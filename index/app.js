@@ -125,9 +125,13 @@ document.getElementById("footnote").innerHTML =
 
 /* Standard methodology + AI disclosure. Generated, not written — see picviz.js. */
 await PV.methodology({
-  meta: {source: "Every dataset behind these pages is listed in _data/PIPELINES.md, " +
-                 "with its key requirement, its cadence and whether it is wired up yet."},
-  sourcesNote: "Named on each page this one links to; the register is _data/PIPELINES.md.",
+  /* Points at _data/SOURCES.json, not at _data/PIPELINES.md. PIPELINES.md is an internal
+     working document and is not published, so naming it here sent every public reader to a
+     path that does not exist — on the one page that exists to tell them where to look. */
+  meta: {source: "Every dataset behind these pages is registered in _data/SOURCES.json " +
+                 "with its endpoint, its exact filter values, and the script that fetched " +
+                 "it. The methods and the known limits are in _data/METHODS-SOP.md."},
+  sourcesNote: "Named on each page this one links to; the register is _data/SOURCES.json.",
   definitions: `<b>PIC-12</b> is the federal-data footprint and matches the cluster-health
     dashboard. <b>NEO-14</b> is how company records are tagged in the vault. They share ten
     counties and are never combined. PIC's measurement register is 3252 + 3255 + 326.`,

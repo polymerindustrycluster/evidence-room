@@ -278,9 +278,14 @@ const PV = (() => {
      not. Disclosure that only appears when the work went well is not disclosure. */
   async function methodology(opts = {}) {
     const o = Object.assign({claims: "claims.json"}, opts);
+    /* A page that supplies noClaimsNote is TELLING us it has no claims file, so do not go
+       looking for one. The catch below made the miss harmless, but it still left a 404 in
+       the network log of the front page of a site whose entire argument is that it checks
+       its own work — the first thing a sceptical reader opens is devtools. */
+    if (o.noClaimsNote) o.claims = null;
     let claims = null;
-    const inlined = document.querySelector(`script[data-pv-file="${o.claims}"]`);
-    if (inlined || location.protocol.startsWith("http")) {
+    const inlined = o.claims && document.querySelector(`script[data-pv-file="${o.claims}"]`);
+    if (o.claims && (inlined || location.protocol.startsWith("http"))) {
       try { claims = await data(o.claims); } catch (e) { /* page may carry none */ }
     }
     /* The registry is loaded here rather than passed in, so a page cannot forget it and

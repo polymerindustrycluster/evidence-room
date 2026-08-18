@@ -100,7 +100,9 @@ python verify_claims.py</pre>
       tagged. They share ten counties and never reconcile. PIC's measurement register is
       <b>3252 + 3255 + 326</b> — NAICS 325 is context, not cluster. A withheld cell is
       never a zero. All three rules are in
-      <span class="mono">_data/PIPELINES.md</span>.</p>
+      <span class="mono">_data/METHODS-SOP.md</span>, and the footprints themselves are
+      defined once in <span class="mono">_data/build/footprints.py</span> &mdash; the file
+      every page imports them from, so a rule stated here cannot disagree with the code.</p>
     <p class="src">The federal sources behind these pages, named once so a reader can find
       them: <dfn><b>QCEW</b> &mdash; the Quarterly Census of Employment and Wages, the
       payroll count behind every jobs and wage figure here.</dfn>
