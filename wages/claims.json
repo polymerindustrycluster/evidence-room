@@ -15,7 +15,7 @@
       "source": "John's decision 2026-08-14",
       "assert": "D['meta']['footprint']['label'] == 'PIC-12'",
       "actual": "D['meta']['footprint']",
-      "falsified_if": "FOOTPRINT: this page uses PIC-12, matching the cluster-health dashboard. It does NOT reconcile with the vault-sourced pages (chain, rfq), which use NEO-14 \u2014 the two share only 10 counties."
+      "falsified_if": "FOOTPRINT: this page uses PIC-12, matching the cluster-health dashboard. It does NOT reconcile with the vault-sourced pages, which use NEO-14 \u2014 the two share only 10 counties."
     }
   ]
 }

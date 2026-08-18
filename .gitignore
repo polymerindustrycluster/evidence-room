@@ -38,13 +38,21 @@ shots/
 # leak vector (contaminated + font-embedded bundles found in the audit).
 dist/
 
-# Blocked artifacts (member/applicant data — see README "Not in this repository"):
+# Withheld artifacts — ALL TEN. See README "Not in this repository".
+# This list must match $BLOCKED in stage/prepare.ps1 exactly. It was short by four for a
+# day: collaboration, credit, reach and talent were held on 2026-08-17 and only the staging
+# allowlist was updated, so the belt had gaps the suspenders happened to cover. Two guards
+# only work if both are complete.
 chain/
 rfq/
 trl/
 oversubscribed/
 6ppd/
 ledger/
+collaboration/
+credit/
+reach/
+talent/
 
 .env
 node_modules/
