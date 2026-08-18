@@ -111,7 +111,13 @@ dfn b{font-weight:900}
    width nothing else on the page used. Bind it to the measure like every other line of prose. */
 .band .takeaway{font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:900;
   color:var(--action);margin:0 0 10px;max-width:var(--measure)}
-.src{margin:22px 0 0;font-size:13px;color:var(--caption);max-width:var(--figure);
+/* TWO WIDTHS, ONE RULE: prose is --measure, figures are --figure. Decided 2026-08-18
+   after the note box, the source caption and the table toggle were all found sitting at
+   figure width under a lede at measure width — three right edges on one screen, which
+   reads as raggedness a reader feels and cannot name. Now every line of prose, including
+   the ones that live in chart chrome, stops where the lede stops. Only things that ARE
+   figures — the svg, the table's data — run wide. */
+.src{margin:22px 0 0;font-size:13px;color:var(--caption);max-width:var(--measure);
   line-height:1.55}
 
 /* chart chrome */
@@ -146,8 +152,10 @@ dfn b{font-weight:900}
 
 /* table-view twin — every chart has one */
 .pv-table{margin:18px 0 0;font-size:14px}
+/* The toggle line is prose and sits with the prose; the table it opens is a figure and
+   keeps the figure width, because a six-column table at 678px is a horizontal scrollbar. */
 .pv-table summary{cursor:pointer;color:var(--action);font-weight:700;font-size:13.5px;
-  padding:7px 0}
+  padding:7px 0;max-width:var(--measure)}
 .pv-table summary:hover{color:var(--hover)}
 .pv-tablewrap{overflow-x:auto;margin:10px 0 0;max-width:100%}
 details.pv-table:not([open]) .pv-tablewrap{display:none}
@@ -161,13 +169,20 @@ details.pv-table:not([open]) .pv-tablewrap{display:none}
 .pv-table thead th:first-child{text-align:left}
 
 .note{background:#F4F1EC;border-left:3px solid var(--hover);padding:15px 20px;margin:26px 0 0;
-  font-size:14.5px;color:#3A3A36;line-height:1.6;max-width:var(--figure)}
+  font-size:14.5px;color:#3A3A36;line-height:1.6;max-width:var(--measure)}
 .note b{color:var(--hover)}
 .closer{background:var(--deeper);color:#fff;padding:52px 0}
+/* SPECIFICITY BUG, fixed 2026-08-18. `.closer .wrap > *` (0,2,0) outranked `.closer p`
+   (0,1,1) — a class beats an element — so the wrapper's --figure won and the two
+   --measure declarations below it NEVER applied, on any page. The closer paragraph rendered
+   at 980px everywhere while its stylesheet said 678. The old column audit could not see it
+   because 980 is a sanctioned width; the hardened audit reports "on FIGURE, expected
+   MEASURE" and that is how this was found. Selectors below now carry the wrapper's own
+   specificity so the cascade resolves the way it reads. */
 .closer .wrap > *{max-width:var(--figure)}
-.closer p{font-size:clamp(20px,2.6vw,30px);font-weight:900;letter-spacing:-.02em;
+.closer .wrap > p{font-size:clamp(20px,2.6vw,30px);font-weight:900;letter-spacing:-.02em;
   line-height:1.26;max-width:var(--measure);margin:0}
-.closer .sub{margin:18px 0 0;font-size:16.5px;font-weight:400;color:#A8CDD4;
+.closer .wrap > .sub{margin:18px 0 0;font-size:16.5px;font-weight:400;color:#A8CDD4;
   max-width:var(--measure);letter-spacing:0;line-height:1.6}
 .closer .sub b{color:#fff}
 

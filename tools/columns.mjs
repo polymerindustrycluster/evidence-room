@@ -7,13 +7,21 @@
  * A page reads as "inconsistent widths" when a reader's eye finds more vertical rules than
  * the design has reasons for. Three is a system the eye learns in one screenful:
  *
- *   MEASURE  running prose — headline, lede, note. Narrow because reading is the job.
- *   FIGURE   anything with data in it — chart, source line, table, methodology.
+ *   MEASURE  every line of PROSE — takeaway, headline, lede, note, source caption, the
+ *            table toggle. Narrow because reading is the job. This includes prose that
+ *            lives inside chart chrome; where it sits does not change what it is.
+ *   FIGURE   things that ARE data — the chart svg, the table's rows, the legend.
  *   FULL     the band background only. Nothing with ink in it.
  *
  * Anything that lands on a fourth value is a mistake even if it looks fine in isolation,
  * because the reader sees it as a fourth rule and no rule explains it. That is the whole
  * defect: not that any one block is wrong, but that no two agree.
+ *
+ * TWO CHECKS, NOT ONE. Until 2026-08-18 this only asked "is it on SOME sanctioned width?"
+ * — and a note box at figure width, sitting directly under a lede at measure width, passed
+ * as on-column while a reader saw three right edges on one screen. Now every element also
+ * has an EXPECTED slot, and landing on the wrong sanctioned width is reported the same as
+ * landing on none. Being on a column is necessary; being on the right one is the point.
  */
 import {readdirSync} from "fs";
 import {pathToFileURL} from "url";
@@ -54,26 +62,48 @@ for (const W of WIDTHS) {
         };
         const want = {measure: probe("var(--measure)"), figure: probe("var(--figure)"),
                       full: FULL};
+        // Which width each thing SHOULD sit on. Prose is measure; data is figure. The hero
+        // h1 is display type and deliberately wide — 54px at 678 wraps into a tower.
+        const EXPECT = [
+          [".band .takeaway", "measure"], [".band h2", "measure"], [".band .lede", "measure"],
+          [".band .note", "measure"], [".band .src", "measure"],
+          [".band .pv-table summary", "measure"],
+          [".hero .stand", "measure"], [".closer p", "measure"], [".closer h2", "measure"],
+          [".band .chart", "figure"], [".band .legend", "figure"],
+          [".band .pv-method", "figure"], [".hero h1", "figure"],
+        ];
         const out = [];
-        document.querySelectorAll(
-          ".band .takeaway, .band h2, .band .lede, .band .note, .band .src, " +
-          ".band .chart, .band .legend, .band .pv-method, .hero .stand, .hero h1, " +
-          ".closer h2, .closer p").forEach(e => {
+        for (const [sel, expect] of EXPECT) {
+          document.querySelectorAll(sel).forEach(e => {
             if (!e.getClientRects().length) return;
             const w = e.getBoundingClientRect().width;
             const near = Object.entries(want)
               .find(([, v]) => Math.abs(w - v) <= 2);
-            out.push({sel: e.className || e.tagName.toLowerCase(),
-                      w: Math.round(w), slot: near ? near[0] : null});
+            const slot = near ? near[0] : null;
+            // A short line (a one-word takeaway, a summary that fits) is narrower than its
+            // column by content, not by rule — its max-width is what we are auditing.
+            const cap = parseFloat(getComputedStyle(e).maxWidth);
+            const capSlot = Object.entries(want).find(([, v]) => Math.abs(cap - v) <= 2);
+            const effective = slot || (capSlot ? capSlot[0] : null);
+            // Below ~760px the stylesheet collapses figure and measure to one width on
+            // purpose (one column is the only honest layout on a phone). When they
+            // coincide the "expected slot" question has no answer, so it is not asked.
+            const collapsed = Math.abs(want.measure - want.figure) <= 2;
+            out.push({sel, w: Math.round(w), slot: effective, expect,
+                      wrong: !collapsed && effective && effective !== expect});
           });
+        }
         return {want: {measure: Math.round(want.measure), figure: Math.round(want.figure),
                        full: Math.round(FULL)}, out};
       });
       if (rows) {
         checked += rows.out.length;
         rows.out.filter(r => !r.slot).forEach(r =>
-          offenders.push(`${name} .${String(r.sel).split(" ")[0]} = ${r.w}px ` +
+          offenders.push(`${name} ${r.sel} = ${r.w}px OFF-COLUMN ` +
                          `(measure ${rows.want.measure} / figure ${rows.want.figure} / full ${rows.want.full})`));
+        rows.out.filter(r => r.wrong).forEach(r =>
+          offenders.push(`${name} ${r.sel} = ${r.w}px on ${r.slot.toUpperCase()}, ` +
+                         `expected ${r.expect.toUpperCase()}`));
       }
     } catch { /* not built */ }
     await page.close();
