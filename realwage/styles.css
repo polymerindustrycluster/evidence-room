@@ -1,0 +1,2 @@
+/* realwage — the slope chart needs room for two label gutters; nothing else is special */
+.chart svg{max-width:100%}

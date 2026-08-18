@@ -1,0 +1,47 @@
+{
+  "data": "federal.json",
+  "claims": [
+    {
+      "id": "fed-total",
+      "text": "About $249M of federal polymer obligations as awarded — $280M in 2025 dollars.",
+      "source": "USAspending.gov, place of performance, PIC-12; BLS CPI-U annual averages for the real column",
+      "assert": "abs(sum(r['amount'] for r in D['naics']) - 249_000_000) < 5_000_000 and abs(sum(r['real'] for r in D['naics']) - 280_000_000) < 6_000_000",
+      "actual": "(sum(r['amount'] for r in D['naics']), sum(r['real'] for r in D['naics']))",
+      "falsified_if": "USAspending restates an obligation, or the CPI table is extended and changes the base. NOTE: an earlier version of this page published only the nominal sum. Adding more than one year of dollars together without adjusting is a defect, not a style choice — the gap here is 12 percent.",
+      "official_check": "The first adjustment attempt returned +3% because fiscal 2026 was missing from the CPI table and was silently skipped by an 'if year in CPI' guard. A lookup that skips what it cannot find is the same failure mode as a dead code: it produces a plausible number instead of an error."
+    },
+    {
+      "id": "fed-top-naics",
+      "text": "All Other Rubber Product Manufacturing (326299) is the largest recipient industry, ahead of tire manufacturing.",
+      "source": "USAspending by NAICS, summed across fiscal years",
+      "assert": "sorted({c: sum(r['amount'] for r in D['naics'] if r['code']==c) for c in set(r['code'] for r in D['naics'])}.items(), key=lambda t: -t[1])[0][0] == '326299'",
+      "actual": "sorted({c: sum(r['amount'] for r in D['naics'] if r['code']==c) for c in set(r['code'] for r in D['naics'])}.items(), key=lambda t: -t[1])[:3]",
+      "falsified_if": "A large tire award lands, or a 326299 award is de-obligated. NOTE: 326211 leads in individual fiscal years (FY2025) while 326299 leads the eight-year total — a single-year check would reproduce the original error."
+    },
+    {
+      "id": "fed-tire-second",
+      "text": "Tire manufacturing is the second-largest recipient industry.",
+      "source": "USAspending by NAICS, summed FY2019-FY2026",
+      "assert": "sorted({c: sum(r['amount'] for r in D['naics'] if r['code']==c) for c in set(r['code'] for r in D['naics'])}.items(), key=lambda t: -t[1])[1][0] == '326211'",
+      "actual": "sorted({c: sum(r['amount'] for r in D['naics'] if r['code']==c) for c in set(r['code'] for r in D['naics'])}.items(), key=lambda t: -t[1])[:3]",
+      "falsified_if": "Either of the top two codes moves. Paired with fed-top-naics so the ordering cannot silently swap."
+    },
+    {
+      "id": "fed-real-ranking-stable",
+      "text": "Inflation adjustment does not change which industry received the most.",
+      "source": "derived: nominal and real rankings compared across all NAICS codes",
+      "assert": "sorted({r['code'] for r in D['naics']}, key=lambda k: -sum(x['amount'] for x in D['naics'] if x['code'] == k))[:3] == sorted({r['code'] for r in D['naics']}, key=lambda k: -sum(x['real'] for x in D['naics'] if x['code'] == k))[:3]",
+      "actual": "(sorted({r['code'] for r in D['naics']}, key=lambda k: -sum(x['amount'] for x in D['naics'] if x['code'] == k))[:3], sorted({r['code'] for r in D['naics']}, key=lambda k: -sum(x['real'] for x in D['naics'] if x['code'] == k))[:3])",
+      "falsified_if": "The nominal and real top-three diverge. They agree today, which is why the 'largest recipient is not tire manufacturing' finding survives the adjustment — worth checking again whenever a new fiscal year lands."
+    },
+    {
+      "id": "fed-excludes-disclosed",
+      "text": "The page states that university and research awards are invisible to the NAICS view.",
+      "source": "USAspending NAICS filter is 325*/326* manufacturing; a university files under 61xxxx",
+      "assert": "'excludes' in D['meta'] and 'NAICS' in D['meta']['excludes'] and 'invisible' in D['meta']['excludes'].lower()",
+      "actual": "D['meta'].get('excludes','MISSING')",
+      "falsified_if": "The excludes note is dropped from the meta, or the NAICS filter widens to include 61xxxx/5417xx. This is a STRUCTURAL absence, not a suppression: the NSF NEO-SMART Engine ($14,999,983) and TARDISS are real federal money in these counties that this view cannot see. An absence produced by a filter reads exactly like an absence in the world, which is why it has to be stated rather than noticed.",
+      "official_check": "The all-industry county rows DO capture these awards; only the NAICS rows exclude them. The two are shown separately and never summed."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "data": "realwage.json",
+  "claims": [
+    {
+      "id": "rw-flip",
+      "text": "Akron ranks 33rd of 56 polymer metros on nominal wages and 19th on price-adjusted wages.",
+      "source": "BLS QCEW 2023 NAICS 326 metro weekly wage; BEA MARPP 2023 all-items price parity",
+      "assert": "[r for r in D['big'] if r['area']=='10420'][0]['big_rank_nominal'] == 33 and [r for r in D['big'] if r['area']=='10420'][0]['big_rank_real'] == 19",
+      "actual": "[(r['big_rank_nominal'], r['big_rank_real'], r['big_climb']) for r in D['big'] if r['area']=='10420']",
+      "falsified_if": "Either source revises, or the 2,000-job floor changes. The floor is a CHOICE — it selects the comparison set, and a different floor gives a different rank. State the floor whenever the rank is quoted."
+    },
+    {
+      "id": "rw-crosses-median",
+      "text": "The adjustment moves Akron from below the median polymer metro to above it.",
+      "source": "derived: median nominal and median real across the 56-metro set",
+      "assert": "(lambda B, a: a['nominal'] < sorted(r['nominal'] for r in B)[len(B)//2] and a['real'] > sorted(r['real'] for r in B)[len(B)//2])(D['big'], [r for r in D['big'] if r['area']=='10420'][0])",
+      "actual": "(sorted(r['nominal'] for r in D['big'])[len(D['big'])//2], sorted(r['real'] for r in D['big'])[len(D['big'])//2], [(r['nominal'], r['real']) for r in D['big'] if r['area']=='10420'])",
+      "falsified_if": "Akron's wage rises or falls past the median in either measure. Crossing the median is the entire claim; if it stops crossing, the page has no finding and should say so."
+    },
+    {
+      "id": "rw-not-cheap",
+      "text": "Akron is a median-price metro, not a cheap one: more than a hundred metros are cheaper.",
+      "source": "BEA MARPP 2023, all items, 235 metros with a disclosed polymer wage",
+      "assert": "len([r for r in D['metros'] if r['rpp'] < [x for x in D['metros'] if x['area']=='10420'][0]['rpp']]) > 100",
+      "actual": "(len([r for r in D['metros'] if r['rpp'] < [x for x in D['metros'] if x['area']=='10420'][0]['rpp']]), len(D['metros']))",
+      "falsified_if": "Akron's price level falls relative to other metros. This claim exists to stop the page being read as a 'low cost of living' pitch — the advantage is relative to where the polymer industry sits, not to the country."
+    },
+    {
+      "id": "rw-metro-only",
+      "text": "This page is metro-level throughout and never uses the PIC-12 county footprint.",
+      "source": "BEA publishes price parities only for metros; they cannot be summed to counties",
+      "assert": "'METRO' in D['meta']['geography'] and all(len(r['area']) == 5 for r in D['metros'])",
+      "actual": "D['meta']['geography']",
+      "falsified_if": "Anyone joins this to county QCEW or to the vault. Cleveland and Canton withhold their 2023 polymer wage, so the region appears through Akron alone — that is a coverage limit, not a regional figure."
+    }
+  ]
+}

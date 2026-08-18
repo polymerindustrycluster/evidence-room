@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>The PIC Evidence Room</title>
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <strong>Polymer Industry Cluster</strong>
+    <span>Interactive evidence</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow" id="eyebrow">One evidence base</p>
+    <h1>Every number here has a source, an assertion, and <em>a way to be proved
+      wrong</em>.</h1>
+    <p class="stand">Built from free public data &mdash; federal payroll and wage records,
+      the census, energy and price series, federal spending, and the national record of
+      college degrees &mdash; plus PIC's own vault and grant intake. Each published sentence is a
+      re-runnable assertion; each carries the condition that would falsify it. Nothing here
+      is cleared for external use without the checks at the bottom of this page.</p>
+    <p class="stand"><dfn><b>PIC-12</b> and <b>NEO-14</b> are two different maps of the
+      same region: twelve counties for anything built from federal data, fourteen for
+      anything from PIC's own records. They share ten counties and are never mixed in one
+      figure.</dfn></p>
+    <div class="hero-row" id="figs"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">Start here</p>
+    <h2>The four that answer a question someone actually asked</h2>
+    <p class="lede">If you only open a few, open these. Each replaces a claim PIC currently
+      makes on assertion with one it can defend on evidence.</p>
+    <div class="cards lead" id="lead"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The rest</p>
+    <h2 id="alltitle">Everything, by what it is for</h2>
+    <div class="cards" id="all"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">Before anything leaves the building</p>
+    <h2>How to check this work</h2>
+    <div class="checks">
+      <div>
+        <h3>1. Re-run every claim</h3>
+        <pre>cd _data/build
+python verify_claims.py</pre>
+        <p>Every published sentence is an assertion against the data that produced it.
+          A failure means the sentence no longer matches its source &mdash; fix the
+          sentence or the computation, never the assertion.</p>
+      </div>
+      <div>
+        <h3>2. Read the falsification conditions</h3>
+        <pre>python verify_claims.py --list</pre>
+        <p>Each claim carries what would make it wrong. This output is the brief for a
+          hostile reviewer &mdash; it is the attack surface, written down by the person
+          who made the claims.</p>
+      </div>
+      <div>
+        <h3>3. Attack the manual claims first</h3>
+        <p>Claims quoted from documents rather than datasets cannot be machine-checked.
+          They print as <span class="mono">MANL</span> and are the most likely place a
+          wrong reading survives. They need a human or a council lane.</p>
+      </div>
+      <div>
+        <h3>4. Rebuild the data from origin</h3>
+        <pre>python fetch_*.py &amp;&amp; python derive_*.py</pre>
+        <p>Every dataset is reproducible from <span class="mono">_data/build/</span> with
+          free public APIs. Nothing depends on a private table, and nothing writes to
+          production.</p>
+      </div>
+    </div>
+    <div class="note" id="footnote"></div>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="wrap">
+    <p>Two footprints, three registers, and a suppression rule. Read those before quoting
+      anything.</p>
+    <p class="sub">Federal-data pages use <b>PIC-12</b>, matching the cluster-health
+      dashboard. Vault-sourced pages use <b>NEO-14</b>, which is how company records are
+      tagged. They share ten counties and never reconcile. PIC's measurement register is
+      <b>3252 + 3255 + 326</b> — NAICS 325 is context, not cluster. A withheld cell is
+      never a zero. All three rules are in
+      <span class="mono">_data/PIPELINES.md</span>.</p>
+    <p class="src">The federal sources behind these pages, named once so a reader can find
+      them: <dfn><b>QCEW</b> &mdash; the Quarterly Census of Employment and Wages, the
+      payroll count behind every jobs and wage figure here.</dfn>
+      <dfn><b>IPEDS</b> &mdash; the Integrated Postsecondary Education Data System, the
+      federal record of every degree conferred.</dfn>
+      <dfn><b>NAICS</b> &mdash; the North American Industry Classification System, the codes
+      that decide which employers count as polymer.</dfn>
+      <dfn><b>BEA</b> is the Bureau of Economic Analysis, which publishes regional price
+      levels; <b>BLS</b> is the Bureau of Labor Statistics.</dfn>
+      <dfn><b>TRL</b> &mdash; technology readiness level, a 1-to-9 scale from idea to
+      production.</dfn></p>
+  </div>
+</section>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

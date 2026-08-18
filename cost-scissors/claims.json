@@ -1,0 +1,46 @@
+{
+  "data": "scissors.json",
+  "claims": [
+    {
+      "id": "cs-ladder-monotonic",
+      "text": "Retracement falls monotonically down the chain: gas, then crude, then resin, then finished product.",
+      "source": "FRED/BLS and EIA monthly series, each indexed to January 2019; retracement = (peak - now) / (peak - 100)",
+      "assert": "(lambda g: g['feedstock'] > g['resin'] > g['product'])({s['stage']: max(x['retraced'] for x in D['series'] if x['stage']==s['stage'] and x['retraced'] is not None) for s in D['series'] if s['stage'] in ('feedstock','resin','product')})",
+      "actual": "[(s['stage'], s['label'], s['retraced']) for s in D['series'] if s['retraced'] is not None]",
+      "falsified_if": "Any stage overtakes the one above it. The ORDERING is the claim and it is robust to the base month; the exact percentages are not, because January 2019 is a winter month and flatters the gas fall."
+    },
+    {
+      "id": "cs-product-at-peak",
+      "text": "Finished polymer product prices have retraced nothing — their peak is the most recent month.",
+      "source": "PPI plastics and rubber products manufacturing, PCU326326",
+      "assert": "all(s['retraced'] == 0 and s['peak']['date'] == s['now']['date'] for s in D['series'] if s['stage']=='product')",
+      "actual": "[(s['label'], s['peak']['date'], s['peak']['index'], s['now']['index']) for s in D['series'] if s['stage']=='product']",
+      "falsified_if": "Any month prints below the prior peak — at which point this page's headline is out of date and must be restated. This is the most perishable claim on the site; it expires with the next PPI release."
+    },
+    {
+      "id": "cs-gas-round-tripped",
+      "text": "Natural gas is below where it started in January 2019.",
+      "source": "EIA Henry Hub spot, monthly",
+      "assert": "(lambda g: g['now']['index'] < 100 and g['retraced'] > 1)([s for s in D['series'] if 'natural gas' in s['label'].lower()][0])",
+      "actual": "[(s['label'], s['peak']['index'], s['now']['index'], s['retraced']) for s in D['series'] if 'natural gas' in s['label'].lower()]",
+      "falsified_if": "Gas rises back above its January 2019 level. Note the base is a WINTER month, so this comparison is flattering by construction — the honest version is that gas has fully round-tripped, not that it is cheap."
+    },
+    {
+      "id": "cs-spread-not-margin",
+      "text": "The product-minus-resin spread is stated as an index spread and never as a margin.",
+      "source": "Standing rule - labor, freight, energy and packaging are in neither index",
+      "verify": "manual",
+      "assert": null,
+      "falsified_if": "Anyone describes this line as profit, margin, or markup. Two readings fit the same line - the industry held price after input costs fell, or its other costs rose enough to require it - and this data cannot separate them.",
+      "checked_by": "Unit-discipline rule, not a data check"
+    },
+    {
+      "id": "cs-one-axis",
+      "text": "Series in different units share an axis only because every one is rebased to its own January 2019.",
+      "source": "derive_rest.py indexes each series to its base month before any chart sees it",
+      "assert": "all(s['base'] == '2019-01-01' for s in D['series']) and 'rebasing' in D['meta']",
+      "actual": "sorted({s['unit'] for s in D['series']})",
+      "falsified_if": "Any raw level reaches a shared axis. Dollars per mcf, cents per kWh and index points are not comparable quantities, and indexing is the only thing that makes one axis honest here."
+    }
+  ]
+}

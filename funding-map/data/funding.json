@@ -1,0 +1,443 @@
+{
+ "meta": {
+  "title": "Where the public money goes",
+  "asOf": "2026-08-13",
+  "publisher": "Polymer Industry Cluster",
+  "totals": {
+   "awards": 85335784,
+   "match": 20954667,
+   "total": 106290451
+  },
+  "disclosures": [
+   "Figures are awarded or committed amounts; disbursement follows milestones.",
+   "All seven EDA figures are verified against signed federal Notices of Award.",
+   "NEO-SMART is a separate CWRU-led NSF Engine award in which PIC is a core partner. It is not PIC money and is not on this diagram."
+  ],
+  "notShown": [
+   "Disbursement timing. Every figure here is what has been awarded or committed, not what has been spent.",
+   "Private investment, in-kind contribution, and company R&D spending that sits alongside these awards.",
+   "The NEO-SMART NSF Engine, which is a separate award to a separate lead organization.",
+   "Partner-by-partner detail behind the aggregate match and cost-share figures.",
+   "A separate award number for Synthe6. There isn't one, and that is not an omission: Synthe6 is a workstream inside Ohio Innovation Hub grant SBIG20251005, delivered through a dated subgrant agreement rather than a separately numbered award."
+  ],
+  "scaleNote": [
+   "Drawn to scale: the three source bars, their three match bars, the seven EDA ribbons, and the five Ohio workstream bands.",
+   "Not to scale across programs: connectors into individual recipients. Within PIC Translational R&D the seven are proportional to each other; within Synthe6 the nine are equal because the awards are equal. At $25K a cohort ribbon would be a fraction of a pixel, so every recipient carries its amount as a label instead."
+  ],
+  "reconciliation": [
+   "The rows above account for the money that has reached a named recipient. That is less than the $85,335,784 in awards, for two reasons the diagram also shows.",
+   "Of the $5,992,000 allocated to PIC Translational R&D, $3,349,892 is executed in the seven sub-grants listed here.",
+   "Of the $3,748,500 startup-support workstream, $225,000 is the nine Synthe6 cohort cash awards; the balance is delivered through the Bounce sub-grant that runs the program.",
+   "Adding $20,954,667 in match and cost share to the $85,335,784 in awards gives the $106,290,451 total secured."
+  ],
+  "provenance": [
+   "EDA Sustainable Polymers Tech Hub: signed federal Notices of Award, cross-checked against USAspending.gov by award ID. The seven awards total $51,001,413 against a \"$51 million\" headline; partner match totals $7,164,030.",
+   "Ohio Innovation Hub: the executed state grant agreement (Grant Control No. SBIG20251005, appropriation 1956F8, Am. Sub. H.B. 33, 135th G.A.) and the contract-grade workstream budget, identical to the cent across the December 2024 contract-amendment exhibit and the September 2025 budget form.",
+   "PIC Translational R&D sub-grants: executed sub-grant agreements. The University of Akron figure is $678,614, the executed amount written into the signed agreement.",
+   "Synthe6 cohort: $25,000 in one-time non-dilutive cash per company, confirmed in the grant agreement, the Bounce first amendment, and the startup grant administration agreement. The money is administered by Bounce Innovation Hub under a subgrant agreement dated 15 May 2025, which draws on Ohio Innovation Hub grant SBIG20251005 — Synthe6 is a workstream inside that grant, not a separate award, and has no award number of its own.",
+   "Good Jobs Challenge (APEX): award ED25OIE0G0108 and the signed Notice of Award. Good Jobs Challenge is the funding program and APEX is the initiative it funds. They are one award described two ways, not two awards."
+  ]
+ },
+ "sources": [
+  {
+   "id": "eda",
+   "name": "EDA Sustainable Polymers Tech Hub",
+   "short": "EDA Tech Hub",
+   "kind": "Federal implementation award",
+   "agency": "U.S. Economic Development Administration",
+   "award": 51001413,
+   "matchAmount": 7164030,
+   "matchLabel": "partner match",
+   "hue": "eda",
+   "mechanism": "direct",
+   "mechanismTitle": "Direct federal awards",
+   "mechanismLines": [
+    "Obligated to each project lead.",
+    "PIC is not a pass-through."
+   ],
+   "note": "EDA obligates directly to each project lead. The Greater Akron Chamber is one recipient among seven, for innovation governance. No part of the other six awards passes through it."
+  },
+  {
+   "id": "ohio",
+   "name": "Ohio Innovation Hub",
+   "short": "Ohio Innovation Hub",
+   "kind": "State program investment",
+   "agency": "Ohio Department of Development",
+   "award": 31250000,
+   "matchAmount": 10417066,
+   "matchLabel": "state cost share",
+   "hue": "ohio",
+   "mechanism": "hub",
+   "mechanismTitle": "Greater Akron Polymer Innovation Hub",
+   "mechanismLines": [],
+   "note": "The state award genuinely deploys through the hub, which allocates it across five workstreams. The workstream bands are drawn to scale against each other on an expanded scale — at the shared source scale the two smallest would be too thin to label.",
+   "awardId": "SBIG20251005",
+   "awardIdLabel": "Grant Control No. "
+  },
+  {
+   "id": "apex",
+   "name": "Good Jobs Challenge (APEX)",
+   "short": "Good Jobs Challenge (APEX)",
+   "kind": "Federal workforce award",
+   "agency": "U.S. Economic Development Administration",
+   "award": 3084371,
+   "matchAmount": 3373571,
+   "matchLabel": "local match",
+   "hue": "apex",
+   "mechanism": "direct",
+   "mechanismTitle": "APEX workforce initiative",
+   "mechanismLines": [
+    "Greater Akron Chamber as grantee."
+   ],
+   "note": "Good Jobs Challenge is the federal program; APEX (Advanced Polymer and Manufacturing Excellence) is the initiative it funds. They are one award, not two. The money funds regional workforce programs rather than Chamber operations."
+  }
+ ],
+ "programs": [
+  {
+   "id": "eda-direct",
+   "sourceId": "eda",
+   "name": "Direct federal awards",
+   "amount": 51001413,
+   "tint": "eda",
+   "chip": "EDA",
+   "note": "Seven implementation awards obligated straight to their project leads."
+  },
+  {
+   "id": "oh-facility",
+   "sourceId": "ohio",
+   "name": "Pilot facility",
+   "amount": 18521985,
+   "share": "59.27%",
+   "tint": "hub",
+   "chip": "OHIO HUB",
+   "note": "The largest single block of state funds: buildings and structures, capital equipment, siting and architectural work, and four years of operations."
+  },
+  {
+   "id": "oh-rd",
+   "sourceId": "ohio",
+   "name": "PIC Translational R&D",
+   "amount": 5992000,
+   "share": "19.17%",
+   "tint": "rd",
+   "chip": "TRANSLATIONAL",
+   "note": "PIC Translational R&D Funding — competitive awards up to $500K. $3.35M is executed across seven sub-grants; the balance is not yet sub-granted.",
+   "rider": "$3.35M executed in seven sub-grants"
+  },
+  {
+   "id": "oh-startup",
+   "sourceId": "ohio",
+   "name": "Startup support",
+   "amount": 3748500,
+   "share": "12.00%",
+   "tint": "s6",
+   "chip": "SYNTHE6",
+   "note": "Delivered through the Bounce sub-grant, which is the entire startup-support workstream. Each Synthe6 cohort company receives $25,000 in one-time non-dilutive cash."
+  },
+  {
+   "id": "oh-gov",
+   "sourceId": "ohio",
+   "name": "Governance",
+   "amount": 1499515,
+   "share": "4.80%",
+   "tint": "hub",
+   "chip": "OHIO HUB",
+   "note": "Hub administration and program management."
+  },
+  {
+   "id": "oh-workforce",
+   "sourceId": "ohio",
+   "name": "Workforce development",
+   "amount": 1488000,
+   "share": "4.76%",
+   "tint": "hub",
+   "chip": "OHIO HUB",
+   "note": "Regional polymer workforce programming funded from state hub money."
+  },
+  {
+   "id": "apex-workforce",
+   "sourceId": "apex",
+   "name": "APEX workforce initiative",
+   "amount": 3084371,
+   "tint": "apex",
+   "chip": "APEX",
+   "note": "Advanced Polymer and Manufacturing Excellence, run with the Polymer Sector Partnership."
+  }
+ ],
+ "recipients": [
+  {
+   "id": "bioverde",
+   "name": "BioVerde",
+   "awards": [
+    {
+     "programId": "eda-direct",
+     "amount": 11122386,
+     "awardId": "ED25HDQ0G0038",
+     "funds": "Bio-based butadiene",
+     "chip": "EDA R&D"
+    },
+    {
+     "programId": "oh-startup",
+     "amount": 25000,
+     "funds": "Synthe6 cohort award"
+    }
+   ]
+  },
+  {
+   "id": "flexsys",
+   "name": "Flexsys",
+   "awards": [
+    {
+     "programId": "eda-direct",
+     "amount": 10093286,
+     "awardId": "ED25HDQ0G0013",
+     "funds": "Safer anti-degradant, a 6PPD alternative",
+     "chip": "EDA R&D"
+    }
+   ]
+  },
+  {
+   "id": "goodyear",
+   "name": "Goodyear",
+   "awards": [
+    {
+     "programId": "eda-direct",
+     "amount": 9390634,
+     "awardId": "ED25HDQ0G0036",
+     "funds": "Polymer composite, liquid phase mixing",
+     "chip": "EDA R&D"
+    }
+   ]
+  },
+  {
+   "id": "university-of-akron",
+   "name": "University of Akron",
+   "awards": [
+    {
+     "programId": "eda-direct",
+     "amount": 7071802,
+     "awardId": "ED24HDQ0G0452",
+     "funds": "Workforce (WISE)"
+    },
+    {
+     "programId": "oh-rd",
+     "amount": 678614,
+     "funds": "Copolymers of butadiene and CO₂"
+    }
+   ]
+  },
+  {
+   "id": "huntsman",
+   "name": "Huntsman",
+   "awards": [
+    {
+     "programId": "eda-direct",
+     "amount": 5970805,
+     "awardId": "ED25HDQ0G0009",
+     "funds": "Carbon black and nanotubes from methane",
+     "chip": "EDA R&D"
+    }
+   ]
+  },
+  {
+   "id": "full-circle",
+   "name": "Full Circle Technologies",
+   "awards": [
+    {
+     "programId": "eda-direct",
+     "amount": 4702500,
+     "awardId": "ED25HDQ0G0030",
+     "funds": "Recycling, end-of-life tires",
+     "chip": "EDA R&D"
+    }
+   ]
+  },
+  {
+   "id": "greater-akron-chamber",
+   "name": "Greater Akron Chamber",
+   "awards": [
+    {
+     "programId": "eda-direct",
+     "amount": 2650000,
+     "awardId": "ED24HDQ0G0413",
+     "funds": "Innovation governance — a regional office of innovation for the Tech Hub"
+    },
+    {
+     "programId": "oh-gov",
+     "amount": 1499515,
+     "funds": "Innovation Hub governance and program administration"
+    }
+   ]
+  },
+  {
+   "id": "polymer-pilot-facility",
+   "name": "Polymer Pilot Facility",
+   "awards": [
+    {
+     "programId": "oh-facility",
+     "amount": 18521985,
+     "funds": "Buildings and structures, capital equipment, siting and architectural work, and operations"
+    }
+   ]
+  },
+  {
+   "id": "peak-nano",
+   "name": "Peak Nano Films",
+   "awards": [
+    {
+     "programId": "oh-rd",
+     "amount": 677778,
+     "funds": "Degradable multilayer polymer films"
+    }
+   ]
+  },
+  {
+   "id": "promerus",
+   "name": "Promerus",
+   "awards": [
+    {
+     "programId": "oh-rd",
+     "amount": 500000,
+     "funds": "Green DCPD from renewable sources"
+    }
+   ]
+  },
+  {
+   "id": "cwru",
+   "name": "Case Western Reserve University",
+   "awards": [
+    {
+     "programId": "oh-rd",
+     "amount": 495000,
+     "funds": "Solid-state deformation processing"
+    }
+   ]
+  },
+  {
+   "id": "synthomer",
+   "name": "Synthomer",
+   "awards": [
+    {
+     "programId": "oh-rd",
+     "amount": 410000,
+     "funds": "Advanced additives for lighter, thinner packaging"
+    }
+   ]
+  },
+  {
+   "id": "polykinetix",
+   "name": "PolyKinetix",
+   "awards": [
+    {
+     "programId": "oh-rd",
+     "amount": 296000,
+     "funds": "Rubber and plastics pyrolysis demonstration"
+    },
+    {
+     "programId": "oh-startup",
+     "amount": 25000,
+     "funds": "Synthe6 cohort award"
+    }
+   ]
+  },
+  {
+   "id": "aeris",
+   "name": "Aeris Biosciences",
+   "alsoKnownAs": "formerly Auxilium Health",
+   "awards": [
+    {
+     "programId": "oh-rd",
+     "amount": 292500,
+     "funds": "GMP pilot manufacturing and process development"
+    },
+    {
+     "programId": "oh-startup",
+     "amount": 25000,
+     "funds": "Synthe6 cohort award"
+    }
+   ]
+  },
+  {
+   "id": "ace-innovations",
+   "name": "ACE Innovations",
+   "awards": [
+    {
+     "programId": "oh-startup",
+     "amount": 25000,
+     "funds": "Synthe6 cohort award"
+    }
+   ]
+  },
+  {
+   "id": "gelpure",
+   "name": "GelPure",
+   "awards": [
+    {
+     "programId": "oh-startup",
+     "amount": 25000,
+     "funds": "Synthe6 cohort award"
+    }
+   ]
+  },
+  {
+   "id": "materium",
+   "name": "Materium Technologies",
+   "awards": [
+    {
+     "programId": "oh-startup",
+     "amount": 25000,
+     "funds": "Synthe6 cohort award"
+    }
+   ]
+  },
+  {
+   "id": "plastinuva",
+   "name": "Plastinuva",
+   "awards": [
+    {
+     "programId": "oh-startup",
+     "amount": 25000,
+     "funds": "Synthe6 cohort award"
+    }
+   ]
+  },
+  {
+   "id": "seauciel",
+   "name": "Seauciel",
+   "awards": [
+    {
+     "programId": "oh-startup",
+     "amount": 25000,
+     "funds": "Synthe6 cohort award"
+    }
+   ]
+  },
+  {
+   "id": "tkm-ballistics",
+   "name": "TKM Ballistics",
+   "awards": [
+    {
+     "programId": "oh-startup",
+     "amount": 25000,
+     "funds": "Synthe6 cohort award"
+    }
+   ]
+  },
+  {
+   "id": "regional-workforce",
+   "name": "Regional workforce programs",
+   "awards": [
+    {
+     "programId": "apex-workforce",
+     "amount": 3084371,
+     "awardId": "ED25OIE0G0108",
+     "funds": "APEX, targeting 500 enrollments and 320 placements"
+    },
+    {
+     "programId": "oh-workforce",
+     "amount": 1488000,
+     "funds": "Regional polymer workforce programming"
+    }
+   ]
+  }
+ ]
+}

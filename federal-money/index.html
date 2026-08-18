@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>The Other Federal Money</title>
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <strong>Polymer Industry Cluster</strong>
+    <span>Cluster vitals &middot; federal obligations</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Polymer obligations at place of performance, FY2019&ndash;2026</p>
+    <h1>Federal money has been landing on polymer work here <em>every year for eight
+      years</em>.</h1>
+    <p class="stand">PIC's funding map shows the awards PIC helped win. This shows the
+      background rate &mdash; ordinary federal contracting in chemical and plastics manufacturing
+      across the same <b>twelve</b> counties. It is the context that makes the Tech Hub
+      award legible as either large or ordinary, and PIC has never put the two side by
+      side. <b>Two limits bound everything below, and both are structural rather than
+      incidental.</b> The industry view filters to chemical and plastics manufacturing
+      codes only, so
+      <b>university and research awards are invisible to it by construction</b> &mdash; a
+      university files under 61xxxx. And place of performance is a <b>reported field on
+      the award</b>, not an observation of where the work happened.</p>
+    <p class="stand"><dfn><b>Obligation</b> &mdash; money the government has legally
+      committed to pay. It is a promise on the books, not cash already spent, and it is the
+      figure federal spending data reports.</dfn>
+      <dfn><b>Place of performance</b> is where the work is done, which is not always where
+      the company is headquartered.</dfn></p>
+    <div class="hero-row" id="figs"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The chart</p>
+    <h2>Eight years of polymer obligations, by fiscal year</h2>
+    <p class="lede">One bar per federal fiscal year. These are obligations recorded against
+      chemical (325) and plastics and rubber (326) industry codes, for work performed in
+      the region.</p>
+    <div class="chart"><svg id="fy" role="img" aria-labelledby="fy-t">
+      <title id="fy-t">Federal polymer obligations by fiscal year.</title></svg></div>
+    <div id="fytable"></div>
+    <p class="src" id="fysrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">What it buys</p>
+    <h2 id="natitle">Which industries the money actually goes to</h2>
+    <p class="lede">The same obligations, broken out by six-digit industry across all eight
+      years. The largest recipient is not the one you would guess &mdash; it is a
+      residual category defined by what it is not.</p>
+    <div class="chart"><svg id="na" role="img" aria-labelledby="na-t">
+      <title id="na-t">Federal polymer obligations by six-digit industry code.</title></svg></div>
+    <div id="natable"></div>
+    <div class="note" id="caveat"></div>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="wrap">
+    <p>A number is big or small only against something.</p>
+    <p class="sub" id="closersub"></p>
+  </div>
+</section>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

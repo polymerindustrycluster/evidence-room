@@ -1,0 +1,9 @@
+/* location-quotient — page-specific only; tokens and chart chrome live in
+   ../_shared/pic-viz.css so every artifact in web/ stays one system. */
+.picker{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 0}
+.pick{background:#fff;border:1px solid var(--line);color:var(--pv-ink);font:inherit;
+  font-size:13.5px;padding:8px 14px;cursor:pointer;transition:all .14s}
+.pick:hover{border-color:var(--hover);color:var(--hover)}
+.pick[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff;
+  font-weight:700}
+.pick:focus-visible{outline:2px solid var(--action);outline-offset:2px}

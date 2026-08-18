@@ -1,0 +1,21 @@
+{
+  "data": "revisions.json",
+  "claims": [
+    {
+      "id": "rev-share",
+      "text": "About 95 percent of published months were revised at least once.",
+      "source": "ALFRED archival vintages for three PPI series",
+      "assert": "0.92 <= len(D['periods']) / len(set((r['series'], r['date']) for r in D['all'])) <= 0.98",
+      "actual": "(len(D['periods']), len(set((r['series'], r['date']) for r in D['all'])))",
+      "falsified_if": "A refetch adds recent months not yet revised, pulling the share down over time."
+    },
+    {
+      "id": "rev-small",
+      "text": "The typical revision is a fraction of a percent.",
+      "source": "ALFRED first-published against latest value",
+      "assert": "max(abs(p['pct']) for p in D['periods'] if p['pct'] is not None) < 2.0",
+      "actual": "max(abs(p['pct']) for p in D['periods'] if p['pct'] is not None)",
+      "falsified_if": "A benchmark revision moves any month by 2 percent or more. This claim licenses trusting the cost-scissors page; if it fails, that page needs a warning."
+    }
+  ]
+}

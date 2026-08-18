@@ -1,0 +1,56 @@
+{
+ "data": "peers.json",
+ "claims": [
+  {
+   "id": "oh-rank-1",
+   "text": "Ohio is first in the nation in plastics and rubber products employment.",
+   "source": "BLS QCEW by-industry 2024, NAICS 326, private ownership",
+   "assert": "D['states']['326']['rank_emp'] == 1",
+   "actual": "D['states']['326']['rank_emp']",
+   "falsified_if": "A 2024 revision moves another state above Ohio, or BLS restates NAICS 326.",
+   "official_check": "Rank computed directly from BLS annual_avg_emplvl; no derived quantity."
+  },
+  {
+   "id": "oh-complete",
+   "text": "All 51 states are disclosed, so the Ohio ranking has no asterisk.",
+   "source": "BLS QCEW disclosure_code, NAICS 326, 2024",
+   "assert": "D['states']['326']['suppressed'] == 0 and D['states']['326']['of_disclosed'] == 51",
+   "actual": "(D['states']['326']['suppressed'], D['states']['326']['of_disclosed'])",
+   "falsified_if": "BLS begins suppressing a state cell for NAICS 326."
+  },
+  {
+   "id": "oh-jobs",
+   "text": "Ohio has 54,846 plastics and rubber jobs.",
+   "source": "BLS QCEW 2024 annual average, NAICS 326, private",
+   "assert": "round(D['states']['326']['subject_emp']) == 54846",
+   "actual": "D['states']['326']['subject_emp']",
+   "falsified_if": "Any QCEW revision to Ohio 2024."
+  },
+  {
+   "id": "akron-bounded",
+   "text": "Akron ranks 6th among the 155 metros that disclose employment.",
+   "source": "BLS QCEW 2024 NAICS 326, private. Rank among DISCLOSED metros only.",
+   "assert": "D['metros']['326']['rank_emp'] == 6 and D['metros']['326']['of_disclosed'] == 155",
+   "actual": "(D['metros']['326']['rank_emp'], D['metros']['326']['of_disclosed'], D['metros']['326']['suppressed'])",
+   "falsified_if": "A disclosed metro passes Akron's 6,910 jobs, or the disclosed count moves off 155. NOTE: this replaced a '6th to 16th' claim that bounded the rank by establishment count. That bound was INVALID — establishments do not bound employment, and a suppressed metro with fewer, larger plants can beat Akron on jobs. Never restate a national rank from this; 227 metros are suppressed and their employment is unknown, not estimated.",
+   "official_check": "BLS publishes no metro employment rank. The disclosed-only qualifier is not removable — it is the claim.",
+   "assert_": null
+  },
+  {
+   "id": "akron-lq",
+   "text": "Akron sits at 4.69x the national concentration on 6,910 jobs.",
+   "source": "BLS QCEW 2024, lq_annual_avg_emplvl",
+   "assert": "round(D['metros']['326']['subject_lq'],2) == 4.69 and round(D['metros']['326']['subject_emp']) == 6910",
+   "actual": "(D['metros']['326']['subject_lq'], D['metros']['326']['subject_emp'])",
+   "falsified_if": "QCEW revises Akron MSA 2024."
+  },
+  {
+   "id": "metro-visibility",
+   "text": "Only 155 of 382 metros are disclosed for plastics and rubber.",
+   "source": "BLS QCEW disclosure_code, 2024",
+   "assert": "D['visibility']['metro']['disclosed'] == 155 and D['visibility']['metro']['suppressed'] == 227",
+   "actual": "D['visibility']['metro']",
+   "falsified_if": "BLS changes disclosure rules, or the establishment mix shifts enough to unlock cells."
+  }
+ ]
+}

@@ -1,0 +1,203 @@
+/* WIDTHS COME FROM _shared/pic-viz.css. This page predated that file and carried its own
+   --wrap/--gut pair at 1500px, so it ran ~350px wider than every other artifact on the
+   site — the single biggest reason the collection reads as inconsistent even though each
+   page is internally tidy. Its own type, color and spacing are unchanged; only the column
+   is shared. _shared is linked BEFORE this file, so every rule here still wins. */
+/* =========================================================================
+   PIC portfolio timeline — styles
+   Sibling of web/funding-map. Same vocabulary: Aptos, brand palette, generous
+   whitespace, assertion headline, charcoal copy (never black).
+   The rule that is easy to break and must not be: never white text on #1A8A9E
+   (4.06:1). Dark surfaces are #0C6473 (6.8:1 with white).
+   Type floor: this page follows the deck's DESIGN-TYPE-FLOOR discipline in
+   spirit — nothing a reader needs is set as muted micro-type. 12.5px gray is
+   how the funding map's award IDs became invisible.
+   ========================================================================= */
+
+/* PUBLIC CUT — the @font-face rules that were here loaded Aptos .ttf files.
+   Aptos is licensed to Microsoft and is not redistributed in this repository. The font
+   stacks below still name it, so a reader who has Aptos installed sees it; everyone else
+   falls through to Segoe UI and then to the system UI font, which is what the stacks are
+   for. Removed by stage/strip_licensed_fonts.py. */
+
+:root {
+  --teal-900:#0C6473; --teal-700:#12798B; --teal-500:#1A8A9E; --teal-050:#EAF3F5;
+  --lime:#B8D637; --green-mid:#8FAE2B; --green-deep:#5E7A10; --green-ink:#1F2A04;
+  --orange:#E5673E; --orange-dk:#C24E27; --plum:#8E3B62;
+
+  --ink:#3B3C38; --charcoal:#585955; --muted:#656661;
+  --line:#E2E4E3; --line-soft:#EEF0EF;
+  --bg:#FFFFFF; --bg-alt:#F7F8F7; --bg-tint:#F2F6F6;
+  --focus:#0C6473;
+
+  /* One hue per lane. Chosen so no two adjacent lanes share a hue family, and
+     every one clears 4.5:1 as ink on white — these are used as text, not just fills. */
+  --lane-desig:#12798B;
+  --lane-rd:#8E3B62;
+  --lane-work:#9A6A08;
+  --lane-startup:#1A8A9E;
+  --lane-infra:#5E7A10;
+
+  --r-sm:6px; --r-md:10px; --r-lg:16px;
+  --t-fast:140ms;
+  --font:'Aptos','Segoe UI Variable Text','Segoe UI',system-ui,-apple-system,Arial,sans-serif;
+  --font-display:'Aptos Display','Aptos','Segoe UI Variable Display','Segoe UI',system-ui,sans-serif;
+}
+
+*,*::before,*::after { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--font);
+  font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
+  clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+.skip { position:absolute; left:-9999px; }
+.skip:focus { left:16px; top:16px; z-index:60; background:#fff; padding:12px 18px;
+  border-radius:var(--r-sm); box-shadow:0 4px 18px rgba(0,0,0,.18); }
+:focus-visible { outline:3px solid var(--focus); outline-offset:3px; border-radius:4px; }
+
+/* ------------------------------------------------------------------ masthead */
+.masthead { background:linear-gradient(158deg,#0C6473 0%,#12798B 62%,#17879b 100%);
+  color:#fff; padding:clamp(46px,7vw,86px) 0 clamp(38px,5vw,60px); }
+.eyebrow { margin:0 0 14px; font-weight:700; font-size:14.5px; letter-spacing:.18em;
+  text-transform:uppercase; color:#BFE2E9; }
+.masthead h1 { margin:0; font-family:var(--font-display); font-weight:700;
+  font-size:clamp(34px,5.2vw,62px); line-height:1.05; letter-spacing:-.02em; max-width:var(--figure); }
+.lede { margin:20px 0 0; max-width:var(--measure); font-size:clamp(17px,1.5vw,20px);
+  color:rgba(255,255,255,.9); }
+.topline { list-style:none; display:flex; flex-wrap:wrap; gap:14px; margin:32px 0 0; padding:0; }
+.topline li { background:rgba(255,255,255,.11); border:1px solid rgba(255,255,255,.2);
+  border-radius:var(--r-md); padding:12px 18px; }
+.topline b { display:block; font-family:var(--font-display); font-size:30px; line-height:1.1; }
+.topline span { font-size:14.5px; color:#CFE6EB; }
+
+/* ------------------------------------------------------------------ sections */
+.section { padding:clamp(38px,5vw,66px) 0; }
+.section--alt { background:var(--bg-alt); border-top:1px solid var(--line); }
+.section--methods { background:var(--bg-tint); border-top:1px solid var(--line); }
+h2 { font-family:var(--font-display); font-size:clamp(24px,2.6vw,34px); margin:0 0 8px;
+  letter-spacing:-.01em; color:var(--teal-900); }
+h3 { font-size:19px; margin:0 0 10px; color:var(--teal-900); }
+.sub { margin:0 0 22px; color:var(--charcoal); }
+
+/* ------------------------------------------------------------------ controls */
+.controls { display:flex; flex-wrap:wrap; gap:26px 40px; align-items:flex-start;
+  padding-bottom:22px; margin-bottom:20px; border-bottom:1px solid var(--line); }
+.ctl-h { display:block; font-weight:700; font-size:13.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:9px; }
+.chips { display:flex; flex-wrap:wrap; gap:8px; }
+.chip { font:600 15px/1 var(--font); padding:9px 15px; border-radius:999px; cursor:pointer;
+  background:#fff; border:1.5px solid var(--line); color:var(--charcoal);
+  display:inline-flex; align-items:center; gap:8px; transition:background var(--t-fast); }
+.chip:hover { background:var(--bg-alt); }
+.chip .sw { width:11px; height:11px; border-radius:3px; flex:0 0 auto; }
+.chip[aria-pressed="false"] { opacity:.42; }
+.chip[aria-pressed="true"] { border-color:currentColor; }
+.reset { margin-left:auto; align-self:center; font:600 15px/1 var(--font); cursor:pointer;
+  background:var(--teal-900); color:#fff; border:0; border-radius:999px; padding:11px 20px; }
+
+/* ------------------------------------------------- the pre-window summary band */
+.pre-window { border-left:5px solid var(--line); padding:2px 0 2px 20px; margin:0 0 26px;
+  color:var(--charcoal); font-size:16px; }
+.pre-window b { color:var(--teal-900); }
+
+/* ------------------------------------------------------------------ the viz */
+.viz { position:relative; }
+.viz svg { display:block; width:100%; height:auto; overflow:visible; }
+.nojs { color:var(--muted); }
+
+.lane-band { fill:var(--bg-alt); }
+.lane-band.alt { fill:#fff; }
+.lane-name { font:700 15px/1 var(--font); }
+.lane-count { font:600 13.5px/1 var(--font); fill:var(--muted); }
+.axis-y { font:600 14px/1 var(--font); fill:var(--muted); }
+.axis-rule { stroke:var(--line); stroke-width:1; }
+.now-rule { stroke:var(--charcoal); stroke-width:1.5; stroke-dasharray:5 5; }
+.now-lab { font:700 13px/1 var(--font); fill:var(--charcoal); letter-spacing:.06em;
+  text-transform:uppercase; }
+
+.ev { cursor:pointer; }
+.ev .dot { stroke:#fff; stroke-width:1.5; }
+/* Forward-dated events must never read as delivered work. Hollow, not faded:
+   a lighter version of the same mark reads as "less important", which is wrong —
+   a scheduled award end is not a minor delivered event, it is a different kind of
+   thing. A SOLID ring, not a dashed one: at r=5.5 a 3/2.4 dash pattern breaks into
+   flecks and vanishes against the lane band. Ring weight carries it instead. */
+/* --c is set per node in app.js. It has to be a CSS custom property rather than an
+   inline stroke="" attribute: SVG presentation attributes lose to ANY stylesheet rule,
+   so `.ev .dot { stroke:#fff }` silently repainted every forward ring white-on-white
+   and the marks vanished. */
+.ev.fwd .dot { fill:#fff !important; stroke:var(--c) !important; stroke-width:3; }
+.ev.fwd .pip { pointer-events:none; }
+.ev .hit { fill:transparent; }
+.ev:hover .dot, .ev.on .dot { stroke:var(--ink); stroke-width:2.5; }
+.ev.dim { opacity:.13; }
+.ev-lab { font:600 14px/1.25 var(--font); fill:var(--ink); pointer-events:none; }
+.ev-lab.dim { opacity:.13; }
+
+.tip { position:absolute; z-index:20; max-width:var(--tip); background:#fff; color:var(--ink);
+  border:1px solid var(--line); border-radius:var(--r-md); padding:13px 15px;
+  box-shadow:0 10px 34px rgba(12,100,115,.17); pointer-events:none; font-size:15px; }
+.tip .t-d { font-weight:700; font-size:13.5px; color:var(--muted); letter-spacing:.05em;
+  text-transform:uppercase; margin-bottom:5px; }
+.tip .t-t { font-weight:600; line-height:1.4; }
+.tip .t-o { color:var(--charcoal); font-size:14.5px; margin-top:6px; }
+
+/* ------------------------------------------------------------------ legend */
+.legend { display:flex; flex-wrap:wrap; gap:20px 34px; margin-top:26px; padding-top:20px;
+  border-top:1px solid var(--line); font-size:15px; color:var(--charcoal); }
+.legend .grp { display:flex; flex-wrap:wrap; gap:8px 18px; align-items:center; }
+.legend .lg-h { font-weight:700; font-size:13px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--muted); }
+.legend .item { display:inline-flex; align-items:center; gap:8px; }
+
+/* ------------------------------------------------------------------ cards (narrow) */
+.cards { display:grid; gap:12px; }
+.card { border:1px solid var(--line); border-left:5px solid var(--line); border-radius:var(--r-md);
+  background:#fff; padding:14px 16px; }
+.card .c-d { font-weight:700; font-size:14px; color:var(--muted); letter-spacing:.04em;
+  text-transform:uppercase; }
+.card .c-t { font-weight:600; margin-top:4px; line-height:1.42; }
+.card .c-o { color:var(--charcoal); font-size:15px; margin-top:6px; }
+.card .c-f { display:inline-block; margin-top:9px; font-weight:700; font-size:13px;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--muted);
+  border:1.5px dashed var(--line); border-radius:999px; padding:4px 10px; }
+
+/* ------------------------------------------------------------------ table */
+.tablewrap { overflow-x:auto; border:1px solid var(--line); border-radius:var(--r-md);
+  background:#fff; }
+.dtable { border-collapse:collapse; width:100%; min-width:820px; font-size:15.5px; }
+.dtable th, .dtable td { text-align:left; padding:12px 16px; border-bottom:1px solid var(--line-soft);
+  vertical-align:top; }
+.dtable thead th { background:var(--teal-900); color:#fff; font-size:14px; letter-spacing:.06em;
+  text-transform:uppercase; position:sticky; top:0; }
+.dtable .t-date { white-space:nowrap; font-variant-numeric:tabular-nums; color:var(--charcoal); }
+.dtable .t-lane { white-space:nowrap; font-weight:600; }
+.dtable .t-st { white-space:nowrap; color:var(--charcoal); }
+.linkish { background:none; border:0; padding:0; color:var(--teal-700); font:600 16px/1 var(--font);
+  cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+.dl { margin-top:16px; }
+
+/* ------------------------------------------------------------------ methods */
+.methods-grid { display:grid; gap:clamp(28px,5vw,60px); grid-template-columns:minmax(0,1fr); }
+@media (min-width:900px) { .methods-grid { grid-template-columns:1.25fr 1fr; } }
+.asof { color:var(--muted); font-size:15.5px; margin:0 0 14px; }
+.callout { border-left:4px solid var(--teal-500); padding-left:16px; color:var(--charcoal); }
+.notes { margin:0; padding-left:20px; color:var(--charcoal); }
+.notes li { margin-bottom:9px; }
+
+/* ------------------------------------------------------------------ panel */
+.scrim { position:fixed; inset:0; background:rgba(20,32,34,.42); z-index:40; }
+.panel { position:fixed; top:0; right:0; bottom:0; width:min(460px,100%); background:#fff;
+  z-index:50; overflow-y:auto; padding:30px 30px 44px; box-shadow:-14px 0 44px rgba(0,0,0,.2); }
+.panel h2 { font-size:26px; margin:6px 0 10px; color:var(--ink); }
+.panel .p-kind { font-weight:700; font-size:13.5px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--teal-700); }
+.panel .p-close { position:absolute; top:20px; right:22px; width:38px; height:38px; border-radius:50%;
+  border:1px solid var(--line); background:#fff; cursor:pointer; font-size:19px; line-height:1; }
+.panel .p-meta { display:grid; gap:10px; margin:18px 0 0; padding:16px; background:var(--bg-alt);
+  border-radius:var(--r-md); }
+.panel .p-meta div { display:flex; gap:12px; font-size:15.5px; }
+.panel .p-meta dt { font-weight:700; color:var(--muted); min-width:118px; }
+.panel .p-note { margin-top:18px; color:var(--charcoal); font-size:15.5px; }
+
+@media (prefers-reduced-motion:reduce) { * { transition:none !important; animation:none !important; } }

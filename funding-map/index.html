@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where The Public Money Goes</title>
+<meta name="description" content="An interactive map of the $106.3 million in public awards and match behind the Polymer Industry Cluster: three sources, seven programs, twenty-one recipients.">
+<meta name="color-scheme" content="light">
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%230C6473'/><circle cx='16' cy='11' r='4' fill='%23B8D637'/><circle cx='10' cy='21' r='4' fill='%231A8A9E'/><circle cx='22' cy='21' r='4' fill='%231A8A9E'/></svg>">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">Polymer Industry Cluster &middot; Greater Akron</p>
+    <h1>Three public awards converge on one portfolio</h1>
+    <p class="standfirst">
+      Federal and state money reaches the Greater Akron polymer cluster through three separate awards
+      that behave in three different ways. This is every dollar of it, and every organization it reaches.
+    </p>
+
+    <div class="topline">
+      <div class="topline-total">
+        <p class="tt-value"><span id="total-count" data-value="106290451">$106.3M</span></p>
+        <p class="tt-label">awarded and committed across three public awards</p>
+        <p class="tt-sub"><strong>$85.3M</strong> in awards <span aria-hidden="true">+</span><span class="sr-only">plus</span> <strong>$21.0M</strong> in match and cost share</p>
+      </div>
+      <ul class="topline-sources" id="topline-sources">
+        <li class="ts ts--eda">
+          <p class="ts-amount">$51.00M</p>
+          <p class="ts-name">EDA Sustainable Polymers Tech Hub</p>
+          <p class="ts-match">+ $7.16M partner match</p>
+        </li>
+        <li class="ts ts--ohio">
+          <p class="ts-amount">$31.25M</p>
+          <p class="ts-name">Ohio Innovation Hub</p>
+          <p class="ts-match">+ $10.42M state cost share</p>
+        </li>
+        <li class="ts ts--apex">
+          <p class="ts-amount">$3.08M</p>
+          <p class="ts-name">Good Jobs Challenge (APEX)</p>
+          <p class="ts-match">+ $3.37M local match</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="section section--map" aria-labelledby="map-h">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2 id="map-h">Where it goes</h2>
+          <p class="lede">
+            Hue names the funding source. Within the Ohio stream, a tint step separates the two
+            company-facing programs &mdash; PIC Translational R&amp;D and Synthe6 startup awards &mdash; from the hub&rsquo;s own
+            workstreams. Every recipient row carries the program chips that fund it.
+          </p>
+        </div>
+        <div class="controls">
+          <button type="button" id="reset-view" class="btn btn--ghost" hidden>Reset view</button>
+        </div>
+      </div>
+
+      <noscript>
+        <p class="noscript">
+          This map is drawn in your browser from a single data file. With JavaScript turned off you can still read
+          every figure directly: <a href="data/funding.json">data/funding.json</a>. The three award headlines,
+          the totals and the disclosures above and below are complete without it.
+        </p>
+      </noscript>
+
+      <div id="viz" class="viz" aria-busy="true">
+        <p class="viz-loading">Loading the funding data&hellip;</p>
+      </div>
+
+      <div id="legend" class="legend" hidden></div>
+
+      <div class="fnotes">
+        <p class="fn" id="fn-disclosure"></p>
+        <p class="fn" id="fn-scale"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--table" aria-labelledby="table-h">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2 id="table-h">Every award, in full</h2>
+          <p class="lede">
+            The same data as the map, at full precision. Source, program, recipient, amount and award ID
+            where one is public.
+          </p>
+        </div>
+        <div class="controls">
+          <a id="csv-link" class="btn" href="#" download="pic-funding-map.csv">Download the data (CSV)</a>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table id="data-table" class="dtable">
+          <caption class="sr-only">Every public award reaching the Polymer Industry Cluster, by source, program and recipient.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Source</th>
+              <th scope="col">Program</th>
+              <th scope="col">Recipient</th>
+              <th scope="col" class="num">Amount</th>
+              <th scope="col">Award ID</th>
+              <th scope="col">What it funds</th>
+            </tr>
+          </thead>
+          <tbody id="data-tbody">
+            <tr><td colspan="6">Loading&hellip;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="fnotes" id="table-note"></div>
+    </div>
+  </section>
+
+  <section class="section section--methods" aria-labelledby="methods-h">
+    <div class="wrap methods-grid">
+      <div>
+        <h2 id="methods-h">Methods and provenance</h2>
+        <p class="asof">Figures as of <time datetime="2026-08-13">13 August 2026</time>.</p>
+        <ul class="prov" id="prov-list"></ul>
+      </div>
+      <div>
+        <h3 id="notshown-h">What this doesn&rsquo;t show</h3>
+        <ul class="prov prov--warn" id="notshown-list"></ul>
+        <p class="rule-note">
+          Amounts of $1M or more are shown to two decimal places; amounts below $1M are rounded to
+          whole thousands. Full precision is in the table and the CSV.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>Polymer Industry Cluster &middot; Greater Akron Chamber</p>
+    <p class="foot-note">
+      Figures are awarded or committed amounts; disbursement follows milestones.
+    </p>
+  </div>
+</footer>
+
+<!-- detail panel -->
+<div id="scrim" class="scrim" hidden></div>
+<aside id="panel" class="panel" role="dialog" aria-modal="false" aria-labelledby="panel-title" hidden>
+  <div class="panel-inner">
+    <button type="button" id="panel-close" class="panel-close" aria-label="Close details">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <p class="panel-kind" id="panel-kind"></p>
+    <h2 class="panel-title" id="panel-title"></h2>
+    <div id="panel-body"></div>
+    <p class="panel-disclosure" id="panel-disclosure"></p>
+  </div>
+</aside>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">How we did this</p>
+    <h2>Sources, filters, and how to rebuild this page</h2>
+    <div id="repro"></div>
+  </div>
+</section>
+
+<script src="../_shared/sources.js"></script>
+<script>PVSources.render("funding-map", "repro", {limits: [
+  "This is the public money PIC helped win, not all public money reaching polymer work in the region. A program PIC was not part of does not appear here, and its absence is not evidence it does not exist.",
+  "Award figures are amounts announced or obligated, not cash spent. An obligation can be drawn down over several years, reduced, or de-obligated entirely.",
+  "Recipients are named as the award names them. Where an award passes through one organization to others, only the named recipient appears.",
+  "This page predates the shared house style and does not carry a claims file, so no sentence on it is checked by a re-runnable assertion."
+]});</script>
+<script src="app.js"></script>
+</body>
+</html>

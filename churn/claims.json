@@ -1,0 +1,45 @@
+{
+  "data": "churn.json",
+  "claims": [
+    {
+      "id": "churn-totals",
+      "text": "111,529 hire events and 111,361 separation events across the period.",
+      "source": "Census QWI seasonally adjusted, NAICS 326, PIC-12 counties summed",
+      "assert": "sum(q['hires'] for q in D['quarters']) == 111529 and sum(q['seps'] for q in D['quarters']) == 111361",
+      "actual": "(sum(q['hires'] for q in D['quarters']), sum(q['seps'] for q in D['quarters']))",
+      "falsified_if": "QWI re-benchmarks, which it does periodically and substantially — the most volatile series published here. UNITS: these are events, not people; one worker hired three times is three hires. Summing counties also counts a Summit-to-Stark move as one separation AND one hire, so the regional figure is inflated relative to any single-county comparison by an amount QWI cannot measure. Never write 'people'. FOOTPRINT: these are the 12 PIC-12 counties only. An earlier version published 139,180/137,727 because the derivation summed every row in qwi.json, which deliberately holds BOTH footprints — so the total was a 14-county mixture labeled PIC-12. UNITS: these are events, not people; one worker hired three times is three hires. Summing counties also counts a Summit-to-Stark move as one separation AND one hire. Never write 'people'."
+    },
+    {
+      "id": "churn-net",
+      "text": "Net employment change of +168 jobs.",
+      "source": "derived: hires minus separations, summed",
+      "assert": "sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters']) == 168",
+      "actual": "sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters'])",
+      "falsified_if": "Any QWI revision. This is a flow-derived net, NOT the change in the employment stock."
+    },
+    {
+      "id": "churn-quarters",
+      "text": "55 quarters are drawn; the unpublished quarter is dropped, not zeroed.",
+      "source": "QWI coverage 2012Q1 to 2025Q3",
+      "assert": "len(D['quarters']) == 55 and all(q['counties'] > 0 for q in D['quarters'])",
+      "actual": "(len(D['quarters']), min(q['counties'] for q in D['quarters']))",
+      "falsified_if": "QWI publishes 2025Q4 and the pipeline is not re-run."
+    },
+    {
+      "id": "churn-footprint",
+      "text": "This page uses the PIC-12 footprint.",
+      "source": "John's decision 2026-08-14",
+      "assert": "D['meta']['footprint']['label'] == 'PIC-12'",
+      "actual": "D['meta']['footprint']",
+      "falsified_if": "FOOTPRINT: this page uses PIC-12, matching the cluster-health dashboard. It does NOT reconcile with the vault-sourced pages (chain, rfq), which use NEO-14 — the two share only 10 counties."
+    },
+    {
+      "id": "churn-footprint-complete",
+      "text": "Every quarter covers all twelve PIC-12 counties.",
+      "source": "derive_rest.py filters qwi.json to the footprint and asserts full coverage",
+      "assert": "all(q['counties'] == 12 for q in D['quarters'])",
+      "actual": "sorted({q['counties'] for q in D['quarters']})",
+      "falsified_if": "Any quarter covers fewer than twelve counties — either QWI withheld one, or the pull is short and fetch_footprint.py needs re-running. This claim exists because the page published a 14-county total under a PIC-12 banner for weeks; a footprint that is merely STATED is not a footprint that is CHECKED."
+    }
+  ]
+}

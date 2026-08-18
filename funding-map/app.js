@@ -1,0 +1,1158 @@
+/* Prefer the JSON the bundler inlined; fall back to fetch when the folder is served
+   directly. One call site, both modes — the source tree and the published artifact never
+   diverge, and a bundled page needs no network at all. */
+function loadData(file) {
+  var tag = document.querySelector(
+    'script[type="application/json"][data-pv-file="' + file + '"]');
+  if (tag) return Promise.resolve(JSON.parse(tag.textContent));
+  return fetch('data/' + file, {cache: 'no-cache'}).then(function (r) {
+    if (!r.ok) throw new Error(r.status + ' ' + r.statusText);
+    return r.json();
+  });
+}
+
+/* =========================================================================
+   PIC funding map
+   Vanilla JS. No dependencies, no build step. Everything on this page is
+   derived from data/funding.json — that file is the single source of truth.
+
+   Structure
+     1  formatting          the number-format rule lives here and nowhere else
+     2  data model          load, index, build the source→program→recipient graph
+     3  diagram (wide)      SVG sankey, laid out in real CSS pixels
+     4  cards (narrow)      the deliberate alternative view below ~960px
+     5  table / csv / prose
+     6  interaction         highlight, detail panel, hash routing, reveal
+   ========================================================================= */
+
+(() => {
+  'use strict';
+
+  // Container px. Measured, not guessed: below about this width the longest
+  // recipient names ("Case Western Reserve University") can no longer sit beside
+  // their chips and amount without being cut, so the card view takes over.
+  /* Was 1120, which was above the shared 1044px column — so folding this page into the one
+     column system silently swapped its centerpiece diagram for the phone fallback. The
+     diagram itself was only ever drawing about 1,054px of ink, so it was never the reason
+     for the number. 900 keeps the card fallback for real narrow screens. */
+  const CARD_BREAKPOINT = 900;
+  const REVEAL_MS = 1100;        // total staged-reveal budget
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  let DATA = null;
+  let G = null;                  // indexed graph
+  let revealDone = false;
+  let selected = null;           // {kind, id}
+  let lastFocusEl = null;
+  let currentMode = null;        // 'diagram' | 'cards'
+  let lastW = 0;                 // last width we laid out for
+  let cardMode = 'program';      // 'program' | 'amount' | 'name'
+
+  const viz = document.getElementById('viz');
+  const panel = document.getElementById('panel');
+  const scrim = document.getElementById('scrim');
+  const resetBtn = document.getElementById('reset-view');
+
+  /* ---------------------------------------------------------------- 1 format */
+
+  // The rule: $1M and above gets two decimals and an M. Below $1M gets whole
+  // thousands and a K. Full precision belongs in the panel, the table and the CSV.
+  function fmt(n) {
+    if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
+    return '$' + Math.round(n / 1000).toLocaleString('en-US') + 'K';
+  }
+  function fmtHero(n) { return '$' + (n / 1e6).toFixed(1) + 'M'; }
+  function fmtFull(n) { return '$' + n.toLocaleString('en-US'); }
+
+  // For screen readers, spelled out rather than abbreviated.
+  function fmtSpoken(n) {
+    if (n >= 1e6) return (n / 1e6).toFixed(2) + ' million dollars';
+    return Math.round(n / 1000).toLocaleString('en-US') + ' thousand dollars';
+  }
+
+  /* ---------------------------------------------------------------- 2 model */
+
+  // `deep` paints the solid stem; `textInk` is the only value allowed on white
+  // type — each measured at or above 4.5:1 so small labels stay legible.
+  const TINT = {
+    eda:  { solid: '#1A8A9E', deep: '#0C6473', textInk: '#0C6473', chipBg: '#D3EAEF', chipFg: '#0A5361' },
+    // `ohio` is the source hue; `hub` is the same green used for the hub's own
+    // workstreams. Same value, two names, because they mean different things.
+    ohio: { solid: '#8FAE2B', deep: '#6E8A1E', textInk: '#4F6310', chipBg: '#E2EDC6', chipFg: '#3D4E0D' },
+    hub:  { solid: '#8FAE2B', deep: '#6E8A1E', textInk: '#4F6310', chipBg: '#E2EDC6', chipFg: '#3D4E0D' },
+    rd:   { solid: '#5E7A10', deep: '#4C630C', textInk: '#3E520A', chipBg: '#DCE7BE', chipFg: '#34450A' },
+    s6:   { solid: '#B8D637', deep: '#93AE22', textInk: '#4A5A12', chipBg: '#EDF5C9', chipFg: '#4A5A12' },
+    apex: { solid: '#E5673E', deep: '#C24E27', textInk: '#B04521', chipBg: '#FADCD1', chipFg: '#8A3419' }
+  };
+  const chipClass = (chip) => 'chip chip--' + chip.replace(/[^A-Z0-9]/gi, '');
+
+  function index(data) {
+    const sources = new Map(data.sources.map((s) => [s.id, s]));
+    const programs = new Map(data.programs.map((p) => [p.id, p]));
+    const recipients = new Map(data.recipients.map((r) => [r.id, r]));
+
+    // links, plus the reverse indexes the highlight logic needs
+    const progOut = new Map();   // programId -> [{recipient, award}]
+    data.programs.forEach((p) => progOut.set(p.id, []));
+    data.recipients.forEach((r) => {
+      r.total = r.awards.reduce((a, w) => a + w.amount, 0);
+      // An award may override its program's chip. Needed because `eda-direct` is genuinely ONE
+      // instrument (seven awards obligated straight to their project leads) carrying three kinds
+      // of work: five industry-led R&D projects, one workforce, one governance. Splitting the
+      // program to label them would invent a structure the award does not have.
+      // See specs/NAMING-RULING-RD-2026-08-13.md.
+      r.chips = [...new Set(r.awards.map((w) => w.chip || programs.get(w.programId).chip))];
+      r.awards.forEach((w, i) => {
+        w.key = r.id + '::' + w.programId;
+        w.recipientId = r.id;
+        w.index = i;
+        progOut.get(w.programId).push({ recipient: r, award: w });
+      });
+    });
+
+    const srcPrograms = new Map();
+    data.sources.forEach((s) => srcPrograms.set(s.id, data.programs.filter((p) => p.sourceId === s.id)));
+
+    return { sources, programs, recipients, progOut, srcPrograms, order: data };
+  }
+
+  // Everything on the path through a node, upstream and downstream.
+  function related(kind, id) {
+    const nodes = new Set(), links = new Set();
+    const addProgram = (p) => {
+      nodes.add('prog:' + p.id);
+      nodes.add('src:' + p.sourceId);
+      links.add('link:' + p.sourceId + '>' + p.id);
+      G.progOut.get(p.id).forEach(({ recipient, award }) => {
+        nodes.add('rcp:' + recipient.id);
+        links.add('link:' + award.key);
+      });
+    };
+    if (kind === 'source') {
+      nodes.add('src:' + id);
+      G.srcPrograms.get(id).forEach(addProgram);
+    } else if (kind === 'program') {
+      addProgram(G.programs.get(id));
+    } else {
+      const r = G.recipients.get(id);
+      nodes.add('rcp:' + r.id);
+      r.awards.forEach((w) => {
+        const p = G.programs.get(w.programId);
+        nodes.add('prog:' + p.id);
+        nodes.add('src:' + p.sourceId);
+        links.add('link:' + p.sourceId + '>' + p.id);
+        links.add('link:' + w.key);
+      });
+    }
+    return { nodes, links };
+  }
+
+  /* ---------------------------------------------------------------- svg utils */
+
+  const NS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs, text) {
+    const n = document.createElementNS(NS, tag);
+    for (const k in attrs) if (attrs[k] != null) n.setAttribute(k, attrs[k]);
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function h(tag, attrs, kids) {
+    const n = document.createElement(tag);
+    for (const k in (attrs || {})) {
+      if (k === 'class') n.className = attrs[k];
+      else if (k === 'text') n.textContent = attrs[k];
+      else if (k.startsWith('on')) n.addEventListener(k.slice(2), attrs[k]);
+      else if (attrs[k] != null) n.setAttribute(k, attrs[k]);
+    }
+    (kids || []).forEach((c) => n.appendChild(c));
+    return n;
+  }
+  const clamp = (lo, v, hi) => Math.max(lo, Math.min(v, hi));
+
+  // Greedy word wrap for SVG plate copy. Aptos runs ~0.50em average advance,
+  // so this estimate is close enough for two short label sentences.
+  function wrap(str, maxW, fontSize) {
+    const per = fontSize * 0.505;
+    const words = str.split(/\s+/);
+    const n = Math.max(1, Math.ceil((str.length * per) / maxW));
+    const target = (str.length * per) / n;          // balance the lines, so no word is left alone
+    const out = [];
+    let line = '';
+    words.forEach((w) => {
+      const cand = line ? line + ' ' + w : w;
+      const worse = Math.abs(cand.length * per - target) > Math.abs(line.length * per - target);
+      if (line && worse && out.length < n - 1) { out.push(line); line = w; }
+      else line = cand;
+    });
+    if (line) out.push(line);
+    return out;
+  }
+
+  // Sankey ribbon: two cubics joined by straight caps.
+  function ribbon(x0, y0a, y0b, x1, y1a, y1b) {
+    const mx = (x0 + x1) / 2;
+    return `M${x0},${y0a} C${mx},${y0a} ${mx},${y1a} ${x1},${y1a} L${x1},${y1b} C${mx},${y1b} ${mx},${y0b} ${x0},${y0b} Z`;
+  }
+
+  /* ---------------------------------------------------------------- 3 diagram */
+
+  function layout(W) {
+    const d = DATA;
+    const pad = 8, srcGap = 34, innerGap = 4;
+
+    // --- right column: one row per recipient, taller when it carries a second award
+    /* 0.35, not 0.30. Every other zone in this layout is a ribbon or a band and shrinks
+       gracefully; the recipient column is TEXT, and organization names do not get shorter
+       when the column does. At the shared 980px column the old share left 294px and
+       ellipsized "Full Circle Technologies" and a rider amount down to "+ $...". The flow
+       region gives up 49px, which costs a ribbon nothing. Do not push past ~0.365: rowX
+       would cross bandR and the rows would sit on top of the bands. */
+    const rowW = clamp(280, W * 0.35, 440);
+    const rows = [];
+    let y = pad;
+    const groupOf = (r) => G.programs.get(r.awards[0].programId).id;
+    d.recipients.forEach((r, i) => {
+      const dual = r.awards.length > 1;
+      const hgt = dual ? 52 : 34;
+      const prev = d.recipients[i - 1];
+      // a little air between program groups
+      if (prev && groupOf(prev) !== groupOf(r)) y += 12;
+      rows.push({ r, y, h: hgt, cy: y + (dual ? 18 : hgt / 2), dual });
+      y += hgt;
+    });
+    const H = y + pad;
+
+    // --- left column: three sources on one shared dollar scale
+    const grand = d.meta.totals.total;
+    const U = H - 2 * pad - 2 * srcGap - d.sources.length * innerGap;
+    const s = U / grand;
+
+    const srcLabelW = clamp(196, W * 0.205, 286);
+    const stemW = 15;
+    const bodyW = clamp(58, W * 0.068, 120);
+    const srcX = srcLabelW;
+    const mechX = srcX + stemW + bodyW;
+    const hubZone = clamp(124, W * 0.158, 236);
+    const bandX = mechX + hubZone;
+    const bandW = clamp(136, W * 0.175, 254);
+    const bandR = bandX + bandW;
+    const rightEdge = W - 4;
+    const rowX = rightEdge - rowW;
+
+    const src = [];
+    let sy = pad;
+    d.sources.forEach((so) => {
+      const ah = so.award * s, mh = so.matchAmount * s;
+      src.push({ so, y: sy, h: ah, my: sy + ah + innerGap, mh });
+      sy += ah + innerGap + mh + srcGap;
+    });
+    const byId = Object.fromEntries(src.map((x) => [x.so.id, x]));
+
+    // --- middle: EDA and APEX pass straight through; Ohio expands onto a
+    // workstream column, and the funnel is what declares the scale change.
+    const edaB = { x: mechX, w: bandR - mechX, y: byId.eda.y, h: byId.eda.h };
+    const apexB = { x: mechX, w: bandR - mechX, y: byId.apex.y, h: byId.apex.h };
+    const hub = { x: mechX, w: hubZone * 0.6, y: byId.ohio.y, h: byId.ohio.h };
+    // EDA has no split, so its mechanism is a plate on the flow rather than a
+    // node it passes through. Same left edge as the hub node, so they rhyme.
+    const edaPlate = { x: mechX, w: hubZone - 8, h: 124, y: edaB.y + edaB.h / 2 - 62 };
+
+    const roomTop = edaB.y + edaB.h + 16;
+    const roomBot = apexB.y - 16;
+    const Hws = clamp(260, roomBot - roomTop, 470);
+    let wsTop = (hub.y + hub.h / 2) - Hws / 2;
+    wsTop = clamp(roomTop, wsTop, roomBot - Hws);
+
+    const ohPrograms = G.srcPrograms.get('ohio');
+    const ohTotal = ohPrograms.reduce((a, p) => a + p.amount, 0);
+    const ws = [];
+    let wy = wsTop;
+    ohPrograms.forEach((p) => {
+      const hh = (p.amount / ohTotal) * Hws;
+      ws.push({ p, y: wy, h: hh });
+      wy += hh;
+    });
+
+    // --- band segments each outgoing award leaves from
+    const bandOf = {};
+    bandOf['eda-direct'] = { x: bandR, y: edaB.y, h: edaB.h };
+    bandOf['apex-workforce'] = { x: bandR, y: apexB.y, h: apexB.h };
+    ws.forEach((w) => { bandOf[w.p.id] = { x: bandR, y: w.y, h: w.h }; });
+
+    // slice each band among its recipients, ordered by row so ribbons stay legible
+    const rowIndex = new Map(rows.map((rw, i) => [rw.r.id, i]));
+    const slices = new Map();
+    d.programs.forEach((p) => {
+      const outs = G.progOut.get(p.id).slice()
+        .sort((a, b) => rowIndex.get(a.recipient.id) - rowIndex.get(b.recipient.id));
+      const band = bandOf[p.id];
+      const sum = outs.reduce((a, o) => a + o.award.amount, 0);
+      let cy = band.y;
+      outs.forEach((o) => {
+        const hh = (o.award.amount / sum) * band.h;
+        slices.set(o.award.key, { x: band.x, y: cy, h: hh });
+        cy += hh;
+      });
+    });
+
+    return { W, H, pad, s, src, byId, srcX, stemW, bodyW, mechX, hubZone, bandX, bandW, bandR,
+             rightEdge, rowX, rowW, rows, edaB, apexB, hub, edaPlate, ws, Hws, slices, bandOf };
+  }
+
+  function describe() {
+    const d = DATA;
+    const srcTxt = d.sources.map((s) =>
+      `${s.name}, ${fmtSpoken(s.award)} plus ${fmtSpoken(s.matchAmount)} in ${s.matchLabel}`).join('; ');
+    const wsTxt = G.srcPrograms.get('ohio').map((p) => `${p.name} ${fmtSpoken(p.amount)}`).join(', ');
+    return `Money-flow diagram in three columns. Left, three public awards drawn to scale, each paired with a ` +
+      `hatched match bar on the same scale: ${srcTxt}. Middle, the mechanism: the EDA award is obligated directly ` +
+      `to each of seven project leads with no pass-through; the Ohio award enters the Greater Akron Polymer ` +
+      `Innovation Hub and splits into five workstreams drawn to scale against each other — ${wsTxt}; the Good Jobs ` +
+      `Challenge APEX award runs to regional workforce programs with the Greater Akron Chamber as grantee. Right, ` +
+      `one row per organization, each labeled with its amount and the program chips that fund it. ` +
+      `${d.recipients.filter((r) => r.awards.length > 1).length} organizations receive money from more than one ` +
+      `program. Every figure is also in the data table below this graphic.`;
+  }
+
+  function renderDiagram(W) {
+    const L = layout(W);
+    const d = DATA;
+
+    const svg = el('svg', {
+      class: 'sankey', viewBox: `0 0 ${L.W} ${L.H}`, width: L.W, height: L.H,
+      role: 'img', 'aria-label': describe()
+    });
+
+    // ---- defs: gradients per tint, hatches for match money
+    const defs = el('defs');
+    for (const k in TINT) {
+      const g = el('linearGradient', { id: 'g-' + k, x1: 0, y1: 0, x2: 1, y2: 0 });
+      g.appendChild(el('stop', { offset: 0, 'stop-color': TINT[k].solid, 'stop-opacity': .86 }));
+      g.appendChild(el('stop', { offset: 1, 'stop-color': TINT[k].solid, 'stop-opacity': .56 }));
+      defs.appendChild(g);
+      const p = el('pattern', { id: 'h-' + k, width: 9, height: 9,
+        patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' });
+      p.appendChild(el('rect', { width: 9, height: 9, fill: TINT[k].solid, 'fill-opacity': .26 }));
+      p.appendChild(el('rect', { width: 3.4, height: 9, fill: TINT[k].deep, 'fill-opacity': .52 }));
+      defs.appendChild(p);
+    }
+    // one wipe per stream, so the reveal reads as three flows being drawn
+    d.sources.forEach((so) => {
+      const cp = el('clipPath', { id: 'clip-' + so.id, clipPathUnits: 'userSpaceOnUse' });
+      cp.appendChild(el('rect', { class: 'wipe wipe--' + so.id, x: L.mechX, y: 0, width: L.W - L.mechX, height: L.H }));
+      defs.appendChild(cp);
+    });
+    svg.appendChild(defs);
+
+    // ---- convergence highlight behind multi-program rows
+    // rowgroup, so the highlights arrive with the rows they belong to rather
+    // than floating on an empty canvas during the reveal
+    const hlG = el('g', { class: 'rowgroup' });
+    L.rows.filter((rw) => rw.dual).forEach((rw) => {
+      hlG.appendChild(el('rect', { class: 'hl dimmable', 'data-node': 'rcp:' + rw.r.id,
+        x: L.rowX - 16, y: rw.y + 2, width: L.rightEdge - L.rowX + 16, height: rw.h - 4, rx: 8, fill: TINT.s6.solid }));
+    });
+    svg.appendChild(hlG);
+
+    // ---- sources (bar + match chip + labels)
+    const srcG = el('g', { class: 'srcgroup' });
+    L.src.forEach((sx) => {
+      const t = TINT[sx.so.hue];
+      const nid = 'src:' + sx.so.id;
+      const g = el('g', { class: 'dimmable', 'data-node': nid });
+      g.appendChild(el('rect', { x: L.srcX, y: sx.y, width: L.stemW, height: sx.h, fill: t.deep }));
+      g.appendChild(el('rect', { x: L.srcX + L.stemW, y: sx.y, width: L.bodyW, height: sx.h, fill: `url(#g-${sx.so.hue})` }));
+      g.appendChild(el('rect', { x: L.srcX, y: sx.my, width: L.stemW, height: sx.mh, fill: t.deep, 'fill-opacity': .42 }));
+      const mx2 = L.mechX, r = Math.min(6, sx.mh / 2);
+      g.appendChild(el('path', {
+        d: `M${L.srcX + L.stemW},${sx.my} H${mx2 - r} A${r},${r} 0 0 1 ${mx2},${sx.my + r} V${sx.my + sx.mh - r} A${r},${r} 0 0 1 ${mx2 - r},${sx.my + sx.mh} H${L.srcX + L.stemW} Z`,
+        fill: `url(#h-${sx.so.hue})` }));
+
+      // labels, right-aligned into the gutter, centered on the award bar
+      const lx = L.srcX - 14, cy = sx.y + sx.h / 2;
+      const amtSize = clamp(21, L.W * 0.021, 29);
+      // style, not the fill attribute — the .sankey text rule would win otherwise
+      g.appendChild(el('text', { class: 'src-amount', x: lx, y: cy - 24, 'text-anchor': 'end',
+        'font-size': amtSize, style: `fill:${t.textInk}` }, fmt(sx.so.award)));
+      g.appendChild(el('text', { class: 'src-name', x: lx, y: cy + 1, 'text-anchor': 'end' }, sx.so.name));
+      g.appendChild(el('text', { class: 'src-kind', x: lx, y: cy + 21, 'text-anchor': 'end' }, sx.so.kind));
+      g.appendChild(el('text', { class: 'src-match', x: lx, y: cy + 44, 'text-anchor': 'end',
+        style: `fill:${t.textInk}` }, `+ ${fmt(sx.so.matchAmount)} ${sx.so.matchLabel}`));
+      srcG.appendChild(g);
+    });
+    svg.appendChild(srcG);
+
+    // ---- mechanism + ribbons, inside the per-stream wipe
+    const flowG = el('g');
+    d.sources.forEach((so) => {
+      const g = el('g', { 'clip-path': `url(#clip-${so.id})` });
+      flowG.appendChild(g);
+
+      if (so.id === 'eda' || so.id === 'apex') {
+        // The band is the awards bundled, so draw it as its slices with hairline
+        // gaps. Hovering one recipient then lights its own thread of the band.
+        const B = so.id === 'eda' ? L.edaB : L.apexB;
+        const prog = G.srcPrograms.get(so.id)[0];
+        G.progOut.get(prog.id).forEach(({ award }) => {
+          const sl = L.slices.get(award.key);
+          g.appendChild(el('rect', { class: 'band dimmable', 'data-node': 'prog:' + prog.id,
+            'data-link': 'link:' + award.key,
+            x: B.x, y: sl.y, width: B.w, height: Math.max(sl.h - 1.5, 1.2), fill: `url(#g-${prog.tint})` }));
+        });
+      } else {
+        g.appendChild(el('rect', { class: 'dimmable', 'data-node': 'src:ohio',
+          x: L.hub.x, y: L.hub.y, width: L.hub.w, height: L.hub.h, rx: 10, fill: TINT.eda.deep }));
+        // funnel: hub band expands onto the workstream column
+        const fx0 = L.hub.x + L.hub.w, fx1 = L.bandX, fm = (fx0 + fx1) / 2;
+        let acc = L.hub.y;
+        L.ws.forEach((w) => {
+          const hh = (w.p.amount / 31250000) * L.hub.h;
+          const tint = TINT[w.p.tint];
+          g.appendChild(el('path', {
+            class: 'funnel dimmable', 'data-node': 'prog:' + w.p.id, 'data-link': 'link:ohio>' + w.p.id,
+            d: `M${fx0},${acc} C${fm},${acc} ${fm},${w.y} ${fx1},${w.y} L${fx1},${w.y + w.h} C${fm},${w.y + w.h} ${fm},${acc + hh} ${fx0},${acc + hh} Z`,
+            fill: tint.solid, 'fill-opacity': .34 }));
+          acc += hh;
+        });
+        L.ws.forEach((w) => {
+          g.appendChild(el('rect', { class: 'band dimmable', 'data-node': 'prog:' + w.p.id,
+            x: L.bandX, y: w.y, width: L.bandW, height: w.h, fill: `url(#g-${w.p.tint})` }));
+        });
+      }
+
+      // ribbons out to the recipient rows
+      G.srcPrograms.get(so.id).forEach((p) => {
+        const tint = TINT[p.tint];
+        G.progOut.get(p.id).forEach(({ recipient, award }) => {
+          const sl = L.slices.get(award.key);
+          const rw = L.rows.find((x) => x.r.id === recipient.id);
+          const capH = 22, k = recipient.awards.length;
+          const segH = capH / k, top = rw.cy - capH / 2 + award.index * segH;
+          g.appendChild(el('path', {
+            class: 'ribbon dimmable', 'data-link': 'link:' + award.key, 'data-node': 'rcp:' + recipient.id,
+            d: ribbon(sl.x, sl.y, sl.y + Math.max(sl.h, 1.2), L.rowX - 13, top, top + segH),
+            fill: tint.solid, 'fill-opacity': .42 }));
+        });
+      });
+    });
+    svg.appendChild(flowG);
+
+    // ---- mechanism labels (outside the wipe so they never flash mid-draw)
+    const mechG = el('g', { class: 'rowgroup' });
+    const edaProg = G.srcPrograms.get('eda')[0];
+    // A dark plate, because teal-900 type on the teal band measures 2.2:1 and
+    // white type on it measures 3.2:1 — neither is readable. On the plate it is 6.8:1.
+    // Each label set carries the same data-node as the shape it sits on, so a
+    // label never stays dark over a band that has dimmed out from under it.
+    const P = L.edaPlate;
+    const plateG = el('g', { class: 'dimmable', 'data-node': 'prog:' + edaProg.id });
+    plateG.appendChild(el('rect', { x: P.x, y: P.y, width: P.w, height: P.h, rx: 10, fill: TINT.eda.deep }));
+    const cx = P.x + P.w / 2, inner = P.w - 20;
+    let py = P.y + 30;
+    wrap(DATA.sources[0].mechanismTitle, inner, 15).forEach((ln) => {
+      plateG.appendChild(el('text', { class: 'plate-title', x: cx, y: py, 'text-anchor': 'middle' }, ln));
+      py += 19;
+    });
+    py += 4;
+    DATA.sources[0].mechanismLines.forEach((s) => {
+      wrap(s, inner, 11.5).forEach((ln) => {
+        plateG.appendChild(el('text', { class: 'plate-sub', x: cx, y: py, 'text-anchor': 'middle' }, ln));
+        py += 14;
+      });
+    });
+    mechG.appendChild(plateG);
+
+    const hubG = el('g', { class: 'dimmable', 'data-node': 'src:ohio' });
+    ['Greater Akron', 'Polymer', 'Innovation Hub'].forEach((ln, i) => {
+      hubG.appendChild(el('text', { class: 'hub-title', x: L.hub.x + L.hub.w / 2,
+        y: L.hub.y + L.hub.h / 2 - 16 + i * 19, 'text-anchor': 'middle' }, ln));
+    });
+    mechG.appendChild(hubG);
+
+    L.ws.forEach((w) => {
+      const small = w.h < 34;
+      const base = w.y + w.h / 2 + (small ? 4 : (w.p.rider ? -1 : 5));
+      const g = el('g', { class: 'dimmable', 'data-node': 'prog:' + w.p.id });
+      g.appendChild(el('text', { class: 'ws-name', x: L.bandX + 14, y: base,
+        style: `font-size:${small ? 12 : 14.5}px` }, w.p.name));
+      g.appendChild(el('text', { class: 'ws-amt', x: L.bandR - 14, y: base, 'text-anchor': 'end',
+        style: `font-size:${small ? 12 : 15}px` }, fmt(w.p.amount)));
+      if (w.p.rider && w.h > 44) {
+        g.appendChild(el('text', { class: 'ws-rider', x: L.bandR - 14, y: base + 17, 'text-anchor': 'end' }, w.p.rider));
+      }
+      mechG.appendChild(g);
+    });
+
+    const apexG = el('g', { class: 'dimmable', 'data-node': 'prog:' + G.srcPrograms.get('apex')[0].id });
+    apexG.appendChild(el('text', { class: 'mech-title', x: L.mechX + 4, y: L.apexB.y - 16,
+      style: `font-size:14px;fill:${TINT.apex.textInk}` }, DATA.sources[2].mechanismTitle));
+    apexG.appendChild(el('text', { class: 'mech-sub', x: L.mechX + 4, y: L.apexB.y + L.apexB.h + 20 },
+      DATA.sources[2].mechanismLines[0]));
+    mechG.appendChild(apexG);
+
+    // ---- recipient rows
+    L.rows.forEach((rw) => {
+      const r = rw.r, nid = 'rcp:' + r.id;
+      const g = el('g', { class: 'dimmable', 'data-node': nid });
+      const prime = r.awards[0], t0 = TINT[G.programs.get(prime.programId).tint];
+
+      // node cap, split when the row is fed by two programs
+      const capH = 22, k = r.awards.length, segH = capH / k;
+      r.awards.forEach((w, i) => {
+        const tt = TINT[G.programs.get(w.programId).tint];
+        g.appendChild(el('rect', { x: L.rowX - 13, y: rw.cy - capH / 2 + i * segH, width: 8, height: segH - (k > 1 ? 1 : 0),
+          rx: 2, fill: tt.solid }));
+      });
+
+      const nameY = rw.cy + 5;
+      g.appendChild(el('text', { class: 'rc-name', x: L.rowX, y: nameY }, r.name));
+      g.appendChild(el('text', { class: 'rc-amt', x: L.rightEdge, y: nameY, 'text-anchor': 'end', fill: t0.deep },
+        fmt(prime.amount)));
+      // On a multi-program row the chips drop to the second line with the rider,
+      // which leaves the full column width for names like "Regional workforce programs".
+      const chipY = rw.dual ? nameY + 19 : nameY;
+      if (rw.dual) {
+        const w2 = r.awards[1], p2 = G.programs.get(w2.programId);
+        // data-short is the fallback when the row is too narrow for the program
+        // name. Dropping it costs nothing — the chip beside it says the same thing.
+        g.appendChild(el('text', { class: 'rc-rider', x: L.rowX + 2, y: chipY,
+          'data-short': `+ ${fmt(w2.amount)}` }, `+ ${fmt(w2.amount)} ${p2.name}`));
+      }
+      const cg = el('g', { class: 'chipg' });
+      r.chips.forEach((c) => {
+        const ct = chipTintFor(c);
+        cg.appendChild(el('rect', { class: 'chip-bg', height: 17, rx: 8.5, fill: ct.chipBg, y: chipY - 13 }));
+        cg.appendChild(el('text', { class: 'chip-tx', y: chipY - 1, fill: ct.chipFg }, c));
+      });
+      g.appendChild(cg);
+      mechG.appendChild(g);
+    });
+    svg.appendChild(mechG);
+
+    // ---- interactive overlay: real HTML buttons, so focus and semantics are real
+    const hits = h('div', { class: 'hitlayer' });
+    const addHit = (kind, id, label, x, y, w, hh) => {
+      const b = h('button', { class: 'hit', type: 'button', 'data-kind': kind, 'data-id': id,
+        'aria-label': label, style: `left:${x}px;top:${y}px;width:${w}px;height:${hh}px` });
+      hits.appendChild(b);
+    };
+    L.src.forEach((sx) => {
+      const so = sx.so;
+      addHit('source', so.id,
+        `${so.name}. ${fmtSpoken(so.award)} awarded, plus ${fmtSpoken(so.matchAmount)} in ${so.matchLabel}. Show details.`,
+        0, sx.y - 4, L.mechX, sx.h + sx.mh + 12);
+    });
+    addHit('program', edaProg.id, `${edaProg.name}. ${fmtSpoken(edaProg.amount)}. Show details.`,
+      L.edaB.x, L.edaB.y, L.edaB.w, L.edaB.h);
+    L.ws.forEach((w) => addHit('program', w.p.id,
+      `${w.p.name}, Ohio Innovation Hub. ${fmtSpoken(w.p.amount)}. Show details.`, L.bandX, w.y, L.bandW, w.h));
+    const apexProg = G.srcPrograms.get('apex')[0];
+    addHit('program', apexProg.id, `${apexProg.name}. ${fmtSpoken(apexProg.amount)}. Show details.`,
+      L.apexB.x, L.apexB.y, L.apexB.w, L.apexB.h);
+    L.rows.forEach((rw) => {
+      const r = rw.r;
+      const parts = r.awards.map((w) => `${fmtSpoken(w.amount)} from ${G.programs.get(w.programId).name}`).join(', and ');
+      addHit('recipient', r.id, `${r.name}. ${parts}. Show details.`, L.rowX - 18, rw.y + 1, L.rightEdge - L.rowX + 18, rw.h - 2);
+    });
+
+    viz.textContent = '';
+    viz.appendChild(svg);
+    viz.appendChild(hits);
+    viz.removeAttribute('aria-busy');
+
+    fitLabels(svg, L);
+    return L;
+  }
+
+  function chipTintFor(chip) {
+    // EDA R&D tints with its SOURCE (federal teal), not with the Ohio R&D green. The two are both
+    // R&D but they are different money, and color carries the stream while the word carries the work.
+    if (chip === 'EDA' || chip === 'EDA R&D') return TINT.eda;
+    if (chip === 'TRANSLATIONAL') return TINT.rd;
+    if (chip === 'SYNTHE6') return TINT.s6;
+    if (chip === 'APEX') return TINT.apex;
+    return TINT.hub;
+  }
+
+  // Measure once the real font is in, then place chips and shrink any name that
+  // would collide with them. Nothing here changes the data — only the fit.
+  function fitLabels(svg, L) {
+    const AMT_COL = 92;
+
+    // Source labels are right-anchored into the left gutter, so anything too
+    // wide runs off the canvas rather than overlapping something.
+    const gutter = L.srcX - 16;
+    svg.querySelectorAll('.src-name').forEach((n) => shrinkToFit(n, gutter, 15, 12));
+    svg.querySelectorAll('.src-kind, .src-match').forEach((n) => shrinkToFit(n, gutter, 13.5, 12));
+
+    L.rows.forEach((rw) => {
+      const g = svg.querySelector(`g[data-node="rcp:${CSS.escape(rw.r.id)}"].dimmable`);
+      if (!g) return;
+      const cg = g.querySelector('.chipg');
+      const name = g.querySelector('.rc-name');
+      if (!cg || !name) return;
+
+      const rects = [...cg.querySelectorAll('rect')], txts = [...cg.querySelectorAll('text')];
+      let widths = txts.map((t) => { try { return t.getComputedTextLength(); } catch (e) { return 40; } });
+      const padX = 8, gapX = 5;
+      let totalW = widths.reduce((a, w) => a + w + padX * 2, 0) + gapX * (widths.length - 1);
+      let cx = L.rightEdge - AMT_COL - totalW;
+      rects.forEach((rect, i) => {
+        rect.setAttribute('x', cx);
+        rect.setAttribute('width', widths[i] + padX * 2);
+        txts[i].setAttribute('x', cx + padX);
+        cx += widths[i] + padX * 2 + gapX;
+      });
+
+      // Shrink, then truncate, whichever text shares the line with the chips.
+      const chipsLeft = L.rightEdge - AMT_COL - totalW;
+      const rider = g.querySelector('.rc-rider');
+      const target = rw.dual ? rider : name;
+      const nameAvail = rw.dual ? (L.rightEdge - AMT_COL) - L.rowX - 12 : chipsLeft - L.rowX - 12;
+
+      shrinkToFit(name, nameAvail, 15, 12);
+      if (target && target !== name) {
+        const availR = chipsLeft - L.rowX - 12;
+        shrinkToFit(target, availR, 12.5, 12, false);
+        if (target.getComputedTextLength() > availR) {
+          target.textContent = target.getAttribute('data-short');
+          target.style.fontSize = '';
+          shrinkToFit(target, availR, 12.5, 12);
+        }
+      }
+    });
+
+    /* The workstream bands were the one label group this pass never covered, so they were
+       the only place text could still land on top of text: the name is left-anchored inside
+       the band and the amount right-anchored, and nothing checked that the two did not meet
+       in the middle. "PIC Translational R&D" and "$5.79M" overlapped even at the old wider
+       layout — it just took the narrower shared column to make it obvious. Stack when the
+       band is tall enough to carry two lines; otherwise shrink, then truncate. */
+    L.ws.forEach((w) => {
+      const g = svg.querySelector(`g[data-node="prog:${CSS.escape(w.p.id)}"].dimmable`);
+      if (!g) return;
+      const name = g.querySelector('.ws-name'), amt = g.querySelector('.ws-amt');
+      if (!name || !amt) return;
+      const inner = (L.bandR - L.bandX) - 28, gap = 12;
+      const aw = amt.getComputedTextLength();
+      if (name.getComputedTextLength() + aw + gap <= inner) return;
+      const rider = g.querySelector('.ws-rider');
+      if (w.h >= 40 && !rider) {
+        const base = parseFloat(name.getAttribute('y'));
+        name.setAttribute('y', base - 9);
+        amt.setAttribute('y', base + 10);
+        amt.setAttribute('x', L.bandX + 14);
+        amt.setAttribute('text-anchor', 'start');
+        shrinkToFit(name, inner, 14.5, 12);
+      } else {
+        shrinkToFit(name, inner - aw - gap, 14.5, 12);
+      }
+    });
+  }
+
+  /* `min` is the project's 12px legibility floor, not a suggestion. These labels used to
+     shrink to 10.5 to avoid truncating an organization name; below 12 the name is present
+     but not readable, which is the worse failure. Truncate instead — the full value is in
+     the hover and in the table view, so nothing is lost, only moved. */
+  function shrinkToFit(node, avail, from, min, allowTruncate = true) {
+    if (!node || avail <= 0) return;
+    // style, not the font-size attribute — the class rule would win otherwise
+    let fs = from, w = node.getComputedTextLength();
+    while (w > avail && fs > min) { fs -= 0.5; node.style.fontSize = fs + 'px'; w = node.getComputedTextLength(); }
+    if (allowTruncate && w > avail) {
+      let s = node.textContent;
+      while (s.length > 4 && node.getComputedTextLength() > avail) { s = s.slice(0, -2); node.textContent = s + '…'; }
+    }
+  }
+
+  /* ---------------------------------------------------------------- 4 cards */
+
+  function renderCards() {
+    const d = DATA;
+    const root = h('div', { class: 'cards' });
+
+    const seg = h('div', { class: 'seg', role: 'group', 'aria-label': 'Arrange recipients' });
+    [['program', 'By program'], ['amount', 'By amount'], ['name', 'A–Z']].forEach(([k, lab]) => {
+      seg.appendChild(h('button', { type: 'button', text: lab, 'aria-pressed': String(cardMode === k),
+        onclick: () => { cardMode = k; render(); } }));
+    });
+    root.appendChild(h('div', { class: 'sortbar' }, [
+      h('span', { class: 'sortbar-label', text: 'Arrange' }), seg
+    ]));
+
+    const card = (r, amount, chips, tint, max, segs) => {
+      const bar = h('div', { class: 'rcard-bar' });
+      segs.forEach((sg) => {
+        const pct = (sg.amount / max) * 100;
+        bar.appendChild(h('span', { style: `width:${pct}%;background:${sg.color}` }));
+      });
+      const chipRow = h('div', { class: 'rcard-chips' });
+      chips.forEach((c) => chipRow.appendChild(h('span', { class: chipClass(c), text: c })));
+      return h('li', {}, [
+        h('button', {
+          class: 'rcard', type: 'button', 'data-kind': 'recipient', 'data-id': r.id,
+          'aria-label': `${r.name}, ${fmtSpoken(amount)}. Show details.`
+        }, [
+          h('div', { class: 'rcard-top' }, [
+            h('span', { class: 'rcard-name', text: r.name }),
+            h('span', { class: 'rcard-amt', text: fmt(amount) })
+          ]),
+          chipRow, bar
+        ])
+      ]);
+    };
+
+    if (cardMode === 'program') {
+      d.programs.forEach((p) => {
+        const so = G.sources.get(p.sourceId);
+        const tint = TINT[p.tint];
+        const outs = G.progOut.get(p.id).slice().sort((a, b) => b.award.amount - a.award.amount);
+        const max = Math.max(...outs.map((o) => o.award.amount));
+        const list = h('ul', { class: 'card-list' });
+        outs.forEach(({ recipient, award }) => {
+          list.appendChild(card(recipient, award.amount, recipient.chips, tint, max,
+            [{ amount: award.amount, color: tint.solid }]));
+        });
+        const grp = h('section', { class: 'card-group', style: `--grp:${tint.solid}` }, [
+          h('div', { class: 'cg-head' }, [
+            h('h3', { class: 'cg-title', text: p.name }),
+            h('span', { class: 'cg-amount', text: fmt(p.amount) })
+          ]),
+          h('p', { class: 'cg-sub', text: `${so.short} · ${outs.length} recipient${outs.length > 1 ? 's' : ''}` }),
+          list
+        ]);
+        root.appendChild(grp);
+      });
+    } else {
+      const list = h('ul', { class: 'card-list' });
+      const sorted = d.recipients.slice().sort(
+        cardMode === 'amount' ? (a, b) => b.total - a.total : (a, b) => a.name.localeCompare(b.name));
+      const max = Math.max(...sorted.map((r) => r.total));
+      sorted.forEach((r) => {
+        const segs = r.awards.map((w) => ({ amount: w.amount, color: TINT[G.programs.get(w.programId).tint].solid }));
+        list.appendChild(card(r, r.total, r.chips, TINT.eda, max, segs));
+      });
+      root.appendChild(h('section', { class: 'card-group', style: '--grp:var(--teal-500)' }, [
+        h('div', { class: 'cg-head' }, [
+          h('h3', { class: 'cg-title', text: cardMode === 'amount' ? 'All recipients, largest first' : 'All recipients, A to Z' }),
+          h('span', { class: 'cg-amount', text: fmt(DATA.meta.totals.awards) })
+        ]),
+        h('p', { class: 'cg-sub', text: `${sorted.length} organizations · bar segments show each program that funds them` }),
+        list
+      ]));
+    }
+
+    viz.textContent = '';
+    viz.appendChild(root);
+    viz.removeAttribute('aria-busy');
+    return root;
+  }
+
+  /* ---------------------------------------------------------------- 5 static */
+
+  function renderLegend() {
+    const lg = document.getElementById('legend');
+    lg.textContent = '';
+    const block = (title, items) => {
+      const ul = h('ul', {});
+      items.forEach((it) => ul.appendChild(h('li', {}, [
+        it.chip ? h('span', { class: chipClass(it.label), text: it.label })
+                : h('span', { class: 'sw' + (it.hatch ? ' sw--hatch' : ''),
+                    style: it.hatch ? `color:${it.color}` : `background-color:${it.color}` }),
+        h('span', { text: it.text })
+      ])));
+      return h('div', {}, [h('h3', { text: title }), ul]);
+    };
+    lg.appendChild(block('Funding source', [
+      { color: TINT.eda.solid, text: 'EDA Tech Hub (federal)' },
+      { color: TINT.hub.solid, text: 'Ohio Innovation Hub (state)' },
+      { color: TINT.apex.solid, text: 'Good Jobs Challenge / APEX (federal)' },
+      { color: TINT.hub.deep, hatch: true, text: 'Match and cost share' }
+    ]));
+    lg.appendChild(block('Program, within the Ohio stream', [
+      { color: TINT.rd.solid, text: 'PIC Translational R&D' },
+      { color: TINT.s6.solid, text: 'Synthe6 startup awards' },
+      { color: TINT.hub.solid, text: 'Hub workstreams' }
+    ]));
+    lg.appendChild(block('Program chips', [
+      // Two R&D chips on purpose. EDA R&D is the five industry-led Tech Hub projects;
+      // TRANSLATIONAL is the ODOD program. Both are research; they are different money.
+      { chip: true, label: 'EDA', text: '' }, { chip: true, label: 'EDA R&D', text: '' },
+      { chip: true, label: 'OHIO HUB', text: '' }, { chip: true, label: 'TRANSLATIONAL', text: '' },
+      { chip: true, label: 'SYNTHE6', text: '' }, { chip: true, label: 'APEX', text: '' }
+    ]));
+    lg.hidden = false;
+  }
+
+  function renderProse() {
+    document.getElementById('fn-disclosure').textContent = DATA.meta.disclosures.join(' ');
+    document.getElementById('fn-scale').textContent = DATA.meta.scaleNote.join(' ');
+    const pl = document.getElementById('prov-list');
+    DATA.meta.provenance.forEach((t) => pl.appendChild(h('li', { text: t })));
+    const nl = document.getElementById('notshown-list');
+    DATA.meta.notShown.forEach((t) => nl.appendChild(h('li', { text: t })));
+  }
+
+  function tableRows() {
+    const out = [];
+    DATA.programs.forEach((p) => {
+      const so = G.sources.get(p.sourceId);
+      G.progOut.get(p.id).forEach(({ recipient, award }) => {
+        out.push({ source: so.name, program: p.name, recipient: recipient.name,
+          amount: award.amount, awardId: award.awardId || '', funds: award.funds || '' });
+      });
+    });
+    return out;
+  }
+
+  function renderTable() {
+    const tb = document.getElementById('data-tbody');
+    tb.textContent = '';
+    tableRows().forEach((r) => {
+      tb.appendChild(h('tr', {}, [
+        h('td', { class: 't-src', text: r.source }),
+        h('td', { text: r.program }),
+        h('th', { class: 't-rcp', scope: 'row', text: r.recipient }),
+        h('td', { class: 'num', text: fmtFull(r.amount) }),
+        h('td', { class: 't-id', text: r.awardId || '—' }),
+        h('td', { class: 't-funds', text: r.funds })
+      ]));
+    });
+    // Foot the column that is actually in the table. The rows sum to less than
+    // the awards total, and the note below the table says exactly why.
+    const rowSum = tableRows().reduce((a, r) => a + r.amount, 0);
+    const tf = h('tfoot', {}, [h('tr', {}, [
+      h('td', { colspan: '3', text: 'Total to named recipients' }),
+      h('td', { class: 'num', text: fmtFull(rowSum) }),
+      h('td', { colspan: '2', text: `of ${fmtFull(DATA.meta.totals.awards)} awarded` })
+    ])]);
+    const tbl = document.getElementById('data-table');
+    const old = tbl.querySelector('tfoot');
+    if (old) old.remove();
+    tbl.appendChild(tf);
+
+    const note = document.getElementById('table-note');
+    note.textContent = '';
+    DATA.meta.reconciliation.forEach((t) => note.appendChild(h('p', { class: 'fn', text: t })));
+  }
+
+  function buildCsv() {
+    const q = (v) => `"${String(v).replace(/"/g, '""')}"`;
+    const lines = [['Source', 'Program', 'Recipient', 'Amount (USD)', 'Amount (display)', 'Award ID', 'What it funds'].join(',')];
+    tableRows().forEach((r) => lines.push([q(r.source), q(r.program), q(r.recipient), r.amount,
+      q(fmt(r.amount)), q(r.awardId), q(r.funds)].join(',')));
+    const blob = new Blob([lines.join('\r\n') + '\r\n'], { type: 'text/csv;charset=utf-8' });
+    const a = document.getElementById('csv-link');
+    a.href = URL.createObjectURL(blob);
+    a.download = `pic-funding-map-${DATA.meta.asOf}.csv`;
+  }
+
+  /* ---------------------------------------------------------------- 6 interact */
+
+  function setHighlight(kind, id) {
+    const nodes = viz.querySelectorAll('[data-node], [data-link]');
+    if (!kind) {
+      viz.classList.remove('is-focused');
+      nodes.forEach((n) => n.classList.remove('lit'));
+      return;
+    }
+    const { nodes: ns, links: ls } = related(kind, id);
+    nodes.forEach((n) => {
+      const a = n.getAttribute('data-node'), b = n.getAttribute('data-link');
+      n.classList.toggle('lit', (a && ns.has(a)) || (b && ls.has(b)));
+    });
+    viz.classList.add('is-focused');
+  }
+
+  function panelFor(kind, id) {
+    const kindEl = document.getElementById('panel-kind');
+    const titleEl = document.getElementById('panel-title');
+    const body = document.getElementById('panel-body');
+    body.textContent = '';
+
+    const chipsRow = (chips) => {
+      const row = h('div', { class: 'panel-chips' });
+      chips.forEach((c) => row.appendChild(h('span', { class: chipClass(c), text: c })));
+      return row;
+    };
+    const totalBlock = (v, label) => h('div', { class: 'panel-total' }, [
+      h('p', { class: 'pt-v', text: fmt(v) }), h('p', { class: 'pt-l', text: label })
+    ]);
+
+    if (kind === 'recipient') {
+      const r = G.recipients.get(id);
+      kindEl.textContent = 'Recipient';
+      titleEl.textContent = r.name;
+      if (r.alsoKnownAs) body.appendChild(h('p', { class: 'panel-aka', text: r.alsoKnownAs }));
+      body.appendChild(chipsRow(r.chips));
+      body.appendChild(totalBlock(r.total, r.awards.length > 1
+        ? `awarded across ${r.awards.length} programs · ${fmtFull(r.total)}`
+        : `awarded · ${fmtFull(r.total)}`));
+      body.appendChild(h('h3', { text: r.awards.length > 1 ? 'Award breakdown' : 'The award' }));
+      r.awards.forEach((w) => {
+        const p = G.programs.get(w.programId), so = G.sources.get(p.sourceId), t = TINT[p.tint];
+        const blk = h('div', { class: 'award', style: `--aw:${t.solid}` }, [
+          h('div', { class: 'award-top' }, [
+            h('span', { class: 'award-amt', text: fmt(w.amount) }),
+            h('span', { class: 'award-prog', text: p.name })
+          ]),
+          h('p', { class: 'award-src', text: `${so.name} · ${fmtFull(w.amount)}` })
+        ]);
+        if (w.funds) blk.appendChild(h('p', { class: 'award-funds', text: w.funds }));
+        if (w.awardId) blk.appendChild(h('p', { class: 'award-id' }, [
+          h('b', { text: 'Award ID ' }), document.createTextNode(w.awardId)
+        ]));
+        body.appendChild(blk);
+      });
+    } else if (kind === 'program') {
+      const p = G.programs.get(id), so = G.sources.get(p.sourceId);
+      kindEl.textContent = 'Program · ' + so.short;
+      titleEl.textContent = p.name;
+      body.appendChild(chipsRow([p.chip]));
+      body.appendChild(totalBlock(p.amount,
+        (p.share ? `${p.share} of the Ohio award · ` : '') + fmtFull(p.amount)));
+      body.appendChild(h('p', { class: 'panel-note', text: p.note }));
+      const outs = G.progOut.get(p.id).slice().sort((a, b) => b.award.amount - a.award.amount);
+      body.appendChild(h('h3', { text: `Where it goes · ${outs.length} recipient${outs.length > 1 ? 's' : ''}` }));
+      const ul = h('ul', { class: 'panel-list' });
+      outs.forEach(({ recipient, award }) => ul.appendChild(h('li', {}, [
+        h('span', { text: recipient.name }), h('span', { class: 'pl-a', text: fmt(award.amount) })
+      ])));
+      body.appendChild(ul);
+    } else {
+      const so = G.sources.get(id);
+      kindEl.textContent = 'Funding source';
+      titleEl.textContent = so.name;
+      body.appendChild(h('p', { class: 'panel-aka', text: `${so.kind} · ${so.agency}` }));
+      // Source-level award identifier. The EDA and APEX awards are identified per recipient,
+      // so their IDs live on the awards; the Ohio grant is a single instrument to GAC and its
+      // Grant Control No. identifies the whole $31.25M. See specs/AWARD-IDS-2026-08-13.md.
+      if (so.awardId) body.appendChild(h('p', { class: 'award-id' },
+        [h('b', { text: so.awardIdLabel || 'Award ID ' }), document.createTextNode(so.awardId)]));
+      body.appendChild(totalBlock(so.award, `awarded · ${fmtFull(so.award)}`));
+      body.appendChild(h('p', { class: 'panel-note',
+        text: `Plus ${fmt(so.matchAmount)} in ${so.matchLabel} (${fmtFull(so.matchAmount)}), committed alongside the award.` }));
+      body.appendChild(h('p', { class: 'panel-note', style: 'margin-top:14px', text: so.note }));
+      const progs = G.srcPrograms.get(id);
+      body.appendChild(h('h3', { text: progs.length > 1 ? `Five workstreams` : 'Program' }));
+      const ul = h('ul', { class: 'panel-list' });
+      progs.forEach((p) => ul.appendChild(h('li', {}, [
+        h('span', { text: p.name + (p.share ? ` · ${p.share}` : '') }),
+        h('span', { class: 'pl-a', text: fmt(p.amount) })
+      ])));
+      body.appendChild(ul);
+    }
+    document.getElementById('panel-disclosure').textContent = DATA.meta.disclosures[0];
+  }
+
+  function openDetail(kind, id, { push = true, focus = true } = {}) {
+    if (!G[kind === 'recipient' ? 'recipients' : kind === 'program' ? 'programs' : 'sources'].has(id)) return;
+    selected = { kind, id };
+    panelFor(kind, id);
+    setHighlight(kind, id);
+    markSelected();
+
+    panel.hidden = false; scrim.hidden = false;
+    requestAnimationFrame(() => { panel.classList.add('is-open'); scrim.classList.add('is-open'); });
+    resetBtn.hidden = false;
+
+    const hash = '#' + kind + '/' + id;
+    if (push && location.hash !== hash) history.pushState({ kind, id }, '', hash);
+    if (focus) {
+      lastFocusEl = document.activeElement;
+      document.getElementById('panel-close').focus({ preventScroll: true });
+    }
+    cancelReveal();
+  }
+
+  function closeDetail({ push = true, restore = true } = {}) {
+    if (!selected) return;
+    selected = null;
+    panel.classList.remove('is-open'); scrim.classList.remove('is-open');
+    const done = () => { panel.hidden = true; scrim.hidden = true; };
+    reduceMotion.matches ? done() : setTimeout(done, 200);
+    setHighlight(null);
+    markSelected();
+    resetBtn.hidden = true;
+    if (push && location.hash) history.pushState(null, '', location.pathname + location.search);
+    if (restore && lastFocusEl && document.contains(lastFocusEl)) lastFocusEl.focus({ preventScroll: true });
+    lastFocusEl = null;
+  }
+
+  function markSelected() {
+    viz.querySelectorAll('.hit, .rcard').forEach((b) => {
+      const on = selected && b.dataset.kind === selected.kind && b.dataset.id === selected.id;
+      b.classList.toggle('is-selected', !!on);
+    });
+  }
+
+  function cancelReveal() {
+    if (revealDone) return;
+    revealDone = true;
+    viz.classList.remove('reveal');
+    viz.classList.add('static');
+    const c = viz.querySelector('.cards');
+    if (c) { c.classList.remove('reveal'); c.classList.add('static'); }
+  }
+
+  function startReveal(root) {
+    if (revealDone || reduceMotion.matches) { root.classList.add('static'); return; }
+    root.classList.add('reveal');
+    // stagger the rows so they land after the ribbons have drawn
+    root.querySelectorAll('.rowgroup, .card-group').forEach((g, i) => {
+      g.style.animationDelay = (260 + i * 26) + 'ms';
+    });
+    setTimeout(() => { revealDone = true; root.classList.remove('reveal'); root.classList.add('static'); }, REVEAL_MS);
+  }
+
+  function countUp() {
+    const node = document.getElementById('total-count');
+    const target = Number(node.dataset.value);
+    if (reduceMotion.matches) { node.textContent = fmtHero(target); return; }
+    let ran = false;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting || ran) return;
+        ran = true; io.disconnect();
+        const t0 = performance.now(), dur = 900;
+        const step = (t) => {
+          const k = Math.min(1, (t - t0) / dur);
+          const e2 = 1 - Math.pow(1 - k, 3);
+          node.textContent = fmtHero(target * e2);
+          if (k < 1) requestAnimationFrame(step); else node.textContent = fmtHero(target);
+        };
+        requestAnimationFrame(step);
+      });
+    }, { threshold: 0.4 });
+    io.observe(node);
+  }
+
+  /* ---------------------------------------------------------------- render */
+
+  function render() {
+    const W = Math.round(viz.getBoundingClientRect().width);
+    if (!W) return;
+    const mode = W < CARD_BREAKPOINT ? 'cards' : 'diagram';
+    const first = currentMode === null;
+    currentMode = mode;
+    lastW = W;
+
+    const root = mode === 'diagram' ? (renderDiagram(W), viz) : renderCards();
+    if (first) startReveal(mode === 'diagram' ? viz : root);
+    else { (mode === 'diagram' ? viz : root).classList.add('static'); }
+
+    markSelected();
+    if (selected) setHighlight(selected.kind, selected.id);
+  }
+
+  function wire() {
+    // hover / focus highlight, click to open
+    viz.addEventListener('pointerover', (e) => {
+      const b = e.target.closest('.hit, .rcard');
+      if (b && !selected) setHighlight(b.dataset.kind, b.dataset.id);
+    });
+    viz.addEventListener('pointerout', (e) => {
+      const b = e.target.closest('.hit, .rcard');
+      if (b && !selected && !viz.contains(e.relatedTarget)) setHighlight(null);
+      else if (b && !selected && !e.relatedTarget?.closest?.('.hit, .rcard')) setHighlight(null);
+    });
+    viz.addEventListener('focusin', (e) => {
+      const b = e.target.closest('.hit, .rcard');
+      if (b && !selected) setHighlight(b.dataset.kind, b.dataset.id);
+    });
+    viz.addEventListener('focusout', (e) => {
+      if (!selected && !viz.contains(e.relatedTarget)) setHighlight(null);
+    });
+    viz.addEventListener('click', (e) => {
+      const b = e.target.closest('.hit, .rcard');
+      if (!b) return;
+      if (selected && selected.kind === b.dataset.kind && selected.id === b.dataset.id) closeDetail();
+      else openDetail(b.dataset.kind, b.dataset.id);
+    });
+
+    document.getElementById('panel-close').addEventListener('click', () => closeDetail());
+    scrim.addEventListener('click', () => closeDetail());
+    // click-away, for the widths where there is no scrim to click
+    document.addEventListener('click', (e) => {
+      if (!selected) return;
+      if (e.target.closest('.panel, .hit, .rcard, #reset-view')) return;
+      closeDetail({ restore: false });
+    });
+    resetBtn.addEventListener('click', () => { closeDetail(); setHighlight(null); });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && selected) { e.preventDefault(); closeDetail(); }
+    });
+
+    // any interaction kills the remainder of the reveal, once and for all
+    ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((t) =>
+      window.addEventListener(t, cancelReveal, { once: true, passive: true }));
+
+    const syncHash = () => {
+      const m = /^#(recipient|program|source)\/(.+)$/.exec(decodeURIComponent(location.hash));
+      if (m) openDetail(m[1], m[2], { push: false, focus: false });
+      else closeDetail({ push: false, restore: false });
+    };
+    window.addEventListener('popstate', syncHash);
+    window.addEventListener('hashchange', syncHash);
+
+    // ResizeObserver fires once on observe. Re-rendering on that first call
+    // would restart the layout mid-reveal and cancel it, so only act on a real
+    // width change.
+    let t;
+    const ro = new ResizeObserver(() => {
+      clearTimeout(t);
+      t = setTimeout(() => {
+        if (Math.round(viz.getBoundingClientRect().width) !== lastW) render();
+      }, 130);
+    });
+    ro.observe(viz);
+
+    reduceMotion.addEventListener('change', () => { cancelReveal(); });
+  }
+
+  /* ---------------------------------------------------------------- boot */
+
+  async function boot() {
+    try {
+      // loadData returns PARSED json (inlined tag or fetch), not a Response — the
+      // res.ok / res.json() pair that used to live here would throw on the object.
+      DATA = await loadData('funding.json');
+    } catch (err) {
+      viz.textContent = '';
+      viz.appendChild(h('p', { class: 'noscript' }, [
+        document.createTextNode('The funding data could not be loaded (' + err.message + '). '),
+        h('a', { href: 'data/funding.json', text: 'Open the data file directly.' }),
+        document.createTextNode(' If you opened this page from your file system, serve it over HTTP instead — see the README.')
+      ]));
+      viz.removeAttribute('aria-busy');
+      return;
+    }
+
+    G = index(DATA);
+    renderProse();
+    renderTable();
+    renderLegend();
+    buildCsv();
+    countUp();
+
+    if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) { /* measure anyway */ } }
+    render();
+    wire();
+
+    const m = /^#(recipient|program|source)\/(.+)$/.exec(decodeURIComponent(location.hash));
+    if (m) {
+      cancelReveal();
+      openDetail(m[1], m[2], { push: false, focus: false });
+      const b = viz.querySelector(`[data-kind="${m[1]}"][data-id="${CSS.escape(m[2])}"]`);
+      if (b) {
+        b.scrollIntoView({ block: 'center', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+        b.focus({ preventScroll: true });
+      }
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();

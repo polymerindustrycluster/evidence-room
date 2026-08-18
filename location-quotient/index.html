@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>A Number We Own</title>
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <strong>Polymer Industry Cluster</strong>
+    <span>Cluster vitals &middot; concentration</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Location quotient, computed from public data</p>
+    <h1>PIC quotes a concentration figure it licenses. <em>Here is one it owns.</em></h1>
+    <p class="stand">Team NEO's 2.69&times; is a Lightcast product: one number, one year,
+      no decomposition, and nobody outside the license can check it. The Bureau of Labor Statistics publishes the
+      components free. This is eleven years of concentration for six polymer industries
+      across twelve counties &mdash; reproduced to within 0.005 of the figure the bureau
+      publishes itself.</p>
+    <p class="stand"><dfn><b>Location quotient (LQ)</b> &mdash; how concentrated an industry
+      is here compared with the country as a whole. An LQ of 1.0 means the region has exactly
+      its national share of those jobs; 2.69 means nearly three times that share.</dfn>
+      <dfn>An <b>establishment</b> is a single physical site, not a company: one firm with
+      three plants is three establishments.</dfn></p>
+    <div class="hero-row" id="figs"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The trend</p>
+    <h2 id="trendtitle">Eleven years of concentration, by industry</h2>
+    <p class="lede">A location quotient of 1.0 means the region has exactly its national
+      share of an industry. Select an industry to bring it forward; the others stay as
+      context rather than disappearing.</p>
+    <div class="picker" id="picker" role="group" aria-label="Choose an industry"></div>
+    <div class="chart"><svg id="trend" role="img" aria-labelledby="trend-t">
+      <title id="trend-t">Location quotient by year for six polymer industries across the
+        fourteen-county region.</title></svg></div>
+    <div id="trendtable"></div>
+    <p class="src" id="trendsrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The honest caveat</p>
+    <h2>The highest concentrations sit on the smallest bases</h2>
+    <p class="lede">A location quotient is a ratio, so a county with six plants can post a
+      bigger number than a county with sixty. Plotted against the jobs behind it, the
+      dramatic figures move to the left where they belong.</p>
+    <div class="chart"><svg id="scatter" role="img" aria-labelledby="scatter-t">
+      <title id="scatter-t">Location quotient against employment for every county and
+        industry in the latest year.</title></svg></div>
+    <div id="scattertable"></div>
+    <p class="src" id="scattersrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The map, as a grid</p>
+    <h2 id="heattitle">Every county against every industry</h2>
+    <p class="lede">Twelve counties, six industries, latest year. Hatched cells are ones
+      the bureau will not disclose &mdash; a withheld cell is not a zero, and is never drawn as
+      one.</p>
+    <div class="chart"><svg id="heat" role="img" aria-labelledby="heat-t">
+      <title id="heat-t">Grid of location quotient by county and industry.</title></svg></div>
+    <div id="heattable"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">Show your work</p>
+    <h2>Why you can trust the number above</h2>
+    <p class="lede">The bureau publishes its own location quotient alongside the components. Every
+      cell computed here is checked against it. If the two ever diverge, this chart is where
+      it shows up first.</p>
+    <div class="chart"><svg id="resid" role="img" aria-labelledby="resid-t">
+      <title id="resid-t">Distribution of the difference between the computed and published
+        location quotient.</title></svg></div>
+    <div id="residtable"></div>
+    <div class="note" id="defnote"></div>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="wrap">
+    <p>A licensed number is a claim. A reproduced number is a measurement.</p>
+    <p class="sub" id="closersub"></p>
+  </div>
+</section>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

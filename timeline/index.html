@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Operating Record</title>
+<meta name="description" content="An interactive record of what the Polymer Industry Cluster has done since 2023: designations and funding, R&amp;D, workforce, startups and infrastructure, on one shared timeline.">
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip" href="#viz">Skip to the timeline</a>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">The operating record</p>
+    <h1>Five workstreams, running at the same time</h1>
+    <p class="lede">
+      Everything the cluster has publicly done since the 2023 federal designation, on one shared
+      timeline. Not a highlight reel &mdash; the full public record, so the quiet stretches show too.
+    </p>
+    <ul class="topline" id="topline">
+      <!-- filled from data; static fallback below is replaced on load -->
+      <li><b>&mdash;</b><span>public events</span></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <div class="wrap">
+
+      <div class="controls" id="controls" role="group" aria-label="Filter the timeline">
+        <div class="ctl">
+          <span class="ctl-h" id="lane-h">Workstream</span>
+          <div class="chips" id="lane-filters" role="group" aria-labelledby="lane-h"></div>
+        </div>
+        <div class="ctl">
+          <span class="ctl-h" id="hz-h">Time to a visible result</span>
+          <div class="chips" id="hz-filters" role="group" aria-labelledby="hz-h"></div>
+        </div>
+        <button class="reset" id="reset" type="button" hidden>Reset filters</button>
+      </div>
+
+      <div class="pre-window" id="pre-window"></div>
+
+      <div class="viz" id="viz" tabindex="-1">
+        <p class="nojs">This timeline needs JavaScript. The full record is in the table below.</p>
+      </div>
+
+      <div class="legend" id="legend" hidden></div>
+
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="wrap">
+      <h2 id="table-h">The same record, as a table</h2>
+      <p class="sub">Every event on this page, in date order, with its workstream and source date precision.</p>
+      <div class="tablewrap">
+        <table class="dtable" id="dtable" aria-labelledby="table-h">
+          <caption class="sr-only">Public events in the Polymer Industry Cluster record, by date.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Event</th>
+              <th scope="col">Workstream</th>
+              <th scope="col">Organization</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="dl"><button class="linkish" id="csv" type="button">Download this table as CSV</button></p>
+    </div>
+  </section>
+
+  <section class="section section--methods">
+    <div class="wrap methods-grid">
+      <div>
+        <h2 id="methods-h">Methods and provenance</h2>
+        <p class="asof">Record as of <time datetime="2026-08-13">13 August 2026</time>.</p>
+        <p id="m-source"></p>
+        <p id="m-public" class="callout"></p>
+      </div>
+      <div>
+        <h3>How to read it</h3>
+        <ul class="notes" id="m-notes"></ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="panel" id="panel" hidden role="dialog" aria-modal="true" aria-labelledby="panel-title"></aside>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">How we did this</p>
+    <h2>Sources, filters, and how to rebuild this page</h2>
+    <div id="repro"></div>
+  </div>
+</section>
+
+<script src="../_shared/sources.js"></script>
+<script>PVSources.render("timeline", "repro", {limits: [
+  "Public record only. An event that was not announced, reported or filed publicly does not appear, so a quiet period on this timeline means nothing was published — not that nothing happened.",
+  "Future milestones are drawn hollow because they are plans, not facts. A hollow marker records an intention on a date and is not evidence the thing occurred.",
+  "Dates are the date of public record, which can trail the decision by weeks. The order of two close events is not reliable.",
+  "This page predates the shared house style and does not carry a claims file, so no sentence on it is checked by a re-runnable assertion."
+]});</script>
+<script src="app.js"></script>
+</body>
+</html>

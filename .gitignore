@@ -1,0 +1,51 @@
+# Evidence Room public repo — exclusion contract.
+#
+# This gitignore is BELT; the staging script (prepare.ps1) is SUSPENDERS: blocked content
+# is never copied into this tree in the first place, and this file stops it if someone
+# copies by hand later. From the 2026-08-17 public-release audit.
+
+# Raw fetched data — re-fetchable by construction via _data/build/fetch_*.py.
+# (_sbir_awards.csv carries PI emails; ohsos_bulk.json carries SoS filing records;
+# metroverse.json is CC BY-NC-SA + D&B-derived and may NEVER enter a public repo.)
+_data/build/*.json
+_data/build/*.jsonl
+_data/build/*.csv
+_data/build/*.zip
+_data/build/*.xlsx
+_data/build/*.txt
+_data/build/__pycache__/
+
+# Internal process docs stay internal. METHODS-SOP.md is the one public methods doc.
+_data/*.md
+!_data/METHODS-SOP.md
+
+# Staging machinery is process, not product.
+stage/
+
+# Vault-serving prototype (sqlite with 1,834 companies + member table).
+_data/prototype-sqlite/
+
+# QA scratch renders — six embed blocked pages.
+shots/
+*/shots/
+
+# Licensed fonts (Aptos — Microsoft). Code may name the font; files never ship.
+*/fonts/
+*.ttf
+*.otf
+
+# Bundles are built in CI for the shipped set only — a committed dist/ was a standing
+# leak vector (contaminated + font-embedded bundles found in the audit).
+dist/
+
+# Blocked artifacts (member/applicant data — see README "Not in this repository"):
+chain/
+rfq/
+trl/
+oversubscribed/
+6ppd/
+ledger/
+
+.env
+node_modules/
+__pycache__/

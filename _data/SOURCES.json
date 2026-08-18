@@ -1,0 +1,159 @@
+{
+  "_readme": [
+    "THE SOURCE REGISTRY. One entry per data source, carrying the endpoint a reader would",
+    "have to hit and the EXACT filter values applied to it. It exists because an audit on",
+    "2026-08-17 found only 3 of 20 datasets published a source URL and none published its",
+    "industry or program codes — so the artifacts asserted reproducibility they did not",
+    "provide. A methodology box that names 'BLS QCEW' without naming NAICS 3252 tells a",
+    "reader where to start and not what was done.",
+    "",
+    "Every value below was extracted from the fetch scripts, not written from memory.",
+    "`script` is the file that hits the endpoint; run it and you get the same bytes.",
+    "",
+    "`by_artifact` maps each published page to the sources it rests on, so PV.methodology()",
+    "can render the right subset without every derive script having to declare it. Adding a",
+    "page here is how it gets a reproduce block; tools/verify.mjs fails a page that has none.",
+    "",
+    "PUBLIC CUT. This registry lists only the sources behind the analyses published in",
+    "this repository. The internal series has more pages and more sources; their",
+    "absence here is stated in the README rather than left to be discovered."
+  ],
+  "sources": {
+    "qcew": {
+      "name": "BLS Quarterly Census of Employment and Wages",
+      "agency": "Bureau of Labor Statistics",
+      "url": "https://data.bls.gov/cew/data/api/{year}/{qtr}/area/{fips}.csv",
+      "docs": "https://www.bls.gov/cew/additional-resources/open-data/csv-data-slices.htm",
+      "filters": {
+        "NAICS codes": "10 (all industries), 31-33 (manufacturing), 325 (chemical manufacturing), 3252 (resin, synthetic rubber and fibers), 3255 (paint, coating and adhesive), 326 (plastics and rubber products), 3261 (plastics products), 3262 (rubber products)",
+        "ownership": "own_code 0 (total, all ownerships) and 5 (private)",
+        "geography": "county FIPS, PIC-12 and NEO-14 (see footprints.py)",
+        "note": "PIC's own measurement register is 3252 + 3255 + 326. NAICS 325 is context, not cluster — it contains pharmaceuticals and agricultural chemicals."
+      },
+      "script": "_data/build/fetch_qcew.py, fetch_footprint.py",
+      "key_required": false
+    },
+    "qwi": {
+      "name": "Census Quarterly Workforce Indicators, seasonally adjusted",
+      "agency": "US Census Bureau / LEHD",
+      "url": "https://api.census.gov/data/timeseries/qwi/sa",
+      "docs": "https://www.census.gov/data/developers/data-sets/qwi.html",
+      "filters": {
+        "variables": "Emp, HirA, Sep, EarnBeg",
+        "industry": "326 (plastics and rubber products manufacturing); 00 (all industries) as the benchmark on the talent demand chart",
+        "geography": "state 39, the twelve PIC-12 counties",
+        "note": "EarnBeg is average monthly earnings of employees who also worked for the same employer in the prior quarter — stable jobs, not new hires."
+      },
+      "script": "_data/build/fetch_footprint.py, fetch_qwi_demand.py",
+      "key_required": true
+    },
+    "lodes": {
+      "name": "LEHD Origin-Destination Employment Statistics, LODES8",
+      "agency": "US Census Bureau / LEHD",
+      "url": "https://lehd.ces.census.gov/data/lodes/LODES8/{st}/od/{st}_od_{main|aux}_JT00_{year}.csv.gz",
+      "docs": "https://lehd.ces.census.gov/data/lodes/LODES8/LODESTechDoc8.2.pdf",
+      "filters": {
+        "segment": "JT00 — all jobs, all sectors. LODES origin-destination carries NO industry dimension, so this is the whole economy and never the polymer cluster.",
+        "files": "main (both ends in state) plus aux (work in state, home out of state). Omitting aux makes the region look artificially self-contained.",
+        "years": "2022, with 2019 as a pre-pandemic baseline",
+        "geography": "work end bounded to PIC-12 for the commute matrix; home end bounded to PIC-12 for the reciprocal; peer comparison reads twelve states' main files",
+        "note": "Both ends are employer-reported addresses. The home end is a residence on file, not evidence anyone travelled."
+      },
+      "script": "_data/build/fetch_lodes.py, fetch_lodes_resident.py, fetch_lodes_peers.py",
+      "key_required": false
+    },
+    "bea_rpp": {
+      "name": "BEA Regional Price Parities",
+      "agency": "Bureau of Economic Analysis",
+      "url": "https://apps.bea.gov/api/data/",
+      "docs": "https://apps.bea.gov/API/signup/",
+      "filters": {
+        "dataset": "Regional, RPP by metropolitan statistical area",
+        "base": "a fixed national basket, US average = 100",
+        "note": "Published at METRO, which neither nests inside nor tiles PIC-12. Akron, Cleveland-Elyria and Youngstown-Warren each include territory the footprint excludes. Do not sum the three and call it PIC-12."
+      },
+      "script": "_data/build/fetch_bea.py, fetch_rpp.py",
+      "key_required": true
+    },
+    "fred": {
+      "name": "FRED producer price and commodity series",
+      "agency": "Federal Reserve Bank of St. Louis",
+      "url": "https://api.stlouisfed.org/fred/series/observations?series_id={id}",
+      "docs": "https://fred.stlouisfed.org/docs/api/fred/",
+      "filters": {
+        "series": "WPU072 (PPI rubber and plastic products), WPU066 (PPI plastics resins and materials), WPU06 (PPI industrial chemicals), PCU326326 (PPI plastics and rubber products manufacturing), PCU325211325211 (PPI plastics material and resin manufacturing), WTISPLC (WTI crude oil spot)",
+        "note": "Producer price indexes, not consumer prices. Index levels, not dollars.",
+        "run order": "fetch_rest.py FIRST, then fetch_chain_prices.py. The second appends the feedstock and resin links to fred.json; running fetch_rest.py after it overwrites the file and silently drops them."
+      },
+      "script": "_data/build/fetch_rest.py, fetch_chain_prices.py",
+      "key_required": true
+    },
+    "usaspending": {
+      "name": "USAspending federal contract and grant obligations",
+      "agency": "US Treasury",
+      "url": "https://api.usaspending.gov/api/v2/search/spending_by_category/",
+      "docs": "https://api.usaspending.gov/",
+      "filters": {
+        "NAICS": "325* and 326* manufacturing codes only, so university and research awards are invisible by construction — a university files under 61xxxx",
+        "geography": "place of performance, a reported field on the award rather than an observation of where work happened",
+        "note": "Obligations are money legally committed, not cash spent."
+      },
+      "script": "_data/build/fetch_rest.py",
+      "key_required": false
+    },
+    "public_record": {
+      "name": "PIC public record — dated milestones",
+      "agency": "Polymer Industry Cluster",
+      "url": null,
+      "docs": null,
+      "filters": {
+        "compiled": "Merged from eight internal and public record sets — operational status reports, funding and award files, verified deck facts, and primary-press dates from the quote bank. 487 raw rows reduced to 104 dated events.",
+        "publicOnly": "Only events recorded as PUBLIC appear. Internal operational milestones, and the record of which dates slipped, are deliberately excluded — this is the public record, not the project's whole history.",
+        "forward_are_hollow": "18 of the 104 are future milestones and are drawn hollow, so a plan never reads as a fact.",
+        "not_reproducible": "Hand-compiled from documents rather than fetched from an API. Every event carries its own date and organisation; there is no script that regenerates this file, and pretending otherwise would be the opposite of what this registry is for."
+      },
+      "script": null,
+      "key_required": false
+    }
+  },
+  "by_artifact": {
+    "laborshed": [
+      "lodes"
+    ],
+    "churn": [
+      "qwi",
+      "qcew"
+    ],
+    "wages": [
+      "qcew"
+    ],
+    "realwage": [
+      "qcew",
+      "bea_rpp"
+    ],
+    "peers": [
+      "qcew"
+    ],
+    "location-quotient": [
+      "qcew"
+    ],
+    "revisions": [
+      "qcew",
+      "fred"
+    ],
+    "cost-scissors": [
+      "fred",
+      "qcew"
+    ],
+    "federal-money": [
+      "usaspending"
+    ],
+    "funding-map": [
+      "usaspending"
+    ],
+    "timeline": [
+      "public_record"
+    ],
+    "index": []
+  }
+}

@@ -1,0 +1,30 @@
+/* index — a gallery, so the cards carry the weight instead of charts */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);margin:30px 0 0}
+.cards.lead{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+.card{background:#fff;padding:22px;display:block;text-decoration:none;color:inherit;
+  transition:background .14s}
+.card:hover,.card:focus-visible{background:#F1EEE9;outline:none}
+.card .grp{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:900;
+  color:var(--action);margin:0 0 9px}
+.card h3{font-size:19px;margin:0 0 7px;letter-spacing:-.02em;line-height:1.2}
+.card .q{margin:0 0 12px;font-size:14px;color:var(--caption);font-style:italic}
+.card p.f{margin:0;font-size:15px;line-height:1.5;color:#26333A}
+.card .meta{margin:13px 0 0;font-size:12px;color:var(--caption);display:flex;gap:8px;
+  flex-wrap:wrap;align-items:center}
+.card .pill{background:#EDE9E2;padding:2px 8px;font-size:12px;letter-spacing:.04em}
+.card .pill.n14{background:#F2E7EE;color:var(--hover)}
+.card .pill.man{background:#F4F1EC;color:var(--hover)}
+.cards.lead .card{border-left:3px solid var(--ink)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;
+  margin:30px 0 0}
+.checks h3{font-size:16px;margin:0 0 8px}
+.checks p{margin:10px 0 0;font-size:14.5px;color:#3A4448;line-height:1.55}
+.checks pre{background:#F1EEE9;border-left:3px solid var(--action);padding:11px 14px;
+  margin:0;font-size:12.5px;overflow-x:auto;font-family:ui-monospace,Consolas,monospace}
+.mono{font-family:ui-monospace,Consolas,monospace;font-size:.92em;background:#F1EEE9;
+  padding:1px 5px}
+@media (max-width:640px){
+  .cards,.cards.lead{grid-template-columns:1fr}
+  .card{padding:18px}
+}

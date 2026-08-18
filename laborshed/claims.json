@@ -1,0 +1,89 @@
+{
+ "data": {
+  "ls": "laborshed.json",
+  "b": "bench.json"
+ },
+ "claims": [
+  {
+   "id": "ls-no-county-is-a-market",
+   "text": "Not one of the twelve counties has 69 percent of its jobs held by its own residents.",
+   "source": "LEHD LODES8 origin-destination, Ohio 2022, segment JT00, main + aux",
+   "assert": "max(r['in_county'] for r in D['ls']['matrix']) < 0.69",
+   "actual": "sorted(((r['work_name'], r['in_county']) for r in D['ls']['matrix']), key=lambda x: -x[1])[:3]",
+   "falsified_if": "Any county reaches 0.69. DENOMINATOR: the share is over ALL jobs worked in the county, including those held from outside PIC-12 — dividing by the PIC-12 interior alone inflates every share (Summit reads 53.9% that way against 48.4% correctly) and would break the claim this page makes."
+  },
+  {
+   "id": "ls-summit-under-half",
+   "text": "Summit County, the cluster's center, is at 48.4 percent.",
+   "source": "LODES 2022, Summit work end, all home ends",
+   "assert": "abs([r for r in D['ls']['matrix'] if r['work_name']=='Summit'][0]['in_county'] - 0.484) < 0.003",
+   "actual": "[(r['work_name'], r['in_county'], r['jobs_total']) for r in D['ls']['matrix'] if r['work_name']=='Summit']",
+   "falsified_if": "LODES revises, or the footprint changes. Cross-checked: these shares reproduce the figures in the LODES codebook independently derived by another session, which is the only cross-session validation in the stack."
+  },
+  {
+   "id": "ls-rows-are-whole",
+   "text": "Each row accounts for every job in that county — twelve home counties plus an outside-footprint remainder.",
+   "source": "derived: interior cells plus external inflow per work county",
+   "assert": "all(abs(sum(c['share'] for c in r['cells']) + r['outside_share'] - 1) < 0.003 for r in D['ls']['matrix'])",
+   "actual": "[(r['work_name'], round(sum(c['share'] for c in r['cells']) + r['outside_share'], 4)) for r in D['ls']['matrix'][:3]]",
+   "falsified_if": "Any row fails to sum to one. A matrix whose rows do not close is not a share matrix, and every cell would be reading against a different denominator."
+  },
+  {
+   "id": "ls-distant-not-pandemic",
+   "text": "The distant-metro share is not a pandemic effect: Franklin County was already the largest external source in 2019.",
+   "source": "LODES 2019 baseline, pulled specifically to test this",
+   "assert": "D['ls']['external']['2019']['distant'] > 50000 and D['ls']['external']['2022']['adjacent'] / D['ls']['external']['2019']['adjacent'] < 1.05",
+   "actual": "(D['ls']['external']['2019'], D['ls']['external']['2022'])",
+   "falsified_if": "A revised 2019 vintage shows distant metros small. THIS CLAIM KILLED A STORY: the candidate 'remote work broke the labor shed' required Franklin to be small in 2019. It was 23,506 — already the largest. The hypothesis is dead and does not appear on this page; what survives is that adjacent and distant were always different things."
+  },
+  {
+   "id": "ls-not-the-cluster",
+   "text": "This is the whole economy, not the polymer cluster.",
+   "source": "LODES origin-destination carries no industry dimension at any grain",
+   "verify": "manual",
+   "assert": null,
+   "falsified_if": "Anyone describes these figures as the cluster's workforce. Industry detail exists only in the WAC workplace files, at 2-digit sectors, and cannot be crossed with residence. A polymer-specific version of this page cannot be built from this source.",
+   "checked_by": "Source-capability rule, not a data check"
+  },
+  {
+   "id": "ls-county-pattern-is-national",
+   "text": "95 percent of counties in peer metropolitan areas are also below 69 percent, so the county-level pattern is not specific to Northeast Ohio.",
+   "source": "LEHD LODES8 2022, 397 counties in 73 single-state peer metros, in-state basis both sides",
+   "assert": "D['b']['benchmark']['share_below_69'] > 0.90",
+   "actual": "(D['b']['benchmark']['share_below_69'], D['b']['benchmark']['n_peer_counties'])",
+   "falsified_if": "Fewer than 90 percent of peer metro counties fall below 0.69. If this drops, the county-level framing becomes a regional finding again and the hero must change back."
+  },
+  {
+   "id": "ls-pic12-above-peer-median",
+   "text": "The median PIC-12 county holds MORE of its jobs with its own residents than the median peer metro county.",
+   "source": "as above",
+   "assert": "D['b']['benchmark']['pic12_median'] > D['b']['benchmark']['peer_median']",
+   "actual": "(D['b']['benchmark']['pic12_median'], D['b']['benchmark']['peer_median'])",
+   "falsified_if": "The PIC-12 median falls below the peer median. That would make the region less contained than typical and the page would be understating, not overstating."
+  },
+  {
+   "id": "ls-region-is-a-market",
+   "text": "Just under 90 percent of the jobs in PIC-12 are held by people who live in PIC-12, and just under 90 percent of PIC-12 residents' jobs sit inside it.",
+   "source": "LEHD LODES8 2022; workplace side Ohio main+aux, resident side Ohio main plus six neighbor aux files",
+   "assert": "D['b']['totals']['work_region_share'] > 0.85 and D['b']['totals']['res_region_share'] > 0.85",
+   "actual": "(D['b']['totals']['work_region_share'], D['b']['totals']['res_region_share'])",
+   "falsified_if": "Either share drops below 0.85. NOTE the two are different quantities with different denominators and are never summed or differenced; they agree here, which is a finding, not a construction."
+  },
+  {
+   "id": "ls-only-pittsburgh-matches",
+   "text": "Among peer regions of six or more counties, only Pittsburgh holds as much of its workforce inside its own borders as PIC-12.",
+   "source": "as above, single-state metros only",
+   "assert": "sum(1 for r in D['b']['regions'] if r['kind'] != 'footprint' and r['region_share_work'] >= D['b']['totals']['work_region_share']) <= 1",
+   "actual": "[(r['name'], r['region_share_work']) for r in D['b']['regions'][:4]]",
+   "falsified_if": "Two or more peer regions match or beat PIC-12. Region share rises with region size, so this is a bounded claim about comparable regions and NOT a national ranking."
+  },
+  {
+   "id": "ls-out-of-state-is-small",
+   "text": "Only about 1 percent of PIC-12 residents' jobs are outside Ohio, so the resident-side figure is not hollowed out by out-of-state work.",
+   "source": "LEHD LODES8 2022, aux files for PA, WV, IN, KY, NY",
+   "assert": "D['b']['totals']['out_of_state_share'] < 0.03",
+   "actual": "D['b']['totals']['out_of_state_share']",
+   "falsified_if": "Out-of-state work exceeds 3 percent. Michigan's 2022 aux file is not published by LEHD, so this is a lower bound; MI is not adjacent to any PIC-12 county, which is why the omission is tolerable and stated."
+  }
+ ]
+}

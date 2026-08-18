@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>What The Paycheck Buys</title>
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <strong>Polymer Industry Cluster</strong>
+    <span>Cluster vitals &middot; real wages</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Polymer wages against local price levels, 2023</p>
+    <h1>The same paycheck ranks <em>below average</em> in dollars and
+      <em>above average</em> in what it buys.</h1>
+    <p class="stand">Every wage comparison PIC has ever published is nominal, which quietly
+      assumes a dollar is a dollar everywhere. the Bureau of Economic Analysis publishes a price index for each metro
+      &mdash; a fixed national basket, US average 100 &mdash; so the assumption is
+      testable. Among the 56 metros with a real polymer workforce, Akron is
+      <b>33rd on nominal weekly wages and 19th on what those wages actually buy</b>. The
+      adjustment does not just help; it crosses the median. <b>It is also smaller than the
+      pitch PIC usually makes</b>, and this page says why.</p>
+    <p class="stand"><dfn><b>Nominal</b> &mdash; the number printed on the paycheck,
+      before any adjustment for what things cost where you live. Its opposite here is
+      &ldquo;real,&rdquo; meaning what the paycheck actually buys.</dfn>
+      <dfn>The <b>median</b> is the middle value, with as many above as below &mdash; not the
+      average, which a few very high earners can pull upward.</dfn></p>
+    <div class="hero-row" id="figs"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The flip</p>
+    <h2 id="slopetitle">Where each polymer metro sits before and after the price adjustment</h2>
+    <p class="lede">Every metro with at least 2,000 polymer jobs, ranked by nominal weekly
+      wage on the left and by price-adjusted wage on the right. A line sloping down means a
+      metro's wages buy less than the dollar figure suggests. The steepest falls are the
+      places PIC competes with for people.</p>
+    <div class="chart"><svg id="slope" role="img" aria-labelledby="slope-t">
+      <title id="slope-t">Nominal versus price-adjusted wage rank for polymer metros.</title>
+    </svg></div>
+    <div id="slopetable"></div>
+    <p class="src" id="slopesrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The honest counterweight</p>
+    <h2>Northeast Ohio is not a cheap metro. It is an average one.</h2>
+    <p class="lede">The advantage above is real, but it does not come from where PIC usually
+      says it does. Akron's price level is almost exactly the metro median &mdash; more than
+      a hundred metros are cheaper. What produces the climb is that a large share of the
+      polymer industry sits in genuinely expensive places.</p>
+    <div class="chart"><svg id="strip" role="img" aria-labelledby="strip-t">
+      <title id="strip-t">Distribution of metro price levels with Akron marked.</title>
+    </svg></div>
+    <div id="striptable"></div>
+    <div class="note" id="cheapnote"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">Wage against price</p>
+    <h2>The two things a recruiter is actually trading off</h2>
+    <p class="lede">Nominal wage across, local price level up. The diagonal is constant
+      purchasing power &mdash; every metro on the same line offers the same real wage.
+      Up and to the left is a worse deal than the salary implies; down and to the right is
+      a better one.</p>
+    <div class="chart"><svg id="scatter" role="img" aria-labelledby="scatter-t">
+      <title id="scatter-t">Nominal weekly wage against metro price level.</title>
+    </svg></div>
+    <div id="scattertable"></div>
+    <p class="src" id="scattersrc"></p>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="wrap">
+    <p>Recruiting against Chicago on salary is a losing argument. Recruiting on what the
+      salary buys is a winning one, by about fourteen places.</p>
+    <p class="sub" id="closersub"></p>
+  </div>
+</section>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

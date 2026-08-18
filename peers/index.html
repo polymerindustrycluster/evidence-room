@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>First In The Nation</title>
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <strong>Polymer Industry Cluster</strong>
+    <span>Cluster vitals &middot; national position</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Where Northeast Ohio actually sits, nationally</p>
+    <h1>Ohio is <em>first in the country</em> in plastics and rubber employment.</h1>
+    <p class="stand">In plastics and rubber products manufacturing, private ownership, 2024 &mdash; and that clause has to
+      travel with the sentence, because it is a narrower industry than &ldquo;polymers&rdquo;
+      and a single year of a series the Bureau of Labor Statistics revises. Within it: first in absolute jobs, ahead
+      of California, Texas and Michigan, with all 51 state-level geographies disclosed.
+      No suppression asterisk. Several scope asterisks. The metro claim is smaller than
+      PIC has been saying, and this page says why.</p>
+    <p class="stand"><dfn><b>Suppressed</b> &mdash; the bureau withholds a figure when too few
+      employers exist for it to be published without identifying one of them. The jobs are
+      real; the number is simply not disclosed, which is not the same as zero.</dfn>
+      <dfn>An <b>establishment</b> is one physical site, not one company.</dfn>
+      <dfn><b>Concentration</b> here means the region's share of an industry measured
+      against the country's: 1.0 is exactly the national share.</dfn></p>
+    <div class="hero-row" id="figs"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The clean claim</p>
+    <h2 id="statetitle">Every state, plastics and rubber products</h2>
+    <p class="lede">States are the one geography the bureau barely suppresses &mdash; 51 of 51
+      disclosed. That makes this the most defensible comparison available, and it is the
+      one PIC should lead with in any funder conversation.</p>
+    <div class="chart"><svg id="states" role="img" aria-labelledby="states-t">
+      <title id="states-t">Plastics and rubber products employment by state.</title></svg></div>
+    <div id="statestable"></div>
+    <p class="src" id="statesrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The narrow claim</p>
+    <h2 id="metrotitle">Akron among the metros we can see</h2>
+    <p class="lede">Each dot is a metro area: jobs across, concentration up. Akron sits in
+      a top-right quadrant almost nothing else occupies &mdash; large <em>and</em>
+      concentrated &mdash; <em>among the metros that disclose</em>. That qualifier is the
+      whole claim, not a caveat on it, and the box below explains why an earlier and more
+      flattering version of this sentence was wrong.</p>
+    <div class="chart"><svg id="scatter" role="img" aria-labelledby="scatter-t">
+      <title id="scatter-t">Metro plastics and rubber employment against concentration.</title>
+    </svg></div>
+    <div id="scattertable"></div>
+    <div class="note" id="bound"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">What we cannot see</p>
+    <h2>Most of the country is withheld, and that changes what a ranking means</h2>
+    <p class="lede">The bureau suppresses any cell that could identify an employer. For plastics
+      and rubber that removes most metros and most counties &mdash; including some of the
+      largest. This chart is the reason every rank on this page says "among disclosed".</p>
+    <div class="chart"><svg id="vis" role="img" aria-labelledby="vis-t">
+      <title id="vis-t">Share of areas disclosed versus suppressed, by geography level.</title>
+    </svg></div>
+    <div id="vistable"></div>
+    <p class="src" id="vissrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">Over time</p>
+    <h2 id="trendtitle">Akron against its real peers, not its assumed ones</h2>
+    <p class="lede">The peer set here was chosen by the data &mdash; the metros that
+      actually rank alongside Akron &mdash; rather than by which cities feel comparable.
+      Select one to bring it forward.</p>
+    <div class="picker" id="picker" role="group" aria-label="Choose a peer metro"></div>
+    <div class="chart"><svg id="trend" role="img" aria-labelledby="trend-t">
+      <title id="trend-t">Employment over time for Akron and peer metros.</title></svg></div>
+    <div id="trendtable"></div>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="wrap">
+    <p>"Among the metros the bureau discloses" is four words. They are the difference between a
+      claim that survives a reviewer and one that does not.</p>
+    <p class="sub" id="closersub"></p>
+  </div>
+</section>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

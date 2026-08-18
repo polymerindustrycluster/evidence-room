@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Does The Cluster Pay Better</title>
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <strong>Polymer Industry Cluster</strong>
+    <span>Cluster vitals &middot; wages</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Polymer wages against the towns they sit in</p>
+    <h1>In 40 of 51 measurable cells, a polymer job pays <em>more than the county
+      average</em>.</h1>
+    <p class="stand">PIC's workforce case rests on the claim that these are good jobs. The
+      claim is checkable: the Bureau of Labor Statistics publishes average weekly wage by county and industry every
+      year. <b>Be clear about the bar.</b> The county all-industry average includes retail
+      and hospitality, so beating it is a low hurdle for manufacturing &mdash; it is the
+      right control for local cost of living, and a weak test of &ldquo;good&rdquo;. These
+      are also <b>means, not medians</b>, computed per disclosed cell, so one large employer
+      moves a county and every cell counts the same regardless of size.</p>
+    <div class="hero-row" id="figs"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The chart</p>
+    <h2 id="premtitle">Every county and industry against its own local average</h2>
+    <p class="lede">A value of 1.0 means the polymer job pays exactly what the average job
+      in that county pays. To the right is a premium; to the left, a discount. The
+      comparison is deliberately local &mdash; a wage that beats the national average but
+      trails its own town is not a good job in that town.</p>
+    <div class="chart"><svg id="prem" role="img" aria-labelledby="prem-t">
+      <title id="prem-t">Wage premium against the local all-industry average, by county
+        and industry.</title></svg></div>
+    <div id="premtable"></div>
+    <p class="src" id="premsrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">Over time</p>
+    <h2>The premium has not been eroding</h2>
+    <p class="lede">Median wage premium across all measurable county-industry cells, by
+      year. A single line is the honest form here: the county-level series are noisy and
+      the question is whether the cluster is pulling away from or falling toward its
+      surroundings.</p>
+    <div class="chart"><svg id="trend" role="img" aria-labelledby="trend-t">
+      <title id="trend-t">Median polymer wage premium over the local average, by year.</title>
+    </svg></div>
+    <div id="trendtable"></div>
+    <div class="note" id="caveat"></div>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="wrap">
+    <p>"Good jobs" is a claim. This is the version with a denominator.</p>
+    <p class="sub" id="closersub"></p>
+  </div>
+</section>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

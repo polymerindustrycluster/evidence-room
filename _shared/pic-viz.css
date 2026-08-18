@@ -1,0 +1,255 @@
+:root{
+  --ink:#0C6473; --deep:#073F49; --deeper:#052E36; --action:#188295; --hover:#995480;
+  --caption:#656661; --lime:#B8D637; --paper:#FAF9F7; --line:#DDD9D2; --text:#141A1C;
+  /* validated categorical — see picviz.js header */
+  --c1:#008BA8; --c2:#C85F0C; --c3:#A32A78;
+  --pv-grid:#E4E0D8; --pv-axis:#BDB7AC; --pv-ink:#3A4448; --pv-muted:#7C837F;
+  --sans:Lato,"Segoe UI",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
+  /* ONE COLUMN SYSTEM. Everything derives from --figure; nothing is sized independently.
+     The previous version had three: a text measure in `ch` of a FIXED font (pinned at
+     698px from 2560 down to 760), a figure in `px` (shrinking below 1044), and headings in
+     `ch` of a CLAMPED font (shrinking continuously). They agreed at exactly one viewport
+     width. Everywhere else the text/figure ratio drifted 0.71 -> 0.97 and nearly crossed
+     over, so the relationship between prose and chart changed as the reader resized.
+     Now the ratio is fixed by construction. Verify with tools/widthsweep.mjs.
+
+     THE MEASURE IS IN PIXELS, NOT `ch`, AND THAT IS THE WHOLE POINT. A custom property
+     holding a font-relative unit is not one value — it is one value PER ELEMENT, because
+     `ch` resolves against the font of whatever finally uses the token, not the font where
+     it was declared. So a single `--measure:74ch` rendered as 546px in the source line,
+     561px in a caption, 576px in the eyebrow, 663px in an h2, and 698px in the lede: six
+     vertical rules on a page whose design has two. That is precisely the raggedness a
+     reader feels and cannot name. 678px IS 74 characters of the body face — measured once,
+     here, so every element gets the same number instead of its own. Audit: tools/columns.mjs. */
+  --figure:min(980px, 100%);
+  --measure:min(678px, calc(var(--figure) * 0.72));
+  /* An overlay is not in the page column — it floats above it — so it needs its own width
+     rather than the figure. It is a token, not a number in one page's stylesheet, because
+     the moment a second page grows a modal the two widths will disagree. */
+  --sheet:min(800px, 100%);
+  /* Tooltip width. Two implementations had drifted to 290 and 340 for no reason anyone
+     could state; a floating card that is a different width on different pages is the same
+     inconsistency as a column that is, just smaller. */
+  --tip:min(300px, calc(100vw - 32px));
+  /* There is no separate headline measure. A heading set 6 percent narrower than the lede
+     directly beneath it reads as neither aligned nor deliberately indented — it reads as a
+     mistake, because 41px is below the width at which an offset looks chosen. Headline and
+     lede share one left rule AND one right rule; the headline is distinguished by size and
+     weight, which is what size and weight are for. */
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--text);font-family:var(--sans);
+  font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+/* THE WRAP IS THE FIGURE COLUMN PLUS ITS GUTTERS — 980 + 32 + 32. It used to be 1200,
+   which meant every block on the page was capped at 980 and then left-aligned inside a
+   1,136px container: 156px of dead space down the entire right edge, at every width above
+   about 1,044. That gutter is what reads as "the hero is empty on the right," except it
+   was not the hero — it was every band, and the hero only showed it most because a dark
+   ground makes empty space visible. Nothing was missing from the page; the page was
+   sitting off-center in its own container. */
+.wrap{max-width:1044px;margin:0 auto;padding:0 32px}
+h1,h2,h3{margin:0;font-weight:900;letter-spacing:-.02em;line-height:1.06;text-wrap:balance}
+p{margin:0 0 1.1em} a{color:var(--action)}
+/* <dfn> is the right element for the defining instance of a term — it is what tells a
+   screen reader "this is where the word is explained," and it is what the copy audit reads
+   to decide a term has been glossed. The browser default italicizes it, which turns a
+   three-term glossary paragraph into three italic sentences; the bold term already carries
+   the emphasis, so the definition stays in normal roman. */
+dfn{font-style:normal}
+dfn b{font-weight:900}
+
+.mast{background:var(--deeper);color:#EAF4F5;padding:11px 0}
+.mast .wrap{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.mast strong{font-weight:900;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+/* Official PIC mark, sized to the cap-height of the wordmark beside it and given real
+   clear space. It leads the masthead; the PROTOTYPE flag opposite it must stay legible,
+   because a registered mark on a draft is the thing most likely to be misread. */
+.pv-markwrap{display:inline-flex;align-items:center;align-self:center;margin-right:2px}
+/* The parent masthead row aligns on BASELINE, which floats an inline SVG upward — hence
+   align-self:center. Sized at 30px because the mark is fine-lined: below about 26 it stops
+   reading as a molecule and becomes scattered dots. */
+.pv-mark{display:block;height:30px;width:auto}
+@media (max-width:640px){ .pv-mark{height:24px} }
+.mast span{color:#7FB3BC;font-size:12px}
+.mast .proto{margin-left:auto;color:var(--lime);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;font-weight:700}
+
+.hero{background:var(--ink);color:#fff;padding:52px 0 42px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(900px 450px at 84% -12%,rgba(26,138,158,.5),transparent 64%)}
+.hero .wrap{position:relative}
+.eyebrow{margin:0 0 11px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+  font-weight:700;color:var(--lime)}
+/* The stat row used to be exempt from the figure cap "because four stats need the full
+   column." That exemption gave the hero three right edges — stand at 678, headline at 980,
+   stats at 1136 — so the eye learned the widest rule from the stats and then read the space
+   beside the headline as a hole. It is the hero's whole emptiness problem. The stats fit
+   inside 980 (four at a 130px minimum plus gaps is 634), so there was nothing to buy. */
+.hero .wrap > *{max-width:var(--figure)}
+.hero h1{font-size:clamp(31px,4.4vw,54px);max-width:var(--figure)}
+.hero h1 em{font-style:normal;color:var(--lime)}
+.hero .stand{margin:16px 0 0;max-width:var(--measure);color:#C6E2E6;font-size:17.5px}
+
+/* hero figure — same sans, proportional figures (never tabular at display size) */
+.hero-row{display:flex;gap:38px;flex-wrap:wrap;margin:30px 0 0}
+.figv{border-top:3px solid rgba(255,255,255,.3);padding:13px 0 0;min-width:130px}
+.figv.key{border-color:var(--lime)}
+.figv .n{font-size:clamp(34px,4vw,52px);font-weight:900;line-height:1;letter-spacing:-.03em;
+  font-variant-numeric:proportional-nums}
+.figv .k{margin:8px 0 0;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:700;color:#9FCBD2}
+/* px, not ch, for the same reason as the measure: `ch` here resolved against this
+   element's 13.5px font and nothing else on the page used that number. It sits beside
+   .figv's own min-width:130px, so the pair is now in one unit. */
+.figv .d{margin:5px 0 0;font-size:13.5px;color:#B7D9DE;max-width:220px}
+
+.band{padding:56px 0;border-top:1px solid var(--line)}
+.band:first-of-type{border-top:0}
+.band h2{font-size:clamp(24px,3vw,34px);max-width:var(--measure)}
+.band .lede{margin:13px 0 0;max-width:var(--measure);font-size:17.5px;color:#394346}
+/* The eyebrow is short, so its BOX being full-bleed never showed — until one wrapped at a
+   width nothing else on the page used. Bind it to the measure like every other line of prose. */
+.band .takeaway{font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:900;
+  color:var(--action);margin:0 0 10px;max-width:var(--measure)}
+.src{margin:22px 0 0;font-size:13px;color:var(--caption);max-width:var(--figure);
+  line-height:1.55}
+
+/* chart chrome */
+/* The figure column. Capped because 1,136px for twelve points flattens a trend into a
+   gentle wobble and leaves the text stranded beside it — a chart should be as wide as its
+   data needs, not as wide as the container allows. */
+.chart{margin:30px 0 0;max-width:var(--figure)}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.pv-tick{font-size:13.6px;fill:var(--pv-muted);font-variant-numeric:tabular-nums}
+.pv-axlab{font-size:13.6px;fill:var(--pv-muted);letter-spacing:.08em;text-transform:uppercase;
+  font-weight:700}
+.pv-lab{font-size:14.2px;fill:var(--pv-ink);font-weight:700}
+.pv-labq{font-size:13.6px;fill:var(--pv-muted)}
+.legend{display:flex;gap:20px;flex-wrap:wrap;margin:14px 0 0;font-size:13.5px;
+  color:var(--pv-ink)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{width:14px;height:14px;display:block;flex:none}
+.legend i.ln{height:3px}
+/* A dashed swatch for a dashed line. Two gray series in one panel are told apart by stroke
+   pattern, not by hue, so the legend has to carry the pattern or it identifies nothing. */
+.legend i.ln.dash{height:0;border-top:3px dashed #B9B3A9;background:none !important}
+
+.pv-tip{position:fixed;z-index:90;pointer-events:none;opacity:0;transition:opacity .1s;
+  background:var(--deeper);color:#fff;padding:10px 13px;font-size:13.5px;line-height:1.45;
+  max-width:var(--tip);box-shadow:0 6px 22px rgba(0,0,0,.28)}
+.pv-tip.on{opacity:1}
+.pv-tip b{color:var(--lime)}
+.pv-tip .v{font-variant-numeric:tabular-nums}
+
+[tabindex="0"]:focus{outline:none}
+[tabindex="0"]:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+
+/* table-view twin — every chart has one */
+.pv-table{margin:18px 0 0;font-size:14px}
+.pv-table summary{cursor:pointer;color:var(--action);font-weight:700;font-size:13.5px;
+  padding:7px 0}
+.pv-table summary:hover{color:var(--hover)}
+.pv-tablewrap{overflow-x:auto;margin:10px 0 0;max-width:100%}
+details.pv-table:not([open]) .pv-tablewrap{display:none}
+.pv-table table{border-collapse:collapse;width:100%;min-width:420px}
+.pv-table caption{text-align:left;font-size:12.5px;color:var(--caption);padding:0 0 8px}
+.pv-table th,.pv-table td{padding:7px 12px;border-bottom:1px solid var(--line);
+  text-align:right;font-variant-numeric:tabular-nums}
+.pv-table th[scope=row]{text-align:left;font-weight:700;font-variant-numeric:normal}
+.pv-table thead th{font-size:12px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--caption);border-bottom:2px solid var(--text);text-align:right}
+.pv-table thead th:first-child{text-align:left}
+
+.note{background:#F4F1EC;border-left:3px solid var(--hover);padding:15px 20px;margin:26px 0 0;
+  font-size:14.5px;color:#3A3A36;line-height:1.6;max-width:var(--figure)}
+.note b{color:var(--hover)}
+.closer{background:var(--deeper);color:#fff;padding:52px 0}
+.closer .wrap > *{max-width:var(--figure)}
+.closer p{font-size:clamp(20px,2.6vw,30px);font-weight:900;letter-spacing:-.02em;
+  line-height:1.26;max-width:var(--measure);margin:0}
+.closer .sub{margin:18px 0 0;font-size:16.5px;font-weight:400;color:#A8CDD4;
+  max-width:var(--measure);letter-spacing:0;line-height:1.6}
+.closer .sub b{color:#fff}
+
+@media (max-width:760px){
+  .wrap{padding:0 20px}
+  .band{padding:38px 0}
+  .hero-row{gap:26px}
+  /* Below this the ratio is abandoned deliberately: there is not enough width for a
+     figure column AND a narrower text column, so everything takes the full width. */
+  :root{--figure:100%; --measure:100%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* Which county set this page was built from. PIC-12 and NEO-14 share only 10 counties
+   and never reconcile, so no page may leave it implicit. */
+.pv-footprint{background:#F1EEE9;border-bottom:1px solid var(--line);padding:9px 0;
+  font-size:13px;color:#3A4448}
+/* `.pv-footprint .wrap` used to restate .wrap verbatim. A duplicate of a rule is a
+   second copy that can drift from the first, and this one already had: it still said
+   1200px after .wrap moved to 1044. The class alone does the job. */
+.pv-footprint b{color:var(--ink);letter-spacing:.04em}
+.pv-footprint .d{color:var(--caption)}
+.pv-footprint::before{content:"";display:block}
+
+/* Methodology box — generated by PV.methodology(), present on every page by
+   construction. Deliberately plain: it is a disclosure, not a feature. */
+.pv-method{background:#F4F1EC;border-top:2px solid var(--line)}
+/* A FLOW, not a grid. These panels are wildly uneven — a two-line source list next to a
+   six-line note on what was checked — and a row grid aligns every panel in a row to the
+   tallest one, so the short panels sat above holes the height of the longest. Multi-column
+   fills top-to-bottom and starts the next panel where the last one ended. */
+.pv-method-grid{columns:3 290px;column-gap:34px;margin:28px 0 0}
+.pv-method-grid>div{break-inside:avoid;margin:0 0 26px;min-width:0}
+.pv-method h3{font-size:14px;margin:0 0 8px;letter-spacing:.02em}
+/* The reproduce block spans the full method column rather than sitting in one of its
+   flow columns: a source entry with an endpoint and six filters is a table, not a column
+   of a masonry, and breaking it mid-source would split a filter from its source. */
+.pv-repro{column-span:all;break-inside:avoid;margin:0 0 30px;padding:0 0 6px;
+  border-bottom:1px solid var(--line)}
+.pv-repro h4{font-size:13.5px;margin:0 0 3px;letter-spacing:.01em}
+.pv-src{break-inside:avoid;margin:0 0 18px;padding-left:12px;
+  border-left:2px solid var(--pv-grid)}
+.pv-endpoint{margin:5px 0;font-size:13px;overflow-wrap:anywhere;color:#3A4448}
+.pv-filters{margin:6px 0 0;font-size:13px;line-height:1.5}
+.pv-filters dt{font-weight:900;color:#2A3A3E;margin:5px 0 0}
+.pv-filters dd{margin:0;color:#3A4448}
+.pv-method p,.pv-method li{font-size:14px;line-height:1.55;color:#3A4448}
+.pv-method p{margin:0 0 .7em}
+.pv-method ul{margin:0;padding-left:18px}
+.pv-method li{margin:0 0 5px}
+.pv-method pre{background:#E9E4DB;border-left:3px solid var(--action);padding:9px 12px;
+  margin:10px 0 0;font-size:12px;overflow-x:auto;font-family:ui-monospace,Consolas,monospace}
+.pv-method .pv-method-note{font-size:12.5px;color:var(--caption)}
+/* ABSOLUTE, not `.92em`. A relative font-size compounds with whatever it is nested in,
+   so the same class rendered 12.9px inside a 14px paragraph and 11.5px inside a 12.5px
+   note — under the legibility floor, in 19 artifacts at once, the moment a smaller parent
+   appeared. This is the `ch` measure bug in a different unit: one declaration, many values.
+   tools/textsize.mjs caught it; the fix is to stop it being relative. */
+.pv-method .mono{font-family:ui-monospace,Consolas,monospace;font-size:12.9px;
+  background:#E9E4DB;padding:1px 5px;overflow-wrap:anywhere}
+
+/* MOBILE CHART LEGIBILITY.
+   Every chart is drawn in a ~1100-unit viewBox. Left to scale freely, a 390px screen
+   renders that at about 0.32x, so a 12-unit tick label lands under 4 CSS pixels — the
+   page passes every automated check and is unreadable. Bumping the type instead does
+   not work: labels are positioned in the same user units, so scaling them up collides
+   them. So the chart keeps a legible minimum width and pans, which is what newsrooms
+   do, and the table-view twin below every chart is the non-scrolling equivalent. */
+@media (max-width: 760px){
+  .chart{overflow-x:auto;overscroll-behavior-x:contain;padding-bottom:6px}
+  .chart svg{min-width:860px}
+  /* type is in the same user units as the geometry, so it scales with the viewBox;
+     a modest bump plus the wider minimum lands tick labels near 11 CSS px */
+  .pv-tick{font-size:15.5px}
+  .pv-lab{font-size:16px}
+  .pv-labq{font-size:15.5px}
+  .pv-axlab{font-size:15.5px}
+  .chart::after{content:"Scroll the chart sideways \2192  or open the table below";
+    display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+    font-weight:700;color:var(--caption);padding:8px 0 0;position:sticky;left:0}
+}
+
+/* Inert cells completing a short final grid row — see PV.padGrid(). Without them the
+   container's rule color shows through as a gray slab beside the last real card. */
+.pv-filler{background:#fff;pointer-events:none}

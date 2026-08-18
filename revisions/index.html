@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Every Number Moves</title>
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <strong>Polymer Industry Cluster</strong>
+    <span>Cluster vitals &middot; data revisions</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">What happened to the numbers after they were published</p>
+    <h1>Almost every month of these three price series <em>moved after publication</em>
+      &mdash; by almost nothing.</h1>
+    <p class="stand">Every chart on every other page shows the current value of each month.
+      That is a convention, and it hides something: a statistical agency keeps revising a
+      figure for years after it first appears. This page shows the same series as everyone
+      else, plus every value each month has ever had. <b>The scope is three producer-price
+      series, not PIC's figures generally</b> &mdash; and the headline finding is that the
+      revisions are small, which is the opposite of what &ldquo;95% changed&rdquo; sounds
+      like on its own.</p>
+    <div class="hero-row" id="figs"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The chart</p>
+    <h2 id="pathtitle">First published against latest, for every month</h2>
+    <p class="lede">One line per month: where the number started and where it ended up.
+      Most move a little. The interesting question is not the size of any single revision
+      but whether they lean &mdash; whether first estimates are systematically high or low.</p>
+    <div class="chart"><svg id="path" role="img" aria-labelledby="path-t">
+      <title id="path-t">First-published versus latest value for each reference month.</title>
+    </svg></div>
+    <div class="legend">
+      <span><i style="background:#C85F0C"></i> Revised down</span>
+      <span><i style="background:#008BA8"></i> Revised up</span>
+    </div>
+    <div id="pathtable"></div>
+    <p class="src" id="pathsrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The distribution</p>
+    <h2>How far a number typically travels</h2>
+    <p class="lede">Every revised month as one mark, by how much the figure moved between
+      its first appearance and today. If the mass sat cleanly on one side, first estimates
+      would be biased and every trend drawn from fresh data would need a warning.</p>
+    <div class="chart"><svg id="dist" role="img" aria-labelledby="dist-t">
+      <title id="dist-t">Distribution of total revision size across all reference months.</title>
+    </svg></div>
+    <div id="disttable"></div>
+    <div class="note" id="caveat"></div>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="wrap">
+    <p>Showing only the latest vintage is a choice. It is just usually an invisible one.</p>
+    <p class="sub" id="closersub"></p>
+  </div>
+</section>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

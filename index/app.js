@@ -1,0 +1,138 @@
+/* The gallery. Cards are grouped by what each piece is FOR, not by data source — a reader
+   arrives with a question, not with a preference for QCEW. Claim counts come from
+   counts.json, not from this file, and the index-counts claim checks them against the
+   harness — so this page cannot drift away from it without the harness saying so. */
+(async () => {
+"use strict";
+/* Counts come from _data/build/derive_index.py, which reads every claims.json. They
+   were hand-typed once and immediately drifted — the page said 61 claims and "sixteen
+   pieces" while the harness said 62 and 17. */
+const C = await PV.data("counts.json");
+const cnt = s => C.pages[s] || {claims: 0, manual: 0};
+const ALL = [
+ {s:"peers", g:"position", t:"First In The Nation", q:"Where does the region actually rank?",
+  f:"Ohio is first in the US in plastics and rubber jobs — NAICS 326, private, 2024, all 51 states disclosed. Akron is 6th among the 155 metros that disclose; 227 withhold and are simply unknown.",
+  foot:"PIC-12", claims:6, lead:true},
+ {s:"reach", g:"position", t:"How Far The Research Reaches", q:"Who does the region's polymer research connect to?",
+  f:"1,448 papers classified in polymers and plastics, 632 partner institutions in 50 countries. The region corresponds on 81% of them. 36% of the collaboration is domestic and 28% is with China. 23% of the work sits in the top tenth of its field.",
+  foot:"n/a", claims:6, manual:1},
+ {s:"credit", g:"position", t:"One Company, a Third of the Credit", q:"Who gets credited for what the region invents?",
+  f:"Nearly half the polymer patents invented in these twelve counties name a company outside the region — unremarkable in itself, since two neighboring states bracket this one on either side. What is not ordinary: Bridgestone alone accounts for about a third of everything credited away, and out-files Goodyear on work done here. Applications, not grants.",
+  foot:"PIC-12", claims:5},
+ {s:"collaboration", g:"workforce", t:"The Collaboration That Thinned", q:"Do the region's two research universities actually work together?",
+  f:"201 coauthored papers since 2012 and four joint federal awards worth $3.7M — so yes. But only 7 are classified in polymers and plastics and 11 in biomaterials, the last of either in 2020, and no new joint award started between 2017 and the end of the window in 2024.",
+  foot:"n/a", claims:5, manual:1},
+ {s:"talent", g:"workforce", t:"The Pipeline That Never Moved", q:"How many polymer graduates does the region produce?",
+  f:"Polymer degrees fell 65% from their 2016 peak — but US conferrals peaked the same year and fell 36%, so most of it is the field, not the region. The residual is the regional part.",
+  foot:"PIC-12", claims:8, manual:1, lead:true},
+ {s:"location-quotient", g:"position", t:"A Number We Own", q:"How concentrated is the cluster, really?",
+  f:"Eleven years of concentration computed from free BLS components, reproduced to within 0.005 of the figure BLS publishes itself. Each NAICS labeled by measurement register.",
+  foot:"PIC-12", claims:6, lead:true},
+ {s:"oversubscribed", g:"programs", t:"Where The Money Runs Out", q:"What did we have to say no to?",
+  f:"59 applications requested $14.65M and offered $10.97M of their own match. Funding order alone swings how far a fixed budget reaches by a factor of seven.",
+  foot:"intake", claims:3, manual:1, lead:true},
+ {s:"laborshed", g:"workforce", t:"No County Is A Labor Market", q:"Is a single county a meaningful unit for workforce policy?",
+  f:"Not one of the twelve counties has 69% of its jobs held by its own residents. Summit, the cluster's center, is at 48.4% — most people working there live somewhere else.",
+  foot:"PIC-12", claims:5, manual:1, lead:true},
+ {s:"churn", g:"workforce", t:"The Churn Engine", q:"Is the workforce stable, or just flat?",
+  f:"111,529 hire events and 111,361 separations for 168 net jobs across fourteen years — a flow more than a thousand times larger than the number anyone is scored on.",
+  foot:"PIC-12", claims:4},
+ {s:"wages", g:"workforce", t:"Does The Cluster Pay Better?", q:"Are these actually good jobs?",
+  f:"In 40 of 51 disclosed cells the mean polymer wage beats the county all-industry mean — a real result against a deliberately low bar.",
+  foot:"PIC-12", claims:2},
+ {s:"realwage", g:"conditions", t:"What The Paycheck Buys", q:"Are the wages good after cost of living?",
+  f:"Akron ranks 33rd of 56 polymer metros in dollars and 19th in what those dollars buy. But 110 metros are cheaper — the advantage is against this industry's geography, not the country.",
+  foot:"metros", claims:4},
+ {s:"cost-scissors", g:"conditions", t:"Nothing Came Back Down", q:"Where in the chain did the price spike stick?",
+  f:"Gas gave back 104% of its spike, crude 54%, resin 33%, finished product nothing at all. Retracement falls monotonically with distance from the wellhead.",
+  foot:"national", claims:5, manual:1},
+ {s:"federal-money", g:"money", t:"The Other Federal Money", q:"What federal money reaches polymer manufacturers?",
+  f:"$280M in 2025 dollars over eight years. The largest recipient is not tire manufacturing but a residual category — and university awards are invisible to this view by construction.",
+  foot:"PIC-12", claims:3},
+ {s:"trl", g:"programs", t:"Sixty-Nine Percent", q:"How mature is the applicant pool?",
+  f:"41 of 59 applications sit at TRL 3–5. What that measures is who applied to a mid-TRL program — not a regional gap. Every figure self-reported.",
+  foot:"intake", claims:3},
+ {s:"chain", g:"capability", t:"Can Northeast Ohio Make This?", q:"Can the region make a given thing?",
+  f:"785 classified companies on the chain that turns a molecule into a product. Applications cluster where cataloged companies are fewest — coverage, not competition.",
+  foot:"NEO-14", claims:5},
+ {s:"rfq", g:"capability", t:"Route This Part", q:"Who here could make this part?",
+  f:"Describe a part and see the whole supply path, with every capability-statement field carrying its source. PIC certifies nothing — this is a directory, not an endorsement.",
+  foot:"NEO-14", claims:3, manual:1},
+ {s:"6ppd", g:"programs", t:"One Number Is Real", q:"What is actually proven about the tire-wear work?",
+  f:"Three funded components address the same tire-wear chemistry from three directions. Of the eight quantities they state, exactly one has already happened.",
+  foot:"projects", claims:4, manual:4},
+ {s:"revisions", g:"method", t:"Every Number Moves", q:"How much do these figures change after publication?",
+  f:"Almost every month of three producer-price series moved after publication, by a median of 0.15%. Small — and that being small is the finding.",
+  foot:"national", claims:2},
+ {s:"ledger", g:"method", t:"What We Can Actually Say", q:"Which claims are we allowed to make?",
+  f:"Thirty-three years of commercialization on one axis, with a five-condition publication gate. Ten of twelve rows clear it.",
+  foot:"vault", claims:3, manual:3},
+ {s:"funding-map", g:"money", t:"PIC Funding Map", q:"Where did the public money go?",
+  f:"Three awards, seven programs, every named recipient, with the disclosures attached. Predates the shared house style.",
+  foot:"awards", legacy:true},
+ {s:"timeline", g:"method", t:"Public Record Timeline", q:"What happened publicly, and when?",
+  f:"87 dated public events in lanes, with future milestones drawn hollow so a plan never reads as a fact. Predates the shared house style.",
+  foot:"public record", legacy:true},
+];
+/* THE HUB LINKS WHAT EXISTS, NOTHING ELSE. counts.json is generated by derive_index.py
+   from the artifact folders actually present in the tree it runs in, so this one filter
+   does two jobs: internally every card shows, and in the public tree — where only the
+   pages John marked `publish` in _data/ARTIFACT-REVIEW.md were ever copied — the held
+   pages disappear on their own. A second hand-maintained publish list would be a second
+   thing to forget, and forgetting THIS one publishes a dead link straight to a page that
+   was withheld on purpose. */
+const A = ALL.filter(x => C.pages[x.s]);
+const GRP = {position:"National position", workforce:"Workforce", programs:"PIC programs",
+  capability:"Regional capability", money:"Money", conditions:"Operating conditions",
+  method:"Method & governance"};
+const totalClaims = C.total_claims;
+const totalManual = C.total_manual;
+
+PV.figures([
+  ["key", C.n_pieces, "interactive pieces", "each self-contained, each reproducible"],
+  ["", totalClaims, "checked claims", totalManual + " of them need a human"],
+  /* Named in plain terms, not as eight initialisms. A hero stat tile is not caught by
+     the body-copy audit, but a reader meets it before anything else on the site —
+     the precise program names live in each page's source line, which is their contract. */
+  ["", "8", "public data sources", "all federal, all free; each one named on the page that uses it"],
+  ["", "0", "private dependencies", "nothing reads or writes production"]
+]);
+
+const card = x => `<a class="card" href="../${x.s}/">
+  <div class="grp">${GRP[x.g]}</div>
+  <h3>${x.t}</h3>
+  <p class="q">${x.q}</p>
+  <p class="f">${x.f}</p>
+  <div class="meta">
+    <span class="pill${x.foot === "NEO-14" ? " n14" : ""}">${x.foot}</span>
+    ${cnt(x.s).claims ? `<span class="pill">${cnt(x.s).claims} claims</span>` : ""}
+    ${cnt(x.s).manual ? `<span class="pill man">${cnt(x.s).manual} manual</span>` : ""}
+    ${x.legacy ? `<span class="pill">legacy</span>` : ""}
+  </div></a>`;
+document.getElementById("lead").innerHTML = A.filter(x => x.lead).map(card).join("");
+const order = ["position", "workforce", "capability", "programs", "money", "conditions",
+  "method"];
+document.getElementById("all").innerHTML =
+  order.flatMap(g => A.filter(x => x.g === g && !x.lead)).map(card).join("");
+PV.padGrid(".cards", "card");
+
+document.getElementById("footnote").innerHTML =
+  `<b>${totalManual} of the ${totalClaims} claims cannot be machine-checked.</b> They are
+   quoted from project narratives, press releases and internal registers rather than from
+   datasets — the 6PPD page and the commercialization ledger are almost entirely of this
+   kind. They carry a source and a falsification condition but no runnable assertion, so
+   they are where a wrong reading is most likely to survive. Attack them first.`;
+
+/* Standard methodology + AI disclosure. Generated, not written — see picviz.js. */
+await PV.methodology({
+  meta: {source: "Every dataset behind these pages is listed in _data/PIPELINES.md, " +
+                 "with its key requirement, its cadence and whether it is wired up yet."},
+  sourcesNote: "Named on each page this one links to; the register is _data/PIPELINES.md.",
+  definitions: `<b>PIC-12</b> is the federal-data footprint and matches the cluster-health
+    dashboard. <b>NEO-14</b> is how company records are tagged in the vault. They share ten
+    counties and are never combined. PIC's measurement register is 3252 + 3255 + 326.`,
+  noClaimsNote: `This page makes no numeric claim of its own. The counts above are
+    generated from every artifact's claims file by <span class="mono">derive_index.py</span>,
+    so they cannot drift from the harness — they were hand-typed once and were wrong within
+    a day.`});
+})();
