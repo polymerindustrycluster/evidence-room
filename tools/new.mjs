@@ -112,11 +112,18 @@ figures([
 ]);
 
 /* ---------------------------------------------------------------- 1. chart
-   EXAMPLE ONLY — replace with the form the data's job actually calls for. */
+   EXAMPLE ONLY — replace with the form the data's job actually calls for.
+
+   WIDTH: a chart is as wide as its data needs, not as wide as the column allows. A
+   many-row bar or dot plot fills the figure (default). A short time series — a dozen
+   points — does NOT: pass narrow:true and it takes the narrow figure (640px), which
+   is where an editorial desk sets a line chart. Stretched across 980 a real move reads
+   as a wobble. The column audit (tools/columns.mjs) knows both widths and will report a
+   chart at 640 that did not opt in, or prose at any width but the measure. */
 {
   const rows = (D.rows || []).slice(0, 12);
   const {svg, m, w, h} = chart("main", {H: 70 + rows.length * 30,
-    m: {t: 40, r: 170, b: 56, l: 200}});
+    m: {t: 40, r: 170, b: 56, l: 200}});   // add narrow:true for a short series
   const maxV = Math.max(...rows.map(r => r.value), 1);
   const xs = v => m.l + (v / maxV) * w;              // LINEAR — bars encode from zero
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys: () => 0, xt: ticks(0, maxV, 5), yt: [],
