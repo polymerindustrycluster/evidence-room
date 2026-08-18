@@ -60,8 +60,10 @@ for (const W of WIDTHS) {
           d.remove();
           return w;
         };
+        // narrow is the third sanctioned width — a small-N series that chose not to fill
+        // the figure. It is only ever legitimate on a .chart that declared it.
         const want = {measure: probe("var(--measure)"), figure: probe("var(--figure)"),
-                      full: FULL};
+                      narrow: probe("var(--figure-narrow)"), full: FULL};
         // Which width each thing SHOULD sit on. Prose is measure; data is figure. The hero
         // h1 is display type and deliberately wide — 54px at 678 wraps into a tower.
         const EXPECT = [
@@ -84,7 +86,13 @@ for (const W of WIDTHS) {
             // column by content, not by rule — its max-width is what we are auditing.
             const cap = parseFloat(getComputedStyle(e).maxWidth);
             const capSlot = Object.entries(want).find(([, v]) => Math.abs(cap - v) <= 2);
-            const effective = slot || (capSlot ? capSlot[0] : null);
+            let effective = slot || (capSlot ? capSlot[0] : null);
+            // A chart at the narrow width is on-column IF it opted in; a chart that
+            // happens to be 640 without the class is a mistake, and prose at 640 always is.
+            if (effective === "narrow") {
+              effective = (expect === "figure" && e.classList.contains("narrow"))
+                ? "figure" : "narrow-unexpected";
+            }
             // Below ~760px the stylesheet collapses figure and measure to one width on
             // purpose (one column is the only honest layout on a phone). When they
             // coincide the "expected slot" question has no answer, so it is not asked.

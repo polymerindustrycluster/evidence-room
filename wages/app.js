@@ -78,7 +78,7 @@ PV.figures([
     const v = D.trend.filter(r => r.year === y && r.vs_local_all).map(r => r.vs_local_all);
     return {year: y, med: med(v), n: v.length};
   });
-  const {svg, W, H, m, w, h} = PV.chart("trend", {W: 1100, H: 320, m: {t: 40, r: 50, b: 60, l: 44}});
+  const {svg, W, H, m, w, h} = PV.chart("trend", {W: 1100, H: 320, narrow: true, m: {t: 40, r: 50, b: 60, l: 44}});
   const lo = Math.min(0.95, ...pts.map(p => p.med)) - 0.03;
   const hi = Math.max(...pts.map(p => p.med)) + 0.03;
   const xs = y => m.l + ((y - years[0]) / (years.at(-1) - years[0])) * w;

@@ -160,6 +160,13 @@ const PV = (() => {
     if (opts.rows != null && opts.H != null)
       throw new Error(`chart("${id}"): pass rows+rowH OR H, never both`);
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    /* A CHART IS AS WIDE AS ITS DATA NEEDS. One figure width for a 51-row dot plot AND an
+       11-point line was the tell that these pages were assembled from a template rather
+       than composed: the line chart stretched 0.12 of premium across 980px and read as a
+       wobble. `narrow:true` puts the containing .chart at --figure-narrow (640px), which is
+       where an editorial desk sets a short time series. The svg still fills whatever box
+       it is given via viewBox, so the caller changes nothing else. */
+    if (opts.narrow) svg.closest(".chart")?.classList.add("narrow");
     while (svg.childNodes.length > (opts.keep ?? 1)) svg.removeChild(svg.lastChild);
     return {svg, W, H, m, w: W - m.l - m.r, h: H - m.t - m.b};
   }
@@ -351,6 +358,21 @@ const PV = (() => {
     const limits = Object.entries(m).filter(e => prose(e) && LIMITS.has(e[0])).map(([, v]) => v);
     const method = Object.entries(m).filter(e => prose(e) && METHOD.has(e[0])).map(([, v]) => v);
 
+    /* THE DATELINE. Every editorial data piece says who and when at the top; these pages
+       said it at the bottom in 13px, on a site whose whole argument is "check our work."
+       The date is meta.fetched — when the source was pulled — because that is the honest
+       "as of" for an analysis that rebuilds from live federal series. It is written into
+       the masthead from the data, so it can neither be forgotten nor go stale. Byline is
+       the organisation, deliberately: this is desk work, and the reviewer of record is
+       named in "How we checked it" below. */
+    const mast = document.querySelector("header.mast .wrap");
+    if (mast && m.fetched && !mast.querySelector(".dateline")) {
+      const d = document.createElement("span");
+      d.className = "dateline";
+      d.textContent = `Data as of ${m.fetched}`;
+      mast.appendChild(d);
+    }
+
     const sec = document.createElement("section");
     sec.className = "band pv-method";
     sec.innerHTML = `<div class="wrap">
@@ -366,8 +388,8 @@ const PV = (() => {
              than written from memory, and rendered here so it cannot drift from them. */
           const R = o.registry, keys = (R && R.by_artifact && R.by_artifact[o.page]) || [];
           if (!keys.length) return "";
-          return `<div class="pv-repro">
-            <h3>Reproduce this</h3>
+          return `<details class="pv-repro">
+            <summary><h3>Reproduce this</h3></summary>
             <p class="pv-method-note">Every figure on this page comes from the sources below.
               The filters are the exact values applied, not a description of them.</p>
             ${keys.map(k => {
@@ -385,7 +407,7 @@ const PV = (() => {
                   <span class="mono">${src.script}</span></p>` : ""}
               </div>`;
             }).join("")}
-          </div>`;
+          </details>`;
         })()}
         <div>
           <h3>Data sources</h3>

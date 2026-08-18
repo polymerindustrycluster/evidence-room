@@ -23,6 +23,11 @@
      here, so every element gets the same number instead of its own. Audit: tools/columns.mjs. */
   --figure:min(980px, 100%);
   --measure:min(678px, calc(var(--figure) * 0.72));
+  /* A second, NARROWER figure for small-N time series — a dozen points do not need 980px,
+     and stretched across it a real move reads as noise. Two figure widths is not a third
+     column: it is the same column and a chart that chose not to fill it, which is what a
+     reader sees an editorial line chart do every day. Opt in per chart with `narrow:true`. */
+  --figure-narrow:min(640px, 100%);
   /* An overlay is not in the page column — it floats above it — so it needs its own width
      rather than the figure. It is a token, not a number in one page's stylesheet, because
      the moment a second page grows a modal the two widths will disagree. */
@@ -47,7 +52,15 @@ body{margin:0;background:var(--paper);color:var(--text);font-family:var(--sans);
    was not the hero — it was every band, and the hero only showed it most because a dark
    ground makes empty space visible. Nothing was missing from the page; the page was
    sitting off-center in its own container. */
-.wrap{max-width:1044px;margin:0 auto;padding:0 32px}
+/* THE WRAP IS THE FIGURE. Until 2026-08-18 the wrap was 1044 with content capped at 980
+   and left-aligned inside it, so `margin:0 auto` centred an invisible box while everything
+   the reader saw sat against a hard left rail with the viewport's slack piled on the right
+   — the "app, not publication" feeling. Now the wrap's own width is the figure width plus
+   padding, so centring the wrap centres the content and the whitespace is symmetric. This
+   is what every editorial data desk does (NYT Upshot, FT Visual, The Pudding) and it is
+   the single largest reason those pages read as composed rather than assembled. */
+.wrap{max-width:calc(var(--figure) + 64px);margin:0 auto;padding:0 32px}
+.mast .dateline{margin-left:auto;font-size:12.5px;color:#9FCBD2;letter-spacing:.02em}
 h1,h2,h3{margin:0;font-weight:900;letter-spacing:-.02em;line-height:1.06;text-wrap:balance}
 p{margin:0 0 1.1em} a{color:var(--action)}
 /* <dfn> is the right element for the defining instance of a term — it is what tells a
@@ -74,7 +87,10 @@ dfn b{font-weight:900}
 .mast .proto{margin-left:auto;color:var(--lime);font-size:12px;letter-spacing:.14em;
   text-transform:uppercase;font-weight:700}
 
-.hero{background:var(--ink);color:#fff;padding:52px 0 42px;position:relative;overflow:hidden}
+/* Tightened 2026-08-18: at 52/42 the hero plus stat row ran ~1,100px on the longest pages
+   and the first chart arrived at 1,300px — a laptop saw a dark screen with a headline and
+   four numbers and no evidence. Editorial pages put a chart above the fold. */
+.hero{background:var(--ink);color:#fff;padding:40px 0 34px;position:relative;overflow:hidden}
 .hero::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(900px 450px at 84% -12%,rgba(26,138,158,.5),transparent 64%)}
 .hero .wrap{position:relative}
@@ -88,10 +104,10 @@ dfn b{font-weight:900}
 .hero .wrap > *{max-width:var(--figure)}
 .hero h1{font-size:clamp(31px,4.4vw,54px);max-width:var(--figure)}
 .hero h1 em{font-style:normal;color:var(--lime)}
-.hero .stand{margin:16px 0 0;max-width:var(--measure);color:#C6E2E6;font-size:17.5px}
+.hero .stand{margin:16px 0 0;max-width:var(--measure);color:#C6E2E6;font-size:19px;line-height:1.55}
 
 /* hero figure — same sans, proportional figures (never tabular at display size) */
-.hero-row{display:flex;gap:38px;flex-wrap:wrap;margin:30px 0 0}
+.hero-row{display:flex;gap:38px;flex-wrap:wrap;margin:24px 0 0}
 .figv{border-top:3px solid rgba(255,255,255,.3);padding:13px 0 0;min-width:130px}
 .figv.key{border-color:var(--lime)}
 .figv .n{font-size:clamp(34px,4vw,52px);font-weight:900;line-height:1;letter-spacing:-.03em;
@@ -106,7 +122,10 @@ dfn b{font-weight:900}
 .band{padding:56px 0;border-top:1px solid var(--line)}
 .band:first-of-type{border-top:0}
 .band h2{font-size:clamp(24px,3vw,34px);max-width:var(--measure)}
-.band .lede{margin:13px 0 0;max-width:var(--measure);font-size:17.5px;color:#394346}
+/* THE LEDE IS THE SECOND-MOST-IMPORTANT TEXT ON THE PAGE and was set at body size, 3px
+   above the note box beneath it. Editorial ledes run 20-21px; a reader should feel the
+   sentence that says what the chart shows before they feel the caveat under it. */
+.band .lede{margin:14px 0 0;max-width:var(--measure);font-size:20px;line-height:1.5;color:#394346}
 /* The eyebrow is short, so its BOX being full-bleed never showed — until one wrapped at a
    width nothing else on the page used. Bind it to the measure like every other line of prose. */
 .band .takeaway{font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:900;
@@ -125,6 +144,7 @@ dfn b{font-weight:900}
    gentle wobble and leaves the text stranded beside it — a chart should be as wide as its
    data needs, not as wide as the container allows. */
 .chart{margin:30px 0 0;max-width:var(--figure)}
+.chart.narrow{max-width:var(--figure-narrow)}
 .chart svg{display:block;width:100%;height:auto;overflow:visible}
 .pv-tick{font-size:13.6px;fill:var(--pv-muted);font-variant-numeric:tabular-nums}
 .pv-axlab{font-size:13.6px;fill:var(--pv-muted);letter-spacing:.08em;text-transform:uppercase;
@@ -155,7 +175,7 @@ dfn b{font-weight:900}
 /* The toggle line is prose and sits with the prose; the table it opens is a figure and
    keeps the figure width, because a six-column table at 678px is a horizontal scrollbar. */
 .pv-table summary{cursor:pointer;color:var(--action);font-weight:700;font-size:13.5px;
-  padding:7px 0;max-width:var(--measure)}
+  padding:7px 0;max-width:var(--measure);margin-left:auto;margin-right:auto}
 .pv-table summary:hover{color:var(--hover)}
 .pv-tablewrap{overflow-x:auto;margin:10px 0 0;max-width:100%}
 details.pv-table:not([open]) .pv-tablewrap{display:none}
@@ -214,9 +234,19 @@ details.pv-table:not([open]) .pv-tablewrap{display:none}
    six-line note on what was checked — and a row grid aligns every panel in a row to the
    tallest one, so the short panels sat above holes the height of the longest. Multi-column
    fills top-to-bottom and starts the next panel where the last one ended. */
-.pv-method-grid{columns:3 290px;column-gap:34px;margin:28px 0 0}
-.pv-method-grid>div{break-inside:avoid;margin:0 0 26px;min-width:0}
-.pv-method h3{font-size:14px;margin:0 0 8px;letter-spacing:.02em}
+/* PROSE, NOT A GRID. This was `columns:3 290px` at 14px — three narrow columns of small
+   type that read as terms of service, on the section that carries the best content on the
+   page. Editorial methodology is a prose block at body size in the reading measure, with
+   the machine-readable registry available on demand rather than in the way. Same words. */
+.pv-method-grid{margin:26px 0 0;max-width:var(--measure)}
+.pv-method-grid>div,.pv-method-grid>details{margin:0 0 30px;min-width:0}
+.pv-method h3{font-size:19px;margin:0 0 8px;letter-spacing:-.01em}
+.pv-method .pv-repro{max-width:var(--figure)}
+.pv-method .pv-repro summary{cursor:pointer;list-style:none;display:inline-block}
+.pv-method .pv-repro summary::-webkit-details-marker{display:none}
+.pv-method .pv-repro summary h3{display:inline;color:var(--action)}
+.pv-method .pv-repro summary h3::before{content:"▸  ";font-size:.8em}
+.pv-method .pv-repro[open] summary h3::before{content:"▾  "}
 /* The reproduce block spans the full method column rather than sitting in one of its
    flow columns: a source entry with an endpoint and six filters is a table, not a column
    of a masonry, and breaking it mid-source would split a filter from its source. */
@@ -229,7 +259,7 @@ details.pv-table:not([open]) .pv-tablewrap{display:none}
 .pv-filters{margin:6px 0 0;font-size:13px;line-height:1.5}
 .pv-filters dt{font-weight:900;color:#2A3A3E;margin:5px 0 0}
 .pv-filters dd{margin:0;color:#3A4448}
-.pv-method p,.pv-method li{font-size:14px;line-height:1.55;color:#3A4448}
+.pv-method p,.pv-method li{font-size:16.5px;line-height:1.6;color:#3A4448}
 .pv-method p{margin:0 0 .7em}
 .pv-method ul{margin:0;padding-left:18px}
 .pv-method li{margin:0 0 5px}
@@ -268,3 +298,14 @@ details.pv-table:not([open]) .pv-tablewrap{display:none}
 /* Inert cells completing a short final grid row — see PV.padGrid(). Without them the
    container's rule color shows through as a gray slab beside the last real card. */
 .pv-filler{background:#fff;pointer-events:none}
+
+/* ONE AXIS. Every block in a band — prose at the measure, charts at the figure, small
+   series at the narrow figure — is centred on the same vertical line, so a narrower block
+   is narrower symmetrically rather than shorter on the right. This is what makes an
+   editorial page read as composed: nothing is left-justified against a rail, and a
+   reader's eye finds one centre no matter which width a block chose. A left-rail layout
+   with three widths reads as ragged the moment two blocks of different width stack; a
+   centred one does not, because the asymmetry is gone. Tested both ways 2026-08-18. */
+.band .wrap > *,.hero .wrap > *,.closer .wrap > *,.pv-method .wrap > *,
+.pv-method-grid > *{margin-left:auto;margin-right:auto}
+.pv-method-grid{margin-left:auto;margin-right:auto}
