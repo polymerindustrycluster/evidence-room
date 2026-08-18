@@ -1,5 +1,10 @@
 """The two county footprints, defined once.
 
+VENDORED COPY. The canonical definition lives in the pic-geo package
+(github.com/polymerindustrycluster/pic-geo). This copy exists so the fetch scripts run from a
+clone with nothing else installed. Change it ONLY by changing pic-geo first; pic-geo's test
+suite asserts the two are identical.
+
 DECISION (John, 2026-08-14): pages built on FEDERAL data use PIC-12 so they reconcile
 with the cluster-health dashboard. Pages built on the VAULT stay NEO-14, because that is
 how company records are tagged. Every page prints which one it used.
