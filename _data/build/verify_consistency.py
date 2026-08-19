@@ -514,6 +514,49 @@ def check_empty_data(arts: list[str]) -> None:
 
 
 # ------------------------------------------------------------------------------- main
+
+
+def check_catalog() -> None:
+    """The generated catalog must know every script and every output in _data/build/.
+    `build_catalog.py` writes _data/catalog.json; this compares it to the folder. A script
+    or output the catalog does not list means the catalog is STALE — regenerate it. A
+    catalog older than the newest script is stale by definition. ERROR, because a stale
+    inventory is the one failure that reads as completeness."""
+    import glob as _glob, time as _time
+    build = os.path.join(WEB, "_data", "build")
+    cat_path = os.path.join(WEB, "_data", "catalog.json")
+    if not os.path.exists(cat_path):
+        err("catalog", "_data/catalog.json", "missing — run python _data/build/build_catalog.py"); return
+    cat = load_json(cat_path)
+    if not cat:
+        err("catalog", "_data/catalog.json", "unreadable"); return
+    known_scripts = {r["script"] for r in cat.get("scripts", [])}
+    known_outputs = set(cat.get("outputs", {}).keys())
+    infra = {"build_catalog.py", "verify_claims.py", "verify_consistency.py", "contact.py",
+             "footprints.py", "build_pic12_geo.py"}
+    on_disk = {os.path.basename(p) for g in ("fetch_*.py", "extract_*.py", "derive_*.py", "build_*.py")
+               for p in _glob.glob(os.path.join(build, g))} - infra
+    for sc in sorted(on_disk - known_scripts):
+        err("catalog", sc, "script exists but the catalog does not list it — regenerate build_catalog.py")
+    for sc in sorted(known_scripts - on_disk):
+        err("catalog", sc, "catalog lists a script that no longer exists — regenerate build_catalog.py")
+    outs = {os.path.basename(p) for p in _glob.glob(os.path.join(build, "*.json"))} - {"catalog.json"}
+    for o in sorted(outs - known_outputs):
+        err("catalog", o, "output exists but the catalog does not list it — regenerate build_catalog.py")
+    cat_m = os.path.getmtime(cat_path)
+    newest = max((os.path.getmtime(os.path.join(build, f)) for f in on_disk), default=0)
+    if newest > cat_m + 60:
+        err("catalog", "_data/catalog.json",
+            f"a script is newer than the catalog by {int((newest-cat_m)/60)} min — regenerate build_catalog.py")
+    for r in cat.get("scripts", []):
+        if "import_error" in r.get("flags", []) or "syntax_error" in r.get("flags", []):
+            warn("catalog", r["script"], f"catalog says it does not import: {r.get('import_error') or 'syntax'}")
+        if "writes_outside_build" in r.get("flags", []):
+            warn("catalog", r["script"], f"writes outside the web tree: {r.get('writes_outside_build')}")
+    n_orph = len(cat.get("orphan_outputs", []))
+    if n_orph:
+        warn("catalog", "_data/build", f"{n_orph} output file(s) no script claims — see CATALOG.md 'Orphan outputs'")
+
 def main() -> int:
     arts = artifacts()
     reg_path = os.path.join(WEB, "_data", "SOURCES.json")
@@ -529,6 +572,7 @@ def main() -> int:
     check_hub(arts)
     check_duplicates(arts)
     check_empty_data(arts)
+    check_catalog()
 
     errors = [f for f in findings if f[0] == "ERROR"]
     warns = [f for f in findings if f[0] == "WARN"]

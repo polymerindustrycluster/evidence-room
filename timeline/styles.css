@@ -201,3 +201,55 @@ h3 { font-size:19px; margin:0 0 10px; color:var(--teal-900); }
 .panel .p-note { margin-top:18px; color:var(--charcoal); font-size:15.5px; }
 
 @media (prefers-reduced-motion:reduce) { * { transition:none !important; animation:none !important; } }
+
+/* ------------------------------------------------- the prologue: why here (2026-08-18) */
+/* Heritage sits ABOVE the operating record on an era-banded axis of its own. It keeps this
+   page's own visual generation (Aptos, teal, charcoal) and the shared column: prose blocks
+   are the measure, the era chart and the photo strip are the figure. */
+.kicker { margin:0 0 6px; font-weight:700; font-size:13.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--teal-700); }
+.sub--measure { max-width:var(--measure); }
+.section--prologue { background:var(--bg-tint); border-bottom:1px solid var(--line); }
+.section--prologue h2 { margin-bottom:10px; }
+.pro-viz { position:relative; margin-top:6px; }
+.pro-viz svg { display:block; width:100%; height:auto; overflow:visible; }
+.era-band { fill:#fff; }
+.era-band.alt { fill:#EEF3F3; }
+.era-lab { font:700 13.5px/1 var(--font); fill:var(--muted); letter-spacing:.04em; }
+.yr-lab { font:600 11.5px/1 var(--font); fill:var(--charcoal); pointer-events:none;
+  font-variant-numeric:tabular-nums; }
+.hev:hover .yr-lab, .hev:focus .yr-lab { fill:var(--ink); }
+.pro-legend { margin:14px 0 0; font-size:14.5px; color:var(--charcoal); max-width:var(--measure); }
+.pro-legend .sw { display:inline-block; width:11px; height:11px; border-radius:50%; vertical-align:-1px; }
+
+/* five public-domain stills. A row that scrolls in its own container — the page never
+   overflows — with the licence and the archive of record under every frame. */
+.photos { display:flex; gap:16px; overflow-x:auto; scroll-snap-type:x mandatory;
+  margin:30px 0 0; padding:0 0 10px; -webkit-overflow-scrolling:touch; }
+.photos figure { flex:0 0 min(340px, 82%); margin:0; scroll-snap-align:start; }
+.photos img { display:block; width:100%; height:auto; aspect-ratio:4/3; object-fit:cover;
+  border-radius:var(--r-sm); background:var(--bg-alt); }
+.photos figcaption { margin-top:8px; font-size:13.5px; line-height:1.45; color:var(--charcoal); }
+.photos figcaption a { color:var(--teal-700); text-decoration:underline; text-underline-offset:3px; }
+.photos-note { margin:6px 0 0; font-size:14.5px; color:var(--charcoal); max-width:var(--measure); }
+/* Desktop: wrap 3 + 2 instead of a horizontal scroller. A snap-strip is right under a thumb
+   and wrong under a mouse — at 1440 it clipped the third photo mid-caption with no cue that
+   it scrolled, and read as broken (seen 2026-08-18). Phone keeps the strip. */
+@media (min-width: 900px) {
+  .photos { flex-wrap:wrap; overflow-x:visible; scroll-snap-type:none; }
+  .photos figure { flex:0 0 calc((100% - 32px) / 3); }
+}
+
+.pro-table { margin-top:26px; }
+.pro-table summary { cursor:pointer; font-weight:600; color:var(--teal-700); font-size:16px; }
+.pro-table .tablewrap { margin-top:14px; }
+.dtable .t-one { min-width:320px; color:var(--charcoal); font-size:14.5px; }
+#htable { min-width:960px; }
+.card .c-k { font-weight:700; font-size:13px; letter-spacing:.06em; text-transform:uppercase; }
+.card a { color:var(--teal-700); }
+
+.panel .p-one { font-size:16px; color:var(--ink); }
+.panel h3 { margin:20px 0 8px; font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+.panel .p-src { margin:0; padding-left:18px; font-size:14.5px; color:var(--charcoal); }
+.panel .p-src li { margin-bottom:8px; overflow-wrap:anywhere; }
+.panel .p-src a { color:var(--teal-700); }

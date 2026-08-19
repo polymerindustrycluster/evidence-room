@@ -1,7 +1,7 @@
 {
- "n_pieces": 11,
- "total_claims": 45,
- "total_manual": 2,
+ "n_pieces": 12,
+ "total_claims": 69,
+ "total_manual": 6,
  "pages": {
   "churn": {
    "claims": 5,
@@ -23,6 +23,10 @@
    "claims": 6,
    "manual": 0
   },
+  "occupations": {
+   "claims": 12,
+   "manual": 0
+  },
   "peers": {
    "claims": 6,
    "manual": 0
@@ -35,16 +39,15 @@
    "claims": 2,
    "manual": 0
   },
+  "timeline": {
+   "claims": 12,
+   "manual": 4
+  },
   "wages": {
    "claims": 2,
    "manual": 0
   },
   "funding-map": {
-   "claims": 0,
-   "manual": 0,
-   "legacy": true
-  },
-  "timeline": {
    "claims": 0,
    "manual": 0,
    "legacy": true

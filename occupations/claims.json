@@ -1,0 +1,101 @@
+{
+  "data": "viz-data.json",
+  "claims": [
+    {
+      "id": "occ-hero-one-in-nine",
+      "text": "In plastics and rubber manufacturing, one job in nine is a molding-machine setter — and half of all the nation's molding-machine setters work in this one industry.",
+      "source": "BLS National Employment Matrix, industry 326000, 2024 base",
+      "assert": "(lambda s: 8.5 <= 100 / s['pct_of_industry'] <= 9.6 and 47.5 <= s['pct_of_occupation'] <= 54.9)(one(m for m in D['mix'] if m['soc'] == '51-4072'))",
+      "actual": "(lambda s: (s['pct_of_industry'], s['pct_of_occupation']))(one(m for m in D['mix'] if m['soc'] == '51-4072'))",
+      "falsified_if": "The setters' share of the industry leaves the 10.4–11.8% band that reads as 'one in nine', or the industry's share of the occupation leaves 47.5–54.9%, at which point 'half' becomes 'about half' or a different fraction. Both move with each matrix release."
+    },
+    {
+      "id": "occ-hero-figures",
+      "text": "10.9% of the industry's jobs are molding-machine setters; 51% of the nation's setters work in plastics and rubber manufacturing; 725,100 jobs in the industry nationally in 2024; engineers, scientists and technicians are 4.0%.",
+      "source": "BLS National Employment Matrix, industry 326000, 2024 base",
+      "assert": "(lambda s: s['pct_of_industry'] == 10.9 and round(s['pct_of_occupation']) == 51)(one(m for m in D['mix'] if m['soc'] == '51-4072')) and D['mix_totals']['industry_emp_2024_k'] == 725.1 and D['mix_totals']['eng_sci_share_pct'] == 4.0",
+      "actual": "(one(m for m in D['mix'] if m['soc'] == '51-4072')['pct_of_industry'], one(m for m in D['mix'] if m['soc'] == '51-4072')['pct_of_occupation'], D['mix_totals']['industry_emp_2024_k'], D['mix_totals']['eng_sci_share_pct'])",
+      "falsified_if": "Any of the four hero figures changes in the next matrix release. The engineer/scientist/technician share is the sum of detailed occupations with codes 17-2, 19-2, 19-4 and 17-3; a code added to or dropped from the matrix changes it."
+    },
+    {
+      "id": "occ-fourteen-share",
+      "text": "Fourteen occupations are 59% of the industry, and most of them are on the floor. The fourteen shown are 59.4% of the industry's jobs; production occupations of every kind are 58.5%.",
+      "source": "BLS National Employment Matrix, industry 326000, 2024 base",
+      "assert": "len(D['mix']) == 14 and D['mix_totals']['top_n_share_pct'] == 59.4 and round(D['mix_totals']['top_n_share_pct']) == 59 and D['mix_totals']['production_share_pct'] == 58.5 and sum(1 for m in D['mix'] if m['soc'].startswith('51-')) >= 8",
+      "actual": "(len(D['mix']), D['mix_totals']['top_n_share_pct'], D['mix_totals']['production_share_pct'], sum(1 for m in D['mix'] if m['soc'].startswith('51-')))",
+      "falsified_if": "The top-fourteen share moves off 59.4%, or fewer than eight of the fourteen are production (51-xxxx) occupations, which is what 'most of them are on the floor' asserts."
+    },
+    {
+      "id": "occ-tire-builders",
+      "text": "Tire builders — the industry's ninth-largest occupation — are published for none of the four metros.",
+      "source": "BLS National Employment Matrix rank; BLS OEWS May 2024 metropolitan file",
+      "assert": "[m['soc'] for m in D['mix']].index('51-9197') == 8 and D['pay_totals']['absent_everywhere'] == ['51-9197']",
+      "actual": "([m['soc'] for m in D['mix']].index('51-9197'), D['pay_totals']['absent_everywhere'])",
+      "falsified_if": "The bureau publishes a tire-builder estimate for any of Akron, Cleveland, Canton-Massillon or Youngstown-Warren in a later vintage, or the occupation's rank in the industry moves off ninth. An estimate appearing would also be the more interesting story."
+    },
+    {
+      "id": "occ-region-estimate",
+      "text": "The twelve counties reported 18,594 plastics-and-rubber jobs in 2024. Applying the national shares to that total gives an estimate of about 2,000 molding-machine setters and about 740 engineers, scientists and technicians in the region's plants.",
+      "source": "BLS QCEW 2024 annual averages, private ownership, NAICS 326, the twelve PIC-12 counties; shares from the National Employment Matrix",
+      "assert": "D['region']['emp'] == 18594 and D['region']['counties_counted'] == 12 and D['region']['setters_estimate'] == 2000 and D['region']['eng_sci_estimate'] == 740 and abs(D['region']['emp'] * D['region']['setters_share_pct'] / 100 - D['region']['setters_estimate']) < 50",
+      "actual": "(D['region']['emp'], D['region']['counties_counted'], D['region']['setters_estimate'], D['region']['eng_sci_estimate'])",
+      "falsified_if": "QCEW revises the 2024 county cells, a county becomes suppressed (the estimate then rests on fewer than twelve counties and the sentence must say so), or the matrix shares change. This is an estimate under a stated assumption, and the sentence says so; the assertion protects the arithmetic, not the assumption."
+    },
+    {
+      "id": "occ-beats-national",
+      "text": "Above the national median in 5 of 25 published occupations in Akron, 10 of 25 in Cleveland, 5 of 22 in Canton-Massillon and 1 of 21 in Youngstown-Warren.",
+      "source": "BLS OEWS May 2024, metropolitan and national files, annual median",
+      "assert": "D['pay_totals']['beats_national'] == {'10420': 5, '17410': 10, '15940': 5, '49660': 1} and D['pay_totals']['disclosed'] == {'10420': 25, '17410': 25, '15940': 22, '49660': 21}",
+      "actual": "(D['pay_totals']['beats_national'], D['pay_totals']['disclosed'])",
+      "falsified_if": "A new wage vintage moves any metro median across the national one, or changes which cells are published. The occupation set is 26; the denominators are what each metro publishes."
+    },
+    {
+      "id": "occ-degree-vs-floor",
+      "text": "In every metro the six degree occupations sit further under the national median than the fourteen high-school occupations. In Akron the median ratio is 0.93× for the degree occupations against 0.97× for the high-school ones; in Cleveland 0.95× against 1.01×.",
+      "source": "BLS OEWS May 2024 (metro median ÷ national median), grouped by the O*NET education majority",
+      "assert": "all(v['degree_median_ratio'] < v['hs_median_ratio'] for v in D['pay_totals']['ratio_by_metro'].values()) and len(D['education_totals']['ba_plus_majority']) == 6 and len(D['education_totals']['hs_majority']) == 14 and round(D['pay_totals']['ratio_by_metro']['10420']['degree_median_ratio'], 2) == 0.93 and round(D['pay_totals']['ratio_by_metro']['10420']['hs_median_ratio'], 2) == 0.97 and round(D['pay_totals']['ratio_by_metro']['17410']['degree_median_ratio'], 2) == 0.95 and round(D['pay_totals']['ratio_by_metro']['17410']['hs_median_ratio'], 2) == 1.01",
+      "actual": "D['pay_totals']['ratio_by_metro']",
+      "falsified_if": "Any metro's degree-group median ratio rises to or above its high-school-group ratio — the h2 says 'the gap is widest at the top' for every metro — or the Akron and Cleveland ratios move off the printed values. Canton-Massillon and Youngstown-Warren rest on three degree occupations each; a single published cell changes them."
+    },
+    {
+      "id": "occ-education-counts",
+      "text": "Six of these occupations are degree jobs; fourteen are high-school jobs; the rest sit between. Six of the 26 occupations have a bachelor's-or-higher majority; fourteen have a high-school-or-less majority.",
+      "source": "O*NET 30.3 Education, element 2.D.1, binned",
+      "assert": "len(D['education_totals']['ba_plus_majority']) == 6 and len(D['education_totals']['hs_majority']) == 14 and D['education_totals']['n'] == 26 and all(r['bins']['bachelors'] + r['bins']['graduate'] > 50 for r in D['education'] if r['soc'] in D['education_totals']['ba_plus_majority']) and all(r['bins']['hs_or_less'] > 50 for r in D['education'] if r['soc'] in D['education_totals']['hs_majority'])",
+      "actual": "(len(D['education_totals']['ba_plus_majority']), len(D['education_totals']['hs_majority']), D['education_totals']['n'])",
+      "falsified_if": "An O*NET release moves any occupation across the 50% line in either bin, or the occupation set changes. 'Majority' means strictly more than half of respondents."
+    },
+    {
+      "id": "occ-programs",
+      "text": "Three universities confer the region's polymer and materials degrees. The polymer programs conferred 63 degrees in 2023 against a three-year average of 80.4 a year.",
+      "source": "IPEDS completions by CIP (14.3201, 40.0507 polymer; 14.1801, 40.1001 materials), first major, via the Urban Institute API",
+      "assert": "len(D['program_totals']['institutions']) == 3 and D['program_totals']['latest_year'] == 2023 and D['program_totals']['polymer_awards_latest'] == 63 and D['program_totals']['polymer_awards_window_avg'] == 80.4 and D['program_totals']['window'] == [2021, 2022, 2023] and len(D['programs']) == 13",
+      "actual": "D['program_totals']",
+      "falsified_if": "The 2024 completions load (the latest year then moves and every figure here re-bases), a fourth institution reports completions in these codes, or a program with zero completions in the window starts conferring."
+    },
+    {
+      "id": "occ-youngstown-fewest",
+      "text": "Youngstown-Warren publishes 21 of the 26 occupations, the fewest, and is in the table.",
+      "source": "BLS OEWS May 2024 metropolitan file",
+      "assert": "D['pay_totals']['disclosed']['49660'] == 21 and D['pay_totals']['occupations'] == 26 and D['pay_totals']['disclosed']['49660'] == min(D['pay_totals']['disclosed'].values()) and list(D['pay_totals']['disclosed'].values()).count(21) == 1",
+      "actual": "D['pay_totals']['disclosed']",
+      "falsified_if": "Another metro publishes as few or fewer cells, in which case the reason for putting Youngstown-Warren in the table rather than on the chart no longer holds and the choice has to be re-made or re-explained."
+    },
+    {
+      "id": "occ-high-rse",
+      "text": "2 of the metro cells here exceed 10% relative standard error of the mean wage.",
+      "source": "BLS OEWS May 2024 metropolitan file, MEAN_PRSE",
+      "assert": "D['pay_totals']['high_rse_cells'] == 2 and D['pay_totals']['high_rse_threshold_pct'] == 10",
+      "actual": "D['pay_totals']['high_rse_cells']",
+      "falsified_if": "A new vintage changes the sampling error on any of the 93 published cells. The two are the materials-scientist cells in Akron and Cleveland."
+    },
+    {
+      "id": "occ-closer",
+      "text": "The industry's jobs are mostly floor jobs, and Akron and Cleveland pay them within a few percent of the national rate. The degree jobs are few, pay under the national rate in every metro, and are trained at three schools. Nationally, production occupations are 58.5% of the industry and engineers, scientists and technicians 4.0%. The six degree occupations draw on about 80 polymer degrees a year from three universities.",
+      "source": "BLS National Employment Matrix (production share); BLS OEWS May 2024 ratios by education group; IPEDS institutions",
+      "assert": "D['mix_totals']['production_share_pct'] > 50 and 0.95 <= D['pay_totals']['ratio_by_metro']['10420']['hs_median_ratio'] <= 1.05 and 0.95 <= D['pay_totals']['ratio_by_metro']['17410']['hs_median_ratio'] <= 1.05 and all(v['degree_median_ratio'] < 1 for v in D['pay_totals']['ratio_by_metro'].values()) and len(D['program_totals']['institutions']) == 3 and D['mix_totals']['eng_sci_share_pct'] < 10 and round(D['program_totals']['polymer_awards_window_avg']) == 80 and D['mix_totals']['production_share_pct'] == 58.5",
+      "actual": "(D['mix_totals']['production_share_pct'], {a: (v['hs_median_ratio'], v['degree_median_ratio']) for a, v in D['pay_totals']['ratio_by_metro'].items()}, D['program_totals']['institutions'])",
+      "falsified_if": "Production occupations fall below half the industry; Akron's or Cleveland's high-school-group median ratio leaves 0.95-1.05 ('within a few percent'); any metro's degree-group median ratio reaches 1.0; or a fourth institution confers degrees in these codes. 'Few' is carried by the 4.0% engineer/scientist/technician share staying under 10%."
+    }
+  ]
+}

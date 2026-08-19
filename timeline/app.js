@@ -48,6 +48,8 @@ function loadData(file) {
   const HZ_ORDER = ['quick', 'mid', 'long'];
 
   let DATA = null, IN = [], PRE = [];
+  let HER = null;                       // heritage.json — the prologue's data
+  const HCOL = { heritage: '#585955', discoveries: '#8E3B62' };
   const offLane = new Set(), offHz = new Set();
   let mode = null, lastW = 0, tip = null;
 
@@ -214,6 +216,209 @@ function loadData(file) {
       'scheduled, not delivered. A dashed rule marks 13 August 2026. The same record is in the table below.';
   }
 
+  /* ------------------------------------------------ 3b the prologue: why here */
+  // The heritage rows sit on an ERA-BANDED axis, not the 2023–2029 linear scale: five
+  // era columns of equal width, events placed linearly inside their column. 1898–2012 on
+  // the operating record's scale would compress to nothing; a linear 114-year axis would
+  // put 11 of 32 marks in one 30-year stretch. Equal era columns are the honest middle —
+  // and the columns are labeled with their years so nobody reads the axis as linear.
+  const proBox = document.getElementById('pro-viz');
+  let proMode = null, proW = 0, ptip = null;
+
+  const yearFrac = (e) => {
+    const d = new Date(e.date);
+    return e.year + (e.datePrecision === 'day' || e.datePrecision === 'month'
+      ? (d.getUTCMonth() + (d.getUTCDate() - 1) / 31) / 12 : 0.5);
+  };
+  function packBy(events, xf, minGap) {
+    const rowsEnd = [];
+    events.forEach((e) => {
+      const cx = xf(e);
+      let row = rowsEnd.findIndex((end) => cx - end >= minGap);
+      if (row === -1) { row = rowsEnd.length; rowsEnd.push(-1e9); }
+      rowsEnd[row] = cx; e._row = row; e._cx = cx;
+    });
+    return Math.max(1, rowsEnd.length);
+  }
+  const hDate = (e) => e.dateDisplay;
+  const hKind = (e) => (HER.collections.find((c) => c.key === e.collection) || {}).name || e.collection;
+
+  function renderPrologue() {
+    if (!HER || !proBox) return;
+    const W = proBox.clientWidth;
+    if (!W) return;
+    const want = W < CARD_BREAKPOINT ? 'cards' : 'diagram';
+    if (want === proMode && Math.abs(W - proW) < 2) return;
+    proMode = want; proW = W;
+    proBox.textContent = '';
+    (want === 'cards' ? renderHCards : renderHDiagram)(W);
+  }
+
+  function renderHDiagram(W) {
+    const L = { left: 150, right: 18, top: 46, bot: 30, rowH: 34, padY: 14, gap: 12 };
+    const plotW = W - L.left - L.right, eraW = plotW / HER.eras.length;
+    const xf = (e) => {
+      const era = HER.eras[e.era];
+      return L.left + e.era * eraW + ((yearFrac(e) - era.from) / (era.to - era.from)) * eraW;
+    };
+    const rows = HER.collections.map((c) => {
+      const evs = HER.events.filter((e) => e.collection === c.key)
+        .sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+      return { ...c, evs, n: packBy(evs, xf, 38) };
+    });
+    let y = L.top;
+    rows.forEach((r) => { r.y = y; r.h = r.n * L.rowH + L.padY * 2; y += r.h + L.gap; });
+    const H = y + L.bot;
+    const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
+      'aria-label': `Two rows of ${HER.events.length} proven heritage events from ${HER.meta.counts.firstYear} ` +
+        `to ${HER.meta.counts.lastYear}, on five era columns of equal width: ` +
+        HER.eras.map((x) => x.label).join(', ') + '. Top row: what changed the region\u2019s capacity. ' +
+        'Bottom row: what was first understood here. Each dot is one dated event; the same rows are in the table below.' });
+
+    // era columns
+    HER.eras.forEach((era, i) => {
+      const x0 = L.left + i * eraW;
+      svg.appendChild(el('rect', { class: 'era-band' + (i % 2 ? ' alt' : ''),
+        x: x0, y: L.top - 8, width: eraW, height: y - L.gap - L.top + 8 }));
+      svg.appendChild(el('text', { class: 'era-lab', x: x0 + eraW / 2, y: L.top - 20,
+        'text-anchor': 'middle' }, era.label));
+      if (i) svg.appendChild(el('line', { class: 'axis-rule', x1: x0, x2: x0, y1: L.top - 8, y2: y - L.gap }));
+    });
+    // row labels, and a hairline between the two rows so the tenses read as two rows
+    rows.forEach((r, i) => {
+      if (i) svg.appendChild(el('line', { class: 'axis-rule', x1: 0, x2: W - L.right, y1: r.y - L.gap / 2, y2: r.y - L.gap / 2 }));
+      const words = r.name.split(' ');
+      const l1 = words.slice(0, 2).join(' '), l2 = words.slice(2).join(' ');
+      svg.appendChild(el('text', { class: 'lane-name', x: 0, y: r.y + 24, fill: HCOL[r.key] }, l1));
+      if (l2) svg.appendChild(el('text', { class: 'lane-name', x: 0, y: r.y + 44, fill: HCOL[r.key] }, l2));
+      svg.appendChild(el('text', { class: 'lane-count', x: 0, y: r.y + (l2 ? 65 : 45) }, `${r.evs.length} events`));
+    });
+    // marks
+    rows.forEach((r) => {
+      const g = el('g', {});
+      r.evs.forEach((e) => {
+        const cy = r.y + L.padY + e._row * L.rowH + 10;
+        const node = el('g', { class: 'ev hev', 'data-id': e.id, style: `--c:${HCOL[r.key]}`,
+          tabindex: '0', role: 'button', 'aria-label': `${hDate(e)}. ${e.title}. ${r.name}.` });
+        node.appendChild(el('circle', { class: 'hit', cx: e._cx, cy, r: 14 }));
+        node.appendChild(el('circle', { class: 'dot', cx: e._cx, cy, r: 6.5, fill: HCOL[r.key] }));
+        node.appendChild(el('text', { class: 'yr-lab', x: e._cx, y: cy + 19, 'text-anchor': 'middle' },
+          String(e.year)));
+        g.appendChild(node);
+      });
+      svg.appendChild(g);
+    });
+    proBox.appendChild(svg);
+    wireHEvents(svg);
+    const lg = document.getElementById('pro-legend');
+    lg.hidden = false; lg.textContent = '';
+    HER.collections.forEach((c, i) => {
+      if (i) lg.appendChild(document.createTextNode(' \u00b7 '));
+      lg.appendChild(h('span', { class: 'sw', style: `background:${HCOL[c.key]}` }));
+      lg.appendChild(h('b', { text: ' ' + c.name }));
+      lg.appendChild(document.createTextNode(' \u2014 ' + c.gloss));
+    });
+    lg.appendChild(document.createTextNode('. A dot sits at its first year; the columns are equal in width, not in years.'));
+  }
+
+  function renderHCards() {
+    const list = h('div', { class: 'cards' });
+    HER.events.slice().sort((a, b) => a.date < b.date ? -1 : 1).forEach((e) => {
+      const src = e.sources.find((x) => x.url);
+      const c = h('div', { class: 'card', style: `border-left-color:${HCOL[e.collection]}` }, [
+        h('div', { class: 'c-d', text: hDate(e) }),
+        h('div', { class: 'c-t', text: e.title }),
+        h('div', { class: 'c-o', text: e.oneLiner }),
+      ]);
+      const foot = h('div', { class: 'c-o' }, [h('span', { class: 'c-k', style: `color:${HCOL[e.collection]}`, text: hKind(e) })]);
+      if (src) { foot.appendChild(document.createTextNode(' \u00b7 ')); foot.appendChild(h('a', { href: src.url, text: 'Source' })); }
+      c.appendChild(foot);
+      list.appendChild(c);
+    });
+    proBox.appendChild(list);
+    document.getElementById('pro-legend').hidden = true;
+  }
+
+  function wireHEvents(svg) {
+    svg.querySelectorAll('.hev').forEach((n) => {
+      const e = HER.events.find((x) => x.id === n.dataset.id);
+      n.addEventListener('mouseenter', () => showHTip(n, e));
+      n.addEventListener('mouseleave', hideHTip);
+      n.addEventListener('focus', () => showHTip(n, e));
+      n.addEventListener('blur', hideHTip);
+      n.addEventListener('click', () => openHPanel(e));
+      n.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openHPanel(e); }
+      });
+    });
+  }
+  function showHTip(node, e) {
+    hideHTip();
+    ptip = h('div', { class: 'tip' }, [
+      h('div', { class: 't-d', text: hDate(e) }),
+      h('div', { class: 't-t', text: e.title }),
+      h('div', { class: 't-o', text: hKind(e) + ' \u00b7 click for the source' }),
+    ]);
+    proBox.appendChild(ptip);
+    const b = node.getBoundingClientRect(), v = proBox.getBoundingClientRect();
+    const left = Math.min(Math.max(8, b.left - v.left - ptip.offsetWidth / 2 + b.width / 2),
+      v.width - ptip.offsetWidth - 8);
+    ptip.style.left = left + 'px';
+    ptip.style.top = Math.max(4, b.top - v.top - ptip.offsetHeight - 12) + 'px';
+  }
+  const hideHTip = () => { if (ptip) { ptip.remove(); ptip = null; } };
+
+  function openHPanel(e) {
+    panel.textContent = '';
+    panel.appendChild(h('button', { class: 'p-close', type: 'button', 'aria-label': 'Close',
+      onclick: closePanel, text: '\u00d7' }));
+    panel.appendChild(h('p', { class: 'p-kind', style: `color:${HCOL[e.collection]}`, text: hKind(e) }));
+    panel.appendChild(h('h2', { id: 'panel-title', text: e.title }));
+    panel.appendChild(h('dl', { class: 'p-meta' }, [
+      h('div', {}, [h('dt', { text: 'Date' }), h('dd', { text: hDate(e) })]),
+      h('div', {}, [h('dt', { text: 'Register row' }), h('dd', { text: `${e.id} \u00b7 labeled ${e.label.toLowerCase()}` })]),
+    ]));
+    panel.appendChild(h('p', { class: 'p-note p-one', text: e.oneLiner }));
+    if (e.datePrecision === 'range') panel.appendChild(h('p', { class: 'p-note',
+      text: 'Recorded as a span of years; the mark sits at its first year.' }));
+    else if (e.datePrecision === 'year') panel.appendChild(h('p', { class: 'p-note',
+      text: 'Recorded to the year only; placed mid-year.' }));
+    const ul = h('ul', { class: 'p-src' });
+    e.sources.forEach((sr) => {
+      const li = h('li', {});
+      if (sr.url) {
+        li.appendChild(h('a', { href: sr.url, text: sr.url.replace(/^https?:\/\/(www\.)?/, '').split(/[/?#]/)[0] }));
+        if (sr.note) li.appendChild(document.createTextNode(' \u2014 ' + sr.note));
+      } else li.appendChild(document.createTextNode(sr.note));
+      ul.appendChild(li);
+    });
+    panel.appendChild(h('h3', { text: e.sources.length === 1 ? 'Source' : 'Sources' }));
+    panel.appendChild(ul);
+    panel.hidden = false; scrim.hidden = false;
+    panel.querySelector('.p-close').focus();
+  }
+
+  function buildHTable() {
+    const tb = document.querySelector('#htable tbody');
+    if (!tb || !HER) return;
+    tb.textContent = '';
+    HER.events.slice().sort((a, b) => a.date < b.date ? -1 : 1).forEach((e) => {
+      const srcs = e.sources.filter((x) => x.url);
+      const td = h('td', {});
+      if (srcs.length) {
+        td.appendChild(h('a', { href: srcs[0].url, text: 'Source' }));
+        if (srcs.length > 1) td.appendChild(document.createTextNode(` +${srcs.length - 1}`));
+      }
+      tb.appendChild(h('tr', {}, [
+        h('td', { class: 't-date', text: hDate(e) }),
+        h('td', { text: e.title }),
+        h('td', { class: 't-lane', style: `color:${HCOL[e.collection]}`, text: hKind(e) }),
+        h('td', { class: 't-one', text: e.oneLiner }),
+        td,
+      ]));
+    });
+  }
+
   /* -------------------------------------------------------- 4 table + csv */
 
   function buildTable() {
@@ -297,7 +502,7 @@ function loadData(file) {
   }
   function closePanel() { panel.hidden = true; scrim.hidden = true; }
   scrim.addEventListener('click', closePanel);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closePanel(); hideTip(); } });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closePanel(); hideTip(); hideHTip(); } });
 
   /* --------------------------------------------------------- filters */
 
@@ -362,15 +567,23 @@ function loadData(file) {
 
   /* ------------------------------------------------------------- boot */
 
-  loadData('timeline.json').then((d) => {
-    DATA = d;
+  Promise.all([loadData('timeline.json'), loadData('heritage.json')]).then(([d, hd]) => {
+    DATA = d; HER = hd;
     const from = WIN_FROM.getTime();
     d.events.forEach((e) => { (new Date(e.date).getTime() >= from ? IN : PRE).push(e); });
     IN = IN.filter((e) => e.show || !e.delivered);
 
-    const c = d.meta.counts;
+    // The lede's numbers come from the data, never from the HTML — the static text is
+    // only what a reader sees before the JSON arrives (and it is what claims.json guards).
+    const hc = HER.meta.counts;
+    const put = (id, v) => { const n = document.getElementById(id); if (n) n.textContent = String(v); };
+    put('h-shown', hc.shown); put('h-first', hc.firstYear); put('h-last', hc.lastYear);
+    put('h-her', hc.heritage); put('h-dis', hc.discoveries);
+    put('pro-range', `${hc.firstYear} to ${hc.lastYear}`);
+
     document.getElementById('topline').innerHTML = '';
-    [[IN.length, 'public events shown'],
+    [[hc.shown, `proven heritage events, ${hc.firstYear}\u2013${hc.lastYear}`],
+     [IN.length, 'public events shown'],
      [IN.filter((e) => e.delivered).length, 'delivered since 2023'],
      [IN.filter((e) => !e.delivered).length, 'scheduled ahead'],
      [d.lanes.length, 'workstreams, in parallel']].forEach(([n, l]) => {
@@ -378,25 +591,38 @@ function loadData(file) {
         h('b', { text: String(n) }), h('span', { text: l })]));
     });
 
+    // Context-tier rows (the old "Rubber Capital, 1900" one-liners) are superseded by the
+    // sourced heritage prologue above; only PIC-era pre-2023 events are listed here.
+    const preShown = PRE.filter((e) => e.tier !== 'CTX');
     const pw = document.getElementById('pre-window');
-    if (PRE.length) {
+    if (preShown.length) {
       pw.appendChild(h('p', {}, [
         h('b', { text: 'Before this window. ' }),
-        document.createTextNode(PRE.map((e) => `${e.dateDisplay} ${e.title}`).join(' · ') +
-          '. The timeline opens at the 2023 federal designation — the first event with money behind it.'),
+        document.createTextNode(preShown.map((e) => `${e.dateDisplay} ${e.title}`).join(' \u00b7 ') +
+          '. The timeline opens at the 2023 federal designation \u2014 the first event with money behind it. ' +
+          'Everything earlier is the heritage record above.'),
       ]));
     }
 
     document.getElementById('m-source').textContent = d.meta.source;
     document.getElementById('m-public').textContent = d.meta.publicOnly;
+    const dropped = hc.dropped['label:CLAIMED'] || 0;
+    document.getElementById('m-heritage').textContent =
+      `The heritage rows come from PIC\u2019s NEO Polymer Wins register, an internal file. Of its ` +
+      `${hc.shown + dropped} heritage and discovery rows, ${hc.shown} are labeled proven and appear here; ` +
+      `${dropped} labeled claimed are withheld. ${hc.sourcesStripped} internal source references were ` +
+      `stripped in the build, and every row shown carries at least one public source. Shipped products, ` +
+      `licenses and living capital are a different register and are not on this page.`;
     const notes = document.getElementById('m-notes');
     [['Each dot is one dated event, in the workstream that produced it.',],
      ['Dot size is how long that kind of work takes to show a result — not how important it is.'],
      ['Hollow dots to the right of the dashed rule are scheduled dates from the award record, not work already done.'],
      ['Dates are shown at the precision they were recorded. Some events are known only to a month or a year, and are placed mid-period rather than pretending to a day.'],
+     ['The heritage chart above the record uses five era columns of equal width, so its axis is not linear; a dot sits at its first year, and clicking it opens the register’s sentence and source.'],
     ].forEach(([t]) => notes.appendChild(h('li', { text: t })));
 
     buildFilters(); buildTable(); render();
+    buildHTable(); renderPrologue();
   }).catch((err) => {
     viz.textContent = '';
     viz.appendChild(h('p', { class: 'nojs',
@@ -405,5 +631,5 @@ function loadData(file) {
   });
 
   let t;
-  window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(render, 130); });
+  window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => { render(); renderPrologue(); }, 130); });
 })();

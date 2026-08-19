@@ -1,0 +1,1404 @@
+{
+ "meta": {
+  "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
+  "generated": "2026-08-19 08:27",
+  "seconds": 0.8,
+  "scripts": 25,
+  "outputs_on_disk": 0,
+  "outputs_claimed": 20,
+  "orphan_outputs": 0,
+  "registry_error": null,
+  "flag_counts": {
+   "not_in_PIPELINES.md": 25,
+   "no_house_docstring": 22,
+   "no_traps_section": 22,
+   "output_missing_on_disk": 21,
+   "import_error": 6,
+   "not_in_SOURCES.json": 5,
+   "no_output_detected": 4
+  }
+ },
+ "scripts": [
+  {
+   "script": "derive_index.py",
+   "kind": "derive",
+   "what_it_adds": "Counts for the index page, read from the claims files themselves.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 356
+   },
+   "hosts": [],
+   "outputs": [],
+   "page_outputs": [
+    "_data/build/index/data/counts.json"
+   ],
+   "page_outputs_exist": {
+    "_data/build/index/data/counts.json": false
+   },
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": [
+     "index/data/counts.json"
+    ]
+   },
+   "output_learned_by": {
+    "index/data/counts.json": "observed"
+   },
+   "observed_stop": "open(counts.json,'w')",
+   "observed_network": [],
+   "observed_reads": [
+    "churn/claims.json",
+    "cost-scissors/claims.json",
+    "federal-money/claims.json",
+    "laborshed/claims.json",
+    "location-quotient/claims.json",
+    "occupations/claims.json",
+    "peers/claims.json",
+    "realwage/claims.json",
+    "revisions/claims.json",
+    "timeline/claims.json",
+    "wages/claims.json"
+   ],
+   "import_error": null,
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "derive_laborshed.py",
+   "kind": "derive",
+   "what_it_adds": "The commute matrix — where the people who work in each PIC-12 county live.",
+   "what_one_row_is": "One (home county, work county) count of JOBS. Not people: a worker holding two jobs is counted twice. Not commuters: both ends are employer-reported addresses, so the home end is a residence on file, not evidence that anyone travelled.  THE FORM DECISION The instinct for origin-destination data is a flow map or a chord diagram. Twelve counties makes both illegible and neither answers the question.",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1304
+   },
+   "hosts": [],
+   "outputs": [],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": []
+   },
+   "output_learned_by": {},
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [
+    "lodes.json"
+   ],
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/lodes.json'",
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "import_error",
+    "no_house_docstring",
+    "no_output_detected",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json"
+   ]
+  },
+  {
+   "script": "derive_occupations.py",
+   "kind": "derive",
+   "what_it_adds": "Build web/occupations/data/viz-data.json — the occupations inside plastics and rubber",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1634
+   },
+   "hosts": [],
+   "outputs": [],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": []
+   },
+   "output_learned_by": {},
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [
+    "occmix.json"
+   ],
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/occmix.json'",
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "import_error",
+    "no_house_docstring",
+    "no_output_detected",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json"
+   ]
+  },
+  {
+   "script": "derive_peers.py",
+   "kind": "derive",
+   "what_it_adds": "Derive the peer-positioning dataset.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 652
+   },
+   "hosts": [],
+   "outputs": [],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": []
+   },
+   "output_learned_by": {},
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [
+    "peers.json"
+   ],
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/peers.json'",
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "import_error",
+    "no_house_docstring",
+    "no_output_detected",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json"
+   ]
+  },
+  {
+   "script": "derive_realwage.py",
+   "kind": "derive",
+   "what_it_adds": "Nominal polymer wages against what they actually buy.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 931
+   },
+   "hosts": [],
+   "outputs": [
+    "rpp.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "rpp.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "rpp.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "rpp.json": "static"
+   },
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [
+    "peers.json"
+   ],
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/peers.json'",
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "import_error",
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_bea.py",
+   "kind": "fetch",
+   "what_it_adds": "BEA county GDP by industry — value added, which QCEW cannot give.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 471
+   },
+   "hosts": [
+    "apps.bea.gov"
+   ],
+   "outputs": [
+    "bea.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "bea.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "bea.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "bea.json": "static"
+   },
+   "observed_stop": "SystemExit(FATAL: BEA line codes returned no rows: ['1', '13', '3']. A code that returns nothing is a bad code — check CAGDP2 before writing bea.json.)",
+   "observed_network": [
+    "http<path>/UserID=<redacted>&method=GetData&datasetname=Regional&TableName=CAGDP2&LineCode=1&GeoFIPS=39007,39035,39055,39085,39093,39099,39103,39133,39151,39153,39155,39169,39000,00000&Year=ALL&ResultFormat=JSON",
+    "http<path>/UserID=<redacted>&method=GetData&datasetname=Regional&TableName=CAGDP2&LineCode=3&GeoFIPS=39007,39035,39055,39085,39093,39099,39103,39133,39151,39153,39155,39169,39000,00000&Year=ALL&ResultFormat=JSON",
+    "http<path>/UserID=<redacted>&method=GetData&datasetname=Regional&TableName=CAGDP2&LineCode=13&GeoFIPS=39007,39035,39055,39085,39093,39099,39103,39133,39151,39153,39155,39169,39000,00000&Year=ALL&ResultFormat=JSON"
+   ],
+   "observed_reads": [
+    "<outside-repo>/.env"
+   ],
+   "import_error": null,
+   "registry_sources": [
+    "bea_rpp"
+   ],
+   "consuming_pages": [
+    "realwage"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_chain_prices.py",
+   "kind": "fetch",
+   "what_it_adds": "The feedstock and resin links of the polymer price chain, appended to fred.json.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1023
+   },
+   "hosts": [
+    "api.stlouisfed.org"
+   ],
+   "outputs": [],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": []
+   },
+   "output_learned_by": {},
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [
+    "<outside-repo>/.env",
+    "fred.json"
+   ],
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/fred.json'",
+   "registry_sources": [
+    "fred"
+   ],
+   "consuming_pages": [
+    "cost-scissors",
+    "revisions"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "import_error",
+    "no_house_docstring",
+    "no_output_detected",
+    "no_traps_section",
+    "not_in_PIPELINES.md"
+   ]
+  },
+  {
+   "script": "fetch_footprint.py",
+   "kind": "fetch",
+   "what_it_adds": "Add the two counties PIC's footprint has and ours did not.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 556
+   },
+   "hosts": [
+    "api.census.gov",
+    "data.bls.gov"
+   ],
+   "outputs": [
+    "qwi.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "qwi.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "qwi.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "qwi.json": "static"
+   },
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [
+    "<outside-repo>/.env",
+    "qcew.json"
+   ],
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/qcew.json'",
+   "registry_sources": [
+    "qcew",
+    "qwi"
+   ],
+   "consuming_pages": [
+    "churn",
+    "cost-scissors",
+    "location-quotient",
+    "occupations",
+    "peers",
+    "realwage",
+    "revisions",
+    "wages"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "import_error",
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_intl.py",
+   "kind": "fetch",
+   "what_it_adds": "Did the rest of the country keep its international polymer students, or lose them too?",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1779
+   },
+   "hosts": [
+    "educationdata.urban.org"
+   ],
+   "outputs": [
+    "intl.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "intl.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "intl.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "intl.json": "static"
+   },
+   "observed_stop": "SystemExit(FATAL: no national rows for CIP 143201)",
+   "observed_network": [
+    "http<path>/?cipcode_6digit=143201&majornum=1&sex=99",
+    "http<path>/?cipcode_6digit=143201&majornum=1&sex=99",
+    "http<path>/?cipcode_6digit=143201&majornum=1&sex=99",
+    "http<path>/?cipcode_6digit=143201&majornum=1&sex=99"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "ipeds"
+   ],
+   "consuming_pages": [
+    "occupations"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_ipeds.py",
+   "kind": "fetch",
+   "what_it_adds": "IPEDS completions — the talent pipeline with a denominator.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 798
+   },
+   "hosts": [
+    "educationdata.urban.org"
+   ],
+   "outputs": [
+    "ipeds.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "ipeds.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "ipeds.json"
+    ],
+    "observed": [
+     "ipeds.json"
+    ]
+   },
+   "output_learned_by": {
+    "ipeds.json": "observed"
+   },
+   "observed_stop": "open(ipeds.json,'w')",
+   "observed_network": [
+    "http<path>/?fips=39",
+    "http<path>/?fips=39",
+    "http<path>/?fips=39",
+    "http<path>/?cipcode_6digit=143201&fips=39&majornum=1"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "ipeds"
+   ],
+   "consuming_pages": [
+    "occupations"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_ipeds_cip.py",
+   "kind": "fetch",
+   "what_it_adds": "`ipeds.json` (from `fetch_ipeds.py`) is every Ohio institution, ten CIP codes, 2012–2023, award levels UNLABELLED (see `derive_ipeds.py`: \"AWARD LEVEL IS DELIBERATELY NOT USED\"). This file goes back to 1991 — the first year the API carries 6-digit CIP detail for these codes — for the three institutions that ARE the regional polymer pipeline (Akron, Kent State, Case Western), puts Ohio and US totals beside them from the same endpoint with the same filters, and LABELS the award levels from the API's own codebook, fetched and asserted at run time. Bachelor's, master's and doctorate are separable ",
+   "what_one_row_is": "One (year, institution or geography, CIP-6, award level) count of DEGREES CONFERRED, race and sex at their totals (race=99, sex=99). Not people: a double major appears under majornum 1 and 2, so from 2000 on rows are first-major only. Not people who stayed — IPEDS cannot see where a graduate goes.  THE CIP CODES, VERIFIED 2026-08-18 against the NCES CIP 2020 file (http<path>/cipcode",
+   "traps": "- **Award-level codes are the Urban API's, not IPEDS's.** 7 is Bachelor's, 9 is Master's, 4 is Associate's; 20 is Doctor's until 2008 and 22/23/24 are Doctor's from 2007 (both appear in 2007–2008 — sum them). `fetch_ipeds.py` maps 7 to Master and 22 to Other, which is wrong; `derive_ipeds.py` already refuses to use those labels. The labels here come from `api-values/?format_name=award_level` and are re-asserted every run. - **Two ways to total, and they differ.** With `majornum=1` (2000+) a double major counts once; without it, twice. `meta.second_major_share_us_pct` records how much the filte",
+   "docstring": {
+    "has_house_docstring": true,
+    "has_traps": true,
+    "length": 3933
+   },
+   "hosts": [
+    "educationdata.urban.org",
+    "nces.ed.gov"
+   ],
+   "outputs": [
+    "ipeds.json",
+    "ipeds_cip.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "ipeds.json": false,
+    "ipeds_cip.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "ipeds.json",
+     "ipeds_cip.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "ipeds.json": "static",
+    "ipeds_cip.json": "static"
+   },
+   "observed_stop": "SystemExit(FATAL: award_level 4 is '' in the API codebook, expected \"Associate's degree\". The AWARD map above is pinned to the 2026-08-18 codebook.)",
+   "observed_network": [
+    "http<path>/?format=json&format_name=award_level",
+    "http<path>/?format=json&format_name=award_level",
+    "http<path>/?format=json&format_name=award_level"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "ipeds"
+   ],
+   "consuming_pages": [
+    "occupations"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_ipeds_national.py",
+   "kind": "fetch",
+   "what_it_adds": "The counterfactual: did POLYMER DEGREES decline, or did Northeast Ohio decline?",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1548
+   },
+   "hosts": [
+    "educationdata.urban.org"
+   ],
+   "outputs": [
+    "ipeds.json",
+    "ipeds_national.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "ipeds.json": false,
+    "ipeds_national.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "ipeds_national.json"
+    ],
+    "observed": [
+     "ipeds.json"
+    ]
+   },
+   "output_learned_by": {
+    "ipeds.json": "observed",
+    "ipeds_national.json": "static"
+   },
+   "observed_stop": "open(ipeds.json,'w')",
+   "observed_network": [
+    "http<path>/?fips=39",
+    "http<path>/?fips=39",
+    "http<path>/?fips=39",
+    "http<path>/?cipcode_6digit=143201&fips=39&majornum=1"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "ipeds"
+   ],
+   "consuming_pages": [
+    "occupations"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_lodes.py",
+   "kind": "fetch",
+   "what_it_adds": "LODES — the labor shed. Where the people who work here actually live.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1275
+   },
+   "hosts": [
+    "lehd.ces.census.gov"
+   ],
+   "outputs": [
+    "lodes.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "lodes.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "lodes.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "lodes.json": "static"
+   },
+   "observed_stop": "urlopen",
+   "observed_network": [
+    "http<path>/oh_od_main_JT00_2022.csv.gz"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "lodes"
+   ],
+   "consuming_pages": [
+    "laborshed"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_lodes_peers.py",
+   "kind": "fetch",
+   "what_it_adds": "Is PIC-12's containment unusual, or is it just America?",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1558
+   },
+   "hosts": [
+    "lehd.ces.census.gov"
+   ],
+   "outputs": [
+    "lodes_flows_cache.json",
+    "lodes_peers.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "lodes_flows_cache.json": false,
+    "lodes_peers.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "lodes_flows_cache.json",
+     "lodes_peers.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "lodes_flows_cache.json": "static",
+    "lodes_peers.json": "static"
+   },
+   "observed_stop": "SystemExit(FATAL: no flows read. A zero here is a bug, not an empty country.)",
+   "observed_network": [
+    "http<path>/oh_xwalk.csv.gz",
+    "http<path>/oh_od_main_JT00_2022.csv.gz",
+    "http<path>/pa_xwalk.csv.gz",
+    "http<path>/pa_od_main_JT00_2022.csv.gz"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "lodes"
+   ],
+   "consuming_pages": [
+    "laborshed"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_lodes_resident.py",
+   "kind": "fetch",
+   "what_it_adds": "LODES, the OTHER direction — where the people who LIVE here actually work.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1807
+   },
+   "hosts": [
+    "lehd.ces.census.gov"
+   ],
+   "outputs": [
+    "lodes_resident.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "lodes_resident.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "lodes_resident.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "lodes_resident.json": "static"
+   },
+   "observed_stop": "SystemExit(FATAL: no flows with a HOME end in PIC-12. A zero here is a bug in the GEOID slice or the file layout, not an empty region.)",
+   "observed_network": [
+    "http<path>/oh_od_main_JT00_2022.csv.gz",
+    "http<path>/pa_od_aux_JT00_2022.csv.gz",
+    "http<path>/mi_od_aux_JT00_2022.csv.gz",
+    "http<path>/wv_od_aux_JT00_2022.csv.gz"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "lodes"
+   ],
+   "consuming_pages": [
+    "laborshed"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_occmix.py",
+   "kind": "fetch",
+   "what_it_adds": "The occupation mix inside polymer manufacturing — the bridge over QWI's blind spot.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1776
+   },
+   "hosts": [
+    "data.bls.gov"
+   ],
+   "outputs": [
+    "occmix.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "occmix.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "occmix.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "occmix.json": "static"
+   },
+   "observed_stop": "SystemExit(FATAL: 326000: )",
+   "observed_network": [
+    "http<path>/nationalMatrix?queryParams=326000&ioType=i",
+    "http<path>/nationalMatrix?queryParams=326000&ioType=i",
+    "http<path>/nationalMatrix?queryParams=326000&ioType=i"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "nem"
+   ],
+   "consuming_pages": [
+    "occupations"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_odjfs_projections.py",
+   "kind": "fetch",
+   "what_it_adds": "Everything else in this stack is a rear-view mirror: QCEW, BDS, QWI, WARN, patents all describe what already happened. This is the one free official series that says what the state EXPECTS — ODJFS Bureau of Labor Market Information's 10-year industry and occupation projections, statewide and at two sub-state grains that cover the PIC-12: the JobsOhio Northeast region (Team NEO, 18 counties, a superset of PIC-12) and the four MSAs whose counties are PIC-12 counties (Akron, Cleveland, Canton, Youngstown; Ashtabula and Wayne are outside every MSA and appear only in the region and state figures).",
+   "what_one_row_is": "One INDUSTRY (NAICS 3- or 4-digit, or a sector title with no code) or one OCCUPATION (SOC), for one GEOGRAPHY: 2022 base employment, 2032 projected, change, percent, and for occupations the annual openings split (growth / exits / transfers) and a median wage. These are PROJECTIONS — a modelled path, not a forecast with a confidence band, and BLS-style projections have historically under-called bot",
+   "traps": "- **Publication thresholds differ by geography.** The statewide file footnotes \"Industries with 5,000 or more workers\"; the regional files use their own cut and drop more rows. Youngstown has no 325 row at all; Canton has 325 and 326 but no 4-digit detail; Northeast has 3250A2 but not 3250A1. A missing row is SUPPRESSED, not zero. - The XLSX header is three or four stacked rows; the real data starts at the row whose column A is \"Code\" (or, statewide, whose column A begins \"Total All\"). Located by content, never by line number. - Numbers arrive as float strings from the XML (`'-2.89000000000000",
+   "docstring": {
+    "has_house_docstring": true,
+    "has_traps": true,
+    "length": 3112
+   },
+   "hosts": [
+    "ohiolmi.com",
+    "schemas.openxmlformats.org"
+   ],
+   "outputs": [
+    "odjfs_projections.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "odjfs_projections.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "odjfs_projections.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "odjfs_projections.json": "static"
+   },
+   "observed_stop": "urlopen",
+   "observed_network": [
+    "http<path>/IndOH32.xlsx"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "odjfs"
+   ],
+   "consuming_pages": [
+    "occupations"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_oews.py",
+   "kind": "fetch",
+   "what_it_adds": "BLS OEWS — occupation wages. Moves the workforce case from \"how many jobs\" to \"which\".",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1631
+   },
+   "hosts": [
+    "www.bls.gov"
+   ],
+   "outputs": [
+    "oews.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "oews.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "oews.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "oews.json": "static"
+   },
+   "observed_stop": "SystemExit(FATAL: no OEWS metro file reachable. Last error: _Probe . BLS blocks on header completeness — a bare User-Agent gets 403 while a full browser header set passes.)",
+   "observed_network": [
+    "http<path>/oesm24ma.zip",
+    "http<path>/oesm23ma.zip"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "oews"
+   ],
+   "consuming_pages": [
+    "occupations"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_oews_national.py",
+   "kind": "fetch",
+   "what_it_adds": "BLS OEWS — the NATIONAL benchmark for the metro occupation wages in oews.json.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1201
+   },
+   "hosts": [
+    "www.bls.gov"
+   ],
+   "outputs": [
+    "oews.json",
+    "oews_national.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "oews.json": false,
+    "oews_national.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "oews.json",
+     "oews_national.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "oews.json": "static",
+    "oews_national.json": "static"
+   },
+   "observed_stop": "SystemExit(FATAL: oews.json is missing — run fetch_oews.py first; the occupation set is read from it so the two files can never disagree.)",
+   "observed_network": [],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "oews_national"
+   ],
+   "consuming_pages": [
+    "occupations"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_onet_education.py",
+   "kind": "fetch",
+   "what_it_adds": "O*NET — what each occupation is, its Job Zone, and the education its workers report.",
+   "what_one_row_is": "One SOC occupation with: the O*NET title and one-paragraph description; its JOB ZONE (O*NET's scale of overall preparation, from \"little or no preparation\" to \"extensive\"; release 30.x reports the two lowest steps as one band, \"Job Zone 1-2\"); and the distribution of REQUIRED LEVEL OF EDUCATION as reported by the workers and occupational experts O*NET surveyed — the share reporting each of twelve ",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 2246
+   },
+   "hosts": [
+    "www.onetcenter.org"
+   ],
+   "outputs": [
+    "oews.json",
+    "onet_education.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "oews.json": false,
+    "onet_education.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "oews.json",
+     "onet_education.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "oews.json": "static",
+    "onet_education.json": "static"
+   },
+   "observed_stop": "SystemExit(FATAL: oews.json is missing — run fetch_oews.py first.)",
+   "observed_network": [],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "onet_education"
+   ],
+   "consuming_pages": [
+    "occupations"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_provenance.py",
+   "kind": "fetch",
+   "what_it_adds": "Every other fetcher here measures the cluster. This one measures a SENTENCE. The Greater Akron Chamber's 2022 Polymer Industry Cluster reports state that Ohio's polymer industry has \"more than 72,000 employees in 996 companies contributing $40+ billion to the Ohio GDP\", footnoted to an Ohio Development Services Agency report of June 2019. That ODSA report was recovered on 2026-08-18 (`Documents/ohio-econdev-corpus/02_odsa-polymer-industry- reports/ODSA_B403_Ohio-Polymers-Industry_2019-06.pdf`) and it states its own method verbatim: \"Ohio's polymers industry (32521, 325991 and 326 combined) acc",
+   "what_one_row_is": "Census County Business Patterns 2016 (NAICS 2012 basis): one (geography, NAICS) cell of ESTAB and EMP, for Ohio and every Ohio county, at 326, 32521, 325991. BEA SAGDP2: one (year, industry line) cell of current-dollar GDP for Ohio. Both are the published values, untouched — no imputation, no suppression adjustment.  THE SCOPE HERE IS ODSA'S, NOT PIC'S. `PIPELINES.md` section 6 governs this repo's",
+   "traps": "- CBP county cells carry an EMP of 0 with a noise flag where employment is withheld; summing county EMP therefore UNDERCOUNTS the state EMP (63,757 vs 72,581 here). Use the state row for state totals; use county rows only for establishment counts and for the \"counties with at least one establishment\" figure, which survives suppression. - CBP 2016 is on the NAICS 2012 basis (`NAICS2012=`); 2017 onward uses `NAICS2017=`. Requesting the wrong vintage parameter returns nothing, not an error. - The Census API now REQUIRES a key (`CENSUS_API_KEY`); keyless calls 302 to a missing_key page. BEA needs ",
+   "docstring": {
+    "has_house_docstring": true,
+    "has_traps": true,
+    "length": 4340
+   },
+   "hosts": [
+    "api.census.gov",
+    "apps.bea.gov",
+    "data.bls.gov"
+   ],
+   "outputs": [
+    "provenance.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "provenance.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "provenance.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "provenance.json": "static"
+   },
+   "observed_stop": "urlopen",
+   "observed_network": [
+    "http<path>/cbp?get=ESTAB,EMP&for=state:39&NAICS2012=326key=<redacted>"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "qcew"
+   ],
+   "consuming_pages": [
+    "churn",
+    "cost-scissors",
+    "location-quotient",
+    "occupations",
+    "peers",
+    "realwage",
+    "revisions",
+    "wages"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_qcew.py",
+   "kind": "fetch",
+   "what_it_adds": "Cheap fix #1: the location-quotient denominator, fetched locally.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 477
+   },
+   "hosts": [
+    "data.bls.gov"
+   ],
+   "outputs": [
+    "qcew.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "qcew.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": [
+     "qcew.json"
+    ]
+   },
+   "output_learned_by": {
+    "qcew.json": "observed"
+   },
+   "observed_stop": "open(qcew.json,'w')",
+   "observed_network": [
+    "http<path>/39153.csv",
+    "http<path>/39035.csv",
+    "http<path>/39133.csv",
+    "http<path>/39151.csv"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "qcew"
+   ],
+   "consuming_pages": [
+    "churn",
+    "cost-scissors",
+    "location-quotient",
+    "occupations",
+    "peers",
+    "realwage",
+    "revisions",
+    "wages"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_qwi_demand.py",
+   "kind": "fetch",
+   "what_it_adds": "The demand term. Is the polymer talent shortage visible in the price of labor?",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1571
+   },
+   "hosts": [
+    "api.census.gov"
+   ],
+   "outputs": [
+    "qwi_demand.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "qwi_demand.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "qwi_demand.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "qwi_demand.json": "static"
+   },
+   "observed_stop": "SystemExit(FATAL: industry 326 returned nothing. A missing benchmark is worse than no chart — the polymer series alone cannot answer whether its movement is specific to polymer.)",
+   "observed_network": [
+    "http<path>/sa?get=Emp,EarnBeg&for=county:007,035,055,085,093,099,103,133,151,153,155,169&in=state:39&industry=326&year=2012&quarter=1key=<redacted>",
+    "http<path>/sa?get=Emp,EarnBeg&for=county:007,035,055,085,093,099,103,133,151,153,155,169&in=state:39&industry=326&year=2012&quarter=2key=<redacted>",
+    "http<path>/sa?get=Emp,EarnBeg&for=county:007,035,055,085,093,099,103,133,151,153,155,169&in=state:39&industry=326&year=2012&quarter=3key=<redacted>",
+    "http<path>/sa?get=Emp,EarnBeg&for=county:007,035,055,085,093,099,103,133,151,153,155,169&in=state:39&industry=326&year=2012&quarter=4key=<redacted>"
+   ],
+   "observed_reads": [
+    "<outside-repo>/.env"
+   ],
+   "import_error": null,
+   "registry_sources": [
+    "qwi"
+   ],
+   "consuming_pages": [
+    "churn"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_rest.py",
+   "kind": "fetch",
+   "what_it_adds": "Fetch the remaining cluster-vitals sources straight from origin.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 395
+   },
+   "hosts": [
+    "api.census.gov",
+    "api.eia.gov",
+    "api.stlouisfed.org",
+    "api.usaspending.gov",
+    "apps.bea.gov"
+   ],
+   "outputs": [
+    "fred.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "fred.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": [
+     "fred.json"
+    ]
+   },
+   "output_learned_by": {
+    "fred.json": "observed"
+   },
+   "observed_stop": "SystemExit(FATAL: EIA series returned no rows: ['Henry Hub natural gas spot', 'Ohio industrial electricity price']. Check the route and facets before writing eia.json.)",
+   "observed_network": [
+    "http<path>/observations?series_id=WPU072api_key=<redacted>&file_type=json&observation_start=2005-01-01",
+    "http<path>/observations?series_id=WPU072api_key=<redacted>&file_type=json&observation_start=2019-01-01&realtime_start=2019-01-01&realtime_end=9999-12-31",
+    "http<path>/observations?series_id=WPU06api_key=<redacted>&file_type=json&observation_start=2005-01-01",
+    "http<path>/observations?series_id=WPU06api_key=<redacted>&file_type=json&observation_start=2019-01-01&realtime_start=2019-01-01&realtime_end=9999-12-31"
+   ],
+   "observed_reads": [
+    "<outside-repo>/.env"
+   ],
+   "import_error": null,
+   "registry_sources": [
+    "fred",
+    "usaspending"
+   ],
+   "consuming_pages": [
+    "cost-scissors",
+    "federal-money",
+    "funding-map",
+    "revisions"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_rpp.py",
+   "kind": "fetch",
+   "what_it_adds": "BEA Regional Price Parities — what a dollar actually buys, by metro.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 939
+   },
+   "hosts": [
+    "apps.bea.gov"
+   ],
+   "outputs": [
+    "rpp.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "rpp.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "rpp.json"
+    ],
+    "observed": [
+     "rpp.json"
+    ]
+   },
+   "output_learned_by": {
+    "rpp.json": "observed"
+   },
+   "observed_stop": "open(rpp.json,'w')",
+   "observed_network": [
+    "http<path>/UserID=<redacted>&method=GetData&datasetname=Regional&TableName=MARPP&LineCode=1&GeoFIPS=MSA&Year=2019,2020,2021,2022,2023&ResultFormat=JSON",
+    "http<path>/UserID=<redacted>&method=GetData&datasetname=Regional&TableName=MARPP&LineCode=2&GeoFIPS=MSA&Year=2019,2020,2021,2022,2023&ResultFormat=JSON",
+    "http<path>/UserID=<redacted>&method=GetData&datasetname=Regional&TableName=MARPP&LineCode=3&GeoFIPS=MSA&Year=2019,2020,2021,2022,2023&ResultFormat=JSON",
+    "http<path>/UserID=<redacted>&method=GetData&datasetname=Regional&TableName=MARPP&LineCode=4&GeoFIPS=MSA&Year=2019,2020,2021,2022,2023&ResultFormat=JSON"
+   ],
+   "observed_reads": [
+    "<outside-repo>/.env"
+   ],
+   "import_error": null,
+   "registry_sources": [
+    "bea_rpp"
+   ],
+   "consuming_pages": [
+    "realwage"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  }
+ ],
+ "orphan_outputs": [],
+ "outputs": {}
+}

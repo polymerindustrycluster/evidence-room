@@ -25,6 +25,9 @@ const ALL = [
  {s:"wages", g:"workforce", t:"Does The Cluster Pay Better?", q:"Are these actually good jobs?",
   f:"In 40 of 51 disclosed cells the mean polymer wage beats the county all-industry mean — a real result against a deliberately low bar.",
   foot:"PIC-12", claims:2},
+ {s:"occupations", g:"workforce", t:"The Occupations Inside Polymer Manufacturing", q:"Which jobs is the industry made of, and what do they pay here?",
+  f:"One in nine is a molding-machine setter. Four Northeast Ohio metros pay the floor jobs near the national rate and the degree jobs under it — nominal, all-industry, before any cost-of-living adjustment.",
+  foot:"metro, not PIC-12", claims:12},
  {s:"realwage", g:"conditions", t:"What The Paycheck Buys", q:"Are the wages good after cost of living?",
   f:"Akron ranks 33rd of 56 polymer metros in dollars and 19th in what those dollars buy. But 110 metros are cheaper — the advantage is against this industry's geography, not the country.",
   foot:"metros", claims:4},
@@ -40,9 +43,9 @@ const ALL = [
  {s:"funding-map", g:"money", t:"PIC Funding Map", q:"Where did the public money go?",
   f:"Three awards, seven programs, every named recipient, with the disclosures attached. Predates the shared house style.",
   foot:"awards", legacy:true},
- {s:"timeline", g:"method", t:"Public Record Timeline", q:"What happened publicly, and when?",
-  f:"87 dated public events in lanes, with future milestones drawn hollow so a plan never reads as a fact. Predates the shared house style.",
-  foot:"public record", legacy:true},
+ {s:"timeline", g:"method", t:"Why Here, Then The Record", q:"Why is the cluster here — and what has it done?",
+  f:"32 proven heritage events from 1898 on an era-banded axis, then 87 dated public events since 2023 in lanes, future milestones hollow so a plan never reads as a fact. Predates the shared house style; carries a claims file.",
+  foot:"public record + wins register", legacy:true},
 
  /* 10 further pieces exist and are not published — see the README.
     Their entries are removed here rather than filtered at render time, so the

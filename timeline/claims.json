@@ -1,0 +1,105 @@
+{
+  "data": {"h": "heritage.json", "t": "timeline.json"},
+  "claims": [
+    {
+      "id": "tl-heritage-count",
+      "text": "First, the heritage: 32 dated events between 1898 and 2012 — 19 that changed the region's capacity and 13 scientific firsts.",
+      "source": "web/timeline/data/heritage.json, built by tools/build-heritage-web.py from the NEO Polymer Wins register (INDEX.md heritage + discoveries collections)",
+      "assert": "D['h']['meta']['counts']['shown'] == 32 and D['h']['meta']['counts']['heritage'] == 19 and D['h']['meta']['counts']['discoveries'] == 13 and D['h']['meta']['counts']['firstYear'] == 1898 and D['h']['meta']['counts']['lastYear'] == 2012 and len(D['h']['events']) == 32 and min(e['year'] for e in D['h']['events']) == 1898 and max(e['year'] for e in D['h']['events']) == 2012",
+      "actual": "(D['h']['meta']['counts']['shown'], D['h']['meta']['counts']['heritage'], D['h']['meta']['counts']['discoveries'], D['h']['meta']['counts']['firstYear'], D['h']['meta']['counts']['lastYear'])",
+      "falsified_if": "The register gains or loses a PROVEN heritage or discovery row, or a row's label changes. The lede, the prologue heading, the topline tile and the methods paragraph are all written from the same counts at load time, so the static numbers here must move with them — this claim is what forces that."
+    },
+    {
+      "id": "tl-heritage-proven-only",
+      "text": "Each shown only because PIC's own register labels it proven against a named source.",
+      "source": "heritage.json: every emitted event carries label PROVEN; the builder drops every other label and records the drops",
+      "assert": "all(e['label'] == 'PROVEN' for e in D['h']['events']) and D['h']['meta']['counts']['dropped'].get('label:CLAIMED', 0) == 5 and D['h']['meta']['counts']['dropped'].get('label:ASPIRATIONAL', 0) == 0 and len(D['h']['meta']['withheld']) == 5 and all(w['label'] != 'PROVEN' for w in D['h']['meta']['withheld'])",
+      "actual": "(sorted(set(e['label'] for e in D['h']['events'])), D['h']['meta']['counts']['dropped'], [w['id'] for w in D['h']['meta']['withheld']])",
+      "falsified_if": "Any non-PROVEN row is emitted, or the withheld count stops matching the drop count. Five CLAIMED rows are held today (H-001 Goodrich 1870, H-004 UA lab 1909, H-006 wartime GR-S, H-008c Morton 1948, H-015 Promerus 2020); if a later wave proves one, the number here changes and the sentence still holds — the assertion pins the mechanism, the count is the current reading."
+    },
+    {
+      "id": "tl-heritage-every-mark-has-source",
+      "text": "Every mark opens its source.",
+      "source": "heritage.json: sources per event, http(s) only after the builder strips vault references",
+      "assert": "all(any(s['url'] and s['url'].startswith('http') for s in e['sources']) for e in D['h']['events']) and not any('vault' in (s['note'] or '').lower() or '.md' in (s['note'] or '') for e in D['h']['events'] for s in e['sources'])",
+      "actual": "(sum(1 for e in D['h']['events'] if any(s['url'] for s in e['sources'])), len(D['h']['events']), D['h']['meta']['counts']['sourcesStripped'])",
+      "falsified_if": "A row is emitted with no public URL, or an internal source reference (a vault path, a .md file) leaks into a source note. The register is internal; only URLs and plain bibliographic lines may travel."
+    },
+    {
+      "id": "tl-heritage-wartime-withheld",
+      "text": "Rows the register labels only claimed — where a date or a figure is recorded two ways — are held back rather than shown with a caveat, and the wartime synthetic-rubber program is one of them.",
+      "source": "NEO-POLYMER-WINS INDEX.md: H-006 (1942–45 GR-S program) is CLAIMED because wartime tonnage is recorded four different ways; heritage.json meta.withheld carries the id",
+      "assert": "any(w['id'] == 'H-006' and w['label'] == 'CLAIMED' for w in D['h']['meta']['withheld']) and not any(e['id'] == 'H-006' for e in D['h']['events']) and not any('800,000' in e['oneLiner'] or '920,000' in e['oneLiner'] for e in D['h']['events'])",
+      "actual": "[w for w in D['h']['meta']['withheld'] if w['id'] == 'H-006']",
+      "falsified_if": "H-006 is promoted to PROVEN (then this sentence must be rewritten, not the assertion), or a wartime tonnage figure appears in any emitted one-liner. The register's rule: four measures, no single number is honest, print none."
+    },
+    {
+      "id": "tl-heritage-title-count-in-methods",
+      "text": "Of its 37 heritage and discovery rows, 32 are labeled proven and appear here; 5 labeled claimed are withheld. 3 internal source references were stripped in the build.",
+      "source": "heritage.json meta.counts (methods paragraph is written from these at load time)",
+      "assert": "D['h']['meta']['counts']['shown'] + D['h']['meta']['counts']['dropped'].get('label:CLAIMED', 0) == 37 and D['h']['meta']['counts']['sourcesStripped'] == 3",
+      "actual": "(D['h']['meta']['counts']['shown'], D['h']['meta']['counts']['dropped'], D['h']['meta']['counts']['sourcesStripped'])",
+      "falsified_if": "The register's heritage + discoveries collections change size, or a re-run of the builder strips a different number of internal references. The methods paragraph is generated, so it cannot drift from the data — but this file's text can, and this claim is what catches it."
+    },
+    {
+      "id": "tl-operating-five-workstreams",
+      "text": "Five workstreams, running at the same time.",
+      "source": "timeline.json lanes",
+      "assert": "len(D['t']['lanes']) == 5",
+      "actual": "[l['name'] for l in D['t']['lanes']]",
+      "falsified_if": "A lane is added or merged in the inventory's LANES map."
+    },
+    {
+      "id": "tl-operating-since-2023",
+      "text": "Everything the cluster has publicly done since the 2023 federal designation.",
+      "source": "timeline.json: the 2023 designation is a public event in the record and the swimlane window opens at 2023-01-01",
+      "assert": "any(e['date'].startswith('2023') and 'esignat' in e['title'] for e in D['t']['events']) and D['t']['meta']['counts']['events'] == len(D['t']['events'])",
+      "actual": "[ (e['date'], e['title']) for e in D['t']['events'] if e['date'].startswith('2023') and 'esignat' in e['title'] ]",
+      "falsified_if": "The designation event leaves the public record, or the window constant in app.js moves off 2023 without this sentence moving with it."
+    },
+    {
+      "id": "tl-operating-as-of",
+      "text": "Operating record as of 13 August 2026; heritage register as of 14 August 2026.",
+      "source": "timeline.json meta.asOf; heritage.json meta.asOf",
+      "assert": "D['t']['meta']['asOf'] == '2026-08-13' and D['h']['meta']['asOf'] == '2026-08-14'",
+      "actual": "(D['t']['meta']['asOf'], D['h']['meta']['asOf'])",
+      "falsified_if": "Either builder is re-run against a newer inventory or register: the <time> elements in index.html are static and must be edited with the data."
+    },
+    {
+      "id": "tl-discoveries-not-products",
+      "text": "A discovery is a paper or a patent, never a product.",
+      "source": "NEO-POLYMER-WINS GOAL.md and collections/discoveries.md: 'A paper or a patent is enough. A product is a child row.'",
+      "verify": "manual",
+      "assert": null,
+      "actual": null,
+      "falsified_if": "The register redefines the discoveries collection to admit products, or a shipped/licensed row is emitted into the prologue (the builder drops those collections and counts the drops)."
+    },
+    {
+      "id": "tl-heritage-not-cluster-outcome",
+      "text": "None of it is a cluster outcome; it is the reason the cluster is here.",
+      "source": "NEO-POLYMER-WINS GOAL.md: heritage and discoveries 'may not fill an EDA success cell'; every atom carries pic_caused: no",
+      "verify": "manual",
+      "assert": null,
+      "actual": null,
+      "falsified_if": "A heritage or discovery atom is ever marked pic_caused: yes. The register's own rule is that PIC-era awards live in a different collection and are not wins until they ship."
+    },
+    {
+      "id": "tl-photos-public-domain",
+      "text": "Five photographs, all in the public domain: four US federal works from the Library of Congress and the Naval History and Heritage Command, one from NASA.",
+      "source": "NEO-POLYMER-WINS media/MEDIA-LEDGER.md and incoming/wave1b-media.md — LOC fsac.1a35066, fsac.1a35064, fsac.1a35068 (Palmer, FSA/OWI, PD); NHHC NH 42164 (US Navy, PD); NASA aerogels feature (NASA, PD)",
+      "verify": "manual",
+      "assert": null,
+      "actual": null,
+      "falsified_if": "Any of the five archive records is found to carry a third-party credit or a restriction. The ledger's rule stands: news-site, Getty, postcard and Wikipedia-page-as-licence images never ship, and the megadeck's vintage Airdock postcard stays out until its rights are checked."
+    },
+    {
+      "id": "tl-photos-no-university-firsts",
+      "text": "No archive on this page holds a cleared photograph of the university firsts, so none is shown.",
+      "source": "MEDIA-LEDGER.md: 'No public-domain photo found yet for UA 1909, Baer 1963, Kent LCI, Kennedy, Harris–Cheng, or Dhinojwala. Do not fill those holes with news or campus PR.'",
+      "verify": "manual",
+      "assert": null,
+      "actual": null,
+      "falsified_if": "A university grants written permission for a science photograph or a public-domain one is found; then a frame may be added and this sentence must change."
+    }
+  ]
+}

@@ -198,11 +198,17 @@ details.pv-table:not([open]) .pv-tablewrap{display:none}
    at 980px everywhere while its stylesheet said 678. The old column audit could not see it
    because 980 is a sanctioned width; the hardened audit reports "on FIGURE, expected
    MEASURE" and that is how this was found. Selectors below now carry the wrapper's own
-   specificity so the cascade resolves the way it reads. */
+   specificity so the cascade resolves the way it reads.
+   SECOND HALF OF THE SAME BUG, found 2026-08-18 by the occupations build: those two rules
+   also set `margin:0` / `margin:18px 0 0`, which at (0,2,1) outranked the one-axis
+   `margin-left:auto;margin-right:auto` block (0,2,0) at the end of this file — so the
+   closer prose sat at 678px but LEFT-ALIGNED inside the 980px wrap on every page. The
+   column audit measures widths, not centres, and could not see it. Horizontal margins are
+   now `auto` here, in the winning rule. */
 .closer .wrap > *{max-width:var(--figure)}
 .closer .wrap > p{font-size:clamp(20px,2.6vw,30px);font-weight:900;letter-spacing:-.02em;
-  line-height:1.26;max-width:var(--measure);margin:0}
-.closer .wrap > .sub{margin:18px 0 0;font-size:16.5px;font-weight:400;color:#A8CDD4;
+  line-height:1.26;max-width:var(--measure);margin:0 auto}
+.closer .wrap > .sub{margin:18px auto 0;font-size:16.5px;font-weight:400;color:#A8CDD4;
   max-width:var(--measure);letter-spacing:0;line-height:1.6}
 .closer .sub b{color:#fff}
 

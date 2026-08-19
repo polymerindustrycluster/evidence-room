@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Operating Record</title>
-<meta name="description" content="An interactive record of what the Polymer Industry Cluster has done since 2023: designations and funding, R&amp;D, workforce, startups and infrastructure, on one shared timeline.">
+<meta name="description" content="Why a polymer cluster sits in Northeast Ohio — the proven heritage and scientific firsts, 1898 to 2012 — and then the record of what the Polymer Industry Cluster has publicly done since the 2023 federal designation, on one page.">
 <link rel="stylesheet" href="../_shared/pic-viz.css">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -14,11 +14,15 @@
 
 <header class="masthead">
   <div class="wrap">
-    <p class="eyebrow">The operating record</p>
-    <h1>Five workstreams, running at the same time</h1>
+    <p class="eyebrow">Why here, and the operating record</p>
+    <h1>Why here — and then what the cluster did</h1>
     <p class="lede">
-      Everything the cluster has publicly done since the 2023 federal designation, on one shared
-      timeline. Not a highlight reel &mdash; the full public record, so the quiet stretches show too.
+      Two records on one page. First, the heritage: <b id="h-shown">32</b> dated events between
+      <span id="h-first">1898</span> and <span id="h-last">2012</span> &mdash; <span id="h-her">19</span>
+      that changed the region&rsquo;s capacity and <span id="h-dis">13</span> scientific firsts &mdash; each
+      shown only because PIC&rsquo;s own register labels it <i>proven</i> against a named source. Then the
+      operating record: everything the cluster has publicly done since the 2023 federal designation.
+      Not a highlight reel &mdash; the full public record, so the quiet stretches show too.
     </p>
     <ul class="topline" id="topline">
       <!-- filled from data; static fallback below is replaced on load -->
@@ -28,8 +32,87 @@
 </header>
 
 <main>
-  <section class="section">
+  <section class="section section--prologue" aria-labelledby="pro-h">
     <div class="wrap">
+      <p class="kicker">Before the record</p>
+      <h2 id="pro-h">Why here: <span id="pro-range">1898 to 2012</span></h2>
+      <p class="sub sub--measure">Before there was a cluster to record, there was a place. These are the
+        events PIC&rsquo;s register can prove changed the region&rsquo;s capacity, and the scientific firsts it
+        can prove happened here &mdash; <dfn>a <b>discovery</b> is a paper or a patent, never a product</dfn>.
+        None of it is a cluster outcome; it is the reason the cluster is here. Every mark opens its
+        source. Rows the register labels only <i>claimed</i> &mdash; where a date or a figure is recorded two
+        ways &mdash; are held back rather than shown with a caveat, and the wartime synthetic-rubber program
+        is one of them.</p>
+
+      <div class="pro-viz" id="pro-viz" tabindex="-1">
+        <p class="nojs">This chart needs JavaScript. The same rows are in the table below the photographs.</p>
+      </div>
+      <p class="pro-legend" id="pro-legend" hidden></p>
+
+      <div class="photos" role="list" aria-label="Public-domain photographs from the heritage record">
+        <figure role="listitem">
+          <img src="img/USN-AKRON-CONSTRUCTION-1930.jpg" width="1400" height="1077" loading="lazy"
+            alt="Black-and-white photograph: the ring-and-girder framework of the airship USS Akron, partly covered, filling a vast hangar, with scaffolding towers beneath it.">
+          <figcaption>USS Akron under construction in the Goodyear-Zeppelin Airdock, Akron, 5 November 1930.
+            US Navy. Public domain.
+            <a href="https://www.history.navy.mil/our-collections/photography/numerical-list-of-images/nhhc-series/nh-series/NH-42000/NH-42164.html">NHHC NH 42164</a></figcaption>
+        </figure>
+        <figure role="listitem">
+          <img src="img/LOC-PALMER-AIRDOCK-COLOR-1941.jpg" width="1600" height="1228" loading="lazy"
+            alt="Color photograph: the dark, curved bulk of the Goodyear Airdock against a blue sky, an American flag and a Goodyear flag flying, and a row of 1930s cars parked in front.">
+          <figcaption>Goodyear Airdock, Akron, December 1941. Alfred T. Palmer, US Office of War Information.
+            Public domain. <a href="https://hdl.loc.gov/loc.pnp/fsac.1a35066">LOC fsac.1a35066</a></figcaption>
+        </figure>
+        <figure role="listitem">
+          <img src="img/LOC-PALMER-GOODYEAR-TANK-1941.jpg" width="1600" height="1236" loading="lazy"
+            alt="Color photograph: a woman in a blue work dress presses fabric on the form of an aircraft fuel tank; more tank forms stand behind her, marked in chalk.">
+          <figcaption>Self-sealing aircraft fuel tank manufacture, Goodyear, Akron, December 1941. Alfred T. Palmer,
+            US Office of War Information. Public domain. <a href="https://hdl.loc.gov/loc.pnp/fsac.1a35064">LOC fsac.1a35064</a></figcaption>
+        </figure>
+        <figure role="listitem">
+          <img src="img/LOC-PALMER-GOODRICH-1941.jpg" width="1600" height="1231" loading="lazy"
+            alt="Color photograph: two mill hands bend over a rolling mill as a thick white sheet of synthetic rubber comes off the rolls.">
+          <figcaption>Ameripol synthetic rubber sheet leaving a rolling mill at B.F. Goodrich, Akron, 1941. Alfred T.
+            Palmer, US Office of War Information. Public domain. <a href="https://hdl.loc.gov/loc.pnp/fsac.1a35068">LOC fsac.1a35068</a></figcaption>
+        </figure>
+        <figure role="listitem">
+          <img src="img/NASA-AEROGEL-POLYMER-2011.jpg" width="1600" height="1270" loading="lazy"
+            alt="Photograph: a researcher stacks two jars of coins on a thin slab of translucent aerogel bridging two metal blocks; the slab bears the weight.">
+          <figcaption>Polymer-reinforced aerogel sample, NASA Glenn Research Center. NASA. Public domain.
+            <a href="https://www.nasa.gov/aeronautics/aerogels-thinner-lighter-stronger/">NASA, &ldquo;Aerogels: Thinner, Lighter, Stronger&rdquo;</a></figcaption>
+        </figure>
+      </div>
+      <p class="photos-note">Five photographs, all in the public domain: four US federal works from the Library of
+        Congress and the Naval History and Heritage Command, one from NASA. No archive on this page holds a cleared
+        photograph of the university firsts, so none is shown.</p>
+
+      <details class="pro-table">
+        <summary>The heritage rows, as a table</summary>
+        <div class="tablewrap">
+          <table class="dtable" id="htable" aria-label="Proven heritage and discovery rows, by date">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Event</th>
+                <th scope="col">Kind</th>
+                <th scope="col">What the register says</th>
+                <th scope="col">Source</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="op-h">
+    <div class="wrap">
+      <p class="kicker">The record</p>
+      <h2 id="op-h">Five workstreams, running at the same time</h2>
+      <p class="sub sub--measure">Everything the cluster has publicly done since the 2023 federal
+        designation, on one shared timeline. Dot size is how long that kind of work takes to show a
+        result; hollow dots are scheduled, not done.</p>
 
       <div class="controls" id="controls" role="group" aria-label="Filter the timeline">
         <div class="ctl">
@@ -57,7 +140,7 @@
   <section class="section section--alt">
     <div class="wrap">
       <h2 id="table-h">The same record, as a table</h2>
-      <p class="sub">Every event on this page, in date order, with its workstream and source date precision.</p>
+      <p class="sub">Every operating-record event on this page, in date order, with its workstream and source date precision.</p>
       <div class="tablewrap">
         <table class="dtable" id="dtable" aria-labelledby="table-h">
           <caption class="sr-only">Public events in the Polymer Industry Cluster record, by date.</caption>
@@ -81,9 +164,11 @@
     <div class="wrap methods-grid">
       <div>
         <h2 id="methods-h">Methods and provenance</h2>
-        <p class="asof">Record as of <time datetime="2026-08-13">13 August 2026</time>.</p>
+        <p class="asof">Operating record as of <time datetime="2026-08-13">13 August 2026</time>; heritage
+          register as of <time datetime="2026-08-14">14 August 2026</time>.</p>
         <p id="m-source"></p>
         <p id="m-public" class="callout"></p>
+        <p id="m-heritage"></p>
       </div>
       <div>
         <h3>How to read it</h3>
@@ -109,7 +194,9 @@
   "Public record only. An event that was not announced, reported or filed publicly does not appear, so a quiet period on this timeline means nothing was published — not that nothing happened.",
   "Future milestones are drawn hollow because they are plans, not facts. A hollow marker records an intention on a date and is not evidence the thing occurred.",
   "Dates are the date of public record, which can trail the decision by weeks. The order of two close events is not reliable.",
-  "This page predates the shared house style and does not carry a claims file, so no sentence on it is checked by a re-runnable assertion."
+  "The heritage rows are why the region has this capacity, not what the cluster did. None of them is a cluster outcome, and a discovery — a paper or a patent — is not a product.",
+  "Heritage rows appear only when PIC's register labels them proven. Rows it labels claimed, where a date or a figure is recorded two ways, are withheld rather than shown with a caveat. The register is internal; only the proven rows and their public sources travel to this page.",
+  "Every sentence on this page that states a count, a date range or a rule is a re-runnable assertion in claims.json; sentences quoted from documents are marked for manual review there."
 ]});</script>
 <script src="app.js"></script>
 </body>

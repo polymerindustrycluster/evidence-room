@@ -1,0 +1,999 @@
+{
+ "meta": {
+  "title": "Why here",
+  "asOf": "2026-08-14",
+  "publisher": "Polymer Industry Cluster",
+  "source": "NEO Polymer Wins register (internal), heritage and discoveries collections; only PROVEN rows and their public sources travel",
+  "note": "Only rows the register labels PROVEN are shown. CLAIMED rows — where a date or a figure is recorded two ways — are held back rather than shown with a caveat.",
+  "counts": {
+   "shown": 32,
+   "heritage": 19,
+   "discoveries": 13,
+   "dropped": {
+    "label:CLAIMED": 5,
+    "collection:shipped": 21,
+    "collection:licensed": 5,
+    "collection:living": 3
+   },
+   "firstYear": 1898,
+   "lastYear": 2012,
+   "sourcesStripped": 3
+  },
+  "withheld": [
+   {
+    "id": "H-001",
+    "label": "CLAIMED",
+    "year": "1870"
+   },
+   {
+    "id": "H-004",
+    "label": "CLAIMED",
+    "year": "1909"
+   },
+   {
+    "id": "H-006",
+    "label": "CLAIMED",
+    "year": "1942–45"
+   },
+   {
+    "id": "H-008c",
+    "label": "CLAIMED",
+    "year": "1948"
+   },
+   {
+    "id": "H-015",
+    "label": "CLAIMED",
+    "year": "2020"
+   }
+  ]
+ },
+ "eras": [
+  {
+   "from": 1895,
+   "to": 1920,
+   "label": "1898–1919"
+  },
+  {
+   "from": 1920,
+   "to": 1946,
+   "label": "1920–1945"
+  },
+  {
+   "from": 1946,
+   "to": 1970,
+   "label": "1946–1969"
+  },
+  {
+   "from": 1970,
+   "to": 2000,
+   "label": "1970–1999"
+  },
+  {
+   "from": 2000,
+   "to": 2020,
+   "label": "2000–2019"
+  }
+ ],
+ "collections": [
+  {
+   "key": "heritage",
+   "name": "Why here",
+   "gloss": "what changed the region’s capacity"
+  },
+  {
+   "key": "discoveries",
+   "name": "First understood here",
+   "gloss": "a paper or a patent, not a product"
+  }
+ ],
+ "events": [
+  {
+   "id": "H-002",
+   "atom": "WIN-HER-002",
+   "collection": "heritage",
+   "date": "1898-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "1898",
+   "year": 1898,
+   "era": 0,
+   "title": "Frank and Charles Seiberling start Goodyear in Akron",
+   "oneLiner": "In 1898 Frank and Charles Seiberling began making rubber goods in two Market Street factories in Akron and named the company after Charles Goodyear. (corporate.goodyear.com)",
+   "sources": [
+    {
+     "url": "https://corporate.goodyear.com/us/en/company/history.html",
+     "note": "1898; Frank and Charley Seiberling; Market Street, Akron; named for Charles Goodyear"
+    },
+    {
+     "url": "https://ohiomemory.org/digital/collection/p267401coll36/id/21777/",
+     "note": "search-retrieved: incorporated 29 Aug 1898, $100,000 capital; David Hill first president"
+    },
+    {
+     "url": "https://www.acs.org/education/whatischemistry/landmarks/syntheticrubber.html",
+     "note": "Goodyear in GR-S consortium; Ray P. Dinsmore Chemigum patent 1940, “produced in Akron”"
+    }
+   ],
+   "doNotSay": "August 29, 1898 or $100,000 capital as if printed on Goodyear’s current history page. That Charles Goodyear lived or worked in Akron. Any founding headcount.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-003",
+   "atom": "WIN-HER-003",
+   "collection": "heritage",
+   "date": "1900-08-03",
+   "datePrecision": "day",
+   "dateDisplay": "3 Aug 1900",
+   "year": 1900,
+   "era": 0,
+   "title": "Harvey S. Firestone founds Firestone Tire & Rubber in Akron",
+   "oneLiner": "Bridgestone Americas dates the Firestone Tire & Rubber Company to 3 August 1900 in Akron.",
+   "sources": [
+    {
+     "url": "https://web.archive.org/web/20250107205307/https://www.bridgestoneamericas.com/en/company/foundations/history",
+     "note": "FETCHED 2026-08-14: Aug 3 1900 founding; June 1910 new factory"
+    },
+    {
+     "url": "https://www.bridgestoneamericas.com/en/company/foundations/history",
+     "note": "live URL 403'd from this environment; same path as the archive"
+    },
+    {
+     "url": "https://www.firestonetire.com/about-firestone/heritage/",
+     "note": "search-retrieved: founded Akron 1900; first factory two years later, 12 men"
+    },
+    {
+     "url": "https://www.acs.org/education/whatischemistry/landmarks/syntheticrubber.html",
+     "note": "Firestone in Big Four R&D and 19 Dec 1941 agreement; John Street pilot plant"
+    },
+    {
+     "url": "https://publicintegrity.org/health/unintended-consequences-rubber-industry-toxic-legacy-in-akron/",
+     "note": "Love & Giffels: Firestone from Chicago, 1900"
+    }
+   ],
+   "doNotSay": "“12 employees at founding.” Collapsing the December 27 factory switch with the June 1910 plant. Any $10,000 figure. That Firestone’s first GR-S bale (ACS: 26 Apr 1942) was poured in Akron — ACS does not give the plant city.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-006c",
+   "atom": "WIN-HER-006",
+   "collection": "heritage",
+   "date": "1909-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "1909",
+   "year": 1909,
+   "era": 0,
+   "title": "ACS India Rubber Section / Rubber Division sits in Akron",
+   "oneLiner": "Rubber Division, ACS says it began as the ACS India Rubber Section in 1909 and has been headquartered in Akron since that year. (rubber.org)",
+   "sources": [
+    {
+     "url": "https://www.rubber.org/about-us/",
+     "note": "1909 India Rubber Section; Division 1919; HQ Akron since 1909"
+    }
+   ],
+   "doNotSay": "That this is the UA rubber-chemistry course. That PIC created the Division.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-005",
+   "atom": "WIN-HER-005",
+   "collection": "heritage",
+   "date": "1915-09-29",
+   "datePrecision": "day",
+   "dateDisplay": "29 Sep 1915",
+   "year": 1915,
+   "era": 0,
+   "title": "O’Neil and Fouse found General Tire in Akron",
+   "oneLiner": "General Tire’s site dates the company to 29 September 1915 in Akron, founded by William F. O’Neil and Winfred E. Fouse.",
+   "sources": [
+    {
+     "url": "https://generaltire.com/our-world/latest-news/a-relationship-built-on-similar-values",
+     "note": "29 Sept 1915; O’Neil and Fouse; Akron"
+    },
+    {
+     "url": "https://libguides.uakron.edu/az/archives-and-special-collections/general-tire-and-rubber-company-records",
+     "note": "UA Archives: founded Akron 1915 by O’Neil and Fouse"
+    },
+    {
+     "url": "https://www.encyclopedia.com/books/politics-and-business-magazines/general-tire-inc",
+     "note": "International Directory of Company Histories: 1915; Kansas City prelude; father as funder"
+    },
+    {
+     "url": "https://www.acs.org/education/whatischemistry/landmarks/syntheticrubber.html",
+     "note": "General Tire at later CRC meetings"
+    }
+   ],
+   "doNotSay": "$200,000 or $50,000 founding capital (secondary disagreement; no primary opened). That General was one of the five original RRC patent-sharing signatories — ACS’s five are Firestone, Goodrich, Goodyear, Jersey Standard, U.S. Rubber.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-006d",
+   "atom": "WIN-HER-007",
+   "collection": "heritage",
+   "date": "1920-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "1920",
+   "year": 1920,
+   "era": 1,
+   "title": "Census records Akron’s 1910–1920 population tripling",
+   "oneLiner": "The 1920 Census counted Akron at 208,435 residents, up from 69,067 in 1910 — a 201.8 percent increase, the fastest among Ohio cities over 25,000. (Bureau of the Census, 1920 Ohio bulletin)",
+   "sources": [
+    {
+     "url": "https://www2.census.gov/library/publications/decennial/1920/bulletins/demographics/population-oh-number-of-inhabitants.pdf",
+     "note": "p. 2: Akron 69,067 / 208,435 / +139,368 / 201.8%; “more than trebled”; “by far the greatest rate of growth”"
+    },
+    {
+     "url": "https://www.akronohio.gov/departments/service/water_reclamation_services/history_of_water_reclamation_facility.php",
+     "note": "same Census figures; rubber-industry jobs as the city’s own causal gloss"
+    }
+   ],
+   "doNotSay": "That Census “proves” the growth was “driven entirely by rubber” — the bulletin does not say that. Any 1940–45 “population doubling” figure. Any rubber-employment headcount not in a named primary.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "D-001",
+   "atom": "WIN-DIS-001",
+   "collection": "discoveries",
+   "date": "1926-07-01",
+   "datePrecision": "range",
+   "dateDisplay": "1926–33",
+   "year": 1926,
+   "era": 1,
+   "title": "Waldo Semon plasticizes PVC at B.F. Goodrich, Akron",
+   "oneLiner": "In 1933 the USPTO issued US 1,929,453 to Waldo L. Semon of Silver Lake Village, Ohio, assigned to B.F. Goodrich, for a method of dissolving polymerized vinyl chloride in a non-volatile solvent and cooling it to a rubber-like gel. PVC itself already existed.",
+   "sources": [
+    {
+     "url": "https://patents.google.com/patent/US1929453A/en",
+     "note": "issued 1933-10-10; continuation of 1928-11-16 filing; Semon, Silver Lake Village, OH; Goodrich assignee"
+    },
+    {
+     "url": "https://www.invent.org/inductees/waldo-l-semon",
+     "note": "1995; 1926 Akron lab; US 1,929,453 and 2,188,396; 116 U.S. patents"
+    },
+    {
+     "url": "https://www.acs.org/education/whatischemistry/landmarks/syntheticrubber.html",
+     "note": "Semon later led Goodrich’s wartime synthetic-rubber work; do not use this page as the PVC primary"
+    }
+   ],
+   "doNotSay": "That Semon invented PVC. That vinyl is an Akron trademark. Any $32 billion industry figure. That this is Ameripol (that is D-002). Any PIC lineage.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "D-002",
+   "atom": "WIN-DIS-002",
+   "collection": "discoveries",
+   "date": "1940-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "1940",
+   "year": 1940,
+   "era": 1,
+   "title": "Goodrich introduces Ameripol synthetic rubber",
+   "oneLiner": "ACS’s synthetic-rubber landmark states that B.F. Goodrich under Waldo Semon introduced Ameripol in 1940. Germany already had Buna; Akron did not invent synthetic rubber.",
+   "sources": [
+    {
+     "url": "https://www.acs.org/education/whatischemistry/landmarks/syntheticrubber.html",
+     "note": "Ameripol introduced 1940; Semon 100 lb/day pilot; wartime consortium is a different claim"
+    },
+    {
+     "url": "https://www.hmdb.org/m.asp?m=44733",
+     "note": "ACS plaque text, UA, dedicated 1998-08-29; GR-S consortium; “Akron and other U.S. locations”"
+    },
+    {
+     "url": "https://www.nytimes.com/1940/06/06/archives/synthetic-rubber-created-for-tires-invents-ameripol.html",
+     "note": "1940-06-06; Ameripol introduction; Semon credited"
+    },
+    {
+     "url": "https://www.invent.org/inductees/waldo-l-semon",
+     "note": "Semon technical leadership on synthetic “natural” rubber and oil-resistant rubbers at BFG"
+    }
+   ],
+   "doNotSay": "“Akron invented synthetic rubber.” That Ameripol was the first synthetic rubber. The date 4 June 1940 as if ACS printed it. That the 51 wartime plants were in Akron. Any 800k/920k tonnage on this row. That PIC descends from Ameripol.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-006b",
+   "atom": "WIN-HER-009",
+   "collection": "heritage",
+   "date": "1944-01-01",
+   "datePrecision": "day",
+   "dateDisplay": "1 Jan 1944",
+   "year": 1944,
+   "era": 1,
+   "title": "University of Akron takes over the Wilbeth Road government rubber pilot",
+   "oneLiner": "NSF’s 1955 rubber commission reported that RFC built the Government Laboratories in Akron in 1943 at 351 West Wilbeth Road and that the University of Akron has operated them for the government since 1 January 1944.",
+   "sources": [
+    {
+     "url": "https://nsf-gov-resources.nsf.gov/nsb/publications/1955/nsb1255.pdf",
+     "note": "pp. 10–11: 1943 RFC construction; 351 W. Wilbeth Rd.; adjoining Firestone; UA operator since 1 Jan 1944; >$2M construction; reactor/testing capability"
+    },
+    {
+     "url": "https://www.uakron.edu/registrar/bulletins/grad/1941-1945/generalbulletin1944-45.pdf",
+     "note": "early 1944 Rubber Director / Rubber Reserve contract; Wilbeth Road; reactor sizes; Whitby"
+    },
+    {
+     "url": "https://www.uakron.edu/polymer/about-us/history",
+     "note": "later institutional wording: 1942 Rubber Research Laboratory contract"
+    },
+    {
+     "url": "https://www.acs.org/education/whatischemistry/landmarks/syntheticrubber.html",
+     "note": "UA at the 29 Dec 1942 Akron CRC meeting"
+    }
+   ],
+   "doNotSay": "That this was one of the 51 production plants. That UA “manufactured the nation’s synthetic rubber.” Any wartime employment peak. Equating “Rubber Technical Institute” (UA marketing) with the NSF “Government Laboratories” without a primary that uses both names.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-008b",
+   "atom": "WIN-HER-011",
+   "collection": "heritage",
+   "date": "1956-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "1956",
+   "year": 1956,
+   "era": 2,
+   "title": "UA Institute of Rubber Research and first polymer-chemistry Ph.D.",
+   "oneLiner": "The University of Akron’s official history dates the Institute of Rubber Research to 1956 and the first polymer-chemistry Ph.D. program to that era.",
+   "sources": [
+    {
+     "url": "https://www.uakron.edu/polymer/about-us/history",
+     "note": ""
+    },
+    {
+     "url": "https://www.uakron.edu/im/news/the-college-of-polymer-science-and-polymer-engineering-a-brief-131-year-history-by-frank-n-kelley",
+     "note": ""
+    },
+    {
+     "url": "https://www.jotmi.org/index.php/GT/article/download/art64/428/546",
+     "note": ""
+    }
+   ],
+   "doNotSay": "Do not say the Institute of Polymer Science was founded in 1956. UA’s history page dates that rename to 1964. Do not print a graduate-count unless UA names it.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "D-003",
+   "atom": "WIN-DIS-003",
+   "collection": "discoveries",
+   "date": "1963-01-15",
+   "datePrecision": "month",
+   "dateDisplay": "Jan 1963",
+   "year": 1963,
+   "era": 2,
+   "title": "Eric Baer founds the first standalone U.S. polymer department at Case",
+   "oneLiner": "Case Western Reserve’s macromolecular department states it was founded in January 1963 under Eric Baer as the first standalone U.S. polymer department.",
+   "sources": [
+    {
+     "url": "https://engineering.case.edu/macromolecular-science-and-engineering/about",
+     "note": "Jan 1963; first standalone; Baer"
+    },
+    {
+     "url": "https://engineering.case.edu/macromolecular-science-and-engineering/history",
+     "note": ""
+    },
+    {
+     "url": "https://cen.acs.org/articles/91/i23/Just-One-Word-Plastics.html",
+     "note": "2013-06-10; first stand-alone polymer department, 1963, Baer"
+    },
+    {
+     "url": "https://plasticshof.org/members/dr-eric-baer/",
+     "note": ""
+    }
+   ],
+   "doNotSay": "“First polymer department in the world.” That Baer invented a polymer in 1963 (this row is a department). That CLiPS or Peak Nano is this win. That the department began at the 1967 Case–Western Reserve federation.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-007",
+   "atom": "WIN-HER-012",
+   "collection": "heritage",
+   "date": "1963-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "1963",
+   "year": 1963,
+   "era": 2,
+   "title": "Case Institute first standalone US polymer department",
+   "oneLiner": "Case Western Reserve’s macromolecular department states it was founded in January 1963 under Eric Baer as the first standalone U.S. polymer department.",
+   "sources": [
+    {
+     "url": "https://engineering.case.edu/macromolecular-science-and-engineering/about",
+     "note": ""
+    },
+    {
+     "url": "https://engineering.case.edu/macromolecular-science-and-engineering/history",
+     "note": ""
+    }
+   ],
+   "doNotSay": "Do not say “first polymer department in the world.” Case’s own claim is first standalone US polymer group at an engineering school. Do not date the department to the 1967 Case–Western Reserve federation; the unit began at Case Institute.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-008",
+   "atom": "WIN-HER-013",
+   "collection": "heritage",
+   "date": "1965-03-18",
+   "datePrecision": "day",
+   "dateDisplay": "18 Mar 1965",
+   "year": 1965,
+   "era": 2,
+   "title": "Kent State Liquid Crystal Institute authorized",
+   "oneLiner": "Kent State’s trustees authorized the Liquid Crystal Institute under Glenn H. Brown in 1965.",
+   "sources": [
+    {
+     "url": "https://www.kent.edu/amlci/our-legacy",
+     "note": ""
+    },
+    {
+     "url": "https://www.kent.edu/amlci/glenn-h-brown-liquid-crystal-institute",
+     "note": ""
+    },
+    {
+     "url": "https://kentdisplays.com/history/",
+     "note": ""
+    }
+   ],
+   "doNotSay": "Do not call Kent Displays a PIC-era win. Do not collapse 1965 founding with the 1986 Glenn H. Brown naming or the 2018 AMLCI rename.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "D-004",
+   "atom": "WIN-DIS-004",
+   "collection": "discoveries",
+   "date": "1965-07-01",
+   "datePrecision": "range",
+   "dateDisplay": "1965 / 1994",
+   "year": 1965,
+   "era": 2,
+   "title": "Brown founds Kent LCI; Yang–West–Chien–Doane demonstrate bistable cholesteric displays",
+   "oneLiner": "Kent State’s trustees authorized the Liquid Crystal Institute under Glenn H. Brown in 1965. In 1994 Yang, West, Chien, and Doane published bistable cholesteric display physics in the Journal of Applied Physics.",
+   "sources": [
+    {
+     "url": "https://www.kent.edu/amlci/our-legacy",
+     "note": "trustees 1965; Brown director 1965–83; Neubert 1995; ILCC 1965"
+    },
+    {
+     "url": "https://www.kent.edu/amlci/glenn-h-brown-liquid-crystal-institute",
+     "note": "named for Brown 1986; directors sequence"
+    },
+    {
+     "url": "https://pubs.aip.org/aip/jap/article/76/2/1331/497092/Control-of-reflectivity-and-bistability-in",
+     "note": "Yang, West, Chien, Doane, J. Appl. Phys. 76, 1331, 1994-07-15"
+    },
+    {
+     "url": "https://kentdisplays.com/history/",
+     "note": "1993 spinout is the product child, not this row"
+    }
+   ],
+   "doNotSay": "That Kent discovered liquid crystals (1888, Europe). That Doane invented PDLC as this row. That West’s PDLC is Doane’s cholesteric paper. That Fergason’s TN LCD is a Kent first. That Boogie Board is this discovery. Any licensee list for PDLC privacy glass.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-009c",
+   "atom": "WIN-HER-015",
+   "collection": "heritage",
+   "date": "1984-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "1984",
+   "year": 1984,
+   "era": 3,
+   "title": "Edison Polymer Innovation Corporation (EPIC)",
+   "oneLiner": "Ohio stood up the Edison Polymer Innovation Corporation (EPIC) in 1984 as a joint UA–CWRU–industry shop. It is a dated predecessor cluster, not a legal ancestor of PIC, and it did not become a durable dues-funded organization.",
+   "sources": [
+    {
+     "url": "https://www.latimes.com/archives/la-xpm-1991-08-11-fi-810-story.html",
+     "note": ""
+    },
+    {
+     "url": "https://www.uakron.edu/im/news/the-college-of-polymer-science-and-polymer-engineering-a-brief-131-year-history-by-frank-n-kelley",
+     "note": ""
+    },
+    {
+     "url": "https://ead.ohiolink.edu/xtf-ead/view?docId=ead/OhAkUAS0017.xml;query=;brand=default",
+     "note": ""
+    }
+   ],
+   "doNotSay": "Do not call EPIC a PIC ancestor in the legal-entity sense. Do not say it “succeeded.” Do not substitute PolymerOhio or Akron Tomorrow here; those lack a 1945–2000 founding date.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "D-005",
+   "atom": "WIN-DIS-005",
+   "collection": "discoveries",
+   "date": "1986-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "1986",
+   "year": 1986,
+   "era": 3,
+   "title": "Living carbocationic polymerization of isobutylene at the University of Akron",
+   "oneLiner": "In 1986 Faust and Kennedy at the University of Akron published a demonstration of the living carbocationic polymerization of isobutylene (Polymer Bulletin 15:317–323).",
+   "sources": [
+    {
+     "url": "https://link.springer.com/article/10.1007/BF00254850",
+     "note": "Faust & Kennedy, Polym. Bull. 1986, 15, 317–323"
+    },
+    {
+     "url": "https://doi.org/10.1002/(SICI)1099-0518(19990715)37:14<2285::AID-POLA1>3.0.CO;2-P",
+     "note": "Kennedy, J. Polym. Sci. A 1999, 37, 2285–2293"
+    },
+    {
+     "url": "https://www.uakron.edu/im/news/interviewing-dr-joseph-kennedy-about-his-146-u-s-patents-and-what-drives-him-to-help-others",
+     "note": "2022-01-24; UA interview"
+    },
+    {
+     "url": "https://www.rubbernews.com/obituary/university-akron-professor-joseph-kennedy-dies-ay-96",
+     "note": "2024-08-07; died 2024-07-19"
+    }
+   ],
+   "doNotSay": "That Kennedy invented living polymerization (Szwarc, anionic, 1956). That this paper is TAXUS. Any “more than one million surgeries” figure on this row. Any royalty. That PIC funded Kennedy.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "D-011",
+   "atom": "WIN-DIS-011",
+   "collection": "discoveries",
+   "date": "1986-07-01",
+   "datePrecision": "range",
+   "dateDisplay": "1987",
+   "year": 1986,
+   "era": 3,
+   "title": "Kent phase-separation PDLC — LC microdroplets formed by curing a resin solution",
+   "oneLiner": "In 1987 Kent State was assigned US 4,688,900 (Doane, Chidichimo, Vaz) for liquid-crystal microdroplets that form spontaneously when a resin solution is cured. Fergason’s 1984 encapsulated-LC patent is earlier and different.",
+   "sources": [
+    {
+     "url": "https://patents.google.com/patent/US4688900A/en",
+     "note": "issued 1987-08-25; Kent State; Doane, Chidichimo, Vaz"
+    },
+    {
+     "url": "https://pubs.aip.org/aip/apl/article-abstract/48/4/269/49013",
+     "note": "Doane, Vaz, Wu, Žumer, Appl. Phys. Lett. 1986, 48, 269"
+    },
+    {
+     "url": "https://patents.google.com/patent/US4435047A/en",
+     "note": "Fergason 1984; prior encapsulated LC — cite only as the thing Kent is not"
+    }
+   ],
+   "doNotSay": "That Kent invented PDLC first, full stop. That this is Fergason’s TN LCD. That West is an inventor on US 4,688,900. Unnamed 3M/Asahi/Polytronix licensees as proven. That this is the Boogie Board (cholesteric, D-004 / S-003).",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-009b",
+   "atom": "WIN-HER-016",
+   "collection": "heritage",
+   "date": "1986-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "1986",
+   "year": 1986,
+   "era": 3,
+   "title": "Goodyear defeats Goldsmith and stays Akron-headquartered",
+   "oneLiner": "On 20 November 1986 Goodyear bought out Sir James Goldsmith’s stake and kept world headquarters in Akron. (NYT, 21 November 1986)",
+   "sources": [
+    {
+     "url": "https://www.nytimes.com/1986/11/21/business/goodyear-buys-out-goldsmith.html",
+     "note": ""
+    },
+    {
+     "url": "https://www.latimes.com/archives/la-xpm-1987-01-13-fi-4218-story.html",
+     "note": ""
+    }
+   ],
+   "doNotSay": "Do not call the buyback “greenmail” as a settled legal fact; Mercer and Goldsmith both denied it. Do not print a layoff headcount without a named primary. Do not say Goodyear “won for free.”",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-009",
+   "atom": "WIN-HER-017",
+   "collection": "heritage",
+   "date": "1987-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "1987–88",
+   "year": 1987,
+   "era": 3,
+   "title": "Continental–General and Bridgestone–Firestone; Akron kept the labs",
+   "oneLiner": "Continental purchased GenCorp’s tire operations on 30 October 1987. Bridgestone announced the Firestone cash deal in March 1988. What stayed was the Akron technical bench.",
+   "sources": [
+    {
+     "url": "https://generaltire.com/our-world/latest-news/general-tire-celebrates-100-years-of-reliability",
+     "note": ""
+    },
+    {
+     "url": "https://www.latimes.com/archives/la-xpm-1988-03-18-fi-1643-story.html",
+     "note": ""
+    },
+    {
+     "url": "https://www.bridgestone.com/corporate/history/story/1981-1990.html",
+     "note": ""
+    },
+    {
+     "url": "https://www.latimes.com/archives/la-xpm-1991-08-11-fi-810-story.html",
+     "note": ""
+    }
+   ],
+   "doNotSay": "Do not say Continental–General closed in 1988. Do not say “three of the Big Four went foreign in 1988.” Do not print the $650 million or $628 million Continental prices here; no primary opened in this wave named the figure in-sentence. Do not say Firestone HQ stayed in Akron after 1991.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-009d",
+   "atom": "WIN-HER-018",
+   "collection": "heritage",
+   "date": "1988-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "1988–98",
+   "year": 1988,
+   "era": 3,
+   "title": "UA College of Polymer Science and Polymer Engineering",
+   "oneLiner": "UA bulletin and school history date the College of Polymer Science and Polymer Engineering to July 1988, combining the Department of Polymer Science with the Department of Polymer Engineering; Frank N. Kelley was inaugural dean, and the Polymer Science Building was opened on 1 April 1991.",
+   "sources": [
+    {
+     "url": "https://www.uakron.edu/polymer/about-us/history",
+     "note": ""
+    },
+    {
+     "url": "https://bulletin.uakron.edu/graduate/colleges-programs/engineering/polymer-science-engineering/",
+     "note": ""
+    },
+    {
+     "url": "https://www.uakron.edu/development/landmarks/goodyear-polymer-center",
+     "note": ""
+    },
+    {
+     "url": "https://www.uakron.edu/im/news/the-college-of-polymer-science-and-polymer-engineering-a-brief-131-year-history-by-frank-n-kelley",
+     "note": ""
+    }
+   ],
+   "doNotSay": "Do not say the Goodyear Polymer Center was built in 1998. Do not say UA archives’ 1991 photo caption (“opened the Goodyear Polymer Center”) overrides the Development Office’s January 1998 rename. Do not print the gift dollar amount; Plastics News “millions” was not opened.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "D-008",
+   "atom": "WIN-DIS-008",
+   "collection": "discoveries",
+   "date": "1990-07-01",
+   "datePrecision": "range",
+   "dateDisplay": "1990 / 2010",
+   "year": 1990,
+   "era": 3,
+   "title": "Baer and Hiltner forced-assembly microlayer / nanolayer coextrusion science at Case",
+   "oneLiner": "Baer and Hiltner’s Case group published microlayer thickness-effect science in 1990 (J. Mater. Sci. 25:2039) and later named forced-assembly nanolayer coextrusion (Ponting, Hiltner, Baer, 2010). They did not invent coextrusion.",
+   "sources": [
+    {
+     "url": "https://link.springer.com/article/10.1007/BF01045761",
+     "note": "Ma, Vijayan, Hiltner, Baer, Im, Schrenk, J. Mater. Sci. 1990, 25, 2039–2046"
+    },
+    {
+     "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/masy.201050803",
+     "note": "Ponting, Hiltner, Baer, Macromol. Symp. 2010"
+    },
+    {
+     "url": "https://pubs.acs.org/doi/10.1021/ie100321h",
+     "note": "Ponting et al., Ind. Eng. Chem. Res. 2010; forced-assembly gradient films"
+    },
+    {
+     "url": "https://engineering.case.edu/macromolecular-science-and-engineering/about",
+     "note": ""
+    }
+   ],
+   "doNotSay": "That Baer invented multilayer coextrusion (Schrenk / Dow). That CLiPS 2006 is the discovery date. That Peak Nano is this paper. PIC or P25.15 as this win. Any plant or jobs figure from a confidential Peak slide.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "D-006",
+   "atom": "WIN-DIS-006",
+   "collection": "discoveries",
+   "date": "1990-08-07",
+   "datePrecision": "day",
+   "dateDisplay": "7 Aug 1990",
+   "year": 1990,
+   "era": 3,
+   "title": "Kennedy–Puskas–Kaszas–Hager PIB block thermoplastic elastomers (US 4,946,899)",
+   "oneLiner": "On 7 August 1990 the USPTO issued US 4,946,899 to Kennedy, Puskas, Kaszas, and Hager, assigned to the University of Akron, for living-cationic polyisobutylene block thermoplastic elastomers.",
+   "sources": [
+    {
+     "url": "https://patents.google.com/patent/US4946899A/en",
+     "note": "issued 1990-08-07; filed 1988-12-16; UA assignee"
+    },
+    {
+     "url": "https://www.uakron.edu/research/technology/polymer.dot",
+     "note": "UA later product claim; do not import surgery counts onto this patent row"
+    }
+   ],
+   "doNotSay": "That this patent is TAXUS. “More than one million surgeries” (that is UA’s later product claim). $5 million to UA. That Puskas is still at UA (she later moved to Ohio State). That PIC licensed this.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "D-012",
+   "atom": "WIN-DIS-012",
+   "collection": "discoveries",
+   "date": "1991-02-19",
+   "datePrecision": "day",
+   "dateDisplay": "19 Feb 1991",
+   "year": 1991,
+   "era": 3,
+   "title": "West and Doane haze-free PDLC in a birefringent polymer matrix",
+   "oneLiner": "In 1991 Kent State was assigned US 4,994,204 to Doane and West for a haze-free PDLC whose polymer matrix is birefringent and index-matched in all viewing directions.",
+   "sources": [
+    {
+     "url": "https://patents.google.com/patent/US4994204A/en",
+     "note": "issued 1991-02-19; Kent State; Doane and West"
+    }
+   ],
+   "doNotSay": "That West merely licensed PDLC. That this is the 1987 Doane/Vaz process patent. That this is Kent Displays / Boogie Board. Fergason as a Kent inventor. Any trade-press licensee list without a TTO primary.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-009e",
+   "atom": "WIN-HER-019",
+   "collection": "heritage",
+   "date": "1991-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "1991",
+   "year": 1991,
+   "era": 3,
+   "title": "NSF ALCOM Science and Technology Center at Kent–Case–Akron",
+   "oneLiner": "NSF lists the Center for Advanced Liquid Crystalline Optical Materials (ALCOM) as Class of 1991, award 8920147, Kent State lead; Kent’s history says NSF selected the Kent–CWRU–UA consortium in 1990 as Ohio’s only Science and Technology Center.",
+   "sources": [
+    {
+     "url": "https://www.nsf.gov/od/oia/ia/stc",
+     "note": ""
+    },
+    {
+     "url": "https://www.kent.edu/amlci/glenn-h-brown-liquid-crystal-institute",
+     "note": ""
+    },
+    {
+     "url": "https://www.kent.edu/amlci/our-legacy",
+     "note": ""
+    },
+    {
+     "url": "https://kentdisplays.com/history/",
+     "note": ""
+    }
+   ],
+   "doNotSay": "Do not treat Kent’s “1990 selected” and NSF’s “Class of 1991” as the same day. Do not print an award dollar figure; the historical NSF abstract page did not load amounts. Do not call ALCOM a PIC win.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "D-007",
+   "atom": "WIN-DIS-007",
+   "collection": "discoveries",
+   "date": "1994-09-06",
+   "datePrecision": "day",
+   "dateDisplay": "6 Sep 1994",
+   "year": 1994,
+   "era": 3,
+   "title": "Harris and Cheng negative-birefringent soluble polyimide films for LCD compensation",
+   "oneLiner": "In 1994 the USPTO issued US 5,344,916 to Frank Harris and Stephen Cheng, assigned to the University of Akron, for soluble polyimide films that self-orient in plane and show negative birefringence for LCD compensation.",
+   "sources": [
+    {
+     "url": "https://patents.google.com/patent/US5344916A/en",
+     "note": "issued 1994-09-06; UA assignee; Harris & Cheng"
+    },
+    {
+     "url": "https://www.uakron.edu/research/technology/polymer.dot",
+     "note": "UA later commercialization language; do not import sales figures"
+    }
+   ],
+   "doNotSay": "$1 billion in LCD-film sales. $5 million to UA. The unnamed Japanese licensee as if identified. That APS (2002) is this patent. That PIC commercialized the film.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-010",
+   "atom": "WIN-HER-021",
+   "collection": "heritage",
+   "date": "2000-07-01",
+   "datePrecision": "range",
+   "dateDisplay": "2000/2001",
+   "year": 2000,
+   "era": 4,
+   "title": "Akron Global Polymer Academy",
+   "oneLiner": "The University of Akron’s official polymer-school history dates the Akron Global Polymer Academy to 2000/2001 and says the State of Ohio funded it.",
+   "sources": [
+    {
+     "url": "https://www.uakron.edu/polymer/about-us/history",
+     "note": "2000/2001 AGPA; State of Ohio funded"
+    },
+    {
+     "url": "https://www.uakron.edu/polymer/about-us/buildings",
+     "note": "PEAC dedicated 8 June 2001; houses AGPA"
+    }
+   ],
+   "doNotSay": "That AGPA is a legal ancestor of PIC. Any headcount or appropriation not on the UA history page.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-011",
+   "atom": "WIN-HER-022",
+   "collection": "heritage",
+   "date": "2002-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "2002",
+   "year": 2002,
+   "era": 4,
+   "title": "Harris and Cheng found Akron Polymer Systems",
+   "oneLiner": "Akron Polymer Systems says it was founded in 2002 by Frank W. Harris and Stephen Z. D. Cheng of the University of Akron. The company site is still live.",
+   "sources": [
+    {
+     "url": "https://akronpolysys.com/company/",
+     "note": "founded 2002; Harris and Cheng; still live 2026-08-14"
+    },
+    {
+     "url": "https://www.uakron.edu/im/news/university-of-akron-s-polymer-program-generates-successful-spin-out-companies",
+     "note": "2020-06-01"
+    }
+   ],
+   "doNotSay": "$1 billion LCD-film sales. $5 million to UA. An unnamed Japanese licensee. That APS founding is a PIC outcome. That Third Frontier founded APS (company page does not say that).",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-012",
+   "atom": "WIN-HER-023",
+   "collection": "heritage",
+   "date": "2002-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "2002",
+   "year": 2002,
+   "era": 4,
+   "title": "Ohio Third Frontier program begins",
+   "oneLiner": "Ohio’s Third Frontier program began in 2002. It is a state technology-investment program, not a legal ancestor of PIC.",
+   "sources": [
+    {
+     "url": "https://www.ohiomfg.com/wp-content/uploads/2024/02/ohio_third_frontier_program_talking_points_11_03_2011.pdf",
+     "note": "created in 2002"
+    },
+    {
+     "url": "https://ssti.org/blog/ohio-voters-approve-700-million-bond-third-frontier-program",
+     "note": "established 2002"
+    },
+    {
+     "url": "https://development.ohio.gov/business/third-frontier-and-technology",
+     "note": "program still exists; no founding year on the fetched landing page"
+    },
+    {
+     "url": null,
+     "note": "Beacon Journal 21 Feb 2010 via CDFA reprint (campaign copy; $100M and job claims not used)"
+    }
+   ],
+   "doNotSay": "“$100 million into Akron.” Statewide SRI job counts as if they were NEO polymer jobs. That Third Frontier is PIC. That it founded Kent Displays or APS.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "D-010",
+   "atom": "WIN-DIS-010",
+   "collection": "discoveries",
+   "date": "2005-07-01",
+   "datePrecision": "range",
+   "dateDisplay": "2005–13",
+   "year": 2005,
+   "era": 4,
+   "title": "Dhinojwala lab synthetic gecko adhesives and wet-adhesion science",
+   "oneLiner": "Dhinojwala’s University of Akron group published synthetic gecko foot-hairs from carbon nanotubes in 2005 (Chem. Commun.) and CNT gecko tapes in 2007 (PNAS). BEVA 371 Akron is a different project.",
+   "sources": [
+    {
+     "url": "https://pubmed.ncbi.nlm.nih.gov/16041421/",
+     "note": "Yurdumakan et al., Chem. Commun. 2005, 3799–3801"
+    },
+    {
+     "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1904109/",
+     "note": "Ge et al., PNAS 2007, 104, 10792–10795"
+    },
+    {
+     "url": "https://www.pnas.org/doi/10.1073/pnas.1219317110",
+     "note": "Stark et al., PNAS 2013; wet adhesion; UA IACUC"
+    },
+    {
+     "url": "https://www.uakron.edu/im/news/ua-researchers-resolve-fundamental-issues-explaining-gecko-adhesion",
+     "note": "2021-05-20; Sci. Adv. increment; not BEVA"
+    }
+   ],
+   "doNotSay": "That BEVA is the gecko product. That UA discovered van der Waals gecko adhesion (Autumn et al.). That a gecko tape is sold from Akron. Any NSF-dollar figure as a win. PIC causation.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "D-013",
+   "atom": "WIN-DIS-013",
+   "collection": "discoveries",
+   "date": "2005-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "2005",
+   "year": 2005,
+   "era": 4,
+   "title": "Puskas arborescent / hyperbranched polyisobutylene block copolymers",
+   "oneLiner": "In 2005 Puskas and coworkers at the University of Akron published dendritic (arborescent) polyisobutylene–polystyrene block copolymers (J. Polym. Sci. A, doi:10.1002/pola.20638), a different architecture from the 1990 SIBS patent.",
+   "sources": [
+    {
+     "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/pola.20638",
+     "note": "Puskas et al., J. Polym. Sci. A 2005"
+    },
+    {
+     "url": "https://ideaexchange.uakron.edu/chemengin_ideas/551/",
+     "note": "UA repository record"
+    },
+    {
+     "url": "https://patents.justia.com/patent/6747098",
+     "note": "US 6,747,098; arborescent TPE lineage"
+    }
+   ],
+   "doNotSay": "That this is TAXUS or US 4,946,899. That Puskas is still a UA faculty member. Any implant count. PIC causation.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-013",
+   "atom": "WIN-HER-024",
+   "collection": "heritage",
+   "date": "2006-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "2006–2016",
+   "year": 2006,
+   "era": 4,
+   "title": "NSF awards CLiPS as a Science and Technology Center",
+   "oneLiner": "NSF awarded Case Western Reserve a Science and Technology Center for Layered Polymeric Systems (CLiPS) in 2006 and renewed it in 2011. CWRU’s 2011 release said the awards run in two five-year increments.",
+   "sources": [
+    {
+     "url": "https://www.prnewswire.com/news-releases/research-and-education-success-earns-more-nsf-funding-135869773.html",
+     "note": "2011-12-19; began 2006; renewed; two five-year increments; $40M commitment not used"
+    },
+    {
+     "url": "https://grantome.com/grant/NSF/DMR-0423914",
+     "note": "DMR-0423914; 2006-08-01 to 2016-07-31"
+    }
+   ],
+   "doNotSay": "$19 million, $31 million, or $40 million. That CLiPS invented coextrusion (Dow / Schrenk). That Advanced Hydro is a NEO plant. That PIC created CLiPS.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "H-014",
+   "atom": "WIN-HER-025",
+   "collection": "heritage",
+   "date": "2010-07-01",
+   "datePrecision": "year",
+   "dateDisplay": "2010",
+   "year": 2010,
+   "era": 4,
+   "title": "National Polymer Innovation Center building completed",
+   "oneLiner": "The University of Akron’s official history dates the National Polymer Innovation Center building to 2010. Ohio’s 2010 TTOC report says the 42,750-square-foot facility opened that fall.",
+   "sources": [
+    {
+     "url": "https://www.uakron.edu/polymer/about-us/history",
+     "note": "2010 NPIC building completed"
+    },
+    {
+     "url": "https://www.uakron.edu/polymer/about-us/buildings",
+     "note": "roll-to-roll description"
+    },
+    {
+     "url": null,
+     "note": "Ohio TTOC FY 2010 Annual Report (42,750 sq ft; opened fall 2010)"
+    }
+   ],
+   "doNotSay": "That Third Frontier paid for NPIC unless a primary says so. That this building is the PIC pilot facility. Any construction cost not in a named source.",
+   "label": "PROVEN"
+  },
+  {
+   "id": "D-009",
+   "atom": "WIN-DIS-009",
+   "collection": "discoveries",
+   "date": "2012-07-01",
+   "datePrecision": "range",
+   "dateDisplay": "2012",
+   "year": 2012,
+   "era": 4,
+   "title": "Meador / Guo flexible cross-linked polyimide aerogels at NASA Glenn",
+   "oneLiner": "Meador and coworkers at NASA Glenn published flexible, aromatic-triamine-cross-linked polyimide aerogels in 2012 (ACS Appl. Mater. Interfaces 4:536–544) and were issued US 9,109,088 in 2015. The 2015 FLEXcon/Blueshift deal is a license, not this discovery.",
+   "sources": [
+    {
+     "url": "https://pubs.acs.org/doi/10.1021/am2014635",
+     "note": "Meador et al., ACS Appl. Mater. Interfaces 2012, 4, 536–544"
+    },
+    {
+     "url": "https://patents.google.com/patent/US9109088B2/en",
+     "note": "issued 2015-08-18; Meador / Guo; NASA + OAI"
+    },
+    {
+     "url": "https://technology.nasa.gov/patent/LEW-TOPS-133",
+     "note": "Glenn T2 summary; first cross-linked PI aerogel networks"
+    },
+    {
+     "url": "https://www.nasa.gov/news-release/nasa-glenn-signs-exclusive-license-agreement-for-polyimide-aerogel/",
+     "note": "2015-06-17; license child only"
+    }
+   ],
+   "doNotSay": "That Glenn invented aerogels (Kistler / silica). That the 2015 license is the invention. That Blueshift manufactures in NEO. “500 times stronger” without naming NASA T2 as the speaker. Any PIC cause.",
+   "label": "PROVEN"
+  }
+ ]
+}

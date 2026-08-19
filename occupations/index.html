@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>The Occupations Inside Polymer Manufacturing</title>
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <strong>Polymer Industry Cluster</strong>
+    <span>Cluster vitals &middot; occupations</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">The jobs inside plastics and rubber manufacturing &mdash; nationally, and
+      what they pay in four Northeast Ohio metros</p>
+    <h1 id="h1">In plastics and rubber manufacturing, one job in nine is a molding-machine setter
+      &mdash; and <em>half of all the nation&rsquo;s molding-machine setters</em> work in this
+      one industry.</h1>
+    <p class="stand">PIC&rsquo;s workforce case is usually argued in totals: how many jobs, what
+      the average job pays. This page opens the total up. It names the occupations the industry
+      is actually staffed with, what each pays in Akron, Cleveland, Canton-Massillon and
+      Youngstown-Warren against the same job nationally, and what schooling the people doing
+      the work report having. <b>Two limits are stated here, not in a footnote.</b> The staffing
+      shares are national and the metro wages are for every industry that employs the
+      occupation, not for plastics plants alone; and the metros neither nest inside nor tile
+      the twelve counties PIC measures against, so they are shown side by side and never
+      summed.</p>
+    <div class="hero-row" id="figs"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The staffing pattern</p>
+    <h2 id="mixtitle">Fourteen occupations are 59% of the industry, and most of them are on
+      the floor</h2>
+    <p class="lede">Each bar is one occupation&rsquo;s share of everyone employed in plastics and
+      rubber manufacturing nationally in 2024. The figure at the bar&rsquo;s end is the reverse
+      question &mdash; what share of that occupation, across every industry, works in this one
+      &mdash; which is how polymer-specific the job is. Bars encode from zero and the axis is
+      linear.</p>
+    <div class="chart"><svg id="mix" role="img" aria-labelledby="mix-t">
+      <title id="mix-t">The fourteen largest occupations in plastics and rubber manufacturing by
+        share of the industry&rsquo;s national employment, with each occupation&rsquo;s share
+        that works in this industry.</title></svg></div>
+    <div id="mixtable"></div>
+    <p class="src" id="mixsrc"></p>
+    <div class="note" id="mixnote"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">What each pays</p>
+    <h2 id="paytitle">Against the same job nationally, the region&rsquo;s metros mostly pay
+      less &mdash; and the gap is widest at the top</h2>
+    <p class="lede">One row per occupation, ordered by the national annual median. The hollow
+      diamond is the nation; the dots are the three metros with the most published cells.
+      A dot left of the diamond pays under the national median for that job; right of it,
+      over. These are dollars as paid, in every industry that employs the occupation, and not
+      adjusted for what a dollar buys in each metro.</p>
+    <div class="legend" id="paylegend"></div>
+    <div class="chart"><svg id="pay" role="img" aria-labelledby="pay-t">
+      <title id="pay-t">Annual median wage for each occupation in Akron, Cleveland and
+        Canton-Massillon against the national median, May 2024.</title></svg></div>
+    <div id="paytable"></div>
+    <p class="src" id="paysrc"></p>
+    <div class="note" id="paynote"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">What schooling the work reports</p>
+    <h2 id="edutitle">Six of these occupations are degree jobs; fourteen are high-school jobs;
+      the rest sit between</h2>
+    <p class="lede">Each bar is one occupation, and its four segments are the share of surveyed
+      workers and occupational experts who report each level of education as what the job
+      requires &mdash; high school or less, some college or an associate degree, a bachelor&rsquo;s,
+      a graduate degree. The label at the right is the occupation&rsquo;s <dfn><b>Job
+      Zone</b>, the Labor Department&rsquo;s rating of how much overall preparation the work
+      typically needs, from little to extensive.</dfn> Neither is a hiring requirement.</p>
+    <div class="legend" id="edulegend"></div>
+    <div class="chart"><svg id="edu" role="img" aria-labelledby="edu-t">
+      <title id="edu-t">Reported required level of education for each occupation, as four
+        stacked shares, with the Job Zone.</title></svg></div>
+    <div id="edutable"></div>
+    <p class="src" id="edusrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">Where the degree jobs are trained here</p>
+    <h2 id="progtitle">Three universities confer the region&rsquo;s polymer and materials
+      degrees</h2>
+    <p class="lede">For the six occupations above where a majority hold a bachelor&rsquo;s or
+      more, the local supply is the degrees conferred by the region&rsquo;s universities in
+      polymer engineering, polymer chemistry, materials engineering and materials science.
+      Each bar is one program at one institution &mdash; the average number of degrees
+      conferred a year across the latest three years the federal record covers. Programs, not
+      people.</p>
+    <div class="chart"><svg id="prog" role="img" aria-labelledby="prog-t">
+      <title id="prog-t">Degrees conferred a year, on average over three years, by program and
+        institution.</title></svg></div>
+    <div id="progtable"></div>
+    <p class="src" id="progsrc"></p>
+    <div class="note" id="prognote"></div>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="wrap">
+    <p>The industry&rsquo;s jobs are mostly floor jobs, and Akron and Cleveland pay them within
+      a few percent of the national rate. The degree jobs are few, pay under the national rate
+      in every metro, and are trained at three schools.</p>
+    <p class="sub" id="closersub"></p>
+  </div>
+</section>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

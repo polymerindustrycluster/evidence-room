@@ -65,6 +65,22 @@ async function bundle(name) {
     html = html.replace(m[0], () => `url(data:${mime};base64,${b64})`);
   }
 
+  /* 1c. <img src="img/X.jpg"> -> data URI. Same reason as the fonts: a bundle is
+     self-contained or it is not a bundle, and a relative <img> in dist/ is a broken image
+     nobody chose. Only local img/ and assets/ paths; remote images are left alone (a page
+     should not be using any). Missing files print, so a typo cannot ship as a blank frame.
+     Added 2026-08-18 for the timeline's five public-domain stills. */
+  for (const m of [...html.matchAll(/<img\b[^>]*\bsrc=(["'])((?:img|assets)\/[^"']+)\1[^>]*>/gi)]) {
+    const abs = path.resolve(dir, m[2]);
+    if (!existsSync(abs)) { console.log(`  ${name}: missing ${m[2]}`); continue; }
+    const ext = path.extname(abs).slice(1).toLowerCase();
+    const mime = {jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp",
+                  svg: "image/svg+xml", gif: "image/gif"}[ext] || "application/octet-stream";
+    const b64 = (await readFile(abs)).toString("base64");
+    const tag = m[0].replace(m[2], () => `data:${mime};base64,${b64}`);
+    html = html.replace(m[0], () => tag);
+  }
+
   // 2. <script src="..."></script> → inline
   for (const m of [...html.matchAll(/<script[^>]+src=["']([^"']+)["'][^>]*><\/script>/gi)]) {
     if (/^https?:/i.test(m[1])) continue;
