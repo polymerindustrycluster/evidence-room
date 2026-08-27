@@ -3,11 +3,19 @@
   "claims": [
     {
       "id": "occ-hero-one-in-nine",
-      "text": "In plastics and rubber manufacturing, one job in nine is a molding-machine setter — and half of all the nation's molding-machine setters work in this one industry.",
+      "text": "In plastics and rubber manufacturing, one job in nine is a molding-machine setter, and half of all the nation's molding-machine setters work in this one industry.",
       "source": "BLS National Employment Matrix, industry 326000, 2024 base",
       "assert": "(lambda s: 8.5 <= 100 / s['pct_of_industry'] <= 9.6 and 47.5 <= s['pct_of_occupation'] <= 54.9)(one(m for m in D['mix'] if m['soc'] == '51-4072'))",
       "actual": "(lambda s: (s['pct_of_industry'], s['pct_of_occupation']))(one(m for m in D['mix'] if m['soc'] == '51-4072'))",
       "falsified_if": "The setters' share of the industry leaves the 10.4–11.8% band that reads as 'one in nine', or the industry's share of the occupation leaves 47.5–54.9%, at which point 'half' becomes 'about half' or a different fraction. Both move with each matrix release."
+    },
+    {
+      "id": "occ-standfirst",
+      "text": "All four Northeast Ohio metros pay the degree occupations under the national rate while paying the floor closer to it, and the local polymer-degree count has run at less than half its earlier pace for two years (standfirst).",
+      "source": "BLS OEWS May 2024 ratios by education group; IPEDS polymer completions by year",
+      "assert": "all(v['degree_median_ratio'] < 1 for v in D['pay_totals']['ratio_by_metro'].values()) and all(v['degree_median_ratio'] < v['hs_median_ratio'] for v in D['pay_totals']['ratio_by_metro'].values()) and (lambda E, R: 0.30 <= (sum(R) / len(R)) / (sum(E) / len(E)) <= 0.50)([sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2022)], [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in (2022, 2023)])",
+      "actual": "({a: (v['degree_median_ratio'], v['hs_median_ratio']) for a, v in D['pay_totals']['ratio_by_metro'].items()}, [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2024)])",
+      "falsified_if": "Any metro's degree-group median ratio reaches 1.0 ('under the national rate' fails), any metro's degree ratio reaches its high-school ratio ('closer to it' fails), or the 2022–23 average polymer conferral count leaves 30–50% of the 2014–2021 average ('less than half its earlier pace' fails)."
     },
     {
       "id": "occ-hero-figures",
@@ -26,8 +34,24 @@
       "falsified_if": "The top-fourteen share moves off 59.4%, or fewer than eight of the fourteen are production (51-xxxx) occupations, which is what 'most of them are on the floor' asserts."
     },
     {
+      "id": "occ-mix-figtitle",
+      "text": "The largest floor job alone outweighs every engineer and scientist in the industry combined (mix figure title).",
+      "source": "BLS National Employment Matrix: setters' share vs the summed engineer/scientist/technician share",
+      "assert": "(lambda s: s['pct_of_industry'] > D['mix_totals']['eng_sci_share_pct'] and s['soc'].startswith('51-') and s['pct_of_industry'] == max(m['pct_of_industry'] for m in D['mix']))(one(m for m in D['mix'] if m['soc'] == '51-4072'))",
+      "actual": "(one(m for m in D['mix'] if m['soc'] == '51-4072')['pct_of_industry'], D['mix_totals']['eng_sci_share_pct'])",
+      "falsified_if": "The setters' share falls to or below the engineer/scientist/technician share, or setters stop being the industry's largest occupation."
+    },
+    {
+      "id": "occ-mix-most-specific",
+      "text": "The two most polymer-specific jobs on the list are floor jobs (staffing lede).",
+      "source": "BLS National Employment Matrix, share of each occupation that works in industry 326000",
+      "assert": "all(r['soc'].startswith('51-') for r in sorted(D['mix'], key=lambda m: -m['pct_of_occupation'])[:2])",
+      "actual": "[(r['soc'], r['pct_of_occupation']) for r in sorted(D['mix'], key=lambda m: -m['pct_of_occupation'])[:2]]",
+      "falsified_if": "A non-production occupation enters the top two reverse shares in a later matrix release."
+    },
+    {
       "id": "occ-tire-builders",
-      "text": "Tire builders — the industry's ninth-largest occupation — are published for none of the four metros.",
+      "text": "Tire builders, the industry's ninth-largest occupation, are published for none of the four metros (pay source line and on-chart label).",
       "source": "BLS National Employment Matrix rank; BLS OEWS May 2024 metropolitan file",
       "assert": "[m['soc'] for m in D['mix']].index('51-9197') == 8 and D['pay_totals']['absent_everywhere'] == ['51-9197']",
       "actual": "([m['soc'] for m in D['mix']].index('51-9197'), D['pay_totals']['absent_everywhere'])",
@@ -43,7 +67,7 @@
     },
     {
       "id": "occ-beats-national",
-      "text": "Above the national median in 5 of 25 published occupations in Akron, 10 of 25 in Cleveland, 5 of 22 in Canton-Massillon and 1 of 21 in Youngstown-Warren.",
+      "text": "Only 5 of Akron's 25 published occupations beat the same job nationally, 10 of 25 in Cleveland, 5 of 22 in Canton-Massillon and 1 of 21 in Youngstown-Warren (pay lede).",
       "source": "BLS OEWS May 2024, metropolitan and national files, annual median",
       "assert": "D['pay_totals']['beats_national'] == {'10420': 5, '17410': 10, '15940': 5, '49660': 1} and D['pay_totals']['disclosed'] == {'10420': 25, '17410': 25, '15940': 22, '49660': 21}",
       "actual": "(D['pay_totals']['beats_national'], D['pay_totals']['disclosed'])",
@@ -51,11 +75,43 @@
     },
     {
       "id": "occ-degree-vs-floor",
-      "text": "In every metro the six degree occupations sit further under the national median than the fourteen high-school occupations. In Akron the median ratio is 0.93× for the degree occupations against 0.97× for the high-school ones; in Cleveland 0.95× against 1.01×.",
-      "source": "BLS OEWS May 2024 (metro median ÷ national median), grouped by the O*NET education majority",
+      "text": "The pay gap against the nation is widest at the top of the schooling ladder (pay h2); the degree band sits deeper under its diamonds than the floor band in every metro (figure title); Akron pays the degree band a median 0.93x the nation and Cleveland 0.95x, against 0.97x and 1.01x for the high-school band (on-chart band annotations, closer sub).",
+      "source": "BLS OEWS May 2024 (metro median / national median), grouped by the O*NET education majority",
       "assert": "all(v['degree_median_ratio'] < v['hs_median_ratio'] for v in D['pay_totals']['ratio_by_metro'].values()) and len(D['education_totals']['ba_plus_majority']) == 6 and len(D['education_totals']['hs_majority']) == 14 and round(D['pay_totals']['ratio_by_metro']['10420']['degree_median_ratio'], 2) == 0.93 and round(D['pay_totals']['ratio_by_metro']['10420']['hs_median_ratio'], 2) == 0.97 and round(D['pay_totals']['ratio_by_metro']['17410']['degree_median_ratio'], 2) == 0.95 and round(D['pay_totals']['ratio_by_metro']['17410']['hs_median_ratio'], 2) == 1.01",
       "actual": "D['pay_totals']['ratio_by_metro']",
-      "falsified_if": "Any metro's degree-group median ratio rises to or above its high-school-group ratio — the h2 says 'the gap is widest at the top' for every metro — or the Akron and Cleveland ratios move off the printed values. Canton-Massillon and Youngstown-Warren rest on three degree occupations each; a single published cell changes them."
+      "falsified_if": "Any metro's degree-group median ratio rises to or above its high-school-group ratio (the h2 and figure title claim the ordering for every metro), or the Akron and Cleveland ratios move off the printed values. Canton-Massillon and Youngstown-Warren rest on three degree occupations each; a single published cell changes them."
+    },
+    {
+      "id": "occ-pay-groups",
+      "text": "The pay chart's three bands hold 6 degree occupations, 6 in between and 14 high-school occupations, and every occupation on the pay chart has an education row to group it by (band labels, selector optgroups).",
+      "source": "BLS OEWS occupation set joined to O*NET education majorities on the SOC code",
+      "assert": "len(D['pay']) == D['pay_totals']['occupations'] and len([r for r in D['pay'] if r['soc'] in D['education_totals']['ba_plus_majority']]) == 6 and len([r for r in D['pay'] if r['soc'] in D['education_totals']['hs_majority']]) == 14 and len([r for r in D['pay'] if r['soc'] not in D['education_totals']['ba_plus_majority'] and r['soc'] not in D['education_totals']['hs_majority']]) == 6 and all(r['soc'] in set(e['soc'] for e in D['education']) for r in D['pay'])",
+      "actual": "(len(D['pay']), len([r for r in D['pay'] if r['soc'] in D['education_totals']['ba_plus_majority']]), len([r for r in D['pay'] if r['soc'] not in D['education_totals']['ba_plus_majority'] and r['soc'] not in D['education_totals']['hs_majority']]), len([r for r in D['pay'] if r['soc'] in D['education_totals']['hs_majority']]))",
+      "falsified_if": "An O*NET release moves an occupation across a majority line (the band counts change), the occupation set changes size, or a pay row appears with no education row (the selector's education clause and the grouping both break)."
+    },
+    {
+      "id": "occ-selector-default",
+      "text": "All 26 occupations: the industry's fourteen largest hold 59.4% of its national employment, and every metro pays the six degree occupations further under the nation than the fourteen high-school ones (default selector verdict).",
+      "source": "BLS National Employment Matrix; BLS OEWS May 2024 ratios by education group",
+      "assert": "D['pay_totals']['occupations'] == 26 and D['mix_totals']['top_n'] == 14 and D['mix_totals']['top_n_share_pct'] == 59.4 and all(v['degree_median_ratio'] < v['hs_median_ratio'] for v in D['pay_totals']['ratio_by_metro'].values())",
+      "actual": "(D['pay_totals']['occupations'], D['mix_totals']['top_n'], D['mix_totals']['top_n_share_pct'], {a: (v['degree_median_ratio'], v['hs_median_ratio']) for a, v in D['pay_totals']['ratio_by_metro'].items()})",
+      "falsified_if": "The occupation set or top-fourteen share changes, or any metro's degree ratio reaches its high-school ratio. Per the house pattern for interactive verdicts, this guards the DEFAULT sentence; per-occupation variants recompose from the same data fields and are unguarded by design."
+    },
+    {
+      "id": "occ-vignette-setter",
+      "text": "A molding-machine setter in metro Akron makes $41,260 a year at the median, thirty dollars over the same job's national median of $41,230 (paycheck band; '+$30' stat card).",
+      "source": "BLS OEWS May 2024: SOC 51-4072 annual median, Akron MSA and national",
+      "assert": "(lambda r: abs(r['metros']['10420']['median'] - 41260) <= 0.5 and abs(r['national']['median'] - 41230) <= 0.5 and 25 <= r['metros']['10420']['median'] - r['national']['median'] <= 35)(one(p for p in D['pay'] if p['soc'] == '51-4072'))",
+      "actual": "(lambda r: (r['metros']['10420']['median'], r['national']['median'], r['metros']['10420']['median'] - r['national']['median']))(one(p for p in D['pay'] if p['soc'] == '51-4072'))",
+      "falsified_if": "A new OEWS vintage moves either median, or the gap leaves $25–35 and '+$30' / 'thirty dollars' no longer describes it."
+    },
+    {
+      "id": "occ-vignette-engineer",
+      "text": "A chemical engineer in metro Akron makes $105,660 against $121,860 nationally, about $16,200 a year under (paycheck band; '-$16,200' stat card; 'sixteen thousand at the top' h2).",
+      "source": "BLS OEWS May 2024: SOC 17-2041 annual median, Akron MSA and national",
+      "assert": "(lambda r: abs(r['metros']['10420']['median'] - 105660) <= 0.5 and abs(r['national']['median'] - 121860) <= 0.5 and 15500 <= r['national']['median'] - r['metros']['10420']['median'] <= 16800)(one(p for p in D['pay'] if p['soc'] == '17-2041'))",
+      "actual": "(lambda r: (r['metros']['10420']['median'], r['national']['median'], r['national']['median'] - r['metros']['10420']['median']))(one(p for p in D['pay'] if p['soc'] == '17-2041'))",
+      "falsified_if": "A new OEWS vintage moves either median, or the gap leaves $15,500–16,800 so '$16,200' and 'sixteen thousand' no longer round from the data. These are metro-wide all-industry medians, and the band says so."
     },
     {
       "id": "occ-education-counts",
@@ -66,16 +122,40 @@
       "falsified_if": "An O*NET release moves any occupation across the 50% line in either bin, or the occupation set changes. 'Majority' means strictly more than half of respondents."
     },
     {
+      "id": "occ-edu-figtitle",
+      "text": "Every degree-majority occupation is an engineer or scientist job (education figure title and lede).",
+      "source": "O*NET 30.3 majorities; SOC major groups 17-2 (engineers) and 19-2 (physical scientists)",
+      "assert": "all(s.startswith('17-2') or s.startswith('19-2') for s in D['education_totals']['ba_plus_majority'])",
+      "actual": "sorted(D['education_totals']['ba_plus_majority'])",
+      "falsified_if": "An occupation outside the engineer (17-2xxx) and physical-scientist (19-2xxx) code families acquires a bachelor's-or-higher majority in a later O*NET release."
+    },
+    {
       "id": "occ-programs",
-      "text": "Three universities confer the region's polymer and materials degrees. The polymer programs conferred 63 degrees in 2023 against a three-year average of 80.4 a year.",
+      "text": "Three universities confer the degrees (h2, figure); the polymer programs conferred 63 degrees in 2023, the latest year loaded, and the chart averages 2021-2023 (closer sub, source line).",
       "source": "IPEDS completions by CIP (14.3201, 40.0507 polymer; 14.1801, 40.1001 materials), first major, via the Urban Institute API",
       "assert": "len(D['program_totals']['institutions']) == 3 and D['program_totals']['latest_year'] == 2023 and D['program_totals']['polymer_awards_latest'] == 63 and D['program_totals']['polymer_awards_window_avg'] == 80.4 and D['program_totals']['window'] == [2021, 2022, 2023] and len(D['programs']) == 13",
       "actual": "D['program_totals']",
       "falsified_if": "The 2024 completions load (the latest year then moves and every figure here re-bases), a fourth institution reports completions in these codes, or a program with zero completions in the window starts conferring."
     },
     {
+      "id": "occ-pipeline-halved",
+      "text": "Polymer programs conferred between 118 and 179 degrees a year from 2014 through 2021, then 54 in 2022 and 63 in 2023, under half the earlier pace; the adjacent materials programs held their usual range (pipeline lede, h2 'fallen by more than half', on-chart bracket, closer).",
+      "source": "IPEDS completions by CIP via the Urban Institute API, summed across polymer programs (14.3201, 40.0507) by year",
+      "assert": "(lambda P: P['2021'] == 124 and P['2022'] == 54 and P['2023'] == 63)({y: sum(p['by_year'].get(y, 0) for p in D['programs'] if p['group'] == 'polymer') for y in ('2021', '2022', '2023')}) and (lambda E: min(E) == 118 and max(E) == 179)([sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2022)]) and (lambda E, R: (sum(R) / len(R)) / (sum(E) / len(E)) < 0.5)([sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2022)], [54, 63]) and (lambda E, R: min(E) <= min(R) and max(R) <= max(E))([sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] != 'polymer') for y in range(2014, 2022)], [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] != 'polymer') for y in (2022, 2023)])",
+      "actual": "{y: (sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer'), sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] != 'polymer')) for y in range(2014, 2024)}",
+      "falsified_if": "A revised or extended IPEDS pull moves any yearly polymer sum, the 2022-23 average rises to half or more of the 2014-2021 average ('fallen by more than half' and 'halved' fail), or a materials-program year leaves the 2014-2021 range ('held their usual range' fails). A CIP recoding that moved a program between codes would falsify the interpretation without falsifying the arithmetic; the lede says so."
+    },
+    {
+      "id": "occ-akron-poly-share",
+      "text": "The University of Akron confers two-thirds of the region's polymer degrees (programs figure title).",
+      "source": "IPEDS completions: Akron's polymer-program window averages over the polymer total",
+      "assert": "0.62 <= sum(p['window_avg'] for p in D['programs'] if p['group'] == 'polymer' and 'Akron' in p['institution']) / D['program_totals']['polymer_awards_window_avg'] <= 0.72",
+      "actual": "sum(p['window_avg'] for p in D['programs'] if p['group'] == 'polymer' and 'Akron' in p['institution']) / D['program_totals']['polymer_awards_window_avg']",
+      "falsified_if": "Akron's share of the polymer window average leaves 62-72%, at which point 'two-thirds' no longer rounds from the data."
+    },
+    {
       "id": "occ-youngstown-fewest",
-      "text": "Youngstown-Warren publishes 21 of the 26 occupations, the fewest, and is in the table.",
+      "text": "Youngstown-Warren publishes 21 of the 26 occupations, the fewest, and is in the table (pay source line).",
       "source": "BLS OEWS May 2024 metropolitan file",
       "assert": "D['pay_totals']['disclosed']['49660'] == 21 and D['pay_totals']['occupations'] == 26 and D['pay_totals']['disclosed']['49660'] == min(D['pay_totals']['disclosed'].values()) and list(D['pay_totals']['disclosed'].values()).count(21) == 1",
       "actual": "D['pay_totals']['disclosed']",
@@ -83,7 +163,7 @@
     },
     {
       "id": "occ-high-rse",
-      "text": "2 of the metro cells here exceed 10% relative standard error of the mean wage.",
+      "text": "2 metro cells exceed 10% relative standard error of the mean wage (pay source line).",
       "source": "BLS OEWS May 2024 metropolitan file, MEAN_PRSE",
       "assert": "D['pay_totals']['high_rse_cells'] == 2 and D['pay_totals']['high_rse_threshold_pct'] == 10",
       "actual": "D['pay_totals']['high_rse_cells']",
@@ -91,11 +171,11 @@
     },
     {
       "id": "occ-closer",
-      "text": "The industry's jobs are mostly floor jobs, and Akron and Cleveland pay them within a few percent of the national rate. The degree jobs are few, pay under the national rate in every metro, and are trained at three schools. Nationally, production occupations are 58.5% of the industry and engineers, scientists and technicians 4.0%. The six degree occupations draw on about 80 polymer degrees a year from three universities.",
-      "source": "BLS National Employment Matrix (production share); BLS OEWS May 2024 ratios by education group; IPEDS institutions",
-      "assert": "D['mix_totals']['production_share_pct'] > 50 and 0.95 <= D['pay_totals']['ratio_by_metro']['10420']['hs_median_ratio'] <= 1.05 and 0.95 <= D['pay_totals']['ratio_by_metro']['17410']['hs_median_ratio'] <= 1.05 and all(v['degree_median_ratio'] < 1 for v in D['pay_totals']['ratio_by_metro'].values()) and len(D['program_totals']['institutions']) == 3 and D['mix_totals']['eng_sci_share_pct'] < 10 and round(D['program_totals']['polymer_awards_window_avg']) == 80 and D['mix_totals']['production_share_pct'] == 58.5",
-      "actual": "(D['mix_totals']['production_share_pct'], {a: (v['hs_median_ratio'], v['degree_median_ratio']) for a, v in D['pay_totals']['ratio_by_metro'].items()}, D['program_totals']['institutions'])",
-      "falsified_if": "Production occupations fall below half the industry; Akron's or Cleveland's high-school-group median ratio leaves 0.95-1.05 ('within a few percent'); any metro's degree-group median ratio reaches 1.0; or a fourth institution confers degrees in these codes. 'Few' is carried by the 4.0% engineer/scientist/technician share staying under 10%."
+      "text": "The industry's jobs are mostly floor jobs, and Akron and Cleveland pay those within a few percent of the national rate. The degree jobs are few, pay under the national rate in every metro, and their local polymer-degree count has halved. Staffed, yes; paid, at a discount at the top; replaced, from a degree count running at half its old pace.",
+      "source": "BLS National Employment Matrix (production share); BLS OEWS May 2024 ratios by education group; IPEDS polymer completions by year",
+      "assert": "D['mix_totals']['production_share_pct'] > 50 and 0.95 <= D['pay_totals']['ratio_by_metro']['10420']['hs_median_ratio'] <= 1.05 and 0.95 <= D['pay_totals']['ratio_by_metro']['17410']['hs_median_ratio'] <= 1.05 and all(v['degree_median_ratio'] < 1 for v in D['pay_totals']['ratio_by_metro'].values()) and D['mix_totals']['eng_sci_share_pct'] < 10 and (lambda E, R: (sum(R) / len(R)) / (sum(E) / len(E)) <= 0.5)([sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2022)], [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in (2022, 2023)])",
+      "actual": "(D['mix_totals']['production_share_pct'], {a: (v['hs_median_ratio'], v['degree_median_ratio']) for a, v in D['pay_totals']['ratio_by_metro'].items()}, [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2024)])",
+      "falsified_if": "Production occupations fall below half the industry; Akron's or Cleveland's high-school-group median ratio leaves 0.95-1.05 ('within a few percent'); any metro's degree-group median ratio reaches 1.0; or the recent polymer conferral pace rises above half the 2014-2021 average ('has halved' fails). 'Few' is carried by the 4.0% engineer/scientist/technician share staying under 10%."
     }
   ]
 }

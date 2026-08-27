@@ -1,0 +1,52 @@
+/* occupations — page-local additions only. House anatomy (.mast/.hero/.band/.closer)
+   and the shared column system stay untouched so the layout gates keep applying.
+   This file adds: per-figure chrome, the occupation selector, one stat band (the
+   page's register change), band-tint pacing, and the per-form mobile re-layout
+   override. Pattern copied from wages/styles.css (the worked exemplar). */
+
+/* Figure chrome: every chart carries its own claim-title + how-to-read line, so the H2
+   does section work instead of doubling as the chart title (chart-craft.md). */
+.fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
+  line-height:1.3;max-width:var(--measure);color:var(--text)}
+.fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure)}
+.fig-title + .fig-sub + .chart{margin-top:16px}
+.fig-title + .fig-sub + .legend{margin-top:14px}
+
+/* Occupation selector — 26 rows is too many for a button rail, so a native select:
+   compact, keyboard-native, and the default state tells the full story. */
+.osel{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:20px 0 0;
+  max-width:var(--measure)}
+.osel label{font:700 13px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;
+  color:#4A5457}
+.osel select{font:700 15px/1.2 var(--sans);color:var(--ink);background:#fff;
+  border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-height:44px;
+  max-width:100%}
+.osel select:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+.verdict{margin:14px 0 0;font-size:17px;line-height:1.55;max-width:var(--measure);
+  color:#243135}
+.verdict b{color:var(--ink)}
+
+/* Pacing: alternate band grounds so the scroll reads as a wave, not a loop. */
+.band.tint{background:#F4F1EC}
+
+/* The stat band — the page's one register change: the two paychecks at display size. */
+.statgrid{display:flex;gap:56px;flex-wrap:wrap;margin:28px 0 0;max-width:var(--figure)}
+.statv{border-top:4px solid #9FD2DA;padding:16px 0 0;min-width:220px;flex:1}
+.statv.deg{border-top-color:#0C6473}
+.statv .n{font-size:clamp(46px,5vw,66px);font-weight:900;line-height:1;
+  letter-spacing:-.03em;font-variant-numeric:proportional-nums;color:var(--text)}
+.statv .k{margin:9px 0 0;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:900;color:#4A5457}
+.statv .d{margin:6px 0 0;font-size:14px;color:#5A625E;max-width:340px}
+
+/* Mobile: this page re-lays every chart out per form (labels above marks, grouped
+   row stacks) — so the shared sideways-scroll fallback is switched off. The evidence
+   must be in the first paint, not behind a pan (chart-craft § mobile). */
+@media (max-width:760px){
+  .chart{overflow-x:visible;padding-bottom:0}
+  .chart svg{min-width:0}
+  .chart::after{content:none}
+  .statgrid{gap:28px}
+  .statv .n{font-size:44px}
+  .legend{gap:12px 16px}
+}
