@@ -26,7 +26,6 @@ app.js              four charts (desktop + mobile forms), selector, table twins
 claims.json         22 assertions, all machine-checked against data/viz-data.json
 data/viz-data.json  THE DATA (59 KB). Edit the builder, not this.
 shots/              desktop.png, mobile.png
-INTEGRATION-NOTE.md what the controller must wire before this page is reachable or shippable
 ```
 
 ## Rebuild the data
