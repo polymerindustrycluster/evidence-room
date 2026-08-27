@@ -22,13 +22,15 @@
     <p class="eyebrow">Polymer wages against local price levels, 2023</p>
     <h1>The same paycheck ranks <em>below average</em> in dollars and
       <em>above average</em> in what it buys.</h1>
-    <p class="stand">Every wage comparison PIC has ever published is nominal, which quietly
-      assumes a dollar is a dollar everywhere. the Bureau of Economic Analysis publishes a price index for each metro
-      &mdash; a fixed national basket, US average 100 &mdash; so the assumption is
-      testable. Among the 56 metros with a real polymer workforce, Akron is
-      <b>33rd on nominal weekly wages and 19th on what those wages actually buy</b>. The
-      adjustment does not just help; it crosses the median. <b>It is also smaller than the
-      pitch PIC usually makes</b>, and this page says why.</p>
+    <p class="stand">For a member trying to hire against Chicago or Boston money, the
+      number on the offer is only half the argument: the same paycheck stretches about
+      10 percent further in Akron than in Chicago. Every wage comparison PIC has ever
+      published is nominal, which quietly assumes a dollar is a dollar everywhere. The
+      Bureau of Economic Analysis prices a fixed national basket in every metro (US
+      average = 100), so the assumption is testable. Among the 56 metros with a real
+      polymer workforce, Akron is <b>33rd on nominal weekly wages and 19th on what
+      those wages actually buy</b>. The climb crosses the median, and it is smaller
+      than the pitch PIC usually makes. This page says why.</p>
     <p class="stand"><dfn><b>Nominal</b> &mdash; the number printed on the paycheck,
       before any adjustment for what things cost where you live. Its opposite here is
       &ldquo;real,&rdquo; meaning what the paycheck actually buys.</dfn>
@@ -46,9 +48,21 @@
       wage on the left and by price-adjusted wage on the right. A line sloping down means a
       metro's wages buy less than the dollar figure suggests. The steepest falls are the
       places PIC competes with for people.</p>
+    <div class="csel" id="msel" role="group" aria-label="Pick the metro you are recruiting against"></div>
+    <p class="verdict" id="verdict"></p>
+    <p class="fig-title">Akron climbs 14 places when the paycheck is restated in what it buys</p>
+    <p class="fig-sub">The 56 metros with at least 2,000 polymer jobs, ranked by nominal
+      weekly wage and re-ranked by price-adjusted wage. BLS QCEW and BEA price
+      parities, 2023.</p>
     <div class="chart"><svg id="slope" role="img" aria-labelledby="slope-t">
-      <title id="slope-t">Nominal versus price-adjusted wage rank for polymer metros.</title>
+      <title id="slope-t">Nominal versus price-adjusted wage rank for polymer metros:
+        Akron climbs from 33rd to 19th, while San Francisco, Seattle and New York fall
+        furthest.</title>
     </svg></div>
+    <div class="legend">
+      <span><i style="background:#C85F0C"></i> Akron</span>
+      <span><i style="background:#A32A78"></i> The metro you pick</span>
+    </div>
     <div id="slopetable"></div>
     <p class="src" id="slopesrc"></p>
   </div>
@@ -62,8 +76,13 @@
       says it does. Akron's price level is almost exactly the metro median &mdash; more than
       a hundred metros are cheaper. What produces the climb is that a large share of the
       polymer industry sits in genuinely expensive places.</p>
+    <p class="fig-title">Akron&rsquo;s price level lands in the middle of the pack, not the cheap end</p>
+    <p class="fig-sub">One tick per metro: the all-items price level of the 235 metros
+      with a disclosed polymer wage, US average = 100, BEA 2023. Akron sits at 92.9; the
+      median metro is 93.1.</p>
     <div class="chart"><svg id="strip" role="img" aria-labelledby="strip-t">
-      <title id="strip-t">Distribution of metro price levels with Akron marked.</title>
+      <title id="strip-t">Distribution of metro price levels with Akron marked at the
+        median, not the cheap end.</title>
     </svg></div>
     <div id="striptable"></div>
     <div class="note" id="cheapnote"></div>
@@ -78,18 +97,36 @@
       purchasing power &mdash; every metro on the same line offers the same real wage.
       Up and to the left is a worse deal than the salary implies; down and to the right is
       a better one.</p>
+    <p class="fig-title">The biggest polymer employers sit where the same salary buys up to a fifth less</p>
+    <p class="fig-sub">Nominal weekly wage across, local price level up, 2023. Circle area
+      is polymer employment; every metro on one dashed diagonal buys the same.</p>
     <div class="chart"><svg id="scatter" role="img" aria-labelledby="scatter-t">
-      <title id="scatter-t">Nominal weekly wage against metro price level.</title>
+      <title id="scatter-t">Nominal weekly wage against metro price level: above the
+        diagonal a salary flatters the offer, below it the salary understates it, and
+        Akron sits on the favorable side.</title>
     </svg></div>
     <div id="scattertable"></div>
     <p class="src" id="scattersrc"></p>
   </div>
 </section>
 
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">What it means in an offer letter</p>
+    <h2>Against Chicago, the price advantage is worth about $6,600 a year</h2>
+    <p class="lede">Akron&rsquo;s average polymer paycheck is $1,238 a week, about
+      $64,000 a year. To hand a candidate the same buying power, a Chicago employer has
+      to write about $71,000, and the spread widens up the price ladder: matching it in
+      San Francisco takes about $81,000. These are averages of covered paychecks in each
+      metro, not any one person&rsquo;s offer; the point is the size of the wedge a
+      recruiter can put in a candidate&rsquo;s spreadsheet.</p>
+  </div>
+</section>
+
 <section class="closer">
   <div class="wrap">
-    <p>Recruiting against Chicago on salary is a losing argument. Recruiting on what the
-      salary buys is a winning one, by about fourteen places.</p>
+    <p>A Chicago offer has to clear $71,000 to beat Akron&rsquo;s $64,000. Against New
+      York, Los Angeles or Seattle, the bigger paycheck buys less outright.</p>
     <p class="sub" id="closersub"></p>
   </div>
 </section>

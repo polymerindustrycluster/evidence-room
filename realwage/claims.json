@@ -3,10 +3,10 @@
   "claims": [
     {
       "id": "rw-flip",
-      "text": "Akron ranks 33rd of 56 polymer metros on nominal wages and 19th on price-adjusted wages.",
+      "text": "Akron ranks 33rd of 56 polymer metros on nominal wages and 19th on price-adjusted wages, a climb of 14 places; the comparison set is the 56 metros with at least 2,000 polymer jobs (standfirst, hero cards, slope figure title and annotation, mobile rank list). Extended 2026-08-27 from the rank-only assertion: the climb, the set size and the floor are now asserted too, because all three are hand-typed on the page.",
       "source": "BLS QCEW 2023 NAICS 326 metro weekly wage; BEA MARPP 2023 all-items price parity",
-      "assert": "[r for r in D['big'] if r['area']=='10420'][0]['big_rank_nominal'] == 33 and [r for r in D['big'] if r['area']=='10420'][0]['big_rank_real'] == 19",
-      "actual": "[(r['big_rank_nominal'], r['big_rank_real'], r['big_climb']) for r in D['big'] if r['area']=='10420']",
+      "assert": "(lambda a: a['big_rank_nominal'] == 33 and a['big_rank_real'] == 19 and a['big_climb'] == 14)([r for r in D['big'] if r['area']=='10420'][0]) and len(D['big']) == 56 and D['meta']['n_big'] == 56 and D['meta']['big_floor'] == 2000",
+      "actual": "[(r['big_rank_nominal'], r['big_rank_real'], r['big_climb'], len(D['big']), D['meta']['big_floor']) for r in D['big'] if r['area']=='10420']",
       "falsified_if": "Either source revises, or the 2,000-job floor changes. The floor is a CHOICE — it selects the comparison set, and a different floor gives a different rank. State the floor whenever the rank is quoted."
     },
     {
@@ -24,6 +24,62 @@
       "assert": "len([r for r in D['metros'] if r['rpp'] < [x for x in D['metros'] if x['area']=='10420'][0]['rpp']]) > 100",
       "actual": "(len([r for r in D['metros'] if r['rpp'] < [x for x in D['metros'] if x['area']=='10420'][0]['rpp']]), len(D['metros']))",
       "falsified_if": "Akron's price level falls relative to other metros. This claim exists to stop the page being read as a 'low cost of living' pitch — the advantage is relative to where the polymer industry sits, not to the country."
+    },
+    {
+      "id": "rw-strip-marks",
+      "text": "The strip figure subtitle hand-types three values: 235 metros, Akron at 92.9, the median metro at 93.1 (strip fig-sub; svg title).",
+      "source": "BEA MARPP 2023 all items; median convention matches the page's JS (sorted, floor(n/2))",
+      "assert": "len(D['metros']) == 235 and D['meta']['n_metros'] == 235 and abs([r for r in D['metros'] if r['area']=='10420'][0]['rpp'] - 92.9) <= 0.05 and abs(sorted(r['rpp'] for r in D['metros'])[len(D['metros'])//2] - 93.1) <= 0.05",
+      "actual": "(len(D['metros']), [r['rpp'] for r in D['metros'] if r['area']=='10420'], sorted(r['rpp'] for r in D['metros'])[len(D['metros'])//2])",
+      "falsified_if": "A revision moves Akron's price level or the median off the one-decimal values typed in the subtitle, or the disclosed-metro count leaves 235."
+    },
+    {
+      "id": "rw-stretch-chicago",
+      "text": "The same paycheck stretches about 10 percent further in Akron than in Chicago (standfirst).",
+      "source": "derived: Chicago RPP over Akron RPP, minus one",
+      "assert": "(lambda c, a: 0.095 <= c['rpp']/a['rpp'] - 1 <= 0.11)([r for r in D['big'] if 'Chicago' in r['name']][0], [r for r in D['big'] if r['area']=='10420'][0])",
+      "actual": "(lambda c, a: c['rpp']/a['rpp'] - 1)([r for r in D['big'] if 'Chicago' in r['name']][0], [r for r in D['big'] if r['area']=='10420'][0])",
+      "falsified_if": "Either metro's price parity revises enough that the ratio leaves 9.5-11 percent, so 'about 10 percent' no longer rounds from the data."
+    },
+    {
+      "id": "rw-rivals-fall",
+      "text": "The three steepest falls in the 56-metro ranking are San Francisco, Seattle and New York, falling 24 to 29 places (slope bracket annotation, svg title, lede's 'steepest falls' framing).",
+      "source": "derived: big_climb sorted ascending, first three",
+      "assert": "(lambda f: all(any(n in r['name'] for r in f) for n in ('San Francisco', 'Seattle', 'New York')) and min(-r['big_climb'] for r in f) == 24 and max(-r['big_climb'] for r in f) == 29)(sorted(D['big'], key=lambda r: r['big_climb'])[:3])",
+      "actual": "[(r['name'], r['big_climb']) for r in sorted(D['big'], key=lambda r: r['big_climb'])[:3]]",
+      "falsified_if": "A revision reorders the biggest fallers or moves the fall magnitudes off the 24-29 range typed in the bracket."
+    },
+    {
+      "id": "rw-fifth-less",
+      "text": "The industry's biggest employers sit where the same salary buys up to a fifth less than in Akron (scatter figure title, closer sub). 'Biggest employers' means the five largest big-metro polymer employers; the maximum shortfall among them is Los Angeles at about 19 percent. Corrected 2026-08-27: the previous closer said 'a quarter less', which no metro on the page reaches (the maximum anywhere in the set is San Francisco at 21 percent).",
+      "source": "derived: 1 - Akron RPP / metro RPP over the five largest employers",
+      "assert": "(lambda t5, a: 0.165 <= max(1 - a['rpp']/r['rpp'] for r in t5) <= 0.215)(sorted(D['big'], key=lambda r: -r['emp'])[:5], [r for r in D['big'] if r['area']=='10420'][0])",
+      "actual": "(lambda t5, a: [(r['name'], round(1 - a['rpp']/r['rpp'], 3)) for r in t5])(sorted(D['big'], key=lambda r: -r['emp'])[:5], [r for r in D['big'] if r['area']=='10420'][0])",
+      "falsified_if": "Price parities revise so the largest shortfall among the top-five employers leaves 16.5-21.5 percent, and 'a fifth' stops being the honest round."
+    },
+    {
+      "id": "rw-flips-outright",
+      "text": "14 of the 56 metros pay more on paper than Akron and buy less, New York, Los Angeles and Seattle among them (default verdict sentence, closer).",
+      "source": "derived: nominal above Akron's and real below Akron's",
+      "assert": "(lambda F: len(F) == 14 and all(any(n in r['name'] for r in F) for n in ('New York', 'Los Angeles', 'Seattle')))((lambda a: [r for r in D['big'] if r['nominal'] > a['nominal'] and r['real'] < a['real']])([r for r in D['big'] if r['area']=='10420'][0]))",
+      "actual": "(lambda a: [(r['name'], r['nominal'], round(r['real'], 1)) for r in D['big'] if r['nominal'] > a['nominal'] and r['real'] < a['real']])([r for r in D['big'] if r['area']=='10420'][0])",
+      "falsified_if": "A revision changes the count of outright flips or drops any of the three named metros out of the set. The named metros are the ones a recruiter actually loses candidates to; if one leaves, the closer must be rewritten."
+    },
+    {
+      "id": "rw-offer-arithmetic",
+      "text": "Akron's average polymer paycheck is $1,238 a week (about $64,000 a year) and buys like $1,332; matching its buying power takes about $71,000 in Chicago (a wedge of about $6,600) and about $81,000 in San Francisco (human-scale band, closer, comparator default and template).",
+      "source": "derived: Akron nominal scaled by each rival's RPP ratio, annualized at 52 weeks",
+      "assert": "(lambda a, c, s: a['nominal'] == 1238 and abs(a['real'] - 1332.3) <= 0.5 and abs(a['nominal']*52 - 64000) <= 600 and abs(a['nominal']*c['rpp']/a['rpp']*52 - 71000) <= 600 and abs((a['nominal']*c['rpp']/a['rpp'] - a['nominal'])*52 - 6600) <= 300 and abs(a['nominal']*s['rpp']/a['rpp']*52 - 81000) <= 800)([r for r in D['big'] if r['area']=='10420'][0], [r for r in D['big'] if 'Chicago' in r['name']][0], [r for r in D['big'] if 'San Francisco' in r['name']][0])",
+      "actual": "(lambda a, c, s: (a['nominal'], a['real'], round(a['nominal']*52), round(a['nominal']*c['rpp']/a['rpp']*52), round((a['nominal']*c['rpp']/a['rpp'] - a['nominal'])*52), round(a['nominal']*s['rpp']/a['rpp']*52)))([r for r in D['big'] if r['area']=='10420'][0], [r for r in D['big'] if 'Chicago' in r['name']][0], [r for r in D['big'] if 'San Francisco' in r['name']][0])",
+      "falsified_if": "Any of the annualized figures stops rounding to the hand-typed $64,000 / $71,000 / $6,600 / $81,000. Per-rival sentences composed by the picker are variants of this same arithmetic and are covered by it plus rw-flip; only the default state is asserted directly."
+    },
+    {
+      "id": "rw-single-year",
+      "text": "Everything on this page is the 2023 release; no earlier year ships with it, so the 14-place climb is shown without a track record (slope source line). This sentence must be replaced by a persistence test the moment prior-year pairs are added to the data.",
+      "source": "data file inventory: meta.year and the absence of any multi-year series",
+      "assert": "D['meta']['year'] == 2023 and 'trend' not in D and sorted(D.keys()) == ['big', 'home', 'meta', 'metros']",
+      "actual": "(D['meta']['year'], sorted(D.keys()))",
+      "falsified_if": "A rebuilt data file carries 2021/2022 pairs (or any 'trend' key). Then the honest move inverts: drop this disclaimer and show whether the climb repeats across releases."
     },
     {
       "id": "rw-metro-only",
