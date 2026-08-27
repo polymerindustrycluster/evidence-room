@@ -253,3 +253,77 @@ h3 { font-size:19px; margin:0 0 10px; color:var(--teal-900); }
 .panel .p-src { margin:0; padding-left:18px; font-size:14.5px; color:var(--charcoal); }
 .panel .p-src li { margin-bottom:8px; overflow-wrap:anywhere; }
 .panel .p-src a { color:var(--teal-700); }
+
+/* ------------------------------------------- 2026-08-27 revision: the story layer */
+/* This page's charts carry the .chart class so the shared gates (collide, columns)
+   can see them — but the shared .chart layout rules are for picviz pages, so they are
+   neutralized here: this page manages its own widths, and below 900px it swaps to
+   cards instead of a sideways-scroll hint. */
+.chart { margin:0; max-width:none; }
+@media (max-width:760px) {
+  .chart { overflow-x:visible; padding-bottom:0; }
+  .chart svg { min-width:0; }
+  .chart::after { content:none; }
+}
+
+/* per-figure chrome: every chart carries its own title, subtitle and source line */
+.fig-title { margin:22px 0 2px; font-weight:700; font-size:18px; color:var(--ink);
+  max-width:var(--measure); }
+.fig-sub { margin:0 0 16px; font-size:14.5px; color:var(--charcoal); max-width:var(--measure); }
+.fig-src { margin:14px 0 0; font-size:13.5px; color:var(--muted); max-width:var(--measure); }
+
+/* annotation layer (both SVG charts) */
+.ann { font:600 12.5px/1.3 var(--font); fill:var(--ink); }
+.ann-name { font:700 13px/1 var(--font); fill:var(--ink); }
+.leader { stroke:#A9ACAA; stroke-width:1; }
+.ev-rule { stroke:#C2C6C4; stroke-width:1.5; }
+.rule-lab { font:600 12.5px/1 var(--font); fill:var(--charcoal); }
+.fwd-zone { fill:#F6F1E4; opacity:.55; }
+
+/* the cadence chart */
+.cadence { margin-top:4px; }
+.cadence svg { display:block; width:100%; height:auto; overflow:visible; }
+.cad-pre { fill:#8A8B87; }
+.cad-post { fill:var(--teal-700); }
+.cad-val { font:700 12.5px/1 var(--font); fill:var(--ink); font-variant-numeric:tabular-nums; }
+.cad-note { font:600 12.5px/1 var(--font); fill:var(--muted); }
+.cad-ann-pre { fill:#6E6F6B; }
+.cad-ann-post { fill:var(--teal-700); }
+.pre-list { margin:14px 0 0; font-size:14.5px; color:var(--charcoal); max-width:var(--measure); }
+.pre-list b { color:var(--teal-900); }
+
+/* narrative asides beside the swimlane */
+.asides { display:grid; gap:18px; margin-top:28px; }
+@media (min-width:900px) { .asides { grid-template-columns:1fr 1fr; } }
+.aside { border-left:4px solid var(--teal-500); background:#fff; border:1px solid var(--line);
+  border-left:4px solid var(--teal-500); padding:16px 20px; border-radius:var(--r-sm); }
+.aside h3 { margin:0 0 6px; font-size:13.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--teal-700); }
+.aside p { margin:0; font-size:15.5px; color:var(--charcoal); }
+
+/* the promises section */
+.watch-h { margin-top:26px; }
+.watch { margin:0; padding-left:22px; color:var(--charcoal); max-width:var(--measure); }
+.watch li { margin-bottom:10px; }
+.watch b { color:var(--teal-900); font-variant-numeric:tabular-nums; }
+
+/* table: cap + year groups + inline scheduled tag */
+.yrhead th { background:var(--bg-tint); color:var(--teal-900); font-size:13.5px;
+  letter-spacing:.08em; text-transform:uppercase; text-align:left; padding:9px 16px;
+  border-bottom:1px solid var(--line); position:sticky; top:43px; }
+.badge { display:inline-block; margin-left:10px; font-weight:700; font-size:12.5px;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--muted);
+  border:1.5px dashed var(--line); border-radius:999px; padding:2px 9px; vertical-align:1px; }
+.dl-sep { color:var(--muted); margin:0 10px; }
+
+/* mobile: the Today divider card */
+.today-card { border-left-color:var(--charcoal); background:var(--bg-tint); }
+
+/* closer: dark mirror of the masthead; every paragraph is classed on purpose —
+   a bare-p display rule here is the known funding-map bug pattern */
+.closer { background:linear-gradient(158deg,#0C6473 0%,#12798B 62%,#17879b 100%);
+  color:#fff; padding:clamp(42px,6vw,72px) 0; }
+.closer .big { margin:0; font-family:var(--font-display); font-weight:700;
+  font-size:clamp(24px,3.2vw,38px); line-height:1.18; letter-spacing:-.015em;
+  max-width:var(--figure); }
+.closer .sub { margin:16px 0 0; color:rgba(255,255,255,.88); max-width:var(--measure); }

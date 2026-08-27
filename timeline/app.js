@@ -21,9 +21,9 @@ function loadData(file) {
    Structure
      1  data + scales
      2  layout        lane bands, collision packing, label placement
-     3  render        svg (wide) / cards (narrow)
+     3  render        svg (wide) / cards (narrow); 3a cadence, 3b prologue
      4  table + csv
-     5  interaction   filters, hover, panel, hash routing
+     5  interaction   filters, hover, panel
    ========================================================================= */
 
 (() => {
@@ -31,27 +31,35 @@ function loadData(file) {
 
   // Below this the lanes stop being readable as lanes and a card list is honest.
   const CARD_BREAKPOINT = 900;
-  // The window. 99 of 104 public events fall inside it; the five older ones are
-  // summarized in a band above rather than compressing the axis to nothing.
+  // The window. Most public events fall inside it; the older ones feed the cadence
+  // chart's "before" bars instead of compressing the axis to nothing.
   const WIN_FROM = new Date('2023-01-01');
   const WIN_TO = new Date('2030-01-01');
   const NOW = new Date('2026-08-13');
+  const NOW_ISO = '2026-08-13';
+  const NOW_LBL = '13 Aug 2026';
+  const DESIG_ISO = '2023-10-23';
 
   const LANE_COLOR = {
     desig: '#12798B', rd: '#8E3B62', work: '#9A6A08', startup: '#1A8A9E', infra: '#5E7A10',
   };
+  // Horizon is a FILTER facet only (the chips below the H2). It no longer sizes the
+  // dots: three barely distinguishable radii read as importance, which the data never
+  // meant. One radius for every event; status is the fill, lane is the color.
   const HZ = {
-    quick: { r: 5.5, label: 'Under a year' },
-    mid: { r: 7, label: 'One to three years' },
-    long: { r: 8.5, label: 'Three years or more' },
+    quick: { label: 'Under a year' },
+    mid: { label: 'One to three years' },
+    long: { label: 'Three years or more' },
   };
   const HZ_ORDER = ['quick', 'mid', 'long'];
+  const DOT_R = 7;
 
   let DATA = null, IN = [], PRE = [];
   let HER = null;                       // heritage.json — the prologue's data
   const HCOL = { heritage: '#585955', discoveries: '#8E3B62' };
   const offLane = new Set(), offHz = new Set();
   let mode = null, lastW = 0, tip = null;
+  let tableExpanded = false;
 
   const viz = document.getElementById('viz');
   const panel = document.getElementById('panel');
@@ -74,6 +82,22 @@ function loadData(file) {
     }
     (kids || []).forEach((c) => n.appendChild(c));
     return n;
+  };
+  /* A paper plate behind SVG text that must sit over other ink. data-pv-plated marks
+     the text as deliberately plated so the collide gate does not report it. */
+  const plated = (g, s, x, y, opts) => {
+    const o = opts || {};
+    const fs = o.cw || 6.6;                 // rough char width for the plate
+    const wpx = s.length * fs + 8;
+    const anchor = o.anchor || 'start';
+    const px = anchor === 'end' ? x - wpx + 4 : anchor === 'middle' ? x - wpx / 2 : x - 4;
+    g.appendChild(el('rect', { x: px, y: y - 11.5, width: wpx, height: 15,
+      fill: '#fff', opacity: .92, rx: 2 }));
+    const t = el('text', { class: o.class || 'ann', x, y,
+      'text-anchor': anchor, 'data-pv-plated': '1' }, s);
+    if (o.fill) t.setAttribute('fill', o.fill);
+    g.appendChild(t);
+    return t;
   };
 
   /* ------------------------------------------------------------- 1 data */
@@ -122,8 +146,18 @@ function loadData(file) {
     (want === 'cards' ? renderCards : renderDiagram)(w);
   }
 
+  /* The three page-wide moments, drawn as labeled vertical rules (the chart-craft
+     "labeled event line" idiom). Label STRINGS are editorial; the dates come from
+     the events themselves and are asserted in claims.json. */
+  const RULES = [
+    { date: '2023-10-23', label: '23 Oct 2023 · EDA designates the Tech Hub, 1 of 31', tier: 0 },
+    { date: '2024-07-02', label: '2 Jul 2024 · the $51M implementation grant', tier: 1 },
+    { date: '2024-12-01', label: 'Dec 2024 · five company R&D awards begin', tier: 2 },
+  ];
+
   function renderDiagram(W) {
-    const L = { left: 208, right: 26, top: 46, bot: 42, laneGap: 10, rowH: 30, padY: 16 };
+    const L = { left: 208, right: 26, top: 112, bot: 96, laneGap: 10, rowH: 30, padY: 16 };
+    const TIER_Y = [16, 34, 52];
     const plotW = W - L.left - L.right;
     const span = WIN_TO - WIN_FROM;
     const x = (d) => L.left + ((Math.min(Math.max(d, WIN_FROM), WIN_TO) - WIN_FROM) / span) * plotW;
@@ -137,16 +171,17 @@ function loadData(file) {
 
     let y = L.top;
     lanes.forEach((ln) => { ln.y = y; ln.h = ln.nRows * L.rowH + L.padY * 2; y += ln.h + L.laneGap; });
+    const laneBot = y - L.laneGap;
     const H = y + L.bot;
 
     const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
       'aria-label': ariaSummary() });
 
-    // year gridlines + labels
+    // year gridlines + labels (labels sit just above the lanes, under the rule labels)
     for (let yr = 2023; yr <= 2030; yr++) {
       const gx = x(new Date(`${yr}-01-01`));
-      svg.appendChild(el('line', { class: 'axis-rule', x1: gx, x2: gx, y1: L.top - 14, y2: y - L.laneGap }));
-      if (yr < 2030) svg.appendChild(el('text', { class: 'axis-y', x: gx + 7, y: L.top - 20 }, yr));
+      svg.appendChild(el('line', { class: 'axis-rule', x1: gx, x2: gx, y1: L.top - 12, y2: laneBot }));
+      if (yr < 2030) svg.appendChild(el('text', { class: 'axis-y', x: gx + 7, y: L.top - 18 }, yr));
     }
 
     // lane bands + names
@@ -160,23 +195,35 @@ function loadData(file) {
         shown === ln.all ? `${shown} events` : `${shown} of ${ln.all} events`));
     });
 
-    // the "as of" rule — bars/dots to its right are scheduled, not delivered
+    // a light tint over everything right of Today: the promise zone
     const nx = x(NOW);
-    svg.appendChild(el('line', { class: 'now-rule', x1: nx, x2: nx, y1: L.top - 14, y2: y - L.laneGap }));
-    svg.appendChild(el('text', { class: 'now-lab', x: nx + 8, y: y - L.laneGap + 20 }, 'Today'));
+    svg.appendChild(el('rect', { class: 'fwd-zone', x: nx, y: L.top - 12,
+      width: L.left + plotW - nx, height: laneBot - L.top + 12 }));
+
+    // the three labeled event rules, behind the dots
+    RULES.forEach((rl) => {
+      const rx = x(new Date(rl.date));
+      const ty = TIER_Y[rl.tier];
+      svg.appendChild(el('line', { class: 'ev-rule', x1: rx, x2: rx, y1: ty + 5, y2: laneBot }));
+      svg.appendChild(el('text', { class: 'rule-lab', x: rx + 6, y: ty }, rl.label));
+    });
+
+    // the "as of" rule — dots to its right are scheduled, not delivered
+    svg.appendChild(el('line', { class: 'now-rule', x1: nx, x2: nx, y1: L.top - 12, y2: laneBot }));
 
     // events
+    const pos = {};
     lanes.forEach((ln) => {
       const g = el('g', {});
       ln.evs.forEach((e) => {
         const cy = ln.y + L.padY + e._row * L.rowH + L.rowH / 2;
-        const r = (HZ[e.horizon] || HZ.mid).r;
+        pos[e.id] = { x: e._cx, y: cy };
         const node = el('g', { class: 'ev' + (e.delivered ? '' : ' fwd'), 'data-id': e.id,
           style: `--c:${LANE_COLOR[ln.key]}`,
           tabindex: '0', role: 'button',
           'aria-label': `${showDate(e)}. ${e.title}.` + (e.delivered ? '' : ' Scheduled, not delivered.') });
-        node.appendChild(el('circle', { class: 'hit', cx: e._cx, cy, r: Math.max(13, r + 7) }));
-        node.appendChild(el('circle', { class: 'dot', cx: e._cx, cy, r, fill: LANE_COLOR[ln.key],
+        node.appendChild(el('circle', { class: 'hit', cx: e._cx, cy, r: DOT_R + 7 }));
+        node.appendChild(el('circle', { class: 'dot', cx: e._cx, cy, r: DOT_R, fill: LANE_COLOR[ln.key],
           stroke: e.delivered ? '#fff' : LANE_COLOR[ln.key] }));
         // A white ring on a pale lane band still needs an anchor at small radii, or it
         // reads as a hole in the chart rather than a mark on it.
@@ -187,6 +234,42 @@ function loadData(file) {
       svg.appendChild(g);
     });
 
+    /* Leader-line labels for two single-dot moments (drawn last, never occluded).
+       Skipped when a filter hides the dot — a label with no mark is a lie. */
+    const ann = el('g', {});
+    const nsf = pos['E205'];
+    if (nsf) {
+      ann.appendChild(el('line', { class: 'leader', x1: nsf.x, x2: nsf.x,
+        y1: 78, y2: nsf.y - DOT_R - 3 }));
+      plated(ann, '14 Jul 2026 · NSF backs NEO-SMART with $160M', nsf.x - 6, 72,
+        { anchor: 'end', class: 'ann' });
+    }
+    const pf = pos['F29'];
+    if (pf) {
+      // the leader slopes on purpose: a flat hairline would read as an axis
+      ann.appendChild(el('line', { class: 'leader', x1: pf.x + DOT_R + 2, x2: pf.x + 16,
+        y1: pf.y - 5, y2: pf.y - 13 }));
+      plated(ann, 'pilot facility ready · Nov 2027', pf.x + 20, pf.y - 12, { class: 'ann' });
+    }
+    svg.appendChild(ann);
+
+    /* The on-chart takeaway, in the bottom margin right of Today. Counts are computed
+       from the visible events so the sentence stays true under filters. */
+    const schedVis = IN.filter((e) => visible(e) && !e.delivered);
+    const near = schedVis.filter((e) => e.date < '2027-01-01').length;
+    const farEv = schedVis.filter((e) => e.date >= '2027-01-01');
+    const farEnds = farEv.filter((e) => /end|completion/.test(e.title.toLowerCase())).length;
+    const pilot = farEv.some((e) => e.id === 'F29');
+    svg.appendChild(el('text', { class: 'now-lab', x: nx + 10, y: laneBot + 22 },
+      `Today · ${NOW_LBL}`));
+    ['Everything right of Today is a promise:',
+     `${schedVis.length} scheduled dates, ${near} due by end-2026;`,
+     `the other ${farEv.length}, 2027 to 2029, are ${pilot ? 'the pilot' : 'award and'}`,
+     pilot ? `plant and ${farEnds} award clocks running out.` : 'project clocks running out.']
+      .forEach((s, i) => {
+        svg.appendChild(el('text', { class: 'ann', x: nx + 10, y: laneBot + 42 + i * 17 }, s));
+      });
+
     viz.appendChild(svg);
     wireEvents(svg);
     buildLegend();
@@ -194,15 +277,26 @@ function loadData(file) {
 
   function renderCards(W) {
     const list = h('div', { class: 'cards' });
-    IN.filter(visible).slice().reverse().forEach((e) => {
-      const c = h('div', { class: 'card', style: `border-left-color:${LANE_COLOR[e.laneKey]}` }, [
-        h('div', { class: 'c-d', text: showDate(e) }),
-        h('div', { class: 'c-t', text: e.title }),
-        h('div', { class: 'c-o', text: `${e.lane} · ${e.org}` }),
-      ]);
-      if (!e.delivered) c.appendChild(h('span', { class: 'c-f', text: 'Scheduled, not delivered' }));
-      list.appendChild(c);
-    });
+    // Past first: the story reads forward, and the divider says where fact ends.
+    let divided = false;
+    IN.filter(visible).slice()
+      .sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0)
+      .forEach((e) => {
+        if (!e.delivered && !divided) {
+          divided = true;
+          list.appendChild(h('div', { class: 'card today-card' }, [
+            h('div', { class: 'c-d', text: `Today · ${NOW_LBL}` }),
+            h('div', { class: 'c-t', text: 'Every card below this one is scheduled, not delivered.' }),
+          ]));
+        }
+        const c = h('div', { class: 'card', style: `border-left-color:${LANE_COLOR[e.laneKey]}` }, [
+          h('div', { class: 'c-d', text: showDate(e) }),
+          h('div', { class: 'c-t', text: e.title }),
+          h('div', { class: 'c-o', text: `${e.lane} · ${e.org}` }),
+        ]);
+        if (!e.delivered) c.appendChild(h('span', { class: 'c-f', text: 'Scheduled, not delivered' }));
+        list.appendChild(c);
+      });
     viz.appendChild(list);
     buildLegend();
   }
@@ -211,9 +305,108 @@ function loadData(file) {
     const n = IN.filter(visible).length;
     const fwd = IN.filter((e) => visible(e) && !e.delivered).length;
     return `Timeline of ${n} public events from 2023 to 2029, in five workstream lanes: ` +
-      DATA.lanes.map((l) => l.name).join(', ') + '. Each dot is one dated event; dot size shows how ' +
-      `long that kind of work takes to show a result. ${fwd} events are hollow because they are ` +
-      'scheduled, not delivered. A dashed rule marks 13 August 2026. The same record is in the table below.';
+      DATA.lanes.map((l) => l.name).join(', ') + '. Each dot is one dated event; all dots are ' +
+      `the same size. ${fwd} events are hollow because they are scheduled, not delivered. ` +
+      'A dashed rule marks 13 August 2026, and labeled vertical rules mark the October 2023 ' +
+      'designation, the July 2024 implementation grant and the December 2024 R&D award starts. ' +
+      'The same record is in the table below.';
+  }
+
+  /* ---------------------------------------------- 3a the cadence comparison */
+  // Delivered public events per year, before and after the designation, from the
+  // same record that feeds the calendar. CTX rows (century-scale context) excluded;
+  // the caveat beside the chart carries the record-keeping asymmetry.
+  const cadBox = document.getElementById('cadence');
+  let cadW = 0;
+
+  function cadenceData() {
+    const rec = PRE.filter((e) => e.tier !== 'CTX' && e.delivered)
+      .concat(IN.filter((e) => e.delivered));
+    const years = [2021, 2022, 2023, 2024, 2025, 2026];
+    const rows = years.map((yr) => {
+      const inYr = rec.filter((e) => +e.date.slice(0, 4) === yr);
+      return { yr,
+        before: inYr.filter((e) => e.date < DESIG_ISO).length,
+        since: inYr.filter((e) => e.date >= DESIG_ISO).length };
+    });
+    const before = rows.reduce((s, r) => s + r.before, 0);
+    const since = rows.reduce((s, r) => s + r.since, 0);
+    return { rows, before, since };
+  }
+
+  function renderCadence() {
+    if (!cadBox || !DATA) return;
+    const W = cadBox.clientWidth;
+    if (!W || Math.abs(W - cadW) < 2) return;
+    cadW = W;
+    cadBox.textContent = '';
+    const { rows, before, since } = cadenceData();
+    const narrow = W < 560;
+    const m = { t: 40, r: 12, b: narrow ? 56 : 44, l: 34 };
+    const Hpx = narrow ? 230 : 260;
+    const w = W - m.l - m.r, hp = Hpx - m.t - m.b;
+    const yMax = Math.max(...rows.map((r) => r.before + r.since)) + 4;
+    const ys = (v) => m.t + hp - (v / yMax) * hp;
+    const bw = Math.min(72, (w / rows.length) * 0.58);
+    const cx = (i) => m.l + (w / rows.length) * (i + 0.5);
+
+    const svg = el('svg', { viewBox: `0 0 ${W} ${Hpx}`, role: 'img',
+      'aria-label': `Bar chart of delivered public events per year, 2021 to 2026: ` +
+        rows.map((r) => `${r.yr}: ${r.before + r.since}`).join(', ') +
+        `. ${before} events fall before the 23 October 2023 designation and ${since} after; ` +
+        '2026 is counted through 13 August.' });
+
+    // y gridlines
+    [0, 10, 20, 30].forEach((v) => {
+      if (v > yMax) return;
+      svg.appendChild(el('line', { class: 'axis-rule', x1: m.l, x2: W - m.r,
+        y1: ys(v), y2: ys(v) }));
+      svg.appendChild(el('text', { class: 'axis-y cad-tick', x: m.l - 8, y: ys(v) + 4,
+        'text-anchor': 'end' }, String(v)));
+    });
+
+    rows.forEach((r, i) => {
+      const xc = cx(i);
+      let top = ys(0);
+      if (r.before) {
+        const y1 = ys(r.before);
+        svg.appendChild(el('rect', { class: 'cad-pre', x: xc - bw / 2, y: y1,
+          width: bw, height: top - y1 }));
+        top = y1 - 2;
+      }
+      if (r.since) {
+        const y1 = top - (ys(0) - ys(r.since));
+        svg.appendChild(el('rect', { class: 'cad-post', x: xc - bw / 2, y: y1,
+          width: bw, height: ys(0) - ys(r.since) }));
+        top = y1;
+      }
+      svg.appendChild(el('text', { class: 'cad-val', x: xc, y: top - 6,
+        'text-anchor': 'middle' }, String(r.before + r.since)));
+      svg.appendChild(el('text', { class: 'axis-y', x: xc, y: ys(0) + 18,
+        'text-anchor': 'middle' }, String(r.yr)));
+      if (r.yr === 2023) svg.appendChild(el('text', { class: 'cad-note', x: xc,
+        y: ys(0) + (narrow ? 34 : 33), 'text-anchor': 'middle' }, 'designation · 23 Oct'));
+      if (r.yr === 2026) svg.appendChild(el('text', { class: 'cad-note', x: xc,
+        y: ys(0) + (narrow ? 34 : 33), 'text-anchor': 'middle' }, 'to 13 Aug'));
+    });
+
+    // the two-phase annotation, stacked over the short early bars
+    svg.appendChild(el('text', { class: 'ann cad-ann-pre', x: m.l + 4, y: m.t + 8 },
+      `before · ${before} events in 34 months`));
+    svg.appendChild(el('text', { class: 'ann cad-ann-post', x: m.l + 4, y: m.t + 28 },
+      `since · ${since} delivered in 34 months`));
+
+    cadBox.appendChild(svg);
+
+    const pl = document.getElementById('pre-list');
+    if (pl && !pl.textContent) {
+      const bef = PRE.filter((e) => e.tier !== 'CTX' && e.delivered)
+        .concat(IN.filter((e) => e.delivered && e.date < DESIG_ISO))
+        .sort((a, b) => a.date < b.date ? -1 : 1);
+      pl.appendChild(h('b', { text: `The ${bef.length} before: ` }));
+      pl.appendChild(document.createTextNode(
+        bef.map((e) => `${showDate(e)}, ${e.title}`).join(' · ') + '.'));
+    }
   }
 
   /* ------------------------------------------------ 3b the prologue: why here */
@@ -243,6 +436,17 @@ function loadData(file) {
   const hDate = (e) => e.dateDisplay;
   const hKind = (e) => (HER.collections.find((c) => c.key === e.collection) || {}).name || e.collection;
 
+  /* Named labels for the load-bearing heritage events. Hand-authored strings; the
+     dates and rows they name are asserted in claims.json. Each label sits in the
+     annotation band under its row block, with a short leader to its dot. */
+  const HANN = [
+    { id: 'H-002', text: '1898 · Goodyear founded', anchor: 'start' },
+    { id: 'H-009e', text: '1991 · NSF ALCOM science center', anchor: 'middle' },
+    { id: 'D-001', text: '1926 · Semon plasticizes PVC', anchor: 'middle' },
+    { id: 'D-003', text: '1963 · first polymer department', anchor: 'middle' },
+    { id: 'D-009', text: '2012 · the last proven row', anchor: 'end' },
+  ];
+
   function renderPrologue() {
     if (!HER || !proBox) return;
     const W = proBox.clientWidth;
@@ -255,7 +459,7 @@ function loadData(file) {
   }
 
   function renderHDiagram(W) {
-    const L = { left: 150, right: 18, top: 46, bot: 30, rowH: 34, padY: 14, gap: 12 };
+    const L = { left: 150, right: 18, top: 46, bot: 56, rowH: 34, padY: 14, gap: 44 };
     const plotW = W - L.left - L.right, eraW = plotW / HER.eras.length;
     const xf = (e) => {
       const era = HER.eras[e.era];
@@ -268,12 +472,14 @@ function loadData(file) {
     });
     let y = L.top;
     rows.forEach((r) => { r.y = y; r.h = r.n * L.rowH + L.padY * 2; y += r.h + L.gap; });
-    const H = y + L.bot;
+    const H = y - L.gap + L.bot;
     const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
       'aria-label': `Two rows of ${HER.events.length} proven heritage events from ${HER.meta.counts.firstYear} ` +
         `to ${HER.meta.counts.lastYear}, on five era columns of equal width: ` +
-        HER.eras.map((x) => x.label).join(', ') + '. Top row: what changed the region\u2019s capacity. ' +
-        'Bottom row: what was first understood here. Each dot is one dated event; the same rows are in the table below.' });
+        HER.eras.map((x) => x.label).join(', ') + '. Top row: what changed the region’s capacity. ' +
+        'Bottom row: what was first understood here. Named labels mark Goodyear 1898, PVC 1926, the first ' +
+        'polymer department 1963, the ALCOM center 1991 and the last proven row in 2012. After 2012 the ' +
+        'record goes quiet until the 2023 designation. The same rows are in the table below.' });
 
     // era columns
     HER.eras.forEach((era, i) => {
@@ -284,9 +490,8 @@ function loadData(file) {
         'text-anchor': 'middle' }, era.label));
       if (i) svg.appendChild(el('line', { class: 'axis-rule', x1: x0, x2: x0, y1: L.top - 8, y2: y - L.gap }));
     });
-    // row labels, and a hairline between the two rows so the tenses read as two rows
-    rows.forEach((r, i) => {
-      if (i) svg.appendChild(el('line', { class: 'axis-rule', x1: 0, x2: W - L.right, y1: r.y - L.gap / 2, y2: r.y - L.gap / 2 }));
+    // row labels
+    rows.forEach((r) => {
       const words = r.name.split(' ');
       const l1 = words.slice(0, 2).join(' '), l2 = words.slice(2).join(' ');
       svg.appendChild(el('text', { class: 'lane-name', x: 0, y: r.y + 24, fill: HCOL[r.key] }, l1));
@@ -294,31 +499,47 @@ function loadData(file) {
       svg.appendChild(el('text', { class: 'lane-count', x: 0, y: r.y + (l2 ? 65 : 45) }, `${r.evs.length} events`));
     });
     // marks
+    const pos = {};
     rows.forEach((r) => {
       const g = el('g', {});
       r.evs.forEach((e) => {
         const cy = r.y + L.padY + e._row * L.rowH + 10;
+        pos[e.id] = { x: e._cx, y: cy, rowBot: r.y + r.h };
         const node = el('g', { class: 'ev hev', 'data-id': e.id, style: `--c:${HCOL[r.key]}`,
           tabindex: '0', role: 'button', 'aria-label': `${hDate(e)}. ${e.title}. ${r.name}.` });
         node.appendChild(el('circle', { class: 'hit', cx: e._cx, cy, r: 14 }));
         node.appendChild(el('circle', { class: 'dot', cx: e._cx, cy, r: 6.5, fill: HCOL[r.key] }));
-        node.appendChild(el('text', { class: 'yr-lab', x: e._cx, y: cy + 19, 'text-anchor': 'middle' },
-          String(e.year)));
         g.appendChild(node);
       });
       svg.appendChild(g);
     });
+    // named labels in the band under each row block, leader up to the dot
+    const ann = el('g', {});
+    HANN.forEach((a) => {
+      const p = pos[a.id];
+      if (!p) return;
+      const ly = p.rowBot + 20;
+      ann.appendChild(el('line', { class: 'leader', x1: p.x, x2: p.x,
+        y1: p.y + 9, y2: ly - 10 }));
+      plated(ann, a.text, p.x, ly, { anchor: a.anchor, class: 'ann-name' });
+    });
+    svg.appendChild(ann);
+    // the on-chart takeaway, bottom right
+    svg.appendChild(el('text', { class: 'ann', x: W - L.right, y: H - 8,
+      'text-anchor': 'end' },
+      'After 2012 the proven record goes quiet; the next event is the 2023 federal designation, eleven years on.'));
+
     proBox.appendChild(svg);
     wireHEvents(svg);
     const lg = document.getElementById('pro-legend');
     lg.hidden = false; lg.textContent = '';
     HER.collections.forEach((c, i) => {
-      if (i) lg.appendChild(document.createTextNode(' \u00b7 '));
+      if (i) lg.appendChild(document.createTextNode(' · '));
       lg.appendChild(h('span', { class: 'sw', style: `background:${HCOL[c.key]}` }));
       lg.appendChild(h('b', { text: ' ' + c.name }));
-      lg.appendChild(document.createTextNode(' \u2014 ' + c.gloss));
+      lg.appendChild(document.createTextNode(': ' + c.gloss));
     });
-    lg.appendChild(document.createTextNode('. A dot sits at its first year; the columns are equal in width, not in years.'));
+    lg.appendChild(document.createTextNode('. A dot sits at its first year; the columns are equal in width, not in years. Click any dot for the register’s sentence and source.'));
   }
 
   function renderHCards() {
@@ -331,7 +552,7 @@ function loadData(file) {
         h('div', { class: 'c-o', text: e.oneLiner }),
       ]);
       const foot = h('div', { class: 'c-o' }, [h('span', { class: 'c-k', style: `color:${HCOL[e.collection]}`, text: hKind(e) })]);
-      if (src) { foot.appendChild(document.createTextNode(' \u00b7 ')); foot.appendChild(h('a', { href: src.url, text: 'Source' })); }
+      if (src) { foot.appendChild(document.createTextNode(' · ')); foot.appendChild(h('a', { href: src.url, text: 'Source' })); }
       c.appendChild(foot);
       list.appendChild(c);
     });
@@ -357,7 +578,7 @@ function loadData(file) {
     ptip = h('div', { class: 'tip' }, [
       h('div', { class: 't-d', text: hDate(e) }),
       h('div', { class: 't-t', text: e.title }),
-      h('div', { class: 't-o', text: hKind(e) + ' \u00b7 click for the source' }),
+      h('div', { class: 't-o', text: hKind(e) + ' · click for the source' }),
     ]);
     proBox.appendChild(ptip);
     const b = node.getBoundingClientRect(), v = proBox.getBoundingClientRect();
@@ -371,12 +592,12 @@ function loadData(file) {
   function openHPanel(e) {
     panel.textContent = '';
     panel.appendChild(h('button', { class: 'p-close', type: 'button', 'aria-label': 'Close',
-      onclick: closePanel, text: '\u00d7' }));
+      onclick: closePanel, text: '×' }));
     panel.appendChild(h('p', { class: 'p-kind', style: `color:${HCOL[e.collection]}`, text: hKind(e) }));
     panel.appendChild(h('h2', { id: 'panel-title', text: e.title }));
     panel.appendChild(h('dl', { class: 'p-meta' }, [
       h('div', {}, [h('dt', { text: 'Date' }), h('dd', { text: hDate(e) })]),
-      h('div', {}, [h('dt', { text: 'Register row' }), h('dd', { text: `${e.id} \u00b7 labeled ${e.label.toLowerCase()}` })]),
+      h('div', {}, [h('dt', { text: 'Register row' }), h('dd', { text: `${e.id} · labeled ${e.label.toLowerCase()}` })]),
     ]));
     panel.appendChild(h('p', { class: 'p-note p-one', text: e.oneLiner }));
     if (e.datePrecision === 'range') panel.appendChild(h('p', { class: 'p-note',
@@ -388,7 +609,7 @@ function loadData(file) {
       const li = h('li', {});
       if (sr.url) {
         li.appendChild(h('a', { href: sr.url, text: sr.url.replace(/^https?:\/\/(www\.)?/, '').split(/[/?#]/)[0] }));
-        if (sr.note) li.appendChild(document.createTextNode(' \u2014 ' + sr.note));
+        if (sr.note) li.appendChild(document.createTextNode(' · ' + sr.note));
       } else li.appendChild(document.createTextNode(sr.note));
       ul.appendChild(li);
     });
@@ -420,20 +641,52 @@ function loadData(file) {
   }
 
   /* -------------------------------------------------------- 4 table + csv */
+  // Newest first, capped at the 12 most recent delivered events behind a "show all"
+  // disclosure — the story owns the scroll, the appendix owns the archive. The status
+  // column is gone: every default row is delivered (the caption says so once), and the
+  // scheduled rows appear at the end when expanded, each tagged inline.
 
   function buildTable() {
     const tb = document.querySelector('#dtable tbody');
     tb.textContent = '';
-    IN.filter(visible).forEach((e) => {
-      tb.appendChild(h('tr', {}, [
+    const del = IN.filter((e) => visible(e) && e.delivered)
+      .sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0);
+    const sch = IN.filter((e) => visible(e) && !e.delivered)
+      .sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+    const row = (e) => {
+      const tdE = h('td', {}, [document.createTextNode(e.title)]);
+      if (!e.delivered) tdE.appendChild(h('span', { class: 'badge', text: 'Scheduled' }));
+      return h('tr', {}, [
         h('td', { class: 't-date', text: showDate(e) }),
-        h('td', { text: e.title }),
+        tdE,
         h('td', { class: 't-lane', style: `color:${LANE_COLOR[e.laneKey]}`, text: e.lane }),
         h('td', { text: e.org }),
-        h('td', { class: 't-st', text: e.delivered ? 'Delivered' : 'Scheduled' }),
-      ]));
+      ]);
+    };
+    const yrHead = (label) => h('tr', { class: 'yrhead' },
+      [h('th', { colspan: '4', scope: 'colgroup', text: label })]);
+    const cap = tableExpanded ? del.length : Math.min(12, del.length);
+    let curYr = null;
+    del.slice(0, cap).forEach((e) => {
+      const yr = e.date.slice(0, 4);
+      if (yr !== curYr) { tb.appendChild(yrHead(yr)); curYr = yr; }
+      tb.appendChild(row(e));
     });
+    if (tableExpanded && sch.length) {
+      tb.appendChild(yrHead(`Scheduled ahead · ${sch.length} dates`));
+      sch.forEach((e) => tb.appendChild(row(e)));
+    }
+    const btn = document.getElementById('showall');
+    if (btn) {
+      btn.hidden = del.length + sch.length <= cap;
+      btn.textContent = tableExpanded
+        ? 'Show the 12 most recent only'
+        : `Show all ${del.length} delivered and ${sch.length} scheduled events`;
+    }
   }
+  document.getElementById('showall').addEventListener('click', () => {
+    tableExpanded = !tableExpanded; buildTable();
+  });
 
   document.getElementById('csv').addEventListener('click', () => {
     const q = (s) => `"${String(s == null ? '' : s).replace(/"/g, '""')}"`;
@@ -551,12 +804,9 @@ function loadData(file) {
       h('span', { class: 'item' }, [svgDot('#12798B', false), h('span', { text: 'Delivered' })]),
       h('span', { class: 'item' }, [svgDot('#12798B', true), h('span', { text: 'Scheduled, not delivered' })]),
     ]));
-    lg.appendChild(grp('Dot size — time to a visible result', HZ_ORDER.map((k) => {
-      const s = document.createElementNS(NS, 'svg');
-      s.setAttribute('width', '22'); s.setAttribute('height', '22');
-      s.appendChild(el('circle', { cx: 11, cy: 11, r: HZ[k].r, fill: '#585955', stroke: '#fff' }));
-      return h('span', { class: 'item' }, [s, h('span', { text: HZ[k].label })]);
-    })));
+    lg.appendChild(grp('Size', [
+      h('span', { class: 'item' }, [h('span', { text: 'Every dot is the same size; the chips above filter by how long that kind of work takes to show a result.' })]),
+    ]));
     lg.hidden = false;
   }
 
@@ -579,49 +829,52 @@ function loadData(file) {
     const put = (id, v) => { const n = document.getElementById(id); if (n) n.textContent = String(v); };
     put('h-shown', hc.shown); put('h-first', hc.firstYear); put('h-last', hc.lastYear);
     put('h-her', hc.heritage); put('h-dis', hc.discoveries);
-    put('pro-range', `${hc.firstYear} to ${hc.lastYear}`);
+    const { before, since } = cadenceData();
+    put('cad-before', before); put('cad-since', since);
+    put('n-fwd', IN.filter((e) => !e.delivered).length);
 
+    // Four tiles, not five: the fifth wrapped to its own row at 1280 and the
+    // workstream count already leads the calendar H2.
     document.getElementById('topline').innerHTML = '';
-    [[hc.shown, `proven heritage events, ${hc.firstYear}\u2013${hc.lastYear}`],
-     [IN.length, 'public events shown'],
-     [IN.filter((e) => e.delivered).length, 'delivered since 2023'],
-     [IN.filter((e) => !e.delivered).length, 'scheduled ahead'],
-     [d.lanes.length, 'workstreams, in parallel']].forEach(([n, l]) => {
+    [[hc.shown, `proven heritage events, ${hc.firstYear}–${hc.lastYear}`],
+     [before, '34 months before designation'],
+     [since, 'delivered, 34 months since'],
+     [IN.filter((e) => !e.delivered).length, 'scheduled ahead']].forEach(([n, l]) => {
       document.getElementById('topline').appendChild(h('li', {}, [
         h('b', { text: String(n) }), h('span', { text: l })]));
     });
 
-    // Context-tier rows (the old "Rubber Capital, 1900" one-liners) are superseded by the
-    // sourced heritage prologue above; only PIC-era pre-2023 events are listed here.
-    const preShown = PRE.filter((e) => e.tier !== 'CTX');
-    const pw = document.getElementById('pre-window');
-    if (preShown.length) {
-      pw.appendChild(h('p', {}, [
-        h('b', { text: 'Before this window. ' }),
-        document.createTextNode(preShown.map((e) => `${e.dateDisplay} ${e.title}`).join(' \u00b7 ') +
-          '. The timeline opens at the 2023 federal designation \u2014 the first event with money behind it. ' +
-          'Everything earlier is the heritage record above.'),
-      ]));
+    // The next three scheduled dates, straight from the record.
+    const watch = document.getElementById('watch');
+    if (watch) {
+      IN.filter((e) => !e.delivered && e.date > NOW_ISO)
+        .sort((a, b) => a.date < b.date ? -1 : 1).slice(0, 3)
+        .forEach((e) => watch.appendChild(h('li', {}, [
+          h('b', { text: showDate(e) }),
+          document.createTextNode(` ${e.title} · ${e.org}`),
+        ])));
     }
 
     document.getElementById('m-source').textContent = d.meta.source;
     document.getElementById('m-public').textContent = d.meta.publicOnly;
     const dropped = hc.dropped['label:CLAIMED'] || 0;
     document.getElementById('m-heritage').textContent =
-      `The heritage rows come from PIC\u2019s NEO Polymer Wins register, an internal file. Of its ` +
+      `The heritage rows come from PIC’s NEO Polymer Wins register, an internal file. Of its ` +
       `${hc.shown + dropped} heritage and discovery rows, ${hc.shown} are labeled proven and appear here; ` +
       `${dropped} labeled claimed are withheld. ${hc.sourcesStripped} internal source references were ` +
       `stripped in the build, and every row shown carries at least one public source. Shipped products, ` +
       `licenses and living capital are a different register and are not on this page.`;
     const notes = document.getElementById('m-notes');
-    [['Each dot is one dated event, in the workstream that produced it.',],
-     ['Dot size is how long that kind of work takes to show a result — not how important it is.'],
+    [['Each dot is one dated event, in the workstream that produced it.'],
+     ['Every dot is the same size. Color is the workstream; a hollow ring with a center pip is a scheduled date; the chips filter by how long that kind of work takes to show a result.'],
      ['Hollow dots to the right of the dashed rule are scheduled dates from the award record, not work already done.'],
+     ['Vertical rules and named labels mark the load-bearing events; every other dot opens its title, date and organization on click.'],
      ['Dates are shown at the precision they were recorded. Some events are known only to a month or a year, and are placed mid-period rather than pretending to a day.'],
+     ['The cadence chart counts delivered public events per year from this same record; its record-keeping caveat sits beside it.'],
      ['The heritage chart above the record uses five era columns of equal width, so its axis is not linear; a dot sits at its first year, and clicking it opens the register’s sentence and source.'],
     ].forEach(([t]) => notes.appendChild(h('li', { text: t })));
 
-    buildFilters(); buildTable(); render();
+    buildFilters(); buildTable(); render(); renderCadence();
     buildHTable(); renderPrologue();
   }).catch((err) => {
     viz.textContent = '';
@@ -631,5 +884,5 @@ function loadData(file) {
   });
 
   let t;
-  window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => { render(); renderPrologue(); }, 130); });
+  window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => { render(); renderCadence(); renderPrologue(); }, 130); });
 })();

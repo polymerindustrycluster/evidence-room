@@ -1,12 +1,14 @@
 # PIC portfolio timeline — why here, then the operating record
 
-Two records on one page. **A heritage prologue** — 32 dated events, 1898 to 2012, that the
-NEO Polymer Wins register labels PROVEN (19 that changed the region's capacity, 13
-scientific firsts) — on an era-banded axis above **the operating record**: what the cluster
-has publicly done since the 2023 federal designation, 87 public events across five
-workstreams on one shared calendar. Companion to `web/funding-map` — *that* one shows where
-the money sits today, this one shows why the region has this capacity and what the portfolio
-did with it.
+Two records on one page, told as one argument: **Akron earned this cluster over a
+century; the last three years are the test.** A heritage prologue — 32 dated events,
+1898 to 2012, that the NEO Polymer Wins register labels PROVEN (19 that changed the
+region's capacity, 13 scientific firsts) — on an era-banded axis, then a cadence
+comparison (4 public events in the 34 months before the October 2023 designation, 68
+delivered in the 34 months since), then the operating record: 87 public events across
+five workstreams on one shared calendar, 69 delivered and 18 scheduled. Companion to
+`web/funding-map` — *that* one shows where the money sits today, this one shows why the
+region has this capacity and what the portfolio did with it.
 
 Self-contained: vanilla JS, inline SVG, no frameworks, no CDN, no build step.
 
@@ -137,5 +139,58 @@ showing what slipped is a different artifact with different consequences.
   "less important"; a scheduled award end is a *different kind of thing*, not a minor one.
   The ring color must be set through the `--c` custom property — an inline `stroke=""`
   presentation attribute loses to any stylesheet rule and the rings vanish white-on-white.
-- **Dot size is horizon** (time to a visible result), never importance.
-- One dimension per visual channel: lane = color, horizon = size, status = fill.
+- **Every dot is the same size** (changed 2026-08-27; see the revision note below).
+  Horizon (time to a visible result) is a filter facet only. One dimension per visual
+  channel: lane = color, status = fill.
+
+## Revision 2026-08-27 — editorial rebuild (clarifications + one encoding change)
+
+No data changed and no number was corrected; this is a story-layer rebuild against the
+data-journalism review rubric. What moved:
+
+- **Headline is now the finding** ("Akron earned this cluster over a century. The last
+  three years are the test."), the dek carries the before/after cadence numbers, and the
+  register mechanics moved out of the lede into Methods.
+- **Annotation layer added to both charts.** Heritage strip: named leader-line labels for
+  Goodyear 1898, Semon/PVC 1926, the first polymer department 1963, NSF ALCOM 1991, the
+  last proven row 2012, plus an on-chart takeaway naming the eleven-year quiet before the
+  designation. Swimlane: three labeled vertical rules (designation, $51M implementation,
+  Dec 2024 R&D starts), leader labels for the NSF $160M award and the pilot-facility
+  readiness target, a tinted "promise zone" right of Today, and a computed on-chart
+  takeaway (18 scheduled, 10 due by end-2026, 8 in 2027–2029). Per-figure
+  title/subtitle/source chrome added to every chart.
+- **New cadence chart** (delivered public events per year, 2021–2026, split at the
+  designation) built from the same shipped `timeline.json` — no new data. Its
+  record-keeping caveat (the compilation is designation-era, so the before count is a
+  floor and the 17× ratio an upper bound) sits beside the chart and in the limits list.
+- **ENCODING CHANGE: dot size no longer carries horizon.** Three radii (5.5/7/8.5px) were
+  barely distinguishable and size instinctively reads as importance — the page had to
+  caveat "not how important it is" in two places, which was the tell. All dots are r=7;
+  the horizon chips remain as a filter; the legend and methods notes moved with it.
+- **Table capped**: default is the 12 most recent delivered events, newest first, grouped
+  by year (sticky group headers), behind a "Show all 69 + 18" disclosure; the Status
+  column moved into the caption (constant in the default view) and scheduled rows are
+  tagged inline when expanded. The CSV still carries Status for every row.
+- **Mobile**: card list now reads past-first with a "Today" divider card where the
+  delivered record ends; the table cap removes ~5,000px of default scroll.
+- **Human scale**: two 40-word asides beside the swimlane (BioVerde's relocation, the
+  Barberton HS workshop → K-12 pathway), both from events already in the record.
+- **Closer added** (house `.closer` anatomy) resolving the headline question.
+- claims.json grew from 12 to 24 claims; every new or moved sentence is guarded, and the
+  two claims whose sentences moved carry a dated note. All 24 pass.
+
+### Reporting that would elevate this page (drafted asks, not yet made)
+
+The two asides are named public instances; a reported quote would beat both. If John
+wants to make calls:
+
+1. **Dave Witte, CEO, BioVerde** — "What specifically about the grant made moving
+   operations to Ohio worth it?", "What would have happened without the designation?",
+   "What has to be true by the time your award ends in December 2028 for this to have
+   worked?" Quote slots into the BioVerde aside.
+2. **The Barberton HS workshop organizers (NovationSi / RD Abbott)** — "Whose idea was a
+   high-school polymer workshop sixteen days after the designation?", "What did the
+   students build?", "Did any of them enter the K-12 pathway?" Quote slots into the
+   school aside.
+
+The page ships correctly without them (vignette rung); it is not blocked on reporting.
