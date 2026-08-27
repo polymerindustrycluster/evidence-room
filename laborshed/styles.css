@@ -1,0 +1,44 @@
+/* laborshed — page-local additions only. House anatomy (.mast/.hero/.band/.closer) and
+   the shared column system stay untouched so the layout gates keep applying. This file
+   adds: per-figure chrome, the county selector, a reading-line register distinct from
+   source fine print, one tinted vignette band, and the per-form mobile re-layout
+   override (the wages pattern). */
+
+/* Figure chrome: every chart carries its own claim-title + how-to-read line, so the H2
+   does section work instead of doubling as the chart title (chart-craft.md). */
+.fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
+  line-height:1.3;max-width:var(--measure);color:var(--text)}
+.fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure)}
+.fig-title + .fig-sub + .chart{margin-top:16px}
+
+/* County selector — 12 buttons, not a dropdown; the default state tells the full story. */
+.csel{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0;max-width:var(--figure)}
+.csel button{font:700 13px/1 var(--sans);letter-spacing:.03em;padding:11px 13px;
+  border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;
+  border-radius:999px;min-height:38px}
+.csel button:hover{border-color:var(--ink)}
+.csel button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.csel button:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+.verdict{margin:14px 0 0;font-size:17px;line-height:1.55;max-width:var(--measure);
+  color:#243135}
+.verdict b{color:var(--ink)}
+
+/* Two prose registers under a chart. The READING line is an editorial payoff in body
+   ink; the .src caption stays true fine print. The audit found both sharing one gray
+   register, which typeset findings as disclaimers. */
+.reading{margin:22px 0 0;font-size:16.5px;line-height:1.6;color:#243135;
+  max-width:var(--measure)}
+.reading b{color:var(--ink)}
+
+/* Pacing: one tinted band (the human-scale vignette) so the scroll changes register. */
+.band.tint{background:#F4F1EC}
+
+/* Mobile: this page re-lays every chart out per form (matrix becomes a per-county
+   list, bars get labels above marks, the strip compresses) — so the shared
+   sideways-scroll fallback is switched off. The evidence must be in the first paint,
+   not behind a pan (chart-craft § mobile). */
+@media (max-width:760px){
+  .chart{overflow-x:visible;padding-bottom:0}
+  .chart svg{min-width:0}
+  .chart::after{content:none}
+}
