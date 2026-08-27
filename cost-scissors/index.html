@@ -6,6 +6,7 @@
 <meta name="color-scheme" content="light">
 <title>Nothing Came Back Down</title>
 <link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -21,13 +22,11 @@
     <p class="eyebrow">Feedstock, resin and product prices, indexed to January 2019</p>
     <h1>Natural gas round-tripped completely. Finished polymer products are at
       <em>an all-time high this month</em>.</h1>
-    <p class="stand">The 2022 price spike is over at the top of the chain and has barely
-      moved at the bottom of it, and the pattern in between is a clean ladder. Measure how
-      much of each price's rise has since come back and the answer falls monotonically with
-      distance from the wellhead: <b>gas has given back everything, crude about half, resin
-      about a third, and finished polymer products nothing at all</b>. An earlier version of
-      this page showed only the two ends and could describe the gap. Three stages explain
-      where in the chain it stuck.</p>
+    <p class="stand">Gas has given back its whole 2022 spike, crude oil about half, resin
+      about a third, and finished polymer products none of it. That ordering, drawn from
+      eleven years of federal price series, means <b>somebody in this chain ate the spike
+      and somebody banked it</b>. Which one you were depends on the link you sell from,
+      and the cluster has members on every link.</p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -35,34 +34,52 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The finding</p>
-    <h2>How much of each price rise has come back</h2>
-    <p class="lede">Each bar starts at the series' own peak since January 2019 and runs back
-      toward its base. A full bar means the price has completely round-tripped; an empty one
-      means it is still sitting at its high. Nothing about this ordering was designed &mdash;
-      it is what the four stages do.</p>
+    <h2>Each step away from the wellhead kept more of the 2022 rise</h2>
+    <p class="lede">Each bar measures how much of a series&rsquo; rise above January 2019
+      has since come back. Gas gave back all of it and now costs less than before the
+      spike; crude oil gave back about half, resin about a third, and finished polymer
+      products none at all. One feedstock breaks the pattern: Ohio industrial electricity
+      peaked this January, not in 2022, and has given back only about a quarter. The
+      series are public EIA and BLS data, the analysis is scripted from them, and every
+      published number on this page is re-checked against the data on each build.</p>
+    <p class="csel-q">Where do you sit?</p>
+    <div class="csel" id="csel" role="group" aria-label="Re-read the page from one seat in the chain"></div>
+    <p class="verdict" id="verdict"></p>
+    <p class="fig-title">Gas gave back 104% of its rise; finished products gave back none</p>
+    <p class="fig-sub">Share of each series&rsquo; rise above January 2019 that has since
+      come back. January 2019 = 100; peak months differ by series.</p>
     <div class="chart"><svg id="ladder" role="img" aria-labelledby="ladder-t">
-      <title id="ladder-t">Share of each price rise since 2019 that has been retraced.</title>
+      <title id="ladder-t">Chart showing gas prices fully retraced their 2022 spike while
+        finished polymer product prices retraced none of theirs, with crude, resin and
+        electricity in between.</title>
     </svg></div>
     <div id="laddertable"></div>
     <p class="src" id="laddersrc"></p>
   </div>
 </section>
 
-<section class="band">
+<section class="band tint">
   <div class="wrap">
     <p class="takeaway">The whole chain</p>
-    <h2>Every series on one axis, because every series is rebased</h2>
-    <p class="lede">These are dollars per thousand cubic feet, cents per kilowatt-hour and
-      three different index bases &mdash; quantities that must never share a value axis.
-      Indexing each to its own January 2019 makes one axis honest, and the axis then reads
-      as percent change rather than as price.</p>
+    <h2>The spike moved down the chain and stopped at the finished product</h2>
+    <p class="lede">Gas tripled by August 2022 and fell all the way back. Crude crested
+      that June and kept about half of its rise. Resin crested across 2021 and 2022 and
+      still holds about two thirds of its rise. The two finished-product lines climbed to
+      about 40% above their base and have not come down: the wave weakened at every link
+      until the last one, where it set.</p>
+    <p class="fig-title">Feedstock spiked and fell; product prices climbed and stayed</p>
+    <p class="fig-sub">Monthly index, January 2019 = 100. Color: one series per chain
+      link. Gray: related series, for context.</p>
     <div class="chart"><svg id="lines" role="img" aria-labelledby="lines-t">
-      <title id="lines-t">Feedstock, resin and product prices indexed to January 2019.</title>
+      <title id="lines-t">Chart showing the 2022 feedstock spike collapsing while
+        finished-product prices climbed to about 40% above their 2019 base and stayed
+        there.</title>
     </svg></div>
     <div class="legend">
-      <span><i class="ln" style="background:#A32A78"></i> Feedstock &mdash; gas, crude, power</span>
-      <span><i class="ln" style="background:#C85F0C"></i> Resin &mdash; what converters buy</span>
-      <span><i class="ln" style="background:#008BA8"></i> Product &mdash; what they sell</span>
+      <span><i class="ln" style="background:#A32A78"></i> Feedstock &middot; Henry Hub gas</span>
+      <span><i class="ln" style="background:#C85F0C"></i> Resin &middot; what converters buy</span>
+      <span><i class="ln" style="background:#008BA8"></i> Product &middot; what they sell</span>
+      <span><i class="ln" style="background:#BDB7AC"></i> Context series</span>
     </div>
     <div id="linestable"></div>
     <p class="src" id="linessrc"></p>
@@ -72,23 +89,67 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The spread</p>
-    <h2 id="spreadtitle">What a converter buys against what a converter sells</h2>
-    <p class="lede">One index subtracted from the other: finished-product prices minus resin
-      prices, both rebased to the same month. Above zero means output prices have risen
-      further than input prices since 2019. This is the single line most relevant to a PIC
-      member, and it is the one most easily misread &mdash; the note underneath says why.</p>
+    <h2>A 23-point squeeze has become a 14-point cushion</h2>
+    <p class="lede">One index minus the other: finished-product prices minus resin
+      prices, both rebased to the same month. Below zero, output prices had risen less
+      since 2019 than input prices, and that was the converter&rsquo;s world through the
+      shortage, bottoming 23 points under water in August 2021. The line crossed zero in
+      August 2022, has stayed above it every month since, and peaked at +23 this January
+      before easing to +14. The gray line asks the same question one link up, resin
+      against the industrial chemicals that feed it: a +19 windfall in September 2021
+      that has since unwound to just below zero.</p>
+    <p class="fig-title">Below zero through the squeeze, above zero every month since
+      August 2022</p>
+    <p class="fig-sub">Finished-product index minus resin index, in points; both series
+      set to 100 at January 2019. Gray: the same computation one link up (resin minus
+      industrial chemicals).</p>
     <div class="chart"><svg id="spread" role="img" aria-labelledby="spread-t">
-      <title id="spread-t">Product price index minus resin price index since 2019.</title>
+      <title id="spread-t">Chart showing the product-minus-resin index spread running
+        negative through 2021, crossing zero in August 2022, peaking at 23 points in
+        January 2026 and standing at 14 points now, while the resin-minus-chemicals
+        spread unwound to zero.</title>
     </svg></div>
     <div id="spreadtable"></div>
-    <div class="note" id="spreadnote"></div>
+    <p class="src" id="spreadsrc"></p>
+    <div class="note"><b>This is not a margin.</b> Labor, freight, energy, tooling and
+      packaging are in neither index, and several of those rose sharply over exactly this
+      period; a widening spread is entirely consistent with flat or falling
+      profitability. Two readings fit and the data cannot separate them: the industry
+      held price after input costs fell, or its other costs rose enough to require it.
+      Anyone quoting this line owes the reader both.</div>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">One part, priced through it</p>
+    <h2>What the scissors did to a dollar part</h2>
+    <p class="lede">Take a part that left an Ohio molding line at $1.00 in January 2019
+      and price it at the industry average ever since. In August 2021 it billed about
+      $1.14 while the resin going into it cost 36% more than in 2019: that is the
+      squeeze, absorbed at the machine. Today the same part bills about $1.40, its resin
+      is up 25%, and the gas behind that resin costs 7% less than it did in 2019. The
+      part is illustrative, priced by the industry index rather than any member&rsquo;s
+      quote, and its arc is the page in miniature: it paid for the spike on the way up
+      and kept the price after the spike left.</p>
+    <div class="statgrid">
+      <div class="statv"><div class="n" id="v0"></div>
+        <div class="k">January 2019</div>
+        <div class="d">resin at its base</div></div>
+      <div class="statv"><div class="n" id="v1"></div>
+        <div class="k">August 2021</div>
+        <div class="d" id="v1d"></div></div>
+      <div class="statv"><div class="n" id="v2"></div>
+        <div class="k" id="v2k"></div>
+        <div class="d" id="v2d"></div></div>
+    </div>
   </div>
 </section>
 
 <section class="closer">
   <div class="wrap">
-    <p>Input costs normalized. Output prices did not, and the gap is now the widest it has
-      been.</p>
+    <p>Whether the last four years squeezed you or paid you depends on which link of the
+      chain you sold from.</p>
     <p class="sub" id="closersub"></p>
   </div>
 </section>

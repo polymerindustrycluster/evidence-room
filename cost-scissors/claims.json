@@ -3,7 +3,7 @@
   "claims": [
     {
       "id": "cs-ladder-monotonic",
-      "text": "Retracement falls monotonically down the chain: gas, then crude, then resin, then finished product.",
+      "text": "Retracement falls monotonically down the chain: gas, then crude, then resin, then finished product (standfirst, ladder H2, default verdict, closer).",
       "source": "FRED/BLS and EIA monthly series, each indexed to January 2019; retracement = (peak - now) / (peak - 100)",
       "assert": "(lambda g: g['feedstock'] > g['resin'] > g['product'])({s['stage']: max(x['retraced'] for x in D['series'] if x['stage']==s['stage'] and x['retraced'] is not None) for s in D['series'] if s['stage'] in ('feedstock','resin','product')})",
       "actual": "[(s['stage'], s['label'], s['retraced']) for s in D['series'] if s['retraced'] is not None]",
@@ -11,23 +11,135 @@
     },
     {
       "id": "cs-product-at-peak",
-      "text": "Finished polymer product prices have retraced nothing — their peak is the most recent month.",
+      "text": "Finished polymer product prices have retraced nothing - their peak is the most recent month (H1, hero card, ladder, verdicts).",
       "source": "PPI plastics and rubber products manufacturing, PCU326326",
       "assert": "all(s['retraced'] == 0 and s['peak']['date'] == s['now']['date'] for s in D['series'] if s['stage']=='product')",
       "actual": "[(s['label'], s['peak']['date'], s['peak']['index'], s['now']['index']) for s in D['series'] if s['stage']=='product']",
-      "falsified_if": "Any month prints below the prior peak — at which point this page's headline is out of date and must be restated. This is the most perishable claim on the site; it expires with the next PPI release."
+      "falsified_if": "Any month prints below the prior peak - at which point this page's headline is out of date and must be restated. This is the most perishable claim on the site; it expires with the next PPI release."
+    },
+    {
+      "id": "cs-product-alltime",
+      "text": "The H1 says 'all-time high this month': within the shipped 2015-2026 window, no earlier month of either product series exceeds the current value.",
+      "source": "full shipped span of both product PPIs, 2015 onward",
+      "assert": "all(all(p['index'] <= s['now']['index'] + 1e-9 for p in s['points']) for s in D['series'] if s['stage']=='product')",
+      "actual": "[(s['label'], max(p['index'] for p in s['points']), s['now']['index']) for s in D['series'] if s['stage']=='product']",
+      "falsified_if": "A product series shows any past month above the current value, in which case 'all-time high' overstates and the headline must be requalified to the actual window."
     },
     {
       "id": "cs-gas-round-tripped",
-      "text": "Natural gas is below where it started in January 2019.",
+      "text": "Natural gas is below where it started in January 2019 (H1, hero card, ladder lede).",
       "source": "EIA Henry Hub spot, monthly",
       "assert": "(lambda g: g['now']['index'] < 100 and g['retraced'] > 1)([s for s in D['series'] if 'natural gas' in s['label'].lower()][0])",
       "actual": "[(s['label'], s['peak']['index'], s['now']['index'], s['retraced']) for s in D['series'] if 'natural gas' in s['label'].lower()]",
-      "falsified_if": "Gas rises back above its January 2019 level. Note the base is a WINTER month, so this comparison is flattering by construction — the honest version is that gas has fully round-tripped, not that it is cheap."
+      "falsified_if": "Gas rises back above its January 2019 level. Note the base is a WINTER month, so this comparison is flattering by construction - the honest version is that gas has fully round-tripped, not that it is cheap."
+    },
+    {
+      "id": "cs-gas-below-seven",
+      "text": "Gas now costs 7% less than in January 2019: the hero card leads with the plain reading (-7%) and the vignette repeats it.",
+      "source": "EIA Henry Hub spot, current month against the 2019-01 base",
+      "assert": "(lambda g: 6.5 <= 100 - g['now']['index'] <= 7.5)(one(s for s in D['series'] if 'natural gas' in s['label'].lower()))",
+      "actual": "(lambda g: (g['now']['date'], g['now']['index']))(one(s for s in D['series'] if 'natural gas' in s['label'].lower()))",
+      "falsified_if": "The next EIA month moves the index outside 92.5-93.5, so the hand-typed '7% less' and the '-7%' card no longer round from the data."
+    },
+    {
+      "id": "cs-crude-about-half",
+      "text": "Crude has given back about half of its rise, and it crested in June 2022 (standfirst, ladder lede, lines lede 'crested that June').",
+      "source": "WTI spot, indexed to January 2019",
+      "assert": "(lambda c: 0.45 <= c['retraced'] <= 0.60 and c['peak']['date'] == '2022-06-01')(one(s for s in D['series'] if 'crude' in s['label'].lower()))",
+      "actual": "(lambda c: (c['retraced'], c['peak']['date']))(one(s for s in D['series'] if 'crude' in s['label'].lower()))",
+      "falsified_if": "Crude's retracement leaves 45-60% (no longer 'about half'), or a revision moves its peak month off June 2022."
+    },
+    {
+      "id": "cs-resin-about-third",
+      "text": "Both resin series have given back about a third of their rise; resin manufacturing now runs +25% against January 2019; the resin crests fall in 2021 and 2022 (standfirst, hero card, ledes, vignette, verdicts, closer).",
+      "source": "PPI plastics material and resin manufacturing; PPI plastics resins and materials",
+      "assert": "(lambda rs: all(0.28 <= r['retraced'] <= 0.42 for r in rs) and all(r['peak']['date'][:4] in ('2021','2022') for r in rs) and 24.5 <= one(r for r in rs if 'manufacturing' in r['label'])['now']['index'] - 100 <= 25.5)([s for s in D['series'] if s['stage']=='resin'])",
+      "actual": "[(s['label'], s['retraced'], s['peak']['date'], s['now']['index']) for s in D['series'] if s['stage']=='resin']",
+      "falsified_if": "Either resin retracement leaves 28-42% (no longer 'about a third'), the resin-manufacturing index leaves 124.5-125.5 (the '+25%' card and 'resin up 25%' stop rounding), or a revision moves a resin peak out of 2021-2022."
+    },
+    {
+      "id": "cs-elec-exception",
+      "text": "Ohio industrial electricity is the exception named in the ladder lede: its peak month is January 2026, not 2022, and it has given back only about a quarter of its rise.",
+      "source": "EIA Ohio industrial electricity price, monthly",
+      "assert": "(lambda e: e['peak']['date'] == '2026-01-01' and 0.22 <= e['retraced'] <= 0.32)(one(s for s in D['series'] if 'electricity' in s['label'].lower()))",
+      "actual": "(lambda e: (e['peak']['date'], e['retraced'], e['now']['index']))(one(s for s in D['series'] if 'electricity' in s['label'].lower()))",
+      "falsified_if": "A new month prints above the January 2026 level (the 'peaked this January' sentence dates immediately), or the retracement leaves 22-32%."
+    },
+    {
+      "id": "cs-product-forty",
+      "text": "Finished-product prices are about 40% above their January 2019 base: the manufacturing index rounds to +40% (hero card, note arithmetic, vignette $1.40) and both product lines sit within 'about 40%' (lines lede, on-chart plateau callout).",
+      "source": "both product PPIs against the 2019-01 base",
+      "assert": "(lambda ps: all(37.5 <= p['now']['index'] - 100 <= 42.5 for p in ps) and 39.5 <= one(p for p in ps if 'manufacturing' in p['label'])['now']['index'] - 100 <= 40.49)([s for s in D['series'] if s['stage']=='product'])",
+      "actual": "[(s['label'], s['now']['index']) for s in D['series'] if s['stage']=='product']",
+      "falsified_if": "The manufacturing index leaves 139.5-140.49 (the '+40%' card and '$1.40' stop rounding), or either product series leaves the 37.5-42.5 band that makes 'about 40%' honest."
+    },
+    {
+      "id": "cs-spread-now",
+      "text": "The converter spread (product index minus resin index) stands at +14 points (hero card, spread lede, verdicts, closer).",
+      "source": "PCU326326 minus PCU325211325211, both rebased to 2019-01",
+      "assert": "(lambda sp: 13.5 <= sp[-1][1] <= 14.49)((lambda P, R: [(d, P[d]-R[d]) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}))",
+      "actual": "(lambda P, R: [(d, round(P[d]-R[d],2)) for d in sorted(P) if d in R][-1])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']})",
+      "falsified_if": "The next PPI release moves the latest spread outside 13.5-14.49 points, so every hand-typed '+14' stops rounding from the data."
+    },
+    {
+      "id": "cs-spread-trough",
+      "text": "The spread bottomed at -23 points in August 2021, the squeeze (hero card sub-line, spread lede, on-chart trough callout, closer).",
+      "source": "minimum of the derived converter spread",
+      "assert": "(lambda sp: (lambda t: t[0] == '2021-08-01' and -23.49 <= t[1] <= -22.5)(min(sp, key=lambda x: x[1])))((lambda P, R: [(d, P[d]-R[d]) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}))",
+      "actual": "(lambda sp: min(sp, key=lambda x: x[1]))((lambda P, R: [(d, round(P[d]-R[d],2)) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}))",
+      "falsified_if": "A revision moves the minimum off August 2021 or outside -23.49 to -22.5, so '-23' or 'August 2021' stops being the honest reading."
+    },
+    {
+      "id": "cs-spread-peak",
+      "text": "The spread peaked at +23 points in January 2026, NOT this month (spread H2 arithmetic, lede 'peaked at +23 this January before easing to +14', on-chart peak callout). The previous version of this page called the current spread 'the widest it has been'; that was wrong once the January 2026 print exceeded it, and the correction is recorded in the README.",
+      "source": "maximum of the derived converter spread",
+      "assert": "(lambda sp: (lambda t: t[0] == '2026-01-01' and 22.5 <= t[1] <= 23.49)(max(sp, key=lambda x: x[1])))((lambda P, R: [(d, P[d]-R[d]) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}))",
+      "actual": "(lambda sp: max(sp, key=lambda x: x[1]))((lambda P, R: [(d, round(P[d]-R[d],2)) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}))",
+      "falsified_if": "A new month prints a wider spread than January 2026 or a revision moves that peak, at which point 'peaked at +23 this January' must be restated."
+    },
+    {
+      "id": "cs-spread-positive-since",
+      "text": "The spread crossed zero in August 2022 and has been positive every month since (fig-title, spread lede).",
+      "source": "sign of the derived converter spread by month",
+      "assert": "(lambda sp: max(d for d, v in sp if v <= 0) == '2022-07-01' and all(v > 0 for d, v in sp if d > '2022-07-01'))((lambda P, R: [(d, P[d]-R[d]) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}))",
+      "actual": "(lambda sp: [(d, round(v,2)) for d, v in sp if '2022-05' <= d <= '2022-10'])((lambda P, R: [(d, P[d]-R[d]) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}))",
+      "falsified_if": "Any month after July 2022 prints at or below zero, or a revision moves the last negative month, so 'every month since August 2022' stops being true."
+    },
+    {
+      "id": "cs-comparator-unwound",
+      "text": "The resin-maker's same-method spread (resin manufacturing minus industrial chemicals) spiked to +19 points in September 2021 and has unwound to just below zero (spread lede, gray on-chart line and callout, resin verdict).",
+      "source": "PCU325211325211 minus the industrial chemicals PPI, both rebased to 2019-01",
+      "assert": "(lambda cp: (lambda mx: mx[0] == '2021-09-01' and 18.5 <= mx[1] <= 19.49)(max(cp, key=lambda x: x[1])) and -4.5 <= cp[-1][1] < 0)((lambda R, C: [(d, R[d]-C[d]) for d in sorted(R) if d in C])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if 'industrial chemicals' in s['label'])['points']}))",
+      "actual": "(lambda cp: (max(cp, key=lambda x: x[1]), cp[-1]))((lambda R, C: [(d, round(R[d]-C[d],2)) for d in sorted(R) if d in C])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if 'industrial chemicals' in s['label'])['points']}))",
+      "falsified_if": "The comparator's latest value leaves -4.5 to 0 ('just below zero' stops being honest), or its maximum moves off +19 in September 2021."
+    },
+    {
+      "id": "cs-vignette-part",
+      "text": "The dollar-part vignette: a part at $1.00 in January 2019 bills about $1.14 in August 2021 (resin then up 36%) and about $1.40 in July 2026 (resin up 25%), priced at the product-manufacturing index. Illustrative translation, not any member's quote.",
+      "source": "PCU326326 and PCU325211325211 index levels at 2019-01, 2021-08 and the current month",
+      "assert": "(lambda P, R, nowd: abs(P['2019-01-01'] - 100) < 1e-6 and 113.5 <= P['2021-08-01'] <= 114.49 and 35.5 <= R['2021-08-01'] - 100 <= 36.49 and nowd == '2026-07-01')({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}, one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['now']['date'])",
+      "actual": "(lambda P, R: (P['2021-08-01'], R['2021-08-01'], P[max(P)]))({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']})",
+      "falsified_if": "A revision moves the August 2021 product index off $1.14, the August 2021 resin index off +36%, or the data refresh past July 2026 while the hand-typed month in the vignette band still says July 2026."
+    },
+    {
+      "id": "cs-eleven-years",
+      "text": "The standfirst says 'eleven years of federal price series': every series starts January 2015 and the product series run into 2026.",
+      "source": "shipped span of all eight series",
+      "assert": "all(s['points'][0]['date'] == '2015-01-01' for s in D['series']) and max(s['now']['date'] for s in D['series']) >= '2026-01-01'",
+      "actual": "sorted(set((s['points'][0]['date'], s['now']['date']) for s in D['series']))",
+      "falsified_if": "The fetch window changes, so 'eleven years' no longer describes the span."
+    },
+    {
+      "id": "cs-default-verdict",
+      "text": "The selector's default sentence: gas sellers have given back the whole rise, resin makers about a third, and product makers none of it. Per-seat variants restate these same ingredients and are unguarded by design; this claim guards the default state.",
+      "source": "retraced field by stage",
+      "assert": "(lambda g, rs, ps: g['retraced'] > 1 and all(0.28 <= r['retraced'] <= 0.42 for r in rs) and all(p['retraced'] == 0 for p in ps))(one(s for s in D['series'] if 'natural gas' in s['label'].lower()), [s for s in D['series'] if s['stage']=='resin'], [s for s in D['series'] if s['stage']=='product'])",
+      "actual": "[(s['stage'], s['label'], s['retraced']) for s in D['series'] if s['retraced'] is not None]",
+      "falsified_if": "Gas drops below full retracement, a resin series leaves the 'about a third' band, or a product series starts retracing - each would rewrite the default verdict."
     },
     {
       "id": "cs-spread-not-margin",
-      "text": "The product-minus-resin spread is stated as an index spread and never as a margin.",
+      "text": "The product-minus-resin spread is stated as an index spread and never as a margin (note box, product verdict, closer).",
       "source": "Standing rule - labor, freight, energy and packaging are in neither index",
       "verify": "manual",
       "assert": null,
@@ -36,7 +148,7 @@
     },
     {
       "id": "cs-one-axis",
-      "text": "Series in different units share an axis only because every one is rebased to its own January 2019.",
+      "text": "Series in different units share an axis only because every one is rebased to its own January 2019; the rebasing rationale lives in the lines chart's source line, not its section title.",
       "source": "derive_rest.py indexes each series to its base month before any chart sees it",
       "assert": "all(s['base'] == '2019-01-01' for s in D['series']) and 'rebasing' in D['meta']",
       "actual": "sorted({s['unit'] for s in D['series']})",
