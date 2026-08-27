@@ -318,7 +318,7 @@ function loadData(file) {
     return `Money-flow diagram in three columns. Left, three public awards drawn to scale, each paired with a ` +
       `hatched match bar on the same scale: ${srcTxt}. Middle, the mechanism: the EDA award is obligated directly ` +
       `to each of seven project leads with no pass-through; the Ohio award enters the Greater Akron Polymer ` +
-      `Innovation Hub and splits into five workstreams drawn to scale against each other — ${wsTxt}; the Good Jobs ` +
+      `Innovation Hub and splits into five workstreams drawn to scale against each other (${wsTxt}); the Good Jobs ` +
       `Challenge APEX award runs to regional workforce programs with the Greater Akron Chamber as grantee. Right, ` +
       `one row per organization, each labeled with its amount and the program chips that fund it. ` +
       `${d.recipients.filter((r) => r.awards.length > 1).length} organizations receive money from more than one ` +
