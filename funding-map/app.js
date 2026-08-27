@@ -209,19 +209,28 @@ function loadData(file) {
        region gives up 49px, which costs a ribbon nothing. Do not push past ~0.365: rowX
        would cross bandR and the rows would sit on top of the bands. */
     const rowW = clamp(280, W * 0.35, 440);
+    /* Two annotation slots live inside the recipient column: a contrast note above the
+       Synthe6 cohort rows and a reconciliation footing under the last row. The heights
+       are layout constants; every numeral in them is computed from DATA when drawn. */
+    const A2H = 58, A3H = 84;
     const rows = [];
     let y = pad;
+    let a2Top = null;
     const groupOf = (r) => G.programs.get(r.awards[0].programId).id;
     d.recipients.forEach((r, i) => {
       const dual = r.awards.length > 1;
       const hgt = dual ? 52 : 34;
       const prev = d.recipients[i - 1];
       // a little air between program groups
-      if (prev && groupOf(prev) !== groupOf(r)) y += 12;
+      if (prev && groupOf(prev) !== groupOf(r)) {
+        y += 12;
+        if (groupOf(r) === 'oh-startup') { a2Top = y; y += A2H; }
+      }
       rows.push({ r, y, h: hgt, cy: y + (dual ? 18 : hgt / 2), dual });
       y += hgt;
     });
-    const H = y + pad;
+    const a3Top = y + 10;
+    const H = y + pad + A3H;
 
     // --- left column: three sources on one shared dollar scale
     const grand = d.meta.totals.total;
@@ -297,7 +306,8 @@ function loadData(file) {
     });
 
     return { W, H, pad, s, src, byId, srcX, stemW, bodyW, mechX, hubZone, bandX, bandW, bandR,
-             rightEdge, rowX, rowW, rows, edaB, apexB, hub, edaPlate, ws, Hws, slices, bandOf };
+             rightEdge, rowX, rowW, rows, edaB, apexB, hub, edaPlate, ws, Hws, slices, bandOf,
+             a2Top, a3Top };
   }
 
   function describe() {
@@ -312,7 +322,11 @@ function loadData(file) {
       `Challenge APEX award runs to regional workforce programs with the Greater Akron Chamber as grantee. Right, ` +
       `one row per organization, each labeled with its amount and the program chips that fund it. ` +
       `${d.recipients.filter((r) => r.awards.length > 1).length} organizations receive money from more than one ` +
-      `program. Every figure is also in the data table below this graphic.`;
+      `program. Notes on the diagram mark the ${fmtSpoken(G.programs.get('oh-facility').amount)} pilot facility ` +
+      `as the single largest line, the ${G.progOut.get('oh-startup').length} startup awards of ` +
+      `${fmtSpoken(G.progOut.get('oh-startup')[0].award.amount)} each, and the ` +
+      `${fmtSpoken(d.meta.totals.awards - d.recipients.reduce((a, r) => a + r.total, 0))} awarded but not yet ` +
+      `with a named recipient. Every figure is also in the data table below this graphic.`;
   }
 
   function renderDiagram(W) {
@@ -530,6 +544,8 @@ function loadData(file) {
     });
     svg.appendChild(mechG);
 
+    renderAnnotations(svg, L);
+
     // ---- interactive overlay: real HTML buttons, so focus and semantics are real
     const hits = h('div', { class: 'hitlayer' });
     const addHit = (kind, id, label, x, y, w, hh) => {
@@ -573,6 +589,90 @@ function loadData(file) {
     if (chip === 'SYNTHE6') return TINT.s6;
     if (chip === 'APEX') return TINT.apex;
     return TINT.hub;
+  }
+
+  /* ------------------------------------------------------------- annotations
+     Three editorial callouts drawn ON the diagram, and drawn LAST so nothing
+     occludes them. Every numeral is computed from DATA and formatted by fmt(),
+     the same rule as the labels they sit beside, so a data revision moves the
+     annotation with it. Each group carries the data-node of the thing it is
+     about, so it dims and lights with that thing. */
+  const NUMWORD = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
+    'eight', 'nine', 'ten', 'eleven', 'twelve'];
+  const numword = (n, cap) => {
+    const w = NUMWORD[n] || String(n);
+    return cap ? w.charAt(0).toUpperCase() + w.slice(1) : w;
+  };
+
+  function renderAnnotations(svg, L) {
+    const g = el('g', { class: 'annos rowgroup' });
+
+    // A1 — the single largest line is a building. Text sits in the empty left
+    // gutter between the EDA and Ohio label blocks; the leader runs right,
+    // through the source-bar gap, into the pilot-facility band.
+    const fac = L.ws.find((w) => w.p.id === 'oh-facility');
+    if (fac) {
+      const corridorTop = L.byId.eda.my + L.byId.eda.mh + 10;  // below the EDA match bar
+      const corridorBot = L.byId.ohio.y - 10;                  // above the Ohio award bar
+      const ly = clamp(corridorTop, fac.y + 52, corridorBot);
+      if (corridorBot - corridorTop >= 0) {
+        const a1 = el('g', { class: 'dimmable', 'data-node': 'prog:' + fac.p.id });
+        const tx = L.srcX - 14;
+        [['The single largest line', 'anno-t anno-strong'],
+         ['on this map is a building:', 'anno-t'],
+         [`the ${fmt(fac.p.amount)} pilot facility.`, 'anno-t']].forEach(([t, cls], i) => {
+          a1.appendChild(el('text', { class: cls, x: tx, y: ly - 34 + i * 16,
+            'text-anchor': 'end' }, t));
+        });
+        a1.appendChild(el('line', { class: 'anno-lead', x1: L.srcX - 8, y1: ly + 6,
+          x2: L.bandX + 3, y2: ly + 6 }));
+        a1.appendChild(el('circle', { class: 'anno-dot', cx: L.bandX + 3, cy: ly + 6, r: 2.5 }));
+        g.appendChild(a1);
+      }
+    }
+
+    // A2 — the cash-layer contrast, directly above the Synthe6 cohort rows,
+    // with an elbow leader pointing into the group.
+    const s6 = G.progOut.get('oh-startup') || [];
+    const eda7 = G.progOut.get('eda-direct') || [];
+    if (L.a2Top != null && s6.length && eda7.length) {
+      const amounts = s6.map((o) => o.award.amount);
+      const sum6 = amounts.reduce((a, v) => a + v, 0);
+      const even = Math.min(...amounts) === Math.max(...amounts);
+      const edaSum = eda7.reduce((a, o) => a + o.award.amount, 0);
+      const a2 = el('g', { class: 'dimmable', 'data-node': 'prog:oh-startup' });
+      const l1 = `${numword(s6.length, true)} startups share ${fmt(sum6)} in cash` +
+        (even ? `, ${fmt(amounts[0])} each.` : '.');
+      const l2 = `The ${numword(eda7.length)} federal leads above hold ${fmt(edaSum)}.`;
+      [[l1, 'anno-t anno-strong'], [l2, 'anno-t']].forEach(([t, cls], i) => {
+        a2.appendChild(el('text', { class: cls, x: L.rowX, y: L.a2Top + 15 + i * 17 }, t));
+      });
+      a2.appendChild(el('path', { class: 'anno-lead',
+        d: `M${L.rowX + 6},${L.a2Top + 40} V${L.a2Top + 54} h7`, fill: 'none' }));
+      g.appendChild(a2);
+    }
+
+    // A3 — the reconciliation footing: awarded money with no named recipient yet,
+    // ruled off under the recipient column like a ledger total.
+    if (L.a3Top != null) {
+      const named = DATA.recipients.reduce((a, r) => a + r.total, 0);
+      const un = DATA.meta.totals.awards - named;
+      const rdBal = G.programs.get('oh-rd').amount -
+        G.progOut.get('oh-rd').reduce((a, o) => a + o.award.amount, 0);
+      const s6Bal = G.programs.get('oh-startup').amount -
+        s6.reduce((a, o) => a + o.award.amount, 0);
+      const a3 = el('g', { class: 'dimmable', 'data-node': 'src:ohio' });
+      a3.appendChild(el('line', { class: 'anno-lead', x1: L.rowX, y1: L.a3Top + 2,
+        x2: L.rightEdge, y2: L.a3Top + 2 }));
+      [[`Not on any row: ${fmt(un)} of awarded money has`, 'anno-t anno-strong'],
+       [`no named recipient yet: ${fmt(rdBal)} of R&D not yet`, 'anno-t'],
+       [`sub-granted, ${fmt(s6Bal)} running Synthe6 via Bounce.`, 'anno-t']].forEach(([t, cls], i) => {
+        a3.appendChild(el('text', { class: cls, x: L.rowX, y: L.a3Top + 22 + i * 17 }, t));
+      });
+      g.appendChild(a3);
+    }
+
+    svg.appendChild(g);
   }
 
   // Measure once the real font is in, then place chips and shrink any name that
@@ -645,9 +745,30 @@ function loadData(file) {
         amt.setAttribute('x', L.bandX + 14);
         amt.setAttribute('text-anchor', 'start');
         shrinkToFit(name, inner, 14.5, 12);
+      } else if (w.h >= 60 && rider) {
+        /* Three-line stack for a tall band that carries a rider. This is the
+           "PIC Translational R&D" fix: shrink-then-truncate rendered it as
+           "PIC Translati…" at exactly the width the lede told readers to study.
+           Name, amount and rider each get their own left-anchored line instead. */
+        const base = parseFloat(name.getAttribute('y'));
+        name.setAttribute('y', base - 17);
+        amt.setAttribute('y', base + 1);
+        amt.setAttribute('x', L.bandX + 14);
+        amt.setAttribute('text-anchor', 'start');
+        rider.setAttribute('y', base + 19);
+        rider.setAttribute('x', L.bandX + 14);
+        rider.setAttribute('text-anchor', 'start');
+        shrinkToFit(name, inner, 14.5, 12);
+        shrinkToFit(rider, inner, 12, 12);
       } else {
         shrinkToFit(name, inner - aw - gap, 14.5, 12);
       }
+    });
+
+    // Annotation copy fits its lane or shrinks to the 12px floor, never past it.
+    svg.querySelectorAll('.annos text').forEach((n) => {
+      const end = n.getAttribute('text-anchor') === 'end';
+      shrinkToFit(n, end ? L.srcX - 22 : L.rowW - 8, 12.5, 12);
     });
   }
 
@@ -681,6 +802,15 @@ function loadData(file) {
       h('span', { class: 'sortbar-label', text: 'Arrange' }), seg
     ]));
 
+    /* GLOBAL bar scale. Scaling each group to its own maximum rendered a $25K
+       cohort award and an $11.12M federal award as the same full-width bar two
+       screens apart — a cross-group misread waiting to happen. One maximum for
+       every bar, stated, so a sliver means a sliver. */
+    const gmax = Math.max(...d.recipients.flatMap((r) => r.awards.map((w) => w.amount)));
+    const gRec = d.recipients.find((r) => r.awards.some((w) => w.amount === gmax));
+    root.appendChild(h('p', { class: 'cards-note',
+      text: `Every bar is drawn against the same maximum, ${gRec.name} at ${fmt(gmax)}, so lengths compare across groups.` }));
+
     const card = (r, amount, chips, tint, max, segs) => {
       const bar = h('div', { class: 'rcard-bar' });
       segs.forEach((sg) => {
@@ -708,18 +838,20 @@ function loadData(file) {
         const so = G.sources.get(p.sourceId);
         const tint = TINT[p.tint];
         const outs = G.progOut.get(p.id).slice().sort((a, b) => b.award.amount - a.award.amount);
-        const max = Math.max(...outs.map((o) => o.award.amount));
         const list = h('ul', { class: 'card-list' });
         outs.forEach(({ recipient, award }) => {
-          list.appendChild(card(recipient, award.amount, recipient.chips, tint, max,
+          list.appendChild(card(recipient, award.amount, recipient.chips, tint, gmax,
             [{ amount: award.amount, color: tint.solid }]));
         });
+        const amts = outs.map((o) => o.award.amount);
+        const even = outs.length > 2 && Math.min(...amts) === Math.max(...amts);
         const grp = h('section', { class: 'card-group', style: `--grp:${tint.solid}` }, [
           h('div', { class: 'cg-head' }, [
             h('h3', { class: 'cg-title', text: p.name }),
             h('span', { class: 'cg-amount', text: fmt(p.amount) })
           ]),
-          h('p', { class: 'cg-sub', text: `${so.short} · ${outs.length} recipient${outs.length > 1 ? 's' : ''}` }),
+          h('p', { class: 'cg-sub', text: `${so.short} · ${outs.length} recipient${outs.length > 1 ? 's' : ''}` +
+            (even ? ` · ${fmt(amts[0])} each` : '') }),
           list
         ]);
         root.appendChild(grp);
@@ -943,7 +1075,12 @@ function loadData(file) {
       ])));
       body.appendChild(ul);
     }
-    document.getElementById('panel-disclosure').textContent = DATA.meta.disclosures[0];
+    /* The defining uncertainty gets said where the inference happens, not only in a
+       footer: an awarded dollar and a spent dollar are identical pixels on the map.
+       Outlay figures are internal per the sub-award disclosure ruling (see README),
+       so the panel says "not public" rather than saying nothing. */
+    document.getElementById('panel-disclosure').textContent =
+      DATA.meta.disclosures[0] + ' Disbursement to date is not public on this page.';
   }
 
   function openDetail(kind, id, { push = true, focus = true } = {}) {
@@ -956,6 +1093,9 @@ function loadData(file) {
     panel.hidden = false; scrim.hidden = false;
     requestAnimationFrame(() => { panel.classList.add('is-open'); scrim.classList.add('is-open'); });
     resetBtn.hidden = false;
+
+    const finder = document.getElementById('finder');
+    if (finder) finder.value = kind === 'recipient' ? id : '';
 
     const hash = '#' + kind + '/' + id;
     if (push && location.hash !== hash) history.pushState({ kind, id }, '', hash);
@@ -975,6 +1115,8 @@ function loadData(file) {
     setHighlight(null);
     markSelected();
     resetBtn.hidden = true;
+    const finder = document.getElementById('finder');
+    if (finder) finder.value = '';
     if (push && location.hash) history.pushState(null, '', location.pathname + location.search);
     if (restore && lastFocusEl && document.contains(lastFocusEl)) lastFocusEl.focus({ preventScroll: true });
     lastFocusEl = null;
@@ -1047,6 +1189,24 @@ function loadData(file) {
   }
 
   function wire() {
+    /* The lookup affordance. Deep links (#recipient/…) always existed; the select
+       makes them reachable without knowing the URL grammar. Any PIC member can jump
+       straight to their own row; selection opens the same panel a click would. */
+    const finder = document.getElementById('finder');
+    if (finder) {
+      DATA.recipients.slice()
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .forEach((r) => finder.appendChild(h('option', { value: r.id,
+          text: `${r.name} · ${fmt(r.total)}` })));
+      finder.addEventListener('change', () => {
+        if (!finder.value) { closeDetail(); return; }
+        const id = finder.value;
+        openDetail('recipient', id, { focus: false });
+        const b = viz.querySelector(`[data-kind="recipient"][data-id="${CSS.escape(id)}"]`);
+        if (b) b.scrollIntoView({ block: 'center', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+      });
+    }
+
     // hover / focus highlight, click to open
     viz.addEventListener('pointerover', (e) => {
       const b = e.target.closest('.hit, .rcard');
@@ -1076,7 +1236,7 @@ function loadData(file) {
     // click-away, for the widths where there is no scrim to click
     document.addEventListener('click', (e) => {
       if (!selected) return;
-      if (e.target.closest('.panel, .hit, .rcard, #reset-view')) return;
+      if (e.target.closest('.panel, .hit, .rcard, #reset-view, #finder')) return;
       closeDetail({ restore: false });
     });
     resetBtn.addEventListener('click', () => { closeDetail(); setHighlight(null); });

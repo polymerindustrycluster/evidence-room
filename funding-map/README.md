@@ -7,10 +7,11 @@ plus match. Destined for `picinnovation.org/funding`.
 Self-contained: vanilla JS, inline SVG, no frameworks, no CDN, no build step.
 
 ```
-index.html          page shell — headline, disclosures, section structure
+index.html          page shell — headline, machines, disclosures, section structure
 styles.css          all styling, brand tokens at the top
-app.js              layout, rendering, interaction
+app.js              layout, rendering, annotations, interaction
 data/funding.json   THE DATA. Edit this and nothing else.
+claims.json         every published sentence's guard — re-run by _data/build/verify_claims.py
 fonts/              Aptos, copied from ../../megadeck/fonts
 ```
 
@@ -36,12 +37,23 @@ provenance list, the screen-reader description of the graphic — is derived
 from it at runtime. There are no hard-coded figures in `app.js` or
 `styles.css`.
 
-Three exceptions live in `index.html`, because they must survive with
-JavaScript switched off, and they must be updated by hand if the data changes:
+The hand-typed exceptions live in `index.html`, because they must survive with
+JavaScript switched off. Every one of them is guarded by an assertion in
+`claims.json` (run `python3 _data/build/verify_claims.py funding-map`), and they
+must be updated by hand if the data changes:
 
-- the `$106.3M` hero figure and its `data-value` attribute on `#total-count`
+- the `$106.3M` hero figure and its `data-value` attribute on `#total-count`,
+  and the `$106 million` in the headline
+- the `$85.3M` / `$21.0M` hero sub-line
 - the three source tiles in the masthead
-- the `as of` date in the methods section
+- the three machine cards (amounts, counts, and each card's fact line)
+- the figure title's `twenty-one recipients` and the verdict sentence under
+  the diagram (`$85.3M` / `$79.2M` / `more than half` / `largest line`)
+- the two vignette kickers (`$10.09M`, `$4.70M`)
+- the `as of` date in the methods section and the figure source line
+
+The three on-diagram annotations are NOT hand-typed: their numerals are
+computed from `funding.json` at render time and formatted by `fmt()`.
 
 The structure is `sources` → `programs` → `recipients`:
 
@@ -65,7 +77,10 @@ No raw comma-strings (`$678,614`) anywhere in a label. Full precision belongs
 in the detail panel, the data table and the CSV — all three carry it.
 
 The `$106.3M` hero is the one deliberate exception (one decimal), because that
-is the figure as it is quoted everywhere else in PIC's materials.
+is the figure as it is quoted everywhere else in PIC's materials. The verdict
+sentence under the diagram uses the same one-decimal register (`$85.3M`,
+`$79.2M`) for the same reason. On-diagram annotations use `fmt()` unchanged, so
+an annotation always prints the same string as the band or row it points at.
 
 ## What must never be published here
 
@@ -99,10 +114,14 @@ put white text on `#1A8A9E` — it measures 4.06:1. Dark surfaces are `#0C6473`.
 Text colors on white come from `TINT[*].textInk`, each measured at 4.5:1 or
 better.
 
-**Two views, one dataset.** Above 1120px of container width the ribbon diagram
-renders. Below it, a grouped card view takes over with the same chips, amounts
-and detail panel — sortable by program, by amount, or A–Z. It is a designed
-alternative, not a fallback. The breakpoint is measured rather than guessed: below it the longest recipient names can no longer sit beside their chips and amount without being cut.
+**Two views, one dataset.** Above 900px of container width the ribbon diagram
+renders (the breakpoint moved from 1120 when the page joined the shared column
+system; the diagram only ever drew about 1,054px of ink). Below it, a grouped
+card view takes over with the same chips, amounts and detail panel — sortable
+by program, by amount, or A–Z, with every bar on one global dollar scale. It is
+a designed alternative, not a fallback. The breakpoint is measured rather than
+guessed: below it the longest recipient names can no longer sit beside their
+chips and amount without being cut.
 
 **Motion.** A staged reveal runs once: sources fade in, the three ribbon
 streams draw left to right over about 700ms staggered by stream, then the
@@ -141,6 +160,39 @@ Its own Netlify site, surfaced on the main domain by a force-200 proxy.
    The `!` forces the rewrite even though the path could otherwise match.
 4. Netlify normalizes trailing slashes, which has bitten this pattern before —
    verify both `/funding` and `/funding/` resolve after deploying.
+
+## Revision, 27 August 2026 (append-only)
+
+Editorial rebuild against the data-journalism review rubric. No figure changed;
+one data label did (see the last bullet). What changed:
+
+- **Headline reframed to the finding**: "A $106 million bet on Akron polymers
+  runs through three very different machines", with "every dollar, every
+  organization" kept as the standfirst's trust clause.
+- **A "three machines" section** now sequences the awards one at a time, one
+  character sentence each, before the combined map, with deep links into it.
+- **Three annotations drawn on the Sankey**, numerals computed from the data:
+  the $18.52M pilot facility as the single largest line (leader line from the
+  left gutter); nine startups sharing $225K beside the seven federal leads'
+  $51.00M (above the cohort rows); and the $6.17M with no named recipient yet
+  (a ledger-style footing under the recipient column).
+- **The legend moved above the diagram** and the encoding narration left the
+  lede; the figure got its own title, subtitle and source line.
+- **A verdict sentence closes the diagram section** ($85.3M awarded, $79.2M
+  named, more than half with seven awardees, the largest line a building).
+- **Two vignettes** (Flexsys / 6PPD-quinone, Full Circle / tire recycling)
+  give the two most story-rich awards a human-scale beat; the 6PPD claim is a
+  manually verified citation in `claims.json`.
+- **A recipient finder** (select box) over the existing deep links.
+- **Card view bars now share one global scale** with a stated maximum; the old
+  per-group scaling drew $25K and $11.12M as identical full-width bars.
+- **Every detail panel states** that disbursement to date is not public here.
+- **`claims.json` added**: 18 machine-checked assertions plus 3 manual ones.
+  The page no longer predates the claims harness.
+- **Label edit in `funding.json`**: the Translational R&D band rider shortened
+  from "$3.35M executed in seven sub-grants" to "$3.35M executed so far" so it
+  fits the band's three-line stack (the figure is unchanged and guarded; the
+  seven-sub-grant count stays in the reconciliation notes and claims).
 
 ## Open questions for a human
 

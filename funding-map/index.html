@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Where The Public Money Goes</title>
-<meta name="description" content="An interactive map of the $106.3 million in public awards and match behind the Polymer Industry Cluster: three sources, seven programs, twenty-one recipients.">
+<title>Where the public money goes</title>
+<meta name="description" content="A $106.3 million bet on Akron polymers, drawn to scale: three public awards, seven programs, twenty-one recipients, and every dollar mapped.">
 <meta name="color-scheme" content="light">
 <link rel="stylesheet" href="../_shared/pic-viz.css">
 <link rel="stylesheet" href="styles.css">
@@ -17,10 +17,11 @@
 <header class="masthead">
   <div class="wrap">
     <p class="eyebrow">Polymer Industry Cluster &middot; Greater Akron</p>
-    <h1>Three public awards converge on one portfolio</h1>
+    <h1>A <em>$106 million</em> bet on Akron polymers runs through three very different machines</h1>
     <p class="standfirst">
-      Federal and state money reaches the Greater Akron polymer cluster through three separate awards
-      that behave in three different ways. This is every dollar of it, and every organization it reaches.
+      Federal and state awards worth $106.3 million reach the Greater Akron polymer cluster through
+      three machines that share almost nothing in how a dollar moves. This is every dollar of it,
+      and every organization it reaches.
     </p>
 
     <div class="topline">
@@ -52,21 +53,65 @@
 
 <main id="main">
 
+  <section class="section section--machines" aria-labelledby="machines-h">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2 id="machines-h">Each machine moves its money differently</h2>
+          <p class="lede">
+            Meet the three awards one at a time; the combined map follows. Each machine keeps its
+            color everywhere below.
+          </p>
+        </div>
+      </div>
+      <ol class="machines">
+        <li class="machine machine--eda">
+          <p class="m-kicker">Machine 1 &middot; EDA Sustainable Polymers Tech Hub &middot; <strong>$51.00M</strong> federal</p>
+          <p class="m-sent">EDA obligates each of its seven awards straight to the project lead, so no federal dollar passes through PIC&rsquo;s hands.</p>
+          <p class="m-fact">Largest check: BioVerde, $11.12M, for bio-based butadiene. <a href="#source/eda">Trace it on the map</a></p>
+        </li>
+        <li class="machine machine--ohio">
+          <p class="m-kicker">Machine 2 &middot; Ohio Innovation Hub &middot; <strong>$31.25M</strong> state</p>
+          <p class="m-sent">The state&rsquo;s grant lands in one Akron hub and splits five ways; the biggest slice, $18.52M, is a building.</p>
+          <p class="m-fact">Its two company-facing slices, Translational R&amp;D and Synthe6, reach fourteen organizations. <a href="#source/ohio">Trace it on the map</a></p>
+        </li>
+        <li class="machine machine--apex">
+          <p class="m-kicker">Machine 3 &middot; Good Jobs Challenge (APEX) &middot; <strong>$3.08M</strong> federal</p>
+          <p class="m-sent">One workforce award, held by the Greater Akron Chamber as grantee, funds regional training aimed at 500 enrollments and 320 placements.</p>
+          <p class="m-fact">The local match commitment beside it, $3.37M, is larger than the award itself. <a href="#source/apex">Trace it on the map</a></p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
   <section class="section section--map" aria-labelledby="map-h">
     <div class="wrap">
       <div class="section-head">
         <div>
           <h2 id="map-h">Where it goes</h2>
           <p class="lede">
-            Hue names the funding source. Within the Ohio stream, a tint step separates the two
-            company-facing programs &mdash; PIC Translational R&amp;D and Synthe6 startup awards &mdash; from the hub&rsquo;s own
-            workstreams. Every recipient row carries the program chips that fund it.
+            The three machines drawn as one system: every award, its mechanism, and every named
+            recipient, on one dollar scale. Select any element to trace its thread; full precision
+            sits in its panel and in the table below.
           </p>
         </div>
         <div class="controls">
+          <label class="sr-only" for="finder">Find a recipient</label>
+          <select id="finder" class="finder">
+            <option value="">Find a recipient&hellip;</option>
+          </select>
           <button type="button" id="reset-view" class="btn btn--ghost" hidden>Reset view</button>
         </div>
       </div>
+
+      <p class="fig-title">Three machines, twenty-one recipients: the money lands unevenly</p>
+      <p class="fig-sub">
+        Awards and match drawn to one dollar scale. Hue names the source; a tint step separates the
+        Ohio hub&rsquo;s two company-facing programs. In the wide diagram, connectors into
+        individual recipients are not to scale.
+      </p>
+
+      <div id="legend" class="legend" hidden></div>
 
       <noscript>
         <p class="noscript">
@@ -80,11 +125,53 @@
         <p class="viz-loading">Loading the funding data&hellip;</p>
       </div>
 
-      <div id="legend" class="legend" hidden></div>
+      <p class="verdict">
+        Of the $85.3M awarded, $79.2M has reached a named recipient. More than half sits with the
+        seven direct federal awardees, and the single largest line is a building.
+      </p>
 
       <div class="fnotes">
         <p class="fn" id="fn-disclosure"></p>
         <p class="fn" id="fn-scale"></p>
+      </div>
+      <p class="fig-src">
+        Sources: signed federal Notices of Award; the executed Ohio grant agreement (Grant Control
+        No. SBIG20251005); executed sub-grant agreements. Figures as of 13 August 2026.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--vig" aria-labelledby="vig-h">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2 id="vig-h">What a line item buys</h2>
+          <p class="lede">Two of the terse award labels above carry more story than they let on.</p>
+        </div>
+      </div>
+      <div class="vignettes">
+        <article class="vig">
+          <p class="vig-kicker">Flexsys &middot; $10.09M &middot; EDA R&amp;D</p>
+          <h3>Replacing the tire additive behind the coho salmon die-offs</h3>
+          <p class="vig-body">
+            Nearly every tire on the road carries 6PPD, an anti-degradant that keeps rubber from
+            cracking. Its breakdown product, 6PPD-quinone, is the chemical a 2021 <cite>Science</cite>
+            paper identified as killing coho salmon in urban Pacific Northwest streams.
+            Flexsys&rsquo;s award funds development of a safer alternative in Akron.
+          </p>
+          <p class="vig-link"><a href="#recipient/flexsys">See the award</a></p>
+        </article>
+        <article class="vig">
+          <p class="vig-kicker">Full Circle Technologies &middot; $4.70M &middot; EDA R&amp;D</p>
+          <h3>Un-making a tire is the hard part</h3>
+          <p class="vig-body">
+            A tire is mostly vulcanized rubber, built never to melt back down, so recycling one into
+            new products is far harder than recycling a bottle. Full Circle&rsquo;s award funds
+            end-of-life tire recycling, the only recycling project among the seven direct federal
+            awards.
+          </p>
+          <p class="vig-link"><a href="#recipient/full-circle">See the award</a></p>
+        </article>
       </div>
     </div>
   </section>
@@ -181,7 +268,8 @@
   "This is the public money PIC helped win, not all public money reaching polymer work in the region. A program PIC was not part of does not appear here, and its absence is not evidence it does not exist.",
   "Award figures are amounts announced or obligated, not cash spent. An obligation can be drawn down over several years, reduced, or de-obligated entirely.",
   "Recipients are named as the award names them. Where an award passes through one organization to others, only the named recipient appears.",
-  "This page predates the shared house style and does not carry a claims file, so no sentence on it is checked by a re-runnable assertion."
+  "No comparison with the other eleven funded EDA Tech Hubs is drawn here, because their award data is not shipped with this page. Every comparison on the page is internal to these three awards.",
+  "Every quantified sentence on this page is guarded by claims.json and re-run against data/funding.json by the repo’s claims gate. Three claims (the 6PPD-quinone finding, the vulcanized-rubber point, and the disbursement-disclosure rule) are recorded there as manually verified, with sources named in the file."
 ]});</script>
 <script src="app.js"></script>
 </body>
