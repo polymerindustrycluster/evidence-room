@@ -6,6 +6,7 @@
 <meta name="color-scheme" content="light">
 <title>Does The Cluster Pay Better</title>
 <link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -18,55 +19,135 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">Polymer wages against the towns they sit in</p>
-    <h1>In 40 of 51 measurable cells, a polymer job pays <em>more than the county
-      average</em>.</h1>
-    <p class="stand">PIC's workforce case rests on the claim that these are good jobs. The
-      claim is checkable: the Bureau of Labor Statistics publishes average weekly wage by county and industry every
-      year. <b>Be clear about the bar.</b> The county all-industry average includes retail
-      and hospitality, so beating it is a low hurdle for manufacturing &mdash; it is the
-      right control for local cost of living, and a weak test of &ldquo;good&rdquo;. These
-      are also <b>means, not medians</b>, computed per disclosed cell, so one large employer
-      moves a county and every cell counts the same regardless of size.</p>
+    <p class="eyebrow">Do polymer jobs out-pay the towns they sit in? &middot; BLS QCEW, 2015&ndash;2025</p>
+    <h1>The typical polymer job pays <em>1.2 times</em> what the average job in its
+      county pays.</h1>
+    <p class="stand">In 40 of the 51 industry-county pairings the Bureau of Labor
+      Statistics can disclose, polymer pay beats the county's all-industry average
+      &mdash; and the eleven that miss all sit on one side of the house. That is the
+      checkable number behind the region's good-jobs pitch: the wage argument members
+      take to commissioners, school boards and recruits.</p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
-    <p class="takeaway">The chart</p>
-    <h2 id="premtitle">Every county and industry against its own local average</h2>
-    <p class="lede">A value of 1.0 means the polymer job pays exactly what the average job
-      in that county pays. To the right is a premium; to the left, a discount. The
-      comparison is deliberately local &mdash; a wage that beats the national average but
-      trails its own town is not a good job in that town.</p>
+    <p class="takeaway">The finding</p>
+    <h2>Where polymer pay beats the town &mdash; and where it doesn't</h2>
+    <p class="lede">A pairing is one industry's average weekly wage in one county,
+      divided by that county's average across every industry &mdash; above 1.0&times;,
+      polymer work out-pays its town. The data are the BLS census of covered jobs, the
+      analysis is scripted from the public files, and every published number on this
+      page is re-checked against the data on each build.</p>
+    <div class="csel" id="csel" role="group" aria-label="Highlight one county"></div>
+    <p class="verdict" id="verdict"></p>
+    <p class="fig-title">Premiums run from 2.09&times; down to 0.77&times; &mdash;
+      chemistry on top, plastics and rubber below the line</p>
+    <p class="fig-sub">Average weekly wage &divide; the county's all-industry average,
+      2025. Dot area = jobs in the pairing.</p>
     <div class="chart"><svg id="prem" role="img" aria-labelledby="prem-t">
       <title id="prem-t">Wage premium against the local all-industry average, by county
-        and industry.</title></svg></div>
+        and industry, 2025. Chemistry-side pairings cluster at the top, plastics and
+        rubber at the bottom.</title></svg></div>
+    <div class="legend">
+      <span><i style="background:#008BA8"></i> Chemistry side &mdash; chemicals, resin, paint</span>
+      <span><i style="background:#C85F0C"></i> Products side &mdash; plastics &amp; rubber</span>
+    </div>
     <div id="premtable"></div>
     <p class="src" id="premsrc"></p>
+    <div class="note" id="note"><b>What an average weekly wage hides.</b> It moves with
+      hours and the mix of jobs, not only pay rates &mdash; a plant on overtime reads as
+      a raise, and a manager and a line operator average into one number. These are
+      means per disclosed pairing, so one large employer can move a county. It answers
+      &ldquo;what does this work pay here, relative to everything else here&rdquo;
+      &mdash; not &ldquo;what would you earn.&rdquo;</div>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">The split</p>
+    <h2>The premium is a chemistry premium</h2>
+    <p class="lede">Chemistry-side pairings run a median 1.35&times; their county's
+      average, and every one of the 23 clears it. Plastics-and-rubber pairings run a
+      median 1.01&times;, with 17 of 28 above. One plausible explanation: chemicals,
+      resin and paint are capital-intensive, continuous processes &mdash; more output
+      per worker, round-the-clock operator shifts, more chemists per line &mdash; while
+      molding and extrusion compete with every other light manufacturer in town for the
+      same labor.</p>
+    <div class="statgrid">
+      <div class="statv"><div class="n" id="sv1"></div>
+        <div class="k">chemicals &middot; resin &middot; paint</div>
+        <div class="d" id="sv1d"></div></div>
+      <div class="statv prod"><div class="n" id="sv2"></div>
+        <div class="k">plastics &amp; rubber products</div>
+        <div class="d" id="sv2d"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The counterweight</p>
+    <h2>The same jobs trail their own industries nationally</h2>
+    <p class="lede">Beating the county average is the local test. The national one is
+      harder: 44 of the 51 pairings pay below what the same industry averages across
+      the United States &mdash; the median sits at 0.88&times;. Both facts are true at
+      once, and the recruiting pitch that survives scrutiny carries both.</p>
+    <p class="fig-title">33 of 51 pairings beat their town while trailing their
+      industry</p>
+    <p class="fig-sub">Horizontal: wage &divide; county all-industry average. Vertical:
+      wage &divide; the same industry's U.S. average. 2025; dot area = jobs.</p>
+    <div class="chart"><svg id="scat" role="img" aria-labelledby="scat-t">
+      <title id="scat-t">Scatter of each pairing's local wage premium against its
+        national same-industry ratio. Most pairings sit above the local line but below
+        the national one.</title></svg></div>
+    <div id="scattable"></div>
+    <p class="src" id="scatsrc"></p>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
     <p class="takeaway">Over time</p>
-    <h2>The premium has not been eroding</h2>
-    <p class="lede">Median wage premium across all measurable county-industry cells, by
-      year. A single line is the honest form here: the county-level series are noisy and
-      the question is whether the cluster is pulling away from or falling toward its
-      surroundings.</p>
-    <div class="chart"><svg id="trend" role="img" aria-labelledby="trend-t">
-      <title id="trend-t">Median polymer wage premium over the local average, by year.</title>
-    </svg></div>
+    <h2>A decade on, the premium has held</h2>
+    <p class="lede">The median premium has stayed between 1.12&times; and 1.25&times;
+      since 2015, ending at 1.21&times; against 1.20&times; at the start. The honest
+      reading is flat: the cluster is not falling toward its surroundings, and it is
+      not pulling away from them either &mdash; a year-to-year move of a point or two
+      is small next to the spread across pairings.</p>
+    <p class="fig-title">Holding near 1.2&times;: the median premium, with the middle
+      half of pairings behind it</p>
+    <p class="fig-sub">Median of all disclosed pairings per year; shaded band spans the
+      25th&ndash;75th percentile.</p>
+    <div class="chart narrow"><svg id="trend" role="img" aria-labelledby="trend-t">
+      <title id="trend-t">Median polymer wage premium over the local average by year,
+        2015 to 2025, with the interquartile range of pairings shaded behind the
+        line.</title></svg></div>
     <div id="trendtable"></div>
-    <div class="note" id="caveat"></div>
+    <p class="src" id="trendsrc"></p>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">What it means in a paycheck</p>
+    <h2>2.09&times; is a life, not a ratio</h2>
+    <p class="lede">A Lake County chemical-manufacturing job averages $2,474 a week
+      &mdash; about $129,000 a year &mdash; in a county where the average job pays
+      about $62,000. Same county, other side of the house: rubber-products work
+      averages $1,028 a week, about $53,000, under the county line. And the lowest
+      pairing on the page &mdash; Stark County rubber products, $853 a week, about
+      $44,000 &mdash; is 30 jobs, a reminder that the small cells here are averages of
+      very few paychecks. These are cell averages, not any one person's pay.</p>
   </div>
 </section>
 
 <section class="closer">
   <div class="wrap">
-    <p>"Good jobs" is a claim. This is the version with a denominator.</p>
+    <p>Against its own towns, the wage claim holds. Against its own industries, it is
+      still a discount.</p>
     <p class="sub" id="closersub"></p>
   </div>
 </section>

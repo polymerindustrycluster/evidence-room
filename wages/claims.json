@@ -3,11 +3,155 @@
   "claims": [
     {
       "id": "wage-premium-count",
-      "text": "In 40 of 51 measurable cells a polymer job pays above its county average.",
+      "text": "In 40 of the 51 county-industry pairings BLS can disclose, polymer pay beats the county's all-industry average (standfirst, hero card, default verdict sentence).",
       "source": "BLS QCEW weekly wage, county NAICS against county all-industry",
       "assert": "len([r for r in D['latest_rows'] if r.get('vs_local_all') and r['vs_local_all']>1]) == 40 and len([r for r in D['latest_rows'] if r.get('vs_local_all')]) == 51",
       "actual": "(len([r for r in D['latest_rows'] if r.get('vs_local_all') and r['vs_local_all']>1]), len([r for r in D['latest_rows'] if r.get('vs_local_all')]))",
-      "falsified_if": "Any county-industry disclosure flips, changing the denominator of 58."
+      "falsified_if": "A QCEW revision or disclosure change flips any cell across 1.0x or changes the 51-pairing denominator."
+    },
+    {
+      "id": "headline-median-premium",
+      "text": "The typical polymer job pays 1.2 times what the average job in its county pays; the median premium is 1.21x (H1, hero card, over-time lede).",
+      "source": "median of vs_local_all across disclosed 2025 cells",
+      "assert": "abs((lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_local_all'] for r in D['latest_rows'] if r.get('vs_local_all')]) - 1.208) <= 0.007",
+      "actual": "(lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_local_all'] for r in D['latest_rows'] if r.get('vs_local_all')])",
+      "falsified_if": "The median moves outside 1.201-1.215, so the hand-typed '1.2 times' and '1.21x' no longer round from the data."
+    },
+    {
+      "id": "below-all-products",
+      "text": "All eleven pairings below the local average make plastics or rubber products (standfirst 'one side of the house', chart-1 bracket, split band).",
+      "source": "vs_local_all <= 1 cells, 2025",
+      "assert": "(lambda b: len(b) == 11 and all(r['naics'] in ('326','3261','3262') for r in b))([r for r in D['latest_rows'] if r.get('vs_local_all') and r['vs_local_all'] <= 1])",
+      "actual": "sorted((r['name'], r['naics']) for r in D['latest_rows'] if r.get('vs_local_all') and r['vs_local_all'] <= 1)",
+      "falsified_if": "Any chemistry-side cell (325, 3252, 3255) drops below 1.0x, or the below count leaves 11."
+    },
+    {
+      "id": "top11-all-chemistry",
+      "text": "The eleven largest premiums are all chemistry-side: chemicals, resin and paint (chart-1 bracket, mobile header annotation).",
+      "source": "vs_local_all rank, 2025",
+      "assert": "all(r['naics'] in ('325','3252','3255') for r in sorted([r for r in D['latest_rows'] if r.get('vs_local_all')], key=lambda r: -r['vs_local_all'])[:11])",
+      "actual": "[(r['name'], r['naics']) for r in sorted([r for r in D['latest_rows'] if r.get('vs_local_all')], key=lambda r: -r['vs_local_all'])[:11]]",
+      "falsified_if": "A plastics or rubber cell enters the top eleven premiums."
+    },
+    {
+      "id": "chem-side-median",
+      "text": "Chemistry-side pairings run a median 1.35x their county's average, and every one of the 23 clears it (split-band lede and stat).",
+      "source": "NAICS 325, 3252, 3255 cells, 2025",
+      "assert": "(lambda c: len(c) == 23 and all(v > 1 for v in c) and abs((lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))(c) - 1.347) <= 0.004)([r['vs_local_all'] for r in D['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('325','3252','3255')])",
+      "actual": "(lambda c: (len(c), min(c), (lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))(c)))([r['vs_local_all'] for r in D['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('325','3252','3255')])",
+      "falsified_if": "The chemistry-side median leaves 1.343-1.351 (no longer rounds to 1.35), any chemistry cell falls to or below 1.0x, or the count leaves 23."
+    },
+    {
+      "id": "products-side-median",
+      "text": "Plastics-and-rubber pairings run a median 1.01x, with 17 of 28 above (split-band lede and stat).",
+      "source": "NAICS 326, 3261, 3262 cells, 2025",
+      "assert": "(lambda c: len(c) == 28 and len([v for v in c if v > 1]) == 17 and abs((lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))(c) - 1.014) <= 0.004)([r['vs_local_all'] for r in D['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('326','3261','3262')])",
+      "actual": "(lambda c: (len(c), len([v for v in c if v > 1]), (lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))(c)))([r['vs_local_all'] for r in D['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('326','3261','3262')])",
+      "falsified_if": "The products-side median leaves 1.010-1.018 (no longer rounds to 1.01), or the 17-of-28 tally changes."
+    },
+    {
+      "id": "employment-share-above",
+      "text": "78% of the jobs sit in a pairing that pays above the county average, counted once at each county's finest disclosed level (hero card).",
+      "source": "emp-weighted share over deduplicated cells (child level preferred to its parent group)",
+      "assert": "0.770 <= (lambda R: (lambda dd: sum(r['emp'] for r in dd if r['vs_local_all']>1)/sum(r['emp'] for r in dd))([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')]) <= 0.785",
+      "actual": "(lambda R: (lambda dd: sum(r['emp'] for r in dd if r['vs_local_all']>1)/sum(r['emp'] for r in dd))([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
+      "falsified_if": "The deduplicated employment-weighted share leaves 77.0-78.5%, so the '78%' card no longer rounds from the data."
+    },
+    {
+      "id": "dedup-count",
+      "text": "Counted once at each county's finest disclosed level, 27 of 35 pairings pay above the county average - the same roughly three-in-four share (chart-1 source line). This is the overlap accounting: the data ship industry groups 325 and 326 alongside their sub-industries, so a county can appear at both levels.",
+      "source": "deduplication rule: keep a group row only where no child of that group is disclosed in the county",
+      "assert": "(lambda R: (lambda dd: len([r for r in dd if r['vs_local_all']>1]) == 27 and len(dd) == 35)([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
+      "actual": "(lambda R: (lambda dd: (len([r for r in dd if r['vs_local_all']>1]), len(dd)))([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
+      "falsified_if": "Disclosure changes move the deduplicated tally off 27 of 35."
+    },
+    {
+      "id": "possible-pairings",
+      "text": "51 of 72 possible pairings are disclosed (chart-1 source line): 6 tracked industries x 12 footprint counties.",
+      "source": "distinct NAICS in latest_rows x distinct counties",
+      "assert": "len(set(r['naics'] for r in D['latest_rows'])) * len(set(r['name'] for r in D['latest_rows'])) == 72",
+      "actual": "(len(set(r['naics'] for r in D['latest_rows'])), len(set(r['name'] for r in D['latest_rows'])))",
+      "falsified_if": "The tracked industry list or the county footprint changes size. (The previous page said '84 possible' - 6 industries x 12 counties is 72; corrected in this revision.)"
+    },
+    {
+      "id": "vs-us-counterweight",
+      "text": "44 of the 51 pairings pay below what the same industry averages across the United States; the median sits at 0.88x (counterweight lede, closer).",
+      "source": "vs_us: county weekly wage / same-industry US average",
+      "assert": "len([r for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us') and r['vs_us'] < 1]) == 44 and abs((lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_us'] for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us')]) - 0.881) <= 0.004",
+      "actual": "(len([r for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us') and r['vs_us'] < 1]), (lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_us'] for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us')]))",
+      "falsified_if": "The below-US count leaves 44 or the median leaves 0.877-0.885 (no longer rounds to 0.88)."
+    },
+    {
+      "id": "quadrants",
+      "text": "33 pairings beat their town while trailing their industry; 7 beat both; 11 trail both; none trail the town while beating the industry (scatter title and quadrant annotations).",
+      "source": "joint sign of vs_local_all-1 and vs_us-1, 2025",
+      "assert": "(lambda R: len([r for r in R if r['vs_local_all']>1 and r['vs_us']<=1])==33 and len([r for r in R if r['vs_local_all']>1 and r['vs_us']>1])==7 and len([r for r in R if r['vs_local_all']<=1 and r['vs_us']<=1])==11 and len([r for r in R if r['vs_local_all']<=1 and r['vs_us']>1])==0)([r for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us')])",
+      "actual": "(lambda R: (len([r for r in R if r['vs_local_all']>1 and r['vs_us']<=1]), len([r for r in R if r['vs_local_all']>1 and r['vs_us']>1]), len([r for r in R if r['vs_local_all']<=1 and r['vs_us']<=1]), len([r for r in R if r['vs_local_all']<=1 and r['vs_us']>1])))([r for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us')])",
+      "falsified_if": "Any quadrant count moves off 33 / 7 / 11 / 0."
+    },
+    {
+      "id": "trend-held",
+      "text": "The median premium has stayed between 1.12x and 1.25x since 2015, ending at 1.21x against 1.20x at the start; the low is 1.12x in 2023 (over-time lede and dip annotation).",
+      "source": "per-year median of vs_local_all across all disclosed cells",
+      "assert": "(lambda M: min(M.values()) >= 1.115 and max(M.values()) <= 1.255 and abs(M[2015]-1.1965) <= 0.006 and abs(M[2025]-1.2078) <= 0.006 and min(M, key=M.get) == 2023)({y: (lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_local_all'] for r in D['trend'] if r.get('vs_local_all') and r['year']==y]) for y in set(r['year'] for r in D['trend'] if r.get('vs_local_all'))})",
+      "actual": "{y: round((lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_local_all'] for r in D['trend'] if r.get('vs_local_all') and r['year']==y]), 3) for y in sorted(set(r['year'] for r in D['trend'] if r.get('vs_local_all')))}",
+      "falsified_if": "Any yearly median leaves the stated 1.12-1.25 band, the endpoints stop rounding to 1.20 and 1.21, or the minimum year moves off 2023 - each would change the 'held, not eroding' calibration."
+    },
+    {
+      "id": "trend-cells-range",
+      "text": "Between 48 and 58 pairings are disclosed in a given year (trend source line).",
+      "source": "per-year cell counts",
+      "assert": "(lambda C: min(C) == 48 and max(C) == 58)([len([r for r in D['trend'] if r.get('vs_local_all') and r['year']==y]) for y in set(r['year'] for r in D['trend'] if r.get('vs_local_all'))])",
+      "actual": "sorted((y, len([r for r in D['trend'] if r.get('vs_local_all') and r['year']==y])) for y in set(r['year'] for r in D['trend'] if r.get('vs_local_all')))",
+      "falsified_if": "A revision changes the yearly disclosure counts outside 48-58."
+    },
+    {
+      "id": "human-lake-chem",
+      "text": "A Lake County chemical-manufacturing job averages $2,474 a week - about $129,000 a year - in a county where the average job pays about $62,000 (human-scale band; chart-1 bracket).",
+      "source": "Lake 325 cell; county average derived as weekly_wage / vs_local_all",
+      "assert": "(lambda r: abs(r['weekly_wage'] - 2474) <= 0.5 and abs(r['weekly_wage']*52 - 129000) <= 1500 and abs(r['weekly_wage']/r['vs_local_all']*52 - 62000) <= 1500)(one(r for r in D['latest_rows'] if r['name']=='Lake' and r['naics']=='325'))",
+      "actual": "(lambda r: (r['weekly_wage'], round(r['weekly_wage']*52), round(r['weekly_wage']/r['vs_local_all']*52)))(one(r for r in D['latest_rows'] if r['name']=='Lake' and r['naics']=='325'))",
+      "falsified_if": "The Lake 325 weekly wage revises off $2,474, or the annualized figures leave $129,000 / $62,000 by more than $1,500."
+    },
+    {
+      "id": "human-lake-rubber",
+      "text": "Lake County rubber-products work averages $1,028 a week, about $53,000, under the county line (human-scale band).",
+      "source": "Lake 3262 cell",
+      "assert": "(lambda r: abs(r['weekly_wage'] - 1028) <= 0.5 and r['vs_local_all'] < 1 and abs(r['weekly_wage']*52 - 53000) <= 1500)(one(r for r in D['latest_rows'] if r['name']=='Lake' and r['naics']=='3262'))",
+      "actual": "(lambda r: (r['weekly_wage'], round(r['weekly_wage']*52), r['vs_local_all']))(one(r for r in D['latest_rows'] if r['name']=='Lake' and r['naics']=='3262'))",
+      "falsified_if": "The Lake 3262 wage revises off $1,028 or crosses above the county average."
+    },
+    {
+      "id": "human-stark-rubber",
+      "text": "The lowest pairing on the page is Stark County rubber products: $853 a week, about $44,000, across 30 jobs (human-scale band; chart-1 bracket).",
+      "source": "minimum vs_local_all cell, 2025",
+      "assert": "(lambda r: r['name']=='Stark' and r['naics']=='3262' and abs(r['weekly_wage']-853) <= 0.5 and r['emp'] == 30 and abs(r['weekly_wage']*52 - 44000) <= 1500)(sorted([r for r in D['latest_rows'] if r.get('vs_local_all')], key=lambda r: r['vs_local_all'])[0])",
+      "actual": "(lambda r: (r['name'], r['naics'], r['weekly_wage'], r['emp'], round(r['weekly_wage']*52)))(sorted([r for r in D['latest_rows'] if r.get('vs_local_all')], key=lambda r: r['vs_local_all'])[0])",
+      "falsified_if": "A different cell becomes the minimum, or Stark 3262's wage or 30-job count revises."
+    },
+    {
+      "id": "median-weekly-wage",
+      "text": "The median weekly wage is $1,369 - about $71,000 a year (hero card).",
+      "source": "median of weekly_wage across disclosed 2025 cells",
+      "assert": "(lambda m: abs(m - 1369) <= 1 and abs(m*52 - 71000) <= 600)((lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['weekly_wage'] for r in D['latest_rows'] if r.get('vs_local_all')]))",
+      "actual": "(lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['weekly_wage'] for r in D['latest_rows'] if r.get('vs_local_all')])",
+      "falsified_if": "The median weekly wage leaves $1,368-1,370, so '$71,000 a year' no longer rounds from it."
+    },
+    {
+      "id": "every-county-one-above",
+      "text": "Every one of the twelve counties keeps at least one above-average pairing (default verdict sentence).",
+      "source": "per-county max of vs_local_all, 2025",
+      "assert": "(lambda R: len(set(r['name'] for r in R)) == 12 and all(any(r['vs_local_all'] > 1 for r in R if r['name'] == c) for c in set(r['name'] for r in R)))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
+      "actual": "sorted((c, max(r['vs_local_all'] for r in D['latest_rows'] if r.get('vs_local_all') and r['name']==c)) for c in set(r['name'] for r in D['latest_rows'] if r.get('vs_local_all')))",
+      "falsified_if": "A county's best pairing falls to or below 1.0x, or a county drops out of disclosure entirely."
+    },
+    {
+      "id": "page-vintage",
+      "text": "Chart titles and subtitles on the page state 2025 as the reference year (hand-typed in index.html).",
+      "source": "data meta",
+      "assert": "D['meta']['latest'] == 2025",
+      "actual": "D['meta']['latest']",
+      "falsified_if": "The data refresh to a newer latest year while the hand-typed page chrome still says 2025."
     },
     {
       "id": "wages-footprint",
@@ -15,7 +159,7 @@
       "source": "John's decision 2026-08-14",
       "assert": "D['meta']['footprint']['label'] == 'PIC-12'",
       "actual": "D['meta']['footprint']",
-      "falsified_if": "FOOTPRINT: this page uses PIC-12, matching the cluster-health dashboard. It does NOT reconcile with the vault-sourced pages, which use NEO-14 \u2014 the two share only 10 counties."
+      "falsified_if": "FOOTPRINT: this page uses PIC-12, matching the cluster-health dashboard. It does NOT reconcile with the vault-sourced pages, which use NEO-14 — the two share only 10 counties."
     }
   ]
 }
