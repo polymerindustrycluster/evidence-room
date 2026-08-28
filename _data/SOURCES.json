@@ -271,11 +271,10 @@
   ],
   "cluster-health": [
    "qcew",
-   "oews",
    "ipeds",
+   "odjfs",
    "usaspending",
-   "fred",
-   "bea_rpp"
+   "fred"
   ],
   "scorecard": [
    "usaspending",

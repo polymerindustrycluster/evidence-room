@@ -1,7 +1,7 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-08-28 14:02",
+  "generated": "2026-08-28 14:04",
   "seconds": 0.1,
   "scripts": 25,
   "outputs_on_disk": 0,
@@ -292,7 +292,6 @@
     "bea_rpp"
    ],
    "consuming_pages": [
-    "cluster-health",
     "realwage"
    ],
    "in_pipelines_md": false,
@@ -928,6 +927,7 @@
     "odjfs"
    ],
    "consuming_pages": [
+    "cluster-health",
     "occupations"
    ],
    "in_pipelines_md": false,
@@ -980,7 +980,6 @@
     "oews"
    ],
    "consuming_pages": [
-    "cluster-health",
     "occupations"
    ],
    "in_pipelines_md": false,
@@ -1392,7 +1391,6 @@
     "bea_rpp"
    ],
    "consuming_pages": [
-    "cluster-health",
     "realwage"
    ],
    "in_pipelines_md": false,
