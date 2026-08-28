@@ -1,0 +1,47 @@
+/* federal-money — page-local additions only. House anatomy (.mast/.hero/.band/.closer)
+   and the shared column system stay untouched so the layout gates keep applying. This
+   file adds: per-figure chrome, a quieter definition line in the hero, the award-recipient
+   ladder (the page's one register change), band-tint pacing, and the per-form mobile
+   re-layout override. */
+
+/* Figure chrome: every chart carries its own claim-title + how-to-read line, so the H2
+   does section work instead of doubling as the chart title (chart-craft.md). */
+.fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
+  line-height:1.3;max-width:var(--measure);color:var(--text)}
+.fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure)}
+.fig-title + .fig-sub + .chart{margin-top:16px}
+
+/* The definition sits beside the first chart, where the word is first used, at caption
+   weight: jargon translation, not part of the argument, and not a second dek. */
+.deffn{margin:16px 0 0;max-width:var(--measure);font-size:15.5px;line-height:1.5;
+  color:#4E5654}
+.deffn dfn{font-style:normal}
+.deffn b{color:var(--ink)}
+
+/* Pacing: alternate band grounds so the scroll reads as a wave, not a loop. */
+.band.tint{background:#F4F1EC}
+
+/* The award ladder — the page's register change: seven named awards at display weight,
+   which is the one place on the page where the money has a face. */
+.leads{margin:26px 0 0;max-width:var(--figure);border-top:1px solid var(--line)}
+.lead{display:flex;gap:24px;align-items:baseline;padding:14px 0;
+  border-bottom:1px solid var(--line)}
+.lead .amt{font-size:26px;font-weight:900;letter-spacing:-.02em;line-height:1;
+  color:var(--ink);font-variant-numeric:tabular-nums;min-width:104px}
+.lead .who{font-size:17px;font-weight:900;color:var(--text);min-width:210px}
+.lead .what{font-size:14.5px;color:#5A625E;flex:1}
+.lead .bar{display:block;height:5px;background:var(--ink);opacity:.28;margin:8px 0 0}
+
+@media (max-width:760px){
+  /* Every chart on this page re-lays itself out per form below 760px (horizontal rows,
+     labels above marks), so the shared sideways-scroll fallback is switched off. The
+     evidence belongs in the first paint, not behind a pan (chart-craft § mobile). */
+  .chart{overflow-x:visible;padding-bottom:0}
+  .chart svg{min-width:0}
+  .chart::after{content:none}
+  .fig-title{font-size:19px;margin-top:24px}
+  .lead{display:block;padding:13px 0}
+  .lead .amt{font-size:23px}
+  .lead .who{display:block;margin:3px 0 0}
+  .lead .what{display:block;margin:2px 0 0}
+}
