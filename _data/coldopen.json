@@ -15,7 +15,8 @@
     "threshold nobody meets. Lower them as pages are fixed."
   ],
   "limit": 900,
-  "fixed": ["wages", "accountability", "scorecard", "funding-map", "location-quotient"],
+  "fixed": ["wages", "accountability", "scorecard", "funding-map", "location-quotient",
+    "realwage"],
   "ceilings": {
     "churn": 1725,
     "cluster-health": 1145,
@@ -25,7 +26,6 @@
     "laborshed": 1542,
     "occupations": 1668,
     "peers": 1408,
-    "realwage": 1974,
     "revisions": 1417,
     "timeline": 1385
   }

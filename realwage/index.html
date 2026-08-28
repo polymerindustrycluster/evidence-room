@@ -29,6 +29,19 @@
     <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data: the federal census of jobs and pay
       (BLS QCEW) and metro price levels (BEA Regional Price Parities) &middot;
       August&nbsp;2026</p>
+    <!-- THE COLD OPEN. This page opened on 1,974px of headline, standfirst, byline and
+         stat cards before its first mark: two full screens of reading before a reader met
+         any evidence. The stat cards are not the problem and have not moved. This strip is
+         the headline claim drawn, the same 56 metros ticked twice, once by the wage on the
+         paycheck and once by what that wage buys, with the middle metro of each ranking as
+         the line that separates ahead from behind. It is deliberately a POORER view than
+         the slope chart below: no names, no rank change per metro, no picked rival, no
+         table. Its job is to show that Akron crosses the middle and hand the reader on.
+         Guarded by tools/coldopen.mjs. -->
+    <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
+      id="open-t">Each of the 56 polymer metros drawn as one tick, twice: once by the wage
+      printed on the paycheck and once by what that wage buys. Akron sits below the middle
+      metro on the printed number and above it once local prices are counted.</title></svg></div>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>

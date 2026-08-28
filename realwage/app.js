@@ -604,11 +604,178 @@ document.getElementById("closersub").innerHTML =
    carry: ${cheaper} metros are cheaper than this one, so PIC should retire the word
    “cheap” and argue the checkable version instead.`;
 
+/* --------------------------------------------------------- 0. the cold open */
+/* The hero strip: the same 56 metros ticked twice, once by the wage on the paycheck and
+   once by what that wage buys, against the middle metro of each ranking. That middle is
+   the reference the page's whole argument turns on, so it is the line drawn, and it is
+   labelled by what it means rather than by its value. Every number in here is derived from
+   D.big at draw time with the same median convention as the rest of the page (sorted,
+   floor(n/2)), so a revision to realwage.json moves the marks and their labels together.
+
+   SIZED IN REAL CSS PIXELS. A viewBox authored at some fixed unit count and squeezed into
+   a narrower column silently shrinks its own type: 678 units in a 350px phone column
+   paints a 15-unit label at 7.7px, well under the 12px floor, while every gate that reads
+   the markup says it is fine. Here the viewBox width IS the measured width, so the scale
+   is 1 and a 15-unit label paints at 15px at every width from 280 to 720 — which is the
+   real range this column takes, because below 760px the shared sheet collapses the
+   measure to the full wrap and the strip gets WIDER, not narrower.
+
+   THERE IS NO BREAKPOINT IN HERE. Every reflow is measured: the two reading lines wrap to
+   the column with getComputedTextLength, the reference label drops to a line of its own
+   when it cannot clear the row title, each subject label is clamped inside the box, and
+   the dollar ticks thin out when their strings would touch. A hard-coded breakpoint is a
+   guess about a string that has not been measured.
+
+   COLOR. The hero ground is --ink #0C6473 and this page's chart inks were mixed for the
+   light bands below it: CAT[1] orange, the Akron accent, measures 1.65:1 there and GRAY
+   1.9:1, both far under the 3:1 floor for a mark. So the accent is lightened to #FFD09A
+   (4.78:1, which also clears 4.5:1 for text), the field ticks are #A3C9CF (3.83:1, marks
+   only), the reference and the secondary reading take #C6E2E6 (5.0:1, the standfirst's own
+   ink) and the takeaway line is white (6.8:1). */
+function drawOpen() {
+  const svg = document.getElementById("open");
+  if (!svg) return;
+  const W = Math.round(svg.getBoundingClientRect().width);
+  if (!W) return;                       // not laid out yet; the resize pass will catch it
+
+  /* Keep the <title> and drop the previous render. This runs again on every width change,
+     so appending would stack two strips in one box, and a naive innerHTML wipe would take
+     the accessible title with it. Keep the first ELEMENT child, not the first childNode:
+     with indented markup that slot holds whitespace and the title goes anyway. */
+  let kept = 0;
+  for (const n of [...svg.childNodes]) {
+    if (n.nodeType === 1 && kept < 1) { kept++; continue; }
+    svg.removeChild(n);
+  }
+
+  const WHITE = "#fff", KEY = "#C6E2E6", FIELD = "#A3C9CF", MARK = "#FFD09A";
+  const F = {"font-size": 15, "font-weight": 700};
+  const put = (s, a) => txt(svg, s, {...F, ...a});
+  /* getComputedTextLength reports USER units, and the viewBox is set to the pixel width
+     before anything is measured, so a user unit is a CSS pixel and the gaps below are in
+     the same currency as the layout. */
+  const len = s => { const n = put(s, {x: 0, y: -99}); const v = n.getComputedTextLength();
+    svg.removeChild(n); return v; };
+  const wrapTo = (s, max) => {
+    const out = []; let line = "";
+    for (const word of s.split(" ")) {
+      const t = line ? line + " " + word : word;
+      if (line && len(t) > max) { out.push(line); line = word; } else line = t;
+    }
+    return line ? out.concat(line) : out;
+  };
+
+  const m = {l: 2, r: 2};
+  const w = W - m.l - m.r;
+  /* One shared dollar scale for both rows, because both rows ARE dollars a week: the
+     printed wage and the same wage restated at national prices. Domain from the data,
+     rounded out to the next $50 so no tick sits on top of an extreme. */
+  const vals = B.flatMap(r => [r.nominal, r.real]);
+  const lo = Math.floor(Math.min(...vals) / 50) * 50;
+  const hi = Math.ceil(Math.max(...vals) / 50) * 50;
+  const X = v => m.l + (v - lo) / (hi - lo) * w;
+  svg.setAttribute("viewBox", `0 0 ${W} 240`);   // provisional; the height is known at the end
+
+  let y = 15;
+  /* The takeaway, with a verb, and the reading under it. A ratio, an index or a rank would
+     need its direction spelled out; dollars a week still need to be told which way is good,
+     because nothing about a tick strip says so. */
+  wrapTo(`Akron: below the middle metro on paper, above it once local prices count.`, w)
+    .forEach(s => { put(s, {x: m.l, y, fill: WHITE}); y += 19; });
+  y += 3;
+  wrapTo(`One tick per metro. Further right is more money a week: better for a worker.`, w)
+    .forEach(s => { put(s, {x: m.l, y, fill: KEY}); y += 19; });
+
+  const REF = "the middle metro";
+  const rows = [
+    {title: "On paper", val: r => r.nominal, ak: AK.nominal, rank: AK.big_rank_nominal},
+    {title: "What it buys", val: r => r.real, ak: AK.real, rank: AK.big_rank_real}
+  ];
+  rows.forEach(row => {
+    const mx = X(med(B.map(row.val))), ax = X(row.ak);
+    const tw = len(row.title), rw = len(REF);
+    /* The reference label leans AWAY from Akron's mark. The two sit within 30px of each
+       other on this scale, which is the finding and also the problem: left-anchored in both
+       rows, the second row's label began left of Akron's tick and read as though it named
+       it. Which side is free is a question about the data, so it is asked of the data.
+
+       WHETHER IT THEN CLEARS THE ROW TITLE IS A QUESTION ABOUT RENDERED STRINGS, NOT ABOUT
+       THE VIEWPORT, and this is where that lesson was paid for again. Leaning the second
+       row's label left puts its END near the middle of the column while the row title's
+       start is pinned to the margin, so the two meet at some widths and not others: with
+       this guard removed, "What it buys" and "the middle metro" overlap by 89px at a 390px
+       viewport and by 20px at 800px, and are CLEAN at 320 and at 1440 — the two widths
+       anyone would think to test. The band is doubled because the shared sheet collapses
+       the measure to the full wrap below 760px, so this column gets WIDER as the viewport
+       narrows past that point and the collision zone reopens on the other side of it. So
+       the strings are measured and the reference drops to a line of its own when it cannot
+       clear. Verified by disabling this line and re-running the width sweep. */
+    let rx = ax > mx ? mx - 7 : mx + 7, anchor = ax > mx ? "end" : "start";
+    if (anchor === "start" && rx + rw > W - m.r) { rx = mx - 7; anchor = "end"; }
+    if (anchor === "end" && rx - rw < m.l) { rx = mx + 7; anchor = "start"; }
+    const own = (anchor === "start" ? rx : rx - rw) < m.l + tw + 14;
+    y += 14;
+    put(row.title, {x: m.l, y, fill: KEY});
+    if (own) y += 19;      // the reference drops UNDER the title, staying next to its band
+    put(REF, {x: rx, y, fill: KEY, "text-anchor": anchor});
+
+    const refY = y + 5;                        // just under the reference label's baseline
+    const top = y + 8, BH = 26, foot = top + BH + 5;
+    // one tick per metro: the distribution as it is, not smoothed into a curve
+    B.forEach(r => el("line", {x1: X(row.val(r)), y1: top + 8, x2: X(row.val(r)), y2: top + BH,
+      stroke: FIELD, "stroke-width": 1.4, "stroke-opacity": .85}, svg));
+    /* The reference runs the whole way from its own label down through the band. Drawn only
+       across the band it was one more pale tick inside the densest part of the field, which
+       is exactly where the middle metro is: the first render put a dot and a dash there and
+       neither the desktop nor the phone read as a rule. */
+    el("line", {x1: mx, y1: refY, x2: mx, y2: top + BH, stroke: KEY, "stroke-width": 1.4,
+      "stroke-dasharray": "4 3"}, svg);
+    el("circle", {cx: mx, cy: refY, r: 2.6, fill: KEY}, svg);
+    // the subject, taller and heavier than either
+    el("line", {x1: ax, y1: top - 4, x2: ax, y2: foot, stroke: MARK, "stroke-width": 3.6}, svg);
+
+    /* Direct label, clamped inside the box: at the narrow end Akron sits close enough to
+       the left margin that a centred label would hang outside the viewBox. */
+    const s = `Akron ${usd(row.ak)}, ${ord(row.rank)} of ${B.length}`;
+    const sw = len(s);
+    let cx = ax, ca = "middle";
+    if (ax - sw / 2 < m.l) { cx = m.l; ca = "start"; }
+    else if (ax + sw / 2 > W - m.r) { cx = W - m.r; ca = "end"; }
+    y = foot + 17;
+    el("line", {x1: ax, y1: foot, x2: ax, y2: y - 11, stroke: MARK, "stroke-width": 1.2}, svg);
+    put(s, {x: cx, y, fill: MARK, "text-anchor": ca});
+    y += 8;
+  });
+
+  y += 6;
+  el("line", {x1: m.l, y1: y, x2: m.l + w, y2: y, stroke: "rgba(255,255,255,.32)",
+    "stroke-width": 1}, svg);
+  y += 17;
+  /* Ticks thin out by MEASUREMENT, not by breakpoint: a label is kept only if its box
+     clears the last one it was drawn beside and stays inside the frame. */
+  let right = -1e9;
+  ticks(lo, hi, 5).forEach(v => {
+    const s = usd(v), sw = len(s), x = X(v);
+    if (x - sw / 2 < Math.max(m.l, right + 10) || x + sw / 2 > W - m.r) return;
+    right = x + sw / 2;
+    put(s, {x, y, "text-anchor": "middle", fill: KEY});
+  });
+  svg.setAttribute("viewBox", `0 0 ${W} ${y + 6}`);
+}
+
 /* --------------------------------------------------------------- assemble */
-function drawAll() { drawSlope(); drawStrip(); drawScatter(); }
+function drawAll() { drawOpen(); drawSlope(); drawStrip(); drawScatter(); }
 drawAll();
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);
+/* ONE MECHANISM, ONE MORE TRIGGER. The cold open is sized in real pixels, so it has to be
+   redrawn whenever its column changes width, not only when the 760px breakpoint flips —
+   otherwise a 678-unit viewBox left in a 502px column paints its labels at 11.1px. The
+   three charts below author fixed viewBoxes, so a redraw at an unchanged breakpoint
+   reproduces exactly what is already on screen. */
+let RESIZE;
+addEventListener("resize", () => { clearTimeout(RESIZE); RESIZE = setTimeout(drawAll, 140); },
+  {passive: true});
 
 /* NO PRE-HERO FOOTPRINT BAR. This page is metro-level end to end, which is a real scope
    limit and was previously flagged in a banner injected between the masthead and the

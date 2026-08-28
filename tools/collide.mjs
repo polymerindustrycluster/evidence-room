@@ -18,13 +18,28 @@ import {readdirSync} from "fs";
 import {pathToFileURL} from "url";
 import {chromium} from "./_browser.mjs";
 
-const names = process.argv.slice(2);
+/* ONE WIDTH IS NOT A TEST, AND THE INTERIOR IS NOT INTERPOLATION. This gate checked
+   1440 only, so every collision found by hand during the 2026-08-28 rebuild was invisible
+   to it: one chart collided at 390 and was clean at 1440, one was clean at both and
+   collided at 560, and one had TWO separate collision zones (390-600 and 761-860) because
+   the shared sheet collapses --measure below 760px, which makes a column get WIDER as the
+   viewport narrows. Whether two labels overlap is a question about rendered string lengths
+   against a column width that does not vary monotonically with the viewport, so the range
+   has to be sampled. --sweep does that; the bare call keeps the fast 1440 check. */
+const SWEEP = [360, 390, 430, 480, 560, 640, 700, 768, 820, 900, 1024, 1180, 1280, 1440];
+
+const args = process.argv.slice(2);
+const sweep = args.includes("--sweep");
+const names = args.filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
+const WIDTHS = sweep ? SWEEP : [1440];
 const b = await chromium.launch();
 let bad = 0;
 for (const n of list) {
-  const p = await b.newPage({viewport: {width: 1440, height: 1000}});
+ const found = [];
+ for (const W of WIDTHS) {
+  const p = await b.newPage({viewport: {width: W, height: 1000}});
   await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
   await p.waitForTimeout(900);
   const r = await p.evaluate(() => {
@@ -95,11 +110,25 @@ for (const n of list) {
   if (r.pastAxis.length) issues.push(`${r.pastAxis.length} past-axis`);
   if (r.textOverText.length) issues.push(`${r.textOverText.length} text-collisions`);
   if (r.outside.length) issues.push(`${r.outside.length} outside-box`);
-  if (issues.length) bad++;
-  console.log(`${n.padEnd(18)} ${issues.length ? "FAIL  " + issues.join(", ") : "OK"}`);
-  [...r.pastAxis.slice(0, 2), ...r.textOverText.slice(0, 3), ...r.outside.slice(0, 2)]
-    .forEach(m => console.log("      " + m));
+  if (issues.length) found.push({W, issues,
+    detail: [...r.pastAxis.slice(0, 2), ...r.textOverText.slice(0, 3),
+             ...r.outside.slice(0, 2)]});
+  if (!sweep) {
+    console.log(`${n.padEnd(18)} ${issues.length ? "FAIL  " + issues.join(", ") : "OK"}`);
+    [...r.pastAxis.slice(0, 2), ...r.textOverText.slice(0, 3), ...r.outside.slice(0, 2)]
+      .forEach(m => console.log("      " + m));
+  }
   await p.close();
+ }
+ if (found.length) bad++;
+ if (sweep) {
+   console.log(`${n.padEnd(18)} ${found.length
+     ? `FAIL  ${found.length}/${WIDTHS.length} widths: ` +
+       found.map(f => f.W).join(", ")
+     : `OK    clean at all ${WIDTHS.length} widths`}`);
+   found.slice(0, 3).forEach(f =>
+     f.detail.slice(0, 2).forEach(m => console.log(`      @${f.W} ${m}`)));
+ }
 }
 await b.close();
 console.log(bad ? `\n${bad} artifact(s) with overlapping or out-of-frame marks`

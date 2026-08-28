@@ -15,6 +15,14 @@
 .hero .byline{margin:0 auto;max-width:var(--measure);font-size:13px;line-height:1.55;
   letter-spacing:.01em;color:#BEDCE1}
 
+/* THE COLD-OPEN STRIP, pinned to the TEXT rail. `var(--figure)` would put it 980px wide
+   and start it 151px left of the headline above it, which is the two-rail defect the house
+   has one law against. The `auto` side margins are load-bearing for the same reason the
+   byline's are: this sheet loads after the core, so a `margin:26px 0 4px` shorthand would
+   beat the core's centring rule and drop the block off the rail. */
+.hero .wrap > .hero-viz{max-width:var(--measure);margin:26px auto 4px}
+.hero-viz svg{width:100%;height:auto;display:block;overflow:visible}
+
 /* Hero overflow, moved into band 1 per page-design's ≤4-line hero lede: the nominal/real
    framing and the two definitions, at body register rather than lede register so the
    lede above them still reads as the band's opening. */
