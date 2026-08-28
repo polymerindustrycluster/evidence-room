@@ -29,6 +29,17 @@
     <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data: the Bureau of Labor
       Statistics Quarterly Census of Employment and Wages (QCEW), annual averages
       2015&ndash;2025 &middot; August&nbsp;2026</p>
+    <!-- THE COLD OPEN. This page opened on 900px of headline, standfirst and stat cards,
+         so the first chart began at 1,818px: a reader scrolled two full screens before
+         seeing a single mark. The stat cards are not the problem and have not moved. This
+         strip is the headline claim drawn, one dot per published pairing on one axis, and
+         it is the only chart on the page a reader meets before any explanation, so it
+         carries its own reading in its labels. The detailed version, by county and
+         industry, is the first band's chart. Guarded by tools/coldopen.mjs. -->
+    <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
+      id="open-t">Every published polymer-industry-and-county pairing in Northeast Ohio,
+      2025, placed by what the work pays against the average job in that same county. Most
+      sit to the right of parity.</title></svg></div>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>

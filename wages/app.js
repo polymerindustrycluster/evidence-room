@@ -587,7 +587,94 @@ document.getElementById("closersub").innerHTML =
    recruiting pitch carries both.`;
 
 /* --------------------------------------------------------------------- assemble */
-function drawAll() { drawPremium(); drawScatter(); drawTrend(); }
+/* ------------------------------------------------------- the cold open, in the hero
+   One dot per published pairing on one axis: the headline claim, drawn, before any
+   explanation. Deliberately the SAME measure as the first band's chart and a poorer
+   view of it (no county, no industry, no size), because its only job is to put the
+   shape of the distribution in the first screen and hand the reader to the detail.
+
+   It re-lays out at the breakpoint through drawAll, like every other chart here. The
+   phone variant is NOT the desktop one scaled: at 700 units squeezed into a 350px
+   column every label rendered at 7.5px, half the 12px floor. The narrow viewBox
+   restores a ~1:1 scale, and the two readings stack instead of sitting on one row. */
+function drawOpen() {
+  const M = MOBILE.matches;
+  const svg = document.getElementById("open");
+  if (svg) {
+    /* THE VIEWBOX IS SIZED TO THE TEXT RAIL, NOT THE FIGURE RAIL. Drawn at the site's
+       980px figure width this strip started 151px left of the headline above it, which
+       is the two-rail defect the house has one law against. At 678 it renders at a 0.97
+       scale, so a 15-unit label paints at 14.6 real pixels. */
+    const W = M ? 358 : 700, H = M ? 232 : 196;
+    const m = M ? {t: 84, r: 10, b: 40, l: 10} : {t: 52, r: 16, b: 42, l: 16};
+    const w = W - m.l - m.r;
+    const LO = 0.7, HI = 2.2;
+    const X = v => m.l + (Math.min(Math.max(v, LO), HI) - LO) / (HI - LO) * w;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    /* Keep the <title> and drop the previous render: drawAll re-runs this at the
+       breakpoint, and appending would stack two swarms in one box. */
+    [...svg.childNodes].slice(1).forEach(n => svg.removeChild(n));
+    const NS = "http://www.w3.org/2000/svg";
+    const mk = (t, a, p) => { const n = document.createElementNS(NS, t);
+      for (const k in a) { if (a[k] == null) continue;
+        if (k === "fill" || k === "stroke") n.style[k] = a[k]; else n.setAttribute(k, a[k]); }
+      (p || svg).appendChild(n); return n; };
+    const tx = (s, a) => { const n = mk("text", a); n.textContent = s; return n; };
+
+    const CHEM = "#6FD9EC", PROD = "#F4A45E", LIME = "#B8D637";
+    const base = m.t + (H - m.t - m.b) - 6, R = M ? 4 : 5;
+
+    /* Axis ticks skip 1.0: parity gets the lime rule and its own label, and a grey tick
+       under it would print the same number twice in two inks. */
+    (M ? [1.2, 1.6, 2.0] : [0.8, 1.2, 1.6, 2.0]).forEach(v => {
+      tx(v.toFixed(1) + "×", {x: X(v), y: H - 12, "text-anchor": "middle",
+        "font-size": 15, "font-weight": 700, fill: "rgba(255,255,255,.62)"});
+    });
+    mk("line", {x1: m.l, y1: base + 11, x2: m.l + w, y2: base + 11,
+      stroke: "rgba(255,255,255,.28)", "stroke-width": 1});
+
+    /* parity, the one line the whole page argues about. It starts BELOW the legend row:
+       drawn from the top it ran straight through the legend's second chip, because
+       1.0× lands at x≈150 and that is where a left-aligned legend puts it. */
+    mk("line", {x1: X(1), y1: M ? m.t + 12 : m.t - 2, x2: X(1), y2: base + 11,
+      stroke: LIME, "stroke-width": 2});
+    tx("1.0×", {x: X(1) - 7, y: H - 12, "text-anchor": "end",
+      "font-size": 15, "font-weight": 700, fill: LIME});
+
+    /* beeswarm: stack rather than overlap, so 51 dots stay countable */
+    const placed = [];
+    rows.map(r => ({x: X(r.vs_local_all), fam: FAM(r)}))
+        .sort((a, b) => a.x - b.x)
+        .forEach(p => {
+          let lvl = 0;
+          while (placed.some(q => q.lvl === lvl && Math.abs(q.x - p.x) < R * 2 + 1)) lvl++;
+          placed.push({x: p.x, lvl});
+          mk("circle", {cx: p.x, cy: base - lvl * (R * 2 + 1.5), r: R,
+            fill: p.fam === "chem" ? CHEM : PROD, "fill-opacity": .95});
+        });
+
+    /* The reading sits ABOVE the swarm on two rows, clear of the axis: the first draft
+       put "11 pay less" on the tick row and it printed straight through the 1.0× label. */
+    tx(`${above} of ${rows.length} pay more`, M ? {x: m.l, y: 18,
+        "font-size": 15, "font-weight": 700, fill: "#fff"}
+      : {x: m.l + w, y: 18, "text-anchor": "end",
+         "font-size": 15, "font-weight": 700, fill: "#fff"});
+    tx(`${belowN} pay less than their county`, {x: m.l, y: M ? 40 : 18,
+      "font-size": 15, "font-weight": 700, fill: "rgba(255,255,255,.8)"});
+    /* Legend clears the parity rule rather than starting at the left margin; on the phone
+       it takes its own two rows, because one row of both keys does not fit 358 units. */
+    const lx = M ? m.l : X(1) + 26, ly = M ? 62 : 34;
+    mk("circle", {cx: lx, cy: ly, r: 5, fill: CHEM});
+    tx("chemistry side", {x: lx + 11, y: ly + 5, "font-size": 15, "font-weight": 700,
+      fill: CHEM});
+    mk("circle", {cx: M ? lx : lx + 128, cy: M ? ly + 22 : ly, r: 5, fill: PROD});
+    tx("plastics and rubber", {x: (M ? lx : lx + 128) + 11, y: (M ? ly + 22 : ly) + 5,
+      "font-size": 15, "font-weight": 700, fill: PROD});
+  }
+
+}
+
+function drawAll() { drawOpen(); drawPremium(); drawScatter(); drawTrend(); }
 drawAll();
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);

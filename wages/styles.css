@@ -71,3 +71,10 @@
   .statgrid{gap:28px}
   .statv .n{font-size:44px}
 }
+
+/* THE COLD-OPEN STRIP. Sits on the figure rail like every other chart, with the `auto`
+   side margins load-bearing for the same reason the byline's are: this sheet loads after
+   the core, so a `margin:26px 0 0` shorthand would beat the core's centring rule and drop
+   the block 151px outboard of the rail. */
+.hero .wrap > .hero-viz{max-width:var(--measure);margin:26px auto 4px}
+.hero-viz svg{width:100%;height:auto;display:block;overflow:visible}

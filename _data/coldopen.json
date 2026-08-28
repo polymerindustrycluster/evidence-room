@@ -1,0 +1,35 @@
+{
+  "_readme": [
+    "Where each page's first chart begins, in CSS pixels from the top of the document at",
+    "1440x900. The house rule is that a reader meets evidence in the first screen; a page",
+    "that opens on 1,800px of prose has broken it, and until 2026-08-28 fifteen of sixteen",
+    "pages had, with no check looking.",
+    "",
+    "This file is a RATCHET, not a target. A page listed here may only improve: the gate",
+    "fails if its first chart moves further down than the number recorded. Pages fixed to",
+    "the rule carry the LIMIT (900) rather than their measured value, so they cannot drift",
+    "back. A page NOT listed here must clear 900 outright, which is what makes this safe",
+    "for new pages.",
+    "",
+    "The unfixed numbers are debts, recorded honestly rather than hidden behind a",
+    "threshold nobody meets. Lower them as pages are fixed."
+  ],
+  "limit": 900,
+  "fixed": ["wages", "accountability"],
+  "ceilings": {
+    "churn": 1725,
+    "cluster-health": 1145,
+    "cost-scissors": 1886,
+    "federal-money": 1700,
+    "funding-map": 2389,
+    "index": 968,
+    "laborshed": 1542,
+    "location-quotient": 2187,
+    "occupations": 1668,
+    "peers": 1408,
+    "realwage": 1974,
+    "revisions": 1417,
+    "scorecard": 5677,
+    "timeline": 1385
+  }
+}
