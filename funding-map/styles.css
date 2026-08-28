@@ -105,7 +105,7 @@ a:hover { color: var(--teal-900); }
 .masthead {
   background: var(--teal-900);
   color: #fff;
-  padding: clamp(40px, 7vw, 92px) 0 clamp(36px, 6vw, 72px);
+  padding: clamp(40px, 7vw, 88px) 0 clamp(28px, 4.4vw, 52px);
   position: relative;
   overflow: hidden;
 }
@@ -122,7 +122,7 @@ a:hover { color: var(--teal-900); }
   /* 12px floor, not 11 — the mobile textsize gate measured this at 11.3px rendered */
   font-size: clamp(12px, 2.9vw, 13px);
   font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--lime-sm); margin-bottom: 18px;
+  color: var(--lime-sm); margin-bottom: 14px;
 }
 .masthead h1 {
   font-size: clamp(30px, 4.6vw, 58px);
@@ -139,8 +139,16 @@ a:hover { color: var(--teal-900); }
   max-width: var(--measure);
 }
 
+/* Genre furniture. The provenance sentence in the methods box is not a byline: a reader
+   deciding whether to trust the page looks for who made it and when, above the fold. */
+.byline {
+  margin-top: 13px; max-width: var(--measure);
+  font-size: 13px; line-height: 1.55; color: rgba(255,255,255,.80);
+}
+.byline time { color: rgba(255,255,255,.92); }
+
 .topline {
-  margin-top: clamp(32px, 5vw, 56px);
+  margin-top: clamp(26px, 3.6vw, 40px);
   display: grid;
   gap: clamp(24px, 3.4vw, 44px);
   grid-template-columns: minmax(0, 1fr);
@@ -177,6 +185,14 @@ a:hover { color: var(--teal-900); }
 .ts--eda  { --src-color: #66D7DE; }
 .ts--ohio { --src-color: var(--lime); }
 .ts--apex { --src-color: #FF9A78; }
+/* The fourth cell of the 2x2 was empty. It holds the page's complication instead: the
+   money with no name on it yet. Dashed, unfilled, so it never reads as a fourth award. */
+.ts--open {
+  background: transparent;
+  border-style: dashed; border-left-style: dashed;
+  --src-color: rgba(255,255,255,.5);
+}
+.ts--open .ts-amount { color: rgba(255,255,255,.88); }
 
 .ts-amount {
   font-family: var(--font-display);
@@ -407,8 +423,24 @@ a:hover { color: var(--teal-900); }
 
 /* ---------------------------------------------------------------- footnotes */
 
-.fnotes { margin-top: 26px; display: grid; gap: 10px; }
-.fn { font-size: 13.5px; line-height: 1.55; color: var(--muted); max-width: var(--figure); }
+.fn { margin-top: 26px; font-size: 13.5px; line-height: 1.55; color: var(--muted); max-width: var(--measure); }
+.fig-src + .disclose { margin-top: 14px; }
+
+/* PROGRESSIVE DISCLOSURE. Everything in here is apparatus that a reader may need and
+   should not have to wade through: it is depth, not the disclosure, because every
+   inference-affecting caveat is still visible beside the figure it qualifies. */
+.disclose { max-width: var(--measure); margin-top: 20px; }
+.disclose > summary {
+  cursor: pointer; list-style: none; display: inline-block;
+  font-size: 13.5px; font-weight: 600; color: var(--teal-700);
+}
+.disclose > summary::-webkit-details-marker { display: none; }
+.disclose > summary::before { content: "\25B8"; margin-right: 8px; font-size: .85em; }
+.disclose[open] > summary::before { content: "\25BE"; }
+.disclose > summary:hover { color: var(--teal-900); }
+.disclose-body { margin-top: 12px; padding-left: 16px; border-left: 2px solid var(--line); }
+.disclose-body p { font-size: 13.5px; line-height: 1.6; color: var(--muted); }
+.disclose-body p + p { margin-top: 9px; }
 
 /* ---------------------------------------------------------------- cards (narrow) */
 
@@ -445,6 +477,20 @@ a:hover { color: var(--teal-900); }
 
 .cards-note { font-size: 13.5px; color: var(--muted); margin: -14px 0 0; max-width: var(--measure); }
 
+/* one card for a cohort of identical awards; the names stay, the nine slivers do not */
+.card-wide { grid-column: 1 / -1; }
+.rcard--group { cursor: default; }
+.rcard--group:hover { border-color: var(--line); box-shadow: none; }
+.rcard-names { list-style: none; margin: 11px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.rname {
+  font: inherit; font-size: 13.5px; cursor: pointer;
+  background: var(--bg-alt); border: 1px solid var(--line); border-radius: 999px;
+  padding: 4px 11px; color: var(--charcoal);
+  transition: border-color var(--t-fast) ease, color var(--t-fast) ease;
+}
+.rname:hover { border-color: var(--teal-500); color: var(--teal-900); }
+.rname.is-selected { border-color: var(--teal-900); color: var(--teal-900); font-weight: 600; }
+
 .sortbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
 .sortbar-label { font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: #fff; }
@@ -465,7 +511,7 @@ a:hover { color: var(--teal-900); }
 /* ---------------------------------------------------------------- table */
 
 .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-md); background: #fff; }
-.dtable { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 780px; }
+.dtable { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 700px; }
 .dtable th, .dtable td { text-align: left; padding: 11px 16px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
 .dtable thead th {
   position: sticky; top: 0; background: var(--teal-050); color: var(--teal-900);
@@ -473,15 +519,58 @@ a:hover { color: var(--teal-900); }
   border-bottom: 1px solid var(--line); z-index: 1;
 }
 .dtable .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* zebra first, hover second — a hover that loses to the stripe is not a hover */
+.dtable tbody tr:nth-of-type(even) { background: #FAFBFA; }
 .dtable tbody tr:hover { background: var(--bg-tint); }
 .dtable tbody tr:last-child td { border-bottom: 0; }
-.dtable .t-src { font-weight: 600; color: var(--charcoal); white-space: nowrap; }
+.dtable .t-by { line-height: 1.35; }
+.dtable .t-prog { display: block; font-weight: 600; color: var(--charcoal); white-space: nowrap; }
+.dtable .t-src { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
 .dtable .t-rcp { font-weight: 600; }
+
+.table-more { margin-top: 16px; }
+.table-more .btn { font-size: 14px; padding: 8px 16px; }
 /* Same reasoning as .award-id: this column exists to be read off and copied, so it does not get
    the muted-furniture treatment. 12.5px gray -> 14px charcoal, selectable as a unit. */
 .dtable .t-id  { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 14px; color: var(--charcoal); white-space: nowrap; user-select: all; -webkit-user-select: all; }
 .dtable .t-funds { color: var(--muted); min-width: 240px; }
 .dtable tfoot td { font-weight: 700; background: var(--teal-050); color: var(--teal-900); border-top: 2px solid var(--teal-500); }
+
+/* MOBILE: one card per award, not a 700px table behind a sideways scroll.
+   At 375px the old table's first paint was "SOURCE | PROGRA" — the two constant,
+   least informative columns, clipped mid-word, with recipient and amount off-screen.
+   Recipient and amount now lead every card and nothing scrolls sideways. */
+@media (max-width: 700px) {
+  .table-scroll { overflow-x: visible; border: 0; background: none; border-radius: 0; }
+  .dtable { min-width: 0; font-size: 14.5px; display: block; }
+  .dtable thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .dtable tbody, .dtable tfoot { display: block; }
+  .dtable tbody tr, .dtable tfoot tr {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "rcp amt" "by by" "funds funds" "id id";
+    gap: 2px 14px; align-items: baseline;
+    border: 1px solid var(--line); border-radius: var(--r-md);
+    background: #fff; padding: 13px 15px; margin-bottom: 10px;
+  }
+  .dtable tbody tr:nth-of-type(even) { background: #fff; }
+  .dtable th, .dtable td { border: 0; padding: 0; }
+  .dtable .t-rcp { grid-area: rcp; font-size: 15.5px; line-height: 1.3; }
+  .dtable .num { grid-area: amt; font-size: 15.5px; font-weight: 700; color: var(--teal-900); }
+  .dtable .t-by { grid-area: by; margin-top: 7px; display: flex; flex-wrap: wrap; gap: 3px 8px; }
+  .dtable .t-prog, .dtable .t-src { display: inline; font-size: 13px; margin: 0; }
+  .dtable .t-funds { grid-area: funds; margin-top: 8px; font-size: 13.5px; line-height: 1.5; }
+  .dtable .t-id { grid-area: id; margin-top: 8px; font-size: 13px; }
+  /* an em dash under an "Award ID" label is a whole card row spent saying nothing */
+  .dtable .t-id[data-none] { display: none; }
+  .dtable .t-id::before {
+    content: attr(data-label) " "; font-family: var(--font); color: var(--muted);
+    user-select: none; -webkit-user-select: none;
+  }
+  .dtable tfoot tr { background: var(--teal-050); border-color: var(--teal-500); }
+  .dtable tfoot td:first-child { grid-area: rcp; }
+  .dtable tfoot td:nth-child(2) { grid-area: amt; }
+  .dtable tfoot td:last-child { grid-area: by; margin-top: 6px; font-weight: 400; font-size: 13px; }
+}
 
 /* ---------------------------------------------------------------- methods */
 
@@ -497,10 +586,65 @@ a:hover { color: var(--teal-900); }
 .prov--warn li { border-left-color: var(--orange); }
 .rule-note { margin-top: 20px; font-size: 13.5px; color: var(--muted); line-height: 1.55; }
 
+/* ------------------------------------------------------- sources appendix
+
+   ONE TEXT RAIL. The shared core is a CENTRED system: `.band .wrap > *` and
+   `.closer .wrap > *` set auto margins, so a block narrower than the figure sits
+   symmetrically in it. This page is not that system — every other text block on it
+   starts at the same left edge — so a centred measure-width h2 inside a figure-width
+   wrap landed ~151px right of the rail, which is exactly the stagger the audit found in
+   the appendix. Same specificity as the shared rule, later in the cascade, so it wins.
+   The widths themselves are untouched: columns.mjs still measures measure/figure. */
+.band .wrap > *, .closer .wrap > * { margin-left: 0; margin-right: 0; }
+
+.section--repro { background: var(--bg-alt); border-top: 1px solid var(--line); }
+.section--repro h2 { color: var(--teal-900); margin-bottom: 20px; }
+.section--repro .pv-repro { border-bottom: 0; padding-bottom: 0; }
+.section--repro .pv-method-note { font-size: 12.5px; color: var(--muted); }
+.section--repro .pv-src { font-size: 14px; line-height: 1.55; color: var(--charcoal); }
+.section--repro .pv-src h4 { font-size: 13.5px; color: var(--teal-900); }
+.section--repro .mono, .section--repro .pv-endpoint {
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-size: 12.9px; overflow-wrap: anywhere;
+}
+.section--repro .disclose-body { max-width: var(--figure); }
+
+/* ---------------------------------------------------------------- closer */
+
+/* The page used to end on apparatus: table, methods, footer, and then a build appendix
+   whose last words were file paths. The closer is the reader's last story impression,
+   and it sits where the house order puts it: story, methodology, closer, footer. */
+.closer { background: var(--teal-900); color: #fff; padding: clamp(48px, 6vw, 72px) 0; }
+/* margin-left LONGHAND, not just the block above: the shared `.closer .wrap > p`
+   rule is `margin:0 auto` at (0,2,1) and outranks the (0,2,0) rail override, which is
+   the same specificity trap that centred this page's appendix header. */
+.closer .wrap > p {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(23px, 2.9vw, 34px); line-height: 1.2; letter-spacing: -0.02em;
+  max-width: var(--measure); color: #fff;
+  margin-left: 0; margin-right: 0;
+}
+.closer .wrap > .sub {
+  margin: 20px 0 0; font-family: var(--font); font-weight: 400; letter-spacing: 0;
+  font-size: 16.5px; line-height: 1.6; color: rgba(255,255,255,.84);
+  max-width: var(--measure);
+}
+
 /* ---------------------------------------------------------------- footer */
 
-.foot { background: var(--teal-900); color: rgba(255,255,255,.82); padding: 34px 0; font-size: 14px; }
-.foot-note { color: rgba(255,255,255,.8); margin-top: 6px; font-size: 13px; }
+.foot { background: var(--teal-050); color: var(--charcoal); padding: 44px 0 40px; font-size: 14px;
+  border-top: 1px solid var(--line); }
+.foot-k {
+  font-size: 12.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 14px;
+}
+.foot-links { list-style: none; margin: 0 0 24px; padding: 0; display: grid; gap: 12px 32px;
+  max-width: var(--figure); grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.foot-links a { font-weight: 700; }
+.foot-links span { display: block; color: var(--muted); font-size: 13.5px; margin-top: 2px; }
+.foot-cta { max-width: var(--measure); padding-top: 20px; border-top: 1px solid var(--line); }
+.foot-cta b { color: var(--teal-900); }
+.foot-id { margin-top: 10px; font-size: 13px; color: var(--muted); max-width: var(--measure); }
 
 /* ---------------------------------------------------------------- panel */
 

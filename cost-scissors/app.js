@@ -67,6 +67,16 @@ const last = spr.at(-1);
 const sPeak = spr.reduce((a, b) => b.v > a.v ? b : a);
 const sTrough = spr.reduce((a, b) => b.v < a.v ? b : a);
 const cPeak = comp.reduce((a, b) => b.v > a.v ? b : a);
+/* The near-closure. The cushion this page is about fell to +0.7 in May 2026 and the
+   chart drew that while the prose called it "easing"; the month is now derived here so
+   the callout, the verdict and the closer all read it off the series rather than off
+   each other. `sDip` is the lowest month of the last two years, which is the window the
+   reader is looking at on the right of the chart. How thin the whole post-2022 run is
+   (three months under a point, the last of them this one) is asserted in claims.json,
+   which recomputes it from the shipped file rather than trusting this line. */
+const sDip = spr.slice(-24).reduce((a, b) => b.v < a.v ? b : a);
+/* What closed it: the resin index's own two-month move into the dip month. */
+const sDipResin = RM[sDip.date] - RM[sdates[sdates.indexOf(sDip.date) - 2]];
 const rows = S.filter(s => s.retraced !== null && s.stage !== "context")
               .sort((a, b) => b.retraced - a.retraced);
 
@@ -117,7 +127,8 @@ function verdict() {
   else v.innerHTML = `<b>Finished products:</b> the winning seat, on these two indexes.
     Your main input gave back about a third of its rise; your output gave back none and
     sits at its peak. The spread runs ${sp(last.v)} points in your favor, against
-    ${sp(sTrough.v)} at the bottom of the 2021 squeeze, and a spread is not a margin:
+    ${sp(sTrough.v)} at the bottom of the 2021 squeeze, though it came within a point of
+    closing in ${monF(sDip.date)}, and a spread is not a margin:
     labor, freight, energy and packaging are in neither series.`;
 }
 {
@@ -191,11 +202,24 @@ function drawLadderDesktop() {
 }
 
 function drawLadderMobile() {
-  const W = 375, m = {t: 46, r: 12, b: 44, l: 12}, rowH = 46, bh = 14;
+  const W = 375, m = {t: 68, r: 12, b: 44, l: 12}, rowH = 46, bh = 14;
   const H = m.t + rows.length * rowH + m.b;
   const {svg} = PV.chart("ladder", {W, H});
   const w = W - m.l - m.r, DOM = 1.08;
   const xs = v => m.l + Math.min(v, DOM) / DOM * w;
+  /* The desktop bars carry a FEEDSTOCK/RESIN/PRODUCT sublabel under every series name.
+     The mobile re-layout has no room for it, so the stage-to-colour mapping got a key
+     of its own here rather than arriving a chart later in the lines legend. */
+  {
+    let x = m.l;
+    ["feedstock", "resin", "product"].forEach(k => {
+      el("rect", {x, y: 12, width: 9, height: 9, rx: 2, fill: STAGE[k].c}, svg);
+      txt(svg, STAGE[k].n.toUpperCase(), {x: x + 13, y: 20, class: "pv-labq"});
+      /* 9.6 user units per uppercase Lato character at this size, measured off the
+         render: 7.4 is the mixed-case figure and it ran the three words together. */
+      x += 22 + STAGE[k].n.length * 9.6;
+    });
+  }
   el("line", {x1: xs(1), y1: m.t - 4, x2: xs(1), y2: H - m.b + 4,
     stroke: "var(--hover)", "stroke-width": 1.2, "stroke-dasharray": "4 3"}, svg);
   txt(svg, "100% = full rise given back", {x: xs(1), y: m.t - 10,
@@ -226,20 +250,32 @@ function drawLadderMobile() {
 /* ------------------------------------------------------------- 2. the lines */
 const lineSeries = S.filter(s => s.stage !== "context");
 const STORY = new Set([gas.label, resinMfg.label, prodMfg.label]);
+/* A WEIGHT LADDER, not three hues. The stage colours are near-isoluminant by
+   construction — product teal and resin orange differ by 0.008 in relative luminance —
+   so in grayscale, in print, or for a reader with deuteranopia the three story lines
+   collapse into one gray and the subtitle's "one series per chain link" stops working.
+   Each link now also gets its own stroke width, ordered down the chain, and every end
+   label carries a rule drawn at its series' own weight. Hue stays the primary read for
+   readers who have it; weight is the read that survives when hue does not. */
+const STORYWD = {product: 3.4, resin: 2.2, feedstock: 1.9};
 function lineStyle(s) {
   if (SEL) return s.stage === SEL
-    ? {stroke: STAGE[s.stage].c, wd: 2.8, op: 1, lab: STAGE[s.stage].c}
-    : {stroke: GRAY, wd: 1.4, op: .5, lab: "var(--pv-muted)"};
+    ? {stroke: STAGE[s.stage].c, wd: STORYWD[s.stage] || 2.8, op: 1,
+       lab: STAGE[s.stage].c}
+    : {stroke: GRAY, wd: 1.1, op: .5, lab: "var(--pv-muted)"};
   return STORY.has(s.label)
-    ? {stroke: STAGE[s.stage].c, wd: 2.6, op: .95, lab: STAGE[s.stage].c}
-    : {stroke: GRAY, wd: 1.6, op: .75, lab: "var(--pv-muted)"};
+    ? {stroke: STAGE[s.stage].c, wd: STORYWD[s.stage], op: .95, lab: STAGE[s.stage].c}
+    : {stroke: GRAY, wd: 1.1, op: .75, lab: "var(--pv-muted)"};
 }
 
 function drawLines() { MOBILE.matches ? drawLinesMobile() : drawLinesDesktop(); }
 
 function drawLinesDesktop() {
+  /* r carries the end-label column: 14 units of stroke swatch, 6 of gap, and the widest
+     hand-shortened series name. Widened by exactly the swatch so the labels start where
+     they always did and nothing runs past the figure's right edge. */
   const {svg, m, w, h} = PV.chart("lines", {W: 1100, H: 460,
-    m: {t: 46, r: 232, b: 62, l: 40}});
+    m: {t: 46, r: 246, b: 62, l: 40}});
   const all = lineSeries.flatMap(s => s.points);
   const dates = [...new Set(all.map(p => p.date))].sort();
   const maxV = Math.max(...all.map(p => p.index)) * 1.04;
@@ -266,8 +302,13 @@ function drawLinesDesktop() {
   });
   lineSeries.forEach(s => {
     const st = lineStyle(s), e = ends.find(x => x.s === s);
+    /* A rule at the series' own stroke weight, in front of its end label: the label is
+       then bound to its line by thickness as well as by hue, which is the binding that
+       survives grayscale. */
+    el("line", {x1: m.l + w + 4, y1: e.y, x2: m.l + w + 18, y2: e.y, stroke: st.stroke,
+      "stroke-width": st.wd, opacity: st.op}, svg);
     txt(svg, `${s.points.at(-1).index.toFixed(0)} ${SHORT[s.label]}`,
-      {x: m.l + w + 10, y: e.y + 4, class: "pv-labq", fill: st.lab});
+      {x: m.l + w + 24, y: e.y + 4, class: "pv-labq", fill: st.lab});
   });
   /* Annotations last, so no series paints over them (house smell list). */
   plated(svg, "100 = the January 2019 level", {x: m.l + 8, y: ys(100) - 8,
@@ -279,15 +320,31 @@ function drawLinesDesktop() {
   plated(svg, `${mon3(gp.date)}: gas triples`, {x: xs(gp.date) - 10,
     y: ys(gp.index) + 4, "text-anchor": "end", class: "pv-lab",
     fill: STAGE.feedstock.c}, 8);
+  /* The product callout sits ON its line, not 70px above it with four gray context
+     series passing between the words and their target. It is bound by position first,
+     a short leader second, and colour only third. */
   {
     const ad = "2024-03-01", ay = ys(PM[ad]);
-    const bx = xs(ad), by = ys(195);
-    el("line", {x1: bx, y1: by + 8, x2: bx, y2: ay - 5, stroke: "var(--pv-axis)",
-      "stroke-width": 1}, svg);
+    const bx = xs(ad), by = ay - 34;
+    el("line", {x1: bx, y1: by + 6, x2: bx, y2: ay - 4, stroke: STAGE.product.c,
+      "stroke-width": 1.2}, svg);
     plated(svg, "products plateau near +40%", {x: bx, y: by - 12,
       "text-anchor": "middle", class: "pv-lab", fill: STAGE.product.c}, 8);
-    plated(svg, "and never come back down", {x: bx, y: by + 3,
-      "text-anchor": "middle", class: "pv-labq"}, 7);
+    plated(svg, "and never come back down", {x: bx, y: by + 1,
+      "text-anchor": "middle", class: "pv-labq"}, 7.5);
+  }
+  /* The winter spike. It is the second-tallest stroke on the chart after August 2022,
+     and a reader tracing the round-trip claim will stop at it, so it is named at
+     CONTEXT weight: it is a seasonal excursion, not a second regime. */
+  {
+    const wd = "2026-01-01", wp = gas.points.find(p => p.date === wd);
+    const gone = gas.points.filter(p => p.date > wd).find(p => p.index < 100);
+    el("circle", {cx: xs(wd), cy: ys(wp.index), r: 3.5, fill: "var(--paper)",
+      stroke: "var(--pv-muted)", "stroke-width": 1.5}, svg);
+    plated(svg, `${mon3(wd)}: winter spike,`, {x: xs(wd) - 9, y: ys(wp.index) - 4,
+      "text-anchor": "end", class: "pv-labq"}, 7.4);
+    plated(svg, `back under 100 by ${mon3(gone.date)}`, {x: xs(wd) - 9,
+      y: ys(wp.index) + 10, "text-anchor": "end", class: "pv-labq"}, 7.4);
   }
   dates.forEach(d => hoverable(el("rect", {x: xs(d) - w / dates.length / 2, y: m.t,
     width: Math.max(2, w / dates.length), height: h, fill: "transparent"}, svg),
@@ -317,8 +374,10 @@ function drawLinesMobile() {
   ord.forEach(s => {
     const st = lineStyle(s);
     el("path", {d: "M" + s.points.map(p => `${xs(p.date)},${ys(p.index)}`).join("L"),
-      fill: "none", stroke: st.stroke, "stroke-width": Math.max(1.1, st.wd - .6),
-      opacity: st.op}, svg);
+      fill: "none", stroke: st.stroke,
+      /* Scaled, not decremented: subtracting a constant flattened the desktop weight
+         ladder into a 0.2-unit spread and the grayscale separation went with it. */
+      "stroke-width": Math.max(.9, st.wd * .78), opacity: st.op}, svg);
   });
   plated(svg, "100 = Jan 2019", {x: m.l + 4, y: ys(100) + 14, class: "pv-labq"}, 7.6);
   /* End labels for the three chain links only; context stays gray and unlabeled
@@ -386,8 +445,13 @@ function drawSpreadDesktop() {
   plated(svg, `${sp(cPeak.v)} for resin makers in the shortage, unwound since`,
     {x: xs(cPeak.date), y: ys(cPeak.v) - 10, "text-anchor": "middle",
      class: "pv-labq", fill: st.cmp.lab}, 7.4);
-  plated(svg, "resin − chemicals", {x: xs("2023-06-01"), y: ys(-8.5),
-    "text-anchor": "middle", class: "pv-labq", fill: st.cmp.lab}, 7.4);
+  /* The comparator is named at its own line end, not floated in-plot: it frees the
+     space under the zero line for the near-closure callout, and it makes both series
+     on this chart decode the same way the lines chart's series do. */
+  txt(svg, "resin −", {x: m.l + w + 8, y: ys(comp.at(-1).v) + 1,
+    class: "pv-labq", fill: st.cmp.lab});
+  txt(svg, "chemicals", {x: m.l + w + 8, y: ys(comp.at(-1).v) + 15,
+    class: "pv-labq", fill: st.cmp.lab});
   el("path", {d: "M" + spr.map(p => `${xs(p.date)},${ys(p.v)}`).join("L"),
     fill: "none", stroke: "#008BA8", "stroke-width": st.main.wd,
     opacity: st.main.op}, svg);
@@ -401,6 +465,20 @@ function drawSpreadDesktop() {
   plated(svg, `${sp(sPeak.v)} · ${mon3(sPeak.date)}`, {x: xs(sPeak.date),
     y: ys(sPeak.v) - 12, "text-anchor": "middle", class: "pv-lab",
     fill: "#008BA8"}, 8);
+  /* The near-closure. It is the most violent recent stroke on the chart and the one
+     the title's "above zero" claim rests on, so it is annotated at story weight with a
+     leader to the dot rather than left for the reader to notice and distrust. */
+  el("line", {x1: xs(sDip.date), y1: ys(sDip.v) + 7, x2: xs(sDip.date),
+    y2: ys(sDip.v) + 34, stroke: "#008BA8", "stroke-width": 1,
+    "stroke-dasharray": "2 2"}, svg);
+  el("circle", {cx: xs(sDip.date), cy: ys(sDip.v), r: 5, fill: "var(--paper)",
+    stroke: "#008BA8", "stroke-width": 2}, svg);
+  plated(svg, `${mon3(sDip.date)}: +${sDip.v.toFixed(1)}`,
+    {x: xs(sDip.date) + 6, y: ys(sDip.v) + 46, "text-anchor": "end",
+     class: "pv-lab", fill: "#008BA8"}, 8);
+  plated(svg, "resin spiked; the cushion nearly closed",
+    {x: xs(sDip.date) + 6, y: ys(sDip.v) + 60, "text-anchor": "end",
+     class: "pv-labq"}, 7.4);
   txt(svg, `${sp(last.v)} now`, {x: m.l + w + 8, y: ys(last.v) + 4,
     class: "pv-lab", fill: "#008BA8"});
   spr.forEach(p => hoverable(el("rect", {x: xs(p.date) - w / spr.length / 2, y: m.t,
@@ -446,6 +524,14 @@ function drawSpreadMobile() {
     stroke: "var(--paper)", "stroke-width": 1.5}, svg);
   plated(svg, sp(sPeak.v), {x: xs(sPeak.date) - 6, y: ys(sPeak.v) - 8,
     "text-anchor": "end", class: "pv-lab", fill: "#008BA8"}, 8);
+  /* The near-closure carries on mobile too: it is the claim the chart title rests on,
+     so it may not be the thing that gets dropped in the re-layout. */
+  el("circle", {cx: xs(sDip.date), cy: ys(sDip.v), r: 4, fill: "var(--paper)",
+    stroke: "#008BA8", "stroke-width": 1.5}, svg);
+  /* Above the zero line, not below it: below, the label ran into the gray comparator
+     and the right-edge series names, which the desktop-only collision gate cannot see. */
+  plated(svg, `+${sDip.v.toFixed(1)} ${mon3(sDip.date)}`, {x: xs(sDip.date) - 5,
+    y: ys(0) - 10, "text-anchor": "end", class: "pv-lab", fill: "#008BA8"}, 8);
   txt(svg, `${sp(last.v)} now`, {x: m.l + w + 6, y: ys(last.v) + 4,
     class: "pv-lab", fill: "#008BA8"});
   txt(svg, "resin −", {x: m.l + w + 6, y: ys(comp.at(-1).v) + 2,
@@ -459,17 +545,22 @@ function drawSpreadMobile() {
 }
 
 /* -------------------------------------------------------- tables + source lines */
+/* Source lines carry source, period and the ONE limitation that changes how the number
+   reads (page-design, caveat budget: 45 words visible). The retracement formula, the
+   rebasing rationale and the missing-comparator note moved into the methodology box,
+   which publishes them from this page's own meta: the ink under each figure was saying
+   them a second time. Table captions stay short because tableView prints the caption
+   into the <summary> as well, so a long one is not a disclosure, it is a third slab of
+   apparatus in link blue. */
 document.getElementById("laddertable").innerHTML = tableView("ld",
   "Peak, current level and retracement by stage (January 2019 = 100)",
-  ["Series", "Stage", "Peak", "Peak month", "Now", "Retraced"],
+  ["Series", "Stage", "Peak", "Peak month", "Now", "Latest month", "Retraced"],
   rows.map(s => [s.label, STAGE[s.stage].n, s.peak.index.toFixed(1), mon(s.peak.date),
-    s.now.index.toFixed(1), pct(s.retraced)]));
+    s.now.index.toFixed(1), mon(s.now.date), pct(s.retraced)]));
 document.getElementById("laddersrc").innerHTML =
-  `${D.meta.sources}; one (series, month) observation, monthly, 2015 through mid-2026.
-   Retracement is (peak &minus; now) &divide; (peak &minus; 100); a series that never
-   rose above its base has no retracement. January 2019 is a winter month: gas enters
-   the index at a seasonal high, so its fall looks larger than an annual-average base
-   would show. The stage ordering is robust to that; the exact percentages are not.`;
+  `${D.meta.sources}, monthly, 2015 through mid-2026, each indexed to January 2019.
+   That base is a winter month, so gas enters at a seasonal high: the stage ordering is
+   robust to it, the exact percentages are not.`;
 
 {
   const dates = [...new Set(lineSeries.flatMap(s => s.points.map(p => p.date)))].sort();
@@ -484,34 +575,42 @@ document.getElementById("laddersrc").innerHTML =
       })]));
 }
 document.getElementById("linessrc").innerHTML =
-  `${D.meta.sources}. Every series is indexed to 100 at its own January 2019 level; the
-   raw series sit in different units ($/mcf, &cent;/kWh, index points), and rebasing is
-   what lets one honest axis carry them. These are national series: Henry Hub is not
-   what an Ohio plant pays delivered or hedged, and a producer-price index is an
-   industry average, not any member&rsquo;s realized price.`;
+  `${D.meta.sources}, monthly, 2015 through mid-2026. These are national series: Henry
+   Hub is not what an Ohio plant pays delivered or hedged, and a producer price index is
+   an industry average, not any member&rsquo;s realized price.`;
 
-document.getElementById("spreadtable").innerHTML = tableView("sd",
-  "Converter and resin-maker spreads, January of each year (index points)",
-  ["Month", "Product", "Resin", "Converter spread", "Resin &minus; chemicals"],
-  spr.filter(p => p.date.endsWith("-01-01")).map(p =>
-    [mon(p.date), PM[p.date].toFixed(0), RM[p.date].toFixed(0),
-     (p.v > 0 ? "+" : "") + p.v.toFixed(0),
-     p.date in CH ? (RM[p.date] - CH[p.date] > 0 ? "+" : "") +
-       (RM[p.date] - CH[p.date]).toFixed(0) : "—"]));
+/* Every January, plus the three months the prose and the chart both name: the peak, the
+   near-closure and now. A reader checking "+0.7 in May 2026" should not have to
+   interpolate between two Januaries to do it. */
+{
+  const keyed = new Set([sPeak.date, sDip.date, last.date, sTrough.date]);
+  document.getElementById("spreadtable").innerHTML = tableView("sd",
+    "Converter and resin-maker spreads: every January, the trough, the peak, the May " +
+    "2026 near-closure and now (index points)",
+    ["Month", "Product", "Resin", "Converter spread", "Resin &minus; chemicals"],
+    spr.filter(p => p.date.endsWith("-01-01") || keyed.has(p.date)).map(p =>
+      [mon(p.date), PM[p.date].toFixed(0), RM[p.date].toFixed(0),
+       (p.v > 0 ? "+" : "") + p.v.toFixed(1),
+       p.date in CH ? (RM[p.date] - CH[p.date] > 0 ? "+" : "") +
+         (RM[p.date] - CH[p.date]).toFixed(1) : "—"]));
+}
 document.getElementById("spreadsrc").innerHTML =
-  `Derived from two BLS producer price indexes: plastics &amp; rubber products
-   manufacturing minus plastics material &amp; resin manufacturing, both set to 100 at
-   January 2019. The gray line is resin manufacturing minus industrial chemicals, the
-   same computation one link up. No economy-wide comparator is drawn: the shipped
-   series include no total-manufacturing input pair, so whether every downstream
-   industry held price this way is a question this page cannot answer.`;
+  `Two BLS producer price indexes, 2015 through July 2026: plastics and rubber products
+   manufacturing minus plastics material and resin manufacturing, both set to 100 at
+   January 2019. Whether every downstream industry held price this way is a question
+   this page cannot answer.`;
 
+/* The closer resolves the hero's question and hands the reader the next thing to watch:
+   the cushion the whole page is about came within a point of closing three months ago,
+   which is the live question the shipped data can pose but not settle. */
 document.getElementById("closersub").innerHTML =
   `<b>The wellhead gave back ${pct(gas.retraced)} of its spike; resin makers about a
    third; finished products none.</b> The converter&rsquo;s gap ran ${sp(sTrough.v)}
-   points at the bottom of the 2021 squeeze and stands ${sp(last.v)} in their favor
-   now, and an index spread is not a margin: labor, freight, energy and packaging are
-   in neither series.`;
+   points at the bottom of the 2021 squeeze and stands ${sp(last.v)} now, and an index
+   spread is not a margin: labor, freight, energy and packaging are in neither series.
+   It has not been steady either. Resin jumped ${sDipResin.toFixed(0)} points in two
+   months this spring and the gap closed to +${sDip.v.toFixed(1)}; the next resin move
+   decides whether it holds.`;
 
 /* --------------------------------------------------------------------- assemble */
 function drawAll() { drawLadder(); drawLines(); drawSpread(); }

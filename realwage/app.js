@@ -47,7 +47,7 @@ const plate = (parent, s, x, y, fs = 7.2, anchor = "start") => {
 PV.figures([
   ["key", `#${AK.big_rank_real}`, `of ${B.length} on real wages`,
    `up ${AK.big_climb} places from #${AK.big_rank_nominal} nominal, among metros with 2,000+ polymer jobs`],
-  ["", usd(AK.real), "what Akron's wage buys", `${usd(AK.nominal)} nominal, at a ${AK.rpp.toFixed(1)} price level`],
+  ["", usd(AK.real), "what Akron’s wage buys", `${usd(AK.nominal)} nominal, at a ${AK.rpp.toFixed(1)} price level`],
   ["", `${cheaper}`, `of ${M.length} metros are cheaper`, "Akron is a median-price metro, not a cheap one"]
 ]);
 
@@ -104,7 +104,10 @@ function verdict() {
     const sel = host.querySelector("select");
     sel.value = SEL && [...sel.options].some(o => o.value === SEL) ? SEL : "";
   };
-  const setSel = area => { SEL = area || null; sync(); verdict(); drawAll(); };
+  /* A legend entry for ink that is not on the plot is a key to nothing. The magenta
+     swatch appears only once a rival has been picked and the magenta line exists. */
+  const legend = () => document.getElementById("picklegend").hidden = !SEL;
+  const setSel = area => { SEL = area || null; sync(); legend(); verdict(); drawAll(); };
   const mk = (label, area) => {
     const b = document.createElement("button");
     b.type = "button"; b.textContent = label;
@@ -191,21 +194,27 @@ function drawSlopeDesktop() {
     }
     hoverable(el("rect", {x: m.l, y: Math.min(y1, y2) - 5, width: w,
       height: Math.abs(y2 - y1) + 10, fill: "transparent"}, svg),
-      `<b>${full(r.name)}</b><br>nominal <span class="v">${usd(r.nominal)}</span> —
+      `<b>${full(r.name)}</b><br>nominal <span class="v">${usd(r.nominal)}</span>,
        rank ${r.big_rank_nominal}<br>price level <span class="v">${r.rpp.toFixed(1)}</span><br>
-       buys <span class="v">${usd(r.real)}</span> — rank ${r.big_rank_real}<br>
+       buys <span class="v">${usd(r.real)}</span>, rank ${r.big_rank_real}<br>
        <b>${fmtClimb(r.big_climb)} places</b> ·
        ${N(r.emp)} polymer jobs`,
       `${short(r.name)}: ${r.big_rank_nominal} to ${r.big_rank_real}`);
   });
 
-  /* The claim, on the chart: Akron's climb, annotated at the midpoint of its own line. */
+  /* The claim, on the chart: Akron's climb, annotated at the midpoint of its own line —
+     and directly under it, the uncertainty that qualifies it. The climb rests on a single
+     print of a revision-prone series, and a reader who reads charts and skips captions
+     was previously shown an unqualified +14. It is drawn, not footnoted. */
   {
     const yMid = (ys(AK.big_rank_nominal) + ys(AK.big_rank_real)) / 2;
     const s = `+${AK.big_climb} places once prices count`;
     plate(svg, s, m.l + w / 2, yMid - 12, 8.6, "middle");
     txt(svg, s, {x: m.l + w / 2, y: yMid - 12, "text-anchor": "middle",
       class: "pv-lab", fill: CAT[1]});
+    const q = `${D.meta.year} only, one print`;
+    plate(svg, q, m.l + w / 2, yMid + 6, 7.6, "middle");
+    txt(svg, q, {x: m.l + w / 2, y: yMid + 6, "text-anchor": "middle", class: "pv-labq"});
   }
   /* The counter-claim, also on the chart: the three steepest falls, bracketed. */
   {
@@ -227,7 +236,7 @@ function drawSlopeMobile() {
   if (SEL) named.add(SEL);
   const list = B.filter(r => named.has(r.area))
     .sort((a, b) => a.big_rank_real - b.big_rank_real);
-  const m = {t: 16, r: 12, b: 14, l: 12}, W = 375, rowH = 34, headH = 26, footH = 24;
+  const m = {t: 16, r: 12, b: 14, l: 12}, W = 375, rowH = 34, headH = 26, footH = 46;
   const H = m.t + headH + list.length * rowH + footH + m.b;
   const {svg} = PV.chart("slope", {W, H});
   txt(svg, "paper", {x: 30, y: m.t + 12, "text-anchor": "middle", class: "pv-labq"});
@@ -255,33 +264,45 @@ function drawSlopeMobile() {
       {x: W - m.r, y: y + 20.5, "text-anchor": "end",
        class: accent ? "pv-lab" : "pv-labq", ...(accent ? {fill: accent} : {})});
     hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, g),
-      `<b>${full(r.name)}</b><br>nominal <span class="v">${usd(r.nominal)}</span> —
-       rank ${r.big_rank_nominal}<br>buys <span class="v">${usd(r.real)}</span> —
+      `<b>${full(r.name)}</b><br>nominal <span class="v">${usd(r.nominal)}</span>,
+       rank ${r.big_rank_nominal}<br>buys <span class="v">${usd(r.real)}</span>,
        rank ${r.big_rank_real}<br><b>${fmtClimb(r.big_climb)}
        places</b>`,
       `${short(r.name)}: ${r.big_rank_nominal} to ${r.big_rank_real}`);
   });
+  const fy = m.t + headH + list.length * rowH;
   txt(svg, `${B.length - list.length} more metros sit between these; see the table.`,
-    {x: 12, y: m.t + headH + list.length * rowH + 16, class: "pv-labq"});
+    {x: 12, y: fy + 16, class: "pv-labq"});
+  // the same drawn qualifier the desktop slope carries, so the mobile reader who
+  // never reaches the caption still sees that +14 is one year's reading
+  txt(svg, `${D.meta.year} only, one print.`, {x: 12, y: fy + 38, class: "pv-labq"});
 }
 
-document.getElementById("slopetable").innerHTML = tableView("sl",
+/* CAVEAT INK. The visible caption under a figure is one source line plus one limitation
+   sentence, ≤45 words (page-design). Everything else that was here — the row definition,
+   why the 2,000-job floor was chosen, the suppression rule, the missing prior years —
+   is depth rather than disclosure, so it moves inside the table twin this figure already
+   opens. Nothing that changes how a number should be read left the visible caption. */
+const withNotes = (html, notes) =>
+  html.replace("</details>", `<p class="tnote">${notes}</p></details>`);
+
+document.getElementById("slopetable").innerHTML = withNotes(tableView("sl",
   `Polymer metros with ${N(D.meta.big_floor)}+ jobs, nominal and price-adjusted weekly wage`,
   ["Metro", "Jobs", "Nominal", "Price level", "Buys", "Nominal rank", "Real rank", "Change"],
   [...B].sort((a, b) => a.big_rank_real - b.big_rank_real).map(r =>
     [full(r.name), N(r.emp), usd(r.nominal), r.rpp.toFixed(1), usd(r.real),
-     r.big_rank_nominal, r.big_rank_real, fmtClimb(r.big_climb)]));
+     r.big_rank_nominal, r.big_rank_real, fmtClimb(r.big_climb)])),
+  `${D.meta.row} Full source: ${D.meta.source}. The field is cut to the
+   ${B.length} metros with at least ${N(D.meta.big_floor)} polymer jobs, so the ranking
+   runs against places that actually do this work rather than against every metro in the
+   country; a different floor gives a different rank. ${D.meta.suppression} No earlier
+   year ships with this page, so nothing here shows whether the
+   ${AK.big_climb}-place climb repeats.`);
 document.getElementById("slopesrc").innerHTML =
-  `${D.meta.source}. ${D.meta.row}. <b>${D.meta.geography}</b>
-   Restricted to the <b>${B.length} metros with at least ${N(D.meta.big_floor)} polymer
-   jobs</b>, so the comparison is against places that actually do this work rather than
-   against every metro in the country. ${D.meta.suppression}
-   <b>Cleveland and Canton are not here</b> — BLS withholds their NAICS 326 wage for
-   2023, so the region appears through Akron alone. One year, one print: everything here
-   is the ${D.meta.year} release of a revision-prone wage series and its matching price
-   index, and no earlier year ships with this page, so the ${AK.big_climb}-place climb
-   is shown without a track record. Treat it as one year’s reading until the next
-   release repeats it.`;
+  `Source: BLS QCEW and BEA Regional Price Parities, ${D.meta.year}; metros where BLS
+   withholds a polymer wage are absent, Cleveland and Canton among them. One print of a
+   revision-prone series, so treat the ${AK.big_climb}-place climb as one year’s
+   reading.`;
 
 /* -------------------------------------------------------- 2. price strip */
 function drawStrip() { drawStripVariant(MOBILE.matches); }
@@ -303,7 +324,10 @@ function drawStripVariant(mobile) {
     const me = r.area === AK.area, pick = r.area === SEL;
     el("line", {x1: xs(r.rpp), y1: m.t + (me || pick ? 4 : 22), x2: xs(r.rpp),
       y2: m.t + h - 4, stroke: me ? CAT[1] : pick ? CAT[2] : GRAY,
-      "stroke-width": me || pick ? 3 : 1, opacity: me || pick ? 1 : .38}, svg);
+      // 4px for Akron: at 3px the subject tick, the dashed median and the US-average
+      // rule all collapsed to the same weight in grayscale, leaving the three labels
+      // as the only separation. Weight now carries it too.
+      "stroke-width": me ? 4 : pick ? 3 : 1, opacity: me || pick ? 1 : .38}, svg);
     if (me) txt(svg, `Akron ${r.rpp.toFixed(1)}`, {x: xs(r.rpp), y: m.t - 8,
       "text-anchor": "middle", class: "pv-lab", fill: CAT[1]});
     if (pick) {
@@ -313,13 +337,22 @@ function drawStripVariant(mobile) {
          "text-anchor": "middle", class: "pv-lab", fill: CAT[2]});
     }
   });
+  /* Both reference labels sit over the tick mass, so each gets a paper plate first.
+     Without it they read as gray-on-gray at 375px, where the mass is densest. */
   const mRpp = med(rpps);
   el("line", {x1: xs(mRpp), y1: m.t + 14, x2: xs(mRpp), y2: m.t + h, stroke: INK,
     "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
-  txt(svg, mobile ? `median ${mRpp.toFixed(1)}` : `median metro ${mRpp.toFixed(1)}`,
-    {x: xs(mRpp) + 8, y: m.t + 26, class: "pv-lab"});
-  el("line", {x1: xs(100), y1: m.t + 14, x2: xs(100), y2: m.t + h, stroke: "var(--hover)",
-    "stroke-width": 1.5}, svg);
+  const mLab = mobile ? `median ${mRpp.toFixed(1)}` : `median metro ${mRpp.toFixed(1)}`;
+  plate(svg, mLab, xs(mRpp) + 8, m.t + 26, 8.2);
+  txt(svg, mLab, {x: xs(mRpp) + 8, y: m.t + 26, class: "pv-lab"});
+  /* At 375px the median label's plate is 96px wide and the two reference lines are only
+     72px apart, so the plate was covering the top of the US-average rule — a plate that
+     hides a reference mark is worse than the crossing it was added to fix. The US line
+     starts below that plate on mobile; on desktop the two are 218px apart and it does
+     not arise. */
+  el("line", {x1: xs(100), y1: m.t + (mobile ? 30 : 14), x2: xs(100), y2: m.t + h,
+    stroke: "var(--hover)", "stroke-width": 1.5}, svg);
+  plate(svg, "US average 100", xs(100) + 8, m.t + 44, 8.2);
   txt(svg, "US average 100", {x: xs(100) + 8, y: m.t + 44, class: "pv-lab",
     fill: "var(--hover)"});
   M.forEach(r => hoverable(el("rect", {x: xs(r.rpp) - 3, y: m.t, width: 6, height: h,
@@ -336,18 +369,18 @@ function drawStripVariant(mobile) {
     ext.slice(0, 6).concat(ext.slice(-6)).map(r =>
       [full(r.name), r.rpp.toFixed(1), N(r.emp)]));
   const mRpp = med(M.map(r => r.rpp));
+  /* The page's one .note box, at the ~80-word budget: the percentile reading of the
+     strip, and the judgment it licenses. The "the climb is not because Akron is cheap"
+     point that used to close this box is the band lede's job two paragraphs above, and
+     saying it twice inside one reading context is hedge repetition. */
   document.getElementById("cheapnote").innerHTML =
-    `<b>${cheaper} of ${M.length} metros have a lower price level than Akron.</b> It sits at
-     ${AK.rpp.toFixed(1)} against a median metro of ${mRpp.toFixed(1)} — that is
-     the ${Math.round(cheaper / M.length * 100)}th percentile, which is another way of
-     saying <b>typical</b>. The familiar "low cost of living" line is true only against the
-     <em>national average of 100</em>, and that average is pulled up by a handful of very
-     expensive places most Ohioans will never compete with for a job.
-     <b>So the climb on the previous chart is not because Akron is cheap.</b> It is because
-     a large share of the polymer industry sits in metros that are genuinely expensive —
-     ${[...B].sort((a, b) => a.big_climb - b.big_climb).slice(0, 3).map(r => short(r.name)).join(", ")}
-     all fall when their wages are adjusted. PIC's advantage is relative to <em>this
-     industry's geography</em>, not to the country.`;
+    `<b>${cheaper} of ${M.length} metros have a lower price level than Akron.</b> It sits
+     at ${AK.rpp.toFixed(1)} against a median metro of ${mRpp.toFixed(1)}: the
+     ${Math.round(cheaper / M.length * 100)}th percentile, which is another way of saying
+     typical. The familiar “low cost of living” line holds only against the national
+     average of 100, and that average is pulled up by a handful of very expensive places
+     most Ohioans will never compete with for a job. PIC’s advantage is relative to this
+     industry’s geography, not to the country.`;
 }
 
 /* ------------------------------------------------------------ 3. scatter */
@@ -370,17 +403,31 @@ function drawScatterVariant(mobile) {
     ylab: mobile ? "Price level" : "Metro price level (100 = US average)"});
   // iso-lines: every metro on one line offers identical purchasing power. Labels sit at
   // the sparse bottom ends of the lines, not in the crowded top band of expensive metros.
-  const isoLabel = mobile ? [1300, 1700] : [1300, 1500, 1700];
+  /* At 375px the bottom-right corner held three labels in ~40px of height: two diagonal
+     tags and the half-plane annotation, the nearest pair within a few pixels of touching.
+     Mobile now tags ONE diagonal — the $1,300 line, the one Akron nearly sits on — and
+     the subtitle carries the generalization ("every metro on one dashed diagonal buys the
+     same"). The remaining diagonals still read as a family without being labelled. */
+  const isoLabel = mobile ? [1300] : [1300, 1500, 1700];
+  /* Two passes, not one. Drawing each line and then its own label meant the NEXT line in
+     the series painted straight through the label just written: at 375px the $1,500
+     diagonal ran through "buys $1,300". Every line first, then every label with its
+     paper plate on top. */
+  const isoPts = new Map();
   [1100, 1300, 1500, 1700].forEach(real => {
     const pts = [];
     for (let p = y0; p <= y1; p += 1) { const nom = real * p / 100;
       if (nom >= x0 && nom <= x1) pts.push([xs(nom), ys(p), nom]); }
     if (pts.length < 2) return;
+    isoPts.set(real, pts);
     el("path", {d: "M" + pts.map(p => `${p[0]},${p[1]}`).join("L"), fill: "none",
       stroke: "var(--pv-grid)", "stroke-width": 1.5, "stroke-dasharray": "5 4"}, svg);
-    if (isoLabel.includes(real) && pts[0][2] > x0 + 10 && pts[0][2] < x1 - 90)
-      txt(svg, `buys ${usd(real)}`, {x: pts[0][0] + 6, y: m.t + h - 8,
-        class: "pv-labq"});
+  });
+  isoPts.forEach((pts, real) => {
+    if (!isoLabel.includes(real) || pts[0][2] <= x0 + 10 || pts[0][2] >= x1 - 90) return;
+    const s = `buys ${usd(real)}`;
+    plate(svg, s, pts[0][0] + 6, m.t + h - 8, mobile ? 8.2 : 7.2);
+    txt(svg, s, {x: pts[0][0] + 6, y: m.t + h - 8, class: "pv-labq"});
   });
   const rmax = Math.max(...B.map(r => r.emp));
   const rEmp = e => (mobile ? 3 : 4) + Math.sqrt(e / rmax) * (mobile ? 9 : 13);
@@ -413,33 +460,42 @@ function drawScatterVariant(mobile) {
   };
   B.filter(r => r.area !== SEL && r.area !== AK.area).forEach(draw);
   B.filter(r => r.area === SEL || r.area === AK.area).forEach(draw);
-  /* The half-planes, named on the plane (drawn last; the corners are empty). */
+  /* The half-planes, named on the plane, drawn last. At 375px the right-hand one is no
+     longer in an empty corner once it lifts clear of the axis, so it gets a paper plate;
+     the desktop corner is genuinely empty and needs none. */
   txt(svg, "salary flatters the offer", {x: m.l + 8, y: m.t + 16,
     class: "pv-labq", opacity: .8});
-  txt(svg, "salary understates it", {x: m.l + w - 6, y: m.t + h - (mobile ? 26 : 12),
+  const uy = m.t + h - (mobile ? 34 : 12);
+  if (mobile) plate(svg, "salary understates it", m.l + w - 6, uy, 8.2, "end");
+  txt(svg, "salary understates it", {x: m.l + w - 6, y: uy,
     "text-anchor": "end", class: "pv-labq", opacity: .8});
 }
 
-document.getElementById("scattertable").innerHTML = tableView("sc",
+document.getElementById("scattertable").innerHTML = withNotes(tableView("sc",
   "Largest polymer metros by employment",
   ["Metro", "Jobs", "Nominal", "Price level", "Buys"],
   [...B].sort((a, b) => b.emp - a.emp).slice(0, 20).map(r =>
-    [full(r.name), N(r.emp), usd(r.nominal), r.rpp.toFixed(1), usd(r.real)]));
+    [full(r.name), N(r.emp), usd(r.nominal), r.rpp.toFixed(1), usd(r.real)])),
+  `Twenty largest employers of the ${B.length} plotted; every metro in the set is drawn.
+   The chart is not an argument that anyone should move. It is the trade-off a recruiter
+   is already making without drawing it.`);
+/* This figure carries its own attribution: screenshotted alone it must still name where
+   the two axes come from, which the subtitle above it does not do. */
 document.getElementById("scattersrc").innerHTML =
-  `Circle area is polymer employment. <b>${D.meta.not}</b> A price level is not a
-   quality-of-life measure and this chart is not an argument that anyone should move —
-   it is the trade-off a recruiter is already making implicitly, drawn once.`;
+  `Source: BLS QCEW and BEA Regional Price Parities, ${D.meta.year}. ${D.meta.not}`;
 
+/* Closer ≤90 words: one display statement of ≤2 lines, then one qualifying paragraph.
+   The New York / Los Angeles / Seattle clause moved down here out of the display line,
+   which was running four rendered lines at 30px. */
 document.getElementById("closersub").innerHTML =
   `<b>Akron’s polymer wage is ${usd(AK.nominal)} a week,
    ${AK.nominal < med(B.map(r => r.nominal)) ? "below" : "above"} the median polymer
    metro; adjusted for local prices it is ${usd(AK.real)},
-   ${AK.real > med(B.map(r => r.real)) ? "above" : "below"} it.</b> That is the whole
-   argument. It is worth ${AK.big_climb} places, it is usable in a recruiting
-   conversation, and it is smaller than “cost of living” is usually made to
+   ${AK.real > med(B.map(r => r.real)) ? "above" : "below"} it.</b> Against New York, Los
+   Angeles or Seattle the bigger paycheck buys less outright. The gap is worth
+   ${AK.big_climb} places, and it is smaller than “cost of living” is usually made to
    carry: ${cheaper} metros are cheaper than this one, so PIC should retire the word
-   “cheap” and argue the checkable version instead. The industry’s
-   biggest employers sit where the same salary buys up to a fifth less.`;
+   “cheap” and argue the checkable version instead.`;
 
 /* --------------------------------------------------------------- assemble */
 function drawAll() { drawSlope(); drawStrip(); drawScatter(); }
@@ -447,16 +503,12 @@ drawAll();
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);
 
-/* This page is metro-level end to end; it has no county footprint and says so. */
-{
-  const b = document.createElement("div");
-  b.className = "pv-footprint";
-  b.innerHTML = `<b>Metropolitan areas, not the PIC-12 counties.</b> BEA publishes price
-    parities only for metros, and they cannot be summed to a county footprint.
-    <span class="d">The region appears here as the Akron MSA alone — Cleveland and Canton
-    withhold their polymer wage for 2023.</span>`;
-  document.querySelector(".mast").after(b);
-}
+/* NO PRE-HERO FOOTPRINT BAR. This page is metro-level end to end, which is a real scope
+   limit and was previously flagged in a banner injected between the masthead and the
+   headline — apparatus above the finding, and (having no .wrap) flush to the viewport
+   edge at x=0 while every other block sat on the 301px rail. The limit now appears in
+   three proper places instead: one reader-language sentence in band 1's gloss, the
+   slope figure's own source line, and meta.geography in the methodology box. */
 
 /* Standard methodology + AI disclosure. Generated, not written — see picviz.js. */
 await PV.methodology({page: "realwage", meta: D.meta});

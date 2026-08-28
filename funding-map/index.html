@@ -23,6 +23,10 @@
       three machines that share almost nothing in how a dollar moves. This is every dollar of it,
       and every organization it reaches.
     </p>
+    <p class="byline">By the Polymer Industry Cluster &middot; Analysis and graphics by
+      Claude (Anthropic), directed and reviewed by a person &middot; Data signed federal
+      Notices of Award and the executed Ohio grant agreement &middot; Figures as of
+      <time datetime="2026-08-13">13 August 2026</time></p>
 
     <div class="topline">
       <div class="topline-total">
@@ -45,6 +49,11 @@
           <p class="ts-amount">$3.08M</p>
           <p class="ts-name">Good Jobs Challenge (APEX)</p>
           <p class="ts-match">+ $3.37M local match</p>
+        </li>
+        <li class="ts ts--open">
+          <p class="ts-amount">$6.17M</p>
+          <p class="ts-name">Awarded, no named recipient yet</p>
+          <p class="ts-match">held in two Ohio workstreams</p>
         </li>
       </ul>
     </div>
@@ -107,8 +116,8 @@
       <p class="fig-title">Three machines, twenty-one recipients: the money lands unevenly</p>
       <p class="fig-sub">
         Awards and match drawn to one dollar scale. Hue names the source; a tint step separates the
-        Ohio hub&rsquo;s two company-facing programs. In the wide diagram, connectors into
-        individual recipients are not to scale.
+        Ohio hub&rsquo;s two company-facing programs.
+        <span class="fig-sub-mode">Connectors into individual recipients are not to scale.</span>
       </p>
 
       <div id="legend" class="legend" hidden></div>
@@ -130,14 +139,15 @@
         seven direct federal awardees, and the single largest line is a building.
       </p>
 
-      <div class="fnotes">
-        <p class="fn" id="fn-disclosure"></p>
-        <p class="fn" id="fn-scale"></p>
-      </div>
+      <p class="fn" id="fn-disclosure"></p>
       <p class="fig-src">
         Sources: signed federal Notices of Award; the executed Ohio grant agreement (Grant Control
         No. SBIG20251005); executed sub-grant agreements. Figures as of 13 August 2026.
       </p>
+      <details class="disclose disclose--fig">
+        <summary>What is drawn to scale, and what this figure leaves out</summary>
+        <div class="disclose-body" id="fn-more"></div>
+      </details>
     </div>
   </section>
 
@@ -182,8 +192,9 @@
         <div>
           <h2 id="table-h">Every award, in full</h2>
           <p class="lede">
-            The same data as the map, at full precision. Source, program, recipient, amount and award ID
-            where one is public.
+            The same data as the map, at full precision, ranked by amount. An award ID appears
+            where the award carries one of its own. The nine equal Synthe6 cohort awards share one
+            row here; the CSV lists each company separately.
           </p>
         </div>
         <div class="controls">
@@ -192,23 +203,27 @@
       </div>
       <div class="table-scroll">
         <table id="data-table" class="dtable">
-          <caption class="sr-only">Every public award reaching the Polymer Industry Cluster, by source, program and recipient.</caption>
+          <caption class="sr-only">Every public award reaching the Polymer Industry Cluster, ranked by amount.</caption>
           <thead>
             <tr>
-              <th scope="col">Source</th>
-              <th scope="col">Program</th>
               <th scope="col">Recipient</th>
               <th scope="col" class="num">Amount</th>
+              <th scope="col">Funded by</th>
               <th scope="col">Award ID</th>
               <th scope="col">What it funds</th>
             </tr>
           </thead>
           <tbody id="data-tbody">
-            <tr><td colspan="6">Loading&hellip;</td></tr>
+            <tr><td colspan="5">Loading&hellip;</td></tr>
           </tbody>
         </table>
       </div>
-      <div class="fnotes" id="table-note"></div>
+      <p class="table-more"><button type="button" id="table-toggle" class="btn btn--ghost"></button></p>
+      <p class="fn" id="table-note"></p>
+      <details class="disclose">
+        <summary>The full reconciliation, line by line</summary>
+        <div class="disclose-body" id="recon-more"></div>
+      </details>
     </div>
   </section>
 
@@ -230,14 +245,43 @@
     </div>
   </section>
 
+  <section class="band section--repro" aria-labelledby="repro-h">
+    <div class="wrap">
+      <p class="takeaway">How we did this</p>
+      <h2 id="repro-h">Sources, filters, and how to rebuild this page</h2>
+      <details class="disclose">
+        <summary>Open the source registry and the limitations</summary>
+        <div class="disclose-body" id="repro"></div>
+      </details>
+    </div>
+  </section>
+
+  <section class="closer">
+    <div class="wrap">
+      <p>Three machines, one ledger: every dollar of the $106.3 million has a line on it.</p>
+      <p class="sub">Of the $85.3M awarded, $79.2M already has a named recipient, and the
+        largest single line among them, $18.52M, is a building rather than a company. The
+        other $6.17M sits in two Ohio workstreams: $2.64M of Translational R&amp;D not yet
+        sub-granted, and $3.52M running Synthe6 through Bounce. All of it is awarded or
+        committed money, not cash spent.</p>
+    </div>
+  </section>
+
 </main>
 
 <footer class="foot">
   <div class="wrap">
-    <p>Polymer Industry Cluster &middot; Greater Akron Chamber</p>
-    <p class="foot-note">
-      Figures are awarded or committed amounts; disbursement follows milestones.
-    </p>
+    <p class="foot-k">Read next</p>
+    <ul class="foot-links">
+      <li><a href="../federal-money/">Is $51 million a lot?</a>
+        <span>The Tech Hub award set beside the federal money the region was already getting.</span></li>
+      <li><a href="../index/">The Evidence Room</a>
+        <span>Every page, each with its own sources and its own tests.</span></li>
+    </ul>
+    <p class="foot-cta">Think a figure here is wrong? Name the sentence and what it fails
+      against: <b>jswanson@greaterakronchamber.org</b>.</p>
+    <p class="foot-id">Polymer Industry Cluster &middot; Greater Akron Chamber.
+      Corrections are dated and appended, never silent.</p>
   </div>
 </footer>
 
@@ -255,21 +299,13 @@
   </div>
 </aside>
 
-<section class="band">
-  <div class="wrap">
-    <p class="takeaway">How we did this</p>
-    <h2>Sources, filters, and how to rebuild this page</h2>
-    <div id="repro"></div>
-  </div>
-</section>
-
 <script src="../_shared/sources.js"></script>
 <script>PVSources.render("funding-map", "repro", {limits: [
   "This is the public money PIC helped win, not all public money reaching polymer work in the region. A program PIC was not part of does not appear here, and its absence is not evidence it does not exist.",
   "Award figures are amounts announced or obligated, not cash spent. An obligation can be drawn down over several years, reduced, or de-obligated entirely.",
   "Recipients are named as the award names them. Where an award passes through one organization to others, only the named recipient appears.",
   "No comparison with the other eleven funded EDA Tech Hubs is drawn here, because their award data is not shipped with this page. Every comparison on the page is internal to these three awards.",
-  "Every quantified sentence on this page is guarded by claims.json and re-run against data/funding.json by the repo’s claims gate. Three claims (the 6PPD-quinone finding, the vulcanized-rubber point, and the disbursement-disclosure rule) are recorded there as manually verified, with sources named in the file."
+  "Every quantified sentence on this page is re-checked against the funding data before publication. Three statements cannot be checked that way and were verified by hand instead: the 6PPD-quinone finding, the vulcanized-rubber point, and the rule that keeps disbursement figures off this page."
 ]});</script>
 <script src="app.js"></script>
 </body>

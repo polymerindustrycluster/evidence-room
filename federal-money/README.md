@@ -7,13 +7,13 @@ year and a half of it. In FY2019 the routine flow alone was larger than the whol
 Sources: USAspending.gov spending_by_category, place of performance, FY2019–FY2026.
 Award figures cross-referenced from the funding map's own shipped file.
 
-**What a row is:** one (fiscal year, category, code) obligation total
+**What a row is:** one obligation total for a single fiscal year, category and industry code
 
 ```
 index.html          page shell, headline, ledes, figure titles
 styles.css          page-local CSS: figure chrome, award ladder, mobile re-layout
 app.js              charts and interaction
-claims.json         15 falsifiable assertions, re-run on every build
+claims.json         16 falsifiable assertions, re-run on every build
 data/federal.json   THE DATA (13 KB). Edit the builder, not this.
 data/techhub.json   DERIVED. Written by derive_techhub.py. Do not hand-edit.
 derive_techhub.py   copies the EDA award across from funding-map/data/funding.json
@@ -54,11 +54,30 @@ it after any change to the funding map's data.
   all-industry county rows ($235.5B, context only).
 - University and research awards are invisible to the NAICS view by construction. The NSF
   NEO-SMART Engine ($14,999,983) appears in no bar.
+- The footprint is PIC-12. The wider fourteen-county reading the vault calls NEO-14 adds
+  Crawford, Huron, Richland and Tuscarawas; the banner on the page states the difference in
+  reader words and names this file for the registry detail.
+
+## Where the apparatus lives
+
+Caveat ink beside a figure is capped at a source line plus one limitation sentence. The
+rest is not deleted, it is relocated, and this is the map:
+
+| What | Where it renders |
+|---|---|
+| Source, period, dollar basis, partial-year warning | the `.src` line under each figure |
+| Nominal totals, closed-year basis, award-line provenance, scope | inside that figure's own table-view disclosure (`.tnote`) |
+| What the NAICS filter cannot see; the all-industry county scope | Band 2 editorial prose, in body register, static HTML |
+| Place of performance as a reported field | the page's single `.note` callout, in Band 1 |
+| Fetch scripts, endpoints, filters, `derive_techhub.py` | the generated "Reproduce this" disclosure, and this file |
+
+Nothing that changes how a number should be read sits behind a disclosure. The disclosures
+carry depth, not the disclosure itself.
 
 ## Known gaps
 
 - **Recipient names behind the procurement peaks.** `spending_by_category` returns
-  categories, not parties, so this page cannot say who holds FY2021's $50.8M. Closing it
+  categories, not parties, so this page cannot say who holds FY2019's $51.6M peak. Closing it
   needs a second pull: USAspending `spending_by_award` (or the bulk award archive),
   filtered to place-of-performance county in the PIC-12, NAICS 325*/326*, FY2019–FY2026,
   keeping `recipient_name` and `awarding_agency`. Until then the human-scale beat runs on

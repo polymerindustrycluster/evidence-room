@@ -19,19 +19,16 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">What happened to the numbers after they were published &middot;
-      ALFRED archival vintages, 2019&ndash;2026</p>
+    <p class="eyebrow">What happened after publication</p>
     <h1>Almost every month of these three price series <em>moved after publication</em>,
       by almost nothing.</h1>
-    <p class="stand">Every chart on this site shows the current value of each month, a
-      convention that hides a statistical agency revising the same figure for years.
-      Across three producer-price series, 259 of 273 published months were later changed,
-      by a typical 0.15 percent. <b>That scope is the whole claim: three price series,
-      not this site&rsquo;s figures generally.</b> A fresh print holds at the level and
-      wobbles in direction: in 14 of 201 comparable month pairs the revision reversed the
-      sign of the month-over-month move. The Quarterly Workforce Indicators behind the
-      churn page restate whole histories when they re-benchmark, and nothing here has
-      measured how far. That is where this method goes next.</p>
+    <p class="stand">Every chart on this site shows each month at its current value, which
+      hides the Bureau of Labor Statistics revising that figure for years. <b>The claim
+      here covers three producer-price series and no others:</b> 259 of 273 published
+      months were later changed, by a typical 0.15 percent.</p>
+    <p class="byline">By the Polymer Industry Cluster &middot; Analysis and graphics by
+      Claude (Anthropic), directed and reviewed by a person &middot; Data ALFRED archival
+      vintages, 2019&ndash;2026 &middot; <span id="asof">August 2026</span></p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -71,8 +68,9 @@
       warning. It leans, slightly, to the up side.</p>
     <p class="fig-title">Half of all revisions land inside 0.15% of the first print, and
       the largest ever recorded here is 1.42%</p>
-    <p class="fig-sub">259 revised months, binned at 0.05 percentage points. Left of zero
-      was revised down, right of zero revised up.</p>
+    <p class="fig-sub">259 revised months: 137 ended up, 121 ended down, and one came back
+      to within 0.001 index points of its first print. Left of zero is a downward
+      revision.</p>
     <div class="chart"><svg id="dist" role="img" aria-labelledby="dist-t">
       <title id="dist-t">Distribution of total revision size across all reference months,
         piled up tightly around zero with a slight lean to the up side and one outlier at
@@ -114,6 +112,25 @@
     <p class="sub" id="closersub"></p>
   </div>
 </section>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-k">Read next</p>
+    <ul class="foot-links">
+      <li><a href="../churn/">Hiring and quitting</a>
+        <span>The employment series whose vintages nobody here has checked.</span></li>
+      <li><a href="../cost-scissors/">The cost scissors</a>
+        <span>What these three price indexes did to margins, at the level.</span></li>
+      <li><a href="../index/">The Evidence Room</a>
+        <span>Every page, each with its own sources and its own tests.</span></li>
+    </ul>
+    <p class="foot-cta">Think a number here is wrong? Name the sentence and what it fails
+      against: <b>jswanson@greaterakronchamber.org</b>.</p>
+    <p class="foot-id">Polymer Industry Cluster &middot; Greater Akron Chamber. Every
+      figure is rebuilt from free public data by the scripts in
+      <a href="https://github.com/polymerindustrycluster/evidence-room">the repository</a>.</p>
+  </div>
+</footer>
 
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>

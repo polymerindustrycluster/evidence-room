@@ -209,6 +209,8 @@ function loadData(file) {
        region gives up 49px, which costs a ribbon nothing. Do not push past ~0.365: rowX
        would cross bandR and the rows would sit on top of the bands. */
     const rowW = clamp(280, W * 0.35, 440);
+    const rightEdge = W - 4;
+    const rowX = rightEdge - rowW;
     /* Two annotation slots live inside the recipient column: a contrast note above the
        Synthe6 cohort rows and a reconciliation footing under the last row. The heights
        are layout constants; every numeral in them is computed from DATA when drawn. */
@@ -217,8 +219,19 @@ function loadData(file) {
     let y = pad;
     let a2Top = null;
     const groupOf = (r) => G.programs.get(r.awards[0].programId).id;
+    /* TWO CONCEPTS, NOT ONE. `multi` is a recipient funded by more than one program: it
+       earns the convergence highlight and the second-award rider. `dual` is only the
+       question of whether the row needs two lines, and a single-award recipient can need
+       one too. "Case Western Reserve" beside a TRANSLATIONAL chip did not fit on one line
+       at any width the diagram renders, and shrink-then-truncate shipped "Case Western
+       Reserv…". On a two-line row the chips drop below and the name gets the whole
+       column, which is the layout that already existed for multi-program rows. */
+    const CHIP_PAD = 21, AMT_COL = 80;   // AMT_COL must match fitLabels
+    const chipsW = (chips) => chips.reduce((a, c) => a + c.length * 7.7 + CHIP_PAD, 0);
     d.recipients.forEach((r, i) => {
-      const dual = r.awards.length > 1;
+      const multi = r.awards.length > 1;
+      const oneLineRoom = (rightEdge - AMT_COL - chipsW(r.chips)) - rowX - 12;
+      const dual = multi || (r.short || r.name).length * 6.3 > oneLineRoom;
       const hgt = dual ? 52 : 34;
       const prev = d.recipients[i - 1];
       // a little air between program groups
@@ -226,7 +239,7 @@ function loadData(file) {
         y += 12;
         if (groupOf(r) === 'oh-startup') { a2Top = y; y += A2H; }
       }
-      rows.push({ r, y, h: hgt, cy: y + (dual ? 18 : hgt / 2), dual });
+      rows.push({ r, y, h: hgt, cy: y + (dual ? 18 : hgt / 2), dual, multi });
       y += hgt;
     });
     const a3Top = y + 10;
@@ -246,8 +259,6 @@ function loadData(file) {
     const bandX = mechX + hubZone;
     const bandW = clamp(136, W * 0.175, 254);
     const bandR = bandX + bandW;
-    const rightEdge = W - 4;
-    const rowX = rightEdge - rowW;
 
     const src = [];
     let sy = pad;
@@ -262,7 +273,9 @@ function loadData(file) {
     // workstream column, and the funnel is what declares the scale change.
     const edaB = { x: mechX, w: bandR - mechX, y: byId.eda.y, h: byId.eda.h };
     const apexB = { x: mechX, w: bandR - mechX, y: byId.apex.y, h: byId.apex.h };
-    const hub = { x: mechX, w: hubZone * 0.6, y: byId.ohio.y, h: byId.ohio.h };
+    // 0.68, not 0.60: the node has to be wide enough to hold "Innovation Hub" at a
+    // legible size. It still ends short of bandX, so the funnel is only shorter.
+    const hub = { x: mechX, w: hubZone * 0.68, y: byId.ohio.y, h: byId.ohio.h };
     // EDA has no split, so its mechanism is a plate on the flow rather than a
     // node it passes through. Same left edge as the hub node, so they rhyme.
     const edaPlate = { x: mechX, w: hubZone - 8, h: 124, y: edaB.y + edaB.h / 2 - 62 };
@@ -363,7 +376,7 @@ function loadData(file) {
     // rowgroup, so the highlights arrive with the rows they belong to rather
     // than floating on an empty canvas during the reveal
     const hlG = el('g', { class: 'rowgroup' });
-    L.rows.filter((rw) => rw.dual).forEach((rw) => {
+    L.rows.filter((rw) => rw.multi).forEach((rw) => {
       hlG.appendChild(el('rect', { class: 'hl dimmable', 'data-node': 'rcp:' + rw.r.id,
         x: L.rowX - 16, y: rw.y + 2, width: L.rightEdge - L.rowX + 16, height: rw.h - 4, rx: 8, fill: TINT.s6.solid }));
     });
@@ -386,12 +399,22 @@ function loadData(file) {
       // labels, right-aligned into the gutter, centered on the award bar
       const lx = L.srcX - 14, cy = sx.y + sx.h / 2;
       const amtSize = clamp(21, L.W * 0.021, 29);
+      /* WRAP, don't truncate. "EDA Sustainable Polymers Tech Hub" is 33 characters and
+         does not fit this gutter even at the 12px floor, so shrink-then-truncate shipped
+         "EDA Sustainable Polymers Tech…" on the flagship $51.00M label. The gutter has
+         empty vertical room above and below every bar, so the name takes a second line
+         and the block re-centres around it. Only names that still overflow at the floor
+         wrap; "Ohio Innovation Hub" and "Good Jobs Challenge (APEX)" stay on one line. */
+      const gut = L.srcX - 16;
+      const nameLines = (sx.so.name.length * 12 * 0.505 > gut) ? wrap(sx.so.name, gut, 15) : [sx.so.name];
+      const dy = (nameLines.length - 1) * 17, off = -dy / 2;
       // style, not the fill attribute — the .sankey text rule would win otherwise
-      g.appendChild(el('text', { class: 'src-amount', x: lx, y: cy - 24, 'text-anchor': 'end',
+      g.appendChild(el('text', { class: 'src-amount', x: lx, y: cy - 24 + off, 'text-anchor': 'end',
         'font-size': amtSize, style: `fill:${t.textInk}` }, fmt(sx.so.award)));
-      g.appendChild(el('text', { class: 'src-name', x: lx, y: cy + 1, 'text-anchor': 'end' }, sx.so.name));
-      g.appendChild(el('text', { class: 'src-kind', x: lx, y: cy + 21, 'text-anchor': 'end' }, sx.so.kind));
-      g.appendChild(el('text', { class: 'src-match', x: lx, y: cy + 44, 'text-anchor': 'end',
+      nameLines.forEach((ln, i) => g.appendChild(
+        el('text', { class: 'src-name', x: lx, y: cy + 1 + i * 17 + off, 'text-anchor': 'end' }, ln)));
+      g.appendChild(el('text', { class: 'src-kind', x: lx, y: cy + 21 + dy + off, 'text-anchor': 'end' }, sx.so.kind));
+      g.appendChild(el('text', { class: 'src-match', x: lx, y: cy + 44 + dy + off, 'text-anchor': 'end',
         style: `fill:${t.textInk}` }, `+ ${fmt(sx.so.matchAmount)} ${sx.so.matchLabel}`));
       srcG.appendChild(g);
     });
@@ -477,10 +500,15 @@ function loadData(file) {
     });
     mechG.appendChild(plateG);
 
+    /* The hub label is wrapped to the node it sits inside, not hand-broken into three
+       fixed lines: "Innovation Hub" at 15px is wider than the node, so white type ran off
+       a dark box onto white paper and vanished at both ends. */
     const hubG = el('g', { class: 'dimmable', 'data-node': 'src:ohio' });
-    ['Greater Akron', 'Polymer', 'Innovation Hub'].forEach((ln, i) => {
-      hubG.appendChild(el('text', { class: 'hub-title', x: L.hub.x + L.hub.w / 2,
-        y: L.hub.y + L.hub.h / 2 - 16 + i * 19, 'text-anchor': 'middle' }, ln));
+    const hubLines = wrap(G.sources.get('ohio').mechanismTitle, L.hub.w - 10, 13.5);
+    hubLines.forEach((ln, i) => {
+      hubG.appendChild(el('text', { class: 'hub-title', style: 'font-size:13.5px', x: L.hub.x + L.hub.w / 2,
+        y: L.hub.y + L.hub.h / 2 + 5 - (hubLines.length - 1) * 8.5 + i * 17,
+        'text-anchor': 'middle' }, ln));
     });
     mechG.appendChild(hubG);
 
@@ -488,8 +516,10 @@ function loadData(file) {
       const small = w.h < 34;
       const base = w.y + w.h / 2 + (small ? 4 : (w.p.rider ? -1 : 5));
       const g = el('g', { class: 'dimmable', 'data-node': 'prog:' + w.p.id });
+      // `short` is the hand-authored label for a band too thin to carry the full name.
+      // "Workforce development" shrank to the floor and still shipped "Workforce dev…".
       g.appendChild(el('text', { class: 'ws-name', x: L.bandX + 14, y: base,
-        style: `font-size:${small ? 12 : 14.5}px` }, w.p.name));
+        style: `font-size:${small ? 12 : 14.5}px` }, (small && w.p.short) || w.p.name));
       g.appendChild(el('text', { class: 'ws-amt', x: L.bandR - 14, y: base, 'text-anchor': 'end',
         style: `font-size:${small ? 12 : 15}px` }, fmt(w.p.amount)));
       if (w.p.rider && w.h > 44) {
@@ -520,13 +550,16 @@ function loadData(file) {
       });
 
       const nameY = rw.cy + 5;
-      g.appendChild(el('text', { class: 'rc-name', x: L.rowX, y: nameY }, r.name));
+      // `short` is the hand-authored map label. "Case Western Reserve University" cannot
+      // sit beside its TRANSLATIONAL chip at any legible size and shipped truncated; the
+      // full legal name stays in the panel, the table, the CSV and the screen-reader text.
+      g.appendChild(el('text', { class: 'rc-name', x: L.rowX, y: nameY }, r.short || r.name));
       g.appendChild(el('text', { class: 'rc-amt', x: L.rightEdge, y: nameY, 'text-anchor': 'end', fill: t0.deep },
         fmt(prime.amount)));
       // On a multi-program row the chips drop to the second line with the rider,
       // which leaves the full column width for names like "Regional workforce programs".
       const chipY = rw.dual ? nameY + 19 : nameY;
-      if (rw.dual) {
+      if (rw.multi) {
         const w2 = r.awards[1], p2 = G.programs.get(w2.programId);
         // data-short is the fallback when the row is too narrow for the program
         // name. Dropping it costs nothing — the chip beside it says the same thing.
@@ -624,9 +657,13 @@ function loadData(file) {
           a1.appendChild(el('text', { class: cls, x: tx, y: ly - 34 + i * 16,
             'text-anchor': 'end' }, t));
         });
+        /* The tip lands INSIDE the facility band, not on its left edge. At the edge it
+           sat beside the pale funnel and the hatched EDA match block, and at rendered
+           size a reader could read it as pointing at the match. */
+        const tipX = L.bandX + Math.min(58, L.bandW * 0.45);
         a1.appendChild(el('line', { class: 'anno-lead', x1: L.srcX - 8, y1: ly + 6,
-          x2: L.bandX + 3, y2: ly + 6 }));
-        a1.appendChild(el('circle', { class: 'anno-dot', cx: L.bandX + 3, cy: ly + 6, r: 2.5 }));
+          x2: tipX, y2: ly + 6 }));
+        a1.appendChild(el('circle', { class: 'anno-dot', cx: tipX, cy: ly + 6, r: 2.5 }));
         g.appendChild(a1);
       }
     }
@@ -678,13 +715,19 @@ function loadData(file) {
   // Measure once the real font is in, then place chips and shrink any name that
   // would collide with them. Nothing here changes the data — only the fit.
   function fitLabels(svg, L) {
-    const AMT_COL = 92;
+    /* 80, not 92. The widest amount in this column is "$11.12M" at about 57px, so 92
+       reserved 35px of air the recipient names needed: it is what pushed "Case Western
+       Reserve University" under the truncation threshold. */
+    const AMT_COL = 80;
 
     // Source labels are right-anchored into the left gutter, so anything too
-    // wide runs off the canvas rather than overlapping something.
+    // wide runs off the canvas rather than overlapping something. Long names have
+    // already been wrapped onto two lines by then; this only trims the remainder.
     const gutter = L.srcX - 16;
     svg.querySelectorAll('.src-name').forEach((n) => shrinkToFit(n, gutter, 15, 12));
     svg.querySelectorAll('.src-kind, .src-match').forEach((n) => shrinkToFit(n, gutter, 13.5, 12));
+    // White type on a dark node: overflow is invisible, so it shrinks and never truncates.
+    svg.querySelectorAll('.hub-title').forEach((n) => shrinkToFit(n, L.hub.w - 10, 13.5, 12, false));
 
     L.rows.forEach((rw) => {
       const g = svg.querySelector(`g[data-node="rcp:${CSS.escape(rw.r.id)}"].dimmable`);
@@ -708,7 +751,7 @@ function loadData(file) {
       // Shrink, then truncate, whichever text shares the line with the chips.
       const chipsLeft = L.rightEdge - AMT_COL - totalW;
       const rider = g.querySelector('.rc-rider');
-      const target = rw.dual ? rider : name;
+      const target = rw.multi ? rider : name;
       const nameAvail = rw.dual ? (L.rightEdge - AMT_COL) - L.rowX - 12 : chipsLeft - L.rowX - 12;
 
       shrinkToFit(name, nameAvail, 15, 12);
@@ -833,18 +876,47 @@ function loadData(file) {
       ]);
     };
 
+    /* One card for a cohort of identical awards. Nine consecutive $25,000 cards drew nine
+       1px slivers down about a thousand pixels of phone scroll and encoded nothing: at the
+       shared $18.52M maximum they are all the same length, and the only thing that differs
+       between them is the company name. So the nine names travel inside one card, each one
+       still its own button, so nothing is dropped and every deep link still resolves. */
+    const cohortCard = (p, outs, tint, max) => {
+      const sum = outs.reduce((a, o) => a + o.award.amount, 0);
+      const bar = h('div', { class: 'rcard-bar' }, [
+        h('span', { style: `width:${(sum / max) * 100}%;background:${tint.solid}` })]);
+      const names = h('ul', { class: 'rcard-names' });
+      outs.slice().sort((a, b) => a.recipient.name.localeCompare(b.recipient.name))
+        .forEach(({ recipient, award }) => names.appendChild(h('li', {}, [
+          h('button', { class: 'rname', type: 'button', 'data-kind': 'recipient',
+            'data-id': recipient.id, text: recipient.name,
+            'aria-label': `${recipient.name}, ${fmtSpoken(award.amount)}. Show details.` })])));
+      return h('li', { class: 'card-wide' }, [h('div', { class: 'rcard rcard--group' }, [
+        h('div', { class: 'rcard-top' }, [
+          h('span', { class: 'rcard-name',
+            text: `${numword(outs.length, true)} companies, ${fmt(outs[0].award.amount)} each` }),
+          h('span', { class: 'rcard-amt', text: fmt(sum) })
+        ]),
+        bar, names
+      ])]);
+    };
+
     if (cardMode === 'program') {
       d.programs.forEach((p) => {
         const so = G.sources.get(p.sourceId);
         const tint = TINT[p.tint];
         const outs = G.progOut.get(p.id).slice().sort((a, b) => b.award.amount - a.award.amount);
-        const list = h('ul', { class: 'card-list' });
-        outs.forEach(({ recipient, award }) => {
-          list.appendChild(card(recipient, award.amount, recipient.chips, tint, gmax,
-            [{ amount: award.amount, color: tint.solid }]));
-        });
         const amts = outs.map((o) => o.award.amount);
         const even = outs.length > 2 && Math.min(...amts) === Math.max(...amts);
+        const list = h('ul', { class: 'card-list' });
+        if (even && outs.length > 3) {
+          list.appendChild(cohortCard(p, outs, tint, gmax));
+        } else {
+          outs.forEach(({ recipient, award }) => {
+            list.appendChild(card(recipient, award.amount, recipient.chips, tint, gmax,
+              [{ amount: award.amount, color: tint.solid }]));
+          });
+        }
         const grp = h('section', { class: 'card-group', style: `--grp:${tint.solid}` }, [
           h('div', { class: 'cg-head' }, [
             h('h3', { class: 'cg-title', text: p.name }),
@@ -907,25 +979,32 @@ function loadData(file) {
       { color: TINT.s6.solid, text: 'Synthe6 startup awards' },
       { color: TINT.hub.solid, text: 'Hub workstreams' }
     ]));
-    lg.appendChild(block('Program chips', [
-      // Two R&D chips on purpose. EDA R&D is the five industry-led Tech Hub projects;
-      // TRANSLATIONAL is the ODOD program. Both are research; they are different money.
-      { chip: true, label: 'EDA', text: '' }, { chip: true, label: 'EDA R&D', text: '' },
-      { chip: true, label: 'OHIO HUB', text: '' }, { chip: true, label: 'TRANSLATIONAL', text: '' },
-      { chip: true, label: 'SYNTHE6', text: '' }, { chip: true, label: 'APEX', text: '' }
-    ]));
+    /* The third block was a key to the program chips: six chips with no text beside them,
+       restating styles the rows already spell out in words. Thirteen legend entries on a
+       directly-labelled chart is legend-as-primary-decoding, so the self-labelling half
+       is gone and only the two colour keys remain. (The two R&D chips are still distinct
+       on purpose: EDA R&D is the industry-led Tech Hub work, TRANSLATIONAL is the ODOD
+       program. Both are research; they are different money, and the hues say so.) */
     lg.hidden = false;
   }
 
   function renderProse() {
-    document.getElementById('fn-disclosure').textContent = DATA.meta.disclosures.join(' ');
-    document.getElementById('fn-scale').textContent = DATA.meta.scaleNote.join(' ');
+    /* CAVEAT INK. What stays visible beside the figure is one limitation sentence and one
+       source line, about 33 words against a 45-word budget. The EDA verification note, the
+       NEO-SMART note and the whole drawn-to-scale inventory ran to ~170 words of apparatus
+       under the map; they are the same words, one click away, where the reader who wants
+       them can still reach them without wading through them to get to the story. */
+    document.getElementById('fn-disclosure').textContent = DATA.meta.disclosures[0];
+    const more = document.getElementById('fn-more');
+    DATA.meta.scaleNote.concat(DATA.meta.disclosures.slice(1))
+      .forEach((t) => more.appendChild(h('p', { text: t })));
     const pl = document.getElementById('prov-list');
     DATA.meta.provenance.forEach((t) => pl.appendChild(h('li', { text: t })));
     const nl = document.getElementById('notshown-list');
     DATA.meta.notShown.forEach((t) => nl.appendChild(h('li', { text: t })));
   }
 
+  // One row per award, for the CSV and for the group-by-program reading.
   function tableRows() {
     const out = [];
     DATA.programs.forEach((p) => {
@@ -938,35 +1017,93 @@ function loadData(file) {
     return out;
   }
 
+  /* DISPLAY rows: the same money, ranked, with one cohort folded.
+     The archive table shipped ~27 rows and about 2,900px of scroll, a third of the page,
+     nine of them identical but for the company name. Ranking answers the question the
+     table is actually asked ("who got the most?"), the cohort folds into one row that
+     names all nine companies, and everything past the tenth row sits behind a control.
+     The CSV is unchanged and still has one line per award. */
+  const TOP_N = 10;
+  function displayRows() {
+    const rows = [];
+    DATA.programs.forEach((p) => {
+      const so = G.sources.get(p.sourceId);
+      const outs = G.progOut.get(p.id);
+      const amts = outs.map((o) => o.award.amount);
+      const even = outs.length > 3 && Math.min(...amts) === Math.max(...amts);
+      if (even) {
+        const names = outs.map((o) => o.recipient.name).sort((a, b) => a.localeCompare(b));
+        rows.push({ source: so.short, program: p.name,
+          recipient: `${numword(outs.length, true)} ` +
+            `${p.chip.charAt(0) + p.chip.slice(1).toLowerCase()} cohort companies`,
+          amount: amts.reduce((a, v) => a + v, 0), awardId: '',
+          funds: `${fmtFull(amts[0])} each in one-time cash: ${names.join(', ')}.` });
+      } else {
+        outs.forEach(({ recipient, award }) => rows.push({ source: so.short, program: p.name,
+          recipient: recipient.name, amount: award.amount,
+          awardId: award.awardId || '', funds: award.funds || '' }));
+      }
+    });
+    return rows.sort((a, b) => b.amount - a.amount);
+  }
+
   function renderTable() {
+    const rows = displayRows();
     const tb = document.getElementById('data-tbody');
     tb.textContent = '';
-    tableRows().forEach((r) => {
-      tb.appendChild(h('tr', {}, [
-        h('td', { class: 't-src', text: r.source }),
-        h('td', { text: r.program }),
-        h('th', { class: 't-rcp', scope: 'row', text: r.recipient }),
-        h('td', { class: 'num', text: fmtFull(r.amount) }),
-        h('td', { class: 't-id', text: r.awardId || '—' }),
-        h('td', { class: 't-funds', text: r.funds })
-      ]));
+    rows.forEach((r, i) => {
+      const tr = h('tr', i >= TOP_N ? { class: 'is-extra', hidden: 'hidden' } : {}, [
+        h('th', { class: 't-rcp', scope: 'row', 'data-label': 'Recipient', text: r.recipient }),
+        h('td', { class: 'num', 'data-label': 'Amount', text: fmtFull(r.amount) }),
+        h('td', { class: 't-by', 'data-label': 'Funded by' }, [
+          h('span', { class: 't-prog', text: r.program }),
+          h('span', { class: 't-src', text: r.source })
+        ]),
+        h('td', { class: 't-id', 'data-label': 'Award ID', 'data-none': r.awardId ? null : '1',
+          text: r.awardId || '—' }),
+        h('td', { class: 't-funds', 'data-label': 'What it funds', text: r.funds })
+      ]);
+      tb.appendChild(tr);
     });
+
     // Foot the column that is actually in the table. The rows sum to less than
-    // the awards total, and the note below the table says exactly why.
-    const rowSum = tableRows().reduce((a, r) => a + r.amount, 0);
+    // the awards total, and the sentence below the table says exactly why.
+    const rowSum = rows.reduce((a, r) => a + r.amount, 0);
     const tf = h('tfoot', {}, [h('tr', {}, [
-      h('td', { colspan: '3', text: 'Total to named recipients' }),
+      h('td', { text: 'Total to named recipients' }),
       h('td', { class: 'num', text: fmtFull(rowSum) }),
-      h('td', { colspan: '2', text: `of ${fmtFull(DATA.meta.totals.awards)} awarded` })
+      h('td', { colspan: '3', text: `of ${fmtFull(DATA.meta.totals.awards)} awarded` })
     ])]);
     const tbl = document.getElementById('data-table');
     const old = tbl.querySelector('tfoot');
     if (old) old.remove();
     tbl.appendChild(tf);
 
-    const note = document.getElementById('table-note');
-    note.textContent = '';
-    DATA.meta.reconciliation.forEach((t) => note.appendChild(h('p', { class: 'fn', text: t })));
+    const btn = document.getElementById('table-toggle');
+    const extra = rows.length - TOP_N;
+    const setState = (open) => {
+      tbl.querySelectorAll('tr.is-extra').forEach((tr) => { tr.hidden = !open; });
+      btn.textContent = open ? 'Show the ten largest only'
+        : `Show all ${rows.length} rows`;
+      btn.setAttribute('aria-expanded', String(open));
+    };
+    if (extra > 0) { btn.setAttribute('aria-controls', 'data-table'); setState(false);
+      btn.addEventListener('click', () => setState(btn.getAttribute('aria-expanded') !== 'true'));
+    } else { btn.parentElement.hidden = true; }
+
+    /* Four reconciliation paragraphs used to follow the table. The foot row already
+       carries the arithmetic, so what is left visible is the one sentence that says
+       where the gap is; the paragraph-by-paragraph version is a click away. */
+    const rd = G.programs.get('oh-rd').amount -
+      G.progOut.get('oh-rd').reduce((a, o) => a + o.award.amount, 0);
+    const s6 = G.programs.get('oh-startup').amount -
+      G.progOut.get('oh-startup').reduce((a, o) => a + o.award.amount, 0);
+    document.getElementById('table-note').textContent =
+      `The ${fmtFull(DATA.meta.totals.awards - rowSum)} difference is Ohio money committed but not ` +
+      `yet written into a sub-grant: ${fmtFull(rd)} of PIC Translational R&D, and ${fmtFull(s6)} of ` +
+      `the startup-support workstream delivered through the Bounce sub-grant that runs Synthe6.`;
+    const recon = document.getElementById('recon-more');
+    DATA.meta.reconciliation.forEach((t) => recon.appendChild(h('p', { text: t })));
   }
 
   function buildCsv() {
@@ -1123,7 +1260,7 @@ function loadData(file) {
   }
 
   function markSelected() {
-    viz.querySelectorAll('.hit, .rcard').forEach((b) => {
+    viz.querySelectorAll('.hit, .rcard[data-kind], .rname').forEach((b) => {
       const on = selected && b.dataset.kind === selected.kind && b.dataset.id === selected.id;
       b.classList.toggle('is-selected', !!on);
     });
@@ -1180,6 +1317,13 @@ function loadData(file) {
     currentMode = mode;
     lastW = W;
 
+    /* The subtitle's last sentence described the wide diagram. Below the card breakpoint
+       there is no wide diagram, so the sentence pointed at something that is not there. */
+    const sub = document.querySelector('.fig-sub-mode');
+    if (sub) sub.textContent = mode === 'diagram'
+      ? 'Connectors into individual recipients are not to scale.'
+      : 'Every bar shares one scale, anchored at the largest single award.';
+
     const root = mode === 'diagram' ? (renderDiagram(W), viz) : renderCards();
     if (first) startReveal(mode === 'diagram' ? viz : root);
     else { (mode === 'diagram' ? viz : root).classList.add('static'); }
@@ -1209,23 +1353,23 @@ function loadData(file) {
 
     // hover / focus highlight, click to open
     viz.addEventListener('pointerover', (e) => {
-      const b = e.target.closest('.hit, .rcard');
+      const b = e.target.closest('.hit, .rcard[data-kind], .rname');
       if (b && !selected) setHighlight(b.dataset.kind, b.dataset.id);
     });
     viz.addEventListener('pointerout', (e) => {
-      const b = e.target.closest('.hit, .rcard');
+      const b = e.target.closest('.hit, .rcard[data-kind], .rname');
       if (b && !selected && !viz.contains(e.relatedTarget)) setHighlight(null);
-      else if (b && !selected && !e.relatedTarget?.closest?.('.hit, .rcard')) setHighlight(null);
+      else if (b && !selected && !e.relatedTarget?.closest?.('.hit, .rcard[data-kind], .rname')) setHighlight(null);
     });
     viz.addEventListener('focusin', (e) => {
-      const b = e.target.closest('.hit, .rcard');
+      const b = e.target.closest('.hit, .rcard[data-kind], .rname');
       if (b && !selected) setHighlight(b.dataset.kind, b.dataset.id);
     });
     viz.addEventListener('focusout', (e) => {
       if (!selected && !viz.contains(e.relatedTarget)) setHighlight(null);
     });
     viz.addEventListener('click', (e) => {
-      const b = e.target.closest('.hit, .rcard');
+      const b = e.target.closest('.hit, .rcard[data-kind], .rname');
       if (!b) return;
       if (selected && selected.kind === b.dataset.kind && selected.id === b.dataset.id) closeDetail();
       else openDetail(b.dataset.kind, b.dataset.id);
@@ -1236,7 +1380,7 @@ function loadData(file) {
     // click-away, for the widths where there is no scrim to click
     document.addEventListener('click', (e) => {
       if (!selected) return;
-      if (e.target.closest('.panel, .hit, .rcard, #reset-view, #finder')) return;
+      if (e.target.closest('.panel, .hit, .rcard, .rname, #reset-view, #finder')) return;
       closeDetail({ restore: false });
     });
     resetBtn.addEventListener('click', () => { closeDetail(); setHighlight(null); });

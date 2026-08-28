@@ -19,6 +19,14 @@
 const {el, txt, ticks, frame, hoverable, tableView, SEQ, CAT, GRAY, INK} = PV;
 const D = await PV.data("churn.json");
 const FP = PV.footprint(D.meta);
+/* The industry code and its name, split on the FIRST comma. `meta.naics` is one field
+   holding both ("326, plastics and rubber products manufacturing"), and splitting it on
+   whitespace kept the comma — so three captions shipped "NAICS 326,,". A caption string
+   is editorial text: it is composed here, never stitched out of a data-dictionary field.
+   `meta.row` in particular stays out of reader prose; it is rendered, correctly, in the
+   methodology box. */
+const NAICS = D.meta.naics.split(",")[0].trim();
+const NAICS_NAME = D.meta.naics.slice(D.meta.naics.indexOf(",") + 1).trim();
 const Q = D.quarters, N = n => Math.round(n).toLocaleString("en-US");
 const label = q => `${q.year}Q${q.q}`;
 const avg = xs => xs.reduce((a, b) => a + b, 0) / xs.length;
@@ -37,10 +45,6 @@ const meanChurn = avg(Q.map(q => q.churn_rate));
 const base12 = avg(Q.slice(0, 4).map(q => q.churn_rate));
 const recent4 = avg(Q.slice(-4).map(q => q.churn_rate));
 const gapPts = (recent4 - base12) * 100;
-const hr12 = avg(Q.slice(0, 4).map(q => q.hires / q.emp));
-const hr4  = avg(Q.slice(-4).map(q => q.hires / q.emp));
-const sr12 = avg(Q.slice(0, 4).map(q => q.seps / q.emp));
-const sr4  = avg(Q.slice(-4).map(q => q.seps / q.emp));
 /* Trailing four-quarter averages: the trend under the seasonality. */
 const roll = k => Q.map((_, i) => i < 3 ? null : avg(Q.slice(i - 3, i + 1).map(k)));
 const rChurn = roll(q => q.churn_rate);
@@ -67,13 +71,11 @@ const ev = c => c.hires + c.seps;
 const outflowCo = CO.filter(c => c.seps > c.hires).length;
 const evRatio = ev(bigCo) / ev(hiCo);
 
-/* ------------------------------------------------------------------ hero row */
-PV.figures([
-  ["key", N(tHires), "hires", `across ${Q.length} quarters`],
-  ["", N(tSeps), "separations", "over the same period"],
-  ["", (tNet >= 0 ? "+" : "") + N(tNet), "net jobs", "hires minus separations"],
-  ["", pc1(meanChurn), "average churn", "of the workforce, per quarter"]
-]);
+/* The hero stat row is STATIC HTML in index.html rather than a PV.figures() call. Without
+   JS the page used to open on a headline and no numbers at all; these four are
+   single-vintage strings guarded by claims.json, so there is no reason for a script to be
+   the only thing that can print them. Same reasoning removed the JS that wrote the
+   claim-carrying titles and ledes: one copy of each sentence, in the markup. */
 
 const MOBILE = matchMedia("(max-width: 760px)");
 /* A paper plate behind an SVG label that must cross other ink (cost-scissors pattern). */
@@ -102,7 +104,29 @@ function placeLabels(items, lh) {
 }
 
 /* ============================================================ 1. the flows */
-function drawFlow() { MOBILE.matches ? flowMobile() : flowDesktop(); }
+/* The narrow rendering draws YEARS, so its how-to-read line and its text alternative are
+   written for years. A subtitle that says "quarterly" over annual bars, and an alt text
+   promising a net line the phone chart does not draw, are the same defect as a title that
+   names marks the reader cannot see. Both are set per rendering, here, so a breakpoint
+   change re-writes them with the chart. */
+function drawFlow() {
+  const mob = MOBILE.matches;
+  document.getElementById("flowsub").textContent = mob
+    ? `Hires (above) and separations (below) in NAICS ${NAICS}, ${FP.words} counties ` +
+      `summed, seasonally adjusted. Each bar is one calendar year, ${first.year} to ` +
+      `${last.year}; the pale last bar is three published quarters.`
+    : `Quarterly hires (above) and separations (below) in NAICS ${NAICS}, ${FP.words} ` +
+      `counties summed, seasonally adjusted, ${D.meta.span[0]} to ${D.meta.span[1]}. ` +
+      `Net change is drawn on the same axis in the same unit.`;
+  document.getElementById("flow-t").textContent = mob
+    ? `Hires and separations in plastics and rubber manufacturing across ${FP.words} ` +
+      `counties, totalled by year and drawn above and below a shared zero. The two sides ` +
+      `are close to mirror images in every year.`
+    : `Quarterly hires and separations in plastics and rubber manufacturing across ` +
+      `${FP.words} counties, drawn above and below a shared zero, with net change as a ` +
+      `flat line through the middle.`;
+  mob ? flowMobile() : flowDesktop();
+}
 
 function flowDesktop() {
   const {svg, W, H, m, w, h} = PV.chart("flow",
@@ -163,14 +187,20 @@ function flowDesktop() {
      ${q.counties < FP.n ? `<br>${FP.n - q.counties} of ${FP.n} counties withheld` : ""}`,
     `${label(q)}: ${N(q.hires)} hires, ${N(q.seps)} separations`));
 
-  /* Annotations last, in the top margin, tied to the shaded span by a leader. */
-  const mid = (xs(iLow) + xs(iTop)) / 2;
-  el("line", {x1: mid, y1: m.t - 16, x2: mid, y2: m.t, stroke: "var(--pv-axis)",
-    "stroke-width": 1}, svg);
+  /* Annotations last, in the top margin. TWO targets, so two treatments: the quarter-
+     specific line is centred over the 2020Q2 bar pair and dropped onto it by a leader;
+     the wave line is not leadered at all, because the shaded band under it already IS
+     its target. The single leader they used to share landed at the midpoint of the band,
+     two bars right of the quarter the bold text names. */
+  const xLow = xs(iLow);
   txt(svg, `${label(lowHire)}: hiring froze at ${N(lowHire.hires)} while ${N(lowHire.seps)} jobs ended`,
-    {x: m.l + w, y: m.t - 42, "text-anchor": "end", class: "pv-lab"});
+    {x: xLow, y: m.t - 42, "text-anchor": "middle", class: "pv-lab"});
   txt(svg, `then a two-year rehiring wave, peaking at ${N(topHire.hires)} hires in ${label(topHire)}`,
-    {x: m.l + w, y: m.t - 24, "text-anchor": "end", class: "pv-labq"});
+    {x: m.l + w, y: m.t - 22, "text-anchor": "end", class: "pv-labq"});
+  /* Leader last and short, so it drops from under the wave line straight onto the bar
+     pair rather than crossing it. */
+  el("line", {x1: xLow, y1: m.t - 11, x2: xLow, y2: m.t, stroke: "var(--pv-axis)",
+    "stroke-width": 1}, svg);
 }
 
 /* Mobile: quarters aggregate to years. Fourteen bars fit 375px; 55 do not, and a
@@ -264,10 +294,15 @@ function rateVariant(W, H, mob) {
     .filter(Boolean).join("L"), fill: "none", stroke: INK, "stroke-width": 3}, svg);
   if (mob) {
     /* One direct label with a leader: at 375px the thin-versus-heavy distinction is
-       carried by the subtitle, and two in-plot labels crowd the only clear band. */
+       carried by the subtitle, and two in-plot labels crowd the only clear band. The
+       leader is drawn in the heavy line's own ink at 1.5px and starts on a dot, because
+       a 1px hairline in axis gray was invisible at the rendered size and left the label
+       floating. */
     const i1 = 12;
-    el("line", {x1: xs(i1), y1: ys(rChurn[i1]) + 4, x2: xs(i1), y2: m.t + h - 20,
-      stroke: "var(--pv-axis)", "stroke-width": 1}, svg);
+    el("circle", {cx: xs(i1), cy: ys(rChurn[i1]), r: 3, fill: INK,
+      stroke: "var(--paper)", "stroke-width": 1.2}, svg);
+    el("line", {x1: xs(i1), y1: ys(rChurn[i1]) + 5, x2: xs(i1), y2: m.t + h - 20,
+      stroke: INK, "stroke-width": 1.5}, svg);
     txt(svg, "four-quarter average", {x: m.l + 4, y: m.t + h - 8, class: "pv-lab"});
   } else {
     const s1 = "four-quarter average";
@@ -286,12 +321,18 @@ function rateVariant(W, H, mob) {
      of <span class="v">${N(q.emp)}</span> jobs`,
     `${label(q)}: churn ${pc1(q.churn_rate)}`));
 
-  /* The peak, named. */
+  /* The peak, named — and named AS the heavy line's peak. It used to be typeset in the
+     single-quarter series' gray and set beside the thin line's higher spike, so the eye
+     bound 16.7% to the wrong series. Now it carries a dot on the heavy line, sits at that
+     dot's own height, and says which line it belongs to. */
   {
-    const s = mob ? `${pc1(rChurn[peakI])} peak` : `${pc1(rChurn[peakI])} at the 2022 peak`;
-    const px = mob ? xs(peakI) : xs(peakI) + 12, py = ys(rChurn[peakI]) + (mob ? 22 : -10);
+    const s = mob ? `${pc1(rChurn[peakI])} peak` : `${pc1(rChurn[peakI])} peak, four-quarter average`;
+    const px = mob ? xs(peakI) : xs(peakI) + 13;
+    const py = ys(rChurn[peakI]) + (mob ? 22 : 4);
+    el("circle", {cx: xs(peakI), cy: ys(rChurn[peakI]), r: 3.5, fill: INK,
+      stroke: "var(--paper)", "stroke-width": 1.2}, svg);
     plate(svg, s, mob ? px - s.length * 3.6 : px, py, 7.2);
-    txt(svg, s, {x: px, y: py, class: "pv-labq",
+    txt(svg, s, {x: px, y: py, class: mob ? "pv-labq" : "pv-lab", fill: INK,
       "text-anchor": mob ? "middle" : "start"});
   }
 
@@ -301,11 +342,18 @@ function rateVariant(W, H, mob) {
   const yA = ys(base12), yB = ys(recent4);
   if (mob) {
     /* Inside the plot, in the empty band under the series — the top margin belongs to the
-       axis label, and a caption printed over it is how the first mobile pass failed. */
+       axis label, and a caption printed over it is how the first mobile pass failed. The
+       label is bracketed to the line's last point and dropped to the clear band on a
+       leader; unanchored, it read as a caption that happened to land in the plot. */
+    const xE = m.l + w;
+    el("path", {d: `M${xE - 5},${yB} h5 V${yA} h-5`, fill: "none", stroke: "var(--pv-ink)",
+      "stroke-width": 1.4}, svg);
+    el("line", {x1: xE, y1: yA + 2, x2: xE, y2: m.t + h - 58, stroke: "var(--pv-ink)",
+      "stroke-width": 1}, svg);
     txt(svg, `still ${gapPts.toFixed(1)} points above 2012`,
-      {x: m.l + w, y: m.t + h - 46, "text-anchor": "end", class: "pv-lab"});
+      {x: xE, y: m.t + h - 44, "text-anchor": "end", class: "pv-lab"});
     txt(svg, `${pc1(recent4)} now, ${pc1(base12)} in 2012`,
-      {x: m.l + w, y: m.t + h - 28, "text-anchor": "end", class: "pv-labq"});
+      {x: xE, y: m.t + h - 26, "text-anchor": "end", class: "pv-labq"});
   } else {
     const bx = m.l + w + 10;
     el("path", {d: `M${bx - 5},${yB} h5 V${yA} h-5`, fill: "none", stroke: "var(--pv-ink)",
@@ -409,39 +457,72 @@ function countyVariant(W, H, mob) {
     xlab: mob ? "Average jobs in the county" : "Average jobs in the county, last four quarters",
     ylab: mob ? "Churn rate per quarter" : "Average quarterly churn rate"});
 
-  /* The region on the same axis, so a county reads against the whole. */
+  /* The region on the same axis, so a county reads against the whole. Shortened on the
+     narrow rendering and plated, because at 375px the long form ran back into Cuyahoga's
+     dot and the dashed rule printed through its own label. */
   el("line", {x1: m.l, y1: ys(recent4), x2: m.l + w, y2: ys(recent4),
     stroke: "var(--hover)", "stroke-width": 1.5, "stroke-dasharray": "5 4"}, svg);
-  txt(svg, mob ? `${pc1(recent4)}: all twelve counties`
-               : `${pc1(recent4)}: all twelve counties over the same four quarters`,
-    {x: m.l + w, y: ys(recent4) - 8, "text-anchor": "end", class: "pv-labq",
-     fill: "var(--hover)"});
+  {
+    const s = mob ? `${pc1(recent4)}: all twelve`
+                  : `${pc1(recent4)}: all twelve counties over the same four quarters`;
+    plate(svg, s, m.l + w, ys(recent4) - 8, mob ? 6.9 : 7.1, "end");
+    txt(svg, s, {x: m.l + w, y: ys(recent4) - 8, "text-anchor": "end", class: "pv-labq",
+      fill: "var(--hover)"});
+  }
 
   /* Labels go right of their dot unless that would run off the plot, then left. Widths
      are estimated from the character count, which is what the de-collision loop needs. */
   const rDot = mob ? 6 : 8, cw = mob ? 6.7 : 7.0, off = rDot + 6;
-  const spots = placeLabels(CO.map(c => {
+  /* WHICH DOTS GET NAMES. Twelve labels fit 1,100px and do not fit 375px: at the rendered
+     narrow size the reference label printed over Cuyahoga, the 10% gridline ran through
+     Lorain and Geauga, Lake sat on the dashed rule and Portage touched Summit. Thinning
+     the labels is the documented mobile move for a scatter, so the narrow rendering names
+     only the three counties the annotations argue about, plus whichever county the reader
+     has selected. Every dot keeps its hover value, and all twelve are in the table. */
+  const NAMED = new Set([hiCo.county, loCo.county, bigCo.county]);
+  const shown = mob ? CO.filter(c => NAMED.has(c.county) || SEL === c.county) : CO;
+  const spots = placeLabels(shown.map(c => {
     const tw = c.county.length * cw, right = xs(c.emp) + off;
     /* Flip to the left when the right-hand run would print over another county's dot,
        or off the plot. Two dots 200 jobs apart at the same rate is the crowded case. */
     const overDot = CO.some(o => o !== c && xs(o.emp) > right && xs(o.emp) < right + tw &&
       Math.abs(ys(o.churn_rate) - ys(c.churn_rate)) < 12);
-    const left = overDot || right + tw > m.l + w - 2;
-    return {c, tw, left, x: left ? xs(c.emp) - off : right, y: ys(c.churn_rate) + 4,
-            w: tw + off};
-  }).map(s => Object.assign(s, {x0: s.left ? s.x - s.tw : s.x})),
+    const flip = overDot || right + tw > m.l + w - 2;
+    /* On the narrow rendering a left-flipped name lands nearer the NEXT dot to its left
+       than its own, because the counties it names sit at the ends of the x range: at 375px
+       "Summit" flipped left and came to rest against Portage's dot, reading as Portage's
+       label. There is no room to its right either, so it goes ABOVE its own dot, where it
+       cannot be read as belonging to anything else. */
+    const above = mob && flip;
+    const left = flip && !above;
+    const x = above ? xs(c.emp) : left ? xs(c.emp) - off : right;
+    return {c, tw, left, above, x,
+            y: ys(c.churn_rate) + (above ? -(rDot + 7) : 4),
+            w: above ? tw : tw + off};
+  }).map(s => Object.assign(s,
+    {x0: s.above ? s.x - s.tw / 2 : s.left ? s.x - s.tw : s.x})),
     mob ? 15 : 16);
-  spots.forEach(({c, x, y, ly, left}) => {
+  const spotOf = new Map(spots.map(s => [s.c.county, s]));
+  CO.forEach(c => {
     const g = el("g", !SEL || SEL === c.county ? {} : {opacity: .18}, svg);
     const cx = xs(c.emp), cyy = ys(c.churn_rate);
-    if (Math.abs(ly - y) > 3)
-      el("line", {x1: cx + (left ? -1 : 1) * (rDot + 1), y1: cyy,
-        x2: x + (left ? 3 : -3), y2: ly - 4, stroke: "var(--pv-axis)",
+    const s = spotOf.get(c.county);
+    if (s && Math.abs(s.ly - s.y) > 3)
+      el("line", {x1: cx + (s.left ? -1 : 1) * (rDot + 1), y1: cyy,
+        x2: s.x + (s.left ? 3 : -3), y2: s.ly - 4, stroke: "var(--pv-axis)",
         "stroke-width": 1}, g);
     el("circle", {cx, cy: cyy, r: SEL === c.county ? rDot + 3 : rDot,
       fill: SEL === c.county ? CAT[1] : SEQ[4], stroke: "var(--paper)",
       "stroke-width": 1.5}, g);
-    txt(g, c.county, {x, y: ly, class: "c-dot", "text-anchor": left ? "end" : "start"});
+    if (s) {
+      /* A paper plate under every name. Lake's rate sits within a tenth of a point of the
+         regional reference, so the dashed rule printed straight through its label. A
+         centred plate is the end-anchored one shifted by half its own width. */
+      plate(g, c.county, s.above ? s.x + s.tw / 2 : s.x, s.ly, cw,
+        s.above || s.left ? "end" : "start");
+      txt(g, c.county, {x: s.x, y: s.ly, class: "c-dot",
+        "text-anchor": s.above ? "middle" : s.left ? "end" : "start"});
+    }
     hoverable(el("circle", {cx, cy: cyy, r: rDot + 8, fill: "transparent"}, g),
       `<b>${c.county} County</b><br>churn <span class="v">${pc1(c.churn_rate)}</span>
        per quarter<br><span class="v">${N(c.emp)}</span> jobs<br>
@@ -471,8 +552,13 @@ function countyVariant(W, H, mob) {
     aHi.forEach((s, i) => txt(svg, s, {x: xs(hiCo.emp) + 44,
       y: ys(hiCo.churn_rate) + 34 + i * 17, class: i ? "pv-labq" : "pv-lab",
       fill: i ? null : CAT[1]}));
-    aBig.forEach((s, i) => txt(svg, s, {x: xs(bigCo.emp) - 16,
-      y: ys(bigCo.churn_rate) + 30 + i * 17, "text-anchor": "end",
+    /* Summit's callout gets the same leader Trumbull's has. Without one it floated
+       between the Portage and Summit dots and could have named either. */
+    el("line", {x1: xs(bigCo.emp) - 10, y1: ys(bigCo.churn_rate) + 7,
+      x2: xs(bigCo.emp) - 20, y2: ys(bigCo.churn_rate) + 24, stroke: "var(--pv-axis)",
+      "stroke-width": 1}, svg);
+    aBig.forEach((s, i) => txt(svg, s, {x: xs(bigCo.emp) - 24,
+      y: ys(bigCo.churn_rate) + 34 + i * 17, "text-anchor": "end",
       class: i ? "pv-labq" : "pv-lab"}));
   }
 }
@@ -480,10 +566,10 @@ function countyVariant(W, H, mob) {
 function verdict() {
   const v = document.getElementById("verdict");
   if (!SEL) {
-    v.innerHTML = `<b>All twelve counties:</b> rates run from ${pc1(loCo.churn_rate)} in
-      ${loCo.county} to ${pc1(hiCo.churn_rate)} in ${hiCo.county}, and ${outflowCo} of
-      ${nCO} recorded more separations than hires over the four quarters. Tap a county to
-      read the chart from its seat.`;
+    v.innerHTML = `<b>All ${FP.words} counties:</b> the lowest rate is
+      ${pc1(loCo.churn_rate)} in ${loCo.county} and the highest ${pc1(hiCo.churn_rate)} in
+      ${hiCo.county}, and ${outflowCo} of ${nCO} recorded more separations than hires over
+      the four quarters. Select a county to read the chart from its seat.`;
     return;
   }
   const c = CO.find(x => x.county === SEL);
@@ -491,8 +577,8 @@ function verdict() {
   v.innerHTML = `<b>${c.county} County:</b> ${pc1(c.churn_rate)} a quarter on
     ${N(c.emp)} jobs, ${rank === 1 ? "the highest rate" : rank === nCO
       ? "the lowest rate" : `the ${ORD[rank]} highest rate of ${nCO}`} in the footprint.
-    Over the last four published quarters that is <b>${N(c.hires)}</b> hires and
-    <b>${N(c.seps)}</b> separations, ${N(ev(c))} job events in all.`;
+    Over the last four published quarters that is ${N(c.hires)} hires and
+    ${N(c.seps)} separations, ${N(ev(c))} job events in all.`;
 }
 
 {
@@ -517,25 +603,17 @@ verdict();
 
 /* ============================================ 5. what it is on a shop floor */
 const FLOOR = 150;
-const perQ = hc => hc * meanChurn;                 // hires, and separations, per quarter
 const perYr = hc => hc * meanChurn * 4;            // replacement hires in a year
 const perYrNow = hc => hc * recent4 * 4;
 
-document.getElementById("floortitle").textContent =
-  `What ${pc1(meanChurn)} a quarter looks like at a ${FLOOR}-person plant`;
-document.getElementById("floorlede").innerHTML =
-  `Averaged over fourteen years, the cluster moves ${pc1(meanChurn)} of its jobs in a
-   quarter. At a ${FLOOR}-person molder that is about <b>${Math.round(perQ(FLOOR))}</b>
-   people starting and about ${Math.round(perQ(FLOOR))} leaving every quarter, roughly
-   <b>five of each in a month</b>, and about <b>${Math.round(perYr(FLOOR))} replacement
-   hires</b> to make in a year. The plant is illustrative: it applies a cluster average
-   to a single site, and no single plant runs at the average.`;
+/* The section head and its lede are static in index.html: the default 150-person case is
+   a single-vintage sentence guarded by churn-shop-floor, so it is markup, not output. */
 
 function calc() {
   const raw = Number(document.getElementById("hc").value);
   const hc = Number.isFinite(raw) ? Math.min(20000, Math.max(1, Math.round(raw))) : FLOOR;
   document.getElementById("calcout").innerHTML =
-    `At the fourteen-year average of ${pc1(meanChurn)} a quarter, a <b>${N(hc)}</b>-person
+    `At the fourteen-year average of ${pc1(meanChurn)} a quarter, a ${N(hc)}-person
      plant makes about <b>${N(perYr(hc))} replacement hires a year</b> and sees about
      ${N(perYr(hc))} people leave. At the most recent four quarters&rsquo;
      ${pc1(recent4)}, about ${N(perYrNow(hc))}. Both are the cluster rate applied to one
@@ -544,35 +622,28 @@ function calc() {
 document.getElementById("hc").addEventListener("input", calc);
 calc();
 
-/* ============================================== tables, source lines, notes */
+/* ================================ tables, source lines, and the one note box
+
+   CAVEAT INK. Each figure gets one source line and at most one limitation sentence,
+   inside a 45-word budget, and the page gets ONE callout box. Everything that used to
+   crowd the captions — a 170-word source block under the flow chart with five bold
+   interruptions, a second note box, the county/quarterly reconciliation — is now folded
+   into the methodology, which is depth rather than disclosure: no caveat that changes how
+   a number should be read has left the figure it qualifies. */
 document.getElementById("flowsub").textContent =
-  `Quarterly hires (above) and separations (below) in NAICS ${D.meta.naics.split(" ")[0]}, ` +
-  `${FP.label} counties summed, seasonally adjusted, ${D.meta.span[0]} to ${D.meta.span[1]}. ` +
-  `Net change is drawn on the same axis in the same unit. On a phone the same series is ` +
-  `aggregated to years.`;
+  `Quarterly hires (above) and separations (below) in NAICS ${NAICS}, ${FP.words} ` +
+  `counties summed, seasonally adjusted, ${D.meta.span[0]} to ${D.meta.span[1]}. ` +
+  `Net change is drawn on the same axis in the same unit.`;
 document.getElementById("flowtable").innerHTML = tableView("f",
   "Quarterly hires, separations and net change",
   ["Quarter", "Hires", "Separations", "Net", "Jobs", "Counties"],
   Q.map(q => [label(q), N(q.hires), N(q.seps), (q.net >= 0 ? "+" : "") + N(q.net),
     N(q.emp), q.counties]));
-{
-  const thin = Q.filter(q => q.counties < FP.n).length;
-  document.getElementById("flowsrc").innerHTML =
-    `Source: ${D.meta.source}, NAICS ${D.meta.naics}. ${D.meta.row}. Across the period
-     <b>${N(tHires)}</b> jobs started and <b>${N(tSeps)}</b> ended, so the region replaced
-     about <b>${replMult.toFixed(1)} times</b> its own starting workforce to finish with
-     ${N(tNet)} more. The beginning-of-quarter count reads ${N(first.emp)} in
-     ${label(first)} against ${N(last.emp)} in ${label(last)}: a seasonally adjusted stock
-     and seasonally adjusted flows are estimated separately and do not add up to one
-     another, so the net above is a flow ledger rather than the change in the stock.
-     ${thin ? `<b>${thin} of ${Q.length} quarters have a county withheld</b>, so those bars
-     are floors.` : `Every quarter carries all ${FP.words} counties, so no bar here is a
-     floor.`} 2025Q4 is absent, not zero: QWI has not published it. The phone rendering
-     sums quarters into years, which changes the shape of the chart and none of the values.`;
-}
+document.getElementById("flowsrc").textContent =
+  `Source: ${D.meta.source}, NAICS ${NAICS} (${NAICS_NAME}), ${FP.label} counties summed, ` +
+  `${D.meta.span[0]} to ${D.meta.span[1]}. The stock and the flows are estimated ` +
+  `separately, so the net line is a flow ledger and not the change in employment.`;
 
-document.getElementById("ratetitle").textContent =
-  `The four-quarter average ends at ${pc1(recent4)}, about ${gapPts.toFixed(1)} points above 2012`;
 document.getElementById("ratesub").textContent =
   `Share of jobs moving in or out per quarter. Thin line: single quarters. Heavy line: ` +
   `trailing four-quarter average. Dashed: the 2012 four-quarter average. ` +
@@ -582,74 +653,43 @@ document.getElementById("ratetable").innerHTML = tableView("r",
   ["Quarter", "Churn rate", "Four-quarter average", "Jobs"],
   Q.map((q, i) => [label(q), pc1(q.churn_rate), rChurn[i] == null ? "—" : pc1(rChurn[i]),
     N(q.emp)]));
-document.getElementById("ratesrc").innerHTML =
-  `${D.meta.source}, NAICS ${D.meta.naics.split(" ")[0]}, ${FP.label} summed. The
-   four-quarter average reads <b>${pc1(base12)}</b> through 2012Q4 and
-   <b>${pc1(recent4)}</b> through ${label(last)}, and it has sat above that 2012 level in
-   ${aboveBase} of the ${nRoll} quarters it covers. It peaked at ${pc1(rChurn[peakI])} in
-   ${label(Q[peakI])}.`;
+document.getElementById("ratesrc").textContent =
+  `Source: ${D.meta.source}, NAICS ${NAICS}, ${FP.label} summed, ${D.meta.span[0]} to ` +
+  `${D.meta.span[1]}. QWI is re-benchmarked periodically, so read the ` +
+  `${gapPts.toFixed(1)}-point rise as an estimate rather than a settled number.`;
+/* The page's single callout box, merged from two. It carries the counting rule that
+   governs every number here and the revision exposure of the one claim most sensitive to
+   it, and nothing else. */
 document.getElementById("revnote").innerHTML =
-  `<b>How much of this gap could be revision?</b> QWI is re-benchmarked periodically and
-   is the most revision-prone series published on this site. This pull carries one vintage,
-   so we cannot say how far past revisions moved these particular quarters, and the
-   ${gapPts.toFixed(1)}-point gap is best read as an estimate. What does not rest on the
-   endpoint: the four-quarter average has been above its 2012 level in ${aboveBase} of
-   ${nRoll} quarters, and that is a shape a revision would have to reverse wholesale.`;
+  `<b>What this cannot tell you.</b> QWI counts jobs, so one person taking two jobs
+   appears twice, and a move between two plants inside the cluster shows as one separation
+   and one hire. It cannot separate a quit from a layoff. QWI is also re-benchmarked
+   periodically and this page carries a single vintage of it, so the
+   ${gapPts.toFixed(1)}-point rise is an estimate; what a revision would have to reverse is
+   the shape, an average above its 2012 level in ${aboveBase} of ${nRoll} quarters.`;
 
-document.getElementById("splitlede").innerHTML =
-  `The rate above is the average of two flows, and only one of them moved. Between 2012
-   and the last four published quarters the separation rate rose about
-   <b>${((sr4 - sr12) * 100).toFixed(1)} points</b> while the hire rate rose about
-   <b>${((hr4 - hr12) * 100).toFixed(1)}</b>. In 2012 hiring ran
-   ${((hr12 - sr12) * 100).toFixed(1)} points ahead of leaving; on a four-quarter average
-   leaving has run ahead in every quarter since ${sepSince}.`;
-document.getElementById("splittitle").textContent =
-  `Hiring ran ahead through the 2010s; since ${sepSince} leaving has, for ${sepRun} quarters straight`;
 document.getElementById("splittable").innerHTML = tableView("s",
   "Hire rate, separation rate and the gap, trailing four quarters",
   ["Quarter", "Hire rate", "Separation rate", "Gap, points"],
   Q.map((q, i) => rHire[i] == null ? null
     : [label(q), pc1(rHire[i]), pc1(rSep[i]), ptsT(+spread[i].toFixed(2))]).filter(Boolean));
-document.getElementById("splitsrc").innerHTML =
-  `Derived from the same series: hires ÷ jobs and separations ÷ jobs, each averaged over
-   the trailing four quarters, then differenced. The first three quarters of 2012 have no
-   trailing window and are not drawn. A gap of one point on a ${N(last.emp)}-job base is
-   about ${N(last.emp / 100)} jobs a quarter.`;
+/* This figure names its own source. It used to open "Derived from the same series",
+   which is a reference to a caption 800px above and leaves the figure unreadable alone. */
+document.getElementById("splitsrc").textContent =
+  `Source: ${D.meta.source}, NAICS ${NAICS}, ${FP.label} summed. Hires and separations ` +
+  `are each divided by jobs, averaged over the trailing four quarters, then differenced; ` +
+  `2012’s first three quarters have no window and are not drawn.`;
 
-document.getElementById("countytitle").textContent =
-  `${hiCo.county} runs the highest rate on the smallest base: ${pc1(hiCo.churn_rate)} of ${N(hiCo.emp)} jobs`;
 document.getElementById("countytable").innerHTML = tableView("c",
   "Churn by county, last four published quarters",
   ["County", "Churn rate", "Hires", "Separations", "Jobs", "Quarters withheld"],
   byRate.map(c => [c.county, pc1(c.churn_rate), N(c.hires), N(c.seps), N(c.emp),
     c.quarters_missing]));
-document.getElementById("countysrc").innerHTML =
-  `${D.meta.source}, NAICS ${D.meta.naics.split(" ")[0]}, last four published quarters
-   (2024Q4 to ${label(last)}). Each county&rsquo;s rate is computed from its own row.
-   County employment here totals ${N(CO.reduce((a, c) => a + c.emp, 0))} against
-   ${N(avg(Q.slice(-4).map(q => q.emp)))} in the quarterly series over the same span,
-   because the two are averaged differently in the derivation; the reference line is the
-   quarterly figure used everywhere else on this page. ${hiCo.county}&rsquo;s rate rests on
-   ${N(hiCo.emp)} jobs, the smallest base here, so it is the cell most likely to move when
-   QWI revises and the ranking of the twelve should be read as unstable at the edges.`;
-document.getElementById("caveat").innerHTML =
-  `<b>What this cannot tell you.</b> QWI counts jobs, so one person taking two jobs in a
-   year appears twice, and a person moving between two plants in the same county shows as
-   one separation and one hire. Churn here includes movement <em>within</em> the cluster,
-   which is not the same as leaving it, and the data cannot separate a quit from a layoff
-   or a retirement from a poach. There is no outside benchmark on this page: an earlier
-   version compared these counties with a single out-of-state county, and that comparison
-   was pulled rather than repaired. The reason, and what a fair one would need, are in
-   &ldquo;How we did this&rdquo; below.`;
+document.getElementById("countysrc").textContent =
+  `Source: ${D.meta.source}, NAICS ${NAICS}, by county, 2024Q4 to ${label(last)}. ` +
+  `${hiCo.county}’s rate rests on ${N(hiCo.emp)} jobs, the smallest base here, so it is ` +
+  `the cell most likely to move on revision and the ranking is unstable at the edges.`;
 
-document.getElementById("closersub").innerHTML =
-  `Between ${label(first)} and ${label(last)} the cluster gained <b>${N(tNet)} net
-   jobs</b> across <b>${N(tHires + tSeps)} hire and separation events</b>, a flow about
-   <b>${N((tHires + tSeps) / tNet)} times larger</b> than the number it is scored on. Net
-   employment is a legitimate outcome measure, and funders are entitled to score it. The
-   point is that a program changing how people move through this industry can do real
-   work without moving that number, and that since ${sepSince} the movement has run
-   toward the door.`;
 
 /* ---------------------------------------------------------------- assemble */
 function drawAll() { drawFlow(); drawRate(); drawSplit(); drawCounty(); }
@@ -660,15 +700,39 @@ MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
 /* Footprint banner — stated on the page, not left to the reader to infer. */
 PV.footprintBanner(FP);
 
-/* Standard methodology + AI disclosure. Generated, not written — see picviz.js. The
-   removed peer comparison is appended here rather than left in the body: it is apparatus,
-   and it was standing where the resolution beat belongs. PV.methodology()'s meta-key sets
-   are fixed in the shared core, so a page-specific block is added to the returned section
-   instead of editing that core. */
+/* Standard methodology + AI disclosure. Generated, not written — see picviz.js. Three
+   page-specific blocks are appended: the removed peer comparison, what a fair one would
+   need, and the detail that used to crowd the figure captions. All three FOLD behind
+   their own heads. Methodology was 28% of the scroll fully expanded, which is apparatus
+   out-inking the story it underwrites; folded, it reads at caption scale and every
+   inference-affecting caveat is still printed beside its own chart. PV.methodology()'s
+   meta-key sets are fixed in the shared core, so page-specific blocks are added to the
+   returned section rather than by editing that core. */
 const meth = await PV.methodology({page: "churn", meta: D.meta});
 meth.querySelector(".pv-method-grid").insertAdjacentHTML("beforeend", `
-  <div>
-    <h3>Why there is no outside comparison here</h3>
+  <details class="fold">
+    <summary><h3>Notes behind the four figures</h3></summary>
+    <p>Across the period ${N(tHires)} jobs started and ${N(tSeps)} ended, so the region
+      replaced about ${replMult.toFixed(1)} times its own opening workforce to finish with
+      ${N(tNet)} more. The beginning-of-quarter count reads ${N(first.emp)} in
+      ${label(first)} against ${N(last.emp)} in ${label(last)}: the seasonally adjusted
+      stock and the seasonally adjusted flows are estimated separately and do not add up to
+      one another, which is why the net drawn on the flow chart is a ledger of flows rather
+      than the change in the stock.</p>
+    <p>Every published quarter carries all ${FP.words} counties, so no bar on the flow
+      chart is a floor. ${last.year}Q4 is absent rather than zero: QWI has not
+      published it. Below 760px the flow chart aggregates quarters into years, which
+      changes the shape of the chart and none of its values, and carries its own title.</p>
+    <p>On the gap chart, one point of separation rate on a ${N(last.emp)}-job base is about
+      ${N(last.emp / 100)} jobs a quarter.</p>
+    <p>On the county chart, each county’s rate is computed from its own row. County
+      employment totals ${N(CO.reduce((a, c) => a + c.emp, 0))} against
+      ${N(avg(Q.slice(-4).map(q => q.emp)))} in the quarterly series over the same span,
+      because the two are averaged differently in the derivation; the dashed reference line
+      is the quarterly figure used everywhere else on this page.</p>
+  </details>
+  <details class="fold">
+    <summary><h3>Why there is no outside comparison here</h3></summary>
     <p>An earlier version of this page ended with a peer comparison: six counties picked
       off a national ranking of payroll records, with Greenville County, South Carolina
       shown as holding its workers nearly twice as well. It was removed rather than fixed,
@@ -688,9 +752,9 @@ meth.querySelector(".pv-method-grid").insertAdjacentHTML("beforeend", `
     <p>QWI also cannot support the word &ldquo;holds.&rdquo; It counts separations without
       distinguishing a quit from a layoff from a plant closing, so nothing in this data
       says whether an employer kept anyone.</p>
-  </div>
-  <div>
-    <h3>What a fair comparison would need</h3>
+  </details>
+  <details class="fold">
+    <summary><h3>What a fair comparison would need, and one number this page lacks</h3></summary>
     <p>Two pulls this page does not have, both from the same API and both cheap:</p>
     <ul>
       <li>The identical QWI seasonally adjusted series with <span class="mono">industry=00</span>
@@ -700,17 +764,14 @@ meth.querySelector(".pv-method-grid").insertAdjacentHTML("beforeend", `
         <span class="mono">industry=00</span> for earnings, but only
         <span class="mono">Emp,EarnBeg</span>, so the flow variables are missing. Same
         pipeline, same suppression rules, same summing bias on both sides.</li>
-      <li>A single county against a single county on NAICS 326, which is the only way to
-        drop the cross-county double count instead of arguing about its size.</li>
+      <li>A single county against a single county on NAICS ${NAICS}, which is the only way
+        to drop the cross-county double count instead of arguing about its size.</li>
     </ul>
     <p>Until one of those is pulled, the comparisons on this page are internal: the
-      cluster against its own 2012, and the twelve counties against each other.</p>
-  </div>
-  <div>
-    <h3>One number this page does not have</h3>
-    <p>How far QWI revisions have historically moved these quarters. That needs archived
-      vintages of the same series, which this pull does not carry, so the
-      ${gapPts.toFixed(1)}-point rise is reported as an estimate and the revision caveat
-      sits beside the chart it affects.</p>
-  </div>`);
+      cluster against its own 2012, and the ${FP.words} counties against each other.</p>
+    <p>The missing number is how far QWI revisions have historically moved these quarters.
+      That needs archived vintages of the same series, which this page does not carry, so
+      the ${gapPts.toFixed(1)}-point rise is reported as an estimate and the revision
+      caveat sits beside the chart it affects.</p>
+  </details>`);
 })();

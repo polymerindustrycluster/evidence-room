@@ -14,16 +14,19 @@
 
 <header class="masthead">
   <div class="wrap">
-    <p class="eyebrow">Two public records &middot; 1898 to 2029</p>
+    <p class="eyebrow">Two public records, 1898&ndash;2029</p>
     <h1>Akron earned this cluster over a century. The last three years are the test.</h1>
     <p class="lede">
-      The public record holds <b id="cad-before">4</b> events in the 34 months before the
-      October 2023 federal designation and <b id="cad-since">68</b> delivered in the 34 months
-      since. The century before that is here too: <b id="h-shown">32</b> proven events,
-      <span id="h-first">1898</span> to <span id="h-last">2012</span>, that explain why the
-      designation landed in Akron at all. Every event on this page carries a named public
-      source, and the <b id="n-fwd">18</b> events still ahead are scheduled, not delivered.
+      The public record holds <span id="cad-before">4</span> events in the 34 months before the
+      October 2023 federal designation and <b><span id="cad-since">68</span> delivered in the 34
+      months since</b>. The century that explains why it landed in Akron is here too:
+      <span id="h-shown">32</span> proven events, <span id="h-first">1898</span> to
+      <span id="h-last">2012</span>. The <span id="n-fwd">18</span> dates ahead are scheduled,
+      not delivered.
     </p>
+    <p class="byline">By the PIC Evidence Room &middot; Analysis and graphics by the Evidence Room
+      &middot; Data PIC&rsquo;s merged event inventory and the NEO Polymer Wins register
+      &middot; August 2026</p>
     <ul class="topline" id="topline">
       <!-- filled from data; static fallback below is replaced on load -->
       <li><b>&mdash;</b><span>public events</span></li>
@@ -46,7 +49,8 @@
       <p class="fig-title">The proven record runs 1898 to 2012, then goes quiet until the designation</p>
       <p class="fig-sub">One dot per proven event on five era columns of equal width, so the
         axis is not linear. Top row: what changed the region&rsquo;s capacity. Bottom row:
-        what was first understood here.</p>
+        what was first understood here. The sixth column, 2013 to 2023, is drawn empty
+        because the register proves nothing in it.</p>
       <div class="pro-viz chart" id="pro-viz" tabindex="-1">
         <p class="nojs">This chart needs JavaScript. The same rows are in the table below the photographs.</p>
       </div>
@@ -126,11 +130,9 @@
         <p class="nojs">This chart needs JavaScript. The counts it draws are in the paragraph above.</p>
       </div>
       <p class="pre-list" id="pre-list"></p>
-      <p class="fig-src">Source: PIC&rsquo;s merged event inventory, public rows only. The
-        record is itself a designation-era compilation: an event from before the cluster had
-        staff to log it had fewer routes in, so the before count is a lower bound and the
-        seventeenfold ratio an upper bound. The two century-scale context rows live in the
-        heritage strip above, and are not counted here.</p>
+      <p class="fig-src">Source: PIC&rsquo;s merged event inventory, public rows only, 2021
+        through 13 August 2026. The record was compiled in the designation era, so the before
+        count is a lower bound and the seventeenfold ratio an upper bound.</p>
     </div>
   </section>
 
@@ -158,7 +160,8 @@
       <p class="fig-title">The delivered record stops at Today; 18 hollow dots wait beyond it</p>
       <p class="fig-sub">Public events 2023 to 2029, one dot each, by workstream. Solid:
         delivered. Hollow: scheduled. Vertical rules mark the designation, the $51M
-        implementation grant and the December 2024 R&amp;D starts.</p>
+        implementation grant and the December 2024 R&amp;D starts; the July 2026 NSF award is
+        labeled on its own dot.</p>
 
       <div class="viz chart" id="viz" tabindex="-1">
         <p class="nojs">This timeline needs JavaScript. The full record is in the table below.</p>
@@ -230,19 +233,15 @@
   </section>
 
   <section class="section section--methods">
-    <div class="wrap methods-grid">
-      <div>
-        <h2 id="methods-h">Methods and provenance</h2>
-        <p class="asof">Operating record as of <time datetime="2026-08-13">13 August 2026</time>; heritage
-          register as of <time datetime="2026-08-14">14 August 2026</time>.</p>
-        <p id="m-source"></p>
-        <p id="m-public" class="callout"></p>
-        <p id="m-heritage"></p>
-      </div>
-      <div>
-        <h3>How to read it</h3>
-        <ul class="notes" id="m-notes"></ul>
-      </div>
+    <div class="wrap">
+      <h2 id="methods-h">Methods and provenance</h2>
+      <p class="asof">Operating record as of <time datetime="2026-08-13">13 August 2026</time>; heritage
+        register as of <time datetime="2026-08-14">14 August 2026</time>.</p>
+      <p id="m-source"></p>
+      <p id="m-public" class="callout"></p>
+      <p id="m-heritage"></p>
+      <h3 class="notes-h">How to read it</h3>
+      <ul class="notes" id="m-notes"></ul>
     </div>
   </section>
 </main>
@@ -268,6 +267,15 @@
   </div>
 </section>
 
+<footer class="pagefoot">
+  <div class="wrap">
+    <p class="foot-id"><b>The PIC Evidence Room</b> &middot; Polymer Industry Cluster</p>
+    <p class="foot-note">Every figure here rebuilds from the data files published beside this
+      page. Corrections are dated and appended, never made silently.</p>
+    <p class="foot-link"><a href="../index/">All Evidence Room pages</a></p>
+  </div>
+</footer>
+
 <script src="../_shared/sources.js"></script>
 <script>PVSources.render("timeline", "repro", {limits: [
   "Public record only. An event that was not announced, reported or filed publicly does not appear, so a quiet period on this timeline means nothing was published, not that nothing happened.",
@@ -276,7 +284,7 @@
   "The heritage rows are why the region has this capacity, not what the cluster did. None of them is a cluster outcome, and a discovery (a paper or a patent) is not a product.",
   "Heritage rows appear only when PIC’s register labels them proven. Rows it labels claimed, where a date or a figure is recorded two ways, are withheld rather than shown with a caveat; the wartime synthetic-rubber program, its tonnage recorded four ways, is one of them. The register is internal; only the proven rows and their public sources travel to this page.",
   "The cadence comparison counts delivered public events per year from this same compiled record. The record is a designation-era compilation, so its early years are a floor: the before count is a lower bound and the seventeenfold ratio an upper bound.",
-  "Every sentence on this page that states a count, a date range or a rule is a re-runnable assertion in claims.json; sentences quoted from documents are marked for manual review there."
+  "Every sentence on this page that states a count, a date range or a rule is re-checked against the data files each time the page is built, and a sentence quoted from a document is flagged for a human to check by hand instead."
 ]});</script>
 <script src="app.js"></script>
 </body>

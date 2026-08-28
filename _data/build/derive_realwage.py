@@ -79,13 +79,21 @@ homes = [r for r in rows if r["home"]]
 out = {"meta": {
     "source": f"BLS QCEW {YEAR} NAICS {NAICS} private metro average weekly wage; "
               f"BEA Regional Price Parities {YEAR} (MARPP, all items)",
-    "row": "one metro: nominal average weekly wage, its price level, and the wage restated "
-           "in national-average purchasing power",
-    "geography": "METRO. This page never uses the PIC-12 county footprint — RPP is not "
-                 "published for counties and cannot be summed to one.",
-    "not": "Not a cost-of-living ranking and not a quality-of-life claim. RPP prices a "
-           "fixed national basket. It says nothing about whether the jobs, schools or "
-           "airports are there.",
+    # A full sentence, because this string is published verbatim under the methodology
+    # box's "What one row is" heading and in the slope table note, where a bare
+    # lowercase fragment read as a broken sentence in both places.
+    "row": "One row is one metro: its nominal average weekly wage, its price level, and "
+           "that wage restated in national-average purchasing power.",
+    # Reader prose, not a register token: this string is published verbatim in the
+    # methodology box, where a bare all-caps "METRO." read as a broken sentence.
+    "geography": "Metro, not county: this page never uses the PIC-12 county footprint. "
+                 "Price parities are published for metropolitan areas only and cannot "
+                 "be summed to a county footprint.",
+    # "RPP" is a register token the page never introduces to a reader, and this string
+    # is published in figure chrome. Say what the index does in reader words instead.
+    "not": "Not a cost-of-living ranking and not a quality-of-life claim. The price "
+           "level compares one fixed national basket across metros; it says nothing "
+           "about the jobs, schools or airports.",
     "suppression": "Metros where QCEW withholds NAICS 326 wages are absent, not zero. "
                    "Every rank is among the disclosed.",
     "year": YEAR, "n_metros": len(rows), "n_big": len(BIG), "big_floor": 2000},

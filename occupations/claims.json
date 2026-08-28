@@ -3,27 +3,27 @@
   "claims": [
     {
       "id": "occ-hero-one-in-nine",
-      "text": "In plastics and rubber manufacturing, one job in nine is a molding-machine setter, and half of all the nation's molding-machine setters work in this one industry.",
+      "text": "Half the nation's molding-machine setters work in this one industry (headline); 10.9% of the industry's jobs are molding-machine setters, one job in nine (first hero stat card).",
       "source": "BLS National Employment Matrix, industry 326000, 2024 base",
       "assert": "(lambda s: 8.5 <= 100 / s['pct_of_industry'] <= 9.6 and 47.5 <= s['pct_of_occupation'] <= 54.9)(one(m for m in D['mix'] if m['soc'] == '51-4072'))",
       "actual": "(lambda s: (s['pct_of_industry'], s['pct_of_occupation']))(one(m for m in D['mix'] if m['soc'] == '51-4072'))",
-      "falsified_if": "The setters' share of the industry leaves the 10.4–11.8% band that reads as 'one in nine', or the industry's share of the occupation leaves 47.5–54.9%, at which point 'half' becomes 'about half' or a different fraction. Both move with each matrix release."
+      "falsified_if": "The industry's share of the occupation leaves 47.5-54.9%, at which point 'half' becomes 'about half' or a different fraction; or the setters' share of the industry leaves the 10.4-11.8% band that rounds to one job in nine, which the stat card computes rather than states. Both move with each matrix release."
     },
     {
       "id": "occ-standfirst",
-      "text": "All four Northeast Ohio metros pay the degree occupations under the national rate while paying the floor closer to it, and the local polymer-degree count has run at less than half its earlier pace for two years (standfirst).",
-      "source": "BLS OEWS May 2024 ratios by education group; IPEDS polymer completions by year",
-      "assert": "all(v['degree_median_ratio'] < 1 for v in D['pay_totals']['ratio_by_metro'].values()) and all(v['degree_median_ratio'] < v['hs_median_ratio'] for v in D['pay_totals']['ratio_by_metro'].values()) and (lambda E, R: 0.30 <= (sum(R) / len(R)) / (sum(E) / len(E)) <= 0.50)([sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2022)], [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in (2022, 2023)])",
-      "actual": "({a: (v['degree_median_ratio'], v['hs_median_ratio']) for a, v in D['pay_totals']['ratio_by_metro'].items()}, [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2024)])",
-      "falsified_if": "Any metro's degree-group median ratio reaches 1.0 ('under the national rate' fails), any metro's degree ratio reaches its high-school ratio ('closer to it' fails), or the 2022–23 average polymer conferral count leaves 30–50% of the 2014–2021 average ('less than half its earlier pace' fails)."
+      "text": "Can the region staff, pay and replace the jobs that make it a polymer capital? The industry runs mostly on floor work, and all four Northeast Ohio metros pay the degree occupations under the national rate (standfirst).",
+      "source": "BLS National Employment Matrix production share; BLS OEWS May 2024 median-wage ratios by education group, four metros",
+      "assert": "D['mix_totals']['production_share_pct'] > 50 and len(D['pay_totals']['ratio_by_metro']) == 4 and all(v['degree_median_ratio'] < 1 for v in D['pay_totals']['ratio_by_metro'].values())",
+      "actual": "(D['mix_totals']['production_share_pct'], {a: v['degree_median_ratio'] for a, v in D['pay_totals']['ratio_by_metro'].items()})",
+      "falsified_if": "Production occupations fall to half or less of the industry ('runs mostly on floor work' fails), any of the four metros' degree-group median wage ratio reaches 1.0 ('under the national rate' fails), or the wage file stops publishing one of the four metros, at which point 'all four' is a claim about a set the page no longer shows."
     },
     {
       "id": "occ-hero-figures",
-      "text": "10.9% of the industry's jobs are molding-machine setters; 51% of the nation's setters work in plastics and rubber manufacturing; 725,100 jobs in the industry nationally in 2024; engineers, scientists and technicians are 4.0%.",
+      "text": "10.9% of the industry's jobs are molding-machine setters, which the first card renders as one job in nine; 51% of the nation's setters work in plastics and rubber manufacturing; 725,100 jobs in the industry nationally in 2024; engineers, scientists and technicians are 4.0%.",
       "source": "BLS National Employment Matrix, industry 326000, 2024 base",
-      "assert": "(lambda s: s['pct_of_industry'] == 10.9 and round(s['pct_of_occupation']) == 51)(one(m for m in D['mix'] if m['soc'] == '51-4072')) and D['mix_totals']['industry_emp_2024_k'] == 725.1 and D['mix_totals']['eng_sci_share_pct'] == 4.0",
+      "assert": "(lambda s: s['pct_of_industry'] == 10.9 and round(s['pct_of_occupation']) == 51 and round(100 / s['pct_of_industry']) == 9)(one(m for m in D['mix'] if m['soc'] == '51-4072')) and D['mix_totals']['industry_emp_2024_k'] == 725.1 and D['mix_totals']['eng_sci_share_pct'] == 4.0",
       "actual": "(one(m for m in D['mix'] if m['soc'] == '51-4072')['pct_of_industry'], one(m for m in D['mix'] if m['soc'] == '51-4072')['pct_of_occupation'], D['mix_totals']['industry_emp_2024_k'], D['mix_totals']['eng_sci_share_pct'])",
-      "falsified_if": "Any of the four hero figures changes in the next matrix release. The engineer/scientist/technician share is the sum of detailed occupations with codes 17-2, 19-2, 19-4 and 17-3; a code added to or dropped from the matrix changes it."
+      "falsified_if": "Any of the four hero figures changes in the next matrix release, or the setters' share stops rounding to one job in nine (the card computes the denominator from the share and prints the word for it, so a share of 11.9% would print 'one job in eight' without anyone editing the page). The engineer/scientist/technician share is the sum of detailed occupations with codes 17-2, 19-2, 19-4 and 17-3; a code added to or dropped from the matrix changes it."
     },
     {
       "id": "occ-fourteen-share",
@@ -35,11 +35,11 @@
     },
     {
       "id": "occ-mix-figtitle",
-      "text": "The largest floor job alone outweighs every engineer and scientist in the industry combined (mix figure title).",
+      "text": "The largest floor job alone outweighs every engineer and scientist in the industry combined (mix figure title), drawn as a reference rule at the summed engineer, scientist and technician share of 4.0%.",
       "source": "BLS National Employment Matrix: setters' share vs the summed engineer/scientist/technician share",
       "assert": "(lambda s: s['pct_of_industry'] > D['mix_totals']['eng_sci_share_pct'] and s['soc'].startswith('51-') and s['pct_of_industry'] == max(m['pct_of_industry'] for m in D['mix']))(one(m for m in D['mix'] if m['soc'] == '51-4072'))",
       "actual": "(one(m for m in D['mix'] if m['soc'] == '51-4072')['pct_of_industry'], D['mix_totals']['eng_sci_share_pct'])",
-      "falsified_if": "The setters' share falls to or below the engineer/scientist/technician share, or setters stop being the industry's largest occupation."
+      "falsified_if": "The setters' share falls to or below the engineer/scientist/technician share, at which point the largest bar no longer clears the rule the chart draws; or setters stop being the industry's largest occupation."
     },
     {
       "id": "occ-mix-most-specific",
@@ -51,7 +51,7 @@
     },
     {
       "id": "occ-tire-builders",
-      "text": "Tire builders, the industry's ninth-largest occupation, are published for none of the four metros (pay source line and on-chart label).",
+      "text": "Tire builders, the industry's ninth-largest occupation, are published for none of the four metros (pay source line and the on-chart label).",
       "source": "BLS National Employment Matrix rank; BLS OEWS May 2024 metropolitan file",
       "assert": "[m['soc'] for m in D['mix']].index('51-9197') == 8 and D['pay_totals']['absent_everywhere'] == ['51-9197']",
       "actual": "([m['soc'] for m in D['mix']].index('51-9197'), D['pay_totals']['absent_everywhere'])",
@@ -59,7 +59,7 @@
     },
     {
       "id": "occ-region-estimate",
-      "text": "The twelve counties reported 18,594 plastics-and-rubber jobs in 2024. Applying the national shares to that total gives an estimate of about 2,000 molding-machine setters and about 740 engineers, scientists and technicians in the region's plants, under a stated assumption (staffing-pattern note beside the mix chart).",
+      "text": "The twelve counties reported 18,594 plastics-and-rubber jobs in 2024. Applying the national shares gives about 2,000 molding-machine setters and about 740 engineers, scientists and technicians, on a stated assumption (staffing-pattern note beside the mix chart).",
       "source": "BLS QCEW 2024 annual averages, private ownership, NAICS 326, the twelve PIC-12 counties; shares from the National Employment Matrix",
       "assert": "D['region']['emp'] == 18594 and D['region']['counties_counted'] == 12 and D['region']['setters_estimate'] == 2000 and D['region']['eng_sci_estimate'] == 740 and abs(D['region']['emp'] * D['region']['setters_share_pct'] / 100 - D['region']['setters_estimate']) < 50",
       "actual": "(D['region']['emp'], D['region']['counties_counted'], D['region']['setters_estimate'], D['region']['eng_sci_estimate'])",
@@ -139,7 +139,7 @@
     },
     {
       "id": "occ-programs",
-      "text": "Three universities confer the degrees (h2, figure); the polymer programs conferred 63 degrees in 2023, the latest year loaded, and the chart averages 2021-2023 (closer sub, source line).",
+      "text": "Three universities confer the degrees (h2, both figures); the polymer programs conferred 63 degrees in 2023, the last year in the file, and the program chart averages 2021-2023.",
       "source": "IPEDS completions by CIP (14.3201, 40.0507 polymer; 14.1801, 40.1001 materials), first major, via the Urban Institute API",
       "assert": "len(D['program_totals']['institutions']) == 3 and D['program_totals']['latest_year'] == 2023 and D['program_totals']['polymer_awards_latest'] == 63 and D['program_totals']['polymer_awards_window_avg'] == 80.4 and D['program_totals']['window'] == [2021, 2022, 2023] and len(D['programs']) == 13",
       "actual": "D['program_totals']",
@@ -147,7 +147,7 @@
     },
     {
       "id": "occ-pipeline-halved",
-      "text": "Polymer programs conferred between 118 and 179 degrees a year from 2014 through 2021, then 54 in 2022 and 63 in 2023, under half the earlier pace; the adjacent materials programs held their usual range (pipeline lede, h2 'fallen by more than half', on-chart bracket, closer).",
+      "text": "Polymer programs conferred between 118 and 179 degrees a year from 2014 through 2021, then 54 in 2022 and 63 in 2023, under half the earlier pace; the adjacent materials programs held their usual range (pipeline lede, h2 'fallen by more than half', the annual trend chart and its table).",
       "source": "IPEDS completions by CIP via the Urban Institute API, summed across polymer programs (14.3201, 40.0507) by year",
       "assert": "(lambda P: P['2021'] == 124 and P['2022'] == 54 and P['2023'] == 63)({y: sum(p['by_year'].get(y, 0) for p in D['programs'] if p['group'] == 'polymer') for y in ('2021', '2022', '2023')}) and (lambda E: min(E) == 118 and max(E) == 179)([sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2022)]) and (lambda E, R: (sum(R) / len(R)) / (sum(E) / len(E)) < 0.5)([sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2022)], [54, 63]) and (lambda E, R: min(E) <= min(R) and max(R) <= max(E))([sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] != 'polymer') for y in range(2014, 2022)], [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] != 'polymer') for y in (2022, 2023)])",
       "actual": "{y: (sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer'), sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] != 'polymer')) for y in range(2014, 2024)}",
@@ -163,7 +163,7 @@
     },
     {
       "id": "occ-youngstown-fewest",
-      "text": "Youngstown-Warren publishes 21 of the 26 occupations, the fewest, and is in the table (pay source line).",
+      "text": "Youngstown-Warren publishes 21 of the 26 occupations, the fewest (pay table note).",
       "source": "BLS OEWS May 2024 metropolitan file",
       "assert": "D['pay_totals']['disclosed']['49660'] == 21 and D['pay_totals']['occupations'] == 26 and D['pay_totals']['disclosed']['49660'] == min(D['pay_totals']['disclosed'].values()) and list(D['pay_totals']['disclosed'].values()).count(21) == 1",
       "actual": "D['pay_totals']['disclosed']",
@@ -171,7 +171,7 @@
     },
     {
       "id": "occ-high-rse",
-      "text": "2 metro cells exceed 10% relative standard error of the mean wage (pay source line).",
+      "text": "2 metro cells exceed 10% relative standard error of the mean wage (pay table note).",
       "source": "BLS OEWS May 2024 metropolitan file, MEAN_PRSE",
       "assert": "D['pay_totals']['high_rse_cells'] == 2 and D['pay_totals']['high_rse_threshold_pct'] == 10",
       "actual": "D['pay_totals']['high_rse_cells']",
@@ -179,11 +179,35 @@
     },
     {
       "id": "occ-closer",
-      "text": "The industry's jobs are mostly floor jobs, and Akron and Cleveland pay those within a few percent of the national rate. The degree jobs are few, pay under the national rate in every metro, and their local polymer-degree count has halved. Staffed, yes; paid, at a discount at the top; replaced, from a degree count running at half its old pace.",
-      "source": "BLS National Employment Matrix (production share); BLS OEWS May 2024 ratios by education group; IPEDS polymer completions by year",
-      "assert": "D['mix_totals']['production_share_pct'] > 50 and 0.95 <= D['pay_totals']['ratio_by_metro']['10420']['hs_median_ratio'] <= 1.05 and 0.95 <= D['pay_totals']['ratio_by_metro']['17410']['hs_median_ratio'] <= 1.05 and all(v['degree_median_ratio'] < 1 for v in D['pay_totals']['ratio_by_metro'].values()) and D['mix_totals']['eng_sci_share_pct'] < 10 and (lambda E, R: (sum(R) / len(R)) / (sum(E) / len(E)) <= 0.5)([sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2022)], [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in (2022, 2023)])",
-      "actual": "(D['mix_totals']['production_share_pct'], {a: (v['hs_median_ratio'], v['degree_median_ratio']) for a, v in D['pay_totals']['ratio_by_metro'].items()}, [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2024)])",
-      "falsified_if": "Production occupations fall below half the industry; Akron's or Cleveland's high-school-group median ratio leaves 0.95-1.05 ('within a few percent'); any metro's degree-group median ratio reaches 1.0; or the recent polymer conferral pace rises above half the 2014-2021 average ('has halved' fails). 'Few' is carried by the 4.0% engineer/scientist/technician share staying under 10%."
+      "text": "The region staffs from the floor, pays the top under the nation, and now trains half as many. Akron pays its high-school occupations a median 0.97x the national rate and its degree occupations 0.93x. The polymer programs behind those degree jobs conferred 63 degrees in 2023, against 118 to 179 a year through 2021.",
+      "source": "BLS National Employment Matrix (production share); BLS OEWS May 2024 median-wage ratios by education group, Akron; IPEDS polymer completions by year",
+      "assert": "D['mix_totals']['production_share_pct'] > 50 and round(D['pay_totals']['ratio_by_metro']['10420']['hs_median_ratio'], 2) == 0.97 and round(D['pay_totals']['ratio_by_metro']['10420']['degree_median_ratio'], 2) == 0.93 and all(v['degree_median_ratio'] < 1 for v in D['pay_totals']['ratio_by_metro'].values()) and D['program_totals']['polymer_awards_latest'] == 63 and (lambda E: min(E) == 118 and max(E) == 179)([sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2022)]) and (lambda E, R: (sum(R) / len(R)) / (sum(E) / len(E)) <= 0.5)([sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2022)], [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in (2022, 2023)])",
+      "actual": "(D['mix_totals']['production_share_pct'], D['pay_totals']['ratio_by_metro']['10420'], D['program_totals']['polymer_awards_latest'], [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2022)], [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in (2022, 2023)])",
+      "falsified_if": "Production occupations fall to half or less of the industry ('staffs from the floor' fails); Akron's high-school or degree median ratio stops rounding to 0.97x or 0.93x, which are printed in the closer to two places; any metro's degree ratio reaches 1.0; the 2023 polymer conferral count moves off 63; the 2014-2021 range stops running 118 to 179; or the recent pace rises above half the 2014-2021 average, at which point 'trains half as many' fails."
+    },
+    {
+      "id": "occ-trend-half-rule",
+      "text": "Polymer degrees fell below half their 2014-2021 pace (pipeline figure title). The rule drawn on the annual chart is half the polymer mean for 2014-2021, 69.6 degrees a year, and both 2022 and 2023 sit under it.",
+      "source": "IPEDS completions by CIP via the Urban Institute, polymer programs (14.3201, 40.0507) summed by year",
+      "assert": "(lambda E, L: abs((sum(E) / len(E)) / 2 - 69.6) < 0.05 and max(L) < (sum(E) / len(E)) / 2 and round((sum(E) / len(E)) / 2) == 70)([sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2022)], [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in (2022, 2023)])",
+      "actual": "((sum([sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2022)]) / 8) / 2, [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in (2022, 2023)])",
+      "falsified_if": "Either later year rises to or above half the 2014-2021 mean, at which point a column crosses the rule the figure title reads off; or the 2014-2021 mean moves enough that the printed rule value (69.6 a year in the table note, 70 on the chart) no longer matches what is drawn. Both are computed from the same yearly sums, never typed."
+    },
+    {
+      "id": "occ-byline",
+      "text": "By John Swanson, analysis and graphics. Data BLS, O*NET and IPEDS, August 2026 (hero byline).",
+      "source": "The page's own data vintage, meta.fetched",
+      "assert": "D['meta']['fetched'][:7] == '2026-08' and len(D['meta']['fetched']) == 10",
+      "actual": "D['meta']['fetched']",
+      "falsified_if": "The data is refetched in a different month. The byline month is read from meta.fetched at render, so the rendered line follows; this assertion holds the static no-script copy in index.html to the same vintage, and fails the moment the two could disagree."
+    },
+    {
+      "id": "occ-onet-licence",
+      "text": "The O*NET 30.3 attribution and CC BY 4.0 licence notice is rendered once on the page, in the footer.",
+      "source": "O*NET 30.3 terms of use, carried in the data file as onet_attribution",
+      "assert": "'CC BY 4.0' in D['onet_attribution'] and 'O*NET' in D['onet_attribution'] and 'has not approved' in D['onet_attribution']",
+      "actual": "D['onet_attribution']",
+      "falsified_if": "The attribution string loses the licence name, the database name or the no-endorsement clause, any of which the licence requires. It is printed verbatim from the data file into the footer, so an edit to the string is the only way this changes."
     }
   ]
 }

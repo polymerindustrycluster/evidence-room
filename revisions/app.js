@@ -26,8 +26,15 @@ const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
 const mon = d => d.slice(0, 7);
 const nice = d => MON[+d.slice(5, 7) - 1] + " " + d.slice(0, 4);
 
-/* Color is a page constant, not a per-chart choice. */
-const DOWN = CAT[1], UP = "#1A8A9E";
+/* Color is a page constant, not a per-chart choice.
+
+   The two directions are separated by LUMINANCE, not only hue. The first build paired
+   CAT[1] with #1A8A9E, whose relative luminances are 0.205 and 0.209 — printed in
+   grayscale or read by a colorblind reader, up and down collapsed into one identical
+   mid-gray and direction survived only through position above or below zero. #0C6473 is
+   the house ink token (SEQ[5]), so nothing new enters the palette, and its luminance is
+   0.104: half the orange's, which is a visible step with the hue removed. */
+const DOWN = CAT[1], UP = "#0C6473";
 
 /* ------------------------------------------------------------- the vintage record
 
@@ -85,6 +92,14 @@ const BIG = ORDER.map(s => S[s].big).reduce((a, b) =>
   Math.abs(b.pct) > Math.abs(a.pct) ? b : a);
 const BIGS = SERIES.find(s => S[s].big === BIG);
 const down = pcts.filter(v => v < 0).length, up = pcts.filter(v => v > 0).length;
+/* 137 + 121 = 258 against 259 revised months, and the missing one was reconciled nowhere:
+   a reader who adds the two annotated counts finds a month that does not exist. It is
+   PCU326326 April 2025, revised four times and landing 0.001 index points from where it
+   started, which rounds to a zero-percent change and so is neither up nor down. Counted
+   here rather than typed, and named in the figure subtitle and the table. */
+const flat = pcts.filter(v => v === 0).length;
+const FLAT = P.filter(p => p.pct === 0)
+  .map(p => Math.abs(Math.round((p.latest - p.first) * 1000) / 1000));
 
 /* ------------------------------------------------- month-over-month, as it was read
 
@@ -115,6 +130,17 @@ SERIES.forEach(s => S[s].rows.forEach(r => {
 const MATERIAL = PAIRS.filter(p => Math.abs(p.then) >= 0.1 && Math.abs(p.now) >= 0.1);
 const FLIPS = MATERIAL.filter(p => p.then * p.now < 0);
 const FLIPBIG = FLIPS.filter(p => p.series === BIGS).length;
+
+/* ------------------------------------------------------------------ byline dateline
+
+   The byline's "as of" is READ FROM THE DATA, never typed: it is the newest vintage in
+   the archive, which is the honest date for a page rebuilt from live federal series. A
+   hand-typed month goes stale on the next refetch and nothing fails. */
+const MONFULL = ["January", "February", "March", "April", "May", "June", "July",
+                 "August", "September", "October", "November", "December"];
+const ASOF = D.all.reduce((a, r) => r.vintage > a ? r.vintage : a, "");
+document.getElementById("asof").textContent =
+  MONFULL[+ASOF.slice(5, 7) - 1] + " " + ASOF.slice(0, 4);
 
 /* ------------------------------------------------------------------- hero stats */
 PV.figures([
@@ -165,8 +191,13 @@ function panel(svg, s, box, o) {
   });
 
   /* Panel header: name, then the two numbers that make the panels comparable. */
+  /* The stacked layout drops the word "move": at 375 the full line measured 376.4 units
+     against a 375 viewBox, so the outermost svg's own overflow:hidden was shaving the
+     last glyph. Hand-shortened rather than scaled or ellipsed, because a truncated label
+     is a build error and a smaller one is a legibility loss. */
   txt(svg, SHORT[s], {x: box.x, y: box.y - o.h2, class: "pv-lab"});
-  txt(svg, `median move ${d.medAbs.toFixed(2)}% · ${d.moved.length} of ${d.rows.length} months revised`,
+  txt(svg, `${o.terse ? "median" : "median move"} ${d.medAbs.toFixed(2)}% · ` +
+    `${d.moved.length} of ${d.rows.length} months revised`,
     {x: box.x, y: box.y - o.h1, class: "pv-labq"});
 
   /* Year ticks. Every other January on the wide layout, every third on the stacked one:
@@ -233,7 +264,8 @@ function drawSmallStacked() {
   const H = top + pitch * 2 + ph + 40;
   const {svg} = PV.chart("sm", {W, H});
   const w = W - m.l - m.r;
-  txt(svg, "revision, % of the first print", {x: m.l, y: 14, class: "pv-labq"});
+  /* y=15, not 14: at 14 the cap box measured -0.6 against the viewBox top. */
+  txt(svg, "revision, % of the first print", {x: m.l, y: 15, class: "pv-labq"});
   txt(svg, "revised up", {x: m.l, y: 34, class: "pv-labq", fill: UP});
   txt(svg, "revised down", {x: m.l + 104, y: 34, class: "pv-labq", fill: DOWN});
 
@@ -245,7 +277,8 @@ function drawSmallStacked() {
     [-1, 1].forEach(v => txt(svg, (v > 0 ? "+" : MINUS) + Math.abs(v).toFixed(1),
       {x: m.l - 8, y: ys(v) + 4, "text-anchor": "end", class: "pv-tick"}));
     txt(svg, "0", {x: m.l - 8, y: ys(0) + 4, "text-anchor": "end", class: "pv-tick"});
-    panel(svg, s, {x: m.l, y, w, h: ph}, {h1: 14, h2: 34, every: 3, charW: 8.1});
+    panel(svg, s, {x: m.l, y, w, h: ph}, {h1: 14, h2: 34, every: 3, charW: 8.1,
+      terse: true});
   });
 }
 
@@ -327,11 +360,17 @@ function drawDistVariant(W, H, mob) {
 
   /* The lean, with an arrow at the side it leans to. 137 against 121 is a small
      majority, and the annotation says small. */
+  /* THE STACKED COPY IS CUT TO CLEAR THE ZERO RULE, NOT JUST TO FIT THE BOX. Right-
+     anchored at 365 with the zero line at x=198, "137 months revised up," ran back to
+     x=185 and "121 down: first prints lean low" to x=158, so the magenta rule struck
+     through both — measured on the built page, because collide.mjs reads the desktop
+     layout only and would never have seen it. The budget is 365 minus 206, or 159 units;
+     these two lines measure 131 and 141. Changing this copy means re-measuring it. */
   const ax = mob ? m.l + w : xs(0.55);
   const anc = mob ? "end" : "start";
-  txt(svg, mob ? `${up} months revised up,` : `${up} months were revised up,`,
+  txt(svg, mob ? `${up} up, ${down} down` : `${up} months were revised up,`,
     {x: ax, y: m.t + (mob ? 22 : 26), class: "pv-lab", "text-anchor": anc});
-  txt(svg, mob ? `${down} down: first prints lean low`
+  txt(svg, mob ? "first prints lean low"
                : `${down} down: first prints lean slightly low`,
     {x: ax, y: m.t + (mob ? 40 : 44), class: "pv-labq", "text-anchor": anc});
   /* The arrow lands 8px above the tallest up-side bar rather than at a hand-picked
@@ -359,39 +398,52 @@ document.getElementById("smtable").innerHTML = tableView("s",
   "Every revised month, largest move first",
   ["Month", "Series", "First published", "Today", "Change", "Revisions"],
   smRows.map(r => [mon(r.date), SHORT[r.s], r.first, r.latest, sgn(r.pct, 3), r.revisions]));
+/* CAPTION INK IS CAPPED AT ONE SOURCE LINE PLUS ONE LIMITATION (page-design § caveat ink,
+   45 words). This note ran 90, with the three series IDs bolded inside it and a definition
+   of what a revision is: a third of the band's lower half was caption-gray. The IDs now
+   live in the methodology box, where a reader who wants to refetch is already standing,
+   and the definition is meta.why, which the same box already publishes. */
 document.getElementById("smsrc").innerHTML =
-  `${D.meta.source}. ${D.meta.row}. ${D.meta.why} Three series:
-   ${ORDER.map(s => `<b>${SHORT[s]}</b> (${CODE[s]})`).join(", ")}, for reference months
-   ${mon(ALLM[0])} to ${mon(ALLM[ALLM.length - 1])}. ${N(P.length)} of ${N(totalPeriods)}
-   published months carry a later value; the other ${totalPeriods - P.length} have one
-   archived vintage each, which is not evidence they never moved.`;
+  `${D.meta.source}, for reference months ${mon(ALLM[0])} to
+   ${mon(ALLM[ALLM.length - 1])}. ${N(P.length)} of ${N(totalPeriods)} published months
+   carry a later value; the other ${totalPeriods - P.length} have one archived vintage
+   each, which is not evidence they never moved.`;
 
 document.getElementById("disttable").innerHTML = tableView("d",
   "Revision size distribution", ["Measure", "Value"],
   [["Months revised at least once", N(P.length)],
    ["Revised downward", N(down)], ["Revised upward", N(up)],
+   [`Ended within ${Math.max(...FLAT)} index points of the first print`, N(flat)],
    ["Median absolute change", MEDABS.toFixed(3) + "%"],
    ["Largest single change", MAXABS.toFixed(3) + "%"],
    ["Mean revisions per month", (P.reduce((a, p) => a + p.revisions, 0) / P.length).toFixed(2)],
    ["Month pairs where the step changed sign", `${FLIPS.length} of ${MATERIAL.length}`]]);
-document.getElementById("distsrc").innerHTML =
-  `${D.meta.source}. One mark per revised month, so the
-   ${totalPeriods - P.length} months with a single archived vintage are not in this chart.
-   Bin width ${(MOBILE.matches ? 0.1 : 0.05).toFixed(2)} percentage points; the axis is
-   clipped at ±1.5%, which holds every observed value.`;
+/* The note owns the bin width, and it is now the ONLY place on the page that states it.
+   The subtitle used to say 0.05 in hardcoded HTML while the stacked layout re-binned to
+   0.10 and this line said so: one quantity, two numbers, on the same phone screen. Written
+   from inside drawAll(), not once at load, so the number cannot go stale when a reader
+   crosses the breakpoint — a single owner that only updates on first paint is the same
+   defect with one fewer place to notice it. */
+function distNote() {
+  document.getElementById("distsrc").innerHTML =
+    `${D.meta.source}. One mark per revised month, so the
+     ${totalPeriods - P.length} months with a single archived vintage are not in this
+     chart. Bin width ${(MOBILE.matches ? 0.1 : 0.05).toFixed(2)} percentage points; the
+     axis is clipped at ±1.5%, which holds every observed value.`;
+}
 
+/* THE ONE CALLOUT BOX ON THE PAGE, capped at ~80 words. It ran 120, and half of those
+   were spent restating the QWI sentence that the hero and the closer also carried, so by
+   the third reading it landed as boilerplate rather than escalation. The QWI point is now
+   made once, in the closer, where it is the forward move. The "least time to be revised"
+   caveat moved into meta.caution, which the methodology box publishes. */
 document.getElementById("caveat").innerHTML =
   `<b>What a small revision licenses.</b> A median move of ${MEDABS.toFixed(2)}% and a
    largest move of ${MAXABS.toFixed(2)}% support one narrow claim: the <em>level</em> of a
    producer-price series does not move much once published. They do not license calling a
    fresh figure &ldquo;safe to act on&rdquo;, which is how an earlier version of this
-   sentence overreached. The newest months are the least revised only because they have
-   had the least time to be, and a small median says nothing about whether a turning point
-   survives: ${FLIPS.length} of ${MATERIAL.length} comparable month pairs changed sign.
-   Other sources on this site are rebuilt differently. The Quarterly Workforce Indicators
-   restate whole histories when they re-benchmark, and county employment is revised on its
-   own schedule; how far either moves is not measured here, and running this method against
-   them is the follow-up worth doing before those numbers reach a board packet.`;
+   sentence overreached. A small median also says nothing about whether a turning point
+   survives: ${FLIPS.length} of ${MATERIAL.length} comparable month pairs changed sign.`;
 
 /* ------------------------------------------------------- 3. one month, up close */
 {
@@ -400,10 +452,6 @@ document.getElementById("caveat").innerHTML =
   const wasThen = asOf(s, p, BIG.firstVintage);
   const momThen = (BIG.first / wasThen - 1) * 100;
   const momNow = (BIG.latest / prev[prev.length - 1].value - 1) * 100;
-  const yd = (+d.slice(0, 4) - 1) + d.slice(4);
-  const yv = rec[s + "|" + yd];
-  const yoyThen = (BIG.first / asOf(s, yd, BIG.firstVintage) - 1) * 100;
-  const yoyNow = (BIG.latest / yv[yv.length - 1].value - 1) * 100;
 
   document.getElementById("vg1").textContent = sgn(momThen, 1);
   document.getElementById("vg1d").textContent =
@@ -415,27 +463,31 @@ document.getElementById("caveat").innerHTML =
     `${prev[prev.length - 1].value}, after ${BIG.revisions} corrections.`;
   /* The vignette is one month, so it needs the count that says it is not a lone oddity.
      The lede carries the story in body type; this line carries the guard against
-     mistaking one named month for the pattern. */
+     mistaking one named month for the pattern, and nothing else: it ran 79 words against
+     a 45-word caption budget. The annual comparison it used to restate is already in the
+     lede two paragraphs up (claim rev-vignette-year checks it there), and which vintage
+     supplies the base month is a derivation, now stated once in the methodology box. The
+     year-over-year arithmetic that fed only this line went with it rather than staying as
+     four unused bindings. */
   document.getElementById("vgnote").innerHTML =
-    `Checked against the whole panel, ${nice(d)} is the largest mover and not a lone one:
-     of ${MATERIAL.length} month pairs where both the first reading and today&rsquo;s
-     reading were at least 0.1%, <b>${FLIPS.length} changed sign</b>, and ${FLIPBIG} of
-     those ${FLIPS.length} are ${SHORT[s].toLowerCase()}, the series that revises hardest.
-     The annual comparisons use ${nice(yd)} as each vintage carried it
-     (${yoyThen.toFixed(1)}% then, ${yoyNow.toFixed(1)}% now). ${D.meta.source};
-     month-over-month steps computed from those vintages, not fetched separately.`;
+    `${nice(d)} is the largest mover here, not a lone one: of ${MATERIAL.length} month
+     pairs where both readings clear 0.1%, <b>${FLIPS.length} changed sign</b>, and
+     ${FLIPBIG} of those are ${SHORT[s].toLowerCase()}. ${D.meta.source}.`;
 }
 
+/* Bold budget: one phrase, not a three-line paragraph set in 900 weight. The old version
+   bolded the whole QWI sentence, which at that length stops reading as emphasis and
+   starts reading as a second closer. */
 document.getElementById("closersub").innerHTML =
   `${N(P.length)} of ${N(totalPeriods)} published months changed after the fact, by a
    median ${MEDABS.toFixed(2)}%, and ${FLIPS.length} of ${MATERIAL.length} comparable
-   month pairs changed sign. Every figure here is rebuilt from archival vintages that are
-   free from the same API that serves the current values. <b>The Quarterly Workforce
-   Indicators restate whole histories when they re-benchmark, and how far they move has
-   not been measured. That is the series this method should be pointed at next.</b>`;
+   month pairs changed sign. The Quarterly Workforce
+   Indicators behind the churn page restate whole histories when they re-benchmark, and
+   how far they move has not been measured: <b>that is the series this method should be
+   pointed at next.</b>`;
 
 /* ------------------------------------------------------------------------ assemble */
-function drawAll() { drawSmall(); drawDist(); }
+function drawAll() { drawSmall(); drawDist(); distNote(); }
 drawAll();
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);
@@ -444,11 +496,19 @@ MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
 /* revisions.json carries `why` — rationale, classified METHOD rather than a limitation —
    and no caveats. The page published an empty Limitations section until the three-way
    classification exposed it. These are the page's own boundaries. */
-await PV.methodology({page: "revisions", meta: {...D.meta,
+await PV.methodology({page: "revisions",
+  /* The three series IDs used to be bolded inside the first figure's caption, where they
+     cost ink a reader scanning the chart did not want to spend. Here they sit beside the
+     row definition, which is where someone who wants to refetch is already looking. */
+  definitions: "The three series are " + ORDER.map(s => `${SHORT[s]} (${CODE[s]})`)
+    .join(", ") + ".",
+  meta: {...D.meta,
   not: "Three price series, not a general claim about official statistics. Other " +
     "indicators revise harder and some barely move; nothing here measures them.",
   caution: "The most recent vintage on each chart is itself an estimate and will be " +
-    "revised again. ‘Final’ is not a status these series have.",
+    "revised again. ‘Final’ is not a status these series have, and the newest months " +
+    "carry the smallest revisions only because they have had the least time to be " +
+    "revised.",
   excludes: "A revision is only visible where ALFRED archived a vintage. A month showing " +
     "one value is not evidence it never moved; it may be evidence nobody kept the " +
     "earlier print.",
@@ -457,11 +517,21 @@ await PV.methodology({page: "revisions", meta: {...D.meta,
     "published value against whatever the previous month carried in that same vintage, " +
     "then repeats the comparison on today’s values. A pair counts only where both " +
     "readings are at least 0.1 percent, so a flip between +0.02 and -0.01 percent is " +
-    "not called a reversal; 201 of 270 pairs clear that floor.",
+    "not called a reversal; 201 of 270 pairs clear that floor. The annual comparison in " +
+    "the vignette follows the same rule against the same month a year earlier.",
   uncertain: "Why September 2021 moved is not in this data. ALFRED archives values, not " +
     "the reasons for them, so the cause of the largest revision here is unreported. The " +
     "question we would put to the BLS Producer Price Index section: which late " +
     "respondent reports or recomputations moved industrial chemicals for September 2021, " +
     "and whether a correction of that size is routine for that month of the year.",
+  /* THE REPORTING THIS PAGE DOES NOT HAVE, NAMED. A page whose only human beat is a
+     translated vignette should say so and say who it would call, rather than let the
+     absence read as a finished piece. */
+  note: "Nobody was interviewed for this page. The reporting it lacks is one call to a " +
+    "resin purchaser in the cluster who quotes WPU06 in a contract: what they did with " +
+    "the September 2021 print, whether their contract re-prices on a later vintage, and " +
+    "how they found out the number had changed. That answer belongs in the vignette " +
+    "above. Until it exists the human beat here is arithmetic a reader can check, not a " +
+    "reported voice.",
 }});
 })();

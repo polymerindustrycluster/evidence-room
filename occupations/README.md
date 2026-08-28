@@ -19,11 +19,11 @@ reported education distribution and Job Zone; plus, for the degree occupations, 
 (institution, program, award level) row of degrees conferred.
 
 ```
-index.html          page shell (hero poses the question; four bands answer it)
+index.html          page shell (hero, five bands, closer, footer)
 styles.css          page-local chrome: figure titles, occupation selector, stat band,
                     band tint, mobile re-layout override
-app.js              four charts (desktop + mobile forms), selector, table twins
-claims.json         23 assertions, all machine-checked against data/viz-data.json
+app.js              five charts (desktop + mobile forms), selector, table twins
+claims.json         26 assertions, all machine-checked against data/viz-data.json
 data/viz-data.json  THE DATA (59 KB). Edit the builder, not this.
 shots/              desktop.png, mobile.png
 ```
@@ -91,7 +91,7 @@ harden the pipeline finding:
    program.** Three questions: Do your own conferral counts confirm the 2022–2023 drop the
    federal record shows? Was any program recoded to a different CIP code after 2021? What
    share of recent graduates take jobs inside the region? Quote slots into the pipeline
-   band, beside the on-chart bracket.
+   band, beside the annual conferral chart.
 
 The page ships at rung 3 (translated vignette) without these; it is not ship-blocked.
 
@@ -137,3 +137,52 @@ Second pass, same branch, after reading the rendered screenshots:
 cd .. && python -m http.server 8899     # http://localhost:8899/occupations/
 node tools/bundle.mjs occupations       # → dist/occupations.html
 ```
+
+## Third pass, same branch: the inspection fix round
+
+An independent visual reviewer read the rendered page at 1:1. What changed, and why:
+
+- **The hero stack now follows the headline-stack rule.** The headline was a two-clause
+  sentence that towered to six lines of display type at 1280; it is now its second clause
+  alone, three lines. The "one job in nine" half moved into the first stat card, where the
+  denominator is computed from the setters' share rather than typed (guarded by the
+  extended `occ-hero-figures`). The kicker lost its source list, which the new byline
+  carries, and now fits one line on a phone. The standfirst dropped its third and fourth
+  facts to the bands that already carry them and renders four lines with one bold phrase.
+  Hero height: 880px to 782px, stat row bottom at 800px.
+- **A byline and a footer.** Genre furniture the page had neither of. The byline's month is
+  read from `meta.fetched` so it cannot drift from the vintage it dates (`occ-byline`); the
+  footer carries related reading, the interview ask, the O*NET licence and the org line.
+- **The interview ask is now recorded on the page**, not only in this README. That is the
+  human-scale escape hatch: the page ships at rung 3, and it says out loud that nobody at a
+  plant was interviewed and what only they could answer.
+- **Caveat ink is inside the budget.** Every figure now carries one source line and one
+  limitation sentence (31, 37, 40, 35 and 26 words against a 45-word budget), one weight,
+  no bold. The rest moved into each table twin's own note (`withNote` in app.js), which is
+  where a reader who is reading the numbers will be. The O*NET CC BY 4.0 licence, which was
+  the single largest block of apparatus ink on the page, renders once in the footer
+  (`occ-onet-licence`).
+- **The pipeline band's claim is drawn.** Its headline claims a time trend and its only
+  figure was a 2021-2023 cross-section, with the decline carried in four lines of bracket
+  text. There is now an annual chart, 2014 to 2023, polymer against materials, with a
+  reference rule at half the 2014-2021 polymer mean: both later years sit under it, which
+  is the claim, drawn. The rule value is computed from the yearly sums, never typed
+  (`occ-trend-half-rule`). The program bars keep only the group brackets.
+- **The mix chart draws its title's benchmark.** "Outweighs every engineer and scientist
+  combined" rested on a hero stat card; it is now a labelled reference rule at the summed
+  4.0% share, which the largest bar visibly clears.
+- **Second text rail closed.** The stat pair is capped at the measure; the chart legend
+  keeps the figure width the column audit requires for it but pads its ink onto the text
+  rail, so every text left edge on the page is 301px at 1280.
+- **The closer is 61 words**, one two-line statement and one qualifying sentence, no bold.
+- **Mobile**: axis captions are small caps at both breakpoints, and the wage plot repeats a
+  dollar tick row under every group instead of once after 26 rows. Ticks that would not fit
+  are dropped rather than clamped inward.
+
+Claims 23 to 26 (`occ-trend-half-rule`, `occ-byline`, `occ-onet-licence`). No claim was
+removed and no source data changed.
+
+Still out of this page's reach, and now one item worse: `_data/SOURCES.json` line 189 says
+the O*NET attribution is "printed in the education source line", which stopped being true
+when the licence moved to the footer. That string renders in the "Reproduce this" block.
+Fixing it is a `_data` change, not a page change.

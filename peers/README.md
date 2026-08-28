@@ -14,7 +14,7 @@ index.html      page shell
 styles.css      page-local CSS: figure chrome, metro finder, mobile re-layout
 app.js          four charts, each with a desktop and a phone rendering
 data/peers.json THE DATA (65 KB). Edit the builder, not this.
-claims.json     20 assertions, re-run by _data/build/verify_claims.py
+claims.json     24 assertions, re-run by _data/build/verify_claims.py
 shots/          desktop.png, mobile.png
 ```
 
@@ -62,19 +62,43 @@ python derive_peers.py
   2015&ndash;2024, recording each year's `disclosure_code` so the number of withheld years
   can be published rather than deduced.
 - Three of the 24 series carry a one- or two-year gap where that metro's cell was
-  withheld. The line connects across the gap; the source caption says so.
+  withheld. The line connects across the gap; the trend table's note says so.
+- **Wording fix, 2026-08-28.** The trend lede called these &ldquo;the 24 metros with a full
+  decade in this file&rdquo;, which contradicted the sibling claim that three of the 24 miss
+  a year. It now says 24 metros *in this extract*; the counts never moved.
 
 ## Reporting we have not done
 
-The page has one human-scale beat and it is sourced from company and trade-body
-statements rather than from anyone we spoke to. The ask that would replace it, drafted
-and unsent:
+The page has two human-scale beats and neither came from anyone we spoke to. The first is
+sourced from company and trade-body statements (Elkhart, Hickory, Erie, Greenville). The
+second is arithmetic: Akron's 6,910 jobs across 117 establishments, about 59 a site,
+guarded as `akron-per-site`. That is a rung-3 vignette and it ships as one; it is an
+average across sites of every size, never evidence about a particular employer. The rung-1
+ask that would replace both, drafted and unsent:
 
 > To the Greater Akron Chamber and to one plant manager at a molder in Summit or Portage
 > County: seven metro areas in the country carry 4,000 or more plastics and rubber jobs at
 > twice the national concentration, and Akron is one of them, alongside Elkhart, Erie,
 > Hickory, Greenville, Scranton and Greensboro. What does that company keep look like from
 > inside a plant here? Who do you lose people to, and who do you win them from?
+
+## Composition pass, 2026-08-28
+
+A visual review at 1:1 found the apparatus competing with the findings. What moved, and
+where it went, so nothing reads as deleted:
+
+- Hero cut to kicker, headline, a 53-word standfirst and a byline. The four-term glossary
+  now sits at the end of band 1 as a `.terms` aside at footnote scale; the first chart
+  starts at 1,244px on desktop and 1,570px at 375px, down from roughly 1,600 and 2,200.
+- Source lines cut to source, period and one limitation, at or under 45 words each, with
+  no bold. The overflow moved INSIDE each figure's existing table disclosure (`.tnote`):
+  the top-20 share, the corner thresholds, the trend extract's gaps.
+- The footprint banner is one line; the county list, the wider fourteen-county definition
+  and the rejected 6th-to-16th bound are in the methodology box. The banner no longer names
+  another footprint by its internal label.
+- The methodology's data-dictionary strings are re-set in reader words on the way in,
+  because the committed `meta.row` and `meta.derived_note` carry backticks that rendered as
+  literal characters. Fix the builder to remove them at source and this override can go.
 
 ## Run and publish
 

@@ -1,1 +1,896 @@
-{"meta":{"source":"USAspending.gov spending_by_category, place of performance","row":"one (fiscal year, category, code) obligation total","footprint":{"key":"pic12","n":12,"label":"PIC-12","counties":["Ashtabula","Cuyahoga","Geauga","Lake","Lorain","Mahoning","Medina","Portage","Stark","Summit","Trumbull","Wayne"],"note":"PIC's official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.","differs":"Excludes Crawford, Huron, Richland and Tuscarawas, which the vault's NEO-14 includes."},"scope":"Obligations at place of performance in the 12 PIC-12 counties. NAICS rows are filtered to 325* and 326* \u2014 chemical and plastics/rubber. County rows are ALL industries and are an order of magnitude larger; the two are shown separately and never summed.","caution":"Place of performance is a REPORTED FIELD on the award, not an observation of where work happened \u2014 a centrally administered contract or a prime performing through a subaward can put the code somewhere other than the activity. An obligation is not an outlay.","excludes":"University and research awards are INVISIBLE to the NAICS view by construction: it filters to 325*/326* manufacturing codes, and a university files under 61xxxx or 5417xx. The NSF NEO-SMART Engine ($14,999,983) and TARDISS do not appear in the NAICS rows. The all-industry county rows do capture them."},"inflation":"Dollars from different years are not the same dollars. Every row carries BOTH the nominal obligation and the same figure restated in 2025 dollars using BLS CPI-U annual averages. Any total spanning more than one year must use the real column; the nominal one is kept so a reader can reconcile against USAspending itself.","cpi_base":2025,"cpi":{"2018":251.107,"2019":255.657,"2020":258.811,"2021":270.97,"2022":292.655,"2023":304.702,"2024":313.689,"2025":322.132,"2026":322.132},"naics":[{"fy":2019,"code":"325510","name":"Paint and Coating Manufacturing","amount":5993271,"real":7551619},{"fy":2019,"code":"325998","name":"All Other Miscellaneous Chemical Product and Preparation Manufacturing","amount":10714908,"real":13500959},{"fy":2019,"code":"326122","name":"Plastics Pipe and Pipe Fitting Manufacturing","amount":17226407,"real":21705554},{"fy":2019,"code":"326211","name":"Tire Manufacturing (except Retreading)","amount":3901504,"real":4915959},{"fy":2019,"code":"326299","name":"All Other Rubber Product Manufacturing","amount":3153933,"real":3974007},{"fy":2020,"code":"325120","name":"Industrial Gas Manufacturing","amount":1364585,"real":1698446},{"fy":2020,"code":"325510","name":"Paint and Coating Manufacturing","amount":4723867,"real":5879614},{"fy":2020,"code":"325998","name":"All Other Miscellaneous Chemical Product and Preparation Manufacturing","amount":8009167,"real":9968699},{"fy":2020,"code":"326299","name":"All Other Rubber Product Manufacturing","amount":11451563,"real":14253315},{"fy":2021,"code":"325120","name":"Industrial Gas Manufacturing","amount":1570903,"real":1867506},{"fy":2021,"code":"325413","name":"In-Vitro Diagnostic Substance Manufacturing","amount":1682386,"real":2000039},{"fy":2021,"code":"325510","name":"Paint and Coating Manufacturing","amount":3018029,"real":3587865},{"fy":2021,"code":"326122","name":"Plastics Pipe and Pipe Fitting Manufacturing","amount":1520450,"real":1807527},{"fy":2021,"code":"326211","name":"Tire Manufacturing (except Retreading)","amount":8875638,"real":10551452},{"fy":2021,"code":"326299","name":"All Other Rubber Product Manufacturing","amount":26027374,"real":30941617},{"fy":2022,"code":"325120","name":"Industrial Gas Manufacturing","amount":1578671,"real":1737679},{"fy":2022,"code":"325413","name":"In-Vitro Diagnostic Substance Manufacturing","amount":1275442,"real":1403908},{"fy":2022,"code":"325510","name":"Paint and Coating Manufacturing","amount":3119729,"real":3433956},{"fy":2022,"code":"326211","name":"Tire Manufacturing (except Retreading)","amount":18324225,"real":20169891},{"fy":2022,"code":"326220","name":"Rubber and Plastics Hoses and Belting Manufacturing","amount":1874100,"real":2062864},{"fy":2022,"code":"326299","name":"All Other Rubber Product Manufacturing","amount":13408782,"real":14759351},{"fy":2023,"code":"325120","name":"Industrial Gas Manufacturing","amount":1539453,"real":1627515},{"fy":2023,"code":"325510","name":"Paint and Coating Manufacturing","amount":1219284,"real":1289031},{"fy":2023,"code":"326220","name":"Rubber and Plastics Hoses and Belting Manufacturing","amount":2036164,"real":2152639},{"fy":2023,"code":"326299","name":"All Other Rubber Product Manufacturing","amount":11245630,"real":11888918},{"fy":2024,"code":"325120","name":"Industrial Gas Manufacturing","amount":1644745,"real":1689013},{"fy":2024,"code":"325510","name":"Paint and Coating Manufacturing","amount":2663193,"real":2734874},{"fy":2024,"code":"326211","name":"Tire Manufacturing (except Retreading)","amount":12468847,"real":12804448},{"fy":2024,"code":"326220","name":"Rubber and Plastics Hoses and Belting Manufacturing","amount":2366157,"real":2429843},{"fy":2024,"code":"326299","name":"All Other Rubber Product Manufacturing","amount":2802648,"real":2878082},{"fy":2025,"code":"325120","name":"Industrial Gas Manufacturing","amount":2809934,"real":2809934},{"fy":2025,"code":"325510","name":"Paint and Coating Manufacturing","amount":1476955,"real":1476955},{"fy":2025,"code":"326211","name":"Tire Manufacturing (except Retreading)","amount":31051228,"real":31051228},{"fy":2025,"code":"326220","name":"Rubber and Plastics Hoses and Belting Manufacturing","amount":1305842,"real":1305842},{"fy":2025,"code":"326299","name":"All Other Rubber Product Manufacturing","amount":2332310,"real":2332310},{"fy":2026,"code":"325510","name":"Paint and Coating Manufacturing","amount":1276517,"real":1276517},{"fy":2026,"code":"326211","name":"Tire Manufacturing (except Retreading)","amount":3209383,"real":3209383},{"fy":2026,"code":"326220","name":"Rubber and Plastics Hoses and Belting Manufacturing","amount":1320204,"real":1320204},{"fy":2026,"code":"326299","name":"All Other Rubber Product Manufacturing","amount":17218441,"real":17218441}],"counties":[{"fy":2019,"county":"ASHTABULA COUNTY","amount":558188210,"real":703326272},{"fy":2019,"county":"CUYAHOGA COUNTY","amount":7190459273,"real":9060096248},{"fy":2019,"county":"GEAUGA COUNTY","amount":422469171,"real":532318063},{"fy":2019,"county":"LAKE COUNTY","amount":1206801734,"real":1520589916},{"fy":2019,"county":"LORAIN COUNTY","amount":1496236761,"real":1885282782},{"fy":2019,"county":"MAHONING COUNTY","amount":1236281896,"real":1557735402},{"fy":2019,"county":"MEDINA COUNTY","amount":786995067,"real":991626652},{"fy":2019,"county":"PORTAGE COUNTY","amount":767331525,"real":966850267},{"fy":2019,"county":"STARK COUNTY","amount":2077865479,"real":2618144476},{"fy":2019,"county":"SUMMIT COUNTY","amount":4370358110,"real":5506722674},{"fy":2019,"county":"TRUMBULL COUNTY","amount":1120962864,"real":1412431537},{"fy":2019,"county":"WAYNE COUNTY","amount":507268087,"real":639166084},{"fy":2020,"county":"ASHTABULA COUNTY","amount":672876117,"real":837502770},{"fy":2020,"county":"CUYAHOGA COUNTY","amount":10914979571,"real":13585451156},{"fy":2020,"county":"GEAUGA COUNTY","amount":640850341,"real":797641530},{"fy":2020,"county":"LAKE COUNTY","amount":1687679364,"real":2100588958},{"fy":2020,"county":"LORAIN COUNTY","amount":1878758319,"real":2338417513},{"fy":2020,"county":"MAHONING COUNTY","amount":1750242208,"real":2178458501},{"fy":2020,"county":"MEDINA COUNTY","amount":1188565727,"real":1479361599},{"fy":2020,"county":"PORTAGE COUNTY","amount":1024634093,"real":1275322261},{"fy":2020,"county":"STARK COUNTY","amount":2763220765,"real":3439273569},{"fy":2020,"county":"SUMMIT COUNTY","amount":6219574556,"real":7741262894},{"fy":2020,"county":"TRUMBULL COUNTY","amount":1457349337,"real":1813906119},{"fy":2020,"county":"WAYNE COUNTY","amount":697849483,"real":868586148},{"fy":2021,"county":"ASHTABULA COUNTY","amount":721933470,"real":858242139},{"fy":2021,"county":"CUYAHOGA COUNTY","amount":10652244364,"real":12663500688},{"fy":2021,"county":"GEAUGA COUNTY","amount":559354054,"real":664966012},{"fy":2021,"county":"LAKE COUNTY","amount":1591172182,"real":1891602307},{"fy":2021,"county":"LORAIN COUNTY","amount":1960115774,"real":2330206350},{"fy":2021,"county":"MAHONING COUNTY","amount":1676188521,"real":1992670630},{"fy":2021,"county":"MEDINA COUNTY","amount":1089957012,"real":1295752416},{"fy":2021,"county":"PORTAGE COUNTY","amount":1072807195,"real":1275364533},{"fy":2021,"county":"STARK COUNTY","amount":2658936623,"real":3160971961},{"fy":2021,"county":"SUMMIT COUNTY","amount":6520624349,"real":7751787145},{"fy":2021,"county":"TRUMBULL COUNTY","amount":1452983180,"real":1727321761},{"fy":2021,"county":"WAYNE COUNTY","amount":641526379,"real":762653340},{"fy":2022,"county":"ASHTABULA COUNTY","amount":676686398,"real":744844075},{"fy":2022,"county":"CUYAHOGA COUNTY","amount":7972986365,"real":8776047031},{"fy":2022,"county":"GEAUGA COUNTY","amount":507431621,"real":558541501},{"fy":2022,"county":"LAKE COUNTY","amount":1383993770,"real":1523393351},{"fy":2022,"county":"LORAIN COUNTY","amount":1725855814,"real":1899688661},{"fy":2022,"county":"MAHONING COUNTY","amount":1374258544,"real":1512677566},{"fy":2022,"county":"MEDINA COUNTY","amount":949813376,"real":1045481138},{"fy":2022,"county":"PORTAGE COUNTY","amount":881926499,"real":970756512},{"fy":2022,"county":"STARK COUNTY","amount":2272099509,"real":2500951493},{"fy":2022,"county":"SUMMIT COUNTY","amount":6562501952,"real":7223494828},{"fy":2022,"county":"TRUMBULL COUNTY","amount":1235049074,"real":1359446544},{"fy":2022,"county":"WAYNE COUNTY","amount":553158184,"real":608873767},{"fy":2023,"county":"ASHTABULA COUNTY","amount":743958569,"real":786515553},{"fy":2023,"county":"CUYAHOGA COUNTY","amount":8153615288,"real":8620030062},{"fy":2023,"county":"GEAUGA COUNTY","amount":546027158,"real":577261786},{"fy":2023,"county":"LAKE COUNTY","amount":1457577143,"real":1540955558},{"fy":2023,"county":"LORAIN COUNTY","amount":1818823278,"real":1922866210},{"fy":2023,"county":"MAHONING COUNTY","amount":1448913929,"real":1531796778},{"fy":2023,"county":"MEDINA COUNTY","amount":1371946313,"real":1450426350},{"fy":2023,"county":"PORTAGE COUNTY","amount":927341396,"real":980388506},{"fy":2023,"county":"STARK COUNTY","amount":2406394097,"real":2544048097},{"fy":2023,"county":"SUMMIT COUNTY","amount":5366989566,"real":5673999786},{"fy":2023,"county":"TRUMBULL COUNTY","amount":1318420643,"real":1393838828},{"fy":2023,"county":"WAYNE COUNTY","amount":627206632,"real":663085004},{"fy":2024,"county":"ASHTABULA COUNTY","amount":639017653,"real":656216937},{"fy":2024,"county":"CUYAHOGA COUNTY","amount":8713644415,"real":8948173836},{"fy":2024,"county":"GEAUGA COUNTY","amount":603180180,"real":619414891},{"fy":2024,"county":"LAKE COUNTY","amount":1603740698,"real":1646905689},{"fy":2024,"county":"LORAIN COUNTY","amount":1969415410,"real":2022422606},{"fy":2024,"county":"MAHONING COUNTY","amount":1508448037,"real":1549048207},{"fy":2024,"county":"MEDINA COUNTY","amount":1052481037,"real":1080808767},{"fy":2024,"county":"PORTAGE COUNTY","amount":967844400,"real":993894119},{"fy":2024,"county":"STARK COUNTY","amount":2546184547,"real":2614715595},{"fy":2024,"county":"SUMMIT COUNTY","amount":4233936701,"real":4347893925},{"fy":2024,"county":"TRUMBULL COUNTY","amount":1379283032,"real":1416406702},{"fy":2024,"county":"WAYNE COUNTY","amount":625380134,"real":642212361},{"fy":2025,"county":"ASHTABULA COUNTY","amount":699407473,"real":699407473},{"fy":2025,"county":"CUYAHOGA COUNTY","amount":9877717457,"real":9877717457},{"fy":2025,"county":"GEAUGA COUNTY","amount":683429335,"real":683429335},{"fy":2025,"county":"LAKE COUNTY","amount":1748449154,"real":1748449154},{"fy":2025,"county":"LORAIN COUNTY","amount":2271107524,"real":2271107524},{"fy":2025,"county":"MAHONING COUNTY","amount":1627004267,"real":1627004267},{"fy":2025,"county":"MEDINA COUNTY","amount":1205241812,"real":1205241812},{"fy":2025,"county":"PORTAGE COUNTY","amount":1093031889,"real":1093031889},{"fy":2025,"county":"STARK COUNTY","amount":2786065160,"real":2786065160},{"fy":2025,"county":"SUMMIT COUNTY","amount":4558868369,"real":4558868369},{"fy":2025,"county":"TRUMBULL COUNTY","amount":1480465619,"real":1480465619},{"fy":2025,"county":"WAYNE COUNTY","amount":677258891,"real":677258891},{"fy":2026,"county":"ASHTABULA COUNTY","amount":539202428,"real":539202428},{"fy":2026,"county":"CUYAHOGA COUNTY","amount":7518574541,"real":7518574541},{"fy":2026,"county":"GEAUGA COUNTY","amount":518240710,"real":518240710},{"fy":2026,"county":"LAKE COUNTY","amount":1347399337,"real":1347399337},{"fy":2026,"county":"LORAIN COUNTY","amount":1703577268,"real":1703577268},{"fy":2026,"county":"MAHONING COUNTY","amount":1262181089,"real":1262181089},{"fy":2026,"county":"MEDINA COUNTY","amount":951620510,"real":951620510},{"fy":2026,"county":"PORTAGE COUNTY","amount":854323175,"real":854323175},{"fy":2026,"county":"STARK COUNTY","amount":2140856609,"real":2140856609},{"fy":2026,"county":"SUMMIT COUNTY","amount":3160316192,"real":3160316192},{"fy":2026,"county":"TRUMBULL COUNTY","amount":1136304927,"real":1136304927},{"fy":2026,"county":"WAYNE COUNTY","amount":531212675,"real":531212675}]}
+{
+ "meta": {
+  "source": "USAspending.gov spending_by_category, place of performance",
+  "row": "One row is one obligation total for a single fiscal year, category and industry code.",
+  "footprint": {
+   "key": "pic12",
+   "n": 12,
+   "label": "PIC-12",
+   "counties": [
+    "Ashtabula",
+    "Cuyahoga",
+    "Geauga",
+    "Lake",
+    "Lorain",
+    "Mahoning",
+    "Medina",
+    "Portage",
+    "Stark",
+    "Summit",
+    "Trumbull",
+    "Wayne"
+   ],
+   "note": "PIC’s official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
+   "differs": "A wider fourteen-county reading of the region also counts Crawford, Huron, Richland and Tuscarawas."
+  },
+  "scope": "Obligations at place of performance in the 12 PIC-12 counties. NAICS rows are filtered to 325* and 326*, chemical and plastics/rubber. County rows are all industries and are an order of magnitude larger; the two are shown separately and never summed.",
+  "caution": "Place of performance is a reported field on the award, not an observation of where the work happened. A centrally administered contract, or a prime performing through a subaward, can put the code somewhere other than the activity. An obligation is not an outlay.",
+  "excludes": "University and research awards are invisible to the NAICS view by construction: it filters to 325*/326* manufacturing codes, and a university files under 61xxxx or 5417xx. The NSF NEO-SMART Engine ($14,999,983) and TARDISS do not appear in the NAICS rows. The all-industry county rows do capture them."
+ },
+ "inflation": "Dollars from different years are not the same dollars. Every row carries BOTH the nominal obligation and the same figure restated in 2025 dollars using BLS CPI-U annual averages. Any total spanning more than one year must use the real column; the nominal one is kept so a reader can reconcile against USAspending itself.",
+ "cpi_base": 2025,
+ "cpi": {
+  "2018": 251.107,
+  "2019": 255.657,
+  "2020": 258.811,
+  "2021": 270.97,
+  "2022": 292.655,
+  "2023": 304.702,
+  "2024": 313.689,
+  "2025": 322.132,
+  "2026": 322.132
+ },
+ "naics": [
+  {
+   "fy": 2019,
+   "code": "325510",
+   "name": "Paint and Coating Manufacturing",
+   "amount": 5993271,
+   "real": 7551619
+  },
+  {
+   "fy": 2019,
+   "code": "325998",
+   "name": "All Other Miscellaneous Chemical Product and Preparation Manufacturing",
+   "amount": 10714908,
+   "real": 13500959
+  },
+  {
+   "fy": 2019,
+   "code": "326122",
+   "name": "Plastics Pipe and Pipe Fitting Manufacturing",
+   "amount": 17226407,
+   "real": 21705554
+  },
+  {
+   "fy": 2019,
+   "code": "326211",
+   "name": "Tire Manufacturing (except Retreading)",
+   "amount": 3901504,
+   "real": 4915959
+  },
+  {
+   "fy": 2019,
+   "code": "326299",
+   "name": "All Other Rubber Product Manufacturing",
+   "amount": 3153933,
+   "real": 3974007
+  },
+  {
+   "fy": 2020,
+   "code": "325120",
+   "name": "Industrial Gas Manufacturing",
+   "amount": 1364585,
+   "real": 1698446
+  },
+  {
+   "fy": 2020,
+   "code": "325510",
+   "name": "Paint and Coating Manufacturing",
+   "amount": 4723867,
+   "real": 5879614
+  },
+  {
+   "fy": 2020,
+   "code": "325998",
+   "name": "All Other Miscellaneous Chemical Product and Preparation Manufacturing",
+   "amount": 8009167,
+   "real": 9968699
+  },
+  {
+   "fy": 2020,
+   "code": "326299",
+   "name": "All Other Rubber Product Manufacturing",
+   "amount": 11451563,
+   "real": 14253315
+  },
+  {
+   "fy": 2021,
+   "code": "325120",
+   "name": "Industrial Gas Manufacturing",
+   "amount": 1570903,
+   "real": 1867506
+  },
+  {
+   "fy": 2021,
+   "code": "325413",
+   "name": "In-Vitro Diagnostic Substance Manufacturing",
+   "amount": 1682386,
+   "real": 2000039
+  },
+  {
+   "fy": 2021,
+   "code": "325510",
+   "name": "Paint and Coating Manufacturing",
+   "amount": 3018029,
+   "real": 3587865
+  },
+  {
+   "fy": 2021,
+   "code": "326122",
+   "name": "Plastics Pipe and Pipe Fitting Manufacturing",
+   "amount": 1520450,
+   "real": 1807527
+  },
+  {
+   "fy": 2021,
+   "code": "326211",
+   "name": "Tire Manufacturing (except Retreading)",
+   "amount": 8875638,
+   "real": 10551452
+  },
+  {
+   "fy": 2021,
+   "code": "326299",
+   "name": "All Other Rubber Product Manufacturing",
+   "amount": 26027374,
+   "real": 30941617
+  },
+  {
+   "fy": 2022,
+   "code": "325120",
+   "name": "Industrial Gas Manufacturing",
+   "amount": 1578671,
+   "real": 1737679
+  },
+  {
+   "fy": 2022,
+   "code": "325413",
+   "name": "In-Vitro Diagnostic Substance Manufacturing",
+   "amount": 1275442,
+   "real": 1403908
+  },
+  {
+   "fy": 2022,
+   "code": "325510",
+   "name": "Paint and Coating Manufacturing",
+   "amount": 3119729,
+   "real": 3433956
+  },
+  {
+   "fy": 2022,
+   "code": "326211",
+   "name": "Tire Manufacturing (except Retreading)",
+   "amount": 18324225,
+   "real": 20169891
+  },
+  {
+   "fy": 2022,
+   "code": "326220",
+   "name": "Rubber and Plastics Hoses and Belting Manufacturing",
+   "amount": 1874100,
+   "real": 2062864
+  },
+  {
+   "fy": 2022,
+   "code": "326299",
+   "name": "All Other Rubber Product Manufacturing",
+   "amount": 13408782,
+   "real": 14759351
+  },
+  {
+   "fy": 2023,
+   "code": "325120",
+   "name": "Industrial Gas Manufacturing",
+   "amount": 1539453,
+   "real": 1627515
+  },
+  {
+   "fy": 2023,
+   "code": "325510",
+   "name": "Paint and Coating Manufacturing",
+   "amount": 1219284,
+   "real": 1289031
+  },
+  {
+   "fy": 2023,
+   "code": "326220",
+   "name": "Rubber and Plastics Hoses and Belting Manufacturing",
+   "amount": 2036164,
+   "real": 2152639
+  },
+  {
+   "fy": 2023,
+   "code": "326299",
+   "name": "All Other Rubber Product Manufacturing",
+   "amount": 11245630,
+   "real": 11888918
+  },
+  {
+   "fy": 2024,
+   "code": "325120",
+   "name": "Industrial Gas Manufacturing",
+   "amount": 1644745,
+   "real": 1689013
+  },
+  {
+   "fy": 2024,
+   "code": "325510",
+   "name": "Paint and Coating Manufacturing",
+   "amount": 2663193,
+   "real": 2734874
+  },
+  {
+   "fy": 2024,
+   "code": "326211",
+   "name": "Tire Manufacturing (except Retreading)",
+   "amount": 12468847,
+   "real": 12804448
+  },
+  {
+   "fy": 2024,
+   "code": "326220",
+   "name": "Rubber and Plastics Hoses and Belting Manufacturing",
+   "amount": 2366157,
+   "real": 2429843
+  },
+  {
+   "fy": 2024,
+   "code": "326299",
+   "name": "All Other Rubber Product Manufacturing",
+   "amount": 2802648,
+   "real": 2878082
+  },
+  {
+   "fy": 2025,
+   "code": "325120",
+   "name": "Industrial Gas Manufacturing",
+   "amount": 2809934,
+   "real": 2809934
+  },
+  {
+   "fy": 2025,
+   "code": "325510",
+   "name": "Paint and Coating Manufacturing",
+   "amount": 1476955,
+   "real": 1476955
+  },
+  {
+   "fy": 2025,
+   "code": "326211",
+   "name": "Tire Manufacturing (except Retreading)",
+   "amount": 31051228,
+   "real": 31051228
+  },
+  {
+   "fy": 2025,
+   "code": "326220",
+   "name": "Rubber and Plastics Hoses and Belting Manufacturing",
+   "amount": 1305842,
+   "real": 1305842
+  },
+  {
+   "fy": 2025,
+   "code": "326299",
+   "name": "All Other Rubber Product Manufacturing",
+   "amount": 2332310,
+   "real": 2332310
+  },
+  {
+   "fy": 2026,
+   "code": "325510",
+   "name": "Paint and Coating Manufacturing",
+   "amount": 1276517,
+   "real": 1276517
+  },
+  {
+   "fy": 2026,
+   "code": "326211",
+   "name": "Tire Manufacturing (except Retreading)",
+   "amount": 3209383,
+   "real": 3209383
+  },
+  {
+   "fy": 2026,
+   "code": "326220",
+   "name": "Rubber and Plastics Hoses and Belting Manufacturing",
+   "amount": 1320204,
+   "real": 1320204
+  },
+  {
+   "fy": 2026,
+   "code": "326299",
+   "name": "All Other Rubber Product Manufacturing",
+   "amount": 17218441,
+   "real": 17218441
+  }
+ ],
+ "counties": [
+  {
+   "fy": 2019,
+   "county": "ASHTABULA COUNTY",
+   "amount": 558188210,
+   "real": 703326272
+  },
+  {
+   "fy": 2019,
+   "county": "CUYAHOGA COUNTY",
+   "amount": 7190459273,
+   "real": 9060096248
+  },
+  {
+   "fy": 2019,
+   "county": "GEAUGA COUNTY",
+   "amount": 422469171,
+   "real": 532318063
+  },
+  {
+   "fy": 2019,
+   "county": "LAKE COUNTY",
+   "amount": 1206801734,
+   "real": 1520589916
+  },
+  {
+   "fy": 2019,
+   "county": "LORAIN COUNTY",
+   "amount": 1496236761,
+   "real": 1885282782
+  },
+  {
+   "fy": 2019,
+   "county": "MAHONING COUNTY",
+   "amount": 1236281896,
+   "real": 1557735402
+  },
+  {
+   "fy": 2019,
+   "county": "MEDINA COUNTY",
+   "amount": 786995067,
+   "real": 991626652
+  },
+  {
+   "fy": 2019,
+   "county": "PORTAGE COUNTY",
+   "amount": 767331525,
+   "real": 966850267
+  },
+  {
+   "fy": 2019,
+   "county": "STARK COUNTY",
+   "amount": 2077865479,
+   "real": 2618144476
+  },
+  {
+   "fy": 2019,
+   "county": "SUMMIT COUNTY",
+   "amount": 4370358110,
+   "real": 5506722674
+  },
+  {
+   "fy": 2019,
+   "county": "TRUMBULL COUNTY",
+   "amount": 1120962864,
+   "real": 1412431537
+  },
+  {
+   "fy": 2019,
+   "county": "WAYNE COUNTY",
+   "amount": 507268087,
+   "real": 639166084
+  },
+  {
+   "fy": 2020,
+   "county": "ASHTABULA COUNTY",
+   "amount": 672876117,
+   "real": 837502770
+  },
+  {
+   "fy": 2020,
+   "county": "CUYAHOGA COUNTY",
+   "amount": 10914979571,
+   "real": 13585451156
+  },
+  {
+   "fy": 2020,
+   "county": "GEAUGA COUNTY",
+   "amount": 640850341,
+   "real": 797641530
+  },
+  {
+   "fy": 2020,
+   "county": "LAKE COUNTY",
+   "amount": 1687679364,
+   "real": 2100588958
+  },
+  {
+   "fy": 2020,
+   "county": "LORAIN COUNTY",
+   "amount": 1878758319,
+   "real": 2338417513
+  },
+  {
+   "fy": 2020,
+   "county": "MAHONING COUNTY",
+   "amount": 1750242208,
+   "real": 2178458501
+  },
+  {
+   "fy": 2020,
+   "county": "MEDINA COUNTY",
+   "amount": 1188565727,
+   "real": 1479361599
+  },
+  {
+   "fy": 2020,
+   "county": "PORTAGE COUNTY",
+   "amount": 1024634093,
+   "real": 1275322261
+  },
+  {
+   "fy": 2020,
+   "county": "STARK COUNTY",
+   "amount": 2763220765,
+   "real": 3439273569
+  },
+  {
+   "fy": 2020,
+   "county": "SUMMIT COUNTY",
+   "amount": 6219574556,
+   "real": 7741262894
+  },
+  {
+   "fy": 2020,
+   "county": "TRUMBULL COUNTY",
+   "amount": 1457349337,
+   "real": 1813906119
+  },
+  {
+   "fy": 2020,
+   "county": "WAYNE COUNTY",
+   "amount": 697849483,
+   "real": 868586148
+  },
+  {
+   "fy": 2021,
+   "county": "ASHTABULA COUNTY",
+   "amount": 721933470,
+   "real": 858242139
+  },
+  {
+   "fy": 2021,
+   "county": "CUYAHOGA COUNTY",
+   "amount": 10652244364,
+   "real": 12663500688
+  },
+  {
+   "fy": 2021,
+   "county": "GEAUGA COUNTY",
+   "amount": 559354054,
+   "real": 664966012
+  },
+  {
+   "fy": 2021,
+   "county": "LAKE COUNTY",
+   "amount": 1591172182,
+   "real": 1891602307
+  },
+  {
+   "fy": 2021,
+   "county": "LORAIN COUNTY",
+   "amount": 1960115774,
+   "real": 2330206350
+  },
+  {
+   "fy": 2021,
+   "county": "MAHONING COUNTY",
+   "amount": 1676188521,
+   "real": 1992670630
+  },
+  {
+   "fy": 2021,
+   "county": "MEDINA COUNTY",
+   "amount": 1089957012,
+   "real": 1295752416
+  },
+  {
+   "fy": 2021,
+   "county": "PORTAGE COUNTY",
+   "amount": 1072807195,
+   "real": 1275364533
+  },
+  {
+   "fy": 2021,
+   "county": "STARK COUNTY",
+   "amount": 2658936623,
+   "real": 3160971961
+  },
+  {
+   "fy": 2021,
+   "county": "SUMMIT COUNTY",
+   "amount": 6520624349,
+   "real": 7751787145
+  },
+  {
+   "fy": 2021,
+   "county": "TRUMBULL COUNTY",
+   "amount": 1452983180,
+   "real": 1727321761
+  },
+  {
+   "fy": 2021,
+   "county": "WAYNE COUNTY",
+   "amount": 641526379,
+   "real": 762653340
+  },
+  {
+   "fy": 2022,
+   "county": "ASHTABULA COUNTY",
+   "amount": 676686398,
+   "real": 744844075
+  },
+  {
+   "fy": 2022,
+   "county": "CUYAHOGA COUNTY",
+   "amount": 7972986365,
+   "real": 8776047031
+  },
+  {
+   "fy": 2022,
+   "county": "GEAUGA COUNTY",
+   "amount": 507431621,
+   "real": 558541501
+  },
+  {
+   "fy": 2022,
+   "county": "LAKE COUNTY",
+   "amount": 1383993770,
+   "real": 1523393351
+  },
+  {
+   "fy": 2022,
+   "county": "LORAIN COUNTY",
+   "amount": 1725855814,
+   "real": 1899688661
+  },
+  {
+   "fy": 2022,
+   "county": "MAHONING COUNTY",
+   "amount": 1374258544,
+   "real": 1512677566
+  },
+  {
+   "fy": 2022,
+   "county": "MEDINA COUNTY",
+   "amount": 949813376,
+   "real": 1045481138
+  },
+  {
+   "fy": 2022,
+   "county": "PORTAGE COUNTY",
+   "amount": 881926499,
+   "real": 970756512
+  },
+  {
+   "fy": 2022,
+   "county": "STARK COUNTY",
+   "amount": 2272099509,
+   "real": 2500951493
+  },
+  {
+   "fy": 2022,
+   "county": "SUMMIT COUNTY",
+   "amount": 6562501952,
+   "real": 7223494828
+  },
+  {
+   "fy": 2022,
+   "county": "TRUMBULL COUNTY",
+   "amount": 1235049074,
+   "real": 1359446544
+  },
+  {
+   "fy": 2022,
+   "county": "WAYNE COUNTY",
+   "amount": 553158184,
+   "real": 608873767
+  },
+  {
+   "fy": 2023,
+   "county": "ASHTABULA COUNTY",
+   "amount": 743958569,
+   "real": 786515553
+  },
+  {
+   "fy": 2023,
+   "county": "CUYAHOGA COUNTY",
+   "amount": 8153615288,
+   "real": 8620030062
+  },
+  {
+   "fy": 2023,
+   "county": "GEAUGA COUNTY",
+   "amount": 546027158,
+   "real": 577261786
+  },
+  {
+   "fy": 2023,
+   "county": "LAKE COUNTY",
+   "amount": 1457577143,
+   "real": 1540955558
+  },
+  {
+   "fy": 2023,
+   "county": "LORAIN COUNTY",
+   "amount": 1818823278,
+   "real": 1922866210
+  },
+  {
+   "fy": 2023,
+   "county": "MAHONING COUNTY",
+   "amount": 1448913929,
+   "real": 1531796778
+  },
+  {
+   "fy": 2023,
+   "county": "MEDINA COUNTY",
+   "amount": 1371946313,
+   "real": 1450426350
+  },
+  {
+   "fy": 2023,
+   "county": "PORTAGE COUNTY",
+   "amount": 927341396,
+   "real": 980388506
+  },
+  {
+   "fy": 2023,
+   "county": "STARK COUNTY",
+   "amount": 2406394097,
+   "real": 2544048097
+  },
+  {
+   "fy": 2023,
+   "county": "SUMMIT COUNTY",
+   "amount": 5366989566,
+   "real": 5673999786
+  },
+  {
+   "fy": 2023,
+   "county": "TRUMBULL COUNTY",
+   "amount": 1318420643,
+   "real": 1393838828
+  },
+  {
+   "fy": 2023,
+   "county": "WAYNE COUNTY",
+   "amount": 627206632,
+   "real": 663085004
+  },
+  {
+   "fy": 2024,
+   "county": "ASHTABULA COUNTY",
+   "amount": 639017653,
+   "real": 656216937
+  },
+  {
+   "fy": 2024,
+   "county": "CUYAHOGA COUNTY",
+   "amount": 8713644415,
+   "real": 8948173836
+  },
+  {
+   "fy": 2024,
+   "county": "GEAUGA COUNTY",
+   "amount": 603180180,
+   "real": 619414891
+  },
+  {
+   "fy": 2024,
+   "county": "LAKE COUNTY",
+   "amount": 1603740698,
+   "real": 1646905689
+  },
+  {
+   "fy": 2024,
+   "county": "LORAIN COUNTY",
+   "amount": 1969415410,
+   "real": 2022422606
+  },
+  {
+   "fy": 2024,
+   "county": "MAHONING COUNTY",
+   "amount": 1508448037,
+   "real": 1549048207
+  },
+  {
+   "fy": 2024,
+   "county": "MEDINA COUNTY",
+   "amount": 1052481037,
+   "real": 1080808767
+  },
+  {
+   "fy": 2024,
+   "county": "PORTAGE COUNTY",
+   "amount": 967844400,
+   "real": 993894119
+  },
+  {
+   "fy": 2024,
+   "county": "STARK COUNTY",
+   "amount": 2546184547,
+   "real": 2614715595
+  },
+  {
+   "fy": 2024,
+   "county": "SUMMIT COUNTY",
+   "amount": 4233936701,
+   "real": 4347893925
+  },
+  {
+   "fy": 2024,
+   "county": "TRUMBULL COUNTY",
+   "amount": 1379283032,
+   "real": 1416406702
+  },
+  {
+   "fy": 2024,
+   "county": "WAYNE COUNTY",
+   "amount": 625380134,
+   "real": 642212361
+  },
+  {
+   "fy": 2025,
+   "county": "ASHTABULA COUNTY",
+   "amount": 699407473,
+   "real": 699407473
+  },
+  {
+   "fy": 2025,
+   "county": "CUYAHOGA COUNTY",
+   "amount": 9877717457,
+   "real": 9877717457
+  },
+  {
+   "fy": 2025,
+   "county": "GEAUGA COUNTY",
+   "amount": 683429335,
+   "real": 683429335
+  },
+  {
+   "fy": 2025,
+   "county": "LAKE COUNTY",
+   "amount": 1748449154,
+   "real": 1748449154
+  },
+  {
+   "fy": 2025,
+   "county": "LORAIN COUNTY",
+   "amount": 2271107524,
+   "real": 2271107524
+  },
+  {
+   "fy": 2025,
+   "county": "MAHONING COUNTY",
+   "amount": 1627004267,
+   "real": 1627004267
+  },
+  {
+   "fy": 2025,
+   "county": "MEDINA COUNTY",
+   "amount": 1205241812,
+   "real": 1205241812
+  },
+  {
+   "fy": 2025,
+   "county": "PORTAGE COUNTY",
+   "amount": 1093031889,
+   "real": 1093031889
+  },
+  {
+   "fy": 2025,
+   "county": "STARK COUNTY",
+   "amount": 2786065160,
+   "real": 2786065160
+  },
+  {
+   "fy": 2025,
+   "county": "SUMMIT COUNTY",
+   "amount": 4558868369,
+   "real": 4558868369
+  },
+  {
+   "fy": 2025,
+   "county": "TRUMBULL COUNTY",
+   "amount": 1480465619,
+   "real": 1480465619
+  },
+  {
+   "fy": 2025,
+   "county": "WAYNE COUNTY",
+   "amount": 677258891,
+   "real": 677258891
+  },
+  {
+   "fy": 2026,
+   "county": "ASHTABULA COUNTY",
+   "amount": 539202428,
+   "real": 539202428
+  },
+  {
+   "fy": 2026,
+   "county": "CUYAHOGA COUNTY",
+   "amount": 7518574541,
+   "real": 7518574541
+  },
+  {
+   "fy": 2026,
+   "county": "GEAUGA COUNTY",
+   "amount": 518240710,
+   "real": 518240710
+  },
+  {
+   "fy": 2026,
+   "county": "LAKE COUNTY",
+   "amount": 1347399337,
+   "real": 1347399337
+  },
+  {
+   "fy": 2026,
+   "county": "LORAIN COUNTY",
+   "amount": 1703577268,
+   "real": 1703577268
+  },
+  {
+   "fy": 2026,
+   "county": "MAHONING COUNTY",
+   "amount": 1262181089,
+   "real": 1262181089
+  },
+  {
+   "fy": 2026,
+   "county": "MEDINA COUNTY",
+   "amount": 951620510,
+   "real": 951620510
+  },
+  {
+   "fy": 2026,
+   "county": "PORTAGE COUNTY",
+   "amount": 854323175,
+   "real": 854323175
+  },
+  {
+   "fy": 2026,
+   "county": "STARK COUNTY",
+   "amount": 2140856609,
+   "real": 2140856609
+  },
+  {
+   "fy": 2026,
+   "county": "SUMMIT COUNTY",
+   "amount": 3160316192,
+   "real": 3160316192
+  },
+  {
+   "fy": 2026,
+   "county": "TRUMBULL COUNTY",
+   "amount": 1136304927,
+   "real": 1136304927
+  },
+  {
+   "fy": 2026,
+   "county": "WAYNE COUNTY",
+   "amount": 531212675,
+   "real": 531212675
+  }
+ ]
+}

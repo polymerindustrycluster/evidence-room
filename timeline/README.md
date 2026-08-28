@@ -53,8 +53,11 @@ record's 2023–2029 scale the prologue would compress to a dot; on a linear 114
 the legend says so, so nobody reads it as linear. Two rows: **Why here** (heritage) and
 **First understood here** (discoveries). A row can carry the same event twice across the two
 rows — Case 1963 and Kent 1965 are both a heritage inflection and a scientific first — and
-the register keeps them as two rows in two tenses on purpose. Below 900px the chart becomes
-a card list, as the swimlane does.
+the register keeps them as two rows in two tenses on purpose. A sixth column, 2013–2023, is
+drawn EMPTY with the note "eleven years, nothing proven": five equal-width era columns made
+the chart look continuously populated, so the second half of its own title survived only as
+a caption. Below 900px the eras become stacked blocks, two collection rows inside each, with
+the same 32 dots at the same year positions.
 
 Two rows carry one-liners assembled in the builder rather than read from the atom (the
 1945–2000 atoms have empty one-liner fields): six are verbatim sentences from
@@ -171,8 +174,10 @@ data-journalism review rubric. What moved:
   by year (sticky group headers), behind a "Show all 69 + 18" disclosure; the Status
   column moved into the caption (constant in the default view) and scheduled rows are
   tagged inline when expanded. The CSV still carries Status for every row.
-- **Mobile**: card list now reads past-first with a "Today" divider card where the
-  delivered record ends; the table cap removes ~5,000px of default scroll.
+- **Mobile**: both dot charts are re-laid-out rather than replaced. The swimlane becomes
+  five small multiples, one per workstream, sharing a year axis, the Today rule, the tinted
+  promise zone and the three labeled event rules; the heritage strip becomes stacked era
+  blocks. Nothing is dropped or aggregated, and every dot still opens its source.
 - **Human scale**: two 40-word asides beside the swimlane (BioVerde's relocation, the
   Barberton HS workshop → K-12 pathway), both from events already in the record.
 - **Closer added** (house `.closer` anatomy) resolving the headline question.
@@ -194,3 +199,37 @@ wants to make calls:
    school aside.
 
 The page ships correctly without them (vignette rung); it is not blocked on reporting.
+
+## 2026-08-28 fix round (independent visual review)
+
+- **One text rail.** The page was left-set while the shared core centres `.band` and
+  `.closer` children, so the sources H2 and the whole closer floated ~151px off the page's
+  own rail and the two-column methods band added a third edge. The page now uses the shared
+  centred system with a single text width; charts, the photo strip and the archive tables
+  are the only blocks that break out. Methods is one column.
+- **The apparatus no longer contradicts itself.** Methods said "487 raw rows reconciled to
+  269" while the sources band said "487 raw rows reduced to 104 dated events". Both numbers
+  are real (269 is the internal inventory's row count; the publication filters documented
+  above drop 161 internal plus 4 by tier, which is exactly the 104), but the page presented
+  them as one quantity. The page now states only the 104 it can prove from shipped data and
+  reconciles it, computed at load time, to 87 calendar dots plus 5 pre-window rows plus 12
+  press-coverage rows.
+- **Mobile charts are charts.** 8,400px and 14,000px of card lists became a stacked era
+  chart and five small multiples. The mobile page is 15.2k px, down from 35.2k.
+- **Mobile tables stack.** The record table clipped EVENT mid-word at 375px with two
+  columns off-screen. Rows are stacked entries below 720px. `#htable`'s 960px floor beat
+  the class-level override at ID specificity and pushed the whole page to 980px wide when a
+  reader opened the heritage disclosure; that is named explicitly in the media query now.
+- **Lane palette rebuilt.** Designations (#12798B) and Startups (#1A8A9E) were two teals
+  0.9 L* apart, and the Designations hex was also the cadence chart's story colour. The new
+  set spans 24.7–48.5 L* with a 5.4 minimum pairwise gap, all at or above 4.5:1 on white.
+  15-point separation is not reachable for five categories under that contrast floor: 4.5:1
+  caps L* at 49.9, so the widest possible minimum gap over a usable 20–50 range is 7.5.
+- **Genre furniture.** Byline block under the standfirst, identity footer after the closer,
+  one accent stat card, 2x2 stat grid, hero standfirst cut to four lines.
+- **Caveat ink.** The cadence source line went from 65 words to 36; the overflow moved into
+  the methods notes. The sources band is capped at the body measure.
+- Heritage annotation labels are de-collided into tiers per row: adding the void column
+  narrowed every era column and pushed "1963 · first polymer department" under the plate of
+  "2012 · the last proven row". `collide.mjs` cannot see it, since both are plated.
+- claims.json grew from 24 to 29. All 25 machine-checkable claims pass; 4 remain manual.

@@ -167,7 +167,19 @@ const PV = (() => {
        where an editorial desk sets a short time series. The svg still fills whatever box
        it is given via viewBox, so the caller changes nothing else. */
     if (opts.narrow) svg.closest(".chart")?.classList.add("narrow");
-    while (svg.childNodes.length > (opts.keep ?? 1)) svg.removeChild(svg.lastChild);
+    /* Keep the first N ELEMENT children, not the first N childNodes. Written as a
+       childNodes count, this silently ate the <title> on every chart whose markup was
+       indented (`<svg ...>\n  <title>`): childNodes[0] is then the whitespace text node,
+       so the kept slot held whitespace and the title was removed on first draw. Every
+       such chart shipped role="img" aria-labelledby pointing at an element that no
+       longer existed — a screen reader got no alternative at all, while the source
+       markup looked correct and every gate passed. Found 2026-08-28. */
+    const keep = opts.keep ?? 1;
+    let kept = 0;
+    for (const node of [...svg.childNodes]) {
+      if (node.nodeType === 1 && kept < keep) { kept++; continue; }
+      svg.removeChild(node);
+    }
     return {svg, W, H, m, w: W - m.l - m.r, h: H - m.t - m.b};
   }
 

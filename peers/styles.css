@@ -1,7 +1,8 @@
 /* peers — page-local additions only. House anatomy (.mast/.hero/.band/.closer) and the
    shared column system stay untouched so the layout gates keep applying. This file adds:
-   per-figure chrome, the metro finder, the comparison picker, band-tint pacing, and the
-   per-form mobile re-layout override. */
+   per-figure chrome, the byline/footer genre furniture, the demoted glossary, the metro
+   finder, the comparison picker, band-tint pacing, and the per-form mobile re-layout
+   override. */
 
 /* Figure chrome: each chart carries its own claim-title and how-to-read line, so the H2
    does section work instead of doubling as the chart title (chart-craft.md). */
@@ -9,6 +10,31 @@
   line-height:1.3;max-width:var(--measure);color:var(--text)}
 .fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure)}
 .fig-title + .fig-sub + .chart{margin-top:16px}
+
+/* Byline. Genre furniture, not decoration: a page that asks to be checked has to say who
+   made it, from what, and when, at the top where a reader decides whether to trust it. */
+.byline{margin:15px 0 0;font-size:13px;line-height:1.55;color:#B7D9DE;letter-spacing:.01em}
+.hero .wrap > .byline{max-width:var(--measure)}
+
+/* The glossary, demoted out of the hero. Four terms at footnote scale beside the first
+   chart, where "suppresses" is first used, instead of six lines of 19px hero type in
+   front of the finding (page-design § hero). */
+.terms{margin:18px 0 0;max-width:var(--measure);font-size:14px;line-height:1.6;
+  color:#4A5457;border-left:3px solid var(--line);padding:2px 0 2px 14px}
+.terms b{font-weight:700;color:var(--text)}
+
+/* Overflow from a source line lands INSIDE the figure's own table disclosure, where the
+   reader who wants the arithmetic already is — instead of spending caption ink in front
+   of the one who does not (page-design § caveat ink). */
+.tnote{margin:12px 0 0;font-size:13px;line-height:1.55;color:var(--caption)}
+
+/* Footer. One stage: what a reader can do here, then who published it, on the paper
+   ground so the story visibly ends. */
+.foot{background:var(--paper);border-top:1px solid var(--line);padding:30px 0 42px}
+.foot .wrap > *{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.foot-lede{margin:0;font-size:15px;line-height:1.55;color:#3A4448}
+.foot-id{margin:12px 0 0;font-size:13px;color:var(--caption);letter-spacing:.02em}
+.foot-id a{color:var(--action);font-weight:700}
 
 /* Metro finder — the lookup job on the interaction ladder. 155 dots identified by hover
    alone hid the reader's own metro; this puts it one keystroke away. The default state

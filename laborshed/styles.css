@@ -1,8 +1,34 @@
 /* laborshed — page-local additions only. House anatomy (.mast/.hero/.band/.closer) and
    the shared column system stay untouched so the layout gates keep applying. This file
-   adds: per-figure chrome, the county selector, a reading-line register distinct from
-   source fine print, one tinted vignette band, and the per-form mobile re-layout
-   override (the wages pattern). */
+   adds: the byline and footer furniture, per-figure chrome, the county selector, a
+   reading-line register distinct from source fine print, two pull-quote stat bands and
+   one tinted vignette band, and the per-form mobile re-layout override (the wages
+   pattern). */
+
+/* Byline. `margin:18px 0 0` shorthand would beat the core's one-axis auto-margin block
+   (0,2,0) at the end of pic-viz.css and drop this onto the wrap's left edge, 151px
+   outboard of the rail — the bug churn and federal-money both shipped. Neither
+   centres.mjs nor columns.mjs samples .byline, so this one is held by eye. */
+.hero .wrap > .byline{margin:16px auto 0;max-width:var(--measure);font-size:13px;
+  line-height:1.5;color:#9CC4CA;letter-spacing:.02em}
+
+/* Footer: the furniture that says the story ended and the page belongs to something.
+   Distinct ground from the closer above it, so the boundary is visible. <footer> is not
+   .band/.hero/.closer, so it does not inherit the core's one-axis rule; it states it. */
+.foot{background:var(--deep);color:#A8CDD4;padding:44px 0 52px;font-size:14px}
+.foot .wrap > *{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.foot-k{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:900;color:#7FB3BC}
+.foot-links{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:12px;
+  grid-template-columns:repeat(3,minmax(0,1fr))}
+.foot-links a{display:block;color:#fff;font-weight:900;text-decoration:none;
+  border-top:2px solid #1A8A9E;padding-top:9px}
+.foot-links a:hover{color:var(--lime)}
+.foot-links span{display:block;margin-top:4px;color:#8FBAC2;font-size:13px}
+.foot-cta{margin:28px 0 0;padding-top:18px;border-top:1px solid rgba(255,255,255,.16)}
+.foot-cta b{color:#fff;font-weight:700}
+.foot-id{margin:14px 0 0;font-size:13px;color:#93B6BD}
+.foot-id a{color:#A8CDD4}
 
 /* Figure chrome: every chart carries its own claim-title + how-to-read line, so the H2
    does section work instead of doubling as the chart title (chart-craft.md). */
@@ -30,8 +56,30 @@
   max-width:var(--measure)}
 .reading b{color:var(--ink)}
 
-/* Pacing: one tinted band (the human-scale vignette) so the scroll changes register. */
+/* Detail that used to sit visible under a chart, moved into that figure's own table
+   disclosure. Caption scale, one weight: this is depth, not the disclosure. */
+.tnote{margin:12px 0 4px;max-width:var(--measure);font-size:13px;line-height:1.6;
+  color:var(--caption)}
+
+/* Pacing. Seven bands ran the same template (kicker → H2 → lede → chart → source →
+   table) in two runs of three, against the ≤2 rule, and the eye learned the loop. The
+   register break is a key number promoted OUT of body prose into display type: the
+   number the section was written to earn, on tinted ground, with nothing else on it. */
 .band.tint{background:#F4F1EC}
+.band.pull{padding-top:44px;padding-bottom:44px}
+.pull-q{max-width:var(--measure)}
+.pull-q .pull-n{display:block;font-size:clamp(48px,6.2vw,76px);font-weight:900;
+  line-height:.95;letter-spacing:-.035em;color:var(--ink);
+  font-variant-numeric:proportional-nums}
+.pull-q .pull-t{display:block;margin:14px 0 0;font-size:19px;line-height:1.5;
+  color:#243135}
+
+/* The dumbbell's two series are told apart by SHAPE first — filled disc against open
+   ring — because teal and slate sat at 0.21 and 0.08 relative luminance and printed as
+   one gray. The legend has to carry the shape or it identifies nothing. */
+.legend i.dot{border-radius:50%}
+.legend i.ring{border-radius:50%;background:var(--paper);
+  box-shadow:inset 0 0 0 2.6px #2C3B41}
 
 /* Mobile: this page re-lays every chart out per form (matrix becomes a per-county
    list, bars get labels above marks, the strip compresses) — so the shared
@@ -41,4 +89,5 @@
   .chart{overflow-x:visible;padding-bottom:0}
   .chart svg{min-width:0}
   .chart::after{content:none}
+  .foot-links{grid-template-columns:1fr}
 }

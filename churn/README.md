@@ -13,7 +13,7 @@ index.html         page shell
 styles.css         page-local CSS: figure chrome, county selector, translator, mobile re-layout
 app.js             charts, selector, translator, appended methods blocks
 data/churn.json    THE DATA (8 KB). Edit the builder, not this.
-claims.json        18 assertions, one per published number
+claims.json        21 assertions, one per published number
 ```
 
 ## The argument, beat by beat
@@ -26,11 +26,26 @@ claims.json        18 assertions, one per published number
    rate about 0.2. On a four-quarter average, leaving has run ahead of hiring in all eleven
    quarters since 2023Q1. Drawn as a derived spread around zero, not as a second pair of
    lines, so it cannot read as a repeat of beat 2.
-4. **By county.** Rate against employment, twelve labeled dots. Trumbull runs 13.5% on 402
+4. **By county.** Rate against employment, twelve dots. Wide: all twelve named. Narrow:
+   only Trumbull, Mahoning and Summit, plus whatever county is selected, because twelve
+   names collide at 375px. Trumbull runs 13.5% on 402
    jobs (434 job events); Summit runs 8.2% on 4,019 (2,644 events, about 6.1 times as many).
 5. **On a shop floor.** 10.8% at a 150-person plant is about sixteen starts and sixteen
    departures a quarter, five of each in a month, 65 replacement hires a year. The headcount
    input recomputes the same arithmetic for any payroll; the default state is guarded.
+
+## Where the sentences live
+
+Claim-carrying text is STATIC in `index.html` and the script that used to write it is gone,
+so there is exactly one copy of each sentence and the page still says what it found with
+JavaScript off: hero stat row, all four figure titles, the split and shop-floor ledes, the
+closer. `app.js` fills only what is genuinely computed or per-rendering — the county
+verdict, the payroll translator, the figure subtitles, source lines and the note box.
+`claims.json` is what stops those static strings drifting from the data.
+
+Band 1 carries TWO figure titles and two subtitles, one per rendering, swapped by
+`.only-wide` / `.only-narrow`: below 760px the chart draws calendar years, so a title
+counting quarters would name marks the reader cannot see.
 
 ## Read before quoting anything from this page
 

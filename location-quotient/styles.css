@@ -3,6 +3,27 @@
    per-figure chrome, the register key + picker, band-tint pacing, the collapsed
    provenance disclosure, and the per-form mobile re-layout override. */
 
+/* Byline block. Genre furniture the provenance sentence does not replace: the hero stack
+   is kicker → headline → standfirst → byline/date, and a data vintage in the masthead is
+   not authorship. It is bound to --measure with a selector that outranks the shared
+   `.hero .wrap > *` figure cap (0,2,0), or it would open a second text rail at the page's
+   most-viewed pixels. */
+/* `margin:18px auto 0`, and the `auto` is load-bearing. The shared one-axis rule sets
+   horizontal margins on `.hero .wrap > *` at (0,2,0); this selector is (0,3,0) and wins,
+   so a `margin:18px 0 0` shorthand here silently zeroes them and left-rails the byline
+   against the wrap at x=150 while every other line of prose centres at 301. Same trap the
+   closer paragraph fell into in the shared sheet, one page later. */
+.hero .wrap > .byline{max-width:var(--measure);margin:18px auto 0;font-size:13px;
+  letter-spacing:.02em;color:#9FCBD2;line-height:1.5}
+.hero .wrap > .byline b{color:#DCEEF1;font-weight:700}
+
+/* A NARROW CHART STILL CLEARS THE TEXT COLUMN. The shared token is 640px against a 678px
+   measure, so the two small-series charts on this page rendered NARROWER than the prose
+   beside them — a chart is never allowed to be the narrowest thing in the band. Raised
+   here rather than page-locally on `.chart.narrow`, because columns.mjs probes the TOKEN
+   to decide whether a width is sanctioned: override the value and the audit follows. */
+:root{--figure-narrow:min(720px, 100%)}
+
 /* Figure chrome: every chart carries its own claim-title and how-to-read line, so the H2
    does section work instead of doubling as the chart title (chart-craft.md). */
 .fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
@@ -50,6 +71,21 @@
 .disclose[open] > summary{border-bottom:1px solid var(--line)}
 .disclose > div{padding:14px 2px 18px;font-size:14.5px;line-height:1.6;color:#3A4448}
 .disclose b{color:var(--ink)}
+
+/* Site-level end. The page used to stop dead on the closer, so the story had no visible
+   finish: no related reading, no way to reach a person, no org identity. Three stages on a
+   ground distinct from both the closer and the bands, and every line on the same text rail
+   as the prose above it. */
+.foot{background:#EDE9E2;border-top:1px solid var(--line);padding:34px 0 40px;
+  font-size:14.5px;line-height:1.6;color:#3A4448}
+.foot .wrap > *{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.foot p{margin:0 0 12px}
+.foot a{color:var(--action)}
+.foot-more{font-size:16px;font-weight:700;color:var(--ink)}
+.foot-ask b{color:var(--ink);font-weight:700}
+.foot-note{font-size:13px;color:var(--caption)}
+.foot-id{margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:13px;
+  letter-spacing:.04em;color:var(--caption)}
 
 /* Mobile: this page re-lays every chart out per form (compact trend with the takeaway
    plated inside the plot, angled heatmap headers, subject-first scatter, narrow

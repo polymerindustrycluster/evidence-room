@@ -3,6 +3,26 @@
    file adds: per-figure chrome, the three-seat selector, the vignette stat band, band
    tint pacing, and the per-form mobile re-layout override. */
 
+/* Byline block — genre furniture, on the same rail as the standfirst above it. The
+   masthead dateline states when the data was pulled; this states who did the work. The
+   selector has to match the shared core's `.hero .wrap > *` weight and the side margins
+   have to stay `auto`, or this later stylesheet's shorthand beats the core's centring
+   rule and drops the block 151px outboard of the text rail. */
+.hero .wrap > .byline{margin:14px auto 0;max-width:var(--measure);font-size:13px;
+  line-height:1.5;color:#9CC4CA;letter-spacing:.02em}
+
+/* Footer — the story visibly ends on its own ground, identity then hub link. */
+.page-foot{background:var(--deep);color:#BEDDE2;padding:30px 0 38px;font-size:14px}
+.page-foot p{margin:0 0 6px;max-width:var(--measure);margin-left:auto;margin-right:auto}
+.page-foot p:last-child{margin-bottom:0}
+.page-foot b{color:#fff;letter-spacing:.06em}
+.page-foot a{color:#9FCBD2}
+
+/* The recorded downgrade on the vignette: what this band is not, and what would fix it.
+   Caption register, so it reads as an editor's note rather than a second lede. */
+.ask{margin:16px 0 0;max-width:var(--measure);font-size:14px;line-height:1.55;
+  color:var(--caption)}
+
 /* Figure chrome: every chart carries its own claim-title + how-to-read line, so the H2
    does section work instead of doubling as the chart title (chart-craft.md). */
 .fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
@@ -12,9 +32,12 @@
 
 /* Seat selector — three seats plus the default whole-chain view. Buttons, not a
    dropdown; the default state tells the full story (interaction.md, lookup rung). */
+/* Both the label and the pill row are capped at the TEXT measure, not the figure: they
+   are read as prose, so a figure cap opened a second text left-edge 151px outboard of
+   the rail every other line on the page sits on (page-design, one rail). */
 .csel-q{margin:22px 0 0;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
-  font-weight:900;color:var(--hover)}
-.csel{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0;max-width:var(--figure)}
+  font-weight:900;color:var(--hover);max-width:var(--measure)}
+.csel{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0;max-width:var(--measure)}
 .csel button{font:700 13px/1 var(--sans);letter-spacing:.03em;padding:11px 14px;
   border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;
   border-radius:999px;min-height:44px}

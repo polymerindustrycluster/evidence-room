@@ -194,6 +194,63 @@ one data label did (see the last bullet). What changed:
   fits the band's three-line stack (the figure is unchanged and guarded; the
   seven-sub-grant count stays in the reconciliation notes and claims).
 
+## Revision, 28 August 2026 (append-only)
+
+Fix round against an independent visual review. No figure and no number changed;
+two data labels and one data typo did (last three bullets). What changed:
+
+- **The page ends on a closer, not on apparatus.** The build appendix used to be
+  injected after `</footer>`, so the last ~1,300px of the page was a limitations
+  bullet wall. The order is now story, methods, sources appendix, closer, footer:
+  a 72-word display-size closer resolves the hero's question, and the appendix
+  sits above it behind a disclosure.
+- **Byline and a three-stage footer added.** The provenance sentence in the
+  methods box is not a byline; the as-of date now sits above the fold.
+- **Three machine-truncated labels fixed.** The $51.00M gutter label wraps to two
+  lines instead of shipping "EDA Sustainable Polymers Tech…"; "Workforce
+  development" uses its `short` label in a band too thin for the full name; and a
+  recipient row whose name cannot sit beside its chips now becomes a two-line row
+  (the layout multi-program rows already used), so "Case Western Reserve
+  University" renders whole at every width the diagram draws. Truncation is
+  checked at eleven widths, not assumed.
+- **The archive table became an editorial table.** Ranked by amount, ten rows
+  visible, "Show all 19 rows" for the rest, the nine equal Synthe6 awards folded
+  into one row that still names all nine companies, source and program merged
+  into one column, zebra tint. The CSV still carries all 27 award lines. Desktop
+  scroll fell from 8,776px to 7,005px.
+- **The mobile table is one card per award** (recipient and amount first) instead
+  of a 780px table clipped to "SOURCE | PROGRA" at first paint.
+- **Caveat ink under the map cut from ~170 words to 44** (one limitation
+  sentence, one source line, one disclosure control). The drawn-to-scale
+  inventory, the NEO-SMART note and the four reconciliation paragraphs moved into
+  disclosures; the reconciliation is now one generated sentence plus the table
+  foot.
+- **The appendix header rejoined the page's single text rail.** The shared core is
+  a centred system (`.band .wrap > *` and `.closer .wrap > p` set auto margins);
+  this page is left-set, so those two rules are overridden page-locally at equal
+  or higher specificity. Widths are untouched, so columns.mjs still measures the
+  same slots.
+- **Nine sliver cards became one on mobile.** At the shared $18.52M maximum the
+  nine $25K bars were ~1px each across ~1,000px of scroll. They are one card now,
+  with all nine companies listed as their own buttons: nothing is dropped and
+  every deep link still resolves. This is an editorial change to a mobile
+  re-layout and is flagged as one.
+- **Smaller fixes**: the chip-style legend block dropped (six self-labelling chips
+  with no text, on a directly labelled chart); the "single largest line" leader
+  extended so its tip sits inside the pilot-facility band rather than beside the
+  hatched match block; the hub node widened so "Innovation Hub" stops running off
+  a dark box onto white paper; the figure subtitle's last sentence now differs by
+  breakpoint, because there is no wide diagram on a phone.
+- **Label edit in `funding.json`**: `recipients[cwru].short` = "Case Western
+  Reserve", the map label. The full legal name stays in the table, the CSV, the
+  panel and the screen-reader description.
+- **Typo fixes in `funding.json`**: straight quotes around "$51 million" in
+  provenance and a straight apostrophe in the Synthe6 notShown line, both now
+  typographer's quotes. House style bans straight quotes in rendered prose.
+- **`claims.json` grew to 23** (19 machine-checked, 4 manual). New: the table's
+  ranking and cohort fold; the two-workstream unrouted split; $6.17M rounding for
+  the hero card; the byline's record types.
+
 ## Open questions for a human
 
 - **Font licensing.** Aptos ships with Microsoft Office. It is bundled here to

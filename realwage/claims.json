@@ -51,7 +51,7 @@
     },
     {
       "id": "rw-fifth-less",
-      "text": "The industry's biggest employers sit where the same salary buys up to a fifth less than in Akron (scatter figure title, closer sub). 'Biggest employers' means the five largest big-metro polymer employers; the maximum shortfall among them is Los Angeles at about 19 percent. Corrected 2026-08-27: the previous closer said 'a quarter less', which no metro on the page reaches (the maximum anywhere in the set is San Francisco at 21 percent).",
+      "text": "The industry's biggest employers sit where the same salary buys up to a fifth less than in Akron (scatter figure title; dropped from the closer 2026-08-28 to bring the closer under its 90-word budget). 'Biggest employers' means the five largest big-metro polymer employers; the maximum shortfall among them is Los Angeles at about 19 percent. Corrected 2026-08-27: the previous closer said 'a quarter less', which no metro on the page reaches (the maximum anywhere in the set is San Francisco at 21 percent).",
       "source": "derived: 1 - Akron RPP / metro RPP over the five largest employers",
       "assert": "(lambda t5, a: 0.165 <= max(1 - a['rpp']/r['rpp'] for r in t5) <= 0.215)(sorted(D['big'], key=lambda r: -r['emp'])[:5], [r for r in D['big'] if r['area']=='10420'][0])",
       "actual": "(lambda t5, a: [(r['name'], round(1 - a['rpp']/r['rpp'], 3)) for r in t5])(sorted(D['big'], key=lambda r: -r['emp'])[:5], [r for r in D['big'] if r['area']=='10420'][0])",
@@ -59,7 +59,7 @@
     },
     {
       "id": "rw-flips-outright",
-      "text": "14 of the 56 metros pay more on paper than Akron and buy less, New York, Los Angeles and Seattle among them (default verdict sentence, closer).",
+      "text": "14 of the 56 metros pay more on paper than Akron and buy less, New York, Los Angeles and Seattle among them (default verdict sentence, and the closer's qualifying paragraph, where the three named metros moved 2026-08-28 out of the display statement).",
       "source": "derived: nominal above Akron's and real below Akron's",
       "assert": "(lambda F: len(F) == 14 and all(any(n in r['name'] for r in F) for n in ('New York', 'Los Angeles', 'Seattle')))((lambda a: [r for r in D['big'] if r['nominal'] > a['nominal'] and r['real'] < a['real']])([r for r in D['big'] if r['area']=='10420'][0]))",
       "actual": "(lambda a: [(r['name'], r['nominal'], round(r['real'], 1)) for r in D['big'] if r['nominal'] > a['nominal'] and r['real'] < a['real']])([r for r in D['big'] if r['area']=='10420'][0])",
@@ -75,7 +75,7 @@
     },
     {
       "id": "rw-single-year",
-      "text": "Everything on this page is the 2023 release; no earlier year ships with it, so the 14-place climb is shown without a track record (slope source line). This sentence must be replaced by a persistence test the moment prior-year pairs are added to the data.",
+      "text": "Everything on this page is the 2023 release; no earlier year ships with it, so the 14-place climb is shown without a track record (slope source line, and since 2026-08-28 the drawn '2023 only, one print' cue under the +14 annotation on both the desktop slope and the mobile rank list). This sentence must be replaced by a persistence test the moment prior-year pairs are added to the data.",
       "source": "data file inventory: meta.year and the absence of any multi-year series",
       "assert": "D['meta']['year'] == 2023 and 'trend' not in D and sorted(D.keys()) == ['big', 'home', 'meta', 'metros']",
       "actual": "(D['meta']['year'], sorted(D.keys()))",
@@ -83,11 +83,18 @@
     },
     {
       "id": "rw-metro-only",
-      "text": "This page is metro-level throughout and never uses the PIC-12 county footprint.",
-      "source": "BEA publishes price parities only for metros; they cannot be summed to counties",
-      "assert": "'METRO' in D['meta']['geography'] and all(len(r['area']) == 5 for r in D['metros'])",
-      "actual": "D['meta']['geography']",
-      "falsified_if": "Anyone joins this to county QCEW or to the vault. Cleveland and Canton withhold their 2023 polymer wage, so the region appears through Akron alone — that is a coverage limit, not a regional figure."
+      "text": "This page is metro-level throughout and never uses the PIC-12 county footprint; the region appears through the Akron metro area alone, because Cleveland and Canton have no disclosed 2023 polymer wage (band 1 gloss, slope source line, slope table note, methodology). Rewritten 2026-08-28: the pre-hero footprint banner that used to carry this was removed, so the sentence is now asserted where a reader actually meets it.",
+      "source": "BEA publishes price parities only for metros; they cannot be summed to counties. Absence of Cleveland and Canton is read off the shipped metro set, not asserted from memory.",
+      "assert": "'Metro, not county' in D['meta']['geography'] and all(len(r['area']) == 5 for r in D['metros']) and len([r for r in D['metros'] if 'Cleveland' in r['name'] or 'Canton' in r['name']]) == 0 and len([r for r in D['metros'] if r['area'] == '10420']) == 1",
+      "actual": "(D['meta']['geography'], [r['name'] for r in D['metros'] if 'Cleveland' in r['name'] or 'Canton' in r['name']])",
+      "falsified_if": "Anyone joins this to county QCEW or to the vault, or a later QCEW release discloses Cleveland or Canton. If either metro appears in the data, 'the region appears through Akron alone' is false on the page and in the byline scope, and both must be rewritten before the next publish."
+    },
+    {
+      "id": "rw-sources-named",
+      "text": "Both figure source lines and the byline name the same two sources and year: BLS QCEW and BEA Regional Price Parities, 2023 (slope source line, scatter source line, hero byline). Added 2026-08-28 because those strings are now hand-typed in the page rather than interpolated from meta.source, which the caveat-ink budget could not carry.",
+      "source": "data file meta.source, which the derive script writes from the fetch parameters",
+      "assert": "'QCEW' in D['meta']['source'] and 'Regional Price Parities' in D['meta']['source'] and str(D['meta']['year']) in D['meta']['source'] and D['meta']['year'] == 2023",
+      "falsified_if": "The page is rebuilt on a different vintage or a different price index, so the hand-typed attribution stops matching meta.source. Any year change must be made in three visible places, not one."
     }
   ]
 }

@@ -1,201 +1,244 @@
 {
-  "data": {"h": "heritage.json", "t": "timeline.json"},
-  "claims": [
-    {
-      "id": "tl-heritage-count",
-      "text": "32 proven events, 1898 to 2012: 19 that changed the region's capacity and 13 scientific firsts (masthead lede, prologue sub, topline tile). [2026-08-27: sentence moved from the old lede into the rewritten lede + prologue sub; assertion unchanged.]",
-      "source": "web/timeline/data/heritage.json, built by tools/build-heritage-web.py from the NEO Polymer Wins register (INDEX.md heritage + discoveries collections)",
-      "assert": "D['h']['meta']['counts']['shown'] == 32 and D['h']['meta']['counts']['heritage'] == 19 and D['h']['meta']['counts']['discoveries'] == 13 and D['h']['meta']['counts']['firstYear'] == 1898 and D['h']['meta']['counts']['lastYear'] == 2012 and len(D['h']['events']) == 32 and min(e['year'] for e in D['h']['events']) == 1898 and max(e['year'] for e in D['h']['events']) == 2012",
-      "actual": "(D['h']['meta']['counts']['shown'], D['h']['meta']['counts']['heritage'], D['h']['meta']['counts']['discoveries'], D['h']['meta']['counts']['firstYear'], D['h']['meta']['counts']['lastYear'])",
-      "falsified_if": "The register gains or loses a PROVEN heritage or discovery row, or a row's label changes. The lede, the prologue heading, the topline tile and the methods paragraph are all written from the same counts at load time, so the static numbers here must move with them — this claim is what forces that."
-    },
-    {
-      "id": "tl-heritage-proven-only",
-      "text": "PIC's register can prove 19 capacity events and 13 firsts, each against a named public source; 5 claimed rows are withheld (prologue sub, figure source line, methods).",
-      "source": "heritage.json: every emitted event carries label PROVEN; the builder drops every other label and records the drops",
-      "assert": "all(e['label'] == 'PROVEN' for e in D['h']['events']) and D['h']['meta']['counts']['dropped'].get('label:CLAIMED', 0) == 5 and D['h']['meta']['counts']['dropped'].get('label:ASPIRATIONAL', 0) == 0 and len(D['h']['meta']['withheld']) == 5 and all(w['label'] != 'PROVEN' for w in D['h']['meta']['withheld'])",
-      "actual": "(sorted(set(e['label'] for e in D['h']['events'])), D['h']['meta']['counts']['dropped'], [w['id'] for w in D['h']['meta']['withheld']])",
-      "falsified_if": "Any non-PROVEN row is emitted, or the withheld count stops matching the drop count. Five CLAIMED rows are held today (H-001 Goodrich 1870, H-004 UA lab 1909, H-006 wartime GR-S, H-008c Morton 1948, H-015 Promerus 2020); if a later wave proves one, the number here changes and the sentence still holds — the assertion pins the mechanism, the count is the current reading."
-    },
-    {
-      "id": "tl-heritage-every-mark-has-source",
-      "text": "Every mark below opens its source (prologue sub).",
-      "source": "heritage.json: sources per event, http(s) only after the builder strips vault references",
-      "assert": "all(any(s['url'] and s['url'].startswith('http') for s in e['sources']) for e in D['h']['events']) and not any('vault' in (s['note'] or '').lower() or '.md' in (s['note'] or '') for e in D['h']['events'] for s in e['sources'])",
-      "actual": "(sum(1 for e in D['h']['events'] if any(s['url'] for s in e['sources'])), len(D['h']['events']), D['h']['meta']['counts']['sourcesStripped'])",
-      "falsified_if": "A row is emitted with no public URL, or an internal source reference (a vault path, a .md file) leaks into a source note. The register is internal; only URLs and plain bibliographic lines may travel."
-    },
-    {
-      "id": "tl-heritage-wartime-withheld",
-      "text": "Rows the register labels claimed, where a date or a figure is recorded two ways, are withheld rather than shown with a caveat; the wartime synthetic-rubber program, its tonnage recorded four ways, is one of them. [2026-08-27: sentence moved from the prologue sub into the methods limits list; assertion unchanged.]",
-      "source": "NEO-POLYMER-WINS INDEX.md: H-006 (1942–45 GR-S program) is CLAIMED because wartime tonnage is recorded four different ways; heritage.json meta.withheld carries the id",
-      "assert": "any(w['id'] == 'H-006' and w['label'] == 'CLAIMED' for w in D['h']['meta']['withheld']) and not any(e['id'] == 'H-006' for e in D['h']['events']) and not any('800,000' in e['oneLiner'] or '920,000' in e['oneLiner'] for e in D['h']['events'])",
-      "actual": "[w for w in D['h']['meta']['withheld'] if w['id'] == 'H-006']",
-      "falsified_if": "H-006 is promoted to PROVEN (then this sentence must be rewritten, not the assertion), or a wartime tonnage figure appears in any emitted one-liner. The register's rule: four measures, no single number is honest, print none."
-    },
-    {
-      "id": "tl-heritage-title-count-in-methods",
-      "text": "Of its 37 heritage and discovery rows, 32 are labeled proven and appear here; 5 labeled claimed are withheld. 3 internal source references were stripped in the build.",
-      "source": "heritage.json meta.counts (methods paragraph is written from these at load time)",
-      "assert": "D['h']['meta']['counts']['shown'] + D['h']['meta']['counts']['dropped'].get('label:CLAIMED', 0) == 37 and D['h']['meta']['counts']['sourcesStripped'] == 3",
-      "actual": "(D['h']['meta']['counts']['shown'], D['h']['meta']['counts']['dropped'], D['h']['meta']['counts']['sourcesStripped'])",
-      "falsified_if": "The register's heritage + discoveries collections change size, or a re-run of the builder strips a different number of internal references. The methods paragraph is generated, so it cannot drift from the data — but this file's text can, and this claim is what catches it."
-    },
-    {
-      "id": "tl-heritage-gap",
-      "text": "The proven record runs 1898 to 2012, then goes quiet until the designation, eleven years on (prologue H2 range, figure title, on-chart takeaway, heritage aria).",
-      "source": "heritage.json meta.counts.lastYear vs the designation event in timeline.json",
-      "assert": "D['h']['meta']['counts']['firstYear'] == 1898 and D['h']['meta']['counts']['lastYear'] == 2012 and (lambda des: int(des[:4]) - D['h']['meta']['counts']['lastYear'] == 11)(one(e['date'] for e in D['t']['events'] if e['date'].startswith('2023') and 'esignat' in e['title']))",
-      "actual": "(D['h']['meta']['counts']['lastYear'], [e['date'] for e in D['t']['events'] if 'esignat' in e['title']])",
-      "falsified_if": "A proven row later than 2012 enters the register (the quiet-gap sentence and the eleven-years arithmetic both break), or the designation event's date moves."
-    },
-    {
-      "id": "tl-prologue-anchors",
-      "text": "The named events on the heritage strip and in the prologue H2: Goodyear founded 1898, Semon plasticizes PVC 1926, the first standalone polymer department 1963, the NSF ALCOM center 1991, and 2012 as the last proven row.",
-      "source": "heritage.json rows H-002, D-001, D-003, H-009e, D-009",
-      "assert": "any(e['id'] == 'H-002' and e['year'] == 1898 and 'Goodyear' in e['title'] for e in D['h']['events']) and any(e['id'] == 'D-001' and e['year'] == 1926 and 'Semon' in e['title'] and 'PVC' in e['title'] for e in D['h']['events']) and any(e['id'] == 'D-003' and e['year'] == 1963 and 'polymer department' in e['title'] for e in D['h']['events']) and any(e['id'] == 'H-009e' and e['year'] == 1991 and 'ALCOM' in e['title'] for e in D['h']['events']) and len([e for e in D['h']['events'] if e['year'] == 2012]) == 1 and one(e for e in D['h']['events'] if e['year'] == 2012)['id'] == 'D-009'",
-      "actual": "[(e['id'], e['year'], e['title']) for e in D['h']['events'] if e['id'] in ('H-002', 'D-001', 'D-003', 'H-009e', 'D-009')]",
-      "falsified_if": "Any anchor row is relabeled, re-dated or dropped, or a second 2012 row appears (then 'the last proven row' label points at the wrong dot)."
-    },
-    {
-      "id": "tl-cadence-before-after",
-      "text": "The public record holds 4 events in the 34 months before the October 2023 federal designation and 68 delivered in the 34 months since; the spans match to within a day and the change is seventeenfold (masthead lede, topline tiles, cadence H2 + sub + chart annotation).",
-      "source": "timeline.json events, shown universe (PRE non-CTX rows plus in-window rows with show, as app.js builds it), split at the designation date; span arithmetic from the event dates and meta.asOf",
-      "assert": "(lambda E, des, asof, jdn: (lambda before, since: len(before) == 4 and len(since) == 68 and len(since) == 17 * len(before) and abs((jdn(asof) - jdn(des)) - (jdn(des) - jdn('2021-01-01'))) <= 2 and round((jdn(des) - jdn('2021-01-01')) / 30.44) == 34 and round((jdn(asof) - jdn(des)) / 30.44) == 34)([e for e in E if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))], [e for e in E if des <= e['date'] and e['delivered'] and e.get('show')]))(D['t']['events'], one(e['date'] for e in D['t']['events'] if e['date'].startswith('2023') and 'esignat' in e['title']), D['t']['meta']['asOf'], lambda s: (lambda y, m, d: (lambda a: d + (153 * (m + 12 * a - 3) + 2) // 5 + 365 * (y + 4800 - a) + (y + 4800 - a) // 4 - (y + 4800 - a) // 100 + (y + 4800 - a) // 400 - 32045)((14 - m) // 12))(int(s[:4]), int(s[5:7]), int(s[8:10])))",
-      "actual": "(lambda E, des: (len([e for e in E if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))]), len([e for e in E if des <= e['date'] and e['delivered'] and e.get('show')])))(D['t']['events'], '2023-10-23')",
-      "falsified_if": "A pre-designation public event is added to or dropped from the inventory (the 4 moves), a delivered event lands or is reclassified (the 68 moves and 17x stops being exact), or meta.asOf advances so the since-span no longer matches the before-span within a day — the '34 months either side' framing dies first."
-    },
-    {
-      "id": "tl-cadence-per-year",
-      "text": "Delivered public events per calendar year in the shown record: 2021: 1, 2022: 2, 2023: 4 (1 before the 23 October designation, 3 after), 2024: 14, 2025: 30, 2026 through 13 August: 21 (cadence chart bars and value labels).",
-      "source": "timeline.json events, shown universe, delivered only, keyed by year",
-      "assert": "(lambda R: [len([e for e in R if e['date'][:4] == y]) for y in ('2021', '2022', '2023', '2024', '2025', '2026')] == [1, 2, 4, 14, 30, 21] and len([e for e in R if e['date'][:4] == '2023' and e['date'] < '2023-10-23']) == 1)([e for e in D['t']['events'] if e['delivered'] and e.get('tier') != 'CTX' and (e['date'] < '2023-01-01' or e.get('show')) and e['date'] >= '2021-01-01'])",
-      "actual": "(lambda R: sorted(set((e['date'][:4], len([x for x in R if x['date'][:4] == e['date'][:4]])) for e in R)))([e for e in D['t']['events'] if e['delivered'] and e.get('tier') != 'CTX' and (e['date'] < '2023-01-01' or e.get('show')) and e['date'] >= '2021-01-01'])",
-      "falsified_if": "Any year's delivered count moves — a regeneration of the inventory, a visibility flip, or a new delivered event lands. The bars render from the data, but this pins the counts the prose and the aria summary state."
-    },
-    {
-      "id": "tl-shown-counts",
-      "text": "Since January 2023 the calendar shows 69 delivered events and 18 scheduled, 87 in all (calendar H2, closer sub, table disclosure); the 87 is the sum, never typed independently.",
-      "source": "timeline.json events, in-window shown universe as app.js builds it",
-      "assert": "(lambda ins: len([e for e in ins if e['delivered']]) == 69 and len([e for e in ins if not e['delivered']]) == 18 and len(ins) == len([e for e in ins if e['delivered']]) + len([e for e in ins if not e['delivered']]) and len(ins) == 87)([e for e in D['t']['events'] if e['date'] >= '2023-01-01' and (e.get('show') or not e['delivered'])])",
-      "actual": "(lambda ins: (len([e for e in ins if e['delivered']]), len([e for e in ins if not e['delivered']]), len(ins)))([e for e in D['t']['events'] if e['date'] >= '2023-01-01' and (e.get('show') or not e['delivered'])])",
-      "falsified_if": "The inventory adds a public event, a scheduled event is delivered (69/18 both move), or the window constant in app.js moves off 2023-01-01 without this claim moving with it."
-    },
-    {
-      "id": "tl-sched-split",
-      "text": "Of the 18 scheduled dates, 10 come due by the end of 2026; the other 8 land between 2027 and 2029: the pilot facility's readiness target and seven award or project end dates (promises section, swimlane on-chart takeaway).",
-      "source": "timeline.json forward events by date and title",
-      "assert": "(lambda sch: len(sch) == 18 and len([e for e in sch if e['date'] < '2027-01-01']) == 10 and (lambda far: len(far) == 8 and all('2027-01-01' <= e['date'] <= '2029-12-31' for e in far) and len([e for e in far if 'ready' in e['title'].lower()]) == 1 and len([e for e in far if 'end' in e['title'].lower() or 'completion' in e['title'].lower()]) == 7)([e for e in sch if e['date'] >= '2027-01-01']))([e for e in D['t']['events'] if not e['delivered'] and e['date'] >= '2023-01-01'])",
-      "actual": "[(e['date'], e['title']) for e in D['t']['events'] if not e['delivered'] and e['date'] >= '2027-01-01']",
-      "falsified_if": "A scheduled date is delivered or slips across the 2026/2027 boundary, a new forward milestone is published, or a 2027+ scheduled event appears that is neither the pilot-facility readiness target nor an end/completion date — the 'the other eight are completion dates' sentence would then be wrong."
-    },
-    {
-      "id": "tl-rd-clocks",
-      "text": "The five company R&D awards began in December 2024 and run to end dates between November 2027 and November 2029; BioVerde's $11.1M award is the largest (promises section, closer, BioVerde aside, Dec-2024 rule label).",
-      "source": "timeline.json: the five 'EDA award to X begins' events of Dec 2024 and the three forward award-period-end events F30/F37/F44",
-      "assert": "(lambda dec: len(dec) == 5 and max(int(e['title'].split('$')[1].split(',')[0] + e['title'].split('$')[1].split(',')[1] + e['title'].split('$')[1].split(',')[2]) if e['title'].count(',') >= 2 else 0 for e in dec) == 11122386 and any('BioVerde' in e['title'] and '11,122,386' in e['title'] for e in dec))([e for e in D['t']['events'] if e['laneKey'] == 'rd' and e['delivered'] and e['date'][:7] == '2024-12' and 'EDA award' in e['title']]) and (lambda ends: sorted(e['date'] for e in ends) == ['2027-11-30', '2028-12-14', '2029-11-30'] and all('end' in e['title'].lower() for e in ends))([e for e in D['t']['events'] if e['laneKey'] == 'rd' and not e['delivered'] and e['date'] >= '2027-01-01'])",
-      "actual": "([(e['date'], e['title']) for e in D['t']['events'] if e['laneKey'] == 'rd' and e['delivered'] and e['date'][:7] == '2024-12'], [(e['date'], e['title']) for e in D['t']['events'] if e['laneKey'] == 'rd' and not e['delivered'] and e['date'] >= '2027-01-01'])",
-      "falsified_if": "An award start is re-dated, a sixth company R&D award begins, an award amount is corrected (the 'largest' ranking can flip), or any of the three end dates moves — each would rewrite the November 2027 to November 2029 window."
-    },
-    {
-      "id": "tl-swimlane-rules",
-      "text": "The labeled marks on the swimlane: the 23 Oct 2023 designation rule (1 of 31), the 2 Jul 2024 ~$51M implementation-grant rule, the Dec 2024 five-award rule, the 14 Jul 2026 NSF $160M NEO-SMART leader label, and the Nov 2027 pilot-facility-ready leader label (RULES + leader annotations in app.js, fig-sub).",
-      "source": "timeline.json events E009, E022, E036–E041, E205, F29",
-      "assert": "any(e['date'] == '2023-10-23' and 'esignat' in e['title'] and '1 of 31' in e['title'] for e in D['t']['events']) and any(e['date'] == '2024-07-02' and '51M' in e['title'] for e in D['t']['events']) and len([e for e in D['t']['events'] if e['laneKey'] == 'rd' and e['delivered'] and e['date'][:7] == '2024-12' and 'EDA award' in e['title']]) == 5 and any(e['id'] == 'E205' and e['date'] == '2026-07-14' and '$160M' in e['title'] and 'NSF' in e['title'] for e in D['t']['events']) and any(e['id'] == 'F29' and e['date'][:7] == '2027-11' and 'ready' in e['title'].lower() and not e['delivered'] for e in D['t']['events'])",
-      "actual": "[(e['id'], e['date'], e['title']) for e in D['t']['events'] if e.get('id') in ('E009', 'E022', 'E205', 'F29')]",
-      "falsified_if": "Any labeled event is re-dated, retitled or dropped from the record — a rule or leader label would then point at nothing, or at the wrong date."
-    },
-    {
-      "id": "tl-watch-next",
-      "text": "The next three scheduled dates after 13 August 2026: 2026 Round 1 technical reviews conclude (15 Aug 2026), the PC3 annual conference (9 Sep 2026), and the pilot-facility groundbreaking target (9 Oct 2026) (watch list; the list itself renders from data).",
-      "source": "timeline.json forward events sorted by date after meta.asOf",
-      "assert": "(lambda nxt: [e['date'] for e in nxt] == ['2026-08-15', '2026-09-09', '2026-10-09'] and 'reviews conclude' in nxt[0]['title'] and 'PC3' in nxt[1]['title'] and 'groundbreaking' in nxt[2]['title'].lower())(sorted([e for e in D['t']['events'] if not e['delivered'] and e['date'] > D['t']['meta']['asOf']], key=lambda e: e['date'])[:3])",
-      "actual": "[(e['date'], e['title']) for e in sorted([e for e in D['t']['events'] if not e['delivered'] and e['date'] > D['t']['meta']['asOf']], key=lambda e: e['date'])[:5]]",
-      "falsified_if": "A nearer milestone is published, one of the three is delivered or re-dated, or asOf advances past 15 August 2026 — the watch list re-renders from data, and this claim forces the surrounding prose to move with it."
-    },
-    {
-      "id": "tl-aside-bioverde",
-      "text": "In September 2024 BioVerde CEO Dave Witte announced the company would move the bulk of its operations to Ohio, citing the grant; its $11.1M bio-based butadiene award began that December, the largest of the five company R&D awards (aside).",
-      "source": "timeline.json events E028 and E040",
-      "assert": "any(e['date'] == '2024-09-05' and 'BioVerde' in e['title'] and 'Witte' in e['title'] and 'moving' in e['title'] and 'citing the grant' in e['title'] for e in D['t']['events']) and any(e['date'] == '2024-12-15' and 'BioVerde' in e['title'] and 'Butadiene' in e['title'] and '11,122,386' in e['title'] for e in D['t']['events'])",
-      "actual": "[(e['date'], e['title']) for e in D['t']['events'] if 'BioVerde' in e['title']]",
-      "falsified_if": "Either BioVerde event is re-dated or reworded in the inventory, or the award amount is corrected — 'largest' is separately pinned by tl-rd-clocks."
-    },
-    {
-      "id": "tl-aside-barberton",
-      "text": "Sixteen days after the designation, NovationSi and RD Abbott ran a polymer workshop at Barberton High School; fourteen months later Barberton launched a K-12 Polymer Pathway curriculum, backed by its community foundation (aside).",
-      "source": "timeline.json events E013 and E048; day and month arithmetic from the recorded dates",
-      "assert": "(lambda jdn: (lambda w, p, des: w['date'] == '2023-11-08' and jdn(w['date']) - jdn(des) == 16 and p['date'] == '2025-01-14' and 'K-12 Polymer Pathway' in p['title'] and 'Barberton Community Foundation' in p['org'] and round((jdn(p['date']) - jdn(w['date'])) / 30.44) == 14)(one(e for e in D['t']['events'] if 'Barberton HS' in e['title']), one(e for e in D['t']['events'] if 'K-12 Polymer Pathway' in e['title']), one(e['date'] for e in D['t']['events'] if e['date'].startswith('2023') and 'esignat' in e['title'])))(lambda s: (lambda y, m, d: (lambda a: d + (153 * (m + 12 * a - 3) + 2) // 5 + 365 * (y + 4800 - a) + (y + 4800 - a) // 4 - (y + 4800 - a) // 100 + (y + 4800 - a) // 400 - 32045)((14 - m) // 12))(int(s[:4]), int(s[5:7]), int(s[8:10])))",
-      "actual": "[(e['date'], e['title'], e['org']) for e in D['t']['events'] if 'Barberton' in e['title'] or 'Barberton' in e['org']]",
-      "falsified_if": "Either Barberton event is re-dated (the sixteen-days and fourteen-months arithmetic breaks), or the pathway's organization changes."
-    },
-    {
-      "id": "tl-table-default",
-      "text": "The table opens on the 12 most recent delivered events, newest first; expanding adds the 18 scheduled rows, tagged. All default rows are delivered, which is why the status column moved into the caption (table sub, caption, disclosure button; claims describe the default, unfiltered state).",
-      "source": "timeline.json in-window shown universe; the cap and ordering are app.js buildTable()",
-      "assert": "(lambda ins: len([e for e in ins if e['delivered']]) >= 12 and len([e for e in ins if not e['delivered']]) == 18)([e for e in D['t']['events'] if e['date'] >= '2023-01-01' and (e.get('show') or not e['delivered'])])",
-      "actual": "(lambda ins: (len([e for e in ins if e['delivered']]), len([e for e in ins if not e['delivered']])))([e for e in D['t']['events'] if e['date'] >= '2023-01-01' and (e.get('show') or not e['delivered'])])",
-      "falsified_if": "Fewer than 12 delivered events exist (the cap sentence stops being true) or the scheduled count moves off 18 while the table sub still states it."
-    },
-    {
-      "id": "tl-operating-five-workstreams",
-      "text": "Five workstreams (calendar H2 and topline tile).",
-      "source": "timeline.json lanes",
-      "assert": "len(D['t']['lanes']) == 5",
-      "actual": "[l['name'] for l in D['t']['lanes']]",
-      "falsified_if": "A lane is added or merged in the inventory's LANES map."
-    },
-    {
-      "id": "tl-operating-since-2023",
-      "text": "Everything the cluster has publicly done since the 2023 federal designation.",
-      "source": "timeline.json: the 2023 designation is a public event in the record and the swimlane window opens at 2023-01-01",
-      "assert": "any(e['date'].startswith('2023') and 'esignat' in e['title'] for e in D['t']['events']) and D['t']['meta']['counts']['events'] == len(D['t']['events'])",
-      "actual": "[ (e['date'], e['title']) for e in D['t']['events'] if e['date'].startswith('2023') and 'esignat' in e['title'] ]",
-      "falsified_if": "The designation event leaves the public record, or the window constant in app.js moves off 2023 without this sentence moving with it."
-    },
-    {
-      "id": "tl-operating-as-of",
-      "text": "Operating record as of 13 August 2026; heritage register as of 14 August 2026.",
-      "source": "timeline.json meta.asOf; heritage.json meta.asOf",
-      "assert": "D['t']['meta']['asOf'] == '2026-08-13' and D['h']['meta']['asOf'] == '2026-08-14'",
-      "actual": "(D['t']['meta']['asOf'], D['h']['meta']['asOf'])",
-      "falsified_if": "Either builder is re-run against a newer inventory or register: the <time> elements in index.html, the NOW constants in app.js and the Today labels are static and must be edited with the data."
-    },
-    {
-      "id": "tl-discoveries-not-products",
-      "text": "A discovery is a paper or a patent, never a product.",
-      "source": "NEO-POLYMER-WINS GOAL.md and collections/discoveries.md: 'A paper or a patent is enough. A product is a child row.'",
-      "verify": "manual",
-      "assert": null,
-      "actual": null,
-      "falsified_if": "The register redefines the discoveries collection to admit products, or a shipped/licensed row is emitted into the prologue (the builder drops those collections and counts the drops)."
-    },
-    {
-      "id": "tl-heritage-not-cluster-outcome",
-      "text": "None of it is a cluster outcome; it is the reason the cluster is here.",
-      "source": "NEO-POLYMER-WINS GOAL.md: heritage and discoveries 'may not fill an EDA success cell'; every atom carries pic_caused: no",
-      "verify": "manual",
-      "assert": null,
-      "actual": null,
-      "falsified_if": "A heritage or discovery atom is ever marked pic_caused: yes. The register's own rule is that PIC-era awards live in a different collection and are not wins until they ship."
-    },
-    {
-      "id": "tl-photos-public-domain",
-      "text": "Five photographs, all in the public domain: four US federal works from the Library of Congress and the Naval History and Heritage Command, one from NASA.",
-      "source": "NEO-POLYMER-WINS media/MEDIA-LEDGER.md and incoming/wave1b-media.md — LOC fsac.1a35066, fsac.1a35064, fsac.1a35068 (Palmer, FSA/OWI, PD); NHHC NH 42164 (US Navy, PD); NASA aerogels feature (NASA, PD)",
-      "verify": "manual",
-      "assert": null,
-      "actual": null,
-      "falsified_if": "Any of the five archive records is found to carry a third-party credit or a restriction. The ledger's rule stands: news-site, Getty, postcard and Wikipedia-page-as-licence images never ship, and the megadeck's vintage Airdock postcard stays out until its rights are checked."
-    },
-    {
-      "id": "tl-photos-no-university-firsts",
-      "text": "No archive on this page holds a cleared photograph of the university firsts, so none is shown.",
-      "source": "MEDIA-LEDGER.md: 'No public-domain photo found yet for UA 1909, Baer 1963, Kent LCI, Kennedy, Harris–Cheng, or Dhinojwala. Do not fill those holes with news or campus PR.'",
-      "verify": "manual",
-      "assert": null,
-      "actual": null,
-      "falsified_if": "A university grants written permission for a science photograph or a public-domain one is found; then a frame may be added and this sentence must change."
-    }
-  ]
+ "data": {
+  "h": "heritage.json",
+  "t": "timeline.json"
+ },
+ "claims": [
+  {
+   "id": "tl-heritage-count",
+   "text": "32 proven events, 1898 to 2012: 19 that changed the region's capacity and 13 scientific firsts (masthead lede, prologue sub, topline tile). [2026-08-27: sentence moved from the old lede into the rewritten lede + prologue sub; assertion unchanged.]",
+   "source": "web/timeline/data/heritage.json, built by tools/build-heritage-web.py from the NEO Polymer Wins register (INDEX.md heritage + discoveries collections)",
+   "assert": "D['h']['meta']['counts']['shown'] == 32 and D['h']['meta']['counts']['heritage'] == 19 and D['h']['meta']['counts']['discoveries'] == 13 and D['h']['meta']['counts']['firstYear'] == 1898 and D['h']['meta']['counts']['lastYear'] == 2012 and len(D['h']['events']) == 32 and min(e['year'] for e in D['h']['events']) == 1898 and max(e['year'] for e in D['h']['events']) == 2012",
+   "actual": "(D['h']['meta']['counts']['shown'], D['h']['meta']['counts']['heritage'], D['h']['meta']['counts']['discoveries'], D['h']['meta']['counts']['firstYear'], D['h']['meta']['counts']['lastYear'])",
+   "falsified_if": "The register gains or loses a PROVEN heritage or discovery row, or a row's label changes. The lede, the prologue heading, the topline tile and the methods paragraph are all written from the same counts at load time, so the static numbers here must move with them — this claim is what forces that."
+  },
+  {
+   "id": "tl-heritage-proven-only",
+   "text": "PIC's register can prove 19 capacity events and 13 firsts, each against a named public source; 5 claimed rows are withheld (prologue sub, figure source line, methods).",
+   "source": "heritage.json: every emitted event carries label PROVEN; the builder drops every other label and records the drops",
+   "assert": "all(e['label'] == 'PROVEN' for e in D['h']['events']) and D['h']['meta']['counts']['dropped'].get('label:CLAIMED', 0) == 5 and D['h']['meta']['counts']['dropped'].get('label:ASPIRATIONAL', 0) == 0 and len(D['h']['meta']['withheld']) == 5 and all(w['label'] != 'PROVEN' for w in D['h']['meta']['withheld'])",
+   "actual": "(sorted(set(e['label'] for e in D['h']['events'])), D['h']['meta']['counts']['dropped'], [w['id'] for w in D['h']['meta']['withheld']])",
+   "falsified_if": "Any non-PROVEN row is emitted, or the withheld count stops matching the drop count. Five CLAIMED rows are held today (H-001 Goodrich 1870, H-004 UA lab 1909, H-006 wartime GR-S, H-008c Morton 1948, H-015 Promerus 2020); if a later wave proves one, the number here changes and the sentence still holds — the assertion pins the mechanism, the count is the current reading."
+  },
+  {
+   "id": "tl-heritage-every-mark-has-source",
+   "text": "Every mark below opens its source (prologue sub).",
+   "source": "heritage.json: sources per event, http(s) only after the builder strips vault references",
+   "assert": "all(any(s['url'] and s['url'].startswith('http') for s in e['sources']) for e in D['h']['events']) and not any('vault' in (s['note'] or '').lower() or '.md' in (s['note'] or '') for e in D['h']['events'] for s in e['sources'])",
+   "actual": "(sum(1 for e in D['h']['events'] if any(s['url'] for s in e['sources'])), len(D['h']['events']), D['h']['meta']['counts']['sourcesStripped'])",
+   "falsified_if": "A row is emitted with no public URL, or an internal source reference (a vault path, a .md file) leaks into a source note. The register is internal; only URLs and plain bibliographic lines may travel."
+  },
+  {
+   "id": "tl-heritage-wartime-withheld",
+   "text": "Rows the register labels claimed, where a date or a figure is recorded two ways, are withheld rather than shown with a caveat; the wartime synthetic-rubber program, its tonnage recorded four ways, is one of them. [2026-08-27: sentence moved from the prologue sub into the methods limits list; assertion unchanged.]",
+   "source": "NEO-POLYMER-WINS INDEX.md: H-006 (1942–45 GR-S program) is CLAIMED because wartime tonnage is recorded four different ways; heritage.json meta.withheld carries the id",
+   "assert": "any(w['id'] == 'H-006' and w['label'] == 'CLAIMED' for w in D['h']['meta']['withheld']) and not any(e['id'] == 'H-006' for e in D['h']['events']) and not any('800,000' in e['oneLiner'] or '920,000' in e['oneLiner'] for e in D['h']['events'])",
+   "actual": "[w for w in D['h']['meta']['withheld'] if w['id'] == 'H-006']",
+   "falsified_if": "H-006 is promoted to PROVEN (then this sentence must be rewritten, not the assertion), or a wartime tonnage figure appears in any emitted one-liner. The register's rule: four measures, no single number is honest, print none."
+  },
+  {
+   "id": "tl-heritage-title-count-in-methods",
+   "text": "Of its 37 heritage and discovery rows, 32 are labeled proven and appear here; 5 labeled claimed are withheld. 3 internal source references were stripped in the build.",
+   "source": "heritage.json meta.counts (methods paragraph is written from these at load time)",
+   "assert": "D['h']['meta']['counts']['shown'] + D['h']['meta']['counts']['dropped'].get('label:CLAIMED', 0) == 37 and D['h']['meta']['counts']['sourcesStripped'] == 3",
+   "actual": "(D['h']['meta']['counts']['shown'], D['h']['meta']['counts']['dropped'], D['h']['meta']['counts']['sourcesStripped'])",
+   "falsified_if": "The register's heritage + discoveries collections change size, or a re-run of the builder strips a different number of internal references. The methods paragraph is generated, so it cannot drift from the data — but this file's text can, and this claim is what catches it."
+  },
+  {
+   "id": "tl-heritage-gap",
+   "text": "The proven record runs 1898 to 2012, then goes quiet until the designation, eleven years on (prologue H2 range, figure title, on-chart takeaway, heritage aria).",
+   "source": "heritage.json meta.counts.lastYear vs the designation event in timeline.json",
+   "assert": "D['h']['meta']['counts']['firstYear'] == 1898 and D['h']['meta']['counts']['lastYear'] == 2012 and (lambda des: int(des[:4]) - D['h']['meta']['counts']['lastYear'] == 11)(one(e['date'] for e in D['t']['events'] if e['date'].startswith('2023') and 'esignat' in e['title']))",
+   "actual": "(D['h']['meta']['counts']['lastYear'], [e['date'] for e in D['t']['events'] if 'esignat' in e['title']])",
+   "falsified_if": "A proven row later than 2012 enters the register (the quiet-gap sentence and the eleven-years arithmetic both break), or the designation event's date moves."
+  },
+  {
+   "id": "tl-prologue-anchors",
+   "text": "The named events on the heritage strip and in the prologue H2: Goodyear founded 1898, Semon plasticizes PVC 1926, the first standalone polymer department 1963, the NSF ALCOM center 1991, and 2012 as the last proven row.",
+   "source": "heritage.json rows H-002, D-001, D-003, H-009e, D-009",
+   "assert": "any(e['id'] == 'H-002' and e['year'] == 1898 and 'Goodyear' in e['title'] for e in D['h']['events']) and any(e['id'] == 'D-001' and e['year'] == 1926 and 'Semon' in e['title'] and 'PVC' in e['title'] for e in D['h']['events']) and any(e['id'] == 'D-003' and e['year'] == 1963 and 'polymer department' in e['title'] for e in D['h']['events']) and any(e['id'] == 'H-009e' and e['year'] == 1991 and 'ALCOM' in e['title'] for e in D['h']['events']) and len([e for e in D['h']['events'] if e['year'] == 2012]) == 1 and one(e for e in D['h']['events'] if e['year'] == 2012)['id'] == 'D-009'",
+   "actual": "[(e['id'], e['year'], e['title']) for e in D['h']['events'] if e['id'] in ('H-002', 'D-001', 'D-003', 'H-009e', 'D-009')]",
+   "falsified_if": "Any anchor row is relabeled, re-dated or dropped, or a second 2012 row appears (then 'the last proven row' label points at the wrong dot)."
+  },
+  {
+   "id": "tl-cadence-before-after",
+   "text": "The public record holds 4 events in the 34 months before the October 2023 federal designation and 68 delivered in the 34 months since; the spans match to within a day and the change is seventeenfold (masthead lede, topline tiles, cadence H2 + sub + chart annotation).",
+   "source": "timeline.json events, shown universe (PRE non-CTX rows plus in-window rows with show, as app.js builds it), split at the designation date; span arithmetic from the event dates and meta.asOf",
+   "assert": "(lambda E, des, asof, jdn: (lambda before, since: len(before) == 4 and len(since) == 68 and len(since) == 17 * len(before) and abs((jdn(asof) - jdn(des)) - (jdn(des) - jdn('2021-01-01'))) <= 2 and round((jdn(des) - jdn('2021-01-01')) / 30.44) == 34 and round((jdn(asof) - jdn(des)) / 30.44) == 34)([e for e in E if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))], [e for e in E if des <= e['date'] and e['delivered'] and e.get('show')]))(D['t']['events'], one(e['date'] for e in D['t']['events'] if e['date'].startswith('2023') and 'esignat' in e['title']), D['t']['meta']['asOf'], lambda s: (lambda y, m, d: (lambda a: d + (153 * (m + 12 * a - 3) + 2) // 5 + 365 * (y + 4800 - a) + (y + 4800 - a) // 4 - (y + 4800 - a) // 100 + (y + 4800 - a) // 400 - 32045)((14 - m) // 12))(int(s[:4]), int(s[5:7]), int(s[8:10])))",
+   "actual": "(lambda E, des: (len([e for e in E if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))]), len([e for e in E if des <= e['date'] and e['delivered'] and e.get('show')])))(D['t']['events'], '2023-10-23')",
+   "falsified_if": "A pre-designation public event is added to or dropped from the inventory (the 4 moves), a delivered event lands or is reclassified (the 68 moves and 17x stops being exact), or meta.asOf advances so the since-span no longer matches the before-span within a day — the '34 months either side' framing dies first."
+  },
+  {
+   "id": "tl-cadence-per-year",
+   "text": "Delivered public events per calendar year in the shown record: 2021: 1, 2022: 2, 2023: 4 (1 before the 23 October designation, 3 after), 2024: 14, 2025: 30, 2026 through 13 August: 21 (cadence chart bars and value labels).",
+   "source": "timeline.json events, shown universe, delivered only, keyed by year",
+   "assert": "(lambda R: [len([e for e in R if e['date'][:4] == y]) for y in ('2021', '2022', '2023', '2024', '2025', '2026')] == [1, 2, 4, 14, 30, 21] and len([e for e in R if e['date'][:4] == '2023' and e['date'] < '2023-10-23']) == 1)([e for e in D['t']['events'] if e['delivered'] and e.get('tier') != 'CTX' and (e['date'] < '2023-01-01' or e.get('show')) and e['date'] >= '2021-01-01'])",
+   "actual": "(lambda R: sorted(set((e['date'][:4], len([x for x in R if x['date'][:4] == e['date'][:4]])) for e in R)))([e for e in D['t']['events'] if e['delivered'] and e.get('tier') != 'CTX' and (e['date'] < '2023-01-01' or e.get('show')) and e['date'] >= '2021-01-01'])",
+   "falsified_if": "Any year's delivered count moves — a regeneration of the inventory, a visibility flip, or a new delivered event lands. The bars render from the data, but this pins the counts the prose and the aria summary state."
+  },
+  {
+   "id": "tl-shown-counts",
+   "text": "Since January 2023 the calendar shows 69 delivered events and 18 scheduled, 87 in all (calendar H2, closer sub, table disclosure); the 87 is the sum, never typed independently.",
+   "source": "timeline.json events, in-window shown universe as app.js builds it",
+   "assert": "(lambda ins: len([e for e in ins if e['delivered']]) == 69 and len([e for e in ins if not e['delivered']]) == 18 and len(ins) == len([e for e in ins if e['delivered']]) + len([e for e in ins if not e['delivered']]) and len(ins) == 87)([e for e in D['t']['events'] if e['date'] >= '2023-01-01' and (e.get('show') or not e['delivered'])])",
+   "actual": "(lambda ins: (len([e for e in ins if e['delivered']]), len([e for e in ins if not e['delivered']]), len(ins)))([e for e in D['t']['events'] if e['date'] >= '2023-01-01' and (e.get('show') or not e['delivered'])])",
+   "falsified_if": "The inventory adds a public event, a scheduled event is delivered (69/18 both move), or the window constant in app.js moves off 2023-01-01 without this claim moving with it."
+  },
+  {
+   "id": "tl-sched-split",
+   "text": "Of the 18 scheduled dates, 10 come due by the end of 2026; the other 8 land between 2027 and 2029: the pilot facility's readiness target and seven award or project end dates (promises section, swimlane on-chart takeaway).",
+   "source": "timeline.json forward events by date and title",
+   "assert": "(lambda sch: len(sch) == 18 and len([e for e in sch if e['date'] < '2027-01-01']) == 10 and (lambda far: len(far) == 8 and all('2027-01-01' <= e['date'] <= '2029-12-31' for e in far) and len([e for e in far if 'ready' in e['title'].lower()]) == 1 and len([e for e in far if 'end' in e['title'].lower() or 'completion' in e['title'].lower()]) == 7)([e for e in sch if e['date'] >= '2027-01-01']))([e for e in D['t']['events'] if not e['delivered'] and e['date'] >= '2023-01-01'])",
+   "actual": "[(e['date'], e['title']) for e in D['t']['events'] if not e['delivered'] and e['date'] >= '2027-01-01']",
+   "falsified_if": "A scheduled date is delivered or slips across the 2026/2027 boundary, a new forward milestone is published, or a 2027+ scheduled event appears that is neither the pilot-facility readiness target nor an end/completion date — the 'the other eight are completion dates' sentence would then be wrong."
+  },
+  {
+   "id": "tl-rd-clocks",
+   "text": "The five company R&D awards began in December 2024 and run to end dates between November 2027 and November 2029; BioVerde's $11.1M award is the largest (promises section, closer, BioVerde aside, Dec-2024 rule label).",
+   "source": "timeline.json: the five 'EDA award to X begins' events of Dec 2024 and the three forward award-period-end events F30/F37/F44",
+   "assert": "(lambda dec: len(dec) == 5 and max(int(e['title'].split('$')[1].split(',')[0] + e['title'].split('$')[1].split(',')[1] + e['title'].split('$')[1].split(',')[2]) if e['title'].count(',') >= 2 else 0 for e in dec) == 11122386 and any('BioVerde' in e['title'] and '11,122,386' in e['title'] for e in dec))([e for e in D['t']['events'] if e['laneKey'] == 'rd' and e['delivered'] and e['date'][:7] == '2024-12' and 'EDA award' in e['title']]) and (lambda ends: sorted(e['date'] for e in ends) == ['2027-11-30', '2028-12-14', '2029-11-30'] and all('end' in e['title'].lower() for e in ends))([e for e in D['t']['events'] if e['laneKey'] == 'rd' and not e['delivered'] and e['date'] >= '2027-01-01'])",
+   "actual": "([(e['date'], e['title']) for e in D['t']['events'] if e['laneKey'] == 'rd' and e['delivered'] and e['date'][:7] == '2024-12'], [(e['date'], e['title']) for e in D['t']['events'] if e['laneKey'] == 'rd' and not e['delivered'] and e['date'] >= '2027-01-01'])",
+   "falsified_if": "An award start is re-dated, a sixth company R&D award begins, an award amount is corrected (the 'largest' ranking can flip), or any of the three end dates moves — each would rewrite the November 2027 to November 2029 window."
+  },
+  {
+   "id": "tl-swimlane-rules",
+   "text": "The labeled marks on the swimlane: the 23 Oct 2023 designation rule (1 of 31), the 2 Jul 2024 ~$51M implementation-grant rule, the Dec 2024 five-award rule, the 14 Jul 2026 NSF $160M NEO-SMART leader labeled on its own dot, and the Nov 2027 pilot-facility readiness leader. [2026-08-28: the figure subtitle used to say the rules mark three events while a fourth labeled line was drawn; it now says the three rules and names the NSF label separately, which is what the chart does.]",
+   "source": "timeline.json events E009, E022, E036–E041, E205, F29",
+   "assert": "any(e['date'] == '2023-10-23' and 'esignat' in e['title'] and '1 of 31' in e['title'] for e in D['t']['events']) and any(e['date'] == '2024-07-02' and '51M' in e['title'] for e in D['t']['events']) and len([e for e in D['t']['events'] if e['laneKey'] == 'rd' and e['delivered'] and e['date'][:7] == '2024-12' and 'EDA award' in e['title']]) == 5 and any(e['id'] == 'E205' and e['date'] == '2026-07-14' and '$160M' in e['title'] and 'NSF' in e['title'] for e in D['t']['events']) and any(e['id'] == 'F29' and e['date'][:7] == '2027-11' and 'ready' in e['title'].lower() and not e['delivered'] for e in D['t']['events'])",
+   "actual": "[(e['id'], e['date'], e['title']) for e in D['t']['events'] if e.get('id') in ('E009', 'E022', 'E205', 'F29')]",
+   "falsified_if": "Any labeled event is re-dated, retitled or dropped from the record — a rule or leader label would then point at nothing, or at the wrong date."
+  },
+  {
+   "id": "tl-watch-next",
+   "text": "The next three scheduled dates after 13 August 2026: 2026 Round 1 technical reviews conclude (15 Aug 2026), the PC3 annual conference (9 Sep 2026), and the pilot-facility groundbreaking target (9 Oct 2026) (watch list; the list itself renders from data).",
+   "source": "timeline.json forward events sorted by date after meta.asOf",
+   "assert": "(lambda nxt: [e['date'] for e in nxt] == ['2026-08-15', '2026-09-09', '2026-10-09'] and 'reviews conclude' in nxt[0]['title'] and 'PC3' in nxt[1]['title'] and 'groundbreaking' in nxt[2]['title'].lower())(sorted([e for e in D['t']['events'] if not e['delivered'] and e['date'] > D['t']['meta']['asOf']], key=lambda e: e['date'])[:3])",
+   "actual": "[(e['date'], e['title']) for e in sorted([e for e in D['t']['events'] if not e['delivered'] and e['date'] > D['t']['meta']['asOf']], key=lambda e: e['date'])[:5]]",
+   "falsified_if": "A nearer milestone is published, one of the three is delivered or re-dated, or asOf advances past 15 August 2026 — the watch list re-renders from data, and this claim forces the surrounding prose to move with it."
+  },
+  {
+   "id": "tl-aside-bioverde",
+   "text": "In September 2024 BioVerde CEO Dave Witte announced the company would move the bulk of its operations to Ohio, citing the grant; its $11.1M bio-based butadiene award began that December, the largest of the five company R&D awards (aside).",
+   "source": "timeline.json events E028 and E040",
+   "assert": "any(e['date'] == '2024-09-05' and 'BioVerde' in e['title'] and 'Witte' in e['title'] and 'moving' in e['title'] and 'citing the grant' in e['title'] for e in D['t']['events']) and any(e['date'] == '2024-12-15' and 'BioVerde' in e['title'] and 'Butadiene' in e['title'] and '11,122,386' in e['title'] for e in D['t']['events'])",
+   "actual": "[(e['date'], e['title']) for e in D['t']['events'] if 'BioVerde' in e['title']]",
+   "falsified_if": "Either BioVerde event is re-dated or reworded in the inventory, or the award amount is corrected — 'largest' is separately pinned by tl-rd-clocks."
+  },
+  {
+   "id": "tl-aside-barberton",
+   "text": "Sixteen days after the designation, NovationSi and RD Abbott ran a polymer workshop at Barberton High School; fourteen months later Barberton launched a K-12 Polymer Pathway curriculum, backed by its community foundation (aside).",
+   "source": "timeline.json events E013 and E048; day and month arithmetic from the recorded dates",
+   "assert": "(lambda jdn: (lambda w, p, des: w['date'] == '2023-11-08' and jdn(w['date']) - jdn(des) == 16 and p['date'] == '2025-01-14' and 'K-12 Polymer Pathway' in p['title'] and 'Barberton Community Foundation' in p['org'] and round((jdn(p['date']) - jdn(w['date'])) / 30.44) == 14)(one(e for e in D['t']['events'] if 'Barberton HS' in e['title']), one(e for e in D['t']['events'] if 'K-12 Polymer Pathway' in e['title']), one(e['date'] for e in D['t']['events'] if e['date'].startswith('2023') and 'esignat' in e['title'])))(lambda s: (lambda y, m, d: (lambda a: d + (153 * (m + 12 * a - 3) + 2) // 5 + 365 * (y + 4800 - a) + (y + 4800 - a) // 4 - (y + 4800 - a) // 100 + (y + 4800 - a) // 400 - 32045)((14 - m) // 12))(int(s[:4]), int(s[5:7]), int(s[8:10])))",
+   "actual": "[(e['date'], e['title'], e['org']) for e in D['t']['events'] if 'Barberton' in e['title'] or 'Barberton' in e['org']]",
+   "falsified_if": "Either Barberton event is re-dated (the sixteen-days and fourteen-months arithmetic breaks), or the pathway's organization changes."
+  },
+  {
+   "id": "tl-table-default",
+   "text": "The table opens on the 12 most recent delivered events, newest first; expanding adds the 18 scheduled rows, tagged. All default rows are delivered, which is why the status column moved into the caption (table sub, caption, disclosure button; claims describe the default, unfiltered state).",
+   "source": "timeline.json in-window shown universe; the cap and ordering are app.js buildTable()",
+   "assert": "(lambda ins: len([e for e in ins if e['delivered']]) >= 12 and len([e for e in ins if not e['delivered']]) == 18)([e for e in D['t']['events'] if e['date'] >= '2023-01-01' and (e.get('show') or not e['delivered'])])",
+   "actual": "(lambda ins: (len([e for e in ins if e['delivered']]), len([e for e in ins if not e['delivered']])))([e for e in D['t']['events'] if e['date'] >= '2023-01-01' and (e.get('show') or not e['delivered'])])",
+   "falsified_if": "Fewer than 12 delivered events exist (the cap sentence stops being true) or the scheduled count moves off 18 while the table sub still states it."
+  },
+  {
+   "id": "tl-operating-five-workstreams",
+   "text": "Five workstreams (calendar H2 and topline tile).",
+   "source": "timeline.json lanes",
+   "assert": "len(D['t']['lanes']) == 5",
+   "actual": "[l['name'] for l in D['t']['lanes']]",
+   "falsified_if": "A lane is added or merged in the inventory's LANES map."
+  },
+  {
+   "id": "tl-operating-since-2023",
+   "text": "Everything the cluster has publicly done since the 2023 federal designation.",
+   "source": "timeline.json: the 2023 designation is a public event in the record and the swimlane window opens at 2023-01-01",
+   "assert": "any(e['date'].startswith('2023') and 'esignat' in e['title'] for e in D['t']['events']) and D['t']['meta']['counts']['events'] == len(D['t']['events'])",
+   "actual": "[ (e['date'], e['title']) for e in D['t']['events'] if e['date'].startswith('2023') and 'esignat' in e['title'] ]",
+   "falsified_if": "The designation event leaves the public record, or the window constant in app.js moves off 2023 without this sentence moving with it."
+  },
+  {
+   "id": "tl-operating-as-of",
+   "text": "Operating record as of 13 August 2026; heritage register as of 14 August 2026.",
+   "source": "timeline.json meta.asOf; heritage.json meta.asOf",
+   "assert": "D['t']['meta']['asOf'] == '2026-08-13' and D['h']['meta']['asOf'] == '2026-08-14'",
+   "actual": "(D['t']['meta']['asOf'], D['h']['meta']['asOf'])",
+   "falsified_if": "Either builder is re-run against a newer inventory or register: the <time> elements in index.html, the NOW constants in app.js and the Today labels are static and must be edited with the data."
+  },
+  {
+   "id": "tl-discoveries-not-products",
+   "text": "A discovery is a paper or a patent, never a product.",
+   "source": "NEO-POLYMER-WINS GOAL.md and collections/discoveries.md: 'A paper or a patent is enough. A product is a child row.'",
+   "verify": "manual",
+   "assert": null,
+   "actual": null,
+   "falsified_if": "The register redefines the discoveries collection to admit products, or a shipped/licensed row is emitted into the prologue (the builder drops those collections and counts the drops)."
+  },
+  {
+   "id": "tl-heritage-not-cluster-outcome",
+   "text": "None of it is a cluster outcome; it is the reason the cluster is here.",
+   "source": "NEO-POLYMER-WINS GOAL.md: heritage and discoveries 'may not fill an EDA success cell'; every atom carries pic_caused: no",
+   "verify": "manual",
+   "assert": null,
+   "actual": null,
+   "falsified_if": "A heritage or discovery atom is ever marked pic_caused: yes. The register's own rule is that PIC-era awards live in a different collection and are not wins until they ship."
+  },
+  {
+   "id": "tl-photos-public-domain",
+   "text": "Five photographs, all in the public domain: four US federal works from the Library of Congress and the Naval History and Heritage Command, one from NASA.",
+   "source": "NEO-POLYMER-WINS media/MEDIA-LEDGER.md and incoming/wave1b-media.md — LOC fsac.1a35066, fsac.1a35064, fsac.1a35068 (Palmer, FSA/OWI, PD); NHHC NH 42164 (US Navy, PD); NASA aerogels feature (NASA, PD)",
+   "verify": "manual",
+   "assert": null,
+   "actual": null,
+   "falsified_if": "Any of the five archive records is found to carry a third-party credit or a restriction. The ledger's rule stands: news-site, Getty, postcard and Wikipedia-page-as-licence images never ship, and the megadeck's vintage Airdock postcard stays out until its rights are checked."
+  },
+  {
+   "id": "tl-photos-no-university-firsts",
+   "text": "No archive on this page holds a cleared photograph of the university firsts, so none is shown.",
+   "source": "MEDIA-LEDGER.md: 'No public-domain photo found yet for UA 1909, Baer 1963, Kent LCI, Kennedy, Harris–Cheng, or Dhinojwala. Do not fill those holes with news or campus PR.'",
+   "verify": "manual",
+   "assert": null,
+   "actual": null,
+   "falsified_if": "A university grants written permission for a science photograph or a public-domain one is found; then a frame may be added and this sentence must change."
+  },
+  {
+   "id": "tl-pipeline-reconciliation",
+   "text": "487 raw rows reduced to 104 dated events. Of those 104, 87 fall inside the 2023 to 2029 calendar window and are drawn there (69 delivered, 18 scheduled), 5 predate the window and feed the cadence chart, and the remaining 12 are press coverage of the cluster rather than things the cluster did (methods paragraph, sources band). [2026-08-28: the methods block said '487 raw rows reconciled to 269' while the sources block said '487 raw rows reduced to 104 dated events', and neither tied to the 87 dots a reader can count. One basis now, and the split is computed at load time rather than typed.]",
+   "source": "web/timeline/data/timeline.json meta.source and the events array; _data/SOURCES.json public_record.filters.compiled states the same 104",
+   "assert": "'104 dated events' in D['t']['meta']['source'] and '269' not in D['t']['meta']['source'] and len(D['t']['events']) == 104 and D['t']['meta']['counts']['events'] == 104 and (lambda cal, pre, media: len(cal) == 87 and len(pre) == 5 and len(media) == 12 and len(cal) + len(pre) + len(media) == len(D['t']['events']) and all(e['tier'] == 'MEDIA' for e in media) and len([e for e in cal if e['delivered']]) == 69 and len([e for e in cal if not e['delivered']]) == 18)([e for e in D['t']['events'] if e['date'] >= '2023-01-01' and (e.get('show') or not e['delivered'])], [e for e in D['t']['events'] if e['date'] < '2023-01-01'], [e for e in D['t']['events'] if e['date'] >= '2023-01-01' and e['delivered'] and not e.get('show')])",
+   "actual": "(len(D['t']['events']), len([e for e in D['t']['events'] if e['date'] >= '2023-01-01' and (e.get('show') or not e['delivered'])]), len([e for e in D['t']['events'] if e['date'] < '2023-01-01']), len([e for e in D['t']['events'] if e['date'] >= '2023-01-01' and e['delivered'] and not e.get('show')]), sorted(set(e['tier'] for e in D['t']['events'] if e['date'] >= '2023-01-01' and e['delivered'] and not e.get('show'))))",
+   "falsified_if": "The two apparatus blocks state the pipeline as two different numbers again, the 104 stops matching the shipped row count, the three parts stop summing to the whole, or a held-out row turns out to be something other than a MEDIA-tier coverage row. Any of those means a reader auditing the trust apparatus hits a contradiction inside it."
+  },
+  {
+   "id": "tl-heritage-void-column",
+   "text": "The sixth column of the heritage strip, 2013 to 2023, is drawn empty because the register proves nothing in it: the last proven row is 2012 and the next event on the page is the October 2023 designation, eleven years on (figure subtitle, the drawn void, heritage aria).",
+   "source": "heritage.json events (no row later than 2012) and the designation row in timeline.json",
+   "assert": "max(e['year'] for e in D['h']['events']) == 2012 and len([e for e in D['h']['events'] if e['year'] > 2012]) == 0 and (lambda des: int(des[:4]) - 2012 == 11)(one(e['date'] for e in D['t']['events'] if e['date'].startswith('2023') and 'esignat' in e['title']))",
+   "actual": "(max(e['year'] for e in D['h']['events']), len([e for e in D['h']['events'] if e['year'] > 2012]))",
+   "falsified_if": "A proven row is dated after 2012, in which case the column is no longer empty and drawing it as a void is a lie. The chart used to carry this finding only as a sentence under the plot while its five equal-width columns showed a continuously populated century; the void is now ink, so a wrong void is a visible wrong chart."
+  },
+  {
+   "id": "tl-cadence-2026-partial",
+   "text": "The 2026 bar counts 1 January to 13 August 2026, 21 delivered events, and is drawn lighter than the full years beside it (cadence chart, figure subtitle, methods note).",
+   "source": "timeline.json meta.asOf and the delivered rows dated in 2026",
+   "assert": "D['t']['meta']['asOf'] == '2026-08-13' and max(e['date'] for e in D['t']['events'] if e['delivered']) <= '2026-08-13' and len([e for e in D['t']['events'] if e['date'] >= '2023-01-01' and (e.get('show') or not e['delivered']) and e['delivered'] and e['date'][:4] == '2026']) == 21",
+   "actual": "(D['t']['meta']['asOf'], max(e['date'] for e in D['t']['events'] if e['delivered']), len([e for e in D['t']['events'] if e['date'] >= '2023-01-01' and (e.get('show') or not e['delivered']) and e['delivered'] and e['date'][:4] == '2026']))",
+   "falsified_if": "A delivered event is dated after the as-of date, or the 2026 count moves. A partial year drawn at the same weight as a complete one reads as a complete one, so the lightening has to track the real cut-off."
+  },
+  {
+   "id": "tl-date-display-one-family",
+   "text": "The date column prints one family of formats: a day, a month, a year, or a spelled range such as 1–15 Aug 2026 (record table, heritage table, event panel). [2026-08-28: five rows printed raw ISO or quarter strings, so one column mixed '2026-08-01 → 08-15' with '22 Jul 2026'.]",
+   "source": "timeline.json dateDisplay on every row whose precision is coarser than a month; day and month rows are formatted at render time",
+   "assert": "all(('-' not in e['dateDisplay'] and 'Q' not in e['dateDisplay'] and '/' not in e['dateDisplay'] and '\\u2192' not in e['dateDisplay']) for e in D['t']['events'] if e['datePrecision'] not in ('day', 'month'))",
+   "actual": "sorted(set(e['dateDisplay'] for e in D['t']['events'] if e['datePrecision'] not in ('day', 'month')))",
+   "falsified_if": "A rebuild reintroduces an ISO or quarter string into a rendered date cell. The CSV export still carries the machine form on purpose; this claim governs only what a reader sees."
+  },
+  {
+   "id": "tl-footer-rebuilds-from-data",
+   "text": "Every figure here rebuilds from the data files published beside this page (page footer, byline data credit).",
+   "source": "web/timeline/data/timeline.json and web/timeline/data/heritage.json, the only two files the page reads",
+   "assert": "len(D['t']['events']) > 0 and len(D['h']['events']) > 0 and all(e.get('date') for e in D['t']['events']) and all(e.get('date') for e in D['h']['events']) and 'Merged from eight' in D['t']['meta']['source'] and 'NEO Polymer Wins' in D['h']['meta']['source']",
+   "actual": "(len(D['t']['events']), len(D['h']['events']))",
+   "falsified_if": "Either data file empties, a row loses its date, or the two named sources in the byline stop being the sources the files declare. The footer promises a reader that the charts are not hand-drawn; if a value ever moves into the markup this claim stops covering it and the promise is false."
+  }
+ ]
 }

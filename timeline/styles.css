@@ -32,11 +32,17 @@
 
   /* One hue per lane. Chosen so no two adjacent lanes share a hue family, and
      every one clears 4.5:1 as ink on white — these are used as text, not just fills. */
-  --lane-desig:#12798B;
-  --lane-rd:#8E3B62;
+  /* 2026-08-28: the old set put Designations (#12798B) and Startups (#1A8A9E) on two
+     teals 0.9 L* apart — one color to any reader, and #12798B was also the cadence
+     chart's "since designation" story hue doing a second job. This set is teal-free
+     except for the darkest lane, spreads the five over 24.7–48.5 L* (min pairwise gap
+     5.4, against 0.9 before), and every one still clears 4.5:1 as ink on white because
+     these are used as text in the lane names, the chips and the table. */
+  --lane-desig:#06414B;
+  --lane-rd:#78304F;
   --lane-work:#9A6A08;
-  --lane-startup:#1A8A9E;
-  --lane-infra:#5E7A10;
+  --lane-startup:#B0421A;
+  --lane-infra:#435F0B;
 
   --r-sm:6px; --r-md:10px; --r-lg:16px;
   --t-fast:140ms;
@@ -61,12 +67,17 @@ body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--font)
 .eyebrow { margin:0 0 14px; font-weight:700; font-size:14.5px; letter-spacing:.18em;
   text-transform:uppercase; color:#BFE2E9; }
 .masthead h1 { margin:0; font-family:var(--font-display); font-weight:700;
-  font-size:clamp(34px,5.2vw,62px); line-height:1.05; letter-spacing:-.02em; max-width:var(--figure); }
+  font-size:clamp(32px,3.9vw,48px); line-height:1.08; letter-spacing:-.02em; max-width:var(--measure); }
 .lede { margin:20px 0 0; max-width:var(--measure); font-size:clamp(17px,1.5vw,20px);
   color:rgba(255,255,255,.9); }
-.topline { list-style:none; display:flex; flex-wrap:wrap; gap:14px; margin:32px 0 0; padding:0; }
+/* 2×2 grid capped at the text measure, not a flex row: a wide row of content-fit cards
+   is a second rail at desktop and a ragged stack at 375. */
+.topline { list-style:none; display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px; margin:30px 0 0; padding:0; max-width:var(--measure); }
 .topline li { background:rgba(255,255,255,.11); border:1px solid rgba(255,255,255,.2);
   border-radius:var(--r-md); padding:12px 18px; }
+.topline li.key { background:rgba(184,214,55,.16); border-color:rgba(184,214,55,.55); }
+.topline li.key b { color:var(--lime); }
 .topline b { display:block; font-family:var(--font-display); font-size:30px; line-height:1.1; }
 .topline span { font-size:14.5px; color:#CFE6EB; }
 
@@ -285,6 +296,7 @@ h3 { font-size:19px; margin:0 0 10px; color:var(--teal-900); }
 .cadence svg { display:block; width:100%; height:auto; overflow:visible; }
 .cad-pre { fill:#8A8B87; }
 .cad-post { fill:var(--teal-700); }
+.cad-post.partial { fill:#7FB4BE; }
 .cad-val { font:700 12.5px/1 var(--font); fill:var(--ink); font-variant-numeric:tabular-nums; }
 .cad-note { font:600 12.5px/1 var(--font); fill:var(--muted); }
 .cad-ann-pre { fill:#6E6F6B; }
@@ -327,3 +339,91 @@ h3 { font-size:19px; margin:0 0 10px; color:var(--teal-900); }
   font-size:clamp(24px,3.2vw,38px); line-height:1.18; letter-spacing:-.015em;
   max-width:var(--figure); }
 .closer .sub { margin:16px 0 0; color:rgba(255,255,255,.88); max-width:var(--measure); }
+
+/* ================================================= 2026-08-28 fix round: one text rail */
+/* The page was left-set at the wrap's content edge (x=150 at 1280) while the shared
+   core CENTRES every block inside .band and .closer. A measure-width block centred in a
+   figure-width wrap starts at x=301, so the sources H2 and the whole closer floated
+   ~151px off the page's own rail, and the two-column methods band added a third text
+   edge at x=721. Fix: adopt the shared centred system for the whole page and give every
+   TEXT block the same width, so "centred" and "one rail" are the same statement. Only
+   non-text units (charts, the photo strip, the archive tables) break out, and they break
+   out symmetrically to the figure width. */
+.masthead .wrap > *, .section .wrap > *, .band .wrap > *, .closer .wrap > *,
+.pagefoot .wrap > * { margin-left:auto; margin-right:auto; max-width:var(--measure); }
+.section .wrap > .chart, .band .wrap > .chart, .section .wrap > .tablewrap,
+.section .wrap > .photos, .section .wrap > .pro-table { max-width:var(--figure); }
+.chart { max-width:var(--figure); }
+.pro-table > summary { max-width:var(--measure); margin-left:auto; margin-right:auto; }
+.band #repro { max-width:var(--measure); }
+.closer .big { max-width:var(--measure); }
+/* methods is one column now: a second flowing-text column is a second rail */
+.methods-grid { display:block; }
+.notes-h { margin-top:26px; }
+
+/* ------------------------------------------------------------------ byline block */
+.byline { margin:18px 0 0; font-size:14px; line-height:1.5; color:#BFE2E9; }
+
+/* ------------------------------------------------------------------ page footer */
+.pagefoot { background:var(--green-ink); color:#E6ECDB; padding:34px 0 40px; }
+/* margin:0 here used to beat the one-axis auto-margin at equal specificity and
+   put the whole footer back on a second rail at x=150. */
+.pagefoot .foot-id { margin:0 auto; font-size:16px; }
+.pagefoot .foot-id b { color:#fff; }
+.pagefoot .foot-note { margin:8px auto 0; font-size:14.5px; line-height:1.55; color:#C3CFB1; }
+.pagefoot .foot-link { margin:14px auto 0; font-size:15px; }
+.pagefoot a { color:var(--lime); text-decoration:underline; text-underline-offset:3px; }
+
+/* --------------------------------------------- heritage: the drawn eleven-year void */
+.era-band.void { fill:#F4F2EC; }
+.void-lab { font:700 12.5px/1 var(--font); fill:var(--muted); letter-spacing:.04em; }
+.void-note { font:700 13px/1.25 var(--font); fill:#8A5B22; }
+.void-edge { stroke:#C9A46A; stroke-width:1.5; stroke-dasharray:4 4; }
+
+/* ------------------------------------------------ mobile chart re-layout, shared bits */
+.pnl-name { font:700 14px/1 var(--font); }
+.pnl-count { font:600 12.5px/1 var(--font); fill:var(--muted); }
+.m-axis { font:600 12px/1 var(--font); fill:var(--muted); font-variant-numeric:tabular-nums; }
+.m-rule { stroke:#C2C6C4; stroke-width:1.5; }
+.m-rule-lab { font:600 12px/1 var(--font); fill:var(--charcoal); }
+/* one quiet ground for all five panels: alternating fills read as two kinds of
+   panel when the gray matches the section's own background. */
+.pnl-band { fill:#fff; }
+
+/* ------------------------------------------- mobile: the tables stop being tables */
+/* At 375 the four-column record clipped EVENT mid-word with two columns off-screen.
+   A sideways-scroll box is reserved for genuine reference matrices; a record a reader
+   is meant to read becomes stacked entries instead. */
+@media (max-width:719px) {
+  .tablewrap { overflow-x:visible; border:0; background:none; border-radius:0; }
+  /* #htable carries min-width:960px at ID specificity; without naming it here the
+     heritage table kept its 960px floor and pushed the whole 390px page to 980px wide
+     the moment a reader opened the disclosure. */
+  .dtable, #htable { min-width:0; display:block; width:100%; }
+  .dtable thead { position:absolute; width:1px; height:1px; overflow:hidden;
+    clip:rect(0 0 0 0); white-space:nowrap; }
+  .dtable tbody, .dtable tr, .dtable td, .dtable th { display:block; }
+  .dtable tbody tr { border:1px solid var(--line); border-radius:var(--r-md);
+    background:#fff; padding:13px 15px; margin-bottom:10px; }
+  .dtable td { border:0; padding:0; }
+  .dtable td:empty { display:none; }
+  .dtable td.t-date { font-weight:700; font-size:13.5px; color:var(--muted);
+    letter-spacing:.04em; text-transform:uppercase; }
+  .dtable td.t-lane { font-size:13px; letter-spacing:.05em; text-transform:uppercase;
+    margin-top:7px; white-space:normal; }
+  .dtable td.t-org, .dtable td.t-one { color:var(--charcoal); font-size:14.5px; margin-top:4px; }
+  .dtable td.t-one { min-width:0; }
+  .dtable td.t-src { margin-top:7px; font-size:14.5px; }
+  .dtable td:not([class]) { font-weight:600; line-height:1.42; margin-top:4px; font-size:16px; }
+  .dtable tr.yrhead { border:0; background:none; padding:0; margin:18px 0 8px; }
+  .dtable .yrhead th { position:static; padding:7px 12px; border-radius:var(--r-sm);
+    border-bottom:0; }
+  .badge { margin-left:8px; }
+}
+
+/* -------------------------------------------------------- mobile: hero and spacing */
+@media (max-width:559px) {
+  .eyebrow { font-size:13px; letter-spacing:.13em; }
+  .topline { grid-template-columns:minmax(0,1fr); }
+  .topline b { font-size:27px; }
+}

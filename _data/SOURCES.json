@@ -28,7 +28,7 @@
         "NAICS codes": "10 (all industries), 31-33 (manufacturing), 325 (chemical manufacturing), 3252 (resin, synthetic rubber and fibers), 3255 (paint, coating and adhesive), 326 (plastics and rubber products), 3261 (plastics products), 3262 (rubber products)",
         "ownership": "own_code 0 (total, all ownerships) and 5 (private)",
         "geography": "county FIPS, PIC-12 and NEO-14 (see footprints.py)",
-        "note": "PIC's own measurement register is 3252 + 3255 + 326. NAICS 325 is context, not cluster — it contains pharmaceuticals and agricultural chemicals.",
+        "note": "PIC’s own measurement register is 3252 + 3255 + 326. NAICS 325 is context, not cluster: it contains pharmaceuticals and agricultural chemicals.",
         "provenance_page": "fetch_provenance.py re-uses this source for one pull: 2016 annual, own_code 5, industry 326+32521+325991 at agglvl 55/57/58 — the QCEW instrument comparison on the provenance page"
       },
       "script": "_data/build/fetch_qcew.py, fetch_footprint.py, fetch_provenance.py",

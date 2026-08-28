@@ -41,8 +41,22 @@ at render time from the two shipped files, or guarded in claims.json.
   measured identically (Summit 48.9% there vs 48.4% fully counted; Ashtabula 72.7% vs
   68.5%). The reading line under the benchmark explains the Ashtabula case.
 - **One accent, one job.** Orange means "under half" everywhere it appears. Plum is
-  the distant-metro series, slate the residents-side dots, dark teal the matched peer
-  (Pittsburgh).
+  the distant-metro series, dark slate the residents-side rings, dark teal the matched
+  peer (Pittsburgh). The dumbbell's two series are told apart by SHAPE first (filled
+  disc = jobs, open ring = residents), because the two inks were within 0.004 of the
+  same relative luminance and printed as one gray.
+- **The regions chart is ordered by county count, not by share.** Region containment
+  rises mechanically with the number of counties, so the ordering axis carries the
+  confounder and the two bars that stand above their own size neighbours are the
+  finding. Sorting it by share drew a two-variable claim as a one-variable ranking.
+- **Short region labels are editorial strings in `bench.json` (`regions[].short`).**
+  Never truncate a label in code: claim `ls-region-labels` fails if one is missing,
+  runs past 14 characters, or is not a substring of the full CBSA name.
+- **The visible source line under each figure is capped at 45 words** — one citation
+  plus one limitation. Segment codes, the main/aux split, the in-state basis and the
+  region-size rule print once each, inside the relevant figure's table disclosure or
+  in the methodology box. `laborshed.json` and `bench.json` supply the methods box
+  together; `app.js` merges the bench keys into the rendered meta.
 - **Mobile summarizes the matrix on purpose.** Below 760px the 13-column matrix
   becomes a per-county three-way split (own residents / rest of PIC-12 / outside);
   the full cell detail stays in the table view. This is an editorial aggregation,
@@ -83,3 +97,20 @@ one meaning; footprint banner moved below the hero; per-form mobile re-layout re
 the sideways-scroll matrix. No published number changed; claims were tightened
 (share-below-69 band, median gap) and extended, with changes documented in
 claims.json.
+
+2026-08-28 — visual-review fixes. Apparatus rebuilt: one source line per figure inside
+the 45-word budget, register internals (JT00, main/aux, the in-state basis, the
+region-size rule) moved into table disclosures and the methods box, and the doubled
+citation removed at its source (`bench.json` meta carried the sentence twice). Dumbbell
+series separated by shape and the one near-coincident pair dodged. Regions chart
+re-ordered by county count with hand-written short labels; the desktop truncation
+`Indianapolis-Carmel-G…` is gone. Byline block, three-stage footer, and two pull-quote
+register breaks added; closer cut from about 250 words to 77.
+
+**One published sentence was wrong and is retired.** The closer said the four counties
+feeding this workforce most heavily are exactly the ones PIC-12 excludes and NEO-14
+includes. Recomputed from `external.top`: the two largest outside sources are Franklin
+(26,960) and Columbiana (14,138), and neither footprint contains either; Crawford does
+not appear among the 27 ranked external sources at all. What the data supports is that
+three of the four NEO-14 additions (Tuscarawas 3rd, Richland 9th, Huron 10th) rank in
+the top ten. Now claim `ls-wider-footprint-adds`.

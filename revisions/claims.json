@@ -43,11 +43,35 @@
     },
     {
       "id": "rev-lean",
-      "text": "137 months were later revised up against 121 revised down, so first prints lean slightly low (hero card, chart-2 arrow annotation, caveat box).",
+      "text": "137 months were later revised up against 121 revised down, so first prints lean slightly low (hero card, chart-2 subtitle, chart-2 arrow annotation).",
       "source": "sign of the total change, first print to latest, per revised month",
       "assert": "(len([p for p in D['periods'] if p['pct'] is not None and p['pct'] < 0]), len([p for p in D['periods'] if p['pct'] is not None and p['pct'] > 0])) == (121, 137)",
       "actual": "(len([p for p in D['periods'] if p['pct'] is not None and p['pct'] < 0]), len([p for p in D['periods'] if p['pct'] is not None and p['pct'] > 0]))",
       "falsified_if": "Either count changes, or the majority crosses to the down side, which would reverse the direction of the lean the arrow annotation points at."
+    },
+    {
+      "id": "rev-net-zero",
+      "text": "One revised month is neither up nor down: it came back to within 0.001 index points of its first print, which is why 137 up plus 121 down is 258 against 259 revised months (chart-2 subtitle, distribution table).",
+      "source": "revised months whose published percentage change rounds to zero, and the index-point gap between their first and latest values",
+      "assert": "[(p['series'], p['date'], round(abs(p['latest'] - p['first']), 3)) for p in D['periods'] if p['pct'] == 0] == [('PCU326326', '2025-04-01', 0.001)] and len([p for p in D['periods'] if p['pct'] is not None and p['pct'] < 0]) + len([p for p in D['periods'] if p['pct'] is not None and p['pct'] > 0]) + 1 == len(D['periods'])",
+      "actual": "[(p['series'], p['date'], p['first'], p['latest'], round(abs(p['latest'] - p['first']), 3)) for p in D['periods'] if p['pct'] == 0]",
+      "falsified_if": "A refetch moves that month off zero, or gives a second month a change that rounds to zero, or changes the 0.001 gap. Any of those breaks the arithmetic the subtitle uses to reconcile the two annotated counts against the stated total, and the reconciliation would have to be rewritten rather than the number nudged."
+    },
+    {
+      "id": "rev-asof",
+      "text": "The newest archived vintage on this page is from August 2026, which is the date the byline carries (hero byline).",
+      "source": "maximum vintage date across every archived observation",
+      "assert": "max(r['vintage'] for r in D['all'])[:7] == '2026-08'",
+      "actual": "max(r['vintage'] for r in D['all'])",
+      "falsified_if": "A refetch pulls a newer vintage, which moves the byline date. The byline reads this maximum from the data rather than carrying a typed month, so the page cannot silently claim to be more current than its archive is; this claim fails loudly if that wiring is ever replaced by a literal."
+    },
+    {
+      "id": "rev-interview-ask",
+      "verify": "manual",
+      "text": "Nobody was interviewed for this page, and the reporting it lacks is one call to a resin purchaser who quotes WPU06 in a contract (methodology, limitations).",
+      "source": "The page's own reporting record: no interview was conducted, and no quotation from any person appears anywhere on it. The human-scale beat is the September 2021 board-deck translation in the vignette, a rung-3 concrete vignette.",
+      "reviewer": "recorded as the page's open reporting ask rather than left as an unexplained absence: who to call, the three questions, and the vignette paragraph the quote would slot into are all named in the Limitations section",
+      "falsified_if": "A quotation from a named person appears on the page while this note still says nobody was interviewed, or a resin purchaser is reached and says WPU06 revisions never touch their contract terms, which would remove the reason the ask is worth making and the sentence would have to go."
     },
     {
       "id": "rev-frequency",
@@ -83,7 +107,7 @@
     },
     {
       "id": "rev-span",
-      "text": "Reference months run January 2019 to July 2026, 91 of them (eyebrow, chart-1 source line).",
+      "text": "Reference months run January 2019 to July 2026, 91 of them (hero byline, chart-1 source line).",
       "source": "distinct reference months in the vintage record",
       "assert": "(min(r['date'] for r in D['all']), max(r['date'] for r in D['all']), len(set(r['date'] for r in D['all']))) == ('2019-01-01', '2026-07-01', 91)",
       "actual": "(min(r['date'] for r in D['all']), max(r['date'] for r in D['all']), len(set(r['date'] for r in D['all'])))",
@@ -91,7 +115,7 @@
     },
     {
       "id": "rev-mom-flips",
-      "text": "Of 270 month-over-month pairs, 201 clear the 0.1 percent floor on both readings and 14 of those changed sign between the first print and today (standfirst, caveat box, vignette, closer, distribution table).",
+      "text": "Of 270 month-over-month pairs, 201 clear the 0.1 percent floor on both readings and 14 of those changed sign between the first print and today (caveat box, vignette, closer, distribution table).",
       "source": "each month's step from the previous month as first published (previous month taken at the same vintage), against the same step on today's values",
       "assert": "(lambda A: (lambda PM, FV, LV, AS: (lambda pairs: (len(pairs), len([p for p in pairs if abs(p[0]) >= 0.1 and abs(p[1]) >= 0.1]), len([p for p in pairs if abs(p[0]) >= 0.1 and abs(p[1]) >= 0.1 and p[0] * p[1] < 0])) == (270, 201, 14))([((FV(s, dt)[1] / AS(s, PM(dt), FV(s, dt)[0]) - 1) * 100, (LV(s, dt) / LV(s, PM(dt)) - 1) * 100) for s in sorted(set(r['series'] for r in A)) for dt in sorted(set(r['date'] for r in A if r['series'] == s)) if PM(dt) in set(r['date'] for r in A if r['series'] == s) and AS(s, PM(dt), FV(s, dt)[0]) is not None]))(lambda dt: '%04d-%02d-01' % ((int(dt[:4]) - 1, 12) if dt[5:7] == '01' else (int(dt[:4]), int(dt[5:7]) - 1)), lambda s, dt: min([(r['vintage'], r['value']) for r in A if r['series'] == s and r['date'] == dt]), lambda s, dt: max([(r['vintage'], r['value']) for r in A if r['series'] == s and r['date'] == dt])[1], lambda s, dt, V: (lambda c: max(c)[1] if c else None)([(r['vintage'], r['value']) for r in A if r['series'] == s and r['date'] == dt and r['vintage'] <= V])))(D['all'])",
       "actual": "(lambda A: (lambda PM, FV, LV, AS: (lambda pairs: (len(pairs), len([p for p in pairs if abs(p[0]) >= 0.1 and abs(p[1]) >= 0.1]), len([p for p in pairs if abs(p[0]) >= 0.1 and abs(p[1]) >= 0.1 and p[0] * p[1] < 0])))([((FV(s, dt)[1] / AS(s, PM(dt), FV(s, dt)[0]) - 1) * 100, (LV(s, dt) / LV(s, PM(dt)) - 1) * 100) for s in sorted(set(r['series'] for r in A)) for dt in sorted(set(r['date'] for r in A if r['series'] == s)) if PM(dt) in set(r['date'] for r in A if r['series'] == s) and AS(s, PM(dt), FV(s, dt)[0]) is not None]))(lambda dt: '%04d-%02d-01' % ((int(dt[:4]) - 1, 12) if dt[5:7] == '01' else (int(dt[:4]), int(dt[5:7]) - 1)), lambda s, dt: min([(r['vintage'], r['value']) for r in A if r['series'] == s and r['date'] == dt]), lambda s, dt: max([(r['vintage'], r['value']) for r in A if r['series'] == s and r['date'] == dt])[1], lambda s, dt, V: (lambda c: max(c)[1] if c else None)([(r['vintage'], r['value']) for r in A if r['series'] == s and r['date'] == dt and r['vintage'] <= V])))(D['all'])",
@@ -116,14 +140,14 @@
     {
       "id": "qwi-restates-history",
       "verify": "manual",
-      "text": "The Quarterly Workforce Indicators restate whole histories when they re-benchmark, and how far they move is not measured on this page (standfirst, caveat box, closer).",
+      "text": "The Quarterly Workforce Indicators restate whole histories when they re-benchmark, and how far they move is not measured on this page (closer).",
       "source": "Census LEHD QWI release documentation; the QWI series the churn page is built on (churn/data/churn.json meta.source). No archived QWI vintages are fetched anywhere in this repo, so nothing here can re-run this assertion.",
       "reviewer": "flagged as the page's open data need: archived QWI and county-employment vintages",
       "falsified_if": "A vintage-to-vintage comparison of QWI, once those vintages are fetched, shows revisions no larger than the three PPI series here. That would remove the reason the closer points this method at the employment series next, and the sentence would have to go."
     },
     {
       "id": "rev-vignette-year",
-      "text": "Against September 2020 the first prints showed industrial chemicals up 24.8 percent, and today the same comparison reads 23.1 percent (vignette source line).",
+      "text": "Against September 2020 the first prints showed industrial chemicals up 24.8 percent, and today the same comparison reads 23.1 percent (vignette lede).",
       "source": "WPU06 September 2021 against September 2020, at the 2021-10-14 vintage and at the latest",
       "assert": "(lambda A: (lambda G: 24.75 <= (G('2021-09-01', 'first') / G('2020-09-01', 'asof') - 1) * 100 < 24.85 and 23.05 <= (G('2021-09-01', 'latest') / G('2020-09-01', 'latest') - 1) * 100 < 23.15)(lambda dt, kind: (lambda v: v[0][1] if kind == 'first' else (v[-1][1] if kind == 'latest' else max([x for x in v if x[0] <= '2021-10-14'])[1]))(sorted([(r['vintage'], r['value']) for r in A if r['series'] == 'WPU06' and r['date'] == dt]))))(D['all'])",
       "actual": "(lambda A: (lambda G: ((G('2021-09-01', 'first') / G('2020-09-01', 'asof') - 1) * 100, (G('2021-09-01', 'latest') / G('2020-09-01', 'latest') - 1) * 100))(lambda dt, kind: (lambda v: v[0][1] if kind == 'first' else (v[-1][1] if kind == 'latest' else max([x for x in v if x[0] <= '2021-10-14'])[1]))(sorted([(r['vintage'], r['value']) for r in A if r['series'] == 'WPU06' and r['date'] == dt]))))(D['all'])",

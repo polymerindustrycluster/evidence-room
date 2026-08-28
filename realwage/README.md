@@ -5,7 +5,7 @@
 Source: BLS QCEW 2023 NAICS 326 metro average weekly wage; BEA Regional Price Parities
 2023 (MARPP, all items).
 
-**What a row is:** one metro — nominal average weekly wage, its all-items price level
+**What a row is:** one metro: nominal average weekly wage, its all-items price level
 (US average = 100), and the wage restated in national-average purchasing power
 (`real = nominal / rpp * 100`).
 
@@ -25,13 +25,30 @@ data/realwage.json   THE DATA (76 KB). Edit the builder, not this.
   climb has no visible track record here. The `rw-single-year` claim pins this: if
   2021/2022 pairs are ever added to the data, that claim fails on purpose and the
   disclaimer must be replaced by a persistence check.
-- RPP prices a fixed national basket. It is not a cost-of-living ranking and not a
-  quality-of-life claim.
+- The price level compares one fixed national basket across metros. It is not a
+  cost-of-living ranking and not a quality-of-life claim.
 - Cleveland and Canton withhold their 2023 NAICS 326 wage; the region appears through
   Akron alone. A withheld cell is absent, not zero.
 - The comparator's per-metro sentences are variants of one arithmetic
   (`offer × rpp_rival / rpp_akron`); claims assert the default state and the shared
   ingredients, not every variant (house pattern for interactive verdicts).
+
+## Clarifications (wording and layout; no number changed)
+
+- **2026-08-28** — apparatus discipline pass after a visual review. The pre-hero
+  county-footprint banner is gone: it was the page's first text, sat above the headline,
+  and rendered at x=0 with no container while every other block sat on the 301px rail.
+  Its content now appears where a reader meets it — one sentence in band 1, the
+  suppression clause in the slope source line, `meta.geography` in the methodology box.
+  Both figure source lines were cut to the house budget (176 and 64 words → 38 and 37,
+  zero bold); what they used to carry moved into each figure's existing table
+  disclosure. The hero lede lost its second paragraph (the definitions moved to bands 1
+  and 2) and now runs four rendered lines. Added: byline block, three-stage footer, and
+  a drawn "2023 only, one print" cue under the +14 annotation on both slope layouts, so
+  a reader who skips captions still sees the qualifier. `meta.row`, `meta.geography` and
+  `meta.not` were rewritten in `derive_realwage.py` as reader sentences (they publish
+  verbatim into figure chrome and the methodology box, where "METRO." and a lowercase
+  "one metro:" read as broken sentences and "RPP" was an unglossed token).
 
 ## Corrections
 

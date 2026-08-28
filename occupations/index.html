@@ -19,17 +19,15 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">Staffing, pay and degrees, occupation by occupation &middot;
-      BLS, O*NET and IPEDS, 2023&ndash;2024</p>
-    <h1 id="h1">In plastics and rubber manufacturing, one job in nine is a molding-machine
-      setter, and <em>half of all the nation&rsquo;s molding-machine setters</em> work in
-      this one industry.</h1>
+    <p class="eyebrow">Staffing, pay and degrees</p>
+    <h1 id="h1"><em>Half the nation&rsquo;s molding-machine setters</em> work in this one
+      industry.</h1>
     <p class="stand">Can the region staff, pay and replace the jobs that make it a polymer
-      capital? The federal record answers one occupation at a time: the industry mostly runs
-      on floor work, all four Northeast Ohio metros <b>pay the degree occupations under the
-      national rate</b> while paying the floor closer to it, and the local polymer-degree
-      count has run at less than half its earlier pace for two years (wage figures are
-      all-industry medians, not plastics-plant pay).</p>
+      capital? The federal record answers one occupation at a time: the industry runs mostly
+      on floor work, and all four Northeast Ohio metros <b>pay the degree occupations under
+      the national rate</b>.</p>
+    <p class="byline" id="byline">By <b>John Swanson</b>, analysis and graphics
+      &middot; Data BLS, O*NET and IPEDS &middot; August 2026</p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -48,12 +46,15 @@
       <label for="osel">Follow one occupation</label>
       <select id="osel" aria-describedby="overdict"></select>
     </div>
-    <p class="verdict" id="overdict"></p>
+    <p class="verdict" id="overdict"><b>All 26 occupations:</b> the industry&rsquo;s
+      fourteen largest hold 59.4% of its national employment, and every metro pays the six
+      degree occupations further under the nation than the fourteen high-school ones. Pick
+      an occupation to follow its row across the charts.</p>
     <p class="fig-title">The largest floor job alone outweighs every engineer and scientist
       in the industry combined</p>
     <p class="fig-sub">Share of national plastics-and-rubber employment, 2024. Darker bars:
       occupations where two-fifths or more of everyone doing that job, in any industry, does
-      it in this one.</p>
+      it in this one. The rule marks the summed engineer, scientist and technician share.</p>
     <div class="chart"><svg id="mix" role="img" aria-labelledby="mix-t">
       <title id="mix-t">The fourteen largest occupations in plastics and rubber
         manufacturing by share of the industry&rsquo;s national employment. The largest,
@@ -77,7 +78,8 @@
       occupations beat the same job nationally, 10 of 25 in Cleveland, 5 of 22 in
       Canton-Massillon and 1 of 21 in Youngstown-Warren. Why the discount lands on exactly
       these jobs is a question these files cannot answer.</p>
-    <p class="fig-title" id="payfigtitle"></p>
+    <p class="fig-title">The degree band sits deeper under its diamonds than the floor band
+      in every metro</p>
     <p class="fig-sub">Annual median wage, May 2024, across every industry that employs the
       occupation. Hollow diamond: the United States. Dots: the three metros with the most
       published cells. Rows are grouped by the schooling workers report (next section) and
@@ -148,16 +150,29 @@
     <p class="lede">The degree jobs the metros underpay draw their local supply from three
       schools. The federal completions record shows polymer programs conferring between 118
       and 179 degrees a year from 2014 through 2021, then 54 in 2022 and 63 in 2023. Two
-      years is still a short record, 2024 was not yet available from the API when this was
-      built, and a program recoded to a different federal program code would leave these
-      counts without leaving the region. The adjacent materials programs held their usual
-      range through the same two years.</p>
-    <p class="fig-title" id="progfigtitle"></p>
-    <p class="fig-sub" id="progfigsub"></p>
+      years is still a short record, and a program recoded to a different federal program
+      code would leave these counts without leaving the region. The adjacent materials
+      programs held their usual range through the same two years.</p>
+    <p class="fig-title">Polymer degrees fell below half their 2014&ndash;2021 pace</p>
+    <p class="fig-sub">Degrees conferred a year by the region&rsquo;s three universities,
+      polymer programs against the adjacent materials programs. The rule marks half the
+      polymer average for 2014 to 2021.</p>
+    <div class="chart narrow"><svg id="trend" role="img" aria-labelledby="trend-t">
+      <title id="trend-t">Polymer and materials degrees conferred a year in the region from
+        2014 to 2023. The polymer count held between 118 and 179 a year through 2021, then
+        fell below half that average in both 2022 and 2023, while the materials count held
+        its range.</title></svg></div>
+    <div id="trendtable"></div>
+    <p class="src" id="trendsrc"></p>
+    <p class="fig-title">The University of Akron confers two-thirds of the region&rsquo;s
+      polymer degrees</p>
+    <p class="fig-sub" id="progfigsub">Degrees conferred a year, average of 2021&ndash;2023,
+      by program and institution. Darker bars: polymer programs; lighter: adjacent materials
+      programs.</p>
     <div class="chart"><svg id="prog" role="img" aria-labelledby="prog-t">
       <title id="prog-t">Degrees conferred a year, on average over 2021 to 2023, by program
         and institution. The University of Akron confers about two-thirds of the polymer
-        count, and the polymer total fell from 124 in 2021 to 54 and then 63.</title></svg></div>
+        count.</title></svg></div>
     <div id="progtable"></div>
     <p class="src" id="progsrc"></p>
   </div>
@@ -165,12 +180,37 @@
 
 <section class="closer">
   <div class="wrap">
-    <p>The industry&rsquo;s jobs are mostly floor jobs, and Akron and Cleveland pay those
-      within a few percent of the national rate. The degree jobs are few, pay under the
-      national rate in every metro, and their local polymer-degree count has halved.</p>
-    <p class="sub" id="closersub"></p>
+    <p>The region staffs from the floor, pays the top under the nation, and now trains half
+      as many.</p>
+    <p class="sub">Akron pays its high-school occupations a median 0.97&times; the national
+      rate and its degree occupations 0.93&times;. The polymer programs behind those degree
+      jobs conferred 63 degrees in 2023, against 118 to 179 a year through 2021, and two
+      years is a short record.</p>
   </div>
 </section>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-kicker">More from the evidence room</p>
+    <div class="foot-grid">
+      <a class="foot-card" href="../wages/"><b>What the plants pay</b>
+        <span>Average weekly wages inside the polymer industries, against the region and the
+          nation.</span></a>
+      <a class="foot-card" href="../realwage/"><b>What a dollar buys</b>
+        <span>The same pay, adjusted for what each metro area costs.</span></a>
+      <a class="foot-card" href="../laborshed/"><b>Who commutes in</b>
+        <span>Where the people filling these jobs actually live.</span></a>
+    </div>
+    <p class="foot-ask">Nobody at a plastics plant was interviewed for this page. The
+      federal files say what a job pays and how many of them there are; they cannot say why a
+      chemical engineer in Akron earns $16,200 under the national median. If you hire for
+      these jobs or work in one, that part is yours. Write to
+      <b>jswanson@greaterakronchamber.org</b>, which is also where corrections go.</p>
+    <p class="foot-note" id="footlicense"></p>
+    <p class="foot-id">Polymer Industry Cluster &middot; Greater Akron Chamber &middot;
+      <a href="../index/">Evidence room</a></p>
+  </div>
+</footer>
 
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>

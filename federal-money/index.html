@@ -19,17 +19,16 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">Is the Tech Hub award big? &middot; USAspending obligations at place
-      of performance, FY2019&ndash;2026</p>
+    <p class="eyebrow">Is the Tech Hub award big?</p>
     <h1>Routine federal contracts bring the region&rsquo;s polymer industry about
       <em>$35 million a year</em>.</h1>
     <p class="stand">The EDA Tech Hub award is $51.0 million. Ordinary federal contracting
       in chemical and plastics manufacturing across the same twelve counties has run at
       $34.9 million a year since 2019, so the award is worth about <b>a year and a
-      half</b> of money the region was already getting. In fiscal 2019 the routine flow
-      alone came to $51.6 million, more than the whole award. PIC has never published the
-      two numbers side by side, and it is the comparison every funder conversation about
-      the award already assumes.</p>
+      half</b> of money the region was already getting.</p>
+    <p class="byline">By the Polymer Industry Cluster &middot; Analysis and graphics by
+      Claude (Anthropic), directed and reviewed by a person &middot; Data USAspending.gov
+      and the PIC funding map &middot; August 2026</p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -42,7 +41,8 @@
       years of money can be added together. These are obligations recorded against
       chemical (325) and plastics and rubber (326) industry codes, for work performed in
       the twelve counties. The rule near the top of the chart is the Tech Hub award, drawn
-      at the same scale.</p>
+      at the same scale. In fiscal 2019 the routine flow alone came to $51.6 million, more
+      than the whole award.</p>
     <p class="deffn"><dfn><b>Obligation</b>: money the government has legally committed to
       pay. It is a promise on the books, not cash already spent, and it is the figure
       federal spending data reports.</dfn></p>
@@ -74,8 +74,7 @@
       &ldquo;all other rubber product manufacturing,&rdquo; is the census bucket for
       rubber goods that fit none of the named classes, and it takes more of the eight
       years than any named industry does.</p>
-    <p class="fig-title">Two rubber-product codes hold two thirds of eight years of
-      money</p>
+    <p class="fig-title">Two rubber-product codes hold 65% of eight years of money</p>
     <p class="fig-sub">Federal obligations by six-digit NAICS code, FY2019 to FY2026
       combined, in 2025 dollars. Bar labels are shortened; the table carries the full
       census names.</p>
@@ -85,7 +84,13 @@
         total.</title></svg></div>
     <div id="natable"></div>
     <p class="src" id="nasrc"></p>
-    <div class="note" id="caveat"></div>
+    <p class="beat">The chart has two blind spots worth naming. University and research
+      awards file under education and research industry codes, so the NSF NEO-SMART Engine,
+      $15.0 million, and TARDISS are real federal money in these counties that appears in
+      no bar above. And the same query run across all industries rather than polymer codes
+      returns $235.5 billion for the same twelve counties over the same years, nearly all
+      of it aerospace, defense and health contracting with no polymer content. The two
+      scopes sit in one data file and are never added together.</p>
   </div>
 </section>
 
@@ -93,11 +98,15 @@
   <div class="wrap">
     <p class="takeaway">The other instrument</p>
     <h2>The award money has names on it</h2>
-    <p class="lede">The background rate is procurement, and the category view used above
-      carries no buyer and no seller, so this page cannot say which firms hold the
-      $50.8 million peak in fiscal 2021. The award reads down to the project. It went to
-      seven leads, each with a named piece of work, and those seven amounts are what the
-      award line on the first chart is made of.</p>
+    <p class="lede">The background rate is procurement, and the category view above carries
+      no buyer and no seller, so this page cannot say which firms hold the $51.6 million
+      recorded in fiscal 2019. The award reads down to the project. It went to seven leads,
+      each with a named piece of work: $11.1 million to BioVerde for bio-based butadiene at
+      the top, and $2.7 million at the bottom to stand up a regional office of innovation
+      at the Greater Akron Chamber.</p>
+    <p class="fig-title">Seven named awards make up the $51.0M line</p>
+    <p class="fig-sub">EDA Tech Hub implementation awards by project lead, in the dollars
+      each was awarded. The rule under each amount is its share of the largest.</p>
     <div class="leads" id="leads"></div>
     <p class="src" id="leadsrc"></p>
   </div>
@@ -106,9 +115,33 @@
 <section class="closer">
   <div class="wrap">
     <p>A number is big or small only against something.</p>
-    <p class="sub" id="closersub"></p>
+    <p class="sub">Routine federal polymer contracting in these twelve counties runs about
+      <b>$34.9 million a year</b> in 2025 dollars. The Tech Hub award, $51.0 million, is
+      about 1.5 years of it, and in fiscal 2019 the routine flow was larger than the whole
+      award on its own. A competitive grant and a procurement obligation are different
+      instruments, so this is a comparison of order of magnitude rather than of like for
+      like.</p>
   </div>
 </section>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-k">Read next</p>
+    <ul class="foot-links">
+      <li><a href="../funding-map/">Where the award goes</a>
+        <span>The same $51.0 million, traced from award to project.</span></li>
+      <li><a href="../location-quotient/">How concentrated it is</a>
+        <span>What the region has more of than the country does.</span></li>
+      <li><a href="../index/">The Evidence Room</a>
+        <span>Every page, each with its own sources and its own tests.</span></li>
+    </ul>
+    <p class="foot-cta">Think a number here is wrong? Name the sentence and what it fails
+      against: <b>jswanson@greaterakronchamber.org</b>.</p>
+    <p class="foot-id">Polymer Industry Cluster &middot; Greater Akron Chamber. Every
+      figure is rebuilt from free public data by the scripts in
+      <a href="https://github.com/polymerindustrycluster/evidence-room">the repository</a>.</p>
+  </div>
+</footer>
 
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>

@@ -71,6 +71,16 @@ const Cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const tq = s => String(s).replace(/'/g, "\u2019");   // presentation only: data strings keep straight quotes in the file
 const MOBILE = matchMedia("(max-width: 760px)");
 
+/* CAVEAT INK GOES IN THE TABLE, NOT UNDER THE CHART.
+   The budget is 45 visible words per figure: one source line and one limitation sentence.
+   Everything else a reader needs only while reading the numbers themselves \u2014 the code
+   lists, the never-sum rule, the per-metro disclosure counts \u2014 belongs inside the
+   disclosure that holds those numbers, at footnote scale and one weight. This appends it
+   to the table twin the shared builder returns, so there is still exactly one place per
+   figure where the apparatus lives. */
+const withNote = (html, note) =>
+  html.replace("</details>", `<p class="tnote">${note}</p></details>`);
+
 /* --------------------------------------------------- the three schooling groups */
 const ET = D.education_totals;
 const DEG = new Set(ET.ba_plus_majority), HS = new Set(ET.hs_majority);
@@ -98,18 +108,31 @@ const polyByYear = Object.fromEntries(progYears.map(y =>
 const progRows = [...D.programs].sort((a, b) =>
   (a.group === b.group ? b.window_avg - a.window_avg : a.group === "polymer" ? -1 : 1));
 const nPoly = progRows.filter(p => p.group === "polymer").length;
-const earlyPoly = progYears.filter(y => +y <= 2021).map(y => polyByYear[y]);
-const eLo = Math.min(...earlyPoly), eHi = Math.max(...earlyPoly);
 const PT = D.program_totals, WIN = PT.window;
 
 /* ------------------------------------------------------------ hero figures */
 const setters = D.mix.find(m => m.soc === "51-4072");
+/* Card 1 carries the headline's other half. The hero used to open with a two-clause
+   sentence that towered to six lines of display type; the "one job in nine" clause reads
+   better as the number it is than as the back half of a headline. */
 figures([
-  ["key", pct(setters.pct_of_industry), "of the industry’s jobs", "are molding-machine setters, nationally, 2024"],
+  ["key", pct(setters.pct_of_industry), "of the industry’s jobs", `are molding-machine setters: one job in ${WORDS[Math.round(100 / setters.pct_of_industry)]}, 2024`],
   ["", pct(setters.pct_of_occupation, 0), "of the nation’s setters", "work in plastics and rubber manufacturing"],
   ["", N(D.mix_totals.industry_emp_2024_k * 1000), "jobs in the industry", "nationally, 2024"],
-  ["", pct(D.mix_totals.eng_sci_share_pct), "engineers and scientists", "with technicians: the distinctive share, and a small one"],
+  ["", pct(D.mix_totals.eng_sci_share_pct), "engineers, scientists, technicians", "the jobs the region claims distinction in, and a small share of the work"],
 ]);
+
+/* The byline's month is read from the data vintage rather than typed, so it cannot drift
+   from the figures it dates. The static copy in index.html is the no-script fallback and
+   says the same thing; claim occ-byline holds them to it. */
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
+                "September", "October", "November", "December"];
+{
+  const [fy, fm] = M.fetched.split("-");
+  document.getElementById("byline").innerHTML =
+    `By <b>John Swanson</b>, analysis and graphics &middot; Data BLS, O*NET and IPEDS
+     &middot; ${MONTHS[+fm - 1]} ${fy}`;
+}
 
 /* ------------------------------------------------- occupation selector + verdict */
 let SEL = null;                                  // selected SOC, or null = all
@@ -143,8 +166,10 @@ function verdict() {
     ? "; most surveyed workers report a bachelor’s degree or more"
     : g === "hs" ? "; most surveyed workers report high school or less"
     : "; schooling reports split between high school and college";
+  /* Reader words, not the agency's initials: the acronym belongs in the methodology box
+     and the table note, where a reader who wants to re-run this can find it. */
   const openClause = p.projection
-    ? `; ODJFS projects ${N(p.projection.openings_annual)} openings a year in northeast Ohio through 2032`
+    ? `; the state projects ${N(p.projection.openings_annual)} openings a year in northeast Ohio through 2032`
     : "";
   v.innerHTML = `<b>${SHORT[SEL] || p.occupation}:</b> ${shareClause}; ${payClause}${eduClause}${openClause}.`;
 }
@@ -202,16 +227,29 @@ function drawMixDesktop() {
        in the industry by 2034`,
       `${r.bls_title}: ${pct(r.pct_of_industry)} of the industry; ${pct(r.pct_of_occupation)} of the occupation`);
   });
+  /* THE TITLE'S BENCHMARK, DRAWN. The claim is that one floor occupation outweighs every
+     engineer and scientist combined, and the engineer/scientist sum is not a row on this
+     chart — most of those occupations are too small to be in the top fourteen. So it is a
+     reference line on the same share scale, labelled by meaning, and the reader can see
+     the top bar clear it. */
+  const ES = D.mix_totals.eng_sci_share_pct;
+  el("line", {x1: xs(ES), y1: m.t - 2, x2: xs(ES), y2: m.t + rows.length * 30,
+    stroke: INK, "stroke-width": 1.5, opacity: .4}, svg);
+  txt(svg, `all engineers, scientists and technicians together: ${pct(ES)}`,
+    {x: xs(ES) + 8, y: m.t - 10, class: "pv-labq"});
 }
 
 function drawMixMobile() {
   const rows = D.mix;
-  const m = {t: 46, r: 12, b: 44, l: 12}, W = 375, rowH = 42;
+  const m = {t: 68, r: 12, b: 44, l: 12}, W = 375, rowH = 42;
   const H = m.t + rows.length * rowH + m.b;
   const {svg} = chart("mix", {W, H});
   const w = W - m.l - m.r;
   const maxV = Math.max(...rows.map(r => r.pct_of_industry)) * 1.18;
   const xs = v => m.l + (v / maxV) * w;
+  const ES = D.mix_totals.eng_sci_share_pct;
+  txt(svg, `rule: all engineers, scientists and technicians, ${pct(ES)}`,
+    {x: m.l, y: m.t - 32, class: "pv-labq"});
   txt(svg, "% of the occupation in this industry →", {x: W - m.r, y: m.t - 10,
     "text-anchor": "end", class: "pv-labq"});
   rows.forEach((r, i) => {
@@ -229,40 +267,47 @@ function drawMixMobile() {
        &middot; <span class="v">${pct(r.pct_of_occupation)}</span> of the occupation`,
       `${r.bls_title}: ${pct(r.pct_of_industry)} of the industry`);
   });
+  el("line", {x1: xs(ES), y1: m.t - 4, x2: xs(ES), y2: m.t + rows.length * rowH,
+    stroke: INK, "stroke-width": 1.5, opacity: .4}, svg);
   const ax = el("g", {}, svg);
   ticks(0, maxV, 4).forEach(v => txt(ax, v + "%", {x: xs(v), y: H - m.b + 18,
     class: "pv-tick", "text-anchor": "middle"}));
-  txt(svg, "share of industry employment, US 2024", {x: m.l, y: H - 8, class: "pv-labq"});
+  /* Same case as the desktop axis caption. A label that is small caps on one breakpoint
+     and sentence case on the other is the same label rendered two ways, which reads as a
+     build difference rather than a design. */
+  txt(svg, "share of the industry, US 2024", {x: m.l, y: H - 8, class: "pv-axlab"});
 }
 
 {
   const rows = D.mix;
   document.getElementById("mixtitle").textContent =
     `${rows.length === 14 ? "Fourteen" : rows.length} occupations are ${Math.round(D.mix_totals.top_n_share_pct)}% of the industry, and most of them are on the floor`;
-  document.getElementById("mixtable").innerHTML = tableView("mix",
+  document.getElementById("mixtable").innerHTML = withNote(tableView("mix",
     "The industry’s largest occupations, US, 2024",
     ["Occupation", "Share of the industry", "Share of the occupation in this industry",
      "Jobs in the industry, 2024", "Projected change to 2034"],
     rows.map(r => [r.bls_title, pct(r.pct_of_industry), pct(r.pct_of_occupation),
-      N(r.emp_2024_k * 1000), (r.change_pct_2024_34 >= 0 ? "+" : "") + r.change_pct_2024_34 + "%"]));
+      N(r.emp_2024_k * 1000), (r.change_pct_2024_34 >= 0 ? "+" : "") + r.change_pct_2024_34 + "%"])),
+    `One row is one detailed occupation employed in the industry, from the Employment
+     Projections matrix for industry 326000 on a 2024 base. The ${rows.length} shown are
+     ${D.mix_totals.top_n_share_pct}% of the industry’s
+     ${N(D.mix_totals.industry_emp_2024_k * 1000)} jobs; production occupations of every
+     kind are ${D.mix_totals.production_share_pct}%; engineers, scientists and technicians
+     together are ${pct(D.mix_totals.eng_sci_share_pct)}. The 2034 column is a projection,
+     a modelled path with no confidence band.`);
   document.getElementById("mixsrc").innerHTML =
-    `Bureau of Labor Statistics Employment Projections, National Employment Matrix, industry
-     326000 &rarr; occupation, 2024 base. One row is one detailed occupation employed in the
-     industry; the staffing shares are national, not regional. The ${rows.length} shown are
-     <b>${D.mix_totals.top_n_share_pct}%</b> of the industry&rsquo;s ${N(D.mix_totals.industry_emp_2024_k * 1000)}
-     jobs; production occupations of every kind are <b>${D.mix_totals.production_share_pct}%</b>;
-     engineers, scientists and technicians together are <b>${pct(D.mix_totals.eng_sci_share_pct)}</b>.`;
+    `Bureau of Labor Statistics Employment Projections, National Employment Matrix, 2024
+     base. The staffing shares are national, not regional: this is the shape of the
+     industry across the country, not inside Ohio.`;
   const R = D.region;
   document.getElementById("mixnote").innerHTML =
     `<b>One regional number, and what kind of number it is.</b> The <dfn>twelve counties PIC
      measures against, its federal-data footprint from Ashtabula to Wayne,</dfn> reported
-     <b>${N(R.emp)}</b> plastics-and-rubber jobs in ${R.year}. Applying the national shares
-     to that total gives an estimate of about <b>${N(R.setters_estimate)}</b>
-     molding-machine setters and about <b>${N(R.eng_sci_estimate)}</b> engineers, scientists
-     and technicians in the region&rsquo;s plants, under a stated assumption: that the
-     region&rsquo;s plants staff like the national pattern, which a region with unusual
-     research intensity may not. Nothing published counts occupations inside the industry by
-     county, so this is the closest a public source gets, and it is not a measurement.`;
+     ${N(R.emp)} plastics-and-rubber jobs in ${R.year}. Applying the national shares gives
+     about ${N(R.setters_estimate)} molding-machine setters and about
+     ${N(R.eng_sci_estimate)} engineers, scientists and technicians, on the assumption that
+     the region&rsquo;s plants staff like the national pattern. Nothing published counts
+     occupations inside the industry by county, so this is an estimate, not a measurement.`;
 }
 
 /* ------------------------------------------------------------ 2. what it pays */
@@ -286,9 +331,12 @@ function drawPay() { MOBILE.matches ? drawPayDesktopish(false) : drawPayDesktopi
 
 function drawPayDesktopish(desktop) {
   const W = desktop ? 1100 : 375;
-  const m = desktop ? {t: 18, r: 70, b: 62, l: 290} : {t: 12, r: 12, b: 62, l: 12};
+  const m = desktop ? {t: 18, r: 70, b: 62, l: 290} : {t: 12, r: 12, b: 86, l: 12};
   const rowH = desktop ? 24 : 36;
-  const headH = desktop ? 44 : 50, gap = desktop ? 16 : 14;
+  /* On the phone the scale used to appear once, after twenty-six rows of scrolling, so
+     the first paint was a field of unscaled dots. Each group now closes with its own
+     dollar ticks, which is what the extra mobile gap buys (chart-craft § mobile). */
+  const headH = desktop ? 44 : 50, gap = desktop ? 16 : 40;
   let cy = m.t;
   const geo = GROUPS.map(G => {
     const headY = cy; cy += headH;
@@ -308,7 +356,7 @@ function drawPayDesktopish(desktop) {
       xfmt: v => "$" + Math.round(v / 1000) + "k",
       xlab: "Annual median wage, May 2024 (axis begins at $25,000)"});
   }
-  geo.forEach(({G, headY, y0}) => {
+  geo.forEach(({G, headY, y0, y1}) => {
     /* The story band gets its shading; every band gets its claim written on it. */
     if (G.key === "deg") el("rect", {x: m.l, y: y0 - 2, width: w,
       height: G.rows.length * rowH + 4, fill: "rgba(12,100,115,.055)"}, svg);
@@ -366,25 +414,31 @@ function drawPayDesktopish(desktop) {
          ${p ? `<br>projected openings, NE Ohio 2022&ndash;32: <span class="v">${N(p.openings_annual)}</span> a year` : ""}`,
         `${r.occupation}: US median ${money(nat)}; ` + AREAS.map(a => `${short(a)} ${r.metros[a].absent ? "withheld" : money(r.metros[a].median)}`).join(", "));
     });
+    /* The scale, repeated under each group on the phone, so no group of dots is ever
+       read without one. */
+    if (!desktop) {
+      const ax = el("g", {}, svg);
+      el("line", {x1: m.l, y1: y1 + 8, x2: W - m.r, y2: y1 + 8,
+        stroke: "var(--pv-axis)", "stroke-width": 1}, ax);
+      /* Dropped, never clamped: a tick label nudged inward to fit is a number printed at
+         the wrong place on its own scale. */
+      ticks(lo, hi, 5).filter(v => v > lo && xs(v) <= W - m.r - 18).forEach(v => txt(ax,
+        "$" + Math.round(v / 1000) + "k", {x: xs(v), y: y1 + 26, class: "pv-tick",
+        "text-anchor": "middle"}));
+    }
   });
   if (!desktop) {
-    const ax = el("g", {}, svg);
-    ticks(lo, hi, 4).filter(v => v >= lo).forEach(v => txt(ax,
-      "$" + Math.round(v / 1000) + "k", {x: Math.min(xs(v), W - 16), y: H - m.b + 18,
-      class: "pv-tick", "text-anchor": "middle"}));
-    txt(svg, "annual median wage, May 2024", {x: m.l, y: H - 22, class: "pv-labq"});
-    txt(svg, "axis begins at $25,000", {x: m.l, y: H - 6, class: "pv-labq"});
+    txt(svg, "annual median wage, May 2024", {x: m.l, y: H - 22, class: "pv-axlab"});
+    txt(svg, "axis begins at $25,000", {x: m.l, y: H - 6, class: "pv-axlab"});
   }
 }
 
 {
   const T = D.pay_totals;
-  document.getElementById("payfigtitle").textContent =
-    "The degree band sits deeper under its diamonds than the floor band in every metro";
   document.getElementById("paylegend").innerHTML =
     `<span><i style="background:#fff;box-shadow:inset 0 0 0 2px ${INK};transform:rotate(45deg);width:11px;height:11px"></i> United States</span>` +
     ON_CHART.map(a => `<span><i style="background:${COLOR[a]};border-radius:50%"></i> ${M.metros[a].short}</span>`).join("");
-  document.getElementById("paytable").innerHTML = tableView("pay",
+  document.getElementById("paytable").innerHTML = withNote(tableView("pay",
     "Annual median wage by occupation and metro against the nation, May 2024",
     ["Occupation", "Schooling band", "United States", ...AREAS.map(a => short(a)),
      "Highest metro RSE", "Projected openings a year, NE Ohio 2022–32"],
@@ -393,19 +447,19 @@ function drawPayDesktopish(desktop) {
       money(r.national && r.national.median),
       ...AREAS.map(a => r.metros[a].absent ? "withheld" : `${money(r.metros[a].median)} (${x(r.metros[a].median_vs_us)})`),
       pct(Math.max(...AREAS.filter(a => !r.metros[a].absent).map(a => r.metros[a].mean_rse), 0)),
-      r.projection ? N(r.projection.openings_annual) : "—"]));
+      r.projection ? N(r.projection.openings_annual) : "—"])),
+    `The metro columns neither nest inside nor tile the twelve PIC counties, so they sit
+     side by side and are never summed. Youngstown-Warren publishes ${T.disclosed["49660"]}
+     of the ${T.occupations} occupations, the fewest; ${T.high_rse_cells} metro cells exceed
+     ${T.high_rse_threshold_pct}% relative standard error of the mean wage. Projected
+     openings are Ohio Department of Job and Family Services 2022&ndash;2032 modelled paths
+     with no confidence band, for the eighteen-county JobsOhio Northeast region, a superset
+     of the footprint. What a dollar buys in each metro is the
+     <a href="../realwage/">real-wage page</a>&rsquo;s question.`);
   document.getElementById("paysrc").innerHTML =
     `Bureau of Labor Statistics Occupational Employment and Wage Statistics, May 2024,
-     metropolitan and national files. The axis begins at $25,000 and every value here is
-     above it. The metros neither nest inside nor tile the twelve PIC counties, so they sit
-     side by side and are <b>never summed</b>. <b>Cells the bureau withheld are absent, not
-     zero</b>: tire builders, the industry&rsquo;s ninth-largest occupation, are published
-     for none of the four metros. Youngstown-Warren publishes ${T.disclosed["49660"]} of the
-     ${T.occupations} occupations, the fewest, and is in the table; ${T.high_rse_cells}
-     metro cells exceed ${T.high_rse_threshold_pct}% relative standard error of the mean
-     wage. Projected openings are ODJFS 2022&ndash;2032 modelled paths with no confidence
-     band, for the eighteen-county JobsOhio Northeast region. What a dollar buys in each
-     metro is the <a href="../realwage/">real-wage page</a>&rsquo;s question.`;
+     metropolitan and national files. Cells the bureau withheld are shown as withheld and
+     never as zero: tire builders are published for none of the four metros.`;
 }
 
 /* -------------------------------------------------------- 3. what schooling */
@@ -479,7 +533,7 @@ function drawEduMobile() {
   const ax = el("g", {}, svg);
   [0, 50, 100].forEach(v => txt(ax, v + "%", {x: Math.min(xs(v), W - 16), y: H - m.b + 18,
     class: "pv-tick", "text-anchor": "middle"}));
-  txt(svg, "share reporting each level as required", {x: m.l, y: H - 8, class: "pv-labq"});
+  txt(svg, "reported required education", {x: m.l, y: H - 8, class: "pv-axlab"});
 }
 
 {
@@ -487,24 +541,103 @@ function drawEduMobile() {
     BINS.map(([, l, c]) => `<span><i style="background:${c}"></i> ${l}</span>`).join("");
   document.getElementById("edutitle").textContent =
     `${Cap(WORDS[ET.ba_plus_majority.length] || String(ET.ba_plus_majority.length))} of these occupations are degree jobs; ${WORDS[ET.hs_majority.length] || ET.hs_majority.length} are high-school jobs; the rest sit between`;
-  document.getElementById("edutable").innerHTML = tableView("edu",
+  document.getElementById("edutable").innerHTML = withNote(tableView("edu",
     "Reported required level of education, by occupation",
     ["Occupation", "Job Zone", ...BINS.map(b => b[1]), "Most-reported level"],
     eduRows.map(r => [r.onet_title, r.job_zone <= 2 ? "1–2" : r.job_zone,
-      ...BINS.map(([k]) => pct(r.bins[k])), tq(r.modal.label.split(" - ")[0])]));
+      ...BINS.map(([k]) => pct(r.bins[k])), tq(r.modal.label.split(" - ")[0])])),
+    `The Job Zone is the database&rsquo;s rating of overall preparation, with the two lowest
+     steps reported as one band. Where one federal occupation code holds several database
+     occupations, the row is the equal-weight mean of them, and the chart&rsquo;s hover
+     names which. ${ET.ba_plus_majority.length} of the ${ET.n} occupations have a
+     bachelor&rsquo;s-or-higher majority; ${ET.hs_majority.length} have a
+     high-school-or-less majority. The licence for this database is in the page footer.`);
   document.getElementById("edusrc").innerHTML =
-    `${D.onet_attribution} One row is one occupation&rsquo;s distribution of reported
-     required education, twelve federal levels binned to four; the Job Zone is the
-     database&rsquo;s rating of overall preparation, with the two lowest steps reported as
-     one band. Where one federal occupation code holds several database occupations, the
-     row is the equal-weight mean of them and the chart&rsquo;s hover names which.
-     <b>${ET.ba_plus_majority.length}</b> of the ${ET.n} occupations have a
-     bachelor&rsquo;s-or-higher majority; <b>${ET.hs_majority.length}</b> have a
-     high-school-or-less majority. Neither figure is a hiring requirement, and none of it
-     is regional.`;
+    `O*NET 30.3, United States Department of Labor. One row is one occupation&rsquo;s
+     distribution of reported required education, twelve federal levels binned to four.
+     Neither that distribution nor the Job Zone is a hiring requirement, and none of it is
+     regional.`;
 }
 
-/* ------------------------------------------------- 4. where degrees are conferred */
+/* ------------------------------------------------- 4. where degrees are conferred
+ *
+ * TWO FIGURES, BECAUSE THE BAND MAKES TWO CLAIMS. The section headline says the count has
+ * fallen by more than half AND that three universities confer it. Until this pass only the
+ * second was drawn: the decline lived in a bracket annotation beside a cross-section of
+ * programs, which is a form/claim mismatch — a reader cannot see a time trend in a chart
+ * with no time axis. The fall now gets the chart it needs, annual and annotated, and the
+ * program bars go back to answering only the question they can answer.
+ */
+const matByYear = Object.fromEntries(progYears.map(y =>
+  [y, D.programs.filter(p => p.group === "materials")
+       .reduce((s, p) => s + (p.by_year[y] || 0), 0)]));
+const EARLY = progYears.filter(y => +y <= 2021);
+const LATE = progYears.filter(y => +y > 2021);
+/* Computed, never typed: the reference rule is half the mean of the early window, and the
+   claim is that BOTH later years sit under it. */
+const earlyMean = EARLY.reduce((s, y) => s + polyByYear[y], 0) / EARLY.length;
+const halfEarly = earlyMean / 2;
+
+function drawTrend() { MOBILE.matches ? drawTrendAt(375, true) : drawTrendAt(780, false); }
+
+/* Width 780 and not wider: `.chart.narrow` renders at 720 CSS px, so a bigger viewBox
+   scales the 13.6-unit labels below the 12px legibility floor (tools/textsize.mjs). */
+function drawTrendAt(W, phone) {
+  const m = phone ? {t: 74, r: 104, b: 58, l: 34} : {t: 58, r: 178, b: 58, l: 50};
+  const H = phone ? 340 : 350;
+  const {svg} = chart("trend", {W, H});
+  const w = W - m.l - m.r, h = H - m.t - m.b;
+  const maxV = Math.max(...progYears.map(y => polyByYear[y])) * 1.14;
+  const ys = v => m.t + h - (v / maxV) * h;                   // LINEAR from zero
+  const bandW = w / progYears.length;
+  const colW = Math.min(bandW * 0.38, 20);
+  frame(svg, {x: m.l, y: m.t, w, h, xs: v => v, ys,
+    xt: [], yt: ticks(0, maxV, 4), yfmt: v => v,
+    xlab: phone ? "degrees conferred a year"
+      : `Degrees conferred a year, ${progYears[0]} to ${progYears[progYears.length - 1]}`});
+  progYears.forEach((y, i) => {
+    const cx = m.l + bandW * (i + 0.5);
+    [[polyByYear[y], SEQ[5], -colW - 1], [matByYear[y], SEQ[2], 1]].forEach(([v, col, dx]) => {
+      el("rect", {x: cx + dx, y: ys(v), width: colW, height: Math.max(1, m.t + h - ys(v)),
+        fill: col}, svg);
+    });
+    if (!phone || i % 2 === 1)
+      txt(svg, phone ? "’" + y.slice(2) : y, {x: cx, y: m.t + h + 20, class: "pv-tick",
+        "text-anchor": "middle"});
+    hoverable(el("rect", {x: cx - bandW / 2, y: m.t, width: bandW, height: h,
+      fill: "transparent"}, svg),
+      `<b>${y}</b><br>polymer <span class="v">${polyByYear[y]}</span> &middot;
+       materials <span class="v">${matByYear[y]}</span>`,
+      `${y}: polymer ${polyByYear[y]}, materials ${matByYear[y]}`);
+  });
+  /* THE REFERENCE LINE THE CLAIM RESTS ON, labelled by meaning and not by value. Its
+     label lives in the right margin rather than on the rule: a level line at 70 runs
+     under the top of every column before 2022, so any in-plot caption would print on
+     solid ink. Outside the plot it is legible and it still reads as the line's own. */
+  const RULE = "#A32A78";
+  el("line", {x1: m.l, y1: ys(halfEarly), x2: m.l + w, y2: ys(halfEarly),
+    stroke: RULE, "stroke-width": 1.5}, svg);
+  const rail = m.l + w + 8;
+  /* Hand-shortened to the margin each breakpoint actually has. A label that runs past the
+     figure is a build error, not a style, so the phone takes four short lines rather than
+     three long ones. */
+  const rlab = phone
+    ? ["half the", `${EARLY[0]}–${EARLY[EARLY.length - 1]}`, "average:", `${Math.round(halfEarly)} a year`]
+    : [`half the ${EARLY[0]}–${EARLY[EARLY.length - 1]}`, "polymer average:", `${Math.round(halfEarly)} a year`];
+  rlab.forEach((s, i) => txt(svg, s, {x: rail, y: ys(halfEarly) - 8 + i * 17,
+    class: i ? "pv-labq" : "pv-lab", fill: i ? null : RULE}));
+  /* Direct labels above the plot, not a legend: two series, named in their own ink. The
+     phone stacks the year annotation onto its own row, because at 375 the two label
+     blocks cannot share one. */
+  txt(svg, "Polymer programs", {x: m.l, y: m.t - (phone ? 54 : 30), class: "pv-lab",
+    fill: SEQ[5]});
+  txt(svg, "Materials programs", {x: m.l, y: m.t - (phone ? 36 : 12), class: "pv-lab",
+    fill: SEQ[3]});
+  txt(svg, `${polyByYear[EARLY[EARLY.length - 1]]} in ${EARLY[EARLY.length - 1]}, then ${LATE.map(y => polyByYear[y]).join(" and ")}`,
+    phone ? {x: m.l, y: m.t - 12, class: "pv-labq"}
+          : {x: m.l + w, y: m.t - 12, "text-anchor": "end", class: "pv-labq"});
+}
+
 function drawProg() { MOBILE.matches ? drawProgMobile() : drawProgDesktop(); }
 
 function drawProgDesktop() {
@@ -545,12 +678,12 @@ function drawProgDesktop() {
     if (!i) a.fill = color;
     txt(svg, s, a);
   });
+  /* The brackets now name the two groups and nothing else. The decline they used to carry
+     in four lines of side text is the chart above, where a time claim belongs. */
   bracket(0, nPoly - 1, SEQ[5]);
-  lines(["All polymer programs", `together: ${polyByYear["2021"]} in 2021,`,
-         `then ${polyByYear["2022"]} and ${polyByYear["2023"]}, under half`,
-         "the 2014–2021 pace"], m.t + 22, SEQ[5]);
+  lines(["Polymer programs", `${nPoly} of ${rows.length} rows`], m.t + 22, SEQ[5]);
   bracket(nPoly, rows.length - 1, SEQ[2]);
-  lines(["Materials programs held", "their 2014–2021 range"],
+  lines(["Materials programs", `${rows.length - nPoly} rows`],
     m.t + nPoly * 30 + 22, SEQ[3]);
 }
 
@@ -567,8 +700,8 @@ function drawProgMobile() {
   const progName = s => s === "Polymer/Plastics Engineering" ? "Polymer eng."
     : s.replace("Polymer Chemistry", "Polymer chem.").replace("Materials Engineering", "Materials eng.")
        .replace("Materials Science", "Materials sci.");
-  txt(svg, `Polymer total: ${polyByYear["2021"]} in 2021, then ${polyByYear["2022"]} and ${polyByYear["2023"]}`,
-    {x: m.l, y: m.t - 12, class: "pv-lab", fill: SEQ[5]});
+  txt(svg, `Polymer programs dark, materials light`,
+    {x: m.l, y: m.t - 12, class: "pv-labq"});
   rows.forEach((r, i) => {
     const y = m.t + i * rowH;
     txt(svg, `${instShort(r.institution)} · ${progName(r.program)} · ${r.award.toLowerCase()}`,
@@ -585,49 +718,46 @@ function drawProgMobile() {
   const ax = el("g", {}, svg);
   ticks(0, maxV, 4).forEach(v => txt(ax, String(v), {x: xs(v), y: H - m.b + 18,
     class: "pv-tick", "text-anchor": "middle"}));
-  txt(svg, `degrees a year, average of ${WIN[0]}–${WIN[WIN.length - 1]}`,
-    {x: m.l, y: H - 8, class: "pv-labq"});
+  txt(svg, `degrees a year, ${WIN[0]}–${WIN[WIN.length - 1]} average`,
+    {x: m.l, y: H - 8, class: "pv-axlab"});
 }
 
 {
   document.getElementById("progtitle").textContent =
     `${WORDS[PT.institutions.length] ? Cap(WORDS[PT.institutions.length]) : PT.institutions.length} universities confer the degrees, and the polymer count has fallen by more than half`;
-  document.getElementById("progfigtitle").textContent =
-    "The University of Akron confers two-thirds of the region’s polymer degrees";
-  document.getElementById("progfigsub").textContent =
-    `Degrees conferred a year, average of ${WIN[0]}–${WIN[WIN.length - 1]}, by program and
-     institution. Darker bars: polymer programs; lighter: adjacent materials programs.`;
-  document.getElementById("progtable").innerHTML = tableView("prog",
+  document.getElementById("trendtable").innerHTML = withNote(tableView("trend",
+    `Polymer and materials degrees conferred a year, ${progYears[0]}–${progYears[progYears.length - 1]}`,
+    ["Year", "Polymer programs", "Materials programs"],
+    progYears.map(y => [y, polyByYear[y], matByYear[y]])),
+    `Polymer programs are polymer engineering 14.3201 and polymer chemistry 40.0507;
+     materials programs are 14.1801 and 40.1001. The rule on the chart is half the polymer
+     mean for ${EARLY[0]}&ndash;${EARLY[EARLY.length - 1]}, which is
+     ${halfEarly.toFixed(1)} degrees a year. A program recoded to a different federal
+     program code would leave these counts without leaving the region.`);
+  document.getElementById("trendsrc").innerHTML =
+    `Integrated Postsecondary Education Data System completions, summed across the
+     region&rsquo;s programs each year. The file ends at ${PT.latest_year}, the last year
+     available when this page was built, so the fall rests on two observed years.`;
+  document.getElementById("progtable").innerHTML = withNote(tableView("prog",
     `Polymer and materials degrees conferred, by program, ${PT.latest_year} and ${WIN[0]}–${WIN[WIN.length - 1]} average`,
     ["Institution", "Program", "Level", String(PT.latest_year), `${WIN[0]}–${WIN[WIN.length - 1]} average`],
-    progRows.map(r => [r.institution, `${r.program} (${r.cip.slice(0, 2)}.${r.cip.slice(2)})`, r.award, r.latest, r.window_avg]));
+    progRows.map(r => [r.institution, `${r.program} (${r.cip.slice(0, 2)}.${r.cip.slice(2)})`, r.award, r.latest, r.window_avg])),
+    `One row is one institution, program and award level, first major only, from the Urban
+     Institute&rsquo;s copy of the federal completions file. Programs with no completions in
+     the window are omitted, which is why the list has ${PT.institutions.length} names.`);
   document.getElementById("progsrc").innerHTML =
     `Integrated Postsecondary Education Data System completions by six-digit program code,
-     via the Urban Institute&rsquo;s Education Data API; first major only. One row is one
-     (institution, program, award level); polymer programs are polymer engineering 14.3201
-     and polymer chemistry 40.0507, materials programs 14.1801 and 40.1001. Programs with no
-     completions in the window are omitted, which is why the list has
-     ${PT.institutions.length} names. The latest year loaded is ${PT.latest_year}; the
-     following year was not available from the API when this was built. Degrees count people
-     finishing, not people hired or staying.`;
+     via the Urban Institute. Degrees count people finishing, not people hired or staying in
+     the region.`;
 }
 
-/* closer */
-{
-  document.getElementById("closersub").innerHTML =
-    `Nationally, production occupations are <b>${pct(D.mix_totals.production_share_pct)}</b> of the
-     industry and engineers, scientists and technicians <b>${pct(D.mix_totals.eng_sci_share_pct)}</b>.
-     Akron pays its high-school occupations at a median <b>${x(RB["10420"].hs_median_ratio)}</b>
-     the national rate and its degree occupations at <b>${x(RB["10420"].degree_median_ratio)}</b>;
-     Cleveland <b>${x(RB["17410"].hs_median_ratio)}</b> and <b>${x(RB["17410"].degree_median_ratio)}</b>.
-     The ${WORDS[ET.ba_plus_majority.length] || ET.ba_plus_majority.length} degree occupations draw
-     on <b>${PT.polymer_awards_latest}</b> polymer degrees conferred in ${PT.latest_year},
-     against ${eLo} to ${eHi} a year through 2021. Staffed, yes; paid, at a discount at the top;
-     replaced, from a degree count running at half its old pace.`;
-}
+/* The O*NET licence is a condition of use, not a caption. It ran inline under the
+   education chart, where it was the single largest block of apparatus ink on the page;
+   the licence belongs once per page, in the footer, which is where boilerplate lives. */
+document.getElementById("footlicense").textContent = D.onet_attribution;
 
 /* --------------------------------------------------------------------- assemble */
-function drawAll() { drawMix(); drawPay(); drawEdu(); drawProg(); }
+function drawAll() { drawMix(); drawPay(); drawEdu(); drawTrend(); drawProg(); }
 drawAll();
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);

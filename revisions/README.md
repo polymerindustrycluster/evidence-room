@@ -3,9 +3,10 @@
 **How much do published figures change after publication, and does the change matter for a
 decision?**
 
-Source: ALFRED — the archival vintages behind FRED, 2019–2026.
+Source: ALFRED, the archival vintage record behind FRED, 2019–2026.
 
-**What a row is:** one (series, reference month) with every value ever published for it
+**What a row is:** one series and one reference month, carrying every value ever published
+for it
 
 Three series, all named in the headline and all drawn:
 
@@ -20,7 +21,7 @@ index.html          page shell
 styles.css          page-local CSS: figure chrome, stat band, mobile re-layout
 app.js              charts and interaction
 data/revisions.json THE DATA (154 KB). Edit the builder, not this.
-claims.json         16 falsifiable assertions: 15 re-run on every build, 1 manual
+claims.json         19 falsifiable assertions: 17 re-run on every build, 2 manual
 shots/              desktop.png, mobile.png
 ```
 
@@ -55,6 +56,18 @@ Raw pulls live beside that script so a derivation can be re-run without re-fetch
   fetches them, so the closing ask cannot be quantified until they exist. Source: Census
   LEHD QWI, NAICS 326, the PIC-12 counties, one file per historical release (not the
   current API, which serves only the latest recomputation).
+
+## Two things this page holds by hand, not by gate
+
+- **Direction is separated by luminance, not only hue.** `DOWN` and `UP` in `app.js` are
+  #C85F0C and #0C6473, relative luminance 0.205 against 0.104. The first build paired the
+  orange with #1A8A9E at 0.209, and in grayscale the two directions were one gray. Any
+  recolour has to keep roughly a 2:1 luminance ratio, or up and down stop being readable
+  without color.
+- **The stacked histogram's up/down annotation is cut to clear the zero rule.** At 375 the
+  rule sits at x=198 and the annotation is right-anchored at 365, so the copy has 159 units
+  to live in. `collide.mjs` measures the desktop layout only and will not catch a
+  regression here; re-measure the two `txt()` calls in the `mob` branch if you reword them.
 
 ## Run and publish
 

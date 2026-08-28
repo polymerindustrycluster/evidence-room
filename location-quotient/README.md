@@ -12,7 +12,7 @@ Source: BLS QCEW open data, annual averages, 2015–2025, 14 areas (12 PIC count
 index.html      page shell and all prose
 app.js          charts, the register picker, and the copy that travels with it
 styles.css      page-local CSS: figure chrome, register key, disclosure band, mobile re-layout
-claims.json     22 guards; 21 machine-checked, 1 manual (the two headquarters facts)
+claims.json     25 guards; 24 machine-checked, 1 manual (the two headquarters facts)
 data/lq.json    THE DATA (229 KB). Edit the builder, not this.
 ```
 
@@ -41,6 +41,11 @@ That set is a subset of PIC-12 chosen for continuity across years. It is not a s
 - Paint is the industry the bureau hides most of: 5 of 12 counties are withheld in 2025, so the paint composite is built on 7 readings. **The paint composite's county set moves between years** (6 to 9 counties), which is why the page carries the fixed-base series. Lorain, 11.2x on 465 jobs in 2024, went withheld in 2025 and is most of the apparent fall from 6.40x to 5.96x.
 - Withholding drops a county from the numerator and the denominator together, and the withheld counties are the small ones, so an incomplete composite reads more plausibly as a ceiling than a floor. Only additive counts (jobs, establishments) are floors when cells go missing. Ratios are neither.
 - The PIC-12 composite is summed from counties and is ours, not the bureau's. BLS publishes no location quotient for a custom geography.
+
+## Corrections
+
+- **2026-08-28, the grid's claim-title.** Three surfaces — the "Where the paint is" lede, the heatmap's figure title, and the SVG text alternative — said "Cuyahoga paint, 11.2x, is the darkest cell in the grid." The ramp is binned at `STEPS = [0,1,2,4,7,11]`, so **six** cells render in the identical darkest colour (Geauga resin 22.7x, Portage rubber 15.1x, Geauga plastics products 12.1x, Geauga all plastics 11.3x, Cuyahoga paint 11.2x, Portage all plastics 11.1x) and four of them are higher than the one the sentence named. The claim was refutable by looking two rows up. All three surfaces now carry what the evidence supports — of the cells in the darkest shade, Cuyahoga paint has the most jobs behind it — the walk-back is printed in the page footer at reader scale, and claim `lq-grid-darkest-shade` re-runs the binning so prose and encoding cannot part company again.
+- **2026-08-28, `meta.composite_note`.** It read "so the composite is a floor," which is true of the summed job and establishment counts and false of the ratio the page plots. Rewritten to say which is which, and to carry the ceiling-not-floor reasoning that used to sit in the chart-1 caption.
 
 ## Open items for the next pass
 

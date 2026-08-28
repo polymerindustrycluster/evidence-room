@@ -23,7 +23,14 @@ const quart = (a, p) => { const s = [...a].sort((x, y) => x - y), n = s.length;
 /* ---------------------------------------------------------------- derived facts */
 const CHEM = new Set(["325", "3252", "3255"]);
 const FAM = r => CHEM.has(r.naics) ? "chem" : "prod";
-const FAMC = r => CHEM.has(r.naics) ? CAT[0] : CAT[1];
+/* The products family is a DARKENED burnt orange rather than the shared CAT[1] (#C85F0C).
+   Measured relative luminance puts CAT[0] at L* 53.3 and CAT[1] at 52.2 — near-isoluminant,
+   so on a grayscale print or to a colourblind reader the two families collapsed into one
+   gray and the legend showed two identical swatches. #8F4008 is the same hue doing the same
+   semantic job at L* 37, a 16-point separation that survives desaturation. Mirrored in
+   styles.css (.statv.prod) and the legend swatch in index.html. */
+const PROD = "#8F4008";
+const FAMC = r => CHEM.has(r.naics) ? CAT[0] : PROD;
 const SHORT = {"325": "Chemicals (group)", "3252": "Resin & synthetic rubber",
   "3255": "Paint & coatings", "326": "Plastics & rubber (group)",
   "3261": "Plastics products", "3262": "Rubber products"};
@@ -70,10 +77,12 @@ const pts = years.map(y => {
 const dip = pts.reduce((a, b) => b.med < a.med ? b : a);
 
 /* ------------------------------------------------------------------- hero stats */
+/* Exactly one accented card, and it is the headline's number: the H1 says "1.2 times", so
+   the median-premium card carries the lime rule and the row has one focal point. */
 PV.figures([
-  ["key", `${above} of ${rows.length}`, "pairings pay above local",
+  ["", `${above} of ${rows.length}`, "pairings pay above local",
    `county-industry pairings, ${D.meta.latest}`],
-  ["", medPrem.toFixed(2) + "×", "median premium", "against the county's own average"],
+  ["key", medPrem.toFixed(2) + "×", "median premium", "against the county’s own average"],
   ["", Math.round(empShare * 100) + "%", "of jobs are above the line",
    "counted once at the finest disclosed level"],
   ["", money(medWage), "median weekly wage",
@@ -82,10 +91,10 @@ PV.figures([
 
 document.getElementById("sv1").textContent = chemMed.toFixed(2) + "×";
 document.getElementById("sv1d").textContent =
-  `median premium — all ${chem.length} pairings clear their county`;
+  `median premium; all ${chem.length} pairings clear their county`;
 document.getElementById("sv2").textContent = prodMed.toFixed(2) + "×";
 document.getElementById("sv2d").textContent =
-  `median premium — ${prodAbove} of ${prod.length} above, all ${belowN} below-average cells`;
+  `median premium; ${prodAbove} of ${prod.length} above, and all ${belowN} below-average cells`;
 
 /* ------------------------------------------------------- county selector + verdict */
 let SEL = null;
@@ -94,7 +103,7 @@ function verdict() {
   const v = document.getElementById("verdict");
   if (!SEL) {
     v.innerHTML = `<b>All twelve counties:</b> ${above} of ${rows.length} pairings pay
-      above their county's average job, and every county keeps at least one
+      above their county&rsquo;s average job, and every county keeps at least one
       above-average pairing. Tap a county to re-read the chart from its seat.`;
     return;
   }
@@ -103,10 +112,10 @@ function verdict() {
   const best = rs.reduce((x, y) => y.vs_local_all > x.vs_local_all ? y : x);
   const worst = rs.reduce((x, y) => y.vs_local_all < x.vs_local_all ? y : x);
   v.innerHTML = rs.length === 1
-    ? `<b>${SEL} County:</b> its one disclosed pairing — ${best.label.toLowerCase()} —
-       pays <b>${best.vs_local_all.toFixed(2)}×</b> the county's average job
+    ? `<b>${SEL} County:</b> its one disclosed pairing, ${best.label.toLowerCase()},
+       pays <b>${best.vs_local_all.toFixed(2)}×</b> the county&rsquo;s average job
        (${money(best.weekly_wage)}/wk).`
-    : `<b>${SEL} County:</b> ${a} of ${rs.length} pairings pay above the county's
+    : `<b>${SEL} County:</b> ${a} of ${rs.length} pairings pay above the county&rsquo;s
        average job. Best: ${SHORT[best.naics].toLowerCase()} at
        <b>${best.vs_local_all.toFixed(2)}×</b> (${money(best.weekly_wage)}/wk);
        lowest: ${SHORT[worst.naics].toLowerCase()} at ${worst.vs_local_all.toFixed(2)}×.`;
@@ -144,18 +153,27 @@ function drawPremium() { MOBILE.matches ? drawPremiumMobile() : drawPremiumDeskt
 
 function drawPremiumDesktop() {
   const {svg, W, m, w} = PV.chart("prem",
-    {W: 1100, rows: rows.length, rowH: 22, m: {t: 56, r: 210, b: 56, l: 270}});
+    {W: 1100, rows: rows.length, rowH: 22, m: {t: 78, r: 210, b: 56, l: 270}});
   const lo = Math.min(0.7, ...rows.map(r => r.vs_local_all)) - 0.02;
   const hi = Math.max(...rows.map(r => r.vs_local_all)) * 1.03;
   const xs = v => m.l + ((v - lo) / (hi - lo)) * w;
   const h = rows.length * 22;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys: () => 0, xt: ticks(lo, hi, 6),
     xfmt: fx, yt: [],
-    xlab: "Weekly wage ÷ that county's all-industry average"});
+    xlab: "Weekly wage ÷ that county’s all-industry average"});
+  /* A 51-row stack has ONE axis at the bottom, which left the top rows ~1,200px from any
+     tick label — a value scale a reader cannot reach is not a scale. Repeat the tick row
+     above the plot and run a hairline down each tick so every row sits on a readable grid. */
+  const grid = el("g", {}, svg);
+  ticks(lo, hi, 6).forEach(v => {
+    el("line", {x1: xs(v), y1: m.t, x2: xs(v), y2: m.t + h, stroke: "var(--pv-grid)",
+      "stroke-width": 1}, grid);
+    txt(grid, fx(v), {x: xs(v), y: m.t - 32, class: "pv-tick", "text-anchor": "middle"});
+  });
   const one = xs(1);
   el("line", {x1: one, y1: m.t - 8, x2: one, y2: m.t + h, stroke: "var(--hover)",
     "stroke-width": 2}, svg);
-  txt(svg, "1.0× — the county's own average", {x: one + 8, y: m.t - 14,
+  txt(svg, "1.0×: the county’s own average", {x: one + 8, y: m.t - 14,
     class: "pv-lab", fill: "var(--hover)"});
   rows.forEach((r, i) => {
     const g = el("g", SEL && dim(r) ? {opacity: .16} : {}, svg);
@@ -168,7 +186,7 @@ function drawPremiumDesktop() {
     txt(g, `${r.name} · ${SHORT[r.naics]}`,
       {x: m.l - 12, y: y + 4, "text-anchor": "end", class: "pv-labq"});
     hoverable(el("rect", {x: 0, y: y - 11, width: W, height: 22, fill: "transparent"}, g),
-      `<b>${r.name} County — ${r.label}</b><br><span class="v">${money(r.weekly_wage)}</span>
+      `<b>${r.name} County · ${r.label}</b><br><span class="v">${money(r.weekly_wage)}</span>
        a week<br><span class="v">${r.vs_local_all.toFixed(2)}×</span> the county average
        ${r.vs_us ? `<br><span class="v">${r.vs_us.toFixed(2)}×</span> the same industry nationally` : ""}
        <br><span class="v">${N(r.emp)}</span> jobs in the pairing`,
@@ -212,10 +230,10 @@ function drawPremiumMobile() {
   const yFor = i => m.t + headH + i * rowH + (i >= above ? bndH : 0);
   el("line", {x1: one, y1: m.t + 8, x2: one, y2: H - m.b, stroke: "var(--hover)",
     "stroke-width": 1.5}, svg);
-  txt(svg, "1.0× — county average", {x: one + 6, y: m.t + 2, class: "pv-labq",
+  txt(svg, "1.0×: county average", {x: one + 6, y: m.t + 2, class: "pv-labq",
     fill: "var(--hover)"});
   {
-    const s = "Top 11: all chemistry — Lake tops it, " + money(top.weekly_wage) + "/wk";
+    const s = "Top 11 all chemistry: Lake tops it, " + money(top.weekly_wage) + "/wk";
     plate(svg, s, m.l, m.t + 28);
     txt(svg, s, {x: m.l, y: m.t + 28, class: "pv-labq", fill: CAT[0]});
   }
@@ -232,7 +250,7 @@ function drawPremiumMobile() {
     el("circle", {cx: xs(r.vs_local_all), cy: yl, r: rEmp(r.emp, 5.4), fill: FAMC(r),
       stroke: "var(--paper)", "stroke-width": 1}, g);
     hoverable(el("rect", {x: 0, y: y, width: W, height: rowH, fill: "transparent"}, g),
-      `<b>${r.name} — ${r.label}</b><br><span class="v">${money(r.weekly_wage)}</span> a week
+      `<b>${r.name} · ${r.label}</b><br><span class="v">${money(r.weekly_wage)}</span> a week
        · <span class="v">${r.vs_local_all.toFixed(2)}×</span> local<br>
        <span class="v">${N(r.emp)}</span> jobs`,
       `${r.name}, ${r.label}: ${r.vs_local_all.toFixed(2)} times the county average`);
@@ -241,7 +259,7 @@ function drawPremiumMobile() {
   el("line", {x1: m.l, y1: yB, x2: W - m.r, y2: yB, stroke: "var(--pv-axis)",
     "stroke-width": 1, "stroke-dasharray": "5 4"}, svg);
   {
-    const s = `↑ ${above} above · ${belowN} below — all plastics & rubber ↓`;
+    const s = `↑ ${above} above · ${belowN} below, all plastics & rubber ↓`;
     plate(svg, s, m.l, yB - 8);
     txt(svg, s, {x: m.l, y: yB - 8, class: "pv-labq"});
   }
@@ -272,22 +290,22 @@ function drawScatterDesktop() {
   const ys = v => m.t + h - ((v - ylo) / (yhi - ylo)) * h;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys, xt: ticks(xlo, xhi, 6),
     yt: ticks(ylo, yhi, 5), xfmt: fx, yfmt: fx,
-    xlab: "× the county's all-industry average → beats the town",
-    ylab: "× the same industry's U.S. average"});
+    xlab: "× the county’s all-industry average → beats the town",
+    ylab: "× the same industry’s U.S. average"});
   el("line", {x1: xs(1), y1: m.t, x2: xs(1), y2: m.t + h, stroke: "var(--hover)",
     "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
   el("line", {x1: m.l, y1: ys(1), x2: m.l + w, y2: ys(1), stroke: "var(--hover)",
     "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
-  txt(svg, "1.0× — the industry's national line", {x: m.l + 6, y: ys(1) - 8,
+  txt(svg, "1.0×: the industry’s national line", {x: m.l + 6, y: ys(1) - 8,
     class: "pv-labq", fill: "var(--hover)"});
-  txt(svg, "1.0× — the county line", {x: xs(1) - 6, y: m.t + 14,
+  txt(svg, "1.0×: the county line", {x: xs(1) - 6, y: m.t + 14,
     class: "pv-labq", fill: "var(--hover)", "text-anchor": "end"});
   rows.forEach(r => {
     const g = el("g", SEL && dim(r) ? {opacity: .14} : {}, svg);
     hoverable(el("circle", {cx: xs(r.vs_local_all), cy: ys(r.vs_us),
       r: rEmp(r.emp, 8.5), fill: FAMC(r), "fill-opacity": .78,
       stroke: "var(--paper)", "stroke-width": 1.2}, g),
-      `<b>${r.name} County — ${r.label}</b><br><span class="v">${r.vs_local_all.toFixed(2)}×</span>
+      `<b>${r.name} County · ${r.label}</b><br><span class="v">${r.vs_local_all.toFixed(2)}×</span>
        the county average · <span class="v">${r.vs_us.toFixed(2)}×</span> the industry
        nationally<br><span class="v">${money(r.weekly_wage)}</span> a week ·
        <span class="v">${N(r.emp)}</span> jobs`,
@@ -295,14 +313,14 @@ function drawScatterDesktop() {
   });
   /* Quadrant verdicts, written where the dots are (plated where dots crowd). */
   {
-    const s1 = `Beats the town, trails the industry — ${qBeatTrail} pairings`;
+    const s1 = `Beats the town, trails the industry · ${qBeatTrail} pairings`;
     plate(svg, s1, xs(1.06), ys(ylo + 0.03), 7.6);
     txt(svg, s1, {x: xs(1.06), y: ys(ylo + 0.03), class: "pv-lab"});
-    const s2 = `Trails both — ${qNeither}`;
+    const s2 = `Trails both · ${qNeither}`;
     plate(svg, s2, xs(1) - 12 - s2.length * 7.6, ys(ylo + 0.03), 7.6);
     txt(svg, s2, {x: xs(1) - 12, y: ys(ylo + 0.03), class: "pv-lab",
       "text-anchor": "end"});
-    txt(svg, `Beats both — ${qBoth} pairings`,
+    txt(svg, `Beats both · ${qBoth} pairings`,
       {x: xs(1.5), y: m.t + 16, class: "pv-lab"});
   }
   /* Two story dots, labeled in the right rail with leader lines. */
@@ -326,16 +344,32 @@ function drawScatterDesktop() {
 }
 
 function drawScatterMobile() {
-  const m = {t: 40, r: 14, b: 50, l: 36}, W = 375, H = 400;
+  /* Left margin is 44, not 36, because this axis now prints "0.6×" rather than "0.6": the
+     units travel with the tick, and the label needs the room to do it. */
+  const m = {t: 62, r: 14, b: 50, l: 44}, W = 375, H = 422;
   const {svg} = PV.chart("scat", {W, H});
   const w = W - m.l - m.r, h = H - m.t - m.b;
   const {xlo, xhi, ylo, yhi} = scDomains();
   const xs = v => m.l + ((v - xlo) / (xhi - xlo)) * w;
   const ys = v => m.t + h - ((v - ylo) / (yhi - ylo)) * h;
+  /* THE AXIS MAY NOT ROUND-LIE. This chart shipped `yfmt: v => v.toFixed(1)` over ticks at
+     0.75 / 1.00 / 1.25, so three gridlines 86px apart were labelled 0.8 / 1.0 / 1.3 — equal
+     pixel gaps asserting spans of 0.2 and 0.3, and every dot near the outer lines misread by
+     0.05. Five requested ticks land the domain on a clean 0.2 step (0.6/0.8/1.0/1.2) and the
+     page's own no-round-lie formatter prints them, exactly as the desktop chart does. */
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys, xt: ticks(xlo, xhi, 3),
-    yt: ticks(ylo, yhi, 4), xfmt: fx,
-    yfmt: v => v.toFixed(1), xlab: "× county average",
+    yt: ticks(ylo, yhi, 5), xfmt: fx,
+    yfmt: fx, xlab: "× county average",
     ylab: "× industry U.S. average"});
+  /* The family key lives on chart 1's legend, roughly 3,000px up the phone scroll. A figure
+     that has to be read where it sits carries its own. */
+  {
+    const ky = 24;
+    el("circle", {cx: m.l + 5, cy: ky - 5, r: 5, fill: CAT[0]}, svg);
+    txt(svg, "chemistry", {x: m.l + 15, y: ky, class: "pv-labq"});
+    el("circle", {cx: m.l + 105, cy: ky - 5, r: 5, fill: PROD}, svg);
+    txt(svg, "plastics & rubber", {x: m.l + 115, y: ky, class: "pv-labq"});
+  }
   el("line", {x1: xs(1), y1: m.t, x2: xs(1), y2: m.t + h, stroke: "var(--hover)",
     "stroke-width": 1.2, "stroke-dasharray": "4 3"}, svg);
   el("line", {x1: m.l, y1: ys(1), x2: m.l + w, y2: ys(1), stroke: "var(--hover)",
@@ -345,7 +379,7 @@ function drawScatterMobile() {
     hoverable(el("circle", {cx: xs(r.vs_local_all), cy: ys(r.vs_us),
       r: rEmp(r.emp, 5.5), fill: FAMC(r), "fill-opacity": .78,
       stroke: "var(--paper)", "stroke-width": 1}, g),
-      `<b>${r.name} — ${r.label}</b><br><span class="v">${r.vs_local_all.toFixed(2)}×</span>
+      `<b>${r.name} · ${r.label}</b><br><span class="v">${r.vs_local_all.toFixed(2)}×</span>
        local · <span class="v">${r.vs_us.toFixed(2)}×</span> national`,
       `${r.name}, ${r.label}`);
   });
@@ -383,7 +417,7 @@ function drawTrendVariant(W, H, mobile) {
     fill: "rgba(0,139,168,.13)"}, svg);
   el("line", {x1: m.l, y1: ys(1), x2: m.l + w, y2: ys(1), stroke: "var(--hover)",
     "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
-  txt(svg, "1.0× — no premium", {x: m.l + 4, y: ys(1) + 16, class: "pv-labq",
+  txt(svg, "1.0×: no premium", {x: m.l + 4, y: ys(1) + 16, class: "pv-labq",
     fill: "var(--hover)"});
   el("path", {d: "M" + pts.map(p => `${xs(p.year)},${ys(p.med)}`).join("L"),
     fill: "none", stroke: INK, "stroke-width": 3}, svg);
@@ -415,33 +449,37 @@ document.getElementById("premtable").innerHTML = tableView("p",
   ["County", "Industry", "Weekly wage", "× local average", "× same industry US", "Jobs"],
   rows.map(r => [r.name, r.label, money(r.weekly_wage), r.vs_local_all.toFixed(2),
     r.vs_us ? r.vs_us.toFixed(2) : "—", N(r.emp)]));
+/* CAVEAT INK. This line ran ~50 words and did methodology work in a caption: the
+   parent/child overlap reconciliation now sits in the methods box, where a reader who wants
+   it will look, and the figure keeps the one limitation that changes how the chart is read.
+   The possible-pairings denominator is COMPUTED from the disclosed industries and counties,
+   never typed. */
 document.getElementById("premsrc").innerHTML =
-  `${D.meta.source}, ${D.meta.latest}. Withheld cells are absent, not zero — ${rows.length}
-   of ${[...new Set(D.latest_rows.map(r => r.naics))].length * counties.length} possible
-   pairings are disclosed. Rows include industry groups and their disclosed
-   sub-industries; counted once at each county's finest level, ${dAbove} of ${dedup.length}
-   pay above — the same roughly three-in-four share.`;
+  `${D.meta.source}, ${D.meta.latest}; ${FP.words} Northeast Ohio counties. Withheld cells
+   are absent, not zero: ${rows.length} of
+   ${[...new Set(D.latest_rows.map(r => r.naics))].length * counties.length} possible
+   pairings are disclosed.`;
 document.getElementById("scattable").innerHTML = tableView("s",
   `Local premium and national same-industry ratio, ${D.meta.latest}`,
   ["County", "Industry", "× local average", "× same industry US", "Jobs"],
   [...rows].sort((a, b) => a.vs_us - b.vs_us).map(r => [r.name, r.label,
     r.vs_local_all.toFixed(2), r.vs_us.toFixed(2), N(r.emp)]));
 document.getElementById("scatsrc").innerHTML =
-  `${D.meta.source}, ${D.meta.latest}. National comparison: county weekly wage ÷ the
-   same industry's U.S. average weekly wage.`;
+  `${D.meta.source}, ${D.meta.latest}; ${FP.words} Northeast Ohio counties. National
+   comparison: county weekly wage ÷ the same industry&rsquo;s U.S. average weekly wage.`;
 document.getElementById("trendtable").innerHTML = tableView("t",
   "Median wage premium and middle-half range by year",
   ["Year", "Median premium", "25th pct", "75th pct", "Pairings measured"],
   pts.map(p => [p.year, p.med.toFixed(3) + "×", p.q1.toFixed(2), p.q3.toFixed(2), p.n]));
 document.getElementById("trendsrc").innerHTML =
-  `${D.meta.source}, ${years[0]}–${years.at(-1)}. Between
-   ${Math.min(...pts.map(p => p.n))} and ${Math.max(...pts.map(p => p.n))} pairings are
-   disclosed in a given year, so the set behind each median shifts slightly.`;
+  `${D.meta.source}, ${years[0]}–${years.at(-1)}; ${FP.words} Northeast Ohio counties.
+   Between ${Math.min(...pts.map(p => p.n))} and ${Math.max(...pts.map(p => p.n))} pairings
+   are disclosed in a given year, so the set behind each median shifts slightly.`;
 
 document.getElementById("closersub").innerHTML =
-  `${above} of ${rows.length} pairings beat their county's average job — a
-   <b>${medPrem.toFixed(2)}×</b> median premium that has held for a decade — and
-   <b>${usBelow} of ${rows.length}</b> still pay under their own industry's national
+  `${above} of ${rows.length} pairings beat their county&rsquo;s average job, a
+   <b>${medPrem.toFixed(2)}×</b> median premium that has held for a decade, and
+   <b>${usBelow} of ${rows.length}</b> still pay under their own industry&rsquo;s national
    average. Both halves are checkable from the same public file, and the honest
    recruiting pitch carries both.`;
 
@@ -451,9 +489,36 @@ drawAll();
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);
 
-/* Footprint banner — stated on the page, not left to the reader to infer. */
-PV.footprintBanner(FP);
+/* NO FOOTPRINT BANNER ABOVE THE HERO. It opened the page on apparatus, ate ~130px of the
+   phone's first paint, and wrote registry names at the reader ("the vault's NEO-14"), which
+   is internal shorthand nobody outside the tracker can parse. The geography a reader
+   actually needs now travels with each figure ("twelve Northeast Ohio counties", in every
+   source line), and the full county list and the reconciliation go to the methods box below,
+   in reader words.
 
-/* Standard methodology + AI disclosure. Generated, not written — see picviz.js. */
-await PV.methodology({page: "wages", meta: D.meta});
+   Standard methodology + AI disclosure. Generated, not written — see picviz.js. The
+   parent/child overlap reconciliation moves here out of chart 1's caption; every count in it
+   is computed above, never typed. */
+const meth = await PV.methodology({page: "wages", meta: D.meta,
+  definitions: `The data ship industry groups (325 chemical manufacturing, 326 plastics and
+    rubber) alongside their disclosed sub-industries, so one county can appear at both levels
+    and the ${rows.length} cells are not additive. Counted once at each county&rsquo;s finest
+    disclosed level, ${dAbove} of ${dedup.length} pairings pay above their county average,
+    the same roughly three-in-four share as the headline ${above} of ${rows.length}. The
+    employment-weighted hero share uses that deduplicated set only.`});
+
+/* Which counties, in reader words, filed under the sources it qualifies. */
+{
+  const h = [...meth.querySelectorAll("h3")]
+    .find(x => x.textContent.trim() === "Data sources");
+  if (h) {
+    const p = document.createElement("p");
+    p.className = "pv-method-note";
+    p.textContent = `Coverage: the cluster’s official ${FP.words}-county footprint ` +
+      `(${FP.counties.join(", ")}), all in Northeast Ohio. A wider fourteen-county ` +
+      `definition of the region, used by some other sources, adds Crawford, Huron, ` +
+      `Richland and Tuscarawas; the two never reconcile, and this page does not mix them.`;
+    h.parentNode.appendChild(p);
+  }
+}
 })();

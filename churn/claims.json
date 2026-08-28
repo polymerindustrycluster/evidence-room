@@ -7,7 +7,31 @@
       "source": "Census QWI seasonally adjusted, NAICS 326, PIC-12 counties summed",
       "assert": "sum(q['hires'] for q in D['quarters']) == 111529 and sum(q['seps'] for q in D['quarters']) == 111361",
       "actual": "(sum(q['hires'] for q in D['quarters']), sum(q['seps'] for q in D['quarters']))",
-      "falsified_if": "QWI re-benchmarks, which it does periodically and substantially — the most volatile series published here. UNITS: these are events, not people; one worker hired three times is three hires. Summing counties also counts a Summit-to-Stark move as one separation AND one hire, so the regional figure is inflated relative to any single-county comparison by an amount QWI cannot measure. Never write 'people'. FOOTPRINT: these are the 12 PIC-12 counties only. An earlier version published 139,180/137,727 because the derivation summed every row in qwi.json, which deliberately holds BOTH footprints — so the total was a 14-county mixture labeled PIC-12."
+      "falsified_if": "QWI re-benchmarks, which it does periodically and substantially — the most volatile series published here. UNITS: these are events, not people; one worker hired three times is three hires. Summing counties also counts a Summit-to-Stark move as one separation AND one hire, so the regional figure is inflated relative to any single-county comparison by an amount QWI cannot measure. Never write 'people'. FOOTPRINT: these are the 12 PIC-12 counties only. An earlier version published 139,180/137,727 because the derivation summed every row in qwi.json, which deliberately holds BOTH footprints — so the total was a 14-county mixture labeled PIC-12. The H1 now prints the exact 111,529 rather than a rounded 111,500, because the hero stat card beside it prints the exact figure and two numbers for one quantity read as an error."
+    },
+    {
+      "id": "churn-hero-per-quarter",
+      "text": "In an average quarter the cluster starts about a tenth of its jobs and ends about another tenth: a 10.8% mean hire rate and a 10.7% mean separation rate.",
+      "source": "derived: hires/jobs and separations/jobs, averaged over the 55 published quarters",
+      "assert": "round(sum(q['hires']/q['emp'] for q in D['quarters']) / len(D['quarters']) * 100, 1) == 10.8 and round(sum(q['seps']/q['emp'] for q in D['quarters']) / len(D['quarters']) * 100, 1) == 10.7 and 0.095 <= sum(q['hires']/q['emp'] for q in D['quarters']) / len(D['quarters']) <= 0.115 and 0.095 <= sum(q['seps']/q['emp'] for q in D['quarters']) / len(D['quarters']) <= 0.115",
+      "actual": "(sum(q['hires']/q['emp'] for q in D['quarters']) / len(D['quarters']) * 100, sum(q['seps']/q['emp'] for q in D['quarters']) / len(D['quarters']) * 100)",
+      "falsified_if": "Either mean rate leaves 9.5%-11.5%, at which point 'about a tenth' in the hero standfirst stops being a fair rounding and the sentence has to be restated. THIS CLAIM EXISTS BECAUSE THE HERO SHIPPED WRONG: it read 'starts and ends about a fifth of itself every year', which the page's own numbers contradict by 2 to 4 times — a fifth of the workforce turns over in job EVENTS every QUARTER (10.8% in plus 10.7% out), and each side alone runs about 43% across a year. It was hand-typed static HTML with no test against it, sitting 200px above a stat card reading 10.8% per quarter. UNITS: rates are job events over jobs at quarter start, per quarter, then averaged across quarters — not total events over total jobs."
+    },
+    {
+      "id": "churn-annual-flow",
+      "text": "In an average complete year about eight thousand jobs start and about eight thousand end: 8,189 hires and 8,149 separations across the thirteen full years.",
+      "source": "derived: quarterly hires and separations summed by calendar year, complete years only",
+      "assert": "len([y for y in {q['year'] for q in D['quarters']} if len([x for x in D['quarters'] if x['year'] == y]) == 4]) == 13 and round(sum(q['hires'] for q in D['quarters'] if len([x for x in D['quarters'] if x['year'] == q['year']]) == 4) / 13 / 1000) == 8 and round(sum(q['seps'] for q in D['quarters'] if len([x for x in D['quarters'] if x['year'] == q['year']]) == 4) / 13 / 1000) == 8",
+      "actual": "(sum(q['hires'] for q in D['quarters'] if len([x for x in D['quarters'] if x['year'] == q['year']]) == 4) / 13, sum(q['seps'] for q in D['quarters'] if len([x for x in D['quarters'] if x['year'] == q['year']]) == 4) / 13)",
+      "falsified_if": "Either annual mean leaves the 7,500-8,500 band, or the number of complete calendar years leaves 13. This guards the flow chart's NARROW title only: below 760px the chart aggregates quarters to years, so the wide title's 'about two thousand every quarter' would name marks a phone reader cannot see. Both titles are static HTML and only one renders at a time. PARTIAL YEAR: 2025 has three published quarters and is excluded from the mean and drawn dimmed with its own on-chart tag."
+    },
+    {
+      "id": "churn-span-and-source",
+      "text": "The byline's data line reads 'U.S. Census QWI, 2012Q1 to 2025Q3'.",
+      "source": "churn.json meta: source name and published span",
+      "assert": "D['meta']['span'] == ['2012Q1', '2025Q3'] and D['meta']['source'].startswith('U.S. Census Quarterly Workforce Indicators') and D['quarters'][0]['year'] == 2012 and D['quarters'][0]['q'] == 1 and D['quarters'][-1]['year'] == 2025 and D['quarters'][-1]['q'] == 3",
+      "actual": "(D['meta']['span'], D['meta']['source'])",
+      "falsified_if": "QWI publishes another quarter and the pipeline is re-run, or the meta span stops matching the first and last drawn quarters. The byline is static HTML, so a span that moves in the data leaves the byline stating a period the charts no longer cover. The masthead's own dateline is separate: it prints meta.fetched, which this pull does not carry."
     },
     {
       "id": "churn-net",

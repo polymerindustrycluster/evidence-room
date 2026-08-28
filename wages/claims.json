@@ -3,7 +3,7 @@
   "claims": [
     {
       "id": "wage-premium-count",
-      "text": "In 40 of the 51 county-industry pairings BLS can disclose, polymer pay beats the county's all-industry average (standfirst, hero card, default verdict sentence).",
+      "text": "In 40 of the 51 county-industry pairings BLS can disclose, polymer pay beats the county's all-industry average (standfirst, hero card, default verdict sentence, closer).",
       "source": "BLS QCEW weekly wage, county NAICS against county all-industry",
       "assert": "len([r for r in D['latest_rows'] if r.get('vs_local_all') and r['vs_local_all']>1]) == 40 and len([r for r in D['latest_rows'] if r.get('vs_local_all')]) == 51",
       "actual": "(len([r for r in D['latest_rows'] if r.get('vs_local_all') and r['vs_local_all']>1]), len([r for r in D['latest_rows'] if r.get('vs_local_all')]))",
@@ -59,7 +59,7 @@
     },
     {
       "id": "dedup-count",
-      "text": "Counted once at each county's finest disclosed level, 27 of 35 pairings pay above the county average - the same roughly three-in-four share (chart-1 source line). This is the overlap accounting: the data ship industry groups 325 and 326 alongside their sub-industries, so a county can appear at both levels.",
+      "text": "Counted once at each county's finest disclosed level, 27 of 35 pairings pay above the county average, the same roughly three-in-four share (methodology box, 'What one row is'). This is the overlap accounting: the data ship industry groups 325 and 326 alongside their sub-industries, so a county can appear at both levels. Moved out of the chart-1 source line in the 2026-08-28 fix round to hold that caption inside the 45-word caveat budget.",
       "source": "deduplication rule: keep a group row only where no child of that group is disclosed in the county",
       "assert": "(lambda R: (lambda dd: len([r for r in dd if r['vs_local_all']>1]) == 27 and len(dd) == 35)([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
       "actual": "(lambda R: (lambda dd: (len([r for r in dd if r['vs_local_all']>1]), len(dd)))([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
@@ -67,7 +67,7 @@
     },
     {
       "id": "possible-pairings",
-      "text": "51 of 72 possible pairings are disclosed (chart-1 source line): 6 tracked industries x 12 footprint counties.",
+      "text": "51 of 72 possible pairings are disclosed (chart-1 source line): 6 tracked industries x 12 footprint counties, both counted from the data rather than typed.",
       "source": "distinct NAICS in latest_rows x distinct counties",
       "assert": "len(set(r['naics'] for r in D['latest_rows'])) * len(set(r['name'] for r in D['latest_rows'])) == 72",
       "actual": "(len(set(r['naics'] for r in D['latest_rows'])), len(set(r['name'] for r in D['latest_rows'])))",
@@ -160,6 +160,47 @@
       "assert": "D['meta']['footprint']['label'] == 'PIC-12'",
       "actual": "D['meta']['footprint']",
       "falsified_if": "FOOTPRINT: this page uses PIC-12, matching the cluster-health dashboard. It does NOT reconcile with the vault-sourced pages, which use NEO-14 — the two share only 10 counties."
+    },
+    {
+      "id": "figure-geography",
+      "text": "Every figure names its geography: 'twelve Northeast Ohio counties' appears in all three chart subtitles or source lines, and the twelve are the footprint counties, all in Ohio (FIPS 39xxx). Added 2026-08-28: no figure said where on the map it was.",
+      "source": "meta.footprint.counties against the county and area codes carried on every disclosed 2025 row",
+      "assert": "len(D['meta']['footprint']['counties']) == 12 and set(r['name'] for r in D['latest_rows'] if r.get('vs_local_all')) == set(D['meta']['footprint']['counties']) and all(str(r['area']).startswith('39') for r in D['latest_rows'] if r.get('vs_local_all'))",
+      "actual": "(len(D['meta']['footprint']['counties']), sorted(set(r['name'] for r in D['latest_rows'] if r.get('vs_local_all'))), sorted(set(str(r['area'])[:2] for r in D['latest_rows'] if r.get('vs_local_all'))))",
+      "falsified_if": "The footprint stops being twelve counties, a disclosed county falls outside it, or any row carries a non-Ohio FIPS prefix, in which case 'twelve Northeast Ohio counties' is wrong on every figure."
+    },
+    {
+      "id": "footprint-excludes-four",
+      "text": "The methodology coverage note says the wider fourteen-county definition of the region adds Crawford, Huron, Richland and Tuscarawas, and that this page does not use it.",
+      "source": "meta.footprint.counties (PIC-12), rewritten out of tracker shorthand for the reader",
+      "assert": "set(D['meta']['footprint']['counties']) & {'Crawford','Huron','Richland','Tuscarawas'} == set() and len(D['meta']['footprint']['counties']) == 12",
+      "actual": "sorted(set(D['meta']['footprint']['counties']) & {'Crawford','Huron','Richland','Tuscarawas'})",
+      "falsified_if": "Any of those four counties enters this page's footprint, or the footprint stops being the twelve-county set."
+    },
+    {
+      "id": "byline-data-vintage",
+      "text": "The byline states the data as BLS QCEW annual averages, 2015-2025.",
+      "source": "meta.source and the year range actually present in the trend series",
+      "assert": "D['meta']['source'] == 'BLS QCEW annual averages' and min(r['year'] for r in D['trend'] if r.get('vs_local_all')) == 2015 and max(r['year'] for r in D['trend'] if r.get('vs_local_all')) == 2025",
+      "actual": "(D['meta']['source'], min(r['year'] for r in D['trend'] if r.get('vs_local_all')), max(r['year'] for r in D['trend'] if r.get('vs_local_all')))",
+      "falsified_if": "The source name changes or the series starts or ends in a different year, leaving the byline describing data the page no longer carries."
+    },
+    {
+      "id": "byline-date",
+      "text": "The byline is dated August 2026, the month this revision was built.",
+      "verify": "manual",
+      "source": "wages/README.md revision log: this page was rebuilt 2026-08-28",
+      "checked_by": "the person directing the build",
+      "assert": "None",
+      "falsified_if": "The page is rebuilt or republished in a later month and the byline still reads August 2026 - the date is not derivable from the data, so it has to be re-set by hand at each revision."
+    },
+    {
+      "id": "closer-both-halves",
+      "text": "Closer: the premium is real against these towns (a majority of pairings above 1.0x local) and a discount against these industries (a majority below 1.0x national).",
+      "source": "vs_local_all and vs_us on the disclosed 2025 cells",
+      "assert": "(lambda R: len([r for r in R if r['vs_local_all']>1]) > len(R)/2 and len([r for r in R if r['vs_us']<1]) > len(R)/2)([r for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us')])",
+      "actual": "(lambda R: (len(R), len([r for r in R if r['vs_local_all']>1]), len([r for r in R if r['vs_us']<1])))([r for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us')])",
+      "falsified_if": "Either majority flips: fewer than half the pairings beat their county, or fewer than half fall below their industry's national average. Either one makes the closer a one-sided claim."
     }
   ]
 }

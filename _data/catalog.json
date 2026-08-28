@@ -1,8 +1,8 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-08-19 08:27",
-  "seconds": 0.8,
+  "generated": "2026-08-28 09:50",
+  "seconds": 0.1,
   "scripts": 25,
   "outputs_on_disk": 0,
   "outputs_claimed": 20,
@@ -13,7 +13,7 @@
    "no_house_docstring": 22,
    "no_traps_section": 22,
    "output_missing_on_disk": 21,
-   "import_error": 6,
+   "import_error": 8,
    "not_in_SOURCES.json": 5,
    "no_output_detected": 4
   }
@@ -55,6 +55,7 @@
     "churn/claims.json",
     "cost-scissors/claims.json",
     "federal-money/claims.json",
+    "funding-map/claims.json",
     "laborshed/claims.json",
     "location-quotient/claims.json",
     "occupations/claims.json",
@@ -104,7 +105,7 @@
    "observed_reads": [
     "lodes.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/lodes.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/lodes.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -145,7 +146,7 @@
    "observed_reads": [
     "occmix.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/occmix.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/occmix.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -186,7 +187,7 @@
    "observed_reads": [
     "peers.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/peers.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/peers.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -235,7 +236,7 @@
    "observed_reads": [
     "peers.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/peers.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/peers.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -281,16 +282,12 @@
    "output_learned_by": {
     "bea.json": "static"
    },
-   "observed_stop": "SystemExit(FATAL: BEA line codes returned no rows: ['1', '13', '3']. A code that returns nothing is a bad code — check CAGDP2 before writing bea.json.)",
-   "observed_network": [
-    "http<path>/UserID=<redacted>&method=GetData&datasetname=Regional&TableName=CAGDP2&LineCode=1&GeoFIPS=39007,39035,39055,39085,39093,39099,39103,39133,39151,39153,39155,39169,39000,00000&Year=ALL&ResultFormat=JSON",
-    "http<path>/UserID=<redacted>&method=GetData&datasetname=Regional&TableName=CAGDP2&LineCode=3&GeoFIPS=39007,39035,39055,39085,39093,39099,39103,39133,39151,39153,39155,39169,39000,00000&Year=ALL&ResultFormat=JSON",
-    "http<path>/UserID=<redacted>&method=GetData&datasetname=Regional&TableName=CAGDP2&LineCode=13&GeoFIPS=39007,39035,39055,39085,39093,39099,39103,39133,39151,39153,39155,39169,39000,00000&Year=ALL&ResultFormat=JSON"
-   ],
+   "observed_stop": null,
+   "observed_network": [],
    "observed_reads": [
     "<outside-repo>/.env"
    ],
-   "import_error": null,
+   "import_error": "KeyError: 'BEA_API_KEY'",
    "registry_sources": [
     "bea_rpp"
    ],
@@ -300,6 +297,7 @@
    "in_pipelines_md": false,
    "freshness": [],
    "flags": [
+    "import_error",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
@@ -336,7 +334,7 @@
     "<outside-repo>/.env",
     "fred.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/fred.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/fred.json'",
    "registry_sources": [
     "fred"
    ],
@@ -393,7 +391,7 @@
     "<outside-repo>/.env",
     "qcew.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/qcew.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/qcew.json'",
    "registry_sources": [
     "qcew",
     "qwi"
@@ -1246,13 +1244,8 @@
    "output_learned_by": {
     "qwi_demand.json": "static"
    },
-   "observed_stop": "SystemExit(FATAL: industry 326 returned nothing. A missing benchmark is worse than no chart — the polymer series alone cannot answer whether its movement is specific to polymer.)",
-   "observed_network": [
-    "http<path>/sa?get=Emp,EarnBeg&for=county:007,035,055,085,093,099,103,133,151,153,155,169&in=state:39&industry=326&year=2012&quarter=1key=<redacted>",
-    "http<path>/sa?get=Emp,EarnBeg&for=county:007,035,055,085,093,099,103,133,151,153,155,169&in=state:39&industry=326&year=2012&quarter=2key=<redacted>",
-    "http<path>/sa?get=Emp,EarnBeg&for=county:007,035,055,085,093,099,103,133,151,153,155,169&in=state:39&industry=326&year=2012&quarter=3key=<redacted>",
-    "http<path>/sa?get=Emp,EarnBeg&for=county:007,035,055,085,093,099,103,133,151,153,155,169&in=state:39&industry=326&year=2012&quarter=4key=<redacted>"
-   ],
+   "observed_stop": "SystemExit(no CENSUS_API_KEY in the environment — this fetch needs the same key fetch_footprint.py uses.)",
+   "observed_network": [],
    "observed_reads": [
     "<outside-repo>/.env"
    ],
@@ -1291,29 +1284,29 @@
     "apps.bea.gov"
    ],
    "outputs": [
-    "fred.json"
+    "usaspending.json"
    ],
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "fred.json": false
+    "usaspending.json": false
    },
    "writes_outside_build": [],
    "witnesses": {
     "static": [],
     "observed": [
-     "fred.json"
+     "usaspending.json"
     ]
    },
    "output_learned_by": {
-    "fred.json": "observed"
+    "usaspending.json": "observed"
    },
-   "observed_stop": "SystemExit(FATAL: EIA series returned no rows: ['Henry Hub natural gas spot', 'Ohio industrial electricity price']. Check the route and facets before writing eia.json.)",
+   "observed_stop": "open(usaspending.json,'w')",
    "observed_network": [
-    "http<path>/observations?series_id=WPU072api_key=<redacted>&file_type=json&observation_start=2005-01-01",
-    "http<path>/observations?series_id=WPU072api_key=<redacted>&file_type=json&observation_start=2019-01-01&realtime_start=2019-01-01&realtime_end=9999-12-31",
-    "http<path>/observations?series_id=WPU06api_key=<redacted>&file_type=json&observation_start=2005-01-01",
-    "http<path>/observations?series_id=WPU06api_key=<redacted>&file_type=json&observation_start=2019-01-01&realtime_start=2019-01-01&realtime_end=9999-12-31"
+    "http<path>/naics",
+    "http<path>/county",
+    "http<path>/naics",
+    "http<path>/county"
    ],
    "observed_reads": [
     "<outside-repo>/.env"
@@ -1365,24 +1358,17 @@
     "static": [
      "rpp.json"
     ],
-    "observed": [
-     "rpp.json"
-    ]
+    "observed": []
    },
    "output_learned_by": {
-    "rpp.json": "observed"
+    "rpp.json": "static"
    },
-   "observed_stop": "open(rpp.json,'w')",
-   "observed_network": [
-    "http<path>/UserID=<redacted>&method=GetData&datasetname=Regional&TableName=MARPP&LineCode=1&GeoFIPS=MSA&Year=2019,2020,2021,2022,2023&ResultFormat=JSON",
-    "http<path>/UserID=<redacted>&method=GetData&datasetname=Regional&TableName=MARPP&LineCode=2&GeoFIPS=MSA&Year=2019,2020,2021,2022,2023&ResultFormat=JSON",
-    "http<path>/UserID=<redacted>&method=GetData&datasetname=Regional&TableName=MARPP&LineCode=3&GeoFIPS=MSA&Year=2019,2020,2021,2022,2023&ResultFormat=JSON",
-    "http<path>/UserID=<redacted>&method=GetData&datasetname=Regional&TableName=MARPP&LineCode=4&GeoFIPS=MSA&Year=2019,2020,2021,2022,2023&ResultFormat=JSON"
-   ],
+   "observed_stop": null,
+   "observed_network": [],
    "observed_reads": [
     "<outside-repo>/.env"
    ],
-   "import_error": null,
+   "import_error": "KeyError: 'BEA_API_KEY'",
    "registry_sources": [
     "bea_rpp"
    ],
@@ -1392,6 +1378,7 @@
    "in_pipelines_md": false,
    "freshness": [],
    "flags": [
+    "import_error",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",

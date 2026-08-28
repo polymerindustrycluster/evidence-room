@@ -19,15 +19,28 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">Is this workforce stable, or only flat? &middot; Census QWI, 2012&ndash;2025</p>
-    <h1>The region recorded 111,500 hires to end up with <em>168 more jobs</em>.</h1>
+    <p class="eyebrow">A stable workforce, or a flat one?</p>
+    <h1>The region recorded 111,529 hires to end up with <em>168 more jobs</em>.</h1>
+    <!-- Claim-carrying text is STATIC, and the script that used to write it has been
+         deleted rather than left to overwrite it: one copy of every sentence, checked by
+         claims.json against the data. Only genuinely computed spans (the county verdict,
+         the payroll translator) are still filled by JS. -->
     <p class="stand">Every employment chart PIC publishes shows a stock: how many jobs
-      exist. Underneath that flat line, plastics and rubber manufacturing in these twelve
-      counties starts and ends about a fifth of itself every year. These are <b>job
-      events, not people</b>: a Summit-to-Stark move counts twice. What follows is how
-      big that movement is, which way it has turned since 2012, and what it looks like on
-      a 150-person floor.</p>
-    <div class="hero-row" id="figs"></div>
+      exist. Underneath, plastics and rubber manufacturing in these twelve counties starts
+      about a tenth of itself and ends about another tenth, every quarter.
+      These are <b>job events, not people</b>: a Summit-to-Stark move counts twice.</p>
+    <p class="byline">By the Polymer Industry Cluster desk &middot; Analysis and graphics
+      J. Swanson &middot; Data U.S. Census QWI, 2012Q1 to 2025Q3 &middot; August 2026</p>
+    <div class="hero-row" id="figs">
+      <div class="figv key"><div class="n">111,529</div><div class="k">hires</div>
+        <div class="d">across 55 quarters</div></div>
+      <div class="figv"><div class="n">111,361</div><div class="k">separations</div>
+        <div class="d">over the same period</div></div>
+      <div class="figv"><div class="n">+168</div><div class="k">net jobs</div>
+        <div class="d">hires minus separations</div></div>
+      <div class="figv"><div class="n">10.8%</div><div class="k">average churn</div>
+        <div class="d">of the workforce, per quarter</div></div>
+    </div>
   </div>
 </section>
 
@@ -37,18 +50,23 @@
     <h2>Hires above the line, separations below, for 55 quarters</h2>
     <p class="lede">Both are flows: jobs starting and ending during the quarter. The line
       through the middle is the net, which is what a conventional employment chart shows
-      on its own.</p>
-    <p class="fig-title">About two thousand jobs start and about two thousand end every
-      quarter, and the net line stays on the axis</p>
+      on its own. What follows is how big the movement is, which way it has turned since
+      2012, and what it looks like on a 150-person floor.</p>
+    <!-- Two titles, one per rendering. The narrow chart aggregates quarters into years,
+         so the wide chart's per-quarter numbers would name marks a phone reader cannot
+         see. Both are static; neither is a truncation of the other. -->
+    <p class="fig-title only-wide">About two thousand jobs start and about two thousand
+      end every quarter, and the net line stays on the axis</p>
+    <p class="fig-title only-narrow">About eight thousand jobs start and about eight
+      thousand end in an average year</p>
     <p class="fig-sub" id="flowsub"></p>
-    <div class="chart"><svg id="flow" role="img" aria-labelledby="flow-t">
-      <title id="flow-t">Quarterly hires and separations in plastics and rubber
+    <div class="chart"><svg id="flow" role="img" aria-labelledby="flow-t"><title id="flow-t">Quarterly hires and separations in plastics and rubber
         manufacturing across twelve counties, drawn above and below a shared zero, with
         net change as a flat line through the middle.</title></svg></div>
     <div class="legend">
       <span><i style="background:#1A8A9E"></i> Hires</span>
       <span><i style="background:#C85F0C"></i> Separations</span>
-      <span><i class="ln" style="background:#141A1C"></i> Net change</span>
+      <span class="only-wide"><i class="ln" style="background:#141A1C"></i> Net change</span>
     </div>
     <div id="flowtable"></div>
     <p class="src" id="flowsrc"></p>
@@ -62,15 +80,18 @@
     <p class="lede">Churn rate is the average of hires and separations over the jobs that
       exist: the share of the workforce that moved in or out that quarter. The pandemic
       spike is visible, and so is the fact that the line settles above where it started.</p>
-    <p class="fig-title" id="ratetitle"></p>
+    <p class="fig-title">The four-quarter average ends at 9.6%, about 1.1 points above
+      2012</p>
     <p class="fig-sub" id="ratesub"></p>
-    <div class="chart"><svg id="rate" role="img" aria-labelledby="rate-t">
-      <title id="rate-t">Quarterly churn rate with its trailing four-quarter average,
+    <div class="chart"><svg id="rate" role="img" aria-labelledby="rate-t"><title id="rate-t">Quarterly churn rate with its trailing four-quarter average,
         against a dashed reference line at the 2012 level. The average peaks in 2022 and
         settles about a point above where it began.</title>
     </svg></div>
     <div id="ratetable"></div>
     <p class="src" id="ratesrc"></p>
+    <!-- The page's one callout box. It sits here because the 1.1-point rise is the
+         claim most exposed to revision, and the counting rule it opens with governs
+         every number on the page. -->
     <div class="note" id="revnote"></div>
   </div>
 </section>
@@ -78,14 +99,18 @@
 <section class="band tint">
   <div class="wrap">
     <p class="takeaway">Which side moved</p>
-    <h2>The extra turnover is on the way out</h2>
-    <p class="lede" id="splitlede"></p>
-    <p class="fig-title" id="splittitle"></p>
+    <h2>The extra turnover is people leaving</h2>
+    <p class="lede">The rate above is the average of two flows, and only one of them
+      moved. Between 2012 and the last four published quarters the separation rate rose
+      about <b>1.9 points</b> while the hire rate rose about 0.2. In 2012 hiring ran 0.9
+      points ahead of leaving; on a four-quarter average leaving has run ahead in every
+      quarter since 2023Q1.</p>
+    <p class="fig-title">Hiring ran ahead through the 2010s; since 2023Q1 leaving has, for
+      11 quarters straight</p>
     <p class="fig-sub">Separation rate minus hire rate, trailing four-quarter average, in
       percentage points of employment. Below the line, hiring runs ahead; above it,
       leaving does. 2012Q4&ndash;2025Q3.</p>
-    <div class="chart"><svg id="split" role="img" aria-labelledby="split-t">
-      <title id="split-t">The gap between the separation rate and the hire rate, drawn
+    <div class="chart"><svg id="split" role="img" aria-labelledby="split-t"><title id="split-t">The gap between the separation rate and the hire rate, drawn
         as a line around zero. It sits below zero for most of the 2010s, swings hard
         negative during the 2021 to 2022 rehiring wave, and stays above zero from 2023
         onward.</title></svg></div>
@@ -105,28 +130,32 @@
     <p class="lede">A high rate on a small base is a different problem from a high rate
       on a large one, so this reads on two axes at once: the rate a county runs, and the
       number of jobs it runs it on. Twelve counties are twelve readings of the same
-      measure by the same method, and they are the only cross-sectional comparison this
-      pull supports.</p>
-    <p class="fig-title" id="countytitle"></p>
+      measure by the same method, and they are the only cross-sectional comparison on
+      this page.</p>
+    <p class="fig-title">Trumbull runs the highest rate on the smallest base: 13.5% of 402
+      jobs</p>
     <p class="fig-sub">Average quarterly churn rate against average employment, last four
       published quarters (2024Q4&ndash;2025Q3). One dot per county; both axes start at zero,
-      so a rate twice as high sits twice as high.</p>
+      so a rate twice as high sits twice as high.<span class="only-narrow"> Three counties
+      are labeled here; select any other to add its label.</span></p>
     <div class="csel" id="csel" role="group" aria-label="Highlight one county"></div>
     <p class="verdict" id="verdict"></p>
-    <div class="chart"><svg id="county" role="img" aria-labelledby="county-t">
-      <title id="county-t">Churn rate against employment for twelve counties. Trumbull
+    <div class="chart"><svg id="county" role="img" aria-labelledby="county-t"><title id="county-t">Churn rate against employment for twelve counties. Trumbull
         sits highest on the smallest base; Summit sits low on the largest.</title></svg></div>
     <div id="countytable"></div>
     <p class="src" id="countysrc"></p>
-    <div class="note" id="caveat"></div>
   </div>
 </section>
 
 <section class="band tint">
   <div class="wrap">
     <p class="takeaway">On a shop floor</p>
-    <h2 id="floortitle"></h2>
-    <p class="lede" id="floorlede"></p>
+    <h2>What 10.8% a quarter looks like at a 150-person plant</h2>
+    <p class="lede">Averaged over fourteen years, the cluster moves 10.8% of its jobs in a
+      quarter. At a 150-person molder that is about <b>16 people starting and 16
+      leaving</b> every quarter, roughly five of each in a month, and about 65 replacement
+      hires to make in a year. The plant is illustrative: it applies a cluster average to
+      a single site, and no single plant runs at the average.</p>
     <div class="calc">
       <div class="row">
         <label for="hc">People on your payroll</label>
@@ -142,9 +171,23 @@
 <section class="closer">
   <div class="wrap">
     <p>Flat is what fast looks like from a distance.</p>
-    <p class="sub" id="closersub"></p>
+    <p class="sub">Between 2012Q1 and 2025Q3 the cluster gained 168 net jobs across
+      222,890 hire and separation events, a flow about <b>1,327 times larger</b> than the
+      number it is scored on. Net employment is a legitimate outcome measure, and funders
+      are entitled to score it. The point is that a program changing how people move
+      through this industry can do real work without moving that number, and that since
+      2023Q1 the movement has run toward the door.</p>
   </div>
 </section>
+
+<footer class="page-foot">
+  <div class="wrap">
+    <p class="foot-id"><b>Polymer Industry Cluster</b> &middot; Greater Akron Chamber
+      &middot; Evidence Room</p>
+    <p class="foot-links"><a href="../">All evidence-room pages</a> &middot; Corrections
+      and questions: jswanson@greaterakronchamber.org</p>
+  </div>
+</footer>
 
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>

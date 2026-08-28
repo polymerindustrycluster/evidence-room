@@ -21,7 +21,7 @@ function loadData(file) {
    Structure
      1  data + scales
      2  layout        lane bands, collision packing, label placement
-     3  render        svg (wide) / cards (narrow); 3a cadence, 3b prologue
+     3  render        svg (wide) / small multiples (narrow); 3a cadence, 3b prologue
      4  table + csv
      5  interaction   filters, hover, panel
    ========================================================================= */
@@ -40,8 +40,15 @@ function loadData(file) {
   const NOW_LBL = '13 Aug 2026';
   const DESIG_ISO = '2023-10-23';
 
+  /* Page-local categorical palette, declared with a legend (five lanes is past the
+     three-hue story limit). Rebuilt 2026-08-28: Designations and Startups used to be two
+     teals 0.9 L* apart, which is one color at dot and chip size, and the Designations
+     teal was the same hex as the cadence chart's "since designation" story bar. This set
+     drops teal from four of the five lanes, spreads them over 24.7-48.5 L* (min pairwise
+     gap 5.4) and keeps every one at or above 4.5:1 on white, because these hues are read
+     as text in the lane names, the chips and the table. */
   const LANE_COLOR = {
-    desig: '#12798B', rd: '#8E3B62', work: '#9A6A08', startup: '#1A8A9E', infra: '#5E7A10',
+    desig: '#06414B', rd: '#78304F', work: '#9A6A08', startup: '#B0421A', infra: '#435F0B',
   };
   // Horizon is a FILTER facet only (the chips below the H2). It no longer sizes the
   // dots: three barely distinguishable radii read as importance, which the data never
@@ -56,7 +63,8 @@ function loadData(file) {
 
   let DATA = null, IN = [], PRE = [];
   let HER = null;                       // heritage.json — the prologue's data
-  const HCOL = { heritage: '#585955', discoveries: '#8E3B62' };
+  // 12.3 L* apart, so the two heritage rows separate in grayscale as well as by row.
+  const HCOL = { heritage: '#3B3C38', discoveries: '#8E3B62' };
   const offLane = new Set(), offHz = new Set();
   let mode = null, lastW = 0, tip = null;
   let tableExpanded = false;
@@ -143,7 +151,7 @@ function loadData(file) {
     if (want === mode && Math.abs(w - lastW) < 2) return;
     mode = want; lastW = w;
     viz.textContent = '';
-    (want === 'cards' ? renderCards : renderDiagram)(w);
+    (want === 'cards' ? renderPanels : renderDiagram)(w);
   }
 
   /* The three page-wide moments, drawn as labeled vertical rules (the chart-craft
@@ -255,49 +263,118 @@ function loadData(file) {
 
     /* The on-chart takeaway, in the bottom margin right of Today. Counts are computed
        from the visible events so the sentence stays true under filters. */
-    const schedVis = IN.filter((e) => visible(e) && !e.delivered);
-    const near = schedVis.filter((e) => e.date < '2027-01-01').length;
-    const farEv = schedVis.filter((e) => e.date >= '2027-01-01');
-    const farEnds = farEv.filter((e) => /end|completion/.test(e.title.toLowerCase())).length;
-    const pilot = farEv.some((e) => e.id === 'F29');
     svg.appendChild(el('text', { class: 'now-lab', x: nx + 10, y: laneBot + 22 },
       `Today · ${NOW_LBL}`));
-    ['Everything right of Today is a promise:',
-     `${schedVis.length} scheduled dates, ${near} due by end-2026;`,
-     `the other ${farEv.length}, 2027 to 2029, are ${pilot ? 'the pilot' : 'award and'}`,
-     pilot ? `plant and ${farEnds} award clocks running out.` : 'project clocks running out.']
-      .forEach((s, i) => {
-        svg.appendChild(el('text', { class: 'ann', x: nx + 10, y: laneBot + 42 + i * 17 }, s));
-      });
+    promiseLines().forEach((s, i) => {
+      svg.appendChild(el('text', { class: 'ann', x: nx + 10, y: laneBot + 42 + i * 17 }, s));
+    });
 
     viz.appendChild(svg);
     wireEvents(svg);
     buildLegend();
   }
 
-  function renderCards(W) {
-    const list = h('div', { class: 'cards' });
-    // Past first: the story reads forward, and the divider says where fact ends.
-    let divided = false;
-    IN.filter(visible).slice()
-      .sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0)
-      .forEach((e) => {
-        if (!e.delivered && !divided) {
-          divided = true;
-          list.appendChild(h('div', { class: 'card today-card' }, [
-            h('div', { class: 'c-d', text: `Today · ${NOW_LBL}` }),
-            h('div', { class: 'c-t', text: 'Every card below this one is scheduled, not delivered.' }),
-          ]));
-        }
-        const c = h('div', { class: 'card', style: `border-left-color:${LANE_COLOR[e.laneKey]}` }, [
-          h('div', { class: 'c-d', text: showDate(e) }),
-          h('div', { class: 'c-t', text: e.title }),
-          h('div', { class: 'c-o', text: `${e.lane} · ${e.org}` }),
-        ]);
-        if (!e.delivered) c.appendChild(h('span', { class: 'c-f', text: 'Scheduled, not delivered' }));
-        list.appendChild(c);
+  /* The same four lines under both layouts, computed from the visible events so a filter
+     can never leave the sentence describing dots that are hidden. */
+  function promiseLines() {
+    const sched = IN.filter((e) => visible(e) && !e.delivered);
+    const near = sched.filter((e) => e.date < '2027-01-01').length;
+    const far = sched.filter((e) => e.date >= '2027-01-01');
+    const ends = far.filter((e) => /end|completion/.test(e.title.toLowerCase())).length;
+    const pilot = far.some((e) => e.id === 'F29');
+    return ['Everything right of Today is a promise:',
+      `${sched.length} scheduled dates, ${near} due by end-2026;`,
+      `the other ${far.length}, 2027 to 2029, are ${pilot ? 'the pilot' : 'award and'}`,
+      pilot ? `plant and ${ends} award clocks running out.` : 'project clocks running out.'];
+  }
+
+  const M_RULES = [
+    { date: '2023-10-23', label: 'Oct 2023 · designation' },
+    { date: '2024-07-02', label: 'Jul 2024 · $51M grant' },
+    { date: '2024-12-01', label: 'Dec 2024 · R&D awards begin' },
+  ];
+
+  /* MOBILE, chart 3. Until 2026-08-28 a phone got 87 stacked cards, about 14,000px, under a
+     subtitle promising hollow dots, a Today rule and vertical event rules that were not on
+     the screen. The swimlane is re-laid-out as five small multiples instead: the lane names
+     become panel headings so the plot keeps the full width, and the shared axis, the Today
+     rule, the tinted promise zone and the three labeled event rules run through all five.
+     Every one of the 87 dots is still drawn, still solid-or-hollow, still tappable. */
+  function renderPanels(W) {
+    // TOP has to clear three tiers of rule label AND the year row under them; at 78 the
+    // "Dec 2024 · R&D awards begin" plate sat on the year labels and hid four of them.
+    const RIGHT = 8, TOP = 96, ROW = 20, HEADH = 24, GAP = 16, BOT = 104;
+    const TIER_Y = [14, 32, 50];
+    const plotW = W - RIGHT;
+    const span = WIN_TO - WIN_FROM;
+    const x = (d) => ((Math.min(Math.max(d, WIN_FROM), WIN_TO) - WIN_FROM) / span) * plotW;
+
+    const lanes = DATA.lanes.map((ln) => {
+      const evs = IN.filter((e) => e.laneKey === ln.key && visible(e))
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+      return { ...ln, evs, nRows: pack(evs, x, 15), all: IN.filter((e) => e.laneKey === ln.key).length };
+    });
+    let y = TOP;
+    lanes.forEach((ln) => { ln.y = y; ln.h = HEADH + ln.nRows * ROW + 8; y += ln.h + GAP; });
+    const laneBot = y - GAP;
+    const H = laneBot + BOT;
+
+    const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': ariaSummary() });
+
+    /* Paint order matters and cost a redraw to find: the panel grounds go down FIRST, so
+       the shared gridlines, the promise tint, the three event rules and the Today rule all
+       run visibly ACROSS the five panels instead of disappearing behind them. */
+    lanes.forEach((ln) => {
+      svg.appendChild(el('rect', { class: 'pnl-band', x: 0, y: ln.y + HEADH - 6,
+        width: W, height: ln.h - HEADH + 6, rx: 6 }));
+    });
+
+    for (let yr = 2023; yr <= 2030; yr++) {
+      const gx = x(new Date(`${yr}-01-01`));
+      svg.appendChild(el('line', { class: 'axis-rule', x1: gx, x2: gx, y1: TOP - 20, y2: laneBot }));
+      if (yr < 2030) svg.appendChild(el('text', { class: 'm-axis', x: gx + 4, y: TOP - 26 }, yr));
+    }
+
+    const nx = x(NOW);
+    svg.appendChild(el('rect', { class: 'fwd-zone', x: nx, y: TOP - 20,
+      width: plotW - nx, height: laneBot - TOP + 20 }));
+
+    M_RULES.forEach((rl, i) => {
+      const rx = x(new Date(rl.date));
+      svg.appendChild(el('line', { class: 'm-rule', x1: rx, x2: rx, y1: TIER_Y[i] + 5, y2: laneBot }));
+      plated(svg, rl.label, rx + 5, TIER_Y[i], { class: 'm-rule-lab', cw: 6.2 });
+    });
+    svg.appendChild(el('line', { class: 'now-rule', x1: nx, x2: nx, y1: TOP - 20, y2: laneBot }));
+
+    lanes.forEach((ln) => {
+      svg.appendChild(el('text', { class: 'pnl-name', x: 0, y: ln.y + 12,
+        fill: LANE_COLOR[ln.key] }, ln.name));
+      svg.appendChild(el('text', { class: 'pnl-count', x: plotW, y: ln.y + 12,
+        'text-anchor': 'end' },
+        ln.evs.length === ln.all ? `${ln.evs.length}` : `${ln.evs.length} of ${ln.all}`));
+      const g = el('g', {});
+      ln.evs.forEach((e) => {
+        const cy = ln.y + HEADH + 6 + e._row * ROW;
+        const node = el('g', { class: 'ev' + (e.delivered ? '' : ' fwd'), 'data-id': e.id,
+          style: `--c:${LANE_COLOR[ln.key]}`, tabindex: '0', role: 'button',
+          'aria-label': `${showDate(e)}. ${e.title}.` + (e.delivered ? '' : ' Scheduled, not delivered.') });
+        node.appendChild(el('circle', { class: 'hit', cx: e._cx, cy, r: 13 }));
+        node.appendChild(el('circle', { class: 'dot', cx: e._cx, cy, r: 6, fill: LANE_COLOR[ln.key],
+          stroke: e.delivered ? '#fff' : LANE_COLOR[ln.key] }));
+        if (!e.delivered) node.appendChild(el('circle', { class: 'pip', cx: e._cx, cy, r: 1.5,
+          fill: LANE_COLOR[ln.key] }));
+        g.appendChild(node);
       });
-    viz.appendChild(list);
+      svg.appendChild(g);
+    });
+
+    svg.appendChild(el('text', { class: 'now-lab', x: 0, y: laneBot + 22 }, `Today · ${NOW_LBL}`));
+    promiseLines().forEach((s, i) => {
+      svg.appendChild(el('text', { class: 'ann', x: 0, y: laneBot + 42 + i * 16 }, s));
+    });
+
+    viz.appendChild(svg);
+    wireEvents(svg);
     buildLegend();
   }
 
@@ -376,8 +453,10 @@ function loadData(file) {
       }
       if (r.since) {
         const y1 = top - (ys(0) - ys(r.since));
-        svg.appendChild(el('rect', { class: 'cad-post', x: xc - bw / 2, y: y1,
-          width: bw, height: ys(0) - ys(r.since) }));
+        // 2026 is eight and a half months, not twelve. A partial period drawn at full
+        // saturation reads as a complete one; lighten it and tag it under the axis.
+        svg.appendChild(el('rect', { class: 'cad-post' + (r.yr === 2026 ? ' partial' : ''),
+          x: xc - bw / 2, y: y1, width: bw, height: ys(0) - ys(r.since) }));
         top = y1;
       }
       svg.appendChild(el('text', { class: 'cad-val', x: xc, y: top - 6,
@@ -455,12 +534,19 @@ function loadData(file) {
     if (want === proMode && Math.abs(W - proW) < 2) return;
     proMode = want; proW = W;
     proBox.textContent = '';
-    (want === 'cards' ? renderHCards : renderHDiagram)(W);
+    (want === 'cards' ? renderHCompact : renderHDiagram)(W);
   }
 
+  /* The eleven-year silence is DRAWN, not captioned. The five era columns come from the
+     data; this sixth column is the absence of data, so it is rendered as an annotated void
+     rather than added to heritage.json. Without it the chart shows a continuously populated
+     century and the second half of its own title ("then goes quiet") survives only in prose. */
+  const VOID = { label: '2013\u20132023', l1: 'eleven years,', l2: 'nothing proven' };
+
   function renderHDiagram(W) {
-    const L = { left: 150, right: 18, top: 46, bot: 56, rowH: 34, padY: 14, gap: 44 };
-    const plotW = W - L.left - L.right, eraW = plotW / HER.eras.length;
+    const L = { left: 150, right: 18, top: 46, bot: 76, rowH: 34, padY: 14, gap: 62 };
+    const nCol = HER.eras.length + 1;                 // five eras plus the void
+    const plotW = W - L.left - L.right, eraW = plotW / nCol;
     const xf = (e) => {
       const era = HER.eras[e.era];
       return L.left + e.era * eraW + ((yearFrac(e) - era.from) / (era.to - era.from)) * eraW;
@@ -476,7 +562,8 @@ function loadData(file) {
     const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
       'aria-label': `Two rows of ${HER.events.length} proven heritage events from ${HER.meta.counts.firstYear} ` +
         `to ${HER.meta.counts.lastYear}, on five era columns of equal width: ` +
-        HER.eras.map((x) => x.label).join(', ') + '. Top row: what changed the region’s capacity. ' +
+        HER.eras.map((x) => x.label).join(', ') + ', followed by a sixth column, 2013 to 2023, ' +
+        'drawn empty because the register proves nothing in it. Top row: what changed the region’s capacity. ' +
         'Bottom row: what was first understood here. Named labels mark Goodyear 1898, PVC 1926, the first ' +
         'polymer department 1963, the ALCOM center 1991 and the last proven row in 2012. After 2012 the ' +
         'record goes quiet until the 2023 designation. The same rows are in the table below.' });
@@ -490,6 +577,24 @@ function loadData(file) {
         'text-anchor': 'middle' }, era.label));
       if (i) svg.appendChild(el('line', { class: 'axis-rule', x1: x0, x2: x0, y1: L.top - 8, y2: y - L.gap }));
     });
+    // the void column: same width as the eras, and visibly holding nothing
+    (function voidCol() {
+      const x0 = L.left + HER.eras.length * eraW, yTop = L.top - 8, yBot = y - L.gap;
+      svg.appendChild(el('rect', { class: 'era-band void', x: x0, y: yTop, width: eraW,
+        height: yBot - yTop }));
+      svg.appendChild(el('line', { class: 'void-edge', x1: x0, x2: x0, y1: yTop, y2: yBot }));
+      svg.appendChild(el('line', { class: 'void-edge', x1: x0 + eraW, x2: x0 + eraW,
+        y1: yTop, y2: yBot }));
+      svg.appendChild(el('text', { class: 'era-lab', x: x0 + eraW / 2, y: L.top - 20,
+        'text-anchor': 'middle' }, VOID.label));
+      const mid = (yTop + yBot) / 2;
+      svg.appendChild(el('text', { class: 'void-note', x: x0 + eraW / 2, y: mid - 4,
+        'text-anchor': 'middle' }, VOID.l1));
+      svg.appendChild(el('text', { class: 'void-note', x: x0 + eraW / 2, y: mid + 14,
+        'text-anchor': 'middle' }, VOID.l2));
+      svg.appendChild(el('text', { class: 'void-lab', x: x0 + eraW / 2, y: yBot + 18,
+        'text-anchor': 'middle' }, 'to the Oct 2023 designation'));
+    })();
     // row labels
     rows.forEach((r) => {
       const words = r.name.split(' ');
@@ -513,24 +618,41 @@ function loadData(file) {
       });
       svg.appendChild(g);
     });
-    // named labels in the band under each row block, leader up to the dot
+    /* Named labels in the band under each row block, leader up to the dot. The labels are
+       de-collided into two tiers: adding the void column narrowed every era column, which
+       pushed "1963 · first polymer department" under the plate of "2012 · the last proven
+       row" and clipped it mid-word. collide.mjs cannot see this — both are plated on
+       purpose — so the spacing is computed here instead. */
     const ann = el('g', {});
-    HANN.forEach((a) => {
-      const p = pos[a.id];
-      if (!p) return;
-      const ly = p.rowBot + 20;
-      ann.appendChild(el('line', { class: 'leader', x1: p.x, x2: p.x,
-        y1: p.y + 9, y2: ly - 10 }));
-      plated(ann, a.text, p.x, ly, { anchor: a.anchor, class: 'ann-name' });
-    });
+    const CW = 6.9;                       // ann-name is 13px bold; ~6.9px a character
+    const placed = [];                    // [tier, x0, x1] of labels already laid down
+    HANN.map((a) => ({ a, p: pos[a.id] })).filter((r) => r.p)
+      .sort((r1, r2) => r1.p.x - r2.p.x)
+      .forEach(({ a, p }) => {
+        const w = a.text.length * CW + 8;
+        const x0 = a.anchor === 'end' ? p.x - w : a.anchor === 'middle' ? p.x - w / 2 : p.x - 4;
+        const x1 = x0 + w;
+        // per row: two labels in different row blocks sit at different heights and
+        // cannot collide, so they must not push each other down a tier
+        let tier = 0;
+        while (placed.some((q) => q[0] === tier && q[3] === p.rowBot &&
+          x0 < q[2] + 6 && x1 > q[1] - 6)) tier++;
+        placed.push([tier, x0, x1, p.rowBot]);
+        const ly = p.rowBot + 20 + tier * 19;
+        ann.appendChild(el('line', { class: 'leader', x1: p.x, x2: p.x,
+          y1: p.y + 9, y2: ly - 10 }));
+        plated(ann, a.text, p.x, ly, { anchor: a.anchor, class: 'ann-name', cw: CW });
+      });
     svg.appendChild(ann);
-    // the on-chart takeaway, bottom right
-    svg.appendChild(el('text', { class: 'ann', x: W - L.right, y: H - 8,
-      'text-anchor': 'end' },
-      'After 2012 the proven record goes quiet; the next event is the 2023 federal designation, eleven years on.'));
+    /* No bottom caption any more: the void column says it in ink, and the old
+       right-anchored sentence was the figure's only floating text edge. */
 
     proBox.appendChild(svg);
     wireHEvents(svg);
+    buildHLegend();
+  }
+
+  function buildHLegend() {
     const lg = document.getElementById('pro-legend');
     lg.hidden = false; lg.textContent = '';
     HER.collections.forEach((c, i) => {
@@ -539,25 +661,80 @@ function loadData(file) {
       lg.appendChild(h('b', { text: ' ' + c.name }));
       lg.appendChild(document.createTextNode(': ' + c.gloss));
     });
-    lg.appendChild(document.createTextNode('. A dot sits at its first year; the columns are equal in width, not in years. Click any dot for the register’s sentence and source.'));
+    lg.appendChild(document.createTextNode('. A dot sits at its first year; the columns are equal in width, not in years. Tap any dot for the register’s sentence and source.'));
   }
 
-  function renderHCards() {
-    const list = h('div', { class: 'cards' });
-    HER.events.slice().sort((a, b) => a.date < b.date ? -1 : 1).forEach((e) => {
-      const src = e.sources.find((x) => x.url);
-      const c = h('div', { class: 'card', style: `border-left-color:${HCOL[e.collection]}` }, [
-        h('div', { class: 'c-d', text: hDate(e) }),
-        h('div', { class: 'c-t', text: e.title }),
-        h('div', { class: 'c-o', text: e.oneLiner }),
-      ]);
-      const foot = h('div', { class: 'c-o' }, [h('span', { class: 'c-k', style: `color:${HCOL[e.collection]}`, text: hKind(e) })]);
-      if (src) { foot.appendChild(document.createTextNode(' · ')); foot.appendChild(h('a', { href: src.url, text: 'Source' })); }
-      c.appendChild(foot);
-      list.appendChild(c);
+  /* MOBILE, chart 1. Until 2026-08-28 this was 32 stacked cards, about 8,400px of them,
+     under a subtitle that told the reader to look at era columns and two rows. The form is
+     kept and transposed instead: the eras become stacked blocks, and inside each block the
+     same two collection rows carry the same dots at the same year positions. Nothing is
+     dropped or aggregated — all 32 marks are here and still open their source on tap. */
+  function renderHCompact(W) {
+    const GUT = 14, RIGHT = 8, ROW = 20, LABH = 20, PADB = 14;
+    const plotW = W - GUT - RIGHT;
+    const cols = HER.eras.concat([{ from: 2012, to: 2023, label: VOID.label, isVoid: true }]);
+    const xf = (e) => {
+      const era = HER.eras[e.era];
+      return GUT + ((yearFrac(e) - era.from) / (era.to - era.from)) * plotW;
+    };
+    // measure first, draw second: the height has to be known before the viewBox exists
+    const blocks = cols.map((era, i) => {
+      const bands = era.isVoid ? [] : HER.collections.map((c) => {
+        const evs = HER.events.filter((e) => e.era === i && e.collection === c.key)
+          .sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+        return { key: c.key, evs, n: evs.length ? packBy(evs, xf, 20) : 0 };
+      }).filter((b) => b.evs.length);
+      return { era, bands };
     });
-    proBox.appendChild(list);
-    document.getElementById('pro-legend').hidden = true;
+    let y = 6;
+    blocks.forEach((b) => {
+      b.y = y; y += LABH;
+      b.bands.forEach((bd) => { bd.y = y; y += bd.n * ROW + 4; });
+      if (b.era.isVoid) { b.voidY = y; y += 46; }
+      y += PADB;
+    });
+    const H = y;
+
+    const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
+      'aria-label': `${HER.events.length} proven heritage events in six stacked era blocks, ` +
+        HER.eras.map((x) => x.label).join(', ') + ' and an empty 2013 to 2023 block. Inside each ' +
+        'block the top row is what changed the region’s capacity and the bottom row is what was ' +
+        'first understood here. The last proven row is 2012 and nothing follows it until the 2023 ' +
+        'federal designation. The same rows are in the table below.' });
+
+    blocks.forEach((b) => {
+      svg.appendChild(el('text', { class: 'era-lab', x: 0, y: b.y + 11 }, b.era.label));
+      const bot = (b.era.isVoid ? b.voidY + 40 : (b.bands.length
+        ? b.bands[b.bands.length - 1].y + b.bands[b.bands.length - 1].n * ROW : b.y + LABH));
+      if (b.era.isVoid) {
+        svg.appendChild(el('rect', { class: 'era-band void', x: 0, y: b.y + LABH - 6,
+          width: W, height: 46, rx: 4 }));
+        svg.appendChild(el('text', { class: 'void-note', x: GUT, y: b.voidY + 10 }, VOID.l1 + ' ' + VOID.l2));
+        svg.appendChild(el('text', { class: 'void-lab', x: GUT, y: b.voidY + 28 },
+          'to the Oct 2023 designation'));
+        return;
+      }
+      b.bands.forEach((bd) => {
+        svg.appendChild(el('rect', { x: 0, y: bd.y, width: 3, height: bd.n * ROW - 4,
+          fill: HCOL[bd.key], rx: 1.5 }));
+        const g = el('g', {});
+        bd.evs.forEach((e) => {
+          const cy = bd.y + 9 + e._row * ROW;
+          const node = el('g', { class: 'ev hev', 'data-id': e.id, style: `--c:${HCOL[bd.key]}`,
+            tabindex: '0', role: 'button',
+            'aria-label': `${hDate(e)}. ${e.title}. ${hKind(e)}.` });
+          node.appendChild(el('circle', { class: 'hit', cx: e._cx, cy, r: 13 }));
+          node.appendChild(el('circle', { class: 'dot', cx: e._cx, cy, r: 6, fill: HCOL[bd.key] }));
+          g.appendChild(node);
+        });
+        svg.appendChild(g);
+      });
+      void bot;
+    });
+
+    proBox.appendChild(svg);
+    wireHEvents(svg);
+    buildHLegend();
   }
 
   function wireHEvents(svg) {
@@ -625,7 +802,7 @@ function loadData(file) {
     tb.textContent = '';
     HER.events.slice().sort((a, b) => a.date < b.date ? -1 : 1).forEach((e) => {
       const srcs = e.sources.filter((x) => x.url);
-      const td = h('td', {});
+      const td = h('td', { class: 't-src' });
       if (srcs.length) {
         td.appendChild(h('a', { href: srcs[0].url, text: 'Source' }));
         if (srcs.length > 1) td.appendChild(document.createTextNode(` +${srcs.length - 1}`));
@@ -660,7 +837,7 @@ function loadData(file) {
         h('td', { class: 't-date', text: showDate(e) }),
         tdE,
         h('td', { class: 't-lane', style: `color:${LANE_COLOR[e.laneKey]}`, text: e.lane }),
-        h('td', { text: e.org }),
+        h('td', { class: 't-org', text: e.org }),
       ]);
     };
     const yrHead = (label) => h('tr', { class: 'yrhead' },
@@ -801,8 +978,8 @@ function loadData(file) {
       return s;
     };
     lg.appendChild(grp('Status', [
-      h('span', { class: 'item' }, [svgDot('#12798B', false), h('span', { text: 'Delivered' })]),
-      h('span', { class: 'item' }, [svgDot('#12798B', true), h('span', { text: 'Scheduled, not delivered' })]),
+      h('span', { class: 'item' }, [svgDot('#06414B', false), h('span', { text: 'Delivered' })]),
+      h('span', { class: 'item' }, [svgDot('#06414B', true), h('span', { text: 'Scheduled, not delivered' })]),
     ]));
     lg.appendChild(grp('Size', [
       h('span', { class: 'item' }, [h('span', { text: 'Every dot is the same size; the chips above filter by how long that kind of work takes to show a result.' })]),
@@ -836,11 +1013,12 @@ function loadData(file) {
     // Four tiles, not five: the fifth wrapped to its own row at 1280 and the
     // workstream count already leads the calendar H2.
     document.getElementById('topline').innerHTML = '';
-    [[hc.shown, `proven heritage events, ${hc.firstYear}–${hc.lastYear}`],
-     [before, '34 months before designation'],
-     [since, 'delivered, 34 months since'],
-     [IN.filter((e) => !e.delivered).length, 'scheduled ahead']].forEach(([n, l]) => {
-      document.getElementById('topline').appendChild(h('li', {}, [
+    // Exactly one card carries the accent, and it is the page's finding.
+    [[hc.shown, `proven heritage events, ${hc.firstYear}–${hc.lastYear}`, false],
+     [before, '34 months before designation', false],
+     [since, 'delivered, 34 months since', true],
+     [IN.filter((e) => !e.delivered).length, 'scheduled ahead', false]].forEach(([n, l, key]) => {
+      document.getElementById('topline').appendChild(h('li', { class: key ? 'key' : null }, [
         h('b', { text: String(n) }), h('span', { text: l })]));
     });
 
@@ -855,7 +1033,19 @@ function loadData(file) {
         ])));
     }
 
-    document.getElementById('m-source').textContent = d.meta.source;
+    /* The 104 is reconciled to what a reader can count on the page, in one place and from
+       the data: 87 drawn on the calendar, 5 before the window, 12 press-coverage rows that
+       are reporting ABOUT the cluster rather than things the cluster did. Typing any of
+       these would let the apparatus contradict itself, which is how it read before. */
+    const nCal = IN.length, nPre = PRE.length;
+    const nMedia = d.events.length - nCal - nPre;
+    document.getElementById('m-source').textContent = d.meta.source +
+      ` Of those ${d.events.length}, ${nCal} fall inside the 2023 to 2029 calendar window and are ` +
+      `drawn there: ${IN.filter((e) => e.delivered).length} delivered and ` +
+      `${IN.filter((e) => !e.delivered).length} scheduled. ${nPre} predate the window and feed the ` +
+      `cadence chart instead. The remaining ${nMedia} are press coverage of the cluster rather than ` +
+      `things the cluster did, and are held out of both charts. The ${hc.shown} heritage rows are a ` +
+      `separate register and are not part of this count.`;
     document.getElementById('m-public').textContent = d.meta.publicOnly;
     const dropped = hc.dropped['label:CLAIMED'] || 0;
     document.getElementById('m-heritage').textContent =
@@ -870,8 +1060,10 @@ function loadData(file) {
      ['Hollow dots to the right of the dashed rule are scheduled dates from the award record, not work already done.'],
      ['Vertical rules and named labels mark the load-bearing events; every other dot opens its title, date and organization on click.'],
      ['Dates are shown at the precision they were recorded. Some events are known only to a month or a year, and are placed mid-period rather than pretending to a day.'],
-     ['The cadence chart counts delivered public events per year from this same record; its record-keeping caveat sits beside it.'],
-     ['The heritage chart above the record uses five era columns of equal width, so its axis is not linear; a dot sits at its first year, and clicking it opens the register’s sentence and source.'],
+     ['The cadence chart counts delivered public events per year from this same record. An event from before the cluster had staff to log it had fewer routes into the record, which is why the before count is a floor rather than a measurement.'],
+     ['The two century-scale context rows sit in the heritage strip at the top of the page and are not counted in the cadence chart.'],
+     ['The 2026 bar covers 1 January to 13 August and is drawn lighter than the full years beside it.'],
+     ['The heritage chart above the record uses five era columns of equal width plus an empty sixth, 2013 to 2023, so its axis is not linear; a dot sits at its first year, and tapping it opens the register’s sentence and source.'],
     ].forEach(([t]) => notes.appendChild(h('li', { text: t })));
 
     buildFilters(); buildTable(); render(); renderCadence();

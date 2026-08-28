@@ -82,6 +82,30 @@
       "falsified_if": "The Cuyahoga cell is revised or withheld, or the disclosed paint total moves so the share leaves 76.0-77.0 percent and the '76%' card and 'three of every four' phrasing stop being true."
     },
     {
+      "id": "lq-grid-darkest-shade",
+      "text": "Six county cells reach the heatmap's darkest shade (the 11x-and-up bin); Cuyahoga paint is not the highest of them, four are higher, and it is the one with the most jobs behind it, the other five running between 491 and 2,829 (grid band lede, grid figure title, grid SVG text alternative, footer correction).",
+      "source": "QCEW county cells, latest year, binned by the ramp the chart draws: STEPS = [0,1,2,4,7,11], so the darkest bin is every disclosed cell at or above 11x",
+      "assert": "(lambda y: (lambda band: len(band) == 6 and max(band, key=lambda c: c['emp'])['name'] == 'Cuyahoga' and max(band, key=lambda c: c['emp'])['naics'] == '3255' and len([c for c in band if c['lq'] > one(x for x in band if x['name']=='Cuyahoga' and x['naics']=='3255')['lq']]) == 4 and min(c['emp'] for c in band if not (c['name']=='Cuyahoga' and c['naics']=='3255')) == 491 and max(c['emp'] for c in band if not (c['name']=='Cuyahoga' and c['naics']=='3255')) == 2829)([c for c in D['cells'] if c['year']==y and c['lq'] and c['emp'] and c['area'] not in ('39000','US000') and c['lq'] >= 11]))(max(x['year'] for x in D['cells']))",
+      "actual": "sorted([(c['name'], c['naics'], round(c['lq'],2), c['emp']) for c in D['cells'] if c['year']==max(x['year'] for x in D['cells']) and c['lq'] and c['emp'] and c['area'] not in ('39000','US000') and c['lq'] >= 11], key=lambda t: -t[2])",
+      "falsified_if": "The darkest bin stops holding exactly six cells, or Cuyahoga paint stops being the largest of them by employment, or the count of cells above it moves off four, or the other five stop spanning 491 to 2,829 jobs. Any of those breaks a sentence that is printed three times. This claim exists because the page previously said Cuyahoga paint was the darkest cell in the grid while five other cells rendered the identical colour and one of them was 22.7x: if the STEPS array in app.js changes, this assertion's hard-coded 11 must change with it or the prose and the encoding part company again."
+    },
+    {
+      "id": "lq-largest-base-cell",
+      "text": "The largest disclosed employment base in the latest year is Cuyahoga chemical manufacturing, 5,780 jobs at 1.46x, which is the scatter's right-hand labelled point and the value its final axis tick carries.",
+      "source": "QCEW county cells, latest year, disclosed only",
+      "assert": "(lambda y: (lambda c: c['name']=='Cuyahoga' and c['naics']=='325' and c['emp'] == 5780 and abs(c['lq'] - 1.46) <= 0.005)(max([c for c in D['cells'] if c['year']==y and c['lq'] and c['emp'] and c['area'] not in ('39000','US000')], key=lambda c: c['emp'])))(max(x['year'] for x in D['cells']))",
+      "actual": "sorted([(c['name'], c['naics'], round(c['lq'],2), c['emp']) for c in D['cells'] if c['year']==max(x['year'] for x in D['cells']) and c['lq'] and c['emp'] and c['area'] not in ('39000','US000')], key=lambda t: -t[3])[:3]",
+      "falsified_if": "Another cell posts more jobs, or this one is revised or withheld. The scatter prints the county, the industry, the ratio and the job count in one label, and the x axis now ends on this point's own value rather than running past its last tick, so a revision moves the axis as well as the sentence."
+    },
+    {
+      "id": "lq-byline",
+      "text": "The byline reads 'Data BLS QCEW, 2015-2025 - August 2026'; the agency, the span and the month are all read from the data file's own meta rather than typed.",
+      "source": "meta.source, meta.years and meta.fetched in lq.json, which the fetch script writes",
+      "assert": "D['meta']['source'].split(' ')[0] == 'BLS' and D['meta']['source'].split(' ')[1] == 'QCEW' and D['meta']['fetched'][:7] == '2026-08' and D['meta']['years'] == [2015, 2025]",
+      "actual": "(D['meta']['source'], D['meta']['fetched'], D['meta']['years'])",
+      "falsified_if": "A refetch moves the vintage into a different month, and the byline's date silently follows it while the page's prose still describes the old pull; or the source string stops starting with the two tokens the byline slices off it, at which point the byline prints something that is not an agency name."
+    },
+    {
       "id": "lq-cuyahoga-largest-base-above-ten",
       "text": "Cuyahoga paint is the largest employment base of any cell above 10x, which is the scatter's figure title and its exception clause.",
       "source": "QCEW county cells, latest year, disclosed only",

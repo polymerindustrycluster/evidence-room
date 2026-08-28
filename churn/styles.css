@@ -3,6 +3,26 @@
    per-figure chrome, the county selector, the churn-cost translator, band-tint pacing,
    and the per-form mobile re-layout override. */
 
+/* Byline block — genre furniture, on the same rail as the standfirst above it. The
+   masthead dateline states when the data was pulled; this states who did the work.
+   Selector matches the shared core's `.hero .wrap > *` weight, or the figure cap in that
+   rule wins and the byline opens a second rail 151px left of the standfirst above it.
+   The `auto` side margins are load-bearing for the same reason: this stylesheet loads
+   AFTER the core, so a `margin:14px 0 0` shorthand here beats the core's centring rule
+   and drops the block onto the wrap's left edge, 151px outboard of the rail. */
+.hero .wrap > .byline{margin:14px auto 0;max-width:var(--measure);font-size:13px;
+  line-height:1.5;color:#9CC4CA;letter-spacing:.02em}
+
+/* Per-rendering copy. The narrow chart in band 1 aggregates quarters into years, so it
+   carries its own title rather than a title written for marks it does not draw. */
+.only-narrow{display:none}
+@media (max-width:760px){
+  /* `.legend span` carries a display of its own, so the plain class loses the cascade
+     here and the net-change swatch keyed a line the narrow chart does not draw. */
+  .only-wide,.legend .only-wide{display:none}
+  .only-narrow{display:revert}
+}
+
 /* Figure chrome: every chart carries its own claim-title + how-to-read line, so the H2
    does section work instead of doubling as the chart title (chart-craft.md). */
 .fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
@@ -44,6 +64,27 @@
 /* Small on-chart labels for the twelve-dot scatter, which needs more labels than a
    14px face can carry at 375px. Floor is 12px rendered (textsize.mjs). */
 .c-dot{font-size:13.6px;fill:var(--pv-ink);font-weight:700}
+
+/* Methodology folds. The page-specific apparatus blocks — the removed peer comparison,
+   what a fair one would need, the notes moved off the figure captions — collapse behind
+   their own heads so the methods box reads at caption scale rather than a third of the
+   scroll. Nothing load-bearing hides here: every caveat that changes how a number should
+   be read is printed beside the chart it qualifies. Styled to match the shared
+   .pv-repro disclosure, but capped at the text measure so it stays on the one rail. */
+.pv-method .fold{margin:0 0 30px;max-width:var(--measure)}
+.pv-method .fold summary{cursor:pointer;list-style:none;display:inline-block}
+.pv-method .fold summary::-webkit-details-marker{display:none}
+.pv-method .fold summary h3{display:inline;color:var(--action)}
+.pv-method .fold summary h3::before{content:"\25B8  ";font-size:.8em}
+.pv-method .fold[open] summary h3::before{content:"\25BE  "}
+
+/* Footer: the story visibly ends. Distinct ground, identity, and a way back to the
+   other pages — the closer is the last editorial beat, this is the last page furniture. */
+.page-foot{background:var(--deep);color:#BEDDE2;padding:30px 0 38px;font-size:14px}
+.page-foot p{margin:0 0 6px;max-width:var(--measure);margin-left:auto;margin-right:auto}
+.page-foot p:last-child{margin-bottom:0}
+.page-foot b{color:#fff;letter-spacing:.06em}
+.page-foot a{color:#9FCBD2}
 
 /* Mobile: every chart on this page is re-laid out per form (annual bars, compact lines,
    a re-scaled scatter), so the shared sideways-scroll fallback is switched off. The

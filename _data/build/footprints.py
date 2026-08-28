@@ -28,10 +28,10 @@ SHARED = set(PIC12) & set(NEO14)
 META = {
     "pic12": {"key": "pic12", "n": len(PIC12), "label": "PIC-12",
               "counties": sorted(PIC12.values()),
-              "note": "PIC's official 12-county footprint, matching the cluster-health "
+              "note": "PIC’s official 12-county footprint, matching the cluster-health "
                       "dashboard. Chosen for federal-data pages so figures reconcile.",
               "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the "
-                         "vault's NEO-14 includes."},
+                         "vault’s NEO-14 includes."},
     "neo14": {"key": "neo14", "n": len(NEO14), "label": "NEO-14",
               "counties": sorted(NEO14.values()),
               "note": "The 14-county set the GAC-PIC vault tags companies against. Kept "

@@ -19,14 +19,16 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">Feedstock, resin and product prices, indexed to January 2019</p>
-    <h1>Natural gas round-tripped completely. Finished polymer products are at
+    <p class="eyebrow">Prices along the polymer chain, 2015 to 2026</p>
+    <h1>Natural gas round-tripped. Finished polymer products are at
       <em>an all-time high this month</em>.</h1>
     <p class="stand">Gas has given back its whole 2022 spike, crude oil about half, resin
-      about a third, and finished polymer products none of it. That ordering, drawn from
-      eleven years of federal price series, means <b>somebody in this chain ate the spike
-      and somebody banked it</b>. Which one you were depends on the link you sell from,
-      and the cluster has members on every link.</p>
+      about a third, and finished polymer products none of it. That ordering means
+      <b>somebody in this chain ate the spike and somebody banked it</b>, and the cluster
+      has members on every link.</p>
+    <p class="byline">By the Polymer Industry Cluster desk &middot; Analysis and graphics
+      J. Swanson &middot; Data U.S. EIA and FRED/BLS, January 2015 to July 2026
+      &middot; August 2026</p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -39,8 +41,7 @@
       has since come back. Gas gave back all of it and now costs less than before the
       spike; crude oil gave back about half, resin about a third, and finished polymer
       products none at all. One feedstock breaks the pattern: Ohio industrial electricity
-      peaked this January, not in 2022, and has given back only about a quarter. The
-      series are public EIA and BLS data, the analysis is scripted from them, and every
+      peaked this January, not in 2022, and has given back only about a quarter. Every
       published number on this page is re-checked against the data on each build.</p>
     <p class="csel-q">Where do you sit?</p>
     <div class="csel" id="csel" role="group" aria-label="Re-read the page from one seat in the chain"></div>
@@ -75,11 +76,13 @@
         finished-product prices climbed to about 40% above their 2019 base and stayed
         there.</title>
     </svg></div>
+    <!-- Swatch heights carry the chart's weight ladder, so the legend decodes the same
+         way the plot does when hue is unavailable. -->
     <div class="legend">
-      <span><i class="ln" style="background:#A32A78"></i> Feedstock &middot; Henry Hub gas</span>
-      <span><i class="ln" style="background:#C85F0C"></i> Resin &middot; what converters buy</span>
-      <span><i class="ln" style="background:#008BA8"></i> Product &middot; what they sell</span>
-      <span><i class="ln" style="background:#BDB7AC"></i> Context series</span>
+      <span><i class="ln" style="background:#A32A78;height:2px"></i> Feedstock &middot; Henry Hub gas</span>
+      <span><i class="ln" style="background:#C85F0C;height:3px"></i> Resin &middot; what converters buy</span>
+      <span><i class="ln" style="background:#008BA8;height:4px"></i> Product &middot; what they sell</span>
+      <span><i class="ln" style="background:#BDB7AC;height:1px"></i> Context series</span>
     </div>
     <div id="linestable"></div>
     <p class="src" id="linessrc"></p>
@@ -94,20 +97,22 @@
       prices, both rebased to the same month. Below zero, output prices had risen less
       since 2019 than input prices, and that was the converter&rsquo;s world through the
       shortage, bottoming 23 points under water in August 2021. The line crossed zero in
-      August 2022, has stayed above it every month since, and peaked at +23 this January
-      before easing to +14. The gray line asks the same question one link up, resin
+      August 2022 by eight hundredths of a point, stayed above it, and peaked at +23 this
+      January. It has not held there. Resin jumped 23 points between March and May 2026,
+      the cushion closed to <b>+0.7, its thinnest month since September 2022</b>, and it
+      reopened to +14 in July. The gray line asks the same question one link up, resin
       against the industrial chemicals that feed it: a +19 windfall in September 2021
       that has since unwound to just below zero.</p>
-    <p class="fig-title">Below zero through the squeeze, above zero every month since
-      August 2022</p>
+    <p class="fig-title">Below zero through the squeeze, above it since 2022, and three
+      times by less than a point</p>
     <p class="fig-sub">Finished-product index minus resin index, in points; both series
       set to 100 at January 2019. Gray: the same computation one link up (resin minus
       industrial chemicals).</p>
     <div class="chart"><svg id="spread" role="img" aria-labelledby="spread-t">
       <title id="spread-t">Chart showing the product-minus-resin index spread running
         negative through 2021, crossing zero in August 2022, peaking at 23 points in
-        January 2026 and standing at 14 points now, while the resin-minus-chemicals
-        spread unwound to zero.</title>
+        January 2026, falling to 0.7 points in May 2026 and standing at 14 points now,
+        while the resin-minus-chemicals spread unwound to zero.</title>
     </svg></div>
     <div id="spreadtable"></div>
     <p class="src" id="spreadsrc"></p>
@@ -132,6 +137,10 @@
       part is illustrative, priced by the industry index rather than any member&rsquo;s
       quote, and its arc is the page in miniature: it paid for the spike on the way up
       and kept the price after the spike left.</p>
+    <p class="ask">What would sharpen this band: one member&rsquo;s own quoted-price
+      history for a single part, January 2019 to now. The desk does not have one, so
+      nothing on this page is a member&rsquo;s number, and the dollar figures below are
+      the industry average translated into dollars.</p>
     <div class="statgrid">
       <div class="statv"><div class="n" id="v0"></div>
         <div class="k">January 2019</div>
@@ -148,11 +157,20 @@
 
 <section class="closer">
   <div class="wrap">
-    <p>Whether the last four years squeezed you or paid you depends on which link of the
-      chain you sold from.</p>
+    <p>Whether the last four years squeezed you or paid you depends on the link you
+      sold from.</p>
     <p class="sub" id="closersub"></p>
   </div>
 </section>
+
+<footer class="page-foot">
+  <div class="wrap">
+    <p class="foot-id"><b>Polymer Industry Cluster</b> &middot; Greater Akron Chamber
+      &middot; Evidence Room</p>
+    <p class="foot-links"><a href="../">All evidence-room pages</a> &middot; Corrections
+      and questions: jswanson@greaterakronchamber.org</p>
+  </div>
+</footer>
 
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>
