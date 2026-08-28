@@ -19,35 +19,87 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">Location quotient, computed from public data</p>
-    <h1>PIC quotes a concentration figure it licenses. <em>Here is one it owns.</em></h1>
-    <p class="stand">Team NEO's 2.69&times; is a Lightcast product: one number, one year,
-      no decomposition, and nobody outside the license can check it. The Bureau of Labor Statistics publishes the
-      components free. This is eleven years of concentration for six polymer industries
-      across twelve counties &mdash; reproduced to within 0.005 of the figure the bureau
-      publishes itself.</p>
-    <p class="stand"><dfn><b>Location quotient (LQ)</b> &mdash; how concentrated an industry
-      is here compared with the country as a whole. An LQ of 1.0 means the region has exactly
-      its national share of those jobs; 2.69 means nearly three times that share.</dfn>
+    <p class="eyebrow">Which polymer industry is this region most concentrated in? &middot; BLS QCEW, 2015&ndash;2025</p>
+    <h1>The region&rsquo;s strongest polymer concentration is paint, at
+      <em>5.96 times</em> the national share.</h1>
+    <p class="stand">Rubber products, the industry Akron is named for, run 2.44&times;.
+      Paint and coatings have led all six polymer industries in every year since 2015, and
+      Cuyahoga County holds three of every four disclosed paint jobs in the region. Every
+      figure here is computed from free Bureau of Labor Statistics files and reproduces the
+      bureau&rsquo;s own published location quotient to the last digit it prints, so anyone
+      who disputes the ranking can re-run it.</p>
+    <p class="stand"><dfn><b>Location quotient (LQ)</b>: how concentrated an industry is
+      here compared with the country as a whole. An LQ of 1.0 means the region has exactly
+      its national share of those jobs; 5.96 means nearly six times that share.</dfn>
       <dfn>An <b>establishment</b> is a single physical site, not a company: one firm with
-      three plants is three establishments.</dfn></p>
+      three plants counts as three establishments.</dfn></p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
-    <p class="takeaway">The trend</p>
-    <h2 id="trendtitle">Eleven years of concentration, by industry</h2>
+    <p class="takeaway">The finding</p>
+    <h2>Paint leads all six polymer industries, and has every year since 2015</h2>
     <p class="lede">A location quotient of 1.0 means the region has exactly its national
-      share of an industry. Select an industry to bring it forward; the others stay as
-      context rather than disappearing.</p>
+      share of an industry. Paint and coatings have not been anywhere near 1.0 since this
+      series starts. The line sits above 5.4&times; for eleven straight years and runs more
+      than double whichever industry is second. Ohio as a whole is already concentrated in
+      paint at 3.78&times;, and these twelve counties are well above the state.</p>
+    <p class="regkey" id="regkey"></p>
     <div class="picker" id="picker" role="group" aria-label="Choose an industry"></div>
+    <p class="fig-title" id="trendtitle"></p>
+    <p class="fig-sub">Location quotient against the nation, PIC-12 composite summed from
+      the counties BLS discloses. Selecting an industry brings its line forward; the other
+      five stay as context.</p>
     <div class="chart"><svg id="trend" role="img" aria-labelledby="trend-t">
       <title id="trend-t">Location quotient by year for six polymer industries across the
-        fourteen-county region.</title></svg></div>
+        twelve-county region, 2015 to 2025. Paint and coatings runs far above the other
+        five in every year.</title></svg></div>
     <div id="trendtable"></div>
     <p class="src" id="trendsrc"></p>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">What the 2025 dip is</p>
+    <h2>Hold the county set still and paint is at an eleven-year high</h2>
+    <p class="lede" id="twistlede"></p>
+    <p class="fig-title" id="twisttitle"></p>
+    <p class="fig-sub">Cuyahoga, Lake, Medina, Stark and Summit are the five counties BLS
+      discloses for paint in all eleven years. The grey line is the all-disclosed composite
+      from the chart above, built on six to nine counties depending on the year.</p>
+    <div class="chart narrow"><svg id="twist" role="img" aria-labelledby="twist-t">
+      <title id="twist-t">Paint location quotient by year on a fixed five-county base
+        against the all-disclosed composite, 2015 to 2025. The fixed-base line ends at its
+        highest value of the series.</title></svg></div>
+    <div id="twisttable"></div>
+    <p class="src" id="twistsrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">Where the paint is</p>
+    <h2>One county holds three of every four disclosed paint jobs</h2>
+    <p class="lede" id="heatlede"></p>
+    <p class="fig-title" id="heattitle"></p>
+    <p class="fig-sub">Location quotient by county and industry, latest year. Counties are
+      sorted by their plastics and rubber products column, the one industry the bureau
+      discloses in all twelve. Hatched cells are withheld, and a withheld cell is never
+      drawn as a zero.</p>
+    <div class="chart"><svg id="heat" role="img" aria-labelledby="heat-t">
+      <title id="heat-t">Grid of location quotient by county and industry. Cuyahoga&rsquo;s
+        paint cell is the darkest in the grid.</title></svg></div>
+    <div id="heattable"></div>
+    <div class="note"><b>Who is in that cell.</b> QCEW cannot name an employer, so the grid
+      shows a concentration and not a company. Two public facts sit behind it: the
+      Sherwin-Williams Company is headquartered in Cleveland, in Cuyahoga County, and RPM
+      International is headquartered in Medina, which posts the region&rsquo;s fifth paint
+      reading at 2.9&times;. QCEW codes an establishment by what it does, so a corporate
+      campus can land in the same industry as a plant. Read that as the plain explanation
+      for a coatings cluster of this size, not as something the file measures.</div>
   </div>
 </section>
 
@@ -55,48 +107,40 @@
   <div class="wrap">
     <p class="takeaway">The honest caveat</p>
     <h2>The highest concentrations sit on the smallest bases</h2>
-    <p class="lede">A location quotient is a ratio, so a county with six plants can post a
-      bigger number than a county with sixty. Plotted against the jobs behind it, the
-      dramatic figures move to the left where they belong.</p>
+    <p class="lede" id="scatterlede"></p>
+    <p class="fig-title" id="scattertitle"></p>
+    <p class="fig-sub">Every disclosed county and industry in the latest year. The
+      horizontal axis is square-root scaled so the small-base counties stay readable.</p>
     <div class="chart"><svg id="scatter" role="img" aria-labelledby="scatter-t">
-      <title id="scatter-t">Location quotient against employment for every county and
-        industry in the latest year.</title></svg></div>
+      <title id="scatter-t">Location quotient against employment for every disclosed county
+        and industry in the latest year. The largest ratios sit on the smallest job
+        counts.</title></svg></div>
     <div id="scattertable"></div>
     <p class="src" id="scattersrc"></p>
   </div>
 </section>
 
-<section class="band">
+<section class="band tint">
   <div class="wrap">
-    <p class="takeaway">The map, as a grid</p>
-    <h2 id="heattitle">Every county against every industry</h2>
-    <p class="lede">Twelve counties, six industries, latest year. Hatched cells are ones
-      the bureau will not disclose &mdash; a withheld cell is not a zero, and is never drawn as
-      one.</p>
-    <div class="chart"><svg id="heat" role="img" aria-labelledby="heat-t">
-      <title id="heat-t">Grid of location quotient by county and industry.</title></svg></div>
-    <div id="heattable"></div>
-  </div>
-</section>
-
-<section class="band">
-  <div class="wrap">
-    <p class="takeaway">Show your work</p>
-    <h2>Why you can trust the number above</h2>
-    <p class="lede">The bureau publishes its own location quotient alongside the components. Every
-      cell computed here is checked against it. If the two ever diverge, this chart is where
-      it shows up first.</p>
-    <div class="chart"><svg id="resid" role="img" aria-labelledby="resid-t">
-      <title id="resid-t">Distribution of the difference between the computed and published
-        location quotient.</title></svg></div>
+    <p class="takeaway">Checked against the bureau</p>
+    <h2>Every cell lands inside the bureau&rsquo;s own rounding</h2>
+    <p class="lede" id="residlede"></p>
+    <p class="fig-title" id="residtitle"></p>
+    <p class="fig-sub">Computed location quotient minus the figure BLS publishes, all years
+      and areas. The spread is flat because what is being measured is rounding.</p>
+    <div class="chart narrow"><svg id="resid" role="img" aria-labelledby="resid-t">
+      <title id="resid-t">Histogram of the difference between the computed and published
+        location quotient, bounded at plus and minus 0.005.</title></svg></div>
     <div id="residtable"></div>
-    <div class="note" id="defnote"></div>
+    <details class="disclose"><summary>How the denominator was established, and what
+      breaks without it</summary>
+      <div id="defnote"></div></details>
   </div>
 </section>
 
 <section class="closer">
   <div class="wrap">
-    <p>A licensed number is a claim. A reproduced number is a measurement.</p>
+    <p>The region&rsquo;s strongest concentration is the one it never quotes.</p>
     <p class="sub" id="closersub"></p>
   </div>
 </section>

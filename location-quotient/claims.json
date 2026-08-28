@@ -2,29 +2,150 @@
   "data": "lq.json",
   "claims": [
     {
-      "id": "lq-reproduces-bls",
-      "text": "The computed location quotient reproduces BLS published figures to within 0.005.",
-      "source": "derive_lq.py cross-check against lq_annual_avg_emplvl",
-      "assert": "D['meta']['verification']['max_abs_residual'] <= 0.005 and D['meta']['verification']['cells_checked'] >= len(D['meta']['footprint']['counties']) * 6 * 8",
-      "actual": "D['meta']['verification']",
-      "falsified_if": "BLS changes its LQ denominator, or our own_code 0 denominator drifts. The cell-count floor scales with the footprint \u2014 it dropped from 726 to 667 when NEO-14 became PIC-12, which is arithmetic, not error.",
-      "official_check": "This IS the official cross-check."
+      "id": "lq-paint-latest",
+      "text": "Paint, coating and adhesive runs 5.96x the national share in the latest year (H1, hero key card, trend figure title, closer).",
+      "source": "QCEW composite summed from the disclosed PIC-12 counties, latest year",
+      "assert": "abs(one(c for c in D['composite'] if c['naics']=='3255' and c['year']==max(x['year'] for x in D['composite']))['lq'] - 5.9635) <= 0.005",
+      "actual": "[(c['year'], round(c['lq'],4)) for c in D['composite'] if c['naics']=='3255'][-3:]",
+      "falsified_if": "A disclosure flip changes which counties enter the paint composite, or a QCEW revision moves the value outside 5.9585-5.9685, at which point the hand-typed '5.96' in the headline no longer rounds from the data."
+    },
+    {
+      "id": "lq-paint-leads-every-year",
+      "text": "Paint has the highest location quotient of the six industries in every year of the series, by at least double the next-highest (hero card '11 of 11', trend annotation, lede).",
+      "source": "QCEW composite, all years",
+      "assert": "(lambda ys: all((lambda r: r[0]['naics']=='3255' and r[0]['lq'] >= 2*r[1]['lq'])(sorted([c for c in D['composite'] if c['year']==y and c['lq']], key=lambda c: -c['lq'])) for y in ys) and len(ys)==11)(sorted(set(c['year'] for c in D['composite'])))",
+      "actual": "[(y, sorted([(c['naics'], round(c['lq'],2)) for c in D['composite'] if c['year']==y and c['lq']], key=lambda t: -t[1])[:2]) for y in sorted(set(c['year'] for c in D['composite']))]",
+      "falsified_if": "Another industry tops paint in any year, or paint's lead over second place drops below 2x in any year, which would break both the 'every year since 2015' claim and the 'more than double' annotation."
+    },
+    {
+      "id": "lq-paint-lead-margin",
+      "text": "The narrowest year's lead is 2.1x the next-highest industry (trend annotation, 'by at least 2.1x the next-highest').",
+      "source": "QCEW composite, ratio of first to second rank per year; the tightest year is 2015",
+      "assert": "abs(min((lambda r: r[0]['lq']/r[1]['lq'])(sorted([c for c in D['composite'] if c['year']==y and c['lq']], key=lambda c: -c['lq'])) for y in set(c['year'] for c in D['composite'])) - 2.113) <= 0.04",
+      "actual": "sorted((round((lambda r: r[0]['lq']/r[1]['lq'])(sorted([c for c in D['composite'] if c['year']==y and c['lq']], key=lambda c: -c['lq'])),3), y) for y in set(c['year'] for c in D['composite']))[:3]",
+      "falsified_if": "The tightest year's margin moves outside 2.073-2.153, so the drawn annotation would print a different first decimal."
+    },
+    {
+      "id": "lq-rubber-latest",
+      "text": "Rubber products, the industry Akron is named for, runs 2.44x in the latest year (standfirst, hero card, closer).",
+      "source": "QCEW composite, NAICS 3262, latest year",
+      "assert": "abs(one(c for c in D['composite'] if c['naics']=='3262' and c['year']==max(x['year'] for x in D['composite']))['lq'] - 2.4424) <= 0.005",
+      "actual": "[(c['year'], round(c['lq'],4)) for c in D['composite'] if c['naics']=='3262'][-3:]",
+      "falsified_if": "The value moves outside 2.4374-2.4474 and '2.44x' stops rounding from the data. 4 of 12 counties are withheld for rubber products, so a disclosure change moves this directly."
+    },
+    {
+      "id": "lq-paint-beats-rubber",
+      "text": "Paint outranks rubber products and outranks the plastics and rubber group in the latest year (the page's organizing finding).",
+      "source": "QCEW composite, latest year",
+      "assert": "(lambda y: one(c for c in D['composite'] if c['naics']=='3255' and c['year']==y)['lq'] > max(one(c for c in D['composite'] if c['naics']==n and c['year']==y)['lq'] for n in ('3262','326','3252','3261','325')))(max(x['year'] for x in D['composite']))",
+      "actual": "sorted([(c['naics'], round(c['lq'],2)) for c in D['composite'] if c['year']==max(x['year'] for x in D['composite']) and c['lq']], key=lambda t: -t[1])",
+      "falsified_if": "Any other industry overtakes paint in the latest year. Paint carries the heaviest suppression of the three core codes (5 of 12 counties), so this is the claim a disclosure change is most likely to break."
     },
     {
       "id": "lq-326-latest",
-      "text": "PIC-12 plastics and rubber sits at 2.32x the national share in the latest year.",
-      "source": "QCEW composite summed from 14 counties",
-      "assert": "round(one(c for c in D['composite'] if c['naics']=='326' and c['year']==max(x['year'] for x in D['composite']))['lq'],2) == 2.32",
-      "actual": "[(c['year'],c['lq']) for c in D['composite'] if c['naics']=='326'][-3:]",
-      "falsified_if": "Any county disclosure flips; the composite excludes withheld counties and is a floor. Changed from 2.43 to 2.32 when the footprint moved from NEO-14 to PIC-12."
+      "text": "PIC-12 plastics and rubber sits at 2.32x the national share in the latest year, on all twelve counties disclosed.",
+      "source": "QCEW composite summed from 12 counties",
+      "assert": "(lambda c: round(c['lq'],2) == 2.32 and c['counties_suppressed'] == 0 and c['counties_counted'] == 12)(one(c for c in D['composite'] if c['naics']=='326' and c['year']==max(x['year'] for x in D['composite'])))",
+      "actual": "[(c['year'],c['lq'],c['counties_counted'],c['counties_suppressed']) for c in D['composite'] if c['naics']=='326'][-3:]",
+      "falsified_if": "Any county disclosure flips for 326, which would also break the claim that this is the one column disclosed everywhere. Changed from 2.43 to 2.32 when the footprint moved from NEO-14 to PIC-12."
     },
     {
-      "id": "lq-paint-highest",
-      "text": "Paint, coating and adhesive is the strongest regional polymer concentration.",
-      "source": "QCEW composite, latest year",
-      "assert": "max((c for c in D['composite'] if c['year']==max(x['year'] for x in D['composite']) and c['lq']), key=lambda c: c['lq'])['naics'] == '3255'",
-      "actual": "sorted([(c['naics'],c['lq']) for c in D['composite'] if c['year']==max(x['year'] for x in D['composite']) and c['lq']], key=lambda t:-t[1])[:3]",
-      "falsified_if": "Another NAICS overtakes 3255, or its heavy suppression (7 of 14 counties) flips."
+      "id": "lq-326-flat",
+      "text": "Plastics and rubber products stayed inside a 2.22x to 2.39x band across all eleven years (the persistence behind 'the concentration is not eroding').",
+      "source": "QCEW composite, NAICS 326, all years, zero suppression in every year",
+      "assert": "(lambda s: min(s) >= 2.22 and max(s) <= 2.39 and len(s) == 11)([c['lq'] for c in D['composite'] if c['naics']=='326' and c['lq']]) and all(c['counties_suppressed']==0 for c in D['composite'] if c['naics']=='326')",
+      "actual": "[(c['year'], round(c['lq'],3)) for c in D['composite'] if c['naics']=='326']",
+      "falsified_if": "Any year of the 326 series leaves the 2.22-2.39 band, or a county goes withheld for 326 and the series stops being a like-for-like eleven-year comparison."
+    },
+    {
+      "id": "lq-paint-fixed-base",
+      "text": "On the five counties BLS discloses for paint in all eleven years, paint runs 7.68x in the latest year against 7.14x in 2015, and the latest year is the highest reading of that fixed-base series (the disclosure-twist section, its figure title, and the closer).",
+      "source": "Derived in app.js from D['cells']: national paint share recovered as (emp/local_total)/lq from any disclosed county, then the fixed-base composite = sum(emp)/sum(local_total) over the always-disclosed counties, divided by that national share. Re-computed here by the same arithmetic.",
+      "assert": "(lambda ys, always: (lambda ser: abs(ser[-1][1] - 7.682) <= 0.01 and abs(ser[0][1] - 7.137) <= 0.01 and max(s[1] for s in ser) == ser[-1][1] and len(always) == 5)([(y, (lambda sel, nat: (sum(c['emp'] for c in sel)/sum(c['local_total'] for c in sel))/nat)([c for c in D['cells'] if c['year']==y and c['naics']=='3255' and c['name'] in always], (lambda v: sum(v)/len(v))([(c['emp']/c['local_total'])/c['lq'] for c in D['cells'] if c['year']==y and c['naics']=='3255' and c['lq'] and c['emp'] and c['local_total'] and c['area'] not in ('39000','US000')]))) for y in ys]))(sorted(set(c['year'] for c in D['cells'])), sorted(a['name'] for a in D['areas'] if a['code'] not in ('39000','US000') and all(any(c['year']==y and c['area']==a['code'] and c['naics']=='3255' and c['lq'] for c in D['cells']) for y in sorted(set(x['year'] for x in D['cells'])))))",
+      "actual": "sorted(a['name'] for a in D['areas'] if a['code'] not in ('39000','US000') and all(any(c['year']==y and c['area']==a['code'] and c['naics']=='3255' and c['lq'] for c in D['cells']) for y in sorted(set(x['year'] for x in D['cells']))))",
+      "falsified_if": "The always-disclosed set stops being exactly five counties, the 2025 fixed-base value leaves 7.672-7.692 or the 2015 value leaves 7.127-7.147, or the latest year stops being the series maximum. Any of those breaks the 'eleven-year high' headline of that section. This is a subset of PIC-12 chosen for continuity, not a second footprint."
+    },
+    {
+      "id": "lq-paint-dropout",
+      "text": "Lorain reported 11.16x on 465 paint jobs in 2024 and is withheld in 2025; Geauga entered the disclosed set in 2025 (the disclosure-twist lede and the on-chart marker).",
+      "source": "QCEW county cells, NAICS 3255, 2024 and 2025",
+      "assert": "(lambda y: (lambda prev, now: abs(prev['lq'] - 11.1638) <= 0.01 and prev['emp'] == 465 and now['lq'] is None)(one(c for c in D['cells'] if c['year']==y-1 and c['name']=='Lorain' and c['naics']=='3255'), one(c for c in D['cells'] if c['year']==y and c['name']=='Lorain' and c['naics']=='3255')) and [a['name'] for a in D['areas'] if a['code'] not in ('39000','US000') and one(c for c in D['cells'] if c['year']==y-1 and c['name']==a['name'] and c['naics']=='3255')['lq'] is None and one(c for c in D['cells'] if c['year']==y and c['name']==a['name'] and c['naics']=='3255')['lq'] is not None] == ['Geauga'])(max(x['year'] for x in D['cells']))",
+      "actual": "[(c['year'], c['name'], c['lq'], c['emp']) for c in D['cells'] if c['naics']=='3255' and c['name'] in ('Lorain','Geauga') and c['year'] >= max(x['year'] for x in D['cells'])-1]",
+      "falsified_if": "A refetch restores Lorain's 2025 disclosure, changes its 2024 value, or adds a second county to the entering set. The drawn annotation names Lorain specifically."
+    },
+    {
+      "id": "lq-cuyahoga-paint",
+      "text": "Cuyahoga's paint cell is 11.2x on 3,258 jobs across 39 establishments and is 76 percent of every disclosed paint job in the region (hero card, heatmap lede and callout, closer).",
+      "source": "QCEW county cell, NAICS 3255, latest year, against the paint composite",
+      "assert": "(lambda y: (lambda c, tot: abs(c['lq'] - 11.2089) <= 0.01 and c['emp'] == 3258 and c['estabs'] == 39 and abs(c['emp']/tot - 0.765) <= 0.005)(one(c for c in D['cells'] if c['year']==y and c['name']=='Cuyahoga' and c['naics']=='3255'), one(c for c in D['composite'] if c['naics']=='3255' and c['year']==y)['emp']))(max(x['year'] for x in D['cells']))",
+      "actual": "[(c['name'], c['lq'], c['emp'], c['estabs']) for c in D['cells'] if c['naics']=='3255' and c['year']==max(x['year'] for x in D['cells']) and c['lq']]",
+      "falsified_if": "The Cuyahoga cell is revised or withheld, or the disclosed paint total moves so the share leaves 76.0-77.0 percent and the '76%' card and 'three of every four' phrasing stop being true."
+    },
+    {
+      "id": "lq-cuyahoga-largest-base-above-ten",
+      "text": "Cuyahoga paint is the largest employment base of any cell above 10x, which is the scatter's figure title and its exception clause.",
+      "source": "QCEW county cells, latest year, disclosed only",
+      "assert": "(lambda y: max([c for c in D['cells'] if c['year']==y and c['lq'] and c['emp'] and c['area'] not in ('39000','US000') and c['lq'] >= 10], key=lambda c: c['emp'])['name'] == 'Cuyahoga' and max([c for c in D['cells'] if c['year']==y and c['lq'] and c['emp'] and c['area'] not in ('39000','US000') and c['lq'] >= 10], key=lambda c: c['emp'])['naics'] == '3255')(max(x['year'] for x in D['cells']))",
+      "actual": "sorted([(c['name'], c['naics'], c['lq'], c['emp']) for c in D['cells'] if c['year']==max(x['year'] for x in D['cells']) and c['lq'] and c['emp'] and c['area'] not in ('39000','US000') and c['lq']>=10], key=lambda t: -t[3])",
+      "falsified_if": "Another cell above 10x posts more jobs than Cuyahoga paint, or Cuyahoga paint drops below 10x. The figure title names the county and industry."
+    },
+    {
+      "id": "lq-medina-paint",
+      "text": "Medina posts the region's fifth paint reading at 2.9x (the human-scale note beside the heatmap).",
+      "source": "QCEW county cells, NAICS 3255, latest year",
+      "assert": "(lambda y: (lambda ranked: round(one(c for c in D['cells'] if c['year']==y and c['name']=='Medina' and c['naics']=='3255')['lq'],1) == 2.9 and [c['name'] for c in ranked].index('Medina') == 4)(sorted([c for c in D['cells'] if c['year']==y and c['naics']=='3255' and c['lq'] and c['area'] not in ('39000','US000')], key=lambda c: -c['lq'])))(max(x['year'] for x in D['cells']))",
+      "actual": "sorted([(c['name'], round(c['lq'],2)) for c in D['cells'] if c['year']==max(x['year'] for x in D['cells']) and c['naics']=='3255' and c['lq'] and c['area'] not in ('39000','US000')], key=lambda t: -t[1])",
+      "falsified_if": "Medina's paint reading leaves 2.85-2.95, or its rank among disclosed paint counties moves off fifth. Summit sits at 2.90 immediately behind it, so a small revision can swap the two."
+    },
+    {
+      "id": "lq-ohio-paint",
+      "text": "Ohio as a whole runs 3.78x in paint, which is the benchmark the region's 5.96x is read against in the trend lede.",
+      "source": "QCEW state cell, area 39000, NAICS 3255, latest year",
+      "assert": "abs(one(c for c in D['cells'] if c['year']==max(x['year'] for x in D['cells']) and c['area']=='39000' and c['naics']=='3255')['lq'] - 3.7771) <= 0.005",
+      "actual": "[(c['area'], c['naics'], c['lq']) for c in D['cells'] if c['year']==max(x['year'] for x in D['cells']) and c['area']=='39000']",
+      "falsified_if": "Ohio's published paint location quotient moves outside 3.7721-3.7821 and '3.78x' stops rounding from the data."
+    },
+    {
+      "id": "lq-geauga-resin",
+      "text": "Geauga's resin cell, 22.7x on 491 jobs across 7 establishments, is the highest location quotient on the page (scatter lede and on-chart label).",
+      "source": "QCEW county cells, latest year",
+      "assert": "(lambda y: (lambda c: c['name']=='Geauga' and c['naics']=='3252' and abs(c['lq'] - 22.70) <= 0.05 and c['emp'] == 491 and c['estabs'] == 7)(max([c for c in D['cells'] if c['year']==y and c['lq'] and c['emp'] and c['area'] not in ('39000','US000')], key=lambda c: c['lq'])))(max(x['year'] for x in D['cells']))",
+      "actual": "sorted([(c['name'], c['naics'], c['lq'], c['emp'], c['estabs']) for c in D['cells'] if c['year']==max(x['year'] for x in D['cells']) and c['lq'] and c['area'] not in ('39000','US000')], key=lambda t: -t[2])[:3]",
+      "falsified_if": "Another cell overtakes it, or its jobs and establishment counts are revised. The label prints all three numbers."
+    },
+    {
+      "id": "lq-disclosed-share",
+      "text": "51 of the 72 possible industry and county cells are disclosed in the latest year; the denominator is computed from the areas and industries in the file, never typed.",
+      "source": "QCEW disclosure across 12 counties and 6 industries, latest year",
+      "assert": "(lambda y, cn, ni: len([c for c in D['cells'] if c['year']==y and c['lq'] and c['emp'] and c['area'] not in ('39000','US000')]) == 51 and cn*ni == 72)(max(x['year'] for x in D['cells']), len([a for a in D['areas'] if a['code'] not in ('39000','US000')]), len(D['naics']))",
+      "actual": "(len([c for c in D['cells'] if c['year']==max(x['year'] for x in D['cells']) and c['lq'] and c['emp'] and c['area'] not in ('39000','US000')]), len([a for a in D['areas'] if a['code'] not in ('39000','US000')]) * len(D['naics']))",
+      "falsified_if": "A refetch changes the disclosure pattern, or the footprint or industry list changes, which moves both the numerator and the printed denominator."
+    },
+    {
+      "id": "lq-paint-suppression",
+      "text": "Paint is withheld in 5 of the 12 counties in the latest year, leaving 7 readings in that heatmap column (heatmap lede, trend source line, closer).",
+      "source": "QCEW disclosure_code across the PIC-12 counties, NAICS 3255",
+      "assert": "(lambda y: one(c for c in D['composite'] if c['naics']=='3255' and c['year']==y)['counties_suppressed'] == 5 and len([c for c in D['cells'] if c['year']==y and c['naics']=='3255' and c['lq'] and c['area'] not in ('39000','US000')]) == 7)(max(x['year'] for x in D['cells']))",
+      "actual": "[(c['name'], c['lq']) for c in D['cells'] if c['naics']=='3255' and c['year']==max(x['year'] for x in D['cells']) and c['area'] not in ('39000','US000')]",
+      "falsified_if": "A disclosure change moves the withheld count off 5, which also moves the paint composite itself."
+    },
+    {
+      "id": "lq-residual-bound",
+      "text": "No checked cell differs from the bureau's published location quotient by more than 0.005, which is half of the last digit BLS prints (verification lede, figure title, on-chart bound).",
+      "source": "derive_lq.py cross-check against lq_annual_avg_emplvl, rounded to five decimals in the shipped cells",
+      "assert": "max(abs(c['residual']) for c in D['cells'] if c['residual'] is not None) <= 0.005 and D['meta']['verification']['max_abs_residual'] <= 0.005 and len([c for c in D['cells'] if c['residual'] is not None]) == D['meta']['verification']['cells_checked'] == 667",
+      "actual": "(max(abs(c['residual']) for c in D['cells'] if c['residual'] is not None), D['meta']['verification'])",
+      "falsified_if": "Any cell exceeds 0.005, which would mean the computation no longer agrees with the published figure inside the bureau's own rounding, or the checked-cell count moves off 667 and the drawn 'all 667 cells land inside' annotation is wrong.",
+      "official_check": "This IS the official cross-check."
+    },
+    {
+      "id": "lq-reproduces-bls",
+      "text": "The computed location quotient reproduces BLS published figures with a mean absolute error of 0.0025 across enough cells to cover the footprint.",
+      "source": "derive_lq.py cross-check against lq_annual_avg_emplvl",
+      "assert": "D['meta']['verification']['mean_abs_residual'] <= 0.003 and D['meta']['verification']['cells_checked'] >= len(D['meta']['footprint']['counties']) * 6 * 8",
+      "actual": "D['meta']['verification']",
+      "falsified_if": "BLS changes its LQ denominator, or our own_code 0 denominator drifts. The cell-count floor scales with the footprint — it dropped from 726 to 667 when NEO-14 became PIC-12, which is arithmetic, not error.",
+      "official_check": "This IS the official cross-check."
     },
     {
       "id": "lq-suppression",
@@ -36,19 +157,28 @@
     },
     {
       "id": "lq-registers",
-      "text": "NAICS 325 is labeled context, not cluster; 3252, 3255 and 326 are the measurement register.",
+      "text": "NAICS 325 is labeled context, not cluster; 3252, 3255 and 326 are the measurement register (the register key above the picker and the heatmap's parent-column rule).",
       "source": "Documents/NAICS work/PIC_NAICS_Crosswalk_ADDENDUM_2026-08-11.md, John's decision 2026-08-11",
-      "assert": "sorted(n['code'] for n in D['naics'] if n['register']=='core') == ['3252','3255','326'] and one(n for n in D['naics'] if n['code']=='325')['register'] == 'context'",
+      "assert": "sorted(n['code'] for n in D['naics'] if n['register']=='core') == ['3252','3255','326'] and one(n for n in D['naics'] if n['code']=='325')['register'] == 'context' and sorted(n['code'] for n in D['naics'] if n['register']=='detail') == ['3261','3262']",
       "actual": "[(n['code'], n['register']) for n in D['naics']]",
       "falsified_if": "PIC changes the measurement register, or someone adds a NAICS without classifying it. Using 325 as cluster overstates NEO-14 by 36.7 percent."
     },
     {
       "id": "lq-footprint",
       "text": "This page uses the PIC-12 footprint.",
-      "source": "John's decision 2026-08-14 \u2014 federal-data pages adopt PIC-12",
+      "source": "John's decision 2026-08-14 — federal-data pages adopt PIC-12",
       "assert": "D['meta']['footprint']['label'] == 'PIC-12' and D['meta']['footprint']['n'] == 12",
       "actual": "D['meta']['footprint']",
-      "falsified_if": "FOOTPRINT: this page uses PIC-12, matching the cluster-health dashboard. It does NOT reconcile with the vault-sourced pages, which use NEO-14 \u2014 the two share only 10 counties."
+      "falsified_if": "FOOTPRINT: this page uses PIC-12, matching the cluster-health dashboard. It does NOT reconcile with the vault-sourced pages, which use NEO-14 — the two share only 10 counties."
+    },
+    {
+      "id": "lq-coatings-anchor",
+      "text": "The Sherwin-Williams Company is headquartered in Cleveland, in Cuyahoga County, and RPM International is headquartered in Medina, Ohio (the human-scale note beside the heatmap).",
+      "source": "Company headquarters addresses as stated on each firm's SEC annual-report cover page. QCEW cannot name an employer, so this is context for the concentration and not evidence of it, and the note says so.",
+      "verify": "manual",
+      "assert": "",
+      "falsified_if": "Either company relocates its headquarters out of the named county, or the sentence is read as attributing the county's location quotient to those firms rather than offering the plain explanation for a coatings cluster of this size.",
+      "checked_by": "needs a human to attach the SEC filing links before this page is re-published"
     }
   ]
 }
