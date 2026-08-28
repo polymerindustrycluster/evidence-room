@@ -213,7 +213,7 @@
    "year": 1920,
    "era": 1,
    "title": "Census records Akron’s 1910–1920 population tripling",
-   "oneLiner": "The 1920 Census counted Akron at 208,435 residents, up from 69,067 in 1910 — a 201.8 percent increase, the fastest among Ohio cities over 25,000. (Bureau of the Census, 1920 Ohio bulletin)",
+   "oneLiner": "The 1920 Census counted Akron at 208,435 residents, up from 69,067 in 1910, a 201.8 percent increase, the fastest among Ohio cities over 25,000. (Bureau of the Census, 1920 Ohio bulletin)",
    "sources": [
     {
      "url": "https://www2.census.gov/library/publications/decennial/1920/bulletins/demographics/population-oh-number-of-inhabitants.pdf",
@@ -532,7 +532,7 @@
    "dateDisplay": "1987",
    "year": 1986,
    "era": 3,
-   "title": "Kent phase-separation PDLC — LC microdroplets formed by curing a resin solution",
+   "title": "Kent phase-separation PDLC: LC microdroplets formed by curing a resin solution",
    "oneLiner": "In 1987 Kent State was assigned US 4,688,900 (Doane, Chidichimo, Vaz) for liquid-crystal microdroplets that form spontaneously when a resin solution is cured. Fergason’s 1984 encapsulated-LC patent is earlier and different.",
    "sources": [
     {

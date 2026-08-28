@@ -453,9 +453,9 @@ document.getElementById("fysrc").innerHTML =
   `${D.meta.source}, in the twelve PIC-12 counties, marked up to 2025 dollars with the
    federal consumer price index (BLS CPI-U annual averages). FY${PARTIAL} is not over: its
    bar is the year so far, drawn hatched, and not comparable to the seven finished years.
-   A year with no row for an industry — FY${trough} for
-   ${label(troughMissing).toLowerCase()} — is a year with nothing recorded, not a
-   confirmed zero.`;
+   A year with no row for an industry (FY${trough} for
+   ${label(troughMissing).toLowerCase()}) means nothing was recorded. Whether the true
+   figure was zero, these files cannot say.`;
 
 document.getElementById("natable").innerHTML = withNotes(tableView("n",
   "Federal polymer obligations by industry code",
@@ -467,7 +467,7 @@ document.getElementById("natable").innerHTML = withNotes(tableView("n",
    by hand; the census names above are the full ones.`);
 document.getElementById("nasrc").innerHTML =
   `${D.meta.source}, added up FY${fys[0]}–FY${fys.at(-1)} in 2025 dollars. Pair every
-   industry with every year — ${codes.length} industries by ${fys.length} years — and only
+   industry with every year (${codes.length} industries by ${fys.length} years) and only
    ${D.naics.length} of the ${codes.length * fys.length} pairs carry an obligation at all;
    a missing one is a year with nothing recorded for that industry, rather than a confirmed
    zero. Every bar label is rounded to the nearest $0.1M, so the eight add to

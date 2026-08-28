@@ -108,13 +108,13 @@ const rows = S.filter(s => s.retraced !== null && s.stage !== "context")
    section that explains it. */
 PV.figures([
   ["key", vsB(gas.now.index), "gas, against January 2019",
-   `cheaper than before the 2022 spike: the buyer's win, the seller's lost windfall. The
+   `cheaper than before the 2022 spike: the buyer’s win, the seller’s lost windfall. The
     whole rise given back, and then some (${pct(gas.retraced)})`],
   ["", vsB(resinMfg.now.index), "resin, against January 2019",
    `the middle seat: about a third of the rise given back, the rest still on the
     invoice`],
   ["", vsB(prodMfg.now.index), "products, against January 2019",
-   "nothing given back, and this month is the dearest on record here: the seller's win"],
+   "nothing given back, and this month is the dearest on record here: the seller’s win"],
   ["", sp(last.v), "points, products over resin",
    `since 2019 product prices have grown ${Math.abs(last.v).toFixed(1)} percentage points
     more than resin prices; in the 2021 squeeze they trailed by
@@ -158,12 +158,12 @@ document.getElementById("v2d").textContent =
     `<b>Where the ${Math.abs(last.v).toFixed(1)} comes from.</b> In ${monF(nD)} the two
      indexes stand at ${r2(PM[nD])} and ${r2(RM[nD])}: a gap of ${r2(last.v)} points. In
      ${monF(tD)} they stood at ${r2(PM[tD])} and ${r2(RM[tD])}, a gap of ${r2(sTrough.v)}.
-     Everywhere else this page rounds those same indexes — to ${rp} and ${rr} today — and
+     Everywhere else this page rounds those same indexes (to ${rp} and ${rr} today), and
      rounded numbers do not subtract: ${rp} − ${rr} comes to ${rp - rr}, which is a point
      of rounding, not a second measurement. The gap is always taken from the full values.
      One more subtraction the headline invites and does not mean: going from
      ${sp(sTrough.v)} to ${sp(last.v)} is a swing of ${(last.v - sTrough.v).toFixed(1)}
-     points in the parts maker's favour, not a shrinking from
+     points in the parts maker’s favour, not a shrinking from
      ${Math.abs(sTrough.v).toFixed(1)} to ${Math.abs(last.v).toFixed(1)}.`;
 }
 
@@ -729,8 +729,8 @@ document.getElementById("laddertable").innerHTML = tableView("ld",
    the READING and never the rule, and the rule then sat five screens below the chart it
    defines — the reader had already decided what the bars meant. Forty-four words. */
 document.getElementById("laddersrc").innerHTML =
-  `${D.meta.sources}, monthly, 2015 through mid-2026, measured against January 2019 &mdash;
-   midwinter, so gas enters at a seasonal high: the ordering survives that, the exact
+  `${D.meta.sources}, monthly, 2015 through mid-2026, measured against January 2019
+   (midwinter, so gas enters at a seasonal high): the ordering survives that, the exact
    percentages do not. Share of the rise given back = (peak &minus; now) &divide;
    (peak &minus; 100).`;
 

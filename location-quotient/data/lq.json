@@ -13,7 +13,7 @@
    "mean_abs_residual": 0.002542,
    "max_abs_residual": 0.004997
   },
-  "suppression": "disclosure_code 'N' → suppressed:true, value null. Never zero.",
+  "suppression": "disclosure_code ‘N’ → suppressed:true, value null. Never zero.",
   "registers": {
    "core": "3252 + 3255 + 326 — the decided measurement register",
    "detail": "a sub-slice of a core code; never add it to its parent",

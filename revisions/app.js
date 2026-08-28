@@ -154,7 +154,7 @@ const FLIPBIG = FLIPS.filter(p => p.series === BIGS).length;
    the shipped archive.
 
    HOW BIG: the typical revision against the typical month. The same 270 consecutive-month
-   pairs, read on today's values, move a median 0.34%. A revision is therefore a bit under
+   pairs, read on today’s values, move a median 0.34%. A revision is therefore a bit under
    half of what these prices do in an ordinary month — small against the LEVEL, and not
    small against the STEP, which is the mechanism behind the reversals further down. This
    is a same-pipeline comparison: both quantities come from one archive, one set of months
@@ -547,7 +547,7 @@ document.getElementById("disttable").innerHTML = tableView("d",
    ["Mean corrections per revised month", (REVTOT / P.length).toFixed(2)],
    ["Months from first print to final value, median", med(LAGS)],
    ["Longest a month kept moving, in months", LAGMAX],
-   ["Median month-over-month price change, today's values",
+   ["Median month-over-month price change, today’s values",
     STEPMED.toFixed(2) + "%"],
    ["Months whose step from the month before reversed",
     `${FLIPS.length} of ${MATERIAL.length}`]]);

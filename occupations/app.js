@@ -162,7 +162,7 @@ const MONTHS = ["January", "February", "March", "April", "May", "June", "July", 
   const [fy, fm] = M.fetched.split("-");
   document.getElementById("byline").innerHTML =
     `By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data BLS, O*NET and IPEDS
-     &middot; ${MONTHS[+fm - 1]} ${fy}`;
+     &middot; ${MONTHS[+fm - 1]}&nbsp;${fy}`;
 }
 
 /* ------------------------------------------------- occupation selector + verdict */

@@ -155,7 +155,7 @@ document.getElementById("byline").innerHTML =
   /* One person holds both roles, so the roles collapse rather than printing the name
      twice (page-design.md, byline anatomy). */
   `By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data
-   ${AGENCY}, ${FIRST}&ndash;${LATEST} &middot; ${MONTHS[+fm - 1]} ${fy}`;
+   ${AGENCY}, ${FIRST}&ndash;${LATEST} &middot; ${MONTHS[+fm - 1]}&nbsp;${fy}`;
 
 /* --------------------------------------------------- the register, in the open */
 /* "CONTEXT SITS OUTSIDE THE REGISTER" was the page's worst sentence: three capitalised
