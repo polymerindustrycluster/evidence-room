@@ -83,15 +83,15 @@
     },
     {
       "id": "churn-average-rate",
-      "text": "The average quarter moves 10.8% of the workforce in or out.",
+      "text": "The average quarter moves 10.8% of the workforce in or out: about a tenth of jobs start and about a tenth end.",
       "source": "derived: mean of the 55 quarterly churn rates",
-      "assert": "round(sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) * 100, 1) == 10.8",
+      "assert": "round(sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) * 100, 1) == 10.8 and 0.095 <= sum(q['hires']/q['emp'] for q in D['quarters']) / len(D['quarters']) <= 0.115 and 0.095 <= sum(q['seps']/q['emp'] for q in D['quarters']) / len(D['quarters']) <= 0.115",
       "actual": "sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) * 100",
-      "falsified_if": "The mean moves off 10.75-10.85. This one figure carries the hero stat card, the shop-floor vignette and the translator's default sentence, so a tenth of a point moves three surfaces at once. UNITS: churn is the average of hires and separations over jobs, so 10.8% is 10.8% hired AND 10.8% separated, not 10.8% total movement."
+      "falsified_if": "The mean moves off 10.75-10.85. This one figure carries the hero stat card, the shop-floor vignette and the translator's default sentence, so a tenth of a point moves three surfaces at once. UNITS: churn is the average of hires and separations over jobs, so 10.8% is 10.8% hired AND 10.8% separated, not 10.8% total movement. The hero stat card no longer reads 'of the workforce, per quarter' but 'a tenth of jobs start, a tenth end, each quarter', so the per-side bounds are asserted here too: a revision that moved either side out of 9.5%-11.5% would break the card even while the 10.8% headline still rounded."
     },
     {
       "id": "churn-baseline-and-gap",
-      "text": "The four-quarter average reads 8.5% through 2012Q4 and 9.6% through 2025Q3, about 1.1 points higher.",
+      "text": "The yearly (four-quarter) average reads 8.5% through 2012Q4 and 9.6% through 2025Q3, about 1.1 points higher.",
       "source": "derived: trailing four-quarter means of the quarterly churn rate",
       "assert": "round(sum(q['churn_rate'] for q in D['quarters'][:4]) / 4 * 100, 1) == 8.5 and round(sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4 * 100, 1) == 9.6 and round((sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4 - sum(q['churn_rate'] for q in D['quarters'][:4]) / 4) * 100, 1) == 1.1",
       "actual": "(sum(q['churn_rate'] for q in D['quarters'][:4]) / 4 * 100, sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4 * 100)",
@@ -99,7 +99,7 @@
     },
     {
       "id": "churn-above-baseline",
-      "text": "The four-quarter average has sat above its 2012 level in 51 of the 52 quarters it covers.",
+      "text": "The yearly average has sat above its 2012 level in 51 of the 52 quarters it covers.",
       "source": "derived: trailing four-quarter mean against the 2012 four-quarter mean",
       "assert": "len(D['quarters']) - 3 == 52 and sum(1 for i in range(3, len(D['quarters'])) if sum(q['churn_rate'] for q in D['quarters'][i-3:i+1]) / 4 > sum(q['churn_rate'] for q in D['quarters'][:4]) / 4) == 51",
       "actual": "sum(1 for i in range(3, len(D['quarters'])) if sum(q['churn_rate'] for q in D['quarters'][i-3:i+1]) / 4 > sum(q['churn_rate'] for q in D['quarters'][:4]) / 4)",
@@ -107,7 +107,7 @@
     },
     {
       "id": "churn-peak",
-      "text": "The four-quarter average peaked at 16.7% in 2022Q2.",
+      "text": "The yearly (four-quarter) average peaked at 16.7% in 2022Q2.",
       "source": "derived: maximum trailing four-quarter mean",
       "assert": "D['quarters'][41]['year'] == 2022 and D['quarters'][41]['q'] == 2 and round(sum(q['churn_rate'] for q in D['quarters'][38:42]) / 4 * 100, 1) == 16.7 and close(max(sum(q['churn_rate'] for q in D['quarters'][i-3:i+1]) / 4 for i in range(3, len(D['quarters']))), sum(q['churn_rate'] for q in D['quarters'][38:42]) / 4, 1e-12)",
       "actual": "max((sum(q['churn_rate'] for q in D['quarters'][i-3:i+1]) / 4, D['quarters'][i]['year'], D['quarters'][i]['q']) for i in range(3, len(D['quarters'])))",
@@ -123,7 +123,7 @@
     },
     {
       "id": "churn-decomposition",
-      "text": "Between 2012 and the last four published quarters the separation rate rose about 1.9 points and the hire rate about 0.2.",
+      "text": "Between 2012 and the last four published quarters the leaving (separation) rate rose about 1.9 points and the hiring (hire) rate about 0.2.",
       "source": "derived: hires/jobs and separations/jobs, four-quarter means at each end",
       "assert": "round((sum(q['seps']/q['emp'] for q in D['quarters'][-4:]) / 4 - sum(q['seps']/q['emp'] for q in D['quarters'][:4]) / 4) * 100, 1) == 1.9 and round((sum(q['hires']/q['emp'] for q in D['quarters'][-4:]) / 4 - sum(q['hires']/q['emp'] for q in D['quarters'][:4]) / 4) * 100, 1) == 0.2 and round((sum(q['hires']/q['emp'] for q in D['quarters'][:4]) / 4 - sum(q['seps']/q['emp'] for q in D['quarters'][:4]) / 4) * 100, 1) == 0.9",
       "actual": "((sum(q['seps']/q['emp'] for q in D['quarters'][-4:]) / 4 - sum(q['seps']/q['emp'] for q in D['quarters'][:4]) / 4) * 100, (sum(q['hires']/q['emp'] for q in D['quarters'][-4:]) / 4 - sum(q['hires']/q['emp'] for q in D['quarters'][:4]) / 4) * 100)",
@@ -131,7 +131,7 @@
     },
     {
       "id": "churn-separations-ahead",
-      "text": "On a four-quarter average, separations have run above hires in each of the eleven quarters since 2023Q1.",
+      "text": "Averaged over a year, separations have run above hires in each of the eleven quarters since 2023Q1.",
       "source": "derived: separation rate minus hire rate, trailing four quarters",
       "assert": "D['quarters'][44]['year'] == 2023 and D['quarters'][44]['q'] == 1 and all(sum(q['seps']/q['emp'] for q in D['quarters'][i-3:i+1]) > sum(q['hires']/q['emp'] for q in D['quarters'][i-3:i+1]) for i in range(44, len(D['quarters']))) and sum(q['seps']/q['emp'] for q in D['quarters'][40:44]) < sum(q['hires']/q['emp'] for q in D['quarters'][40:44]) and len(D['quarters']) - 44 == 11",
       "actual": "[(D['quarters'][i]['year'], D['quarters'][i]['q'], round((sum(q['seps']/q['emp'] for q in D['quarters'][i-3:i+1]) - sum(q['hires']/q['emp'] for q in D['quarters'][i-3:i+1])) / 4 * 100, 2)) for i in range(42, len(D['quarters']))]",
@@ -163,7 +163,7 @@
     },
     {
       "id": "churn-replacement-multiple",
-      "text": "The region started 6.0 times its own opening workforce, and the 222,890 hire and separation events are about 1,327 times the net.",
+      "text": "The region started 6.0 times its own opening workforce, and the 222,890 hire and separation events are about 1,327 for every one job of net gain.",
       "source": "derived: total hires over opening employment; total events over net",
       "assert": "round(sum(q['hires'] for q in D['quarters']) / D['quarters'][0]['emp'], 1) == 6.0 and sum(q['hires'] for q in D['quarters']) + sum(q['seps'] for q in D['quarters']) == 222890 and round((sum(q['hires'] for q in D['quarters']) + sum(q['seps'] for q in D['quarters'])) / (sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters']))) == 1327",
       "actual": "(sum(q['hires'] for q in D['quarters']) / D['quarters'][0]['emp'], (sum(q['hires'] for q in D['quarters']) + sum(q['seps'] for q in D['quarters'])) / (sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters'])))",

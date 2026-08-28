@@ -165,13 +165,17 @@ function drawTrendDesktop() {
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys, xt: YEARS.filter((_, i) => i % 2 === 0),
     yt: ticks(0, maxY, 6), xfmt: v => v, yfmt: fx,
     /* No "YEAR" axis title. The tick row already reads 2015 … 2025; a caps label under it
-       is ink that tells the reader something the numbers said first. */
-    xlab: "", ylab: `Location quotient, ${FP.label} against the nation`});
+       is ink that tells the reader something the numbers said first.
+       The y axis is a constructed unit, so its title carries the READING and not the
+       arithmetic: the formula lives in the methodology box, where a reader who wants it
+       goes looking. */
+    xlab: "", ylab: "↑ more concentrated here than in the country"});
 
   el("line", {x1: m.l, y1: ys(1), x2: m.l + w, y2: ys(1), stroke: "var(--hover)",
     "stroke-width": 1.5}, svg);
-  txt(svg, "1.0× is the national share", {x: m.l + 8, y: ys(1) - 8, class: "pv-lab",
-    fill: "var(--hover)"});
+  /* The reference line is labelled by what CROSSING it means, not by its value alone. */
+  txt(svg, "1.0× · above it, more concentrated here", {x: m.l + 8, y: ys(1) - 8,
+    class: "pv-lab", fill: "var(--hover)"});
 
   /* Right-hand direct labels, nudged apart, with a leader where one had to move. */
   const ends = NAICS.map(code => {
@@ -209,7 +213,9 @@ function drawTrendDesktop() {
   const col = picked === "3255" ? INK : "var(--pv-muted)";
   const mid = paintSeries.find(c => c.year === 2019) || paintSeries[4];
   const s1 = `Paint has led all six industries in every one of ${leadYears.length} years,`;
-  const s2 = `by at least ${leadRatio.toFixed(1)}× the next-highest.`;
+  /* "2.1× the next-highest" is a ratio OF ratios, and beside a chart whose every other
+     number is "× the national share" it reads as one. Say which comparison it is. */
+  const s2 = `always at least ${leadRatio.toFixed(1)} times the second industry.`;
   plated(svg, s1, xs(mid.year) - 92, ys(mid.lq) + 28, "pv-lab", col, 7.4);
   plated(svg, s2, xs(mid.year) - 92, ys(mid.lq) + 45, "pv-labq", col, 7.0);
   el("circle", {cx: xs(paintPeak.year), cy: ys(paintPeak.lq), r: 5, fill: "none",
@@ -231,11 +237,12 @@ function drawTrendMobile() {
   /* The takeaway sits above the plot, in the first paint. */
   txt(svg, `Paint leads all six industries,`, {x: m.l - 2, y: 30, class: "pv-lab"});
   txt(svg, `and has every year since ${FIRST}.`, {x: m.l - 2, y: 50, class: "pv-lab"});
-  txt(svg, `Location quotient against the nation`, {x: m.l - 2, y: 70, class: "pv-labq"});
+  txt(svg, `Higher means more concentrated here.`, {x: m.l - 2, y: 70, class: "pv-labq"});
 
   el("line", {x1: m.l, y1: ys(1), x2: m.l + w, y2: ys(1), stroke: "var(--hover)",
     "stroke-width": 1.3}, svg);
-  txt(svg, "1.0×", {x: m.l + 3, y: ys(1) - 6, class: "pv-labq", fill: "var(--hover)"});
+  txt(svg, "1.0× national share", {x: m.l + 3, y: ys(1) - 6, class: "pv-labq",
+    fill: "var(--hover)"});
 
   NAICS.forEach(code => {
     const s = seriesOf(code);
@@ -292,7 +299,7 @@ function trendCopy() {
     : "";
 
   document.getElementById("trendtitle").textContent =
-    `Paint runs ${fx(paint.lq)} against the nation, more than double the ${fx(runnerUp.lq)} ` +
+    `Paint runs ${fx(paint.lq)} the national share, more than double the ${fx(runnerUp.lq)} ` +
     `of ${runnerUp.label.split(",")[0].toLowerCase()}`;
 
   /* CAVEAT BUDGET: one source line plus one limitation sentence, ~30 words in the default
@@ -309,8 +316,8 @@ function trendCopy() {
       : `All ${FP.words} counties are disclosed for this industry in ${LATEST}.`);
 
   document.getElementById("trendtable").innerHTML = tableView("t",
-    `Location quotient by year · ${sel[0].label}`,
-    ["Year", "LQ", "Jobs", "Establishments", "Counties withheld"],
+    `Concentration against the national share, by year · ${sel[0].label}`,
+    ["Year", "× the national share", "Jobs", "Establishments", "Counties withheld"],
     sel.map(c => [c.year, fx(c.lq), N(c.emp), N(c.estabs), c.counties_suppressed]));
 }
 
@@ -337,7 +344,7 @@ function drawTwistDesktop() {
   const ys = v => m.t + h - ((v - lo) / (hi - lo)) * h;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys, xt: YEARS.filter((_, i) => i % 2 === 0),
     yt: ticks(lo, hi, 5), xfmt: v => v, yfmt: fx, xlab: "",
-    ylab: "Paint location quotient"});
+    ylab: "↑ more concentrated here than in the country"});
   el("path", {d: "M" + paintSeries.map(p => `${xs(p.year)},${ys(p.lq)}`).join("L"),
     fill: "none", stroke: GRAY, "stroke-width": 2}, svg);
   el("path", {d: "M" + fixed.map(p => `${xs(p.year)},${ys(p.lq)}`).join("L"),
@@ -377,6 +384,7 @@ function drawTwistMobile() {
     yt: ticks(lo, hi, 4), xfmt: v => v, yfmt: fx, xlab: "", ylab: ""});
   txt(svg, "Same five counties every year,", {x: m.l - 2, y: 30, class: "pv-lab"});
   txt(svg, "paint is at its eleven-year high.", {x: m.l - 2, y: 50, class: "pv-lab"});
+  txt(svg, "Higher means more concentrated here.", {x: m.l - 2, y: 68, class: "pv-labq"});
   el("path", {d: "M" + paintSeries.map(p => `${xs(p.year)},${ys(p.lq)}`).join("L"),
     fill: "none", stroke: GRAY, "stroke-width": 2}, svg);
   el("path", {d: "M" + fixed.map(p => `${xs(p.year)},${ys(p.lq)}`).join("L"),
@@ -398,21 +406,22 @@ function drawTwistMobile() {
 function twistCopy() {
   const prev = comp("3255", LATEST - 1);
   document.getElementById("twistlede").innerHTML =
-    `The composite above is summed from whichever counties the bureau discloses that year,
-     and the set moves. ${drop.name}, ${fx(drop.lq)} on ${N(drop.emp)} paint jobs in
+    `The line above adds up whichever counties the bureau discloses that year, and the set
+     moves. ${drop.name}, ${fx(drop.lq)} on ${N(drop.emp)} paint jobs in
      ${LATEST - 1}, went withheld in ${LATEST}, which is most of the fall from
      ${fx(prev.lq)} to ${fx(paint.lq)}. Restricted to the ${alwaysOn.length} counties the
      bureau discloses in all ${YEARS.length} years, paint reads ${fx(fixedNow.lq)} in
      ${LATEST} against ${fx(fixedThen.lq)} in ${FIRST}, the highest value in the series.
-     The concentration is not eroding, and on a base that never moves it is climbing.`;
+     The concentration is not eroding, and on a county set that never moves it is
+     climbing.`;
   document.getElementById("twisttitle").textContent =
-    `On a fixed five-county base, paint climbs from ${fx(fixedThen.lq)} to ${fx(fixedNow.lq)}`;
+    `Holding the same five counties, paint climbs from ${fx(fixedThen.lq)} to ${fx(fixedNow.lq)}`;
   /* Source line plus one limitation, ~32 words. The recovery arithmetic and the entrant
      county are real and checkable, and they are the kind of detail a reader opens on
      purpose: they sit in the disclosure below, not in the caption. */
   document.getElementById("twistsrc").innerHTML =
-    `Source: BLS QCEW annual averages, ${FIRST}&ndash;${LATEST}, county cells. The fixed
-     base is ${alwaysOn.map(a => a.name).join(", ")}, a subset of ${FP.label} chosen
+    `Source: BLS QCEW annual averages, ${FIRST}&ndash;${LATEST}, county cells. The five
+     held still are ${alwaysOn.map(a => a.name).join(", ")}, a subset of ${FP.label} chosen
      because the bureau discloses paint there in every year, and not a second footprint.`;
   document.getElementById("fixednote").innerHTML =
     `<b>Derived from the same cells as the chart above, not from a second file.</b> The
@@ -559,13 +568,17 @@ function drawHeatDesktop() {
       txt(svg, s, a);
     });
 
-  heatLegend(svg, LEGEND, m.l, m.t + h + 26, 104);
+  /* A binned ramp whose key is six number ranges tells a reader nothing about which end
+     is which. The direction goes ABOVE the swatches, where it is read first. */
+  txt(svg, "paler cells sit near the national share; darker cells run many times it",
+    {x: m.l, y: m.t + h + 22, class: "pv-labq"});
+  heatLegend(svg, LEGEND, m.l, m.t + h + 34, 104);
   heatCopy(rows);
 }
 
 function drawHeatMobile() {
   const rows = heatRows();
-  const W = 420, m = {t: 128, r: 10, b: 116, l: 92};
+  const W = 420, m = {t: 128, r: 10, b: 134, l: 92};
   const {svg, h, w} = PV.chart("heat", {W, rows: rows.length, rowH: 30, m});
   suppPattern(svg);
   const cw = w / NAICS.length, ch = h / rows.length;
@@ -610,8 +623,10 @@ function drawHeatMobile() {
     {x: 6, y: m.t + h + 26, class: "pv-lab", fill: "var(--hover)"});
   txt(svg, `${Math.round(cuyShare * 100)}% of the region’s disclosed paint jobs`,
     {x: 6, y: m.t + h + 44, class: "pv-labq"});
-  heatLegend(svg, LEGEND.slice(0, 4), 6, m.t + h + 58, 100);
-  heatLegend(svg, LEGEND.slice(4), 6, m.t + h + 84, 100);
+  txt(svg, "darker cells are more concentrated", {x: 6, y: m.t + h + 66,
+    class: "pv-labq"});
+  heatLegend(svg, LEGEND.slice(0, 4), 6, m.t + h + 76, 100);
+  heatLegend(svg, LEGEND.slice(4), 6, m.t + h + 102, 100);
   heatCopy(rows);
 }
 
@@ -623,7 +638,7 @@ function heatCopy(rows) {
     `${Cap(word(topBand.length))} cells on this
      grid reach the darkest shade, and Cuyahoga&rsquo;s ${fx(cuyPaint.lq)} in paint is the
      one with real employment behind it: ${N(cuyPaint.emp)} jobs across
-     ${N(cuyPaint.estabs)} establishments, ${Math.round(cuyShare * 100)}% of every paint job
+     ${N(cuyPaint.estabs)} separate sites, ${Math.round(cuyShare * 100)}% of every paint job
      the bureau discloses in the region. The other ${word(topOthers.length)} run between
      ${N(lo)} and ${N(hi)} jobs. Paint is also the industry the bureau hides most of:
      ${word(paint.counties_suppressed)} of ${FP.words} counties are withheld, so this column
@@ -673,8 +688,10 @@ function drawScatterDesktop() {
        with nothing under it, which is an unlabelled axis extension, not a scale. */
     xt: [0, 100, 500, 1000, 2000, 4000].filter(v => v < maxE).concat(maxE),
     yt: ticks(0, maxL, 6), xfmt: N, yfmt: v => v.toFixed(0) + "×",
-    xlab: "Jobs in that county and industry (square-root scale)",
-    ylab: "Location quotient"});
+    /* Both axes name the reading, not the construction. The square-root scale is
+       arithmetic and moves to the source line. */
+    xlab: "more jobs in that county and industry →",
+    ylab: "↑ more concentrated here than in the country"});
   pts.forEach(p => hoverable(
     el("circle", {cx: xs(p.emp), cy: ys(p.lq), r: 6,
       fill: p.naics === "3255" ? SUBJECT : CONTEXT,
@@ -689,7 +706,7 @@ function drawScatterDesktop() {
      annotation on this chart is now drawn after every mark. */
   el("line", {x1: m.l, y1: ys(1), x2: m.l + w, y2: ys(1), stroke: "var(--hover)",
     "stroke-width": 1.5}, svg);
-  plated(svg, "1.0× is the national share", m.l + 8, ys(1) - 9, "pv-lab",
+  plated(svg, "1.0× · above it, more concentrated here", m.l + 8, ys(1) - 9, "pv-lab",
     "var(--hover)", 7.3);
   /* Words, not codes, and only where a point carries the argument. */
   const label = (p, dx, dy, anchor) =>
@@ -711,9 +728,10 @@ function drawScatterMobile() {
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys,
     xt: [0, 500, 2000].filter(v => v < maxE).concat(maxE),
     yt: ticks(0, maxL, 4), xfmt: N, yfmt: v => v.toFixed(0) + "×",
-    xlab: "jobs in that county and industry", ylab: ""});
+    xlab: "more jobs →", ylab: ""});
   txt(svg, "The biggest ratios sit on the", {x: m.l - 2, y: 26, class: "pv-lab"});
   txt(svg, "smallest job counts.", {x: m.l - 2, y: 46, class: "pv-lab"});
+  txt(svg, "higher: more concentrated here", {x: m.l - 2, y: 64, class: "pv-labq"});
   pts.forEach(p => hoverable(
     el("circle", {cx: xs(p.emp), cy: ys(p.lq), r: 5,
       fill: p.naics === "3255" ? SUBJECT : CONTEXT,
@@ -732,33 +750,35 @@ function drawScatterMobile() {
   /* Annotation last here too, for the reason given in the desktop variant. */
   el("line", {x1: m.l, y1: ys(1), x2: m.l + w, y2: ys(1), stroke: "var(--hover)",
     "stroke-width": 1.3}, svg);
-  plated(svg, "1.0× national share", m.l + 3, ys(1) - 6, "pv-labq", "var(--hover)", 7.2);
+  plated(svg, "1.0× · above it, more concentrated", m.l + 3, ys(1) - 6, "pv-labq",
+    "var(--hover)", 7.2);
 }
 
 function scatterCopy() {
   document.getElementById("scatterlede").innerHTML =
-    `A location quotient is a ratio, so a county with seven plants can post a bigger number
-     than a county with forty. Plotted against the jobs behind it, the dramatic figures move
-     left where they belong: ${topLQ[0].name} County&rsquo;s ${fx(topLQ[0].lq)} in resin is
-     ${N(topLQ[0].emp)} jobs across ${N(topLQ[0].estabs)} establishments, real and small.
-     Paint is the exception on this chart. ${bigAbove10.name}&rsquo;s
-     ${fx(bigAbove10.lq)} rests on ${N(bigAbove10.emp)} jobs, the largest base anywhere
-     above 10&times;. A concentration figure without its base is half a fact, which is why
-     every point here carries both.`;
+    `Concentration is one share divided by another, so a county with seven plants can post
+     a bigger number than a county with forty. Plotted against the jobs behind it, the
+     dramatic figures move left where they belong: ${topLQ[0].name} County&rsquo;s
+     ${fx(topLQ[0].lq)} in resin is ${N(topLQ[0].emp)} jobs at ${N(topLQ[0].estabs)} sites,
+     real and small. Paint is the exception on this chart. ${bigAbove10.name}&rsquo;s
+     ${fx(bigAbove10.lq)} rests on ${N(bigAbove10.emp)} jobs, more than any other cell
+     above 10&times;. A concentration figure without the job count behind it is half a
+     fact, which is why every point here carries both.`;
   document.getElementById("scattertitle").textContent =
-    `${bigAbove10.name} paint is the one large base above 10×`;
+    `${bigAbove10.name} paint has more jobs behind it than any other cell above 10×`;
   /* The colour mapping stated in the figure, not left to be inferred from one labelled
      point: the scatter is the only chart here where the subject is a whole group. */
   document.getElementById("scatterkey").innerHTML =
     `<span><i style="background:${SUBJECT}"></i>Paint &amp; coatings</span>
      <span><i style="background:${CONTEXT}"></i>Every other industry</span>`;
   document.getElementById("scattersrc").innerHTML =
-    `Source: BLS QCEW annual averages, ${LATEST} county cells. ${pts.length} of
-     ${POSSIBLE} possible industry and county pairings are disclosed; the withheld ones are
-     not on this plane at all.`;
+    `Source: BLS QCEW annual averages, ${LATEST} county cells. The horizontal scale is
+     square-root, so the small job counts stay readable. ${pts.length} of ${POSSIBLE}
+     possible county and industry combinations are disclosed; the withheld ones are not on
+     this plane at all.`;
   document.getElementById("scattertable").innerHTML = tableView("s",
     `Concentration against employment, ${LATEST}`,
-    ["County", "Industry", "LQ", "Jobs", "Establishments"],
+    ["County", "Industry", "× the national share", "Jobs", "Establishments"],
     topLQ.slice(0, 12).map(p => [p.name, p.label, fx(p.lq), N(p.emp), N(p.estabs)]));
 }
 
@@ -789,7 +809,8 @@ function drawResidVariant(W, H, mobile) {
     xt: mobile ? [-0.005, 0, 0.005] : [-0.005, -0.0025, 0, 0.0025, 0.005],
     xfmt: v => v === 0 ? "0" : (v > 0 ? "+" : "−") + Math.abs(v).toFixed(4),
     yfmt: v => N(v),
-    xlab: mobile ? "" : "Computed location quotient minus the published figure",
+    /* A deviation axis, so it is labelled by which side is which. */
+    xlab: mobile ? "" : "our figure below the bureau’s ←  0  → our figure above",
     ylab: mobile ? "" : "Cells"});
   bins.forEach(b => {
     const x = xs(b.x0), wd = xs(b.x1) - xs(b.x0) - 1.5;
@@ -808,19 +829,19 @@ function drawResidVariant(W, H, mobile) {
   plated(svg, mobile ? "half the last digit BLS prints"
                      : "half of the last digit the bureau prints",
     xs(0), m.t + 34, "pv-labq", "var(--pv-muted)", 6.9, "middle");
-  if (mobile) txt(svg, "computed minus published", {x: m.l, y: m.t - 14,
+  if (mobile) txt(svg, "our figure minus the bureau’s", {x: m.l, y: m.t - 14,
     class: "pv-labq", fill: "var(--pv-muted)"});
 }
 
 /* ------------------------------------------------------------- copy, once */
 document.getElementById("residlede").innerHTML =
   `BLS publishes its own location quotient to two decimals, and publishes the components
-   too. All ${N(D.meta.verification.cells_checked)} cells computed here agree with the
-   published figure to within ${BOUND.toFixed(3)}, which is half of the last digit the
-   bureau prints. The two are the same number as far as the bureau states it, and the flat
-   shape below is what rounding looks like.`;
+   too. All ${N(D.meta.verification.cells_checked)} cells computed here, each one industry
+   in one county in one year, agree with the published figure to within
+   ${BOUND.toFixed(3)}, which is half of the last digit the bureau prints. The two are the
+   same number as far as the bureau states it.`;
 document.getElementById("residtitle").textContent =
-  `${N(RS.length)} checked cells, none outside ±0.005`;
+  `${N(RS.length)} checked cells, none off the bureau’s figure by more than 0.005`;
 document.getElementById("residsrc").innerHTML =
   `Source: the location quotient BLS publishes against the one computed here, all years and
    areas. Cells the bureau withholds carry no published figure and cannot be checked.`;
@@ -847,8 +868,8 @@ document.getElementById("closersub").innerHTML =
    <b>${fx(fixedNow.lq)}</b> across the ${alwaysOn.length} counties disclosed in every year
    since ${FIRST}, against ${fx(rubber.lq)} for the rubber products the region is named for.
    ${Math.round(cuyShare * 100)}% of the disclosed paint jobs sit in one county, and
-   ${paint.counties_suppressed} of ${FP.n} counties are withheld, so treat the composite as
-   a reading on the counties that report and not a census of the region.`;
+   ${paint.counties_suppressed} of ${FP.n} counties are withheld, so treat the twelve-county
+   figure as a reading on the counties that report and not a census of the region.`;
 
 /* THE DOWNGRADE, RECORDED. An earlier build of this page called Cuyahoga's paint cell the
    darkest in the grid, in the band lede, the figure title and the chart's text

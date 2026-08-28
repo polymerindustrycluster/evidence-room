@@ -89,12 +89,16 @@ const stateLead = S.subject_emp - S.top[1].emp;
 /* Four cards, and they must not wrap onto a second row (house rule: cut to three before
    letting four wrap). The binding constraint is the KEY line — uppercase and letterspaced,
    with no max-width — so every key here is kept under about twenty characters. */
+/* The concentration card is the FIRST place a reader meets the × unit, so its sub-line
+   is the plain reading of the ratio, not a restatement of the arithmetic. The rank and
+   the job counts move to the card beside it, which is what ranks and counts are for. */
 PV.figures([
   ["key", "#" + S.rank_emp, "Ohio, nationally", `${N(S.subject_emp)} jobs, none withheld`],
   ["", `#${cleRank} · #${M.rank_emp}`, "the cluster&rsquo;s metros",
-   `Cleveland ${N(cle.emp)} · Akron ${N(akron.emp)}`],
+   `Cleveland ${N(cle.emp)} · Akron ${N(akron.emp)} jobs, of ${M.of_disclosed} disclosed`],
   ["", akron.lq.toFixed(2) + "×", "Akron concentration",
-   `on ${N(akron.emp)} jobs, ${ord(M.rank_emp)} of ${M.of_disclosed}`],
+   `plastics fills nearly five times as much of Akron&rsquo;s job base as of the
+    country&rsquo;s`],
   ["", String(M.suppressed), "metros withhold", "rank unknown, not estimated"]
 ]);
 
@@ -208,7 +212,10 @@ function scatterDesktop() {
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys,
     xt: [0, 500, 2000, 5000, 10000, 17000].filter(v => v <= maxE),
     yt: ticks(0, maxL, 6), xfmt: short, yfmt: lqfmt,
-    xlab: "Jobs (square-root scale)", ylab: "Concentration against the national share"});
+    /* Both axis titles carry the READING. The square-root scale gets the one reading aid
+       a compressed scale owes a reader; the arithmetic is in the source line. */
+    xlab: "Jobs. Square-root scale: twice as far right is four times as many",
+    ylab: "plastics a smaller slice of local jobs ←   1.0×   → a bigger slice than nationally"});
   SC.forEach(p => {
     const big = p.area === AKRON || p.area === CLE;
     hoverable(el("circle", {cx: xs(p.emp), cy: ys(p.lq), r: big ? 9 : 5, fill: dotFill(p),
@@ -231,10 +238,12 @@ function scatterDesktop() {
   /* Drawn last: rules and captions sit ON TOP of the point labels. */
   el("line", {x1: m.l, y1: ys(1), x2: m.l + w, y2: ys(1), stroke: "var(--hover)",
     "stroke-width": 1.5}, svg);
-  /* Inside the plot, right-aligned above its own line. Outside the right margin it was
-     the only ink on the page past the figure's quantized width. */
-  plated(svg, "1.0× national", m.l + w - 6, ys(1) - 8,
-    {anchor: "end", fill: "var(--hover)"});
+  /* Named by what the line IS, in reader words, not by its value alone; which way to
+     cross it is on the axis title. It sits at the LEFT end of its own line: the right end
+     is where the big low-concentration metros carry their names, and a longer caption
+     there plated over "Detroit". Outside the right margin it was the only ink on the page
+     past the figure's quantized width, so left-inside is the remaining seat. */
+  plated(svg, "1.0× = the US average", m.l + 6, ys(1) - 8, {fill: "var(--hover)"});
   // the corner's claim, written in the corner
   platedBlock(svg, [
     {s: "Large and concentrated", cls: "pv-lab", fill: "#00707F"},
@@ -270,7 +279,7 @@ function scatterMobile() {
      the parity rule drawn and named. Nothing here is behind a pan. */
   el("line", {x1: m.l, y1: ys(1), x2: m.l + w, y2: ys(1), stroke: "var(--hover)",
     "stroke-width": 1.4}, svg);
-  plated(svg, "1.0× national", m.l + 4, ys(1) - 6, {fs: 7.6, fill: "var(--hover)"});
+  plated(svg, "1.0× = the US average", m.l + 4, ys(1) - 6, {fs: 7.6, fill: "var(--hover)"});
   plated(svg, "Akron", xs(akron.emp) + 11, ys(akron.lq) + 5,
     {fs: 7.8, cls: "pv-lab", fill: CAT[1]});
   plated(svg, "Cleveland", xs(cle.emp) + 11, ys(cle.lq) + 5,
@@ -283,8 +292,12 @@ function scatterMobile() {
   platedBlock(svg, [{s: `${M.suppressed} withheld metros`, cls: "pv-lab"},
     {s: "could be anywhere here"}], m.l + w - 2, m.t + h - 34,
     {fs: 7.6, lh: 17, rule: "#C9C3B8"});
-  txt(svg, "jobs (square-root scale)", {x: m.l, y: H - 24, class: "pv-labq"});
-  txt(svg, "up = concentration vs the national share", {x: m.l, y: H - 6, class: "pv-labq"});
+  /* At 375px the two axis titles are the only place direction can live, so they say the
+     reading rather than the formula. */
+  txt(svg, "up = a bigger slice of local jobs than the US",
+    {x: m.l, y: H - 24, class: "pv-labq"});
+  txt(svg, "right = more jobs, on a square-root scale",
+    {x: m.l, y: H - 6, class: "pv-labq"});
   drawFound(svg, xs, ys, 11);
 }
 
@@ -315,16 +328,21 @@ function verdict() {
     return;
   }
   if (!FOUND) {
-    v.innerHTML = `<b>Akron</b> sits at ${akron.lq.toFixed(2)}× the national share on
-      ${N(akron.emp)} jobs, ${ord(M.rank_emp)} of the ${M.of_disclosed} metros that
-      disclose. Cleveland is ${ord(cleRank)} on ${N(cle.emp)} jobs at
-      ${cle.lq.toFixed(2)}×, which carries more jobs at lower concentration and keeps it
-      out of the shaded corner. Type a metro to find it on the chart.`;
+    /* Says what the ratio MEANS, in the same shape as the looked-up verdict below, so a
+       reader who types a metro gets the sentence they have already learnt to read.
+       "4.69× the national share" alone told them nothing about which way was up. */
+    v.innerHTML = `<b>Akron</b>: ${N(akron.emp)} jobs, and plastics fills
+      ${akron.lq.toFixed(2)}× as much of its job base as of the country&rsquo;s,
+      ${ord(M.rank_emp)} of the ${M.of_disclosed} metros that disclose. Cleveland is
+      ${ord(cleRank)} on ${N(cle.emp)} jobs at ${cle.lq.toFixed(2)}×: more jobs, a thinner
+      slice of a bigger economy, which keeps it out of the shaded corner. Type a metro to
+      find it on the chart.`;
     return;
   }
   const p = FOUND;
-  v.innerHTML = `<b>${p.name}</b>: ${N(p.emp)} jobs at ${p.lq.toFixed(2)}× the national
-    share, <b>${ord(rankOf(p.area))} of ${M.of_disclosed}</b> disclosed metros, across
+  v.innerHTML = `<b>${p.name}</b>: ${N(p.emp)} jobs, and plastics fills
+    ${p.lq.toFixed(2)}× as much of its job base as of the country&rsquo;s.
+    <b>${ord(rankOf(p.area))} of ${M.of_disclosed}</b> disclosed metros, across
     ${N(p.estabs)} establishments. ${quadSet.has(p.area)
       ? "It shares the shaded corner with Akron."
       : `Akron is ${ord(M.rank_emp)} at ${akron.lq.toFixed(2)}×.`}`;
@@ -562,22 +580,30 @@ function trendTable() {
 /* ------------------------------------------------- copy that reads from the data */
 document.getElementById("statefig").textContent =
   `Ohio leads ${shortName(S.top[1].name)} by ${N(stateLead)} jobs`;
+/* The second figure on each label is the page's first CHART use of the × unit, so the
+   how-to-read line spends its ink on what the number means rather than on how it is
+   computed. The arithmetic is in the methodology. */
 document.getElementById("statefigsub").textContent =
   `The 20 largest of the ${S.of_disclosed} disclosed state geographies, plastics and rubber ` +
-  `products, ${D.cross_year}. Bar length is jobs; the second figure on each label is ` +
-  `concentration against the national share.`;
+  `products, ${D.cross_year}. Bars are jobs. The second figure says how much of that ` +
+  `state’s job base the industry fills next to the country’s: Ohio’s ` +
+  `${S.subject_lq.toFixed(2)}× is more than double.`;
 document.getElementById("statesrc").innerHTML =
   `${D.meta.source}, ${D.cross_year}, private ownership. All ${S.of_disclosed} state
    geographies are disclosed and none are suppressed, so this is the only complete ranking
    on the page. The chart draws the top 20; the table below lists the top ${S.top.length}.`;
 document.getElementById("statestable").innerHTML = withNote(tableView("s",
   `Plastics and rubber products employment, top ${S.top.length} of ${S.of_disclosed} disclosed states, ${D.cross_year}`,
-  ["Rank", "State", "Jobs", "Establishments", "Concentration"],
+  /* The column head carries the anchor, so a reader scanning the table alone still knows
+     which side of 1.0× is which. */
+  ["Rank", "State", "Jobs", "Establishments", "Concentration (1.0× = US average)"],
   S.top.map((r, i) => [i + 1, r.name, N(r.emp), N(r.estabs),
     r.lq ? r.lq.toFixed(2) + "×" : "—"])),
+  /* Stated as a percentage, not a second ratio: the page already spends "×" on
+     concentration, and one glyph carrying two meanings is how a table goes unread. */
   `The 20 states drawn hold ${pctf(top20Share, 1)} of all state-level jobs. Ohio&rsquo;s
-   ${N(S.subject_emp)} are ${(S.subject_emp / S.top[1].emp).toFixed(2)}× the second-place
-   state&rsquo;s.`);
+   ${N(S.subject_emp)} are ${pctf(S.subject_emp / S.top[1].emp - 1, 1)} more than
+   second-place ${shortName(S.top[1].name)}.`);
 
 document.getElementById("metrotitle").textContent =
   `Akron and Cleveland among the ${M.of_disclosed} metros we can see, ${D.cross_year}`;
@@ -585,18 +611,18 @@ document.getElementById("metrofig").textContent =
   `${quad.length} of ${M.of_disclosed} disclosed metros are both large and concentrated, ` +
   `and Akron is one`;
 document.getElementById("metrofigsub").textContent =
-  `Metro areas, plastics and rubber products, ${D.cross_year}. Across: jobs on a ` +
-  `square-root scale. Up: concentration against the national share. The shaded corner is ` +
-  `${N(JOBCUT)} jobs and 2.0× or better.`;
+  `Each dot is one metro area, ${D.cross_year}. The further RIGHT, the more plastics and ` +
+  `rubber jobs it has. The further UP, the bigger a slice of its job base those jobs are ` +
+  `next to the country’s. The shaded corner clears ${N(JOBCUT)} jobs and 2.0×.`;
 document.getElementById("scattertable").innerHTML = withNote(tableView("m",
   `Metro plastics and rubber, ${D.cross_year}: top ${M.top.length} disclosed by employment`,
-  ["Rank", "Metro", "Jobs", "Establishments", "Concentration"],
+  ["Rank", "Metro", "Jobs", "Establishments", "Concentration (1.0× = US average)"],
   M.top.map((r, i) => [i + 1, r.name, N(r.emp), N(r.estabs),
     r.lq ? r.lq.toFixed(2) + "×" : "—"])),
-  `The two thresholds that cut the corner, ${N(JOBCUT)} jobs and 2.0× the national share, are
-   round numbers picked to name it rather than the output of a test: ${bigN} disclosed metros
-   clear the first, ${conN} clear the second, ${quad.length} clear both. The columns here let
-   you re-cut them.`);
+  `The two thresholds that cut the corner, ${N(JOBCUT)} jobs and twice the national share of
+   jobs, are round numbers picked to name it rather than the output of a test: ${bigN}
+   disclosed metros clear the first, ${conN} clear the second, ${quad.length} clear both. The
+   columns here let you re-cut them.`);
 document.getElementById("scatsrc").innerHTML =
   `${D.meta.source}, ${D.cross_year}, private ownership. ${M.of_disclosed} of
    ${M.of_disclosed + M.suppressed} metro areas are disclosed; the other ${M.suppressed}
@@ -691,7 +717,10 @@ await PV.methodology({
       "counts the withheld metros that run more establishments than the subject, because " +
       "that count would have to be zero for a plain national rank to be honest."},
   definitions:
-    `The PIC-12 footprint is ${FP.counties.join(", ")}. Other regional work uses a wider
+    `Concentration is the QCEW location quotient: the industry&rsquo;s share of an area&rsquo;s
+     private jobs divided by its share of private jobs nationwide. The metro scatter plots
+     jobs on a square-root scale, so the crowd of small metros can separate.
+     The PIC-12 footprint is ${FP.counties.join(", ")}. Other regional work uses a wider
      fourteen-county definition that adds Crawford, Huron, Richland and Tuscarawas; figures
      built on the two never reconcile, and every county on this page is PIC-12.
      An earlier version of this page bounded Akron&rsquo;s metro rank at ${ord(M.rank_emp)}

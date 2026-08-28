@@ -186,3 +186,41 @@ Still out of this page's reach, and now one item worse: `_data/SOURCES.json` lin
 the O*NET attribution is "printed in the education source line", which stopped being true
 when the licence moved to the footer. That string renders in the "Reproduce this" block.
 Fixing it is a `_data` change, not a page change.
+
+## Fourth pass: the plain-reading round
+
+Every number on this page was right and several of them could not be read. A constructed
+unit is any figure that is not a plain count or a plain dollar amount, and this page had
+five: the wage ratio (0.93x), the reverse employment share (95%), the summed
+engineer-scientist rule (4.0%), the Job Zone rating, and the half-pace rule on the degree
+trend. Each was printed as its arithmetic and left the reader to work out which direction
+was which. What changed:
+
+- **The wage ratio leads with its reading.** The band notes said "Akron pays these a median
+  0.93x the nation"; they now say "Akron pays these 7% under the nation (0.93x)". The
+  percentage is computed from the same field the ratio prints, by one `gap()` helper, so
+  the two forms cannot drift; the division itself moved to the pay table note. The closer
+  and the per-occupation verdict sentence follow the same order, plain first. On the phone
+  the x form is the apparatus that goes: 375px holds the reading or the arithmetic, and
+  the table twin carries every ratio to two places. Guards `occ-degree-vs-floor` and
+  `occ-closer` now bound both forms.
+- **The mix chart's second scale says which way it points.** The right-hand column was
+  headed "share of the occupation that is in this industry" over values from 1% to 95%,
+  with nothing to say whether 95% was a lot. It now reads "how much of this job is here,
+  not anywhere else", and the lede reads one value out loud: tire builders at 95%, which
+  is to say almost nobody builds a tire outside this industry (`occ-mix-most-specific`).
+- **Reference lines are labelled by what crossing them means.** The 4.0% rule keeps its
+  name and gains a second line, "five occupations outweigh them on their own", counted off
+  the data. The degree trend's rule now reads "under this rule: less than half the
+  2014-2021 pace, 70 a year" instead of stating the arithmetic that placed it.
+- **The Job Zone column had no header at all.** It now carries "preparation, 1 low, 5
+  high", and the prose definition gives the scale rather than only the concept.
+- **Two readings that were missing entirely**: on the pay chart, that a metro's dot to the
+  LEFT of the national diamond means the metro pays that job less; on the education chart,
+  that the further the dark runs, the more schooling the job's own people say it takes.
+- **Terms of art translated**: "cells" is gone from the reader-facing text (wages, or metro
+  figures); the relative standard error is given as what it means for the number.
+
+No source data changed and no claim was removed. Two guards gained assertions so they
+still bound the sentences after the rewrite, and `occ-mix-most-specific` rounds half up,
+as the browser does, because 94.5 is the value and 95% is what the page prints.

@@ -39,10 +39,11 @@
       come home to, and the last column holds everyone living outside the footprint, so
       a row adds up to one whole county&rsquo;s jobs. LODES is the Census file that
       records, for every job in the country, where the worker lives and where the job
-      is. A self-contained labor market would light up the diagonal and nothing else.</p>
+      is. A self-contained labor market would fill only the diagonal, the boxes where a
+      county meets itself, and leave the rest of the grid empty.</p>
     <div class="csel" id="csel" role="group" aria-label="Highlight one county"></div>
     <p class="verdict" id="verdict"></p>
-    <p class="fig-title">The diagonal is the finding, and it is weak</p>
+    <p class="fig-title" id="matrixfigtitle"></p>
     <p class="fig-sub" id="matrixsub"></p>
     <div class="chart"><svg id="matrix" role="img" aria-labelledby="matrix-t">
       <title id="matrix-t">Twelve by twelve matrix of jobs by work county and home
@@ -58,12 +59,12 @@
     <p class="takeaway">The diagonal alone</p>
     <h2 id="diagtitle">How much of each county&rsquo;s workforce is its own</h2>
     <p class="lede">The diagonal of the matrix, pulled out and ranked. The line at half
-      is not an official standard. It is the point where a county stops being a
-      majority-resident workplace, the quiet assumption behind most single-county
-      workforce claims.</p>
+      is not an official standard. It is the point where a county stops filling most of
+      its own jobs with people who live there, the quiet assumption behind most
+      single-county workforce claims.</p>
     <p class="fig-title" id="diagfigtitle"></p>
-    <p class="fig-sub">Share of each county&rsquo;s 2022 jobs held by its own
-      residents. Orange: under half.</p>
+    <p class="fig-sub">Each bar is one county&rsquo;s 2022 jobs. The longer the bar, the
+      more of that work goes to people who live in the county. Orange: under half.</p>
     <div class="chart"><svg id="diag" role="img" aria-labelledby="diag-t">
       <title id="diag-t">Ranked bars of each county&rsquo;s jobs held by its own
         residents. Four counties, including Summit, fall below half.</title>
@@ -117,13 +118,14 @@
     <p class="takeaway">The reciprocal</p>
     <h2>Where the people who live here work is a different question</h2>
     <p class="lede">Everything above is workplace-side: who fills the jobs that sit in
-      a county. Where that county&rsquo;s own residents work is a separate population
-      with a separate denominator. Both directions are drawn here because publishing
-      one invites the reader to assume the other, and the two do not move together.</p>
+      a county. Where that county&rsquo;s own residents work is a different group of
+      people, counted against a different total. Both directions are drawn here because
+      publishing one invites the reader to assume the other, and the two do not move
+      together.</p>
     <p class="fig-title" id="recipfigtitle"></p>
-    <p class="fig-sub">For each county: the share of its jobs held by its own
-      residents, against the share of its residents&rsquo; jobs that sit in the same
-      county. 2022.</p>
+    <p class="fig-sub">Each county gets two dots. The filled dot: of the jobs sitting in
+      the county, how many go to its own residents. The open dot: of the jobs its
+      residents hold, how many sit in the county. 2022.</p>
     <div class="chart"><svg id="recip" role="img" aria-labelledby="recip-t">
       <title id="recip-t">Dumbbell chart. In nine counties the jobs are more local than
         the residents; Cuyahoga runs the other way.</title>
@@ -151,12 +153,12 @@
     <p class="fig-title">The twelve counties sit inside the national pack, slightly
       above its median</p>
     <p class="fig-sub">Share of a county&rsquo;s jobs held by its own residents, 397
-      counties in 73 peer metros, in-state basis on both sides. The PIC-12 counties are
-      the teal dots.</p>
+      counties in 73 peer metros. Each faint gray tick is one peer county; the teal dots
+      are the twelve.</p>
     <div class="chart"><svg id="bench" role="img" aria-labelledby="bench-t">
-      <title id="bench-t">Strip plot of workplace containment for 397 peer
-        metropolitan counties with the twelve PIC counties marked; the PIC-12 median
-        sits above the peer median.</title></svg></div>
+      <title id="bench-t">Strip plot of how much of its own work each of 397 peer
+        metropolitan counties gives to its own residents, with the twelve PIC counties
+        marked; the middle PIC county sits above the middle peer county.</title></svg></div>
     <p class="src" id="benchsrc"></p>
     <div id="benchtable"></div>
     <p class="reading" id="benchreading"></p>
@@ -175,15 +177,16 @@
     <h2>The twelve-county region very nearly is a labor market</h2>
     <p class="lede">Raise the unit from the county to the footprint and the picture inverts.
       Among regions of comparable size, only Pittsburgh holds as much of its own workforce
-      inside its own borders. Bigger regions contain more by construction, so the bars are
-      ordered by how many counties each region has.</p>
+      inside its own borders. A region with more counties keeps more work inside itself for
+      arithmetic reasons alone, so the bars are ordered by how many counties each region has.</p>
     <p class="fig-title" id="regionsfigtitle"></p>
-    <p class="fig-sub">Share of 2022 jobs held by residents of the same region, ordered by
-      the number of counties in each region, largest first. Every single-state peer metro
-      of six or more counties.</p>
+    <p class="fig-sub">Each bar is one region. The longer the bar, the more of the work
+      inside it goes to people who also live inside it. Ordered by county count, largest
+      first; every single-state peer metro of six or more counties.</p>
     <div class="chart"><svg id="regions" role="img" aria-labelledby="regions-t">
-      <title id="regions-t">Ranked bars of regional job containment. PIC-12 holds 89.5
-        percent of its jobs inside its borders, matched only by Pittsburgh.</title></svg></div>
+      <title id="regions-t">Ranked bars of how much of each region&rsquo;s work goes to
+        its own residents. PIC-12 keeps 89.5 percent inside its borders, matched only by
+        Pittsburgh.</title></svg></div>
     <p class="src" id="regionssrc"></p>
     <div id="regionstable"></div>
     <p class="reading" id="regionsreading"></p>

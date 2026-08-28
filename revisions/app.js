@@ -143,13 +143,17 @@ document.getElementById("asof").textContent =
   MONFULL[+ASOF.slice(5, 7) - 1] + " " + ASOF.slice(0, 4);
 
 /* ------------------------------------------------------------------- hero stats */
+/* The fourth card used to read "121 / 137" over the key "down / up". A slash between two
+   numbers is read as a quotient before it is read as a pair, so the card's headline
+   quantity looked like a ratio of 0.88 that appears nowhere in the data. A middot makes
+   it two counts, and the detail line now states the reading instead of posing it. */
 PV.figures([
   ["key", Math.round(P.length / totalPeriods * 100) + "%", "were revised",
    `${N(P.length)} of ${N(totalPeriods)} published months`],
   ["", (P.reduce((a, p) => a + p.revisions, 0) / P.length).toFixed(1), "revisions each",
-   `up to ${Math.max(...P.map(p => p.revisions))} times`],
-  ["", MEDABS.toFixed(2) + "%", "typical move", "median absolute change"],
-  ["", down + " / " + up, "down / up", "which way first estimates lean"]
+   `per revised month, up to ${Math.max(...P.map(p => p.revisions))} times`],
+  ["", MEDABS.toFixed(2) + "%", "typical move", "half of months moved less than this"],
+  ["", down + " · " + up, "down · up", "so first estimates lean slightly low"]
 ]);
 
 /* =============================================== 1. the revision, three small multiples
@@ -190,14 +194,22 @@ function panel(svg, s, box, o) {
       height: Math.max(0.7, Math.abs(y1 - y0)), fill: r.pct < 0 ? DOWN : UP}, svg);
   });
 
-  /* Panel header: name, then the two numbers that make the panels comparable. */
-  /* The stacked layout drops the word "move": at 375 the full line measured 376.4 units
-     against a 375 viewBox, so the outermost svg's own overflow:hidden was shaving the
-     last glyph. Hand-shortened rather than scaled or ellipsed, because a truncated label
-     is a build error and a smaller one is a legibility loss. */
+  /* Panel header: name, then the two numbers that make the panels comparable.
+
+     THE SUBTITLE LABELS THE SHADED BAND BY WHAT IT MEANS, not by the statistic that
+     drew it. "median move 0.35%" is the arithmetic; a reader who has not met a median
+     absolute deviation cannot say from it which months are inside the band or why the
+     band is there. "half moved under 0.35%" is the same number as a reading.
+
+     THE LINE IS MEASURED, NOT ESTIMATED. pv-labq runs about 7.1 viewBox units per
+     character, and the narrower box is the stacked panel at 375 − 50 − 12 = 313 units,
+     so the budget is 44 characters and this line is 40. The first attempt kept "months
+     revised" and ran 48, which verify.mjs caught as 8px of horizontal overflow at 390.
+     One string serves both layouts, which retired the hand-shortened stacked variant
+     that used to drop the word "move". */
   txt(svg, SHORT[s], {x: box.x, y: box.y - o.h2, class: "pv-lab"});
-  txt(svg, `${o.terse ? "median" : "median move"} ${d.medAbs.toFixed(2)}% · ` +
-    `${d.moved.length} of ${d.rows.length} months revised`,
+  txt(svg, `half moved under ${d.medAbs.toFixed(2)}% · ` +
+    `${d.moved.length} of ${d.rows.length} revised`,
     {x: box.x, y: box.y - o.h1, class: "pv-labq"});
 
   /* Year ticks. Every other January on the wide layout, every third on the stacked one:
@@ -239,7 +251,12 @@ function drawSmallWide() {
   const w = W - m.l - m.r, gap = 40, pw = (w - gap * 2) / 3, h = H - m.t - m.b;
   const ys = v => m.t + h / 2 - (v / LIM) * (h / 2);
 
-  txt(svg, "revision, %", {x: m.l, y: 34, class: "pv-axlab"});
+  /* THE AXIS TITLE CARRIES THE UNIT'S ANCHOR. "revision, %" is a percent of nothing
+     stated: a reader can read the ticks and still not know 0.35% is 0.35% OF the figure
+     the month was first given. Naming what the percent is taken on is the whole cost of
+     making the scale legible. */
+  txt(svg, "revision, % of the first published figure",
+    {x: m.l, y: 34, class: "pv-axlab"});
   YT.forEach(v => txt(svg, ytLab(v), {x: m.l - 10, y: ys(v) + 4, "text-anchor": "end",
     class: "pv-tick"}));
   txt(svg, "0", {x: m.l - 10, y: ys(0) + 4, "text-anchor": "end", class: "pv-tick"});
@@ -247,13 +264,24 @@ function drawSmallWide() {
   ORDER.forEach((s, k) => panel(svg, s,
     {x: m.l + k * (pw + gap), y: m.t, w: pw, h}, {h1: 14, h2: 32, every: 2}));
 
-  /* Direction is labelled in the plot, not in a legend below it. The old legend named
-     two colors a reader could not find; these sit at the ±1.5% level of the first panel,
-     where no bar reaches. */
-  txt(svg, "revised up", {x: m.l + 6, y: ys(1.53), class: "pv-labq", fill: UP});
-  txt(svg, "revised down", {x: m.l + 6, y: ys(-1.61), class: "pv-labq", fill: DOWN});
-  txt(svg, "reference month", {x: m.l + w / 2, y: H - 16, "text-anchor": "middle",
-    class: "pv-axlab"});
+  /* Direction is labelled in the plot, not in a legend below it, and each label says
+     what its side MEANS rather than naming a color. "revised up" alone leaves open "up
+     against what"; the answer, on a page about revisions, is the figure first reported.
+
+     Vertical clearance is held by hand. WPU06 runs +1.382% to −1.415%, so the up label at
+     the 1.53 level sits 11 units above the tallest bar. The down label moved from −1.61
+     to −1.72 because at −1.61 it printed within a unit of the Sep 2021 callout, which is
+     anchored at ys(−1.415)+4 and runs right across the same band; −1.72 still clears the
+     year ticks 22 units below it. */
+  txt(svg, "revised up: higher today", {x: m.l + 6, y: ys(1.53), class: "pv-labq",
+    fill: UP});
+  txt(svg, "revised down: lower today", {x: m.l + 6, y: ys(-1.72), class: "pv-labq",
+    fill: DOWN});
+  /* "Reference month" is the analyst's name for the distinction this whole page turns
+     on, and a general reader does not hold it. Written out, it also teaches the axis:
+     these are the months being priced, not the months the numbers came out. */
+  txt(svg, "the month the price is for", {x: m.l + w / 2, y: H - 16,
+    "text-anchor": "middle", class: "pv-axlab"});
 }
 
 function drawSmallStacked() {
@@ -264,10 +292,14 @@ function drawSmallStacked() {
   const H = top + pitch * 2 + ph + 40;
   const {svg} = PV.chart("sm", {W, H});
   const w = W - m.l - m.r;
-  /* y=15, not 14: at 14 the cap box measured -0.6 against the viewBox top. */
-  txt(svg, "revision, % of the first print", {x: m.l, y: 15, class: "pv-labq"});
-  txt(svg, "revised up", {x: m.l, y: 34, class: "pv-labq", fill: UP});
-  txt(svg, "revised down", {x: m.l + 104, y: 34, class: "pv-labq", fill: DOWN});
+  /* y=15, not 14: at 14 the cap box measured -0.6 against the viewBox top.
+     The two direction labels share one line here, so they carry the reading in the
+     fewest words that still answer "higher than what": the header line directly above
+     supplies "revised", and the color supplies which is which. */
+  txt(svg, "revision, % of the first published figure",
+    {x: m.l, y: 15, class: "pv-labq"});
+  txt(svg, "up: higher today", {x: m.l, y: 34, class: "pv-labq", fill: UP});
+  txt(svg, "down: lower today", {x: m.l + 128, y: 34, class: "pv-labq", fill: DOWN});
 
   ORDER.forEach((s, k) => {
     const y = top + k * pitch;
@@ -277,8 +309,7 @@ function drawSmallStacked() {
     [-1, 1].forEach(v => txt(svg, (v > 0 ? "+" : MINUS) + Math.abs(v).toFixed(1),
       {x: m.l - 8, y: ys(v) + 4, "text-anchor": "end", class: "pv-tick"}));
     txt(svg, "0", {x: m.l - 8, y: ys(0) + 4, "text-anchor": "end", class: "pv-tick"});
-    panel(svg, s, {x: m.l, y, w, h: ph}, {h1: 14, h2: 34, every: 3, charW: 8.1,
-      terse: true});
+    panel(svg, s, {x: m.l, y, w, h: ph}, {h1: 14, h2: 34, every: 3, charW: 8.1});
   });
 }
 
@@ -314,11 +345,16 @@ function drawDistVariant(W, H, mob) {
   (mob ? [-1, -0.5, 0, 0.5, 1] : [-1.5, -1, -0.5, 0, 0.5, 1, 1.5]).forEach(v =>
     txt(svg, v === 0 ? "0" : ytLab(v), {x: xs(v), y: m.t + h + 20,
       "text-anchor": "middle", class: "pv-tick"}));
-  /* The axis caption is set in letter-spaced caps, so it is much wider than its character
+  /* THE AXIS TITLE IS THE READING, NOT THE SUBTRACTION. It used to say "total change
+     from the first published value to today", which is how the number was made and not
+     what a position on it means; the fig-sub then had to spend a sentence saying that
+     left of zero is a downward revision, which is the axis's own job. Naming both ends
+     and the crossing point puts direction where the eye already is and buys that
+     sentence back. Set in letter-spaced caps, so it is much wider than its character
      count suggests; the stacked layout gets a shorter one rather than one that escapes
      the svg box. */
-  txt(svg, mob ? "change since the first print"
-               : "total change from the first published value to today",
+  txt(svg, mob ? "revised down ← 0 → revised up"
+               : "revised down ← no revision → revised up",
     {x: m.l + w / 2, y: H - 8, "text-anchor": "middle", class: "pv-axlab"});
 
   counts.forEach((c, i) => {
@@ -365,13 +401,17 @@ function drawDistVariant(W, H, mob) {
      x=185 and "121 down: first prints lean low" to x=158, so the magenta rule struck
      through both — measured on the built page, because collide.mjs reads the desktop
      layout only and would never have seen it. The budget is 365 minus 206, or 159 units;
-     these two lines measure 131 and 141. Changing this copy means re-measuring it. */
+     "first estimates run low" is 23 characters against the 21 that measured 141, so it
+     lands at about 154. Changing this copy means re-measuring it.
+     "First print" is trade language for the number as it was first given out, so the
+     phrase is "first estimates" everywhere a reader meets it and stays "first print"
+     only in the methodology box. */
   const ax = mob ? m.l + w : xs(0.55);
   const anc = mob ? "end" : "start";
   txt(svg, mob ? `${up} up, ${down} down` : `${up} months were revised up,`,
     {x: ax, y: m.t + (mob ? 22 : 26), class: "pv-lab", "text-anchor": anc});
-  txt(svg, mob ? "first prints lean low"
-               : `${down} down: first prints lean slightly low`,
+  txt(svg, mob ? "first estimates run low"
+               : `${down} down: first estimates run slightly low`,
     {x: ax, y: m.t + (mob ? 40 : 44), class: "pv-labq", "text-anchor": anc});
   /* The arrow lands 8px above the tallest up-side bar rather than at a hand-picked
      coordinate, so it cannot end up inside a bar when the bins change. */
@@ -404,20 +444,21 @@ document.getElementById("smtable").innerHTML = tableView("s",
    live in the methodology box, where a reader who wants to refetch is already standing,
    and the definition is meta.why, which the same box already publishes. */
 document.getElementById("smsrc").innerHTML =
-  `${D.meta.source}, for reference months ${mon(ALLM[0])} to
+  `${D.meta.source}, for the months priced from ${mon(ALLM[0])} to
    ${mon(ALLM[ALLM.length - 1])}. ${N(P.length)} of ${N(totalPeriods)} published months
-   carry a later value; the other ${totalPeriods - P.length} have one archived vintage
-   each, which is not evidence they never moved.`;
+   carry a later value; the other ${totalPeriods - P.length} have only one version on
+   record, which is not evidence they never moved.`;
 
 document.getElementById("disttable").innerHTML = tableView("d",
   "Revision size distribution", ["Measure", "Value"],
   [["Months revised at least once", N(P.length)],
    ["Revised downward", N(down)], ["Revised upward", N(up)],
-   [`Ended within ${Math.max(...FLAT)} index points of the first print`, N(flat)],
+   [`Ended within ${Math.max(...FLAT)} index points of its first value`, N(flat)],
    ["Median absolute change", MEDABS.toFixed(3) + "%"],
    ["Largest single change", MAXABS.toFixed(3) + "%"],
    ["Mean revisions per month", (P.reduce((a, p) => a + p.revisions, 0) / P.length).toFixed(2)],
-   ["Month pairs where the step changed sign", `${FLIPS.length} of ${MATERIAL.length}`]]);
+   ["Months whose step from the month before reversed",
+    `${FLIPS.length} of ${MATERIAL.length}`]]);
 /* The note owns the bin width, and it is now the ONLY place on the page that states it.
    The subtitle used to say 0.05 in hardcoded HTML while the stacked layout re-binned to
    0.10 and this line said so: one quantity, two numbers, on the same phone screen. Written
@@ -426,9 +467,9 @@ document.getElementById("disttable").innerHTML = tableView("d",
    defect with one fewer place to notice it. */
 function distNote() {
   document.getElementById("distsrc").innerHTML =
-    `${D.meta.source}. One mark per revised month, so the
-     ${totalPeriods - P.length} months with a single archived vintage are not in this
-     chart. Bin width ${(MOBILE.matches ? 0.1 : 0.05).toFixed(2)} percentage points; the
+    `${D.meta.source}. Every revised month is counted once, so the
+     ${totalPeriods - P.length} months with only one version on record are not here. Each
+     bar covers ${(MOBILE.matches ? 0.1 : 0.05).toFixed(2)} percentage points; the
      axis is clipped at ±1.5%, which holds every observed value.`;
 }
 
@@ -440,10 +481,11 @@ function distNote() {
 document.getElementById("caveat").innerHTML =
   `<b>What a small revision licenses.</b> A median move of ${MEDABS.toFixed(2)}% and a
    largest move of ${MAXABS.toFixed(2)}% support one narrow claim: the <em>level</em> of a
-   producer-price series does not move much once published. They do not license calling a
-   fresh figure &ldquo;safe to act on&rdquo;, which is how an earlier version of this
-   sentence overreached. A small median also says nothing about whether a turning point
-   survives: ${FLIPS.length} of ${MATERIAL.length} comparable month pairs changed sign.`;
+   producer-price series, how high it reads, does not move much once published. They do
+   not license calling a fresh figure &ldquo;safe to act on&rdquo;, which is how an
+   earlier version overreached. A small median says nothing about whether a turn
+   survives: ${FLIPS.length} of ${MATERIAL.length} months with a clear step from the
+   month before later reversed direction.`;
 
 /* ------------------------------------------------------- 3. one month, up close */
 {
@@ -453,14 +495,23 @@ document.getElementById("caveat").innerHTML =
   const momThen = (BIG.first / wasThen - 1) * 100;
   const momNow = (BIG.latest / prev[prev.length - 1].value - 1) * 100;
 
+  /* EVERY OTHER PERCENT ON THIS PAGE IS A REVISION, so "+1.0%" under a key that says
+     only "September as first published" is read as "September was revised up 1.0%",
+     which is not what it is. The plain reading leads in both detail lines and the two
+     index readings follow it, because the sign between them is the beat and the levels
+     are the evidence for it. */
   document.getElementById("vg1").textContent = sgn(momThen, 1);
+  /* The direction words are derived from the numbers, never typed: a refetch that flips
+     either sign would otherwise leave the arithmetic right and the sentence backwards. */
+  const way = v => v > 0 ? "higher" : "lower";
   document.getElementById("vg1d").textContent =
-    `${nice(d)} at ${BIG.first} against ${nice(p)} at ${wasThen}, on the vintage a ` +
-    `reader held in ${nice(BIG.firstVintage)}.`;
+    `Prices looked ${Math.abs(momThen).toFixed(1)}% ${way(momThen)} in ${nice(d)} than ` +
+    `in ${nice(p)}: index ${BIG.first} against ${wasThen}, as published in ` +
+    `${nice(BIG.firstVintage)}.`;
   document.getElementById("vg2").textContent = sgn(momNow, 1);
   document.getElementById("vg2d").textContent =
-    `${nice(d)} at ${BIG.latest} against ${nice(p)} at ` +
-    `${prev[prev.length - 1].value}, after ${BIG.revisions} corrections.`;
+    `They now read ${Math.abs(momNow).toFixed(1)}% ${way(momNow)}: index ${BIG.latest} ` +
+    `against ${prev[prev.length - 1].value}, after ${BIG.revisions} corrections.`;
   /* The vignette is one month, so it needs the count that says it is not a lone oddity.
      The lede carries the story in body type; this line carries the guard against
      mistaking one named month for the pattern, and nothing else: it ran 79 words against
@@ -470,9 +521,10 @@ document.getElementById("caveat").innerHTML =
      year-over-year arithmetic that fed only this line went with it rather than staying as
      four unused bindings. */
   document.getElementById("vgnote").innerHTML =
-    `${nice(d)} is the largest mover here, not a lone one: of ${MATERIAL.length} month
-     pairs where both readings clear 0.1%, <b>${FLIPS.length} changed sign</b>, and
-     ${FLIPBIG} of those are ${SHORT[s].toLowerCase()}. ${D.meta.source}.`;
+    `${nice(d)} is the largest mover, not a lone one: of ${MATERIAL.length} months that
+     moved at least 0.1% from the month before, <b>${FLIPS.length} later reversed
+     direction</b>, and ${FLIPBIG} of them are ${SHORT[s].toLowerCase()}.
+     ${D.meta.source}.`;
 }
 
 /* Bold budget: one phrase, not a three-line paragraph set in 900 weight. The old version
@@ -480,11 +532,11 @@ document.getElementById("caveat").innerHTML =
    starts reading as a second closer. */
 document.getElementById("closersub").innerHTML =
   `${N(P.length)} of ${N(totalPeriods)} published months changed after the fact, by a
-   median ${MEDABS.toFixed(2)}%, and ${FLIPS.length} of ${MATERIAL.length} comparable
-   month pairs changed sign. The Quarterly Workforce
-   Indicators behind the churn page restate whole histories when they re-benchmark, and
-   how far they move has not been measured: <b>that is the series this method should be
-   pointed at next.</b>`;
+   median ${MEDABS.toFixed(2)}%, and of ${MATERIAL.length} months with a clear step from
+   the month before, ${FLIPS.length} later reversed direction. The Quarterly Workforce
+   Indicators behind the churn page restate whole histories each time they are rebuilt,
+   and how far they move has not been measured: <b>that is the series this method should
+   be pointed at next.</b>`;
 
 /* ------------------------------------------------------------------------ assemble */
 function drawAll() { drawSmall(); drawDist(); distNote(); }
@@ -499,9 +551,18 @@ MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
 await PV.methodology({page: "revisions",
   /* The three series IDs used to be bolded inside the first figure's caption, where they
      cost ink a reader scanning the chart did not want to spend. Here they sit beside the
-     row definition, which is where someone who wants to refetch is already looking. */
-  definitions: "The three series are " + ORDER.map(s => `${SHORT[s]} (${CODE[s]})`)
-    .join(", ") + ".",
+     row definition, which is where someone who wants to refetch is already looking.
+
+     "Vintage", "first print" and "reference month" are the three words this page cannot
+     do without and no general reader holds. They are translated here, once, directly
+     under the row definition that uses the third of them, and the reader-facing surfaces
+     above use the plain phrasing instead: the trade term is kept for the person who came
+     to reproduce the work. */
+  definitions: "A vintage is one published version of a figure: the value as it stood on " +
+    "a given date, before any later correction. The first print, or first estimate, is " +
+    "the earliest of those versions. A reference month is the month being priced, not " +
+    "the month the number came out. The three series are " +
+    ORDER.map(s => `${SHORT[s]} (${CODE[s]})`).join(", ") + ".",
   meta: {...D.meta,
   not: "Three price series, not a general claim about official statistics. Other " +
     "indicators revise harder and some barely move; nothing here measures them.",
@@ -512,8 +573,15 @@ await PV.methodology({page: "revisions",
   excludes: "A revision is only visible where ALFRED archived a vintage. A month showing " +
     "one value is not evidence it never moved; it may be evidence nobody kept the " +
     "earlier print.",
-  derived_note: "The month-over-month comparison is computed from the archived vintages " +
-    "on this page, not fetched separately: for each reference month it takes the first " +
+  /* THE ARITHMETIC LIVES HERE, NOT UNDER THE CHART. The first figure's how-to-read line
+     used to open "Latest published value minus the first print, in percent", which told
+     a reader how the bar was built and left them to work out for themselves that up
+     meant higher today. The subtraction is still published, in the place a reader who
+     wants to check it will look. */
+  derived_note: "Each bar on the first chart is the latest published value minus the " +
+    "first, as a percent of the first. The month-over-month comparison is computed from " +
+    "the archived vintages on this page, not fetched separately: for each month priced " +
+    "it takes the first " +
     "published value against whatever the previous month carried in that same vintage, " +
     "then repeats the comparison on today’s values. A pair counts only where both " +
     "readings are at least 0.1 percent, so a flip between +0.02 and -0.01 percent is " +

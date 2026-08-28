@@ -44,11 +44,14 @@ const plate = (parent, s, x, y, fs = 7.2, anchor = "start") => {
 
 /* Three cards, not four: the house rule is cut to three before letting four wrap, and
    the climb already lives inside the first card's sub-line. */
+/* Every card here is a constructed unit, so each one carries its own direction: what #1
+   means on a rank, and what a price level of 92.9 means in money terms at FIRST use. */
 PV.figures([
-  ["key", `#${AK.big_rank_real}`, `of ${B.length} on real wages`,
-   `up ${AK.big_climb} places from #${AK.big_rank_nominal} nominal, among metros with 2,000+ polymer jobs`],
-  ["", usd(AK.real), "what Akron’s wage buys", `${usd(AK.nominal)} nominal, at a ${AK.rpp.toFixed(1)} price level`],
-  ["", `${cheaper}`, `of ${M.length} metros are cheaper`, "Akron is a median-price metro, not a cheap one"]
+  ["key", `#${AK.big_rank_real}`, `of ${B.length} on what the pay buys`,
+   `up ${AK.big_climb} places from #${AK.big_rank_nominal} on the paycheck itself; #1 is the best of the ${B.length} metros with 2,000+ polymer jobs`],
+  ["", usd(AK.real), "what Akron’s wage buys",
+   `${usd(AK.nominal)} on the paycheck, at a price level of ${AK.rpp.toFixed(1)}: about ${Math.round(100 - AK.rpp)} percent below the US average`],
+  ["", `${cheaper}`, `of ${M.length} metros are cheaper`, "Akron’s prices sit in the middle of the metro range"]
 ]);
 
 /* ------------------------------------------------ comparator: picker + verdict */
@@ -81,7 +84,7 @@ function verdict() {
       Akron is ahead on both counts.`;
   } else if (r.nominal <= AK.nominal) {
     s3 = `It pays ${usd(r.nominal)} on paper, no more than Akron, and buys
-      ${usd(r.real)}; on price-adjusted terms it is the better deal of the two.`;
+      ${usd(r.real)}; once local prices are counted it is the better deal of the two.`;
   } else {
     s3 = `To match Akron’s buying power an offer there has to clear
       ${usd(eqOffer(r))} a week, about $${Math.round(eqOffer(r) * 52 / 1000)},000 a
@@ -149,11 +152,16 @@ function drawSlopeDesktop() {
   const named = new Set(baseNamed);
   if (SEL) named.add(SEL);
   const {svg, W, H, m, w, h} = PV.chart("slope",
-    {W: 1100, H: 40 + B.length * 15 + 58, m: {t: 54, r: 300, b: 44, l: 193}});
+    {W: 1100, H: 52 + B.length * 15 + 58, m: {t: 66, r: 300, b: 44, l: 193}});
   const ys = rank => m.t + ((rank - 1) / (B.length - 1)) * h;
-  txt(svg, "Rank by nominal wage", {x: m.l, y: m.t - 26, "text-anchor": "end",
+  /* A rank is a constructed unit and nothing about "33rd" says which end is good, so each
+     axis title carries its own direction under it: 1 is the top of both columns. */
+  txt(svg, "Rank on paper", {x: m.l, y: m.t - 40, "text-anchor": "end",
     class: "pv-axlab"});
-  txt(svg, "Rank by what it buys", {x: m.l + w, y: m.t - 26, class: "pv-axlab"});
+  txt(svg, "1 = biggest paycheck", {x: m.l, y: m.t - 20, "text-anchor": "end",
+    class: "pv-labq"});
+  txt(svg, "Rank on what it buys", {x: m.l + w, y: m.t - 40, class: "pv-axlab"});
+  txt(svg, "1 = buys the most", {x: m.l + w, y: m.t - 20, class: "pv-labq"});
   el("line", {x1: m.l, y1: m.t, x2: m.l, y2: m.t + h, stroke: "var(--pv-axis)"}, svg);
   el("line", {x1: m.l + w, y1: m.t, x2: m.l + w, y2: m.t + h, stroke: "var(--pv-axis)"}, svg);
 
@@ -194,8 +202,9 @@ function drawSlopeDesktop() {
     }
     hoverable(el("rect", {x: m.l, y: Math.min(y1, y2) - 5, width: w,
       height: Math.abs(y2 - y1) + 10, fill: "transparent"}, svg),
-      `<b>${full(r.name)}</b><br>nominal <span class="v">${usd(r.nominal)}</span>,
-       rank ${r.big_rank_nominal}<br>price level <span class="v">${r.rpp.toFixed(1)}</span><br>
+      `<b>${full(r.name)}</b><br>on paper <span class="v">${usd(r.nominal)}</span>,
+       rank ${r.big_rank_nominal} of ${B.length}<br>price level
+       <span class="v">${r.rpp.toFixed(1)}</span> (US average 100)<br>
        buys <span class="v">${usd(r.real)}</span>, rank ${r.big_rank_real}<br>
        <b>${fmtClimb(r.big_climb)} places</b> ·
        ${N(r.emp)} polymer jobs`,
@@ -212,7 +221,7 @@ function drawSlopeDesktop() {
     plate(svg, s, m.l + w / 2, yMid - 12, 8.6, "middle");
     txt(svg, s, {x: m.l + w / 2, y: yMid - 12, "text-anchor": "middle",
       class: "pv-lab", fill: CAT[1]});
-    const q = `${D.meta.year} only, one print`;
+    const q = `${D.meta.year} only, no track record`;
     plate(svg, q, m.l + w / 2, yMid + 6, 7.6, "middle");
     txt(svg, q, {x: m.l + w / 2, y: yMid + 6, "text-anchor": "middle", class: "pv-labq"});
   }
@@ -236,12 +245,14 @@ function drawSlopeMobile() {
   if (SEL) named.add(SEL);
   const list = B.filter(r => named.has(r.area))
     .sort((a, b) => a.big_rank_real - b.big_rank_real);
-  const m = {t: 16, r: 12, b: 14, l: 12}, W = 375, rowH = 34, headH = 26, footH = 46;
+  const m = {t: 16, r: 12, b: 14, l: 12}, W = 375, rowH = 34, headH = 46, footH = 46;
   const H = m.t + headH + list.length * rowH + footH + m.b;
   const {svg} = PV.chart("slope", {W, H});
   txt(svg, "paper", {x: 30, y: m.t + 12, "text-anchor": "middle", class: "pv-labq"});
   txt(svg, "buys", {x: 88, y: m.t + 12, "text-anchor": "middle", class: "pv-labq"});
   txt(svg, "places", {x: W - m.r, y: m.t + 12, "text-anchor": "end", class: "pv-labq"});
+  /* Two ranks and a signed number, none of which say which way is good. The cue does. */
+  txt(svg, "1 = biggest paycheck; + = climbed", {x: 12, y: m.t + 34, class: "pv-labq"});
   const chip = (g, x, y, s, fill, fg, bold) => {
     el("rect", {x, y, width: 36, height: 22, rx: 7, fill,
       ...(fill === "none" ? {stroke: "var(--pv-axis)"} : {})}, g);
@@ -264,7 +275,7 @@ function drawSlopeMobile() {
       {x: W - m.r, y: y + 20.5, "text-anchor": "end",
        class: accent ? "pv-lab" : "pv-labq", ...(accent ? {fill: accent} : {})});
     hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, g),
-      `<b>${full(r.name)}</b><br>nominal <span class="v">${usd(r.nominal)}</span>,
+      `<b>${full(r.name)}</b><br>on paper <span class="v">${usd(r.nominal)}</span>,
        rank ${r.big_rank_nominal}<br>buys <span class="v">${usd(r.real)}</span>,
        rank ${r.big_rank_real}<br><b>${fmtClimb(r.big_climb)}
        places</b>`,
@@ -275,7 +286,7 @@ function drawSlopeMobile() {
     {x: 12, y: fy + 16, class: "pv-labq"});
   // the same drawn qualifier the desktop slope carries, so the mobile reader who
   // never reaches the caption still sees that +14 is one year's reading
-  txt(svg, `${D.meta.year} only, one print.`, {x: 12, y: fy + 38, class: "pv-labq"});
+  txt(svg, `${D.meta.year} only, no track record.`, {x: 12, y: fy + 38, class: "pv-labq"});
 }
 
 /* CAVEAT INK. The visible caption under a figure is one source line plus one limitation
@@ -288,20 +299,19 @@ const withNotes = (html, notes) =>
 
 document.getElementById("slopetable").innerHTML = withNotes(tableView("sl",
   `Polymer metros with ${N(D.meta.big_floor)}+ jobs, nominal and price-adjusted weekly wage`,
-  ["Metro", "Jobs", "Nominal", "Price level", "Buys", "Nominal rank", "Real rank", "Change"],
+  ["Metro", "Jobs", "On paper", "Price level", "Buys", "Rank on paper", "Rank on buys",
+   "Places moved"],
   [...B].sort((a, b) => a.big_rank_real - b.big_rank_real).map(r =>
     [full(r.name), N(r.emp), usd(r.nominal), r.rpp.toFixed(1), usd(r.real),
      r.big_rank_nominal, r.big_rank_real, fmtClimb(r.big_climb)])),
   `${D.meta.row} Full source: ${D.meta.source}. The field is cut to the
    ${B.length} metros with at least ${N(D.meta.big_floor)} polymer jobs, so the ranking
    runs against places that actually do this work rather than against every metro in the
-   country; a different floor gives a different rank. ${D.meta.suppression} No earlier
-   year ships with this page, so nothing here shows whether the
-   ${AK.big_climb}-place climb repeats.`);
+   country; a different floor gives a different rank. ${D.meta.suppression}`);
 document.getElementById("slopesrc").innerHTML =
-  `Source: BLS QCEW and BEA Regional Price Parities, ${D.meta.year}; metros where BLS
-   withholds a polymer wage are absent, Cleveland and Canton among them. One print of a
-   revision-prone series, so treat the ${AK.big_climb}-place climb as one year’s
+  `Source: BLS QCEW and BEA Regional Price Parities, ${D.meta.year}. Metros where BLS
+   will not publish a polymer wage are missing, Cleveland and Canton among them. Both
+   agencies revise later, so read the ${AK.big_climb}-place climb as one year’s
    reading.`;
 
 /* -------------------------------------------------------- 2. price strip */
@@ -317,8 +327,10 @@ function drawStripVariant(mobile) {
   const xs = v => m.l + ((v - lo) / (hi - lo)) * w;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys: () => 0, xt: ticks(lo, hi, mobile ? 5 : 7),
     yt: [], xfmt: v => v.toFixed(0),
-    xlab: mobile ? "Metro price level, US average = 100"
-                 : "Metro price level, US average = 100 (BEA Regional Price Parities, all items)"});
+    /* The scale is an index, so the axis title carries the reading, not the recipe: the
+       formula and the series name now live in the subtitle above the figure. */
+    xlab: mobile ? "Cheaper ← price level → costlier"
+                 : "Cheaper ← local price level, US average = 100 → more expensive"});
   // one tick per metro — the distribution as it is, not smoothed into a curve
   M.forEach(r => {
     const me = r.area === AK.area, pick = r.area === SEL;
@@ -357,7 +369,8 @@ function drawStripVariant(mobile) {
     fill: "var(--hover)"});
   M.forEach(r => hoverable(el("rect", {x: xs(r.rpp) - 3, y: m.t, width: 6, height: h,
     fill: "transparent"}, svg),
-    `<b>${full(r.name)}</b><br>price level <span class="v">${r.rpp.toFixed(1)}</span>`,
+    `<b>${full(r.name)}</b><br>price level <span class="v">${r.rpp.toFixed(1)}</span>
+     (US average 100)`,
     `${short(r.name)}: ${r.rpp.toFixed(1)}`));
 }
 
@@ -399,8 +412,11 @@ function drawScatterVariant(mobile) {
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys,
     xt: ticks(x0, x1, mobile ? 3 : 6), yt: ticks(y0, y1, mobile ? 4 : 6),
     xfmt: usd, yfmt: v => v.toFixed(0),
-    xlab: "Nominal average weekly wage",
-    ylab: mobile ? "Price level" : "Metro price level (100 = US average)"});
+    /* Dollars need no direction; an index does, so the vertical title says which way is
+       dearer before a reader has to work it out from the tick numbers. */
+    xlab: mobile ? "Average weekly wage →" : "Average weekly wage on the paycheck →",
+    ylab: mobile ? "↑ More expensive · price level"
+                 : "↑ More expensive · price level (US = 100)"});
   // iso-lines: every metro on one line offers identical purchasing power. Labels sit at
   // the sparse bottom ends of the lines, not in the crowded top band of expensive metros.
   /* At 375px the bottom-right corner held three labels in ~40px of height: two diagonal
@@ -453,8 +469,8 @@ function drawScatterVariant(mobile) {
     }
     hoverable(el("circle", {cx: xs(r.nominal), cy: ys(r.rpp), r: Math.max(rad, 11),
       fill: "transparent"}, svg),
-      `<b>${full(r.name)}</b><br>nominal <span class="v">${usd(r.nominal)}</span><br>
-       price level <span class="v">${r.rpp.toFixed(1)}</span><br>
+      `<b>${full(r.name)}</b><br>on paper <span class="v">${usd(r.nominal)}</span><br>
+       price level <span class="v">${r.rpp.toFixed(1)}</span> (US average 100)<br>
        buys <span class="v">${usd(r.real)}</span><br>${N(r.emp)} polymer jobs`,
       `${short(r.name)}: ${usd(r.nominal)} at ${r.rpp.toFixed(1)}, buys ${usd(r.real)}`);
   };
@@ -473,12 +489,11 @@ function drawScatterVariant(mobile) {
 
 document.getElementById("scattertable").innerHTML = withNotes(tableView("sc",
   "Largest polymer metros by employment",
-  ["Metro", "Jobs", "Nominal", "Price level", "Buys"],
+  ["Metro", "Jobs", "On paper", "Price level", "Buys"],
   [...B].sort((a, b) => b.emp - a.emp).slice(0, 20).map(r =>
     [full(r.name), N(r.emp), usd(r.nominal), r.rpp.toFixed(1), usd(r.real)])),
   `Twenty largest employers of the ${B.length} plotted; every metro in the set is drawn.
-   The chart is not an argument that anyone should move. It is the trade-off a recruiter
-   is already making without drawing it.`);
+   It maps the trade-off a recruiter is already making without drawing it.`);
 /* This figure carries its own attribution: screenshotted alone it must still name where
    the two axes come from, which the subtitle above it does not do. */
 document.getElementById("scattersrc").innerHTML =

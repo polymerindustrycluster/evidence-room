@@ -1,0 +1,157 @@
+{
+ "_note": "This page restates numbers that belong to three other pages, so every claim re-runs against THAT page's own shipped data file as well as against this page's derived one. A correction on the funding map, the occupations page or the federal-money page fails this gate instead of leaving a stale board figure behind. Paths climb out of scorecard/data/ on purpose. Two claims here guard an ABSENCE rather than a figure — sc-empty-slots and sc-context-separate — because the defect this page exists to prevent is a plausible number appearing in a cell nobody measured.",
+ "data": {
+  "sc": "scorecard.json",
+  "fm": "../../funding-map/data/funding.json",
+  "th": "../../federal-money/data/techhub.json",
+  "fed": "../../federal-money/data/federal.json",
+  "occ": "../../occupations/data/viz-data.json",
+  "peers": "../../peers/data/peers.json"
+ },
+ "claims": [
+  {
+   "id": "sc-coverage",
+   "text": "Headline and hero card 1: public records fill eight of the fifteen rows PIC answers for, none of the four on revenue, and the other seven are defined and left empty.",
+   "source": "scorecard/data/scorecard.json, written by scorecard/derive_scorecard.py from the four source datasets listed in this file",
+   "assert": "D['sc']['counts']['public'] == 8 and D['sc']['counts']['accountable'] == 15 and D['sc']['counts']['vault'] == 7 and D['sc']['counts']['public'] + D['sc']['counts']['vault'] == D['sc']['counts']['accountable'] and len([r for r in D['sc']['rows'] if r['group'] == 'A']) == 4 and all(r['status'] == 'vault' for r in D['sc']['rows'] if r['group'] == 'A')",
+   "actual": "(D['sc']['counts'], [r['status'] for r in D['sc']['rows'] if r['group'] == 'A'])",
+   "falsified_if": "A row is added to or removed from any group, or a group-A row acquires a public source. The headline prints both halves of the fraction, so either number moving breaks it. The four-on-revenue clause is the group-A membership test: if a dues or renewal figure ever becomes publishable from a public record, the sentence is wrong even though the arithmetic still holds."
+  },
+  {
+   "id": "sc-empty-slots",
+   "text": "Every row sourced from PIC's own registers renders as 'not published here' and carries no figure, and every row not so sourced carries one.",
+   "source": "scorecard/data/scorecard.json — the same condition derive_scorecard.py raises on at build time and app.js throws on at render time",
+   "assert": "all(r['current'] is None and r['sub'] is None for r in D['sc']['rows'] if r['status'] == 'vault') and all(r['current'] for r in D['sc']['rows'] if r['status'] != 'vault') and len([r for r in D['sc']['rows'] if r['status'] == 'vault']) == 7",
+   "actual": "[(r['id'], r['current']) for r in D['sc']['rows'] if r['status'] == 'vault']",
+   "falsified_if": "Any vault row acquires a value, including a zero, a dash, a range or a placeholder. This is the one failure the page exists to prevent, so the tolerance is not a band: a vault cell holds nothing at all. It also fails in the other direction, if a row marked public or context ever renders blank."
+  },
+  {
+   "id": "sc-assigned",
+   "text": "Hero card 2, row b-assigned and the closer: $79.2 million of the $85.3 million awarded, 92.8 percent, sits on an executed line naming the organisation that holds it.",
+   "source": "PIC award register as of 13 August 2026, via funding-map/data/funding.json; recomputed here rather than read from a total",
+   "assert": "sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']) == 79170176 and D['fm']['meta']['totals']['awards'] == 85335784 and D['sc']['delivery']['assigned'] == sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']) and D['sc']['delivery']['awarded'] == D['fm']['meta']['totals']['awards'] and round(D['sc']['delivery']['assigned'] / D['sc']['delivery']['awarded'] * 100, 1) == 92.8",
+   "actual": "(sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']), D['fm']['meta']['totals']['awards'])",
+   "falsified_if": "A recipient line is added, removed or restated in the register, or the award total moves. The share is printed to a tenth of a percent, so 92.74 or 92.85 breaks it. The claim is about ASSIGNMENT, not payment: it would survive unchanged if not one dollar had been disbursed, which is exactly why the disbursement row beneath it is empty."
+  },
+  {
+   "id": "sc-unassigned-ohio",
+   "text": "Hero card 3, the band-2 headline and the chart title: $6.2 million has no named recipient yet, all of it Ohio money, held in two workstreams; the EDA and APEX awards are fully assigned and APEX is committed in a single line.",
+   "source": "PIC award register, funding-map/data/funding.json, programme-to-source join recomputed from the sources and programs arrays",
+   "assert": "(lambda oh: sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] in oh) == 25084392)([p['id'] for p in D['fm']['programs'] if p['sourceId'] == 'ohio']) and one(s for s in D['fm']['sources'] if s['id'] == 'ohio')['award'] == 31250000 and D['sc']['delivery']['unassigned'] == 6165608 and sorted(g['id'] for g in D['sc']['delivery']['gaps']) == ['oh-rd', 'oh-startup'] and all(s['unassigned'] == 0 for s in D['sc']['delivery']['sources'] if s['id'] != 'ohio') and len([a for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'apex-workforce']) == 1",
+   "actual": "[(g['id'], g['gap']) for g in D['sc']['delivery']['gaps']]",
+   "falsified_if": "A sub-grant executes under PIC Translational R&D or startup support, which is the expected way this number moves and should move it down; or an EDA or APEX line is de-obligated, which would put unassigned money outside Ohio and falsify the word 'all'. A third workstream developing a gap also breaks it: the sentence says two."
+  },
+  {
+   "id": "sc-eda-seven",
+   "text": "Row b-eda: all seven EDA implementation awards, $51,001,413, are obligated directly to their project leads.",
+   "source": "Signed federal Notices of Award, via federal-money/data/techhub.json and cross-checked against the funding map's own eda-direct lines",
+   "assert": "len(D['th']['leads']) == 7 and D['th']['award'] == 51001413 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'eda-direct') == 51001413 and one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'eda')['pct'] == 100.0",
+   "actual": "(len(D['th']['leads']), D['th']['award'], sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'eda-direct'))",
+   "falsified_if": "An eighth implementation award appears, one of the seven is restated, or the two files stop agreeing to the dollar. The target cell prints 7 of 7, so a de-obligation that left six would falsify the row and its target at once."
+  },
+  {
+   "id": "sc-ohio-share",
+   "text": "Row b-ohio: 80.3 percent of the $31,250,000 Ohio Innovation Hub grant, $25,084,392, is on an executed line with a named recipient.",
+   "source": "Executed state grant agreement SBIG20251005 and its workstream budget, via funding-map/data/funding.json",
+   "assert": "(lambda o: round(o['pct'], 1) == 80.3 and o['assigned'] == 25084392 and o['award'] == 31250000 and o['assigned'] + o['unassigned'] == o['award'])(one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'ohio'))",
+   "actual": "one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'ohio')",
+   "falsified_if": "Any Ohio workstream sub-grant executes, which moves the share up, or the state restates a workstream budget. Printed to a tenth, so 80.24 or 80.35 breaks it."
+  },
+  {
+   "id": "sc-secured",
+   "text": "Row b-secured: $106.3 million secured, being $85.3 million in awards plus $21.0 million in committed match and cost share.",
+   "source": "PIC award register, funding-map/data/funding.json meta totals",
+   "assert": "D['fm']['meta']['totals']['total'] == 106290451 and D['fm']['meta']['totals']['awards'] + D['fm']['meta']['totals']['match'] == D['fm']['meta']['totals']['total'] and D['sc']['delivery']['secured'] == 106290451 and D['sc']['delivery']['match'] == 20954667",
+   "actual": "D['fm']['meta']['totals']",
+   "falsified_if": "A fourth award is secured, or a partner restates its match. The row says committed rather than received, and would survive a partner failing to pay its match, which is a limitation of the register rather than of this page."
+  },
+  {
+   "id": "sc-recipients",
+   "text": "Row b-recipients: 21 named recipients hold executed award lines across seven programmes.",
+   "source": "PIC award register, funding-map/data/funding.json",
+   "assert": "len(D['fm']['recipients']) == 21 and len(D['fm']['programs']) == 7 and len([r for r in D['fm']['recipients'] if not r['awards']]) == 0",
+   "actual": "(len(D['fm']['recipients']), len(D['fm']['programs']))",
+   "falsified_if": "A recipient is added or removed. One of the twenty-one is a programme aggregate rather than a single organisation, which the row's definition states; if the register ever splits that aggregate into named organisations the count rises and the definition needs rewriting, not just the number."
+  },
+  {
+   "id": "sc-polymer-latest",
+   "text": "Hero card 4, row c-polymer and the closer: 63 polymer credentials were awarded in the region in 2023, against a three-year average of 80.",
+   "source": "IPEDS completions through 2023 at three regional institutions, via occupations/data/viz-data.json",
+   "assert": "sum(p['latest'] for p in D['occ']['programs'] if p['group'] == 'polymer') == 63 and D['occ']['program_totals']['polymer_awards_latest'] == 63 and D['occ']['program_totals']['latest_year'] == 2023 and D['sc']['talent']['polymer'][-1]['n'] == 63 and D['sc']['talent']['polymer_window'] == [124, 54, 63] and round(sum(D['sc']['talent']['polymer_window']) / 3) == 80 and len(D['occ']['program_totals']['institutions']) == 3",
+   "actual": "(sum(p['latest'] for p in D['occ']['programs'] if p['group'] == 'polymer'), D['sc']['talent']['polymer_window'])",
+   "falsified_if": "An IPEDS revision moves any of the three window years, a newer completions year is fetched, or the occupations page re-classifies a CIP code between its polymer and materials groups. This page inherits that classification rather than making its own, so a change there changes this number without any edit here, which is the reason the claim re-runs against that file."
+  },
+  {
+   "id": "sc-polymer-2022",
+   "text": "The talent chart annotation: credentials more than halved in 2022, from 124 to 54.",
+   "source": "IPEDS completions by year, occupations/data/viz-data.json programs.by_year",
+   "assert": "sum(p['by_year'].get('2021', 0) for p in D['occ']['programs'] if p['group'] == 'polymer') == 124 and sum(p['by_year'].get('2022', 0) for p in D['occ']['programs'] if p['group'] == 'polymer') == 54 and 54 * 2 < 124",
+   "actual": "[(y, sum(p['by_year'].get(y, 0) for p in D['occ']['programs'] if p['group'] == 'polymer')) for y in ('2021', '2022', '2023')]",
+   "falsified_if": "A revision lifts 2022 above half of 2021, at which point 'more than halved' is wrong even if the fall remains large. The counts are administrative and in the low hundreds, so a single institution's late filing can move them; the row's trend cell prints all three window years for that reason rather than an arrow."
+  },
+  {
+   "id": "sc-bachelor",
+   "text": "Row c-bachelor: 6 bachelor-level polymer credentials in 2023, a three-year average of 10.3, down in each of the three years.",
+   "source": "IPEDS completions, bachelor-level rows of the polymer CIP codes, via occupations/data/viz-data.json",
+   "assert": "D['sc']['talent']['bachelor_window'] == [17, 8, 6] and (lambda b: b[0] > b[1] > b[2])(D['sc']['talent']['bachelor_window']) and sum(p['by_year'].get('2023', 0) for p in D['occ']['programs'] if p['group'] == 'polymer' and p['award'] == 'Bachelor') == 6 and round(sum(D['sc']['talent']['bachelor_window']) / 3, 1) == 10.3",
+   "actual": "D['sc']['talent']['bachelor_window']",
+   "falsified_if": "A revision breaks the strictly falling order. The words 'down three years' are not survivable on a flat or rising middle year, and with counts this small a single programme's filing decides it: six is a number of people, not a rate."
+  },
+  {
+   "id": "sc-materials",
+   "text": "Row c-materials and the band-3 lede: materials credentials rose from 20 to 33 over the same three years, moving opposite to polymer.",
+   "source": "IPEDS completions, materials CIP codes at the same institutions, via occupations/data/viz-data.json",
+   "assert": "D['sc']['talent']['materials_window'] == [20, 29, 33] and (lambda m: m[0] < m[1] < m[2])(D['sc']['talent']['materials_window']) and sum(p['latest'] for p in D['occ']['programs'] if p['group'] == 'materials') == 33 and D['sc']['talent']['materials_window'][-1] > D['sc']['talent']['polymer_window'][-1] / 2",
+   "actual": "(D['sc']['talent']['materials_window'], D['sc']['talent']['polymer_window'])",
+   "falsified_if": "A revision breaks the rise, or the two series stop moving in opposite directions, which is the only reason the materials row is on the page at all. One of the two materials programmes began reporting in 2022, so part of the rise is a programme appearing rather than growth, and the sentence claims direction only."
+  },
+  {
+   "id": "sc-dup-1920",
+   "text": "The chart's two pale columns and the limitation beside it: every one of the eleven tracked degree programmes that reports a 2019 count carries the identical count again for 2020, so this page reads the 2021 to 2023 window instead.",
+   "source": "occupations/data/viz-data.json programs.by_year, read as shipped",
+   "assert": "(lambda ps: len(ps) == 11 and all(p['by_year']['2019'] == p['by_year'].get('2020') for p in ps))([p for p in D['occ']['programs'] if '2019' in p['by_year']]) and sum(p['by_year'].get('2019', 0) for p in D['occ']['programs'] if p['group'] == 'polymer') == 118 and sum(p['by_year'].get('2020', 0) for p in D['occ']['programs'] if p['group'] == 'polymer') == 118 and D['sc']['talent']['dup_all']",
+   "actual": "[(p['institution'], p['cip'], p['award'], p['by_year'].get('2019'), p['by_year'].get('2020')) for p in D['occ']['programs'] if '2019' in p['by_year']]",
+   "falsified_if": "The occupations page refetches IPEDS and the two years diverge, which would mean one of them was wrong all along and both pale columns need reading again. It also fails if a twelfth programme starts reporting 2019, because the sentence counts eleven. The claim asserts the repetition, not its cause: nothing here establishes which of the two years, if either, is the real one."
+  },
+  {
+   "id": "sc-context-emp",
+   "text": "Row d-emp: 18,594 plastics and rubber jobs across the twelve PIC counties in 2024.",
+   "source": "BLS QCEW 2024, NAICS 326, PIC-12, via occupations/data/viz-data.json",
+   "assert": "D['occ']['region']['emp'] == 18594 and D['occ']['region']['n_counties'] == 12 and D['occ']['region']['year'] == 2024 and D['occ']['region']['naics'] == '326' and D['occ']['region']['footprint'] == 'PIC-12'",
+   "actual": "D['occ']['region']",
+   "falsified_if": "A QCEW revision moves the count by one job, or the footprint changes. The row sits in group D because a plant opening or closing moves it and no PIC decision does; if this number ever became something PIC could be held to, it would have to leave group D, which is a definition change rather than a data change."
+  },
+  {
+   "id": "sc-context-federal",
+   "text": "Row d-federal: routine federal obligations to regional polymer industry codes averaged $34.9 million a year across the eight fiscal years on file, in 2025 dollars.",
+   "source": "USAspending obligations at place of performance, FY2019 to FY2026, via federal-money/data/federal.json",
+   "assert": "abs(sum(r['real'] for r in D['fed']['naics']) / len(set(r['fy'] for r in D['fed']['naics'])) - 34908376) < 50000 and len(set(r['fy'] for r in D['fed']['naics'])) == 8 and min(set(r['fy'] for r in D['fed']['naics'])) == 2019 and max(set(r['fy'] for r in D['fed']['naics'])) == 2026",
+   "actual": "(sum(r['real'] for r in D['fed']['naics']) / len(set(r['fy'] for r in D['fed']['naics'])), sorted(set(r['fy'] for r in D['fed']['naics'])))",
+   "falsified_if": "USAspending backfills an obligation enough to move the eight-year average by $50,000, or the series gains a ninth fiscal year. FY2026 was still running at the pull, so the average includes a partial year and is therefore a floor; the row states the span rather than calling it an annual rate."
+  },
+  {
+   "id": "sc-context-rank",
+   "text": "Row d-rank: Ohio is first among the fifty-one disclosed states on plastics and rubber employment, with 54,846 jobs.",
+   "source": "BLS QCEW by-industry 2024, NAICS 326, private ownership, via peers/data/peers.json",
+   "assert": "D['peers']['states']['326']['rank_emp'] == 1 and round(D['peers']['states']['326']['subject_emp']) == 54846 and D['peers']['states']['326']['of_disclosed'] == 51",
+   "actual": "(D['peers']['states']['326']['rank_emp'], D['peers']['states']['326']['subject_emp'], D['peers']['states']['326']['of_disclosed'])",
+   "falsified_if": "A 2024 revision moves another state above Ohio, changes Ohio's employment by one job, or a state cell goes undisclosed. Ohio's rank is a state-level fact that PIC's twelve counties are one part of, which is why the row is context and why nothing on this page treats it as delivery."
+  },
+  {
+   "id": "sc-owners-targets",
+   "text": "The note beside the table: no owner cell names a person, and three targets are set, every one of them a ceiling fixed by a signed award document rather than an ambition.",
+   "source": "scorecard/data/scorecard.json — the owner and target columns as the derive script writes them",
+   "assert": "D['sc']['counts']['owners_assigned'] == 0 and D['sc']['counts']['targets_set'] == 3 and all(r['owner'] in ('not assigned', 'outside PIC') for r in D['sc']['rows']) and all(r['target'] == 'not set' or 'award' in r['target'] for r in D['sc']['rows']) and sorted(r['id'] for r in D['sc']['rows'] if r['group'] != 'D' and r['target'] != 'not set') == ['b-assigned', 'b-eda', 'b-ohio']",
+   "actual": "[(r['id'], r['owner'], r['target']) for r in D['sc']['rows'] if r['target'] != 'not set']",
+   "falsified_if": "An owner is written into the data file, or a target appears that is not traceable to a signed document. Both would be real progress for PIC and both would make this sentence wrong, which is the point of guarding an absence: the claim is designed to fail the day the absence ends."
+  },
+  {
+   "id": "sc-context-separate",
+   "text": "The distinction the page states once: group D is cluster context PIC does not control, it is never counted into the accountable total, and no figure on the page averages the two.",
+   "source": "scorecard/data/scorecard.json — the group and status fields, and the counts derived from them",
+   "assert": "len([r for r in D['sc']['rows'] if r['group'] == 'D']) == 3 and all(r['status'] == 'context' and r['owner'] == 'outside PIC' for r in D['sc']['rows'] if r['group'] == 'D') and all(r['status'] != 'context' for r in D['sc']['rows'] if r['group'] != 'D') and D['sc']['counts']['accountable'] == len([r for r in D['sc']['rows'] if r['group'] != 'D']) and D['sc']['counts']['rows'] == D['sc']['counts']['accountable'] + D['sc']['counts']['context']",
+   "actual": "[(r['group'], r['status'], r['owner']) for r in D['sc']['rows']]",
+   "falsified_if": "A context row is moved into groups A, B or C, or an accountable row is marked context. Either would let a regional number be read as PIC delivery, which is the failure this page is organised to prevent. It also fails if the two totals stop reconciling, because a row counted in both would be exactly the averaging the page refuses."
+  }
+ ]
+}

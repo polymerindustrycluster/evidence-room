@@ -1,0 +1,109 @@
+/* cluster-health — page-local additions only. House anatomy (.mast/.hero/.band/.closer)
+   and the shared column system stay untouched so the layout gates keep applying.
+
+   This page is an instrument rather than an article, and the one design risk that carries
+   is looking like a KPI wall: five identical boxes of big numbers with nothing to read.
+   The defence is that a tile is a ROW, not a card. The number sits in a fixed left rail
+   and everything that qualifies it runs beside it at reading size, so the eye can scan
+   the rail down the page and the reader who stops on one gets a paragraph, a driver
+   strip and a way out to the page that shows the working. */
+
+/* Figure chrome: the chart carries its own claim-title and how-to-read line, so the H2
+   does section work instead of doubling as the chart title (chart-craft.md). */
+.fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
+  line-height:1.3;max-width:var(--measure);color:var(--text)}
+.fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure);
+  line-height:1.55}
+.fig-title + .fig-sub + .chart{margin-top:16px}
+
+/* Body register. The lede is the claim; this is the paragraph that explains it, set below
+   lede size and above caption size so a reader can feel which is which. */
+.body-note{margin:16px 0 0;max-width:var(--measure);font-size:16.5px;line-height:1.62;
+  color:#3A4448}
+
+.byline{margin:15px 0 0;font-size:13px;line-height:1.55;color:#B7D9DE;letter-spacing:.01em}
+.hero .wrap > .byline{max-width:var(--measure)}
+
+/* ------------------------------------------------------------------------- the tiles */
+.tiles{margin:30px 0 0;max-width:var(--figure);border-top:1px solid var(--line)}
+.tile{display:grid;grid-template-columns:230px minmax(0,1fr);gap:0 32px;
+  padding:26px 0 28px;border-bottom:1px solid var(--line)}
+.t-rail{min-width:0}
+.t-dim{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:900;color:var(--action)}
+.t-q{margin:5px 0 0;font-size:13.5px;color:var(--caption);line-height:1.4}
+/* The number. Proportional figures at display size, tabular everywhere smaller — a
+   display number is a word, a table number is a column. */
+.t-val{margin:12px 0 0;font-size:38px;font-weight:900;line-height:1.02;
+  letter-spacing:-.03em;font-variant-numeric:proportional-nums;color:var(--text)}
+.t-val.two{font-size:30px}
+.t-unit{display:block;margin:7px 0 0;font-size:13px;font-weight:400;letter-spacing:0;
+  color:#5A625E;line-height:1.4}
+/* The verdict pill is the page's one piece of colour-as-verdict, and it is stated in
+   words as well as hue: "above" and "ordinary" are readable in grayscale. */
+.t-pill{display:inline-block;margin:13px 0 0;font-size:12px;font-weight:900;
+  letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;color:#fff}
+.t-pill.ordinary{background:#5C6B6E}
+.t-pill.above{background:#8F4008}
+.t-pill.record{background:#7A1F1F}
+
+.t-read{margin:0;font-size:17px;line-height:1.55;color:#26333A}
+.t-drivers{display:flex;gap:26px;flex-wrap:wrap;margin:18px 0 0;padding:0;list-style:none}
+.t-drivers li{flex:1 1 168px;min-width:0;border-top:2px solid var(--pv-grid);padding:9px 0 0}
+.d-lab{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+  font-weight:900;color:#4A5457;line-height:1.35}
+.d-val{display:block;margin:5px 0 0;font-size:19px;font-weight:900;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;color:var(--ink)}
+.d-note{display:block;margin:4px 0 0;font-size:13px;line-height:1.45;color:#5A625E}
+
+.t-facts{margin:20px 0 0;display:grid;grid-template-columns:118px minmax(0,1fr);
+  gap:9px 18px;font-size:14px;line-height:1.5}
+.t-facts dt{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:900;
+  color:var(--caption);padding-top:2px}
+.t-facts dd{margin:0;color:#3A4448}
+.t-facts dd b{color:var(--text)}
+.t-link{display:inline-block;margin:18px 0 0;font-size:14px;font-weight:900;
+  color:var(--action);text-decoration:none;border-bottom:2px solid #BFE0E6;padding-bottom:2px}
+.t-link:hover,.t-link:focus-visible{color:var(--hover);border-bottom-color:var(--hover)}
+
+/* ------------------------------------------------------------------ register changes */
+.band.tint{background:#EFE9E0}
+.pv-method{background:#E2DCD1}
+
+/* The stat band: the page's one moment at display scale away from the hero. */
+.statgrid{display:flex;gap:48px;flex-wrap:wrap;margin:30px 0 0;max-width:var(--figure)}
+.statv{border-top:4px solid var(--ink);padding:16px 0 0;min-width:210px;flex:1}
+.statv.warn{border-top-color:#8F4008}
+.statv .n{font-size:clamp(40px,4.4vw,58px);font-weight:900;line-height:1;
+  letter-spacing:-.03em;font-variant-numeric:proportional-nums;color:var(--text)}
+.statv .k{margin:9px 0 0;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:900;color:#4A5457}
+.statv .d{margin:6px 0 0;font-size:14px;color:#5A625E;max-width:300px;line-height:1.5}
+
+.changes{margin:26px 0 0;padding:0;list-style:none;max-width:var(--measure)}
+.changes li{border-top:1px solid var(--line);padding:14px 0 0;margin:0 0 14px}
+.changes b{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--action);margin:0 0 5px}
+.changes span{font-size:16px;line-height:1.55;color:#3A4448}
+
+/* ------------------------------------------------------------------------- furniture */
+.foot{background:var(--paper);border-top:1px solid var(--line);padding:30px 0 42px}
+.foot .wrap > *{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.foot-lede{margin:0;font-size:15px;line-height:1.55;color:#3A4448}
+.foot-id{margin:12px 0 0;font-size:13px;color:var(--caption);letter-spacing:.02em}
+.foot-id a{color:var(--action);font-weight:700}
+
+/* Mobile: the one chart re-lays out per form in app.js (labels above their bars, full
+   width, no left rail), so the shared sideways-scroll fallback is switched off. The
+   evidence has to be in the first paint, not behind a pan (chart-craft § mobile). */
+@media (max-width:760px){
+  .chart{overflow-x:visible;padding-bottom:0}
+  .chart svg{min-width:0}
+  .chart::after{content:none}
+  .tile{grid-template-columns:1fr;gap:0}
+  .t-val{margin-top:9px;font-size:34px}
+  .t-read{margin-top:16px}
+  .t-facts{grid-template-columns:1fr;gap:3px 0}
+  .t-facts dt{padding-top:9px}
+  .statgrid{gap:26px}
+}

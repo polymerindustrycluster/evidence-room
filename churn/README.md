@@ -43,6 +43,15 @@ closer. `app.js` fills only what is genuinely computed or per-rendering — the 
 verdict, the payroll translator, the figure subtitles, source lines and the note box.
 `claims.json` is what stops those static strings drifting from the data.
 
+Every scale on this page except the flow chart's is a CONSTRUCTED unit (a share, a gap in
+percentage points), so each of those axis titles carries direction and each reference line
+is labeled by what crossing it means, never by its value alone. The arithmetic that builds
+the unit lives in the source line, not the axis and not the lede: `ratesrc` holds the churn
+formula, `splitsrc` holds the subtraction. Do not move a formula back up into a caption.
+The narrow reference labels are end-anchored at the plot edge, so their character count is
+what keeps them off the dots; lengthening one is a layout change, and `collide.mjs` is the
+check.
+
 Band 1 carries TWO figure titles and two subtitles, one per rendering, swapped by
 `.only-wide` / `.only-narrow`: below 760px the chart draws calendar years, so a title
 counting quarters would name marks the reader cannot see.

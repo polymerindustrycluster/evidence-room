@@ -41,9 +41,9 @@ Raw pulls live beside that script so a derivation can be re-run without re-fetch
   once published. It does **not** mean a fresh figure is "safe to act on" — an earlier
   version of this README said that, and the page itself now retracts it. A small median
   revision says nothing about whether a turning point survives.
-- The month-over-month step is the part that does not survive: 14 of 201 comparable month
-  pairs changed sign between the first print and today, 12 of them in industrial
-  chemicals. That comparison is derived on the page from the archived vintages (each
+- The month-over-month step is the part that does not survive: of 201 months that moved
+  at least 0.1% from the month before, 14 later reversed direction between the first
+  estimate and today, 12 of them in industrial chemicals. That comparison is derived on the page from the archived vintages (each
   month's first print against whatever the previous month carried in the same vintage,
   versus the same step today), with a 0.1% floor on both readings so a flip between +0.02%
   and −0.01% is not counted. Claim `rev-mom-flips` guards all three counts.
@@ -66,8 +66,13 @@ Raw pulls live beside that script so a derivation can be re-run without re-fetch
   without color.
 - **The stacked histogram's up/down annotation is cut to clear the zero rule.** At 375 the
   rule sits at x=198 and the annotation is right-anchored at 365, so the copy has 159 units
-  to live in. `collide.mjs` measures the desktop layout only and will not catch a
-  regression here; re-measure the two `txt()` calls in the `mob` branch if you reword them.
+  to live in, and "first estimates run low" uses about 154 of them. `collide.mjs` measures
+  the desktop layout only and will not catch a regression here; re-measure the two `txt()`
+  calls in the `mob` branch if you reword them.
+- **Chart-1's two direction labels are placed by hand against the extremes.** WPU06 runs
+  +1.382% to -1.415%. On the wide layout the up label sits at the 1.53 level and the down
+  label at -1.72, not -1.61, because at -1.61 it printed into the Sep 2021 callout anchored
+  at ys(-1.415)+4. Re-check both if the data or `LIM` changes.
 
 ## Run and publish
 

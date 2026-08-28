@@ -27,7 +27,7 @@
     },
     {
       "id": "cs-gas-round-tripped",
-      "text": "Natural gas is below where it started in January 2019 (H1, hero card, ladder lede).",
+      "text": "Natural gas is below where it started in January 2019 (H1, hero card, ladder lede, and the ladder how-to-read line's 'past the line, it costs less now than before the run-up started').",
       "source": "EIA Henry Hub spot, monthly",
       "assert": "(lambda g: g['now']['index'] < 100 and g['retraced'] > 1)([s for s in D['series'] if 'natural gas' in s['label'].lower()][0])",
       "actual": "[(s['label'], s['peak']['index'], s['now']['index'], s['retraced']) for s in D['series'] if 'natural gas' in s['label'].lower()]",
@@ -35,7 +35,7 @@
     },
     {
       "id": "cs-gas-below-seven",
-      "text": "Gas now costs 7% less than in January 2019: the hero card leads with the plain reading (-7%) and the vignette repeats it.",
+      "text": "Gas now costs 7% less than in January 2019: the hero card leads with the plain reading (-7%), the ladder row label repeats it as 'now -7% vs 2019', and the vignette states it again.",
       "source": "EIA Henry Hub spot, current month against the 2019-01 base",
       "assert": "(lambda g: 6.5 <= 100 - g['now']['index'] <= 7.5)(one(s for s in D['series'] if 'natural gas' in s['label'].lower()))",
       "actual": "(lambda g: (g['now']['date'], g['now']['index']))(one(s for s in D['series'] if 'natural gas' in s['label'].lower()))",
@@ -67,7 +67,7 @@
     },
     {
       "id": "cs-product-forty",
-      "text": "Finished-product prices are about 40% above their January 2019 base: the manufacturing index rounds to +40% (hero card, note arithmetic, vignette $1.40) and both product lines sit within 'about 40%' (lines lede, on-chart plateau callout).",
+      "text": "Finished-product prices are about 40% above their January 2019 base: the manufacturing index rounds to +40% (hero card, ladder row label, note arithmetic, vignette $1.40) and both product lines sit within 'about 40%' (lines lede, lines how-to-read line's worked example 'a line at 140 costs 40% more than it did then', on-chart plateau callout).",
       "source": "both product PPIs against the 2019-01 base",
       "assert": "(lambda ps: all(37.5 <= p['now']['index'] - 100 <= 42.5 for p in ps) and 39.5 <= one(p for p in ps if 'manufacturing' in p['label'])['now']['index'] - 100 <= 40.49)([s for s in D['series'] if s['stage']=='product'])",
       "actual": "[(s['label'], s['now']['index']) for s in D['series'] if s['stage']=='product']",
@@ -83,7 +83,7 @@
     },
     {
       "id": "cs-spread-now",
-      "text": "The converter spread (product index minus resin index) stands at +14 points (hero card, spread lede, verdicts, closer).",
+      "text": "The converter gap (product index minus resin index) stands at +14 points, that is, product prices have risen 14 percentage points more than resin prices since January 2019 (hero card and its plain-unit sub-line, spread lede, verdicts, closer).",
       "source": "PCU326326 minus PCU325211325211, both rebased to 2019-01",
       "assert": "(lambda sp: 13.5 <= sp[-1][1] <= 14.49)((lambda P, R: [(d, P[d]-R[d]) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}))",
       "actual": "(lambda P, R: [(d, round(P[d]-R[d],2)) for d in sorted(P) if d in R][-1])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']})",
@@ -163,7 +163,7 @@
     },
     {
       "id": "cs-spread-not-margin",
-      "text": "The product-minus-resin spread is stated as an index spread and never as a margin (note box, product verdict, closer).",
+      "text": "The product-minus-resin gap is stated as a difference between two indexes and never as a margin (note box, product verdict, closer). The page uses one word for it throughout, 'gap', so a reader is not asked to hold 'spread' as well.",
       "source": "Standing rule - labor, freight, energy and packaging are in neither index",
       "verify": "manual",
       "assert": null,
@@ -172,7 +172,7 @@
     },
     {
       "id": "cs-one-axis",
-      "text": "Series in different units share an axis only because every one is rebased to its own January 2019. The rebasing rationale is published twice and no more: in the lines chart's table caption and in the methodology box from meta.rebasing. It was moved out of the visible source line to bring that figure inside the 45-word caveat budget.",
+      "text": "Series in different units share an axis only because every one is rebased to its own January 2019. The rebasing RATIONALE is published twice and no more: in the lines chart's table caption and in the methodology box from meta.rebasing. The figure's how-to-read line states the READING instead ('a line at 140 costs 40% more than it did then'), which is chart chrome, not a second copy of the rationale.",
       "source": "derive_rest.py indexes each series to its base month before any chart sees it",
       "assert": "all(s['base'] == '2019-01-01' for s in D['series']) and 'rebasing' in D['meta']",
       "actual": "sorted({s['unit'] for s in D['series']})",

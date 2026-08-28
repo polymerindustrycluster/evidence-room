@@ -158,7 +158,9 @@ function loadData(file) {
      "labeled event line" idiom). Label STRINGS are editorial; the dates come from
      the events themselves and are asserted in claims.json. */
   const RULES = [
-    { date: '2023-10-23', label: '23 Oct 2023 · EDA designates the Tech Hub, 1 of 31', tier: 0 },
+    // "1 of 31" is the inventory's phrasing and reads as a rank; on the chart it is spelled
+    // out as membership, which is what it means.
+    { date: '2023-10-23', label: '23 Oct 2023 · EDA designates the Tech Hub, one of 31 nationwide', tier: 0 },
     { date: '2024-07-02', label: '2 Jul 2024 · the $51M implementation grant', tier: 1 },
     { date: '2024-12-01', label: 'Dec 2024 · five company R&D awards begin', tier: 2 },
   ];
@@ -561,12 +563,19 @@ function loadData(file) {
     const H = y - L.gap + L.bot;
     const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
       'aria-label': `Two rows of ${HER.events.length} proven heritage events from ${HER.meta.counts.firstYear} ` +
-        `to ${HER.meta.counts.lastYear}, on five era columns of equal width: ` +
+        `to ${HER.meta.counts.lastYear}, running earlier to later across five era columns that are ` +
+        'each the same width however many years the era ran, so distance across is not years: ' +
         HER.eras.map((x) => x.label).join(', ') + ', followed by a sixth column, 2013 to 2023, ' +
         'drawn empty because the register proves nothing in it. Top row: what changed the region’s capacity. ' +
         'Bottom row: what was first understood here. Named labels mark Goodyear 1898, PVC 1926, the first ' +
         'polymer department 1963, the ALCOM center 1991 and the last proven row in 2012. After 2012 the ' +
         'record goes quiet until the 2023 designation. The same rows are in the table below.' });
+
+    /* The axis title, in the gutter beside the era labels. A banded time axis looks linear
+       and is not, so it says what horizontal distance means before a reader measures with
+       their eye. The arithmetic of the banding stays in the methods. */
+    svg.appendChild(el('text', { class: 'era-lab', x: 0, y: L.top - 34 }, 'one column per era'));
+    svg.appendChild(el('text', { class: 'era-lab', x: 0, y: L.top - 18 }, 'width is not years'));
 
     // era columns
     HER.eras.forEach((era, i) => {
@@ -661,7 +670,7 @@ function loadData(file) {
       lg.appendChild(h('b', { text: ' ' + c.name }));
       lg.appendChild(document.createTextNode(': ' + c.gloss));
     });
-    lg.appendChild(document.createTextNode('. A dot sits at its first year; the columns are equal in width, not in years. Tap any dot for the register’s sentence and source.'));
+    lg.appendChild(document.createTextNode('. A dot sits at its first year. Tap any dot for the register’s sentence and source.'));
   }
 
   /* MOBILE, chart 1. Until 2026-08-28 this was 32 stacked cards, about 8,400px of them,
@@ -697,7 +706,8 @@ function loadData(file) {
 
     const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
       'aria-label': `${HER.events.length} proven heritage events in six stacked era blocks, ` +
-        HER.eras.map((x) => x.label).join(', ') + ' and an empty 2013 to 2023 block. Inside each ' +
+        HER.eras.map((x) => x.label).join(', ') + ' and an empty 2013 to 2023 block. Each block is ' +
+        'one era and runs earlier to later across the screen, so distance is not years. Inside each ' +
         'block the top row is what changed the region’s capacity and the bottom row is what was ' +
         'first understood here. The last proven row is 2012 and nothing follows it until the 2023 ' +
         'federal designation. The same rows are in the table below.' });
@@ -1015,7 +1025,7 @@ function loadData(file) {
     document.getElementById('topline').innerHTML = '';
     // Exactly one card carries the accent, and it is the page's finding.
     [[hc.shown, `proven heritage events, ${hc.firstYear}–${hc.lastYear}`, false],
-     [before, '34 months before designation', false],
+     [before, 'events, 34 months before', false],
      [since, 'delivered, 34 months since', true],
      [IN.filter((e) => !e.delivered).length, 'scheduled ahead', false]].forEach(([n, l, key]) => {
       document.getElementById('topline').appendChild(h('li', { class: key ? 'key' : null }, [
@@ -1043,7 +1053,7 @@ function loadData(file) {
       ` Of those ${d.events.length}, ${nCal} fall inside the 2023 to 2029 calendar window and are ` +
       `drawn there: ${IN.filter((e) => e.delivered).length} delivered and ` +
       `${IN.filter((e) => !e.delivered).length} scheduled. ${nPre} predate the window and feed the ` +
-      `cadence chart instead. The remaining ${nMedia} are press coverage of the cluster rather than ` +
+      `year-by-year chart instead. The remaining ${nMedia} are press coverage of the cluster rather than ` +
       `things the cluster did, and are held out of both charts. The ${hc.shown} heritage rows are a ` +
       `separate register and are not part of this count.`;
     document.getElementById('m-public').textContent = d.meta.publicOnly;
@@ -1060,10 +1070,10 @@ function loadData(file) {
      ['Hollow dots to the right of the dashed rule are scheduled dates from the award record, not work already done.'],
      ['Vertical rules and named labels mark the load-bearing events; every other dot opens its title, date and organization on click.'],
      ['Dates are shown at the precision they were recorded. Some events are known only to a month or a year, and are placed mid-period rather than pretending to a day.'],
-     ['The cadence chart counts delivered public events per year from this same record. An event from before the cluster had staff to log it had fewer routes into the record, which is why the before count is a floor rather than a measurement.'],
-     ['The two century-scale context rows sit in the heritage strip at the top of the page and are not counted in the cadence chart.'],
+     ['The year-by-year chart counts delivered public events per year from this same record. An event from before the cluster had staff to log it had fewer routes into the record, which is why four is the fewest the record could show, and the true number can only be higher.'],
+     ['The two century-scale context rows sit in the heritage strip at the top of the page and are not counted in the year-by-year chart.'],
      ['The 2026 bar covers 1 January to 13 August and is drawn lighter than the full years beside it.'],
-     ['The heritage chart above the record uses five era columns of equal width plus an empty sixth, 2013 to 2023, so its axis is not linear; a dot sits at its first year, and tapping it opens the register’s sentence and source.'],
+     ['The heritage chart above the record gives every era the same space however many years it ran, plus an empty sixth block for 2013 to 2023, so distance across it is not years; a dot sits at its first year, and tapping it opens the register’s sentence and source.'],
     ].forEach(([t]) => notes.appendChild(h('li', { text: t })));
 
     buildFilters(); buildTable(); render(); renderCadence();

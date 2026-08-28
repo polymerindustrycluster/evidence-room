@@ -11,7 +11,7 @@
     },
     {
       "id": "headline-median-premium",
-      "text": "The typical polymer job pays 1.2 times what the average job in its county pays; the median premium is 1.21x (H1, hero card, over-time lede).",
+      "text": "The typical polymer job pays 1.2 times what the average job in its county pays; the median premium is 1.21x, stated on the hero card as 'the middle pairing pays a fifth more than its county's average job' (H1, hero card, over-time fig-title).",
       "source": "median of vs_local_all across disclosed 2025 cells",
       "assert": "abs((lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_local_all'] for r in D['latest_rows'] if r.get('vs_local_all')]) - 1.208) <= 0.007",
       "actual": "(lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_local_all'] for r in D['latest_rows'] if r.get('vs_local_all')])",
@@ -19,7 +19,7 @@
     },
     {
       "id": "below-all-products",
-      "text": "All eleven pairings below the local average make plastics or rubber products (standfirst 'one side of the house', chart-1 bracket, split band).",
+      "text": "All eleven pairings below the local average make plastics or rubber products (standfirst 'all eleven it loses make plastics or rubber', chart-1 bracket 'all 11 that pay under their own county make plastics or rubber', split band).",
       "source": "vs_local_all <= 1 cells, 2025",
       "assert": "(lambda b: len(b) == 11 and all(r['naics'] in ('326','3261','3262') for r in b))([r for r in D['latest_rows'] if r.get('vs_local_all') and r['vs_local_all'] <= 1])",
       "actual": "sorted((r['name'], r['naics']) for r in D['latest_rows'] if r.get('vs_local_all') and r['vs_local_all'] <= 1)",
@@ -35,7 +35,7 @@
     },
     {
       "id": "chem-side-median",
-      "text": "Chemistry-side pairings run a median 1.35x their county's average, and every one of the 23 clears it (split-band lede and stat).",
+      "text": "Chemistry-side pairings pay about a third more than their county's average job, a median 1.35x, and every one of the 23 clears it (split-band lede and stat card).",
       "source": "NAICS 325, 3252, 3255 cells, 2025",
       "assert": "(lambda c: len(c) == 23 and all(v > 1 for v in c) and abs((lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))(c) - 1.347) <= 0.004)([r['vs_local_all'] for r in D['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('325','3252','3255')])",
       "actual": "(lambda c: (len(c), min(c), (lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))(c)))([r['vs_local_all'] for r in D['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('325','3252','3255')])",
@@ -43,7 +43,7 @@
     },
     {
       "id": "products-side-median",
-      "text": "Plastics-and-rubber pairings run a median 1.01x, with 17 of 28 above (split-band lede and stat).",
+      "text": "Plastics-and-rubber pairings come out level with their towns, a median 1.01x, with 17 of 28 above (split-band lede and stat card).",
       "source": "NAICS 326, 3261, 3262 cells, 2025",
       "assert": "(lambda c: len(c) == 28 and len([v for v in c if v > 1]) == 17 and abs((lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))(c) - 1.014) <= 0.004)([r['vs_local_all'] for r in D['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('326','3261','3262')])",
       "actual": "(lambda c: (len(c), len([v for v in c if v > 1]), (lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))(c)))([r['vs_local_all'] for r in D['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('326','3261','3262')])",
@@ -51,7 +51,7 @@
     },
     {
       "id": "employment-share-above",
-      "text": "78% of the jobs sit in a pairing that pays above the county average, counted once at each county's finest disclosed level (hero card).",
+      "text": "78% of the jobs sit in a pairing that pays above the county average, counted once per county at the finest industry detail published for it (hero card '78% of jobs beat their county average').",
       "source": "emp-weighted share over deduplicated cells (child level preferred to its parent group)",
       "assert": "0.770 <= (lambda R: (lambda dd: sum(r['emp'] for r in dd if r['vs_local_all']>1)/sum(r['emp'] for r in dd))([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')]) <= 0.785",
       "actual": "(lambda R: (lambda dd: sum(r['emp'] for r in dd if r['vs_local_all']>1)/sum(r['emp'] for r in dd))([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
@@ -59,7 +59,7 @@
     },
     {
       "id": "dedup-count",
-      "text": "Counted once at each county's finest disclosed level, 27 of 35 pairings pay above the county average, the same roughly three-in-four share (methodology box, 'What one row is'). This is the overlap accounting: the data ship industry groups 325 and 326 alongside their sub-industries, so a county can appear at both levels. Moved out of the chart-1 source line in the 2026-08-28 fix round to hold that caption inside the 45-word caveat budget.",
+      "text": "Counted once per county, at the finest industry detail published for it, 27 of 35 pairings pay above the county average, the same roughly three-in-four share (methodology box). This is the overlap accounting: the data ship industry groups 325 and 326 alongside their sub-industries, so a county can appear at both levels.",
       "source": "deduplication rule: keep a group row only where no child of that group is disclosed in the county",
       "assert": "(lambda R: (lambda dd: len([r for r in dd if r['vs_local_all']>1]) == 27 and len(dd) == 35)([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
       "actual": "(lambda R: (lambda dd: (len([r for r in dd if r['vs_local_all']>1]), len(dd)))([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
@@ -67,7 +67,7 @@
     },
     {
       "id": "possible-pairings",
-      "text": "51 of 72 possible pairings are disclosed (chart-1 source line): 6 tracked industries x 12 footprint counties, both counted from the data rather than typed.",
+      "text": "51 of 72 possible pairings are big enough to publish (chart-1 source line): 6 tracked industries x 12 footprint counties, both counted from the data rather than typed.",
       "source": "distinct NAICS in latest_rows x distinct counties",
       "assert": "len(set(r['naics'] for r in D['latest_rows'])) * len(set(r['name'] for r in D['latest_rows'])) == 72",
       "actual": "(len(set(r['naics'] for r in D['latest_rows'])), len(set(r['name'] for r in D['latest_rows'])))",
@@ -75,7 +75,7 @@
     },
     {
       "id": "vs-us-counterweight",
-      "text": "44 of the 51 pairings pay below what the same industry averages across the United States; the median sits at 0.88x (counterweight lede, closer).",
+      "text": "44 of the 51 pairings pay less than the same industry pays elsewhere in the country; the typical one pays about 12 percent less, a median 0.88x (counterweight lede, closer). The guarded band 0.877-0.885 all rounds to 'about 12 percent less'.",
       "source": "vs_us: county weekly wage / same-industry US average",
       "assert": "len([r for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us') and r['vs_us'] < 1]) == 44 and abs((lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_us'] for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us')]) - 0.881) <= 0.004",
       "actual": "(len([r for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us') and r['vs_us'] < 1]), (lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_us'] for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us')]))",
@@ -91,7 +91,7 @@
     },
     {
       "id": "trend-held",
-      "text": "The median premium has stayed between 1.12x and 1.25x since 2015, ending at 1.21x against 1.20x at the start; the low is 1.12x in 2023 (over-time lede and dip annotation).",
+      "text": "Every year since 2015 the middle pairing has paid roughly a tenth to a quarter more than its county's average job, a median premium between 1.12x and 1.25x, ending at 1.21x against 1.20x at the start; the low is 1.12x in 2023 (over-time lede and dip annotation).",
       "source": "per-year median of vs_local_all across all disclosed cells",
       "assert": "(lambda M: min(M.values()) >= 1.115 and max(M.values()) <= 1.255 and abs(M[2015]-1.1965) <= 0.006 and abs(M[2025]-1.2078) <= 0.006 and min(M, key=M.get) == 2023)({y: (lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_local_all'] for r in D['trend'] if r.get('vs_local_all') and r['year']==y]) for y in set(r['year'] for r in D['trend'] if r.get('vs_local_all'))})",
       "actual": "{y: round((lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_local_all'] for r in D['trend'] if r.get('vs_local_all') and r['year']==y]), 3) for y in sorted(set(r['year'] for r in D['trend'] if r.get('vs_local_all')))}",
@@ -99,7 +99,7 @@
     },
     {
       "id": "trend-cells-range",
-      "text": "Between 48 and 58 pairings are disclosed in a given year (trend source line).",
+      "text": "Between 48 and 58 pairings are big enough to publish in a given year (trend source line).",
       "source": "per-year cell counts",
       "assert": "(lambda C: min(C) == 48 and max(C) == 58)([len([r for r in D['trend'] if r.get('vs_local_all') and r['year']==y]) for y in set(r['year'] for r in D['trend'] if r.get('vs_local_all'))])",
       "actual": "sorted((y, len([r for r in D['trend'] if r.get('vs_local_all') and r['year']==y])) for y in set(r['year'] for r in D['trend'] if r.get('vs_local_all')))",
@@ -115,7 +115,7 @@
     },
     {
       "id": "human-lake-rubber",
-      "text": "Lake County rubber-products work averages $1,028 a week, about $53,000, under the county line (human-scale band).",
+      "text": "Lake County rubber-products work averages $1,028 a week, about $53,000, below what the average job in that county pays (human-scale band).",
       "source": "Lake 3262 cell",
       "assert": "(lambda r: abs(r['weekly_wage'] - 1028) <= 0.5 and r['vs_local_all'] < 1 and abs(r['weekly_wage']*52 - 53000) <= 1500)(one(r for r in D['latest_rows'] if r['name']=='Lake' and r['naics']=='3262'))",
       "actual": "(lambda r: (r['weekly_wage'], round(r['weekly_wage']*52), r['vs_local_all']))(one(r for r in D['latest_rows'] if r['name']=='Lake' and r['naics']=='3262'))",
@@ -123,7 +123,7 @@
     },
     {
       "id": "human-stark-rubber",
-      "text": "The lowest pairing on the page is Stark County rubber products: $853 a week, about $44,000, across 30 jobs (human-scale band; chart-1 bracket).",
+      "text": "The lowest pairing on the page is Stark County rubber products: $853 a week, about $44,000, covering 30 jobs (human-scale band; chart-1 bracket).",
       "source": "minimum vs_local_all cell, 2025",
       "assert": "(lambda r: r['name']=='Stark' and r['naics']=='3262' and abs(r['weekly_wage']-853) <= 0.5 and r['emp'] == 30 and abs(r['weekly_wage']*52 - 44000) <= 1500)(sorted([r for r in D['latest_rows'] if r.get('vs_local_all')], key=lambda r: r['vs_local_all'])[0])",
       "actual": "(lambda r: (r['name'], r['naics'], r['weekly_wage'], r['emp'], round(r['weekly_wage']*52)))(sorted([r for r in D['latest_rows'] if r.get('vs_local_all')], key=lambda r: r['vs_local_all'])[0])",

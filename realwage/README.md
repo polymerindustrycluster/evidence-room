@@ -21,7 +21,7 @@ data/realwage.json   THE DATA (76 KB). Edit the builder, not this.
 - Ranks are among the **56 metros with at least 2,000 polymer jobs** (a stated choice);
   a different floor gives a different rank. The all-metro set (235 disclosed) appears
   only on the price strip.
-- **One year, one print.** Only the 2023 release ships with this page; the 14-place
+- **One year, no track record.** Only the 2023 release ships with this page; the 14-place
   climb has no visible track record here. The `rw-single-year` claim pins this: if
   2021/2022 pairs are ever added to the data, that claim fails on purpose and the
   disclaimer must be replaced by a persistence check.
@@ -35,6 +35,25 @@ data/realwage.json   THE DATA (76 KB). Edit the builder, not this.
 
 ## Clarifications (wording and layout; no number changed)
 
+- **2026-08-28** — plain-reading pass on every constructed unit. Two units carried the
+  page and neither could be read from the page alone: the RANK (nothing said which end
+  of a 56-metro list was good) and the BEA PRICE LEVEL (an index whose only gloss was
+  its own formula, "US average = 100"). Fixes: every axis title on a constructed scale
+  now carries direction rather than arithmetic — "Rank on paper / 1 = biggest paycheck",
+  "Cheaper ← local price level, US average = 100 → more expensive", "↑ More expensive ·
+  price level (US = 100)" — and the mobile rank list gained "1 = biggest paycheck;
+  + = climbed". The index gets its plain equivalent at first use, in the band-1 gloss
+  and hero card 2: Akron's 92.9 means prices here run about 7 percent below the US
+  average, a number now bounded by `rw-strip-marks`. The scatter's how-to-read line
+  leads with the reading ("the further right, the bigger the paycheck") instead of the
+  axis recipe. Term-of-art swaps at first contact: "nominal" → "on paper" / "the
+  printed number" in cards, tooltips and table headers; "disclosed" → "whose polymer
+  wage BLS publishes"; "withholds" → "will not publish"; "one print" → "no track
+  record"; "price-adjusted terms" → "once local prices are counted". The standfirst's
+  "a real polymer workforce" became "a serious polymer workforce", because "real" is a
+  technical term everywhere else on this page. Ink paid for by cutting two duplicated
+  caveats out of the table notes.
+
 - **2026-08-28** — apparatus discipline pass after a visual review. The pre-hero
   county-footprint banner is gone: it was the page's first text, sat above the headline,
   and rendered at x=0 with no container while every other block sat on the 301px rail.
@@ -44,7 +63,7 @@ data/realwage.json   THE DATA (76 KB). Edit the builder, not this.
   zero bold); what they used to carry moved into each figure's existing table
   disclosure. The hero lede lost its second paragraph (the definitions moved to bands 1
   and 2) and now runs four rendered lines. Added: byline block, three-stage footer, and
-  a drawn "2023 only, one print" cue under the +14 annotation on both slope layouts, so
+  a drawn "2023 only" cue under the +14 annotation on both slope layouts, so
   a reader who skips captions still sees the qualifier. `meta.row`, `meta.geography` and
   `meta.not` were rewritten in `derive_realwage.py` as reader sentences (they publish
   verbatim into figure chrome and the methodology box, where "METRO." and a lowercase

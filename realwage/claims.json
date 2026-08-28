@@ -27,11 +27,11 @@
     },
     {
       "id": "rw-strip-marks",
-      "text": "The strip figure subtitle hand-types three values: 235 metros, Akron at 92.9, the median metro at 93.1 (strip fig-sub; svg title).",
+      "text": "The strip subtitle hand-types three values: 235 metros, Akron at 92.9, the middle metro at 93.1 (strip fig-sub; svg title). Extended 2026-08-28: the band-1 gloss and hero card 2 now also state the PLAIN reading of that index, 'prices here run about 7 percent below the US average', so the bound on 100 minus Akron's price level is asserted too.",
       "source": "BEA MARPP 2023 all items; median convention matches the page's JS (sorted, floor(n/2))",
-      "assert": "len(D['metros']) == 235 and D['meta']['n_metros'] == 235 and abs([r for r in D['metros'] if r['area']=='10420'][0]['rpp'] - 92.9) <= 0.05 and abs(sorted(r['rpp'] for r in D['metros'])[len(D['metros'])//2] - 93.1) <= 0.05",
-      "actual": "(len(D['metros']), [r['rpp'] for r in D['metros'] if r['area']=='10420'], sorted(r['rpp'] for r in D['metros'])[len(D['metros'])//2])",
-      "falsified_if": "A revision moves Akron's price level or the median off the one-decimal values typed in the subtitle, or the disclosed-metro count leaves 235."
+      "assert": "len(D['metros']) == 235 and D['meta']['n_metros'] == 235 and abs([r for r in D['metros'] if r['area']=='10420'][0]['rpp'] - 92.9) <= 0.05 and abs(sorted(r['rpp'] for r in D['metros'])[len(D['metros'])//2] - 93.1) <= 0.05 and 6.5 <= 100 - [r for r in D['metros'] if r['area']=='10420'][0]['rpp'] <= 7.5",
+      "actual": "(len(D['metros']), [r['rpp'] for r in D['metros'] if r['area']=='10420'], sorted(r['rpp'] for r in D['metros'])[len(D['metros'])//2], round(100 - [r for r in D['metros'] if r['area']=='10420'][0]['rpp'], 2))",
+      "falsified_if": "A revision moves Akron's price level or the median off the one-decimal values typed in the subtitle, the disclosed-metro count leaves 235, or Akron's gap to the national average stops rounding to 7 percent. The plain reading and the index have to move together or the page contradicts itself."
     },
     {
       "id": "rw-stretch-chicago",
@@ -75,7 +75,7 @@
     },
     {
       "id": "rw-single-year",
-      "text": "Everything on this page is the 2023 release; no earlier year ships with it, so the 14-place climb is shown without a track record (slope source line, and since 2026-08-28 the drawn '2023 only, one print' cue under the +14 annotation on both the desktop slope and the mobile rank list). This sentence must be replaced by a persistence test the moment prior-year pairs are added to the data.",
+      "text": "Everything on this page is the 2023 release; no earlier year ships with it, so the 14-place climb is shown without a track record (slope source line, and the drawn '2023 only, no track record' cue under the +14 annotation on both the desktop slope and the mobile rank list; the cue read 'one print' until 2026-08-28, which is trade jargon for a first release). This sentence must be replaced by a persistence test the moment prior-year pairs are added to the data.",
       "source": "data file inventory: meta.year and the absence of any multi-year series",
       "assert": "D['meta']['year'] == 2023 and 'trend' not in D and sorted(D.keys()) == ['big', 'home', 'meta', 'metros']",
       "actual": "(D['meta']['year'], sorted(D.keys()))",

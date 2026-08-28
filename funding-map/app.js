@@ -701,9 +701,11 @@ function loadData(file) {
       const a3 = el('g', { class: 'dimmable', 'data-node': 'src:ohio' });
       a3.appendChild(el('line', { class: 'anno-lead', x1: L.rowX, y1: L.a3Top + 2,
         x2: L.rightEdge, y2: L.a3Top + 2 }));
+      // "not yet sub-granted" is the contract word; on the figure it says "not yet passed
+      // on", which is what it means. The sub-grant wording stays in the table note below.
       [[`Not on any row: ${fmt(un)} of awarded money has`, 'anno-t anno-strong'],
        [`no named recipient yet: ${fmt(rdBal)} of R&D not yet`, 'anno-t'],
-       [`sub-granted, ${fmt(s6Bal)} running Synthe6 via Bounce.`, 'anno-t']].forEach(([t, cls], i) => {
+       [`passed on, ${fmt(s6Bal)} running Synthe6 via Bounce.`, 'anno-t']].forEach(([t, cls], i) => {
         a3.appendChild(el('text', { class: cls, x: L.rowX, y: L.a3Top + 22 + i * 17 }, t));
       });
       g.appendChild(a3);
@@ -972,7 +974,7 @@ function loadData(file) {
       { color: TINT.eda.solid, text: 'EDA Tech Hub (federal)' },
       { color: TINT.hub.solid, text: 'Ohio Innovation Hub (state)' },
       { color: TINT.apex.solid, text: 'Good Jobs Challenge / APEX (federal)' },
-      { color: TINT.hub.deep, hatch: true, text: 'Match and cost share' }
+      { color: TINT.hub.deep, hatch: true, text: 'Match and cost share, promised alongside' }
     ]));
     lg.appendChild(block('Program, within the Ohio stream', [
       { color: TINT.rd.solid, text: 'PIC Translational R&D' },
@@ -994,7 +996,12 @@ function loadData(file) {
        NEO-SMART note and the whole drawn-to-scale inventory ran to ~170 words of apparatus
        under the map; they are the same words, one click away, where the reader who wants
        them can still reach them without wading through them to get to the story. */
-    document.getElementById('fn-disclosure').textContent = DATA.meta.disclosures[0];
+    /* PLAIN FIRST. "disbursement follows milestones" is the one term of art left in the
+       sentence a reader actually meets beside the figure, and it is the sentence that
+       decides whether they read these bars as money spent. The plain reading leads; the
+       data string follows verbatim, so a correction to it still propagates. */
+    document.getElementById('fn-disclosure').textContent =
+      'Money is paid out as the work hits agreed checkpoints. ' + DATA.meta.disclosures[0];
     const more = document.getElementById('fn-more');
     DATA.meta.scaleNote.concat(DATA.meta.disclosures.slice(1))
       .forEach((t) => more.appendChild(h('p', { text: t })));
@@ -1179,8 +1186,11 @@ function loadData(file) {
       kindEl.textContent = 'Program · ' + so.short;
       titleEl.textContent = p.name;
       body.appendChild(chipsRow([p.chip]));
+      /* A share with no denominator on it is a number a reader cannot use: this page
+         shows the Ohio money twice, as a $31.25M award and as $41.67M with the state
+         cost share, so "59.27% of the Ohio award" was ambiguous by exactly $10.42M. */
       body.appendChild(totalBlock(p.amount,
-        (p.share ? `${p.share} of the Ohio award · ` : '') + fmtFull(p.amount)));
+        (p.share ? `${p.share} of the ${fmt(so.award)} Ohio award · ` : '') + fmtFull(p.amount)));
       body.appendChild(h('p', { class: 'panel-note', text: p.note }));
       const outs = G.progOut.get(p.id).slice().sort((a, b) => b.award.amount - a.award.amount);
       body.appendChild(h('h3', { text: `Where it goes · ${outs.length} recipient${outs.length > 1 ? 's' : ''}` }));
@@ -1204,7 +1214,8 @@ function loadData(file) {
         text: `Plus ${fmt(so.matchAmount)} in ${so.matchLabel} (${fmtFull(so.matchAmount)}), committed alongside the award.` }));
       body.appendChild(h('p', { class: 'panel-note', style: 'margin-top:14px', text: so.note }));
       const progs = G.srcPrograms.get(id);
-      body.appendChild(h('h3', { text: progs.length > 1 ? `Five workstreams` : 'Program' }));
+      body.appendChild(h('h3', { text: progs.length > 1
+        ? `Five workstreams, shares of the ${fmt(so.award)} award` : 'Program' }));
       const ul = h('ul', { class: 'panel-list' });
       progs.forEach((p) => ul.appendChild(h('li', {}, [
         h('span', { text: p.name + (p.share ? ` · ${p.share}` : '') }),
@@ -1317,12 +1328,20 @@ function loadData(file) {
     currentMode = mode;
     lastW = W;
 
-    /* The subtitle's last sentence described the wide diagram. Below the card breakpoint
-       there is no wide diagram, so the sentence pointed at something that is not there. */
+    /* HOW TO READ, per mode. This span used to carry only the not-to-scale caveat, while
+       the static half of the subtitle described the encoding ("hue names the source; a
+       tint step separates...") and asserted "one dollar scale" — which the Ohio bands do
+       not use. It now states the READING of the geometry that is actually on screen, and
+       says out loud that the bands run on a second scale. In card mode it says nothing:
+       there is no left-to-right and no band column, and the note above the first group
+       already gives the card reading. */
     const sub = document.querySelector('.fig-sub-mode');
     if (sub) sub.textContent = mode === 'diagram'
-      ? 'Connectors into individual recipients are not to scale.'
-      : 'Every bar shares one scale, anchored at the largest single award.';
+      ? 'Left to right: each award, the machine it runs through, then who receives the money. ' +
+        'Taller means more dollars. The Ohio hub’s five bands sit on a larger scale of their ' +
+        'own so the smallest can carry a label, and the threads into single recipients are not ' +
+        'to scale.'
+      : '';
 
     const root = mode === 'diagram' ? (renderDiagram(W), viz) : renderCards();
     if (first) startReveal(mode === 'diagram' ? viz : root);

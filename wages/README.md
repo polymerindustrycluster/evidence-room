@@ -80,6 +80,18 @@ the reporting requirement is the aspiration, not the gate.
 
 ## Revision log
 
+- **2026-08-28 (plain-reading pass)** — the ratio is the page's only unit, and it was being
+  handed to the reader as arithmetic. Chart 1's how-to-read line said "average weekly wage ÷
+  the county's all-industry average" and left the reader to work out that right meant better;
+  it now states the reading, and the formula moved to the source line. Every axis on a ratio
+  scale carries direction (chart 1 mobile, both trend variants, which had none), and every
+  reference line is labelled by what crossing it means rather than by what the line is.
+  `0.88×`, `1.35×`, `1.01×` and the 1.12–1.25 band now lead with a plain equivalent at first
+  use. Terms of art translated at first contact: *pairing* (defined by doing it, in the
+  standfirst), *cell* → group, *disclosed/withheld* → published / too small to publish,
+  *25th–75th percentile* → the middle half. Dropped the "one side of the house" metaphor,
+  which named nothing a first-time reader could hold. Claim `text` fields re-worded to quote
+  the sentences that now ship; all asserts unchanged and passing.
 - **2026-08-28** — fix round against the visual review. Mobile scatter y-axis was printing
   0.75/1.00/1.25 as "0.8/1.0/1.3" (equal pixel gaps asserting unequal spans); now on a 0.2
   step with the page's no-round-lie formatter. Footprint banner removed from above the hero

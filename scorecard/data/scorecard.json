@@ -1,0 +1,458 @@
+{
+ "meta": {
+  "source": "PIC award register (funding map), signed federal Notices of Award, executed state grant agreement SBIG20251005, IPEDS completions, and BLS QCEW — each already published on another page of this site.",
+  "row": "one scorecard metric: its definition, who owns it, how often it is read, the target, and the latest reading where a public record can supply one.",
+  "fetched": "2026-08-13",
+  "definition": "A row is accountable when PIC controls the thing being measured (groups A, B and C) and context when it does not (group D). The two are never averaged, summed, or scored together.",
+  "derived_note": "Nothing here is fetched. Every populated figure is recomputed by derive_scorecard.py from a JSON file another page in this repository already publishes, so a correction on that page fails this page’s claims rather than leaving a stale board number in place.",
+  "publicOnly": "This repository is public and its history is permanent, so it carries no member, applicant or personal data. Every metric that would need PIC’s membership register, general ledger, pipeline or drawdown records is published here as a defined empty slot. Filling those rows requires a copy of this page kept outside a public repository.",
+  "caution": "An award register records what has been committed and executed. It records no payment, so no figure on this page is a measure of money spent. Obligated is not disbursed, and the disbursement row is empty for that reason rather than for lack of effort.",
+  "not": "No target on this page was set by PIC. A target cell showing a figure is a ceiling fixed by a signed award document, and every other target cell reads “not set”. No owner cell names a person, because this repository holds no owner assignment for any row.",
+  "small_numbers": "The talent rows are administrative counts in the low tens. The polymer series ran 124, 54, 63 across 2021, 2022 and 2023, so a single year is a reading and not a direction.",
+  "excludes": "Identical completion counts appear for 2019 and 2020 in every one of the 13 tracked degree programmes in the shipped occupations file. Thirteen programmes do not repeat in lockstep, so this page reads the 2021-2023 window and uses neither of those two years."
+ },
+ "generated_on": "2026-08-28",
+ "version": "1.0",
+ "counts": {
+  "rows": 18,
+  "accountable": 15,
+  "public": 8,
+  "vault": 7,
+  "context": 3,
+  "vault_in_a": 4,
+  "targets_set": 3,
+  "owners_assigned": 0
+ },
+ "groups": [
+  {
+   "key": "A",
+   "title": "Growth and sustainability",
+   "blurb": "Whether PIC can pay for itself. Every row here is measured in PIC’s own membership register and general ledger, and neither may be published in a public repository."
+  },
+  {
+   "key": "B",
+   "title": "Federal and state award delivery",
+   "blurb": "Whether the money PIC won reaches the organisations it was won for. The award register is a public document, so most of this group computes."
+  },
+  {
+   "key": "C",
+   "title": "Talent programs",
+   "blurb": "Whether the region produces the graduates the cluster hires. Federal education data covers the degree side; PIC’s own programs do not."
+  },
+  {
+   "key": "D",
+   "title": "Cluster context",
+   "blurb": "The regional economy PIC works on. Read-only: PIC influences these and does not control them, and they are never averaged with the rows above."
+  }
+ ],
+ "rows": [
+  {
+   "id": "a-members",
+   "group": "A",
+   "status": "vault",
+   "metric": "Members in good standing",
+   "definition": "Organisations whose dues are paid and whose membership has not lapsed on the last day of the quarter. One organisation counts once regardless of how many staff it sends.",
+   "cadence": "Quarterly, at quarter close",
+   "source": "PIC membership register",
+   "owner": "not assigned",
+   "target": "not set",
+   "current": null,
+   "sub": null,
+   "trend": "no prior reading",
+   "dir": "none",
+   "href": null
+  },
+  {
+   "id": "a-dues",
+   "group": "A",
+   "status": "vault",
+   "metric": "Dues revenue, trailing twelve months",
+   "definition": "Dues cash received in the twelve months ending at quarter close. Excludes sponsorship, event fees and grant income, which are counted in the earned-revenue row instead.",
+   "cadence": "Quarterly, at quarter close",
+   "source": "PIC general ledger",
+   "owner": "not assigned",
+   "target": "not set",
+   "current": null,
+   "sub": null,
+   "trend": "no prior reading",
+   "dir": "none",
+   "href": null
+  },
+  {
+   "id": "a-renewal",
+   "group": "A",
+   "status": "vault",
+   "metric": "Renewal rate",
+   "definition": "Members whose renewal date fell in the period and who renewed within ninety days of it, divided by all members whose renewal date fell in the period. Lapsed-then-rejoined counts as a renewal only inside the window.",
+   "cadence": "Quarterly, at quarter close",
+   "source": "PIC membership register",
+   "owner": "not assigned",
+   "target": "not set",
+   "current": null,
+   "sub": null,
+   "trend": "no prior reading",
+   "dir": "none",
+   "href": null
+  },
+  {
+   "id": "a-earned",
+   "group": "A",
+   "status": "vault",
+   "metric": "Earned-revenue share",
+   "definition": "Dues plus fee-for-service plus sponsorship, divided by total operating revenue, over the trailing twelve months. Grant drawdown sits in the denominator and never in the numerator.",
+   "cadence": "Quarterly, at quarter close",
+   "source": "PIC general ledger",
+   "owner": "not assigned",
+   "target": "not set",
+   "current": null,
+   "sub": null,
+   "trend": "no prior reading",
+   "dir": "none",
+   "href": null
+  },
+  {
+   "id": "b-assigned",
+   "group": "B",
+   "status": "public",
+   "metric": "Award dollars with a named recipient",
+   "definition": "Award dollars carried on an executed line item naming the organisation that holds them, divided by all dollars awarded. An assignment test, not a payment test.",
+   "cadence": "On amendment of the award register",
+   "target": "$85,335,784 awarded",
+   "current": "92.8%",
+   "sub": "$79,170,176 of $85,335,784",
+   "trend": "first reading",
+   "source": "PIC award register",
+   "owner": "not assigned",
+   "dir": "none",
+   "href": null
+  },
+  {
+   "id": "b-recipients",
+   "group": "B",
+   "status": "public",
+   "metric": "Named recipients under an executed agreement",
+   "definition": "Distinct organisations holding at least one executed award line. One row of the register is a programme aggregate rather than a single firm, and is counted as one.",
+   "cadence": "On amendment of the award register",
+   "current": "21",
+   "sub": "across 7 programmes",
+   "trend": "first reading",
+   "source": "PIC award register",
+   "owner": "not assigned",
+   "target": "not set",
+   "dir": "none",
+   "href": null
+  },
+  {
+   "id": "b-eda",
+   "group": "B",
+   "status": "public",
+   "metric": "EDA implementation awards obligated to a project lead",
+   "definition": "Tech Hub implementation awards for which EDA has obligated funds directly to the named project lead, against the number of awards in the signed Notices of Award.",
+   "cadence": "On amendment of the award register",
+   "target": "7 of 7 awards",
+   "current": "7 of 7",
+   "sub": "$51,001,413",
+   "trend": "first reading",
+   "source": "Signed federal Notices of Award",
+   "owner": "not assigned",
+   "dir": "none",
+   "href": null
+  },
+  {
+   "id": "b-ohio",
+   "group": "B",
+   "status": "public",
+   "metric": "Ohio Innovation Hub dollars with a named recipient",
+   "definition": "The state grant’s five workstreams, tested the same way as the award total: dollars on an executed line naming the organisation that holds them.",
+   "cadence": "On amendment of the award register",
+   "target": "$31,250,000 awarded",
+   "current": "80.3%",
+   "sub": "$25,084,392 of $31,250,000",
+   "trend": "first reading",
+   "source": "Executed state grant agreement SBIG20251005",
+   "owner": "not assigned",
+   "dir": "none",
+   "href": null
+  },
+  {
+   "id": "b-secured",
+   "group": "B",
+   "status": "public",
+   "metric": "Total public money secured",
+   "definition": "The three public awards plus the partner match and cost share written into them. Committed, not received: match is a promise made at award time by organisations other than PIC.",
+   "cadence": "On amendment of the award register",
+   "current": "$106.3M",
+   "sub": "$85.3M awards plus $21.0M match",
+   "trend": "first reading",
+   "source": "PIC award register",
+   "owner": "not assigned",
+   "target": "not set",
+   "dir": "none",
+   "href": null
+  },
+  {
+   "id": "b-disbursed",
+   "group": "B",
+   "status": "vault",
+   "metric": "Award dollars disbursed to recipients",
+   "definition": "Cash actually paid out against executed awards at quarter close, divided by dollars awarded. The register above records commitment and execution; nothing in it records a payment.",
+   "cadence": "Quarterly, at quarter close",
+   "source": "PIC drawdown records and agency payment systems",
+   "owner": "not assigned",
+   "target": "not set",
+   "current": null,
+   "sub": null,
+   "trend": "no prior reading",
+   "dir": "none",
+   "href": null
+  },
+  {
+   "id": "c-polymer",
+   "group": "C",
+   "status": "public",
+   "metric": "Polymer-program credentials awarded, region",
+   "definition": "Credentials at every level awarded by the three regional institutions in CIP codes the occupations page classes as polymer, in the latest federal reporting year.",
+   "cadence": "Annual, on the IPEDS completions release",
+   "current": "63",
+   "sub": "2021-2023 average 80",
+   "trend": "volatile: 124, 54, 63",
+   "dir": "volatile",
+   "source": "IPEDS completions 2023",
+   "owner": "not assigned",
+   "target": "not set",
+   "href": null
+  },
+  {
+   "id": "c-bachelor",
+   "group": "C",
+   "status": "public",
+   "metric": "Bachelor-level polymer credentials",
+   "definition": "The subset of the row above awarded at bachelor level, across all three institutions. The entry point into the cluster’s technical workforce that does not require graduate school.",
+   "cadence": "Annual, on the IPEDS completions release",
+   "current": "6",
+   "sub": "2021-2023 average 10.3",
+   "trend": "down three years: 17, 8, 6",
+   "dir": "down",
+   "source": "IPEDS completions 2023",
+   "owner": "not assigned",
+   "target": "not set",
+   "href": null
+  },
+  {
+   "id": "c-materials",
+   "group": "C",
+   "status": "public",
+   "metric": "Materials-program credentials awarded, region",
+   "definition": "Credentials at every level in CIP codes the occupations page classes as materials rather than polymer, at the same three institutions and in the same year.",
+   "cadence": "Annual, on the IPEDS completions release",
+   "current": "33",
+   "sub": "2021-2023 average 27",
+   "trend": "up three years: 20, 29, 33",
+   "dir": "up",
+   "source": "IPEDS completions 2023",
+   "owner": "not assigned",
+   "target": "not set",
+   "href": null
+  },
+  {
+   "id": "c-completions",
+   "group": "C",
+   "status": "vault",
+   "metric": "Completions of a PIC-funded training program",
+   "definition": "Individuals who finished a workforce program paid for by the APEX Good Jobs Challenge award or the Ohio workforce workstream, counted at completion and never at enrolment.",
+   "cadence": "Quarterly, at quarter close",
+   "source": "PIC and APEX program records",
+   "owner": "not assigned",
+   "target": "not set",
+   "current": null,
+   "sub": null,
+   "trend": "no prior reading",
+   "dir": "none",
+   "href": null
+  },
+  {
+   "id": "c-placements",
+   "group": "C",
+   "status": "vault",
+   "metric": "Member companies taking a program participant",
+   "definition": "Member organisations that took at least one participant from a PIC-supported program into a placement, internship or apprenticeship in the trailing twelve months.",
+   "cadence": "Quarterly, at quarter close",
+   "source": "PIC program records",
+   "owner": "not assigned",
+   "target": "not set",
+   "current": null,
+   "sub": null,
+   "trend": "no prior reading",
+   "dir": "none",
+   "href": null
+  },
+  {
+   "id": "d-emp",
+   "group": "D",
+   "status": "context",
+   "metric": "Plastics and rubber jobs, PIC-12",
+   "definition": "Covered employment in NAICS 326 across the twelve counties, from the federal employment census. Moves with plant-level hiring decisions PIC does not make.",
+   "owner": "outside PIC",
+   "cadence": "Annual, on the QCEW release",
+   "current": "18,594",
+   "sub": "12 counties, 2024",
+   "trend": "see the occupations page",
+   "source": "Occupations page",
+   "href": "../occupations/",
+   "target": "not set",
+   "dir": "none"
+  },
+  {
+   "id": "d-federal",
+   "group": "D",
+   "status": "context",
+   "metric": "Routine federal obligations to regional polymer firms",
+   "definition": "Federal contracting obligations recorded against chemical and plastics industry codes at place of performance in the twelve counties, averaged over the fiscal years on file, in 2025 dollars.",
+   "owner": "outside PIC",
+   "cadence": "Annual, as USAspending posts",
+   "current": "$34.9M a year",
+   "sub": "FY2019-FY2026 average",
+   "trend": "see the federal-money page",
+   "source": "Federal-money page",
+   "href": "../federal-money/",
+   "target": "not set",
+   "dir": "none"
+  },
+  {
+   "id": "d-rank",
+   "group": "D",
+   "status": "context",
+   "metric": "Ohio’s national rank in plastics and rubber jobs",
+   "definition": "Ohio’s position among the fifty states and the District of Columbia on NAICS 326 covered employment, counting only states the federal census discloses.",
+   "owner": "outside PIC",
+   "cadence": "Annual, on the QCEW release",
+   "current": "1st",
+   "sub": "54,846 jobs, of 51 disclosed",
+   "trend": "see the peers page",
+   "source": "Peers page",
+   "href": "../peers/",
+   "target": "not set",
+   "dir": "none"
+  }
+ ],
+ "delivery": {
+  "awarded": 85335784,
+  "assigned": 79170176,
+  "unassigned": 6165608,
+  "match": 20954667,
+  "secured": 106290451,
+  "sources": [
+   {
+    "id": "eda",
+    "short": "EDA Tech Hub",
+    "name": "EDA Sustainable Polymers Tech Hub",
+    "award": 51001413,
+    "assigned": 51001413,
+    "unassigned": 0,
+    "pct": 100.0
+   },
+   {
+    "id": "ohio",
+    "short": "Ohio Innovation Hub",
+    "name": "Ohio Innovation Hub",
+    "award": 31250000,
+    "assigned": 25084392,
+    "unassigned": 6165608,
+    "pct": 80.2700544
+   },
+   {
+    "id": "apex",
+    "short": "Good Jobs Challenge (APEX)",
+    "name": "Good Jobs Challenge (APEX)",
+    "award": 3084371,
+    "assigned": 3084371,
+    "unassigned": 0,
+    "pct": 100.0
+   }
+  ],
+  "gaps": [
+   {
+    "id": "oh-startup",
+    "name": "Startup support",
+    "amount": 3748500,
+    "assigned": 225000,
+    "gap": 3523500
+   },
+   {
+    "id": "oh-rd",
+    "name": "PIC Translational R&D",
+    "amount": 5992000,
+    "assigned": 3349892,
+    "gap": 2642108
+   }
+  ]
+ },
+ "talent": {
+  "year": 2023,
+  "window": [
+   2021,
+   2022,
+   2023
+  ],
+  "institutions": 3,
+  "polymer": [
+   {
+    "year": 2014,
+    "n": 125
+   },
+   {
+    "year": 2015,
+    "n": 143
+   },
+   {
+    "year": 2016,
+    "n": 179
+   },
+   {
+    "year": 2017,
+    "n": 162
+   },
+   {
+    "year": 2018,
+    "n": 145
+   },
+   {
+    "year": 2019,
+    "n": 118
+   },
+   {
+    "year": 2020,
+    "n": 118
+   },
+   {
+    "year": 2021,
+    "n": 124
+   },
+   {
+    "year": 2022,
+    "n": 54
+   },
+   {
+    "year": 2023,
+    "n": 63
+   }
+  ],
+  "polymer_window": [
+   124,
+   54,
+   63
+  ],
+  "materials_window": [
+   20,
+   29,
+   33
+  ],
+  "bachelor_window": [
+   17,
+   8,
+   6
+  ],
+  "dup_1920": 11,
+  "dup_all": true
+ }
+}

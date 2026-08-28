@@ -3,11 +3,11 @@
   "claims": [
     {
       "id": "lq-paint-latest",
-      "text": "Paint, coating and adhesive runs 5.96x the national share in the latest year (H1, hero key card, trend figure title, closer).",
+      "text": "Paint, coating and adhesive runs 5.96x the national share in the latest year. The H1 states this in plain words ('six times as big a share of the jobs here as it is of the country's'); the standfirst, hero key card, trend figure title and closer carry the 5.96x figure itself.",
       "source": "QCEW composite summed from the disclosed PIC-12 counties, latest year",
       "assert": "abs(one(c for c in D['composite'] if c['naics']=='3255' and c['year']==max(x['year'] for x in D['composite']))['lq'] - 5.9635) <= 0.005",
       "actual": "[(c['year'], round(c['lq'],4)) for c in D['composite'] if c['naics']=='3255'][-3:]",
-      "falsified_if": "A disclosure flip changes which counties enter the paint composite, or a QCEW revision moves the value outside 5.9585-5.9685, at which point the hand-typed '5.96' in the headline no longer rounds from the data."
+      "falsified_if": "A disclosure flip changes which counties enter the paint composite, or a QCEW revision moves the value outside 5.9585-5.9685, at which point the hand-typed '5.96' in the standfirst no longer rounds from the data. The band also has to round to 'six times' at one significant figure for the headline to hold, which it does across 5.5-6.49; a value below 5.5 breaks the headline before it breaks the standfirst."
     },
     {
       "id": "lq-paint-leads-every-year",
@@ -19,7 +19,7 @@
     },
     {
       "id": "lq-paint-lead-margin",
-      "text": "The narrowest year's lead is 2.1x the next-highest industry (trend annotation, 'by at least 2.1x the next-highest').",
+      "text": "The narrowest year's lead is 2.1x the next-highest industry (trend annotation, 'always at least 2.1 times the second industry'). The annotation says 'the second industry' rather than a bare 'x' because this is a ratio of two location quotients sitting beside a chart whose every other number is a ratio to the nation.",
       "source": "QCEW composite, ratio of first to second rank per year; the tightest year is 2015",
       "assert": "abs(min((lambda r: r[0]['lq']/r[1]['lq'])(sorted([c for c in D['composite'] if c['year']==y and c['lq']], key=lambda c: -c['lq'])) for y in set(c['year'] for c in D['composite'])) - 2.113) <= 0.04",
       "actual": "sorted((round((lambda r: r[0]['lq']/r[1]['lq'])(sorted([c for c in D['composite'] if c['year']==y and c['lq']], key=lambda c: -c['lq'])),3), y) for y in set(c['year'] for c in D['composite']))[:3]",
@@ -59,7 +59,7 @@
     },
     {
       "id": "lq-paint-fixed-base",
-      "text": "On the five counties BLS discloses for paint in all eleven years, paint runs 7.68x in the latest year against 7.14x in 2015, and the latest year is the highest reading of that fixed-base series (the disclosure-twist section, its figure title, and the closer).",
+      "text": "On the five counties BLS discloses for paint in all eleven years, paint runs 7.68x in the latest year against 7.14x in 2015, and the latest year is the highest reading of that fixed-base series (the disclosure-twist section, its figure title 'Holding the same five counties, paint climbs from 7.14x to 7.68x', and the closer).",
       "source": "Derived in app.js from D['cells']: national paint share recovered as (emp/local_total)/lq from any disclosed county, then the fixed-base composite = sum(emp)/sum(local_total) over the always-disclosed counties, divided by that national share. Re-computed here by the same arithmetic.",
       "assert": "(lambda ys, always: (lambda ser: abs(ser[-1][1] - 7.682) <= 0.01 and abs(ser[0][1] - 7.137) <= 0.01 and max(s[1] for s in ser) == ser[-1][1] and len(always) == 5)([(y, (lambda sel, nat: (sum(c['emp'] for c in sel)/sum(c['local_total'] for c in sel))/nat)([c for c in D['cells'] if c['year']==y and c['naics']=='3255' and c['name'] in always], (lambda v: sum(v)/len(v))([(c['emp']/c['local_total'])/c['lq'] for c in D['cells'] if c['year']==y and c['naics']=='3255' and c['lq'] and c['emp'] and c['local_total'] and c['area'] not in ('39000','US000')]))) for y in ys]))(sorted(set(c['year'] for c in D['cells'])), sorted(a['name'] for a in D['areas'] if a['code'] not in ('39000','US000') and all(any(c['year']==y and c['area']==a['code'] and c['naics']=='3255' and c['lq'] for c in D['cells']) for y in sorted(set(x['year'] for x in D['cells'])))))",
       "actual": "sorted(a['name'] for a in D['areas'] if a['code'] not in ('39000','US000') and all(any(c['year']==y and c['area']==a['code'] and c['naics']=='3255' and c['lq'] for c in D['cells']) for y in sorted(set(x['year'] for x in D['cells']))))",
@@ -75,7 +75,7 @@
     },
     {
       "id": "lq-cuyahoga-paint",
-      "text": "Cuyahoga's paint cell is 11.2x on 3,258 jobs across 39 establishments and is 76 percent of every disclosed paint job in the region (hero card, heatmap lede and callout, closer).",
+      "text": "Cuyahoga's paint cell is 11.2x on 3,258 jobs across 39 establishments and is 76 percent of every disclosed paint job in the region (hero card, heatmap lede and callout, closer). Reader-facing prose says '39 separate sites' at first contact; 'establishment' is defined in the note beside the grid and used in the tables.",
       "source": "QCEW county cell, NAICS 3255, latest year, against the paint composite",
       "assert": "(lambda y: (lambda c, tot: abs(c['lq'] - 11.2089) <= 0.01 and c['emp'] == 3258 and c['estabs'] == 39 and abs(c['emp']/tot - 0.765) <= 0.005)(one(c for c in D['cells'] if c['year']==y and c['name']=='Cuyahoga' and c['naics']=='3255'), one(c for c in D['composite'] if c['naics']=='3255' and c['year']==y)['emp']))(max(x['year'] for x in D['cells']))",
       "actual": "[(c['name'], c['lq'], c['emp'], c['estabs']) for c in D['cells'] if c['naics']=='3255' and c['year']==max(x['year'] for x in D['cells']) and c['lq']]",
@@ -107,7 +107,7 @@
     },
     {
       "id": "lq-cuyahoga-largest-base-above-ten",
-      "text": "Cuyahoga paint is the largest employment base of any cell above 10x, which is the scatter's figure title and its exception clause.",
+      "text": "Cuyahoga paint has more jobs behind it than any other cell above 10x, which is the scatter's figure title and its exception clause.",
       "source": "QCEW county cells, latest year, disclosed only",
       "assert": "(lambda y: max([c for c in D['cells'] if c['year']==y and c['lq'] and c['emp'] and c['area'] not in ('39000','US000') and c['lq'] >= 10], key=lambda c: c['emp'])['name'] == 'Cuyahoga' and max([c for c in D['cells'] if c['year']==y and c['lq'] and c['emp'] and c['area'] not in ('39000','US000') and c['lq'] >= 10], key=lambda c: c['emp'])['naics'] == '3255')(max(x['year'] for x in D['cells']))",
       "actual": "sorted([(c['name'], c['naics'], c['lq'], c['emp']) for c in D['cells'] if c['year']==max(x['year'] for x in D['cells']) and c['lq'] and c['emp'] and c['area'] not in ('39000','US000') and c['lq']>=10], key=lambda t: -t[3])",
@@ -131,7 +131,7 @@
     },
     {
       "id": "lq-geauga-resin",
-      "text": "Geauga's resin cell, 22.7x on 491 jobs across 7 establishments, is the highest location quotient on the page (scatter lede and on-chart label).",
+      "text": "Geauga's resin cell, 22.7x on 491 jobs at 7 sites, is the highest location quotient on the page (scatter lede and on-chart label).",
       "source": "QCEW county cells, latest year",
       "assert": "(lambda y: (lambda c: c['name']=='Geauga' and c['naics']=='3252' and abs(c['lq'] - 22.70) <= 0.05 and c['emp'] == 491 and c['estabs'] == 7)(max([c for c in D['cells'] if c['year']==y and c['lq'] and c['emp'] and c['area'] not in ('39000','US000')], key=lambda c: c['lq'])))(max(x['year'] for x in D['cells']))",
       "actual": "sorted([(c['name'], c['naics'], c['lq'], c['emp'], c['estabs']) for c in D['cells'] if c['year']==max(x['year'] for x in D['cells']) and c['lq'] and c['area'] not in ('39000','US000')], key=lambda t: -t[2])[:3]",
@@ -139,7 +139,7 @@
     },
     {
       "id": "lq-disclosed-share",
-      "text": "51 of the 72 possible industry and county cells are disclosed in the latest year; the denominator is computed from the areas and industries in the file, never typed.",
+      "text": "51 of the 72 possible county and industry combinations are disclosed in the latest year; the denominator is computed from the areas and industries in the file, never typed.",
       "source": "QCEW disclosure across 12 counties and 6 industries, latest year",
       "assert": "(lambda y, cn, ni: len([c for c in D['cells'] if c['year']==y and c['lq'] and c['emp'] and c['area'] not in ('39000','US000')]) == 51 and cn*ni == 72)(max(x['year'] for x in D['cells']), len([a for a in D['areas'] if a['code'] not in ('39000','US000')]), len(D['naics']))",
       "actual": "(len([c for c in D['cells'] if c['year']==max(x['year'] for x in D['cells']) and c['lq'] and c['emp'] and c['area'] not in ('39000','US000')]), len([a for a in D['areas'] if a['code'] not in ('39000','US000')]) * len(D['naics']))",
@@ -155,7 +155,7 @@
     },
     {
       "id": "lq-residual-bound",
-      "text": "No checked cell differs from the bureau's published location quotient by more than 0.005, which is half of the last digit BLS prints (verification lede, figure title, on-chart bound).",
+      "text": "No checked cell differs from the bureau's published location quotient by more than 0.005, which is half of the last digit BLS prints (verification lede, the figure title '667 checked cells, none off the bureau's figure by more than 0.005', on-chart bound).",
       "source": "derive_lq.py cross-check against lq_annual_avg_emplvl, rounded to five decimals in the shipped cells",
       "assert": "max(abs(c['residual']) for c in D['cells'] if c['residual'] is not None) <= 0.005 and D['meta']['verification']['max_abs_residual'] <= 0.005 and len([c for c in D['cells'] if c['residual'] is not None]) == D['meta']['verification']['cells_checked'] == 667",
       "actual": "(max(abs(c['residual']) for c in D['cells'] if c['residual'] is not None), D['meta']['verification'])",

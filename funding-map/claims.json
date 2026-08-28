@@ -3,7 +3,7 @@
   "claims": [
     {
       "id": "total-secured",
-      "text": "$106.3M awarded and committed across three public awards; the headline's $106 million (H1, hero figure, meta description, and the closer's 'every dollar of the $106.3 million has a line on it').",
+      "text": "$106.3M of public money awarded plus what others promised to put in beside it; the headline's $106 million (H1, hero figure, the standfirst's 'The $106.3 million total', meta description, and the closer's 'every dollar of the $106.3 million has a line on it').",
       "source": "meta.totals in funding.json: awards + match",
       "assert": "D['meta']['totals']['total'] == 106290451 and D['meta']['totals']['awards'] + D['meta']['totals']['match'] == D['meta']['totals']['total'] and abs(D['meta']['totals']['total'] / 1e6 - 106.3) <= 0.05",
       "actual": "D['meta']['totals']",
@@ -11,7 +11,7 @@
     },
     {
       "id": "hero-awards-match",
-      "text": "$85.3M in awards plus $21.0M in match and cost share (hero sub-line; the verdict and the closer's $85.3M; the table foots against $85,335,784).",
+      "text": "$85.3M awarded by government, plus $21.0M partners and the state promised to add, the match and cost share (hero sub-line; the standfirst's 'Governments awarded $85.3 million' and 'promised $21.0 million more alongside it'; the verdict and the closer's $85.3M; the table foots against $85,335,784).",
       "source": "meta.totals.awards and meta.totals.match",
       "assert": "D['meta']['totals']['awards'] == 85335784 and D['meta']['totals']['match'] == 20954667 and abs(D['meta']['totals']['awards'] / 1e6 - 85.3) <= 0.05 and abs(D['meta']['totals']['match'] / 1e6 - 21.0) <= 0.05",
       "actual": "(D['meta']['totals']['awards'], D['meta']['totals']['match'])",
@@ -75,7 +75,7 @@
     },
     {
       "id": "unrouted-split",
-      "text": "The unrouted money splits into $2.64M of Translational R&D not yet sub-granted and $3.52M running Synthe6 through Bounce, and those are the only two workstreams holding any (A3 annotation; the hero card's 'held in two Ohio workstreams'; the reconciliation sentence under the table; the closer).",
+      "text": "The unrouted money splits into $2.64M of Translational R&D not yet passed on to a named recipient and $3.52M running Synthe6 through Bounce, and those are the only two workstreams holding any (A3 annotation, which says 'not yet passed on'; the hero card's 'held in two Ohio spending lines (workstreams)'; the reconciliation sentence under the table, which keeps the contract wording 'not yet written into a sub-grant'; the closer).",
       "source": "program amounts minus their executed sub-awards",
       "assert": "(lambda bal: bal == {'oh-rd': 2642108, 'oh-startup': 3523500})({p['id']: p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) for p in D['programs'] if p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) != 0})",
       "actual": "{p['id']: p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) for p in D['programs']}",

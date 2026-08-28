@@ -1,0 +1,164 @@
+/* scorecard — page-local additions only. House anatomy (.mast/.hero/.band/.closer) and the
+   shared column system stay untouched so the layout gates keep applying. This file adds:
+   the governance banner, per-figure chrome, the scorecard table and its three status
+   treatments, and the per-form mobile re-layout.
+
+   THE ONE THING THIS STYLESHEET IS FOR: making three states legible at a glance, without
+   spending a hue on absence. Computed rows are ink. Context rows are gray, the house
+   colour for "not the subject". Empty rows get no fill at all — a dashed outline on a
+   hatched ground, because a colour would give absence a value. */
+
+/* Byline: genre furniture the standfirst does not replace. Centred on the measure rail
+   with `margin:...auto`, never `margin:18px 0 0` — the shorthand at (0,2,0) loads after
+   pic-viz's `.hero .wrap > *{margin-left:auto}` and would put the block at the measure
+   WIDTH against the figure's LEFT EDGE, which is a second rail. */
+.hero .byline{margin:18px auto 0;max-width:var(--measure);font-size:13px;line-height:1.55;
+  letter-spacing:.01em;color:#BEDCE1}
+
+/* ------------------------------------------------------------------ the governance gate
+   Below the hero and above the table it governs, on its own ground so it cannot be read
+   as part of either. The mast carries a one-line marker for anyone who never scrolls. */
+.gate{background:#F6EFE2;border-top:3px solid #B08A3C;border-bottom:1px solid var(--line);
+  padding:26px 0 28px}
+.gate .wrap > *{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.gate-k{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:900;color:#8A6A22}
+.gate-t{margin:9px 0 0;font-size:18px;line-height:1.45;font-weight:900;color:#3A3021;
+  letter-spacing:-.01em}
+.gate-b{margin:10px 0 0;font-size:14.5px;line-height:1.6;color:#4B4231}
+
+/* Figure chrome: every figure carries its own claim-title and how-to-read line, so the H2
+   does section work instead of doubling as the figure title (chart-craft.md). */
+.fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
+  line-height:1.3;max-width:var(--measure);color:var(--text)}
+.fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure)}
+.fig-title + .fig-sub + .chart{margin-top:16px}
+.fig-sub + .legend{margin-top:14px}
+
+/* The caveat BEAT is editorial narrative in body register, set below the lede and above
+   the apparatus. The page spends its one .note box on the target and owner columns. */
+.beat{margin:24px 0 0;max-width:var(--measure);font-size:17px;line-height:1.6;
+  color:#394346}
+
+/* Pacing: alternate band grounds so the scroll reads as a wave rather than a loop. */
+.band.tint{background:#F4F1EC}
+
+/* ------------------------------------------------------------------- the scorecard table
+   Data, so it takes the figure column. Fixed layout because the definition column has to
+   win the width argument against seven short ones. */
+.board{margin:16px 0 0;max-width:var(--figure)}
+.sc{width:100%;border-collapse:collapse;table-layout:fixed;
+  font-variant-numeric:tabular-nums}
+.sc caption{text-align:left;font-size:13px;color:var(--caption);padding:0 0 10px}
+.sc thead th{font-size:12px;letter-spacing:.09em;text-transform:uppercase;font-weight:900;
+  color:var(--caption);text-align:left;padding:0 10px 7px 0;
+  border-bottom:2px solid var(--text);vertical-align:bottom}
+.sc thead th:first-child{padding-left:14px}
+.h-metric{width:15%} .h-definition{width:24%} .h-owner{width:7%} .h-cadence{width:10%}
+.h-target{width:11%} .h-current{width:14%} .h-trend{width:9%} .h-source{width:10%}
+
+/* Group header: the four bands a board reads in order, each with its own tally so the
+   coverage claim is checkable per group and not only in the hero. */
+.sc .grp th{padding:26px 14px 10px;text-align:left;font-weight:400;
+  border-bottom:1px solid var(--line)}
+.sc .grp .gk{display:inline-block;min-width:22px;font-size:13px;font-weight:900;
+  color:var(--action);letter-spacing:.06em}
+.sc .grp .gt{font-size:17px;font-weight:900;color:var(--text);letter-spacing:-.01em}
+.sc .grp .gn{margin-left:10px;font-size:12.5px;color:var(--caption);
+  font-variant-numeric:tabular-nums}
+.sc .grp .gb{display:block;margin:5px 0 0 22px;font-size:13px;line-height:1.5;
+  color:#5A625E;max-width:var(--measure)}
+
+.sc .r > *{padding:11px 10px 12px 0;border-bottom:1px solid var(--line);
+  vertical-align:top;font-size:13px;line-height:1.45;color:#3A4448;text-align:left}
+.sc .r th{padding-left:14px;font-weight:900;font-size:14px;color:var(--text)}
+.sc .r th .m{display:block}
+.sc .r th a{color:var(--action)}
+.sc .r .def{color:#5A625E}
+.sc .r .cur b{display:block;font-size:16px;font-weight:900;color:var(--ink);
+  letter-spacing:-.01em}
+.sc .r .cur .s{display:block;margin:2px 0 0;font-size:12.5px;color:var(--caption)}
+.sc .r .trend{color:#5A625E}
+.sc .r .srcc{color:var(--caption)}
+
+/* THE THREE STATES. Marked twice: a rule down the left edge and the current cell itself,
+   so neither colour vision nor a greyscale print is load-bearing. */
+.sc .s-public th{border-left:4px solid var(--ink)}
+.sc .s-vault th{border-left:4px dashed #A9A296}
+.sc .s-context th{border-left:4px solid var(--pv-axis)}
+
+/* Awaiting a private copy. No fill, no zero, no dash that could read as flat: the words
+   are the value, and the current and trend columns are merged so no empty trend cell is
+   left for a reader to interpret. */
+.sc .s-vault > *{background:
+  repeating-linear-gradient(45deg,#F7F5F1 0 6px,#EFEBE3 6px 12px)}
+.sc .cur.empty{vertical-align:middle}
+.sc .cur.empty .chip{display:inline-block;padding:3px 9px;border:1px dashed #9A9284;
+  border-radius:11px;font-size:12.5px;font-weight:700;color:#6C6455;background:#FBFAF7}
+.sc .cur.empty .s{display:block;margin:4px 0 0;font-size:12.5px;color:var(--caption)}
+
+/* Cluster context, read-only. Gray is the house colour for "not the subject", the whole
+   group sits on its own ground, and the current figures are set at body weight rather
+   than the ink display weight the accountable rows get — so no reader mistakes a row PIC
+   does not control for one it does. */
+.sc .g-D{background:#F1EEE9}
+.sc .g-D .grp th{border-top:3px solid var(--pv-axis)}
+.sc .s-context .cur b{font-size:14px;font-weight:900;color:#5A625E}
+.sc .s-context th{font-style:normal}
+
+.legend i.sw-public{background:var(--ink)}
+.legend i.sw-vault{border:1px dashed #9A9284;
+  background:repeating-linear-gradient(45deg,#EFEAE2 0 4px,#DAD3C6 4px 8px)}
+.legend i.sw-context{background:var(--pv-axis)}
+
+/* Footer: site furniture on its own ground, so the story visibly ends. */
+.foot{background:var(--deep);color:#A8CDD4;padding:44px 0 52px;font-size:14px}
+.foot .wrap > *{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.foot-k{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:900;color:#7FB3BC}
+.foot-links{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:12px;
+  grid-template-columns:repeat(3,minmax(0,1fr))}
+.foot-links a{display:block;color:#fff;font-weight:900;text-decoration:none;
+  border-top:2px solid #1A8A9E;padding-top:9px}
+.foot-links a:hover{color:var(--lime)}
+.foot-links span{display:block;margin-top:4px;color:#8FBAC2;font-size:13px}
+.foot-cta{margin:28px 0 0;padding-top:18px;border-top:1px solid rgba(255,255,255,.16)}
+.foot-cta b{color:#fff;font-weight:700}
+.foot-id{margin:14px 0 0;font-size:13px;color:#93B6BD}
+.foot-id .mono{font-family:var(--mono,ui-monospace,SFMono-Regular,Menlo,monospace);
+  font-size:12.5px}
+
+@media (max-width:760px){
+  /* Both charts re-lay themselves out per form below 760px (horizontal rows, labels above
+     marks), so the shared sideways-scroll fallback is switched off: the evidence belongs
+     in the first paint, not behind a pan. */
+  .chart{overflow-x:visible;padding-bottom:0}
+  .chart svg{min-width:0}
+  .chart::after{content:none}
+  .fig-title{font-size:19px;margin-top:24px}
+  .gate-t{font-size:16.5px}
+
+  /* THE TABLE BECOMES CARDS. A matrix does not survive a phone as a matrix, and a
+     sideways scroll would hide the empty cells, which are the argument. Each row becomes
+     one card carrying its own column labels; the status rule stays on the left edge. */
+  .sc, .sc tbody, .sc tr, .sc th, .sc td, .sc caption{display:block}
+  .sc thead{display:none}
+  .sc caption{padding-bottom:4px}
+  .sc .grp th{padding:22px 0 6px;border-bottom:0}
+  .sc .grp .gb{margin-left:0}
+  .sc .r{margin:12px 0 0;padding:14px 15px;background:#fff;border:1px solid var(--line);
+    border-left-width:5px}
+  .sc .r > *{padding:0;border-bottom:0;font-size:13.5px}
+  .sc .r th{padding:0;border-left:0}
+  .sc .s-vault{background:repeating-linear-gradient(45deg,#F7F5F1 0 6px,#EFEBE3 6px 12px)}
+  .sc .s-vault > *{background:none}
+  .sc .s-public{border-left-color:var(--ink)}
+  .sc .s-vault{border-left-color:#A9A296;border-left-style:dashed}
+  .sc .s-context{border-left-color:var(--pv-axis);background:#F1EEE9}
+  .sc .g-D{background:none}
+  .sc .r td{margin:9px 0 0}
+  .sc .r td::before{content:attr(data-l);display:block;font-size:12.5px;font-weight:900;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--caption);margin:0 0 2px}
+  .sc .r .cur{margin-top:12px}
+  .foot-links{grid-template-columns:1fr}
+}

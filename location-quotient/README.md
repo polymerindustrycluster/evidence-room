@@ -34,6 +34,27 @@ The **fixed five-county paint series** (section 2) is computed in `app.js` from 
 
 That set is a subset of PIC-12 chosen for continuity across years. It is not a second footprint, and the page says so beside the chart. Claim `lq-paint-fixed-base` re-runs the same arithmetic in Python.
 
+## House rule this page now holds to: direction, not formula
+
+Every number here except the job and establishment counts is a ratio, and a ratio is where
+a page goes unreadable while every figure in it stays correct. Three conventions, and they
+are load-bearing for any future edit:
+
+1. **Axis titles carry the reading, never the arithmetic.** Every location-quotient axis
+   reads `↑ more concentrated here than in the country`. The formula
+   (`LQ = local share ÷ national share`) lives in the methodology box.
+2. **Reference lines are labelled by what crossing them means.** `1.0× · above it, more
+   concentrated here`, not `1.0× is the national share`. The residual chart's axis is a
+   deviation axis and says which side is which.
+3. **Plain language leads at first use; the technical unit follows.** The H1 says "six
+   times as big a share of the jobs here as it is of the country's" and the standfirst
+   supplies "5.96×". Later references may use `5.96×` alone.
+
+Terms translated at first contact, in-line: cell (one industry in one county in one year),
+establishment (one physical site, not a company; reader prose says "separate sites"),
+composite (spelled out as "the line above adds up whichever counties…"), base (spelled out
+as "the jobs behind it"). If you reintroduce one of these bare, the page regresses.
+
 ## Read before quoting anything from this page
 
 - LQ = (local private NAICS employment / local TOTAL-all-ownership employment) divided by the same ratio nationally. The denominator is `own_code 0`, established empirically: it reproduces BLS's published `lq_annual_avg_emplvl` to a mean absolute error of 0.0025 across 667 cells, with no cell outside ±0.005. That bound is half of the last digit BLS prints, so the two figures are the same number as far as the bureau states it. The intuitive private-over-private denominator is wrong by 0.19 on average.

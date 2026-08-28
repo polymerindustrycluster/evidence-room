@@ -80,21 +80,23 @@ const dip = pts.reduce((a, b) => b.med < a.med ? b : a);
 /* Exactly one accented card, and it is the headline's number: the H1 says "1.2 times", so
    the median-premium card carries the lime rule and the row has one focal point. */
 PV.figures([
-  ["", `${above} of ${rows.length}`, "pairings pay above local",
-   `county-industry pairings, ${D.meta.latest}`],
-  ["key", medPrem.toFixed(2) + "×", "median premium", "against the county’s own average"],
-  ["", Math.round(empShare * 100) + "%", "of jobs are above the line",
-   "counted once at the finest disclosed level"],
+  ["", `${above} of ${rows.length}`, "pairings out-pay their county",
+   `one polymer industry in one county, ${D.meta.latest}`],
+  ["key", medPrem.toFixed(2) + "×", "median premium",
+   "the middle pairing pays a fifth more than its county’s average job"],
+  ["", Math.round(empShare * 100) + "%", "of jobs beat their county average",
+   "counted once per county, so groups and their parts do not double up"],
   ["", money(medWage), "median weekly wage",
    `about $${Math.round(medWage * 52 / 1000)},000 a year`]
 ]);
 
 document.getElementById("sv1").textContent = chemMed.toFixed(2) + "×";
 document.getElementById("sv1d").textContent =
-  `median premium; all ${chem.length} pairings clear their county`;
+  `about a third above the county’s average job; all ${chem.length} pairings clear it`;
 document.getElementById("sv2").textContent = prodMed.toFixed(2) + "×";
 document.getElementById("sv2d").textContent =
-  `median premium; ${prodAbove} of ${prod.length} above, and all ${belowN} below-average cells`;
+  `level with the county’s average job; ${prodAbove} of ${prod.length} above it, and every one ` +
+  `of the page’s ${belowN} below-average pairings`;
 
 /* ------------------------------------------------------- county selector + verdict */
 let SEL = null;
@@ -112,7 +114,7 @@ function verdict() {
   const best = rs.reduce((x, y) => y.vs_local_all > x.vs_local_all ? y : x);
   const worst = rs.reduce((x, y) => y.vs_local_all < x.vs_local_all ? y : x);
   v.innerHTML = rs.length === 1
-    ? `<b>${SEL} County:</b> its one disclosed pairing, ${best.label.toLowerCase()},
+    ? `<b>${SEL} County:</b> its one published pairing, ${best.label.toLowerCase()},
        pays <b>${best.vs_local_all.toFixed(2)}×</b> the county&rsquo;s average job
        (${money(best.weekly_wage)}/wk).`
     : `<b>${SEL} County:</b> ${a} of ${rs.length} pairings pay above the county&rsquo;s
@@ -173,7 +175,7 @@ function drawPremiumDesktop() {
   const one = xs(1);
   el("line", {x1: one, y1: m.t - 8, x2: one, y2: m.t + h, stroke: "var(--hover)",
     "stroke-width": 2}, svg);
-  txt(svg, "1.0×: the county’s own average", {x: one + 8, y: m.t - 14,
+  txt(svg, "1.0×: pay matches the county’s average job", {x: one + 8, y: m.t - 14,
     class: "pv-lab", fill: "var(--hover)"});
   rows.forEach((r, i) => {
     const g = el("g", SEL && dim(r) ? {opacity: .16} : {}, svg);
@@ -213,8 +215,8 @@ function drawPremiumDesktop() {
          "hold the 11 largest", "premiums. Lake chemicals",
          `tops the page: ${money(top.weekly_wage)}/wk.`], m.t + 18, CAT[0]);
   bracket(rows.length - 11, rows.length - 1, CAT[1]);
-  lines(["All 11 below the county", "line make plastics or",
-         "rubber. The lowest, Stark", `rubber: ${money(bot.weekly_wage)}/wk`,
+  lines(["All 11 that pay under", "their own county make",
+         "plastics or rubber. The", `lowest, Stark rubber: ${money(bot.weekly_wage)}/wk`,
          `on ${N(bot.emp)} jobs.`], m.t + (rows.length - 11) * 22 + 14, CAT[1]);
 }
 
@@ -230,7 +232,7 @@ function drawPremiumMobile() {
   const yFor = i => m.t + headH + i * rowH + (i >= above ? bndH : 0);
   el("line", {x1: one, y1: m.t + 8, x2: one, y2: H - m.b, stroke: "var(--hover)",
     "stroke-width": 1.5}, svg);
-  txt(svg, "1.0×: county average", {x: one + 6, y: m.t + 2, class: "pv-labq",
+  txt(svg, "1.0×: same as the county", {x: one + 6, y: m.t + 2, class: "pv-labq",
     fill: "var(--hover)"});
   {
     const s = "Top 11 all chemistry: Lake tops it, " + money(top.weekly_wage) + "/wk";
@@ -268,7 +270,8 @@ function drawPremiumMobile() {
     txt(ax, fx(v), {x: xs(v), y: H - m.b + 18, class: "pv-tick",
       "text-anchor": "middle"});
   });
-  txt(svg, "weekly wage ÷ county average", {x: m.l, y: H - 8, class: "pv-labq"});
+  txt(svg, "← pays less than the county · pays more →",
+    {x: m.l, y: H - 8, class: "pv-labq"});
 }
 
 /* ------------------------------------------------- chart 2: the national scatter */
@@ -296,9 +299,9 @@ function drawScatterDesktop() {
     "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
   el("line", {x1: m.l, y1: ys(1), x2: m.l + w, y2: ys(1), stroke: "var(--hover)",
     "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
-  txt(svg, "1.0×: the industry’s national line", {x: m.l + 6, y: ys(1) - 8,
+  txt(svg, "1.0×: matches the industry nationally", {x: m.l + 6, y: ys(1) - 8,
     class: "pv-labq", fill: "var(--hover)"});
-  txt(svg, "1.0×: the county line", {x: xs(1) - 6, y: m.t + 14,
+  txt(svg, "1.0×: matches the county", {x: xs(1) - 6, y: m.t + 14,
     class: "pv-labq", fill: "var(--hover)", "text-anchor": "end"});
   rows.forEach(r => {
     const g = el("g", SEL && dim(r) ? {opacity: .14} : {}, svg);
@@ -410,15 +413,17 @@ function drawTrendVariant(W, H, mobile) {
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys,
     xt: years.filter((_, i) => i % (mobile ? 3 : 2) === 0),
     yt: ticks(lo, hi, 5), xfmt: v => v, yfmt: v => v.toFixed(1) + "×",
-    xlab: "", ylab: mobile ? "" : "median premium over the county average"});
+    xlab: "", ylab: mobile ? "← below the county · above →"
+      : "below the county’s average job ← 1.0× → above it"});
   /* The spread first, so the line reads against it. */
   el("path", {d: "M" + pts.map(p => `${xs(p.year)},${ys(p.q3)}`).join("L") +
     "L" + [...pts].reverse().map(p => `${xs(p.year)},${ys(p.q1)}`).join("L") + "Z",
     fill: "rgba(0,139,168,.13)"}, svg);
   el("line", {x1: m.l, y1: ys(1), x2: m.l + w, y2: ys(1), stroke: "var(--hover)",
     "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
-  txt(svg, "1.0×: no premium", {x: m.l + 4, y: ys(1) + 16, class: "pv-labq",
-    fill: "var(--hover)"});
+  txt(svg, mobile ? "1.0×: same as the county"
+    : "1.0×: pay matches the county’s average job",
+    {x: m.l + 4, y: ys(1) + 16, class: "pv-labq", fill: "var(--hover)"});
   el("path", {d: "M" + pts.map(p => `${xs(p.year)},${ys(p.med)}`).join("L"),
     fill: "none", stroke: INK, "stroke-width": 3}, svg);
   pts.forEach(p => hoverable(
@@ -445,8 +450,9 @@ function drawTrendVariant(W, H, mobile) {
 
 /* -------------------------------------------------------- tables + source lines */
 document.getElementById("premtable").innerHTML = tableView("p",
-  `Wage premium by county and industry, ${D.meta.latest}`,
-  ["County", "Industry", "Weekly wage", "× local average", "× same industry US", "Jobs"],
+  `Wage premium by county and industry, ${D.meta.latest}. Above 1.00 means the work ` +
+  `out-pays the comparison; below 1.00 means it pays less.`,
+  ["County", "Industry", "Weekly wage", "× its county", "× its industry US", "Jobs"],
   rows.map(r => [r.name, r.label, money(r.weekly_wage), r.vs_local_all.toFixed(2),
     r.vs_us ? r.vs_us.toFixed(2) : "—", N(r.emp)]));
 /* CAVEAT INK. This line ran ~50 words and did methodology work in a caption: the
@@ -455,26 +461,28 @@ document.getElementById("premtable").innerHTML = tableView("p",
    The possible-pairings denominator is COMPUTED from the disclosed industries and counties,
    never typed. */
 document.getElementById("premsrc").innerHTML =
-  `${D.meta.source}, ${D.meta.latest}; ${FP.words} Northeast Ohio counties. Withheld cells
-   are absent, not zero: ${rows.length} of
+  `${D.meta.source}, ${D.meta.latest}; ${FP.words} Northeast Ohio counties. Ratio =
+   average weekly wage &divide; the county&rsquo;s all-industry average. Pairings too
+   small to publish are absent, not zero: ${rows.length} of
    ${[...new Set(D.latest_rows.map(r => r.naics))].length * counties.length} possible
-   pairings are disclosed.`;
+   pairings are published.`;
 document.getElementById("scattable").innerHTML = tableView("s",
-  `Local premium and national same-industry ratio, ${D.meta.latest}`,
-  ["County", "Industry", "× local average", "× same industry US", "Jobs"],
+  `Pay against the county and against the same industry nationally, ${D.meta.latest}. ` +
+  `Above 1.00 means the work out-pays that comparison.`,
+  ["County", "Industry", "× its county", "× its industry US", "Jobs"],
   [...rows].sort((a, b) => a.vs_us - b.vs_us).map(r => [r.name, r.label,
     r.vs_local_all.toFixed(2), r.vs_us.toFixed(2), N(r.emp)]));
 document.getElementById("scatsrc").innerHTML =
   `${D.meta.source}, ${D.meta.latest}; ${FP.words} Northeast Ohio counties. National
    comparison: county weekly wage ÷ the same industry&rsquo;s U.S. average weekly wage.`;
 document.getElementById("trendtable").innerHTML = tableView("t",
-  "Median wage premium and middle-half range by year",
-  ["Year", "Median premium", "25th pct", "75th pct", "Pairings measured"],
+  "The middle pairing each year, and the middle half of pairings around it",
+  ["Year", "Middle pairing", "Middle half, low", "Middle half, high", "Pairings measured"],
   pts.map(p => [p.year, p.med.toFixed(3) + "×", p.q1.toFixed(2), p.q3.toFixed(2), p.n]));
 document.getElementById("trendsrc").innerHTML =
   `${D.meta.source}, ${years[0]}–${years.at(-1)}; ${FP.words} Northeast Ohio counties.
    Between ${Math.min(...pts.map(p => p.n))} and ${Math.max(...pts.map(p => p.n))} pairings
-   are disclosed in a given year, so the set behind each median shifts slightly.`;
+   are big enough to publish in a given year, so the set behind each year shifts slightly.`;
 
 document.getElementById("closersub").innerHTML =
   `${above} of ${rows.length} pairings beat their county&rsquo;s average job, a
@@ -501,9 +509,9 @@ MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
    is computed above, never typed. */
 const meth = await PV.methodology({page: "wages", meta: D.meta,
   definitions: `The data ship industry groups (325 chemical manufacturing, 326 plastics and
-    rubber) alongside their disclosed sub-industries, so one county can appear at both levels
-    and the ${rows.length} cells are not additive. Counted once at each county&rsquo;s finest
-    disclosed level, ${dAbove} of ${dedup.length} pairings pay above their county average,
+    rubber) alongside their published sub-industries, so one county can appear at both levels
+    and the ${rows.length} pairings are not additive. Counted once per county, at the finest
+    industry detail published for it, ${dAbove} of ${dedup.length} pairings pay above their county average,
     the same roughly three-in-four share as the headline ${above} of ${rows.length}. The
     employment-weighted hero share uses that deduplicated set only.`});
 

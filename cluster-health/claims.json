@@ -1,0 +1,201 @@
+{
+ "_note": "This page restates a number from every page it links to, so every claim here re-runs against THAT PAGE'S OWN shipped data file and then checks the derived file this page renders from against the same recomputation. A correction upstream fails this page's gate instead of leaving a stale tile behind, and a derive script that was not re-run fails it too. The pattern is index/claims.json's; the paths climb out of cluster-health/data/ on purpose.",
+ "data": {
+  "h": "health.json",
+  "wg": "../../wages/data/wages.json",
+  "lq": "../../location-quotient/data/lq.json",
+  "occ": "../../occupations/data/viz-data.json",
+  "fed": "../../federal-money/data/federal.json",
+  "fm": "../../funding-map/data/funding.json",
+  "rev": "../../revisions/data/revisions.json"
+ },
+ "claims": [
+  {
+   "id": "scale-level",
+   "text": "Scale tile and hero card 1: 24,030 jobs in the measurement register across the twelve counties in 2025, counted in 24 of the 36 industry-county cells.",
+   "source": "BLS QCEW annual averages, NAICS 3252 + 3255 + 326, PIC-12, via wages/data/wages.json",
+   "assert": "(lambda rows, ly: round(sum(r['emp'] for r in rows if r['year'] == ly)) == 24030 and len([r for r in rows if r['year'] == ly]) == 24 and len(set(r['area'] for r in rows)) * 3 == 36)([r for r in D['wg']['trend'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326')], max(r['year'] for r in D['wg']['trend'])) and D['h']['tiles'][0]['value'] == '24,030' and D['h']['register']['possible_cells'] == 36",
+   "actual": "(sum(r['emp'] for r in D['wg']['trend'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326') and r['year'] == max(x['year'] for x in D['wg']['trend'])), D['h']['tiles'][0]['value'])",
+   "falsified_if": "A QCEW revision moves the register total by one job, BLS discloses or withholds one more cell, or derive_health.py is not re-run after either. The hero prints the total to the job, so the tolerance is zero."
+  },
+  {
+   "id": "scale-withheld-is-not-zero",
+   "text": "Scale tile and the callout: 12 of the 36 industry-county cells are withheld, and the total is a floor rather than a count of every job.",
+   "source": "BLS QCEW disclosure behaviour, via wages/data/wages.json and location-quotient/data/lq.json",
+   "assert": "36 - len([r for r in D['wg']['trend'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326') and r['year'] == max(x['year'] for x in D['wg']['trend'])]) == 12 and sum(c['counties_suppressed'] for c in D['lq']['composite'] if c['register'] == 'core' and c['year'] == max(x['year'] for x in D['lq']['composite'])) == 12",
+   "actual": "(36 - len([r for r in D['wg']['trend'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326') and r['year'] == 2025]), sum(c['counties_suppressed'] for c in D['lq']['composite'] if c['register'] == 'core' and c['year'] == 2025))",
+   "falsified_if": "The two source files stop agreeing on how many register cells BLS withheld, which would mean one of them is counting a withheld cell as an observation. The word 'floor' on the tile is not survivable if the withheld count reaches zero."
+  },
+  {
+   "id": "scale-direction",
+   "text": "Scale tile and the H1: employment fell for a third straight year, and the fall in the cells counted in both years is 802 jobs, 3.3 percent.",
+   "source": "BLS QCEW annual averages, cells present in all eleven years, via wages/data/wages.json",
+   "assert": "(lambda rows, ys: (lambda bal: bal[ys[-1]] - bal[ys[-2]] == -802 and bal[ys[-2]] < bal[ys[-3]] and bal[ys[-3]] < bal[ys[-4]] and bal[ys[-4]] > bal[ys[-5]] and round((bal[ys[-1]] / bal[ys[-2]] - 1) * 100, 1) == -3.3)({y: sum(r['emp'] for r in rows if r['year'] == y and len(set(q['year'] for q in rows if q['area'] == r['area'] and q['naics'] == r['naics'])) == len(ys)) for y in ys}))([r for r in D['wg']['trend'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326')], sorted(set(r['year'] for r in D['wg']['trend']))) and D['h']['tiles'][0]['direction']['value'] == -802 and D['h']['tiles'][0]['direction']['streak'] == 3",
+   "actual": "(D['h']['tiles'][0]['direction'], [(r['year'], r['balanced']) for r in D['h']['register']['disclosed']][-5:])",
+   "falsified_if": "Any revision that turns one of the three falls into a rise, or moves the latest step off exactly 802 jobs. The streak is counted on the balanced panel, so a disclosure change alone cannot create or destroy it; a real revision can."
+  },
+  {
+   "id": "scale-band",
+   "text": "Scale tile: the 802-job fall is larger than seven of the nine earlier year-to-year moves, and two have been larger. A typical year moves 341 jobs; the widest earlier move is 1,047.",
+   "source": "Derived in cluster-health/derive_health.py from the balanced panel in wages/data/wages.json",
+   "assert": "D['h']['tiles'][0]['band']['median_prior'] == 341 and D['h']['tiles'][0]['band']['max_prior'] == 1047 and D['h']['tiles'][0]['band']['beats'] == 7 and D['h']['tiles'][0]['band']['n_prior'] == 9 and D['h']['tiles'][0]['band']['verdict'] == 'above' and abs(D['h']['tiles'][0]['band']['typicals'] - 802 / 341) < 0.001",
+   "actual": "D['h']['tiles'][0]['band']",
+   "falsified_if": "Any revision to any year of the balanced panel. This is the claim most exposed to a routine QCEW refresh, because it depends on every year in the series and not only on the latest two.",
+   "official_check": "Re-run derive_health.py and diff data/health.json; a non-empty diff means the shipped tile is stale."
+  },
+  {
+   "id": "scale-drivers",
+   "text": "Scale driver strip: plastics and rubber products lost 824 jobs with all twelve counties disclosed in both years, while resin and synthetic rubber gained 461 with a county returning to disclosure, from four counties to five.",
+   "source": "BLS QCEW annual averages by NAICS, via wages/data/wages.json",
+   "assert": "(lambda rows, ly: (lambda g: g('326', ly) - g('326', ly - 1) == -824 and g('3252', ly) - g('3252', ly - 1) == 461)(lambda n, y: sum(r['emp'] for r in rows if r['naics'] == n and r['year'] == y)) and len([r for r in rows if r['naics'] == '326' and r['year'] == ly]) == 12 and len([r for r in rows if r['naics'] == '326' and r['year'] == ly - 1]) == 12 and len([r for r in rows if r['naics'] == '3252' and r['year'] == ly]) == 5 and len([r for r in rows if r['naics'] == '3252' and r['year'] == ly - 1]) == 4)([r for r in D['wg']['trend'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326')], max(r['year'] for r in D['wg']['trend']))",
+   "actual": "[(t['label'], t['value'], t['note'][:40]) for t in D['h']['tiles'][0]['drivers']]",
+   "falsified_if": "The resin driver's note says the rise is partly the bureau publishing more. That sentence dies the moment the disclosed-county count for 3252 is the same in both years, whatever the employment change does."
+  },
+  {
+   "id": "concentration-lead",
+   "text": "Distinctiveness tile and hero card 2: paint and coatings runs 5.96 times the national share, the highest of the three register industries, and it has been the highest in all eleven years.",
+   "source": "BLS QCEW components, 2015-2025, via location-quotient/data/lq.json",
+   "assert": "(lambda ys, core: abs(one(c for c in core if c['naics'] == '3255' and c['year'] == ys[-1])['lq'] - 5.9635) <= 0.0005 and all(sorted([c for c in core if c['year'] == y], key=lambda c: -c['lq'])[0]['naics'] == '3255' for y in ys) and len(ys) == 11)(sorted(set(c['year'] for c in D['lq']['composite'])), [c for c in D['lq']['composite'] if c['register'] == 'core']) and D['h']['tiles'][1]['value'] == '5.96×'",
+   "actual": "(one(c for c in D['lq']['composite'] if c['naics'] == '3255' and c['year'] == 2025)['lq'], D['h']['tiles'][1]['value'])",
+   "falsified_if": "A QCEW revision moves paint's concentration by more than 0.0005, or another register industry outranks it in any of the eleven years. The tile's whole point is that the strongest concentration is not the industry the region is known for, so a single year of rubber leading would need the sentence rewritten."
+  },
+  {
+   "id": "concentration-move",
+   "text": "Distinctiveness tile: paint fell from 6.40 to 5.96 times the national share, a move larger than eight of the nine earlier ones, with one earlier year moving further.",
+   "source": "BLS QCEW components, via location-quotient/data/lq.json",
+   "assert": "abs(one(c for c in D['lq']['composite'] if c['naics'] == '3255' and c['year'] == 2024)['lq'] - 6.4005) <= 0.0005 and D['h']['tiles'][1]['band']['beats'] == 8 and D['h']['tiles'][1]['band']['n_prior'] == 9 and abs(D['h']['tiles'][1]['band']['latest'] + 0.437) < 0.001 and abs(D['h']['tiles'][1]['band']['max_prior'] - 0.705) < 0.001",
+   "actual": "D['h']['tiles'][1]['band']",
+   "falsified_if": "A revision to any year of the paint series. If the widest earlier move stops being larger than this one, the tile's reading changes from 'bigger than usual' to 'never moved this far', which is a different sentence."
+  },
+  {
+   "id": "concentration-blind",
+   "text": "Distinctiveness tile: five of the twelve counties are withheld for paint and coatings, so the figure is a reading on the seven that report.",
+   "source": "BLS QCEW disclosure codes, via location-quotient/data/lq.json",
+   "assert": "(lambda c: c['counties_suppressed'] == 5 and c['counties_counted'] == 7 and c['counties_counted'] + c['counties_suppressed'] == 12)(one(c for c in D['lq']['composite'] if c['naics'] == '3255' and c['year'] == 2025))",
+   "actual": "one(c for c in D['lq']['composite'] if c['naics'] == '3255' and c['year'] == 2025)",
+   "falsified_if": "BLS discloses or withholds one more county for paint. The tile prints both halves of the split, so either number moving falsifies it."
+  },
+  {
+   "id": "pay-two-sided",
+   "text": "Job quality tile and hero card 3: the typical polymer job pays 1.24 times the average job in its county and 0.90 times what the same industry averages nationally, across the 24 disclosed register cells.",
+   "source": "BLS QCEW 2025 annual averages, county by NAICS, via wages/data/wages.json",
+   "assert": "(lambda rows, med: len(rows) == 24 and abs(med([r['vs_local_all'] for r in rows]) - 1.2369) <= 0.0005 and abs(med([r['vs_us'] for r in rows]) - 0.8952) <= 0.0005 and len([r for r in rows if r['vs_local_all'] > 1]) == 20 and len([r for r in rows if r['vs_us'] >= 1]) == 5)([r for r in D['wg']['latest_rows'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326')], (lambda a: (lambda s, n: s[n // 2] if n % 2 else (s[n // 2 - 1] + s[n // 2]) / 2)(sorted(a), len(a)))) and D['h']['tiles'][2]['value'] == '1.24× / 0.90×'",
+   "actual": "(len([r for r in D['wg']['latest_rows'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326')]), D['h']['tiles'][2]['value'])",
+   "falsified_if": "Either median leaving its printed second decimal, the disclosed cell count leaving 24, or the 20-of-24 and 5-of-24 splits moving. Printing only the first ratio would be the dishonest version of this tile, so the claim guards both or neither."
+  },
+  {
+   "id": "pay-overlap",
+   "text": "Job quality tile: 15 of the 24 disclosed cells, holding 12,896 of the 24,030 jobs, pay above their own county average and below their industry's national average at the same time.",
+   "source": "BLS QCEW 2025 annual averages, via wages/data/wages.json",
+   "assert": "(lambda both, rows: len(both) == 15 and round(sum(r['emp'] for r in both)) == 12896 and round(sum(r['emp'] for r in rows)) == 24030)([r for r in D['wg']['latest_rows'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326') and r['vs_local_all'] > 1 and r['vs_us'] < 1], [r for r in D['wg']['latest_rows'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326')])",
+   "actual": "(len([r for r in D['wg']['latest_rows'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326') and r['vs_local_all'] > 1 and r['vs_us'] < 1]), sum(r['emp'] for r in D['wg']['latest_rows'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326') and r['vs_local_all'] > 1 and r['vs_us'] < 1))",
+   "falsified_if": "One cell crossing either line. This is also the internal-consistency check between the two tiles: the job total here is the same 24,030 the scale tile prints, computed from a different table in the same file."
+  },
+  {
+   "id": "pay-move",
+   "text": "Job quality tile: the national side rose from 0.861 to 0.895, a move larger than five of the nine earlier ones, with four larger.",
+   "source": "County weekly wage divided by the same industry's U.S. weekly wage, both from wages/data/wages.json",
+   "assert": "(lambda rows, us, med: (lambda ratio: abs(ratio(2025) - 0.8952) <= 0.0005 and abs(ratio(2024) - 0.8612) <= 0.0005)(lambda y: med([r['weekly_wage'] / one(u for u in us if u['year'] == y and u['naics'] == r['naics'])['weekly_wage'] for r in rows if r['year'] == y])))([r for r in D['wg']['trend'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326')], [r for r in D['wg']['trend'] if r['area'] == 'US000' and r['naics'] in ('3252', '3255', '326')], (lambda a: (lambda s, n: s[n // 2] if n % 2 else (s[n // 2 - 1] + s[n // 2]) / 2)(sorted(a), len(a)))) and D['h']['tiles'][2]['band']['beats'] == 5 and D['h']['tiles'][2]['band']['n_prior'] == 9",
+   "actual": "D['h']['tiles'][2]['band']",
+   "falsified_if": "A wage revision on either side of the ratio. The band is built on the same statistic the tile prints, a median across disclosed cells, so a change of statistic would falsify it as surely as a change of data."
+  },
+  {
+   "id": "talent-level",
+   "text": "Talent tile and the closer: the three universities conferred 63 polymer degrees in 2023, against 179 in 2016, 65 percent lower.",
+   "source": "IPEDS completions for the polymer programs at three named institutions, via occupations/data/viz-data.json",
+   "assert": "(lambda tot: tot(2023) == 63 and tot(2016) == 179 and abs(round((tot(2023) / tot(2016) - 1) * 100) + 65) < 1)(lambda y: sum(p['by_year'].get(str(y), 0) for p in D['occ']['programs'] if p['group'] == 'polymer')) and D['occ']['program_totals']['polymer_awards_latest'] == 63 and D['h']['tiles'][3]['value'] == '63'",
+   "actual": "(sum(p['by_year'].get('2023', 0) for p in D['occ']['programs'] if p['group'] == 'polymer'), sum(p['by_year'].get('2016', 0) for p in D['occ']['programs'] if p['group'] == 'polymer'))",
+   "falsified_if": "An IPEDS restatement of any polymer program at Case Western Reserve or the University of Akron, or a program joining or leaving the polymer group. The peak year is read from the data rather than typed, so a higher year appearing moves the comparison."
+  },
+  {
+   "id": "talent-move",
+   "text": "Talent tile: the nine-degree rise from 2022 to 2023 is inside the range this measure normally moves, larger than only two of its eight earlier moves.",
+   "source": "IPEDS completions 2014-2023, via occupations/data/viz-data.json",
+   "assert": "D['h']['tiles'][3]['band']['latest'] == 9 and D['h']['tiles'][3]['band']['beats'] == 2 and D['h']['tiles'][3]['band']['n_prior'] == 8 and D['h']['tiles'][3]['band']['verdict'] == 'ordinary' and D['h']['tiles'][3]['band']['max_prior'] == 70",
+   "actual": "D['h']['tiles'][3]['band']",
+   "falsified_if": "The verdict word on this tile is 'ordinary'. It fails the moment the latest move is larger than half the earlier ones, which the next IPEDS release could do on its own without any change in the level."
+  },
+  {
+   "id": "talent-two-years-identical",
+   "text": "Talent tile vintage line and the methodology note: 2019 and 2020 carry an identical count for every one of the programs, which is a property of the source file rather than of the schools.",
+   "source": "IPEDS completions by year and program, via occupations/data/viz-data.json",
+   "assert": "D['h']['completions_flat_pairs'] == [2020] and all(p['by_year'].get('2019') == p['by_year'].get('2020') for p in D['occ']['programs'] if '2019' in p['by_year'] or '2020' in p['by_year'])",
+   "actual": "(D['h']['completions_flat_pairs'], [(p['institution'], p['by_year'].get('2019'), p['by_year'].get('2020')) for p in D['occ']['programs'] if '2019' in p['by_year']])",
+   "falsified_if": "A rebuild of the completions file that gives 2019 and 2020 different values. That would be good news and would remove the caveat; until then the caveat stays, because thirteen programs holding still for a year in step is not what enrolment does.",
+   "official_check": "NCES IPEDS Completions survey, 2019-20 and 2020-21 collection years, CIP 40.1002 and 14.3201 at the three institutions."
+  },
+  {
+   "id": "talent-openings-geography",
+   "text": "Talent driver strip: 46 annual openings for materials and chemical engineers, on the state's eighteen-county projection region rather than on the twelve counties, which is why the tile does not divide one figure into the other.",
+   "source": "Ohio JobsOhio regional occupational projections 2022-2032, via occupations/data/viz-data.json",
+   "assert": "sum(p['projection']['openings_annual'] for p in D['occ']['pay'] if p['soc'] in ('17-2131', '17-2041') and p.get('projection')) == 46 and len([p for p in D['occ']['pay'] if p['soc'] in ('17-2131', '17-2041') and p.get('projection')]) == 2",
+   "actual": "[(p['soc'], p['projection']['openings_annual']) for p in D['occ']['pay'] if p['soc'] in ('17-2131', '17-2041') and p.get('projection')]",
+   "falsified_if": "A new projection vintage. The geography caveat is the load-bearing half: if a projection ever arrives on the twelve counties, the ratio becomes computable and the tile should compute it instead of refusing to."
+  },
+  {
+   "id": "capital-named-recipients",
+   "text": "Capital tile and hero card 4: $51.0M of the $54.1M in federal awards is written into signed awards naming seven organisations.",
+   "source": "Signed federal Notices of Award, via funding-map/data/funding.json",
+   "assert": "(lambda fedprog, rec: (lambda named: sum(a for n, a in named if n not in ('Polymer Pilot Facility', 'Regional workforce programs')) == 51001413 and sum(p['amount'] for p in fedprog) == 54085784 and len(set(n for n, a in named if n not in ('Polymer Pilot Facility', 'Regional workforce programs'))) == 7)([(r['name'], a['amount']) for r in rec for a in r['awards'] if a['programId'] in set(p['id'] for p in fedprog)]))([p for p in D['fm']['programs'] if p['sourceId'] in set(s['id'] for s in D['fm']['sources'] if s['kind'].lower()[:7] == 'federal')], D['fm']['recipients']) and D['h']['federal_awards']['named_to_organisations'] == 51001413",
+   "actual": "(D['h']['federal_awards']['announced'], D['h']['federal_awards']['named_to_organisations'], len(D['h']['federal_awards']['leads']))",
+   "falsified_if": "A restated award, an eighth lead, or a recipient row that names a line item rather than an organisation being counted as one. The difference between the two dollar figures is the workforce award with no published recipient breakdown, and collapsing them would be the claim this tile exists to avoid."
+  },
+  {
+   "id": "capital-move",
+   "text": "Capital tile: routine federal contracting rose to $39.0M in FY2025 from $22.5M, 73 percent higher, and that is still a smaller move than this series usually makes.",
+   "source": "USAspending obligations at place of performance, NAICS 325 and 326, 2025 dollars, via federal-money/data/federal.json",
+   "assert": "(lambda fy: abs(fy(2025) - 38976269) < 1000 and abs(fy(2024) - 22536260) < 1000 and round((fy(2025) / fy(2024) - 1) * 100) == 73)(lambda y: sum(r['real'] for r in D['fed']['naics'] if r['fy'] == y)) and D['h']['tiles'][4]['band']['verdict'] == 'ordinary' and D['h']['tiles'][4]['band']['beats'] == 2 and D['h']['tiles'][4]['band']['n_prior'] == 5",
+   "actual": "(sum(r['real'] for r in D['fed']['naics'] if r['fy'] == 2025), sum(r['real'] for r in D['fed']['naics'] if r['fy'] == 2024), D['h']['tiles'][4]['band'])",
+   "falsified_if": "USAspending backfilling either year, or the CPI rebase moving the real column. This is the page's headline reading, that the biggest percentage change on the page is its most ordinary move, so a verdict of anything but 'ordinary' falsifies the standfirst, the chart annotation and the H2 together."
+  },
+  {
+   "id": "capital-baseline",
+   "text": "Capital tile: the baseline is $36.6M a year of routine contracting, averaged over the seven closed fiscal years, with the open year excluded.",
+   "source": "USAspending obligations, FY2019-FY2025 closed years, 2025 dollars, via federal-money/data/federal.json",
+   "assert": "(lambda closed: abs(sum(r['real'] for r in D['fed']['naics'] if r['fy'] != 2026) / len(closed) - 36606066) < 50000 and len(closed) == 7 and max(set(r['fy'] for r in D['fed']['naics'])) == 2026)(set(r['fy'] for r in D['fed']['naics'] if r['fy'] != 2026)) and D['h']['asof']['open_fiscal_year'] == 2026",
+   "actual": "(sum(r['real'] for r in D['fed']['naics'] if r['fy'] != 2026) / 7, sorted(set(r['fy'] for r in D['fed']['naics'])))",
+   "falsified_if": "FY2026 closing, at which point excluding it becomes wrong and the average has to be rebuilt over eight years. That is a scheduled event, not a hypothetical: this claim is the alarm for it."
+  },
+  {
+   "id": "noise-floor-measured-only-for-prices",
+   "text": "The stat band: 259 reference months of archived vintages across three producer-price series give a middle revision of 0.15 percent of the level and a largest of 1.42 percent, and no other series on this page has a measured revision band.",
+   "source": "ALFRED archived vintages 2019-2026, via revisions/data/revisions.json",
+   "assert": "(lambda a, med: len(a) == 259 and abs(med(a) - 0.148) < 0.0005 and abs(max(a) - 1.415) < 0.0005)([abs(p['pct']) for p in D['rev']['periods']], (lambda a: (lambda s, n: s[n // 2] if n % 2 else (s[n // 2 - 1] + s[n // 2]) / 2)(sorted(a), len(a)))) and len(set(p['label'] for p in D['rev']['periods'])) == 3 and D['h']['measured_revisions']['median_pct'] == 0.148 and D['h']['measured_revisions']['max_pct'] == 1.415",
+   "actual": "(len(D['rev']['periods']), D['h']['measured_revisions'])",
+   "falsified_if": "A new ALFRED pull extending the vintage record, or an employment vintage archive being assembled, which would make the second stat card's zero wrong. The card says zero series here have a measured revision band; the moment one does, that card is a correction."
+  },
+  {
+   "id": "how-many-moved-more-than-usual",
+   "text": "Standfirst, H2 and chart title: three of the five measures moved further this year than the same measure usually moves.",
+   "source": "Derived in cluster-health/derive_health.py from all five source series",
+   "assert": "D['h']['moved_more_than_usual'] == 3 and len(D['h']['tiles']) == 5 and len([t for t in D['h']['tiles'] if t['band']['verdict'] != 'ordinary']) == 3 and [t['band']['verdict'] for t in D['h']['tiles']] == ['above', 'above', 'above', 'ordinary', 'ordinary']",
+   "actual": "[(t['id'], t['band']['verdict'], t['band']['beats'], t['band']['n_prior']) for t in D['h']['tiles']]",
+   "falsified_if": "Any one of the five verdicts flipping. Three sentences on this page print the count, so a single tile changing class breaks all three at once. That is the intended behaviour: the count is the page's headline and it is not allowed to drift.",
+   "official_check": "Re-run derive_health.py and diff data/health.json."
+  },
+  {
+   "id": "human-scale-translation",
+   "text": "The translation under the last band: 802 jobs is close to the whole disclosed plastics-and-rubber payroll of Lorain County, 896 jobs, and BioVerde's $11.1M is the largest of the seven signed awards.",
+   "source": "wages/data/wages.json for the county payroll; funding-map/data/funding.json for the award",
+   "assert": "(lambda rows: one(r for r in rows if r['name'] == 'Lorain')['emp'] == 896 and min(rows, key=lambda r: abs(r['emp'] - 802))['name'] == 'Lorain')([r for r in D['wg']['trend'] if r['year'] == 2025 and r['naics'] == '326' and r['area'] != 'US000']) and D['h']['human_scale']['largest_award'] == 11122386 and D['h']['human_scale']['largest_award_name'] == 'BioVerde'",
+   "actual": "(D['h']['human_scale'], sorted((r['name'], r['emp']) for r in D['wg']['trend'] if r['year'] == 2025 and r['naics'] == '326' and r['area'] != 'US000'))",
+   "falsified_if": "A revision moving another county's plastics-and-rubber payroll nearer to the size of the loss, which would make Lorain the wrong comparison. The county is picked by the data rather than chosen, so the sentence has to be regenerated rather than edited."
+  },
+  {
+   "id": "register-is-three-industries",
+   "text": "Throughout: the measurement register is NAICS 3252, 3255 and 326. NAICS 325 is context and is not added to it.",
+   "source": "_data/METHODS-SOP register definition, carried in location-quotient/data/lq.json",
+   "assert": "sorted(n['code'] for n in D['lq']['naics'] if n['register'] == 'core') == ['3252', '3255', '326'] and one(n for n in D['lq']['naics'] if n['code'] == '325')['register'] == 'context' and len(D['h']['tiles'][0]['drivers']) == 3",
+   "actual": "[(n['code'], n['register']) for n in D['lq']['naics']]",
+   "falsified_if": "The register changing. Every employment, concentration and pay figure on this page would have to be rebuilt, and the driver strip on the scale tile carries one row per register industry so it would be visibly wrong first."
+  },
+  {
+   "id": "footprint-is-twelve-counties",
+   "text": "Throughout: every employment, wage, concentration and contracting figure is on PIC's twelve-county footprint, and the page never mixes it with the wider fourteen-county reading.",
+   "source": "footprint blocks in wages/data/wages.json, location-quotient/data/lq.json and federal-money/data/federal.json",
+   "assert": "D['wg']['meta']['footprint']['n'] == 12 and D['lq']['meta']['footprint']['n'] == 12 and D['fed']['meta']['footprint']['n'] == 12 and D['h']['meta']['footprint']['n'] == 12 and D['wg']['meta']['footprint']['counties'] == D['h']['meta']['footprint']['counties']",
+   "actual": "(D['h']['meta']['footprint']['n'], len(D['h']['meta']['footprint']['counties']))",
+   "falsified_if": "Any source page moving to a different county set. The dashboard copies its footprint block from the wages file rather than declaring one, so a divergence upstream shows up here as a failed assertion instead of as two pages quietly counting different places."
+  }
+ ]
+}

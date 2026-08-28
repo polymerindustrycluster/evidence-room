@@ -6,7 +6,7 @@
  "claims": [
   {
    "id": "ls-no-county-is-a-market",
-   "text": "Not one of the twelve counties has 69 percent of its jobs held by its own residents (H2, matrix callout, default verdict sentence, mobile matrix header).",
+   "text": "Not one of the twelve counties has 69 percent of its jobs held by its own residents (H2, matrix figure title in both layouts, matrix callout, default verdict sentence, mobile matrix header, the benchmark's 69 percent reference line).",
    "source": "LEHD LODES8 origin-destination, Ohio 2022, segment JT00, main + aux",
    "assert": "max(r['in_county'] for r in D['ls']['matrix']) < 0.69",
    "actual": "sorted(((r['work_name'], r['in_county']) for r in D['ls']['matrix']), key=lambda x: -x[1])[:3]",
@@ -14,7 +14,7 @@
   },
   {
    "id": "ls-summit-under-half",
-   "text": "Summit County, the cluster's center, is at 48.4 percent (standfirst, hero card, matrix callout, diagonal figure title).",
+   "text": "Summit County, the cluster's center, fills 48.4 percent of its jobs from home (standfirst, hero card, matrix callout, diagonal figure title).",
    "source": "LODES 2022, Summit work end, all home ends",
    "assert": "abs([r for r in D['ls']['matrix'] if r['work_name']=='Summit'][0]['in_county'] - 0.484) < 0.003",
    "actual": "[(r['work_name'], r['in_county'], r['jobs_total']) for r in D['ls']['matrix'] if r['work_name']=='Summit']",
@@ -46,7 +46,7 @@
   },
   {
    "id": "ls-rows-are-whole",
-   "text": "Each row accounts for every job in that county — twelve home counties plus an outside-footprint remainder (matrix figure subtitle: rows sum to 100%).",
+   "text": "Each row accounts for every job in that county: twelve home counties plus an outside-footprint remainder (section lede, 'a row adds up to one whole county's jobs'; the subtitle used to state the same fact as arithmetic and no longer does).",
    "source": "derived: interior cells plus external inflow per work county",
    "assert": "all(abs(sum(c['share'] for c in r['cells']) + r['outside_share'] - 1) < 0.003 for r in D['ls']['matrix'])",
    "actual": "[(r['work_name'], round(sum(c['share'] for c in r['cells']) + r['outside_share'], 4)) for r in D['ls']['matrix'][:3]]",
@@ -103,7 +103,7 @@
   },
   {
    "id": "ls-county-pattern-is-national",
-   "text": "95 percent of counties in peer metropolitan areas are also below 69 percent, so the county-level pattern is not specific to Northeast Ohio (H2 'Ninety-five percent', the benchmark pull-quote band, closer).",
+   "text": "95 percent of counties in peer metropolitan areas are also below 69 percent, so the county-level pattern is not specific to Northeast Ohio (H2 'Ninety-five percent', the benchmark pull-quote band, closer, and the benchmark chart's 'about 5% of peers do', which is 100 minus this share).",
    "source": "LEHD LODES8 2022, 397 counties in 73 single-state peer metros, in-state basis both sides",
    "assert": "0.945 <= D['b']['benchmark']['share_below_69'] < 0.955",
    "actual": "(D['b']['benchmark']['share_below_69'], D['b']['benchmark']['n_peer_counties'])",
@@ -111,15 +111,15 @@
   },
   {
    "id": "ls-pic12-above-peer-median",
-   "text": "The median PIC-12 county sits 3.5 points above the peer median: 55.3 percent against 51.8 (benchmark bracket, reading line, closer).",
+   "text": "The middle peer county fills 51.8 percent of its jobs with its own residents and the middle PIC-12 county fills 55.3, a gap of 3.5 percentage points (benchmark bracket in both layouts, which now prints the two rounded medians 55 and 52; reading line; closer).",
    "source": "as above",
-   "assert": "D['b']['benchmark']['pic12_median'] > D['b']['benchmark']['peer_median'] and abs((D['b']['benchmark']['pic12_median'] - D['b']['benchmark']['peer_median']) - 0.0353) <= 0.0015",
+   "assert": "D['b']['benchmark']['pic12_median'] > D['b']['benchmark']['peer_median'] and abs((D['b']['benchmark']['pic12_median'] - D['b']['benchmark']['peer_median']) - 0.0353) <= 0.0015 and abs(D['b']['benchmark']['pic12_median'] - 0.553) <= 0.004 and abs(D['b']['benchmark']['peer_median'] - 0.518) <= 0.004",
    "actual": "(D['b']['benchmark']['pic12_median'], D['b']['benchmark']['peer_median'])",
-   "falsified_if": "The gap leaves the band that rounds to 3.5 points, or the direction flips. TIGHTENED 2026-08-27: the claim previously guarded only the direction, while the page now draws a labeled bracket with the size of the gap."
+   "falsified_if": "The gap leaves the band that rounds to 3.5 points, the direction flips, or either median leaves the band that rounds to the whole percent the bracket prints. TIGHTENED 2026-08-27: the claim previously guarded only the direction, while the page now draws a labeled bracket with the size of the gap. TIGHTENED AGAIN 2026-08-28: the bracket now leads with the two medians in plain words, so both levels are printed and both are bounded here; the gap alone could hold while both medians drifted together."
   },
   {
    "id": "ls-ashtabula-in-state-basis",
-   "text": "On the benchmark's in-state basis, Ashtabula reads 72.7 percent and crosses the 69 percent line (bench reading line).",
+   "text": "Counting only jobs held by Ohio residents, which is the benchmark's basis, Ashtabula reads 72.7 percent and clears the 69 percent line (bench reading line).",
    "source": "LEHD LODES8 2022, in-state basis both sides",
    "assert": "(lambda r: abs(r['own_share_work'] - 0.7271) < 0.003)(one(r for r in D['b']['benchmark']['pic12_counties'] if r['name'] == 'Ashtabula'))",
    "actual": "[(r['name'], r['own_share_work'], r['percentile']) for r in D['b']['benchmark']['pic12_counties'] if r['name'] == 'Ashtabula']",

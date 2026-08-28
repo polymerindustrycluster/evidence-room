@@ -90,7 +90,12 @@ These are internal per the build spec's sub-award disclosure ruling, and are
 - **disbursement figures** — only `$1,191,433` of `$3,349,892` in sub-grants has
   actually moved and three of seven are still pre-award at `$0`. The mandatory
   substitute label, which is on the page and in every detail panel, is
-  *"awarded or committed amounts; disbursement follows milestones."*
+  *"awarded or committed amounts; disbursement follows milestones."* Beside the
+  figure it is preceded by a plain reading of it, *"Money is paid out as the work
+  hits agreed checkpoints,"* because "disbursement" is the one term of art left in
+  the sentence that decides whether a reader takes these bars for money spent. The
+  mandated string still renders verbatim from `meta.disclosures[0]`; do not replace
+  it with the plain sentence, and do not delete the plain sentence either.
 - **partner-by-partner match commitments**, the Continental default, and the
   `$742K` match gap
 - the **`$1,000,000` Innovation-Hub-as-APEX-match overlap**, which would net the
@@ -250,6 +255,33 @@ two data labels and one data typo did (last three bullets). What changed:
 - **`claims.json` grew to 23** (19 machine-checked, 4 manual). New: the table's
   ranking and cohort fold; the two-workstream unrouted split; $6.17M rounding for
   the hero card; the byline's record types.
+
+## Plain-reading pass (2026-08-28)
+
+Every number on this page was correct and several were unreadable, because the
+page named its constructed units without ever saying what they mean.
+
+- **`$106.3M` is a sum of two unlike things** and said so only in the term of art
+  "match and cost share". The hero now leads with the plain split (public money
+  awarded, plus what partners and the state promised to put in beside it) and
+  keeps the term behind it; the standfirst gives `$85.3M` and `$21.0M` before it
+  gives the total.
+- **The figure subtitle described the encoding, not the reading** ("hue names the
+  source; a tint step separates…") and asserted "one dollar scale", which the
+  Ohio workstream bands do not use. It now states the reading (left to right,
+  taller means more dollars) and says out loud that the bands sit on a second,
+  larger scale. That sentence lives in `.fig-sub-mode` and is empty in card mode,
+  where there is no left-to-right and no band column.
+- **`59.27% of the Ohio award`** was ambiguous by exactly `$10.42M`, because this
+  page shows the Ohio money as both a `$31.25M` award and `$41.67M` with the state
+  cost share. Both panels now name the denominator.
+- **Terms of art translated at first contact**: obligates, grantee, workstream,
+  disbursement, match. Later uses keep the term alone, which is the point of
+  translating once.
+- **Apparatus cut to pay for it**: the encoding recap in the subtitle, the map
+  lede's duplicate of it, the second scale note in card mode, and "Grant Control
+  No." in the figure source line. Visible caveat ink beside the figure is 40
+  words against the 45-word budget.
 
 ## Open questions for a human
 

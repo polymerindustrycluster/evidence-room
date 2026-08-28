@@ -28,6 +28,13 @@ the hero detail rows, which is where a reader ties back to USAspending. The prev
 version charted nominal bars under a real hero, so the hero read $98.2M and the bar under
 it read $87.6M with nothing reconciling them.
 
+Real and nominal are the page's most-used constructed unit, so they are translated rather
+than named: the Band 1 `.deffn` block defines "in 2025 dollars" and "as awarded" in plain
+words, and the hero row pairs "in 2025 dollars" with "in the dollars of the day" one card
+across so the contrast lands on the first screen. Later references use the technical
+phrase alone, which is what a numerate reader wants and what ties back to the source.
+The hero detail line wraps past about thirty characters; keep replacements shorter.
+
 ## Rebuild the data
 
 ```
@@ -70,6 +77,7 @@ rest is not deleted, it is relocated, and this is the map:
 | What the NAICS filter cannot see; the all-industry county scope | Band 2 editorial prose, in body register, static HTML |
 | Place of performance as a reported field | the page's single `.note` callout, in Band 1 |
 | Fetch scripts, endpoints, filters, `derive_techhub.py` | the generated "Reproduce this" disclosure, and this file |
+| Plain-language reading of every constructed unit | the reference-line label, the axis title, and the `.deffn` block in Band 1 |
 
 Nothing that changes how a number should be read sits behind a disclosure. The disclosures
 carry depth, not the disclosure itself.

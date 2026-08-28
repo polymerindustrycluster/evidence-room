@@ -28,11 +28,11 @@
     },
     {
       "id": "oh-lead-texas",
-      "text": "Ohio leads second-place Texas by 10,248 jobs, which the state chart draws as a rule at Texas.",
+      "text": "Ohio leads second-place Texas by 10,248 jobs, which the state chart draws as a rule at Texas, and the table note calls that 23% more than Texas.",
       "source": "BLS QCEW 2024, NAICS 326, private. Ohio 54,846 minus Texas 44,598.",
-      "assert": "D['states']['326']['top'][1]['name'].startswith('Texas') and round(D['states']['326']['subject_emp'] - D['states']['326']['top'][1]['emp']) == 10248",
-      "actual": "(D['states']['326']['top'][1]['name'], D['states']['326']['subject_emp'] - D['states']['326']['top'][1]['emp'])",
-      "falsified_if": "A revision changes either state's 2024 employment by even one job, or another state takes second place. Tolerance is zero because the page prints the gap to the job.",
+      "assert": "D['states']['326']['top'][1]['name'].startswith('Texas') and round(D['states']['326']['subject_emp'] - D['states']['326']['top'][1]['emp']) == 10248 and round((D['states']['326']['subject_emp'] / D['states']['326']['top'][1]['emp'] - 1) * 100) == 23",
+      "actual": "(D['states']['326']['top'][1]['name'], D['states']['326']['subject_emp'] - D['states']['326']['top'][1]['emp'], (D['states']['326']['subject_emp'] / D['states']['326']['top'][1]['emp'] - 1) * 100)",
+      "falsified_if": "A revision changes either state's 2024 employment by even one job, another state takes second place, or the margin rounds off 23%. Tolerance is zero because the page prints the gap to the job. The percentage replaced a '1.23x the second-place state's' phrasing on 2026-08-28: the page spends the multiplier glyph on concentration, and one glyph carrying two meanings is unreadable.",
       "official_check": "Both figures are published annual averages; the difference is arithmetic."
     },
     {
@@ -54,11 +54,11 @@
     },
     {
       "id": "akron-lq",
-      "text": "Akron sits at 4.69x the national concentration on 6,910 jobs.",
-      "source": "BLS QCEW 2024, lq_annual_avg_emplvl",
-      "assert": "round(D['metros']['326']['subject_lq'],2) == 4.69 and round(D['metros']['326']['subject_emp']) == 6910",
+      "text": "In Akron, plastics and rubber fills nearly five times as much of the local job base as it does of the country's: 4.69x, on 6,910 jobs.",
+      "source": "BLS QCEW 2024, lq_annual_avg_emplvl. 'Nearly five times' is the plain reading of 4.69x, which the hero card and the scatter's lede both print alongside it.",
+      "assert": "round(D['metros']['326']['subject_lq'],2) == 4.69 and round(D['metros']['326']['subject_emp']) == 6910 and 4.5 <= D['metros']['326']['subject_lq'] < 5.0",
       "actual": "(D['metros']['326']['subject_lq'], D['metros']['326']['subject_emp'])",
-      "falsified_if": "QCEW revises Akron MSA 2024."
+      "falsified_if": "QCEW revises Akron MSA 2024. The 4.5-to-5.0 band is guarding the WORDS, not the number: below 4.5 or at 5.0 and above, 'nearly five times' stops being an honest reading of the ratio and the hero card, the glossary and the scatter lede all have to be rewritten together."
     },
     {
       "id": "cle-rank-4",
@@ -88,7 +88,7 @@
     },
     {
       "id": "quadrant-seven",
-      "text": "Seventeen disclosed metros carry 4,000 jobs or more, 37 run at 2.0x the national share or better, and seven do both.",
+      "text": "Seventeen disclosed metros carry 4,000 jobs or more; in 37 the industry fills at least twice as much of the local job base as it does of the country's (2.0x or better); seven do both.",
       "source": "BLS QCEW 2024, NAICS 326, private. Counts over the 155 disclosed metro rows the scatter draws.",
       "assert": "len([p for p in D['metro_scatter'] if p['emp'] >= 4000]) == 17 and len([p for p in D['metro_scatter'] if p['lq'] >= 2.0]) == 37 and len([p for p in D['metro_scatter'] if p['emp'] >= 4000 and p['lq'] >= 2.0]) == 7 and any(p['area'] == 'C1042' for p in D['metro_scatter'] if p['emp'] >= 4000 and p['lq'] >= 2.0)",
       "actual": "(len([p for p in D['metro_scatter'] if p['emp'] >= 4000]), len([p for p in D['metro_scatter'] if p['lq'] >= 2.0]), sorted(p['name'] for p in D['metro_scatter'] if p['emp'] >= 4000 and p['lq'] >= 2.0))",

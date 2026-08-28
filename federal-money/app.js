@@ -120,12 +120,22 @@ const troughWord = troughMissing ? label(troughMissing).split(" ")[0].toLowerCas
    with scripts off; the fed-county-scope claim holds the printed figure to ±$50M. */
 
 /* ------------------------------------------------------------------- hero stat row */
+/* THE PAIR HAS TO TRANSLATE ITSELF INSIDE THE ROW. The detail lines used to read "2025
+   dollars" and "as awarded", a real-versus-nominal pair the page never translated, so a
+   reader met two numbers for the eight-year total, $279.3M and $248.8M, with nothing
+   saying which was the bigger or why. "In the dollars of the day" sits one card away from
+   "in 2025 dollars" and does the work of the contrast on the first screen; Band 1's
+   definition line carries the full reading. The detail line wraps past about thirty
+   characters, so the translation goes on the longer-lived card, not the first one.
+   "Closed years" was register-speak for years that have finished. */
 PV.figures([
-  ["key", short(avgReal), "a year, on average", `FY${fys[0]}–FY${fys.at(-1)}, 2025 dollars`],
+  ["key", short(avgReal), "a year, on average",
+   `FY${fys[0]}–FY${fys.at(-1)}, in 2025 dollars`],
   ["", short(award), "the Tech Hub award", `${A.leads.length} awards, as awarded`],
   ["", years.toFixed(1), "routine years to match it",
-   `${yearsClosed.toFixed(1)} on closed years only`],
-  ["", short(totalReal), "eight-year total", `${short(totalNom)} as awarded`]
+   `${yearsClosed.toFixed(1)} counting finished years only`],
+  ["", short(totalReal), "eight-year total",
+   `${short(totalNom)} in the dollars of the day`]
 ]);
 
 /* ==================================================== 1. the year bars vs the award */
@@ -150,7 +160,9 @@ function yearsDesktop() {
   const ys = v => m.t + h - (v / maxV) * h;
   frame(svg, {x: m.l, y: m.t, w, h, xs: i => xs(i) + bw / 2, ys,
     xt: fys.map((_, i) => i), xfmt: i => "FY" + fys[i], yt: ticks(0, maxV, 5),
-    yfmt: short, ylab: "Obligations, polymer NAICS, 2025 dollars"});
+    /* The axis said "polymer NAICS", a classification acronym the page never expands.
+       The scale is money adjusted for inflation, and that is what it now says. */
+    yfmt: short, ylab: "Federal money committed, in 2025 dollars"});
 
   fys.forEach((fy, i) => {
     const v = real[fy], x = xs(i) + 7, bwi = bw - 14, part = fy === PARTIAL;
@@ -182,11 +194,16 @@ function yearsDesktop() {
     txt(svg, s, {x: cx, y: ly, "text-anchor": "middle", class: "pv-lab"});
   });
 
-  txt(svg, `FY${clears[0]} clears the award line on its own.`,
+  txt(svg, `FY${clears[0]} beat the whole award on its own.`,
     {x: m.l + 4, y: 24, class: "pv-lab"});
-  txt(svg, `FY${nearFy} comes within ${short(gap)} of it.`,
+  txt(svg, `FY${nearFy} came within ${short(gap)} of it.`,
     {x: m.l + 4, y: 42, class: "pv-labq"});
-  txt(svg, `EDA Tech Hub award ${short(award)} = about ${years.toFixed(1)} routine years`,
+  /* A REFERENCE LINE IS LABELLED BY WHAT CROSSING IT MEANS. This label used to read
+     "award $51.0M = about 1.5 routine years", which is the arithmetic: it left the reader
+     to work out that a bar reaching the rule is one ordinary year worth more than the
+     entire award, and most will not. The ratio still leads the page, in the hero card and
+     the figure title above the chart; the line itself now carries the reading. */
+  txt(svg, `EDA Tech Hub award ${short(award)}. A bar above it is a bigger single year.`,
     {x: m.l + w, y: ys(award) - 9, "text-anchor": "end", class: "pv-lab", fill: AWARD});
   /* Anchored over the two shortest bars, clear of every bar top. Anchoring it at the
      right edge put it inside the FY2025 bar, which is the occlusion this rebuild fixes. */
@@ -205,7 +222,9 @@ function yearsDesktop() {
     el("line", {x1: tx + 2, y1: ys(maxV * 0.428) + 7, x2: tx + 2, y2: ys(real[trough]) - 5,
       stroke: "var(--pv-axis)", "stroke-width": 1.2}, svg);
   }
-  txt(svg, "partial year", {x: xs(fys.indexOf(PARTIAL)) + bw / 2,
+  /* "partial year" is the register word for a bar that is a running total. The reader
+     needs to know the year is not over, which is what the hatching means. */
+  txt(svg, "still running", {x: xs(fys.indexOf(PARTIAL)) + bw / 2,
     y: ys(real[PARTIAL]) - 26, "text-anchor": "middle", class: "pv-labq"});
 
   /* Hover targets last: transparent, so they cover the annotations without hiding them. */
@@ -249,7 +268,7 @@ function yearsMobile() {
      rules stay continuous everywhere else. */
   fys.forEach((fy, i) => {
     const y = m.t + i * rowH, v = real[fy];
-    const tag = fy === PARTIAL ? " · partial year"
+    const tag = fy === PARTIAL ? " · still running"
       : (troughMissing && fy === trough) ? ` · no ${troughWord} obligations` : "";
     const t = txt(svg, `FY${fy} · ${short(v)}${tag}`, {x: m.l, y: y + 12,
       class: "pv-labq"});
@@ -261,7 +280,10 @@ function yearsMobile() {
       `FY${fy}: ${usd(v)} in 2025 dollars`);
   });
 
-  txt(svg, `FY${clears[0]} clears the award line`, {x: m.l, y: 20, class: "pv-labq"});
+  /* Same reading as the desktop chart: the orange rule is labelled by what passing it
+     means, not by its value alone. */
+  txt(svg, `Bars past the orange line beat the award. FY${clears[0]} did.`,
+    {x: m.l, y: 20, class: "pv-labq"});
   txt(svg, `award ${short(award)}`, {x: xs(award), y: 42, "text-anchor": "end",
     class: "pv-labq", fill: AWARD});
   txt(svg, `average ${short(avgReal)}`, {x: xs(avgReal), y: 62, "text-anchor": "end",
@@ -277,7 +299,8 @@ function codesDesktop() {
   const maxV = top.real;
   const xs = v => m.l + (v / maxV) * w;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys: () => 0, xt: ticks(0, maxV, 4), yt: [],
-    xfmt: short, xlab: `Obligations, FY${fys[0]}–FY${fys.at(-1)} combined, 2025 dollars`});
+    xfmt: short,
+    xlab: `Federal money committed, FY${fys[0]}–FY${fys.at(-1)} added up, 2025 dollars`});
   codes.forEach((r, i) => {
     const y = m.t + i * rowH + 7, bh = 20;
     /* One hue, two tints: the darker pair is the group the annotation names. Bar length
@@ -303,8 +326,11 @@ function codesDesktop() {
   const rail = m.l + w + 16;
   el("path", {d: `M${rail - 6},${m.t + 5} h6 V${m.t + 2 * rowH - 5} h-6`, fill: "none",
     stroke: INK, "stroke-width": 1.8}, svg);
-  [`Two rubber-product codes`, `hold ${Math.round(topTwoShare * 100)}% of eight`,
-   `years of money. The`, `larger of them is a`, `residual bucket.`]
+  /* A SHARE GETS ITS PLAIN EQUIVALENT ONCE. "65%" is legible on its own; "about two
+     dollars in every three" is the sentence a reader repeats. "Residual bucket" was the
+     census word for a class defined by what does not fit anywhere else. */
+  [`Two rubber-product codes`, `hold ${Math.round(topTwoShare * 100)}% of eight years`,
+   `of money, about two dollars`, `in every three. The larger`, `is a leftovers class.`]
     .forEach((s, i) => txt(svg, s, {x: rail + 8, y: m.t + 18 + i * 17,
       class: i ? "pv-labq" : "pv-lab", fill: i ? null : INK}));
 }
@@ -315,9 +341,9 @@ function codesMobile() {
   const {svg, w} = PV.chart("na", {W, H, m});
   const maxV = top.real;
   const xs = v => m.l + (v / maxV) * w;
-  txt(svg, `Two rubber codes hold ${Math.round(topTwoShare * 100)}% of it`,
+  txt(svg, `Two rubber codes hold ${Math.round(topTwoShare * 100)}%, two dollars in three`,
     {x: m.l, y: 20, class: "pv-lab", fill: INK});
-  txt(svg, `FY${fys[0]}–FY${fys.at(-1)} combined, 2025 dollars`,
+  txt(svg, `FY${fys[0]}–FY${fys.at(-1)} added up, 2025 dollars`,
     {x: m.l, y: 38, class: "pv-labq"});
   codes.forEach((r, i) => {
     const y = m.t + i * rowH;
@@ -334,9 +360,15 @@ function codesMobile() {
 /* ================================================= 3. the award, lead by lead */
 {
   const wide = A.leads[0].amount;
+  /* A LENGTH THAT DISAGREES WITH ITS OWN CAPTION. The rules were drawn at
+     `amount / wide * 88 + 12`, a proportional length on top of a twelve-pixel floor, so
+     the smallest award ($2.7M, a quarter of the largest) got a third of the longest rule.
+     The figure now tells the reader a bar half as long is an award about half the size,
+     which is only true of a rule with no floor under it. Same maximum width, no floor:
+     the shortest is 24px, legible without lying. */
   document.getElementById("leads").innerHTML = A.leads.map(l =>
     `<div class="lead"><div class="amt">${short(l.amount)}<span class="bar"
-       style="width:${Math.round(l.amount / wide * 88) + 12}px"></span></div>
+       style="width:${Math.round(l.amount / wide * 100)}px"></span></div>
      <div class="who">${l.name}</div><div class="what">${l.funds}</div></div>`).join("");
   /* The source line a reader can act on. What stood here named a script, a file path and
      the repository they live in: reproduction detail addressed to a maintainer, printed
@@ -365,15 +397,16 @@ document.getElementById("fytable").innerHTML = withNotes(tableView("y",
   fys.map(fy => [fy === PARTIAL ? `FY${fy} (partial)` : "FY" + fy,
     usd(real[fy]), usd(nom[fy])])),
   `One row is one obligation total for a single fiscal year, category and industry code.
-   As awarded, the same eight years come to <b>${short(totalNom)}</b> and the average year
-   to ${short(avgNom)}; both columns are in the table. Counting only the ${closed.length}
-   closed years the average is ${short(avgClosed)} and the award is about
-   ${yearsClosed.toFixed(1)} years of it, so the ratio the page prints is the less
-   flattering of the two. Award line: ${A.meta.source} ${A.meta.note} ${D.meta.scope}`);
+   Without the inflation adjustment, the same eight years come to
+   <b>${short(totalNom)}</b> and the average year to ${short(avgNom)}; both columns are in
+   the table. Counting only the ${closed.length} years that have finished, the average is
+   ${short(avgClosed)} and the award is about ${yearsClosed.toFixed(1)} years of it, so
+   the ratio the page prints is the less flattering of the two. Award line:
+   ${A.meta.source} ${A.meta.note} ${D.meta.scope}`);
 document.getElementById("fysrc").innerHTML =
-  `${D.meta.source}, in the twelve PIC-12 counties, restated in 2025 dollars with BLS
-   CPI-U annual averages. FY${PARTIAL} is partial: its bar is a running total, drawn
-   hatched, and not comparable to the closed years.`;
+  `${D.meta.source}, in the twelve PIC-12 counties, marked up to 2025 dollars with BLS
+   CPI-U annual averages. FY${PARTIAL} is not over: its bar is the year so far, drawn
+   hatched, and not comparable to the seven finished years.`;
 
 document.getElementById("natable").innerHTML = withNotes(tableView("n",
   "Federal polymer obligations by industry code",
@@ -384,10 +417,10 @@ document.getElementById("natable").innerHTML = withNotes(tableView("n",
    one-year ranking would not reproduce this order. Bar labels on the chart are shortened
    by hand; the census names above are the full ones.`);
 document.getElementById("nasrc").innerHTML =
-  `${D.meta.source}, summed FY${fys[0]}–FY${fys.at(-1)} in 2025 dollars.
-   ${D.naics.length} of the ${codes.length * fys.length} possible code-by-year cells carry
-   an obligation, and an absent cell is a year with no recorded obligation for that code
-   rather than a confirmed zero.`;
+  `${D.meta.source}, added up FY${fys[0]}–FY${fys.at(-1)} in 2025 dollars. Pair every
+   industry with every year and only ${D.naics.length} of the
+   ${codes.length * fys.length} pairs carry an obligation at all; a missing one is a year
+   with nothing recorded for that industry, rather than a confirmed zero.`;
 
 /* ------------------------------------------------------------------------ assemble */
 function drawAll() { drawYears(); drawCodes(); }

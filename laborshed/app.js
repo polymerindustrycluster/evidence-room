@@ -65,6 +65,12 @@ const bm = B.benchmark;
 const CITE = D.meta.source.split(",").slice(0, 3).join(",").trim() + ".";
 const BCITE = B.meta.source.split(".")[0].trim() + ".";
 const gapPts = ((bm.pic12_median - bm.peer_median) * 100).toFixed(1);
+/* The two medians as whole percents, for the chart labels that carry the plain reading
+   of the gap. Read from the data, never typed; guarded by ls-pic12-above-peer-median,
+   which now bounds each median and not only the distance between them. */
+const midPIC = Math.round(bm.pic12_median * 100);
+const midPeer = Math.round(bm.peer_median * 100);
+const peersAbove69 = 100 - Math.round(bm.share_below_69 * 100);
 const ashB = bm.pic12_counties.find(r => r.name === "Ashtabula");
 
 /* ------------------------------------------------------------------- hero stats */
@@ -131,17 +137,26 @@ const dimRow = name => SEL && name !== SEL;
    and its own single limitation, which is also how both stay inside the 45-word caveat
    budget: the caveat that does not apply is not spent. */
 function matrixChrome(mobile) {
+  /* DIRECTION, NOT ARITHMETIC. The subtitle used to say "each row sums to 100%", which
+     is the formula; the row-is-a-whole reading is in the section lede, in words. What
+     the subtitle owes the reader is what a DARK box means and what the bare numbers
+     are, since the cells print "58" with no unit anywhere on the figure. */
+  document.getElementById("matrixfigtitle").textContent = mobile
+    ? "The dark first segment is a county hiring its own residents, and none reaches 69%"
+    : "Each row’s outlined box is the county hiring its own residents, and none reaches 69%";
   document.getElementById("matrixsub").textContent = mobile
     ? `Each county’s 2022 jobs split three ways: its own residents, the rest of the
-       twelve counties, and outside. Orange marks the four counties under half.`
-    : `Share of each work county’s 2022 jobs by home county; each row sums to 100%.
-       Orange outlines mark the four counties whose diagonal is under half.`;
+       twelve counties, and outside. Orange marks the four counties that fill under half
+       their jobs from home.`
+    : `Each row is one work county’s 2022 jobs. The numbers are the percent living in
+       each home county; darker means a bigger share. Orange outlines the four counties
+       whose own residents fill under half.`;
   document.getElementById("matrixsrc").textContent = mobile
     ? `${CITE} The numbers are jobs, not people: a two-job worker appears
        twice. On a phone each row is compressed to a three-way split; the full matrix is
        in the table.`
     : `${CITE} The numbers are jobs, not people: a two-job worker appears
-       twice. Cells under five percent are shaded and not numbered; every value is in
+       twice. Boxes under five percent are shaded and not numbered; every value is in
        the table.`;
 }
 
@@ -313,11 +328,13 @@ function drawDiagDesktop() {
   const xs = v => m.l + v * w;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys: () => 0, yt: [],
     xt: [0, .2, .4, .6, .8, 1], xfmt: v => (v * 100).toFixed(0) + "%",
-    xlab: "Share of the county’s jobs held by its own residents"});
+    xlab: "most jobs filled from outside ←  50%  → most filled by its own residents"});
   el("line", {x1: xs(.5), y1: m.t - 8, x2: xs(.5), y2: m.t + h, stroke: "var(--hover)",
     "stroke-width": 1.5}, svg);
-  /* The rule grew from a one-word label into the sentence it stands for. */
-  txt(svg, "half: below this line, a county is a minority-resident workplace",
+  /* The rule grew from a one-word label into the sentence it stands for, and then out of
+     "minority-resident workplace", which is a phrase this page coined and no reader
+     holds. It also said BELOW of a VERTICAL line, which points the wrong way. */
+  txt(svg, "left of this line, most of the jobs go to people who live elsewhere",
     {x: xs(.5) + 8, y: m.t - 12, class: "pv-labq", fill: "var(--hover)"});
   diagRows.forEach((r, i) => {
     const g = el("g", dimRow(r.work_name) ? {opacity: .22} : {}, svg);
@@ -344,9 +361,9 @@ function drawDiagMobile() {
   const {svg} = chart("diag", {W, H});
   const w = W - m.l - m.r;
   const xs = v => m.l + v * w;
-  txt(svg, "half: below this line, a county is a", {x: xs(.5) - 110, y: 18,
+  txt(svg, "left of the line: most of a county’s jobs", {x: m.l, y: 18,
     class: "pv-labq", fill: "var(--hover)"});
-  txt(svg, "minority-resident workplace", {x: xs(.5) - 110, y: 34,
+  txt(svg, "go to people who live somewhere else", {x: m.l, y: 34,
     class: "pv-labq", fill: "var(--hover)"});
   /* The rule is drawn PER ROW, over the bar band only. As one full-height line it ran
      through the label text of nine rows — "Stark · 59.2% · 157,552 jobs" with a plum
@@ -374,13 +391,16 @@ function drawDiagMobile() {
   [0, .5, 1].forEach(v => txt(svg, Math.round(v * 100) + "%",
     {x: xs(v), y: H - m.b + 22, "text-anchor": v ? (v === 1 ? "end" : "middle") : "start",
      class: "pv-tick"}));
+  /* Lower case, not the uppercase pv-axlab: at 375px the letter-spaced caps run past
+     the viewBox and a directional axis title has to fit to do its job. */
+  txt(svg, "← fewer of its own residents · more →", {x: m.l, y: H - 6, class: "pv-labq"});
 }
 
 document.getElementById("diagtitle").textContent =
   WORDS[underHalf.length].replace(/^./, c => c.toUpperCase()) +
   " of the twelve counties are under half";
 document.getElementById("diagfigtitle").textContent =
-  `Summit, the cluster’s center, is at ${pct(summit.in_county)}`;
+  `Summit, the cluster’s center, fills ${pct(summit.in_county)} of its jobs from home`;
 
 /* --------------------------------------------------- 3. adjacent vs distant */
 const extRows = [
@@ -482,7 +502,10 @@ function drawRecipDesktop() {
   frame(svg, {x: m.l, y: m.t, w, h: pairs.length * 30, xs, ys: () => 0,
     xt: ticks(Math.ceil(lo * 10) / 10, Math.floor(hi * 10) / 10, 5),
     xfmt: v => Math.round(v * 100) + "%",
-    xlab: "Share held locally", ylab: "County"});
+    /* "Share held locally" was one axis title over two different measures with two
+       different totals, and it said nothing about which way was which. */
+    xlab: "more of it leaves the county ←  → more of it stays inside the county",
+    ylab: "County"});
   /* The series are named ON the chart, at the top row's own two dots. The legend below
      the figure is reinforcement; it was the only key, and a reader had to shuttle to it
      to learn which end of every gap the title is talking about. */
@@ -555,7 +578,8 @@ function drawRecipMobile() {
   });
   [.3, .5, .7].forEach(v => txt(svg, Math.round(v * 100) + "%",
     {x: xs(v), y: H - m.b + 22, "text-anchor": "middle", class: "pv-tick"}));
-  txt(svg, "share held locally", {x: m.l, y: H - 8, class: "pv-labq"});
+  txt(svg, "← more leaves the county · more stays →", {x: m.l, y: H - 8,
+    class: "pv-labq"});
 }
 
 document.getElementById("recipfigtitle").textContent =
@@ -574,7 +598,7 @@ function drawBenchDesktop() {
   frame(svg, {x: m.l, y: m.t, w, h: h - 12, xs, ys: () => 0,
     xt: [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
     xfmt: v => Math.round(v * 100) + "%",
-    xlab: "Share of a county’s jobs held by its own residents"});
+    xlab: "more filled from outside ←  → more filled by its own residents"});
   bm.peer_values.forEach((v, i) => {
     el("line", {x1: xs(v), y1: band - 30 + (i % 7) * 7, x2: xs(v),
       y2: band - 24 + (i % 7) * 7, stroke: GRAY, "stroke-width": 1.4, opacity: 0.5}, svg);
@@ -593,13 +617,22 @@ function drawBenchDesktop() {
   txt(svg, "PIC-12 median", {x: xs(bm.pic12_median) + 6, y: 88, class: "pv-axlab",
     fill: CAT[0]});
   /* Reference lines are labeled by MEANING, not by value: "69%" alone made the reader
-     hunt the body prose for what 69 was. */
-  txt(svg, "69%: the ceiling no county reaches", {x: xs(.69) + 6, y: 88,
+     hunt the body prose for what 69 was. And the old wording, "the ceiling no county
+     reaches", was read against a chart on which peer counties visibly clear it — the
+     ceiling is the PIC-12's, so the label now says whose it is and who passes it. */
+  txt(svg, "69%: no PIC-12 county reaches it", {x: xs(.69) + 6, y: 80,
     class: "pv-axlab", fill: "var(--hover)"});
+  txt(svg, `about ${peersAbove69}% of peers do`, {x: xs(.69) + 6, y: 96,
+    class: "pv-labq", fill: "var(--hover)"});
   el("path", {d: `M${xs(bm.peer_median)},62 V56 H${xs(bm.pic12_median)} V62`,
     fill: "none", stroke: "var(--pv-ink)", "stroke-width": 1.4}, svg);
-  txt(svg, `the median PIC-12 county sits ${gapPts} points above the peer median`,
-    {x: xs(bm.peer_median) - 60, y: 48, class: "pv-lab"});
+  /* THE PLAIN READING LEADS; "3.5 points" follows in the reading line below the figure,
+     which is where the reader who wants percentage points goes looking. A bracket
+     labelled only in points asks the reader to hold a unit nobody explained yet. */
+  txt(svg, `the middle PIC-12 county fills ${midPIC}% of its jobs locally; ` +
+           `the middle peer county, ${midPeer}%`,
+    {x: (xs(bm.peer_median) + xs(bm.pic12_median)) / 2, y: 48, "text-anchor": "middle",
+     class: "pv-lab"});
   const ordered = bm.pic12_counties.slice().sort((a, b) => a.own_share_work - b.own_share_work);
   /* Row-packed labels with leader lines; each label takes the first row whose last
      label it clears (see git history for the collision this replaced). */
@@ -638,23 +671,31 @@ function drawBenchMobile() {
   const xs = v => m.l + ((v - lo) / (hi - lo)) * w;
   const band = m.t + 34;
   frame(svg, {x: m.l, y: m.t, w, h: H - m.t - m.b - 6, xs, ys: () => 0,
-    xt: [.2, .4, .6, .8], xfmt: v => Math.round(v * 100) + "%",
-    xlab: "share of jobs held by own residents"});
+    xt: [.2, .4, .6, .8], xfmt: v => Math.round(v * 100) + "%", xlab: ""});
+  /* Lower case and short, because the uppercase axis title does not fit 375px and a
+     direction the reader cannot read is not a direction. */
+  txt(svg, "← more outsiders · more own residents →",
+    {x: m.l + w / 2, y: H - m.b + 46, "text-anchor": "middle", class: "pv-labq"});
   bm.peer_values.forEach((v, i) => {
     el("line", {x1: xs(v), y1: band - 24 + (i % 5) * 6, x2: xs(v),
       y2: band - 19 + (i % 5) * 6, stroke: GRAY, "stroke-width": 1.1, opacity: 0.5}, svg);
   });
-  txt(svg, `the PIC-12 median sits ${gapPts} points`, {x: m.l, y: 16, class: "pv-lab"});
-  txt(svg, "above the peer median", {x: m.l, y: 32, class: "pv-lab"});
-  el("path", {d: `M${xs(bm.peer_median)},52 V46 H${xs(bm.pic12_median)} V52`,
+  txt(svg, `the middle PIC-12 county fills ${midPIC}% of`, {x: m.l, y: 16,
+    class: "pv-lab"});
+  txt(svg, `its jobs locally; the middle peer, ${midPeer}%`, {x: m.l, y: 32,
+    class: "pv-lab"});
+  /* The 69% rule carried its value and nothing else here, so the phone shipped a naked
+     reference line while the desktop said what crossing it meant. */
+  txt(svg, "69%: no PIC-12 county reaches it", {x: m.l, y: 50, class: "pv-labq",
+    fill: "var(--hover)"});
+  el("path", {d: `M${xs(bm.peer_median)},70 V64 H${xs(bm.pic12_median)} V70`,
     fill: "none", stroke: "var(--pv-ink)", "stroke-width": 1.2}, svg);
-  el("line", {x1: xs(bm.peer_median), y1: 56, x2: xs(bm.peer_median), y2: band + 20,
+  el("line", {x1: xs(bm.peer_median), y1: 74, x2: xs(bm.peer_median), y2: band + 20,
     stroke: INK, "stroke-width": 1.2, "stroke-dasharray": "3 3"}, svg);
-  el("line", {x1: xs(bm.pic12_median), y1: 56, x2: xs(bm.pic12_median), y2: band + 20,
+  el("line", {x1: xs(bm.pic12_median), y1: 74, x2: xs(bm.pic12_median), y2: band + 20,
     stroke: CAT[0], "stroke-width": 1.2, "stroke-dasharray": "3 3"}, svg);
-  el("line", {x1: xs(.69), y1: 56, x2: xs(.69), y2: band + 20,
+  el("line", {x1: xs(.69), y1: 74, x2: xs(.69), y2: band + 20,
     stroke: "var(--hover)", "stroke-width": 1.2, "stroke-dasharray": "3 3"}, svg);
-  txt(svg, "69%", {x: xs(.69) + 4, y: 66, class: "pv-labq", fill: "var(--hover)"});
   const dots = bm.pic12_counties.slice().sort((a, b) => a.own_share_work - b.own_share_work);
   dots.forEach(r => {
     const g = el("g", dimRow(r.name) ? {opacity: .25} : {}, svg);
@@ -696,7 +737,7 @@ function drawRegionsDesktop() {
   const xs = v => m.l + v * w;
   frame(svg, {x: m.l, y: m.t, w, h: R.length * 34, xs, ys: () => 0,
     xt: [0, 0.25, 0.5, 0.75, 1], xfmt: v => Math.round(v * 100) + "%",
-    xlab: "Jobs held by residents of the same region",
+    xlab: "more work goes to outsiders ←  → more of it stays in the region",
     ylab: "Region, ordered by how many counties it has"});
   R.forEach((r, i) => {
     const y = m.t + i * 34 + 6, mine = r.kind === "footprint";
@@ -750,10 +791,12 @@ function drawRegionsMobile() {
   [0, .5, 1].forEach(v => txt(svg, Math.round(v * 100) + "%",
     {x: xs(v), y: H - m.b + 22, "text-anchor": v ? (v === 1 ? "end" : "middle") : "start",
      class: "pv-tick"}));
+  txt(svg, "← more work leaves the region · more stays →", {x: m.l, y: H - 6,
+    class: "pv-labq"});
 }
 
 document.getElementById("regionsfigtitle").textContent =
-  `Only Pittsburgh matches the footprint’s ${pct(B.totals.work_region_share)}`;
+  `The footprint keeps ${pct(B.totals.work_region_share)} of its work inside itself, and only Pittsburgh matches it`;
 
 /* -------------------------------------------------------- tables + prose slots */
 
@@ -784,15 +827,15 @@ document.getElementById("diagtable").innerHTML = tableView("dg",
   diagRows.map(r => [r.work_name, N(r.jobs_total), pct(r.in_county),
     pct(1 - r.in_county - r.outside_share), pct(r.outside_share)]));
 document.getElementById("diagsrc").textContent =
-  `${CITE} The diagonal of the matrix above, ranked. The share is over all the jobs in a
-   county, including the ones held from outside the twelve counties.`;
+  `${CITE} The share is over all the jobs in a county, including the ones held from
+   outside the twelve counties.`;
 document.getElementById("diagnote").innerHTML =
   `<b>What this licenses.</b> Retiring the single-county workforce figure:
    “${summit.work_name} County has ${N(summit.jobs_total)} workers” is true of a place
    where ${pct(1 - summit.in_county)} of those workers live somewhere else. Two
    readings stay off the table: none of this is a commute, since the home end is a
    residence on file rather than evidence of a trip, and none of it is
-   cluster-specific, since LODES records no industry at this grain.`;
+   cluster-specific, since LODES records no industry at this level of detail.`;
 
 document.getElementById("exttable").innerHTML = tableView("ex",
   "Largest external sources of PIC-12 jobs",
@@ -800,7 +843,7 @@ document.getElementById("exttable").innerHTML = tableView("ex",
   E.top.map(r => [r.name, r.kind, N(r.jobs_2019), N(r.jobs_2022),
     r.jobs_2019 ? ((r.jobs_2022 / r.jobs_2019 - 1) * 100).toFixed(0) + "%" : "n/a"]));
 document.getElementById("extsrc").textContent =
-  `${CITE} A 2019 vintage of the same file supplies the baseline.
+  `${CITE} The same file for 2019 supplies the baseline.
    ${D.meta.split_is_judgment} The two categories are never summed.`;
 document.getElementById("extreading").innerHTML =
   `<b>This section exists because a story died here.</b> The candidate finding was that
@@ -820,21 +863,27 @@ document.getElementById("reciptable").innerHTML = withNote(tableView("rc",
    ${pct(B.totals.res_region_share)} of PIC-12 residents’ jobs sit inside PIC-12 and
    ${pct(B.totals.out_of_state_share)} sit outside Ohio.`);
 document.getElementById("recipsrc").textContent =
-  `${BCITE} The two dots are different populations with different denominators and are
-   never subtracted from one another: a county can fill its jobs with outsiders while
-   its own residents also leave.`;
+  `${BCITE} The two dots count different people against different totals and are never
+   subtracted from one another: a county can fill its jobs with outsiders while its own
+   residents also leave.`;
 
 document.getElementById("benchtable").innerHTML = withNote(tableView("bm",
   "PIC-12 counties against the peer distribution",
-  ["County", "Jobs held by own residents", "Percentile among peer metro counties"],
+  ["County", "Jobs held by own residents", "Higher than this share of peer counties"],
   bm.pic12_counties.slice().sort((a, b) => a.own_share_work - b.own_share_work)
     .map(r => [r.name, pct(r.own_share_work), pct(r.percentile)])),
   `${B.meta.source} ${B.meta.bases}`);
-document.getElementById("benchsrc").textContent = `${BCITE} ${B.meta.peer_rule}`;
+/* The visible line says what the peer rule MEANS; "containment" and "in-state basis"
+   are the register's words, and both still print in full in the methods box. */
+document.getElementById("benchsrc").textContent =
+  `${BCITE} Only metros inside a single state are compared, since the files count just
+   the jobs held by residents of that state. Metros under 60,000 resident jobs are left
+   out.`;
 document.getElementById("benchreading").innerHTML =
-  `The PIC-12 median (${pct(bm.pic12_median)}) runs <b>${gapPts} points above the peer
-   median</b> (${pct(bm.peer_median)}). Ashtabula crosses 69 here and not earlier
-   because the peer files are in-state only; on that basis it reads
+  `The middle peer county fills ${pct(bm.peer_median)} of its jobs with its own
+   residents; the middle PIC-12 county fills ${pct(bm.pic12_median)}, <b>a gap of
+   ${gapPts} percentage points</b>. Ashtabula clears 69 here and not earlier because the
+   peer files count only Ohio residents’ jobs; on that basis it reads
    ${pct(ashB.own_share_work)}.`;
 
 document.getElementById("regionstable").innerHTML = withNote(tableView("rg",
@@ -844,8 +893,8 @@ document.getElementById("regionstable").innerHTML = withNote(tableView("rg",
   `${B.meta.source} Every qualifying region is shown; none was dropped after the numbers
    were seen.`);
 document.getElementById("regionssrc").textContent =
-  `${BCITE} ${B.meta.size_control} Every single-state peer metro of six or more counties
-   is shown.`;
+  `${BCITE} More counties means more of the work is inside the region for arithmetic
+   reasons alone, so read each bar against its own county count, never as a ranking.`;
 document.getElementById("regionsreading").innerHTML =
   `<b>PIC-12 holds ${pct(B.totals.work_region_share)} of its jobs inside its own
    borders</b>, and among comparable regions only Pittsburgh matches it. That is the

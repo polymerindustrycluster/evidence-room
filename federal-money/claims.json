@@ -104,7 +104,7 @@
       "source": "USAspending by NAICS, top two codes over the eight-year real total",
       "assert": "abs(sum(sorted((sum(r['real'] for r in D['f']['naics'] if r['code']==c) for c in set(r['code'] for r in D['f']['naics'])), reverse=True)[:2]) / sum(r['real'] for r in D['f']['naics']) - 0.6479) < 0.008",
       "actual": "sum(sorted((sum(r['real'] for r in D['f']['naics'] if r['code']==c) for c in set(r['code'] for r in D['f']['naics'])), reverse=True)[:2]) / sum(r['real'] for r in D['f']['naics'])",
-      "falsified_if": "The share moves off 65 percent by more than eight tenths of a point, which is where the on-chart annotation would start printing 64% or 66%. The figure title used to round it to 'two thirds' while the annotation two inches away printed 65%, so a reader met two numbers for one fact; both now print 65% and this tolerance guards that single rendering."
+      "falsified_if": "The share moves off 65 percent by more than eight tenths of a point, which is where the on-chart annotation would start printing 64% or 66%. The figure title used to round it to 'two thirds' while the annotation two inches away printed 65%, so a reader met two numbers for one fact; both now print 65% and this tolerance guards that single rendering. The chart also gives the share its plain equivalent, 'about two dollars in every three'; the same tolerance bounds that reading, since anything inside it rounds nearer to two thirds than to three fifths."
     },
     {
       "id": "fed-real-ranking-stable",
@@ -116,7 +116,7 @@
     },
     {
       "id": "fed-cells-sparse",
-      "text": "39 of the 64 possible code-by-year cells carry an obligation, so most of the grid is absence rather than zero.",
+      "text": "Pairing every industry with every year gives 64 pairs, and only 39 of them carry an obligation, so most of the grid is absence rather than zero.",
       "source": "USAspending rows, counted against codes multiplied by fiscal years",
       "assert": "len(D['f']['naics']) == 39 and len(set(r['code'] for r in D['f']['naics'])) * len(set(r['fy'] for r in D['f']['naics'])) == 64 and len(D['f']['naics']) < len(set(r['code'] for r in D['f']['naics'])) * len(set(r['fy'] for r in D['f']['naics']))",
       "actual": "(len(D['f']['naics']), len(set(r['code'] for r in D['f']['naics'])), len(set(r['fy'] for r in D['f']['naics'])))",
@@ -124,11 +124,11 @@
     },
     {
       "id": "fed-county-scope",
-      "text": "All-industry obligations in the same twelve counties come to $235.5B in 2025 dollars, an order of magnitude above the polymer slice, and the two are never summed.",
+      "text": "All-industry obligations in the same twelve counties come to $235.5B in 2025 dollars, hundreds of times larger than the polymer slice, and the two are never summed.",
       "source": "USAspending spending_by_category, county rows, all industries",
-      "assert": "abs(sum(r['real'] for r in D['f']['counties']) - 235_544_481_704) < 50_000_000 and round(sum(r['real'] for r in D['f']['counties']) / 1e9, 1) == 235.5 and sum(r['real'] for r in D['f']['counties']) > 100 * sum(r['real'] for r in D['f']['naics'])",
+      "assert": "abs(sum(r['real'] for r in D['f']['counties']) - 235_544_481_704) < 50_000_000 and round(sum(r['real'] for r in D['f']['counties']) / 1e9, 1) == 235.5 and 200 * sum(r['real'] for r in D['f']['naics']) < sum(r['real'] for r in D['f']['counties']) < 1000 * sum(r['real'] for r in D['f']['naics'])",
       "actual": "(sum(r['real'] for r in D['f']['counties']), sum(r['real'] for r in D['f']['counties']) / sum(r['real'] for r in D['f']['naics']))",
-      "falsified_if": "The county total moves by more than fifty million, prints as anything other than $235.5B, or the two scopes come within 100x of each other. The tolerance was half a billion while this figure was injected by script and could not go stale; it now sits in Band 2's static prose, where a drift of a tenth of a billion would ship as a wrong published number, so the rounding test pins the exact rendering. The ratio test is the guard on the word 'never': if the scopes were comparable in size, a reader would be entitled to expect them charted together."
+      "falsified_if": "The county total moves by more than fifty million, prints as anything other than $235.5B, or the two scopes come within 100x of each other. The tolerance was half a billion while this figure was injected by script and could not go stale; it now sits in Band 2's static prose, where a drift of a tenth of a billion would ship as a wrong published number, so the rounding test pins the exact rendering. The ratio test is the guard on the words 'hundreds of times larger' and on the word 'never': the band-2 prose now names the size gap in words, so the test brackets it on both sides rather than only from below. If the two counts were comparable in size, a reader would be entitled to expect them charted together."
     },
     {
       "id": "fed-excludes-disclosed",

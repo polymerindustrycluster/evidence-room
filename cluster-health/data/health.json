@@ -1,0 +1,883 @@
+{
+ "meta": {
+  "source": "Recomputed from the shipped data files of six Evidence Room pages: wages, location-quotient, occupations, federal-money, funding-map and revisions.",
+  "sources": "Behind those pages: BLS Quarterly Census of Employment and Wages annual averages; BLS Employment Projections and IPEDS completions; USAspending obligations at place of performance; signed federal Notices of Award; ALFRED archived vintages.",
+  "row": "One row is one measure in one year: its level, the baseline it is read against, and every year-over-year change the same measure has made in its published history.",
+  "definition": "A movement band is built the same way for all five measures. Take the measure’s own published history, compute the change between every consecutive pair of years, hold out the latest one, and compare it against the median and the largest of the earlier changes. A move at or below the median is ordinary for that measure; a move larger than every earlier one is not.",
+  "baseline": "Each tile states the baseline it is read against and why that one. PIC has set no target for any of these five measures, so no tile reports distance from a target: they report level and direction only.",
+  "caution": "The movement band measures how far a published series has moved between years. It is not a revision band and cannot say how far a future revision will move the year just published. This repository has measured that for exactly three producer-price indexes, on the revisions page, and for none of the employment, degree or spending series here.",
+  "suppression": "A cell BLS withholds is never a zero. Three of the five measures are built from county cells and the set of disclosed cells changes year to year, so where it matters the movement is judged on the cells present in every year rather than on the raw total.",
+  "scope": "The measurement register is NAICS 3252, 3255 and 326. NAICS 325 sweeps in pharmaceuticals, agricultural chemicals and industrial gas, about 60 percent of its own figure, and is context rather than cluster.",
+  "not": "This page carries no measure of output, productivity, exports, private investment or company formation, because no page in this room ships one yet. Five measures are not the health of an economy.",
+  "geography": "Every employment, wage and contracting figure is on the PIC-12 footprint. The degree completions are three named universities and the openings estimate beside them is a state projection for an eighteen-county region: they are printed side by side and never divided into one another.",
+  "fetched": "2026-08-18",
+  "footprint": {
+   "key": "pic12",
+   "n": 12,
+   "label": "PIC-12",
+   "counties": [
+    "Ashtabula",
+    "Cuyahoga",
+    "Geauga",
+    "Lake",
+    "Lorain",
+    "Mahoning",
+    "Medina",
+    "Portage",
+    "Stark",
+    "Summit",
+    "Trumbull",
+    "Wayne"
+   ],
+   "note": "PIC's official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
+   "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the vault's NEO-14 includes."
+  }
+ },
+ "asof": {
+  "qcew_year": 2025,
+  "ipeds_year": 2023,
+  "open_fiscal_year": 2026,
+  "funding_asof": "2026-08-13"
+ },
+ "measured_revisions": {
+  "series": [
+   "PPI: industrial chemicals",
+   "PPI: plastics and rubber products manufacturing",
+   "PPI: rubber and plastic products"
+  ],
+  "n_periods": 259,
+  "median_pct": 0.148,
+  "max_pct": 1.415,
+  "span": [
+   "2019-01-01",
+   "2026-06-01"
+  ]
+ },
+ "register": {
+  "years": [
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "counties": 12,
+  "possible_cells": 36,
+  "disclosed": [
+   {
+    "year": 2015,
+    "emp": 24995.0,
+    "cells": 24,
+    "balanced": 24773.0
+   },
+   {
+    "year": 2016,
+    "emp": 24962.0,
+    "cells": 23,
+    "balanced": 24765.0
+   },
+   {
+    "year": 2017,
+    "emp": 25011.0,
+    "cells": 23,
+    "balanced": 24797.0
+   },
+   {
+    "year": 2018,
+    "emp": 25531.0,
+    "cells": 25,
+    "balanced": 24767.0
+   },
+   {
+    "year": 2019,
+    "emp": 25875.0,
+    "cells": 26,
+    "balanced": 25108.0
+   },
+   {
+    "year": 2020,
+    "emp": 24818.0,
+    "cells": 26,
+    "balanced": 24061.0
+   },
+   {
+    "year": 2021,
+    "emp": 26150.0,
+    "cells": 26,
+    "balanced": 24761.0
+   },
+   {
+    "year": 2022,
+    "emp": 26589.0,
+    "cells": 26,
+    "balanced": 25485.0
+   },
+   {
+    "year": 2023,
+    "emp": 25831.0,
+    "cells": 23,
+    "balanced": 25281.0
+   },
+   {
+    "year": 2024,
+    "emp": 24786.0,
+    "cells": 23,
+    "balanced": 24259.0
+   },
+   {
+    "year": 2025,
+    "emp": 24030.0,
+    "cells": 24,
+    "balanced": 23457.0
+   }
+  ],
+  "balanced_cells": 21
+ },
+ "pay_series": [
+  {
+   "year": 2015,
+   "ratio": 0.8049,
+   "local": 998,
+   "national": 1084
+  },
+  {
+   "year": 2016,
+   "ratio": 0.8749,
+   "local": 1024,
+   "national": 1097
+  },
+  {
+   "year": 2017,
+   "ratio": 0.8343,
+   "local": 1046,
+   "national": 1133
+  },
+  {
+   "year": 2018,
+   "ratio": 0.8078,
+   "local": 1062,
+   "national": 1158
+  },
+  {
+   "year": 2019,
+   "ratio": 0.8547,
+   "local": 1087,
+   "national": 1176
+  },
+  {
+   "year": 2020,
+   "ratio": 0.8413,
+   "local": 1146,
+   "national": 1227
+  },
+  {
+   "year": 2021,
+   "ratio": 0.8243,
+   "local": 1243,
+   "national": 1302
+  },
+  {
+   "year": 2022,
+   "ratio": 0.8602,
+   "local": 1222,
+   "national": 1363
+  },
+  {
+   "year": 2023,
+   "ratio": 0.8711,
+   "local": 1251,
+   "national": 1391
+  },
+  {
+   "year": 2024,
+   "ratio": 0.8612,
+   "local": 1347,
+   "national": 1455
+  },
+  {
+   "year": 2025,
+   "ratio": 0.8952,
+   "local": 1429,
+   "national": 1505
+  }
+ ],
+ "completions": [
+  {
+   "year": 2014,
+   "polymer": 125,
+   "materials": 20
+  },
+  {
+   "year": 2015,
+   "polymer": 143,
+   "materials": 26
+  },
+  {
+   "year": 2016,
+   "polymer": 179,
+   "materials": 22
+  },
+  {
+   "year": 2017,
+   "polymer": 162,
+   "materials": 34
+  },
+  {
+   "year": 2018,
+   "polymer": 145,
+   "materials": 29
+  },
+  {
+   "year": 2019,
+   "polymer": 118,
+   "materials": 23
+  },
+  {
+   "year": 2020,
+   "polymer": 118,
+   "materials": 23
+  },
+  {
+   "year": 2021,
+   "polymer": 124,
+   "materials": 20
+  },
+  {
+   "year": 2022,
+   "polymer": 54,
+   "materials": 29
+  },
+  {
+   "year": 2023,
+   "polymer": 63,
+   "materials": 33
+  }
+ ],
+ "completions_flat_pairs": [
+  2020
+ ],
+ "obligations": [
+  {
+   "fy": 2019,
+   "real": 51648098,
+   "open": false
+  },
+  {
+   "fy": 2020,
+   "real": 31800074,
+   "open": false
+  },
+  {
+   "fy": 2021,
+   "real": 50756006,
+   "open": false
+  },
+  {
+   "fy": 2022,
+   "real": 43567649,
+   "open": false
+  },
+  {
+   "fy": 2023,
+   "real": 16958103,
+   "open": false
+  },
+  {
+   "fy": 2024,
+   "real": 22536260,
+   "open": false
+  },
+  {
+   "fy": 2025,
+   "real": 38976269,
+   "open": false
+  },
+  {
+   "fy": 2026,
+   "real": 23024545,
+   "open": true
+  }
+ ],
+ "human_scale": {
+  "jobs_lost": 802,
+  "nearest_county": "Lorain",
+  "nearest_county_emp": 896.0,
+  "largest_award_name": "BioVerde",
+  "largest_award": 11122386,
+  "mean_award": 7285916
+ },
+ "moved_more_than_usual": 3,
+ "federal_awards": {
+  "announced": 54085784,
+  "named_total": 54085784,
+  "named_to_organisations": 51001413,
+  "leads": [
+   {
+    "name": "BioVerde",
+    "amount": 11122386
+   },
+   {
+    "name": "Flexsys",
+    "amount": 10093286
+   },
+   {
+    "name": "Goodyear",
+    "amount": 9390634
+   },
+   {
+    "name": "University of Akron",
+    "amount": 7071802
+   },
+   {
+    "name": "Huntsman",
+    "amount": 5970805
+   },
+   {
+    "name": "Full Circle Technologies",
+    "amount": 4702500
+   },
+   {
+    "name": "Greater Akron Chamber",
+    "amount": 2650000
+   }
+  ],
+  "line_items": [
+   "Polymer Pilot Facility",
+   "Regional workforce programs"
+  ]
+ },
+ "tiles": [
+  {
+   "id": "scale",
+   "dimension": "Scale",
+   "short": "jobs in the register",
+   "question": "How many jobs is this?",
+   "value": "24,030",
+   "unit": "jobs",
+   "reading": "24,030 jobs in the three industries the cluster measures itself by, counted across the twelve counties in 2025. It is a floor, not a total: BLS withheld 12 of the 36 industry-county cells.",
+   "baseline": {
+    "name": "the same counted cells in 2024",
+    "why": "A year is the shortest step this series takes, and the same-cell comparison is the only one that holds the measurement frame still while the economy moves."
+   },
+   "direction": {
+    "value": -802,
+    "pct": -3.3,
+    "words": "down 802 jobs, 3.3 percent, in the cells counted in both years",
+    "short_move": "down 802 jobs",
+    "raw": -756,
+    "streak": 3
+   },
+   "band": {
+    "latest_year": 2025,
+    "latest": -802.0,
+    "abs_latest": 802.0,
+    "median_prior": 341.0,
+    "max_prior": 1047.0,
+    "n_prior": 9,
+    "beats": 7,
+    "typicals": 2.3519,
+    "max_typicals": 3.0704,
+    "verdict": "above",
+    "steps": [
+     {
+      "year": 2016,
+      "change": -8.0,
+      "typicals": 0.0235
+     },
+     {
+      "year": 2017,
+      "change": 32.0,
+      "typicals": 0.0938
+     },
+     {
+      "year": 2018,
+      "change": -30.0,
+      "typicals": 0.088
+     },
+     {
+      "year": 2019,
+      "change": 341.0,
+      "typicals": 1.0
+     },
+     {
+      "year": 2020,
+      "change": -1047.0,
+      "typicals": 3.0704
+     },
+     {
+      "year": 2021,
+      "change": 700.0,
+      "typicals": 2.0528
+     },
+     {
+      "year": 2022,
+      "change": 724.0,
+      "typicals": 2.1232
+     },
+     {
+      "year": 2023,
+      "change": -204.0,
+      "typicals": 0.5982
+     },
+     {
+      "year": 2024,
+      "change": -1022.0,
+      "typicals": 2.9971
+     },
+     {
+      "year": 2025,
+      "change": -802.0,
+      "typicals": 2.3519
+     }
+    ]
+   },
+   "blind": "12 of the 36 industry-county cells are withheld so no employer can be identified from them. A withheld cell is not a zero, and the jobs in it are not in the 24,030.",
+   "vintage": {
+    "as_of": "2025 annual averages",
+    "changes_it": "BLS revises QCEW county cells when employers refile. A new annual release replaces this figure outright."
+   },
+   "link": {
+    "href": "../wages/",
+    "label": "What the work pays"
+   },
+   "drivers": [
+    {
+     "label": "Plastics and rubber products",
+     "value": "-824 jobs",
+     "note": "17,770 jobs, all twelve counties disclosed in both years"
+    },
+    {
+     "label": "Paint and coatings",
+     "value": "-393 jobs",
+     "note": "4,259 jobs across 7 disclosed counties, the same count as last year"
+    },
+    {
+     "label": "Resin and synthetic rubber",
+     "value": "+461 jobs",
+     "note": "a county came back into disclosure, from 4 counties to 5, so this rise is partly the bureau publishing more"
+    }
+   ]
+  },
+  {
+   "id": "concentration",
+   "dimension": "Distinctiveness",
+   "short": "paint against the U.S. share",
+   "question": "Is this cluster unusual, or just present?",
+   "value": "5.96×",
+   "unit": "the national share",
+   "reading": "paint and coatings is the most concentrated of the three: for every job the country holds in it per hundred jobs, these counties hold about 6.0. Rubber and plastics, the industries the region is known for, run 2.32 times.",
+   "baseline": {
+    "name": "1.0 times, the national share of employment",
+    "why": "A share against the country needs no peer region chosen for it and no target set for it, and PIC has set none. At 1.0 the counties look like the country; above it they hold more of this work than their size implies."
+   },
+   "direction": {
+    "value": -0.44,
+    "pct": -6.8,
+    "words": "down from 6.40× to 5.96× the national share, a fall of 0.44",
+    "short_move": "down 0.44×",
+    "streak": null
+   },
+   "band": {
+    "latest_year": 2025,
+    "latest": -0.437,
+    "abs_latest": 0.437,
+    "median_prior": 0.0866,
+    "max_prior": 0.705,
+    "n_prior": 9,
+    "beats": 8,
+    "typicals": 5.0462,
+    "max_typicals": 8.1409,
+    "verdict": "above",
+    "steps": [
+     {
+      "year": 2016,
+      "change": -0.0518,
+      "typicals": 0.5982
+     },
+     {
+      "year": 2017,
+      "change": 0.1568,
+      "typicals": 1.8106
+     },
+     {
+      "year": 2018,
+      "change": 0.705,
+      "typicals": 8.1409
+     },
+     {
+      "year": 2019,
+      "change": -0.1149,
+      "typicals": 1.3268
+     },
+     {
+      "year": 2020,
+      "change": 0.0281,
+      "typicals": 0.3245
+     },
+     {
+      "year": 2021,
+      "change": 0.0013,
+      "typicals": 0.015
+     },
+     {
+      "year": 2022,
+      "change": 0.2198,
+      "typicals": 2.5381
+     },
+     {
+      "year": 2023,
+      "change": 0.0864,
+      "typicals": 0.9977
+     },
+     {
+      "year": 2024,
+      "change": -0.0866,
+      "typicals": 1.0
+     },
+     {
+      "year": 2025,
+      "change": -0.437,
+      "typicals": 5.0462
+     }
+    ]
+   },
+   "blind": "5 of the twelve counties are withheld for paint and coatings, so this is a reading on the 7 that report. The withheld ones are the small ones, which are usually the least concentrated.",
+   "vintage": {
+    "as_of": "2025 annual averages",
+    "changes_it": "A county entering or leaving disclosure moves the composite without any employer changing what it does."
+   },
+   "link": {
+    "href": "../location-quotient/",
+    "label": "How concentrated it is"
+   },
+   "drivers": [
+    {
+     "label": "Paint and coatings",
+     "value": "5.96×",
+     "note": "7 of twelve counties disclosed, 4,259 jobs"
+    },
+    {
+     "label": "Plastics and rubber products",
+     "value": "2.32×",
+     "note": "12 of twelve counties disclosed, 17,770 jobs"
+    },
+    {
+     "label": "Resin and synthetic rubber",
+     "value": "2.00×",
+     "note": "5 of twelve counties disclosed, 2,001 jobs"
+    }
+   ]
+  },
+  {
+   "id": "pay",
+   "dimension": "Job quality",
+   "short": "pay against its industry",
+   "question": "Are these good jobs?",
+   "value": "1.24× / 0.90×",
+   "unit": "its county / its industry nationally",
+   "reading": "The typical polymer job out-pays the average job in its own county by 1.24 times, and pays 0.90 times what the same industry averages nationally. Both are true at once, and 15 of the 24 disclosed cells, holding 12,896 of the 24,030 jobs, sit in both states.",
+   "baseline": {
+    "name": "two baselines, because one of them flatters",
+    "why": "Against the county average it answers whether this is good work to have here. Against the same industry nationally it answers whether this is a good place to do this work. A recruiting number that carries only the first is choosing the flattering half."
+   },
+   "direction": {
+    "value": 0.034,
+    "pct": 4.0,
+    "words": "the national side rose from 0.861× to 0.895× of the U.S. rate for the same work",
+    "short_move": "up 0.034×",
+    "streak": null
+   },
+   "band": {
+    "latest_year": 2025,
+    "latest": 0.034023,
+    "abs_latest": 0.034023,
+    "median_prior": 0.026541,
+    "max_prior": 0.069946,
+    "n_prior": 9,
+    "beats": 5,
+    "typicals": 1.2819,
+    "max_typicals": 2.6353,
+    "verdict": "above",
+    "steps": [
+     {
+      "year": 2016,
+      "change": 0.069946,
+      "typicals": 2.6353
+     },
+     {
+      "year": 2017,
+      "change": -0.04056,
+      "typicals": 1.5282
+     },
+     {
+      "year": 2018,
+      "change": -0.026541,
+      "typicals": 1.0
+     },
+     {
+      "year": 2019,
+      "change": 0.046973,
+      "typicals": 1.7698
+     },
+     {
+      "year": 2020,
+      "change": -0.013453,
+      "typicals": 0.5069
+     },
+     {
+      "year": 2021,
+      "change": -0.017003,
+      "typicals": 0.6406
+     },
+     {
+      "year": 2022,
+      "change": 0.035932,
+      "typicals": 1.3538
+     },
+     {
+      "year": 2023,
+      "change": 0.010872,
+      "typicals": 0.4096
+     },
+     {
+      "year": 2024,
+      "change": -0.009878,
+      "typicals": 0.3722
+     },
+     {
+      "year": 2025,
+      "change": 0.034023,
+      "typicals": 1.2819
+     }
+    ]
+   },
+   "drivers": [
+    {
+     "label": "Beats its own county",
+     "value": "20 of 24 cells",
+     "note": "median 1.24 times the county all-industry average"
+    },
+    {
+     "label": "Beats its industry nationally",
+     "value": "5 of 24 cells",
+     "note": "median 0.90 times the U.S. average for the same work"
+    },
+    {
+     "label": "Weekly wage per covered job",
+     "value": "$1,429",
+     "note": "against $1,505 for the same industry mix nationally"
+    }
+   ],
+   "blind": "An average weekly wage moves with hours and with the mix of occupations, not only with pay rates: a plant on overtime reads as a raise. Nothing here is any one person’s pay.",
+   "vintage": {
+    "as_of": "2025 annual averages",
+    "changes_it": "The local ratio has no shipped history, so only the national side carries a movement band. A year of QCEW wage revisions moves both."
+   },
+   "link": {
+    "href": "../wages/",
+    "label": "Does the cluster pay better"
+   }
+  },
+  {
+   "id": "talent",
+   "dimension": "Talent supply",
+   "short": "polymer degrees a year",
+   "question": "Who is coming out of the schools?",
+   "value": "63",
+   "unit": "polymer degrees a year",
+   "reading": "The three universities in the region conferred 63 polymer degrees in 2023, against 179 in 2016. Materials degrees held at 33.",
+   "baseline": {
+    "name": "the same three institutions in 2016, their own high",
+    "why": "A peer region would need a defensible peer set and PIC has named none. The programs’ own decade is the baseline that needs no choice made for it."
+   },
+   "direction": {
+    "value": 9,
+    "pct": 16.7,
+    "words": "up 9 on the year, and 65 percent below its 2016 high",
+    "short_move": "up 9 degrees",
+    "streak": null
+   },
+   "band": {
+    "latest_year": 2023,
+    "latest": 9,
+    "abs_latest": 9,
+    "median_prior": 17.5,
+    "max_prior": 70,
+    "n_prior": 8,
+    "beats": 2,
+    "typicals": 0.5143,
+    "max_typicals": 4.0,
+    "verdict": "ordinary",
+    "steps": [
+     {
+      "year": 2015,
+      "change": 18,
+      "typicals": 1.0286
+     },
+     {
+      "year": 2016,
+      "change": 36,
+      "typicals": 2.0571
+     },
+     {
+      "year": 2017,
+      "change": -17,
+      "typicals": 0.9714
+     },
+     {
+      "year": 2018,
+      "change": -17,
+      "typicals": 0.9714
+     },
+     {
+      "year": 2019,
+      "change": -27,
+      "typicals": 1.5429
+     },
+     {
+      "year": 2020,
+      "change": 0,
+      "typicals": 0.0
+     },
+     {
+      "year": 2021,
+      "change": 6,
+      "typicals": 0.3429
+     },
+     {
+      "year": 2022,
+      "change": -70,
+      "typicals": 4.0
+     },
+     {
+      "year": 2023,
+      "change": 9,
+      "typicals": 0.5143
+     }
+    ]
+   },
+   "drivers": [
+    {
+     "label": "Polymer programs, 2023",
+     "value": "63",
+     "note": "a three-year average of 80.4"
+    },
+    {
+     "label": "Materials programs, 2023",
+     "value": "33",
+     "note": "the half of the register that has not fallen"
+    },
+    {
+     "label": "Annual openings, the two degree occupations",
+     "value": "46",
+     "note": "materials and chemical engineers, on the state’s eighteen-county projection region, so it cannot be divided into the completions above"
+    }
+   ],
+   "blind": "Three institutions, 13 programs. It cannot see graduates who leave the region, employers who hire from outside it, or the two-year and certificate routes into the same plants.",
+   "vintage": {
+    "as_of": "IPEDS completions, 2023",
+    "changes_it": "This is the slowest series on the page: 2023 is 2 years behind the employment figures. Each new IPEDS release adds one year."
+   },
+   "link": {
+    "href": "../occupations/",
+    "label": "Who does the work"
+   }
+  },
+  {
+   "id": "capital",
+   "dimension": "Capital",
+   "short": "federal contracting a year",
+   "question": "Is public money arriving, and where does it land?",
+   "value": "$51.0M",
+   "unit": "written into signed federal awards",
+   "reading": "$51.0 million of the $54.1 million in federal awards on the funding map is written into signed awards naming 7 organisations. None of it is disbursement: every figure here is money committed, not money spent.",
+   "baseline": {
+    "name": "routine federal contracting, $36.6 million a year in 2025 dollars",
+    "why": "An award is only large or small against the money that was already arriving. Averaged over the 7 closed fiscal years, FY2019 to FY2025; FY2026 is still open and is left out of the average."
+   },
+   "direction": {
+    "value": 16440009,
+    "pct": 72.9,
+    "words": "routine contracting rose to $39.0M in FY2025 from $22.5M, 73 percent higher",
+    "short_move": "up $16.4M",
+    "streak": null
+   },
+   "band": {
+    "latest_year": 2025,
+    "latest": 16440009,
+    "abs_latest": 16440009,
+    "median_prior": 18955932,
+    "max_prior": 26609546,
+    "n_prior": 5,
+    "beats": 2,
+    "typicals": 0.8673,
+    "max_typicals": 1.4038,
+    "verdict": "ordinary",
+    "steps": [
+     {
+      "year": 2020,
+      "change": -19848024,
+      "typicals": 1.0471
+     },
+     {
+      "year": 2021,
+      "change": 18955932,
+      "typicals": 1.0
+     },
+     {
+      "year": 2022,
+      "change": -7188357,
+      "typicals": 0.3792
+     },
+     {
+      "year": 2023,
+      "change": -26609546,
+      "typicals": 1.4038
+     },
+     {
+      "year": 2024,
+      "change": 5578157,
+      "typicals": 0.2943
+     },
+     {
+      "year": 2025,
+      "change": 16440009,
+      "typicals": 0.8673
+     }
+    ]
+   },
+   "drivers": [
+    {
+     "label": "Tech Hub implementation awards",
+     "value": "$51.0M",
+     "note": "7 signed awards, each naming its recipient"
+    },
+    {
+     "label": "Routine contracting, FY2025",
+     "value": "$39.0M",
+     "note": "obligations to polymer plants in the twelve counties, 2025 dollars"
+    },
+    {
+     "label": "Award against the routine flow",
+     "value": "1.4 years",
+     "note": "of the contracting that was already arriving without it"
+    }
+   ],
+   "blind": "The contracting series filters on manufacturing industry codes, so university and research awards are invisible to it: the $15.0M NSF Engine appears in no figure here. Place of performance is a field reported on the award, not an observation of where work happened.",
+   "vintage": {
+    "as_of": "USAspending through FY2026, 2025 dollars",
+    "changes_it": "FY2026 is a partial year and is excluded from every average here. USAspending backfills obligations for months after a year closes."
+   },
+   "link": {
+    "href": "../federal-money/",
+    "label": "The other federal money"
+   }
+  }
+ ]
+}

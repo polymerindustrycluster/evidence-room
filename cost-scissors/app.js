@@ -84,13 +84,14 @@ const rows = S.filter(s => s.retraced !== null && s.stage !== "context")
    Plain reading leads; the technical figure is the sub-line. */
 PV.figures([
   ["key", vsB(gas.now.index), "gas vs January 2019",
-   `cheaper than before the spike: ${pct(gas.retraced)} of the rise given back`],
+   `the whole 2022 rise given back, and then some (${pct(gas.retraced)})`],
   ["", vsB(resinMfg.now.index), "resin vs January 2019",
    `about a third of the rise given back`],
   ["", vsB(prodMfg.now.index), "products vs January 2019",
    "none given back; the peak is the latest month"],
   ["", sp(last.v), "points, product over resin",
-   `ran ${sp(sTrough.v)} at the bottom of the 2021 squeeze`]
+   `percentage points of extra price growth since 2019; ran ${sp(sTrough.v)} in the
+    2021 squeeze`]
 ]);
 
 /* The vignette stat band: one part, priced at three moments, from the same indexes. */
@@ -115,20 +116,21 @@ function verdict() {
     re-read the charts from it.`;
   else if (SEL === "feedstock") v.innerHTML = `<b>Feedstock:</b> the windfall reversed.
     Gas peaked at nearly three times its January 2019 level in ${mon3(gas.peak.date)} and
-    now sits ${(100 - gas.now.index).toFixed(0)}% below it, ${pct(gas.retraced)} of the
-    rise given back. Ohio industrial power is the exception: still up
+    now sits ${(100 - gas.now.index).toFixed(0)}% below it: the whole rise given back,
+    and then some (${pct(gas.retraced)}). Ohio industrial power is the exception: still up
     ${(elec.now.index - 100).toFixed(0)}%, and its peak was this January.`;
   else if (SEL === "resin") v.innerHTML = `<b>Resin:</b> the middle seat. Your output
     crested at about ${vsB(Math.max(resinsMat.peak.index, resinMfg.peak.index))} across
     2021 and 2022, gave back about a third, and still runs
-    ${vsB(resinMfg.now.index)}. Your own version of the spread, resin minus industrial
-    chemicals, spiked to ${sp(cPeak.v)} points in ${mon3(cPeak.date)} and has unwound to
-    just below zero: the shortage windfall did not keep.`;
+    ${vsB(resinMfg.now.index)}. Your own version of the gap, resin against industrial
+    chemicals, opened to ${sp(cPeak.v)} points of extra price growth in
+    ${mon3(cPeak.date)} and has unwound to just below zero: the shortage windfall did not
+    keep.`;
   else v.innerHTML = `<b>Finished products:</b> the winning seat, on these two indexes.
     Your main input gave back about a third of its rise; your output gave back none and
-    sits at its peak. The spread runs ${sp(last.v)} points in your favor, against
-    ${sp(sTrough.v)} at the bottom of the 2021 squeeze, though it came within a point of
-    closing in ${monF(sDip.date)}, and a spread is not a margin:
+    sits at its peak. Your prices have risen ${sp(last.v)} percentage points more than
+    resin since 2019, against ${sp(sTrough.v)} at the bottom of the 2021 squeeze, though
+    the gap came within a point of closing in ${monF(sDip.date)}, and it is not a margin:
     labor, freight, energy and packaging are in neither series.`;
 }
 {
@@ -173,11 +175,12 @@ function drawLadderDesktop() {
   const xs = v => m.l + Math.min(v, DOM) / DOM * w;   // overshoot is drawn, not clipped
   frame(svg, {x: m.l, y: m.t, w, h, xs: v => xs(v), ys: () => 0, yt: [],
     xt: [0, .25, .5, .75, 1], xfmt: pct,
-    xlab: "Share of the rise above January 2019 that has come back"});
+    xlab: "still holds its whole run-up ←   →   gave the whole run-up back"});
   el("line", {x1: xs(1), y1: m.t - 10, x2: xs(1), y2: m.t + h, stroke: "var(--hover)",
     "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
-  txt(svg, "100% = the full rise, given back", {x: xs(1), y: m.t - 16,
-    "text-anchor": "middle", class: "pv-lab", fill: "var(--hover)"});
+  txt(svg, "100% = back to the January 2019 price; past it, cheaper than before",
+    {x: xs(1) + 6, y: m.t - 16, "text-anchor": "end", class: "pv-lab",
+     fill: "var(--hover)"});
   rows.forEach((s, i) => {
     const g = el("g", dimStage(s.stage) ? {opacity: .18} : {}, svg);
     const y = m.t + i * 42 + 8, bh = 24, c = STAGE[s.stage].c;
@@ -189,15 +192,14 @@ function drawLadderDesktop() {
     txt(g, STAGE[s.stage].n.toUpperCase(), {x: m.l - 14, y: y + bh + 9,
       "text-anchor": "end", class: "pv-labq", fill: c});
     txt(g, `${pct(s.retraced)} back`, {x: m.l + w + 12, y: y + bh - 12, class: "pv-lab"});
-    txt(g, s.retraced > 1 ? `now ${s.now.index.toFixed(0)} · past its base`
-                          : `now ${s.now.index.toFixed(0)}`,
+    txt(g, `now ${vsB(s.now.index)} vs 2019`,
       {x: m.l + w + 12, y: y + bh + 5, class: "pv-labq"});
     hoverable(el("rect", {x: 0, y: y - 8, width: W, height: bh + 18,
       fill: "transparent"}, g), `<b>${s.label}</b><br>${STAGE[s.stage].n} stage<br>
       peaked at <span class="v">${s.peak.index.toFixed(1)}</span> in ${mon(s.peak.date)}<br>
       now <span class="v">${s.now.index.toFixed(1)}</span> ·
-      <span class="v">${pct(s.retraced)}</span> of the rise retraced`,
-      `${s.label}: ${pct(s.retraced)} retraced`);
+      <span class="v">${pct(s.retraced)}</span> of the rise given back`,
+      `${s.label}: ${pct(s.retraced)} of its rise given back`);
   });
 }
 
@@ -222,29 +224,36 @@ function drawLadderMobile() {
   }
   el("line", {x1: xs(1), y1: m.t - 4, x2: xs(1), y2: H - m.b + 4,
     stroke: "var(--hover)", "stroke-width": 1.2, "stroke-dasharray": "4 3"}, svg);
-  txt(svg, "100% = full rise given back", {x: xs(1), y: m.t - 10,
+  txt(svg, "100% = back to the 2019 price", {x: xs(1), y: m.t - 10,
     "text-anchor": "end", class: "pv-labq", fill: "var(--hover)"});
   rows.forEach((s, i) => {
     const g = el("g", dimStage(s.stage) ? {opacity: .18} : {}, svg);
     const y = m.t + i * rowH, c = STAGE[s.stage].c;
     txt(g, TINY[s.label], {x: m.l, y: y + 12, class: "pv-labq"});
-    txt(g, `${pct(s.retraced)} · now ${s.now.index.toFixed(0)}`,
-      {x: W - m.r, y: y + 12, "text-anchor": "end", class: "pv-lab"});
+    /* The plain "now +40%" reading is longer than the bare index it replaced and the
+       100% reference line now runs through it. Fully opaque plate, not the house .93
+       one: a 7% ghost of a dashed line lands inside the digits at this size. */
+    const rl = `${pct(s.retraced)} back · now ${vsB(s.now.index)}`;
+    el("rect", {x: W - m.r - rl.length * 8 - 3, y, width: rl.length * 8 + 6, height: 15,
+      fill: "var(--paper)", rx: 2}, g);
+    txt(g, rl, {x: W - m.r, y: y + 12, "text-anchor": "end", class: "pv-lab",
+      "data-pv-plated": "1"});
     el("rect", {x: m.l, y: y + 18, width: xs(1) - m.l, height: bh, fill: "#EDE9E2",
       rx: 3}, g);
     el("rect", {x: m.l, y: y + 18, width: Math.max(3, xs(s.retraced) - m.l),
       height: bh, fill: c, rx: 3}, g);
     hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, g),
-      `<b>${s.label}</b><br><span class="v">${pct(s.retraced)}</span> of the rise
-       retraced · now <span class="v">${s.now.index.toFixed(1)}</span>`,
-      `${s.label}: ${pct(s.retraced)} retraced`);
+      `<b>${s.label}</b><br><span class="v">${pct(s.retraced)}</span> of the rise given
+       back · now <span class="v">${s.now.index.toFixed(1)}</span>`,
+      `${s.label}: ${pct(s.retraced)} of its rise given back`);
   });
   const ax = H - m.b;
   el("line", {x1: m.l, y1: ax, x2: W - m.r, y2: ax, stroke: "var(--pv-axis)",
     "stroke-width": 1}, svg);
   [0, .5, 1].forEach(v => txt(svg, pct(v), {x: xs(v), y: ax + 16,
     "text-anchor": v ? "middle" : "start", class: "pv-tick"}));
-  txt(svg, "share of the rise given back", {x: m.l, y: H - 6, class: "pv-labq"});
+  txt(svg, "longer bar = more of the run-up given back", {x: m.l, y: H - 6,
+    class: "pv-labq"});
 }
 
 /* ------------------------------------------------------------- 2. the lines */
@@ -285,7 +294,7 @@ function drawLinesDesktop() {
   frame(svg, {x: m.l, y: m.t, w, h, xs: d => xs(d), ys,
     xt: yrs.map(y => dates.find(d => d.startsWith(y))).filter(Boolean),
     yt: ticks(0, maxV, 6), xfmt: d => d.slice(0, 4),
-    xlab: "", ylab: "Index, January 2019 = 100"});
+    xlab: "", ylab: "cheaper than in January 2019 ↓   100   ↑ more expensive"});
   el("line", {x1: m.l, y1: ys(100), x2: m.l + w, y2: ys(100), stroke: INK,
     "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
   /* Context ink first, story ink over it. */
@@ -311,8 +320,8 @@ function drawLinesDesktop() {
       {x: m.l + w + 24, y: e.y + 4, class: "pv-labq", fill: st.lab});
   });
   /* Annotations last, so no series paints over them (house smell list). */
-  plated(svg, "100 = the January 2019 level", {x: m.l + 8, y: ys(100) - 8,
-    class: "pv-lab"}, 8);
+  plated(svg, "above this line, costlier than in January 2019", {x: m.l + 8,
+    y: ys(100) - 8, class: "pv-lab"}, 8);
   /* Two claims, written on the chart. */
   const gp = gas.peak;
   el("circle", {cx: xs(gp.date), cy: ys(gp.index), r: 4.5, fill: STAGE.feedstock.c,
@@ -379,7 +388,8 @@ function drawLinesMobile() {
          ladder into a 0.2-unit spread and the grayscale separation went with it. */
       "stroke-width": Math.max(.9, st.wd * .78), opacity: st.op}, svg);
   });
-  plated(svg, "100 = Jan 2019", {x: m.l + 4, y: ys(100) + 14, class: "pv-labq"}, 7.6);
+  plated(svg, "100 = the Jan 2019 price", {x: m.l + 4, y: ys(100) + 14,
+    class: "pv-labq"}, 7.6);
   /* End labels for the three chain links only; context stays gray and unlabeled
      (same series, same emphasis rule as desktop, named in the legend below). */
   const marked = [prodMfg, resinMfg, gas].map(s => ({s,
@@ -431,7 +441,7 @@ function drawSpreadDesktop() {
     xt: yrs.map(y => dates.find(d => d.startsWith(y))).filter(Boolean),
     yt: ticks(lo, hi, 7), xfmt: d => d.slice(0, 4),
     yfmt: v => (v > 0 ? "+" : "") + v.toFixed(0),
-    ylab: "Output index minus input index, points"});
+    ylab: "resin grew more since 2019 ↓   0   ↑ product prices grew more"});
   el("path", {d: "M" + spr.map(p => `${xs(p.date)},${ys(p.v)}`).join("L") +
     `L${xs(dates.at(-1))},${ys(0)}L${xs(dates[0])},${ys(0)}Z`,
     fill: `rgba(0,139,168,${st.area})`}, svg);
@@ -483,10 +493,10 @@ function drawSpreadDesktop() {
     class: "pv-lab", fill: "#008BA8"});
   spr.forEach(p => hoverable(el("rect", {x: xs(p.date) - w / spr.length / 2, y: m.t,
     width: Math.max(2, w / spr.length), height: h, fill: "transparent"}, svg),
-    `<b>${mon(p.date)}</b><br>converter spread <span class="v">${p.v > 0 ? "+" : ""}${p.v.toFixed(1)}</span> points<br>
+    `<b>${mon(p.date)}</b><br>product over resin <span class="v">${p.v > 0 ? "+" : ""}${p.v.toFixed(1)}</span> points<br>
      product <span class="v">${PM[p.date].toFixed(0)}</span> ·
      resin <span class="v">${RM[p.date].toFixed(0)}</span>` +
-     (p.date in CH ? `<br>resin-maker spread <span class="v">${(RM[p.date] - CH[p.date]).toFixed(1)}</span>` : ""),
+     (p.date in CH ? `<br>resin over chemicals <span class="v">${(RM[p.date] - CH[p.date]).toFixed(1)}</span>` : ""),
     `${mon(p.date)}: ${p.v.toFixed(1)} points`));
 }
 
@@ -516,6 +526,10 @@ function drawSpreadMobile() {
   el("path", {d: "M" + spr.map(p => `${xs(p.date)},${ys(p.v)}`).join("L"),
     fill: "none", stroke: "#008BA8", "stroke-width": Math.max(1.8, st.main.wd - .6),
     opacity: st.main.op}, svg);
+  /* Annotations after the ink they sit on. The zero line carries the whole reading of
+     this chart, so it is labeled by what crossing it MEANS on mobile too, and it goes
+     above the line, over the gray comparator rather than over the story series. */
+  plated(svg, "0 = both up the same", {x: m.l + 2, y: ys(0) - 7, class: "pv-labq"}, 6.6);
   el("circle", {cx: xs(sTrough.date), cy: ys(sTrough.v), r: 4, fill: "#008BA8",
     stroke: "var(--paper)", "stroke-width": 1.5}, svg);
   plated(svg, `${sp(sTrough.v)} · the squeeze`, {x: xs(sTrough.date) + 8,
@@ -539,9 +553,9 @@ function drawSpreadMobile() {
   txt(svg, "chem", {x: m.l + w + 6, y: ys(comp.at(-1).v) + 15,
     class: "pv-labq", fill: st.cmp.lab});
   hoverable(el("rect", {x: m.l, y: m.t, width: w, height: h, fill: "transparent"}, svg),
-    `<b>${mon(last.date)}</b><br>converter spread <span class="v">${sp(last.v)}</span>
-     points<br>resin-maker spread <span class="v">${comp.at(-1).v.toFixed(1)}</span>`,
-    "latest spread");
+    `<b>${mon(last.date)}</b><br>product over resin <span class="v">${sp(last.v)}</span>
+     points<br>resin over chemicals <span class="v">${comp.at(-1).v.toFixed(1)}</span>`,
+    "latest gap");
 }
 
 /* -------------------------------------------------------- tables + source lines */
@@ -553,14 +567,14 @@ function drawSpreadMobile() {
    into the <summary> as well, so a long one is not a disclosure, it is a third slab of
    apparatus in link blue. */
 document.getElementById("laddertable").innerHTML = tableView("ld",
-  "Peak, current level and retracement by stage (January 2019 = 100)",
-  ["Series", "Stage", "Peak", "Peak month", "Now", "Latest month", "Retraced"],
+  "Peak, current level and share of the rise given back, by stage (January 2019 = 100)",
+  ["Series", "Stage", "Peak", "Peak month", "Now", "Latest month", "Rise given back"],
   rows.map(s => [s.label, STAGE[s.stage].n, s.peak.index.toFixed(1), mon(s.peak.date),
     s.now.index.toFixed(1), mon(s.now.date), pct(s.retraced)]));
 document.getElementById("laddersrc").innerHTML =
-  `${D.meta.sources}, monthly, 2015 through mid-2026, each indexed to January 2019.
-   That base is a winter month, so gas enters at a seasonal high: the stage ordering is
-   robust to it, the exact percentages are not.`;
+  `${D.meta.sources}, monthly, 2015 through mid-2026, each measured against January 2019.
+   That month is midwinter, so gas enters at a seasonal high: the stage ordering survives
+   that, the exact percentages do not.`;
 
 {
   const dates = [...new Set(lineSeries.flatMap(s => s.points.map(p => p.date)))].sort();
@@ -585,9 +599,9 @@ document.getElementById("linessrc").innerHTML =
 {
   const keyed = new Set([sPeak.date, sDip.date, last.date, sTrough.date]);
   document.getElementById("spreadtable").innerHTML = tableView("sd",
-    "Converter and resin-maker spreads: every January, the trough, the peak, the May " +
-    "2026 near-closure and now (index points)",
-    ["Month", "Product", "Resin", "Converter spread", "Resin &minus; chemicals"],
+    "Both gaps: every January, the trough, the peak, the May 2026 near-closure and now " +
+    "(percentage points of price growth since January 2019)",
+    ["Month", "Product", "Resin", "Product over resin", "Resin over chemicals"],
     spr.filter(p => p.date.endsWith("-01-01") || keyed.has(p.date)).map(p =>
       [mon(p.date), PM[p.date].toFixed(0), RM[p.date].toFixed(0),
        (p.v > 0 ? "+" : "") + p.v.toFixed(1),
@@ -604,10 +618,11 @@ document.getElementById("spreadsrc").innerHTML =
    the cushion the whole page is about came within a point of closing three months ago,
    which is the live question the shipped data can pose but not settle. */
 document.getElementById("closersub").innerHTML =
-  `<b>The wellhead gave back ${pct(gas.retraced)} of its spike; resin makers about a
-   third; finished products none.</b> The converter&rsquo;s gap ran ${sp(sTrough.v)}
-   points at the bottom of the 2021 squeeze and stands ${sp(last.v)} now, and an index
-   spread is not a margin: labor, freight, energy and packaging are in neither series.
+  `<b>The wellhead gave back its whole spike and then some (${pct(gas.retraced)}); resin
+   makers about a third; finished products none.</b> The converter&rsquo;s gap ran ${sp(sTrough.v)}
+   points at the bottom of the 2021 squeeze and stands ${sp(last.v)} now, and a gap
+   between two indexes is not a margin: labor, freight, energy and packaging are in
+   neither series.
    It has not been steady either. Resin jumped ${sDipResin.toFixed(0)} points in two
    months this spring and the gap closed to +${sDip.v.toFixed(1)}; the next resin move
    decides whether it holds.`;

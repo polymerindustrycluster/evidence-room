@@ -43,6 +43,16 @@ const M = D.meta;
 const money = v => v == null ? "—" : "$" + Math.round(v).toLocaleString("en-US");
 const pct = (v, d = 1) => v == null ? "—" : v.toFixed(d) + "%";
 const x = v => v == null ? "—" : v.toFixed(2) + "×";
+/* A RATIO IS READ, NOT COMPUTED, AT FIRST CONTACT. 0.93× is a correct number that asks the
+   reader to do the subtraction and then to work out which way it points; "7% under" is the
+   same number already read. Computed from the same field the × form prints, so the two can
+   never disagree, and the arithmetic itself lives in the pay table note. */
+const gap = (v, ref = " the nation") => {
+  if (v == null) return "—";
+  const d = Math.round((v - 1) * 100);
+  return d === 0 ? `level with${ref || " the nation"}`
+                 : `${Math.abs(d)}% ${d < 0 ? "under" : "over"}${ref}`;
+};
 const AREAS = ["10420", "17410", "15940", "49660"];          // Akron, Cleveland, Canton, Youngstown
 const ON_CHART = ["10420", "17410", "15940"];                // the three with the most disclosed cells
 const COLOR = {"10420": CAT[0], "17410": CAT[1], "15940": CAT[2]};
@@ -159,7 +169,7 @@ function verdict() {
   const area = AREAS.find(a => !p.metros[a].absent);
   const payClause = area
     ? `${M.metros[area].short} median <b>${money(p.metros[area].median)}</b> against
-       ${money(p.national && p.national.median)} nationally (${x(p.metros[area].median_vs_us)})`
+       ${money(p.national && p.national.median)} nationally, ${gap(p.metros[area].median_vs_us)}`
     : `wages withheld in all four metros (national median ${money(p.national && p.national.median)})`;
   const g = grp(SEL);
   const eduClause = !e ? "" : g === "deg"
@@ -207,8 +217,11 @@ function drawMixDesktop() {
   frame(svg, {x: m.l, y: m.t, w, h: rows.length * 30, xs, ys: () => 0,
     xt: ticks(0, maxV, 5), yt: [], xfmt: v => v + "%",
     xlab: "Share of everyone employed in plastics and rubber manufacturing, US, 2024"});
-  txt(svg, "share of the occupation", {x: m.l + w + 12, y: m.t - 26, class: "pv-axlab"});
-  txt(svg, "that is in this industry", {x: m.l + w + 12, y: m.t - 6, class: "pv-axlab"});
+  /* THE SECOND SCALE, READ RATHER THAN DEFINED. "Share of the occupation that is in this
+     industry" is the arithmetic; a reader meeting 95% still has to work out whether that
+     is a lot. The column now says which way it points, and the lede gives the reading. */
+  txt(svg, "how much of this job is", {x: m.l + w + 12, y: m.t - 26, class: "pv-axlab"});
+  txt(svg, "here, not anywhere else", {x: m.l + w + 12, y: m.t - 6, class: "pv-axlab"});
   rows.forEach((r, i) => {
     const g = el("g", dimMix(r.soc) ? {opacity: .18} : {}, svg);
     const y = m.t + i * 30 + 6, bh = 18;
@@ -235,22 +248,30 @@ function drawMixDesktop() {
   const ES = D.mix_totals.eng_sci_share_pct;
   el("line", {x1: xs(ES), y1: m.t - 2, x2: xs(ES), y2: m.t + rows.length * 30,
     stroke: INK, "stroke-width": 1.5, opacity: .4}, svg);
+  /* Named on the first line, and on the second what crossing it MEANS: the rule is only
+     worth drawing because bars pass it, and the count is read off the data, never typed. */
+  const past = rows.filter(r => r.pct_of_industry > ES).length;
   txt(svg, `all engineers, scientists and technicians together: ${pct(ES)}`,
+    {x: xs(ES) + 8, y: m.t - 28, class: "pv-labq"});
+  txt(svg, `${WORDS[past] || past} occupations outweigh them on their own`,
     {x: xs(ES) + 8, y: m.t - 10, class: "pv-labq"});
 }
 
 function drawMixMobile() {
   const rows = D.mix;
-  const m = {t: 68, r: 12, b: 44, l: 12}, W = 375, rowH = 42;
+  const m = {t: 86, r: 12, b: 44, l: 12}, W = 375, rowH = 42;
   const H = m.t + rows.length * rowH + m.b;
   const {svg} = chart("mix", {W, H});
   const w = W - m.l - m.r;
   const maxV = Math.max(...rows.map(r => r.pct_of_industry)) * 1.18;
   const xs = v => m.l + (v / maxV) * w;
   const ES = D.mix_totals.eng_sci_share_pct;
+  const past = rows.filter(r => r.pct_of_industry > ES).length;
   txt(svg, `rule: all engineers, scientists and technicians, ${pct(ES)}`,
+    {x: m.l, y: m.t - 50, class: "pv-labq"});
+  txt(svg, `${WORDS[past] || past} occupations outweigh them on their own`,
     {x: m.l, y: m.t - 32, class: "pv-labq"});
-  txt(svg, "% of the occupation in this industry →", {x: W - m.r, y: m.t - 10,
+  txt(svg, "how much of the job is here →", {x: W - m.r, y: m.t - 10,
     "text-anchor": "end", class: "pv-labq"});
   rows.forEach((r, i) => {
     const g = el("g", dimMix(r.soc) ? {opacity: .18} : {}, svg);
@@ -284,7 +305,7 @@ function drawMixMobile() {
     `${rows.length === 14 ? "Fourteen" : rows.length} occupations are ${Math.round(D.mix_totals.top_n_share_pct)}% of the industry, and most of them are on the floor`;
   document.getElementById("mixtable").innerHTML = withNote(tableView("mix",
     "The industry’s largest occupations, US, 2024",
-    ["Occupation", "Share of the industry", "Share of the occupation in this industry",
+    ["Occupation", "Share of the industry", "Share of everyone with this job who works here",
      "Jobs in the industry, 2024", "Projected change to 2034"],
     rows.map(r => [r.bls_title, pct(r.pct_of_industry), pct(r.pct_of_occupation),
       N(r.emp_2024_k * 1000), (r.change_pct_2024_34 >= 0 ? "+" : "") + r.change_pct_2024_34 + "%"])),
@@ -319,13 +340,17 @@ const payDomain = () => {
      the page is above it; the source line says so. */
   return {lo: 25000, hi: Math.max(...vals) * 1.04};
 };
-const bandNote = (key, compact) => key === "deg"
-  ? (compact
-     ? `Akron ${x(RB["10420"].degree_median_ratio)} the nation · Cleveland ${x(RB["17410"].degree_median_ratio)}`
-     : `Akron pays these a median ${x(RB["10420"].degree_median_ratio)} the nation · Cleveland ${x(RB["17410"].degree_median_ratio)}`)
-  : key === "hs"
-  ? `Akron ${x(RB["10420"].hs_median_ratio)} · Cleveland ${x(RB["17410"].hs_median_ratio)}`
-  : null;
+const bandNote = (key, compact) => {
+  const r = key === "deg" ? "degree_median_ratio" : key === "hs" ? "hs_median_ratio" : null;
+  if (!r) return null;
+  const A = RB["10420"][r], C = RB["17410"][r];
+  const lead = compact || key === "hs" ? "Akron" : "Akron pays these";
+  /* On the phone the × form is the apparatus that goes: 375px holds the reading or the
+     arithmetic, not both, and the table twin carries every ratio to two places. */
+  return compact
+    ? `${lead} ${gap(A)} · Cleveland ${gap(C, "")}`
+    : `${lead} ${gap(A)} (${x(A)}) · Cleveland ${gap(C, "")} (${x(C)})`;
+};
 
 function drawPay() { MOBILE.matches ? drawPayDesktopish(false) : drawPayDesktopish(true); }
 
@@ -450,15 +475,17 @@ function drawPayDesktopish(desktop) {
       r.projection ? N(r.projection.openings_annual) : "—"])),
     `The metro columns neither nest inside nor tile the twelve PIC counties, so they sit
      side by side and are never summed. Youngstown-Warren publishes ${T.disclosed["49660"]}
-     of the ${T.occupations} occupations, the fewest; ${T.high_rse_cells} metro cells exceed
-     ${T.high_rse_threshold_pct}% relative standard error of the mean wage. Projected
+     of the ${T.occupations} occupations, the fewest. The bracketed figure is the metro
+     median divided by the national one, so 0.93× is 7% under the nation and 1.01× is 1%
+     over it; ${T.high_rse_cells} metro figures carry a survey error above
+     ${T.high_rse_threshold_pct}% of the average wage, wide enough to move them. Projected
      openings are Ohio Department of Job and Family Services 2022&ndash;2032 modelled paths
      with no confidence band, for the eighteen-county JobsOhio Northeast region, a superset
      of the footprint. What a dollar buys in each metro is the
      <a href="../realwage/">real-wage page</a>&rsquo;s question.`);
   document.getElementById("paysrc").innerHTML =
     `Bureau of Labor Statistics Occupational Employment and Wage Statistics, May 2024,
-     metropolitan and national files. Cells the bureau withheld are shown as withheld and
+     metropolitan and national files. Wages the bureau withheld are shown as withheld and
      never as zero: tire builders are published for none of the four metros.`;
 }
 
@@ -478,6 +505,10 @@ function drawEduDesktop() {
   frame(svg, {x: m.l, y: m.t, w, h: rows.length * 24, xs, ys: () => 0,
     xt: [0, 25, 50, 75, 100], yt: [], xfmt: v => v + "%",
     xlab: "Share of surveyed workers and experts reporting each level as required"});
+  /* The Zone column ran unlabelled: a reader met "Zone 4" with nothing to say whether four
+     was a lot. The header gives the scale and which end is which. */
+  txt(svg, "preparation", {x: m.l + w + 12, y: m.t - 26, class: "pv-axlab"});
+  txt(svg, "1 low, 5 high", {x: m.l + w + 12, y: m.t - 6, class: "pv-axlab"});
   /* Same tint, same six rows, same order as the pay chart's degree band: the reader can
      carry the shape from one chart to the other without re-reading the labels. */
   el("rect", {x: 0, y: m.t, width: W, height: nDeg * 24,
@@ -506,11 +537,13 @@ function drawEduDesktop() {
 
 function drawEduMobile() {
   const rows = eduRows;
-  const m = {t: 16, r: 12, b: 44, l: 12}, W = 375, rowH = 40;
+  const m = {t: 40, r: 12, b: 44, l: 12}, W = 375, rowH = 40;
   const H = m.t + rows.length * rowH + m.b;
   const {svg} = chart("edu", {W, H});
   const w = W - m.l - m.r;
   const xs = v => m.l + (v / 100) * w;
+  txt(svg, "preparation the job needs: Zone 1 low, 5 high →", {x: W - m.r, y: m.t - 14,
+    "text-anchor": "end", class: "pv-labq"});
   el("rect", {x: 0, y: m.t - 4, width: W, height: nDeg * rowH,
     fill: "rgba(12,100,115,.055)"}, svg);
   rows.forEach((r, i) => {
@@ -546,8 +579,8 @@ function drawEduMobile() {
     ["Occupation", "Job Zone", ...BINS.map(b => b[1]), "Most-reported level"],
     eduRows.map(r => [r.onet_title, r.job_zone <= 2 ? "1–2" : r.job_zone,
       ...BINS.map(([k]) => pct(r.bins[k])), tq(r.modal.label.split(" - ")[0])])),
-    `The Job Zone is the database&rsquo;s rating of overall preparation, with the two lowest
-     steps reported as one band. Where one federal occupation code holds several database
+    `The Job Zone is the database&rsquo;s rating of overall preparation, 1 for the least and
+     5 for the most, with the two lowest steps reported as one band. Where one federal occupation code holds several database
      occupations, the row is the equal-weight mean of them, and the chart&rsquo;s hover
      names which. ${ET.ba_plus_majority.length} of the ${ET.n} occupations have a
      bachelor&rsquo;s-or-higher majority; ${ET.hs_majority.length} have a
@@ -583,7 +616,7 @@ function drawTrend() { MOBILE.matches ? drawTrendAt(375, true) : drawTrendAt(780
 /* Width 780 and not wider: `.chart.narrow` renders at 720 CSS px, so a bigger viewBox
    scales the 13.6-unit labels below the 12px legibility floor (tools/textsize.mjs). */
 function drawTrendAt(W, phone) {
-  const m = phone ? {t: 74, r: 104, b: 58, l: 34} : {t: 58, r: 178, b: 58, l: 50};
+  const m = phone ? {t: 74, r: 118, b: 58, l: 34} : {t: 58, r: 178, b: 58, l: 50};
   const H = phone ? 340 : 350;
   const {svg} = chart("trend", {W, H});
   const w = W - m.l - m.r, h = H - m.t - m.b;
@@ -610,7 +643,8 @@ function drawTrendAt(W, phone) {
        materials <span class="v">${matByYear[y]}</span>`,
       `${y}: polymer ${polyByYear[y]}, materials ${matByYear[y]}`);
   });
-  /* THE REFERENCE LINE THE CLAIM RESTS ON, labelled by meaning and not by value. Its
+  /* THE REFERENCE LINE THE CLAIM RESTS ON, labelled by what CROSSING it means and not by
+     the arithmetic that put it there (that is in the table note). Its
      label lives in the right margin rather than on the rule: a level line at 70 runs
      under the top of every column before 2022, so any in-plot caption would print on
      solid ink. Outside the plot it is legible and it still reads as the line's own. */
@@ -622,8 +656,8 @@ function drawTrendAt(W, phone) {
      figure is a build error, not a style, so the phone takes four short lines rather than
      three long ones. */
   const rlab = phone
-    ? ["half the", `${EARLY[0]}–${EARLY[EARLY.length - 1]}`, "average:", `${Math.round(halfEarly)} a year`]
-    : [`half the ${EARLY[0]}–${EARLY[EARLY.length - 1]}`, "polymer average:", `${Math.round(halfEarly)} a year`];
+    ? ["under this rule:", "less than half", `the ${EARLY[0]}–${EARLY[EARLY.length - 1]}`, `pace, ${Math.round(halfEarly)} a year`]
+    : ["under this rule:", "less than half the", `${EARLY[0]}–${EARLY[EARLY.length - 1]} pace,`, `${Math.round(halfEarly)} a year`];
   rlab.forEach((s, i) => txt(svg, s, {x: rail, y: ys(halfEarly) - 8 + i * 17,
     class: i ? "pv-labq" : "pv-lab", fill: i ? null : RULE}));
   /* Direct labels above the plot, not a legend: two series, named in their own ink. The

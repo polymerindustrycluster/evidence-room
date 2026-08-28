@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Northeast Ohio Polymer Cluster Health</title>
+<meta name="description" content="Five measures of the Northeast Ohio polymer cluster: jobs, concentration, pay, degrees and federal money. Each carries its baseline, how far it normally moves, and what it cannot see.">
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <strong>Polymer Industry Cluster</strong>
+    <span>Cluster health</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">How is the cluster doing?</p>
+    <h1>Polymer jobs have fallen <em>three years running</em>, and $51 million has just
+      been signed.</h1>
+    <p class="stand" id="stand"></p>
+    <p class="byline">By the Polymer Industry Cluster desk &middot; Recomputed from the
+      shipped data of six Evidence Room pages &middot; August 2026</p>
+    <div class="hero-row" id="figs"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">This year in one picture</p>
+    <h2>The loudest number on the page is the ordinary one</h2>
+    <p class="lede">Every measure here moves a bit every year. Before a move is worth
+      reporting it has to be bigger than the moves that measure makes anyway, so each one
+      is put against its own record: how far it has travelled between published years since
+      the series began. Federal contracting rose by nearly three quarters and still did
+      less travelling than usual. Employment fell three percent and did more.</p>
+    <p class="fig-title" id="movetitle"></p>
+    <p class="fig-sub">Each bar is this year&rsquo;s change divided by how far that measure
+      usually moves between years, so all five sit on one scale. At the 1.0 line the year
+      was typical for that measure. The gray band behind each bar is the full range of its
+      earlier moves: a bar inside the band is a year the measure has had before, whichever
+      direction it went.</p>
+    <div class="chart"><svg id="move" role="img" aria-labelledby="move-t">
+      <title id="move-t">Five measures of the polymer cluster, each showing this year&rsquo;s
+        change as a multiple of that measure&rsquo;s typical yearly change, against the full
+        range of its earlier moves. Concentration, employment and pay moved further than
+        usual; degrees and federal money did not.</title></svg></div>
+    <div class="legend">
+      <span><i style="background:#0C6473"></i> The measure rose</span>
+      <span><i style="background:#C85F0C"></i> The measure fell</span>
+      <span><i style="background:#DDD9D2"></i> Range of its earlier year-to-year moves</span>
+    </div>
+    <div id="movetable"></div>
+    <p class="src" id="movesrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The five measures</p>
+    <h2>Each one, the baseline it is read against, and what it cannot see</h2>
+    <p class="lede">PIC has set no target for any of these five, so no tile reports
+      distance from one. Each reports a level, a direction against a stated baseline, and
+      the page it came from, where the working is shown in full.</p>
+    <div class="tiles" id="tiles"></div>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">How to read a move</p>
+    <h2>How far these numbers normally move, and what nobody has measured</h2>
+    <p class="lede">The band behind each bar is built one way for all five measures. Take
+      the measure&rsquo;s own published history, work out the change between every
+      consecutive pair of years, hold out the newest one, and compare it against the middle
+      and the largest of the rest. A move at or under the middle is a year this measure has
+      had many times.</p>
+    <p class="body-note">That band describes how far a series travels between published
+      years. It is not a revision band, and the difference decides how much weight a fresh
+      figure can carry. A revision band would say how far the year just published will move
+      once the agencies restate it, and this repository has measured that for exactly three
+      producer-price indexes: 259 reference months of archived vintages, a middle revision
+      of 0.15 percent of the level and a largest of 1.42 percent. For the employment, degree
+      and spending series on this page, nobody has measured it. The
+      <a href="../revisions/">revisions page</a> says so itself and names archived
+      employment vintages as the file it needs.</p>
+    <div class="statgrid" id="statgrid"></div>
+    <div class="note" id="note"><b>Withheld is not zero.</b> Three of the five measures
+      are built from county cells, and the Bureau of Labor Statistics withholds a cell when
+      publishing it would identify an employer. The set it withholds changes from year to
+      year, so a raw comparison of two annual totals mixes real change with the
+      bureau&rsquo;s publication decisions. Where that applies, the direction on this page
+      is read from the cells present in every year.</div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">What would change these readings</p>
+    <h2>For four of the five, the next thing to move them is a data release</h2>
+    <p class="lede">A dashboard that never says what would change its own numbers invites
+      the reader to treat them as settled. Each of these is a live federal series with a
+      known refresh, and one of them is three years behind the others.</p>
+    <ul class="changes" id="changes"></ul>
+    <p class="body-note" id="scalesub"></p>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="wrap">
+    <p id="closerline"></p>
+    <p class="sub" id="closersub"></p>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-lede">Every figure here is recomputed from the shipped data of the page
+      it links to, by one script in this folder. A correction on any of those pages fails
+      this page&rsquo;s checks until it is carried through.</p>
+    <p class="foot-id"><a href="../index/">The PIC Evidence Room</a> &middot; Polymer
+      Industry Cluster, Greater Akron Chamber</p>
+  </div>
+</footer>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
