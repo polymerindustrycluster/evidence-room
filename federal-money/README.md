@@ -51,7 +51,18 @@ it after any change to the funding map's data.
 
 - The award line is a **competitive implementation grant**; the bars are **procurement
   obligations**. Different instruments, one unit of account. The comparison claimed is of
-  order of magnitude, not of like for like.
+  order of magnitude, not of like for like. The award is charted **as awarded** while the
+  bars are in 2025 dollars; Band 1's `.deffn` prints the restated award ($51.3M) and shows
+  the ratio does not move, guarded by `fed-award-basis`.
+- **Rounding does not close, and the page says so in all three places it shows.** Every
+  `$X.XM` is rounded to the nearest $0.1M, so rounded figures do not always add or subtract
+  to the totals printed beside them: the two gaps to the award line ($647k over, $245k
+  under, against labels that subtract to $200k), the seven award amounts (exactly
+  $51,001,413, printed as seven figures adding to $51.1M), and the eight industry bar
+  labels ($279.2M against a $279.3M total, with two codes both printing $23.5M).
+  `fed-2019-clears`, `fed-award-total` and `fed-label-rounding` each fail if one of those
+  reconciliations goes stale. A reader who checks and finds a gap stops trusting the rest
+  of the page, so a rounding step is stated, never left to be discovered.
 - Place of performance is where work is reported, not where a company is headquartered.
 - An obligation is not an outlay. It is money committed, which may be spent across years
   or de-obligated.

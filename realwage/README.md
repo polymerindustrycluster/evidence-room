@@ -35,6 +35,39 @@ data/realwage.json   THE DATA (76 KB). Edit the builder, not this.
 
 ## Clarifications (wording and layout; no number changed)
 
+- **2026-08-28** — arithmetic-closure and plain-reading pass, written from a reader who
+  had only the rendered page. What they could check, they checked; the fixes are what
+  failed. **The subtraction.** The $6,600 heading and the closer's "$71,000 to beat
+  $64,000" did not reconcile (see Corrections). **The two hero denominators.** "#19 of 56"
+  sat beside "110 of 235" with nothing saying they were different populations, and the
+  explanation lived in a chart caption thousands of pixels down; both cards now name their
+  own universe ("of 56 polymer metros", "of 235 priced US metros"). **Direction of merit
+  on card 3:** 110-of-235 is the yardstick that shrinks the claim, not more good news, and
+  the card now says so. **The unprintable inputs.** The $71,000 and $81,400 conversions
+  depended on Chicago's and San Francisco's price levels, which appeared nowhere on the
+  page and could not be read off the scatter either, so the offer band now prints 92.9,
+  102.5 and 117.6 and the weekly step between the wage and the annual figure. **An axis
+  that stopped before its data:** the scatter's last y label was 110 while seven metros
+  plotted above it, including the San Francisco the "fifth less" headline points at; the
+  top tick is now 120, guarded by `rw-fifth-less`. **Akron's own diagonal is drawn**, in
+  the Akron accent and labelled "Akron buys $1,332", replacing the anonymous $1,300 line:
+  every metro above it buys less than Akron. **A size key**, because the figure title is
+  about where the biggest employers sit and "bigger circles mean more polymer jobs"
+  converts no circle into a job count. **The strip's two reference marks** are 0.2 apart
+  and rendered as one smudge, which meant a reader could miss the finding entirely; they
+  now carry a single label, "median metro 93.1, 0.2 above Akron: effectively the same
+  place", whose subtraction closes against the one-decimal values printed everywhere else.
+  **The prior claim is now on the record**: the page corrected a PIC line it never stated,
+  which took the credit for honesty without putting the discredited claim in print. Band 2
+  opens with it. **PIC is expanded** at first contact, and NAICS 326, QCEW, MARPP, the
+  twelve-county footprint, "covered paychecks", "parities" and "a fixed national basket"
+  are glossed where a reader meets them. The masthead's "real wages" became "what the
+  paycheck buys", because "real" is a term of art everywhere else here. **The 2,000-job
+  floor** gets the honest answer to "was it chosen after the answer was known": the
+  sensitivity, recomputed from the shipped metro set at floors from 1,000 to 5,000
+  (`rw-floor-choice`). **The grey crowd** on the slope is named as grey. Ink paid for by
+  the caveats the new sentences replaced; where it still cost words, they were spent.
+
 - **2026-08-28** — plain-reading pass on every constructed unit. Two units carried the
   page and neither could be read from the page alone: the RANK (nothing said which end
   of a 56-metro list was good) and the BEA PRICE LEVEL (an index whose only gloss was
@@ -70,6 +103,17 @@ data/realwage.json   THE DATA (76 KB). Edit the builder, not this.
   "one metro:" read as broken sentences and "RPP" was an unglossed token).
 
 ## Corrections
+
+- **2026-08-28** — the page printed Akron's annual polymer wage as **$64,000** in the
+  human-scale band and in the closing banner, beside a Chicago equivalent of $71,000 and a
+  section heading of "$6,600 a year". Those three do not close: 71,000 − 64,000 = 7,000.
+  The $6,600 was correct and computed from the unrounded $64,376; the banner beside it
+  carried the same wage rounded to a different place. Every annual figure is now stated to
+  the nearest hundred, so the page's own subtraction lands: **$71,000 − $64,400 = $6,600**,
+  and the offer band prints that line. The San Francisco equivalent moves with it, from
+  $81,000 to **$81,400** (81,437 exact). No underlying number changed; the rounding did.
+  Guarded by `rw-wedge-closes`, which fails if the two printed annuals stop reconciling to
+  the printed wedge, and by `rw-offer-arithmetic` on each figure separately.
 
 - **2026-08-27** — the closer previously said the industry's biggest employers sit
   where the same salary "buys a quarter less." No metro in the set reaches a quarter:

@@ -25,7 +25,13 @@ const MF = ["January","February","March","April","May","June","July","August",
             "September","October","November","December"];
 const mon3 = d => `${M3[+d.slice(5, 7) - 1]} ${d.slice(0, 4)}`;
 const monF = d => `${MF[+d.slice(5, 7) - 1]} ${d.slice(0, 4)}`;
-const sp = v => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(0);
+/* ONE DECIMAL, NOT ZERO, ON THE GAP. The whole-number form printed −23, +23 and +14 for
+   three values that are really −22.50, +22.50 and +14.32, and a reader who subtracted the
+   140 and 125 on the charts got 15 and stopped trusting the page. The decimal does two
+   jobs: it stops the page publishing three different quantities as "23", and it signals
+   at a glance that the gap is not the difference of two rounded integers. The rounding
+   step itself is stated in full in the reconciliation block under the gap lede. */
+const sp = v => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(1);
 const vsB = i => (i >= 100 ? "+" : "−") + Math.abs(i - 100).toFixed(0) + "%";
 
 /* Series, by hand so a lineup change fails loudly rather than silently reshuffling. */
@@ -38,23 +44,35 @@ const prodMfg = S.find(s => s.label === "PPI: plastics and rubber products manuf
 const prodRP = S.find(s => s.label === "PPI: rubber and plastic products");
 const chem = S.find(s => /industrial chemicals/i.test(s.label));
 
-/* Label strings are editorial text: hand-shortened, never machine-truncated. */
+/* Label strings are editorial text: hand-shortened, never machine-truncated.
+   NAMED BY WHAT THEY MEASURE, NOT BY THE ORDER OF THE FEDERAL WORDS. The old short
+   labels were "Plastics resins & materials" against "Resin manufacturing", and
+   "Rubber & plastic products" against "Plastics & rubber products mfg": each pair a
+   word-order shuffle of the other, so a reader could not tell which two of the four fed
+   the +14 gap — the exact thing the gap's arithmetic hinges on. The federal statistics
+   measure resin twice and finished products twice, once from the industries that make
+   them and once as goods traded on the open market, and the labels now say which is
+   which. The two "from its/their makers" series are the pair every subtraction on this
+   page uses, and the desktop ladder tags them again under the bar. */
 const SHORT = {
   "Henry Hub natural gas spot": "Henry Hub natural gas",
-  "Crude oil, WTI spot": "WTI crude oil",
+  "Crude oil, WTI spot": "Crude oil (WTI)",
   "Ohio industrial electricity price": "Ohio industrial electricity",
-  "PPI: plastics resins and materials": "Plastics resins & materials",
-  "PPI: plastics material and resin manufacturing": "Resin manufacturing",
-  "PPI: rubber and plastic products": "Rubber & plastic products",
-  "PPI: plastics and rubber products manufacturing": "Plastics & rubber products mfg"};
+  "PPI: plastics resins and materials": "Resin, as a commodity",
+  "PPI: plastics material and resin manufacturing": "Resin, from its makers",
+  "PPI: rubber and plastic products": "Products, as a commodity",
+  "PPI: plastics and rubber products manufacturing": "Products, from their makers"};
 const TINY = {
   "Henry Hub natural gas spot": "Henry Hub gas",
-  "Crude oil, WTI spot": "WTI crude",
+  "Crude oil, WTI spot": "Crude oil (WTI)",
   "Ohio industrial electricity price": "Ohio industrial power",
-  "PPI: plastics resins and materials": "Resins & materials",
-  "PPI: plastics material and resin manufacturing": "Resin mfg",
-  "PPI: rubber and plastic products": "Rubber & plastic goods",
-  "PPI: plastics and rubber products manufacturing": "Plastics & rubber mfg"};
+  "PPI: plastics resins and materials": "Resin, as a commodity",
+  "PPI: plastics material and resin manufacturing": "Resin, from its makers",
+  "PPI: rubber and plastic products": "Products, as a commodity",
+  "PPI: plastics and rubber products manufacturing": "Products, from their makers"};
+/* The two series every subtraction on this page is built from. */
+const INGAP = new Set(["PPI: plastics material and resin manufacturing",
+                       "PPI: plastics and rubber products manufacturing"]);
 
 /* ------------------------------------------------------------- derived facts */
 const byDate = s => Object.fromEntries(s.points.map(p => [p.date, p.index]));
@@ -81,29 +99,73 @@ const rows = S.filter(s => s.retraced !== null && s.stage !== "context")
               .sort((a, b) => b.retraced - a.retraced);
 
 /* ------------------------------------------------------------------- hero stats
-   Plain reading leads; the technical figure is the sub-line. */
+   Plain reading leads; the technical figure is the sub-line. Each card also says which
+   way is GOOD, which is a separate obligation from which way is up: a naive reader can
+   read "+40%" perfectly and still not know whether it is the page's good news or its
+   bad news, and on this page the honest answer is that it depends on the seat. The
+   fourth card is the page's hardest number and gets the whole sub-line for its plain
+   reading, because this is where a reader meets it first — five screens before the
+   section that explains it. */
 PV.figures([
-  ["key", vsB(gas.now.index), "gas vs January 2019",
-   `the whole 2022 rise given back, and then some (${pct(gas.retraced)})`],
-  ["", vsB(resinMfg.now.index), "resin vs January 2019",
-   `about a third of the rise given back`],
-  ["", vsB(prodMfg.now.index), "products vs January 2019",
-   "none given back; the peak is the latest month"],
-  ["", sp(last.v), "points, product over resin",
-   `percentage points of extra price growth since 2019; ran ${sp(sTrough.v)} in the
-    2021 squeeze`]
+  ["key", vsB(gas.now.index), "gas, against January 2019",
+   `cheaper than before the 2022 spike: the buyer's win, the seller's lost windfall. The
+    whole rise given back, and then some (${pct(gas.retraced)})`],
+  ["", vsB(resinMfg.now.index), "resin, against January 2019",
+   `the middle seat: about a third of the rise given back, the rest still on the
+    invoice`],
+  ["", vsB(prodMfg.now.index), "products, against January 2019",
+   "nothing given back, and this month is the dearest on record here: the seller's win"],
+  ["", sp(last.v), "points, products over resin",
+   `since 2019 product prices have grown ${Math.abs(last.v).toFixed(1)} percentage points
+    more than resin prices; in the 2021 squeeze they trailed by
+    ${Math.abs(sTrough.v).toFixed(1)}. A gap between two indexes, not a profit margin.`]
 ]);
 
 /* The vignette stat band: one part, priced at three moments, from the same indexes. */
 document.getElementById("v0").textContent = "$" + (PM["2019-01-01"] / 100).toFixed(2);
 document.getElementById("v1").textContent = "$" + (PM["2021-08-01"] / 100).toFixed(2);
+/* Both legs of the subtraction, not just the resin one: the band's whole point is the
+   distance between what the part billed and what its resin cost, and a reader given only
+   one of the two numbers cannot see the gap the rest of the page is about. */
 document.getElementById("v1d").textContent =
-  `resin up ${(RM["2021-08-01"] - 100).toFixed(0)}%: the squeeze`;
+  `resin up ${(RM["2021-08-01"] - 100).toFixed(0)}%, the part up ` +
+  `${(PM["2021-08-01"] - 100).toFixed(0)}%: the squeeze`;
 document.getElementById("v2").textContent = "$" + (prodMfg.now.index / 100).toFixed(2);
 document.getElementById("v2k").textContent = monF(prodMfg.now.date);
 document.getElementById("v2d").textContent =
-  `resin up ${(RM[prodMfg.now.date] - 100).toFixed(0)}%, gas ` +
+  `resin up ${(RM[prodMfg.now.date] - 100).toFixed(0)}%, the part up ` +
+  `${(prodMfg.now.index - 100).toFixed(0)}%, gas ` +
   `${(100 - gas.now.index).toFixed(0)}% below its 2019 price`;
+
+/* ------------------------------------------------------------- the reconciliation
+   The page's second-most-prominent number could not be reproduced from any pair of
+   figures the page printed. Product reads 140 on the line chart, +40% on the ladder and
+   $1.40 in the vignette; resin reads 125 and +25%; 140 − 125 is 15, and the page said
+   14. It was right — 139.76 − 125.44 = 14.32 — but a reader who checks and finds a gap
+   stops trusting everything else, and this page's whole standing is that it can be
+   checked. So the hidden step is now written out where the subtraction is invited, with
+   both legs at the precision that makes it close, both moments the page quotes, and the
+   wrong subtraction named before the reader performs it. Every figure here is read off
+   the shipped series; nothing is typed. */
+{
+  /* Typeset minus, not hyphen: the rest of the page signs its numbers with U+2212 and a
+     block whose whole job is "check this subtraction" cannot be the one place that
+     switches glyph mid-sum. */
+  const r2 = v => (v < 0 ? "−" : "") + Math.abs(v).toFixed(2);
+  const tD = sTrough.date, nD = last.date;
+  const rp = Math.round(PM[nD]), rr = Math.round(RM[nD]);
+  document.getElementById("gapmath").innerHTML =
+    `<b>Where the ${Math.abs(last.v).toFixed(1)} comes from.</b> In ${monF(nD)} the two
+     indexes stand at ${r2(PM[nD])} and ${r2(RM[nD])}: a gap of ${r2(last.v)} points. In
+     ${monF(tD)} they stood at ${r2(PM[tD])} and ${r2(RM[tD])}, a gap of ${r2(sTrough.v)}.
+     Everywhere else this page rounds those same indexes — to ${rp} and ${rr} today — and
+     rounded numbers do not subtract: ${rp} − ${rr} comes to ${rp - rr}, which is a point
+     of rounding, not a second measurement. The gap is always taken from the full values.
+     One more subtraction the headline invites and does not mean: going from
+     ${sp(sTrough.v)} to ${sp(last.v)} is a swing of ${(last.v - sTrough.v).toFixed(1)}
+     points in the parts maker's favour, not a shrinking from
+     ${Math.abs(sTrough.v).toFixed(1)} to ${Math.abs(last.v).toFixed(1)}.`;
+}
 
 /* --------------------------------------------------------- seat selector + verdict
    Lookup-rung interaction: the page re-tells its story from the reader's seat. The
@@ -169,8 +231,12 @@ const dimStage = stage => SEL && stage !== SEL;
 function drawLadder() { MOBILE.matches ? drawLadderMobile() : drawLadderDesktop(); }
 
 function drawLadderDesktop() {
+  /* The right gutter is wider than the bars strictly need. The two numbers beside each
+     bar answer DIFFERENT questions — how much of the run-up came off, and where the
+     price stands now — and at "104% back / now −7% vs 2019" they read as one question
+     asked twice. The gutter now carries enough room to say which is which. */
   const {svg, W, m, w, h} = PV.chart("ladder",
-    {W: 1100, rows: rows.length, rowH: 42, m: {t: 56, r: 170, b: 56, l: 260}});
+    {W: 1100, rows: rows.length, rowH: 42, m: {t: 56, r: 232, b: 56, l: 260}});
   const DOM = 1.08;                       // domain runs past 100% so the gas
   const xs = v => m.l + Math.min(v, DOM) / DOM * w;   // overshoot is drawn, not clipped
   frame(svg, {x: m.l, y: m.t, w, h, xs: v => xs(v), ys: () => 0, yt: [],
@@ -189,11 +255,21 @@ function drawLadderDesktop() {
       fill: c, rx: 4}, g);
     txt(g, SHORT[s.label], {x: m.l - 14, y: y + bh - 6, "text-anchor": "end",
       class: "pv-lab"});
-    txt(g, STAGE[s.stage].n.toUpperCase(), {x: m.l - 14, y: y + bh + 9,
-      "text-anchor": "end", class: "pv-labq", fill: c});
-    txt(g, `${pct(s.retraced)} back`, {x: m.l + w + 12, y: y + bh - 12, class: "pv-lab"});
-    txt(g, `now ${vsB(s.now.index)} vs 2019`,
+    /* The stage line also tags the two series the page's arithmetic subtracts, so a
+       reader looking at four near-twin names can see which pair makes the +14.3. */
+    txt(g, STAGE[s.stage].n.toUpperCase() + (INGAP.has(s.label) ? " · IN THE GAP" : ""),
+      {x: m.l - 14, y: y + bh + 9, "text-anchor": "end", class: "pv-labq", fill: c});
+    txt(g, `${pct(s.retraced)} of its rise given back`,
+      {x: m.l + w + 12, y: y + bh - 12, class: "pv-lab"});
+    txt(g, `price now ${vsB(s.now.index)} vs 2019`,
       {x: m.l + w + 12, y: y + bh + 5, class: "pv-labq"});
+    /* The row that breaks the ladder, annotated ON the chart. The section headline
+       promises a ladder by chain position and the bars are sorted by value, so this
+       FEEDSTOCK row sits below both RESIN rows. The prose named the exception; a reader
+       who scans headlines and bars never reached the prose. */
+    if (s === elec)
+      txt(g, "the exception: peaked in 2026, not 2022",
+        {x: xs(s.retraced) + 12, y: y + bh - 7, class: "pv-labq"});
     hoverable(el("rect", {x: 0, y: y - 8, width: W, height: bh + 18,
       fill: "transparent"}, g), `<b>${s.label}</b><br>${STAGE[s.stage].n} stage<br>
       peaked at <span class="v">${s.peak.index.toFixed(1)}</span> in ${mon(s.peak.date)}<br>
@@ -204,7 +280,12 @@ function drawLadderDesktop() {
 }
 
 function drawLadderMobile() {
-  const W = 375, m = {t: 68, r: 12, b: 44, l: 12}, rowH = 46, bh = 14;
+  /* THREE LINES PER ROW, NOT TWO COLUMNS. The name and the reading were set on one line
+     as a left and a right column, and at 375px the longest name ran into its own reading
+     — "Products, from their makers" collided with "0% back · now +40%". They are now
+     stacked, which also buys the room to say what each number answers instead of hanging
+     two unlike figures off the same bar. */
+  const W = 375, m = {t: 68, r: 12, b: 44, l: 12}, rowH = 58, bh = 14;
   const H = m.t + rows.length * rowH + m.b;
   const {svg} = PV.chart("ladder", {W, H});
   const w = W - m.l - m.r, DOM = 1.08;
@@ -222,26 +303,31 @@ function drawLadderMobile() {
       x += 22 + STAGE[k].n.length * 9.6;
     });
   }
-  el("line", {x1: xs(1), y1: m.t - 4, x2: xs(1), y2: H - m.b + 4,
-    stroke: "var(--hover)", "stroke-width": 1.2, "stroke-dasharray": "4 3"}, svg);
+  /* The reference line is drawn ACROSS THE BARS ONLY, not the full height. Run edge to
+     edge it passed straight through the last two words of every row's reading — "vs
+     2019" with a dashed rule inside the digits — and the reading is what the reader is
+     here for. It marks the bars, so it belongs on the bars. */
   txt(svg, "100% = back to the 2019 price", {x: xs(1), y: m.t - 10,
     "text-anchor": "end", class: "pv-labq", fill: "var(--hover)"});
   rows.forEach((s, i) => {
     const g = el("g", dimStage(s.stage) ? {opacity: .18} : {}, svg);
     const y = m.t + i * rowH, c = STAGE[s.stage].c;
-    txt(g, TINY[s.label], {x: m.l, y: y + 12, class: "pv-labq"});
-    /* The plain "now +40%" reading is longer than the bare index it replaced and the
-       100% reference line now runs through it. Fully opaque plate, not the house .93
-       one: a 7% ghost of a dashed line lands inside the digits at this size. */
-    const rl = `${pct(s.retraced)} back · now ${vsB(s.now.index)}`;
-    el("rect", {x: W - m.r - rl.length * 8 - 3, y, width: rl.length * 8 + 6, height: 15,
-      fill: "var(--paper)", rx: 2}, g);
-    txt(g, rl, {x: W - m.r, y: y + 12, "text-anchor": "end", class: "pv-lab",
-      "data-pv-plated": "1"});
-    el("rect", {x: m.l, y: y + 18, width: xs(1) - m.l, height: bh, fill: "#EDE9E2",
+    txt(g, TINY[s.label] + (INGAP.has(s.label) ? " · in the gap"
+                            : s === elec ? " · the exception" : ""),
+      {x: m.l, y: y + 12, class: "pv-lab"});
+    txt(g, `${pct(s.retraced)} of its rise given back · now ` +
+      `${vsB(s.now.index)} vs 2019`, {x: m.l, y: y + 28, class: "pv-labq"});
+    el("rect", {x: m.l, y: y + 34, width: xs(1) - m.l, height: bh, fill: "#EDE9E2",
       rx: 3}, g);
-    el("rect", {x: m.l, y: y + 18, width: Math.max(3, xs(s.retraced) - m.l),
+    el("rect", {x: m.l, y: y + 34, width: Math.max(3, xs(s.retraced) - m.l),
       height: bh, fill: c, rx: 3}, g);
+    el("line", {x1: xs(1), y1: y + 30, x2: xs(1), y2: y + 52, stroke: "var(--hover)",
+      "stroke-width": 1.2, "stroke-dasharray": "4 3"}, g);
+    /* The out-of-order row is named here too: the re-layout drops the stage sublabels,
+       which is exactly where a mobile reader loses the reason the bars are not a ladder. */
+    if (s === elec)
+      txt(g, "peaked 2026, not 2022", {x: xs(s.retraced) + 8, y: y + 45,
+        class: "pv-labq"});
     hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, g),
       `<b>${s.label}</b><br><span class="v">${pct(s.retraced)}</span> of the rise given
        back · now <span class="v">${s.now.index.toFixed(1)}</span>`,
@@ -323,12 +409,17 @@ function drawLinesDesktop() {
   plated(svg, "above this line, costlier than in January 2019", {x: m.l + 8,
     y: ys(100) - 8, class: "pv-lab"}, 8);
   /* Two claims, written on the chart. */
+  /* "Gas tripled" was stated twice as fact and once as a chart annotation. The peak is
+     283 on a base of 100, which is 2.8 times, and a reader with a ruler on this very
+     chart catches it. The annotation now prints the number it is describing. */
   const gp = gas.peak;
   el("circle", {cx: xs(gp.date), cy: ys(gp.index), r: 4.5, fill: STAGE.feedstock.c,
     stroke: "var(--paper)", "stroke-width": 1.5}, svg);
-  plated(svg, `${mon3(gp.date)}: gas triples`, {x: xs(gp.date) - 10,
-    y: ys(gp.index) + 4, "text-anchor": "end", class: "pv-lab",
+  plated(svg, `${mon3(gp.date)}: gas peaks at ${gp.index.toFixed(0)}`, {x: xs(gp.date) - 10,
+    y: ys(gp.index) - 1, "text-anchor": "end", class: "pv-lab",
     fill: STAGE.feedstock.c}, 8);
+  plated(svg, "nearly three times its 2019 price", {x: xs(gp.date) - 10,
+    y: ys(gp.index) + 13, "text-anchor": "end", class: "pv-labq"}, 7.4);
   /* The product callout sits ON its line, not 70px above it with four gray context
      series passing between the words and their target. It is bound by position first,
      a short leader second, and colour only third. */
@@ -390,23 +481,47 @@ function drawLinesMobile() {
   });
   plated(svg, "100 = the Jan 2019 price", {x: m.l + 4, y: ys(100) + 14,
     class: "pv-labq"}, 7.6);
-  /* End labels for the three chain links only; context stays gray and unlabeled
-     (same series, same emphasis rule as desktop, named in the legend below). */
-  const marked = [prodMfg, resinMfg, gas].map(s => ({s,
+  /* End labels for the three chain links, plus crude. Crude is one of the four named
+     characters in the opening paragraph and in the ladder lede, and the re-layout used
+     to drop it into an anonymous gray squiggle among four others — a series the prose
+     leads with may not be untraceable on the width most readers use. The remaining gray
+     lines are named, with the value each ends at, in the key below the chart. */
+  const marked = [prodMfg, resinMfg, gas, crude].map(s => ({s,
     y: ys(s.points.at(-1).index)})).sort((a, b) => a.y - b.y);
   for (let i = 1; i < marked.length; i++)
     if (marked[i].y - marked[i - 1].y < 15) marked[i].y = marked[i - 1].y + 15;
   const NAME = {[gas.label]: "gas", [resinMfg.label]: "resin",
-                [prodMfg.label]: "products"};
+                [prodMfg.label]: "products", [crude.label]: "crude oil"};
   marked.forEach(({s, y}) => plated(svg,
     `${s.points.at(-1).index.toFixed(0)} ${NAME[s.label]}`,
     {x: m.l + w - 2, y: y + 4, "text-anchor": "end", class: "pv-lab",
-     fill: STAGE[s.stage].c}, 8));
+     fill: s === crude ? "var(--pv-muted)" : STAGE[s.stage].c}, 8));
   const gp = gas.peak;
   el("circle", {cx: xs(gp.date), cy: ys(gp.index), r: 3.5, fill: STAGE.feedstock.c,
     stroke: "var(--paper)", "stroke-width": 1.2}, svg);
-  plated(svg, "Aug 2022: gas triples", {x: xs(gp.date) - 7, y: ys(gp.index) + 4,
-    "text-anchor": "end", class: "pv-lab", fill: STAGE.feedstock.c}, 8);
+  plated(svg, `Aug 2022: gas at ${gp.index.toFixed(0)}`, {x: xs(gp.date) - 7,
+    y: ys(gp.index) + 8, "text-anchor": "end", class: "pv-lab",
+    fill: STAGE.feedstock.c}, 8);
+  plated(svg, "nearly triple its 2019 price", {x: xs(gp.date) - 7, y: ys(gp.index) + 23,
+    "text-anchor": "end", class: "pv-labq"}, 7.4);
+  /* The tall magenta stroke at the right edge. Desktop names it; mobile used to drop the
+     annotation and leave an unexplained spike as the last thing on the chart, which is
+     the one place a reader tracing "gas round-tripped" stops and doubts the claim. It
+     hangs below its dot on a leader rather than beside it: level with the spike the
+     second line ran straight through the August 2022 callout. */
+  {
+    const wd = "2026-01-01", wp = gas.points.find(p => p.date === wd);
+    const gone = gas.points.filter(p => p.date > wd).find(p => p.index < 100);
+    const ly = ys(wp.index) + 27;
+    el("circle", {cx: xs(wd), cy: ys(wp.index), r: 3, fill: "var(--paper)",
+      stroke: "var(--pv-muted)", "stroke-width": 1.2}, svg);
+    el("line", {x1: xs(wd), y1: ys(wp.index) + 5, x2: xs(wd), y2: ly - 9,
+      stroke: "var(--pv-muted)", "stroke-width": 1, "stroke-dasharray": "2 2"}, svg);
+    plated(svg, "winter spike,", {x: xs(wd) - 6, y: ly, "text-anchor": "end",
+      class: "pv-labq"}, 6.6);
+    plated(svg, `under 100 by ${mon3(gone.date)}`, {x: xs(wd) - 6, y: ly + 15,
+      "text-anchor": "end", class: "pv-labq"}, 6.6);
+  }
   hoverable(el("rect", {x: m.l, y: m.t, width: w, height: h, fill: "transparent"}, svg),
     `<b>${mon(dates.at(-1))}</b><br>` + lineSeries.map(s =>
       `${TINY[s.label]} <span class="v">${s.points.at(-1).index.toFixed(0)}</span>`)
@@ -458,7 +573,7 @@ function drawSpreadDesktop() {
   /* The comparator is named at its own line end, not floated in-plot: it frees the
      space under the zero line for the near-closure callout, and it makes both series
      on this chart decode the same way the lines chart's series do. */
-  txt(svg, "resin −", {x: m.l + w + 8, y: ys(comp.at(-1).v) + 1,
+  txt(svg, "resin vs", {x: m.l + w + 8, y: ys(comp.at(-1).v) + 1,
     class: "pv-labq", fill: st.cmp.lab});
   txt(svg, "chemicals", {x: m.l + w + 8, y: ys(comp.at(-1).v) + 15,
     class: "pv-labq", fill: st.cmp.lab});
@@ -501,7 +616,11 @@ function drawSpreadDesktop() {
 }
 
 function drawSpreadMobile() {
-  const W = 375, H = 300, m = {t: 40, r: 62, b: 42, l: 34};
+  /* Taller top for the direction cue and a wider right gutter for the comparator's full
+     name: the re-layout used to drop the two-headed cue that makes this chart readable
+     and abbreviate the gray line to "resin − chem", which decodes only against a desktop
+     caption the mobile reader never sees. */
+  const W = 375, H = 320, m = {t: 58, r: 84, b: 42, l: 34};
   const {svg} = PV.chart("spread", {W, H});
   const w = W - m.l - m.r, h = H - m.t - m.b;
   const lo = Math.min(...spr.map(p => p.v), ...comp.map(p => p.v)) * 1.15;
@@ -515,6 +634,8 @@ function drawSpreadMobile() {
     xt: yrs.map(y => dates.find(d => d.startsWith(y))).filter(Boolean),
     yt: ticks(lo, hi, 4), xfmt: d => d.slice(0, 4),
     yfmt: v => (v > 0 ? "+" : "") + v.toFixed(0), ylab: ""});
+  txt(svg, "↑ products grew more  ·  ↓ resin grew more", {x: m.l, y: 20,
+    class: "pv-labq"});
   el("path", {d: "M" + spr.map(p => `${xs(p.date)},${ys(p.v)}`).join("L") +
     `L${xs(dates.at(-1))},${ys(0)}L${xs(dates[0])},${ys(0)}Z`,
     fill: `rgba(0,139,168,${st.area})`}, svg);
@@ -543,19 +664,47 @@ function drawSpreadMobile() {
   el("circle", {cx: xs(sDip.date), cy: ys(sDip.v), r: 4, fill: "var(--paper)",
     stroke: "#008BA8", "stroke-width": 1.5}, svg);
   /* Above the zero line, not below it: below, the label ran into the gray comparator
-     and the right-edge series names, which the desktop-only collision gate cannot see. */
+     and the right-edge series names, which the desktop-only collision gate cannot see.
+     A row higher than the zero-line caption, with a leader down to its dot, because at
+     this width the two strings came within twenty units of touching. */
+  el("line", {x1: xs(sDip.date), y1: ys(0) - 24, x2: xs(sDip.date), y2: ys(sDip.v) - 6,
+    stroke: "#008BA8", "stroke-width": 1, "stroke-dasharray": "2 2"}, svg);
   plated(svg, `+${sDip.v.toFixed(1)} ${mon3(sDip.date)}`, {x: xs(sDip.date) - 5,
-    y: ys(0) - 10, "text-anchor": "end", class: "pv-lab", fill: "#008BA8"}, 8);
+    y: ys(0) - 28, "text-anchor": "end", class: "pv-lab", fill: "#008BA8"}, 8);
   txt(svg, `${sp(last.v)} now`, {x: m.l + w + 6, y: ys(last.v) + 4,
     class: "pv-lab", fill: "#008BA8"});
-  txt(svg, "resin −", {x: m.l + w + 6, y: ys(comp.at(-1).v) + 2,
+  txt(svg, "resin vs", {x: m.l + w + 6, y: ys(comp.at(-1).v) + 2,
     class: "pv-labq", fill: st.cmp.lab});
-  txt(svg, "chem", {x: m.l + w + 6, y: ys(comp.at(-1).v) + 15,
+  txt(svg, "chemicals", {x: m.l + w + 6, y: ys(comp.at(-1).v) + 15,
     class: "pv-labq", fill: st.cmp.lab});
   hoverable(el("rect", {x: m.l, y: m.t, width: w, height: h, fill: "transparent"}, svg),
     `<b>${mon(last.date)}</b><br>product over resin <span class="v">${sp(last.v)}</span>
      points<br>resin over chemicals <span class="v">${comp.at(-1).v.toFixed(1)}</span>`,
     "latest gap");
+}
+
+/* --------------------------------------------------------------- the lines key
+   The gray "context series" used to be one anonymous legend entry covering four lines,
+   and on mobile those four lost their end labels entirely: crude oil, Ohio power and the
+   second resin and product series became untraceable squiggles. The key now names every
+   line and prints the value it ends at, so a reader can match any stroke on the chart to
+   a name at either width without hovering. Swatch heights carry the chart's weight
+   ladder, so the key decodes the same way the plot does when hue is unavailable. */
+{
+  const endOf = s => s.points.at(-1).index.toFixed(0);
+  const ctx = lineSeries.filter(s => !STORY.has(s.label))
+    .sort((a, b) => b.points.at(-1).index - a.points.at(-1).index);
+  document.getElementById("lineskey").innerHTML = [
+    [STAGE.feedstock.c, 2, `Feedstock &middot; Henry Hub gas, ending at ${endOf(gas)}`],
+    [STAGE.resin.c, 3,
+     `Resin &middot; what parts makers buy, ending at ${endOf(resinMfg)}`],
+    [STAGE.product.c, 4,
+     `Products &middot; what they sell, ending at ${endOf(prodMfg)}`],
+    [GRAY, 1, "For context, in gray: " +
+      ctx.map(s => `${SHORT[s.label]} ${endOf(s)}`).join(" &middot; ")]
+  ].map(([c, hgt, s]) =>
+    `<span><i class="ln" style="background:${c};height:${hgt}px"></i> ${s}</span>`)
+   .join("");
 }
 
 /* -------------------------------------------------------- tables + source lines */
@@ -566,15 +715,24 @@ function drawSpreadMobile() {
    them a second time. Table captions stay short because tableView prints the caption
    into the <summary> as well, so a long one is not a disclosure, it is a third slab of
    apparatus in link blue. */
+/* The tables are the crosswalk. The charts label a series by what it measures and the
+   federal statistics label it by their own title; a reader who opens the table to check
+   a number needs both names in one cell or the two systems never meet. */
+const both = s => `${SHORT[s.label]} (${s.label})`;
 document.getElementById("laddertable").innerHTML = tableView("ld",
   "Peak, current level and share of the rise given back, by stage (January 2019 = 100)",
   ["Series", "Stage", "Peak", "Peak month", "Now", "Latest month", "Rise given back"],
-  rows.map(s => [s.label, STAGE[s.stage].n, s.peak.index.toFixed(1), mon(s.peak.date),
+  rows.map(s => [both(s), STAGE[s.stage].n, s.peak.index.toFixed(1), mon(s.peak.date),
     s.now.index.toFixed(1), mon(s.now.date), pct(s.retraced)]));
+/* The formula comes back to the figure it governs. It was moved to the methodology box
+   to stop the source line saying things the caption already said, but the caption states
+   the READING and never the rule, and the rule then sat five screens below the chart it
+   defines — the reader had already decided what the bars meant. Forty-four words. */
 document.getElementById("laddersrc").innerHTML =
-  `${D.meta.sources}, monthly, 2015 through mid-2026, each measured against January 2019.
-   That month is midwinter, so gas enters at a seasonal high: the stage ordering survives
-   that, the exact percentages do not.`;
+  `${D.meta.sources}, monthly, 2015 through mid-2026, measured against January 2019 &mdash;
+   midwinter, so gas enters at a seasonal high: the ordering survives that, the exact
+   percentages do not. Share of the rise given back = (peak &minus; now) &divide;
+   (peak &minus; 100).`;
 
 {
   const dates = [...new Set(lineSeries.flatMap(s => s.points.map(p => p.date)))].sort();
@@ -582,7 +740,7 @@ document.getElementById("laddersrc").innerHTML =
   document.getElementById("linestable").innerHTML = tableView("ln",
     "Index level by series, January of each year (January 2019 = 100)",
     ["Series", "Stage", ...jans.map(d => d.slice(0, 4))],
-    lineSeries.map(s => [s.label, STAGE[s.stage].n,
+    lineSeries.map(s => [both(s), STAGE[s.stage].n,
       ...jans.map(d => {
         const p = s.points.find(x => x.date === d);
         return p ? p.index.toFixed(0) : "—";
@@ -590,8 +748,9 @@ document.getElementById("laddersrc").innerHTML =
 }
 document.getElementById("linessrc").innerHTML =
   `${D.meta.sources}, monthly, 2015 through mid-2026. These are national series: Henry
-   Hub is not what an Ohio plant pays delivered or hedged, and a producer price index is
-   an industry average, not any member&rsquo;s realized price.`;
+   Hub is not what an Ohio plant pays once pipeline charges and long-term supply
+   contracts are settled, and a producer price index is what a whole industry charges at
+   the factory gate, not any member&rsquo;s realized price.`;
 
 /* Every January, plus the three months the prose and the chart both name: the peak, the
    near-closure and now. A reader checking "+0.7 in May 2026" should not have to
@@ -608,11 +767,14 @@ document.getElementById("linessrc").innerHTML =
        p.date in CH ? (RM[p.date] - CH[p.date] > 0 ? "+" : "") +
          (RM[p.date] - CH[p.date]).toFixed(1) : "—"]));
 }
+/* The footnote used to name its two inputs by their federal titles, which matched none
+   of the four labels on the charts above; a reader could not tell which two of the four
+   near-twin series made the gap. Both namings now appear, in the page's order. */
 document.getElementById("spreadsrc").innerHTML =
-  `Two BLS producer price indexes, 2015 through July 2026: plastics and rubber products
-   manufacturing minus plastics material and resin manufacturing, both set to 100 at
-   January 2019. Whether every downstream industry held price this way is a question
-   this page cannot answer.`;
+  `The two makers&rsquo; indexes, 2015 through July 2026, both set to 100 at January 2019:
+   products from their makers (BLS plastics and rubber products manufacturing) minus resin
+   from its makers (BLS plastics material and resin manufacturing). Whether every
+   downstream industry held price this way is a question this page cannot answer.`;
 
 /* The closer resolves the hero's question and hands the reader the next thing to watch:
    the cushion the whole page is about came within a point of closing three months ago,
@@ -623,7 +785,7 @@ document.getElementById("closersub").innerHTML =
    points at the bottom of the 2021 squeeze and stands ${sp(last.v)} now, and a gap
    between two indexes is not a margin: labor, freight, energy and packaging are in
    neither series.
-   It has not been steady either. Resin jumped ${sDipResin.toFixed(0)} points in two
+   It has not been steady either. Resin rose ${sDipResin.toFixed(1)} points in two
    months this spring and the gap closed to +${sDip.v.toFixed(1)}; the next resin move
    decides whether it holds.`;
 

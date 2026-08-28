@@ -26,7 +26,8 @@
       pays against the average job in the same county. Polymer wins in 40 of the 51
       pairings big enough for the Bureau of Labor Statistics to publish, and all eleven
       it loses make plastics or rubber.</p>
-    <p class="byline">By the Polymer Industry Cluster desk &middot; Data BLS QCEW annual averages,
+    <p class="byline">By the Polymer Industry Cluster desk &middot; Data: the Bureau of Labor
+      Statistics Quarterly Census of Employment and Wages (QCEW), annual averages
       2015&ndash;2025 &middot; August 2026</p>
     <div class="hero-row" id="figs"></div>
   </div>
@@ -41,18 +42,21 @@
       two are equal; at 1.2&times; polymer pay is a fifth higher; at 0.9&times; it is a
       tenth lower. (The arithmetic: the industry&rsquo;s average weekly wage in a county,
       divided by that county&rsquo;s average across every industry.) It is the checkable
-      version of the region&rsquo;s good-jobs claim. The data are the BLS census of
-      covered jobs, and every published number here is re-checked against it on each
-      build.</p>
+      version of the region&rsquo;s good-jobs claim. The data are that census, which counts
+      every job covered by unemployment insurance, so it holds almost all payroll work and
+      none of the self-employed, and every published number here is re-checked against it
+      on each build.</p>
     <div class="csel" id="csel" role="group" aria-label="Highlight one county"></div>
     <p class="verdict" id="verdict"></p>
     <p class="fig-title">Pay runs from more than double the county&rsquo;s average job
-      down to about a quarter below it: chemistry on top, plastics and rubber at the
+      down to about three-quarters of it: chemistry on top, plastics and rubber at the
       bottom</p>
     <p class="fig-sub">Each row is one industry in one county. The further RIGHT, the
       more it out-pays other work in its own county; left of the line it pays less than
-      that county&rsquo;s average job. Bigger dot, more jobs. Twelve Northeast Ohio
-      counties, 2025.</p>
+      that county&rsquo;s average job. The top row, Lake County chemicals, is
+      2.09&times; its county; the bottom row, Stark County rubber products, is
+      0.77&times;. Bigger dot, more jobs, to the size key on the chart. Twelve
+      Northeast Ohio counties, 2025.</p>
     <div class="chart"><svg id="prem" role="img" aria-labelledby="prem-t">
       <title id="prem-t">Wage premium against the local all-industry average, by county
         and industry, 2025. Chemistry-side pairings cluster at the top, plastics and
@@ -63,8 +67,8 @@
     </div>
     <div id="premtable"></div>
     <p class="src" id="premsrc"></p>
-    <div class="note" id="note"><b>What an average weekly wage hides.</b> It moves with
-      hours and the mix of jobs, not only pay rates: a plant on overtime reads as a
+    <div class="note" id="note"><b>What an average weekly wage hides.</b> It tracks hours
+      and the mix of jobs alongside pay rates: a plant on overtime reads as a
       raise, and a manager and a line operator average into one number. Each number is an
       average over one published pairing, so one large employer can move a county. It answers
       &ldquo;what does this work pay here, relative to everything else here,&rdquo; not
@@ -107,9 +111,10 @@
       industry</p>
     <p class="fig-sub">Each dot is one industry in one county. The further RIGHT, the more
       it out-pays other work in its own county. The further UP, the more it out-pays the
-      same industry everywhere else in the country. Dots left of the vertical line pay
-      under their town; dots below the horizontal line pay under their industry. Bigger
-      dot, more jobs. Twelve Northeast Ohio counties, 2025.</p>
+      same industry everywhere else in the country. Nothing lands in the top-left corner:
+      no pairing pays under its own town while beating its own industry. Lake County
+      chemicals is the far-right dot, 2.09&times; its county and 1.04&times; its industry.
+      Bigger dot, more jobs. Twelve Northeast Ohio counties, 2025.</p>
     <div class="chart"><svg id="scat" role="img" aria-labelledby="scat-t">
       <title id="scat-t">Scatter of each pairing&rsquo;s local wage premium against its
         national same-industry ratio. Most pairings sit above the local line but below
@@ -146,14 +151,14 @@
 <section class="band tint">
   <div class="wrap">
     <p class="takeaway">What it means in a paycheck</p>
-    <h2>2.09&times; is a life, not a ratio</h2>
+    <h2>The top of the chart is a $129,000 job</h2>
     <p class="lede">A Lake County chemical-manufacturing job averages $2,474 a week,
       about $129,000 a year, in a county where the average job pays about $62,000. Same
       county, the other family: rubber-products work averages $1,028 a week, about
       $53,000, below what the average job there pays. And the lowest pairing on the page,
       Stark County rubber products at $853 a week, about $44,000, covers 30 jobs, a
-      reminder that the smallest groups here average very few paychecks. Every number is
-      a group average, not any one person&rsquo;s pay.</p>
+      reminder that the smallest pairings here average very few paychecks. Every number
+      here averages a whole pairing rather than describing any one person&rsquo;s pay.</p>
   </div>
 </section>
 

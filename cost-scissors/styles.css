@@ -23,6 +23,15 @@
 .ask{margin:16px 0 0;max-width:var(--measure);font-size:14px;line-height:1.55;
   color:var(--caption)}
 
+/* The reconciliation block. Not a caveat and not the page's one .note box: it is the
+   arithmetic the page owes a reader who checks it, because the two figures the page most
+   invites you to subtract (140 and 125) are rounded and do not give the printed gap. It
+   sits directly under the gap lede, at caption scale, with the page's own rule above it
+   so it reads as a worked step rather than a disclaimer. */
+.reckon{margin:20px 0 0;max-width:var(--measure);font-size:14.5px;line-height:1.6;
+  color:#3A4245;border-top:2px solid var(--ink);padding:12px 0 0}
+.reckon b{color:var(--ink)}
+
 /* Figure chrome: every chart carries its own claim-title + how-to-read line, so the H2
    does section work instead of doubling as the chart title (chart-craft.md). */
 .fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;

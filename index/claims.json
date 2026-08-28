@@ -15,7 +15,9 @@
   "rev": "../../revisions/data/revisions.json",
   "fm": "../../funding-map/data/funding.json",
   "tlt": "../../timeline/data/timeline.json",
-  "tlh": "../../timeline/data/heritage.json"
+  "tlh": "../../timeline/data/heritage.json",
+  "st": "states.json",
+  "ch2": "../../cluster-health/data/health.json"
  },
  "claims": [
   {
@@ -36,12 +38,20 @@
    "falsified_if": "A page is added to or removed from the tree, or any linked page gains or loses a claim. This is the only guard on the two inventory sentences the page prints without scripting, and it is deliberately intolerant: those literals are a rendered snapshot of a computation app.js re-runs at load, so any drift has to be re-blessed by a person rather than absorbed. It is also the enforcement of the .unlisted convention: a bundled page makes no external requests and cannot read a .unlisted file at render time, so a new artifact that is neither carded here nor named in this assertion fails the gate until someone decides which it is."
   },
   {
+   "id": "index-pic-name",
+   "text": "The masthead and the first sentence of body prose: PIC is the Polymer Industry Cluster.",
+   "source": "The publisher string PIC writes into its own funding-map dataset, funding-map/data/funding.json",
+   "assert": "D['fm']['meta']['publisher'] == 'Polymer Industry Cluster'",
+   "actual": "D['fm']['meta']['publisher']",
+   "falsified_if": "PIC renames itself, or the funding map's publisher string stops agreeing with the masthead. The acronym ran a dozen times across this page, inside a data label and inside a claim about what PIC usually says, and was never once expanded; a naive reader finished the page not knowing who was asking them to trust the numbers. It is expanded at first contact now, and the expansion is read against a shipped file rather than typed from memory."
+  },
+  {
    "id": "hero-ohio-first",
-   "text": "The H1, and the peers card's answer line 'First in the country': Ohio is first in the country in plastics and rubber jobs, 54,846 of them, 10,248 ahead of second-place Texas.",
+   "text": "The H1 and standfirst, the state chart and the peers card: Ohio is first in the country in plastics and rubber jobs, 54,846 of them, against second-place Texas's 44,598 — a lead of 10,248.",
    "source": "BLS QCEW by-industry 2024, NAICS 326, private ownership, via peers/data/peers.json",
-   "assert": "D['peers']['states']['326']['rank_emp'] == 1 and round(D['peers']['states']['326']['subject_emp']) == 54846 and D['peers']['states']['326']['top'][1]['name'].startswith('Texas') and round(D['peers']['states']['326']['subject_emp'] - D['peers']['states']['326']['top'][1]['emp']) == 10248",
+   "assert": "D['peers']['states']['326']['rank_emp'] == 1 and round(D['peers']['states']['326']['subject_emp']) == 54846 and D['peers']['states']['326']['top'][1]['name'].startswith('Texas') and round(D['peers']['states']['326']['top'][1]['emp']) == 44598 and round(D['peers']['states']['326']['subject_emp'] - D['peers']['states']['326']['top'][1]['emp']) == 10248",
    "actual": "(D['peers']['states']['326']['rank_emp'], D['peers']['states']['326']['subject_emp'], D['peers']['states']['326']['top'][1]['name'], D['peers']['states']['326']['subject_emp'] - D['peers']['states']['326']['top'][1]['emp'])",
-   "falsified_if": "A 2024 revision moves another state above Ohio, changes either state's employment by one job, or another state takes second place. Tolerance is zero because the hub prints the gap to the job."
+   "falsified_if": "A 2024 revision moves another state above Ohio, changes either state's employment by one job, or another state takes second place. Tolerance is zero because all three numbers are printed side by side and 54,846 minus 44,598 has to come out at the 10,248 the page states: this is the guard that keeps that subtraction closing."
   },
   {
    "id": "hero-states-disclosed",
@@ -61,23 +71,32 @@
   },
   {
    "id": "hero-no-county-69",
-   "text": "Hero card 2 sub-line and the laborshed card: no county in the twelve reaches 69 percent.",
+   "text": "Hero card 2 and the laborshed card: Ashtabula is the most self-contained of the twelve counties and still reaches only 68 percent, so no county in the twelve staffs itself.",
    "source": "Census LODES 2022 origin-destination, via laborshed/data/laborshed.json",
-   "assert": "max(r['in_county'] for r in D['ls']['matrix']) < 0.69 and len(D['ls']['matrix']) == 12",
-   "actual": "(max(r['in_county'] for r in D['ls']['matrix']), len(D['ls']['matrix']))",
-   "falsified_if": "Any county's own-resident share reaches 0.69, or the matrix stops holding exactly twelve counties."
+   "assert": "(lambda M: 0.68 <= max(r['in_county'] for r in M) < 0.69 and sorted(M, key=lambda r: -r['in_county'])[0]['work_name'] == 'Ashtabula' and len(M) == 12)(D['ls']['matrix'])",
+   "actual": "(sorted(D['ls']['matrix'], key=lambda r: -r['in_county'])[0]['work_name'], max(r['in_county'] for r in D['ls']['matrix']))",
+   "falsified_if": "Another county overtakes Ashtabula as the most self-contained, Ashtabula's own share leaves the band that rounds down to 68 percent, or the matrix stops holding exactly twelve counties. The page names the county now rather than quoting a bare ceiling, so a change of leader falsifies the sentence even if the number holds."
   },
   {
    "id": "hero-federal-annual",
-   "text": "Hero card 3: routine federal contracting runs $34.9 million a year, and the Tech Hub award is about a year and a half of it.",
+   "text": "Hero card 3 and the federal-money card: ordinary federal contracting averaged $34.9 million a year over the eight fiscal years since 2019, ranging from $17.0 million to $51.6 million, and the one-time $51.0 million Tech Hub award is about 1.5 years of that average.",
    "source": "USAspending obligations at place of performance, FY2019-2026, 2025 dollars, via federal-money/data/",
-   "assert": "abs(sum(r['real'] for r in D['fed']['naics']) / len(set(r['fy'] for r in D['fed']['naics'])) - 34_908_376) < 50_000 and round(D['hub']['award'] / (sum(r['real'] for r in D['fed']['naics']) / len(set(r['fy'] for r in D['fed']['naics']))), 1) == 1.5 and D['hub']['award'] == 51_001_413",
-   "actual": "(sum(r['real'] for r in D['fed']['naics']) / len(set(r['fy'] for r in D['fed']['naics'])), D['hub']['award'])",
-   "falsified_if": "USAspending backfills or revises an obligation enough to move the eight-year average by $50k, the CPI rebase changes, or the award is restated. The ratio is printed to one decimal, so 1.44 or 1.55 breaks it."
+   "assert": "(lambda Y: len(Y) == 8 and abs(sum(Y.values()) / len(Y) - 34_908_376) < 50_000 and abs(min(Y.values()) - 16_958_103) < 50_000 and abs(max(Y.values()) - 51_648_098) < 50_000 and round(min(Y.values()) / 1e6, 1) == 17.0 and round(max(Y.values()) / 1e6, 1) == 51.6 and round(D['hub']['award'] / (sum(Y.values()) / len(Y)), 1) == 1.5 and D['hub']['award'] == 51_001_413)({fy: sum(r['real'] for r in D['fed']['naics'] if r['fy'] == fy) for fy in set(r['fy'] for r in D['fed']['naics'])})",
+   "actual": "sorted([(fy, round(sum(r['real'] for r in D['fed']['naics'] if r['fy'] == fy))) for fy in set(r['fy'] for r in D['fed']['naics'])])",
+   "falsified_if": "USAspending backfills or revises an obligation enough to move the eight-year average by $50k, to move either end of the printed range off $17.0M or $51.6M, or to change the number of fiscal years. The award-to-average ratio is printed to one decimal, so 1.44 or 1.55 breaks it. The maximum is the guard on the card's other sentence: 'fiscal 2019 alone cleared the award line' is only readable beside a range whose top is above $51.0M."
+  },
+  {
+   "id": "index-chart-states",
+   "text": "The state chart and its heading: the ten bars are the ten largest states, Ohio's 10,248-job lead over Texas is wider than the 8,865 between second-place Texas and eighth-place North Carolina, and three of the nine states behind Ohio — Indiana, South Carolina and Wisconsin — hold the industry more densely.",
+   "source": "index/data/states.json, a ten-row cut of peers/data/peers.json, itself BLS QCEW by-industry 2024 annual averages, NAICS 326, private ownership",
+   "assert": "(lambda A, B: [(r['name'], r['emp'], r['lq']) for r in A] == [(r['name'].replace(' -- Statewide', ''), round(r['emp']), r['lq']) for r in B[:10]])(D['st']['states'], D['peers']['states']['326']['top']) and len(D['st']['states']) == 10 and D['st']['states'][0]['emp'] - D['st']['states'][1]['emp'] == 10248 and D['st']['states'][1]['emp'] - D['st']['states'][7]['emp'] == 8865 and D['st']['states'][0]['emp'] - D['st']['states'][1]['emp'] > D['st']['states'][1]['emp'] - D['st']['states'][7]['emp'] and sorted(r['name'] for r in D['st']['states'][1:] if r['lq'] > D['st']['states'][0]['lq']) == ['Indiana', 'South Carolina', 'Wisconsin']",
+   "actual": "(D['st']['states'][0]['emp'] - D['st']['states'][1]['emp'], D['st']['states'][1]['emp'] - D['st']['states'][7]['emp'], [r['name'] for r in D['st']['states'][1:] if r['lq'] > D['st']['states'][0]['lq']])",
+   "falsified_if": "The copy in index/data/states.json stops matching the peers page's own file row for row, any state changes place in the top ten, or the lead stops being the larger of the two spans. The two differences are the point of the chart: it draws them as adjacent shaded bands so a reader sees which is wider, and both numbers are the difference of two bar labels printed beside them, so a QCEW revision that moved one bar without moving its caption would put a visible band next to a wrong number. That is what this asserts against. The last clause guards the source line under the chart, which is the honest complication: a job count is not a concentration, and three of the states Ohio outranks on the count outrank it on the share.",
+   "official_check": "Re-download the QCEW 2024 by-industry file for NAICS 326 and re-derive the peers page; states.json is a straight cut of its top ten."
   },
   {
    "id": "card-peers-metros",
-   "text": "Peers card: Akron is 6th among the 155 metros that disclose, and 227 metros are withheld.",
+   "text": "Peers card: Akron is 6th of the 155 metros that disclose, where 1st is the largest, and 227 metros are withheld.",
    "source": "BLS QCEW 2024, NAICS 326, private, ranks among DISCLOSED metros only, via peers/data/peers.json",
    "assert": "D['peers']['metros']['326']['rank_emp'] == 6 and D['peers']['metros']['326']['of_disclosed'] == 155 and D['peers']['visibility']['metro']['suppressed'] == 227",
    "actual": "(D['peers']['metros']['326']['rank_emp'], D['peers']['metros']['326']['of_disclosed'], D['peers']['visibility']['metro']['suppressed'])",
@@ -85,11 +104,19 @@
   },
   {
    "id": "card-lq-paint-rubber",
-   "text": "Location-quotient card: paint and coatings run 5.96 times the national share and have led all six polymer industries every year since 2015; rubber products run 2.44 times.",
+   "text": "Location-quotient card: paint and coatings fill 5.96 times as large a share of local jobs as they do of the country's, and have led all six polymer industries every year since 2015; rubber products run 2.44 times.",
    "source": "BLS QCEW components, 2015-2025, via location-quotient/data/lq.json",
    "assert": "abs(one(c for c in D['lq']['composite'] if c['naics'] == '3255' and c['year'] == max(x['year'] for x in D['lq']['composite']))['lq'] - 5.9635) <= 0.005 and abs(one(c for c in D['lq']['composite'] if c['naics'] == '3262' and c['year'] == max(x['year'] for x in D['lq']['composite']))['lq'] - 2.4424) <= 0.005 and (lambda ys: all(sorted([c for c in D['lq']['composite'] if c['year'] == y and c['lq']], key=lambda c: -c['lq'])[0]['naics'] == '3255' for y in ys) and len(ys) == 11)(sorted(set(c['year'] for c in D['lq']['composite'])))",
    "actual": "(one(c for c in D['lq']['composite'] if c['naics'] == '3255' and c['year'] == max(x['year'] for x in D['lq']['composite']))['lq'], one(c for c in D['lq']['composite'] if c['naics'] == '3262' and c['year'] == max(x['year'] for x in D['lq']['composite']))['lq'])",
    "falsified_if": "A QCEW revision moves either concentration by more than 0.005, another industry outranks paint in any of the eleven years, or the series stops being eleven years long."
+  },
+  {
+   "id": "card-cluster-health",
+   "text": "Cluster-health card: 24,030 jobs in 2025 with 12 of 36 county-industry figures withheld; on the 21 figures published every year since 2015 the count fell 802 in a year, from 24,259 to 23,457, a third straight fall; three of the five measures moved further than they usually move; and federal contracting, up from $22.5 million to $39.0 million, is not one of the three.",
+   "source": "cluster-health/data/health.json, itself recomputed from six pages' shipped data",
+   "assert": "D['ch2']['moved_more_than_usual'] == 3 and len(D['ch2']['tiles']) == 5 and one(t for t in D['ch2']['tiles'] if t['id'] == 'scale')['value'] == '24,030' and one(t for t in D['ch2']['tiles'] if t['id'] == 'scale')['direction']['value'] == -802 and one(t for t in D['ch2']['tiles'] if t['id'] == 'capital')['band']['verdict'] == 'ordinary' and round(one(t for t in D['ch2']['tiles'] if t['id'] == 'capital')['direction']['pct']) == 73 and len([t for t in D['ch2']['tiles'] if t['band']['verdict'] == 'above']) == 3 and (lambda Y: round(Y[2024] / 1e6, 1) == 22.5 and round(Y[2025] / 1e6, 1) == 39.0)({fy: sum(r['real'] for r in D['fed']['naics'] if r['fy'] == fy) for fy in set(r['fy'] for r in D['fed']['naics'])}) and one(t for t in D['ch2']['tiles'] if t['id'] == 'scale')['direction']['streak'] == 3",
+   "actual": "(D['ch2']['moved_more_than_usual'], [(t['id'], t['band']['verdict']) for t in D['ch2']['tiles']], one(t for t in D['ch2']['tiles'] if t['id'] == 'scale')['direction']['words'])",
+   "falsified_if": "A QCEW revision moves the 2025 count, the matched-county fall, the run of falls, or either end of the contracting rise; or a fourth measure joins the three that moved further than usual, which would falsify 'three of the five'; or federal contracting stops being an ordinary-sized move, which would falsify 'is not one of them'. The card had NO guard at all before this, and it was printing '802' and '24,030' side by side as though one were the endpoint of the other. THREE DIFFERENT BASES sit in this one sentence: 24,030 is the 2025 total with twelve county figures withheld, 24 figures are published in 2025, and the 802 is measured on the 21 figures published in every year since 2015, running 24,259 to 23,457. Each base is named on the card now, and a reader who subtracts the two numbers printed beside the 802 gets 802."
   },
   {
    "id": "card-wages-premium",
@@ -101,15 +128,15 @@
   },
   {
    "id": "card-churn",
-   "text": "Churn card: 111,529 hire events and 111,361 separations produced 168 net jobs, and the average quarter moves 10.8 percent of the workforce.",
+   "text": "Churn card: 111,529 hires and 111,361 separations across 55 quarters produced 168 net jobs, and in the average quarter hires run 10.8 percent of the workforce against 10.7 percent for separations.",
    "source": "Census QWI 2012Q1-2025Q3, NAICS 326, PIC-12, via churn/data/churn.json",
-   "assert": "sum(q['hires'] for q in D['ch']['quarters']) == 111529 and sum(q['seps'] for q in D['ch']['quarters']) == 111361 and sum(q['hires'] for q in D['ch']['quarters']) - sum(q['seps'] for q in D['ch']['quarters']) == 168 and round(sum(q['churn_rate'] for q in D['ch']['quarters']) / len(D['ch']['quarters']) * 100, 1) == 10.8",
-   "actual": "(sum(q['hires'] for q in D['ch']['quarters']), sum(q['seps'] for q in D['ch']['quarters']), round(sum(q['churn_rate'] for q in D['ch']['quarters']) / len(D['ch']['quarters']) * 100, 1))",
-   "falsified_if": "A QWI re-benchmark restates any quarter. The revisions page says outright that QWI restates whole histories and nothing has measured how far, so this claim is the one on the hub most likely to break on a routine refresh."
+   "assert": "sum(q['hires'] for q in D['ch']['quarters']) == 111529 and sum(q['seps'] for q in D['ch']['quarters']) == 111361 and sum(q['hires'] for q in D['ch']['quarters']) - sum(q['seps'] for q in D['ch']['quarters']) == 168 and len(D['ch']['quarters']) == 55 and abs(sum(q['hires'] / q['emp'] for q in D['ch']['quarters']) / len(D['ch']['quarters']) * 100 - 10.8) < 0.05 and abs(sum(q['seps'] / q['emp'] for q in D['ch']['quarters']) / len(D['ch']['quarters']) * 100 - 10.7) < 0.05",
+   "actual": "(sum(q['hires'] for q in D['ch']['quarters']), sum(q['seps'] for q in D['ch']['quarters']), len(D['ch']['quarters']), round(sum(q['hires'] / q['emp'] for q in D['ch']['quarters']) / len(D['ch']['quarters']) * 100, 2), round(sum(q['seps'] / q['emp'] for q in D['ch']['quarters']) / len(D['ch']['quarters']) * 100, 2))",
+   "falsified_if": "A QWI re-benchmark restates any quarter, or the span stops being 55 quarters, or either flow rate moves by half a tenth. The card used to report one merged 10.8 percent as what 'the average quarter moves in or out', which reads as both flows added and would be about 21.5 percent; the shipped churn_rate is the MEAN of the two sides, so each side is now printed and asserted on its own, and the near-equality is the reason 111,529 hires and 111,361 separations net out to 168 jobs."
   },
   {
    "id": "card-occupations",
-   "text": "Occupations card: one job in nine is a molding-machine setter, 51 percent of the country's setters work in this industry, and all four metros pay the degree occupations under the national rate.",
+   "text": "Occupations card: one job in nine is a molding-machine setter, just over half the country's setters work in this industry, and all four metros pay the jobs that need a degree below the national rate.",
    "source": "BLS Employment Projections matrix 2024-34 and OEWS May 2024 metro files, via occupations/data/viz-data.json",
    "assert": "(lambda s: s['pct_of_industry'] == 10.9 and round(s['pct_of_occupation']) == 51)(one(m for m in D['occ']['mix'] if m['soc'] == '51-4072')) and all(v['degree_median_ratio'] < 1 for v in D['occ']['pay_totals']['ratio_by_metro'].values()) and len(D['occ']['pay_totals']['ratio_by_metro']) == 4",
    "actual": "(one(m for m in D['occ']['mix'] if m['soc'] == '51-4072')['pct_of_industry'], one(m for m in D['occ']['mix'] if m['soc'] == '51-4072')['pct_of_occupation'], [v['degree_median_ratio'] for v in D['occ']['pay_totals']['ratio_by_metro'].values()])",
@@ -117,15 +144,15 @@
   },
   {
    "id": "card-realwage",
-   "text": "Real-wage card: among the 56 metros with a real polymer workforce, Akron is 33rd on weekly wages and 19th on what those wages buy.",
+   "text": "Real-wage card: among the 56 metros with enough polymer employment to compare, Akron is 33rd on weekly pay and 19th on what that pay buys, where 1st is best, so counting local prices lifts it across the middle of the pack.",
    "source": "BLS QCEW 2023 wages against BEA regional price parities, via realwage/data/realwage.json",
-   "assert": "(lambda a: a['big_rank_nominal'] == 33 and a['big_rank_real'] == 19)([r for r in D['rw']['big'] if r['area'] == '10420'][0]) and len(D['rw']['big']) == 56",
+   "assert": "(lambda a: a['big_rank_nominal'] == 33 and a['big_rank_real'] == 19)([r for r in D['rw']['big'] if r['area'] == '10420'][0]) and len(D['rw']['big']) == 56 and 33 > (len(D['rw']['big']) + 1) / 2 > 19",
    "actual": "([r for r in D['rw']['big'] if r['area'] == '10420'][0]['big_rank_nominal'], [r for r in D['rw']['big'] if r['area'] == '10420'][0]['big_rank_real'], len(D['rw']['big']))",
-   "falsified_if": "A BEA price-parity revision or a QCEW wage revision moves either rank by one place, or the employment floor changes the comparison set away from 56 metros."
+   "falsified_if": "A BEA price-parity revision or a QCEW wage revision moves either rank by one place, or the employment floor changes the comparison set away from 56 metros. The added clause is the guard on the word 'across': the midpoint of 56 metros is 28.5, and the sentence only holds while 33 sits below it and 19 above."
   },
   {
    "id": "card-cost-scissors",
-   "text": "Cost-scissors card, question and answer line: none of the 2022 spike came back out of finished polymer prices, natural gas gave back its whole spike, and retracement falls with every step away from the wellhead.",
+   "text": "Cost-scissors card, answer line and finding: finished polymer prices never came back down, natural gas gave back its whole spike, and the further a price sits from the wellhead the less of the 2022 spike came back out.",
    "source": "BLS producer price indexes and EIA series, rebased to January 2019, via cost-scissors/data/scissors.json",
    "assert": "(lambda g: g['feedstock'] > g['resin'] > g['product'])({s['stage']: max(x['retraced'] for x in D['cs']['series'] if x['stage'] == s['stage'] and x['retraced'] is not None) for s in D['cs']['series'] if s['stage'] in ('feedstock', 'resin', 'product')}) and all(s['retraced'] == 0 and s['peak']['date'] == s['now']['date'] for s in D['cs']['series'] if s['stage'] == 'product') and (lambda g: g['now']['index'] < 100 and g['retraced'] > 1)([s for s in D['cs']['series'] if 'natural gas' in s['label'].lower()][0])",
    "actual": "{s['label']: s['retraced'] for s in D['cs']['series'] if s['stage'] in ('feedstock', 'resin', 'product')}",
@@ -141,11 +168,11 @@
   },
   {
    "id": "card-funding-map",
-   "text": "Funding-map card: $106.3 million through three public awards and twenty-one named recipients.",
+   "text": "Funding-map card: $106.3 million in all — $85.3 million across three public awards plus $21.0 million of matching money — across twenty-one named recipients, and the $51.0 million Tech Hub award is the largest of the three and sits inside that total.",
    "source": "PIC award register as of 13 August 2026, via funding-map/data/funding.json",
-   "assert": "D['fm']['meta']['totals']['total'] == 106290451 and abs(D['fm']['meta']['totals']['total'] / 1e6 - 106.3) <= 0.05 and len(D['fm']['sources']) == 3 and len(D['fm']['recipients']) == 21",
-   "actual": "(D['fm']['meta']['totals']['total'], len(D['fm']['sources']), len(D['fm']['recipients']))",
-   "falsified_if": "A fourth award is added, a recipient is added or removed, or the total moves off $106.3M when rounded to the tenth of a million."
+   "assert": "(lambda T, S: T['awards'] == 85_335_784 and T['match'] == 20_954_667 and T['total'] == 106_290_451 and T['awards'] + T['match'] == T['total'] and T['awards'] == sum(s['award'] for s in S) and T['match'] == sum(s['matchAmount'] for s in S) and len(S) == 3 and max(s['award'] for s in S) == D['hub']['award'] and round(T['awards'] / 1e6, 1) + round(T['match'] / 1e6, 1) == round(T['total'] / 1e6, 1) == 106.3)(D['fm']['meta']['totals'], D['fm']['sources']) and len(D['fm']['recipients']) == 21",
+   "actual": "(D['fm']['meta']['totals'], [s['award'] for s in D['fm']['sources']], D['hub']['award'], len(D['fm']['recipients']))",
+   "falsified_if": "A fourth award is added, a recipient is added or removed, the Tech Hub award stops being the largest of the three, or any of the three printed millions moves. The last clause is the arithmetic guard: the card prints $85.3M and $21.0M next to a $106.3M total, so the two rounded parts have to keep adding to the rounded whole. They do not have to in general — three figures rounded to a tenth can miss their own total by a tenth — which is exactly why this is asserted rather than assumed."
   },
   {
    "id": "card-revisions",
@@ -157,19 +184,19 @@
   },
   {
    "id": "card-timeline",
-   "text": "Timeline card: 32 proven events from 1898, and 4 public events in the 34 months before October 2023 against 68 in the 34 months since.",
+   "text": "Timeline card: 32 proven milestones between 1898 and 2012 in the heritage register, and, in the separate operating register, 68 public developments in the 34 months after the October 2023 designation against 4 in the 34 months before.",
    "source": "PIC heritage register and operating record as of 13 August 2026, via timeline/data/",
-   "assert": "D['tlh']['meta']['counts']['shown'] == 32 and min(e['year'] for e in D['tlh']['events']) == 1898 and (lambda des: len([e for e in D['tlt']['events'] if des <= e['date'] and e['delivered'] and e.get('show')]) == 68 and len([e for e in D['tlt']['events'] if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))]) == 4)(one(e['date'] for e in D['tlt']['events'] if e['date'].startswith('2023') and 'esignat' in e['title']))",
-   "actual": "(D['tlh']['meta']['counts']['shown'], min(e['year'] for e in D['tlh']['events']), D['tlt']['meta']['counts'])",
-   "falsified_if": "A heritage row is promoted from claimed to proven, or a delivered public event is added to or removed from either 34-month window. Both counts move as the register grows, which is why they are read from the register rather than typed here."
+   "assert": "D['tlh']['meta']['counts']['shown'] == 32 and min(e['year'] for e in D['tlh']['events']) == 1898 and max(e['year'] for e in D['tlh']['events']) == 2012 and (lambda des: des.startswith('2023-10') and len([e for e in D['tlt']['events'] if des <= e['date'] and e['delivered'] and e.get('show')]) == 68 and len([e for e in D['tlt']['events'] if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))]) == 4)(one(e['date'] for e in D['tlt']['events'] if e['date'].startswith('2023') and 'esignat' in e['title']))",
+   "actual": "(D['tlh']['meta']['counts']['shown'], min(e['year'] for e in D['tlh']['events']), max(e['year'] for e in D['tlh']['events']), D['tlt']['meta']['counts'])",
+   "falsified_if": "A heritage row is promoted from claimed to proven, either end of the heritage span moves, the designation date moves out of October 2023, or a delivered public event is added to or removed from either 34-month window. The card used to call both registers 'events', which invited a reader to add 4 and 68 and expect 32; the two counts come from different files and the sentence now says so, with the heritage span printed so the two are visibly different periods."
   },
   {
    "id": "picker-footprint",
-   "text": "The county picker offers exactly the twelve counties the federal-data pages were built from.",
+   "text": "The twelve counties are named in the card key and offered by the county picker, and they are exactly the footprint the federal-data pages were built from.",
    "source": "PIC-12 footprint as shipped in federal-money/data/federal.json meta, itself written by _data/build/footprints.py from pic-geo",
    "assert": "sorted(D['fed']['meta']['footprint']['counties']) == ['Ashtabula', 'Cuyahoga', 'Geauga', 'Lake', 'Lorain', 'Mahoning', 'Medina', 'Portage', 'Stark', 'Summit', 'Trumbull', 'Wayne'] and D['fed']['meta']['footprint']['n'] == 12",
    "actual": "D['fed']['meta']['footprint']['counties']",
-   "falsified_if": "PIC-12 changes in pic-geo and the picker's list in app.js is not changed with it. This is the guard that keeps a hand-typed list in app.js honest: the list is checked against shipped data rather than trusted."
+   "falsified_if": "PIC-12 changes in pic-geo and either the printed list in index.html or the picker's list in app.js is not changed with it. This is the guard that keeps two hand-typed lists honest: both are checked against shipped data rather than trusted."
   },
   {
    "id": "picker-four-metros",

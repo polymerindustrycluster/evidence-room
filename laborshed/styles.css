@@ -73,6 +73,10 @@
   font-variant-numeric:proportional-nums}
 .pull-q .pull-t{display:block;margin:14px 0 0;font-size:19px;line-height:1.5;
   color:#243135}
+/* The reconciliation under the first band: caption register, because it is the hidden
+   step behind two totals rather than a second finding competing with them. */
+.pull-q .pull-note{display:block;margin:12px 0 0;font-size:14px;line-height:1.6;
+  color:var(--caption)}
 
 /* The dumbbell's two series are told apart by SHAPE first — filled disc against open
    ring — because teal and slate sat at 0.21 and 0.08 relative luminance and printed as

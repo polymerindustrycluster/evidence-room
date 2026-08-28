@@ -35,13 +35,14 @@ Raw pulls live beside that script so a derivation can be re-run without re-fetch
   overtime looks like a pay rise.
 - Withheld cells are absent, not zero, which is why 2025 has 51 rows and not 72 (6 tracked
   industries × 12 counties); across 2015–2025 a year carries 48–58 rows.
-- **Parent/child overlap:** the data ship industry groups (325 chemical mfg, 326 plastics &
+- **Parent/child overlap:** the data ship industry families (325 chemical mfg, 326 plastics &
   rubber) alongside their disclosed sub-industries (3252, 3255, 3261, 3262), so a county can
-  appear at both levels and the 51 cells are not additive. Counted once at each county's
-  finest disclosed level, the tally is 27 of 35 above — the same roughly three-in-four share
-  as the headline 40 of 51. Employment-weighted hero shares use the deduplicated set only.
-  (This reconciliation is published in the methodology box; before 2026-08-28 it sat in the
-  chart-1 source line, which pushed that caption to ~50 words against a 45-word budget.)
+  appear at both levels and the 51 cells are not 51 separate places. Counted once at each
+  county's finest disclosed level, the tally is 27 of 35 above — **77%, against 78% for the
+  headline 40 of 51**, both divided out on the page rather than described. Those 27 cover
+  20,463 of the 26,402 jobs in the deduplicated set. The reconciliation is published twice:
+  in hero card 1's detail line, beside the headline it corrects, and in full in the
+  methodology box.
 - The national comparison (`vs_us`) is the counterweight, not a footnote: 44 of 51 cells pay
   below the same industry's U.S. average (median 0.88×).
 
@@ -80,6 +81,28 @@ the reporting requirement is the aspiration, not the gate.
 
 ## Revision log
 
+- **2026-08-28 (naive-reader pass)** — a reader who saw only the rendered page could not
+  make three things close, so those went first. (1) The methodology called 27/35 and 40/51
+  "the same roughly three-in-four share" while a hero card rounded the same idea to 78%:
+  three roundings of one fact. Both percentages are now computed and printed side by side,
+  77% against 78%, guarded by `dedup-reconciles-headline`. (2) The 78% employment-weighted
+  hero card was unverifiable (no job count appeared anywhere on the page) and sat one
+  rounding away from 40/51 = 78.4%, so it read as the headline said twice. It came out of
+  the hero row; the employment totals it rests on (20,463 of 26,402) are printed in the
+  methodology, and its slot went to the page's own counterweight, 44 of 51, whose card
+  states the 33 overlap so that 40 + 44 − 33 = 51 closes (`hero-counts-reconcile`). (3) The
+  de-duplicated 27 of 35 moved up into hero card 1's detail line, beside the number it
+  corrects. Chart 1's title claimed a range whose low end was never printed as a ratio:
+  it now reads "down to about three-quarters of it" and 0.77× is printed in the bracket and
+  the fig-sub (`premium-range-ends`). Both scatter and trend axes stopped labelling before
+  the data ended; headroom now puts the outermost tick past the outermost dot on every
+  scale, and the mobile chart-1 axis, which printed nothing below 1.0×, carries the same
+  0.25 step as desktop. Vertical axes lost their left-right arrows for ↑. QCEW is spelled
+  out in the byline, "covered" glossed in the lede, and NAICS plus all six industry codes
+  named in the methodology (`industry-codes-listed`). Both charts gained a dot-size key
+  drawn by the same radius function as the marks. The empty fourth quadrant is now labelled
+  0 pairings on both widths. The h2 "2.09× is a life, not a ratio" was a banned contrastive
+  inversion and is now "The top of the chart is a $129,000 job".
 - **2026-08-28 (plain-reading pass)** — the ratio is the page's only unit, and it was being
   handed to the reader as arithmetic. Chart 1's how-to-read line said "average weekly wage ÷
   the county's all-industry average" and left the reader to work out that right meant better;

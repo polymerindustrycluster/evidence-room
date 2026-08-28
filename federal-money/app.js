@@ -87,6 +87,11 @@ const yearsClosed = award / avgClosed;         // the same sum, partial year rem
 const clears = fys.filter(fy => real[fy] >= award);
 const gap = Math.min(...fys.filter(fy => real[fy] < award).map(fy => award - real[fy]));
 const nearFy = fys.find(fy => real[fy] < award && award - real[fy] === gap);
+/* THE SUBTRACTION A READER ACTUALLY DOES. The chart labels its bars to the tenth of a
+   million, so the eye reads $51.0M against $50.8M and gets $200k while the true distance
+   is $245k. Both distances are exact here and printed on the bar they belong to; the
+   rounding step that separates them is stated once, in the figure's how-to-read line. */
+const over = real[clears[0]] - award;           // how far the one clearing year clears by
 
 const byCode = {};
 D.naics.forEach(r => {
@@ -97,6 +102,13 @@ D.naics.forEach(r => {
 const codes = Object.values(byCode).sort((a, b) => b.real - a.real);
 const top = codes[0], second = codes[1];
 const topTwoShare = (top.real + second.real) / totalReal;
+/* THE BAR LABELS DO NOT ADD UP TO THE CARD ABOVE THEM, and they cannot: eight figures
+   rounded to the tenth of a million add to $279.2M under a $279.3M total, and two codes
+   print the same $23.5M while drawing different lengths. Both are the same rounding, and
+   both are stated under the chart rather than left for a reader to find and distrust. */
+const dimes = v => Math.round(v / 1e5);          // integer tenths-of-a-million, no FP drift
+const codeDimes = codes.reduce((s, c) => s + dimes(c.real), 0);
+const tie = codes.find((c, i) => i && dimes(c.real) === dimes(codes[i - 1].real));
 /* Hand-shortened bar labels. Census names run to seventy characters and a .slice() would
    truncate mid-word; the table below the chart carries the full names. */
 const SHORT = {
@@ -128,12 +140,19 @@ const troughWord = troughMissing ? label(troughMissing).split(" ")[0].toLowerCas
    definition line carries the full reading. The detail line wraps past about thirty
    characters, so the translation goes on the longer-lived card, not the first one.
    "Closed years" was register-speak for years that have finished. */
+/* A MAGNITUDE WITHOUT A ROLE IS A NUMBER A READER CANNOT PLACE. The first card used to
+   read "a year, on average", which says what the arithmetic is and not what the figure is
+   for: it is the yardstick, the money already arriving that the award gets measured
+   against, and a reader who does not know that cannot tell whether a bigger one would be
+   good news. The third card carries the finished-year average it comes from, because
+   "1.4 counting finished years only" asked the reader to trust a ratio whose denominator
+   the page never printed. */
 PV.figures([
-  ["key", short(avgReal), "a year, on average",
-   `FY${fys[0]}–FY${fys.at(-1)}, in 2025 dollars`],
+  ["key", short(avgReal), "a year the region already gets",
+   `${fys.length}-year average, 2025 dollars`],
   ["", short(award), "the Tech Hub award", `${A.leads.length} awards, as awarded`],
   ["", years.toFixed(1), "routine years to match it",
-   `${yearsClosed.toFixed(1)} counting finished years only`],
+   `${yearsClosed.toFixed(1)} on ${short(avgClosed)}, finished years`],
   ["", short(totalReal), "eight-year total",
    `${short(totalNom)} in the dollars of the day`]
 ]);
@@ -187,16 +206,29 @@ function yearsDesktop() {
        through even though nothing overlapped it. A label whose baseline lands within a
        line-width of a reference rule is raised clear above the rule instead, never
        lowered: the FY2019 label already sits above the award line and must stay there. */
-    const cx = xs(i) + bw / 2, s = short(real[fy]);
+    /* THE CROSSING IS DECIDED BY A DIFFERENCE THE CHART CANNOT DRAW. FY2019 clears the
+       award rule by $647k, about two pixels on a $60M scale, and FY2021 misses by half
+       that. A reader who cannot see it has to take the claim on the caption's word, so
+       the two bars nearest the rule carry their exact distance from it in their own
+       label — the number goes where the eye already is. */
+    const cx = xs(i) + bw / 2;
+    const s = short(real[fy]) + (fy === clears[0] ? ` · ${short(over)} over`
+      : fy === nearFy ? ` · ${short(gap)} under` : "");
     let ly = ys(real[fy]) - 9;
     const near = REFS.find(r => Math.abs(ly - r) < 16);
     if (near !== undefined) ly = Math.min(ly, near - 13);
     txt(svg, s, {x: cx, y: ly, "text-anchor": "middle", class: "pv-lab"});
   });
 
-  txt(svg, `FY${clears[0]} beat the whole award on its own.`,
+  /* A DERIVED NUMBER HAS TO FOLLOW FROM THE NUMBERS PRINTED BESIDE IT. This line read
+     "came within $245k of it" above two labels, $51.0M and $50.8M, whose difference is
+     $200k — so a reader who checked the page against itself found a contradiction and had
+     no way to tell which figure to keep. Both gaps are now exact and sit on the two bars
+     as well; the rounding step that hides them is stated once, in the figure's how-to-read
+     line, rather than twice here and again on the phone layout. */
+  txt(svg, `FY${clears[0]} beat the whole award on its own, by ${short(over)}.`,
     {x: m.l + 4, y: 24, class: "pv-lab"});
-  txt(svg, `FY${nearFy} came within ${short(gap)} of it.`,
+  txt(svg, `FY${nearFy} fell ${short(gap)} short of it.`,
     {x: m.l + 4, y: 42, class: "pv-labq"});
   /* A REFERENCE LINE IS LABELLED BY WHAT CROSSING IT MEANS. This label used to read
      "award $51.0M = about 1.5 routine years", which is the arithmetic: it left the reader
@@ -242,7 +274,9 @@ function yearsDesktop() {
 }
 
 function yearsMobile() {
-  const m = {t: 74, r: 10, b: 30, l: 10}, W = 375, rowH = 38;
+  /* Top margin carries one more line than it used to: the two gaps to the award rule are
+     the page's most-checked subtraction and a phone reader does it too. */
+  const m = {t: 92, r: 10, b: 30, l: 10}, W = 375, rowH = 38;
   const H = m.t + fys.length * rowH + m.b;
   const {svg, w} = PV.chart("fy", {W, H, m});
   hatch(svg, "fmhatch");
@@ -283,10 +317,12 @@ function yearsMobile() {
   /* Same reading as the desktop chart: the orange rule is labelled by what passing it
      means, not by its value alone. */
   txt(svg, `Bars past the orange line beat the award. FY${clears[0]} did.`,
-    {x: m.l, y: 20, class: "pv-labq"});
-  txt(svg, `award ${short(award)}`, {x: xs(award), y: 42, "text-anchor": "end",
+    {x: m.l, y: 18, class: "pv-labq"});
+  txt(svg, `By ${short(over)}. FY${nearFy} fell ${short(gap)} short.`,
+    {x: m.l, y: 36, class: "pv-labq"});
+  txt(svg, `award ${short(award)}`, {x: xs(award), y: 58, "text-anchor": "end",
     class: "pv-labq", fill: AWARD});
-  txt(svg, `average ${short(avgReal)}`, {x: xs(avgReal), y: 62, "text-anchor": "end",
+  txt(svg, `average ${short(avgReal)}`, {x: xs(avgReal), y: 78, "text-anchor": "end",
     class: "pv-labq", fill: INK});
 }
 
@@ -296,7 +332,11 @@ function drawCodes() { MOBILE.matches ? codesMobile() : codesDesktop(); }
 function codesDesktop() {
   const m = {t: 44, r: 250, b: 60, l: 236}, rowH = 34;
   const {svg, W, w, h} = PV.chart("na", {W: 1100, rows: codes.length, rowH, m});
-  const maxV = top.real;
+  /* AN AXIS THAT STOPS BEFORE THE DATA DOES. Scaled to the top bar exactly, the ticks
+     landed on $0/$25M/$50M/$75M and the $98.2M bar ran past the last labelled one, so the
+     longest bar on the page had nothing to measure it against. Rounding the domain up to
+     the next $25M puts a tick at the end of the longest bar. */
+  const maxV = Math.ceil(top.real / 25e6) * 25e6;
   const xs = v => m.l + (v / maxV) * w;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys: () => 0, xt: ticks(0, maxV, 4), yt: [],
     xfmt: short,
@@ -374,11 +414,17 @@ function codesMobile() {
      the repository they live in: reproduction detail addressed to a maintainer, printed
      under a chart for an audience that has no repository. It now sits in the README and
      the generated methodology box, where reproduction detail belongs. */
+  /* "The seven amounts sum to $51.0M" sat directly under seven figures that add to
+     $51.1M. Both are true — the unrounded amounts total the award line to the dollar,
+     and each printed figure is rounded to the nearest $0.1M — but only one was said, so
+     a reader who added the column found the page contradicting itself. The partner match
+     moved into the Band 3 lede, where a fact a reader wants belongs, and out of here. */
+  const leadDimes = A.leads.reduce((s, l) => s + Math.round(l.amount / 1e5), 0);
   document.getElementById("leadsrc").innerHTML =
     `PIC funding map, verified against the signed federal Notices of Award. The seven
-     amounts sum to ${short(A.leads.reduce((s, l) => s + l.amount, 0))}, the award line on
-     the first chart; a ${short(A.match)} ${A.match_label} sits alongside them, is not
-     federal money, and is not counted here.`;
+     amounts sum to exactly ${usd(A.leads.reduce((s, l) => s + l.amount, 0))}, which is the
+     award line on the first chart. Each figure above is rounded to the nearest $0.1M, so
+     the seven as printed add to $${(leadDimes / 10).toFixed(1)}M.`;
 }
 
 /* ------------------------------------------------------ tables and source lines */
@@ -404,9 +450,12 @@ document.getElementById("fytable").innerHTML = withNotes(tableView("y",
    the ratio the page prints is the less flattering of the two. Award line:
    ${A.meta.source} ${A.meta.note} ${D.meta.scope}`);
 document.getElementById("fysrc").innerHTML =
-  `${D.meta.source}, in the twelve PIC-12 counties, marked up to 2025 dollars with BLS
-   CPI-U annual averages. FY${PARTIAL} is not over: its bar is the year so far, drawn
-   hatched, and not comparable to the seven finished years.`;
+  `${D.meta.source}, in the twelve PIC-12 counties, marked up to 2025 dollars with the
+   federal consumer price index (BLS CPI-U annual averages). FY${PARTIAL} is not over: its
+   bar is the year so far, drawn hatched, and not comparable to the seven finished years.
+   A year with no row for an industry — FY${trough} for
+   ${label(troughMissing).toLowerCase()} — is a year with nothing recorded, not a
+   confirmed zero.`;
 
 document.getElementById("natable").innerHTML = withNotes(tableView("n",
   "Federal polymer obligations by industry code",
@@ -418,9 +467,13 @@ document.getElementById("natable").innerHTML = withNotes(tableView("n",
    by hand; the census names above are the full ones.`);
 document.getElementById("nasrc").innerHTML =
   `${D.meta.source}, added up FY${fys[0]}–FY${fys.at(-1)} in 2025 dollars. Pair every
-   industry with every year and only ${D.naics.length} of the
-   ${codes.length * fys.length} pairs carry an obligation at all; a missing one is a year
-   with nothing recorded for that industry, rather than a confirmed zero.`;
+   industry with every year — ${codes.length} industries by ${fys.length} years — and only
+   ${D.naics.length} of the ${codes.length * fys.length} pairs carry an obligation at all;
+   a missing one is a year with nothing recorded for that industry, rather than a confirmed
+   zero. Every bar label is rounded to the nearest $0.1M, so the eight add to
+   $${(codeDimes / 10).toFixed(1)}M against the ${short(totalReal)} eight-year total${tie
+     ? `, and two codes both print ${short(tie.real)} while differing below the rounding`
+     : ""}; the table has the exact figures.`;
 
 /* ------------------------------------------------------------------------ assemble */
 function drawAll() { drawYears(); drawCodes(); }

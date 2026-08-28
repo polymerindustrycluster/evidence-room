@@ -73,6 +73,123 @@ async function decorate() {
   return live.length;
 }
 
+/* ------------------------------------------------------------------ the one chart
+
+   THE HUB HAD NO GRAPHIC. Not an axis, a bar, a line or a map, on a page whose masthead
+   says "Interactive evidence" and whose argument is that numbers should be inspectable. A
+   naive reader finished it able to describe the METHOD and unable to state a single
+   finding's direction: nothing on the page showed whether anything was bigger, smaller,
+   rising or falling. This draws the H1's own claim, and only that.
+
+   THE ARGUMENT IS THE TWO SHADED BANDS, not the bars. Ohio's lead over Texas (10,248) is
+   drawn beside the whole spread from second place down to eighth (8,865), so "wider than"
+   is something the reader sees rather than something the heading asserts. Both numbers are
+   printed, and both are the difference of two bar labels standing next to them.
+
+   Values are read from data/states.json, a cut of the peers page's own shipped file;
+   nothing here is typed. index-chart-states asserts the copy still matches it. */
+const FMT = n => n.toLocaleString("en-US");
+
+function statesChart(D) {
+  const S = D.states;
+  if (!document.getElementById("states")) return;
+  /* Below 760px pic-viz.css pins every chart to a 860px minimum and pans it sideways. A
+     ten-row ranked bar does not need that: it re-lays out honestly at phone width with the
+     name above each bar. `.chart.reflow` in styles.css releases the pan for this one. */
+  const MOB = innerWidth < 760;
+  const XMAX = 56000;
+
+  const OHIO = S[0], TEX = S[1], EIGHTH = S[7];
+  const lead = OHIO.emp - TEX.emp;               // 10,248
+  const spread = TEX.emp - EIGHTH.emp;           // 8,865
+
+  const C = MOB
+    ? PV.chart("states", {W: 360, m: {t: 56, r: 12, b: 40, l: 12}, rows: S.length, rowH: 50})
+    : PV.chart("states", {W: 1000, m: {t: 56, r: 96, b: 42, l: 136}, rows: S.length,
+                          rowH: 40});
+  const {svg, m, w} = C;
+  const x = v => m.l + (v / XMAX) * w;
+  const rowTop = i => m.t + i * (MOB ? 50 : 40);
+  const plotBot = rowTop(S.length);
+
+  /* Bands first, so every mark and every label draws over them. */
+  if (!MOB) {
+    PV.el("rect", {x: x(EIGHTH.emp), y: m.t, width: x(TEX.emp) - x(EIGHTH.emp),
+      height: plotBot - m.t, fill: "rgba(140,132,120,.13)"}, svg);
+    PV.el("rect", {x: x(TEX.emp), y: m.t, width: x(OHIO.emp) - x(TEX.emp),
+      height: plotBot - m.t, fill: "rgba(12,100,115,.13)"}, svg);
+  }
+
+  /* The second-place line. Labelled by what crossing it MEANS, not by what it equals:
+     exactly one bar reaches past it, which is the whole finding. */
+  const ref = [EIGHTH.emp, TEX.emp, OHIO.emp];
+  (MOB ? [TEX.emp] : ref).forEach(v => {
+    PV.el("line", {x1: x(v), y1: m.t, x2: x(v), y2: plotBot,
+      stroke: "var(--pv-axis)", "stroke-width": 1}, svg);
+  });
+
+  const barH = MOB ? 20 : 22;
+  S.forEach((d, i) => {
+    const lead0 = i === 0;
+    const by = MOB ? rowTop(i) + 22 : rowTop(i) + (40 - barH) / 2;
+    if (MOB) {
+      PV.txt(svg, d.name, {x: m.l, y: rowTop(i) + 15, "text-anchor": "start",
+        "font-size": 14, "font-weight": lead0 ? 800 : 600, fill: "#26333A"});
+      PV.txt(svg, FMT(d.emp), {x: m.l + w, y: rowTop(i) + 15, "text-anchor": "end",
+        "font-size": 14, "font-weight": lead0 ? 800 : 400, fill: "#26333A"});
+    } else {
+      PV.txt(svg, d.name, {x: m.l - 12, y: by + barH - 6, "text-anchor": "end",
+        "font-size": 15, "font-weight": lead0 ? 800 : 400, fill: "#26333A"});
+      PV.txt(svg, FMT(d.emp), {x: x(d.emp) + 9, y: by + barH - 6, "text-anchor": "start",
+        "font-size": 15, "font-weight": lead0 ? 800 : 400, fill: "#26333A"});
+    }
+    const bar = PV.el("rect", {x: m.l, y: by, width: x(d.emp) - m.l, height: barH,
+      fill: lead0 ? PV.INK : PV.GRAY}, svg);
+    PV.hoverable(bar, `<b>${d.name}</b><br>${FMT(d.emp)} plastics and rubber jobs, 2024<br>
+      ${d.lq}&times; the national share of local jobs`,
+      `${d.name}, ${FMT(d.emp)} jobs`);
+  });
+
+  /* The two spans, named. On a phone there is no room for two labelled bands, so the lead
+     is stated once on Ohio's own row and the eighth-place comparison stays in the heading
+     and the table below. No value is dropped either way. */
+  if (MOB) {
+    /* BOTH LABELS LIVE IN THE TOP MARGIN. Drawn in the gap under Ohio's bar, the lead
+       annotation sat five pixels into the bar itself and printed teal on teal; there is no
+       clear gap on a stacked row layout, so the top margin is the only honest home for it. */
+    PV.txt(svg, `Ohio leads ${TEX.name} by ${FMT(lead)}`, {x: m.l, y: 18,
+      "text-anchor": "start", "font-size": 14, "font-weight": 800, fill: PV.INK});
+    PV.txt(svg, "second place", {x: x(TEX.emp), y: 42, "text-anchor": "middle",
+      "font-size": 13, fill: "var(--pv-muted)"});
+  } else {
+    const cap = (x0, x1, big, small, ink) => {
+      const mid = (x(x0) + x(x1)) / 2;
+      PV.txt(svg, big, {x: mid, y: m.t - 24, "text-anchor": "middle", "font-size": 17,
+        "font-weight": 800, fill: ink});
+      PV.txt(svg, small, {x: mid, y: m.t - 9, "text-anchor": "middle", "font-size": 13,
+        fill: "var(--pv-muted)"});
+    };
+    cap(EIGHTH.emp, TEX.emp, FMT(spread), "second to eighth", "#5E574C");
+    cap(TEX.emp, OHIO.emp, FMT(lead), "Ohio’s lead", PV.INK);
+  }
+
+  PV.el("line", {x1: m.l, y1: m.t, x2: m.l, y2: plotBot, stroke: "var(--pv-axis)",
+    "stroke-width": 1}, svg);
+  PV.txt(svg, MOB ? "Jobs, 2024. Bars start at zero"
+                  : "Jobs in plastics and rubber products, 2024. Bars start at zero",
+    {x: m.l, y: plotBot + 28, "text-anchor": "start", class: "pv-axlab"});
+
+  /* The container is hidden until this line; see the `.chart.jsdrawn` note in styles.css
+     for why the hide can never sit on the svg. */
+  svg.closest(".chart").classList.add("drawn");
+
+  const mount = document.getElementById("statestable");
+  if (mount) mount.innerHTML = PV.tableView("states",
+    "The ten states with the most plastics and rubber jobs, 2024",
+    ["State", "Jobs", "Share of local jobs against the national share"],
+    S.map(d => [d.name, FMT(d.emp), d.lq + "×"]));
+}
+
 /* ------------------------------------------------------------------ county picker
 
    The one interaction on this page, and it does the lookup job the site's own footprint
@@ -158,6 +275,15 @@ try {
   console.error("hub: county picker unavailable —", e.message);
 }
 
+/* Contained like the rest. The heading above the chart states the finding in text, so a
+   failure here costs the picture and not the claim; styles.css hides an undrawn svg rather
+   than leaving a labelled hole. */
+try {
+  statesChart(await PV.data("states.json"));
+} catch (e) {
+  console.error("hub: state ranking chart unavailable —", e.message);
+}
+
 /* Standard methodology + AI disclosure. Generated, not written — see picviz.js. */
 try {
   await PV.methodology({
@@ -172,13 +298,20 @@ try {
                   "page’s own data file, so a correction there fails this page’s gate. " +
                   "Nothing on this page is computed independently of the pages it links to."},
     sourcesNote: "Named on each page this one links to; the register is _data/SOURCES.json.",
-    definitions: `<b>PIC-12</b> is the federal-data footprint and matches the cluster-health
-      dashboard. <b>NEO-14</b> is how company records are tagged in the vault. They share ten
+    /* Every term here used to arrive as itself: PIC, PIC-12, NEO-14, three bare NAICS
+       numbers and "a withheld cell is never a zero", none of them in plain words. Each now
+       leads with the reading and keeps the house term after it. */
+    definitions: `<b>PIC</b> is the Polymer Industry Cluster, the industry group that
+      publishes this site. <b>PIC-12</b> is the twelve-county footprint every federal-data
+      page here is built on, and matches the cluster-health dashboard. <b>NEO-14</b> is the
+      wider fourteen-county area company records are tagged to in the vault. They share ten
       counties, they never reconcile, and no figure from one belongs in a sentence with a
-      figure from the other. PIC’s measurement register is NAICS 3252, 3255 and 326; NAICS
-      325 is context, not cluster. A withheld cell is never a zero. The footprints are
-      defined canonically in the pic-geo package and all three rules are in
-      <span class="mono">_data/METHODS-SOP.md</span>.`});
+      figure from the other. PIC measures itself on three NAICS codes: 3252 for resins,
+      3255 for paints and coatings, and 326 for plastics and rubber products. NAICS 325, the
+      wider chemicals family, is context rather than cluster. A withheld cell is never a zero: where a count
+      is too small to publish without identifying an employer, the figure is unknown, not
+      none. The footprints are defined canonically in the pic-geo package and all three
+      rules are in <span class="mono">_data/METHODS-SOP.md</span>.`});
 } catch (e) {
   console.error("hub: methodology block unavailable —", e.message);
 }

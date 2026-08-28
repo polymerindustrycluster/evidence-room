@@ -37,6 +37,36 @@
 .hero .figv .n{font-size:clamp(26px,2.6vw,34px)}
 .hero .figv .k{color:#C0DBE1}
 
+/* ------------------------------------------------------------------ the one chart
+
+   NO HOLE WITH SCRIPTING OFF. PV.chart() writes the viewBox at draw time, so an svg that
+   was never drawn still has none, and an undrawn svg with `width:100%;height:auto` paints a
+   labelled empty box 980 by 150. The container is what hides, and it stays hidden until
+   app.js says it drew something; the heading above it carries the finding as text either
+   way, so the failure state is a page with one fewer picture rather than a broken frame.
+
+   NEVER PUT THIS ON THE SVG ITSELF. It was written as `.chart svg:not([viewBox])
+   {display:none}`, which is the obvious form and is a shipped-bug generator: Chromium
+   computes an svg's intrinsic aspect ratio from the viewBox when the element is first laid
+   out, and an svg that was display:none at that moment never gets one back. The published
+   BUNDLE rendered the chart at zero by zero while the served source folder rendered it at
+   980 — and bundle, verify, collide, columns, claims and textsize all passed on the broken
+   file, because the only tool that could see it was a screenshot of the wrong build.
+   Measured 2026-08-28. */
+.chart.jsdrawn{display:none}
+.chart.jsdrawn.drawn{display:block}
+
+/* MOBILE RE-LAYOUT, NOT A SIDEWAYS PAN. pic-viz.css pins every chart to an 860px minimum
+   below 760px and asks the reader to scroll it, which is right for a matrix and wrong for
+   ten ranked bars: this chart re-draws at phone width with each state's name above its bar,
+   so there is nothing off-screen to pan to and the hint would be a lie. Page-local because
+   the shared sheet offers no opt-out. */
+@media (max-width:760px){
+  .chart.reflow{overflow-x:visible;padding-bottom:0}
+  .chart.reflow svg{min-width:0}
+  .chart.reflow::after{content:none}
+}
+
 /* ------------------------------------------------------------------ the gallery
 
    THE GRID SITS ON THE TEXT RAIL. It used to sit at --figure while every line of prose sat

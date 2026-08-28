@@ -21,7 +21,7 @@ index.html          page shell
 styles.css          page-local CSS: figure chrome, stat band, mobile re-layout
 app.js              charts and interaction
 data/revisions.json THE DATA (154 KB). Edit the builder, not this.
-claims.json         19 falsifiable assertions: 17 re-run on every build, 2 manual
+claims.json         21 falsifiable assertions: 19 re-run on every build, 2 manual
 shots/              desktop.png, mobile.png
 ```
 

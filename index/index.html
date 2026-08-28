@@ -27,12 +27,19 @@
     <p class="eyebrow">Findings from free public data</p>
     <h1>Ohio is <em>first in the country</em> in plastics and rubber jobs. That is the
       easiest claim here to prove.</h1>
-    <p class="stand">54,846 of those jobs, ten thousand more than second-place Texas, and
-      every state disclosed in the Bureau of Labor Statistics count. Underneath the ranking
-      sit the questions a member firm argues about: what the work pays, and who is
-      available to do it.</p>
-    <p class="stand dek">Every number here has a source, an assertion, and a way to be
-      proved wrong.</p>
+    <p class="stand">54,846 of those jobs against second-place Texas&rsquo;s 44,598, a lead
+      of 10,248, and every state disclosed in the Bureau of Labor Statistics count.
+      Underneath the ranking sit the questions a member firm argues about: what the work
+      pays, and who is available to do it.</p>
+    <!-- WHAT THIS PAGE ACTUALLY DOES, said in the hero. This line used to read "Every
+         number here has a source, an assertion, and a way to be proved wrong" — which is
+         circular in ordinary English (an assertion is a claim), and which promised more
+         than the page delivers: this page verifies that it copied the linked pages
+         faithfully, not that their findings are right. A naive reader hit the honest
+         version of that caveat far below and had to scroll back. It is the hero's job to
+         carry it. -->
+    <p class="stand dek">Every number here restates a finding from one of the pages below
+      and re-runs against that page&rsquo;s own data on every build.</p>
     <!-- THREE STAT CARDS, IN ONE ROW THAT CANNOT WRAP. The row was four on a two-column
          grid, so it rendered as a 2x2 block against the house rule that hero stats never
          wrap. The fourth card counted the site's own claims, which is apparatus, not a
@@ -40,23 +47,67 @@
          restates a number one of the linked pages publishes and is guarded in claims.json
          against that page's own data file. Written here rather than through PV.figures()
          so the hero survives with scripting off. -->
+    <!-- EVERY CARD SAYS WHICH WAY IS GOOD. All three used to state a magnitude and stop:
+         a naive reader could not tell whether 48.4 percent was alarming or normal, or
+         whether $34.9M was the good news or the yardstick that shrinks it, and the "1.2x"
+         label named the measure instead of reading it. Card 3 also printed the ANSWER to a
+         division whose other input sat four screens away, so the one calculation a reader
+         could try in the hero could not be tried at all; the award is printed here now and
+         51.0 over 34.9 comes out at the 1.5 the card claims. -->
     <div class="hero-row">
       <div class="figv key">
         <div class="n">1.2&times;</div>
-        <div class="k">the polymer wage premium over the county average</div>
-        <div class="d">It beats the local average in 40 of the 51 disclosed pairings</div>
+        <div class="k">what a typical polymer job pays for every dollar the average job in
+          its county pays</div>
+        <div class="d">Higher is better for a worker, and polymer clears the local average
+          in 40 of the 51 industry-county pairings BLS can disclose</div>
       </div>
       <div class="figv">
         <div class="n">48.4%</div>
-        <div class="k">of Summit County&rsquo;s jobs held by its own residents</div>
-        <div class="d">No county in the twelve reaches 69 percent</div>
+        <div class="k">of the jobs in Summit County are held by people who live in it</div>
+        <div class="d">Ashtabula, the most self-contained of the twelve counties, still
+          reaches only 68 percent. None of them staffs itself</div>
       </div>
       <div class="figv">
         <div class="n">$34.9M</div>
-        <div class="k">a year in routine federal contracts</div>
-        <div class="d">The Tech Hub award is about 1.5 years of it</div>
+        <div class="k">a year, on average, in ordinary federal contracts, 2019 to 2026</div>
+        <div class="d">The one-time $51.0M Tech Hub award is about 1.5 years of it. The
+          routine flow is the bigger number</div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- THE ONE CHART. A page whose masthead says "Interactive evidence" and whose argument is
+     that numbers should be inspectable carried no axis, bar, line or map anywhere: every
+     finding arrived as prose in a card, so no number on the page had a direction and the
+     hero's ranking had no shape. This band draws the H1's own claim and nothing else.
+
+     IT OPENS ON THE H2, WITH NO KICKER AND NO LEDE, ON PURPOSE. The two bands after it both
+     open kicker / H2 / lede, and the house limit is two consecutive; a third would have
+     made the page a template loop. The context a lede would have carried sits under the
+     chart in the source line instead, which is where a caveat about the measure belongs.
+
+     Bars are drawn by app.js from data/states.json, never hand-typed here. That file is a
+     cut of the peers page's own shipped dataset, and index-chart-states asserts the copy
+     still matches it state by state. -->
+<section class="band">
+  <div class="wrap">
+    <h2>Ohio&rsquo;s lead over Texas is wider than the gap from Texas down to eighth
+      place</h2>
+    <div class="chart reflow jsdrawn">
+      <svg id="states" role="img" aria-labelledby="statestitle"><title id="statestitle">Ranked
+        bars, the ten states with the most plastics and rubber jobs in 2024. Ohio leads on
+        54,846, then Texas on 44,598, Illinois on 43,168 and California on 41,042, down to
+        South Carolina on 26,733.</title></svg>
+    </div>
+    <div id="statestable"></div>
+    <p class="src">Jobs in plastics and rubber products manufacturing, 2024 annual averages
+      from the Bureau of Labor Statistics payroll census. Every state is disclosed, so
+      nothing is missing from this ranking. A count is only a count, though. Three of the
+      nine states behind Ohio pack the industry more densely into a smaller workforce:
+      Indiana, South Carolina and Wisconsin. That is the question the concentration page
+      below answers.</p>
   </div>
 </section>
 
@@ -64,16 +115,24 @@
   <div class="wrap">
     <p class="takeaway">What this is</p>
     <h2>A cluster checking its own claims in public</h2>
-    <p class="lede">PIC publishes numbers about the Northeast Ohio polymer economy: how many
-      jobs it holds, what they pay, who is available to fill them. Those numbers used to
-      arrive as assertions. Here they arrive with the working shown.</p>
+    <!-- PIC WAS NEVER SPELLED OUT. The acronym appeared a dozen times, including inside a
+         data label, and a first-time reader finished the page not knowing who was asking
+         them to trust the numbers. "Cluster" had the same problem: it is in the H2 above
+         and in the masthead, and nothing said what one is. Both are glossed here, at the
+         first sentence of body prose on the page, and the expansion is guarded against the
+         publisher string in the funding map's own shipped data. -->
+    <p class="lede">The Polymer Industry Cluster, PIC for short, publishes numbers about the
+      plastics, rubber and coatings economy of Northeast Ohio: how many jobs it holds, what
+      they pay, who is available to fill them. A cluster is what its name says, the firms,
+      suppliers and labs of one industry packed into one place. Those numbers used to arrive
+      as bare claims. Here they arrive with the working shown.</p>
     <p class="whatitis-body">Every page is built from federal data that costs nothing to
       obtain, listed in the source registry below: the payroll census of covered jobs, the
       file recording where workers live, degree completions, federal contract spending,
       energy and producer prices. The analysis is scripted rather than hand-assembled, and
       it was done with AI assistance, directed and reviewed by a person. Each reading of
       what the numbers mean was sent to competing AI systems to be argued down before it
-      was published. Every sentence carrying a number is backed by an assertion that re-runs
+      was published. Every sentence carrying a number is backed by a check that re-runs
       against the source data on every build, and each one states the condition that would
       prove it wrong.</p>
     <p class="whatitis-body">This is working research by PIC staff. It is not official
@@ -117,6 +176,18 @@
       PIC measures against; a few use price metro areas, national series, or the public
       registers of awards and dates.</p>
 
+    <!-- THE KEY, WHERE THE CHIPS ARE. Nine chip types ran down the gallery in two colours
+         with nothing explaining either, and their meanings sat two thousand pixels lower in
+         the methodology. A naive reader stopped decoding them after the second card, which
+         is the row that tells them whether a page covers their county. This also lists the
+         twelve counties, which the page named constantly and never once printed. -->
+    <p class="note"><b>Reading a card.</b> The teal chip names the geography the page&rsquo;s
+      figures were built on. <b>PIC-12</b> is the twelve counties PIC measures: Ashtabula,
+      Cuyahoga, Geauga, Lake, Lorain, Mahoning, Medina, Portage, Stark, Summit, Trumbull and
+      Wayne. The counts after it are the sentences on that page stored as checks that re-run
+      against the data, and, where a page has any, the few that rest instead on a document a
+      person read.</p>
+
     <div class="picker">
       <label for="county">Your county</label>
       <select id="county">
@@ -131,31 +202,35 @@
         <h4>Where does Ohio rank among states, and Akron among metros?</h4>
         <p class="ans">First in the country</p>
         <p class="f">Ohio holds 54,846 plastics and rubber jobs, 10,248 more than
-          second-place Texas, with all 51 state geographies disclosed. Akron is 6th among
-          the 155 metros that disclose; 227 metros are withheld and are simply unknown.</p>
+          second-place Texas, with all 51 state geographies disclosed. Akron is 6th of the
+          155 metros that disclose, where 1st is the largest; 227 metros are withheld and
+          are simply unknown.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
       <a class="card" href="../laborshed/" data-slug="laborshed" data-geo="pic12">
         <h4>Where do the people who work in a county live?</h4>
         <p class="f">Summit County&rsquo;s own residents hold 48.4 percent of its 265,460
-          jobs. No county in the twelve reaches 69 percent, so county-level workforce policy
-          is aimed at a population that mostly lives somewhere else.</p>
+          jobs. Ashtabula is the most self-contained of the twelve and still reaches only 68
+          percent, so workforce policy set county by county is aimed at people who mostly
+          live somewhere else.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
       <a class="card" href="../wages/" data-slug="wages" data-geo="pic12">
         <h4>What does a polymer job pay against the average job in its county?</h4>
         <p class="f">The typical polymer job pays 1.2 times what the average job in its
           county pays, and beats it in 40 of the 51 industry-county pairings the bureau can
-          disclose. All eleven that miss make plastics or rubber products.</p>
+          disclose, a pairing being one polymer industry in one county. All eleven that miss
+          make plastics or rubber products.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
       <a class="card" href="../federal-money/" data-slug="federal-money" data-geo="pic12">
         <h4>How big is the Tech Hub award next to the federal money that arrives every
           year?</h4>
         <p class="f">Ordinary federal contracting in chemicals and plastics across the
-          twelve counties has run at $34.9 million a year since 2019. The $51.0 million
-          Tech Hub award is about a year and a half of it, and fiscal 2019 alone cleared
-          the award line.</p>
+          twelve counties has averaged $34.9 million a year over the eight fiscal years
+          since 2019, ranging from $17.0 million to $51.6 million. The $51.0 million Tech
+          Hub award, the federal designation Akron won in October 2023, is about a year and
+          a half of that average, and fiscal 2019 alone cleared the award line.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
     </div>
@@ -164,16 +239,21 @@
     <div class="cards">
       <a class="card" href="../cluster-health/" data-slug="cluster-health" data-geo="pic12">
         <h4>Which measures changed, and which only look like they did?</h4>
-        <p class="f">Jobs fell 802 in a year, to 24,030, and three of the five measures moved
-          further than these series usually move between years. The loudest change, federal
-          contracting up 73 percent, is not one of them.</p>
+        <p class="f">24,030 jobs in 2025, a floor rather than a total because the bureau
+          withheld 12 of the 36 county-industry figures. On the 21 figures published every
+          year since 2015, the only run that holds the same counties still, the count fell
+          802 in a year, from 24,259 to 23,457, a third straight fall. Three of the five
+          measures moved further than they usually move between years, and the loudest
+          change, federal contracting up from $22.5 million to $39.0 million, is not one of
+          them.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
       <a class="card" href="../location-quotient/" data-slug="location-quotient" data-geo="pic12">
         <h4>Which polymer industry is this region most concentrated in?</h4>
-        <p class="f">Paint and coatings run 5.96 times the national share and have led all
-          six polymer industries every year since 2015. Rubber products, the industry Akron
-          is named for, run 2.44 times.</p>
+        <p class="f">Paint and coatings fill 5.96 times as large a share of local jobs as
+          they do of the country&rsquo;s, and have led all six polymer industries every year
+          since 2015. Rubber products, the industry Akron is named for, run 2.44 times.
+          Concentration is what makes a region distinctive and what leaves it exposed.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
     </div>
@@ -182,16 +262,17 @@
     <div class="cards">
       <a class="card" href="../churn/" data-slug="churn" data-geo="pic12">
         <h4>How much hiring and separating sits behind a flat job count?</h4>
-        <p class="f">111,529 hire events and 111,361 separations produced 168 net jobs across
-          fourteen years. The average quarter moves 10.8 percent of the workforce in or
-          out.</p>
+        <p class="f">111,529 hires and 111,361 separations across 55 quarters produced 168
+          net jobs. In the average quarter hires run 10.8 percent of the workforce and
+          separations 10.7 percent, which is how a churn engine that size nets out to
+          nothing.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
       <a class="card" href="../occupations/" data-slug="occupations" data-geo="metros4">
         <h4>Which occupations is the industry made of, and what do they pay here?</h4>
-        <p class="f">One job in nine is a molding-machine setter, and 51 percent of the
+        <p class="f">One job in nine is a molding-machine setter, and just over half the
           country&rsquo;s setters work in this one industry. All four Northeast Ohio metros
-          pay the degree occupations under the national rate.</p>
+          pay the jobs that need a degree below the national rate.</p>
         <p class="meta"><span class="pill geo">four metros</span><span class="pill hit-flag">covers this county</span></p>
       </a>
     </div>
@@ -200,8 +281,11 @@
     <div class="cards one">
       <a class="card" href="../funding-map/" data-slug="funding-map" data-geo="register">
         <h4>Where did the public money go?</h4>
-        <p class="f">$106.3 million through three public awards and twenty-one named
-          recipients, drawn to scale, with the disclosures attached.</p>
+        <p class="f">$106.3 million in all: $85.3 million across three public awards, plus
+          $21.0 million of matching money that came with them, drawn to scale across
+          twenty-one named recipients. The $51.0 million Tech Hub award is the largest of
+          the three and sits inside this total, not on top of it. The $34.9 million a year
+          of ordinary contracting is separate, and recurring.</p>
         <p class="meta"><span class="pill geo">awards</span><span class="pill hit-flag">covers this county</span></p>
       </a>
     </div>
@@ -210,17 +294,17 @@
     <div class="cards">
       <a class="card" href="../realwage/" data-slug="realwage" data-geo="akron">
         <h4>What do these wages buy once local prices are counted?</h4>
-        <p class="f">Among the 56 metros with a real polymer workforce, Akron is 33rd on
-          weekly wages and 19th on what those wages buy. The climb crosses the median and is
-          smaller than the pitch PIC usually makes.</p>
+        <p class="f">Among the 56 metros with enough polymer employment to compare, Akron
+          is 33rd on weekly pay and 19th on what that pay buys, where 1st is best. Counting
+          local prices lifts it across the middle of the pack, not to the top.</p>
         <p class="meta"><span class="pill geo">Akron metro</span><span class="pill hit-flag">covers this county</span></p>
       </a>
       <a class="card" href="../cost-scissors/" data-slug="cost-scissors" data-geo="national">
         <h4>How much of the 2022 price spike came back out of finished polymer prices?</h4>
-        <p class="ans">Nothing came back down</p>
+        <p class="ans">Finished prices never came back down</p>
         <p class="f">Natural gas gave back its whole 2022 spike, crude about half, resin
-          about a third, and finished polymer products none of it. Retracement falls with
-          every step away from the wellhead.</p>
+          about a third, and finished polymer products none of it. The further a price sits
+          from the wellhead, the less of the spike came back out.</p>
         <p class="meta"><span class="pill geo">national</span><span class="pill hit-flag">covers this county</span></p>
       </a>
     </div>
@@ -230,16 +314,18 @@
       <a class="card" href="../revisions/" data-slug="revisions" data-geo="national">
         <h4>How much do these figures change after publication?</h4>
         <p class="ans">Almost every number moves</p>
-        <p class="f">259 of 273 published months in three producer-price series were changed
-          later, by a typical 0.15 percent. That the change is small is the finding, and the
-          scope is those three series only.</p>
+        <p class="f">259 of 273 published months in three producer-price series, the
+          wholesale prices of chemicals, resin and plastic goods, were changed later by a
+          typical 0.15 percent. That the change is small is the finding, and the scope is
+          those three series only.</p>
         <p class="meta"><span class="pill geo">national</span><span class="pill hit-flag">covers this county</span></p>
       </a>
       <a class="card" href="../timeline/" data-slug="timeline" data-geo="register">
         <h4>Why is the cluster here, and what has it done since?</h4>
-        <p class="f">32 proven events from 1898 explain why the designation landed in Akron.
-          The public record holds 4 events in the 34 months before October 2023 and 68 in
-          the 34 months since.</p>
+        <p class="f">32 proven milestones between 1898 and 2012 explain why the designation
+          landed in Akron. A separate operating register counts what has happened since: 68
+          public developments in the 34 months after October 2023, against 4 in the 34
+          months before.</p>
         <p class="meta"><span class="pill geo">public record</span><span class="pill hit-flag">covers this county</span></p>
       </a>
     </div>
@@ -260,11 +346,13 @@
     <p class="note"><b>The <span data-inv="pagesword">thirteen</span> pages here carry
       <span data-inv="claims">292</span> checked claims, and
       <span data-inv="manual">15</span> of them cannot be machine-checked.</b> Every
-      published sentence is stored as an assertion against the data that produced it, next
-      to the condition that would prove it wrong. The exceptions are quoted from project
-      narratives, press releases and internal registers rather than from datasets, so they
-      carry a source and a falsification condition but no runnable assertion. Attack them
-      first.</p>
+      published sentence is stored as a check that re-runs against the data that produced
+      it, next to the condition that would prove it wrong. The exceptions are quoted from
+      project narratives, press releases and internal registers rather than from datasets,
+      so they name a source and what would prove them wrong but cannot be re-run. Attack
+      those first. More checks is not the same as more truth; it is more places this site
+      can be caught being wrong, which is the only sense in which the number is good
+      news.</p>
     <details class="howto">
       <summary>The commands, for anyone who wants to run them</summary>
       <div class="checks">
@@ -274,7 +362,7 @@
 python verify_claims.py
 python verify_claims.py --list</pre>
           <p>A failure means a published sentence no longer matches its source. Fix the
-            sentence or the computation, never the assertion.</p>
+            sentence or the computation, never the check.</p>
         </div>
         <div>
           <h3>Rebuild the data from origin</h3>
@@ -287,7 +375,8 @@ python verify_claims.py --list</pre>
     </details>
     <p class="src">Re-running all of them is one command in
       <a href="https://github.com/polymerindustrycluster/evidence-room">the repository</a>,
-      and the listing doubles as the brief for a hostile reviewer.</p>
+      <span class="mono">python _data/build/verify_claims.py</span>, and the listing doubles
+      as the brief for a hostile reviewer.</p>
     <p class="src">The federal sources behind these pages, named once so a reader can find
       them. <dfn><b>QCEW</b> is the Quarterly Census of Employment and Wages, the payroll
       count behind every jobs and wage figure here.</dfn>
@@ -303,8 +392,9 @@ python verify_claims.py --list</pre>
 <section class="closer">
   <div class="wrap">
     <p>The ranking opens the meeting. The pages here are what has to hold up in it.</p>
-    <p class="sub">If a sentence here is wrong, the fastest way to prove it is the
-      falsification condition stored beside it in that page&rsquo;s claims file.</p>
+    <p class="sub">If a sentence here is wrong, the fastest way to show it is the check
+      stored beside it in that page&rsquo;s claims file. Each one names, in advance, the
+      finding that would break the sentence.</p>
   </div>
 </section>
 

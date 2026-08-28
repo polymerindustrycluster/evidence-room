@@ -3,7 +3,7 @@
   "claims": [
     {
       "id": "wage-premium-count",
-      "text": "In 40 of the 51 county-industry pairings BLS can disclose, polymer pay beats the county's all-industry average (standfirst, hero card, default verdict sentence, closer).",
+      "text": "In 40 of the 51 county-industry pairings BLS can publish, polymer pay beats the county's all-industry average (standfirst, hero card, default verdict sentence, closer). The hero card's own detail line now carries the de-duplicated correction, 27 of 35, so a reader who stops at the cards does not leave with the inflated framing.",
       "source": "BLS QCEW weekly wage, county NAICS against county all-industry",
       "assert": "len([r for r in D['latest_rows'] if r.get('vs_local_all') and r['vs_local_all']>1]) == 40 and len([r for r in D['latest_rows'] if r.get('vs_local_all')]) == 51",
       "actual": "(len([r for r in D['latest_rows'] if r.get('vs_local_all') and r['vs_local_all']>1]), len([r for r in D['latest_rows'] if r.get('vs_local_all')]))",
@@ -51,23 +51,55 @@
     },
     {
       "id": "employment-share-above",
-      "text": "78% of the jobs sit in a pairing that pays above the county average, counted once per county at the finest industry detail published for it (hero card '78% of jobs beat their county average').",
-      "source": "emp-weighted share over deduplicated cells (child level preferred to its parent group)",
-      "assert": "0.770 <= (lambda R: (lambda dd: sum(r['emp'] for r in dd if r['vs_local_all']>1)/sum(r['emp'] for r in dd))([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')]) <= 0.785",
-      "actual": "(lambda R: (lambda dd: sum(r['emp'] for r in dd if r['vs_local_all']>1)/sum(r['emp'] for r in dd))([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
-      "falsified_if": "The deduplicated employment-weighted share leaves 77.0-78.5%, so the '78%' card no longer rounds from the data."
+      "text": "The 27 de-duplicated pairings that beat their county cover 20,463 of the 26,402 jobs in that set (methodology box). Both totals are printed so the share can be divided out on the page; the bare '78%' hero card they replace named no denominator and had no job count anywhere on the page to check it against.",
+      "source": "employment totals over deduplicated cells (child level preferred to its parent group)",
+      "assert": "(lambda R: (lambda dd: sum(r['emp'] for r in dd if r['vs_local_all']>1) == 20463 and sum(r['emp'] for r in dd) == 26402)([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
+      "actual": "(lambda R: (lambda dd: (sum(r['emp'] for r in dd if r['vs_local_all']>1), sum(r['emp'] for r in dd)))([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
+      "falsified_if": "Either printed employment total moves off 20,463 or 26,402, in which case the sentence states a fraction the data no longer support."
     },
     {
       "id": "dedup-count",
-      "text": "Counted once per county, at the finest industry detail published for it, 27 of 35 pairings pay above the county average, the same roughly three-in-four share (methodology box). This is the overlap accounting: the data ship industry groups 325 and 326 alongside their sub-industries, so a county can appear at both levels.",
+      "text": "Counted once per county, at the finest industry detail published for it, 27 of 35 pairings pay above the county average (hero card 1's detail line and the methodology box). This is the overlap accounting: the data ship industry families 325 and 326 alongside their sub-industries, so a county can appear at both levels.",
       "source": "deduplication rule: keep a group row only where no child of that group is disclosed in the county",
       "assert": "(lambda R: (lambda dd: len([r for r in dd if r['vs_local_all']>1]) == 27 and len(dd) == 35)([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
       "actual": "(lambda R: (lambda dd: (len([r for r in dd if r['vs_local_all']>1]), len(dd)))([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
       "falsified_if": "Disclosure changes move the deduplicated tally off 27 of 35."
     },
     {
+      "id": "dedup-reconciles-headline",
+      "text": "The methodology prints both shares side by side: 27 of 35 is 77%, against 78% for the headline 40 of 51. Added 2026-08-28 after a naive reader found the page calling 27/35 (77.1%) and 40/51 (78.4%) 'the same roughly three-in-four share' while a hero card rounded the same idea to 78% - three roundings of one fact, one of them in the direction that understates it.",
+      "source": "the two tallies the page prints, divided out rather than described",
+      "assert": "(lambda R: (lambda dd: round(len([r for r in dd if r['vs_local_all']>1])/len(dd)*100) == 77 and round(len([r for r in R if r['vs_local_all']>1])/len(R)*100) == 78 and abs(len([r for r in dd if r['vs_local_all']>1])/len(dd) - len([r for r in R if r['vs_local_all']>1])/len(R)) <= 0.02)([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
+      "actual": "(lambda R: (lambda dd: (round(len([r for r in dd if r['vs_local_all']>1])/len(dd)*1000)/10, round(len([r for r in R if r['vs_local_all']>1])/len(R)*1000)/10))([r for r in R if not ((r['naics']=='325' and any(x['name']==r['name'] and x['naics'] in ('3252','3255') for x in R)) or (r['naics']=='326' and any(x['name']==r['name'] and x['naics'] in ('3261','3262') for x in R)))]))([r for r in D['latest_rows'] if r.get('vs_local_all')])",
+      "falsified_if": "Either printed percentage stops being the whole-number rounding of its own tally, or the two shares drift more than two points apart, at which point calling them the same finding on two sets is no longer honest. Both are near enough to the middle of their rounding bracket that Python's banker's rounding and the page's half-up rounding agree; a tally landing on an exact .5 would need this re-checked by hand."
+    },
+    {
+      "id": "premium-range-ends",
+      "text": "Both ends of chart 1's stated range are printed as ratios: Lake County chemicals at 2.09x ('more than double the county's average job') and Stark County rubber products at 0.77x ('about three-quarters of it'), in the figure subtitle and in the chart's two brackets.",
+      "source": "max and min of vs_local_all across disclosed 2025 cells",
+      "assert": "(lambda V: abs(max(V) - 2.0895) <= 0.004 and max(V) > 2 and abs(min(V) - 0.7733) <= 0.004 and 0.70 <= min(V) <= 0.80)([r['vs_local_all'] for r in D['latest_rows'] if r.get('vs_local_all')])",
+      "actual": "(lambda V: (min(V), max(V)))([r['vs_local_all'] for r in D['latest_rows'] if r.get('vs_local_all')])",
+      "falsified_if": "The top ratio stops rounding to 2.09x or falls to 2.0 or below, so 'more than double' fails; or the bottom ratio stops rounding to 0.77x or leaves 0.70-0.80, so 'about three-quarters of it' fails. Before this revision the low end was printed only as $853/wk and the reader had to estimate it off the axis."
+    },
+    {
+      "id": "hero-counts-reconcile",
+      "text": "The hero row's two counts and the scatter's quadrants close on each other: 40 pairings beat their county, 44 pay under their own industry nationally, 33 do both, and 40 + 44 - 33 = 51, the whole published set. The third hero card states the 33 overlap so the two counts cannot read as contradicting the denominator they share.",
+      "source": "joint sign of vs_local_all-1 and vs_us-1 on the disclosed 2025 cells",
+      "assert": "(lambda R: len([r for r in R if r['vs_local_all']>1]) == 40 and len([r for r in R if r['vs_us']<1]) == 44 and len([r for r in R if r['vs_local_all']>1 and r['vs_us']<1]) == 33 and len([r for r in R if r['vs_local_all']>1]) + len([r for r in R if r['vs_us']<1]) - len([r for r in R if r['vs_local_all']>1 and r['vs_us']<1]) == len(R) == 51)([r for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us')])",
+      "actual": "(lambda R: (len([r for r in R if r['vs_local_all']>1]), len([r for r in R if r['vs_us']<1]), len([r for r in R if r['vs_local_all']>1 and r['vs_us']<1]), len(R)))([r for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us')])",
+      "falsified_if": "Any of the three counts moves, or a pairing appears that neither beats its county nor trails its industry, in which case 40 + 44 - 33 no longer returns 51 and the two hero cards stop adding up against their shared denominator."
+    },
+    {
+      "id": "industry-codes-listed",
+      "text": "The methodology names all six tracked NAICS codes in one place: 325 chemical manufacturing, 3252 resin and synthetic rubber, 3255 paint and coatings, 326 plastics and rubber products, 3261 plastics products, 3262 rubber products. Added 2026-08-28: a reader could not find the six industries listed anywhere and had to reverse-engineer them from chart rows.",
+      "source": "distinct NAICS present in latest_rows",
+      "assert": "set(r['naics'] for r in D['latest_rows']) == {'325', '3252', '3255', '326', '3261', '3262'}",
+      "actual": "sorted(set(r['naics'] for r in D['latest_rows']))",
+      "falsified_if": "The tracked industry set changes, leaving the methodology's hand-typed list of six codes describing data the page no longer carries."
+    },
+    {
       "id": "possible-pairings",
-      "text": "51 of 72 possible pairings are big enough to publish (chart-1 source line): 6 tracked industries x 12 footprint counties, both counted from the data rather than typed.",
+      "text": "The chart-1 source line now shows the multiplication instead of asserting the product: 6 tracked industries across 12 counties make 72 possible pairings, and 51 of them are published. All three numbers are counted from the data rather than typed.",
       "source": "distinct NAICS in latest_rows x distinct counties",
       "assert": "len(set(r['naics'] for r in D['latest_rows'])) * len(set(r['name'] for r in D['latest_rows'])) == 72",
       "actual": "(len(set(r['naics'] for r in D['latest_rows'])), len(set(r['name'] for r in D['latest_rows'])))",
@@ -83,7 +115,7 @@
     },
     {
       "id": "quadrants",
-      "text": "33 pairings beat their town while trailing their industry; 7 beat both; 11 trail both; none trail the town while beating the industry (scatter title and quadrant annotations).",
+      "text": "33 pairings beat their town while trailing their industry; 7 beat both; 11 trail both; 0 trail the town while beating the industry. All four are now labelled on the scatter, desktop and mobile: the fourth quadrant used to carry no annotation at all, so a reader who counted its dots could not tell an empty corner from a missing label.",
       "source": "joint sign of vs_local_all-1 and vs_us-1, 2025",
       "assert": "(lambda R: len([r for r in R if r['vs_local_all']>1 and r['vs_us']<=1])==33 and len([r for r in R if r['vs_local_all']>1 and r['vs_us']>1])==7 and len([r for r in R if r['vs_local_all']<=1 and r['vs_us']<=1])==11 and len([r for r in R if r['vs_local_all']<=1 and r['vs_us']>1])==0)([r for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us')])",
       "actual": "(lambda R: (len([r for r in R if r['vs_local_all']>1 and r['vs_us']<=1]), len([r for r in R if r['vs_local_all']>1 and r['vs_us']>1]), len([r for r in R if r['vs_local_all']<=1 and r['vs_us']<=1]), len([r for r in R if r['vs_local_all']<=1 and r['vs_us']>1])))([r for r in D['latest_rows'] if r.get('vs_local_all') and r.get('vs_us')])",
@@ -131,7 +163,7 @@
     },
     {
       "id": "median-weekly-wage",
-      "text": "The median weekly wage is $1,369 - about $71,000 a year (hero card).",
+      "text": "The middle pairing's average weekly wage is $1,369, about $71,000 a year (hero card). The card names the pairing as its unit: a bare 'median weekly wage' invites the reading 'the typical polymer worker makes $71,000', which is a different quantity from the median of 51 pairing averages.",
       "source": "median of weekly_wage across disclosed 2025 cells",
       "assert": "(lambda m: abs(m - 1369) <= 1 and abs(m*52 - 71000) <= 600)((lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['weekly_wage'] for r in D['latest_rows'] if r.get('vs_local_all')]))",
       "actual": "(lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['weekly_wage'] for r in D['latest_rows'] if r.get('vs_local_all')])",
@@ -171,7 +203,7 @@
     },
     {
       "id": "footprint-excludes-four",
-      "text": "The methodology coverage note says the wider fourteen-county definition of the region adds Crawford, Huron, Richland and Tuscarawas, and that this page does not use it.",
+      "text": "The methodology coverage note says the wider fourteen-county definition of the region adds Crawford, Huron, Richland and Tuscarawas, and that figures on this page cannot be compared with fourteen-county figures published elsewhere. The old wording, 'the two never reconcile', named no risk a reader could act on.",
       "source": "meta.footprint.counties (PIC-12), rewritten out of tracker shorthand for the reader",
       "assert": "set(D['meta']['footprint']['counties']) & {'Crawford','Huron','Richland','Tuscarawas'} == set() and len(D['meta']['footprint']['counties']) == 12",
       "actual": "sorted(set(D['meta']['footprint']['counties']) & {'Crawford','Huron','Richland','Tuscarawas'})",
@@ -179,7 +211,7 @@
     },
     {
       "id": "byline-data-vintage",
-      "text": "The byline states the data as BLS QCEW annual averages, 2015-2025.",
+      "text": "The byline states the data as the Bureau of Labor Statistics Quarterly Census of Employment and Wages (QCEW), annual averages 2015-2025. The initials are spelled out at first contact: they appeared a dozen times across byline, chart footnotes and source list and were never expanded.",
       "source": "meta.source and the year range actually present in the trend series",
       "assert": "D['meta']['source'] == 'BLS QCEW annual averages' and min(r['year'] for r in D['trend'] if r.get('vs_local_all')) == 2015 and max(r['year'] for r in D['trend'] if r.get('vs_local_all')) == 2025",
       "actual": "(D['meta']['source'], min(r['year'] for r in D['trend'] if r.get('vs_local_all')), max(r['year'] for r in D['trend'] if r.get('vs_local_all')))",

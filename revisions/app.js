@@ -65,7 +65,20 @@ const ALLM = [...new Set(D.all.map(r => r.date))].sort();
 /* ONE NUMBER PER REVISION, FROM ONE PLACE. The derived file publishes `pct` rounded to
    three decimals; recomputing it from the raw values here printed the biggest mover as
    1.41% on the panel and 1.42% in the histogram beside it. The derived field is the
-   published quantity and the one the claims check, so every surface reads it. */
+   published quantity and the one the claims check, so every surface reads it.
+
+   EXCEPT WHEN FORMATTING TO TWO DECIMALS, WHICH IS A DOUBLE ROUNDING AND WAS WRONG.
+   September 2021 ran 348.8 to 343.866, which is −1.41456%. The derived file rounds that
+   to −1.415, and rounding −1.415 again to two places gives 1.42 — the figure this page
+   printed in four places, beside the two index values that a reader divides to get 1.41.
+   A naive reader did exactly that and it was the one calculation on the page that did
+   not close. `pc2` formats from the unrounded change, so the two-decimal figure always
+   follows from the two index numbers printed next to it. Classification (which side of
+   zero a month fell, the one month that came back to where it started), bar geometry,
+   the bins and the median all still read the derived `pct`: that is the quantity the
+   claims check and the only one whose rounding is published. Of the three panel extremes
+   only WPU06 differs between the two; the other two round the same either way. */
+const pc2 = r => sgn((r.latest - r.first) / r.first * 100, 2);
 const PMAP = {};
 P.forEach(p => { PMAP[p.series + "|" + p.date] = p; });
 const S = {};
@@ -87,10 +100,12 @@ const ORDER = [...SERIES].sort((a, b) => S[b].medAbs - S[a].medAbs);
 const totalPeriods = new Set(D.all.map(r => r.series + r.date)).size;
 const pcts = P.map(p => p.pct).filter(v => v != null);
 const MEDABS = med(pcts.map(Math.abs));
-const MAXABS = Math.max(...pcts.map(Math.abs));
 const BIG = ORDER.map(s => S[s].big).reduce((a, b) =>
   Math.abs(b.pct) > Math.abs(a.pct) ? b : a);
 const BIGS = SERIES.find(s => S[s].big === BIG);
+/* The extreme's own magnitude, unrounded, for every surface that prints it to two
+   places beside the index values it came from. See the pc2 note above. */
+const MAXPC = Math.abs((BIG.latest - BIG.first) / BIG.first * 100);
 const down = pcts.filter(v => v < 0).length, up = pcts.filter(v => v > 0).length;
 /* 137 + 121 = 258 against 259 revised months, and the missing one was reconciled nowhere:
    a reader who adds the two annotated counts finds a month that does not exist. It is
@@ -131,6 +146,33 @@ const MATERIAL = PAIRS.filter(p => Math.abs(p.then) >= 0.1 && Math.abs(p.now) >=
 const FLIPS = MATERIAL.filter(p => p.then * p.now < 0);
 const FLIPBIG = FLIPS.filter(p => p.series === BIGS).length;
 
+/* ---------------------------------------------------- the two yardsticks this page owed
+
+   A reader could take in every figure here and still not say whether 0.15% is small or
+   95% is worrying, because the page benchmarked these three series against nothing but
+   each other and said so in its own limitations. Both answers were already sitting in
+   the shipped archive.
+
+   HOW BIG: the typical revision against the typical month. The same 270 consecutive-month
+   pairs, read on today's values, move a median 0.34%. A revision is therefore a bit under
+   half of what these prices do in an ordinary month — small against the LEVEL, and not
+   small against the STEP, which is the mechanism behind the reversals further down. This
+   is a same-pipeline comparison: both quantities come from one archive, one set of months
+   and one set of series, so nothing about the sources differs between the two sides.
+
+   HOW LONG: `path` carries the vintage that first published a month and the vintage of
+   every later change, so the gap between its first and last entries is how long that
+   month kept moving. Across a monthly archive running 2019 to 2026, no month changed
+   more than six after its first print, and 250 of the 259 had stopped inside four. That
+   is the page's missing answer to "so what do I do": wait about half a year, or name the
+   vintage you priced against. */
+const STEPMED = med(PAIRS.map(p => Math.abs(p.now)));
+const mnum = d => +d.slice(0, 4) * 12 + +d.slice(5, 7);
+const LAGS = P.map(p => mnum(p.path[p.path.length - 1].from) - mnum(p.path[0].from));
+const LAGMAX = Math.max(...LAGS);
+const LAGSET = LAGS.filter(v => v <= 4).length;
+const REVTOT = P.reduce((a, p) => a + p.revisions, 0);
+
 /* ------------------------------------------------------------------ byline dateline
 
    The byline's "as of" is READ FROM THE DATA, never typed: it is the newest vintage in
@@ -146,14 +188,27 @@ document.getElementById("asof").textContent =
 /* The fourth card used to read "121 / 137" over the key "down / up". A slash between two
    numbers is read as a quotient before it is read as a pair, so the card's headline
    quantity looked like a ratio of 0.88 that appears nowhere in the data. A middot makes
-   it two counts, and the detail line now states the reading instead of posing it. */
+   it two counts, and the detail line now states the reading instead of posing it.
+
+   EVERY SUB-LINE NOW CARRIES A DIRECTION OF MERIT, WHICH IS A SEPARATE OBLIGATION FROM
+   DIRECTION OF MAGNITUDE. A reader could see that a bigger 95% meant more months changed
+   and still not know whether to be alarmed; the same for 2.9 and for 0.15%. The stat card
+   is where these numbers are first met in reading order, so the plain reading belongs
+   here rather than three screens down beside a chart that has an axis to hang it on.
+
+   Card 4's order is now up-then-down, matching every other statement of the pair on the
+   page, and the pair is read against 121 rather than asserted to lean. */
 PV.figures([
   ["key", Math.round(P.length / totalPeriods * 100) + "%", "were revised",
-   `${N(P.length)} of ${N(totalPeriods)} published months`],
-  ["", (P.reduce((a, p) => a + p.revisions, 0) / P.length).toFixed(1), "revisions each",
-   `per revised month, up to ${Math.max(...P.map(p => p.revisions))} times`],
-  ["", MEDABS.toFixed(2) + "%", "typical move", "half of months moved less than this"],
-  ["", down + " · " + up, "down · up", "so first estimates lean slightly low"]
+   `${N(P.length)} of ${N(totalPeriods)} published months, so a revision here is routine`],
+  ["", (REVTOT / P.length).toFixed(1), "corrections each",
+   `${N(REVTOT)} corrections over ${N(P.length)} revised months, up to ` +
+   `${Math.max(...P.map(p => p.revisions))} on one month`],
+  ["", MEDABS.toFixed(2) + "%", "typical move",
+   `half of revised months moved less; these prices move ` +
+   `${STEPMED.toFixed(2)}% in an ordinary month`],
+  ["", up + " · " + down, "up · down",
+   "a near-even split, with no sign that first estimates run high or low"]
 ]);
 
 /* =============================================== 1. the revision, three small multiples
@@ -223,7 +278,7 @@ function panel(svg, s, box, o) {
 
   /* The biggest mover, named on the chart rather than left for the reader to hunt. */
   const b = d.big, bx = xs(b.i), by = ys(b.pct);
-  const lab = `${nice(b.date)} ${sgn(b.pct, 2)}`;
+  const lab = `${nice(b.date)} ${pc2(b)}`;
   const wide = lab.length * (o.charW || 7.1);
   const right = bx + 8 + wide < box.x + box.w;
   el("circle", {cx: bx, cy: by, r: 2.8, fill: b.pct < 0 ? DOWN : UP,
@@ -237,10 +292,10 @@ function panel(svg, s, box, o) {
     `<b>${SHORT[s]} · ${mon(r.date)}</b><br>first published
      <span class="v">${r.first}</span><br>today <span class="v">${r.latest}</span><br>
      ${r.revisions
-       ? `<span class="v">${sgn(r.pct, 2)}</span> across
+       ? `<span class="v">${pc2(r)}</span> across
           <span class="v">${r.revisions}</span> revision${r.revisions === 1 ? "" : "s"}`
        : "never revised"}`,
-    `${SHORT[s]} ${mon(r.date)}: ${r.first} to ${r.latest}, ${sgn(r.pct, 2)}`));
+    `${SHORT[s]} ${mon(r.date)}: ${r.first} to ${r.latest}, ${pc2(r)}`));
 }
 
 function drawSmall() { MOBILE.matches ? drawSmallStacked() : drawSmallWide(); }
@@ -248,8 +303,18 @@ function drawSmall() { MOBILE.matches ? drawSmallStacked() : drawSmallWide(); }
 function drawSmallWide() {
   const W = 1100, H = 420, m = {t: 92, r: 18, b: 70, l: 62};
   const {svg} = PV.chart("sm", {W, H});
-  const w = W - m.l - m.r, gap = 40, pw = (w - gap * 2) / 3, h = H - m.t - m.b;
+  /* GAP 52, NOT 40, BECAUSE ALL THREE PANELS NOW CARRY TICK LABELS. Only the left panel
+     used to be numbered: the middle and right had gridlines and nothing beside them, so
+     "all three panels share one scale" was a sentence in the prose above that the graphic
+     gave a reader no way to check. A naive reader looked for the numbers, did not find
+     them, and scrolled back up to take the scale on trust. The stacked layout never had
+     this problem, because each panel there is a chart with its own axis.
+     The ticks drop the "%" so a four-character label clears the gap: "+1.5" runs about
+     33 viewBox units right-anchored 8 units off the plot, leaving 11 units of the 52. The
+     unit is stated once, in the axis title, which is where it belongs anyway. */
+  const w = W - m.l - m.r, gap = 52, pw = (w - gap * 2) / 3, h = H - m.t - m.b;
   const ys = v => m.t + h / 2 - (v / LIM) * (h / 2);
+  const px = k => m.l + k * (pw + gap);
 
   /* THE AXIS TITLE CARRIES THE UNIT'S ANCHOR. "revision, %" is a percent of nothing
      stated: a reader can read the ticks and still not know 0.35% is 0.35% OF the figure
@@ -257,12 +322,21 @@ function drawSmallWide() {
      making the scale legible. */
   txt(svg, "revision, % of the first published figure",
     {x: m.l, y: 34, class: "pv-axlab"});
-  YT.forEach(v => txt(svg, ytLab(v), {x: m.l - 10, y: ys(v) + 4, "text-anchor": "end",
-    class: "pv-tick"}));
-  txt(svg, "0", {x: m.l - 10, y: ys(0) + 4, "text-anchor": "end", class: "pv-tick"});
+  /* THE BAND IS NAMED IN THE CHART, NOT ONLY IN THE PARAGRAPH ABOVE IT. Its meaning used
+     to live in one prose clause three lines up, and because the same paragraph insists
+     all three panels share a scale, a reader's first read was that the band was one
+     shared threshold. It is three different widths, one per panel, and saying "that
+     panel's" is what carries the difference. */
+  txt(svg, "shaded band: half of that panel’s months land inside it",
+    {x: m.l + w, y: 34, "text-anchor": "end", class: "pv-labq"});
+  [0, 1, 2].forEach(k => {
+    YT.forEach(v => txt(svg, (v > 0 ? "+" : MINUS) + Math.abs(v).toFixed(1),
+      {x: px(k) - 8, y: ys(v) + 4, "text-anchor": "end", class: "pv-tick"}));
+    txt(svg, "0", {x: px(k) - 8, y: ys(0) + 4, "text-anchor": "end", class: "pv-tick"});
+  });
 
   ORDER.forEach((s, k) => panel(svg, s,
-    {x: m.l + k * (pw + gap), y: m.t, w: pw, h}, {h1: 14, h2: 32, every: 2}));
+    {x: px(k), y: m.t, w: pw, h}, {h1: 14, h2: 32, every: 2}));
 
   /* Direction is labelled in the plot, not in a legend below it, and each label says
      what its side MEANS rather than naming a color. "revised up" alone leaves open "up
@@ -288,7 +362,9 @@ function drawSmallStacked() {
   /* Pitch is set by the two labels that face each other across the gap: one panel's year
      ticks (20 below its plot) and the next panel's name (34 above its plot). collide.mjs
      only measures the wide layout, so this clearance is held by hand. */
-  const W = 375, m = {l: 50, r: 12}, ph = 118, pitch = 208, top = 86;
+  /* top 106, not 86: the band gloss takes a third header line, and the first panel's
+     name sits 34 above its plot, so anything less printed the name into that line. */
+  const W = 375, m = {l: 50, r: 12}, ph = 118, pitch = 208, top = 106;
   const H = top + pitch * 2 + ph + 40;
   const {svg} = PV.chart("sm", {W, H});
   const w = W - m.l - m.r;
@@ -300,6 +376,9 @@ function drawSmallStacked() {
     {x: m.l, y: 15, class: "pv-labq"});
   txt(svg, "up: higher today", {x: m.l, y: 34, class: "pv-labq", fill: UP});
   txt(svg, "down: lower today", {x: m.l + 128, y: 34, class: "pv-labq", fill: DOWN});
+  /* Same gloss as the wide layout, cut to the 313 units between the gutter and the right
+     edge: 33 characters at about 8.3 units each lands near 274. */
+  txt(svg, "band: half of that panel’s months", {x: m.l, y: 53, class: "pv-labq"});
 
   ORDER.forEach((s, k) => {
     const y = top + k * pitch;
@@ -378,40 +457,48 @@ function drawDistVariant(W, H, mob) {
   const by = m.t + h + 42;
   el("path", {d: `M${xs(-MEDABS)},${by - 6}V${by}H${xs(MEDABS)}V${by - 6}`, fill: "none",
     stroke: "var(--pv-axis)", "stroke-width": 1.2}, svg);
+  /* "All months" was wrong by 14: this bracket is drawn over the 259 months that were
+     revised, and the unrevised ones are not in the histogram at all. The distinction is
+     the page's headline pairing ("almost every month moved, by almost nothing"), so the
+     word the reader needs is "revised", not "all". */
   txt(svg, mob ? `half land inside ±${MEDABS.toFixed(2)}%`
-               : `the median move: half of all months land inside ±${MEDABS.toFixed(2)}%`,
+               : `the typical move: half of revised months land inside ` +
+                 `±${MEDABS.toFixed(2)}%`,
     {x: xs(0), y: by + 18, "text-anchor": "middle", class: "pv-lab"});
 
   /* Annotation bands. Wide: the extreme is called out on the left where the tail is
      empty, the lean on the right above the up side. Stacked: the same two live on
      separate horizontal bands, because at 375px they would print on each other. */
-  const mx = xs(-MAXABS);
+  const mx = xs(-MAXPC);
   const exY = m.t + (mob ? 62 : 26);
   el("path", {d: `M${mx},${exY + 6}V${ys(1) - 5}`, fill: "none", stroke: DOWN,
     "stroke-width": 1}, svg);
-  txt(svg, mob ? `largest: ${sgn(-MAXABS, 2)}` : `largest move ${sgn(-MAXABS, 2)}`,
+  txt(svg, mob ? `largest: ${pc2(BIG)}` : `largest move ${pc2(BIG)}`,
     {x: mob ? m.l : mx + 7, y: exY, class: "pv-lab", fill: DOWN});
   if (!mob) txt(svg, `${SHORT[BIGS].toLowerCase()}, ${nice(BIG.date)}`,
     {x: mx + 7, y: m.t + 44, class: "pv-labq"});
 
-  /* The lean, with an arrow at the side it leans to. 137 against 121 is a small
-     majority, and the annotation says small. */
-  /* THE STACKED COPY IS CUT TO CLEAR THE ZERO RULE, NOT JUST TO FIT THE BOX. Right-
+  /* THE SPLIT, NOT A LEAN. This annotation used to read "first estimates run slightly
+     low", which is a claim about a direction and the counts do not support it: 137 of
+     258 signed months is 53.1%, eight months from an even split, and one standard
+     deviation on 258 coin flips is 8.0. A two-sided binomial test puts a split at least
+     this lopsided at p = 0.35, so a fair coin produces it about a third of the time.
+     A naive reader flagged it unprompted, having done the same sum. The annotation now
+     says what the counts do say, and claim rev-lean guards the p-value so the sentence
+     cannot quietly become true or false without failing.
+
+     THE STACKED COPY IS CUT TO CLEAR THE ZERO RULE, NOT JUST TO FIT THE BOX. Right-
      anchored at 365 with the zero line at x=198, "137 months revised up," ran back to
      x=185 and "121 down: first prints lean low" to x=158, so the magenta rule struck
      through both — measured on the built page, because collide.mjs reads the desktop
      layout only and would never have seen it. The budget is 365 minus 206, or 159 units;
-     "first estimates run low" is 23 characters against the 21 that measured 141, so it
-     lands at about 154. Changing this copy means re-measuring it.
-     "First print" is trade language for the number as it was first given out, so the
-     phrase is "first estimates" everywhere a reader meets it and stays "first print"
-     only in the methodology box. */
+     "close to an even split" is 22 characters against the 23 that measured about 154. */
   const ax = mob ? m.l + w : xs(0.55);
   const anc = mob ? "end" : "start";
   txt(svg, mob ? `${up} up, ${down} down` : `${up} months were revised up,`,
     {x: ax, y: m.t + (mob ? 22 : 26), class: "pv-lab", "text-anchor": anc});
-  txt(svg, mob ? "first estimates run low"
-               : `${down} down: first estimates run slightly low`,
+  txt(svg, mob ? "close to an even split"
+               : `${down} down: close to an even split`,
     {x: ax, y: m.t + (mob ? 40 : 44), class: "pv-labq", "text-anchor": anc});
   /* The arrow lands 8px above the tallest up-side bar rather than at a hand-picked
      coordinate, so it cannot end up inside a bar when the bins change. */
@@ -455,8 +542,13 @@ document.getElementById("disttable").innerHTML = tableView("d",
    ["Revised downward", N(down)], ["Revised upward", N(up)],
    [`Ended within ${Math.max(...FLAT)} index points of its first value`, N(flat)],
    ["Median absolute change", MEDABS.toFixed(3) + "%"],
-   ["Largest single change", MAXABS.toFixed(3) + "%"],
-   ["Mean revisions per month", (P.reduce((a, p) => a + p.revisions, 0) / P.length).toFixed(2)],
+   ["Largest single change", MAXPC.toFixed(3) + "%"],
+   ["Corrections published in total", N(REVTOT)],
+   ["Mean corrections per revised month", (REVTOT / P.length).toFixed(2)],
+   ["Months from first print to final value, median", med(LAGS)],
+   ["Longest a month kept moving, in months", LAGMAX],
+   ["Median month-over-month price change, today's values",
+    STEPMED.toFixed(2) + "%"],
    ["Months whose step from the month before reversed",
     `${FLIPS.length} of ${MATERIAL.length}`]]);
 /* The note owns the bin width, and it is now the ONLY place on the page that states it.
@@ -479,13 +571,13 @@ function distNote() {
    made once, in the closer, where it is the forward move. The "least time to be revised"
    caveat moved into meta.caution, which the methodology box publishes. */
 document.getElementById("caveat").innerHTML =
-  `<b>What a small revision licenses.</b> A median move of ${MEDABS.toFixed(2)}% and a
-   largest move of ${MAXABS.toFixed(2)}% support one narrow claim: the <em>level</em> of a
-   producer-price series, how high it reads, does not move much once published. They do
-   not license calling a fresh figure &ldquo;safe to act on&rdquo;, which is how an
-   earlier version overreached. A small median says nothing about whether a turn
-   survives: ${FLIPS.length} of ${MATERIAL.length} months with a clear step from the
-   month before later reversed direction.`;
+  `<b>What a small revision licenses.</b> A typical move of ${MEDABS.toFixed(2)}% and a
+   largest move of ${MAXPC.toFixed(2)}% support one narrow claim: the <em>level</em> of a
+   producer-price series, how high it reads, does not move much once published. An earlier
+   version of this page went further and called a fresh figure safe to act on, which the
+   next sentence disproves. Of ${MATERIAL.length} months whose price clearly moved from the
+   month before, meaning at least 0.1% both as first published and today,
+   ${FLIPS.length} later turned out to have moved the other way.`;
 
 /* ------------------------------------------------------- 3. one month, up close */
 {
@@ -532,9 +624,13 @@ document.getElementById("caveat").innerHTML =
    starts reading as a second closer. */
 document.getElementById("closersub").innerHTML =
   `${N(P.length)} of ${N(totalPeriods)} published months changed after the fact, by a
-   median ${MEDABS.toFixed(2)}%, and of ${MATERIAL.length} months with a clear step from
-   the month before, ${FLIPS.length} later reversed direction. The Quarterly Workforce
-   Indicators behind the churn page restate whole histories each time they are rebuilt,
+   typical ${MEDABS.toFixed(2)}% against the ${STEPMED.toFixed(2)}% these prices move in
+   an ordinary month, and of ${MATERIAL.length} months that clearly moved from the month
+   before, ${FLIPS.length} later turned out to have moved the other way. ${N(LAGSET)} of
+   the ${N(P.length)} had stopped moving within four months of the first print, and the
+   longest any month kept moving was ${LAGMAX} months. The Quarterly Workforce
+   Indicators, the federal count of hires and
+   separations behind the churn page, restate whole histories each time they are rebuilt,
    and how far they move has not been measured: <b>that is the series this method should
    be pointed at next.</b>`;
 
@@ -569,7 +665,9 @@ await PV.methodology({page: "revisions",
   caution: "The most recent vintage on each chart is itself an estimate and will be " +
     "revised again. ‘Final’ is not a status these series have, and the newest months " +
     "carry the smallest revisions only because they have had the least time to be " +
-    "revised.",
+    "revised. The six-month settling figure in the closer is what a seven-year archive " +
+    "shows, not a rule the BLS publishes: a benchmark revision could reach further back " +
+    "than anything in this record has.",
   excludes: "A revision is only visible where ALFRED archived a vintage. A month showing " +
     "one value is not evidence it never moved; it may be evidence nobody kept the " +
     "earlier print.",
@@ -586,7 +684,15 @@ await PV.methodology({page: "revisions",
     "then repeats the comparison on today’s values. A pair counts only where both " +
     "readings are at least 0.1 percent, so a flip between +0.02 and -0.01 percent is " +
     "not called a reversal; 201 of 270 pairs clear that floor. The annual comparison in " +
-    "the vignette follows the same rule against the same month a year earlier.",
+    "the September 2021 section follows the same rule against the same month a year " +
+    "earlier. Two further figures come from the same archive. How long a month keeps " +
+    "moving is the gap between the vintage that first published it and the vintage that " +
+    "last changed it. The ordinary monthly price change quoted beside the typical " +
+    "revision is the median absolute step between consecutive months on today’s values, " +
+    "over those same 270 pairs, so both sides of that comparison come from one archive, " +
+    "one set of months and one set of series. Two decimal places are always formatted " +
+    "from the unrounded change rather than from the three-decimal figure the data file " +
+    "publishes, so the printed percentage follows from the two index values beside it.",
   uncertain: "Why September 2021 moved is not in this data. ALFRED archives values, not " +
     "the reasons for them, so the cause of the largest revision here is unreported. The " +
     "question we would put to the BLS Producer Price Index section: which late " +
@@ -596,10 +702,10 @@ await PV.methodology({page: "revisions",
      translated vignette should say so and say who it would call, rather than let the
      absence read as a finished piece. */
   note: "Nobody was interviewed for this page. The reporting it lacks is one call to a " +
-    "resin purchaser in the cluster who quotes WPU06 in a contract: what they did with " +
-    "the September 2021 print, whether their contract re-prices on a later vintage, and " +
-    "how they found out the number had changed. That answer belongs in the vignette " +
-    "above. Until it exists the human beat here is arithmetic a reader can check, not a " +
-    "reported voice.",
+    "resin purchaser in the Northeast Ohio polymer cluster who quotes WPU06 in a " +
+    "contract: what they did with the September 2021 print, whether their contract " +
+    "re-prices on a later vintage, and how they found out the number had changed. That " +
+    "answer belongs in the September 2021 section above. Until it exists the human beat " +
+    "here is arithmetic a reader can check, not a reported voice.",
 }});
 })();

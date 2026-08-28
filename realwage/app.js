@@ -46,12 +46,17 @@ const plate = (parent, s, x, y, fs = 7.2, anchor = "start") => {
    the climb already lives inside the first card's sub-line. */
 /* Every card here is a constructed unit, so each one carries its own direction: what #1
    means on a rank, and what a price level of 92.9 means in money terms at FIRST use. */
+/* The two hero denominators are DIFFERENT POPULATIONS and sat side by side reading as
+   peers: 56 is the polymer field, 235 is every metro BEA prices. Each key now names its
+   own universe, and card 3 says which way to read it — it is the yardstick that shrinks
+   the claim, not more good news. */
 PV.figures([
-  ["key", `#${AK.big_rank_real}`, `of ${B.length} on what the pay buys`,
-   `up ${AK.big_climb} places from #${AK.big_rank_nominal} on the paycheck itself; #1 is the best of the ${B.length} metros with 2,000+ polymer jobs`],
-  ["", usd(AK.real), "what Akron’s wage buys",
-   `${usd(AK.nominal)} on the paycheck, at a price level of ${AK.rpp.toFixed(1)}: about ${Math.round(100 - AK.rpp)} percent below the US average`],
-  ["", `${cheaper}`, `of ${M.length} metros are cheaper`, "Akron’s prices sit in the middle of the metro range"]
+  ["key", `#${AK.big_rank_real}`, `of ${B.length} polymer metros, on what the pay buys`,
+   `up ${AK.big_climb} places from #${AK.big_rank_nominal} on the paycheck itself; #1 is the best paid of the ${B.length} metros with 2,000+ polymer jobs`],
+  ["", usd(AK.real), "a week: what Akron’s wage buys",
+   `${usd(AK.nominal)} on the paycheck, at a price level of ${AK.rpp.toFixed(1)}: prices here run about ${Math.round(100 - AK.rpp)} percent below the US average, so the same dollars go further`],
+  ["", `${cheaper}`, `of ${M.length} priced US metros are cheaper`,
+   "the yardstick, not the good news: Akron’s prices sit in the middle of the metro range, so the argument here is not that the region is cheap"]
 ]);
 
 /* ------------------------------------------------ comparator: picker + verdict */
@@ -62,11 +67,11 @@ function verdict() {
   const v = document.getElementById("verdict");
   const r = selRow();
   if (!r) {
-    v.innerHTML = `<b>Everywhere at once:</b> Akron’s polymer average is
+    v.innerHTML = `<b>Across all ${B.length} metros:</b> Akron’s polymer average is
       ${usd(AK.nominal)} a week, which buys like ${usd(AK.real)} at national prices.
-      ${flips.length} of the ${B.length} metros, New York and Los Angeles among them,
-      pay more on paper and buy less. Pick the metro you are recruiting against to
-      price the difference.`;
+      ${flips.length} of them, New York and Los Angeles among them, pay more than Akron
+      on paper and buy less than Akron once local prices are counted. Pick the metro you
+      are recruiting against to price the difference.`;
     return;
   }
   const s1 = `<b>${full(r.name)}:</b> ${usd(AK.real)} in Akron buys what
@@ -238,6 +243,13 @@ function drawSlopeDesktop() {
     lines.forEach((s, i) => txt(svg, s, {x: bx + 14, y: ty + i * 17,
       class: i ? "pv-labq" : "pv-lab", ...(i ? {} : {fill: INK})}));
   }
+  /* The grey crowd is most of the chart and was unexplained: a reader who counts the
+     printed ranks (1, 2, 3, 5, 11 ...) goes looking for the missing ones. Say what the
+     grey is, the way the mobile list already does. */
+  txt(svg, `${named.size} metros are named here (Akron, the biggest movers and the top of
+    each column); the other ${B.length - named.size} are drawn in grey. Every one of the
+    ${B.length} is in the table below.`.replace(/\s+/g, " "),
+    {x: m.l, y: m.t + h + 32, class: "pv-labq"});
 }
 
 function drawSlopeMobile() {
@@ -297,6 +309,17 @@ function drawSlopeMobile() {
 const withNotes = (html, notes) =>
   html.replace("</details>", `<p class="tnote">${notes}</p></details>`);
 
+/* The 2,000-job floor SELECTS the comparison set, so a sceptic is entitled to ask whether
+   it was picked after Akron's rank was known. Answer it with the shipped data rather than
+   with a rationale: recompute the climb at other floors and print what comes back. */
+const climbAtFloor = floor => {
+  const S = M.filter(r => r.emp >= floor);
+  const iN = [...S].sort((a, b) => b.nominal - a.nominal).findIndex(r => r.area === AK.area);
+  const iR = [...S].sort((a, b) => b.real - a.real).findIndex(r => r.area === AK.area);
+  return {n: S.length, climb: iN - iR};
+};
+const FLO = climbAtFloor(1000), FHI = climbAtFloor(5000);
+
 document.getElementById("slopetable").innerHTML = withNotes(tableView("sl",
   `Polymer metros with ${N(D.meta.big_floor)}+ jobs, nominal and price-adjusted weekly wage`,
   ["Metro", "Jobs", "On paper", "Price level", "Buys", "Rank on paper", "Rank on buys",
@@ -304,10 +327,15 @@ document.getElementById("slopetable").innerHTML = withNotes(tableView("sl",
   [...B].sort((a, b) => a.big_rank_real - b.big_rank_real).map(r =>
     [full(r.name), N(r.emp), usd(r.nominal), r.rpp.toFixed(1), usd(r.real),
      r.big_rank_nominal, r.big_rank_real, fmtClimb(r.big_climb)])),
-  `${D.meta.row} Full source: ${D.meta.source}. The field is cut to the
-   ${B.length} metros with at least ${N(D.meta.big_floor)} polymer jobs, so the ranking
-   runs against places that actually do this work rather than against every metro in the
-   country; a different floor gives a different rank. ${D.meta.suppression}`);
+  `${D.meta.row} Full source: ${D.meta.source}. (MARPP is BEA’s table of metro price
+   parities; “all items” means the whole shopping list, not rent alone.) The field is cut
+   to the ${B.length} metros with at least ${N(D.meta.big_floor)} polymer jobs, so the
+   ranking runs against places that actually do this work rather than against every metro
+   in the country. That floor is a choice, so here is what other floors give: at
+   ${N(1000)} jobs Akron climbs ${FLO.climb} places in a field of ${FLO.n}, and at
+   ${N(5000)} it climbs ${FHI.climb} in a field of ${FHI.n}. Akron climbs at every floor
+   tested; how far it climbs depends on how many metros are left above it to pass.
+   ${D.meta.suppression}`);
 document.getElementById("slopesrc").innerHTML =
   `Source: BLS QCEW and BEA Regional Price Parities, ${D.meta.year}. Metros where BLS
    will not publish a polymer wage are missing, Cleveland and Canton among them. Both
@@ -319,9 +347,13 @@ function drawStrip() { drawStripVariant(MOBILE.matches); }
 
 function drawStripVariant(mobile) {
   const opts = mobile
-    ? {W: 375, H: 190, m: {t: 52, r: 6, b: 56, l: 6}}
-    : {W: 1100, H: 230, m: {t: 60, r: 0, b: 66, l: 0}};
+    ? {W: 375, H: 202, m: {t: 64, r: 6, b: 56, l: 6}}
+    : {W: 1100, H: 236, m: {t: 66, r: 0, b: 66, l: 0}};
   const {svg, W, H, m, w, h} = PV.chart("strip", opts);
+  /* Centred labels above the plot can run off a 375px canvas. lw() is the half-width of a
+     pv-lab string at this breakpoint's type size; clamp() keeps the label on the page. */
+  const lw = chars => chars * (mobile ? 16 : 14.2) * 0.55 / 2;
+  const clamp = (x, half) => Math.max(half + 4, Math.min(W - half - 4, x));
   const rpps = M.map(r => r.rpp);
   const lo = Math.floor(Math.min(...rpps)), hi = Math.ceil(Math.max(...rpps));
   const xs = v => m.l + ((v - lo) / (hi - lo)) * w;
@@ -340,32 +372,37 @@ function drawStripVariant(mobile) {
       // rule all collapsed to the same weight in grayscale, leaving the three labels
       // as the only separation. Weight now carries it too.
       "stroke-width": me ? 4 : pick ? 3 : 1, opacity: me || pick ? 1 : .38}, svg);
-    if (me) txt(svg, `Akron ${r.rpp.toFixed(1)}`, {x: xs(r.rpp), y: m.t - 8,
-      "text-anchor": "middle", class: "pv-lab", fill: CAT[1]});
+    if (me) txt(svg, `Akron ${r.rpp.toFixed(1)}`, {x: clamp(xs(r.rpp), lw(10)),
+      y: m.t - 30, "text-anchor": "middle", class: "pv-lab", fill: CAT[1]});
     if (pick) {
       const near = Math.abs(xs(r.rpp) - xs(AK.rpp)) < (mobile ? 90 : 130);
-      txt(svg, `${short(r.name)} ${r.rpp.toFixed(1)}`,
-        {x: xs(r.rpp), y: near ? m.t - 28 : m.t - 8,
+      const s = `${short(r.name)} ${r.rpp.toFixed(1)}`;
+      txt(svg, s, {x: clamp(xs(r.rpp), lw(s.length)), y: near ? m.t - 48 : m.t - 12,
          "text-anchor": "middle", class: "pv-lab", fill: CAT[2]});
     }
   });
-  /* Both reference labels sit over the tick mass, so each gets a paper plate first.
-     Without it they read as gray-on-gray at 375px, where the mass is densest. */
+  /* AKRON AND THE MEDIAN ARE 0.2 APART, WHICH IS THE FINDING AND ALSO THE PROBLEM: at
+     100% zoom the solid orange tick and the dashed median rule are one smudge, and a
+     reader who sees one line cannot have the finding. So the pair is labelled ONCE, above
+     the plot, and the label states the gap in the same one-decimal values the page prints
+     everywhere else — 93.1 minus 92.9 — so a reader who checks the subtraction gets the
+     number that is written. The median rule also gets its own cap mark, so it reads as a
+     second line rather than as thickness on the first. */
   const mRpp = med(rpps);
-  el("line", {x1: xs(mRpp), y1: m.t + 14, x2: xs(mRpp), y2: m.t + h, stroke: INK,
+  const gap = (Math.round(mRpp * 10) - Math.round(AK.rpp * 10)) / 10;
+  el("line", {x1: xs(mRpp), y1: m.t + 6, x2: xs(mRpp), y2: m.t + h, stroke: INK,
     "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
-  const mLab = mobile ? `median ${mRpp.toFixed(1)}` : `median metro ${mRpp.toFixed(1)}`;
-  plate(svg, mLab, xs(mRpp) + 8, m.t + 26, 8.2);
-  txt(svg, mLab, {x: xs(mRpp) + 8, y: m.t + 26, class: "pv-lab"});
-  /* At 375px the median label's plate is 96px wide and the two reference lines are only
-     72px apart, so the plate was covering the top of the US-average rule — a plate that
-     hides a reference mark is worse than the crossing it was added to fix. The US line
-     starts below that plate on mobile; on desktop the two are 218px apart and it does
-     not arise. */
-  el("line", {x1: xs(100), y1: m.t + (mobile ? 30 : 14), x2: xs(100), y2: m.t + h,
+  el("circle", {cx: xs(mRpp), cy: m.t + 6, r: 3, fill: INK}, svg);
+  const mLab = mobile
+    ? `median ${mRpp.toFixed(1)}, ${gap.toFixed(1)} above Akron`
+    : `median metro ${mRpp.toFixed(1)}, ${gap.toFixed(1)} above Akron: effectively the same place`;
+  const mx = clamp(xs(mRpp), lw(mLab.length));
+  plate(svg, mLab, mx, m.t - 12, 8.2, "middle");
+  txt(svg, mLab, {x: mx, y: m.t - 12, "text-anchor": "middle", class: "pv-lab"});
+  el("line", {x1: xs(100), y1: m.t + 14, x2: xs(100), y2: m.t + h,
     stroke: "var(--hover)", "stroke-width": 1.5}, svg);
-  plate(svg, "US average 100", xs(100) + 8, m.t + 44, 8.2);
-  txt(svg, "US average 100", {x: xs(100) + 8, y: m.t + 44, class: "pv-lab",
+  plate(svg, "US average 100", xs(100) + 8, m.t + 28, 8.2);
+  txt(svg, "US average 100", {x: xs(100) + 8, y: m.t + 28, class: "pv-lab",
     fill: "var(--hover)"});
   M.forEach(r => hoverable(el("rect", {x: xs(r.rpp) - 3, y: m.t, width: 6, height: h,
     fill: "transparent"}, svg),
@@ -401,12 +438,16 @@ function drawScatter() { drawScatterVariant(MOBILE.matches); }
 
 function drawScatterVariant(mobile) {
   const opts = mobile
-    ? {W: 375, H: 380, m: {t: 34, r: 12, b: 50, l: 34}}
+    ? {W: 375, H: 404, m: {t: 58, r: 12, b: 50, l: 34}}
     : {W: 1100, H: 520, m: {t: 44, r: 71, b: 66, l: 32}};
   const {svg, W, H, m, w, h} = PV.chart("scatter", opts);
   const nx = B.map(r => r.nominal), ry = B.map(r => r.rpp);
   const x0 = Math.min(...nx) * .95, x1 = Math.max(...nx) * 1.04;
-  const y0 = Math.min(...ry) - 2, y1 = Math.max(...ry) + 2;
+  /* THE AXIS MUST LABEL PAST THE DATA. At +2 the top gridline came out at 110 while San
+     Francisco, Los Angeles, New York, Seattle, Miami, Boston and San Diego all plotted
+     above it, so the figure title's "up to a fifth less" pointed at a band of the chart
+     with no numbers in it. +3 puts the last tick at 120, above the highest metro. */
+  const y0 = Math.min(...ry) - 2, y1 = Math.max(...ry) + 3;
   const xs = v => m.l + ((v - x0) / (x1 - x0)) * w;
   const ys = v => m.t + h - ((v - y0) / (y1 - y0)) * h;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys,
@@ -415,35 +456,57 @@ function drawScatterVariant(mobile) {
     /* Dollars need no direction; an index does, so the vertical title says which way is
        dearer before a reader has to work it out from the tick numbers. */
     xlab: mobile ? "Average weekly wage →" : "Average weekly wage on the paycheck →",
-    ylab: mobile ? "↑ More expensive · price level"
-                 : "↑ More expensive · price level (US = 100)"});
+    ylab: mobile ? null : "↑ More expensive · price level (US = 100)"});
+  /* At 375px the one-line desktop title runs off the canvas, and the version that fitted
+     dropped "(US = 100)" — which is the only thing on the chart that says what 100 means.
+     Two lines keep the direction AND the anchor at the width where the reader has least
+     other help. */
+  if (mobile) {
+    txt(svg, "↑ More expensive", {x: m.l, y: m.t - 34, class: "pv-axlab"});
+    txt(svg, "price level, US average = 100", {x: m.l, y: m.t - 14, class: "pv-axlab"});
+  }
   // iso-lines: every metro on one line offers identical purchasing power. Labels sit at
   // the sparse bottom ends of the lines, not in the crowded top band of expensive metros.
   /* At 375px the bottom-right corner held three labels in ~40px of height: two diagonal
      tags and the half-plane annotation, the nearest pair within a few pixels of touching.
-     Mobile now tags ONE diagonal — the $1,300 line, the one Akron nearly sits on — and
-     the subtitle carries the generalization ("every metro on one dashed diagonal buys the
-     same"). The remaining diagonals still read as a family without being labelled. */
-  const isoLabel = mobile ? [1300] : [1300, 1500, 1700];
+     Mobile now tags ONE diagonal, Akron's own, and the subtitle carries the
+     generalization ("every metro on one dashed diagonal buys the same"). The remaining
+     diagonals still read as a family without being labelled. */
+  /* AKRON'S OWN DIAGONAL IS DRAWN. The four iso-lines used to run 1100/1300/1500/1700 and
+     none of them was $1,332 — the headline number of the page — so a reader could not see
+     Akron's position against its own figure, or read off which metros buy less than Akron
+     does. The $1,300 line is replaced by Akron's, in the Akron accent: every metro ABOVE
+     the orange diagonal buys less than Akron, every metro below it buys more. */
+  const AKISO = Math.round(AK.real);
+  const isoAll = [1100, AKISO, 1500, 1700];
+  const isoLabel = mobile ? [AKISO] : isoAll;
   /* Two passes, not one. Drawing each line and then its own label meant the NEXT line in
      the series painted straight through the label just written: at 375px the $1,500
-     diagonal ran through "buys $1,300". Every line first, then every label with its
+     diagonal ran through the label below it. Every line first, then every label with its
      paper plate on top. */
   const isoPts = new Map();
-  [1100, 1300, 1500, 1700].forEach(real => {
+  isoAll.forEach(real => {
     const pts = [];
     for (let p = y0; p <= y1; p += 1) { const nom = real * p / 100;
       if (nom >= x0 && nom <= x1) pts.push([xs(nom), ys(p), nom]); }
     if (pts.length < 2) return;
     isoPts.set(real, pts);
     el("path", {d: "M" + pts.map(p => `${p[0]},${p[1]}`).join("L"), fill: "none",
-      stroke: "var(--pv-grid)", "stroke-width": 1.5, "stroke-dasharray": "5 4"}, svg);
+      stroke: real === AKISO ? CAT[1] : "var(--pv-grid)",
+      "stroke-width": real === AKISO ? 2 : 1.5, "stroke-dasharray": "5 4"}, svg);
   });
+  /* A label floating near the foot of four parallel lines belongs to none of them, so each
+     one now gets a dot on the line it names and sits beside that dot. */
   isoPts.forEach((pts, real) => {
-    if (!isoLabel.includes(real) || pts[0][2] <= x0 + 10 || pts[0][2] >= x1 - 90) return;
-    const s = `buys ${usd(real)}`;
-    plate(svg, s, pts[0][0] + 6, m.t + h - 8, mobile ? 8.2 : 7.2);
-    txt(svg, s, {x: pts[0][0] + 6, y: m.t + h - 8, class: "pv-labq"});
+    if (!isoLabel.includes(real) || pts[0][2] <= x0 + 2 || pts[0][2] >= x1 - 90) return;
+    const me = real === AKISO;
+    const s = me ? `Akron buys ${usd(real)}` : `buys ${usd(real)}`;
+    const ly = m.t + h - 13;   // clear of the axis rule: the plate crossed it at -8
+    el("circle", {cx: pts[0][0], cy: pts[0][1], r: me ? 3.5 : 2.5,
+      fill: me ? CAT[1] : "var(--pv-axis)"}, svg);
+    plate(svg, s, pts[0][0] + 7, ly, mobile ? 8.2 : 7.2);
+    txt(svg, s, {x: pts[0][0] + 7, y: ly, class: me ? "pv-lab" : "pv-labq",
+      ...(me ? {fill: CAT[1]} : {})});
   });
   const rmax = Math.max(...B.map(r => r.emp));
   const rEmp = e => (mobile ? 3 : 4) + Math.sqrt(e / rmax) * (mobile ? 9 : 13);
@@ -456,14 +519,23 @@ function drawScatterVariant(mobile) {
     el("circle", {cx: xs(r.nominal), cy: ys(r.rpp), r: rad,
       fill: me ? CAT[1] : pick ? CAT[2] : SEQ[3], opacity: me || pick ? 1 : .5,
       stroke: "var(--paper)", "stroke-width": 2}, svg);
-    const label = mobile ? (me || pick || r.emp === rmax)
+    /* Mobile named only Chicago and Akron. It now names Los Angeles too, because the band
+       lede works its price level (114.7 against Akron's 92.9) as the case for "a fifth
+       less" and a reader should be able to find the metro it is talking about. Not San
+       Francisco: at 375px its label lands in the same band as the top-left half-plane cue,
+       and the cue is worth more than a fourth name. */
+    const label = mobile ? (me || pick || r.emp > rmax * .52)
                          : (me || pick || r.emp > rmax * .42 || r.rpp > 110);
     if (label) {
       // expensive metros cluster at the top of the scale and their labels collide;
-      // remember what has been placed and step down when a slot is taken
-      const key = Math.round(xs(r.nominal) / 90);
+      // remember what has been placed and step up when a slot is taken. The bucket is
+      // narrower at 375px: at 90 units wide, San Francisco and Los Angeles shared one, so
+      // San Francisco stepped up 16px and printed into the axis title above the plot.
+      const key = Math.round(xs(r.nominal) / (mobile ? 60 : 90));
       const lvl = (placedLbl[key] = (placedLbl[key] || 0) + 1) - 1;
-      txt(svg, short(r.name), {x: xs(r.nominal), y: ys(r.rpp) - rad - 6 - lvl * 16,
+      // A stepped label must not leave the plot; the ceiling is the last defence.
+      const ly = Math.max(m.t + 12, ys(r.rpp) - rad - 6 - lvl * 16);
+      txt(svg, short(r.name), {x: xs(r.nominal), y: ly,
         "text-anchor": "middle", class: me || pick ? "pv-lab" : "pv-labq",
         ...(me ? {fill: CAT[1]} : pick ? {fill: CAT[2]} : {})});
     }
@@ -479,12 +551,32 @@ function drawScatterVariant(mobile) {
   /* The half-planes, named on the plane, drawn last. At 375px the right-hand one is no
      longer in an empty corner once it lifts clear of the axis, so it gets a paper plate;
      the desktop corner is genuinely empty and needs none. */
-  txt(svg, "salary flatters the offer", {x: m.l + 8, y: m.t + 16,
+  const fy = m.t + (mobile ? 14 : 16);
+  if (mobile) plate(svg, "salary flatters the offer", m.l + 8, fy, 8.2);
+  txt(svg, "salary flatters the offer", {x: m.l + 8, y: fy,
     class: "pv-labq", opacity: .8});
-  const uy = m.t + h - (mobile ? 34 : 12);
+  const uy = m.t + h - (mobile ? 52 : 12);
   if (mobile) plate(svg, "salary understates it", m.l + w - 6, uy, 8.2, "end");
   txt(svg, "salary understates it", {x: m.l + w - 6, y: uy,
     "text-anchor": "end", class: "pv-labq", opacity: .8});
+  /* SIZE IS LOAD-BEARING HERE — the figure title is about where the BIGGEST employers sit
+     — and "bigger circles mean more polymer jobs" converts no circle into a job count. A
+     three-step key does. Desktop only: at 375px the key would cost more of the plot than
+     it returns, so the subtitle names the two ends of the scale instead. */
+  if (!mobile) {
+    const kx = m.l + w - 176, ky = m.t + 34;
+    el("rect", {x: kx - 16, y: ky - 36, width: 192, height: 66, fill: "var(--paper)",
+      opacity: .94, rx: 3, "data-pv-plated": "1"}, svg);
+    txt(svg, "Circle size = polymer jobs", {x: kx - 8, y: ky - 20, class: "pv-labq"});
+    let cx = kx + 8;
+    [2000, 10000, 30000].forEach(e => {
+      const rr = rEmp(e);
+      el("circle", {cx, cy: ky + 2, r: rr, fill: SEQ[3], opacity: .5,
+        stroke: "var(--paper)", "stroke-width": 2}, svg);
+      txt(svg, N(e), {x: cx, y: ky + 26, "text-anchor": "middle", class: "pv-labq"});
+      cx += rr + 48;
+    });
+  }
 }
 
 document.getElementById("scattertable").innerHTML = withNotes(tableView("sc",

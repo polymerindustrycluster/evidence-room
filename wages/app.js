@@ -62,8 +62,19 @@ for (const c in byC) for (const k in byC[c]) {
   dedup.push(byC[c][k]);
 }
 const dAbove = dedup.filter(r => r.vs_local_all > 1).length;
-const empShare = dedup.filter(r => r.vs_local_all > 1).reduce((s, r) => s + r.emp, 0) /
-                 dedup.reduce((s, r) => s + r.emp, 0);
+/* THE TWO SHARES ARE PRINTED, NEVER LEFT TO THE READER TO INFER. 27/35 and 40/51 are the
+   same finding on two different sets, and the page used to call them both "roughly
+   three-in-four" while a hero card rounded one of them to 78% — a reader who divided got
+   77.1% and 78.4% and could not tell which rounding to believe. Both percentages are now
+   computed here and printed side by side in the methodology, so the reconciliation closes
+   on the page rather than in a reader's head. */
+const pctDedup = Math.round(dAbove / dedup.length * 100);
+const pctHead = Math.round(above / rows.length * 100);
+/* The employment-weighted share was a hero card no reader could check: no job count
+   appeared anywhere on the page, and 78% collided with 40/51 = 78.4% two cards away. The
+   totals themselves now travel with it in the methodology, where its definition lives. */
+const empAbove = dedup.filter(r => r.vs_local_all > 1).reduce((s, r) => s + r.emp, 0);
+const empTot = dedup.reduce((s, r) => s + r.emp, 0);
 const counties = Object.keys(byC).sort();
 const top = rows[0], bot = rows.at(-1);
 
@@ -79,15 +90,25 @@ const dip = pts.reduce((a, b) => b.med < a.med ? b : a);
 /* ------------------------------------------------------------------- hero stats */
 /* Exactly one accented card, and it is the headline's number: the H1 says "1.2 times", so
    the median-premium card carries the lime rule and the row has one focal point. */
+/* Card 3 used to be the employment-weighted 78%. It came out: it was the one hero number
+   with no denominator on it and no job count anywhere on the page to check it against, and
+   it landed a rounding apart from 40/51 = 78.4% two cards away, so it read as the headline
+   said twice. Its replacement is the page's own counterweight, which is checkable from the
+   scatter (7 beat both + 33 beat the town only = 40; 33 + 11 = 44; 40 + 44 − 33 = 51) and
+   which puts the bad half of the finding in the hero row instead of only in act three.
+   Card 1 now carries the de-duplicated tally beside the headline it corrects. */
 PV.figures([
-  ["", `${above} of ${rows.length}`, "pairings out-pay their county",
-   `one polymer industry in one county, ${D.meta.latest}`],
+  ["", `${above} of ${rows.length}`, "published pairings out-pay their county",
+   `one polymer industry in one county, ${D.meta.latest}. Counting each county once
+    instead: ${dAbove} of ${dedup.length}.`],
   ["key", medPrem.toFixed(2) + "×", "median premium",
    "the middle pairing pays a fifth more than its county’s average job"],
-  ["", Math.round(empShare * 100) + "%", "of jobs beat their county average",
-   "counted once per county, so groups and their parts do not double up"],
-  ["", money(medWage), "median weekly wage",
-   `about $${Math.round(medWage * 52 / 1000)},000 a year`]
+  ["", `${usBelow} of ${rows.length}`, "pay under their own industry nationally",
+   `the typical one about 12 percent less (${usMed.toFixed(2)}×). ${qBeatTrail} pairings
+    are in both counts, which is how ${above} and ${usBelow} fit inside ${rows.length}.`],
+  ["", money(medWage), "the middle pairing’s weekly wage",
+   `about $${Math.round(medWage * 52 / 1000)},000 a year, averaged over that whole pairing
+    rather than any one person’s pay`]
 ]);
 
 document.getElementById("sv1").textContent = chemMed.toFixed(2) + "×";
@@ -151,23 +172,45 @@ const fx = v => (Math.round(v * 100) % 10 ? v.toFixed(2) : v.toFixed(1)) + "×";
 const plate = (parent, s, x, y, fs = 7.2) => el("rect", {x: x - 3, y: y - 12,
   width: s.length * fs + 6, height: 15, fill: "var(--paper)", opacity: .94, rx: 2}, parent);
 
+/* DOT SIZE NEEDS A SCALE OR IT IS DECORATION. Both scatter-family charts encode employment
+   as dot area, and a reader who can see that one dot is bigger than another still cannot
+   say whether that gap is ten jobs or ten thousand. That gap carries weight on this page
+   more than most: the lowest value on chart 1 rests on 30 paychecks. Key circles are drawn by
+   the same rEmp() the marks use, so the key cannot drift from the encoding it explains. */
+const SIZE_STEPS = [100, 1000, 5000];
+function sizeKey(svg, x, y, mx, fs) {
+  const lead = "dot size = jobs";
+  txt(svg, lead, {x, y, class: "pv-labq"});
+  let cx = x + lead.length * fs + 12;
+  SIZE_STEPS.forEach(n => {
+    const r = rEmp(n, mx), s = N(n);
+    el("circle", {cx: cx + r, cy: y - 4, r, fill: GRAY}, svg);
+    txt(svg, s, {x: cx + r * 2 + 5, y, class: "pv-labq"});
+    cx += r * 2 + 5 + s.length * fs + 12;
+  });
+}
+
 function drawPremium() { MOBILE.matches ? drawPremiumMobile() : drawPremiumDesktop(); }
 
 function drawPremiumDesktop() {
   const {svg, W, m, w} = PV.chart("prem",
     {W: 1100, rows: rows.length, rowH: 22, m: {t: 78, r: 210, b: 56, l: 270}});
   const lo = Math.min(0.7, ...rows.map(r => r.vs_local_all)) - 0.02;
-  const hi = Math.max(...rows.map(r => r.vs_local_all)) * 1.03;
+  /* THE LAST TICK SITS BEYOND THE LAST DOT. At 1.03 headroom the axis stopped labelling at
+     2.0× while the top row plots at 2.09×, so the page's most-quoted value hung past every
+     label it could be read against. 1.08 with seven requested ticks keeps the same 0.25
+     step and adds a 2.25× tick, which brackets the data instead of ending inside it. */
+  const hi = Math.max(...rows.map(r => r.vs_local_all)) * 1.08;
   const xs = v => m.l + ((v - lo) / (hi - lo)) * w;
   const h = rows.length * 22;
-  frame(svg, {x: m.l, y: m.t, w, h, xs, ys: () => 0, xt: ticks(lo, hi, 6),
+  frame(svg, {x: m.l, y: m.t, w, h, xs, ys: () => 0, xt: ticks(lo, hi, 7),
     xfmt: fx, yt: [],
     xlab: "pays less than the county ←   1.0×   → pays more than the county"});
   /* A 51-row stack has ONE axis at the bottom, which left the top rows ~1,200px from any
      tick label — a value scale a reader cannot reach is not a scale. Repeat the tick row
      above the plot and run a hairline down each tick so every row sits on a readable grid. */
   const grid = el("g", {}, svg);
-  ticks(lo, hi, 6).forEach(v => {
+  ticks(lo, hi, 7).forEach(v => {
     el("line", {x1: xs(v), y1: m.t, x2: xs(v), y2: m.t + h, stroke: "var(--pv-grid)",
       "stroke-width": 1}, grid);
     txt(grid, fx(v), {x: xs(v), y: m.t - 32, class: "pv-tick", "text-anchor": "middle"});
@@ -177,6 +220,7 @@ function drawPremiumDesktop() {
     "stroke-width": 2}, svg);
   txt(svg, "1.0×: pay matches the county’s average job", {x: one + 8, y: m.t - 14,
     class: "pv-lab", fill: "var(--hover)"});
+  sizeKey(svg, 12, 24, 7.3, 6.9);
   rows.forEach((r, i) => {
     const g = el("g", SEL && dim(r) ? {opacity: .16} : {}, svg);
     const y = m.t + i * 22 + 11;
@@ -210,14 +254,21 @@ function drawPremiumDesktop() {
     if (!i) a.fill = color;
     txt(svg, s, a);
   });
+  /* BOTH ENDS OF THE HEADLINE RANGE ARE PRINTED AS RATIOS. The title claims pay runs from
+     more than double the county average down to about three-quarters of it; the top end
+     was printed three ways and the bottom end only as $853/wk, so half the claim was
+     checkable and half had to be eyeballed off the axis. */
   bracket(0, 10, CAT[0]);
   lines(["All chemistry up here:", "chemicals, resin and paint",
          "hold the 11 largest", "premiums. Lake chemicals",
-         `tops the page: ${money(top.weekly_wage)}/wk.`], m.t + 18, CAT[0]);
+         `tops the page at ${top.vs_local_all.toFixed(2)}×,`,
+         `${money(top.weekly_wage)}/wk.`], m.t + 18, CAT[0]);
   bracket(rows.length - 11, rows.length - 1, CAT[1]);
   lines(["All 11 that pay under", "their own county make",
-         "plastics or rubber. The", `lowest, Stark rubber: ${money(bot.weekly_wage)}/wk`,
-         `on ${N(bot.emp)} jobs.`], m.t + (rows.length - 11) * 22 + 14, CAT[1]);
+         "plastics or rubber. The", "lowest, Stark rubber, is",
+         `${bot.vs_local_all.toFixed(2)}× its county:`,
+         `${money(bot.weekly_wage)}/wk on ${N(bot.emp)} jobs.`],
+        m.t + (rows.length - 11) * 22 + 14, CAT[1]);
 }
 
 function drawPremiumMobile() {
@@ -226,7 +277,7 @@ function drawPremiumMobile() {
   const {svg} = PV.chart("prem", {W, H});
   const w = W - m.l - m.r;
   const lo = Math.min(0.7, ...rows.map(r => r.vs_local_all)) - 0.02;
-  const hi = Math.max(...rows.map(r => r.vs_local_all)) * 1.03;
+  const hi = Math.max(...rows.map(r => r.vs_local_all)) * 1.08;
   const xs = v => m.l + ((v - lo) / (hi - lo)) * w;
   const one = xs(1);
   const yFor = i => m.t + headH + i * rowH + (i >= above ? bndH : 0);
@@ -234,8 +285,10 @@ function drawPremiumMobile() {
     "stroke-width": 1.5}, svg);
   txt(svg, "1.0×: same as the county", {x: one + 6, y: m.t + 2, class: "pv-labq",
     fill: "var(--hover)"});
+  sizeKey(svg, m.l, 20, 5.4, 7.8);
   {
-    const s = "Top 11 all chemistry: Lake tops it, " + money(top.weekly_wage) + "/wk";
+    const s = `Top 11 all chemistry. Lake: ${top.vs_local_all.toFixed(2)}×, ` +
+      money(top.weekly_wage) + "/wk";
     plate(svg, s, m.l, m.t + 28);
     txt(svg, s, {x: m.l, y: m.t + 28, class: "pv-labq", fill: CAT[0]});
   }
@@ -265,8 +318,13 @@ function drawPremiumMobile() {
     plate(svg, s, m.l, yB - 8);
     txt(svg, s, {x: m.l, y: yB - 8, class: "pv-labq"});
   }
+  /* SIX TICKS, NOT FOUR. At four requested ticks this axis stepped by 0.5 and printed
+     1.0 / 1.5 / 2.0 only: nothing was labelled below parity even though eleven rows sit
+     there, and the top row (2.09×) was drawn past the last tick with no way to read it.
+     Six requests land the same 0.25 step the desktop uses, so both ends of the range have
+     a tick to sit against. */
   const ax = el("g", {}, svg);
-  ticks(lo, hi, 4).forEach(v => {
+  ticks(lo, hi, 7).forEach(v => {
     txt(ax, fx(v), {x: xs(v), y: H - m.b + 18, class: "pv-tick",
       "text-anchor": "middle"});
   });
@@ -277,11 +335,14 @@ function drawPremiumMobile() {
 /* ------------------------------------------------- chart 2: the national scatter */
 function drawScatter() { MOBILE.matches ? drawScatterMobile() : drawScatterDesktop(); }
 
+/* Headroom is set so the outermost TICK lands past the outermost DOT on both scales: at the
+   old padding the axis stopped at 2.0× and 1.2× while Lake plots at 2.09× and Wayne at
+   1.28×, which left the two dots the annotations name sitting past every label. */
 function scDomains() {
   const xlo = Math.min(0.7, ...rows.map(r => r.vs_local_all)) - 0.02;
-  const xhi = Math.max(...rows.map(r => r.vs_local_all)) * 1.04;
+  const xhi = Math.max(...rows.map(r => r.vs_local_all)) * 1.08;
   const ylo = Math.min(...rows.map(r => r.vs_us)) - 0.04;
-  const yhi = Math.max(...rows.map(r => r.vs_us)) * 1.06;
+  const yhi = Math.max(...rows.map(r => r.vs_us)) * 1.10;
   return {xlo, xhi, ylo, yhi};
 }
 
@@ -291,18 +352,36 @@ function drawScatterDesktop() {
   const {xlo, xhi, ylo, yhi} = scDomains();
   const xs = v => m.l + ((v - xlo) / (xhi - xlo)) * w;
   const ys = v => m.t + h - ((v - ylo) / (yhi - ylo)) * h;
-  frame(svg, {x: m.l, y: m.t, w, h, xs, ys, xt: ticks(xlo, xhi, 6),
+  /* A VERTICAL AXIS DOES NOT GET LEFT-RIGHT ARROWS. This label used to read
+     "pays less than the industry nationally ← → pays more", set horizontally above a plot
+     whose real horizontal axis uses the identical arrow idiom for a different variable, so
+     one figure spent the same visual grammar on two meanings. Naive readers parsed it as a
+     second left-right scale and went looking for the axis it belonged to. */
+  frame(svg, {x: m.l, y: m.t, w, h, xs, ys, xt: ticks(xlo, xhi, 7),
     yt: ticks(ylo, yhi, 5), xfmt: fx, yfmt: fx,
     xlab: "pays less than the county ←   → pays more than the county",
-    ylab: "pays less than the industry nationally ←   → pays more"});
+    ylab: "↑ up the chart: pays more than the same industry nationally"});
   el("line", {x1: xs(1), y1: m.t, x2: xs(1), y2: m.t + h, stroke: "var(--hover)",
     "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
   el("line", {x1: m.l, y1: ys(1), x2: m.l + w, y2: ys(1), stroke: "var(--hover)",
     "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
-  txt(svg, "1.0×: matches the industry nationally", {x: m.l + 6, y: ys(1) - 8,
+  /* Set on TWO SHORT LINES so it ends before the vertical reference line at xs(1). Run as
+     one line it crossed that line and rendered as "industry|nationally", which is where a
+     naive reader stalled. Each reference line is now named by what crossing it means. */
+  ["1.0×: above this line,", "pay beats the industry"].forEach((s, i) =>
+    txt(svg, s, {x: m.l + 6, y: ys(1) - 42 + i * 16, class: "pv-labq",
+      fill: "var(--hover)"}));
+  txt(svg, "1.0×: right of it, beats the county", {x: xs(1) + 6, y: m.t + 14,
     class: "pv-labq", fill: "var(--hover)"});
-  txt(svg, "1.0×: matches the county", {x: xs(1) - 6, y: m.t + 14,
-    class: "pv-labq", fill: "var(--hover)", "text-anchor": "end"});
+  sizeKey(svg, m.l + 6, m.t + 44, 8.5, 6.9);
+  /* THE FOURTH QUADRANT IS A FINDING, NOT AN OVERSIGHT. Three quadrants carried counts and
+     the fourth carried nothing, so a reader who counted dots and found it empty could not
+     tell whether that was the answer or a missing label. Nothing in the region pays under
+     its own town while out-paying its own industry, and the empty corner is the only place
+     on the chart with room to say so. */
+  ["This corner is empty:", "0 pairings pay under", "their own town while",
+   "beating their industry."].forEach((s, i) => txt(svg, s,
+    {x: m.l + 6, y: m.t + 80 + i * 16, class: i ? "pv-labq" : "pv-lab"}));
   rows.forEach(r => {
     const g = el("g", SEL && dim(r) ? {opacity: .14} : {}, svg);
     hoverable(el("circle", {cx: xs(r.vs_local_all), cy: ys(r.vs_us),
@@ -349,7 +428,9 @@ function drawScatterDesktop() {
 function drawScatterMobile() {
   /* Left margin is 44, not 36, because this axis now prints "0.6×" rather than "0.6": the
      units travel with the tick, and the label needs the room to do it. */
-  const m = {t: 62, r: 14, b: 50, l: 44}, W = 375, H = 422;
+  /* Top margin is 84, not 62: the phone header now carries three rows (family key, dot-size
+     key, axis reading) and at 62 the size key printed straight over the axis label. */
+  const m = {t: 84, r: 14, b: 50, l: 44}, W = 375, H = 444;
   const {svg} = PV.chart("scat", {W, H});
   const w = W - m.l - m.r, h = H - m.t - m.b;
   const {xlo, xhi, ylo, yhi} = scDomains();
@@ -360,10 +441,10 @@ function drawScatterMobile() {
      pixel gaps asserting spans of 0.2 and 0.3, and every dot near the outer lines misread by
      0.05. Five requested ticks land the domain on a clean 0.2 step (0.6/0.8/1.0/1.2) and the
      page's own no-round-lie formatter prints them, exactly as the desktop chart does. */
-  frame(svg, {x: m.l, y: m.t, w, h, xs, ys, xt: ticks(xlo, xhi, 3),
+  frame(svg, {x: m.l, y: m.t, w, h, xs, ys, xt: ticks(xlo, xhi, 4),
     yt: ticks(ylo, yhi, 5), xfmt: fx,
     yfmt: fx, xlab: "← under town   ·   over town →",
-    ylab: "← under industry   ·   over →"});
+    ylab: "↑ up: beats its industry"});
   /* The family key lives on chart 1's legend, roughly 3,000px up the phone scroll. A figure
      that has to be read where it sits carries its own. */
   {
@@ -372,6 +453,7 @@ function drawScatterMobile() {
     txt(svg, "chemistry", {x: m.l + 15, y: ky, class: "pv-labq"});
     el("circle", {cx: m.l + 105, cy: ky - 5, r: 5, fill: PROD}, svg);
     txt(svg, "plastics & rubber", {x: m.l + 115, y: ky, class: "pv-labq"});
+    sizeKey(svg, m.l, ky + 22, 5.5, 7.8);
   }
   el("line", {x1: xs(1), y1: m.t, x2: xs(1), y2: m.t + h, stroke: "var(--hover)",
     "stroke-width": 1.2, "stroke-dasharray": "4 3"}, svg);
@@ -395,6 +477,14 @@ function drawScatterMobile() {
     txt(svg, s2, {x: xs(1) - 6, y: m.t + h - 46, class: "pv-labq",
       "text-anchor": "end"});
     txt(svg, `beats both · ${qBoth}`, {x: xs(1) + 6, y: m.t + 12, class: "pv-labq"});
+    /* The fourth quadrant, counted on the phone too. Plated because 375px leaves the
+       empty corner narrower than the words, so the label crosses the reference line and
+       the plate keeps the type readable where it does. */
+    ["0 pairings", "in this corner"].forEach((s, i) => {
+      const y = m.t + 32 + i * 18;
+      plate(svg, s, m.l + 4, y);
+      txt(svg, s, {x: m.l + 4, y, class: "pv-labq"});
+    });
   }
 }
 
@@ -407,14 +497,17 @@ function drawTrendVariant(W, H, mobile) {
   const {svg} = PV.chart("trend", {W, H, narrow: true, keep: 1});
   const w = W - m.l - m.r, h = H - m.t - m.b;
   const lo = Math.min(...pts.map(p => p.q1), 1) - 0.04;
-  const hi = Math.max(...pts.map(p => p.q3)) + 0.05;
+  /* +0.09 rather than +0.05 so the tick ladder reaches 1.5× and the top of the shaded band
+     (1.46× at its widest year) has a label above it instead of running off past the last
+     one. Six requested ticks hold the 0.1 step that the wider span would otherwise lose. */
+  const hi = Math.max(...pts.map(p => p.q3)) + 0.09;
   const xs = y => m.l + ((y - years[0]) / (years.at(-1) - years[0])) * w;
   const ys = v => m.t + h - ((v - lo) / (hi - lo)) * h;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys,
     xt: years.filter((_, i) => i % (mobile ? 3 : 2) === 0),
-    yt: ticks(lo, hi, 5), xfmt: v => v, yfmt: v => v.toFixed(1) + "×",
-    xlab: "", ylab: mobile ? "← below the county · above →"
-      : "below the county’s average job ← 1.0× → above it"});
+    yt: ticks(lo, hi, 6), xfmt: v => v, yfmt: v => v.toFixed(1) + "×",
+    xlab: "", ylab: mobile ? "↑ up: above the county"
+      : "↑ up: further above the county’s average job"});
   /* The spread first, so the line reads against it. */
   el("path", {d: "M" + pts.map(p => `${xs(p.year)},${ys(p.q3)}`).join("L") +
     "L" + [...pts].reverse().map(p => `${xs(p.year)},${ys(p.q1)}`).join("L") + "Z",
@@ -463,9 +556,11 @@ document.getElementById("premtable").innerHTML = tableView("p",
 document.getElementById("premsrc").innerHTML =
   `${D.meta.source}, ${D.meta.latest}; ${FP.words} Northeast Ohio counties. Ratio =
    average weekly wage &divide; the county&rsquo;s all-industry average. Pairings too
-   small to publish are absent, not zero: ${rows.length} of
+   small to publish are absent, not zero: the
+   ${[...new Set(D.latest_rows.map(r => r.naics))].length} tracked industries across
+   ${counties.length} counties make
    ${[...new Set(D.latest_rows.map(r => r.naics))].length * counties.length} possible
-   pairings are published.`;
+   pairings, and ${rows.length} of them are published.`;
 document.getElementById("scattable").innerHTML = tableView("s",
   `Pay against the county and against the same industry nationally, ${D.meta.latest}. ` +
   `Above 1.00 means the work out-pays that comparison.`,
@@ -508,12 +603,19 @@ MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
    parent/child overlap reconciliation moves here out of chart 1's caption; every count in it
    is computed above, never typed. */
 const meth = await PV.methodology({page: "wages", meta: D.meta,
-  definitions: `The data ship industry groups (325 chemical manufacturing, 326 plastics and
-    rubber) alongside their published sub-industries, so one county can appear at both levels
-    and the ${rows.length} pairings are not additive. Counted once per county, at the finest
-    industry detail published for it, ${dAbove} of ${dedup.length} pairings pay above their county average,
-    the same roughly three-in-four share as the headline ${above} of ${rows.length}. The
-    employment-weighted hero share uses that deduplicated set only.`});
+  definitions: `NAICS is the federal industry classification, and the
+    ${[...new Set(D.latest_rows.map(r => r.naics))].length} industries tracked here are its
+    codes 325 chemical manufacturing, 3252 resin and synthetic rubber, 3255 paint and
+    coatings, 326 plastics and rubber products, 3261 plastics products, and 3262 rubber
+    products. A covered job is one covered by unemployment insurance, which is what this
+    census counts. Codes 325 and 326 are broad families holding the four others, and where
+    both a family and its parts clear the disclosure threshold in a county the data publish
+    the county at both levels, so one county can be counted twice and the ${rows.length}
+    pairings are not ${rows.length} separate places. Counted once per county, at the finest
+    industry detail published for it, ${dAbove} of ${dedup.length} pairings pay above their
+    county average: ${pctDedup}%, against ${pctHead}% for the headline ${above} of
+    ${rows.length}. Those ${dAbove} cover ${N(empAbove)} of the ${N(empTot)} jobs in that
+    de-duplicated set.`});
 
 /* Which counties, in reader words, filed under the sources it qualifies. */
 {
@@ -525,7 +627,8 @@ const meth = await PV.methodology({page: "wages", meta: D.meta,
     p.textContent = `Coverage: the cluster’s official ${FP.words}-county footprint ` +
       `(${FP.counties.join(", ")}), all in Northeast Ohio. A wider fourteen-county ` +
       `definition of the region, used by some other sources, adds Crawford, Huron, ` +
-      `Richland and Tuscarawas; the two never reconcile, and this page does not mix them.`;
+      `Richland and Tuscarawas, so figures on this page cannot be compared with ` +
+      `fourteen-county figures published elsewhere.`;
     h.parentNode.appendChild(p);
   }
 }

@@ -27,27 +27,43 @@
     },
     {
       "id": "rev-median",
-      "text": "The median absolute revision is 0.15 percent (standfirst, hero card, chart-2 title, the median bracket drawn under chart 2, caveat box, closer).",
+      "text": "The typical revision is 0.15 percent, measured across the 259 months that were revised and not across all 273 published (standfirst, hero card, chart-2 title, the bracket drawn under chart 2, caveat box, closer).",
       "source": "median of the absolute percentage change, first print to latest, across all revised months",
       "assert": "0.145 <= (lambda a: (lambda s, n: s[n//2] if n % 2 else (s[n//2-1] + s[n//2]) / 2)(sorted(a), len(a)))([abs(p['pct']) for p in D['periods'] if p['pct'] is not None]) < 0.155",
       "actual": "(lambda a: (lambda s, n: s[n//2] if n % 2 else (s[n//2-1] + s[n//2]) / 2)(sorted(a), len(a)))([abs(p['pct']) for p in D['periods'] if p['pct'] is not None])",
-      "falsified_if": "The median leaves the band that rounds to 0.15 percent, which would break the hero card, both chart titles and the axis bracket at once."
+      "falsified_if": "The median leaves the band that rounds to 0.15 percent, which would break the hero card, both chart titles and the axis bracket at once. The base is the other half of this claim: the card and the bracket said 'half of months' until 2026-08-28, which reads as all 273 and overstates the reassurance the page is offering."
+    },
+    {
+      "id": "rev-vs-month",
+      "text": "These prices move a median 0.34 percent from one month to the next, so a typical revision of 0.15 percent is a bit under half of an ordinary month's movement (hero card, closer, distribution table).",
+      "source": "median absolute month-over-month change on the latest published values, over the same 270 consecutive-month pairs the reversal count is built from, against the median absolute revision",
+      "assert": "(lambda A: (lambda PM, LV, MED: (lambda steps, rev: len(steps) == 270 and 0.335 <= MED(steps) < 0.345 and MED(steps) > 2 * MED(rev))([abs(LV(s, dt) / LV(s, PM(dt)) - 1) * 100 for s in sorted(set(r['series'] for r in A)) for dt in sorted(set(r['date'] for r in A if r['series'] == s)) if PM(dt) in set(r['date'] for r in A if r['series'] == s)], [abs(p['pct']) for p in D['periods'] if p['pct'] is not None]))(lambda dt: '%04d-%02d-01' % ((int(dt[:4]) - 1, 12) if dt[5:7] == '01' else (int(dt[:4]), int(dt[5:7]) - 1)), lambda s, dt: max([(r['vintage'], r['value']) for r in A if r['series'] == s and r['date'] == dt])[1], lambda a: (lambda t, n: t[n // 2] if n % 2 else (t[n // 2 - 1] + t[n // 2]) / 2)(sorted(a), len(a))))(D['all'])",
+      "actual": "(lambda A: (lambda PM, LV, MED: (MED([abs(LV(s, dt) / LV(s, PM(dt)) - 1) * 100 for s in sorted(set(r['series'] for r in A)) for dt in sorted(set(r['date'] for r in A if r['series'] == s)) if PM(dt) in set(r['date'] for r in A if r['series'] == s)]), MED([abs(p['pct']) for p in D['periods'] if p['pct'] is not None])))(lambda dt: '%04d-%02d-01' % ((int(dt[:4]) - 1, 12) if dt[5:7] == '01' else (int(dt[:4]), int(dt[5:7]) - 1)), lambda s, dt: max([(r['vintage'], r['value']) for r in A if r['series'] == s and r['date'] == dt])[1], lambda a: (lambda t, n: t[n // 2] if n % 2 else (t[n // 2 - 1] + t[n // 2]) / 2)(sorted(a), len(a))))(D['all'])",
+      "falsified_if": "The ordinary monthly move leaves the band that rounds to 0.34 percent, or it stops being more than twice the typical revision, at which point the yardstick reverses and a revision becomes comparable to a month's own movement. This is the page's only answer to 'is 0.15 percent small'; it had none until 2026-08-28 and its own limitations said so. Both quantities come from one archive, the same 270 pairs and the same three series, so a change in either side is a change in the finding rather than in the sources."
+    },
+    {
+      "id": "rev-settle",
+      "text": "No month changed more than six months after its first print, and 250 of the 259 revised months had stopped moving inside four (closer, distribution table).",
+      "source": "for each revised month, the gap in months between the vintage that first published it and the vintage that last changed it",
+      "assert": "(lambda lags: max(lags) == 6 and len([v for v in lags if v <= 4]) == 250 and len(lags) == 259)([(lambda a, b: (int(b[:4]) - int(a[:4])) * 12 + int(b[5:7]) - int(a[5:7]))(p['path'][0]['from'], p['path'][-1]['from']) for p in D['periods']])",
+      "actual": "sorted(set((lambda a, b: (int(b[:4]) - int(a[:4])) * 12 + int(b[5:7]) - int(a[5:7]))(p['path'][0]['from'], p['path'][-1]['from']) for p in D['periods']))",
+      "falsified_if": "Any month turns out to have moved more than six months after first print, or the count settled within four leaves 250. The closer tells a reader to price against the version published about half a year later, which is advice this claim alone supports; if a benchmark revision ever reaches further back than six months the advice is wrong and has to be withdrawn, not softened. The bound is what a 2019-2026 monthly archive shows, not a rule the BLS publishes, and the methodology box says so."
     },
     {
       "id": "rev-max",
-      "text": "The largest single revision is 1.42 percent: industrial chemicals for September 2021, first published at 348.8 and now 343.866, a drop of 1.42 percent (chart-2 annotation, chart-1 panel annotation, vignette lede).",
-      "source": "maximum absolute percentage change across all revised months",
-      "assert": "(lambda b: 1.415 <= abs(b['pct']) < 1.425 and b['series'] == 'WPU06' and b['date'] == '2021-09-01' and b['first'] == 348.8 and b['latest'] == 343.866)(max([p for p in D['periods'] if p['pct'] is not None], key=lambda p: abs(p['pct'])))",
-      "actual": "(lambda b: (b['series'], b['date'], b['first'], b['latest'], b['pct']))(max([p for p in D['periods'] if p['pct'] is not None], key=lambda p: abs(p['pct'])))",
-      "falsified_if": "A later vintage moves September 2021 again, or any other month overtakes it. Three surfaces name this month by name, so a new record-holder invalidates the vignette, not just a number."
+      "text": "The largest single revision is 1.41 percent: industrial chemicals for September 2021, first published at 348.8 and now 343.866, a drop of 1.41 percent (chart-2 annotation, chart-1 panel annotation, chart-2 title, caveat box, vignette lede).",
+      "source": "maximum absolute percentage change across all revised months, recomputed from the two index values the page prints beside it",
+      "assert": "(lambda b: b['series'] == 'WPU06' and b['date'] == '2021-09-01' and b['first'] == 348.8 and b['latest'] == 343.866 and abs(b['pct']) == max(abs(p['pct']) for p in D['periods'] if p['pct'] is not None) and round(abs((b['latest'] - b['first']) / b['first'] * 100), 2) == 1.41)(max([p for p in D['periods'] if p['pct'] is not None], key=lambda p: abs(p['pct'])))",
+      "actual": "(lambda b: (b['series'], b['date'], b['first'], b['latest'], b['pct'], round(abs((b['latest'] - b['first']) / b['first'] * 100), 2)))(max([p for p in D['periods'] if p['pct'] is not None], key=lambda p: abs(p['pct'])))",
+      "falsified_if": "A later vintage moves September 2021 again, or any other month overtakes it. Five surfaces name this month, so a new record-holder invalidates the vignette, not just a number. The clause that matters most is the last one in the assertion: it recomputes the printed 1.41 from 348.8 and 343.866, the two values the page sets beside it, and fails if they ever stop reconciling. The page printed 1.42 until 2026-08-28 because the derived file rounds the change to three places (-1.415) and rounding that again to two gives 1.42, while a reader dividing the two index values gets 1.41."
     },
     {
       "id": "rev-lean",
-      "text": "137 months were later revised up against 121 revised down, so first estimates run slightly low (hero card, chart-2 subtitle, chart-2 arrow annotation).",
-      "source": "sign of the total change, first print to latest, per revised month",
-      "assert": "(len([p for p in D['periods'] if p['pct'] is not None and p['pct'] < 0]), len([p for p in D['periods'] if p['pct'] is not None and p['pct'] > 0])) == (121, 137)",
-      "actual": "(len([p for p in D['periods'] if p['pct'] is not None and p['pct'] < 0]), len([p for p in D['periods'] if p['pct'] is not None and p['pct'] > 0]))",
-      "falsified_if": "Either count changes, or the majority crosses to the down side, which would reverse the direction of the lean the arrow annotation points at."
+      "text": "137 months were later revised up against 121 revised down, a split close enough to even that no direction shows in the first estimates (hero card, chart-2 subtitle, chart-2 arrow annotation, distribution lede).",
+      "source": "sign of the total change, first print to latest, per revised month; and a two-sided binomial test of that split against an even one",
+      "assert": "(lambda dn, up: (dn, up) == (121, 137) and (lambda n, k: sum(math.comb(n, i) for i in range(n + 1) if abs(i - n / 2) >= abs(k - n / 2)) / 2 ** n)(dn + up, up) > 0.05)(len([p for p in D['periods'] if p['pct'] is not None and p['pct'] < 0]), len([p for p in D['periods'] if p['pct'] is not None and p['pct'] > 0]))",
+      "actual": "(lambda dn, up: (dn, up, (lambda n, k: sum(math.comb(n, i) for i in range(n + 1) if abs(i - n / 2) >= abs(k - n / 2)) / 2 ** n)(dn + up, up)))(len([p for p in D['periods'] if p['pct'] is not None and p['pct'] < 0]), len([p for p in D['periods'] if p['pct'] is not None and p['pct'] > 0]))",
+      "falsified_if": "Either count changes, or the split becomes lopsided enough that a fair coin would produce it less than one time in twenty, at which point 'close to an even split' is the wrong reading and the card, the chart annotation and the section lede all have to say so instead. Until 2026-08-28 those three surfaces asserted the opposite, that first estimates run slightly low: 137 of 258 is 53.1 percent, eight months from even against a standard deviation of 8.0, and a two-sided binomial test puts it at p = 0.35."
     },
     {
       "id": "rev-net-zero",
@@ -75,11 +91,11 @@
     },
     {
       "id": "rev-frequency",
-      "text": "A revised month was revised 2.9 times on average, up to 4 times (hero card).",
-      "source": "revision count per revised reference month",
-      "assert": "2.85 <= sum(p['revisions'] for p in D['periods']) / len(D['periods']) < 2.95 and max(p['revisions'] for p in D['periods']) == 4",
-      "actual": "(sum(p['revisions'] for p in D['periods']) / len(D['periods']), max(p['revisions'] for p in D['periods']))",
-      "falsified_if": "The mean leaves the band that rounds to 2.9, or any month accumulates a fifth revision."
+      "text": "741 corrections were published across the 259 revised months, an average of 2.9 each and never more than 4 on one month (hero card, distribution table).",
+      "source": "revision count per revised reference month, and its total",
+      "assert": "sum(p['revisions'] for p in D['periods']) == 741 and 2.85 <= sum(p['revisions'] for p in D['periods']) / len(D['periods']) < 2.95 and max(p['revisions'] for p in D['periods']) == 4",
+      "actual": "(sum(p['revisions'] for p in D['periods']), len(D['periods']), sum(p['revisions'] for p in D['periods']) / len(D['periods']), max(p['revisions'] for p in D['periods']))",
+      "falsified_if": "The total moves, or the mean leaves the band that rounds to 2.9, or any month accumulates a fifth revision. The total is on the card so the average can be checked: 741 over 259 is 2.86, which is what 2.9 rounds from. The card carried the average with no denominator anywhere on the page until 2026-08-28, so it was the one headline figure a reader could not reproduce."
     },
     {
       "id": "rev-series-medians",

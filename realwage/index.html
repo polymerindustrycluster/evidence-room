@@ -13,7 +13,7 @@
 <header class="mast">
   <div class="wrap">
     <strong>Polymer Industry Cluster</strong>
-    <span>Cluster vitals &middot; real wages</span>
+    <span>Cluster vitals &middot; what the paycheck buys</span>
   </div>
 </header>
 
@@ -23,12 +23,13 @@
     <h1>The same paycheck ranks <em>below average</em> in dollars and
       <em>above average</em> in what it buys.</h1>
     <p class="stand">Hiring against Chicago money, the offer number is half the argument:
-      the same paycheck stretches about 10 percent further in Akron. Among the 56 metros
-      with a serious polymer workforce, Akron is <b>33rd on the printed number and 19th
-      on what it buys</b>, a smaller climb than PIC usually pitches.</p>
-    <p class="byline">By the Polymer Industry Cluster desk &middot; Analysis and graphics
-      by Claude (Anthropic) &middot; Data BLS QCEW and
-      BEA Regional Price Parities &middot; August 2026</p>
+      the same dollars stretch about 10 percent further in Akron than in Chicago. Among
+      the 56 metros with at least 2,000 polymer jobs, Akron is <b>33rd on the printed
+      number and 19th on what it buys</b>, a climb of 14 places.</p>
+    <p class="byline">By the Polymer Industry Cluster (PIC) desk &middot; Analysis and
+      graphics by Claude (Anthropic) &middot; Data: the federal census of jobs and pay
+      (BLS QCEW) and metro price levels (BEA Regional Price Parities) &middot;
+      August 2026</p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -41,16 +42,19 @@
       ranked on the left by the wage printed on the paycheck, on the right by what that
       wage buys. A line sloping down means a metro’s wages buy less than the dollar
       figure suggests. The steepest falls are the places PIC competes with for people.</p>
-    <p class="gloss">Every wage comparison PIC has ever published is nominal.
+    <p class="gloss">A polymer job here means one in plastics and rubber products
+      manufacturing, industry code NAICS 326. Every wage comparison PIC has ever
+      published is nominal.
       <dfn><b>Nominal</b> means the number printed on the paycheck, before any adjustment
       for what things cost where you live; its opposite here is &ldquo;real,&rdquo; what
-      the paycheck buys.</dfn> The Bureau of Economic Analysis prices the same national
-      basket in every metro and scores each one against the country: 100 is the national
-      average, under 100 means things cost less than they do nationally, over 100 means
-      more. Akron scores 92.9, so prices here run about 7 percent below the US average.
-      Those parities cover metropolitan areas only, so the region appears here as the
-      Akron metro area alone: Cleveland and Canton have no published 2023 polymer
-      wage.</p>
+      the paycheck buys.</dfn> The Bureau of Economic Analysis prices the same shopping
+      list of goods and services in every metro and scores each one against the country:
+      100 is the national average, under 100 means things cost less than they do
+      nationally, over 100 means more. Akron scores 92.9, so prices here run about 7
+      percent below the US average. Those price levels are published for metropolitan
+      areas only, so PIC&rsquo;s twelve-county footprint cannot be scored at all: the
+      region appears here as the Akron metro area alone, and Cleveland and Canton have no
+      published 2023 polymer wage.</p>
     <div class="csel" id="msel" role="group" aria-label="Pick the metro you are recruiting against"></div>
     <p class="verdict" id="verdict"></p>
     <p class="fig-title">Akron climbs 14 places when the paycheck is restated in what it buys</p>
@@ -74,11 +78,12 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The honest counterweight</p>
-    <h2>Northeast Ohio is not a cheap metro. It is an average one.</h2>
-    <p class="lede">The advantage above is real, but it does not come from where PIC usually
-      says it does. Akron’s price level is almost exactly the metro median, and more than
-      a hundred metros are cheaper. What produces the climb is that a large share of the
-      polymer industry sits in genuinely expensive places.</p>
+    <h2>Northeast Ohio sits in the middle of the metro price range.</h2>
+    <p class="lede">PIC’s standard recruiting line has been that Akron is a low-cost
+      place to live and hire. The price data will not carry it: Akron’s price level is
+      almost exactly the metro median, and more than a hundred metros are cheaper. The
+      advantage above is real, and what produces it is that a large share of the polymer
+      industry sits in genuinely expensive places.</p>
     <p class="gloss"><dfn>The <b>median</b> is the middle value, with as many above as
       below, rather than the average, which a few very high earners can pull
       upward.</dfn></p>
@@ -102,10 +107,14 @@
     <p class="lede">The further right a metro sits, the bigger the paycheck. The further
       up, the more that paycheck has to cover. So the top left is the worst trade a
       recruiter can make and the bottom right the best. Every metro on one dashed
-      diagonal ends up with the same buying power.</p>
+      diagonal ends up with the same buying power, and the orange diagonal is
+      Akron&rsquo;s own: every metro above it buys less. Los Angeles is the sharpest case
+      among the big employers, at a price level of 114.7 against Akron&rsquo;s 92.9, so
+      the same salary covers about a fifth less there.</p>
     <p class="fig-title">The biggest polymer employers sit where the same salary buys up to a fifth less</p>
-    <p class="fig-sub">Weekly wage across, local price level up, 2023. Bigger circles mean
-      more polymer jobs; every metro on one dashed diagonal buys the same.</p>
+    <p class="fig-sub">Weekly wage across, local price level up, 2023. Circle size is
+      polymer jobs, from the 2,000-job floor to Chicago&rsquo;s 33,400; every metro on one
+      dashed diagonal buys the same.</p>
     <div class="chart"><svg id="scatter" role="img" aria-labelledby="scatter-t">
       <title id="scatter-t">Weekly wage against local price level: above the dashed
         diagonals a salary flatters the offer, below them it understates it, and Akron
@@ -120,18 +129,20 @@
   <div class="wrap">
     <p class="takeaway">What it means in an offer letter</p>
     <h2>Against Chicago, the price advantage is worth about $6,600 a year</h2>
-    <p class="lede">Akron&rsquo;s average polymer paycheck is $1,238 a week, about
-      $64,000 a year. To hand a candidate the same buying power, a Chicago employer has
-      to write about $71,000, and the spread widens up the price ladder: matching it in
-      San Francisco takes about $81,000. These are averages of covered paychecks in each
-      metro, not any one person&rsquo;s offer; the point is the size of the wedge a
-      recruiter can put in a candidate&rsquo;s spreadsheet.</p>
+    <p class="lede">Akron&rsquo;s average polymer paycheck is $1,238 a week, which is
+      $64,400 a year over 52 weeks. Chicago prices run 102.5 against Akron&rsquo;s 92.9,
+      so the same buying power costs a Chicago employer $1,365 a week, about $71,000 a
+      year: $71,000 minus $64,400 is the $6,600 in the heading. San Francisco is dearer
+      again at 117.6, where matching Akron takes about $1,566 a week, or $81,400. These
+      are averages across every job the federal wage count covers in each metro, not any
+      one person&rsquo;s offer; the point is the size of the wedge a recruiter can put in
+      a candidate&rsquo;s spreadsheet.</p>
   </div>
 </section>
 
 <section class="closer">
   <div class="wrap">
-    <p>A Chicago offer has to clear $71,000 to beat Akron&rsquo;s $64,000.</p>
+    <p>A Chicago offer has to clear $71,000 to beat Akron&rsquo;s $64,400.</p>
     <p class="sub" id="closersub"></p>
   </div>
 </section>

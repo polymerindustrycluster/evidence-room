@@ -25,6 +25,7 @@ Raw pulls live beside those scripts so a derivation can be re-run without re-fet
 
 ## Read before quoting anything from this page
 
+- **The published gap is one decimal (+14.3), and it is NOT the difference of the rounded indexes.** 140 − 125 = 15; the gap is 139.76 − 125.44 = 14.32. If you quote it, quote the tenth, and if you show the legs, show them at two decimals — the reconciliation block does both. Same at the trough: 114 and 136 give −22, the gap is −22.50.
 - Series are in $/mcf, ¢/kWh and index points. They are rebased to 100 at 2019-01 so that ONE axis is honest. This page exists partly to avoid the dual-axis anti-pattern.
 - Two constructed units carry the page, and both are stated as a READING on the figure rather than as arithmetic. (1) Share of a run-up given back, on the ladder: 0% still holds the whole run-up, 100% is back to the January 2019 price, past 100% is cheaper than before the run-up started. (2) The gap between two same-based indexes, on the spread chart: one point is one percentage point of price growth since January 2019, above zero means product prices grew more, below zero means resin did. The formulas live in the source lines and `meta.definition`, not on the axes.
 - An index shows movement from the base month only — a series that starts high and stays flat looks like one that is cheap and flat.
@@ -34,6 +35,38 @@ Raw pulls live beside those scripts so a derivation can be re-run without re-fet
 - "Above zero every month since August 2022" is true and thin. Three of those 48 months came in under a single point: August 2022 (+0.08, the crossing itself), September 2022 (+0.58) and May 2026 (+0.71). Quote the run without those three and you are quoting a stronger claim than the data make.
 
 ## Corrections
+
+- **2026-08-28 (second pass, naive-reader audit)** — **The gap did not subtract.** The page printed
+  the two indexes it is built from as 140 and 125 (line chart, ladder, `$1.40`/`+25%`) and printed
+  their difference as +14. A reader who checked got 15, and the same failure recurred at the squeeze:
+  `$1.14` against "resin up 36%" gives −22 where the page said −23. Both were correct rounding of
+  139.76 − 125.44 = 14.32 and 113.83 − 136.33 = −22.50, and neither was recoverable from anything on
+  the page. Three changes: the gap is now published to the tenth everywhere (+14.3, −22.5, +22.5,
+  +19.2), which also stops three unrelated quantities all printing as "23"; a reconciliation block
+  under the gap lede prints both legs at two decimals for both months, states the rounded subtraction
+  and its answer, and names the swing (36.8 points) that the old headline's "23 → 14" invited a reader
+  to compute as 9; and the vignette carries both legs instead of only the resin one. Guarded by the
+  new `cs-gap-reconciles`, which fails if the two-decimal legs stop subtracting to the stated gaps or
+  if the rounded legs stop differing by the 15 the block names.
+- **2026-08-28 (second pass)** — "Gas tripled by August 2022" was stated twice in prose and once as a
+  chart annotation. The peak is 283 on a base of 100, which is 2.8×, and it is measurable on the page's
+  own chart. Now "nearly three times", with the annotation printing the number (`Aug 2022: gas peaks at
+  283`) and a new claim (`cs-gas-not-tripled`) that fails if the peak ever reaches 300.
+- **2026-08-28 (second pass)** — Four of the seven series were labelled as word-order shuffles of each
+  other ("Plastics resins & materials" / "Resin manufacturing"; "Rubber & plastic products" /
+  "Plastics & rubber products mfg"), so a reader could not tell which two fed the gap. Renamed by what
+  they measure — *from its/their makers* against *as a commodity* — with an IN THE GAP tag on the
+  ladder rows that feed the subtraction and both namings in the gap's source line (`cs-four-series-two-pairs`).
+  The section headline now names the one row that breaks the ladder ("except the power bill"), and that
+  row is tagged on the chart at both widths (`cs-elec-out-of-order`).
+- **2026-08-28 (second pass)** — The spread subhead promised three sub-one-point months and the prose
+  named two; the third is now named by date. The gas retracement is worked through in the ladder's
+  how-to-read line using figures a reader can read off the page (`cs-ladder-worked-example`), the
+  formula returned to that figure's source line, and *converter*, *feedstock*, *Henry Hub*, *WTI*, *PPI*,
+  *EIA*, *BLS*, *FRED*, *$/mcf* and *¢/kWh* are all glossed at first contact. On mobile: the ladder
+  re-laid out to three lines a row (the longest series name collided with its own reading), the gap
+  chart regained the direction cue and the full "resin vs chemicals" name, and crude oil — a named
+  character in the prose — regained an end label instead of being one of four anonymous gray lines.
 
 - **2026-08-28** — The spread lede said the gap "peaked at +23 this January before easing to +14." That is not the path the chart draws. Resin rose 23 points between March and May 2026 and the gap fell to +0.7 in May, its thinnest month since September 2022, before reopening to +14 in July. The lede now states that path, the dip is annotated on both the desktop and mobile renderings, and the chart title no longer says "above zero every month since August 2022" without saying how thin three of those months were. Two claims were added to pin it (`cs-spread-near-close`, `cs-resin-spring-jump`) and `cs-spread-positive-since` now asserts the count of sub-one-point months rather than only their sign.
 

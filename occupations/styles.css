@@ -41,6 +41,12 @@
    rail, which is what the one-rail law is actually about. Collapses to zero below 760px,
    where the two columns are the same width by design. */
 .legend{padding-left:calc((var(--figure) - var(--measure)) / 2)}
+/* An ABSENCE named in the legend. The fourth metro is quoted in the prose and drawn
+   nowhere, which sent readers hunting through the chart for a series that was never
+   there. Set recessive so it reads as "not on this chart" rather than a fifth series. */
+.legend span.off{color:var(--caption);max-width:100%;align-items:flex-start}
+.legend span.off > span{min-width:0}
+.legend span.off i{margin-top:3px;flex:none}
 
 /* Occupation selector — 26 rows is too many for a button rail, so a native select:
    compact, keyboard-native, and the default state tells the full story. */

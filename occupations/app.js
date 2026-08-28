@@ -50,7 +50,10 @@ const x = v => v == null ? "—" : v.toFixed(2) + "×";
 const gap = (v, ref = " the nation") => {
   if (v == null) return "—";
   const d = Math.round((v - 1) * 100);
-  return d === 0 ? `level with${ref || " the nation"}`
+  /* An explicit empty referent is a caller saying "the referent is already in this line"
+     — so it suppresses the trailing phrase in BOTH branches, not only the numeric one. A
+     second "the nation" in a 375px band note is what pushed it off the figure. */
+  return d === 0 ? (ref === "" ? "level" : `level with${ref || " the nation"}`)
                  : `${Math.abs(d)}% ${d < 0 ? "under" : "over"}${ref}`;
 };
 const AREAS = ["10420", "17410", "15940", "49660"];          // Akron, Cleveland, Canton, Youngstown
@@ -108,7 +111,20 @@ const eduAll = D.education.filter(r => r.bins);
 const eduSoc = Object.fromEntries(eduAll.map(r => [r.soc, r]));
 const eduRows = payRows.map(r => eduSoc[r.soc]).filter(Boolean);
 const nDeg = eduRows.filter(r => grp(r.soc) === "deg").length;   // the shaded band, both charts
+/* How far the "fourteen largest" and the "fourteen high-school-majority" sets diverge. */
+const MIX_NOT_HS = D.mix.filter(r => !HS.has(r.soc)).length;
 const RB = D.pay_totals.ratio_by_metro;
+/* THE BAND SUMMARY IS A MEDIAN OF RATIOS, AND THE MIDDLE BAND HAD NONE. The data file
+   carries degree_median_ratio and hs_median_ratio but no "in between" figure, so the one
+   band a reader would use to ask where the discount starts carried no summary at all and
+   read as an omission. Computed here by the same rule the file uses for the other two:
+   the median of that band's own metro-over-nation ratios, disclosed cells only. */
+const median = a => {
+  const s = [...a].sort((p, q) => p - q), n = s.length;
+  return n === 0 ? null : n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2;
+};
+const bandRatio = (key, area) => median(GROUPS.find(G => G.key === key).rows
+  .filter(r => !r.metros[area].absent).map(r => r.metros[area].median_vs_us));
 
 /* Polymer conferrals by year, summed across programs — the pipeline finding. */
 const progYears = [...new Set(D.programs.flatMap(p => Object.keys(p.by_year)))].sort();
@@ -125,10 +141,15 @@ const setters = D.mix.find(m => m.soc === "51-4072");
 /* Card 1 carries the headline's other half. The hero used to open with a two-clause
    sentence that towered to six lines of display type; the "one job in nine" clause reads
    better as the number it is than as the back half of a headline. */
+/* DIRECTION OF MERIT, NOT ONLY DIRECTION OF MAGNITUDE. A naive reader could say which way
+   each of these numbers ran and not one of them whether a bigger one was good news for the
+   region. The sub-line is the page's first contact with every one of these measures, so it
+   is where the reading goes (writing.md, constructed units); card two also carries the
+   denominator flip, since 51% is cut from the OCCUPATION and 10.9% from the INDUSTRY. */
 figures([
-  ["key", pct(setters.pct_of_industry), "of the industry’s jobs", `are molding-machine setters: one job in ${WORDS[Math.round(100 / setters.pct_of_industry)]}, 2024`],
-  ["", pct(setters.pct_of_occupation, 0), "of the nation’s setters", "work in plastics and rubber manufacturing"],
-  ["", N(D.mix_totals.industry_emp_2024_k * 1000), "jobs in the industry", "nationally, 2024"],
+  ["key", pct(setters.pct_of_industry), "of the industry’s jobs", `are molding-machine setters: one job in ${WORDS[Math.round(100 / setters.pct_of_industry)]}, 2024. A concentration this high leaves one job to keep staffed`],
+  ["", pct(setters.pct_of_occupation, 0), "of the nation’s molding-machine setters", "work in plastics and rubber manufacturing: few employers outside it bid for them, and few outside it to hire from"],
+  ["", N(D.mix_totals.industry_emp_2024_k * 1000), "jobs in the industry", `nationally, 2024. The base the ${pct(setters.pct_of_industry)} and ${pct(D.mix_totals.eng_sci_share_pct)} are cut from`],
   ["", pct(D.mix_totals.eng_sci_share_pct), "engineers, scientists, technicians", "the jobs the region claims distinction in, and a small share of the work"],
 ]);
 
@@ -154,12 +175,18 @@ const dimMix = soc => SEL && mixSoc[SEL] && soc !== SEL;
 function verdict() {
   const v = document.getElementById("overdict");
   if (!SEL) {
+    /* THE TWO FOURTEENS, DISENTANGLED. The industry's fourteen LARGEST occupations and its
+       fourteen HIGH-SCHOOL-MAJORITY ones are different sets that happen to share a count,
+       and a reader who fuses them carries away "the industry is 59% high-school work",
+       which is false. The overlap is counted from the data, never typed. */
     v.innerHTML = `<b>All ${D.pay_totals.occupations} occupations:</b> the industry’s
       ${WORDS[D.mix_totals.top_n] || D.mix_totals.top_n} largest hold
       ${pct(D.mix_totals.top_n_share_pct)} of its national employment, and every metro pays
       the ${WORDS[ET.ba_plus_majority.length]} degree occupations further under the nation
-      than the ${WORDS[ET.hs_majority.length]} high-school ones. Pick an occupation to
-      follow its row across the charts.`;
+      than the ${WORDS[ET.hs_majority.length]} high-school-majority ones. Those are two
+      different fourteens: ${WORDS[MIX_NOT_HS] || MIX_NOT_HS} of the largest occupations are
+      not high-school-majority jobs. Pick an occupation to follow its row across the
+      charts.`;
     return;
   }
   const p = paySoc[SEL], m = mixSoc[SEL], e = eduSoc[SEL];
@@ -301,8 +328,10 @@ function drawMixMobile() {
 
 {
   const rows = D.mix;
+  /* "The fourteen LARGEST", never a bare "fourteen": the schooling section has its own
+     fourteen and the two sets differ by four members. */
   document.getElementById("mixtitle").textContent =
-    `${rows.length === 14 ? "Fourteen" : rows.length} occupations are ${Math.round(D.mix_totals.top_n_share_pct)}% of the industry, and most of them are on the floor`;
+    `The ${WORDS[rows.length] || rows.length} largest occupations are ${Math.round(D.mix_totals.top_n_share_pct)}% of the industry, and most of them are on the floor`;
   document.getElementById("mixtable").innerHTML = withNote(tableView("mix",
     "The industry’s largest occupations, US, 2024",
     ["Occupation", "Share of the industry", "Share of everyone with this job who works here",
@@ -322,8 +351,9 @@ function drawMixMobile() {
      industry across the country, not inside Ohio.`;
   const R = D.region;
   document.getElementById("mixnote").innerHTML =
-    `<b>One regional number, and what kind of number it is.</b> The <dfn>twelve counties PIC
-     measures against, its federal-data footprint from Ashtabula to Wayne,</dfn> reported
+    `<b>One regional number, and what kind of number it is.</b> The <dfn>twelve counties the
+     Polymer Industry Cluster (PIC) measures against, the federal-data footprint of the
+     Greater Akron Chamber&rsquo;s polymer programme, running from Ashtabula to Wayne,</dfn> reported
      ${N(R.emp)} plastics-and-rubber jobs in ${R.year}. Applying the national shares gives
      about ${N(R.setters_estimate)} molding-machine setters and about
      ${N(R.eng_sci_estimate)} engineers, scientists and technicians, on the assumption that
@@ -342,9 +372,10 @@ const payDomain = () => {
 };
 const bandNote = (key, compact) => {
   const r = key === "deg" ? "degree_median_ratio" : key === "hs" ? "hs_median_ratio" : null;
-  if (!r) return null;
-  const A = RB["10420"][r], C = RB["17410"][r];
-  const lead = compact || key === "hs" ? "Akron" : "Akron pays these";
+  const A = r ? RB["10420"][r] : bandRatio(key, "10420");
+  const C = r ? RB["17410"][r] : bandRatio(key, "17410");
+  if (A == null || C == null) return null;
+  const lead = compact || key !== "deg" ? "Akron" : "Akron pays these";
   /* On the phone the × form is the apparatus that goes: 375px holds the reading or the
      arithmetic, not both, and the table twin carries every ratio to two places. */
   return compact
@@ -356,12 +387,16 @@ function drawPay() { MOBILE.matches ? drawPayDesktopish(false) : drawPayDesktopi
 
 function drawPayDesktopish(desktop) {
   const W = desktop ? 1100 : 375;
-  const m = desktop ? {t: 18, r: 70, b: 62, l: 290} : {t: 12, r: 12, b: 86, l: 12};
+  /* The right gutter holds the metro-over-nation column below; the top margin holds its
+     header. Both widened from the version that had neither. */
+  const m = desktop ? {t: 78, r: 240, b: 62, l: 290} : {t: 36, r: 60, b: 86, l: 12};
   const rowH = desktop ? 24 : 36;
-  /* On the phone the scale used to appear once, after twenty-six rows of scrolling, so
-     the first paint was a field of unscaled dots. Each group now closes with its own
-     dollar ticks, which is what the extra mobile gap buys (chart-craft § mobile). */
-  const headH = desktop ? 44 : 50, gap = desktop ? 16 : 40;
+  /* The scale used to appear once, at the bottom, after twenty-six rows: reading the
+     degree band on the desktop page put the dollars roughly seven hundred pixels off
+     screen, and the phone showed a field of unscaled dots. Each group now closes with its
+     own dollar ticks at BOTH widths, which is what the wider gap buys (chart-craft
+     § mobile) — the small screen should not be the easier one to read. */
+  const headH = desktop ? 52 : 50, gap = desktop ? 44 : 40;
   let cy = m.t;
   const geo = GROUPS.map(G => {
     const headY = cy; cy += headH;
@@ -375,11 +410,32 @@ function drawPayDesktopish(desktop) {
   const w = W - m.l - m.r;
   const {lo, hi} = payDomain();
   const xs = v => m.l + ((v - lo) / (hi - lo)) * w;         // LINEAR
+  /* THE COLUMN THE DOTS CANNOT DRAW. One dollar scale has to hold a $30 gap and a $16,200
+     one, so in the high-school band the three metro dots and the national diamond collapse
+     into a single ten-pixel clump and the only question the chart exists to answer — which
+     side of the diamond is this metro on — cannot be read off the picture. Position still
+     encodes the wage, because the level is worth seeing; the ratio is printed beside it,
+     because the comparison is not drawable at this scale. Same measure and same glyph as
+     the band notes and the table, so nothing here is a second unit. */
+  /* Three columns where the desktop gutter holds three; on the phone the gutter holds one,
+     and the header says which metro it is rather than leaving the reader to guess. */
+  const COLS = desktop ? ON_CHART : ["10420"];
+  const rail = m.l + w + (desktop ? 14 : 8);
+  const colX = i => rail + i * 78;
   if (desktop) {
-    frame(svg, {x: m.l, y: m.t, w, h, xs, ys: () => 0,
-      xt: [lo, ...ticks(lo, hi, 6).filter(v => v > lo + 5000)], yt: [],
-      xfmt: v => "$" + Math.round(v / 1000) + "k",
-      xlab: "Annual median wage, May 2024 (axis begins at $25,000)"});
+    txt(svg, "metro pay ÷ national pay", {x: rail, y: m.t - 62, class: "pv-axlab"});
+    txt(svg, "under 1.00 is below the nation", {x: rail, y: m.t - 44, class: "pv-labq"});
+    /* Canton-Massillon does not fit a 74-unit column on one line and ran into Cleveland's
+       header, so a hyphenated metro name breaks at its hyphen and the parts bottom-align
+       with the single-word names beside them. */
+    COLS.forEach((a, i) => short(a).split("-").forEach((part, j, all) =>
+      txt(svg, j < all.length - 1 ? part + "-" : part,
+        {x: colX(i), y: m.t - 8 - (all.length - 1 - j) * 16,
+         class: "pv-lab", fill: COLOR[a]})));
+  } else {
+    txt(svg, `right of each row: ${short(COLS[0])} pay ÷ national pay`,
+      {x: m.l, y: 14, class: "pv-labq"});
+    txt(svg, "under 1.00 is below the nation", {x: m.l, y: 30, class: "pv-labq"});
   }
   geo.forEach(({G, headY, y0, y1}) => {
     /* The story band gets its shading; every band gets its claim written on it. */
@@ -387,11 +443,13 @@ function drawPayDesktopish(desktop) {
       height: G.rows.length * rowH + 4, fill: "rgba(12,100,115,.055)"}, svg);
     const label = `${G.label} · ${G.rows.length} occupations`;
     if (desktop) {
-      txt(svg, label, {x: m.l, y: headY + 20, class: "pv-lab", fill: INK});
+      /* The note sits UNDER the band label, not opposite it. Right-anchored at the plot's
+         right edge it collided with the label once the gutter took 166px of that edge, and
+         a summary that overlaps its own band name is worse than no summary. */
+      txt(svg, label, {x: m.l, y: headY + 18, class: "pv-lab", fill: INK});
       const note = bandNote(G.key, false);
-      if (note) txt(svg, note, {x: m.l + w, y: headY + 20, "text-anchor": "end",
-        class: "pv-labq"});
-      el("line", {x1: m.l, y1: headY + 30, x2: m.l + w, y2: headY + 30,
+      if (note) txt(svg, note, {x: m.l, y: headY + 38, class: "pv-labq"});
+      el("line", {x1: m.l, y1: headY + 46, x2: m.l + w, y2: headY + 46,
         stroke: "var(--pv-grid)", "stroke-width": 1}, svg);
     } else {
       txt(svg, label, {x: m.l, y: headY + 18, class: "pv-lab", fill: INK});
@@ -428,6 +486,11 @@ function drawPayDesktopish(desktop) {
       if (AREAS.every(a => r.metros[a].absent))
         txt(g, "withheld in all four metros", {x: xs(nat) + (desktop ? 14 : 10),
           y: yl + 4, class: "pv-labq"});
+      COLS.forEach((a, i) => {
+        const c = r.metros[a];
+        txt(g, c.absent ? "—" : x(c.median_vs_us), {x: colX(i), y: yl + 4,
+          class: c.absent ? "pv-labq" : "pv-lab", fill: c.absent ? null : COLOR[a]});
+      });
       const cells = AREAS.map(a => {
         const c = r.metros[a];
         return `${short(a)}: ${c.absent ? "<i>withheld</i>" : `<span class="v">${money(c.median)}</span> (${x(c.median_vs_us)}, RSE ${c.mean_rse}%)`}`;
@@ -439,30 +502,35 @@ function drawPayDesktopish(desktop) {
          ${p ? `<br>projected openings, NE Ohio 2022&ndash;32: <span class="v">${N(p.openings_annual)}</span> a year` : ""}`,
         `${r.occupation}: US median ${money(nat)}; ` + AREAS.map(a => `${short(a)} ${r.metros[a].absent ? "withheld" : money(r.metros[a].median)}`).join(", "));
     });
-    /* The scale, repeated under each group on the phone, so no group of dots is ever
+    /* The scale, repeated under each group at both widths, so no group of dots is ever
        read without one. */
-    if (!desktop) {
-      const ax = el("g", {}, svg);
-      el("line", {x1: m.l, y1: y1 + 8, x2: W - m.r, y2: y1 + 8,
-        stroke: "var(--pv-axis)", "stroke-width": 1}, ax);
-      /* Dropped, never clamped: a tick label nudged inward to fit is a number printed at
-         the wrong place on its own scale. */
-      ticks(lo, hi, 5).filter(v => v > lo && xs(v) <= W - m.r - 18).forEach(v => txt(ax,
-        "$" + Math.round(v / 1000) + "k", {x: xs(v), y: y1 + 26, class: "pv-tick",
-        "text-anchor": "middle"}));
-    }
+    const ax = el("g", {}, svg);
+    el("line", {x1: m.l, y1: y1 + 8, x2: m.l + w, y2: y1 + 8,
+      stroke: "var(--pv-axis)", "stroke-width": 1}, ax);
+    /* Dropped, never clamped: a tick label nudged inward to fit is a number printed at
+       the wrong place on its own scale. */
+    ticks(lo, hi, 5).filter(v => (desktop || v > lo) && xs(v) <= m.l + w - 18)
+      .forEach(v => txt(ax, "$" + Math.round(v / 1000) + "k",
+        {x: xs(v), y: y1 + 26, class: "pv-tick", "text-anchor": "middle"}));
   });
-  if (!desktop) {
-    txt(svg, "annual median wage, May 2024", {x: m.l, y: H - 22, class: "pv-axlab"});
-    txt(svg, "axis begins at $25,000", {x: m.l, y: H - 6, class: "pv-axlab"});
-  }
+  txt(svg, desktop ? "Annual median wage, May 2024 (axis begins at $25,000)"
+                   : "annual median wage, May 2024",
+    desktop ? {x: m.l + w / 2, y: H - 16, "text-anchor": "middle", class: "pv-axlab"}
+            : {x: m.l, y: H - 22, class: "pv-axlab"});
+  if (!desktop) txt(svg, "axis begins at $25,000", {x: m.l, y: H - 6, class: "pv-axlab"});
 }
 
 {
   const T = D.pay_totals;
+  /* THE FOURTH METRO, IN THE LEGEND. The deck says all four, the lede quotes a
+     Youngstown-Warren figure, and the chart draws three — a fact that lived in one
+     dependent clause of a five-line subtitle, which readers went hunting past. The absence
+     belongs where the presences are named. */
+  const OFF = AREAS.filter(a => !ON_CHART.includes(a));
   document.getElementById("paylegend").innerHTML =
     `<span><i style="background:#fff;box-shadow:inset 0 0 0 2px ${INK};transform:rotate(45deg);width:11px;height:11px"></i> United States</span>` +
-    ON_CHART.map(a => `<span><i style="background:${COLOR[a]};border-radius:50%"></i> ${M.metros[a].short}</span>`).join("");
+    ON_CHART.map(a => `<span><i style="background:${COLOR[a]};border-radius:50%"></i> ${M.metros[a].short}</span>`).join("") +
+    OFF.map(a => `<span class="off"><i style="background:none;box-shadow:inset 0 0 0 2px #B9B3A9;border-radius:50%"></i> <span>${M.metros[a].short}, not drawn: ${T.disclosed[a]} of ${T.occupations} wages published</span></span>`).join("");
   document.getElementById("paytable").innerHTML = withNote(tableView("pay",
     "Annual median wage by occupation and metro against the nation, May 2024",
     ["Occupation", "Schooling band", "United States", ...AREAS.map(a => short(a)),
@@ -473,15 +541,17 @@ function drawPayDesktopish(desktop) {
       ...AREAS.map(a => r.metros[a].absent ? "withheld" : `${money(r.metros[a].median)} (${x(r.metros[a].median_vs_us)})`),
       pct(Math.max(...AREAS.filter(a => !r.metros[a].absent).map(a => r.metros[a].mean_rse), 0)),
       r.projection ? N(r.projection.openings_annual) : "—"])),
-    `The metro columns neither nest inside nor tile the twelve PIC counties, so they sit
-     side by side and are never summed. Youngstown-Warren publishes ${T.disclosed["49660"]}
-     of the ${T.occupations} occupations, the fewest. The bracketed figure is the metro
-     median divided by the national one, so 0.93× is 7% under the nation and 1.01× is 1%
-     over it; ${T.high_rse_cells} metro figures carry a survey error above
+    `The metro areas neither sit inside the twelve Polymer Industry Cluster counties nor
+     cover them exactly, so the columns sit side by side and are never summed.
+     ${WORDS[D.pay_totals.absent_everywhere.length] || D.pay_totals.absent_everywhere.length}
+     occupation is withheld in all four metros, and the rest of the gap between
+     ${T.occupations} and each metro&rsquo;s published count is withheld in that metro
+     alone: ${AREAS.map(a => `${short(a)} ${T.disclosed[a]}`).join(", ")}.
+     ${T.high_rse_cells} metro figures carry a survey error above
      ${T.high_rse_threshold_pct}% of the average wage, wide enough to move them. Projected
      openings are Ohio Department of Job and Family Services 2022&ndash;2032 modelled paths
-     with no confidence band, for the eighteen-county JobsOhio Northeast region, a superset
-     of the footprint. What a dollar buys in each metro is the
+     with no confidence band, for the eighteen-county JobsOhio Northeast region, which
+     contains all twelve counties and more. What a dollar buys in each metro is the
      <a href="../realwage/">real-wage page</a>&rsquo;s question.`);
   document.getElementById("paysrc").innerHTML =
     `Bureau of Labor Statistics Occupational Employment and Wage Statistics, May 2024,
@@ -513,6 +583,14 @@ function drawEduDesktop() {
      carry the shape from one chart to the other without re-reading the labels. */
   el("rect", {x: 0, y: m.t, width: W, height: nDeg * 24,
     fill: "rgba(12,100,115,.055)"}, svg);
+  /* THE TEST THE SECTION TURNS ON, DRAWN. "Degree-MAJORITY" is a claim about half, and the
+     reader had no half to check it against: every bar runs the full width, so the only
+     thing that varies is where the dark begins. Labelled by what crossing means. */
+  el("line", {x1: xs(50), y1: m.t - 2, x2: xs(50), y2: m.t + rows.length * 24,
+    stroke: INK, "stroke-width": 1.5, opacity: .4}, svg);
+  txt(svg, "half the reports", {x: xs(50) + 8, y: m.t - 26, class: "pv-labq"});
+  txt(svg, "dark starting left of here: most say a degree",
+    {x: xs(50) + 8, y: m.t - 8, class: "pv-labq"});
   rows.forEach((r, i) => {
     const g = el("g", dim(r.soc) ? {opacity: .18} : {}, svg);
     const y = m.t + i * 24 + 4, bh = 16;
@@ -537,15 +615,23 @@ function drawEduDesktop() {
 
 function drawEduMobile() {
   const rows = eduRows;
-  const m = {t: 40, r: 12, b: 44, l: 12}, W = 375, rowH = 40;
+  const m = {t: 56, r: 12, b: 44, l: 12}, W = 375, rowH = 40;
   const H = m.t + rows.length * rowH + m.b;
   const {svg} = chart("edu", {W, H});
   const w = W - m.l - m.r;
   const xs = v => m.l + (v / 100) * w;
-  txt(svg, "preparation the job needs: Zone 1 low, 5 high →", {x: W - m.r, y: m.t - 14,
+  txt(svg, "preparation the job needs: Zone 1 low, 5 high →", {x: W - m.r, y: m.t - 30,
     "text-anchor": "end", class: "pv-labq"});
+  txt(svg, "left of the rule: most reports say a degree",
+    {x: m.l, y: m.t - 12, class: "pv-labq"});
   el("rect", {x: 0, y: m.t - 4, width: W, height: nDeg * rowH,
     fill: "rgba(12,100,115,.055)"}, svg);
+  /* Segment per row, not one full-height rule: on the phone the labels sit ABOVE their
+     bars rather than in a left margin, so a continuous line at 50% struck through half the
+     occupation names. It reads as the same rule and crosses nothing. */
+  rows.forEach((r, i) => el("line", {x1: xs(50), y1: m.t + i * rowH + 17,
+    x2: xs(50), y2: m.t + i * rowH + 33, stroke: INK, "stroke-width": 1.5,
+    opacity: .45}, svg));
   rows.forEach((r, i) => {
     const g = el("g", dim(r.soc) ? {opacity: .18} : {}, svg);
     const y = m.t + i * rowH;
@@ -573,7 +659,7 @@ function drawEduMobile() {
   document.getElementById("edulegend").innerHTML =
     BINS.map(([, l, c]) => `<span><i style="background:${c}"></i> ${l}</span>`).join("");
   document.getElementById("edutitle").textContent =
-    `${Cap(WORDS[ET.ba_plus_majority.length] || String(ET.ba_plus_majority.length))} of these occupations are degree jobs; ${WORDS[ET.hs_majority.length] || ET.hs_majority.length} are high-school jobs; the rest sit between`;
+    `${Cap(WORDS[ET.ba_plus_majority.length] || String(ET.ba_plus_majority.length))} of these occupations are degree jobs; ${WORDS[ET.hs_majority.length] || ET.hs_majority.length} are high-school-majority; the rest sit between`;
   document.getElementById("edutable").innerHTML = withNote(tableView("edu",
     "Reported required level of education, by occupation",
     ["Occupation", "Job Zone", ...BINS.map(b => b[1]), "Most-reported level"],
@@ -655,19 +741,28 @@ function drawTrendAt(W, phone) {
   /* Hand-shortened to the margin each breakpoint actually has. A label that runs past the
      figure is a build error, not a style, so the phone takes four short lines rather than
      three long ones. */
+  /* THE BASELINE THE RULE IS HALF OF, PRINTED. The label used to name the window and the
+     threshold and nothing in between, so a reader holding the only two figures on the page
+     — "between 118 and 179 a year" — could not get to 70 from either of them: half of 118
+     is 59 and half of 179 is 90. The average it is actually half of now appears, here and
+     in the series annotation, so the arithmetic closes on the figure itself. */
   const rlab = phone
-    ? ["under this rule:", "less than half", `the ${EARLY[0]}–${EARLY[EARLY.length - 1]}`, `pace, ${Math.round(halfEarly)} a year`]
-    : ["under this rule:", "less than half the", `${EARLY[0]}–${EARLY[EARLY.length - 1]} pace,`, `${Math.round(halfEarly)} a year`];
+    ? ["under this rule:", "half the", `${EARLY[0]}–${EARLY[EARLY.length - 1]}`,
+       `average of ${Math.round(earlyMean)},`, `so ${Math.round(halfEarly)} a year`]
+    : ["under this rule:", `half the ${EARLY[0]}–${EARLY[EARLY.length - 1]}`,
+       `average of ${Math.round(earlyMean)},`, `so ${Math.round(halfEarly)} a year`];
   rlab.forEach((s, i) => txt(svg, s, {x: rail, y: ys(halfEarly) - 8 + i * 17,
     class: i ? "pv-labq" : "pv-lab", fill: i ? null : RULE}));
-  /* Direct labels above the plot, not a legend: two series, named in their own ink. The
-     phone stacks the year annotation onto its own row, because at 375 the two label
-     blocks cannot share one. */
-  txt(svg, "Polymer programs", {x: m.l, y: m.t - (phone ? 54 : 30), class: "pv-lab",
-    fill: SEQ[5]});
-  txt(svg, "Materials programs", {x: m.l, y: m.t - (phone ? 36 : 12), class: "pv-lab",
-    fill: SEQ[3]});
-  txt(svg, `${polyByYear[EARLY[EARLY.length - 1]]} in ${EARLY[EARLY.length - 1]}, then ${LATE.map(y => polyByYear[y]).join(" and ")}`,
+  /* SWATCHES, LIKE EVERY OTHER LEGEND ON THE PAGE. Coloured text alone was the weakest
+     cue here and the only one of its kind, and the materials label was printed in a
+     different step of the ramp from the bars it named. */
+  const key = (label, col, y) => {
+    el("rect", {x: m.l, y: y - 10, width: 11, height: 11, fill: col, rx: 2}, svg);
+    txt(svg, label, {x: m.l + 16, y, class: "pv-lab"});
+  };
+  key("Polymer programs", SEQ[5], m.t - (phone ? 54 : 30));
+  key("Materials programs", SEQ[2], m.t - (phone ? 36 : 12));
+  txt(svg, `${Math.round(earlyMean)} a year through ${EARLY[EARLY.length - 1]}, then ${LATE.map(y => polyByYear[y]).join(" and ")}`,
     phone ? {x: m.l, y: m.t - 12, class: "pv-labq"}
           : {x: m.l + w, y: m.t - 12, "text-anchor": "end", class: "pv-labq"});
 }
@@ -693,7 +788,7 @@ function drawProgDesktop() {
       fill: r.group === "polymer" ? SEQ[5] : SEQ[2], rx: 3}, svg);
     txt(svg, `${instShort(r.institution)} · ${progName(r.program)} · ${r.award.toLowerCase()}`,
       {x: m.l - 12, y: y + bh - 4, "text-anchor": "end", class: "pv-lab"});
-    txt(svg, String(r.window_avg), {x: xs(r.window_avg) + 8, y: y + bh - 4, class: "pv-lab"});
+    txt(svg, r.window_avg.toFixed(1), {x: xs(r.window_avg) + 8, y: y + bh - 4, class: "pv-lab"});
     const yrs = Object.entries(r.by_year).map(([yy, v]) => `${yy}: ${v}`).join(" · ");
     hoverable(el("rect", {x: 0, y: y - 6, width: W, height: bh + 12, fill: "transparent"}, svg),
       `<b>${r.institution}</b><br>${r.program} (CIP ${r.cip.slice(0, 2)}.${r.cip.slice(2)}), ${r.award}
@@ -742,7 +837,7 @@ function drawProgMobile() {
       {x: m.l, y: y + 12, class: "pv-labq"});
     el("rect", {x: m.l, y: y + 18, width: Math.max(2, xs(r.window_avg) - m.l), height: 14,
       fill: r.group === "polymer" ? SEQ[5] : SEQ[2], rx: 3}, svg);
-    txt(svg, String(r.window_avg), {x: xs(r.window_avg) + 6, y: y + 30, class: "pv-lab"});
+    txt(svg, r.window_avg.toFixed(1), {x: xs(r.window_avg) + 6, y: y + 30, class: "pv-lab"});
     hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, svg),
       `<b>${r.institution}</b><br>${r.program}, ${r.award}<br>${WIN[0]}–${WIN[WIN.length - 1]}
        average <span class="v">${r.window_avg}</span> &middot; ${PT.latest_year}:
@@ -757,16 +852,25 @@ function drawProgMobile() {
 }
 
 {
+  /* TWO CORRECTIONS IN ONE HEADING, both caught by a reader checking it against the chart
+     under it. (1) Three institutions appear on the programs chart, but only two of them
+     confer a POLYMER degree; Kent State is in the materials comparison group alone, so a
+     reader counting the dark bars contradicted the heading immediately. (2) "More than
+     half" did not follow from the annotation beside it: 63 against 124 in 2021 is a 49%
+     fall. It IS more than half below the 2014-2021 average, which is what the figure title
+     and the rule have always said, so the heading now makes the claim the chart draws. */
+  const polyInst = new Set(D.programs.filter(p => p.group === "polymer").map(p => p.institution));
   document.getElementById("progtitle").textContent =
-    `${WORDS[PT.institutions.length] ? Cap(WORDS[PT.institutions.length]) : PT.institutions.length} universities confer the degrees, and the polymer count has fallen by more than half`;
+    `${Cap(WORDS[polyInst.size] || String(polyInst.size))} universities confer the polymer degrees, and the count has fallen below half its old pace`;
   document.getElementById("trendtable").innerHTML = withNote(tableView("trend",
     `Polymer and materials degrees conferred a year, ${progYears[0]}–${progYears[progYears.length - 1]}`,
     ["Year", "Polymer programs", "Materials programs"],
     progYears.map(y => [y, polyByYear[y], matByYear[y]])),
     `Polymer programs are polymer engineering 14.3201 and polymer chemistry 40.0507;
-     materials programs are 14.1801 and 40.1001. The rule on the chart is half the polymer
-     mean for ${EARLY[0]}&ndash;${EARLY[EARLY.length - 1]}, which is
-     ${halfEarly.toFixed(1)} degrees a year. A program recoded to a different federal
+     materials programs are 14.1801 and 40.1001. The polymer mean for
+     ${EARLY[0]}&ndash;${EARLY[EARLY.length - 1]} is ${earlyMean.toFixed(2)} degrees a year
+     and the rule on the chart is half of it, ${halfEarly.toFixed(2)}, which the label
+     rounds to ${Math.round(halfEarly)}. A program recoded to a different federal
      program code would leave these counts without leaving the region.`);
   document.getElementById("trendsrc").innerHTML =
     `Integrated Postsecondary Education Data System completions, summed across the
@@ -775,7 +879,7 @@ function drawProgMobile() {
   document.getElementById("progtable").innerHTML = withNote(tableView("prog",
     `Polymer and materials degrees conferred, by program, ${PT.latest_year} and ${WIN[0]}–${WIN[WIN.length - 1]} average`,
     ["Institution", "Program", "Level", String(PT.latest_year), `${WIN[0]}–${WIN[WIN.length - 1]} average`],
-    progRows.map(r => [r.institution, `${r.program} (${r.cip.slice(0, 2)}.${r.cip.slice(2)})`, r.award, r.latest, r.window_avg])),
+    progRows.map(r => [r.institution, `${r.program} (${r.cip.slice(0, 2)}.${r.cip.slice(2)})`, r.award, r.latest, r.window_avg.toFixed(1)])),
     `One row is one institution, program and award level, first major only, from the Urban
      Institute&rsquo;s copy of the federal completions file. Programs with no completions in
      the window are omitted, which is why the list has ${PT.institutions.length} names.`);
