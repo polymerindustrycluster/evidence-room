@@ -6,6 +6,7 @@
 <meta name="color-scheme" content="light">
 <title>Every Number Moves</title>
 <link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -18,57 +19,98 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">What happened to the numbers after they were published</p>
-    <h1>Almost every month of these three price series <em>moved after publication</em>
-      &mdash; by almost nothing.</h1>
-    <p class="stand">Every chart on every other page shows the current value of each month.
-      That is a convention, and it hides something: a statistical agency keeps revising a
-      figure for years after it first appears. This page shows the same series as everyone
-      else, plus every value each month has ever had. <b>The scope is three producer-price
-      series, not PIC's figures generally</b> &mdash; and the headline finding is that the
-      revisions are small, which is the opposite of what &ldquo;95% changed&rdquo; sounds
-      like on its own.</p>
+    <p class="eyebrow">What happened to the numbers after they were published &middot;
+      ALFRED archival vintages, 2019&ndash;2026</p>
+    <h1>Almost every month of these three price series <em>moved after publication</em>,
+      by almost nothing.</h1>
+    <p class="stand">Every chart on this site shows the current value of each month, a
+      convention that hides a statistical agency revising the same figure for years.
+      Across three producer-price series, 259 of 273 published months were later changed,
+      by a typical 0.15 percent. <b>That scope is the whole claim: three price series,
+      not this site&rsquo;s figures generally.</b> A fresh print holds at the level and
+      wobbles in direction: in 14 of 201 comparable month pairs the revision reversed the
+      sign of the month-over-month move. The Quarterly Workforce Indicators behind the
+      churn page restate whole histories when they re-benchmark, and nothing here has
+      measured how far. That is where this method goes next.</p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
-    <p class="takeaway">The chart</p>
-    <h2 id="pathtitle">First published against latest, for every month</h2>
-    <p class="lede">One line per month: where the number started and where it ended up.
-      Most move a little. The interesting question is not the size of any single revision
-      but whether they lean &mdash; whether first estimates are systematically high or low.</p>
-    <div class="chart"><svg id="path" role="img" aria-labelledby="path-t">
-      <title id="path-t">First-published versus latest value for each reference month.</title>
+    <p class="takeaway">The revisions</p>
+    <h2>Every month moved, and almost none moved far</h2>
+    <p class="lede">One bar per published month, drawn as the whole distance the number
+      travelled after it first appeared. All three panels share one scale, so the
+      comparison between them is the point: industrial chemicals, the series a resin
+      buyer quotes, revises further than the two downstream indexes. The shaded band in
+      each panel spans that series&rsquo; own median move, so half its months land inside
+      it.</p>
+    <p class="fig-title">Industrial chemicals moves a median 0.35% after publication,
+      more than twice as far as either downstream series</p>
+    <p class="fig-sub">Latest published value minus the first print, in percent, for
+      every reference month. One shared vertical scale; panels ordered by median move.</p>
+    <div class="chart"><svg id="sm" role="img" aria-labelledby="sm-t">
+      <title id="sm-t">Three panels, one per price series, showing how far each reference
+        month was revised between its first published value and today. Bars above the
+        zero line were revised up, below it revised down. Industrial chemicals carries
+        visibly longer bars than the two plastics and rubber series.</title>
     </svg></div>
-    <div class="legend">
-      <span><i style="background:#C85F0C"></i> Revised down</span>
-      <span><i style="background:#008BA8"></i> Revised up</span>
-    </div>
-    <div id="pathtable"></div>
-    <p class="src" id="pathsrc"></p>
+    <div id="smtable"></div>
+    <p class="src" id="smsrc"></p>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">The distribution</p>
+    <h2>How far a number typically travels</h2>
+    <p class="lede">Every revised month as one mark, placed by how far the figure moved
+      between its first appearance and today. If the mass sat cleanly on one side, first
+      estimates would be biased and every trend drawn from fresh data would need a
+      warning. It leans, slightly, to the up side.</p>
+    <p class="fig-title">Half of all revisions land inside 0.15% of the first print, and
+      the largest ever recorded here is 1.42%</p>
+    <p class="fig-sub">259 revised months, binned at 0.05 percentage points. Left of zero
+      was revised down, right of zero revised up.</p>
+    <div class="chart"><svg id="dist" role="img" aria-labelledby="dist-t">
+      <title id="dist-t">Distribution of total revision size across all reference months,
+        piled up tightly around zero with a slight lean to the up side and one outlier at
+        minus 1.42 percent.</title>
+    </svg></div>
+    <div id="disttable"></div>
+    <p class="src" id="distsrc"></p>
+    <div class="note" id="caveat"></div>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
-    <p class="takeaway">The distribution</p>
-    <h2>How far a number typically travels</h2>
-    <p class="lede">Every revised month as one mark, by how much the figure moved between
-      its first appearance and today. If the mass sat cleanly on one side, first estimates
-      would be biased and every trend drawn from fresh data would need a warning.</p>
-    <div class="chart"><svg id="dist" role="img" aria-labelledby="dist-t">
-      <title id="dist-t">Distribution of total revision size across all reference months.</title>
-    </svg></div>
-    <div id="disttable"></div>
-    <div class="note" id="caveat"></div>
+    <p class="takeaway">One month, up close</p>
+    <h2>The month that changed direction</h2>
+    <p class="lede">On 14 October 2021 the Bureau of Labor Statistics published its first
+      estimate of September: industrial chemicals at 348.8. Three corrections later that
+      month reads 343.866, the largest single revision on this page. A board deck built
+      that October would have carried the annual number right and the monthly one
+      backwards. On the vintage a reader held that October, September stood 24.8 percent
+      above September 2020, and today the same comparison reads 23.1 percent. The step
+      from August is the part that did not survive.</p>
+    <div class="statgrid">
+      <div class="statv"><div class="n" id="vg1"></div>
+        <div class="k">September as first published</div>
+        <div class="d" id="vg1d"></div></div>
+      <div class="statv down"><div class="n" id="vg2"></div>
+        <div class="k">the same two months today</div>
+        <div class="d" id="vg2d"></div></div>
+    </div>
+    <p class="src" id="vgnote"></p>
   </div>
 </section>
 
 <section class="closer">
   <div class="wrap">
-    <p>Showing only the latest vintage is a choice. It is just usually an invisible one.</p>
+    <p>A fresh print of these three series is worth quoting at the level, and worth
+      checking before you quote the direction of one month.</p>
     <p class="sub" id="closersub"></p>
   </div>
 </section>

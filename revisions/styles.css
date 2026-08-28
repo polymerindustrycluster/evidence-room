@@ -1,0 +1,39 @@
+/* revisions — page-local additions only. House anatomy (.mast/.hero/.band/.closer) and
+   the shared column system stay untouched so the layout gates keep applying. This file
+   adds: per-figure chrome, the one stat band (the page's register change), band-tint
+   pacing, and the per-form mobile re-layout override. */
+
+/* Figure chrome: each chart carries its own claim-title + how-to-read line, so the H2
+   does section work instead of doubling as the chart title (chart-craft.md). */
+.fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
+  line-height:1.3;max-width:var(--measure);color:var(--text)}
+.fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure)}
+.fig-title + .fig-sub + .chart{margin-top:16px}
+
+/* Pacing: alternate band grounds so the scroll reads as a wave, not a loop. */
+.band.tint{background:#F4F1EC}
+
+/* The stat band — the page's one register change: the two readings of one month, set at
+   display size, because the whole argument turns on the sign between them. */
+.statgrid{display:flex;gap:56px;flex-wrap:wrap;margin:28px 0 0;max-width:var(--figure)}
+.statv{border-top:4px solid #1A8A9E;padding:16px 0 0;min-width:230px;flex:1}
+.statv.down{border-top-color:#C85F0C}
+.statv .n{font-size:clamp(46px,5vw,66px);font-weight:900;line-height:1;
+  letter-spacing:-.03em;font-variant-numeric:proportional-nums;color:var(--text)}
+.statv .k{margin:9px 0 0;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:900;color:#4A5457}
+.statv .d{margin:6px 0 0;font-size:14px;color:#5A625E;max-width:330px}
+
+/* Mobile: both charts re-lay out per form below 760px (three stacked panels for the
+   small multiples, a coarser binning for the histogram), so the shared sideways-scroll
+   fallback is switched off. The evidence belongs in the first paint, not behind a pan
+   (chart-craft § mobile). */
+@media (max-width:760px){
+  .chart{overflow-x:visible;padding-bottom:0}
+  .chart svg{min-width:0}
+  .chart::after{content:none}
+  .fig-title{font-size:19px}
+  .statgrid{gap:26px}
+  .statv{min-width:0}
+  .statv .n{font-size:44px}
+}
