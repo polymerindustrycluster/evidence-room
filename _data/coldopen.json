@@ -16,11 +16,10 @@
   ],
   "limit": 900,
   "fixed": ["wages", "accountability", "scorecard", "funding-map", "location-quotient",
-    "realwage"],
+    "realwage", "cost-scissors"],
   "ceilings": {
     "churn": 1725,
     "cluster-health": 1145,
-    "cost-scissors": 1886,
     "federal-money": 1700,
     "index": 968,
     "laborshed": 1542,

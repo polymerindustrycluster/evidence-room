@@ -227,6 +227,201 @@ const plated = (svg, s, a, fs = 7.4) => {
 };
 const dimStage = stage => SEL && stage !== SEL;
 
+/* ==================================================== 0. THE COLD OPEN, IN THE HERO
+   The headline claim, drawn, before a word of explanation. This page opened on 1,886px
+   of headline, standfirst, byline and stat cards, so a reader scrolled two full screens
+   before meeting a single mark. The stat cards are not the problem and have not moved:
+   moving them out was tried on another page here and made the first screen worse, so
+   the hero gains a graphic instead of losing its numbers.
+
+   THREE PRICES, ONE AXIS, TWO MOMENTS EACH — and deliberately a POORER view than
+   anything below it, never a smaller copy of one. The ladder carries all seven series
+   and a different measure entirely (the SHARE of the run-up given back); the line chart
+   carries eight series across every month since 2015; the spread chart carries a derived
+   difference. This strip has one link per stage — no crude, no electricity, no commodity
+   twins, no history, no seat — and says one thing: the ring is where the price got to,
+   the dot is where it is now, and the gap between them is how much came back off. Its
+   whole job is to put that shape in the first screen and hand the reader on.
+
+   Every value is read off the shipped series (s.peak.index, s.now.index) through the
+   page's own vsB(), so a revision to scissors.json moves the marks and their labels
+   together. Nothing here is typed, including which row is still sitting at its peak:
+   that is a date comparison, so if products ever come off the top the strip stops
+   saying they have not.
+
+   IT DOES NOT ANSWER THE SEAT SELECTOR. The selector sits below it and re-reads charts
+   the reader has already been shown; a strip met before any explanation has nothing to
+   re-emphasize, so drawOpen ignores SEL by construction. */
+
+/* COLOUR ON THE DARK HERO. The ground is var(--ink) #0C6473 and this page's own chart
+   inks die on it: feedstock #A32A78 measures 1.02:1, resin #C85F0C 1.65:1, product
+   #008BA8 1.70:1 — all three under even the 3:1 floor for a mark, let alone the 4.5:1
+   for text. Each is lightened here and nowhere else, keeping its hue so the stage
+   mapping a reader learns in the hero is the one the ladder repeats: feedstock #F4C8E6
+   at 4.62:1, resin #FFCF8C at 4.72:1, product #A5E6F3 at 4.93:1. Every one clears the
+   text floor, because each carries its row's name as well as its marks.
+
+   THE 100 REFERENCE TAKES THE LIME, NOT --hover, AND THAT IS A DELIBERATE DEVIATION
+   from the ladder below, where the same reference is plum. Lightened enough to be
+   legible on this ground, --hover (#995480) lands within a few points of the lightened
+   feedstock plum, and a reference line a reader can mistake for a data series is worse
+   than a reference hue that changes between the hero and the first band. Lime is
+   already this hero's own emphasis ink (the headline's <em>) and encodes no series
+   anywhere on the page. #CFE85C measures 4.97:1; var(--lime) itself is 4.12:1, which
+   clears the mark floor but not the text floor its label needs. O_KEY #C6E2E6 is the
+   standfirst's own ink at 5.00:1, and white is 6.80:1. */
+const O_HUE = {feedstock: "#F4C8E6", resin: "#FFCF8C", product: "#A5E6F3"};
+const O_REF = "#CFE85C", O_KEY = "#C6E2E6";
+/* One link per stage, in chain order, so the strip reads wellhead to warehouse. The two
+   PPI series are the makers' pair — the same two every subtraction on this page uses. */
+const OPEN = [gas, resinMfg, prodMfg];
+const f0 = v => v.toFixed(0);
+const atPeak = s => s.peak.date === s.now.date;
+/* One wording for all three rows, so the reader compares three readings of the same
+   shape rather than three sentences. On the product row it prints the same number twice,
+   which is the finding said in the plainest way the strip can say it; the interpretation
+   goes on the chart, next to the mark, rather than into this line. */
+const openRead = s => `${f0(s.peak.index)} at its peak, ${f0(s.now.index)} now`;
+
+function drawOpen() {
+  const host = document.getElementById("open");
+  if (!host) return;
+  /* THE VIEWBOX IS THE MEASURED TEXT RAIL IN REAL CSS PIXELS, NOT A CONSTANT. A fixed
+     unit count on a fluid rail is a scale factor in disguise: 700 units squeezed into a
+     350px column paints a 15-unit label at 7.5px, and a chart built that way passed this
+     project's text gate at 1440 AND at 390 while painting 10.0px labels everywhere
+     between 761 and 899, because only the two ends were ever sampled. Sizing the box to
+     the rail makes the render scale exactly 1, so a 15-unit label is 15px at every
+     width by construction. Verify: node tools/textsize.mjs --sweep cost-scissors. */
+  const W = Math.round(host.parentElement.getBoundingClientRect().width);
+  if (!W) return;
+  /* NO LEFT MARGIN, ON PURPOSE. The strip's block sits on the text rail, but its INK is
+     what a reader compares to the headline above it, and an inset of even a dozen units
+     puts the strip's first word off the rail every other line on this page sits on. The
+     marks are kept off the edge by the domain's own padding below, not by a margin, so
+     the type and the prose share one left edge exactly. The two units on the right are
+     insurance against a right-anchored string ending a hair past the viewBox. */
+  const m = {r: 2, l: 0}, w = W - m.l - m.r;
+  /* PV.chart is used for its title-safe clear (it keeps the first ELEMENT child, so an
+     indented <title> survives the redraw). Its height is provisional: the real one is
+     not known until the strings have been measured, so the viewBox is set again below. */
+  const {svg} = PV.chart("open", {W, H: 10});
+
+  const HEAD = {"font-size": 16, "font-weight": 900, fill: "#fff"};
+  const SUBA = {"font-size": 14, fill: O_KEY};
+  const NAME = {"font-size": 15, "font-weight": 900};
+  const READ = {"font-size": 14, "font-weight": 700, fill: O_KEY};
+  const TICK = {"font-size": 14, "font-weight": 700, fill: O_KEY};
+
+  /* WHETHER TWO STRINGS FIT IS A QUESTION ABOUT RENDERED LENGTHS, NOT ABOUT THE
+     VIEWPORT, so nothing below is switched on a hard-coded breakpoint. Every line here
+     is packed by measurement, and the row layout stacks or does not stack on the same
+     evidence. getComputedTextLength reports user units, which at scale 1 are the pixels
+     the reader gets. */
+  const measure = (s, a) => {
+    const n = txt(svg, s, Object.assign({x: 0, y: -90}, a));
+    const len = n.getComputedTextLength();
+    svg.removeChild(n);
+    return len;
+  };
+  const wrapText = (s, a, max) => {
+    const out = [];
+    let cur = "";
+    for (const word of s.split(" ")) {
+      const next = cur ? `${cur} ${word}` : word;
+      if (cur && measure(next, a) > max) { out.push(cur); cur = word; }
+      else cur = next;
+    }
+    if (cur) out.push(cur);
+    return out;
+  };
+
+  const READING = `Gas now costs ${vsB(gas.now.index)} against January 2019. Finished ` +
+                  `products, ${vsB(prodMfg.now.index)}.`;
+  /* The strip has to be readable cold, so it says what its two marks are and what its
+     one axis means in its own labels: a reader meets this before the standfirst has
+     explained a single thing, and an index is the most common place a page becomes
+     unreadable while every number in it is correct. */
+  const SUBTEXT = "The ring is each price at its peak, the dot is today. A long line is " +
+                  "a price that came a long way back.";
+  const DIRTEXT = "Further left is a lower price: at 100 it is back to what it cost in " +
+                  "January 2019.";
+  const headL = wrapText(READING, HEAD, w);
+  const subL = wrapText(SUBTEXT, SUBA, w);
+  const dirL = wrapText(DIRTEXT, SUBA, w);
+
+  /* A row sets its name and its reading on ONE baseline at opposite ends, which is the
+     house idiom, and stacks them when the measured pair cannot clear a 24-unit gutter.
+     One row deciding for all three: three rows at two different heights would read as
+     three different things rather than one comparison. */
+  const stack = OPEN.some(s => measure(SHORT[s.label], NAME) + 24 +
+                               measure(openRead(s), READ) > w);
+  const rowH = stack ? 62 : 46, ARM = stack ? 48 : 32;
+  const top = 18 + (headL.length - 1) * 22 + subL.length * 19 + 14;
+  const AXIS = top + 2 * rowH + ARM + 24;
+  const H = AXIS + 40 + dirL.length * 18;
+
+  /* Domain from the data, with a little air at each end so no mark is drawn on an edge.
+     It is anchored at neither 0 nor 100: these are POSITIONS on a rebased scale, not
+     lengths, and 100 — the only anchor that means anything here — is drawn and labelled
+     rather than assumed. */
+  const vals = OPEN.flatMap(s => [s.peak.index, s.now.index]);
+  const LO = Math.min(...vals) - 9, HI = Math.max(...vals) + 11;
+  const X = v => m.l + (v - LO) / (HI - LO) * w;
+
+  headL.forEach((s, i) => txt(svg, s, Object.assign({x: m.l, y: 18 + i * 22}, HEAD)));
+  subL.forEach((s, i) => txt(svg, s,
+    Object.assign({x: m.l, y: 18 + (headL.length - 1) * 22 + 22 + i * 19}, SUBA)));
+
+  OPEN.forEach((s, i) => {
+    const y0 = top + i * rowH, c = O_HUE[s.stage], y = y0 + ARM;
+    txt(svg, SHORT[s.label], Object.assign({x: m.l, y: y0 + 12}, NAME, {fill: c}));
+    txt(svg, openRead(s), stack ? Object.assign({x: m.l, y: y0 + 31}, READ)
+      : Object.assign({x: m.l + w, y: y0 + 12, "text-anchor": "end"}, READ));
+    const px = X(s.peak.index), nx = X(s.now.index);
+    /* The connector is the finding: its length IS how far the price came back. A row
+       with no connector is a price that has not moved, which is the other half of the
+       headline, so the zero-length case is left empty and named instead of faked. */
+    if (Math.abs(nx - px) > 1)
+      el("line", {x1: px, y1: y, x2: nx, y2: y, stroke: c, "stroke-width": 2.4,
+        "stroke-linecap": "round"}, svg);
+    el("circle", {cx: px, cy: y, r: 6.5, fill: "none", stroke: c, "stroke-width": 2}, svg);
+    el("circle", {cx: nx, cy: y, r: 4, fill: c}, svg);
+    /* The one row whose ring and dot are the same mark, said in words next to it: a
+       reader cannot be asked to notice an absence. */
+    if (atPeak(s))
+      txt(svg, "still at its peak", Object.assign({x: nx + 13, y: y + 5},
+        {"font-size": 14, "font-weight": 700, fill: c}));
+  });
+
+  /* THE 100 REFERENCE IS DRAWN AS ONE SEGMENT PER ROW, not one full-height rule, and in
+     its own pass so it is never buried under a connector. Run edge to edge it would pass
+     straight through every row name: the names start at the left margin and 100 lands
+     about fifty units in, so here a data-positioned rule and a margin-positioned label
+     meet at EVERY width, not merely at some. The last segment carries on down to the
+     axis, where the tick it belongs to is labelled in the same ink. */
+  OPEN.forEach((_, i) => {
+    const y = top + i * rowH + ARM;
+    el("line", {x1: X(100), y1: y - 11, x2: X(100),
+      y2: i === OPEN.length - 1 ? AXIS : y + 11, stroke: O_REF, "stroke-width": 2}, svg);
+  });
+
+  el("line", {x1: m.l, y1: AXIS, x2: m.l + w, y2: AXIS,
+    stroke: "rgba(255,255,255,.32)", "stroke-width": 1}, svg);
+  /* Ticks come off the shared tick maker rather than a typed list, so a revision that
+     moves the domain moves them, and they skip anything near 100: parity has the lime
+     rule and its own label, and a grey tick beneath it would print the same number
+     twice in two inks. */
+  ticks(LO, HI, 5).filter(v => v > LO && v < HI && Math.abs(v - 100) > 20).forEach(v =>
+    txt(svg, f0(v), Object.assign({x: X(v), y: AXIS + 20, "text-anchor": "middle"}, TICK)));
+  txt(svg, "100", Object.assign({x: X(100), y: AXIS + 20, "text-anchor": "middle"},
+    TICK, {fill: O_REF}));
+  dirL.forEach((s, i) => txt(svg, s,
+    Object.assign({x: m.l, y: AXIS + 44 + i * 18}, SUBA)));
+
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+}
+
 /* ------------------------------------------------------------ 1. the ladder */
 function drawLadder() { MOBILE.matches ? drawLadderMobile() : drawLadderDesktop(); }
 
@@ -790,10 +985,23 @@ document.getElementById("closersub").innerHTML =
    decides whether it holds.`;
 
 /* --------------------------------------------------------------------- assemble */
-function drawAll() { drawLadder(); drawLines(); drawSpread(); }
+function drawAll() { drawOpen(); drawLadder(); drawLines(); drawSpread(); }
 drawAll();
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);
+
+/* THE COLD-OPEN STRIP IS THE ONE CHART HERE THAT REDRAWS ON A PLAIN RESIZE, and that is
+   the price of sizing it in real pixels. Every chart below is authored in fixed viewBox
+   units and only re-lays out when the 760px breakpoint moves; the strip's box IS the
+   text rail, which is fluid between about 320px and 678px, so a resize that never
+   crosses the breakpoint still changes its geometry and its measured line breaks. Rate
+   limited to one redraw per frame. */
+let openPending = false;
+addEventListener("resize", () => {
+  if (openPending) return;
+  openPending = true;
+  requestAnimationFrame(() => { openPending = false; drawOpen(); });
+});
 
 /* This page is national throughout — no county footprint applies. */
 

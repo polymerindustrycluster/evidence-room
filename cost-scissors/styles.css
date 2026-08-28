@@ -11,6 +11,16 @@
 .hero .wrap > .byline{margin:14px auto 0;max-width:var(--measure);font-size:13px;
   line-height:1.5;color:#9CC4CA;letter-spacing:.02em}
 
+/* THE COLD-OPEN STRIP. On the TEXT rail, not the 980px figure rail: a chart sitting
+   directly under a headline at figure width starts 151px outboard of it, which is the
+   two-rail defect the house has one law against. The `auto` side margins are load-bearing
+   for the same reason the byline's are — this sheet loads after the core, so a
+   `margin:26px 0 4px` shorthand would beat the core's centring rule and drop the block
+   off the rail. `overflow:visible` because the strip's leftmost mark is a price that has
+   fallen below its own 2019 base and must not be clipped for it. */
+.hero .wrap > .hero-viz{max-width:var(--measure);margin:26px auto 4px}
+.hero-viz svg{width:100%;height:auto;display:block;overflow:visible}
+
 /* Footer — the story visibly ends on its own ground, identity then hub link. */
 .page-foot{background:var(--deep);color:#BEDDE2;padding:30px 0 38px;font-size:14px}
 .page-foot p{margin:0 0 6px;max-width:var(--measure);margin-left:auto;margin-right:auto}
