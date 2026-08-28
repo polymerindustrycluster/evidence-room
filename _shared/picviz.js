@@ -108,7 +108,7 @@ const PV = (() => {
 
   /* build the table-view twin from rows [{cells:[], head:bool}] */
   function tableView(id, caption, head, rows) {
-    return `<details class="pv-table"><summary>Table view &mdash; ${caption}</summary>
+    return `<details class="pv-table"><summary>Table view: ${caption}</summary>
       <div class="pv-tablewrap"><table>
         <caption>${caption}</caption>
         <thead><tr>${head.map(h => `<th scope="col">${h}</th>`).join("")}</tr></thead>
@@ -201,7 +201,7 @@ const PV = (() => {
     b.className = "pv-footprint";
     // .wrap or it renders full-bleed at x=0, flush against the window edge, while every
     // other element on the page sits inside the centered column
-    b.innerHTML = `<div class="wrap"><b>${FP.label}</b> &mdash; ${FP.words} counties.
+    b.innerHTML = `<div class="wrap"><b>${FP.label}</b>: ${FP.words} counties.
       ${FP.note || ""}
       ${extra ? `<span class="d">${extra}</span>` : ""}
       ${FP.differs ? `<span class="d">${FP.differs}</span>` : ""}</div>`;
@@ -428,11 +428,11 @@ const PV = (() => {
         <div>
           <h3>How we checked it</h3>
           <p>${list.length
-            ? `Every number on this page is written as a <b>test</b>, not a sentence &mdash;
+            ? `Every number on this page is written as a <b>test</b>, not a sentence:
                <b>${list.length}</b> of them, each stating the condition that would prove it
                wrong. ${auto.length} re-run automatically against the source data;
-               ${manual.length} rest on a document a person had to read.`
-            : (o.noClaimsNote || "This page makes no numeric claim of its own — every " +
+               ${manual.length} ${manual.length === 1 ? 'rests' : 'rest'} on a document a person had to read.`
+            : (o.noClaimsNote || "This page makes no numeric claim of its own: every " +
                "figure on it is carried by the page it links to, and is checked there.")}</p>
           <p>The work was done with <b>Claude (Anthropic)</b>, directed and reviewed by a
             person. Figures are recomputed from the source data by script, and readings of
@@ -445,7 +445,7 @@ const PV = (() => {
         <div>
           <h3>Corrections</h3>
           <p>Every figure here is rebuilt from free public data, so any of it can be
-            checked independently &mdash; and errors are expected to be found.</p>
+            checked independently, and errors are expected to be found.</p>
           <p>If you think something is wrong, say so:
             <b>${o.contact || "jswanson@greaterakronchamber.org"}</b>. The most useful note
             names the sentence and what you think it fails against.</p>
