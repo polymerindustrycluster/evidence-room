@@ -3,7 +3,7 @@
   "claims": [
     {
       "id": "total-secured",
-      "text": "$106.3M of public money awarded plus what others promised to put in beside it; the headline's $106 million (H1, hero figure, the standfirst's 'The $106.3 million total', meta description, and the closer's 'every dollar of the $106.3 million has a line on it').",
+      "text": "$106.3M of public money awarded plus what others promised to put in beside it; the headline's $106 million (H1, the hero's lead stat card, the meta description, and the closer's 'every dollar of the $106.3 million has a line on it').",
       "source": "meta.totals in funding.json: awards + match",
       "assert": "D['meta']['totals']['total'] == 106290451 and D['meta']['totals']['awards'] + D['meta']['totals']['match'] == D['meta']['totals']['total'] and abs(D['meta']['totals']['total'] / 1e6 - 106.3) <= 0.05",
       "actual": "D['meta']['totals']",
@@ -11,7 +11,7 @@
     },
     {
       "id": "hero-awards-match",
-      "text": "$85.3M awarded by government, plus $21.0M partners and the state promised to add, the match and cost share (hero sub-line; the standfirst's 'Governments awarded $85.3 million' and 'promised $21.0 million more alongside it'; the verdict and the closer's $85.3M; the table foots against $85,335,784).",
+      "text": "$85.3M awarded by government, plus $21.0M partners and the state promised to add, the match and cost share (hero stat cards two and three; the standfirst's 'Governments awarded $85.3 million' and 'promised $21.0 million more beside it'; the verdict and the closer's $85.3M; the table foots against $85,335,784).",
       "source": "meta.totals.awards and meta.totals.match",
       "assert": "D['meta']['totals']['awards'] == 85335784 and D['meta']['totals']['match'] == 20954667 and abs(D['meta']['totals']['awards'] / 1e6 - 85.3) <= 0.05 and abs(D['meta']['totals']['match'] / 1e6 - 21.0) <= 0.05",
       "actual": "(D['meta']['totals']['awards'], D['meta']['totals']['match'])",
@@ -19,7 +19,7 @@
     },
     {
       "id": "tile-figures",
-      "text": "The three masthead tiles: $51.00M + $7.16M partner match; $31.25M + $10.42M state cost share; $3.08M + $3.37M local match (hand-typed; the machine kickers repeat the award figures; the footer's 'Is $51 million a lot?' link rounds the first).",
+      "text": "The three award figures and the match promised beside each: $51.00M + $7.16M partner match; $31.25M + $10.42M state cost share; $3.08M + $3.37M local match (hand-typed in the machines band, each award in a kicker and its match in the fact line below it; the footer's 'Is $51 million a lot?' link rounds the first).",
       "source": "sources[] award and matchAmount",
       "assert": "(lambda s: s['award'] == 51001413 and s['matchAmount'] == 7164030)(one(x for x in D['sources'] if x['id'] == 'eda')) and (lambda s: s['award'] == 31250000 and s['matchAmount'] == 10417066)(one(x for x in D['sources'] if x['id'] == 'ohio')) and (lambda s: s['award'] == 3084371 and s['matchAmount'] == 3373571)(one(x for x in D['sources'] if x['id'] == 'apex'))",
       "actual": "[(s['id'], s['award'], s['matchAmount']) for s in D['sources']]",
@@ -27,7 +27,7 @@
     },
     {
       "id": "three-machines-shape",
-      "text": "Three awards, three machines: seven direct federal awards, one state grant split into five workstreams, one workforce award (H1, standfirst, machines section, map lede).",
+      "text": "Three awards, three machines: seven direct federal awards, one state grant split into five workstreams, one workforce award (H1, the machines band's three kickers and sentences, the figure title).",
       "source": "sources[], programs[], recipients[].awards[]",
       "assert": "len(D['sources']) == 3 and len([w for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct']) == 7 and len([p for p in D['programs'] if p['sourceId'] == 'ohio']) == 5 and len([p for p in D['programs'] if p['sourceId'] == 'apex']) == 1",
       "actual": "(len(D['sources']), len([w for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct']), len([p for p in D['programs'] if p['sourceId'] == 'ohio']), len([p for p in D['programs'] if p['sourceId'] == 'apex']))",
@@ -59,7 +59,7 @@
     },
     {
       "id": "eda-seven-51m",
-      "text": "The seven federal leads hold $51.00M (A2 annotation line two; machine 1; the EDA tile).",
+      "text": "The seven federal leads hold $51.00M (A2 annotation line two; machine 1's kicker and sentence).",
       "source": "sum of eda-direct awards",
       "assert": "(lambda ws: len(ws) == 7 and sum(ws) == 51001413)([w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct'])",
       "actual": "(len([w for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct']), sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct'))",
@@ -67,7 +67,7 @@
     },
     {
       "id": "named-vs-awarded",
-      "text": "Of the $85.3M awarded, $79.2M has reached a named recipient; $6.17M has not (verdict sentence, A3 annotation, the fourth hero stat card, the table foot and the closer).",
+      "text": "Of the $85.3M awarded, $79.2M has reached a named recipient; $6.17M has not (the standfirst's '$79.2 million already names who receives it', the verdict sentence, A3 annotation, the fourth hero stat card, the table foot and the closer).",
       "source": "sum over recipients[].awards[] against meta.totals.awards",
       "assert": "(lambda s: s == 79170176 and D['meta']['totals']['awards'] - s == 6165608 and abs(s / 1e6 - 79.2) <= 0.05 and abs((D['meta']['totals']['awards'] - s) / 1e6 - 6.17) <= 0.005)(sum(w['amount'] for r in D['recipients'] for w in r['awards']))",
       "actual": "(sum(w['amount'] for r in D['recipients'] for w in r['awards']), D['meta']['totals']['awards'] - sum(w['amount'] for r in D['recipients'] for w in r['awards']))",
@@ -75,7 +75,7 @@
     },
     {
       "id": "unrouted-split",
-      "text": "The unrouted money splits into $2.64M of Translational R&D not yet passed on to a named recipient and $3.52M running Synthe6 through Bounce, and those are the only two workstreams holding any (A3 annotation, which says 'not yet passed on'; the hero card's 'held in two Ohio spending lines (workstreams)'; the reconciliation sentence under the table, which keeps the contract wording 'not yet written into a sub-grant'; the closer).",
+      "text": "The unrouted money splits into $2.64M of Translational R&D not yet passed on to a named recipient and $3.52M running Synthe6 through Bounce, and those are the only two workstreams holding any (A3 annotation, which says 'not yet passed on'; the fourth hero stat card's 'held in two Ohio spending lines'; the reconciliation sentence under the register, which keeps the contract wording 'not yet written into a sub-grant'; the closer).",
       "source": "program amounts minus their executed sub-awards",
       "assert": "(lambda bal: bal == {'oh-rd': 2642108, 'oh-startup': 3523500})({p['id']: p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) for p in D['programs'] if p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) != 0})",
       "actual": "{p['id']: p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) for p in D['programs']}",
@@ -139,7 +139,7 @@
     },
     {
       "id": "as-of-date",
-      "text": "The hand-typed 'as of 13 August 2026' in the byline, the methods section and the figure source line matches the data vintage.",
+      "text": "The hand-typed '13 August 2026' in the byline and the figure source line, and the same date passed to PV.methodology as the data vintage, which stamps the mast dateline and the generated methods box.",
       "source": "meta.asOf",
       "assert": "D['meta']['asOf'] == '2026-08-13' and 'Notices of Award' in D['meta']['provenance'][0] and 'grant agreement' in D['meta']['provenance'][1]",
       "actual": "(D['meta']['asOf'], D['meta']['provenance'][0][:60], D['meta']['provenance'][1][:60])",
@@ -168,18 +168,11 @@
     },
     {
       "id": "table-cohort-fold",
-      "text": "The award table ranks nineteen rows and shows the ten largest until the reader opens the rest; the nine equal Synthe6 cohort awards fold into one of those rows, and the CSV still carries all twenty-seven award lines (table lede, the 'Show all 19 rows' control, the folded row's own label).",
+      "text": "The award register ranks nineteen rows and shows the ten largest until the reader opens the rest; the nine equal Synthe6 cohort awards fold into one of those rows, and the CSV still carries all twenty-seven award lines (register lede, the 'Show all 19 rows' control, the folded row's own label).",
       "source": "recipients[].awards[]: every award line, with the oh-startup lines summed into one display row",
       "assert": "len([w for r in D['recipients'] for w in r['awards']]) == 27 and (lambda rows: len(rows) == 19 and sorted(rows, reverse=True)[9] > sorted(rows, reverse=True)[10])([w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] != 'oh-startup'] + [sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == 'oh-startup')])",
       "actual": "(len([w for r in D['recipients'] for w in r['awards']]), sorted([w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] != 'oh-startup'] + [sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == 'oh-startup')], reverse=True)[8:12])",
       "falsified_if": "An award line is added or removed so the counts 27 and 19 go stale, or the tenth and eleventh largest rows tie, so 'the ten largest' stops being a clean cut."
-    },
-    {
-      "id": "hand-verified-three",
-      "text": "The sources appendix says three statements on this page were verified by hand instead of re-checked against the funding data: the 6PPD-quinone finding, the vulcanized-rubber point, and the rule that keeps disbursement figures off this page.",
-      "verify": "manual",
-      "source": "The three hand-verified statements about the world in this file - sixppd-coho, tire-thermoset and disbursement-not-public. This claim is the appendix sentence that lists them, not a fourth statement of its own, so the harness reports four manual entries and the page correctly says three.",
-      "falsified_if": "A fourth statement about the world is verified by hand without being named in the appendix sentence, or one of the three gains a data-backed assertion, so 'three' stops being the count."
     }
   ]
 }

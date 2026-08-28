@@ -7,12 +7,12 @@ plus match. Destined for `picinnovation.org/funding`.
 Self-contained: vanilla JS, inline SVG, no frameworks, no CDN, no build step.
 
 ```
-index.html          page shell — headline, machines, disclosures, section structure
-styles.css          all styling, brand tokens at the top
-app.js              layout, rendering, annotations, interaction
+index.html          page shell on the house anatomy — mast, hero, four bands, closer
+styles.css          page-local additions only; widths, type, palette and the mast/hero/
+                    band/closer chrome come from ../_shared/pic-viz.css
+app.js              layout, rendering, annotations, interaction, hero stats, methods box
 data/funding.json   THE DATA. Edit this and nothing else.
 claims.json         every published sentence's guard — re-run by _data/build/verify_claims.py
-fonts/              Aptos, copied from ../../megadeck/fonts
 ```
 
 ## Run it locally
@@ -42,15 +42,20 @@ JavaScript switched off. Every one of them is guarded by an assertion in
 `claims.json` (run `python3 _data/build/verify_claims.py funding-map`), and they
 must be updated by hand if the data changes:
 
-- the `$106.3M` hero figure and its `data-value` attribute on `#total-count`,
-  and the `$106 million` in the headline
-- the `$85.3M` / `$21.0M` hero sub-line
-- the three source tiles in the masthead
-- the three machine cards (amounts, counts, and each card's fact line)
+- the `$106 million` in the headline, and the `$85.3M` / `$21.0M` / `$79.2M` in
+  the standfirst
+- the three machine cards (award amounts, the match promised beside each, counts,
+  and each card's fact line)
 - the figure title's `twenty-one recipients` and the verdict sentence under
   the diagram (`$85.3M` / `$79.2M` / `more than half` / `largest line`)
 - the two vignette kickers (`$10.09M`, `$4.70M`)
-- the `as of` date in the methods section and the figure source line
+- the `as of` date in the byline and the figure source line, and the same date
+  passed to `PV.methodology()` as `meta.fetched`
+
+The four hero stat cards are NOT hand-typed any more: `renderHero()` builds them
+from `meta.totals` through `PV.figures()`, and `#total-count` gets its
+`data-value` from the same object, so the count-up animation and the printed
+figure cannot disagree.
 
 The three on-diagram annotations are NOT hand-typed: their numerals are
 computed from `funding.json` at render time and formatted by `fmt()`.
@@ -283,13 +288,56 @@ page named its constructed units without ever saying what they mean.
   No." in the figure source line. Visible caveat ink beside the figure is 40
   words against the 45-word budget.
 
+## Revision, 28 August 2026 — migrated onto the house anatomy (append-only)
+
+This page predated `_shared/pic-viz.css` and carried its own chrome. It now uses
+the same skeleton as the other thirteen pages. No figure changed; the diagram, its
+detail drawer and both fallbacks are untouched apart from one label fix.
+
+- **Chrome rebuilt on `.mast` / `.hero` / `.band` / `.closer`.** The bespoke
+  `.masthead` (its own eyebrow, headline, standfirst, topline and four award tiles)
+  became a house mast plus a hero with a kicker, a three-line finding headline, a
+  standfirst, a byline and a four-card `PV.figures()` stat row. The five `.section`
+  blocks became four `.band` sections, each with a takeaway kicker, a takeaway H2, a
+  lede, its figure and a source line, alternating ground for pacing.
+- **The four masthead award tiles folded into the machines band.** Each machine card
+  now carries its own award figure in the kicker and the match promised beside it in
+  the fact line, so the six figures live once, next to the sentence that explains
+  them, instead of twice in two registers.
+- **`PV.methodology()` replaced the hand-rolled methods section and the
+  `PVSources.render()` appendix**, and lands where it lands on every other page:
+  between the last band and the closer. Its "Reproduce this" block comes from
+  `_data/SOURCES.json`. The five `notShown` items and the four page-level limits
+  from the old appendix are handed to it under classified meta keys, so the wording
+  still has one home. Record-level provenance (which signed document each figure
+  came from) has no slot in the generated box, so it rides in a disclosure beside
+  the register it documents.
+- **`styles.css` fell from 770 lines to 396.** Deleted: the page's own `--wrap`,
+  palette, radius and motion tokens, the Aptos font stacks, the element resets, and
+  every rule for masthead, topline, tiles, sections, ledes, methods grid, closer and
+  band tint that `_shared/pic-viz.css` already provides — including the page-local
+  override that pinned this page to a left rail while the rest of the site is a
+  centred system. What is left is what the figures need.
+- **The layout gates now apply to this page.** `columns.mjs` measures 24 elements at
+  seven widths, `centres.mjs` reads its axis, and wrapping the diagram in `.chart`
+  brought it inside `collide.mjs`'s reach for the first time — which immediately
+  found a real collision: the APEX mechanism title, set on one 14px line, ran 183px
+  past the mechanism column and under the Ohio "Workforce" band label by 18px. It is
+  now wrapped to the mechanism column at 13px and stacked upward, like the hub label
+  above it.
+- **One claim retired.** `hand-verified-three` guarded the appendix sentence that
+  named the three hand-verified statements. The generated methods box now states the
+  split from `claims.json` itself ("19 re-run automatically … 3 rest on a document a
+  person had to read"), so the count cannot be hand-typed and go stale — and dropping
+  the claim makes that generated count correct, because it was reporting four manual
+  entries for three statements about the world. Every other claim's text was updated
+  to name where its sentence now sits.
+
 ## Open questions for a human
 
-- **Font licensing.** Aptos ships with Microsoft Office. It is bundled here to
-  match the deck, but redistributing it from a public site is a licensing
-  question worth answering before launch. To drop it, delete the `@font-face`
-  blocks at the top of `styles.css`; the stack already falls back to Segoe UI
-  Variable and then a system sans, and nothing else changes.
+- ~~**Font licensing.**~~ Closed 28 August 2026: the page no longer names Aptos.
+  It takes `--sans` from the shared core, like every other page, so the display
+  face is a site-level decision for John rather than this page's own.
 - **Two project labels** are inferences rather than retrieved award text:
   Huntsman's "carbon black and nanotubes from methane" and the University of
   Akron's EDA award as "Workforce (WISE)". The dollar figures and award IDs are

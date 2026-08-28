@@ -280,6 +280,12 @@
    "usaspending",
    "ipeds",
    "qcew"
+  ],
+  "accountability": [
+   "usaspending",
+   "public_record",
+   "qcew",
+   "ipeds"
   ]
  }
 }

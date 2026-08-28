@@ -1,0 +1,1241 @@
+{
+ "meta": {
+  "title": "What PIC promised, what has landed, and who is in the coalition",
+  "source": "Every figure is recomputed from a file another page of this site already publishes: the PIC award register (funding map), the internal scorecard, the public event register (timeline), the EDA Tech Hub award file, USAspending obligations, and BLS QCEW establishment counts. Nothing on this page is fetched.",
+  "row": "one executed award line in the coalition register, and one dated public commitment in the promise register. The two are never counted together.",
+  "fetched": "2026-08-13",
+  "definition": "Money is attributed to PIC when it sits on an executed award line naming the Greater Akron Chamber, the organisation that holds PIC. Money obligated directly to another project lead is convened, not held, and the page reports the two separately rather than summing them into one figure of merit.",
+  "baseline": "The published $106,290,451 secured figure is the baseline the subtraction runs against. It is the number a reader arrives to test, so it is kept in full and decomposed rather than replaced.",
+  "derived_note": "Nothing here is fetched and nothing is typed. derive_accountability.py recomputes every figure from the shipped JSON of the pages named above, and claims.json re-runs the same arithmetic against those upstream files rather than against this page’s own output, so a correction on the funding map fails this page instead of leaving a flattering number standing.",
+  "caution": "An award register records commitment and execution. It records no payment, so no figure on this page measures money spent, and the disbursement stage is drawn empty for that reason rather than for lack of effort.",
+  "not": "No target on this page was set by PIC. The three targets on the board are ceilings fixed by signed award documents, and no board row names an owner. Where PIC has set no target, the absence is the finding and no placeholder stands in for it.",
+  "publicOnly": "This repository is public and its history is permanent, so it carries no member, applicant or personal record at any grain. Seven board rows and the membership goal are published as defined empty slots with the register that holds the real number named beside them.",
+  "excludes": "The public event register records only events recorded as public. The record of which published dates slipped is deliberately withheld there, so the promise register on this page begins on the day it opened and reports nothing about dates published before it existed.",
+  "scope": "PIC’s own award register and public record. This page is not a health report on the regional polymer economy, which is cluster-health, and not the internal board scorecard, which is unlinked and carries deliberately empty rows.",
+  "small_numbers": "The promise register holds eighteen rows and one of them carries a number that can be missed. A keeping rate computed over a handful of resolved commitments would be noise with a percent sign, so this page prints the count and no rate until 6 commitments have resolved.",
+  "note": "Match and cost share are never summed into the staged bar. They are promises made at award time by organisations other than PIC, so they are drawn detached, with their own label."
+ },
+ "generated_on": "2026-08-28",
+ "as_of": "2026-08-13",
+ "draft": {
+  "status": "unreviewed draft",
+  "reason": "This page has not been through marketing or communications review, and the seven questions in its README are unanswered. The hero leads with the subtraction because that is the version that has to be seen to be judged, and whether it may is one of the seven."
+ },
+ "attribution": {
+  "stages": [
+   {
+    "key": "secured",
+    "amount": 106290451,
+    "label": "reported secured",
+    "sub": "three public awards plus partner match and state cost share"
+   },
+   {
+    "key": "awarded",
+    "amount": 85335784,
+    "label": "awarded",
+    "sub": "the three public awards themselves"
+   },
+   {
+    "key": "assigned",
+    "amount": 79170176,
+    "label": "assigned to a named recipient",
+    "sub": "27 executed lines naming 21 recipients"
+   },
+   {
+    "key": "attributed",
+    "amount": 4149515,
+    "label": "on award lines naming PIC’s own organisation",
+    "sub": "two lines naming the Greater Akron Chamber"
+   }
+  ],
+  "match": {
+   "amount": 20954667,
+   "label": "partner match and state cost share",
+   "sub": "committed by organisations other than PIC, at award time"
+  },
+  "share_of_awarded": 0.048625732435996605,
+  "gac_lines": [
+   {
+    "amount": 2650000,
+    "award_id": "ED24HDQ0G0413",
+    "funds": "Innovation governance: a regional office of innovation for the Tech Hub",
+    "source_id": "eda"
+   },
+   {
+    "amount": 1499515,
+    "award_id": null,
+    "funds": "Innovation Hub governance and program administration",
+    "source_id": "ohio"
+   }
+  ],
+  "mechanism": "EDA obligates directly to each project lead. The Greater Akron Chamber is one recipient among seven, for innovation governance. No part of the other six awards passes through it.",
+  "other_leads": 6
+ },
+ "staging": {
+  "awarded": 85335784,
+  "assigned": 79170176,
+  "unassigned": 6165608,
+  "share_assigned": 92.77488562125356,
+  "sources": [
+   {
+    "id": "eda",
+    "short": "EDA Tech Hub",
+    "name": "EDA Sustainable Polymers Tech Hub",
+    "award": 51001413,
+    "assigned": 51001413,
+    "unassigned": 0,
+    "pct": 100.0
+   },
+   {
+    "id": "ohio",
+    "short": "Ohio Innovation Hub",
+    "name": "Ohio Innovation Hub",
+    "award": 31250000,
+    "assigned": 25084392,
+    "unassigned": 6165608,
+    "pct": 80.2700544
+   },
+   {
+    "id": "apex",
+    "short": "Good Jobs Challenge (APEX)",
+    "name": "Good Jobs Challenge (APEX)",
+    "award": 3084371,
+    "assigned": 3084371,
+    "unassigned": 0,
+    "pct": 100.0
+   }
+  ],
+  "gaps": [
+   {
+    "id": "oh-startup",
+    "name": "Startup support",
+    "amount": 3748500,
+    "assigned": 225000,
+    "gap": 3523500
+   },
+   {
+    "id": "oh-rd",
+    "name": "PIC Translational R&D",
+    "amount": 5992000,
+    "assigned": 3349892,
+    "gap": 2642108
+   }
+  ],
+  "reconciliation": [
+   "The rows above account for the money that has reached a named recipient. That is less than the $85,335,784 in awards, for two reasons the diagram also shows.",
+   "Of the $5,992,000 allocated to PIC Translational R&D, $3,349,892 is executed in the seven sub-grants listed here.",
+   "Of the $3,748,500 startup-support workstream, $225,000 is the nine Synthe6 cohort cash awards; the balance is delivered through the Bounce sub-grant that runs the program.",
+   "Adding $20,954,667 in match and cost share to the $85,335,784 in awards gives the $106,290,451 total secured."
+  ],
+  "aggregates": {
+   "recipients": 2,
+   "lines": 3,
+   "total": 23094356,
+   "share_of_assigned": 29.170525021947658,
+   "rows": [
+    {
+     "recipient": "Polymer Pilot Facility",
+     "amount": 18521985,
+     "program": "Pilot facility"
+    },
+    {
+     "recipient": "Regional workforce programs",
+     "amount": 3084371,
+     "program": "APEX workforce initiative"
+    },
+    {
+     "recipient": "Regional workforce programs",
+     "amount": 1488000,
+     "program": "Workforce development"
+    }
+   ]
+  },
+  "disbursed": null,
+  "disbursed_label": "no public record exists"
+ },
+ "coalition": {
+  "recipients": 21,
+  "lines": 27,
+  "award_ids": 8,
+  "rule": 1000000,
+  "above": {
+   "n": 11,
+   "sum": 75595284,
+   "share": 95.48454711026537
+  },
+  "below": {
+   "n": 16,
+   "sum": 3574892,
+   "share": 4.5154528897346395
+  },
+  "rd": {
+   "n": 7,
+   "sum": 3349892,
+   "max": 678614,
+   "min": 292500,
+   "median": 495000,
+   "max_to": "University of Akron",
+   "min_to": "Aeris Biosciences"
+  },
+  "cohort": {
+   "n": 9,
+   "each": 25000,
+   "sum": 225000
+  },
+  "rows": [
+   {
+    "recipient_id": "polymer-pilot-facility",
+    "recipient": "Polymer Pilot Facility",
+    "also_known_as": null,
+    "program_id": "oh-facility",
+    "program": "Pilot facility",
+    "source_id": "ohio",
+    "amount": 18521985,
+    "funds": "Buildings and structures, capital equipment, siting and architectural work, and operations",
+    "award_id": null,
+    "kind": "program_aggregate",
+    "kind_label": "Programme aggregate",
+    "role": "program operator"
+   },
+   {
+    "recipient_id": "bioverde",
+    "recipient": "BioVerde",
+    "also_known_as": null,
+    "program_id": "eda-direct",
+    "program": "Direct federal awards",
+    "source_id": "eda",
+    "amount": 11122386,
+    "funds": "Bio-based butadiene",
+    "award_id": "ED25HDQ0G0038",
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "project lead"
+   },
+   {
+    "recipient_id": "flexsys",
+    "recipient": "Flexsys",
+    "also_known_as": null,
+    "program_id": "eda-direct",
+    "program": "Direct federal awards",
+    "source_id": "eda",
+    "amount": 10093286,
+    "funds": "Safer anti-degradant, a 6PPD alternative",
+    "award_id": "ED25HDQ0G0013",
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "project lead"
+   },
+   {
+    "recipient_id": "goodyear",
+    "recipient": "Goodyear",
+    "also_known_as": null,
+    "program_id": "eda-direct",
+    "program": "Direct federal awards",
+    "source_id": "eda",
+    "amount": 9390634,
+    "funds": "Polymer composite, liquid phase mixing",
+    "award_id": "ED25HDQ0G0036",
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "project lead"
+   },
+   {
+    "recipient_id": "university-of-akron",
+    "recipient": "University of Akron",
+    "also_known_as": null,
+    "program_id": "eda-direct",
+    "program": "Direct federal awards",
+    "source_id": "eda",
+    "amount": 7071802,
+    "funds": "Workforce (WISE)",
+    "award_id": "ED24HDQ0G0452",
+    "kind": "university",
+    "kind_label": "University",
+    "role": "project lead"
+   },
+   {
+    "recipient_id": "huntsman",
+    "recipient": "Huntsman",
+    "also_known_as": null,
+    "program_id": "eda-direct",
+    "program": "Direct federal awards",
+    "source_id": "eda",
+    "amount": 5970805,
+    "funds": "Carbon black and nanotubes from methane",
+    "award_id": "ED25HDQ0G0009",
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "project lead"
+   },
+   {
+    "recipient_id": "full-circle",
+    "recipient": "Full Circle Technologies",
+    "also_known_as": null,
+    "program_id": "eda-direct",
+    "program": "Direct federal awards",
+    "source_id": "eda",
+    "amount": 4702500,
+    "funds": "Recycling, end-of-life tires",
+    "award_id": "ED25HDQ0G0030",
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "project lead"
+   },
+   {
+    "recipient_id": "regional-workforce",
+    "recipient": "Regional workforce programs",
+    "also_known_as": null,
+    "program_id": "apex-workforce",
+    "program": "APEX workforce initiative",
+    "source_id": "apex",
+    "amount": 3084371,
+    "funds": "APEX, targeting 500 enrollments and 320 placements",
+    "award_id": "ED25OIE0G0108",
+    "kind": "program_aggregate",
+    "kind_label": "Programme aggregate",
+    "role": "program operator"
+   },
+   {
+    "recipient_id": "greater-akron-chamber",
+    "recipient": "Greater Akron Chamber",
+    "also_known_as": null,
+    "program_id": "eda-direct",
+    "program": "Direct federal awards",
+    "source_id": "eda",
+    "amount": 2650000,
+    "funds": "Innovation governance: a regional office of innovation for the Tech Hub",
+    "award_id": "ED24HDQ0G0413",
+    "kind": "administrator",
+    "kind_label": "Administrator",
+    "role": "project lead"
+   },
+   {
+    "recipient_id": "greater-akron-chamber",
+    "recipient": "Greater Akron Chamber",
+    "also_known_as": null,
+    "program_id": "oh-gov",
+    "program": "Governance",
+    "source_id": "ohio",
+    "amount": 1499515,
+    "funds": "Innovation Hub governance and program administration",
+    "award_id": null,
+    "kind": "administrator",
+    "kind_label": "Administrator",
+    "role": "governance"
+   },
+   {
+    "recipient_id": "regional-workforce",
+    "recipient": "Regional workforce programs",
+    "also_known_as": null,
+    "program_id": "oh-workforce",
+    "program": "Workforce development",
+    "source_id": "ohio",
+    "amount": 1488000,
+    "funds": "Regional polymer workforce programming",
+    "award_id": null,
+    "kind": "program_aggregate",
+    "kind_label": "Programme aggregate",
+    "role": "program operator"
+   },
+   {
+    "recipient_id": "university-of-akron",
+    "recipient": "University of Akron",
+    "also_known_as": null,
+    "program_id": "oh-rd",
+    "program": "PIC Translational R&D",
+    "source_id": "ohio",
+    "amount": 678614,
+    "funds": "Copolymers of butadiene and CO₂",
+    "award_id": null,
+    "kind": "university",
+    "kind_label": "University",
+    "role": "sub-grantee"
+   },
+   {
+    "recipient_id": "peak-nano",
+    "recipient": "Peak Nano Films",
+    "also_known_as": null,
+    "program_id": "oh-rd",
+    "program": "PIC Translational R&D",
+    "source_id": "ohio",
+    "amount": 677778,
+    "funds": "Degradable multilayer polymer films",
+    "award_id": null,
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "sub-grantee"
+   },
+   {
+    "recipient_id": "promerus",
+    "recipient": "Promerus",
+    "also_known_as": null,
+    "program_id": "oh-rd",
+    "program": "PIC Translational R&D",
+    "source_id": "ohio",
+    "amount": 500000,
+    "funds": "Green DCPD from renewable sources",
+    "award_id": null,
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "sub-grantee"
+   },
+   {
+    "recipient_id": "cwru",
+    "recipient": "Case Western Reserve University",
+    "also_known_as": null,
+    "program_id": "oh-rd",
+    "program": "PIC Translational R&D",
+    "source_id": "ohio",
+    "amount": 495000,
+    "funds": "Solid-state deformation processing",
+    "award_id": null,
+    "kind": "university",
+    "kind_label": "University",
+    "role": "sub-grantee"
+   },
+   {
+    "recipient_id": "synthomer",
+    "recipient": "Synthomer",
+    "also_known_as": null,
+    "program_id": "oh-rd",
+    "program": "PIC Translational R&D",
+    "source_id": "ohio",
+    "amount": 410000,
+    "funds": "Advanced additives for lighter, thinner packaging",
+    "award_id": null,
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "sub-grantee"
+   },
+   {
+    "recipient_id": "polykinetix",
+    "recipient": "PolyKinetix",
+    "also_known_as": null,
+    "program_id": "oh-rd",
+    "program": "PIC Translational R&D",
+    "source_id": "ohio",
+    "amount": 296000,
+    "funds": "Rubber and plastics pyrolysis demonstration",
+    "award_id": null,
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "sub-grantee"
+   },
+   {
+    "recipient_id": "aeris",
+    "recipient": "Aeris Biosciences",
+    "also_known_as": "formerly Auxilium Health",
+    "program_id": "oh-rd",
+    "program": "PIC Translational R&D",
+    "source_id": "ohio",
+    "amount": 292500,
+    "funds": "GMP pilot manufacturing and process development",
+    "award_id": null,
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "sub-grantee"
+   },
+   {
+    "recipient_id": "bioverde",
+    "recipient": "BioVerde",
+    "also_known_as": null,
+    "program_id": "oh-startup",
+    "program": "Startup support",
+    "source_id": "ohio",
+    "amount": 25000,
+    "funds": "Synthe6 cohort award",
+    "award_id": null,
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "cohort awardee"
+   },
+   {
+    "recipient_id": "polykinetix",
+    "recipient": "PolyKinetix",
+    "also_known_as": null,
+    "program_id": "oh-startup",
+    "program": "Startup support",
+    "source_id": "ohio",
+    "amount": 25000,
+    "funds": "Synthe6 cohort award",
+    "award_id": null,
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "cohort awardee"
+   },
+   {
+    "recipient_id": "aeris",
+    "recipient": "Aeris Biosciences",
+    "also_known_as": "formerly Auxilium Health",
+    "program_id": "oh-startup",
+    "program": "Startup support",
+    "source_id": "ohio",
+    "amount": 25000,
+    "funds": "Synthe6 cohort award",
+    "award_id": null,
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "cohort awardee"
+   },
+   {
+    "recipient_id": "ace-innovations",
+    "recipient": "ACE Innovations",
+    "also_known_as": null,
+    "program_id": "oh-startup",
+    "program": "Startup support",
+    "source_id": "ohio",
+    "amount": 25000,
+    "funds": "Synthe6 cohort award",
+    "award_id": null,
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "cohort awardee"
+   },
+   {
+    "recipient_id": "gelpure",
+    "recipient": "GelPure",
+    "also_known_as": null,
+    "program_id": "oh-startup",
+    "program": "Startup support",
+    "source_id": "ohio",
+    "amount": 25000,
+    "funds": "Synthe6 cohort award",
+    "award_id": null,
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "cohort awardee"
+   },
+   {
+    "recipient_id": "materium",
+    "recipient": "Materium Technologies",
+    "also_known_as": null,
+    "program_id": "oh-startup",
+    "program": "Startup support",
+    "source_id": "ohio",
+    "amount": 25000,
+    "funds": "Synthe6 cohort award",
+    "award_id": null,
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "cohort awardee"
+   },
+   {
+    "recipient_id": "plastinuva",
+    "recipient": "Plastinuva",
+    "also_known_as": null,
+    "program_id": "oh-startup",
+    "program": "Startup support",
+    "source_id": "ohio",
+    "amount": 25000,
+    "funds": "Synthe6 cohort award",
+    "award_id": null,
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "cohort awardee"
+   },
+   {
+    "recipient_id": "seauciel",
+    "recipient": "Seauciel",
+    "also_known_as": null,
+    "program_id": "oh-startup",
+    "program": "Startup support",
+    "source_id": "ohio",
+    "amount": 25000,
+    "funds": "Synthe6 cohort award",
+    "award_id": null,
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "cohort awardee"
+   },
+   {
+    "recipient_id": "tkm-ballistics",
+    "recipient": "TKM Ballistics",
+    "also_known_as": null,
+    "program_id": "oh-startup",
+    "program": "Startup support",
+    "source_id": "ohio",
+    "amount": 25000,
+    "funds": "Synthe6 cohort award",
+    "award_id": null,
+    "kind": "firm",
+    "kind_label": "Company",
+    "role": "cohort awardee"
+   }
+  ],
+  "not_a_roster": "This is a register of recipients, not a membership roster. PIC has members who receive nothing here and recipients who are not members, and PIC’s membership register is not published."
+ },
+ "promises": {
+  "opened_on": "2026-08-28",
+  "rule": "Only a date already published is eligible for this register, so publishing a date can never be worse than withholding one.",
+  "rows": [
+   {
+    "id": "F02",
+    "commitment": "2026 Round 1 technical reviews conclude",
+    "type": "milestone",
+    "owner": "PIC",
+    "owner_class": "pic",
+    "set_by": "PIC",
+    "source_document": "PIC public announcement, compiled in the public event register",
+    "award_id": null,
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2026-08-15",
+    "current_date": "2026-08-15",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "the resolution date has not been read against the register yet",
+    "history": [],
+    "timeline_title": "2026 Round 1 technical reviews conclude"
+   },
+   {
+    "id": "F04",
+    "commitment": "PC3 annual conference",
+    "type": "milestone",
+    "owner": "PIC",
+    "owner_class": "pic",
+    "set_by": "PIC",
+    "source_document": "PIC public announcement, compiled in the public event register",
+    "award_id": null,
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2026-09-09",
+    "current_date": "2026-09-09",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "the date has not arrived",
+    "history": [],
+    "timeline_title": "PC3 annual conference"
+   },
+   {
+    "id": "F11",
+    "commitment": "Pilot-facility groundbreaking target",
+    "type": "milestone",
+    "owner": "PIC",
+    "owner_class": "pic",
+    "set_by": "PIC",
+    "source_document": "Ohio Innovation Hub grant SBIG20251005 project schedule, compiled in the public event register",
+    "award_id": null,
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2026-10-09",
+    "current_date": "2026-10-09",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "the date has not arrived",
+    "history": [],
+    "timeline_title": "Pilot-facility groundbreaking target"
+   },
+   {
+    "id": "F17",
+    "commitment": "Polymer Composite: commission extruder, begin compounding, deliver sample lots",
+    "type": "milestone",
+    "owner": "Goodyear",
+    "owner_class": "partner",
+    "set_by": "Goodyear",
+    "source_document": "EDA Tech Hub project work plan, award ED25HDQ0G0036",
+    "award_id": "ED25HDQ0G0036",
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2026-10-22",
+    "current_date": "2026-10-22",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "the date has not arrived",
+    "history": [],
+    "timeline_title": "Polymer Composite: commission extruder, begin compounding, deliver sample lots"
+   },
+   {
+    "id": "F18",
+    "commitment": "Bio-Based Butadiene: build fermentation lab, optimize strains, establish pilot facilities",
+    "type": "milestone",
+    "owner": "BioVerde and the University of Akron",
+    "owner_class": "partner",
+    "set_by": "BioVerde",
+    "source_document": "EDA Tech Hub project work plan, award ED25HDQ0G0038",
+    "award_id": "ED25HDQ0G0038",
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2026-10-22",
+    "current_date": "2026-10-22",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "the date has not arrived",
+    "history": [],
+    "timeline_title": "Bio-Based Butadiene: build fermentation lab, optimize strains, establish pilot facilities at NPIC"
+   },
+   {
+    "id": "F19",
+    "commitment": "Carbon Black and Nanotubes: install and start up process equipment, expand testing throughput",
+    "type": "milestone",
+    "owner": "Huntsman",
+    "owner_class": "partner",
+    "set_by": "Huntsman",
+    "source_document": "EDA Tech Hub project work plan, award ED25HDQ0G0009",
+    "award_id": "ED25HDQ0G0009",
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2026-10-22",
+    "current_date": "2026-10-22",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "the date has not arrived",
+    "history": [],
+    "timeline_title": "Carbon Black & Nanotubes: install/start up process equipment; expand testing throughput"
+   },
+   {
+    "id": "F20",
+    "commitment": "Safer Anti-Degradant: tire-performance and toxicology testing, scale up process chemistry",
+    "type": "milestone",
+    "owner": "Flexsys",
+    "owner_class": "partner",
+    "set_by": "Flexsys",
+    "source_document": "EDA Tech Hub project work plan, award ED25HDQ0G0013",
+    "award_id": "ED25HDQ0G0013",
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2026-10-22",
+    "current_date": "2026-10-22",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "the date has not arrived",
+    "history": [],
+    "timeline_title": "Safer Anti-Degradant: tire-performance & toxicology testing; scale-up process chemistry"
+   },
+   {
+    "id": "F21",
+    "commitment": "WISE: grow student participation and internships, launch new courses, certificates and webinars",
+    "type": "milestone",
+    "owner": "University of Akron and the Tech Hub team",
+    "owner_class": "partner",
+    "set_by": "University of Akron",
+    "source_document": "EDA Tech Hub project work plan, award ED24HDQ0G0452",
+    "award_id": "ED24HDQ0G0452",
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2026-10-22",
+    "current_date": "2026-10-22",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "the date has not arrived",
+    "history": [],
+    "timeline_title": "WISE: grow student participation and internships; launch new courses, certificates, webinars"
+   },
+   {
+    "id": "F22",
+    "commitment": "Innovation Governance: economic-impact and risk work, grow membership, advocacy and comms reach",
+    "type": "milestone",
+    "owner": "Greater Akron Chamber and PIC",
+    "owner_class": "pic",
+    "set_by": "Greater Akron Chamber",
+    "source_document": "EDA Tech Hub project work plan, award ED24HDQ0G0413",
+    "award_id": "ED24HDQ0G0413",
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2026-10-22",
+    "current_date": "2026-10-22",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "membership and reach are measured in PIC’s own registers, which this repository may not carry",
+    "history": [],
+    "timeline_title": "Innovation Governance: economic-impact and risk work; grow membership, advocacy, comms reach"
+   },
+   {
+    "id": "F16",
+    "commitment": "Recycling End-of-Life Tires: plant equipment delivery, blanket approval sought across 50 states",
+    "type": "milestone",
+    "owner": "Full Circle Technologies",
+    "owner_class": "partner",
+    "set_by": "Full Circle Technologies",
+    "source_document": "EDA Tech Hub project work plan, award ED25HDQ0G0030",
+    "award_id": "ED25HDQ0G0030",
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2026-11-15",
+    "current_date": "2026-11-15",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "the date has not arrived",
+    "history": [],
+    "timeline_title": "Recycling End-of-Life Tires: plant equipment delivery; blanket approval sought across 50 states"
+   },
+   {
+    "id": "F29",
+    "commitment": "Polymer Pilot Facility ready for first pilot projects",
+    "type": "milestone",
+    "owner": "PIC",
+    "owner_class": "pic",
+    "set_by": "PIC",
+    "source_document": "Ohio Innovation Hub grant SBIG20251005 project schedule, compiled in the public event register",
+    "award_id": null,
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2027-11-15",
+    "current_date": "2027-11-15",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "the date has not arrived",
+    "history": [],
+    "timeline_title": "Polymer Pilot Facility ready for first pilot projects"
+   },
+   {
+    "id": "F30",
+    "commitment": "Flexsys and Full Circle EDA award periods end",
+    "type": "period_end",
+    "owner": "Flexsys and Full Circle Technologies",
+    "owner_class": "partner",
+    "set_by": "EDA",
+    "source_document": "Signed federal Notices of Award ED25HDQ0G0013 and ED25HDQ0G0030",
+    "award_id": "ED25HDQ0G0013",
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2027-11-30",
+    "current_date": "2027-11-30",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "an award period ending is not a thing achieved, so this row carries a date and no outcome",
+    "history": [],
+    "timeline_title": "Flexsys and Full Circle EDA award periods end"
+   },
+   {
+    "id": "F35",
+    "commitment": "APEX Good Jobs Challenge period ends, targeting 500 enrollments, 400 completions and 320 placements",
+    "type": "numeric_outcome",
+    "owner": "Greater Akron Chamber",
+    "owner_class": "pic",
+    "set_by": "EDA",
+    "source_document": "Signed federal Notice of Award ED25OIE0G0108",
+    "award_id": "ED25OIE0G0108",
+    "targets": {
+     "enrollments": 500,
+     "completions": 400,
+     "placements": 320
+    },
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2028-01-15",
+    "current_date": "2028-01-15",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "not published: enrollment, completion and placement counts are held in PIC and APEX programme records, which this repository does not carry",
+    "history": [],
+    "timeline_title": "APEX Good Jobs Challenge period ends — targets 500 enrollments / 400 completions / 320 placements"
+   },
+   {
+    "id": "F37",
+    "commitment": "Goodyear and BioVerde EDA award periods end",
+    "type": "period_end",
+    "owner": "Goodyear and BioVerde",
+    "owner_class": "partner",
+    "set_by": "EDA",
+    "source_document": "Signed federal Notices of Award ED25HDQ0G0036 and ED25HDQ0G0038",
+    "award_id": "ED25HDQ0G0036",
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2028-12-14",
+    "current_date": "2028-12-14",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "an award period ending is not a thing achieved, so this row carries a date and no outcome",
+    "history": [],
+    "timeline_title": "Goodyear and BioVerde EDA award periods end"
+   },
+   {
+    "id": "F38",
+    "commitment": "Ohio Innovation Hub project completion date",
+    "type": "milestone",
+    "owner": "Greater Akron Chamber and the Ohio Department of Development",
+    "owner_class": "pic",
+    "set_by": "ODOD",
+    "source_document": "Executed state grant agreement SBIG20251005",
+    "award_id": null,
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2028-12-31",
+    "current_date": "2028-12-31",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "the date has not arrived",
+    "history": [],
+    "timeline_title": "Ohio Innovation Hub project completion date"
+   },
+   {
+    "id": "F42",
+    "commitment": "EDA Tech Hub consortium period ends",
+    "type": "period_end",
+    "owner": "Greater Akron Chamber, PIC and EDA",
+    "owner_class": "pic",
+    "set_by": "EDA",
+    "source_document": "Signed federal Notice of Award ED24HDQ0G0413",
+    "award_id": "ED24HDQ0G0413",
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2029-09-30",
+    "current_date": "2029-09-30",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "an award period ending is not a thing achieved, so this row carries a date and no outcome",
+    "history": [],
+    "timeline_title": "EDA Tech Hub consortium period ends"
+   },
+   {
+    "id": "F43",
+    "commitment": "University of Akron WISE workforce award period ends",
+    "type": "period_end",
+    "owner": "University of Akron",
+    "owner_class": "partner",
+    "set_by": "EDA",
+    "source_document": "Signed federal Notice of Award ED24HDQ0G0452",
+    "award_id": "ED24HDQ0G0452",
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2029-09-30",
+    "current_date": "2029-09-30",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "an award period ending is not a thing achieved, so this row carries a date and no outcome",
+    "history": [],
+    "timeline_title": "UA WISE workforce award period ends"
+   },
+   {
+    "id": "F44",
+    "commitment": "Huntsman EDA sub-award period ends",
+    "type": "period_end",
+    "owner": "Huntsman",
+    "owner_class": "partner",
+    "set_by": "EDA",
+    "source_document": "Signed federal Notice of Award ED25HDQ0G0009",
+    "award_id": "ED25HDQ0G0009",
+    "first_published": "2026-08-28",
+    "first_published_basis": "register opened",
+    "first_published_date": "2029-11-30",
+    "current_date": "2029-11-30",
+    "status": "scheduled",
+    "reading": null,
+    "no_reading_because": "an award period ending is not a thing achieved, so this row carries a date and no outcome",
+    "history": [],
+    "timeline_title": "Huntsman EDA sub-award period ends"
+   }
+  ],
+  "by_type": {
+   "numeric_outcome": 1,
+   "milestone": 12,
+   "period_end": 5
+  },
+  "by_owner": {
+   "pic": 8,
+   "partner": 10
+  },
+  "near": 10,
+  "far": 8,
+  "calibration": {
+   "statistic": "the share of dated public commitments that resolved on the date first published",
+   "n": 0,
+   "kept": 0,
+   "rate": null,
+   "floor": 6,
+   "floor_basis": "spec default, Open Question 4 unanswered: below six resolved commitments the page prints the count and no rate"
+  },
+  "unsourced_goal": {
+   "id": "G01",
+   "commitment": "150 members and $1 million in annual revenue by 2028",
+   "type": "numeric_outcome",
+   "set_by": "PIC",
+   "source_document": null,
+   "resolution_date": "2028-12-31",
+   "reading": "not published. The measurement lives in PIC’s membership register, which a public repository with permanent history may not carry.",
+   "why_uncited": "PIC states this goal. This repository holds no dated public document setting it, so the register cannot cite one. That absence is reportable and is not a defect to be tidied.",
+   "counted_in_rows": false,
+   "counted_in_rows_reason": "A row with no source document does not meet this register’s entry test (a date, an owner and a source document), so it is shown beside the register and excluded from every count on this page. Open Question 1 decides whether it becomes a row."
+  },
+  "goal_context": {
+   "establishments": 364,
+   "year": 2025,
+   "counties": 12,
+   "suppressed": 0,
+   "naics": "326",
+   "label": "Plastics & rubber products"
+  }
+ },
+ "reconcile": {
+  "rows": [
+   {
+    "published": "39 proposals, 14 funded",
+    "on": "2025-07-01",
+    "display": "2025",
+    "document": "Public event register, E128",
+    "counted": null
+   },
+   {
+    "published": "5 of 38",
+    "on": "2025-12-12",
+    "display": "2025-12-12",
+    "document": "Public event register, E122",
+    "counted": null
+   },
+   {
+    "published": "59 applications, up 51 percent year on year",
+    "on": "2026-07-07",
+    "display": "2026-07-07",
+    "document": "Public event register, E202",
+    "counted": null
+   },
+   {
+    "published": "7 executed sub-grants totalling $3,349,892",
+    "on": "2026-08-13",
+    "display": "2026-08-13",
+    "document": "Award register, executed sub-grant agreements",
+    "counted": "Executed sub-grant agreements, which is the only one of these four that says what it counted."
+   },
+   {
+    "published": "500 enrollments and 320 placements, against 500 enrollments, 400 completions and 320 placements",
+    "on": "2026-08-13",
+    "display": "2026-08-13",
+    "document": "Award register and public event register, both describing ED25OIE0G0108",
+    "counted": "Two descriptions of one Notice of Award. One of them is incomplete."
+   }
+  ],
+  "events": [
+   {
+    "id": "E128",
+    "date": "2025-07-01",
+    "date_display": "2025",
+    "title": "First PIC innovation-funding cycle completes: 39 proposals, 14 funded, ~$2.1M seed",
+    "org": "PIC I&C Committee",
+    "parsed": {
+     "proposals": 39,
+     "funded": 14
+    }
+   },
+   {
+    "id": "E122",
+    "date": "2025-12-12",
+    "date_display": "2025-12-12",
+    "title": "PolyKinetix selected — \"5 of 38\" PIC R&D proposals",
+    "org": "PolyKinetix",
+    "parsed": {
+     "selected": 5,
+     "population": 38
+    }
+   },
+   {
+    "id": "E202",
+    "date": "2026-07-07",
+    "date_display": "2026-07-07",
+    "title": "2026 innovation intake finalized: 59 applications, +51% YoY",
+    "org": "PIC",
+    "parsed": {
+     "applications": 59,
+     "yoy_pct": 51
+    }
+   }
+  ],
+  "apex": {
+   "funding": "APEX, targeting 500 enrollments and 320 placements",
+   "timeline": "APEX Good Jobs Challenge period ends — targets 500 enrollments / 400 completions / 320 placements",
+   "differ": true
+  },
+  "standing_rule": "Every new public count of this programme is added to this table, or the build fails."
+ },
+ "negative": {
+  "counts": {
+   "rows": 18,
+   "accountable": 15,
+   "public": 8,
+   "vault": 7,
+   "context": 3,
+   "vault_in_a": 4,
+   "targets_set": 3,
+   "owners_assigned": 0
+  },
+  "targets": [
+   {
+    "metric": "Award dollars with a named recipient",
+    "target": "$85,335,784 awarded",
+    "group": "B"
+   },
+   {
+    "metric": "EDA implementation awards obligated to a project lead",
+    "target": "7 of 7 awards",
+    "group": "B"
+   },
+   {
+    "metric": "Ohio Innovation Hub dollars with a named recipient",
+    "target": "$31,250,000 awarded",
+    "group": "B"
+   }
+  ],
+  "vault_rows": [
+   {
+    "id": "a-members",
+    "metric": "Members in good standing",
+    "source": "PIC membership register",
+    "definition": "Organisations whose dues are paid and whose membership has not lapsed on the last day of the quarter. One organisation counts once regardless of how many staff it sends.",
+    "cadence": "Quarterly, at quarter close",
+    "current": null,
+    "sub": null
+   },
+   {
+    "id": "a-dues",
+    "metric": "Dues revenue, trailing twelve months",
+    "source": "PIC general ledger",
+    "definition": "Dues cash received in the twelve months ending at quarter close. Excludes sponsorship, event fees and grant income, which are counted in the earned-revenue row instead.",
+    "cadence": "Quarterly, at quarter close",
+    "current": null,
+    "sub": null
+   },
+   {
+    "id": "a-renewal",
+    "metric": "Renewal rate",
+    "source": "PIC membership register",
+    "definition": "Members whose renewal date fell in the period and who renewed within ninety days of it, divided by all members whose renewal date fell in the period. Lapsed-then-rejoined counts as a renewal only inside the window.",
+    "cadence": "Quarterly, at quarter close",
+    "current": null,
+    "sub": null
+   },
+   {
+    "id": "a-earned",
+    "metric": "Earned-revenue share",
+    "source": "PIC general ledger",
+    "definition": "Dues plus fee-for-service plus sponsorship, divided by total operating revenue, over the trailing twelve months. Grant drawdown sits in the denominator and never in the numerator.",
+    "cadence": "Quarterly, at quarter close",
+    "current": null,
+    "sub": null
+   },
+   {
+    "id": "b-disbursed",
+    "metric": "Award dollars disbursed to recipients",
+    "source": "PIC drawdown records and agency payment systems",
+    "definition": "Cash actually paid out against executed awards at quarter close, divided by dollars awarded. The register above records commitment and execution; nothing in it records a payment.",
+    "cadence": "Quarterly, at quarter close",
+    "current": null,
+    "sub": null
+   },
+   {
+    "id": "c-completions",
+    "metric": "Completions of a PIC-funded training program",
+    "source": "PIC and APEX program records",
+    "definition": "Individuals who finished a workforce program paid for by the APEX Good Jobs Challenge award or the Ohio workforce workstream, counted at completion and never at enrolment.",
+    "cadence": "Quarterly, at quarter close",
+    "current": null,
+    "sub": null
+   },
+   {
+    "id": "c-placements",
+    "metric": "Member companies taking a program participant",
+    "source": "PIC program records",
+    "definition": "Member organisations that took at least one participant from a PIC-supported program into a placement, internship or apprenticeship in the trailing twelve months.",
+    "cadence": "Quarterly, at quarter close",
+    "current": null,
+    "sub": null
+   }
+  ],
+  "list2": [
+   {
+    "covers": [
+     "a-members",
+     "a-dues",
+     "a-renewal",
+     "a-earned"
+    ],
+    "not_here": "Members in good standing, dues revenue, renewal rate, earned-revenue share",
+    "because": "This repository is public and its history is permanent, so it carries no member, applicant or personal data. Every metric that would need PIC’s membership register, general ledger, pipeline or drawdown records is published here as a defined empty slot. Filling those rows requires a copy of this page kept outside a public repository.",
+    "because_from": "scorecard.json meta.publicOnly",
+    "would_need": "A membership-agreement and marketing-communications decision on what may be published, and at what grain.",
+    "defined_on": "2026-08-28",
+    "fill_by": null,
+    "permanent_reason": "This repository is public and its history is permanent, so no grain of a member record is publishable in it. A populated copy belongs outside it."
+   },
+   {
+    "covers": [
+     "b-disbursed"
+    ],
+    "not_here": "Award dollars disbursed",
+    "because": "An award register records what has been committed and executed. It records no payment, so no figure on this page is a measure of money spent. Obligated is not disbursed, and the disbursement row is empty for that reason rather than for lack of effort.",
+    "because_from": "scorecard.json meta.caution",
+    "would_need": "A public disbursement record, or a decision to publish drawdown totals.",
+    "defined_on": "2026-08-28",
+    "fill_by": "on a decision to publish drawdown totals",
+    "permanent_reason": null
+   },
+   {
+    "covers": [
+     "c-completions",
+     "c-placements"
+    ],
+    "not_here": "Completions of a PIC-funded training programme, and member companies taking a participant",
+    "because": "Held in PIC and APEX programme records, which this repository does not carry.",
+    "because_from": "scorecard.json, the two empty group C rows",
+    "would_need": "A quarterly reporting arrangement with ConxusNEO, the Ohio Manufacturers’ Association and the Polymer Sector Partnership.",
+    "defined_on": "2026-08-28",
+    "fill_by": "on a quarterly reporting arrangement",
+    "permanent_reason": null
+   },
+   {
+    "covers": [],
+    "not_here": "Jobs created, or an economic-impact multiplier",
+    "because": "No page in this room ships a method for it that survives its own gates.",
+    "because_from": "this page",
+    "would_need": "A defensible method, published before the number.",
+    "defined_on": "2026-08-28",
+    "fill_by": null,
+    "permanent_reason": "Until a method exists and is published first, the figure would be an assertion with a decimal point on it."
+   },
+   {
+    "covers": [],
+    "not_here": "Which published dates slipped before this register opened",
+    "because": "This page shows only events recorded as public. Internal operational milestones, and the record of which dates slipped, are deliberately not here.",
+    "because_from": "timeline.json meta.publicOnly",
+    "would_need": "A decision to emit the slip column, which cannot be un-made.",
+    "defined_on": "2026-08-28",
+    "fill_by": "on the slip-record decision (Open Question 3)",
+    "permanent_reason": null
+   },
+   {
+    "covers": [],
+    "not_here": "The NEO-SMART NSF Engine award",
+    "because": "NEO-SMART is a separate CWRU-led NSF Engine award in which PIC is a core partner. It is not PIC money and is not on this diagram.",
+    "because_from": "funding.json meta.disclosures",
+    "would_need": "Nothing. It is correctly excluded, and it is named here so nobody thinks it was overlooked.",
+    "defined_on": "2026-08-28",
+    "fill_by": null,
+    "permanent_reason": "It is not PIC money, so it will never appear on this page."
+   }
+  ]
+ },
+ "context": {
+  "techhub_award": 51001413,
+  "background_rate": 34908375.5,
+  "background_years": [
+   2019,
+   2026
+  ],
+  "background_counties": 12,
+  "defects": [
+   {
+    "figure": "The EDA award total behind the 4.9 percent share",
+    "text": "The award is shown as awarded. 2 of the 7 implementation awards carry FY2024 award IDs; restating those into 2025 dollars raises the award total by 0.5%, which does not move the published ratio.",
+    "from": "federal-money/data/techhub.json meta.note"
+   },
+   {
+    "figure": "Comparing the Tech Hub award with routine federal contracting",
+    "text": "A competitive implementation grant and a procurement obligation are different instruments. They share a unit of account, dollars committed, and that is the only sense in which this page compares them.",
+    "from": "federal-money/data/techhub.json meta.caution"
+   },
+   {
+    "figure": "The background rate of routine federal money",
+    "text": "Place of performance is a reported field on the award, not an observation of where the work happened. A centrally administered contract, or a prime performing through a subaward, can put the code somewhere other than the activity. An obligation is not an outlay.",
+    "from": "federal-money/data/federal.json meta.caution"
+   },
+   {
+    "figure": "The board’s talent rows",
+    "text": "Every one of the 11 tracked degree programmes that reports a 2019 count carries the identical count again for 2020 in the shipped occupations file, all 11 of them. Independent programmes do not repeat in lockstep, so this page reads the 2021-2023 window and uses neither of those two years.",
+    "from": "scorecard/data/scorecard.json meta.excludes"
+   },
+   {
+    "figure": "The board’s talent rows",
+    "text": "The talent rows are administrative counts in the low tens. The polymer series ran 124, 54, 63 across 2021, 2022 and 2023, so a single year is a reading and not a direction.",
+    "from": "scorecard/data/scorecard.json meta.small_numbers"
+   }
+  ]
+ }
+}

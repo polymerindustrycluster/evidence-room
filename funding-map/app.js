@@ -529,8 +529,17 @@ function loadData(file) {
     });
 
     const apexG = el('g', { class: 'dimmable', 'data-node': 'prog:' + G.srcPrograms.get('apex')[0].id });
-    apexG.appendChild(el('text', { class: 'mech-title', x: L.mechX + 4, y: L.apexB.y - 16,
-      style: `font-size:14px;fill:${TINT.apex.textInk}` }, DATA.sources[2].mechanismTitle));
+    /* Wrapped to the mechanism column, like the hub label above it, and stacked upward
+       from the band. Set on one 14px line it ran 183px, past the mechanism column and
+       under the Ohio "Workforce" band label by 18px — a real collision that no gate could
+       see while this figure sat outside `.chart`. Folding the page into the house anatomy
+       put it inside collide.mjs's reach, and this is what it found. */
+    const apexLines = wrap(DATA.sources[2].mechanismTitle, L.hub.w - 10, 13);
+    apexLines.forEach((ln, i) => {
+      apexG.appendChild(el('text', { class: 'mech-title', x: L.mechX + 4,
+        y: L.apexB.y - 16 - (apexLines.length - 1 - i) * 17,
+        style: `font-size:13px;fill:${TINT.apex.textInk}` }, ln));
+    });
     apexG.appendChild(el('text', { class: 'mech-sub', x: L.mechX + 4, y: L.apexB.y + L.apexB.h + 20 },
       DATA.sources[2].mechanismLines[0]));
     mechG.appendChild(apexG);
@@ -1005,10 +1014,49 @@ function loadData(file) {
     const more = document.getElementById('fn-more');
     DATA.meta.scaleNote.concat(DATA.meta.disclosures.slice(1))
       .forEach((t) => more.appendChild(h('p', { text: t })));
+    /* Record-level provenance — which signed document each figure came from — has no slot
+       in the generated methodology box (PV.methodology's meta keys are fixed in the shared
+       core). It rides with the register it documents, one click away. */
     const pl = document.getElementById('prov-list');
     DATA.meta.provenance.forEach((t) => pl.appendChild(h('li', { text: t })));
-    const nl = document.getElementById('notshown-list');
-    DATA.meta.notShown.forEach((t) => nl.appendChild(h('li', { text: t })));
+  }
+
+  /* The hero stat row, through the house helper: three findings and one apparatus figure,
+     never more than four, first card carries the accent. The total keeps its id and
+     data-value so countUp() still animates it. */
+  function renderHero() {
+    const t = DATA.meta.totals;
+    const named = DATA.recipients.reduce((a, r) => a + r.total, 0);
+    PV.figures([
+      ['key', `<span id="total-count" data-value="${t.total}">${fmtHero(t.total)}</span>`,
+        'Public money in play', 'awarded, plus the match promised beside it'],
+      ['', fmtHero(t.awards), 'Awarded by government', 'across three signed awards'],
+      ['', fmtHero(t.match), 'Promised alongside',
+        'what partners and the state agreed to add, the match and cost share'],
+      ['', fmt(t.awards - named), 'No named recipient yet',
+        'held in two Ohio spending lines']
+    ]);
+  }
+
+  /* The generated "How we did this" band, in the house position: after the last story
+     band, before the closer. PV.methodology publishes only meta keys classified in
+     _shared/picviz.js, so the page's five "what this doesn't show" items are handed over
+     under the classified names rather than restated here — one wording, one source. */
+  function renderMethods() {
+    const ns = DATA.meta.notShown;
+    return PV.methodology({
+      page: 'funding-map',
+      meta: {
+        source: 'Signed federal Notices of Award, the executed Ohio grant agreement (SBIG20251005), and executed sub-grant agreements.',
+        fetched: '13 August 2026',
+        row: 'One row is one award line: a named recipient, the program that funds it, and the amount that program has committed to that recipient.',
+        caution: ns[0], excludes: ns[1], not_the_cluster: ns[2], note: ns[3],
+        award_level_note: ns[4],
+        publicOnly: 'This is the public money PIC helped win, not all public money reaching polymer work in the region. A program PIC was not part of does not appear here, and its absence is not evidence it does not exist.',
+        not: 'Recipients are named as the award names them. Where an award passes through one organization to others, only the named recipient appears.',
+        scope: 'No comparison with the other eleven funded EDA Tech Hubs is drawn here, because their award data is not shipped with this page. Every comparison on the page is internal to these three awards.'
+      }
+    });
   }
 
   // One row per award, for the CSV and for the group-by-program reading.
@@ -1454,11 +1502,13 @@ function loadData(file) {
     }
 
     G = index(DATA);
+    renderHero();
     renderProse();
     renderTable();
     renderLegend();
     buildCsv();
     countUp();
+    await renderMethods();
 
     if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) { /* measure anyway */ } }
     render();

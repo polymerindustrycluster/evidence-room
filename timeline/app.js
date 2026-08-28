@@ -1020,17 +1020,18 @@ function loadData(file) {
     put('cad-before', before); put('cad-since', since);
     put('n-fwd', IN.filter((e) => !e.delivered).length);
 
-    // Four tiles, not five: the fifth wrapped to its own row at 1280 and the
-    // workstream count already leads the calendar H2.
-    document.getElementById('topline').innerHTML = '';
-    // Exactly one card carries the accent, and it is the page's finding.
-    [[hc.shown, `proven heritage events, ${hc.firstYear}–${hc.lastYear}`, false],
-     [before, 'events, 34 months before', false],
-     [since, 'delivered, 34 months since', true],
-     [IN.filter((e) => !e.delivered).length, 'scheduled ahead', false]].forEach(([n, l, key]) => {
-      document.getElementById('topline').appendChild(h('li', { class: key ? 'key' : null }, [
-        h('b', { text: String(n) }), h('span', { text: l })]));
-    });
+    /* The hero stat row, through the shared ceremony helper rather than a page-local
+       list: four cards, 2x2 on the measure rail, and exactly one carries the accent
+       because exactly one of them is the page's finding. Four, not five — the fifth
+       wrapped to its own row at 1280 and the workstream count already leads the
+       calendar H2. */
+    PV.figures([
+      ['', hc.shown, 'Proven heritage events', `${hc.firstYear} to ${hc.lastYear}`],
+      ['', before, 'Events, 34 months before', 'Up to the October 2023 designation'],
+      ['key', since, 'Delivered, 34 months since', 'The same span, to within a day'],
+      ['', IN.filter((e) => !e.delivered).length, 'Scheduled ahead',
+       'Dates on the record, not yet delivered'],
+    ]);
 
     // The next three scheduled dates, straight from the record.
     const watch = document.getElementById('watch');
@@ -1049,32 +1050,65 @@ function loadData(file) {
        these would let the apparatus contradict itself, which is how it read before. */
     const nCal = IN.length, nPre = PRE.length;
     const nMedia = d.events.length - nCal - nPre;
-    document.getElementById('m-source').textContent = d.meta.source +
-      ` Of those ${d.events.length}, ${nCal} fall inside the 2023 to 2029 calendar window and are ` +
-      `drawn there: ${IN.filter((e) => e.delivered).length} delivered and ` +
-      `${IN.filter((e) => !e.delivered).length} scheduled. ${nPre} predate the window and feed the ` +
-      `year-by-year chart instead. The remaining ${nMedia} are press coverage of the cluster rather than ` +
-      `things the cluster did, and are held out of both charts. The ${hc.shown} heritage rows are a ` +
-      `separate register and are not part of this count.`;
-    document.getElementById('m-public').textContent = d.meta.publicOnly;
     const dropped = hc.dropped['label:CLAIMED'] || 0;
-    document.getElementById('m-heritage').textContent =
-      `The heritage rows come from PIC’s NEO Polymer Wins register, an internal file. Of its ` +
-      `${hc.shown + dropped} heritage and discovery rows, ${hc.shown} are labeled proven and appear here; ` +
-      `${dropped} labeled claimed are withheld. ${hc.sourcesStripped} internal source references were ` +
-      `stripped in the build, and every row shown carries at least one public source. Shipped products, ` +
-      `licenses and living capital are a different register and are not on this page.`;
-    const notes = document.getElementById('m-notes');
-    [['Each dot is one dated event, in the workstream that produced it.'],
-     ['Every dot is the same size. Color is the workstream; a hollow ring with a center pip is a scheduled date; the chips filter by how long that kind of work takes to show a result.'],
-     ['Hollow dots to the right of the dashed rule are scheduled dates from the award record, not work already done.'],
-     ['Vertical rules and named labels mark the load-bearing events; every other dot opens its title, date and organization on click.'],
-     ['Dates are shown at the precision they were recorded. Some events are known only to a month or a year, and are placed mid-period rather than pretending to a day.'],
-     ['The year-by-year chart counts delivered public events per year from this same record. An event from before the cluster had staff to log it had fewer routes into the record, which is why four is the fewest the record could show, and the true number can only be higher.'],
-     ['The two century-scale context rows sit in the heritage strip at the top of the page and are not counted in the year-by-year chart.'],
-     ['The 2026 bar covers 1 January to 13 August and is drawn lighter than the full years beside it.'],
-     ['The heritage chart above the record gives every era the same space however many years it ran, plus an empty sixth block for 2013 to 2023, so distance across it is not years; a dot sits at its first year, and tapping it opens the register’s sentence and source.'],
-    ].forEach(([t]) => notes.appendChild(h('li', { text: t })));
+    /* The methodology box is the shared one, injected between the last band and the
+       closer like every other page in the room. It used to be a hand-written section
+       with its own heading and its own "Reproduce this" renderer, which is how this page
+       ended up with a provenance block nobody else had to maintain. The meta below is an
+       inline literal rather than a data file's meta block because two registers feed this
+       page, and the reconciliation between them is computed here from both. */
+    PV.methodology({page: 'timeline', meta: {
+      fetched: '13 August 2026',
+      source: d.meta.source +
+        ` Of those ${d.events.length}, ${nCal} fall inside the 2023 to 2029 calendar window and are ` +
+        `drawn there: ${IN.filter((e) => e.delivered).length} delivered and ` +
+        `${IN.filter((e) => !e.delivered).length} scheduled. ${nPre} predate the window and feed the ` +
+        `year-by-year chart instead. The remaining ${nMedia} are press coverage of the cluster rather ` +
+        `than things the cluster did, and are held out of both charts.`,
+      sources:
+        `The heritage rows come from PIC’s NEO Polymer Wins register, an internal file, as of ` +
+        `14 August 2026. Of its ${hc.shown + dropped} heritage and discovery rows, ${hc.shown} are ` +
+        `labeled proven and appear here; ${dropped} labeled claimed are withheld. ` +
+        `${hc.sourcesStripped} internal source references were stripped in the build, and every row ` +
+        `shown carries at least one public source. Shipped products, licenses and living capital are ` +
+        `a different register and are not on this page.`,
+      row: `One row is one dated public event: something the cluster did, or had done to it, that ` +
+        `entered a public record on a date. The ${hc.shown} heritage rows are a separate register ` +
+        `and are not part of that count.`,
+      definition: 'Each dot is one dated event, in the workstream that produced it. Every dot is the ' +
+        'same size: color is the workstream, and a hollow ring with a center pip is a scheduled date. ' +
+        'The chips filter by how long that kind of work takes to show a result.',
+      bases: 'Dates are shown at the precision they were recorded. Some events are known only to a ' +
+        'month or a year, and are placed mid-period rather than pretending to a day.',
+      stages: 'Vertical rules and named labels mark the load-bearing events; every other dot opens ' +
+        'its title, date and organization on click.',
+      derived_note: 'The year-by-year chart counts delivered public events per year from this same ' +
+        'record. The 2026 bar covers 1 January to 13 August 2026 and is drawn lighter than the full ' +
+        'years beside it. The two century-scale context rows sit in the heritage strip and are not ' +
+        'counted in it.',
+      composite_note: 'The heritage strip gives every era the same space however many years it ran, ' +
+        'plus an empty sixth block for 2013 to 2023, so distance across it is not years. A dot sits ' +
+        'at its first year, and tapping it opens the register’s sentence and source.',
+      publicOnly: d.meta.publicOnly +
+        ' A quiet period on this timeline means nothing was published, not that nothing happened.',
+      uncertain: 'Future milestones are drawn hollow because they are plans, not facts. A hollow ' +
+        'marker records an intention on a date and is not evidence the thing occurred.',
+      caution: 'Dates are the date of public record, which can trail the decision by weeks. The ' +
+        'order of two close events is not reliable.',
+      not_the_cluster: 'The heritage rows are why the region has this capacity, not what the cluster ' +
+        'did. None of them is a cluster outcome, and a discovery (a paper or a patent) is not a product.',
+      /* HER.meta.note says this in the register's own voice, with em-dashes the house
+         prose ban does not allow, so the sentence is rewritten here rather than piped
+         through. Same rule, same five withheld rows. */
+      note: 'Heritage rows appear only when PIC’s register labels them proven. Rows it labels ' +
+        'claimed, where a date or a figure is recorded two ways, are withheld rather than shown ' +
+        'with a caveat; the wartime synthetic-rubber program, its tonnage recorded four ways, is ' +
+        'one of them. The register is internal; only the proven rows and their public sources ' +
+        'travel to this page.',
+      small_numbers: 'The year-by-year record was compiled after the designation, so its early years ' +
+        'are under-counted: four is the fewest the before count can be, and seventeen times the most ' +
+        'the jump can be.',
+    }});
 
     buildFilters(); buildTable(); render(); renderCadence();
     buildHTable(); renderPrologue();
