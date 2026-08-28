@@ -102,7 +102,9 @@ dfn b{font-weight:900}
    beside the headline as a hole. It is the hero's whole emptiness problem. The stats fit
    inside 980 (four at a 130px minimum plus gaps is 634), so there was nothing to buy. */
 .hero .wrap > *{max-width:var(--figure)}
-.hero h1{font-size:clamp(31px,4.4vw,54px);max-width:var(--figure)}
+.hero .wrap > h1{font-size:clamp(30px,3.8vw,46px);max-width:var(--measure)}
+.hero .wrap > .eyebrow{max-width:var(--measure)}
+.pv-footprint .wrap{max-width:calc(var(--measure) + 64px)}
 .hero h1 em{font-style:normal;color:var(--lime)}
 .hero .stand{margin:16px 0 0;max-width:var(--measure);color:#C6E2E6;font-size:19px;line-height:1.55}
 

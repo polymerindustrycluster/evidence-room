@@ -72,7 +72,7 @@ for (const W of WIDTHS) {
           [".band .pv-table summary", "measure"],
           [".hero .stand", "measure"], [".closer p", "measure"], [".closer h2", "measure"],
           [".band .chart", "figure"], [".band .legend", "figure"],
-          [".band .pv-method", "figure"], [".hero h1", "figure"],
+          [".band .pv-method", "figure"], [".hero h1", "measure"],
         ];
         const out = [];
         for (const [sel, expect] of EXPECT) {
