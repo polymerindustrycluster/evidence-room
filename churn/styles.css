@@ -13,6 +13,17 @@
 .hero .wrap > .byline{margin:14px auto 0;max-width:var(--measure);font-size:13px;
   line-height:1.5;color:#9CC4CA;letter-spacing:.02em}
 
+/* "Is a tenth a quarter a lot?" — the benchmark question, answered on the first screen
+   rather than inside a collapsed methodology fold. The honest answer is that this pull
+   carries no outside comparator, so the block says so and then supplies the reading the
+   comparison was wanted for: which side of the flow moved, and therefore whether the
+   churn is the good kind or the bad kind. Same rail and same measure as the standfirst
+   above it, one step quieter. */
+.hero .wrap > .gauge{margin:26px auto 0;max-width:var(--measure);
+  border-top:2px solid #2C6470;padding:16px 0 0;font-size:16.5px;line-height:1.6;
+  color:#BCD9DE}
+.hero .wrap > .gauge b{color:#fff}
+
 /* Per-rendering copy. The narrow chart in band 1 aggregates quarters into years, so it
    carries its own title rather than a title written for marks it does not draw. */
 .only-narrow{display:none}

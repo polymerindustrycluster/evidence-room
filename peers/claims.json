@@ -12,11 +12,27 @@
     },
     {
       "id": "oh-complete",
-      "text": "All 51 states are disclosed, so the Ohio ranking has no asterisk.",
+      "text": "All 51 state figures are published, so the Ohio ranking has no asterisk.",
       "source": "BLS QCEW disclosure_code, NAICS 326, 2024",
       "assert": "D['states']['326']['suppressed'] == 0 and D['states']['326']['of_disclosed'] == 51",
       "actual": "(D['states']['326']['suppressed'], D['states']['326']['of_disclosed'])",
       "falsified_if": "BLS begins suppressing a state cell for NAICS 326."
+    },
+    {
+      "id": "states-51-are-dc",
+      "text": "The 51 state geographies are the 50 states and the District of Columbia.",
+      "source": "BLS QCEW state-level area codes, 2024. QCEW publishes Puerto Rico and the Virgin Islands under their own codes; a 51-row state universe is therefore the 50 states plus DC.",
+      "assert": "D['states']['326']['of_disclosed'] + D['states']['326']['suppressed'] == 51 and D['visibility']['state']['disclosed'] == 51",
+      "actual": "(D['states']['326']['of_disclosed'], D['visibility']['state']['disclosed'])",
+      "falsified_if": "The state universe moves off 51 rows, in which case the identification is wrong and the hero sentence has to be rewritten. NOTE: the count is machine-checked, the identification of the 51st as DC is a DEDUCTION from how QCEW codes areas and is not checked here — the shipped file carries only the top 25 states by name. Added 2026-08-28 because the page printed 51 four times without ever saying what the extra one was, and a reader checking the page for errors flags that as one."
+    },
+    {
+      "id": "oh-rank-lq-4",
+      "text": "Three states fill more of their job base with plastics and rubber than Ohio does, and every one of them has fewer of these jobs.",
+      "source": "BLS QCEW 2024, lq_annual_avg_emplvl, NAICS 326, private. Rank among the 51 disclosed state geographies.",
+      "assert": "D['states']['326']['rank_lq'] == 4 and D['states']['326']['rank_emp'] == 1 and len([r for r in D['states']['326']['top'] if r['lq'] and r['lq'] > D['states']['326']['subject_lq']]) == 3",
+      "actual": "(D['states']['326']['rank_lq'], D['states']['326']['subject_lq'], [(r['name'], r['lq']) for r in D['states']['326']['top'] if r['lq'] and r['lq'] > D['states']['326']['subject_lq']])",
+      "falsified_if": "Ohio's concentration rank moves off 4th, which makes the count something other than three, or Ohio stops being first on jobs, which breaks the second half, or a fourth state in the shipped top-25 passes Ohio's 2.14x. Guards the state chart's how-to-read line: the chart prints a second figure it does not draw, three of the twenty drawn states beat Ohio on it (Indiana, South Carolina, Wisconsin), and a skimmer who latches onto that column concludes the chart contradicts the headline."
     },
     {
       "id": "oh-jobs",
@@ -88,12 +104,38 @@
     },
     {
       "id": "quadrant-seven",
-      "text": "Seventeen disclosed metros carry 4,000 jobs or more; in 37 the industry fills at least twice as much of the local job base as it does of the country's (2.0x or better); seven do both.",
+      "text": "Two counts over the same 155 disclosed metros: 17 carry 4,000 jobs or more, 37 are places where the industry fills at least twice as much of the local job base as it does of the country's, and seven are in both counts, Akron among them.",
       "source": "BLS QCEW 2024, NAICS 326, private. Counts over the 155 disclosed metro rows the scatter draws.",
       "assert": "len([p for p in D['metro_scatter'] if p['emp'] >= 4000]) == 17 and len([p for p in D['metro_scatter'] if p['lq'] >= 2.0]) == 37 and len([p for p in D['metro_scatter'] if p['emp'] >= 4000 and p['lq'] >= 2.0]) == 7 and any(p['area'] == 'C1042' for p in D['metro_scatter'] if p['emp'] >= 4000 and p['lq'] >= 2.0)",
       "actual": "(len([p for p in D['metro_scatter'] if p['emp'] >= 4000]), len([p for p in D['metro_scatter'] if p['lq'] >= 2.0]), sorted(p['name'] for p in D['metro_scatter'] if p['emp'] >= 4000 and p['lq'] >= 2.0))",
-      "falsified_if": "Any of the three counts moves by one, or Akron leaves the corner. The thresholds are editorial round numbers, not a test result, and the page says so; if a revision moves a metro across either line the sentence and the shading both have to change.",
-      "official_check": "Both thresholds are stated on the chart and in the source line so a reader can re-cut them from the table view."
+      "falsified_if": "Any of the three counts moves by one, or Akron leaves the corner. The thresholds are editorial round numbers, not a test result, and the page says so; if a revision moves a metro across either line the sentence and the two dashed lines both have to change.",
+      "official_check": "Both thresholds are now printed at the axes where their lines meet them, named in the how-to-read line as round numbers rather than a test result, and repeated in the source line so a reader can re-cut them from the table view. Before 2026-08-28 they carried no value on either axis and the corner was tinted as well as hatched, so the claim rested on two unlabelled lines and a fill a reader could not distinguish from the withheld-field hatch under it."
+    },
+    {
+      "id": "pic12-total",
+      "text": "The twelve PIC-12 counties hold 18,594 plastics and rubber jobs, 34% of Ohio's 54,846, and all twelve publish a 2024 figure.",
+      "source": "BLS QCEW 2024, NAICS 326, private ownership, county level. Sum of the twelve PIC-12 county cells over Ohio's state cell.",
+      "assert": "len(D['footprint_counties']) == 12 and D['meta']['footprint']['n'] == 12 and round(sum(c['emp'] for c in D['footprint_counties'])) == 18594 and round(sum(c['emp'] for c in D['footprint_counties']) / D['states']['326']['subject_emp'] * 100) == 34",
+      "actual": "(len(D['footprint_counties']), sum(c['emp'] for c in D['footprint_counties']), sum(c['emp'] for c in D['footprint_counties']) / D['states']['326']['subject_emp'])",
+      "falsified_if": "A revision moves the total off 18,594 or the share off 34% when rounded, or the footprint block stops carrying all twelve counties. The count of twelve is what makes this a complete regional total: the builder keeps only counties BLS discloses, so twelve rows for a twelve-county footprint means nothing is withheld. Eleven rows would mean a county was suppressed and the sum would be a floor, not a total, and the sentence would have to say so.",
+      "official_check": "Added 2026-08-28. The page is headed 'where Northeast Ohio actually sits' and defines a twelve-county footprint in its first line, and until this claim existed it published no regional figure at all: every number was a state or a metro."
+    },
+    {
+      "id": "pic12-not-metros",
+      "text": "County figures and metro figures do not sum into one another, so the twelve-county total is never added to the metro counts. Summit and Portage do come to exactly the Akron metro's 6,910.",
+      "source": "BLS QCEW 2024, NAICS 326, private. County cells against MSA cells for the same year and industry.",
+      "assert": "round(sum(c['emp'] for c in D['footprint_counties'] if c['area'] in ('39153', '39133'))) == 6910 and round(one(p for p in D['metro_scatter'] if p['area'] == 'C1042')['emp']) == 6910 and round(sum(c['emp'] for c in D['footprint_counties'] if c['area'] in ('39035', '39055', '39085', '39093', '39103'))) != round(one(p for p in D['metro_scatter'] if p['area'] == 'C1741')['emp'])",
+      "actual": "(sum(c['emp'] for c in D['footprint_counties'] if c['area'] in ('39153', '39133')), sum(c['emp'] for c in D['footprint_counties'] if c['area'] in ('39035', '39055', '39085', '39093', '39103')), one(p for p in D['metro_scatter'] if p['area'] == 'C1741')['emp'])",
+      "falsified_if": "Summit plus Portage stops equalling the Akron MSA cell, which would break the glossary's worked example, or the five Cleveland-MSA counties start summing to the Cleveland MSA cell, which would make the non-additivity caution describe a problem that no longer exists. The two levels currently disagree by 1,425 jobs at Cleveland and agree exactly at Akron, and the page states the caution rather than the discrepancy because it cannot explain the discrepancy from the shipped file. Nothing on the page adds a county figure to a metro one.",
+      "official_check": "Akron MSA = Summit + Portage; Cleveland MSA = Cuyahoga, Geauga, Lake, Lorain, Medina (OMB 2023 delineations). The Akron identity is checkable in the shipped data and is printed on the page as the reader's own check."
+    },
+    {
+      "id": "akron-lq-rank-8",
+      "text": "Akron's 4.69x is higher than all but seven of the 155 metros that disclose.",
+      "source": "BLS QCEW 2024, lq_annual_avg_emplvl, NAICS 326, private. Rank among disclosed metros by concentration.",
+      "assert": "D['metros']['326']['rank_lq'] == 8 and D['metros']['326']['of_disclosed'] == 155 and len([p for p in D['metro_scatter'] if p['lq'] > D['metros']['326']['subject_lq']]) == 7",
+      "actual": "(D['metros']['326']['rank_lq'], sorted((p['lq'], p['name']) for p in D['metro_scatter'] if p['lq'] > D['metros']['326']['subject_lq']))",
+      "falsified_if": "Akron's concentration rank moves off 8th, or the count of metros above it moves off seven. This is the evidence behind the glossary's statement that one industry's decade moves more of Akron's job base than it does almost anywhere else that publishes: without a number the sentence is an assertion of significance, which is the thing the style lint exists to catch."
     },
     {
       "id": "metro-visibility",
@@ -138,11 +180,11 @@
     },
     {
       "id": "trend-half-grew",
-      "text": "Twelve of the 24 metros in the trend extract gained jobs between 2015 and 2024.",
-      "source": "BLS QCEW annual averages, NAICS 326, private. Trend extract: top-30 finishers by 2024 employment with at least eight disclosed years.",
+      "text": "Twelve of the 24 metros that qualified for the trend comparison gained jobs between 2015 and 2024, and all 24 are listed in the second table under the chart.",
+      "source": "BLS QCEW annual averages, NAICS 326, private. A metro qualified by finishing in the top 30 by 2024 employment and publishing at least eight of the ten years.",
       "assert": "len([t for t in D['trend'].values() if t['naics'] == '326']) == 24 and len([t for t in D['trend'].values() if t['naics'] == '326' and t['series'][-1]['emp'] > t['series'][0]['emp']]) == 12",
       "actual": "sorted((t['name'], t['series'][-1]['emp'] - t['series'][0]['emp']) for t in D['trend'].values() if t['naics'] == '326')",
-      "falsified_if": "Either count moves. This set is SELECTED on 2024 size and on surviving disclosure, so it is not a sample of American metros and the page uses it only to say the Los Angeles slide is not general. Wording fixed 2026-08-28: the page said 'metros with a full decade in this file', which contradicted the sibling claim that three of the 24 miss a year.",
+      "falsified_if": "Either count moves, or the second table stops listing every qualifying metro. This set is SELECTED on 2024 size and on surviving disclosure, so it is not a sample of American metros and the page uses it only to say the Los Angeles slide is not general. Wording fixed 2026-08-28 twice: the page said 'metros with a full decade in this file', which contradicted the sibling claim that three of the 24 miss a year; and it called the set an 'extract', internal vocabulary for a number a reader could not see anywhere on the page, so the chart now says how many of the 24 it draws and the table lists the rest.",
       "official_check": "Selection rule lives in _data/build/derive_peers.py and is restated in the chart's source line."
     },
     {
@@ -188,7 +230,7 @@
       "text": "Ten withheld metros run more establishments than Akron's 117, which is the count the rejected 6th-to-16th bound was built from.",
       "assert": "D['metros']['326']['could_displace_n'] == 10 and len(D['metros']['326']['could_displace']) == 10 and round(D['metros']['326']['subject_estabs']) == 117 and all(x['estabs'] > D['metros']['326']['subject_estabs'] for x in D['metros']['326']['could_displace'])",
       "source": "BLS QCEW open data, 2024, metro areas, NAICS 326, private ownership.",
-      "falsified_if": "The count moves off ten, or any listed metro stops out-running Akron on establishments. The methodology box prints 6th-to-16th as a bound the page REJECTED; if this number moves, that paragraph is describing arithmetic nobody did. The bound stays rejected either way, because establishment counts do not bound employment."
+      "falsified_if": "The count moves off ten, or any listed metro stops out-running Akron on establishments. The methodology box prints 6th-to-16th as a bound the page REJECTED, and the same ten is the count the derived-note gives for why a plain national rank is not safe; if this number moves, both passages are describing arithmetic nobody did. The bound stays rejected either way, because establishment counts do not bound employment."
     },
     {
       "id": "withheld-establishments",

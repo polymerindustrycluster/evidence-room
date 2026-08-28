@@ -10,10 +10,12 @@ Source: BLS QCEW open data, annual averages, 2015–2025, 14 areas (12 PIC count
 
 ```
 index.html      page shell and all prose
-app.js          charts, the register picker, and the copy that travels with it
-styles.css      page-local CSS: figure chrome, register key, disclosure band, mobile re-layout
-claims.json     25 guards; 24 machine-checked, 1 manual (the two headquarters facts)
-data/lq.json    THE DATA (229 KB). Edit the builder, not this.
+app.js          charts, the industry picker, and the copy that travels with it
+styles.css      page-local CSS: figure chrome, industry key, disclosure band, mobile re-layout
+claims.json     30 guards; 29 machine-checked, 1 manual (the two headquarters facts)
+data/lq.json    THE DATA (229 KB). Values come from the builder; the prose in `meta`
+                (definition, composite_note) is edited here, because it is published
+                verbatim into the methodology box.
 ```
 
 ## Rebuild the data
@@ -54,6 +56,31 @@ Terms translated at first contact, in-line: cell (one industry in one county in 
 establishment (one physical site, not a company; reader prose says "separate sites"),
 composite (spelled out as "the line above adds up whichever counties…"), base (spelled out
 as "the jobs behind it"). If you reintroduce one of these bare, the page regresses.
+
+## Revision note, 2026-08-28 — what a naive-reader pass changed
+
+No number on the page moved. A reviewer who saw only the rendered page could state exactly
+what 5.96x measures and could not say whether it was good news, and could not say how big
+any of it was. Both were omissions, so these are clarifications and not corrections:
+
+1. **Direction of merit, stated.** The standfirst now says what a high reading does imply
+   (more coatings work per job here than the country has) and what it does not (that the
+   industry is big), the first hero card repeats it, and the closer gives the verdict as a
+   verdict ("we read 5.96x as..."), attributed rather than smuggled in as a fact.
+2. **A magnitude to stand the ratios on.** New claim `lq-cluster-size`: 24,030 cluster jobs
+   out of 1,701,857 in PIC-12, paint 4,259 of them. It replaced the "11 of 11" hero card,
+   which repeated a sentence already printed three times above the fold.
+3. **"The register" is gone from reader prose.** It was a defined term defined nowhere.
+   Core / detail / context each arrive with the one example that shows why they exist.
+4. **The grid sorts by paint.** Sorted by plastics-and-rubber, Cuyahoga — the only outlined
+   cell, the subject of the whole section — was the last row. Guarded by `lq-grid-sort`.
+5. **Floors and ceilings no longer read as a contradiction.** `meta.composite_note` names
+   its subject in every clause: counts are floors, the ratio is more plausibly a ceiling.
+6. **Terms of art translated where the reader meets them**: withheld (first source line),
+   cell (first sentence of the grid lede), QCEW/BLS/annual averages (provenance sentence),
+   establishment retired in favour of "separate sites", PIC expanded in the top banner.
+7. **The square-root scale moved above the plot** with a reading aid, out of grey type below
+   it. Grid cells print the x. Chart 1's labels carry each series' 2015 value.
 
 ## Read before quoting anything from this page
 

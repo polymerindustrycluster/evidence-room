@@ -84,22 +84,38 @@ const metroShare = V.metro.disclosed_emp / V.state.disclosed_emp;
 const top20 = S.top.slice(0, 20);
 const top20Share = top20.reduce((s, r) => s + r.emp, 0) / V.state.disclosed_emp;
 const stateLead = S.subject_emp - S.top[1].emp;
+/* The page is headed "where Northeast Ohio actually sits", so it owes a Northeast Ohio
+   number. The footprint block carries every PIC-12 county that BLS discloses, and all
+   twelve are disclosed, so the region total is a plain sum with nothing missing from it.
+   County cells and metro cells are different geographies and are never added together. */
+const FC = D.footprint_counties;
+const picEmp = FC.reduce((s, c) => s + c.emp, 0);
+const picShare = picEmp / S.subject_emp;
 
 /* ------------------------------------------------------------------- hero stats */
 /* Four cards, and they must not wrap onto a second row (house rule: cut to three before
    letting four wrap). The binding constraint is the KEY line — uppercase and letterspaced,
    with no max-width — so every key here is kept under about twenty characters. */
 /* The concentration card is the FIRST place a reader meets the × unit, so its sub-line
-   is the plain reading of the ratio, not a restatement of the arithmetic. The rank and
-   the job counts move to the card beside it, which is what ranks and counts are for. */
+   gives the plain reading of the ratio AND says which way to read it as news: a naive
+   reader could state what the number measured and still not say whether the page was
+   delivering good news or bad, which is the defect that costs a stat card its job.
+   The withheld-metro count lost its own card to the region total: 227 is already the
+   bolded number in the standfirst, the subject of a whole band and of the closer, while
+   the twelve-county figure was the one thing the page promised and never printed.
+   The rank card names which city holds which rank, in the order the numbers are set. */
 PV.figures([
-  ["key", "#" + S.rank_emp, "Ohio, nationally", `${N(S.subject_emp)} jobs, none withheld`],
-  ["", `#${cleRank} · #${M.rank_emp}`, "the cluster&rsquo;s metros",
-   `Cleveland ${N(cle.emp)} · Akron ${N(akron.emp)} jobs, of ${M.of_disclosed} disclosed`],
+  ["key", "#" + S.rank_emp, "Ohio, nationally",
+   `${N(S.subject_emp)} jobs, and every state figure published`],
+  ["", N(picEmp), "the twelve counties",
+   `the PIC-12 footprint, ${pctf(picShare, 1)} of Ohio&rsquo;s ${N(S.subject_emp)}.
+    A county total, not a sum of metros.`],
+  ["", `#${cleRank} · #${M.rank_emp}`, "cleveland · akron",
+   `Cleveland ${ord(cleRank)} on ${N(cle.emp)} jobs, Akron ${ord(M.rank_emp)} on
+    ${N(akron.emp)}, of the ${M.of_disclosed} metros that disclose`],
   ["", akron.lq.toFixed(2) + "×", "Akron concentration",
    `plastics fills nearly five times as much of Akron&rsquo;s job base as of the
-    country&rsquo;s`],
-  ["", String(M.suppressed), "metros withhold", "rank unknown, not estimated"]
+    country&rsquo;s: the region&rsquo;s selling point and its exposure at once`]
 ]);
 
 /* ------------------------------------------------------------- 1. states */
@@ -108,7 +124,7 @@ function drawStates() { MOBILE.matches ? statesMobile() : statesDesktop(); }
 function statesDesktop() {
   const rows = top20;
   const {svg, W, m, w} = PV.chart("states",
-    {W: 1100, rows: rows.length, rowH: 28, m: {t: 40, r: 105, b: 56, l: 100}});
+    {W: 1100, rows: rows.length, rowH: 28, m: {t: 40, r: 122, b: 56, l: 100}});
   const maxV = rows[0].emp;
   const xs = v => m.l + (v / maxV) * w;
   const h = rows.length * 28;
@@ -122,8 +138,16 @@ function statesDesktop() {
       fill: isOh ? SEQ[5] : SEQ[2], rx: 4}, svg);
     txt(svg, shortName(r.name), {x: m.l - 12, y: y + bh - 4, "text-anchor": "end",
       class: isOh ? "pv-lab" : "pv-labq"});
-    txt(svg, `${N(r.emp)}${r.lq ? `  ·  ${r.lq.toFixed(2)}×` : ""}`,
-      {x: xs(r.emp) + 10, y: y + bh - 4, class: isOh ? "pv-lab" : "pv-labq"});
+    /* Two text nodes, not one string. The bars encode jobs and nothing else, and a reader
+       who skims the second figure finds three states beating Ohio on it — so the ranked
+       quantity is set at label weight and the concentration figure is set back in the
+       quiet grey, at a fixed offset rather than a measured one (getComputedTextLength
+       returns 0 until the node is in the document). */
+    const jobs = N(r.emp);
+    txt(svg, jobs, {x: xs(r.emp) + 10, y: y + bh - 4, class: isOh ? "pv-lab" : "pv-labq"});
+    if (r.lq) txt(svg, `${r.lq.toFixed(2)}×`,
+      {x: xs(r.emp) + 20 + jobs.length * 8.2, y: y + bh - 4, class: "pv-labq",
+       fill: "var(--pv-axis)"});
     hoverable(el("rect", {x: 0, y: y - 5, width: W, height: bh + 10, fill: "transparent"},
       svg), `<b>${r.name}</b><br><span class="v">${N(r.emp)}</span> jobs<br>
       <span class="v">${r.lq ? r.lq.toFixed(2) : "—"}</span>× the national share<br>
@@ -140,7 +164,7 @@ function statesDesktop() {
 
 function statesMobile() {
   const rows = top20;
-  const m = {t: 34, r: 12, b: 54, l: 12}, W = 375, rowH = 34;
+  const m = {t: 34, r: 12, b: 72, l: 12}, W = 375, rowH = 34;
   const H = m.t + rows.length * rowH + m.b;
   const {svg} = PV.chart("states", {W, H});
   const w = W - m.l - m.r, h = rows.length * rowH;
@@ -150,9 +174,16 @@ function statesMobile() {
     xfmt: short, xlab: ""});
   rows.forEach((r, i) => {
     const y = m.t + i * rowH, isOh = r.area === S.subject;
-    /* Value rides the LABEL line, not the bar end: nothing to clip at the viewport edge. */
-    txt(svg, `${shortName(r.name)} · ${N(r.emp)}${r.lq ? ` · ${r.lq.toFixed(2)}×` : ""}`,
+    /* Value rides the LABEL line, not the bar end: nothing to clip at the viewport edge.
+       The concentration figure trails in the quiet grey, as on the wide layout, because
+       the bar draws jobs and only jobs. */
+    txt(svg, `${shortName(r.name)} · ${N(r.emp)}`,
       {x: m.l, y: y + 13, class: isOh ? "pv-lab" : "pv-labq"});
+    /* Right-aligned in its own column rather than trailing the name at a guessed offset:
+       at 375px a character-width estimate ran the two labels into each other on nine of
+       the twenty rows, and collide.mjs is desktop-only, so nothing but the crop caught it. */
+    if (r.lq) txt(svg, `${r.lq.toFixed(2)}×`, {x: m.l + w, y: y + 13, "text-anchor": "end",
+      class: "pv-labq", fill: "var(--pv-axis)"});
     el("rect", {x: m.l, y: y + 19, width: Math.max(3, xs(r.emp) - m.l), height: 11,
       fill: isOh ? SEQ[5] : SEQ[2], rx: 3}, svg);
     hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, svg),
@@ -160,7 +191,18 @@ function statesMobile() {
        <span class="v">${r.lq ? r.lq.toFixed(2) : "—"}</span>× the national share`,
       `${r.name}: ${N(r.emp)} jobs`);
   });
-  txt(svg, "plastics and rubber products jobs", {x: m.l, y: H - 10, class: "pv-labq"});
+  /* The margin, drawn on the phone too. It used to exist only on the wide layout, so a
+     phone reader got the headline number and none of its proof. The rule runs from above
+     Ohio's bar down through Texas's, and the caption sits clear above the whole chart. */
+  const x2 = xs(S.top[1].emp);
+  el("line", {x1: x2, y1: m.t - 4, x2, y2: m.t + rowH + 30, stroke: "var(--hover)",
+    "stroke-width": 1.4, "stroke-dasharray": "5 4"}, svg);
+  txt(svg, `${N(stateLead)} jobs clear of ${shortName(S.top[1].name)}`,
+    {x: m.l + w, y: m.t - 12, "text-anchor": "end", class: "pv-lab",
+     fill: "var(--hover)"});
+  txt(svg, "plastics and rubber products jobs", {x: m.l, y: H - 26, class: "pv-labq"});
+  txt(svg, "bar length is jobs; the grey × is concentration",
+    {x: m.l, y: H - 8, class: "pv-labq"});
 }
 
 /* ------------------------------------------------------------- 2. metro scatter */
@@ -181,14 +223,31 @@ function voidWash(svg, m, w, h) {
   el("rect", {x: m.l, y: m.t, width: w, height: h, fill: "url(#voidhatch)"}, svg);
 }
 
-function quadTint(svg, m, w, xs, ys) {
+/* The corner, drawn as two labelled threshold lines and NOTHING ELSE.
+   It used to carry a teal wash as well, painted over the withheld-field hatch that runs
+   under the whole plot — so the corner was the one region that was both tinted and
+   hatched, and a reader could not tell whether the hatch meant something different
+   inside it. It does not: a withheld metro could be anywhere on this plane, the corner
+   included, and that is exactly what the uniform hatch has to keep saying. The lines now
+   run to the axes and carry their values, because "seven metros clear both bars" is
+   entirely a product of where these two lines sit. */
+/* Drawn AFTER frame(). collide.mjs calls the widest sub-3px horizontal line in an SVG
+   "the axis", first one wins, so a full-width rule drawn before the gridlines makes the
+   withheld-field rect read as a bar crossing the axis. The gridlines have to be in the
+   document first. */
+function quadLines(svg, m, w, h, xs, ys) {
   const x0 = xs(JOBCUT), y0 = ys(LQCUT);
-  el("rect", {x: x0, y: m.t, width: m.l + w - x0, height: y0 - m.t,
-    fill: "rgba(0,139,168,.09)"}, svg);
-  el("line", {x1: x0, y1: m.t, x2: x0, y2: y0, stroke: "#008BA8", "stroke-width": 1.4,
+  el("line", {x1: x0, y1: m.t, x2: x0, y2: m.t + h, stroke: "#008BA8", "stroke-width": 1.5,
     "stroke-dasharray": "6 4"}, svg);
-  el("line", {x1: x0, y1: y0, x2: m.l + w, y2: y0, stroke: "#008BA8", "stroke-width": 1.4,
+  el("line", {x1: m.l, y1: y0, x2: m.l + w, y2: y0, stroke: "#008BA8", "stroke-width": 1.5,
     "stroke-dasharray": "6 4"}, svg);
+}
+/* Values at the axes, drawn last so the plates sit over the dots. At 375px there is no
+   seat for them that does not land on the corner caption, so the phone layout names both
+   thresholds inside that caption instead of printing them twice. */
+function quadLabels(svg, m, h, xs, ys) {
+  plated(svg, `${N(JOBCUT)} jobs`, xs(JOBCUT) + 7, m.t + h - 8, {fill: "#00707F"});
+  plated(svg, `${LQCUT.toFixed(1)}×`, m.l + 5, ys(LQCUT) - 7, {fill: "#00707F"});
 }
 
 function dotFill(p) {
@@ -203,19 +262,24 @@ function dotTip(p) {
 
 function scatterDesktop() {
   const {svg, m, w, h} = PV.chart("scatter",
-    {W: 1100, H: 520, m: {t: 44, r: 132, b: 68, l: 34}});
+    {W: 1100, H: 520, m: {t: 44, r: 132, b: 84, l: 34}});
   const maxE = Math.max(...SC.map(p => p.emp)), maxL = Math.max(...SC.map(p => p.lq)) * 1.05;
   const xs = v => m.l + (Math.sqrt(v) / Math.sqrt(maxE)) * w;
   const ys = v => m.t + h - (v / maxL) * h;
   voidWash(svg, m, w, h);
-  quadTint(svg, m, w, xs, ys);
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys,
     xt: [0, 500, 2000, 5000, 10000, 17000].filter(v => v <= maxE),
-    yt: ticks(0, maxL, 6), xfmt: short, yfmt: lqfmt,
-    /* Both axis titles carry the READING. The square-root scale gets the one reading aid
-       a compressed scale owes a reader; the arithmetic is in the source line. */
-    xlab: "Jobs. Square-root scale: twice as far right is four times as many",
-    ylab: "plastics a smaller slice of local jobs ←   1.0×   → a bigger slice than nationally"});
+    yt: ticks(0, maxL, 6), xfmt: short, yfmt: lqfmt, xlab: "", ylab: ""});
+  quadLines(svg, m, w, h, xs, ys);
+  /* Both directions, in words, under the plot. The vertical axis used to be described by
+     a horizontal strip ABOVE the chart carrying left and right arrows, so the figure
+     appeared to hold two x-axis titles and a first-time reader read the axes backwards.
+     Each line now names its own direction before it says anything else, which is the one
+     phrasing that cannot be mapped to the wrong axis. */
+  txt(svg, "up = plastics fills a bigger slice of that metro’s job base than of the country’s",
+    {x: m.l, y: m.t + h + 42, class: "pv-labq"});
+  txt(svg, "right = more jobs, on a square-root scale, so twice as far right is four times as many",
+    {x: m.l, y: m.t + h + 62, class: "pv-labq"});
   SC.forEach(p => {
     const big = p.area === AKRON || p.area === CLE;
     hoverable(el("circle", {cx: xs(p.emp), cy: ys(p.lq), r: big ? 9 : 5, fill: dotFill(p),
@@ -244,17 +308,18 @@ function scatterDesktop() {
      there plated over "Detroit". Outside the right margin it was the only ink on the page
      past the figure's quantized width, so left-inside is the remaining seat. */
   plated(svg, "1.0× = the US average", m.l + 6, ys(1) - 8, {fill: "var(--hover)"});
+  quadLabels(svg, m, h, xs, ys);
   // the corner's claim, written in the corner
   platedBlock(svg, [
     {s: "Large and concentrated", cls: "pv-lab", fill: "#00707F"},
-    {s: `${quad.length} of ${M.of_disclosed} disclosed metros clear ${N(JOBCUT)} jobs and 2.0×`}
+    {s: `${quad.length} of the ${M.of_disclosed} disclosed metros are past both dashed lines`}
   ], m.l + w - 6, m.t + 24, {rule: "#008BA8"});
   // the void, written on the plane it covers
   platedBlock(svg, [
     {s: `${M.suppressed} metros are withheld from this whole chart.`, cls: "pv-lab"},
     {s: `${M.could_displace.slice(0, 4).map(x => shortName(x.name)).join(", ")} are somewhere on`},
     {s: "this plane, at jobs BLS will not publish."}
-  ], m.l + w - 6, m.t + 96, {rule: "#C9C3B8"});
+  ], m.l + w - 6, m.t + 116, {rule: "#C9C3B8"});
   drawFound(svg, xs, ys, 13);
 }
 
@@ -266,9 +331,9 @@ function scatterMobile() {
   const xs = v => m.l + (Math.sqrt(v) / Math.sqrt(maxE)) * w;
   const ys = v => m.t + h - (v / maxL) * h;
   voidWash(svg, m, w, h);
-  quadTint(svg, m, w, xs, ys);
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys, xt: [0, 2000, 10000], yt: ticks(0, maxL, 4),
     xfmt: kfmt, yfmt: lqfmt, xlab: "", ylab: ""});
+  quadLines(svg, m, w, h, xs, ys);
   SC.forEach(p => {
     const big = p.area === AKRON || p.area === CLE;
     hoverable(el("circle", {cx: xs(p.emp), cy: ys(p.lq), r: big ? 7 : 3.2, fill: dotFill(p),
@@ -287,7 +352,7 @@ function scatterMobile() {
   /* Two short lines rather than one long one: at 375px a one-line caption's plate ran
      back past the corner's own boundary and read as a label for the whole plot. */
   platedBlock(svg, [{s: `${quad.length} of ${M.of_disclosed} metros`, cls: "pv-lab",
-    fill: "#00707F"}, {s: `${short(JOBCUT)}+ jobs, 2×+`}], m.l + w - 2, m.t + 16,
+    fill: "#00707F"}, {s: `past ${N(JOBCUT)} jobs and 2.0×`}], m.l + w - 2, m.t + 16,
     {fs: 7.6, lh: 17, rule: "#008BA8"});
   platedBlock(svg, [{s: `${M.suppressed} withheld metros`, cls: "pv-lab"},
     {s: "could be anywhere here"}], m.l + w - 2, m.t + h - 34,
@@ -335,7 +400,7 @@ function verdict() {
       ${akron.lq.toFixed(2)}× as much of its job base as of the country&rsquo;s,
       ${ord(M.rank_emp)} of the ${M.of_disclosed} metros that disclose. Cleveland is
       ${ord(cleRank)} on ${N(cle.emp)} jobs at ${cle.lq.toFixed(2)}×: more jobs, a thinner
-      slice of a bigger economy, which keeps it out of the shaded corner. Type a metro to
+      slice of a bigger economy, which keeps it below the 2.0× line. Type a metro to
       find it on the chart.`;
     return;
   }
@@ -344,7 +409,7 @@ function verdict() {
     ${p.lq.toFixed(2)}× as much of its job base as of the country&rsquo;s.
     <b>${ord(rankOf(p.area))} of ${M.of_disclosed}</b> disclosed metros, across
     ${N(p.estabs)} establishments. ${quadSet.has(p.area)
-      ? "It shares the shaded corner with Akron."
+      ? "It is past both dashed lines, in the corner with Akron."
       : `Akron is ${ord(M.rank_emp)} at ${akron.lq.toFixed(2)}×.`}`;
 }
 
@@ -491,9 +556,9 @@ function trendLines(svg, xs, ys, mobile) {
   return out;
 }
 
-/* Cleveland has a 2024 cell and no series: the extract keeps metros with at least eight
-   disclosed years, and Cleveland's earlier cells are withheld too often to clear it. An
-   absence this load-bearing is drawn as a ghost, not left off the chart. */
+/* Cleveland has a 2024 figure and no line: this comparison keeps metros that published at
+   least eight of the ten years, and Cleveland's earlier years are withheld too often to
+   clear that. An absence this load-bearing is drawn as a ghost, not left off the chart. */
 function clevelandGhost(svg, xs, ys, mobile) {
   const cx = xs(YRS.at(-1)), cy = ys(cle.emp);
   el("circle", {cx, cy, r: mobile ? 5 : 7, fill: "none", stroke: CAT[2],
@@ -502,7 +567,7 @@ function clevelandGhost(svg, xs, ys, mobile) {
     cx - (mobile ? 10 : 14), cy + (mobile ? -8 : 4),
     {cls: "pv-lab", fs: mobile ? 7.6 : 6.6, anchor: "end", fill: CAT[2]});
   if (!mobile)
-    plated(svg, "too few disclosed years for a line", cx - 14, cy - 13, {anchor: "end"});
+    plated(svg, "too few published years to draw a line", cx - 14, cy - 13, {anchor: "end"});
 }
 
 function trendDesktop() {
@@ -567,14 +632,26 @@ function trendMobile() {
 
 function trendTable() {
   const p = peers.find(x => x.area === picked);
+  /* Two tables, because the prose makes two different claims. The first is the picked
+     pair year by year. The second exists so "12 of the 24 gained jobs" is a sentence a
+     reader can check: nine of those metros are drawn and the other fifteen were nowhere
+     on the page, so the count rested on a set nobody could see. */
+  const changes = TR.map(t => ({t, d: last(t) - first(t)})).sort((a, b) => b.d - a.d);
   document.getElementById("trendtable").innerHTML = withNote(tableView("t",
     `Employment over time: Akron and ${p ? shortName(p.name) : "peers"}`,
     ["Year", "Akron", p ? shortName(p.name) : "—"],
     YRS.map(y => [y, emp(tAkron, y) ? N(emp(tAkron, y)) : "withheld",
       p && emp(p, y) ? N(emp(p, y)) : "withheld"])),
-    `${TR.length} metros qualify for this extract. ${gappy} of them miss a year or two,
-     where that metro&rsquo;s cell was withheld, and the chart connects the line across the
-     gap rather than breaking it.`);
+    `${gappy} of the ${TR.length} metros miss a year or two, where that metro&rsquo;s cell
+     was withheld, and the chart connects the line across the gap rather than breaking it.`)
+  + withNote(tableView("ta",
+    `All ${TR.length} metros in this comparison: first published year against ${YRS.at(-1)}`,
+    ["Metro", "First year", "Jobs then", `Jobs ${YRS.at(-1)}`, "Change"],
+    changes.map(({t, d}) => [shortName(t.name), t.series[0].year, N(first(t)), N(last(t)),
+      (d > 0 ? "+" : d < 0 ? "−" : "") + N(Math.abs(d))])),
+    `${grew} of the ${TR.length} gained. A metro qualified by finishing in the top 30 by
+     ${D.cross_year} jobs and publishing at least eight of the ten years, so this is a set
+     selected on size and on surviving disclosure, not a sample of American metros.`);
 }
 
 /* ------------------------------------------------- copy that reads from the data */
@@ -585,9 +662,11 @@ document.getElementById("statefig").textContent =
    computed. The arithmetic is in the methodology. */
 document.getElementById("statefigsub").textContent =
   `The 20 largest of the ${S.of_disclosed} disclosed state geographies, plastics and rubber ` +
-  `products, ${D.cross_year}. Bars are jobs. The second figure says how much of that ` +
-  `state’s job base the industry fills next to the country’s: Ohio’s ` +
-  `${S.subject_lq.toFixed(2)}× is more than double.`;
+  `products, ${D.cross_year}. Bar length is jobs, and only jobs. The grey figure beside ` +
+  `each count is concentration, which nothing on the chart draws: it says how much of that state’s job base the ` +
+  `industry fills next to the country’s, so Ohio’s ${S.subject_lq.toFixed(2)}× is more than ` +
+  `double the national slice, and only ${S.rank_lq - 1} states fill more of their job base ` +
+  `with it than Ohio does, every one of them with fewer of these jobs.`;
 document.getElementById("statesrc").innerHTML =
   `${D.meta.source}, ${D.cross_year}, private ownership. All ${S.of_disclosed} state
    geographies are disclosed and none are suppressed, so this is the only complete ranking
@@ -613,16 +692,19 @@ document.getElementById("metrofig").textContent =
 document.getElementById("metrofigsub").textContent =
   `Each dot is one metro area, ${D.cross_year}. The further RIGHT, the more plastics and ` +
   `rubber jobs it has. The further UP, the bigger a slice of its job base those jobs are ` +
-  `next to the country’s. The shaded corner clears ${N(JOBCUT)} jobs and 2.0×.`;
+  `next to the country’s. The two dashed lines at ${N(JOBCUT)} jobs and 2.0× are round ` +
+  `numbers, picked to name a corner rather than produced by a test: ${bigN} of the ` +
+  `${M.of_disclosed} disclosed metros are past the first, ${conN} past the second, and ` +
+  `${quad.length} past both. Move either line and the count changes, which is why the ` +
+  `table below carries both columns.`;
 document.getElementById("scattertable").innerHTML = withNote(tableView("m",
   `Metro plastics and rubber, ${D.cross_year}: top ${M.top.length} disclosed by employment`,
   ["Rank", "Metro", "Jobs", "Establishments", "Concentration (1.0× = US average)"],
   M.top.map((r, i) => [i + 1, r.name, N(r.emp), N(r.estabs),
     r.lq ? r.lq.toFixed(2) + "×" : "—"])),
   `The two thresholds that cut the corner, ${N(JOBCUT)} jobs and twice the national share of
-   jobs, are round numbers picked to name it rather than the output of a test: ${bigN}
-   disclosed metros clear the first, ${conN} clear the second, ${quad.length} clear both. The
-   columns here let you re-cut them.`);
+   jobs, are round numbers picked to name it rather than the output of a test. The columns
+   here let you re-cut them at any pair of values you prefer.`);
 document.getElementById("scatsrc").innerHTML =
   `${D.meta.source}, ${D.cross_year}, private ownership. ${M.of_disclosed} of
    ${M.of_disclosed + M.suppressed} metro areas are disclosed; the other ${M.suppressed}
@@ -638,13 +720,18 @@ document.getElementById("bound").innerHTML =
    so the claim stays narrow at ${ord(M.rank_emp)} among those that disclose.`;
 
 document.getElementById("vislede").innerHTML =
-  `The bureau suppresses any cell that could identify an employer. For plastics and rubber
+  `The bureau withholds any figure that could identify an employer. For plastics and rubber
    that removes ${M.suppressed} of ${M.of_disclosed + M.suppressed} metro areas and
    ${N(V.county.suppressed)} of ${N(V.county.disclosed + V.county.suppressed)} county areas,
    including some of the largest. The ${V.metro.disclosed} metros still visible hold
    ${N(V.metro.disclosed_emp)} jobs, <b>${pctf(metroShare, 1)} of the
    ${N(V.state.disclosed_emp)}</b> the states add up to. The rest sits in withheld cells and
-   outside metro areas altogether.`;
+   outside metro areas altogether. Northeast Ohio is on the visible side of that line: all
+   ${FP.words} ${FP.label} counties publish a ${D.cross_year} figure, and together they hold
+   ${N(picEmp)} plastics and rubber jobs, ${pctf(picShare, 1)} of Ohio&rsquo;s
+   ${N(S.subject_emp)}. That is a county total. Counties and metro areas are separate BLS
+   geographies whose figures do not sum into one another, so it is not the Cleveland and
+   Akron numbers added together.`;
 document.getElementById("visfigsub").textContent =
   `Areas disclosed and areas withheld, by geography level, NAICS 326, ${D.cross_year}. ` +
   `Solid is disclosed; hatching is withheld. Each bar is the share of areas at that ` +
@@ -653,7 +740,7 @@ document.getElementById("vissrc").innerHTML =
   `${D.meta.source}, ${D.cross_year}. The withheld areas are not empty:
    ${N(V.metro.suppressed_estabs)} establishments sit in withheld metro cells and
    ${N(V.county.suppressed_estabs)} in withheld county cells, so a withheld cell is never
-   a zero.`;
+   a zero. Every ${FP.label} county is on the disclosed side of this chart.`;
 document.getElementById("vistable").innerHTML = tableView("v",
   `Disclosure by geography level, NAICS 326, ${D.cross_year}`,
   ["Level", "Disclosed", "Withheld", "Share visible", "Establishments withheld"],
@@ -668,16 +755,21 @@ document.getElementById("trendlede").innerHTML =
    <b>${N(laDrop)} plastics and rubber jobs since ${YRS[0]}</b>, a ${laPct.toFixed(1)}%
    fall. Akron&rsquo;s line barely moves: every year of the decade sits within
    <b>${N(akSwing)} jobs</b> of where it started, and ${YRS.at(-1)} is the lowest of them at
-   ${N(last(tAkron))}. Over the same years ${grew} of the ${TR.length} metros in this
-   extract gained jobs, so the slide belongs to Los Angeles rather than to the
-   industry.`;
+   ${N(last(tAkron))}. Over the same years ${grew} of the ${TR.length} metros that qualified
+   for this comparison gained jobs, so the slide belongs to Los Angeles rather than to the
+   industry. The chart draws ${1 + peers.length} of those ${TR.length}: Akron and the eight
+   largest of the rest. All ${TR.length} are listed in the second table under it.`;
 document.getElementById("trendfig").textContent =
   `Los Angeles gave up ${N(laDrop)} jobs. Akron stayed within ${N(akSwing)} of where it started.`;
+document.getElementById("trendfigsub").textContent =
+  `Plastics and rubber jobs by year. Nine lines: Akron in orange, the metro you pick in ` +
+  `dark teal, and the seven other metros you can pick left in grey. Cleveland has no line, ` +
+  `for the reason marked beside its ${D.cross_year} point.`;
 document.getElementById("trendsrc").innerHTML =
-  `${D.meta.source}, ${YRS[0]}&ndash;${YRS.at(-1)}, NAICS 326. The extract keeps metros in the
-   top 30 by ${D.cross_year} jobs with at least eight disclosed years. Cleveland,
-   ${ord(cleRank)} by ${D.cross_year} jobs, misses that bar and appears as a ghosted
-   ${D.cross_year} point.`;
+  `${D.meta.source}, ${YRS[0]}&ndash;${YRS.at(-1)}, NAICS 326. A metro qualified for this
+   comparison by finishing in the top 30 by ${D.cross_year} jobs and publishing at least
+   eight of the ten years, which leaves ${TR.length}. Cleveland, ${ord(cleRank)} by
+   ${D.cross_year} jobs, misses that bar and appears as a ghosted ${D.cross_year} point.`;
 
 document.getElementById("closersub").innerHTML =
   `Ohio&rsquo;s first place is complete and quotable in <b>NAICS 326, private ownership,
@@ -695,8 +787,11 @@ MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
 
 /* Footprint banner, cut to one line. The first thing a reader met on this page used to be
    130px of apparatus naming a rival county definition by its internal label; the footprint
-   still has to be stated at the top, but its detail belongs in the methods. */
-PV.footprintBanner({...FP, note: "", differs: ""},
+   still has to be stated at the top, but its detail belongs in the methods. It also has to
+   say what the label MEANS, because a reader who cannot decode "PIC-12" in the first line
+   of the page reads it as a filing code and stops. */
+PV.footprintBanner(
+  {...FP, note: "The Northeast Ohio counties this page adds up as one region.", differs: ""},
   "County list and how it compares with wider regional definitions: see the methodology.");
 
 /* Standard methodology + AI disclosure. Generated, not written — see picviz.js.
@@ -706,27 +801,34 @@ PV.footprintBanner({...FP, note: "", differs: ""},
 await PV.methodology({
   page: "peers",
   meta: {...D.meta,
-    suppression: "BLS marks a cell as not disclosed when publishing it could identify an " +
-      "employer. Employment is withheld far more often than establishment counts, so a " +
-      "ranking built on employment alone systematically omits the largest metros. Any rank " +
-      "stated from this file is a rank among disclosed areas and has to say so.",
-    row: "one (year, area, NAICS) annual-average cell, private ownership. The employment " +
-      "column counts jobs covered by unemployment insurance, so a row counts jobs rather " +
-      "than people or companies.",
-    derived_note: "Every rank on this page is a rank among disclosed areas. The build also " +
-      "counts the withheld metros that run more establishments than the subject, because " +
-      "that count would have to be zero for a plain national rank to be honest."},
+    suppression: "BLS withholds a figure when publishing it could identify an employer. " +
+      "Employment is withheld far more often than establishment counts, so a ranking built " +
+      "on employment alone systematically omits the largest metros. Any rank stated from " +
+      "this file is a rank among disclosed areas and has to say so.",
+    geography: "Counties and metro areas are separate geographies in this file and their " +
+      "figures do not sum into one another, so the twelve-county total is never added to " +
+      "the metro counts and no figure on this page mixes the two levels.",
+    row: "One row is one area&rsquo;s figure for one year in one industry, private employers " +
+      "only: the annual average of the twelve monthly counts. The employment column counts " +
+      "jobs covered by unemployment insurance, so a row counts jobs rather than people or " +
+      "companies.",
+    derived_note: "Every rank on this page is a rank among disclosed areas. This build " +
+      "also counts how many withheld metros run more establishments than Akron does. Ten " +
+      "do. A plain national rank would only be safe if that count were zero."},
   definitions:
     `Concentration is the QCEW location quotient: the industry&rsquo;s share of an area&rsquo;s
      private jobs divided by its share of private jobs nationwide. The metro scatter plots
-     jobs on a square-root scale, so the crowd of small metros can separate.
-     The PIC-12 footprint is ${FP.counties.join(", ")}. Other regional work uses a wider
-     fourteen-county definition that adds Crawford, Huron, Richland and Tuscarawas; figures
-     built on the two never reconcile, and every county on this page is PIC-12.
+     jobs on a square-root scale, so the crowd of small metros can separate. The two lines
+     that cut its corner, ${N(JOBCUT)} jobs and ${LQCUT.toFixed(1)}&times;, are round numbers
+     chosen to name a group, not the output of a test.
+     The ${FP.label} footprint is ${FP.counties.join(", ")}, and all ${FP.words} are
+     disclosed for ${D.cross_year}, so the ${N(picEmp)}-job regional total has nothing
+     missing from it. Other regional work uses a wider fourteen-county definition that adds
+     Crawford, Huron, Richland and Tuscarawas; figures built on the two never reconcile, and
+     every county on this page is ${FP.label}.
      An earlier version of this page bounded Akron&rsquo;s metro rank at ${ord(M.rank_emp)}
      to ${ord(M.rank_emp + M.could_displace_n)} by counting the ${M.could_displace_n} withheld
-     metros that run more establishments than Akron&rsquo;s ${N(M.subject_estabs)}. Two
-     reviews rejected that bound, correctly: establishment counts do not bound employment,
-     so the page states the rank among the ${M.of_disclosed} metros that disclose and
-     nothing wider.`});
+     metros that run more establishments than Akron&rsquo;s ${N(M.subject_estabs)}. That bound
+     was wrong: establishment counts do not bound employment, so the page states the rank
+     among the ${M.of_disclosed} metros that disclose and nothing wider.`});
 })();

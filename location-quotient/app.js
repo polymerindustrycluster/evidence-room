@@ -64,6 +64,27 @@ const cuyPaint = cell("Cuyahoga", "3255", LATEST);
 const cuyShare = cuyPaint.emp / paint.emp;
 const medPaint = cell("Medina", "3255", LATEST);
 const paintCounties = pts.filter(c => c.naics === "3255").sort((a, b) => b.lq - a.lq);
+/* HOW BIG IS ANY OF THIS. A ratio with no magnitude beside it is the defect this page
+   spends a whole section levelling at other people's numbers, and it committed the same
+   one at the regional level: eleven "×" figures and no denominator a reader could feel.
+   Regional employment is the LQ's own denominator, summed once per county (local_total is
+   constant across a county-year's rows), and the cluster is the three CORE codes — the
+   two DETAIL codes are slices of 326 and adding them would count the same jobs twice. */
+const regionJobs = CNTY.reduce((s, a) =>
+  s + (D.cells.find(c => c.year === LATEST && c.area === a.code)?.local_total || 0), 0);
+const CORE = D.naics.filter(n => n.register === "core").map(n => n.code);
+const clusterJobs = CORE.reduce((s, n) => s + comp(n, LATEST).emp, 0);
+const regionM = (regionJobs / 1e6).toFixed(2);              // "1.70"
+const oneIn = n => Math.round(regionJobs / n / 10) * 10;    // rounded, so the division reads
+const paintShareOfCluster = Math.round(paint.emp / clusterJobs * 100);
+/* Paint outside the one county the section is about, so "76%" has its complement printed
+   next to it rather than left as an exercise. */
+const paintElsewhere = paint.emp - cuyPaint.emp;
+const paintOtherCounties = paintCounties.length - 1;
+/* The industries that are THINNER here than nationally. Three dots sit visibly below the
+   scatter's reference line and the page never said what they were. */
+const below1 = pts.filter(p => p.lq < 1);
+const below1Cuy = below1.filter(p => p.name === "Cuyahoga");
 /* Number words for counts a sentence has to speak. Digits below ten read as data in a
    line of prose, and these are prose. */
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight",
@@ -105,13 +126,23 @@ const entrants = CNTY.filter(a => !cell(a.name, "3255", LATEST - 1)?.lq && cell(
 /* ------------------------------------------------------------- hero figures */
 /* Four cards, and they must not wrap: at 980px the row has 980 minus three 38px gaps to
    spend, and the .k line sets each card's width, so the keys stay short. */
+/* WHAT THE CARD IS FOR CHANGED. Card 1 now spends its sub-line on the READING rather than
+   on a rank the headline already gave: a naive reader could state what 5.96× measures and
+   could not say whether to be pleased about it, which is the only question a chamber board
+   actually has. Card 3 was "11 of 11 years paint has led" — true, and said in the dek, in
+   the H2 below it and in the trend annotation, so it was the page's most duplicated
+   apparatus. It is now the magnitude the page had nowhere: the cluster against regional
+   employment, so every "×" downstream has something to stand on. Card 4 drops the word
+   "disclosed", which did its first work here four screens before the page explained that
+   the bureau hides small counts. */
 PV.figures([
-  ["key", fx(paint.lq), "paint & coatings", `strongest of the six, ${LATEST}`],
+  ["key", fx(paint.lq), "paint & coatings",
+   `strongest of the six, ${LATEST}. More coatings work per job here than the country has.`],
   ["", fx(rubber.lq), "rubber products", "the industry Akron is named for"],
-  ["", `${leadYears.length} of ${YEARS.length}`, "years paint has led",
-   `top of the six since ${FIRST}`],
+  ["", N(clusterJobs), "polymer cluster jobs",
+   `of ${regionM} million in the region, about one job in ${oneIn(clusterJobs)}`],
   ["", Math.round(cuyShare * 100) + "%", "paint jobs in Cuyahoga",
-   `${N(cuyPaint.emp)} of ${N(paint.emp)} disclosed`]
+   `${N(cuyPaint.emp)} of the ${N(paint.emp)} paint jobs the bureau publishes`]
 ]);
 
 /* The byline. Every element of it is read from the data rather than typed, so the month
@@ -127,10 +158,18 @@ document.getElementById("byline").innerHTML =
    ${AGENCY}, ${FIRST}&ndash;${LATEST} &middot; ${MONTHS[+fm - 1]} ${fy}`;
 
 /* --------------------------------------------------- the register, in the open */
+/* "CONTEXT SITS OUTSIDE THE REGISTER" was the page's worst sentence: three capitalised
+   terms in three sentences, one of them ("the register") a piece of internal vocabulary
+   defined nowhere on the page, and no example of any of them. A naive reader read it three
+   times and moved on without it. The internal word is gone, and each label now arrives
+   with the one case that shows why it exists. */
 document.getElementById("regkey").innerHTML =
-  `<b>Core</b> counts as the cluster: resin, paint, and plastics and rubber products.
-   <b>Detail</b> is a slice of a core code and is never added to it. <b>Context</b> sits
-   outside the register and is drawn for comparison only.`;
+  `<b>Core</b> is what this page counts as the cluster: resin, paint, and plastics and
+   rubber products. <b>Detail</b> is a slice of one of those three and is never added to
+   it. Rubber products sits inside plastics and rubber products, so counting both would
+   count the same jobs twice. <b>Context</b> sits outside the cluster and is drawn only for
+   comparison. Chemical manufacturing is here for that reason: it also carries
+   pharmaceuticals, farm chemicals and industrial gas, which are not this cluster.`;
 
 const picker = document.getElementById("picker");
 picker.innerHTML = D.naics.map(n =>
@@ -177,14 +216,30 @@ function drawTrendDesktop() {
   txt(svg, "1.0× · above it, more concentrated here", {x: m.l + 8, y: ys(1) - 8,
     class: "pv-lab", fill: "var(--hover)"});
 
-  /* Right-hand direct labels, nudged apart, with a leader where one had to move. */
+  /* Right-hand direct labels, nudged apart, with a leader where one had to move.
+     TWO LINES NOW, not one. Five of the six series are drawn in the same pale grey, so a
+     reader could read their 2025 endpoints and could not trace whether any of them had
+     risen or fallen across eleven years — and "is rubber up or down?" is the first
+     question anyone in this region asks. Printing each line's 2015 reading under its 2025
+     one answers it without adding a hue the page would then have to explain. The minimum
+     gap doubles to carry the second line. */
   const ends = NAICS.map(code => {
     const s = seriesOf(code);
     return s.length ? {code, s, y: ys(s.at(-1).lq)} : null;
   }).filter(Boolean).sort((a, b) => a.y - b.y);
-  const MIN = 17;
+  /* Two passes, not one. A push-down-only nudge with the taller gap ran the last label's
+     second line straight through the "2025" tick — the collision gate caught it. The
+     second pass pulls the stack back up off the floor, which is free here because the
+     subject line sits alone at the top of an empty half. FLOOR leaves room for the second
+     line of the lowest label. */
+  const MIN = 33, FLOOR = m.t + h - 22;
   for (let i = 1; i < ends.length; i++)
     if (ends[i].y - ends[i - 1].y < MIN) ends[i].y = ends[i - 1].y + MIN;
+  if (ends.at(-1).y > FLOOR) {
+    ends.at(-1).y = FLOOR;
+    for (let i = ends.length - 2; i >= 0; i--)
+      if (ends[i + 1].y - ends[i].y < MIN) ends[i].y = ends[i + 1].y - MIN;
+  }
 
   NAICS.forEach(code => {
     const e = ends.find(x => x.code === code);
@@ -199,11 +254,13 @@ function drawTrendDesktop() {
     txt(svg, `${fx(s.at(-1).lq)} ${s[0].label}`,
       {x: m.l + w + 12, y: e.y, class: on ? "pv-lab" : "pv-labq",
        fill: on ? INK : "var(--pv-muted)"});
+    txt(svg, `from ${fx(s[0].lq)} in ${FIRST}`,
+      {x: m.l + w + 12, y: e.y + 15, class: "pv-labq", fill: "var(--pv-muted)"});
     if (on) s.forEach(c => hoverable(
       el("circle", {cx: xs(c.year), cy: ys(c.lq), r: 5, fill: INK,
         stroke: "var(--paper)", "stroke-width": 2}, svg),
       `<b>${c.label}, ${c.year}</b><br><span class="v">${fx(c.lq)}</span> the national share
-       <br><span class="v">${N(c.emp)}</span> jobs across ${N(c.estabs)} establishments
+       <br><span class="v">${N(c.emp)}</span> jobs across ${N(c.estabs)} separate sites
        ${c.counties_suppressed ? `<br>${c.counties_suppressed} of ${FP.n} counties withheld` : ""}`,
       `${c.label} ${c.year}: ${fx(c.lq)}`));
   });
@@ -239,10 +296,13 @@ function drawTrendMobile() {
   txt(svg, `and has every year since ${FIRST}.`, {x: m.l - 2, y: 50, class: "pv-lab"});
   txt(svg, `Higher means more concentrated here.`, {x: m.l - 2, y: 70, class: "pv-labq"});
 
+  /* Plated, and labelled by what crossing it means — the phone build printed a bare
+     "1.0× national share" straight onto the rule it names, which both blurred the glyphs
+     and gave the value without the direction. */
   el("line", {x1: m.l, y1: ys(1), x2: m.l + w, y2: ys(1), stroke: "var(--hover)",
     "stroke-width": 1.3}, svg);
-  txt(svg, "1.0× national share", {x: m.l + 3, y: ys(1) - 6, class: "pv-labq",
-    fill: "var(--hover)"});
+  plated(svg, "1.0× · above it, more concentrated", m.l + 3, ys(1) - 6, "pv-labq",
+    "var(--hover)", 7.0);
 
   NAICS.forEach(code => {
     const s = seriesOf(code);
@@ -307,17 +367,23 @@ function trendCopy() {
      composite is ours and not the bureau's — is all in the generated methodology box,
      which reads it from the same meta. Saying it twice made a third of the mid-scroll
      read as disclaimer. */
+  /* WITHHELD IS DEFINED HERE, because this is where it first does work in prose. The word
+     was carrying a whole disclosure regime four screens before the page explained it, and
+     one reader read it as "confirmed" and took 4,259 for the region's entire paint
+     workforce. Translation is exempt from the caveat budget; the budget pays for it by
+     having lost the row definition and the ownership note to the methodology box. */
   document.getElementById("trendsrc").innerHTML =
     `Source: BLS QCEW annual averages, ${FIRST}&ndash;${LATEST}. ` + regLine +
     (supp
       ? `${Cap(word(supp))} of ${FP.words} counties are withheld for
-         ${last.label.toLowerCase()} in ${LATEST}, so this line reads the counties that
-         report and not the whole region.`
+         ${last.label.toLowerCase()} in ${LATEST}, meaning the bureau will not publish a
+         county with too few employers in it to keep them anonymous, so this line reads the
+         counties that report and not the whole region.`
       : `All ${FP.words} counties are disclosed for this industry in ${LATEST}.`);
 
   document.getElementById("trendtable").innerHTML = tableView("t",
     `Concentration against the national share, by year · ${sel[0].label}`,
-    ["Year", "× the national share", "Jobs", "Establishments", "Counties withheld"],
+    ["Year", "× the national share", "Jobs", "Separate sites", "Counties withheld"],
     sel.map(c => [c.year, fx(c.lq), N(c.emp), N(c.estabs), c.counties_suppressed]));
 }
 
@@ -406,13 +472,24 @@ function drawTwistMobile() {
 function twistCopy() {
   const prev = comp("3255", LATEST - 1);
   document.getElementById("twistlede").innerHTML =
+    /* ONE SENTENCE PER MOVE. This used to run "Restricted to the 5 counties the bureau
+       discloses in all 11 years, paint reads 7.68× in 2025 against 7.14× in 2015, the
+       highest value in the series" — two numbers, two baselines and a qualifier in one
+       breath, and "the series" could mean either line on the chart. Split, and the
+       ambiguous phrase replaced by the thing it meant. The level gap between the two lines
+       is now accounted for too: a reader who is not told why 7.68× and 5.96× differ will
+       assume one of them is wrong. */
     `The line above adds up whichever counties the bureau discloses that year, and the set
      moves. ${drop.name}, ${fx(drop.lq)} on ${N(drop.emp)} paint jobs in
      ${LATEST - 1}, went withheld in ${LATEST}, which is most of the fall from
-     ${fx(prev.lq)} to ${fx(paint.lq)}. Restricted to the ${alwaysOn.length} counties the
-     bureau discloses in all ${YEARS.length} years, paint reads ${fx(fixedNow.lq)} in
-     ${LATEST} against ${fx(fixedThen.lq)} in ${FIRST}, the highest value in the series.
-     The concentration is not eroding, and on a county set that never moves it is
+     ${fx(prev.lq)} to ${fx(paint.lq)}. So hold the counties still.
+     ${Cap(word(alwaysOn.length))} of the ${FP.words} are disclosed for paint in every one
+     of the ${YEARS.length} years, and across those ${word(alwaysOn.length)} paint reads
+     ${fx(fixedNow.lq)} in ${LATEST}, up from ${fx(fixedThen.lq)} in ${FIRST} and higher
+     than in any year between. The teal line sits above the grey one because it counts
+     ${word(alwaysOn.length)} counties and the grey counts
+     ${word(paintCounties.length)}, not because it measures anything different.
+     Concentration here is not eroding, and on a county set that never moves it is
      climbing.`;
   document.getElementById("twisttitle").textContent =
     `Holding the same five counties, paint climbs from ${fx(fixedThen.lq)} to ${fx(fixedNow.lq)}`;
@@ -420,11 +497,11 @@ function twistCopy() {
      county are real and checkable, and they are the kind of detail a reader opens on
      purpose: they sit in the disclosure below, not in the caption. */
   document.getElementById("twistsrc").innerHTML =
-    `Source: BLS QCEW annual averages, ${FIRST}&ndash;${LATEST}, county cells. The five
+    `Source: BLS QCEW annual averages, ${FIRST}&ndash;${LATEST}, county by county. The five
      held still are ${alwaysOn.map(a => a.name).join(", ")}, a subset of ${FP.label} chosen
      because the bureau discloses paint there in every year, and not a second footprint.`;
   document.getElementById("fixednote").innerHTML =
-    `<b>Derived from the same cells as the chart above, not from a second file.</b> The
+    `<b>Derived from the same county figures as the chart above, not from a second file.</b> The
      national paint share each year is recovered from any disclosed county
      (share = jobs ÷ county total ÷ that county&rsquo;s published location quotient), and
      all disclosed counties agree on it to seven figures, which is the check that this
@@ -466,10 +543,23 @@ const shade = lq => SEQ[Math.max(0, STEPS.findLastIndex(s => lq >= s))];
    off this array, so the prose cannot drift from the encoding again. */
 const topBand = pts.filter(p => p.lq >= STEPS.at(-1)).sort((a, b) => b.emp - a.emp);
 const topOthers = topBand.filter(p => p !== cuyPaint);
+/* SORTING IS EDITORIAL AND THIS SORT WAS ARGUING AGAINST THE PAGE. Rows used to be ordered
+   by the plastics-and-rubber column, on the reasonable ground that it is the one industry
+   disclosed in all twelve counties — which put Cuyahoga, the county this whole section is
+   about and the only outlined cell, in the LAST row, where a reader scans it as the least
+   of the twelve. Paint is the sort key now. Counties whose paint cell is withheld have no
+   key, so they sit beneath the disclosed ones in the old order, and the caption states
+   both halves of the rule. */
 const heatRows = () => {
+  const key = a => cell(a.name, "3255", LATEST)?.lq;
   const rows = CNTY.map(a => ({...a}));
-  rows.sort((a, b) => (cell(b.name, "326", LATEST)?.lq || 0) -
-                      (cell(a.name, "326", LATEST)?.lq || 0));
+  rows.sort((a, b) => {
+    const ka = key(a), kb = key(b);
+    if (ka != null && kb != null) return kb - ka;
+    if (ka != null) return -1;
+    if (kb != null) return 1;
+    return (cell(b.name, "326", LATEST)?.lq || 0) - (cell(a.name, "326", LATEST)?.lq || 0);
+  });
   return rows;
 };
 function suppPattern(svg) {
@@ -518,7 +608,7 @@ function drawHeatDesktop() {
     stroke: "var(--pv-axis)", "stroke-width": 1.5}, svg);
   /* Two lines, not one. Set on a single line the caption ran 25 units wider than the
      bracket it belongs to and overhung the parent column it exists to exclude. */
-  ["slices of the column at left,", "never added to it"].forEach((s, i) =>
+  ["already counted inside", "the column at left"].forEach((s, i) =>
     txt(svg, s, {x: m.l + (pi + 2) * cw, y: m.t - 104 + i * 17, "text-anchor": "middle",
       class: "pv-labq"}));
 
@@ -532,13 +622,16 @@ function drawHeatDesktop() {
       el("rect", {x, y, width: cw - 2, height: ch - 2,
         fill: ok ? shade(cl.lq) : "url(#supp)"}, svg);
       // White is legible on the darkest step only. PIC brand law: never white on #1A8A9E.
-      if (ok) txt(svg, cl.lq.toFixed(1), {x: x + cw / 2 - 1, y: y + ch / 2 + 5,
+      /* The × goes IN the cell. Every other number on the page carries it, and a reader
+         who lands on the grid first has no way to tell whether a bare 22.7 is a multiple,
+         a percentage or a job count in hundreds. */
+      if (ok) txt(svg, cl.lq.toFixed(1) + "×", {x: x + cw / 2 - 1, y: y + ch / 2 + 5,
         "text-anchor": "middle", class: "pv-lab",
         fill: cl.lq >= 11 ? "#fff" : "var(--pv-ink)"});
       hoverable(el("rect", {x, y, width: cw - 2, height: ch - 2, fill: "transparent"}, svg),
         ok ? `<b>${a.name} County · ${cl.label}</b><br><span class="v">${fx(cl.lq)}</span>
               on <span class="v">${N(cl.emp)}</span> jobs across
-              <span class="v">${N(cl.estabs)}</span> establishments`
+              <span class="v">${N(cl.estabs)}</span> separate sites`
            : `<b>${a.name} County · ${D.naics[c].label}</b><br>withheld by BLS for disclosure,
               which is not a zero`,
         ok ? `${a.name}, ${cl.label}: ${fx(cl.lq)}` : `${a.name}: withheld`);
@@ -560,8 +653,8 @@ function drawHeatDesktop() {
     stroke: "var(--hover)", "stroke-width": 1.5}, svg);
   [[`Cuyahoga paint, ${fx(cuyPaint.lq)}`, "pv-lab", "var(--hover)"],
    [`${N(cuyPaint.emp)} jobs across ${N(cuyPaint.estabs)} sites,`, "pv-labq", null],
-   [`${Math.round(cuyShare * 100)}% of every disclosed`, "pv-labq", null],
-   ["paint job in the region", "pv-labq", null]]
+   [`${Math.round(cuyShare * 100)}% of every paint job`, "pv-labq", null],
+   ["the bureau publishes here", "pv-labq", null]]
     .forEach(([s, cls, fill], i) => {
       const a = {x: rail, y: by + ch / 2 - 18 + i * 17, class: cls};
       if (fill) a.fill = fill;
@@ -605,7 +698,10 @@ function drawHeatMobile() {
       const ok = cl && cl.lq != null;
       el("rect", {x, y, width: cw - 2, height: ch - 2,
         fill: ok ? shade(cl.lq) : "url(#supp)"}, svg);
-      if (ok) txt(svg, cl.lq.toFixed(1), {x: x + cw / 2 - 1, y: y + ch / 2 + 5,
+      /* The × goes IN the cell. Every other number on the page carries it, and a reader
+         who lands on the grid first has no way to tell whether a bare 22.7 is a multiple,
+         a percentage or a job count in hundreds. */
+      if (ok) txt(svg, cl.lq.toFixed(1) + "×", {x: x + cw / 2 - 1, y: y + ch / 2 + 5,
         "text-anchor": "middle", class: "pv-lab",
         fill: cl.lq >= 11 ? "#fff" : "var(--pv-ink)"});
       hoverable(el("rect", {x, y, width: cw - 2, height: ch - 2, fill: "transparent"}, svg),
@@ -634,15 +730,29 @@ function heatCopy(rows) {
   const disclosed = pts.length;
   const lo = Math.min(...topOthers.map(p => p.emp)),
         hi = Math.max(...topOthers.map(p => p.emp));
+  /* "CELL" IS DEFINED IN ITS OWN FIRST SENTENCE. The figure caption below already carried
+     the definition, but the caption sits after this paragraph in reading order, so the
+     page was using its most-repeated term of art (667 cells, 51 of 72 cells, the six
+     darkest cells) a screen before it said what one is. */
   document.getElementById("heatlede").innerHTML =
-    `${Cap(word(topBand.length))} cells on this
-     grid reach the darkest shade, and Cuyahoga&rsquo;s ${fx(cuyPaint.lq)} in paint is the
+    `A cell here is one industry in one county. ${Cap(word(topBand.length))} of them reach
+     the darkest shade, and Cuyahoga&rsquo;s ${fx(cuyPaint.lq)} in paint is the
      one with real employment behind it: ${N(cuyPaint.emp)} jobs across
      ${N(cuyPaint.estabs)} separate sites, ${Math.round(cuyShare * 100)}% of every paint job
-     the bureau discloses in the region. The other ${word(topOthers.length)} run between
+     the bureau publishes in the region. The other ${word(topOthers.length)} run between
      ${N(lo)} and ${N(hi)} jobs. Paint is also the industry the bureau hides most of:
      ${word(paint.counties_suppressed)} of ${FP.words} counties are withheld, so this column
      shows ${word(paintCounties.length)} readings and not twelve.`;
+  /* WHICH HALF OF THE SENTENCE IS THE GOOD HALF. A reader at the Akron end of a
+     twelve-county region reads "76% of it is in Cleveland" as bad news; the page presented
+     it as an achievement and offered neither reading. Both are printed now, with the
+     complement of the 76% beside it so the arithmetic closes. */
+  document.getElementById("heatlede2").innerHTML =
+    `Three of every four paint jobs sitting in one county reads two ways, and both are
+     true. It is the reason the region can claim a coatings cluster at all, and it means
+     one county&rsquo;s plant decisions move the regional figure on their own. Outside
+     Cuyahoga, the ${word(paintOtherCounties)} other counties in this column hold
+     ${N(paintElsewhere)} paint jobs between them.`;
   /* The claim the evidence supports, in the words the encoding uses. The binned ramp puts
      ${topBand.length} cells in one shade; what separates this one is the base under it. */
   document.getElementById("heattitle").textContent =
@@ -698,7 +808,7 @@ function drawScatterDesktop() {
       stroke: "var(--paper)", "stroke-width": 2}, svg),
     `<b>${p.name} County · ${p.label}</b><br><span class="v">${fx(p.lq)}</span>
      the national share<br><span class="v">${N(p.emp)}</span> jobs across
-     ${N(p.estabs)} establishments`,
+     ${N(p.estabs)} separate sites`,
     `${p.name}, ${p.label}: ${fx(p.lq)} on ${N(p.emp)} jobs`));
   /* ANNOTATION LAST. The reference line and its label used to be drawn before the marks,
      so a context point landed on top of the word "share" and the label shipped reading
@@ -763,7 +873,10 @@ function scatterCopy() {
      real and small. Paint is the exception on this chart. ${bigAbove10.name}&rsquo;s
      ${fx(bigAbove10.lq)} rests on ${N(bigAbove10.emp)} jobs, more than any other cell
      above 10&times;. A concentration figure without the job count behind it is half a
-     fact, which is why every point here carries both.`;
+     fact, which is why every point here carries both. ${Cap(word(below1.length))} dots sit
+     below the 1.0&times; line: those are the county and industry pairs the region holds
+     less of, for its size, than the country does, and ${word(below1Cuy.length)} of the
+     ${word(below1.length)} are in Cuyahoga.`;
   document.getElementById("scattertitle").textContent =
     `${bigAbove10.name} paint has more jobs behind it than any other cell above 10×`;
   /* The colour mapping stated in the figure, not left to be inferred from one labelled
@@ -771,14 +884,18 @@ function scatterCopy() {
   document.getElementById("scatterkey").innerHTML =
     `<span><i style="background:${SUBJECT}"></i>Paint &amp; coatings</span>
      <span><i style="background:${CONTEXT}"></i>Every other industry</span>`;
+  /* The square-root scale moved OUT of this line and up into the figure's how-to-read
+     caption, next to the sentence that already says what RIGHT means, and it went with a
+     reading aid rather than a disclosure. A transform announced in grey type below the
+     plot is announced after the reader has already measured horizontal distance and been
+     wrong. One statement per reading context, so it is not repeated here. */
   document.getElementById("scattersrc").innerHTML =
-    `Source: BLS QCEW annual averages, ${LATEST} county cells. The horizontal scale is
-     square-root, so the small job counts stay readable. ${pts.length} of ${POSSIBLE}
+    `Source: BLS QCEW annual averages, ${LATEST} county cells. ${pts.length} of ${POSSIBLE}
      possible county and industry combinations are disclosed; the withheld ones are not on
      this plane at all.`;
   document.getElementById("scattertable").innerHTML = tableView("s",
     `Concentration against employment, ${LATEST}`,
-    ["County", "Industry", "× the national share", "Jobs", "Establishments"],
+    ["County", "Industry", "× the national share", "Jobs", "Separate sites"],
     topLQ.slice(0, 12).map(p => [p.name, p.label, fx(p.lq), N(p.emp), N(p.estabs)]));
 }
 
@@ -853,7 +970,7 @@ document.getElementById("residtable").innerHTML = tableView("v",
    ["Worst error", D.meta.verification.max_abs_residual.toFixed(6)],
    ["Cells withheld by BLS", N(D.cells.filter(c => c.suppressed).length)]]);
 document.getElementById("defnote").innerHTML =
-  `<b>The denominator was established, not assumed.</b> ${D.meta.definition} The intuitive
+  `<b>Which denominator, and how we know.</b> ${D.meta.definition} The intuitive
    alternative, private employment over private employment, is wrong by 0.19 on average and
    by as much as 1.03, which is the distance between &ldquo;twice the national
    average&rdquo; and &ldquo;three times.&rdquo; This chart is the tripwire: if BLS changes
@@ -863,13 +980,21 @@ document.getElementById("defnote").innerHTML =
    free, which is why this page can rank six industries and eleven years against each
    other and that figure cannot.`;
 
+/* THE CLOSER RESOLVES THE QUESTION, AND THE QUESTION INCLUDED "SO WHAT". A naive reader
+   finished this page able to state exactly what 5.96× measures and unable to say whether
+   it was the thing to sell or the thing to hedge, which is the only decision the audience
+   this page is written for actually faces. The verdict is the author's, so it is written
+   as the author's ("we read") and the magnitude it rests on is printed beside it. */
 document.getElementById("closersub").innerHTML =
   `Paint and coatings run <b>${fx(paint.lq)}</b> the national share in ${LATEST}, and
    <b>${fx(fixedNow.lq)}</b> across the ${alwaysOn.length} counties disclosed in every year
    since ${FIRST}, against ${fx(rubber.lq)} for the rubber products the region is named for.
-   ${Math.round(cuyShare * 100)}% of the disclosed paint jobs sit in one county, and
+   ${Math.round(cuyShare * 100)}% of the published paint jobs sit in one county, and
    ${paint.counties_suppressed} of ${FP.n} counties are withheld, so treat the twelve-county
-   figure as a reading on the counties that report and not a census of the region.`;
+   figure as a reading on the counties that report and not a census of the region.
+   ${N(paint.emp)} paint jobs in a region of ${regionM} million makes this a specialism
+   rather than a mainstay, and we read ${fx(paint.lq)} as a claim worth making to a
+   coatings firm choosing a site, not as a concentration the region has to hedge against.`;
 
 /* THE DOWNGRADE, RECORDED. An earlier build of this page called Cuyahoga's paint cell the
    darkest in the grid, in the band lede, the figure title and the chart's text
@@ -893,8 +1018,14 @@ drawAll();
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);
 
-/* Footprint banner — stated on the page, not left to the reader to infer. */
-PV.footprintBanner(FP);
+/* Footprint banner — stated on the page, not left to the reader to infer. The stored note
+   read "PIC's official 12-county footprint, matching the cluster-health dashboard": PIC
+   twice in the first sentence a reader ever meets, expanded only in the footer thousands
+   of pixels below, and a cross-reference to a dashboard they have never seen. Expanded
+   once, here, and the cross-reference replaced by what it was there to promise. */
+PV.footprintBanner({...FP, note: `PIC stands for Polymer Industry Cluster, and these
+  ${FP.words} are its official footprint, used on every page here that is built from
+  federal files so the figures reconcile with each other.`});
 
 /* Standard methodology + AI disclosure. Generated, not written — see picviz.js. */
 await PV.methodology({page: "location-quotient", meta: D.meta});

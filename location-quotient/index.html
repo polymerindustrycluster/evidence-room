@@ -23,10 +23,13 @@
     <h1>Paint is <em>six times</em> as big a share of the jobs here as it is
       of the country&rsquo;s.</h1>
     <p class="stand">That is 5.96&times; the national share, the strongest of six polymer
-      industries. Rubber products, the industry Akron is named for, run 2.44&times;. Paint
-      has led all six in every year since 2015, and one county holds three of every four
-      disclosed paint jobs. Every figure here is rebuilt from free federal files and
-      matches the bureau&rsquo;s own published figure to the last digit it prints.</p>
+      industries and more than double the 2.44&times; of the rubber products the region is
+      named for. Paint has led all six in every year since 2015. A reading that high means
+      more coatings work per job here than the country has, in sites, in suppliers and in
+      people who know it; it does not mean the industry is big. Paint is 4,259 jobs in a
+      region of 1.70 million, about one in four hundred. Every figure is rebuilt from free
+      federal files and matches the Bureau of Labor Statistics&rsquo; own published figure
+      to the last digit it prints.</p>
     <p class="byline" id="byline"></p>
     <div class="hero-row" id="figs"></div>
   </div>
@@ -44,13 +47,25 @@
       eleven straight years, and more than double whichever
       industry is second. Ohio as a whole is already concentrated in paint at 3.78&times;,
       and these twelve counties are well above the state.</p>
+    <p class="lede">How big is that in jobs? The whole cluster this page measures, resin
+      plus paint plus plastics and rubber products, comes to 24,030 of the region&rsquo;s
+      1.70 million jobs, about one in seventy, and it is a floor: the bureau will not
+      publish every county, so the true figure is higher. Paint is 4,259 of those, 18%.
+      The figures come from the Bureau of Labor Statistics&rsquo; Quarterly Census of
+      Employment and Wages, or QCEW, which counts jobs covered by unemployment insurance
+      and reports them as annual averages of the year&rsquo;s four quarters; the analysis
+      is John Swanson&rsquo;s, and every figure in it is re-run against the bureau&rsquo;s
+      own published one in the check at the foot of this page.</p>
     <p class="regkey" id="regkey"></p>
-    <div class="picker" id="picker" role="group" aria-label="Choose an industry"></div>
+    <p class="pickhint" id="pickhint">Press one of these buttons to bring that industry
+      forward on the chart below. Paint is forward now.</p>
+    <div class="picker" id="picker" role="group" aria-labelledby="pickhint"></div>
     <p class="fig-title" id="trendtitle"></p>
-    <p class="fig-sub">Each line is one industry, summed across the counties BLS
+    <p class="fig-sub">Each line is one industry, summed across the counties the bureau
       discloses. The higher the line, the more concentrated that industry is here than in
-      the country as a whole. Selecting an industry brings its line forward; the other
-      five stay as context.</p>
+      the country as a whole. Paint is the dark line, drawn forward, and the other five are
+      grey. Resin climbed hardest of those five, from 1.33&times; in 2015 to 2.00&times;
+      now; rubber products and plastics products both end below where they started.</p>
     <div class="chart"><svg id="trend" role="img" aria-labelledby="trend-t">
       <title id="trend-t">Concentration against the national share, by year, for six
         polymer industries across the twelve-county region, 2015 to 2025. Paint and
@@ -78,7 +93,7 @@
     <div id="twisttable"></div>
     <p class="src" id="twistsrc"></p>
     <details class="disclose"><summary>How the same-five-counties line was derived from the
-      same cells</summary>
+      same county figures</summary>
       <div id="fixednote"></div></details>
   </div>
 </section>
@@ -86,27 +101,30 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">Where the paint is</p>
-    <h2>One county holds three of every four disclosed paint jobs</h2>
+    <h2>One county holds three of every four paint jobs the bureau publishes</h2>
     <p class="lede" id="heatlede"></p>
+    <p class="lede" id="heatlede2"></p>
     <p class="fig-title" id="heattitle"></p>
     <p class="fig-sub">Each cell is one industry in one county, latest year. A cell at
       1.0&times; holds exactly its national share of those jobs; at 11.2&times;, eleven
-      times as much. Counties are sorted by the plastics and rubber products column, the
-      one industry the bureau discloses in all twelve. Hatched cells are withheld and are
-      never drawn as a zero.</p>
+      times as much. Counties are sorted by the paint column, highest first, so the county
+      this section is about is the top row; the counties whose paint cell is withheld sit
+      beneath, ordered by plastics and rubber. Hatched cells are withheld and are never
+      drawn as a zero.</p>
     <div class="chart"><svg id="heat" role="img" aria-labelledby="heat-t">
       <title id="heat-t">Grid of concentration against the national share, by county and
         industry. Six cells reach the darkest shade, and Cuyahoga&rsquo;s paint cell is the
         one with the most jobs behind it.</title></svg></div>
     <div id="heattable"></div>
     <p class="src" id="heatsrc"></p>
-    <div class="note"><b>Who is in that cell.</b> An establishment is one physical site and
-      not a company, and QCEW cannot name an employer, so this grid shows a concentration
-      and not a firm. Sherwin-Williams is headquartered in Cleveland, in Cuyahoga County,
-      and RPM International in Medina, which posts the region&rsquo;s fifth paint reading
-      at 2.9&times;. QCEW codes a site by what it does, so a corporate campus can land in
-      the same industry as a plant: the plain explanation for a coatings cluster of this
-      size, and not something the file measures.</div>
+    <div class="note"><b>Who is in that cell.</b> The file counts separate sites, not
+      companies: one physical location is one site, so a firm with a head office and two
+      plants in the region counts three times. It never names an employer, so this grid
+      shows a concentration and not a firm. Sherwin-Williams is headquartered in Cleveland,
+      in Cuyahoga County, and RPM International in Medina, which posts the region&rsquo;s
+      fifth paint reading at 2.9&times;. A site is coded by what it does, so a corporate
+      campus can land in the same industry as a plant: the plain explanation for a coatings
+      cluster of this size, and not something the file measures.</div>
   </div>
 </section>
 
@@ -118,7 +136,9 @@
     <p class="fig-title" id="scattertitle"></p>
     <p class="fig-sub">Each dot is one industry in one county, latest year. The further
       UP, the more concentrated that industry is here than in the country. The further
-      RIGHT, the more jobs sit behind that number.</p>
+      RIGHT, the more jobs sit behind that number. The job axis is squeezed so the small
+      counts stay apart, and the ticks are spaced to match: twice as far right is four
+      times as many jobs, not twice as many.</p>
     <div class="chart"><svg id="scatter" role="img" aria-labelledby="scatter-t">
       <title id="scatter-t">Concentration against employment for every disclosed county
         and industry in the latest year. The largest ratios sit on the smallest job
@@ -137,7 +157,9 @@
     <p class="fig-title" id="residtitle"></p>
     <p class="fig-sub">Each bar counts how many of our figures landed that far from the
       bureau&rsquo;s published one. Zero is an exact match, and every bar sits inside the
-      bureau&rsquo;s own rounding. The flat shape is what rounding looks like.</p>
+      bureau&rsquo;s own rounding. Read the shape this way: an error in the method would
+      pile the bars up on one side of zero, and a difference that is only rounding spreads
+      them evenly across the range, which is what happened.</p>
     <div class="chart narrow"><svg id="resid" role="img" aria-labelledby="resid-t">
       <title id="resid-t">Histogram of the difference between our computed figure and the
         bureau&rsquo;s published one, bounded at plus and minus 0.005.</title></svg></div>

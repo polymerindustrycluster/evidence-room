@@ -461,8 +461,10 @@ const PV = (() => {
           <p>${list.length
             ? `Every number on this page is written as a <b>test</b>, not a sentence:
                <b>${list.length}</b> of them, each stating the condition that would prove it
-               wrong. ${auto.length} re-run automatically against the source data;
-               ${manual.length} ${manual.length === 1 ? 'rests' : 'rest'} on a document a person had to read.`
+               wrong. ${auto.length} re-run automatically against the source data every time
+               the page is built. ${manual.length === 0
+                 ? "None of them rests on a document a person had to read, which is the stronger position: nothing here needs you to trust a reading."
+                 : `${manual.length} ${manual.length === 1 ? "rests" : "rest"} on a document a person had to read, so ${manual.length === 1 ? "that one is" : "those are"} the place to attack first.`}`
             : (o.noClaimsNote || "This page makes no numeric claim of its own: every " +
                "figure on it is carried by the page it links to, and is checked there.")}</p>
           <p>The work was done with <b>Claude (Anthropic)</b>, directed and reviewed by a

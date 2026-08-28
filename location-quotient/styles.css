@@ -42,10 +42,17 @@
 .regkey b{color:var(--ink);font-weight:900;letter-spacing:.08em;font-size:12.5px;
   text-transform:uppercase}
 
-.picker{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0;max-width:var(--figure)}
+/* The chips read as buttons now. A reader looking at a static render sat in front of six
+   boxes with one filled in, unable to tell whether a control had been missed or a sentence
+   left over from another version — so the caption above them says outright that they are
+   pressable, and the unpressed ones carry a raised edge instead of a hairline. */
+.pickhint{margin:18px 0 0;max-width:var(--measure);font-size:13.5px;color:var(--caption)}
+.picker{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0;max-width:var(--figure)}
 .pick{background:#fff;border:1px solid var(--line);color:var(--pv-ink);font:inherit;
   font-size:13.5px;padding:8px 14px;cursor:pointer;transition:all .14s;min-height:38px;
-  display:inline-flex;align-items:baseline;gap:9px}
+  display:inline-flex;align-items:baseline;gap:9px;
+  box-shadow:0 1px 0 var(--line), 0 2px 0 rgba(0,0,0,.05)}
+.pick[aria-pressed=true]{box-shadow:none}
 .pick:hover{border-color:var(--hover);color:var(--hover)}
 .pick[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff;
   font-weight:700}

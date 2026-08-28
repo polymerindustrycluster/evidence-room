@@ -49,8 +49,8 @@ derived file fails the gate rather than shipping.
 
 ## Read before quoting anything from this page
 
-- **The movement band is a HISTORY band, not a REVISION band.** It says how far a series
-  has moved between published years. It does not say how far the year just published will
+- **The usual-move yardstick is a HISTORY measure, not a REVISION measure.** It says how
+  far a series has moved between published years. It does not say how far the year just published will
   move once the agency restates it. This repository has measured that for exactly three
   producer-price indexes, on the revisions page (median 0.15% of the level, largest
   1.42%), and for none of the employment, degree or spending series here. Do not carry
@@ -137,3 +137,15 @@ beats) is the product. Any change to it is dated and explained here, never silen
   `#0C6473` and `#C85F0C`, relative luminance 0.104 against 0.205. Any recolour has to
   keep roughly that 2:1 ratio, or up and down become one gray in grayscale. The verdict
   pill states its reading in words for the same reason.
+- **Those two hues are the CHART's, and nothing else on the page may spend them.** The
+  driver-strip values used `--ink`, which is the UP teal, so two falls printed in the
+  colour the legend assigns to a rise. They are neutral now, and the verdict pill is the
+  reference line's charcoal rather than the DOWN rust, so "notable" and "which way" stay
+  visually independent.
+- **The record mark is an upright, never a band.** It used to be a filled region from zero
+  to the widest earlier move, which every bar sits inside by construction, so its caption
+  read as "nothing unusual here" against row labels saying the opposite. A single mark
+  carries the same fact with no inside or outside to misread.
+- **The axis carries no `×`.** That glyph is spent on the row labels, where it means
+  multiples of a national share or wage. The axis is multiples of a normal year's move,
+  which is a different quantity, so it is written in words.

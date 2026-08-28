@@ -21,11 +21,12 @@
 <section class="hero">
   <div class="wrap">
     <p class="eyebrow">How is the cluster doing?</p>
-    <h1>Polymer jobs have fallen for a <em>third straight year</em>.</h1>
+    <h1>Polymer jobs in Northeast Ohio have fallen for a <em>third straight year</em>.</h1>
     <p class="stand" id="stand"></p>
     <div class="hero-row" id="figs"></div>
     <p class="byline">By the Polymer Industry Cluster desk &middot; Recomputed from the
-      shipped data of six Evidence Room pages &middot; August 2026</p>
+      published data of six pages in the Evidence Room, our public data archive
+      &middot; August 2026</p>
   </div>
 </section>
 
@@ -33,11 +34,14 @@
   <div class="wrap">
     <p class="takeaway">This year in one picture</p>
     <h2>The loudest number here is ordinary</h2>
-    <p class="lede">A move counts only if it beats this measure&rsquo;s own noise.</p>
+    <p class="lede">A big number is only news if it is big for that particular measure.</p>
     <p class="fig-title" id="movetitle"></p>
     <p class="fig-sub">Each bar is this year&rsquo;s change divided by how far that measure
-      usually moves between years. The gray band behind it is the full range of its earlier
-      moves, so a bar inside the band is a year this measure has had before.</p>
+      usually moves between years, so a three-hundredths move in a wage ratio and a
+      $16 million move in contracting land on one axis. Past 1.0 the move beat the middle
+      of that measure&rsquo;s own earlier moves, which is what &ldquo;bigger than
+      usual&rdquo; means here and which about half of years do. The upright mark on each
+      row is the furthest that measure has ever moved in a single year.</p>
     <div class="chart"><svg id="move" role="img" aria-labelledby="move-t">
       <title id="move-t">Five measures of the polymer cluster, each showing this year&rsquo;s
         change as a multiple of that measure&rsquo;s typical yearly change, against the full
@@ -46,7 +50,7 @@
     <div class="legend">
       <span><i style="background:#0C6473"></i> The measure rose</span>
       <span><i style="background:#C85F0C"></i> The measure fell</span>
-      <span><i style="background:#DDD9D2"></i> Range of its earlier year-to-year moves</span>
+      <span><i class="tick"></i> The furthest it has ever moved in one year</span>
     </div>
     <div id="movetable"></div>
     <p class="src" id="movesrc"></p>
@@ -57,9 +61,10 @@
   <div class="wrap">
     <p class="takeaway">The five measures</p>
     <h2>Each one, the baseline it is read against, and what it cannot see</h2>
-    <p class="lede">PIC has set no target for any of these five, so no tile reports
-      distance from one. Each reports a level, a direction against a stated baseline, and
-      the page it came from, where the working is shown in full.</p>
+    <p class="lede">We have set no target for any of these five, so no tile reports
+      distance from one. Each reports a level, a direction against a stated baseline, what
+      a high reading would mean for the region, and the page it came from, where the
+      working is shown in full.</p>
     <div class="tiles" id="tiles"></div>
   </div>
 </section>
@@ -68,27 +73,30 @@
   <div class="wrap">
     <p class="takeaway">How to read a move</p>
     <h2>How far these numbers normally move, and what nobody has measured</h2>
-    <p class="lede">The band behind each bar is built one way for all five measures. Take
-      the measure&rsquo;s own published history, work out the change between every
+    <p class="lede">The yardstick each bar is measured against is built one way for all
+      five measures. Take the measure&rsquo;s own published history, work out the change between every
       consecutive pair of years, hold out the newest one, and compare it against the middle
-      and the largest of the rest. A move at or under the middle is a year this measure has
-      had many times.</p>
-    <p class="body-note">That band describes how far a series travels between published
-      years. It is not a revision band, and the difference decides how much weight a fresh
-      figure can carry. A revision band would say how far the year just published will move
-      once the agencies restate it, and this repository has measured that for exactly three
-      producer-price indexes: 259 reference months of archived vintages, a middle revision
-      of 0.15 percent of the level and a largest of 1.42 percent. For the employment, degree
+      and the largest of the rest. Half a measure&rsquo;s years land under its own middle
+      by construction, which is why a badge saying a move beat it is a prompt to look
+      rather than a verdict.</p>
+    <p class="body-note">That yardstick describes how far a series travels between
+      published years. It says nothing about revision, and the difference decides how much
+      weight a fresh figure can carry. A revision measure would say how far the year just
+      published will move once the agencies restate it, and this repository has measured
+      that for exactly three producer-price indexes, the prices factories charge for what
+      they make: 259 reference months of archived earlier releases, a middle revision of
+      0.15 percent of the level and a largest of 1.42 percent. For the employment, degree
       and spending series on this page, nobody has measured it. The
       <a href="../revisions/">revisions page</a> says so itself and names archived
-      employment vintages as the file it needs.</p>
+      employment releases as the file it needs.</p>
     <div class="statgrid" id="statgrid"></div>
     <div class="note" id="note"><b>Withheld is not zero.</b> Three of the five measures
-      are built from county cells, and the Bureau of Labor Statistics withholds a cell when
-      publishing it would identify an employer. The set it withholds changes from year to
-      year, so a raw comparison of two annual totals mixes real change with the
-      bureau&rsquo;s publication decisions. Where that applies, the direction on this page
-      is read from the cells present in every year.</div>
+      are built from one employment figure per county per industry, and the Bureau of
+      Labor Statistics withholds a figure when publishing it would identify an employer.
+      The set it withholds changes from year to year, so a raw comparison of two annual
+      totals mixes real change with the bureau&rsquo;s publication decisions. Where that
+      applies, the direction on this page is read from the figures present in every
+      year.</div>
   </div>
 </section>
 
@@ -113,11 +121,11 @@
 
 <footer class="foot">
   <div class="wrap">
-    <p class="foot-lede">Every figure here is recomputed from the shipped data of the page
-      it links to, by one script in this folder. A correction on any of those pages fails
-      this page&rsquo;s checks until it is carried through.</p>
-    <p class="foot-id"><a href="../index/">The PIC Evidence Room</a> &middot; Polymer
-      Industry Cluster, Greater Akron Chamber</p>
+    <p class="foot-lede">Every figure here is recomputed from the published data of the
+      page it links to, by one script in this folder. A correction on any of those pages
+      fails this page&rsquo;s checks until it is carried through.</p>
+    <p class="foot-id"><a href="../index/">The PIC Evidence Room</a>, our public data
+      pages &middot; Polymer Industry Cluster, Greater Akron Chamber</p>
   </div>
 </footer>
 

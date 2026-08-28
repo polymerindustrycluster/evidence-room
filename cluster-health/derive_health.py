@@ -8,20 +8,25 @@ WHAT THIS IS
 
   Run from anywhere:  python3 cluster-health/derive_health.py
 
-THE MOVEMENT BAND, AND WHAT IT IS NOT
+HOW FAR A MEASURE USUALLY MOVES, AND WHAT THAT IS NOT
   Each tile reports whether this year's move is unusual for that measure. The rule is one
   rule, applied identically to all five:
 
       take the same measure's own published history;
       compute the absolute change between every consecutive pair of years;
       hold out the latest change; that is the year being judged;
-      the band is the MEDIAN of the earlier changes, and the largest of them.
+      the yardstick is the MEDIAN of the earlier changes, and the largest of them.
+
+  The page draws the median as a reference line at 1.0 and the largest as a single upright
+  mark per row. It used to draw the largest as a filled band from zero, which every bar
+  sat inside by construction, so the caption said "nothing unusual here" while the labels
+  beside it said the opposite.
 
   A move at or below the median is inside the range this measure normally moves between
   published years. A move larger than every earlier one is outside it. In between, the
   tile says how many earlier years it beats.
 
-  This is a HISTORY band, not a REVISION band. It says how far the series has moved
+  This is a HISTORY yardstick, not a REVISION one. It says how far the series has moved
   between published years. It does not say how far a future revision will move the year
   just published, because for four of these five measures nobody has measured that. The
   one place it HAS been measured in this repo is the producer-price series on the
@@ -149,6 +154,12 @@ for n in REGISTER:
     d = by_industry[n]
     d["change"] = d["latest"] - d["prev"]
 
+# The three industry moves are read on EVERY county published this year; the headline 802
+# is read on the smaller set published in every year. The two therefore do not agree, and
+# a reader who adds the three finds this number instead of the headline, so the page has
+# to print it rather than leave the subtraction to fail silently.
+drivers_sum = sum(by_industry[n]["change"] for n in REGISTER)
+
 # consecutive falling years, on the balanced panel
 falling = 0
 for i in range(len(YEARS) - 1, 0, -1):
@@ -258,6 +269,8 @@ rev_series = sorted({p["label"] for p in rev["periods"]})
 # --------------------------------------------------------------------------- assemble
 WORDS = {0: "no", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
          7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven", 12: "twelve"}
+ORDINAL = {1: "first", 2: "second", 3: "third", 4: "fourth", 5: "fifth", 6: "sixth",
+           7: "seventh", 8: "eighth", 9: "ninth", 10: "tenth"}
 
 
 def fmt_n(v):
@@ -268,50 +281,61 @@ tiles = [
     {
         "id": "scale",
         "dimension": "Scale",
-        "short": "jobs in the register",
+        "short": "jobs counted",
         "question": "How many jobs is this?",
         "value": fmt_n(disclosed[LATEST]),
         "unit": "jobs",
         "reading": (f"{fmt_n(disclosed[LATEST])} jobs in the three industries the cluster "
                     f"measures itself by, counted across the twelve counties in "
-                    f"{LATEST}. It is a floor, not a total: BLS withheld "
-                    f"{possible - cells[LATEST]} of the {possible} industry-county cells."),
+                    f"{LATEST}. It is a floor rather than a total: the Bureau of Labor "
+                    f"Statistics publishes one figure per county per industry, and it "
+                    f"withheld {possible - cells[LATEST]} of the {possible} to keep single "
+                    f"employers unidentifiable."),
+        "means": (f"On the {len(balanced_keys)} county figures published in every year "
+                  f"since {YEARS[0]}, the only run that holds the same set of counties "
+                  f"still, the total went {fmt_n(balanced[LATEST - 2])} in {LATEST - 2}, "
+                  f"then {fmt_n(balanced[LATEST - 1])}, then {fmt_n(balanced[LATEST])}. "
+                  f"That is the {ORDINAL[falling]} straight fall, and fewer jobs is the "
+                  f"bad direction here."),
         "baseline": {
-            "name": f"the same counted cells in {LATEST - 1}",
-            "why": ("A year is the shortest step this series takes, and the same-cell "
-                    "comparison is the only one that holds the measurement frame still "
-                    "while the economy moves."),
+            "name": f"the same county figures in {LATEST - 1}",
+            "why": ("A year is the shortest step this series takes, and comparing the "
+                    "same set of counties is the only way to hold the measurement frame "
+                    "still while the economy moves."),
         },
         "direction": {
             "value": round(balanced[LATEST] - balanced[LATEST - 1]),
             "pct": round((balanced[LATEST] / balanced[LATEST - 1] - 1) * 100, 1),
             "words": (f"down {abs(round(balanced[LATEST] - balanced[LATEST - 1])):,} jobs, "
                       f"{abs(round((balanced[LATEST] / balanced[LATEST - 1] - 1) * 100, 1))} "
-                      f"percent, in the cells counted in both years"),
+                      f"percent, on the county figures published in both years"),
             "short_move": f"down {abs(round(balanced[LATEST] - balanced[LATEST - 1])):,} jobs",
+            "of": "on the county figures published in both years",
             "raw": round(disclosed[LATEST] - disclosed[LATEST - 1]),
             "streak": falling,
         },
         "band": scale_band,
-        "blind": (f"{possible - cells[LATEST]} of the {possible} industry-county cells "
-                  f"are withheld so no employer can be identified from them. A withheld "
-                  f"cell is not a zero, and the jobs in it are not in the "
+        "blind": (f"{possible - cells[LATEST]} of the {possible} county-by-industry "
+                  f"figures are withheld so no employer can be identified from them. A "
+                  f"withheld figure is not a zero, and the jobs behind it are not in the "
                   f"{fmt_n(disclosed[LATEST])}."),
         "vintage": {
             "as_of": f"{LATEST} annual averages",
-            "changes_it": ("BLS revises QCEW county cells when employers refile. A new "
-                           "annual release replaces this figure outright."),
+            "changes_it": ("The Bureau of Labor Statistics revises these county figures, "
+                           "which come from its Quarterly Census of Employment and Wages, "
+                           "when employers refile. A new annual release replaces this "
+                           "figure outright."),
         },
         "link": {"href": "../wages/", "label": "What the work pays"},
         "drivers": [
             {"label": by_industry["326"]["label"],
              "value": f"down {abs(by_industry['326']['change']):,.0f} jobs",
              "note": (f"{fmt_n(by_industry['326']['latest'])} jobs, all twelve counties "
-                      f"disclosed in both years")},
+                      f"published in both years")},
             {"label": by_industry["3255"]["label"],
              "value": f"down {abs(by_industry['3255']['change']):,.0f} jobs",
              "note": (f"{fmt_n(by_industry['3255']['latest'])} jobs across "
-                      f"{WORDS[by_industry['3255']['cells_latest']]} disclosed counties, "
+                      f"{WORDS[by_industry['3255']['cells_latest']]} published counties, "
                       f"the same count as last year")},
             {"label": by_industry["3252"]["label"],
              "value": f"up {abs(by_industry['3252']['change']):,.0f} jobs",
@@ -320,6 +344,12 @@ tiles = [
                       f"{WORDS[by_industry['3252']['cells_latest']]}, so this rise is "
                       f"partly the bureau publishing more")},
         ],
+        "drivers_note": (f"Add these three and you get a fall of "
+                         f"{abs(round(drivers_sum)):,}, "
+                         f"which is the change across every county published this year. "
+                         f"The {abs(round(balanced[LATEST] - balanced[LATEST - 1])):,} "
+                         f"above is measured on the smaller set published in both years, "
+                         f"so the two differ and the three do not sum to it."),
     },
     {
         "id": "concentration",
@@ -333,6 +363,11 @@ tiles = [
                     f"that the country does. Plastics and rubber, the industries the region "
                     f"is known for, run "
                     f"{[c for c in conc if c['naics'] == '326'][0]['lq']:.2f} times."),
+        "means": (f"A high share cuts both ways. {WORDS[round(lead['lq'])].capitalize()} "
+                  f"times the country’s concentration is what makes these counties worth "
+                  f"a buyer’s flight, and it is what ties local payroll to one industry’s "
+                  f"cycle. This year’s fall moves them a step toward looking like the "
+                  f"country, which costs some of each."),
         "baseline": {
             "name": "1.0 times, the national share of employment",
             "why": ("A share against the country needs no peer region chosen for it and "
@@ -347,6 +382,7 @@ tiles = [
                       f"share, a fall of {abs(lead['lq'] - lead['prev']):.2f}"),
             "short_move": (f"down {abs(lead['lq'] - lead['prev']):.2f}, "
                            f"to {lead['lq']:.2f}×"),
+            "of": "on the year",
             "streak": None,
         },
         "band": conc_band,
@@ -363,7 +399,7 @@ tiles = [
         "drivers": [
             {"label": c["label"],
              "value": f"{c['lq']:.2f}×",
-             "note": (f"{WORDS[c['counties_counted']]} of twelve counties disclosed, "
+             "note": (f"{WORDS[c['counties_counted']]} of twelve counties published, "
                       f"{fmt_n(c['emp'])} jobs")}
             for c in conc
         ],
@@ -375,10 +411,16 @@ tiles = [
         "question": "Are these good jobs?",
         "value": f"{median(local):.2f}× / {median(nat):.2f}×",
         "unit": "its county / its industry nationally",
+        # Two numbers in one tile read as one figure with a slash in it. Split them so
+        # each carries its own label instead of asking the reader to pair by position.
+        "value_parts": [
+            {"v": f"{median(local):.2f}×", "k": "the average job in its own county"},
+            {"v": f"{median(nat):.2f}×", "k": "the same industry across the country"},
+        ],
         "reading": (f"The typical polymer job out-pays the average job in its own county "
                     f"by {median(local):.2f} times, and pays {median(nat):.2f} times what "
                     f"the same industry averages nationally. Both are true at once, and "
-                    f"{len(both)} of the {len(latest_reg)} disclosed cells, holding "
+                    f"{len(both)} of the {len(latest_reg)} published county figures, holding "
                     f"{fmt_n(sum(r['emp'] for r in both))} of the "
                     f"{fmt_n(emp_total)} jobs, sit in both states."),
         "baseline": {
@@ -395,15 +437,16 @@ tiles = [
                       f"{nat_series[-1][1]:.3f}× of the U.S. rate for the same work"),
             "short_move": (f"up {abs(nat_series[-1][1] - nat_series[-2][1]):.2f}, "
                            f"to {nat_series[-1][1]:.2f}×"),
+            "of": "on the year, on the national side",
             "streak": None,
         },
         "band": pay_band,
         "drivers": [
             {"label": "Beats its own county",
-             "value": f"{sum(1 for v in local if v > 1)} of {len(local)} cells",
+             "value": f"{sum(1 for v in local if v > 1)} of {len(local)} counties",
              "note": f"median {median(local):.2f} times the county all-industry average"},
             {"label": "Beats its industry nationally",
-             "value": f"{sum(1 for v in nat if v >= 1)} of {len(nat)} cells",
+             "value": f"{sum(1 for v in nat if v >= 1)} of {len(nat)} counties",
              "note": f"median {median(nat):.2f} times the U.S. average for the same work"},
             {"label": "Weekly wage per covered job",
              "value": "$" + fmt_n(nat_series[-1][2]),
@@ -415,9 +458,9 @@ tiles = [
                   "raise. Nothing here is any one person’s pay."),
         "vintage": {
             "as_of": f"{LATEST} annual averages",
-            "changes_it": ("The local ratio has no shipped history, so only the national "
-                           "side carries a movement band. A year of QCEW wage revisions "
-                           "moves both."),
+            "changes_it": ("The local ratio has no published history here, so only the "
+                           "national side can be judged against its own past. A year of "
+                           "wage revisions moves both."),
         },
         "link": {"href": "../wages/", "label": "Does the cluster pay better"},
     },
@@ -431,8 +474,8 @@ tiles = [
         "reading": (f"The three universities in the region conferred "
                     f"{polymer[deg_latest]} polymer degrees in {deg_latest}, against "
                     f"{polymer[deg_peak_year]} in {deg_peak_year}, their own high. "
-                    f"Materials degrees, the other half of the program set, held at "
-                    f"{materials[deg_latest]}."),
+                    f"Materials degrees, the other group of programs these three schools "
+                    f"count here, held at {materials[deg_latest]}."),
         "baseline": {
             "name": f"the same three institutions in {deg_peak_year}, their own high",
             "why": ("A peer region would need a defensible peer set and PIC has named "
@@ -446,6 +489,7 @@ tiles = [
                       f"{abs(round((polymer[deg_latest] / polymer[deg_peak_year] - 1) * 100))}"
                       f" percent below its {deg_peak_year} high"),
             "short_move": f"up {polymer[deg_latest] - polymer[deg_latest - 1]} degrees",
+            "of": "on the year",
             "streak": None,
         },
         "band": deg_band,
@@ -456,7 +500,7 @@ tiles = [
                       f"{occ['program_totals']['polymer_awards_window_avg']}")},
             {"label": f"Materials programs, {deg_latest}",
              "value": fmt_n(materials[deg_latest]),
-             "note": "the half of the program set that has not fallen"},
+             "note": "the group of programs that has not fallen"},
             {"label": "Annual openings, the two degree occupations",
              "value": fmt_n(sum(o["annual"] for o in openings)),
              "note": ("materials and chemical engineers, on the state’s "
@@ -468,7 +512,8 @@ tiles = [
                   f"see graduates who leave the region, employers who hire from outside it, "
                   f"or the two-year and certificate routes into the same plants."),
         "vintage": {
-            "as_of": f"IPEDS completions, {deg_latest}",
+            "as_of": (f"{deg_latest}, from IPEDS, the federal survey every college "
+                      f"reports its completed degrees to"),
             "changes_it": (f"This is the slowest series on the page: {deg_latest} is "
                            f"{WORDS[LATEST - deg_latest]} years behind the employment "
                            f"figures. Each new IPEDS release adds one year."),
@@ -487,6 +532,13 @@ tiles = [
                     f"funding map is written into signed awards naming "
                     f"{WORDS[len(eda_leads)]} organizations. None of it is disbursement: "
                     f"every figure here is money committed, not money spent."),
+        "means": (f"A bigger number here is good news for the region only once the money "
+                  f"is spent, and no figure on this page tracks spending. Read "
+                  f"${federal_org_named / 1e6:.1f}M as a queue with "
+                  f"{WORDS[len(eda_leads)]} names on it. The change printed beside it, up "
+                  f"${(fy_real[closed[-1]] - fy_real[closed[-2]]) / 1e6:.1f}M, belongs to "
+                  f"a different series: the year-on-year move in routine contracting, "
+                  f"money already flowing to plants here."),
         "baseline": {
             "name": (f"routine federal contracting, ${closed_avg / 1e6:.1f} million a year "
                      f"in {fed['cpi_base']} dollars"),
@@ -503,31 +555,40 @@ tiles = [
                       f"FY{closed[-1]} from ${fy_real[closed[-2]] / 1e6:.1f}M, "
                       f"{round((fy_real[closed[-1]] / fy_real[closed[-2]] - 1) * 100)} "
                       f"percent higher"),
-            "short_move": (f"up ${(fy_real[closed[-1]] - fy_real[closed[-2]]) / 1e6:.1f}M"),
+            # The tile prints $51.0M of signed awards and this move underneath it. They
+            # are different series, so the label says which one moved rather than letting
+            # the layout imply it is the award pile growing.
+            "short_move": (f"Contracting up "
+                           f"${(fy_real[closed[-1]] - fy_real[closed[-2]]) / 1e6:.1f}M"),
+            "of": (f"in routine contracting on the year, which is not the "
+                   f"${federal_org_named / 1e6:.1f}M above"),
             "streak": None,
         },
         "band": cap_band,
         "drivers": [
-            {"label": "Tech Hub implementation awards",
+            {"label": "Signed awards",
              "value": "$" + f"{sum(a for _, a in eda_leads) / 1e6:.1f}M",
-             "note": (f"{WORDS[len(eda_leads)].capitalize()} signed awards, each naming "
-                      f"its recipient")},
+             "note": (f"{WORDS[len(eda_leads)].capitalize()} awards under the federal Tech "
+                      f"Hubs program, each one a signed document naming its recipient")},
             {"label": "Routine contracting, FY" + str(closed[-1]),
              "value": "$" + f"{fy_real[closed[-1]] / 1e6:.1f}M",
-             "note": (f"obligations to polymer plants in the twelve counties, "
-                      f"{fed['cpi_base']} dollars")},
-            {"label": "Award against the routine flow",
+             "note": (f"federal contracts and grants written to polymer plants in the "
+                      f"twelve counties, in {fed['cpi_base']} dollars")},
+            {"label": "The award, in years of routine contracting",
              "value": f"{sum(a for _, a in eda_leads) / closed_avg:.1f} years",
-             "note": "of the contracting that was already arriving without it"},
+             "note": (f"${sum(a for _, a in eda_leads) / 1e6:.1f}M divided by the "
+                      f"${closed_avg / 1e6:.1f}M a year that was already arriving")},
         ],
         "blind": ("The contracting series filters on manufacturing industry codes, so "
-                  "university and research awards are invisible to it: the "
-                  "$15.0M NSF Engine appears in no figure here. Place of performance is a "
-                  "field reported on the award, not an observation of where work happened."),
+                  "university and research awards are invisible to it: a $15.0M National "
+                  "Science Foundation Engines award appears in no figure here. Place of "
+                  "performance is a field reported on the award, not an observation of "
+                  "where work happened."),
         "vintage": {
-            "as_of": f"USAspending through FY{OPEN_FY}, {fed['cpi_base']} dollars",
+            "as_of": (f"USAspending, the government’s own record of what it contracts and "
+                      f"grants, through FY{OPEN_FY} in {fed['cpi_base']} dollars"),
             "changes_it": (f"FY{OPEN_FY} is a partial year and is excluded from every "
-                           f"average here. USAspending backfills obligations for months "
+                           f"average here. USAspending keeps adding awards for months "
                            f"after a year closes."),
         },
         "link": {"href": "../federal-money/", "label": "The other federal money"},
@@ -536,44 +597,54 @@ tiles = [
 
 health = {
     "meta": {
-        "source": ("Recomputed from the shipped data files of six Evidence Room pages: "
-                   "wages, location-quotient, occupations, federal-money, funding-map "
-                   "and revisions."),
-        "sources": ("Behind those pages: BLS Quarterly Census of Employment and Wages "
-                    "annual averages; BLS Employment Projections and IPEDS completions; "
-                    "USAspending obligations at place of performance; signed federal "
-                    "Notices of Award; ALFRED archived vintages."),
+        "source": ("Recomputed from the published data files of six pages in the Evidence "
+                   "Room, PIC’s public data archive: wages, concentration, occupations, "
+                   "federal money, the funding map and revisions."),
+        "sources": ("Behind those pages: annual average employment and wages from the "
+                    "Quarterly Census of Employment and Wages, the count the Bureau of "
+                    "Labor Statistics builds from state unemployment-insurance filings; "
+                    "BLS Employment Projections and completed degrees from IPEDS, the "
+                    "federal survey every college reports to; award and contract records "
+                    "from USAspending, filed against the place of performance the award "
+                    "names; the signed award documents themselves; and archived earlier "
+                    "releases of the price series from ALFRED, the Federal Reserve’s "
+                    "archive of what each statistic said on the day it was published."),
         "row": ("One row is one measure in one year: its level, the baseline it is read "
                 "against, and every year-over-year change the same measure has made in "
                 "its published history."),
-        "definition": ("A movement band is built the same way for all five measures. Take "
-                       "the measure’s own published history, compute the change "
-                       "between every consecutive pair of years, hold out the latest one, "
-                       "and compare it against the median and the largest of the earlier "
-                       "changes. A move at or below the median is ordinary for that "
-                       "measure; a move larger than every earlier one is not."),
+        "definition": ("How far a measure usually moves is worked out the same way for "
+                       "all five. Take the measure’s own published history, compute the "
+                       "change between every consecutive pair of years, hold out the "
+                       "latest one, and compare it against the median and the largest of "
+                       "the earlier changes. A move at or below the median is an ordinary "
+                       "year for that measure, which by construction about half of years "
+                       "are; a move larger than every earlier one has no precedent in the "
+                       "series."),
         "baseline": ("Each tile states the baseline it is read against and why that one. "
                      "PIC has set no target for any of these five measures, so no tile "
                      "reports distance from a target: they report level and direction "
                      "only."),
-        "caution": ("The movement band measures how far a published series has moved "
-                    "between years. It is not a revision band and cannot say how far a "
-                    "future revision will move the year just published. This repository "
-                    "has measured that for exactly three producer-price indexes, on the "
-                    "revisions page, and for none of the employment, degree or spending "
-                    "series here."),
-        "suppression": ("A cell BLS withholds is never a zero. Three of the five measures "
-                        "are built from county cells and the set of disclosed cells "
-                        "changes year to year, so for those three the movement is judged "
-                        "on the cells present in every year rather than on the raw total."),
-        "scope": ("The measurement register is NAICS 3252, 3255 and 326. NAICS 325 sweeps "
-                  "in pharmaceuticals, agricultural chemicals and industrial gas, about "
-                  "60 percent of its own figure, and is context rather than cluster."),
+        "caution": ("What is measured here is how far a published series has moved "
+                    "between years. That is not the same as how far a future revision "
+                    "will move the year just published, which this repository has "
+                    "measured for exactly three producer-price indexes (the prices "
+                    "factories charge for their output), on the revisions page, and for "
+                    "none of the employment, degree or spending series here."),
+        "suppression": ("A county figure the bureau withholds is never a zero. Three of "
+                        "the five measures are built from one figure per county per "
+                        "industry, and the set the bureau publishes changes year to year, "
+                        "so for those three the movement is judged on the figures present "
+                        "in every year rather than on the raw total."),
+        "scope": ("The three industries counted here are the census codes for resin and "
+                  "synthetic rubber (3252), paint and coatings (3255) and plastics and "
+                  "rubber products (326). The wider chemicals code 325 sweeps in "
+                  "pharmaceuticals, agricultural chemicals and industrial gas, about 60 "
+                  "percent of its own figure, and is context rather than cluster."),
         "not": ("This page carries no measure of output, productivity, exports, private "
                 "investment or company formation, because no page in this room ships one "
                 "yet. Five measures are not the health of an economy."),
-        "geography": ("Every employment, wage and contracting figure is on the PIC-12 "
-                      "footprint. The degree completions are three named universities and "
+        "geography": ("Every employment, wage and contracting figure is on the twelve "
+                      "counties PIC treats as its region. The degree completions are three named universities and "
                       "the openings estimate beside them is a state projection for an "
                       "eighteen-county region: they are printed side by side and never "
                       "divided into one another."),

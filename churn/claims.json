@@ -35,19 +35,27 @@
     },
     {
       "id": "churn-net",
-      "text": "Net employment change of +168 jobs.",
+      "text": "The flow ledger nets +168: 168 more job starts than job ends across the period.",
       "source": "derived: hires minus separations, summed",
       "assert": "sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters']) == 168",
       "actual": "sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters'])",
-      "falsified_if": "Any QWI revision. This is a flow-derived net, NOT the change in the employment stock — the stock reads 18,444 at the start and 17,725 at the end, and the page says so beside the chart."
+      "falsified_if": "Any QWI revision. This is a flow-derived net, NOT the change in the employment stock — the stock reads 18,444 at the start and 17,725 at the end, and the page says so on the hero stat card, in the flow chart's source line and in the closer. WORDING: the H1 read 'to end up with 168 more jobs' and the closer 'the cluster gained 168 net jobs', which a reader will quote to a board as a jobs gain and be wrong, because the published headcount fell over the same span. Both now say starts against ends. If this number is ever restated as a change in employment anywhere on the page, that sentence is false and churn-stock-and-flow is the claim that proves it."
     },
     {
       "id": "churn-stock-and-flow",
-      "text": "The beginning-of-quarter count reads 18,444 in 2012Q1 against 17,725 in 2025Q3, so the flow ledger is not the change in the stock.",
+      "text": "The beginning-of-quarter count reads 18,444 in 2012Q1 against 17,725 in 2025Q3, a fall of 719, so the flow ledger is not the change in the stock.",
       "source": "Census QWI Emp, first and last published quarters",
-      "assert": "D['quarters'][0]['emp'] == 18444 and D['quarters'][-1]['emp'] == 17725 and abs((D['quarters'][-1]['emp'] - D['quarters'][0]['emp']) - (sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters']))) > 500",
-      "actual": "(D['quarters'][0]['emp'], D['quarters'][-1]['emp'], sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters']))",
-      "falsified_if": "A QWI revision that reconciles the seasonally adjusted stock with the seasonally adjusted flows. If the two ever agree within 500 jobs, the sentence in the flow chart's source line about them being estimated separately has to be rewritten, not just re-rounded."
+      "assert": "D['quarters'][0]['emp'] == 18444 and D['quarters'][-1]['emp'] == 17725 and D['quarters'][-1]['emp'] - D['quarters'][0]['emp'] == -719 and abs((D['quarters'][-1]['emp'] - D['quarters'][0]['emp']) - (sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters']))) > 500",
+      "actual": "(D['quarters'][0]['emp'], D['quarters'][-1]['emp'], D['quarters'][-1]['emp'] - D['quarters'][0]['emp'], sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters']))",
+      "falsified_if": "A QWI revision that reconciles the seasonally adjusted stock with the seasonally adjusted flows, or that moves the 719-job fall. If the two ever agree within 500 jobs, the sentence about them being estimated separately has to be rewritten, not just re-rounded. The 719 is now printed in three reader-facing places — the +168 hero card, the flow chart's source line and the closer — because a qualifier that lives only in a grey source note two screens below the number it qualifies does not reach the reader who quotes the number."
+    },
+    {
+      "id": "churn-last-four-net",
+      "text": "Over the last four published quarters the region ended 531 more jobs than it started, so the nine-of-twelve county outflow and the fourteen-year +168 do not contradict each other.",
+      "source": "derived: hires minus separations over the last four quarters, and the county panel over the same four",
+      "assert": "sum(q['hires'] - q['seps'] for q in D['quarters'][-4:]) == -531 and sum(c['hires'] - c['seps'] for c in D['counties']) == -531 and sum(1 for c in D['counties'] if c['seps'] > c['hires']) == 9",
+      "actual": "(sum(q['hires'] - q['seps'] for q in D['quarters'][-4:]), sum(c['hires'] - c['seps'] for c in D['counties']))",
+      "falsified_if": "The four-quarter net leaves -531, or the county panel stops summing to the same figure as the last four quarters of the time series. THIS CLAIM EXISTS BECAUSE A READER STALLED: the county verdict said nine of twelve counties ended more jobs than they started while the hero said +168, and the reader stopped to check whether the page contradicted itself. It does not, because the two cover different periods, and the verdict line now prints the four-quarter figure so the reader does not have to work that out. If the two panels ever stop reconciling, the verdict sentence is wrong."
     },
     {
       "id": "churn-quarters",
@@ -59,11 +67,11 @@
     },
     {
       "id": "churn-footprint",
-      "text": "This page uses the PIC-12 footprint.",
+      "text": "This page uses the PIC-12 footprint, and the banner names all twelve counties.",
       "source": "John's decision 2026-08-14",
-      "assert": "D['meta']['footprint']['label'] == 'PIC-12'",
-      "actual": "D['meta']['footprint']",
-      "falsified_if": "FOOTPRINT: this page uses PIC-12, matching the cluster-health dashboard. It does NOT reconcile with the vault-sourced pages, which use NEO-14 — the two share only 10 counties."
+      "assert": "D['meta']['footprint']['label'] == 'PIC-12' and len(D['meta']['footprint']['counties']) == 12 and D['meta']['footprint']['counties'] == sorted(D['meta']['footprint']['counties']) and {c['county'] for c in D['counties']} == set(D['meta']['footprint']['counties'])",
+      "actual": "D['meta']['footprint']['counties']",
+      "falsified_if": "The footprint label changes, the list stops holding twelve names, the names stop being alphabetical (the banner prints them in file order and reads as a list), or the county panel stops covering exactly the counties the banner names. BANNER COPY: the strip above the headline used to open on 'excludes Crawford, Huron, Richland and Tuscarawas, which the vault's NEO-14 includes' — two undefined internal terms in the most valuable position on the page. A naive reader skipped the whole strip. It now names the twelve counties, which is the geography the headline promises; NEO-14 is defined in the methodology instead. FOOTPRINT: this page still does NOT reconcile with NEO-14 pages, which share only 10 counties, and the methodology says so."
     },
     {
       "id": "churn-footprint-complete",
@@ -83,11 +91,19 @@
     },
     {
       "id": "churn-average-rate",
-      "text": "The average quarter moves 10.8% of the workforce in or out: about a tenth of jobs start and about a tenth end.",
+      "text": "The average quarter moves 10.8% of the workforce in or out: about a tenth of jobs start and about a tenth end. That average runs across fourteen calendar years, 2012 to 2025, and the last four published quarters run 9.6%.",
       "source": "derived: mean of the 55 quarterly churn rates",
-      "assert": "round(sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) * 100, 1) == 10.8 and 0.095 <= sum(q['hires']/q['emp'] for q in D['quarters']) / len(D['quarters']) <= 0.115 and 0.095 <= sum(q['seps']/q['emp'] for q in D['quarters']) / len(D['quarters']) <= 0.115",
+      "assert": "round(sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) * 100, 1) == 10.8 and len({q['year'] for q in D['quarters']}) == 14 and min(q['year'] for q in D['quarters']) == 2012 and max(q['year'] for q in D['quarters']) == 2025 and round(sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4 * 100, 1) == 9.6 and 0.095 <= sum(q['hires']/q['emp'] for q in D['quarters']) / len(D['quarters']) <= 0.115 and 0.095 <= sum(q['seps']/q['emp'] for q in D['quarters']) / len(D['quarters']) <= 0.115",
       "actual": "sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) * 100",
-      "falsified_if": "The mean moves off 10.75-10.85. This one figure carries the hero stat card, the shop-floor vignette and the translator's default sentence, so a tenth of a point moves three surfaces at once. UNITS: churn is the average of hires and separations over jobs, so 10.8% is 10.8% hired AND 10.8% separated, not 10.8% total movement. The hero stat card no longer reads 'of the workforce, per quarter' but 'a tenth of jobs start, a tenth end, each quarter', so the per-side bounds are asserted here too: a revision that moved either side out of 9.5%-11.5% would break the card even while the 10.8% headline still rounded."
+      "falsified_if": "The mean moves off 10.75-10.85, the span stops covering exactly the fourteen calendar years 2012 to 2025, or the recent four-quarter mean leaves 9.6%. THE CARD NOW CARRIES ITS PERIOD AND ITS CURRENT VALUE, because a reader met 10.8% on a card, 9.6% in a chart headline and 8.5% on a dashed line and had to build a table in their head to keep three numbers for one measure apart. The card is labelled 'average churn, 2012 to 2025' and prints 9.6% beside it, and the rate section's lede lines up all three in one sentence. This one figure still carries the hero stat card, the shop-floor comparison and the translator's second sentence, so a tenth of a point moves three surfaces at once. UNITS: churn is the average of hires and separations over jobs, so 10.8% is 10.8% hired AND 10.8% separated, not 10.8% total movement. The hero stat card no longer reads 'of the workforce, per quarter' but 'a tenth of jobs start, a tenth end, each quarter', so the per-side bounds are asserted here too: a revision that moved either side out of 9.5%-11.5% would break the card even while the 10.8% headline still rounded."
+    },
+    {
+      "id": "churn-no-comparator",
+      "text": "This page carries no outside comparator: one industry code, one footprint, and no second series to hold the churn rate against.",
+      "source": "churn.json: the whole shipped payload",
+      "assert": "set(D.keys()) == {'meta', 'quarters', 'counties'} and D['meta']['naics'].startswith('326') and D['meta']['footprint']['label'] == 'PIC-12' and all(set(q.keys()) <= {'year','q','emp','hires','seps','counties','missing','net','churn_rate'} for q in D['quarters']) and all(set(c.keys()) <= {'county','hires','seps','emp','quarters_missing','churn_rate'} for c in D['counties'])",
+      "actual": "(sorted(D.keys()), D['meta']['naics'], D['meta']['footprint']['label'], sorted({k for q in D['quarters'] for k in q}))",
+      "falsified_if": "The pull gains a second industry code, a second geography, or any field carrying an all-manufacturing or national rate. AT THAT POINT THIS PAGE MUST PUBLISH THE COMPARISON RATHER THAN SAY IT HAS NONE. The hero now answers 'is a tenth a quarter a lot?' with 'nothing on this page answers that against another industry or another state', which is an honest finding only while it is true of the shipped data; the moment a comparator lands in this file that sentence becomes an evasion. The reason it sits in the hero rather than in a collapsed methodology fold is that a naive reader asked the question in the first ten seconds and found the answer six thousand pixels down, behind a toggle whose title was itself the admission."
     },
     {
       "id": "churn-baseline-and-gap",
@@ -147,23 +163,23 @@
     },
     {
       "id": "churn-trumbull-summit",
-      "text": "Trumbull's 13.5% of 402 jobs is 434 job events; Summit's 8.2% of 4,019 jobs is 2,644, about 6.1 times as many.",
+      "text": "Trumbull runs 434 starts and ends in a year on 402 jobs: at 13.5%, about 54 of its jobs start in a quarter and about 54 end. Summit runs 2,644 on 4,019 jobs, 6.1 times Trumbull's.",
       "source": "Census QWI by county, last four published quarters",
-      "assert": "one(c for c in D['counties'] if c['county'] == 'Trumbull')['hires'] + one(c for c in D['counties'] if c['county'] == 'Trumbull')['seps'] == 434 and one(c for c in D['counties'] if c['county'] == 'Summit')['hires'] + one(c for c in D['counties'] if c['county'] == 'Summit')['seps'] == 2644 and one(c for c in D['counties'] if c['county'] == 'Trumbull')['emp'] == 402 and one(c for c in D['counties'] if c['county'] == 'Summit')['emp'] == 4019 and max(c['emp'] for c in D['counties']) == 4019 and round(2644 / 434, 1) == 6.1",
-      "actual": "[(c['county'], c['emp'], c['hires'] + c['seps']) for c in D['counties']]",
-      "falsified_if": "Either county's event count or employment moves, or some other county overtakes Summit on employment (the assertion pins that too, because the chart annotates Summit as the largest base). This pair is the whole rate-versus-base argument, drawn as two annotated dots."
+      "assert": "one(c for c in D['counties'] if c['county'] == 'Trumbull')['hires'] + one(c for c in D['counties'] if c['county'] == 'Trumbull')['seps'] == 434 and one(c for c in D['counties'] if c['county'] == 'Summit')['hires'] + one(c for c in D['counties'] if c['county'] == 'Summit')['seps'] == 2644 and one(c for c in D['counties'] if c['county'] == 'Trumbull')['emp'] == 402 and one(c for c in D['counties'] if c['county'] == 'Summit')['emp'] == 4019 and max(c['emp'] for c in D['counties']) == 4019 and round(2644 / 434, 1) == 6.1 and round(one(c for c in D['counties'] if c['county'] == 'Trumbull')['churn_rate'] * 402) == 54 and abs(one(c for c in D['counties'] if c['county'] == 'Trumbull')['churn_rate'] * 402 * 8 - 434) < 3",
+      "actual": "[(c['county'], c['emp'], round(c['churn_rate'] * c['emp']), c['hires'] + c['seps']) for c in D['counties']]",
+      "falsified_if": "Either county's event count or employment moves, or some other county overtakes Summit on employment (the assertion pins that too, because the chart annotates Summit as the largest base), or 13.5% of 402 stops rounding to 54 a quarter, or the per-quarter figure times eight stops landing within three events of 434. THE ARITHMETIC HAS TO CLOSE ON THE PAGE. The annotation used to read '13.5% of 402 jobs is 434 job events', which hides a multiplier of eight — four quarters, and both sides of the flow. A naive reader multiplied, got 54, assumed a typo, and distrusted the page for two passes. The percentage now lives on the y-axis and in one fig-sub sentence that spells out the 54 and the ×8 in words; the on-chart annotations print counts only, and the one derived figure left on the chart (6.1) divides 2,644 by 434, both of which are printed beside it. This pair is the whole rate-versus-base argument, drawn as two annotated dots."
     },
     {
       "id": "churn-shop-floor",
-      "text": "At a 150-person plant, 10.8% quarterly churn is about sixteen hires and sixteen departures a quarter, five of each in a month, and about 65 replacement hires a year.",
-      "source": "derived: the mean quarterly churn rate applied to a 150-person payroll",
-      "assert": "round(150 * sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters'])) == 16 and round(150 * sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) / 3) == 5 and round(150 * sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) * 4) == 65 and round(150 * sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4 * 4) == 58",
-      "actual": "(150 * sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']), 150 * sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) * 4)",
-      "falsified_if": "Any of the four numbers moves by one. This guards the translator's DEFAULT state, which is the 150-person case printed in the section lede and in the widget before anything is typed; other headcounts are the same arithmetic and are unguarded by design. ILLUSTRATIVE: it applies a cluster average to a single site and is not a measurement of any plant."
+      "text": "At a 150-person plant, the current 9.6% quarterly churn is about fourteen hires and fourteen departures a quarter, five of each in a month, and about 58 replacement hires a year; the fourteen-year average of 10.8% is sixteen and sixteen, and about 65 a year.",
+      "source": "derived: the recent four-quarter and the fourteen-year mean churn rates applied to a 150-person payroll",
+      "assert": "round(150 * sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4) == 14 and round(150 * sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4 / 3) == 5 and round(150 * sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4 * 4) == 58 and round(150 * sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters'])) == 16 and round(150 * sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) / 3) == 5 and round(150 * sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) * 4) == 65",
+      "actual": "(150 * sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4, 150 * sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4 * 4, 150 * sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']), 150 * sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) * 4)",
+      "falsified_if": "Any of the six numbers moves by one. ORDER MATTERS AND IS GUARDED HERE: the section used to open on 10.8%, the highest and least current of the three churn figures on the page, and conceded the current 9.6% in its last sentence. A reader holding three churn numbers at once was handed the stalest one first. The heading, the lede and the translator's default sentence now lead with the last four published quarters and offer the fourteen-year average as the comparison, so both pairs of numbers are asserted. Other headcounts typed into the translator are the same arithmetic and are unguarded by design. ILLUSTRATIVE: it applies a cluster average to a single site and is not a measurement of any plant."
     },
     {
       "id": "churn-replacement-multiple",
-      "text": "The region started 6.0 times its own opening workforce, and the 222,890 hire and separation events are about 1,327 for every one job of net gain.",
+      "text": "The region started 6.0 times its own opening workforce, and the 222,890 hire and separation events are about 1,327 for every one job of the 168-job margin between starts and ends.",
       "source": "derived: total hires over opening employment; total events over net",
       "assert": "round(sum(q['hires'] for q in D['quarters']) / D['quarters'][0]['emp'], 1) == 6.0 and sum(q['hires'] for q in D['quarters']) + sum(q['seps'] for q in D['quarters']) == 222890 and round((sum(q['hires'] for q in D['quarters']) + sum(q['seps'] for q in D['quarters'])) / (sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters']))) == 1327",
       "actual": "(sum(q['hires'] for q in D['quarters']) / D['quarters'][0]['emp'], (sum(q['hires'] for q in D['quarters']) + sum(q['seps'] for q in D['quarters'])) / (sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters'])))",

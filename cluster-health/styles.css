@@ -60,7 +60,11 @@
    display number is a word, a table number is a column. */
 .t-val{margin:12px 0 0;font-size:38px;font-weight:900;line-height:1.02;
   letter-spacing:-.03em;font-variant-numeric:proportional-nums;color:var(--text)}
-.t-val.two{font-size:30px}
+/* Two numbers, stacked, each with its own words underneath. Printed side by side over a
+   paired label they read as one figure with a slash in it, and the reader had to go find
+   a paragraph to learn which half went with which. */
+.t-val.two{font-size:29px;margin-top:10px}
+.t-val.two + .t-val.two{margin-top:12px}
 .t-unit{display:block;margin:7px 0 0;font-size:13px;font-weight:400;letter-spacing:0;
   color:#5A625E;line-height:1.4}
 /* The rail alone has to answer level, direction and whether the direction is unusual, so
@@ -71,24 +75,39 @@
 .t-move span{display:block;font-weight:400;font-size:12.5px;letter-spacing:.02em;
   color:#5A625E}
 
-/* The verdict pill is the page's one piece of colour-as-verdict, and it is stated in
-   words as well as hue: "above" and "ordinary" are readable in grayscale. */
+/* NOTABLE AND DIRECTION ARE INDEPENDENT, so the pill may not borrow either direction
+   colour. It used to be rust, which the chart legend assigns to "the measure fell", so a
+   rising measure wore a falling colour and read as bad news about good news. The pill is
+   now the same charcoal as the 1.0 reference line, which is the thing it reports crossing;
+   "ordinary" is the same charcoal at reading weight in an outline, so the pair separates
+   by fill rather than by hue and survives grayscale. */
 .t-pill{display:inline-block;margin:13px 0 0;font-size:12px;font-weight:900;
-  letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;color:#fff}
-.t-pill.ordinary{background:#5C6B6E}
-.t-pill.above{background:#8F4008}
-.t-pill.record{background:#7A1F1F}
+  letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;border:2px solid #2A3A3E}
+.t-pill.ordinary{background:transparent;color:#2A3A3E}
+.t-pill.above{background:#2A3A3E;color:#fff}
+.t-pill.record{background:#7A1F1F;border-color:#7A1F1F;color:#fff}
 
 .t-read{margin:0;font-size:17px;line-height:1.55;color:#26333A}
+/* What a high reading MEANS for the region, which the direction of the number does not
+   say. Set below the reading and above the drivers, so it reads as interpretation. */
+.t-means{margin:12px 0 0;font-size:15.5px;line-height:1.55;color:#3A4448;
+  border-left:3px solid var(--line);padding-left:14px}
 .t-drivers{display:flex;gap:26px;flex-wrap:wrap;margin:18px 0 0;padding:0;list-style:none}
 .t-drivers li{flex:1 1 168px;min-width:0;border-top:2px solid var(--pv-grid);padding:9px 0 0}
 /* min-height, so a label that wraps to two lines does not drop its own value half a line
    below the two beside it. The strip reads across, so the values have to line up. */
 .d-lab{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
   font-weight:900;color:#4A5457;line-height:1.35;min-height:2.7em}
+/* NEUTRAL, deliberately. --ink is the exact teal the chart legend spends on "the measure
+   rose", and two of these three values are falls; printing them in it taught a colour
+   code on one screen and broke it on the next. The two direction colours now live only in
+   the chart and in the tile's own move line. */
 .d-val{display:block;margin:5px 0 0;font-size:19px;font-weight:900;letter-spacing:-.02em;
-  font-variant-numeric:tabular-nums;color:var(--ink)}
+  font-variant-numeric:tabular-nums;color:var(--text)}
 .d-note{display:block;margin:4px 0 0;font-size:13px;line-height:1.45;color:#5A625E}
+/* Why the three above do not add to the headline. Sits under the strip, where a reader
+   who has just tried the arithmetic is looking. */
+.d-foot{margin:14px 0 0;font-size:14px;line-height:1.5;color:#3A4448;max-width:var(--measure)}
 
 .t-facts{margin:20px 0 0;display:grid;grid-template-columns:118px minmax(0,1fr);
   gap:9px 18px;font-size:14px;line-height:1.5}
@@ -99,6 +118,9 @@
 .t-link{display:inline-block;margin:18px 0 0;font-size:14px;font-weight:900;
   color:var(--action);text-decoration:none;border-bottom:2px solid #BFE0E6;padding-bottom:2px}
 .t-link:hover,.t-link:focus-visible{color:var(--hover);border-bottom-color:var(--hover)}
+
+/* The record mark is an upright, so its swatch is one too. */
+.legend i.tick{width:3px;height:16px;background:#9A948A;margin:0 5px}
 
 /* ------------------------------------------------------------------ register changes */
 .band.tint{background:#EFE9E0}

@@ -20,7 +20,8 @@
 <section class="hero">
   <div class="wrap">
     <p class="eyebrow">A stable workforce, or a flat one?</p>
-    <h1>The region recorded 111,529 hires to end up with <em>168 more jobs</em>.</h1>
+    <h1>The region recorded 111,529 hires to end up with <em>168 more job starts than
+      job ends</em>.</h1>
     <!-- Claim-carrying text is STATIC, and the script that used to write it has been
          deleted rather than left to overwrite it: one copy of every sentence, checked by
          claims.json against the data. Only genuinely computed spans (the county verdict,
@@ -36,11 +37,23 @@
         <div class="d">across 55 quarters</div></div>
       <div class="figv"><div class="n">111,361</div><div class="k">separations</div>
         <div class="d">over the same period</div></div>
-      <div class="figv"><div class="n">+168</div><div class="k">net jobs</div>
-        <div class="d">hires minus separations</div></div>
-      <div class="figv"><div class="n">10.8%</div><div class="k">average churn</div>
-        <div class="d">a tenth of jobs start, a tenth end, each quarter</div></div>
+      <div class="figv"><div class="n">+168</div><div class="k">net flow, 14 years</div>
+        <div class="d">hires minus separations. The Census headcount, estimated
+          separately, fell by 719 over the same span</div></div>
+      <div class="figv"><div class="n">10.8%</div><div class="k">average churn, 2012 to
+        2025</div>
+        <div class="d">a tenth of jobs start, a tenth end, each quarter. The last four
+          published quarters run 9.6%</div></div>
     </div>
+    <p class="gauge"><b>Is a tenth of the jobs, every quarter, a lot?</b> Nothing on this
+      page answers that against another industry or another state: the Census pull behind
+      it covers plastics and rubber in these twelve counties and carries no second series
+      to hold it against. What the page can answer is which way the movement runs, which
+      is the half that decides whether churn is good news. A payroll churns when people
+      leave for better work, and it churns when a plant cannot keep anyone. Since 2012 the
+      leaving rate here has risen 1.9 points while the hiring rate rose 0.2, and since
+      2023Q1 more jobs have ended than started in every quarter. Of the two readings, that
+      is the worse one.</p>
   </div>
 </section>
 
@@ -48,10 +61,12 @@
   <div class="wrap">
     <p class="takeaway">The flow</p>
     <h2>Hires above the line, separations below, for 55 quarters</h2>
-    <p class="lede">Both are flows: jobs starting and ending during the quarter. The line
-      through the middle is the net, which is what a conventional employment chart shows
-      on its own. What follows is how big the movement is, which way it has turned since
-      2012, and what it looks like on a 150-person floor.</p>
+    <p class="lede">Both are flows: jobs starting and ending during the quarter, as
+      counted by the Quarterly Workforce Indicators, the Census Bureau series that reports
+      how many jobs each county&rsquo;s employers started and ended in every three-month
+      period. Their difference is the net change, which is what a conventional employment
+      chart shows on its own. What follows is how big the movement is, which way it has
+      turned since 2012, and what it looks like on a 150-person floor.</p>
     <!-- Two titles, one per rendering. The narrow chart aggregates quarters into years,
          so the wide chart's per-quarter numbers would name marks a phone reader cannot
          see. Both are static; neither is a truncation of the other. -->
@@ -79,8 +94,11 @@
     <h2>Turnover has risen since 2012 and has not come back down</h2>
     <p class="lede">Churn rate is the share of jobs that start or end in a quarter: at
       10%, about one job in ten starts and another one in ten ends. Higher means more
-      movement through the same payroll, not a gain or loss of jobs. The pandemic spike is
-      visible, and so is the fact that the line settles above where it started.</p>
+      movement through the same payroll, not a gain or loss of jobs. Three readings of it
+      run through this page, and they are not in conflict: 10.8% is the average across all
+      fourteen years, 8.5% is where 2012 sat, and 9.6% is the last four published
+      quarters. The pandemic spike is visible, and so is the fact that the line settles
+      above where it started.</p>
     <p class="fig-title">The yearly average ends at 9.6%, about 1.1 points above
       2012</p>
     <p class="fig-sub" id="ratesub"></p>
@@ -128,18 +146,23 @@
   <div class="wrap">
     <p class="takeaway">By county</p>
     <h2>Where the turnover concentrates</h2>
-    <p class="lede">A high rate on a small base is a different problem from a high rate
-      on a large one, so this reads on two axes at once: the rate a county runs, and the
-      number of jobs it runs it on. Twelve counties are twelve readings of the same
-      measure by the same method, and this is the only place on the page where one
-      place is measured against another.</p>
-    <p class="fig-title">Trumbull runs the highest rate on the smallest base: 13.5% of 402
-      jobs</p>
+    <p class="lede">A county&rsquo;s rate rides on a base, meaning the number of jobs it
+      has to move. A high rate on a small base is a different problem from a high rate on
+      a large one, so this reads on two axes at once: the rate a county runs, and the base
+      it runs it on. Twelve counties are twelve readings of the same measure by the same
+      method, and this is the only place on the page where one place is measured against
+      another.</p>
+    <p class="fig-title">Trumbull runs the highest rate on the smallest base: 434 starts
+      and ends in a year, on 402 jobs</p>
     <p class="fig-sub">One dot per county, last four published quarters
       (2024Q4&ndash;2025Q3). The further RIGHT, the more plastics and rubber jobs the county
       has. The further UP, the bigger the share of those jobs that starts or ends each
-      quarter.<span class="only-narrow"> Three counties are labeled here; select any other
-      to add its label.</span></p>
+      quarter. The rate counts one side at a time: at Trumbull&rsquo;s 13.5%, about 54 of
+      its 402 jobs start in a quarter and about 54 end, which comes to 434 starts and ends
+      across the four quarters. The vertical scale starts at 5%, below every county,
+      rather than at zero.<span class="only-narrow"> The dashed line is the
+      region&rsquo;s own rate, 9.6% a quarter. Three counties are labeled here; select any
+      other to add its label.</span></p>
     <div class="csel" id="csel" role="group" aria-label="Highlight one county"></div>
     <p class="verdict" id="verdict"></p>
     <div class="chart"><svg id="county" role="img" aria-labelledby="county-t"><title id="county-t">Churn rate against employment for twelve counties. Trumbull
@@ -152,12 +175,14 @@
 <section class="band tint">
   <div class="wrap">
     <p class="takeaway">On a shop floor</p>
-    <h2>What 10.8% a quarter looks like at a 150-person plant</h2>
-    <p class="lede">Averaged over fourteen years, the cluster moves 10.8% of its jobs in a
-      quarter. At a 150-person molder that is about <b>16 people starting and 16
-      leaving</b> every quarter, roughly five of each in a month, and about 65 replacement
-      hires to make in a year. The plant is illustrative: it applies a cluster average to
-      a single site, and no single plant runs at the average.</p>
+    <h2>What 9.6% a quarter looks like at a 150-person plant</h2>
+    <p class="lede">Over the last four published quarters the cluster moved 9.6% of its
+      jobs in a quarter. At a 150-person plant that is about <b>14 people starting and 14
+      leaving</b> every quarter, roughly five of each in a month, and about 58 replacement
+      hires to make in a year. Across all fourteen years the rate averages 10.8%, which
+      works out to 16 and 16 a quarter and about 65 replacement hires a year. The plant is
+      illustrative: it applies a cluster average to a single site, and no single plant
+      runs at the average.</p>
     <div class="calc">
       <div class="row">
         <label for="hc">People on your payroll</label>
@@ -173,13 +198,14 @@
 <section class="closer">
   <div class="wrap">
     <p>Flat is what fast looks like from a distance.</p>
-    <p class="sub">Between 2012Q1 and 2025Q3 the cluster gained 168 net jobs across
-      222,890 hire and separation events: about <b>1,327 jobs started or ended for every
-      one job</b> the region ended up with. Net employment is a legitimate outcome
-      measure, and funders
-      are entitled to score it. The point is that a program changing how people move
-      through this industry can do real work without moving that number, and that since
-      2023Q1 the movement has run toward the door.</p>
+    <p class="sub">Between 2012Q1 and 2025Q3 the cluster recorded 222,890 hire and
+      separation events and finished 168 starts ahead of ends: about <b>1,327 events for
+      every one job of that margin</b>. The Census headcount, estimated separately, fell
+      by 719 across the same span, so the headline is flat on either reading. Net
+      employment is a legitimate outcome measure, and funders are entitled to score it.
+      The point is that a program changing how people move through this industry can do
+      real work without moving that number, and that since 2023Q1 the movement has run
+      toward the door.</p>
   </div>
 </section>
 
