@@ -33,14 +33,22 @@ for (const n of list) {
       const fs = parseFloat(getComputedStyle(e).fontSize);
       if (fs) out.dom.push({fs: +fs.toFixed(1), sel: e.className || e.tagName});
     });
-    // SVG text: authored in user units, so multiply by the element's actual scale
+    // SVG text: authored in user units, so multiply by the element's actual scale.
+    // An SVG we cannot scale is UNMEASURED, not clean — a collapsed chart would
+    // otherwise report "svg-min —" and pass the check that exists to catch it.
+    const unmeasured = [];
     document.querySelectorAll("svg").forEach(svg => {
       const vb = svg.viewBox && svg.viewBox.baseVal;
       const box = svg.getBoundingClientRect();
-      if (!vb || !vb.width || !box.width) return;
+      const texts = [...svg.querySelectorAll("text")].filter(t => t.textContent.trim());
+      if (!vb || !vb.width || !box.width) {
+        if (texts.length) unmeasured.push(
+          (svg.getAttribute("class") || svg.parentElement?.className || "svg") +
+          ":" + texts.length + (!vb || !vb.width ? " no-viewBox" : " zero-width"));
+        return;
+      }
       const scale = box.width / vb.width;
-      svg.querySelectorAll("text").forEach(t => {
-        if (!t.textContent.trim()) return;
+      texts.forEach(t => {
         const fs = parseFloat(getComputedStyle(t).fontSize) * scale;
         out.svg.push({fs: +fs.toFixed(1), cls: t.getAttribute("class") || "text",
                       scale: +scale.toFixed(3)});
@@ -49,19 +57,21 @@ for (const n of list) {
     const min = a => a.length ? a.reduce((m, x) => x.fs < m.fs ? x : m) : null;
     const under = a => [...new Set(a.filter(x => x.fs < 12)
       .map(x => (x.cls || x.sel) + "@" + x.fs))].slice(0, 4);
-    return {domMin: min(out.dom), svgMin: min(out.svg),
+    return {domMin: min(out.dom), svgMin: min(out.svg), unmeasured,
             domUnder: under(out.dom), svgUnder: under(out.svg),
             scale: out.svg[0] ? out.svg[0].scale : null};
   });
-  const fail = (r.domUnder.length || r.svgUnder.length);
+  const fail = (r.domUnder.length || r.svgUnder.length || r.unmeasured.length);
   if (fail) bad++;
   console.log(`${n.padEnd(18)} ${fail ? "FAIL" : "PASS"}  ` +
     `dom-min ${r.domMin ? r.domMin.fs : "—"}  svg-min ${r.svgMin ? r.svgMin.fs : "—"}` +
     `${r.scale ? `  (svg scale ${r.scale})` : ""}` +
     `${r.svgUnder.length ? "  svg<12: " + r.svgUnder.join(" ") : ""}` +
-    `${r.domUnder.length ? "  dom<12: " + r.domUnder.join(" ") : ""}`);
+    `${r.domUnder.length ? "  dom<12: " + r.domUnder.join(" ") : ""}` +
+    `${r.unmeasured.length ? "  UNMEASURED: " + r.unmeasured.join(" ") : ""}`);
   await p.close();
 }
 await b.close();
-console.log(bad ? `\n${bad} artifact(s) below the 12px floor` : "\nall text at or above 12px");
+console.log(bad ? `\n${bad} artifact(s) below the 12px floor or unmeasurable`
+                : "\nall text at or above 12px");
 process.exit(bad ? 1 : 0);
