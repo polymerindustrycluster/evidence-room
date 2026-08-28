@@ -10,6 +10,10 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<!-- Set synchronously, before first paint, so the one control on this page that needs
+     JavaScript (the county picker) is hidden rather than dead when there is none. Every
+     other thing on this page, the thirteen links above all, renders from this file. -->
+<script>document.documentElement.classList.add("js")</script>
 
 <header class="mast">
   <div class="wrap">
@@ -20,16 +24,39 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow" id="eyebrow">Findings from free public data</p>
+    <p class="eyebrow">Findings from free public data</p>
     <h1>Ohio is <em>first in the country</em> in plastics and rubber jobs. That is the
       easiest claim here to prove.</h1>
     <p class="stand">54,846 of those jobs, ten thousand more than second-place Texas, and
       every state disclosed in the Bureau of Labor Statistics count. Underneath the ranking
-      sit the questions a member firm actually argues about: what the work pays, and who is
+      sit the questions a member firm argues about: what the work pays, and who is
       available to do it.</p>
     <p class="stand dek">Every number here has a source, an assertion, and a way to be
       proved wrong.</p>
-    <div class="hero-row" id="figs"></div>
+    <!-- THREE STAT CARDS, IN ONE ROW THAT CANNOT WRAP. The row was four on a two-column
+         grid, so it rendered as a 2x2 block against the house rule that hero stats never
+         wrap. The fourth card counted the site's own claims, which is apparatus, not a
+         finding; it now sits in the band that is about the apparatus. Each of these three
+         restates a number one of the linked pages publishes and is guarded in claims.json
+         against that page's own data file. Written here rather than through PV.figures()
+         so the hero survives with scripting off. -->
+    <div class="hero-row">
+      <div class="figv key">
+        <div class="n">1.2&times;</div>
+        <div class="k">the polymer wage premium over the county average</div>
+        <div class="d">It beats the local average in 40 of the 51 disclosed pairings</div>
+      </div>
+      <div class="figv">
+        <div class="n">48.4%</div>
+        <div class="k">of Summit County&rsquo;s jobs held by its own residents</div>
+        <div class="d">No county in the twelve reaches 69 percent</div>
+      </div>
+      <div class="figv">
+        <div class="n">$34.9M</div>
+        <div class="k">a year in routine federal contracts</div>
+        <div class="d">The Tech Hub award is about 1.5 years of it</div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -58,25 +85,38 @@
   </div>
 </section>
 
-<section class="band">
-  <div class="wrap">
-    <p class="takeaway">Start here</p>
-    <h2>Four pages that replace a claim PIC makes with one it can defend</h2>
-    <p class="lede">Each of these answers a question a funder or a member firm has already
-      asked out loud. The tag on every card names the geography its figures are built from,
-      because the two footprints in use here never reconcile.</p>
-    <div class="cards lead" id="lead"></div>
-  </div>
-</section>
+<!-- THE GALLERY. One band, not two.
 
+     It was two: a "Start here" band of four cards, then an "Everything" band holding the
+     other nine under a sort nothing rendered. That split cost the page twice. The band
+     openings were the third and fourth consecutive kicker/H2/lede against a house limit of
+     two, and the county picker sat in the second band while stating a verdict about all
+     thirteen pages, four of which a reader had already scrolled past. One band, one
+     picker, one taxonomy, every card under the group it belongs to and nowhere else.
+
+     EVERY CARD IS AN ANCHOR IN THIS FILE. They used to be built by app.js from an array,
+     which meant the front door to thirteen pages contained no link to any of them with
+     scripting off, or if one fetch failed. app.js now decorates these anchors (claim
+     counts, county flags, the verdict) and creates none of them.
+
+     Each card's finding sentence restates a number the linked page publishes, and each
+     restatement is guarded in this page's claims.json against THAT PAGE'S data file, so a
+     correction on a page fails the hub's gate instead of leaving a stale card behind.
+
+     data-geo = the geography the page's figures are BUILT ON, which is what the county
+     picker answers. "pic12" holds all twelve counties; "metros4" is the four metropolitan
+     areas the occupations file publishes wages for; "akron" is the single regional metro
+     the cost-of-living page prices; "national" and "register" pages contain no county
+     reading. -->
 <section class="band">
   <div class="wrap">
     <p class="takeaway">Everything</p>
     <h2 id="alltitle">Everything here, by the question it answers</h2>
-    <p class="lede">Most of these pages are built on the twelve counties PIC measures against.
-      A few use price metro areas, national series, or the public registers of awards and
-      dates. Pick a county and each card says whether it is built on a geography that
-      contains it.</p>
+    <p class="lede">The pages under Start here each answer a question a funder or a member
+      firm has already asked out loud. Most of these pages are built on the twelve counties
+      PIC measures against; a few use price metro areas, national series, or the public
+      registers of awards and dates.</p>
+
     <div class="picker">
       <label for="county">Your county</label>
       <select id="county">
@@ -84,20 +124,147 @@
       </select>
       <p class="verdict" id="verdict" aria-live="polite"></p>
     </div>
-    <div class="cards" id="all"></div>
+
+    <h3 class="gname">Start here</h3>
+    <div class="cards lead">
+      <a class="card" href="../peers/" data-slug="peers" data-geo="pic12">
+        <h4>Where does Ohio rank among states, and Akron among metros?</h4>
+        <p class="ans">First in the country</p>
+        <p class="f">Ohio holds 54,846 plastics and rubber jobs, 10,248 more than
+          second-place Texas, with all 51 state geographies disclosed. Akron is 6th among
+          the 155 metros that disclose; 227 metros are withheld and are simply unknown.</p>
+        <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+      <a class="card" href="../laborshed/" data-slug="laborshed" data-geo="pic12">
+        <h4>Where do the people who work in a county live?</h4>
+        <p class="f">Summit County&rsquo;s own residents hold 48.4 percent of its 265,460
+          jobs. No county in the twelve reaches 69 percent, so county-level workforce policy
+          is aimed at a population that mostly lives somewhere else.</p>
+        <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+      <a class="card" href="../wages/" data-slug="wages" data-geo="pic12">
+        <h4>What does a polymer job pay against the average job in its county?</h4>
+        <p class="f">The typical polymer job pays 1.2 times what the average job in its
+          county pays, and beats it in 40 of the 51 industry-county pairings the bureau can
+          disclose. All eleven that miss make plastics or rubber products.</p>
+        <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+      <a class="card" href="../federal-money/" data-slug="federal-money" data-geo="pic12">
+        <h4>How big is the Tech Hub award next to the federal money that arrives every
+          year?</h4>
+        <p class="f">Ordinary federal contracting in chemicals and plastics across the
+          twelve counties has run at $34.9 million a year since 2019. The $51.0 million
+          Tech Hub award is about a year and a half of it, and fiscal 2019 alone cleared
+          the award line.</p>
+        <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+    </div>
+
+    <h3 class="gname">National position</h3>
+    <div class="cards">
+      <a class="card" href="../cluster-health/" data-slug="cluster-health" data-geo="pic12">
+        <h4>Which measures changed, and which only look like they did?</h4>
+        <p class="f">Jobs fell 802 in a year, to 24,030, and three of the five measures moved
+          further than these series usually move between years. The loudest change, federal
+          contracting up 73 percent, is not one of them.</p>
+        <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+      <a class="card" href="../location-quotient/" data-slug="location-quotient" data-geo="pic12">
+        <h4>Which polymer industry is this region most concentrated in?</h4>
+        <p class="f">Paint and coatings run 5.96 times the national share and have led all
+          six polymer industries every year since 2015. Rubber products, the industry Akron
+          is named for, run 2.44 times.</p>
+        <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+    </div>
+
+    <h3 class="gname">Workforce</h3>
+    <div class="cards">
+      <a class="card" href="../churn/" data-slug="churn" data-geo="pic12">
+        <h4>How much hiring and separating sits behind a flat job count?</h4>
+        <p class="f">111,529 hire events and 111,361 separations produced 168 net jobs across
+          fourteen years. The average quarter moves 10.8 percent of the workforce in or
+          out.</p>
+        <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+      <a class="card" href="../occupations/" data-slug="occupations" data-geo="metros4">
+        <h4>Which occupations is the industry made of, and what do they pay here?</h4>
+        <p class="f">One job in nine is a molding-machine setter, and 51 percent of the
+          country&rsquo;s setters work in this one industry. All four Northeast Ohio metros
+          pay the degree occupations under the national rate.</p>
+        <p class="meta"><span class="pill geo">four metros</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+    </div>
+
+    <h3 class="gname">Money</h3>
+    <div class="cards one">
+      <a class="card" href="../funding-map/" data-slug="funding-map" data-geo="register">
+        <h4>Where did the public money go?</h4>
+        <p class="f">$106.3 million through three public awards and twenty-one named
+          recipients, drawn to scale, with the disclosures attached.</p>
+        <p class="meta"><span class="pill geo">awards</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+    </div>
+
+    <h3 class="gname">Operating conditions</h3>
+    <div class="cards">
+      <a class="card" href="../realwage/" data-slug="realwage" data-geo="akron">
+        <h4>What do these wages buy once local prices are counted?</h4>
+        <p class="f">Among the 56 metros with a real polymer workforce, Akron is 33rd on
+          weekly wages and 19th on what those wages buy. The climb crosses the median and is
+          smaller than the pitch PIC usually makes.</p>
+        <p class="meta"><span class="pill geo">Akron metro</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+      <a class="card" href="../cost-scissors/" data-slug="cost-scissors" data-geo="national">
+        <h4>How much of the 2022 price spike came back out of finished polymer prices?</h4>
+        <p class="ans">Nothing came back down</p>
+        <p class="f">Natural gas gave back its whole 2022 spike, crude about half, resin
+          about a third, and finished polymer products none of it. Retracement falls with
+          every step away from the wellhead.</p>
+        <p class="meta"><span class="pill geo">national</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+    </div>
+
+    <h3 class="gname">Method and governance</h3>
+    <div class="cards">
+      <a class="card" href="../revisions/" data-slug="revisions" data-geo="national">
+        <h4>How much do these figures change after publication?</h4>
+        <p class="ans">Almost every number moves</p>
+        <p class="f">259 of 273 published months in three producer-price series were changed
+          later, by a typical 0.15 percent. That the change is small is the finding, and the
+          scope is those three series only.</p>
+        <p class="meta"><span class="pill geo">national</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+      <a class="card" href="../timeline/" data-slug="timeline" data-geo="register">
+        <h4>Why is the cluster here, and what has it done since?</h4>
+        <p class="f">32 proven events from 1898 explain why the designation landed in Akron.
+          The public record holds 4 events in the 34 months before October 2023 and 68 in
+          the 34 months since.</p>
+        <p class="meta"><span class="pill geo">public record</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+    </div>
   </div>
 </section>
 
+<!-- The act boundary: everything below is apparatus. This band opens on the callout rather
+     than on a kicker/H2/lede, which is what keeps it from being a third consecutive band
+     running the identical template. -->
 <section class="band alt">
   <div class="wrap">
     <p class="takeaway">Before anything leaves the building</p>
     <h2>Every sentence here is a test that can fail</h2>
-    <p class="lede">Each published sentence is stored as an assertion against the data that
-      produced it, next to the condition that would prove it wrong. Re-running all of them
-      is one command in
-      <a href="https://github.com/polymerindustrycluster/evidence-room">the repository</a>,
-      and the listing doubles as the brief for a hostile reviewer.</p>
-    <div class="note" id="footnote"></div>
+    <!-- The two counts below are written by app.js from ONE derived inventory: the cards
+         above, intersected with the harness totals in counts.json. The literals are the
+         current values of that derivation, guarded by index-inventory in claims.json, so a
+         reader with scripting off sees a number the gate has checked rather than a blank. -->
+    <p class="note"><b>The <span data-inv="pagesword">thirteen</span> pages here carry
+      <span data-inv="claims">292</span> checked claims, and
+      <span data-inv="manual">15</span> of them cannot be machine-checked.</b> Every
+      published sentence is stored as an assertion against the data that produced it, next
+      to the condition that would prove it wrong. The exceptions are quoted from project
+      narratives, press releases and internal registers rather than from datasets, so they
+      carry a source and a falsification condition but no runnable assertion. Attack them
+      first.</p>
     <details class="howto">
       <summary>The commands, for anyone who wants to run them</summary>
       <div class="checks">
@@ -118,6 +285,9 @@ python verify_claims.py --list</pre>
         </div>
       </div>
     </details>
+    <p class="src">Re-running all of them is one command in
+      <a href="https://github.com/polymerindustrycluster/evidence-room">the repository</a>,
+      and the listing doubles as the brief for a hostile reviewer.</p>
     <p class="src">The federal sources behind these pages, named once so a reader can find
       them. <dfn><b>QCEW</b> is the Quarterly Census of Employment and Wages, the payroll
       count behind every jobs and wage figure here.</dfn>
@@ -133,9 +303,8 @@ python verify_claims.py --list</pre>
 <section class="closer">
   <div class="wrap">
     <p>The ranking opens the meeting. The pages here are what has to hold up in it.</p>
-    <p class="sub">Two of the twelve predate this design system and say so on their cards.
-      If a sentence here is wrong, the fastest way to prove it is the falsification
-      condition stored beside it in that page&rsquo;s claims file.</p>
+    <p class="sub">If a sentence here is wrong, the fastest way to prove it is the
+      falsification condition stored beside it in that page&rsquo;s claims file.</p>
   </div>
 </section>
 

@@ -14,7 +14,7 @@
  "claims": [
   {
    "id": "acc-hero",
-   "text": "Headline and hero cards: of the $106.3 million PIC reports securing, $4,149,515 sits on award lines naming PIC's own organisation, 4.9 percent of the $85,335,784 awarded; the page carries 18 dated commitments; 7 of the 15 rows PIC answers for cannot be filled from any public record.",
+   "text": "Headline, standfirst and the stat row under the lead figure: of the $106.3 million PIC reports securing, $4,149,515 sits on award lines naming PIC's own organisation, 4.9 percent of the $85,335,784 awarded; the page carries 18 dated commitments; 7 of the 15 rows PIC answers for cannot be filled from any public record.",
    "source": "funding-map/data/funding.json recipients[greater-akron-chamber] and meta.totals; timeline/data/timeline.json events where delivered is false; scorecard/data/scorecard.json counts",
    "assert": "sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) == 4149515 and round(sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) / D['fm']['meta']['totals']['awards'], 3) == 0.049 and len([e for e in D['tl']['events'] if not e['delivered']]) == 18 and D['sc']['counts']['vault'] == 7 and D['sc']['counts']['accountable'] == 15",
    "actual": "(sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']), round(sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) / D['fm']['meta']['totals']['awards'], 3), len([e for e in D['tl']['events'] if not e['delivered']]), D['sc']['counts']['vault'], D['sc']['counts']['accountable'])",

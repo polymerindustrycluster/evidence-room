@@ -1,10 +1,14 @@
 {
- "n_pieces": 14,
- "total_claims": 309,
- "total_manual": 16,
+ "n_pieces": 15,
+ "total_claims": 334,
+ "total_manual": 15,
  "pages": {
+  "accountability": {
+   "claims": 24,
+   "manual": 0
+  },
   "churn": {
-   "claims": 21,
+   "claims": 23,
    "manual": 0
   },
   "cluster-health": {
@@ -20,8 +24,8 @@
    "manual": 0
   },
   "funding-map": {
-   "claims": 23,
-   "manual": 4
+   "claims": 22,
+   "manual": 3
   },
   "laborshed": {
    "claims": 24,

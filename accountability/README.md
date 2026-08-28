@@ -49,11 +49,10 @@ this page instead of leaving a stale figure standing. One claim, `acc-generated-
 the other way: it checks the shipped `accountability.json` against those upstream files, so
 a page rendering yesterday's arithmetic fails loudly.
 
-## Required before this page can pass `verify.mjs`
+## Provenance registration (done)
 
-`_data/SOURCES.json` is outside this page's scope and does not yet list it, so the render
-gate reports `accountability is not in SOURCES.json` and no "Reproduce this" block renders.
-The one-line patch, to `by_artifact`:
+`_data/SOURCES.json` now carries this page in `by_artifact`, so `verify.mjs` passes and the
+"Reproduce this" block renders:
 
 ```json
 "accountability": ["usaspending", "public_record", "qcew", "ipeds"]
@@ -199,13 +198,40 @@ These are defaults, not decisions. Each is stated on the page where it appears.
   encoding (hollow ring with a centre pip for scheduled, solid disc for delivered) plus
   `moved` and `missed`, added now so the first slip is not a schema change in the week it
   happens.
-- **A chart in the first screen.** Page-design law wants one within the opening ~900px. The
-  draft banner is a caller requirement the spec did not budget for, and with the banner, the
-  mast, and the hero the spec specifies (eyebrow, headline, standfirst, byline, three stat
-  cards), band A's chart begins at roughly 1,570px. If the banner comes off at publication
-  the hero alone runs about 900px and the chart lands at the fold; if it stays, the fix is to
-  move the stat row below the lead figure, which page-design explicitly sanctions and the
-  spec does not.
+## The cold open, and what it cost (fixed 2026-08-28)
+
+The draft shipped with the lead figure's top at **1,547px** measured at 1280 — no chart in
+the opening screen, which is the one composition rule this house does not bend. It is now at
+**882px**. Four changes, in the order page-design prefers them, and nothing about the band
+order or the argument moved:
+
+1. **The stat row moved out of the hero** to sit under the attribution chart's source line,
+   which is what page-design prescribes when a hero cannot both carry stat cards and clear
+   the fold. The three cards are unchanged; they now read as that figure's summary rather
+   than as a KPI tile row a reader meets before any evidence. `.figv` was written for the
+   dark hero, so `styles.css` restates its four colours for paper and gives the key card the
+   INK rule the bars are drawn in. `acc-hero` still guards all three numbers; its `text`
+   now says where they render.
+2. **The draft banner is one line.** It says what it has to say — unreviewed, not published,
+   not through marketing or communications review — in a sentence, at 49px instead of 241px.
+   What the long version also said (which open questions are unanswered, which sections
+   carry a stated default) is said on the page at each place it applies, and here.
+3. **The headline is three rendered lines**, not four, which was a standing violation of the
+   fixed headline stack independent of the fold. The subtraction stays above the fold and is
+   now *more* complete there: the standfirst carries `4.9 percent of the $85,335,784 awarded`,
+   which previously only appeared in a stat card 800px down.
+4. **Band A's lede and how-to-read line lost a duplicated sentence.** Both said match is a
+   promise made by other organisations and is never summed into the bar; the figure keeps it,
+   because a figure has to survive being screenshotted alone.
+
+**One reading changed.** Band A's H2 read "PIC holds 4.9 percent of the money it reports
+securing". 4.9 percent is of the **$85,335,784 awarded**; of the $106.3 million reported
+secured the same $4,149,515 is 3.9 percent. The H2 named the wrong denominator for the ratio
+printed beside it — the constructed-unit trap this page's own README warns about, two
+subtractions that look like one number. It now reads "4.9 percent of the $85.3 million
+awarded". No published page ever carried the wrong sentence (this one has never been linked),
+so it is recorded here rather than in `CORRECTIONS.md`; if the draft was circulated, it
+belongs there too.
 
 ## Editorial notes for review
 

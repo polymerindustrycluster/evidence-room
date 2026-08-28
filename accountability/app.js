@@ -58,9 +58,12 @@ if (S.disbursed !== null || S.disbursed === 0)
 if (N.vault_rows.some(r => r.current || r.sub))
   throw new Error("a board row awaiting a private register arrived carrying a figure");
 
-/* --------------------------------------------------------------------- hero stat row
+/* ------------------------------------------------ the stat row, below the lead figure
    Three findings, no apparatus stat, and the accent goes on the attribution figure
-   because the subtraction is the page's single point. */
+   because the subtraction is the page's single point. The host div lives in band A,
+   under the attribution chart's source line rather than in the hero: three numbers on a
+   dark slab where the chart should be is the composition page-design names outright, and
+   moving them here is the trade it prescribes. They read as the chart's summary now. */
 figures([
   ["key", usd(A.stages[3].amount), "on award lines naming the Greater Akron Chamber",
    `${pct1(A.share_of_awarded * 100)} of ${usd(S.awarded)} awarded`],
