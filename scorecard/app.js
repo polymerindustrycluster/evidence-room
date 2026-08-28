@@ -24,7 +24,7 @@
  */
 (async () => {
 "use strict";
-const {el, txt, ticks, frame, hoverable, tableView, chart, figures, GRAY, INK, SEQ} = PV;
+const {el, txt, ticks, frame, hoverable, tableView, chart, figures, INK, SEQ} = PV;
 
 const D = await PV.data("scorecard.json");
 const MOBILE = matchMedia("(max-width: 760px)");
@@ -75,7 +75,7 @@ document.getElementById("cover").innerHTML =
    coverage is the page's single point. */
 figures([
   ["key", `${C.public} of ${C.accountable}`, "accountable rows public data can fill",
-   `the other ${C.vault} are defined and left empty`],
+   `the other ${C.vault} are defined and blank`],
   ["", short(DEL.assigned), `of ${short(DEL.awarded)} awarded has a named recipient`,
    "an assignment test; the register records no payment"],
   ["", short(DEL.unassigned), "awarded with no recipient named yet",

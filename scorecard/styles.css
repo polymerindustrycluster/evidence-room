@@ -15,6 +15,27 @@
 .hero .byline{margin:18px auto 0;max-width:var(--measure);font-size:13px;line-height:1.55;
   letter-spacing:.01em;color:#BEDCE1}
 
+/* ------------------------------------------------------------ hero coverage squares
+   The page's lead visual, above the stat row rather than below it, so the first screen
+   opens on a graphic instead of a row of numbers. One square is one metric. Absence gets
+   no hue: a computed row is filled, a row awaiting the vault is an outline, context is a
+   flat grey. That survives greyscale and colour-blind reading, which a red/green pair
+   would not. Centred on the measure rail; `margin:... auto` because `margin:22px 0 0`
+   at (0,2,0) would beat pic-viz's `.hero .wrap > *{margin-left:auto}` and open a second
+   left rail under the standfirst. */
+.hero .cover{margin:24px auto 0;max-width:var(--measure);display:flex;flex-wrap:wrap;
+  gap:14px 26px;align-items:flex-start}
+.cov-g{display:block}
+.cov-cells{display:flex;gap:4px}
+.cov-cells i{width:22px;height:22px;display:block;border-radius:3px}
+.cov-cells .cv-public{background:#EAF3F4}
+.cov-cells .cv-vault{background:none;border:1.5px dashed rgba(255,255,255,.55)}
+.cov-cells .cv-context{background:rgba(255,255,255,.28)}
+.cov-l{display:block;margin:7px 0 0;font-size:12px;color:#B7D9DE;
+  font-variant-numeric:tabular-nums}
+.cov-l b{color:var(--lime);font-weight:900;margin-right:3px}
+.cov-cap{flex-basis:100%;margin:2px 0 0;font-size:13px;line-height:1.5;color:#9FCBD2}
+
 /* ------------------------------------------------------------------ the governance gate
    Below the hero and above the table it governs, on its own ground so it cannot be read
    as part of either. The mast carries a one-line marker for anyone who never scrolls. */
@@ -146,6 +167,9 @@
   .sc caption{padding-bottom:4px}
   .sc .grp th{padding:22px 0 6px;border-bottom:0}
   .sc .grp .gb{margin-left:0}
+  /* The tally is its own line on a phone: inline it wrapped mid-phrase under the group
+     title and read as a stray fragment. */
+  .sc .grp .gn{display:block;margin:3px 0 0}
   .sc .r{margin:12px 0 0;padding:14px 15px;background:#fff;border:1px solid var(--line);
     border-left-width:5px}
   .sc .r > *{padding:0;border-bottom:0;font-size:13.5px}

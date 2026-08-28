@@ -1,7 +1,7 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-08-28 09:50",
+  "generated": "2026-08-28 14:02",
   "seconds": 0.1,
   "scripts": 25,
   "outputs_on_disk": 0,
@@ -53,6 +53,7 @@
    "observed_network": [],
    "observed_reads": [
     "churn/claims.json",
+    "cluster-health/claims.json",
     "cost-scissors/claims.json",
     "federal-money/claims.json",
     "funding-map/claims.json",
@@ -62,8 +63,7 @@
     "peers/claims.json",
     "realwage/claims.json",
     "revisions/claims.json",
-    "timeline/claims.json",
-    "wages/claims.json"
+    "scorecard/claims.json"
    ],
    "import_error": null,
    "registry_sources": [],
@@ -292,6 +292,7 @@
     "bea_rpp"
    ],
    "consuming_pages": [
+    "cluster-health",
     "realwage"
    ],
    "in_pipelines_md": false,
@@ -339,6 +340,7 @@
     "fred"
    ],
    "consuming_pages": [
+    "cluster-health",
     "cost-scissors",
     "revisions"
    ],
@@ -398,12 +400,14 @@
    ],
    "consuming_pages": [
     "churn",
+    "cluster-health",
     "cost-scissors",
     "location-quotient",
     "occupations",
     "peers",
     "realwage",
     "revisions",
+    "scorecard",
     "wages"
    ],
    "in_pipelines_md": false,
@@ -461,7 +465,9 @@
     "ipeds"
    ],
    "consuming_pages": [
-    "occupations"
+    "cluster-health",
+    "occupations",
+    "scorecard"
    ],
    "in_pipelines_md": false,
    "freshness": [],
@@ -519,7 +525,9 @@
     "ipeds"
    ],
    "consuming_pages": [
-    "occupations"
+    "cluster-health",
+    "occupations",
+    "scorecard"
    ],
    "in_pipelines_md": false,
    "freshness": [],
@@ -579,7 +587,9 @@
     "ipeds"
    ],
    "consuming_pages": [
-    "occupations"
+    "cluster-health",
+    "occupations",
+    "scorecard"
    ],
    "in_pipelines_md": false,
    "freshness": [],
@@ -638,7 +648,9 @@
     "ipeds"
    ],
    "consuming_pages": [
-    "occupations"
+    "cluster-health",
+    "occupations",
+    "scorecard"
    ],
    "in_pipelines_md": false,
    "freshness": [],
@@ -968,6 +980,7 @@
     "oews"
    ],
    "consuming_pages": [
+    "cluster-health",
     "occupations"
    ],
    "in_pipelines_md": false,
@@ -1134,12 +1147,14 @@
    ],
    "consuming_pages": [
     "churn",
+    "cluster-health",
     "cost-scissors",
     "location-quotient",
     "occupations",
     "peers",
     "realwage",
     "revisions",
+    "scorecard",
     "wages"
    ],
    "in_pipelines_md": false,
@@ -1195,12 +1210,14 @@
    ],
    "consuming_pages": [
     "churn",
+    "cluster-health",
     "cost-scissors",
     "location-quotient",
     "occupations",
     "peers",
     "realwage",
     "revisions",
+    "scorecard",
     "wages"
    ],
    "in_pipelines_md": false,
@@ -1317,10 +1334,12 @@
     "usaspending"
    ],
    "consuming_pages": [
+    "cluster-health",
     "cost-scissors",
     "federal-money",
     "funding-map",
-    "revisions"
+    "revisions",
+    "scorecard"
    ],
    "in_pipelines_md": false,
    "freshness": [],
@@ -1373,6 +1392,7 @@
     "bea_rpp"
    ],
    "consuming_pages": [
+    "cluster-health",
     "realwage"
    ],
    "in_pipelines_md": false,

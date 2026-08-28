@@ -31,15 +31,16 @@ const dirColor = t => t.band.latest >= 0 ? UP : DOWN;
 /* The verdict, written out rather than left as a class name. A median is a description of
    the middle, never a threshold somebody set, so the sentence always carries the count. */
 function verdictText(t) {
-  const b = t.band;
+  const b = t.band, rest = b.n_prior - b.beats;
+  const w = n => WORDS[n] || String(n);
   if (b.verdict === "ordinary")
-    return `Inside the range this measure normally moves: ${b.n_prior - b.beats} of its
-      ${b.n_prior} earlier year-to-year moves were at least this big.`;
+    return `Inside the range this measure normally moves: ${w(rest)} of its ${w(b.n_prior)}
+      earlier year-to-year moves were at least this big.`;
   if (b.verdict === "record")
-    return `Larger than every one of its ${b.n_prior} earlier year-to-year moves. Nothing
-      in the published series has moved this far before.`;
-  return `Larger than ${b.beats} of its ${b.n_prior} earlier year-to-year moves, and
-    ${b.n_prior - b.beats} have been larger.`;
+    return `Larger than every one of its ${w(b.n_prior)} earlier year-to-year moves.
+      Nothing in the published series has moved this far before.`;
+  return `Larger than ${w(b.beats)} of its ${w(b.n_prior)} earlier year-to-year moves, and
+    ${w(rest)} ${rest === 1 ? "has" : "have"} been larger.`;
 }
 const verdictShort = t => t.band.verdict === "ordinary" ? "Ordinary year"
   : t.band.verdict === "record" ? "Never moved this far" : "Bigger than usual";
@@ -50,25 +51,27 @@ const talent = byId("talent"), cap = byId("capital");
 const moved = D.moved_more_than_usual;
 const WORD = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "All five"};
 
-document.getElementById("stand").innerHTML =
-  `${WORD[moved]} of the five measures below moved further this year than the same measure
-   usually moves, and the biggest percentage change on the page was not one of them:
-   federal contracting rose ${cap.direction.pct.toFixed(0)} percent and still travelled
-   less than it does in a normal year. Every figure is recomputed from a page in this room
-   that shows the working.`;
+const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight",
+  "nine", "ten", "eleven", "twelve"];
 
+document.getElementById("stand").innerHTML =
+  `${WORD[moved]} of the five measures below moved further this year than they usually
+   move, and the biggest percentage change on the page, federal contracting up
+   ${cap.direction.pct.toFixed(0)} percent, was not one of them.`;
+
+const withheld = D.register.possible_cells - D.register.disclosed.at(-1).cells;
 PV.figures([
-  ["key", scale.value, "polymer jobs counted",
-   `down ${N(Math.abs(scale.direction.value))} in the cells counted in both years;
-    ${D.register.possible_cells - D.register.disclosed.at(-1).cells} of the
-    ${D.register.possible_cells} industry-county cells are withheld`],
-  ["", conc.value, "strongest concentration",
-   `${conc.drivers[0].label.toLowerCase()} against the national share, ahead of rubber and
-    plastics at ${conc.drivers.find(d => d.label.indexOf("Plastics") === 0).value}`],
-  ["", pay.value.split(" / ")[1], "of the national rate for the same work",
-   `and ${pay.value.split(" / ")[0]} the average job in its own county. Both are true`],
-  ["", cap.value, "in signed federal awards",
-   `to ${D.federal_awards.leads.length} named organisations. None of it is money spent yet`],
+  ["key", scale.value, "jobs counted",
+   `down ${N(Math.abs(scale.direction.value))} on the year, and ${withheld} of the
+    ${D.register.possible_cells} cells withheld`],
+  ["", conc.value, "paint concentration",
+   `the strongest of the three, ahead of plastics and rubber at
+    ${conc.drivers.find(d => d.label.indexOf("Plastics") === 0).value}`],
+  ["", pay.value.split(" / ")[1], "of the national rate",
+   `for the same work, and ${pay.value.split(" / ")[0]} the average job in its own county`],
+  ["", cap.value, "in signed awards",
+   `federal money naming ${WORDS[D.federal_awards.leads.length]} recipients, none of it
+    spent yet`],
 ]);
 
 /* ------------------------------------------------------------------- the movement chart
@@ -117,7 +120,7 @@ function drawMoveDesktop() {
     hoverable(bar, `<b>${t.dimension}</b><br>${t.direction.words}<br>
       <span class="v">${t.band.typicals.toFixed(2)}×</span> a typical year&rsquo;s move
       <br>widest earlier move: <span class="v">${t.band.max_typicals.toFixed(2)}×</span>`,
-      `${t.dimension}: ${t.band.typicals.toFixed(2)} times a typical year's move`);
+      `${t.dimension}: ${t.band.typicals.toFixed(2)} times a typical year\u2019s move`);
 
     txt(svg, moveWords(t), {x: m.l + w + 16, y: cy - 4, "text-anchor": "start",
       class: "pv-lab", fill: dirColor(t)});
@@ -133,10 +136,13 @@ function drawMoveDesktop() {
 
   const ci = ORDER.findIndex(t => t.id === "capital");
   const cy = m.t + ci * rowH + rowH / 2;
+  // Past the END OF THE GRAY BAND, not past the bar. Anchored to the bar it sat on top of
+  // the band behind it, which is the one thing on this chart a reader must be able to see.
+  const ax = x(Math.max(cap.band.typicals, cap.band.max_typicals)) + 22;
   txt(svg, `Federal contracting rose ${cap.direction.pct.toFixed(0)} percent`,
-    {x: x(cap.band.typicals) + 20, y: cy - 2, "text-anchor": "start", class: "pv-lab"});
+    {x: ax, y: cy - 2, "text-anchor": "start", class: "pv-lab"});
   txt(svg, "and still moved less than it does in a normal year.",
-    {x: x(cap.band.typicals) + 20, y: cy + 18, "text-anchor": "start", class: "pv-labq"});
+    {x: ax, y: cy + 18, "text-anchor": "start", class: "pv-labq"});
 }
 
 /* Mobile is a re-layout, not a shrink: the row label moves above its own bar so the plot
@@ -146,9 +152,16 @@ function drawMoveMobile() {
   const {svg, w, h} = PV.chart("move", {W, m, H: m.t + T.length * rowH + m.b});
   const x = v => m.l + (v / XMAX) * w;
 
+  /* Gridlines run across the BAR STRIP of each row and stop there. Drawn full height they
+     struck through every label above every bar, which collide.mjs cannot see because it
+     measures the desktop layout only. Read off a 375px crop, not off the gate. */
+  const strip = i => [m.t + i * rowH + 40, m.t + i * rowH + 68];
   ticks(0, XMAX, 4).forEach(v => {
-    el("line", {x1: x(v), y1: m.t - 6, x2: x(v), y2: m.t + T.length * rowH,
-      stroke: "var(--pv-grid)", "stroke-width": 1}, svg);
+    ORDER.forEach((t, i) => {
+      const [y1, y2] = strip(i);
+      el("line", {x1: x(v), y1, x2: x(v), y2, stroke: "var(--pv-grid)",
+        "stroke-width": 1}, svg);
+    });
     txt(svg, v + "×", {x: x(v), y: m.t + T.length * rowH + 22, "text-anchor": "middle",
       class: "pv-tick"});
   });
@@ -163,11 +176,13 @@ function drawMoveMobile() {
     const bar = el("rect", {x: x(0), y: y + 47, width: Math.max(2, x(t.band.typicals) - x(0)),
       height: 14, fill: dirColor(t)}, svg);
     hoverable(bar, `<b>${t.dimension}</b><br>${t.direction.words}`,
-      `${t.dimension}: ${t.band.typicals.toFixed(2)} times a typical year's move`);
+      `${t.dimension}: ${t.band.typicals.toFixed(2)} times a typical year\u2019s move`);
   });
 
-  el("line", {x1: x(1), y1: m.t - 12, x2: x(1), y2: m.t + T.length * rowH,
-    stroke: "#2A3A3E", "stroke-width": 2}, svg);
+  ORDER.forEach((t, i) => {
+    const [y1, y2] = strip(i);
+    el("line", {x1: x(1), y1, x2: x(1), y2, stroke: "#2A3A3E", "stroke-width": 2}, svg);
+  });
   txt(svg, "1.0×: a typical year", {x: x(1) + 8, y: m.t - 20, "text-anchor": "start",
     class: "pv-lab"});
   txt(svg, "bigger to the right", {x: m.l, y: m.t + T.length * rowH + 44,
@@ -179,7 +194,7 @@ document.getElementById("movetitle").textContent =
   `not among them`;
 
 document.getElementById("movetable").innerHTML = tableView("move",
-  "This year's change against each measure's own record of year-to-year change",
+  "This year\u2019s change against each measure\u2019s own record of year-to-year change",
   ["Measure", "This year", "A typical year", "Widest earlier move", "Reading"],
   ORDER.map(t => [t.dimension, t.direction.words,
     t.band.median_prior.toLocaleString("en-US"),
@@ -204,6 +219,8 @@ document.getElementById("tiles").innerHTML = T.map(t => `
       <p class="t-q">${t.question}</p>
       <p class="t-val${t.value.indexOf("/") > -1 ? " two" : ""}">${t.value}
         <span class="t-unit">${t.unit}</span></p>
+      <p class="t-move" style="color:${dirColor(t)}">${t.direction.short_move}
+        <span>on the year</span></p>
       <span class="t-pill ${t.band.verdict}">${verdictShort(t)}</span>
     </div>
     <div class="t-body">
@@ -225,11 +242,12 @@ document.getElementById("tiles").innerHTML = T.map(t => `
    measured calibration rather than another headline. */
 const R = D.measured_revisions;
 document.getElementById("statgrid").innerHTML = `
-  <div class="statv"><div class="n">${R.median_pct}%</div>
+  <div class="statv"><div class="n">${R.median_pct.toFixed(2)}%</div>
     <div class="k">middle revision, price indexes</div>
     <div class="d">Across ${R.n_periods} reference months of archived vintages for
-      ${R.series.length} producer-price series, the middle revision moved the published
-      level by ${R.median_pct} percent and the largest by ${R.max_pct} percent.</div></div>
+      ${WORDS[R.series.length]} producer-price series, the middle revision moved the
+      published level by ${R.median_pct.toFixed(2)} percent of it and the largest by
+      ${R.max_pct.toFixed(2)} percent.</div></div>
   <div class="statv warn"><div class="n">0</div>
     <div class="k">series here with a measured revision band</div>
     <div class="d">No archived vintages have been assembled for the employment, degree or
@@ -242,25 +260,27 @@ document.getElementById("changes").innerHTML = T.map(t =>
 
 const HS = D.human_scale;
 document.getElementById("scalesub").innerHTML =
-  `Two of those numbers are worth converting into things. The
-   ${N(HS.jobs_lost)} jobs the register lost between the two years is close to the whole
-   disclosed plastics-and-rubber payroll of ${HS.nearest_county} County,
-   ${N(HS.nearest_county_emp)} jobs. The $${(HS.largest_award / 1e6).toFixed(1)} million
-   award to ${HS.largest_award_name} is the largest of the
-   ${D.federal_awards.leads.length}, which average
-   $${(HS.mean_award / 1e6).toFixed(1)} million each; both figures come from signed federal
-   Notices of Award rather than from an announcement.`;
+  `Two of these are easier to picture than to read. The ${N(HS.jobs_lost)} jobs lost
+   between the two years are close to the whole disclosed plastics-and-rubber payroll of
+   ${HS.nearest_county} County, ${N(HS.nearest_county_emp)} jobs. The
+   $${(HS.largest_award / 1e6).toFixed(1)} million award to ${HS.largest_award_name} is the
+   largest of the ${WORDS[D.federal_awards.leads.length]}, which average
+   $${(HS.mean_award / 1e6).toFixed(1)} million each; both come from signed federal Notices
+   of Award rather than from an announcement.`;
 
 /* --------------------------------------------------------------------------- closer */
 document.getElementById("closerline").textContent =
   "Smaller every year, paid above its towns and below its industry, holding $51 million " +
   "it has not spent.";
 document.getElementById("closersub").innerHTML =
-  `That is the reading on ${T.length} measures, none of which has a target set for it, and
-   ${D.register.possible_cells - D.register.disclosed.at(-1).cells} of the
-   ${D.register.possible_cells} employment cells behind the first one are withheld rather
-   than small. The degree figure is the one to watch and the one to trust least: it is
-   ${D.asof.qcew_year - D.asof.ipeds_year} years behind everything else here.`;
+  `That is the reading on ${WORDS[T.length]} measures, none of which has a target set for
+   it, and ${withheld} of the ${D.register.possible_cells} employment cells behind the
+   first one are withheld rather than small. The degree figure is the one to watch and the
+   one to trust least: it is ${WORDS[D.asof.qcew_year - D.asof.ipeds_year]} years behind
+   everything else here.`;
+
+document.getElementById("lagsub").textContent =
+  `${WORDS[D.asof.qcew_year - D.asof.ipeds_year]} years`;
 
 /* -------------------------------------------------------------------------- assemble */
 drawMove();

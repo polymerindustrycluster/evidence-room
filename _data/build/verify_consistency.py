@@ -454,6 +454,12 @@ def check_hub(arts: list[str]) -> None:
         if a == "index":
             continue
         if not re.search(rf"['\"/]{re.escape(a)}['\"/]", blob):
+            # An artifact may be deliberately unlisted (an internal working view kept out
+            # of the published set). Declaring it costs a file that states WHY, so the
+            # exemption is visible in review rather than silent in a gate.
+            if os.path.exists(os.path.join(WEB, a, ".unlisted")):
+                warn("hub", a, "unlisted on purpose — see " + a + "/.unlisted")
+                continue
             err("hub", a, "not linked from the hub — builds and ships but is unreachable")
 
 

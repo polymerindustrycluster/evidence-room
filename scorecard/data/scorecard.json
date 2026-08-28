@@ -1,6 +1,6 @@
 {
  "meta": {
-  "source": "PIC award register (funding map), signed federal Notices of Award, executed state grant agreement SBIG20251005, IPEDS completions, and BLS QCEW — each already published on another page of this site.",
+  "source": "PIC award register (funding map), signed federal Notices of Award, executed state grant agreement SBIG20251005, IPEDS completions, and BLS QCEW. Each is already published on another page of this site.",
   "row": "one scorecard metric: its definition, who owns it, how often it is read, the target, and the latest reading where a public record can supply one.",
   "fetched": "2026-08-13",
   "definition": "A row is accountable when PIC controls the thing being measured (groups A, B and C) and context when it does not (group D). The two are never averaged, summed, or scored together.",
@@ -9,7 +9,7 @@
   "caution": "An award register records what has been committed and executed. It records no payment, so no figure on this page is a measure of money spent. Obligated is not disbursed, and the disbursement row is empty for that reason rather than for lack of effort.",
   "not": "No target on this page was set by PIC. A target cell showing a figure is a ceiling fixed by a signed award document, and every other target cell reads “not set”. No owner cell names a person, because this repository holds no owner assignment for any row.",
   "small_numbers": "The talent rows are administrative counts in the low tens. The polymer series ran 124, 54, 63 across 2021, 2022 and 2023, so a single year is a reading and not a direction.",
-  "excludes": "Identical completion counts appear for 2019 and 2020 in every one of the 13 tracked degree programmes in the shipped occupations file. Thirteen programmes do not repeat in lockstep, so this page reads the 2021-2023 window and uses neither of those two years."
+  "excludes": "Every one of the 11 tracked degree programmes that reports a 2019 count carries the identical count again for 2020 in the shipped occupations file, all 11 of them. Independent programmes do not repeat in lockstep, so this page reads the 2021-2023 window and uses neither of those two years."
  },
  "generated_on": "2026-08-28",
  "version": "1.0",

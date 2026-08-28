@@ -388,9 +388,11 @@ COUNTS = {
 
 doc = {
     "meta": {
+        # No em-dash: the house style bans them in published prose, and this string is
+        # printed under the table and again in the generated methodology box.
         "source": "PIC award register (funding map), signed federal Notices of Award, "
                   "executed state grant agreement SBIG20251005, IPEDS completions, and "
-                  "BLS QCEW — each already published on another page of this site.",
+                  "BLS QCEW. Each is already published on another page of this site.",
         "row": "one scorecard metric: its definition, who owns it, how often it is read, "
                "the target, and the latest reading where a public record can supply one.",
         "fetched": FM["meta"]["asOf"],

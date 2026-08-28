@@ -19,6 +19,10 @@ const cnt = s => C.pages[s] || {claims: 0, manual: 0};
    the occupations file publishes wages for; "akron" is the single regional metro the
    cost-of-living page prices; national and register pages contain no county reading. */
 const ALL = [
+ {s:"cluster-health", g:"position", geo:"pic12", t:"How the cluster is doing",
+  q:"Five measures, and whether each one actually moved.",
+  f:"Scale, concentration, pay, the degree pipeline and federal money, each read against a stated baseline and against how much these federal series normally move after publication, so a change inside the noise is reported as one.",
+  foot:"PIC-12"},
  {s:"peers", g:"position", geo:"pic12", t:"First in the country",
   q:"Where does the region actually rank?",
   f:"Ohio holds 54,846 plastics and rubber jobs, 10,248 more than second-place Texas, with all 51 state geographies disclosed. Akron is 6th among the 155 metros that disclose; 227 metros are withheld and are simply unknown.",
