@@ -238,6 +238,25 @@ const PV = (() => {
      implies clearance, so the flag has to stay louder than the logo. */
   const MARK = `<svg class="pv-mark" viewBox="-30 -30 289.182 294.048" role="img" aria-label="Polymer Industry Cluster" xmlns="http://www.w3.org/2000/svg"> <g id="pic-mark"> <path id="path2" d="m 1557.61,1759.91 -467.12,216.88 203.23,498.07 40.16,-16.38 -187.6,-459.77 429.59,-199.44 -18.26,-39.36" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path3" d="m 1313.8,2618.78 c -83.89,0 -152.13,-68.24 -152.13,-152.11 0,-83.89 68.24,-152.13 152.13,-152.13 83.87,0 152.12,68.24 152.12,152.13 0,83.87 -68.25,152.11 -152.12,152.11" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path4" d="m 256.441,1089.67 -35.511,24.91 389.636,555.58 495.664,335.55 24.31,-35.92 -489.044,-331.08 -385.055,-549.04" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path5" d="m 611.324,1638.49 -409.047,377.31 29.418,31.89 409.043,-377.31 -29.414,-31.89" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path6" d="m 626.031,1842.59 c -103.742,0 -188.148,-84.41 -188.148,-188.16 0,-103.74 84.406,-188.15 188.148,-188.15 103.75,0 188.157,84.41 188.157,188.15 0,103.75 -84.407,188.16 -188.157,188.16" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path7" d="m 1118.38,2139.88 c -83.88,0 -152.126,-68.24 -152.126,-152.13 0,-83.87 68.246,-152.11 152.126,-152.11 83.88,0 152.12,68.24 152.12,152.11 0,83.89 -68.24,152.13 -152.12,152.13" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path8" d="m 1566.74,1931.72 c -83.89,0 -152.13,-68.24 -152.13,-152.13 0,-83.87 68.24,-152.11 152.13,-152.11 83.88,0 152.12,68.24 152.12,152.11 0,83.89 -68.24,152.13 -152.12,152.13" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path9" d="m 216.984,2183.88 c -83.875,0 -152.1207,-68.25 -152.1207,-152.13 0,-83.89 68.2457,-152.13 152.1207,-152.13 83.887,0 152.129,68.24 152.129,152.13 0,83.88 -68.242,152.13 -152.129,152.13" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path10" d="M 238.684,1340.83 C 107.074,1340.83 0,1233.74 0,1102.13 0,970.512 107.074,863.441 238.684,863.441 c 131.613,0 238.695,107.071 238.695,238.689 0,131.61 -107.082,238.7 -238.695,238.7" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> </g> </svg>`;
 
+  /* The tab mark. The masthead MARK is white-filled for a dark strip, so used bare as a
+     favicon it disappears on a light tab. This wraps the same paths on the masthead's own
+     ground (--deeper) so the tab reads as the page's own header at 16px, and it is injected
+     here rather than written into fifteen <head>s so a new page inherits it by existing.
+     Data URI, so it survives bundling into a single self-contained file. */
+  function favicon() {
+    if (document.querySelector('link[rel="icon"]')) return;
+    const paths = MARK.slice(MARK.indexOf("<g"), MARK.lastIndexOf("</svg>"));
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-60 -60 349 354">' +
+      '<rect x="-60" y="-60" width="349" height="354" rx="52" fill="#052E36"/>' +
+      paths + "</svg>";
+    const link = document.createElement("link");
+    link.rel = "icon";
+    link.type = "image/svg+xml";
+    link.href = "data:image/svg+xml," + encodeURIComponent(svg);
+    document.head.appendChild(link);
+  }
+
   function mark() {
     const host = document.querySelector(".mast .wrap");
     if (!host || host.querySelector(".pv-mark")) return null;
@@ -471,7 +490,8 @@ const PV = (() => {
   }
 
   return {el, txt, ticks, frame, hoverable, showTip, hideTip, tableView, data, footprint,
-          methodology, figures, chart, footprintBanner, padGrid, mark, N,
+          methodology, figures, chart, footprintBanner, padGrid, mark, favicon, N,
           CAT, SEQ, GRAY, INK, usd, usdShort, reduced};
 })();
 PV.mark();
+PV.favicon();

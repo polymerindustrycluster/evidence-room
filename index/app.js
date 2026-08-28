@@ -98,7 +98,7 @@ PV.figures([
   ["key", "1.2×", "the polymer wage premium over the county average", "It beats the local average in 40 of the 51 disclosed pairings"],
   ["", "48.4%", "of Summit County’s jobs held by its own residents", "No county in the twelve reaches 69 percent"],
   ["", "$34.9M", "a year in routine federal contracts", "The Tech Hub award is about 1.5 years of it"],
-  ["", C.total_claims, "checked claims across twelve pages", C.total_manual + " rest on a document a person read"]
+  ["", C.total_claims, "checked claims across " + C.n_pieces + " pages", C.total_manual + " rest on a document a person read"]
 ]);
 
 const card = x => `<a class="card" href="../${x.s}/" data-geo="${x.geo}">
