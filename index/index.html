@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>The PIC Evidence Room</title>
+<meta name="description" content="Ohio leads the country in plastics and rubber jobs. Twelve pages of free public data on what the work pays, who holds it, and where the federal money goes in Northeast Ohio.">
 <link rel="stylesheet" href="../_shared/pic-viz.css">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -19,18 +20,15 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow" id="eyebrow">One evidence base</p>
-    <h1>Every number here has a source, an assertion, and <em>a way to be proved
-      wrong</em>.</h1>
-    <p class="stand">Built from free public data &mdash; federal payroll and wage records,
-      the census, energy and price series, federal spending, and the national record of
-      college degrees &mdash; plus PIC's own vault and grant intake. Each published sentence is a
-      re-runnable assertion; each carries the condition that would falsify it. Nothing here
-      is cleared for external use without the checks at the bottom of this page.</p>
-    <p class="stand"><dfn><b>PIC-12</b> and <b>NEO-14</b> are two different maps of the
-      same region: twelve counties for anything built from federal data, fourteen for
-      anything from PIC's own records. They share ten counties and are never mixed in one
-      figure.</dfn></p>
+    <p class="eyebrow" id="eyebrow">Twelve findings from free public data</p>
+    <h1>Ohio is <em>first in the country</em> in plastics and rubber jobs. That is the
+      easiest claim here to prove.</h1>
+    <p class="stand">54,846 of those jobs, ten thousand more than second-place Texas, and
+      every state disclosed in the Bureau of Labor Statistics count. Underneath the ranking
+      sit the questions a member firm actually argues about: what the work pays, and who is
+      available to do it.</p>
+    <p class="stand dek">Every number here has a source, an assertion, and a way to be
+      proved wrong.</p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -38,84 +36,81 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">Start here</p>
-    <h2>The four that answer a question someone actually asked</h2>
-    <p class="lede">If you only open a few, open these. Each replaces a claim PIC currently
-      makes on assertion with one it can defend on evidence.</p>
+    <h2>Four pages that replace a claim PIC makes with one it can defend</h2>
+    <p class="lede">Each of these answers a question a funder or a member firm has already
+      asked out loud. The tag on every card names the geography its figures are built from,
+      because the two footprints in use here never reconcile.</p>
     <div class="cards lead" id="lead"></div>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
-    <p class="takeaway">The rest</p>
-    <h2 id="alltitle">Everything, by what it is for</h2>
+    <p class="takeaway">All twelve</p>
+    <h2 id="alltitle">Everything here, by the question it answers</h2>
+    <p class="lede">Six of these pages are built on the twelve counties PIC measures
+      against, two price metro areas, two are national series, and two are registers of
+      public awards and dates. Pick a county and each card says whether it is built on a
+      geography that contains it.</p>
+    <div class="picker">
+      <label for="county">Your county</label>
+      <select id="county">
+        <option value="">All twelve counties</option>
+      </select>
+      <p class="verdict" id="verdict" aria-live="polite"></p>
+    </div>
     <div class="cards" id="all"></div>
   </div>
 </section>
 
-<section class="band">
+<section class="band alt">
   <div class="wrap">
     <p class="takeaway">Before anything leaves the building</p>
-    <h2>How to check this work</h2>
-    <div class="checks">
-      <div>
-        <h3>1. Re-run every claim</h3>
-        <pre>cd _data/build
-python verify_claims.py</pre>
-        <p>Every published sentence is an assertion against the data that produced it.
-          A failure means the sentence no longer matches its source &mdash; fix the
-          sentence or the computation, never the assertion.</p>
-      </div>
-      <div>
-        <h3>2. Read the falsification conditions</h3>
-        <pre>python verify_claims.py --list</pre>
-        <p>Each claim carries what would make it wrong. This output is the brief for a
-          hostile reviewer &mdash; it is the attack surface, written down by the person
-          who made the claims.</p>
-      </div>
-      <div>
-        <h3>3. Attack the manual claims first</h3>
-        <p>Claims quoted from documents rather than datasets cannot be machine-checked.
-          They print as <span class="mono">MANL</span> and are the most likely place a
-          wrong reading survives. They need a human or a council lane.</p>
-      </div>
-      <div>
-        <h3>4. Rebuild the data from origin</h3>
-        <pre>python fetch_*.py &amp;&amp; python derive_*.py</pre>
-        <p>Every dataset is reproducible from <span class="mono">_data/build/</span> with
-          free public APIs. Nothing depends on a private table, and nothing writes to
-          production.</p>
-      </div>
-    </div>
+    <h2>Every sentence here is a test that can fail</h2>
+    <p class="lede">Each published sentence is stored as an assertion against the data that
+      produced it, next to the condition that would prove it wrong. Re-running all of them
+      is one command in
+      <a href="https://github.com/polymerindustrycluster/evidence-room">the repository</a>,
+      and the listing doubles as the brief for a hostile reviewer.</p>
     <div class="note" id="footnote"></div>
+    <details class="howto">
+      <summary>The commands, for anyone who wants to run them</summary>
+      <div class="checks">
+        <div>
+          <h3>Re-run every claim, or read what would break it</h3>
+          <pre>cd _data/build
+python verify_claims.py
+python verify_claims.py --list</pre>
+          <p>A failure means a published sentence no longer matches its source. Fix the
+            sentence or the computation, never the assertion.</p>
+        </div>
+        <div>
+          <h3>Rebuild the data from origin</h3>
+          <pre>python fetch_*.py &amp;&amp; python derive_*.py</pre>
+          <p>Every dataset is reproducible from <span class="mono">_data/build/</span> with
+            free public APIs. Nothing reads a private table, and nothing writes to
+            production.</p>
+        </div>
+      </div>
+    </details>
+    <p class="src">The federal sources behind these pages, named once so a reader can find
+      them. <dfn><b>QCEW</b> is the Quarterly Census of Employment and Wages, the payroll
+      count behind every jobs and wage figure here.</dfn>
+      <dfn><b>IPEDS</b> is the Integrated Postsecondary Education Data System, the federal
+      record of every degree conferred.</dfn>
+      <dfn><b>NAICS</b> is the North American Industry Classification System, the codes that
+      decide which employers count as polymer.</dfn>
+      <dfn><b>BEA</b> is the Bureau of Economic Analysis, which publishes regional price
+      levels, and <b>BLS</b> is the Bureau of Labor Statistics.</dfn></p>
   </div>
 </section>
 
 <section class="closer">
   <div class="wrap">
-    <p>Two footprints, three registers, and a suppression rule. Read those before quoting
-      anything.</p>
-    <p class="sub">Federal-data pages use <b>PIC-12</b>, matching the cluster-health
-      dashboard. Vault-sourced pages use <b>NEO-14</b>, which is how company records are
-      tagged. They share ten counties and never reconcile. PIC's measurement register is
-      <b>3252 + 3255 + 326</b> — NAICS 325 is context, not cluster. A withheld cell is
-      never a zero. All three rules are in
-      <span class="mono">_data/METHODS-SOP.md</span>. The footprints themselves are
-      canonically defined in <a href="https://github.com/polymerindustrycluster/pic-geo">pic-geo</a>,
-      a separate small package with its own tests; this repository carries a vendored copy at
-      <span class="mono">_data/build/footprints.py</span> so its scripts run from a clone with
-      nothing else installed, and pic-geo's test suite asserts the two never diverge.</p>
-    <p class="src">The federal sources behind these pages, named once so a reader can find
-      them: <dfn><b>QCEW</b> &mdash; the Quarterly Census of Employment and Wages, the
-      payroll count behind every jobs and wage figure here.</dfn>
-      <dfn><b>IPEDS</b> &mdash; the Integrated Postsecondary Education Data System, the
-      federal record of every degree conferred.</dfn>
-      <dfn><b>NAICS</b> &mdash; the North American Industry Classification System, the codes
-      that decide which employers count as polymer.</dfn>
-      <dfn><b>BEA</b> is the Bureau of Economic Analysis, which publishes regional price
-      levels; <b>BLS</b> is the Bureau of Labor Statistics.</dfn>
-      <dfn><b>TRL</b> &mdash; technology readiness level, a 1-to-9 scale from idea to
-      production.</dfn></p>
+    <p>The ranking opens the meeting. The twelve pages here are what has to hold up in it.</p>
+    <p class="sub">Two of the twelve predate this design system and say so on their cards.
+      If a sentence here is wrong, the fastest way to prove it is the falsification
+      condition stored beside it in that page&rsquo;s claims file.</p>
   </div>
 </section>
 

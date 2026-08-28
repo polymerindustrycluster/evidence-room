@@ -1,6 +1,24 @@
 /* index — a gallery, so the cards carry the weight instead of charts */
+
+/* SHIPPED BUG, fixed here 2026-08-28. pic-viz.css sets
+   `.closer .wrap > p{font-size:clamp(20px,2.6vw,30px);font-weight:900}` at (0,2,1), which
+   display-scales ANY bare <p> in the closer. This page ended on a nine-line source
+   glossary set in 30px black — the page's parting image was a footnote. The glossary has
+   moved out of the closer entirely; these two rules stay as the guard, so a caption that
+   wanders back in is typeset as a caption. They carry the wrapper's own specificity
+   because that is what it takes to win, and they leave max-width on --measure so
+   tools/columns.mjs still sees `.closer p` on the text rail. Never patch this in
+   _shared/pic-viz.css: the display rule is correct for the closer's one big sentence. */
+.closer .wrap > p.src,
+.closer .wrap > p.note{font-size:13px;font-weight:400;letter-spacing:0;line-height:1.6;
+  color:#A8CDD4;max-width:var(--measure);margin:18px auto 0}
+
+/* The trust line, demoted from the H1 it used to be. Quieter than the standfirst above
+   it: it is the page's credential, not its finding. */
+.hero .stand.dek{font-size:16.5px;color:#9FC4CB;margin-top:14px}
+
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;
-  background:var(--line);border:1px solid var(--line);margin:30px 0 0}
+  background:var(--line);border:1px solid var(--line);margin:26px 0 0}
 .cards.lead{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
 .card{background:#fff;padding:22px;display:block;text-decoration:none;color:inherit;
   transition:background .14s}
@@ -16,15 +34,54 @@
 .card .pill.n14{background:#F2E7EE;color:var(--hover)}
 .card .pill.man{background:#F4F1EC;color:var(--hover)}
 .cards.lead .card{border-left:3px solid var(--ink)}
-.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;
-  margin:30px 0 0}
-.checks h3{font-size:16px;margin:0 0 8px}
-.checks p{margin:10px 0 0;font-size:14.5px;color:#3A4448;line-height:1.55}
+
+/* ------------------------------------------------------------------ county picker
+   The default state is the whole gallery with nothing marked, so the page reads the same
+   printed as it does on screen. Selecting a county adds a flag; it never hides a card. */
+.picker{max-width:var(--measure);margin:24px 0 0;background:#F1EEE9;
+  border-left:3px solid var(--action);padding:16px 20px}
+.picker label{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:900;color:var(--action);margin:0 0 8px}
+.picker select{font-family:inherit;font-size:16px;padding:9px 12px;min-height:44px;
+  background:#fff;border:1px solid var(--line);color:var(--text);max-width:100%}
+.picker select:focus-visible{outline:2px solid var(--action);outline-offset:1px}
+.picker .verdict{margin:12px 0 0;font-size:15px;line-height:1.55;color:#3A4448}
+.picker .verdict b{color:var(--text)}
+/* Marked, never dimmed. Fading the cards a county is not in would tell a reader that a
+   national price series is less relevant to them, which is false: those pages contain
+   their county the way they contain everyone's. The flag adds information; nothing is
+   taken away. */
+.card .pill.hit-flag{display:none;background:var(--ink);color:#fff}
+body.picked .card.hit{background:#F7FAFA;box-shadow:inset 3px 0 0 var(--action)}
+body.picked .cards.lead .card.hit{box-shadow:none;border-left-color:var(--action)}
+body.picked .card.hit .pill.hit-flag{display:inline}
+
+/* The act boundary. The gallery is the story; everything after this band is apparatus,
+   and a tint is what tells a scrolling reader that without a sentence saying so. The
+   generated methodology band below it stays on paper, so the two alternate. */
+.band.alt{background:#F2EFEA}
+.band.alt .note{background:#FAF9F7}
+.band.alt .checks pre,.band.alt .mono{background:#E7E2DA}
+
+/* ------------------------------------------------------------------ method disclosure
+   Four panels of shell commands used to sit between the gallery and the closer at full
+   band weight, on a page read by executives. The band now states the check in one line
+   and keeps the commands here. */
+.howto{margin:22px 0 0;max-width:var(--measure)}
+.howto summary{cursor:pointer;color:var(--action);font-weight:700;font-size:14.5px;
+  padding:6px 0}
+.howto summary:hover{color:var(--hover)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:26px;
+  margin:14px 0 0}
+.checks h3{font-size:15px;margin:0 0 8px}
+.checks p{margin:10px 0 0;font-size:14px;color:#3A4448;line-height:1.55}
 .checks pre{background:#F1EEE9;border-left:3px solid var(--action);padding:11px 14px;
   margin:0;font-size:12.5px;overflow-x:auto;font-family:ui-monospace,Consolas,monospace}
 .mono{font-family:ui-monospace,Consolas,monospace;font-size:.92em;background:#F1EEE9;
   padding:1px 5px}
+
 @media (max-width:640px){
   .cards,.cards.lead{grid-template-columns:1fr}
   .card{padding:18px}
+  .picker select{width:100%}
 }
