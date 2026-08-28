@@ -85,3 +85,10 @@ body.picked .card.hit .pill.hit-flag{display:inline}
   .card{padding:18px}
   .picker select{width:100%}
 }
+
+/* "What this is" — the frame that tells a reader what kind of document this is
+   before they judge it as one. Body prose sits at the reading register, not the
+   lede register, so the frame reads as orientation rather than as a finding. */
+.whatitis{background:var(--paper-alt,#F1EEE9)}
+.whatitis-body{margin:14px 0 0;max-width:var(--measure);font-size:16.5px;
+  line-height:1.62;color:#3A4448}

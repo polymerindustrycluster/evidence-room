@@ -160,7 +160,7 @@ function drawPremiumDesktop() {
   const h = rows.length * 22;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys: () => 0, xt: ticks(lo, hi, 6),
     xfmt: fx, yt: [],
-    xlab: "Weekly wage ÷ that county’s all-industry average"});
+    xlab: "pays less than the county ←   1.0×   → pays more than the county"});
   /* A 51-row stack has ONE axis at the bottom, which left the top rows ~1,200px from any
      tick label — a value scale a reader cannot reach is not a scale. Repeat the tick row
      above the plot and run a hairline down each tick so every row sits on a readable grid. */
@@ -290,8 +290,8 @@ function drawScatterDesktop() {
   const ys = v => m.t + h - ((v - ylo) / (yhi - ylo)) * h;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys, xt: ticks(xlo, xhi, 6),
     yt: ticks(ylo, yhi, 5), xfmt: fx, yfmt: fx,
-    xlab: "× the county’s all-industry average → beats the town",
-    ylab: "× the same industry’s U.S. average"});
+    xlab: "pays less than the county ←   → pays more than the county",
+    ylab: "pays less than the industry nationally ←   → pays more"});
   el("line", {x1: xs(1), y1: m.t, x2: xs(1), y2: m.t + h, stroke: "var(--hover)",
     "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
   el("line", {x1: m.l, y1: ys(1), x2: m.l + w, y2: ys(1), stroke: "var(--hover)",
@@ -359,8 +359,8 @@ function drawScatterMobile() {
      page's own no-round-lie formatter prints them, exactly as the desktop chart does. */
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys, xt: ticks(xlo, xhi, 3),
     yt: ticks(ylo, yhi, 5), xfmt: fx,
-    yfmt: fx, xlab: "× county average",
-    ylab: "× industry U.S. average"});
+    yfmt: fx, xlab: "← under town   ·   over town →",
+    ylab: "← under industry   ·   over →"});
   /* The family key lives on chart 1's legend, roughly 3,000px up the phone scroll. A figure
      that has to be read where it sits carries its own. */
   {
