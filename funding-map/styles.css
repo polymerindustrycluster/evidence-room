@@ -37,6 +37,14 @@ html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
   line-height:1.5;color:#9CC4CA;letter-spacing:.02em}
 .hero .wrap > .byline time{color:#C6E2E6}
 
+/* THE COLD-OPEN STRIP. Pinned to the TEXT rail, not the figure rail: drawn at this site's
+   980px figure width a chart sitting directly under the headline starts 151px outboard of
+   it, which is the two-rail defect. The `auto` side margins are load-bearing for the same
+   reason the byline's are, since this sheet loads after the core. */
+.hero .wrap > .hero-viz{max-width:var(--measure);margin:26px auto 4px}
+.hero-viz svg{width:100%;height:auto;display:block;overflow:visible}
+.hero-viz text{font-family:var(--sans);font-variant-numeric:tabular-nums}
+
 /* The headline's key figure is one token to a reader; balanced wrapping broke it as
    "$106 / million" across two lines, which reads as two numbers for an instant. */
 .hero h1 em{white-space:nowrap}

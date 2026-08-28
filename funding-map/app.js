@@ -1366,9 +1366,137 @@ function loadData(file) {
     io.observe(node);
   }
 
+  /* ------------------------------------------------------------- cold open */
+  /* The hero strip. Every organization that has been named as receiving this money, one
+     row each, ordered by size: the shape of where it lands, before a word of explanation.
+     Deliberately a POORER view than the map below, which carries source, program,
+     mechanism and match as well; this keeps recipient and dollars and nothing else, and
+     orders by size, which the map does not. Every figure in it is derived here from
+     DATA.recipients, so a revision to funding.json moves the chart and its labels together.
+
+     SIZED IN REAL CSS PIXELS, like renderDiagram above it. A viewBox authored at some
+     fixed unit count and squeezed into a narrower column silently shrinks its own type:
+     700 units in a 350px phone column paints a 15-unit label at 7.5px, half the floor.
+     Here the viewBox width IS the measured width, so the scale is 1 and a 15-unit label
+     paints at 15px at every width. Below 520px the layout changes rather than the scale:
+     the reading stacks onto three lines, the rows tighten, the tick set halves and the
+     labels shorten.
+
+     COLOR. The dark hero ground is --ink #0C6473, and this page's own lane hues were
+     mixed for the light band below: --eda #1A8A9E measures 1.7:1 on it, --ohio 2.7:1,
+     --apex 2.1:1, all under the 3:1 floor. The mark hue is --eda lightened to #7ADAEA
+     (4.2:1); the secondary type is #C6E2E6, the standfirst's own ink (5.0:1). */
+  function drawOpen() {
+    const svg = document.getElementById('open');
+    if (!svg || !DATA) return;
+    const W = Math.round(svg.getBoundingClientRect().width);
+    if (!W) return;
+    const M = W < 520;
+
+    const rows = DATA.recipients
+      .map((r) => ({ name: r.name, total: r.awards.reduce((s, a) => s + a.amount, 0) }))
+      .sort((a, b) => b.total - a.total);
+    const named = rows.reduce((s, r) => s + r.total, 0);
+    // One stated cut, $1M, and both sides of it are counted from the data.
+    const over = rows.filter((r) => r.total >= 1e6).length;
+    const under = rows.length - over;
+    const share = Math.round(rows.slice(0, over).reduce((s, r) => s + r.total, 0) / named * 100);
+    const top = rows[0];
+    // Domain anchored at 0 and running to the next whole million above the longest row.
+    const DOM = Math.ceil(top.total / 1e6) * 1e6;
+
+    const m = M ? { r: 12, b: 32, l: 12 } : { r: 16, b: 34, l: 16 };
+    const rowH = M ? 5.4 : 6;
+    const w = W - m.l - m.r;
+    const X = (v) => m.l + (v / DOM) * w;
+
+    /* Keep the <title> and drop the previous render. This runs again on every real width
+       change, and appending would stack two strips in one box; a naive innerHTML wipe
+       would take the accessible title with it. */
+    [...svg.childNodes].slice(1).forEach((n) => svg.removeChild(n));
+    const add = (tag, attrs, text) => { const n = el(tag, attrs, text); svg.appendChild(n); return n; };
+
+    const MARK = '#7ADAEA', KEY = '#C6E2E6';
+    const LABEL = { 'font-size': 15, 'font-weight': 700 };
+
+    const reading = M ? `${over} of ${rows.length} clear $1M, taking ${share}%`
+                      : `${over} of the ${rows.length} clear $1M and take ${share}% of it`;
+    const topLabel = `${M ? 'Pilot facility' : top.name}, ${fmtHero(top.total)}`;
+
+    /* WHETHER THE READING AND THE ROW LABEL FIT ON ONE BASELINE IS A QUESTION ABOUT
+       RENDERED STRINGS, NOT ABOUT THE VIEWPORT. Sharing that baseline at opposite ends is
+       the house idiom and it was clean at 1440 and at 390, so the first version hard-coded
+       it for every width above the narrow switch. At 560px the two overlapped by 36px:
+       the reading's length is fixed and the label's right edge is pinned to the data. So
+       the strings are measured and the label drops to a line of its own when it would not
+       clear. getComputedTextLength reports user units, which is what the gap is in. */
+    const measure = (s) => {
+      const n = add('text', { ...LABEL, x: 0, y: -60 }, s);
+      const len = n.getComputedTextLength();
+      svg.removeChild(n);
+      return len;
+    };
+    const oneLine = !M && m.l + measure(reading) + 24 <= X(top.total) - measure(topLabel);
+    m.t = M ? 95 : (oneLine ? 54 : 74);
+
+    const H = Math.round(m.t + rows.length * rowH + m.b);
+    const rowY = (i) => m.t + i * rowH + rowH / 2;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+    rows.forEach((r, i) => {
+      const y = rowY(i), x = X(r.total);
+      /* .8, not the .55 this shipped with first: a stem carries the value in its length,
+         so it is a graphical object that has to clear 3:1 on the hero ground. At .55 the
+         composite measures 2.34:1; at .8 it is 3.31:1. */
+      add('line', { x1: m.l, y1: y, x2: x, y2: y, stroke: MARK,
+        'stroke-width': M ? 1.6 : 1.8, 'stroke-opacity': .8 });
+      add('circle', { cx: x, cy: y, r: M ? 2.4 : 2.6, fill: MARK });
+    });
+
+    const ay = m.t + rows.length * rowH + 8;
+    add('line', { x1: m.l, y1: ay, x2: m.l + w, y2: ay,
+      stroke: 'rgba(255,255,255,.32)', 'stroke-width': 1 });
+    (M ? [0, 10e6] : [0, 5e6, 10e6, 15e6]).forEach((v) => {
+      add('text', { ...LABEL, x: X(v), y: H - 10, 'text-anchor': 'middle', fill: KEY },
+        v ? '$' + v / 1e6 + 'M' : '$0');
+    });
+
+    /* The reading. The phone has no room for the whole sentence on one line, so it takes
+       three of its own; the wide layout says it in two. */
+    if (M) {
+      add('text', { ...LABEL, x: m.l, y: 16, fill: '#fff' },
+        `Where the ${fmtHero(named)} lands:`);
+      add('text', { ...LABEL, x: m.l, y: 36, fill: '#fff' }, 'one row per recipient');
+      add('text', { ...LABEL, x: m.l, y: 56, fill: KEY }, reading);
+    } else {
+      add('text', { ...LABEL, x: m.l, y: 16, fill: '#fff' },
+        `Where the ${fmtHero(named)} lands: one row per recipient`);
+      add('text', { ...LABEL, x: m.l, y: 36, fill: KEY }, reading);
+    }
+
+    // The longest row, named where it ends, with a leader down to it: a direct label is
+    // the primary decoding here, and there is no legend to shuttle to.
+    const tx = X(top.total), ty = oneLine ? 36 : (M ? 79 : 58);
+    add('text', { ...LABEL, x: tx, y: ty, 'text-anchor': 'end', fill: '#fff' }, topLabel);
+    add('line', { x1: tx, y1: ty + 5, x2: tx, y2: rowY(0) - 4,
+      stroke: 'rgba(255,255,255,.5)', 'stroke-width': 1 });
+
+    /* The tail, bracketed rather than labelled row by row: twelve rows at this scale
+       cannot each carry a name, and the claim is about the group, not its members. */
+    const bx = M ? 30 : 52;
+    add('line', { x1: bx, y1: rowY(over) - rowH / 2 - 1, x2: bx, y2: rowY(rows.length - 1) + rowH / 2 + 1,
+      stroke: 'rgba(255,255,255,.4)', 'stroke-width': 1 });
+    add('text', { ...LABEL, x: bx + 8, y: (rowY(over) + rowY(rows.length - 1)) / 2 + 5, fill: KEY },
+      M ? `${under} under $1M` : `${under} recipients under $1M each`);
+  }
+
   /* ---------------------------------------------------------------- render */
 
   function render() {
+    /* The cold open re-lays out on the same trigger as the map: one width change, one
+       render pass. It reads its own container rather than the map's, because it sits on
+       the text rail and the map on the figure rail. */
+    drawOpen();
     const W = Math.round(viz.getBoundingClientRect().width);
     if (!W) return;
     const mode = W < CARD_BREAKPOINT ? 'cards' : 'diagram';

@@ -31,14 +31,34 @@ for (const n of list) {
   const p = await b.newPage({viewport: {width: 1440, height: 900}});
   await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
   await p.waitForTimeout(1000);
-  const top = await p.evaluate(() => {
+  const {top, hidden} = await p.evaluate(() => {
     const c = [...document.querySelectorAll("svg")].find(s => {
       const bx = s.getBoundingClientRect();
       return bx.width > 200 && bx.height > 80 && !s.closest(".mast");
     });
-    return c ? Math.round(c.getBoundingClientRect().top + scrollY) : null;
+    /* A VISUAL THAT IS NOT SVG IS INVISIBLE TO EVERY GATE HERE. One page carried an
+       isotype in its hero built from HTML <i> squares: this gate read the gap it left
+       and reported the first chart 5,000px further down, while textsize and collide
+       could not measure it at all. Repeated small empty elements are the signature, so
+       name them rather than let a page keep an unmeasurable graphic. */
+    const hidden = [];
+    document.querySelectorAll(".hero *, .band *").forEach(el => {
+      const kids = [...el.children];
+      if (kids.length < 12 || el.closest("svg")) return;
+      const tag = kids[0].tagName;
+      if (!kids.every(k => k.tagName === tag && !k.textContent.trim())) return;
+      const ok = kids.every(k => { const b = k.getBoundingClientRect();
+        return b.width > 0 && b.width < 24 && b.height < 24; });
+      if (ok) hidden.push(`${kids.length}x <${tag.toLowerCase()}> in ` +
+        `.${(el.getAttribute("class") || el.tagName).split(" ")[0]}`);
+    });
+    return {top: c ? Math.round(c.getBoundingClientRect().top + scrollY) : null,
+            hidden: [...new Set(hidden)]};
   });
   await p.close();
+  if (hidden.length) loose++,
+    console.log(`${" ".repeat(18)}      note: graphic built from HTML, unmeasurable by ` +
+                `any gate here (${hidden.join("; ")}) — redraw it as SVG`);
 
   const ceiling = FIXED.has(n) ? LIMIT : (CFG.ceilings[n] ?? LIMIT);
   const kind = FIXED.has(n) || !(n in CFG.ceilings) ? "limit" : "debt";

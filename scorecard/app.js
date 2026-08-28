@@ -49,26 +49,124 @@ const C = D.counts;
 const DEL = D.delivery;
 const TAL = D.talent;
 
-/* ------------------------------------------------------------- hero coverage squares
-   The lead visual, and it opens the page rather than the stat row: one square per
-   metric, grouped, so a reader sees in the first screen that the empty rows are not
-   scattered but concentrated in group A. An isotype (chart-craft, MAGNITUDE row) where
-   one icon is one metric — the count is small enough that whole units beat a bar.
-   No hue is spent on absence: computed squares are filled, empty ones are an outline. */
-document.getElementById("cover").innerHTML =
-  D.groups.map(g => {
-    const rows = ROWS.filter(r => r.group === g.key);
-    const filled = rows.filter(r => r.status === "public").length;
-    return `<span class="cov-g">
-      <span class="cov-cells">${rows.map(r =>
-        `<i class="cv-${r.status}"></i>`).join("")}</span>
-      <span class="cov-l"><b>${g.key}</b> ${esc(g.title.split(" ")[0])} &middot; ${
-        g.key === "D" ? `${rows.length} context` : `${filled} of ${rows.length}`}</span>
-    </span>`;
-  }).join("") +
-  `<span class="cov-cap">One square is one metric. Filled squares are the rows a public
-    record can fill, outlines are the rows waiting on a private copy, and the grey run
-    at the end is cluster context PIC does not control.</span>`;
+/* ============================================================ 0. THE COLD OPEN
+   The lead visual, in the first screen, above the stat row. It was already here as a row
+   of HTML squares; it is drawn now, because a page whose whole argument is which cells
+   are empty cannot make a reader scroll 5,677px to meet its first mark.
+
+   An isotype (chart-craft, MAGNITUDE row): one square is one metric, grouped, so the
+   shape a reader takes away is that the blanks are not scattered but concentrated in
+   group A. No hue is spent on absence — computed is filled, awaiting the vault is an
+   outline, context is a flat wash — which survives greyscale and colour-blind reading.
+
+   DELIBERATELY POORER THAN THE TABLE BELOW IT. One dimension, status per metric. No
+   definition, owner, cadence, target, current reading, trend or source: those are eight
+   columns and they are the reason the table exists. This strip only has to put the
+   coverage shape in the first screen and hand the reader on.
+
+   COLOUR ON THE DARK HERO. The site's chart inks are mixed for #FAF9F7 paper and cannot
+   be reused here: INK is #0C6473, which IS this ground, and the dark half of the SEQ
+   ramp measures under 3:1 against it. So this strip draws in lightened hero inks — a
+   near-white fill, a white dashed outline, a white wash — and the group letters take a
+   lightened lime, #CFE85C at 4.97:1, where the page's own --lime (#B8D637) reaches only
+   4.12:1 and would fail the 4.5:1 floor for body-size text. */
+const O_FILL = "#EAF3F4", O_EDGE = "rgba(255,255,255,.66)", O_CTX = "rgba(255,255,255,.30)",
+      O_LIME = "#CFE85C", O_MUTE = "#CDE6EA";
+
+/* Each row carries the group's WHOLE title, not its first word. The shorthand this strip
+   replaces printed group B as "Federal", and group B's entire finding is that the money
+   with no named recipient is state money — so the abbreviation contradicted the page. A
+   full title costs a wider label column and nothing else. */
+const OPENG = D.groups.map(g => {
+  const rs = ROWS.filter(r => r.group === g.key);
+  const filled = rs.filter(r => r.status === "public").length;
+  return {key: g.key, title: g.title, cells: rs.map(r => r.status),
+    tally: g.key === "D" ? `${rs.length} rows, context only`
+                         : `${filled} of ${rs.length} computed`};
+});
+
+/* One metric. A vault square is inset by half its stroke so the dashed edge lands inside
+   the same cell box as a filled one and the four runs stay on one baseline. The dash
+   scales with the square: "4 3" on the 13-unit key swatch drew four corners and read as
+   a different mark from the 24-unit squares it was the key for. */
+function openCell(svg, status, x, y, s) {
+  if (status === "vault")
+    el("rect", {x: x + .75, y: y + .75, width: s - 1.5, height: s - 1.5, rx: 3,
+      fill: "none", stroke: O_EDGE, "stroke-width": 1.5,
+      "stroke-dasharray": s < 16 ? "2.4 1.8" : "4 3"}, svg);
+  else
+    el("rect", {x, y, width: s, height: s, rx: 3,
+      fill: status === "public" ? O_FILL : O_CTX}, svg);
+}
+
+/* The phone version is NOT this one scaled. A 700-unit viewBox squeezed into a 350px
+   column renders every label at 7.5px, well under the 12px floor, so the phone gets its
+   own viewBox (358 units, a ~1:1 scale), its own square size, and the tally stacked over
+   the squares instead of sitting beside them. Redraw safety is PV.chart's `keep`, which
+   counts ELEMENT children rather than childNodes and so cannot eat the <title> the way a
+   `childNodes.slice(1)` does on indented markup. */
+function drawOpen() {
+  const M = MOBILE.matches;
+  const W = M ? 358 : 700, H = M ? 348 : 240;
+  const m = M ? {t: 62, r: 10, b: 10, l: 10} : {t: 56, r: 14, b: 30, l: 14};
+  const {svg, w} = chart("open", {W, H, m});
+  const SQ = M ? 18 : 24, CELL = M ? 23 : 31, SX = M ? m.l : m.l + 296;
+  const TOP = M ? [62, 116, 170, 232] : [56, 90, 124, 168];
+  const RULE = M ? 220 : 156;
+
+  /* The finding, in the strip's own words, because this is the only chart a reader meets
+     before any explanation. Two lines rather than one: measured, the phone column holds
+     about 44 characters at 15 units and the desktop one about 80. */
+  txt(svg, M ? `${C.public} of ${C.accountable} rows compute from a public record`
+             : `${C.public} of the ${C.accountable} rows PIC answers for compute from `
+               + `a public record`,
+    {x: m.l, y: M ? 20 : 19, "font-size": M ? 15 : 16, "font-weight": M ? 700 : 900,
+     fill: "#fff"});
+  txt(svg, `The ${C.vault_in_a} rows on revenue are all blank.`,
+    {x: m.l, y: 40, "font-size": 15, "font-weight": 700, fill: O_LIME});
+
+  /* On the phone the title takes its own line above the squares and the tally drops to
+     the squares' line. Side by side, group B's title runs 238 units from x=26 and its
+     right-aligned tally starts at 228: a 35-unit overlap at 390px, and none at any
+     desktop width, which is why this is a re-layout and not a scale. */
+  OPENG.forEach((g, i) => {
+    const top = TOP[i], label = top + (M ? 12 : 20), tally = top + (M ? 34 : 20);
+    txt(svg, g.key, {x: m.l, y: label, "font-size": 15, "font-weight": 900, fill: O_LIME});
+    txt(svg, g.title, {x: m.l + (M ? 16 : 18), y: label, "font-size": 15,
+      "font-weight": 700, fill: "#fff"});
+    txt(svg, g.tally, {x: m.l + w, y: tally, "text-anchor": "end",
+      "font-size": 15, "font-weight": 700, fill: g.key === "D" ? O_MUTE
+        : g.tally.startsWith("0 ") ? O_LIME : "#fff"});
+    g.cells.forEach((s, j) =>
+      openCell(svg, s, SX + j * CELL, top + (M ? 20 : 3), SQ));
+  });
+
+  /* Group D is ruled off, the same separation the table makes with its own ground: it is
+     the regional economy, not PIC's performance, and this page exists partly to refuse
+     the averaging of the two. */
+  el("line", {x1: m.l, y1: RULE, x2: m.l + w, y2: RULE,
+    stroke: "rgba(255,255,255,.24)", "stroke-width": 1}, svg);
+
+  /* The key, so the strip reads cold from its own labels. Three items on one row at 700
+     units; stacked on the phone, where one row of three overruns the column. The advance
+     is the label's MEASURED width, not a character count times a guessed per-character
+     width: this face is proportional, and the estimate that got the first draft here was
+     out by a third on the longest of the three. */
+  const KEY = [["public", "computed from a public record"],
+               ["vault", "not published here"], ["context", "cluster context"]];
+  let kx = m.l;
+  KEY.forEach(([status, label], i) => {
+    const ky = M ? 292 + i * 22 : 220, x = M ? m.l : kx;
+    openCell(svg, status, x, ky - 11, 13);
+    kx = x + 19 + txt(svg, label,
+      {x: x + 19, y: ky, "font-size": 14, fill: O_MUTE}).getComputedTextLength() + 26;
+  });
+}
+drawOpen();
+/* The strip re-lays itself out at the breakpoint. The two charts below it are drawn once,
+   as they always were; changing that is a separate job and not this one. */
+MOBILE.addEventListener ? MOBILE.addEventListener("change", drawOpen)
+                        : MOBILE.addListener(drawOpen);
 
 /* ------------------------------------------------------------------- hero stat row
    Four findings, no apparatus stat. The coverage card carries the accent because

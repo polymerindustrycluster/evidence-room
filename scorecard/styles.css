@@ -15,26 +15,21 @@
 .hero .byline{margin:18px auto 0;max-width:var(--measure);font-size:13px;line-height:1.55;
   letter-spacing:.01em;color:#BEDCE1}
 
-/* ------------------------------------------------------------ hero coverage squares
-   The page's lead visual, above the stat row rather than below it, so the first screen
-   opens on a graphic instead of a row of numbers. One square is one metric. Absence gets
-   no hue: a computed row is filled, a row awaiting the vault is an outline, context is a
-   flat grey. That survives greyscale and colour-blind reading, which a red/green pair
-   would not. Centred on the measure rail; `margin:... auto` because `margin:22px 0 0`
-   at (0,2,0) would beat pic-viz's `.hero .wrap > *{margin-left:auto}` and open a second
-   left rail under the standfirst. */
-.hero .cover{margin:24px auto 0;max-width:var(--measure);display:flex;flex-wrap:wrap;
-  gap:14px 26px;align-items:flex-start}
-.cov-g{display:block}
-.cov-cells{display:flex;gap:4px}
-.cov-cells i{width:22px;height:22px;display:block;border-radius:3px}
-.cov-cells .cv-public{background:#EAF3F4}
-.cov-cells .cv-vault{background:none;border:1.5px dashed rgba(255,255,255,.55)}
-.cov-cells .cv-context{background:rgba(255,255,255,.28)}
-.cov-l{display:block;margin:7px 0 0;font-size:12px;color:#B7D9DE;
-  font-variant-numeric:tabular-nums}
-.cov-l b{color:var(--lime);font-weight:900;margin-right:3px}
-.cov-cap{flex-basis:100%;margin:2px 0 0;font-size:13px;line-height:1.5;color:#9FCBD2}
+/* -------------------------------------------------------------------- the cold open
+   The coverage isotype, promoted from a row of HTML squares to a drawn chart so the
+   first screen carries a mark rather than only type. Absence still gets no hue: a
+   computed row is filled, a row awaiting the vault is an outline, context is a flat
+   wash, which survives greyscale and colour-blind reading where a red/green pair
+   would not.
+
+   PINNED TO THE MEASURE RAIL, NOT THE FIGURE RAIL. Drawn at --figure this strip starts
+   151px left of the headline above it, which is the two-rail defect the house has one
+   law against. And the side margins are `auto` rather than a `margin:24px 0 0`
+   shorthand: this sheet loads after pic-viz, so the shorthand at (0,2,0) would beat
+   `.hero .wrap > *{margin-left:auto}` and open that same second rail by another route. */
+.hero .wrap > .hero-viz{max-width:var(--measure);margin:24px auto 0}
+.hero-viz svg{width:100%;height:auto;display:block;overflow:visible}
+.hero-cap{margin:9px 0 0;font-size:13px;line-height:1.5;color:#9FCBD2}
 
 /* ------------------------------------------------------------------ the governance gate
    Below the hero and above the table it governs, on its own ground so it cannot be read
