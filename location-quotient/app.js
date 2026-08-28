@@ -157,6 +157,126 @@ document.getElementById("byline").innerHTML =
   `By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data
    ${AGENCY}, ${FIRST}&ndash;${LATEST} &middot; ${MONTHS[+fm - 1]}&nbsp;${fy}`;
 
+/* ------------------------------------------------------- the cold open, in the hero
+   The headline claim, drawn, before a word of explanation: six bars, one year, one
+   axis. It is the ONLY chart a reader meets before any prose, so it carries its own
+   reading in its own labels, and it is deliberately a POORER view than anything below
+   it - no county, no employment, no eleven-year path - because its job is the shape and
+   the handoff, not the argument.
+
+   Every number here is a shipped one: comp(code, LATEST).lq is the same series the trend
+   chart draws, and fx() is the page's single renderer for a ratio.
+
+   It re-lays itself out through drawAll and on resize. SHORT is declared below and read
+   at DRAW time, never at definition time. */
+function drawOpen() {
+  /* THE VIEWBOX IS THE TEXT RAIL, MEASURED, NOT THE 980px FIGURE RAIL AND NOT A CONSTANT.
+     Two defects sit behind that. Drawn at the site's figure width this strip begins 151px
+     left of the headline it draws, which is the two-rail defect the house has one law
+     against. And a CONSTANT 700-unit box on a fluid rail is a scale factor in disguise:
+     the first build fixed it at 700 and passed the text floor at 1440 and at 390 while
+     painting 10.0px labels between 761px and 899px, where the rail is only 502 to 602px
+     wide and nothing was measuring. Sizing the box to the rail in real pixels makes the
+     scale exactly 1, so a 14-unit label is 14px at EVERY width by construction. */
+  const rail = Math.round(
+    document.getElementById("open").parentElement.getBoundingClientRect().width) || 678;
+  /* Below 560px of rail the wide form cannot hold its own second line, let alone a
+     142px name gutter, so the strip re-lays out: names stacked over their bars, its own
+     tick set, its own reading. That is a re-layout, not the wide one shrunk. */
+  const M = rail < 560;
+  const W = rail, H = M ? 364 : 250;
+  const m = M ? {t: 74, r: 10, b: 60, l: 10} : {t: 60, r: 62, b: 58, l: 150};
+  const {svg, w} = PV.chart("open", {W, H, m});
+
+  /* THE HERO GROUND IS var(--ink) #0C6473 AND THE LIGHT-GROUND INKS DIE ON IT. The page's
+     own chart ink IS that colour, and var(--hover), the plum every chart below uses for
+     the 1.0x reference, measures 1.3:1 against it. So each is lightened here and nowhere
+     else: O_BAR is the light end of the page's own sequential ramp (4.1:1), O_PAINT is
+     var(--lime), the hue the headline already gives the subject (4.1:1), and O_REF is
+     var(--hover) lightened to 3.5:1 so the reference line keeps its hue from chart to
+     chart. O_MUTE clears 4.6:1, above the byline's own 3.9:1 on this ground. */
+  const O_BAR = "#9FD2DA", O_PAINT = "var(--lime)", O_REF = "#E9A9D0", O_MUTE = "#BFDDE2";
+
+  /* Ranked, and the count is COUNTED. "all six" is typed nowhere: if the bureau ever
+     withheld one of these at the regional level the row would drop out and the reading
+     line would say five, rather than printing a number the picture no longer shows. */
+  const rows = D.naics.map(n => ({code: n.code, name: SHORT[n.code],
+      lq: comp(n.code, LATEST)?.lq}))
+    .filter(r => r.lq).sort((a, b) => b.lq - a.lq);
+  /* Bars run from ZERO, not from parity: a location quotient is a ratio with a real zero,
+     so bar length is the quantity and the 1.0x rule is drawn across it. Every bar crossing
+     that rule is the second thing the strip says for free. */
+  const HI = Math.max(...rows.map(r => r.lq)) * 1.09;
+  const X = v => m.l + (v / HI) * w;
+
+  /* The reading, in the strip's own words, because this is the only chart on the page a
+     reader meets before any prose. Measured, the wide rail holds about 78 characters at
+     14px and the narrow one about 40 at 13px, which is why the second sentence breaks in
+     two on the phone rather than being set smaller. */
+  txt(svg, `Paint at ${fx(paint.lq)} leads all ${word(rows.length)}, ${LATEST}`,
+    {x: M ? m.l : 8, y: M ? 20 : 22, "font-size": M ? 15 : 16, "font-weight": 900,
+     fill: "#fff"});
+  txt(svg, M ? "Each bar is one industry: its share of" :
+    "Each bar is one industry: its share of jobs here against its share nationally.",
+    {x: M ? m.l : 8, y: M ? 42 : 44, "font-size": M ? 13 : 14, fill: O_MUTE});
+  if (M) txt(svg, "jobs here against its share nationally.",
+    {x: m.l, y: 61, "font-size": 13, fill: O_MUTE});
+
+  const ROW = M ? 36 : 22, BAR = M ? 11 : 12;
+  const AXIS = m.t + rows.length * ROW + (M ? 9 : 7);
+  rows.forEach((r, i) => {
+    const top = m.t + i * ROW, on = r.code === "3255";
+    const ink = on ? O_PAINT : O_BAR;
+    /* The narrow form STACKS name over bar; it does not squeeze the wide form's 142px
+       name gutter into a 350px rail, where "Plastics prod." alone would eat 30% of the
+       width and leave the shortest bar barely longer than its own label. */
+    el("rect", {x: X(0), y: top + (M ? 18 : 3), width: Math.max(2, X(r.lq) - X(0)),
+      height: BAR, rx: 1, fill: ink}, svg);
+    txt(svg, r.name, {x: M ? m.l : 8, y: top + (M ? 12 : 14),
+      "font-size": M ? 14 : 15, "font-weight": on ? 900 : 700,
+      fill: on ? O_PAINT : "#fff"});
+    txt(svg, fx(r.lq), M ? {x: m.l + w, y: top + 12, "text-anchor": "end",
+        "font-size": 14, "font-weight": 900, fill: ink}
+      : {x: X(r.lq) + 9, y: top + 14, "font-size": 15, "font-weight": 900, fill: ink});
+  });
+
+  /* THE 1.0x RULE, DRAWN LAST so it paints over the bars rather than under them: it is
+     the line the whole page argues about, and six bars crossing it is the finding.
+
+     ON THE NARROW FORM IT IS ONE SEGMENT PER BAR, not one full-height line. The stacked
+     names start at x=10 and parity lands at x=62, so a single rule ran straight through
+     five of the six industry names at 390px and through none of them at 1440px: a
+     data-positioned rule and a margin-positioned label meet only at some widths. Found by
+     rendering at 390, not by reasoning from the wide draw. */
+  if (M) rows.forEach((_, i) => {
+    const top = m.t + i * ROW;
+    el("line", {x1: X(1), y1: top + 17, x2: X(1),
+      y2: i === rows.length - 1 ? AXIS : top + BAR + 21, stroke: O_REF,
+      "stroke-width": 2}, svg);
+  });
+  else el("line", {x1: X(1), y1: m.t - 6, x2: X(1), y2: AXIS, stroke: O_REF,
+    "stroke-width": 2}, svg);
+  el("line", {x1: m.l, y1: AXIS, x2: m.l + w, y2: AXIS,
+    stroke: "rgba(255,255,255,.3)", "stroke-width": 1}, svg);
+
+  /* Ticks skip anything within half a unit of parity: 1.0x gets the plum label and its
+     own rule, and a grey tick beneath it would print the same number twice in two inks. */
+  const TICK = AXIS + 16;
+  ticks(0, HI, M ? 3 : 4).filter(v => Math.abs(v - 1) > .5).forEach(v =>
+    txt(svg, v ? v + "×" : "0", {x: X(v), y: TICK, "text-anchor": "middle",
+      "font-size": M ? 13 : 14, fill: O_MUTE}));
+  txt(svg, "1.0×", {x: X(1), y: TICK, "text-anchor": "middle",
+    "font-size": M ? 13 : 14, "font-weight": 700, fill: O_REF});
+
+  /* Direction, spelled out, because "more concentrated" is not something a bar length
+     tells anyone by itself. On the phone it takes two lines rather than one. */
+  txt(svg, M ? "At 1.0× the two shares match." :
+    "At 1.0× the two shares match. Further right is more concentrated here.",
+    {x: M ? m.l : 8, y: TICK + 22, "font-size": M ? 13 : 14, fill: O_MUTE});
+  if (M) txt(svg, "Further right is more concentrated here.",
+    {x: m.l, y: TICK + 38, "font-size": 13, fill: O_MUTE});
+}
+
 /* --------------------------------------------------- the register, in the open */
 /* "CONTEXT SITS OUTSIDE THE REGISTER" was the page's worst sentence: three capitalised
    terms in three sentences, one of them ("the register") a piece of internal vocabulary
@@ -1009,7 +1129,9 @@ document.getElementById("footcorr").innerHTML =
    darkest shade, Cuyahoga paint has the most jobs behind it.`;
 
 /* --------------------------------------------------------------------- assemble */
-function drawAll() { drawTrend(); drawTwist(); drawHeat(); drawScatter(); drawResid(); }
+function drawAll() {
+  drawOpen(); drawTrend(); drawTwist(); drawHeat(); drawScatter(); drawResid();
+}
 trendCopy(); twistCopy(); scatterCopy();
 drawAll();
 /* Only the breakpoint redraws. Every chart is authored in viewBox units, so a plain
@@ -1017,6 +1139,18 @@ drawAll();
    nothing for it. */
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);
+
+/* THE COLD-OPEN STRIP IS THE ONE EXCEPTION, and it is one on purpose. Every chart below it
+   is authored in fixed viewBox units and only has to re-lay out when the breakpoint moves.
+   The strip is authored in the REAL PIXELS of the text rail, which is fluid between about
+   500px and 678px, so a resize that never crosses 760px still changes its geometry. Rate
+   limited to one redraw per frame, and it draws six bars. */
+let openPending = false;
+addEventListener("resize", () => {
+  if (openPending) return;
+  openPending = true;
+  requestAnimationFrame(() => { openPending = false; drawOpen(); });
+});
 
 /* Footprint banner — stated on the page, not left to the reader to infer. The stored note
    read "PIC's official 12-county footprint, matching the cluster-health dashboard": PIC

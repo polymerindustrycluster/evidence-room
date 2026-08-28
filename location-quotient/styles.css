@@ -17,6 +17,15 @@
   letter-spacing:.02em;color:#9FCBD2;line-height:1.5}
 .hero .wrap > .byline b{color:#DCEEF1;font-weight:700}
 
+/* THE COLD-OPEN STRIP, pinned to the TEXT rail. The shared sheet caps `.hero .wrap > *`
+   at --figure (980px), so left alone this chart would start 151px outboard of the
+   headline it draws: the two-rail defect. This selector is (0,3,0) and beats it. The
+   `auto` side margins are load-bearing for the same reason they are on the byline one
+   rule up: a `margin:24px 0 4px` shorthand silently zeroes them and left-rails the whole
+   block against the wrap. */
+.hero .wrap > .hero-viz{max-width:var(--measure);margin:24px auto 4px}
+.hero-viz svg{width:100%;height:auto;display:block;overflow:visible}
+
 /* A NARROW CHART STILL CLEARS THE TEXT COLUMN. The shared token is 640px against a 678px
    measure, so the two small-series charts on this page rendered NARROWER than the prose
    beside them — a chart is never allowed to be the narrowest thing in the band. Raised
