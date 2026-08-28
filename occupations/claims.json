@@ -59,7 +59,7 @@
     },
     {
       "id": "occ-region-estimate",
-      "text": "The twelve counties reported 18,594 plastics-and-rubber jobs in 2024. Applying the national shares to that total gives an estimate of about 2,000 molding-machine setters and about 740 engineers, scientists and technicians in the region's plants.",
+      "text": "The twelve counties reported 18,594 plastics-and-rubber jobs in 2024. Applying the national shares to that total gives an estimate of about 2,000 molding-machine setters and about 740 engineers, scientists and technicians in the region's plants, under a stated assumption (staffing-pattern note beside the mix chart).",
       "source": "BLS QCEW 2024 annual averages, private ownership, NAICS 326, the twelve PIC-12 counties; shares from the National Employment Matrix",
       "assert": "D['region']['emp'] == 18594 and D['region']['counties_counted'] == 12 and D['region']['setters_estimate'] == 2000 and D['region']['eng_sci_estimate'] == 740 and abs(D['region']['emp'] * D['region']['setters_share_pct'] / 100 - D['region']['setters_estimate']) < 50",
       "actual": "(D['region']['emp'], D['region']['counties_counted'], D['region']['setters_estimate'], D['region']['eng_sci_estimate'])",
@@ -120,6 +120,14 @@
       "assert": "len(D['education_totals']['ba_plus_majority']) == 6 and len(D['education_totals']['hs_majority']) == 14 and D['education_totals']['n'] == 26 and all(r['bins']['bachelors'] + r['bins']['graduate'] > 50 for r in D['education'] if r['soc'] in D['education_totals']['ba_plus_majority']) and all(r['bins']['hs_or_less'] > 50 for r in D['education'] if r['soc'] in D['education_totals']['hs_majority'])",
       "actual": "(len(D['education_totals']['ba_plus_majority']), len(D['education_totals']['hs_majority']), D['education_totals']['n'])",
       "falsified_if": "An O*NET release moves any occupation across the 50% line in either bin, or the occupation set changes. 'Majority' means strictly more than half of respondents."
+    },
+    {
+      "id": "occ-edu-band-mirrors-pay",
+      "text": "Rows in the same order as the pay chart, and the shaded band holds the same six degree occupations (education figure subtitle; the tinted band on both charts).",
+      "source": "BLS OEWS occupation set joined to O*NET education majorities on the SOC code",
+      "assert": "len(D['education_totals']['ba_plus_majority']) == 6 and set(D['education_totals']['ba_plus_majority']) <= set(r['soc'] for r in D['pay']) and all(one(e for e in D['education'] if e['soc'] == s).get('bins') for s in D['education_totals']['ba_plus_majority']) and all(r['soc'] in set(e['soc'] for e in D['education'] if e.get('bins')) for r in D['pay'])",
+      "actual": "(sorted(D['education_totals']['ba_plus_majority']), len([e for e in D['education'] if e.get('bins')]), len(D['pay']))",
+      "falsified_if": "The degree band stops holding exactly six occupations, a degree occupation loses its education row (it would then be absent from the education chart while still shaded on the pay chart), or any pay row has no education row with bins, at which point the two charts no longer share a row order and the shaded bands stop describing the same occupations."
     },
     {
       "id": "occ-edu-figtitle",

@@ -23,7 +23,7 @@ index.html          page shell (hero poses the question; four bands answer it)
 styles.css          page-local chrome: figure titles, occupation selector, stat band,
                     band tint, mobile re-layout override
 app.js              four charts (desktop + mobile forms), selector, table twins
-claims.json         22 assertions, all machine-checked against data/viz-data.json
+claims.json         23 assertions, all machine-checked against data/viz-data.json
 data/viz-data.json  THE DATA (59 KB). Edit the builder, not this.
 shots/              desktop.png, mobile.png
 ```
@@ -103,13 +103,33 @@ labeled schooling bands with band ratios annotated on-chart; degree-pipeline dec
 surfaced as a finding (previously a "Degrees, not hires." caveat note); occupation
 selector added; paycheck vignette band added; guardrails de-duplicated to one statement
 per binding layer; per-figure title/subtitle chrome added; per-form mobile re-layouts
-replace the sideways-scroll fallback. No source data changed. Claims: 12 → 22. Removed
+replace the sideways-scroll fallback. No source data changed. Claims: 12 → 23. Removed
 claim ids: none. Reworded claim texts (same assertions): occ-hero-one-in-nine (em-dash →
 comma), occ-tire-builders, occ-beats-national, occ-degree-vs-floor, occ-programs,
 occ-closer — each now names the sentence's new location. The former "The reading." note
 under the pay chart moved onto the chart itself (band annotations) and into the lede; the
 former "Degrees, not hires." note became the pipeline section's finding plus a source-line
 clause.
+
+Second pass, same branch, after reading the rendered screenshots:
+
+- **The education chart now shades its top six rows** with the pay chart's band tint, so
+  the degree group is one shape carried across two figures rather than a sentence asking
+  the reader to re-read 26 labels. The figure subtitle says what the shading is; new claim
+  `occ-edu-band-mirrors-pay` guards that the two bands hold the same six occupations and
+  that every pay row still has an education row to keep the orders aligned (claims 22 → 23).
+- **The methodology box's prose is normalised for house punctuation at render time**
+  (`housePunct` in app.js). The `meta` strings are written by the shared builder and stored
+  in the data file with em-dashes and straight quotes; the builder is not this page's to
+  edit, so the page fixes the punctuation on the way to the reader, the same
+  presentation-only move `tq()` already makes for the O*NET labels. Punctuation only, never
+  a word: paired em-dashes become parentheses, a lone one becomes a colon, quotes become
+  typographer's quotes. The same meta keys are passed through, so the shared classifier
+  still sees every one of them.
+- Still out of this page's reach: the shared chrome writes its own em-dashes ("Table view
+  —", the corrections line) and `_data/SOURCES.json` writes straight quotes into the
+  "Reproduce this" filter table. Both are shared-core surfaces; fixing them is a
+  `_shared`/`_data` change, not a page change.
 
 ## Run and publish
 

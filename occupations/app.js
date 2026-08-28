@@ -87,6 +87,7 @@ const mixSoc = Object.fromEntries(D.mix.map(r => [r.soc, r]));
 const eduAll = D.education.filter(r => r.bins);
 const eduSoc = Object.fromEntries(eduAll.map(r => [r.soc, r]));
 const eduRows = payRows.map(r => eduSoc[r.soc]).filter(Boolean);
+const nDeg = eduRows.filter(r => grp(r.soc) === "deg").length;   // the shaded band, both charts
 const RB = D.pay_totals.ratio_by_metro;
 
 /* Polymer conferrals by year, summed across programs — the pipeline finding. */
@@ -258,11 +259,10 @@ function drawMixMobile() {
      <b>${N(R.emp)}</b> plastics-and-rubber jobs in ${R.year}. Applying the national shares
      to that total gives an estimate of about <b>${N(R.setters_estimate)}</b>
      molding-machine setters and about <b>${N(R.eng_sci_estimate)}</b> engineers, scientists
-     and technicians in the region&rsquo;s plants. It is an estimate under a stated
-     assumption: that the region&rsquo;s plants staff like the national pattern, which a
-     region with unusual research intensity may not. Nothing published counts occupations
-     inside the industry by county; this is the closest a public source gets, and it is not
-     a measurement.`;
+     and technicians in the region&rsquo;s plants, under a stated assumption: that the
+     region&rsquo;s plants staff like the national pattern, which a region with unusual
+     research intensity may not. Nothing published counts occupations inside the industry by
+     county, so this is the closest a public source gets, and it is not a measurement.`;
 }
 
 /* ------------------------------------------------------------ 2. what it pays */
@@ -424,6 +424,10 @@ function drawEduDesktop() {
   frame(svg, {x: m.l, y: m.t, w, h: rows.length * 24, xs, ys: () => 0,
     xt: [0, 25, 50, 75, 100], yt: [], xfmt: v => v + "%",
     xlab: "Share of surveyed workers and experts reporting each level as required"});
+  /* Same tint, same six rows, same order as the pay chart's degree band: the reader can
+     carry the shape from one chart to the other without re-reading the labels. */
+  el("rect", {x: 0, y: m.t, width: W, height: nDeg * 24,
+    fill: "rgba(12,100,115,.055)"}, svg);
   rows.forEach((r, i) => {
     const g = el("g", dim(r.soc) ? {opacity: .18} : {}, svg);
     const y = m.t + i * 24 + 4, bh = 16;
@@ -453,6 +457,8 @@ function drawEduMobile() {
   const {svg} = chart("edu", {W, H});
   const w = W - m.l - m.r;
   const xs = v => m.l + (v / 100) * w;
+  el("rect", {x: 0, y: m.t - 4, width: W, height: nDeg * rowH,
+    fill: "rgba(12,100,115,.055)"}, svg);
   rows.forEach((r, i) => {
     const g = el("g", dim(r.soc) ? {opacity: .18} : {}, svg);
     const y = m.t + i * rowH;
@@ -626,6 +632,26 @@ drawAll();
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);
 
-/* Standard methodology + AI disclosure. Generated, not written — see picviz.js. */
+/* Standard methodology + AI disclosure. Generated, not written — see picviz.js.
+ *
+ * The meta strings are prose the METHODOLOGY BOX renders to a reader, so the house
+ * punctuation law applies to them (style-bans: no em-dashes in prose, typographer's
+ * quotes). They are written by the shared builder and stored in the data file with
+ * straight quotes and em-dashes, and the builder is not this page's to edit — so the
+ * page normalises them at RENDER time, the same presentation-only move tq() makes for
+ * the O*NET label strings above. Punctuation only: the transform never changes a word,
+ * and the same keys are passed through, so the shared classifier still sees them all. */
+const housePunct = s => s
+  .replace(/\s—\s([^—]{1,140}?)\s—\s/g, " ($1) ")   // paired: parenthesise
+  .replace(/\s—\s/g, ": ")                                     // lone: colon
+  .replace(/(^|[\s(])'([^']+)'(?=[\s.,;:)]|$)/g, "$1‘$2’")
+  .replace(/'/g, "’");
+const VERBATIM = new Set(["url", "docs", "fetched", "as_of"]);   // machine strings, not prose
+/* Rewritten IN PLACE on the loaded object, not into a new one: verify_consistency.py
+   resolves `meta:` back through the PV.data() call that produced it, and a fresh object
+   reads to that gate as an inline literal with no limitation prose. Same keys, same
+   values, house punctuation. The file on disk is untouched. */
+for (const [k, v] of Object.entries(D.meta))
+  if (typeof v === "string" && !VERBATIM.has(k)) D.meta[k] = housePunct(v);
 await PV.methodology({page: "occupations", meta: D.meta});
 })();
