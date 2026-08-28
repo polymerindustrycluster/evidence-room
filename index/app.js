@@ -19,9 +19,9 @@ const cnt = s => C.pages[s] || {claims: 0, manual: 0};
    the occupations file publishes wages for; "akron" is the single regional metro the
    cost-of-living page prices; national and register pages contain no county reading. */
 const ALL = [
- {s:"cluster-health", g:"position", geo:"pic12", t:"How the cluster is doing",
-  q:"Five measures, and whether each one actually moved.",
-  f:"Scale, concentration, pay, the degree pipeline and federal money, each read against a stated baseline and against how much these federal series normally move after publication, so a change inside the noise is reported as one.",
+ {s:"cluster-health", g:"position", geo:"pic12", t:"Three of five moved",
+  q:"Which measures actually changed, and which only look like it?",
+  f:"Jobs fell 802 in a year, to 24,030, and three of the five measures moved further than these series usually move between years. The loudest change, federal contracting up 73 percent, is not one of them.",
   foot:"PIC-12"},
  {s:"peers", g:"position", geo:"pic12", t:"First in the country",
   q:"Where does the region actually rank?",
