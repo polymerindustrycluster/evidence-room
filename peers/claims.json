@@ -27,14 +27,30 @@
    "falsified_if": "Any QCEW revision to Ohio 2024."
   },
   {
+   "id": "oh-lead-texas",
+   "text": "Ohio leads second-place Texas by 10,248 jobs, which the state chart draws as a rule at Texas.",
+   "source": "BLS QCEW 2024, NAICS 326, private. Ohio 54,846 minus Texas 44,598.",
+   "assert": "D['states']['326']['top'][1]['name'].startswith('Texas') and round(D['states']['326']['subject_emp'] - D['states']['326']['top'][1]['emp']) == 10248",
+   "actual": "(D['states']['326']['top'][1]['name'], D['states']['326']['subject_emp'] - D['states']['326']['top'][1]['emp'])",
+   "falsified_if": "A revision changes either state's 2024 employment by even one job, or another state takes second place. Tolerance is zero because the page prints the gap to the job.",
+   "official_check": "Both figures are published annual averages; the difference is arithmetic."
+  },
+  {
+   "id": "states-top20-share",
+   "text": "The 20 states drawn hold 80% of all state-level plastics and rubber jobs.",
+   "source": "BLS QCEW 2024, NAICS 326, private. Top-20 sum over the 51-state total.",
+   "assert": "round(sum(r['emp'] for r in D['states']['326']['top'][:20]) / D['visibility']['state']['disclosed_emp'] * 100) == 80",
+   "actual": "sum(r['emp'] for r in D['states']['326']['top'][:20]) / D['visibility']['state']['disclosed_emp']",
+   "falsified_if": "Revisions move the top-20 share off 80% when rounded to a whole percent. Guards the honesty fix on the state chart: the H2 and the source line both say the chart draws 20 of 51, and this is the number that makes that disclosure meaningful."
+  },
+  {
    "id": "akron-bounded",
    "text": "Akron ranks 6th among the 155 metros that disclose employment.",
    "source": "BLS QCEW 2024 NAICS 326, private. Rank among DISCLOSED metros only.",
    "assert": "D['metros']['326']['rank_emp'] == 6 and D['metros']['326']['of_disclosed'] == 155",
    "actual": "(D['metros']['326']['rank_emp'], D['metros']['326']['of_disclosed'], D['metros']['326']['suppressed'])",
    "falsified_if": "A disclosed metro passes Akron's 6,910 jobs, or the disclosed count moves off 155. NOTE: this replaced a '6th to 16th' claim that bounded the rank by establishment count. That bound was INVALID — establishments do not bound employment, and a suppressed metro with fewer, larger plants can beat Akron on jobs. Never restate a national rank from this; 227 metros are suppressed and their employment is unknown, not estimated.",
-   "official_check": "BLS publishes no metro employment rank. The disclosed-only qualifier is not removable — it is the claim.",
-   "assert_": null
+   "official_check": "BLS publishes no metro employment rank. The disclosed-only qualifier is not removable — it is the claim."
   },
   {
    "id": "akron-lq",
@@ -45,12 +61,113 @@
    "falsified_if": "QCEW revises Akron MSA 2024."
   },
   {
+   "id": "cle-rank-4",
+   "text": "Cleveland is 4th of the 155 disclosed metros, on 8,794 jobs at 1.84x the national share.",
+   "source": "BLS QCEW 2024, NAICS 326, private. Rank among DISCLOSED metros only, computed from the same scatter file the chart draws.",
+   "assert": "[p['area'] for p in sorted(D['metro_scatter'], key=lambda p: -p['emp'])].index('C1741') + 1 == 4 and round(one(p for p in D['metro_scatter'] if p['area'] == 'C1741')['emp']) == 8794 and round(one(p for p in D['metro_scatter'] if p['area'] == 'C1741')['lq'], 2) == 1.84",
+   "actual": "one(p for p in D['metro_scatter'] if p['area'] == 'C1741')",
+   "falsified_if": "A revision moves Cleveland off 4th among disclosed metros, changes its 8,794 jobs, or moves its concentration off 1.84x at two decimals. Zero tolerance on the rank: the hero prints it.",
+   "official_check": "BLS publishes no metro rank. Cleveland MSA is C1741 in the QCEW area file; the rank is a sort of the disclosed rows."
+  },
+  {
+   "id": "two-of-top-six",
+   "text": "The cluster holds two of the top six disclosed metros: Cleveland at #4 and Akron at #6.",
+   "source": "BLS QCEW 2024 NAICS 326 (ranking) and OMB 2023 metro delineations (which counties each MSA covers).",
+   "assert": "set(p['area'] for p in sorted(D['metro_scatter'], key=lambda p: -p['emp'])[:6]) >= {'C1741', 'C1042'} and all(c in D['meta']['footprint']['counties'] for c in ['Cuyahoga', 'Geauga', 'Lake', 'Lorain', 'Medina', 'Summit', 'Portage'])",
+   "actual": "[p['name'] for p in sorted(D['metro_scatter'], key=lambda p: -p['emp'])[:6]]",
+   "falsified_if": "Either metro drops out of the disclosed top six, or the PIC-12 footprint stops containing the seven counties the two MSAs are built from. The county half is what makes 'the cluster holds' true rather than 'two Ohio metros rank'; OMB re-delineation is the live risk and is NOT machine-checked here.",
+   "official_check": "Cleveland MSA = Cuyahoga, Geauga, Lake, Lorain, Medina. Akron MSA = Summit, Portage. All seven are PIC-12 counties, checked against meta.footprint.counties."
+  },
+  {
+   "id": "akron-top-six-lq",
+   "text": "Akron is the most concentrated of the six biggest disclosed metros.",
+   "source": "BLS QCEW 2024, lq_annual_avg_emplvl, disclosed metros only",
+   "assert": "all(p['lq'] < D['metros']['326']['subject_lq'] for p in sorted(D['metro_scatter'], key=lambda p: -p['emp'])[:6] if p['area'] != 'C1042')",
+   "actual": "[(p['name'], p['lq']) for p in sorted(D['metro_scatter'], key=lambda p: -p['emp'])[:6]]",
+   "falsified_if": "Greenville (4.37x, the nearest) or any other top-six metro passes Akron's 4.69x. Strict inequality, no tolerance: a tie would make the hero card wrong."
+  },
+  {
+   "id": "quadrant-seven",
+   "text": "Seventeen disclosed metros carry 4,000 jobs or more, 37 run at 2.0x the national share or better, and seven do both.",
+   "source": "BLS QCEW 2024, NAICS 326, private. Counts over the 155 disclosed metro rows the scatter draws.",
+   "assert": "len([p for p in D['metro_scatter'] if p['emp'] >= 4000]) == 17 and len([p for p in D['metro_scatter'] if p['lq'] >= 2.0]) == 37 and len([p for p in D['metro_scatter'] if p['emp'] >= 4000 and p['lq'] >= 2.0]) == 7 and any(p['area'] == 'C1042' for p in D['metro_scatter'] if p['emp'] >= 4000 and p['lq'] >= 2.0)",
+   "actual": "(len([p for p in D['metro_scatter'] if p['emp'] >= 4000]), len([p for p in D['metro_scatter'] if p['lq'] >= 2.0]), sorted(p['name'] for p in D['metro_scatter'] if p['emp'] >= 4000 and p['lq'] >= 2.0))",
+   "falsified_if": "Any of the three counts moves by one, or Akron leaves the corner. The thresholds are editorial round numbers, not a test result, and the page says so; if a revision moves a metro across either line the sentence and the shading both have to change.",
+   "official_check": "Both thresholds are stated on the chart and in the source line so a reader can re-cut them from the table view."
+  },
+  {
    "id": "metro-visibility",
    "text": "Only 155 of 382 metros are disclosed for plastics and rubber.",
    "source": "BLS QCEW disclosure_code, 2024",
    "assert": "D['visibility']['metro']['disclosed'] == 155 and D['visibility']['metro']['suppressed'] == 227",
    "actual": "D['visibility']['metro']",
    "falsified_if": "BLS changes disclosure rules, or the establishment mix shifts enough to unlock cells."
+  },
+  {
+   "id": "county-withheld",
+   "text": "1,135 of 1,838 county areas are withheld.",
+   "source": "BLS QCEW disclosure_code, NAICS 326, 2024, county level",
+   "assert": "D['visibility']['county']['suppressed'] == 1135 and D['visibility']['county']['disclosed'] + D['visibility']['county']['suppressed'] == 1838",
+   "actual": "D['visibility']['county']",
+   "falsified_if": "The county universe or the number of withheld county cells changes."
+  },
+  {
+   "id": "metro-jobs-share",
+   "text": "The 155 disclosed metros hold 216,109 jobs, 30% of the 721,430 counted across the states.",
+   "source": "BLS QCEW 2024, NAICS 326, private. Sum of disclosed metro cells over the sum of all 51 state cells.",
+   "assert": "D['visibility']['metro']['disclosed_emp'] == 216109 and D['visibility']['state']['disclosed_emp'] == 721430 and round(D['visibility']['metro']['disclosed_emp'] / D['visibility']['state']['disclosed_emp'] * 100) == 30",
+   "actual": "(D['visibility']['metro']['disclosed_emp'], D['visibility']['state']['disclosed_emp'])",
+   "falsified_if": "Either total moves, or the ratio rounds off 30%. The remainder is NOT all suppression: it also holds jobs in counties outside any metro area, and the page says so rather than implying the missing 70% is all withheld."
+  },
+  {
+   "id": "la-decline",
+   "text": "Los Angeles shed 3,699 plastics and rubber jobs between 2015 and 2024, a 17.5% fall.",
+   "source": "BLS QCEW annual averages, NAICS 326, private, Los Angeles-Long Beach-Anaheim MSA",
+   "assert": "round(D['trend']['326|C3108']['series'][0]['emp'] - D['trend']['326|C3108']['series'][-1]['emp']) == 3699 and round((D['trend']['326|C3108']['series'][0]['emp'] - D['trend']['326|C3108']['series'][-1]['emp']) / D['trend']['326|C3108']['series'][0]['emp'] * 100, 1) == 17.5 and D['trend']['326|C3108']['series'][0]['year'] == 2015 and D['trend']['326|C3108']['series'][-1]['year'] == 2024",
+   "actual": "(D['trend']['326|C3108']['series'][0], D['trend']['326|C3108']['series'][-1])",
+   "falsified_if": "A revision to either endpoint moves the drop off 3,699 jobs or the fall off 17.5% at one decimal, or the series stops starting in 2015 and ending in 2024. This is a descriptive change over a window, not a trend estimate: no rate is fitted and none is claimed.",
+   "official_check": "Both endpoints are published annual averages; the change is arithmetic on the same series."
+  },
+  {
+   "id": "akron-flat",
+   "text": "Every year of Akron's 2015-2024 series sits within 286 jobs of its 2015 level, and 2024 is the lowest of them at 6,910.",
+   "source": "BLS QCEW annual averages, NAICS 326, private, Akron MSA",
+   "assert": "round(max(abs(s['emp'] - D['trend']['326|C1042']['series'][0]['emp']) for s in D['trend']['326|C1042']['series'])) == 286 and round(min(s['emp'] for s in D['trend']['326|C1042']['series'])) == 6910 and D['trend']['326|C1042']['series'][-1]['emp'] == min(s['emp'] for s in D['trend']['326|C1042']['series']) and len(D['trend']['326|C1042']['series']) == 10",
+   "actual": "[(s['year'], s['emp']) for s in D['trend']['326|C1042']['series']]",
+   "falsified_if": "Any revised year moves further than 286 jobs from 2015, 2024 stops being the low point, or a suppressed year shortens the series below ten. The sentence is deliberately 'within 286 jobs', not 'flat': Akron is down 3.4% over the window and the page does not call that no change."
+  },
+  {
+   "id": "trend-half-grew",
+   "text": "Twelve of the 24 metros with a full decade in the trend file gained jobs over the same years.",
+   "source": "BLS QCEW annual averages, NAICS 326, private. Trend extract: top-30 finishers by 2024 employment with at least eight disclosed years.",
+   "assert": "len([t for t in D['trend'].values() if t['naics'] == '326']) == 24 and len([t for t in D['trend'].values() if t['naics'] == '326' and t['series'][-1]['emp'] > t['series'][0]['emp']]) == 12",
+   "actual": "sorted((t['name'], t['series'][-1]['emp'] - t['series'][0]['emp']) for t in D['trend'].values() if t['naics'] == '326')",
+   "falsified_if": "Either count moves. This set is SELECTED on 2024 size and on surviving disclosure, so it is not a sample of American metros and the page uses it only to say the Los Angeles slide is not general.",
+   "official_check": "Selection rule lives in _data/build/derive_peers.py and is restated in the chart's source line."
+  },
+  {
+   "id": "trend-gaps",
+   "text": "Three of the 24 series miss a year or two, where that metro's cell was withheld.",
+   "source": "BLS QCEW disclosure_code, NAICS 326, 2015-2024",
+   "assert": "len([t for t in D['trend'].values() if t['naics'] == '326' and len(t['series']) < 10]) == 3",
+   "actual": "[(t['name'], len(t['series'])) for t in D['trend'].values() if t['naics'] == '326' and len(t['series']) < 10]",
+   "falsified_if": "A rebuild changes how many series carry gaps. The chart connects across a gap rather than breaking the line, which is a drawing choice the source line discloses."
+  },
+  {
+   "id": "cleveland-no-series",
+   "text": "Cleveland has no line on the trend chart: it is 4th by 2024 jobs and absent from the trend extract.",
+   "source": "BLS QCEW 2015-2024, NAICS 326. Extract rule in _data/build/derive_peers.py: top-30 by 2024 employment AND at least eight disclosed years.",
+   "assert": "'326|C1741' not in D['trend'] and any(p['area'] == 'C1741' for p in D['metro_scatter']) and [p['area'] for p in sorted(D['metro_scatter'], key=lambda p: -p['emp'])].index('C1741') < 30",
+   "actual": "sorted(k for k in D['trend'] if k.startswith('326|'))",
+   "falsified_if": "A rebuild adds a Cleveland series, in which case the ghost point and its caption come off the chart and Cleveland joins the picker. Because Cleveland clears the top-30 half of the rule, the only way it can fail the rule is the eight-year minimum — that is a deduction from the shipped builder, not a count of Cleveland's disclosed years, which the committed data does not carry."
+  },
+  {
+   "id": "quadrant-towns",
+   "verify": "manual",
+   "text": "Elkhart builds most of the country's recreational vehicles; Hickory makes furniture and fiber-optic cable; Erie runs injection molding and mold-making shops; Greenville holds Michelin's North American headquarters and BMW's only US assembly plant.",
+   "source": "Company and trade-association public statements (RV Industry Association on Elkhart; CommScope and the North Carolina furniture industry on Hickory; Michelin North America and BMW Manufacturing on Greenville). NOT from the BLS file this page is built on.",
+   "falsified_if": "Any of the four descriptions is wrong or out of date — a plant closes, a headquarters moves, or the trade body stops making the Elkhart claim. This is the one passage on the page with no dataset behind it, and the page says so in its own text rather than letting the reader assume the harness covered it.",
+   "checked_by": "Unverified in this build: needs one editor pass that opens each source and records the URL and date before publication."
   }
  ]
 }
