@@ -459,21 +459,28 @@ const PV = (() => {
         <div>
           <h3>How we checked it</h3>
           <p>${list.length
-            ? `Every number on this page is written as a <b>test</b>, not a sentence:
-               <b>${list.length}</b> of them, each stating the condition that would prove it
-               wrong. ${auto.length} re-run automatically against the source data every time
-               the page is built. ${manual.length === 0
-                 ? "None of them rests on a document a person had to read, which is the stronger position: nothing here needs you to trust a reading."
-                 : `${manual.length} ${manual.length === 1 ? "rests" : "rest"} on a document a person had to read, so ${manual.length === 1 ? "that one is" : "those are"} the place to attack first.`}`
+            ? `Every sentence on this page that carries a number also carries a written
+               condition that would prove it wrong. There are <b>${list.length}</b> of them.
+               ${manual.length === 0
+                 ? `All ${list.length} are re-checked against the source data each time the
+                    page is built, so a figure that stopped being true would break the build
+                    before it reached you.`
+                 : `${auto.length} are re-checked against the source data each time the page
+                    is built, so a figure that stopped being true would break the build
+                    before it reached you. The other ${manual.length} ${manual.length === 1
+                      ? "depends on a person having read a document correctly, so it is"
+                      : "depend on a person having read a document correctly, so they are"}
+                    the place to attack first.`}`
             : (o.noClaimsNote || "This page makes no numeric claim of its own: every " +
                "figure on it is carried by the page it links to, and is checked there.")}</p>
-          <p>The work was done with <b>Claude (Anthropic)</b>, directed and reviewed by a
-            person. Figures are recomputed from the source data by script, and readings of
-            what they mean were sent to competing AI systems to be argued down. That is a
-            floor, not a guarantee: one mistyped federal classification code once erased a
-            university&rsquo;s degree program from a finding and passed every check, because
-            the checks were true of the data the mistake had already filtered. A reader
-            caught it.</p>
+          <p>Analysis and graphics by <b>Claude (Anthropic)</b>, directed and reviewed by
+            John Swanson. Figures are recomputed from the source data by script, and readings
+            of what they mean were sent to competing AI systems to be argued down. None of
+            that guarantees the page is right. On another page in this series, one mistyped
+            federal classification code erased a university&rsquo;s degree program from a
+            finding and passed every check, because the checks were true of the data the
+            mistake had already filtered out. A reader caught it, and that is the failure
+            this section exists to make findable.</p>
         </div>
         <div>
           <h3>Corrections</h3>

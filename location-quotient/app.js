@@ -154,7 +154,7 @@ const AGENCY = D.meta.source.split(/[ ,]+/).slice(0, 2).join(" ");   // "BLS QCE
 document.getElementById("byline").innerHTML =
   /* One person holds both roles, so the roles collapse rather than printing the name
      twice (page-design.md, byline anatomy). */
-  `By <b>John Swanson</b>, analysis and graphics &middot; Data
+  `By the Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic), directed and reviewed by <b>John Swanson</b> &middot; Data
    ${AGENCY}, ${FIRST}&ndash;${LATEST} &middot; ${MONTHS[+fm - 1]} ${fy}`;
 
 /* --------------------------------------------------- the register, in the open */

@@ -161,7 +161,7 @@ const MONTHS = ["January", "February", "March", "April", "May", "June", "July", 
 {
   const [fy, fm] = M.fetched.split("-");
   document.getElementById("byline").innerHTML =
-    `By <b>John Swanson</b>, analysis and graphics &middot; Data BLS, O*NET and IPEDS
+    `By the Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic), directed and reviewed by <b>John Swanson</b> &middot; Data BLS, O*NET and IPEDS
      &middot; ${MONTHS[+fm - 1]} ${fy}`;
 }
 
