@@ -473,8 +473,8 @@ const PV = (() => {
                     the place to attack first.`}`
             : (o.noClaimsNote || "This page makes no numeric claim of its own: every " +
                "figure on it is carried by the page it links to, and is checked there.")}</p>
-          <p>Analysis and graphics by <b>Claude (Anthropic)</b>, directed and reviewed by
-            John Swanson. Figures are recomputed from the source data by script, and readings
+          <p>Analysis and graphics by <b>Claude (Anthropic)</b>; <b>John Swanson</b> is
+            responsible for what this page says. Figures are recomputed from the source data by script, and readings
             of what they mean were sent to competing AI systems to be argued down. None of
             that guarantees the page is right. On another page in this series, one mistyped
             federal classification code erased a university&rsquo;s degree program from a

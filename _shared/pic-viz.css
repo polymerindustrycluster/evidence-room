@@ -105,6 +105,14 @@ dfn b{font-weight:900}
 .hero .wrap > .hero-row{max-width:var(--measure)}
 .hero .wrap > h1{font-size:clamp(30px,3.8vw,46px);max-width:var(--measure);text-wrap:balance}
 .hero .wrap > .eyebrow{max-width:var(--measure)}
+/* Byline block. Fifteen per-page stylesheets each carried an identical copy of this and
+   the hub carried none, so the one page without it rendered its byline at standfirst
+   size, competing with the dek it sits under. Here, a new page inherits it by existing.
+   The class selector outranks the `> *` rule above, and the `auto` side margins are
+   load-bearing: a `margin:14px 0 0` shorthand drops the block onto the wrap's left edge,
+   151px outboard of the text rail. */
+.hero .wrap > .byline{margin:14px auto 0;max-width:var(--measure);font-size:13px;
+  line-height:1.5;color:#9CC4CA;letter-spacing:.02em}
 .pv-footprint .wrap{max-width:calc(var(--measure) + 64px)}
 .hero h1 em{font-style:normal;color:var(--lime)}
 .hero .stand{margin:16px 0 0;max-width:var(--measure);color:#C6E2E6;font-size:19px;line-height:1.55}

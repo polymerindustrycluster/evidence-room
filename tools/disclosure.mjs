@@ -16,8 +16,9 @@ import {readdirSync} from "fs";
 import {pathToFileURL} from "url";
 import {chromium} from "./_browser.mjs";
 
-const CANON = "Analysis and graphics by Claude (Anthropic), " +
-              "directed and reviewed by John Swanson";
+const CANON = "Analysis and graphics by Claude (Anthropic)";
+/* and the human who answers for it must be named in the same line */
+const OWNER = "John Swanson";
 /* Names that must never be the sole credit for analysis or graphics. */
 const MISCREDIT = /\b(?:analysis and graphics|analysis)\b[^·.]{0,40}\b(?:J\.? ?Swanson|John Swanson|the Evidence Room)\b/i;
 
@@ -40,11 +41,12 @@ for (const n of list) {
   const probs = [];
   if (r.byline === null) probs.push("no .byline element");
   else {
-    if (!r.byline.includes(CANON)) probs.push("byline lacks the disclosure");
+    if (!r.byline.includes(CANON)) probs.push("byline lacks the AI credit");
+    if (!r.byline.includes(OWNER)) probs.push("byline names no responsible person");
+    /* John is the byline and answers for the page; what he must never be credited with
+       is producing the analysis and graphics, which is the regression this catches. */
     const m = r.byline.match(MISCREDIT);
-    /* the canonical line contains "directed and reviewed by John Swanson", which is
-       credit for direction, not for the analysis — only flag it outside that phrase */
-    if (m && !r.byline.includes(CANON)) probs.push(`miscredits: "${m[0]}"`);
+    if (m) probs.push(`credits a person for the analysis: "${m[0]}"`);
   }
   if (r.method && !r.method.includes("Claude (Anthropic)"))
     probs.push("methodology box drops the disclosure");
