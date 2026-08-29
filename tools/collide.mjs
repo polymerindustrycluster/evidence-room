@@ -149,6 +149,24 @@ for (const n of list) {
          first run. A scrollable container is the signal. */
       const box = svg.closest(".chart");
       const pans = box && box.scrollWidth > box.clientWidth + 1;
+      /* CLIPPED INK, which no check here covered and which eyes found first. A row label
+         right-anchored at m.l - 10 can sit a few units left of the svg's own box. That is
+         invisible while nothing clips it, because overflow:visible paints it into the
+         gutter. Put the same chart in an overflow-x:auto container and those units are
+         GONE, and unlike ink past the right edge they cannot be scrolled to: scrolling
+         right moves content further left. Three pixels is the left stem of a capital, so
+         "North Carolina" rendered as "Vorth Carolina" on a 900px screen and every gate
+         passed. Only the left edge is unreachable, so only the left edge is tested. */
+      if (pans) {
+        const cb = box.getBoundingClientRect();
+        svg.querySelectorAll("text,rect,circle").forEach(el => {
+          const bb = el.getBoundingClientRect();
+          if (!bb.width && !bb.height) return;
+          if (bb.left < cb.left - 0.5) out.outside.push(
+            `svg${si}: <${el.tagName}> "${(el.textContent || "").trim().slice(0, 22)}" ` +
+            `clipped ${Math.round(cb.left - bb.left)}px off its left edge, unreachable`);
+        });
+      }
       const wrap = pans ? null : svg.closest(".wrap");
       if (wrap) {
         const wb = wrap.getBoundingClientRect();

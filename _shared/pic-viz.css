@@ -298,6 +298,16 @@ details.pv-table:not([open]) .pv-tablewrap{display:none}
    not work: labels are positioned in the same user units, so scaling them up collides
    them. So the chart keeps a legible minimum width and pans, which is what newsrooms
    do, and the table-view twin below every chart is the non-scrolling equivalent. */
+/* SCROLL CONTAINERS BLEED, THEY DO NOT CLIP. A row label right-anchored at m.l - 10
+   can end up a few units left of x=0, which is harmless while nothing clips it: at wide
+   widths the svg's overflow:visible paints it into the gutter. The moment a chart sits in
+   an overflow-x:auto box those units are cut, and three pixels is the left stem of a
+   capital, so "North Carolina" renders as "Vorth Carolina". Padding gives the overhang
+   somewhere to live inside the scrollable area, and the negative margin puts the column
+   back where it was, so nothing moves. The real defect is a left margin narrower than the
+   label it must hold; this keeps that from becoming a clipped glyph. */
+.chart{padding-left:22px;margin-left:-22px}
+
 /* THE TABLET BAND, which the rule above stops one pixel short of covering.
    The reasoning above is right and was applied only below 760px. Between 761px and the
    ~1100px where the column finally reaches its 980px cap, the charts have no minimum and
