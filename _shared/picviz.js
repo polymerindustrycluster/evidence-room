@@ -150,10 +150,24 @@ const PV = (() => {
       txt(g, yfmt ? yfmt(v) : v, {x: x - 10, y: ys(v) + 4, "text-anchor": "end",
         class: "pv-tick"});
     });
-    (xt || []).forEach(v => {
-      txt(g, xfmt ? xfmt(v) : v, {x: xs(v), y: y + h + 20, "text-anchor": "middle",
-        class: "pv-tick"});
-    });
+    /* THE TICK ROW'S DROP IS MEASURED, NOT TYPED. It was 20 units below the plot floor
+       while the bottom y-tick's baseline sits 4 below it, leaving 16 between two
+       baselines whose face paints a 16.84-unit box on the DESKTOP and 18.2 on a phone.
+       So the y-axis's lowest label and the x-axis's first one touched in the corner at
+       every width, on every chart that draws both. It surfaced as "0" against "2015" on
+       four pages; two of them worked around it locally by passing xt: [] and placing the
+       row themselves, which is the tell that the core was wrong. Below the collision
+       gate's 3px floor on desktop, which is why it survived so long.
+
+       Only the drop moves; the caller's bottom margin is unchanged, so a chart that was
+       already tight stays tight and the sweep says whether that is true. */
+    if ((xt || []).length) {
+      const drop = Math.max(20, 4 + lead(svg, "pv-tick", "pv-tick", 3));
+      (xt || []).forEach(v => {
+        txt(g, xfmt ? xfmt(v) : v, {x: xs(v), y: y + h + drop, "text-anchor": "middle",
+          class: "pv-tick"});
+      });
+    }
     /* TAGGED, so a checker does not have to guess which line is the axis. collide.mjs
        picked "the widest short horizontal line" and kept the FIRST at that width; frame()
        draws gridlines before the axis and they span the same plot width, so the check had

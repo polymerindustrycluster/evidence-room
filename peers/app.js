@@ -324,7 +324,17 @@ function scatterDesktop() {
 }
 
 function scatterMobile() {
-  const m = {t: 38, r: 12, b: 64, l: 32}, W = 375, H = 440;
+  /* The bottom margin holds a measured stack: the tick row, then two direction captions.
+     It was a typed 64, which cleared frame()'s old typed 20-unit tick drop by luck. Both
+     are derived now, so the box grows if the type does instead of printing outside it. */
+  const m = {t: 38, r: 12, b: 64, l: 32}, W = 375;
+  const probe = PV.chart("scatter", {W, H: 440});
+  const tickGap = Math.max(20, PV.lead(probe.svg, "pv-tick", "pv-tick", 3));
+  const capGap = PV.lead(probe.svg, "pv-tick", "pv-labq", 4);
+  const capGap2 = PV.lead(probe.svg, "pv-labq", "pv-labq", 3);
+  const descend = PV.face(probe.svg, "pv-labq").descent;
+  m.b = Math.ceil(tickGap + capGap + capGap2 + descend + 4);
+  const H = 440 - 64 + m.b;
   const {svg} = PV.chart("scatter", {W, H});
   const w = W - m.l - m.r, h = H - m.t - m.b;
   const maxE = Math.max(...SC.map(p => p.emp)), maxL = Math.max(...SC.map(p => p.lq)) * 1.05;
@@ -359,10 +369,17 @@ function scatterMobile() {
     {fs: 7.6, lh: 17, rule: "#C9C3B8"});
   /* At 375px the two axis titles are the only place direction can live, so they say the
      reading rather than the formula. */
+  /* PLACED OFF THE TICK ROW, NOT OFF THE CANVAS FLOOR. These were pinned at H-24 and
+     H-6, which happened to clear a tick row that frame() dropped a typed 20 units below
+     the plot. When that drop became measured the row moved down and printed straight
+     through the first caption. A caption that must sit under a row belongs at a
+     measured distance from that row, not at a distance from the bottom of the box. */
+  const tickBase = m.t + h + Math.max(20, PV.lead(svg, "pv-tick", "pv-tick", 3));
+  const capY = tickBase + PV.lead(svg, "pv-tick", "pv-labq", 4);
   txt(svg, "up = a bigger slice of local jobs than the US",
-    {x: m.l, y: H - 24, class: "pv-labq"});
+    {x: m.l, y: capY, class: "pv-labq"});
   txt(svg, "right = more jobs, on a square-root scale",
-    {x: m.l, y: H - 6, class: "pv-labq"});
+    {x: m.l, y: capY + PV.lead(svg, "pv-labq", "pv-labq", 3), class: "pv-labq"});
   drawFound(svg, xs, ys, 11);
 }
 
