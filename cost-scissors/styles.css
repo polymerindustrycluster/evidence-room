@@ -21,6 +21,16 @@
 .hero .wrap > .hero-viz{max-width:var(--measure);margin:26px auto 4px}
 .hero-viz svg{width:100%;height:auto;display:block;overflow:visible}
 
+/* THE NOMINAL DISCLOSURE. Not footer material: the page's moral sentence ("somebody
+   banked it") rests on it, so it sits in the hero between the cold-open strip and the
+   four stat cards, at reading scale on its own ruled ground rather than in caption gray.
+   Text rail with `auto` side margins for the same reason as .byline and .hero-viz above:
+   this sheet loads after the core, so a `margin:22px 0 4px` shorthand would beat the
+   core's centring rule and drop the block 151px outboard of the rail. */
+.hero .wrap > .realnote{max-width:var(--measure);margin:22px auto 2px;font-size:15px;
+  line-height:1.62;color:#C6E2E6;border-top:2px solid var(--lime);padding:13px 0 0}
+.realnote b{color:#fff}
+
 /* Footer — the story visibly ends on its own ground, identity then hub link. */
 .page-foot{background:var(--deep);color:#BEDDE2;padding:30px 0 38px;font-size:14px}
 .page-foot p{margin:0 0 6px;max-width:var(--measure);margin-left:auto;margin-right:auto}
@@ -92,6 +102,7 @@
   .chart::after{content:none}
   .statgrid{gap:24px}
   .statv .n{font-size:42px}
+  .hero .wrap > .realnote{font-size:14.5px}
 }
 
 /* Four hero cards must never wrap (page-design.md): the shared 38px gap + 220px sub
