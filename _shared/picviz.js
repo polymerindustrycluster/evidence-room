@@ -83,6 +83,41 @@ const PV = (() => {
     return node;
   }
 
+  /* MEASURED TYPE METRICS, because a leading constant is a guess about a face that a
+     stylesheet can change underneath it. The same defect shipped on four pages here: a
+     label and its sub-line share an anchor 13 to 16 units apart while the sheet raises
+     chart type below 760px to a face that paints an 18.75-unit line box, so every stacked
+     pair overlapped at every width in the band. Shortening the strings cannot fix that;
+     only measuring can.
+
+     Units are VIEWBOX units, which is what the geometry is drawn in. The probe sits on
+     the baseline at x=0 rather than parked off-canvas: getBBox reports in viewBox
+     coordinates, so a probe at y=-999 returns an ascent of 1014 and a leading computed
+     from it is nonsense. Memoised per class per svg, since a redraw asks repeatedly. */
+  const faceCache = new WeakMap();
+  function face(svg, cls = "pv-lab") {
+    let byCls = faceCache.get(svg);
+    if (!byCls) faceCache.set(svg, byCls = {});
+    if (byCls[cls]) return byCls[cls];
+    const t = txt(svg, "Hxpg", {x: 0, y: 0, class: cls, opacity: 0});
+    let m;
+    try {
+      const bb = t.getBBox();
+      m = {h: bb.height, ascent: -bb.y, descent: bb.height + bb.y};
+    } catch {
+      const fs = parseFloat(getComputedStyle(t).fontSize) || 14;
+      m = {h: fs * 1.32, ascent: fs * 1.02, descent: fs * 0.3};
+    }
+    svg.removeChild(t);
+    return (byCls[cls] = m);
+  }
+
+  /* Baseline-to-baseline distance that clears both faces, plus air. Use this wherever a
+     line sits under another line; never a typed number. */
+  function lead(svg, upper = "pv-lab", lower = "pv-labq", air = 3) {
+    return Math.ceil(face(svg, upper).descent + face(svg, lower).ascent + air);
+  }
+
   /* AN AXIS LABEL THAT CANNOT FIT IS PULLED BACK, NOT PAINTED OFF THE PAGE.
      Charts that write their own axis label bypass frame(), so they bypassed the clamp
      added there: churn's ran 6px past a 390px viewport with overflow:visible. Same rule,
@@ -541,7 +576,7 @@ const PV = (() => {
     return sec;
   }
 
-  return {el, txt, axlab, ticks, frame, hoverable, showTip, hideTip, tableView, data, footprint,
+  return {el, txt, axlab, face, lead, ticks, frame, hoverable, showTip, hideTip, tableView, data, footprint,
           methodology, figures, chart, footprintBanner, padGrid, mark, favicon, N,
           CAT, SEQ, GRAY, INK, usd, usdShort, reduced};
 })();

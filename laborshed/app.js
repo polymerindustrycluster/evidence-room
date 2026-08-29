@@ -166,6 +166,54 @@ verdict();
 const MOBILE = matchMedia("(max-width: 760px)");
 const dimRow = name => SEL && name !== SEL;
 
+/* ------------------------------------------------------- measured leading
+
+   THE PHONE'S LEADING WAS TYPED AND THE PHONE'S TYPE IS NOT, WHICH IS ONE BUG WEARING
+   FIFTEEN FACES. Every phone chart below stacked its label lines 16 user units apart, a
+   number chosen against the desktop face. Below 760px the shared sheet raises chart type
+   in the SAME user units the geometry is drawn in — 13.6 to 15.5 for .pv-labq and .pv-tick,
+   14.2 to 16 for .pv-lab — and a 15.5-unit face paints an 18.8-unit line box. So every
+   16-unit slot on this page sat three units under the height of its own type, and all
+   fifteen of the collisions collide.mjs found in five charts trace to that one constant:
+   two annotation lines in the ranked bars, a label over its sub-label in each of three
+   external buckets, two header lines and two ceiling lines in the strip, and a direction
+   caption printed across the whole tick row in three charts at once.
+
+   Leading is measured off the face actually in use, in the chart's own units, and every
+   stacked pair below is spaced and every bottom margin sized from it. Re-measured when
+   the breakpoint changes, because that is when the face changes. Guarded by
+   tools/collide.mjs --sweep, which failed at 7 of 14 widths on this page before. */
+const leadCache = new Map();
+function lead() {
+  const key = MOBILE.matches ? "phone" : "wide";
+  if (leadCache.has(key)) return leadCache.get(key);
+  /* getBBox reports USER UNITS, which is the space the geometry around it is written in,
+     and it agrees with the client rect the collision gate measures divided by the render
+     scale. Probed off-canvas in a chart that is always in the document. */
+  const probe = txt(document.getElementById("diag"), "Hxpqg 48.4% jobs",
+    {x: -999, y: 0, class: "pv-lab"});
+  const measured = probe.getBBox().height;
+  /* A probe that runs before layout measures 0, and a typed constant standing in for a
+     measurement is the failure this whole block exists to end. The fallback is the
+     computed face size, which is available whether or not the box has been laid out. */
+  const face = parseFloat(getComputedStyle(probe).fontSize) || 16;
+  probe.remove();
+  const v = Math.ceil(measured || face * 1.25) + 2;
+  leadCache.set(key, v);
+  return v;
+}
+/* Where the tick row sits below the plot floor. The direction caption then sits one
+   measured leading below the ticks, and the bottom margin is the two of them plus air —
+   stated once because three phone charts draw the same foot. */
+const AX_TICK = 22;
+const axisFootDepth = () => AX_TICK + lead() + 10;
+function axisFoot(svg, H, m, marks, caption) {
+  const y = H - m.b + AX_TICK;
+  marks.forEach(([x, label, anchor]) =>
+    txt(svg, label, {x, y, "text-anchor": anchor, class: "pv-tick"}));
+  txt(svg, caption, {x: m.l, y: y + lead(), class: "pv-labq"});
+}
+
 /* ------------------------------------------------------------- 1. the matrix */
 
 /* How much of each row the five-percent labeling threshold hides, in whole points, read
@@ -392,7 +440,7 @@ const diagRows = [...M].sort((a, b) => b.in_county - a.in_county);
 function drawDiag() { MOBILE.matches ? drawDiagMobile() : drawDiagDesktop(); }
 
 function drawDiagDesktop() {
-  const {svg, m, w, h} = chart("diag", {rows: diagRows.length, rowH: 34,
+  const {svg, W, m, w, h} = chart("diag", {rows: diagRows.length, rowH: 34,
     m: {t: 44, r: 17, b: 58, l: 80}});
   const xs = v => m.l + v * w;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys: () => 0, yt: [],
@@ -415,7 +463,14 @@ function drawDiagDesktop() {
       class: "pv-lab"});
     txt(g, `${pct(r.in_county)}  ·  ${N(r.jobs_total)} jobs`,
       {x: xs(r.in_county) + 10, y: y + bh - 6, class: me ? "pv-lab" : "pv-labq"});
-    hoverable(el("rect", {x: 0, y: y - 6, width: m.l + w + 170, height: bh + 12,
+    /* THE ROW TARGET STOPS AT THE VIEWBOX, NOT 170 UNITS PAST IT. Written as
+       `m.l + w + 170` to reach past the bar and under its direct label, this ran to 1253
+       in an 1100-unit box: with overflow:visible that is a focusable, hover-catching
+       surface 104px out in the page margin at 1180px and wider, outside the column every
+       other element on the page respects. The widest direct label ends near 910, so the
+       box is coverage enough and cannot leave the figure. Found by collide.mjs's
+       against-the-wrap check, 2026-08-28. */
+    hoverable(el("rect", {x: 0, y: y - 6, width: W, height: bh + 12,
       fill: "transparent"}, g),
       `<b>${r.work_name}</b><br><span class="v">${N(r.jobs_total)}</span> jobs<br>
        <span class="v">${pct(r.in_county)}</span> held by ${r.work_name} residents<br>
@@ -425,14 +480,16 @@ function drawDiagDesktop() {
 }
 
 function drawDiagMobile() {
-  const W = 375, m = {t: 64, r: 12, b: 44, l: 12}, rowH = 40;
+  const L = lead();
+  const W = 375, m = {t: 64, r: 12, b: axisFootDepth(), l: 12}, rowH = 40;
   const H = m.t + diagRows.length * rowH + m.b;
   const {svg} = chart("diag", {W, H});
   const w = W - m.l - m.r;
   const xs = v => m.l + v * w;
-  txt(svg, "left of the line: most of a county’s jobs", {x: m.l, y: 18,
+  const note1 = 18, note2 = note1 + L;
+  txt(svg, "left of the line: most of a county’s jobs", {x: m.l, y: note1,
     class: "pv-labq", fill: "var(--hover)"});
-  txt(svg, "go to people who live somewhere else", {x: m.l, y: 34,
+  txt(svg, "go to people who live somewhere else", {x: m.l, y: note2,
     class: "pv-labq", fill: "var(--hover)"});
   /* The rule is drawn PER ROW, over the bar band only. As one full-height line it ran
      through the label text of nine rows — "Stark · 59.2% · 157,552 jobs" with a plum
@@ -443,7 +500,7 @@ function drawDiagMobile() {
     el("line", {x1: xs(.5), y1: yr + 15, x2: xs(.5), y2: yr + 34,
       stroke: "var(--hover)", "stroke-width": 1.4}, svg);
   });
-  el("line", {x1: xs(.5), y1: 40, x2: xs(.5), y2: m.t, stroke: "var(--hover)",
+  el("line", {x1: xs(.5), y1: note2 + 8, x2: xs(.5), y2: m.t, stroke: "var(--hover)",
     "stroke-width": 1.4}, svg);
   diagRows.forEach((r, i) => {
     const g = el("g", dimRow(r.work_name) ? {opacity: .22} : {}, svg);
@@ -457,12 +514,11 @@ function drawDiagMobile() {
       `<b>${r.work_name}</b><br><span class="v">${pct(r.in_county)}</span> held by its
        own residents`, `${r.work_name}: ${pct(r.in_county)} in-county`);
   });
-  [0, .5, 1].forEach(v => txt(svg, Math.round(v * 100) + "%",
-    {x: xs(v), y: H - m.b + 22, "text-anchor": v ? (v === 1 ? "end" : "middle") : "start",
-     class: "pv-tick"}));
   /* Lower case, not the uppercase pv-axlab: at 375px the letter-spaced caps run past
      the viewBox and a directional axis title has to fit to do its job. */
-  txt(svg, "← fewer of its own residents · more →", {x: m.l, y: H - 6, class: "pv-labq"});
+  axisFoot(svg, H, m, [0, .5, 1].map(v =>
+      [xs(v), Math.round(v * 100) + "%", v ? (v === 1 ? "end" : "middle") : "start"]),
+    "← fewer of its own residents · more →");
 }
 
 document.getElementById("diagtitle").textContent =
@@ -496,7 +552,7 @@ function drawExt() { MOBILE.matches ? drawExtMobile() : drawExtDesktop(); }
 function drawExtDesktop() {
   /* The left rail widened from 235 to 285 to hold the adjacent bucket's four county
      names at the same size the distant bucket's four metro names already used. */
-  const {svg, m, w, h} = chart("ext", {H: 300, m: {t: 52, r: 85, b: 66, l: 285}});
+  const {svg, W, m, w, h} = chart("ext", {H: 300, m: {t: 52, r: 85, b: 66, l: 285}});
   const maxV = Math.max(...extRows.flatMap(r => [r[2], r[3]])) * 1.08;
   const xs = v => m.l + (v / maxV) * w;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys: () => 0, yt: [], xt: ticks(0, maxV, 5),
@@ -514,7 +570,10 @@ function drawExtDesktop() {
     const ch = v19 ? Math.round((v22 / v19 - 1) * 100) : 0;
     txt(svg, `${N(v22)}  2022  (${ch >= 0 ? "+" : ""}${ch}%)`,
       {x: xs(v22) + 10, y: y + bh + 12, class: "pv-lab"});
-    hoverable(el("rect", {x: 0, y: y - 6, width: m.l + w + 200, height: bh * 2 + 12,
+    /* Same escape as the ranked bars above: `m.l + w + 200` is 1215 in an 1100-unit box,
+       70px of focusable surface out in the page margin. The group's own labels end well
+       inside the box, so the viewBox is the target. */
+    hoverable(el("rect", {x: 0, y: y - 6, width: W, height: bh * 2 + 12,
       fill: "transparent"}, svg),
       `<b>${label}</b><br>${sub}<br>2019 <span class="v">${N(v19)}</span><br>
        2022 <span class="v">${N(v22)}</span> (${ch >= 0 ? "+" : ""}${ch}%)`,
@@ -523,27 +582,38 @@ function drawExtDesktop() {
 }
 
 function drawExtMobile() {
-  const W = 375, m = {t: 20, r: 12, b: 76, l: 12}, groupH = 88;
-  const H = m.t + extRows.length * groupH + m.b;
+  /* Four stacked rows per group — name, member list, 2019 bar, 2022 bar — every one of
+     them placed from the row above by the measured leading, so the group's own height is
+     the sum of what it holds rather than a typed 88 written for a 16-unit face. */
+  const L = lead(), BAR = 13, AX_LINE = 20, AX_TICKS = 16;
+  const yLab = 12, ySub = yLab + L, yB1 = ySub + 12, yB2 = yB1 + L;
+  /* The trailing pad is the group boundary, and it has to beat the gaps INSIDE a group or
+     three buckets read as one nine-line list. Two leadings of air against the roughly
+     half-leading between a bucket's own rows keeps the grouping doing the work. */
+  const groupH = yB2 + BAR + 2 * L;
+  const W = 375, m = {t: 20, r: 12, b: AX_LINE + AX_TICKS + 2 * L + 8, l: 12};
+  /* The last group has no group after it, so its trailing pad is not spent — otherwise
+     the axis line floats two leadings below the bars it scales. */
+  const H = m.t + extRows.length * groupH - 2 * L + m.b;
   const {svg} = chart("ext", {W, H});
   const w = W - m.l - m.r;
   const maxV = Math.max(...extRows.flatMap(r => [r[2], r[3]])) * 1.05;
   const xs = v => m.l + (v / maxV) * w;
   extRows.forEach(([label, sub, v19, v22, col], i) => {
     const y0 = m.t + i * groupH;
-    txt(svg, label, {x: m.l, y: y0 + 12, class: "pv-lab"});
-    txt(svg, sub, {x: m.l, y: y0 + 28, class: "pv-labq"});
+    txt(svg, label, {x: m.l, y: y0 + yLab, class: "pv-lab"});
+    txt(svg, sub, {x: m.l, y: y0 + ySub, class: "pv-labq"});
     const ch = v19 ? Math.round((v22 / v19 - 1) * 100) : 0;
-    el("rect", {x: m.l, y: y0 + 36, width: xs(v19) - m.l, height: 13, fill: col,
+    el("rect", {x: m.l, y: y0 + yB1, width: xs(v19) - m.l, height: BAR, fill: col,
       opacity: .38, rx: 2}, svg);
-    txt(svg, `${N(v19)} · 2019`, {x: xs(v19) - 6, y: y0 + 47, "text-anchor": "end",
+    txt(svg, `${N(v19)} · 2019`, {x: xs(v19) - 6, y: y0 + yB1 + 11, "text-anchor": "end",
       class: "pv-labq", fill: "var(--pv-ink)"});
-    el("rect", {x: m.l, y: y0 + 53, width: xs(v22) - m.l, height: 13, fill: col,
+    el("rect", {x: m.l, y: y0 + yB2, width: xs(v22) - m.l, height: BAR, fill: col,
       rx: 2}, svg);
     txt(svg, `${N(v22)} · 2022 (${ch >= 0 ? "+" : ""}${ch}%)`,
-      {x: xs(v22) - 6, y: y0 + 64, "text-anchor": "end", class: "pv-labq",
+      {x: xs(v22) - 6, y: y0 + yB2 + 11, "text-anchor": "end", class: "pv-labq",
        fill: col === GRAY ? "var(--pv-ink)" : "#fff"});
-    hoverable(el("rect", {x: m.l, y: y0, width: w, height: groupH - 8,
+    hoverable(el("rect", {x: m.l, y: y0, width: w, height: yB2 + BAR + 4,
       fill: "transparent"}, svg),
       `<b>${label}</b><br>2019 <span class="v">${N(v19)}</span><br>
        2022 <span class="v">${N(v22)}</span> (${ch >= 0 ? "+" : ""}${ch}%)`,
@@ -553,15 +623,15 @@ function drawExtMobile() {
      With values printed inside each bar and no axis, a reader can compare the 2019 and
      2022 bars in one group but not one group against another, which is the comparison
      the figure title makes. Two ticks and a baseline restore the shared scale. */
-  const axY = H - m.b + 20;
+  const axY = H - m.b + AX_LINE, yTick = axY + AX_TICKS;
   el("line", {x1: m.l, y1: axY, x2: m.l + w, y2: axY, stroke: "var(--pv-axis)",
     "stroke-width": 1}, svg);
   [[0, "start"], [40000, "middle"], [80000, "end"]].forEach(([v, a]) =>
-    txt(svg, N(v), {x: xs(v), y: axY + 16, "text-anchor": a, class: "pv-tick"}));
+    txt(svg, N(v), {x: xs(v), y: yTick, "text-anchor": a, class: "pv-tick"}));
   txt(svg, "jobs in PIC-12 held by people living outside it,",
-    {x: m.l, y: H - 22, class: "pv-labq"});
+    {x: m.l, y: yTick + L, class: "pv-labq"});
   txt(svg, "on one scale shared by all six bars",
-    {x: m.l, y: H - 6, class: "pv-labq"});
+    {x: m.l, y: yTick + 2 * L, class: "pv-labq"});
 }
 
 document.getElementById("extfigtitle").textContent =
@@ -657,7 +727,7 @@ function drawRecipDesktop() {
 }
 
 function drawRecipMobile() {
-  const W = 375, m = {t: 20, r: 14, b: 44, l: 12}, rowH = 42;
+  const W = 375, m = {t: 20, r: 14, b: axisFootDepth(), l: 12}, rowH = 42;
   const H = m.t + pairs.length * rowH + m.b;
   const {svg} = chart("recip", {W, H});
   const w = W - m.l - m.r;
@@ -682,10 +752,9 @@ function drawRecipMobile() {
   });
   /* Ticks start at 20, not 30: Geauga's open dot is at 25.5% and used to sit outside the
      labelled part of the scale. Same fix as the desktop domain. */
-  [.2, .4, .6, .8].forEach(v => txt(svg, Math.round(v * 100) + "%",
-    {x: xs(v), y: H - m.b + 22, "text-anchor": "middle", class: "pv-tick"}));
-  txt(svg, "← more leaves the county · more stays →", {x: m.l, y: H - 8,
-    class: "pv-labq"});
+  axisFoot(svg, H, m,
+    [.2, .4, .6, .8].map(v => [xs(v), Math.round(v * 100) + "%", "middle"]),
+    "← more leaves the county · more stays →");
 }
 
 document.getElementById("recipfigtitle").textContent =
@@ -797,7 +866,13 @@ function drawBenchMobile() {
      pixels apart. They cannot be labeled in place at 375px, so they get a keyed legend
      instead, in the same two inks the rules are drawn in. The block above the strip grew
      by 34 units to hold it and the ceiling rule's second line. */
-  const W = 375, H = 300, m = {t: 122, r: 10, b: 58, l: 10};
+  /* Six stacked lines before the strip even starts — two of reading, a two-part key, two
+     of ceiling — so the block's own depth is measured leading times its line count, and
+     the plot top follows from it rather than a typed 122. */
+  const L = lead();
+  const yRead1 = 16, yRead2 = yRead1 + L, yKey = yRead2 + L;
+  const yCeil1 = yKey + L, yCeil2 = yCeil1 + L, yBracket = yCeil2 + 16;
+  const W = 375, H = 300, m = {t: yBracket + 12, r: 10, b: 58, l: 10};
   const {svg} = chart("bench", {W, H});
   const w = W - m.l - m.r;
   const lo = 0.06, hi = 0.95;          // same open domain as desktop; see there
@@ -813,34 +888,35 @@ function drawBenchMobile() {
     el("line", {x1: xs(v), y1: band - 24 + (i % 5) * 6, x2: xs(v),
       y2: band - 19 + (i % 5) * 6, stroke: GRAY, "stroke-width": 1.1, opacity: 0.5}, svg);
   });
-  txt(svg, `the middle PIC-12 county fills ${midPIC}% of`, {x: m.l, y: 16,
+  txt(svg, `the middle PIC-12 county fills ${midPIC}% of`, {x: m.l, y: yRead1,
     class: "pv-lab"});
-  txt(svg, `its jobs locally; the middle peer, ${midPeer}%`, {x: m.l, y: 32,
+  txt(svg, `its jobs locally; the middle peer, ${midPeer}%`, {x: m.l, y: yRead2,
     class: "pv-lab"});
   /* The key for the two median rules: a dash in the rule's own ink, then its name. */
   let kx = m.l;
   [[`PIC-12 median ${midPIC}%`, CAT[0]], [`peer median ${midPeer}%`, INK]]
     .forEach(([s, c]) => {
-      el("line", {x1: kx, y1: 48, x2: kx + 12, y2: 48, stroke: c, "stroke-width": 1.6,
-        "stroke-dasharray": "3 3"}, svg);
-      txt(svg, s, {x: kx + 17, y: 52, class: "pv-labq", fill: c});
-      kx += 17 + s.length * 7.4 + 26;
+      el("line", {x1: kx, y1: yKey - 4, x2: kx + 12, y2: yKey - 4, stroke: c,
+        "stroke-width": 1.6, "stroke-dasharray": "3 3"}, svg);
+      const t = txt(svg, s, {x: kx + 17, y: yKey, class: "pv-labq", fill: c});
+      /* The advance was `s.length * 7.4`, a character count that does not know the face
+         and would have ridden the second key into the first the moment either string
+         gained a digit. Measured. */
+      kx += 17 + t.getComputedTextLength() + 22;
     });
   /* The ceiling rule carried its value and nothing else here, so the phone shipped a
      naked reference line while the desktop said what crossing it meant. It also has to
      name Ashtabula, whose dot sits to the right of it on this chart's basis. */
-  txt(svg, `${CEIL_PCT}%: about ${peersAboveCeil}% of peers clear it,`, {x: m.l, y: 74,
-    class: "pv-labq", fill: "var(--hover)"});
-  txt(svg, `and Ashtabula, at ${pct(ashB.own_share_work)} on this basis`, {x: m.l, y: 90,
-    class: "pv-labq", fill: "var(--hover)"});
-  el("path", {d: `M${xs(bm.peer_median)},110 V104 H${xs(bm.pic12_median)} V110`,
+  txt(svg, `${CEIL_PCT}%: about ${peersAboveCeil}% of peers clear it,`,
+    {x: m.l, y: yCeil1, class: "pv-labq", fill: "var(--hover)"});
+  txt(svg, `and Ashtabula, at ${pct(ashB.own_share_work)} on this basis`,
+    {x: m.l, y: yCeil2, class: "pv-labq", fill: "var(--hover)"});
+  el("path", {d: `M${xs(bm.peer_median)},${yBracket} V${yBracket - 6} ` +
+    `H${xs(bm.pic12_median)} V${yBracket}`,
     fill: "none", stroke: "var(--pv-ink)", "stroke-width": 1.2}, svg);
-  el("line", {x1: xs(bm.peer_median), y1: 114, x2: xs(bm.peer_median), y2: band + 20,
-    stroke: INK, "stroke-width": 1.2, "stroke-dasharray": "3 3"}, svg);
-  el("line", {x1: xs(bm.pic12_median), y1: 114, x2: xs(bm.pic12_median), y2: band + 20,
-    stroke: CAT[0], "stroke-width": 1.2, "stroke-dasharray": "3 3"}, svg);
-  el("line", {x1: xs(CEIL), y1: 114, x2: xs(CEIL), y2: band + 20,
-    stroke: "var(--hover)", "stroke-width": 1.2, "stroke-dasharray": "3 3"}, svg);
+  [[bm.peer_median, INK], [bm.pic12_median, CAT[0]], [CEIL, "var(--hover)"]]
+    .forEach(([v, c]) => el("line", {x1: xs(v), y1: yBracket + 4, x2: xs(v),
+      y2: band + 20, stroke: c, "stroke-width": 1.2, "stroke-dasharray": "3 3"}, svg));
   const dots = bm.pic12_counties.slice().sort((a, b) => a.own_share_work - b.own_share_work);
   dots.forEach(r => {
     const g = el("g", dimRow(r.name) ? {opacity: .25} : {}, svg);
@@ -912,8 +988,9 @@ function drawRegionsDesktop() {
 }
 
 function drawRegionsMobile() {
-  const W = 375, m = {t: 20, r: 12, b: 44, l: 12}, rowH = 42;
-  const H = m.t + R.length * rowH + 18 + m.b;
+  const W = 375, m = {t: 20, r: 12, b: axisFootDepth(), l: 12}, rowH = 42;
+  /* + 22, not + 18: the Pittsburgh row carries one extra line and advances y by 22. */
+  const H = m.t + R.length * rowH + 22 + m.b;
   const {svg} = chart("regions", {W, H});
   const w = W - m.l - m.r;
   const xs = v => m.l + v * w;
@@ -938,11 +1015,9 @@ function drawRegionsMobile() {
       y += 22;
     }
   });
-  [0, .5, 1].forEach(v => txt(svg, Math.round(v * 100) + "%",
-    {x: xs(v), y: H - m.b + 22, "text-anchor": v ? (v === 1 ? "end" : "middle") : "start",
-     class: "pv-tick"}));
-  txt(svg, "← more work leaves the region · more stays →", {x: m.l, y: H - 6,
-    class: "pv-labq"});
+  axisFoot(svg, H, m, [0, .5, 1].map(v =>
+      [xs(v), Math.round(v * 100) + "%", v ? (v === 1 ? "end" : "middle") : "start"]),
+    "← more work leaves the region · more stays →");
 }
 
 const PGH = R.find(r => /^Pittsburgh/.test(r.name));
