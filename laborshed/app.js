@@ -31,6 +31,7 @@ const B = await PV.data("bench.json");
 const pct = v => (v * 100).toFixed(1) + "%";
 const WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
                "nine", "ten", "eleven", "twelve"];
+const cap = s => s[0].toUpperCase() + s.slice(1);
 /* The residents-side ink. It is DARK, and the series is drawn as an open ring rather
    than a filled dot, because the earlier slate (#4A5457) sat at 0.085 relative luminance
    against the jobs-side teal's 0.213 — a 1.95:1 gray separation on two 12px dots, so the
@@ -61,7 +62,14 @@ const adjGrew = Math.round((E["2022"].adjacent / E["2019"].adjacent - 1) * 100);
 const franklin = E.top[0];
 const pairs = B.pairs.slice().sort((a, b) => b.work_own - a.work_own);
 const nJobsMoreLocal = pairs.filter(p => p.work_own > p.res_own).length;
-const cuy = pairs.find(p => p.name === "Cuyahoga");
+/* THE COUNTIES THAT RUN THE OTHER WAY, ALL OF THEM, WIDEST GAP FIRST.
+   The figure title says nine of twelve and the chart's own callout named one. Three run
+   the other way and only one of the three is a real gap, which is a finding the page had
+   the data for and did not print. Read from the pairs rather than typed, so a revision
+   that flips Mahoning rewrites the sentence instead of falsifying it silently. */
+const inverted = pairs.filter(p => p.res_own > p.work_own)
+  .sort((a, b) => (b.res_own - b.work_own) - (a.res_own - a.work_own));
+const gapPtsOf = p => (Math.abs(p.res_own - p.work_own) * 100).toFixed(1);
 const bm = B.benchmark;
 
 /* THE VISIBLE CITATION, DERIVED FROM THE FULL ONE SO THE TWO CANNOT DRIFT.
@@ -102,11 +110,65 @@ const ext22Total = E["2022"].adjacent + E["2022"].distant + E["2022"].other;
 const TAIL = D.totals.jobs_worked_in_pic12 - rowsTotal;
 const importedPct = (D.totals.home_outside_pic12 / D.totals.jobs_worked_in_pic12 * 100)
   .toFixed(2);
-/* The largest named members of each external bucket, read from the data instead of
-   typed, because the distant sub-label named four metros while the adjacent one named
-   nothing at all and the adjacent/distant split is what the whole section rests on. */
-const topOf = kind => E.top.filter(r => r.kind === kind).slice(0, 4)
+
+/* TWO TOTALS FOR ONE PLACE, BOTH LABELLED PIC-12, NEITHER NAMING ITS BASIS.
+   1,735,169 jobs sit in the twelve counties when the worker may live in ANY state. The
+   same twelve hold 1,702,542 when only OHIO residents are counted, which is the basis
+   the peer comparison is built on so that every region is measured the same way. Both
+   are correct, they are 32,627 apart, and a reader who met them four screens apart had
+   nothing on the page to tell them which was which. This is the same basis split that
+   already bit this page once, at Ashtabula's 68.5 against 72.7, and the fix there was to
+   name the basis at the rule; it is named here at every place a PIC-12-wide total or
+   share is printed.
+
+   THE TWO OUTSIDE SHARES ARE NOT COMPLEMENTS OF EACH OTHER. 12.2 percent outside and
+   89.5 percent inside look like they should add to a hundred and do not, because they
+   run over different denominators with the SAME numerator: 1,524,279 jobs are held from
+   inside the twelve either way, which is 87.9 percent of 1,735,169 and 89.5 percent of
+   1,702,542. The 210,890 held from outside on the wider basis is 178,263 Ohio residents
+   living outside the twelve plus 32,627 residents of other states, and the second group
+   is exactly what the narrower basis drops from both ends. Guarded by
+   ls-two-pic12-totals, which asserts that identity rather than the two numbers. */
+const JOBS_ALL = D.totals.jobs_worked_in_pic12;
+const JOBS_OHIO = bm.pic12_counties.reduce((a, r) => a + r.jobs_located, 0);
+const OUT_OF_STATE = JOBS_ALL - JOBS_OHIO;
+const OUTSIDE_OHIO = D.totals.home_outside_pic12 - OUT_OF_STATE;
+const importedPctOhio = (OUTSIDE_OHIO / JOBS_OHIO * 100).toFixed(1);
+const insidePctAll = (D.totals.home_inside_pic12 / JOBS_ALL * 100).toFixed(1);
+/* The two-digit state code the twelve counties themselves carry, taken from the data
+   rather than typed, so the one external source that is not an Ohio county can be
+   pointed at without a crosswalk this repository does not ship. */
+const OHIO_FIPS = ORDER[0].fips.slice(0, 2);
+
+/* THE SUB-LABEL NAMED FOUR AND THE BAR COUNTED EVERY ONE.
+   Both buckets were given their four largest members by name last round, answering a
+   reader who found the buckets anonymous. That turned the label into a lie of a
+   different kind: "Adjacent counties, Columbiana, Tuscarawas, Ashland, Carroll, 57,302"
+   reads as though those four ARE the bucket, and they come to 36,913. The number beside
+   the bar was right and the words beside it were not. The four are still named, because
+   a bucket a reader cannot check is worse; a second line now prints how many of the
+   bucket's sources the table lists and what the named four actually come to, so a
+   subset reads as a subset. Guarded by ls-bucket-sublabels. */
+const kindRows = kind => E.top.filter(r => r.kind === kind);
+const topOf = kind => kindRows(kind).slice(0, 4)
   .map(r => r.name.replace(/^.*\((.*)\)$/, "$1"));
+const topSum = kind => kindRows(kind).slice(0, 4)
+  .reduce((a, r) => a + r.jobs_2022, 0);
+const listedSum = kind => kindRows(kind).reduce((a, r) => a + r.jobs_2022, 0);
+
+/* THE ONE TABLE ABOUT WHERE PEOPLE COME FROM CARRIED TWELVE ROWS WITH NO PLACE NAME.
+   The build names an external source county only when it is one of the twelve or one of
+   the counties the adjacent and distant judgment lists cover; every other source arrives
+   carrying the five-digit code the federal file uses, and the name field is set to that
+   code. No county crosswalk ships with this page, so the names cannot be recovered here.
+   Twelve rows and 31,433 jobs were printed as bare codes in the one table whose whole
+   subject is where people come from. The rows now say plainly that they are unnamed,
+   the figure says how many and how large, and the gap is recorded as a data need in
+   this page's README. Guarded by ls-unnamed-origins. */
+const unnamed = E.top.filter(r => r.name === r.fips);
+const unnamedJobs = unnamed.reduce((a, r) => a + r.jobs_2022, 0);
+const unnamedOutState = unnamed.filter(r => !r.fips.startsWith(OHIO_FIPS));
+const placeName = r => r.name === r.fips ? `Unnamed county ${r.fips}` : r.name;
 
 /* ------------------------------------------------------------------- hero stats */
 /* DIRECTION OF MERIT, NOT ONLY DIRECTION OF MAGNITUDE. A card reading 48.4% told a
@@ -289,8 +351,15 @@ function matrixChrome(mobile) {
     : `Each row is one work county’s 2022 jobs. The numbers are the percent living in
        each home county; darker means a bigger share. Orange outlines the four counties
        whose own residents fill under half.`;
+  /* THE INITIALS IN THE CITATION GET THEIR ONE SENTENCE, AND SO DOES THE PAGE'S SUBJECT.
+     LEHD stood in the byline and in every source line on the page with nothing around it
+     to decode from, and "labor shed" is what this page is about and was first defined
+     four sections down, inside the section where a story died. Both are glossed here, at
+     the first figure, in the visible caption rather than inside a collapsed table. */
+  const GLOSS = `LEHD is the Census Bureau’s Longitudinal Employer-Household Dynamics
+    program, and a labor shed is the area a workplace draws its workers from.`;
   document.getElementById("matrixsrc").textContent = mobile
-    ? `${CITE} The numbers are jobs, not people: a two-job worker appears
+    ? `${CITE} ${GLOSS} The numbers are jobs, not people: a two-job worker appears
        twice. On a phone each row is compressed to a three-way split; the full matrix is
        in the table.`
     /* THE LEDE PROMISES A ROW IS A WHOLE COUNTY AND NO ROW ON SCREEN ADDS TO 100.
@@ -298,9 +367,10 @@ function matrixChrome(mobile) {
        to 92 and Ashtabula's to 85, and a reader who tries the promised addition finds it
        fails. The size of what is missing is now printed, computed per row, so the
        arithmetic is stated rather than left to be discovered. */
-    : `${CITE} The numbers are jobs, not people: a two-job worker appears twice. Boxes
-       under five percent are shaded and left blank, so ${HIDDEN_LO} to ${HIDDEN_HI} jobs
-       in every hundred sit in boxes with no number on them; the table has all of them.`;
+    : `${CITE} ${GLOSS} The numbers are jobs, not people: a two-job worker appears twice.
+       Boxes under five percent are shaded and left blank, so ${HIDDEN_LO} to
+       ${HIDDEN_HI} jobs in every hundred sit in boxes with no number on them; the table
+       has all of them.`;
 }
 
 function drawMatrix() {
@@ -556,44 +626,61 @@ document.getElementById("diagfigtitle").textContent =
   `Summit, the cluster’s center, fills ${pct(summit.in_county)} of its jobs from home`;
 
 /* --------------------------------------------------- 3. adjacent vs distant */
-/* BOTH BUCKETS NAME THEIR MEMBERS NOW, AND BOTH LISTS COME FROM THE DATA.
+/* BOTH BUCKETS NAME THEIR MEMBERS, AND BOTH LISTS COME FROM THE DATA.
    The distant row named four metros and the adjacent row named nothing, so the split
    the whole section turns on ("this is not a commute") could not be checked by a reader
    without Northeast Ohio geography in their head. Largest four in each bucket, read from
-   the same top-sources table the figure links to. Guarded by ls-bucket-sublabels. */
+   the same top-sources table the figure links to, over a second line that says how much
+   of the bar those four are. Guarded by ls-bucket-sublabels. */
+const subsetLine = kind =>
+  `four of ${kindRows(kind).length} listed · ${N(topSum(kind))} of ` +
+  `${N(E["2022"][kind])}`;
 const extRows = [
-  ["Adjacent counties", topOf("adjacent").join(", "), E["2019"].adjacent,
-   E["2022"].adjacent, SEQ[4]],
-  ["Distant metros", topOf("distant").join(", "), E["2019"].distant,
-   E["2022"].distant, CAT[2]],
-  ["Everywhere else", "including out of state", E["2019"].other,
-   E["2022"].other, GRAY]];
+  ["Adjacent counties", topOf("adjacent").join(", "), subsetLine("adjacent"),
+   E["2019"].adjacent, E["2022"].adjacent, SEQ[4]],
+  ["Distant metros", topOf("distant").join(", "), subsetLine("distant"),
+   E["2019"].distant, E["2022"].distant, CAT[2]],
+  /* The third bucket cannot name anything: not one of its counties carries a name in the
+     shipped file, which is the finding of the row rather than an omission from it. */
+  ["Everywhere else", "no county here is named in the data",
+   `${kindRows("other").length} listed by code · ${N(listedSum("other"))} of ` +
+   `${N(E["2022"].other)}`, E["2019"].other, E["2022"].other, GRAY]];
 
 document.getElementById("extsub").textContent =
   `Jobs located in the twelve counties and held by people living outside them, 2019 and
-   2022. Adjacent means a county close enough that a daily drive is plausible; the four
-   largest are named below, and the table gives every source county with its type.
-   Distant means an Ohio metro roughly two hours away.`;
+   2022. Adjacent means a county close enough that a daily drive is plausible, distant an
+   Ohio metro roughly two hours away. Each bar counts every source county in its bucket;
+   the names beside it are the four largest, and the second line says what those four
+   come to. ${cap(WORDS[unnamed.length])} of the source counties in the table reach it with a
+   county code and no name, ${N(unnamedJobs)} jobs between them.`;
 
 function drawExt() { MOBILE.matches ? drawExtMobile() : drawExtDesktop(); }
 
 function drawExtDesktop() {
   /* The left rail widened from 235 to 285 to hold the adjacent bucket's four county
-     names at the same size the distant bucket's four metro names already used. */
-  const {svg, W, m, w, h} = chart("ext", {H: 300, m: {t: 52, r: 85, b: 66, l: 285}});
-  const maxV = Math.max(...extRows.flatMap(r => [r[2], r[3]])) * 1.08;
+     names at the same size the distant bucket's four metro names already used, and the
+     rail now carries a third line stating what fraction of the bar those names are. */
+  /* The right margin is 105, not 85: the widest value label ("89,328 2022 (+5%)") ran
+     ten units past the viewBox edge and the last bracket was clipped off the chart. */
+  const {svg, W, m, w, h} = chart("ext", {H: 340, m: {t: 52, r: 105, b: 66, l: 300}});
+  const maxV = Math.max(...extRows.flatMap(r => [r[3], r[4]])) * 1.08;
   const xs = v => m.l + (v / maxV) * w;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys: () => 0, yt: [], xt: ticks(0, maxV, 5),
     xfmt: N, xlab: "Jobs in PIC-12 held by people living outside it"});
-  const bh = 20, gap = (h - extRows.length * (bh * 2 + 10)) / (extRows.length - 1 || 1);
-  extRows.forEach(([label, sub, v19, v22, col], i) => {
-    const y = m.t + i * (bh * 2 + 10 + gap);
+  const bh = 20, gap = (h - extRows.length * (bh * 2 + 26)) / (extRows.length - 1 || 1);
+  extRows.forEach(([label, sub, sub2, v19, v22, col], i) => {
+    const y = m.t + i * (bh * 2 + 26 + gap);
     el("rect", {x: m.l, y, width: Math.max(2, xs(v19) - m.l), height: bh - 4,
       fill: col, opacity: .38, rx: 3}, svg);
     el("rect", {x: m.l, y: y + bh, width: Math.max(2, xs(v22) - m.l), height: bh - 4,
       fill: col, rx: 3}, svg);
     txt(svg, label, {x: m.l - 12, y: y + bh - 2, "text-anchor": "end", class: "pv-lab"});
     txt(svg, sub, {x: m.l - 12, y: y + bh + 14, "text-anchor": "end", class: "pv-labq"});
+    /* The subset arithmetic sits UNDER the names it qualifies, not beside them: a reader
+       who has just read four county names is the one who needs to be told they are four
+       of eight, and telling them anywhere else is telling them too late. */
+    txt(svg, sub2, {x: m.l - 12, y: y + bh + 30, "text-anchor": "end",
+      class: "pv-labq"});
     txt(svg, `${N(v19)}  2019`, {x: xs(v19) + 10, y: y + bh - 6, class: "pv-labq"});
     const ch = v19 ? Math.round((v22 / v19 - 1) * 100) : 0;
     txt(svg, `${N(v22)}  2022  (${ch >= 0 ? "+" : ""}${ch}%)`,
@@ -603,18 +690,19 @@ function drawExtDesktop() {
        inside the box, so the viewBox is the target. */
     hoverable(el("rect", {x: 0, y: y - 6, width: W, height: bh * 2 + 12,
       fill: "transparent"}, svg),
-      `<b>${label}</b><br>${sub}<br>2019 <span class="v">${N(v19)}</span><br>
+      `<b>${label}</b><br>${sub}<br>${sub2}<br>2019 <span class="v">${N(v19)}</span><br>
        2022 <span class="v">${N(v22)}</span> (${ch >= 0 ? "+" : ""}${ch}%)`,
-      `${label}: ${N(v19)} in 2019, ${N(v22)} in 2022`);
+      `${label}: ${N(v19)} in 2019, ${N(v22)} in 2022, ${sub2}`);
   });
 }
 
 function drawExtMobile() {
-  /* Four stacked rows per group — name, member list, 2019 bar, 2022 bar — every one of
-     them placed from the row above by the measured leading, so the group's own height is
-     the sum of what it holds rather than a typed 88 written for a 16-unit face. */
+  /* Five stacked rows per group: name, member list, what fraction of the bar those
+     members are, 2019 bar, 2022 bar. Every one of them is placed from the row above by
+     the measured leading, so the group's own height is the sum of what it holds rather
+     than a typed 88 written for a 16-unit face. */
   const L = lead(), BAR = 13, AX_LINE = 20, AX_TICKS = 16;
-  const yLab = 12, ySub = yLab + L, yB1 = ySub + 12, yB2 = yB1 + L;
+  const yLab = 12, ySub = yLab + L, ySub2 = ySub + L, yB1 = ySub2 + 12, yB2 = yB1 + L;
   /* The trailing pad is the group boundary, and it has to beat the gaps INSIDE a group or
      three buckets read as one nine-line list. Two leadings of air against the roughly
      half-leading between a bucket's own rows keeps the grouping doing the work. */
@@ -625,12 +713,13 @@ function drawExtMobile() {
   const H = m.t + extRows.length * groupH - 2 * L + m.b;
   const {svg} = chart("ext", {W, H});
   const w = W - m.l - m.r;
-  const maxV = Math.max(...extRows.flatMap(r => [r[2], r[3]])) * 1.05;
+  const maxV = Math.max(...extRows.flatMap(r => [r[3], r[4]])) * 1.05;
   const xs = v => m.l + (v / maxV) * w;
-  extRows.forEach(([label, sub, v19, v22, col], i) => {
+  extRows.forEach(([label, sub, sub2, v19, v22, col], i) => {
     const y0 = m.t + i * groupH;
     txt(svg, label, {x: m.l, y: y0 + yLab, class: "pv-lab"});
     txt(svg, sub, {x: m.l, y: y0 + ySub, class: "pv-labq"});
+    txt(svg, sub2, {x: m.l, y: y0 + ySub2, class: "pv-labq"});
     const ch = v19 ? Math.round((v22 / v19 - 1) * 100) : 0;
     el("rect", {x: m.l, y: y0 + yB1, width: xs(v19) - m.l, height: BAR, fill: col,
       opacity: .38, rx: 2}, svg);
@@ -643,9 +732,9 @@ function drawExtMobile() {
        fill: col === GRAY ? "var(--pv-ink)" : "#fff"});
     hoverable(el("rect", {x: m.l, y: y0, width: w, height: yB2 + BAR + 4,
       fill: "transparent"}, svg),
-      `<b>${label}</b><br>2019 <span class="v">${N(v19)}</span><br>
+      `<b>${label}</b><br>${sub}<br>${sub2}<br>2019 <span class="v">${N(v19)}</span><br>
        2022 <span class="v">${N(v22)}</span> (${ch >= 0 ? "+" : ""}${ch}%)`,
-      `${label}: ${N(v19)} in 2019, ${N(v22)} in 2022`);
+      `${label}: ${N(v19)} in 2019, ${N(v22)} in 2022, ${sub2}`);
   });
   /* THE PHONE DROPPED THE SCALE ALTOGETHER, WHICH TURNS SIX BARS INTO DECORATION.
      With values printed inside each bar and no axis, a reader can compare the 2019 and
@@ -746,13 +835,21 @@ function drawRecipDesktop() {
        sit in the county${tight ? "<br>The two are effectively equal." : ""}`,
       `${r.name}: ${pct(r.work_own)} of jobs held locally, ${pct(r.res_own)} of residents work locally${tight ? ", effectively equal" : ""}`);
   });
-  /* The exception, stated at the top of the figure rather than in the rail, because the
-     rail now carries a value pair for every row and the reader can find Cuyahoga by its
-     printed numbers instead of by a leader line. */
-  const cg = el("g", dimRow("Cuyahoga") ? {opacity: .25} : {}, svg);
-  txt(cg, `Cuyahoga runs the other way: ${Math.round(cuy.work_own * 100)}% of its jobs ` +
-    `are filled locally, while ${Math.round(cuy.res_own * 100)}% of its residents’ jobs ` +
-    "stay local.", {x: m.l, y: 30, class: "pv-lab"});
+  /* THE CALLOUT NAMED ONE COUNTY AND THERE ARE THREE. "Cuyahoga runs the other way" was
+     printed over a chart in which Cuyahoga, Summit and Mahoning all run the other way,
+     and the figure title's "nine of the twelve" implied the other three without ever
+     saying which. A reader who counted found the gap. All three are named now, in order
+     of how wide the gap is, and Mahoning is called what it is: a tie, not a direction.
+     Guarded by ls-cuyahoga-inverts and ls-nine-of-twelve-jobs-more-local. */
+  const cg = el("g", {}, svg);
+  [`${cap(WORDS[inverted.length])} of the twelve run the other way: ` +
+     `${inverted.slice(0, -1).map(r => r.name).join(", ")} and ${inverted.at(-1).name}.`,
+   `${inverted[0].name} is the widest, at ${Math.round(inverted[0].work_own * 100)}% of ` +
+     `its jobs filled locally against ${Math.round(inverted[0].res_own * 100)}% of its ` +
+     `residents’ jobs staying local.`,
+   `${inverted.at(-1).name}, at the other end, is ${gapPtsOf(inverted.at(-1))} points ` +
+     `apart, which is a tie rather than a direction.`]
+    .forEach((s, i) => txt(cg, s, {x: m.l, y: 14 + i * 16, class: "pv-labq"}));
 }
 
 function drawRecipMobile() {
@@ -786,8 +883,11 @@ function drawRecipMobile() {
     "← more leaves the county · more stays →");
 }
 
+/* THE TITLE COUNTED NINE AND LEFT THE OTHER THREE TO THE READER, which is how a callout
+   naming one of them came to read as though it were naming the only one. */
 document.getElementById("recipfigtitle").textContent =
-  `In ${WORDS[nJobsMoreLocal]} of the twelve counties, jobs stay local at a higher rate than residents do`;
+  `In ${WORDS[nJobsMoreLocal]} of the twelve counties jobs stay local at a higher rate ` +
+  `than residents do; ${WORDS[inverted.length]} run the other way`;
 
 /* --------------------------------------------------------- 5. the benchmark */
 
@@ -1073,8 +1173,19 @@ document.getElementById("matrixtable").innerHTML = withNote(tableView("mx",
   ["Works in", "Total jobs", ...ORDER.map(o => o.name), "Outside PIC-12"],
   M.map(r => [r.work_name, N(r.jobs_total),
     ...r.cells.map(c => pct(c.share)), pct(r.outside_share)])),
-  `${D.meta.source}. ${D.meta.row} JT00 is the file’s all-jobs segment; “main” and “aux”
-   are its in-state and cross-state halves. ${D.meta.no_industry}`);
+  /* THE PAGE'S OWN REGISTER WORDS, GLOSSED AT THE FIRST PLACE A READER MEETS THEM.
+     LEHD and WAC were initials with nothing around them to decode from, and "labor
+     shed" is the page's subject and arrived undefined here and defined four sections
+     later. The strings stay unedited in the data files; only the rendered copy is
+     glossed, the same treatment the methods box already gives them. */
+  `${D.meta.source}. LEHD is the Census Bureau’s Longitudinal Employer-Household
+   Dynamics program and LODES is the part of it that pairs the county a job sits in with
+   the county its worker lives in, which is what makes a labor shed, the area a workplace
+   draws its workers from, something you can count. ${D.meta.row} JT00 is the file’s
+   all-jobs segment; “main” and “aux” are its in-state and cross-state halves.
+   ${D.meta.no_industry.replace("the WAC workplace files",
+     "the separate workplace-area files, which record only where a job is done")}
+   Every job count on this chart takes a worker resident in any state.`);
 /* #matrixsrc is written by matrixChrome(), which runs per breakpoint. */
 
 document.getElementById("diagtable").innerHTML = tableView("dg",
@@ -1085,7 +1196,10 @@ document.getElementById("diagtable").innerHTML = tableView("dg",
     pct(1 - r.in_county - r.outside_share), pct(r.outside_share)]));
 document.getElementById("diagsrc").textContent =
   `${CITE} The share is over all the jobs in a county, including the ones held from
-   outside the twelve counties.`;
+   outside the twelve counties and including the ones held by residents of another
+   state. The twelve bars come to ${N(rowsTotal)} jobs on that basis; the regions chart
+   near the end of this page counts Ohio residents only and reaches a different total
+   for the same twelve counties, which the band below explains.`;
 /* "WHAT THIS LICENSES" STOPPED A READER COLD, and the sentence under it carried three
    ideas and a nested quotation. Plain heading, and the claim is broken into the
    sentences it was always three of. */
@@ -1097,11 +1211,26 @@ document.getElementById("diagnote").innerHTML =
    residence on file, not evidence that anyone travelled. And none of it is specific to
    the polymer cluster, because LODES records no industry at this level of detail.`;
 
-document.getElementById("exttable").innerHTML = tableView("ex",
+document.getElementById("exttable").innerHTML = withNote(tableView("ex",
   "Largest external sources of PIC-12 jobs",
   ["Home county", "Type", "2019", "2022", "Change"],
-  E.top.map(r => [r.name, r.kind, N(r.jobs_2019), N(r.jobs_2022),
-    r.jobs_2019 ? ((r.jobs_2022 / r.jobs_2019 - 1) * 100).toFixed(0) + "%" : "n/a"]));
+  E.top.map(r => [placeName(r), r.kind, N(r.jobs_2019), N(r.jobs_2022),
+    r.jobs_2019 ? ((r.jobs_2022 / r.jobs_2019 - 1) * 100).toFixed(0) + "%" : "n/a"])),
+  /* THE GAP IS NAMED HERE BECAUSE IT CANNOT BE CLOSED HERE. A reader who wanted to know
+     where these people live met a five-digit code in the one table about exactly that.
+     No county crosswalk ships with this page, so the honest move is to say what the code
+     is, what the build could and could not name, and how much of the outside total sits
+     behind it. Recorded as a data need in laborshed/README.md. */
+  `${cap(WORDS[unnamed.length])} of these rows carry the county code the federal file uses and
+   no place name: ${N(unnamedJobs)} jobs, ${(unnamedJobs / D.totals.home_outside_pic12
+   * 100).toFixed(0)} percent of the ${N(D.totals.home_outside_pic12)} held from outside
+   the twelve. The build can name a source county only when it is one of the twelve or
+   one of the counties the adjacent and distant lists judge; no county crosswalk ships
+   with this page, so the rest arrive as codes and are printed as codes rather than
+   dressed up as names. ${cap(WORDS[unnamed.length - unnamedOutState.length])} of them begin
+   with the ${OHIO_FIPS} that starts every Ohio county code on this page;
+   ${unnamedOutState.map(r => r.fips).join(" and ")} does not, so it is a county in
+   another state.`);
 /* THE THREE BARS ADD TO 208,338 AND THE BAND BEFORE THIS SECTION SAYS 210,890, so the
    source line carries the number and the band carries the reason. Splitting them that
    way keeps this figure honest under a screenshot without spending the caveat budget
@@ -1129,20 +1258,35 @@ document.getElementById("reciptable").innerHTML = withNote(tableView("rc",
    "In own county", "Anywhere in PIC-12"],
   pairs.map(r => [r.name, N(r.work_jobs), pct(r.work_own), N(r.res_jobs),
     pct(r.res_own), pct(r.res_region)])),
-  `${B.meta.source} ${B.meta.row} ${B.meta.bases} Region-wide,
-   ${pct(B.totals.res_region_share)} of PIC-12 residents’ jobs sit inside PIC-12 and
-   ${pct(B.totals.out_of_state_share)} sit outside Ohio.`);
+  /* "RECIPROCAL" IS THE REGISTER'S WORD FOR TWO DIRECTIONS AND IT IS NOT THE READER'S.
+     The methods box already swapped it out of this same string and this note printed the
+     original, so the one word the page had decided not to use survived in the one place
+     nobody re-read. Same substitution, applied where the string is rendered. */
+  `${B.meta.source} ${B.meta.row}
+   ${B.meta.bases.replace("The reciprocal chart", "The two-direction chart above")}
+   Region-wide, ${pct(B.totals.res_region_share)} of PIC-12 residents’ jobs sit inside
+   PIC-12 and ${pct(B.totals.out_of_state_share)} sit outside Ohio.`);
+/* The three inverted counties are named in the SOURCE line as well as the desktop
+   callout, because the phone layout has no callout and a reader on it would otherwise
+   meet the figure title's "three run the other way" with no way to learn which three. */
 document.getElementById("recipsrc").textContent =
   `${BCITE} The two dots count different people against different totals and are never
    subtracted from one another: a county can fill its jobs with outsiders while its own
-   residents also leave.`;
+   residents also leave. The ${WORDS[inverted.length]} counties running the other way, residents
+   more local than jobs, are ${inverted.slice(0, -1).map(r => r.name).join(", ")} and
+   ${inverted.at(-1).name}, and only ${inverted[0].name}’s gap is wide.`;
 
 document.getElementById("benchtable").innerHTML = withNote(tableView("bm",
   "PIC-12 counties against the peer distribution",
   ["County", "Jobs held by own residents", "Higher than this share of peer counties"],
   bm.pic12_counties.slice().sort((a, b) => a.own_share_work - b.own_share_work)
     .map(r => [r.name, pct(r.own_share_work), pct(r.percentile)])),
-  `${B.meta.source} ${B.meta.bases}`);
+  /* Same substitution as the two-direction table and the methods box: this note prints
+     the same bases string and was the last place "reciprocal" survived on the page. */
+  `${B.meta.source}
+   ${B.meta.bases.replace("The reciprocal chart", "The two-direction chart")}
+   On this basis the twelve counties hold ${N(JOBS_OHIO)} jobs, not the ${N(JOBS_ALL)}
+   the charts above them count.`);
 /* The visible line says what the peer rule MEANS; "containment" and "in-state basis"
    are the register's words, and both still print in full in the methods box. */
 document.getElementById("benchsrc").textContent =
@@ -1160,18 +1304,33 @@ document.getElementById("benchreading").innerHTML =
    any state and this one counts only Ohio residents. Every county here moves the same
    way for the same reason.`;
 
+/* THE COLUMN HEADER NAMES THE BASIS, because this is the table where a reader who
+   suspects two totals for one place goes to check, and it is the one printing the
+   smaller of the two. */
 document.getElementById("regionstable").innerHTML = withNote(tableView("rg",
   "Regions of six or more counties",
-  ["Region", "Counties", "Jobs located here", "Held by residents of the region"],
+  ["Region", "Counties", "Jobs located here, held by residents of its own state",
+   "Held by residents of the region"],
   R.map(r => [r.name, r.counties, N(r.jobs_located), pct(r.region_share_work)])),
   `${B.meta.source} Every qualifying region is shown; none was dropped after the numbers
-   were seen.`);
+   were seen. The job counts here are the in-state ones: PIC-12 reads ${N(JOBS_OHIO)}
+   rather than the ${N(JOBS_ALL)} the earlier charts print for the same twelve counties,
+   the difference being ${N(OUT_OF_STATE)} jobs held by residents of other states.`);
 document.getElementById("regionssrc").textContent =
-  `${BCITE} More counties means more of the work is inside the region for arithmetic
-   reasons alone, so read each bar against its own county count, never as a ranking.`;
+  `${BCITE} Every region counts only the jobs held by residents of its own state, which
+   is what makes the regions comparable and what makes the PIC-12 total here
+   ${N(JOBS_OHIO)} rather than ${N(JOBS_ALL)}. More counties means more of the work is
+   inside the region for arithmetic reasons alone, so read each bar against its own
+   county count, never as a ranking.`;
 document.getElementById("regionsreading").innerHTML =
   `<b>PIC-12 holds ${pct(B.totals.work_region_share)} of its jobs inside its own
-   borders</b>, and among comparable regions only Pittsburgh is higher, at
+   borders</b>, counting the jobs Ohio residents hold, which is the basis every region on
+   this chart is measured on. On that basis the twelve counties hold ${N(JOBS_OHIO)}
+   jobs and ${N(OUTSIDE_OHIO)} of them go to people living outside the twelve,
+   ${importedPctOhio} percent. The band earlier on this page counts a worker resident in
+   any state and reads ${N(JOBS_ALL)} and ${importedPct} percent. Same twelve counties,
+   same ${N(D.totals.home_inside_pic12)} jobs held from inside, two denominators. Among
+   comparable regions only Pittsburgh is higher, at
    ${pct(PGH.region_share_work)} on ${WORDS[PGH.counties]} counties rather than twelve. Read
    against this chart’s own size rule, that makes Pittsburgh the stronger figure and the
    twelve counties the closest thing to it. Either way it is the claim the county-level
@@ -1189,17 +1348,36 @@ document.getElementById("regionsreading").innerHTML =
    computed, not typed, and the twelve rows and the three bars are asserted to be short
    by the same amount. The percent is also stated unrounded, because 12.2 percent of
    1,735,169 is 211,690 and a reader who multiplies forward is owed the missing step. */
+/* THE BAND OWNS THE BASIS TOO, BECAUSE IT OWNS THE LARGER OF THE TWO TOTALS.
+   The 2,552 residual was explained here and a second, twelve times larger gap was not:
+   the regions chart at the end of this page calls the same twelve counties 1,702,542
+   jobs. A reader who noticed the smaller discrepancy being reconciled and the larger one
+   passed over in silence is owed both, in the one place the bigger total is set in
+   display type. Guarded by ls-two-pic12-totals. */
 document.getElementById("pullimport").innerHTML =
   `<b class="pull-n">${pct(D.totals.share_imported)}</b>
-   <span class="pull-t">of the ${N(D.totals.jobs_worked_in_pic12)} jobs inside the
+   <span class="pull-t">of the ${N(JOBS_ALL)} jobs inside the
    twelve counties are held by people who live outside them:
    ${N(D.totals.home_outside_pic12)} jobs in 2022, or ${importedPct} percent before
-   rounding.</span>
-   <span class="pull-note">Both totals count every home-county-to-work-county pair in the
+   rounding. That total counts a job whatever state its worker lives in.</span>
+   <span class="pull-note"><b>Two totals, two bases, both PIC-12.</b> The regions chart
+   near the end of this page counts only the jobs held by Ohio residents, so that PIC-12
+   and every peer region are measured the same way, and the same twelve counties come to
+   ${N(JOBS_OHIO)} jobs there: ${N(OUT_OF_STATE)} fewer, all of them workers living in
+   another state. Neither figure corrects the other. Their outside shares are not
+   complements of each other either, because they share a numerator and not a
+   denominator: ${N(D.totals.home_inside_pic12)} jobs are held from inside the twelve on
+   both bases, which is ${insidePctAll} percent of ${N(JOBS_ALL)} and
+   ${pct(B.totals.work_region_share)} of ${N(JOBS_OHIO)}. The
+   ${N(D.totals.home_outside_pic12)} held from outside is ${N(OUTSIDE_OHIO)} Ohio
+   residents living beyond the twelve, which is ${importedPctOhio} percent on the
+   narrower basis, plus the ${N(OUT_OF_STATE)} that basis leaves out.</span>
+   <span class="pull-note"><b>And a small residual under both.</b> Both totals count
+   every home-county-to-work-county pair in the
    file. The charts are drawn from its largest 4,000 pairs, so adding up the twelve
    county totals, or the three bars in the next chart, lands ${N(TAIL)} jobs short of
    these figures either way: one job in every
-   ${N(Math.round(D.totals.jobs_worked_in_pic12 / TAIL))}, in home counties that send a
+   ${N(Math.round(JOBS_ALL / TAIL))}, in home counties that send a
    handful of people each.</span>`;
 document.getElementById("pullpeers").innerHTML =
   `<b class="pull-n">${(peersBelowCeil * 100).toFixed(1)}%</b>
@@ -1225,8 +1403,9 @@ document.getElementById("closersub").innerHTML =
   `The county figure describes metropolitan America rather than this region:
    ${(peersBelowCeil * 100).toFixed(1)}% of ${bm.n_peer_counties} peer counties also sit
    below ${CEIL_PCT} percent. What survives is the twelve together:
-   <b>${pct(B.totals.work_region_share)}</b> of their jobs are held by people living
-   inside them, a figure only Pittsburgh beats among comparable regions. A wider line
+   <b>${pct(B.totals.work_region_share)}</b> of their ${N(JOBS_OHIO)} jobs are held by
+   people living inside them, counting Ohio residents on both sides as every region on
+   that chart is counted, a figure only Pittsburgh beats among comparable regions. A wider line
    would hold more: the fourteen-county Northeast Ohio footprint adds
    ${WIDER_ADDS.slice(0, -1).join(", ")} and ${WIDER_ADDS.at(-1)}, and all but
    ${ADDS_OUT.join(" and ")} already rank among the ten largest outside sources of these
@@ -1276,7 +1455,25 @@ Object.assign(D.meta, {sources: B.meta.source,
     "The home county on a job record is"),
   no_industry: D.meta.no_industry.replace(
     "the WAC workplace files and cannot be crossed with residence",
-    "the WAC workplace files, which record only where a job is done, so it cannot be " +
-    "crossed with residence")});
-await PV.methodology({page: "laborshed", meta: D.meta});
+    "the WAC files, short for workplace area characteristics, which record only where a " +
+    "job is done, so it cannot be crossed with residence")});
+/* THE LAST "RECIPROCAL" ON THE PAGE LIVED IN THE SHARED SOURCE REGISTRY, which this page
+   does not own and must not edit for everyone. The registry is loaded here instead of
+   left to the methods box to load, and this page's own entry is glossed on the way in:
+   same words as the two-direction chart is called everywhere else, one page deep, with
+   the registry file itself untouched. If the fetch fails the box loads it as before. */
+let REGISTRY = null;
+try {
+  REGISTRY = await PV.data("SOURCES.json");
+  const e = REGISTRY && REGISTRY.sources && REGISTRY.sources.lodes
+    && REGISTRY.sources.lodes.filters;
+  if (e && typeof e.geography === "string")
+    e.geography = e.geography
+      .replace("for the reciprocal", "for the two-direction chart")
+      .replace("work end", "workplace end");
+} catch (err) { REGISTRY = null; }
+/* The call keeps its literal-object shape: verify_consistency.py matches
+   PV.methodology({...}) and an Object.assign wrapper made this page read as publishing no
+   provenance at all. A null registry is the same as passing none; the box loads its own. */
+await PV.methodology({page: "laborshed", meta: D.meta, registry: REGISTRY});
 })();

@@ -40,6 +40,14 @@ at render time from the two shipped files, or guarded in claims.json.
   denominator; the 397-county benchmark is in-state-only on both sides so peers are
   measured identically (Summit 48.9% there vs 48.4% fully counted; Ashtabula 72.7% vs
   68.5%). The reading line under the benchmark explains the Ashtabula case.
+- **Two totals for the twelve counties, and both are right.** 1,735,169 jobs on the
+  all-residents basis (a worker resident in ANY state), 1,702,542 on the in-state basis
+  the regions and benchmark charts use, 32,627 apart. The two outside shares that follow
+  from them, 12.2% and 10.5%, are NOT complements of each other: 1,524,279 jobs are held
+  from inside the twelve on both bases and only the denominator changes. Name the basis
+  wherever either total or either share is printed; claim `ls-two-pic12-totals` asserts
+  the identity that ties them, not the two numbers on their own. This is the same split
+  that produced the Ashtabula 68.5/72.7 confusion one round earlier.
 - **One accent, one job.** Orange means "under half" everywhere it appears. Plum is
   the distant-metro series, dark slate the residents-side rings, dark teal the matched
   peer (Pittsburgh). The dumbbell's two series are told apart by SHAPE first (filled
@@ -64,6 +72,31 @@ at render time from the two shipped files, or guarded in claims.json.
 - The vignette ("a quality engineer whose paycheck says Barberton and whose mortgage
   says Columbus") is **illustrative** — a composite consistent with the data, not a
   person in it. The counts beside it (26,960 / 23,506) are real and claim-guarded.
+
+## Open data need: no county-name crosswalk ships with this build
+
+`derive_laborshed.py` names an external source county only when it is one of the twelve
+(`footprints.PIC12`) or one of the counties in its own hand-written `ADJACENT` /
+`DISTANT` judgment lists. Every other source falls through to
+`{"name": k}` where `k` is the five-digit FIPS code, so **twelve rows of
+`external.top`, 31,433 jobs and 15% of the imported workforce, carry a code and no
+place name** — in the one table on the page whose subject is where these people live.
+Eleven of the twelve begin with Ohio's `39`; `42085` does not.
+
+Nothing shipped in this repository can resolve them: there is no county crosswalk in
+`_data/`, in any page's `data/`, or in `footprints.py`, and the raw LODES pull is
+gitignored (`_data/build/*.json`). So the page **states the gap** rather than printing
+a code a reader cannot use: those cells read `Unnamed county 39089`, the figure
+subtitle and the "Everywhere else" bucket label both say so, and the table note gives
+the count, the job total and the one non-Ohio code. Guarded by `ls-unnamed-origins`.
+
+**To close it**, add a national county FIPS-to-name table to the build and have
+`derive_laborshed.py` fall back to it instead of to the code. `fetch_lodes.py` currently
+pulls only `oh_od_main` and `oh_od_aux`; LEHD publishes a per-state geography crosswalk
+alongside them, and the Census gazetteer is the other option. Verify whichever is chosen
+covers non-Ohio origins before wiring it in, since `42085` is the case that matters.
+Then `external.top[].name` is always a place name, and `ls-unnamed-origins` should be
+replaced by a claim asserting that every source is named.
 
 ## Reporting that would upgrade the vignette (drafted ask, not yet done)
 
@@ -114,3 +147,40 @@ includes. Recomputed from `external.top`: the two largest outside sources are Fr
 not appear among the 27 ranked external sources at all. What the data supports is that
 three of the four NEO-14 additions (Tuscarawas 3rd, Richland 9th, Huron 10th) rank in
 the top ten. Now claim `ls-wider-footprint-adds`.
+
+2026-08-29 — reader-review fixes, four findings, three of them ours.
+
+**Two totals for one place, neither naming its basis.** The pull band printed 12.2% of
+1,735,169 and the regions table five screens later summed to 1,702,542 at 89.5% inside,
+and nothing on the page said which basis either was on. Both are correct: the first
+counts a worker resident in any state, the second counts Ohio residents only so that
+PIC-12 and its peer regions are measured identically. They are 32,627 apart. The basis
+is now named at the pull band, the diagonal source line, the regions figure subtitle,
+source line, reading line, table header and note, the benchmark table note and the
+closer, and the band prints the reconciliation: 1,524,279 jobs are held from inside the
+twelve on BOTH bases, so 12.2% and 10.5% are two shares of two denominators and not
+complements. Claim `ls-two-pic12-totals` asserts that identity. The reader who found it
+also computed ~178,800 from 10.5% of 1,702,542 and was right to; what they could not
+know is that it excludes out-of-state workers by construction.
+
+**The bucket label was ours, from the last round.** Naming each bucket's four largest
+members answered one reader and misled the next: "Adjacent counties · Columbiana,
+Tuscarawas, Ashland, Carroll · 57,302" over four counties that come to 36,913. The
+names stay; a second sub-line now prints `four of 8 listed · 36,913 of 57,302` on each
+bucket. The reader's addition was exact.
+
+**Twelve origins with no place name.** See the data-need section above. Not resolvable
+from anything shipped, so the page says so instead of printing a bare code.
+
+**Three counties run the other way, not one.** Cuyahoga, Summit and Mahoning all have a
+higher resident-side share than jobs-side share; the callout named Cuyahoga and the
+figure title's "nine of the twelve" left the rest to be inferred. All three are named
+now, in the callout, in the figure title's count, in the source line the phone layout
+gets, and in the chart's alt text, with Mahoning's tenth of a point called a tie.
+
+**Register words glossed at first contact.** LEHD is expanded and "labor shed" defined
+in the first figure's source line, directly under the opening chart, rather than four
+sections down. "Reciprocal" is gone from the rendered page: the shared source registry
+`_data/SOURCES.json` held the last one and is not this page's to edit, so `app.js` loads
+it and glosses its own entry on the way into the methods box. WAC is expanded where it
+appears.

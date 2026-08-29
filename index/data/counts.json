@@ -1,6 +1,6 @@
 {
  "n_pieces": 15,
- "total_claims": 387,
+ "total_claims": 389,
  "total_manual": 15,
  "pages": {
   "accountability": {
@@ -28,7 +28,7 @@
    "manual": 3
   },
   "laborshed": {
-   "claims": 28,
+   "claims": 30,
    "manual": 1
   },
   "location-quotient": {
