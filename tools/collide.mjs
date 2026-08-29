@@ -101,6 +101,34 @@ for (const n of list) {
         if (bb.bottom > vb.bottom + 4 || bb.top < vb.top - 4)
           out.outside.push(`svg${si}: ${el.tagName} outside the box vertically`);
       });
+      /* HORIZONTALLY, THE TEST IS THE PAGE COLUMN, NOT THE SVG BOX. The header above has
+         always claimed to catch ink outside the viewBox; it only ever looked up and down,
+         and two agents found the same escape independently on 2026-08-28 (a right-anchored
+         award name starting at x=-19.5, an annotation ending 30 units past a 1100-unit
+         box). Measuring against the SVG flags 30 combinations, but 24 of them are the
+         ordinary idiom of a last tick label centred on the end of its axis, which
+         overhangs by half its width into a 32px gutter and harms nothing. Ink outside the
+         WRAP is the real defect: that is past the page column, into the margin, and it is
+         what the header meant. */
+      /* ...EXCEPT where the chart deliberately pans. Between 761 and 1099 the shared
+         sheet gives charts a 980px minimum inside an overflow-x:auto container, so ink
+         beyond the column is the pan idiom working as designed, not a spill. Testing
+         against the wrap without this exemption flagged six pages in that band on its
+         first run. A scrollable container is the signal. */
+      const box = svg.closest(".chart");
+      const pans = box && box.scrollWidth > box.clientWidth + 1;
+      const wrap = pans ? null : svg.closest(".wrap");
+      if (wrap) {
+        const wb = wrap.getBoundingClientRect();
+        [...svg.querySelectorAll("text,rect,circle")].forEach(el => {
+          const bb = el.getBoundingClientRect();
+          if (!bb.width && !bb.height) return;
+          const over = Math.max(bb.right - wb.right, wb.left - bb.left);
+          if (over > 1) out.outside.push(
+            `svg${si}: <${el.tagName}> "${(el.textContent || "").trim().slice(0, 24)}" ` +
+            `${Math.round(over)}px past the page column`);
+        });
+      }
     });
     const uniq = a => [...new Set(a)];
     return {textOverText: uniq(out.textOverText), pastAxis: uniq(out.pastAxis),
@@ -110,13 +138,13 @@ for (const n of list) {
   if (r.pastAxis.length) issues.push(`${r.pastAxis.length} past-axis`);
   if (r.textOverText.length) issues.push(`${r.textOverText.length} text-collisions`);
   if (r.outside.length) issues.push(`${r.outside.length} outside-box`);
-  if (issues.length) found.push({W, issues,
-    detail: [...r.pastAxis.slice(0, 2), ...r.textOverText.slice(0, 3),
-             ...r.outside.slice(0, 2)]});
+  if (issues.length) {
+    const all = [...r.pastAxis, ...r.textOverText, ...r.outside];
+    found.push({W, issues, detail: all.slice(0, 12), elided: Math.max(0, all.length - 12)});
+  }
   if (!sweep) {
     console.log(`${n.padEnd(18)} ${issues.length ? "FAIL  " + issues.join(", ") : "OK"}`);
-    [...r.pastAxis.slice(0, 2), ...r.textOverText.slice(0, 3), ...r.outside.slice(0, 2)]
-      .forEach(m => console.log("      " + m));
+    [...r.pastAxis, ...r.textOverText, ...r.outside].forEach(m => console.log("      " + m));
   }
   await p.close();
  }
@@ -126,8 +154,16 @@ for (const n of list) {
      ? `FAIL  ${found.length}/${WIDTHS.length} widths: ` +
        found.map(f => f.W).join(", ")
      : `OK    clean at all ${WIDTHS.length} widths`}`);
-   found.slice(0, 3).forEach(f =>
-     f.detail.slice(0, 2).forEach(m => console.log(`      @${f.W} ${m}`)));
+   /* Every finding at the narrowest failing width, in full. Printing three per width
+      handed one agent 4 of this page's 12 collisions, because the first chart's filled
+      the quota before the second was reached, and a list that silently truncates is a
+      list that gets half-fixed. Remaining widths are summarised by count. */
+   const worst = found[0];
+   if (worst) {
+     worst.detail.forEach(m => console.log(`      @${worst.W} ${m}`));
+     if (worst.elided) console.log(`      @${worst.W} ...and ${worst.elided} more`);
+     found.slice(1).forEach(f => console.log(`      @${f.W} ${f.issues.join(", ")}`));
+   }
  }
 }
 await b.close();

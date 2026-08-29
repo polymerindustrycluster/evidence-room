@@ -33,6 +33,22 @@ const {el, txt, ticks, frame, hoverable, tableView, chart, figures, INK, GRAY, C
 const D = await PV.data("accountability.json");
 const MOBILE = matchMedia("(max-width: 760px)");
 
+/* LEADING IS THE PHONE CANVASES' ENTIRE COLLISION BUDGET, and all three of them had it
+   set too small. Every text-over-text pair the width sweep found on this page was a label
+   printing on the line beneath it: two runs of text both anchored at m.l, so they overlap
+   horizontally whatever either string says, and only the distance between their baselines
+   decides whether they clear. Nothing here is a string-length problem, so nothing here is
+   fixed by measuring strings.
+   Measured rather than guessed: at the narrowest column this page ever gives a 375-unit
+   canvas (320px at a 360px viewport, scale 0.853) a 14.2-unit .pv-lab paints a box 18.8
+   units tall and a 13.6-unit .pv-labq 18.7, so the 14, 15 and 16 authored across these
+   three charts left two to five units of overlap on every stacked pair, at every width
+   from 360 to 760. 22 clears the tallest measured box with three units to spare.
+   The desktop rows' 18 could not simply be borrowed: it clears by one unit at the scale
+   THEY render at and by nothing at this one, which is exactly why a leading that reads
+   fine in source has to be checked against rendered boxes. */
+const MOBLEAD = 22;
+
 const usd = v => "$" + Math.round(v).toLocaleString("en-US");
 /* Round at the unit, not after dividing: (2650000 / 1e6).toFixed(1) prints "$2.6M"
    because 2.65 has no exact binary form. The house published an award a hundred thousand
@@ -166,6 +182,13 @@ function attribMobile() {
      among seven, for innovation governance") is 81 characters and does not fit a 375-unit
      canvas on one line; the last bar's own label already says the Chamber is the recipient,
      so dropping it here loses no reading. Nothing is machine-truncated. */
+
+  /* Every pair the sweep flagged on this chart was a stage's label over its own value,
+     14 units apart. See MOBLEAD. */
+  const LAB = 14;               // label baseline, from the row top
+  const VAL = LAB + MOBLEAD;    // its value, one line below
+  const BARTOP = VAL + 8;       // bar top, below the value's descenders
+
   const m = {t: 66, r: 12, b: 22, l: 12}, rowH = 84, W = 375;
   const H = m.t + STG.length * rowH + 40 + 82 + m.b;
   const {svg, w} = chart("attrib", {W, H, m});
@@ -173,15 +196,15 @@ function attribMobile() {
   const geo = {xs, rowH, m};
   const mechM = A.mechanism.split(". ");
   txt(svg, mechM[0] + ".", {x: m.l, y: 20, class: "pv-lab"});
-  txt(svg, mechM[2], {x: m.l, y: 40, class: "pv-labq"});
+  txt(svg, mechM[2], {x: m.l, y: 20 + MOBLEAD, class: "pv-labq"});
   STG.forEach((_, i) => {
-    const {s, prev, y, barY, bh} = attribRow(svg, i, geo, {barTop: 34, bh: 16});
-    txt(svg, s.label, {x: m.l, y: y + 14, class: "pv-lab"});
+    const {s, prev, y, barY} = attribRow(svg, i, geo, {barTop: BARTOP, bh: 16});
+    txt(svg, s.label, {x: m.l, y: y + LAB, class: "pv-lab"});
     txt(svg, usd(s.amount) + (prev ? `, down ${short(prev.amount - s.amount)}` : ""),
-      {x: m.l, y: y + 28, class: "pv-labq"});
+      {x: m.l, y: y + VAL, class: "pv-labq"});
     if (i === 3)
       txt(svg, `${pct1(A.share_of_awarded * 100)} of the awards`,
-        {x: m.l, y: barY + 32, class: "pv-labq", fill: "#8C4325"});
+        {x: m.l, y: barY + 36, class: "pv-labq", fill: "#8C4325"});
     hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, svg),
       `<b>${esc(s.label)}</b><br><span class="v">${usd(s.amount)}</span>`,
       `${s.label}: ${usd(s.amount)}`);
@@ -191,8 +214,8 @@ function attribMobile() {
     stroke: "var(--pv-axis)", "stroke-width": 1, "stroke-dasharray": "3 4"}, svg);
   txt(svg, A.match.label, {x: m.l, y: my + 12, class: "pv-lab"});
   txt(svg, usd(A.match.amount) + ", not part of the total above",
-    {x: m.l, y: my + 26, class: "pv-labq"});
-  el("rect", {x: m.l, y: my + 34, width: xs(A.match.amount) - m.l, height: 16,
+    {x: m.l, y: my + 12 + MOBLEAD, class: "pv-labq"});
+  el("rect", {x: m.l, y: my + 12 + MOBLEAD + 8, width: xs(A.match.amount) - m.l, height: 16,
     fill: "none", stroke: GRAY, "stroke-width": 1.5, "stroke-dasharray": "5 4", rx: 3},
     svg);
 }
@@ -281,41 +304,63 @@ function stageDesktop() {
 }
 
 function stageMobile() {
-  const m = {t: 22, r: 12, b: 20, l: 12}, rowH = 142, W = 375;
-  const H = m.t + 3 * rowH + m.b;
-  const {svg, w} = chart("stage", {W, H, m});
+  /* Baselines step by MOBLEAD throughout — label, value, and the annotation stack under
+     the middle stage. It was authored at 15 between a label and its value and 16 between
+     the two gap lines, and all five pairs printed on each other.
+     THE THREE STAGES FLOW; THEY DO NOT SIT ON A UNIFORM ROW PITCH. A fixed rowH has to be
+     tall enough for the middle stage, which carries a four-line annotation stack the other
+     two do not, so it buys that clearance by stranding the first stage above 75 units of
+     nothing — and once the leading grew, the pitch that fit at 15 no longer fit at 22 and
+     the last gap line ran into the third stage's label. A cursor advanced past each
+     stage's own last ink gives every stage the same measured air, BLOCK, and makes the
+     canvas as tall as its content instead of three times its worst row. */
+  const m = {t: 22, r: 12, b: 20, l: 12}, W = 375;
+  const LAB = 13;      // first label baseline, below the top margin
+  const BAR = MOBLEAD + 8, BARH = 18;   // bar top below the label baseline, and its height
+  const BLOCK = 46;    // white between one stage's last ink and the next stage's label
+  /* A nominal height to open the canvas with; the last line of this function sets the
+     real one from where the cursor actually finished. Nothing here measures text, so the
+     interim value only has to exist. */
+  const {svg, w} = chart("stage", {W, H: 400, m});
   hatch(svg, "agghatch");
   const xs = v => m.l + (v / S.awarded) * w;
-  let y = m.t;
-  txt(svg, "Awarded", {x: m.l, y: y + 13, class: "pv-lab"});
-  txt(svg, usd(S.awarded), {x: m.l, y: y + 28, class: "pv-labq"});
-  el("rect", {x: m.l, y: y + 36, width: w, height: 18, fill: INK, rx: 3}, svg);
 
-  y = m.t + rowH;
-  txt(svg, "On a line naming a recipient", {x: m.l, y: y + 13, class: "pv-lab"});
-  txt(svg, `${usd(S.assigned)}, ${pct1(S.share_assigned)}`, {x: m.l, y: y + 28,
+  let b = m.t + LAB;                       // baseline of the stage label being drawn
+  txt(svg, "Awarded", {x: m.l, y: b, class: "pv-lab"});
+  txt(svg, usd(S.awarded), {x: m.l, y: b + MOBLEAD, class: "pv-labq"});
+  el("rect", {x: m.l, y: b + BAR, width: w, height: BARH, fill: INK, rx: 3}, svg);
+
+  b += BAR + BARH + BLOCK;
+  txt(svg, "On a line naming a recipient", {x: m.l, y: b, class: "pv-lab"});
+  txt(svg, `${usd(S.assigned)}, ${pct1(S.share_assigned)}`, {x: m.l, y: b + MOBLEAD,
     class: "pv-labq"});
-  el("rect", {x: m.l, y: y + 36, width: xs(S.assigned) - m.l, height: 18, fill: INK,
+  const barY = b + BAR;
+  el("rect", {x: m.l, y: barY, width: xs(S.assigned) - m.l, height: BARH, fill: INK,
     rx: 3}, svg);
   const aggW = (AGG.total / S.awarded) * w;
-  el("rect", {x: m.l, y: y + 36, width: aggW, height: 18,
+  el("rect", {x: m.l, y: barY, width: aggW, height: BARH,
     fill: "url(#agghatch)", rx: 3}, svg);
+  const note = barY + BARH + 20;   // first annotation, clear of the bar's underside
   txt(svg, `hatched: ${pct1(AGG.share_of_assigned)} names a building and a programme`,
-    {x: m.l, y: y + 70, class: "pv-labq"});
+    {x: m.l, y: note, class: "pv-labq"});
   /* The two named gaps belong on the chart at every width, not only on the desktop one.
      One per line on a 375-unit canvas: both on one line renders 403 units wide and puts
      the whole page into horizontal scroll. */
-  txt(svg, "dashed, both inside the state grant:", {x: m.l, y: y + 88, class: "pv-labq"});
+  txt(svg, "dashed, both inside the state grant:",
+    {x: m.l, y: note + MOBLEAD, class: "pv-labq"});
   S.gaps.forEach((g, i) =>
     txt(svg, `${g.name} ${short(g.gap)}`,
-      {x: m.l + 10, y: y + 104 + i * 16, class: "pv-labq"}));
+      {x: m.l + 10, y: note + MOBLEAD * (2 + i), class: "pv-labq"}));
 
-  y = m.t + 2 * rowH;
-  txt(svg, "Paid out to recipients", {x: m.l, y: y + 13, class: "pv-lab"});
-  txt(svg, "the stage this page cannot show", {x: m.l, y: y + 28, class: "pv-labq"});
-  el("rect", {x: m.l, y: y + 36, width: w, height: 22, fill: "none", stroke: "#9A9284",
+  b = note + MOBLEAD * (1 + S.gaps.length) + BLOCK;
+  txt(svg, "Paid out to recipients", {x: m.l, y: b, class: "pv-lab"});
+  txt(svg, "the stage this page cannot show", {x: m.l, y: b + MOBLEAD, class: "pv-labq"});
+  const outY = b + BAR;
+  el("rect", {x: m.l, y: outY, width: w, height: 22, fill: "none", stroke: "#9A9284",
     "stroke-width": 2, "stroke-dasharray": "7 5", rx: 3}, svg);
-  txt(svg, S.disbursed_label, {x: m.l + 10, y: y + 51, class: "pv-labq", fill: "#6C6455"});
+  txt(svg, S.disbursed_label, {x: m.l + 10, y: outY + 15, class: "pv-labq",
+    fill: "#6C6455"});
+  svg.setAttribute("viewBox", `0 0 ${W} ${outY + 22 + m.b}`);
 }
 
 (MOBILE.matches ? stageMobile : stageDesktop)();
@@ -461,6 +506,7 @@ function mark(g, cx, cy, st, r) {
 
 function swimlane(W, mob) {
   const m = mob ? {t: 46, r: 14, b: 54, l: 14} : {t: 62, r: 40, b: 66, l: 40};
+  const LEAD = mob ? MOBLEAD : 20;
   const H = mob ? 286 : 348;
   const {svg, w, h} = chart("swim", {W, H, m});
   const xs = d => m.l + ((days(d) - T0) / (T1 - T0 || 1)) * w;
@@ -476,17 +522,42 @@ function swimlane(W, mob) {
   yearStarts.forEach(iso => {
     el("line", {x1: xs(iso), y1: m.t, x2: xs(iso), y2: m.t + h, stroke: "var(--pv-grid)",
       "stroke-width": 1}, svg);
-    txt(svg, iso.slice(0, 4), {x: xs(iso), y: m.t + h + 20, "text-anchor": "middle",
-      class: "pv-tick"});
   });
-  const first = P.rows[0].current_date.split("-");
-  txt(svg, `${MONTH[+first[1] - 1].slice(0, 3)} ${first[0]}`,
-    {x: m.l, y: m.t + h + 20, class: "pv-tick"});
 
+  /* THE ORIGIN LABEL AND THE YEAR TICKS SHARE ONE BASELINE, and on the narrow canvas the
+     first year cannot clear the origin: the register opens 15 August 2026 and 2027 begins
+     139 days later, 11.6 percent into a 1,203-day window, which puts "2027" 40 units from
+     the start of "Aug 2026" on a 347-unit axis. Whether they clear is a question about
+     rendered string lengths against an x that comes from the DATA, so it is measured, not
+     guessed at a breakpoint: the origin's own rendered width is compared with each year's,
+     and a year that will not clear drops to a second row DIRECTLY UNDER ITS OWN GRIDLINE,
+     where it still labels the thing it labels. Nothing is dropped and nothing moves away
+     from its mark. On the 1,020-unit desktop axis the same comparison passes at every
+     width and all four labels stay on one row, so the canvas keeps its authored height. */
+  const tickY = m.t + h + 20;
+  const first = P.rows[0].current_date.split("-");
+  const org = txt(svg, `${MONTH[+first[1] - 1].slice(0, 3)} ${first[0]}`,
+    {x: m.l, y: tickY, class: "pv-tick"});
+  const orgRight = m.l + org.getComputedTextLength();
+  let staggered = false;
+  yearStarts.forEach(iso => {
+    const t = txt(svg, iso.slice(0, 4), {x: xs(iso), y: tickY, "text-anchor": "middle",
+      class: "pv-tick"});
+    if (xs(iso) - t.getComputedTextLength() / 2 < orgRight + 8) {
+      t.setAttribute("y", tickY + LEAD);
+      staggered = true;
+    }
+  });
+  /* The second row is only paid for when it is used, and it is the viewBox that grows:
+     h, the axis and every mark are already placed off the authored height. */
+  const drop = staggered ? LEAD : 0;
+  if (drop) svg.setAttribute("viewBox", `0 0 ${W} ${H + drop}`);
+
+  const noteY = m.t - (mob ? 6 : 10);
   txt(svg, `PIC-owned ↑ ${P.by_owner.pic} commitments`,
-    {x: m.l, y: m.t - (mob ? 20 : 30), class: "pv-lab"});
+    {x: m.l, y: noteY - LEAD, class: "pv-lab"});
   txt(svg, `Partner-owned ↓ ${P.by_owner.partner} commitments`,
-    {x: m.l, y: m.t + h + (mob ? 40 : 46), class: "pv-lab"});
+    {x: m.l, y: m.t + h + (mob ? 40 : 46) + drop, class: "pv-lab"});
 
   /* Marks last, after every rule, so nothing is drawn over them. Rows sharing a date are
      stacked away from the axis rather than overplotted; six commitments share
@@ -509,7 +580,7 @@ function swimlane(W, mob) {
      horizontal scroll. */
   txt(svg, mob ? `None of the ${P.rows.length} has resolved yet.`
                 : `Every mark is a hollow scheduled ring. None has resolved yet.`,
-    {x: m.l, y: m.t - (mob ? 6 : 10), class: "pv-labq"});
+    {x: m.l, y: noteY, class: "pv-labq"});
 }
 
 swimlane(MOBILE.matches ? 375 : 1100, MOBILE.matches);

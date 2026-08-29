@@ -339,34 +339,91 @@ function deliveryDesktop() {
   });
 }
 
+/* THE PHONE ROW IS SPACED FROM THE MEASURED LINE BOX, NOT FROM A GUESSED LEADING.
+   Every row here printed its own award name on top of its own dollar figure at all seven
+   sweep widths below 761px. The two baselines sat 15 units apart while the shared sheet
+   raises .pv-lab to 16 units below 760px, and a 16-unit face occupies about 18.8 units
+   from ascender to descender, so the pair could not clear by construction. The overlap
+   measured 3.2 rendered px at 360 and 5.6 at 700 (this chart keeps a fixed 375-unit
+   viewBox, so the scale runs 0.85 to 1.76 across the band and the same 3.7 units of
+   overlap arrive as different pixel counts). It was invisible at 1440 because the desktop
+   draw is a different function, with a 14.2-unit face on 17 units of lead, which clears.
+   Pre-existing; found by collide.mjs --sweep on 2026-08-28.
+
+   Nothing below is a constant. The two faces are measured, the name and its amount share
+   a line when the two rendered strings fit the column and stack when they do not, the bar
+   and the status line hang off those measurements, and the row height falls out of the
+   arithmetic rather than being asserted ahead of it. A breakpoint here would be a guess
+   about strings nobody had measured. */
 function deliveryMobile() {
-  const m = {t: 70, r: 12, b: 34, l: 12}, rowH = 80;
-  const W = 375, H = m.t + DEL.sources.length * rowH + m.b;
-  const {svg, w} = chart("delivery", {W, H, m});
+  const m = {t: 70, r: 12, b: 34, l: 12};
+  const W = 375, w = W - m.l - m.r;
+  const {svg} = chart("delivery", {W, H: 400, m});    // provisional; height known below
   hatch(svg, "schatch");
   const xs = v => m.l + (v / maxAward) * w;
 
-  DEL.sources.forEach((s, i) => {
+  /* Ascent and descent of the live faces. getBBox reports user units, and the viewBox is
+     in those same units, so every gap below is in one currency. */
+  const face = cls => {
+    const n = txt(svg, "Hg$0", {x: 0, y: 0, class: cls});
+    const b = n.getBBox();
+    svg.removeChild(n);
+    return {up: -b.y, down: b.y + b.height};
+  };
+  const measure = (s, cls) => {
+    const n = txt(svg, s, {x: 0, y: -999, class: cls});
+    const v = n.getComputedTextLength();
+    svg.removeChild(n);
+    return v;
+  };
+  const LAB = face("pv-lab"), Q = face("pv-labq");
+  const GAP = 10;                          // between a name and its amount on one line
+  const LEAD = LAB.down + Q.up + 2;        // baseline to baseline when the pair stacks
+  const barH = 18, air = 8;                // the bar, and the air above and below it
+
+  const rows = DEL.sources.map(s => {
+    const amt = `${short(s.award)} awarded`;
+    return {s, amt, nw: measure(s.short, "pv-lab"), aw: measure(amt, "pv-labq")};
+  });
+  /* One template for all three rows, so the rows stay aligned: if any name and amount
+     cannot share a line, every pair stacks. Today all three fit; the widest, "Good Jobs
+     Challenge (APEX)" with its amount, uses 340 of the 351 units available. */
+  const stack = rows.some(r => r.nw + GAP + r.aw > w);
+
+  const nameY = LAB.up + 2;                          // all four offsets are row-relative
+  const amtY = stack ? nameY + LEAD : nameY;
+  const barY = amtY + Q.down + air;
+  const statY = barY + barH + air + Q.up;
+  /* The gap between rows is twice the gap inside one, so a status line reads as belonging
+     to the bar above it rather than to the name below it. */
+  const rowH = Math.ceil(statY + Q.down + 2 * air);
+  const H = m.t + rows.length * rowH + m.b;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+
+  rows.forEach(({s, amt, nw}, i) => {
     const y = m.t + i * rowH;
-    el("rect", {x: m.l, y: y + 36, width: Math.max(3, xs(s.assigned) - m.l), height: 18,
-      fill: INK, rx: 3}, svg);
+    el("rect", {x: m.l, y: y + barY, width: Math.max(3, xs(s.assigned) - m.l),
+      height: barH, fill: INK, rx: 3}, svg);
     if (s.unassigned > 0)
-      el("rect", {x: xs(s.assigned), y: y + 36, width: xs(s.award) - xs(s.assigned),
-        height: 18, fill: "url(#schatch)", stroke: "#9A9284", "stroke-width": 1,
+      el("rect", {x: xs(s.assigned), y: y + barY, width: xs(s.award) - xs(s.assigned),
+        height: barH, fill: "url(#schatch)", stroke: "#9A9284", "stroke-width": 1,
         "stroke-dasharray": "4 3", rx: 3}, svg);
-    txt(svg, s.short, {x: m.l, y: y + 15, class: "pv-lab"});
-    txt(svg, `${short(s.award)} awarded`, {x: m.l, y: y + 30, class: "pv-labq"});
+    txt(svg, s.short, {x: m.l, y: y + nameY, class: "pv-lab"});
+    txt(svg, amt, {x: stack ? m.l : m.l + nw + GAP, y: y + amtY, class: "pv-labq"});
     txt(svg, s.unassigned ? `${short(s.assigned)} named, ${short(s.unassigned)} not yet`
                           : "fully assigned to named recipients",
-      {x: m.l, y: y + 70, class: "pv-labq"});
+      {x: m.l, y: y + statY, class: "pv-labq"});
     hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, svg),
       `<b>${s.name}</b><br><span class="v">${usd(s.award)}</span> awarded<br>
        ${usd(s.assigned)} with a named recipient`,
       `${s.name}: ${usd(s.award)} awarded, ${usd(s.assigned)} with a named recipient`);
   });
-  txt(svg, "Solid is money with a named recipient.", {x: m.l, y: 24, class: "pv-lab"});
+  /* The reading pair above the rows takes the same measured leading. It sat on 20 units,
+     which cleared by 1.1px at 360 and would have been the next row of this same defect. */
+  txt(svg, "Solid is money with a named recipient.",
+    {x: m.l, y: LAB.up + 4, class: "pv-lab"});
   txt(svg, `Hatched is the ${short(DEL.unassigned)} without one.`,
-    {x: m.l, y: 44, class: "pv-labq"});
+    {x: m.l, y: LAB.up + 4 + LEAD, class: "pv-labq"});
 }
 
 (MOBILE.matches ? deliveryMobile : deliveryDesktop)();
