@@ -225,6 +225,37 @@ const plated = (svg, s, a, fs = 7.4) => {
               fill: "var(--paper)", opacity: .93, rx: 2}, svg);
   return txt(svg, s, Object.assign({"data-pv-plated": "1"}, a));
 };
+
+/* THE PHONE CANVASES ARE SPACED FROM THE MEASURED LINE BOX, NOT FROM A GUESSED LEADING.
+   All nine text-over-text pairs the width sweep found on this page were one defect said
+   nine times: a label and the line under it, both anchored at the same x, separated by a
+   leading constant chosen against the DESKTOP face. Below 760px the shared sheet raises
+   .pv-lab to 16px and .pv-labq / .pv-tick to 15.5px, and a face that size occupies a
+   measured 18.75 units from ascender to descender. The three mobile draws were carrying
+   16, 16 and 13 units of lead, so every stacked pair overlapped by 2.75 to 5.75 units by
+   construction, at every width in the band.
+
+   It looked like a narrow-screen bug and is not. These canvases keep a fixed 375-unit
+   viewBox against a column of viewport minus 40, so the scale runs 0.85 at 360 up to 1.92
+   at 760, and the same overlap in user units arrives as a different pixel count at each
+   width: under the gate's 3px floor below about 415px, over it above. Nothing about the
+   overlap changed across the band; only whether the gate could see it.
+
+   So nothing below is a constant. face() reports the ascent and descent of a live face in
+   the viewBox's own units, and every stacked baseline, row height and canvas height is
+   derived from it. A breakpoint here would be a guess about a box nobody had measured.
+   Pre-existing; found by collide.mjs --sweep on 2026-08-28. */
+/* On the baseline, not parked off-canvas: getBBox reports the box in the viewBox's own
+   coordinates, so a probe drawn at y = -999 returns an ascent of 1014. */
+const face = (svg, cls) => {
+  const n = txt(svg, "Hg$0", {x: 0, y: 0, class: cls});
+  const b = n.getBBox();
+  svg.removeChild(n);
+  return {up: -b.y, down: b.y + b.height};
+};
+/* Baseline to baseline for a pair of lines that stack, plus a little air. */
+const lead = (upper, lower, air = 3) => upper.down + lower.up + air;
+
 const dimStage = stage => SEL && stage !== SEL;
 
 /* ==================================================== 0. THE COLD OPEN, IN THE HERO
@@ -480,9 +511,24 @@ function drawLadderMobile() {
      — "Products, from their makers" collided with "0% back · now +40%". They are now
      stacked, which also buys the room to say what each number answers instead of hanging
      two unlike figures off the same bar. */
-  const W = 375, m = {t: 68, r: 12, b: 44, l: 12}, rowH = 58, bh = 14;
+  const W = 375, m = {t: 68, r: 12, l: 12}, bh = 14;
+  /* Provisional height: the real one is not known until the faces have been measured. */
+  const {svg} = PV.chart("ladder", {W, H: 400});
+  const LAB = face(svg, "pv-lab"), Q = face(svg, "pv-labq"), T = face(svg, "pv-tick");
+  /* Four row-relative offsets, each hanging off the one above it: the name, its reading,
+     the bar, and the height that falls out of them. The name and the reading were 16
+     units apart and their boxes are 18.75 tall, which is the whole defect. */
+  const nameY = LAB.up;                      // the name's baseline, row-relative
+  const subY = nameY + lead(LAB, Q);         // its reading, one measured line below
+  const barY = subY + Q.down + 6;            // the bar top, clear of that reading
+  const rowH = Math.ceil(barY + bh + 12);    // the air between rows, not inside one
+  /* The foot is two more stacked lines, so it is measured on the same terms rather than
+     left on the 44 units that happened to clear the smaller desktop face by 3. */
+  const tickDrop = T.up + 2;                 // the axis to the percent ticks below it
+  const footDrop = tickDrop + lead(T, Q);    // and on to the reading under those
+  m.b = Math.ceil(footDrop + Q.down + 4);
   const H = m.t + rows.length * rowH + m.b;
-  const {svg} = PV.chart("ladder", {W, H});
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   const w = W - m.l - m.r, DOM = 1.08;
   const xs = v => m.l + Math.min(v, DOM) / DOM * w;
   /* The desktop bars carry a FEEDSTOCK/RESIN/PRODUCT sublabel under every series name.
@@ -509,20 +555,23 @@ function drawLadderMobile() {
     const y = m.t + i * rowH, c = STAGE[s.stage].c;
     txt(g, TINY[s.label] + (INGAP.has(s.label) ? " · in the gap"
                             : s === elec ? " · the exception" : ""),
-      {x: m.l, y: y + 12, class: "pv-lab"});
+      {x: m.l, y: y + nameY, class: "pv-lab"});
     txt(g, `${pct(s.retraced)} of its rise given back · now ` +
-      `${vsB(s.now.index)} vs 2019`, {x: m.l, y: y + 28, class: "pv-labq"});
-    el("rect", {x: m.l, y: y + 34, width: xs(1) - m.l, height: bh, fill: "#EDE9E2",
+      `${vsB(s.now.index)} vs 2019`, {x: m.l, y: y + subY, class: "pv-labq"});
+    el("rect", {x: m.l, y: y + barY, width: xs(1) - m.l, height: bh, fill: "#EDE9E2",
       rx: 3}, g);
-    el("rect", {x: m.l, y: y + 34, width: Math.max(3, xs(s.retraced) - m.l),
+    el("rect", {x: m.l, y: y + barY, width: Math.max(3, xs(s.retraced) - m.l),
       height: bh, fill: c, rx: 3}, g);
-    el("line", {x1: xs(1), y1: y + 30, x2: xs(1), y2: y + 52, stroke: "var(--hover)",
-      "stroke-width": 1.2, "stroke-dasharray": "4 3"}, g);
+    el("line", {x1: xs(1), y1: y + barY - 4, x2: xs(1), y2: y + barY + bh + 4,
+      stroke: "var(--hover)", "stroke-width": 1.2, "stroke-dasharray": "4 3"}, g);
     /* The out-of-order row is named here too: the re-layout drops the stage sublabels,
-       which is exactly where a mobile reader loses the reason the bars are not a ladder. */
+       which is exactly where a mobile reader loses the reason the bars are not a ladder.
+       Centred on its own bar off the measured face, so it stays beside the mark it
+       explains however tall the row becomes. */
     if (s === elec)
-      txt(g, "peaked 2026, not 2022", {x: xs(s.retraced) + 8, y: y + 45,
-        class: "pv-labq"});
+      txt(g, "peaked 2026, not 2022",
+        {x: xs(s.retraced) + 8, y: y + barY + bh / 2 + (Q.up - Q.down) / 2,
+         class: "pv-labq"});
     hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, g),
       `<b>${s.label}</b><br><span class="v">${pct(s.retraced)}</span> of the rise given
        back · now <span class="v">${s.now.index.toFixed(1)}</span>`,
@@ -531,10 +580,10 @@ function drawLadderMobile() {
   const ax = H - m.b;
   el("line", {x1: m.l, y1: ax, x2: W - m.r, y2: ax, stroke: "var(--pv-axis)",
     "stroke-width": 1}, svg);
-  [0, .5, 1].forEach(v => txt(svg, pct(v), {x: xs(v), y: ax + 16,
+  [0, .5, 1].forEach(v => txt(svg, pct(v), {x: xs(v), y: ax + tickDrop,
     "text-anchor": v ? "middle" : "start", class: "pv-tick"}));
-  txt(svg, "longer bar = more of the run-up given back", {x: m.l, y: H - 6,
-    class: "pv-labq"});
+  txt(svg, "longer bar = more of the run-up given back",
+    {x: m.l, y: ax + footDrop, class: "pv-labq"});
 }
 
 /* ------------------------------------------------------------- 2. the lines */
@@ -662,6 +711,22 @@ function drawLinesMobile() {
   frame(svg, {x: m.l, y: m.t, w, h, xs: d => xs(d), ys,
     xt: yrs.map(y => dates.find(d => d.startsWith(y))).filter(Boolean),
     yt: ticks(0, maxV, 4), xfmt: d => d.slice(0, 4), xlab: "", ylab: ""});
+  /* THE AXIS CORNER, STAGGERED OFF THE MEASURED BOX. frame() hangs value ticks 4 units
+     under their own gridline and year ticks 20 units under the axis, which is 16 units
+     between the two that meet in the corner: the zero tick and the first year. They also
+     overlap horizontally by construction, because the zero tick is right-anchored 10
+     units left of the plot and the first year is centred ON the plot edge, so half of
+     "2015" reaches back past it whatever either string says. Vertical separation is
+     therefore the only lever, and 16 units cannot hold an 18.75-unit box. The year row
+     drops far enough to clear the zero tick's own descender, measured; the axis, the
+     plot and every mark stay where they were. */
+  {
+    const T = face(svg, "pv-tick");
+    const yearY = m.t + h + 4 + T.down + T.up + 3;
+    svg.querySelectorAll("text.pv-tick").forEach(t => {
+      if (t.getAttribute("text-anchor") === "middle") t.setAttribute("y", yearY);
+    });
+  }
   el("line", {x1: m.l, y1: ys(100), x2: m.l + w, y2: ys(100), stroke: INK,
     "stroke-width": 1.2, "stroke-dasharray": "4 3"}, svg);
   const ord = [...lineSeries].sort((a, b) =>
@@ -868,10 +933,17 @@ function drawSpreadMobile() {
     y: ys(0) - 28, "text-anchor": "end", class: "pv-lab", fill: "#008BA8"}, 8);
   txt(svg, `${sp(last.v)} now`, {x: m.l + w + 6, y: ys(last.v) + 4,
     class: "pv-lab", fill: "#008BA8"});
-  txt(svg, "resin vs", {x: m.l + w + 6, y: ys(comp.at(-1).v) + 2,
-    class: "pv-labq", fill: st.cmp.lab});
-  txt(svg, "chemicals", {x: m.l + w + 6, y: ys(comp.at(-1).v) + 15,
-    class: "pv-labq", fill: st.cmp.lab});
+  /* ONE LABEL ON TWO LINES, LED OFF ITS OWN FACE. These two ran on 13 units against a
+     box that measures 18.75, so the comparator's name printed on itself at every width
+     the page has. The pair now takes the measured leading and the block is centred on
+     the line's own end, so the name still sits level with the stroke it names. */
+  {
+    const Q = face(svg, "pv-labq"), L = lead(Q, Q);
+    const cy = ys(comp.at(-1).v) - L / 2 + (Q.up - Q.down) / 2;
+    txt(svg, "resin vs", {x: m.l + w + 6, y: cy, class: "pv-labq", fill: st.cmp.lab});
+    txt(svg, "chemicals", {x: m.l + w + 6, y: cy + L, class: "pv-labq",
+      fill: st.cmp.lab});
+  }
   hoverable(el("rect", {x: m.l, y: m.t, width: w, height: h, fill: "transparent"}, svg),
     `<b>${mon(last.date)}</b><br>product over resin <span class="v">${sp(last.v)}</span>
      points<br>resin over chemicals <span class="v">${comp.at(-1).v.toFixed(1)}</span>`,
