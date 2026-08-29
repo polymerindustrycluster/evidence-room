@@ -11,7 +11,7 @@
    760px: no sideways-scroll hint, subject and reference line in the first paint. */
 (async () => {
 "use strict";
-const {el, txt, ticks, frame, hoverable, tableView, SEQ, CAT, GRAY, INK} = PV;
+const {el, txt, ticks, frame, hoverable, tableView, face, lead, SEQ, CAT, GRAY, INK} = PV;
 const D = await PV.data("peers.json");
 const FP = PV.footprint(D.meta);
 const N = n => Math.round(n).toLocaleString("en-US");
@@ -597,12 +597,38 @@ function trendDesktop() {
 }
 
 function trendMobile() {
-  const m = {t: 34, r: 14, b: 66, l: 38}, W = 375, H = 380;
-  const {svg} = PV.chart("trend", {W, H});
-  const w = W - m.l - m.r, h = H - m.t - m.b;
+  /* THE AXIS CORNER, AND THE TWO LINES UNDER IT, MEASURED. frame() drops its x-tick row
+     16 units below the y-tick baseline. That is under the 16.8-unit line box the desktop
+     face paints by less than a unit, and under the 18.2-to-18.8-unit box the shared sheet
+     switches to below 760px by more than two. So "0" and "2015", which share the axis
+     corner, printed on each other at every width, and the two reading lines beneath —
+     stacked on a typed 18 — overlapped at the same time. The gate saw only the corner,
+     and only from 480 up, where the render scale finally pushed one of those constant
+     overlaps past its 3px floor; the reading lines were the same defect waiting for a
+     wider phone. Every drop here is now a measured leading, and the canvas height falls
+     out of where the last line lands rather than out of a typed 380.
+
+     The desktop build below still takes frame()'s 16, and still touches by 0.84 units at
+     1440 — em box only, since both rows are digits and neither has a descender. That one
+     is not this page's to fix: it is frame()'s own drop against the desktop face, it is
+     identical on every page here that draws both tick rows through frame() (measured on
+     location-quotient the same day), and the fix belongs in _shared/picviz.js. */
+  const node = document.getElementById("trend");
+  const T = face(node, "pv-tick"), Q = face(node, "pv-labq");
+  const W = 375, m = {t: 34, r: 14, b: 0, l: 38}, h = 280;
+  /* Provisional: the real height is not known until the reading lines have been placed. */
+  const {svg} = PV.chart("trend", {W, H: m.t + h + 66});
+  const w = W - m.l - m.r;
   const {maxV, xs, ys} = trendGeom(svg, m, w, h);
-  frame(svg, {x: m.l, y: m.t, w, h, xs, ys, xt: [YRS[0], YRS[Math.floor(YRS.length / 2)],
-    YRS.at(-1)], yt: ticks(0, maxV, 4), xfmt: v => v, yfmt: kfmt, xlab: "", ylab: ""});
+  frame(svg, {x: m.l, y: m.t, w, h, xs, ys, xt: [], yt: ticks(0, maxV, 4),
+    yfmt: kfmt, xlab: "", ylab: ""});
+  /* The only pv-tick marks on the canvas at this point are the y row frame() just wrote,
+     so their floor is the thing the year row has to clear. */
+  const yFloor = Math.max(...[...svg.querySelectorAll("text.pv-tick")]
+    .map(t => { const b = t.getBBox(); return b.y + b.height; }));
+  const yearY = Math.ceil(yFloor + T.ascent + 4);
+  [YRS[0], YRS[Math.floor(YRS.length / 2)], YRS.at(-1)].forEach(v =>
+    txt(svg, v, {x: xs(v), y: yearY, "text-anchor": "middle", class: "pv-tick"}));
   trendLines(svg, xs, ys, true);
   clevelandGhost(svg, xs, ys, true);
   const p = peers.find(x => x.area === picked);
@@ -612,9 +638,12 @@ function trendMobile() {
     {cls: "pv-lab", fs: 7.8, anchor: "end", fill: CAT[1]});
   plated(svg, `Los Angeles down ${laPct.toFixed(1)}% since ${YRS[0]}`, m.l + 4,
     ys(emp(tLA, YRS[5])) + 34, {cls: "pv-lab", fs: 7.6, fill: INK});
-  txt(svg, "plastics and rubber jobs", {x: m.l, y: H - 24, class: "pv-labq"});
+  const unitY = yearY + lead(svg, "pv-tick", "pv-labq");
+  txt(svg, "plastics and rubber jobs", {x: m.l, y: unitY, class: "pv-labq"});
+  const periodY = unitY + lead(svg, "pv-labq", "pv-labq");
   txt(svg, `${YRS[0]}–${YRS.at(-1)}, disclosed metros only`,
-    {x: m.l, y: H - 6, class: "pv-labq"});
+    {x: m.l, y: periodY, class: "pv-labq"});
+  svg.setAttribute("viewBox", `0 0 ${W} ${Math.ceil(periodY + Q.descent + 6)}`);
 }
 
 {

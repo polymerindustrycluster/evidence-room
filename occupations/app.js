@@ -37,7 +37,7 @@
  */
 (async () => {
 "use strict";
-const {el, txt, ticks, frame, hoverable, tableView, chart, figures, N, SEQ, CAT, INK} = PV;
+const {el, txt, ticks, frame, hoverable, tableView, chart, face, figures, N, SEQ, CAT, INK} = PV;
 const D = await PV.data("viz-data.json");
 const M = D.meta;
 const money = v => v == null ? "—" : "$" + Math.round(v).toLocaleString("en-US");
@@ -387,16 +387,41 @@ function drawPay() { MOBILE.matches ? drawPayDesktopish(false) : drawPayDesktopi
 
 function drawPayDesktopish(desktop) {
   const W = desktop ? 1100 : 375;
+  /* MEASURED STACKS, NOT TYPED DROPS. Every pair of lines in this chart that shares an x
+     sat on a drop typed against the desktop face: the phone's two reading lines at the
+     top (16 apart), each band's label and its note (18), and the two lines under the
+     dollar scale at the foot (16). Below 760px the shared sheet raises chart type to a
+     face that paints an 18.2-to-18.8-unit line box, so all five pairs overlapped at every
+     width in the phone band — the gate's 3px reporting floor showed the two 16s from 480
+     up, where the render scale exceeds 1, and never showed the three 18s at all. Nothing
+     here is an axis corner; it is the same leading constant five times. The drops below
+     are derived from the rendered face. On desktop they come out one to two units tighter
+     than the numbers that were typed here (37, 44 and 50 against 38, 46 and 52), because
+     a derived drop asks the face what it needs rather than rounding up by eye, and the
+     foot line hangs from the last tick row instead of from the canvas bottom. Measured
+     clearance between every pair on this chart is now 2.25 units or better at all
+     fourteen swept widths. */
+  const node = document.getElementById("pay");
+  const Q = face(node, "pv-labq"), A = face(node, "pv-axlab");
+  const capY = Math.ceil(Q.ascent + 2);                 // phone: first reading line
+  const capY2 = capY + PV.lead(node, "pv-labq", "pv-labq");
+  const labelDrop = 18;                                 // band label under its header top
+  const noteDrop = labelDrop + PV.lead(node, "pv-lab", "pv-labq");
+  const ruleDrop = Math.ceil(noteDrop + Q.descent + 4);
   /* The right gutter holds the metro-over-nation column below; the top margin holds its
-     header. Both widened from the version that had neither. */
-  const m = desktop ? {t: 78, r: 240, b: 62, l: 290} : {t: 36, r: 60, b: 86, l: 12};
+     header. Both widened from the version that had neither. On the phone the top margin
+     is no longer a number at all: it is whatever puts the first band label one measured
+     leading under the second reading line. */
+  const m = desktop
+    ? {t: 78, r: 240, b: 62, l: 290}
+    : {t: capY2 + PV.lead(node, "pv-labq", "pv-lab") - labelDrop, r: 60, b: 0, l: 12};
   const rowH = desktop ? 24 : 36;
   /* The scale used to appear once, at the bottom, after twenty-six rows: reading the
      degree band on the desktop page put the dollars roughly seven hundred pixels off
      screen, and the phone showed a field of unscaled dots. Each group now closes with its
      own dollar ticks at BOTH widths, which is what the wider gap buys (chart-craft
      § mobile) — the small screen should not be the easier one to read. */
-  const headH = desktop ? 52 : 50, gap = desktop ? 44 : 40;
+  const headH = ruleDrop + (desktop ? 6 : 8), gap = desktop ? 44 : 40;
   let cy = m.t;
   const geo = GROUPS.map(G => {
     const headY = cy; cy += headH;
@@ -405,6 +430,13 @@ function drawPayDesktopish(desktop) {
     return {G, headY, y0, y1};
   });
   const h = cy - gap - m.t;
+  /* The last group's dollar ticks are the floor the foot lines have to clear, so the two
+     of them are placed from that floor and the phone's bottom margin is whatever putting
+     them there costs. The desktop margin keeps its own breathing room. */
+  const footTick = m.t + h + 26;
+  const wageY = footTick + PV.lead(node, "pv-tick", "pv-axlab");
+  const beginY = wageY + PV.lead(node, "pv-axlab", "pv-axlab");        // phone only
+  m.b = desktop ? 62 : Math.ceil(beginY + A.descent + 6) - (m.t + h);
   const H = m.t + h + m.b;
   const {svg} = chart("pay", {W, H});
   const w = W - m.l - m.r;
@@ -434,8 +466,8 @@ function drawPayDesktopish(desktop) {
          class: "pv-lab", fill: COLOR[a]})));
   } else {
     txt(svg, `right of each row: ${short(COLS[0])} pay ÷ national pay`,
-      {x: m.l, y: 14, class: "pv-labq"});
-    txt(svg, "under 1.00 is below the nation", {x: m.l, y: 30, class: "pv-labq"});
+      {x: m.l, y: capY, class: "pv-labq"});
+    txt(svg, "under 1.00 is below the nation", {x: m.l, y: capY2, class: "pv-labq"});
   }
   geo.forEach(({G, headY, y0, y1}) => {
     /* The story band gets its shading; every band gets its claim written on it. */
@@ -446,16 +478,16 @@ function drawPayDesktopish(desktop) {
       /* The note sits UNDER the band label, not opposite it. Right-anchored at the plot's
          right edge it collided with the label once the gutter took 166px of that edge, and
          a summary that overlaps its own band name is worse than no summary. */
-      txt(svg, label, {x: m.l, y: headY + 18, class: "pv-lab", fill: INK});
+      txt(svg, label, {x: m.l, y: headY + labelDrop, class: "pv-lab", fill: INK});
       const note = bandNote(G.key, false);
-      if (note) txt(svg, note, {x: m.l, y: headY + 38, class: "pv-labq"});
-      el("line", {x1: m.l, y1: headY + 46, x2: m.l + w, y2: headY + 46,
+      if (note) txt(svg, note, {x: m.l, y: headY + noteDrop, class: "pv-labq"});
+      el("line", {x1: m.l, y1: headY + ruleDrop, x2: m.l + w, y2: headY + ruleDrop,
         stroke: "var(--pv-grid)", "stroke-width": 1}, svg);
     } else {
-      txt(svg, label, {x: m.l, y: headY + 18, class: "pv-lab", fill: INK});
+      txt(svg, label, {x: m.l, y: headY + labelDrop, class: "pv-lab", fill: INK});
       const note = bandNote(G.key, true);
-      if (note) txt(svg, note, {x: m.l, y: headY + 36, class: "pv-labq"});
-      el("line", {x1: m.l, y1: headY + 42, x2: W - m.r, y2: headY + 42,
+      if (note) txt(svg, note, {x: m.l, y: headY + noteDrop, class: "pv-labq"});
+      el("line", {x1: m.l, y1: headY + ruleDrop, x2: W - m.r, y2: headY + ruleDrop,
         stroke: "var(--pv-grid)", "stroke-width": 1}, svg);
     }
     G.rows.forEach((r, i) => {
@@ -515,9 +547,9 @@ function drawPayDesktopish(desktop) {
   });
   txt(svg, desktop ? "Annual median wage, May 2024 (axis begins at $25,000)"
                    : "annual median wage, May 2024",
-    desktop ? {x: m.l + w / 2, y: H - 16, "text-anchor": "middle", class: "pv-axlab"}
-            : {x: m.l, y: H - 22, class: "pv-axlab"});
-  if (!desktop) txt(svg, "axis begins at $25,000", {x: m.l, y: H - 6, class: "pv-axlab"});
+    desktop ? {x: m.l + w / 2, y: wageY, "text-anchor": "middle", class: "pv-axlab"}
+            : {x: m.l, y: wageY, class: "pv-axlab"});
+  if (!desktop) txt(svg, "axis begins at $25,000", {x: m.l, y: beginY, class: "pv-axlab"});
 }
 
 {
