@@ -168,9 +168,23 @@ const MOBILE = matchMedia("(max-width: 760px)");
 const rEmp = (e, mx) => 2.2 + mx * Math.sqrt(e / maxEmp);
 /* Ticks that never round-lie: 1.25 prints as 1.25×, never 1.3×. */
 const fx = v => (Math.round(v * 100) % 10 ? v.toFixed(2) : v.toFixed(1)) + "×";
-/* A paper plate behind an SVG label that must cross other ink (cost-scissors pattern). */
-const plate = (parent, s, x, y, fs = 7.2) => el("rect", {x: x - 3, y: y - 12,
-  width: s.length * fs + 6, height: 15, fill: "var(--paper)", opacity: .94, rx: 2}, parent);
+/* A paper plate behind an SVG label that must cross other ink (cost-scissors pattern).
+   MEASURED, never counted from the string. The plate used to size itself `s.length * fs`
+   — a guess about a face the shared sheet enlarges below 760px — and the two
+   right-anchored call sites positioned themselves from that same guess. On the phone
+   scatter it ran 18 units wider than the words it covered, which put the plate's left
+   edge at x=-15.9 in a 375-unit box: ink in the page margin at 560, 640 and 700, while
+   the label itself sat inside. Draw the text, read its rendered box, slip the rect in
+   behind it. One call now does both, so the plate cannot disagree with its own label. */
+const plated = (parent, s, a) => {
+  const t = txt(parent, s, a);
+  let bb = null;
+  try { bb = t.getBBox(); } catch { /* no layout yet: ship the label unplated */ }
+  if (bb && bb.width) parent.insertBefore(el("rect", {x: bb.x - 3, y: bb.y - 2,
+    width: bb.width + 6, height: bb.height + 4, fill: "var(--paper)", opacity: .94,
+    rx: 2}), t);
+  return t;
+};
 
 /* DOT SIZE NEEDS A SCALE OR IT IS DECORATION. Both scatter-family charts encode employment
    as dot area, and a reader who can see that one dot is bigger than another still cannot
@@ -289,15 +303,13 @@ function drawPremiumMobile() {
   {
     const s = `Top 11 all chemistry. Lake: ${top.vs_local_all.toFixed(2)}×, ` +
       money(top.weekly_wage) + "/wk";
-    plate(svg, s, m.l, m.t + 28);
-    txt(svg, s, {x: m.l, y: m.t + 28, class: "pv-labq", fill: CAT[0]});
+    plated(svg, s, {x: m.l, y: m.t + 28, class: "pv-labq", fill: CAT[0]});
   }
   rows.forEach((r, i) => {
     const g = el("g", SEL && dim(r) ? {opacity: .16} : {}, svg);
     const y = yFor(i);
     const lab = `${r.name} · ${SHORT[r.naics]}`;
-    plate(g, lab, m.l, y + 12);
-    txt(g, lab, {x: m.l, y: y + 12, class: "pv-labq"});
+    plated(g, lab, {x: m.l, y: y + 12, class: "pv-labq"});
     const yl = y + 24;
     const x0 = Math.min(one, xs(r.vs_local_all)), x1 = Math.max(one, xs(r.vs_local_all));
     el("line", {x1: x0, y1: yl, x2: x1, y2: yl, stroke: FAMC(r), "stroke-width": 2,
@@ -315,8 +327,7 @@ function drawPremiumMobile() {
     "stroke-width": 1, "stroke-dasharray": "5 4"}, svg);
   {
     const s = `↑ ${above} above · ${belowN} below, all plastics & rubber ↓`;
-    plate(svg, s, m.l, yB - 8);
-    txt(svg, s, {x: m.l, y: yB - 8, class: "pv-labq"});
+    plated(svg, s, {x: m.l, y: yB - 8, class: "pv-labq"});
   }
   /* SIX TICKS, NOT FOUR. At four requested ticks this axis stepped by 0.5 and printed
      1.0 / 1.5 / 2.0 only: nothing was labelled below parity even though eleven rows sit
@@ -396,11 +407,9 @@ function drawScatterDesktop() {
   /* Quadrant verdicts, written where the dots are (plated where dots crowd). */
   {
     const s1 = `Beats the town, trails the industry · ${qBeatTrail} pairings`;
-    plate(svg, s1, xs(1.06), ys(ylo + 0.03), 7.6);
-    txt(svg, s1, {x: xs(1.06), y: ys(ylo + 0.03), class: "pv-lab"});
+    plated(svg, s1, {x: xs(1.06), y: ys(ylo + 0.03), class: "pv-lab"});
     const s2 = `Trails both · ${qNeither}`;
-    plate(svg, s2, xs(1) - 12 - s2.length * 7.6, ys(ylo + 0.03), 7.6);
-    txt(svg, s2, {x: xs(1) - 12, y: ys(ylo + 0.03), class: "pv-lab",
+    plated(svg, s2, {x: xs(1) - 12, y: ys(ylo + 0.03), class: "pv-lab",
       "text-anchor": "end"});
     txt(svg, `Beats both · ${qBoth} pairings`,
       {x: xs(1.5), y: m.t + 16, class: "pv-lab"});
@@ -470,21 +479,16 @@ function drawScatterMobile() {
   });
   {
     const s1 = `beats town, trails industry · ${qBeatTrail}`;
-    plate(svg, s1, xs(1) + 6, ys(ylo + 0.02));
-    txt(svg, s1, {x: xs(1) + 6, y: ys(ylo + 0.02), class: "pv-labq"});
+    plated(svg, s1, {x: xs(1) + 6, y: ys(ylo + 0.02), class: "pv-labq"});
     const s2 = `trails both · ${qNeither}`;
-    plate(svg, s2, xs(1) - 6 - s2.length * 7.2, m.t + h - 46);
-    txt(svg, s2, {x: xs(1) - 6, y: m.t + h - 46, class: "pv-labq",
+    plated(svg, s2, {x: xs(1) - 6, y: m.t + h - 46, class: "pv-labq",
       "text-anchor": "end"});
     txt(svg, `beats both · ${qBoth}`, {x: xs(1) + 6, y: m.t + 12, class: "pv-labq"});
     /* The fourth quadrant, counted on the phone too. Plated because 375px leaves the
        empty corner narrower than the words, so the label crosses the reference line and
        the plate keeps the type readable where it does. */
-    ["0 pairings", "in this corner"].forEach((s, i) => {
-      const y = m.t + 32 + i * 18;
-      plate(svg, s, m.l + 4, y);
-      txt(svg, s, {x: m.l + 4, y, class: "pv-labq"});
-    });
+    ["0 pairings", "in this corner"].forEach((s, i) =>
+      plated(svg, s, {x: m.l + 4, y: m.t + 32 + i * 18, class: "pv-labq"}));
   }
 }
 
@@ -535,8 +539,7 @@ function drawTrendVariant(W, H, mobile) {
     y: ys(pts[0].med) + 18, class: "pv-lab"});
   {
     const s = `${dip.med.toFixed(2)}× in ${dip.year}`;
-    plate(svg, s, xs(dip.year) - s.length * 3.4, ys(dip.med) + 20, 6.8);
-    txt(svg, s, {x: xs(dip.year), y: ys(dip.med) + 20, class: "pv-labq",
+    plated(svg, s, {x: xs(dip.year), y: ys(dip.med) + 20, class: "pv-labq",
       "text-anchor": "middle"});
   }
 }
