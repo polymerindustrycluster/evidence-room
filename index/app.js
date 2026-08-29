@@ -104,7 +104,12 @@ function statesChart(D) {
   const spread = TEX.emp - EIGHTH.emp;           // 8,865
 
   const C = MOB
-    ? PV.chart("states", {W: 360, m: {t: 56, r: 12, b: 40, l: 12}, rows: S.length, rowH: 50})
+    /* Measured, with a fallback: an unlaid-out container measures 0, which silently
+       kept the authored 360 on the first attempt at this. */
+    ? PV.chart("states", {W: Math.max(300, Math.round(
+        document.getElementById("states").parentElement.getBoundingClientRect().width)
+        || Math.min(980, innerWidth - 40)),
+        m: {t: 56, r: 12, b: 40, l: 12}, rows: S.length, rowH: 50})
     : PV.chart("states", {W: 1000, m: {t: 56, r: 96, b: 42, l: 136}, rows: S.length,
                           rowH: 40});
   const {svg, m, w} = C;

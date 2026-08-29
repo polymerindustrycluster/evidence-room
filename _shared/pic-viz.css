@@ -298,11 +298,36 @@ details.pv-table:not([open]) .pv-tablewrap{display:none}
    not work: labels are positioned in the same user units, so scaling them up collides
    them. So the chart keeps a legible minimum width and pans, which is what newsrooms
    do, and the table-view twin below every chart is the non-scrolling equivalent. */
+/* THE TABLET BAND, which the rule above stops one pixel short of covering.
+   The reasoning above is right and was applied only below 760px. Between 761px and the
+   ~1100px where the column finally reaches its 980px cap, the charts have no minimum and
+   shrink with the container: at a 768px viewport the column is 704px against a 1100-unit
+   viewBox, a 0.64 scale, and a 13.6px tick label paints at 8.7 real pixels. Fourteen of
+   sixteen pages did that on a portrait tablet or a half-screen window, and no gate saw it
+   because textsize.mjs only ever measured 390 and 1440 (fixed 2026-08-28, --sweep).
+   980px is not an arbitrary floor: it is --figure, so a chart in this band renders at the
+   same 0.891 scale it has on a wide screen rather than at some third size. */
+@media (min-width: 761px) and (max-width: 1099px){
+  .chart{overflow-x:auto;overscroll-behavior-x:contain;padding-bottom:6px}
+  .chart svg{min-width:980px}
+  .chart.narrow{overflow-x:visible}
+  .chart.narrow svg{min-width:0}
+  .chart::after{content:"Scroll the chart sideways \2192  or open the table below";
+    display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+    font-weight:700;color:var(--caption);padding:8px 0 0;position:sticky;left:0}
+  .chart.narrow::after{content:none}
+}
+
 @media (max-width: 760px){
   .chart{overflow-x:auto;overscroll-behavior-x:contain;padding-bottom:6px}
-  .chart svg{min-width:860px}
+  /* 900, not 860. At 860 a 15.5-unit tick in a ~1130-unit viewBox painted 11.8px at a
+     360px screen, just under the floor, on two pages. Widening the minimum is the SAFE
+     lever here and bumping the type is not: a wider minimum is a pure zoom, so marks and
+     labels scale together and no two of them can newly meet, whereas larger type in the
+     same user units moves labels toward each other. Costs 40px more pan. */
+  .chart svg{min-width:900px}
   /* type is in the same user units as the geometry, so it scales with the viewBox;
-     a modest bump plus the wider minimum lands tick labels near 11 CSS px */
+     a modest bump plus the wider minimum lands tick labels above the 12px floor */
   .pv-tick{font-size:15.5px}
   .pv-lab{font-size:16px}
   .pv-labq{font-size:15.5px}

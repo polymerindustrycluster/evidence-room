@@ -107,10 +107,20 @@ function openCell(svg, status, x, y, s) {
    `childNodes.slice(1)` does on indented markup. */
 function drawOpen() {
   const M = MOBILE.matches;
-  const W = M ? 358 : 700, H = M ? 348 : 240;
+  /* MEASURED, NOT AUTHORED. Fixed at 700 and 358 this held at 1440 and 390 and painted
+     10.1px labels at 768, where the rail is narrower than at either. Measuring the rail
+     makes the render scale exactly 1.000 at every width, so a label's authored size is
+     its real size. The square grid is right-anchored off w, so it follows. */
+  const railW = Math.round(
+    (document.getElementById("open").parentElement || {getBoundingClientRect: () => ({})})
+      .getBoundingClientRect().width || 0);
+  const W = Math.max(300, railW || (M ? 358 : 700));
+  const H = M ? 348 : 240;
   const m = M ? {t: 62, r: 10, b: 10, l: 10} : {t: 56, r: 14, b: 30, l: 14};
   const {svg, w} = chart("open", {W, H, m});
-  const SQ = M ? 18 : 24, CELL = M ? 23 : 31, SX = M ? m.l : m.l + 296;
+  const SQ = M ? 18 : 24, CELL = M ? 23 : 31;
+  /* the label column keeps its 296 units only while there is room for it */
+  const SX = M ? m.l : m.l + Math.min(296, Math.max(150, W - m.l - m.r - 250));
   const TOP = M ? [62, 116, 170, 232] : [56, 90, 124, 168];
   const RULE = M ? 220 : 156;
 
@@ -167,6 +177,9 @@ drawOpen();
    as they always were; changing that is a separate job and not this one. */
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawOpen)
                         : MOBILE.addListener(drawOpen);
+/* A viewBox measured from the rail goes stale when the rail changes, which the
+   breakpoint listener alone does not catch. Debounced. */
+{ let t; addEventListener("resize", () => { clearTimeout(t); t = setTimeout(drawOpen, 150); }); }
 
 /* ------------------------------------------------------------------- hero stat row
    Four findings, no apparatus stat. The coverage card carries the accent because

@@ -83,6 +83,22 @@ const PV = (() => {
     return node;
   }
 
+  /* AN AXIS LABEL THAT CANNOT FIT IS PULLED BACK, NOT PAINTED OFF THE PAGE.
+     Charts that write their own axis label bypass frame(), so they bypassed the clamp
+     added there: churn's ran 6px past a 390px viewport with overflow:visible. Same rule,
+     callable. Measures the rendered string, because character count does not know the
+     face. */
+  function axlab(svg, s, a = {}) {
+    const t = txt(svg, s, Object.assign({class: "pv-axlab"}, a));
+    const vbW = svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width;
+    if (vbW) {
+      const len = t.getComputedTextLength();
+      const x = +(a.x || 0);
+      if (x + len > vbW - 2) t.setAttribute("x", Math.max(2, vbW - 2 - len));
+    }
+    return t;
+  }
+
   /* frame: solid hairline grid, recessive axes, no dashes */
   function frame(svg, {x, y, w, h, xs, ys, xt, yt, xfmt, yfmt, xlab, ylab, band}) {
     const g = el("g", {}, svg);
@@ -100,9 +116,36 @@ const PV = (() => {
     });
     el("line", {x1: x, y1: y + h, x2: x + w, y2: y + h,
       stroke: "var(--pv-axis)", "stroke-width": 1}, g);
-    if (xlab) txt(g, xlab, {x: x + w / 2, y: y + h + 46, "text-anchor": "middle",
-      class: "pv-axlab"});
-    if (ylab) txt(g, ylab, {x, y: y - 16, "text-anchor": "start", class: "pv-axlab"});
+    /* The x-axis label is centred on the PLOT, which sits right of the box centre whenever
+       the left margin exceeds the right — a 42/12 split offsets it by 15 units. That was
+       invisible while charts were drawn in more units than they were rendered in and the
+       whole thing shrank. Once a chart is drawn at its true size, a label as wide as the
+       plot overhangs the viewBox, and with overflow:visible it paints off the page: churn
+       pushed 6px past a 390px viewport. Clamp it into the box, measuring the rendered
+       string rather than guessing from character count. */
+    if (xlab) {
+      const t = txt(g, xlab, {x: x + w / 2, y: y + h + 46, "text-anchor": "middle",
+        class: "pv-axlab"});
+      const vbW = svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width;
+      if (vbW) {
+        const half = t.getComputedTextLength() / 2;
+        if (half * 2 < vbW - 4)
+          t.setAttribute("x", Math.min(Math.max(x + w / 2, half + 2), vbW - half - 2));
+      }
+    }
+    /* The y-axis label sits ABOVE the plot, anchored at the left margin, so a long one
+       runs off the right of a narrow chart: churn's "Share starting or ending" started at
+       x=42 and ran 334 units wide inside a 350-unit box, 6px past a 390px viewport. Pull
+       it back to the left edge rather than let it paint outside, and measure the rendered
+       string to decide, since character count does not know the face. */
+    if (ylab) {
+      const t = txt(g, ylab, {x, y: y - 16, "text-anchor": "start", class: "pv-axlab"});
+      const vbW = svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width;
+      if (vbW) {
+        const len = t.getComputedTextLength();
+        if (x + len > vbW - 2) t.setAttribute("x", Math.max(2, vbW - 2 - len));
+      }
+    }
     return g;
   }
 
@@ -498,7 +541,7 @@ const PV = (() => {
     return sec;
   }
 
-  return {el, txt, ticks, frame, hoverable, showTip, hideTip, tableView, data, footprint,
+  return {el, txt, axlab, ticks, frame, hoverable, showTip, hideTip, tableView, data, footprint,
           methodology, figures, chart, footprintBanner, padGrid, mark, favicon, N,
           CAT, SEQ, GRAY, INK, usd, usdShort, reduced};
 })();

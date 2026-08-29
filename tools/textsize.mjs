@@ -2,7 +2,7 @@
  * SVG text is authored in viewBox units and rendered at whatever scale the container
  * imposes, so a compliant 12px declaration can paint at 10.7 real pixels.
  *
- *   node tools/textsize.mjs [--mobile] [names...]
+ *   node tools/textsize.mjs [--sweep|--mobile|--one] [names...]
  *
  * Reports the smallest RENDERED text on each page, DOM and SVG separately, using the
  * element's own getBoundingClientRect against its computed font-size.
@@ -18,14 +18,23 @@ import {chromium} from "./_browser.mjs";
    the viewport once max-widths and breakpoints are involved, so the interior has to be
    sampled. --sweep does that; the two named widths remain for a quick check. */
 const SWEEP = [360, 390, 430, 480, 560, 640, 700, 768, 820, 900, 1024, 1180, 1280, 1440];
+/* THE DEFAULT IS SIX WIDTHS, NOT ONE. Checking a single width is what let 8.7px chart
+   text ship on fourteen pages. These six are not arbitrary: 360 and 390 are the two phone
+   sizes where a mobile re-layout's own viewBox can be too wide for the column, 768 and 900
+   sit inside the tablet band where charts used to shrink below their type's floor, 1024 is
+   its upper edge, and 1440 is the wide case. --sweep runs all fourteen and is the one to
+   run before shipping; --mobile and the bare call keep the old single-width behaviour for
+   a quick look. */
+const DEFAULT = [360, 390, 768, 900, 1024, 1440];
 
 const args = process.argv.slice(2);
 const mobile = args.includes("--mobile");
 const sweep = args.includes("--sweep");
+const one = args.includes("--one");
 const names = args.filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
-const WIDTHS = sweep ? SWEEP : [mobile ? 390 : 1440];
+const WIDTHS = sweep ? SWEEP : one ? [mobile ? 390 : 1440] : (mobile ? [360, 390] : DEFAULT);
 
 const b = await chromium.launch();
 let bad = 0;
@@ -78,7 +87,7 @@ for (const n of list) {
     `${r.svgUnder.length ? "svg<12 " + r.svgUnder.join(" ") : ""}` +
     `${r.domUnder.length ? " dom<12 " + r.domUnder.join(" ") : ""}` +
     `${r.unmeasured.length ? " UNMEASURED " + r.unmeasured.join(" ") : ""}`.trim());
-  if (!sweep) console.log(`${n.padEnd(18)} ${fail ? "FAIL" : "PASS"}  ` +
+  if (WIDTHS.length === 1) console.log(`${n.padEnd(18)} ${fail ? "FAIL" : "PASS"}  ` +
     `dom-min ${r.domMin ? r.domMin.fs : "—"}  svg-min ${r.svgMin ? r.svgMin.fs : "—"}` +
     `${r.scale ? `  (svg scale ${r.scale})` : ""}` +
     `${r.svgUnder.length ? "  svg<12: " + r.svgUnder.join(" ") : ""}` +
@@ -87,7 +96,7 @@ for (const n of list) {
   await p.close();
  }
  if (hits.length) bad++;
- if (sweep) console.log(`${n.padEnd(18)} ${hits.length ? "FAIL" : "PASS"}` +
+ if (WIDTHS.length > 1) console.log(`${n.padEnd(18)} ${hits.length ? "FAIL" : "PASS"}` +
    (hits.length ? `  ${hits.length}/${WIDTHS.length} widths\n    ` + hits.slice(0, 4).join("\n    ")
                 : `  clean at all ${WIDTHS.length} widths`));
 }

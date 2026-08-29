@@ -791,7 +791,11 @@ function drawHeatDesktop() {
 
 function drawHeatMobile() {
   const rows = heatRows();
-  const W = 420, m = {t: 128, r: 10, b: 134, l: 92};
+  /* MEASURED. Authored at 420, which on a 360px screen is a 0.762 scale and put the
+     quiet labels at 11.8px. */
+  const W = Math.max(320, Math.round(
+    document.getElementById("heat").parentElement.getBoundingClientRect().width) || 420);
+  const m = {t: 128, r: 10, b: 134, l: 92};
   const {svg, h, w} = PV.chart("heat", {W, rows: rows.length, rowH: 30, m});
   suppPattern(svg);
   const cw = w / NAICS.length, ch = h / rows.length;

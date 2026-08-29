@@ -603,9 +603,15 @@ function drawOpen() {
   if (svg) {
     /* THE VIEWBOX IS SIZED TO THE TEXT RAIL, NOT THE FIGURE RAIL. Drawn at the site's
        980px figure width this strip started 151px left of the headline above it, which
-       is the two-rail defect the house has one law against. At 678 it renders at a 0.97
-       scale, so a 15-unit label paints at 14.6 real pixels. */
-    const W = M ? 358 : 700, H = M ? 232 : 196;
+       is the two-rail defect the house has one law against.
+
+       AND IT IS SIZED IN MEASURED PIXELS, not authored units. The first version fixed it
+       at 700 and 358, which held at 1440 and 390 and painted 10.9px labels at 768, where
+       the rail is narrower than either. Measuring makes the render scale exactly 1.000 at
+       every width, so a 15-unit label is 15 real pixels always. */
+    const railW = Math.round((svg.parentElement || svg).getBoundingClientRect().width);
+    const W = Math.max(300, railW || (M ? 358 : 700));
+    const H = M ? 232 : 196;
     const m = M ? {t: 84, r: 10, b: 40, l: 10} : {t: 52, r: 16, b: 42, l: 16};
     const w = W - m.l - m.r;
     const LO = 0.7, HI = 2.2;
@@ -678,6 +684,13 @@ function drawAll() { drawOpen(); drawPremium(); drawScatter(); drawTrend(); }
 drawAll();
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);
+/* A viewBox measured from the rail is stale the moment the rail changes, and the
+   breakpoint listener above only fires at 760px. Debounced so a drag-resize does not
+   redraw on every frame. */
+{
+  let t;
+  addEventListener("resize", () => { clearTimeout(t); t = setTimeout(drawAll, 150); });
+}
 
 /* NO FOOTPRINT BANNER ABOVE THE HERO. It opened the page on apparatus, ate ~130px of the
    phone's first paint, and wrote registry names at the reader ("the vault's NEO-14"), which

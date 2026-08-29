@@ -173,7 +173,7 @@ function flowDesktop() {
     if (q.q !== 1 || q.year % 2) return;
     txt(svg, q.year, {x: xs(i), y: m.t + h + 22, "text-anchor": "middle", class: "pv-tick"});
   });
-  txt(svg, "Jobs starting or ending in the quarter", {x: m.l, y: m.t - 62, class: "pv-axlab"});
+  PV.axlab(svg, "Jobs starting or ending in the quarter", {x: m.l, y: m.t - 62});
   txt(svg, "hires", {x: m.l + w + 10, y: ys(maxF * .55), class: "pv-lab", fill: SEQ[5]});
   txt(svg, "separations", {x: m.l + w + 10, y: ys(-maxF * .55), class: "pv-lab",
     fill: CAT[1]});
@@ -235,7 +235,7 @@ const YEARS = (() => {
 const partial = YEARS.filter(y => y.n < 4);
 
 function flowMobile() {
-  const W = 375, H = 392, m = {t: 76, r: 12, b: 54, l: 42};
+  const W = colW("flow"), H = 392, m = {t: 76, r: 12, b: 54, l: 42};
   const {svg} = PV.chart("flow", {W, H});
   const w = W - m.l - m.r, h = H - m.t - m.b;
   const maxF = Math.max(...YEARS.map(y => Math.max(y.hires, y.seps)));
@@ -255,7 +255,7 @@ function flowMobile() {
         class: "pv-tick"});
     });
   });
-  txt(svg, "Jobs started and ended, per year", {x: m.l, y: m.t - 50, class: "pv-axlab"});
+  PV.axlab(svg, "Jobs started and ended, per year", {x: m.l, y: m.t - 50});
   YEARS.forEach((y, i) => {
     const x = xs(i) - bw / 2;
     const dim = y.n < 4 ? .55 : 1;
@@ -285,7 +285,8 @@ function flowMobile() {
 }
 
 /* ============================================================== 2. the rate */
-function drawRate() { MOBILE.matches ? rateVariant(375, 320, true) : rateVariant(1100, 372, false); }
+function drawRate() { MOBILE.matches ? rateVariant(colW("rate"), 320, true)
+                                     : rateVariant(1100, 372, false); }
 
 function rateVariant(W, H, mob) {
   const m = mob ? {t: 54, r: 16, b: 52, l: 42} : {t: 52, r: 176, b: 60, l: 44};
@@ -385,8 +386,21 @@ function rateVariant(W, H, mob) {
   }
 }
 
+/* THE PHONE COLUMN, MEASURED. Every mobile variant here was authored against a 375px
+   phone, but the column is 320 on a 360px screen, a 0.853 scale that put labels at
+   11.1px. Measuring the chart's own container makes the render scale 1.000. The fallback
+   matters: a container that has not been laid out when the draw runs measures 0, which is
+   how the first attempt at this silently kept the authored width. */
+const colW = id => {
+  const el = document.getElementById(id);
+  const w = el && el.parentElement
+    ? Math.round(el.parentElement.getBoundingClientRect().width) : 0;
+  return Math.max(300, w || Math.min(980, innerWidth - 40));
+};
+
 /* ================================================== 3. which side moved */
-function drawSplit() { MOBILE.matches ? splitVariant(375, 330, true) : splitVariant(1100, 400, false); }
+function drawSplit() { MOBILE.matches ? splitVariant(colW("split"), 330, true)
+                                      : splitVariant(1100, 400, false); }
 
 function splitVariant(W, H, mob) {
   const m = mob ? {t: 50, r: 16, b: 54, l: 40} : {t: 54, r: 200, b: 62, l: 46};
@@ -408,9 +422,9 @@ function splitVariant(W, H, mob) {
   /* The axis said what was subtracted from what, which is the one thing a reader can
      read off the source line. It now says what the height MEANS; the subtraction is in
      splitsrc. */
-  txt(svg, mob ? "↑ more jobs ended than started"
-               : "Gap between leaving and hiring, in points ↑ above zero, more jobs ended than started",
-    {x: m.l, y: m.t - 24, class: "pv-axlab"});
+  PV.axlab(svg, mob ? "↑ more jobs ended than started"
+                    : "Gap between leaving and hiring, in points ↑ above zero, more jobs ended than started",
+    {x: m.l, y: m.t - 24});
 
   /* Area on both sides of zero, clipped rather than hand-split at the crossings. */
   const pts = spread.map((v, i) => v == null ? null : `${xs(i)},${ys(v)}`).filter(Boolean);
@@ -464,7 +478,7 @@ function splitVariant(W, H, mob) {
 
 /* ============================================================= 4. by county */
 let SEL = null;
-function drawCounty() { MOBILE.matches ? countyVariant(375, 460, true)
+function drawCounty() { MOBILE.matches ? countyVariant(colW("county"), 460, true)
                                        : countyVariant(1100, 520, false); }
 
 function countyVariant(W, H, mob) {
