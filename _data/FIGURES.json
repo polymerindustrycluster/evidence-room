@@ -29,90 +29,167 @@
     "whether two figures are the same quantity, so it reports and a human decides. What",
     "gets confirmed lands here, which is the part that can be asserted."
   ],
-
   "figures": {
     "techhub_award": {
-      "value": 51001413, "display": "$51.0M",
-      "also_printed_as": ["$51,001,413", "$51.0 million"],
-      "unit": "USD", "basis": "EDA Sustainable Polymers Tech Hub, as awarded, nominal",
-      "vintage": "signed 2024", "source": "usaspending + PIC award register",
-      "observability": "public", "status": "agreed",
-      "pages": ["federal-money", "funding-map", "accountability", "scorecard", "index", "cluster-health"]
+      "value": 51001413,
+      "display": "$51.0M",
+      "also_printed_as": [
+        "$51,001,413",
+        "$51.0 million"
+      ],
+      "unit": "USD",
+      "basis": "EDA Sustainable Polymers Tech Hub, as awarded, nominal",
+      "vintage": "signed 2024",
+      "source": "usaspending + PIC award register",
+      "observability": "public",
+      "status": "agreed",
+      "pages": [
+        "federal-money",
+        "funding-map",
+        "accountability",
+        "scorecard",
+        "index",
+        "cluster-health"
+      ]
     },
     "techhub_award_2025_dollars": {
-      "value": 51263077, "display": "$51.3 million",
-      "unit": "USD", "basis": "the same award restated in 2025 dollars",
+      "value": 51263077,
+      "display": "$51.3 million",
+      "unit": "USD",
+      "basis": "the same award restated in 2025 dollars",
       "differs_from": "techhub_award",
       "why": "CPI-U rebasing, not a second award. A page comparing it against nominal contracting must say which ruler it is using.",
-      "observability": "public", "status": "agreed", "pages": ["federal-money"]
+      "observability": "public",
+      "status": "agreed",
+      "pages": [
+        "federal-money"
+      ]
     },
     "pilot_facility": {
-      "value": 18521985, "display": "$18.52M",
-      "also_printed_as": ["$18,521,985", "$18.5M"],
-      "unit": "USD", "basis": "Ohio Innovation Hub pilot facility line",
-      "observability": "public", "status": "agreed",
-      "pages": ["funding-map", "accountability", "scorecard"]
+      "value": 18521985,
+      "display": "$18.52M",
+      "also_printed_as": [
+        "$18,521,985",
+        "$18.5M"
+      ],
+      "unit": "USD",
+      "basis": "Ohio Innovation Hub pilot facility line",
+      "observability": "public",
+      "status": "agreed",
+      "pages": [
+        "funding-map",
+        "accountability",
+        "scorecard"
+      ]
     },
     "award_disbursed": {
-      "value": null, "display": "no public record exists",
-      "unit": "USD", "basis": "money actually paid out against the executed lines",
+      "value": null,
+      "display": "no public record exists",
+      "unit": "USD",
+      "basis": "money actually paid out against the executed lines",
       "observability": "NOT PUBLICLY OBSERVABLE",
       "why_unobservable": "The public record shows award and execution, never drawdown. A fully assigned award that has disbursed nothing and one that has disbursed everything look identical.",
       "status": "agreed",
       "forbidden": "No page may state a disbursed amount, including zero. cluster-health printed 'signed, none of it spent' on 2026-08-29, which asserts as fact something no source can support.",
-      "pages": ["accountability", "cluster-health"]
+      "pages": [
+        "accountability",
+        "cluster-health"
+      ]
     },
     "neosmart_obligation": {
-      "value": 14999983, "display": "$15.0 million",
-      "also_printed_as": ["$14,999,983"],
-      "unit": "USD", "basis": "NSF NEO-SMART Engine, obligated, appears under education/research NAICS not polymer codes",
-      "observability": "public", "status": "agreed", "pages": ["federal-money"]
+      "value": 14999983,
+      "display": "$15.0 million",
+      "also_printed_as": [
+        "$14,999,983"
+      ],
+      "unit": "USD",
+      "basis": "NSF NEO-SMART Engine, obligated, appears under education/research NAICS not polymer codes",
+      "observability": "public",
+      "status": "agreed",
+      "pages": [
+        "federal-money"
+      ]
     },
     "neosmart_headline": {
-      "value": 160000000, "display": "$160M",
-      "unit": "USD", "basis": "UNKNOWN. Printed only inside a typed event title with no amount field, no source and no note.",
-      "observability": "unverified", "status": "unverified",
-      "conflict": "Ten times the obligated figure recorded above, for the same award. Plausibly a ten-year ceiling against a first-phase obligation, but nothing in this repo says so and it is a public claim about public money.",
-      "action": "REMOVED from timeline pending a source. Restore only with a citation naming what the figure covers.",
+      "value": null,
+      "display": "REMOVED",
+      "unit": "USD",
+      "basis": "the NSF Engines Type 2 ten-year program ceiling, not this award",
+      "observability": "resolved",
+      "status": "agreed",
+      "resolved": "NSF award record 2532460 (api.nsf.gov, retrieved 2026-08-29) gives estimatedTotalAmt 14,999,983 and fundsObligatedAmt 7,499,984. The $160M is a program ceiling contingent on renewals across ten years; no source ties it to this award. timeline now prints the sourced figures and a guard fails if 160 appears in any amount, title or note.",
       "pages": []
     },
     "pic12_jobs_all_residents": {
-      "value": 1735169, "display": "1,735,169",
-      "unit": "jobs", "basis": "every job located in the twelve counties, worker resident in ANY state",
-      "vintage": "LODES 2022", "source": "lodes",
-      "observability": "public", "status": "agreed", "pages": ["laborshed"]
+      "value": 1735169,
+      "display": "1,735,169",
+      "unit": "jobs",
+      "basis": "every job located in the twelve counties, worker resident in ANY state",
+      "vintage": "LODES 2022",
+      "source": "lodes",
+      "observability": "public",
+      "status": "agreed",
+      "pages": [
+        "laborshed"
+      ]
     },
     "pic12_jobs_in_state": {
-      "value": 1702542, "display": "1,702,542",
-      "unit": "jobs", "basis": "the same twelve counties counting OHIO residents only",
+      "value": 1702542,
+      "display": "1,702,542",
+      "unit": "jobs",
+      "basis": "the same twelve counties counting OHIO residents only",
       "differs_from": "pic12_jobs_all_residents",
       "why": "The peer comparison is built on an in-state basis so every region is measured the same way. Both are correct and both were labelled PIC-12, roughly 32,600 apart, which a reader found and could not reconcile.",
       "status": "unresolved",
       "action": "laborshed must name the basis wherever both appear, or the reader meets two totals for one place.",
-      "pages": ["laborshed"]
+      "pages": [
+        "laborshed"
+      ]
     },
     "routine_federal_per_year": {
-      "value": null, "display": "DISPUTED",
-      "unit": "USD/year", "basis": "average annual ordinary federal contracting to polymer codes in the twelve counties",
-      "status": "unresolved",
+      "value": 36606066,
+      "display": "$36.6M",
+      "unit": "USD/year",
+      "basis": "average annual ordinary federal contracting to polymer codes in the twelve counties",
+      "status": "agreed",
       "conflict": "index prints $34.9M a year and the Tech Hub as 'about a year and a half' of it; cluster-health prints $36.6M a year and '1.4 years'. 51.0/34.9 = 1.46 and 51.0/36.6 = 1.39, so both internally consistent and mutually contradictory. federal-money's own text distinguishes an eight-year average from a finished-years-only average, which is probably the source of the split.",
-      "action": "Pick one basis, name it wherever the figure appears, and give the other its own id.",
-      "pages": ["index", "cluster-health", "federal-money"]
+      "action": "index still prints the eight-year figure. Fix pending.",
+      "pages": [
+        "index",
+        "cluster-health",
+        "federal-money"
+      ],
+      "observability": "public",
+      "resolved": "Computed from federal-money's own shipped data. $34,908,376 averages all EIGHT fiscal years INCLUDING the partial FY2026 at $23.0M; $36,606,066 averages the SEVEN finished years. An annual rate must not include a year that has not finished, so $36.6M (and 1.4 years) is the defensible pair. index's $34.9M and 'about a year and a half' understate the annual rate and overstate the award's reach."
     },
     "polymer_jobs_2025": {
-      "value": null, "display": "DISPUTED",
-      "unit": "jobs", "basis": "polymer employment across the twelve counties, 2025",
-      "status": "unresolved",
+      "value": null,
+      "display": "DISPUTED",
+      "unit": "jobs",
+      "basis": "polymer employment across the twelve counties, 2025",
+      "status": "agreed",
       "conflict": "cluster-health's hero says 24,030 counted in 2025; its own opening line says 23,457. 17,770 + 4,259 + 2,001 = 24,030 checks out, so the 23,457 is the one to trace.",
-      "pages": ["cluster-health"]
+      "pages": [
+        "cluster-health"
+      ],
+      "observability": "public",
+      "resolved": "Both correct, two bases. 24,030 is every published cell in 2025 (17,770 + 4,259 + 2,001, 24 cells). 23,457 is the BALANCED panel: the 21 counties published in every year since 2015, which is the only set that supports the three-year trend 25,281 to 24,259 to 23,457. The level and the trend need different bases and the page names neither.",
+      "action": "cluster-health must label each. Fix pending."
     },
     "polymer_concentration": {
-      "value": null, "display": "DISPUTED",
+      "value": null,
+      "display": "DISPUTED",
       "unit": "multiple of national share",
       "basis": "plastics and rubber concentration in the twelve counties against the national share",
-      "status": "unresolved",
+      "status": "agreed",
       "conflict": "2.32x on cluster-health, 2.44x on index, same subject.",
-      "pages": ["index", "cluster-health"]
+      "pages": [
+        "index",
+        "cluster-health"
+      ],
+      "observability": "public",
+      "resolved": "NOT A CONFLICT, and this entry was my error. index says 'Rubber products, the industry Akron is named for, run 2.44 times'; cluster-health says 'Plastics and rubber, the industries the region is known for, run 2.32 times'. Rubber products is NAICS 3262 and plastics-and-rubber is 326, its parent. Two industries, two correct figures. The detector paired them on word overlap and I recorded the conflict without checking the labels.",
+      "action": "None on the pages. A registry entry is a claim like any other and this one was wrong."
     }
   }
 }

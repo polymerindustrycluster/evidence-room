@@ -279,3 +279,136 @@ three figures changed.
   verify_consistency, columns, centres, textsize --mobile all pass. `columns.mjs` measures
   33 elements on this page now, against 4 before, because the layout gates key on the house
   class names.
+
+## 2026-08-29 — a naive-reader pass, and one number withdrawn
+
+A reader was given the rendered page and nothing else. Everything below is something they
+hit, plus the checks that now stop each one coming back. Every fix derives its number at
+render time; nothing on this page is a count typed into the markup any more.
+
+### The $160M is gone; the award now carries a sourced figure
+
+**Was:** the swimlane's leader label read `14 Jul 2026 · NSF backs NEO-SMART with $160M`,
+and `timeline.json` event **E205** was titled `NSF awards the CWRU-led NEO-SMART Engine
+$160M`.
+
+**Is:** the title carries no figure. The row carries the amount as **data**, with its basis
+and its record:
+
+```
+amount          14999983     amountBasis     "estimated total"
+obligated        7499984     obligatedBasis  "obligated FY2026"
+awardId          "2532460"   awardDate       "2026-07-13"
+periodStart     "2026-08-01" periodEnd       "2036-07-31"
+amountSource / amountNote    the record, and what is deliberately not printed
+```
+
+**Provenance:** NSF award record **2532460**, `api.nsf.gov/services/v1/awards.json`,
+retrieved **2026-08-29**. NSF Engines Type 2 cooperative agreement to Case Western Reserve
+University; `estimatedTotalAmt` 14999983, `fundsObligatedAmt` 7499984 (FY2026); award date
+07/13/2026; period 08/01/2026 to 07/31/2036. The estimated total matches, to the dollar, the
+figure the *federal-money* page already carried from USAspending, so the two pages now agree
+on one number from two independent records.
+
+**Why it was pulled first.** The reader found the same award carrying two numbers an order of
+magnitude apart: $160M here, and `$15.0 million` / `($14,999,983)` on *federal-money*. They
+could not tell which was wrong. The $160M existed in exactly one place in this repository:
+inside a typed title. No amount field, no source, no note, nothing to check it against. It
+was removed before a source existed, and restored only as a different number that came with
+one.
+
+**What is still not printed, and why.** NSF Engines Type 2 is publicly described with a
+ten-year program ceiling far larger than this award. That ceiling is contingent on renewals
+across the decade and **no source here ties it to this award**, so the page does not print it
+as this award's value — and does not print it as a denial either, because a number in a
+disclaimer is still a number a reader can quote. Reading the ceiling as the award is the
+exact conflation that produced the original error.
+
+**Guarded by** `tl-swimlane-rules`, which now checks the amount against its record, checks
+the obligation is below the total, requires a basis and a source for any amount, and fails if
+`160` appears in any amount, title or amount note in the inventory.
+
+**The date.** The page keeps 14 Jul 2026, which is the inventory's date of *public record*;
+the award record's own date is 13 Jul 2026 and the period of performance starts 1 Aug 2026.
+The calendar band now says which is which rather than leaving a reader to reconcile them.
+
+### "Eleven years, nothing proven" is WITHDRAWN
+
+It was an artefact of its own bucketing. `heritage.json`'s last era declared itself
+`from: 2000, to: 2020` (label "2000-2019") while the sixth block was a typed constant,
+"2013-2023". They overlapped, so any row dated 2013 to 2019 was assigned to the era and the
+block could **not** fill from data whatever the register held. An empty block and an
+unfillable one look identical on a page.
+
+The last era now ends at 2013, where the block begins, and every era's label is checked
+against its own bounds (`tl-heritage-blocks-partition`). Re-checked on the corrected
+buckets, the finding does not survive: two rows are recorded as running into that window,
+`D-010` (2005-13) and `H-013`, the NSF CLiPS center awarded 2006 and renewed to 2016. Both
+are now **drawn** in the block as bars ending at the year they stop, which is the proof the
+block is fillable.
+
+What is left is true and smaller, and is what the page now says: no *new* proven row after
+2012, and nothing at all after 2016 — a seven-year silence, not eleven. `endYear` was added
+to every heritage row so the strip can see where a row *ends*, not only where it starts;
+that is also the answer to "1898 to 2012 while rows read 2005-13 and 2006-2016". The old
+claim `tl-heritage-void-column` is deleted; `tl-heritage-gap` was rewritten and names the
+withdrawal.
+
+### The heritage register double-counted two events
+
+`D-003` and `H-007` carried the **identical** register sentence for one fact, the Case
+macromolecular department of January 1963, counted once as a discovery and once as heritage.
+`H-007` is canonical: this page's own definition is that a discovery is "a paper or a patent,
+never a product", and a department is capacity. `D-003` is merged into it and recorded in
+`meta.merged`.
+
+`H-008` and `D-004` were a partial overlap, not a duplicate: `D-004` opened with `H-008`'s
+sentence about the 1965 Kent institute and then added a separate 1994 paper. Deleting it
+would have lost real evidence, so it is **narrowed** to the 1994 discovery it alone carries
+and re-dated accordingly (`meta.narrowed`). So one genuine double-count, not two.
+
+31 rows, 19 + 12. `tl-heritage-no-double-count` now fails if any shipped row's register
+sentence turns up inside another's.
+
+### 68 and 69 were the same rows measured from two different dates
+
+Both were typed into the markup, in five places, and the page never said which was which.
+68 is delivered on or after the 23 October 2023 designation (the pace comparison); 69 is
+delivered on or after the window opens, 1 January 2023 (the calendar). They differ by one
+row, 9 January 2023. Both are derived now, both start dates are named on the page, and the
+row between them is named in prose written from the data. `tl-shown-counts` holds the
+relationship, and fails if a *second* row ever lands in that gap — which would make the
+one-row sentence quietly wrong.
+
+### The other five
+
+- **"5 predate the window and feed the year-by-year chart."** Three do. The chart starts at
+  2021 and drops the two century-scale context rows. The methods paragraph now computes the
+  split.
+- **Newest-first, out of order.** Two rows were anchored mid-year while displaying a later
+  period: `1–15 Aug 2026` sat below `7 Jul 2026`. A span row now anchors at the first year it
+  displays (`tl-range-rows-sort-on-shown-date`).
+- **`pilot facility ready · Nov 2027`** while the record said `Oct–Dec 2027`. Both leader
+  labels are now built from the event they point at.
+- **Dot height inside a lane read as rank.** It is collision packing. Said in the legend, the
+  figure subtitle, the methods and the aria summary.
+- **Undefined short names.** PIC, the designation (and what it confers), NEO-SMART, PC3,
+  ODOD, ConxusNEO, GJC, RFP, PDLC, YoY now have a glossary above the record table.
+
+Not reproduced: "chart-3 cuts off the fifth workstream entirely." The swimlane measures
+1018px at 1440 and 924px at 390, and all five lanes render at both. A 1000px-tall crop of it
+loses the last lane, which is the likely source.
+
+One consequence outside this page: the hub card in `index/` restates this page's heritage
+count, so `index/claims.json` `card-timeline` failed on the 32-to-31 change. The card text and
+its assertion were corrected there. That cross-page catch is what `index/claims.json` exists
+for, and it worked.
+
+Gates: bundle, verify, collide --sweep (14 widths), columns, centres, textsize --sweep,
+disclosure, style, coldopen, verify_claims (31 claims on this page, 27 pass, 4 manual),
+verify_consistency. Each new guard was also run against the defect that motivated it, and
+fails on it: a re-added duplicate sentence, the era stretched back over the sixth block, the
+row that runs to 2016 removed, `$160M` restored to the title, a second row in the 68/69 gap, a
+pre-window row reclassified as context, the range row re-anchored to mid-year, and the
+register header drifting from the rows. A gate that returns nothing on the case that motivated
+it is worse than no gate.

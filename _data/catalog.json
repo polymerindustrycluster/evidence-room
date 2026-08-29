@@ -1,7 +1,7 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-08-28 14:04",
+  "generated": "2026-08-29 10:20",
   "seconds": 0.1,
   "scripts": 25,
   "outputs_on_disk": 0,
@@ -52,6 +52,7 @@
    "observed_stop": "open(counts.json,'w')",
    "observed_network": [],
    "observed_reads": [
+    "accountability/claims.json",
     "churn/claims.json",
     "cluster-health/claims.json",
     "cost-scissors/claims.json",
@@ -62,8 +63,7 @@
     "occupations/claims.json",
     "peers/claims.json",
     "realwage/claims.json",
-    "revisions/claims.json",
-    "scorecard/claims.json"
+    "revisions/claims.json"
    ],
    "import_error": null,
    "registry_sources": [],
@@ -398,6 +398,7 @@
     "qwi"
    ],
    "consuming_pages": [
+    "accountability",
     "churn",
     "cluster-health",
     "cost-scissors",
@@ -464,6 +465,7 @@
     "ipeds"
    ],
    "consuming_pages": [
+    "accountability",
     "cluster-health",
     "occupations",
     "scorecard"
@@ -524,6 +526,7 @@
     "ipeds"
    ],
    "consuming_pages": [
+    "accountability",
     "cluster-health",
     "occupations",
     "scorecard"
@@ -586,6 +589,7 @@
     "ipeds"
    ],
    "consuming_pages": [
+    "accountability",
     "cluster-health",
     "occupations",
     "scorecard"
@@ -647,6 +651,7 @@
     "ipeds"
    ],
    "consuming_pages": [
+    "accountability",
     "cluster-health",
     "occupations",
     "scorecard"
@@ -1145,6 +1150,7 @@
     "qcew"
    ],
    "consuming_pages": [
+    "accountability",
     "churn",
     "cluster-health",
     "cost-scissors",
@@ -1208,6 +1214,7 @@
     "qcew"
    ],
    "consuming_pages": [
+    "accountability",
     "churn",
     "cluster-health",
     "cost-scissors",
@@ -1333,6 +1340,7 @@
     "usaspending"
    ],
    "consuming_pages": [
+    "accountability",
     "cluster-health",
     "cost-scissors",
     "federal-money",

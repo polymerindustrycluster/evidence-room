@@ -13,6 +13,66 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-08-29 — the NSF Engines figure, *timeline*
+
+### The NSF NEO-SMART award amount — *timeline*, published
+
+**Was:** the operating-record swimlane labelled the 14 July 2026 award
+"NSF backs NEO-SMART with $160M", and `timeline/data/timeline.json` event E205 was titled
+"NSF awards the CWRU-led NEO-SMART Engine $160M".
+
+**Is:** "NSF awards the CWRU-led NEO-SMART Engine", with the amount carried as data on the
+row rather than as prose in the title: $14,999,983 estimated total, of which $7,499,984
+obligated for FY2026, from NSF award record 2532460 (api.nsf.gov awards.json, retrieved
+2026-08-29). The award, the date and the awarder are unchanged.
+
+**Cause:** a reader found the same award carrying two figures an order of magnitude apart —
+$160M on *timeline*, and $15.0 million ($14,999,983) on *federal-money*. The $160M existed
+in exactly one place in this repository: inside a typed event title, with no amount field,
+no source and no note. The *federal-money* figure carries dollar-level precision and a
+USAspending record. The two are plausibly the same award at two scopes, because NSF Engines
+are commonly announced as a ten-year ceiling alongside a much smaller initial obligation —
+but nothing here establishes that, so the page does not assert it, in either direction. The
+unsourced figure was withdrawn, and then replaced by a sourced one: the NSF award record
+gives an estimated total of $14,999,983, which agrees to the dollar with the USAspending
+figure *federal-money* already carried, so the two pages now state one number from two
+independent records. The program ceiling is still not printed anywhere on either page, in
+either direction, because no source ties it to this award. See
+[timeline/README.md](timeline/README.md).
+
+### "Eleven years, nothing proven" — *timeline*, published
+
+**Was:** the heritage strip drew a sixth block, 2013 to 2023, captioned "eleven years,
+nothing proven", and the figure title read "The proven record runs 1898 to 2012, then goes
+quiet until the designation".
+
+**Is:** the block reports what the register covers inside it, and the page says no *new*
+proven row after 2012 and nothing at all after 2016 — a seven-year silence.
+
+**Cause:** a definitional bug, found by the same reader. The register's last era declared
+itself 2000 to 2019 while the sixth block was a typed "2013-2023"; the two overlapped, so
+any row dated 2013 to 2019 resolved to the era and the block could not be filled from data
+whatever the register held. With the boundary corrected, the finding did not survive: two
+rows run into that window, including the NSF CLiPS center awarded in 2006 and renewed to
+2016. The silence is real but shorter, and is now stated at its real size. A finding that is
+an artefact of its own bucketing is not a finding.
+
+### The proven heritage count, 32 to 31 — *timeline*, published
+
+**Was:** "32 proven events ... 19 that changed the region's capacity and 13 scientific
+firsts."
+
+**Is:** 31, 19 and 12.
+
+**Cause:** two register rows carried one event in identical words — the Case macromolecular
+department of January 1963, counted once as heritage and once as a discovery. The heritage
+row is canonical (a department is capacity; the page's own rule is that a discovery is a
+paper or a patent, never a product) and the discovery row is merged into it. A second,
+partial overlap on the 1965 Kent institute was resolved by narrowing rather than deleting,
+so no evidence was lost and the count moved by one, not two.
+
+---
+
 ## 2026-08-17 — the pre-publication review
 
 This repository was reviewed page by page before anything was published. Eleven pages
