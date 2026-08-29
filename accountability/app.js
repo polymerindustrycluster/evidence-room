@@ -120,7 +120,47 @@ function attribDesktop() {
      version set the two label lines 12 apart and collide.mjs found nine text-over-text
      overlaps at 14.2px and 13.6px, which is what 12 units of leading buys. Leading is not
      a style choice here; it is the difference between a legible chart and a failing gate. */
-  const m = {t: 80, r: 156, b: 40, l: 16}, rowH = 86, W = 1100;
+  /* THE RIGHT MARGIN IS MEASURED AGAINST THE LONGEST DROP LABEL, NOT THE VALUE LABELS.
+     It was typed at 156, which comfortably holds a value like "$85,335,784" at about 97
+     units. But the drop annotation is drawn from the SAME x one line below, and
+     "match and cost share, promised by others" with its amount paints 358 units: the row
+     ran to 1130.9 in an 1100-unit box, 31 units past the edge at every desktop width.
+     overflow:visible meant it painted into the page margin rather than being clipped, so
+     it read as a ragged right edge and no gate saw it. collide.mjs measures ink against
+     the page COLUMN, and 27px of overhang lands inside the 32px gutter.
+
+     Clamping the label the way frame() clamps an axis title is wrong here: pulling it 31
+     units left starts it at 740, inside the bar end at 761. Wrapping is wrong too, since
+     the drop line sits 36 below the bar top and the next row's label is only 25 further
+     down. What is actually too small is the margin, so the margin is computed: widen
+     until the worst row fits, measuring the real strings. */
+  const rowH = 86, W = 1100;
+  const m = {t: 80, r: 156, b: 40, l: 16};
+  {
+    const probe = chart("attrib", {W, H: 200, m});
+    const measure = (str, cls) => {
+      const t = txt(probe.svg, str, {x: 0, y: 0, class: cls, opacity: 0});
+      const len = t.getComputedTextLength();
+      probe.svg.removeChild(t);
+      return len;
+    };
+    const need = STG.map((st, i) => {
+      const frac = st.amount / MAXA;
+      const label = i && DROP[i]
+        ? measure(`−${usd(STG[i - 1].amount - st.amount)} ${DROP[i]}`, "pv-labq")
+        : measure(usd(st.amount), "pv-lab");
+      /* right edge = m.l + frac*(W - m.l - r) + 12 + label  must clear W - 2 */
+      return {frac, label};
+    });
+    let r = m.r;
+    for (let i = 0; i < 40; i++) {
+      const worst = Math.max(...need.map(q =>
+        m.l + q.frac * (W - m.l - r) + 12 + q.label));
+      if (worst <= W - 2) break;
+      r += Math.ceil(worst - (W - 2));
+    }
+    m.r = r;
+  }
   const H = m.t + STG.length * rowH + 34 + 86 + m.b;
   const {svg, w} = chart("attrib", {W, H, m});
   const xs = v => m.l + (v / MAXA) * w;
