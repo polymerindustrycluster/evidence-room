@@ -82,6 +82,31 @@ const wrapText = (svg, s, cls, max) => {
   return out;
 };
 
+/* THE LEFT MARGIN IS MEASURED TOO, for the same reason the wrap above is. frame() sets
+   every y-tick `end`-anchored at `x - TICK_GAP`, so the left margin has to hold the
+   longest RENDERED tick string plus that gap. The scatter typed l:32 against a "100" that
+   paints 25.3 units, and each of 100, 110 and 120 started 3 units left of x=0. At 1440
+   the svg has overflow:visible and the overhang lands in the page gutter unseen; between
+   761px and 1099px the shared sheet wraps the chart in an overflow-x:auto box and those
+   units are CLIPPED, with no scroll position that brings them back.
+
+   getComputedTextLength reports USER units, so the probe runs inside the viewBox the
+   margin will be written in — set here, and set again by PV.chart a moment later. */
+const TICK_GAP = 10;                  // frame()'s own gap between a y-tick and the plot
+const gutter = (id, W, labels, gap) => {
+  const svg = document.getElementById(id);
+  svg.setAttribute("viewBox", `0 0 ${W} 100`);
+  let max = 0;
+  for (const [s, cls] of labels) {
+    const t = txt(svg, s, {x: 0, y: 0, class: cls});
+    let len = 0;
+    try { len = t.getComputedTextLength(); } catch { len = 0; }
+    svg.removeChild(t);
+    max = Math.max(max, len);
+  }
+  return Math.ceil(max + gap);
+};
+
 /* Three cards, not four: the house rule is cut to three before letting four wrap, and
    the climb already lives inside the first card's sub-line. */
 /* Every card here is a constructed unit, so each one carries its own direction: what #1
@@ -490,10 +515,8 @@ function drawStripVariant(mobile) {
 function drawScatter() { drawScatterVariant(MOBILE.matches); }
 
 function drawScatterVariant(mobile) {
-  const opts = mobile
-    ? {W: 375, H: 404, m: {t: 58, r: 12, b: 50, l: 34}}
-    : {W: 1100, H: 520, m: {t: 44, r: 71, b: 66, l: 32}};
-  const {svg, W, H, m, w, h} = PV.chart("scatter", opts);
+  /* The domain and its tick strings come first, because the LEFT MARGIN is measured off
+     those strings and the domain does not depend on the margin. */
   const nx = B.map(r => r.nominal), ry = B.map(r => r.rpp);
   const x0 = Math.min(...nx) * .95, x1 = Math.max(...nx) * 1.04;
   /* THE AXIS MUST LABEL PAST THE DATA. At +2 the top gridline came out at 110 while San
@@ -501,12 +524,19 @@ function drawScatterVariant(mobile) {
      above it, so the figure title's "up to a fifth less" pointed at a band of the chart
      with no numbers in it. +3 puts the last tick at 120, above the highest metro. */
   const y0 = Math.min(...ry) - 2, y1 = Math.max(...ry) + 3;
+  const yt = ticks(y0, y1, mobile ? 4 : 6);
+  const yfmt = v => v.toFixed(0);
+  const boxW = mobile ? 375 : 1100;
+  const gut = gutter("scatter", boxW, yt.map(v => [yfmt(v), "pv-tick"]), TICK_GAP);
+  const opts = mobile
+    ? {W: boxW, H: 404, m: {t: 58, r: 12, b: 50, l: gut}}
+    : {W: boxW, H: 520, m: {t: 44, r: 71, b: 66, l: gut}};
+  const {svg, W, H, m, w, h} = PV.chart("scatter", opts);
   const xs = v => m.l + ((v - x0) / (x1 - x0)) * w;
   const ys = v => m.t + h - ((v - y0) / (y1 - y0)) * h;
-  const yt = ticks(y0, y1, mobile ? 4 : 6);
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys,
     xt: ticks(x0, x1, mobile ? 3 : 6), yt,
-    xfmt: usd, yfmt: v => v.toFixed(0),
+    xfmt: usd, yfmt,
     /* Dollars need no direction; an index does, so the vertical title says which way is
        dearer before a reader has to work it out from the tick numbers. */
     xlab: mobile ? "Average weekly wage →" : "Average weekly wage on the paycheck →",

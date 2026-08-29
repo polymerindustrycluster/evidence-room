@@ -37,6 +37,31 @@ const short = v => v >= 1e6 ? "$" + (Math.round(v / 1e5) / 10).toFixed(1) + "M"
                  : v ? "$" + Math.round(v / 1e3) + "K" : "$0";
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 
+/* THE LEFT MARGIN IS MEASURED, NOT TYPED. The delivery rows carry an `end`-anchored award
+   name at `m.l - GUT`, so the margin has to hold the LONGEST RENDERED name plus that gap.
+   It was typed at 196 while "Good Jobs Challenge (APEX)" paints 201.5 units, which put
+   the whole first stem of the name 19 units left of x=0. At 1440 the svg has
+   overflow:visible and that ink lands in the page gutter, so it looked fine; between
+   761px and 1099px the shared sheet puts the chart in an overflow-x:auto box and it is
+   CLIPPED — and scrolling right carries it further out, not into view.
+
+   getComputedTextLength reports USER units, so the probe runs inside the viewBox the
+   margin will be written in — set here, and set again by chart() a moment later. */
+const GUT = 14;                       // this chart's gap between a row label and the plot
+function gutter(id, W, labels, gap = GUT) {
+  const svg = document.getElementById(id);
+  svg.setAttribute("viewBox", `0 0 ${W} 100`);
+  let max = 0;
+  for (const [s, cls] of labels) {
+    const t = txt(svg, s, {x: 0, y: 0, class: cls});
+    let len = 0;
+    try { len = t.getComputedTextLength(); } catch { len = 0; }
+    svg.removeChild(t);
+    max = Math.max(max, len);
+  }
+  return Math.ceil(max + gap);
+}
+
 /* ------------------------------------------------------------------- the second lock */
 function assertEmpty(rows) {
   const bad = rows.filter(r => r.status === "vault" && (r.current || r.sub));
@@ -288,7 +313,11 @@ function hatch(svg, id) {
 const maxAward = Math.max(...DEL.sources.map(s => s.award));
 
 function deliveryDesktop() {
-  const m = {t: 92, r: 232, b: 68, l: 196}, rowH = 62;
+  /* Two lines share the label column — the award's short name at label weight and its
+     dollar figure in the quiet grey — so the margin is measured against BOTH faces. */
+  const l = gutter("delivery", 1100, DEL.sources.flatMap(s =>
+    [[s.short, "pv-lab"], [`${short(s.award)} awarded`, "pv-labq"]]));
+  const m = {t: 92, r: 232, b: 68, l}, rowH = 62;
   const {svg, w, h} = chart("delivery", {W: 1100, rows: DEL.sources.length, rowH, m});
   hatch(svg, "schatch");
   const xs = v => m.l + (v / maxAward) * w;
@@ -308,8 +337,8 @@ function deliveryDesktop() {
   /* Labels after every filled mark, so nothing is drawn over. */
   DEL.sources.forEach((s, i) => {
     const y = m.t + i * rowH + 13, bh = 26;
-    txt(svg, s.short, {x: m.l - 14, y: y + 12, "text-anchor": "end", class: "pv-lab"});
-    txt(svg, `${short(s.award)} awarded`, {x: m.l - 14, y: y + 29,
+    txt(svg, s.short, {x: m.l - GUT, y: y + 12, "text-anchor": "end", class: "pv-lab"});
+    txt(svg, `${short(s.award)} awarded`, {x: m.l - GUT, y: y + 29,
       "text-anchor": "end", class: "pv-labq"});
     txt(svg, s.unassigned ? `${short(s.assigned)} named` : "fully assigned",
       {x: xs(s.award) + 14, y: y + 12, class: "pv-lab"});
@@ -323,10 +352,13 @@ function deliveryDesktop() {
      bar above it, which a screenshot showed and the collision gate did not: collide.mjs
      compares text against text, never a rule against a mark. The Ohio row is already
      labelled at both ends, so the leader was buying nothing. */
+  /* The standfirst is anchored to the FIGURE's left edge, not to the plot. It was written
+     `m.l - 196`, which is x=0 only for as long as m.l happens to be 196 — and the margin
+     is now measured, so it does not. */
   txt(svg, `The whole ${short(DEL.unassigned)} without a named recipient is Ohio money.`,
-    {x: m.l - 196, y: 34, class: "pv-lab"});
+    {x: 0, y: 34, class: "pv-lab"});
   txt(svg, DEL.gaps.map(g => `${g.name} holds ${short(g.gap)}`).join("; ") + ".",
-    {x: m.l - 196, y: 55, class: "pv-labq"});
+    {x: 0, y: 55, class: "pv-labq"});
 
   DEL.sources.forEach((s, i) => {
     hoverable(el("rect", {x: 0, y: m.t + i * rowH, width: 1100, height: rowH,

@@ -307,9 +307,21 @@ function loadData(file) {
     // "Dec 2024 · R&D awards begin" plate sat on the year labels and hid four of them.
     const RIGHT = 8, TOP = 96, ROW = 20, HEADH = 24, GAP = 16, BOT = 104;
     const TIER_Y = [14, 32, 50];
-    const plotW = W - RIGHT;
+    /* THE SCALE IS INSET BY THE WIDEST MARK'S OWN RADIUS. A dot is drawn AROUND its x, so
+       a time scale that starts at x=0 puts half of every mark at the window's opening
+       date outside the box: the first event's 13-unit tap target sat 10.8 units left of
+       the viewBox and its 6-unit dot 3.8. The wide layout never showed this because it
+       has a lane-name column; the panel layout moved the names above the plot to win the
+       full width and took the margin away with them. At 1440 overflow:visible lets that
+       ink land in the page gutter, but this layout only runs below ~900px, where the
+       shared sheet's overflow-x:auto box CLIPS it — and it is the TAP TARGET, so what was
+       lost was not decoration. Written off the radii rather than typed, so the inset
+       cannot drift from the marks it exists to hold. */
+    const HIT_R = 13, DOT_R = 6;
+    const LEFT = HIT_R;
+    const plotW = W - RIGHT - LEFT, plotR = LEFT + plotW;
     const span = WIN_TO - WIN_FROM;
-    const x = (d) => ((Math.min(Math.max(d, WIN_FROM), WIN_TO) - WIN_FROM) / span) * plotW;
+    const x = (d) => LEFT + ((Math.min(Math.max(d, WIN_FROM), WIN_TO) - WIN_FROM) / span) * plotW;
 
     const lanes = DATA.lanes.map((ln) => {
       const evs = IN.filter((e) => e.laneKey === ln.key && visible(e))
@@ -339,7 +351,7 @@ function loadData(file) {
 
     const nx = x(NOW);
     svg.appendChild(el('rect', { class: 'fwd-zone', x: nx, y: TOP - 20,
-      width: plotW - nx, height: laneBot - TOP + 20 }));
+      width: plotR - nx, height: laneBot - TOP + 20 }));
 
     M_RULES.forEach((rl, i) => {
       const rx = x(new Date(rl.date));
@@ -351,7 +363,7 @@ function loadData(file) {
     lanes.forEach((ln) => {
       svg.appendChild(el('text', { class: 'pnl-name', x: 0, y: ln.y + 12,
         fill: LANE_COLOR[ln.key] }, ln.name));
-      svg.appendChild(el('text', { class: 'pnl-count', x: plotW, y: ln.y + 12,
+      svg.appendChild(el('text', { class: 'pnl-count', x: plotR, y: ln.y + 12,
         'text-anchor': 'end' },
         ln.evs.length === ln.all ? `${ln.evs.length}` : `${ln.evs.length} of ${ln.all}`));
       const g = el('g', {});
@@ -360,8 +372,8 @@ function loadData(file) {
         const node = el('g', { class: 'ev' + (e.delivered ? '' : ' fwd'), 'data-id': e.id,
           style: `--c:${LANE_COLOR[ln.key]}`, tabindex: '0', role: 'button',
           'aria-label': `${showDate(e)}. ${e.title}.` + (e.delivered ? '' : ' Scheduled, not delivered.') });
-        node.appendChild(el('circle', { class: 'hit', cx: e._cx, cy, r: 13 }));
-        node.appendChild(el('circle', { class: 'dot', cx: e._cx, cy, r: 6, fill: LANE_COLOR[ln.key],
+        node.appendChild(el('circle', { class: 'hit', cx: e._cx, cy, r: HIT_R }));
+        node.appendChild(el('circle', { class: 'dot', cx: e._cx, cy, r: DOT_R, fill: LANE_COLOR[ln.key],
           stroke: e.delivered ? '#fff' : LANE_COLOR[ln.key] }));
         if (!e.delivered) node.appendChild(el('circle', { class: 'pip', cx: e._cx, cy, r: 1.5,
           fill: LANE_COLOR[ln.key] }));

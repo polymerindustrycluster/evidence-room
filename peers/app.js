@@ -37,6 +37,33 @@ const AKRON = M.subject, CLE = "C1741";
 const shortName = s => s.split(",")[0].split("-")[0].trim();
 const MOBILE = matchMedia("(max-width: 760px)");
 
+/* THE LEFT MARGIN IS MEASURED, NOT TYPED — the same class of bug as a typed leading.
+   A row label set `end`-anchored at `m.l - GUT` needs the margin to hold the LONGEST
+   RENDERED label plus that gap. Both wide charts here typed one: l:100 against state
+   names that paint 92.2 units, and l:92 against "County areas" at 92.5. At 1440 the svg
+   has overflow:visible, so the overhang paints into the page gutter and reads as fine;
+   between 761px and 1099px the shared sheet puts the chart in an overflow-x:auto box and
+   the same units are CLIPPED, and scrolling right carries the label further out rather
+   than into view. Three units is the left stem of a capital — "North Carolina" published
+   as "Vorth Carolina" at 900px.
+
+   getComputedTextLength reports USER units, so the probe has to run inside the viewBox
+   the margin will be written in — set here, and set again by PV.chart a moment later. */
+const GUT = 12;                       // the gap this page keeps between label and plot
+function gutter(id, W, labels, gap = GUT) {
+  const svg = document.getElementById(id);
+  svg.setAttribute("viewBox", `0 0 ${W} 100`);
+  let max = 0;
+  for (const [s, cls] of labels) {
+    const t = txt(svg, s, {x: 0, y: 0, class: cls});
+    let len = 0;
+    try { len = t.getComputedTextLength(); } catch { len = 0; }
+    svg.removeChild(t);
+    max = Math.max(max, len);
+  }
+  return Math.ceil(max + gap);
+}
+
 /* A paper plate behind a label that must cross other ink (the cost-scissors idiom).
    data-pv-plated on the text tells collide.mjs the covering is deliberate. */
 const plate = (parent, s, x, y, fs = 6.4, anchor = "start") =>
@@ -124,7 +151,11 @@ function drawStates() { MOBILE.matches ? statesMobile() : statesDesktop(); }
 function statesDesktop() {
   const rows = top20;
   const {svg, W, m, w} = PV.chart("states",
-    {W: 1100, rows: rows.length, rowH: 28, m: {t: 40, r: 122, b: 56, l: 100}});
+    {W: 1100, rows: rows.length, rowH: 28, m: {t: 40, r: 122, b: 56,
+      /* Measured against the class each row actually uses: the subject state is set at
+         label weight and the rest in the quiet grey, and the two faces differ. */
+      l: gutter("states", 1100, rows.map(r =>
+        [shortName(r.name), r.area === S.subject ? "pv-lab" : "pv-labq"]))}});
   const maxV = rows[0].emp;
   const xs = v => m.l + (v / maxV) * w;
   const h = rows.length * 28;
@@ -136,7 +167,7 @@ function statesDesktop() {
     // emphasis, not categorical: one bar is the subject, the rest are context
     el("rect", {x: m.l, y, width: Math.max(3, xs(r.emp) - m.l), height: bh,
       fill: isOh ? SEQ[5] : SEQ[2], rx: 4}, svg);
-    txt(svg, shortName(r.name), {x: m.l - 12, y: y + bh - 4, "text-anchor": "end",
+    txt(svg, shortName(r.name), {x: m.l - GUT, y: y + bh - 4, "text-anchor": "end",
       class: isOh ? "pv-lab" : "pv-labq"});
     /* Two text nodes, not one string. The bars encode jobs and nothing else, and a reader
        who skims the second figure finds three states beating Ohio on it — so the ranked
@@ -329,6 +360,16 @@ function scatterMobile() {
      are derived now, so the box grows if the type does instead of printing outside it. */
   const m = {t: 38, r: 12, b: 64, l: 32}, W = 375;
   const probe = PV.chart("scatter", {W, H: 440});
+  /* The LEFT margin is measured for the same reason the bottom one is. At a typed 32 the
+     widest y-tick ("7.5x" at 32.8 units) plus frame()'s 10-unit gap put the label 10px
+     left of the chart's own column at 390px. It never clipped, because this chart opts
+     out of the pan box, so it simply printed in the page margin: the second-rail defect
+     rather than a lost glyph, and invisible to every gate either way. */
+  {
+    const probeT = PV.txt(probe.svg, "7.5×", {x: 0, y: 0, class: "pv-tick", opacity: 0});
+    m.l = Math.ceil(probeT.getComputedTextLength()) + 12;
+    probe.svg.removeChild(probeT);
+  }
   const tickGap = Math.max(20, PV.lead(probe.svg, "pv-tick", "pv-tick", 3));
   const capGap = PV.lead(probe.svg, "pv-tick", "pv-labq", 4);
   const capGap2 = PV.lead(probe.svg, "pv-labq", "pv-labq", 3);
@@ -471,7 +512,8 @@ function hatchDefs(svg) {
 
 function visDesktop() {
   const {svg, W, m, w, h} = PV.chart("vis",
-    {W: 1100, H: 250, m: {t: 44, r: 97, b: 56, l: 92}});
+    {W: 1100, H: 250, m: {t: 44, r: 97, b: 56,
+      l: gutter("vis", 1100, VKEYS.map(k => [VLAB[k], "pv-lab"]))}});
   hatchDefs(svg);
   const bh = 34, gap = (h - VKEYS.length * bh) / (VKEYS.length - 1);
   VKEYS.forEach((k, i) => {
@@ -483,7 +525,8 @@ function visDesktop() {
     const rem = w - dw - 2;
     if (rem > 0)
       el("rect", {x: m.l + dw + 2, y, width: rem, height: bh, fill: "url(#supp)", rx: 4}, svg);
-    txt(svg, VLAB[k], {x: m.l - 12, y: y + bh / 2 + 5, "text-anchor": "end", class: "pv-lab"});
+    txt(svg, VLAB[k], {x: m.l - GUT, y: y + bh / 2 + 5, "text-anchor": "end",
+      class: "pv-lab"});
     /* Every bar is normalised to its own level's universe, so the 51-state bar draws
        longer than the 703-county segment. The share rides INSIDE the bar with the count,
        which is the only place a reader can trip over the unit switch. */

@@ -214,6 +214,33 @@ function axisFoot(svg, H, m, marks, caption) {
   txt(svg, caption, {x: m.l, y: y + lead(), class: "pv-labq"});
 }
 
+/* THE LEFT MARGIN IS MEASURED, NOT TYPED — same class of bug as the leading above.
+   A row label set `end`-anchored at `m.l - GAP` needs the margin to hold the LONGEST
+   RENDERED label plus that gap. Both wide charts here typed l:80 against county names
+   that paint up to 70.7 units, so "Ashtabula", "Cuyahoga" and "Mahoning" each started
+   left of x=0. At 1440 the svg has overflow:visible and the overhang paints harmlessly
+   into the page gutter, which is why it survived every eyeball pass; between 761px and
+   1099px the shared sheet puts the chart in an overflow-x:auto box and the same units are
+   CLIPPED, and scrolling right moves the label further out, so a reader cannot reach it.
+   Two units is the left stem of a capital.
+
+   getComputedTextLength reports USER units, so the probe has to run inside the viewBox
+   the margin will be written in — set here, and set again by chart() a moment later. */
+const GUT = 12;                       // the gap this page keeps between label and plot
+function gutter(id, W, labels, gap = GUT) {
+  const svg = document.getElementById(id);
+  svg.setAttribute("viewBox", `0 0 ${W} 100`);
+  let max = 0;
+  for (const [s, cls] of labels) {
+    const t = txt(svg, s, {x: 0, y: 0, class: cls});
+    let len = 0;
+    try { len = t.getComputedTextLength(); } catch { len = 0; }
+    svg.removeChild(t);
+    max = Math.max(max, len);
+  }
+  return Math.ceil(max + gap);
+}
+
 /* ------------------------------------------------------------- 1. the matrix */
 
 /* How much of each row the five-percent labeling threshold hides, in whole points, read
@@ -441,7 +468,8 @@ function drawDiag() { MOBILE.matches ? drawDiagMobile() : drawDiagDesktop(); }
 
 function drawDiagDesktop() {
   const {svg, W, m, w, h} = chart("diag", {rows: diagRows.length, rowH: 34,
-    m: {t: 44, r: 17, b: 58, l: 80}});
+    m: {t: 44, r: 17, b: 58,
+        l: gutter("diag", 1100, diagRows.map(r => [r.work_name, "pv-lab"]))}});
   const xs = v => m.l + v * w;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys: () => 0, yt: [],
     xt: [0, .2, .4, .6, .8, 1], xfmt: v => (v * 100).toFixed(0) + "%",
@@ -459,7 +487,7 @@ function drawDiagDesktop() {
     const me = r.in_county < 0.5;
     el("rect", {x: m.l, y, width: Math.max(3, xs(r.in_county) - m.l), height: bh,
       fill: me ? CAT[1] : DIAG_CONTEXT, rx: 4}, g);
-    txt(g, r.work_name, {x: m.l - 12, y: y + bh - 6, "text-anchor": "end",
+    txt(g, r.work_name, {x: m.l - GUT, y: y + bh - 6, "text-anchor": "end",
       class: "pv-lab"});
     txt(g, `${pct(r.in_county)}  ·  ${N(r.jobs_total)} jobs`,
       {x: xs(r.in_county) + 10, y: y + bh - 6, class: me ? "pv-lab" : "pv-labq"});
@@ -670,7 +698,8 @@ const recipRow = r => `jobs ${Math.round(r.work_own * 100)}%  ·  residents ` +
 
 function drawRecipDesktop() {
   const {svg, m, w} = chart("recip", {rows: pairs.length, rowH: 30,
-    m: {t: 86, r: 210, b: 58, l: 80}});
+    m: {t: 86, r: 210, b: 58,
+        l: gutter("recip", 1100, pairs.map(r => [r.name, "pv-lab"]))}});
   const {lo, hi} = recipDomain();
   const xs = v => m.l + ((v - lo) / (hi - lo)) * w;
   frame(svg, {x: m.l, y: m.t, w, h: pairs.length * 30, xs, ys: () => 0,
@@ -699,7 +728,7 @@ function drawRecipDesktop() {
     const g = el("g", dimRow(r.name) ? {opacity: .22} : {}, svg);
     const y = m.t + i * 30 + 15;
     const tight = tightPair(r), dy = tight ? 5 : 0;
-    txt(g, r.name, {x: m.l - 12, y: y + 5, "text-anchor": "end", class: "pv-lab"});
+    txt(g, r.name, {x: m.l - GUT, y: y + 5, "text-anchor": "end", class: "pv-lab"});
     el("line", {x1: xs(r.work_own), y1: y - dy, x2: xs(r.res_own), y2: y + dy,
       stroke: "var(--pv-axis)", "stroke-width": 2}, g);
     el("circle", {cx: xs(r.work_own), cy: y - dy, r: 6, fill: CAT[0],
