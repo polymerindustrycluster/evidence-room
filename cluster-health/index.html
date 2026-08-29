@@ -20,7 +20,7 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">How is the cluster doing?</p>
+    <p class="eyebrow">How is the cluster doing, measure by measure?</p>
     <h1>Polymer jobs in Northeast Ohio have fallen for a <em>third straight year</em>.</h1>
     <p class="stand" id="stand"></p>
     <div class="hero-row" id="figs"></div>
@@ -32,9 +32,38 @@
 
 <section class="band">
   <div class="wrap">
-    <p class="takeaway">This year in one picture</p>
-    <h2>The loudest number here is ordinary</h2>
-    <p class="lede">A big number is only news if it is big for that particular measure.</p>
+    <p class="takeaway">Where the five stand</p>
+    <h2>Each measure in its own range</h2>
+    <p class="lede" id="standlede"></p>
+    <div class="chart"><svg id="stand-chart" role="img" aria-labelledby="stand-t">
+      <title id="stand-t">Five measures of the polymer cluster, each shown as a dot on the
+        range of its own published years, from that measure&rsquo;s lowest year on the left
+        to its highest on the right. Employment sits at the bottom of its range, polymer
+        degrees near the bottom, pay against the national rate at the top, federal
+        contracting in the middle, and concentration, which has no better end, near the
+        middle.</title></svg></div>
+    <div class="legend">
+      <span><i style="background:#0C6473;border-radius:50%"></i> Where the measure sits
+        today, on a measure that has a better end</span>
+      <span><i style="background:#9A948A;border-radius:50%"></i> The one measure with no
+        better end</span>
+      <span><i class="ln" style="background:#D8D2C8"></i> Its own lowest to its own
+        highest published year</span>
+    </div>
+    <div id="standtable"></div>
+    <p class="src" id="standsrc"></p>
+    <div class="note" id="standnote"></div>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">How unusual the year was</p>
+    <h2>How far each measure moved, which is a different question from how it is doing</h2>
+    <p class="lede">This chart grades nothing. A bar is the SIZE of this year&rsquo;s step
+      against how far that measure usually steps, and the colour says whether the measure
+      rose or fell, not whether rising was good. The longest bar belongs to concentration,
+      the one measure on this page with no better end at all.</p>
     <p class="fig-title" id="movetitle"></p>
     <p class="fig-sub">Each bar is this year&rsquo;s change divided by how far that measure
       usually moves between years, so a three-hundredths move in a wage ratio and a
@@ -62,9 +91,10 @@
     <p class="takeaway">The five measures</p>
     <h2>Each one, the baseline it is read against, and what it cannot see</h2>
     <p class="lede">We have set no target for any of these five, so no tile reports
-      distance from one. Each reports a level, a direction against a stated baseline, what
-      a high reading would mean for the region, and the page it came from, where the
-      working is shown in full.</p>
+      distance from one. Each reports a level, where that level sits in the measure&rsquo;s
+      own published range, which end of that range is the better one for the region where
+      there is one, a direction against a stated baseline, and the page it came from,
+      where the working is shown in full.</p>
     <div class="tiles" id="tiles"></div>
   </div>
 </section>

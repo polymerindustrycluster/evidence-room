@@ -228,6 +228,78 @@
    "assert": "(lambda award, closed: (lambda base: abs(award / base - 1.4) < 0.05 and round(award / 1e6, 1) == 51.0 and round(base / 1e6, 1) == 36.6)(sum(r['real'] for r in closed) / len(closed)))(sum(a['amount'] for a in D['h']['federal_awards']['leads']), [r for r in D['h']['obligations'] if not r['open']]) and D['h']['tiles'][4]['drivers'][2]['value'] == '1.4 years'",
    "actual": "(sum(a['amount'] for a in D['h']['federal_awards']['leads']), [r for r in D['h']['obligations'] if not r['open']], D['h']['tiles'][4]['drivers'][2])",
    "falsified_if": "A closed fiscal year being backfilled, or an award being added or withdrawn, moving the ratio past 1.35 or 1.45. Both operands are printed beside the 1.4, so a reader can divide them; if they stop producing it the page is showing its own arithmetic failing."
+  },
+  {
+   "id": "capital-move-subtracts",
+   "text": "Capital tile: routine contracting rose to $38.98M in FY2025 from $22.54M, a rise of $16.44M and 73 percent higher. The three printed figures subtract: 38.98 minus 22.54 is 16.44.",
+   "source": "USAspending obligations at place of performance, NAICS 325 and 326, 2025 dollars, via federal-money/data/federal.json",
+   "assert": "(lambda fy, ys: (lambda a, b: round(round(a / 1e6, 2) - round(b / 1e6, 2), 2) == round((a - b) / 1e6, 2) and all(s in D['h']['tiles'][4]['direction']['words'] for s in ('$%.2fM' % (a / 1e6), '$%.2fM' % (b / 1e6), '$%.2fM' % ((a - b) / 1e6))) and D['h']['tiles'][4]['direction']['short_move'] == 'Contracting up $%.2fM' % ((a - b) / 1e6) and D['h']['tiles'][4]['drivers'][1]['value'] == '$%.2fM' % (a / 1e6) and '$%.2fM' % (b / 1e6) in D['h']['tiles'][4]['drivers'][1]['note'])(fy(ys[-1]), fy(ys[-2])))(lambda y: sum(r['real'] for r in D['fed']['naics'] if r['fy'] == y), sorted(r['fy'] for r in D['h']['obligations'] if not r['open']))",
+   "actual": "[(r['fy'], round(r['real'] / 1e6, 2)) for r in D['h']['obligations']] + [D['h']['tiles'][4]['direction']['words']]",
+   "falsified_if": "Either level rounding to a pair whose difference is not the printed difference. This is the defect a reader found at one decimal: 39.0 minus 22.5 is 16.5, not the 16.4 printed beside it, and both ends were correctly rounded. The precision is chosen so the subtraction closes; if a revision breaks that, the sentence has to be rewritten, not re-rounded."
+  },
+  {
+   "id": "two-bases-for-the-same-year",
+   "text": "Standfirst, hero card 1 and the Scale tile: 24,030 is every county figure published for 2025 and 23,457 is the 21 figures published in every year since 2015. Two bases, both correct, and each is labelled wherever it appears.",
+   "source": "BLS QCEW annual averages, all published cells and the balanced panel, via wages/data/wages.json",
+   "assert": "(lambda rows, ys: (lambda lvl, bal: round(lvl) == 24030 and round(bal) == 23457 and round(lvl) != round(bal) and round(D['h']['tiles'][0]['bases']['level']['value']) == round(lvl) and round(D['h']['tiles'][0]['bases']['trend']['value']) == round(bal) and D['h']['tiles'][0]['bases']['level']['cells'] == len([r for r in rows if r['year'] == ys[-1]]) and D['h']['tiles'][0]['bases']['trend']['cells'] == 21 and D['h']['tiles'][0]['bases']['level']['label'] != D['h']['tiles'][0]['bases']['trend']['label'] and D['h']['tiles'][0]['bases']['level']['display'] in D['h']['tiles'][0]['reading'] and D['h']['tiles'][0]['bases']['trend']['display'] in D['h']['tiles'][0]['means'])(sum(r['emp'] for r in rows if r['year'] == ys[-1]), sum(r['emp'] for r in rows if r['year'] == ys[-1] and len(set(q['year'] for q in rows if q['area'] == r['area'] and q['naics'] == r['naics'])) == len(ys))))([r for r in D['wg']['trend'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326')], sorted(set(r['year'] for r in D['wg']['trend'])))",
+   "actual": "(D['h']['tiles'][0]['bases']['level'], D['h']['tiles'][0]['bases']['trend'])",
+   "falsified_if": "The two totals coming to agree, which would mean every county figure was published in every year and the distinction had gone; or either figure appearing on the page without its basis named. A reader met both unlabelled and read them as a contradiction."
+  },
+  {
+   "id": "no-disbursed-amount-anywhere",
+   "text": "Hero card 4, the Capital tile and the closer: the page states no disbursed amount for the signed awards, including no zero, and says the record cannot show one.",
+   "source": "_data/FIGURES.json, which registers award_disbursed as NOT PUBLICLY OBSERVABLE, and the accountability page it agrees with",
+   "assert": "(lambda blob: all(p not in blob for p in ('none of it spent', 'none of it disbursed', 'none of it drawn', 'nothing spent', 'zero spent', 'not money spent', 'it has not spent', 'unspent', 'yet to be spent')) and 'no public record exists' in D['h']['tiles'][4]['blind'])(str(D['h']).lower())",
+   "actual": "D['h']['tiles'][4]['blind'][:200]",
+   "falsified_if": "Any of those phrasings returning to the derived file. A stated zero is as much a claim as a stated number and the record supports neither: a fully assigned award that has disbursed nothing and one that has disbursed everything are the same document in public. This claim guards the DERIVED file; tools/figures.mjs guards the rendered page, which is where the phrase shipped from."
+  },
+  {
+   "id": "standing-scale",
+   "text": "Standing chart and Scale tile: on the balanced panel, 23,457 in 2025 is the lowest of the eleven published years, against a high of 25,485 in 2022.",
+   "source": "BLS QCEW annual averages, balanced panel, via wages/data/wages.json",
+   "assert": "(lambda bal, s: s['value'] == min(bal.values()) and s['low']['value'] == min(bal.values()) and s['low']['year'] == 2025 and s['high']['value'] == max(bal.values()) and s['high']['year'] == 2022 and s['position'] == 0.0 and s['rank_from_low'] == 1 and s['n_years'] == len(bal) == 11 and s['better_end'] == 'high')((lambda rows, ys: {y: sum(r['emp'] for r in rows if r['year'] == y and len(set(q['year'] for q in rows if q['area'] == r['area'] and q['naics'] == r['naics'])) == len(ys)) for y in ys})([r for r in D['wg']['trend'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326')], sorted(set(r['year'] for r in D['wg']['trend']))), D['h']['tiles'][0]['standing'])",
+   "actual": "D['h']['tiles'][0]['standing']",
+   "falsified_if": "Any revision lifting 2025 off the floor of its own eleven years, at which point the standfirst, the chart and the closer all say the wrong thing together. The rank is exact and carries no tolerance."
+  },
+  {
+   "id": "standing-concentration-has-no-better-end",
+   "text": "Standing chart and Distinctiveness tile: paint and coatings at 5.96 times the national share sits fourth lowest of its eleven published years, between 5.40 in 2016 and 6.49 in 2023, and is the one measure drawn with no better end.",
+   "source": "Location quotient composite, via location-quotient/data/lq.json",
+   "assert": "(lambda ser, s: s['value'] == ser[max(ser)] and s['low']['value'] == round(min(ser.values()), 6) and s['low']['year'] == 2016 and s['high']['value'] == round(max(ser.values()), 6) and s['high']['year'] == 2023 and s['rank_from_low'] == 4 and s['n_years'] == 11 and s['better_end'] is None and abs(s['position'] - (ser[max(ser)] - min(ser.values())) / (max(ser.values()) - min(ser.values()))) < 5e-5)({c['year']: c['lq'] for c in D['lq']['composite'] if c['naics'] == '3255'}, D['h']['tiles'][1]['standing'])",
+   "actual": "D['h']['tiles'][1]['standing']",
+   "falsified_if": "A better_end being assigned to this measure. The page says a high share is the region's distinction and its exposure at once, so giving it a merit direction would contradict its own tile; the movement chart already hands this measure the longest bar, and a reader read that as a verdict."
+  },
+  {
+   "id": "standing-pay-top-of-range-is-not-parity",
+   "text": "Standing chart, hero card 3 and the Job quality tile: the pay ratio is at the highest of its eleven published years and under 1.0 in every one of them, which is why the page says a range position is not a grade.",
+   "source": "BLS QCEW weekly wages, local cells against the same industry nationally, via wages/data/wages.json",
+   "assert": "(lambda ser, s: s['position'] == 1.0 and s['rank_from_low'] == s['n_years'] == 11 and s['better_end'] == 'high' and abs(s['value'] - max(ser.values())) < 1e-6 and all(v < 1.0 for v in ser.values()) and abs(s['low']['value'] - min(ser.values())) < 1e-6 and s['low']['year'] == 2015)((lambda rows, ys: (lambda us: {y: (lambda v: sorted(v)[len(v) // 2] if len(v) % 2 else (sorted(v)[len(v) // 2 - 1] + sorted(v)[len(v) // 2]) / 2)([r['weekly_wage'] / us[(y, r['naics'])] for r in rows if r['year'] == y]) for y in ys})({(r['year'], r['naics']): r['weekly_wage'] for r in D['wg']['trend'] if r['area'] == 'US000' and r['naics'] in ('3252', '3255', '326')}))([r for r in D['wg']['trend'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326')], sorted(set(r['year'] for r in D['wg']['trend']))), D['h']['tiles'][2]['standing'])",
+   "actual": "D['h']['tiles'][2]['standing']",
+   "falsified_if": "The ratio reaching or passing 1.0 in any published year, at which point 'the best year in this range is still a year paying less than the country' is false and the note that uses this row as its worked example has to be rewritten."
+  },
+  {
+   "id": "standing-talent",
+   "text": "Standing chart and Talent supply tile: 63 polymer degrees in 2023 is the second lowest of the ten published years, against a high of 179 in 2016.",
+   "source": "IPEDS completions for the three named institutions, via occupations/data/viz-data.json",
+   "assert": "(lambda ser, s: s['value'] == ser[max(ser)] and s['low']['value'] == min(ser.values()) and s['low']['year'] == 2022 and s['high']['value'] == max(ser.values()) and s['high']['year'] == 2016 and s['rank_from_low'] == 2 and s['n_years'] == len(ser) == 10 and s['better_end'] == 'high')({y: sum(p['by_year'].get(str(y), 0) for p in D['occ']['programs'] if p['group'] == 'polymer') for y in sorted({int(y) for p in D['occ']['programs'] for y in p['by_year']})}, D['h']['tiles'][3]['standing'])",
+   "actual": "D['h']['tiles'][3]['standing']",
+   "falsified_if": "A new IPEDS year arriving, which moves both the rank and the year count and is a scheduled event rather than a hypothetical; or a restatement moving 2022 off the floor."
+  },
+  {
+   "id": "standing-capital",
+   "text": "Standing chart and Capital tile: routine contracting of $38.98M in FY2025 is the middle of the seven closed fiscal years, between $16.96M in FY2023 and $51.65M in FY2019, with the open year excluded.",
+   "source": "USAspending obligations, FY2019-FY2025 closed years, 2025 dollars, via federal-money/data/federal.json",
+   "assert": "(lambda ser, s: s['value'] == ser[max(ser)] and s['low']['value'] == min(ser.values()) and s['low']['year'] == 2023 and s['high']['value'] == max(ser.values()) and s['high']['year'] == 2019 and s['rank_from_low'] == 4 and s['n_years'] == len(ser) == 7 and s['better_end'] == 'high' and s['year_prefix'] == 'FY' and 2026 not in ser)({y: round(sum(r['real'] for r in D['fed']['naics'] if r['fy'] == y), 6) for y in sorted(set(r['fy'] for r in D['fed']['naics'])) if y != max(set(r['fy'] for r in D['fed']['naics']))}, D['h']['tiles'][4]['standing'])",
+   "actual": "D['h']['tiles'][4]['standing']",
+   "falsified_if": "FY2026 closing, which adds an eighth year to the rail and changes the rank; the same scheduled event the baseline claim is the alarm for. Also falsified if the open year is ever drawn on this rail, which would put a partial year beside seven full ones."
+  },
+  {
+   "id": "standing-merit-is-declared-not-inferred",
+   "text": "Standing chart, its legend and every tile: four of the five measures carry a better end and it is the high end for all four; exactly one, Distinctiveness, carries none and is drawn grey.",
+   "source": "The declared merit direction in derive_health.py, asserted against what the page renders from",
+   "assert": "len([t for t in D['h']['tiles'] if t['standing']['better_end'] == 'high']) == 4 and len([t for t in D['h']['tiles'] if t['standing']['better_end'] is None]) == 1 and [t['dimension'] for t in D['h']['tiles'] if t['standing']['better_end'] is None] == ['Distinctiveness'] and D['h']['standing_summary']['without_merit'] == ['Distinctiveness'] and len(D['h']['standing_summary']['with_merit']) == 4 and all(t['standing']['better_end'] in ('high', None) for t in D['h']['tiles']) and all(len(t['standing']['merit_short']) > 0 and len(t['standing']['merit']) > 0 for t in D['h']['tiles'])",
+   "actual": "[(t['dimension'], t['standing']['better_end'], t['standing']['merit_short']) for t in D['h']['tiles']]",
+   "falsified_if": "A fifth better end being added, or the low end becoming the better one for any measure, either of which breaks the axis label that states the rule once for the whole chart. A measure quietly acquiring a merit direction nobody argued for is the failure this claim exists to catch."
   }
  ]
 }

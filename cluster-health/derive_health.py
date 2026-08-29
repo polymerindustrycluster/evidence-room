@@ -106,6 +106,66 @@ def band(series):
     }
 
 
+def standing(series, better_end):
+    """WHERE A MEASURE SITS IN ITS OWN PUBLISHED RANGE.
+
+    series = [(year, value), ...] ascending, every point on ONE basis.
+
+    `band()` above answers "was this year's STEP unusual". It says nothing about whether
+    the level is good or bad, and a reader who arrives asking how the cluster is doing
+    gets a volatility reading out of it and nothing else. This is the other half: the
+    level against the only reference this repository can use without inventing a goal —
+    the same measure's own published years.
+
+    `better_end` names which END of that range is the better one for the region, or None
+    where the measure genuinely has no better end. Concentration is the None: the page's
+    own text says a high share is the region's distinction and its exposure at once.
+
+    THIS IS NOT A GRADE AND THE PAGE HAS TO SAY SO. Job quality sits at the TOP of its own
+    range and is still below the national rate for the same work in every year of that
+    range. A range position answers "against its own history"; it cannot answer "against
+    where it ought to be", because nobody here has said where that is.
+
+    Rank counts YEARS and the position uses VALUES, so the two can read differently when
+    the years above a measure are bunched together. Both are reported rather than one
+    being picked as the tidier of the two.
+    """
+    if len(series) < 4:
+        raise ValueError("a standing range needs at least four years")
+    vals = [v for _, v in series]
+    lo, hi = min(vals), max(vals)
+    if hi == lo:
+        raise ValueError("a standing range needs a range")
+    cur_year, cur = series[-1]
+    rank = sum(1 for v in vals if v < cur) + 1        # 1 = the lowest published year
+    n = len(series)
+    if rank == 1:
+        rank_words = f"lowest of {WORDS[n]} years"
+    elif rank == n:
+        rank_words = f"highest of {WORDS[n]} years"
+    elif rank * 2 - 1 == n:
+        rank_words = f"middle of {WORDS[n]} years"
+    elif rank * 2 <= n:
+        rank_words = f"{ORDINAL[rank].lower()} lowest of {WORDS[n]}"
+    else:
+        rank_words = f"{ORDINAL[n - rank + 1].lower()} highest of {WORDS[n]}"
+    return {
+        "value": round(cur, 6),
+        "year": cur_year,
+        "n_years": n,
+        "span": [series[0][0], series[-1][0]],
+        # The first year attaining the extreme. Every one of the five is unique today;
+        # if a tie ever appears, the earlier year is named and the values still agree.
+        "low": {"year": next(y for y, v in series if v == lo), "value": round(lo, 6)},
+        "high": {"year": next(y for y, v in series if v == hi), "value": round(hi, 6)},
+        "position": round((cur - lo) / (hi - lo), 4),
+        "rank_from_low": rank,
+        "rank_words": rank_words,
+        "better_end": better_end,
+        "series": [{"year": y, "value": round(v, 6)} for y, v in series],
+    }
+
+
 # ---------------------------------------------------------------------------- sources
 wg = load("wages", "data", "wages.json")
 lq = load("location-quotient", "data", "lq.json")
@@ -284,19 +344,58 @@ tiles = [
         "short": "jobs counted",
         "question": "How many jobs is this?",
         "value": fmt_n(disclosed[LATEST]),
-        "unit": "jobs",
+        "unit": f"jobs, every county figure published for {LATEST}",
+        # TWO TOTALS FOR ONE YEAR, AND BOTH ARE RIGHT. A reader met 24,030 in the hero and
+        # 23,457 in the standfirst and could not reconcile them. They are two bases: the
+        # LEVEL counts every cell BLS published this year, the TREND counts only the cells
+        # published in every year, because that is the only set a three-year run can be
+        # read off. Neither is fixable into the other and neither may travel unlabelled.
+        "bases": {
+            "level": {"value": disclosed[LATEST], "display": fmt_n(disclosed[LATEST]),
+                      "cells": cells[LATEST], "of_cells": possible,
+                      "label": f"every county figure published for {LATEST}",
+                      "why": ("A level is the fullest count the bureau published for the "
+                              "year, and it is a floor, because a withheld figure is not "
+                              "a zero.")},
+            "trend": {"value": balanced[LATEST], "display": fmt_n(balanced[LATEST]),
+                      "cells": len(balanced_keys), "of_cells": possible,
+                      "label": (f"the {len(balanced_keys)} county figures published in "
+                                f"every year since {YEARS[0]}"),
+                      "why": ("A trend needs one fixed set of counties, or the bureau’s "
+                              "disclosure decisions read as jobs appearing and vanishing. "
+                              "This is the only basis that supports the three-year run.")},
+            "note": (f"Two totals for {LATEST}, on two bases, both correct. "
+                     f"{fmt_n(disclosed[LATEST])} is every published figure; "
+                     f"{fmt_n(balanced[LATEST])} is the fixed set. They differ by "
+                     f"{fmt_n(disclosed[LATEST] - balanced[LATEST])} jobs, which is the "
+                     f"counties that report in some years and not others."),
+        },
         "reading": (f"{fmt_n(disclosed[LATEST])} jobs in the three industries the cluster "
                     f"measures itself by, counted across the twelve counties in "
-                    f"{LATEST}. It is a floor rather than a total: the Bureau of Labor "
+                    f"{LATEST}, on every county figure the bureau published for the year. "
+                    f"It is a floor rather than a total: the Bureau of Labor "
                     f"Statistics publishes one figure per county per industry, and it "
                     f"withheld {possible - cells[LATEST]} of the {possible} to keep single "
                     f"employers unidentifiable."),
-        "means": (f"On the {len(balanced_keys)} county figures published in every year "
-                  f"since {YEARS[0]}, the only run that holds the same set of counties "
-                  f"still, the total went {fmt_n(balanced[LATEST - 2])} in {LATEST - 2}, "
+        "means": (f"That count cannot carry a trend, because the set of counties in it "
+                  f"changes from year to year. On the {len(balanced_keys)} county figures "
+                  f"published in every year since {YEARS[0]}, the only run that holds the "
+                  f"same set of counties still, the total went "
+                  f"{fmt_n(balanced[LATEST - 2])} in {LATEST - 2}, "
                   f"then {fmt_n(balanced[LATEST - 1])}, then {fmt_n(balanced[LATEST])}. "
                   f"That is the {ORDINAL[falling]} straight fall, and fewer jobs is the "
-                  f"bad direction here."),
+                  f"bad direction here. The two totals for {LATEST} differ by "
+                  f"{fmt_n(disclosed[LATEST] - balanced[LATEST])} jobs and each is "
+                  f"labelled wherever it appears."),
+        "standing": dict(standing([(y, balanced[y]) for y in YEARS], "high"),
+                         basis=(f"the {len(balanced_keys)} county figures published in "
+                                f"every year since {YEARS[0]}"),
+                         basis_short="jobs on the fixed county set",
+                         merit_short="more jobs is better",
+                         merit=("More jobs is the better end of this range. Nobody has "
+                                "set a number the region is aiming at, so the range is "
+                                "its own decade and not a goal."),
+                         fmt="n"),
         "baseline": {
             "name": f"the same county figures in {LATEST - 1}",
             "why": ("A year is the shortest step this series takes, and comparing the "
@@ -368,6 +467,23 @@ tiles = [
                   f"a buyer’s flight, and it is what ties local payroll to one industry’s "
                   f"cycle. This year’s fall moves them a step toward looking like the "
                   f"country, which costs some of each."),
+        # THE ONE MEASURE WITH NO BETTER END, and the page says so rather than colouring
+        # it as if it had one. A reader was told the longest bar on the movement chart was
+        # the measure the page itself calls double-edged; encoding merit here without
+        # admitting this exception would repeat that in a new place.
+        "standing": dict(standing([(y, comp[(lead["naics"], y)]["lq"]) for y in lq_years],
+                                  None),
+                         basis=(f"the same composite for {lead['label'].lower()}, "
+                                f"{lq_years[0]} to {lq_years[-1]}"),
+                         basis_short="paint against the U.S. share",
+                         merit_short="no better end",
+                         merit=("This measure has no better end. A high share is what "
+                                "makes these counties worth a buyer’s flight and what "
+                                "ties local payroll to one industry’s cycle, so a move "
+                                "in either direction buys one and costs the other. It is "
+                                "shown here without a merit direction rather than being "
+                                "given one it does not have."),
+                         fmt="x2"),
         "baseline": {
             "name": "1.0 times, the national share of employment",
             "why": ("A share against the country needs no peer region chosen for it and "
@@ -423,6 +539,21 @@ tiles = [
                     f"{len(both)} of the {len(latest_reg)} published county figures, holding "
                     f"{fmt_n(sum(r['emp'] for r in both))} of the "
                     f"{fmt_n(emp_total)} jobs, sit in both states."),
+        # THE EXAMPLE THAT KEEPS THE RANGE HONEST. This measure is at the TOP of its own
+        # published range and below the national rate for the same work in every year of
+        # it. A range position is a comparison with its own history and nothing more; read
+        # as a grade it would say the pay question is solved, which it is not.
+        "standing": dict(standing([(y, v) for y, v, _, _, _ in nat_series], "high"),
+                         basis=(f"the same median ratio against the national rate, "
+                                f"{YEARS[0]} to {YEARS[-1]}"),
+                         basis_short="pay against its industry",
+                         merit_short="nearer parity is better",
+                         merit=(f"Closer to the national rate is the better end. It has "
+                                f"not reached it: the ratio is under 1.0 in every one of "
+                                f"the {WORDS[len(nat_series)]} published years, so the "
+                                f"best year in this range is still a year paying less "
+                                f"than the country does for the same work."),
+                         fmt="x3"),
         "baseline": {
             "name": "two baselines, because one of them flatters",
             "why": ("Against the county average it answers whether this is good work to "
@@ -476,6 +607,16 @@ tiles = [
                     f"{polymer[deg_peak_year]} in {deg_peak_year}, their own high. "
                     f"Materials degrees, the other group of programs these three schools "
                     f"count here, held at {materials[deg_latest]}."),
+        "standing": dict(standing([(y, polymer[y]) for y in prog_years], "high"),
+                         basis=(f"the same three institutions, {prog_years[0]} to "
+                                f"{prog_years[-1]}"),
+                         basis_short="polymer degrees a year",
+                         merit_short="more degrees is better",
+                         merit=("More degrees out of the three programs is the better "
+                                "end. Nobody has set a number the region needs, and this "
+                                "range cannot see the two-year and certificate routes "
+                                "into the same plants."),
+                         fmt="n"),
         "baseline": {
             "name": f"the same three institutions in {deg_peak_year}, their own high",
             "why": ("A peer region would need a defensible peer set and PIC has named "
@@ -527,18 +668,40 @@ tiles = [
         "question": "Is public money arriving, and where does it land?",
         "value": "$" + f"{federal_org_named / 1e6:.1f}M",
         "unit": "written into signed federal awards",
+        # WHAT THE RECORD SHOWS, AND WHAT IT CANNOT. This tile used to say "none of it
+        # spent", which a reader finished believing was a measured zero. It is not: the
+        # public record shows AWARD and EXECUTION and never DRAWDOWN, so a fully assigned
+        # award that has paid out nothing and one that has paid out everything are the
+        # same document here. Stating zero is as much a claim as stating a number, and
+        # this page may state neither. _data/FIGURES.json carries the rule.
         "reading": (f"${federal_org_named / 1e6:.1f} million of the "
                     f"${federal_announced / 1e6:.1f} million in federal awards on the "
                     f"funding map is written into signed awards naming "
-                    f"{WORDS[len(eda_leads)]} organizations. None of it is disbursement: "
-                    f"every figure here is money committed, not money spent."),
+                    f"{WORDS[len(eda_leads)]} organizations. That is what the record "
+                    f"shows: money signed for and assigned to a named recipient. How much "
+                    f"of it has been paid out is a different quantity, and no figure on "
+                    f"this page or in the public record is a measure of it."),
         "means": (f"A bigger number here is good news for the region only once the money "
-                  f"is spent, and no figure on this page tracks spending. Read "
+                  f"reaches the ground, and nothing published tracks that. Read "
                   f"${federal_org_named / 1e6:.1f}M as a queue with "
-                  f"{WORDS[len(eda_leads)]} names on it. The change printed beside it, up "
-                  f"${(fy_real[closed[-1]] - fy_real[closed[-2]]) / 1e6:.1f}M, belongs to "
+                  f"{WORDS[len(eda_leads)]} names on it, of unknown length. The change "
+                  f"printed beside it, up "
+                  f"${(fy_real[closed[-1]] - fy_real[closed[-2]]) / 1e6:.2f}M, belongs to "
                   f"a different series: the year-on-year move in routine contracting, "
                   f"money already flowing to plants here."),
+        "standing": dict(standing([(y, fy_real[y]) for y in closed], "high"),
+                         basis=(f"routine contracting in the {WORDS[len(closed)]} closed "
+                                f"fiscal years, FY{closed[0]} to FY{closed[-1]}, in "
+                                f"{fed['cpi_base']} dollars"),
+                         basis_short="routine contracting a year",
+                         merit_short="more arriving is better",
+                         year_prefix="FY",
+                         merit=("More federal money actually contracted to plants here is "
+                                "the better end, and this is the one capital series on "
+                                "the page that is money arriving rather than money "
+                                "promised. The signed awards above have no standing here "
+                                "at all, because drawdown is not published."),
+                         fmt="usd_m2"),
         "baseline": {
             "name": (f"routine federal contracting, ${closed_avg / 1e6:.1f} million a year "
                      f"in {fed['cpi_base']} dollars"),
@@ -551,15 +714,21 @@ tiles = [
         "direction": {
             "value": round(fy_real[closed[-1]] - fy_real[closed[-2]]),
             "pct": round((fy_real[closed[-1]] / fy_real[closed[-2]] - 1) * 100, 1),
-            "words": (f"routine contracting rose to ${fy_real[closed[-1]] / 1e6:.1f}M in "
-                      f"FY{closed[-1]} from ${fy_real[closed[-2]] / 1e6:.1f}M, "
+            # TWO DECIMALS, BECAUSE THE SUBTRACTION IS PRINTED. At one decimal this read
+            # "rose to $39.0M from $22.5M ... up $16.4M", and 39.0 - 22.5 is 16.5. Both
+            # ends were correctly rounded and the sentence still failed the only check a
+            # reader can run on it in their head. Rounded to hundredths the three figures
+            # close: 38.98 - 22.54 = 16.44. A claim in claims.json asserts that they do.
+            "words": (f"routine contracting rose to ${fy_real[closed[-1]] / 1e6:.2f}M in "
+                      f"FY{closed[-1]} from ${fy_real[closed[-2]] / 1e6:.2f}M, a rise of "
+                      f"${(fy_real[closed[-1]] - fy_real[closed[-2]]) / 1e6:.2f}M and "
                       f"{round((fy_real[closed[-1]] / fy_real[closed[-2]] - 1) * 100)} "
                       f"percent higher"),
             # The tile prints $51.0M of signed awards and this move underneath it. They
             # are different series, so the label says which one moved rather than letting
             # the layout imply it is the award pile growing.
             "short_move": (f"Contracting up "
-                           f"${(fy_real[closed[-1]] - fy_real[closed[-2]]) / 1e6:.1f}M"),
+                           f"${(fy_real[closed[-1]] - fy_real[closed[-2]]) / 1e6:.2f}M"),
             "of": (f"in routine contracting on the year, which is not the "
                    f"${federal_org_named / 1e6:.1f}M above"),
             "streak": None,
@@ -571,19 +740,25 @@ tiles = [
              "note": (f"{WORDS[len(eda_leads)].capitalize()} awards under the federal Tech "
                       f"Hubs program, each one a signed document naming its recipient")},
             {"label": "Routine contracting, FY" + str(closed[-1]),
-             "value": "$" + f"{fy_real[closed[-1]] / 1e6:.1f}M",
+             "value": "$" + f"{fy_real[closed[-1]] / 1e6:.2f}M",
              "note": (f"federal contracts and grants written to polymer plants in the "
-                      f"twelve counties, in {fed['cpi_base']} dollars")},
+                      f"twelve counties, in {fed['cpi_base']} dollars, against "
+                      f"${fy_real[closed[-2]] / 1e6:.2f}M the year before")},
             {"label": "The award, in years of routine contracting",
              "value": f"{sum(a for _, a in eda_leads) / closed_avg:.1f} years",
              "note": (f"${sum(a for _, a in eda_leads) / 1e6:.1f}M divided by the "
                       f"${closed_avg / 1e6:.1f}M a year that was already arriving")},
         ],
-        "blind": ("The contracting series filters on manufacturing industry codes, so "
-                  "university and research awards are invisible to it: a $15.0M National "
-                  "Science Foundation Engines award appears in no figure here. Place of "
-                  "performance is a field reported on the award, not an observation of "
-                  "where work happened."),
+        "blind": ("How much of the signed money has actually been paid out: no public "
+                  "record exists. The record shows what was awarded and what was assigned "
+                  "to a recipient, never what was drawn down, so a fully assigned award "
+                  "that has disbursed nothing and one that has disbursed everything look "
+                  "identical here. This page therefore states no disbursed amount, and "
+                  "that includes not stating a zero. The contracting series also filters "
+                  "on manufacturing industry codes, so university and research awards are "
+                  "invisible to it: a $15.0M National Science Foundation Engines award "
+                  "appears in no figure here. Place of performance is a field reported on "
+                  "the award, not an observation of where work happened."),
         "vintage": {
             "as_of": (f"USAspending, the government’s own record of what it contracts and "
                       f"grants, through FY{OPEN_FY} in {fed['cpi_base']} dollars"),
@@ -622,8 +797,12 @@ health = {
                        "series."),
         "baseline": ("Each tile states the baseline it is read against and why that one. "
                      "PIC has set no target for any of these five measures, so no tile "
-                     "reports distance from a target: they report level and direction "
-                     "only."),
+                     "reports distance from a target. What each tile does report instead "
+                     "is where the level sits in the same measure’s own published range, "
+                     "which end of that range is the better one for the region where "
+                     "there is one, and how far this year’s step was by that measure’s "
+                     "own history. The five are never added into a score, because that "
+                     "would need weights nobody has set."),
         "caution": ("What is measured here is how far a published series has moved "
                     "between years. That is not the same as how far a future revision "
                     "will move the year just published, which this repository has "
@@ -695,6 +874,31 @@ health = {
               key=lambda r: abs(r["emp"] - abs(balanced[LATEST] - balanced[LATEST - 1]))),
        max(eda_leads, key=lambda x: x[1])),
     "moved_more_than_usual": sum(1 for t in tiles if t["band"]["verdict"] != "ordinary"),
+    # THE STANDING READING, counted rather than asserted. Four of the five have a better
+    # end; one does not, and the page names it rather than colouring it in. The five are
+    # never added together: a single score needs weights, nobody here has set any, and a
+    # composite built on weights an author picked would be the target this page keeps
+    # saying it does not have.
+    "standing_summary": {
+        "with_merit": [t["dimension"] for t in tiles if t["standing"]["better_end"]],
+        "without_merit": [t["dimension"] for t in tiles if not t["standing"]["better_end"]],
+        # Extremes are only reported for measures that HAVE a better end. The lowest year
+        # of a measure with no better end is not a bad year, it is just a low one.
+        "at_own_low": [t["dimension"] for t in tiles if t["standing"]["better_end"]
+                       and t["standing"]["rank_from_low"] == 1],
+        "at_own_high": [t["dimension"] for t in tiles if t["standing"]["better_end"]
+                        and t["standing"]["rank_from_low"] == t["standing"]["n_years"]],
+        "reference": "each measure’s own published years, which nobody had to choose",
+        "not_a_score": ("The five are not combined. A single cluster score needs weights "
+                        "saying how much a job is worth against a degree against a dollar, "
+                        "and nobody has set any; a composite built on weights an author "
+                        "picked would be exactly the target this page says it does not "
+                        "have."),
+        "not_a_grade": ("A position in a measure’s own range is a comparison with its own "
+                        "history and nothing more. Job quality sits at the top of its "
+                        "range and is below the national rate for the same work in every "
+                        "year of that range, so the top of a range is not a pass."),
+    },
     "federal_awards": {
         "announced": federal_announced,
         "named_total": federal_named,

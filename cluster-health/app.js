@@ -1,12 +1,23 @@
 /* Cluster health — the front door to the Evidence Room, and a maintained instrument
    rather than an article.
 
-   THE ONE CHART. Five measures in five different units cannot share a value axis, so the
-   axis is not a value: it is "how far this measure usually moves in a year", and every
-   bar is this year's change divided by that. One scale, one reference line at 1.0, one
-   reading a person can state out loud. The gray band behind each bar is the full range of
-   that measure's earlier moves, which is what stops a long bar being read as
-   unprecedented when two earlier years went further.
+   TWO CHARTS, TWO QUESTIONS, AND THEY ARE NOT THE SAME QUESTION.
+
+   STANDING (first, and the one the eyebrow asks): where each level sits on the range of
+   its own published years, lowest at the left and highest at the right, with the better
+   end of that range marked where the measure has one. Five units cannot share a value
+   axis; a position within a measure's own history can be shared, and it is the only
+   reference here nobody had to choose. It is not a grade, and the note under it says so
+   using the row that proves it: pay sits at the top of its range and is under the
+   national rate for the same work in every year of that range.
+
+   MOVEMENT (second): how far this year's step was against how far that measure usually
+   steps. The axis is not a value either: it is "how far this measure usually moves in a
+   year", and every bar is this year's change divided by that. One reference line at 1.0.
+   For a while this was the ONLY chart, and a reader who came asking how the cluster was
+   doing left with a volatility meter whose longest bar belonged to the one measure this
+   page says has no better end. Bar length is size of move; colour is rose or fell.
+   Neither is merit, and the band now says that in its first line.
 
    NOTHING IS TYPED. Every figure comes from data/health.json, which derive_health.py
    rebuilds from the shipped data files of the six pages that publish these measures. The
@@ -46,6 +57,26 @@ function verdictText(t) {
 const verdictShort = t => t.band.verdict === "ordinary" ? "Ordinary year"
   : t.band.verdict === "record" ? "Never moved this far" : "Bigger than usual";
 
+/* ---------------------------------------------------------------- standing vocabulary
+   Two different questions live on this page and a reader who conflates them comes away
+   with the wrong one answered. STANDING is where a level sits in the same measure's own
+   published range, and which end of that range is the better one for the region. MOVEMENT
+   is how far this year's step was against how far that measure usually steps. The
+   movement chart alone reads as a verdict and is not one: its longest bar belongs to the
+   measure this page says has no better end at all. */
+const SFMT = {
+  n: v => N(v),
+  x2: v => v.toFixed(2) + "×",
+  x3: v => v.toFixed(3) + "×",
+  usd_m2: v => "$" + (v / 1e6).toFixed(2) + "M",
+};
+const sfmt = (s, v) => SFMT[s.fmt](v);
+const syear = (s, y) => (s.year_prefix || "") + y;
+const sPoint = (s, side) => `${sfmt(s, s[side].value)} in ${syear(s, s[side].year)}`;
+const AT_LOW = s => s.position === 0, AT_HIGH = s => s.position === 1;
+const standColor = s => s.better_end ? UP : MARK;
+const cap1 = t => t.charAt(0).toUpperCase() + t.slice(1);
+
 /* ------------------------------------------------------------------------ hero copy */
 const scale = byId("scale"), conc = byId("concentration"), pay = byId("pay");
 const talent = byId("talent"), cap = byId("capital");
@@ -55,18 +86,29 @@ const WORD = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "All five"};
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight",
   "nine", "ten", "eleven", "twelve"];
 
-/* Two sentences, one job each. The first names the three industries the word "cluster"
-   stands for and prints the three years the headline claims, because a headline about a
-   three-year fall on a page showing one year is a claim the reader cannot check. The
-   second is the finding, with the negation as a trailing clause rather than nested inside
-   the sentence it qualifies. */
+/* Three jobs, in order. (1) The three-year run the headline claims, on the basis that
+   supports it, NAMED as that basis. (2) The other total for the same year, also named,
+   because a reader met 24,030 in the hero and 23,457 here and could not reconcile two
+   figures for one year. They are two bases and both are correct: a level counts every
+   figure the bureau published, a trend counts only the figures published in every year,
+   and neither can be fixed into the other. (3) The standing reading, which is the
+   question the eyebrow asks. It used to be the MOVEMENT reading, which answers a
+   different question and left a reader who wanted to know how the cluster was doing
+   holding a volatility meter. */
 const bal = D.register.disclosed.slice(-3);
+const BASES = scale.bases;
+const standLine = t => `${t.dimension === "Job quality" ? "pay against the national rate"
+  : t.dimension === "Scale" ? "jobs" : t.dimension === "Talent supply" ? "polymer degrees"
+  : t.dimension === "Capital" ? "federal contracting" : t.dimension.toLowerCase()}
+  at the ${t.standing.rank_words}`;
 document.getElementById("stand").innerHTML =
-  `Plastics and rubber, paint and coatings and resin held ${N(bal[0].balanced)} jobs in
-   ${bal[0].year}, ${N(bal[1].balanced)} in ${bal[1].year} and ${N(bal[2].balanced)} in
-   ${bal[2].year}, counted on the same set of county figures each year. ${WORD[moved]} of
-   the five measures below moved further this year than that measure usually moves, and
-   federal contracting, up ${cap.direction.pct.toFixed(0)} percent, was not one of them.`;
+  `On ${BASES.trend.label}, plastics and rubber, paint and coatings and resin held
+   ${N(bal[0].balanced)} jobs in ${bal[0].year}, ${N(bal[1].balanced)} in ${bal[1].year}
+   and ${N(bal[2].balanced)} in ${bal[2].year}. ${cap1(BASES.level.label)} gives a higher
+   total, ${BASES.level.display}, on a basis that cannot carry a trend. Four of the five
+   measures below have a better direction and a worse one, and against their own published
+   years ${[scale, talent, pay, cap].map(standLine).join(", ")}; concentration, the fifth,
+   has no better end.`;
 
 /* Each hero number's sub-line is that number's plain reading, because for three of the
    four this is where the reader meets the measure first. Whether a big number is good
@@ -74,22 +116,171 @@ document.getElementById("stand").innerHTML =
 const withheld = D.register.possible_cells - D.register.disclosed.at(-1).cells;
 const ORD = ["", "first", "second", "third", "fourth", "fifth", "sixth"];
 PV.figures([
-  ["key", scale.value, "jobs counted in " + D.asof.qcew_year,
-   `down ${N(Math.abs(scale.direction.value))} on the figures published in both years, the
-    ${ORD[scale.direction.streak]} fall running. ${withheld} of the
-    ${D.register.possible_cells} county-by-industry figures are hidden to protect single
-    employers.`],
+  ["key", BASES.level.display, "jobs, all published counties",
+   `${withheld} of the ${BASES.level.of_cells} county figures are withheld to protect
+    single employers, so this is a floor. On the fixed set of ${BASES.trend.cells} it is
+    ${BASES.trend.display}, down ${N(Math.abs(scale.direction.value))} and falling for the
+    ${ORD[scale.direction.streak]} year.`],
   ["", conc.value, "the U.S. share of paint work",
    `these counties do ${WORDS[Math.round(parseFloat(conc.value))]} times as much paint and
-    coatings work, per job, as the country. High concentration is the cluster&rsquo;s
-    distinction and its exposure.`],
+    coatings work, per job, as the country. High concentration is the region&rsquo;s
+    distinction and its exposure, so it is the one measure here with no better end.`],
   ["", pay.value.split(" / ")[1], "of the national rate",
-   `the same work pays about a tenth less here than the U.S. average for it, and about a
-    quarter more than the average job in its own county.`],
-  ["", cap.value, "signed, none of it spent",
-   `${WORDS[D.federal_awards.leads.length]} organizations have signed for it. It is worth
-    about ${cap.drivers[2].value} of the federal contracting already arriving.`],
+   `the same work pays about a tenth less here than the U.S. average for it and about a
+    quarter more than the average job in its own county. It has been under the U.S. rate
+    in all ${WORDS[pay.standing.n_years]} published years.`],
+  /* NOT "none of it spent". The public record shows what was awarded and what was
+     assigned to a recipient, never what was drawn down, so an award that has paid out
+     nothing and one that has paid out everything are the same document here. Stating a
+     zero is as much a claim as stating a number, and this page can support neither.
+     _data/FIGURES.json registers the quantity as not publicly observable and
+     tools/figures.mjs fails the build on any page that gives it a value. */
+  ["", cap.value, "signed, " + WORDS[D.federal_awards.leads.length] + " named recipients",
+   `signed for and assigned, worth about ${cap.drivers[2].value} of the contracting
+    already arriving. How much has been paid out is not in the public record, so no amount
+    is stated here, not even a zero.`],
 ]);
+
+/* ------------------------------------------------------------------- the standing chart
+
+   THE CHART THAT ANSWERS THE EYEBROW. Five measures in five units cannot share a value
+   axis, and the movement chart solved that by making the axis "how far this measure
+   usually moves". That is a real quantity and it is not standing: it says how UNUSUAL a
+   step was, never whether the level is good, and a reader arriving at "how is the cluster
+   doing" left with a volatility meter whose longest bar was the one measure the page
+   itself says cuts both ways.
+
+   This axis is the other unit-free comparison available, and it is not a target: each
+   measure's own published years, its lowest at the left and its highest at the right. No
+   goal is invented, no peer set is chosen, and the reader can see the actual endpoint
+   values and their years on every row.
+
+   WHAT IT STILL CANNOT SAY. A position in a measure's own range is not a grade. Job
+   quality sits at the far right of its rail and is under the national rate for the same
+   work in all eleven of those years, so the top of a range is not a pass. The note under
+   the chart says exactly that, using that row as the example, because a reader who takes
+   the right-hand end for "good" has swapped one wrong reading for another.
+
+   MERIT IS SPATIAL, NOT A THRESHOLD. Four of the five have a better end and it is the
+   right-hand one for all four, which the axis label states once. The fifth is drawn grey
+   and labelled "no better end". Nothing here colours a half of a range good or bad, which
+   would be a cutoff nobody set. */
+const STAND = [...T].sort((a, b) => a.standing.position - b.standing.position);
+
+function drawStand() {
+  return MOBILE.matches ? drawStandMobile() : drawStandDesktop();
+}
+
+function drawStandDesktop() {
+  const {svg, m, w, h} = PV.chart("stand-chart",
+    {W: 1100, m: {t: 44, r: 252, b: 66, l: 246}, rows: T.length, rowH: 76});
+  const rowH = h / T.length;
+  const x = p => m.l + p * w;
+
+  STAND.forEach((t, i) => {
+    const s = t.standing, cy = m.t + i * rowH + rowH / 2, col = standColor(s);
+    txt(svg, t.dimension, {x: m.l - 16, y: cy - 6, "text-anchor": "end", class: "pv-lab"});
+    txt(svg, s.basis_short, {x: m.l - 16, y: cy + 13, "text-anchor": "end",
+      class: "pv-labq"});
+
+    el("line", {x1: x(0), y1: cy, x2: x(1), y2: cy, stroke: "#D8D2C8", "stroke-width": 4,
+      "stroke-linecap": "round"}, svg);
+    [0, 1].forEach(p => el("line", {x1: x(p), y1: cy - 9, x2: x(p), y2: cy + 9,
+      stroke: "#B9B3A9", "stroke-width": 2}, svg));
+
+    /* The endpoint labels carry the real values and their years, so the rail is
+       inspectable rather than decorative. When the current year IS an endpoint the
+       endpoint label is the current label: printing a second one on top of it was the
+       first thing that collided here. */
+    const lowNow = AT_LOW(s), highNow = AT_HIGH(s);
+    txt(svg, sPoint(s, "low"), {x: x(0), y: cy + 26, "text-anchor": "start",
+      class: lowNow ? "pv-lab" : "pv-labq", fill: lowNow ? col : undefined});
+    txt(svg, sPoint(s, "high"), {x: x(1), y: cy + 26, "text-anchor": "end",
+      class: highNow ? "pv-lab" : "pv-labq", fill: highNow ? col : undefined});
+
+    const dot = el("circle", {cx: x(s.position), cy, r: 9, fill: col}, svg);
+    if (!lowNow && !highNow)
+      txt(svg, sfmt(s, s.value), {x: x(s.position), y: cy - 16, fill: col, class: "pv-lab",
+        "text-anchor": s.position < 0.1 ? "start" : s.position > 0.9 ? "end" : "middle"});
+    hoverable(dot, `<b>${t.dimension}</b><br>${sfmt(s, s.value)} in ${syear(s, s.year)},
+      the ${s.rank_words}<br>lowest ${sPoint(s, "low")}<br>highest ${sPoint(s, "high")}
+      <br>${s.merit_short}`,
+      `${t.dimension}: ${sfmt(s, s.value)}, the ${s.rank_words}`);
+
+    txt(svg, cap1(s.rank_words), {x: m.l + w + 16, y: cy - 6, "text-anchor": "start",
+      class: "pv-lab"});
+    txt(svg, s.merit_short, {x: m.l + w + 16, y: cy + 13, "text-anchor": "start",
+      class: "pv-labq"});
+  });
+
+  txt(svg, "ITS OWN LOWEST YEAR", {x: x(0), y: m.t + h + 30, "text-anchor": "start",
+    class: "pv-axlab"});
+  txt(svg, "ITS OWN HIGHEST YEAR →", {x: x(1), y: m.t + h + 30, "text-anchor": "end",
+    class: "pv-axlab"});
+}
+
+/* Mobile is a re-layout, not a shrink. The two label columns stack above their own rail,
+   and the current value joins the rank line rather than floating over the rail, where at
+   358px of plot it would have sat on an endpoint label on three rows out of five. */
+function drawStandMobile() {
+  const W = 390, m = {t: 28, r: 16, b: 58, l: 16}, rowH = 110;
+  const {svg, w} = PV.chart("stand-chart",
+    {W, m, H: m.t + T.length * rowH + m.b});
+  const x = p => m.l + p * w;
+
+  STAND.forEach((t, i) => {
+    const s = t.standing, y = m.t + i * rowH, col = standColor(s), ry = y + 70;
+    txt(svg, t.dimension, {x: m.l, y: y + 14, "text-anchor": "start", class: "pv-lab"});
+    txt(svg, `${sfmt(s, s.value)} · ${s.rank_words}`, {x: m.l, y: y + 33,
+      "text-anchor": "start", class: "pv-labq", fill: col});
+    txt(svg, s.merit_short, {x: m.l, y: y + 51, "text-anchor": "start", class: "pv-labq"});
+
+    el("line", {x1: x(0), y1: ry, x2: x(1), y2: ry, stroke: "#D8D2C8", "stroke-width": 4,
+      "stroke-linecap": "round"}, svg);
+    [0, 1].forEach(p => el("line", {x1: x(p), y1: ry - 8, x2: x(p), y2: ry + 8,
+      stroke: "#B9B3A9", "stroke-width": 2}, svg));
+    const dot = el("circle", {cx: x(s.position), cy: ry, r: 8, fill: col}, svg);
+    hoverable(dot, `<b>${t.dimension}</b><br>${sfmt(s, s.value)}, the ${s.rank_words}`,
+      `${t.dimension}: ${sfmt(s, s.value)}, the ${s.rank_words}`);
+    txt(svg, sPoint(s, "low"), {x: x(0), y: ry + 24, "text-anchor": "start",
+      class: "pv-labq"});
+    txt(svg, sPoint(s, "high"), {x: x(1), y: ry + 24, "text-anchor": "end",
+      class: "pv-labq"});
+  });
+
+  txt(svg, "LOWEST YEAR", {x: m.l, y: m.t + T.length * rowH + 30, "text-anchor": "start",
+    class: "pv-axlab"});
+  txt(svg, "HIGHEST YEAR →", {x: m.l + w, y: m.t + T.length * rowH + 30,
+    "text-anchor": "end", class: "pv-axlab"});
+}
+
+const SS = D.standing_summary;
+document.getElementById("standlede").innerHTML =
+  `The axis is a position, not a value: each measure&rsquo;s own published years, its
+   lowest year at the left and its highest at the right.`;
+
+document.getElementById("standtable").innerHTML = tableView("stand",
+  "Each measure now, against the lowest and highest years of its own published run",
+  ["Measure", "Now", "Its lowest year", "Its highest year", "Where it sits",
+   "Better end"],
+  STAND.map(t => [t.dimension, `${sfmt(t.standing, t.standing.value)} in
+    ${syear(t.standing, t.standing.year)}`, sPoint(t.standing, "low"),
+    sPoint(t.standing, "high"), cap1(t.standing.rank_words), t.standing.merit_short]));
+
+document.getElementById("standsrc").innerHTML =
+  `For ${WORDS[SS.with_merit.length]} of the five the right-hand end is the better one for
+   the region; the fifth, ${SS.without_merit.join(" and ").toLowerCase()}, has no better
+   end and is drawn grey. Each rail is one measure on one basis, recomputed from the shipped data of the page it
+   links to: ${STAND.map(t => `${t.dimension.toLowerCase()}, ${t.standing.basis}`)
+     .join("; ")}. The dot is placed by VALUE and the rank counts YEARS, so a measure can
+   sit near the middle of its rail and still be fourth from the bottom when the years
+   above it are bunched together. Both are printed rather than one being picked as the
+   tidier of the two.`;
+
+document.getElementById("standnote").innerHTML =
+  `<b>A range is not a grade.</b> ${SS.not_a_grade} ${SS.not_a_score} Nobody had to choose
+   this reference, which is the whole reason it is the one used: a peer region would need
+   a peer set somebody picked, and a goal line would need a goal nobody has set.`;
 
 /* ------------------------------------------------------------------- the movement chart
 
@@ -289,6 +480,12 @@ document.getElementById("tiles").innerHTML = T.map(t => `
       ${t.drivers_note ? `<p class="d-foot">${t.drivers_note}</p>` : ""}
       <dl class="t-facts">
         <dt>Against</dt><dd><b>${t.baseline.name}.</b> ${t.baseline.why}</dd>
+        <dt>Where it stands</dt><dd><b>The ${t.standing.rank_words}.</b>
+          ${sfmt(t.standing, t.standing.value)} in ${syear(t.standing, t.standing.year)},
+          on ${t.standing.basis}. Its lowest published year is
+          ${sPoint(t.standing, "low")} and its highest ${sPoint(t.standing, "high")}. That
+          is a comparison with its own history, not with a target.</dd>
+        <dt>Better direction</dt><dd>${t.standing.merit}</dd>
         <dt>This year</dt><dd>${t.direction.words}.</dd>
         <dt>Unusual?</dt><dd>${verdictText(t)}</dd>
         <dt>Cannot see</dt><dd>${t.blind}</dd>
@@ -332,24 +529,32 @@ document.getElementById("scalesub").innerHTML =
 
 /* --------------------------------------------------------------------------- closer
    "Smaller every year" was a claim about the whole series, which rose in two of the last
-   five. The page evidences three consecutive falls, so the closer says three. */
+   five. The page evidences three consecutive falls, so the closer says three.
+   "Holding $51.0 million it has not spent" went the same way as the hero card: it stated
+   a drawdown of zero for a quantity nothing published can show. The closer now says what
+   the record holds and stops there. */
 document.getElementById("closerline").textContent =
   `Three years smaller, paid above its towns and below its industry, holding ` +
-  `${cap.value.replace("M", " million")} it has not spent.`;
+  `${cap.value.replace("M", " million")} in signed awards no public record follows ` +
+  `to the ground.`;
 document.getElementById("closersub").innerHTML =
   `That is the reading on ${WORDS[T.length]} measures, none of which has a target set for
-   it, and ${withheld} of the ${D.register.possible_cells} county employment figures
-   behind the first one are withheld rather than small. The degree figure is the one to
-   watch and the one to trust least: it is
-   ${WORDS[D.asof.qcew_year - D.asof.ipeds_year]} years behind everything else here.`;
+   it. Against their own published years, ${[scale, talent, pay, cap].map(standLine)
+     .join(", ")}, and concentration has no better end to be read against at all. The five
+   are not added into a score, because that needs weights nobody has set. ${withheld} of
+   the ${D.register.possible_cells} county employment figures behind the first one are
+   withheld rather than small, and the degree figure is the one to watch and the one to
+   trust least: it is ${WORDS[D.asof.qcew_year - D.asof.ipeds_year]} years behind
+   everything else here.`;
 
 document.getElementById("lagsub").textContent =
   `${WORDS[D.asof.qcew_year - D.asof.ipeds_year]} years`;
 
 /* -------------------------------------------------------------------------- assemble */
-drawMove();
-MOBILE.addEventListener ? MOBILE.addEventListener("change", drawMove)
-                        : MOBILE.addListener(drawMove);
+const redraw = () => { drawStand(); drawMove(); };
+redraw();
+MOBILE.addEventListener ? MOBILE.addEventListener("change", redraw)
+                        : MOBILE.addListener(redraw);
 
 const meth = await PV.methodology({page: "cluster-health", meta: D.meta,
   definitions: `Every figure is recomputed by <span class="mono">derive_health.py</span> in

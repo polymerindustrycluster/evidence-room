@@ -13,6 +13,95 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-08-29 — the disbursement claim and a subtraction, *cluster-health*
+
+### "Signed, none of it spent" — *cluster-health*, published
+
+**Was:** the fourth hero figure read `$51.0M / SIGNED, NONE OF IT SPENT`, the Capital tile
+said "None of it is disbursement: every figure here is money committed, not money spent",
+and the closer said the cluster was "holding $51.0 million it has not spent".
+
+**Is:** the hero figure reads `$51.0M / SIGNED, SEVEN NAMED RECIPIENTS`, and the page says
+what the record holds and stops there: the money is signed for and assigned, and how much
+has been paid out is a different quantity for which **no public record exists**. The
+Capital tile's "Cannot see" row carries that in full, and the closer now says the awards
+are ones "no public record follows to the ground". No disbursed amount appears anywhere on
+the page, and that includes not stating a zero.
+
+**Cause:** a reader finished the page believing PIC had spent nothing, and found the
+*accountability* page two pages over describing the same stage as an empty box: the public
+record shows award and execution, never drawdown, so a fully assigned award that has
+disbursed nothing and a fully assigned award that has disbursed everything look identical.
+The tile was stating as a measured fact a quantity the same repository describes as
+unknowable. **Stating a zero is as much a claim as stating a number.**
+`_data/FIGURES.json` registers `award_disbursed` as NOT PUBLICLY OBSERVABLE;
+`tools/figures.mjs` was failing this page on exactly this sentence and now passes. Claim
+`no-disbursed-amount-anywhere` guards the derived file the page renders from, so the
+phrasing cannot come back through `derive_health.py` either.
+
+### $39.0M minus $22.5M printed as $16.4M — *cluster-health*, published
+
+**Was:** the Capital tile said "routine contracting rose to $39.0M in FY2025 from $22.5M,
+73 percent higher" with "Contracting up $16.4M" beside it, and the driver strip printed
+"$39.0M".
+
+**Is:** "routine contracting rose to $38.98M in FY2025 from $22.54M, a rise of $16.44M and
+73 percent higher", with "Contracting up $16.44M" and a driver strip reading "$38.98M ...
+against $22.54M the year before". 38.98 minus 22.54 is 16.44.
+
+**Cause:** a reader ran the only check the page gave them and it failed: 39.0 minus 22.5 is
+16.5, not the 16.4 printed twice beside it. Both ends were correctly rounded from
+$38,976,269 and $22,536,260, and the rounding is exactly what broke the subtraction. The
+underlying figures have not changed. The precision is now chosen so that the arithmetic a
+reader can do in their head closes, and claim `capital-move-subtracts` asserts it: if a
+revision ever breaks the closure, the sentence has to be rewritten rather than re-rounded.
+
+### Two job totals for 2025, neither labelled — *cluster-health*, published
+
+**Was:** the hero read "24,030 / JOBS COUNTED IN 2025" while the standfirst two inches
+below said the same three industries held "23,457 in 2025". Neither figure named its basis.
+
+**Is:** both are printed, both are labelled, and neither has been changed. `24,030` is
+every county figure BLS published for 2025, 24 of 36 cells, and it is a floor because a
+withheld cell is not a zero. `23,457` is the **balanced panel**, the 21 cells published in
+every year since 2015, and it is the only basis that supports the three-year run 25,281 to
+24,259 to 23,457. The hero card, the standfirst and the Scale tile now each name the basis
+they are on, and the tile prints the 573-job gap between them and says what it is.
+
+**Cause:** a reader met two totals for one year and could not reconcile them, which is the
+correct reaction to two unlabelled numbers. **A level and a trend need different bases**,
+and neither figure is fixable into the other: the level counts everything published, the
+trend holds the set of counties still so the bureau's disclosure decisions cannot read as
+jobs appearing and vanishing. Claim `two-bases-for-the-same-year` holds both figures, both
+cell counts and the requirement that each display string appears in the sentence that
+names its basis.
+
+### The dashboard could not say whether the cluster was doing well — *cluster-health*, published
+
+**Was:** the page opened "How is the cluster doing?" and answered with one chart whose bar
+length was *how unusual a move was* and whose colour was *rose or fell*. Nothing on the
+page encoded better or worse. The longest bar on it, Distinctiveness at 5.05 times its
+usual move, belonged to the one measure the page's own tile says "cuts both ways".
+
+**Is:** the two questions are separated into two bands. A new standing chart, now the first
+chart on the page, puts each measure on the range of its **own published years** — its
+lowest at the left, its highest at the right — marks which end is the better one for the
+region, and draws the one measure with no better end in grey. Every tile gains a "Where it
+stands" and a "Better direction" row. The movement chart keeps its method unchanged, moves
+below, and now opens "This chart grades nothing."
+
+**Cause:** a reader asked the question the page asks in its own eyebrow and got a
+volatility meter. No figure was wrong; the page was answering a different question from the
+one it posed. **No target was invented to fix it** — PIC has set none, and a goal line or a
+chosen peer set would have been a target by another name. The reference used is the only
+one nobody had to choose. The page now also says plainly what that reference cannot do: a
+range position is a comparison with a measure's own history, and Job quality sits at the
+top of its range while paying below the national rate for the same work in all eleven years
+of it. The five are not combined into a score, because a composite needs weights nobody has
+set.
+
+---
+
 ## 2026-08-29 — the NSF Engines figure, *timeline*
 
 ### The NSF NEO-SMART award amount — *timeline*, published
@@ -187,3 +276,59 @@ in quirks mode — laid out to the CSS box model, but measured against a much ol
 No published figure changed. It is here because it affected every page, it was invisible
 precisely because the pages still looked correct, and someone reproducing this work should
 know it was wrong for a long time.
+
+### The routine federal contracting rate — *index*, 2026-08-29
+
+**Was:** the hub's third hero card and its federal-money card put ordinary federal
+contracting at **$34.9 million a year** over the eight fiscal years since 2019, and the
+$51.0 million Tech Hub award at **about a year and a half** of it. The funding map card
+repeated the $34.9 million.
+
+**Is:** **$36.6 million a year** across the seven finished fiscal years, 2019 to 2025, and
+the award at **about 1.4 years** of it. The basis is named wherever the figure appears, and
+each card says that fiscal 2026 is still running and is not in the average.
+
+**Cause.** The eight-year mean included fiscal 2026, which had run about seven months and
+stood at $23.0 million. An annual rate may not include a year that has not finished: the
+part-year pulls the mean down, which understates the routine flow and overstates how far
+the one-time award reaches. The cluster-health dashboard had been computing the same
+quantity on finished years only, so one site published one figure at two values and both
+per-page gates passed, because each page was checked against its own data and nothing was
+checked against the other page. `_data/FIGURES.json` `routine_federal_per_year` records the
+adjudication; `hero-federal-annual` now asserts the finished-years basis and fails if the
+all-years average is ever restored. The same registry entry lists `federal-money` as
+printing this figure, and that page still prints the eight-year version; it was out of
+scope for this change and is unresolved.
+
+### Two concentrations a reader could not tell apart — *index*, 2026-08-29
+
+**Was:** "Rubber products, the industry Akron is named for, run 2.44 times", beside a
+dashboard sentence reading "Plastics and rubber, the industries the region is known for,
+run 2.32 times".
+
+**Is:** the card names both codes and prints both values in one sentence: rubber products
+alone, NAICS 3262, at 2.44 times, and the wider plastics and rubber family that contains
+it, NAICS 326, at 2.32 times.
+
+**Cause.** No published figure was wrong. 3262 is a child of 326, so both numbers are right
+and neither moved. What was wrong is that the two labels, "the industry Akron is named for"
+against "the industries the region is known for", did not tell a reader the subjects were
+different: two readers and one cross-page audit filed it as one figure at two values. A
+figure whose correctness depends on a distinction the prose does not draw is a defect even
+when the arithmetic holds.
+
+### The hub advertised a claim count the page it points at had outgrown — *index*, 2026-08-29
+
+**Was:** the cluster-health card carried a "23 claims" pill for a page that says on its own
+face there are 27 of them, and the hub inventory sentence read "292 checked claims".
+
+**Is:** the pill and the total are read from the pages themselves on every build, so both move with them.
+
+**Cause.** `index/data/counts.json` is generated from every artifact's `claims.json`, and
+the pills and the inventory sentence were already derived from it rather than typed. The
+gap was that nothing checked the generated file against its own inputs: `index-counts-internal`
+compared counts.json to itself, so a file that was never regenerated stayed internally
+consistent and passed while every page in the tree grew past it. A derived number is only as
+fresh as the last derivation, and a check that never reads the source cannot notice.
+`index-counts-fresh` now reads all fifteen `claims.json` files directly and fails on any
+disagreement; it was tested by restoring the stale value, which it caught.
