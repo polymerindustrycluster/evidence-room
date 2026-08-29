@@ -98,8 +98,13 @@ const PV = (() => {
   function face(svg, cls = "pv-lab") {
     let byCls = faceCache.get(svg);
     if (!byCls) faceCache.set(svg, byCls = {});
-    if (byCls[cls]) return byCls[cls];
+    /* KEYED BY THE FACE, NOT JUST THE CLASS. The sheet swaps chart type at 760px, so a
+       cache keyed on class alone returns the desktop metrics to a phone redraw after a
+       live resize — the exact staleness this helper exists to prevent. The probe is
+       created first so its computed size can be part of the key. */
     const t = txt(svg, "Hxpg", {x: 0, y: 0, class: cls, opacity: 0});
+    const key = cls + "@" + (getComputedStyle(t).fontSize || "");
+    if (byCls[key]) { svg.removeChild(t); return byCls[key]; }
     let m;
     try {
       const bb = t.getBBox();
@@ -109,7 +114,7 @@ const PV = (() => {
       m = {h: fs * 1.32, ascent: fs * 1.02, descent: fs * 0.3};
     }
     svg.removeChild(t);
-    return (byCls[cls] = m);
+    return (byCls[key] = m);
   }
 
   /* Baseline-to-baseline distance that clears both faces, plus air. Use this wherever a
@@ -149,7 +154,13 @@ const PV = (() => {
       txt(g, xfmt ? xfmt(v) : v, {x: xs(v), y: y + h + 20, "text-anchor": "middle",
         class: "pv-tick"});
     });
-    el("line", {x1: x, y1: y + h, x2: x + w, y2: y + h,
+    /* TAGGED, so a checker does not have to guess which line is the axis. collide.mjs
+       picked "the widest short horizontal line" and kept the FIRST at that width; frame()
+       draws gridlines before the axis and they span the same plot width, so the check had
+       always been measuring against the topmost GRIDLINE. It reported a label plate
+       overlapping a gridline as "a bar crosses the axis", which sent one diagnosis down
+       the wrong path entirely. */
+    el("line", {x1: x, y1: y + h, x2: x + w, y2: y + h, "data-pv-axis": "1",
       stroke: "var(--pv-axis)", "stroke-width": 1}, g);
     /* The x-axis label is centred on the PLOT, which sits right of the box centre whenever
        the left margin exceeds the right — a 42/12 split offsets it by 15 units. That was

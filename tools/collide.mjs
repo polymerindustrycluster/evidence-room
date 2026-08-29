@@ -61,13 +61,45 @@ for (const n of list) {
           if (ox > MIN && oy > MIN)
             out.textOverText.push(`svg${si}: "${boxes[i].s}" x "${boxes[j].s}"`);
         }
-      // the baseline axis is the widest short horizontal line frame() draws
-      let axis = null, aw = 0;
-      svg.querySelectorAll("line").forEach(l => {
+      /* THE AXIS IDENTIFIES ITSELF. This used to take "the widest short horizontal
+         line", keeping the first at that width — and frame() draws gridlines before the
+         axis, at the same plot width, so it had always measured against the topmost
+         GRIDLINE. Everything below the first gridline read as past the axis, which is how
+         a label plate came to be reported as a bar crossing it. frame() now tags the real
+         one; the old heuristic stays as a fallback for charts that draw their own axis,
+         but takes the BOTTOM-most candidate rather than the first. */
+      let axis = null;
+      const tagged = svg.querySelector("line[data-pv-axis]");
+      if (tagged) axis = tagged.getBoundingClientRect();
+      else {
+        /* THE AXIS IS IDENTIFIED BY ITS INK, not its position. Picking the widest line
+           found the topmost gridline; picking the bottom-most found the LOWEST gridline,
+           which on a diverging chart sits well under the zero line. Both were guesses
+           about geometry. The axis is drawn in --pv-axis and the grid in --pv-grid, so
+           the ink says which is which; position is only the tiebreak. */
+        const AXIS_INK = "rgb(189, 183, 172)";
+        let aw = 0;
+        const cands = [...svg.querySelectorAll("line")]
+          .map(l => ({bb: l.getBoundingClientRect(), ink: getComputedStyle(l).stroke}))
+          .filter(c => c.bb.height < 3 && c.bb.width > 40);
+        const inked = cands.filter(c => c.ink === AXIS_INK);
+        (inked.length ? inked : cands).forEach(c => {
+          if (c.bb.width > aw) { aw = c.bb.width; axis = c.bb; }
+        });
+      }
+      /* A DIVERGING CHART'S AXIS IS ITS ZERO LINE, AND BARS ARE MEANT TO CROSS IT.
+         The straddle test below assumes the axis is the floor of the plot. On a chart
+         that diverges around zero it is the middle, and every negative bar is a
+         "violation". The signature is unambiguous: a gridline drawn BELOW the axis means
+         the plot continues past it, so the axis is not the floor. Skipping the test there
+         costs nothing, because a bar overshooting the bottom of a diverging plot is
+         caught by the out-of-frame check instead. Found when tagging the axis line made
+         this check accurate for the first time and churn lit up at all fourteen widths. */
+      const below = [...svg.querySelectorAll("line")].some(l => {
         const bb = l.getBoundingClientRect();
-        if (bb.height < 3 && bb.width > aw) { aw = bb.width; axis = bb; }
+        return axis && bb.height < 3 && bb.width > 100 && bb.top > axis.bottom + 4;
       });
-      if (axis) {
+      if (axis && !below) {
         svg.querySelectorAll("rect").forEach(el => {
           const bb = el.getBoundingClientRect();
           if (!bb.height || bb.width < 2) return;
