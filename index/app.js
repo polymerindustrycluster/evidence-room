@@ -31,7 +31,14 @@
    render time; the enforcement is index-inventory in claims.json, which asserts that every
    page in counts.json is either carded here or one of the two unlisted artifacts. A new
    artifact therefore cannot appear in the tree without either getting a card or being
-   declared unlisted: the gate fails until someone decides which. */
+   declared unlisted: the gate fails until someone decides which.
+
+   AND IT IS NOW SAID ON THE PAGE. Excluding them from the totals was correct and being
+   silent about them was not: a reader who reached one of those two pages by direct URL
+   could not tell from the hub whether it was withheld or forgotten. The difference between
+   the tree and the published set is printed in #withheld, from this same computation, and
+   the paragraph removes itself in a cut of the tree where the unlisted pages were never
+   copied — where the difference really is nothing, saying "two" would be the new lie. */
 const CARDS = [...document.querySelectorAll(".card[data-slug]")];
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight",
   "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"];
@@ -70,6 +77,15 @@ async function decorate() {
   put("pagesword", word(live.length));
   put("claims", claims);
   put("manual", manual);
+
+  /* The tree minus the gallery. counts.json holds one row per artifact that renders, so
+     this is the number of built pages no card leads to, and it is derived rather than
+     typed for the same reason the two counts above are. Nothing here reads why a page is
+     withheld — that lives in each page's own .unlisted file and in index-inventory. */
+  const withheld = C.n_pieces - live.length;
+  put("withheldword", Word(withheld));
+  if (!withheld) document.getElementById("withheld")?.remove();
+
   return live.length;
 }
 

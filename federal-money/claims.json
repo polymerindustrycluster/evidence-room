@@ -1,178 +1,181 @@
 {
-  "data": {"f": "federal.json", "h": "techhub.json"},
-  "claims": [
-    {
-      "id": "fed-annual-rate",
-      "text": "Routine federal contracts bring the region's polymer industry about $35 million a year: $34.9M in 2025 dollars across FY2019-FY2026.",
-      "source": "USAspending.gov, place of performance, PIC-12, NAICS 325*/326*; BLS CPI-U annual averages for the real column",
-      "assert": "abs(sum(r['real'] for r in D['f']['naics']) / len(set(r['fy'] for r in D['f']['naics'])) - 34_908_376) < 50_000",
-      "actual": "sum(r['real'] for r in D['f']['naics']) / len(set(r['fy'] for r in D['f']['naics']))",
-      "falsified_if": "USAspending restates an obligation, a ninth fiscal year lands, or the CPI table is extended and moves the base. The tolerance is 50k, which is tighter than the 50k that would flip the printed $34.9M to $34.8M or $35.0M, so the number on the page cannot drift without this failing.",
-      "official_check": "The headline rounds 34.9 to 'about $35 million'. It is an eight-year mean that includes a PARTIAL fiscal year; the closed-year mean is checked separately by fed-closed-average and is printed beside the chart."
-    },
-    {
-      "id": "fed-award-ratio",
-      "text": "The EDA Tech Hub award is worth about a year and a half of routine polymer contracting: 1.5 years on the eight-year average.",
-      "source": "techhub.json award total divided by the FY2019-FY2026 mean of the real column",
-      "assert": "abs(D['h']['award'] / (sum(r['real'] for r in D['f']['naics']) / len(set(r['fy'] for r in D['f']['naics']))) - 1.461) < 0.02 and round(D['h']['award'] / (sum(r['real'] for r in D['f']['naics']) / len(set(r['fy'] for r in D['f']['naics']))), 1) == 1.5",
-      "actual": "D['h']['award'] / (sum(r['real'] for r in D['f']['naics']) / len(set(r['fy'] for r in D['f']['naics'])))",
-      "falsified_if": "Either side moves: an EDA de-obligation, a restated obligation, or a new fiscal year. The second half of the assertion pins the printed '1.5', so a ratio that drifted to 1.44 or 1.56 fails even though it would still read as 'about a year and a half'.",
-      "official_check": "This compares a competitive implementation grant against procurement obligations. They are different instruments and the page says so beside the chart, in the closer, and in techhub.json's caution field. The comparison claimed is of order of magnitude, not of like for like."
-    },
-    {
-      "id": "fed-award-total",
-      "text": "The EDA Tech Hub award is $51.0M, made of seven implementation awards to named project leads whose printed figures, each rounded to $0.1M, add to $51.1M.",
-      "source": "funding-map/data/funding.json, verified against signed federal Notices of Award; copied here by derive_techhub.py",
-      "assert": "sum(math.floor(l['amount'] / 1e5 + 0.5) for l in D['h']['leads']) == 511 and D['h']['agency'] == 'U.S. Economic Development Administration' and D['h']['award'] == 51_001_413 and len(D['h']['leads']) == 7 and sum(l['amount'] for l in D['h']['leads']) == D['h']['award'] and sorted(D['h']['leads'], key=lambda l: -l['amount'])[0]['name'] == 'BioVerde' and round(sorted(D['h']['leads'], key=lambda l: -l['amount'])[0]['amount'] / 1e6, 1) == 11.1 and sorted(D['h']['leads'], key=lambda l: -l['amount'])[-1]['name'] == 'Greater Akron Chamber' and sorted(D['h']['leads'], key=lambda l: -l['amount'])[-1]['amount'] == 2_650_000",
-      "actual": "(D['h']['award'], len(D['h']['leads']), sum(l['amount'] for l in D['h']['leads']), [(l['name'], l['amount']) for l in sorted(D['h']['leads'], key=lambda l: -l['amount'])])",
-      "falsified_if": "The funding map restates the award, an eighth lead is added, or the copy step drifts from its source. The sum-equals-total half is the real guard: it fails the moment the seven amounts on this page stop being what the award line is drawn from. The rounded-sum half is the arithmetic guard: the seven figures the ladder prints add to $51.1M while the unrounded seven add to exactly the $51.0M award line, and the source line under the ladder now says both, so this fails the moment the printed column stops totalling 51.1. The agency half guards the deck, which expands EDA in full at first contact. The name-and-amount halves guard the two leads the Band 3 lede names in prose, $11.1M to BioVerde at the top and $2.7M to the Greater Akron Chamber at the bottom, so neither can be restated or reordered without this failing. The bottom lead is pinned to its exact 2,650,000 rather than a rounded value: the page's formatter published it as $2.6M until this run, because 2.65 sits a hair below the binary midpoint and toFixed rounded it down.",
-      "official_check": "The $7.2M partner match is deliberately excluded from the award line. It is not federal money and adding it would inflate the ratio the page is built on."
-    },
-    {
-      "id": "fed-2019-clears",
-      "text": "FY2019 cleared the award line by $647k and FY2021 fell $245k short of it, and neither gap is what the chart's rounded labels ($51.0M, $50.8M) subtract to.",
-      "source": "USAspending real column by fiscal year against the techhub.json award total",
-      "assert": "[fy for fy in set(r['fy'] for r in D['f']['naics']) if sum(r['real'] for r in D['f']['naics'] if r['fy'] == fy) >= D['h']['award']] == [2019] and abs(D['h']['award'] - sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2021) - 245_407) < 25_000 and abs(sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2019) - D['h']['award'] - 646_685) < 25_000 and math.floor(D['h']['award'] / 1e5 + 0.5) - math.floor(sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2021) / 1e5 + 0.5) == 2",
-      "actual": "sorted((fy, sum(r['real'] for r in D['f']['naics'] if r['fy'] == fy)) for fy in set(r['fy'] for r in D['f']['naics']))",
-      "falsified_if": "Any second year crosses the award total, or either gap moves by more than 25k. Both halves matter: the on-chart annotation names FY2019 as the ONLY year that clears the line, so a second crossing makes the chart wrong, not merely imprecise. The fourth test is the arithmetic guard added after a reader checked the page against itself: the chart labels round to $0.1M, so subtracting the printed $51.0M and $50.8M gives $200k against a true gap of $245k, and the chart now says so. That test fails the moment the rounded labels stop differing by exactly two tenths of a million, which is the moment the printed reconciliation would become wrong.",
-      "official_check": "FY2019 clears the line in 2025 dollars and not as awarded ($41.0M nominal). The chart is on the real basis and says so in its axis label, its subtitle and its source line."
-    },
-    {
-      "id": "fed-2019-peak",
-      "text": "FY2019 is the largest of the eight years at $51.6M in 2025 dollars; FY2021, at $50.8M, is second.",
-      "source": "USAspending real column summed by fiscal year",
-      "assert": "max(set(r['fy'] for r in D['f']['naics']), key=lambda fy: sum(x['real'] for x in D['f']['naics'] if x['fy'] == fy)) == 2019 and round(sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2019) / 1e6, 1) == 51.6 and sorted(((sum(x['real'] for x in D['f']['naics'] if x['fy'] == fy), fy) for fy in set(r['fy'] for r in D['f']['naics'])), reverse=True)[1][1] == 2021",
-      "actual": "sorted(((round(sum(x['real'] for x in D['f']['naics'] if x['fy'] == fy)), fy) for fy in set(r['fy'] for r in D['f']['naics'])), reverse=True)[:3]",
-      "falsified_if": "Any year overtakes FY2019, FY2019 is restated off $51.6M, or FY2021 stops being the runner-up. This claim exists because the Band 3 lede shipped calling FY2021 'the $50.8 million peak' while the chart directly above it drew FY2019 taller: the page disagreed with itself about which year was the largest, and no assertion was watching the word 'peak'. The rounding test is what pins the printed figure, so a restatement to $51.5M or $51.7M fails here rather than reaching a reader.",
-      "official_check": "Peak on the real basis. As awarded, FY2021 ($42.7M) is larger than FY2019 ($41.0M) — the ordering swaps with the dollar basis, which is exactly why the chart, the prose and this claim all state 2025 dollars."
-    },
-    {
-      "id": "fed-closed-average",
-      "text": "Counting only the seven closed fiscal years, the average is $36.6M and the award is about 1.4 years of it.",
-      "source": "USAspending real column, FY2026 excluded as the open federal year",
-      "assert": "abs(sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7 - 36_606_066) < 50_000 and round(D['h']['award'] / (sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7), 1) == 1.4",
-      "actual": "(sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7, D['h']['award'] / (sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7))",
-      "falsified_if": "FY2026 closes and the exclusion becomes wrong, or a closed year is restated. This is the page's own sensitivity check on its headline ratio: the two bases give 1.5 and 1.4 years and both are printed, so a reader is never shown one basis as if it were the only one. The $36.6M half now guards a printed number rather than a table one: the hero card read '1.4 counting finished years only' and asked the reader to accept a ratio whose denominator appeared nowhere on the page, so the card carries the $36.6M average and 51.0 divided by 36.6 has to keep landing on 1.4.",
-      "official_check": "Dropping the partial year RAISES the average and LOWERS the ratio. Publishing only the flattering basis would have been the easy version of this page."
-    },
-    {
-      "id": "fed-partial-year",
-      "text": "FY2026 is the partial year: it is the last fiscal year in the file and its bar is drawn hatched.",
-      "source": "USAspending pull, fiscal years present in federal.json",
-      "assert": "max(r['fy'] for r in D['f']['naics']) == 2026 and len(set(r['fy'] for r in D['f']['naics'])) == 8",
-      "actual": "sorted(set(r['fy'] for r in D['f']['naics']))",
-      "falsified_if": "A ninth fiscal year lands. app.js carries PARTIAL as a hand-set constant, so if FY2027 arrives and this claim is not updated, the page would hatch a closed year and draw the new open one at full weight. That is the exact failure this claim exists to catch.",
-      "official_check": "A partial year cannot be detected from a low value. FY2023 is lower than FY2026 and is a fully closed year."
-    },
-    {
-      "id": "fed-trough-tire",
-      "text": "FY2023 is the lowest year on the chart, and no tire-manufacturing obligation appears in it.",
-      "source": "USAspending rows by (fiscal year, code); 326211 is the code the chart annotation names",
-      "assert": "min(set(r['fy'] for r in D['f']['naics']), key=lambda fy: sum(r['real'] for r in D['f']['naics'] if r['fy'] == fy)) == 2023 and not any(r['code'] == '326211' and r['fy'] == 2023 for r in D['f']['naics']) and len(set(r['fy'] for r in D['f']['naics'] if r['code'] == '326211')) >= 5",
-      "actual": "sorted(set(r['fy'] for r in D['f']['naics'] if r['code'] == '326211'))",
-      "falsified_if": "A 326211 row appears for FY2023, another year drops below it, or 326211 stops being a regular presence (the >=5-years test is what makes its absence worth annotating rather than ordinary).",
-      "official_check": "The chart says no obligation APPEARS, not that none was made. An absent row in this API is a year with no recorded obligation for that code, and this page does not treat it as a confirmed zero."
-    },
-    {
-      "id": "fed-total",
-      "text": "About $249M of federal polymer obligations as awarded, $279M in 2025 dollars.",
-      "source": "USAspending.gov, place of performance, PIC-12; BLS CPI-U annual averages for the real column",
-      "assert": "abs(sum(r['amount'] for r in D['f']['naics']) - 248_801_869) < 400_000 and abs(sum(r['real'] for r in D['f']['naics']) - 279_267_004) < 400_000",
-      "actual": "(sum(r['amount'] for r in D['f']['naics']), sum(r['real'] for r in D['f']['naics']))",
-      "falsified_if": "USAspending restates an obligation, or the CPI table is extended and changes the base. NOTE: an earlier version of this page published only the nominal sum. Adding more than one year of dollars together without adjusting is a defect, not a style choice; the gap here is 12 percent. Tolerance tightened from 5M to 400k in the rebuild, because the page now prints $279.3M and $248.8M to one decimal.",
-      "official_check": "The first adjustment attempt returned +3% because fiscal 2026 was missing from the CPI table and was silently skipped by an 'if year in CPI' guard. A lookup that skips what it cannot find is the same failure mode as a dead code: it produces a plausible number instead of an error."
-    },
-    {
-      "id": "fed-top-naics",
-      "text": "All Other Rubber Product Manufacturing (326299) is the largest recipient industry, ahead of tire manufacturing.",
-      "source": "USAspending by NAICS, summed across fiscal years in 2025 dollars",
-      "assert": "sorted({c: sum(r['real'] for r in D['f']['naics'] if r['code']==c) for c in set(r['code'] for r in D['f']['naics'])}.items(), key=lambda t: -t[1])[0][0] == '326299'",
-      "actual": "sorted({c: sum(r['real'] for r in D['f']['naics'] if r['code']==c) for c in set(r['code'] for r in D['f']['naics'])}.items(), key=lambda t: -t[1])[:3]",
-      "falsified_if": "A large tire award lands, or a 326299 award is de-obligated. NOTE: 326211 leads in individual fiscal years (FY2025) while 326299 leads the eight-year total, so a single-year check would reproduce the original error. Rebased onto the real column in the rebuild, because that is now the basis the chart draws."
-    },
-    {
-      "id": "fed-tire-second",
-      "text": "Tire manufacturing is the second-largest recipient industry.",
-      "source": "USAspending by NAICS, summed FY2019-FY2026 in 2025 dollars",
-      "assert": "sorted({c: sum(r['real'] for r in D['f']['naics'] if r['code']==c) for c in set(r['code'] for r in D['f']['naics'])}.items(), key=lambda t: -t[1])[1][0] == '326211'",
-      "actual": "sorted({c: sum(r['real'] for r in D['f']['naics'] if r['code']==c) for c in set(r['code'] for r in D['f']['naics'])}.items(), key=lambda t: -t[1])[:3]",
-      "falsified_if": "Either of the top two codes moves. Paired with fed-top-naics so the ordering cannot silently swap."
-    },
-    {
-      "id": "fed-toptwo-share",
-      "text": "Two rubber-product codes hold 65 percent of eight years of money.",
-      "source": "USAspending by NAICS, top two codes over the eight-year real total",
-      "assert": "abs(sum(sorted((sum(r['real'] for r in D['f']['naics'] if r['code']==c) for c in set(r['code'] for r in D['f']['naics'])), reverse=True)[:2]) / sum(r['real'] for r in D['f']['naics']) - 0.6479) < 0.008",
-      "actual": "sum(sorted((sum(r['real'] for r in D['f']['naics'] if r['code']==c) for c in set(r['code'] for r in D['f']['naics'])), reverse=True)[:2]) / sum(r['real'] for r in D['f']['naics'])",
-      "falsified_if": "The share moves off 65 percent by more than eight tenths of a point, which is where the on-chart annotation would start printing 64% or 66%. The figure title used to round it to 'two thirds' while the annotation two inches away printed 65%, so a reader met two numbers for one fact; both now print 65% and this tolerance guards that single rendering. The chart also gives the share its plain equivalent, 'about two dollars in every three'; the same tolerance bounds that reading, since anything inside it rounds nearer to two thirds than to three fifths."
-    },
-    {
-      "id": "fed-real-ranking-stable",
-      "text": "Inflation adjustment does not change which industries received the most.",
-      "source": "derived: nominal and real rankings compared across all NAICS codes",
-      "assert": "sorted({r['code'] for r in D['f']['naics']}, key=lambda k: -sum(x['amount'] for x in D['f']['naics'] if x['code'] == k))[:3] == sorted({r['code'] for r in D['f']['naics']}, key=lambda k: -sum(x['real'] for x in D['f']['naics'] if x['code'] == k))[:3]",
-      "actual": "(sorted({r['code'] for r in D['f']['naics']}, key=lambda k: -sum(x['amount'] for x in D['f']['naics'] if x['code'] == k))[:3], sorted({r['code'] for r in D['f']['naics']}, key=lambda k: -sum(x['real'] for x in D['f']['naics'] if x['code'] == k))[:3])",
-      "falsified_if": "The nominal and real top-three diverge. They agree today, which is why the 'largest recipient is a residual category' finding survives the rebuild's move onto the real basis. Worth checking again whenever a new fiscal year lands."
-    },
-    {
-      "id": "fed-cells-sparse",
-      "text": "Pairing every industry with every year gives 64 pairs, and only 39 of them carry an obligation, so most of the grid is absence rather than zero.",
-      "source": "USAspending rows, counted against codes multiplied by fiscal years",
-      "assert": "len(D['f']['naics']) == 39 and len(set(r['code'] for r in D['f']['naics'])) * len(set(r['fy'] for r in D['f']['naics'])) == 64 and len(D['f']['naics']) < len(set(r['code'] for r in D['f']['naics'])) * len(set(r['fy'] for r in D['f']['naics']))",
-      "actual": "(len(D['f']['naics']), len(set(r['code'] for r in D['f']['naics'])), len(set(r['fy'] for r in D['f']['naics'])))",
-      "falsified_if": "The row count or the code/year counts change. The denominator on the page is computed from the file, never typed, and the third test is the one carrying the editorial weight: if the grid ever filled up, the sentence about absent cells would be vacuous and would have to go."
-    },
-    {
-      "id": "fed-county-scope",
-      "text": "All-industry obligations in the same twelve counties come to $235.5B in 2025 dollars, and polymer-coded work is about one dollar in every 840 of it; the two are never summed.",
-      "source": "USAspending spending_by_category, county rows, all industries",
-      "assert": "abs(sum(r['real'] for r in D['f']['counties']) - 235_544_481_704) < 50_000_000 and round(sum(r['real'] for r in D['f']['counties']) / 1e9, 1) == 235.5 and 835 <= sum(r['real'] for r in D['f']['counties']) / sum(r['real'] for r in D['f']['naics']) < 845",
-      "actual": "(sum(r['real'] for r in D['f']['counties']), sum(r['real'] for r in D['f']['counties']) / sum(r['real'] for r in D['f']['naics']))",
-      "falsified_if": "The county total moves by more than fifty million, prints as anything other than $235.5B, or the ratio leaves the 835-to-845 band that makes 'one dollar in every 840' true. That band replaced a 200x-to-1000x bracket when Band 2 stopped merely warning the reader not to add the two counts and started giving the size gap a figure a reader can check: a stated ratio needs a tolerance that would fail if the printed 840 became 830 or 850. The tolerance was half a billion while this figure was injected by script and could not go stale; it now sits in Band 2's static prose, where a drift of a tenth of a billion would ship as a wrong published number, so the rounding test pins the exact rendering. The ratio test is the guard on the words 'hundreds of times larger' and on the word 'never': the band-2 prose now names the size gap in words, so the test brackets it on both sides rather than only from below. If the two counts were comparable in size, a reader would be entitled to expect them charted together."
-    },
-    {
-      "id": "fed-award-basis",
-      "text": "Restated into 2025 dollars the award is $51.3M, and the ratio the page prints is still about 1.5 routine years.",
-      "source": "techhub.json award_2025_dollars, against the FY2019-FY2026 mean of the real column",
-      "assert": "round(D['h']['award_2025_dollars'] / 1e6, 1) == 51.3 and D['h']['award_2025_dollars'] > D['h']['award'] and round(D['h']['award_2025_dollars'] / (sum(r['real'] for r in D['f']['naics']) / len(set(r['fy'] for r in D['f']['naics']))), 1) == 1.5",
-      "actual": "(D['h']['award_2025_dollars'], D['h']['award_2025_dollars'] / (sum(r['real'] for r in D['f']['naics']) / len(set(r['fy'] for r in D['f']['naics']))))",
-      "falsified_if": "The restated award stops printing as $51.3M, stops being larger than the as-awarded figure, or the ratio on the restated basis leaves 1.5. This claim exists because the page's central comparison puts an unadjusted award beside an inflation-adjusted flow, two rulers under one headline, and a reader who noticed had no way to tell how much it mattered. Band 1's definition line now answers that with a number, so the number needs a guard: if putting both sides on one basis ever moved the ratio off 1.5, the sentence saying it does not would be false and this fails.",
-      "official_check": "2 of the 7 implementation awards carry FY2024 award IDs; restating those is what raises the total by 0.5%. techhub.json's meta note carries the detail."
-    },
-    {
-      "id": "fed-label-rounding",
-      "text": "The eight industry bar labels, each rounded to $0.1M, add to $279.2M against a $279.3M eight-year total, and two of the eight print the same $23.5M.",
-      "source": "USAspending real column by NAICS code, rounded the way the chart labels round",
-      "assert": "sum(math.floor(sum(r['real'] for r in D['f']['naics'] if r['code'] == c) / 1e5 + 0.5) for c in set(r['code'] for r in D['f']['naics'])) == 2792 and round(sum(r['real'] for r in D['f']['naics']) / 1e6, 1) == 279.3 and len(set(math.floor(sum(r['real'] for r in D['f']['naics'] if r['code'] == c) / 1e5 + 0.5) for c in set(r['code'] for r in D['f']['naics']))) == 7 and sum(1 for c in set(r['code'] for r in D['f']['naics']) if math.floor(sum(r['real'] for r in D['f']['naics'] if r['code'] == c) / 1e5 + 0.5) == 235) == 2 and math.ceil(max(sum(r['real'] for r in D['f']['naics'] if r['code'] == c) for c in set(r['code'] for r in D['f']['naics'])) / 25e6) * 25e6 == 100_000_000",
-      "actual": "sorted((math.floor(sum(r['real'] for r in D['f']['naics'] if r['code'] == c) / 1e5 + 0.5), c) for c in set(r['code'] for r in D['f']['naics']))",
-      "falsified_if": "The rounded labels stop summing to 2792 tenths, the total stops printing as $279.3M, the tie at $23.5M resolves or a second one appears, or the top bar outgrows a $100M axis. This is the guard on an arithmetic reconciliation, not on a figure: a reader added the eight bar labels, got $279.2M, and found it under the $279.3M card the page prints for the same money. Both are right and the gap is rounding, which the source line under the chart now says in words. If the two ever stop being $0.1M apart, or the two identical $23.5M labels stop being identical, that sentence goes stale and this fails first.",
-      "official_check": "The tie is real, not a rendering fault: 326122 and 325998 are $43,423 apart, well below the tenth of a million the labels resolve. The bars are drawn from the unrounded figures, so they differ by about a quarter of a pixel."
-    },
-    {
-      "id": "fed-trough-scale",
-      "text": "Tire manufacturing recorded $20.2M in FY2022 and no obligation at all in FY2023, most of the $26.6M the regional total fell between those two years.",
-      "source": "USAspending real column, code 326211 against the FY2022 and FY2023 totals",
-      "assert": "round(sum(r['real'] for r in D['f']['naics'] if r['code'] == '326211' and r['fy'] == 2022) / 1e6, 1) == 20.2 and not any(r['code'] == '326211' and r['fy'] == 2023 for r in D['f']['naics']) and round((sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2022) - sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2023)) / 1e6, 1) == 26.6 and sum(r['real'] for r in D['f']['naics'] if r['code'] == '326211' and r['fy'] == 2022) > 0.5 * (sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2022) - sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2023))",
-      "actual": "(sum(r['real'] for r in D['f']['naics'] if r['code'] == '326211' and r['fy'] == 2022), sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2022), sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2023))",
-      "falsified_if": "Either printed figure moves off $20.2M or $26.6M, a 326211 row appears for FY2023, or the missing code stops accounting for more than half the fall. The last test is what licenses the word 'most': it is the difference between a code that explains the trough and a code that merely coincides with it, and if a restatement made the tire gap a minority of the drop, Band 2's reading of what concentration costs would be wrong.",
-      "official_check": "An absent row is a year with nothing recorded, not a confirmed zero, and Band 2 says so rather than calling FY2023 a business event. Which of the two it is cannot be settled from these files."
-    },
-    {
-      "id": "fed-partner-match",
-      "text": "A $7.2M non-federal partner match sits alongside the seven awards and is counted in no figure on this page.",
-      "source": "techhub.json match field, against the seven implementation award amounts",
-      "assert": "round(D['h']['match'] / 1e6, 1) == 7.2 and sum(l['amount'] for l in D['h']['leads']) == D['h']['award'] and D['h']['match'] not in [l['amount'] for l in D['h']['leads']] and D['h']['match'] < D['h']['award']",
-      "actual": "(D['h']['match'], D['h']['award'], sum(l['amount'] for l in D['h']['leads']))",
-      "falsified_if": "The match is restated off $7.2M, or the seven award amounts stop summing to the award line, which is the test that the match is genuinely outside it. The figure used to appear once, in grey type under the award ladder; it now sits in the Band 3 lede because a chamber audience cares what the region put up, and a figure in body register needs a guard that the same figure in a source note did not."
-    },
-    {
-      "id": "fed-excludes-disclosed",
-      "text": "The page states that university and research awards are invisible to the NAICS view, and names the $15.0M NSF NEO-SMART Engine as one of them.",
-      "source": "USAspending NAICS filter is 325*/326* manufacturing; a university files under 61xxxx",
-      "assert": "'excludes' in D['f']['meta'] and 'NAICS' in D['f']['meta']['excludes'] and 'invisible' in D['f']['meta']['excludes'].lower() and '14,999,983' in D['f']['meta']['excludes'] and round(14_999_983 / 1e6, 1) == 15.0",
-      "actual": "D['f']['meta'].get('excludes','MISSING')",
-      "falsified_if": "The excludes note is dropped from the meta, the NSF figure is restated away from $15.0M, or the NAICS filter widens to include 61xxxx/5417xx. The figure half is new: Band 2 now prints '$15.0 million' in reader prose rather than injecting it from the meta string, so the rounded rendering needs its own guard. This is a structural absence, not a suppression, and an absence produced by a filter reads exactly like an absence in the world, which is why it has to be stated rather than noticed.",
-      "official_check": "The all-industry county rows DO capture these awards; only the NAICS rows exclude them. The two are shown separately and never summed."
-    }
-  ]
+ "data": {
+  "f": "federal.json",
+  "h": "techhub.json"
+ },
+ "claims": [
+  {
+   "id": "fed-annual-rate",
+   "text": "The eight-year mean, $34.9M in 2025 dollars across FY2019-FY2026, is named on the page as the figure NOT used for the comparison: it averages in a fiscal year that has not finished. The headline rate is the closed-year mean, checked by fed-closed-average.",
+   "source": "USAspending.gov, place of performance, PIC-12, NAICS 325*/326*; BLS CPI-U annual averages for the real column",
+   "assert": "abs(sum(r['real'] for r in D['f']['naics']) / len(set(r['fy'] for r in D['f']['naics'])) - 34_908_376) < 50_000",
+   "actual": "sum(r['real'] for r in D['f']['naics']) / len(set(r['fy'] for r in D['f']['naics']))",
+   "falsified_if": "USAspending restates an obligation, a ninth fiscal year lands, or the CPI table is extended and moves the base. The tolerance is 50k, which is tighter than the 50k that would flip the printed $34.9M to $34.8M or $35.0M, so the number on the page cannot drift without this failing.",
+   "official_check": "Kept as a live assertion even though the page no longer leads with it, because the page still prints it to say why it is the wrong basis for an annual rate. If the printed 34.9 goes, this claim goes with it."
+  },
+  {
+   "id": "fed-award-ratio",
+   "text": "On the eight-year average the award reads as 1.5 years of routine contracting. The page prints this only as the comparison it rejects; the headline ratio is 1.4 years on closed years.",
+   "source": "techhub.json award total divided by the FY2019-FY2026 mean of the real column",
+   "assert": "abs(D['h']['award'] / (sum(r['real'] for r in D['f']['naics']) / len(set(r['fy'] for r in D['f']['naics']))) - 1.461) < 0.02 and round(D['h']['award'] / (sum(r['real'] for r in D['f']['naics']) / len(set(r['fy'] for r in D['f']['naics']))), 1) == 1.5",
+   "actual": "D['h']['award'] / (sum(r['real'] for r in D['f']['naics']) / len(set(r['fy'] for r in D['f']['naics'])))",
+   "falsified_if": "Either side moves: an EDA de-obligation, a restated obligation, or a new fiscal year. The second half of the assertion pins the printed '1.5', so a ratio that drifted to 1.44 or 1.56 fails even though it would still read as 'about a year and a half'.",
+   "official_check": "This compares a competitive implementation grant against procurement obligations. They are different instruments and the page says so beside the chart, in the closer, and in techhub.json's caution field. The comparison claimed is of order of magnitude, not of like for like."
+  },
+  {
+   "id": "fed-award-total",
+   "text": "The EDA Tech Hub award is $51.0M, made of seven implementation awards to named project leads whose printed figures, each rounded to $0.1M, add to $51.1M.",
+   "source": "funding-map/data/funding.json, verified against signed federal Notices of Award; copied here by derive_techhub.py",
+   "assert": "sum(math.floor(l['amount'] / 1e5 + 0.5) for l in D['h']['leads']) == 511 and D['h']['agency'] == 'U.S. Economic Development Administration' and D['h']['award'] == 51_001_413 and len(D['h']['leads']) == 7 and sum(l['amount'] for l in D['h']['leads']) == D['h']['award'] and sorted(D['h']['leads'], key=lambda l: -l['amount'])[0]['name'] == 'BioVerde' and round(sorted(D['h']['leads'], key=lambda l: -l['amount'])[0]['amount'] / 1e6, 1) == 11.1 and sorted(D['h']['leads'], key=lambda l: -l['amount'])[-1]['name'] == 'Greater Akron Chamber' and sorted(D['h']['leads'], key=lambda l: -l['amount'])[-1]['amount'] == 2_650_000",
+   "actual": "(D['h']['award'], len(D['h']['leads']), sum(l['amount'] for l in D['h']['leads']), [(l['name'], l['amount']) for l in sorted(D['h']['leads'], key=lambda l: -l['amount'])])",
+   "falsified_if": "The funding map restates the award, an eighth lead is added, or the copy step drifts from its source. The sum-equals-total half is the real guard: it fails the moment the seven amounts on this page stop being what the award line is drawn from. The rounded-sum half is the arithmetic guard: the seven figures the ladder prints add to $51.1M while the unrounded seven add to exactly the $51.0M award line, and the source line under the ladder now says both, so this fails the moment the printed column stops totalling 51.1. The agency half guards the deck, which expands EDA in full at first contact. The name-and-amount halves guard the two leads the Band 3 lede names in prose, $11.1M to BioVerde at the top and $2.7M to the Greater Akron Chamber at the bottom, so neither can be restated or reordered without this failing. The bottom lead is pinned to its exact 2,650,000 rather than a rounded value: the page's formatter published it as $2.6M until this run, because 2.65 sits a hair below the binary midpoint and toFixed rounded it down.",
+   "official_check": "The $7.2M partner match is deliberately excluded from the award line. It is not federal money and adding it would inflate the ratio the page is built on."
+  },
+  {
+   "id": "fed-2019-clears",
+   "text": "FY2019 cleared the award line by $647k and FY2021 fell $245k short of it, and neither gap is what the chart's rounded labels ($51.0M, $50.8M) subtract to.",
+   "source": "USAspending real column by fiscal year against the techhub.json award total",
+   "assert": "[fy for fy in set(r['fy'] for r in D['f']['naics']) if sum(r['real'] for r in D['f']['naics'] if r['fy'] == fy) >= D['h']['award']] == [2019] and abs(D['h']['award'] - sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2021) - 245_407) < 25_000 and abs(sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2019) - D['h']['award'] - 646_685) < 25_000 and math.floor(D['h']['award'] / 1e5 + 0.5) - math.floor(sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2021) / 1e5 + 0.5) == 2",
+   "actual": "sorted((fy, sum(r['real'] for r in D['f']['naics'] if r['fy'] == fy)) for fy in set(r['fy'] for r in D['f']['naics']))",
+   "falsified_if": "Any second year crosses the award total, or either gap moves by more than 25k. Both halves matter: the on-chart annotation names FY2019 as the ONLY year that clears the line, so a second crossing makes the chart wrong, not merely imprecise. The fourth test is the arithmetic guard added after a reader checked the page against itself: the chart labels round to $0.1M, so subtracting the printed $51.0M and $50.8M gives $200k against a true gap of $245k, and the chart now says so. That test fails the moment the rounded labels stop differing by exactly two tenths of a million, which is the moment the printed reconciliation would become wrong.",
+   "official_check": "FY2019 clears the line in 2025 dollars and not as awarded ($41.0M nominal). The chart is on the real basis and says so in its axis label, its subtitle and its source line."
+  },
+  {
+   "id": "fed-2019-peak",
+   "text": "FY2019 is the largest of the eight years at $51.6M in 2025 dollars; FY2021, at $50.8M, is second.",
+   "source": "USAspending real column summed by fiscal year",
+   "assert": "max(set(r['fy'] for r in D['f']['naics']), key=lambda fy: sum(x['real'] for x in D['f']['naics'] if x['fy'] == fy)) == 2019 and round(sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2019) / 1e6, 1) == 51.6 and sorted(((sum(x['real'] for x in D['f']['naics'] if x['fy'] == fy), fy) for fy in set(r['fy'] for r in D['f']['naics'])), reverse=True)[1][1] == 2021",
+   "actual": "sorted(((round(sum(x['real'] for x in D['f']['naics'] if x['fy'] == fy)), fy) for fy in set(r['fy'] for r in D['f']['naics'])), reverse=True)[:3]",
+   "falsified_if": "Any year overtakes FY2019, FY2019 is restated off $51.6M, or FY2021 stops being the runner-up. This claim exists because the Band 3 lede shipped calling FY2021 'the $50.8 million peak' while the chart directly above it drew FY2019 taller: the page disagreed with itself about which year was the largest, and no assertion was watching the word 'peak'. The rounding test is what pins the printed figure, so a restatement to $51.5M or $51.7M fails here rather than reaching a reader.",
+   "official_check": "Peak on the real basis. As awarded, FY2021 ($42.7M) is larger than FY2019 ($41.0M) — the ordering swaps with the dollar basis, which is exactly why the chart, the prose and this claim all state 2025 dollars."
+  },
+  {
+   "id": "fed-closed-average",
+   "text": "HEADLINE BASIS. Counting only the seven closed fiscal years the average is $36.6M and the award is about 1.4 years of it. This is the pair the hero, the figure title and the benchmark section print, and the pair the hub restates.",
+   "source": "USAspending real column, FY2026 excluded as the open federal year",
+   "assert": "abs(sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7 - 36_606_066) < 50_000 and round(D['h']['award'] / (sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7), 1) == 1.4",
+   "actual": "(sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7, D['h']['award'] / (sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7))",
+   "falsified_if": "FY2026 closes and the exclusion becomes wrong, or a closed year is restated. This is the page's own sensitivity check on its headline ratio: the two bases give 1.5 and 1.4 years and both are printed, so a reader is never shown one basis as if it were the only one. The $36.6M half now guards a printed number rather than a table one: the hero card read '1.4 counting finished years only' and asked the reader to accept a ratio whose denominator appeared nowhere on the page, so the card carries the $36.6M average and 51.0 divided by 36.6 has to keep landing on 1.4.",
+   "official_check": "Dropping the partial year RAISES the average and LOWERS the ratio. Publishing only the flattering basis would have been the easy version of this page."
+  },
+  {
+   "id": "fed-partial-year",
+   "text": "FY2026 is the partial year: it is the last fiscal year in the file and its bar is drawn hatched.",
+   "source": "USAspending pull, fiscal years present in federal.json",
+   "assert": "max(r['fy'] for r in D['f']['naics']) == 2026 and len(set(r['fy'] for r in D['f']['naics'])) == 8",
+   "actual": "sorted(set(r['fy'] for r in D['f']['naics']))",
+   "falsified_if": "A ninth fiscal year lands. app.js carries PARTIAL as a hand-set constant, so if FY2027 arrives and this claim is not updated, the page would hatch a closed year and draw the new open one at full weight. That is the exact failure this claim exists to catch.",
+   "official_check": "A partial year cannot be detected from a low value. FY2023 is lower than FY2026 and is a fully closed year."
+  },
+  {
+   "id": "fed-trough-tire",
+   "text": "FY2023 is the lowest year on the chart, and no tire-manufacturing obligation appears in it.",
+   "source": "USAspending rows by (fiscal year, code); 326211 is the code the chart annotation names",
+   "assert": "min(set(r['fy'] for r in D['f']['naics']), key=lambda fy: sum(r['real'] for r in D['f']['naics'] if r['fy'] == fy)) == 2023 and not any(r['code'] == '326211' and r['fy'] == 2023 for r in D['f']['naics']) and len(set(r['fy'] for r in D['f']['naics'] if r['code'] == '326211')) >= 5",
+   "actual": "sorted(set(r['fy'] for r in D['f']['naics'] if r['code'] == '326211'))",
+   "falsified_if": "A 326211 row appears for FY2023, another year drops below it, or 326211 stops being a regular presence (the >=5-years test is what makes its absence worth annotating rather than ordinary).",
+   "official_check": "The chart says no obligation APPEARS, not that none was made. An absent row in this API is a year with no recorded obligation for that code, and this page does not treat it as a confirmed zero."
+  },
+  {
+   "id": "fed-total",
+   "text": "About $249M of federal polymer obligations as awarded, $279M in 2025 dollars.",
+   "source": "USAspending.gov, place of performance, PIC-12; BLS CPI-U annual averages for the real column",
+   "assert": "abs(sum(r['amount'] for r in D['f']['naics']) - 248_801_869) < 400_000 and abs(sum(r['real'] for r in D['f']['naics']) - 279_267_004) < 400_000",
+   "actual": "(sum(r['amount'] for r in D['f']['naics']), sum(r['real'] for r in D['f']['naics']))",
+   "falsified_if": "USAspending restates an obligation, or the CPI table is extended and changes the base. NOTE: an earlier version of this page published only the nominal sum. Adding more than one year of dollars together without adjusting is a defect, not a style choice; the gap here is 12 percent. Tolerance tightened from 5M to 400k in the rebuild, because the page now prints $279.3M and $248.8M to one decimal.",
+   "official_check": "The first adjustment attempt returned +3% because fiscal 2026 was missing from the CPI table and was silently skipped by an 'if year in CPI' guard. A lookup that skips what it cannot find is the same failure mode as a dead code: it produces a plausible number instead of an error."
+  },
+  {
+   "id": "fed-top-naics",
+   "text": "All Other Rubber Product Manufacturing (326299) is the largest recipient industry, ahead of tire manufacturing.",
+   "source": "USAspending by NAICS, summed across fiscal years in 2025 dollars",
+   "assert": "sorted({c: sum(r['real'] for r in D['f']['naics'] if r['code']==c) for c in set(r['code'] for r in D['f']['naics'])}.items(), key=lambda t: -t[1])[0][0] == '326299'",
+   "actual": "sorted({c: sum(r['real'] for r in D['f']['naics'] if r['code']==c) for c in set(r['code'] for r in D['f']['naics'])}.items(), key=lambda t: -t[1])[:3]",
+   "falsified_if": "A large tire award lands, or a 326299 award is de-obligated. NOTE: 326211 leads in individual fiscal years (FY2025) while 326299 leads the eight-year total, so a single-year check would reproduce the original error. Rebased onto the real column in the rebuild, because that is now the basis the chart draws."
+  },
+  {
+   "id": "fed-tire-second",
+   "text": "Tire manufacturing is the second-largest recipient industry.",
+   "source": "USAspending by NAICS, summed FY2019-FY2026 in 2025 dollars",
+   "assert": "sorted({c: sum(r['real'] for r in D['f']['naics'] if r['code']==c) for c in set(r['code'] for r in D['f']['naics'])}.items(), key=lambda t: -t[1])[1][0] == '326211'",
+   "actual": "sorted({c: sum(r['real'] for r in D['f']['naics'] if r['code']==c) for c in set(r['code'] for r in D['f']['naics'])}.items(), key=lambda t: -t[1])[:3]",
+   "falsified_if": "Either of the top two codes moves. Paired with fed-top-naics so the ordering cannot silently swap."
+  },
+  {
+   "id": "fed-toptwo-share",
+   "text": "Two rubber-product codes hold 65 percent of eight years of money.",
+   "source": "USAspending by NAICS, top two codes over the eight-year real total",
+   "assert": "abs(sum(sorted((sum(r['real'] for r in D['f']['naics'] if r['code']==c) for c in set(r['code'] for r in D['f']['naics'])), reverse=True)[:2]) / sum(r['real'] for r in D['f']['naics']) - 0.6479) < 0.008",
+   "actual": "sum(sorted((sum(r['real'] for r in D['f']['naics'] if r['code']==c) for c in set(r['code'] for r in D['f']['naics'])), reverse=True)[:2]) / sum(r['real'] for r in D['f']['naics'])",
+   "falsified_if": "The share moves off 65 percent by more than eight tenths of a point, which is where the on-chart annotation would start printing 64% or 66%. The figure title used to round it to 'two thirds' while the annotation two inches away printed 65%, so a reader met two numbers for one fact; both now print 65% and this tolerance guards that single rendering. The chart also gives the share its plain equivalent, 'about two dollars in every three'; the same tolerance bounds that reading, since anything inside it rounds nearer to two thirds than to three fifths."
+  },
+  {
+   "id": "fed-real-ranking-stable",
+   "text": "Inflation adjustment does not change which industries received the most.",
+   "source": "derived: nominal and real rankings compared across all NAICS codes",
+   "assert": "sorted({r['code'] for r in D['f']['naics']}, key=lambda k: -sum(x['amount'] for x in D['f']['naics'] if x['code'] == k))[:3] == sorted({r['code'] for r in D['f']['naics']}, key=lambda k: -sum(x['real'] for x in D['f']['naics'] if x['code'] == k))[:3]",
+   "actual": "(sorted({r['code'] for r in D['f']['naics']}, key=lambda k: -sum(x['amount'] for x in D['f']['naics'] if x['code'] == k))[:3], sorted({r['code'] for r in D['f']['naics']}, key=lambda k: -sum(x['real'] for x in D['f']['naics'] if x['code'] == k))[:3])",
+   "falsified_if": "The nominal and real top-three diverge. They agree today, which is why the 'largest recipient is a residual category' finding survives the rebuild's move onto the real basis. Worth checking again whenever a new fiscal year lands."
+  },
+  {
+   "id": "fed-cells-sparse",
+   "text": "Pairing every industry with every year gives 64 pairs, and only 39 of them carry an obligation, so most of the grid is absence rather than zero.",
+   "source": "USAspending rows, counted against codes multiplied by fiscal years",
+   "assert": "len(D['f']['naics']) == 39 and len(set(r['code'] for r in D['f']['naics'])) * len(set(r['fy'] for r in D['f']['naics'])) == 64 and len(D['f']['naics']) < len(set(r['code'] for r in D['f']['naics'])) * len(set(r['fy'] for r in D['f']['naics']))",
+   "actual": "(len(D['f']['naics']), len(set(r['code'] for r in D['f']['naics'])), len(set(r['fy'] for r in D['f']['naics'])))",
+   "falsified_if": "The row count or the code/year counts change. The denominator on the page is computed from the file, never typed, and the third test is the one carrying the editorial weight: if the grid ever filled up, the sentence about absent cells would be vacuous and would have to go."
+  },
+  {
+   "id": "fed-county-scope",
+   "text": "All-industry obligations in the same twelve counties come to $235.5B in 2025 dollars, and polymer-coded work is about one dollar in every 840 of it; the two are never summed.",
+   "source": "USAspending spending_by_category, county rows, all industries",
+   "assert": "abs(sum(r['real'] for r in D['f']['counties']) - 235_544_481_704) < 50_000_000 and round(sum(r['real'] for r in D['f']['counties']) / 1e9, 1) == 235.5 and 835 <= sum(r['real'] for r in D['f']['counties']) / sum(r['real'] for r in D['f']['naics']) < 845",
+   "actual": "(sum(r['real'] for r in D['f']['counties']), sum(r['real'] for r in D['f']['counties']) / sum(r['real'] for r in D['f']['naics']))",
+   "falsified_if": "The county total moves by more than fifty million, prints as anything other than $235.5B, or the ratio leaves the 835-to-845 band that makes 'one dollar in every 840' true. That band replaced a 200x-to-1000x bracket when Band 2 stopped merely warning the reader not to add the two counts and started giving the size gap a figure a reader can check: a stated ratio needs a tolerance that would fail if the printed 840 became 830 or 850. The tolerance was half a billion while this figure was injected by script and could not go stale; it now sits in Band 2's static prose, where a drift of a tenth of a billion would ship as a wrong published number, so the rounding test pins the exact rendering. The ratio test is the guard on the words 'hundreds of times larger' and on the word 'never': the band-2 prose now names the size gap in words, so the test brackets it on both sides rather than only from below. If the two counts were comparable in size, a reader would be entitled to expect them charted together."
+  },
+  {
+   "id": "fed-award-basis",
+   "text": "Restated into 2025 dollars the award is $51.3M, and the ratio the page prints is still about 1.5 routine years.",
+   "source": "techhub.json award_2025_dollars, against the FY2019-FY2026 mean of the real column",
+   "assert": "round(D['h']['award_2025_dollars'] / 1e6, 1) == 51.3 and D['h']['award_2025_dollars'] > D['h']['award'] and round(D['h']['award_2025_dollars'] / (sum(r['real'] for r in D['f']['naics']) / len(set(r['fy'] for r in D['f']['naics']))), 1) == 1.5",
+   "actual": "(D['h']['award_2025_dollars'], D['h']['award_2025_dollars'] / (sum(r['real'] for r in D['f']['naics']) / len(set(r['fy'] for r in D['f']['naics']))))",
+   "falsified_if": "The restated award stops printing as $51.3M, stops being larger than the as-awarded figure, or the ratio on the restated basis leaves 1.5. This claim exists because the page's central comparison puts an unadjusted award beside an inflation-adjusted flow, two rulers under one headline, and a reader who noticed had no way to tell how much it mattered. Band 1's definition line now answers that with a number, so the number needs a guard: if putting both sides on one basis ever moved the ratio off 1.5, the sentence saying it does not would be false and this fails.",
+   "official_check": "2 of the 7 implementation awards carry FY2024 award IDs; restating those is what raises the total by 0.5%. techhub.json's meta note carries the detail."
+  },
+  {
+   "id": "fed-label-rounding",
+   "text": "The eight industry bar labels, each rounded to $0.1M, add to $279.2M against a $279.3M eight-year total, and two of the eight print the same $23.5M.",
+   "source": "USAspending real column by NAICS code, rounded the way the chart labels round",
+   "assert": "sum(math.floor(sum(r['real'] for r in D['f']['naics'] if r['code'] == c) / 1e5 + 0.5) for c in set(r['code'] for r in D['f']['naics'])) == 2792 and round(sum(r['real'] for r in D['f']['naics']) / 1e6, 1) == 279.3 and len(set(math.floor(sum(r['real'] for r in D['f']['naics'] if r['code'] == c) / 1e5 + 0.5) for c in set(r['code'] for r in D['f']['naics']))) == 7 and sum(1 for c in set(r['code'] for r in D['f']['naics']) if math.floor(sum(r['real'] for r in D['f']['naics'] if r['code'] == c) / 1e5 + 0.5) == 235) == 2 and math.ceil(max(sum(r['real'] for r in D['f']['naics'] if r['code'] == c) for c in set(r['code'] for r in D['f']['naics'])) / 25e6) * 25e6 == 100_000_000",
+   "actual": "sorted((math.floor(sum(r['real'] for r in D['f']['naics'] if r['code'] == c) / 1e5 + 0.5), c) for c in set(r['code'] for r in D['f']['naics']))",
+   "falsified_if": "The rounded labels stop summing to 2792 tenths, the total stops printing as $279.3M, the tie at $23.5M resolves or a second one appears, or the top bar outgrows a $100M axis. This is the guard on an arithmetic reconciliation, not on a figure: a reader added the eight bar labels, got $279.2M, and found it under the $279.3M card the page prints for the same money. Both are right and the gap is rounding, which the source line under the chart now says in words. If the two ever stop being $0.1M apart, or the two identical $23.5M labels stop being identical, that sentence goes stale and this fails first.",
+   "official_check": "The tie is real, not a rendering fault: 326122 and 325998 are $43,423 apart, well below the tenth of a million the labels resolve. The bars are drawn from the unrounded figures, so they differ by about a quarter of a pixel."
+  },
+  {
+   "id": "fed-trough-scale",
+   "text": "Tire manufacturing recorded $20.2M in FY2022 and no obligation at all in FY2023, most of the $26.6M the regional total fell between those two years.",
+   "source": "USAspending real column, code 326211 against the FY2022 and FY2023 totals",
+   "assert": "round(sum(r['real'] for r in D['f']['naics'] if r['code'] == '326211' and r['fy'] == 2022) / 1e6, 1) == 20.2 and not any(r['code'] == '326211' and r['fy'] == 2023 for r in D['f']['naics']) and round((sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2022) - sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2023)) / 1e6, 1) == 26.6 and sum(r['real'] for r in D['f']['naics'] if r['code'] == '326211' and r['fy'] == 2022) > 0.5 * (sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2022) - sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2023))",
+   "actual": "(sum(r['real'] for r in D['f']['naics'] if r['code'] == '326211' and r['fy'] == 2022), sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2022), sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2023))",
+   "falsified_if": "Either printed figure moves off $20.2M or $26.6M, a 326211 row appears for FY2023, or the missing code stops accounting for more than half the fall. The last test is what licenses the word 'most': it is the difference between a code that explains the trough and a code that merely coincides with it, and if a restatement made the tire gap a minority of the drop, Band 2's reading of what concentration costs would be wrong.",
+   "official_check": "An absent row is a year with nothing recorded, not a confirmed zero, and Band 2 says so rather than calling FY2023 a business event. Which of the two it is cannot be settled from these files."
+  },
+  {
+   "id": "fed-partner-match",
+   "text": "A $7.2M non-federal partner match sits alongside the seven awards and is counted in no figure on this page.",
+   "source": "techhub.json match field, against the seven implementation award amounts",
+   "assert": "round(D['h']['match'] / 1e6, 1) == 7.2 and sum(l['amount'] for l in D['h']['leads']) == D['h']['award'] and D['h']['match'] not in [l['amount'] for l in D['h']['leads']] and D['h']['match'] < D['h']['award']",
+   "actual": "(D['h']['match'], D['h']['award'], sum(l['amount'] for l in D['h']['leads']))",
+   "falsified_if": "The match is restated off $7.2M, or the seven award amounts stop summing to the award line, which is the test that the match is genuinely outside it. The figure used to appear once, in grey type under the award ladder; it now sits in the Band 3 lede because a chamber audience cares what the region put up, and a figure in body register needs a guard that the same figure in a source note did not."
+  },
+  {
+   "id": "fed-excludes-disclosed",
+   "text": "The page states that university and research awards are invisible to the NAICS view, and names the $15.0M NSF NEO-SMART Engine as one of them.",
+   "source": "USAspending NAICS filter is 325*/326* manufacturing; a university files under 61xxxx",
+   "assert": "'excludes' in D['f']['meta'] and 'NAICS' in D['f']['meta']['excludes'] and 'invisible' in D['f']['meta']['excludes'].lower() and '14,999,983' in D['f']['meta']['excludes'] and round(14_999_983 / 1e6, 1) == 15.0",
+   "actual": "D['f']['meta'].get('excludes','MISSING')",
+   "falsified_if": "The excludes note is dropped from the meta, the NSF figure is restated away from $15.0M, or the NAICS filter widens to include 61xxxx/5417xx. The figure half is new: Band 2 now prints '$15.0 million' in reader prose rather than injecting it from the meta string, so the rounded rendering needs its own guard. This is a structural absence, not a suppression, and an absence produced by a filter reads exactly like an absence in the world, which is why it has to be stated rather than noticed.",
+   "official_check": "The all-industry county rows DO capture these awards; only the NAICS rows exclude them. The two are shown separately and never summed."
+  }
+ ]
 }

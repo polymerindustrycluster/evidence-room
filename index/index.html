@@ -25,8 +25,13 @@
 <section class="hero">
   <div class="wrap">
     <p class="eyebrow">Findings from free public data</p>
-    <h1>Ohio is <em>first in the country</em> in plastics and rubber jobs. That is the
-      easiest claim here to prove.</h1>
+    <!-- THE SECOND SENTENCE USED TO READ "That is the easiest claim here to prove." A
+         reader stopped on it twice: "That" can attach to the jobs rather than to the
+         claim, and "prove" is the word this hero corrected itself out of one paragraph
+         later, because the page checks its restatements rather than proving its findings.
+         The replacement refers to nothing and promises only what the dek promises. -->
+    <h1>Ohio is <em>first in the country</em> in plastics and rubber jobs. Nothing here is
+      easier to check.</h1>
     <p class="stand">54,846 of those jobs against second-place Texas&rsquo;s 44,598, a lead
       of 10,248, and every state disclosed in the Bureau of Labor Statistics count.
       Underneath the ranking sit the questions a member firm argues about: what the work
@@ -53,18 +58,26 @@
          so the hero survives with scripting off. -->
     <!-- EVERY CARD SAYS WHICH WAY IS GOOD. All three used to state a magnitude and stop:
          a naive reader could not tell whether 48.4 percent was alarming or normal, or
-         whether $34.9M was the good news or the yardstick that shrinks it, and the "1.2x"
-         label named the measure instead of reading it. Card 3 also printed the ANSWER to a
-         division whose other input sat four screens away, so the one calculation a reader
-         could try in the hero could not be tried at all; the award is printed here now and
-         51.0 over 34.9 comes out at the 1.5 the card claims. -->
+         whether the annual contracting figure was the good news or the yardstick that
+         shrinks it, and the "1.2x" label named the measure instead of reading it. Card 3
+         also printed the ANSWER to a division whose other input sat four screens away, so
+         the one calculation a reader could try in the hero could not be tried at all; the
+         award is printed here now and 51.0 over 36.6 comes out at the 1.4 the card claims.
+
+         CARD 3 MOVED BASIS ON 2026-08-29, from an eight-year average to the seven finished
+         years. See the note on the federal-money card below, and CORRECTIONS.md.
+
+         CARD 1 NAMES ITS UNIT. "40 of the 51 industry-county pairings" sat next to
+         cluster-health's "20 of 24 counties" and two readers took them for one count in
+         two shapes. They are different units, and this card says which one it is counting
+         rather than leaving the compound noun to carry it. -->
     <div class="hero-row">
       <div class="figv key">
         <div class="n">1.2&times;</div>
         <div class="k">what a typical polymer job pays for every dollar the average job in
           its county pays</div>
-        <div class="d">Higher is better for a worker, and polymer clears the local average
-          in 40 of the 51 industry-county pairings BLS can disclose</div>
+        <div class="d">Higher is better for a worker. Polymer clears the local average in
+          40 of 51 disclosed pairings, one industry in one county</div>
       </div>
       <div class="figv">
         <div class="n">48.4%</div>
@@ -73,9 +86,10 @@
           reaches only 68 percent. None of them staffs itself</div>
       </div>
       <div class="figv">
-        <div class="n">$34.9M</div>
-        <div class="k">a year, on average, in ordinary federal contracts, 2019 to 2026</div>
-        <div class="d">The one-time $51.0M Tech Hub award is about 1.5 years of it. The
+        <div class="n">$36.6M</div>
+        <div class="k">a year, on average, in ordinary federal contracts, the seven
+          finished years 2019 to 2025</div>
+        <div class="d">The one-time $51.0M Tech Hub award is about 1.4 years of it. The
           routine flow is the bigger number</div>
       </div>
     </div>
@@ -230,11 +244,20 @@
       <a class="card" href="../federal-money/" data-slug="federal-money" data-geo="pic12">
         <h4>How big is the Tech Hub award next to the federal money that arrives every
           year?</h4>
+        <!-- THE BASIS IS NAMED BECAUSE THE BASIS IS THE WHOLE DISAGREEMENT. This card and
+             the hero card above printed $34.9 million a year, an average of all eight
+             fiscal years including a fiscal 2026 that has run about seven months and stands
+             at $23.0 million. An annual rate cannot include a year that has not finished:
+             the part-year drags the mean down, which understates the routine flow and
+             overstates how far the one-time award reaches. Both now print the seven
+             finished years at $36.6 million and 1.4 years, which is what the cluster-health
+             dashboard prints. _data/FIGURES.json routine_federal_per_year records it. -->
         <p class="f">Ordinary federal contracting in chemicals and plastics across the
-          twelve counties has averaged $34.9 million a year over the eight fiscal years
-          since 2019, ranging from $17.0 million to $51.6 million. The $51.0 million Tech
-          Hub award, the federal designation Akron won in October 2023, is about a year and
-          a half of that average, and fiscal 2019 alone cleared the award line.</p>
+          twelve counties has averaged $36.6 million a year across the seven finished fiscal
+          years, 2019 to 2025, ranging from $17.0 million to $51.6 million. Fiscal 2026 is
+          still running and is not in that average. The $51.0 million Tech Hub award, the
+          federal designation Akron won in October 2023, is about 1.4 years of that average,
+          and fiscal 2019 alone cleared the award line.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
     </div>
@@ -254,10 +277,21 @@
       </a>
       <a class="card" href="../location-quotient/" data-slug="location-quotient" data-geo="pic12">
         <h4>Which polymer industry is this region most concentrated in?</h4>
+        <!-- TWO CONCENTRATIONS, TWO INDUSTRIES, AND TWO READERS TOOK THEM FOR ONE FIGURE
+             AT TWO VALUES. This card said "Rubber products, the industry Akron is named
+             for, run 2.44 times" while the cluster-health dashboard says "Plastics and
+             rubber, the industries the region is known for, run 2.32 times". Rubber
+             products is NAICS 3262; plastics and rubber is NAICS 326, the family that
+             CONTAINS it. Both figures are right and neither moves. What was wrong is that
+             nothing on either page let a reader tell the two apart, so this card names both
+             codes and prints both values in one sentence, where the containment is visible.
+             Both are asserted against location-quotient's own shipped file. -->
         <p class="f">Paint and coatings fill 5.96 times as large a share of local jobs as
           they do of the country&rsquo;s, and have led all six polymer industries every year
-          since 2015. Rubber products, the industry Akron is named for, run 2.44 times.
-          Concentration is what makes a region distinctive and what leaves it exposed.</p>
+          since 2015. Rubber products alone, NAICS 3262, the narrow industry Akron is named
+          for, run 2.44 times; the wider plastics and rubber family that contains it, NAICS
+          326, runs 2.32 times. Concentration is what makes a region distinctive and what
+          leaves it exposed.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
     </div>
@@ -288,8 +322,9 @@
         <p class="f">$106.3 million in all: $85.3 million across three public awards, plus
           $21.0 million of matching money that came with them, drawn to scale across
           twenty-one named recipients. The $51.0 million Tech Hub award is the largest of
-          the three and sits inside this total, not on top of it. The $34.9 million a year
-          of ordinary contracting is separate, and recurring.</p>
+          the three and sits inside this total, not on top of it. The $36.6 million a year
+          of ordinary contracting, on the seven finished fiscal years, is separate and
+          recurring.</p>
         <p class="meta"><span class="pill geo">awards</span><span class="pill hit-flag">covers this county</span></p>
       </a>
     </div>
@@ -343,12 +378,15 @@
   <div class="wrap">
     <p class="takeaway">Before anything leaves the building</p>
     <h2>Every sentence here is a test that can fail</h2>
-    <!-- The two counts below are written by app.js from ONE derived inventory: the cards
-         above, intersected with the harness totals in counts.json. The literals are the
-         current values of that derivation, guarded by index-inventory in claims.json, so a
-         reader with scripting off sees a number the gate has checked rather than a blank. -->
+    <!-- The counts below and in the paragraph after it are written by app.js from ONE
+         derived inventory: the cards above, intersected with the harness totals in
+         counts.json. The literals are the current values of that derivation, guarded by
+         index-inventory in claims.json, so a reader with scripting off sees a number the
+         gate has checked rather than a blank. counts.json is itself checked against every
+         artifact's own claims.json by index-counts-fresh, which is what stops a card
+         advertising 23 claims for a 27-claim page. -->
     <p class="note"><b>The <span data-inv="pagesword">thirteen</span> pages here carry
-      <span data-inv="claims">292</span> checked claims, and
+      <span data-inv="claims">345</span> checked claims, and
       <span data-inv="manual">15</span> of them cannot be machine-checked.</b> Every
       published sentence is stored as a check that re-runs against the data that produced
       it, next to the condition that would prove it wrong. The exceptions are quoted from
@@ -357,6 +395,29 @@
       those first. More checks is not the same as more truth; it is more places this site
       can be caught being wrong, which is the only sense in which the number is good
       news.</p>
+    <!-- WHAT THE HUB DOES NOT LINK, SAID OUT LOUD. A reader handed the rendered pages met
+         two that no card leads to and could not tell whether they were withheld or simply
+         missed: the sentence above counts the published set and nothing accounted for the
+         difference between that set and the tree. This paragraph does, and every number in
+         it is written by app.js from the same counts.json the sentence above reads, so the
+         two can never disagree.
+
+         NEITHER PAGE IS CARDED, AND THAT IS A DECISION, NOT AN OVERSIGHT. Each ships a
+         .unlisted file at its own root giving its reason, and index-inventory in
+         claims.json fails the gate if a third artifact ever appears that is neither carded
+         here nor named there. The draft's own file says in terms that adding its hub card
+         is a separate, deliberate act; it is not this page's to take, and the two open
+         questions it is waiting on are a communications decision. Making the withholding
+         visible is what this page owes a reader in the meantime. -->
+    <p class="note" id="withheld"><b><span data-inv="withheldword">Two</span> further pages
+      are built and gated in this repository and are deliberately not linked from here.</b>
+      One is an internal board view of PIC&rsquo;s own performance: a populated copy would
+      carry member records a public repository with permanent history cannot hold. The other
+      is an unreviewed draft of the public scorecard, held back until communications review
+      answers the question its opening figure turns on, and it says on its own face that it
+      is a draft. Each states its reason in a file at its directory root, neither is counted
+      in the totals above, and putting either in the gallery above is a separate decision
+      that has not been taken.</p>
     <details class="howto">
       <summary>The commands, for anyone who wants to run them</summary>
       <div class="checks">

@@ -153,14 +153,18 @@
       "basis": "average annual ordinary federal contracting to polymer codes in the twelve counties",
       "status": "agreed",
       "conflict": "index prints $34.9M a year and the Tech Hub as 'about a year and a half' of it; cluster-health prints $36.6M a year and '1.4 years'. 51.0/34.9 = 1.46 and 51.0/36.6 = 1.39, so both internally consistent and mutually contradictory. federal-money's own text distinguishes an eight-year average from a finished-years-only average, which is probably the source of the split.",
-      "action": "index still prints the eight-year figure. Fix pending.",
+      "action": "RESOLVED on all three pages: index, cluster-health and federal-money now lead with the closed-year mean. federal-money still prints $34.9M, deliberately, to say why an eight-year mean that includes an unfinished year is the wrong basis for an annual rate.",
       "pages": [
         "index",
         "cluster-health",
         "federal-money"
       ],
       "observability": "public",
-      "resolved": "Computed from federal-money's own shipped data. $34,908,376 averages all EIGHT fiscal years INCLUDING the partial FY2026 at $23.0M; $36,606,066 averages the SEVEN finished years. An annual rate must not include a year that has not finished, so $36.6M (and 1.4 years) is the defensible pair. index's $34.9M and 'about a year and a half' understate the annual rate and overstate the award's reach."
+      "resolved": "Computed from federal-money's own shipped data. $34,908,376 averages all EIGHT fiscal years INCLUDING the partial FY2026 at $23.0M; $36,606,066 averages the SEVEN finished years. An annual rate must not include a year that has not finished, so $36.6M (and 1.4 years) is the defensible pair. index's $34.9M and 'about a year and a half' understate the annual rate and overstate the award's reach.",
+      "also_printed_as": [
+        "$36.6 million",
+        "$36,606,066"
+      ]
     },
     "polymer_jobs_2025": {
       "value": null,

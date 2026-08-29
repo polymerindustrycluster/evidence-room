@@ -1,6 +1,6 @@
 {
  "n_pieces": 15,
- "total_claims": 334,
+ "total_claims": 387,
  "total_manual": 15,
  "pages": {
   "accountability": {
@@ -12,15 +12,15 @@
    "manual": 0
   },
   "cluster-health": {
-   "claims": 23,
+   "claims": 36,
    "manual": 0
   },
   "cost-scissors": {
-   "claims": 24,
+   "claims": 29,
    "manual": 2
   },
   "federal-money": {
-   "claims": 16,
+   "claims": 20,
    "manual": 0
   },
   "funding-map": {
@@ -28,27 +28,27 @@
    "manual": 3
   },
   "laborshed": {
-   "claims": 24,
+   "claims": 28,
    "manual": 1
   },
   "location-quotient": {
-   "claims": 25,
+   "claims": 30,
    "manual": 1
   },
   "occupations": {
-   "claims": 26,
+   "claims": 32,
    "manual": 0
   },
   "peers": {
-   "claims": 24,
+   "claims": 29,
    "manual": 1
   },
   "realwage": {
-   "claims": 12,
+   "claims": 15,
    "manual": 0
   },
   "revisions": {
-   "claims": 19,
+   "claims": 21,
    "manual": 2
   },
   "scorecard": {
@@ -56,11 +56,11 @@
    "manual": 0
   },
   "timeline": {
-   "claims": 29,
+   "claims": 31,
    "manual": 4
   },
   "wages": {
-   "claims": 25,
+   "claims": 29,
    "manual": 1
   }
  },
