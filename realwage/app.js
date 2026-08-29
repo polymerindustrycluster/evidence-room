@@ -34,12 +34,52 @@ const fallers = [...B].sort((a, b) => a.big_climb - b.big_climb).slice(0, 3);
 const fallLo = Math.min(...fallers.map(r => -r.big_climb));
 const fallHi = Math.max(...fallers.map(r => -r.big_climb));
 const MOBILE = matchMedia("(max-width: 760px)");
-/* A paper plate behind an SVG label that must cross other ink (cost-scissors pattern). */
+/* A paper plate behind an SVG label that must cross other ink (cost-scissors pattern).
+   PLATE names how far the box reaches above and below the label's BASELINE. It used to be
+   two unnamed numbers inside the helper, which meant a caller positioning a plated label
+   against something else — a gridline, an axis rule — had to guess the box it was about
+   to draw. One did, and drew it across a gridline. */
+const PLATE = {up: 12, down: 3};
 const plate = (parent, s, x, y, fs = 7.2, anchor = "start") => {
   const wpx = s.length * fs + 6;
   const x0 = anchor === "middle" ? x - wpx / 2 : anchor === "end" ? x - wpx + 3 : x - 3;
-  return el("rect", {x: x0, y: y - 12, width: wpx, height: 15,
+  return el("rect", {x: x0, y: y - PLATE.up, width: wpx, height: PLATE.up + PLATE.down,
     fill: "var(--paper)", opacity: .94, rx: 2, "data-pv-plated": "1"}, parent);
+};
+
+/* Wrap MEASURED against the rendered face. Character count does not know the face, and a
+   note authored as one line for a 1100-unit box ran 69 units past it, 29px into the page
+   margin at 1440, because nothing ever measured the string it actually drew.
+   getComputedTextLength reports in viewBox units, so this is safe to call before the
+   viewBox is set: the caller needs the line count to size its own bottom margin.
+
+   BALANCED, NOT GREEDY. A plain greedy wrap of this page's one long note put twelve
+   characters alone on line two — a widow, which reads as a mistake rather than as a
+   sentence. Once the line COUNT is known, the narrowest width that still yields that many
+   lines evens them out without touching a single word. */
+const wrapText = (svg, s, cls, max) => {
+  const probe = txt(svg, "", {x: 0, y: 0, class: cls, opacity: 0});
+  const words = s.split(/\s+/);
+  const fit = wide => {
+    const out = [];
+    let line = "";
+    for (const word of words) {
+      probe.textContent = line ? line + " " + word : word;
+      if (line && probe.getComputedTextLength() > wide) { out.push(line); line = word; }
+      else line = probe.textContent;
+    }
+    if (line) out.push(line);
+    return out;
+  };
+  const n = fit(max).length;
+  let lo = 40, hi = max;              // hi always fits in n lines, lo assumed not to
+  while (n > 1 && hi - lo > 8) {
+    const mid = (lo + hi) / 2;
+    if (fit(mid).length <= n) hi = mid; else lo = mid;
+  }
+  const out = fit(hi);
+  svg.removeChild(probe);
+  return out;
 };
 
 /* Three cards, not four: the house rule is cut to three before letting four wrap, and
@@ -156,8 +196,25 @@ function drawSlope() { MOBILE.matches ? drawSlopeMobile() : drawSlopeDesktop(); 
 function drawSlopeDesktop() {
   const named = new Set(baseNamed);
   if (SEL) named.add(SEL);
-  const {svg, W, H, m, w, h} = PV.chart("slope",
-    {W: 1100, H: 52 + B.length * 15 + 58, m: {t: 66, r: 300, b: 44, l: 193}});
+  /* The grey crowd is most of the chart and was unexplained: a reader who counts the
+     printed ranks (1, 2, 3, 5, 11 ...) goes looking for the missing ones. Say what the
+     grey is, the way the mobile list already does. Composed BEFORE the chart is sized,
+     because how many lines it takes decides how much bottom margin the chart needs — as
+     one line it was 976 units wide from x=193 in an 1100-unit box, so it ran off the
+     canvas and 29px past the page column at 1440. */
+  const W = 1100, NOTE_TOP = 32, host = document.getElementById("slope");
+  const note = `${named.size} metros are named here (Akron, the biggest movers and the top
+    of each column); the other ${B.length - named.size} are drawn in grey. Every one of
+    the ${B.length} is in the table below.`.replace(/\s+/g, " ");
+  const mBase = {t: 66, r: 300, l: 193};
+  const noteLines = wrapText(host, note, "pv-labq", W - mBase.l - 6);
+  const noteLead = PV.lead(host, "pv-labq", "pv-labq");
+  /* A ROW CHART DECLARES ITS ROWS. This passed H directly as `52 + rows * 15 + 58`, a pad
+     that happened to equal t+b — right by luck, and unable to stay right once the bottom
+     margin had to grow for a second note line. rows+rowH makes the core own the sum. */
+  const m = Object.assign({}, mBase, {b: NOTE_TOP + (noteLines.length - 1) * noteLead
+    + Math.ceil(PV.face(host, "pv-labq").descent) + 6});
+  const {svg, w, h} = PV.chart("slope", {W, rows: B.length, rowH: 15, m});
   const ys = rank => m.t + ((rank - 1) / (B.length - 1)) * h;
   /* A rank is a constructed unit and nothing about "33rd" says which end is good, so each
      axis title carries its own direction under it: 1 is the top of both columns. */
@@ -243,13 +300,9 @@ function drawSlopeDesktop() {
     lines.forEach((s, i) => txt(svg, s, {x: bx + 14, y: ty + i * 17,
       class: i ? "pv-labq" : "pv-lab", ...(i ? {} : {fill: INK})}));
   }
-  /* The grey crowd is most of the chart and was unexplained: a reader who counts the
-     printed ranks (1, 2, 3, 5, 11 ...) goes looking for the missing ones. Say what the
-     grey is, the way the mobile list already does. */
-  txt(svg, `${named.size} metros are named here (Akron, the biggest movers and the top of
-    each column); the other ${B.length - named.size} are drawn in grey. Every one of the
-    ${B.length} is in the table below.`.replace(/\s+/g, " "),
-    {x: m.l, y: m.t + h + 32, class: "pv-labq"});
+  /* The note, on the lines it measured out to, on measured leading. */
+  noteLines.forEach((s, i) => txt(svg, s,
+    {x: m.l, y: m.t + h + NOTE_TOP + i * noteLead, class: "pv-labq"}));
 }
 
 function drawSlopeMobile() {
@@ -450,8 +503,9 @@ function drawScatterVariant(mobile) {
   const y0 = Math.min(...ry) - 2, y1 = Math.max(...ry) + 3;
   const xs = v => m.l + ((v - x0) / (x1 - x0)) * w;
   const ys = v => m.t + h - ((v - y0) / (y1 - y0)) * h;
+  const yt = ticks(y0, y1, mobile ? 4 : 6);
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys,
-    xt: ticks(x0, x1, mobile ? 3 : 6), yt: ticks(y0, y1, mobile ? 4 : 6),
+    xt: ticks(x0, x1, mobile ? 3 : 6), yt,
     xfmt: usd, yfmt: v => v.toFixed(0),
     /* Dollars need no direction; an index does, so the vertical title says which way is
        dearer before a reader has to work it out from the tick numbers. */
@@ -497,15 +551,26 @@ function drawScatterVariant(mobile) {
   });
   /* A label floating near the foot of four parallel lines belongs to none of them, so each
      one now gets a dot on the line it names and sits beside that dot. */
+  /* THE LABEL SITS IN THE CLEAR BAND, NOT ACROSS A GRIDLINE. These labels sat at a typed
+     13 units above the plot floor, which on the 375-unit canvas put the paper plate at
+     329-344 with the bottom gridline at 330.6 running through it. The overlap was in the
+     drawing at every width in the mobile band; it only crossed the collision gate's 2px
+     floor once the canvas scaled past ~1.27x, so it read as a 560-700px bug and was not
+     one. Position the plate against the LAST GRIDLINE, which is the ink it can hit, and
+     against the plate's own declared box — then clamp so it stays off the axis rule. The
+     desktop value is unchanged: its gridline already fell clear. */
+  const gridLo = Math.max(...yt.filter(v => v >= y0 && v <= y1).map(ys));
+  const isoY = Math.min(
+    Math.max(m.t + h - 13, gridLo + PLATE.up + 2),
+    m.t + h - PLATE.down - 2);
   isoPts.forEach((pts, real) => {
     if (!isoLabel.includes(real) || pts[0][2] <= x0 + 2 || pts[0][2] >= x1 - 90) return;
     const me = real === AKISO;
     const s = me ? `Akron buys ${usd(real)}` : `buys ${usd(real)}`;
-    const ly = m.t + h - 13;   // clear of the axis rule: the plate crossed it at -8
     el("circle", {cx: pts[0][0], cy: pts[0][1], r: me ? 3.5 : 2.5,
       fill: me ? CAT[1] : "var(--pv-axis)"}, svg);
-    plate(svg, s, pts[0][0] + 7, ly, mobile ? 8.2 : 7.2);
-    txt(svg, s, {x: pts[0][0] + 7, y: ly, class: me ? "pv-lab" : "pv-labq",
+    plate(svg, s, pts[0][0] + 7, isoY, mobile ? 8.2 : 7.2);
+    txt(svg, s, {x: pts[0][0] + 7, y: isoY, class: me ? "pv-lab" : "pv-labq",
       ...(me ? {fill: CAT[1]} : {})});
   });
   const rmax = Math.max(...B.map(r => r.emp));
