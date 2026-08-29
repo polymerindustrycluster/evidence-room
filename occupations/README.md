@@ -224,3 +224,95 @@ was which. What changed:
 No source data changed and no claim was removed. Two guards gained assertions so they
 still bound the sentences after the rewrite, and `occ-mix-most-specific` rounds half up,
 as the browser does, because 94.5 is the value and 95% is what the page prints.
+
+## Fifth pass: the scope round, and three corrections a reader found
+
+A naive reader was given the rendered page and nothing else. They finished the hero
+believing that 51% of America's molding-machine setters work in Northeast Ohio. Every
+figure in that hero was correct. The frame was not, and the page's own correction ("the
+staffing shares are national, not regional") sat 180 lines below the belief, where it
+reached nobody who had already formed one.
+
+**Scope is now furniture, not a caveat.** Two measures with two geographies run through
+this page, so the page says which at every point a reader can enter it:
+
+- the **eyebrow** is the scope split, above the headline: "Staffing: the whole country ·
+  Pay and degrees: Northeast Ohio";
+- the **headline** ends "anywhere in the country";
+- the **standfirst** leads with the split and only then asks the region's question, so
+  "the region" no longer primes the four national figures under it;
+- a **scope strip** sits directly over the stat row it governs;
+- all four **hero stat cards** carry a UNITED STATES stamp, because a strip states a rule
+  and a stamp travels with the number;
+- every **band kicker** carries its own geography, in ink for the national bands and in the
+  metro accent for the regional ones;
+- the **pay lede** names the change of scope in its first sentence;
+- the **staffing chart** carries the scope on the canvas at both widths, so the figure
+  survives being screenshotted out of the page.
+
+This supersedes the fourth pass's column head. That pass gave the mix chart's second scale
+a reading, "how much of this job is HERE, not anywhere else", where "here" meant this
+INDUSTRY. On a page whose masthead names a regional organisation, "here" reads as Ohio, and
+that column head is what cemented the misreading: it prints the same 51% the hero does. The
+column now reads "US workers in this job: the share employed in this industry", and the word
+"here" is gone from the chart at both widths and from the section kicker.
+
+Nothing about this is machine-checkable from the data alone, so `occ-scope-split` guards
+what is: that the staffing rows carry no geography, that the pay rows carry exactly four
+metros, and that the region's estimated setters are under a twentieth of the national count
+the hero prints, which is the size of the misreading.
+
+**Three arithmetic corrections, all found by the same reader, all real:**
+
+1. **The top-fourteen share was 59.4% and should have been 59.6%.** The fourteen job counts
+   sum to 432,200 against the industry's 725,100, which is 59.6%. The printed 59.4% was the
+   sum of fourteen shares each rounded to a tenth of a point, and the roundings run 0.2
+   points net downward. The page now computes the share from the counts, the heading rounds
+   that to 60%, and the table note prints both numbers with the reason they differ so a
+   reader's own arithmetic closes either way round. `occ-fourteen-share` asserts the pair
+   rather than either half. The data file's `mix_totals.top_n_share_pct` still carries 59.4
+   and is no longer read by the page; correcting it is a `_data/build` change.
+2. **Cleveland beats the nation in 11 occupations, not 10.** The stored tally is computed on
+   each row's ratio rounded to two places, so first-line supervisors at $71,220 against
+   $71,190 read as 1.00 and dropped out, while this page's own paycheck band celebrates a
+   $30 lead in Akron as beating the nation. The lede sentence is now composed from the
+   dollar medians (`#beats`), and the table note names the two cells that are level to the
+   dollar and counts the leads under $100, because a tally is not a ranking.
+   `occ-beats-national` recomputes the count and keeps a tripwire on the stored field.
+3. **The chart was mis-sorted.** Industrial engineers (14,400 jobs) printed above cutting
+   and press machine setters (14,600) because both round to 2.0% and the file breaks the tie
+   on something the page does not show. Rows now sort by job count; `occ-mix-order` guards
+   it.
+
+**Four smaller reader findings, also real:**
+
+- The first hero card ended on an unfinished sentence ("A concentration this high leaves one
+  job to keep staffed"). It now finishes the thought and says what the concentration costs.
+- "2 metro figures carry a survey error above 10%" sat beside a column that shows each
+  occupation's WIDEST metro only, so exactly one of the two was visible. Both are now named
+  with their values (materials scientists in Cleveland at 13.7% and in Akron at 11.2%), and
+  the note says why one is not in the column. `occ-high-rse` names them too.
+- The education table printed the database's own occupation title, so the row the rest of
+  the page calls "Assemblers and fabricators" appeared as "Team Assemblers", and its
+  most-reported level printed labels ("Post-Secondary Certificate", "Some College Courses")
+  that match none of the four column heads above them. The page name now leads and names the
+  database occupation only where the database files the work under a different code; the
+  modal cell says which of the four columns holds the level it prints, mapped from the
+  survey's own 1-to-12 numbering. `occ-edu-row-names` guards both.
+- **RSE** was expanded only in the methodology box, forty screens below its first use as a
+  table header. The header and hover now say "survey error" and the note expands it.
+
+**Also:** the four teal steps could not carry "where the dark begins", which is the whole
+reading of the education chart. The ramp is the validated sequential one and stays; the fix
+is structural, a paper hairline at every segment join and a full-height ink notch at the one
+join the claim turns on, drawn from the same bins the segments are. The Job Zone column head
+and the table header now name the term and give its reading at the point of use, because a
+reader reaches the chart before the paragraph that defines it, and `<dfn>` gets a dotted rule
+so the defining instance looks like one.
+
+The cold open improved from 1,668px to about 1,633px: the occupation selector and its
+verdict moved below the staffing chart, which pays for the scope furniture and puts the
+evidence earlier. `_data/coldopen.json` still records the old 1,668 debt and should be
+tightened; that is a `_data` change.
+
+Claims 26 to 32. No claim was removed; no source data changed.

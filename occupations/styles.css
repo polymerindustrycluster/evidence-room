@@ -21,6 +21,36 @@
   letter-spacing:.02em;color:#9FCBD2;line-height:1.5}
 .hero .wrap > .byline b{color:#DCEEF1;font-weight:700}
 
+/* THE SCOPE FURNITURE. A naive reader finished this hero believing that 51% of America's
+   molding-machine setters work in Northeast Ohio. Every number in it was correct; the frame
+   was not. Two measures with two geographies run through the page, and a correction 180
+   lines down does not reach a reader who has already formed the belief, so scope stops
+   being a caveat and becomes permanent furniture: a strip over the stat row that governs
+   it, and a tag on every band kicker naming that band's geography. Bound to --measure with
+   a selector that outranks the shared `.hero .wrap > *` figure cap, same as .byline. */
+.hero .wrap > .scopebar{max-width:var(--measure);margin:22px auto 0;padding:8px 0 8px 13px;
+  border-left:3px solid var(--lime);font-size:14.5px;line-height:1.45;color:#DCEEF1}
+/* The kicker tag reads as a label, not as more kicker: a boxed chip, one weight down, in
+   ink for the national bands and in the metro accent for the regional ones. It inherits
+   the kicker's uppercase, which is what makes it scan as a stamp. */
+.takeaway .scope{display:inline-block;margin-left:9px;padding:2px 7px;border-radius:3px;
+  font-size:12px;letter-spacing:.1em;font-weight:900;vertical-align:1px;
+  color:#0C6473;background:#DCEEF1;box-shadow:inset 0 0 0 1px #9FD2DA}
+.takeaway .scope.reg{color:#7A3A05;background:#FBEADC;box-shadow:inset 0 0 0 1px #E4B98E}
+/* The same stamp on the stat cards, because the strip above them states a rule and the
+   chip carries it on the number itself. The card a reader misread (51% of the nation's
+   molding-machine setters) is the one that most needed a label attached to it, and a label
+   on only that card would imply the other three were something else. */
+.figv .d .scope{display:block;width:fit-content;margin:0 0 7px;padding:2px 7px;
+  border-radius:3px;font-size:12px;letter-spacing:.1em;font-weight:900;
+  text-transform:uppercase;color:#0A3A44;background:#9FD2DA}
+/* A DEFINITION THAT DOES NOT LOOK LIKE ONE IS NOT READ AS ONE. The shared sheet strips
+   <dfn>'s italics and puts nothing in their place, so the page's one defined term read as
+   ordinary prose and a reader met "Zone 4" on the chart with nothing to say whether four
+   was a lot. The dotted rule is the ordinary cue and costs no height; the chart column and
+   the table header now also carry the reading, because a reader arrives at the chart first. */
+.band .lede dfn{border-bottom:1px dotted #8A9599}
+
 /* Figure chrome: every chart carries its own claim-title + how-to-read line, so the H2
    does section work instead of doubling as the chart title (chart-craft.md). */
 .fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;

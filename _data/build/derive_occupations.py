@@ -66,10 +66,19 @@ for r in detailed[:TOP_N]:
                 "pct_of_industry": f(raw[4]), "pct_of_occupation": f(raw[5]),
                 "emp_2034_k": f(raw[6]), "change_pct_2024_34": f(raw[10]),
                 "in_wage_set": r["soc"] in SOC})
-top_share = round(sum(m["pct_of_industry"] for m in mix), 1)
-production_share = round(sum(f(r["raw"][4]) for r in detailed if r["soc"].startswith("51-")), 1)
+# A SHARE IS COMPUTED FROM COUNTS, NEVER BY ADDING ROUNDED SHARES. BLS publishes
+# pct_of_industry to one decimal, so summing fourteen of them accumulates fourteen
+# roundings: they netted -0.203pp and published 59.4% where the counts give 59.6%. A
+# naive reader added the job counts, divided, and found the page short by two tenths.
+# The same mistake was live in all three shares below, so all three now divide.
+def share_of_industry(recs):
+    emp = sum(f(r["raw"][3]) or 0 for r in recs)
+    return round(emp / industry_emp_k * 100, 1)
+
+top_share = share_of_industry(detailed[:TOP_N])
+production_share = share_of_industry([r for r in detailed if r["soc"].startswith("51-")])
 eng_sci_codes = [r for r in detailed if r["soc"][:4] in ("17-2", "19-2", "19-4", "17-3")]
-eng_sci_share = round(sum(f(r["raw"][4]) for r in eng_sci_codes), 1)
+eng_sci_share = share_of_industry(eng_sci_codes)
 setters = next(m for m in mix if m["soc"] == "51-4072")
 tire = next((r for r in detailed if r["soc"] == "51-9197"), None)
 

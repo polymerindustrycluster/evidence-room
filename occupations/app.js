@@ -106,13 +106,32 @@ const GROUPS = [
 ];
 const payRows = GROUPS.flatMap(G => G.rows);
 const paySoc = Object.fromEntries(payRows.map(r => [r.soc, r]));
-const mixSoc = Object.fromEntries(D.mix.map(r => [r.soc, r]));
+
+/* ---------------------------------------------------- the staffing mix, ordered and summed
+ *
+ * ORDER BY JOBS, NOT BY THE ROUNDED SHARE THE BAR PRINTS. A reader counting down the chart
+ * found industrial engineers (14,400 jobs) printed ABOVE cutting-and-press setters (14,600),
+ * because both round to 2.0% and the file's order breaks the tie by something the page does
+ * not show. A "largest first" chart whose rows are not largest-first is a defect a reader
+ * can see and no gate was measuring, so the order is now derived from the counts themselves.
+ *
+ * AND SUM THE JOBS, NOT THE ROUNDED SHARES. The same reader added the fourteen job counts
+ * (432,200), divided by the industry's 725,100 and got 59.6%, against a printed 59.4%. They
+ * were right: 59.4 is the sum of fourteen shares each rounded to a tenth of a point, and
+ * those roundings run 0.2 points net downward. The share is computed here from the counts
+ * and the table note prints both numbers with the reason they differ, so a reader who does
+ * the arithmetic lands where the page does. */
+const MIX = [...D.mix].sort((a, b) => b.emp_2024_k - a.emp_2024_k);
+const MIX_EMP_K = MIX.reduce((s, r) => s + r.emp_2024_k, 0);
+const topShare = MIX_EMP_K / D.mix_totals.industry_emp_2024_k * 100;
+const topShareBars = MIX.reduce((s, r) => s + r.pct_of_industry, 0);   // what the bars print
+const mixSoc = Object.fromEntries(MIX.map(r => [r.soc, r]));
 const eduAll = D.education.filter(r => r.bins);
 const eduSoc = Object.fromEntries(eduAll.map(r => [r.soc, r]));
 const eduRows = payRows.map(r => eduSoc[r.soc]).filter(Boolean);
 const nDeg = eduRows.filter(r => grp(r.soc) === "deg").length;   // the shaded band, both charts
 /* How far the "fourteen largest" and the "fourteen high-school-majority" sets diverge. */
-const MIX_NOT_HS = D.mix.filter(r => !HS.has(r.soc)).length;
+const MIX_NOT_HS = MIX.filter(r => !HS.has(r.soc)).length;
 const RB = D.pay_totals.ratio_by_metro;
 /* THE BAND SUMMARY IS A MEDIAN OF RATIOS, AND THE MIDDLE BAND HAD NONE. The data file
    carries degree_median_ratio and hs_median_ratio but no "in between" figure, so the one
@@ -137,7 +156,7 @@ const nPoly = progRows.filter(p => p.group === "polymer").length;
 const PT = D.program_totals, WIN = PT.window;
 
 /* ------------------------------------------------------------ hero figures */
-const setters = D.mix.find(m => m.soc === "51-4072");
+const setters = MIX.find(m => m.soc === "51-4072");
 /* Card 1 carries the headline's other half. The hero used to open with a two-clause
    sentence that towered to six lines of display type; the "one job in nine" clause reads
    better as the number it is than as the back half of a headline. */
@@ -146,11 +165,16 @@ const setters = D.mix.find(m => m.soc === "51-4072");
    region. The sub-line is the page's first contact with every one of these measures, so it
    is where the reading goes (writing.md, constructed units); card two also carries the
    denominator flip, since 51% is cut from the OCCUPATION and 10.9% from the INDUSTRY. */
+/* Card 4 used to read "the jobs the region CLAIMS DISTINCTION IN" under a national share,
+   which is the page's whole scope problem in one sub-line: a regional referent hung on a
+   number cut from the country. The distinction claim belongs where the regional numbers
+   are, and this card now says what 4.0% is a share OF. */
+const US = `<span class="scope">United States</span>`;
 figures([
-  ["key", pct(setters.pct_of_industry), "of the industry’s jobs", `are molding-machine setters: one job in ${WORDS[Math.round(100 / setters.pct_of_industry)]}, 2024. A concentration this high leaves one job to keep staffed`],
-  ["", pct(setters.pct_of_occupation, 0), "of the nation’s molding-machine setters", "work in plastics and rubber manufacturing: few employers outside it bid for them, and few outside it to hire from"],
-  ["", N(D.mix_totals.industry_emp_2024_k * 1000), "jobs in the industry", `nationally, 2024. The base the ${pct(setters.pct_of_industry)} and ${pct(D.mix_totals.eng_sci_share_pct)} are cut from`],
-  ["", pct(D.mix_totals.eng_sci_share_pct), "engineers, scientists, technicians", "the jobs the region claims distinction in, and a small share of the work"],
+  ["key", pct(setters.pct_of_industry), "of the industry’s jobs", `${US}are molding-machine setters, one job in ${WORDS[Math.round(100 / setters.pct_of_industry)]}, 2024. It is the industry’s largest occupation, which makes staffing it the industry’s largest staffing problem`],
+  ["", pct(setters.pct_of_occupation, 0), "of the nation’s molding-machine setters", `${US}work in plastics and rubber manufacturing, counted across the country: few other employers bid for them, and few others to hire from`],
+  ["", N(D.mix_totals.industry_emp_2024_k * 1000), "jobs in the industry", `${US}in 2024, and the base the ${pct(setters.pct_of_industry)} and ${pct(D.mix_totals.eng_sci_share_pct)} are cut from`],
+  ["", pct(D.mix_totals.eng_sci_share_pct), "engineers, scientists, technicians", `${US}of all jobs in the industry: the work a polymer region is known for is a small share of it`],
 ]);
 
 /* The byline's month is read from the data vintage rather than typed, so it cannot drift
@@ -180,8 +204,8 @@ function verdict() {
        and a reader who fuses them carries away "the industry is 59% high-school work",
        which is false. The overlap is counted from the data, never typed. */
     v.innerHTML = `<b>All ${D.pay_totals.occupations} occupations:</b> the industry’s
-      ${WORDS[D.mix_totals.top_n] || D.mix_totals.top_n} largest hold
-      ${pct(D.mix_totals.top_n_share_pct)} of its national employment, and every metro pays
+      ${WORDS[MIX.length] || MIX.length} largest hold
+      ${pct(topShare)} of its national employment, and every metro pays
       the ${WORDS[ET.ba_plus_majority.length]} degree occupations further under the nation
       than the ${WORDS[ET.hs_majority.length]} high-school-majority ones. Those are two
       different fourteens: ${WORDS[MIX_NOT_HS] || MIX_NOT_HS} of the largest occupations are
@@ -192,7 +216,7 @@ function verdict() {
   const p = paySoc[SEL], m = mixSoc[SEL], e = eduSoc[SEL];
   const shareClause = m
     ? `<b>${pct(m.pct_of_industry)}</b> of the industry’s jobs nationally`
-    : `outside the industry’s ${WORDS[D.mix_totals.top_n] || D.mix_totals.top_n} largest occupations`;
+    : `outside the industry’s ${WORDS[MIX.length] || MIX.length} largest occupations`;
   const area = AREAS.find(a => !p.metros[a].absent);
   const payClause = area
     ? `${M.metros[area].short} median <b>${money(p.metros[area].median)}</b> against
@@ -236,19 +260,24 @@ verdict();
 function drawMix() { MOBILE.matches ? drawMixMobile() : drawMixDesktop(); }
 
 function drawMixDesktop() {
-  const rows = D.mix;
+  const rows = MIX;
   const {svg, W, m, w} = chart("mix", {W: 1100, rows: rows.length, rowH: 30,
-    m: {t: 44, r: 250, b: 60, l: 290}});
+    m: {t: 66, r: 250, b: 60, l: 290}});
   const maxV = Math.max(...rows.map(r => r.pct_of_industry)) * 1.18;
   const xs = v => m.l + (v / maxV) * w;                     // LINEAR from zero
   frame(svg, {x: m.l, y: m.t, w, h: rows.length * 30, xs, ys: () => 0,
     xt: ticks(0, maxV, 5), yt: [], xfmt: v => v + "%",
     xlab: "Share of everyone employed in plastics and rubber manufacturing, US, 2024"});
-  /* THE SECOND SCALE, READ RATHER THAN DEFINED. "Share of the occupation that is in this
-     industry" is the arithmetic; a reader meeting 95% still has to work out whether that
-     is a lot. The column now says which way it points, and the lede gives the reading. */
-  txt(svg, "how much of this job is", {x: m.l + w + 12, y: m.t - 26, class: "pv-axlab"});
-  txt(svg, "here, not anywhere else", {x: m.l + w + 12, y: m.t - 6, class: "pv-axlab"});
+  /* THE SECOND SCALE, AND THE WORD THAT BROKE THE PAGE. This column read "how much of this
+     job is HERE, NOT ANYWHERE ELSE", where "here" meant this INDUSTRY. On a page whose
+     masthead names a regional organisation, a reader took "here" for Ohio and carried away
+     that half of America's molding-machine setters work in Northeast Ohio: the figures were
+     right and the frame made them false. The column now names its universe (everyone in the
+     US who holds the job) and its subject (this industry), and the word "here" is gone from
+     the chart at both widths. */
+  txt(svg, "US workers in this job:", {x: m.l + w + 12, y: m.t - 46, class: "pv-axlab"});
+  txt(svg, "the share employed", {x: m.l + w + 12, y: m.t - 26, class: "pv-axlab"});
+  txt(svg, "in this industry", {x: m.l + w + 12, y: m.t - 6, class: "pv-axlab"});
   rows.forEach((r, i) => {
     const g = el("g", dimMix(r.soc) ? {opacity: .18} : {}, svg);
     const y = m.t + i * 30 + 6, bh = 18;
@@ -285,8 +314,8 @@ function drawMixDesktop() {
 }
 
 function drawMixMobile() {
-  const rows = D.mix;
-  const m = {t: 86, r: 12, b: 44, l: 12}, W = 375, rowH = 42;
+  const rows = MIX;
+  const m = {t: 126, r: 12, b: 44, l: 12}, W = 375, rowH = 42;
   const H = m.t + rows.length * rowH + m.b;
   const {svg} = chart("mix", {W, H});
   const w = W - m.l - m.r;
@@ -294,12 +323,19 @@ function drawMixMobile() {
   const xs = v => m.l + (v / maxV) * w;
   const ES = D.mix_totals.eng_sci_share_pct;
   const past = rows.filter(r => r.pct_of_industry > ES).length;
+  /* THE SCOPE LINE COMES FIRST ON THE PHONE, because the phone's first paint of this chart
+     is the reader's first paint of any chart, and the number in the right-hand column is the
+     one the hero already showed them. */
+  txt(svg, "these figures count the whole country",
+    {x: m.l, y: m.t - 100, class: "pv-lab"});
   txt(svg, `rule: all engineers, scientists and technicians, ${pct(ES)}`,
-    {x: m.l, y: m.t - 50, class: "pv-labq"});
+    {x: m.l, y: m.t - 78, class: "pv-labq"});
   txt(svg, `${WORDS[past] || past} occupations outweigh them on their own`,
-    {x: m.l, y: m.t - 32, class: "pv-labq"});
-  txt(svg, "how much of the job is here →", {x: W - m.r, y: m.t - 10,
-    "text-anchor": "end", class: "pv-labq"});
+    {x: m.l, y: m.t - 60, class: "pv-labq"});
+  txt(svg, "right of each row: of all US workers", {x: m.l, y: m.t - 32,
+    class: "pv-labq"});
+  txt(svg, "in the job, the share in this industry", {x: m.l, y: m.t - 14,
+    class: "pv-labq"});
   rows.forEach((r, i) => {
     const g = el("g", dimMix(r.soc) ? {opacity: .18} : {}, svg);
     const y = m.t + i * rowH;
@@ -327,23 +363,33 @@ function drawMixMobile() {
 }
 
 {
-  const rows = D.mix;
+  const rows = MIX;
   /* "The fourteen LARGEST", never a bare "fourteen": the schooling section has its own
      fourteen and the two sets differ by four members. */
   document.getElementById("mixtitle").textContent =
-    `The ${WORDS[rows.length] || rows.length} largest occupations are ${Math.round(D.mix_totals.top_n_share_pct)}% of the industry, and most of them are on the floor`;
+    `The ${WORDS[rows.length] || rows.length} largest occupations are ${Math.round(topShare)}% of the industry, and most of them are on the floor`;
   document.getElementById("mixtable").innerHTML = withNote(tableView("mix",
     "The industry’s largest occupations, US, 2024",
-    ["Occupation", "Share of the industry", "Share of everyone with this job who works here",
+    ["Occupation", "Share of the industry",
+     "Share of everyone in the country with this job who works in this industry",
      "Jobs in the industry, 2024", "Projected change to 2034"],
     rows.map(r => [r.bls_title, pct(r.pct_of_industry), pct(r.pct_of_occupation),
       N(r.emp_2024_k * 1000), (r.change_pct_2024_34 >= 0 ? "+" : "") + r.change_pct_2024_34 + "%"])),
+    /* THE TWO NUMBERS A READER WILL GET, BOTH PRINTED, WITH THE REASON THEY DIFFER. Adding
+       the job counts gives one answer and adding the printed bar shares gives another, and
+       the page used to publish only the second. Both are stated here on the base a reader
+       can see, so the arithmetic closes either way round. */
     `One row is one detailed occupation employed in the industry, from the Employment
-     Projections matrix for industry 326000 on a 2024 base. The ${rows.length} shown are
-     ${D.mix_totals.top_n_share_pct}% of the industry’s
-     ${N(D.mix_totals.industry_emp_2024_k * 1000)} jobs; production occupations of every
+     Projections matrix for industry 326000 on a 2024 base. The ${rows.length} shown hold
+     ${N(MIX_EMP_K * 1000)} of the industry’s
+     ${N(D.mix_totals.industry_emp_2024_k * 1000)} jobs, which is ${pct(topShare)}. Adding
+     the shares printed on the bars instead gives ${pct(topShareBars)}, because each of them
+     is rounded to a tenth of a point and the roundings run down; the ${pct(topShare)} is
+     computed from the job counts. Production occupations of every
      kind are ${D.mix_totals.production_share_pct}%; engineers, scientists and technicians
-     together are ${pct(D.mix_totals.eng_sci_share_pct)}. The 2034 column is a projection,
+     together are ${pct(D.mix_totals.eng_sci_share_pct)}. Rows run largest first by job
+     count, not by the rounded share, so two occupations that both print 2.0% still sit in
+     the right order. The 2034 column is a projection,
      a modelled path with no confidence band.`);
   document.getElementById("mixsrc").innerHTML =
     `Bureau of Labor Statistics Employment Projections, National Employment Matrix, 2024
@@ -525,7 +571,7 @@ function drawPayDesktopish(desktop) {
       });
       const cells = AREAS.map(a => {
         const c = r.metros[a];
-        return `${short(a)}: ${c.absent ? "<i>withheld</i>" : `<span class="v">${money(c.median)}</span> (${x(c.median_vs_us)}, RSE ${c.mean_rse}%)`}`;
+        return `${short(a)}: ${c.absent ? "<i>withheld</i>" : `<span class="v">${money(c.median)}</span> (${x(c.median_vs_us)}, survey error ${c.mean_rse}%)`}`;
       }).join("<br>");
       const p = r.projection;
       hoverable(el("rect", {x: 0, y: desktop ? y - rowH / 2 : y, width: W, height: rowH,
@@ -552,6 +598,43 @@ function drawPayDesktopish(desktop) {
   if (!desktop) txt(svg, "axis begins at $25,000", {x: m.l, y: beginY, class: "pv-axlab"});
 }
 
+/* ------------------------- WHAT "BEATS THE NATION" COUNTS, COUNTED FROM THE DOLLARS
+ *
+ * The lede used to print a typed 10 for Cleveland. A reader counting the published table
+ * got 11 and was right: the stored tally was computed on each row's ratio ROUNDED to two
+ * places, so first-line supervisors, at $71,220 against $71,190, read as 1.00 and dropped
+ * out. The page's own paycheck band celebrates a $30 lead in Akron as beating the nation,
+ * so a $30 lead in Cleveland has to count as one too. Recomputed here from the medians the
+ * table prints, with the ties named rather than silently excluded. */
+const beatsRows = a => payRows.filter(r => !r.metros[a].absent && r.national &&
+  r.metros[a].median > r.national.median);
+const levelRows = a => payRows.filter(r => !r.metros[a].absent && r.national &&
+  r.metros[a].median === r.national.median);
+/* A lead of a few tens of dollars on a survey estimate is a tally entry, not a ranking, and
+   the note says how many of them there are rather than leaving a reader to find out. */
+const narrowLeads = AREAS.flatMap(a => beatsRows(a)
+  .filter(r => r.metros[a].median - r.national.median < 100).map(r => [a, r]));
+const LEVEL = AREAS.flatMap(a => levelRows(a).map(r => [a, r]));
+/* NAME THE CELLS, DO NOT JUST COUNT THEM. The note said "2 metro figures carry a survey
+   error above 10%" beside a column that shows each occupation's WIDEST metro only, so
+   exactly one of the two was visible and a reader checking the sentence could not close it.
+   Derived and named here, from the same cells the table prints. */
+const HIGH_RSE = AREAS.flatMap(a => payRows
+  .filter(r => !r.metros[a].absent && r.metros[a].mean_rse > D.pay_totals.high_rse_threshold_pct)
+  .map(r => [a, r]))
+  .sort((p, q) => q[1].metros[q[0]].mean_rse - p[1].metros[p[0]].mean_rse);
+const rowWidestRse = r => Math.max(...AREAS.filter(a => !r.metros[a].absent)
+  .map(a => r.metros[a].mean_rse), 0);
+const HIGH_RSE_SHOWN = HIGH_RSE.filter(([a, r]) => r.metros[a].mean_rse === rowWidestRse(r)).length;
+{
+  const [first, ...rest] = AREAS;
+  const tail = rest.map(a => `${beatsRows(a).length} of ${D.pay_totals.disclosed[a]} in ${short(a)}`);
+  document.getElementById("beats").innerHTML =
+    `Only ${beatsRows(first).length} of ${short(first)}’s ${D.pay_totals.disclosed[first]}
+     published occupations are paid above the same job nationally,
+     ${tail.slice(0, -1).join(", ")} and ${tail[tail.length - 1]}.`;
+}
+
 {
   const T = D.pay_totals;
   /* THE FOURTH METRO, IN THE LEGEND. The deck says all four, the lede quotes a
@@ -565,8 +648,11 @@ function drawPayDesktopish(desktop) {
     OFF.map(a => `<span class="off"><i style="background:none;box-shadow:inset 0 0 0 2px #B9B3A9;border-radius:50%"></i> <span>${M.metros[a].short}, not drawn: ${T.disclosed[a]} of ${T.occupations} wages published</span></span>`).join("");
   document.getElementById("paytable").innerHTML = withNote(tableView("pay",
     "Annual median wage by occupation and metro against the nation, May 2024",
+    /* RSE arrived here unexpanded and was the page's first and only use of the initials
+       before the methodology box, forty screens down, spelled them out. A column header is
+       prose and gets the same first-contact translation as a sentence. */
     ["Occupation", "Schooling band", "United States", ...AREAS.map(a => short(a)),
-     "Highest metro RSE", "Projected openings a year, NE Ohio 2022–32"],
+     "Widest survey error in any metro", "Projected openings a year, NE Ohio 2022–32"],
     payRows.map(r => [r.occupation,
       {deg: "Degree", mid: "In between", hs: "High school"}[grp(r.soc)],
       money(r.national && r.national.median),
@@ -575,12 +661,22 @@ function drawPayDesktopish(desktop) {
       r.projection ? N(r.projection.openings_annual) : "—"])),
     `The metro areas neither sit inside the twelve Polymer Industry Cluster counties nor
      cover them exactly, so the columns sit side by side and are never summed.
-     ${WORDS[D.pay_totals.absent_everywhere.length] || D.pay_totals.absent_everywhere.length}
+     ${Cap(WORDS[D.pay_totals.absent_everywhere.length] || String(D.pay_totals.absent_everywhere.length))}
      occupation is withheld in all four metros, and the rest of the gap between
      ${T.occupations} and each metro&rsquo;s published count is withheld in that metro
      alone: ${AREAS.map(a => `${short(a)} ${T.disclosed[a]}`).join(", ")}.
-     ${T.high_rse_cells} metro figures carry a survey error above
-     ${T.high_rse_threshold_pct}% of the average wage, wide enough to move them. Projected
+     ${Cap(WORDS[HIGH_RSE.length] || String(HIGH_RSE.length))} metro figures carry a survey error
+     (the relative standard error, the sampling error as a share of the estimate) above
+     ${T.high_rse_threshold_pct}% of the average wage, wide enough to move them:
+     ${HIGH_RSE.map(([a, r]) => `${name(r)} in ${short(a)} (${pct(r.metros[a].mean_rse)})`).join(" and ")}.
+     The column above carries only each occupation&rsquo;s widest metro, so
+     ${WORDS[HIGH_RSE.length - HIGH_RSE_SHOWN] || HIGH_RSE.length - HIGH_RSE_SHOWN} of them
+     is not visible there. Being paid above the national median means exactly that, a higher
+     figure in dollars: ${WORDS[narrowLeads.length] || narrowLeads.length} of the metro
+     figures clear their national median by under $100, which on a survey estimate is a tally
+     entry and not a ranking, and ${WORDS[LEVEL.length] || LEVEL.length} more are level to
+     the dollar and count as neither
+     (${LEVEL.map(([a, r]) => `${name(r)} in ${short(a)}`).join(", ")}). Projected
      openings are Ohio Department of Job and Family Services 2022&ndash;2032 modelled paths
      with no confidence band, for the eighteen-county JobsOhio Northeast region, which
      contains all twelve counties and more. What a dollar buys in each metro is the
@@ -596,20 +692,62 @@ const BINS = [["hs_or_less", "High school or less", SEQ[0]],
               ["some_college", "Some college or associate", SEQ[2]],
               ["bachelors", "Bachelor’s degree", SEQ[4]],
               ["graduate", "Graduate degree", SEQ[5]]];
+/* THE FOUR COLUMNS ARE TWELVE LEVELS BINNED, AND THE TABLE WAS PRINTING THE TWELVE.
+   "Most-reported level" read "Post-Secondary Certificate" and "Some College Courses",
+   labels that appear nowhere among the four headings above them, and a reader gave up
+   reconciling the row. The database numbers its levels 1 to 12 and the bins are runs of
+   that numbering, so the column each modal level belongs to is derivable rather than
+   guessable: 1-2 high school or less, 3-5 some college or associate, 6-7 bachelor's,
+   8-12 graduate. Printed beside the level, so the row closes on itself. */
+const binOfCategory = c => c <= 2 ? BINS[0] : c <= 5 ? BINS[1] : c <= 7 ? BINS[2] : BINS[3];
+const modalCell = r => {
+  const lvl = tq(r.modal.label.split(" - ")[0]), col = binOfCategory(r.modal.category)[1];
+  return lvl.toLowerCase() === col.toLowerCase() ? lvl : `${lvl} (in the ${col} column)`;
+};
+/* ONE OCCUPATION, ONE NAME, ACROSS EVERY SURFACE. This table printed the database's own
+   occupation title, so the row the rest of the page calls "Assemblers and fabricators"
+   appeared here as "Team Assemblers" and read as a different job. The page name leads; the
+   database occupation is named only where its code is genuinely a different one from the
+   federal code the row is filed under, which is the case the reader actually hit. */
+const onetCode = r => (r.join.match(/\d{2}-\d{4}/) || [""])[0];
+
+/* WHERE THE DARK BEGINS, DRAWN AS A MARK RATHER THAN LEFT TO THE HUES.
+   The section's whole reading is "the earlier the dark begins, the more schooling the
+   job's own people say it takes", and on a 16-unit bar four steps of one teal ramp do not
+   carry that boundary: a reader reported the shades as near-identical and the reading as
+   unusable. Two cheap fixes, both structural rather than chromatic (the ramp is the
+   validated sequential one and stays): a paper-coloured hairline at every segment join, so
+   all four boundaries are crisp at any size, and a full-height ink tick at the ONE join the
+   claim turns on, where bachelor's begins. The tick is drawn from the same bins the
+   segments are, so it cannot point at the wrong place. */
+const degreeMark = (g, r, xs, y, bh) => {
+  const b = r.bins, joins = [b.hs_or_less, b.hs_or_less + b.some_college,
+    b.hs_or_less + b.some_college + b.bachelors];
+  joins.forEach(v => { if (v > 0.05 && v < 99.95)
+    el("line", {x1: xs(v), y1: y, x2: xs(v), y2: y + bh,
+      stroke: "var(--paper)", "stroke-width": 1}, g); });
+  const start = b.hs_or_less + b.some_college;          // where bachelor's-or-higher begins
+  if (start < 99.95) el("line", {x1: xs(start), y1: y - 3, x2: xs(start), y2: y + bh + 3,
+    stroke: INK, "stroke-width": 1.6}, g);
+};
+const eduName = r => onetCode(r) === r.soc ? r.occupation
+  : `${r.occupation} (${r.onet_title} in the database, ${r.join.replace("O*NET ", "")})`;
 
 function drawEdu() { MOBILE.matches ? drawEduMobile() : drawEduDesktop(); }
 
 function drawEduDesktop() {
   const rows = eduRows;
   const {svg, W, m, w} = chart("edu", {W: 1100, rows: rows.length, rowH: 24,
-    m: {t: 44, r: 150, b: 60, l: 290}});
+    m: {t: 66, r: 200, b: 60, l: 290}});
   const xs = v => m.l + (v / 100) * w;
   frame(svg, {x: m.l, y: m.t, w, h: rows.length * 24, xs, ys: () => 0,
     xt: [0, 25, 50, 75, 100], yt: [], xfmt: v => v + "%",
     xlab: "Share of surveyed workers and experts reporting each level as required"});
   /* The Zone column ran unlabelled: a reader met "Zone 4" with nothing to say whether four
-     was a lot. The header gives the scale and which end is which. */
-  txt(svg, "preparation", {x: m.l + w + 12, y: m.t - 26, class: "pv-axlab"});
+     was a lot, and the term itself was defined in a paragraph most readers reach the chart
+     before. The header now names the term AND gives its reading, at the point of use. */
+  txt(svg, "Job Zone:", {x: m.l + w + 12, y: m.t - 46, class: "pv-axlab"});
+  txt(svg, "preparation needed,", {x: m.l + w + 12, y: m.t - 26, class: "pv-axlab"});
   txt(svg, "1 low, 5 high", {x: m.l + w + 12, y: m.t - 6, class: "pv-axlab"});
   /* Same tint, same six rows, same order as the pay chart's degree band: the reader can
      carry the shape from one chart to the other without re-reading the labels. */
@@ -621,7 +759,7 @@ function drawEduDesktop() {
   el("line", {x1: xs(50), y1: m.t - 2, x2: xs(50), y2: m.t + rows.length * 24,
     stroke: INK, "stroke-width": 1.5, opacity: .4}, svg);
   txt(svg, "half the reports", {x: xs(50) + 8, y: m.t - 26, class: "pv-labq"});
-  txt(svg, "dark starting left of here: most say a degree",
+  txt(svg, "a notch left of this rule: most say a degree",
     {x: xs(50) + 8, y: m.t - 8, class: "pv-labq"});
   rows.forEach((r, i) => {
     const g = el("g", dim(r.soc) ? {opacity: .18} : {}, svg);
@@ -633,15 +771,16 @@ function drawEduDesktop() {
         height: bh, fill: col}, g);
       acc += v;
     });
+    degreeMark(g, r, xs, y, bh);
     txt(g, name(r), {x: m.l - 12, y: y + bh - 3, "text-anchor": "end", class: "pv-lab"});
     txt(g, r.job_zone ? `Zone ${r.job_zone <= 2 ? "1–2" : r.job_zone}` : "",
       {x: m.l + w + 12, y: y + bh - 3, class: "pv-labq"});
     const desc = (r.description || "").split(". ")[0];
     hoverable(el("rect", {x: 0, y: y - 4, width: W, height: bh + 8, fill: "transparent"}, g),
-      `<b>${r.onet_title}</b><br>${BINS.map(([k, l]) => `${l}: <span class="v">${pct(r.bins[k])}</span>`).join("<br>")}
-       <br>most reported: ${tq(r.modal.label.split(" - ")[0])} (${pct(r.modal.pct)})<br>${r.job_zone_name}
-       ${desc ? `<br><i>${desc}.</i>` : ""}<br><span style="font-size:12px">${r.join}</span>`,
-      `${r.onet_title}: ${BINS.map(([k, l]) => `${l} ${pct(r.bins[k])}`).join(", ")}; ${r.job_zone_name}`);
+      `<b>${r.occupation}</b><br>${BINS.map(([k, l]) => `${l}: <span class="v">${pct(r.bins[k])}</span>`).join("<br>")}
+       <br>most reported: ${modalCell(r)} (${pct(r.modal.pct)})<br>${r.job_zone_name}
+       ${desc ? `<br><i>${desc}.</i>` : ""}<br><span style="font-size:12px">database occupation: ${r.onet_title}, ${r.join}</span>`,
+      `${r.occupation}: ${BINS.map(([k, l]) => `${l} ${pct(r.bins[k])}`).join(", ")}; ${r.job_zone_name}`);
   });
 }
 
@@ -652,9 +791,9 @@ function drawEduMobile() {
   const {svg} = chart("edu", {W, H});
   const w = W - m.l - m.r;
   const xs = v => m.l + (v / 100) * w;
-  txt(svg, "preparation the job needs: Zone 1 low, 5 high →", {x: W - m.r, y: m.t - 30,
+  txt(svg, "Job Zone: preparation needed, 1 low 5 high →", {x: W - m.r, y: m.t - 30,
     "text-anchor": "end", class: "pv-labq"});
-  txt(svg, "left of the rule: most reports say a degree",
+  txt(svg, "notch left of the rule: most reports say a degree",
     {x: m.l, y: m.t - 12, class: "pv-labq"});
   el("rect", {x: 0, y: m.t - 4, width: W, height: nDeg * rowH,
     fill: "rgba(12,100,115,.055)"}, svg);
@@ -677,9 +816,10 @@ function drawEduMobile() {
         height: 14, fill: col}, g);
       acc += v;
     });
+    degreeMark(g, r, xs, y + 18, 14);
     hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, g),
-      `<b>${r.onet_title}</b><br>${BINS.map(([k, l]) => `${l}: <span class="v">${pct(r.bins[k])}</span>`).join("<br>")}`,
-      `${r.onet_title}: ${BINS.map(([k, l]) => `${l} ${pct(r.bins[k])}`).join(", ")}`);
+      `<b>${r.occupation}</b><br>${BINS.map(([k, l]) => `${l}: <span class="v">${pct(r.bins[k])}</span>`).join("<br>")}`,
+      `${r.occupation}: ${BINS.map(([k, l]) => `${l} ${pct(r.bins[k])}`).join(", ")}`);
   });
   const ax = el("g", {}, svg);
   [0, 50, 100].forEach(v => txt(ax, v + "%", {x: Math.min(xs(v), W - 16), y: H - m.b + 18,
@@ -694,15 +834,23 @@ function drawEduMobile() {
     `${Cap(WORDS[ET.ba_plus_majority.length] || String(ET.ba_plus_majority.length))} of these occupations are degree jobs; ${WORDS[ET.hs_majority.length] || ET.hs_majority.length} are high-school-majority; the rest sit between`;
   document.getElementById("edutable").innerHTML = withNote(tableView("edu",
     "Reported required level of education, by occupation",
-    ["Occupation", "Job Zone", ...BINS.map(b => b[1]), "Most-reported level"],
-    eduRows.map(r => [r.onet_title, r.job_zone <= 2 ? "1–2" : r.job_zone,
-      ...BINS.map(([k]) => pct(r.bins[k])), tq(r.modal.label.split(" - ")[0])])),
+    ["Occupation", "Job Zone: preparation the work needs, 1 low to 5 high",
+     ...BINS.map(b => b[1]), "Most-reported single level, of the twelve the survey uses"],
+    eduRows.map(r => [eduName(r), r.job_zone <= 2 ? "1–2" : r.job_zone,
+      ...BINS.map(([k]) => pct(r.bins[k])), modalCell(r)])),
     `The Job Zone is the database&rsquo;s rating of overall preparation, 1 for the least and
-     5 for the most, with the two lowest steps reported as one band. Where one federal occupation code holds several database
+     5 for the most, with the two lowest steps reported as one band. The survey offers
+     twelve levels of education and the four columns here are runs of those twelve: levels
+     1 to 2 are high school or less, 3 to 5 some college or associate, 6 to 7
+     bachelor&rsquo;s, 8 to 12 graduate. The last column names the single most-reported
+     level, so it prints one of the twelve and says which of the four columns holds it.
+     Where one federal occupation code holds several database
      occupations, the row is the equal-weight mean of them, and the chart&rsquo;s hover
-     names which. ${ET.ba_plus_majority.length} of the ${ET.n} occupations have a
+     names which; where the database files the work under a different code from the federal
+     one, the occupation column names both. ${ET.ba_plus_majority.length} of the ${ET.n} occupations have a
      bachelor&rsquo;s-or-higher majority; ${ET.hs_majority.length} have a
-     high-school-or-less majority. The licence for this database is in the page footer.`);
+     high-school-or-less majority. None of it is regional. The licence for this database is
+     in the page footer.`);
   document.getElementById("edusrc").innerHTML =
     `O*NET 30.3, United States Department of Labor. One row is one occupation&rsquo;s
      distribution of reported required education, twelve federal levels binned to four.
