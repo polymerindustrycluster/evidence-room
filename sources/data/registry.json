@@ -3,10 +3,10 @@
   "source": "This page\u2019s own dataset is _data/SOURCES.json (the source registry) and _data/catalog.json (the generated inventory of build scripts), joined to five shipped page files: wages for the concentration reading and the industry-code arithmetic, occupations for the education-boundary example, peers for the disclosure rates, revisions for how far these series move after publication, and laborshed for the measured gap.",
   "row": "One row of the register is one dataset: its endpoint, the exact filter values applied to it, whether it needs a key, and every page here that rests on it.",
   "fetched": "2026-08-29",
-  "definition": "How you get it is DERIVED from the endpoint\u2019s shape, not declared in the registry: no endpoint at all is an internal record, a URL ending in a file extension or a directory is a bulk download, a URL with an api path segment is an API request, and anything left is a portal query. The rule is printed on the page so a reader can disagree with a label rather than inherit it.",
+  "definition": "How you get it is DERIVED from the endpoint\u2019s shape, not declared in the registry, and the four tests run IN THIS ORDER: no endpoint at all is an internal record; then a URL ending in a file extension is a bulk download; then a URL with an api path segment is an API request; then a URL ending in a directory is a bulk download; and anything left is a portal query. The order is printed because it decides the answer rather than describing it: two of these endpoints end in a directory AND carry an api segment, and reading the tests in a different order relabels them. The rule is on the page so a reader can disagree with a label rather than inherit it.",
   "why": "The register lists only the sources behind the analyses published in this repository. The internal series has more pages and more sources, and their absence is stated rather than left to be discovered.",
   "scope": "This page hands over method, not data. It does not republish any source, and following it will not give you these numbers: it will give you the same numbers for your own region, which is the point.",
-  "not": "The register records a licence only where a source states one. For the federal statistical series it records none, and this page does not infer one, so check each agency\u2019s own terms before you redistribute anything.",
+  "not": "A licence and a set of terms are different things and the register keeps them apart. Two sources state a LICENCE that conditions use: O*NET is CC BY 4.0 and IPEDS reaches this site through the Urban Institute\u2019s portal under ODC-By 1.0. Both require attribution, and both credits are printed in this page\u2019s footer with a link to the licence, because describing a licence is not complying with one. The federal statistical series state TERMS instead, which is public domain with a citation request, and those are quoted on each entry with the agency page they come from, rather than left as an implication that no term exists.",
   "caution": "Two of the fourteen sources have no endpoint and no script. They are internal records, the published file is the artifact, and nothing on this site can make them fetchable."
  },
  "sources": [
@@ -22,6 +22,9 @@
    "route": "bulk",
    "route_label": "bulk file download",
    "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": "Public domain. BLS asks to be cited as the source: https://www.bls.gov/bls/linksite.htm",
    "is": "A census, not a survey. It counts every job covered by unemployment insurance, from returns employers already have to file, so it carries no sampling error and no margin of error to report.",
    "good": "Jobs, establishment counts and average weekly wages, by county and by industry code, quarterly and as annual averages, back to 1990.",
    "cannot": "It cannot see the self-employed, most farm labour, or anyone outside the insurance system, and it withholds any cell where too few employers would be identifiable. Its wage is an average per covered job: not a salary, not per person, and it moves with hours and occupational mix as well as with pay.",
@@ -32,11 +35,23 @@
     ],
     [
      "ownership",
-     "own_code 0 (total, all ownerships) and 5 (private)"
+     "own_code 5 (private) carries every industry row; own_code 0 (total, all ownerships) exists only on industry 10. Those are not two interchangeable choices: an industry row at own_code 0 does not exist to be picked."
+    ],
+    [
+     "aggregation",
+     "county area file: agglvl_code 70 is the all-ownership county total, 71 the county total by ownership, 74 NAICS sector, 75 NAICS 3-digit, 76 NAICS 4-digit, 77 5-digit, 78 6-digit. The US000 file uses 10, 11, 15, 16 and 18 for the same rungs. agglvl 50 to 58 are STATE levels and appear in no county file."
     ],
     [
      "geography",
      "county FIPS, PIC-12 and NEO-14 (see footprints.py)"
+    ],
+    [
+     "by_industry",
+     "the same census sliced the other way, one file per NAICS across every area, at https://data.bls.gov/cew/data/api/{year}/a/industry/{naics}.csv. The disclosure rates published on the sources page are the 2024 annual file for 326, own_code 5: county rows are agglvl 75, metropolitan rows agglvl 45, state rows agglvl 55."
+    ],
+    [
+     "user_agent",
+     "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address; data.bls.gov serves any of them. contact.py holds the single address this repository sends."
     ],
     [
      "note",
@@ -44,7 +59,7 @@
     ],
     [
      "provenance_page",
-     "fetch_provenance.py re-uses this source for one pull: 2016 annual, own_code 5, industry 326+32521+325991 at agglvl 55/57/58; the QCEW instrument comparison on the provenance page"
+     "fetch_provenance.py re-uses this source for one pull: 2016 annual, area 39000 which is the STATE of Ohio and not a county, own_code 5, industry 326+32521+325991 at agglvl 55/57/58, which are the state 3-, 5- and 6-digit levels. Those three agglvl codes belong to that state pull alone and return nothing from a county file."
     ]
    ],
    "pages": [
@@ -67,20 +82,31 @@
    "name": "USAspending federal contract and grant obligations",
    "short": "USAspending awards",
    "agency": "US Treasury",
-   "url": "https://api.usaspending.gov/api/v2/search/spending_by_category/",
+   "url": "https://api.usaspending.gov/api/v2/search/spending_by_category/{category}/",
    "docs": "https://api.usaspending.gov/",
    "script": "_data/build/fetch_rest.py",
    "key_required": false,
    "route": "api",
    "route_label": "API request",
    "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": "Public domain federal spending data. USAspending states no additional licence.",
    "is": "The Treasury\u2019s public record of federal awards: contracts, grants and other obligations, filed by the agency that made them.",
    "good": "How much federal money is obligated to work performed in a place, cut by industry code and fiscal year.",
-   "cannot": "An obligation is money legally committed, not cash spent, and place of performance is a field the award reports rather than an observation of where the work happened. An industry-code filter cannot see a university or a research institute, which file under entirely different codes.",
+   "cannot": "An obligation is money legally committed, not cash spent, and place of performance is a field the award reports rather than an observation of where the work happened. An industry-code filter cannot see a university or a research institute, which file under entirely different codes. It also cannot tell you a programme ceiling: an award record carries what is obligated, a press release usually quotes a multi-year maximum, and this site once printed the two for the same award on two pages, $160M against $14,999,983, before a reader found them side by side.",
    "filters": [
     [
+     "method",
+     "POST with a JSON body, and the {category} path segment is required: naics and county are the two this site asks for. The endpoint without a category returns 404 to GET and to POST alike, which is what a reader who copies the stem alone will meet."
+    ],
+    [
      "NAICS",
-     "325* and 326* manufacturing codes only, so university and research awards are invisible by construction: a university files under 61xxxx"
+     "not sent to the API. A naics_codes filter returns 422, so the pull asks for the NAICS category over a county place-of-performance list and keeps 325* and 326* CLIENT-SIDE, in fetch_rest.py. University and research awards are invisible by construction either way: a university files under 61xxxx."
+    ],
+    [
+     "paging",
+     "limit 100 per fiscal year per category, not paged. Anything past the hundredth result for a year is absent, and the file cannot tell you how much."
     ],
     [
      "geography",
@@ -111,7 +137,10 @@
    "key_required": false,
    "route": "api",
    "route_label": "API request",
-   "licence": null,
+   "licence": "ODC-By 1.0",
+   "licence_url": "https://opendatacommons.org/licenses/by/1-0/",
+   "attribution": "Integrated Postsecondary Education Data System (IPEDS) Completions, via Education Data Portal v. 0.26.1, Urban Institute, accessed 18 August 2026, https://educationdata.urban.org/documentation/, made available under the ODC Attribution License.",
+   "terms": "The underlying IPEDS collection is a public-domain federal series, but the route this site uses is not the federal one. Everything served through the Urban Institute\u2019s Education Data Portal is licensed to the user under the Open Data Commons Attribution License (ODC-By) v1.0, which REQUIRES attribution and a citation naming the portal version and the access date: https://educationdata.urban.org/documentation/. Portal version 0.26.1 was released 2026-08-05 and was current at this site\u2019s access date of 2026-08-18.",
    "is": "The federal record of every degree and certificate conferred by every institution that takes federal student aid, filed by six-digit programme code.",
    "good": "Counting the graduates of named programmes at named institutions, year by year, against the same programmes nationally.",
    "cannot": "It counts people finishing a programme, never people hired and never people who stayed in the region. A programme code returning zero at every institution in every year is far more likely to be a bad code than a real absence of graduates.",
@@ -165,6 +194,9 @@
    "route": "api",
    "route_label": "API request",
    "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
    "is": "The St Louis Fed\u2019s distribution of federal price series: producer price indexes and commodity spot prices, served from one API under one key.",
    "good": "Following what a feedstock, a resin or a finished good costs over time, on a common base you choose.",
    "cannot": "Index levels are not dollars, and producer prices are not consumer prices. Nothing arrives deflated, so a rise you have not divided by a price index is a cash figure and needs saying so.",
@@ -201,6 +233,9 @@
    "route": "bulk",
    "route_label": "bulk file download",
    "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
    "is": "Ohio\u2019s own long-term employment projections, published as spreadsheets by region and by occupation rather than through any API.",
    "good": "A state agency\u2019s view of where an industry and its occupations are headed inside Ohio, at a geography federal files do not offer.",
    "cannot": "A projection is a modelled path with no confidence band, and it historically under-calls turning points. Two of this site\u2019s three register codes are published only inside wider bundles, so the register cannot be rebuilt from it.",
@@ -220,6 +255,10 @@
     [
      "register_cannot_be_rebuilt",
      "3252 is published only inside bundle 3250A1 and 3255 only inside 3250A2; only 326/3261/3262 are clean"
+    ],
+    [
+     "access",
+     "ohiolmi.com returns 403 to a scripted request, browser User-Agent or not, so this one is a manual download: open the directory in a browser and save the spreadsheet. Verified 2026-08-29."
     ]
    ],
    "pages": [
@@ -240,6 +279,9 @@
    "route": "internal",
    "route_label": "internal record, no endpoint",
    "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
    "is": "A hand-compiled register of dated public milestones, merged from operational reports, funding files and primary press, with a source for every date.",
    "good": "Placing a designation, an award or an opening on a timeline that someone else can check event by event.",
    "cannot": "There is no endpoint and no script: it can be re-read but not re-fetched. Only events recorded as public appear, so the record of which dates slipped is deliberately absent from it.",
@@ -279,6 +321,9 @@
    "route": "api",
    "route_label": "API request",
    "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": "Public domain. BEA publishes citation guidelines: https://www.bea.gov/help/guidelines-for-citing-bea",
    "is": "A price level rather than a price: an index with the national average set to 100, saying what a fixed basket costs in one metropolitan area against another.",
    "good": "Turning a nominal wage into what it actually buys where it is earned.",
    "cannot": "It is published for metropolitan areas, which neither nest inside nor tile a county footprint. Three metros that overlap a twelve-county region cannot be added into a figure for that region.",
@@ -313,6 +358,9 @@
    "route": "internal",
    "route_label": "internal record, no endpoint",
    "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
    "is": "An internal register of what the region invented and what changed its capacity, of which only the rows its own index marks PROVEN are published.",
    "good": "Naming a first, or a capability, with a public source attached to it.",
    "cannot": "The register is internal and its builder cannot be run from a public clone, so the shipped file is the artifact rather than a reproducible output. Every published row carries its own public sources instead.",
@@ -353,12 +401,15 @@
    "short": "LEHD LODES8 origin-destination",
    "agency": "US Census Bureau / LEHD",
    "url": "https://lehd.ces.census.gov/data/lodes/LODES8/{st}/od/{st}_od_{main|aux}_JT00_{year}.csv.gz",
-   "docs": "https://lehd.ces.census.gov/data/lodes/LODES8/LODESTechDoc8.2.pdf",
+   "docs": "https://lehd.ces.census.gov/data/lodes/LODES8/LODESTechDoc8.4.pdf",
    "script": "_data/build/fetch_lodes.py, fetch_lodes_resident.py, fetch_lodes_peers.py",
    "key_required": false,
    "route": "bulk",
    "route_label": "bulk file download",
    "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": "Public domain. The Census Bureau asks to be cited as the source of the original data: https://www.census.gov/about/policies/citation.html",
    "is": "A count of JOBS, each one linking the census block where the job is to the block where its holder\u2019s address is on file. LODES8 is the current vintage and JT00 is the segment meaning all jobs in all sectors.",
    "good": "Where the people who work in a place live, and the reciprocal: where the people who live in a place work.",
    "cannot": "It is not a commute. Nothing in it counts a trip, and the home end is a residence on file rather than evidence that anyone travelled. It carries no industry dimension at all, so a polymer-only version of a labour shed cannot be built from it.",
@@ -401,6 +452,9 @@
    "route": "portal",
    "route_label": "web portal query",
    "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": "Public domain. BLS asks to be cited as the source: https://www.bls.gov/bls/linksite.htm",
    "is": "The projection of which occupations an industry is made of, published as an industry-by-occupation matrix with a base year and a projected year.",
    "good": "Saying what mix of jobs an industry runs on, and how that mix is expected to change over ten years.",
    "cannot": "It is national only. No state or metro cut exists, so any regional headcount built from it is a synthetic estimate resting on an assumption that has to be stated in the same sentence as the number.",
@@ -439,6 +493,9 @@
    "route": "bulk",
    "route_label": "bulk file download",
    "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": "Public domain. BLS asks to be cited as the source: https://www.bls.gov/bls/linksite.htm",
    "is": "A survey of employers about which occupations they employ and what they pay, published as one snapshot a year for metropolitan areas.",
    "good": "What a named occupation pays where the work is, against the same occupation nationally.",
    "cannot": "One vintage is a level and never a trend: methods and area definitions change between years. Its top code is a ceiling rather than a value, and a starred or hashed cell is unknown, never zero.",
@@ -473,6 +530,9 @@
    "route": "bulk",
    "route_label": "bulk file download",
    "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": "Public domain. BLS asks to be cited as the source: https://www.bls.gov/bls/linksite.htm",
    "is": "The same survey\u2019s national file, the benchmark half of the metro comparison.",
    "good": "Giving a local wage something to be measured against that was collected the same way.",
    "cannot": "It is all industries at once, so a national occupational wage is not the wage that occupation gets inside one industry. Some occupations appear as both a broad and a detailed row with identical values; keep one.",
@@ -511,6 +571,9 @@
    "route": "bulk",
    "route_label": "bulk file download",
    "licence": "CC BY 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+   "attribution": "This page includes information from the O*NET 30.3 Database by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA). Used under the CC BY 4.0 license. O*NET\u00ae is a trademark of USDOL/ETA. PIC has modified some of this information. USDOL/ETA has not approved, endorsed, or tested these modifications.",
+   "terms": "onetcenter.org/license_db.html sets three conditions this site has to meet and not merely describe: credit the database and USDOL/ETA, LINK to the licence, and display the registered-trademark symbol on the O*NET mark. All three are rendered in this page\u2019s footer.",
    "is": "The Labor Department\u2019s occupational database, which describes what a job requires instead of counting how many of them there are. It is licensed CC BY 4.0 and the licence requires attribution wherever it is used.",
    "good": "The level of education people in an occupation report, and the job zone the database assigns it.",
    "cannot": "It is national and has no state or metro cut. It describes an occupation everywhere, not that occupation here, and a merged reference row can hide a distinction the raw scale makes.",
@@ -553,6 +616,9 @@
    "route": "api",
    "route_label": "API request",
    "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": "Public domain. The Census Bureau asks to be cited as the source of the original data: https://www.census.gov/about/policies/citation.html",
    "is": "A quarterly panel built from the same state employment records, following jobs rather than counting them once: hires, separations and the earnings of jobs that persist from one quarter to the next.",
    "good": "How much hiring and separating sits behind a flat job count, and what a stable job pays.",
    "cannot": "It restates its own history when the programme re-benchmarks, so a figure pulled today is not necessarily the figure published last year, and no archive of past vintages is fetched anywhere in this build. EarnBeg counts only workers who were already at the same employer the quarter before.",
@@ -731,14 +797,20 @@
    "heritage_register",
    "public_record"
   ],
-  "n_filter_lines": 60,
+  "n_filter_lines": 66,
   "routes": {
    "bulk": 6,
    "api": 5,
    "internal": 2,
    "portal": 1
   },
-  "n_licensed": 1,
+  "n_licensed": 2,
+  "licensed_sources": [
+   "ipeds",
+   "onet_education"
+  ],
+  "n_terms": 10,
+  "n_public": 12,
   "most_used": "qcew",
   "most_used_pages": 11,
   "n_single_source_pages": 6,
@@ -751,8 +823,153 @@
    "wages"
   ],
   "n_build_scripts": 26,
-  "catalog_generated": "2026-08-29 22:28"
+  "catalog_generated": "2026-08-29 23:41"
  },
+ "footprint": {
+  "key": "pic12",
+  "n": 12,
+  "label": "PIC-12",
+  "counties": [
+   "Ashtabula",
+   "Cuyahoga",
+   "Geauga",
+   "Lake",
+   "Lorain",
+   "Mahoning",
+   "Medina",
+   "Portage",
+   "Stark",
+   "Summit",
+   "Trumbull",
+   "Wayne"
+  ],
+  "note": "PIC's official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
+  "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the vault's NEO-14 includes."
+ },
+ "socs": [
+  {
+   "soc": "11-3051",
+   "occupation": "Industrial production managers"
+  },
+  {
+   "soc": "17-2041",
+   "occupation": "Chemical engineers"
+  },
+  {
+   "soc": "17-2112",
+   "occupation": "Industrial engineers"
+  },
+  {
+   "soc": "17-2131",
+   "occupation": "Materials engineers"
+  },
+  {
+   "soc": "17-2141",
+   "occupation": "Mechanical engineers"
+  },
+  {
+   "soc": "17-3026",
+   "occupation": "Industrial engineering technologists and technicians"
+  },
+  {
+   "soc": "19-2031",
+   "occupation": "Chemists"
+  },
+  {
+   "soc": "19-2032",
+   "occupation": "Materials scientists"
+  },
+  {
+   "soc": "19-4031",
+   "occupation": "Chemical technicians"
+  },
+  {
+   "soc": "43-5071",
+   "occupation": "Shipping, receiving and inventory clerks"
+  },
+  {
+   "soc": "49-9041",
+   "occupation": "Industrial machinery mechanics"
+  },
+  {
+   "soc": "49-9071",
+   "occupation": "Maintenance and repair workers, general"
+  },
+  {
+   "soc": "51-1011",
+   "occupation": "First-line supervisors of production workers"
+  },
+  {
+   "soc": "51-2090",
+   "occupation": "Miscellaneous assemblers and fabricators"
+  },
+  {
+   "soc": "51-4021",
+   "occupation": "Extruding and drawing machine setters (metal/plastic)"
+  },
+  {
+   "soc": "51-4031",
+   "occupation": "Cutting/punching/press machine setters (metal/plastic)"
+  },
+  {
+   "soc": "51-4072",
+   "occupation": "Molding, coremaking and casting machine setters (metal/plastic)"
+  },
+  {
+   "soc": "51-4081",
+   "occupation": "Multiple machine tool setters (metal/plastic)"
+  },
+  {
+   "soc": "51-9011",
+   "occupation": "Chemical equipment operators"
+  },
+  {
+   "soc": "51-9023",
+   "occupation": "Mixing and blending machine setters"
+  },
+  {
+   "soc": "51-9041",
+   "occupation": "Extruding, forming, pressing and compacting machine setters"
+  },
+  {
+   "soc": "51-9061",
+   "occupation": "Inspectors, testers, sorters, samplers, weighers"
+  },
+  {
+   "soc": "51-9111",
+   "occupation": "Packaging and filling machine operators"
+  },
+  {
+   "soc": "51-9197",
+   "occupation": "Tire builders"
+  },
+  {
+   "soc": "53-7062",
+   "occupation": "Laborers and freight, stock and material movers, hand"
+  },
+  {
+   "soc": "53-7064",
+   "occupation": "Packers and packagers, hand"
+  }
+ ],
+ "attributions": [
+  {
+   "key": "ipeds",
+   "name": "IPEDS Completions, via the Urban Institute Education Data API",
+   "short": "IPEDS degree completions",
+   "licence": "ODC-By 1.0",
+   "licence_url": "https://opendatacommons.org/licenses/by/1-0/",
+   "text": "Integrated Postsecondary Education Data System (IPEDS) Completions, via Education Data Portal v. 0.26.1, Urban Institute, accessed 18 August 2026, https://educationdata.urban.org/documentation/, made available under the ODC Attribution License."
+  },
+  {
+   "key": "onet_education",
+   "name": "O*NET 30.3 database: Occupation Data, Job Zones, Job Zone Reference, Education, Education Categories",
+   "short": "O*NET education levels",
+   "licence": "CC BY 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+   "text": "This page includes information from the O*NET 30.3 Database by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA). Used under the CC BY 4.0 license. O*NET\u00ae is a trademark of USDOL/ETA. PIC has modified some of this information. USDOL/ETA has not approved, endorsed, or tested these modifications."
+  }
+ ],
  "codes": [
   {
    "code": "325",
@@ -846,6 +1063,18 @@
    "share": 100.0
   }
  },
+ "suppression_vintage": {
+  "_what": "The disclosure chart is a VINTAGE, and the page has to say which one or a reader who pulls the newest year reads a normal year-on-year change as a discrepancy in our arithmetic. The published year is checked against the peers page's own shipped counts at build time; the comparison year is recorded here with the date it was read.",
+  "endpoint": "https://data.bls.gov/cew/data/api/{year}/a/industry/{naics}.csv",
+  "naics": "326",
+  "own_code": "5",
+  "published_year": 2024,
+  "comparison_year": 2025,
+  "comparison_read_on": "2026-08-29",
+  "comparison_county_disclosed": 724,
+  "comparison_county_total": 1839,
+  "comparison_metro_rows": 0
+ },
  "lq": {
   "worked": {
    "county": "Summit",
@@ -866,7 +1095,49 @@
    "emp": 491
   },
   "n_readings": 51,
-  "n_above_one": 45
+  "n_above_one": 45,
+  "basis": {
+   "year": 2025,
+   "area": "39153",
+   "county": "Summit",
+   "naics": "326",
+   "read_on": "2026-08-29",
+   "rows": "local: own_code 5 industry 326 agglvl 75; own_code 0 industry 10 agglvl 70; own_code 5 industry 10 agglvl 71. national (US000): own_code 5 industry 326 agglvl 15; own_code 0 industry 10 agglvl 10; own_code 5 industry 10 agglvl 11.",
+   "local_industry_private": 3824,
+   "local_all_industry_all_ownerships": 259944,
+   "local_all_industry_private": 232800,
+   "national_industry_private": 700170,
+   "national_all_industry_all_ownerships": 155685781,
+   "national_all_industry_private": 133117983,
+   "bls_basis": 3.271,
+   "bls_basis_2dp": 3.27,
+   "bls_published": 3.27,
+   "same_basis": 3.123,
+   "same_basis_2dp": 3.12,
+   "gap_pct": -4.5,
+   "self_check": {
+    "_what": "The county file proves its own denominator. Each ownership TOTAL row carries a location quotient of its own, and on a same-ownership basis every one of them would be exactly 1.00 by construction. They are not.",
+    "own_5_private_lq": 1.05,
+    "own_3_local_government_lq": 0.88,
+    "own_2_state_government_lq": 0.44,
+    "own_1_federal_lq": 0.39
+   }
+  },
+  "provenance": {
+   "cells_compared": 601,
+   "match_bls_column": 601,
+   "match_our_recomputation": 599,
+   "separating_cells": 2,
+   "published_is": "bls_column",
+   "our_value": 3.27,
+   "our_value_full": 3.271,
+   "residual": 0.00102,
+   "verification": {
+    "cells_checked": 667,
+    "mean_abs_residual": 0.002542,
+    "max_abs_residual": 0.004997
+   }
+  }
  },
  "readings": [
   {
@@ -1302,6 +1573,16 @@
    "jobs": null,
    "why": "The step that turns the fetched price series into that page\u2019s shipped file is not present in _data/build/, so the page\u2019s data is a frozen derived artifact rather than a reproducible one.",
    "close": "Restore the derivation script, and have it emit the meta prose the page\u2019s methodology box renders."
+  },
+  {
+   "id": "rebuild-commands",
+   "page": "several",
+   "n": 7,
+   "jobs": null,
+   "unit": "pages",
+   "what": "Some pages name a rebuild script that is not in this repository",
+   "why": "The page READMEs that name derive_lq.py, derive_rest.py, fetch_peers.py tell a reader to run a file _data/build/ does not contain, so those pages ship a derived artifact that cannot be regenerated from this clone. The fetch scripts behind them are all present; it is the derivation step that is absent. Named here because a rebuild command that fails is worse than none: it reads as reproducibility.",
+   "close": "Ship the derivation scripts, or change those READMEs to say the shipped file is the artifact, the way the two internal registers in the register above already do."
   },
   {
    "id": "cleveland-trend",

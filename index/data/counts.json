@@ -1,6 +1,6 @@
 {
  "n_pieces": 16,
- "total_claims": 412,
+ "total_claims": 415,
  "total_manual": 15,
  "pages": {
   "accountability": {
@@ -56,7 +56,7 @@
    "manual": 0
   },
   "sources": {
-   "claims": 15,
+   "claims": 18,
    "manual": 0
   },
   "timeline": {

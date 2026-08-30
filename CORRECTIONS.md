@@ -13,6 +13,106 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-08-29 — the replication guide did not replicate, *sources*
+
+Two outside reviewers were given the rendered page and the public internet, and asked to do
+the one thing the page exists to make possible: rebuild the number it publishes. Neither
+could. The first followed the recipe exactly and landed on 3.123 against a published 3.27.
+Both are recorded here because the page is a set of instructions, and an instruction that
+produces the wrong answer is a published error in the same way a wrong figure is.
+
+### The stated rule did not produce the published number — *sources*, published
+
+**Was:** recipe step 2 said to filter to `own_code` "5 for private ownership, or 0 for all
+ownerships… Whichever you pick, use the same one for all four numbers in the next step: a
+ratio whose numerator counts private employment and whose denominator counts every ownership
+is not a location quotient, it is two different measures divided." Step 3 said the file's own
+`lq_annual_avg_emplvl` column was "computed the same way against the national total, on the
+same ownership as the row it sits in."
+
+**Is:** ownership is not a choice on the numerator — in these files the industry rows exist
+at `own_code` 5 and nowhere else, so there is no NAICS 326 row at `own_code` 0 to pick. The
+denominator is `own_code` 0, the all-ownership total, and the mismatch is the bureau's own
+definition rather than an error to be avoided. The page now prints both arithmetics from the
+same six components: BLS's basis gives 3.2710, the same-ownership basis gives 3.1230, and the
+gap is 4.5 percent. It also prints the reader's own check — the county file's all-industry
+rows read 1.05, 0.88, 0.44 and 0.39 for private, local, state and federal ownership, and on a
+same-ownership basis every one of those would be exactly 1.00 by construction.
+
+**Cause:** the sentence was a plausible generalisation that nobody tested against the file.
+The published 3.27 is BLS's own `lq_annual_avg_emplvl` column, carried through the pay page;
+this site's independent recomputation of the same cell is 3.2710, and across 667 checked
+cells the two never differ by more than 0.005. The two ship side by side on
+*location-quotient* precisely so the computed one can be checked, and that pairing is what
+settled which figure *sources* prints: the two round apart on 2 of 601 comparable cells, and
+the printed figure follows the bureau's on all 601. Claims `src-lq-basis` and
+`src-lq-provenance` now re-run both arithmetics and re-establish the provenance from shipped
+data on every build.
+
+### Three aggregation codes that return nothing — *sources*, published
+
+**Was:** step 2 told a reader to "filter to the aggregation levels that carry industry detail
+for your geography (`agglvl_code` 55, 57 and 58 for county by industry)."
+
+**Is:** 55, 57 and 58 are the STATE 3-, 5- and 6-digit levels. A county area file contains
+only 70 to 78, and the national file only 10 to 18, so those three codes return zero rows
+from either file the same step tells a reader to download. The step now gives the county
+ladder — 70 all-ownership total, 71 total by ownership, 74 sector, 75 three-digit, 76
+four-digit, 78 six-digit — and the national one beside it.
+
+**Cause:** the codes were real and belonged to a different geography. `fetch_provenance.py`
+applies them to area 39000, which is the state of Ohio, for one instrument comparison, and
+the registry recorded that correctly and in context. The recipe borrowed the values without
+reading which geography they were for. **A machine check vouched for the wrong filter for as
+long as it was published**, because it asserted only that the codes appeared somewhere in the
+registry's filter values, which they did. That is this page's own trap — a filter that
+returns nothing reading as a finding, and a green check standing over it — happening inside
+the section that teaches it, and it took a reviewer with no access to this repository to
+catch it. `src-codes-are-the-registry-codes` now pins the county levels to the county-file
+sentence and requires the state levels to stay inside the state-pull entry; run against the
+pre-fix registry values it returns False.
+
+### A required licence attribution was missing, and the one that was present was
+non-compliant — *sources*, published
+
+**Was:** the register said "exactly one of the fourteen sources states a licence" and printed
+one credit, for O*NET, set with `textContent`.
+
+**Is:** two sources state a licence. IPEDS reaches this site through the Urban Institute's
+Education Data Portal, and everything served through that portal is licensed to the user
+under ODC-By 1.0, which requires attribution and a citation naming the portal version and the
+access date; that credit was owed and is now printed. The O*NET credit was present and did
+not meet its own licence on two counts: the mark must display the registered-trademark symbol
+and the licence must be LINKED, and setting the line with `textContent` meant there was no
+link to CC BY 4.0 anywhere on the page. Both credits now carry their licence name as an
+anchor, and `derive_sources.py` fails the build if a source states a licence and carries no
+attribution, or if the O*NET credit loses its trademark symbol.
+
+**Cause:** the registry inferred a licence by searching each entry for the string "CC BY",
+which cannot see a licence that is not a Creative Commons one. A licence the code had no way
+to recognise was indistinguishable, on the page, from a source that publishes no licence at
+all. The registry now reads an explicit `licence` field first. Separately, the federal series
+carry TERMS rather than a licence — public domain, citation requested — and each entry now
+quotes them with the agency page they come from, because "records no licence" invited a
+reader to conclude no term was published.
+
+### Endpoints that 404 as printed — *sources*, published
+
+**Was:** the register printed the USAspending endpoint as
+`https://api.usaspending.gov/api/v2/search/spending_by_category/` and the LODES technical
+documentation as `LODESTechDoc8.2.pdf`.
+
+**Is:** the USAspending stem 404s to GET and to POST alike; the working form is POST with a
+JSON body to `.../spending_by_category/{category}/`, and the register now also records what
+it had left out — that the 325/326 filter is applied client-side because `naics_codes` 422s,
+and that the pull takes 100 results per fiscal year and does not page. The LODES entry now
+points at `LODESTechDoc8.4.pdf`; version 8.2 has never existed in that directory.
+
+**Cause:** both were transcribed rather than fetched. The register's entire promise is that
+these are the endpoints a reader would have to hit, and neither had been hit as printed.
+
+---
+
 ## 2026-08-29 — a hierarchy ranked and a total flattened, *location-quotient* and *funding-map*
 
 One defect in two shapes, both found by a reader given nothing but the rendered page: a

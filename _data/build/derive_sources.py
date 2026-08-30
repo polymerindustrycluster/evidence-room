@@ -84,12 +84,26 @@ def route_of(src):
 
 
 def licence_of(src):
-    """The only licence this registry records is the one it states. Nothing is inferred.
+    """The only licence this registry records is the one the SOURCE states. Nothing is
+    inferred, and nothing is guessed from the agency.
 
-    O*NET is CC BY 4.0 and says so in its own entry. For the federal statistical series
-    the registry records no licence at all, and saying "public domain" here would be
-    this file asserting law rather than reading the register, so it does not.
+    TWO SOURCES STATE ONE, and the second was missed for a fortnight because this
+    function only knew how to see a Creative Commons string. O*NET is CC BY 4.0 and says
+    so in prose inside its own filters. IPEDS reaches this site through the Urban
+    Institute's Education Data Portal, and everything served through that portal is
+    licensed to the user under ODC-By 1.0, which also requires attribution — a licence
+    that does not contain the letters "CC BY" and so was invisible to the old regex while
+    the page went on printing "exactly one states a licence". An explicit `licence` field
+    is now read first, precisely so a licence that does not look like the one we expected
+    cannot go unrecorded again.
+
+    The federal statistical series state TERMS rather than a licence (public domain,
+    citation requested), which is a different thing and is carried in `terms`. Recording
+    them as licences would be this file asserting law rather than reading the register.
     """
+    stated = src.get("licence")
+    if stated:
+        return stated
     m = re.search(r"CC BY[- ]([\d.]+)", json.dumps(src), re.I)
     return f"CC BY {m.group(1)}" if m else None
 
@@ -172,10 +186,19 @@ PLAIN = {
         "obligations, filed by the agency that made them.",
   "good": "How much federal money is obligated to work performed in a place, cut by "
           "industry code and fiscal year.",
+  # THE NSF LESSON BELONGS ON THIS LINE and was missing from it. This site printed
+  # $160M for one NSF Engine award on one page and $14,999,983 for the same award on
+  # another, an order of magnitude apart, because a programme ceiling and an initial
+  # obligation are different quantities and an announcement quotes whichever is larger.
+  # A guide that teaches this source has to teach that before a replicator repeats it.
   "cannot": "An obligation is money legally committed, not cash spent, and place of "
             "performance is a field the award reports rather than an observation of where "
             "the work happened. An industry-code filter cannot see a university or a "
-            "research institute, which file under entirely different codes."},
+            "research institute, which file under entirely different codes. It also "
+            "cannot tell you a programme ceiling: an award record carries what is "
+            "obligated, a press release usually quotes a multi-year maximum, and this "
+            "site once printed the two for the same award on two pages, $160M against "
+            "$14,999,983, before a reader found them side by side."},
  "public_record": {
   "is": "A hand-compiled register of dated public milestones, merged from operational "
         "reports, funding files and primary press, with a source for every date.",
@@ -288,6 +311,9 @@ def build():
             "route": route,
             "route_label": ROUTES[route],
             "licence": licence_of(s),
+            "licence_url": s.get("licence_url"),
+            "attribution": s.get("attribution"),
+            "terms": s.get("terms"),
             "is": PLAIN[key]["is"],
             "good": PLAIN[key]["good"],
             "cannot": PLAIN[key]["cannot"],
@@ -315,6 +341,9 @@ def build():
         "n_filter_lines": sum(len(r["filters"]) for r in sources),
         "routes": routes,
         "n_licensed": sum(1 for r in sources if r["licence"]),
+        "licensed_sources": sorted(r["key"] for r in sources if r["licence"]),
+        "n_terms": sum(1 for r in sources if r["terms"]),
+        "n_public": sum(1 for r in sources if r["route"] != "internal"),
         "most_used": sources[0]["key"],
         "most_used_pages": sources[0]["n_pages"],
         "n_single_source_pages": sum(1 for p in pages if p["n_sources"] == 1),
@@ -378,6 +407,93 @@ def build():
                     "emp": round(fragile["emp"])},
         "n_readings": len(lq_rows),
         "n_above_one": sum(1 for r in lq_rows if r["lq"] > 1),
+    }
+
+    # ------------------------------------------- what basis that reading is actually on
+    # THE PAGE FAILED ITS OWN ACCEPTANCE TEST HERE. It told a reader to hold ownership
+    # constant across all four numbers, which is the intuitive rule and is not the rule
+    # BLS uses. A reviewer with no repo access followed it exactly and landed on 3.123
+    # against the 3.27 published above. Both are arithmetically correct; they are
+    # different measures, and only one of them is a location quotient as the bureau
+    # defines it. So the page now prints BOTH, derived here rather than argued in prose.
+    #
+    # The recomputation is also the guard. `worked_example` is six numbers read off two
+    # BLS files by hand, which is exactly the kind of typed block that rots, so it is
+    # never trusted: BLS's basis is recomputed from those six and checked against the
+    # location quotient the pay page ships for the same cell. Disagree by more than
+    # half of the last digit the bureau prints and the build stops here.
+    we = reg["worked_example"]
+    li, lt0, lt5 = (we["local_industry_private"],
+                    we["local_all_industry_all_ownerships"],
+                    we["local_all_industry_private"])
+    ni, nt0, nt5 = (we["national_industry_private"],
+                    we["national_all_industry_all_ownerships"],
+                    we["national_all_industry_private"])
+    bls_basis = (li / lt0) / (ni / nt0)
+    same_basis = (li / lt5) / (ni / nt5)
+    cell = next((r for r in lq_rows if r["area"] == we["area_fips"]
+                 and r["naics"] == we["naics"]), None)
+    if cell is None:
+        raise SystemExit(
+            f"derive_sources: worked_example names {we['area_name']} {we['naics']} in "
+            f"{we['year']} and the pay page publishes no such cell. The recipe is walking "
+            "a reader to a row this site no longer prints.")
+    if abs(bls_basis - cell["lq"]) > 0.005:
+        raise SystemExit(
+            f"derive_sources: the six components in SOURCES.json worked_example give "
+            f"{bls_basis:.4f} on BLS's own basis, and the pay page publishes "
+            f"{cell['lq']} for the same cell. The recipe would teach arithmetic that "
+            "does not land on the number beside it. Re-read the two area files.")
+    lq["basis"] = {
+        "year": we["year"], "area": we["area_fips"], "county": we["area_name"],
+        "naics": we["naics"], "read_on": we["read_on"], "rows": we["rows"],
+        "local_industry_private": li,
+        "local_all_industry_all_ownerships": lt0,
+        "local_all_industry_private": lt5,
+        "national_industry_private": ni,
+        "national_all_industry_all_ownerships": nt0,
+        "national_all_industry_private": nt5,
+        "bls_basis": round(bls_basis, 4),
+        "bls_basis_2dp": round(bls_basis, 2),
+        "bls_published": we["bls_published_lq"],
+        "same_basis": round(same_basis, 4),
+        "same_basis_2dp": round(same_basis, 2),
+        "gap_pct": round((same_basis - bls_basis) / bls_basis * 100, 1),
+        "self_check": we["ownership_self_check"],
+    }
+
+    # WHICH OF THE TWO FIGURES DO WE ACTUALLY PRINT — decided by test, not by memory.
+    # The concentration page ships both: `lq`, which it computes from components, and
+    # `lq_published`, which is BLS's lq_annual_avg_emplvl column carried through so the
+    # computed one can be checked. The pay page ships one number, and this page prints
+    # the pay page's. They agree almost everywhere, which is the whole point of keeping
+    # both, and 'almost' is what makes the question answerable: on a handful of cells the
+    # two round apart, and the printed figure follows exactly one of them.
+    LQP = load(WEB, "location-quotient", "data", "lq.json")
+    ours = {(c["year"], c["area"], c["naics"]): c for c in LQP["cells"]}
+    n_cmp = agree_pub = agree_own = 0
+    for r in W["trend"]:
+        c = ours.get((r["year"], r["area"], r["naics"]))
+        if not c or r.get("lq") is None or c.get("lq") is None:
+            continue
+        n_cmp += 1
+        agree_pub += abs(c["lq_published"] - r["lq"]) < 1e-9
+        agree_own += abs(round(c["lq"], 2) - r["lq"]) < 1e-9
+    if agree_pub != n_cmp:
+        raise SystemExit(
+            "derive_sources: the figure this page prints no longer matches BLS's own "
+            f"column on {n_cmp - agree_pub} of {n_cmp} cells. The provenance sentence "
+            "below it would be false. Re-derive before publishing.")
+    lq["provenance"] = {
+        "cells_compared": n_cmp,
+        "match_bls_column": agree_pub,
+        "match_our_recomputation": agree_own,
+        "separating_cells": n_cmp - agree_own,
+        "published_is": "bls_column",
+        "our_value": round(cell["lq"], 4) if isinstance(cell.get("lq"), float) else cell["lq"],
+        "our_value_full": ours[(we["year"], we["area_fips"], we["naics"])]["lq"],
+        "residual": ours[(we["year"], we["area_fips"], we["naics"])]["residual"],
+        "verification": LQP["meta"]["verification"],
     }
     # Every published reading, so the cold-open strip draws the distribution rather than
     # two called-out cases floating on an empty scale.
@@ -446,6 +562,36 @@ def build():
         d, s = v["disclosed"], v["suppressed"]
         supp[level] = {"disclosed": d, "suppressed": s, "total": d + s,
                        "share": round(d / (d + s) * 100, 1)}
+    # A DISCLOSURE RATE IS A VINTAGE, and the page never said which. A reviewer pulling
+    # the newest by-industry file counted 724 of 1,839 counties against the 703 of 1,838
+    # printed here and read it as an arithmetic disagreement. It is a year: BLS discloses
+    # slightly differently every vintage and had published no metropolitan rows for the
+    # newer year at all. Both figures now travel with their year attached.
+    bi = reg["worked_example"]["by_industry_vintage"]
+    if bi["published_year"] != P["meta"]["cross_year"]:
+        raise SystemExit(
+            f"derive_sources: the registry dates the disclosure rates to "
+            f"{bi['published_year']} and the peers page built them from "
+            f"{P['meta']['cross_year']}. The page would stamp the wrong vintage on the "
+            "one chart whose whole lesson is that a blank is not a zero.")
+    supp_vintage = dict(bi)
+
+    # ----------------------------------- rebuild commands that do not run, by scanning
+    # A guide is judged on whether its instructions work, so the one instruction this
+    # repository prints most often gets checked rather than trusted: every page README
+    # that says "python <something>.py" under a rebuild heading is tested against what
+    # _data/build/ actually contains.
+    have = {f for f in os.listdir(HERE) if f.endswith(".py")}
+    missing_builders = []
+    for slug in sorted(by_art):
+        rp = os.path.join(WEB, slug, "README.md")
+        if not os.path.isfile(rp):
+            continue
+        with open(rp, encoding="utf-8") as fh:
+            named = re.findall(r"python\s+([A-Za-z0-9_]+\.py)", fh.read())
+        for script in dict.fromkeys(named):
+            if script not in have:
+                missing_builders.append((slug, script))
 
     # ------------------------------------------- the gap we could not close, measured
     L = load(WEB, "laborshed", "data", "laborshed.json")
@@ -483,6 +629,25 @@ def build():
                 "derived artifact rather than a reproducible one.",
          "close": "Restore the derivation script, and have it emit the meta prose the "
                   "page’s methodology box renders."},
+        # FOUND BY LOOKING RATHER THAN BY REMEMBERING. Several page READMEs print a
+        # "Rebuild the data" command, and a replication guide is exactly the page that
+        # has no business printing a command nobody can run. The set is scanned below
+        # rather than typed, because a typed list of missing files is the one kind of
+        # list that goes stale the moment somebody fixes one.
+        {"id": "rebuild-commands", "page": "several", "n": len(missing_builders),
+         "jobs": None, "unit": "pages",
+         "what": "Some pages name a rebuild script that is not in this repository",
+         "why": "The " + ("page README that names " if len(missing_builders) == 1 else
+                          "page READMEs that name ") +
+                ", ".join(sorted({m[1] for m in missing_builders})) +
+                " tell a reader to run a file _data/build/ does not contain, so those "
+                "pages ship a derived artifact that cannot be regenerated from this "
+                "clone. The fetch scripts behind them are all present; it is the "
+                "derivation step that is absent. Named here because a rebuild command "
+                "that fails is worse than none: it reads as reproducibility.",
+         "close": "Ship the derivation scripts, or change those READMEs to say the "
+                  "shipped file is the artifact, the way the two internal registers in "
+                  "the register above already do."},
         {"id": "cleveland-trend", "page": "peers",
          "what": "One peer metro has no time series", "n": None, "jobs": None,
          "why": "Cleveland clears the size test and fails the disclosure test: it does "
@@ -505,27 +670,93 @@ def build():
                "rests on it.",
         "fetched": FETCHED,
         "definition": "How you get it is DERIVED from the endpoint’s shape, not declared "
-                      "in the registry: no endpoint at all is an internal record, a URL "
-                      "ending in a file extension or a directory is a bulk download, a "
-                      "URL with an api path segment is an API request, and anything left "
-                      "is a portal query. The rule is printed on the page so a reader can "
-                      "disagree with a label rather than inherit it.",
+                      "in the registry, and the four tests run IN THIS ORDER: no "
+                      "endpoint at all is an internal record; then a URL ending in a "
+                      "file extension is a bulk download; then a URL with an api path "
+                      "segment is an API request; then a URL ending in a directory is a "
+                      "bulk download; and anything left is a portal query. The order is "
+                      "printed because it decides the answer rather than describing it: "
+                      "two of these endpoints end in a directory AND carry an api "
+                      "segment, and reading the tests in a different order relabels "
+                      "them. The rule is on the page so a reader can disagree with a "
+                      "label rather than inherit it.",
         "why": "The register lists only the sources behind the analyses published in this "
                "repository. The internal series has more pages and more sources, and "
                "their absence is stated rather than left to be discovered.",
         "scope": "This page hands over method, not data. It does not republish any source, "
                  "and following it will not give you these numbers: it will give you the "
                  "same numbers for your own region, which is the point.",
-        "not": "The register records a licence only where a source states one. For the "
-               "federal statistical series it records none, and this page does not infer "
-               "one, so check each agency’s own terms before you redistribute anything.",
+        "not": "A licence and a set of terms are different things and the register keeps "
+               "them apart. Two sources state a LICENCE that conditions use: O*NET is "
+               "CC BY 4.0 and IPEDS reaches this site through the Urban Institute’s "
+               "portal under ODC-By 1.0. Both require attribution, and both credits are "
+               "printed in this page’s footer with a link to the licence, because "
+               "describing a licence is not complying with one. The federal statistical "
+               "series state TERMS instead, which is public domain with a citation "
+               "request, and "
+               "those are quoted on each entry with the agency page they come from, "
+               "rather than left as an implication that no term exists.",
         "caution": "Two of the fourteen sources have no endpoint and no script. They are "
                    "internal records, the published file is the artifact, and nothing on "
                    "this site can make them fetchable.",
     }
 
+    # ------------------------------------------------------ the sets, actually listed
+    # A REPLICATION GUIDE THAT SAYS "twelve counties" AND "twenty-six occupation codes"
+    # WITHOUT LISTING THEM has told a reader the size of a decision, not the decision. A
+    # reviewer working from the rendered page alone could enumerate about five of the
+    # eleven values they would need to change for their own region; the twelve counties
+    # and the twenty-six SOC codes were two of the missing six, and both were one join
+    # away from a file this page already reads.
+    footprint = dict(W["meta"]["footprint"])
+    if len(footprint["counties"]) != footprint["n"]:
+        raise SystemExit("derive_sources: the footprint's own count and its own list "
+                         "disagree, which is the defect this listing exists to prevent.")
+    socs = sorted(({"soc": r["soc"], "occupation": r["occupation"]} for r in O["pay"]),
+                  key=lambda r: r["soc"])
+    if len(socs) != classification["soc"]["n_codes"]:
+        raise SystemExit(f"derive_sources: {len(socs)} occupation codes listed against "
+                         f"{classification['soc']['n_codes']} counted. The page would "
+                         "state a number and print a different set under it.")
+
+    # ------------------------------------------------------ attribution, not description
+    # TWO LICENCES ON THIS PAGE ARE CONDITIONS OF USE rather than courtesies, and both
+    # were failing. O*NET requires the registered-trademark symbol and a LINK to the
+    # licence, and the footer was being set with textContent, so there was no link on the
+    # page at all. IPEDS reaches this site through the Urban Institute's portal under
+    # ODC-By, which requires a citation naming the portal version and the access date,
+    # and the page printed nothing and told the reader only one source was licensed.
+    #
+    # The required elements are ASSERTED here rather than trusted, because an attribution
+    # that is nearly right is not compliance and reads exactly like compliance.
+    attributions = []
+    for s in sources:
+        if not s["attribution"]:
+            continue
+        if not s["licence_url"]:
+            raise SystemExit(f"derive_sources: {s['key']} states a licence and an "
+                             "attribution but no licence URL to link to, and both "
+                             "licences on this page require the link.")
+        attributions.append({"key": s["key"], "name": s["name"], "short": s["short"],
+                             "licence": s["licence"],
+                             "licence_url": s["licence_url"], "text": s["attribution"]})
+    licensed = [s["key"] for s in sources if s["licence"]]
+    if sorted(a["key"] for a in attributions) != sorted(licensed):
+        raise SystemExit(
+            "derive_sources: " + ", ".join(sorted(set(licensed) -
+                                                  {a['key'] for a in attributions})) +
+            " states a licence and carries no attribution. Both licences in this "
+            "registry require one, so a described licence with no credit printed is the "
+            "one defect on this page that is not merely embarrassing.")
+    onet = next((a for a in attributions if a["key"] == "onet_education"), None)
+    if onet and ("O*NET®" not in onet["text"] or "USDOL/ETA" not in onet["text"]):
+        raise SystemExit("derive_sources: the O*NET credit must display the registered "
+                         "trademark symbol on the mark and name USDOL/ETA.")
+
     out = {"meta": meta, "sources": sources, "pages": pages, "totals": totals,
+           "footprint": footprint, "socs": socs, "attributions": attributions,
            "codes": codes, "doublecount": doublecount, "suppression": supp,
+           "suppression_vintage": supp_vintage,
            "lq": lq, "readings": readings, "classification": classification,
            "vintage": vintage, "gaps": gaps,
            "onet_attribution": load(WEB, "occupations", "data",

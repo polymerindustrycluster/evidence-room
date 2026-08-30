@@ -3,10 +3,10 @@
   "claims": [
     {
       "id": "src-register-size",
-      "text": "Fourteen public datasets build every page on this site, and sixty filter lines are published rather than described (standfirst, first hero card, second hero card, the register lede, the closer).",
+      "text": "Fourteen datasets build every page on this site, twelve of them public and two internal records nobody can fetch, and sixty-six filter lines are published rather than described (standfirst, first hero card, second hero card, the register lede, the closer).",
       "source": "_data/SOURCES.json, rendered by _data/build/derive_sources.py",
-      "assert": "D['totals']['n_sources'] == 14 and len(D['sources']) == 14 and D['totals']['n_filter_lines'] == 60 and D['totals']['n_filter_lines'] == sum(len(s['filters']) for s in D['sources'])",
-      "actual": "(D['totals']['n_sources'], D['totals']['n_filter_lines'])",
+      "assert": "D['totals']['n_sources'] == 14 and len(D['sources']) == 14 and D['totals']['n_public'] == 12 and D['totals']['n_public'] + D['totals']['n_no_endpoint'] == D['totals']['n_sources'] and D['totals']['n_filter_lines'] == 66 and D['totals']['n_filter_lines'] == sum(len(s['filters']) for s in D['sources'])",
+      "actual": "(D['totals']['n_sources'], D['totals']['n_public'], D['totals']['n_filter_lines'])",
       "falsified_if": "A source is added to or removed from the registry, or a filter line is added to one, without the two hero cards and the closer moving with it. The second half of the assertion is the one that matters: it re-derives the filter count from the entries themselves rather than trusting the total the same script wrote, so a totals block that stopped agreeing with its own rows fails here rather than shipping."
     },
     {
@@ -19,11 +19,11 @@
     },
     {
       "id": "src-codes-are-the-registry-codes",
-      "text": "Every industry code the recipe prints, and the ownership and aggregation filters beside them, are the values the registry records for the Quarterly Census of Employment and Wages: 325, 3252, 3255, 326, 3261, 3262, industry 10 for all industries, own_code 5 for private, and aggregation levels 55, 57 and 58 (recipe steps 1 and 2).",
+      "text": "Every industry code the recipe prints, and the ownership and aggregation filters beside them, are the values the registry records for the Quarterly Census of Employment and Wages FOR A COUNTY PULL: 325, 3252, 3255, 326, 3261, 3262, industry 10 for all industries, own_code 5 for private, own_code 0 for the all-ownership total, and county aggregation levels 70, 71, 75 and 76. The state levels 55, 57 and 58 appear in the registry only inside the one entry that describes a state pull (recipe steps 1 and 2).",
       "source": "SOURCES.json sources.qcew.filters, verbatim",
-      "assert": "(lambda f: all(c in f for c in ('325', '3252', '3255', '326', '3261', '3262')) and '10 (all industries)' in f and 'own_code 0' in f and '5 (private)' in f and 'agglvl 55/57/58' in f)(' '.join(kv[1] for s in D['sources'] if s['key'] == 'qcew' for kv in s['filters']))",
+      "assert": "(lambda F: (lambda f, county, state: all(c in f for c in ('325', '3252', '3255', '326', '3261', '3262')) and '10 (all industries)' in f and 'own_code 5 (private)' in f and 'own_code 0 (total, all ownerships)' in f and all(a in county for a in ('70', '71', '75', '76')) and all(s not in county for s in ('55', '57', '58')) and '55/57/58' in state and 'STATE of Ohio' in state)(' '.join(F.values()), F['aggregation'].split('The US000')[0], F['provenance_page']))({kv[0]: kv[1] for s in D['sources'] if s['key'] == 'qcew' for kv in s['filters']})",
       "actual": "[kv[0] for s in D['sources'] if s['key'] == 'qcew' for kv in s['filters']]",
-      "falsified_if": "The registry's own filter values stop containing a code the recipe teaches, which would mean the guide is telling a replicator to run a pull this site no longer runs. This is the whole point of the page and the reason the codes are typed in the recipe rather than injected: a reader with scripting off still sees them, and this check is what stops them going stale."
+      "falsified_if": "The registry's own filter values stop containing a code the recipe teaches, which would mean the guide is telling a replicator to run a pull this site no longer runs. THE GEOGRAPHY CLAUSES ARE THE REPAIR. The earlier version of this check asserted only that 55, 57 and 58 appeared somewhere in the registry, and it passed while the recipe told readers to apply them to a county file that contains no such rows: they are state levels, recorded correctly for a state pull on another page. A machine check that vouches for a filter because it is right somewhere else is this page's own trap happening inside the page that teaches it, so this now pins the county levels to the county-file sentence and requires the state levels to stay inside the state-pull entry."
     },
     {
       "id": "src-double-count",
@@ -40,6 +40,30 @@
       "assert": "(lambda w, R: w['county'] == 'Summit' and w['area'] == '39153' and w['naics'] == '326' and w['lq'] == 3.27 and w['emp'] == 3824 and w['year'] == 2025 and all(r['emp'] <= w['emp'] for r in R if r['naics'] == '326'))(D['lq']['worked'], D['readings'])",
       "actual": "D['lq']['worked']",
       "falsified_if": "That county's employment or concentration is revised, or another county overtakes Summit as the largest 326 base, at which point the recipe would be walking a reader to a number the site no longer prints. The last clause is what pins WHICH row the recipe teaches from: without it a refetch could silently move the worked example to a different county while every printed figure still agreed with itself."
+    },
+    {
+      "id": "src-lq-basis",
+      "text": "The recipe's arithmetic reproduces the number the page publishes. Summit County plastics and rubber in 2025: 3,824 private jobs over 259,944 all-ownership local jobs, divided by 700,170 over 155,685,781 nationally, gives 3.271, which rounds to the 3.27 BLS prints and this page publishes. The same four codes on a same-ownership basis — dividing by the 232,800 private local and 133,117,983 private national totals instead — give 3.123, 4.5 percent lower. The county file proves which basis is in force: its all-industry rows read 1.05, 0.88, 0.44 and 0.39 for private, local, state and federal ownership, and on a same-ownership basis every one of them would be exactly 1.00 (recipe step 3).",
+      "source": "_data/SOURCES.json worked_example, six components read off the 2025 area files for 39153 and US000, recomputed by derive_sources.py and checked against wages/data/wages.json",
+      "assert": "(lambda B, W: abs(B['local_industry_private'] / B['local_all_industry_all_ownerships'] / (B['national_industry_private'] / B['national_all_industry_all_ownerships']) - B['bls_basis']) < 5e-5 and abs(B['local_industry_private'] / B['local_all_industry_private'] / (B['national_industry_private'] / B['national_all_industry_private']) - B['same_basis']) < 5e-5 and B['bls_basis_2dp'] == B['bls_published'] == W['lq'] and B['local_industry_private'] == W['emp'] and B['same_basis_2dp'] != B['bls_basis_2dp'] and B['gap_pct'] < 0 and B['local_all_industry_private'] < B['local_all_industry_all_ownerships'] and B['self_check']['own_5_private_lq'] != 1.0)(D['lq']['basis'], D['lq']['worked'])",
+      "actual": "(D['lq']['basis']['bls_basis'], D['lq']['basis']['same_basis'], D['lq']['worked']['lq'])",
+      "falsified_if": "Either arithmetic stops reproducing from the six components it is printed with, or BLS's basis stops landing on the figure the pay page publishes for the same cell. THIS IS THE PAGE'S ACCEPTANCE TEST, and the page failed it: an outside reviewer with no access to this repository followed the rule this page stated, which held ownership constant across all four numbers, and landed on 3.123 against a published 3.27. Both are correct arithmetic on the same files; only one is a location quotient as the bureau computes it. The last clause is the reader's own check rather than ours — a same-ownership total divided by itself is 1.00 by construction, and BLS printing 1.05 for it is the file saying what its denominator is."
+    },
+    {
+      "id": "src-lq-provenance",
+      "text": "The 3.27 this page prints is BLS's own lq_annual_avg_emplvl column, not this site's recomputation of it. The two agree on all 601 comparable cells for the published figure and part on 2 of them for our own, which is what settles which one is being printed; our independent value for the worked cell is 3.271, and across 667 checked cells the two never differ by more than 0.005, half of the last digit the bureau prints (recipe step 3, the provenance paragraph).",
+      "source": "wages/data/wages.json trend against location-quotient/data/lq.json cells, which ship both the computed lq and BLS's lq_published",
+      "assert": "(lambda P: P['published_is'] == 'bls_column' and P['match_bls_column'] == P['cells_compared'] and P['cells_compared'] > 500 and P['separating_cells'] > 0 and P['match_our_recomputation'] == P['cells_compared'] - P['separating_cells'] and abs(P['residual']) <= P['verification']['max_abs_residual'] and P['verification']['max_abs_residual'] < 0.005 and P['verification']['cells_checked'] > 600)(D['lq']['provenance'])",
+      "actual": "D['lq']['provenance']",
+      "falsified_if": "The published figure stops matching BLS's column on any cell, or the two series stop disagreeing anywhere, at which point this page could no longer tell a reader which of the two it prints and the provenance sentence would be a guess. The separating clause is the load-bearing one: if the computed and published series agreed everywhere, the claim 'we print the bureau's' would be untestable from shipped data, and a replication guide is not entitled to assert a provenance it cannot demonstrate."
+    },
+    {
+      "id": "src-footprint-named",
+      "text": "The twelve counties behind every regional figure on this site are named on the page rather than counted at: Ashtabula, Cuyahoga, Geauga, Lake, Lorain, Mahoning, Medina, Portage, Stark, Summit, Trumbull and Wayne, and the twenty-six occupation codes are listed in full beside them (the multi-county step, and the classification cards).",
+      "source": "wages/data/wages.json meta.footprint; occupations/data/viz-data.json pay",
+      "assert": "(lambda F, S: F['n'] == 12 and len(F['counties']) == F['n'] and F['label'] == 'PIC-12' and 'Ashtabula' in F['counties'] and 'Trumbull' in F['counties'] and len(S) == D['classification']['soc']['n_codes'] == 26 and len({s['soc'] for s in S}) == 26 and all(s['occupation'] for s in S))(D['footprint'], D['socs'])",
+      "actual": "(D['footprint']['n'], len(D['socs']))",
+      "falsified_if": "The footprint gains or loses a county, or the occupation set changes, without the page's own list moving with it. A transfer test found a reader could enumerate about five of the eleven values they would need to change for their own region, and these were two of the six they could not: both were one join away from a file this page already reads, and publishing the size of a set instead of the set is the difference between a guide and a description of one."
     },
     {
       "id": "src-lq-fragile",
@@ -98,12 +122,12 @@
       "falsified_if": "A page is added to the tree, or a page starts or stops resting on a single source, either of which moves the chart's ranking and the sentence under it. The strict-maximum clause is what makes 'more than any other' a derived statement rather than a typed one: a tie at eleven would fail it, and the chart's title would need rewriting rather than quietly becoming ambiguous."
     },
     {
-      "id": "src-onet-licence",
-      "text": "Exactly one of the fourteen sources states a licence: O*NET is CC BY 4.0, the licence requires attribution, and the required attribution is printed in this page's footer (the licence line under the register, and the footer).",
-      "source": "SOURCES.json sources.onet_education; occupations/data/viz-data.json onet_attribution",
-      "assert": "(lambda L: D['totals']['n_licensed'] == 1 and len(L) == 1 and L[0]['key'] == 'onet_education' and L[0]['licence'] == 'CC BY 4.0' and 'CC BY 4.0' in D['onet_attribution'] and 'USDOL/ETA' in D['onet_attribution'] and len(D['onet_attribution']) > 200)([s for s in D['sources'] if s['licence']])",
-      "actual": "[(s['key'], s['licence']) for s in D['sources'] if s['licence']]",
-      "falsified_if": "Another source starts stating a licence, or the O*NET attribution string changes or goes missing from the page it is copied from. This is the one obligation on this page that is a condition of use rather than a courtesy: dropping the footer text while continuing to describe the dataset would put the site out of compliance with the licence it names."
+      "id": "src-licences-and-attribution",
+      "text": "Two of the fourteen sources state a licence that conditions use, and both require attribution: O*NET is CC BY 4.0 and IPEDS reaches this site through the Urban Institute's Education Data Portal under ODC-By 1.0. Both credits are printed in this page's footer, each carrying its licence name as a link and the elements its own licence requires — the registered-trademark symbol on the O*NET mark, and the portal version and access date for the ODC-By citation (the licence line under the register, and the footer).",
+      "source": "SOURCES.json licence, licence_url and attribution fields, rendered by derive_sources.py",
+      "assert": "(lambda A, T: D['totals']['n_licensed'] == 2 and D['totals']['licensed_sources'] == ['ipeds', 'onet_education'] and len(A) == 2 and sorted(a['key'] for a in A) == D['totals']['licensed_sources'] and all(a['licence'] and a['licence_url'] and a['licence_url'].startswith('https://') and len(a['text']) > 120 for a in A) and sorted(a['licence'] for a in A) == ['CC BY 4.0', 'ODC-By 1.0'] and 'O*NET® is a trademark of USDOL/ETA' in T['onet_education'] and 'CC BY 4.0' in T['onet_education'] and '30.3' in T['onet_education'] and 'ODC Attribution License' in T['ipeds'] and '0.26.1' in T['ipeds'] and '2026' in T['ipeds'] and 'Urban Institute' in T['ipeds'])(D['attributions'], {a['key']: a['text'] for a in D['attributions']})",
+      "actual": "[(a['key'], a['licence'], a['licence_url']) for a in D['attributions']]",
+      "falsified_if": "A source starts or stops stating a licence, or a required element drops out of either credit. THIS CHECK EXISTS BECAUSE THE PAGE FAILED IT. The IPEDS licence went unrecorded for a fortnight because the registry only knew how to recognise a Creative Commons string, so the page said 'exactly one states a licence' while serving portal data under ODC-By with no credit at all; and the O*NET credit, which was present, was non-compliant on two counts — no registered-trademark symbol, and set with textContent so there was no link to the licence anywhere on the page. Every element each licence names as a condition is asserted here rather than described, because an attribution that is nearly right reads exactly like one that is right."
     },
     {
       "id": "src-route-mix",

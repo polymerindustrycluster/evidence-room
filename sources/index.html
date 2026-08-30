@@ -23,11 +23,12 @@
     <p class="eyebrow">A replication guide for other regions</p>
     <h1>You can rebuild this for your own region. <em>The codes are the hard part</em>,
       and they are all on this page.</h1>
-    <p class="stand">Fourteen public datasets build every page on this site. Here are the
-      endpoints, the exact filters, what each source cannot tell you, and the traps that
-      produce a confidently wrong answer rather than an obviously wrong one. It opens on
-      one question carried the whole way, from the endpoint to the reading, because a
-      worked question teaches what a table of links cannot.</p>
+    <p class="stand">Fourteen datasets build every page on this site, twelve of them
+      public and two internal records nobody can fetch. Here are the endpoints, the exact
+      filters, what each source cannot tell you, and the traps that produce a confidently
+      wrong answer rather than an obviously wrong one. It opens on one question carried
+      the whole way, from the endpoint to the reading, because a worked question teaches
+      what a table of links cannot.</p>
     <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Sources register compiled from the
       fetch scripts, August&nbsp;2026</p>
     <!-- THE COLD OPEN. The page leads on the concentration recipe, so the first mark a
@@ -56,7 +57,7 @@
       most accessible of the fourteen sources, and it exercises every trap worth learning
       at once: which codes count as your industry, what happens when you add a code family
       to its own parts, what a blank cell means, and what the answer does not tell you.
-      Six steps. Nothing below needs anything from this repository.</p>
+      Seven steps. Nothing below needs anything from this repository.</p>
 
     <ol class="steps">
       <li>
@@ -83,37 +84,69 @@
         <p>The <b class="code">{fips}</b> is the five-digit county code, and the
           <b class="code">a</b> is the annual average.
           Take annual averages rather than a quarter, because these series are not
-          seasonally adjusted and adjacent quarters are not comparable. Inside the file,
-          filter to the aggregation levels that carry industry detail for your geography
-          (<b class="code">agglvl_code</b> 55, 57 and 58 for county by industry) and to
-          <b class="code">own_code</b> 5 for private ownership, or 0 for all ownerships.
-          This site&rsquo;s register records both in use. Whichever you pick, use the same
-          one for all four numbers in the next step: a ratio whose numerator counts private
-          employment and whose denominator counts every ownership is not a location
-          quotient, it is two different measures divided. One area file already holds every
-          industry level for that area, so
-          your all-industry denominator is the row carrying industry code
-          <b class="code">10</b> in the file you just downloaded. Download one more file,
-          for area <b class="code">US000</b>, and it holds the national pair.</p>
+          seasonally adjusted and adjacent quarters are not comparable. One area file
+          already holds every industry level for that area, so your all-industry
+          denominator is the row carrying industry code <b class="code">10</b> in the file
+          you just downloaded. Download one more file, for area
+          <b class="code">US000</b>, and it holds the national pair.</p>
+        <p><b>The aggregation level is the county filter, and it is not the state one.</b>
+          Every row carries an <b class="code">agglvl_code</b> saying which rung of the
+          geography-by-industry ladder it sits on, and the rungs are numbered separately
+          per geography. In a county file, <b class="code">70</b> is the county total
+          across all ownerships, <b class="code">71</b> the county total by ownership,
+          <b class="code">74</b> the sector, <b class="code">75</b> a three-digit NAICS
+          code, <b class="code">76</b> four-digit and <b class="code">78</b> six-digit. So
+          326 is <b class="code">75</b> and 3252 is <b class="code">76</b>. The
+          <b class="code">US000</b> file numbers the same rungs
+          <b class="code">10</b>, <b class="code">11</b>, <b class="code">15</b>,
+          <b class="code">16</b> and <b class="code">18</b>. The 50-to-58 block belongs to
+          STATE files and appears in no county file at all.</p>
+        <p class="warn"><b>This page told you the wrong ones until 2026-08-29.</b> It said
+          to filter to <b class="code">55</b>, <b class="code">57</b> and
+          <b class="code">58</b> for county by industry. Those are the state 3-, 5- and
+          6-digit levels. They return zero rows from the county file this same step tells
+          you to download, and a reader who applied them got an empty table on a page whose
+          own trap section says never to let a filter that returns nothing read as a
+          finding of zero. The codes were real: they belong to one state-level pull
+          elsewhere in this site&rsquo;s register, and the recipe borrowed them without
+          reading which geography they were for.</p>
+        <p><b>Ownership is not a choice here, and this is where the arithmetic goes.</b>
+          Filter to <b class="code">own_code</b> 5, private ownership: in these files the
+          industry rows exist at own_code 5 and nowhere else, so there is no
+          all-ownership row for 326 to pick even if you wanted one. The all-industry
+          denominator is the opposite: take <b class="code">own_code</b> 0, the total
+          across every ownership. That pairing is deliberate and the next step is about
+          why.</p>
       </li>
       <li>
         <h3>Do the arithmetic</h3>
         <p>A location quotient is a ratio of two shares. It asks whether your industry
           fills more of your local job market than it fills of the country&rsquo;s.</p>
-        <p class="formula">LQ&nbsp;=&nbsp;(local industry jobs &divide; local jobs, all
-          industries)&nbsp;&divide;&nbsp;(national industry jobs &divide; national jobs,
-          all industries)</p>
+        <p class="formula">LQ&nbsp;=&nbsp;(local industry jobs, private &divide; local jobs,
+          all industries, <em>all ownerships</em>)&nbsp;&divide;&nbsp;(national industry
+          jobs, private &divide; national jobs, all industries, <em>all ownerships</em>)</p>
         <p>Four numbers, all four in the two files you just pulled. Nothing is modelled,
           nothing is estimated, and there is no confidence interval, because the source is
           a census of insured employment rather than a survey.</p>
-        <p><b>Check yourself against the file.</b> Those area files also carry a
-          location-quotient column of their own,
-          <b class="code">lq_annual_avg_emplvl</b>, computed the same way against the
-          national total, on the same ownership as the row it sits in. Do the division by
-          hand first, then compare. Agreement means your four numbers came from one basis;
-          a disagreement is nearly always that they did not, and it is the quietest way to
-          get a plausible wrong answer. That column is also how to tell which basis a
-          published figure, including the one below, is on.</p>
+        <p class="warn"><b>The top and the bottom are on different ownerships on
+          purpose, and that will look like a mistake.</b> The intuitive rule is to hold
+          ownership constant across all four numbers, and this page taught that rule until
+          2026-08-29. It is a coherent measure and it is not the one the bureau publishes.
+          Held constant at private, the worked cell below comes out
+          <b id="samebasis">lower</b>. BLS divides private industry employment by
+          all-ownership totals, and the number every published location quotient on this
+          site sits on is that one. Do not quietly switch the rule to whichever produces
+          your figure: pick the bureau&rsquo;s if you want to be comparable to anybody
+          else&rsquo;s, and say which you used either way.</p>
+        <p id="lqarith">The worked cell, with all six numbers.</p>
+        <p><b>The file proves its own denominator, and this is the check to run first.</b>
+          Those area files carry a location-quotient column of their own,
+          <b class="code">lq_annual_avg_emplvl</b>. Look at the rows for industry
+          <b class="code">10</b> at each <b class="code">own_code</b>: on a
+          same-ownership basis each of those would be exactly 1.00, because it would be
+          dividing a total by itself. <span id="ownlq">They are not.</span> That is the
+          bureau telling you, in its own file, what its denominator is.</p>
+        <p id="lqprov">Where the number on this page comes from.</p>
       </li>
       <li>
         <h3>Read it against 1.0, and only against 1.0</h3>
@@ -134,6 +167,26 @@
           a size. A single plant closing can halve it. Print the job count beside every
           reading so nobody can quote the ratio without the base, which is why the chart
           at the top of this page carries both.</p>
+      </li>
+      <li>
+        <h3>If your region is more than one county, you have to build it yourself</h3>
+        <p>No statistical agency publishes a location quotient for a custom geography, so a
+          region-wide reading is yours and not the bureau&rsquo;s, and it has to be built
+          from components rather than averaged from county readings. A location quotient
+          cannot be averaged across places. Sum the industry jobs over your counties, sum
+          the all-industry totals over the same counties, divide one by the other, and
+          divide that by the national share you already have from the
+          <b class="code">US000</b> file.</p>
+        <p><b>Withheld counties are the hard part, and they behave differently for the two
+          kinds of number.</b> A withheld county drops out of the numerator and the
+          denominator together, so it does not drag the ratio toward zero, but it does not
+          leave it untouched either. Job and site counts built this way are floors: the
+          missing counties&rsquo; jobs are simply absent. The ratio is neither a floor nor
+          a census. Withheld counties are disproportionately the small ones, which are
+          usually the least concentrated, so a ratio built without them reads more
+          plausibly as a ceiling. Print how many counties are in it, every time, because
+          that set moves between years.</p>
+        <p class="body" id="footprint">The footprint this site uses.</p>
       </li>
       <li>
         <h3>What it lands on here</h3>
@@ -247,6 +300,13 @@
       length and split into the areas with a published employment figure for plastics and
       rubber products and the areas where it was withheld. The count of areas is in the
       row label, because equal-length bars deliberately say nothing about it.</p>
+    <p class="body"><b>Count these yourself.</b> The same census slices the other way, one
+      file per industry across every area in the country, and that file is where these
+      rates come from:</p>
+    <pre class="endpoint">https://data.bls.gov/cew/data/api/{year}/a/industry/{naics}.csv</pre>
+    <p class="body" id="hidehow">Take <b class="code">own_code</b> 5 and count the rows
+      whose <b class="code">disclosure_code</b> is <b class="code">N</b>. County rows are
+      <b class="code">agglvl_code</b> 75, metropolitan rows 45 and state rows 55.</p>
     <div class="chart reflow"><svg id="hide" role="img" aria-labelledby="hide-t">
       <title id="hide-t">Chart showing that all 51 state geographies disclose their
         plastics and rubber employment, while 155 of 382 metropolitan areas and 703 of
@@ -263,6 +323,15 @@
       This site published a transposed programme code once and erased a whole
       university&rsquo;s degree programme, and every check passed, because the checks were
       true of the data the mistake had already filtered out.</p>
+    <p class="note"><b>This page broke that rule itself, in the recipe above.</b> Until
+      2026-08-29 step two named three aggregation codes that return nothing from the file
+      it tells you to download, and a machine check vouched for them: the check asserted
+      the codes appeared in this site&rsquo;s own registry, which they do, for a state
+      pull on a different page. A green tick over a filter that was right somewhere else
+      is the same defect one level up, and it took an outside reader with no access to
+      this repository to catch it. The check now asserts the codes are right for the
+      geography the recipe actually uses, and the walk-back is printed in step two rather
+      than only here.</p>
   </div>
 </section>
 
@@ -343,7 +412,7 @@
       &middot; Evidence Room</p>
     <p class="foot-links"><a href="../">All evidence-room pages</a> &middot; Corrections
       and questions: jswanson@greaterakronchamber.org</p>
-    <p class="foot-licence" id="footlicence"></p>
+    <div class="foot-licence" id="footlicence"></div>
   </div>
 </footer>
 

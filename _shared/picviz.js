@@ -541,7 +541,28 @@ const PV = (() => {
                   <span class="mono">${src.script}</span></p>` : ""}
               </div>`;
             }).join("")}
-          </details>`;
+          </details>
+          ${(() => {
+            /* LICENCE ATTRIBUTION IS AN OBLIGATION, NOT A COURTESY, and it belongs on
+               every page that USES the data rather than only on the one that describes
+               it. A hostile review on 2026-08-29 found IPEDS reaching this site through
+               the Urban Institute's portal under ODC-By 1.0, which requires attribution,
+               with none printed anywhere; and the O*NET credit rendered without the
+               registered-trademark symbol and with no link to CC BY 4.0, both of which
+               that licence explicitly requires ("The trademark symbol must be properly
+               displayed"). The compliant strings and the licence URLs were already in the
+               registry. Nothing rendered them. Emitted here, from the same by-artifact
+               list the block above uses, so a page cannot use a licensed source and omit
+               its credit. */
+            const cred = keys.map(k => R.sources[k])
+              .filter(src => src && src.attribution);
+            if (!cred.length) return "";
+            return `<div class="pv-src pv-attrib"><h4>Required attribution</h4>` +
+              cred.map(src => `<p class="pv-method-note">${src.attribution}` +
+                (src.licence_url
+                  ? ` <a href="${src.licence_url}" rel="license">Licence</a>.` : "") +
+                `</p>`).join("") + `</div>`;
+          })()}`;
         })()}
         <div>
           <h3>Data sources</h3>

@@ -51,6 +51,11 @@ const CASES = [
    inject: s => s.replace(/Analysis and graphics by Claude \(Anthropic\)/,
      "Analysis and graphics J. Swanson")},
 
+  {gate: "disclosure", page: "occupations", args: ["occupations"],
+   defect: "licensed data used without the trademark symbol or a link to the licence",
+   inject: s => s.replace("creativecommons.org/licenses/by/4.0/", "example.invalid/none")
+                 .replace(/O\*NET(\u00ae|®) is a trademark/, "O*NET is a trademark")},
+
   {gate: "coldopen", page: "churn", args: ["churn"],
    defect: "a page whose first chart sinks below its recorded budget",
    inject: s => s.replace("</head>", "<style>.hero .wrap{padding-bottom:400px}</style></head>")},

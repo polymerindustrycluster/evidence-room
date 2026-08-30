@@ -42,8 +42,12 @@ const TEAL = INK, LIGHT = "#6BB8C4", PALE = "#CFE8EC", WARN = "#C85F0C";
 
 /* ------------------------------------------------------------------ hero figures */
 figures([
-  ["key", String(T.n_sources), "public datasets behind every page here",
-   `${Word(T.n_key_required)} need a free key. ${Word(T.n_no_endpoint)} have no endpoint at all`],
+  /* NOT "public datasets": two of the fourteen are internal records nobody can fetch,
+     which the page itself says four sections down. A card that rounds that away is the
+     page contradicting itself above the fold. */
+  ["key", String(T.n_sources), "datasets behind every page here",
+   `${Word(T.n_public)} public. ${Word(T.n_key_required)} need a free key.
+    ${Word(T.n_no_endpoint)} have no endpoint at all`],
   ["", String(T.n_filter_lines), "filter lines published, not described",
    "The exact codes, ownership and geography applied to each source"],
   ["", N(DC.doubled), "jobs counted twice if you add a code family to its own parts",
@@ -372,25 +376,42 @@ function drawTax() {
      keys. "Used by oews, oews_national, onet_education, nem" is the shape of the data
      rather than a sentence, and nothing else on the page ever shows a reader a key. */
   const nameOf = k => (D.sources.find(s => s.key === k) || {}).short || k;
-  const t = (k, name, full, body, srcs) =>
+  /* EVERY SET ON THIS CARD IS LISTED, not counted at. A reader replicating this for
+     another region needs the codes; "twenty-six occupation codes" tells them the size of
+     a decision somebody else made. The education codes were already listed here and the
+     occupation codes were not, which is the asymmetry a transfer test found. */
+  const t = (k, name, full, body, srcs, extra) =>
     `<div class="t"><h4>${k}</h4><p class="w">${name}</p>
-     <p>${body}</p><p class="s">${full}. Used by ${srcs.map(nameOf).join("; ")}.</p></div>`;
+     <p>${body}</p>${extra || ""}
+     <p class="s">${full}. Used by ${srcs.map(nameOf).join("; ")}.</p></div>`;
+  const socList = `<details class="codes"><summary>All ${C.soc.n_codes} codes</summary>
+    <dl>${D.socs.map(s => `<dt>${s.soc}</dt><dd>${s.occupation}</dd>`).join("")}</dl>
+    </details>`;
   host.innerHTML =
     t("NAICS", "Which industry", "North American Industry Classification System",
       `This site counts ${word(C.naics.n_register)} codes as its cluster and reads
        ${word(C.naics.n_codes)} in all. Whether paints and coatings belong is a judgement,
        not a fact: this site says yes, and somebody reasonable says no.`,
-      C.naics.sources) +
+      C.naics.sources,
+      `<details class="codes"><summary>All ${word(C.naics.n_codes)} codes</summary>
+       <dl>${D.codes.map(c => `<dt>${c.code}</dt><dd>${c.name}</dd>`).join("")}</dl>
+       </details>`) +
     t("SOC", "Which occupation", "Standard Occupational Classification",
       `A chosen set of ${C.soc.n_codes} occupation codes stands for the work this
        industry does. Change the set and the average wage of the industry changes with
        it, because you have changed which jobs are in it.`,
-      C.soc.sources) +
+      C.soc.sources, socList) +
     t("CIP", "Which degree", "Classification of Instructional Programs, six digits",
       `${Word(C.cip.n_core)} programme codes are counted as core and
        ${word(C.cip.n_adjacent)} more as adjacent, and the two lists are kept apart
        rather than merged, so the boundary can be argued with.`,
-      C.cip.sources);
+      C.cip.sources,
+      `<details class="codes"><summary>All
+       ${word(C.cip.n_core + C.cip.n_adjacent)} codes</summary>
+       <dl>${C.cip.core.map(c => `<dt>${c.code}</dt><dd>${c.name} &middot; core</dd>`)
+              .join("")}
+           ${C.cip.adjacent.map(c => `<dt>${c.code}</dt><dd>${c.name} &middot; adjacent</dd>`)
+              .join("")}</dl></details>`);
   document.getElementById("cipmath").innerHTML =
     `Counting only the ${word(C.cip.n_core)} core codes, the region&rsquo;s universities
      awarded <b>${N(C.cip.degrees_core)}</b> degrees between ${C.cip.first_year} and
@@ -433,6 +454,7 @@ function drawRegistry() {
       ${s.url ? `<p class="ep">${s.url}</p>`
               : `<p class="ep">No endpoint. This is an internal record and cannot be
                  fetched by anyone, including us. The published file is the artifact.</p>`}
+      ${s.terms ? `<p class="terms"><b>Terms.</b> ${s.terms}</p>` : ""}
       ${filters ? `<details><summary>The exact filters applied to it
         (${s.filters.length})</summary><dl>${filters}</dl></details>` : ""}
       <p class="dep">${s.docs ? `<a href="${s.docs}">Agency documentation</a> &middot; ` : ""}
@@ -443,12 +465,90 @@ function drawRegistry() {
   }).join("");
 
   document.getElementById("licencesrc").innerHTML =
-    `${Word(T.n_licensed)} of the ${word(T.n_sources)} states a licence: O*NET is
-     CC BY 4.0 and the licence requires attribution, which is printed in the footer of this
-     page. For the federal statistical series the register records no licence, and this
-     page does not infer one, so check each agency&rsquo;s own terms before you
-     redistribute anything.`;
-  document.getElementById("footlicence").textContent = D.onet_attribution;
+    `${Word(T.n_licensed)} of the ${word(T.n_sources)} state a licence that conditions
+     use, and both require attribution: ${D.attributions.map(a =>
+       `${a.short} under <a href="${a.licence_url}">${a.licence}</a>`)
+       .join(" and ")}. Both credits are printed in the footer of this page, because
+     describing a licence is not complying with one. ${Word(T.n_terms)} sources state
+     TERMS rather than a licence, which is public domain with a citation request, and
+     each entry quotes them with the agency page they come from, so no source here should
+     be read as publishing no terms at all.`;
+
+  /* THE FOOTER IS THE COMPLIANCE SURFACE, not a description of one. Both licences
+     require a LINK to the licence text, and this was set with textContent, so the page
+     carried the words "CC BY 4.0" and no link anywhere. The licence name is now the
+     anchor, and the trademark symbol travels in the attribution string itself, where
+     _data/build/derive_sources.py asserts it rather than hoping for it. */
+  document.getElementById("footlicence").innerHTML = D.attributions.map(a => {
+    const link = `<a href="${a.licence_url}">${a.licence}</a>`;
+    /* The required wording differs per licence and neither is ours to paraphrase, so the
+       link goes on the licence name where the text already names it, and is appended
+       where it does not, rather than the text being bent to fit one pattern. */
+    const linked = a.text.includes(a.licence)
+      ? a.text.split(a.licence).join(link)
+      : `${a.text} Licence: ${link}.`;
+    return `<p class="attr">${linked}</p>`;
+  }).join("");
+}
+
+/* ------------------------------------------------ the recipe's own worked arithmetic */
+/* THE ONE THING THIS PAGE EXISTS TO MAKE POSSIBLE is a reader landing on the number it
+   publishes. It failed that test: the rule it stated produced 3.123 against a published
+   3.27, because the stated rule held ownership constant and the bureau's does not. Both
+   arithmetics are printed here from the same six components, so the gap is explained
+   rather than discovered. */
+function drawRecipe() {
+  const B = D.lq.basis, P = D.lq.provenance, S = B.self_check, F = D.footprint;
+  document.getElementById("samebasis").innerHTML =
+    `<b>${B.same_basis_2dp}</b> rather than <b>${B.bls_basis_2dp}</b>,
+     ${Math.abs(B.gap_pct)}% lower`;
+
+  document.getElementById("lqarith").innerHTML =
+    `<b>The worked cell, both ways.</b> ${B.county} County, ${B.naics}, ${B.year}.
+     BLS&rsquo;s basis is (${N(B.local_industry_private)} &divide;
+     ${N(B.local_all_industry_all_ownerships)}) &divide; (${N(B.national_industry_private)}
+     &divide; ${N(B.national_all_industry_all_ownerships)}) =
+     <b>${B.bls_basis}</b>, which rounds to the ${B.bls_published} the file prints and this
+     page publishes. Holding ownership at private throughout instead gives
+     (${N(B.local_industry_private)} &divide; ${N(B.local_all_industry_private)}) &divide;
+     (${N(B.national_industry_private)} &divide; ${N(B.national_all_industry_private)}) =
+     <b>${B.same_basis}</b>. Same four files, same codes, different measure. Read on
+     ${B.read_on}: ${B.rows}`;
+
+  document.getElementById("ownlq").innerHTML =
+    `In this file they read ${S.own_5_private_lq} for private,
+     ${S.own_3_local_government_lq} for local government,
+     ${S.own_2_state_government_lq} for state and ${S.own_1_federal_lq} for federal.`;
+
+  document.getElementById("lqprov").innerHTML =
+    `<b>Which of the two this page prints, and how that was settled.</b> The
+     ${B.bls_published} above is BLS&rsquo;s own <span class="mono">lq_annual_avg_emplvl</span>
+     column, carried through this site&rsquo;s pay page unchanged. That is not an
+     assumption: the concentration page computes its own value from components and ships
+     BLS&rsquo;s beside it, the two round apart on
+     ${P.separating_cells} of ${N(P.cells_compared)} cells, and the printed figure follows
+     the bureau&rsquo;s on ${N(P.match_bls_column)} of ${N(P.cells_compared)} and ours on
+     ${N(P.match_our_recomputation)}. Our independent recomputation of this cell is
+     ${P.our_value_full}, ${Math.abs(P.residual)} away, and across
+     ${N(P.verification.cells_checked)} checked cells the two never differ by more than
+     ${P.verification.max_abs_residual}, which is half of the last digit the bureau prints.
+     So: the number is the bureau&rsquo;s, we can reproduce it, and it is on the bureau&rsquo;s
+     mixed-ownership basis rather than the same-basis rule this page used to teach.`;
+
+  document.getElementById("footprint").innerHTML =
+    `<b>The footprint behind every regional figure on this site is ${F.label}</b>, and
+     these are the ${word(F.n)} counties, named because a reader replicating this needs the
+     set and not its size: ${F.counties.join(", ")}. A wider fourteen-county definition is
+     also in use in this project, and every page here stamps which footprint it was built
+     on in a banner, because two pages on two footprints reconcile with nothing.`;
+
+  const V = D.suppression_vintage;
+  document.getElementById("hidehow").insertAdjacentHTML("beforeend",
+    ` The figures drawn here are the <b>${V.published_year}</b> annual file, and the year
+      is load-bearing: the ${V.comparison_year} file gives ${N(V.comparison_county_disclosed)}
+      disclosed counties of ${N(V.comparison_county_total)} and carries no metropolitan
+      rows at all yet, read ${V.comparison_read_on}. A reader who pulls the newest year and
+      compares it to this chart is looking at a different vintage, not at a disagreement.`);
 }
 
 /* ------------------------------------------------------------------- the gaps */
@@ -458,7 +558,8 @@ function drawGaps() {
   host.innerHTML = D.gaps.map(g => `<div class="gap">
     <h4>${g.what}</h4>
     <p class="pg">${g.page}</p>
-    <p>${g.n ? `<b>${Word(g.n)} rows, ${N(g.jobs)} jobs.</b> ` : ""}${g.why}</p>
+    <p>${g.n ? `<b>${Word(g.n)} ${g.unit || "rows"}${g.jobs ? `, ${N(g.jobs)} jobs` : ""}.</b> `
+             : ""}${g.why}</p>
     <p class="fix"><b>To close it:</b> ${g.close}</p>
   </div>`).join("");
 }
@@ -479,6 +580,7 @@ document.getElementById("closersub").innerHTML =
 
 drawTax();
 drawVintage();
+drawRecipe();
 drawRegistry();
 drawGaps();
 

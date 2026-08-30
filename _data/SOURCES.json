@@ -26,11 +26,15 @@
    "docs": "https://www.bls.gov/cew/additional-resources/open-data/csv-data-slices.htm",
    "filters": {
     "NAICS codes": "10 (all industries), 31-33 (manufacturing), 325 (chemical manufacturing), 3252 (resin, synthetic rubber and fibers), 3255 (paint, coating and adhesive), 326 (plastics and rubber products), 3261 (plastics products), 3262 (rubber products)",
-    "ownership": "own_code 0 (total, all ownerships) and 5 (private)",
+    "ownership": "own_code 5 (private) carries every industry row; own_code 0 (total, all ownerships) exists only on industry 10. Those are not two interchangeable choices: an industry row at own_code 0 does not exist to be picked.",
+    "aggregation": "county area file: agglvl_code 70 is the all-ownership county total, 71 the county total by ownership, 74 NAICS sector, 75 NAICS 3-digit, 76 NAICS 4-digit, 77 5-digit, 78 6-digit. The US000 file uses 10, 11, 15, 16 and 18 for the same rungs. agglvl 50 to 58 are STATE levels and appear in no county file.",
     "geography": "county FIPS, PIC-12 and NEO-14 (see footprints.py)",
+    "by_industry": "the same census sliced the other way, one file per NAICS across every area, at https://data.bls.gov/cew/data/api/{year}/a/industry/{naics}.csv. The disclosure rates published on the sources page are the 2024 annual file for 326, own_code 5: county rows are agglvl 75, metropolitan rows agglvl 45, state rows agglvl 55.",
+    "user_agent": "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address; data.bls.gov serves any of them. contact.py holds the single address this repository sends.",
     "note": "PIC’s own measurement register is 3252 + 3255 + 326. NAICS 325 is context, not cluster: it contains pharmaceuticals and agricultural chemicals.",
-    "provenance_page": "fetch_provenance.py re-uses this source for one pull: 2016 annual, own_code 5, industry 326+32521+325991 at agglvl 55/57/58; the QCEW instrument comparison on the provenance page"
+    "provenance_page": "fetch_provenance.py re-uses this source for one pull: 2016 annual, area 39000 which is the STATE of Ohio and not a county, own_code 5, industry 326+32521+325991 at agglvl 55/57/58, which are the state 3-, 5- and 6-digit levels. Those three agglvl codes belong to that state pull alone and return nothing from a county file."
    },
+   "terms": "Public domain. BLS asks to be cited as the source: https://www.bls.gov/bls/linksite.htm",
    "script": "_data/build/fetch_qcew.py, fetch_footprint.py, fetch_provenance.py",
    "key_required": false
   },
@@ -45,6 +49,7 @@
     "geography": "state 39, the twelve PIC-12 counties",
     "note": "EarnBeg is average monthly earnings of employees who also worked for the same employer in the prior quarter: stable jobs rather than new hires."
    },
+   "terms": "Public domain. The Census Bureau asks to be cited as the source of the original data: https://www.census.gov/about/policies/citation.html",
    "script": "_data/build/fetch_footprint.py, fetch_qwi_demand.py",
    "key_required": true
   },
@@ -52,7 +57,7 @@
    "name": "LEHD Origin-Destination Employment Statistics, LODES8",
    "agency": "US Census Bureau / LEHD",
    "url": "https://lehd.ces.census.gov/data/lodes/LODES8/{st}/od/{st}_od_{main|aux}_JT00_{year}.csv.gz",
-   "docs": "https://lehd.ces.census.gov/data/lodes/LODES8/LODESTechDoc8.2.pdf",
+   "docs": "https://lehd.ces.census.gov/data/lodes/LODES8/LODESTechDoc8.4.pdf",
    "filters": {
     "segment": "JT00, meaning all jobs in all sectors. LODES origin-destination carries NO industry dimension, so this is the whole economy and never the polymer cluster.",
     "files": "main (both ends in state) plus aux (work in state, home out of state). Omitting aux makes the region look artificially self-contained.",
@@ -60,6 +65,7 @@
     "geography": "work end bounded to PIC-12 for the commute matrix; home end bounded to PIC-12 for the reciprocal; peer comparison reads twelve states’ main files",
     "note": "Both ends are employer-reported addresses. The home end is a residence on file, not evidence anyone travelled."
    },
+   "terms": "Public domain. The Census Bureau asks to be cited as the source of the original data: https://www.census.gov/about/policies/citation.html",
    "script": "_data/build/fetch_lodes.py, fetch_lodes_resident.py, fetch_lodes_peers.py",
    "key_required": false
   },
@@ -77,6 +83,10 @@
     "note": "Two earlier code entries did not exist and silently returned zero: 140320 (a transposition of 143201) and 143101 (materials science is in the 40 series, not 14). A core code returning zero across every year and institution is evidence of a bad code, not of no graduates.",
     "ipeds_cip": "fetch_ipeds_cip.py adds institution × CIP × year (used by talent and occupations)"
    },
+   "licence": "ODC-By 1.0",
+   "licence_url": "https://opendatacommons.org/licenses/by/1-0/",
+   "attribution": "Integrated Postsecondary Education Data System (IPEDS) Completions, via Education Data Portal v. 0.26.1, Urban Institute, accessed 18 August 2026, https://educationdata.urban.org/documentation/, made available under the ODC Attribution License.",
+   "terms": "The underlying IPEDS collection is a public-domain federal series, but the route this site uses is not the federal one. Everything served through the Urban Institute’s Education Data Portal is licensed to the user under the Open Data Commons Attribution License (ODC-By) v1.0, which REQUIRES attribution and a citation naming the portal version and the access date: https://educationdata.urban.org/documentation/. Portal version 0.26.1 was released 2026-08-05 and was current at this site’s access date of 2026-08-18.",
    "script": "_data/build/fetch_ipeds.py, fetch_ipeds_national.py, fetch_intl.py, _data/build/fetch_ipeds_cip.py",
    "key_required": false
   },
@@ -90,6 +100,7 @@
     "base": "a fixed national basket, US average = 100",
     "note": "Published at METRO, which neither nests inside nor tiles PIC-12. Akron, Cleveland-Elyria and Youngstown-Warren each include territory the footprint excludes. Do not sum the three and call it PIC-12."
    },
+   "terms": "Public domain. BEA publishes citation guidelines: https://www.bea.gov/help/guidelines-for-citing-bea",
    "script": "_data/build/fetch_bea.py, fetch_rpp.py",
    "key_required": true
   },
@@ -116,19 +127,23 @@
     "geography": "metropolitan area, carrying the same non-nesting caveat as BEA RPP",
     "note": "One year only. This is a level, not a trend; the wage trend on the talent page comes from QWI instead."
    },
+   "terms": "Public domain. BLS asks to be cited as the source: https://www.bls.gov/bls/linksite.htm",
    "script": "_data/build/fetch_oews.py",
    "key_required": false
   },
   "usaspending": {
    "name": "USAspending federal contract and grant obligations",
    "agency": "US Treasury",
-   "url": "https://api.usaspending.gov/api/v2/search/spending_by_category/",
+   "url": "https://api.usaspending.gov/api/v2/search/spending_by_category/{category}/",
    "docs": "https://api.usaspending.gov/",
    "filters": {
-    "NAICS": "325* and 326* manufacturing codes only, so university and research awards are invisible by construction: a university files under 61xxxx",
+    "method": "POST with a JSON body, and the {category} path segment is required: naics and county are the two this site asks for. The endpoint without a category returns 404 to GET and to POST alike, which is what a reader who copies the stem alone will meet.",
+    "NAICS": "not sent to the API. A naics_codes filter returns 422, so the pull asks for the NAICS category over a county place-of-performance list and keeps 325* and 326* CLIENT-SIDE, in fetch_rest.py. University and research awards are invisible by construction either way: a university files under 61xxxx.",
+    "paging": "limit 100 per fiscal year per category, not paged. Anything past the hundredth result for a year is absent, and the file cannot tell you how much.",
     "geography": "place of performance, a reported field on the award rather than an observation of where work happened",
     "note": "Obligations are money legally committed, not cash spent."
    },
+   "terms": "Public domain federal spending data. USAspending states no additional licence.",
    "script": "_data/build/fetch_rest.py",
    "key_required": false
   },
@@ -173,6 +188,7 @@
     "dedupe": "51-2090 appears as broad and detailed with identical values; one row kept, detailed preferred",
     "note": "all industries; the ‘#’ ceiling ($115/hr, $239,200/yr) and ‘*’ are both null, never zero"
    },
+   "terms": "Public domain. BLS asks to be cited as the source: https://www.bls.gov/bls/linksite.htm",
    "script": "_data/build/fetch_oews_national.py",
    "key_required": false
   },
@@ -188,6 +204,10 @@
     "job_zone": "30.x reports zones 1 and 2 as one band keyed 2; a zone-1 row reads the merged reference row",
     "attribution": "required on the page, printed in the education source line"
    },
+   "licence": "CC BY 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+   "attribution": "This page includes information from the O*NET 30.3 Database by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA). Used under the CC BY 4.0 license. O*NET® is a trademark of USDOL/ETA. PIC has modified some of this information. USDOL/ETA has not approved, endorsed, or tested these modifications.",
+   "terms": "onetcenter.org/license_db.html sets three conditions this site has to meet and not merely describe: credit the database and USDOL/ETA, LINK to the licence, and display the registered-trademark symbol on the O*NET mark. All three are rendered in this page’s footer.",
    "script": "_data/build/fetch_onet_education.py",
    "key_required": false
   },
@@ -202,6 +222,7 @@
     "rows": "Line Item detailed occupations only; Summary rows excluded",
     "geography": "NATIONAL ONLY: no state or metro cut exists; any regional count built from it is a synthetic estimate under a stated assumption, and the sentence says so"
    },
+   "terms": "Public domain. BLS asks to be cited as the source: https://www.bls.gov/bls/linksite.htm",
    "script": "_data/build/fetch_occmix.py",
    "key_required": false
   },
@@ -214,10 +235,58 @@
     "geography": "JobsOhio Northeast (18 counties, superset of PIC-12) and the four MSAs; Ashtabula and Wayne appear only in region and state figures",
     "row": "one industry or one SOC occupation × geography: 2022 base, 2032 projected, change, percent, annual openings split, median wage",
     "projection_not_forecast": "a modelled path with no confidence band; historically under-calls turning points",
-    "register_cannot_be_rebuilt": "3252 is published only inside bundle 3250A1 and 3255 only inside 3250A2; only 326/3261/3262 are clean"
+    "register_cannot_be_rebuilt": "3252 is published only inside bundle 3250A1 and 3255 only inside 3250A2; only 326/3261/3262 are clean",
+    "access": "ohiolmi.com returns 403 to a scripted request, browser User-Agent or not, so this one is a manual download: open the directory in a browser and save the spreadsheet. Verified 2026-08-29."
    },
    "script": "_data/build/fetch_odjfs_projections.py",
    "key_required": false
+  }
+ },
+ "worked_example": {
+  "_why": [
+   "THE SIX NUMBERS THE RECIPE IS BUILT ON, read off the two files the recipe tells a",
+   "reader to download, so the guide can print the arithmetic AND the arithmetic it is not.",
+   "They are here rather than derived from a shipped page file because no page here ships",
+   "the two PRIVATE all-industry totals: the site never divides by them. A reader who",
+   "follows the intuitive same-ownership rule does, lands on a different number, and is",
+   "entitled to be told which is which instead of assuming they made a mistake.",
+   "",
+   "THEY ARE NOT TRUSTED. derive_sources.py recomputes BLS's own basis from these six",
+   "values and FAILS THE BUILD unless it reproduces the location quotient the pay page",
+   "publishes for the same cell to within 0.005. If a refetch moves that cell and nobody",
+   "moves these, the build stops rather than teaching a recipe that no longer lands."
+  ],
+  "year": 2025,
+  "area_fips": "39153",
+  "area_name": "Summit",
+  "naics": "326",
+  "read_on": "2026-08-29",
+  "local_industry_private": 3824,
+  "local_all_industry_all_ownerships": 259944,
+  "local_all_industry_private": 232800,
+  "national_industry_private": 700170,
+  "national_all_industry_all_ownerships": 155685781,
+  "national_all_industry_private": 133117983,
+  "bls_published_lq": 3.27,
+  "rows": "local: own_code 5 industry 326 agglvl 75; own_code 0 industry 10 agglvl 70; own_code 5 industry 10 agglvl 71. national (US000): own_code 5 industry 326 agglvl 15; own_code 0 industry 10 agglvl 10; own_code 5 industry 10 agglvl 11.",
+  "ownership_self_check": {
+   "_what": "The county file proves its own denominator. Each ownership TOTAL row carries a location quotient of its own, and on a same-ownership basis every one of them would be exactly 1.00 by construction. They are not.",
+   "own_5_private_lq": 1.05,
+   "own_3_local_government_lq": 0.88,
+   "own_2_state_government_lq": 0.44,
+   "own_1_federal_lq": 0.39
+  },
+  "by_industry_vintage": {
+   "_what": "The disclosure chart is a VINTAGE, and the page has to say which one or a reader who pulls the newest year reads a normal year-on-year change as a discrepancy in our arithmetic. The published year is checked against the peers page's own shipped counts at build time; the comparison year is recorded here with the date it was read.",
+   "endpoint": "https://data.bls.gov/cew/data/api/{year}/a/industry/{naics}.csv",
+   "naics": "326",
+   "own_code": "5",
+   "published_year": 2024,
+   "comparison_year": 2025,
+   "comparison_read_on": "2026-08-29",
+   "comparison_county_disclosed": 724,
+   "comparison_county_total": 1839,
+   "comparison_metro_rows": 0
   }
  },
  "by_artifact": {

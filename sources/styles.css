@@ -90,6 +90,15 @@
   color:var(--text);line-height:1.2}
 .tax .t p{margin:7px 0 0;font-size:14px;line-height:1.5;color:#4A5255}
 .tax .t .s{margin:8px 0 0;font-size:12.5px;color:var(--caption)}
+/* THE SET, not its size. Each card now carries the codes it counts, folded so the three
+   cards still read as one parallel argument at rest. */
+.tax .t .codes{margin:9px 0 0}
+.tax .t .codes summary{cursor:pointer;color:var(--action);font-weight:700;font-size:13px}
+.tax .t .codes summary:hover{color:var(--hover)}
+.tax .t .codes dl{margin:7px 0 0;font-size:12.5px;line-height:1.45;
+  display:grid;grid-template-columns:auto 1fr;gap:2px 10px}
+.tax .t .codes dt{font-weight:900;color:#2A3A3E;font-variant-numeric:tabular-nums}
+.tax .t .codes dd{margin:0;color:#4A5255}
 
 /* THE REGISTER. Fourteen entries, each of which is a small document: three sentences of
    plain language, an endpoint, a filter list and a dependency line. A grid of cards would
@@ -109,6 +118,12 @@
 .entry .lines .no b{color:var(--hover)}
 .entry .ep{margin:12px 0 0;font-family:ui-monospace,Consolas,monospace;font-size:12.5px;
   color:#3A4448;overflow-wrap:anywhere;background:#F1EEE9;padding:8px 11px}
+/* TERMS ARE NOT A LICENCE and the register keeps them visually apart from both the
+   plain-language lines and the chips: a public-domain series with a citation request is
+   a different obligation from CC BY, and printing nothing invited a reader to think no
+   term was published at all. */
+.entry .terms{margin:10px 0 0;font-size:13px;line-height:1.5;color:#4A5255}
+.entry .terms b{color:var(--ink);letter-spacing:.02em}
 .entry .dep{margin:10px 0 0;font-size:13px;color:var(--caption)}
 .entry details{margin:10px 0 0}
 .entry summary{cursor:pointer;color:var(--action);font-weight:700;font-size:13.5px;
@@ -148,9 +163,15 @@
 .page-foot p{margin:0 0 6px;max-width:var(--measure);margin-left:auto;margin-right:auto}
 .page-foot p:last-child{margin-bottom:0}
 .page-foot b{color:#fff;letter-spacing:.06em}
-/* The O*NET licence is a condition of use, not a caption: it belongs once per page, in
-   the footer, which is where boilerplate lives. */
+/* TWO LICENCES ARE CONDITIONS OF USE, not captions: they belong once per page, in the
+   footer, which is where boilerplate lives. Both require a LINK to the licence text, so
+   the anchor here is not decoration and must stay visible against the dark footer —
+   this block was set with textContent until 2026-08-29 and carried no link at all. */
 .foot-licence{margin-top:14px;font-size:12.5px;line-height:1.55;color:#8FB6BE}
+.foot-licence .attr{margin:0 0 7px}
+.foot-licence .attr:last-child{margin-bottom:0}
+.foot-licence a{color:#CFE7EC;text-decoration:underline}
+.foot-licence a:hover{color:#fff}
 
 @media (max-width:760px){
   .tax{grid-template-columns:1fr;gap:20px}
