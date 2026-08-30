@@ -1,249 +1,257 @@
 {
- "data": {
-  "ls": "laborshed.json",
-  "b": "bench.json"
- },
- "claims": [
-  {
-   "id": "ls-no-county-is-a-market",
-   "text": "Not one of the twelve counties has 70 percent of its jobs held by its own residents (H2 'seven of ten', matrix figure title in both layouts, matrix callout, hero card, default verdict sentence, mobile matrix header, the benchmark's 70 percent reference line).",
-   "source": "LEHD LODES8 origin-destination, Ohio 2022, segment JT00, main + aux",
-   "assert": "max(r['in_county'] for r in D['ls']['matrix']) < 0.70",
-   "actual": "sorted(((r['work_name'], r['in_county']) for r in D['ls']['matrix']), key=lambda x: -x[1])[:3]",
-   "falsified_if": "Any county reaches 0.70. THE THRESHOLD MOVED 2026-08-28: the page ran two ceilings a point apart, an H2 saying 'seven of ten' over a card, a callout, a pull band and a reference line all set at 69, which from outside reads as reverse-engineered from Ashtabula's 68.5 — the tightest round number keeping 'none reaches it' true. One round number now, the one the headline already said. DENOMINATOR: the share is over ALL jobs worked in the county, including those held from outside PIC-12 — dividing by the PIC-12 interior alone inflates every share (Summit reads 53.9% that way against 48.4% correctly) and would break the claim this page makes."
+  "data": {
+    "ls": "laborshed.json",
+    "b": "bench.json"
   },
-  {
-   "id": "ls-summit-under-half",
-   "text": "Summit County, the cluster's center, fills 48.4 percent of its jobs from home (standfirst, hero card, matrix callout, diagonal figure title).",
-   "source": "LODES 2022, Summit work end, all home ends",
-   "assert": "abs([r for r in D['ls']['matrix'] if r['work_name']=='Summit'][0]['in_county'] - 0.484) < 0.003",
-   "actual": "[(r['work_name'], r['in_county'], r['jobs_total']) for r in D['ls']['matrix'] if r['work_name']=='Summit']",
-   "falsified_if": "LODES revises, or the footprint changes. Cross-checked: these shares reproduce the figures in the LODES codebook independently derived by another session, which is the only cross-session validation in the stack."
-  },
-  {
-   "id": "ls-summit-jobs-total",
-   "text": "Summit County holds 265,460 jobs (standfirst, hero card, diagonal note).",
-   "source": "LODES 2022, Summit work end, all home ends",
-   "assert": "[r for r in D['ls']['matrix'] if r['work_name']=='Summit'][0]['jobs_total'] == 265460",
-   "actual": "[r['jobs_total'] for r in D['ls']['matrix'] if r['work_name']=='Summit']",
-   "falsified_if": "A LODES revision moves Summit's job count; the hand-typed 265,460 in the standfirst would then be stale."
-  },
-  {
-   "id": "ls-extremes",
-   "text": "Ashtabula is the highest at 68.5 percent and Geauga the lowest at 30.8 percent, out of exactly twelve counties (hero cards, matrix callout, default verdict sentence).",
-   "source": "LODES 2022, per-county in_county share",
-   "assert": "(lambda rows: len(rows) == 12 and max(rows, key=lambda r: r['in_county'])['work_name'] == 'Ashtabula' and abs(max(r['in_county'] for r in rows) - 0.6848) < 0.003 and min(rows, key=lambda r: r['in_county'])['work_name'] == 'Geauga' and abs(min(r['in_county'] for r in rows) - 0.3083) < 0.003)(D['ls']['matrix'])",
-   "actual": "(max(((r['work_name'], r['in_county']) for r in D['ls']['matrix']), key=lambda x: x[1]), min(((r['work_name'], r['in_county']) for r in D['ls']['matrix']), key=lambda x: x[1]))",
-   "falsified_if": "A revision changes which county is the extreme, or moves either share off the value the cards and callouts print."
-  },
-  {
-   "id": "ls-four-under-half",
-   "text": "Four counties are under half, and they are Summit, Medina, Portage and Geauga (generated H2, orange accent meaning, matrix figure subtitle, mobile annotation).",
-   "source": "LODES 2022, in_county < 0.5",
-   "assert": "set(r['work_name'] for r in D['ls']['matrix'] if r['in_county'] < 0.5) == {'Summit', 'Medina', 'Portage', 'Geauga'}",
-   "actual": "sorted((r['work_name'], r['in_county']) for r in D['ls']['matrix'] if r['in_county'] < 0.5)",
-   "falsified_if": "A county crosses 0.5 in either direction. The orange accent means exactly 'under half' on this page, so a membership change must recolor the matrix outlines, the diagonal bars and the mobile list together."
-  },
-  {
-   "id": "ls-rows-are-whole",
-   "text": "Each row accounts for every job in that county: twelve home counties plus an outside-footprint remainder (section lede, 'a row adds up to one whole county's jobs'; the subtitle used to state the same fact as arithmetic and no longer does).",
-   "source": "derived: interior cells plus external inflow per work county",
-   "assert": "all(abs(sum(c['share'] for c in r['cells']) + r['outside_share'] - 1) < 0.003 for r in D['ls']['matrix'])",
-   "actual": "[(r['work_name'], round(sum(c['share'] for c in r['cells']) + r['outside_share'], 4)) for r in D['ls']['matrix'][:3]]",
-   "falsified_if": "Any row fails to sum to one. A matrix whose rows do not close is not a share matrix, and every cell would be reading against a different denominator."
-  },
-  {
-   "id": "ls-distant-not-pandemic",
-   "text": "The distant-metro share is not a pandemic effect: Franklin County was already the largest external source in 2019.",
-   "source": "LODES 2019 baseline, pulled specifically to test this",
-   "assert": "D['ls']['external']['2019']['distant'] > 50000 and D['ls']['external']['2022']['adjacent'] / D['ls']['external']['2019']['adjacent'] < 1.05",
-   "actual": "(D['ls']['external']['2019'], D['ls']['external']['2022'])",
-   "falsified_if": "A revised 2019 vintage shows distant metros small. THIS CLAIM KILLED A STORY: the candidate 'remote work broke the labor shed' required Franklin to be small in 2019. It was 23,506 — already the largest. The hypothesis is dead and does not appear on this page; what survives is that adjacent and distant were always different things."
-  },
-  {
-   "id": "ls-distant-grew-13",
-   "text": "Distant residence grew 13 percent from 2019 to 2022 while adjacent commuting grew 1 percent (external figure title, lede).",
-   "source": "LODES 2019 and 2022, adjacent vs distant totals",
-   "assert": "abs(D['ls']['external']['2022']['distant'] / D['ls']['external']['2019']['distant'] - 1.134) <= 0.005 and abs(D['ls']['external']['2022']['adjacent'] / D['ls']['external']['2019']['adjacent'] - 1.014) <= 0.005",
-   "actual": "(D['ls']['external']['2022']['distant'] / D['ls']['external']['2019']['distant'], D['ls']['external']['2022']['adjacent'] / D['ls']['external']['2019']['adjacent'])",
-   "falsified_if": "Either growth rate leaves the band that rounds to the printed 13% and 1%. The figure title recomputes at render time, but the lede's 'roughly half' and the hero card lean on the same split."
-  },
-  {
-   "id": "ls-franklin-largest-external",
-   "text": "Franklin County (Columbus) is the largest single external source: 26,960 jobs in 2022, 23,506 in 2019 (vignette band, reading line).",
-   "source": "LODES 2019 and 2022, top external home counties",
-   "assert": "(lambda t: t[0]['name'].startswith('Franklin') and t[0]['jobs_2022'] == 26960 and t[0]['jobs_2019'] == 23506 and t[0]['jobs_2022'] == max(r['jobs_2022'] for r in t))(D['ls']['external']['top'])",
-   "actual": "D['ls']['external']['top'][0]",
-   "falsified_if": "A revision reorders the top external sources or moves Franklin's counts; the hand-typed 26,960 and 23,506 in the vignette would then be stale, as would its 'About 27,000' headline."
-  },
-  {
-   "id": "ls-not-the-cluster",
-   "text": "This is the whole economy, not the polymer cluster.",
-   "source": "LODES origin-destination carries no industry dimension at any grain",
-   "verify": "manual",
-   "assert": null,
-   "falsified_if": "Anyone describes these figures as the cluster's workforce. Industry detail exists only in the WAC workplace files, at 2-digit sectors, and cannot be crossed with residence. A polymer-specific version of this page cannot be built from this source.",
-   "checked_by": "Source-capability rule, not a data check"
-  },
-  {
-   "id": "ls-nine-of-twelve-jobs-more-local",
-   "text": "In nine of the twelve counties the share of jobs held locally exceeds the share of residents' jobs that stay local, and the figure title now states the other three rather than leaving them to be inferred (two-direction figure title).",
-   "source": "LEHD LODES8 2022, both directions per county",
-   "assert": "len([p for p in D['b']['pairs'] if p['work_own'] > p['res_own']]) == 9 and len([p for p in D['b']['pairs'] if p['res_own'] > p['work_own']]) == 3 and len(D['b']['pairs']) == 12",
-   "actual": "sorted((p['name'], round(p['work_own'] - p['res_own'], 3)) for p in D['b']['pairs'])",
-   "falsified_if": "The count leaves nine, or the two groups stop accounting for all twelve counties. KNIFE EDGE: Mahoning's gap is -0.1 percentage points, so a small revision flips it to ten; the figure title is generated from this count, but the claim exists to force that regeneration to be noticed. The title used to stop at 'nine of the twelve', which invited a reader to work out that three run the other way and then met them with a callout naming one. Both halves are printed now and both are counted here. The same knife edge is why the dumbbell dodges near-coincident pairs (see ls-coincident-pairs)."
-  },
-  {
-   "id": "ls-cuyahoga-inverts",
-   "text": "Three of the twelve counties run the other way, with a higher share of residents' jobs staying local than of local jobs going to residents: Cuyahoga at 58 percent of jobs against 76 percent of residents, Summit 3.5 points apart, and Mahoning 0.1 of a point apart, which is a tie. All three are named in the chart callout, in the figure title's count and in the source line, which is the one a phone reader gets (two-direction figure callout, figure title, source line, chart alt text).",
-   "source": "LEHD LODES8 2022, Cuyahoga both directions",
-   "assert": "(lambda inv: len(inv) == 3 and [p['name'] for p in inv] == ['Cuyahoga', 'Summit', 'Mahoning'] and abs(inv[0]['work_own'] - 0.5792) < 0.003 and abs(inv[0]['res_own'] - 0.7645) < 0.003 and round((inv[1]['res_own'] - inv[1]['work_own']) * 100, 1) == 3.5 and round((inv[2]['res_own'] - inv[2]['work_own']) * 100, 1) == 0.1)(sorted((p for p in D['b']['pairs'] if p['res_own'] > p['work_own']), key=lambda p: p['work_own'] - p['res_own']))",
-   "actual": "sorted(((p['name'], round((p['res_own'] - p['work_own']) * 100, 1)) for p in D['b']['pairs'] if p['res_own'] > p['work_own']), key=lambda x: -x[1])",
-   "falsified_if": "The membership of the three changes, their order by gap width changes, or either printed gap moves off the value the callout states. THE CALLOUT NAMED ONE OF THREE: 'Cuyahoga runs the other way' was printed over a chart in which Cuyahoga, Summit and Mahoning all do, and the figure title's 'nine of the twelve' implied the other three without ever saying which, so a reader who counted found a gap the page had the data to close and did not. KNIFE EDGE: Mahoning's gap is a tenth of a point, so a small revision moves it into the other group and rewrites both this sentence and the figure title's count; the copy is generated from the data so that it moves, and this claim is what makes the move visible. See ls-coincident-pairs, which is the same knife edge seen from the drawing side."
-  },
-  {
-   "id": "ls-county-pattern-is-national",
-   "text": "95.2 percent of the 397 counties in peer metropolitan areas are also below 70 percent, so the county-level pattern is not specific to Northeast Ohio (H2 'Ninety-five percent', the benchmark pull-quote band, closer, and the benchmark chart's 'about 5% of peers clear it', which is 100 minus this share).",
-   "source": "LEHD LODES8 2022, 397 counties in 73 single-state peer metros, in-state basis both sides",
-   "assert": "(lambda v: 0.945 <= len([x for x in v if x < 0.70]) / len(v) < 0.955 and round((1 - len([x for x in v if x < 0.70]) / len(v)) * 100) == 5)(D['b']['benchmark']['peer_values'])",
-   "actual": "(len([x for x in D['b']['benchmark']['peer_values'] if x < 0.70]), D['b']['benchmark']['n_peer_counties'])",
-   "falsified_if": "The share leaves the band that rounds to 95 percent, or its complement stops rounding to the 5 percent the chart annotation prints. RE-BASED 2026-08-28: the ceiling moved from 69 to 70, so this now COUNTS the 397 shipped peer values rather than reading the pre-computed share_below_69 field, which would have printed 94.7 under a line labelled 70. TIGHTENED 2026-08-27: the old bound (> 0.90) allowed 0.92 to pass while the H2 said 'Ninety-five percent'. If this drops, the county-level framing becomes a regional finding again and the hero must change back."
-  },
-  {
-   "id": "ls-pic12-above-peer-median",
-   "text": "The middle peer county fills 51.8 percent of its jobs with its own residents and the middle PIC-12 county fills 55.3, a gap of 3.5 percentage points (benchmark bracket in both layouts, which now prints the two rounded medians 55 and 52; reading line; closer).",
-   "source": "as above",
-   "assert": "D['b']['benchmark']['pic12_median'] > D['b']['benchmark']['peer_median'] and abs((D['b']['benchmark']['pic12_median'] - D['b']['benchmark']['peer_median']) - 0.0353) <= 0.0015 and abs(D['b']['benchmark']['pic12_median'] - 0.553) <= 0.004 and abs(D['b']['benchmark']['peer_median'] - 0.518) <= 0.004",
-   "actual": "(D['b']['benchmark']['pic12_median'], D['b']['benchmark']['peer_median'])",
-   "falsified_if": "The gap leaves the band that rounds to 3.5 points, the direction flips, or either median leaves the band that rounds to the whole percent the bracket prints. TIGHTENED 2026-08-27: the claim previously guarded only the direction, while the page now draws a labeled bracket with the size of the gap. TIGHTENED AGAIN 2026-08-28: the bracket now leads with the two medians in plain words, so both levels are printed and both are bounded here; the gap alone could hold while both medians drifted together."
-  },
-  {
-   "id": "ls-ashtabula-in-state-basis",
-   "text": "Counting only jobs held by Ohio residents, which is the benchmark's basis, Ashtabula reads 72.7 percent and clears the 70 percent line, against 68.5 percent on the all-residents basis the earlier charts use (bench chart's on-rule annotation in both layouts, bench reading line).",
-   "source": "LEHD LODES8 2022, in-state basis both sides",
-   "assert": "(lambda r: abs(r['own_share_work'] - 0.7271) < 0.003 and r['own_share_work'] > 0.70)(one(r for r in D['b']['benchmark']['pic12_counties'] if r['name'] == 'Ashtabula'))",
-   "actual": "[(r['name'], r['own_share_work'], r['percentile']) for r in D['b']['benchmark']['pic12_counties'] if r['name'] == 'Ashtabula']",
-   "falsified_if": "Ashtabula's in-state share moves off 72.7 percent or drops below 0.70. THE CHART CONTRADICTED ITS OWN LABEL: the rule was annotated 'no PIC-12 county reaches it' with Ashtabula's dot plotted plainly to the right of it, and the reconciliation sat two paragraphs below the figure, after the source note and a collapsed table link. The rule now names Ashtabula and its value at the rule. If Ashtabula stops clearing 70 on this basis, that annotation is wrong in the other direction and has to come off."
-  },
-  {
-   "id": "ls-region-is-a-market",
-   "text": "Just under 90 percent of the jobs in PIC-12 are held by people who live in PIC-12, and just under 90 percent of PIC-12 residents' jobs sit inside it. This is what the closer's display line rests on: twelve counties is the smallest unit that holds this labor market whole.",
-   "source": "LEHD LODES8 2022; workplace side Ohio main+aux, resident side Ohio main plus six neighbor aux files",
-   "assert": "D['b']['totals']['work_region_share'] > 0.85 and D['b']['totals']['res_region_share'] > 0.85",
-   "actual": "(D['b']['totals']['work_region_share'], D['b']['totals']['res_region_share'])",
-   "falsified_if": "Either share drops below 0.85. NOTE the two are different quantities with different denominators and are never summed or differenced; they agree here, which is a finding, not a construction."
-  },
-  {
-   "id": "ls-only-pittsburgh-matches",
-   "text": "Exactly one peer region of six or more counties holds more of its workforce inside its own borders than PIC-12 does, and it is Pittsburgh, at 89.6 percent on eight counties against PIC-12's 89.5 on twelve (regions figure title, on-chart label 'ahead of PIC-12, on four fewer counties', section lede, reading line, closer).",
-   "source": "as above, single-state metros only",
-   "assert": "(lambda pg, others, mine: len(pg) == 1 and pg[0]['region_share_work'] > mine and pg[0]['region_share_work'] - mine < 0.005 and pg[0]['counties'] < 12 and max(r['region_share_work'] for r in others) < mine)([r for r in D['b']['regions'] if r['name'].startswith('Pittsburgh')], [r for r in D['b']['regions'] if r['kind'] != 'footprint' and not r['name'].startswith('Pittsburgh')], D['b']['totals']['work_region_share'])",
-   "actual": "[(r['name'], r['counties'], r['region_share_work']) for r in sorted(D['b']['regions'], key=lambda r: -r['region_share_work'])[:4]]",
-   "falsified_if": "A second peer region reaches PIC-12's share, Pittsburgh stops being ahead of it, Pittsburgh's lead opens past half a point, or Pittsburgh stops having fewer counties. CORRECTED 2026-08-28: the page said 'only Pittsburgh matches it' and 'the only peer that matches' beside a bar drawn visibly longer than PIC-12's — 89.6 against 89.5 — and by the chart's own size rule (more counties means more work kept inside, for arithmetic reasons alone) Pittsburgh's eight-county figure is the stronger one. The copy now says Pittsburgh is ahead, so this claim checks the direction of the difference rather than allowing a tie. Region share rises with region size, so this stays a bounded claim about comparable regions and NOT a national ranking."
-  },
-  {
-   "id": "ls-out-of-state-is-small",
-   "text": "Only about 1 percent of PIC-12 residents' jobs are outside Ohio, so the resident-side figure is not hollowed out by out-of-state work.",
-   "source": "LEHD LODES8 2022, aux files for PA, WV, IN, KY, NY",
-   "assert": "D['b']['totals']['out_of_state_share'] < 0.03",
-   "actual": "D['b']['totals']['out_of_state_share']",
-   "falsified_if": "Out-of-state work exceeds 3 percent. Michigan's 2022 aux file is not published by LEHD, so this is a lower bound; MI is not adjacent to any PIC-12 county, which is why the omission is tolerable and stated."
-  },
-  {
-   "id": "ls-share-imported",
-   "text": "12.2 percent of the 1,735,169 jobs inside the twelve counties are held by people living outside them: 210,890 jobs in 2022, 12.15 percent before rounding (pull-quote band before the adjacent-versus-distant section).",
-   "source": "LODES 2022, jobs located in PIC-12, home county open",
-   "assert": "abs(D['ls']['totals']['share_imported'] - 0.1215) < 0.002 and D['ls']['totals']['home_outside_pic12'] == 210890 and D['ls']['totals']['jobs_worked_in_pic12'] == 1735169 and abs(D['ls']['totals']['home_outside_pic12'] / D['ls']['totals']['jobs_worked_in_pic12'] - D['ls']['totals']['share_imported']) < 0.0005 and round(D['ls']['totals']['home_outside_pic12'] / D['ls']['totals']['jobs_worked_in_pic12'] * 100, 2) == 12.15",
-   "actual": "(D['ls']['totals'], round(D['ls']['totals']['home_outside_pic12'] / D['ls']['totals']['jobs_worked_in_pic12'] * 100, 2))",
-   "falsified_if": "The share leaves the band that rounds to the 12.2% set in display type, the two counts stop dividing into it, or the unrounded percent the band now prints stops being 12.15. THE FORWARD MULTIPLICATION DID NOT CLOSE: 12.2% of 1,735,169 is 211,690, not the 210,890 printed in the same sentence, so the band states the unrounded figure and the rounding step is no longer hidden. DENOMINATOR: every job located in PIC-12, including the ones held from outside it."
-  },
-  {
-   "id": "ls-two-pic12-totals",
-   "text": "The twelve counties hold 1,735,169 jobs counting a worker resident in ANY state and 1,702,542 counting OHIO residents only, which is the basis every peer region on the regions chart is measured on. The two are 32,627 apart, both were labelled PIC-12, and each is now printed with its basis named beside it (pull band, diagonal source line, regions figure subtitle, regions source line, regions reading line, regions table header and note, closer). The two outside shares, 12.2 percent and the regions chart's 10.5 percent, share the numerator 1,524,279 and differ only in their denominator.",
-   "source": "laborshed.json totals against the same twelve counties in bench.json, which is built on the in-state basis",
-   "assert": "(lambda a, i, t, w: a == 1735169 and i == 1702542 and a - i == 32627 and one(r for r in D['b']['regions'] if r['kind'] == 'footprint')['jobs_located'] == i and i - (t['home_outside_pic12'] - (a - i)) == t['home_inside_pic12'] and abs((t['home_outside_pic12'] - (a - i)) / i - (1 - w)) < 0.0005 and abs(t['home_inside_pic12'] / a - 0.8785) < 0.002)(D['ls']['totals']['jobs_worked_in_pic12'], sum(r['jobs_located'] for r in D['b']['benchmark']['pic12_counties']), D['ls']['totals'], D['b']['totals']['work_region_share'])",
-   "actual": "(D['ls']['totals']['jobs_worked_in_pic12'], sum(r['jobs_located'] for r in D['b']['benchmark']['pic12_counties']), D['ls']['totals']['home_outside_pic12'], D['ls']['totals']['home_inside_pic12'], D['b']['totals']['work_region_share'])",
-   "falsified_if": "Either total moves, the gap between them stops being the out-of-state remainder, or the identity stops closing. THE IDENTITY IS THE CLAIM, NOT THE TWO NUMBERS: 1,524,279 jobs are held from inside the twelve on BOTH bases, so the wider basis divides it by 1,735,169 and reads 87.8 percent inside, and the narrower divides it by 1,702,542 and reads 89.5. If subtracting the out-of-state jobs from the 210,890 held from outside ever stops reproducing bench.json's own 1 - work_region_share, then the two files are no longer describing the same twelve counties and no sentence on this page reconciling them is safe. A reader met 12.2 percent of 1,735,169 in one band and 89.5 percent of a table summing to 1,702,542 five screens later, with nothing saying which was which, and could not close a gap of roughly 30,000 jobs. This is the same basis split that already bit this page at Ashtabula (68.5 against 72.7), which is why it is now guarded rather than merely mentioned."
-  },
-  {
-   "id": "ls-tail-reconciles",
-   "text": "The twelve county job totals add to 1,732,617 and the three 2022 outside-source bars add to 208,338, each short of the region totals printed beside them by the same 2,552 jobs, which the pull-quote band and the external figure's source line both state (pull band, external source line).",
-   "source": "derived: laborshed.json matrix rows and external buckets against meta totals",
-   "assert": "(lambda rows, ext, tot: tot['jobs_worked_in_pic12'] - rows == tot['home_outside_pic12'] - ext and 0 < tot['jobs_worked_in_pic12'] - rows < 0.002 * tot['jobs_worked_in_pic12'] and tot['jobs_worked_in_pic12'] - rows == 2552)(sum(r['jobs_total'] for r in D['ls']['matrix']), sum(D['ls']['external']['2022'].values()), D['ls']['totals'])",
-   "actual": "(sum(r['jobs_total'] for r in D['ls']['matrix']), D['ls']['totals']['jobs_worked_in_pic12'], sum(D['ls']['external']['2022'].values()), D['ls']['totals']['home_outside_pic12'])",
-   "falsified_if": "The two residuals stop being equal, either one changes size, or the residual grows past two in every thousand jobs. THIS IS THE ARITHMETIC A READER CHECKED AND LOST TRUST OVER: adding the twelve job counts on the ranked bars gives 1,732,617 against a stated 1,735,169, and adding the three outside-source bars gives 208,338 against a stated 210,890 — the same 2,552 both times, with nothing on the page acknowledging it. The totals count every home-to-work county pair in the LODES file; the matrix rows and the buckets are built from the largest 4,000 pairs, so the smallest home counties never reach either chart. The band now prints that reconciliation and this claim is what makes the two numbers fail together if the pair cut ever changes. The interior reconciles exactly: the twelve-by-twelve cells sum to home_inside_pic12 with no residual at all, which is why the whole difference sits on the outside column."
-  },
-  {
-   "id": "ls-two-medians-two-bases",
-   "text": "The middle of the twelve is 55.3 percent on the benchmark's in-state basis and 53.5 percent on the all-residents basis the ranked chart above uses, and the benchmark subtitle prints both so the change of basis reads as a change of measure (benchmark figure subtitle).",
-   "source": "bench.json in-state shares against laborshed.json all-residents shares, same twelve counties",
-   "assert": "(lambda a, b: abs(a - 0.5533) < 0.004 and abs(b - 0.53505) < 0.004 and a > b)(D['b']['benchmark']['pic12_median'], (lambda v: (v[5] + v[6]) / 2)(sorted(r['in_county'] for r in D['ls']['matrix'])))",
-   "actual": "(D['b']['benchmark']['pic12_median'], (lambda v: (v[5] + v[6]) / 2)(sorted(r['in_county'] for r in D['ls']['matrix'])))",
-   "falsified_if": "Either middle moves off the value the subtitle prints, or the in-state basis stops reading higher than the all-residents one. A reader went back to the ranked chart to find the 55.3 percent middle county and found 53.5, and concluded one of the two sections was wrong. The section re-bases all twelve counties, not only Ashtabula, and disclosed it for Ashtabula alone; both middles are now printed side by side and this claim recomputes each from the file it belongs to."
-  },
-  {
-   "id": "ls-matrix-hidden-remainder",
-   "text": "The matrix leaves 5 to 15 jobs in every hundred sitting in boxes under five percent, which are shaded and carry no number, and the desktop source line states that range (matrix source line).",
-   "source": "derived: per-row share not covered by a numbered cell or the outside column",
-   "assert": "(lambda h: math.floor(min(h) * 100) == 5 and math.ceil(max(h) * 100) == 15)([1 - r['outside_share'] - sum(c['share'] for c in r['cells'] if c['share'] >= 0.05) for r in D['ls']['matrix']])",
-   "actual": "sorted((round((1 - r['outside_share'] - sum(c['share'] for c in r['cells'] if c['share'] >= 0.05)) * 100, 1), r['work_name']) for r in D['ls']['matrix'])",
-   "falsified_if": "Either end of the range moves off the printed 5 or 15. The section lede promises a row adds up to one whole county's jobs and no row on screen does: Summit's numbered boxes come to 92 and Ashtabula's to 85. The size of what the labeling threshold hides is now printed rather than left for a reader to discover by adding a row up and failing."
-  },
-  {
-   "id": "ls-bucket-sublabels",
-   "text": "Both external buckets name their four largest members on the chart, read from the top-sources table rather than typed, over a second line stating what those four come to against the whole bar: adjacent is led by Columbiana, Tuscarawas, Ashland and Carroll, four of the eight listed and 36,913 of 57,302; distant by Columbus, Toledo, Cincinnati and Dayton, four of the seven listed and 50,248 of 61,708. The third bucket names nobody because nothing in it carries a name, and says so (external figure sub-labels and second sub-labels, both layouts).",
-   "source": "laborshed.json external.top, the same rows the figure's table view lists",
-   "assert": "(lambda a, d, o: len(a) == 8 and len(d) == 7 and len(o) == 12 and a[0]['name'] == 'Columbiana' and d[0]['name'].startswith('Franklin') and sum(r['jobs_2022'] for r in a[:4]) == 36913 and sum(r['jobs_2022'] for r in d[:4]) == 50248 and sum(r['jobs_2022'] for r in a[:4]) < D['ls']['external']['2022']['adjacent'] and sum(r['jobs_2022'] for r in d[:4]) < D['ls']['external']['2022']['distant'] and sum(r['jobs_2022'] for r in o) < D['ls']['external']['2022']['other'])([r for r in D['ls']['external']['top'] if r['kind'] == 'adjacent'], [r for r in D['ls']['external']['top'] if r['kind'] == 'distant'], [r for r in D['ls']['external']['top'] if r['kind'] == 'other'])",
-   "actual": "[(k, [(r['name'], r['jobs_2022']) for r in D['ls']['external']['top'] if r['kind'] == k][:4], sum(r['jobs_2022'] for r in D['ls']['external']['top'] if r['kind'] == k), D['ls']['external']['2022'][k]) for k in ('adjacent', 'distant', 'other')]",
-   "falsified_if": "Either bucket has fewer than four named sources above the 2,000-job cut, the largest member of either changes without the label changing with it, or a named four ever equals its whole bucket while the label still calls it four of more. THE LABEL LIED IN THE OTHER DIRECTION FIRST: the distant row named four metros and the adjacent row named nothing, so the adjacent-versus-distant split, the judgment the whole 'this is not a commute' argument rests on, could not be checked by a reader who does not carry Northeast Ohio geography in their head. There is no map on this page. Naming the four largest fixed that and created this defect: 'Adjacent counties, Columbiana, Tuscarawas, Ashland, Carroll, 57,302' beside four counties that come to 36,913 reads as though those four ARE the bucket. The number was right and the words were not, and a reader added them and lost 20,389 jobs. The second sub-line now prints the subset arithmetic, so this claim bounds both failures: the names must be there AND they must not equal the bar."
-  },
-  {
-   "id": "ls-unnamed-origins",
-   "text": "Twelve rows of the external-sources table carry a five-digit county code and no place name, 31,433 jobs between them, because the build names an external source only when it is one of the twelve or one of the counties the adjacent and distant lists judge and no county crosswalk ships with this page. Those rows print as 'Unnamed county 39089' rather than as a bare code, the figure subtitle and the 'Everywhere else' bucket label both say so, and the table note gives the count, the job total and the one code that is not an Ohio county (external figure subtitle, third bucket sub-labels, external table cells and note).",
-   "source": "laborshed.json external.top, where the name field falls back to the FIPS code",
-   "assert": "(lambda u, o, oh: len(u) == 12 and sum(r['jobs_2022'] for r in u) == 31433 and all(r['kind'] == 'other' for r in u) and len(o) == len(u) and len([r for r in u if not r['fips'].startswith(oh)]) == 1 and all(r['name'] != r['fips'] for r in D['ls']['external']['top'] if r['kind'] != 'other'))([r for r in D['ls']['external']['top'] if r['name'] == r['fips']], [r for r in D['ls']['external']['top'] if r['kind'] == 'other'], D['ls']['order'][0]['fips'][:2])",
-   "actual": "[(r['fips'], r['kind'], r['jobs_2022']) for r in D['ls']['external']['top'] if r['name'] == r['fips']]",
-   "falsified_if": "A row outside the 'other' bucket loses its name, the unnamed count or job total changes without the figure and table changing with it, or more than one unnamed source stops carrying Ohio's state prefix. THIS IS A DATA NEED, NOT A FIX: the names cannot be recovered from anything this repository ships, so the page states the gap instead of printing a code a reader cannot use. It is recorded in laborshed/README.md. If a county crosswalk is ever added to the build, these twelve get names and this claim should be replaced by one asserting that every source is named."
-  },
-  {
-   "id": "ls-wider-footprint-adds",
-   "text": "Three of the four counties the fourteen-county Northeast Ohio footprint adds to PIC-12 are among the ten largest outside sources of PIC-12 jobs: Tuscarawas, Richland and Huron. Crawford, the fourth, is not among the largest external sources at all, and the closer now names all four and singles Crawford out by name rather than saying 'three of them' (closer).",
-   "source": "LODES 2022 external home counties, against the PIC-12/NEO-14 difference in _data/build/footprints.py",
-   "assert": "(lambda adds, top: len(adds) == 4 and len([r for r in top[:10] if r['name'].split(' (')[0] in adds]) == 3 and not [r for r in top if r['name'].split(' (')[0] == 'Crawford'])(D['ls']['meta']['footprint']['wider_adds'], D['ls']['external']['top'])",
-   "actual": "[(i + 1, r['name'], r['jobs_2022']) for i, r in enumerate(D['ls']['external']['top']) if r['name'].split(' (')[0] in D['ls']['meta']['footprint']['wider_adds']]",
-   "falsified_if": "Fewer or more than three of the four additions rank in the top ten, or Crawford appears among the ranked external sources. THIS REPLACED A WRONG PUBLISHED SENTENCE: the closer said the four counties feeding this workforce most heavily are exactly the ones PIC-12 excludes and NEO-14 includes. The two largest are Franklin (26,960) and Columbiana (14,138), and neither footprint contains either. Denominator: the four is len(wider_adds), read from the data, not typed."
-  },
-  {
-   "id": "ls-regions-size-order",
-   "text": "The regions figure is ordered by how many counties each region has, and PIC-12 and Pittsburgh are the only two regions above 85 percent, so the two that break the size slope are visible as a shape rather than asserted in prose (regions figure, its lede and axis label).",
-   "source": "LODES 2022, single-state peer metros of six or more counties",
-   "assert": "sorted(r['name'] for r in D['b']['regions'] if r['region_share_work'] >= 0.85) == ['PIC-12', 'Pittsburgh, PA'] and len(D['b']['regions']) == 8",
-   "actual": "sorted(((r['counties'], r['name'], round(r['region_share_work'], 4)) for r in D['b']['regions']), reverse=True)",
-   "falsified_if": "A third region reaches 85 percent, or the peer set changes size. The bars are sorted on county count, so the argument is carried by two bars standing above their own size neighbours; if a third joins them, ordering by size no longer isolates the finding and the form has to change again. The chart was previously sorted on share, which drew a two-variable claim as a one-variable ranking."
-  },
-  {
-   "id": "ls-coincident-pairs",
-   "text": "Exactly one county's two dots on the reciprocal chart sit closer together than 1.2 percentage points: Mahoning, at jobs 53.4 percent against residents 53.5 percent. That row is the one the chart dodges vertically.",
-   "source": "LEHD LODES8 2022, both directions per county",
-   "assert": "[p['name'] for p in D['b']['pairs'] if abs(p['work_own'] - p['res_own']) < 0.012] == ['Mahoning']",
-   "actual": "sorted(((round(abs(p['work_own'] - p['res_own']), 4), p['name']) for p in D['b']['pairs']))[:3]",
-   "falsified_if": "A second county's pair falls inside 1.2 points, or Mahoning's opens past it. At the chart's scale 1.2 points is under three pixels, and the two dots printed as one: the teal dot was fully occluded and the row published as a missing datum. If the set changes, the dodge applies to different rows and the crops have to be looked at again."
-  },
-  {
-   "id": "ls-region-labels",
-   "text": "Every region on the regions chart carries a hand-written short label, so no axis label is machine-truncated (regions figure, both layouts).",
-   "source": "editorial label strings in bench.json, one per region",
-   "assert": "all(0 < len(r.get('short') or '') <= 14 and (r.get('short') or '\\x00') in r['name'] for r in D['b']['regions'])",
-   "actual": "[(r['short'], r['name']) for r in D['b']['regions']]",
-   "falsified_if": "A region has no short label, its label runs past 14 characters, or the short label is not a substring of the full region name. The desktop chart shipped 'Indianapolis-Carmel-G…' from a 21-character slice while the phone rendered the name in full: machine truncation mid-word is a build error, and this claim is what stops it coming back when the peer set changes."
-  },
-  {
-   "id": "ls-citation-fields",
-   "text": "The short citation printed under each figure is cut from the full registry citation in the data, not typed beside it (all six figure source lines).",
-   "source": "meta.source in laborshed.json and bench.json",
-   "assert": "[s.strip() for s in D['ls']['meta']['source'].split(',')][:3] == ['LEHD LODES8 origin-destination', 'Ohio', '2022'] and D['b']['meta']['source'].split('.')[0].strip() == 'LEHD LODES8 origin-destination, 2022' and D['b']['meta']['source'].count('segment JT00') == 0",
-   "actual": "(D['ls']['meta']['source'], D['b']['meta']['source'])",
-   "falsified_if": "Either source string stops leading with source, geography and year in that order, so the visible line would silently lose its year or gain a register internal. bench.json's own source string used to contain its citation TWICE, and the note that read it shipped 'LEHD LODES8 origin-destination, 2022, segment JT00. LEHD LODES8 origin-destination, 2022, segment JT00 (all jobs).' on both layouts."
-  }
- ]
+  "claims": [
+    {
+      "id": "ls-no-county-is-a-market",
+      "text": "Not one of the twelve counties has 70 percent of its jobs held by its own residents (H2 'seven of ten', matrix figure title in both layouts, matrix callout, hero card, default verdict sentence, mobile matrix header, the benchmark's 70 percent reference line).",
+      "source": "LEHD LODES8 origin-destination, Ohio 2022, segment JT00, main + aux",
+      "assert": "max(r['in_county'] for r in D['ls']['matrix']) < 0.70",
+      "actual": "sorted(((r['work_name'], r['in_county']) for r in D['ls']['matrix']), key=lambda x: -x[1])[:3]",
+      "falsified_if": "Any county reaches 0.70. THE THRESHOLD MOVED 2026-08-28: the page ran two ceilings a point apart, an H2 saying 'seven of ten' over a card, a callout, a pull band and a reference line all set at 69, which from outside reads as reverse-engineered from Ashtabula's 68.5 — the tightest round number keeping 'none reaches it' true. One round number now, the one the headline already said. DENOMINATOR: the share is over ALL jobs worked in the county, including those held from outside PIC-12 — dividing by the PIC-12 interior alone inflates every share (Summit reads 53.9% that way against 48.4% correctly) and would break the claim this page makes."
+    },
+    {
+      "id": "ls-summit-under-half",
+      "text": "Summit County, the cluster's center, fills 48.4 percent of its jobs from home (standfirst, hero card, matrix callout, diagonal figure title).",
+      "source": "LODES 2022, Summit work end, all home ends",
+      "assert": "abs([r for r in D['ls']['matrix'] if r['work_name']=='Summit'][0]['in_county'] - 0.484) < 0.003",
+      "actual": "[(r['work_name'], r['in_county'], r['jobs_total']) for r in D['ls']['matrix'] if r['work_name']=='Summit']",
+      "falsified_if": "LODES revises, or the footprint changes. Cross-checked: these shares reproduce the figures in the LODES codebook independently derived by another session, which is the only cross-session validation in the stack."
+    },
+    {
+      "id": "ls-summit-jobs-total",
+      "text": "Summit County holds 265,460 jobs (standfirst, hero card, diagonal note).",
+      "source": "LODES 2022, Summit work end, all home ends",
+      "assert": "[r for r in D['ls']['matrix'] if r['work_name']=='Summit'][0]['jobs_total'] == 265460",
+      "actual": "[r['jobs_total'] for r in D['ls']['matrix'] if r['work_name']=='Summit']",
+      "falsified_if": "A LODES revision moves Summit's job count; the hand-typed 265,460 in the standfirst would then be stale."
+    },
+    {
+      "id": "ls-extremes",
+      "text": "Ashtabula is the highest at 68.5 percent and Geauga the lowest at 30.8 percent, out of exactly twelve counties (hero cards, matrix callout, default verdict sentence).",
+      "source": "LODES 2022, per-county in_county share",
+      "assert": "(lambda rows: len(rows) == 12 and max(rows, key=lambda r: r['in_county'])['work_name'] == 'Ashtabula' and abs(max(r['in_county'] for r in rows) - 0.6848) < 0.003 and min(rows, key=lambda r: r['in_county'])['work_name'] == 'Geauga' and abs(min(r['in_county'] for r in rows) - 0.3083) < 0.003)(D['ls']['matrix'])",
+      "actual": "(max(((r['work_name'], r['in_county']) for r in D['ls']['matrix']), key=lambda x: x[1]), min(((r['work_name'], r['in_county']) for r in D['ls']['matrix']), key=lambda x: x[1]))",
+      "falsified_if": "A revision changes which county is the extreme, or moves either share off the value the cards and callouts print."
+    },
+    {
+      "id": "ls-four-under-half",
+      "text": "Four counties are under half, and they are Summit, Medina, Portage and Geauga (generated H2, orange accent meaning, matrix figure subtitle, mobile annotation).",
+      "source": "LODES 2022, in_county < 0.5",
+      "assert": "set(r['work_name'] for r in D['ls']['matrix'] if r['in_county'] < 0.5) == {'Summit', 'Medina', 'Portage', 'Geauga'}",
+      "actual": "sorted((r['work_name'], r['in_county']) for r in D['ls']['matrix'] if r['in_county'] < 0.5)",
+      "falsified_if": "A county crosses 0.5 in either direction. The orange accent means exactly 'under half' on this page, so a membership change must recolor the matrix outlines, the diagonal bars and the mobile list together."
+    },
+    {
+      "id": "ls-rows-are-whole",
+      "text": "Each row accounts for every job in that county: twelve home counties plus an outside-footprint remainder (section lede, 'a row adds up to one whole county's jobs'; the subtitle used to state the same fact as arithmetic and no longer does).",
+      "source": "derived: interior cells plus external inflow per work county",
+      "assert": "all(abs(sum(c['share'] for c in r['cells']) + r['outside_share'] - 1) < 0.003 for r in D['ls']['matrix'])",
+      "actual": "[(r['work_name'], round(sum(c['share'] for c in r['cells']) + r['outside_share'], 4)) for r in D['ls']['matrix'][:3]]",
+      "falsified_if": "Any row fails to sum to one. A matrix whose rows do not close is not a share matrix, and every cell would be reading against a different denominator."
+    },
+    {
+      "id": "ls-distant-not-pandemic",
+      "text": "The distant-metro share is not a pandemic effect: Franklin County was already the largest external source in 2019.",
+      "source": "LODES 2019 baseline, pulled specifically to test this",
+      "assert": "D['ls']['external']['2019']['distant'] > 50000 and D['ls']['external']['2022']['adjacent'] / D['ls']['external']['2019']['adjacent'] < 1.05",
+      "actual": "(D['ls']['external']['2019'], D['ls']['external']['2022'])",
+      "falsified_if": "A revised 2019 vintage shows distant metros small. THIS CLAIM KILLED A STORY: the candidate 'remote work broke the labor shed' required Franklin to be small in 2019. It was 23,506 — already the largest. The hypothesis is dead and does not appear on this page; what survives is that adjacent and distant were always different things."
+    },
+    {
+      "id": "ls-distant-grew-13",
+      "text": "Distant residence grew 13 percent from 2019 to 2022 while adjacent commuting grew 1 percent (external figure title, lede).",
+      "source": "LODES 2019 and 2022, adjacent vs distant totals",
+      "assert": "abs(D['ls']['external']['2022']['distant'] / D['ls']['external']['2019']['distant'] - 1.134) <= 0.005 and abs(D['ls']['external']['2022']['adjacent'] / D['ls']['external']['2019']['adjacent'] - 1.014) <= 0.005",
+      "actual": "(D['ls']['external']['2022']['distant'] / D['ls']['external']['2019']['distant'], D['ls']['external']['2022']['adjacent'] / D['ls']['external']['2019']['adjacent'])",
+      "falsified_if": "Either growth rate leaves the band that rounds to the printed 13% and 1%. The figure title recomputes at render time, but the lede's 'roughly half' and the hero card lean on the same split."
+    },
+    {
+      "id": "ls-franklin-largest-external",
+      "text": "Franklin County (Columbus) is the largest single external source: 26,960 jobs in 2022, 23,506 in 2019 (vignette band, reading line).",
+      "source": "LODES 2019 and 2022, top external home counties",
+      "assert": "(lambda t: t[0]['name'].startswith('Franklin') and t[0]['jobs_2022'] == 26960 and t[0]['jobs_2019'] == 23506 and t[0]['jobs_2022'] == max(r['jobs_2022'] for r in t))(D['ls']['external']['top'])",
+      "actual": "D['ls']['external']['top'][0]",
+      "falsified_if": "A revision reorders the top external sources or moves Franklin's counts; the hand-typed 26,960 and 23,506 in the vignette would then be stale, as would its 'About 27,000' headline."
+    },
+    {
+      "id": "ls-not-the-cluster",
+      "text": "This is the whole economy, not the polymer cluster.",
+      "source": "LODES origin-destination carries no industry dimension at any grain",
+      "verify": "manual",
+      "assert": null,
+      "falsified_if": "Anyone describes these figures as the cluster's workforce. Industry detail exists only in the WAC workplace files, at 2-digit sectors, and cannot be crossed with residence. A polymer-specific version of this page cannot be built from this source.",
+      "checked_by": "Source-capability rule, not a data check"
+    },
+    {
+      "id": "ls-nine-of-twelve-jobs-more-local",
+      "text": "In nine of the twelve counties the share of jobs held locally exceeds the share of residents' jobs that stay local, and the figure title now states the other three rather than leaving them to be inferred (two-direction figure title).",
+      "source": "LEHD LODES8 2022, both directions per county",
+      "assert": "len([p for p in D['b']['pairs'] if p['work_own'] > p['res_own']]) == 9 and len([p for p in D['b']['pairs'] if p['res_own'] > p['work_own']]) == 3 and len(D['b']['pairs']) == 12",
+      "actual": "sorted((p['name'], round(p['work_own'] - p['res_own'], 3)) for p in D['b']['pairs'])",
+      "falsified_if": "The count leaves nine, or the two groups stop accounting for all twelve counties. KNIFE EDGE: Mahoning's gap is -0.1 percentage points, so a small revision flips it to ten; the figure title is generated from this count, but the claim exists to force that regeneration to be noticed. The title used to stop at 'nine of the twelve', which invited a reader to work out that three run the other way and then met them with a callout naming one. Both halves are printed now and both are counted here. The same knife edge is why the dumbbell dodges near-coincident pairs (see ls-coincident-pairs)."
+    },
+    {
+      "id": "ls-cuyahoga-inverts",
+      "text": "Three of the twelve counties run the other way, with a higher share of residents' jobs staying local than of local jobs going to residents: Cuyahoga at 58 percent of jobs against 76 percent of residents, Summit 3.5 points apart, and Mahoning 0.1 of a point apart, which is a tie. All three are named in the chart callout, in the figure title's count and in the source line, which is the one a phone reader gets (two-direction figure callout, figure title, source line, chart alt text).",
+      "source": "LEHD LODES8 2022, Cuyahoga both directions",
+      "assert": "(lambda inv: len(inv) == 3 and [p['name'] for p in inv] == ['Cuyahoga', 'Summit', 'Mahoning'] and abs(inv[0]['work_own'] - 0.5792) < 0.003 and abs(inv[0]['res_own'] - 0.7645) < 0.003 and round((inv[1]['res_own'] - inv[1]['work_own']) * 100, 1) == 3.5 and round((inv[2]['res_own'] - inv[2]['work_own']) * 100, 1) == 0.1)(sorted((p for p in D['b']['pairs'] if p['res_own'] > p['work_own']), key=lambda p: p['work_own'] - p['res_own']))",
+      "actual": "sorted(((p['name'], round((p['res_own'] - p['work_own']) * 100, 1)) for p in D['b']['pairs'] if p['res_own'] > p['work_own']), key=lambda x: -x[1])",
+      "falsified_if": "The membership of the three changes, their order by gap width changes, or either printed gap moves off the value the callout states. THE CALLOUT NAMED ONE OF THREE: 'Cuyahoga runs the other way' was printed over a chart in which Cuyahoga, Summit and Mahoning all do, and the figure title's 'nine of the twelve' implied the other three without ever saying which, so a reader who counted found a gap the page had the data to close and did not. KNIFE EDGE: Mahoning's gap is a tenth of a point, so a small revision moves it into the other group and rewrites both this sentence and the figure title's count; the copy is generated from the data so that it moves, and this claim is what makes the move visible. See ls-coincident-pairs, which is the same knife edge seen from the drawing side."
+    },
+    {
+      "id": "ls-county-pattern-is-national",
+      "text": "95.2 percent of the 397 counties in peer metropolitan areas are also below 70 percent, so the county-level pattern is not specific to Northeast Ohio (H2 'Ninety-five percent', the benchmark pull-quote band, closer, and the benchmark chart's 'about 5% of peers clear it', which is 100 minus this share).",
+      "source": "LEHD LODES8 2022, 397 counties in 73 single-state peer metros, in-state basis both sides",
+      "assert": "(lambda v: 0.945 <= len([x for x in v if x < 0.70]) / len(v) < 0.955 and round((1 - len([x for x in v if x < 0.70]) / len(v)) * 100) == 5)(D['b']['benchmark']['peer_values'])",
+      "actual": "(len([x for x in D['b']['benchmark']['peer_values'] if x < 0.70]), D['b']['benchmark']['n_peer_counties'])",
+      "falsified_if": "The share leaves the band that rounds to 95 percent, or its complement stops rounding to the 5 percent the chart annotation prints. RE-BASED 2026-08-28: the ceiling moved from 69 to 70, so this now COUNTS the 397 shipped peer values rather than reading the pre-computed share_below_69 field, which would have printed 94.7 under a line labelled 70. TIGHTENED 2026-08-27: the old bound (> 0.90) allowed 0.92 to pass while the H2 said 'Ninety-five percent'. If this drops, the county-level framing becomes a regional finding again and the hero must change back."
+    },
+    {
+      "id": "ls-pic12-above-peer-median",
+      "text": "The middle peer county fills 51.8 percent of its jobs with its own residents and the middle PIC-12 county fills 55.3, a gap of 3.5 percentage points (benchmark bracket in both layouts, which now prints the two rounded medians 55 and 52; reading line; closer).",
+      "source": "as above",
+      "assert": "D['b']['benchmark']['pic12_median'] > D['b']['benchmark']['peer_median'] and abs((D['b']['benchmark']['pic12_median'] - D['b']['benchmark']['peer_median']) - 0.0353) <= 0.0015 and abs(D['b']['benchmark']['pic12_median'] - 0.553) <= 0.004 and abs(D['b']['benchmark']['peer_median'] - 0.518) <= 0.004",
+      "actual": "(D['b']['benchmark']['pic12_median'], D['b']['benchmark']['peer_median'])",
+      "falsified_if": "The gap leaves the band that rounds to 3.5 points, the direction flips, or either median leaves the band that rounds to the whole percent the bracket prints. TIGHTENED 2026-08-27: the claim previously guarded only the direction, while the page now draws a labeled bracket with the size of the gap. TIGHTENED AGAIN 2026-08-28: the bracket now leads with the two medians in plain words, so both levels are printed and both are bounded here; the gap alone could hold while both medians drifted together."
+    },
+    {
+      "id": "ls-ashtabula-in-state-basis",
+      "text": "Counting only jobs held by Ohio residents, which is the benchmark's basis, Ashtabula reads 72.7 percent and clears the 70 percent line, against 68.5 percent on the all-residents basis the earlier charts use (bench chart's on-rule annotation in both layouts, bench reading line).",
+      "source": "LEHD LODES8 2022, in-state basis both sides",
+      "assert": "(lambda r: abs(r['own_share_work'] - 0.7271) < 0.003 and r['own_share_work'] > 0.70)(one(r for r in D['b']['benchmark']['pic12_counties'] if r['name'] == 'Ashtabula'))",
+      "actual": "[(r['name'], r['own_share_work'], r['percentile']) for r in D['b']['benchmark']['pic12_counties'] if r['name'] == 'Ashtabula']",
+      "falsified_if": "Ashtabula's in-state share moves off 72.7 percent or drops below 0.70. THE CHART CONTRADICTED ITS OWN LABEL: the rule was annotated 'no PIC-12 county reaches it' with Ashtabula's dot plotted plainly to the right of it, and the reconciliation sat two paragraphs below the figure, after the source note and a collapsed table link. The rule now names Ashtabula and its value at the rule. If Ashtabula stops clearing 70 on this basis, that annotation is wrong in the other direction and has to come off."
+    },
+    {
+      "id": "ls-region-is-a-market",
+      "text": "Just under 90 percent of the jobs in PIC-12 are held by people who live in PIC-12, and just under 90 percent of PIC-12 residents' jobs sit inside it. This is what the closer's display line rests on: twelve counties is the smallest unit that holds this labor market whole.",
+      "source": "LEHD LODES8 2022; workplace side Ohio main+aux, resident side Ohio main plus six neighbor aux files",
+      "assert": "D['b']['totals']['work_region_share'] > 0.85 and D['b']['totals']['res_region_share'] > 0.85",
+      "actual": "(D['b']['totals']['work_region_share'], D['b']['totals']['res_region_share'])",
+      "falsified_if": "Either share drops below 0.85. NOTE the two are different quantities with different denominators and are never summed or differenced; they agree here, which is a finding, not a construction."
+    },
+    {
+      "id": "ls-only-pittsburgh-matches",
+      "text": "Exactly one peer region of six or more counties holds more of its workforce inside its own borders than PIC-12 does, and it is Pittsburgh, at 89.6 percent on eight counties against PIC-12's 89.5 on twelve (regions figure title, on-chart label 'ahead of PIC-12, on four fewer counties', section lede, reading line, closer).",
+      "source": "as above, single-state metros only",
+      "assert": "(lambda pg, others, mine: len(pg) == 1 and pg[0]['region_share_work'] > mine and pg[0]['region_share_work'] - mine < 0.005 and pg[0]['counties'] < 12 and max(r['region_share_work'] for r in others) < mine)([r for r in D['b']['regions'] if r['name'].startswith('Pittsburgh')], [r for r in D['b']['regions'] if r['kind'] != 'footprint' and not r['name'].startswith('Pittsburgh')], D['b']['totals']['work_region_share'])",
+      "actual": "[(r['name'], r['counties'], r['region_share_work']) for r in sorted(D['b']['regions'], key=lambda r: -r['region_share_work'])[:4]]",
+      "falsified_if": "A second peer region reaches PIC-12's share, Pittsburgh stops being ahead of it, Pittsburgh's lead opens past half a point, or Pittsburgh stops having fewer counties. CORRECTED 2026-08-28: the page said 'only Pittsburgh matches it' and 'the only peer that matches' beside a bar drawn visibly longer than PIC-12's — 89.6 against 89.5 — and by the chart's own size rule (more counties means more work kept inside, for arithmetic reasons alone) Pittsburgh's eight-county figure is the stronger one. The copy now says Pittsburgh is ahead, so this claim checks the direction of the difference rather than allowing a tie. Region share rises with region size, so this stays a bounded claim about comparable regions and NOT a national ranking."
+    },
+    {
+      "id": "ls-out-of-state-is-small",
+      "text": "Only about 1 percent of PIC-12 residents' jobs are outside Ohio, so the resident-side figure is not hollowed out by out-of-state work.",
+      "source": "LEHD LODES8 2022, aux files for PA, WV, IN, KY, NY",
+      "assert": "D['b']['totals']['out_of_state_share'] < 0.03",
+      "actual": "D['b']['totals']['out_of_state_share']",
+      "falsified_if": "Out-of-state work exceeds 3 percent. Michigan's 2022 aux file is not published by LEHD, so this is a lower bound; MI is not adjacent to any PIC-12 county, which is why the omission is tolerable and stated."
+    },
+    {
+      "id": "ls-share-imported",
+      "text": "12.2 percent of the 1,735,169 jobs inside the twelve counties are held by people living outside them: 210,890 jobs in 2022, 12.15 percent before rounding (pull-quote band before the adjacent-versus-distant section).",
+      "source": "LODES 2022, jobs located in PIC-12, home county open",
+      "assert": "abs(D['ls']['totals']['share_imported'] - 0.1215) < 0.002 and D['ls']['totals']['home_outside_pic12'] == 210890 and D['ls']['totals']['jobs_worked_in_pic12'] == 1735169 and abs(D['ls']['totals']['home_outside_pic12'] / D['ls']['totals']['jobs_worked_in_pic12'] - D['ls']['totals']['share_imported']) < 0.0005 and round(D['ls']['totals']['home_outside_pic12'] / D['ls']['totals']['jobs_worked_in_pic12'] * 100, 2) == 12.15",
+      "actual": "(D['ls']['totals'], round(D['ls']['totals']['home_outside_pic12'] / D['ls']['totals']['jobs_worked_in_pic12'] * 100, 2))",
+      "falsified_if": "The share leaves the band that rounds to the 12.2% set in display type, the two counts stop dividing into it, or the unrounded percent the band now prints stops being 12.15. THE FORWARD MULTIPLICATION DID NOT CLOSE: 12.2% of 1,735,169 is 211,690, not the 210,890 printed in the same sentence, so the band states the unrounded figure and the rounding step is no longer hidden. DENOMINATOR: every job located in PIC-12, including the ones held from outside it."
+    },
+    {
+      "id": "ls-two-pic12-totals",
+      "text": "The twelve counties hold 1,735,169 jobs counting a worker resident in ANY state and 1,702,542 counting OHIO residents only, which is the basis every peer region on the regions chart is measured on. The two are 32,627 apart, both were labelled PIC-12, and each is now printed with its basis named beside it (pull band, diagonal source line, regions figure subtitle, regions source line, regions reading line, regions table header and note, closer). The two outside shares, 12.2 percent and the regions chart's 10.5 percent, share the numerator 1,524,279 and differ only in their denominator.",
+      "source": "laborshed.json totals against the same twelve counties in bench.json, which is built on the in-state basis",
+      "assert": "(lambda a, i, t, w: a == 1735169 and i == 1702542 and a - i == 32627 and one(r for r in D['b']['regions'] if r['kind'] == 'footprint')['jobs_located'] == i and i - (t['home_outside_pic12'] - (a - i)) == t['home_inside_pic12'] and abs((t['home_outside_pic12'] - (a - i)) / i - (1 - w)) < 0.0005 and abs(t['home_inside_pic12'] / a - 0.8785) < 0.002)(D['ls']['totals']['jobs_worked_in_pic12'], sum(r['jobs_located'] for r in D['b']['benchmark']['pic12_counties']), D['ls']['totals'], D['b']['totals']['work_region_share'])",
+      "actual": "(D['ls']['totals']['jobs_worked_in_pic12'], sum(r['jobs_located'] for r in D['b']['benchmark']['pic12_counties']), D['ls']['totals']['home_outside_pic12'], D['ls']['totals']['home_inside_pic12'], D['b']['totals']['work_region_share'])",
+      "falsified_if": "Either total moves, the gap between them stops being the out-of-state remainder, or the identity stops closing. THE IDENTITY IS THE CLAIM, NOT THE TWO NUMBERS: 1,524,279 jobs are held from inside the twelve on BOTH bases, so the wider basis divides it by 1,735,169 and reads 87.8 percent inside, and the narrower divides it by 1,702,542 and reads 89.5. If subtracting the out-of-state jobs from the 210,890 held from outside ever stops reproducing bench.json's own 1 - work_region_share, then the two files are no longer describing the same twelve counties and no sentence on this page reconciling them is safe. A reader met 12.2 percent of 1,735,169 in one band and 89.5 percent of a table summing to 1,702,542 five screens later, with nothing saying which was which, and could not close a gap of roughly 30,000 jobs. This is the same basis split that already bit this page at Ashtabula (68.5 against 72.7), which is why it is now guarded rather than merely mentioned."
+    },
+    {
+      "id": "ls-tail-reconciles",
+      "text": "The twelve county job totals add to 1,732,617 and the three 2022 outside-source bars add to 208,338, each short of the region totals printed beside them by the same 2,552 jobs, which the pull-quote band and the external figure's source line both state (pull band, external source line).",
+      "source": "derived: laborshed.json matrix rows and external buckets against meta totals",
+      "assert": "(lambda rows, ext, tot: tot['jobs_worked_in_pic12'] - rows == tot['home_outside_pic12'] - ext and 0 < tot['jobs_worked_in_pic12'] - rows < 0.002 * tot['jobs_worked_in_pic12'] and tot['jobs_worked_in_pic12'] - rows == 2552)(sum(r['jobs_total'] for r in D['ls']['matrix']), sum(D['ls']['external']['2022'].values()), D['ls']['totals'])",
+      "actual": "(sum(r['jobs_total'] for r in D['ls']['matrix']), D['ls']['totals']['jobs_worked_in_pic12'], sum(D['ls']['external']['2022'].values()), D['ls']['totals']['home_outside_pic12'])",
+      "falsified_if": "The two residuals stop being equal, either one changes size, or the residual grows past two in every thousand jobs. THIS IS THE ARITHMETIC A READER CHECKED AND LOST TRUST OVER: adding the twelve job counts on the ranked bars gives 1,732,617 against a stated 1,735,169, and adding the three outside-source bars gives 208,338 against a stated 210,890 — the same 2,552 both times, with nothing on the page acknowledging it. The totals count every home-to-work county pair in the LODES file; the matrix rows and the buckets are built from the largest 4,000 pairs, so the smallest home counties never reach either chart. The band now prints that reconciliation and this claim is what makes the two numbers fail together if the pair cut ever changes. The interior reconciles exactly: the twelve-by-twelve cells sum to home_inside_pic12 with no residual at all, which is why the whole difference sits on the outside column."
+    },
+    {
+      "id": "ls-two-medians-two-bases",
+      "text": "The middle of the twelve is 55.3 percent on the benchmark's in-state basis and 53.5 percent on the all-residents basis the ranked chart above uses, and the benchmark subtitle prints both so the change of basis reads as a change of measure (benchmark figure subtitle).",
+      "source": "bench.json in-state shares against laborshed.json all-residents shares, same twelve counties",
+      "assert": "(lambda a, b: abs(a - 0.5533) < 0.004 and abs(b - 0.53505) < 0.004 and a > b)(D['b']['benchmark']['pic12_median'], (lambda v: (v[5] + v[6]) / 2)(sorted(r['in_county'] for r in D['ls']['matrix'])))",
+      "actual": "(D['b']['benchmark']['pic12_median'], (lambda v: (v[5] + v[6]) / 2)(sorted(r['in_county'] for r in D['ls']['matrix'])))",
+      "falsified_if": "Either middle moves off the value the subtitle prints, or the in-state basis stops reading higher than the all-residents one. A reader went back to the ranked chart to find the 55.3 percent middle county and found 53.5, and concluded one of the two sections was wrong. The section re-bases all twelve counties, not only Ashtabula, and disclosed it for Ashtabula alone; both middles are now printed side by side and this claim recomputes each from the file it belongs to."
+    },
+    {
+      "id": "ls-matrix-hidden-remainder",
+      "text": "The matrix leaves 5 to 15 jobs in every hundred sitting in boxes under five percent, which are shaded and carry no number, and the desktop source line states that range (matrix source line).",
+      "source": "derived: per-row share not covered by a numbered cell or the outside column",
+      "assert": "(lambda h: math.floor(min(h) * 100) == 5 and math.ceil(max(h) * 100) == 15)([1 - r['outside_share'] - sum(c['share'] for c in r['cells'] if c['share'] >= 0.05) for r in D['ls']['matrix']])",
+      "actual": "sorted((round((1 - r['outside_share'] - sum(c['share'] for c in r['cells'] if c['share'] >= 0.05)) * 100, 1), r['work_name']) for r in D['ls']['matrix'])",
+      "falsified_if": "Either end of the range moves off the printed 5 or 15. The section lede promises a row adds up to one whole county's jobs and no row on screen does: Summit's numbered boxes come to 92 and Ashtabula's to 85. The size of what the labeling threshold hides is now printed rather than left for a reader to discover by adding a row up and failing."
+    },
+    {
+      "id": "ls-bucket-sublabels",
+      "text": "Both external buckets name their four largest members on the chart, read from the top-sources table rather than typed, over a second line stating what those four come to against the whole bar: adjacent is led by Columbiana, Tuscarawas, Ashland and Carroll, four of the eight listed and 36,913 of 57,302; distant by Columbus, Toledo, Cincinnati and Dayton, four of the seven listed and 50,248 of 61,708. The third bucket names nobody because nothing in it carries a name, and says so (external figure sub-labels and second sub-labels, both layouts).",
+      "source": "laborshed.json external.top, the same rows the figure's table view lists",
+      "assert": "(lambda a, d, o: len(a) == 8 and len(d) == 7 and len(o) == 12 and a[0]['name'] == 'Columbiana' and d[0]['name'].startswith('Franklin') and sum(r['jobs_2022'] for r in a[:4]) == 36913 and sum(r['jobs_2022'] for r in d[:4]) == 50248 and sum(r['jobs_2022'] for r in a[:4]) < D['ls']['external']['2022']['adjacent'] and sum(r['jobs_2022'] for r in d[:4]) < D['ls']['external']['2022']['distant'] and sum(r['jobs_2022'] for r in o) < D['ls']['external']['2022']['other'])([r for r in D['ls']['external']['top'] if r['kind'] == 'adjacent'], [r for r in D['ls']['external']['top'] if r['kind'] == 'distant'], [r for r in D['ls']['external']['top'] if r['kind'] == 'other'])",
+      "actual": "[(k, [(r['name'], r['jobs_2022']) for r in D['ls']['external']['top'] if r['kind'] == k][:4], sum(r['jobs_2022'] for r in D['ls']['external']['top'] if r['kind'] == k), D['ls']['external']['2022'][k]) for k in ('adjacent', 'distant', 'other')]",
+      "falsified_if": "Either bucket has fewer than four named sources above the 2,000-job cut, the largest member of either changes without the label changing with it, or a named four ever equals its whole bucket while the label still calls it four of more. THE LABEL LIED IN THE OTHER DIRECTION FIRST: the distant row named four metros and the adjacent row named nothing, so the adjacent-versus-distant split, the judgment the whole 'this is not a commute' argument rests on, could not be checked by a reader who does not carry Northeast Ohio geography in their head. There is no map on this page. Naming the four largest fixed that and created this defect: 'Adjacent counties, Columbiana, Tuscarawas, Ashland, Carroll, 57,302' beside four counties that come to 36,913 reads as though those four ARE the bucket. The number was right and the words were not, and a reader added them and lost 20,389 jobs. The second sub-line now prints the subset arithmetic, so this claim bounds both failures: the names must be there AND they must not equal the bar."
+    },
+    {
+      "id": "ls-unnamed-origins",
+      "text": "Twelve rows of the external-sources table carry a five-digit county code and no place name, 31,433 jobs between them, because the build names an external source only when it is one of the twelve or one of the counties the adjacent and distant lists judge and no county crosswalk ships with this page. Those rows print as 'Unnamed county 39089' rather than as a bare code, the figure subtitle and the 'Everywhere else' bucket label both say so, and the table note gives the count, the job total and the one code that is not an Ohio county (external figure subtitle, third bucket sub-labels, external table cells and note).",
+      "source": "laborshed.json external.top, where the name field falls back to the FIPS code",
+      "assert": "(lambda u, o, oh: len(u) == 12 and sum(r['jobs_2022'] for r in u) == 31433 and all(r['kind'] == 'other' for r in u) and len(o) == len(u) and len([r for r in u if not r['fips'].startswith(oh)]) == 1 and all(r['name'] != r['fips'] for r in D['ls']['external']['top'] if r['kind'] != 'other'))([r for r in D['ls']['external']['top'] if r['name'] == r['fips']], [r for r in D['ls']['external']['top'] if r['kind'] == 'other'], D['ls']['order'][0]['fips'][:2])",
+      "actual": "[(r['fips'], r['kind'], r['jobs_2022']) for r in D['ls']['external']['top'] if r['name'] == r['fips']]",
+      "falsified_if": "A row outside the 'other' bucket loses its name, the unnamed count or job total changes without the figure and table changing with it, or more than one unnamed source stops carrying Ohio's state prefix. THIS IS A DATA NEED, NOT A FIX: the names cannot be recovered from anything this repository ships, so the page states the gap instead of printing a code a reader cannot use. It is recorded in laborshed/README.md. If a county crosswalk is ever added to the build, these twelve get names and this claim should be replaced by one asserting that every source is named."
+    },
+    {
+      "id": "ls-wider-footprint-adds",
+      "text": "Three of the four counties the fourteen-county Northeast Ohio footprint adds to PIC-12 are among the ten largest outside sources of PIC-12 jobs: Tuscarawas, Richland and Huron. Crawford, the fourth, is not among the largest external sources at all, and the closer now names all four and singles Crawford out by name rather than saying 'three of them' (closer).",
+      "source": "LODES 2022 external home counties, against the PIC-12/NEO-14 difference in _data/build/footprints.py",
+      "assert": "(lambda adds, top: len(adds) == 4 and len([r for r in top[:10] if r['name'].split(' (')[0] in adds]) == 3 and not [r for r in top if r['name'].split(' (')[0] == 'Crawford'])(D['ls']['meta']['footprint']['wider_adds'], D['ls']['external']['top'])",
+      "actual": "[(i + 1, r['name'], r['jobs_2022']) for i, r in enumerate(D['ls']['external']['top']) if r['name'].split(' (')[0] in D['ls']['meta']['footprint']['wider_adds']]",
+      "falsified_if": "Fewer or more than three of the four additions rank in the top ten, or Crawford appears among the ranked external sources. THIS REPLACED A WRONG PUBLISHED SENTENCE: the closer said the four counties feeding this workforce most heavily are exactly the ones PIC-12 excludes and NEO-14 includes. The two largest are Franklin (26,960) and Columbiana (14,138), and neither footprint contains either. Denominator: the four is len(wider_adds), read from the data, not typed."
+    },
+    {
+      "id": "ls-regions-size-order",
+      "text": "The regions figure is ordered by how many counties each region has, and PIC-12 and Pittsburgh are the only two regions above 85 percent, so the two that break the size slope are visible as a shape rather than asserted in prose (regions figure, its lede and axis label).",
+      "source": "LODES 2022, single-state peer metros of six or more counties",
+      "assert": "sorted(r['name'] for r in D['b']['regions'] if r['region_share_work'] >= 0.85) == ['PIC-12', 'Pittsburgh, PA'] and len(D['b']['regions']) == 8",
+      "actual": "sorted(((r['counties'], r['name'], round(r['region_share_work'], 4)) for r in D['b']['regions']), reverse=True)",
+      "falsified_if": "A third region reaches 85 percent, or the peer set changes size. The bars are sorted on county count, so the argument is carried by two bars standing above their own size neighbours; if a third joins them, ordering by size no longer isolates the finding and the form has to change again. The chart was previously sorted on share, which drew a two-variable claim as a one-variable ranking."
+    },
+    {
+      "id": "ls-coincident-pairs",
+      "text": "Exactly one county's two dots on the reciprocal chart sit closer together than 1.2 percentage points: Mahoning, at jobs 53.4 percent against residents 53.5 percent. That row is the one the chart dodges vertically.",
+      "source": "LEHD LODES8 2022, both directions per county",
+      "assert": "[p['name'] for p in D['b']['pairs'] if abs(p['work_own'] - p['res_own']) < 0.012] == ['Mahoning']",
+      "actual": "sorted(((round(abs(p['work_own'] - p['res_own']), 4), p['name']) for p in D['b']['pairs']))[:3]",
+      "falsified_if": "A second county's pair falls inside 1.2 points, or Mahoning's opens past it. At the chart's scale 1.2 points is under three pixels, and the two dots printed as one: the teal dot was fully occluded and the row published as a missing datum. If the set changes, the dodge applies to different rows and the crops have to be looked at again."
+    },
+    {
+      "id": "ls-region-labels",
+      "text": "Every region on the regions chart carries a hand-written short label, so no axis label is machine-truncated (regions figure, both layouts).",
+      "source": "editorial label strings in bench.json, one per region",
+      "assert": "all(0 < len(r.get('short') or '') <= 14 and (r.get('short') or '\\x00') in r['name'] for r in D['b']['regions'])",
+      "actual": "[(r['short'], r['name']) for r in D['b']['regions']]",
+      "falsified_if": "A region has no short label, its label runs past 14 characters, or the short label is not a substring of the full region name. The desktop chart shipped 'Indianapolis-Carmel-G…' from a 21-character slice while the phone rendered the name in full: machine truncation mid-word is a build error, and this claim is what stops it coming back when the peer set changes."
+    },
+    {
+      "id": "ls-citation-fields",
+      "text": "The short citation printed under each figure is cut from the full registry citation in the data, not typed beside it (all six figure source lines).",
+      "source": "meta.source in laborshed.json and bench.json",
+      "assert": "[s.strip() for s in D['ls']['meta']['source'].split(',')][:3] == ['LEHD LODES8 origin-destination', 'Ohio', '2022'] and D['b']['meta']['source'].split('.')[0].strip() == 'LEHD LODES8 origin-destination, 2022' and D['b']['meta']['source'].count('segment JT00') == 0",
+      "actual": "(D['ls']['meta']['source'], D['b']['meta']['source'])",
+      "falsified_if": "Either source string stops leading with source, geography and year in that order, so the visible line would silently lose its year or gain a register internal. bench.json's own source string used to contain its citation TWICE, and the note that read it shipped 'LEHD LODES8 origin-destination, 2022, segment JT00. LEHD LODES8 origin-destination, 2022, segment JT00 (all jobs).' on both layouts."
+    },
+    {
+      "id": "ls-distant-share-basis",
+      "text": "The imported-workforce section states which basis its 'roughly half' is on: distant metros are 61,708 of the 119,010 jobs that fall into the two named groups, about 52 percent, and 29 percent of the 210,890 imported jobs as a whole. The gap between those two readings is the 89,328 jobs in counties too scattered to group, which is the largest single piece.",
+      "source": "laborshed/data/laborshed.json external.2022 and totals",
+      "assert": "(lambda e, t: 0.515 <= e['distant'] / (e['adjacent'] + e['distant']) <= 0.525 and 0.288 <= e['distant'] / t <= 0.298 and e['other'] > e['distant'] > e['adjacent'] and e['adjacent'] + e['distant'] + e['other'] < t)(D['ls']['external']['2022'], D['ls']['totals']['home_outside_pic12'])",
+      "actual": "(D['ls']['external']['2022'], D['ls']['totals']['home_outside_pic12'])",
+      "falsified_if": "The two readings converge, or the ungrouped bucket stops being the largest. Added 2026-08-30 after two model families independently divided and found the page saying 'roughly half of it' where 'it' was the whole imported share and the answer was 29 percent. The figure was never wrong; the basis was never named. This is the same defect the sources page's second recipe exists to teach, found on a page of ours."
+    }
+  ]
 }

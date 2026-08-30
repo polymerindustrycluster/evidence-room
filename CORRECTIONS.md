@@ -13,6 +13,56 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-08-30 — four corrections, and one this repository cannot make
+
+Fifty-six independent reviews, four model families over every page, each reading only the
+rendered page with no access to this repository. Four published statements changed.
+
+**A chart described itself wrongly to the people who cannot see it, *federal-money*.** The
+fiscal-year chart's text alternative said *"Two of the eight years are worth more than the
+whole award on their own."* On the page's own real-dollar basis, 2019 exceeds the award by
+$647,000 and 2021 falls $245,000 short. One year. The chart's two annotations, drawn beside
+the award line, said exactly that and were correct. So a sighted reader and a screen-reader
+user were handed different findings from one figure, and nothing on this site compared the
+two. Now pinned by `fed-years-over-award`, and `tools/alttext.mjs` checks that every chart
+carries a description at all.
+
+**A source that was never used, *cost-scissors*.** The methodology box credited the BLS
+Quarterly Census of Employment and Wages. That page is built from FRED price series and its
+data and thirty-two claims contain no `agglvl`, no `own_code`, no NAICS and no employment
+figure of any kind. The registry said so and the box printed the registry faithfully. This
+is the second such case in one day, after *revisions* the same morning. Between them the
+two entries made one federal source look like it fed eleven pages when it fed nine.
+`tools/provenance.mjs` now asks the question no gate here had asked: does the registry match
+the page, rather than only the page matching the registry.
+
+**"Every" where the number was 95 percent, *revisions*.** The headline read *"Every month
+moved"* directly above the page's own tile reading *259 of 273*. On a page whose entire
+subject is counting precisely, its own headline rounded 95 percent up to all of them.
+
+**A share stated on a basis the sentence did not name, *laborshed*.** The page said
+*"Roughly half of it comes from metros two hours away"* where *it* was the whole imported
+workforce. Half is right for the two named groups, adjacent and distant, and 29 percent is
+right against the imported share as a whole. Neither figure was wrong. The basis was never
+stated, and the largest single piece of that workforce lives in counties too scattered to
+group at all, which is what the two readings differ by.
+
+### The one this repository cannot correct
+
+Six pages print a sentence describing the wider county footprint: *"Excludes Crawford,
+Huron, Richland and Tuscarawas, which the vault's NEO-14 includes."* Every word is true and
+the sentence is incomplete: NEO-14 also **drops Ashtabula and Trumbull**. A reader who adds
+four counties to a twelve-county footprint gets sixteen, under a label that says fourteen.
+Ten renderings across six pages, from one string.
+
+The string lives in `_data/build/footprints.py`, which is a vendored copy of the `pic-geo`
+package and carries an explicit rule that changes go to `pic-geo` first, where a test suite
+asserts the two are identical. Editing it here would break that guarantee to fix a sentence.
+It is recorded rather than fixed, and it is the correct order of operations even though it
+leaves the defect on the site today.
+
+---
+
 ## 2026-08-29 — the replication guide did not replicate, *sources*
 
 Two outside reviewers were given the rendered page and the public internet, and asked to do

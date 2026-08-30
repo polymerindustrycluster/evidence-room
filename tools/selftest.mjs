@@ -74,6 +74,22 @@ const CASES = [
       both ways when the change was made. */
    inject: s => s.replace("<body>", '<body><p>A reader said "this is prose" here.</p>')},
 
+  {gate: "provenance", page: "cost-scissors", args: ["cost-scissors"],
+   defect: "a page crediting a federal source it has never read",
+   /* Injected into SOURCES.json rather than the artifact, so this case names its own file.
+      This is the entry exactly as it shipped: cost-scissors is built from FRED price
+      series and credited the BLS employment census for months. */
+   file: "_data/SOURCES.json",
+   inject: s => s.replace('"cost-scissors": [\n   "fred"\n  ]',
+                          '"cost-scissors": [\n   "fred",\n   "qcew"\n  ]')},
+
+  {gate: "alttext", page: "wages", args: ["wages"],
+   defect: "a chart shipped with no accessible description at all",
+   /* The structural half of the description defect. The SEMANTIC half, a description that
+      states a true-looking count which is simply wrong, is not gateable and is pinned by a
+      claim instead; see the header of tools/alttext.mjs. */
+   inject: s => s.replace(/<title id="prem-t">[\s\S]*?<\/title>/, "")},
+
   {gate: "figures", page: "cluster-health", args: ["cluster-health"],
    defect: "a page stating an amount for a quantity the public record cannot show",
    /* Anchored on <body> rather than a page-specific class: the first draft keyed on
@@ -89,7 +105,7 @@ const run = (gate, args) => spawnSync("node", [`tools/${gate}.mjs`, ...args],
 let trusted = 0, broken = [];
 for (const c of CASES) {
   if (only.length && !only.includes(c.gate)) continue;
-  const f = `dist/${c.page}.html`, bak = `${f}.selftest-backup`;
+  const f = c.file || `dist/${c.page}.html`, bak = `${f}.selftest-backup`;
   if (!existsSync(f)) { console.log(`SKIP  ${c.gate} — ${f} missing, run bundle first`); continue; }
   copyFileSync(f, bak);
   let before, after;

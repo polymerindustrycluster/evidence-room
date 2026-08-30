@@ -168,6 +168,14 @@
       "assert": "(lambda A: (lambda G: 24.75 <= (G('2021-09-01', 'first') / G('2020-09-01', 'asof') - 1) * 100 < 24.85 and 23.05 <= (G('2021-09-01', 'latest') / G('2020-09-01', 'latest') - 1) * 100 < 23.15)(lambda dt, kind: (lambda v: v[0][1] if kind == 'first' else (v[-1][1] if kind == 'latest' else max([x for x in v if x[0] <= '2021-10-14'])[1]))(sorted([(r['vintage'], r['value']) for r in A if r['series'] == 'WPU06' and r['date'] == dt]))))(D['all'])",
       "actual": "(lambda A: (lambda G: ((G('2021-09-01', 'first') / G('2020-09-01', 'asof') - 1) * 100, (G('2021-09-01', 'latest') / G('2020-09-01', 'latest') - 1) * 100))(lambda dt, kind: (lambda v: v[0][1] if kind == 'first' else (v[-1][1] if kind == 'latest' else max([x for x in v if x[0] <= '2021-10-14'])[1]))(sorted([(r['vintage'], r['value']) for r in A if r['series'] == 'WPU06' and r['date'] == dt]))))(D['all'])",
       "falsified_if": "Either annual figure leaves the band that rounds to its printed value, or the gap between them widens enough that the annual story no longer survives the revision, which is the half of the vignette that says what the first print got right."
+    },
+    {
+      "id": "rev-almost-every",
+      "text": "The revisions headline says ALMOST every month moved, not every month: 259 of the 273 published series-months were later changed, which is 94.9 percent, and the remaining 14 are the ones the archive cannot speak to.",
+      "source": "revisions/data/revisions.json",
+      "assert": "(lambda revised, total: revised == 259 and total == 273 and revised < total and 0.945 <= revised / total <= 0.952)(len(D['periods']), len(set((r['series'], r['date']) for r in D['all'])))",
+      "actual": "(len(D['periods']), len(set((r['series'], r['date']) for r in D['all'])))",
+      "falsified_if": "The counts move and the headline does not. Corrected 2026-08-30: the headline read 'Every month moved' directly above a tile reading 259 of 273. On a page whose entire subject is counting precisely, its own H2 rounded 95 percent up to all of them."
     }
   ]
 }

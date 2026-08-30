@@ -833,7 +833,7 @@
    "wages"
   ],
   "n_build_scripts": 26,
-  "catalog_generated": "2026-08-30 11:26"
+  "catalog_generated": "2026-08-30 12:29"
  },
  "footprint": {
   "key": "pic12",
@@ -1908,10 +1908,10 @@
  ],
  "checks": {
   "n_pages": 16,
-  "n_claims": 430,
+  "n_claims": 432,
   "n_manual": 15,
   "this_page": 32,
-  "n_auto": 415
+  "n_auto": 417
  },
  "vintage": {
   "n_revised": 259,

@@ -35,6 +35,8 @@ const GATES = [
   ["style",       "node",   ["tools/style.mjs"],             "house style law in rendered prose"],
   ["coldopen",    "node",   ["tools/coldopen.mjs"],          "evidence in the first screen, ratcheted"],
   ["figures",     "node",   ["tools/figures.mjs"],           "cross-page figure registry"],
+  ["provenance",  "node",   ["tools/provenance.mjs"],        "the registry matches the page, not only the reverse"],
+  ["alttext",     "node",   ["tools/alttext.mjs"],           "every chart carries a description"],
   ["claims",      "python3", ["_data/build/verify_claims.py"],      "every numeric sentence against its own data"],
   ["consistency", "python3", ["_data/build/verify_consistency.py"], "builders, catalog, prose invariants"],
   ["collide",     "node",   ["tools/collide.mjs", "--sweep"],  "overlap and out-of-frame, 14 widths", true],
