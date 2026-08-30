@@ -43,15 +43,39 @@
     },
     {
       "id": "churn-stock-and-flow",
-      "text": "The beginning-of-quarter count reads 18,444 in 2012Q1 against 17,725 in 2025Q3, a fall of 719, so the flow ledger is not the change in the stock.",
+      "text": "The beginning-of-quarter count reads 18,444 in 2012Q1 against 17,725 in 2025Q3, a fall of 719 or about 4%, so the flow ledger is not the change in the stock and the headcount is the measure that answers whether employment grew.",
       "source": "Census QWI Emp, first and last published quarters",
-      "assert": "D['quarters'][0]['emp'] == 18444 and D['quarters'][-1]['emp'] == 17725 and D['quarters'][-1]['emp'] - D['quarters'][0]['emp'] == -719 and abs((D['quarters'][-1]['emp'] - D['quarters'][0]['emp']) - (sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters']))) > 500",
-      "actual": "(D['quarters'][0]['emp'], D['quarters'][-1]['emp'], D['quarters'][-1]['emp'] - D['quarters'][0]['emp'], sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters']))",
-      "falsified_if": "A QWI revision that reconciles the seasonally adjusted stock with the seasonally adjusted flows, or that moves the 719-job fall. If the two ever agree within 500 jobs, the sentence about them being estimated separately has to be rewritten, not just re-rounded. The 719 is now printed in three reader-facing places — the +168 hero card, the flow chart's source line and the closer — because a qualifier that lives only in a grey source note two screens below the number it qualifies does not reach the reader who quotes the number."
+      "assert": "D['quarters'][0]['emp'] == 18444 and D['quarters'][-1]['emp'] == 17725 and D['quarters'][-1]['emp'] - D['quarters'][0]['emp'] == -719 and abs((D['quarters'][-1]['emp'] - D['quarters'][0]['emp']) - (sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters']))) > 500 and 3.5 <= (D['quarters'][0]['emp'] - D['quarters'][-1]['emp']) / D['quarters'][0]['emp'] * 100 <= 4.5",
+      "actual": "(D['quarters'][0]['emp'], D['quarters'][-1]['emp'], D['quarters'][-1]['emp'] - D['quarters'][0]['emp'], (D['quarters'][0]['emp'] - D['quarters'][-1]['emp']) / D['quarters'][0]['emp'] * 100, sum(q['hires'] for q in D['quarters']) - sum(q['seps'] for q in D['quarters']))",
+      "falsified_if": "A QWI revision that reconciles the seasonally adjusted stock with the seasonally adjusted flows, that moves the 719-job fall, or that moves the fall out of 3.5%-4.5% so the closer's 'about 4%' stops rounding. If the two ever agree within 500 jobs, the sentence about them being estimated separately has to be rewritten, not just re-rounded. A READER FINISHED THIS PAGE UNSURE WHETHER JOBS GREW: they met +168 in the headline and 719 fewer in grey type and could not tell which answered the question. Both are right and they measure different things, so the page now says WHICH QUESTION EACH ANSWERS wherever the two meet: the standfirst ('Are there more jobs? No'), the +168 hero card, the flow table's column heads, the reconciliation note under that table, the flow chart's source line, the methodology and the closer. The headcount is the growth answer; the ledger is not. If any surface stops saying so, the reader's confusion is back."
+    },
+    {
+      "id": "churn-flow-vs-stock-quarterly",
+      "text": "Quarter by quarter the flow ledger and the change in the headcount point opposite ways in 8 of the 54 comparisons, and the widest gap between the two measures anywhere in the series is 2022Q4, where the ledger ran 153 jobs short while the headcount rose 299 into the next quarter.",
+      "source": "derived: net flow in quarter i against Emp[i+1] minus Emp[i], Emp being the stock at quarter start",
+      "assert": "sum(1 for i in range(len(D['quarters']) - 1) if (D['quarters'][i]['net'] > 0) != ((D['quarters'][i+1]['emp'] - D['quarters'][i]['emp']) > 0)) == 8 and len(D['quarters']) - 1 == 54 and one(q for q in D['quarters'] if q['year'] == 2022 and q['q'] == 4)['net'] == -153 and one(q for q in D['quarters'] if q['year'] == 2023 and q['q'] == 1)['emp'] - one(q for q in D['quarters'] if q['year'] == 2022 and q['q'] == 4)['emp'] == 299 and max(range(len(D['quarters']) - 1), key=lambda i: abs((D['quarters'][i+1]['emp'] - D['quarters'][i]['emp']) - D['quarters'][i]['net'])) == 43 and D['quarters'][43]['year'] == 2022 and D['quarters'][43]['q'] == 4 and abs((D['quarters'][44]['emp'] - D['quarters'][43]['emp']) - D['quarters'][43]['net']) == 452",
+      "actual": "[(str(D['quarters'][i]['year']) + 'Q' + str(D['quarters'][i]['q']), D['quarters'][i]['net'], D['quarters'][i+1]['emp'] - D['quarters'][i]['emp'], abs((D['quarters'][i+1]['emp'] - D['quarters'][i]['emp']) - D['quarters'][i]['net'])) for i in range(len(D['quarters']) - 1) if (D['quarters'][i]['net'] > 0) != ((D['quarters'][i+1]['emp'] - D['quarters'][i]['emp']) > 0)]",
+      "falsified_if": "Any QWI revision moves the count of sign disagreements off 8, or moves the widest gap off 2022Q4. THE EXAMPLE IS DERIVED IN app.js, NOT TYPED: the page reduces over every quarter pair and prints whichever gap is largest, so a revision moves the sentence with the data and this claim is what says the sentence changed. It reduces over ALL pairs rather than over the sign disagreements, because a revision that emptied that filter would throw on the reduce and take the whole page down; as shipped the widest gap is also a sign disagreement. PAIRING: Emp is the stock at quarter START, so the flows DURING quarter i are the ones that would have to carry the stock from Q[i] to Q[i+1]. That is the comparison a reader makes by eye when they difference the table's jobs column, and it is the one asserted here. A reader reported '2022Q2: net -155, jobs +979' as proof the table contradicted itself: the -155 is real, the +979 is not in the series at any pairing (the 2022Q2 stock rose 1,636 from 2022Q1 and fell 421 into 2022Q3), and the columns are not in conflict because they are not the same measure. They ALSO do not contradict every quarter: they agree in sign in 46 of 54."
+    },
+    {
+      "id": "churn-flow-aligned-to-stock",
+      "text": "Aligned to the 54 quarters the two headcount readings bracket, the flows still net +376 against a headcount that fell 719, so the mismatch is not an end effect.",
+      "source": "derived: net flow summed over 2012Q1 to 2025Q2, against Emp at 2012Q1 and 2025Q3",
+      "assert": "sum(q['net'] for q in D['quarters'][:-1]) == 376 and len(D['quarters'][:-1]) == 54 and D['quarters'][0]['emp'] - D['quarters'][-1]['emp'] == 719",
+      "actual": "(sum(q['net'] for q in D['quarters'][:-1]), D['quarters'][-1]['emp'] - D['quarters'][0]['emp'])",
+      "falsified_if": "The aligned net leaves +376, or it turns negative, at which point the flow chart's source line stops being able to say the mismatch survives period alignment. THIS EXISTS BECAUSE THE OBVIOUS OBJECTION IS AN OFF-BY-ONE: the +168 headline sums flows across all 55 quarters while the 719-job fall compares two stock readings 54 quarters apart, and a sceptical reader will suspect the whole gap is that extra quarter. It is not. Dropping 2025Q3's flows moves the ledger from +168 to +376, further from the stock, not nearer."
+    },
+    {
+      "id": "churn-net-crosses-zero",
+      "text": "The net flow series takes both signs across the 55 quarters, from -559 in 2022Q3 to +1,612 in 2022Q1, which is why the flow chart's axis carries a minus sign below zero.",
+      "source": "derived: hires minus separations, per quarter",
+      "assert": "min(q['net'] for q in D['quarters']) == -559 and max(q['net'] for q in D['quarters']) == 1612 and min(q['net'] for q in D['quarters']) < 0 < max(q['net'] for q in D['quarters'])",
+      "actual": "(min(q['net'] for q in D['quarters']), max(q['net'] for q in D['quarters']))",
+      "falsified_if": "The net series stops crossing zero, at which point a signed axis is no longer load-bearing. THIS GUARDS A RENDERING, NOT A SENTENCE. The flow chart draws hires up and separations down around a shared zero AND draws the net line on that same axis. The axis shipped reading 4,000 / 2,000 / 0 / 2,000 / 4,000 with no sign anywhere, so a point below zero meant 'separations, a positive magnitude' on the bars and 'a negative net' on the line, and a reader could not tell a loss from an outflow. Ends are now plotted as negative jobs and the ticks below zero carry a minus, which also makes the chart's arithmetic close: the net line is the two bar heights added. Do not restore an unsigned mirror while this series crosses zero."
     },
     {
       "id": "churn-last-four-net",
-      "text": "Over the last four published quarters the region ended 531 more jobs than it started, so the nine-of-twelve county outflow and the fourteen-year +168 do not contradict each other.",
+      "text": "Over the last four published quarters the region ended 531 more jobs than it started, so the nine-of-twelve county outflow and the 55-quarter +168 do not contradict each other.",
       "source": "derived: hires minus separations over the last four quarters, and the county panel over the same four",
       "assert": "sum(q['hires'] - q['seps'] for q in D['quarters'][-4:]) == -531 and sum(c['hires'] - c['seps'] for c in D['counties']) == -531 and sum(1 for c in D['counties'] if c['seps'] > c['hires']) == 9",
       "actual": "(sum(q['hires'] - q['seps'] for q in D['quarters'][-4:]), sum(c['hires'] - c['seps'] for c in D['counties']))",
@@ -59,11 +83,11 @@
     },
     {
       "id": "churn-quarters",
-      "text": "55 quarters are drawn; the unpublished quarter is dropped, not zeroed.",
+      "text": "55 quarters are drawn, which is 13.75 years and not 14; the unpublished quarter is dropped, not zeroed.",
       "source": "QWI coverage 2012Q1 to 2025Q3",
-      "assert": "len(D['quarters']) == 55 and all(q['counties'] > 0 for q in D['quarters'])",
-      "actual": "(len(D['quarters']), min(q['counties'] for q in D['quarters']))",
-      "falsified_if": "QWI publishes 2025Q4 and the pipeline is not re-run."
+      "assert": "len(D['quarters']) == 55 and all(q['counties'] > 0 for q in D['quarters']) and len(D['quarters']) / 4 == 13.75",
+      "actual": "(len(D['quarters']), len(D['quarters']) / 4, min(q['counties'] for q in D['quarters']))",
+      "falsified_if": "QWI publishes 2025Q4 and the pipeline is not re-run. THE SPAN IS COUNTED IN QUARTERS EVERYWHERE ON THE PAGE, because it was counted in years and the years were wrong: the hero card read 'net flow, 14 years' and two ledes read 'across all fourteen years' for a series that runs 13.75 years. 2012 to 2025 is fourteen CALENDAR years touched, which is why the churn-average-rate card still says '2012 to 2025', but it is not fourteen years of data and no card, lede or app.js string may say so again. If a quarter is added or dropped, this assert fails before the prose can drift."
     },
     {
       "id": "churn-footprint",
@@ -91,7 +115,7 @@
     },
     {
       "id": "churn-average-rate",
-      "text": "The average quarter moves 10.8% of the workforce in or out: about a tenth of jobs start and about a tenth end. That average runs across fourteen calendar years, 2012 to 2025, and the last four published quarters run 9.6%.",
+      "text": "The average quarter moves 10.8% of the workforce in or out: about a tenth of jobs start and about a tenth end. That average runs across the 55 published quarters, 2012 to 2025, and the last four published quarters run 9.6%.",
       "source": "derived: mean of the 55 quarterly churn rates",
       "assert": "round(sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) * 100, 1) == 10.8 and len({q['year'] for q in D['quarters']}) == 14 and min(q['year'] for q in D['quarters']) == 2012 and max(q['year'] for q in D['quarters']) == 2025 and round(sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4 * 100, 1) == 9.6 and 0.095 <= sum(q['hires']/q['emp'] for q in D['quarters']) / len(D['quarters']) <= 0.115 and 0.095 <= sum(q['seps']/q['emp'] for q in D['quarters']) / len(D['quarters']) <= 0.115",
       "actual": "sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) * 100",
@@ -171,11 +195,11 @@
     },
     {
       "id": "churn-shop-floor",
-      "text": "At a 150-person plant, the current 9.6% quarterly churn is about fourteen hires and fourteen departures a quarter, five of each in a month, and about 58 replacement hires a year; the fourteen-year average of 10.8% is sixteen and sixteen, and about 65 a year.",
-      "source": "derived: the recent four-quarter and the fourteen-year mean churn rates applied to a 150-person payroll",
+      "text": "At a 150-person plant, the current 9.6% quarterly churn is about fourteen hires and fourteen departures a quarter, five of each in a month, and about 58 replacement hires a year; the 55-quarter average of 10.8% is sixteen and sixteen, and about 65 a year.",
+      "source": "derived: the recent four-quarter and the 55-quarter mean churn rates applied to a 150-person payroll",
       "assert": "round(150 * sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4) == 14 and round(150 * sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4 / 3) == 5 and round(150 * sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4 * 4) == 58 and round(150 * sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters'])) == 16 and round(150 * sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) / 3) == 5 and round(150 * sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) * 4) == 65",
       "actual": "(150 * sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4, 150 * sum(q['churn_rate'] for q in D['quarters'][-4:]) / 4 * 4, 150 * sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']), 150 * sum(q['churn_rate'] for q in D['quarters']) / len(D['quarters']) * 4)",
-      "falsified_if": "Any of the six numbers moves by one. ORDER MATTERS AND IS GUARDED HERE: the section used to open on 10.8%, the highest and least current of the three churn figures on the page, and conceded the current 9.6% in its last sentence. A reader holding three churn numbers at once was handed the stalest one first. The heading, the lede and the translator's default sentence now lead with the last four published quarters and offer the fourteen-year average as the comparison, so both pairs of numbers are asserted. Other headcounts typed into the translator are the same arithmetic and are unguarded by design. ILLUSTRATIVE: it applies a cluster average to a single site and is not a measurement of any plant."
+      "falsified_if": "Any of the six numbers moves by one. ORDER MATTERS AND IS GUARDED HERE: the section used to open on 10.8%, the highest and least current of the three churn figures on the page, and conceded the current 9.6% in its last sentence. A reader holding three churn numbers at once was handed the stalest one first. The heading, the lede and the translator's default sentence now lead with the last four published quarters and offer the 55-quarter average as the comparison, so both pairs of numbers are asserted. Other headcounts typed into the translator are the same arithmetic and are unguarded by design. ILLUSTRATIVE: it applies a cluster average to a single site and is not a measurement of any plant."
     },
     {
       "id": "churn-replacement-multiple",

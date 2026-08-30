@@ -359,6 +359,20 @@
           those three series only.</p>
         <p class="meta"><span class="pill geo">national</span><span class="pill hit-flag">covers this county</span></p>
       </a>
+      <!-- THE REPLICATION GUIDE. It is the only page here that makes no interpretive
+           claim about the region: it hands over method, so its card leads with what a
+           reader can DO rather than with a finding. data-geo is "method" because the page
+           is built on no geography at all, which is why the county picker never marks it:
+           a page that contains no county reading should not claim to cover one. -->
+      <a class="card" href="../sources/" data-slug="sources" data-geo="method">
+        <h4>How would another region rebuild all of this?</h4>
+        <p class="ans">Take the codes, they are the hard part</p>
+        <p class="f">Every dataset behind this site, with the exact filters applied to it,
+          what each one cannot tell you, which need a key and which cannot be fetched at
+          all. One question is carried the whole way, from the endpoint to the reading, and
+          the gaps we could not close are published beside it.</p>
+        <p class="meta"><span class="pill geo">method</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
       <a class="card" href="../timeline/" data-slug="timeline" data-geo="register">
         <h4>Why is the cluster here, and what has it done since?</h4>
         <p class="f">31 proven milestones, the first dated 1898 and the last 2012, explain
@@ -385,8 +399,8 @@
          gate has checked rather than a blank. counts.json is itself checked against every
          artifact's own claims.json by index-counts-fresh, which is what stops a card
          advertising 23 claims for a 27-claim page. -->
-    <p class="note"><b>The <span data-inv="pagesword">thirteen</span> pages here carry
-      <span data-inv="claims">352</span> checked claims, and
+    <p class="note"><b>The <span data-inv="pagesword">fourteen</span> pages here carry
+      <span data-inv="claims">370</span> checked claims, and
       <span data-inv="manual">15</span> of them cannot be machine-checked.</b> Every
       published sentence is stored as a check that re-runs against the data that produced
       it, next to the condition that would prove it wrong. The exceptions are quoted from

@@ -61,6 +61,33 @@ const lowHire = Q.reduce((a, q) => q.hires < a.hires ? q : a);
 const topHire = Q.reduce((a, q) => q.hires > a.hires ? q : a);
 const replMult = tHires / first.emp;
 
+/* ------------------------------------------- TWO INSTRUMENTS, TWO QUESTIONS
+   The page publishes two Census numbers for the same industry and the same span, and
+   they disagree in sign: the flow ledger nets +168 while the headcount falls 719. A
+   reader met both, could not tell which one answered "did jobs grow", and finished
+   unsure. Neither is wrong. QWI counts hires and separations as EVENTS during a quarter
+   and counts Emp as a HEADCOUNT on one day at the start of it; the two are estimated
+   separately and seasonally adjusted separately, so they are not required to add up and
+   routinely do not. The one that answers whether there are more jobs is the headcount.
+   Everything below derives that comparison rather than asserting it in prose. */
+const stockFall = first.emp - last.emp;                    // 719, a FALL, printed unsigned
+const stockPct = stockFall / first.emp * 100;
+/* Emp is the stock at quarter START, so the flows DURING quarter i are the ones that
+   would have to carry the stock from Q[i] to Q[i+1]. That is the honest pairing, and it
+   is the one a reader makes by eye when they difference the Jobs column of the table. */
+const dStock = i => Q[i + 1].emp - Q[i].emp;
+const pairs = Q.slice(0, -1).map((q, i) => ({q, d: dStock(i), gap: Math.abs(dStock(i) - q.net)}));
+const clashes = pairs.filter(r => (r.q.net > 0) !== (r.d > 0));
+/* The example is DERIVED, not typed: the widest gap between the two measures anywhere in
+   the series. A hand-picked quarter would be a number the next revision silently
+   falsifies. Reduced over `pairs`, which cannot be empty, rather than over `clashes`,
+   which a revision could empty and take the whole page down with a TypeError. As shipped
+   the widest gap is also a sign disagreement, and the claim asserts both. */
+const clash = pairs.reduce((a, r) => r.gap > a.gap ? r : a);
+/* Aligned to the same 54 quarters the two stock readings bracket, the flows still net
+   positive against a stock that fell. The mismatch is not an end-effect. */
+const netAligned = Q.slice(0, -1).reduce((a, q) => a + q.net, 0);
+
 /* Counties: twelve same-method readings of the same measure. */
 const CO = D.counties.filter(c => c.churn_rate);
 const nCO = CO.length;
@@ -70,7 +97,7 @@ const bigCo = CO.reduce((a, c) => c.emp > a.emp ? c : a);
 const ev = c => c.hires + c.seps;
 const outflowCo = CO.filter(c => c.seps > c.hires).length;
 const evRatio = ev(bigCo) / ev(hiCo);
-/* The county panel covers the last four quarters; the hero covers fourteen years. A
+/* The county panel covers the last four quarters; the hero covers all 55. A
    reader who reads "nine of twelve ended more jobs than they started" next to a headline
    +168 stops to check whether the two contradict. They do not, because they are different
    periods, and the verdict line now says so with the four-quarter figure. */
@@ -123,29 +150,32 @@ function drawFlow() {
      number above a chart is a term of art the reader has to carry until the small grey
      type below finally translates it. */
   document.getElementById("flowsub").textContent = mob
-    ? `Hires (above) and separations (below) in ${NAICS_NAME} (NAICS ${NAICS}), ` +
+    ? `Hires above zero and separations below it in ${NAICS_NAME} (NAICS ${NAICS}), ` +
       `${FP.words} counties summed, seasonally adjusted so the usual winter and summer ` +
       `swing is taken out. Each bar is one calendar year, ${first.year} to ` +
-      `${last.year}; the pale last bar is three published quarters. Across all of them ` +
-      `the net comes to ${N(tNet)} more starts than ends, too small to draw beside bars ` +
-      `this size.`
-    : `Quarterly hires (above) and separations (below) in ${NAICS_NAME} ` +
-      `(NAICS ${NAICS}), ${FP.words} counties summed, seasonally adjusted so the usual ` +
-      `winter and summer swing is taken out, ${D.meta.span[0]} to ${D.meta.span[1]}. ` +
-      `Net change is drawn on the same axis in the same unit.`;
+      `${last.year}; the pale last bar is three published quarters. Ends are plotted as ` +
+      `negative jobs. Across all of them the flow ledger comes to ${N(tNet)} more starts ` +
+      `than ends, too small to draw beside bars this size.`
+    : `Quarterly hires (above zero) and separations (below it, as negative jobs) in ` +
+      `${NAICS_NAME} (NAICS ${NAICS}), ${FP.words} counties summed, seasonally adjusted ` +
+      `so the usual winter and summer swing is taken out, ${D.meta.span[0]} to ` +
+      `${D.meta.span[1]}. The net line is the two bars added.`;
   document.getElementById("flow-t").textContent = mob
     ? `Hires and separations in plastics and rubber manufacturing across ${FP.words} ` +
-      `counties, totalled by year and drawn above and below a shared zero. The two sides ` +
-      `are close to mirror images in every year.`
+      `counties, totalled by year, hires drawn up from zero and separations down as ` +
+      `negative jobs. The two sides are close to mirror images in every year.`
     : `Quarterly hires and separations in plastics and rubber manufacturing across ` +
-      `${FP.words} counties, drawn above and below a shared zero, with net change as a ` +
-      `flat line through the middle.`;
+      `${FP.words} counties, hires drawn up from zero and separations down as negative ` +
+      `jobs, with their sum as a net line that stays close to the zero axis.`;
   mob ? flowMobile() : flowDesktop();
 }
 
 function flowDesktop() {
+  /* Left margin is 64 rather than 48 because the lower half of the axis is SIGNED (see
+     the tick loop): "−4,000" is a character wider than "4,000", and at 48 the minus sign
+     was drawn at a negative x. */
   const {svg, W, H, m, w, h} = PV.chart("flow",
-    {W: 1100, H: 500, m: {t: 92, r: 96, b: 66, l: 48}});
+    {W: 1100, H: 500, m: {t: 92, r: 96, b: 66, l: 64}});
   const maxF = Math.max(...Q.map(q => Math.max(q.hires, q.seps)));
   const xs = i => m.l + (i / (Q.length - 1)) * w;
   const cy = m.t + h / 2;
@@ -160,20 +190,30 @@ function flowDesktop() {
     el("rect", {x: xs(iLow) - bw, y: y0, width: xs(iTop) - xs(iLow) + 2 * bw,
       height: y1 - y0, fill: "rgba(12,100,115,.07)"}, svg));
 
+  /* THE LOWER HALF CARRIES ITS SIGN. This axis ran 4,000 / 2,000 / 0 / 2,000 / 4,000 with
+     no minus anywhere, and the NET LINE is drawn on it. So a point 155 units below zero
+     was ambiguous by construction: on the bars, below the line meant "separations", a
+     positive magnitude mirrored downward; on the net line it meant "minus 155". One axis
+     cannot mean both. Signing it settles the question in the direction that makes the
+     chart's own arithmetic close: ends are plotted as negative jobs, starts as positive,
+     and the net line is then literally the height of the two bars added. A reader who
+     traces the line below zero now reads a loss, which is what it is. */
   ticks(0, maxF, 3).forEach(v => {
     [1, -1].forEach(sgn => {
       if (v === 0 && sgn < 0) return;
       const y = cy - sgn * (v / maxF) * (h / 2);
       el("line", {x1: m.l, y1: y, x2: m.l + w, y2: y, stroke: "var(--pv-grid)",
         "stroke-width": 1}, svg);
-      txt(svg, N(v), {x: m.l - 10, y: y + 4, "text-anchor": "end", class: "pv-tick"});
+      txt(svg, (sgn < 0 ? "−" : "") + N(v), {x: m.l - 10, y: y + 4,
+        "text-anchor": "end", class: "pv-tick"});
     });
   });
   Q.forEach((q, i) => {
     if (q.q !== 1 || q.year % 2) return;
     txt(svg, q.year, {x: xs(i), y: m.t + h + 22, "text-anchor": "middle", class: "pv-tick"});
   });
-  PV.axlab(svg, "Jobs starting or ending in the quarter", {x: m.l, y: m.t - 62});
+  PV.axlab(svg, "Jobs per quarter: starts positive, ends negative, net is the two added",
+    {x: m.l, y: m.t - 62});
   txt(svg, "hires", {x: m.l + w + 10, y: ys(maxF * .55), class: "pv-lab", fill: SEQ[5]});
   txt(svg, "separations", {x: m.l + w + 10, y: ys(-maxF * .55), class: "pv-lab",
     fill: CAT[1]});
@@ -195,10 +235,13 @@ function flowDesktop() {
   Q.forEach((q, i) => hoverable(
     el("rect", {x: xs(i) - bw / 2 - 1, y: m.t, width: bw + 2, height: h, fill: "transparent"},
       svg),
+    /* The tooltip is where the two measures sit closest together, so it is where each
+       one has to name itself. "net +X · N jobs" put a flow and a stock in one line with
+       nothing to tell them apart. */
     `<b>${label(q)}</b><br><span class="v">${N(q.hires)}</span> hires<br>
      <span class="v">${N(q.seps)}</span> separations<br>
-     net <span class="v">${q.net >= 0 ? "+" : ""}${N(q.net)}</span> ·
-     <span class="v">${N(q.emp)}</span> jobs
+     net flow <span class="v">${q.net >= 0 ? "+" : "−"}${N(Math.abs(q.net))}</span><br>
+     <span class="v">${N(q.emp)}</span> jobs counted at quarter start, a separate estimate
      ${q.counties < FP.n ? `<br>not published for ${FP.n - q.counties} of ${FP.n} counties` : ""}`,
     `${label(q)}: ${N(q.hires)} hires, ${N(q.seps)} separations`));
 
@@ -251,11 +294,17 @@ function flowMobile() {
       const y = cy - sgn * (v / maxF) * (h / 2);
       el("line", {x1: m.l, y1: y, x2: m.l + w, y2: y, stroke: "var(--pv-grid)",
         "stroke-width": 1}, svg);
-      txt(svg, v ? v / 1000 + "k" : "0", {x: m.l - 8, y: y + 5, "text-anchor": "end",
-        class: "pv-tick"});
+      /* Signed for the same reason as the wide rendering, and to the same convention, so
+         a reader who meets both forms meets one chart. This form draws no net line, but
+         an unsigned mirror here and a signed one at 761px is two charts. */
+      txt(svg, v ? (sgn < 0 ? "−" : "") + v / 1000 + "k" : "0", {x: m.l - 8, y: y + 5,
+        "text-anchor": "end", class: "pv-tick"});
     });
   });
-  PV.axlab(svg, "Jobs started and ended, per year", {x: m.l, y: m.t - 50});
+  /* Short enough to fit 358 units of phone column. The full reading ("ends are plotted as
+     negative jobs") is in this rendering's own subtitle; an axis title that runs off the
+     plot edge says nothing at all. */
+  PV.axlab(svg, "Jobs per year, ends negative", {x: m.l, y: m.t - 50});
   YEARS.forEach((y, i) => {
     const x = xs(i) - bw / 2;
     const dim = y.n < 4 ? .55 : 1;
@@ -632,7 +681,7 @@ function verdict() {
       ${pc1(loCo.churn_rate)} in ${loCo.county} and the highest ${pc1(hiCo.churn_rate)} in
       ${hiCo.county}, and ${outflowCo} of ${nCO} recorded more separations than hires over
       the four quarters. So did the region as a whole, by ${N(Math.abs(last4Net))}; the
-      ${tNet >= 0 ? "+" : ""}${N(tNet)} in the headline is the fourteen-year ledger, not
+      ${tNet >= 0 ? "+" : ""}${N(tNet)} in the headline is the ${Q.length}-quarter ledger, not
       this one. Select a county to see its own numbers.`;
     return;
   }
@@ -676,13 +725,13 @@ const perYrNow = hc => hc * recent4 * 4;
 function calc() {
   const raw = Number(document.getElementById("hc").value);
   const hc = Number.isFinite(raw) ? Math.min(20000, Math.max(1, Math.round(raw))) : FLOOR;
-  /* Current rate leads, fourteen-year average follows. Leading with 10.8% put the
+  /* Current rate leads, whole-series average follows. Leading with 10.8% put the
      highest and least current of the page's three churn figures in front of a reader who
      was already holding three. */
   document.getElementById("calcout").innerHTML =
     `At the most recent four quarters&rsquo; ${pc1(recent4)} a quarter, a ${N(hc)}-person
      plant makes about <b>${N(perYrNow(hc))} replacement hires a year</b> and sees about
-     ${N(perYrNow(hc))} people leave. At the fourteen-year average of ${pc1(meanChurn)},
+     ${N(perYrNow(hc))} people leave. At the ${Q.length}-quarter average of ${pc1(meanChurn)},
      about ${N(perYr(hc))}. Both are the cluster rate applied to one payroll, not a
      forecast for any particular plant.`;
 }
@@ -700,21 +749,44 @@ calc();
 /* The flow caption is written per rendering inside drawFlow(), which runs after this
    block. A second copy here only ever printed the desktop wording over its own
    replacement, so it was one sentence maintained in two places and visible in neither. */
+/* THE TWO COLUMNS THAT LOOK LIKE ONE MEASURE. "Net" beside "Jobs" invites a reader to
+   difference the Jobs column and check it against Net, and it does not reconcile: Net is
+   a difference of two event counts, Jobs is a headcount on one day, and the two are
+   estimated separately. Both headers now name their own instrument, so the invitation is
+   withdrawn at the point it was issued rather than corrected in a caption below. */
 document.getElementById("flowtable").innerHTML = tableView("f",
-  "Quarterly hires, separations and net change",
-  ["Quarter", "Hires", "Separations", "Net", "Jobs", "Counties"],
-  Q.map(q => [label(q), N(q.hires), N(q.seps), (q.net >= 0 ? "+" : "") + N(q.net),
-    N(q.emp), q.counties]));
+  "Quarterly hires, separations, the net flow of the two, and the separately counted headcount",
+  ["Quarter", "Hires", "Separations", "Net flow", "Jobs at quarter start", "Counties"],
+  Q.map(q => [label(q), N(q.hires), N(q.seps),
+    (q.net >= 0 ? "+" : "−") + N(Math.abs(q.net)), N(q.emp), q.counties]));
+/* The reconciliation, in prose, immediately under the table and above the source line.
+   It is derived end to end: the example quarter is the widest gap between the two
+   measures in the series, not a quarter somebody liked. */
+document.getElementById("flowreconcile").innerHTML =
+  `<b>Two measures, two questions.</b> Hires and separations are events counted through
+   the quarter. The jobs column is a headcount taken on one day at the start of it. The
+   Census estimates them separately and seasonally adjusts them separately, so they are
+   not built to add up and mostly do not. <b>Net flow</b> answers how the ledger of starts
+   against ends came out. <b>The headcount</b> answers whether there are more jobs than
+   there were, and it is the one to quote when the question is growth. Differencing the
+   jobs column will not reproduce net flow, and in ${clashes.length} of the
+   ${pairs.length} quarter-to-quarter comparisons the two point opposite ways. The widest
+   gap of all is ${label(clash.q)}, where the ledger ran
+   ${N(Math.abs(clash.q.net))} jobs short while the headcount rose ${N(clash.d)} into the
+   next quarter. Across the whole series the
+   ledger reads ${tNet >= 0 ? "+" : "−"}${N(Math.abs(tNet))} and the headcount reads
+   ${N(stockFall)} fewer jobs, about ${stockPct.toFixed(0)}% down.`;
 /* The limitation is stated in terms a reader can act on, and the qualifier it carries
    now also rides on the hero stat card, where +168 is first met. A number quoted three
    times as a jobs gain and corrected once in grey type two screens below is a number
    that will be quoted wrong. */
 document.getElementById("flowsrc").textContent =
   `Source: ${D.meta.source}, NAICS ${NAICS}, ${FP.label} counties summed, ` +
-  `${D.meta.span[0]} to ${D.meta.span[1]}. The Census estimates the headcount and the ` +
-  `flows separately, so the net here is a ledger of hires against separations and not ` +
-  `the change in the job count: that count reads ${N(first.emp)} in ${label(first)} ` +
-  `against ${N(last.emp)} in ${label(last)}.`;
+  `${D.meta.span[0]} to ${D.meta.span[1]}. The job count reads ${N(first.emp)} in ` +
+  `${label(first)} against ${N(last.emp)} in ${label(last)}. Aligning the flows to the ` +
+  `same ${pairs.length} quarters those two readings bracket still leaves them apart: ` +
+  `${netAligned >= 0 ? "+" : "−"}${N(Math.abs(netAligned))} on the ledger against ` +
+  `${N(stockFall)} fewer jobs on the count, so the mismatch is not an end effect.`;
 
 /* The measure and its direction now sit on the axis, and the dashed line names itself, so
    the subtitle keeps only what the eye cannot get from the plot: which line is which, and
@@ -811,6 +883,21 @@ meth.querySelector(".pv-method-grid").insertAdjacentHTML("beforeend", `
       stock and the seasonally adjusted flows are estimated separately and do not add up to
       one another, which is why the net drawn on the flow chart is a ledger of flows rather
       than the change in the stock.</p>
+    <p><b>Which of the two answers whether employment grew.</b> The headcount does. It is
+      a count of jobs on a day, so a fall in it is fewer jobs; ${N(stockFall)} fewer here,
+      about ${stockPct.toFixed(1)}% of the ${label(first)} level. The flow ledger answers
+      a different question, how the quarter&rsquo;s starts came out against its ends, and
+      ${N(Math.abs(tNet))} is what is left of ${N(tHires + tSeps)} events after they
+      cancel. Neither number is a correction of the other and neither is wrong. The
+      mismatch is not confined to the endpoints: quarter by quarter, the ledger and the
+      change in the headcount point opposite ways in ${clashes.length} of
+      ${pairs.length} comparisons, and the widest gap between them falls at
+      ${label(clash.q)}. Aligned to the
+      ${pairs.length} quarters the two headcount readings bracket, the flows still net
+      ${netAligned >= 0 ? "+" : "−"}${N(Math.abs(netAligned))}. This is ordinary for
+      QWI and not a defect in this pull; a flow count and a point-in-time count of the
+      same industry are separate estimates with separate reference periods, and each is
+      seasonally adjusted on its own.</p>
     <p>Every published quarter carries all ${FP.words} counties, so no bar on the flow
       chart is a floor. ${last.year}Q4 is absent rather than zero: the Census has not
       published it. Below 760px the flow chart aggregates quarters into years, which

@@ -13,13 +13,25 @@ index.html         page shell
 styles.css         page-local CSS: figure chrome, county selector, translator, mobile re-layout
 app.js             charts, selector, translator, appended methods blocks
 data/churn.json    THE DATA (8 KB). Edit the builder, not this.
-claims.json        21 assertions, one per published number
+claims.json        26 assertions, one per published number
 ```
+
+**Two measures, two questions.** This page publishes two Census numbers for the same
+industry over the same span and they disagree in sign: the flow ledger nets **+168**, the
+headcount falls **719**. Both are right. Hires and separations are events counted through a
+quarter; `Emp` is a headcount on one day at the start of it; the two are estimated and
+seasonally adjusted separately and are not built to reconcile. **The headcount is the one
+that answers whether employment grew.** Say so wherever the two appear together, and never
+restate +168 as a jobs gain.
 
 ## The argument, beat by beat
 
-1. **The flow.** 111,529 hires and 111,361 separations for +168 net jobs. Diverging bars
-   around a shared zero, net drawn as a line in the same unit.
+1. **The flow.** 111,529 hires and 111,361 separations for a +168 flow ledger. Diverging
+   bars around a shared zero, net drawn as a line in the same unit. **The axis is signed:**
+   starts are positive, ends are negative, so the net line is the two bar heights added.
+   Unsigned it read 4,000 / 2,000 / 0 / 2,000 / 4,000 and could not distinguish an outflow
+   from a loss. Do not restore an unsigned mirror while the net series crosses zero
+   (`churn-net-crosses-zero`).
 2. **The rate.** The trailing four-quarter average ends at 9.6% against 8.5% in 2012, and it
    has sat above the 2012 level in 51 of the 52 quarters it covers.
 3. **Which side moved** (the payoff). The separation rate is up about 1.9 points; the hire
@@ -65,7 +77,11 @@ counting quarters would name marks the reader cannot see.
   The `counties` field on each row is the check.
 - The flow-derived net (+168) is not the change in the employment stock, which reads 18,444
   in 2012Q1 against 17,725 in 2025Q3. The seasonally adjusted stock and the seasonally
-  adjusted flows are estimated separately and do not add up to one another.
+  adjusted flows are estimated separately and do not add up to one another. Aligning the
+  flows to the 54 quarters those two stock readings bracket does not close the gap: the
+  ledger goes to +376, further from the stock, not nearer. Quarter by quarter the two point
+  opposite ways in 8 of 54 comparisons. **Which one answers "did employment grow": the
+  headcount.**
 - There is **no outside benchmark on this page**, and the reason is in the methodology box.
   The comparisons here are internal: the cluster against its own 2012, and the twelve
   counties against each other.
@@ -90,6 +106,14 @@ counting quarters would name marks the reader cannot see.
 
 ## Corrections
 
+- **2026-08-29.** Three, all in the repo-root `CORRECTIONS.md`. (1) The page published a
+  flow ledger and a headcount that disagree in sign and never said which question each
+  answered; a reader finished it unsure whether jobs had grown. Both numbers stand. The
+  standfirst, the `+168` hero card, the flow table's column heads, a new note under that
+  table, the source line, the methodology and the closer now all say the headcount is the
+  growth answer. (2) The flow chart's axis carried no minus sign below zero while the net
+  line was drawn on it; ends are now plotted negative. (3) The span was stated as
+  "14 years" for 55 quarters (13.75); everything counts quarters now.
 - **2026-08-28.** `meta.note` in `data/churn.json` said `counties_counted says how many of 14
   are in each sum` on a page whose footprint is PIC-12 and whose field is named `counties`.
   It was published in the methodology box as a limitation. Corrected to name the twelve and
