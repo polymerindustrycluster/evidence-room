@@ -1,0 +1,209 @@
+{
+ "meta": {
+  "source": "Ohio Tax Credit Authority meeting minutes (PDF), Ohio Department of Development, served from dam.assets.ohio.gov",
+  "row": "one tax-credit award as recorded in the minutes: company, counties, credit rate and term, full-time jobs COMMITTED and new annual payroll COMMITTED.",
+  "commitment_not_delivery": "These are promises made in exchange for a credit, not jobs created. Ohio's Auditor found 36 of 55 companies in one recent year had not met their commitments.",
+  "sample_not_census": "There is no API and no machine-readable index. The minutes list is assembled by hand and is a SAMPLE of meetings, so no total here is a state total or a period total.",
+  "unreadable": [
+   {
+    "file": "taxcreditminutes-10252021.pdf",
+    "pages": 3,
+    "images": 21
+   }
+  ],
+  "n_meetings_parsed": 5,
+  "n_meetings_unreadable": 1
+ },
+ "awards": [
+  {
+   "company": "ark data centers, LLC",
+   "counties": "Summit/Cuyahoga",
+   "in_footprint": true,
+   "fte_committed": 10,
+   "new_annual_payroll_committed": 1100000,
+   "credit_pct": 50.0,
+   "credit_years": 10,
+   "file": "Meeting_Minutes_TCA_3.2.2026_pn7x3l.pdf"
+  },
+  {
+   "company": "AAA Cooper Transportation",
+   "counties": "Franklin/ Summit/Lucas",
+   "in_footprint": true,
+   "fte_committed": 210,
+   "new_annual_payroll_committed": 14700000,
+   "credit_pct": 1.668,
+   "credit_years": 9,
+   "file": "Meeting_Minutes_TCA_3.2.2026_pn7x3l.pdf"
+  },
+  {
+   "company": "First Quality Home Care Products, LLC",
+   "counties": "Fulton",
+   "in_footprint": false,
+   "fte_committed": 400,
+   "new_annual_payroll_committed": 20000000,
+   "credit_pct": 1.601,
+   "credit_years": 10,
+   "file": "Meeting_Minutes_TCA_3.2.2026_pn7x3l.pdf"
+  },
+  {
+   "company": "Dainty Foods USA",
+   "counties": "Clermont",
+   "in_footprint": false,
+   "fte_committed": 240,
+   "new_annual_payroll_committed": 15864000,
+   "credit_pct": 1.671,
+   "credit_years": 10,
+   "file": "Meeting_Minutes_TCA_3.2.2026_pn7x3l.pdf"
+  },
+  {
+   "company": "Steel & O'Brien Manufacturing Inc",
+   "counties": "Butler",
+   "in_footprint": false,
+   "fte_committed": 230,
+   "new_annual_payroll_committed": 13387398,
+   "credit_pct": 1.636,
+   "credit_years": 9,
+   "file": "Meeting_Minutes_TCA_3.2.2026_pn7x3l.pdf"
+  },
+  {
+   "company": "Dupon USA LLC",
+   "counties": "Franklin",
+   "in_footprint": false,
+   "fte_committed": 60,
+   "new_annual_payroll_committed": 3071000,
+   "credit_pct": 1.195,
+   "credit_years": 7,
+   "file": "Meeting_Minutes_TCA_3.30.2026.pdf"
+  },
+  {
+   "company": "Copper Run Capital LLC",
+   "counties": "Franklin",
+   "in_footprint": false,
+   "fte_committed": 30,
+   "new_annual_payroll_committed": 6000000,
+   "credit_pct": 1.813,
+   "credit_years": 8,
+   "file": "Meeting_Minutes_TCA_3.30.2026.pdf"
+  },
+  {
+   "company": "Resonant Sciences LLC",
+   "counties": "Greene",
+   "in_footprint": false,
+   "fte_committed": 101,
+   "new_annual_payroll_committed": 10000000,
+   "credit_pct": 1.738,
+   "credit_years": 9,
+   "file": "Meeting_Minutes_TCA_3.30.2026.pdf"
+  },
+  {
+   "company": "Vertiv Corporation",
+   "counties": "Lawrence",
+   "in_footprint": false,
+   "fte_committed": 520,
+   "new_annual_payroll_committed": 26025000,
+   "credit_pct": 1.6,
+   "credit_years": 10,
+   "file": "Meeting_Minutes_TCA_3.30.2026.pdf"
+  },
+  {
+   "company": "APAR USA LLC",
+   "counties": "Muskingum",
+   "in_footprint": false,
+   "fte_committed": 290,
+   "new_annual_payroll_committed": 17900000,
+   "credit_pct": 1.656,
+   "credit_years": 10,
+   "file": "Meeting_Minutes_TCA_3.30.2026.pdf"
+  },
+  {
+   "company": "East Trailers LLC",
+   "counties": "Portage",
+   "in_footprint": true,
+   "fte_committed": 175,
+   "new_annual_payroll_committed": 9570000,
+   "credit_pct": 1.496,
+   "credit_years": 8,
+   "file": "Meeting_Minutes_TCA_3.30.2026.pdf"
+  },
+  {
+   "company": "NEW PROJECTS Centric HC, LLC",
+   "counties": "Franklin",
+   "in_footprint": false,
+   "fte_committed": 200,
+   "new_annual_payroll_committed": 14000000,
+   "credit_pct": 1.678,
+   "credit_years": 9,
+   "file": "Meeting_Minutes_TCA_4.27.2026.pdf"
+  },
+  {
+   "company": "Webb Chemical Service Corporation",
+   "counties": "Cuyahoga",
+   "in_footprint": true,
+   "fte_committed": 25,
+   "new_annual_payroll_committed": 2000000,
+   "credit_pct": 1.249,
+   "credit_years": 7,
+   "file": "Meeting_Minutes_TCA_4.27.2026.pdf"
+  },
+  {
+   "company": "Whirlpool Corporation",
+   "counties": "Wood",
+   "in_footprint": false,
+   "fte_committed": 100,
+   "new_annual_payroll_committed": 5200000,
+   "credit_pct": 1.312,
+   "credit_years": 8,
+   "file": "Meeting_Minutes_TCA_4.27.2026.pdf"
+  },
+  {
+   "company": "NEW PROJECTS OPmobility Exterior USA, LLC",
+   "counties": "Wood",
+   "in_footprint": false,
+   "fte_committed": 541,
+   "new_annual_payroll_committed": 40000000,
+   "credit_pct": 1.968,
+   "credit_years": 12,
+   "file": "TCA_Meeting_Minutes_6.1.2026.pdf"
+  },
+  {
+   "company": "Cologix, Inc",
+   "counties": "Delaware",
+   "in_footprint": false,
+   "fte_committed": 90,
+   "new_annual_payroll_committed": 10000000,
+   "credit_pct": 50.0,
+   "credit_years": 10,
+   "file": "TCA_Meeting_Minutes_6.1.2026.pdf"
+  },
+  {
+   "company": "Melink Solar, LLC",
+   "counties": "Hamilton",
+   "in_footprint": false,
+   "fte_committed": 30,
+   "new_annual_payroll_committed": 3600000,
+   "credit_pct": null,
+   "credit_years": null,
+   "file": "Meeting_Minutes_6.2.2025.pdf"
+  },
+  {
+   "company": "Bay Cities Container Corporation",
+   "counties": "Hamilton",
+   "in_footprint": false,
+   "fte_committed": 10,
+   "new_annual_payroll_committed": 1800000,
+   "credit_pct": null,
+   "credit_years": null,
+   "file": "Meeting_Minutes_6.2.2025.pdf"
+  },
+  {
+   "company": "Vaughn Industries, LLC",
+   "counties": "Wyandot",
+   "in_footprint": false,
+   "fte_committed": 126,
+   "new_annual_payroll_committed": 8820000,
+   "credit_pct": null,
+   "credit_years": null,
+   "file": "Meeting_Minutes_6.2.2025.pdf"
+  }
+ ]
+}
