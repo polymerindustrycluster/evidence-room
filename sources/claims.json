@@ -3,9 +3,9 @@
   "claims": [
     {
       "id": "src-register-size",
-      "text": "Fourteen datasets build every page on this site, twelve of them public and two internal records nobody can fetch, and sixty-six filter lines are published rather than described (standfirst, first hero card, second hero card, the register lede, the closer).",
+      "text": "Fourteen datasets build every page on this site, twelve of them public and two internal records nobody can fetch, and sixty-nine filter lines are published rather than described (standfirst, first hero card, second hero card, the register lede, the closer).",
       "source": "_data/SOURCES.json, rendered by _data/build/derive_sources.py",
-      "assert": "D['totals']['n_sources'] == 14 and len(D['sources']) == 14 and D['totals']['n_public'] == 12 and D['totals']['n_public'] + D['totals']['n_no_endpoint'] == D['totals']['n_sources'] and D['totals']['n_filter_lines'] == 66 and D['totals']['n_filter_lines'] == sum(len(s['filters']) for s in D['sources'])",
+      "assert": "D['totals']['n_sources'] == 14 and len(D['sources']) == 14 and D['totals']['n_public'] == 12 and D['totals']['n_public'] + D['totals']['n_no_endpoint'] == D['totals']['n_sources'] and D['totals']['n_filter_lines'] == 69 and D['totals']['n_filter_lines'] == sum(len(s['filters']) for s in D['sources'])",
       "actual": "(D['totals']['n_sources'], D['totals']['n_public'], D['totals']['n_filter_lines'])",
       "falsified_if": "A source is added to or removed from the registry, or a filter line is added to one, without the two hero cards and the closer moving with it. The second half of the assertion is the one that matters: it re-derives the filter count from the entries themselves rather than trusting the total the same script wrote, so a totals block that stopped agreeing with its own rows fails here rather than shipping."
     },
@@ -59,11 +59,11 @@
     },
     {
       "id": "src-footprint-named",
-      "text": "The twelve counties behind every regional figure on this site are named on the page rather than counted at: Ashtabula, Cuyahoga, Geauga, Lake, Lorain, Mahoning, Medina, Portage, Stark, Summit, Trumbull and Wayne, and the twenty-six occupation codes are listed in full beside them (the multi-county step, and the classification cards).",
+      "text": "The twelve counties behind every regional figure on this site are named on the page rather than counted at, each with the five-digit FIPS code the filter actually takes: Ashtabula 39007, Cuyahoga 39035, Geauga 39055, Lake 39085, Lorain 39093, Mahoning 39099, Medina 39103, Portage 39133, Stark 39151, Summit 39153, Trumbull 39155 and Wayne 39169, and the twenty-six occupation codes are listed in full beside them (the multi-county step, and the classification cards).",
       "source": "wages/data/wages.json meta.footprint; occupations/data/viz-data.json pay",
-      "assert": "(lambda F, S: F['n'] == 12 and len(F['counties']) == F['n'] and F['label'] == 'PIC-12' and 'Ashtabula' in F['counties'] and 'Trumbull' in F['counties'] and len(S) == D['classification']['soc']['n_codes'] == 26 and len({s['soc'] for s in S}) == 26 and all(s['occupation'] for s in S))(D['footprint'], D['socs'])",
-      "actual": "(D['footprint']['n'], len(D['socs']))",
-      "falsified_if": "The footprint gains or loses a county, or the occupation set changes, without the page's own list moving with it. A transfer test found a reader could enumerate about five of the eleven values they would need to change for their own region, and these were two of the six they could not: both were one join away from a file this page already reads, and publishing the size of a set instead of the set is the difference between a guide and a description of one."
+      "assert": "(lambda F, S: F['n'] == 12 and len(F['counties']) == F['n'] and F['label'] == 'PIC-12' and set(['Ashtabula', 'Trumbull']) <= set([c['name'] for c in F['counties']]) and all(len(c['fips']) == 5 and c['fips'].isdigit() and c['fips'][:2] == '39' for c in F['counties']) and len(set([c['fips'] for c in F['counties']])) == F['n'] and len(S) == D['classification']['soc']['n_codes'] == 26 and len({s['soc'] for s in S}) == 26 and all(s['occupation'] for s in S))(D['footprint'], D['socs'])",
+      "actual": "(D['footprint']['n'], len(D['socs']), [c['fips'] for c in D['footprint']['counties']][:3])",
+      "falsified_if": "The footprint gains or loses a county, or the occupation set changes, or a county loses its FIPS code, without the page's own list moving with it. Two transfer tests drove this claim. The first found a reader could enumerate about five of the eleven values they would need for their own region, and the county set was one of the six they could not; the counties were then named. The second, on 2026-08-30, rebuilt this page's target number from BLS and still had to leave the site, because a name is not a filter and the codes lived only in a build file no reader can open. Publishing the size of a set is not publishing the set, and publishing its labels is not publishing its keys."
     },
     {
       "id": "src-lq-fragile",
@@ -139,7 +139,7 @@
     },
     {
       "id": "src-gap-county-names",
-      "text": "Twelve origin counties on the labour-shed page carry a five-digit code and no place name, 31,433 jobs between them, because no county crosswalk ships anywhere in this repository (the gaps section).",
+      "text": "Twelve origin counties on the labour-shed page carry a five-digit code and no place name, 31,433 jobs between them, because these origins are anywhere in the country and no national county crosswalk ships in this repository (the gaps section).",
       "source": "laborshed/data/laborshed.json external.top, rows whose name falls back to the FIPS code",
       "assert": "(lambda g: g['n'] == 12 and g['jobs'] == 31433 and g['page'] == 'laborshed' and g['close'])(one(g for g in D['gaps'] if g['id'] == 'county-names'))",
       "actual": "[g for g in D['gaps'] if g['id'] == 'county-names']",

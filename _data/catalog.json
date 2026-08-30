@@ -1,7 +1,7 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-08-29 23:41",
+  "generated": "2026-08-30 08:43",
   "seconds": 0.1,
   "scripts": 26,
   "outputs_on_disk": 0,

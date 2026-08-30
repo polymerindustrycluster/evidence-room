@@ -39,11 +39,11 @@
     ],
     [
      "aggregation",
-     "county area file: agglvl_code 70 is the all-ownership county total, 71 the county total by ownership, 74 NAICS sector, 75 NAICS 3-digit, 76 NAICS 4-digit, 77 5-digit, 78 6-digit. The US000 file uses 10, 11, 15, 16 and 18 for the same rungs. agglvl 50 to 58 are STATE levels and appear in no county file."
+     "county area file: agglvl_code 70 is the all-ownership county total, 71 the county total by ownership, 74 NAICS sector, 75 NAICS 3-digit, 76 NAICS 4-digit, 77 5-digit, 78 6-digit. The US000 file uses 10, 11, 15, 16 and 18 for the same rungs. agglvl 50 to 58 are STATE levels and appear in no county file: 55 is three-digit, 56 four-digit, 57 five-digit and 58 six-digit."
     ],
     [
      "geography",
-     "county FIPS, PIC-12 and NEO-14 (see footprints.py)"
+     "county FIPS. The page\u2019s own footprint, PIC-12, is 39007 Ashtabula, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39169 Wayne. The wider NEO-14 used by the vault pages is 39033 Crawford, 39035 Cuyahoga, 39055 Geauga, 39077 Huron, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39139 Richland, 39151 Stark, 39153 Summit, 39157 Tuscarawas, 39169 Wayne. Both are defined once in footprints.py, which is a vendored copy of the pic-geo package."
     ],
     [
      "by_industry",
@@ -51,7 +51,7 @@
     ],
     [
      "user_agent",
-     "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address; data.bls.gov serves any of them. contact.py holds the single address this repository sends."
+     "This source is on data.bls.gov, which serves a scripted request with any User-Agent or none. The 403 is on www.bls.gov, which the two OEWS files use, and the warning is filed on those rather than here."
     ],
     [
      "note",
@@ -511,6 +511,10 @@
     [
      "note",
      "One year only. This is a level, not a trend; the wage trend on the talent page comes from QWI instead."
+    ],
+    [
+     "user_agent",
+     "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address. contact.py holds the single address this repository sends. data.bls.gov, which the QCEW pulls use, serves any of them."
     ]
    ],
    "pages": [
@@ -552,6 +556,10 @@
     [
      "note",
      "all industries; the \u2018#\u2019 ceiling ($115/hr, $239,200/yr) and \u2018*\u2019 are both null, never zero"
+    ],
+    [
+     "user_agent",
+     "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address. contact.py holds the single address this repository sends. data.bls.gov, which the QCEW pulls use, serves any of them."
     ]
    ],
    "pages": [
@@ -564,7 +572,7 @@
    "name": "O*NET 30.3 database: Occupation Data, Job Zones, Job Zone Reference, Education, Education Categories",
    "short": "O*NET education levels",
    "agency": "U.S. Department of Labor / Employment and Training Administration (CC BY 4.0; attribution printed on the page)",
-   "url": "https://www.onetcenter.org/dl_files/database/db_30_3_text/",
+   "url": "https://www.onetcenter.org/dl_files/database/db_30_3_text.zip",
    "docs": "https://www.onetcenter.org/database.html",
    "script": "_data/build/fetch_onet_education.py",
    "key_required": false,
@@ -597,6 +605,10 @@
     [
      "attribution",
      "required on the page, printed in the education source line"
+    ],
+    [
+     "fetch",
+     "the .zip is the artifact and returns 200. The same path with the .zip trimmed off is a directory that returns 403 to every User-Agent tried, including a contact address, so a reader who shortens the URL to browse the files meets a wall rather than a listing."
     ]
    ],
    "pages": [
@@ -797,7 +809,7 @@
    "heritage_register",
    "public_record"
   ],
-  "n_filter_lines": 66,
+  "n_filter_lines": 69,
   "routes": {
    "bulk": 6,
    "api": 5,
@@ -823,25 +835,61 @@
    "wages"
   ],
   "n_build_scripts": 26,
-  "catalog_generated": "2026-08-29 23:41"
+  "catalog_generated": "2026-08-30 08:43"
  },
  "footprint": {
   "key": "pic12",
   "n": 12,
   "label": "PIC-12",
   "counties": [
-   "Ashtabula",
-   "Cuyahoga",
-   "Geauga",
-   "Lake",
-   "Lorain",
-   "Mahoning",
-   "Medina",
-   "Portage",
-   "Stark",
-   "Summit",
-   "Trumbull",
-   "Wayne"
+   {
+    "name": "Ashtabula",
+    "fips": "39007"
+   },
+   {
+    "name": "Cuyahoga",
+    "fips": "39035"
+   },
+   {
+    "name": "Geauga",
+    "fips": "39055"
+   },
+   {
+    "name": "Lake",
+    "fips": "39085"
+   },
+   {
+    "name": "Lorain",
+    "fips": "39093"
+   },
+   {
+    "name": "Mahoning",
+    "fips": "39099"
+   },
+   {
+    "name": "Medina",
+    "fips": "39103"
+   },
+   {
+    "name": "Portage",
+    "fips": "39133"
+   },
+   {
+    "name": "Stark",
+    "fips": "39151"
+   },
+   {
+    "name": "Summit",
+    "fips": "39153"
+   },
+   {
+    "name": "Trumbull",
+    "fips": "39155"
+   },
+   {
+    "name": "Wayne",
+    "fips": "39169"
+   }
   ],
   "note": "PIC's official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
   "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the vault's NEO-14 includes."
@@ -1544,7 +1592,7 @@
    "what": "Twelve origin counties have no place name",
    "n": 12,
    "jobs": 31433,
-   "why": "No county FIPS-to-name crosswalk ships anywhere in this repository, so those rows print a five-digit code a reader cannot use.",
+   "why": "The two local footprints are named and numbered on this page, but these origins are anywhere in the country and no NATIONAL county FIPS-to-name crosswalk ships in this repository, so those rows print a five-digit code a reader cannot use.",
    "close": "Add a national county crosswalk to the build. LEHD publishes a per-state geography crosswalk beside the LODES files, and the Census gazetteer is the other option; check that whichever is chosen covers out-of-state origins before wiring it in."
   },
   {

@@ -207,10 +207,86 @@ Rationale: D1 completes the pair of QCEW recipes a reader most wants, and shares
 source, so it is cheap. D3 is self-contained, additive, and carries the strongest lesson.
 D4 unlocks D5, which should not ship before it. D2 needs a bulk-download explanation and is
 the largest single piece. D8 is only worth writing once several recipes exist to be
-confused by. D6 is the one that can be dropped entirely without the page failing.
+confused by. D7 summarises what every recipe before it parameterised, so it gets more
+complete and less writing the later it runs. D6 is the one that can be dropped entirely
+without the page failing.
 
 Ship in pairs, as with everything else on this branch, and re-run the replication test after
 each pair rather than at the end.
+
+### What actually blocks what
+
+That chain has seven arrows and not one of them is a dependency in its own right. The real
+constraints cut across it, and there are only two. Knowing which is which is what lets this
+be resequenced under pressure without breaking anything.
+
+**Hard. Do not reorder these:**
+
+- **D3 and D4 both before D5.** D5 prints federal dollars across years by NAICS. Without D4
+  a reader compares nominal dollars across a decade; without D3 they cannot name the award
+  behind a peak. D5's own risk note says this, and it is repeated here because a sequencing
+  section that omits it invites exactly the reordering it warns against.
+- **D4 before anything else that prints a multi-year dollar total.** Today that is only D5,
+  so this is the same edge stated generally. A future item that prints one inherits it.
+
+**Soft. Reorder freely if something changes:**
+
+- **D1 first is a value call, not a dependency.** It is cheapest because it reuses v1's
+  source and its trap is already measured. Nothing downstream needs it.
+- **D2 is independent of everything.** Different dataset, different agency, different trap,
+  no shared machinery. It sits fourth because it is the largest piece, not because anything
+  waits on it. Whoever wants the most novel thing first should take it first.
+- **D8 is not blocked by anything, and its slot is the softest here.** Checked against v1
+  rather than assumed: the page already carries material for all four of D8's reasons, not
+  some of them. Vintage is a published section, suppression is a published section, basis is
+  the 3.27-against-3.123 pair the whole page opens on, and code set is the classification
+  card. D8 adds no new material at all. What it adds is *placement*, collecting the four at
+  the moment a reader is frustrated. So its late slot is a judgment about when that moment
+  arrives, not a dependency, and it can be pulled forward whenever someone wants it.
+- **D6 is last or never**, which is containment rather than dependency. It is the only item
+  whose failure mode is making the page worse rather than leaving it incomplete.
+
+### Where you can stop
+
+Four points where the page is coherent if work halts. This matters more than the order,
+because the realistic outcome is not eight items but three or four.
+
+| Stop after | What the page is | What it stops claiming |
+|---|---|---|
+| **v1 (today)** | One worked question, carried end to end, plus the register | It already reads as complete; nothing to walk back |
+| **D1** | A complete guide to one dataset, two questions, two traps | Nothing. This is the natural MVP ceiling |
+| **D3 + D4** | One dataset plus provenance and the deflator choice | Nothing, but the register's fourteen sources now visibly outrun the recipes |
+| **D2 + D5 + D8** | Four datasets, four traps, a troubleshooting path | Functionally complete. D7 and D6 are polish |
+
+If the work stops between a pair, finish the pair. A half-shipped recipe is the one state
+this page cannot be in, because its whole claim is that a stranger can follow it.
+
+### What can run in parallel
+
+D3 touches no recipe machinery and shares no source with anything else, so it can be built
+alongside D1 by someone else entirely. D2 shares no source with D1, D4 or D5. D6 and D7 are
+prose over material that already exists. The genuinely serial spine is D4 → D5, and that is
+all of it.
+
+### The one reorder that would actually hurt
+
+Shipping D5 before D4. A federal-contracting recipe that prints dollar totals across a
+decade without having first taught which deflator applies teaches a reader to read nominal
+growth as real growth. That is the precise error the cost-scissors page exists to correct,
+and this site would be teaching it on the page that claims to teach method.
+
+### A note on D7, which has already been half-tested
+
+The replication test run on 2026-08-30 executed D7's acceptance criterion as a side effect:
+a reviewer with no repo access was asked to name every value they would change for their own
+region. They named all but two. One of the two, the state aggregation level for a four-digit
+industry, was fixed the same day. The other, their own counties' FIPS codes, cannot be fixed
+from here without the national crosswalk this page already publishes as a gap.
+
+So D7's remaining scope is one paragraph and a decision about that crosswalk, not a section.
+That is an argument for pulling it forward beside D8, since both are reader support rather
+than new recipes. Left in place above because the order is John's call, not a mechanical
+consequence.
 
 ## How each one gets built, mechanically
 

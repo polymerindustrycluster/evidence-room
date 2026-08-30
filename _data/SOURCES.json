@@ -27,10 +27,10 @@
    "filters": {
     "NAICS codes": "10 (all industries), 31-33 (manufacturing), 325 (chemical manufacturing), 3252 (resin, synthetic rubber and fibers), 3255 (paint, coating and adhesive), 326 (plastics and rubber products), 3261 (plastics products), 3262 (rubber products)",
     "ownership": "own_code 5 (private) carries every industry row; own_code 0 (total, all ownerships) exists only on industry 10. Those are not two interchangeable choices: an industry row at own_code 0 does not exist to be picked.",
-    "aggregation": "county area file: agglvl_code 70 is the all-ownership county total, 71 the county total by ownership, 74 NAICS sector, 75 NAICS 3-digit, 76 NAICS 4-digit, 77 5-digit, 78 6-digit. The US000 file uses 10, 11, 15, 16 and 18 for the same rungs. agglvl 50 to 58 are STATE levels and appear in no county file.",
-    "geography": "county FIPS, PIC-12 and NEO-14 (see footprints.py)",
+    "aggregation": "county area file: agglvl_code 70 is the all-ownership county total, 71 the county total by ownership, 74 NAICS sector, 75 NAICS 3-digit, 76 NAICS 4-digit, 77 5-digit, 78 6-digit. The US000 file uses 10, 11, 15, 16 and 18 for the same rungs. agglvl 50 to 58 are STATE levels and appear in no county file: 55 is three-digit, 56 four-digit, 57 five-digit and 58 six-digit.",
+    "geography": "county FIPS. The page’s own footprint, PIC-12, is 39007 Ashtabula, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39169 Wayne. The wider NEO-14 used by the vault pages is 39033 Crawford, 39035 Cuyahoga, 39055 Geauga, 39077 Huron, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39139 Richland, 39151 Stark, 39153 Summit, 39157 Tuscarawas, 39169 Wayne. Both are defined once in footprints.py, which is a vendored copy of the pic-geo package.",
     "by_industry": "the same census sliced the other way, one file per NAICS across every area, at https://data.bls.gov/cew/data/api/{year}/a/industry/{naics}.csv. The disclosure rates published on the sources page are the 2024 annual file for 326, own_code 5: county rows are agglvl 75, metropolitan rows agglvl 45, state rows agglvl 55.",
-    "user_agent": "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address; data.bls.gov serves any of them. contact.py holds the single address this repository sends.",
+    "user_agent": "This source is on data.bls.gov, which serves a scripted request with any User-Agent or none. The 403 is on www.bls.gov, which the two OEWS files use, and the warning is filed on those rather than here.",
     "note": "PIC’s own measurement register is 3252 + 3255 + 326. NAICS 325 is context, not cluster: it contains pharmaceuticals and agricultural chemicals.",
     "provenance_page": "fetch_provenance.py re-uses this source for one pull: 2016 annual, area 39000 which is the STATE of Ohio and not a county, own_code 5, industry 326+32521+325991 at agglvl 55/57/58, which are the state 3-, 5- and 6-digit levels. Those three agglvl codes belong to that state pull alone and return nothing from a county file."
    },
@@ -125,7 +125,8 @@
    "filters": {
     "sheet": "MSA_M2024_dl",
     "geography": "metropolitan area, carrying the same non-nesting caveat as BEA RPP",
-    "note": "One year only. This is a level, not a trend; the wage trend on the talent page comes from QWI instead."
+    "note": "One year only. This is a level, not a trend; the wage trend on the talent page comes from QWI instead.",
+    "user_agent": "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address. contact.py holds the single address this repository sends. data.bls.gov, which the QCEW pulls use, serves any of them."
    },
    "terms": "Public domain. BLS asks to be cited as the source: https://www.bls.gov/bls/linksite.htm",
    "script": "_data/build/fetch_oews.py",
@@ -186,7 +187,8 @@
     "sheet": "national_M2024_dl",
     "occupations": "the SOC set read from oews.json (26 codes); the metro pull defines the set",
     "dedupe": "51-2090 appears as broad and detailed with identical values; one row kept, detailed preferred",
-    "note": "all industries; the ‘#’ ceiling ($115/hr, $239,200/yr) and ‘*’ are both null, never zero"
+    "note": "all industries; the ‘#’ ceiling ($115/hr, $239,200/yr) and ‘*’ are both null, never zero",
+    "user_agent": "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address. contact.py holds the single address this repository sends. data.bls.gov, which the QCEW pulls use, serves any of them."
    },
    "terms": "Public domain. BLS asks to be cited as the source: https://www.bls.gov/bls/linksite.htm",
    "script": "_data/build/fetch_oews_national.py",
@@ -195,14 +197,15 @@
   "onet_education": {
    "name": "O*NET 30.3 database: Occupation Data, Job Zones, Job Zone Reference, Education, Education Categories",
    "agency": "U.S. Department of Labor / Employment and Training Administration (CC BY 4.0; attribution printed on the page)",
-   "url": "https://www.onetcenter.org/dl_files/database/db_30_3_text/",
+   "url": "https://www.onetcenter.org/dl_files/database/db_30_3_text.zip",
    "docs": "https://www.onetcenter.org/database.html",
    "filters": {
     "element": "2.D.1 Required Level of Education, scale RL",
     "bins": "1-2 HS or less; 3-5 some college/associate; 6-7 bachelor’s; 8-12 graduate",
     "join": ".00 variant preferred, else equal-weight mean of variants; broad SOC 51-2090 = mean of five-char stem",
     "job_zone": "30.x reports zones 1 and 2 as one band keyed 2; a zone-1 row reads the merged reference row",
-    "attribution": "required on the page, printed in the education source line"
+    "attribution": "required on the page, printed in the education source line",
+    "fetch": "the .zip is the artifact and returns 200. The same path with the .zip trimmed off is a directory that returns 403 to every User-Agent tried, including a contact address, so a reader who shortens the URL to browse the files meets a wall rather than a listing."
    },
    "licence": "CC BY 4.0",
    "licence_url": "https://creativecommons.org/licenses/by/4.0/",

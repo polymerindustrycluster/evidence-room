@@ -48,6 +48,8 @@ import json
 import os
 import re
 
+from footprints import PIC12, NEO14
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.abspath(os.path.join(HERE, "..", ".."))
 
@@ -603,8 +605,10 @@ def build():
          "what": "Twelve origin counties have no place name",
          "n": len(unnamed),
          "jobs": round(sum(r["jobs_2022"] for r in unnamed)),
-         "why": "No county FIPS-to-name crosswalk ships anywhere in this repository, so "
-                "those rows print a five-digit code a reader cannot use.",
+         "why": "The two local footprints are named and numbered on this page, but these "
+                "origins are anywhere in the country and no NATIONAL county "
+                "FIPS-to-name crosswalk ships in this repository, so those rows print a "
+                "five-digit code a reader cannot use.",
          "close": "Add a national county crosswalk to the build. LEHD publishes a "
                   "per-state geography crosswalk beside the LODES files, and the Census "
                   "gazetteer is the other option; check that whichever is chosen covers "
@@ -712,6 +716,27 @@ def build():
     if len(footprint["counties"]) != footprint["n"]:
         raise SystemExit("derive_sources: the footprint's own count and its own list "
                          "disagree, which is the defect this listing exists to prevent.")
+    # A NAME IS NOT A FILTER. A replication reviewer working from the rendered page on
+    # 2026-08-30 rebuilt this page's target number from BLS and still had to leave the
+    # site, because the twelve counties were NAMED here and the filter line pointed at
+    # footprints.py, a file no reader of this page can open. The codes are joined from
+    # that same module rather than typed in, so the printed list cannot drift from the
+    # one the fetch scripts actually send.
+    # Named fips_table, not codes: this module already binds `codes` to the NAICS, SOC
+    # and CIP classification list, and the first draft of this block shadowed it and
+    # shipped the county table into the page's classification section instead.
+    fips_table = {"pic12": PIC12, "neo14": NEO14}.get(footprint["key"])
+    if fips_table is None:
+        raise SystemExit(f"derive_sources: no code table for footprint "
+                         f"{footprint['key']!r}, so the page would name counties it "
+                         "cannot number.")
+    by_name = {v: k for k, v in fips_table.items()}
+    absent = [c for c in footprint["counties"] if c not in by_name]
+    if absent:
+        raise SystemExit(f"derive_sources: no FIPS code for {absent}. The page would "
+                         "print a county the build cannot address.")
+    footprint["counties"] = [{"name": c, "fips": by_name[c]}
+                             for c in footprint["counties"]]
     socs = sorted(({"soc": r["soc"], "occupation": r["occupation"]} for r in O["pay"]),
                   key=lambda r: r["soc"])
     if len(socs) != classification["soc"]["n_codes"]:

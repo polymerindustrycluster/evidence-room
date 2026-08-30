@@ -538,7 +538,9 @@ function drawRecipe() {
   document.getElementById("footprint").innerHTML =
     `<b>The footprint behind every regional figure on this site is ${F.label}</b>, and
      these are the ${word(F.n)} counties, named because a reader replicating this needs the
-     set and not its size: ${F.counties.join(", ")}. A wider fourteen-county definition is
+     set and not its size, each with the five-digit FIPS code the filter actually takes:
+     ${F.counties.map(c => `${c.name} <b class="code">${c.fips}</b>`).join(", ")}. A wider
+     fourteen-county definition is
      also in use in this project, and every page here stamps which footprint it was built
      on in a banner, because two pages on two footprints reconcile with nothing.`;
 
