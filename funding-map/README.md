@@ -1,8 +1,11 @@
 # PIC funding map
 
-An interactive map of the public money behind the Polymer Industry Cluster:
-three awards, seven programs, twenty-one recipients, `$106,290,451` in awards
-plus match. Destined for `picinnovation.org/funding`.
+An interactive map of the public money behind the Polymer Industry Cluster
+(PIC): three awards, seven programs, twenty-one recipients, `$85,335,784`
+awarded plus `$20,954,667` of match and cost share promised beside it, which is
+the `$106,290,451` the region reports as secured. The headline number is the
+AWARDED figure; the total is reached in the standfirst's next sentence and in
+the stat row. Destined for `picinnovation.org/funding`.
 
 Self-contained: vanilla JS, inline SVG, no frameworks, no CDN, no build step.
 
@@ -42,8 +45,12 @@ JavaScript switched off. Every one of them is guarded by an assertion in
 `claims.json` (run `python3 _data/build/verify_claims.py funding-map`), and they
 must be updated by hand if the data changes:
 
-- the `$106 million` in the headline, and the `$85.3M` / `$21.0M` / `$79.2M` in
-  the standfirst
+- the `$85.3 million` in the headline, and the `$21.0 million` / `$106.3 million`
+  / `$79.2 million` in the standfirst. The headline number is the AWARDED money,
+  not the total secured: it printed `$106 million` until 2026-08-29, one line
+  above a standfirst saying governments awarded $85.3 million, and a reader met
+  four totals before the page explained any of them. The total is still on the
+  page, in the standfirst's second sentence, the third stat card and the closer.
 - the three machine cards (award amounts, the match promised beside each, counts,
   and each card's fact line)
 - the figure title's `twenty-one recipients` and the verdict sentence under
@@ -53,9 +60,11 @@ must be updated by hand if the data changes:
   passed to `PV.methodology()` as `meta.fetched`
 
 The four hero stat cards are NOT hand-typed any more: `renderHero()` builds them
-from `meta.totals` through `PV.figures()`, and `#total-count` gets its
+from `meta.totals` through `PV.figures()`, and `#hero-count` gets its
 `data-value` from the same object, so the count-up animation and the printed
-figure cannot disagree.
+figure cannot disagree. Read in grid order the row is the addition itself:
+awarded, promised beside it, the two added together, then how much of the
+awarded money already names a recipient.
 
 The three on-diagram annotations are NOT hand-typed: their numerals are
 computed from `funding.json` at render time and formatted by `fmt()`.
@@ -178,7 +187,9 @@ one data label did (see the last bullet). What changed:
 
 - **Headline reframed to the finding**: "A $106 million bet on Akron polymers
   runs through three very different machines", with "every dollar, every
-  organization" kept as the standfirst's trust clause.
+  organization" kept as the standfirst's trust clause. *Superseded 2026-08-29:
+  the headline number is now the $85.3 million awarded, not the total secured —
+  see CORRECTIONS.md.*
 - **A "three machines" section** now sequences the awards one at a time, one
   character sentence each, before the combined map, with deep links into it.
 - **Three annotations drawn on the Sankey**, numerals computed from the data:

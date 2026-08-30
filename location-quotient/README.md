@@ -2,7 +2,9 @@
 
 **Which polymer industry is this region most concentrated in, and can we prove it without a licence?**
 
-Answer, from the free BLS file: paint and coatings, at 5.96x the national share in 2025, ahead of the rubber products (2.44x) the region is named for. Paint has led all six industries in every year since 2015.
+Answer, from the free BLS file: paint and coatings, at 5.96x the national share in 2025, ahead of the rubber products (2.44x) the region is named for. Paint is the strongest of the three codes this page counts as the cluster (3252, 3255, 326) and has run above every other series drawn here in every year since 2015.
+
+**Six series are drawn and they are not one ranking.** 3261 and 3262 are slices of 326; adding them to it counts the same jobs twice. 325 is context, outside the cluster. Any sentence that ranks "six industries" is wrong even when every number in it is right — see CORRECTIONS.md, 2026-08-29. The opening strip draws the three cluster codes as the ranking and sets the other three apart under headings that say why, with block membership read from `naics[].register` rather than typed.
 
 Source: BLS QCEW open data, annual averages, 2015–2025, 14 areas (12 PIC counties plus Ohio and the United States).
 

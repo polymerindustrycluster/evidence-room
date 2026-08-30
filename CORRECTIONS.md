@@ -13,6 +13,192 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-08-29 — a hierarchy ranked and a total flattened, *location-quotient* and *funding-map*
+
+One defect in two shapes, both found by a reader given nothing but the rendered page: a
+nesting published as a flat list, and a sum published as a simpler thing than it is.
+
+### "The strongest of six polymer industries" — *location-quotient*, published
+
+**Was:** the hero drew six bars in one ranked strip, the standfirst read *the strongest of
+six polymer industries*, the section H2 read *Paint leads all six polymer industries*, the
+hero card read *strongest of the six*, and the trend annotation read *Paint has led all six
+industries in every one of 11 years, always at least 2.1 times the second industry*.
+
+**Is:** the strip draws three labelled blocks. The ranking is the first: the three codes the
+page counts as the cluster, 3252, 3255 and 326, under the heading *The three industries
+counted as the cluster*. Plastics products and rubber products are drawn hollow under
+*Already counted inside plastics and rubber*, and chemical manufacturing under *Outside the
+cluster, drawn for comparison*. The strip's reading line is *Paint leads the cluster at
+5.96×*. The standfirst, the H2 and the hero card rank the three. The trend chart still draws
+all six lines and its annotation now says what the picture shows, *Paint has run above every
+other line in all 11 years, always at least 2.1 times the next line*, and the figure's
+how-to-read line states the nesting before the reader traces a series. The figure title
+compares paint against the second of the three, 2.32×, not against rubber products.
+
+**Cause:** every number was right and the comparison between them did not exist. 3261 and
+3262 are slices of 326, which the page's own register key says four screens down would count
+the same jobs twice if added; 325 is declared context, not cluster. A reader who took the
+strip as a ranking finished with the region's second industry being a slice of its third.
+Membership is now read from the register in the data file rather than typed, so a
+reclassification moves a bar between blocks instead of leaving a heading wrong, and claim
+`lq-paint-beats-rubber` asserts the ranked set is the three core codes and that paint leads
+it by more than double.
+
+### "About four times further right than any other" — *location-quotient*, published
+
+**Was:** the opening strip's text alternative, the only description a screen-reader user
+gets of it, said *paint runs about four times further right than any other*.
+
+**Is:** *about two and a half times the next bar in that ranking*.
+
+**Cause:** an inherited number nobody had re-derived. Bars run from zero, so the comparison
+is of lengths: paint at 5.96× against 2.32× for plastics and rubber products, the next bar
+in the ranking, is **2.57**; against 2.44× for rubber products, the longest bar of any kind
+on the strip, it is **2.44**. Neither is four. The figure is now computed at draw time and
+the claim fails if the ratio leaves the band that rounds to "about two and a half".
+
+### A point label printed above the wrong dot — *location-quotient*, published
+
+**Was:** on the concentration-against-employment scatter, *Cuyahoga chemicals, 1.46× on
+5,780 jobs* was set on one line, right-anchored, thirteen units above its own point. The
+39-character string ran left across a third of the plot and closed on Summit's plastics and
+rubber dot at 3.27×. A reader reported the label as floating beside a dot at about three and
+a half, which is what it looked like.
+
+**Is:** two shorter lines stacked directly over the point, *Cuyahoga chemicals* and *1.46×
+on 5,780 jobs*. The nearest other mark is 46 units left of where those lines begin, so the
+label stands in an empty column above its own dot.
+
+**Cause:** the collision gate is a 3px overlap test and the label never overlapped anything;
+proximity to the wrong mark is not something it can see. A first attempt lifted the long
+line clear of the 3px floor and still printed the words directly above the wrong dot, which
+is the lesson worth keeping: clearing a gate is not the same as being read correctly.
+
+### "Three public awards, $106 million" — *funding-map*, published
+
+**Was:** the H1 read *Three public awards, **$106 million**, and no two move the money the
+same way*, and the standfirst's first line read *Governments awarded $85.3 million*. The
+stat row led with $106.3M under the key *Public money in play* and set $85.3M, $21.0M and
+$6.17M beside it with nothing saying how they related.
+
+**Is:** the H1 prints the awarded money, **$85.3 million**. The standfirst's second sentence
+does the arithmetic: partners and the state promised $21.0 million more beside it, and the
+two added together are the $106.3 million the region reports as secured. Read in grid order
+the stat row is that same addition: `$85.3M / AWARDED BY GOVERNMENT`, `$21.0M / PROMISED
+BESIDE IT` with *promised, not awarded* under it, `$106.3M / THE TWO ADDED TOGETHER`, then
+`$79.2M / ALREADY NAMES A RECIPIENT`.
+
+**Cause:** no figure changed and no figure was wrong. $106,290,451 is $85,335,784 awarded
+plus $20,954,667 of match and cost share, and the match is money others promised to put in,
+not government money and not money spent. The page carried that arithmetic in a disclosure
+under the register, four screens below the headline that depended on it, so a reader met the
+contradiction first and the resolution last, and on a phone met four totals before any
+explanation. $106.3M is still this page's total and still the figure the hub, the scorecard
+and the accountability page carry for the quantity; what changed is which number arrives
+first and whether its parts arrive with it.
+
+### "BioVerde · $11.15M" against a row reading $11,122,386 — *funding-map*, published
+
+**Was:** the recipient finder above the map listed *BioVerde · $11.15M* while the register
+below printed **$11,122,386** against the same name. Nothing on the page said the finder
+lists an organization and the register lists an award line.
+
+**Is:** the finder option reads *BioVerde · $11.15M across two awards*, and the register lede
+works the case through in generated prose: one row is one award line, not one organization;
+six organizations hold more than one award; BioVerde is $11.15M in the finder and
+$11,122,386 in its largest row, the difference being a $25,000 Synthe6 cohort award.
+
+**Cause:** the $25,000 was a second, much smaller award, not a rounding difference or a
+different vintage. $11,122,386 + $25,000 = $11,147,386, which is $11.15M at the page's hero
+precision. The diagram had always drawn it, as a `+ $25K` rider on BioVerde's row; the
+finder was the one surface that summed without saying so. Claim `bioverde-largest-eda` now
+asserts the two-award structure, the total, and that BioVerde is the largest of the six
+multi-award organizations, which is how the generated sentence picks its example.
+
+### PIC and EDA were never expanded — *funding-map*, published
+
+**Was:** neither acronym was written out anywhere on the page. *PIC* ran through the machine
+cards, the legend and the program names; *EDA* titles the largest of the three awards.
+
+**Is:** the machines band lede expands both before their first use: PIC is the Polymer
+Industry Cluster, the body that publishes the page, and EDA is the U.S. Economic Development
+Administration, the federal agency behind two of the three awards. Both halves are asserted
+by `three-machines-shape` against `meta.publisher` and the agency field on each source.
+
+**Cause:** an organization's own acronym is the one it never sees, because it uses it hourly.
+The page whose argument is that this money can be traced by anyone did not say who "anyone"
+would be tracing.
+
+---
+
+## 2026-08-29 — two right numbers and no way to tell them apart, *churn*
+
+### A flow ledger read as a jobs gain — *churn*, published
+
+**Was:** the headline read *The region recorded 111,529 hires to end up with **168 more job
+starts than job ends***, the standfirst opened on the difference between a stock and a flow
+without saying which the page was reporting, and the fact that the Census headcount fell by
+719 over the same span arrived in grey type on a hero card and in a source line under the
+chart. The flow table set a signed **Net** column beside an unlabelled **Jobs** column. The
+band-one lede said the difference of the two flows *"is what a conventional employment chart
+shows on its own."*
+
+**Is:** the standfirst answers the question outright before anything else: *Are there more
+jobs? No: the headcount fell by 719, to 17,725.* The hero card reads `+168 / NET FLOW, 55
+QUARTERS / starts minus ends. Not a jobs gain: the headcount fell 719`. The table's columns
+are **Net flow** and **Jobs at quarter start**, and a note directly beneath it names the two
+instruments, says which question each answers, and says which one to quote when the question
+is growth. The lede no longer equates the two. The closer says the headcount is the growth
+answer and that it fell about 4%.
+
+**Cause.** No number was wrong and no number moved. QWI counts hires and separations as
+events during a quarter and counts `Emp` as a headcount on one day at the start of it; the
+two are estimated separately, seasonally adjusted separately, and are not built to
+reconcile. Across the series the ledger reads +168 and the headcount reads 719 fewer jobs,
+and quarter by quarter the two point opposite ways in 8 of 54 comparisons, the widest at
+2022Q4 (ledger 153 short, headcount up 299). A reader who met both finished unsure whether
+employment had grown, which is the failure: the page published two answers to what looked
+like one question and never said they were answers to two. Three checks now guard it:
+`churn-flow-vs-stock-quarterly`, `churn-flow-aligned-to-stock` (the flows still net +376
+when aligned to the 54 quarters the headcount readings bracket, so the gap is not an
+end effect) and the existing `churn-stock-and-flow`.
+
+### An axis that ran 4,000 / 2,000 / 0 / 2,000 / 4,000 — *churn*, published
+
+**Was:** the flow chart drew hires up and separations down around a shared zero, with the
+net change as a line **on that same axis**, and no tick below zero carried a sign. A point
+155 units under the line meant "155 separations" if you were reading a bar and "minus 155"
+if you were reading the line.
+
+**Is:** ends are plotted as negative jobs, the ticks below zero carry a minus, the axis
+title reads *Jobs per quarter: starts positive, ends negative, net is the two added*, and
+the net line is now literally the two bar heights summed. The narrow rendering, which draws
+years and no net line, is signed to the same convention. Guarded by
+`churn-net-crosses-zero`, which fails if the net series stops crossing zero and the signed
+axis stops being load-bearing.
+
+**Cause.** A diverging chart of two positive magnitudes can be drawn unsigned. One that also
+carries a signed series on the same scale cannot: the axis was being asked to mean two
+things at once, and a reader could not tell a loss from an outflow.
+
+### "14 years" for a 55-quarter series — *churn*, published
+
+**Was:** the hero card read `NET FLOW, 14 YEARS`, and two ledes read "across all fourteen
+years". Two strings in `app.js` said "the fourteen-year ledger" and "the fourteen-year
+average".
+
+**Is:** all of them count quarters. 2012Q1 to 2025Q3 is 55 quarters, which is 13.75 years,
+and `churn-quarters` now asserts that division so the prose cannot drift back. The
+`average churn, 2012 to 2025` card keeps its label, because 2012 to 2025 is fourteen
+calendar years *touched*, which is a different claim and a true one.
+
+**Cause.** A quarter count rounded up into a year count in the one place the page states its
+own span. Nothing downstream used the wrong figure, but the card sat next to another card
+reading "across 55 quarters" and a reader checked the arithmetic.
+
+---
+
 ## 2026-08-29 — a hierarchy published as a flat list, *wages*
 
 ### "The typical polymer job pays 1.2 times" — *wages*, published

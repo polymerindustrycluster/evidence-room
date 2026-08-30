@@ -1021,20 +1021,29 @@ function loadData(file) {
     DATA.meta.provenance.forEach((t) => pl.appendChild(h('li', { text: t })));
   }
 
-  /* The hero stat row, through the house helper: three findings and one apparatus figure,
-     never more than four, first card carries the accent. The total keeps its id and
-     data-value so countUp() still animates it. */
+  /* THE STAT ROW IS THE ADDITION, LAID OUT. It used to lead with $106.3M under the key
+     "Public money in play", with the two parts as the second and third cards and a fourth
+     unrelated total beside them — four figures in a 2x2 grid with nothing saying how any
+     of them related, arriving under a headline that printed a fifth reading of the first.
+     Read in grid order it is now: awarded, promised beside it, the two added, and how much
+     of the awarded money has found a recipient. The key line on the third card does the
+     work a plus sign cannot: at 390px "= $106.3M" is wider than the column it sits in.
+
+     $106.3M IS STILL THE PAGE'S TOTAL and still the figure the hub, the scorecard and the
+     accountability page carry for this quantity. What changed is which number the reader
+     meets first and whether the parts arrive with it. */
   function renderHero() {
     const t = DATA.meta.totals;
     const named = DATA.recipients.reduce((a, r) => a + r.total, 0);
     PV.figures([
-      ['key', `<span id="total-count" data-value="${t.total}">${fmtHero(t.total)}</span>`,
-        'Public money in play', 'awarded, plus the match promised beside it'],
-      ['', fmtHero(t.awards), 'Awarded by government', 'across three signed awards'],
-      ['', fmtHero(t.match), 'Promised alongside',
-        'what partners and the state agreed to add, the match and cost share'],
-      ['', fmt(t.awards - named), 'No named recipient yet',
-        'held in two Ohio spending lines']
+      ['key', `<span id="hero-count" data-value="${t.awards}">${fmtHero(t.awards)}</span>`,
+        'Awarded by government', 'the three signed awards this page follows'],
+      ['', fmtHero(t.match), 'Promised beside it',
+        'match and cost share from partners and the state: promised, not awarded'],
+      ['', fmtHero(t.total), 'The two added together',
+        'the total the region reports as secured'],
+      ['', fmtHero(named), 'Already names a recipient',
+        `of the money awarded; the other ${fmt(t.awards - named)} sits in two Ohio lines`]
     ]);
   }
 
@@ -1157,6 +1166,27 @@ function loadData(file) {
       `The ${fmtFull(DATA.meta.totals.awards - rowSum)} difference is Ohio money committed but not ` +
       `yet written into a sub-grant: ${fmtFull(rd)} of PIC Translational R&D, and ${fmtFull(s6)} of ` +
       `the startup-support workstream delivered through the Bounce sub-grant that runs Synthe6.`;
+
+    /* WHAT ONE ROW COUNTS, WORKED THROUGH ON THE PAGE'S OWN LARGEST CASE. Generated, so
+       the example moves if the file does: the organization named is whichever multi-award
+       recipient holds the most, and both figures and the difference between them are read
+       off its own awards rather than typed. */
+    const multi = DATA.recipients.filter((r) => r.awards.length > 1);
+    const unit = document.getElementById('row-unit');
+    if (unit && multi.length) {
+      const ex = multi.slice().sort((a, b) => b.total - a.total)[0];
+      const big = ex.awards.slice().sort((a, b) => b.amount - a.amount)[0];
+      const rest = ex.awards.filter((w) => w !== big);
+      unit.textContent =
+        ` One row is one award line, not one organization. ${numword(multi.length, true)} ` +
+        `organizations hold more than one award and appear on more than one row, so the ` +
+        /* Curly, not straight: tools/style.mjs asserts the house apostrophe against the
+           rendered page, and a template literal is the easiest place to lose it. */
+        `finder above the map, which adds an organization’s awards together, can read ` +
+        `higher than any row here: ${ex.name} is ${fmt(ex.total)} in the finder and ` +
+        `${fmtFull(big.amount)} in its largest row, the difference being a ` +
+        `${fmtFull(rest[0].amount)} ${rest[0].funds}.`;
+    }
     const recon = document.getElementById('recon-more');
     DATA.meta.reconciliation.forEach((t) => recon.appendChild(h('p', { text: t })));
   }
@@ -1344,8 +1374,11 @@ function loadData(file) {
     setTimeout(() => { revealDone = true; root.classList.remove('reveal'); root.classList.add('static'); }, REVEAL_MS);
   }
 
+  /* Animates the hero's KEY figure, which is the awarded money now rather than the total
+     secured. The id moved with it; a node id naming a quantity the card no longer shows is
+     the next reader's wrong turn. */
   function countUp() {
-    const node = document.getElementById('total-count');
+    const node = document.getElementById('hero-count');
     const target = Number(node.dataset.value);
     if (reduceMotion.matches) { node.textContent = fmtHero(target); return; }
     let ran = false;
@@ -1531,12 +1564,18 @@ function loadData(file) {
     /* The lookup affordance. Deep links (#recipient/…) always existed; the select
        makes them reachable without knowing the URL grammar. Any PIC member can jump
        straight to their own row; selection opens the same panel a click would. */
+    /* AN OPTION THAT SUMS SAYS SO. This listed "BioVerde · $11.15M" while the register
+       below printed $11,122,386 against the same name, and nothing on the page told the
+       reader that the $25,000 between them is a second, much smaller award. The finder is
+       per ORGANIZATION and the register is per AWARD LINE; where those differ the option
+       now names the count it is adding, and the register lede carries the worked example. */
     const finder = document.getElementById('finder');
     if (finder) {
       DATA.recipients.slice()
         .sort((a, b) => a.name.localeCompare(b.name))
         .forEach((r) => finder.appendChild(h('option', { value: r.id,
-          text: `${r.name} · ${fmt(r.total)}` })));
+          text: `${r.name} · ${fmt(r.total)}` +
+            (r.awards.length > 1 ? ` across ${numword(r.awards.length)} awards` : '') })));
       finder.addEventListener('change', () => {
         if (!finder.value) { closeDetail(); return; }
         const id = finder.value;

@@ -11,7 +11,7 @@
     },
     {
       "id": "lq-paint-leads-every-year",
-      "text": "Paint has the highest location quotient of the six industries in every year of the series, by at least double the next-highest (the standfirst, the section H2 and the trend annotation). The hero card that repeated this as '11 of 11' was removed: the same fact was already printed three times above the fold, and the card slot went to the magnitude the page had nowhere.",
+      "text": "Paint has the highest location quotient of the six series drawn on this page in every year of the series, by at least double the next-highest (the standfirst's 'Paint has led every year since 2015', the section H2, the trend lede's 'more than double whichever line is next', the trend annotation and the mobile trend takeaway). The wording moved off 'all six industries' on 2026-08-29: three of the six are a slice of a fourth or sit outside the cluster, so a rank across six asserts a comparison that does not exist. What the picture actually shows, and what these sentences now say, is that paint runs above every LINE drawn here. The ranking sentences (H2, hero card, cold-open reading line, trend figure title) rank the three core codes only. The hero card that repeated this as '11 of 11' was removed: the same fact was already printed three times above the fold, and the card slot went to the magnitude the page had nowhere.",
       "source": "QCEW composite, all years",
       "assert": "(lambda ys: all((lambda r: r[0]['naics']=='3255' and r[0]['lq'] >= 2*r[1]['lq'])(sorted([c for c in D['composite'] if c['year']==y and c['lq']], key=lambda c: -c['lq'])) for y in ys) and len(ys)==11)(sorted(set(c['year'] for c in D['composite'])))",
       "actual": "[(y, sorted([(c['naics'], round(c['lq'],2)) for c in D['composite'] if c['year']==y and c['lq']], key=lambda t: -t[1])[:2]) for y in sorted(set(c['year'] for c in D['composite']))]",
@@ -19,7 +19,7 @@
     },
     {
       "id": "lq-paint-lead-margin",
-      "text": "The narrowest year's lead is 2.1x the next-highest industry (trend annotation, 'always at least 2.1 times the second industry'). The annotation says 'the second industry' rather than a bare 'x' because this is a ratio of two location quotients sitting beside a chart whose every other number is a ratio to the nation.",
+      "text": "The narrowest year's lead is 2.1x the next-highest series on the chart (trend annotation, 'always at least 2.1 times the next line'). The annotation names what is being divided rather than printing a bare 'x' because this is a ratio of two location quotients sitting beside a chart whose every other number is a ratio to the nation. It says 'the next line' and not 'the second industry': the second-highest series in most years is rubber products, which is a slice of the plastics and rubber line drawn beside it, so calling it the second INDUSTRY ranks two things that overlap.",
       "source": "QCEW composite, ratio of first to second rank per year; the tightest year is 2015",
       "assert": "abs(min((lambda r: r[0]['lq']/r[1]['lq'])(sorted([c for c in D['composite'] if c['year']==y and c['lq']], key=lambda c: -c['lq'])) for y in set(c['year'] for c in D['composite'])) - 2.113) <= 0.04",
       "actual": "sorted((round((lambda r: r[0]['lq']/r[1]['lq'])(sorted([c for c in D['composite'] if c['year']==y and c['lq']], key=lambda c: -c['lq'])),3), y) for y in set(c['year'] for c in D['composite']))[:3]",
@@ -35,15 +35,15 @@
     },
     {
       "id": "lq-paint-beats-rubber",
-      "text": "Paint outranks rubber products and outranks the plastics and rubber group in the latest year (the page's organizing finding).",
-      "source": "QCEW composite, latest year",
-      "assert": "(lambda y: one(c for c in D['composite'] if c['naics']=='3255' and c['year']==y)['lq'] > max(one(c for c in D['composite'] if c['naics']==n and c['year']==y)['lq'] for n in ('3262','326','3252','3261','325')))(max(x['year'] for x in D['composite']))",
-      "actual": "sorted([(c['naics'], round(c['lq'],2)) for c in D['composite'] if c['year']==max(x['year'] for x in D['composite']) and c['lq']], key=lambda t: -t[1])",
-      "falsified_if": "Any other industry overtakes paint in the latest year. Paint carries the heaviest suppression of the three core codes (5 of 12 counties), so this is the claim a disclosure change is most likely to break."
+      "text": "Paint outranks rubber products and outranks the plastics and rubber group in the latest year (the page's organizing finding). It is also the strongest of the three CORE codes, and its bar is about two and a half times the length of the next bar in that ranking, which is plastics and rubber products at 2.32x: the standfirst's 'strongest of the three industries this page counts as the cluster', the H2, the hero key card, the cold open's reading line and its text alternative ('about two and a half times the next bar in that ranking'), and the trend figure title's 'more than double'. The 'about two and a half' was 'about four times' in the shipped text alternative until 2026-08-29 and had never been derived: paint's bar is 2.57 times the next CLUSTER bar and 2.44 times the longest bar of any kind on the strip, and neither is four.",
+      "source": "QCEW composite, latest year; ratio of the two highest core codes",
+      "assert": "(lambda y: (lambda p, core: p['lq'] > max(one(c for c in D['composite'] if c['naics']==n and c['year']==y)['lq'] for n in ('3262','326','3252','3261','325')) and core[0]['naics']=='3255' and len(core)==3 and p['lq'] > 2*core[1]['lq'] and 2.45 <= p['lq']/core[1]['lq'] < 2.75 and round(p['lq']/max(c['lq'] for c in D['composite'] if c['year']==y and c['lq'] and c['naics']!='3255'), 2) < 4)(one(c for c in D['composite'] if c['naics']=='3255' and c['year']==y), sorted([c for c in D['composite'] if c['year']==y and c['lq'] and c['register']=='core'], key=lambda c: -c['lq'])))(max(x['year'] for x in D['composite']))",
+      "actual": "sorted([(c['naics'], c['register'], round(c['lq'],2)) for c in D['composite'] if c['year']==max(x['year'] for x in D['composite']) and c['lq']], key=lambda t: -t[2])",
+      "falsified_if": "Any other industry overtakes paint in the latest year, or the paint-to-second-core ratio leaves the 2.45-2.75 band so 'about two and a half times' stops rounding, or a fourth code is classified core. Paint carries the heaviest suppression of the three core codes (5 of 12 counties), so this is the claim a disclosure change is most likely to break."
     },
     {
       "id": "lq-326-latest",
-      "text": "PIC-12 plastics and rubber sits at 2.32x the national share in the latest year, on all twelve counties disclosed.",
+      "text": "PIC-12 plastics and rubber sits at 2.32x the national share in the latest year, on all twelve counties disclosed. It is the second of the three cluster codes, which is the figure the trend title prints against paint ('more than double the 2.32x of plastics and rubber products, the next of the three') and the second bar of the cold open's ranking block.",
       "source": "QCEW composite summed from 12 counties",
       "assert": "(lambda c: round(c['lq'],2) == 2.32 and c['counties_suppressed'] == 0 and c['counties_counted'] == 12)(one(c for c in D['composite'] if c['naics']=='326' and c['year']==max(x['year'] for x in D['composite'])))",
       "actual": "[(c['year'],c['lq'],c['counties_counted'],c['counties_suppressed']) for c in D['composite'] if c['naics']=='326'][-3:]",
@@ -181,7 +181,7 @@
     },
     {
       "id": "lq-registers",
-      "text": "NAICS 325 is labeled context, not cluster; 3252, 3255 and 326 are the measurement register (the register key above the picker and the heatmap's parent-column rule).",
+      "text": "NAICS 325 is labeled context, not cluster; 3252, 3255 and 326 are the measurement register. This classification is now STRUCTURE and not only a chip: the cold open draws one block per register with its own heading, the ranking block is the core codes and counts itself ('The three industries counted as the cluster'), the two detail codes are drawn hollow under 'Already counted inside plastics and rubber', and 325 sits under 'Outside the cluster, drawn for comparison'. Also the register key above the picker, the picker chips, the trend how-to-read line and the heatmap's parent-column rule.",
       "source": "Documents/NAICS work/PIC_NAICS_Crosswalk_ADDENDUM_2026-08-11.md, John's decision 2026-08-11",
       "assert": "sorted(n['code'] for n in D['naics'] if n['register']=='core') == ['3252','3255','326'] and one(n for n in D['naics'] if n['code']=='325')['register'] == 'context' and sorted(n['code'] for n in D['naics'] if n['register']=='detail') == ['3261','3262']",
       "actual": "[(n['code'], n['register']) for n in D['naics']]",

@@ -3,7 +3,7 @@
   "claims": [
     {
       "id": "total-secured",
-      "text": "$106.3M of public money awarded plus what others promised to put in beside it; the headline's $106 million (H1, the hero's lead stat card, the meta description, and the closer's 'every dollar of the $106.3 million has a line on it').",
+      "text": "$106.3M of public money awarded plus what others promised to put in beside it: the standfirst's 'the two added together are the $106.3 million the region reports as secured', the third hero stat card under the key 'The two added together', the meta description and the closer's 'every dollar of the $106.3 million, awarded and promised, has a line on it'. IT IS NO LONGER THE HEADLINE NUMBER. Until 2026-08-29 the H1 printed $106 million one line above a standfirst saying governments awarded $85.3 million, so a reader met a contradiction and then four totals before any explanation. The H1 now prints the awarded money and the standfirst reaches the total in its next sentence.",
       "source": "meta.totals in funding.json: awards + match",
       "assert": "D['meta']['totals']['total'] == 106290451 and D['meta']['totals']['awards'] + D['meta']['totals']['match'] == D['meta']['totals']['total'] and abs(D['meta']['totals']['total'] / 1e6 - 106.3) <= 0.05",
       "actual": "D['meta']['totals']",
@@ -11,7 +11,7 @@
     },
     {
       "id": "hero-awards-match",
-      "text": "$85.3M awarded by government, plus $21.0M partners and the state promised to add, the match and cost share (hero stat cards two and three; the standfirst's 'Governments awarded $85.3 million' and 'promised $21.0 million more beside it'; the verdict and the closer's $85.3M; the table foots against $85,335,784).",
+      "text": "$85.3M awarded by government, plus $21.0M partners and the state promised to add, the match and cost share. The $85.3M is the H1's key figure and the hero's first stat card; the $21.0M is the second card and the standfirst's 'promised $21.0 million more beside it'; the verdict and the closer carry $85.3M and the table foots against $85,335,784. The match is labelled 'promised, not awarded' on its own card because it is money others agreed to put in, not government money and not money spent, and reading it as awarded is what the old $106 million headline invited.",
       "source": "meta.totals.awards and meta.totals.match",
       "assert": "D['meta']['totals']['awards'] == 85335784 and D['meta']['totals']['match'] == 20954667 and abs(D['meta']['totals']['awards'] / 1e6 - 85.3) <= 0.05 and abs(D['meta']['totals']['match'] / 1e6 - 21.0) <= 0.05",
       "actual": "(D['meta']['totals']['awards'], D['meta']['totals']['match'])",
@@ -27,19 +27,19 @@
     },
     {
       "id": "three-machines-shape",
-      "text": "Three awards, three machines: seven direct federal awards, one state grant split into five workstreams, one workforce award (H1, the machines band's three kickers and sentences, the figure title).",
-      "source": "sources[], programs[], recipients[].awards[]",
-      "assert": "len(D['sources']) == 3 and len([w for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct']) == 7 and len([p for p in D['programs'] if p['sourceId'] == 'ohio']) == 5 and len([p for p in D['programs'] if p['sourceId'] == 'apex']) == 1",
-      "actual": "(len(D['sources']), len([w for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct']), len([p for p in D['programs'] if p['sourceId'] == 'ohio']), len([p for p in D['programs'] if p['sourceId'] == 'apex']))",
-      "falsified_if": "A source, workstream or direct award is added or removed, so 'three machines', 'seven awards' or 'splits five ways' stops being the count."
+      "text": "Three awards, three machines: seven direct federal awards, one state grant split into five workstreams, one workforce award (H1, the machines band's three kickers and sentences, the figure title). The band lede also expands the two acronyms this page runs on before their first use: PIC is the Polymer Industry Cluster, which publishes the page, and EDA is the U.S. Economic Development Administration, 'the federal agency behind two of the three awards'. Neither was written out anywhere on the page until 2026-08-29, on a page whose argument is that this money can be traced by anyone.",
+      "source": "sources[], programs[], recipients[].awards[]; meta.publisher and sources[].agency",
+      "assert": "len(D['sources']) == 3 and len([w for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct']) == 7 and len([p for p in D['programs'] if p['sourceId'] == 'ohio']) == 5 and len([p for p in D['programs'] if p['sourceId'] == 'apex']) == 1 and D['meta']['publisher'] == 'Polymer Industry Cluster' and len([s for s in D['sources'] if s['agency'] == 'U.S. Economic Development Administration']) == 2",
+      "actual": "(len(D['sources']), len([w for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct']), len([p for p in D['programs'] if p['sourceId'] == 'ohio']), len([p for p in D['programs'] if p['sourceId'] == 'apex']), D['meta']['publisher'], [s['agency'] for s in D['sources']])",
+      "falsified_if": "A source, workstream or direct award is added or removed, so 'three machines', 'seven awards' or 'splits five ways' stops being the count; or the publisher name changes; or a third award turns out to be an EDA award, or one of the two stops being one, so 'two of the three' goes stale."
     },
     {
       "id": "bioverde-largest-eda",
-      "text": "Largest federal check: BioVerde, $11.12M, for bio-based butadiene (machine 1 fact).",
-      "source": "eda-direct awards ranked by amount",
-      "assert": "(lambda rows: sorted(rows, key=lambda x: -x[1])[0] == ('BioVerde', 11122386))([(r['name'], w['amount']) for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct']) and 'butadiene' in one(w for r in D['recipients'] if r['name'] == 'BioVerde' for w in r['awards'] if w['programId'] == 'eda-direct')['funds'].lower()",
-      "actual": "sorted([(r['name'], w['amount']) for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct'], key=lambda x: -x[1])[:2]",
-      "falsified_if": "Another EDA award tops $11,122,386, or the BioVerde figure or project description revises."
+      "text": "Largest federal check: BioVerde, $11.12M, for bio-based butadiene (machine 1 fact). BioVerde also holds a $25,000 Synthe6 cohort award, so its ORGANIZATION total is $11,147,386, which the finder renders as $11.15M and the panel prints in full. That $25,000 is the whole of the gap a reader found between 'BioVerde · $11.15M' in the finder and $11,122,386 in the register, and it is now named in both places: the finder option says 'across two awards' and the register lede works the example through. Six organizations hold more than one award; BioVerde is the largest of them, which is how the generated sentence picks it.",
+      "source": "eda-direct awards ranked by amount; recipients[].awards[] totals",
+      "assert": "(lambda rows: sorted(rows, key=lambda x: -x[1])[0] == ('BioVerde', 11122386))([(r['name'], w['amount']) for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct']) and 'butadiene' in one(w for r in D['recipients'] if r['name'] == 'BioVerde' for w in r['awards'] if w['programId'] == 'eda-direct')['funds'].lower() and (lambda multi: len(multi) == 6 and (lambda ex: ex['name'] == 'BioVerde' and sum(w['amount'] for w in ex['awards']) == 11147386 and len(ex['awards']) == 2 and sorted(w['amount'] for w in ex['awards']) == [25000, 11122386])(sorted(multi, key=lambda r: -sum(w['amount'] for w in r['awards']))[0]))([r for r in D['recipients'] if len(r['awards']) > 1])",
+      "actual": "[(r['name'], [w['amount'] for w in r['awards']]) for r in D['recipients'] if len(r['awards']) > 1]",
+      "falsified_if": "Another EDA award tops $11,122,386, or the BioVerde figure or project description revises, or an organization is added to or removed from the multi-award set so 'six organizations' goes stale, or BioVerde stops being the largest of them so the generated example names someone else while the surrounding sentence still says otherwise."
     },
     {
       "id": "facility-largest-line",
@@ -67,7 +67,7 @@
     },
     {
       "id": "named-vs-awarded",
-      "text": "Of the $85.3M awarded, $79.2M has reached a named recipient; $6.17M has not (the standfirst's '$79.2 million already names who receives it', the verdict sentence, A3 annotation, the fourth hero stat card, the table foot and the closer).",
+      "text": "Of the $85.3M awarded, $79.2M has reached a named recipient; $6.17M has not (the standfirst's '$79.2 million already names who receives it', the verdict sentence, A3 annotation, the fourth hero stat card, which now prints the $79.2M with the $6.17M in its sub-line rather than the other way round, the table foot and the closer).",
       "source": "sum over recipients[].awards[] against meta.totals.awards",
       "assert": "(lambda s: s == 79170176 and D['meta']['totals']['awards'] - s == 6165608 and abs(s / 1e6 - 79.2) <= 0.05 and abs((D['meta']['totals']['awards'] - s) / 1e6 - 6.17) <= 0.005)(sum(w['amount'] for r in D['recipients'] for w in r['awards']))",
       "actual": "(sum(w['amount'] for r in D['recipients'] for w in r['awards']), D['meta']['totals']['awards'] - sum(w['amount'] for r in D['recipients'] for w in r['awards']))",
