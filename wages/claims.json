@@ -268,6 +268,14 @@
       "assert": "(lambda M: (lambda v: 1.245 <= sorted(v)[len(v)//2] <= 1.26 and len(v) == 12 and all(x > 1 for x in v))([c['mfg_weekly_wage'] / c['all_weekly_wage'] for c in M['counties'].values()]))(D['m'])",
       "actual": "{n: round(c['mfg_weekly_wage'] / c['all_weekly_wage'], 2) for n, c in D['m']['counties'].items()}",
       "falsified_if": "Any county's manufacturing wage drops to or below its all-jobs average, at which point 'in every one of the twelve counties' is false and the band must be rewritten before the build passes."
+    },
+    {
+      "id": "wage-mfg-overlap",
+      "text": "The factory-baseline band names its own overlap: the polymer cover (325 and 326, 33,528 jobs) is about one manufacturing job in six across the twelve counties' 216,335 private manufacturing jobs, so polymer sits inside its own comparator and the 0.99x is mildly conservative.",
+      "source": "wages/data/wages.json cover against wages/data/mfg.json county mfg_emp",
+      "assert": "(lambda cover, mfg: 0.14 <= cover / mfg <= 0.17 and mfg == 216335)(sum(r['emp'] for r in D['w']['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('325', '326')), sum(c['mfg_emp'] for c in D['m']['counties'].values()))",
+      "actual": "(sum(r['emp'] for r in D['w']['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('325','326')), sum(c['mfg_emp'] for c in D['m']['counties'].values()))",
+      "falsified_if": "The share leaves the one-in-six band on a refetch. Added 2026-08-30 after a naive reader asked whether the county manufacturing wage includes the polymer jobs themselves. It does, and a comparator that contains the compared has to say so."
     }
   ]
 }

@@ -654,6 +654,59 @@
     "churn"
    ],
    "n_pages": 1
+  },
+  {
+   "key": "uspto",
+   "name": "USPTO Open Data Portal, patent applications search",
+   "short": "USPTO patent applications",
+   "agency": "United States Patent and Trademark Office",
+   "url": "https://api.uspto.gov/api/v1/patent/applications/search",
+   "docs": "https://data.uspto.gov/apis/getting-started",
+   "script": "_data/build/fetch_patents.py",
+   "key_required": true,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": "Public domain United States government work.",
+   "is": "The Patent Office\u2019s live record of patent applications, searchable by classification code and by the addresses on the filing, roughly eighteen months after each application is filed.",
+   "good": "Whether a place still files inventions in a field: applications by filing year, cut by CPC class and by inventor or applicant address.",
+   "cannot": "It cannot see an application younger than the publication lag, so the newest years always look like a collapse and never are. An address is where the mail goes, not where the laboratory is: one Akron-assigned tire application carries a Luxembourg inventor, and the inventor and applicant bases differ by more than a factor of two. And an application is a filing, not a grant.",
+   "filters": [
+    [
+     "method",
+     "POST with a JSON body carrying q and pagination; the count field of the reply is the figure, and no rows are read for a count."
+    ],
+    [
+     "cpc",
+     "applicationMetaData.cpcClassificationBag:C08*, organic macromolecular compounds. One defensible definition of polymer, and a choice."
+    ],
+    [
+     "basis",
+     "inventor correspondence address (applicationMetaData.inventorBag.correspondenceAddressBag): geographicRegionCode for the state, countryCode for the nation, cityName for a city; swap inventorBag for applicantBag for the ownership basis, which gives 3,948 all-time against the inventor basis\u2019s 8,854. The year filter is applicationMetaData.filingDate:[YYYY-01-01 TO YYYY-12-31], and the all-technology series is the same query with the CPC clause removed."
+    ],
+    [
+     "lag",
+     "an application publishes about eighteen months after filing, so the newest filing years are undercounted by construction and always look like a collapse. Years after 2023 are flagged incomplete rather than dropped."
+    ],
+    [
+     "zero",
+     "a genuine zero arrives as HTTP 404 whose body reads No matching records. The fetch accepts that as 0 only when the body says so; any other 404 fails loudly, because a failed request silently becoming a zero is the suppression trap one endpoint over."
+    ],
+    [
+     "dead_routes",
+     "PatentsView (search.patentsview.org) shut down 2026-03-20, and Patent Public Search answered every query with a 500 when tried on 2026-08-30. Both were candidate routes; neither is callable."
+    ],
+    [
+     "worldwide_trap",
+     "a count with NO country filter is worldwide filings at the USPTO and reads flat across a window in which American polymer filings fell 22 percent, because foreign-origin filings filled the hole. The first version of the patents page made exactly this error and a replication reviewer caught it before publication: filter countryCode or say you did not."
+    ]
+   ],
+   "pages": [
+    "patents"
+   ],
+   "n_pages": 1
   }
  ],
  "pages": [
@@ -760,6 +813,13 @@
    "n_sources": 1
   },
   {
+   "slug": "patents",
+   "sources": [
+    "uspto"
+   ],
+   "n_sources": 1
+  },
+  {
    "slug": "peers",
    "sources": [
     "qcew"
@@ -792,23 +852,24 @@
   }
  ],
  "totals": {
-  "n_sources": 14,
-  "n_pages": 17,
-  "n_key_required": 3,
+  "n_sources": 15,
+  "n_pages": 18,
+  "n_key_required": 4,
   "key_sources": [
    "bea_rpp",
    "fred",
-   "qwi"
+   "qwi",
+   "uspto"
   ],
   "n_no_endpoint": 2,
   "no_endpoint_sources": [
    "heritage_register",
    "public_record"
   ],
-  "n_filter_lines": 69,
+  "n_filter_lines": 76,
   "routes": {
    "bulk": 6,
-   "api": 5,
+   "api": 6,
    "internal": 2,
    "portal": 1
   },
@@ -817,23 +878,24 @@
    "ipeds",
    "onet_education"
   ],
-  "n_terms": 10,
-  "n_public": 12,
+  "n_terms": 11,
+  "n_public": 13,
   "most_used": "qcew",
   "most_used_pages": 9,
-  "n_single_source_pages": 8,
+  "n_single_source_pages": 9,
   "single_source_pages": [
    "cost-scissors",
    "federal-money",
    "funding-map",
    "laborshed",
    "location-quotient",
+   "patents",
    "peers",
    "revisions",
    "wages"
   ],
-  "n_build_scripts": 26,
-  "catalog_generated": "2026-08-30 12:29"
+  "n_build_scripts": 30,
+  "catalog_generated": "2026-08-30 14:17"
  },
  "footprint": {
   "key": "pic12",
@@ -1907,11 +1969,11 @@
   }
  ],
  "checks": {
-  "n_pages": 16,
-  "n_claims": 432,
+  "n_pages": 17,
+  "n_claims": 443,
   "n_manual": 15,
   "this_page": 32,
-  "n_auto": 417
+  "n_auto": 428
  },
  "vintage": {
   "n_revised": 259,

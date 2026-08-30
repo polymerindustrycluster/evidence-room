@@ -304,11 +304,11 @@
     },
     {
       "id": "ch-national-tide",
-      "text": "The tide note separates place from industry: national private NAICS 326 employment fell from 733,910 in 2023 to 700,170 in 2025, down 4.6 percent, against the region's 7.2 percent fall on its fixed-set count over the same years, so roughly two-thirds of the region's pace is the industry's own decline and the region still falls faster than its industry.",
+      "text": "The tide note separates place from industry ON A MATCHED BASIS: national private employment in the same three codes the regional count uses (326, 3252, 3255) fell from 895,431 in 2023 to 857,188 in 2025, down 4.3 percent, against the region's 7.2 percent on its fixed set, so about three-fifths of the region's pace is the industry's own decline and the region still falls faster than its industry.",
       "source": "cluster-health/data/tide.json (QCEW US000, fetched 2026-08-30); the regional figures re-run against health.json",
-      "assert": "(lambda t, R: (lambda u23, u25, r23, r25: u23 == 733910 and u25 == 700170 and -0.048 < u25/u23 - 1 < -0.044 and -0.075 < r25/r23 - 1 < -0.069 and (u25/u23 - 1) / (r25/r23 - 1) > 0.6)([x for x in t['trend'] if x['year']==2023][0]['us_326_emp'], [x for x in t['trend'] if x['year']==2025][0]['us_326_emp'], [x for x in R if x['year']==2023][0]['balanced'], [x for x in R if x['year']==2025][0]['balanced']))(D['tide'], D['h']['register']['disclosed'])",
+      "assert": "(lambda t, R: (lambda u23, u25, r23, r25: u23 == 895431 and u25 == 857188 and -0.045 < u25/u23 - 1 < -0.041 and -0.075 < r25/r23 - 1 < -0.069 and 0.55 <= (u25/u23 - 1) / (r25/r23 - 1) <= 0.65)([x for x in t['trend'] if x['year']==2023][0]['us_register_emp'], [x for x in t['trend'] if x['year']==2025][0]['us_register_emp'], [x for x in R if x['year']==2023][0]['balanced'], [x for x in R if x['year']==2025][0]['balanced']))(D['tide'], D['h']['register']['disclosed'])",
       "actual": "([x for x in D['h']['register']['disclosed'] if x['year'] in (2023, 2025)], D['tide']['trend'])",
-      "falsified_if": "Either series is revised so the two rates converge or diverge past the stated fractions, or the region stops falling faster than its industry, at which point the note's last sentence must be rewritten rather than left to imply a persistence the data no longer shows. Added 2026-08-30: four reviewers on four different pages found this site comparing the region to nothing, and this was the page where that gap sat under the headline itself."
+      "falsified_if": "Either series revises the two rates apart, or the region stops falling faster than its industry. Re-based 2026-08-30, the day it shipped: a naive reader caught the first version comparing the region's three-industry register to a national series of 326 alone, a one-industry tide under a three-industry fall. The matched basis moved the tide from 4.6 to 4.3 percent, immaterial to the reading and material to the honesty."
     }
   ]
 }

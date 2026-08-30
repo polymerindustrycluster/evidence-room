@@ -62,11 +62,16 @@ async function decorate() {
   for (const el of live) {
     const p = C.pages[el.dataset.slug];
     const flag = el.querySelector(".hit-flag");
+    const meta = el.querySelector(".meta");
+    /* Two cards legitimately carry no county flag (sources is method-scoped, patents is
+       state-scoped), and inserting before a null flag threw — inside the catch, so the
+       hub 'stood' while silently dropping every claims pill after the throw. A card
+       without a flag appends its pills to the meta row instead. */
     const add = (cls, text) => {
       const s = document.createElement("span");
       s.className = "pill " + cls;
       s.textContent = text;
-      flag.before(s);
+      if (flag) flag.before(s); else meta.appendChild(s);
     };
     if (p.claims) add("apx", `${p.claims} claims`);
     if (p.manual) add("apx man", `${p.manual} manual`);

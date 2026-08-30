@@ -243,6 +243,24 @@
    },
    "script": "_data/build/fetch_odjfs_projections.py",
    "key_required": false
+  },
+  "uspto": {
+   "name": "USPTO Open Data Portal, patent applications search",
+   "agency": "United States Patent and Trademark Office",
+   "url": "https://api.uspto.gov/api/v1/patent/applications/search",
+   "docs": "https://data.uspto.gov/apis/getting-started",
+   "filters": {
+    "method": "POST with a JSON body carrying q and pagination; the count field of the reply is the figure, and no rows are read for a count.",
+    "cpc": "applicationMetaData.cpcClassificationBag:C08*, organic macromolecular compounds. One defensible definition of polymer, and a choice.",
+    "basis": "inventor correspondence address (applicationMetaData.inventorBag.correspondenceAddressBag): geographicRegionCode for the state, countryCode for the nation, cityName for a city; swap inventorBag for applicantBag for the ownership basis, which gives 3,948 all-time against the inventor basis’s 8,854. The year filter is applicationMetaData.filingDate:[YYYY-01-01 TO YYYY-12-31], and the all-technology series is the same query with the CPC clause removed.",
+    "lag": "an application publishes about eighteen months after filing, so the newest filing years are undercounted by construction and always look like a collapse. Years after 2023 are flagged incomplete rather than dropped.",
+    "zero": "a genuine zero arrives as HTTP 404 whose body reads No matching records. The fetch accepts that as 0 only when the body says so; any other 404 fails loudly, because a failed request silently becoming a zero is the suppression trap one endpoint over.",
+    "dead_routes": "PatentsView (search.patentsview.org) shut down 2026-03-20, and Patent Public Search answered every query with a 500 when tried on 2026-08-30. Both were candidate routes; neither is callable.",
+    "worldwide_trap": "a count with NO country filter is worldwide filings at the USPTO and reads flat across a window in which American polymer filings fell 22 percent, because foreign-origin filings filled the hole. The first version of the patents page made exactly this error and a replication reviewer caught it before publication: filter countryCode or say you did not."
+   },
+   "terms": "Public domain United States government work.",
+   "script": "_data/build/fetch_patents.py",
+   "key_required": true
   }
  },
  "worked_example": {
@@ -357,6 +375,9 @@
    "public_record",
    "qcew",
    "ipeds"
+  ],
+  "patents": [
+   "uspto"
   ]
  }
 }

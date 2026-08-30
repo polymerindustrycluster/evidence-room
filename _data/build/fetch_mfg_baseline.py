@@ -71,7 +71,19 @@ for y in TREND_YEARS:
             and r.get("disclosure_code") != "N"]
     if len(r326) != 1:
         raise SystemExit(f"US000 {y}: expected one NAICS 326 private row, got {len(r326)}")
-    tide.append({"year": y, "us_326_emp": int(r326[0]["annual_avg_emplvl"])})
+    # THE TIDE MUST MATCH THE REGIONAL BASIS. A naive reader caught the first version
+    # comparing the region's THREE-industry register (326 + 3252 + 3255) against a
+    # national series of 326 alone: a one-industry tide under a three-industry fall.
+    # The matched tide sums the same three codes from the same file.
+    reg = 0
+    for code in ("326", "3252", "3255"):
+        rr = [r for r in rs if r["industry_code"] == code and r["own_code"] == "5"
+              and r.get("disclosure_code") != "N"]
+        if len(rr) != 1:
+            raise SystemExit(f"US000 {y}: expected one NAICS {code} private row, got {len(rr)}")
+        reg += int(rr[0]["annual_avg_emplvl"])
+    tide.append({"year": y, "us_326_emp": int(r326[0]["annual_avg_emplvl"]),
+                 "us_register_emp": reg})
     if y == YEAR:
         rm = [r for r in rs if r["industry_code"] == "31-33" and r["own_code"] == "5"]
         us_mfg_wage = int(rm[0]["annual_avg_wkly_wage"]) if rm else None

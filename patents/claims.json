@@ -1,0 +1,65 @@
+{
+  "_note": "Every complete-year figure re-runs against data/patents.json, which is the same file the charts render from. The degree echo re-runs against the talent page's own shipped data, so the two pages cannot drift apart silently.",
+  "data": {
+    "p": "patents.json",
+    "occ": "../../occupations/data/viz-data.json"
+  },
+  "claims": [
+    {
+      "id": "pat-hero-fall",
+      "text": "Ohio filed 342 polymer patent applications in 2023, the last complete filing year, down a quarter from 455 in 2015 and in step with the American field's fall (second hero card; bars chart; closer).",
+      "source": "patents/data/patents.json rows, complete years",
+      "assert": "(lambda C: C[0]['year'] == 2015 and C[-1]['year'] == 2023 and C[0]['ohio'] == 455 and C[-1]['ohio'] == 342 and 0.24 <= 1 - C[-1]['ohio'] / C[0]['ohio'] <= 0.26)([r for r in D['p']['rows'] if r['complete']])",
+      "actual": "[(r['year'], r['ohio']) for r in D['p']['rows'] if r['complete']]",
+      "falsified_if": "A refetch moves either endpoint, which late-publishing applications genuinely can do for recent years: the USPTO record itself back-fills. The fetch stamps its read date for exactly this reason."
+    },
+    {
+      "id": "pat-two-by-two",
+      "text": "The 2x2 that carries the page, indexed to 2015 = 100 at 2023, all on US inventor addresses: American polymer filings 78.2 against American all-class filings 98.4; Ohio polymer 75.2 against Ohio all-class 87.5. The polymer pair falls together far below the all-class pair (H1, standfirst, hero spark, the four-line chart and its end labels, the closer).",
+      "source": "patents/data/patents.json rows, complete years, indexed in the page from the same file",
+      "assert": "(lambda B, L: abs(L['us_inv']/B['us_inv']*100 - 78.2) < 0.15 and abs(L['us_inv_all']/B['us_inv_all']*100 - 98.4) < 0.15 and abs(L['ohio']/B['ohio']*100 - 75.2) < 0.15 and abs(L['ohio_all']/B['ohio_all']*100 - 87.5) < 0.15 and L['ohio']/B['ohio'] < L['us_inv']/B['us_inv'] and 0.19 <= 1 - L['us_inv']/B['us_inv'] <= 0.24)([r for r in D['p']['rows'] if r['complete']][0], [r for r in D['p']['rows'] if r['complete']][-1])",
+      "actual": "[(k, round([r for r in D['p']['rows'] if r['complete']][-1][k] / [r for r in D['p']['rows'] if r['complete']][0][k] * 100, 1)) for k in ('ohio', 'ohio_all', 'us_inv', 'us_inv_all')]",
+      "falsified_if": "Any endpoint moves past a tenth of a point, or Ohio's polymer line stops sitting at or below the American one, or the American fall leaves the band that makes 'by a fifth' honest. This claim replaced pat-three-baselines the day the page shipped: the first version's national line carried no address filter, was worldwide filings at the USPTO, and read flat at 99 only because foreign-origin filings filled the hole. A replication reviewer reproduced the 99 and could not reproduce the label on it. The unfiltered number is now printed as a trap with its own claim below."
+    },
+    {
+      "id": "pat-share-held",
+      "text": "Ohio's share of AMERICAN polymer filings held near one in ten across the window, 10.1 percent in 2015 to 9.7 in 2023 (third hero card). The share of the WORLDWIDE count fell from 4.1 to 3.1, and that fall is the foreign-filing trap, not an Ohio story (the trap note under the four-line chart).",
+      "source": "patents/data/patents.json rows",
+      "assert": "(lambda B, L: abs(B['ohio']/B['us_inv']*100 - 10.1) < 0.1 and abs(L['ohio']/L['us_inv']*100 - 9.7) < 0.1 and abs(B['ohio']/B['world']*100 - 4.1) < 0.1 and abs(L['ohio']/L['world']*100 - 3.1) < 0.1 and abs(L['world']/B['world']*100 - 99.0) < 0.15)([r for r in D['p']['rows'] if r['complete']][0], [r for r in D['p']['rows'] if r['complete']][-1])",
+      "actual": "[(r['year'], round(r['ohio']/r['us_inv']*100, 1), round(r['ohio']/r['world']*100, 1)) for r in D['p']['rows'] if r['complete']]",
+      "falsified_if": "Either share moves past a tenth of a point. The two shares are printed together deliberately: the same numerator over two denominators tells opposite stories, which is the basis lesson of this whole site on one card."
+    },
+    {
+      "id": "pat-lag-flagged",
+      "text": "Every filing year after 2023 is flagged incomplete and drawn hollow, and the lede names the current counts: 2025 holds 266 and 2026 holds 20 as of the fetch date. Neither is a finding about Ohio (the bars chart, its subtitle, its on-chart annotation, the lede).",
+      "source": "patents/data/patents.json rows and meta.lag",
+      "assert": "(lambda R: all((r['year'] <= 2023) == r['complete'] for r in R) and [r for r in R if r['year'] == 2025][0]['ohio'] == 266 and [r for r in R if r['year'] == 2026][0]['ohio'] == 20)(D['p']['rows'])",
+      "actual": "[(r['year'], r['ohio'], r['complete']) for r in D['p']['rows'] if not r['complete']]",
+      "falsified_if": "The lag catches up and an incomplete year's count converges on a complete level, at which point LAST_COMPLETE in the fetch should advance and this page's hollow bars shrink by one, or a refetch moves the two named counts, which it will: these two numbers are snapshots of a moving record and say so in the prose."
+    },
+    {
+      "id": "pat-cities-no-claim",
+      "text": "The metro-city section makes no ranking claim and says why: across complete years Akron's count ranges from 46 to 87 and Youngstown's touches zero (the section lede and the city table).",
+      "source": "patents/data/patents.json rows, complete years, city fields",
+      "assert": "(lambda C: min(r['akron'] for r in C) == 46 and max(r['akron'] for r in C) == 87 and min(r['youngstown'] for r in C) == 0)([r for r in D['p']['rows'] if r['complete']])",
+      "actual": "[(r['year'], r['akron'], r['youngstown']) for r in D['p']['rows'] if r['complete']]",
+      "falsified_if": "A refetch moves the stated range. The deeper commitment this claim pins: if a future edit adds a city-level trend claim, the smallness documented here is the evidence a reviewer should raise against it."
+    },
+    {
+      "id": "pat-two-bases",
+      "text": "Counted by inventor address Ohio has 8,854 polymer applications all-time; counted by applicant address, 3,948. The page counts inventors and prints both (the address band, the methodology box).",
+      "source": "patents/data/patents.json bases",
+      "assert": "D['p']['bases']['by_inventor'] == 8854 and D['p']['bases']['by_applicant'] == 3948",
+      "actual": "D['p']['bases']",
+      "falsified_if": "Either total moves on a refetch; both are cumulative and only grow, so a DECREASE would indicate a query change rather than new data and should stop the build for inspection, not be re-blessed."
+    },
+    {
+      "id": "pat-degree-echo",
+      "text": "The pipeline note restates the talent page's finding from that page's own shipped data: the region's polymer programs conferred 63 degrees in 2023 against an average of 139 a year through 2021 (the note in the city band).",
+      "source": "occupations/data/viz-data.json programs, group polymer, re-run here so the two pages cannot drift apart",
+      "assert": "(lambda tot: tot('2023') == 63 and 135 <= sum(tot(str(y)) for y in range(2014, 2022)) / 8 <= 143)(lambda y: sum(p['by_year'].get(y, 0) for p in D['occ']['programs'] if p['group'] == 'polymer'))",
+      "actual": "{y: sum(p['by_year'].get(str(y), 0) for p in D['occ']['programs'] if p['group'] == 'polymer') for y in range(2014, 2024)}",
+      "falsified_if": "The talent page's data is refetched and the degree counts move, in which case this page's note is stale and fails here rather than waiting for a reader to put the two pages side by side, which is how this site's worst error was found."
+    }
+  ]
+}

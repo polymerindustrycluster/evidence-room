@@ -105,10 +105,9 @@ document.getElementById("stand").innerHTML =
   `On ${BASES.trend.label}, plastics and rubber, paint and coatings and resin held
    ${N(bal[0].balanced)} jobs in ${bal[0].year}, ${N(bal[1].balanced)} in ${bal[1].year}
    and ${N(bal[2].balanced)} in ${bal[2].year}. ${cap1(BASES.level.label)} gives a higher
-   total, ${BASES.level.display}, on a basis that cannot carry a trend. Four of the five
-   measures below have a better direction and a worse one, and against their own published
-   years ${[scale, talent, pay, cap].map(standLine).join(", ")}; concentration, the fifth,
-   has no better end.`;
+   total, ${BASES.level.display}, on a basis that cannot carry a trend. Against their own
+   histories: ${[scale, talent, pay, cap].map(standLine).join("; ")}. Concentration, the
+   fifth measure, has no better end.`;
 
 /* Each hero number's sub-line is that number's plain reading, because for three of the
    four this is where the reader meets the measure first. Whether a big number is good

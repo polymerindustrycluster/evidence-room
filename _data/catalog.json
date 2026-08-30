@@ -1,21 +1,21 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-08-30 12:42",
-  "seconds": 0.1,
-  "scripts": 26,
+  "generated": "2026-08-30 14:51",
+  "seconds": 0.4,
+  "scripts": 30,
   "outputs_on_disk": 0,
   "outputs_claimed": 20,
   "orphan_outputs": 0,
   "registry_error": null,
   "flag_counts": {
-   "not_in_PIPELINES.md": 26,
-   "no_house_docstring": 22,
-   "no_traps_section": 22,
-   "output_missing_on_disk": 22,
+   "not_in_PIPELINES.md": 30,
+   "no_house_docstring": 26,
+   "no_traps_section": 26,
+   "output_missing_on_disk": 24,
+   "not_in_SOURCES.json": 9,
    "import_error": 8,
-   "not_in_SOURCES.json": 6,
-   "no_output_detected": 4
+   "no_output_detected": 6
   }
  },
  "scripts": [
@@ -61,9 +61,9 @@
     "laborshed/claims.json",
     "location-quotient/claims.json",
     "occupations/claims.json",
+    "patents/claims.json",
     "peers/claims.json",
-    "realwage/claims.json",
-    "revisions/claims.json"
+    "realwage/claims.json"
    ],
    "import_error": null,
    "registry_sources": [],
@@ -721,6 +721,52 @@
    ]
   },
   {
+   "script": "fetch_jobsohio.py",
+   "kind": "fetch",
+   "what_it_adds": "JobsOhio executed grants and loans, parsed from the monthly PDF reports.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1504
+   },
+   "hosts": [],
+   "outputs": [],
+   "page_outputs": [
+    "_data/build/_data/jobsohio.json"
+   ],
+   "page_outputs_exist": {
+    "_data/build/_data/jobsohio.json": false
+   },
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": [
+     "_data/jobsohio.json"
+    ]
+   },
+   "output_learned_by": {
+    "_data/jobsohio.json": "observed"
+   },
+   "observed_stop": "open(jobsohio.json,'w')",
+   "observed_network": [],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json",
+    "output_missing_on_disk"
+   ]
+  },
+  {
    "script": "fetch_lodes.py",
    "kind": "fetch",
    "what_it_adds": "LODES — the labor shed. Where the people who work here actually live.",
@@ -887,6 +933,48 @@
     "no_traps_section",
     "not_in_PIPELINES.md",
     "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_mfg_baseline.py",
+   "kind": "fetch",
+   "what_it_adds": "The manufacturing baseline: is the polymer premium a polymer story or a factory story?",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1057
+   },
+   "hosts": [
+    "data.bls.gov"
+   ],
+   "outputs": [],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": []
+   },
+   "output_learned_by": {},
+   "observed_stop": "urlopen",
+   "observed_network": [
+    "http<path>/39007.csv"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_output_detected",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json"
    ]
   },
   {
@@ -1159,6 +1247,56 @@
     "no_traps_section",
     "not_in_PIPELINES.md",
     "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_patents.py",
+   "kind": "fetch",
+   "what_it_adds": "Polymer patent applications with a Northeast Ohio inventor, by filing year.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 2465
+   },
+   "hosts": [
+    "api.uspto.gov"
+   ],
+   "outputs": [],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": []
+   },
+   "output_learned_by": {},
+   "observed_stop": "SystemExit(USPTO count failed after four tries: \n  query: applicationMetaData.inventorBag.correspondenceAddressBag.geographicRegionCode:OH AND applicationMetaData.cpcClassificationBag:C08* AND applicationMetaData.filingDate:[2015-01-01 TO 2015-12-31])",
+   "observed_network": [
+    "http<path>/search",
+    "http<path>/search",
+    "http<path>/search",
+    "http<path>/search"
+   ],
+   "observed_reads": [
+    "<outside-repo>/.env"
+   ],
+   "import_error": null,
+   "registry_sources": [
+    "uspto"
+   ],
+   "consuming_pages": [
+    "patents"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_output_detected",
+    "no_traps_section",
+    "not_in_PIPELINES.md"
    ]
   },
   {
@@ -1459,6 +1597,54 @@
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_state_incentives.py",
+   "kind": "fetch",
+   "what_it_adds": "Ohio state tax-credit awards, parsed from Tax Credit Authority meeting minutes.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 2130
+   },
+   "hosts": [
+    "dam.assets.ohio.gov"
+   ],
+   "outputs": [],
+   "page_outputs": [
+    "_data/build/_data/state_incentives.json"
+   ],
+   "page_outputs_exist": {
+    "_data/build/_data/state_incentives.json": false
+   },
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": [
+     "_data/state_incentives.json"
+    ]
+   },
+   "output_learned_by": {
+    "_data/state_incentives.json": "observed"
+   },
+   "observed_stop": "open(state_incentives.json,'w')",
+   "observed_network": [],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json",
     "output_missing_on_disk"
    ]
   }

@@ -1,6 +1,6 @@
 {
- "n_pieces": 16,
- "total_claims": 432,
+ "n_pieces": 17,
+ "total_claims": 443,
  "total_manual": 15,
  "pages": {
   "accountability": {
@@ -12,7 +12,7 @@
    "manual": 0
   },
   "cluster-health": {
-   "claims": 36,
+   "claims": 37,
    "manual": 0
   },
   "cost-scissors": {
@@ -37,6 +37,10 @@
   },
   "occupations": {
    "claims": 32,
+   "manual": 0
+  },
+  "patents": {
+   "claims": 7,
    "manual": 0
   },
   "peers": {
@@ -64,7 +68,7 @@
    "manual": 4
   },
   "wages": {
-   "claims": 31,
+   "claims": 34,
    "manual": 1
   }
  },

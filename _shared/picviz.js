@@ -476,6 +476,8 @@ const PV = (() => {
       "no_industry", "not_a_commute", "split_is_judgment", "impact_is_separate",
       "no_raw_trends", "quarantine", "nominal", "no_deflator", "small_numbers",
       "publicOnly", "note", "peer_rule", "size_control",
+      /* patents: the three caveats a reader needs, published as limits */
+      "unit", "lag", "address_is_not_a_lab",
     ]);
     const METHOD = new Set([
       "definition", "bases", "stages", "baseline", "why", "why_corresponding",
@@ -487,6 +489,8 @@ const PV = (() => {
       "subfield_alt", "cip", "cip_groups", "groups", "neo", "measure", "industries",
       "benchmark", "demographics", "control", "polymer_bound", "baseline_year",
       "two_measures", "led_joined", "naics",
+      /* patents: mechanics of the pull, and the completeness cutoff */
+      "cpc", "geography", "last_complete_year",
     ]);
     const prose = ([, v]) => typeof v === "string" && v.trim().length >= 25;
     const limits = Object.entries(m).filter(e => prose(e) && LIMITS.has(e[0])).map(([, v]) => v);

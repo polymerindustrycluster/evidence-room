@@ -83,19 +83,23 @@
  "national_326_trend": [
   {
    "year": 2022,
-   "us_326_emp": 746593
+   "us_326_emp": 746593,
+   "us_register_emp": 909558
   },
   {
    "year": 2023,
-   "us_326_emp": 733910
+   "us_326_emp": 733910,
+   "us_register_emp": 895431
   },
   {
    "year": 2024,
-   "us_326_emp": 719721
+   "us_326_emp": 719721,
+   "us_register_emp": 879945
   },
   {
    "year": 2025,
-   "us_326_emp": 700170
+   "us_326_emp": 700170,
+   "us_register_emp": 857188
   }
  ]
 }

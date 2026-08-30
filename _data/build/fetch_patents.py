@@ -117,6 +117,26 @@ for y in range(FIRST_YEAR, LAST_YEAR + 1):
     row = {"year": y, "complete": y <= LAST_COMPLETE}
     row["ohio"] = count(f"{GEO}.geographicRegionCode:OH AND "
                         f"applicationMetaData.cpcClassificationBag:{CPC} AND {year_range(y)}")
+    # THE TWO BASELINES WITHOUT WHICH THE OHIO SERIES CANNOT BE READ. The national C08
+    # series separates the region from the field: if polymer patenting fell everywhere,
+    # an Ohio fall is the tide. And Ohio's ALL-CLASS series separates polymer from the
+    # state: Ohio's overall patenting is itself declining, so the polymer-specific story
+    # is only the part that falls FASTER than that. Run without the second baseline, this
+    # page would have overstated its own finding by a factor of two, which was caught at
+    # the stress-test stage rather than after publication.
+    # THE NATIONAL BASIS MUST MATCH THE OHIO BASIS. The first shipped version compared
+    # Ohio's inventor-address series to an UNFILTERED national count, which is worldwide
+    # filings at the USPTO: flat at 99 only because foreign-origin filings filled the
+    # hole American ones left. A replication reviewer reproduced 99.0 and then could not
+    # reproduce the LABEL, which is how this was caught the day the page shipped. The
+    # matched national series is countryCode:US on the same inventor bag, and it tells a
+    # different story: American polymer filings fell by a fifth. The worldwide count is
+    # kept, as the trap it is.
+    row["us_inv"] = count(f"{GEO}.countryCode:US AND "
+                          f"applicationMetaData.cpcClassificationBag:{CPC} AND {year_range(y)}")
+    row["us_inv_all"] = count(f"{GEO}.countryCode:US AND {year_range(y)}")
+    row["world"] = count(f"applicationMetaData.cpcClassificationBag:{CPC} AND {year_range(y)}")
+    row["ohio_all"] = count(f"{GEO}.geographicRegionCode:OH AND {year_range(y)}")
     for c in CITIES:
         row[c.lower()] = count(f"{GEO}.cityName:{c} AND "
                                f"applicationMetaData.cpcClassificationBag:{CPC} AND "
@@ -165,6 +185,11 @@ out = {
 }
 p = os.path.join(WEB, "_data", "patents.json")
 json.dump(out, open(p, "w", encoding="utf-8"), indent=1)
+# The page reads its own copy, per house convention: every page renders from its own
+# data/ directory so a page and its claims always see the same file.
+pd = os.path.join(WEB, "patents", "data")
+os.makedirs(pd, exist_ok=True)
+json.dump(out, open(os.path.join(pd, "patents.json"), "w", encoding="utf-8"), indent=1)
 print(f"\nwrote {p}")
 t = out["trend_complete_years"]
 print(f"  Ohio polymer filings {t['first']}-{t['last']}: {t['first_value']} to "

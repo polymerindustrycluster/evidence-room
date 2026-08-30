@@ -40,6 +40,7 @@ const PRINTS = {
   onet_education:  ["onet", "job_zone", "jobzone", "education", "schooling"],
   nem:             ["projection", "matrix", "326000", "occupation"],
   odjfs:           ["projection", "opening", "2032", "ohio", "odjfs"],
+  uspto:           ["cpc", "inventor", "applicant", "filing", "patent", "uspto"],
   public_record:   ["event", "milestone", "date", "lane"],
   heritage_register: ["heritage", "proven", "claimed", "discover", "era"],
 };

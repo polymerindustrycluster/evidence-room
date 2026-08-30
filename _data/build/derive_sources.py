@@ -232,6 +232,17 @@ PLAIN = {
   "cannot": "There is no endpoint and no script: it can be re-read but not re-fetched. "
             "Only events recorded as public appear, so the record of which dates slipped "
             "is deliberately absent from it."},
+ "uspto": {
+  "is": "The Patent Office’s live record of patent applications, searchable by "
+        "classification code and by the addresses on the filing, roughly eighteen months "
+        "after each application is filed.",
+  "good": "Whether a place still files inventions in a field: applications by filing "
+          "year, cut by CPC class and by inventor or applicant address.",
+  "cannot": "It cannot see an application younger than the publication lag, so the newest "
+            "years always look like a collapse and never are. An address is where the "
+            "mail goes, not where the laboratory is: one Akron-assigned tire application "
+            "carries a Luxembourg inventor, and the inventor and applicant bases differ "
+            "by more than a factor of two. And an application is a filing, not a grant."},
  "heritage_register": {
   "is": "An internal register of what the region invented and what changed its capacity, "
         "of which only the rows its own index marks PROVEN are published.",
@@ -273,6 +284,7 @@ PLAIN = {
 # fails below if a source is added without it.
 SHORT = {
     "qcew": "QCEW employment and wages",
+    "uspto": "USPTO patent applications",
     "usaspending": "USAspending awards",
     "ipeds": "IPEDS degree completions",
     "fred": "FRED price series",
