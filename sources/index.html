@@ -18,7 +18,7 @@
   </div>
 </header>
 
-<section class="hero">
+<section class="hero" id="sec-top" data-nav="Top">
   <div class="wrap">
     <p class="eyebrow">A replication guide for other regions</p>
     <h1>You can rebuild this for your own region. <em>The codes are the hard part</em>,
@@ -49,7 +49,7 @@
 
 <!-- ACT 1: ONE QUESTION, CARRIED ALL THE WAY. This is the page. The register below is
      reference; this is the thing another region can actually copy on a Tuesday. -->
-<section class="band">
+<section class="band" id="sec-concentration" data-nav="Concentration">
   <div class="wrap">
     <p class="takeaway">The worked question</p>
     <h2>Is your region unusually concentrated in an industry?</h2>
@@ -88,7 +88,11 @@
           already holds every industry level for that area, so your all-industry
           denominator is the row carrying industry code <b class="code">10</b> in the file
           you just downloaded. Download one more file, for area
-          <b class="code">US000</b>, and it holds the national pair.</p>
+          <b class="code">US000</b>, and it holds the national pair. The employment count
+          you divide is the column named <b class="code">annual_avg_emplvl</b>. Do not
+          reach for <b class="code">lq_annual_avg_emplvl</b> beside it: that is the
+          bureau&rsquo;s own finished location quotient, on its own basis, and step six
+          is about why the two differ.</p>
         <p><b>The aggregation level is the county filter, and it is not the state one.</b>
           Every row carries an <b class="code">agglvl_code</b> saying which rung of the
           geography-by-industry ladder it sits on, and the rungs are numbered separately
@@ -203,17 +207,183 @@
       </li>
     </ol>
 
-    <p class="note"><b>What this page is not yet.</b> Three more worked questions, how to
-      look up a named award by its identifier, the nominal-against-real question, and how
-      the sentences on this site are stored as checks that re-run are all held back rather
-      than half-written; each one is specified, ordered and given its own acceptance test in
+    <p class="note"><b>What this page is not yet.</b> Two more worked questions, the
+      labour shed and federal contracting, the nominal-against-real question, and how the
+      sentences on this site are stored as checks that re-run are held back rather than
+      half-written; each one is specified, ordered and given its own acceptance test in
       <a href="ROADMAP.md">sources/ROADMAP.md</a>, so a reader can see exactly what is
       coming instead of taking a promise.</p>
   </div>
 </section>
 
+<!-- ACT 1b: THE SECOND WORKED QUESTION. Same file, one column across, and a trap that
+     is not about the data at all but about the sentence you write over it. -->
+<section class="band tint" id="sec-pay" data-nav="Pay premium">
+  <div class="wrap">
+    <p class="takeaway">The second worked question</p>
+    <h2>Does that industry pay better than the rest of your regional economy?</h2>
+    <p class="lede">This one is nearly free once you have the first: the same file, the
+      same filters, one column across. What it costs instead is a decision about what you
+      divide by, and then a trap that has nothing to do with the data and everything to do
+      with the sentence you write over it. Four steps. This site got the sentence wrong,
+      and the wrong version is the one a replicator writes first.</p>
+
+    <ol class="steps">
+      <li>
+        <h3>Take the wage column, not the employment one</h3>
+        <p>The county file you already downloaded carries
+          <b class="code">annual_avg_wkly_wage</b> beside the employment column. No second
+          request, no different endpoint. Everything you decided in the first recipe still
+          holds: the same code set, the same ownership, the same aggregation level, the
+          same annual average.</p>
+        <p class="warn"><b>An average weekly wage is not a pay rate.</b> It moves with
+          hours worked and with the mix of occupations inside the industry, not only with
+          what an employer pays for a given job. A region whose plants run more overtime
+          reads as higher paying. State this or your reader will hear a rate.</p>
+      </li>
+      <li>
+        <h3>Decide what you are dividing by, because there are two questions here</h3>
+        <p>A wage on its own says nothing, so it needs a denominator, and the two obvious
+          ones answer different questions. Divide by the same industry nationally and you
+          are asking whether your region is a good place to hold this job. Divide by the
+          average job in the same county and you are asking whether the industry pays
+          above its own town. Those two can point opposite ways at once, and here they
+          do.</p>
+        <p class="body" id="paydenoms">The two measures this site publishes.</p>
+        <p>Neither is the right one. They are different questions, and a page that prints
+          one while its headline asks the other is the most common way this recipe goes
+          wrong before the arithmetic even starts.</p>
+      </li>
+      <li>
+        <h3>The trap: what your median is a median <em>of</em></h3>
+        <p>Now you have a ratio for every industry-and-county cell your agency will
+          publish, and you want one number. You take the median. The question nobody asks
+          out loud is what that median runs over, and there are at least three answers
+          sitting in the same table.</p>
+        <p class="body" id="payunits">The three units, and what each one is a middle
+          of.</p>
+        <p class="formula" id="paymath">The two medians.</p>
+        <p class="body" id="paycover">What the job figure is a median of.</p>
+        <p><b>The list median is the easy one to compute and the easy one to describe
+          wrongly.</b> Sorting the cells and taking the middle one gives you the middle
+          <em>cell</em>. Writing &ldquo;the typical job pays&rdquo; over it claims the middle
+          <em>job</em>, which is a different statistic whenever the big cells sit to one
+          side of the small ones. They usually do, because employment is concentrated and
+          concentration is not symmetric.</p>
+        <p class="body" id="paydrag">Which cell does the pulling here.</p>
+        <p class="warn"><b>This site published the wrong sentence over the right
+          number.</b> The pay page read &ldquo;the typical polymer job pays 1.2 times what
+          the average job in its county pays&rdquo; while the figure under it was a median over
+          cells. The number was correct and the sentence was not, and a reader reported
+          believing a stronger claim than the page was making. The fix was not a new
+          number: it was naming the unit in the sentence and computing the job-weighted
+          figure beside it, so a reader can see both.</p>
+      </li>
+      <li>
+        <h3>What it lands on here</h3>
+        <p class="body" id="paylands">What the two denominators say about this
+          region.</p>
+        <p>Publish the unit in the sentence, not in a methodology note. If you can only
+          print one figure, print the one that does not flatter you, and say which it is.
+          Here the job-weighted figure is the higher of the two, which is exactly why the
+          lower one can stay the headline without anyone suspecting a thumb on the
+          scale.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ACT 1c: CHECKING ONE AWARD, INCLUDING OURS. The only section that teaches a reader
+     to check this site rather than to copy it. Its worked example is our own worst
+     published error, kept in because the lookup that catches it is the transferable part. -->
+<section class="band" id="sec-awards" data-nav="Award lookup">
+  <div class="wrap">
+    <p class="takeaway">Checking a single number, including ours</p>
+    <h2>Any dollar figure with an award behind it can be checked in about a minute</h2>
+    <p class="lede">Everything above this is a statistic built from a census. This is the
+      opposite: one award, one identifier, one record, and no judgement calls at all. It is
+      here because it is the only part of this page that teaches you to check
+      <em>us</em>, and because the worked example is the largest error this site has
+      published.</p>
+
+    <ol class="steps">
+      <li>
+        <h3>Get the identifier, and expect a page not to print it</h3>
+        <p>Every federal award carries an identifier that is stable, public and unique.
+          Most announcements quote a dollar figure and omit it, which is the point at which
+          a number stops being checkable and becomes a claim. If a page you are reading
+          gives a federal figure and no identifier, that is a finding about the page.</p>
+        <p class="body" id="edanote">The awards behind this region&rsquo;s Tech Hub.</p>
+        <div id="edalist"></div>
+        <p class="warn"><b>The fiscal year in an identifier is the year of the award
+          action, not the year of the programme.</b> Two of the seven above carry
+          <b class="code">ED24</b> rather than <b class="code">ED25</b>, on the same
+          designation. Sorting or filtering by the digits in an id will silently split a
+          programme in half.</p>
+      </li>
+      <li>
+        <h3>Look it up at the agency, not at a press release</h3>
+        <p>NSF is the easy one. Its records are keyed by the same number that appears in
+          the announcement, need no key and no registration, and open in a browser.</p>
+        <pre class="endpoint">https://api.nsf.gov/services/v1/awards.json?id={award_id}</pre>
+        <p>The figures you came for are named <b class="code">estimatedTotalAmt</b> and
+          <b class="code">fundsObligatedAmt</b>, with <b class="code">fundsObligated</b>
+          breaking the obligation down by fiscal year, and <b class="code">transType</b>
+          telling you whether it is a grant or a cooperative agreement.</p>
+        <p class="warn"><b>USAspending takes two steps, and the obvious one fails
+          silently.</b> The award number printed on a federal grant document is not the key
+          its award endpoint takes: that endpoint wants USAspending&rsquo;s own internal
+          identifier, and a real award number handed to it directly returns a bare
+          <b class="code">404</b> rather than an error that explains itself. Ask the search
+          endpoint for the internal id first. It is a POST, and it is a different endpoint
+          from the <b class="code">{category}</b> paths in the register below.</p>
+        <pre class="endpoint">POST https://api.usaspending.gov/api/v2/search/spending_by_award/
+{"filters": {"award_ids": ["ED25HDQ0G0038"],
+             "award_type_codes": ["02", "03", "04", "05"]},
+ "fields": ["Award ID", "Recipient Name", "Award Amount", "generated_internal_id"]}</pre>
+        <p>That reply carries <b class="code">generated_internal_id</b>, and it carries
+          <b class="code">Award Amount</b> as well, which is often the whole answer: for
+          the first award in the table above it comes back as 11,122,386, the figure
+          printed beside it. Feed the internal id to the award endpoint for the full
+          record, where the obligation is <b class="code">total_obligation</b> and the
+          number you started from is <b class="code">fain</b>.</p>
+        <pre class="endpoint">https://api.usaspending.gov/api/v2/awards/{generated_internal_id}/</pre>
+        <p>Neither agency needs registration. This is the cheapest verification on the
+          whole page and the one least often done.</p>
+      </li>
+      <li>
+        <h3>Three numbers that are not each other</h3>
+        <p>An award record carries several dollar figures and an announcement will quote
+          whichever is largest. They mean different things and only one of them is money
+          that has actually moved.</p>
+        <p class="body" id="nsfnums">The worked award, with all three.</p>
+        <p><b>Obligated</b> is money legally committed, and it is the only one with a
+          number behind it today. <b>Estimated total</b> is what the award is expected to
+          reach across its full period if every year is funded. A <b>programme ceiling</b>
+          is not a property of your award at all: it is the maximum the programme could
+          reach across every recipient and every renewal, and it appears in press material
+          because it is the biggest available number.</p>
+      </li>
+      <li>
+        <h3>The one this site got wrong</h3>
+        <p class="body" id="awarderr">What we printed, and what the record says.</p>
+        <p>It was in a hand-typed event title, taken from a description rather than a
+          record, and it sat on this site until a reader put two of our own pages side by
+          side and found the same award carrying two figures an order of magnitude apart.
+          No gate caught it, because no gate was comparing figures across pages; one does
+          now. The lookup above would have caught it in a minute, at any point, by
+          anybody.</p>
+        <p class="warn"><b>This is the section to copy.</b> Not because the mistake is
+          unusual, but because it is ordinary: a ceiling read as a value, from a
+          description rather than a record, on the one number nobody thought to check
+          because it was ours.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
 <!-- ACT 2: THE DECISION NOBODY PUBLISHES -->
-<section class="band tint">
+<section class="band tint" id="sec-classification" data-nav="Classification">
   <div class="wrap">
     <p class="takeaway">The decision nobody publishes</p>
     <h2>Federal data makes you define your subject inside someone else&rsquo;s
@@ -288,7 +458,7 @@
 </section>
 
 <!-- ACT 3: THE TRAP THAT PRODUCES CONFIDENTLY WRONG ANSWERS -->
-<section class="band">
+<section class="band" id="sec-suppression" data-nav="Suppression">
   <div class="wrap">
     <p class="takeaway">The trap</p>
     <h2>A withheld cell is not a zero</h2>
@@ -340,7 +510,7 @@
 </section>
 
 <!-- ACT 4: THE OTHER REASON YOUR NUMBER WILL DIFFER -->
-<section class="band tint">
+<section class="band tint" id="sec-vintage" data-nav="Vintage">
   <div class="wrap">
     <p class="takeaway">Before you tell us we are wrong</p>
     <h2>Your number will not match ours, and that is expected</h2>
@@ -360,7 +530,7 @@
 </section>
 
 <!-- ACT 5: THE REGISTER. Reference, deliberately after the teaching. -->
-<section class="band">
+<section class="band" id="sec-register" data-nav="The register">
   <div class="wrap">
     <p class="takeaway">The register</p>
     <h2>All fourteen datasets, with what each one cannot tell you</h2>
@@ -390,7 +560,7 @@
 </section>
 
 <!-- ACT 6: WHAT WE COULD NOT GET -->
-<section class="band tint">
+<section class="band tint" id="sec-gaps" data-nav="Gaps">
   <div class="wrap">
     <p class="takeaway">What we could not get</p>
     <h2>The gaps, published rather than hidden</h2>

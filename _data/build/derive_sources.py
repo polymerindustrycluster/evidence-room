@@ -56,6 +56,29 @@ WEB = os.path.abspath(os.path.join(HERE, "..", ".."))
 FETCHED = "2026-08-29"
 
 
+def median(values):
+    """The statistic this page's second recipe is about, so it is defined once here."""
+    v = sorted(values)
+    n = len(v)
+    if not n:
+        raise SystemExit("derive_sources: median of an empty set")
+    return v[n // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) / 2
+
+
+def weighted_median(pairs):
+    """Median of a population, each row carrying a weight. The row where the running
+    weight first reaches half the total, which is a DIFFERENT row from the middle of the
+    list whenever the heavy rows sit to one side. That difference is the lesson."""
+    v = sorted(pairs, key=lambda t: t[0])
+    half = sum(w for _, w in v) / 2
+    run = 0.0
+    for value, w in v:
+        run += w
+        if run >= half:
+            return value
+    raise SystemExit("derive_sources: weighted median fell off the end")
+
+
 def load(*parts):
     with open(os.path.join(*parts), encoding="utf-8") as fh:
         return json.load(fh)
@@ -778,11 +801,141 @@ def build():
         raise SystemExit("derive_sources: the O*NET credit must display the registered "
                          "trademark symbol on the mark and name USDOL/ETA.")
 
+    # ================================================================ RECIPE 2, THE PAY
+    # WHAT THE MEDIAN IS OVER. The pay page said "the typical polymer job pays 1.2 times"
+    # when the figure was a median over ROWS, and its heaviest rows sit below it. Both
+    # statistics are defensible; only one matches that sentence. A replicator computes the
+    # row median first, because it is the easy one, and will write the job sentence over
+    # it unless someone says so out loud.
+    #
+    # Every number below is read from the pay page's own shipped file, so this recipe
+    # cannot teach a value that page has stopped publishing.
+    WG = load(WEB, "wages", "data", "wages.json")
+    pay_rows = [r for r in WG["latest_rows"] if r.get("vs_local_all")]
+    pay_naics = sorted({r["naics"] for r in pay_rows})
+    pay_counties = sorted({r["name"] for r in pay_rows})
+
+    # The group cover: 325 and 326 taken once per county. The only complete
+    # non-overlapping set the published data offer, so it is what a job weighting can run
+    # over at all. Coarser than a pairing, and the page says so rather than implying the
+    # two units are interchangeable.
+    cover = [r for r in pay_rows if r["naics"] in ("325", "326")]
+    med_pair = median([r["vs_local_all"] for r in pay_rows])
+    med_job = weighted_median([(r["vs_local_all"], r["emp"]) for r in cover])
+    if not med_job > med_pair:
+        raise SystemExit(
+            "derive_sources: the job-weighted median is no longer above the pairing "
+            "median. The recipe's whole point is that the easy statistic is the LOWER "
+            "one, so publishing the harder one cannot be read as flattering the finding. "
+            "That sentence would now be backwards. Re-read before publishing.")
+
+    # The single row that most moves the two apart: the heaviest one sitting below the
+    # pairing median. Named on the page, because "the heavy rows are low" is an assertion
+    # and this is the evidence for it.
+    drag = max((r for r in pay_rows if r["vs_local_all"] < med_pair),
+               key=lambda r: r["emp"])
+
+    # Counted once per county at the finest detail published, which is the third unit and
+    # the reason the page prints all three rather than picking one.
+    def is_family(r):
+        return ((r["naics"] == "325" and any(x["name"] == r["name"] and
+                                             x["naics"] in ("3252", "3255") for x in pay_rows)) or
+                (r["naics"] == "326" and any(x["name"] == r["name"] and
+                                             x["naics"] in ("3261", "3262") for x in pay_rows)))
+    dedup = [r for r in pay_rows if not is_family(r)]
+
+    # WHAT THE JOB WEIGHTING IS OVER. Codex found, on a review of the shipped page, that
+    # the 33,528-job cover is 325 + 326 while this same page declares the measurement
+    # register to be 3252 + 3255 + 326 and calls 325 "context, not cluster". Both are
+    # true and the coarser set is the only complete non-overlapping one the published
+    # data offer, which is why the pay page uses it. But a recipe whose entire lesson is
+    # NAME THE UNIT cannot leave its own population unnamed: nearly half those jobs are
+    # outside the boundary the reader was given two sections earlier.
+    register = ("3252", "3255", "326")
+    outside = [r for r in cover if r["naics"] not in register]
+    wage = {
+        "year": WG["meta"]["latest"],
+        "cover_naics": sorted({r["naics"] for r in cover}),
+        "cover_outside_register": round(sum(r["emp"] for r in outside)),
+        "register_naics": list(register),
+        "register_jobs": round(sum(r["emp"] for r in pay_rows
+                                   if r["naics"] in register)),
+        "n_published": len(pay_rows),
+        "n_industries": len(pay_naics),
+        "n_counties": len(pay_counties),
+        "n_possible": len(pay_naics) * len(pay_counties),
+        "median_pairing": round(med_pair, 4),
+        "median_job": round(med_job, 4),
+        "n_above_local": len([r for r in pay_rows if r["vs_local_all"] > 1]),
+        "n_below_us": len([r for r in pay_rows if r.get("vs_us") and r["vs_us"] < 1]),
+        "median_vs_us": round(median([r["vs_us"] for r in pay_rows if r.get("vs_us")]), 4),
+        "cover_rows": len(cover),
+        "cover_jobs": round(sum(r["emp"] for r in cover)),
+        "cover_jobs_above": round(sum(r["emp"] for r in cover if r["vs_local_all"] > 1)),
+        "dedup_rows": len(dedup),
+        "dedup_above": len([r for r in dedup if r["vs_local_all"] > 1]),
+        "drag": {"county": drag["name"], "label": drag["label"],
+                 "ratio": round(drag["vs_local_all"], 4), "emp": round(drag["emp"])},
+        "measures": WG["meta"]["measures"],
+        "caution": WG["meta"]["caution"],
+    }
+
+    # ============================================================ AWARD IDENTIFIERS, D3
+    # THE ONLY SECTION THAT TEACHES A READER TO CHECK US. Its worked example is this
+    # site's own worst published error: a programme ceiling read as an award value,
+    # overstating a federal award by an order of magnitude, on a site whose premise is
+    # checkability. It is printed rather than quietly corrected because the lookup that
+    # catches it is the transferable part, and a guide that only shows its clean cases
+    # teaches nothing about how the mistake is actually made.
+    TL = load(WEB, "timeline", "data", "timeline.json")
+    nsf = next((e for e in TL["events"] if e.get("awardId") == "2532460"), None)
+    if nsf is None:
+        raise SystemExit("derive_sources: NSF award 2532460 is no longer on the timeline, "
+                         "so the award-lookup recipe has lost its worked example.")
+    TH = load(WEB, "federal-money", "data", "techhub.json")
+    leads = TH["leads"]
+    if not all(l.get("awardId") for l in leads):
+        raise SystemExit("derive_sources: an EDA lead carries no award identifier. The "
+                         "recipe tells a reader to look each one up by id.")
+    if sum(l["amount"] for l in leads) != TH["award"]:
+        raise SystemExit(
+            f"derive_sources: the seven EDA leads sum to "
+            f"{sum(l['amount'] for l in leads):,} against a published award of "
+            f"{TH['award']:,}. The recipe asks a reader to add the ids up and land on "
+            "the total, and they would not.")
+
+    CEILING = 160_000_000          # the figure this site printed; see _data/FIGURES.json
+    awards = {
+        "nsf": {
+            "id": nsf["awardId"], "title": nsf["title"], "org": nsf["org"],
+            "estimated_total": nsf["amount"], "obligated": nsf["obligated"],
+            "obligated_basis": nsf["obligatedBasis"],
+            "period_start": nsf["periodStart"], "period_end": nsf["periodEnd"],
+            "award_date": nsf["awardDate"],
+            "share_obligated": round(nsf["obligated"] / nsf["amount"], 4),
+            "note": nsf["amountNote"], "source": nsf["amountSource"],
+        },
+        "error": {
+            "printed": CEILING,
+            "actual": nsf["amount"],
+            "factor": round(CEILING / nsf["amount"], 1),
+            "corrected_on": "2026-08-29",
+        },
+        "eda": {
+            "agency": TH["agency"], "name": TH["name"], "total": TH["award"],
+            "n": len(leads),
+            "leads": [{"name": l["name"], "id": l["awardId"], "amount": l["amount"],
+                       "funds": l["funds"]} for l in
+                      sorted(leads, key=lambda l: -l["amount"])],
+        },
+    }
+
     out = {"meta": meta, "sources": sources, "pages": pages, "totals": totals,
            "footprint": footprint, "socs": socs, "attributions": attributions,
            "codes": codes, "doublecount": doublecount, "suppression": supp,
            "suppression_vintage": supp_vintage,
            "lq": lq, "readings": readings, "classification": classification,
+           "wage": wage, "awards": awards,
            "vintage": vintage, "gaps": gaps,
            "onet_attribution": load(WEB, "occupations", "data",
                                     "viz-data.json")["onet_attribution"]}

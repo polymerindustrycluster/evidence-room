@@ -44,11 +44,22 @@ for (const n of list) {
       const s = t.textContent;
       const ctx = s.replace(/\s+/g, " ").trim();
       if (!ctx) continue;
+      /* VERBATIM SPANS ARE NOT PROSE. A reader is meant to COPY the contents of a
+         <pre> or a .code: an endpoint, a field name, a JSON request body. The
+         typographic rules below are about writing, and applying them here does not
+         improve the page, it breaks the thing the page exists to hand over. JSON is
+         the case that forced this: {"filters": ...} is only valid with straight
+         double quotes, and a curly pair would ship a request body that cannot be
+         pasted into anything. Scoped to elements whose whole purpose is verbatim
+         content, so prose gains no exemption anywhere. Em-dashes and banned words
+         are still checked, because neither is required by any syntax. */
+      const verbatim = !!el.closest("pre,code,.code,.endpoint,.mono");
       /* a lone dash is the no-data placeholder, not prose */
       const bare = /^[—–-]$/.test(ctx);
       if (s.includes("—") && !bare) out.push(["em-dash", ctx.slice(0, 70)]);
-      if (/(?<=\w)'(?=\w)|(?<=\s)'|'(?=\s)/.test(s)) out.push(["straight-quote", ctx.slice(0, 70)]);
-      if (/"/.test(s)) out.push(["straight-double", ctx.slice(0, 70)]);
+      if (!verbatim && /(?<=\w)'(?=\w)|(?<=\s)'|'(?=\s)/.test(s))
+        out.push(["straight-quote", ctx.slice(0, 70)]);
+      if (!verbatim && /"/.test(s)) out.push(["straight-double", ctx.slice(0, 70)]);
       const m = s.match(BANNED);
       if (m) out.push([`banned:${m[1].toLowerCase()}`, ctx.slice(0, 70)]);
     }

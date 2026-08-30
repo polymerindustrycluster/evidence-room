@@ -553,6 +553,189 @@ function drawRecipe() {
       compares it to this chart is looking at a different vintage, not at a disagreement.`);
 }
 
+/* ------------------------------------------------------- recipe 2, the pay premium */
+/* THE UNIT OF THE MEDIAN, which is the whole reason this recipe exists. Every figure
+   is read from the pay page's own shipped file by derive_sources.py, including the cell
+   that drags the two statistics apart, so this cannot teach a value that page has
+   stopped publishing. */
+function drawPay() {
+  const W = D.wage;
+  if (!W) return;
+  const x = v => `${v.toFixed(2)}x`;
+
+  document.getElementById("paydenoms").innerHTML =
+    `This site publishes both, for every cell. Against the same industry nationally,
+     <b>${W.n_below_us} of the ${W.n_published}</b> published cells pay less than the
+     industry pays elsewhere, a middle cell of <b>${x(W.median_vs_us)}</b>. Against the
+     average job in the same county, <b>${W.n_above_local} of the ${W.n_published}</b>
+     pay more. The same cells, the same year, opposite verdicts, and both are true.`;
+
+  document.getElementById("payunits").innerHTML =
+    `The table holds ${W.n_published} published cells out of ${W.n_possible} possible,
+     ${word(W.n_industries)} industry codes across ${word(W.n_counties)} counties. Take
+     the middle of those ${W.n_published} and the unit is a <b>cell</b>.
+     <b>Count each county once and the unit is a county-industry.</b> The rule is to keep
+     the finest detail published for that county and drop the family above it: where a
+     county publishes ${W.register_naics[0]} or ${W.register_naics[1]}, drop its 325 row;
+     where it publishes 3261 or 3262, drop its 326. That leaves
+     <b>${W.dedup_rows}</b> rows, of which ${W.dedup_above} pay above their county.
+     <b>Weight by employment and the unit is a job</b>, but only a coarser set can carry
+     that: the two industry groups taken once per county, ${N(W.cover_jobs)} jobs,
+     ${N(W.cover_jobs_above)} of them in a group that out-pays its county.`;
+
+  /* THE POPULATION HAS TO BE NAMED, NOT JUST COUNTED. This recipe's whole lesson is that
+     a median is a median OF something; printing 33,528 without saying which codes it is
+     would commit the exact fault the section is about, and nearly half of it sits
+     outside the register the reader was handed two sections earlier. */
+  document.getElementById("paycover").innerHTML =
+    `<b>Read the job figure with its boundary attached.</b> The only complete
+     non-overlapping set the published data offer is NAICS
+     ${W.cover_naics.join(" and ")} taken once per county, so that is what a job weighting
+     can run over at all. It is wider than this site&rsquo;s own measurement register of
+     ${W.register_naics.join(", ")}, which covers ${N(W.register_jobs)} jobs:
+     <b>${N(W.cover_outside_register)}</b> of the ${N(W.cover_jobs)} weighted jobs, about
+     ${Math.round(W.cover_outside_register / W.cover_jobs * 100)} percent, are chemistry
+     the register calls context rather than cluster. The finer set cannot be weighted
+     because it is not published for every county. That is a real limit, not a
+     rounding note, and it is the reason the cell median stays the headline.`;
+
+  document.getElementById("paymath").innerHTML =
+    `middle of ${W.n_published} cells = ${x(W.median_pairing)} &nbsp;&middot;&nbsp;
+     middle of ${N(W.cover_jobs)} jobs = ${x(W.median_job)}`;
+
+  document.getElementById("paydrag").innerHTML =
+    `The heaviest cell sitting below the cell median is
+     <b>${W.drag.county} County ${W.drag.label.toLowerCase().replace(" & ", " and ")}</b> at
+     ${x(W.drag.ratio)} on ${N(W.drag.emp)} jobs, the same cell the first recipe worked.
+     One cell in ${W.n_published} by the list count, and ${
+       Math.round(W.drag.emp / W.cover_jobs * 100)} percent of the jobs by the other.
+     That is the gap between the two statistics, in one row.`;
+
+  document.getElementById("paylands").innerHTML =
+    `In ${W.year}, across ${word(W.n_counties)} counties: the middle cell pays
+     <b>${x(W.median_pairing)}</b> what the average job in its county pays, the middle
+     job <b>${x(W.median_job)}</b>. Against the same industries nationally the region
+     pays <b>${x(W.median_vs_us)}</b>, a discount rather than a premium. It is a good
+     industry to hold a job in relative to this region, and this region is a cheap place
+     to hire for it, and those are the same finding read from two sides.`;
+}
+
+/* --------------------------------------------------- checking one award, including ours */
+function drawAwards() {
+  const A = D.awards;
+  if (!A) return;
+  const M = v => `$${(v / 1e6).toFixed(v % 1e6 ? 1 : 0)}M`;
+  const full = v => `$${N(v)}`;
+  const yr = d => d.slice(0, 4);
+  const MONTHS = ["January", "February", "March", "April", "May", "June", "July",
+    "August", "September", "October", "November", "December"];
+  const day = d => `${+d.slice(8, 10)} ${MONTHS[+d.slice(5, 7) - 1]} ${d.slice(0, 4)}`;
+
+  document.getElementById("edanote").innerHTML =
+    `The ${A.eda.name} is ${word(A.eda.n)} implementation awards from the
+     ${A.eda.agency}, ${full(A.eda.total)} between them. Each carries its own identifier,
+     and the ${word(A.eda.n)} amounts add to the total, so a reader can check the
+     addition as well as the parts.`;
+
+  document.getElementById("edalist").innerHTML =
+    /* TWO COLUMNS, NOT THREE. A third column for the identifier forced the table past
+       420px, and at 390px the AMOUNT scrolled off the right edge: the reader lost the
+       figure while keeping the label for it, and the caption clipped mid-sentence. The
+       identifier sits under its lead instead, which fits every phone and costs nothing
+       on a desktop. Found by rendering it at 390, not by a gate. */
+    `<div class="pv-table awards"><table>
+      <caption>The ${word(A.eda.n)} implementation awards, largest first. Look any of
+        them up by the identifier under its lead.</caption>
+      <thead><tr><th>Lead and award identifier</th><th>Amount</th></tr></thead>
+      <tbody>${A.eda.leads.map(l => `<tr>
+        <th scope="row">${l.name}<b class="code">${l.id}</b></th>
+        <td>${full(l.amount)}</td></tr>`).join("")}
+      </tbody>
+      <tfoot><tr><th scope="row">Total</th>
+        <td><b>${full(A.eda.total)}</b></td></tr></tfoot>
+    </table></div>`;
+
+  document.getElementById("nsfnums").innerHTML =
+    `NSF award <b class="code">${A.nsf.id}</b>, made ${day(A.nsf.award_date)}, runs
+     ${yr(A.nsf.period_start)} to ${yr(A.nsf.period_end)}. Its record gives an estimated
+     total of <b>${full(A.nsf.estimated_total)}</b> and
+     <b>${full(A.nsf.obligated)}</b> ${A.nsf.obligated_basis}, which is
+     ${Math.round(A.nsf.share_obligated * 100)} percent of it. The programme it sits in
+     is publicly described with a much larger ten-year ceiling contingent on renewals,
+     and no source ties that ceiling to this award.`;
+
+  document.getElementById("awarderr").innerHTML =
+    `<b>This site printed ${M(A.error.printed)} for that award.</b> The record says
+     ${full(A.error.actual)}. We overstated a federal award by a factor of
+     <b>${A.error.factor}</b>, on a site whose premise is that its numbers can be
+     checked, and it stood until ${day(A.error.corrected_on)}.`;
+}
+
+/* ------------------------------------------------------------------ section nav */
+/* Built from the sections themselves, so a section added to this page appears in the
+   nav without anybody remembering to add it, and one removed cannot leave a link to
+   nothing behind. The METHODOLOGY block is appended separately because picviz.js emits
+   it rather than index.html, so it carries no data-nav of its own to read. */
+function drawNav() {
+  const secs = [...document.querySelectorAll("section[data-nav]")];
+  const method = document.querySelector("section.pv-method");
+  if (method) {
+    method.id ||= "sec-method";
+    method.dataset.nav = "Method";
+    secs.push(method);
+  }
+  if (secs.length < 2) return;
+
+  const items = secs.map(x => `<li><a href="#${x.id}">${x.dataset.nav}</a></li>`).join("");
+  const rail = document.createElement("nav");
+  rail.className = "docnav";
+  rail.setAttribute("aria-label", "Sections");
+  rail.innerHTML = `<h2>On this page</h2><ol>${items}</ol>`;
+
+  const bar = document.createElement("nav");
+  bar.className = "docbar";
+  bar.setAttribute("aria-label", "Sections");
+  bar.innerHTML = `<ol>${items}</ol>`;
+
+  /* AFTER THE HERO, both of them. See the note in styles.css: the cold-open gate
+     measures where this page's first chart lands and the first chart is in the hero, so
+     nothing may be inserted above it. */
+  const hero = document.querySelector("section.hero");
+  hero.after(bar);
+  hero.after(rail);
+
+  /* Scroll spy. The active section is the last one whose top has passed the reading
+     line, not the one nearest the middle: a reader at the bottom of a 4,000px section is
+     still in it, and highlighting the next one because it is closer to the centre is the
+     failure mode of every naive version of this. */
+  const links = [...rail.querySelectorAll("a"), ...bar.querySelectorAll("a")];
+  const LINE = 90;
+  let current = null;
+  function spy() {
+    let active = secs[0];
+    for (const x of secs) if (x.getBoundingClientRect().top <= LINE) active = x;
+    /* The last section can be too short to ever reach the line, so the foot of the
+       document claims it rather than leaving the previous one lit. */
+    if (innerHeight + scrollY >= document.body.scrollHeight - 4) active = secs[secs.length - 1];
+    if (active.id === current) return;
+    current = active.id;
+    for (const a of links) {
+      const on = a.getAttribute("href") === "#" + current;
+      if (on) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current");
+      /* Keep the active chip in view in the bar, which scrolls sideways. */
+      if (on && a.closest(".docbar") && bar.offsetParent)
+        a.scrollIntoView({block: "nearest", inline: "nearest"});
+    }
+  }
+  let ticking = false;
+  addEventListener("scroll", () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { ticking = false; spy(); });
+  }, {passive: true});
+  spy();
+}
+
 /* ------------------------------------------------------------------- the gaps */
 function drawGaps() {
   const host = document.getElementById("gaps");
@@ -583,6 +766,8 @@ document.getElementById("closersub").innerHTML =
 drawTax();
 drawVintage();
 drawRecipe();
+drawPay();
+drawAwards();
 drawRegistry();
 drawGaps();
 
@@ -617,4 +802,8 @@ await PV.methodology({
     means the two are equal. A <b>withheld cell</b> is a figure an agency suppressed
     because too few employers would be identifiable; it is unknown, never zero.`,
 });
+
+/* LAST, because PV.methodology() above is what appends the methodology section and
+   the nav is built by reading the sections that exist. */
+drawNav();
 })();

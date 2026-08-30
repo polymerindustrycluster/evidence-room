@@ -44,6 +44,19 @@ A deferred item is not done until its recipe passes this test.
 - Geography compressed into the classification section: county, metro and state are
   published separately and do not sum into one another.
 
+**Added after v1, in the order this file set (D1, then D3):**
+
+- **Recipe 2, the wage premium.** The same file and the same filters, one column across,
+  and the trap is not in the data: it is what your median is a median *of*. Three defensible
+  units sit in one table (51 published cells, 35 counted once per county, 33,528 jobs) and
+  they give different answers. The recipe names the cell that pulls them apart, which is the
+  same cell recipe 1 worked. Includes this site's own wrong sentence over a right number.
+- **Award identifiers, with the NSF case as the worked example.** The only section that
+  teaches a reader to check *us*. Seven EDA awards with their identifiers, which sum to the
+  published total so the addition is checkable too; the two endpoints that resolve an award
+  id without a key; obligation against estimated total against programme ceiling; and the
+  $160M-against-$14,999,983 error printed in full, including the factor.
+
 Generated from `_data/SOURCES.json` and `_data/catalog.json` by `_data/build/
 derive_sources.py`, both of which are already policed by `verify_consistency.py`. Nothing on
 the page is typed that could be derived, because everything typed on this site drifted
@@ -56,7 +69,12 @@ within a week.
 Each carries: what it is, why it is worth doing, the material that already exists, its
 acceptance criterion, and what could go wrong. Ordered by value per unit of work.
 
-### D1. Recipe 2 — the wage premium
+### D1. Recipe 2 — the wage premium — **SHIPPED**
+
+> Shipped 2026-08-30. Kept here with its spec intact, because the acceptance
+> criterion below is the thing that has to keep passing, not a task that is
+> now closed. Its numbers are derived in `derive_sources.py` from the pay
+> page's own file and pinned by four claims (`src-pay-*`).
 
 **What.** "Does this industry pay better than the rest of my regional economy?" QCEW again,
 but the measure is a ratio against a local denominator rather than a national share.
@@ -97,7 +115,11 @@ which basis their number is on.
 the size and about `JT00` meaning all jobs in all sectors, so nobody expects an industry cut
 that does not exist.
 
-### D3. Award identifiers, with the NSF case as the worked example
+### D3. Award identifiers, with the NSF case as the worked example — **SHIPPED**
+
+> Shipped 2026-08-30, with the error published as the ROADMAP recommended.
+> Pinned by three claims (`src-award-*`), one of which asserts the overstatement
+> factor is still computed from the two figures it sits between.
 
 **What.** How to verify a specific award rather than trusting a page: USAspending by award
 id, `api.nsf.gov/services/v1/awards.json` by keyword or id.
@@ -201,7 +223,9 @@ Vintage is already in v1; this collects all four in one place at the point of fr
 
 ## Sequencing
 
-D1 → D3 → D4 → D2 → D5 → D8 → D7 → D6.
+~~D1~~ → ~~D3~~ → **D4** → D2 → D5 → D8 → D7 → D6.
+
+**D1 and D3 shipped 2026-08-30.** D4 is next, and it is the one that unblocks D5.
 
 Rationale: D1 completes the pair of QCEW recipes a reader most wants, and shares v1's
 source, so it is cheap. D3 is self-contained, additive, and carries the strongest lesson.
@@ -306,8 +330,11 @@ consequence.
 - **Scope of audience.** Is this aimed at other Tech Hubs specifically, or at any regional
   economic development office? The former justifies more polymer-specific worked examples;
   the latter argues for keeping every recipe industry-neutral in its wording.
-- **Do we publish our own error in D3?** Recommended yes: the $160M-versus-$15M case is the
-  best teaching material on the page. It does mean printing a mistake this site made.
+- ~~**Do we publish our own error in D3?**~~ **Answered by shipping it, 2026-08-30.** The
+  $160M-against-$14,999,983 case is printed in full, with the factor, the date it stood
+  until, and the note that no gate caught it because no gate was comparing figures across
+  pages. Reversible: it is one step in one section, and `src-award-error` is the only claim
+  that would need removing. Worth a second look at MarCom sign-off rather than now.
 - **Does D6 belong here or on its own page?** It is the most distinctive thing we have built
   and the least related to public data.
 - **Maintenance owner.** The registry is generated and gated, so it will not rot silently,

@@ -835,7 +835,7 @@
    "wages"
   ],
   "n_build_scripts": 26,
-  "catalog_generated": "2026-08-30 08:43"
+  "catalog_generated": "2026-08-30 09:18"
  },
  "footprint": {
   "key": "pic12",
@@ -1576,6 +1576,117 @@
    "lift_pct": 21.0,
    "first_year": 2014,
    "last_year": 2023
+  }
+ },
+ "wage": {
+  "year": 2025,
+  "cover_naics": [
+   "325",
+   "326"
+  ],
+  "cover_outside_register": 15758,
+  "register_naics": [
+   "3252",
+   "3255",
+   "326"
+  ],
+  "register_jobs": 24030,
+  "n_published": 51,
+  "n_industries": 6,
+  "n_counties": 12,
+  "n_possible": 72,
+  "median_pairing": 1.2078,
+  "median_job": 1.2597,
+  "n_above_local": 40,
+  "n_below_us": 44,
+  "median_vs_us": 0.8813,
+  "cover_rows": 23,
+  "cover_jobs": 33528,
+  "cover_jobs_above": 29080,
+  "dedup_rows": 35,
+  "dedup_above": 27,
+  "drag": {
+   "county": "Summit",
+   "label": "Plastics & rubber products",
+   "ratio": 1.0135,
+   "emp": 3824
+  },
+  "measures": {
+   "vs_us": "county weekly wage \u00f7 the same industry nationally",
+   "vs_local_all": "county weekly wage \u00f7 that county's all-industry average \u2014 does the cluster pay above its own town"
+  },
+  "caution": "Average weekly wage moves with hours and with the mix of occupations, not only with pay rates."
+ },
+ "awards": {
+  "nsf": {
+   "id": "2532460",
+   "title": "NSF awards the CWRU-led NEO-SMART Engine",
+   "org": "NSF / CWRU / NEO-SMART",
+   "estimated_total": 14999983,
+   "obligated": 7499984,
+   "obligated_basis": "obligated FY2026",
+   "period_start": "2026-08-01",
+   "period_end": "2036-07-31",
+   "award_date": "2026-07-13",
+   "share_obligated": 0.5,
+   "note": "This is the award: a ten-year cooperative agreement, 1 August 2026 to 31 July 2036. NSF Engines Type 2 is publicly described with a much larger ten-year program ceiling contingent on renewals; no source here ties that ceiling to this award, so this page does not print it as this award\u2019s value. Reading the ceiling as the award is what put a figure ten times too large on this event until 29 August 2026.",
+   "source": "NSF award record 2532460, api.nsf.gov/services/v1/awards.json, retrieved 29 August 2026: NSF Engines Type 2 cooperative agreement to Case Western Reserve University, estimatedTotalAmt 14999983, fundsObligatedAmt 7499984 (FY2026), award date 07/13/2026, period 08/01/2026 to 07/31/2036. The estimated total matches the obligation the federal money page reports for this award from USAspending, to the dollar."
+  },
+  "error": {
+   "printed": 160000000,
+   "actual": 14999983,
+   "factor": 10.7,
+   "corrected_on": "2026-08-29"
+  },
+  "eda": {
+   "agency": "U.S. Economic Development Administration",
+   "name": "EDA Sustainable Polymers Tech Hub",
+   "total": 51001413,
+   "n": 7,
+   "leads": [
+    {
+     "name": "BioVerde",
+     "id": "ED25HDQ0G0038",
+     "amount": 11122386,
+     "funds": "Bio-based butadiene"
+    },
+    {
+     "name": "Flexsys",
+     "id": "ED25HDQ0G0013",
+     "amount": 10093286,
+     "funds": "Safer anti-degradant, a 6PPD alternative"
+    },
+    {
+     "name": "Goodyear",
+     "id": "ED25HDQ0G0036",
+     "amount": 9390634,
+     "funds": "Polymer composite, liquid phase mixing"
+    },
+    {
+     "name": "University of Akron",
+     "id": "ED24HDQ0G0452",
+     "amount": 7071802,
+     "funds": "Workforce (WISE)"
+    },
+    {
+     "name": "Huntsman",
+     "id": "ED25HDQ0G0009",
+     "amount": 5970805,
+     "funds": "Carbon black and nanotubes from methane"
+    },
+    {
+     "name": "Full Circle Technologies",
+     "id": "ED25HDQ0G0030",
+     "amount": 4702500,
+     "funds": "Recycling, end-of-life tires"
+    },
+    {
+     "name": "Greater Akron Chamber",
+     "id": "ED24HDQ0G0413",
+     "amount": 2650000,
+     "funds": "Innovation governance: a regional office of innovation for the Tech Hub"
+    }
+   ]
   }
  },
  "vintage": {

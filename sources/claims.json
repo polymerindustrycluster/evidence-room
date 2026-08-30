@@ -144,6 +144,62 @@
       "assert": "(lambda g: g['n'] == 12 and g['jobs'] == 31433 and g['page'] == 'laborshed' and g['close'])(one(g for g in D['gaps'] if g['id'] == 'county-names'))",
       "actual": "[g for g in D['gaps'] if g['id'] == 'county-names']",
       "falsified_if": "A crosswalk is added to the build, at which point the count should drop to zero and this gap should be deleted from the page rather than kept as a stale confession. It would also fail if the labour-shed data changed and the unnamed set moved, which is the point: a published gap that quietly stops matching its own page is worse than not publishing it."
+    },
+    {
+      "id": "src-pay-two-medians",
+      "text": "Recipe 2 prints both medians and their order: the middle of the 51 published cells pays 1.21x its county's average job, the middle of the 33,528 jobs pays 1.26x (the formula line, the units paragraph, and the closing paragraph of that recipe). The job figure is the HIGHER of the two, which is the reason the cell figure can stay the headline without flattering the finding.",
+      "source": "wages/data/wages.json latest_rows, re-derived by derive_sources.py",
+      "assert": "abs(D['wage']['median_pairing'] - 1.208) <= 0.007 and abs(D['wage']['median_job'] - 1.2597) <= 0.004 and D['wage']['median_job'] > D['wage']['median_pairing']",
+      "actual": "(D['wage']['median_pairing'], D['wage']['median_job'])",
+      "falsified_if": "Either median moves, or the job-weighted figure stops being the higher of the two. The ORDER is the load-bearing half: the recipe teaches that the easy statistic is the lower one, so a page publishing the harder one cannot be suspected of picking the flattering number. If that inverts, the paragraph is backwards and the build stops in derive_sources.py before it reaches here."
+    },
+    {
+      "id": "src-pay-denominators",
+      "text": "Recipe 2's second step prints both denominators against each other: 44 of the 51 published cells pay less than the same industry pays nationally, a middle cell of 0.88x, while 40 of the 51 pay more than the average job in their own county. Same cells, same year, opposite verdicts.",
+      "source": "wages/data/wages.json latest_rows",
+      "assert": "D['wage']['n_below_us'] == 44 and D['wage']['n_above_local'] == 40 and D['wage']['n_published'] == 51 and abs(D['wage']['median_vs_us'] - 0.881) <= 0.004",
+      "actual": "(D['wage']['n_below_us'], D['wage']['n_above_local'], D['wage']['median_vs_us'])",
+      "falsified_if": "Either count moves without the paragraph moving with it. The two counts are printed side by side precisely because they point opposite ways; if they ever stopped doing so the step would be teaching a choice that no longer has consequences."
+    },
+    {
+      "id": "src-pay-units",
+      "text": "Recipe 2 names all three units and counts each: 51 published cells out of 72 possible, six industry codes across twelve counties; 35 cells counted once per county at the finest detail published, of which 27 beat their county; and 33,528 jobs in the group cover, 29,080 of them in a group that out-pays its county.",
+      "source": "wages/data/wages.json latest_rows",
+      "assert": "(lambda W: W['n_published'] == 51 and W['n_possible'] == 72 and W['n_industries'] * W['n_counties'] == W['n_possible'] and W['dedup_rows'] == 35 and W['dedup_above'] == 27 and W['cover_rows'] == 23 and W['cover_jobs'] == 33528 and W['cover_jobs_above'] == 29080)(D['wage'])",
+      "actual": "(D['wage']['n_published'], D['wage']['dedup_rows'], D['wage']['cover_jobs'])",
+      "falsified_if": "Any of the three counts moves. They are printed together because the recipe's claim is that one table holds three defensible units, and a reader who cannot see all three will pick the first one and describe it as one of the others. The 72 is asserted as a product rather than a constant, so a footprint or code-set change fails here."
+    },
+    {
+      "id": "src-pay-drag",
+      "text": "Recipe 2 names the cell that pulls the two medians apart: the heaviest cell sitting below the cell median is Summit County plastics and rubber products at 1.01x on 3,824 jobs, which is one cell in 51 by the list count and 11 percent of the jobs by the other, and it is the same cell the first recipe worked.",
+      "source": "wages/data/wages.json latest_rows, heaviest row below the row median",
+      "assert": "(lambda g, W: g['ratio'] < W['median_pairing'] and g['emp'] == 3824 and g['county'] == 'Summit' and round(g['emp'] / W['cover_jobs'] * 100) == 11)(D['wage']['drag'], D['wage'])",
+      "actual": "D['wage']['drag']",
+      "falsified_if": "The heaviest below-median cell changes, which would make the named example wrong, or its share of the cover stops rounding to 11 percent. This claim is the evidence for the assertion beside it: 'the heavy cells sit low' is a statement about the distribution, and one named row with both its counts is what makes it checkable rather than plausible."
+    },
+    {
+      "id": "src-award-eda",
+      "text": "The award-lookup recipe prints all seven EDA implementation awards with their identifiers and amounts, and the seven amounts add to the published total of $51,001,413, so a reader can check the addition as well as the parts. Two of the seven carry ED24 rather than ED25 identifiers on the same designation, which the step warns about.",
+      "source": "federal-money/data/techhub.json leads",
+      "assert": "(lambda E: E['n'] == 7 and len(E['leads']) == 7 and sum(l['amount'] for l in E['leads']) == E['total'] == 51001413 and all(l['id'] for l in E['leads']) and len(set(l['id'] for l in E['leads'])) == 7 and len([l for l in E['leads'] if l['id'][:4] == 'ED24']) == 2)(D['awards']['eda'])",
+      "actual": "(D['awards']['eda']['n'], D['awards']['eda']['total'], [l['id'] for l in D['awards']['eda']['leads']])",
+      "falsified_if": "An award is added, removed or re-numbered, or the seven stop summing to the total. The sum is the point: the recipe asks a reader to add the parts and land on the published figure, and a page that asks that has to be sure it holds. The ED24 count is asserted because the step warns that filtering on the digits in an identifier splits a programme in half, and a warning with no live instance behind it is decoration."
+    },
+    {
+      "id": "src-award-nsf",
+      "text": "The worked award is NSF 2532460, made 13 July 2026, running 2026 to 2036, with an estimated total of $14,999,983 and $7,499,984 obligated for FY2026, which is 50 percent of it. The three quantities are printed separately because an announcement quotes whichever is largest.",
+      "source": "timeline/data/timeline.json, the event carrying awardId 2532460",
+      "assert": "(lambda A: A['id'] == '2532460' and A['estimated_total'] == 14999983 and A['obligated'] == 7499984 and abs(A['share_obligated'] - 0.5) < 0.001 and A['period_start'][:4] == '2026' and A['period_end'][:4] == '2036')(D['awards']['nsf'])",
+      "actual": "(D['awards']['nsf']['estimated_total'], D['awards']['nsf']['obligated'])",
+      "falsified_if": "The award record is restated, or the timeline event loses its identifier. Both figures come from the event the timeline publishes, so this claim also fails if the two pages stop agreeing, which is the failure that put the error below on this site in the first place."
+    },
+    {
+      "id": "src-award-error",
+      "text": "The award recipe publishes this site's own worst error rather than only its clean cases: we printed $160M for NSF award 2532460 against a record of $14,999,983, overstating a federal award by a factor of 10.7, and it stood until 29 August 2026.",
+      "source": "_data/FIGURES.json neosmart_headline; timeline README and event note",
+      "assert": "(lambda E: E['printed'] == 160000000 and E['actual'] == 14999983 and abs(E['factor'] - round(E['printed'] / E['actual'], 1)) < 0.05 and E['factor'] > 10)(D['awards']['error'])",
+      "actual": "D['awards']['error']",
+      "falsified_if": "The factor stops being computed from the two figures it sits between, or the corrected value moves without the multiple moving with it. This is the one claim on the page whose subject is the page's own publisher, and it is asserted like any other because an error printed as teaching material has to be as checkable as the findings around it."
     }
   ]
 }

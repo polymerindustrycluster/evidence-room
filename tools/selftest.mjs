@@ -64,6 +64,16 @@ const CASES = [
    defect: "an em-dash in published prose, which the house style law forbids",
    inject: s => s.replace("<body>", '<body><p>A banned em-dash \u2014 here.</p>')},
 
+  {gate: "style", page: "revisions", args: ["revisions"],
+   defect: "a straight quote in published prose, still caught after the rule was narrowed",
+   /* The quote rules were scoped to skip <pre>/.code on 2026-08-30, because a JSON
+      request body is only valid with straight double quotes and the page hands one to the
+      reader to paste. Narrowing a rule is exactly when it stops catching what it was
+      written for, so the prose half is pinned here. The verbatim half cannot be expressed
+      as an injection in this harness (it asserts injected=FAIL) and was checked by hand
+      both ways when the change was made. */
+   inject: s => s.replace("<body>", '<body><p>A reader said "this is prose" here.</p>')},
+
   {gate: "figures", page: "cluster-health", args: ["cluster-health"],
    defect: "a page stating an amount for a quantity the public record cannot show",
    /* Anchored on <body> rather than a page-specific class: the first draft keyed on

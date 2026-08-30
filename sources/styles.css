@@ -36,6 +36,24 @@
   color:#333B3E}
 .band .sub-h{margin:38px auto 0;max-width:var(--measure);font-size:20px;font-weight:900;
   letter-spacing:-.01em;color:var(--text);line-height:1.25}
+/* INSIDE A STEP, .body IS A STEP PARAGRAPH. The rule above centres at measure width in
+   the band's own wrap, which is right in the band and wrong inside a list item: the item
+   already carries 52px of padding for its numeral, so `margin:auto` centred the paragraph
+   in what was left and rendered it inset 88px and 175px narrower than every paragraph
+   around it. It shipped that way on the footprint paragraph in recipe 1, and no gate saw
+   it, because 451px is a legal width and the column audit checks the width a block lands
+   on rather than whether it lands on the same one as its own siblings. Found by looking
+   at it. */
+.steps > li > .body{margin-left:0;margin-right:0;max-width:none;font-size:16px;
+  line-height:1.6}
+
+/* The award reference table. Two columns so it fits a phone without scrolling, with the
+   identifier on its own line under the lead: it is a monospace string a reader retypes
+   into somebody else's search box, so it needs to be selectable and whole, not clipped. */
+.pv-table.awards table{min-width:0}
+.pv-table.awards th[scope=row]{line-height:1.35}
+.pv-table.awards th[scope=row] .code{display:block;width:fit-content;margin:4px 0 0;
+  font-size:13px;font-weight:700}
 
 /* THE PROCEDURE. A numbered list is the right element: the steps are ordered, a reader
    returns to step 4, and an <ol> is what a screen reader announces as one. The numerals
@@ -179,3 +197,61 @@
   .steps > li{padding-left:44px}
   .steps > li::before{width:30px;height:30px;font-size:14px}
 }
+
+/* ============================================================ SECTION NAVIGATION
+   THIS PAGE IS 27,000 PIXELS TALL. Ten sections, a register of fourteen sources, four
+   recipes' worth of procedure, and until now no way to see that structure or move
+   through it: a reader who wanted the suppression rates scrolled past three recipes to
+   find them, and a reader who did not already know they existed never found them at
+   all. Length is the cost of being a reference; illegible length is not.
+
+   TWO PRESENTATIONS, ONE LIST. The rail is the better one and it only fits where the
+   page's own column leaves room for it: .wrap is 1044px wide and centred, so a 160px
+   rail with a gap needs (100vw - 1044) / 2 >= 176, which is 1396px. Below that the same
+   items become a sticky bar. There is no width at which a reader gets neither.
+
+   BOTH SIT AFTER THE HERO, which is not an aesthetic choice: the cold-open gate measures
+   where this page's first chart lands, sources is on the fixed list at 900px, and a bar
+   in the flow above the hero would push that chart down and fail it. */
+
+.docnav{display:none}
+.docbar{display:none}
+
+/* --- the rail, where the page's own margin has room for it --- */
+@media (min-width:1400px){
+  .docnav{display:block;position:fixed;top:96px;width:160px;
+    left:max(16px, calc(50vw - 522px - 176px));z-index:5}
+  .docnav h2{font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--caption);font-weight:900;margin:0 0 10px}
+  .docnav ol{list-style:none;margin:0;padding:0;
+    border-left:2px solid var(--line)}
+  .docnav a{display:block;padding:6px 0 6px 12px;margin-left:-2px;
+    border-left:2px solid transparent;
+    font-size:13px;line-height:1.3;color:#5A6A6E;text-decoration:none;font-weight:700}
+  .docnav a:hover{color:var(--hover)}
+  .docnav a[aria-current]{color:var(--ink);border-left-color:var(--ink)}
+}
+
+/* --- the bar, everywhere else. Scrolls sideways rather than wrapping to three rows:
+       a nav that changes height as you scroll past it moves the text under it. --- */
+@media (max-width:1399px){
+  .docbar{display:block;position:sticky;top:0;z-index:6;
+    background:rgba(250,249,246,.97);border-bottom:1px solid var(--line);
+    backdrop-filter:blur(6px)}
+  .docbar ol{list-style:none;display:flex;gap:2px;margin:0 auto;padding:0 20px;
+    max-width:calc(var(--figure) + 64px);overflow-x:auto;scrollbar-width:none}
+  .docbar ol::-webkit-scrollbar{display:none}
+  .docbar li{flex:0 0 auto}
+  .docbar a{display:block;padding:11px 10px;font-size:12.5px;line-height:1.2;
+    white-space:nowrap;color:#5A6A6E;text-decoration:none;font-weight:700;
+    border-bottom:2px solid transparent}
+  .docbar a[aria-current]{color:var(--ink);border-bottom-color:var(--ink)}
+  .docbar{position:sticky}
+  .docbar::after{content:"";position:absolute;top:0;right:0;bottom:1px;width:34px;
+    pointer-events:none;
+    background:linear-gradient(to right, rgba(250,249,246,0), rgba(250,249,246,.98))}
+}
+
+/* A jumped-to heading must not land under the sticky bar. */
+section[id]{scroll-margin-top:56px}
+@media (min-width:1400px){section[id]{scroll-margin-top:20px}}
