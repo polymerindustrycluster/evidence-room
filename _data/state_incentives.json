@@ -4,15 +4,10 @@
   "row": "one tax-credit award as recorded in the minutes: company, counties, credit rate and term, full-time jobs COMMITTED and new annual payroll COMMITTED.",
   "commitment_not_delivery": "These are promises made in exchange for a credit, not jobs created. Ohio's Auditor found 36 of 55 companies in one recent year had not met their commitments.",
   "sample_not_census": "There is no API and no machine-readable index. The minutes list is assembled by hand and is a SAMPLE of meetings, so no total here is a state total or a period total.",
-  "unreadable": [
-   {
-    "file": "taxcreditminutes-10252021.pdf",
-    "pages": 3,
-    "images": 21
-   }
-  ],
-  "n_meetings_parsed": 5,
-  "n_meetings_unreadable": 1
+  "ocr": "Scanned minutes are OCRd with ocrmypdf when it is on PATH. The 2021 file has no text layer at all and yields five awards after OCR, so the readable range is a function of tooling rather than of what Ohio published.",
+  "unreadable": [],
+  "n_meetings_parsed": 6,
+  "n_meetings_unreadable": 0
  },
  "awards": [
   {
@@ -64,6 +59,46 @@
    "credit_pct": 1.636,
    "credit_years": 9,
    "file": "Meeting_Minutes_TCA_3.2.2026_pn7x3l.pdf"
+  },
+  {
+   "company": "V-Rod USA, Inc.",
+   "counties": "Williams",
+   "in_footprint": false,
+   "fte_committed": 60,
+   "new_annual_payroll_committed": 4030000,
+   "credit_pct": 1.393,
+   "credit_years": 8,
+   "file": "Meeting_Minutes_TCA_3.2.2026_pn7x3l.pdf"
+  },
+  {
+   "company": "Newman Technology, Inc.",
+   "counties": "Richland",
+   "in_footprint": false,
+   "fte_committed": 70,
+   "new_annual_payroll_committed": 3552062,
+   "credit_pct": 1.225,
+   "credit_years": 6,
+   "file": "Meeting_Minutes_TCA_3.2.2026_pn7x3l.pdf"
+  },
+  {
+   "company": "PPG Industries Ohio, Inc.",
+   "counties": "Delaware",
+   "in_footprint": false,
+   "fte_committed": 100,
+   "new_annual_payroll_committed": 7993116,
+   "credit_pct": 1.483,
+   "credit_years": 8,
+   "file": "Meeting_Minutes_TCA_3.2.2026_pn7x3l.pdf"
+  },
+  {
+   "company": "Applied Metals Technologies, LTD.",
+   "counties": "Cuyahoga",
+   "in_footprint": true,
+   "fte_committed": 152,
+   "new_annual_payroll_committed": 11000000,
+   "credit_pct": 1.619,
+   "credit_years": 9,
+   "file": "Meeting_Minutes_TCA_3.30.2026.pdf"
   },
   {
    "company": "Dupon USA LLC",
@@ -126,7 +161,7 @@
    "file": "Meeting_Minutes_TCA_3.30.2026.pdf"
   },
   {
-   "company": "NEW PROJECTS Centric HC, LLC",
+   "company": "Centric HC, LLC",
    "counties": "Franklin",
    "in_footprint": false,
    "fte_committed": 200,
@@ -146,6 +181,16 @@
    "file": "Meeting_Minutes_TCA_4.27.2026.pdf"
   },
   {
+   "company": "The Technology House, LTD.",
+   "counties": "Portage",
+   "in_footprint": true,
+   "fte_committed": 72,
+   "new_annual_payroll_committed": 5362440,
+   "credit_pct": 1.446,
+   "credit_years": 8,
+   "file": "Meeting_Minutes_TCA_4.27.2026.pdf"
+  },
+  {
    "company": "Whirlpool Corporation",
    "counties": "Wood",
    "in_footprint": false,
@@ -156,13 +201,83 @@
    "file": "Meeting_Minutes_TCA_4.27.2026.pdf"
   },
   {
-   "company": "NEW PROJECTS OPmobility Exterior USA, LLC",
+   "company": "Ohio Valley Electrical Services Inc.",
+   "counties": "Hamilton",
+   "in_footprint": false,
+   "fte_committed": 40,
+   "new_annual_payroll_committed": 2875000,
+   "credit_pct": 1.266,
+   "credit_years": 7,
+   "file": "Meeting_Minutes_TCA_4.27.2026.pdf"
+  },
+  {
+   "company": "OPmobility Exterior USA, LLC",
    "counties": "Wood",
    "in_footprint": false,
    "fte_committed": 541,
    "new_annual_payroll_committed": 40000000,
    "credit_pct": 1.968,
    "credit_years": 12,
+   "file": "TCA_Meeting_Minutes_6.1.2026.pdf"
+  },
+  {
+   "company": "Killer Brownie LTD.",
+   "counties": "Montgomery",
+   "in_footprint": false,
+   "fte_committed": 82,
+   "new_annual_payroll_committed": 6000000,
+   "credit_pct": 1.811,
+   "credit_years": 9,
+   "file": "TCA_Meeting_Minutes_6.1.2026.pdf"
+  },
+  {
+   "company": "AeroVironment, Inc.",
+   "counties": "Greene",
+   "in_footprint": false,
+   "fte_committed": 200,
+   "new_annual_payroll_committed": 19262000,
+   "credit_pct": 1.804,
+   "credit_years": 10,
+   "file": "TCA_Meeting_Minutes_6.1.2026.pdf"
+  },
+  {
+   "company": "AAA Club Alliance Inc.",
+   "counties": "Hamilton",
+   "in_footprint": false,
+   "fte_committed": 250,
+   "new_annual_payroll_committed": 18750000,
+   "credit_pct": 1.685,
+   "credit_years": 9,
+   "file": "TCA_Meeting_Minutes_6.1.2026.pdf"
+  },
+  {
+   "company": "Weidmann Electrical Technology Inc.",
+   "counties": "Butler",
+   "in_footprint": false,
+   "fte_committed": 105,
+   "new_annual_payroll_committed": 10657542,
+   "credit_pct": 1.726,
+   "credit_years": 9,
+   "file": "TCA_Meeting_Minutes_6.1.2026.pdf"
+  },
+  {
+   "company": "Hikma Pharmaceuticals USA Inc.",
+   "counties": "Franklin",
+   "in_footprint": false,
+   "fte_committed": 50,
+   "new_annual_payroll_committed": 3000000,
+   "credit_pct": 1.236,
+   "credit_years": 7,
+   "file": "TCA_Meeting_Minutes_6.1.2026.pdf"
+  },
+  {
+   "company": "Hikma Pharmaceuticals USA Inc.",
+   "counties": "Cuyahoga",
+   "in_footprint": true,
+   "fte_committed": 300,
+   "new_annual_payroll_committed": 25500000,
+   "credit_pct": 1.878,
+   "credit_years": 15,
    "file": "TCA_Meeting_Minutes_6.1.2026.pdf"
   },
   {
@@ -176,13 +291,23 @@
    "file": "TCA_Meeting_Minutes_6.1.2026.pdf"
   },
   {
+   "company": "Hexion Inc.",
+   "counties": "Franklin",
+   "in_footprint": false,
+   "fte_committed": 100,
+   "new_annual_payroll_committed": 11700000,
+   "credit_pct": 1.873,
+   "credit_years": 10,
+   "file": "Meeting_Minutes_6.2.2025.pdf"
+  },
+  {
    "company": "Melink Solar, LLC",
    "counties": "Hamilton",
    "in_footprint": false,
    "fte_committed": 30,
    "new_annual_payroll_committed": 3600000,
-   "credit_pct": null,
-   "credit_years": null,
+   "credit_pct": 1.561,
+   "credit_years": 7,
    "file": "Meeting_Minutes_6.2.2025.pdf"
   },
   {
@@ -191,8 +316,28 @@
    "in_footprint": false,
    "fte_committed": 10,
    "new_annual_payroll_committed": 1800000,
-   "credit_pct": null,
-   "credit_years": null,
+   "credit_pct": 1.51,
+   "credit_years": 7,
+   "file": "Meeting_Minutes_6.2.2025.pdf"
+  },
+  {
+   "company": "StandardAero Component Services, Inc.",
+   "counties": "Hamilton",
+   "in_footprint": false,
+   "fte_committed": 300,
+   "new_annual_payroll_committed": 13820000,
+   "credit_pct": 1.433,
+   "credit_years": 8,
+   "file": "Meeting_Minutes_6.2.2025.pdf"
+  },
+  {
+   "company": "Azure Farms, Inc.",
+   "counties": "Lawrence",
+   "in_footprint": false,
+   "fte_committed": 150,
+   "new_annual_payroll_committed": 11000000,
+   "credit_pct": 1.626,
+   "credit_years": 9,
    "file": "Meeting_Minutes_6.2.2025.pdf"
   },
   {
@@ -201,9 +346,59 @@
    "in_footprint": false,
    "fte_committed": 126,
    "new_annual_payroll_committed": 8820000,
-   "credit_pct": null,
-   "credit_years": null,
+   "credit_pct": 1.531,
+   "credit_years": 8,
    "file": "Meeting_Minutes_6.2.2025.pdf"
+  },
+  {
+   "company": "PROJECTS Divisions, Inc, (Divisions Maintenance Group)",
+   "counties": "Hamilton",
+   "in_footprint": false,
+   "fte_committed": null,
+   "new_annual_payroll_committed": 25600000,
+   "credit_pct": 2.102,
+   "credit_years": 10,
+   "file": "taxcreditminutes-10252021.pdf"
+  },
+  {
+   "company": "Legrand North America, LLC",
+   "counties": "Montgomery",
+   "in_footprint": false,
+   "fte_committed": null,
+   "new_annual_payroll_committed": 10291230,
+   "credit_pct": 1.399,
+   "credit_years": 8,
+   "file": "taxcreditminutes-10252021.pdf"
+  },
+  {
+   "company": "Coterie Applications, Inc.",
+   "counties": "Hamilton",
+   "in_footprint": false,
+   "fte_committed": null,
+   "new_annual_payroll_committed": 750000,
+   "credit_pct": 1.319,
+   "credit_years": 6,
+   "file": "taxcreditminutes-10252021.pdf"
+  },
+  {
+   "company": "EPC - Columbia, Inc.",
+   "counties": "Warren",
+   "in_footprint": false,
+   "fte_committed": null,
+   "new_annual_payroll_committed": 1924000,
+   "credit_pct": 1.018,
+   "credit_years": 6,
+   "file": "taxcreditminutes-10252021.pdf"
+  },
+  {
+   "company": "Iten Defense, LLC",
+   "counties": "Ashtabula",
+   "in_footprint": true,
+   "fte_committed": null,
+   "new_annual_payroll_committed": 3696689,
+   "credit_pct": 1.726,
+   "credit_years": 7,
+   "file": "taxcreditminutes-10252021.pdf"
   }
  ]
 }

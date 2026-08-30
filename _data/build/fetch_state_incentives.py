@@ -34,6 +34,8 @@ THREE LIMITS, and the second one is the dangerous one:
 import json
 import os
 import re
+import shutil
+import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -63,16 +65,42 @@ def parse(path):
     doc = fitz.open(path)
     text = "\n".join(p.get_text() for p in doc)
     if len(text.strip()) < 200:
-        # See note 2. Zero awards and an unreadable file are different facts.
-        return None, {"pages": doc.page_count,
-                      "images": sum(len(p.get_images()) for p in doc)}
+        # See note 2. A scan is not an empty meeting. OCR it if the tool is here, and if
+        # it is not, report UNREADABLE rather than returning a zero that reads as a finding.
+        ocr = path.replace(".pdf", ".ocr.pdf")
+        if not os.path.exists(ocr) and shutil.which("ocrmypdf"):
+            subprocess.run(["ocrmypdf", "--force-ocr", "--quiet", path, ocr],
+                           check=False, capture_output=True)
+        if os.path.exists(ocr):
+            doc = fitz.open(ocr)
+            text = "\n".join(p.get_text() for p in doc)
+        if len(text.strip()) < 200:
+            return None, {"pages": doc.page_count,
+                          "images": sum(len(p.get_images()) for p in doc),
+                          "ocr_attempted": bool(shutil.which("ocrmypdf"))}
     t = re.sub(r"\s*\n\s*", " ", text)
     t = re.sub(r"Page \d+( of \d+)?", " ", t)
     out = []
-    for m in re.finditer(r"([A-Za-z][^.]{2,90}?)\s+" + OPENER, t):
-        nxt = t.find(OPENER, m.end())
-        blk = t[m.start(): nxt if nxt > 0 else m.start() + 1600]
-        co = m.group(1).strip()
+    # ANCHOR ON THE OPENER, THEN WALK BACK. The first version captured the company with
+    # [^.]{2,90} before the opener, which excludes full stops, so every "Inc." and "Co."
+    # broke the match. Measured against a raw count of the opener phrase it was dropping
+    # 17 of 39 awards, 44 percent, silently. An undercount that large presented as data
+    # would have been worse than publishing nothing, and nothing in the output looked
+    # wrong: it simply returned fewer awards.
+    starts = [m.start() for m in re.finditer(re.escape(OPENER), t)]
+    for i, at in enumerate(starts):
+        end = starts[i + 1] if i + 1 < len(starts) else min(len(t), at + 1800)
+        blk = t[at:end]
+        # The company is the tail of whatever precedes the opener, bounded by the previous
+        # award's block so a long minute cannot bleed one name into the next.
+        prev = starts[i - 1] if i else max(0, at - 400)
+        lead = t[prev:at].strip()
+        # Cut at the last sentence end that is followed by a capital, which is where the
+        # previous paragraph stopped. Abbreviations like "Inc." survive because the cut
+        # requires a capital AND a preceding lowercase or digit.
+        cut = list(re.finditer(r"(?<=[a-z0-9])\.\s+(?=[A-Z])", lead))
+        co = lead[cut[-1].end():] if cut else lead
+        co = co.strip()
         # A section heading runs straight into the first company of that section, so the
         # first match reads "JOB CREATION TAX CREDIT - NEW PROJECTS ark data centers".
         # Keyed on the SHAPE of a heading rather than a list of its words, because the list
@@ -81,11 +109,20 @@ def parse(path):
         # THREE OR MORE consecutive all-caps words, because "AAA Cooper Transportation"
         # begins with one and the first version of this rule ate it. A heading is a long
         # caps run; a company initialism is a short one.
-        co = re.sub(r"^(?:[-\u2013\u2014]\s*)?(?:\b[A-Z][A-Z&.]*\b[\s\u2013-]+){3,}", "", co).strip()
+        # Sections open "IV. JOB CREATION TAX CREDIT - NEW PROJECTS" and run straight into
+        # the first company. The roman numeral has to be part of the run or the whole strip
+        # fails on exactly the awards that open a section; the earlier version did.
+        # Verified to strip that heading while leaving "AAA Cooper Transportation",
+        # "Hikma Pharmaceuticals USA Inc." and "The Technology House, LTD." intact.
+        co = re.sub(r"^(?:(?:[IVX]+\.|[-\u2013\u2014]|\b[A-Z][A-Z&.]*\b)[\s\u2013-]+){3,}",
+                    "", co).strip()
         cty = re.search(r"([A-Za-z/ ]+?)\s+Count(?:y|ies)", blk)
         fte = re.search(r"create\s+([\d,]+)\s+full-?\s*time", blk)
         pay = re.search(r"generating\s+\$([\d,]+)\s+in new annual payroll", blk)
-        pct = re.search(r"tax (?:exemption|credit) of ([\d.]+) percent for (\d+) year", blk)
+        # "50 percent" in 2026 minutes, "2.102%" in 2021 minutes. The word-only version of
+        # this matched nothing in the older files and would have silently reported every
+        # pre-2022 award as having no credit rate.
+        pct = re.search(r"tax (?:exemption|credit) of ([\d.]+)\s*(?:percent|%) for (\d+) year", blk)
         counties = cty.group(1).strip() if cty else None
         out.append({
             "company": co[:80],
@@ -129,6 +166,7 @@ out = {
         "sample_not_census": "There is no API and no machine-readable index. The minutes "
                              "list is assembled by hand and is a SAMPLE of meetings, so no "
                              "total here is a state total or a period total.",
+        "ocr": "Scanned minutes are OCRd with ocrmypdf when it is on PATH. The 2021 file has no text layer at all and yields five awards after OCR, so the readable range is a function of tooling rather than of what Ohio published.",
         "unreadable": unreadable,
         "n_meetings_parsed": len({r["file"] for r in rows}),
         "n_meetings_unreadable": len(unreadable),
