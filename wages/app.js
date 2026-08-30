@@ -75,6 +75,72 @@ const pctHead = Math.round(above / rows.length * 100);
    totals themselves now travel with it in the methodology, where its definition lives. */
 const empAbove = dedup.filter(r => r.vs_local_all > 1).reduce((s, r) => s + r.emp, 0);
 const empTot = dedup.reduce((s, r) => s + r.emp, 0);
+
+/* ------------------------------------------------ the Jobs column, counted once
+   A naive reader summed the Jobs column to size the cluster and found the arithmetic
+   himself: Summit plastics 2,486 + rubber 1,338 = plastics & rubber 3,824, exactly. He
+   was right. 326 IS 3261 + 3262 to the rounding, and 325 holds 3252 and 3255 plus the
+   chemistry the disclosure threshold never splits out, so 20,844 jobs appear in the
+   column twice and the column sums to 1.6 times the real figure. He learned that 400
+   lines later, in the methodology. It is now stated at the column head, in the caption,
+   and on every row's own industry label.
+
+   THE COMPLETE COVER IS THE GROUP LEVEL, not the finest one. dedup above keeps the
+   finest disclosed row per county, which is right for counting PAIRINGS and wrong for
+   counting JOBS: where a county publishes only some of a group's parts, the rest of the
+   group falls out of that set, and 7,126 chemical jobs (Cuyahoga's 2,104, Summit's
+   1,788, Lake's 1,428 and more) disappear from its 26,402. 325 and 326 taken once per
+   county are disjoint and exhaustive over everything published here, so that is the set
+   the job totals use. */
+const GROUPS = ["325", "326"];
+const famRows = [];
+for (const c in byC) for (const g of GROUPS) if (byC[c][g]) famRows.push(byC[c][g]);
+const jobsOnce = famRows.reduce((s, r) => s + r.emp, 0);
+const jobsCol = rows.reduce((s, r) => s + r.emp, 0);
+const jobsTwice = jobsCol - jobsOnce;
+const groupRows = rows.filter(r => GROUPS.includes(r.naics)).length;
+const isGroup = r => GROUPS.includes(r.naics);
+/* The nesting, written on the row rather than left to a code a reader has to look up.
+   The chart's row labels already said "(group)" through SHORT; the tables did not, and
+   the tables are where the Jobs column is. */
+const tlab = r => r.label + (isGroup(r) ? " (group)"
+  : CHEM.has(r.naics) ? " (in the chemical group)"
+                      : " (in the plastics & rubber group)");
+/* Tooltips carry it too, because a hover is a point of contact like any other. A part
+   row says so only where its group is actually published in that county; every one of
+   them is today, and the page must not assert it where it is not. */
+const jobsTip = r => {
+  const n = `<span class="v">${N(r.emp)}</span> jobs`;
+  if (isGroup(r)) return n + ", the whole group";
+  const p = CHEM.has(r.naics) ? "325" : "326";
+  return byC[r.name][p] ? n + ", counted again in this county’s group row" : n;
+};
+/* THE HEADLINE STATES A MEDIAN OVER PAIRINGS, AND NOW SAYS SO. The same overlap makes
+   the second half of the reader's finding: 1.21x is the middle of 51 ROWS, and the
+   heaviest rows sit below it (Cuyahoga plastics & rubber, 0.87x on 2,037 jobs), so
+   "the typical polymer job pays 1.2 times" asserted something the median never
+   measured. The job-weighted version IS computable from the shipped file, because the
+   group-level cover carries employment on every row: sort those rows by premium and
+   walk the jobs to the half-way mark. It lands ABOVE the pairing median, so the
+   headline understates rather than overstates, which is the only reason the pairing
+   figure can stay the headline honestly. Both are printed on the median card. */
+const wmed = pairs => {
+  const s = [...pairs].sort((a, b) => a[0] - b[0]);
+  const T = s.reduce((t, p) => t + p[1], 0);
+  let c = 0;
+  for (const [v, w] of s) { c += w; if (c >= T / 2) return v; }
+  return s[s.length - 1][0];
+};
+const jobMed = wmed(famRows.map(r => [r.vs_local_all, r.emp]));
+const jobsAbove = famRows.filter(r => r.vs_local_all > 1).reduce((s, r) => s + r.emp, 0);
+/* A SECOND NON-OVERLAPPING COVER, PRINTED SO THE FIRST ONE CANNOT BE MISTAKEN FOR THE
+   ONLY ONE. Take the two disclosed chemistry parts plus the whole plastics-and-rubber
+   group and the counties come to a different, also-correct total, because that list
+   leaves out everything in 325 the threshold never splits out. Naming it is what stops
+   a reader meeting two job counts for "the polymer cluster" and assuming one is wrong. */
+const jobsNarrow = rows.filter(r => ["3252", "3255", "326"].includes(r.naics))
+  .reduce((s, r) => s + r.emp, 0);
+
 const counties = Object.keys(byC).sort();
 const top = rows[0], bot = rows.at(-1);
 
@@ -101,8 +167,10 @@ PV.figures([
   ["", `${above} of ${rows.length}`, "published pairings out-pay their county",
    `one polymer industry in one county, ${D.meta.latest}. Counting each county once
     instead: ${dAbove} of ${dedup.length}.`],
-  ["key", medPrem.toFixed(2) + "×", "median premium",
-   "the middle pairing pays a fifth more than its county’s average job"],
+  ["key", medPrem.toFixed(2) + "×", "median premium, over pairings",
+   `the middle of the ${rows.length} pairings pays a fifth more than its county’s average
+    job. Weight by jobs instead of by rows and the middle of ${N(jobsOnce)} jobs sits at
+    ${jobMed.toFixed(2)}×.`],
   ["", `${usBelow} of ${rows.length}`, "pay under their own industry nationally",
    `the typical one about 12 percent less (${usMed.toFixed(2)}×). ${qBeatTrail} pairings
     are in both counts, which is how ${above} and ${usBelow} fit inside ${rows.length}.`],
@@ -249,7 +317,7 @@ function drawPremiumDesktop() {
       `<b>${r.name} County · ${r.label}</b><br><span class="v">${money(r.weekly_wage)}</span>
        a week<br><span class="v">${r.vs_local_all.toFixed(2)}×</span> the county average
        ${r.vs_us ? `<br><span class="v">${r.vs_us.toFixed(2)}×</span> the same industry nationally` : ""}
-       <br><span class="v">${N(r.emp)}</span> jobs in the pairing`,
+       <br>${jobsTip(r)}`,
       `${r.name}, ${r.label}: ${r.vs_local_all.toFixed(2)} times the county average`);
   });
   /* Boundary between the 40th and 41st row — the above/below line, named. */
@@ -318,8 +386,7 @@ function drawPremiumMobile() {
       stroke: "var(--paper)", "stroke-width": 1}, g);
     hoverable(el("rect", {x: 0, y: y, width: W, height: rowH, fill: "transparent"}, g),
       `<b>${r.name} · ${r.label}</b><br><span class="v">${money(r.weekly_wage)}</span> a week
-       · <span class="v">${r.vs_local_all.toFixed(2)}×</span> local<br>
-       <span class="v">${N(r.emp)}</span> jobs`,
+       · <span class="v">${r.vs_local_all.toFixed(2)}×</span> local<br>${jobsTip(r)}`,
       `${r.name}, ${r.label}: ${r.vs_local_all.toFixed(2)} times the county average`);
   });
   const yB = m.t + headH + above * rowH + bndH / 2;
@@ -401,7 +468,7 @@ function drawScatterDesktop() {
       `<b>${r.name} County · ${r.label}</b><br><span class="v">${r.vs_local_all.toFixed(2)}×</span>
        the county average · <span class="v">${r.vs_us.toFixed(2)}×</span> the industry
        nationally<br><span class="v">${money(r.weekly_wage)}</span> a week ·
-       <span class="v">${N(r.emp)}</span> jobs`,
+       ${jobsTip(r)}`,
       `${r.name}, ${r.label}: ${r.vs_local_all.toFixed(2)} local, ${r.vs_us.toFixed(2)} national`);
   });
   /* Quadrant verdicts, written where the dots are (plated where dots crowd). */
@@ -545,30 +612,54 @@ function drawTrendVariant(W, H, mobile) {
 }
 
 /* -------------------------------------------------------- tables + source lines */
+/* THE WARNING SITS AT THE COLUMN, NOT 400 LINES BELOW IT. The caption is what a reader
+   meets first (it is the <summary> when the table is shut and the <caption> when it is
+   open), the header cell says it again where the eye lands to start adding, and each
+   row's industry cell says whether it is a group or a part of one. The de-duplicated
+   total is printed beside the column's own sum so a reader can see the size of the
+   error rather than take it on trust. */
 document.getElementById("premtable").innerHTML = tableView("p",
   `Wage premium by county and industry, ${D.meta.latest}. Above 1.00 means the work ` +
-  `out-pays the comparison; below 1.00 means it pays less.`,
-  ["County", "Industry", "Weekly wage", "× its county", "× its industry US", "Jobs"],
-  rows.map(r => [r.name, r.label, money(r.weekly_wage), r.vs_local_all.toFixed(2),
+  `out-pays the comparison; below 1.00 means it pays less. Do not add the Jobs column: ` +
+  `${groupRows} of these ${rows.length} rows are the two industry GROUPS, 325 chemical ` +
+  `manufacturing and 326 plastics and rubber products, which already hold other rows ` +
+  `here, so the column sums to ${N(jobsCol)} where these six industries hold ` +
+  `${N(jobsOnce)} jobs, each counted once.`,
+  ["County", "Industry", "Weekly wage", "× its county", "× its industry US",
+   "Jobs (groups overlap, do not add)"],
+  rows.map(r => [r.name, tlab(r), money(r.weekly_wage), r.vs_local_all.toFixed(2),
     r.vs_us ? r.vs_us.toFixed(2) : "—", N(r.emp)]));
 /* CAVEAT INK. This line ran ~50 words and did methodology work in a caption: the
    parent/child overlap reconciliation now sits in the methods box, where a reader who wants
    it will look, and the figure keeps the one limitation that changes how the chart is read.
    The possible-pairings denominator is COMPUTED from the disclosed industries and counties,
    never typed. */
+/* THE NESTING IS NAMED BEFORE THE PAIRING ARITHMETIC, not after it. A reader met
+   "6 industries across 12 counties make 72 possible pairings" and had to re-read to
+   work out that two of the six contain the other four. It is stated first now, so the
+   72 arrives already explained. */
 document.getElementById("premsrc").innerHTML =
   `${D.meta.source}, ${D.meta.latest}; ${FP.words} Northeast Ohio counties. Ratio =
-   average weekly wage &divide; the county&rsquo;s all-industry average. Pairings too
-   small to publish are absent, not zero: the
+   average weekly wage &divide; the county&rsquo;s all-industry average. Two of the six
+   industries, 325 chemical manufacturing and 326 plastics and rubber products, are
+   groups holding the other four, so a county can appear twice: once for a group and
+   once for a part of it. Counting each county once at group level, these
+   ${rows.length} rows cover ${N(jobsOnce)} jobs; the Jobs column itself sums to
+   ${N(jobsCol)}, because ${N(jobsTwice)} jobs sit in both a group row and a part row.
+   Pairings too small to publish are absent, not zero: the
    ${[...new Set(D.latest_rows.map(r => r.naics))].length} tracked industries across
    ${counties.length} counties make
    ${[...new Set(D.latest_rows.map(r => r.naics))].length * counties.length} possible
    pairings, and ${rows.length} of them are published.`;
 document.getElementById("scattable").innerHTML = tableView("s",
   `Pay against the county and against the same industry nationally, ${D.meta.latest}. ` +
-  `Above 1.00 means the work out-pays that comparison.`,
-  ["County", "Industry", "× its county", "× its industry US", "Jobs"],
-  [...rows].sort((a, b) => a.vs_us - b.vs_us).map(r => [r.name, r.label,
+  `Above 1.00 means the work out-pays that comparison. Same ${rows.length} rows as the ` +
+  `table above, so the same warning holds: ${groupRows} of them are the groups 325 and ` +
+  `326 holding other rows, and the Jobs column sums to ${N(jobsCol)} against ` +
+  `${N(jobsOnce)} jobs counted once.`,
+  ["County", "Industry", "× its county", "× its industry US",
+   "Jobs (groups overlap, do not add)"],
+  [...rows].sort((a, b) => a.vs_us - b.vs_us).map(r => [r.name, tlab(r),
     r.vs_local_all.toFixed(2), r.vs_us.toFixed(2), N(r.emp)]));
 document.getElementById("scatsrc").innerHTML =
   `${D.meta.source}, ${D.meta.latest}; ${FP.words} Northeast Ohio counties. National
@@ -584,10 +675,11 @@ document.getElementById("trendsrc").innerHTML =
 
 document.getElementById("closersub").innerHTML =
   `${above} of ${rows.length} pairings beat their county&rsquo;s average job, a
-   <b>${medPrem.toFixed(2)}×</b> median premium that has held for a decade, and
-   <b>${usBelow} of ${rows.length}</b> still pay under their own industry&rsquo;s national
-   average. Both halves are checkable from the same public file, and the honest
-   recruiting pitch carries both.`;
+   <b>${medPrem.toFixed(2)}×</b> median across pairings that has held for a decade
+   (<b>${jobMed.toFixed(2)}×</b> if you weight the ${N(jobsOnce)} jobs instead of the
+   rows), and <b>${usBelow} of ${rows.length}</b> still pay under their own
+   industry&rsquo;s national average. Both halves are checkable from the same public
+   file, and the honest recruiting pitch carries both.`;
 
 /* --------------------------------------------------------------------- assemble */
 /* ------------------------------------------------------- the cold open, in the hero
@@ -672,12 +764,17 @@ function drawOpen() {
       "font-size": 15, "font-weight": 700, fill: "rgba(255,255,255,.8)"});
     /* Legend clears the parity rule rather than starting at the left margin; on the phone
        it takes its own two rows, because one row of both keys does not fit 358 units. */
-    const lx = M ? m.l : X(1) + 26, ly = M ? 62 : 34;
+    /* THE KEY NAMES THE INDUSTRIES, IT DOES NOT NAME A SIDE. This chip read "chemistry
+       side" and the one on the scatter read "products side", and both appeared as chart
+       keys roughly 1,300px above the sentence that defines either. The second chip was
+       always self-explaining ("plastics and rubber"); the first now is too, and the
+       gap to it widens from 128 to 200 units to hold the longer word. */
+    const lx = M ? m.l : X(1) + 26, ly = M ? 62 : 34, gap = 200;
     mk("circle", {cx: lx, cy: ly, r: 5, fill: CHEM});
-    tx("chemistry side", {x: lx + 11, y: ly + 5, "font-size": 15, "font-weight": 700,
-      fill: CHEM});
-    mk("circle", {cx: M ? lx : lx + 128, cy: M ? ly + 22 : ly, r: 5, fill: PROD});
-    tx("plastics and rubber", {x: (M ? lx : lx + 128) + 11, y: (M ? ly + 22 : ly) + 5,
+    tx("chemicals, resin, paint", {x: lx + 11, y: ly + 5, "font-size": 15,
+      "font-weight": 700, fill: CHEM});
+    mk("circle", {cx: M ? lx : lx + gap, cy: M ? ly + 22 : ly, r: 5, fill: PROD});
+    tx("plastics and rubber", {x: (M ? lx : lx + gap) + 11, y: (M ? ly + 22 : ly) + 5,
       "font-size": 15, "font-weight": 700, fill: PROD});
   }
 
@@ -718,7 +815,25 @@ const meth = await PV.methodology({page: "wages", meta: D.meta,
     industry detail published for it, ${dAbove} of ${dedup.length} pairings pay above their
     county average: ${pctDedup}%, against ${pctHead}% for the headline ${above} of
     ${rows.length}. Those ${dAbove} cover ${N(empAbove)} of the ${N(empTot)} jobs in that
-    de-duplicated set.`});
+    de-duplicated set. That ${N(empTot)} is not this cluster&rsquo;s headcount and is not
+    used as one: keeping the finest row per county drops whatever a group holds beyond
+    its published parts, which is ${N(jobsOnce - empTot)} chemical-manufacturing jobs in
+    the counties that publish only some of 325. For counting JOBS the complete
+    non-overlapping cover is the group level, 325 and 326 once per county, which is
+    ${N(jobsOnce)} jobs; the Jobs column in the tables sums to ${N(jobsCol)} because
+    ${N(jobsTwice)} of them appear in a group row and a part row both. A job total is
+    only as clear as the industry list under it: narrow the list to the two published
+    chemistry parts plus plastics-and-rubber, dropping the rest of chemical
+    manufacturing, and the same ${FP.words} counties give ${N(jobsNarrow)} instead.
+    This page keeps all of 325, which is where its highest-paying rows are.
+    Which median the headline states: ${medPrem.toFixed(2)}&times; is the middle of the
+    ${rows.length} published PAIRINGS, and it is the figure the headline, the cards and
+    the over-time chart all state. Weighting the group-level cover by employment instead
+    puts the middle JOB at ${jobMed.toFixed(2)}&times;, and ${N(jobsAbove)} of the
+    ${N(jobsOnce)} jobs sit in a group paying above its county average. The job-weighted
+    figure is the higher of the two, so the headline understates rather than overstates;
+    it is also the coarser one, since the only complete cover the data publish is whole
+    groups, and it is not the number the page headlines.`});
 
 /* Which counties, in reader words, filed under the sources it qualifies. */
 {

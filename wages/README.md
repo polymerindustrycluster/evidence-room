@@ -81,6 +81,36 @@ the reporting requirement is the aspiration, not the gate.
 
 ## Revision log
 
+- **2026-08-29 (the hierarchy, published as a hierarchy)** — a naive reader found the same
+  defect wearing two faces, and was right both times. (1) The Jobs column silently
+  double-counted: he checked Summit plastics 2,486 + rubber 1,338 against plastics & rubber
+  3,824 and got it exactly, then learned 400 lines later, in the methodology, that "one
+  county can be counted twice". 326 IS 3261 + 3262 to the rounding; 325 holds 3252 and 3255
+  plus chemistry the disclosure threshold never splits out, so the column sums to 54,372
+  where the six industries hold **33,528** jobs counted once, an overstatement of 1.62 (he
+  guessed "roughly double", which is right for the products side and too high overall). The
+  disclosure moved to the point of contact: the table caption, which is also the collapsed
+  summary; the column header, which now reads "Jobs (groups overlap, do not add)"; every
+  row's industry cell, which says "(group)" or "(in the chemical group)"; the chart
+  tooltips; and the source line under the chart. Guarded by `jobs-counted-once`, which also
+  asserts that no part row is published in a county whose group is withheld, because the
+  tooltip and the group-level cover both depend on that. (2) The H1 read "The typical
+  polymer job pays 1.2 times", and 1.21× is a median over PAIRINGS whose heaviest members
+  sit below it (Cuyahoga plastics & rubber, 0.87× on 2,037 jobs). The unit is now in the
+  headline ("The middle polymer pairing..."), defined in the standfirst's first clause, and
+  named on the card ("median premium, over pairings"). The job-weighted version IS
+  computable, because the group-level cover carries employment on every row: it is
+  **1.26×**, ABOVE the pairing median, so the headline understates rather than overstates,
+  which is the only reason the pairing figure can stay the headline honestly. It is printed
+  on the same card, in the closer and in the methodology, guarded by `job-weighted-median`.
+  Two job totals now appear on the page and both are labelled: the finest-level set's
+  26,402 is explicitly not the headcount (it drops the 7,126 chemical jobs 325 holds beyond
+  its published parts), and the narrower 3252 + 3255 + 326 list gives 24,030 for the same
+  counties, printed so that two correct totals cannot read as one wrong one. Also: the cold
+  open's key said "chemistry side" roughly 1,300px above the sentence defining it, and now
+  names the industries ("chemicals, resin, paint"); and the chart-1 source line states the
+  nesting BEFORE the 72-possible-pairings arithmetic instead of after it.
+
 - **2026-08-28 (naive-reader pass)** — a reader who saw only the rendered page could not
   make three things close, so those went first. (1) The methodology called 27/35 and 40/51
   "the same roughly three-in-four share" while a hero card rounded the same idea to 78%:

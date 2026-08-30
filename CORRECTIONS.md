@@ -13,6 +13,56 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-08-29 — a hierarchy published as a flat list, *wages*
+
+### "The typical polymer job pays 1.2 times" — *wages*, published
+
+**Was:** the H1 read *The typical polymer job pays **1.2 times** what the average job in its
+county pays*, and the hero card beside it read `1.21× / MEDIAN PREMIUM`.
+
+**Is:** the H1 reads *The middle polymer pairing pays **1.2 times** what the average job in
+its county pays*; the standfirst's first clause defines a pairing as one polymer industry in
+one county; the card reads `1.21× / MEDIAN PREMIUM, OVER PAIRINGS`; and the card's detail
+line carries the job-weighted figure, **1.26×**, computed from the same shipped file.
+
+**Cause:** 1.21× is the median of 51 rows, and the heaviest rows sit below it — Cuyahoga
+plastics and rubber is 0.87× on 2,037 jobs. A reader who took "job" literally believed a
+claim the page never measured. The job-weighted median is computable: NAICS 325 and 326
+taken once per county are disjoint and exhaustive over everything published here, and every
+row carries employment, so the middle of 33,528 jobs can be walked out directly. It lands
+**above** the pairing median, which is the only reason the pairing figure could stay in the
+headline: the published number understates rather than flatters. Claim
+`job-weighted-median` guards both the figure and the direction of the gap, and fails if the
+job-weighted median ever drops to or below the pairing median.
+
+### The Jobs column double-counted, and said so 400 lines later — *wages*, published
+
+**Was:** the two table twins carried a plain `Jobs` column and no warning at the column. The
+only statement of the overlap was in the methodology box, roughly 400 lines below the table:
+*"one county can be counted twice."*
+
+**Is:** the warning sits where the adding happens. The table caption — which is also the
+`<summary>` a reader sees before opening the table — states that 23 of the 51 rows are the
+groups 325 and 326, that the column sums to **54,372**, and that the six industries hold
+**33,528** jobs counted once. The column header reads `Jobs (groups overlap, do not add)`.
+Every row's industry cell says whether it is a group or a part of one. The chart tooltips
+say "the whole group" or "counted again in this county's group row". The source line under
+the chart states the nesting before the possible-pairings arithmetic rather than after it.
+
+**Cause:** a reader summed the column to size the cluster and found the arithmetic himself:
+Summit plastics 2,486 + rubber 1,338 = plastics and rubber 3,824, exactly. He was right on
+the mechanism and wrong on the size — he guessed "roughly double", and the true factor is
+**1.62**, because 326 is exactly 3261 + 3262 while 325 also holds chemistry the disclosure
+threshold never splits out. Two related things were corrected with it: the page's existing
+de-duplicated employment total, 26,402, is the finest-level SET's employment and is now
+labelled as not the cluster's headcount, since keeping the finest row per county drops the
+7,126 chemical-manufacturing jobs 325 holds beyond its published parts; and the methodology
+now prints **24,030**, the total on the narrower 3252 + 3255 + 326 list, so that a reader
+meeting two correct job totals for these twelve counties does not conclude one is wrong.
+Claim `jobs-counted-once` guards every printed total, the group/part mix, the 326 = 3261 +
+3262 identity the reader checked, and the condition the tooltip depends on: that no part row
+is published in a county whose group is withheld.
+
 ## 2026-08-29 — the disbursement claim and a subtraction, *cluster-health*
 
 ### "Signed, none of it spent" — *cluster-health*, published
