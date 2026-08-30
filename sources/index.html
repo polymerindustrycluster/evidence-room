@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>How To Rebuild This</title>
+<meta name="description" content="The public replication guide for the PIC Evidence Room: fourteen public datasets, the exact codes and filters, one worked question carried from endpoint to reading, and the traps that produce a confidently wrong answer.">
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <strong>Polymer Industry Cluster</strong>
+    <span>Method &middot; sources, codes and the traps</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">A replication guide for other regions</p>
+    <h1>You can rebuild this for your own region. <em>The codes are the hard part</em>,
+      and they are all on this page.</h1>
+    <p class="stand">Fourteen public datasets build every page on this site. Here are the
+      endpoints, the exact filters, what each source cannot tell you, and the traps that
+      produce a confidently wrong answer rather than an obviously wrong one. It opens on
+      one question carried the whole way, from the endpoint to the reading, because a
+      worked question teaches what a table of links cannot.</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Sources register compiled from the
+      fetch scripts, August&nbsp;2026</p>
+    <!-- THE COLD OPEN. The page leads on the concentration recipe, so the first mark a
+         reader meets is that recipe's own output: every concentration reading this site
+         publishes, on one scale, against the 1.0 line that is the whole point of the
+         measure. It carries its own reading and its own scale note in its labels because
+         a reader meets it before the standfirst has explained anything. The recipe that
+         produces it is the band directly below. Guarded by tools/coldopen.mjs. -->
+    <div class="hero-viz"><svg id="lqstrip" role="img" aria-labelledby="lqstrip-t"><title
+      id="lqstrip-t">Every concentration reading this site publishes for 2025, drawn on a
+      logarithmic scale against 1.0, the point at which an industry fills the same share of
+      local jobs as it does of the country&rsquo;s. Forty-five of the fifty-one published
+      readings sit above it. The largest, Geauga County resin at 22.7 times, rests on
+      fewer than five hundred jobs.</title></svg></div>
+    <div class="hero-row" id="figs"></div>
+  </div>
+</section>
+
+<!-- ACT 1: ONE QUESTION, CARRIED ALL THE WAY. This is the page. The register below is
+     reference; this is the thing another region can actually copy on a Tuesday. -->
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The worked question</p>
+    <h2>Is your region unusually concentrated in an industry?</h2>
+    <p class="lede">This is the measure most regional strategies open with, it runs on the
+      most accessible of the fourteen sources, and it exercises every trap worth learning
+      at once: which codes count as your industry, what happens when you add a code family
+      to its own parts, what a blank cell means, and what the answer does not tell you.
+      Six steps. Nothing below needs anything from this repository.</p>
+
+    <ol class="steps">
+      <li>
+        <h3>Choose your codes, and know that you are choosing</h3>
+        <p>There is no polymer line in federal industry statistics, and there is very
+          likely no line for your industry either. Somebody picks a set of North American
+          Industry Classification System codes and that set decides every number that
+          follows. This site counts three: <b class="code">3252</b> resins, synthetic
+          rubber and fibres, <b class="code">3255</b> paints, coatings and adhesives, and
+          <b class="code">326</b> plastics and rubber products. The concentration page
+          reads six, adding the wider chemical family <b class="code">325</b> and the two
+          halves of 326, <b class="code">3261</b> plastics products and
+          <b class="code">3262</b> rubber products.</p>
+        <p class="warn"><b>Never add a family to its own parts.</b> 326 contains 3261 and
+          3262; 325 contains 3252 and 3255. Summing a column that holds both is the first
+          mistake, it is invisible in the output, and the next section draws exactly what
+          it costs here.</p>
+      </li>
+      <li>
+        <h3>Pull the data</h3>
+        <p>The Quarterly Census of Employment and Wages publishes open comma-separated
+          slices, one file per area per period, with no key and no registration.</p>
+        <pre class="endpoint">https://data.bls.gov/cew/data/api/{year}/a/area/{fips}.csv</pre>
+        <p>The <b class="code">{fips}</b> is the five-digit county code, and the
+          <b class="code">a</b> is the annual average.
+          Take annual averages rather than a quarter, because these series are not
+          seasonally adjusted and adjacent quarters are not comparable. Inside the file,
+          filter to the aggregation levels that carry industry detail for your geography
+          (<b class="code">agglvl_code</b> 55, 57 and 58 for county by industry) and to
+          <b class="code">own_code</b> 5 for private ownership, or 0 for all ownerships.
+          This site&rsquo;s register records both in use. Whichever you pick, use the same
+          one for all four numbers in the next step: a ratio whose numerator counts private
+          employment and whose denominator counts every ownership is not a location
+          quotient, it is two different measures divided. One area file already holds every
+          industry level for that area, so
+          your all-industry denominator is the row carrying industry code
+          <b class="code">10</b> in the file you just downloaded. Download one more file,
+          for area <b class="code">US000</b>, and it holds the national pair.</p>
+      </li>
+      <li>
+        <h3>Do the arithmetic</h3>
+        <p>A location quotient is a ratio of two shares. It asks whether your industry
+          fills more of your local job market than it fills of the country&rsquo;s.</p>
+        <p class="formula">LQ&nbsp;=&nbsp;(local industry jobs &divide; local jobs, all
+          industries)&nbsp;&divide;&nbsp;(national industry jobs &divide; national jobs,
+          all industries)</p>
+        <p>Four numbers, all four in the two files you just pulled. Nothing is modelled,
+          nothing is estimated, and there is no confidence interval, because the source is
+          a census of insured employment rather than a survey.</p>
+        <p><b>Check yourself against the file.</b> Those area files also carry a
+          location-quotient column of their own,
+          <b class="code">lq_annual_avg_emplvl</b>, computed the same way against the
+          national total, on the same ownership as the row it sits in. Do the division by
+          hand first, then compare. Agreement means your four numbers came from one basis;
+          a disagreement is nearly always that they did not, and it is the quietest way to
+          get a plausible wrong answer. That column is also how to tell which basis a
+          published figure, including the one below, is on.</p>
+      </li>
+      <li>
+        <h3>Read it against 1.0, and only against 1.0</h3>
+        <p>A reading of 1.0 means the industry fills exactly the same share of local jobs
+          as it does of the country&rsquo;s. Above 1.0 the region is more concentrated
+          than the country, below it, less. This site&rsquo;s worked case, drawn at the
+          top of this page: <b id="lqworked">the largest county reading</b>. The measure
+          is a share of a share, so it has no unit and cannot be added, averaged across
+          geographies, or compared between two different industry definitions.</p>
+      </li>
+      <li>
+        <h3>Two rules that will bite you</h3>
+        <p><b>A withheld cell is not a zero.</b> Statistical agencies suppress any cell
+          where too few employers would be identifiable, and the suppressed cells are
+          disproportionately the small ones. Treating a blank as a zero gives a confidently
+          wrong answer. There is a section on this below, with the rates.</p>
+        <p><b>A high reading on a small base is fragile.</b> Concentration is a share, not
+          a size. A single plant closing can halve it. Print the job count beside every
+          reading so nobody can quote the ratio without the base, which is why the chart
+          at the top of this page carries both.</p>
+      </li>
+      <li>
+        <h3>What it lands on here</h3>
+        <p>The same pull, filtered the same way, produces the
+          <a href="../location-quotient/">concentration page</a> and, with wages instead of
+          employment counts, the <a href="../wages/">pay-premium page</a>. That is the
+          point worth taking away: one file, filtered once, answers a concentration
+          question and a pay question and a peer-ranking question, and most of the work in
+          all three is deciding what counts as your industry.</p>
+      </li>
+    </ol>
+
+    <p class="note"><b>What this page is not yet.</b> Three more worked questions, how to
+      look up a named award by its identifier, the nominal-against-real question, and how
+      the sentences on this site are stored as checks that re-run are all held back rather
+      than half-written; each one is specified, ordered and given its own acceptance test in
+      <a href="ROADMAP.md">sources/ROADMAP.md</a>, so a reader can see exactly what is
+      coming instead of taking a promise.</p>
+  </div>
+</section>
+
+<!-- ACT 2: THE DECISION NOBODY PUBLISHES -->
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">The decision nobody publishes</p>
+    <h2>Federal data makes you define your subject inside someone else&rsquo;s
+      classification, once per question</h2>
+    <p class="lede">There is no polymer industry, no polymer occupation and no polymer
+      degree in federal statistics. There are code lists, and somebody has to decide which
+      codes are the subject. This site makes that decision three times, in three
+      taxonomies, and every one of them is a judgement with a consequence rather than a
+      lookup.</p>
+
+    <div class="tax" id="tax"></div>
+
+    <p class="fig-title">Add an industry family to its own parts and the same job is in
+      the table twice</p>
+    <p class="fig-sub">Jobs in the twelve counties this site measures, 2025, as the pay
+      page publishes them. Each part code sits inside the family code above it, so a
+      reader who adds the whole column gets a number that does not exist. The top bar is
+      that number; the bottom bar is the same jobs counted once. Bars start at zero.</p>
+    <div class="chart reflow"><svg id="tree" role="img" aria-labelledby="tree-t">
+      <title id="tree-t">Chart showing that adding every industry code in the table gives
+        54,372 jobs, while the two family codes alone hold 33,528, because every part code
+        is already inside a family code and 20,844 jobs appear twice.</title>
+    </svg></div>
+    <div id="treetable"></div>
+    <p class="src" id="treesrc"></p>
+
+    <h3 class="sub-h">The boundary call, with its price on it</h3>
+    <p class="body">The education codes are the clearest case, because this site already
+      wrote its boundary down. Programmes in polymer and plastics are
+      <b>core</b>. Materials, mechanical, chemical and general chemistry programmes are
+      <b>adjacent</b>: they feed the same employers and they are not the same thing. The
+      registry holds the two lists separately rather than merging them, which means the
+      judgement is inspectable instead of baked in.</p>
+    <p class="body" id="cipmath">The consequence is a number.</p>
+    <p class="body">Neither answer is wrong. Publishing one without saying which line was
+      drawn is.</p>
+
+    <h3 class="sub-h">Geography is the fourth classification, and it is the one that
+      breaks people</h3>
+    <p class="body">County, metropolitan area and state are three separate geographies,
+      published separately, and they do not sum into one another. A metro is a set of whole
+      counties, so the Akron metro is Summit plus Portage, and the twelve counties this
+      site measures are overlapped by three metros, each of which reaches into territory
+      the twelve exclude. That forbids three things outright: adding metro figures to get a
+      region, treating a metro price level as a county price level, and putting a county
+      figure in the same sentence as a metro figure without naming both. This site has
+      already had a defect from crossing that line, which is why the geography a page is
+      built on is stamped on the page in a banner rather than left in a footnote.</p>
+
+    <h3 class="sub-h">How to do this for your own industry</h3>
+    <ol class="steps tight">
+      <li><h3>Start from the plants, not the codes</h3><p>List the employers everyone in
+        the region agrees are the industry, then look up what each one actually files
+        under. The code list falls out of the firms; a code list drawn first will miss
+        them.</p></li>
+      <li><h3>Write down the boundary calls as calls</h3><p>For every code somebody
+        reasonable would argue about, keep it in a separate named group, the way the
+        education codes here are split into core and adjacent. Then either answer can be
+        produced on demand.</p></li>
+      <li><h3>Draw the hierarchy before you sum anything</h3><p>Note which of your codes
+        contain which. A two-minute drawing prevents the double count.</p></li>
+      <li><h3>Say what the choice makes invisible</h3><p>Every code filter is a decision
+        about what you will not be able to see. Industry-coded federal award data cannot
+        see a university or a research institute, because they file under entirely
+        different codes, so a whole class of award is missing by construction rather than
+        by accident. Publish that sentence next to the number.</p></li>
+      <li><h3>Publish the list</h3><p>The codes cost you weeks and cost a reader nothing.
+        A methodology that names the dataset without naming the codes tells somebody where
+        to start, not what you did.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ACT 3: THE TRAP THAT PRODUCES CONFIDENTLY WRONG ANSWERS -->
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The trap</p>
+    <h2>A withheld cell is not a zero</h2>
+    <p class="lede">Every statistical agency suppresses cells that would identify an
+      employer, and the smaller the geography, the more of them go. Nothing in the file
+      says <i>withheld</i> in a way a spreadsheet respects: the cell is blank, or it is a
+      zero, or it carries a one-letter disclosure code most people never read. Someone who
+      treats those as real zeroes gets an answer that looks fine and is wrong, which is
+      worse than an answer that looks wrong.</p>
+    <p class="fig-title">Every state discloses. Most metropolitan areas and most counties
+      do not</p>
+    <p class="fig-sub">Each bar is every area of that kind in the country, drawn the same
+      length and split into the areas with a published employment figure for plastics and
+      rubber products and the areas where it was withheld. The count of areas is in the
+      row label, because equal-length bars deliberately say nothing about it.</p>
+    <div class="chart reflow"><svg id="hide" role="img" aria-labelledby="hide-t">
+      <title id="hide-t">Chart showing that all 51 state geographies disclose their
+        plastics and rubber employment, while 155 of 382 metropolitan areas and 703 of
+        1,838 counties do, the rest being withheld.</title>
+    </svg></div>
+    <div id="hidetable"></div>
+    <p class="src" id="hidesrc"></p>
+    <p class="note"><b>What to do about it.</b> Three things, in order. Read the
+      disclosure code rather than the value, and carry it through your pipeline. Say
+      &ldquo;among disclosed areas&rdquo; every time you state a rank, because a rank
+      computed over the visible half is not a national rank. And never let a filter that
+      returns nothing render as a finding of zero: a code that comes back empty in every
+      year at every geography is far more likely to be a bad code than a real absence.
+      This site published a transposed programme code once and erased a whole
+      university&rsquo;s degree programme, and every check passed, because the checks were
+      true of the data the mistake had already filtered out.</p>
+  </div>
+</section>
+
+<!-- ACT 4: THE OTHER REASON YOUR NUMBER WILL DIFFER -->
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">Before you tell us we are wrong</p>
+    <h2>Your number will not match ours, and that is expected</h2>
+    <p class="lede">Federal series revise for years after first publication. A figure
+      pulled today is a figure as of today, and the version this site printed was as of the
+      day it was pulled, which is why every page here stamps a date in its masthead. If you
+      re-run one of these recipes and land a little away from us, the first thing to check
+      is not the arithmetic.</p>
+    <p class="body" id="vintagemath">How far these series move after publication has been
+      measured here.</p>
+    <p class="body">So: stamp your own pull date on your own output, keep the raw file you
+      pulled, and when you compare against somebody else&rsquo;s figure, compare the
+      vintages before you compare the numbers. A difference of a fraction of a percent
+      against a published figure is the series behaving normally. A difference of a factor
+      is a code or a geography or an ownership filter, and it is almost always the code.</p>
+  </div>
+</section>
+
+<!-- ACT 5: THE REGISTER. Reference, deliberately after the teaching. -->
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The register</p>
+    <h2>All fourteen datasets, with what each one cannot tell you</h2>
+    <p class="lede">Generated from the same file the pages themselves read, so it cannot
+      drift from them. Each entry carries the endpoint, whether it needs a key or a
+      registration, its licence where one is stated, the exact filter values applied to it,
+      and every page here that rests on it. Two of the fourteen are internal records with
+      no endpoint at all, and saying so plainly is the point of listing them.</p>
+    <p class="fig-title">One source carries most of this site</p>
+    <p class="fig-sub">Pages resting on each dataset. The two marked in orange have no
+      endpoint and no script: they cannot be fetched by anyone, including us. Bars start at
+      zero.</p>
+    <div class="chart reflow"><svg id="deps" role="img" aria-labelledby="deps-t">
+      <title id="deps-t">Ranked bars of how many pages each of the fourteen datasets
+        feeds, led by the Quarterly Census of Employment and Wages at eleven, with most
+        sources feeding one page each.</title>
+    </svg></div>
+    <div id="depstable"></div>
+    <p class="src" id="depssrc"></p>
+    <p class="src" id="regnote">The register below renders from
+      <span class="mono">_data/SOURCES.json</span>, which is extracted from the fetch
+      scripts rather than written from memory. With scripting off, read that file
+      directly.</p>
+    <div id="registry"></div>
+    <p class="src" id="licencesrc"></p>
+  </div>
+</section>
+
+<!-- ACT 6: WHAT WE COULD NOT GET -->
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">What we could not get</p>
+    <h2>The gaps, published rather than hidden</h2>
+    <p class="lede">A replication guide that only lists what worked is an advertisement.
+      These are the holes in this site&rsquo;s own data that are still open, what each one
+      costs, and what would close it. Every one is recorded in the affected
+      page&rsquo;s own notes as well.</p>
+    <div class="gaps" id="gaps"></div>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="wrap">
+    <p>The URL is the cheap half. The codes, the ownership filter and the suppression rule
+      are the part that took weeks, and they are the part worth giving away.</p>
+    <p class="sub" id="closersub"></p>
+  </div>
+</section>
+
+<footer class="page-foot">
+  <div class="wrap">
+    <p class="foot-id"><b>Polymer Industry Cluster</b> &middot; Greater Akron Chamber
+      &middot; Evidence Room</p>
+    <p class="foot-links"><a href="../">All evidence-room pages</a> &middot; Corrections
+      and questions: jswanson@greaterakronchamber.org</p>
+    <p class="foot-licence" id="footlicence"></p>
+  </div>
+</footer>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

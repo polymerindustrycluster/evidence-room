@@ -1,0 +1,1317 @@
+{
+ "meta": {
+  "source": "This page\u2019s own dataset is _data/SOURCES.json (the source registry) and _data/catalog.json (the generated inventory of build scripts), joined to five shipped page files: wages for the concentration reading and the industry-code arithmetic, occupations for the education-boundary example, peers for the disclosure rates, revisions for how far these series move after publication, and laborshed for the measured gap.",
+  "row": "One row of the register is one dataset: its endpoint, the exact filter values applied to it, whether it needs a key, and every page here that rests on it.",
+  "fetched": "2026-08-29",
+  "definition": "How you get it is DERIVED from the endpoint\u2019s shape, not declared in the registry: no endpoint at all is an internal record, a URL ending in a file extension or a directory is a bulk download, a URL with an api path segment is an API request, and anything left is a portal query. The rule is printed on the page so a reader can disagree with a label rather than inherit it.",
+  "why": "The register lists only the sources behind the analyses published in this repository. The internal series has more pages and more sources, and their absence is stated rather than left to be discovered.",
+  "scope": "This page hands over method, not data. It does not republish any source, and following it will not give you these numbers: it will give you the same numbers for your own region, which is the point.",
+  "not": "The register records a licence only where a source states one. For the federal statistical series it records none, and this page does not infer one, so check each agency\u2019s own terms before you redistribute anything.",
+  "caution": "Two of the fourteen sources have no endpoint and no script. They are internal records, the published file is the artifact, and nothing on this site can make them fetchable."
+ },
+ "sources": [
+  {
+   "key": "qcew",
+   "name": "BLS Quarterly Census of Employment and Wages",
+   "short": "QCEW employment and wages",
+   "agency": "Bureau of Labor Statistics",
+   "url": "https://data.bls.gov/cew/data/api/{year}/{qtr}/area/{fips}.csv",
+   "docs": "https://www.bls.gov/cew/additional-resources/open-data/csv-data-slices.htm",
+   "script": "_data/build/fetch_qcew.py, fetch_footprint.py, fetch_provenance.py",
+   "key_required": false,
+   "route": "bulk",
+   "route_label": "bulk file download",
+   "licence": null,
+   "is": "A census, not a survey. It counts every job covered by unemployment insurance, from returns employers already have to file, so it carries no sampling error and no margin of error to report.",
+   "good": "Jobs, establishment counts and average weekly wages, by county and by industry code, quarterly and as annual averages, back to 1990.",
+   "cannot": "It cannot see the self-employed, most farm labour, or anyone outside the insurance system, and it withholds any cell where too few employers would be identifiable. Its wage is an average per covered job: not a salary, not per person, and it moves with hours and occupational mix as well as with pay.",
+   "filters": [
+    [
+     "NAICS codes",
+     "10 (all industries), 31-33 (manufacturing), 325 (chemical manufacturing), 3252 (resin, synthetic rubber and fibers), 3255 (paint, coating and adhesive), 326 (plastics and rubber products), 3261 (plastics products), 3262 (rubber products)"
+    ],
+    [
+     "ownership",
+     "own_code 0 (total, all ownerships) and 5 (private)"
+    ],
+    [
+     "geography",
+     "county FIPS, PIC-12 and NEO-14 (see footprints.py)"
+    ],
+    [
+     "note",
+     "PIC\u2019s own measurement register is 3252 + 3255 + 326. NAICS 325 is context, not cluster: it contains pharmaceuticals and agricultural chemicals."
+    ],
+    [
+     "provenance_page",
+     "fetch_provenance.py re-uses this source for one pull: 2016 annual, own_code 5, industry 326+32521+325991 at agglvl 55/57/58; the QCEW instrument comparison on the provenance page"
+    ]
+   ],
+   "pages": [
+    "accountability",
+    "churn",
+    "cluster-health",
+    "cost-scissors",
+    "location-quotient",
+    "occupations",
+    "peers",
+    "realwage",
+    "revisions",
+    "scorecard",
+    "wages"
+   ],
+   "n_pages": 11
+  },
+  {
+   "key": "usaspending",
+   "name": "USAspending federal contract and grant obligations",
+   "short": "USAspending awards",
+   "agency": "US Treasury",
+   "url": "https://api.usaspending.gov/api/v2/search/spending_by_category/",
+   "docs": "https://api.usaspending.gov/",
+   "script": "_data/build/fetch_rest.py",
+   "key_required": false,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "is": "The Treasury\u2019s public record of federal awards: contracts, grants and other obligations, filed by the agency that made them.",
+   "good": "How much federal money is obligated to work performed in a place, cut by industry code and fiscal year.",
+   "cannot": "An obligation is money legally committed, not cash spent, and place of performance is a field the award reports rather than an observation of where the work happened. An industry-code filter cannot see a university or a research institute, which file under entirely different codes.",
+   "filters": [
+    [
+     "NAICS",
+     "325* and 326* manufacturing codes only, so university and research awards are invisible by construction: a university files under 61xxxx"
+    ],
+    [
+     "geography",
+     "place of performance, a reported field on the award rather than an observation of where work happened"
+    ],
+    [
+     "note",
+     "Obligations are money legally committed, not cash spent."
+    ]
+   ],
+   "pages": [
+    "accountability",
+    "cluster-health",
+    "federal-money",
+    "funding-map",
+    "scorecard"
+   ],
+   "n_pages": 5
+  },
+  {
+   "key": "ipeds",
+   "name": "IPEDS Completions, via the Urban Institute Education Data API",
+   "short": "IPEDS degree completions",
+   "agency": "National Center for Education Statistics, served by the Urban Institute",
+   "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/completions-cip-6/{year}/",
+   "docs": "https://educationdata.urban.org/documentation/colleges.html",
+   "script": "_data/build/fetch_ipeds.py, fetch_ipeds_national.py, fetch_intl.py, _data/build/fetch_ipeds_cip.py",
+   "key_required": false,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "is": "The federal record of every degree and certificate conferred by every institution that takes federal student aid, filed by six-digit programme code.",
+   "good": "Counting the graduates of named programmes at named institutions, year by year, against the same programmes nationally.",
+   "cannot": "It counts people finishing a programme, never people hired and never people who stayed in the region. A programme code returning zero at every institution in every year is far more likely to be a bad code than a real absence of graduates.",
+   "filters": [
+    [
+     "CIP-6 core",
+     "143201 (polymer/plastics engineering), 400507 (polymer chemistry), 150607 (plastics and polymer engineering technology)"
+    ],
+    [
+     "CIP-6 adjacent",
+     "141801 (materials engineering), 400510 (materials chemistry), 401001 (materials science), 141901 (mechanical engineering), 140701 (chemical engineering), 400501 (chemistry general), 151701 (energy systems technology)"
+    ],
+    [
+     "majornum",
+     "1 only, so a double major is counted once"
+    ],
+    [
+     "race/sex",
+     "race=99 and sex=99 are the total rows; race=8 is nonresident alien. The two partitions are aggregated separately and never crossed; this endpoint does not offer the cross-tab at CIP-6."
+    ],
+    [
+     "national benchmark",
+     "the same codes with no state filter, restricted to codes the footprint itself confers as a programme (which excludes 150607), since PIC-12\u2019s entire history in it is two awards from one community college in one year"
+    ],
+    [
+     "note",
+     "Two earlier code entries did not exist and silently returned zero: 140320 (a transposition of 143201) and 143101 (materials science is in the 40 series, not 14). A core code returning zero across every year and institution is evidence of a bad code, not of no graduates."
+    ],
+    [
+     "ipeds_cip",
+     "fetch_ipeds_cip.py adds institution \u00d7 CIP \u00d7 year (used by talent and occupations)"
+    ]
+   ],
+   "pages": [
+    "accountability",
+    "cluster-health",
+    "occupations",
+    "scorecard"
+   ],
+   "n_pages": 4
+  },
+  {
+   "key": "fred",
+   "name": "FRED producer price and commodity series",
+   "short": "FRED price series",
+   "agency": "Federal Reserve Bank of St. Louis",
+   "url": "https://api.stlouisfed.org/fred/series/observations?series_id={id}",
+   "docs": "https://fred.stlouisfed.org/docs/api/fred/",
+   "script": "_data/build/fetch_rest.py, fetch_chain_prices.py",
+   "key_required": true,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "is": "The St Louis Fed\u2019s distribution of federal price series: producer price indexes and commodity spot prices, served from one API under one key.",
+   "good": "Following what a feedstock, a resin or a finished good costs over time, on a common base you choose.",
+   "cannot": "Index levels are not dollars, and producer prices are not consumer prices. Nothing arrives deflated, so a rise you have not divided by a price index is a cash figure and needs saying so.",
+   "filters": [
+    [
+     "series",
+     "WPU072 (PPI rubber and plastic products), WPU066 (PPI plastics resins and materials), WPU06 (PPI industrial chemicals), PCU326326 (PPI plastics and rubber products manufacturing), PCU325211325211 (PPI plastics material and resin manufacturing), WTISPLC (WTI crude oil spot)"
+    ],
+    [
+     "note",
+     "Producer price indexes, not consumer prices. Index levels, not dollars."
+    ],
+    [
+     "run order",
+     "fetch_rest.py FIRST, then fetch_chain_prices.py. The second appends the feedstock and resin links to fred.json; running fetch_rest.py after it overwrites the file and silently drops them."
+    ]
+   ],
+   "pages": [
+    "cluster-health",
+    "cost-scissors",
+    "revisions"
+   ],
+   "n_pages": 3
+  },
+  {
+   "key": "odjfs",
+   "name": "Ohio LMI long-term employment projections, 2022\u20132032",
+   "short": "Ohio LMI projections",
+   "agency": "Ohio Department of Job and Family Services, Bureau of Labor Market Information",
+   "url": "https://ohiolmi.com/_docs/PROJ/",
+   "docs": "https://ohiolmi.com/Home/Projections/ProjectionsHome",
+   "script": "_data/build/fetch_odjfs_projections.py",
+   "key_required": false,
+   "route": "bulk",
+   "route_label": "bulk file download",
+   "licence": null,
+   "is": "Ohio\u2019s own long-term employment projections, published as spreadsheets by region and by occupation rather than through any API.",
+   "good": "A state agency\u2019s view of where an industry and its occupations are headed inside Ohio, at a geography federal files do not offer.",
+   "cannot": "A projection is a modelled path with no confidence band, and it historically under-calls turning points. Two of this site\u2019s three register codes are published only inside wider bundles, so the register cannot be rebuilt from it.",
+   "filters": [
+    [
+     "geography",
+     "JobsOhio Northeast (18 counties, superset of PIC-12) and the four MSAs; Ashtabula and Wayne appear only in region and state figures"
+    ],
+    [
+     "row",
+     "one industry or one SOC occupation \u00d7 geography: 2022 base, 2032 projected, change, percent, annual openings split, median wage"
+    ],
+    [
+     "projection_not_forecast",
+     "a modelled path with no confidence band; historically under-calls turning points"
+    ],
+    [
+     "register_cannot_be_rebuilt",
+     "3252 is published only inside bundle 3250A1 and 3255 only inside 3250A2; only 326/3261/3262 are clean"
+    ]
+   ],
+   "pages": [
+    "cluster-health",
+    "occupations"
+   ],
+   "n_pages": 2
+  },
+  {
+   "key": "public_record",
+   "name": "PIC public record, dated milestones",
+   "short": "PIC public record",
+   "agency": "Polymer Industry Cluster",
+   "url": null,
+   "docs": null,
+   "script": null,
+   "key_required": false,
+   "route": "internal",
+   "route_label": "internal record, no endpoint",
+   "licence": null,
+   "is": "A hand-compiled register of dated public milestones, merged from operational reports, funding files and primary press, with a source for every date.",
+   "good": "Placing a designation, an award or an opening on a timeline that someone else can check event by event.",
+   "cannot": "There is no endpoint and no script: it can be re-read but not re-fetched. Only events recorded as public appear, so the record of which dates slipped is deliberately absent from it.",
+   "filters": [
+    [
+     "compiled",
+     "Merged from eight internal and public record sets: operational status reports, funding and award files, verified deck facts, and primary-press dates from the quote bank. 487 raw rows reduced to 104 dated events."
+    ],
+    [
+     "publicOnly",
+     "Only events recorded as PUBLIC appear. Internal operational milestones, and the record of which dates slipped, are deliberately excluded; this is the public record, not the project\u2019s whole history."
+    ],
+    [
+     "forward_are_hollow",
+     "18 of the 104 are future milestones and are drawn hollow, so a plan never reads as a fact."
+    ],
+    [
+     "not_reproducible",
+     "Hand-compiled from documents rather than fetched from an API. Every event carries its own date and organisation; there is no script that regenerates this file, and pretending otherwise would be the opposite of what this registry is for."
+    ]
+   ],
+   "pages": [
+    "accountability",
+    "timeline"
+   ],
+   "n_pages": 2
+  },
+  {
+   "key": "bea_rpp",
+   "name": "BEA Regional Price Parities",
+   "short": "BEA regional price parities",
+   "agency": "Bureau of Economic Analysis",
+   "url": "https://apps.bea.gov/api/data/",
+   "docs": "https://apps.bea.gov/API/signup/",
+   "script": "_data/build/fetch_bea.py, fetch_rpp.py",
+   "key_required": true,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "is": "A price level rather than a price: an index with the national average set to 100, saying what a fixed basket costs in one metropolitan area against another.",
+   "good": "Turning a nominal wage into what it actually buys where it is earned.",
+   "cannot": "It is published for metropolitan areas, which neither nest inside nor tile a county footprint. Three metros that overlap a twelve-county region cannot be added into a figure for that region.",
+   "filters": [
+    [
+     "dataset",
+     "Regional, RPP by metropolitan statistical area"
+    ],
+    [
+     "base",
+     "a fixed national basket, US average = 100"
+    ],
+    [
+     "note",
+     "Published at METRO, which neither nests inside nor tiles PIC-12. Akron, Cleveland-Elyria and Youngstown-Warren each include territory the footprint excludes. Do not sum the three and call it PIC-12."
+    ]
+   ],
+   "pages": [
+    "realwage"
+   ],
+   "n_pages": 1
+  },
+  {
+   "key": "heritage_register",
+   "name": "NEO Polymer Wins register, heritage and discoveries collections",
+   "short": "NEO Polymer Wins register",
+   "agency": "Polymer Industry Cluster (internal register; only PROVEN rows and public sources travel)",
+   "url": null,
+   "docs": null,
+   "script": null,
+   "key_required": false,
+   "route": "internal",
+   "route_label": "internal record, no endpoint",
+   "licence": null,
+   "is": "An internal register of what the region invented and what changed its capacity, of which only the rows its own index marks PROVEN are published.",
+   "good": "Naming a first, or a capability, with a public source attached to it.",
+   "cannot": "The register is internal and its builder cannot be run from a public clone, so the shipped file is the artifact rather than a reproducible output. Every published row carries its own public sources instead.",
+   "filters": [
+    [
+     "proven_only",
+     "Only rows the register\u2019s INDEX labels PROVEN are emitted; the 5 CLAIMED rows are withheld as id + label + year only, with no wording."
+    ],
+    [
+     "collections",
+     "heritage (what changed the region\u2019s capacity) and discoveries (what was first understood here). The shipped, licensed, living and pic-era collections are a different tense and are not on this page."
+    ],
+    [
+     "sources_travel",
+     "Only http(s) URLs and bibliographic lines travel; vault-path source references are stripped at build and counted (3)."
+    ],
+    [
+     "do_not_say_guard",
+     "Every emitted sentence is checked against the register\u2019s own do-not-say list; a hit fails the build."
+    ],
+    [
+     "wartime_tonnage",
+     "Four different measures exist in the sources and none is printed, which is the register\u2019s standing rule."
+    ],
+    [
+     "reproducibility",
+     "The register is internal; the builder (PIC-decks/tools/build-heritage-web.py) cannot be re-run from a public clone. The emitted data/heritage.json IS the published artifact, like the operating record; every row carries its public source URLs so each can be checked by hand."
+    ]
+   ],
+   "pages": [
+    "timeline"
+   ],
+   "n_pages": 1
+  },
+  {
+   "key": "lodes",
+   "name": "LEHD Origin-Destination Employment Statistics, LODES8",
+   "short": "LEHD LODES8 origin-destination",
+   "agency": "US Census Bureau / LEHD",
+   "url": "https://lehd.ces.census.gov/data/lodes/LODES8/{st}/od/{st}_od_{main|aux}_JT00_{year}.csv.gz",
+   "docs": "https://lehd.ces.census.gov/data/lodes/LODES8/LODESTechDoc8.2.pdf",
+   "script": "_data/build/fetch_lodes.py, fetch_lodes_resident.py, fetch_lodes_peers.py",
+   "key_required": false,
+   "route": "bulk",
+   "route_label": "bulk file download",
+   "licence": null,
+   "is": "A count of JOBS, each one linking the census block where the job is to the block where its holder\u2019s address is on file. LODES8 is the current vintage and JT00 is the segment meaning all jobs in all sectors.",
+   "good": "Where the people who work in a place live, and the reciprocal: where the people who live in a place work.",
+   "cannot": "It is not a commute. Nothing in it counts a trip, and the home end is a residence on file rather than evidence that anyone travelled. It carries no industry dimension at all, so a polymer-only version of a labour shed cannot be built from it.",
+   "filters": [
+    [
+     "segment",
+     "JT00, meaning all jobs in all sectors. LODES origin-destination carries NO industry dimension, so this is the whole economy and never the polymer cluster."
+    ],
+    [
+     "files",
+     "main (both ends in state) plus aux (work in state, home out of state). Omitting aux makes the region look artificially self-contained."
+    ],
+    [
+     "years",
+     "2022, with 2019 as a pre-pandemic baseline"
+    ],
+    [
+     "geography",
+     "work end bounded to PIC-12 for the commute matrix; home end bounded to PIC-12 for the reciprocal; peer comparison reads twelve states\u2019 main files"
+    ],
+    [
+     "note",
+     "Both ends are employer-reported addresses. The home end is a residence on file, not evidence anyone travelled."
+    ]
+   ],
+   "pages": [
+    "laborshed"
+   ],
+   "n_pages": 1
+  },
+  {
+   "key": "nem",
+   "name": "BLS Employment Projections, National Employment Matrix, industry to occupation",
+   "short": "BLS National Employment Matrix",
+   "agency": "Bureau of Labor Statistics",
+   "url": "https://data.bls.gov/projections/nationalMatrix?queryParams=326000&ioType=i",
+   "docs": "https://www.bls.gov/emp/tables.htm",
+   "script": "_data/build/fetch_occmix.py",
+   "key_required": false,
+   "route": "portal",
+   "route_label": "web portal query",
+   "licence": null,
+   "is": "The projection of which occupations an industry is made of, published as an industry-by-occupation matrix with a base year and a projected year.",
+   "good": "Saying what mix of jobs an industry runs on, and how that mix is expected to change over ten years.",
+   "cannot": "It is national only. No state or metro cut exists, so any regional headcount built from it is a synthetic estimate resting on an assumption that has to be stated in the same sentence as the number.",
+   "filters": [
+    [
+     "industry",
+     "326000 plastics and rubber products manufacturing (325000, 326100, 326200 also fetched)"
+    ],
+    [
+     "base",
+     "2024, projected 2034"
+    ],
+    [
+     "rows",
+     "Line Item detailed occupations only; Summary rows excluded"
+    ],
+    [
+     "geography",
+     "NATIONAL ONLY: no state or metro cut exists; any regional count built from it is a synthetic estimate under a stated assumption, and the sentence says so"
+    ]
+   ],
+   "pages": [
+    "occupations"
+   ],
+   "n_pages": 1
+  },
+  {
+   "key": "oews",
+   "name": "BLS Occupational Employment and Wage Statistics, metropolitan file",
+   "short": "OEWS metro wages",
+   "agency": "Bureau of Labor Statistics",
+   "url": "https://www.bls.gov/oes/special-requests/oesm24ma.zip",
+   "docs": "https://www.bls.gov/oes/tables.htm",
+   "script": "_data/build/fetch_oews.py",
+   "key_required": false,
+   "route": "bulk",
+   "route_label": "bulk file download",
+   "licence": null,
+   "is": "A survey of employers about which occupations they employ and what they pay, published as one snapshot a year for metropolitan areas.",
+   "good": "What a named occupation pays where the work is, against the same occupation nationally.",
+   "cannot": "One vintage is a level and never a trend: methods and area definitions change between years. Its top code is a ceiling rather than a value, and a starred or hashed cell is unknown, never zero.",
+   "filters": [
+    [
+     "sheet",
+     "MSA_M2024_dl"
+    ],
+    [
+     "geography",
+     "metropolitan area, carrying the same non-nesting caveat as BEA RPP"
+    ],
+    [
+     "note",
+     "One year only. This is a level, not a trend; the wage trend on the talent page comes from QWI instead."
+    ]
+   ],
+   "pages": [
+    "occupations"
+   ],
+   "n_pages": 1
+  },
+  {
+   "key": "oews_national",
+   "name": "BLS Occupational Employment and Wage Statistics, national file",
+   "short": "OEWS national wages",
+   "agency": "Bureau of Labor Statistics",
+   "url": "https://www.bls.gov/oes/special-requests/oesm24nat.zip",
+   "docs": "https://www.bls.gov/oes/tables.htm",
+   "script": "_data/build/fetch_oews_national.py",
+   "key_required": false,
+   "route": "bulk",
+   "route_label": "bulk file download",
+   "licence": null,
+   "is": "The same survey\u2019s national file, the benchmark half of the metro comparison.",
+   "good": "Giving a local wage something to be measured against that was collected the same way.",
+   "cannot": "It is all industries at once, so a national occupational wage is not the wage that occupation gets inside one industry. Some occupations appear as both a broad and a detailed row with identical values; keep one.",
+   "filters": [
+    [
+     "sheet",
+     "national_M2024_dl"
+    ],
+    [
+     "occupations",
+     "the SOC set read from oews.json (26 codes); the metro pull defines the set"
+    ],
+    [
+     "dedupe",
+     "51-2090 appears as broad and detailed with identical values; one row kept, detailed preferred"
+    ],
+    [
+     "note",
+     "all industries; the \u2018#\u2019 ceiling ($115/hr, $239,200/yr) and \u2018*\u2019 are both null, never zero"
+    ]
+   ],
+   "pages": [
+    "occupations"
+   ],
+   "n_pages": 1
+  },
+  {
+   "key": "onet_education",
+   "name": "O*NET 30.3 database: Occupation Data, Job Zones, Job Zone Reference, Education, Education Categories",
+   "short": "O*NET education levels",
+   "agency": "U.S. Department of Labor / Employment and Training Administration (CC BY 4.0; attribution printed on the page)",
+   "url": "https://www.onetcenter.org/dl_files/database/db_30_3_text/",
+   "docs": "https://www.onetcenter.org/database.html",
+   "script": "_data/build/fetch_onet_education.py",
+   "key_required": false,
+   "route": "bulk",
+   "route_label": "bulk file download",
+   "licence": "CC BY 4.0",
+   "is": "The Labor Department\u2019s occupational database, which describes what a job requires instead of counting how many of them there are. It is licensed CC BY 4.0 and the licence requires attribution wherever it is used.",
+   "good": "The level of education people in an occupation report, and the job zone the database assigns it.",
+   "cannot": "It is national and has no state or metro cut. It describes an occupation everywhere, not that occupation here, and a merged reference row can hide a distinction the raw scale makes.",
+   "filters": [
+    [
+     "element",
+     "2.D.1 Required Level of Education, scale RL"
+    ],
+    [
+     "bins",
+     "1-2 HS or less; 3-5 some college/associate; 6-7 bachelor\u2019s; 8-12 graduate"
+    ],
+    [
+     "join",
+     ".00 variant preferred, else equal-weight mean of variants; broad SOC 51-2090 = mean of five-char stem"
+    ],
+    [
+     "job_zone",
+     "30.x reports zones 1 and 2 as one band keyed 2; a zone-1 row reads the merged reference row"
+    ],
+    [
+     "attribution",
+     "required on the page, printed in the education source line"
+    ]
+   ],
+   "pages": [
+    "occupations"
+   ],
+   "n_pages": 1
+  },
+  {
+   "key": "qwi",
+   "name": "Census Quarterly Workforce Indicators, seasonally adjusted",
+   "short": "Census QWI workforce indicators",
+   "agency": "US Census Bureau / LEHD",
+   "url": "https://api.census.gov/data/timeseries/qwi/sa",
+   "docs": "https://www.census.gov/data/developers/data-sets/qwi.html",
+   "script": "_data/build/fetch_footprint.py, fetch_qwi_demand.py",
+   "key_required": true,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "is": "A quarterly panel built from the same state employment records, following jobs rather than counting them once: hires, separations and the earnings of jobs that persist from one quarter to the next.",
+   "good": "How much hiring and separating sits behind a flat job count, and what a stable job pays.",
+   "cannot": "It restates its own history when the programme re-benchmarks, so a figure pulled today is not necessarily the figure published last year, and no archive of past vintages is fetched anywhere in this build. EarnBeg counts only workers who were already at the same employer the quarter before.",
+   "filters": [
+    [
+     "variables",
+     "Emp, HirA, Sep, EarnBeg"
+    ],
+    [
+     "industry",
+     "326 (plastics and rubber products manufacturing); 00 (all industries) as the benchmark on the talent demand chart"
+    ],
+    [
+     "geography",
+     "state 39, the twelve PIC-12 counties"
+    ],
+    [
+     "note",
+     "EarnBeg is average monthly earnings of employees who also worked for the same employer in the prior quarter: stable jobs rather than new hires."
+    ]
+   ],
+   "pages": [
+    "churn"
+   ],
+   "n_pages": 1
+  }
+ ],
+ "pages": [
+  {
+   "slug": "occupations",
+   "sources": [
+    "ipeds",
+    "nem",
+    "odjfs",
+    "oews",
+    "oews_national",
+    "onet_education",
+    "qcew"
+   ],
+   "n_sources": 7
+  },
+  {
+   "slug": "cluster-health",
+   "sources": [
+    "fred",
+    "ipeds",
+    "odjfs",
+    "qcew",
+    "usaspending"
+   ],
+   "n_sources": 5
+  },
+  {
+   "slug": "accountability",
+   "sources": [
+    "ipeds",
+    "public_record",
+    "qcew",
+    "usaspending"
+   ],
+   "n_sources": 4
+  },
+  {
+   "slug": "scorecard",
+   "sources": [
+    "ipeds",
+    "qcew",
+    "usaspending"
+   ],
+   "n_sources": 3
+  },
+  {
+   "slug": "churn",
+   "sources": [
+    "qcew",
+    "qwi"
+   ],
+   "n_sources": 2
+  },
+  {
+   "slug": "cost-scissors",
+   "sources": [
+    "fred",
+    "qcew"
+   ],
+   "n_sources": 2
+  },
+  {
+   "slug": "realwage",
+   "sources": [
+    "bea_rpp",
+    "qcew"
+   ],
+   "n_sources": 2
+  },
+  {
+   "slug": "revisions",
+   "sources": [
+    "fred",
+    "qcew"
+   ],
+   "n_sources": 2
+  },
+  {
+   "slug": "timeline",
+   "sources": [
+    "heritage_register",
+    "public_record"
+   ],
+   "n_sources": 2
+  },
+  {
+   "slug": "federal-money",
+   "sources": [
+    "usaspending"
+   ],
+   "n_sources": 1
+  },
+  {
+   "slug": "funding-map",
+   "sources": [
+    "usaspending"
+   ],
+   "n_sources": 1
+  },
+  {
+   "slug": "laborshed",
+   "sources": [
+    "lodes"
+   ],
+   "n_sources": 1
+  },
+  {
+   "slug": "location-quotient",
+   "sources": [
+    "qcew"
+   ],
+   "n_sources": 1
+  },
+  {
+   "slug": "peers",
+   "sources": [
+    "qcew"
+   ],
+   "n_sources": 1
+  },
+  {
+   "slug": "wages",
+   "sources": [
+    "qcew"
+   ],
+   "n_sources": 1
+  },
+  {
+   "slug": "index",
+   "sources": [],
+   "n_sources": 0
+  },
+  {
+   "slug": "sources",
+   "sources": [],
+   "n_sources": 0
+  }
+ ],
+ "totals": {
+  "n_sources": 14,
+  "n_pages": 17,
+  "n_key_required": 3,
+  "key_sources": [
+   "bea_rpp",
+   "fred",
+   "qwi"
+  ],
+  "n_no_endpoint": 2,
+  "no_endpoint_sources": [
+   "heritage_register",
+   "public_record"
+  ],
+  "n_filter_lines": 60,
+  "routes": {
+   "bulk": 6,
+   "api": 5,
+   "internal": 2,
+   "portal": 1
+  },
+  "n_licensed": 1,
+  "most_used": "qcew",
+  "most_used_pages": 11,
+  "n_single_source_pages": 6,
+  "single_source_pages": [
+   "federal-money",
+   "funding-map",
+   "laborshed",
+   "location-quotient",
+   "peers",
+   "wages"
+  ],
+  "n_build_scripts": 26,
+  "catalog_generated": "2026-08-29 22:28"
+ },
+ "codes": [
+  {
+   "code": "325",
+   "name": "Chemical manufacturing",
+   "short": "chemicals",
+   "parent": null,
+   "level": "family",
+   "in_register": false,
+   "emp": 15758,
+   "pairings": 11
+  },
+  {
+   "code": "3252",
+   "name": "Resins, synthetic rubber and fibres",
+   "short": "resins",
+   "parent": "325",
+   "level": "part",
+   "in_register": true,
+   "emp": 2001,
+   "pairings": 5
+  },
+  {
+   "code": "3255",
+   "name": "Paints, coatings and adhesives",
+   "short": "paints and coatings",
+   "parent": "325",
+   "level": "part",
+   "in_register": true,
+   "emp": 4259,
+   "pairings": 7
+  },
+  {
+   "code": "326",
+   "name": "Plastics and rubber products",
+   "short": "plastics and rubber",
+   "parent": null,
+   "level": "family",
+   "in_register": true,
+   "emp": 17770,
+   "pairings": 12
+  },
+  {
+   "code": "3261",
+   "name": "Plastics products",
+   "short": "plastics products",
+   "parent": "326",
+   "level": "part",
+   "in_register": false,
+   "emp": 11239,
+   "pairings": 8
+  },
+  {
+   "code": "3262",
+   "name": "Rubber products",
+   "short": "rubber products",
+   "parent": "326",
+   "level": "part",
+   "in_register": false,
+   "emp": 3345,
+   "pairings": 8
+  }
+ ],
+ "doublecount": {
+  "rows": 51,
+  "family_rows": 23,
+  "column_sum": 54372,
+  "once_counted": 33528,
+  "doubled": 20844,
+  "factor": 1.62,
+  "register_sum": 24030,
+  "unsplit_chemistry": 9498,
+  "year": 2025
+ },
+ "suppression": {
+  "metro": {
+   "disclosed": 155,
+   "suppressed": 227,
+   "total": 382,
+   "share": 40.6
+  },
+  "county": {
+   "disclosed": 703,
+   "suppressed": 1135,
+   "total": 1838,
+   "share": 38.2
+  },
+  "state": {
+   "disclosed": 51,
+   "suppressed": 0,
+   "total": 51,
+   "share": 100.0
+  }
+ },
+ "lq": {
+  "worked": {
+   "county": "Summit",
+   "area": "39153",
+   "naics": "326",
+   "label": "Plastics & rubber products",
+   "short": "plastics and rubber",
+   "lq": 3.27,
+   "emp": 3824,
+   "year": 2025
+  },
+  "fragile": {
+   "county": "Geauga",
+   "naics": "3252",
+   "label": "Resin, synthetic rubber & fibers",
+   "short": "resins",
+   "lq": 22.7,
+   "emp": 491
+  },
+  "n_readings": 51,
+  "n_above_one": 45
+ },
+ "readings": [
+  {
+   "lq": 0.09,
+   "county": "Mahoning",
+   "naics": "325",
+   "emp": 49
+  },
+  {
+   "lq": 0.24,
+   "county": "Stark",
+   "naics": "3262",
+   "emp": 30
+  },
+  {
+   "lq": 0.47,
+   "county": "Cuyahoga",
+   "naics": "3262",
+   "emp": 262
+  },
+  {
+   "lq": 0.53,
+   "county": "Stark",
+   "naics": "325",
+   "emp": 479
+  },
+  {
+   "lq": 0.65,
+   "county": "Cuyahoga",
+   "naics": "326",
+   "emp": 2037
+  },
+  {
+   "lq": 0.69,
+   "county": "Cuyahoga",
+   "naics": "3261",
+   "emp": 1776
+  },
+  {
+   "lq": 1.02,
+   "county": "Cuyahoga",
+   "naics": "3252",
+   "emp": 418
+  },
+  {
+   "lq": 1.25,
+   "county": "Trumbull",
+   "naics": "326",
+   "emp": 365
+  },
+  {
+   "lq": 1.37,
+   "county": "Mahoning",
+   "naics": "326",
+   "emp": 575
+  },
+  {
+   "lq": 1.46,
+   "county": "Cuyahoga",
+   "naics": "325",
+   "emp": 5780
+  },
+  {
+   "lq": 1.46,
+   "county": "Stark",
+   "naics": "326",
+   "emp": 1031
+  },
+  {
+   "lq": 1.65,
+   "county": "Medina",
+   "naics": "325",
+   "emp": 597
+  },
+  {
+   "lq": 1.72,
+   "county": "Stark",
+   "naics": "3261",
+   "emp": 1002
+  },
+  {
+   "lq": 1.82,
+   "county": "Lake",
+   "naics": "3262",
+   "emp": 146
+  },
+  {
+   "lq": 1.88,
+   "county": "Summit",
+   "naics": "325",
+   "emp": 2806
+  },
+  {
+   "lq": 2.0,
+   "county": "Portage",
+   "naics": "325",
+   "emp": 651
+  },
+  {
+   "lq": 2.0,
+   "county": "Lorain",
+   "naics": "326",
+   "emp": 896
+  },
+  {
+   "lq": 2.34,
+   "county": "Wayne",
+   "naics": "325",
+   "emp": 645
+  },
+  {
+   "lq": 2.41,
+   "county": "Lorain",
+   "naics": "325",
+   "emp": 1376
+  },
+  {
+   "lq": 2.59,
+   "county": "Summit",
+   "naics": "3261",
+   "emp": 2486
+  },
+  {
+   "lq": 2.61,
+   "county": "Lake",
+   "naics": "326",
+   "emp": 1172
+  },
+  {
+   "lq": 2.67,
+   "county": "Wayne",
+   "naics": "3261",
+   "emp": 474
+  },
+  {
+   "lq": 2.72,
+   "county": "Wayne",
+   "naics": "3255",
+   "emp": 55
+  },
+  {
+   "lq": 2.79,
+   "county": "Lake",
+   "naics": "3261",
+   "emp": 1026
+  },
+  {
+   "lq": 2.9,
+   "county": "Summit",
+   "naics": "3255",
+   "emp": 316
+  },
+  {
+   "lq": 2.93,
+   "county": "Lake",
+   "naics": "325",
+   "emp": 1676
+  },
+  {
+   "lq": 2.94,
+   "county": "Medina",
+   "naics": "3255",
+   "emp": 78
+  },
+  {
+   "lq": 2.99,
+   "county": "Medina",
+   "naics": "3261",
+   "emp": 699
+  },
+  {
+   "lq": 3.07,
+   "county": "Wayne",
+   "naics": "326",
+   "emp": 664
+  },
+  {
+   "lq": 3.09,
+   "county": "Stark",
+   "naics": "3255",
+   "emp": 204
+  },
+  {
+   "lq": 3.27,
+   "county": "Summit",
+   "naics": "326",
+   "emp": 3824
+  },
+  {
+   "lq": 3.58,
+   "county": "Geauga",
+   "naics": "325",
+   "emp": 754
+  },
+  {
+   "lq": 4.08,
+   "county": "Medina",
+   "naics": "326",
+   "emp": 1160
+  },
+  {
+   "lq": 4.59,
+   "county": "Summit",
+   "naics": "3252",
+   "emp": 702
+  },
+  {
+   "lq": 4.81,
+   "county": "Medina",
+   "naics": "3252",
+   "emp": 179
+  },
+  {
+   "lq": 4.9,
+   "county": "Wayne",
+   "naics": "3262",
+   "emp": 190
+  },
+  {
+   "lq": 5.66,
+   "county": "Ashtabula",
+   "naics": "325",
+   "emp": 945
+  },
+  {
+   "lq": 5.93,
+   "county": "Lake",
+   "naics": "3255",
+   "emp": 248
+  },
+  {
+   "lq": 6.31,
+   "county": "Portage",
+   "naics": "3252",
+   "emp": 211
+  },
+  {
+   "lq": 6.4,
+   "county": "Summit",
+   "naics": "3262",
+   "emp": 1338
+  },
+  {
+   "lq": 6.49,
+   "county": "Geauga",
+   "naics": "3255",
+   "emp": 100
+  },
+  {
+   "lq": 7.78,
+   "county": "Geauga",
+   "naics": "3262",
+   "emp": 230
+  },
+  {
+   "lq": 9.06,
+   "county": "Medina",
+   "naics": "3262",
+   "emp": 461
+  },
+  {
+   "lq": 10.21,
+   "county": "Portage",
+   "naics": "3261",
+   "emp": 2140
+  },
+  {
+   "lq": 10.33,
+   "county": "Ashtabula",
+   "naics": "326",
+   "emp": 1352
+  },
+  {
+   "lq": 11.08,
+   "county": "Portage",
+   "naics": "326",
+   "emp": 2829
+  },
+  {
+   "lq": 11.21,
+   "county": "Cuyahoga",
+   "naics": "3255",
+   "emp": 3258
+  },
+  {
+   "lq": 11.29,
+   "county": "Geauga",
+   "naics": "326",
+   "emp": 1865
+  },
+  {
+   "lq": 12.06,
+   "county": "Geauga",
+   "naics": "3261",
+   "emp": 1636
+  },
+  {
+   "lq": 15.06,
+   "county": "Portage",
+   "naics": "3262",
+   "emp": 688
+  },
+  {
+   "lq": 22.7,
+   "county": "Geauga",
+   "naics": "3252",
+   "emp": 491
+  }
+ ],
+ "classification": {
+  "naics": {
+   "what": "industry",
+   "n_codes": 6,
+   "n_register": 3,
+   "sources": [
+    "nem",
+    "qcew",
+    "qwi",
+    "usaspending"
+   ]
+  },
+  "soc": {
+   "what": "occupation",
+   "n_codes": 26,
+   "sources": [
+    "oews",
+    "oews_national",
+    "onet_education",
+    "nem"
+   ]
+  },
+  "cip": {
+   "what": "education",
+   "n_core": 3,
+   "n_adjacent": 7,
+   "core": [
+    {
+     "code": "143201",
+     "name": "polymer/plastics engineering"
+    },
+    {
+     "code": "400507",
+     "name": "polymer chemistry"
+    },
+    {
+     "code": "150607",
+     "name": "plastics and polymer engineering technology"
+    }
+   ],
+   "adjacent": [
+    {
+     "code": "141801",
+     "name": "materials engineering"
+    },
+    {
+     "code": "400510",
+     "name": "materials chemistry"
+    },
+    {
+     "code": "401001",
+     "name": "materials science"
+    },
+    {
+     "code": "141901",
+     "name": "mechanical engineering"
+    },
+    {
+     "code": "140701",
+     "name": "chemical engineering"
+    },
+    {
+     "code": "400501",
+     "name": "chemistry general"
+    },
+    {
+     "code": "151701",
+     "name": "energy systems technology"
+    }
+   ],
+   "sources": [
+    "ipeds"
+   ],
+   "degrees_core": 1231,
+   "degrees_adjacent": 259,
+   "degrees_both": 1490,
+   "programmes_core": 8,
+   "programmes_adjacent": 5,
+   "lift_pct": 21.0,
+   "first_year": 2014,
+   "last_year": 2023
+  }
+ },
+ "vintage": {
+  "n_revised": 259,
+  "n_published": 273,
+  "median_pct": 0.15,
+  "max_pct": 1.41,
+  "n_series": 3
+ },
+ "gaps": [
+  {
+   "id": "county-names",
+   "page": "laborshed",
+   "what": "Twelve origin counties have no place name",
+   "n": 12,
+   "jobs": 31433,
+   "why": "No county FIPS-to-name crosswalk ships anywhere in this repository, so those rows print a five-digit code a reader cannot use.",
+   "close": "Add a national county crosswalk to the build. LEHD publishes a per-state geography crosswalk beside the LODES files, and the Census gazetteer is the other option; check that whichever is chosen covers out-of-state origins before wiring it in."
+  },
+  {
+   "id": "award-parties",
+   "page": "federal-money",
+   "what": "No recipient names behind the procurement peaks",
+   "n": null,
+   "jobs": null,
+   "why": "The USAspending endpoint used here returns categories rather than parties, so the page cannot say who holds the largest year.",
+   "close": "A second pull against spending_by_award, or the bulk award archive, keeping recipient_name and awarding_agency."
+  },
+  {
+   "id": "qwi-vintages",
+   "page": "revisions",
+   "what": "No archive of past QWI releases",
+   "n": null,
+   "jobs": null,
+   "why": "The programme restates whole histories when it re-benchmarks, and nothing in this build fetches an earlier vintage, so how far those restatements move a published number is unmeasured here.",
+   "close": "One stored file per historical release. The live API serves only the latest recomputation, so this has to be collected going forward."
+  },
+  {
+   "id": "price-derivation",
+   "page": "cost-scissors",
+   "what": "One derivation step is missing from the build",
+   "n": null,
+   "jobs": null,
+   "why": "The step that turns the fetched price series into that page\u2019s shipped file is not present in _data/build/, so the page\u2019s data is a frozen derived artifact rather than a reproducible one.",
+   "close": "Restore the derivation script, and have it emit the meta prose the page\u2019s methodology box renders."
+  },
+  {
+   "id": "cleveland-trend",
+   "page": "peers",
+   "what": "One peer metro has no time series",
+   "n": null,
+   "jobs": null,
+   "why": "Cleveland clears the size test and fails the disclosure test: it does not carry enough disclosed years to draw a line, so it appears as a single ghosted point with the absence labelled.",
+   "close": "Re-fetch that metro\u2019s industry series year by year, recording each year\u2019s disclosure code so the number of withheld years can be published rather than deduced."
+  }
+ ],
+ "onet_attribution": "This page includes information from the O*NET 30.3 Database by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA), used under the CC BY 4.0 license. O*NET is a trademark of USDOL/ETA. PIC has modified some of this information; USDOL/ETA has not approved, endorsed, or tested these modifications."
+}

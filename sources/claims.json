@@ -1,0 +1,125 @@
+{
+  "data": "registry.json",
+  "claims": [
+    {
+      "id": "src-register-size",
+      "text": "Fourteen public datasets build every page on this site, and sixty filter lines are published rather than described (standfirst, first hero card, second hero card, the register lede, the closer).",
+      "source": "_data/SOURCES.json, rendered by _data/build/derive_sources.py",
+      "assert": "D['totals']['n_sources'] == 14 and len(D['sources']) == 14 and D['totals']['n_filter_lines'] == 60 and D['totals']['n_filter_lines'] == sum(len(s['filters']) for s in D['sources'])",
+      "actual": "(D['totals']['n_sources'], D['totals']['n_filter_lines'])",
+      "falsified_if": "A source is added to or removed from the registry, or a filter line is added to one, without the two hero cards and the closer moving with it. The second half of the assertion is the one that matters: it re-derives the filter count from the entries themselves rather than trusting the total the same script wrote, so a totals block that stopped agreeing with its own rows fails here rather than shipping."
+    },
+    {
+      "id": "src-keys-and-dead-ends",
+      "text": "Three of the fourteen sources need a free API key, and they are the Census workforce indicators, the BEA regional price parities and FRED. Two have no endpoint at all, and those two also have no script: the PIC public record and the heritage register (first hero card, the register lede, the closer, and the two register entries that print a no-endpoint line instead of a URL).",
+      "source": "SOURCES.json key_required, url and script fields",
+      "assert": "D['totals']['n_key_required'] == 3 and D['totals']['key_sources'] == ['bea_rpp', 'fred', 'qwi'] and D['totals']['n_no_endpoint'] == 2 and D['totals']['no_endpoint_sources'] == ['heritage_register', 'public_record'] and all(s['url'] is None and s['script'] is None for s in D['sources'] if s['route'] == 'internal') and all(s['url'] is not None for s in D['sources'] if s['route'] != 'internal')",
+      "actual": "(D['totals']['key_sources'], D['totals']['no_endpoint_sources'])",
+      "falsified_if": "An agency starts or stops requiring a key, or one of the two internal registers gains a public endpoint or a fetch script, at which point the page would be telling a replicator that something is unfetchable when it is not. The last clause is the guard in the other direction: a source that loses its URL would silently become a fourth dead end, and the page states the number two in three places."
+    },
+    {
+      "id": "src-codes-are-the-registry-codes",
+      "text": "Every industry code the recipe prints, and the ownership and aggregation filters beside them, are the values the registry records for the Quarterly Census of Employment and Wages: 325, 3252, 3255, 326, 3261, 3262, industry 10 for all industries, own_code 5 for private, and aggregation levels 55, 57 and 58 (recipe steps 1 and 2).",
+      "source": "SOURCES.json sources.qcew.filters, verbatim",
+      "assert": "(lambda f: all(c in f for c in ('325', '3252', '3255', '326', '3261', '3262')) and '10 (all industries)' in f and 'own_code 0' in f and '5 (private)' in f and 'agglvl 55/57/58' in f)(' '.join(kv[1] for s in D['sources'] if s['key'] == 'qcew' for kv in s['filters']))",
+      "actual": "[kv[0] for s in D['sources'] if s['key'] == 'qcew' for kv in s['filters']]",
+      "falsified_if": "The registry's own filter values stop containing a code the recipe teaches, which would mean the guide is telling a replicator to run a pull this site no longer runs. This is the whole point of the page and the reason the codes are typed in the recipe rather than injected: a reader with scripting off still sees them, and this check is what stops them going stale."
+    },
+    {
+      "id": "src-double-count",
+      "text": "Adding every industry code the pay page publishes gives 54,372 jobs; the two family codes alone hold 33,528, so 20,844 jobs are in the table twice. Every part code sits inside a family code, and the two are not the same thing as a family being exhausted by its parts: 9,498 of chemical manufacturing is never split out at this level (the third hero card, the double-count chart and its overhang annotation, the chart source line, the recipe's step-one warning).",
+      "source": "wages/data/wages.json latest_rows, 2025 annual averages, twelve counties",
+      "assert": "(lambda C, F, P: D['doublecount']['column_sum'] == 54372 and D['doublecount']['once_counted'] == 33528 and D['doublecount']['doubled'] == 20844 and D['doublecount']['column_sum'] - D['doublecount']['once_counted'] == D['doublecount']['doubled'] and sum(c['emp'] for c in P) == D['doublecount']['doubled'] and sum(c['emp'] for c in F) == D['doublecount']['once_counted'] and D['doublecount']['unsplit_chemistry'] == 9498 and all(c['parent'] in [f['code'] for f in F] for c in P) and len(F) == 2 and len(P) == 4)(D['codes'], [c for c in D['codes'] if c['level'] == 'family'], [c for c in D['codes'] if c['level'] == 'part'])",
+      "actual": "(D['doublecount']['column_sum'], D['doublecount']['once_counted'], D['doublecount']['doubled'])",
+      "falsified_if": "The pay page refetches and any of the three totals moves, or a part code stops nesting inside a family code in this site's own code list. The identity in the middle is the load-bearing clause: the overhang drawn on the chart is column minus once-counted, and it is separately asserted to equal the sum of the four part rows, so the chart cannot draw an overhang that is not the duplication it claims to be."
+    },
+    {
+      "id": "src-lq-worked",
+      "text": "The recipe's worked reading is Summit County, Ohio, area code 39153, plastics and rubber products, NAICS 326, at 3.27 times the national share on 3,824 jobs in 2025, and it is the largest 326 employment base in the file (recipe step 4, and the white callout on the cold-open strip).",
+      "source": "wages/data/wages.json latest_rows, the lq and area fields",
+      "assert": "(lambda w, R: w['county'] == 'Summit' and w['area'] == '39153' and w['naics'] == '326' and w['lq'] == 3.27 and w['emp'] == 3824 and w['year'] == 2025 and all(r['emp'] <= w['emp'] for r in R if r['naics'] == '326'))(D['lq']['worked'], D['readings'])",
+      "actual": "D['lq']['worked']",
+      "falsified_if": "That county's employment or concentration is revised, or another county overtakes Summit as the largest 326 base, at which point the recipe would be walking a reader to a number the site no longer prints. The last clause is what pins WHICH row the recipe teaches from: without it a refetch could silently move the worked example to a different county while every printed figure still agreed with itself."
+    },
+    {
+      "id": "src-lq-fragile",
+      "text": "The largest concentration reading this site publishes is Geauga County resin at 22.7 times the national share, and it rests on 491 jobs, fewer than five hundred (the orange callout on the cold-open strip, and the small-base rule in recipe step 5).",
+      "source": "wages/data/wages.json latest_rows",
+      "assert": "(lambda f, R: f['lq'] == 22.7 and f['emp'] == 491 and f['emp'] < 500 and f['county'] == 'Geauga' and f['naics'] == '3252' and f['lq'] == max(r['lq'] for r in R) and len([r for r in R if r['lq'] == f['lq']]) == 1)(D['lq']['fragile'], D['readings'])",
+      "actual": "(D['lq']['fragile'], max(r['lq'] for r in D['readings']))",
+      "falsified_if": "Another reading overtakes it, or its base moves above five hundred, at which point the strip's own caption stops being the small-base warning it is drawn to be. The uniqueness clause is deliberate: a tie would make 'the largest' ambiguous and the callout would name one of two."
+    },
+    {
+      "id": "src-lq-distribution",
+      "text": "Forty-five of the fifty-one concentration readings this site publishes sit above 1.0, and all fifty-one are drawn on the cold-open strip (the strip's own heading line and its text alternative).",
+      "source": "wages/data/wages.json, every 2025 row carrying a location quotient",
+      "assert": "D['lq']['n_readings'] == 51 and D['lq']['n_above_one'] == 45 and len(D['readings']) == 51 and len([r for r in D['readings'] if r['lq'] > 1]) == 45",
+      "actual": "(len(D['readings']), len([r for r in D['readings'] if r['lq'] > 1]))",
+      "falsified_if": "A county figure is disclosed or withheld in a later vintage, changing the count of readings, or a reading crosses 1.0. The strip states both numbers in its opening line, so a drift in either would leave the first sentence a reader meets disagreeing with the marks under it."
+    },
+    {
+      "id": "src-suppression-rates",
+      "text": "Every one of the 51 state geographies discloses its plastics and rubber employment. 155 of 382 metropolitan areas do, and 703 of 1,838 counties, so most metros and most counties are withheld (the suppression chart, its table, and the section lede).",
+      "source": "peers/data/peers.json visibility, from the by-industry national pull",
+      "assert": "(lambda S: S['state']['disclosed'] == 51 and S['state']['suppressed'] == 0 and S['metro']['disclosed'] == 155 and S['metro']['total'] == 382 and S['county']['disclosed'] == 703 and S['county']['total'] == 1838 and all(v['disclosed'] + v['suppressed'] == v['total'] for v in S.values()) and all(abs(v['share'] - v['disclosed'] / v['total'] * 100) < 0.05 for v in S.values()) and S['metro']['share'] < 50 and S['county']['share'] < 50)(D['suppression'])",
+      "actual": "D['suppression']",
+      "falsified_if": "A later vintage discloses or withholds differently, or the shares stop matching the counts they are drawn from. The two under-fifty clauses guard the section's claim in words rather than in digits: the heading says most metros and most counties do not disclose, and that sentence has to fail if the shares cross a half."
+    },
+    {
+      "id": "src-three-classifications",
+      "text": "This site defines its subject three times: six industry codes of which three are its register, twenty-six occupation codes, and ten education codes split three core and seven adjacent (the three classification cards).",
+      "source": "SOURCES.json ipeds filters for the education codes; occupations/data/viz-data.json for the occupation set; this site's own industry register",
+      "assert": "(lambda C: C['naics']['n_codes'] == 6 and C['naics']['n_register'] == 3 and C['soc']['n_codes'] == 26 and C['cip']['n_core'] == 3 and C['cip']['n_adjacent'] == 7 and len(C['cip']['core']) == 3 and len(C['cip']['adjacent']) == 7 and all(len(c['code']) == 6 for c in C['cip']['core'] + C['cip']['adjacent']) and len(set(c['code'] for c in C['cip']['core']) & set(c['code'] for c in C['cip']['adjacent'])) == 0)(D['classification'])",
+      "actual": "(D['classification']['naics']['n_codes'], D['classification']['soc']['n_codes'], D['classification']['cip']['n_core'], D['classification']['cip']['n_adjacent'])",
+      "falsified_if": "A code is added to or removed from any of the three sets. The disjointness clause is the one that carries the argument: the whole point of the education example is that core and adjacent are kept apart rather than merged, and a code appearing in both lists would make the boundary this section teaches meaningless while every count still looked right."
+    },
+    {
+      "id": "src-cip-boundary-price",
+      "text": "Counting only the three core education codes, the region's universities awarded 1,231 degrees between 2014 and 2023 across eight programmes. Counting the adjacent codes as well gives 1,490 across thirteen, a pipeline 21 percent larger from the same institutions in the same years (the boundary-call paragraph).",
+      "source": "occupations/data/viz-data.json programs, summed over by_year",
+      "assert": "(lambda C: C['degrees_core'] == 1231 and C['degrees_adjacent'] == 259 and C['degrees_both'] == 1490 and C['degrees_core'] + C['degrees_adjacent'] == C['degrees_both'] and C['programmes_core'] == 8 and C['programmes_adjacent'] == 5 and C['first_year'] == 2014 and C['last_year'] == 2023 and abs(C['lift_pct'] - 21.0) < 0.05 and abs(C['lift_pct'] - C['degrees_adjacent'] / C['degrees_core'] * 100) < 0.05)(D['classification']['cip'])",
+      "actual": "D['classification']['cip']['degrees_core'], D['classification']['cip']['degrees_both'], D['classification']['cip']['lift_pct']",
+      "falsified_if": "The degree file is refetched and either total moves, or the two stop summing to the third. This is the page's only worked consequence of a boundary call, and it is stated as a subtraction a reader can do in their head: 1,490 minus 1,231 is 259, and 259 over 1,231 is the 21 percent the sentence claims. The last clause recomputes that percentage rather than trusting the stored one."
+    },
+    {
+      "id": "src-vintage",
+      "text": "On the three producer-price series this site publishes, 259 of 273 published months were changed after they were first printed, by a typical 0.15 percent, and the largest single revision on record was 1.41 percent (the vintage section).",
+      "source": "revisions/data/revisions.json, first against latest vintage of each month",
+      "assert": "(lambda V: V['n_revised'] == 259 and V['n_published'] == 273 and V['n_series'] == 3 and abs(V['median_pct'] - 0.15) < 0.005 and abs(V['max_pct'] - 1.41) < 0.005 and V['n_revised'] < V['n_published'])(D['vintage'])",
+      "actual": "D['vintage']",
+      "falsified_if": "A new vintage revises another month, moves the median out of the band that rounds to 0.15 percent, or sets a new record above 1.41. The largest figure is recomputed here from the two index values rather than read off the stored percentage, because the page it comes from printed 1.42 until 2026-08-28 by rounding a rounded number, and a guide that tells a replicator to check our arithmetic has to do the division the way they would."
+    },
+    {
+      "id": "src-dependency-structure",
+      "text": "The Quarterly Census of Employment and Wages feeds eleven pages, more than any other source, and six of the seventeen artifacts in the register rest on a single dataset each (the dependency chart, its source line, and the chart's text alternative).",
+      "source": "SOURCES.json by_artifact, inverted",
+      "assert": "(lambda S, T: S[0]['key'] == 'qcew' and S[0]['n_pages'] == 11 and T['most_used_pages'] == 11 and all(s['n_pages'] < 11 for s in S[1:]) and T['n_single_source_pages'] == 6 and T['n_single_source_pages'] == len([p for p in D['pages'] if p['n_sources'] == 1]) and T['n_pages'] == len(D['pages']) and T['n_pages'] == 17)(D['sources'], D['totals'])",
+      "actual": "(D['sources'][0]['key'], D['sources'][0]['n_pages'], D['totals']['n_single_source_pages'], D['totals']['n_pages'])",
+      "falsified_if": "A page is added to the tree, or a page starts or stops resting on a single source, either of which moves the chart's ranking and the sentence under it. The strict-maximum clause is what makes 'more than any other' a derived statement rather than a typed one: a tie at eleven would fail it, and the chart's title would need rewriting rather than quietly becoming ambiguous."
+    },
+    {
+      "id": "src-onet-licence",
+      "text": "Exactly one of the fourteen sources states a licence: O*NET is CC BY 4.0, the licence requires attribution, and the required attribution is printed in this page's footer (the licence line under the register, and the footer).",
+      "source": "SOURCES.json sources.onet_education; occupations/data/viz-data.json onet_attribution",
+      "assert": "(lambda L: D['totals']['n_licensed'] == 1 and len(L) == 1 and L[0]['key'] == 'onet_education' and L[0]['licence'] == 'CC BY 4.0' and 'CC BY 4.0' in D['onet_attribution'] and 'USDOL/ETA' in D['onet_attribution'] and len(D['onet_attribution']) > 200)([s for s in D['sources'] if s['licence']])",
+      "actual": "[(s['key'], s['licence']) for s in D['sources'] if s['licence']]",
+      "falsified_if": "Another source starts stating a licence, or the O*NET attribution string changes or goes missing from the page it is copied from. This is the one obligation on this page that is a condition of use rather than a courtesy: dropping the footer text while continuing to describe the dataset would put the site out of compliance with the licence it names."
+    },
+    {
+      "id": "src-route-mix",
+      "text": "Of the fourteen sources, six are bulk file downloads, five are API requests, two are internal records with no endpoint, and one is a web portal query, and how you get each one is derived from its endpoint rather than declared in the registry (the register chips, and the method note that states the rule).",
+      "source": "SOURCES.json url fields, classified by _data/build/derive_sources.py",
+      "assert": "(lambda R: R == {'bulk': 6, 'api': 5, 'internal': 2, 'portal': 1} and sum(R.values()) == 14 and R['internal'] == D['totals']['n_no_endpoint'])(D['totals']['routes'])",
+      "actual": "D['totals']['routes']",
+      "falsified_if": "An agency changes an endpoint, which is exactly the event this classification is meant to surface: a bulk file becoming an API, or an API acquiring a query string, changes what a replicator has to do and the chips on the register would say the old thing. The rule is derived, so it can be wrong about a source without the registry being wrong, which is why the page prints the rule next to the labels rather than only the labels."
+    },
+    {
+      "id": "src-gap-county-names",
+      "text": "Twelve origin counties on the labour-shed page carry a five-digit code and no place name, 31,433 jobs between them, because no county crosswalk ships anywhere in this repository (the gaps section).",
+      "source": "laborshed/data/laborshed.json external.top, rows whose name falls back to the FIPS code",
+      "assert": "(lambda g: g['n'] == 12 and g['jobs'] == 31433 and g['page'] == 'laborshed' and g['close'])(one(g for g in D['gaps'] if g['id'] == 'county-names'))",
+      "actual": "[g for g in D['gaps'] if g['id'] == 'county-names']",
+      "falsified_if": "A crosswalk is added to the build, at which point the count should drop to zero and this gap should be deleted from the page rather than kept as a stale confession. It would also fail if the labour-shed data changed and the unnamed set moved, which is the point: a published gap that quietly stops matching its own page is worse than not publishing it."
+    }
+  ]
+}

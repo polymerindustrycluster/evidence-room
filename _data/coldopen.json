@@ -22,7 +22,8 @@
     "funding-map",
     "location-quotient",
     "realwage",
-    "cost-scissors"
+    "cost-scissors",
+    "sources"
   ],
   "ceilings": {
     "churn": 1725,

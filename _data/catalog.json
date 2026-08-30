@@ -1,20 +1,20 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-08-29 10:20",
+  "generated": "2026-08-29 22:29",
   "seconds": 0.1,
-  "scripts": 25,
+  "scripts": 26,
   "outputs_on_disk": 0,
   "outputs_claimed": 20,
   "orphan_outputs": 0,
   "registry_error": null,
   "flag_counts": {
-   "not_in_PIPELINES.md": 25,
+   "not_in_PIPELINES.md": 26,
    "no_house_docstring": 22,
    "no_traps_section": 22,
-   "output_missing_on_disk": 21,
+   "output_missing_on_disk": 22,
    "import_error": 8,
-   "not_in_SOURCES.json": 5,
+   "not_in_SOURCES.json": 6,
    "no_output_detected": 4
   }
  },
@@ -245,6 +245,58 @@
     "import_error",
     "no_house_docstring",
     "no_traps_section",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "derive_sources.py",
+   "kind": "derive",
+   "what_it_adds": "A page-shaped rendering of _data/SOURCES.json and _data/catalog.json, plus the worked numbers the guide teaches from: the concentration recipe’s own reading, the three classifications this site has to choose a subject inside (industry, occupation, education) and what moving the education boundary costs, the industry-code hierarchy and what adding a family to its own children costs, the disclosure rates behind the suppression lesson, how far these series revise after they are published, and the dependency structure of which source feeds which page.  IT IS GENERATED BECAUSE A TYPED COPY DRIFTS. ",
+   "what_one_row_is": "One row of `sources` is one dataset in the registry: its endpoint, the exact filter values applied to it, whether it needs a key, how you actually get it, its licence, and every page here that rests on it. One row of `pages` is one artifact and the sources it rests on, which is the same relation read the other way.  `codes` is one NAICS code as this site uses it, with its parent, its plain-English",
+   "traps": "- THE ROUTE IS DERIVED, NOT DECLARED. SOURCES.json has no \"how do I get this\" field, so `route` is classified from the URL shape. The rule is published on the page and stated in meta.definition, because a derived label that reads as a fact is the defect this whole site is about. Order matters: a null URL is checked first, then a file extension or directory path, then an /api/ segment. BLS QCEW’s endpoint contains BOTH \"/api/\" and \".csv\" and it is a bulk CSV slice, so extension wins. - THE PLAIN-LANGUAGE LINES ARE EDITORIAL AND HAND-AUTHORED, harvested from the glosses the pages already carry. ",
+   "docstring": {
+    "has_house_docstring": true,
+    "has_traps": true,
+    "length": 3076
+   },
+   "hosts": [],
+   "outputs": [],
+   "page_outputs": [
+    "_data/build/sources/data/registry.json"
+   ],
+   "page_outputs_exist": {
+    "_data/build/sources/data/registry.json": false
+   },
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": [
+     "sources/data/registry.json"
+    ]
+   },
+   "output_learned_by": {
+    "sources/data/registry.json": "observed"
+   },
+   "observed_stop": "open(registry.json,'w')",
+   "observed_network": [],
+   "observed_reads": [
+    "_data/SOURCES.json",
+    "_data/catalog.json",
+    "laborshed/data/laborshed.json",
+    "occupations/data/viz-data.json",
+    "peers/data/peers.json",
+    "revisions/data/revisions.json",
+    "wages/data/wages.json"
+   ],
+   "import_error": null,
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
     "not_in_PIPELINES.md",
     "not_in_SOURCES.json",
     "output_missing_on_disk"
