@@ -64,7 +64,10 @@ within a week.
 
 ---
 
-## Deferred items
+## Deferred items — all eight now shipped
+
+Kept with their specs intact rather than deleted. The acceptance criterion under each is the
+thing that has to keep passing; a shipped item is not a closed one.
 
 Each carries: what it is, why it is worth doing, the material that already exists, its
 acceptance criterion, and what could go wrong. Ordered by value per unit of work.
@@ -95,7 +98,10 @@ which one answers "what does a job here pay".
 **Risk.** The nesting explanation is already in the classification section; this recipe must
 reference it rather than repeat it, or the page starts saying the same thing twice.
 
-### D2. Recipe 3 — the labor shed
+### D2. Recipe 3 — the labor shed — **SHIPPED**
+
+> Shipped 2026-08-30. Its two-basis identity is guarded in derive_sources.py: the build fails if the two
+> totals stop reconciling, because the identity IS the lesson.
 
 **What.** "Where do the people who work here actually live?" LODES origin-destination.
 
@@ -143,7 +149,10 @@ difference between an obligation, an estimated total, and a program ceiling.
 
 **Risk.** None material. This is additive and self-contained.
 
-### D4. Nominal against real, and which deflator
+### D4. Nominal against real, and which deflator — **SHIPPED**
+
+> Shipped 2026-08-30. The build fails if the finished-product series stops peaking in a different month on
+> the two bases, because the recipe's worked example is that the peak MOVES.
 
 **What.** Why a price or a dollar figure needs a basis, which deflator this site uses
 (CPI-U), and what changes when you apply it.
@@ -163,7 +172,9 @@ statements survive.
 **Risk.** Easy to over-explain into an economics lesson. Keep it to: pick a basis, say which,
 be consistent, and show one reading that flips.
 
-### D5. Recipe 4 — federal contracting
+### D5. Recipe 4 — federal contracting — **SHIPPED**
+
+> Shipped 2026-08-30. Shipped after D3 and D4 as the sequencing required, so it could lean on both.
 
 **What.** "How much federal money reaches my industry here?" USAspending, filtered by NAICS
 and place of performance.
@@ -182,7 +193,10 @@ their filter cannot see.
 
 **Risk.** Overlaps D3 and D4; sequence it after both so it can lean on them.
 
-### D6. How this site verifies itself
+### D6. How this site verifies itself — **SHIPPED**
+
+> Shipped 2026-08-30. Kept short and last, as its own spec demanded. It names what the harness did NOT
+> catch, which is the honest half.
 
 **What.** A short section on the claims harness: every numeric sentence carries a written
 condition that would prove it wrong, and they re-run on every build.
@@ -199,7 +213,10 @@ tooling.
 **Risk.** Turning the page into a tour of our own harness. If it cannot be done in a short
 section, it belongs on its own page or nowhere.
 
-### D7. Localisation notes
+### D7. Localisation notes — **SHIPPED**
+
+> Shipped 2026-08-30. The substitution list is GENERATED from the recipes' own values, so it cannot go
+> stale, and the two values a reader must supply are marked rather than omitted.
 
 **What.** A short "swap PIC-12 for your counties" section: which parameters change (the FIPS
 list, the code set, the reference geography) and which stay.
@@ -210,7 +227,10 @@ list, the code set, the reference geography) and which stay.
 
 **Acceptance.** A reviewer names every value they would have to change for their own region.
 
-### D8. Troubleshooting: "I got a different number"
+### D8. Troubleshooting: "I got a different number" — **SHIPPED**
+
+> Shipped 2026-08-30. Placed at the end of the recipes, where a reader who has just failed arrives. It
+> introduces no new material, which was the point.
 
 **What.** The four reasons a replicator's figure will not match ours, in the order they
 occur: a different vintage, a different basis, a different code set, and a suppression they
@@ -223,9 +243,13 @@ Vintage is already in v1; this collects all four in one place at the point of fr
 
 ## Sequencing
 
-~~D1~~ → ~~D3~~ → **D4** → D2 → D5 → D8 → D7 → D6.
+~~D1~~ → ~~D3~~ → ~~D4~~ → ~~D2~~ → ~~D5~~ → ~~D8~~ → ~~D7~~ → ~~D6~~.
 
-**D1 and D3 shipped 2026-08-30.** D4 is next, and it is the one that unblocks D5.
+**All eight shipped 2026-08-30, in the order this file set.** The page now carries five
+worked questions, the basis decision under all of them, a troubleshooting path, a generated
+substitution list, and a short section on the claims harness. What is left is not on this
+list: it is the cross-page editorial audit run the same day, which found 60 defects across
+the other thirteen pages and is a larger piece of work than this roadmap ever was.
 
 Rationale: D1 completes the pair of QCEW recipes a reader most wants, and shares v1's
 source, so it is cheap. D3 is self-contained, additive, and carries the strongest lesson.

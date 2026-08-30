@@ -115,11 +115,11 @@
     },
     {
       "id": "src-dependency-structure",
-      "text": "The Quarterly Census of Employment and Wages feeds eleven pages, more than any other source, and six of the seventeen artifacts in the register rest on a single dataset each (the dependency chart, its source line, and the chart's text alternative).",
+      "text": "The Quarterly Census of Employment and Wages feeds ten pages, more than any other source, and seven of the seventeen artifacts in the register rest on a single dataset each (the dependency chart, its source line, and the chart's text alternative).",
       "source": "SOURCES.json by_artifact, inverted",
-      "assert": "(lambda S, T: S[0]['key'] == 'qcew' and S[0]['n_pages'] == 11 and T['most_used_pages'] == 11 and all(s['n_pages'] < 11 for s in S[1:]) and T['n_single_source_pages'] == 6 and T['n_single_source_pages'] == len([p for p in D['pages'] if p['n_sources'] == 1]) and T['n_pages'] == len(D['pages']) and T['n_pages'] == 17)(D['sources'], D['totals'])",
+      "assert": "(lambda S, T: S[0]['key'] == 'qcew' and S[0]['n_pages'] == 10 and T['most_used_pages'] == 10 and all(s['n_pages'] < 10 for s in S[1:]) and T['n_single_source_pages'] == 7 and T['n_single_source_pages'] == len([p for p in D['pages'] if p['n_sources'] == 1]) and T['n_pages'] == len(D['pages']) and T['n_pages'] == 17)(D['sources'], D['totals'])",
       "actual": "(D['sources'][0]['key'], D['sources'][0]['n_pages'], D['totals']['n_single_source_pages'], D['totals']['n_pages'])",
-      "falsified_if": "A page is added to the tree, or a page starts or stops resting on a single source, either of which moves the chart's ranking and the sentence under it. The strict-maximum clause is what makes 'more than any other' a derived statement rather than a typed one: a tie at eleven would fail it, and the chart's title would need rewriting rather than quietly becoming ambiguous."
+      "falsified_if": "A page gains or loses a source without this chart moving. Corrected 2026-08-30 from eleven pages and six single-source pages: an editorial reviewer reading the RENDERED revisions page, with no access to this repository, noticed that its methodology box credited the employment census on a page built from three producer-price series. The registry did list qcew against revisions, so the box was printing the registry faithfully and the registry was wrong. That single false entry made QCEW look more central than it is AND made this site look better diversified than it is, and no gate here could see it: every check confirmed the page matched the registry, and none asked whether the registry matched the page."
     },
     {
       "id": "src-licences-and-attribution",
@@ -200,6 +200,62 @@
       "assert": "(lambda E: E['printed'] == 160000000 and E['actual'] == 14999983 and abs(E['factor'] - round(E['printed'] / E['actual'], 1)) < 0.05 and E['factor'] > 10)(D['awards']['error'])",
       "actual": "D['awards']['error']",
       "falsified_if": "The factor stops being computed from the two figures it sits between, or the corrected value moves without the multiple moving with it. This is the one claim on the page whose subject is the page's own publisher, and it is asserted like any other because an error printed as teaching material has to be as checkable as the findings around it."
+    },
+    {
+      "id": "src-deflator-table",
+      "text": "The basis section publishes the deflator it teaches: CPI-U annual averages on a 2019 base, moving 255.657 to 322.132, so general prices rose 26.0 percent across the window and a 2025 dollar buys what 79 cents bought in 2019.",
+      "source": "cost-scissors/data/scissors.json deflator block",
+      "assert": "(lambda F: F['base_year'] == '2019' and F['latest_year'] == '2025' and abs(F['inflation_pct'] - 26.0) <= 0.05 and abs(F['cpi_latest'] / F['cpi_base'] - 1.26) <= 0.005 and len(F['years']) >= 7)(D['deflator'])",
+      "actual": "(D['deflator']['inflation_pct'], D['deflator']['cpi_base'], D['deflator']['cpi_latest'])",
+      "falsified_if": "The price page reships its deflator on a different base or a later year and this section keeps teaching the old one. The recipe tells a reader to divide by these exact numbers, so a stale table here is a wrong instruction rather than a stale fact."
+    },
+    {
+      "id": "src-deflator-flip",
+      "text": "The worked example is that deflation moves the PEAK, not just the level: finished plastics and rubber prices reach 139.8 in cash and 110.9 deflated, and their dearest month is July 2026 in cash but August 2022 in real terms, nearly four years earlier. Resin at 125.4 in cash comes back to 99.6 deflated, essentially its 2019 level.",
+      "source": "cost-scissors/data/scissors.json series, deflated by its own CPI table",
+      "assert": "(lambda F: F['product']['real'] < F['product']['nominal'] and F['product']['real_peak'] != F['product']['cash_peak'] and F['product']['real_peak'][:4] == '2022' and abs(F['product']['real'] - 110.9) <= 0.6 and abs(F['resin']['real'] - 99.6) <= 0.6 and F['resin']['real'] < 100 < F['resin']['nominal'])(D['deflator'])",
+      "actual": "(D['deflator']['product'], D['deflator']['resin'])",
+      "falsified_if": "The peak stops moving under deflation, or resin stops crossing 100. Both are the lesson rather than decoration: the build fails in derive_sources.py before this claim runs if the peaks converge, because the section would then be teaching a difference that no longer exists. Resin crossing 100 is what makes 'gave the whole rise back' true in real terms and false in cash, which is the sharpest single case on the page."
+    },
+    {
+      "id": "src-shed-two-bases",
+      "text": "Recipe 3 prints both labour-shed totals and the identity joining them: the twelve counties held 1,735,169 jobs in 2022 counting a worker resident in any state and 1,702,542 counting Ohio residents only, 32,627 apart, with the same 1,524,279 held from inside sitting in both. The gap is entirely in the imported half, which is why the two are not rival estimates of one quantity.",
+      "source": "laborshed/data/laborshed.json totals; laborshed/data/bench.json regions",
+      "assert": "(lambda S: S['all_residents'] == 1735169 and S['in_state_only'] == 1702542 and S['gap'] == 32627 and S['inside'] == 1524279 and S['inside'] + S['outside_in_state'] == S['in_state_only'] and S['inside'] + S['outside_any_state'] == S['all_residents'] and S['all_residents'] - S['in_state_only'] == S['gap'])(D['shed'])",
+      "actual": "D['shed']",
+      "falsified_if": "Either total moves without the other, or the identity stops closing. The identity is the lesson rather than the totals: a replicator who pulls LODES will produce one of these two without noticing there was a choice, and the arithmetic is what shows the difference is a definition rather than an error. derive_sources.py fails the build before this claim runs if the two bases stop reconciling."
+    },
+    {
+      "id": "src-shed-outside",
+      "text": "Recipe 3's last step prints the outside half honestly: of the 210,890 jobs held from outside the twelve counties, the three named groups account for 208,338 of them, 57,302 from adjacent counties, 61,708 from distant metros and 89,328 from counties too scattered to group, which is the biggest of the three and the least examined. The remaining 2,552 are not in the grouping at all, and the page says so rather than letting three numbers read as a partition of a fourth.",
+      "source": "laborshed/data/laborshed.json external",
+      "assert": "(lambda E, S: E['adjacent'] + E['distant'] + E['other'] == S['external_classified'] and S['external_classified'] + S['external_unclassified'] == S['outside_any_state'] and S['external_unclassified'] > 0 and E['other'] > E['adjacent'] and E['other'] > E['distant'] and abs(S['share_imported'] - 0.1215) < 0.001)(D['shed']['external_split'], D['shed'])",
+      "actual": "(D['shed']['external_split'], D['shed']['external_classified'], D['shed']['external_unclassified'])",
+      "falsified_if": "The three groups stop summing to the classified figure, or the classified figure plus the unclassified remainder stops making the outside total. This claim exists because its own first version was WRONG: it asserted the three groups summed to 210,890 and they sum to 208,338. The gap is small, 1.2 percent, and a recipe teaching a reader to respect bases cannot quietly absorb a base it has not explained. If the remainder ever reaches zero the wording should change back, not the assertion."
+    },
+    {
+      "id": "src-contracting-partial-year",
+      "text": "Recipe 4 separates the finished years from the running one: fiscal 2019 to 2026 is eight years of which seven are closed, $225.8M was obligated across the closed years, and the $248.8M all-year figure is the more misleading of the two because $23.0M of it is a part-year.",
+      "source": "federal-money/data/federal.json naics rows",
+      "assert": "(lambda C: C['n_years'] == 8 and C['closed_years'] == 7 and C['closed_years'] == C['n_years'] - 1 and C['total_closed'] + C['partial_fy_amount'] == C['total_all'] and abs(C['total_closed'] / 1e6 - 225.8) < 0.1 and abs(C['partial_fy_amount'] / 1e6 - 23.0) < 0.1)(D['contracting'])",
+      "actual": "(D['contracting']['total_closed'], D['contracting']['partial_fy_amount'])",
+      "falsified_if": "A fiscal year closes and the split does not move with it, or the two parts stop making the whole. The step teaches that a running year is not a year, and it would be a poor place to print a total that quietly included one."
+    },
+    {
+      "id": "src-contracting-blind",
+      "text": "Recipe 4's last step names what its own filter cannot see: the NAICS cut reads eight industry codes and is blind by construction to university and research awards, which file under 61xxxx and 5417xx, so the $14,999,983 NSF award appears nowhere in these rows.",
+      "source": "federal-money/data/federal.json meta.excludes",
+      "assert": "(lambda C, A: C['n_codes'] == 8 and '61xxxx' in C['invisible'] and str(A['nsf']['estimated_total']) in C['invisible'].replace(',', '') or str(f\"{A['nsf']['estimated_total']:,}\") in C['invisible'])(D['contracting'], D['awards'])",
+      "actual": "(D['contracting']['n_codes'], D['contracting']['invisible'][:120])",
+      "falsified_if": "The exclusion note stops naming the codes it excludes or stops naming the award it misses. The whole step is that a code filter's blindness is invisible in its own output, so a vague version of this sentence would be worse than none: it has to name a specific award the reader can look up and fail to find."
+    },
+    {
+      "id": "src-swaps-complete",
+      "text": "The localisation section lists every value a reader would change to run these recipes on their own region, eight of them, and marks the two that cannot be supplied from here: their own counties' FIPS codes and their own industry's code set. The list is generated from the recipes' own values rather than typed.",
+      "source": "derived in derive_sources.py from the footprint, register, worked cell, labour shed and deflator that the recipes above already publish",
+      "assert": "(lambda S, F, W: len(S) == 8 and len([x for x in S if x['supply']]) == 2 and all(x['what'] and x['ours'] and x['yours'] and x['where'] and x['note'] for x in S) and any(F['label'] in x['ours'] for x in S) and any(','.join(W['register_naics']).replace(',', ', ') == x['ours'] for x in S))(D['swaps'], D['footprint'], D['wage'])",
+      "actual": "[(x['what'], x['supply']) for x in D['swaps']]",
+      "falsified_if": "A recipe starts depending on a value this list does not carry, or one of these stops being generated from the page it describes. Two transfer tests drove this section: in the second, a reviewer with no repo access could name every substitution except exactly these two, which is why they are marked as the reader's to find rather than left off."
     }
   ]
 }

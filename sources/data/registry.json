@@ -71,11 +71,10 @@
     "occupations",
     "peers",
     "realwage",
-    "revisions",
     "scorecard",
     "wages"
    ],
-   "n_pages": 11
+   "n_pages": 10
   },
   {
    "key": "usaspending",
@@ -727,14 +726,6 @@
    "n_sources": 2
   },
   {
-   "slug": "revisions",
-   "sources": [
-    "fred",
-    "qcew"
-   ],
-   "n_sources": 2
-  },
-  {
    "slug": "timeline",
    "sources": [
     "heritage_register",
@@ -774,6 +765,13 @@
    "slug": "peers",
    "sources": [
     "qcew"
+   ],
+   "n_sources": 1
+  },
+  {
+   "slug": "revisions",
+   "sources": [
+    "fred"
    ],
    "n_sources": 1
   },
@@ -824,18 +822,19 @@
   "n_terms": 10,
   "n_public": 12,
   "most_used": "qcew",
-  "most_used_pages": 11,
-  "n_single_source_pages": 6,
+  "most_used_pages": 10,
+  "n_single_source_pages": 7,
   "single_source_pages": [
    "federal-money",
    "funding-map",
    "laborshed",
    "location-quotient",
    "peers",
+   "revisions",
    "wages"
   ],
   "n_build_scripts": 26,
-  "catalog_generated": "2026-08-30 09:18"
+  "catalog_generated": "2026-08-30 10:09"
  },
  "footprint": {
   "key": "pic12",
@@ -1688,6 +1687,232 @@
     }
    ]
   }
+ },
+ "deflator": {
+  "index": "CPI-U, all items, U.S. city average, annual averages",
+  "base_year": "2019",
+  "latest_year": "2025",
+  "source": "BLS, as shipped in this site's federal-money/data/federal.json",
+  "caution": "Annual averages, not monthly, and the table carries no 2026 average. A real-terms reading of a 2026 month therefore uses the 2025 deflator and understates the adjustment by whatever prices have done since, so every real figure quoted on this page is an upper bound.",
+  "cpi_base": 255.657,
+  "cpi_latest": 322.132,
+  "inflation_pct": 26.0,
+  "product": {
+   "label": "PPI: plastics and rubber products manufacturing",
+   "nominal": 139.8,
+   "real": 110.9,
+   "real_peak": "2022-08-01",
+   "cash_peak": "2026-07-01",
+   "unit": "index",
+   "stage": "product"
+  },
+  "resin": {
+   "label": "PPI: plastics material and resin manufacturing",
+   "nominal": 125.4,
+   "real": 99.6,
+   "real_peak": "2021-10-01",
+   "cash_peak": "2022-06-01",
+   "unit": "index",
+   "stage": "resin"
+  },
+  "years": [
+   {
+    "year": "2018",
+    "cpi": 251.107,
+    "factor": 0.9822
+   },
+   {
+    "year": "2019",
+    "cpi": 255.657,
+    "factor": 1.0
+   },
+   {
+    "year": "2020",
+    "cpi": 258.811,
+    "factor": 1.0123
+   },
+   {
+    "year": "2021",
+    "cpi": 270.97,
+    "factor": 1.0599
+   },
+   {
+    "year": "2022",
+    "cpi": 292.655,
+    "factor": 1.1447
+   },
+   {
+    "year": "2023",
+    "cpi": 304.702,
+    "factor": 1.1918
+   },
+   {
+    "year": "2024",
+    "cpi": 313.689,
+    "factor": 1.227
+   },
+   {
+    "year": "2025",
+    "cpi": 322.132,
+    "factor": 1.26
+   }
+  ]
+ },
+ "shed": {
+  "year": 2022,
+  "state": "Ohio",
+  "segment": "JT00",
+  "all_residents": 1735169,
+  "in_state_only": 1702542,
+  "gap": 32627,
+  "inside": 1524279,
+  "outside_any_state": 210890,
+  "outside_in_state": 178263,
+  "share_imported": 0.1215,
+  "external_split": {
+   "adjacent": 57302,
+   "distant": 61708,
+   "other": 89328
+  },
+  "external_classified": 208338,
+  "external_unclassified": 2552,
+  "no_industry": "LODES origin-destination carries NO industry dimension. This is the labor shed of the whole economy, NOT of the polymer cluster. Industry detail exists only in the WAC workplace files and cannot be crossed with residence.",
+  "not_a_commute": "The home end is a residence on file, not evidence of a journey. Nothing here counts a trip.",
+  "row_is": "one (home county, work county) count of JOBS, not people and not commuters. A two-job worker appears twice."
+ },
+ "contracting": {
+  "first_fy": 2019,
+  "last_fy": 2026,
+  "n_years": 8,
+  "closed_years": 7,
+  "total_all": 248801869,
+  "total_closed": 225777324,
+  "partial_fy_amount": 23024545,
+  "n_codes": 8,
+  "top": [
+   {
+    "name": "All Other Rubber Product Manufacturing",
+    "amount": 87640681
+   },
+   {
+    "name": "Tire Manufacturing (except Retreading)",
+    "amount": 77830825
+   },
+   {
+    "name": "Paint and Coating Manufacturing",
+    "amount": 23490845
+   }
+  ],
+  "by_fy": [
+   {
+    "fy": 2019,
+    "amount": 40990023
+   },
+   {
+    "fy": 2020,
+    "amount": 25549182
+   },
+   {
+    "fy": 2021,
+    "amount": 42694780
+   },
+   {
+    "fy": 2022,
+    "amount": 39580949
+   },
+   {
+    "fy": 2023,
+    "amount": 16040531
+   },
+   {
+    "fy": 2024,
+    "amount": 21945590
+   },
+   {
+    "fy": 2025,
+    "amount": 38976269
+   },
+   {
+    "fy": 2026,
+    "amount": 23024545
+   }
+  ],
+  "invisible": "University and research awards are invisible to the NAICS view by construction: it filters to 325*/326* manufacturing codes, and a university files under 61xxxx or 5417xx. The NSF NEO-SMART Engine ($14,999,983) and TARDISS do not appear in the NAICS rows. The all-industry county rows do capture them.",
+  "place_caution": "Place of performance is a reported field on the award, not an observation of where the work happened. A centrally administered contract, or a prime performing through a subaward, can put the code somewhere other than the activity. An obligation is not an outlay.",
+  "cpi_base": 2025
+ },
+ "swaps": [
+  {
+   "what": "The geography",
+   "ours": "PIC-12, 39007, 39035, 39055 and 9 more",
+   "yours": "your own county FIPS codes",
+   "where": "every recipe",
+   "supply": true,
+   "note": "Not in this repository, and not derivable from anything on this page. Census publishes a national county gazetteer; LEHD ships a geography crosswalk beside the LODES files."
+  },
+  {
+   "what": "The industry code set",
+   "ours": "3252, 3255, 326",
+   "yours": "the codes your own plants file under",
+   "where": "concentration, pay, federal money",
+   "supply": true,
+   "note": "A judgment rather than a lookup. The classification section above is the method: start from the plants, test each code, keep the boundary calls in a named group."
+  },
+  {
+   "what": "The year",
+   "ours": "2025",
+   "yours": "any published year",
+   "where": "every recipe",
+   "supply": false,
+   "note": "The QCEW endpoint takes it in the path. Annual averages only exist for completed years."
+  },
+  {
+   "what": "The aggregation level",
+   "ours": "75 for a three-digit code",
+   "yours": "the rung matching YOUR code\u2019s digit length",
+   "where": "concentration, pay",
+   "supply": false,
+   "note": "County file: 74 sector, 75 three-digit, 76 four, 77 five, 78 six. A state file numbers the same rungs 55 to 58."
+  },
+  {
+   "what": "The ownership",
+   "ours": "own_code 5, private",
+   "yours": "unchanged",
+   "where": "concentration, pay",
+   "supply": false,
+   "note": "Industry rows exist only at own_code 5. The national denominator rows are own_code 0, and that asymmetry is the point of the basis note."
+  },
+  {
+   "what": "The national comparison file",
+   "ours": "US000",
+   "yours": "unchanged",
+   "where": "concentration",
+   "supply": false,
+   "note": "Same endpoint, same year, area US000."
+  },
+  {
+   "what": "The state",
+   "ours": "Ohio",
+   "yours": "your own state, and its neighbours if your region crosses a line",
+   "where": "labour shed",
+   "supply": false,
+   "note": "LODES is one file per state. A region spanning two states needs both, plus the aux file for each."
+  },
+  {
+   "what": "The deflator base year",
+   "ours": "2019",
+   "yours": "any year you name and keep",
+   "where": "the basis section, federal money",
+   "supply": false,
+   "note": "Any base is defensible. Printing which one you used is not optional."
+  }
+ ],
+ "checks": {
+  "n_pages": 16,
+  "n_claims": 429,
+  "n_manual": 15,
+  "this_page": 32,
+  "n_auto": 414
  },
  "vintage": {
   "n_revised": 259,

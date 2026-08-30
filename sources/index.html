@@ -23,12 +23,14 @@
     <p class="eyebrow">A replication guide for other regions</p>
     <h1>You can rebuild this for your own region. <em>The codes are the hard part</em>,
       and they are all on this page.</h1>
-    <p class="stand">Fourteen datasets build every page on this site, twelve of them
-      public and two internal records nobody can fetch. Here are the endpoints, the exact
-      filters, what each source cannot tell you, and the traps that produce a confidently
-      wrong answer rather than an obviously wrong one. It opens on one question carried
-      the whole way, from the endpoint to the reading, because a worked question teaches
-      what a table of links cannot.</p>
+    <p class="stand"><b id="nrecipes">Worked questions</b>, each carried the whole way
+      from the endpoint to the reading, on the public federal data behind every page here.
+      The first one needs a browser, a spreadsheet and two file downloads: no key, no
+      registration, and nothing from this repository. What costs you time is not the data,
+      it is deciding which codes count as your industry, so that decision is worked
+      through rather than assumed. Also here: the fourteen datasets, what each one cannot
+      tell you, and the traps that give a confidently wrong answer rather than an
+      obviously wrong one.</p>
     <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Sources register compiled from the
       fetch scripts, August&nbsp;2026</p>
     <!-- THE COLD OPEN. The page leads on the concentration recipe, so the first mark a
@@ -49,7 +51,7 @@
 
 <!-- ACT 1: ONE QUESTION, CARRIED ALL THE WAY. This is the page. The register below is
      reference; this is the thing another region can actually copy on a Tuesday. -->
-<section class="band" id="sec-concentration" data-nav="Concentration">
+<section class="band" id="sec-concentration" data-recipe="1" data-nav="Concentration">
   <div class="wrap">
     <p class="takeaway">The worked question</p>
     <h2>Is your region unusually concentrated in an industry?</h2>
@@ -190,9 +192,14 @@
           denominator together, so it does not drag the ratio toward zero, but it does not
           leave it untouched either. Job and site counts built this way are floors: the
           missing counties&rsquo; jobs are simply absent. The ratio is neither a floor nor
-          a census. Withheld counties are disproportionately the small ones, which are
-          usually the least concentrated, so a ratio built without them reads more
-          plausibly as a ceiling. Print how many counties are in it, every time, because
+          a census. <b>You cannot sign the direction of that error</b>, and it is
+          tempting to try. Withheld counties are disproportionately the small ones, so it
+          reads like a ceiling: drop the small places and the ratio should rise. But small
+          does not mean unconcentrated. The most concentrated cell this site publishes is
+          also one of its smallest, at 22.7 times the national share on 491 jobs, and the
+          smallest cells it publishes run from 0.09 to 22.7. Losing one of those pulls the
+          regional ratio down, not up. Report the ratio with the count of counties inside
+          it, every time, and say the direction is unknown rather than guessing it, because
           that set moves between years.</p>
         <p class="body" id="footprint">The footprint this site uses.</p>
       </li>
@@ -218,7 +225,7 @@
 
 <!-- ACT 1b: THE SECOND WORKED QUESTION. Same file, one column across, and a trap that
      is not about the data at all but about the sentence you write over it. -->
-<section class="band tint" id="sec-pay" data-nav="Pay premium">
+<section class="band tint" id="sec-pay" data-recipe="1" data-nav="Pay premium">
   <div class="wrap">
     <p class="takeaway">The second worked question</p>
     <h2>Does that industry pay better than the rest of your regional economy?</h2>
@@ -293,10 +300,187 @@
   </div>
 </section>
 
+<!-- ACT 1b-1: RECIPE 3, THE LABOUR SHED. The one most likely to be new to a reader,
+     and the one whose lesson is that the same place has two correct totals. -->
+<section class="band" id="sec-shed" data-recipe="1" data-nav="Labour shed">
+  <div class="wrap">
+    <p class="takeaway">The third worked question</p>
+    <h2>Where do the people who work here actually live?</h2>
+    <p class="lede">Most economic development offices have never pulled this one, which is
+      the reason it is here: it answers the question a single county cannot, and it is the
+      cleanest demonstration on this page that a place can have two totals that are both
+      right. Four steps. It is a bulk download rather than an API, so read step one before
+      you start.</p>
+
+    <ol class="steps">
+      <li>
+        <h3>Take the origin-destination file, and know what it costs</h3>
+        <p>The Census Bureau&rsquo;s LEHD programme publishes, for every state, a table of
+          how many jobs are held by residents of each home area and worked in each work
+          area. It is free, needs no key, and is a compressed bulk file rather than a
+          query: one per state, tens of megabytes, and you will want a spreadsheet that
+          copes or a few lines of code.</p>
+        <pre class="endpoint">https://lehd.ces.census.gov/data/lodes/LODES8/{st}/od/{st}_od_main_JT00_{year}.csv.gz</pre>
+        <p><b class="code">main</b> holds jobs where home and work are both in that state.
+          <b class="code">aux</b> is the other file, and it is the one people forget: jobs
+          worked in the state by residents of somewhere else. Which of the two you take,
+          or whether you take both, is the whole of step three.</p>
+        <p class="warn"><b>There is no industry dimension in this file.</b>
+          <b class="code">JT00</b> means all jobs in all sectors, so this is the labour
+          shed of a whole economy and never of your industry. If you need the industry cut
+          it is not here and you should stop looking for it in this file.</p>
+      </li>
+      <li>
+        <h3>Know what one row is before you sum it</h3>
+        <p class="body" id="shedrow">What a row counts.</p>
+        <p><b>A job is not a person and a home is not a journey.</b> Somebody holding two
+          jobs is two rows. The home end is an address on file, not evidence that anyone
+          travelled: a fully remote worker who lives three states away and a worker who
+          drives in every morning are the same row. Nothing in this file counts a trip, so
+          do not call the output commuting.</p>
+      </li>
+      <li>
+        <h3>The choice that makes two right answers</h3>
+        <p>Now sum the jobs worked inside your region. Take only the
+          <b class="code">main</b> file and you have counted jobs held by residents of
+          your own state. Add <b class="code">aux</b> and you have counted jobs held by
+          residents of anywhere. Both are defensible; they answer different questions, and
+          they differ by more than a rounding.</p>
+        <p class="body" id="shedbases">The two totals for this site&rsquo;s own
+          footprint.</p>
+        <p class="formula" id="shedidentity">The identity.</p>
+        <p>Notice what the identity says: the jobs held from inside the region are the
+          <em>same number</em> on both bases. Every bit of the difference sits in the
+          imported half. So the two totals are not rival estimates of one quantity, and
+          treating the gap as error is the mistake. Pick the basis your comparison needs,
+          and if you are ranking yourself against other regions, use the basis they used.</p>
+      </li>
+      <li>
+        <h3>Read the outside half, and do not over-read it</h3>
+        <p class="body" id="shedoutside">Where the imported jobs come from.</p>
+        <p><b>Adjacent against distant is your judgment, not a published field.</b> The
+          file gives you a home county code and nothing else. Any grouping into
+          neighbouring and far-away is a line you drew, so draw it explicitly, print the
+          rule, and expect somebody to argue with it. The alternative is not objectivity;
+          it is an unstated rule.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ACT 1b-2: THE BASIS. Not a recipe: a decision that silently governs every recipe
+     that compares two years. It sits here because both worked questions above are
+     single-year and the ones below are not. -->
+<section class="band" id="sec-basis" data-nav="Nominal or real">
+  <div class="wrap">
+    <p class="takeaway">The decision under every comparison across years</p>
+    <h2>A dollar in 2019 and a dollar in 2026 are different units</h2>
+    <p class="lede">Both questions above are single-year, so nothing needed a basis. The
+      moment you compare two years, you are choosing one whether you say so or not, and
+      the default choice is the wrong one. This is the shortest thing on the page and it
+      changes more answers than anything else on it.</p>
+
+    <ol class="steps">
+      <li>
+        <h3>Pick a basis and name it in the sentence</h3>
+        <p><b>Nominal</b> is the number as invoiced or appropriated: what actually changed
+          hands. <b>Real</b> divides that by a price index so the unit stays the same size
+          across years. Neither is more honest. What is dishonest is not saying which,
+          because a reader assumes real and the easy number is nominal.</p>
+        <p class="warn"><b>This site shipped a whole page without making that call.</b>
+          Every series on its price page was nominal and the page never said so, across
+          years in which general prices rose a quarter, so a rise of forty percent and a
+          record high both read as real gains. Nothing was miscomputed. The basis was
+          simply never stated, which is the most common way this goes wrong.</p>
+      </li>
+      <li>
+        <h3>Get the index, and use annual averages</h3>
+        <p>For general prices the standard choice is the Consumer Price Index for all
+          urban consumers, annual averages, published free and without a key. Divide every
+          figure by the index for its own year, then multiply by the index for the year
+          you want to express everything in. Pick that base year once and print it.</p>
+        <p class="body" id="cpitable">The table this site uses.</p>
+        <p class="warn"><b>The index runs out before your data does.</b> Annual averages
+          exist only for completed years, so a figure from the current year has no
+          deflator of its own and has to borrow the last published one. That understates
+          the adjustment by whatever prices have done since, which makes every real figure
+          computed that way an upper bound. Say so rather than letting it pass as exact.</p>
+      </li>
+      <li>
+        <h3>Now look at what moved</h3>
+        <p class="body" id="deflated">What changes on this site&rsquo;s own price page.</p>
+        <p><b>The peak is the one that catches people.</b> A series at a record high in
+          cash can have peaked years earlier in real terms, and a page that says
+          &ldquo;record high&rdquo; without a basis has told a reader something that is
+          true of the money and false of the value. That is not a rounding difference. It
+          is a different sentence.</p>
+      </li>
+      <li>
+        <h3>Which of your own statements survive</h3>
+        <p>Take every sentence you have written that compares two years and re-run it on
+          the deflated series. Three things can happen: it survives unchanged, it survives
+          with a smaller number, or it reverses. Print which. A finding that holds on both
+          bases is worth more than one that holds on the one you happened to pick, and you
+          only know which you have if you check.</p>
+        <p class="body" id="deflordering">What survived here.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ACT 1b-3: RECIPE 4, FEDERAL CONTRACTING. Sequenced after the basis section, which
+     it depends on: this is the first recipe whose output is dollars across years. -->
+<section class="band tint" id="sec-contracting" data-recipe="1" data-nav="Federal money">
+  <div class="wrap">
+    <p class="takeaway">The fourth worked question</p>
+    <h2>How much federal money reaches your industry, in your place?</h2>
+    <p class="lede">This one teaches the limit of a code filter better than anything else
+      on the page, because the thing it gets wrong is invisible in its own output. Four
+      steps, and the fourth is the one that changes what you publish.</p>
+
+    <ol class="steps">
+      <li>
+        <h3>Ask by category, with a POST</h3>
+        <p>USAspending publishes every federal award. The endpoint that answers
+          &ldquo;how much, cut by X&rdquo; takes a POST with a JSON body, and the category
+          is part of the path rather than the body: <b class="code">naics</b> and
+          <b class="code">county</b> are the two this site asks for.</p>
+        <pre class="endpoint">POST https://api.usaspending.gov/api/v2/search/spending_by_category/naics/</pre>
+        <p>Filter on place of performance for your counties and on the fiscal years you
+          want. No key, no registration.</p>
+      </li>
+      <li>
+        <h3>Decide which years you are allowed to compare</h3>
+        <p class="body" id="fedyears">What the years look like here.</p>
+        <p><b>The current fiscal year is not a year.</b> It is however much of a year has
+          elapsed, and putting it in a bar chart beside completed years draws a collapse
+          that has not happened. Either exclude it or label it, and say which you did.</p>
+        <p class="warn"><b>And these are dollars across years, so the basis section above
+          applies.</b> Federal award data is published nominal. A rising total across
+          seven years is partly prices.</p>
+      </li>
+      <li>
+        <h3>An obligation is not an outlay, and a place is not an observation</h3>
+        <p class="body" id="fedcaution">What the two fields actually mean.</p>
+      </li>
+      <li>
+        <h3>Now name what your filter cannot see</h3>
+        <p class="body" id="fedblind">The awards this cut is blind to.</p>
+        <p><b>This is the step people skip, and it is the reason to run this recipe at
+          all.</b> An industry filter returns a number, and the number is correct for what
+          it counted. Nothing in the output says a whole class of award was never
+          eligible. Write the sentence naming what your filter excludes and print it next
+          to the total, every time, because a reader cannot infer it and you will forget
+          it within a month.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
 <!-- ACT 1c: CHECKING ONE AWARD, INCLUDING OURS. The only section that teaches a reader
      to check this site rather than to copy it. Its worked example is our own worst
      published error, kept in because the lookup that catches it is the transferable part. -->
-<section class="band" id="sec-awards" data-nav="Award lookup">
+<section class="band" id="sec-awards" data-recipe="1" data-nav="Award lookup">
   <div class="wrap">
     <p class="takeaway">Checking a single number, including ours</p>
     <h2>Any dollar figure with an award behind it can be checked in about a minute</h2>
@@ -382,6 +566,97 @@
   </div>
 </section>
 
+<!-- ACT 1c-2: LOCALISATION. Everything above implies this and nothing said it. The list
+     is generated from the recipes' own values, so a substitution cannot go missing when a
+     recipe changes. -->
+<section class="band" id="sec-swap" data-nav="Run it on your region">
+  <div class="wrap">
+    <p class="takeaway">Every value you have to change</p>
+    <h2>Running all of this on your own region</h2>
+    <p class="lede">The recipes above are worked on twelve counties in Northeast Ohio and
+      one industry. None of that is load-bearing. Here is every value you would swap, and
+      the two you will have to find for yourself, because a guide that implies a
+      substitution without listing it has left the reader to discover which of its numbers
+      were examples.</p>
+    <div id="swaplist"></div>
+    <p class="note"><b>Two of these are not ours to give you.</b> Your counties&rsquo; FIPS
+      codes are not in this repository, and neither is your industry&rsquo;s code set:
+      the first is a lookup, the second is a judgment, and the classification section above
+      is how to make it. Everything else on the list is a literal substitution.</p>
+  </div>
+</section>
+
+<!-- ACT 1e: HOW THIS PAGE POLICES ITSELF. Last, and short, because it is about us and
+     the page's value is that it is not. Kept because the idea transfers even to somebody
+     who never runs our code. -->
+<section class="band" id="sec-checks" data-nav="How this is checked">
+  <div class="wrap">
+    <p class="takeaway">The part that is worth copying without our code</p>
+    <h2>Every number on this site carries a written condition that would prove it wrong</h2>
+    <p class="lede">One idea, and you do not need our tooling to use it. It is here because
+      it is the cheapest thing on this page to adopt and the only one that keeps working
+      after the person who built the analysis has moved on.</p>
+    <p class="body" id="checkidea">What the harness does.</p>
+    <p><b>The discipline, not the code.</b> Write the sentence you intend to publish. Then,
+      beside it, write the condition under which it would be false, as an expression over
+      the data rather than as a note to yourself: not &ldquo;check this later&rdquo; but
+      &ldquo;this is wrong if the median moves outside this band&rdquo; or &ldquo;this is
+      wrong if these three counts stop summing to that one&rdquo;. Re-run them whenever
+      the data changes. A spreadsheet column of TRUE and FALSE does the job; the mechanism
+      does not matter and the habit does.</p>
+    <p class="body" id="checkcaught">What it has actually caught here.</p>
+    <p class="warn"><b>It does not make a page right.</b> A check is only as good as the
+      question it asks, and the failures on this site that hurt most were the ones no check
+      was looking for: a filter that was valid for a different geography, a source credited
+      on a page that never used it, three published numbers that did not sum to a fourth.
+      Every one was found by a person reading the page. Write the conditions anyway, and do
+      not mistake a green board for a correct one.</p>
+  </div>
+</section>
+
+<!-- ACT 1d: TROUBLESHOOTING. Placed at the end of the recipes, where a reader who has
+     just failed to reproduce something arrives. It adds no new material: every reason
+     below is taught above, and this section exists to collect them at the moment of
+     frustration rather than to introduce anything. -->
+<section class="band tint" id="sec-differs" data-nav="Your number differs">
+  <div class="wrap">
+    <p class="takeaway">When it does not reproduce</p>
+    <h2>You followed it and got a different number</h2>
+    <p class="lede">Assume the difference is real and find it, rather than assuming one of
+      us made an arithmetic mistake. Nearly every failure to reproduce a figure on this
+      site has turned out to be one of five things, in roughly this order of frequency.
+      Work down the list; the first four are cheap to check.</p>
+
+    <ol class="steps tight">
+      <li><h3>A different vintage</h3><p>The series was revised between our pull and
+        yours. Federal series restate history routinely and quietly. Every figure here is
+        stamped with the date it was read; compare that to your own pull date before
+        anything else. A small difference in a recent month is almost always this.</p></li>
+      <li><h3>A different basis</h3><p>The commonest cause of a difference too large to be
+        revision. Same data, different denominator or different population: private
+        against all ownerships, one state&rsquo;s residents against any state&rsquo;s,
+        nominal against real, a median over rows against a median over jobs. Each of those
+        is worked through above, and each produces a number that is not wrong.</p></li>
+      <li><h3>A different code set</h3><p>You included a code we excluded, or summed a
+        family together with its own parts. The second one is silent: nothing in the
+        output looks wrong. Check your hierarchy before your arithmetic.</p></li>
+      <li><h3>A suppression you read as a zero</h3><p>A blank cell is withheld, not zero.
+        If your total is lower than ours, count how many cells you have against how many
+        we say we had.</p></li>
+      <li><h3>A different geography</h3><p>County, metropolitan area and state are
+        published separately and do not nest. Three metros overlapping a twelve-county
+        region do not sum to it, and a custom region is yours to build rather than the
+        bureau&rsquo;s to publish.</p></li>
+    </ol>
+
+    <p class="note"><b>If it is none of these, we would rather know.</b> A figure here that
+      cannot be reproduced from public data is a defect whether or not the arithmetic is
+      right, because the whole claim of this page is that a stranger can follow it. The
+      address to argue with is at the foot of the page, and the most useful note names the
+      sentence and what you think it fails against.</p>
+  </div>
+</section>
+
 <!-- ACT 2: THE DECISION NOBODY PUBLISHES -->
 <section class="band tint" id="sec-classification" data-nav="Classification">
   <div class="wrap">
@@ -438,7 +713,23 @@
       <li><h3>Start from the plants, not the codes</h3><p>List the employers everyone in
         the region agrees are the industry, then look up what each one actually files
         under. The code list falls out of the firms; a code list drawn first will miss
-        them.</p></li>
+        them.</p>
+        <p><b>Where to look each one up.</b> Three routes, none of which needs a key.
+        Census publishes the classification itself, with definitions and the full
+        hierarchy, at <b class="mono">census.gov/naics</b>, and its search box takes a
+        plain description of what a plant makes. For a named firm, the federal award
+        record carries the code the government itself assigned: search the company at
+        <b class="mono">usaspending.gov</b> and read
+        <b class="code">naics_code</b> off any award. For a public company, its
+        <b class="code">SIC</b> is on the cover of every SEC filing at
+        <b class="mono">sec.gov/edgar</b>, which is a different scheme but close enough
+        to tell you which family you are in.</p>
+        <p><b>Then test each candidate code with one question:</b> if a plant filed under
+        this code closed tomorrow, would anyone in the region call it a loss to this
+        industry? Yes means keep it, no means it is context, and cannot-tell means it is
+        a boundary call and belongs in the next step rather than in the main list. That
+        is the test that put <b class="code">325</b> outside this site&rsquo;s own
+        register and <b class="code">3252</b> inside it.</p></li>
       <li><h3>Write down the boundary calls as calls</h3><p>For every code somebody
         reasonable would argue about, keep it in a separate named group, the way the
         education codes here are split into core and adjacent. Then either answer can be
@@ -497,20 +788,11 @@
       This site published a transposed programme code once and erased a whole
       university&rsquo;s degree programme, and every check passed, because the checks were
       true of the data the mistake had already filtered out.</p>
-    <p class="note"><b>This page broke that rule itself, in the recipe above.</b> Until
-      2026-08-29 step two named three aggregation codes that return nothing from the file
-      it tells you to download, and a machine check vouched for them: the check asserted
-      the codes appeared in this site&rsquo;s own registry, which they do, for a state
-      pull on a different page. A green tick over a filter that was right somewhere else
-      is the same defect one level up, and it took an outside reader with no access to
-      this repository to catch it. The check now asserts the codes are right for the
-      geography the recipe actually uses, and the walk-back is printed in step two rather
-      than only here.</p>
   </div>
 </section>
 
 <!-- ACT 4: THE OTHER REASON YOUR NUMBER WILL DIFFER -->
-<section class="band tint" id="sec-vintage" data-nav="Vintage">
+<section class="band tint" id="sec-vintage" data-nav="Revision">
   <div class="wrap">
     <p class="takeaway">Before you tell us we are wrong</p>
     <h2>Your number will not match ours, and that is expected</h2>

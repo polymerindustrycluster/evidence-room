@@ -1,7 +1,7 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-08-30 09:32",
+  "generated": "2026-08-30 10:34",
   "seconds": 0.1,
   "scripts": 26,
   "outputs_on_disk": 0,
@@ -285,14 +285,16 @@
    "observed_reads": [
     "_data/SOURCES.json",
     "_data/catalog.json",
+    "cost-scissors/data/scissors.json",
+    "federal-money/data/federal.json",
     "federal-money/data/techhub.json",
+    "index/data/counts.json",
+    "laborshed/data/bench.json",
     "laborshed/data/laborshed.json",
     "location-quotient/data/lq.json",
     "occupations/data/viz-data.json",
     "peers/data/peers.json",
-    "revisions/data/revisions.json",
-    "timeline/data/timeline.json",
-    "wages/data/wages.json"
+    "revisions/data/revisions.json"
    ],
    "import_error": null,
    "registry_sources": [],
@@ -461,7 +463,6 @@
     "occupations",
     "peers",
     "realwage",
-    "revisions",
     "scorecard",
     "wages"
    ],
@@ -1213,7 +1214,6 @@
     "occupations",
     "peers",
     "realwage",
-    "revisions",
     "scorecard",
     "wages"
    ],
@@ -1277,7 +1277,6 @@
     "occupations",
     "peers",
     "realwage",
-    "revisions",
     "scorecard",
     "wages"
    ],

@@ -880,6 +880,167 @@ def build():
         "caution": WG["meta"]["caution"],
     }
 
+    # =============================================== RECIPE 3, THE LABOUR SHED, D2
+    # THE SAME PLACE HAS TWO CORRECT TOTALS. This is the best teaching artifact on the
+    # site: twelve counties hold 1,735,169 jobs counting a worker resident in any state
+    # and 1,702,542 counting Ohio residents only. Both were labelled PIC-12 once. They
+    # are not a discrepancy and neither is wrong; they answer different questions, and
+    # the identity that joins them is the lesson, because a replicator pulling LODES will
+    # produce one of the two without noticing there was a choice.
+    LS = load(WEB, "laborshed", "data", "laborshed.json")
+    BN = load(WEB, "laborshed", "data", "bench.json")
+    T = LS["totals"]
+    all_res = T["jobs_worked_in_pic12"]
+    in_state = [r for r in BN["regions"] if r["kind"] == "footprint"]
+    if len(in_state) != 1:
+        raise SystemExit("derive_sources: the labour-shed benchmark no longer carries "
+                         "exactly one footprint row, so the two-basis identity has no "
+                         "second total to reconcile against.")
+    in_state = in_state[0]["jobs_located"]
+    inside = T["home_inside_pic12"]
+    out_of_state = all_res - in_state
+
+    # The identity, ASSERTED rather than described: the same jobs-held-from-inside figure
+    # sits in both totals, and the two differ only by the out-of-state residents one
+    # counts and the other does not. If this stops holding, the recipe is teaching a
+    # reconciliation that no longer reconciles.
+    if inside + (T["home_outside_pic12"] - out_of_state) != in_state:
+        raise SystemExit(
+            f"derive_sources: the two labour-shed bases no longer reconcile. "
+            f"{inside:,} held from inside plus {T['home_outside_pic12'] - out_of_state:,} "
+            f"in-state outside does not make {in_state:,}.")
+    if inside + T["home_outside_pic12"] != all_res:
+        raise SystemExit("derive_sources: the all-residents total is not its own parts.")
+
+    ext = LS["external"][str(LS["meta"]["year"])]
+    shed = {
+        "year": LS["meta"]["year"],
+        "state": "Ohio",
+        "segment": "JT00",
+        "all_residents": all_res,
+        "in_state_only": in_state,
+        "gap": out_of_state,
+        "inside": inside,
+        "outside_any_state": T["home_outside_pic12"],
+        "outside_in_state": T["home_outside_pic12"] - out_of_state,
+        "share_imported": T["share_imported"],
+        # The three buckets partition the CLASSIFIED external jobs, which is 2,552 short
+        # of the outside total. Carried as its own number rather than smoothed away: the
+        # first draft of this recipe wrote "of the 210,890 ... 57,302 ... 61,708 ...
+        # 89,328", implying a partition, and its own claim caught it. A recipe about
+        # bases cannot round away a base it does not understand.
+        "external_split": {"adjacent": ext["adjacent"], "distant": ext["distant"],
+                           "other": ext["other"]},
+        "external_classified": ext["adjacent"] + ext["distant"] + ext["other"],
+        "external_unclassified": (T["home_outside_pic12"]
+                                  - (ext["adjacent"] + ext["distant"] + ext["other"])),
+        "no_industry": LS["meta"]["no_industry"],
+        "not_a_commute": LS["meta"]["not_a_commute"],
+        "row_is": LS["meta"]["row"],
+    }
+
+    # ================================================== NOMINAL AGAINST REAL, D4
+    # THE BASIS DECISION, which this site shipped a whole page without making. Every
+    # series on cost-scissors was nominal and the page never said so, across years in
+    # which general prices rose a quarter, so "+40%" and "a record high" both read as
+    # real gains. Three of that page's own readings change under deflation and one
+    # reverses outright, which is the entire argument for stating a basis, made out of
+    # the site's own mistake rather than a hypothetical.
+    #
+    # Recomputed here from that page's shipped table, with the same clamp it uses: the
+    # CPI-U annuals stop at 2025, so a 2026 month is deflated by the 2025 average and
+    # every real figure is therefore an upper bound on the price and a lower bound on
+    # the adjustment.
+    SC = load(WEB, "cost-scissors", "data", "scissors.json")
+    DEF = SC["deflator"]
+    cpi, base, last = DEF["values"], DEF["base_year"], DEF["latest_year"]
+
+    def factor(year):
+        return cpi[min(year, last)] / cpi[base]
+
+    def series(label):
+        hit = [x for x in SC["series"] if x["label"] == label]
+        if len(hit) != 1:
+            raise SystemExit(f"derive_sources: {len(hit)} series match {label!r} on the "
+                             "cost page; the deflator recipe names exactly one.")
+        return hit[0]
+
+    def deflated(label):
+        sx = series(label)
+        nominal = sx["now"]["index"]
+        real = nominal / factor(sx["now"]["date"][:4] if "date" in sx["now"] else "2026")
+        peak = max((p["index"] / factor(p["date"][:4]), p["date"])
+                   for p in sx["points"] if p["date"] >= base + "-01-01")
+        cash_peak = max((p["index"], p["date"]) for p in sx["points"]
+                        if p["date"] >= base + "-01-01")
+        return {"label": label, "nominal": round(nominal, 1), "real": round(real, 1),
+                "real_peak": peak[1], "cash_peak": cash_peak[1],
+                "unit": sx.get("unit"), "stage": sx.get("stage")}
+
+    product = deflated("PPI: plastics and rubber products manufacturing")
+    resin = deflated("PPI: plastics material and resin manufacturing")
+    if not (product["real"] < product["nominal"] and resin["real"] < resin["nominal"]):
+        raise SystemExit("derive_sources: deflation is not reducing these indices, which "
+                         "means the base year or the clamp has moved. The recipe teaches "
+                         "that real is below cash over this window.")
+    if product["real_peak"] == product["cash_peak"]:
+        raise SystemExit(
+            "derive_sources: the finished-product series now peaks in the same month on "
+            "both bases. The recipe's worked example is that the peak MOVES, and it "
+            "would be teaching a difference that no longer exists.")
+
+    deflator = {
+        "index": DEF["index"], "base_year": base, "latest_year": last,
+        "source": DEF["source"], "caution": DEF["caution"],
+        "cpi_base": cpi[base], "cpi_latest": cpi[last],
+        "inflation_pct": round((cpi[last] / cpi[base] - 1) * 100, 1),
+        "product": product, "resin": resin,
+        "years": [{"year": y, "cpi": v, "factor": round(v / cpi[base], 4)}
+                  for y, v in sorted(cpi.items())],
+    }
+
+    # ========================================== RECIPE 4, FEDERAL CONTRACTING, D5
+    # WHAT A CODE FILTER CANNOT SEE. This recipe exists for one lesson the other three
+    # cannot teach: an industry-coded view of federal money is blind to whole classes of
+    # award BY CONSTRUCTION, and the blindness is invisible in the output. The worked
+    # case is on this site: the $15M NSF Engine award to a university appears nowhere in
+    # these NAICS rows, because a university files under 61xxxx and a research institute
+    # under 5417xx. A replicator who filters by industry and reports a total has reported
+    # a total of the awards their filter could see.
+    #
+    # Sequenced after D4 deliberately: this is the first recipe whose output is dollars
+    # across years, so the basis decision has to exist before it.
+    FM = load(WEB, "federal-money", "data", "federal.json")
+    fm_rows = FM["naics"]
+    fys = sorted({r["fy"] for r in fm_rows})
+    by_fy = {}
+    for r in fm_rows:
+        by_fy[r["fy"]] = by_fy.get(r["fy"], 0) + r["amount"]
+    partial = max(fys)
+    closed = [y for y in fys if y != partial]
+    by_code = {}
+    for r in fm_rows:
+        by_code[r["name"]] = by_code.get(r["name"], 0) + r["amount"]
+    ranked = sorted(by_code.items(), key=lambda kv: -kv[1])
+
+    if not all(("real" in r and "amount" in r) for r in fm_rows):
+        raise SystemExit("derive_sources: the federal rows no longer carry both a nominal "
+                         "and a real figure, and the recipe teaches reading them together.")
+
+    contracting = {
+        "first_fy": min(fys), "last_fy": partial, "n_years": len(fys),
+        "closed_years": len(closed),
+        "total_all": sum(by_fy.values()),
+        "total_closed": sum(by_fy[y] for y in closed),
+        "partial_fy_amount": by_fy[partial],
+        "n_codes": len({r["code"] for r in fm_rows}),
+        "top": [{"name": n, "amount": v} for n, v in ranked[:3]],
+        "by_fy": [{"fy": y, "amount": by_fy[y]} for y in fys],
+        "invisible": FM["meta"]["excludes"],
+        "place_caution": FM["meta"]["caution"],
+        "cpi_base": FM["cpi_base"],
+    }
+
     # ============================================================ AWARD IDENTIFIERS, D3
     # THE ONLY SECTION THAT TEACHES A READER TO CHECK US. Its worked example is this
     # site's own worst published error: a programme ceiling read as an award value,
@@ -930,12 +1091,73 @@ def build():
         },
     }
 
+    # ============================ LOCALISATION, D7, AND THE CHECKS SECTION, D6
+    # THE SUBSTITUTION LIST IS DERIVED, not typed, because it is the one list on this page
+    # that goes stale invisibly: a recipe changes, a value it depends on moves, and a
+    # typed swap list keeps naming the old one. Two transfer tests drove this section, and
+    # in the second the reviewer could name every substitution except two. Those two are
+    # marked as things the reader must supply, rather than quietly omitted.
+    swaps = [
+        {"what": "The geography", "ours": f"{footprint['label']}, "
+         f"{', '.join(c['fips'] for c in footprint['counties'][:3])} and "
+         f"{len(footprint['counties']) - 3} more",
+         "yours": "your own county FIPS codes",
+         "where": "every recipe", "supply": True,
+         "note": "Not in this repository, and not derivable from anything on this page. "
+                 "Census publishes a national county gazetteer; LEHD ships a geography "
+                 "crosswalk beside the LODES files."},
+        {"what": "The industry code set",
+         "ours": ", ".join(wage["register_naics"]),
+         "yours": "the codes your own plants file under",
+         "where": "concentration, pay, federal money", "supply": True,
+         "note": "A judgment rather than a lookup. The classification section above is the "
+                 "method: start from the plants, test each code, keep the boundary calls "
+                 "in a named group."},
+        {"what": "The year", "ours": str(lq["worked"]["year"]),
+         "yours": "any published year", "where": "every recipe", "supply": False,
+         "note": "The QCEW endpoint takes it in the path. Annual averages only exist for "
+                 "completed years."},
+        {"what": "The aggregation level", "ours": "75 for a three-digit code",
+         "yours": "the rung matching YOUR code’s digit length",
+         "where": "concentration, pay", "supply": False,
+         "note": "County file: 74 sector, 75 three-digit, 76 four, 77 five, 78 six. A "
+                 "state file numbers the same rungs 55 to 58."},
+        {"what": "The ownership", "ours": "own_code 5, private",
+         "yours": "unchanged", "where": "concentration, pay", "supply": False,
+         "note": "Industry rows exist only at own_code 5. The national denominator rows "
+                 "are own_code 0, and that asymmetry is the point of the basis note."},
+        {"what": "The national comparison file", "ours": "US000",
+         "yours": "unchanged", "where": "concentration", "supply": False,
+         "note": "Same endpoint, same year, area US000."},
+        {"what": "The state", "ours": shed["state"],
+         "yours": "your own state, and its neighbours if your region crosses a line",
+         "where": "labour shed", "supply": False,
+         "note": "LODES is one file per state. A region spanning two states needs both, "
+                 "plus the aux file for each."},
+        {"what": "The deflator base year", "ours": deflator["base_year"],
+         "yours": "any year you name and keep", "where": "the basis section, federal money",
+         "supply": False,
+         "note": "Any base is defensible. Printing which one you used is not optional."},
+    ]
+
+    # The checks section counts the harness rather than describing it, and counts it from
+    # the hub's own tally so this page cannot claim a number the site does not carry.
+    CN = load(WEB, "index", "data", "counts.json")
+    checks = {
+        "n_pages": len(CN["pages"]),
+        "n_claims": sum(v["claims"] for v in CN["pages"].values()),
+        "n_manual": sum(v["manual"] for v in CN["pages"].values()),
+        "this_page": CN["pages"].get("sources", {}).get("claims", 0),
+    }
+    checks["n_auto"] = checks["n_claims"] - checks["n_manual"]
+
     out = {"meta": meta, "sources": sources, "pages": pages, "totals": totals,
            "footprint": footprint, "socs": socs, "attributions": attributions,
            "codes": codes, "doublecount": doublecount, "suppression": supp,
            "suppression_vintage": supp_vintage,
            "lq": lq, "readings": readings, "classification": classification,
-           "wage": wage, "awards": awards,
+           "wage": wage, "awards": awards, "deflator": deflator, "shed": shed,
+           "contracting": contracting, "swaps": swaps, "checks": checks,
            "vintage": vintage, "gaps": gaps,
            "onet_attribution": load(WEB, "occupations", "data",
                                     "viz-data.json")["onet_attribution"]}

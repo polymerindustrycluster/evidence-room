@@ -620,6 +620,108 @@ function drawPay() {
      to hire for it, and those are the same finding read from two sides.`;
 }
 
+/* ------------------------------------------------------- recipe 3, the labour shed */
+function drawShed() {
+  const S = D.shed;
+  if (!S) return;
+  const pct = (a, b) => (a / b * 100).toFixed(1);
+
+  document.getElementById("shedrow").innerHTML = S.row_is;
+
+  document.getElementById("shedbases").innerHTML =
+    `In ${S.year}, this site&rsquo;s twelve counties held <b>${N(S.all_residents)}</b>
+     jobs counting a worker resident in any state, and <b>${N(S.in_state_only)}</b>
+     counting ${S.state} residents only. The two are <b>${N(S.gap)}</b> apart. Both were
+     published here as the same footprint before anyone noticed they were two different
+     measures.`;
+
+  document.getElementById("shedidentity").innerHTML =
+    `${N(S.inside)} held from inside &nbsp;+&nbsp; ${N(S.outside_in_state)} from
+     elsewhere in ${S.state} &nbsp;=&nbsp; ${N(S.in_state_only)}<br>
+     ${N(S.inside)} held from inside &nbsp;+&nbsp; ${N(S.outside_any_state)} from
+     anywhere &nbsp;=&nbsp; ${N(S.all_residents)}`;
+
+  const E = S.external_split;
+  document.getElementById("shedoutside").innerHTML =
+    `${N(S.outside_any_state)} jobs are held from outside the twelve counties, which is
+     ${(S.share_imported * 100).toFixed(1)} percent of everything worked here. Of those,
+     ${N(S.external_classified)} fall into three groups: ${N(E.adjacent)} from counties
+     next door, ${N(E.distant)} from metropolitan areas hours away, and
+     <b>${N(E.other)}</b> from counties scattered too thinly to group, which is the
+     largest of the three at ${pct(E.other, S.external_classified)} percent and the least
+     examined. <b>The other ${N(S.external_unclassified)} are not in the grouping at
+     all.</b> That is ${pct(S.external_unclassified, S.outside_any_state)} percent, small
+     enough to round away and worth not rounding away: three numbers printed under a
+     fourth read as a partition of it, and these are not one.`;
+}
+
+/* ------------------------------------------------ recipe 4, federal contracting */
+function drawContracting() {
+  const C = D.contracting;
+  if (!C) return;
+  const M = v => `$${(v / 1e6).toFixed(1)}M`;
+
+  document.getElementById("fedyears").innerHTML =
+    `This site pulls fiscal ${C.first_fy} to ${C.last_fy}, ${word(C.n_years)} years, of
+     which <b>${word(C.closed_years)} are finished</b>. Across the finished years the
+     region&rsquo;s polymer manufacturers were obligated <b>${M(C.total_closed)}</b>. Adding
+     the part-year brings it to ${M(C.total_all)}, and that larger number is the more
+     misleading of the two, because ${M(C.partial_fy_amount)} of it is however much of
+     ${C.last_fy} had elapsed when the file was read.`;
+
+  document.getElementById("fedcaution").innerHTML = C.place_caution;
+
+  document.getElementById("fedblind").innerHTML =
+    `${C.invisible} This cut sees <b>${word(C.n_codes)} industry codes</b>, led by
+     ${C.top.map(t => `${t.name.toLowerCase()} at ${M(t.amount)}`).join(", ")}. Everything
+     else in the region&rsquo;s federal money is outside the frame by construction, and the
+     total does not know that.`;
+}
+
+/* ------------------------------------------------- the basis: nominal against real */
+/* Every figure recomputed here from the price page's own shipped table, with that page's
+   own clamp: the CPI annuals stop before the current year, so a current-year month
+   borrows the last published deflator and every real figure is an upper bound. */
+function drawDeflator() {
+  const F = D.deflator;
+  if (!F) return;
+  const yr = d => d.slice(0, 4);
+  const MON = ["January","February","March","April","May","June","July","August",
+    "September","October","November","December"];
+  const month = d => `${MON[+d.slice(5, 7) - 1]} ${yr(d)}`;
+
+  document.getElementById("cpitable").innerHTML =
+    `${F.index}, ${F.base_year} to ${F.latest_year}, on a base of ${F.base_year}. The
+     index moved from <b>${F.cpi_base}</b> to <b>${F.cpi_latest}</b>, so general prices
+     rose <b>${F.inflation_pct} percent</b> across the window and a
+     ${F.latest_year} dollar buys what
+     ${(100 / (1 + F.inflation_pct / 100)).toFixed(0)} cents bought in ${F.base_year}.
+     The divisor for any year is that year&rsquo;s index over
+     ${F.base_year}&rsquo;s: ${F.years.filter(y => [F.base_year, "2022", F.latest_year]
+       .includes(y.year)).map(y => `${y.year} is ${y.factor}`).join(", ")}.`;
+
+  document.getElementById("deflated").innerHTML =
+    `<b>Finished plastics and rubber prices.</b> Up to <b>${F.product.nominal}</b> in
+     cash against a ${F.base_year} base of 100, which is the rise of about forty percent
+     that page reported. Deflated, <b>${F.product.real}</b>: a real rise of about
+     ${Math.round(F.product.real - 100)} percent, not forty. And the dearest month is not
+     the same month. In cash it is <b>${month(F.product.cash_peak)}</b>; in real terms it
+     was <b>${month(F.product.real_peak)}</b>, nearly four years earlier.
+     <b>Resin</b> makes the sharper case: <b>${F.resin.nominal}</b> in cash still reads
+     as a lasting increase, and at <b>${F.resin.real}</b> deflated it has given back the
+     entire rise and sits essentially back at its ${F.base_year} level.`;
+
+  document.getElementById("deflordering").innerHTML =
+    `That page&rsquo;s central finding is an ORDERING, that the cost spike was given back
+     at the wellhead, partly at resin, and not at all in finished products. Re-run on the
+     deflated series the ordering holds, because every link faces the same general
+     inflation. So the page may stay nominal and says that it rechecked. Its
+     <em>magnitudes</em> did not survive: forty percent became
+     ${Math.round(F.product.real - 100)}, and a record high became a four-year-old peak.
+     Both outcomes in one page, which is why the check is worth running rather than
+     reasoning about.`;
+}
+
 /* --------------------------------------------------- checking one award, including ours */
 function drawAwards() {
   const A = D.awards;
@@ -669,6 +771,14 @@ function drawAwards() {
      ${full(A.error.actual)}. We overstated a federal award by a factor of
      <b>${A.error.factor}</b>, on a site whose premise is that its numbers can be
      checked, and it stood until ${day(A.error.corrected_on)}.`;
+}
+
+/* The standfirst counts the recipes rather than asserting a number, so shipping the next
+   one from ROADMAP.md updates the opening without anybody remembering to. */
+function countRecipes() {
+  const n = document.querySelectorAll("section[data-recipe]").length;
+  const el = document.getElementById("nrecipes");
+  if (el && n) el.textContent = `${Word(n)} worked question${n === 1 ? "" : "s"}`;
 }
 
 /* ------------------------------------------------------------------ section nav */
@@ -722,9 +832,18 @@ function drawNav() {
     for (const a of links) {
       const on = a.getAttribute("href") === "#" + current;
       if (on) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current");
-      /* Keep the active chip in view in the bar, which scrolls sideways. */
-      if (on && a.closest(".docbar") && bar.offsetParent)
-        a.scrollIntoView({block: "nearest", inline: "nearest"});
+      /* Keep the active chip in view in the bar, which scrolls sideways.
+         SET scrollLeft, do not call scrollIntoView. Even with block:"nearest" that
+         method is free to scroll the DOCUMENT, and it did: on a 390px screen the first
+         spy() call on load scrolled the page 793px, landing a reader below the headline
+         and the standfirst, on the page whose first job is to say what it offers. An
+         outside reviewer read that as an editorial failure of the opening. It was this
+         line. Moving the container's own scrollLeft cannot move the page. */
+      if (on && a.closest(".docbar") && bar.offsetParent) {
+        const ol = bar.firstElementChild;
+        const want = a.offsetLeft - (ol.clientWidth - a.offsetWidth) / 2;
+        ol.scrollLeft = Math.max(0, Math.min(want, ol.scrollWidth - ol.clientWidth));
+      }
     }
   }
   let ticking = false;
@@ -734,6 +853,41 @@ function drawNav() {
     requestAnimationFrame(() => { ticking = false; spy(); });
   }, {passive: true});
   spy();
+}
+
+/* ------------------------------------------- localisation, and the checks section */
+function drawSwaps() {
+  const S = D.swaps;
+  if (!S) return;
+  document.getElementById("swaplist").innerHTML =
+    `<div class="pv-table awards"><table>
+      <caption>Every value the recipes above depend on. Two of the ${word(S.length)} are
+        marked because you have to find them yourself.</caption>
+      <thead><tr><th>What it is, and where it appears</th><th>Ours</th></tr></thead>
+      <tbody>${S.map(x => `<tr>
+        <th scope="row">${x.what}${x.supply
+            ? ' <b class="code">you supply</b>' : ""}
+          <span class="swapnote">${x.where}. ${x.note}</span></th>
+        <td style="text-align:left">${x.ours}<br><em>${x.yours}</em></td></tr>`).join("")}
+      </tbody></table></div>`;
+
+  const C = D.checks;
+  if (!C) return;
+  document.getElementById("checkidea").innerHTML =
+    `Across ${word(C.n_pages)} pages this site carries <b>${N(C.n_claims)}</b> of them.
+     ${N(C.n_auto)} are re-run against the source data every time the site is built, so a
+     figure that stopped being true breaks the build before anybody reads it. The other
+     ${C.n_manual} rest on a person having read a document correctly, which is why they
+     are labelled and are the place to attack first. This page alone carries
+     ${C.this_page}.`;
+
+  document.getElementById("checkcaught").innerHTML =
+    `On this page, in one week: a recipe that printed three aggregation codes returning
+     nothing from the file it told you to download; a median described over the wrong
+     unit; three published figures asserted to sum to a fourth that they miss by 2,552;
+     and a source credited on a page that never used it, which had quietly made one
+     dataset look more central than it is. The first three were caught by a condition
+     written next to the sentence. The last was caught by a person reading the page.`;
 }
 
 /* ------------------------------------------------------------------- the gaps */
@@ -765,8 +919,13 @@ document.getElementById("closersub").innerHTML =
 
 drawTax();
 drawVintage();
+countRecipes();
 drawRecipe();
 drawPay();
+drawShed();
+drawDeflator();
+drawContracting();
+drawSwaps();
 drawAwards();
 drawRegistry();
 drawGaps();
