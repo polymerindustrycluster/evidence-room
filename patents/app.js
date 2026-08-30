@@ -86,9 +86,9 @@ function drawIdx() {
   if (!mob) {
   const ax = xs(2020.4);
   const ay = ys((idx(LAST, "us_inv") + idx(LAST, "ohio_all")) / 2);
-  txt(svg, "polymer fell, everywhere;", {x: ax, y: ay - 8,
+  txt(svg, "American polymer fell;", {x: ax, y: ay - 8,
     "text-anchor": "middle", class: "pv-lab", fill: OHIO});
-  txt(svg, "patenting overall did not", {x: ax, y: ay + 10,
+  txt(svg, "American patenting did not", {x: ax, y: ay + 10,
     "text-anchor": "middle", class: "pv-labq"});
   }
 
