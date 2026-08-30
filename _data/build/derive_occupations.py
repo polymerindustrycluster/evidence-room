@@ -29,6 +29,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "..", "..", "occupations", "data", "viz-data.json")
 
 
+import ipeds_quarantine as QZ
+
+
 def load(name):
     return json.load(open(os.path.join(HERE, name), encoding="utf-8"))
 
@@ -36,6 +39,11 @@ def load(name):
 occ, oews, nat, onet, ipeds, qcew, odjfs = (load(f) for f in (
     "occmix.json", "oews.json", "oews_national.json", "onet_education.json",
     "ipeds_cip.json", "qcew.json", "odjfs_projections.json"))
+# The degree panel is the only IPEDS-fed part of this page, and it inherits the federal
+# mirror's republished 2020 (see ipeds_quarantine.py). Dropped at load, so the ten-year
+# window, the per-programme by_year map and the window average all count real years only.
+ipeds["rows"] = QZ.drop(ipeds["rows"])
+ipeds.setdefault("meta", {})["quarantined"] = {str(y): w for y, w in QZ.QUARANTINED.items()}
 
 SOC = oews["meta"]["occupations"]                     # the one occupation set
 METROS = oews["meta"]["metros"]
@@ -265,6 +273,9 @@ out = {
     "education": edu,
     "education_totals": {"ba_plus_majority": ba_plus_majority, "hs_majority": hs_majority,
                          "n": len(edu)},
+    "quarantined": {str(y): w for y, w in QZ.QUARANTINED.items()},
+    "gaps": {"kind": "quarantine+sparse",
+             "reason": QZ.CAPTION + "; a programme with no completions in a year has no row"},
     "programs": programs,
     "program_totals": {"institutions": insts, "latest_year": LATEST, "window": WINDOW,
                        "polymer_awards_latest": polymer_latest,

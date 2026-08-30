@@ -38,6 +38,7 @@ const GATES = [
   ["provenance",  "node",   ["tools/provenance.mjs"],        "the registry matches the page, not only the reverse"],
   ["alttext",     "node",   ["tools/alttext.mjs"],           "every chart carries a description"],
   ["claims",      "python3", ["_data/build/verify_claims.py"],      "every numeric sentence against its own data"],
+  ["series",      "python3", ["_data/build/verify_series.py"],      "the DATA against the world, not against its own prose"],
   ["consistency", "python3", ["_data/build/verify_consistency.py"], "builders, catalog, prose invariants"],
   ["collide",     "node",   ["tools/collide.mjs", "--sweep"],  "overlap and out-of-frame, 14 widths", true],
   ["textsize",    "node",   ["tools/textsize.mjs", "--sweep"], "12px rendered floor, 14 widths", true],
