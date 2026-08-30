@@ -127,7 +127,7 @@
     },
     {
       "id": "ls-region-is-a-market",
-      "text": "Just under 90 percent of the jobs in PIC-12 are held by people who live in PIC-12, and just under 90 percent of PIC-12 residents' jobs sit inside it. This is what the closer's display line rests on: twelve counties is the smallest unit that holds this labor market whole.",
+      "text": "Just under 90 percent of the jobs in PIC-12 are held by people who live in PIC-12, and just under 90 percent of PIC-12 residents' jobs sit inside it. This is what the H1 and the closer's display line rest on. Rewritten 2026-08-30: the old H1 sold Summit's 51.6 percent, which is 'most' by 1.6 points and counts jobs while saying people; the finding the page actually proves, held here since it shipped, is that the twelve together retain just under nine in ten.",
       "source": "LEHD LODES8 2022; workplace side Ohio main+aux, resident side Ohio main plus six neighbor aux files",
       "assert": "D['b']['totals']['work_region_share'] > 0.85 and D['b']['totals']['res_region_share'] > 0.85",
       "actual": "(D['b']['totals']['work_region_share'], D['b']['totals']['res_region_share'])",

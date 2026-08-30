@@ -1,0 +1,101 @@
+{
+ "meta": {
+  "source": "BLS QCEW annual averages, data.bls.gov, fetched live; own_code 5 for industries, own_code 0 for the all-industry county totals",
+  "year": 2025,
+  "row": "one county: private manufacturing (NAICS 31-33) average weekly wage and employment, beside the county all-ownership all-industry average wage.",
+  "why": "The pay pages compare polymer to the ALL-JOBS average, which cannot separate a polymer premium from a factory premium. Manufacturing as a whole is the comparator that separates them."
+ },
+ "counties": {
+  "Ashtabula": {
+   "fips": "39007",
+   "mfg_weekly_wage": 1259,
+   "mfg_emp": 6755,
+   "all_weekly_wage": 955
+  },
+  "Cuyahoga": {
+   "fips": "39035",
+   "mfg_weekly_wage": 1687,
+   "mfg_emp": 63761,
+   "all_weekly_wage": 1486
+  },
+  "Geauga": {
+   "fips": "39055",
+   "mfg_weekly_wage": 1308,
+   "mfg_emp": 6517,
+   "all_weekly_wage": 1126
+  },
+  "Lake": {
+   "fips": "39085",
+   "mfg_weekly_wage": 1538,
+   "mfg_emp": 20990,
+   "all_weekly_wage": 1184
+  },
+  "Lorain": {
+   "fips": "39093",
+   "mfg_weekly_wage": 1455,
+   "mfg_emp": 15342,
+   "all_weekly_wage": 1116
+  },
+  "Mahoning": {
+   "fips": "39099",
+   "mfg_weekly_wage": 1305,
+   "mfg_emp": 9844,
+   "all_weekly_wage": 1036
+  },
+  "Medina": {
+   "fips": "39103",
+   "mfg_weekly_wage": 1387,
+   "mfg_emp": 8932,
+   "all_weekly_wage": 1160
+  },
+  "Portage": {
+   "fips": "39133",
+   "mfg_weekly_wage": 1463,
+   "mfg_emp": 10310,
+   "all_weekly_wage": 1172
+  },
+  "Stark": {
+   "fips": "39151",
+   "mfg_weekly_wage": 1415,
+   "mfg_emp": 23960,
+   "all_weekly_wage": 1103
+  },
+  "Summit": {
+   "fips": "39153",
+   "mfg_weekly_wage": 1391,
+   "mfg_emp": 26152,
+   "all_weekly_wage": 1256
+  },
+  "Trumbull": {
+   "fips": "39155",
+   "mfg_weekly_wage": 1569,
+   "mfg_emp": 10196,
+   "all_weekly_wage": 1031
+  },
+  "Wayne": {
+   "fips": "39169",
+   "mfg_weekly_wage": 1393,
+   "mfg_emp": 13576,
+   "all_weekly_wage": 1146
+  }
+ },
+ "us_mfg_weekly_wage": 1721,
+ "national_326_trend": [
+  {
+   "year": 2022,
+   "us_326_emp": 746593
+  },
+  {
+   "year": 2023,
+   "us_326_emp": 733910
+  },
+  {
+   "year": 2024,
+   "us_326_emp": 719721
+  },
+  {
+   "year": 2025,
+   "us_326_emp": 700170
+  }
+ ]
+}
