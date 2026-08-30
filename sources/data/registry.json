@@ -66,7 +66,6 @@
     "accountability",
     "churn",
     "cluster-health",
-    "cost-scissors",
     "location-quotient",
     "occupations",
     "peers",
@@ -74,7 +73,7 @@
     "scorecard",
     "wages"
    ],
-   "n_pages": 10
+   "n_pages": 9
   },
   {
    "key": "usaspending",
@@ -710,14 +709,6 @@
    "n_sources": 2
   },
   {
-   "slug": "cost-scissors",
-   "sources": [
-    "fred",
-    "qcew"
-   ],
-   "n_sources": 2
-  },
-  {
    "slug": "realwage",
    "sources": [
     "bea_rpp",
@@ -732,6 +723,13 @@
     "public_record"
    ],
    "n_sources": 2
+  },
+  {
+   "slug": "cost-scissors",
+   "sources": [
+    "fred"
+   ],
+   "n_sources": 1
   },
   {
    "slug": "federal-money",
@@ -822,9 +820,10 @@
   "n_terms": 10,
   "n_public": 12,
   "most_used": "qcew",
-  "most_used_pages": 10,
-  "n_single_source_pages": 7,
+  "most_used_pages": 9,
+  "n_single_source_pages": 8,
   "single_source_pages": [
+   "cost-scissors",
    "federal-money",
    "funding-map",
    "laborshed",
@@ -834,7 +833,7 @@
    "wages"
   ],
   "n_build_scripts": 26,
-  "catalog_generated": "2026-08-30 10:09"
+  "catalog_generated": "2026-08-30 11:26"
  },
  "footprint": {
   "key": "pic12",
@@ -1909,10 +1908,10 @@
  ],
  "checks": {
   "n_pages": 16,
-  "n_claims": 429,
+  "n_claims": 430,
   "n_manual": 15,
   "this_page": 32,
-  "n_auto": 414
+  "n_auto": 415
  },
  "vintage": {
   "n_revised": 259,

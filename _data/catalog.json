@@ -1,7 +1,7 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-08-30 10:34",
+  "generated": "2026-08-30 11:26",
   "seconds": 0.1,
   "scripts": 26,
   "outputs_on_disk": 0,
@@ -458,7 +458,6 @@
     "accountability",
     "churn",
     "cluster-health",
-    "cost-scissors",
     "location-quotient",
     "occupations",
     "peers",
@@ -1209,7 +1208,6 @@
     "accountability",
     "churn",
     "cluster-health",
-    "cost-scissors",
     "location-quotient",
     "occupations",
     "peers",
@@ -1272,7 +1270,6 @@
     "accountability",
     "churn",
     "cluster-health",
-    "cost-scissors",
     "location-quotient",
     "occupations",
     "peers",
