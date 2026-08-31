@@ -239,11 +239,6 @@
    "materials": 23
   },
   {
-   "year": 2020,
-   "polymer": 118,
-   "materials": 23
-  },
-  {
    "year": 2021,
    "polymer": 124,
    "materials": 20
@@ -966,7 +961,7 @@
    "standing": {
     "value": 63,
     "year": 2023,
-    "n_years": 10,
+    "n_years": 9,
     "span": [
      2014,
      2023
@@ -981,7 +976,7 @@
     },
     "position": 0.072,
     "rank_from_low": 2,
-    "rank_words": "second lowest of ten",
+    "rank_words": "second lowest of nine",
     "better_end": "high",
     "series": [
      {
@@ -1009,10 +1004,6 @@
       "value": 118
      },
      {
-      "year": 2020,
-      "value": 118
-     },
-     {
       "year": 2021,
       "value": 124
      },
@@ -1025,7 +1016,7 @@
       "value": 63
      }
     ],
-    "basis": "the same three institutions, 2014 to 2023",
+    "basis": "the same three institutions, 2014 to 2023. 2020 is not drawn: the federal mirror republished 2019 under that year.",
     "basis_short": "polymer degrees a year",
     "merit_short": "more degrees is better",
     "merit": "More degrees out of the three programs is the better end. Nobody has set a number the region needs, and this range cannot see the two-year and certificate routes into the same plants.",
@@ -1278,5 +1269,9 @@
     "label": "The other federal money"
    }
   }
- ]
+ ],
+ "quarantined": {
+  "2020": "the Urban Institute IPEDS mirror serves 2019 data under year=2020"
+ },
+ "quarantine_caption": "2020 is not drawn: the federal mirror republished 2019 under that year"
 }

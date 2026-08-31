@@ -118,11 +118,11 @@
     },
     {
       "id": "talent-two-years-identical",
-      "text": "Talent tile vintage line and the methodology note: 2019 and 2020 carry an identical count for every one of the programs, which is a property of the source file rather than of the schools.",
+      "text": "Talent tile vintage line and the methodology note: the federal mirror republished 2019's award counts under 2020, identically, for every one of the programmes. It is a property of the source file rather than of the schools, and the year is now quarantined out of this page and of the shared completions file rather than drawn.",
       "source": "IPEDS completions by year and program, via occupations/data/viz-data.json",
-      "assert": "D['h']['completions_flat_pairs'] == [2020] and all(p['by_year'].get('2019') == p['by_year'].get('2020') for p in D['occ']['programs'] if '2019' in p['by_year'] or '2020' in p['by_year'])",
+      "assert": "D['h']['completions_flat_pairs'] == [2020] and all(p['by_year'].get('2020') is None for p in D['occ']['programs']) and all(r.get('year') != 2020 for r in D['h']['completions']) and '2020' in D['h']['quarantined']",
       "actual": "(D['h']['completions_flat_pairs'], [(p['institution'], p['by_year'].get('2019'), p['by_year'].get('2020')) for p in D['occ']['programs'] if '2019' in p['by_year']])",
-      "falsified_if": "A rebuild of the completions file that gives 2019 and 2020 different values. That would be good news and would remove the caveat; until then the caveat stays, because thirteen programs holding still for a year in step is not what enrolment does.",
+      "falsified_if": "2020 reappears in either file, or the record of WHY it was removed (completions_flat_pairs) is lost, or this page stops declaring the quarantine so a reader meets a gap with no reason attached. The claim used to assert the duplication was PRESENT; it now asserts it was found and removed, which is the same fact one step later.",
       "official_check": "NCES IPEDS Completions survey, 2019-20 and 2020-21 collection years, CIP 40.1002 and 14.3201 at the three institutions."
     },
     {
@@ -280,11 +280,11 @@
     },
     {
       "id": "standing-talent",
-      "text": "Standing chart and Talent supply tile: 63 polymer degrees in 2023 is the second lowest of the ten published years, against a high of 179 in 2016.",
+      "text": "Standing chart and Talent supply tile: 63 polymer degrees in 2023 is the second lowest of the nine years the record actually carries, against a high of 179 in 2016. Nine, not ten: 2020 is quarantined and is not counted as a year of data.",
       "source": "IPEDS completions for the three named institutions, via occupations/data/viz-data.json",
-      "assert": "(lambda ser, s: s['value'] == ser[max(ser)] and s['low']['value'] == min(ser.values()) and s['low']['year'] == 2022 and s['high']['value'] == max(ser.values()) and s['high']['year'] == 2016 and s['rank_from_low'] == 2 and s['n_years'] == len(ser) == 10 and s['better_end'] == 'high')({y: sum(p['by_year'].get(str(y), 0) for p in D['occ']['programs'] if p['group'] == 'polymer') for y in sorted({int(y) for p in D['occ']['programs'] for y in p['by_year']})}, D['h']['tiles'][3]['standing'])",
+      "assert": "(lambda ser, s: s['value'] == ser[max(ser)] and s['low']['value'] == min(ser.values()) and s['low']['year'] == 2022 and s['high']['value'] == max(ser.values()) and s['high']['year'] == 2016 and s['rank_from_low'] == 2 and s['n_years'] == len(ser) == 9 and 2020 not in ser and s['rank_words'].endswith('of nine') and s['better_end'] == 'high')({y: sum(p['by_year'].get(str(y), 0) for p in D['occ']['programs'] if p['group'] == 'polymer') for y in sorted({int(y) for p in D['occ']['programs'] for y in p['by_year']})}, D['h']['tiles'][3]['standing'])",
       "actual": "D['h']['tiles'][3]['standing']",
-      "falsified_if": "A new IPEDS year arriving, which moves both the rank and the year count and is a scheduled event rather than a hypothetical; or a restatement moving 2022 off the floor."
+      "falsified_if": "The count of years drawn stops matching the count of years in the shared file, or the rank, the low or the high moves. n_years is pinned at 9 deliberately: a tile that counts a quarantined year as a year of data was the defect here, and 'of ten' was printed for months."
     },
     {
       "id": "standing-capital",

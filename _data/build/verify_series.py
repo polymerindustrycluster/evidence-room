@@ -42,6 +42,8 @@ import os
 import sys
 from collections import defaultdict
 
+import ipeds_quarantine as QZ
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.abspath(os.path.join(HERE, "..", ".."))
 SKIP = {"dist", "shots", "tools", "_data", "_shared", "node_modules", "stage"}
@@ -190,6 +192,16 @@ def audit(page):
             big = max((v for _, v in paths), default=0)
             if year in ok_years:
                 kind = "OK-DECLARED"
+            elif year in QZ.QUARANTINED:
+                # The systemic threshold exists because ONE series repeating a value is
+                # usually real. A repeat at a year the project's own quarantine list names
+                # is never real, at any count. cluster-health and scorecard each carried
+                # exactly one such series and each scored INFO here while shipping the
+                # federal mirror's duplicated 2020 into a published standing tile; the file
+                # that had eleven tripped the threshold and got fixed, the files that had
+                # one did not. A count threshold is the wrong instrument once the year is
+                # known to be fabricated.
+                kind = "QUARANTINE-LEAK"
             elif len(paths) >= MIN_SERIES_FOR_SYSTEMIC:
                 kind = "DUPLICATE"
             else:
@@ -211,7 +223,7 @@ def main():
         for kind, where, msg in audit(p):
             if kind == "INFO":
                 continue          # printed only with -v; one flat year is not news
-            if kind in ("DUPLICATE", "HOLE", "ERROR", "FROZEN"):
+            if kind in ("DUPLICATE", "HOLE", "ERROR", "FROZEN", "QUARANTINE-LEAK"):
                 bad += 1
                 print(f"  {R}{kind:<11}{Z} {where}\n      {msg}")
             else:

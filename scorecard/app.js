@@ -476,7 +476,14 @@ document.getElementById("deliverysrc").innerHTML =
 /* ================================================================== 3. talent
    One series, ten years, change over time: columns. Two years are drawn pale because the
    file repeats itself across them and this page does not read them. */
-const EXCLUDED = [2019, 2020];
+/* Was [2019, 2020]: both halves of the duplicated pair were drawn pale and labelled
+   "repeated in the source file", because with the pair sitting side by side there was no way
+   to tell from THIS file which of the two was the real year. There is now. The mirror
+   republished 2019 under 2020, so 2019 is the genuine observation and 2020 is the copy, and
+   the copy is quarantined out of the series entirely rather than greyed inside it. Paling
+   2019 would now mark a real year as suspect with nothing beside it to explain why. The
+   window this page reads is unchanged and was always right. */
+const EXCLUDED = [];
 const tal = TAL.polymer;
 
 function talentDesktop() {
@@ -545,7 +552,8 @@ function talentMobile() {
 
 document.getElementById("talenttable").innerHTML = tableView("tal",
   "Credentials awarded by the three regional institutions in polymer CIP codes, by "
-  + "federal reporting year. The 2019 and 2020 rows repeat each other in the source file.",
+  + "federal reporting year. 2020 is absent: the federal mirror republished 2019 under it, "
+    + "so the year carries no observation of its own and is not drawn.",
   ["Year", "Polymer credentials"],
   tal.map(p => [String(p.year) + (EXCLUDED.includes(p.year) ? " (repeated)" : ""),
     String(p.n)]));
