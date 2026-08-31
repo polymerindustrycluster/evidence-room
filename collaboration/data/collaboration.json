@@ -1,0 +1,232 @@
+{
+ "meta": {
+  "question": "Do the University of Akron and Case Western Reserve collaborate, and on polymer work specifically?",
+  "sources": "OpenAlex works listing both institutions; NSF awards API, awards to either institution since 2012.",
+  "row": "one year: works listing both institutions, works matching ‘polymer’, and each institution’s own total output.",
+  "two_measures": "Publications and federal awards are independent instruments aimed at the same proposition, which is what makes this triangulation rather than juxtaposition. They can disagree.",
+  "polymer_bound": "Polymer relevance is OpenAlex subfield 2507, ‘Polymers and Plastics’, a classification rather than a keyword. Biomaterials is a separate subfield (2502) and is counted beside it, never merged into it. The unbounded coauthorship count is published alongside both.",
+  "what_a_null_would_mean": "This instrument can demonstrate collaboration and CANNOT demonstrate its absence. OpenAlex affiliation coverage is incomplete, NSF’s co-PI field lists signatories rather than the coalition, and neither sees industry contracts, consortium membership, joint teaching or a conversation. A low count means not detectable at this resolution.",
+  "subfield": "2507",
+  "subfield_alt": "2502",
+  "years": [
+   2012,
+   2024
+  ],
+  "fetched": "2026-08-17",
+  "control": "Each university’s own annual output is carried beside the joint count, because a joint series alone cannot tell a thinning relationship from an indexing lag or from one partner shrinking."
+ },
+ "totals": {
+  "coauthored": 201,
+  "coauthored_polymer": 7,
+  "joint_awards": 4,
+  "joint_award_dollars": 3670535,
+  "nsf_akron": 245,
+  "nsf_cwru": 366,
+  "peak_year": 2018,
+  "peak_joint": 29,
+  "last_year": 2024,
+  "last_joint": 2,
+  "newest_joint_award_year": "2017",
+  "polymer_total": 7,
+  "bio_total": 11,
+  "subject_total": 18,
+  "last_subject_year": 2020
+ },
+ "series": [
+  {
+   "year": 2012,
+   "joint": 12,
+   "polymer": 0,
+   "bio": 0,
+   "akron": 1175,
+   "cwru": 4652,
+   "per_1k_akron": 10.21
+  },
+  {
+   "year": 2013,
+   "joint": 13,
+   "polymer": 0,
+   "bio": 0,
+   "akron": 1341,
+   "cwru": 4545,
+   "per_1k_akron": 9.69
+  },
+  {
+   "year": 2014,
+   "joint": 19,
+   "polymer": 1,
+   "bio": 2,
+   "akron": 1393,
+   "cwru": 4808,
+   "per_1k_akron": 13.64
+  },
+  {
+   "year": 2015,
+   "joint": 24,
+   "polymer": 0,
+   "bio": 2,
+   "akron": 1556,
+   "cwru": 4869,
+   "per_1k_akron": 15.42
+  },
+  {
+   "year": 2016,
+   "joint": 15,
+   "polymer": 1,
+   "bio": 1,
+   "akron": 1371,
+   "cwru": 5058,
+   "per_1k_akron": 10.94
+  },
+  {
+   "year": 2017,
+   "joint": 24,
+   "polymer": 1,
+   "bio": 4,
+   "akron": 1174,
+   "cwru": 5485,
+   "per_1k_akron": 20.44
+  },
+  {
+   "year": 2018,
+   "joint": 29,
+   "polymer": 0,
+   "bio": 1,
+   "akron": 1158,
+   "cwru": 5534,
+   "per_1k_akron": 25.04
+  },
+  {
+   "year": 2019,
+   "joint": 11,
+   "polymer": 2,
+   "bio": 0,
+   "akron": 946,
+   "cwru": 5704,
+   "per_1k_akron": 11.63
+  },
+  {
+   "year": 2020,
+   "joint": 22,
+   "polymer": 2,
+   "bio": 1,
+   "akron": 1009,
+   "cwru": 6468,
+   "per_1k_akron": 21.8
+  },
+  {
+   "year": 2021,
+   "joint": 16,
+   "polymer": 0,
+   "bio": 0,
+   "akron": 783,
+   "cwru": 6199,
+   "per_1k_akron": 20.43
+  },
+  {
+   "year": 2022,
+   "joint": 9,
+   "polymer": 0,
+   "bio": 0,
+   "akron": 694,
+   "cwru": 6287,
+   "per_1k_akron": 12.97
+  },
+  {
+   "year": 2023,
+   "joint": 5,
+   "polymer": 0,
+   "bio": 0,
+   "akron": 696,
+   "cwru": 6585,
+   "per_1k_akron": 7.18
+  },
+  {
+   "year": 2024,
+   "joint": 2,
+   "polymer": 0,
+   "bio": 0,
+   "akron": 722,
+   "cwru": 6195,
+   "per_1k_akron": 2.77
+  }
+ ],
+ "joint_awards": [
+  {
+   "id": "1432891 + 1432950",
+   "title": "Collaborative Research: Northern Ohio AGEP-T: A Racially and Ethnically Inclusive Graduate Education Model in Biology, Chemistry and Engineering",
+   "start": "10/01/2015",
+   "amount": 2637585,
+   "awardee": "both (NSF Collaborative Research)",
+   "via": "separate awards, one project"
+  },
+  {
+   "id": "1852597 + 1620198",
+   "title": "Collaborative Research: Algorithm and Theory for Interface Computations",
+   "start": "07/01/2016",
+   "amount": 257950,
+   "awardee": "both (NSF Collaborative Research)",
+   "via": "separate awards, one project"
+  },
+  {
+   "id": "1711625 + 1711395",
+   "title": "Collaborative Research:   Wideband Multi-Beam Antenna Arrays: Low-Complexity Algorithms and Analog-CMOS Implementations",
+   "start": "07/01/2017",
+   "amount": 400000,
+   "awardee": "both (NSF Collaborative Research)",
+   "via": "separate awards, one project"
+  },
+  {
+   "id": "1731722 + 1730946",
+   "title": "SpecEES:  Collaborative Research:  Spatially Oversampled Dense Multi-Beam Millimeter-Wave Communications for Exponentially Increased Energy-Efficiency",
+   "start": "08/15/2017",
+   "amount": 375000,
+   "awardee": "both (NSF Collaborative Research)",
+   "via": "separate awards, one project"
+  }
+ ],
+ "sample": [
+  {
+   "year": 2020,
+   "title": "Fused Filament Fabrication 4D Printing of a Highly Extensible, Self-Healing, Shape Memory Elastomer Based on Thermoplastic Polymer Blends",
+   "doi": "https://doi.org/10.1021/acsami.0c18618",
+   "venue": "ACS Applied Materials & Interfaces"
+  },
+  {
+   "year": 2020,
+   "title": "Structure-Rheology-Property relationships in double-percolated Polypropylene/Poly(methyl methacrylate)/Boron nitride polymer composites",
+   "doi": "https://doi.org/10.1016/j.compscitech.2020.108306",
+   "venue": "Composites Science and Technology"
+  },
+  {
+   "year": 2019,
+   "title": "Carbon nanofiber reinforced Co-continuous HDPE/PMMA composites: Exploring the role of viscosity ratio on filler distribution and electrical/thermal properties",
+   "doi": "https://doi.org/10.1016/j.compscitech.2019.107859",
+   "venue": "Composites Science and Technology"
+  },
+  {
+   "year": 2019,
+   "title": "Effect of compatibilizer on morphology and properties of HDPE/Nylon 6 blends",
+   "doi": "https://doi.org/10.1002/polb.24783",
+   "venue": "Journal of Polymer Science Part B Polymer Physics"
+  },
+  {
+   "year": 2017,
+   "title": "Molecular dynamics simulations and morphology analysis of TEM imaged PVDF nanofibers",
+   "doi": "https://doi.org/10.1016/j.polymer.2017.07.086",
+   "venue": "Polymer"
+  },
+  {
+   "year": 2016,
+   "title": "Natural Fiber-Based Biocomposites",
+   "doi": "https://doi.org/10.1007/978-3-319-46610-1_3",
+   "venue": "Green energy and technology"
+  },
+  {
+   "year": 2014,
+   "title": "Influence of Shunt-damping circuit on the dynamic response of a bio-inspired piezoelectric micropillar sensor",
+   "doi": "https://doi.org/10.1117/12.2057518",
+   "venue": "Proceedings of SPIE, the International Society for Optical Engineering/Proceedings of SPIE"
+  }
+ ]
+}

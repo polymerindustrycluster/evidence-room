@@ -9,8 +9,6 @@
  * of acquiring a fifth dialect. They are page-local, not promoted to _shared, because
  * the per-page definitions differ and reconciling them is a separate job. */
 
-/* from sources/styles.css */
-.hero-viz svg{width:100%;height:auto;display:block;overflow:visible}
 
 /* from sources/styles.css */
 .warn{margin:11px 0 0;font-size:15px;line-height:1.55;max-width:var(--measure);color:#3A3A36;background:#F6EEF3;

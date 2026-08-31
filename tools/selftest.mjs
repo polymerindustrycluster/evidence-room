@@ -67,8 +67,12 @@ const CASES = [
            "against its parent and prose runs 488px wide (shipped 2026-08-31)",
    /* Recreates the defect by un-pinning --measure on the methodology grid, restoring
       the :root formula whose leftover 100% compounds inside the 678px container. */
-   inject: s => s.replace("</head>", "<style>.pv-method-grid{--measure:" +
-     "min(678px, calc(min(980px, 100%) * 0.72))}</style></head>")},
+   /* The fix moved from a literal pin on the grid to a 100% pin on its CHILDREN when
+      the story layer arrived (two page measures), so the injection now overrides the
+      children pin — the first version went stale within a day and reported BROKEN,
+      which is the harness doing its job. */
+   inject: s => s.replace("</head>", "<style>.pv-method-grid > *{--measure:" +
+     "min(678px, calc(min(980px, 100%) * 0.72)) !important}</style></head>")},
 
   {gate: "coldopen", page: "churn", args: ["churn"],
    defect: "a page whose first chart sinks below its recorded budget",

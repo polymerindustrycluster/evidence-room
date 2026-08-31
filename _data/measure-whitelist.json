@@ -10,7 +10,8 @@
   "funding-map's card insets; tile = cluster-health's dashboard tiles (rail labels and",
   "718px two-column notes); calib = accountability's calibration cards; aside =",
   "timeline's 436px sidebar cards; pv-method-note/pv-src = the uniform 664 source-box",
-  "inset on every page."
+  "inset on every page.",
+  "pv-wrong = the What-we-got-wrong corrections block (plum rule + 18px inset), a shared component from the story-page promotion; its entries are structured corrections, not running prose."
  ],
  "allowed": {
   "pv-method-note": [
@@ -45,6 +46,9 @@
   ],
   "calib": [
    "accountability"
+  ],
+  "pv-wrong": [
+   "*"
   ]
  }
 }

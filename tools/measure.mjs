@@ -31,7 +31,13 @@ import {fileURLToPath, pathToFileURL} from "url";
 import {chromium} from "./_browser.mjs";
 
 const WEB = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const MEASURE = 678, TOL = 15;
+/* THE MEASURE IS THE PAGE'S OWN, not a constant. The first version hardcoded 678 and
+   was falsified within hours: four story-layer pages landed (_shared/story.css, the
+   Silver Bulletin geometry measured off the real thing — one 728px column for prose
+   and figures alike) and 68 correct paragraphs turned red. Two documented design
+   systems is not drift; a page failing ITS OWN system is. The gate now probes each
+   page's resolved --measure with a real element and asserts against that. */
+const TOL = 15;
 
 let allow = {};
 try { allow = JSON.parse(readFileSync(`${WEB}/_data/measure-whitelist.json`, "utf-8")).allowed || {}; }
@@ -49,6 +55,13 @@ for (const name of pages) {
   await p.waitForTimeout(1200);
   await p.evaluate(() => document.querySelectorAll("details").forEach(d => d.open = true));
   await p.waitForTimeout(300);
+  const MEASURE = await p.evaluate(() => {
+    const probe = document.createElement("div");
+    probe.style.cssText = "width:10000px;max-width:var(--measure);position:absolute;visibility:hidden";
+    document.body.appendChild(probe);
+    const w = Math.round(probe.getBoundingClientRect().width);
+    probe.remove(); return w;
+  });
   const rows = await p.evaluate((allowKeys) => {
     const out = [];
     document.querySelectorAll("p").forEach(e => {

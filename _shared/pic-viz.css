@@ -303,8 +303,12 @@ details.pv-table:not([open]) .pv-tablewrap{display:none}
    var(--figure) into --measure at :root, so descendants inherit the formula with 100%
    still unresolved inside it, and re-pinning --figure downstream is inert. 678px above
    the container's width is also inert, so this is safe at every viewport. Found by a
-   reader, 2026-08-31. */
-.pv-method-grid{margin:26px 0 0;max-width:var(--measure);--measure:678px}
+   reader, 2026-08-31. Amended the same night: the literal 678 pin broke the moment a
+   second design layer existed (story.css pages measure 728), so the pin moved to the
+   grid's CHILDREN as 100% — the grid itself holds the page's measure, and nothing
+   inside it re-caps. Layer-agnostic, and the compounding is still dead. */
+.pv-method-grid{margin:26px 0 0;max-width:var(--measure)}
+.pv-method-grid > *{--measure:100%}
 .pv-method-grid>div,.pv-method-grid>details{margin:0 0 30px;min-width:0}
 .pv-method h3{font-size:19px;margin:0 0 8px;letter-spacing:-.01em}
 .pv-method .pv-repro{max-width:var(--figure)}
@@ -441,3 +445,38 @@ details.pv-table:not([open]) .pv-tablewrap{display:none}
 /* Band tint, promoted 2026-08-31: defined identically on federal-money, cost-scissors
  * and patents, used unstyled on sources (the last classes-debt entry). One definition. */
 .band.tint{background:#F4F1EC}
+
+/* Table filter/sort bar for pages that ship a long register (ported with tableTools). */
+.pv-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+.pv-tools label{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+  color:var(--caption)}
+.pv-tools input{flex:1 1 200px;max-width:300px;padding:7px 10px;font:inherit;font-size:14.5px;
+  border:1px solid var(--line);background:#fff;color:var(--text)}
+.pv-tools input:focus-visible{outline:2px solid var(--action);outline-offset:1px}
+.pv-tools .pv-count{font-size:13px;color:var(--caption);font-variant-numeric:tabular-nums}
+.pv-tools .pv-hint{font-size:13px;color:var(--caption);margin-left:auto}
+th.pv-sortable{cursor:pointer;user-select:none;white-space:nowrap}
+th.pv-sortable:hover{color:var(--action)}
+th.pv-sortable:focus-visible{outline:2px solid var(--action);outline-offset:-2px}
+th.pv-sortable::after{content:" ↕";opacity:.3;font-weight:400}
+th.pv-sortable[aria-sort="ascending"]::after{content:" ↑";opacity:1;color:var(--action)}
+th.pv-sortable[aria-sort="descending"]::after{content:" ↓";opacity:1;color:var(--action)}
+.pv-tablewrap td a,.pv-tablewrap th a{color:var(--action)}
+
+/* What-we-got-wrong block (ported with whatWeGotWrong()). */
+/* WHAT WE GOT WRONG (editorial standard rule 6, 2026-08-21). Corrections standing
+   together, named, instead of scattered through source lines where they read as hedging.
+   Same generated-not-written contract as the methodology block; plum accent because it is
+   neither prose nor caveat — it is the page keeping its own score. */
+.pv-wrong .entry{border-left:3px solid #A32A78;padding:2px 0 2px 18px;margin:18px 0 0;
+  max-width:var(--measure)}
+.pv-wrong .entry p{margin:0 0 .4em;font-size:15.5px;line-height:1.55}
+.pv-wrong .entry .when{font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:700;color:#A32A78}
+
+/* THE COLD-OPEN STRIP HOST, promoted from eight per-page copies on 2026-08-31 when four
+   promoted pages used the class unstyled: a convention defined per page is a convention
+   only the page it was invented on gets right (same lesson as .fig-title). The realwage
+   values are canonical; scorecard's 24px top margin was the only divergence and it loses. */
+.hero .wrap > .hero-viz{max-width:var(--measure);margin:26px auto 4px}
+.hero-viz svg{width:100%;height:auto;display:block;overflow:visible}

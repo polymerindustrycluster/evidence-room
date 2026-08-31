@@ -70,7 +70,9 @@ closes it.
 
 ## Not in this repository
 
-Eleven analyses are here. Ten more exist internally and are not published, each for a
+Twenty-two analyses are here after the 2026-08-31 promotion of four workshop pages
+(atlas, programs, reach, collaboration — each through a cross-model stage-7 audit and its
+named fixes before arriving). Six more exist internally and are not published, each for a
 stated reason:
 
 - **Member-company records.** Two pages rest on a catalogue of company records including
@@ -78,16 +80,16 @@ stated reason:
 - **Applicant data.** Two pages describe a funding round application by application,
   including applications that were not funded. Naming an unsuccessful applicant is not
   something a funder gets to do.
-- **Partner reporting under embargo.** One page quotes project reporting that requires a
-  partner's sign-off it does not have.
-- **Corrections pending re-review.** Four pages had factual defects found in the same review
-  that cleared these eleven. The defects are fixed and logged in
-  [CORRECTIONS.md](CORRECTIONS.md); the pages themselves are held until they are re-read on
-  the corrected text rather than waved through because a gate went green.
-- One further page is held pending review.
+- **Partner reporting under embargo.** One page quotes project reporting that requires
+  partner sign-offs it does not yet have (the permission gate is printed on the page
+  itself).
+- **Rebuilt, awaiting fresh review.** Two pages were rebuilt after their audit verdicts
+  (a corrected comparator on one, a corrected decomposition on the other) and are held
+  until the rebuilt text gets a fresh independent pass rather than being waved through
+  because a gate went green.
+- One further page is held pending conversations it names.
 
-Their absence is stated here rather than left to be discovered. The staging script that
-builds this repository fails if any of them appears in it.
+Their absence is stated here rather than left to be discovered.
 
 ## License
 

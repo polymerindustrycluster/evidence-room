@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>The Hollowing of Polymer Education</title>
+<meta name="description" content="Northeast Ohio wants to rebuild its polymer technician pipeline. Of the three layers of polymer education, it is the only one that did not hold.">
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="../_shared/story.css">
+<style>
+/* FOUR STATS, TWO UP. story.css already grids a four-stat hero two by two, and its rule
+   outranks anything written here, so the grid is left alone. What it does not set is the
+   display size: the house clamp was measured against a wider column, and four numbers at
+   52px inside a half-column cell push the first chart off the screen. */
+.hero-row .figv .n{font-size:clamp(30px,3.4vw,42px)}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <strong>Polymer Industry Cluster</strong>
+    <span>Evidence room &middot; polymer education</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Every polymer degree and certificate in the federal record,
+      1991&ndash;2023</p>
+    <h1>Northeast Ohio wants to rebuild its polymer technician pipeline. Of the three
+      layers of polymer education, it is <em>the only one that did not hold</em>.</h1>
+    <p class="stand">Barely one in four polymer technician programs that ever got going was
+      still awarding a credential in 2023. Welding and machining, taught in the same
+      buildings by the same colleges, came through at nearly twice that rate, and so did
+      polymer degrees.</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data IPEDS completions by 6-digit CIP, The same IPEDS pull for six peer technician CI and 1 more &middot; August&nbsp;2026</p>
+    <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
+      id="open-t">Three layers of polymer education drawn as three survival bars: technician programs survive at 27 percent, degree programs and the adjacent trades both at 48.</title></svg></div>
+    <div class="hero-row" id="figs"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The finding</p>
+    <h2>Two of these three layers held. The technician layer lost three programs in
+      four</h2>
+    <p class="lede">One rule measures all three layers over the same years. A program is in
+      this chart if it ever conferred more than ten completions, and it counts as surviving if it conferred
+      one in 2023. The six peer trades are here for one reason: welding, machining,
+      industrial maintenance and their neighbours are taught in the same buildings by the
+      same kind of college, so if they had fallen as far, this would be a story about
+      community colleges rather than about polymers. They did not. The trades and the
+      polymer degrees finish within a point of each other; the technician layer finishes
+      twenty points below both. One limit travels with the headline above and belongs down
+      here rather than up there: this record sees only what colleges chose to file under the
+      polymer codes, so no one has rebuilt this layer <i>in the paperwork</i>, which is not
+      the same as no one having done it on the ground.</p>
+    <div class="chart"><svg id="spine" role="img" aria-labelledby="spine-t">
+      <title id="spine-t">Share of programs still conferring in 2023: polymer technician,
+        the peer-trades control, and polymer degrees.</title></svg></div>
+    <div id="spinetable"></div>
+    <p class="src" id="spinesrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The record</p>
+    <h2 id="seriestitle">After a collapse and a recovery, completions are a third below their
+      2016 peak</h2>
+    <p class="lede">Every polymer completion in the record, added up by year, certificates
+      through doctorates. It fell through the 2000s, more than doubled from the 2007 floor
+      to the 2016 peak, and has declined in four of the five years since that can be
+      compared. The line breaks at 2020, a year this record cannot see.</p>
+    <p class="fig-sub" id="seriessub"></p>
+    <div class="chart"><svg id="series" role="img" aria-labelledby="series-t">
+      <title id="series-t">US polymer program completions per year, 1991 to 2023.</title></svg></div>
+    <div id="seriestable"></div>
+    <p class="src" id="seriessrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The base rate</p>
+    <h2 id="basetitle">Most technician programs that ever existed never took hold</h2>
+    <p class="lede">The chart above counts programs that got past ten completions. This one
+      drops that filter and looks at all 168, because the ones that never got going are the
+      decision-relevant fact. Programs kept being started, and about half never took hold.
+      Anyone proposing to rebuild this layer is proposing to beat that base rate, and should
+      know it before, not after.</p>
+    <div class="chart"><svg id="base" role="img" aria-labelledby="base-t">
+      <title id="base-t">Of 168 US polymer technician programs since 1991: how many stayed
+        tiny, how many ran five years or less, and how many did both.</title></svg></div>
+    <div id="basetable"></div>
+    <p class="src" id="basesrc"></p>
+    <div class="note" id="basenote"></div>
+    <div id="ohiotable"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">What working looks like</p>
+    <h2 id="worktitle">Sixteen technician programs ever passed a hundred completions, and
+      one of them is not like the others</h2>
+    <p class="lede">Each bar is one program&rsquo;s lifetime completions, for the sixteen
+      that ever passed one hundred. Dark bars are still conferring; light bars ended. Ferris
+      State is the outlier to study: more completions than the next two programs combined,
+      across 33 unbroken years. Why it held while the layer around it thinned is a question
+      this dataset cannot answer, and it is the first interview to do.</p>
+    <div class="legend" id="worklegend"></div>
+    <p class="fig-sub" id="workingsub"></p>
+    <div class="chart"><svg id="working" role="img" aria-labelledby="working-t">
+      <title id="working-t">Lifetime completions for the sixteen US polymer technician
+        programs that ever passed one hundred, by status.</title></svg></div>
+    <div id="worktable"></div>
+    <p class="src" id="worksrc"></p>
+    <div class="note" id="worknote"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The anchor</p>
+    <h2 id="uatitle">In 2023 the University of Akron, the world&rsquo;s flagship polymer
+      school, graduated two polymer undergraduates</h2>
+    <p class="lede">Akron&rsquo;s polymer completions, every year the record covers. The
+      collapse is recent, steep, and top-heavy, and it ran through the same years the
+      region&rsquo;s federal and state polymer awards arrived. A technician pipeline built on
+      top of a contracting anchor is a different proposition from one built on a stable
+      anchor.</p>
+    <div class="chart"><svg id="ua" role="img" aria-labelledby="ua-t">
+      <title id="ua-t">University of Akron polymer completions per year, 1991 to 2023.</title></svg></div>
+    <div id="uatable"></div>
+    <p class="src" id="uasrc"></p>
+    <div class="note" id="uanote"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">What it pays</p>
+    <h2 id="paytitle">Where the record shows earnings at all, they are strong:
+      $87k&ndash;$101k four years out</h2>
+    <p class="lede">The federal Scorecard publishes earnings for polymer engineering
+      bachelor&rsquo;s degrees at exactly five institutions, and none is in Ohio. For each:
+      median earnings one year and four years after graduation, with the national middle
+      half of the program code behind them.</p>
+    <div class="legend" id="paylegend"></div>
+    <div class="chart"><svg id="pay" role="img" aria-labelledby="pay-t">
+      <title id="pay-t">Median earnings one and four years after a polymer engineering
+        bachelor’s degree, for the five institutions with published values.</title></svg></div>
+    <div id="paytable"></div>
+    <p class="src" id="paysrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The turn</p>
+    <h2 id="findtitle">No one has rebuilt one</h2>
+    <p class="lede">This dataset contains no verified example of a substantial polymer
+      technician program dying and being rebuilt. The one candidate dissolved on inspection
+      into a federal reporting change at a program that never stopped teaching. A region
+      proposing to rebuild this layer is proposing to do something this record offers no
+      example of anyone doing.</p>
+    <p class="lede" id="findsub">What &ldquo;rebuild&rdquo; means depends on which fact you
+      take as the problem: the survival rate, the coin-flip base rate of new starts, or the
+      contracting anchor. Each points at a different program design, and the record is
+      compatible with all three readings, which is exactly why the design choice has to be
+      made on purpose.</p>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="wrap">
+    <p>There is no verified rebuild case in this record. Whoever builds the next polymer
+      technician program is writing the first one: against a coin-flip base rate, on top of
+      a contracting anchor, in the layer that survived worst.</p>
+    <p class="sub" id="closersub"></p>
+  </div>
+</section>
+
+<section class="band appendix">
+  <div class="wrap">
+    <p class="chapter-kicker">Appendix</p>
+    <p class="takeaway">The register</p>
+    <h2>Where the record has lived, state by state</h2>
+    <p class="lede">Substantive programs by state, all thirty states that have ever filed
+      one. A chart of this table was cut on editorial review: a figure whose caption has to
+      forbid its own obvious inference is a figure the page is better without, because a
+      state at zero here is a filing habit rather than a confirmed absence. Every value
+      survives in the table.</p>
+    <div id="statestable"></div>
+    <p class="src" id="statessrc"></p>
+  </div>
+</section>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>The Collaboration That Thinned</title>
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="../_shared/story.css">
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <strong>Polymer Industry Cluster</strong>
+    <span>Cluster vitals &middot; collaboration</span>
+    <span class="proto">Prototype &middot; internal draft</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Akron and Case Western, 2012&ndash;2024</p>
+    <h1>Akron and Case Western have written 201 papers together since 2012.
+      <em>Seven were about polymers.</em></h1>
+    <p class="stand">Two independent instruments, publications and federal awards, measured
+      over thirteen years. <b>201 coauthored papers, seven classified in polymers, four joint
+      federal awards worth $3.7 million, none starting after 2017 in this window.</b> Joint
+      output held near its high through 2021, then fell three years running.</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data OpenAlex works and institutions, NSF Awards API &middot; August&nbsp;2026</p>
+    <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
+      id="open-t">Thirteen years of joint output drawn as one column per year: a rise to 2016, a plateau, and three falling years at the end.</title></svg></div>
+    <div class="hero-row" id="figs"></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The record</p>
+    <h2>Two hundred and one papers, and a fall that starts in 2022</h2>
+    <p class="lede">Every work in a public index that lists both universities among its
+      author affiliations. Each tick at the base is one paper classified in polymers and
+      plastics, or in biomaterials next to it, a subject classification, not a keyword.
+      They are drawn as individual ticks rather than a proportional band because there are few
+      enough that a band would render as a sliver and read as zero.</p>
+    <div class="legend">
+      <span><i style="background:#008BA8"></i> All coauthored works</span>
+      <span><i style="background:#C85F0C"></i> Classified in polymers and plastics</span>
+      <span><i style="background:#9FD2DA"></i> Classified in biomaterials</span>
+    </div>
+    <div class="chart"><svg id="joint" role="img" aria-labelledby="joint-t">
+      <title id="joint-t">Works per year listing both the University of Akron and Case
+        Western Reserve University, with the polymer-matching subset.</title></svg></div>
+    <div id="jointtable"></div>
+    <p class="src" id="jointsrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">Why this page exists</p>
+    <p class="lede">An earlier page here said PIC could put the two polymer chairs in the same
+      room, &ldquo;which nothing in this data suggests has happened.&rdquo; That was an unbounded
+      negative resting on data that was never about collaboration, and it has been deleted.
+      This page is what replaces it: the claim, measured. <b>The window closes before the
+      largest relevant award exists.</b> Case Western leads the NEO-SMART NSF Engine, awarded
+      14 July 2026, and the University of Akron is among its core partners; one of its three
+      research clusters is polymers. The largest joint federal undertaking these two
+      institutions have entered began eighteen months after this window closed. It is outside
+      this series and is not evidence against it, but a reader who knows about it should not
+      have to wonder whether this page does. <b>What this cannot show is an absence</b>:
+      publication databases and grant records do not see industry contracts, consortium
+      membership, joint teaching or a conversation, so a low count here means not visible at
+      this resolution.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The control</p>
+    <h2>It is not indexing lag, and it is not only that Akron shrank</h2>
+    <p class="lede">A falling count at the end of a series has two innocent explanations
+      before it has an interesting one: the database has not finished indexing recent years,
+      or one partner is simply publishing less of everything. Both are checkable, and both
+      are drawn here rather than argued in a footnote.</p>
+    <div class="legend">
+      <span><i class="ln" style="background:#B9B3A9"></i> Each university’s own output</span>
+      <span><i style="background:#008BA8"></i> Joint works per 1,000 of Akron’s output</span>
+    </div>
+    <div class="chart"><svg id="control" role="img" aria-labelledby="control-t">
+      <title id="control-t">Each university’s own annual output, and joint works expressed
+        per thousand of the University of Akron’s output.</title></svg></div>
+    <div id="controltable"></div>
+    <p class="src" id="controlsrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The money</p>
+    <h2>Four joint federal awards, none starting after 2017 in this window</h2>
+    <p class="lede">Federal awards are the second, independent instrument. They are counted
+      two ways, because the National Science Foundation encodes a partnership two ways: as
+      one award naming investigators at both institutions, and as a &ldquo;Collaborative
+      Research&rdquo; project split into a separate award for each. Missing the second
+      method undercounts badly. <b>The series ends in 2024.</b> An award made after that
+      (the CWRU-led NEO-SMART NSF Engine, July 2026, in which Akron is a core partner) is later than anything this
+      chart can see, and its absence here says nothing about it.</p>
+    <div class="chart"><svg id="awards" role="img" aria-labelledby="awards-t">
+      <title id="awards-t">Joint federal awards to both universities by start year and
+        amount.</title></svg></div>
+    <div id="awardstable"></div>
+    <p class="src" id="awardssrc"></p>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="wrap">
+    <p>The question was never whether they have met. It is whether they still do.</p>
+    <p class="sub" id="closersub"></p>
+  </div>
+</section>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

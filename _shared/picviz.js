@@ -290,7 +290,8 @@ const PV = (() => {
       if (node.nodeType === 1 && kept < keep) { kept++; continue; }
       svg.removeChild(node);
     }
-    return {svg, W, H, m, w: W - m.l - m.r, h: H - m.t - m.b};
+
+  return {svg, W, H, m, w: W - m.l - m.r, h: H - m.t - m.b};
   }
 
   /* Complete the final row of a card grid.
@@ -633,7 +634,168 @@ const PV = (() => {
     return sec;
   }
 
-  return {el, txt, axlab, face, lead, ticks, frame, hoverable, showTip, hideTip, tableView, data, footprint,
+
+      /* ------------------------------------------- sortable, filterable table views
+
+     The table twin is usually a fallback for the chart. For a directory — 147 institutions,
+     one row each — it is the primary interface, and a reader who wants "the Ohio ones,
+     largest first" should not have to read 147 rows to find eight. Sorting and filtering
+     are attached to the DOM `tableView` already rendered, so no page changes its markup or
+     describes its schema twice, and a table with the tools removed is still the same table.
+
+     Numeric columns are DETECTED, not declared: a column whose cells all parse as numbers
+     once punctuation is stripped sorts numerically. Declaring them per page would be a
+     second description of the data, which is a second thing to get out of step.
+
+     One trap, learned elsewhere in this house and easy to reintroduce: blanks go last in
+     BOTH directions, so the null branch must not be multiplied by the direction — do that
+     and every empty cell floats to the top the moment a reader reverses the sort. */
+  function tableTools(host, opts = {}) {
+    const root = typeof host === "string" ? document.querySelector(host) : host;
+    const table = root && root.querySelector("table");
+    if (!table || !table.tHead || !table.tBodies[0]) return null;
+    const tbody = table.tBodies[0];
+    const rows = [...tbody.rows];
+    const heads = [...table.tHead.rows[0].cells];
+    const cellText = (row, i) => (row.cells[i] ? row.cells[i].textContent : "").trim();
+    const num = s => {
+      const v = parseFloat(String(s).replace(/[^0-9.\-]/g, ""));
+      return Number.isNaN(v) ? null : v;
+    };
+    const isNumeric = i => rows.some(r => num(cellText(r, i)) !== null) &&
+      rows.every(r => { const t = cellText(r, i); return !t || t === "—" || num(t) !== null; });
+
+    const tools = document.createElement("div");
+    tools.className = "pv-tools";
+    const id = "pvf" + Math.random().toString(36).slice(2, 8);
+    tools.innerHTML = `<label for="${id}">Filter</label>
+      <input id="${id}" type="search" autocomplete="off" spellcheck="false"
+             placeholder="${opts.placeholder || "type to narrow these rows"}">
+      <span class="pv-count" role="status" aria-live="polite"></span>
+      <span class="pv-hint">click a column to sort</span>`;
+    /* The scroll wrap is a DESCENDANT of the host (host > details > wrap > table), not a
+       child of it, so the reference node has to be resolved against its own parent —
+       insertBefore against the wrong parent throws NotFoundError and takes the rest of the
+       page's script with it. */
+    const wrap = root.querySelector(".pv-tablewrap") || table;
+    wrap.parentNode.insertBefore(tools, wrap);
+    const input = tools.querySelector("input"), count = tools.querySelector(".pv-count");
+    const applyFilter = () => {
+      const q = input.value.trim().toLowerCase();
+      let shown = 0;
+      rows.forEach(r => {
+        const hit = !q || r.textContent.toLowerCase().includes(q);
+        r.hidden = !hit;
+        if (hit) shown++;
+      });
+      count.textContent = q ? `${shown} of ${rows.length} rows` : `${rows.length} rows`;
+    };
+    input.addEventListener("input", applyFilter);
+    applyFilter();
+
+    let sortCol = -1, dir = 1;
+    heads.forEach((th, i) => {
+      th.classList.add("pv-sortable");
+      th.tabIndex = 0;
+      const doSort = () => {
+        dir = sortCol === i ? -dir : 1;
+        sortCol = i;
+        const numeric = isNumeric(i);
+        [...rows].sort((a, b) => {
+          const A = cellText(a, i), B = cellText(b, i);
+          if (numeric) {
+            const x = num(A), y = num(B);
+            if (x === null) return 1;            // blanks last, in both directions
+            if (y === null) return -1;
+            return (x - y) * dir;
+          }
+          if (!A) return 1;
+          if (!B) return -1;
+          return A.localeCompare(B, "en", {numeric: true}) * dir;
+        }).forEach(r => tbody.appendChild(r));
+        heads.forEach(h => h.removeAttribute("aria-sort"));
+        th.setAttribute("aria-sort", dir === 1 ? "ascending" : "descending");
+      };
+      th.addEventListener("click", doSort);
+      th.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); doSort(); }
+      });
+    });
+    return {table, filter: input};
+  }
+
+
+  /* Text ON a colored mark: the label color is not a style choice. A hand-picked ink per
+     step reads at 2.5:1, white on a pale bar at 1.7:1. Neither renders wrong, neither
+     collides, and no gate saw them until one measured contrast.
+
+     So derive it. Given the fill a mark is painted with, return whichever of the two text
+     colors actually contrasts better. The dark option is near-black rather than --pv-ink
+     because mid-ramp teals need more separation than the body ink can give, and PIC brand
+     law forbids white on #1A8A9E — a measured pick honors that rule by arithmetic instead
+     of by remembering it. */
+  const _rgb = c => {
+    if (!c) return null;
+    let s = String(c).trim();
+    const v = s.match(/^var\(\s*(--[\w-]+)\s*\)$/);
+    if (v) s = getComputedStyle(document.documentElement).getPropertyValue(v[1]).trim();
+    if (s.startsWith("#")) {
+      const h = s.slice(1);
+      const n = h.length === 3 ? h.split("").map(x => x + x).join("") : h;
+      if (n.length < 6) return null;
+      return {r: parseInt(n.slice(0, 2), 16), g: parseInt(n.slice(2, 4), 16),
+              b: parseInt(n.slice(4, 6), 16)};
+    }
+    const m = s.match(/rgba?\(([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)/);
+    return m ? {r: +m[1], g: +m[2], b: +m[3]} : null;
+  };
+  const _lum = ({r, g, b}) => {
+    const f = v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); };
+    return .2126 * f(r) + .7152 * f(g) + .0722 * f(b);
+  };
+  const _ratio = (a, b) => {
+    const [x, y] = [_lum(a), _lum(b)].sort((p, q) => q - p);
+    return (x + .05) / (y + .05);
+  };
+  const INK_ON = "#0F1618", LIGHT_ON = "#fff";
+  function onFill(fill, dark = INK_ON, light = LIGHT_ON) {
+    const bg = _rgb(fill);
+    if (!bg) return dark;
+    return _ratio(_rgb(dark), bg) >= _ratio(_rgb(light), bg) ? dark : light;
+  }
+
+  /* ------------------------------------------------------- what we got wrong
+
+     Editorial standard rule 6 (2026-08-21). A page that has corrected itself says so in
+     ONE standing block, not in asides scattered through source lines — scattered, a
+     correction reads as hedging; standing and dated, it is the thing no comparison
+     outlet publishes. Generated, not written, like the methodology block: the page hands
+     over its entries and cannot restyle or soften them. Entries mirror CORRECTIONS.md
+     ({when, was, is, why}) — same events, standing where a reader can find them. */
+  function whatWeGotWrong(entries) {
+    if (!entries || !entries.length) return null;
+    const sec = document.createElement("section");
+    sec.className = "band pv-wrong";
+    sec.innerHTML = `<div class="wrap">
+      <p class="takeaway">The record of this page</p>
+      <h2>What we got wrong</h2>
+      <p class="lede">Every number here is rebuilt from public data, so errors are expected
+        to be found, including by us. These are this page’s own corrections, dated, oldest
+        error first. The repository-wide log is in CORRECTIONS.md.</p>
+      ${entries.map(e => `<div class="entry">
+        <p class="when">${e.when}</p>
+        <p><b>Was:</b> ${e.was}</p>
+        <p><b>Is:</b> ${e.is}</p>
+        ${e.why ? `<p><b>Why it happened:</b> ${e.why}</p>` : ""}
+      </div>`).join("")}
+    </div>`;
+    const closer = document.querySelector(".closer");
+    if (closer) closer.parentNode.insertBefore(sec, closer);
+    else document.body.appendChild(sec);
+    return sec;
+  }
+
+  return {tableTools, onFill, whatWeGotWrong, el, txt, axlab, face, lead, ticks, frame, hoverable, showTip, hideTip, tableView, data, footprint,
           methodology, figures, chart, footprintBanner, padGrid, mark, favicon, N,
           CAT, SEQ, GRAY, INK, usd, usdShort, reduced};
 })();
