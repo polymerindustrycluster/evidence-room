@@ -39,9 +39,6 @@
   "ACE": [
    "funding-map"
   ],
-  "AGEP": [
-   "collaboration"
-  ],
   "ALCOM": [
    "timeline"
   ],
@@ -129,7 +126,6 @@
    "accountability",
    "churn",
    "cluster-health",
-   "collaboration",
    "federal-money",
    "funding-map",
    "index",
@@ -187,11 +183,7 @@
   "PAN": [
    "chain"
   ],
-  "PI": [
-   "collaboration"
-  ],
   "PIC": [
-   "collaboration",
    "federal-money",
    "laborshed",
    "patents",
@@ -229,7 +221,6 @@
    "realwage"
   ],
   "SMART": [
-   "collaboration",
    "federal-money",
    "funding-map",
    "timeline"
