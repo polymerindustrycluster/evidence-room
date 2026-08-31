@@ -522,7 +522,8 @@ if (hash.get("county")) state.county = hash.get("county");
   const {el, txt, ticks, frame, hoverable, tableView, SEQ, CAT} = PV;
   const rows = VIZ.spine;
   const W = 1100, H = 60 + rows.length*46 + 70, m = {t:44, b:66};
-  const mid = W/2, gap = 150, half = mid - gap/2 - 30;
+  /* -30 left the left axis's own '246' tick 6px past the edge below 1100px. 2026-09-01. */
+  const mid = W/2, gap = 150, half = mid - gap/2 - 42;
   const h = H - m.t - m.b;
   const svg = document.getElementById("sd");
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);

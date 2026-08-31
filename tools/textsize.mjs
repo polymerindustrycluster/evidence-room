@@ -58,6 +58,11 @@ for (const n of list) {
     // otherwise report "svg-min —" and pass the check that exists to catch it.
     const unmeasured = [];
     document.querySelectorAll("svg").forEach(svg => {
+      /* A display:none svg renders for nobody — sighted or screen reader (display:none
+         removes it from the accessibility tree too). chain swaps its wide ribbon for a
+         stacked-bar DIV below 900px this way, and the gate read the hidden ribbon as
+         "zero-width, unmeasurable". Hidden-by-design is not unmeasured. 2026-09-01. */
+      if (getComputedStyle(svg).display === "none") return;
       const vb = svg.viewBox && svg.viewBox.baseVal;
       const box = svg.getBoundingClientRect();
       const texts = [...svg.querySelectorAll("text")].filter(t => t.textContent.trim());

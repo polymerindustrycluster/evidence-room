@@ -185,7 +185,9 @@ PV.figures([
 {
   const R = D.top.slice(0, 14);
   const {svg, m, w} = chart("dir", {W: COL, rows: R.length, rowH: 26,
-    m: {t: 40, r: 8, b: 54, l: 244}});
+    m: {t: 40, r: 8, b: 54, l: 282}});
+  /* l was 244; 'South China University of Technology' ran 26px past the left edge at
+     phone text sizes. Same fast-CI ship-route as the rest. 2026-09-01. */
   const max = Math.max(...R.map(p => p.total)) * 1.06;
   const xs = v => m.l + (v / max) * w;
   frame(svg, {x: m.l, y: m.t, w, h: R.length * 26, xs, ys: () => 0,

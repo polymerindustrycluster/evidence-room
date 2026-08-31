@@ -11,7 +11,9 @@
   "718px two-column notes); calib = accountability's calibration cards; aside =",
   "timeline's 436px sidebar cards; pv-method-note/pv-src = the uniform 664 source-box",
   "inset on every page.",
-  "pv-wrong = the What-we-got-wrong corrections block (plum rule + 18px inset), a shared component from the story-page promotion; its entries are structured corrections, not running prose."
+  "pv-wrong = the What-we-got-wrong corrections block (plum rule + 18px inset), a shared component from the story-page promotion; its entries are structured corrections, not running prose.",
+  "card/blank-list = chain's company-card grid (285px card summaries) and the map-side gap list (375px column); both grid registers, not running prose.",
+  "mgrid = chain's two-column methodology grid; its column paragraphs are 307px by layout."
  ],
  "allowed": {
   "pv-method-note": [
@@ -49,6 +51,15 @@
   ],
   "pv-wrong": [
    "*"
+  ],
+  "card": [
+   "chain"
+  ],
+  "blank-list": [
+   "chain"
+  ],
+  "mgrid": [
+   "chain"
   ]
  }
 }
