@@ -117,7 +117,11 @@ function drawChain(hits) {
   const outSum = tiers.reduce((a,t) => a + t.outside, 0);
   const expected = tiers.map(t => t.outside * (neoSum / outSum));
 
-  while (chainSvg.childNodes.length > 1) chainSvg.removeChild(chainSvg.lastChild);
+  /* Keep the <title> the svg's aria-labelledby points to: the old loop kept exactly
+     one child, and that child was the leading whitespace text node, so every redraw
+     deleted the chart's accessible name. Found by a first-read editor, 2026-09-01. */
+  [...chainSvg.childNodes].forEach(n => {
+    if (!(n.nodeType === 1 && n.tagName.toLowerCase() === "title")) chainSvg.removeChild(n); });
 
   const defs = el("defs");
   const grad = el("linearGradient", {id:"ribbon", x1:"0", y1:"0", x2:"1", y2:"0"});
@@ -279,7 +283,8 @@ function drawMap(hits) {
   const shade = r => r <= 0 ? "url(#nodata)"
     : ramp[Math.min(ramp.length-1, Math.floor(r / .32))];
 
-  while (mapSvg.childNodes.length > 1) mapSvg.removeChild(mapSvg.lastChild);
+  [...mapSvg.childNodes].forEach(n => {
+    if (!(n.nodeType === 1 && n.tagName.toLowerCase() === "title")) mapSvg.removeChild(n); });
   const defs = el("defs");
   const nd = el("pattern", {id:"nodata", width:"8", height:"8",
     patternUnits:"userSpaceOnUse", patternTransform:"rotate(45)"});
