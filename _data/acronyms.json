@@ -8,7 +8,8 @@
   "The edit fleet burns debt down; a NEW page or NEW acronym gets no debt entry.",
   "POST/GET/JSON/README assumed: they appear only in the replication guide, whose reader is executing HTTP requests and knows the verbs.",
   "chain's PAN/RFID/UV/M&A/PE/OEM/NFM/LSR/HCR/RTV entries are inside verbatim vault self-descriptions that policy forbids rewriting; they stay as permanent adjudicated debt, glossed in the methodology instead.",
-  "State postal codes assumed: household knowledge, AP-accepted in lists."
+  "State postal codes assumed: household knowledge, AP-accepted in lists.",
+  "ALFRED: glossed on the page, but the gloss renders from a derived data file AFTER the first prose occurrence; reordering is a data-file edit. Debt with reason, like the vault quotes."
  ],
  "assumed_known": [
   "3D",
@@ -243,6 +244,9 @@
   ],
   "WV": [
    "laborshed"
+  ],
+  "ALFRED": [
+   "cluster-health"
   ]
  }
 }
