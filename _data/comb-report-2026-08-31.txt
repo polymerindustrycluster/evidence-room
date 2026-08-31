@@ -1,0 +1,92 @@
+th (in details)                    transform usually none (1085/1356)  BUT uppercase x271 on: accountability, churn, cluster-health, cost-scissors, federal-money, laborshed, location-quotient, occupations, patents, peers, realwage, revisions, scorecard, sources, timeline, wages
+th (in details)                    size      usually 14px (1092/1356)  BUT 12px x264 on: accountability, churn, cluster-health, cost-scissors, federal-money, laborshed, location-quotient, occupations, patents, peers, realwage, revisions, scorecard, sources, wages
+th (in details)                    color     usually rgb(20, 26, 28) (1085/1356)  BUT rgb(101, 102, 97) x264 on: accountability, churn, cluster-health, cost-scissors, federal-money, laborshed, location-quotient, occupations, patents, peers, realwage, revisions, scorecard, sources, wages
+th (in details)                    spacing   usually normal (1085/1356)  BUT 1.08px x264 on: accountability, churn, cluster-health, cost-scissors, federal-money, laborshed, location-quotient, occupations, patents, peers, realwage, revisions, scorecard, sources, wages
+td (in details)                    size      usually 14px (4983/5024)  BUT 15.5px x41 on: timeline
+td                                 color     usually rgb(58, 68, 72) (86/115)  BUT rgb(20, 26, 28) x27 on: sources, timeline
+p                                  weight    usually 400 (191/208)  BUT 900 x17 on: accountability, churn, cluster-health, cost-scissors, federal-money, funding-map, laborshed, location-quotient, occupations, patents, peers, realwage, revisions, scorecard, sources, timeline, wages
+p                                  spacing   usually normal (191/208)  BUT -0.6px x17 on: accountability, churn, cluster-health, cost-scissors, federal-money, funding-map, laborshed, location-quotient, occupations, patents, peers, realwage, revisions, scorecard, sources, timeline, wages
+p.pv-method-note (in details)      left      usually 396 (65/81)  BUT 380 x16 on: accountability, churn, cluster-health, cost-scissors, federal-money, funding-map, laborshed, location-quotient, occupations, patents, peers, realwage, revisions, scorecard, timeline, wages
+p.pv-method-note (in details)      width     usually 664 (65/81)  BUT 680 x16 on: accountability, churn, cluster-health, cost-scissors, federal-money, funding-map, laborshed, location-quotient, occupations, patents, peers, realwage, revisions, scorecard, timeline, wages
+td                                 size      usually 13.5px (86/115)  BUT 14px x15 on: sources
+th                                 spacing   usually normal (54/75)  BUT 1.08px x12 on: accountability, sources, timeline
+td                                 size      usually 13.5px (86/115)  BUT 15.5px x12 on: timeline
+th                                 size      usually 14px (58/75)  BUT 12px x11 on: accountability, sources
+th                                 color     usually rgb(20, 26, 28) (54/75)  BUT rgb(101, 102, 97) x11 on: accountability, sources
+th (in details)                    color     usually rgb(20, 26, 28) (1085/1356)  BUT rgb(255, 255, 255) x7 on: timeline
+th (in details)                    spacing   usually normal (1085/1356)  BUT 0.84px x7 on: timeline
+p                                  left      usually 380 (141/208)  BUT 400 x6 on: sources
+p                                  width     usually 680 (140/208)  BUT 660 x6 on: sources
+th                                 color     usually rgb(20, 26, 28) (54/75)  BUT rgb(12, 100, 115) x5 on: funding-map, timeline
+th                                 size      usually 14px (58/75)  BUT 12.5px x4 on: funding-map
+th                                 color     usually rgb(20, 26, 28) (54/75)  BUT rgb(255, 255, 255) x4 on: timeline
+th                                 spacing   usually normal (54/75)  BUT 0.625px x4 on: funding-map
+th                                 spacing   usually normal (54/75)  BUT 0.84px x4 on: timeline
+h3                                 transform usually none (124/128)  BUT uppercase x4 on: funding-map, timeline
+summary (in details)               size      usually 13.5px (68/75)  BUT 13px x3 on: sources
+li                                 size      usually 16.5px (119/125)  BUT 14px x3 on: accountability
+li                                 size      usually 16.5px (119/125)  BUT 17px x3 on: timeline
+li                                 weight    usually 400 (122/125)  BUT 700 x3 on: accountability
+li                                 color     usually rgb(58, 68, 72) (122/125)  BUT rgb(20, 26, 28) x3 on: accountability
+p                                  width     usually 680 (140/208)  BUT 212 x3 on: sources
+p.foot-id                          size      usually 13px (13/16)  BUT 14px x3 on: churn, cost-scissors, sources
+p.foot-id                          spacing   usually normal (11/16)  BUT 0.26px x3 on: cluster-health, peers, wages
+p.byline                           color     usually rgb(156, 196, 202) (15/17)  BUT rgb(159, 203, 210) x2 on: location-quotient, occupations
+summary (in details)               size      usually 13.5px (68/75)  BUT 14px x2 on: location-quotient
+summary (in details)               size      usually 13.5px (68/75)  BUT 16px x2 on: timeline
+summary (in details)               color     usually rgb(24, 130, 149) (73/75)  BUT rgb(12, 100, 115) x2 on: location-quotient
+td                                 size      usually 13.5px (86/115)  BUT 14.5px x2 on: funding-map
+td                                 weight    usually 400 (113/115)  BUT 900 x2 on: funding-map
+td                                 color     usually rgb(58, 68, 72) (86/115)  BUT rgb(12, 100, 115) x2 on: funding-map
+h3                                 size      usually 19px (122/128)  BUT 12px x2 on: funding-map
+h3                                 size      usually 19px (122/128)  BUT 21px x2 on: funding-map
+h3                                 size      usually 19px (122/128)  BUT 13.5px x2 on: timeline
+h3                                 weight    usually 900 (126/128)  BUT 700 x2 on: timeline
+h3                                 color     usually rgb(20, 26, 28) (124/128)  BUT rgb(101, 102, 97) x2 on: funding-map
+h3                                 color     usually rgb(20, 26, 28) (124/128)  BUT rgb(24, 130, 149) x2 on: timeline
+h3                                 spacing   usually -0.19px (122/128)  BUT 1.2px x2 on: funding-map
+h3                                 spacing   usually -0.19px (122/128)  BUT -0.42px x2 on: funding-map
+h3                                 spacing   usually -0.19px (122/128)  BUT 1.35px x2 on: timeline
+h3                                 left      usually 380 (85/128)  BUT 408 x2 on: funding-map
+h3                                 width     usually 680 (85/128)  BUT 468 x2 on: funding-map
+h3                                 width     usually 680 (85/128)  BUT 436 x2 on: timeline
+p                                  width     usually 680 (140/208)  BUT 436 x2 on: timeline
+p.foot-id                          spacing   usually normal (11/16)  BUT 0.52px x2 on: location-quotient, occupations
+p.warn                             size      usually 16px (12/14)  BUT 15px x2 on: patents, sources
+p.warn                             color     usually rgb(51, 59, 62) (12/14)  BUT rgb(58, 58, 54) x2 on: patents, sources
+h2                                 size      usually 34px (107/108)  BUT 12px x1 on: sources
+h2                                 color     usually rgb(20, 26, 28) (107/108)  BUT rgb(101, 102, 97) x1 on: sources
+h2                                 transform usually none (107/108)  BUT uppercase x1 on: sources
+h2                                 spacing   usually -0.68px (107/108)  BUT 1.56px x1 on: sources
+h2                                 left      usually 380 (107/108)  BUT 24 x1 on: sources
+h2                                 width     usually 680 (107/108)  BUT 160 x1 on: sources
+th                                 size      usually 14px (58/75)  BUT 13px x1 on: accountability
+th                                 size      usually 14px (58/75)  BUT 13.5px x1 on: timeline
+th                                 color     usually rgb(20, 26, 28) (54/75)  BUT rgb(153, 84, 128) x1 on: accountability
+th                                 spacing   usually normal (54/75)  BUT 0.13px x1 on: accountability
+td.num                             weight    usually 700 (27/38)  BUT 900 x1 on: funding-map
+td.num                             color     usually rgb(20, 26, 28) (37/38)  BUT rgb(12, 100, 115) x1 on: funding-map
+h3 (in details)                    width     usually 140 (16/19)  BUT 256 x1 on: churn
+h3 (in details)                    width     usually 140 (16/19)  BUT 356 x1 on: churn
+h3 (in details)                    width     usually 140 (16/19)  BUT 580 x1 on: churn
+h3                                 left      usually 380 (85/128)  BUT 232 x1 on: funding-map
+h3                                 left      usually 380 (85/128)  BUT 744 x1 on: funding-map
+h3                                 left      usually 380 (85/128)  BUT 256 x1 on: timeline
+h3                                 left      usually 380 (85/128)  BUT 752 x1 on: timeline
+p                                  left      usually 380 (141/208)  BUT 232 x1 on: sources
+p                                  left      usually 380 (141/208)  BUT 616 x1 on: sources
+p                                  left      usually 380 (141/208)  BUT 848 x1 on: sources
+p                                  left      usually 380 (141/208)  BUT 256 x1 on: timeline
+p                                  left      usually 380 (141/208)  BUT 752 x1 on: timeline
+p                                  width     usually 680 (140/208)  BUT 980 x1 on: sources
+p.foot-k                           size      usually 12px (6/7)  BUT 12.5px x1 on: funding-map
+p.foot-k                           color     usually rgb(127, 179, 188) (6/7)  BUT rgb(101, 102, 97) x1 on: funding-map
+p.foot-k                           spacing   usually 1.68px (6/7)  BUT 1.25px x1 on: funding-map
+p.foot-cta                         color     usually rgb(168, 205, 212) (6/7)  BUT rgb(58, 68, 72) x1 on: funding-map
+p.verdict                          size      usually 17px (6/7)  BUT 19px x1 on: funding-map
+p.verdict                          weight    usually 400 (6/7)  BUT 700 x1 on: funding-map
+p.verdict                          color     usually rgb(36, 49, 53) (6/7)  BUT rgb(12, 100, 115) x1 on: funding-map
+p.warn                             left      usually 432 (12/14)  BUT 380 x1 on: patents
+p.warn                             left      usually 432 (12/14)  BUT 232 x1 on: sources
+p.warn                             width     usually 628 (12/14)  BUT 680 x1 on: patents
+p.warn                             width     usually 628 (12/14)  BUT 980 x1 on: sources
