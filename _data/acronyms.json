@@ -87,9 +87,6 @@
    "scorecard",
    "wages"
   ],
-  "FWCI": [
-   "reach"
-  ],
   "GET": [
    "accountability",
    "federal-money",
@@ -183,8 +180,7 @@
   "PIC": [
    "federal-money",
    "laborshed",
-   "patents",
-   "reach"
+   "patents"
   ],
   "POST": [
    "accountability",
