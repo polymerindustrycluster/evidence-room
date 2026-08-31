@@ -194,6 +194,17 @@ dfn b{font-weight:900}
 .pv-labq{font-size:13.6px;fill:var(--pv-muted)}
 .legend{display:flex;gap:20px;flex-wrap:wrap;margin:14px 0 0;font-size:13.5px;
   color:var(--pv-ink)}
+/* KEY BEFORE DATA (2026-08-31). The house convention moved: a legend renders ABOVE its
+ * chart, in reading order, so the reader holds the key before meeting the data instead
+ * of decoding, scanning down, and scanning back. This is the shared practice of the
+ * exemplars the room is built against: NYT colors category words directly above the
+ * graphic, Datawrapper places the scatter color key above the plot by default (and
+ * Silver Bulletin ships Datawrapper), The Pudding keys color in the prose itself.
+ * Left edge stays the chart rail; that was already consistent and correct.
+ * The two rules below carry the spacing the old below-chart margin provided, and the
+ * .fig-title adjacency rule keeps working for charts that have no legend. */
+.fig-sub + .legend{margin-top:14px}
+.legend + .chart{margin-top:12px}
 .legend span{display:inline-flex;align-items:center;gap:8px}
 .legend i{width:14px;height:14px;display:block;flex:none}
 .legend i.ln{height:3px}

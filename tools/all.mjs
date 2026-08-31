@@ -39,6 +39,7 @@ const GATES = [
   ["alttext",     "node",   ["tools/alttext.mjs"],           "every chart carries a description"],
   ["fonts",       "node",   ["tools/fonts.mjs"],             "every font this site names, this site ships"],
   ["classes",     "node",   ["tools/classes.mjs"],           "every class a page uses resolves to a rule"],
+  ["legends",     "node",   ["tools/legends.mjs"],           "the reader gets the key before the data"],
   ["claims",      "python3", ["_data/build/verify_claims.py"],      "every numeric sentence against its own data"],
   ["series",      "python3", ["_data/build/verify_series.py"],      "the DATA against the world, not against its own prose"],
   ["consistency", "python3", ["_data/build/verify_consistency.py"], "builders, catalog, prose invariants"],
