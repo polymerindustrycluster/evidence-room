@@ -72,10 +72,12 @@ trl/
 oversubscribed/
 6ppd/
 ledger/
-collaboration/
 credit/
-reach/
 talent/
+# collaboration/ and reach/ left this list 2026-08-31: both passed the stage-7 audit, their
+# named fixes shipped (all four exclusions reported on reach; the NEO-SMART question
+# answered on collaboration), and John approved promotion. credit/ and talent/ stay until
+# their rebuilds get a fresh stage-7 pass; the other six are restricted on content.
 
 .env
 node_modules/

@@ -1,0 +1,54 @@
+{
+ "data": "collaboration.json",
+ "claims": [
+  {
+   "id": "col-they-do-collaborate",
+   "text": "The University of Akron and Case Western Reserve have coauthored more than 200 works since 2012 and hold four joint federal awards.",
+   "source": "OpenAlex works listing both institutions; NSF awards API",
+   "assert": "D['totals']['coauthored'] > 150 and D['totals']['joint_awards'] >= 3",
+   "actual": "(D['totals']['coauthored'], D['totals']['joint_awards'], D['totals']['joint_award_dollars'])",
+   "falsified_if": "Either measure collapses. This is the claim that refutes the deleted 'nothing suggests they have met' line; if it fails, that line was closer to right than this page is and the page must be withdrawn, not softened. This claim is about collaboration EXISTING, which is what refutes 'never convened'. It is deliberately independent of whether the collaboration is about polymers — see col-rarely-about-polymers, which says it mostly is not."
+  },
+  {
+   "id": "col-thinning-is-real",
+   "text": "Joint output fell by more than two thirds from its 2018 peak even after controlling for Akron's own contraction.",
+   "source": "as above; joint works per 1,000 of Akron's own annual output",
+   "assert": "1 - D['series'][-1]['per_1k_akron'] / max(r['per_1k_akron'] for r in D['series']) > 0.66",
+   "actual": "[(r['year'], r['joint'], r['akron'], r['per_1k_akron']) for r in D['series'] if r['year'] in (2018, 2023, 2024)]",
+   "falsified_if": "The controlled rate recovers. NOTE the final year is the least-indexed and must not carry this claim alone — the 2018-2023 movement has to hold on its own."
+  },
+  {
+   "id": "col-not-indexing-lag",
+   "text": "The decline is not an artifact of incomplete indexing: Case Western's own output is higher at the end of the series than at the joint peak.",
+   "source": "OpenAlex, each institution's own works per year",
+   "assert": "D['series'][-1]['cwru'] >= [r['cwru'] for r in D['series'] if r['year'] == D['totals']['peak_year']][0]",
+   "actual": "[(r['year'], r['akron'], r['cwru']) for r in D['series'][-4:]]",
+   "falsified_if": "Case Western's own recent output drops below its level at the joint peak, which would mean the index is thin on recent years and the joint decline cannot be separated from it."
+  },
+  {
+   "id": "col-no-new-joint-award",
+   "text": "Within the window measured here, 2012 to 2024, no new joint federal award started after 2017.",
+   "source": "NSF awards API, awards to either institution since 2012, Collaborative Research mechanism only",
+   "assert": "max(int((a['start'] or '0000')[-4:]) for a in D['joint_awards']) <= 2017 and D['meta']['years'][1] <= 2024",
+   "actual": "[(a['start'], a['amount'], a['title'][:60]) for a in D['joint_awards']] + [('window', D['meta']['years'])]",
+   "falsified_if": "A joint award starting after 2017 and on or before 2024 appears, OR the pull is extended past 2024 without re-reading this sentence. LIMIT, and it has already bitten: the unbounded form of this claim ('none since 2017') was refutable from PIC's own timeline page, which records the CWRU-led NEO-SMART NSF Engine awarded 2026-07-14. That award is outside this window, so the arithmetic held while the sentence did not — which is why the window is now asserted beside the maximum. Separately, this sees NSF only: a joint NIH, DOE, EDA or state award would not appear here and would not falsify the arithmetic while still making the sentence misleading."
+  },
+  {
+   "id": "col-cannot-prove-absence",
+   "text": "These instruments can demonstrate collaboration and cannot demonstrate its absence.",
+   "source": "Method note, not a data check",
+   "verify": "manual",
+   "assert": null,
+   "actual": null,
+   "falsified_if": "Nothing in the data can falsify this; it is the standing limit on how the page may be read, and it is the reason a null result would not have been published."
+  },
+  {
+   "id": "col-rarely-about-polymers",
+   "text": "Of 201 joint papers, seven are classified in polymers and plastics and eleven in biomaterials, and the last of either was 2020.",
+   "source": "OpenAlex subfields 2507 and 2502, confirmed against the s3://openalex snapshot; a classification, not a keyword",
+   "assert": "D['totals']['subject_total'] < 0.15 * D['totals']['coauthored'] and D['totals']['last_subject_year'] <= 2020",
+   "actual": "(D['totals']['polymer_total'], D['totals']['bio_total'], D['totals']['coauthored'], D['totals']['last_subject_year'])",
+   "falsified_if": "The subject share rises above 15 percent, or a joint paper appears in either subject after 2020. THIS NUMBER MOVED WHEN THE BOUND DID: the full-text keyword 'polymer' returned 24 of these papers and the subject classification returns 7, because the keyword counted any paper that mentioned the word. The larger number was the one published first."
+  }
+ ]
+}

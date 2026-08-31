@@ -1,0 +1,53 @@
+{
+  "data": "viz-data.json",
+  "claims": [
+    {
+      "id": "atlas-counts",
+      "text": "147 US institutions ever filed a polymer program in the federal record, 1991–2023, across 35 states plus Puerto Rico; 41 had a program still conferring in 2023. 'Ever' is a 33-year union and 'still conferring' a one-year snapshot — different constructs, never stated as a ratio.",
+      "source": "polymer-programs-db census, aggregated to institutions, source='ipeds' only",
+      "assert": "D['totals']['ever'] == 147 and D['totals']['active'] == 41 and D['totals']['states'] == 35 and len(D['dots']) == 146 and len(D['off_projection']) == 1 and D['off_projection'][0]['unitid'] == 242617 and D['totals']['active'] == sum(1 for d in D['dots'] + D['off_projection'] if d['active_programs'] > 0)",
+      "actual": "(D['totals'], len(D['dots']), [o['name'] for o in D['off_projection']])",
+      "falsified_if": "2024 data lands or IPEDS revises (the census probes every build); or the mixed-denominator trap re-enters — any sentence stating 41-of-147 as a survival rate fails the census's own documented kill of that headline."
+    },
+    {
+      "id": "atlas-mapped-complete",
+      "text": "Every one of the 147 institutions is placed: 146 on the map, one (Inter American University of Puerto Rico–San Germán) named beside it because AlbersUSA carries no Puerto Rico inset. Seven pre-2009 closures sit at their city's centroid, and each says so in its hover.",
+      "source": "IPEDS directory coordinates via the Urban Institute API, with per-dot provenance",
+      "assert": "D['totals']['unmapped'] == 0 and len(D['dots']) + len(D['off_projection']) == D['totals']['ever'] and sum(1 for d in D['dots'] + D['off_projection'] if d['coord_source'].startswith('hand')) == 7 and all('coord_source' in d for d in D['dots'])",
+      "actual": "(D['totals'], sorted(set(d['coord_source'] for d in D['dots'] if d['coord_source'].startswith('hand'))))",
+      "falsified_if": "A directory vintage supplies real coordinates for one of the seven centroids (prefer it and drop the hand row), or a new census institution fails every directory year and the unmapped count leaves zero — at which point the page must grow a 'not mapped' table, not a guess."
+    },
+    {
+      "id": "atlas-top-lowell",
+      "text": "The deepest institutional teaching record is UMass Lowell's: 2,929 lifetime completions across its polymer programs, still conferring.",
+      "source": "polymer-programs-db census, institution-level sum",
+      "assert": "'Massachusetts-Lowell' in D['top']['name'] and D['top']['total_awards'] == 2929 and D['top']['total_awards'] == max(d['total_awards'] for d in D['dots']) and (lambda t: t['active_programs'] > 0)(one(d for d in D['dots'] if d['unitid'] == D['top']['unitid']))",
+      "actual": "D['top']",
+      "falsified_if": "A revision or the 2024 vintage reorders the top — Akron's record is second and shrinking annual output means the gap now only widens, so a change here would signal a data problem before a real one."
+    },
+    {
+      "id": "atlas-mi-oh-construct",
+      "text": "At institution level Michigan leads with 15 institutions ever to Ohio's 14 — while the programs page shows Ohio first on substantive programs. Institutions and programs are different units; both rankings are true and the page says so rather than picking the flattering one.",
+      "source": "polymer-programs-db census, both aggregations",
+      "assert": "D['states_list'][0]['state'] == 'MI' and D['states_list'][0]['ever'] == 15 and D['states_list'][1]['state'] == 'OH' and D['states_list'][1]['ever'] == 14",
+      "actual": "D['states_list'][:3]",
+      "falsified_if": "A revision flips the order — at a one-institution margin, a single recoded campus does it. If Ohio takes the institution lead too, the construct lesson stays and the sentence flips."
+    },
+    {
+      "id": "atlas-invisible-four",
+      "text": "Four institutions confirmed to teach polymer science under chemistry or chemical-engineering codes — UChicago (Pritzker), Dartmouth, Rutgers and Brown — are drawn as hollow diamonds: the census's blind spot made visible on the map itself. There are certainly more; these are the verified ones.",
+      "source": "polymer-programs-db README, 'confirmed cases' — each verified against the institution's own program pages during the census build",
+      "verify": "manual",
+      "checked_by": "Claude (2026-08-21 build), against the census's confirmed-cases list; the four were verified during the census build, not re-verified today",
+      "falsified_if": "Any of the four starts filing under a polymer CIP (it then becomes a dot and leaves this list), or a fifth institution is confirmed (add it — the list understates by design and growing it strengthens the point)."
+    },
+    {
+      "id": "atlas-no-research-layer",
+      "text": "The research layer — institution-level polymer output from OpenAlex subfield 2507 — is deliberately absent from this version: its candidate list is zero-verified and the API is metered. It is the named next step, not a silent omission.",
+      "source": "polymer-programs-db known_gaps.md (openalex_candidates.tsv, 'zero individually verified'); the API-REGISTRY OpenAlex row (metered, daily budget)",
+      "verify": "manual",
+      "checked_by": "Claude (2026-08-21 build)",
+      "falsified_if": "The candidates get verified and fetched under budget — at which point this claim is retired and the layer ships with its own claims."
+    }
+  ]
+}

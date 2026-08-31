@@ -1,0 +1,115 @@
+/* THE STORY LAYER — link this AFTER pic-viz.css on any page that tells a story.
+   Everything here was measured, not invented: see _data/LAYOUT-SPEC.md for the reference
+   measurements (Silver Bulletin: body text 728px AND figures 728px on one left edge, 20/32
+   type, 65px figure-to-text gap) and for the blind diagnoses from three model families.
+
+   WHAT IT DOES
+   1. ONE COLUMN. --figure, --measure and --figure-narrow collapse to one width, so a chart is
+      exactly as wide as the sentence above it. Two widths are what made charts read as centred.
+   2. ONE LEFT RAIL. The house stylesheet centres each block on a shared axis; a narrow block
+      then steps inward on both sides and the left edge alternates down the page. Every block
+      here is left-aligned instead, so the page has exactly one left edge (tools/_edges.mjs).
+   3. RHYTHM. A chart, its table toggle and its source line are one bundle; sections breathe
+      at 44px rather than 120px canyons.
+   4. AN ENDING. .appendix marks everything after the closer as reference: a double rule,
+      quieter headings, collapsed .refbox panels.
+
+   A page that uses charts must also set its svg viewBox to the column width 1:1 (W: 728) or
+   its in-chart type renders under the 12px floor. See LAYOUT-SPEC.md rule 2. */
+
+/* ONE COLUMN, MEASURED FROM THE REAL THING (2026-08-19).
+   tools/_refmeasure.mjs loaded the Silver Bulletin and measured it: body text 728px wide at
+   x=356, figures 728px wide at x=356 — ONE width for prose and graphics, 20px/32px type,
+   65px from a figure to the next paragraph. Not two widths. Our 678 prose / 980 figure split
+   is what made the charts read as centred: the ink inside a 980 box floats right of a 678
+   text column even when the boxes share a left edge. Gemini and MiniMax, shown screenshots
+   blind, both named it independently (plus zero-baselined axes leaving 40-50% dead canvas).
+   So: one width for everything, axes cropped to their data, charts shorter, rhythm locked. */
+:root{--figure:min(728px,100%); --measure:min(728px,100%); --figure-narrow:min(728px,100%)}
+/* rhythm: a chart, its table toggle and its source line are ONE bundle; sections breathe */
+.band{padding-block:44px}
+.chart{margin:18px 0 0}
+.pv-table{margin-top:8px}
+.src{margin-top:6px}
+.anecdote{margin:22px 0}
+.hero{padding-bottom:26px}
+.band h2{margin-top:2px}
+/* The house hero-row is a multi-column grid sized for three or four stats, with the detail
+   line capped at 220px. This page carries ONE stat, so the grid left it 508px wide with a
+   220px caption inside a 728px column: the block John circled. One stat spans the column. */
+.hero-row .figv{max-width:none}
+.hero-row .figv .d{max-width:var(--measure);font-size:15px;margin-top:7px}
+/* ...but only a ONE-STAT row spans the column. Blanket `display:block` here turned every
+   multi-stat hero into a tower of four full-width slabs (federal-money, revisions), which
+   is the same defect in the other direction. One stat gets the column and the display
+   size; two or more stay the house flex row and keep their caption at --measure. */
+.hero-row:has(> .figv:only-child){display:block}
+/* Four stats in a 728 column wrap 3+1 in the house flex row, which reads as a mistake. Two by
+   two is deliberate. Scoped to exactly four, so three-stat and one-stat heroes are untouched
+   (the blanket-rule trap that broke federal-money and revisions earlier today). */
+.hero-row:has(> .figv:nth-child(4)){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 30px}
+.hero-row:has(> .figv:nth-child(5)){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 30px}
+.hero-row:has(> .figv:only-child) .figv .n{font-size:clamp(38px,5vw,58px)}
+.band .lede{margin-top:10px}
+/* ONE LEFT RAIL, not one centre. The house stylesheet centres every block on a shared
+   vertical axis, which makes a 678px prose block step inward from a 980px chart on BOTH
+   sides: the left edge then alternates 230 / 381 / 230 down the page and reads as a zigzag,
+   because a reader's eye tracks left edges, not centres. Upshot, the Silver Bulletin and
+   every newspaper graphics desk left-align text and figures to one rail and let the right
+   edge rag. This block overrides the centring for this page: same specificity as the house
+   rule, later in the cascade, so it wins. Reported by John 2026-08-19 with the left edges
+   marked in red; measured afterwards with tools/_edges.mjs, which counts distinct left
+   edges and is the check the width tool never made.  */
+body .hero .wrap > *,body .band .wrap > *,body .closer .wrap > *,body .pv-method .wrap > *,
+body .pv-method-grid,body .pv-method-grid > *,body [id$="-prose"] > *,
+body .refbox .inner > *,body .anecdote,body .chapter-kicker,body .gaps,
+body .refbox,body .controls,body .dl,body .chartnote,
+body .closer .wrap > .sub,body .pv-table summary,body .pv-tablewrap,
+body .pv-method-note,body .pv-repro,body .pv-src{margin-left:0;margin-right:0}
+/* the reference boxes lose their left border and left padding so their contents start
+   ON the rail rather than one border-plus-padding inside it */
+.refbox{background:transparent}
+.refbox > summary{padding-left:0}
+.refbox .inner{padding:4px 0 14px}
+.refbox .inner > .lede{padding:0}
+.chapter-kicker{font-family:ui-monospace,Consolas,monospace;font-size:.8rem;letter-spacing:.06em;color:var(--caption);margin:0 auto 2px;max-width:var(--measure)}
+.band .takeaway,.band h2{margin-left:auto;margin-right:auto}
+.anecdote{border-left:3px solid var(--lime);padding:10px 18px;margin:16px auto;color:var(--text);max-width:var(--measure)}
+.anecdote .who{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--caption);margin-top:6px}
+.src a{color:var(--action);text-decoration:underline;text-underline-offset:2px}
+
+/* THE APPENDIX READS AS AN APPENDIX. The story ends at the closer; everything after it is
+   reference, and the page says so with a double rule, quieter type, and collapsed boxes.
+   Proportion, not just alignment: the reader should be able to stop at the closer. */
+.appendix{border-top:3px double var(--line)}
+.appendix .takeaway{color:var(--caption)}
+.appendix h2{font-size:clamp(20px,2.2vw,26px)}
+.appendix .lede{font-size:17px}
+.refbox{max-width:var(--figure);margin:14px 0 0;border:0;border-top:1px solid var(--line)}
+.refbox > summary{cursor:pointer;padding:12px 0;font-weight:700;color:var(--deep);list-style-position:inside}
+.refbox[open] > summary{border-bottom:1px solid var(--line)}
+.refbox .lede{margin-top:10px}
+.dl{max-width:var(--measure);margin:16px auto 0;font-size:.95rem}
+.dl a{color:var(--action);font-weight:700}
+
+/* explorer controls (appendix only) */
+.controls{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;margin:14px auto 6px;max-width:var(--figure)}
+.controls fieldset{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.controls legend{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--caption);padding:0;margin-right:6px;float:left}
+.controls label{font-size:.92rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.controls input{accent-color:var(--ink)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.seg button{border:0;background:var(--paper);color:var(--text);padding:6px 12px;font:inherit;font-size:.9rem;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.seg button:focus-visible{outline:2px solid var(--hover);outline-offset:-2px}
+.band h3{max-width:var(--figure);margin:26px auto 0}
+.chartnote{font-size:.86rem;color:var(--caption);max-width:var(--figure);margin:6px auto 0}
+
+.splices{width:100%;border-collapse:collapse;font-size:.92rem;margin:10px 0 4px}
+.splices th{text-align:left;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--caption);padding:6px 10px;border-bottom:2px solid var(--line)}
+.splices td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.splices td:first-child{font-family:ui-monospace,Consolas,monospace;font-size:.85em;white-space:nowrap}
+.gaps{list-style:none;padding:0;margin:0;max-width:var(--measure)}
+.gaps li{padding:9px 0;border-bottom:1px solid var(--line)}
+.gaps b{color:var(--deep)}
+@media (max-width:640px){.splices td:first-child{white-space:normal}}

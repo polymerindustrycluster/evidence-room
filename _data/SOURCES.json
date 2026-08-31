@@ -261,6 +261,88 @@
    "terms": "Public domain United States government work.",
    "script": "_data/build/fetch_patents.py",
    "key_required": true
+  },
+  "ipeds_programs_census": {
+   "name": "IPEDS completions by 6-digit CIP, 1991-2023 (the polymer-programs-db census)",
+   "agency": "National Center for Education Statistics, via the Urban Institute Education Data API",
+   "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/completions-cip-6",
+   "docs": "https://educationdata.urban.org/documentation/colleges.html",
+   "filters": {
+    "polymer CIP codes": "14.3201 Polymer/Plastics Engineering; 40.0507 Polymer Chemistry; 15.0607 Plastics and Polymer Engineering Technology",
+    "years": "1991-2023 (2024 returns HTTP 500 from the API and is probed on every build)",
+    "majors": "first majors only from 2000; the distinction does not exist before 2000 and filtering earlier years on it silently returns zero rows",
+    "award levels": "certificate levels canonicalised across the 2020 IPEDS renumbering (1->31, 2/3->32, 5/6->33) before any counting",
+    "demographics": "race=99, sex=99 (totals only)",
+    "census build": "sibling checkout polymer-programs-db: fetch_ipeds_national.py -> raw_ipeds_national.json, build_db.py -> programs.sqlite; derive_programs.py reads the sqlite and cross-checks every published number"
+   },
+   "script": "derive_programs.py"
+  },
+  "ipeds_directory": {
+   "name": "IPEDS institutional directory (coordinates and identity)",
+   "agency": "National Center for Education Statistics, via the Urban Institute Education Data API",
+   "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/directory/{year}/",
+   "filters": {
+    "lookup": "per-unitid, year 2023 with fallback to the institution’s last active year",
+    "trap": "a year’s directory omits institutions that closed before it, and the latitude/longitude fields begin in 2009: seven pre-2009 closures are placed at hand city centroids, stated per-dot",
+    "projection": "points and basemap pre-projected at build time into the us-atlas AlbersUSA frame (975x610, scale 1300, translate 487.5/305): NOT d3 defaults"
+   },
+   "script": "derive_atlas.py"
+  },
+  "ipeds_control_cips": {
+   "name": "The same IPEDS pull for six peer technician CIPs (the control)",
+   "agency": "National Center for Education Statistics, via the Urban Institute Education Data API",
+   "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/completions-cip-6",
+   "filters": {
+    "control CIP codes": "48.0508 Welding; 48.0501 Machine Tool; 15.0613 Manufacturing Eng Tech; 47.0303 Industrial Mechanics and Maintenance; 15.0303 Electrical/Electronic Eng Tech; 15.0805 Mechanical Eng Tech",
+    "rule": "identical to the polymer census: substantive = more than 10 lifetime completions, active = a completion in 2023, same years, same award-level canonicalisation",
+    "control build": "sibling checkout polymer-programs-db: fetch_control_cips.py -> control_cips.json, read by derive_programs.py"
+   },
+   "script": "derive_programs.py"
+  },
+  "scorecard_fos_polymer": {
+   "name": "College Scorecard field-of-study earnings and debt, polymer engineering",
+   "agency": "U.S. Department of Education",
+   "url": "https://api.data.gov/ed/collegescorecard/v1/schools",
+   "docs": "https://collegescorecard.ed.gov/data/documentation/",
+   "key_required": true,
+   "filters": {
+    "program": "CIP 4-digit 1432, credential Bachelor’s Degree",
+    "vintages": "latest = 2020 cohorts for 1-year earnings, 2022 file for 4-year earnings, 2019 file for debt; any ratio across them mixes cohorts",
+    "dedupe": "census_match=1 only - the Scorecard attaches Penn State Behrend’s values to Main Campus too, and the duplicate reads as a sixth institution",
+    "suppression": "84% of cells are privacy-suppressed and suppression tracks program size; the five published institutions are the biggest programs, not a sample",
+    "acquisition": "sibling checkout polymer-programs-db/incoming/college-scorecard: fetch_scorecard.py -> scorecard_fos_polymer_tidy.csv, read by derive_programs.py"
+   },
+   "script": "derive_programs.py"
+  },
+  "openalex": {
+   "name": "OpenAlex works and institutions",
+   "agency": "OurResearch (open, non-profit)",
+   "url": "https://api.openalex.org/works",
+   "docs": "https://docs.openalex.org/",
+   "filters": {
+    "institutions": "I110152177 (University of Akron), I58956616 (Case Western Reserve University)",
+    "subject bound": "topics.subfield.id:2507, ‘Polymers and Plastics’. A CLASSIFICATION, not a keyword.",
+    "years": "publication_year 2015-2024",
+    "reported alongside": "subfield 2502 ‘Biomaterials’, counted separately and never merged in",
+    "taxonomy source": "subfield ids confirmed against s3://openalex/data/jsonl/subfields, not inferred from documentation",
+    "note": "An earlier bound matched the full-text word ‘polymer’ and returned 4,037 works, four of whose five largest partners were hospitals. The classification returns 1,448. Author position uses is_corresponding, not first author, because in this field the first author is normally the graduate student.",
+    "one script deliberately omitted": "fetch_openalex.py hits this same endpoint but is still on the OLD keyword bound and returns the superseded 4,037 figure. No published page reads its output, so it is left out rather than handing a reader a script that reproduces the wrong number. Audited 2026-08-17."
+   },
+   "script": "_data/build/fetch_reach.py, fetch_collab.py",
+   "key_required": false
+  },
+  "nsf_awards": {
+   "name": "NSF Awards API",
+   "agency": "National Science Foundation",
+   "url": "https://api.nsf.gov/services/v1/awards.json",
+   "docs": "https://www.research.gov/common/webapi/awardapisearch-v1.htm",
+   "filters": {
+    "scope": "every award to either university since 2012-01-01",
+    "joint detection": "two ways: one award naming investigators at both institutions by email domain, and NSF’s ‘Collaborative Research’ mechanism, which issues a separate award per institution under an identical title",
+    "note": "Only awards NSF itself labels ‘Collaborative Research’ are counted as joint. Matching on shared title alone booked ‘Graduate Research Fellowship Program’: an institutional block grant every university receives separately, as a $1.1M joint project."
+   },
+   "script": "_data/build/fetch_collab.py, fetch_research_awards.py",
+   "key_required": false
   }
  },
  "worked_example": {
@@ -378,6 +460,22 @@
   ],
   "patents": [
    "uspto"
+  ],
+  "atlas": [
+   "ipeds_programs_census",
+   "ipeds_directory"
+  ],
+  "programs": [
+   "ipeds_programs_census",
+   "ipeds_control_cips",
+   "scorecard_fos_polymer"
+  ],
+  "reach": [
+   "openalex"
+  ],
+  "collaboration": [
+   "openalex",
+   "nsf_awards"
   ]
  }
 }

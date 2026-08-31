@@ -1,25 +1,139 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-08-31 10:46",
-  "seconds": 6.4,
-  "scripts": 36,
+  "generated": "2026-08-31 13:59",
+  "seconds": 6.3,
+  "scripts": 44,
   "outputs_on_disk": 19,
-  "outputs_claimed": 23,
-  "orphan_outputs": 6,
+  "outputs_claimed": 30,
+  "orphan_outputs": 4,
   "registry_error": null,
   "flag_counts": {
-   "not_in_PIPELINES.md": 36,
-   "no_house_docstring": 32,
-   "no_traps_section": 32,
-   "output_missing_on_disk": 20,
-   "not_in_SOURCES.json": 15,
+   "not_in_PIPELINES.md": 44,
+   "no_house_docstring": 40,
+   "no_traps_section": 40,
+   "output_missing_on_disk": 25,
+   "not_in_SOURCES.json": 18,
    "meta_fetched_vs_mtime_gap": 12,
-   "no_output_detected": 4,
-   "import_error": 3
+   "import_error": 6,
+   "no_output_detected": 6
   }
  },
  "scripts": [
+  {
+   "script": "derive_atlas.py",
+   "kind": "derive",
+   "what_it_adds": "Atlas step 1 of 2: institutions + coordinates. -> atlas_rows.json",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1297
+   },
+   "hosts": [
+    "educationdata.urban.org",
+    "nces.ed.gov"
+   ],
+   "outputs": [
+    "atlas_rows.json",
+    "ipeds_coords.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "atlas_rows.json": true,
+    "ipeds_coords.json": true
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "atlas_rows.json"
+    ],
+    "observed": [
+     "ipeds_coords.json"
+    ]
+   },
+   "output_learned_by": {
+    "atlas_rows.json": "static",
+    "ipeds_coords.json": "observed"
+   },
+   "observed_stop": "open(ipeds_coords.json,'w')",
+   "observed_network": [],
+   "observed_reads": [
+    "ipeds_coords.json"
+   ],
+   "import_error": null,
+   "registry_sources": [
+    "ipeds_directory"
+   ],
+   "consuming_pages": [
+    "atlas"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [
+    {
+     "output": "atlas_rows.json",
+     "meta_fetched": null,
+     "file_mtime": "2026-08-21",
+     "bytes": 80221,
+     "row": null
+    },
+    {
+     "output": "ipeds_coords.json",
+     "meta_fetched": null,
+     "file_mtime": "2026-08-21",
+     "bytes": 17346,
+     "row": null
+    }
+   ],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md"
+   ]
+  },
+  {
+   "script": "derive_collaboration.py",
+   "kind": "derive",
+   "what_it_adds": "Shape the collaboration measures for the page, and carry the control series with them.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 997
+   },
+   "hosts": [],
+   "outputs": [],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": []
+   },
+   "output_learned_by": {},
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [
+    "collab.json"
+   ],
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/collab.json'",
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "import_error",
+    "no_house_docstring",
+    "no_output_detected",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json"
+   ]
+  },
   {
    "script": "derive_index.py",
    "kind": "derive",
@@ -54,17 +168,17 @@
    "observed_network": [],
    "observed_reads": [
     "accountability/claims.json",
+    "atlas/claims.json",
     "churn/claims.json",
     "cluster-health/claims.json",
+    "collaboration/claims.json",
     "cost-scissors/claims.json",
-    "credit/claims.json",
     "federal-money/claims.json",
     "funding-map/claims.json",
     "laborshed/claims.json",
     "location-quotient/claims.json",
     "occupations/claims.json",
-    "patents/claims.json",
-    "peers/claims.json"
+    "patents/claims.json"
    ],
    "import_error": null,
    "registry_sources": [],
@@ -374,6 +488,112 @@
    ]
   },
   {
+   "script": "derive_programs.py",
+   "kind": "derive",
+   "what_it_adds": "The hollowing: polymer education 1991-2023, derived for the programs page.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1682
+   },
+   "hosts": [
+    "educationdata.urban.org"
+   ],
+   "outputs": [],
+   "page_outputs": [
+    "_data/build/programs/data/viz-data.json"
+   ],
+   "page_outputs_exist": {
+    "_data/build/programs/data/viz-data.json": false
+   },
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": [
+     "programs/data/viz-data.json"
+    ]
+   },
+   "output_learned_by": {
+    "programs/data/viz-data.json": "observed"
+   },
+   "observed_stop": "open(viz-data.json,'w')",
+   "observed_network": [],
+   "observed_reads": [
+    "<outside-repo>/control_cips.json",
+    "<outside-repo>/scorecard_fos_polymer_tidy.csv"
+   ],
+   "import_error": null,
+   "registry_sources": [
+    "ipeds_programs_census",
+    "ipeds_control_cips",
+    "scorecard_fos_polymer"
+   ],
+   "consuming_pages": [
+    "atlas",
+    "programs"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "derive_reach.py",
+   "kind": "derive",
+   "what_it_adds": "Shape the collaboration network for the page, and quarantine what cannot be trusted.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 2415
+   },
+   "hosts": [],
+   "outputs": [
+    "world.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "world.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "world.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "world.json": "static"
+   },
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [
+    "reach.json"
+   ],
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/reach.json'",
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "import_error",
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json",
+    "output_missing_on_disk"
+   ]
+  },
+  {
    "script": "derive_realwage.py",
    "kind": "derive",
    "what_it_adds": "Nominal polymer wages against what they actually buy.",
@@ -476,38 +696,20 @@
    },
    "hosts": [],
    "outputs": [],
-   "page_outputs": [
-    "_data/build/sources/data/registry.json"
-   ],
-   "page_outputs_exist": {
-    "_data/build/sources/data/registry.json": false
-   },
+   "page_outputs": [],
+   "page_outputs_exist": {},
    "outputs_exist": {},
    "writes_outside_build": [],
    "witnesses": {
     "static": [],
-    "observed": [
-     "sources/data/registry.json"
-    ]
+    "observed": []
    },
-   "output_learned_by": {
-    "sources/data/registry.json": "observed"
-   },
-   "observed_stop": "open(registry.json,'w')",
+   "output_learned_by": {},
+   "observed_stop": "SystemExit(derive_sources: no plain-language gloss or short name for ipeds_programs_census, ipeds_directory, ipeds_control_cips, scorecard_fos_polymer, openalex, nsf_awards. Every source needs what it is, what it is good for, and what it cannot tell you; the third is the most useful line on the page and the build refuses to publish a registry that has silently dropped one.)",
    "observed_network": [],
    "observed_reads": [
     "_data/SOURCES.json",
-    "_data/catalog.json",
-    "cost-scissors/data/scissors.json",
-    "federal-money/data/federal.json",
-    "federal-money/data/techhub.json",
-    "index/data/counts.json",
-    "laborshed/data/bench.json",
-    "laborshed/data/laborshed.json",
-    "location-quotient/data/lq.json",
-    "occupations/data/viz-data.json",
-    "peers/data/peers.json",
-    "revisions/data/revisions.json"
+    "_data/catalog.json"
    ],
    "import_error": null,
    "registry_sources": [],
@@ -515,9 +717,9 @@
    "in_pipelines_md": false,
    "freshness": [],
    "flags": [
+    "no_output_detected",
     "not_in_PIPELINES.md",
-    "not_in_SOURCES.json",
-    "output_missing_on_disk"
+    "not_in_SOURCES.json"
    ]
   },
   {
@@ -639,6 +841,67 @@
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md"
+   ]
+  },
+  {
+   "script": "fetch_collab.py",
+   "kind": "fetch",
+   "what_it_adds": "Do the University of Akron and Case Western Reserve actually work together?",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 2046
+   },
+   "hosts": [
+    "api.nsf.gov",
+    "api.openalex.org"
+   ],
+   "outputs": [
+    "collab.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "collab.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "collab.json"
+    ],
+    "observed": [
+     "collab.json"
+    ]
+   },
+   "output_learned_by": {
+    "collab.json": "observed"
+   },
+   "observed_stop": "open(collab.json,'w')",
+   "observed_network": [
+    "http<path>/2012&rpp=25&offset=1",
+    "http<path>/2012&rpp=25&offset=1",
+    "http<path>/2012&rpp=25&offset=1",
+    "http<path>/2012&rpp=25&offset=1"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "openalex",
+    "nsf_awards"
+   ],
+   "consuming_pages": [
+    "collaboration",
+    "reach"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
    ]
   },
   {
@@ -1574,6 +1837,59 @@
    ]
   },
   {
+   "script": "fetch_openalex.py",
+   "kind": "fetch",
+   "what_it_adds": "OpenAlex — research OUTPUT, which nothing else in this stack measures.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 2034
+   },
+   "hosts": [
+    "api.openalex.org"
+   ],
+   "outputs": [
+    "openalex.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "openalex.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "openalex.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "openalex.json": "static"
+   },
+   "observed_stop": "urlopen",
+   "observed_network": [
+    "http<path>/institutions?search=University%20of%20Akron&per_page=1&mailto=jswanson%40greaterakronchamber.org",
+    "http<path>/institutions?search=University%20of%20Akron&per_page=1&mailto=jswanson%40greaterakronchamber.org",
+    "http<path>/institutions?search=University%20of%20Akron&per_page=1&mailto=jswanson%40greaterakronchamber.org",
+    "http<path>/institutions?search=University%20of%20Akron&per_page=1&mailto=jswanson%40greaterakronchamber.org"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json",
+    "output_missing_on_disk"
+   ]
+  },
+  {
    "script": "fetch_patents.py",
    "kind": "fetch",
    "what_it_adds": "Polymer patent applications with a Northeast Ohio inventor, by filing year.",
@@ -1866,6 +2182,120 @@
    ],
    "consuming_pages": [
     "churn"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_reach.py",
+   "kind": "fetch",
+   "what_it_adds": "Who the region's polymer research reaches, and who reaches for it.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1807
+   },
+   "hosts": [
+    "api.openalex.org"
+   ],
+   "outputs": [
+    "reach.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "reach.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "reach.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "reach.json": "static"
+   },
+   "observed_stop": "urlopen",
+   "observed_network": [
+    "http<path>/works?per-page=1&filter=institutions.id:I110152177|I58956616,publication_year:2015-2024&mailto=jswanson@greaterakronchamber.org&search=polymer",
+    "http<path>/works?per-page=1&filter=institutions.id:I110152177|I58956616,publication_year:2015-2024&mailto=jswanson@greaterakronchamber.org&search=polymer",
+    "http<path>/works?per-page=1&filter=institutions.id:I110152177|I58956616,publication_year:2015-2024&mailto=jswanson@greaterakronchamber.org&search=polymer",
+    "http<path>/works?per-page=1&filter=institutions.id:I110152177|I58956616,publication_year:2015-2024&mailto=jswanson@greaterakronchamber.org&search=polymer"
+   ],
+   "observed_reads": [],
+   "import_error": "TypeError: unsupported format string passed to NoneType.__format__",
+   "registry_sources": [
+    "openalex"
+   ],
+   "consuming_pages": [
+    "collaboration",
+    "reach"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "import_error",
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_research_awards.py",
+   "kind": "fetch",
+   "what_it_adds": "NSF and NIH research awards — the federal money `federal-money` cannot see.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1220
+   },
+   "hosts": [
+    "api.nsf.gov",
+    "api.reporter.nih.gov"
+   ],
+   "outputs": [
+    "research_awards.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "research_awards.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "research_awards.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "research_awards.json": "static"
+   },
+   "observed_stop": "urlopen",
+   "observed_network": [
+    "http<path>/awards.json?awardeeStateCode=OH&keyword=polymer&printFields=id,title,awardeeName,awardeeCity,awardeeStateCode,fundsObligatedAmt,date,piFirstName,piLastName&offset=1&rpp=25",
+    "http<path>/awards.json?awardeeStateCode=OH&keyword=polymer&printFields=id,title,awardeeName,awardeeCity,awardeeStateCode,fundsObligatedAmt,date,piFirstName,piLastName&offset=1&rpp=25",
+    "http<path>/awards.json?awardeeStateCode=OH&keyword=polymer&printFields=id,title,awardeeName,awardeeCity,awardeeStateCode,fundsObligatedAmt,date,piFirstName,piLastName&offset=1&rpp=25"
+   ],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "nsf_awards"
+   ],
+   "consuming_pages": [
+    "collaboration"
    ],
    "in_pipelines_md": false,
    "freshness": [],

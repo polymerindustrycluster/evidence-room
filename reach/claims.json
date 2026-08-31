@@ -1,0 +1,62 @@
+{
+  "data": "reach.json",
+  "claims": [
+    {
+      "id": "rch-network-breadth",
+      "text": "The region's polymer papers carry co-authors at more than 600 institutions across 50 countries.",
+      "source": "OpenAlex works 2015-2024 classified in subfield 2507 'Polymers and Plastics' with an Akron or Case Western authorship. A CLASSIFICATION, not the full-text keyword an earlier version used.",
+      "assert": "D['totals']['partners_shown'] == 629 and D['totals']['partners'] == 633 and D['totals']['countries'] == 50",
+      "actual": "(D['totals']['partners_shown'], D['totals']['countries'], D['totals']['works'])",
+      "falsified_if": "Either count moves. The bounds are pinned with == rather than > 500 and >= 40: the sentence says 600 institutions across 50 COUNTRIES and the old assert was satisfied by 40, so a page could have printed fifty while its data said forty and the board would have stayed green. An assert must be at least as strong as the sentence it certifies. This one caught a real error on 2026-08-31, in a slide deck that read the top-N country array's length as though it were the country total."
+    },
+    {
+      "id": "rch-region-leads",
+      "text": "A corresponding author sat in the region on about four fifths of the papers where one is identified.",
+      "source": "as above; is_corresponding, populated on about 94 percent of the corpus",
+      "assert": "0.72 < D['totals']['led_share'] < 0.90",
+      "actual": "(D['totals']['led'], D['totals']['joined'], D['totals']['no_corresponding'], D['totals']['led_share'])",
+      "falsified_if": "The led share leaves the 65-85 percent band. The 627 papers with no corresponding author flagged are excluded from the denominator and must stay excluded rather than assigned."
+    },
+    {
+      "id": "rch-impact-top-decile",
+      "text": "About a quarter of the region's polymer papers rank in the top tenth of their field and year.",
+      "source": "OpenAlex citation_normalized_percentile, field- and age-normalized",
+      "assert": "D['totals']['top10_share'] > 0.20",
+      "actual": "(D['totals']['top10'], D['totals']['pct_n'], D['totals']['top10_share'], D['totals']['top1_share'])",
+      "falsified_if": "The top-decile share drops toward the 10 percent you would expect by definition. That would mean the region's polymer output is ordinary for its field rather than well above it."
+    },
+    {
+      "id": "rch-median-not-mean",
+      "text": "The median paper sits just above the world average; the mean is more than double it and is not the number to quote.",
+      "source": "as above",
+      "assert": "D['totals']['fwci_mean'] > 1.8 * D['totals']['fwci_median']",
+      "actual": "(D['totals']['fwci_median'], D['totals']['fwci_mean'], D['fwci_deciles'])",
+      "falsified_if": "The mean and median converge. Until they do, any summary using the mean describes a small tail and implies it describes the whole."
+    },
+    {
+      "id": "rch-no-raw-citations",
+      "text": "No raw citation count is compared across years anywhere on this page.",
+      "source": "Method note",
+      "verify": "manual",
+      "assert": null,
+      "actual": null,
+      "falsified_if": "Nothing in the data. A 2015 paper has had a decade to accumulate citations and a 2024 paper has had months, so a raw-citation trend draws the calendar rather than the research."
+    },
+    {
+      "id": "rch-quarantine-is-disclosed",
+      "text": "Four institutions resolved implausibly by the affiliation parser are excluded, all four named, with their works reported and the one in China called out because this page publishes a country breakdown.",
+      "source": "Method note; see derive_reach.py",
+      "assert": "D['totals']['quarantined'] == 4 and len(D['quarantined']) == 4 and D['totals']['quarantined_works'] == 10 and sum(1 for q in D['quarantined'] if q['country'] == 'CN') == 1",
+      "actual": "[(q['name'], q['total'], q['why'][:60]) for q in D['quarantined']]",
+      "falsified_if": "The count of exclusions changes without the page changing with it. Pinned at four because the page reported ONE for as long as the code read quarantined[0] beside the typed word 'One', and an assert of >= 1 could not see the difference."
+    },
+    {
+      "id": "rch-bound-is-a-classification",
+      "text": "Works are bounded by subject classification, not by matching the word 'polymer' in the text.",
+      "source": "OpenAlex subfield 2507, confirmed against the s3://openalex subfields snapshot rather than inferred",
+      "assert": "D['totals']['works'] < 2500 and D['totals']['partners_shown'] < 1200",
+      "actual": "(D['totals']['works'], D['totals']['partners_shown'], D['totals']['countries'])",
+      "falsified_if": "The corpus grows back toward 4,000 works, which would mean the keyword bound has returned. The keyword put four hospitals in the five largest partners and healthcare institutions at 17 percent of the network; the classification puts them at 3.5 percent, because biomedical polymer work is a separate subfield (2502) and a keyword cannot tell the two apart."
+    }
+  ]
+}
