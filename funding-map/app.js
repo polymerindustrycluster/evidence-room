@@ -977,7 +977,7 @@ function loadData(file) {
                     style: it.hatch ? `color:${it.color}` : `background-color:${it.color}` }),
         h('span', { text: it.text })
       ])));
-      return h('div', {}, [h('h3', { text: title }), ul]);
+      return h('div', {}, [h('p', { class: 'legend-h', text: title }), ul]);
     };
     lg.appendChild(block('Funding source', [
       { color: TINT.eda.solid, text: 'EDA Tech Hub (federal)' },
@@ -1243,7 +1243,7 @@ function loadData(file) {
       body.appendChild(totalBlock(r.total, r.awards.length > 1
         ? `awarded across ${r.awards.length} programs · ${fmtFull(r.total)}`
         : `awarded · ${fmtFull(r.total)}`));
-      body.appendChild(h('h3', { text: r.awards.length > 1 ? 'Award breakdown' : 'The award' }));
+      body.appendChild(h('p', { class: 'panel-h', text: r.awards.length > 1 ? 'Award breakdown' : 'The award' }));
       r.awards.forEach((w) => {
         const p = G.programs.get(w.programId), so = G.sources.get(p.sourceId), t = TINT[p.tint];
         const blk = h('div', { class: 'award', style: `--aw:${t.solid}` }, [
@@ -1271,7 +1271,7 @@ function loadData(file) {
         (p.share ? `${p.share} of the ${fmt(so.award)} Ohio award · ` : '') + fmtFull(p.amount)));
       body.appendChild(h('p', { class: 'panel-note', text: p.note }));
       const outs = G.progOut.get(p.id).slice().sort((a, b) => b.award.amount - a.award.amount);
-      body.appendChild(h('h3', { text: `Where it goes · ${outs.length} recipient${outs.length > 1 ? 's' : ''}` }));
+      body.appendChild(h('p', { class: 'panel-h', text: `Where it goes · ${outs.length} recipient${outs.length > 1 ? 's' : ''}` }));
       const ul = h('ul', { class: 'panel-list' });
       outs.forEach(({ recipient, award }) => ul.appendChild(h('li', {}, [
         h('span', { text: recipient.name }), h('span', { class: 'pl-a', text: fmt(award.amount) })
@@ -1292,7 +1292,7 @@ function loadData(file) {
         text: `Plus ${fmt(so.matchAmount)} in ${so.matchLabel} (${fmtFull(so.matchAmount)}), committed alongside the award.` }));
       body.appendChild(h('p', { class: 'panel-note', style: 'margin-top:14px', text: so.note }));
       const progs = G.srcPrograms.get(id);
-      body.appendChild(h('h3', { text: progs.length > 1
+      body.appendChild(h('p', { class: 'panel-h', text: progs.length > 1
         ? `Five workstreams, shares of the ${fmt(so.award)} award` : 'Program' }));
       const ul = h('ul', { class: 'panel-list' });
       progs.forEach((p) => ul.appendChild(h('li', {}, [

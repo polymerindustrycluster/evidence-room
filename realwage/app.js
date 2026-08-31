@@ -18,7 +18,8 @@ const short = s => s.split(" (")[0].split("-")[0].split(",")[0];
 const full = s => s.split(" (")[0];
 const ord = n => { const s = ["th", "st", "nd", "rd"], v = n % 100;
   return n + (s[(v - 20) % 10] || s[v] || s[0]); };
-const fmtClimb = c => (c > 0 ? "+" : "") + c;
+/* true minus for drops (2026-08-31): 23 table cells printed JS hyphens */
+const fmtClimb = c => (c > 0 ? "+" : c < 0 ? "\u2212" : "") + Math.abs(c);
 const AK = B.find(r => r.area === "10420") || M.find(r => r.area === "10420");
 const med = a => { const s = [...a].sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; };
 const cheaper = M.filter(r => r.rpp < AK.rpp).length;

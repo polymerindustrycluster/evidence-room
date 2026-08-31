@@ -92,7 +92,7 @@
 
 /* The one warning inside a step. Not the page's .note box: it is the trap belonging to
    that step, and it has to sit inside the step's own indent rather than break out of it. */
-.warn{margin:11px 0 0;font-size:15px;line-height:1.55;color:#3A3A36;background:#F6EEF3;
+.warn{margin:11px 0 0;font-size:15px;line-height:1.55;max-width:var(--measure);color:#3A3A36;background:#F6EEF3;
   border-left:3px solid var(--hover);padding:11px 15px}
 .warn b{color:var(--hover)}
 
@@ -111,7 +111,7 @@
 /* THE SET, not its size. Each card now carries the codes it counts, folded so the three
    cards still read as one parallel argument at rest. */
 .tax .t .codes{margin:9px 0 0}
-.tax .t .codes summary{cursor:pointer;color:var(--action);font-weight:700;font-size:13px}
+.tax .t .codes summary{cursor:pointer;color:var(--action);font-weight:700;font-size:13.5px}
 .tax .t .codes summary:hover{color:var(--hover)}
 .tax .t .codes dl{margin:7px 0 0;font-size:12.5px;line-height:1.45;
   display:grid;grid-template-columns:auto 1fr;gap:2px 10px}
@@ -221,7 +221,7 @@
 @media (min-width:1400px){
   .docnav{display:block;position:fixed;top:96px;width:160px;
     left:max(16px, calc(50vw - 522px - 176px));z-index:5}
-  .docnav h2{font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+  .docnav .docnav-h{font-size:12px;letter-spacing:.13em;text-transform:uppercase;
     color:var(--caption);font-weight:900;margin:0 0 10px}
   .docnav ol{list-style:none;margin:0;padding:0;
     border-left:2px solid var(--line)}

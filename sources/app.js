@@ -561,7 +561,7 @@ function drawRecipe() {
 function drawPay() {
   const W = D.wage;
   if (!W) return;
-  const x = v => `${v.toFixed(2)}x`;
+  const x = v => `${v.toFixed(2)}×`;
 
   document.getElementById("paydenoms").innerHTML =
     `This site publishes both, for every cell. Against the same industry nationally,
@@ -800,7 +800,10 @@ function drawNav() {
   const rail = document.createElement("nav");
   rail.className = "docnav";
   rail.setAttribute("aria-label", "Sections");
-  rail.innerHTML = `<h2>On this page</h2><ol>${items}</ol>`;
+  /* A <p>, not an <h2>: nav chrome is not part of the argument's outline. The old h2
+     rendered at 12px uppercase gray — an eyebrow wearing a heading tag — and a screen
+     reader announced it as a peer of the section headings. Demoted 2026-08-31. */
+  rail.innerHTML = `<p class="docnav-h">On this page</p><ol>${items}</ol>`;
 
   const bar = document.createElement("nav");
   bar.className = "docbar";

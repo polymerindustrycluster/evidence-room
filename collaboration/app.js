@@ -140,10 +140,15 @@ PV.figures([
      rediscovered. */
   const P1 = 132, GAP = 68, P2 = 58;
   const {svg, m, w} = chart("control", {W: COL, H: 46 + P1 + GAP + P2 + 58,
-    m: {t: 46, r: 92, b: 58, l: 46}});
+    m: {t: 46, r: 92, b: 58, l: 54}});
+  /* l was 46 and the y-axis's own "6,000" (end-anchored at l-10) ran 4px past the left
+     edge at every width below 760 — shipped in the promotion because CI runs the fast
+     suite, which skips the width sweeps. Found by the full sweep, 2026-09-01. */
   const top2 = m.t + P1 + GAP;
   const maxOwn = Math.max(...S.map(r => Math.max(r.akron, r.cwru))) * 1.1;
-  const maxRate = Math.max(...S.map(r => r.per_1k_akron)) * 1.18;
+  /* 1.18 put the top tick's label in the same box as the panel label one line above it
+     at phone text sizes; 1.5 drops the top tick a third of the panel down. 2026-09-01. */
+  const maxRate = Math.max(...S.map(r => r.per_1k_akron)) * 1.5;
   const xs = y => m.l + ((y - S[0].year) / (last.year - S[0].year)) * w;
   const yo = v => m.t + P1 - (v / maxOwn) * P1;
   const yr = v => top2 + P2 - (v / maxRate) * P2;
@@ -201,7 +206,10 @@ PV.figures([
 {
   const A = D.joint_awards;
   const {svg, m, w} = chart("awards", {W: COL, rows: A.length, rowH: 48,
-    m: {t: 40, r: 24, b: 54, l: 48}});
+    m: {t: 40, r: 24, b: 54, l: 52}});
+  /* l was 48: the end-anchored start-year labels at l-12 ran 1.4px past the left edge
+     below 760px. Same ship-route as the control chart's clip: CI's fast suite skips
+     the width sweeps. 2026-09-01. */
   const max = Math.max(...A.map(r => r.amount)) * 1.06;
   const xs = v => m.l + (v / max) * w;
   frame(svg, {x: m.l, y: m.t, w, h: A.length * 48, xs, ys: () => 0,

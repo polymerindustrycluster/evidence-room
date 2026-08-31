@@ -682,7 +682,7 @@ await PV.methodology({page: "revisions",
     "it takes the first " +
     "published value against whatever the previous month carried in that same vintage, " +
     "then repeats the comparison on today’s values. A pair counts only where both " +
-    "readings are at least 0.1 percent, so a flip between +0.02 and -0.01 percent is " +
+    "readings are at least 0.1 percent, so a flip between +0.02 and −0.01 percent is " +
     "not called a reversal; 201 of 270 pairs clear that floor. The annual comparison in " +
     "the September 2021 section follows the same rule against the same month a year " +
     "earlier. Two further figures come from the same archive. How long a month keeps " +

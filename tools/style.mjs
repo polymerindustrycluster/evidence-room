@@ -62,6 +62,18 @@ for (const n of list) {
       if (!verbatim && /"/.test(s)) out.push(["straight-double", ctx.slice(0, 70)]);
       const m = s.match(BANNED);
       if (m) out.push([`banned:${m[1].toLowerCase()}`, ctx.slice(0, 70)]);
+      /* NEGATIVES TAKE THE TRUE MINUS (U+2212), never the ASCII hyphen — the hyphen is
+         a third the width of the digits beside it. Found 2026-08-31: four axis ticks
+         and eleven table cells leaked JS's default stringification while every
+         hand-written negative used the minus. Preceded by space/paren/start so ranges
+         (2012-2023) and identifiers never match; verbatim spans exempt (a pasteable
+         query needs ASCII). */
+      if (!verbatim && /(^|[\s(])-\d/.test(s))
+        out.push(["hyphen-negative", ctx.slice(0, 70)]);
+      /* MULTIPLICATION IS ×, never the letter x: 1.2× not 1.2x. Same date, same class
+         of drift — five pages used ×, one formatter wrote x. */
+      if (!verbatim && /\d ?x(?=[\s.,)%])/.test(s))
+        out.push(["x-for-times", ctx.slice(0, 70)]);
     }
     return out;
   });

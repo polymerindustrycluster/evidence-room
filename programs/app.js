@@ -272,7 +272,11 @@ figures([
   ];
   const ROW = 42;
   const {svg, W, m, w} = chart("base", {W: COL, rows: rows.length, rowH: ROW,
-    m: {t: 66, r: 24, b: 56, l: 190}});
+    m: {t: 66, r: 24, b: 56, l: 198}});
+  /* The three row-label margins below were sized against desktop type; the story
+     layer's phone font boost pushed the longest end-anchored labels 3-23px past the
+     left edge at every width under 760. CI's fast suite skips the sweeps, so the
+     promotion shipped with it. Widened to the longest label plus headroom. 2026-09-01. */
   const xs = v => m.l + (v / B.ever) * w;                    // LINEAR from zero, of 168
   frame(svg, {x: m.l, y: m.t, w, h: rows.length * ROW, xs, ys: () => 0,
     xt: [0, 42, 84, 126, 168], yt: [],
@@ -335,7 +339,7 @@ figures([
     ? `${shortInst(r.institution)}, ${awardWords(r.award)}` : shortInst(r.institution);
   const ROW = 24;
   const {svg, W, m, w} = chart("working", {W: COL, rows: rows.length, rowH: ROW,
-    m: {t: 66, r: 30, b: 54, l: 214}});
+    m: {t: 66, r: 30, b: 54, l: 242}});
   const maxV = rows[0].total_awards * 1.08;
   const xs = v => m.l + (v / maxV) * w;                      // LINEAR from zero
   frame(svg, {x: m.l, y: m.t, w, h: rows.length * ROW, xs, ys: () => 0,
@@ -469,7 +473,7 @@ figures([
   const rows = D.pay;
   const ROW = 36;
   const {svg, W, m, w} = chart("pay", {W: COL, rows: rows.length, rowH: ROW,
-    m: {t: 78, r: 20, b: 54, l: 150}});
+    m: {t: 78, r: 20, b: 54, l: 172}});
   const lo = 50000;
   const vals = rows.flatMap(r => [r.earn_1yr, r.earn_4yr]).filter(v => v != null);
   const hi = Math.max(...vals, rows[0].earn_4yr_p75_national || 0) * 1.05;

@@ -1215,7 +1215,7 @@ document.getElementById("exttable").innerHTML = withNote(tableView("ex",
   "Largest external sources of PIC-12 jobs",
   ["Home county", "Type", "2019", "2022", "Change"],
   E.top.map(r => [placeName(r), r.kind, N(r.jobs_2019), N(r.jobs_2022),
-    r.jobs_2019 ? ((r.jobs_2022 / r.jobs_2019 - 1) * 100).toFixed(0) + "%" : "n/a"])),
+    r.jobs_2019 ? (((r.jobs_2022 / r.jobs_2019 - 1) * 100).toFixed(0).replace(/^-?0$/, "0").replace(/^-/, "\u2212") + "%") : "n/a"])),
   /* THE GAP IS NAMED HERE BECAUSE IT CANNOT BE CLOSED HERE. A reader who wanted to know
      where these people live met a five-digit code in the one table about exactly that.
      No county crosswalk ships with this page, so the honest move is to say what the code

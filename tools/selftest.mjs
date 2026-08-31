@@ -56,6 +56,24 @@ const CASES = [
    inject: s => s.replace("creativecommons.org/licenses/by/4.0/", "example.invalid/none")
                  .replace(/O\*NET(\u00ae|®) is a trademark/, "O*NET is a trademark")},
 
+  {gate: "style", page: "realwage", args: ["realwage"],
+   defect: "a negative number printed with the ASCII hyphen instead of the true minus " +
+           "(23 table cells shipped this way, found 2026-08-31)",
+   inject: s => s.replace("</head>", "<style></style></head>")
+                 .replace("<body>", "<body><p>The gap widened by -14% this year.</p>")},
+
+  {gate: "measure", page: "churn", args: ["churn"],
+   defect: "the compounding measure: a nested measure-capped box re-resolves 100% " +
+           "against its parent and prose runs 488px wide (shipped 2026-08-31)",
+   /* Recreates the defect by un-pinning --measure on the methodology grid, restoring
+      the :root formula whose leftover 100% compounds inside the 678px container. */
+   /* The fix moved from a literal pin on the grid to a 100% pin on its CHILDREN when
+      the story layer arrived (two page measures), so the injection now overrides the
+      children pin — the first version went stale within a day and reported BROKEN,
+      which is the harness doing its job. */
+   inject: s => s.replace("</head>", "<style>.pv-method-grid > *{--measure:" +
+     "min(678px, calc(min(980px, 100%) * 0.72)) !important}</style></head>")},
+
   {gate: "coldopen", page: "churn", args: ["churn"],
    defect: "a page whose first chart sinks below its recorded budget",
    inject: s => s.replace("</head>", "<style>.hero .wrap{padding-bottom:400px}</style></head>")},

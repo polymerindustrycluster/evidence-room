@@ -129,7 +129,9 @@
 /* The stat band: the page's one moment at display scale away from the hero. */
 .statgrid{display:flex;gap:48px;flex-wrap:wrap;margin:30px 0 0;max-width:var(--figure)}
 .statv{border-top:4px solid var(--ink);padding:16px 0 0;min-width:210px;flex:1}
-.statv.warn{border-top-color:#8F4008}
+/* Renamed from .statv.warn 2026-08-31: .warn is the house callout BOX on sources and
+   patents, and one class name carrying two meanings is how drift starts. */
+.statv.flag{border-top-color:#8F4008}
 .statv .n{font-size:clamp(40px,4.4vw,58px);font-weight:900;line-height:1;
   letter-spacing:-.03em;font-variant-numeric:proportional-nums;color:var(--text)}
 .statv .k{margin:9px 0 0;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;

@@ -18,7 +18,7 @@
    the shared one-axis rule and left-rail the byline at x=150 while every other line of
    prose centres at 301. */
 .hero .wrap > .byline{max-width:var(--measure);margin:16px auto 0;font-size:13px;
-  letter-spacing:.02em;color:#9FCBD2;line-height:1.5}
+  letter-spacing:.02em;color:#9CC4CA;line-height:1.5}
 .hero .wrap > .byline b{color:#DCEEF1;font-weight:700}
 
 /* THE SCOPE FURNITURE. A naive reader finished this hero believing that 51% of America's

@@ -1,0 +1,65 @@
+{
+ "_readme": [
+  "Deliberate prose registers that do not sit on the 678px measure, adjudicated by a",
+  "human on 2026-08-31 when tools/measure.mjs landed. A RATCHET like classes-debt.json:",
+  "an entry tolerates a register on named pages (or \"*\"); any off-measure paragraph",
+  "NOT covered fails the gate. Delete an entry when its register retires. Keys are an",
+  "element class, an ancestor class, or a bare ancestor tag (e.g. aside).",
+  "The registers: steps = sources' numbered replication steps (626, a 52px numeral",
+  "inset); gap/tax = sources' gap callouts and taxonomy labels; machine/disclose/vig =",
+  "funding-map's card insets; tile = cluster-health's dashboard tiles (rail labels and",
+  "718px two-column notes); calib = accountability's calibration cards; aside =",
+  "timeline's 436px sidebar cards; pv-method-note/pv-src = the uniform 664 source-box",
+  "inset on every page.",
+  "pv-wrong = the What-we-got-wrong corrections block (plum rule + 18px inset), a shared component from the story-page promotion; its entries are structured corrections, not running prose.",
+  "card/blank-list = chain's company-card grid (285px card summaries) and the map-side gap list (375px column); both grid registers, not running prose.",
+  "mgrid = chain's two-column methodology grid; its column paragraphs are 307px by layout."
+ ],
+ "allowed": {
+  "pv-method-note": [
+   "*"
+  ],
+  "pv-src": [
+   "*"
+  ],
+  "aside": [
+   "timeline"
+  ],
+  "steps": [
+   "sources"
+  ],
+  "gap": [
+   "sources"
+  ],
+  "tax": [
+   "sources"
+  ],
+  "machine": [
+   "funding-map"
+  ],
+  "disclose": [
+   "funding-map"
+  ],
+  "vig": [
+   "funding-map"
+  ],
+  "tile": [
+   "cluster-health"
+  ],
+  "calib": [
+   "accountability"
+  ],
+  "pv-wrong": [
+   "*"
+  ],
+  "card": [
+   "chain"
+  ],
+  "blank-list": [
+   "chain"
+  ],
+  "mgrid": [
+   "chain"
+  ]
+ }
+}
