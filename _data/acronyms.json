@@ -122,7 +122,6 @@
   "NEO": [
    "accountability",
    "churn",
-   "cluster-health",
    "federal-money",
    "funding-map",
    "index",
@@ -188,7 +187,6 @@
   ],
   "POST": [
    "accountability",
-   "cluster-health",
    "federal-money",
    "patents",
    "scorecard",
