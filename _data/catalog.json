@@ -1,18 +1,18 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-08-31 15:04",
-  "seconds": 9.9,
-  "scripts": 46,
+  "generated": "2026-08-31 15:19",
+  "seconds": 13.3,
+  "scripts": 47,
   "outputs_on_disk": 19,
-  "outputs_claimed": 30,
+  "outputs_claimed": 31,
   "orphan_outputs": 4,
   "registry_error": null,
   "flag_counts": {
-   "not_in_PIPELINES.md": 46,
+   "not_in_PIPELINES.md": 47,
+   "no_traps_section": 43,
    "no_house_docstring": 42,
-   "no_traps_section": 42,
-   "output_missing_on_disk": 25,
+   "output_missing_on_disk": 26,
    "not_in_SOURCES.json": 19,
    "meta_fetched_vs_mtime_gap": 12,
    "import_error": 8,
@@ -869,6 +869,62 @@
    "freshness": [],
    "flags": [
     "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_cbp.py",
+   "kind": "fetch",
+   "what_it_adds": "QCEW gives jobs and establishment counts at county x 326 but no size distribution. This gives the SHAPE: how many of the region's polymer establishments are under five employees versus over a hundred. That distinction decides which intervention works — supplier development aimed at 20 small shops is a different program from workforce training aimed at three large plants.  `PIPELINES.md` recorded that `EMPSZES` \"only returns All establishments.\" That was the QUERY, not the source: `EMPSZES` must be requested as a **get variable**, not as a filter. Requested correctly, 2022 CBP returns the full ",
+   "what_one_row_is": "One (county, NAICS, employment-size class) cell. The class `001` is \"All establishments\" and is the TOTAL, not another bin — summing 001 with the classes double-counts every establishment.  THE SIZE-CLASS ROWS CARRY NO EMPLOYMENT, AND THAT IS DELIBERATE. Every row except `001` returns `EMP=0` with flag `EMP_F='N'`. Establishment counts by size are publishable; employment inside each bin is withhel",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": true,
+    "has_traps": false,
+    "length": 2337
+   },
+   "hosts": [
+    "api.census.gov"
+   ],
+   "outputs": [
+    "cbp.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "cbp.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "cbp.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "cbp.json": "static"
+   },
+   "observed_stop": "SystemExit(FATAL: 2022 326 county 153: )",
+   "observed_network": [
+    "http<path>/cbp?get=NAME%2CESTAB%2CEMP%2CPAYANN%2CEMP_F%2CESTAB_F%2CPAYANN_F%2CEMPSZES%2CEMPSZES_LABEL&for=county%3A153&in=state%3A39&NAICS2017=326key=<redacted>",
+    "http<path>/cbp?get=NAME%2CESTAB%2CEMP%2CPAYANN%2CEMP_F%2CESTAB_F%2CPAYANN_F%2CEMPSZES%2CEMPSZES_LABEL&for=county%3A153&in=state%3A39&NAICS2017=326key=<redacted>",
+    "http<path>/cbp?get=NAME%2CESTAB%2CEMP%2CPAYANN%2CEMP_F%2CESTAB_F%2CPAYANN_F%2CEMPSZES%2CEMPSZES_LABEL&for=county%3A153&in=state%3A39&NAICS2017=326key=<redacted>"
+   ],
+   "observed_reads": [
+    "<outside-repo>/.env"
+   ],
+   "import_error": null,
+   "registry_sources": [
+    "cbp"
+   ],
+   "consuming_pages": [
+    "chain"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
     "no_traps_section",
     "not_in_PIPELINES.md",
     "output_missing_on_disk"
