@@ -71,7 +71,16 @@ def rank_block(year, naics, k, subject):
     }
 
 
-out = {"meta": dict(SRC["meta"], footprint=META[FOOTPRINT], derived_note=(
+# A HOLE IN A TREND LINE IS A SUPPRESSION, AND IT HAS TO SAY SO. BLS withholds most
+# metro-years for this industry; the house rule is that a withheld cell is never a zero,
+# so the deriver drops it entirely, which leaves a gap that looks exactly like a fetch
+# that failed. Declaring the policy is what tells verify_series (and a reader) which it is.
+GAPS = {"kind": "suppression",
+        "reason": "BLS withholds employment for most metro-years in this industry; a "
+                  "withheld cell is dropped, never drawn as zero, so a trend line is "
+                  "broken wherever the bureau did not publish"}
+out = {"gaps": GAPS,
+       "meta": dict(SRC["meta"], footprint=META[FOOTPRINT], derived_note=(
         "Every rank here is among DISCLOSED areas. `could_displace_n` counts suppressed "
         "areas with more establishments than the subject — the number that would have to "
         "be zero for a plain 'national rank' to be honest.")),
