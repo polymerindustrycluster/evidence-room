@@ -326,7 +326,7 @@
     "reported alongside": "subfield 2502 ‘Biomaterials’, counted separately and never merged in",
     "taxonomy source": "subfield ids confirmed against s3://openalex/data/jsonl/subfields, not inferred from documentation",
     "note": "An earlier bound matched the full-text word ‘polymer’ and returned 4,037 works, four of whose five largest partners were hospitals. The classification returns 1,448. Author position uses is_corresponding, not first author, because in this field the first author is normally the graduate student.",
-    "one script deliberately omitted": "fetch_openalex.py hits this same endpoint but is still on the OLD keyword bound and returns the superseded 4,037 figure. No published page reads its output, so it is left out rather than handing a reader a script that reproduces the wrong number. Audited 2026-08-17."
+    "one script deliberately omitted": "fetch_openalex.py hits this same endpoint but is still on the old keyword bound and returns the superseded 4,037 figure. No published page reads its output, so it is left out rather than handing a reader a script that reproduces the wrong number. Audited 2026-08-17."
    },
    "script": "_data/build/fetch_reach.py, fetch_collab.py",
    "key_required": false
