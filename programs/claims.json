@@ -1,0 +1,93 @@
+{
+ "data": "viz-data.json",
+ "claims": [
+  {
+   "id": "prog-spine-hollowing",
+   "text": "Of the programs that ever passed ten completions, 27% of polymer technician programs still conferred in 2023, against 48% of polymer degree programs and 48% of the six peer trades taught in the same buildings. The technician layer is the outlier, and it is the only one: the other two are statistically indistinguishable from each other (48.1% against 47.9%, p=0.98), while the technician layer sits about 20 points below both (p=0.0005). On 73 programs the interval around that 27% runs from 19% to 39%, and all of it lies below the other two layers.",
+   "source": "polymer-programs-db census (IPEDS 1991-2023, 2020 quarantined) plus control_cips.json: same rule, same years, same certificate canonicalisation on both sides",
+   "assert": "D['layers']['technician']['survive_pct'] == 27 and D['layers']['degree']['survive_pct'] == 48 and D['layers']['control']['survive_pct'] == 48 and D['layers']['technician']['survive_pct'] < D['layers']['control']['survive_pct'] and (D['layers']['technician']['still'], D['layers']['technician']['ever']) == (20, 73) and (D['layers']['degree']['still'], D['layers']['degree']['ever']) == (37, 77) and (D['layers']['control']['still'], D['layers']['control']['ever']) == (3185, 6648)",
+   "actual": "{k: (v['still'], v['ever'], v['survive_pct']) for k, v in D['layers'].items() if isinstance(v, dict)}",
+   "falsified_if": "The ORDER changes. Technician no longer clearly below the control kills the hollowing claim outright, because then this is a story about technical education rather than about polymers. It also dies if the two sides stop being measured the same way: both must stay above ten lifetime completions, active must mean a completion in the final year, certificate award levels must be canonicalised, and 2020 must be excluded on BOTH sides. Two of those four were false on the control side until 2026-08-26, and the published gap was 8 points instead of 20. On 73 programs the technician rate carries a plus-or-minus of about ten points, so a gap under ten points would not be reportable at all. Quote the interval with the number."
+  },
+  {
+   "id": "prog-series-shape",
+   "text": "US polymer completions ran 476 in 1991, fell to a floor of 379 in 2007, more than doubled to a 970 peak in 2016, and were 617 in 2023, which is 36% below peak. They fell in four of the five years since the peak that can be compared. 2020 is not one of them: the federal mirror republished 2019 under that year, so it is dropped and the line is drawn with a break in it.",
+   "source": "IPEDS completions, three polymer CIP codes, all award levels, via the Urban Institute API, with 2020 quarantined",
+   "assert": "(D['marks']['first']['year'], D['marks']['first']['awards']) == (1991, 476) and (D['marks']['trough']['year'], D['marks']['trough']['awards']) == (2007, 379) and (D['marks']['peak']['year'], D['marks']['peak']['awards']) == (2016, 970) and (D['marks']['latest']['year'], D['marks']['latest']['awards']) == (2023, 617) and D['marks']['pct_off_peak'] == 36 and D['down_years_last7'] == 4 and D['down_years_of'] == 5 and '2020' in D['quarantined'] and 2020 not in [r['year'] for r in D['series']]",
+   "actual": "(D['marks'], D['down_years_last7'])",
+   "falsified_if": "IPEDS revises a back year, 2024 arrives and extends the series, or the trough flips back to 2006, which sits one completion higher at 380: the two years are a near-tie and an earlier telling named the wrong one. If the mirror repairs 2020 the quarantine lifts, and both the count and its denominator change: it becomes N of seven again. Restate the sentence then, do not quietly re-count it."
+  },
+  {
+   "id": "prog-base-rate",
+   "text": "Of all 168 US polymer technician programs since 1991, 95 (57%) conferred ten or fewer completions in their entire existence, 91 (54%) ran five years or less, and 75 (45%) were both: started and failed. Anyone proposing to rebuild this layer is proposing to beat close to a coin-flip base rate.",
+   "source": "polymer-programs-db census, associate and certificate levels, no size threshold, 2020 quarantined",
+   "assert": "D['base']['ever'] == 168 and D['base']['le10_awards'] == 95 and D['base']['le5_years'] == 91 and D['base']['both'] == 75 and D['base']['both_pct'] == 45",
+   "actual": "D['base']",
+   "falsified_if": "The counts move when 2024 data lands or IPEDS revises, or the certificate-level canonicalisation changes. These are only right AFTER the 2020 award-level recode is corrected AND the duplicated 2020 is removed: an uncanonicalised rebuild splits programs and inflates every number here, while leaving 2020 in doubles a year inside every lifetime total, which moved four programs back across the ten-award line on 2026-08-26."
+  },
+  {
+   "id": "prog-ohio-never-took-off",
+   "text": "Of Ohio's 22 technician programs, 13 never reached ten completions. The University of Akron itself appears twice among the 13 — the flagship polymer school could not make a technician program stick.",
+   "source": "polymer-programs-db census, Ohio rows",
+   "assert": "D['ohio']['tech_ever'] == 22 and D['ohio']['never_took_off'] == 13 and sum(1 for p in D['ohio']['programs'] if p['total_awards'] <= 10 and 'AKRON MAIN' in p['institution'].upper()) == 2 and sum(1 for p in D['ohio']['programs'] if p['total_awards'] <= 10 and 'EDISON' in p['institution'].upper()) == 3",
+   "actual": "[(p['institution'], p['total_awards']) for p in D['ohio']['programs'] if p['total_awards'] <= 10]",
+   "falsified_if": "A late completion pushes any of the 13 over ten (the record is live at the bottom: one graduating class changes membership), or a catalogue check shows one of the 13 running substantively under a code this census cannot see — the 'ended is not closed' trap applies to small programs hardest."
+  },
+  {
+   "id": "prog-ferris-outlier",
+   "text": "Ferris State's technician program conferred 1,253 completions across 32 counted years between 1991 and 2023 and is still active, more than the next two programs combined.",
+   "source": "polymer-programs-db census, 2020 quarantined",
+   "assert": "(lambda t: 'FERRIS' in t[0]['institution'].upper() and t[0]['total_awards'] == 1253 and (t[0]['first_year'], t[0]['last_year']) == (1991, 2023) and t[0]['status'] == 'active' and t[0]['total_awards'] > t[1]['total_awards'] + t[2]['total_awards'])(D['top_tech'])",
+   "actual": "[(t['institution'], t['total_awards'], t['status']) for t in D['top_tech'][:3]]",
+   "falsified_if": "Ferris stops conferring, so status leaves 'active'; a revision breaks the 1991 to 2023 run; or the next two programs' combined total passes 1,253, and Everett and Hennepin are both active and gaining. The span is 32 counted years, not 33: 2020 is quarantined, so the lifetime total omits one real year of output and is a floor."
+  },
+  {
+   "id": "prog-terra-loss",
+   "text": "Terra State's associate degree ran 25 unbroken years, 1991–2015, conferred 206 completions, and ended — the largest ended program in the record at a college that still operates. (Akron Machining Institute's 347 is larger, but the institution itself wound down.)",
+   "source": "polymer-programs-db census; closure verified against Terra State's current catalogue (narrowed to a single certificate)",
+   "assert": "(lambda t: t['total_awards'] == 206 and (t['first_year'], t['last_year']) == (1991, 2015) and t['status'] == 'ended')(one(t for t in D['top_tech'] if 'TERRA' in t['institution'].upper())) and one(t for t in D['top_tech'] if 'MACHINING' in t['institution'].upper())['total_awards'] == 347",
+   "actual": "[(t['institution'], t['total_awards'], t['first_year'], t['last_year'], t['status']) for t in D['top_tech'] if t['status'] != 'active']",
+   "falsified_if": "Terra State resumes conferring under this CIP (the college still runs one certificate — a revival is possible and would be the better story), or a larger ended program surfaces at an operating college. Separately: Terra State entered state fiscal watch in April 2026, which is a fact about the college, not this record."
+  },
+  {
+   "id": "prog-ua-collapse",
+   "text": "The University of Akron's polymer completions fell from 114 in 2016 to 44 in 2023, a drop of 61%, with master's degrees going 66 to 16, doctorates 45 to 26, and an undergraduate line across those eight years of 3, 1, 0, 3, no data, 0, 0, 2. The flagship graduated two polymer undergraduates in 2023.",
+   "source": "polymer-programs-db census, unitid 200800, 2020 quarantined",
+   "assert": "D['ua']['recent']['2016'] == 114 and D['ua']['latest'] == 44 and D['ua']['pct_off'] == 61 and (D['ua']['masters_2016'], D['ua']['masters_2023']) == (66, 16) and (D['ua']['doctorate_2016'], D['ua']['doctorate_2023']) == (45, 26) and D['ua']['bachelor_2016_2023'] == [3, 1, 0, 3, None, 0, 0, 2] and D['ua']['bachelor_2016_2023'][-1] == 2",
+   "actual": "D['ua']",
+   "falsified_if": "A revision moves any year, or 2024 arrives. The 2020 slot is None and must stay None, never 0: a zero there would assert that the flagship graduated nobody that year, which the record does not say and this project cannot know."
+  },
+  {
+   "id": "prog-states-ohio",
+   "text": "Ohio has held more substantive polymer programs than any state — 22 ever, 11 still conferring in 2023.",
+   "source": "polymer-programs-db census, substantive programs by state",
+   "assert": "D['states'][0]['state'] == 'OH' and D['states'][0]['ever'] == 22 and D['states'][0]['still'] == 11",
+   "actual": "D['states'][:3]",
+   "falsified_if": "Pennsylvania (20 ever) closes the gap in a revision, or the substantive threshold changes. This claim is about filings under polymer CIPs: a state ranking low teaches polymers under codes this census cannot see, so the ranking supports 'Ohio files the most polymer-coded programs', never 'other states lack polymer education'."
+  },
+  {
+   "id": "prog-pay-five",
+   "text": "The Scorecard publishes polymer engineering bachelor's earnings at exactly five institutions — none in Ohio. Their medians run $60k–$78k one year out and $87k–$101k four years out, with median federal-loan debt of $19k–$27k.",
+   "source": "College Scorecard field-of-study files, CIP 14.32, latest vintages (2020 earnings-1yr, 2022 earnings-4yr, 2019 debt)",
+   "assert": "len(D['pay']) == 5 and all(r['state'] != 'OH' for r in D['pay']) and all(60000 <= r['earn_1yr'] <= 78000 for r in D['pay'] if r['earn_1yr']) and all(87000 <= r['earn_4yr'] <= 101000 for r in D['pay'] if r['earn_4yr']) and all(19000 <= r['debt'] <= 27000 for r in D['pay'] if r['debt'])",
+   "actual": "[(r['institution'], r['earn_1yr'], r['earn_4yr'], r['debt']) for r in D['pay']]",
+   "falsified_if": "A new Scorecard vintage unsuppresses a sixth institution (Akron's cells appearing would be the more interesting story), or any value leaves its band. The five are the complete published record because suppression tracks program size — they are the biggest programs, not a sample, and no average of them describes the field."
+  },
+  {
+   "id": "prog-no-rebuild-case",
+   "text": "This dataset contains no verified example of a substantial polymer technician program dying and being rebuilt. The one candidate dissolved on inspection into a federal reporting change at a continuously running program.",
+   "source": "polymer-programs-db STORY-SPEC.md Act 4 (the retraction): the Wichita State 'rebuild' was the 2020 certificate-level recode splitting one continuous program into an apparent death and an apparent birth; verified same unitid, unbroken teaching",
+   "verify": "manual",
+   "checked_by": "Claude (2026-08-21 build), against the census's own retraction record; the retraction itself was triggered by re-checking a finding that looked too clean",
+   "falsified_if": "Someone identifies a program that conferred substantively, stopped for two or more real years (not a code change), and returned to substantive conferral. Finding one would IMPROVE PIC's position — it would be the existence proof the rebuild argument currently lacks."
+  },
+  {
+   "id": "prog-anchor-tension",
+   "text": "The anchor institution's polymer pipeline contracted through the same years in which $7.1M of EDA Tech Hub money and a share of the $31.25M Ohio Innovation Hub award arrived. Rising institutional investment, falling academic pipeline, same institution, same years.",
+   "source": "Award documents in ohio-econdev-corpus (12_eda-tech-hubs: SPTH designation and award; 09_ohio-innovation-hubs: Akron/PIC $31.25M) set against the UA completions series above",
+   "verify": "manual",
+   "checked_by": "Claude (2026-08-21 build), against the award announcements and the IPEDS series; the UA sub-award figure of $7.1M is from PIC project records",
+   "falsified_if": "UA completions turn upward in the 2024–25 vintages (completions lag enrolment 2–4 years, so money arriving in 2024 could not appear here yet — the tension is about timing, not causation, and the sentence must never claim the money caused the fall)."
+  }
+ ]
+}

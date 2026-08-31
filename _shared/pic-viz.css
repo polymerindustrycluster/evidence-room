@@ -409,3 +409,38 @@ details.pv-table:not([open]) .pv-tablewrap{display:none}
   line-height:1.3;max-width:var(--measure);color:var(--text)}
 .fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure)}
 .fig-title + .fig-sub + .chart{margin-top:16px}
+
+/* Table filter/sort bar for pages that ship a long register (ported with tableTools). */
+.pv-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+.pv-tools label{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+  color:var(--caption)}
+.pv-tools input{flex:1 1 200px;max-width:300px;padding:7px 10px;font:inherit;font-size:14.5px;
+  border:1px solid var(--line);background:#fff;color:var(--text)}
+.pv-tools input:focus-visible{outline:2px solid var(--action);outline-offset:1px}
+.pv-tools .pv-count{font-size:13px;color:var(--caption);font-variant-numeric:tabular-nums}
+.pv-tools .pv-hint{font-size:13px;color:var(--caption);margin-left:auto}
+th.pv-sortable{cursor:pointer;user-select:none;white-space:nowrap}
+th.pv-sortable:hover{color:var(--action)}
+th.pv-sortable:focus-visible{outline:2px solid var(--action);outline-offset:-2px}
+th.pv-sortable::after{content:" ↕";opacity:.3;font-weight:400}
+th.pv-sortable[aria-sort="ascending"]::after{content:" ↑";opacity:1;color:var(--action)}
+th.pv-sortable[aria-sort="descending"]::after{content:" ↓";opacity:1;color:var(--action)}
+.pv-tablewrap td a,.pv-tablewrap th a{color:var(--action)}
+
+/* What-we-got-wrong block (ported with whatWeGotWrong()). */
+/* WHAT WE GOT WRONG (editorial standard rule 6, 2026-08-21). Corrections standing
+   together, named, instead of scattered through source lines where they read as hedging.
+   Same generated-not-written contract as the methodology block; plum accent because it is
+   neither prose nor caveat — it is the page keeping its own score. */
+.pv-wrong .entry{border-left:3px solid #A32A78;padding:2px 0 2px 18px;margin:18px 0 0;
+  max-width:var(--measure)}
+.pv-wrong .entry p{margin:0 0 .4em;font-size:15.5px;line-height:1.55}
+.pv-wrong .entry .when{font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:700;color:#A32A78}
+
+/* THE COLD-OPEN STRIP HOST, promoted from eight per-page copies on 2026-08-31 when four
+   promoted pages used the class unstyled: a convention defined per page is a convention
+   only the page it was invented on gets right (same lesson as .fig-title). The realwage
+   values are canonical; scorecard's 24px top margin was the only divergence and it loses. */
+.hero .wrap > .hero-viz{max-width:var(--measure);margin:26px auto 4px}
+.hero-viz svg{width:100%;height:auto;display:block;overflow:visible}

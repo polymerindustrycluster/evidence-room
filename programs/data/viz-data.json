@@ -1,0 +1,848 @@
+{
+ "meta": {
+  "title": "The hollowing of polymer education",
+  "question": "Which layer of polymer education contracted, by how much, and against what baseline?",
+  "source": "IPEDS completions by six-digit CIP, 1991–2023, via the Urban Institute Education Data API; the polymer-programs-db census build of 2026-08-21",
+  "sources": "College Scorecard field-of-study files (earnings and debt by institution × program); the same IPEDS pull re-run for six peer technician CIPs as a control",
+  "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/completions-cip-6",
+  "fetched": "2026-08-21",
+  "span": "1991–2023",
+  "cip": "Polymer group: 14.3201 Polymer/Plastics Engineering, 40.0507 Polymer Chemistry, 15.0607 Plastics and Polymer Engineering Technology. Control: 48.0508, 48.0501, 15.0613, 47.0303, 15.0303, 15.0805.",
+  "row": "One row is one (institution, program CIP, award level) with a completions count for every year it conferred, 1991–2023. Programs are enumerated from the union of all years: a single year undercounts, because a program with no completions that year is invisible in it.",
+  "definition": "Substantive means more than ten completions over the program’s life; the control was pulled with the same rule, the same years and the same active test, which is what makes the survival comparison a comparison. Active means a completion in 2023, the final year of the series; a program quiet for one year is ‘unclear’, for two or more ‘ended’.",
+  "excludes": "Counts only programs institutions chose to file under three polymer CIP codes in IPEDS. Rubber and coatings have no CIP and cannot be separated; programs housed under chemistry or chemical engineering (UChicago, Dartmouth, Rutgers and Brown are confirmed cases) are invisible; non-degree training is out of scope; 2024 is missing. A floor, not a census.",
+  "caution": "‘Ended’ in the federal record is not ‘closed’ on the ground: institutions keep teaching under other codes, and three of nine named closures failed a catalogue check in this project’s own history. No named-casualty list appears here without one.",
+  "note": "Certificate award levels were renumbered by IPEDS in 2020; uncorrected, the renumbering manufactures a wave of phantom 2018–19 closures. Codes are canonicalised before any counting, and the phantom wave was written up and retracted in the census’s own story spec.",
+  "small_numbers": "The earnings panel rests on the five institutions the Scorecard publishes unsuppressed for polymer engineering bachelor’s degrees: 84% of cells are privacy-suppressed and suppression tracks program size, so the five are the biggest programs, not a sample.",
+  "size_control": "Per-state counts are substantive programs only. A state at zero is filing behaviour, not a confirmed absence: Illinois, North Carolina and Texas all teach polymers under codes this census cannot see."
+ },
+ "series": [
+  {
+   "year": 1991,
+   "awards": 476
+  },
+  {
+   "year": 1992,
+   "awards": 618
+  },
+  {
+   "year": 1993,
+   "awards": 651
+  },
+  {
+   "year": 1994,
+   "awards": 669
+  },
+  {
+   "year": 1995,
+   "awards": 692
+  },
+  {
+   "year": 1996,
+   "awards": 597
+  },
+  {
+   "year": 1997,
+   "awards": 596
+  },
+  {
+   "year": 1998,
+   "awards": 613
+  },
+  {
+   "year": 1999,
+   "awards": 652
+  },
+  {
+   "year": 2000,
+   "awards": 571
+  },
+  {
+   "year": 2001,
+   "awards": 544
+  },
+  {
+   "year": 2002,
+   "awards": 486
+  },
+  {
+   "year": 2003,
+   "awards": 588
+  },
+  {
+   "year": 2004,
+   "awards": 488
+  },
+  {
+   "year": 2005,
+   "awards": 417
+  },
+  {
+   "year": 2006,
+   "awards": 380
+  },
+  {
+   "year": 2007,
+   "awards": 379
+  },
+  {
+   "year": 2008,
+   "awards": 392
+  },
+  {
+   "year": 2009,
+   "awards": 434
+  },
+  {
+   "year": 2010,
+   "awards": 481
+  },
+  {
+   "year": 2011,
+   "awards": 551
+  },
+  {
+   "year": 2012,
+   "awards": 719
+  },
+  {
+   "year": 2013,
+   "awards": 764
+  },
+  {
+   "year": 2014,
+   "awards": 803
+  },
+  {
+   "year": 2015,
+   "awards": 791
+  },
+  {
+   "year": 2016,
+   "awards": 970
+  },
+  {
+   "year": 2017,
+   "awards": 920
+  },
+  {
+   "year": 2018,
+   "awards": 950
+  },
+  {
+   "year": 2019,
+   "awards": 807
+  },
+  {
+   "year": 2021,
+   "awards": 763
+  },
+  {
+   "year": 2022,
+   "awards": 673
+  },
+  {
+   "year": 2023,
+   "awards": 617
+  }
+ ],
+ "marks": {
+  "first": {
+   "year": 1991,
+   "awards": 476
+  },
+  "trough": {
+   "year": 2007,
+   "awards": 379
+  },
+  "peak": {
+   "year": 2016,
+   "awards": 970
+  },
+  "latest": {
+   "year": 2023,
+   "awards": 617
+  },
+  "pct_off_peak": 36
+ },
+ "down_years_last7": 4,
+ "down_years_of": 5,
+ "quarantined": {
+  "2020": "the Urban Institute IPEDS mirror serves 2019 data under year=2020"
+ },
+ "quarantine_caption": "2020 is not drawn: the federal mirror republished 2019 under that year",
+ "layers": {
+  "degree": {
+   "ever": 77,
+   "still": 37,
+   "survive_pct": 48
+  },
+  "technician": {
+   "ever": 73,
+   "still": 20,
+   "survive_pct": 27
+  },
+  "control": {
+   "ever": 6648,
+   "still": 3185,
+   "survive_pct": 48,
+   "cips": {
+    "480508": "Welding Technology",
+    "480501": "Machine Tool Technology",
+    "150613": "Manufacturing Engineering Technology",
+    "470303": "Industrial Mechanics and Maintenance",
+    "150303": "Electrical/Electronic Engineering Technology",
+    "150805": "Mechanical Engineering Technology"
+   },
+   "rule": "substantive = >10 total awards; active = a completion in 2023; same rule as the polymer census"
+  },
+  "substantive_min": 10
+ },
+ "base": {
+  "ever": 168,
+  "le10_awards": 95,
+  "le5_years": 91,
+  "both": 75,
+  "le10_awards_pct": 57,
+  "le5_years_pct": 54,
+  "both_pct": 45
+ },
+ "ohio": {
+  "tech_ever": 22,
+  "never_took_off": 13,
+  "programs": [
+   {
+    "institution": "AKRON MACHINING INSTITUTE INCORPORATED",
+    "award": "Cert 1-2yr",
+    "level": "certificate",
+    "first_year": 1994,
+    "last_year": 2001,
+    "total_awards": 347,
+    "status": "ended",
+    "span": 8
+   },
+   {
+    "institution": "Terra State Community College",
+    "award": "Associate",
+    "level": "associate",
+    "first_year": 1991,
+    "last_year": 2015,
+    "total_awards": 206,
+    "status": "ended",
+    "span": 25
+   },
+   {
+    "institution": "Shawnee State University",
+    "award": "Associate",
+    "level": "associate",
+    "first_year": 1991,
+    "last_year": 2023,
+    "total_awards": 92,
+    "status": "active",
+    "span": 33
+   },
+   {
+    "institution": "Sinclair Community College",
+    "award": "Cert <1yr",
+    "level": "certificate",
+    "first_year": 2018,
+    "last_year": 2023,
+    "total_awards": 64,
+    "status": "active",
+    "span": 6
+   },
+   {
+    "institution": "Northwest State Community College",
+    "award": "Associate",
+    "level": "associate",
+    "first_year": 2003,
+    "last_year": 2019,
+    "total_awards": 56,
+    "status": "ended",
+    "span": 17
+   },
+   {
+    "institution": "Cincinnati State Technical and Community College",
+    "award": "Associate",
+    "level": "associate",
+    "first_year": 1998,
+    "last_year": 2013,
+    "total_awards": 51,
+    "status": "ended",
+    "span": 16
+   },
+   {
+    "institution": "Terra State Community College",
+    "award": "Cert <1yr",
+    "level": "certificate",
+    "first_year": 1992,
+    "last_year": 2021,
+    "total_awards": 45,
+    "status": "ended",
+    "span": 30
+   },
+   {
+    "institution": "Terra State Community College",
+    "award": "Cert 1-2yr",
+    "level": "certificate",
+    "first_year": 1993,
+    "last_year": 2007,
+    "total_awards": 28,
+    "status": "ended",
+    "span": 15
+   },
+   {
+    "institution": "Northwest State Community College",
+    "award": "Cert 1-2yr",
+    "level": "certificate",
+    "first_year": 2005,
+    "last_year": 2019,
+    "total_awards": 14,
+    "status": "ended",
+    "span": 15
+   },
+   {
+    "institution": "Edison State Community College",
+    "award": "Cert 1-2yr",
+    "level": "certificate",
+    "first_year": 2003,
+    "last_year": 2005,
+    "total_awards": 10,
+    "status": "ended",
+    "span": 3
+   },
+   {
+    "institution": "Edison State Community College",
+    "award": "Associate",
+    "level": "associate",
+    "first_year": 2003,
+    "last_year": 2006,
+    "total_awards": 9,
+    "status": "ended",
+    "span": 4
+   },
+   {
+    "institution": "Sinclair Community College",
+    "award": "Associate",
+    "level": "associate",
+    "first_year": 1999,
+    "last_year": 2007,
+    "total_awards": 9,
+    "status": "ended",
+    "span": 9
+   },
+   {
+    "institution": "University of Toledo",
+    "award": "Associate",
+    "level": "associate",
+    "first_year": 1992,
+    "last_year": 1995,
+    "total_awards": 9,
+    "status": "ended",
+    "span": 4
+   },
+   {
+    "institution": "Edison State Community College",
+    "award": "Associate",
+    "level": "associate",
+    "first_year": 2000,
+    "last_year": 2000,
+    "total_awards": 7,
+    "status": "ended",
+    "span": 1
+   },
+   {
+    "institution": "Shawnee State University",
+    "award": "Cert 1-2yr",
+    "level": "certificate",
+    "first_year": 1995,
+    "last_year": 2002,
+    "total_awards": 7,
+    "status": "ended",
+    "span": 8
+   },
+   {
+    "institution": "University of Akron Main Campus",
+    "award": "Cert <1yr",
+    "level": "certificate",
+    "first_year": 2013,
+    "last_year": 2018,
+    "total_awards": 5,
+    "status": "ended",
+    "span": 6
+   },
+   {
+    "institution": "University of Akron Main Campus",
+    "award": "Associate",
+    "level": "associate",
+    "first_year": 2005,
+    "last_year": 2008,
+    "total_awards": 4,
+    "status": "ended",
+    "span": 4
+   },
+   {
+    "institution": "Kent State University at Kent",
+    "award": "Cert <1yr",
+    "level": "certificate",
+    "first_year": 2001,
+    "last_year": 2002,
+    "total_awards": 3,
+    "status": "ended",
+    "span": 2
+   },
+   {
+    "institution": "Hocking College",
+    "award": "Cert <1yr",
+    "level": "certificate",
+    "first_year": 2001,
+    "last_year": 2001,
+    "total_awards": 2,
+    "status": "ended",
+    "span": 1
+   },
+   {
+    "institution": "Kent State University at Tuscarawas",
+    "award": "Associate",
+    "level": "associate",
+    "first_year": 2002,
+    "last_year": 2002,
+    "total_awards": 1,
+    "status": "ended",
+    "span": 1
+   },
+   {
+    "institution": "Lakeland Community College",
+    "award": "Cert <1yr",
+    "level": "certificate",
+    "first_year": 2013,
+    "last_year": 2013,
+    "total_awards": 1,
+    "status": "ended",
+    "span": 1
+   },
+   {
+    "institution": "Lakeland Community College",
+    "award": "Cert 1-2yr",
+    "level": "certificate",
+    "first_year": 2013,
+    "last_year": 2013,
+    "total_awards": 1,
+    "status": "ended",
+    "span": 1
+   }
+  ]
+ },
+ "top_tech": [
+  {
+   "institution": "Ferris State University",
+   "state": "MI",
+   "first_year": 1991,
+   "last_year": 2023,
+   "total_awards": 1253,
+   "status": "active",
+   "award": "Associate"
+  },
+  {
+   "institution": "Everett Community College",
+   "state": "WA",
+   "first_year": 2011,
+   "last_year": 2023,
+   "total_awards": 411,
+   "status": "active",
+   "award": "Cert <1yr"
+  },
+  {
+   "institution": "Hennepin Technical College",
+   "state": "MN",
+   "first_year": 1991,
+   "last_year": 2023,
+   "total_awards": 409,
+   "status": "active",
+   "award": "Cert <1yr"
+  },
+  {
+   "institution": "Wichita State University-Campus of Applied Sciences and Technology",
+   "state": "KS",
+   "first_year": 2013,
+   "last_year": 2023,
+   "total_awards": 350,
+   "status": "active",
+   "award": "Cert <1yr"
+  },
+  {
+   "institution": "AKRON MACHINING INSTITUTE INCORPORATED",
+   "state": "OH",
+   "first_year": 1994,
+   "last_year": 2001,
+   "total_awards": 347,
+   "status": "ended",
+   "award": "Cert 1-2yr"
+  },
+  {
+   "institution": "Hennepin Technical College",
+   "state": "MN",
+   "first_year": 1991,
+   "last_year": 2023,
+   "total_awards": 250,
+   "status": "active",
+   "award": "Cert 1-2yr"
+  },
+  {
+   "institution": "Terra State Community College",
+   "state": "OH",
+   "first_year": 1991,
+   "last_year": 2015,
+   "total_awards": 206,
+   "status": "ended",
+   "award": "Associate"
+  },
+  {
+   "institution": "Pennsylvania College of Technology",
+   "state": "PA",
+   "first_year": 1991,
+   "last_year": 2023,
+   "total_awards": 205,
+   "status": "active",
+   "award": "Associate"
+  },
+  {
+   "institution": "Grand Rapids Community College",
+   "state": "MI",
+   "first_year": 1991,
+   "last_year": 2023,
+   "total_awards": 204,
+   "status": "active",
+   "award": "Associate"
+  },
+  {
+   "institution": "Spokane Community College",
+   "state": "WA",
+   "first_year": 2013,
+   "last_year": 2023,
+   "total_awards": 168,
+   "status": "active",
+   "award": "Cert 1-2yr"
+  },
+  {
+   "institution": "Peninsula College",
+   "state": "WA",
+   "first_year": 2012,
+   "last_year": 2018,
+   "total_awards": 156,
+   "status": "ended",
+   "award": "Cert <1yr"
+  },
+  {
+   "institution": "IYRS School of Technology & Trades",
+   "state": "RI",
+   "first_year": 2010,
+   "last_year": 2023,
+   "total_awards": 153,
+   "status": "active",
+   "award": "Cert 1-2yr"
+  },
+  {
+   "institution": "College of DuPage",
+   "state": "IL",
+   "first_year": 1991,
+   "last_year": 2002,
+   "total_awards": 148,
+   "status": "ended",
+   "award": "Cert <1yr"
+  },
+  {
+   "institution": "Vincennes University",
+   "state": "IN",
+   "first_year": 1992,
+   "last_year": 1999,
+   "total_awards": 111,
+   "status": "ended",
+   "award": "Associate"
+  },
+  {
+   "institution": "Wichita State University-Campus of Applied Sciences and Technology",
+   "state": "KS",
+   "first_year": 2011,
+   "last_year": 2022,
+   "total_awards": 105,
+   "status": "unclear",
+   "award": "Cert 1-2yr"
+  },
+  {
+   "institution": "Olympic College",
+   "state": "WA",
+   "first_year": 2011,
+   "last_year": 2021,
+   "total_awards": 102,
+   "status": "ended",
+   "award": "Cert <1yr"
+  }
+ ],
+ "ua": {
+  "series": {
+   "1991": 47,
+   "1992": 67,
+   "1993": 61,
+   "1994": 59,
+   "1995": 66,
+   "1996": 49,
+   "1997": 62,
+   "1998": 54,
+   "1999": 68,
+   "2000": 70,
+   "2001": 50,
+   "2002": 47,
+   "2003": 69,
+   "2004": 61,
+   "2005": 55,
+   "2006": 44,
+   "2007": 37,
+   "2008": 30,
+   "2009": 37,
+   "2010": 31,
+   "2011": 41,
+   "2012": 80,
+   "2013": 94,
+   "2014": 96,
+   "2015": 94,
+   "2016": 114,
+   "2017": 114,
+   "2018": 109,
+   "2019": 77,
+   "2021": 87,
+   "2022": 32,
+   "2023": 44
+  },
+  "recent": {
+   "2016": 114,
+   "2017": 114,
+   "2018": 109,
+   "2019": 77,
+   "2021": 87,
+   "2022": 32,
+   "2023": 44
+  },
+  "peak_recent": 114,
+  "latest": 44,
+  "pct_off": 61,
+  "masters_2016": 66,
+  "masters_2023": 16,
+  "doctorate_2016": 45,
+  "doctorate_2023": 26,
+  "bachelor_2016_2023": [
+   3,
+   1,
+   0,
+   3,
+   null,
+   0,
+   0,
+   2
+  ]
+ },
+ "states": [
+  {
+   "state": "OH",
+   "ever": 22,
+   "still": 11
+  },
+  {
+   "state": "MI",
+   "ever": 18,
+   "still": 7
+  },
+  {
+   "state": "PA",
+   "ever": 17,
+   "still": 6
+  },
+  {
+   "state": "MA",
+   "ever": 15,
+   "still": 8
+  },
+  {
+   "state": "WA",
+   "ever": 14,
+   "still": 5
+  },
+  {
+   "state": "MN",
+   "ever": 7,
+   "still": 2
+  },
+  {
+   "state": "KS",
+   "ever": 7,
+   "still": 3
+  },
+  {
+   "state": "TN",
+   "ever": 5,
+   "still": 0
+  },
+  {
+   "state": "MS",
+   "ever": 5,
+   "still": 3
+  },
+  {
+   "state": "IL",
+   "ever": 5,
+   "still": 0
+  },
+  {
+   "state": "CT",
+   "ever": 5,
+   "still": 1
+  },
+  {
+   "state": "CA",
+   "ever": 5,
+   "still": 3
+  },
+  {
+   "state": "NY",
+   "ever": 4,
+   "still": 0
+  },
+  {
+   "state": "NC",
+   "ever": 4,
+   "still": 0
+  },
+  {
+   "state": "VA",
+   "ever": 3,
+   "still": 1
+  },
+  {
+   "state": "ND",
+   "ever": 3,
+   "still": 1
+  },
+  {
+   "state": "AL",
+   "ever": 3,
+   "still": 2
+  },
+  {
+   "state": "WI",
+   "ever": 2,
+   "still": 1
+  },
+  {
+   "state": "WV",
+   "ever": 1,
+   "still": 1
+  },
+  {
+   "state": "UT",
+   "ever": 1,
+   "still": 0
+  },
+  {
+   "state": "TX",
+   "ever": 1,
+   "still": 0
+  },
+  {
+   "state": "RI",
+   "ever": 1,
+   "still": 1
+  },
+  {
+   "state": "PR",
+   "ever": 1,
+   "still": 0
+  },
+  {
+   "state": "NJ",
+   "ever": 1,
+   "still": 0
+  },
+  {
+   "state": "ME",
+   "ever": 1,
+   "still": 1
+  },
+  {
+   "state": "KY",
+   "ever": 1,
+   "still": 1
+  },
+  {
+   "state": "IN",
+   "ever": 1,
+   "still": 0
+  },
+  {
+   "state": "GA",
+   "ever": 1,
+   "still": 0
+  },
+  {
+   "state": "FL",
+   "ever": 1,
+   "still": 0
+  },
+  {
+   "state": "DC",
+   "ever": 1,
+   "still": 1
+  }
+ ],
+ "pay": [
+  {
+   "institution": "University of Massachusetts-Lowell",
+   "state": "MA",
+   "earn_1yr": 77114.0,
+   "earn_4yr": 100428.0,
+   "debt": 27000.0,
+   "earn_4yr_national": 92919.0,
+   "earn_4yr_p25_national": 79614.0,
+   "earn_4yr_p75_national": 107159.0
+  },
+  {
+   "institution": "Western Washington University",
+   "state": "WA",
+   "earn_1yr": 60375.0,
+   "earn_4yr": 92439.0,
+   "debt": 19743.0,
+   "earn_4yr_national": 92919.0,
+   "earn_4yr_p25_national": 79614.0,
+   "earn_4yr_p75_national": 107159.0
+  },
+  {
+   "institution": "Pennsylvania College of Technology",
+   "state": "PA",
+   "earn_1yr": 71651.0,
+   "earn_4yr": 88433.0,
+   "debt": 25407.0,
+   "earn_4yr_national": 92919.0,
+   "earn_4yr_p25_national": 79614.0,
+   "earn_4yr_p75_national": 107159.0
+  },
+  {
+   "institution": "University of Wisconsin-Stout",
+   "state": "WI",
+   "earn_1yr": 75800.0,
+   "earn_4yr": 88102.0,
+   "debt": 22964.0,
+   "earn_4yr_national": 92919.0,
+   "earn_4yr_p25_national": 79614.0,
+   "earn_4yr_p75_national": 107159.0
+  },
+  {
+   "institution": "Pennsylvania State University-Penn State Erie-Behrend College",
+   "state": "PA",
+   "earn_1yr": 68438.0,
+   "earn_4yr": 87636.0,
+   "debt": 27000.0,
+   "earn_4yr_national": 92919.0,
+   "earn_4yr_p25_national": 79614.0,
+   "earn_4yr_p75_national": 107159.0
+  }
+ ]
+}
