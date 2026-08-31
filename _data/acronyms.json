@@ -119,8 +119,11 @@
   "EOS": [
    "scorecard"
   ],
-  "FWCI": [
-   "reach"
+  "ETA": [
+   "sources"
+  ],
+  "HCR": [
+   "chain"
   ],
   "HS": [
    "occupations",
@@ -135,8 +138,14 @@
   "LMI": [
    "sources"
   ],
+  "LOC": [
+   "timeline"
+  ],
   "LODES": [
    "laborshed"
+  ],
+  "LSR": [
+   "chain"
   ],
   "M&A": [
    "chain"
@@ -152,6 +161,9 @@
   ],
   "NET": [
    "sources"
+  ],
+  "NFM": [
+   "chain"
   ],
   "NH": [
    "timeline"
@@ -182,14 +194,16 @@
    "chain"
   ],
   "PIC": [
-   "federal-money",
-   "reach"
+   "federal-money"
   ],
   "QCEW": [
    "sources"
   ],
   "QWI": [
    "occupations"
+  ],
+  "RD": [
+   "timeline"
   ],
   "RFID": [
    "chain"
@@ -202,6 +216,9 @@
   ],
   "RPP": [
    "realwage"
+  ],
+  "RTV": [
+   "chain"
   ],
   "SEC": [
    "sources"
@@ -226,27 +243,6 @@
   ],
   "WV": [
    "laborshed"
-  ],
-  "NFM": [
-   "chain"
-  ],
-  "LSR": [
-   "chain"
-  ],
-  "HCR": [
-   "chain"
-  ],
-  "RTV": [
-   "chain"
-  ],
-  "ETA": [
-   "sources"
-  ],
-  "LOC": [
-   "timeline"
-  ],
-  "RD": [
-   "timeline"
   ]
  }
 }

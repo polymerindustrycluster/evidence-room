@@ -288,9 +288,9 @@ PV.figures([
 document.getElementById("closersub").innerHTML =
   `<b>${N(T.works)} papers, ${N(T.partners_shown)} institutions, ${T.countries} countries,
    and ${pctf(T.top10_share)} of the work in the top tenth of its field.</b> The reason to
-   measure this is not the size of the number. It is that PIC’s case for the cluster rests
-   on assets that can be named, and until now the research network was described in
-   adjectives. <b>What the page does not say:</b> it has no peer benchmark, so it cannot
+   measure this is not the size of the number. It is that the case made by the Polymer
+   Industry Cluster (PIC), an initiative of the Greater Akron Chamber, rests on assets that
+   can be named, and until now the research network was described in adjectives. <b>What the page does not say:</b> it has no peer benchmark, so it cannot
    tell you whether ${N(T.partners_shown)} partners is many for a region this size. It counts
    papers, which are not products, patents or hires. <b>And ${pctf(T.us_share)} of the
    collaboration is domestic while ${pctf((D.countries.find(c => c.code === "CN") || {share: 0}).share)}
