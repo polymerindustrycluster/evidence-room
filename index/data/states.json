@@ -1,0 +1,64 @@
+{
+ "meta": {
+  "title": "Plastics and rubber jobs by state, 2024",
+  "source": "BLS QCEW open data, by-industry annual averages, NAICS 326, private ownership",
+  "row": "one state's 2024 annual-average covered employment in plastics and rubber products manufacturing, with its share of the state's jobs against the national share",
+  "derived_note": "Copied from peers/data/peers.json, the shipped dataset behind the peers page, and cut to the ten largest states. Nothing is fetched and nothing is recomputed here: every value is the value that file carries, to the job. index-chart-states in claims.json asserts this copy still matches it row for row, so a QCEW revision on the peers page fails this page's gate rather than leaving a stale chart behind.",
+  "year": 2024,
+  "of_disclosed": 51,
+  "suppressed": 0,
+  "subject": "Ohio"
+ },
+ "states": [
+  {
+   "name": "Ohio",
+   "emp": 54846,
+   "lq": 2.14
+  },
+  {
+   "name": "Texas",
+   "emp": 44598,
+   "lq": 0.69
+  },
+  {
+   "name": "Illinois",
+   "emp": 43168,
+   "lq": 1.54
+  },
+  {
+   "name": "California",
+   "emp": 41042,
+   "lq": 0.49
+  },
+  {
+   "name": "Pennsylvania",
+   "emp": 39698,
+   "lq": 1.42
+  },
+  {
+   "name": "Michigan",
+   "emp": 39518,
+   "lq": 1.93
+  },
+  {
+   "name": "Indiana",
+   "emp": 37661,
+   "lq": 2.55
+  },
+  {
+   "name": "North Carolina",
+   "emp": 35733,
+   "lq": 1.57
+  },
+  {
+   "name": "Wisconsin",
+   "emp": 32666,
+   "lq": 2.39
+  },
+  {
+   "name": "South Carolina",
+   "emp": 26733,
+   "lq": 2.52
+  }
+ ]
+}

@@ -1,9 +1,81 @@
-/* location-quotient — page-specific only; tokens and chart chrome live in
-   ../_shared/pic-viz.css so every artifact in web/ stays one system. */
-.picker{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 0}
+/* peers — page-local additions only. House anatomy (.mast/.hero/.band/.closer) and the
+   shared column system stay untouched so the layout gates keep applying. This file adds:
+   per-figure chrome, the byline/footer genre furniture, the demoted glossary, the metro
+   finder, the comparison picker, band-tint pacing, and the per-form mobile re-layout
+   override. */
+
+/* Figure chrome: each chart carries its own claim-title and how-to-read line, so the H2
+   does section work instead of doubling as the chart title (chart-craft.md). */
+.fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
+  line-height:1.3;max-width:var(--measure);color:var(--text)}
+.fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure)}
+.fig-title + .fig-sub + .chart{margin-top:16px}
+
+/* Byline. Genre furniture, not decoration: a page that asks to be checked has to say who
+   made it, from what, and when, at the top where a reader decides whether to trust it. */
+.byline{margin:15px 0 0;font-size:13px;line-height:1.55;color:#B7D9DE;letter-spacing:.01em}
+.hero .wrap > .byline{max-width:var(--measure)}
+
+/* The glossary, demoted out of the hero. Four terms at footnote scale beside the first
+   chart, where "suppresses" is first used, instead of six lines of 19px hero type in
+   front of the finding (page-design § hero). */
+.terms{margin:18px 0 0;max-width:var(--measure);font-size:14px;line-height:1.6;
+  color:#4A5457;border-left:3px solid var(--line);padding:2px 0 2px 14px}
+.terms b{font-weight:700;color:var(--text)}
+
+/* Overflow from a source line lands INSIDE the figure's own table disclosure, where the
+   reader who wants the arithmetic already is — instead of spending caption ink in front
+   of the one who does not (page-design § caveat ink). */
+.tnote{margin:12px 0 0;font-size:13px;line-height:1.55;color:var(--caption)}
+
+/* Footer. One stage: what a reader can do here, then who published it, on the paper
+   ground so the story visibly ends. */
+.foot{background:var(--paper);border-top:1px solid var(--line);padding:30px 0 42px}
+.foot .wrap > *{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.foot-lede{margin:0;font-size:15px;line-height:1.55;color:#3A4448}
+.foot-id{margin:12px 0 0;font-size:13px;color:var(--caption);letter-spacing:.02em}
+.foot-id a{color:var(--action);font-weight:700}
+
+/* Metro finder — the lookup job on the interaction ladder. 155 dots identified by hover
+   alone hid the reader's own metro; this puts it one keystroke away. The default state
+   still tells the whole story, so nothing load-bearing sits behind the control. */
+.msearch{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:20px 0 0;
+  max-width:var(--measure)}
+.msearch label{font:900 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;
+  color:#4A5457}
+.msearch input{font:inherit;font-size:15px;padding:10px 13px;border:1px solid var(--line);
+  background:#fff;color:var(--text);border-radius:999px;min-width:270px;min-height:40px}
+.msearch input:focus-visible{outline:2px solid var(--action);outline-offset:2px;
+  border-color:var(--ink)}
+.mverdict{margin:12px 0 0;font-size:17px;line-height:1.55;max-width:var(--measure);
+  color:#243135}
+.mverdict b{color:var(--ink)}
+
+/* Comparison picker for the time series. */
+.picker{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 0;max-width:var(--figure)}
 .pick{background:#fff;border:1px solid var(--line);color:var(--pv-ink);font:inherit;
-  font-size:13.5px;padding:8px 14px;cursor:pointer;transition:all .14s}
+  font-size:13.5px;padding:9px 14px;cursor:pointer;min-height:38px;transition:all .14s}
 .pick:hover{border-color:var(--hover);color:var(--hover)}
 .pick[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff;
   font-weight:700}
 .pick:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+
+/* Legend swatch for the withheld field: the same hatch the visibility chart uses, so
+   "withheld" reads as one thing across the page. */
+.legend i.hatch{background:repeating-linear-gradient(45deg,#F2EFE9 0 3px,#C9C3B8 3px 5px);
+  border:1px solid var(--line)}
+
+/* Pacing: one tinted band so the scroll reads as a wave rather than a loop. */
+.band.tint{background:#F4F1EC}
+
+/* Mobile: every chart on this page re-lays itself out per form (stacked state rows, a
+   re-scaled scatter that opens on Akron and the parity line, compact visibility rows, a
+   two-series trend). The shared sideways-scroll fallback is switched off because the
+   evidence has to be in the first paint, not behind a pan (chart-craft § mobile). */
+@media (max-width:760px){
+  .chart{overflow-x:visible;padding-bottom:0}
+  .chart svg{min-width:0}
+  .chart::after{content:none}
+  .fig-title{font-size:19px}
+  .msearch input{min-width:0;flex:1}
+}

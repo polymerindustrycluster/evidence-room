@@ -19,87 +19,217 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">Location quotient, computed from public data</p>
-    <h1>PIC quotes a concentration figure it licenses. <em>Here is one it owns.</em></h1>
-    <p class="stand">Team NEO's 2.69&times; is a Lightcast product: one number, one year,
-      no decomposition, and nobody outside the license can check it. The Bureau of Labor Statistics publishes the
-      components free. This is eleven years of concentration for six polymer industries
-      across twelve counties &mdash; reproduced to within 0.005 of the figure the bureau
-      publishes itself.</p>
-    <p class="stand"><dfn><b>Location quotient (LQ)</b> &mdash; how concentrated an industry
-      is here compared with the country as a whole. An LQ of 1.0 means the region has exactly
-      its national share of those jobs; 2.69 means nearly three times that share.</dfn>
-      <dfn>An <b>establishment</b> is a single physical site, not a company: one firm with
-      three plants is three establishments.</dfn></p>
+    <p class="eyebrow">Which industry, and by how much?</p>
+    <h1>Paint is <em>six times</em> as big a share of the jobs here as it is
+      of the country&rsquo;s.</h1>
+    <!-- THE COLD OPEN. This page opened on 2,187px of headline, standfirst and stat
+         cards: a reader scrolled more than two full screens before meeting a single
+         mark. The stat cards are not the problem and have not moved; the hero gains
+         the headline claim drawn instead of losing its numbers.
+
+         IT SITS ABOVE THE STANDFIRST, not below the byline where the three already
+         fixed pages put theirs. Measured at 390x844, this page carries 144px of
+         county-footprint block above its hero and a 628-character standfirst, so a
+         strip placed below the byline starts at 952px, past the phone&rsquo;s first
+         screen, and the standfirst is a comprehension fix that may not be cut to make
+         room for it. Above the standfirst it opens at 380px on the desktop and 417px
+         on the phone, and the headline reads straight into the picture of itself.
+
+         It is deliberately a poorer view than every chart below: one year, no county,
+         no employment, no eleven-year path. Its whole job is the shape, one bar about
+         two and a half times the length of the next in its own ranking, and handing the
+         reader on to the trend.
+
+         IT IS NOT ONE LIST OF SIX. It was, and a reader given only the rendering said so:
+         two of the six sit INSIDE a third and one is outside the cluster, so ranking them
+         together compares things that cannot be compared. Three labelled blocks now, and
+         only the first is the ranking. Guarded by tools/coldopen.mjs. -->
+    <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
+      id="open-t">The three industries this page counts as the polymer cluster, ranked,
+      in the twelve-county region in 2025, drawn as bars against the share of jobs the
+      same industry holds nationally. Paint runs 5.96 times the national share, about two
+      and a half times the next bar in that ranking. Set apart below them are the two
+      slices already counted inside plastics and rubber products, drawn as outlines, and
+      the wider chemical manufacturing industry, which sits outside the cluster and is
+      drawn only for comparison. Every bar passes the 1.0 times line where the two shares
+      match.</title></svg></div>
+    <p class="stand">That is 5.96&times; the national share, the strongest of the three
+      industries this page counts as the cluster. It is also more than double the
+      2.44&times; of the rubber products the region is named for, and it has led every
+      year since 2015. A
+      reading that high means more coatings work per job here than the country has, in
+      sites, in suppliers and in people who know it; it does not mean the industry is big.
+      Paint is 4,259 jobs in a region of 1.70 million, about one in four hundred. Every
+      figure is rebuilt from free federal files and matches the Bureau of Labor
+      Statistics&rsquo; own published figure to the last digit it prints.</p>
+    <p class="byline" id="byline"></p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
-    <p class="takeaway">The trend</p>
-    <h2 id="trendtitle">Eleven years of concentration, by industry</h2>
-    <p class="lede">A location quotient of 1.0 means the region has exactly its national
-      share of an industry. Select an industry to bring it forward; the others stay as
-      context rather than disappearing.</p>
-    <div class="picker" id="picker" role="group" aria-label="Choose an industry"></div>
+    <p class="takeaway">The finding</p>
+    <h2>Paint leads the three cluster industries, and has every year since 2015</h2>
+    <p class="lede"><dfn>Every figure on this page compares two shares: how much of the
+      region&rsquo;s jobs sit in an industry, against how much of the country&rsquo;s do.
+      At <b>1.0&times;</b> the two match. Above 1.0&times; the industry is more
+      concentrated here than nationally, and below it, less. Economists call this a
+      <b>location quotient</b>.</dfn> Paint sits far above that line: above 5.4&times; for
+      eleven straight years, and more than double whichever
+      line is next. Ohio as a whole is already concentrated in paint at 3.78&times;,
+      and these twelve counties are well above the state.</p>
+    <p class="lede">How big is that in jobs? The whole cluster this page measures, resin
+      plus paint plus plastics and rubber products, comes to 24,030 of the region&rsquo;s
+      1.70 million jobs, about one in seventy, and it is a floor: the bureau will not
+      publish every county, so the true figure is higher. Paint is 4,259 of those, 18%.
+      The figures come from the Bureau of Labor Statistics&rsquo; Quarterly Census of
+      Employment and Wages, or QCEW, which counts jobs covered by unemployment insurance
+      and reports them as annual averages of the year&rsquo;s four quarters; the analysis
+      is John Swanson&rsquo;s, and every figure in it is re-run against the bureau&rsquo;s
+      own published one in the check at the foot of this page.</p>
+    <p class="regkey" id="regkey"></p>
+    <p class="pickhint" id="pickhint">Press one of these buttons to bring that industry
+      forward on the chart below. Paint is forward now.</p>
+    <div class="picker" id="picker" role="group" aria-labelledby="pickhint"></div>
+    <p class="fig-title" id="trendtitle"></p>
+    <p class="fig-sub">Each line is one industry, summed across the counties the bureau
+      discloses. The higher the line, the more concentrated that industry is here than in
+      the country as a whole. Paint is the dark line, drawn forward, and the other five are
+      grey. Three of the six are the cluster: resin, paint, and plastics and rubber
+      products. Plastics products and rubber products are slices of that third line rather
+      than industries standing beside it, and chemical manufacturing is drawn from outside
+      the cluster for comparison, so the six lines are not one ranking. Resin climbed
+      hardest of the five greys, from 1.33&times; in 2015 to 2.00&times; now; rubber
+      products and plastics products both end below where they started.</p>
     <div class="chart"><svg id="trend" role="img" aria-labelledby="trend-t">
-      <title id="trend-t">Location quotient by year for six polymer industries across the
-        fourteen-county region.</title></svg></div>
+      <title id="trend-t">Concentration against the national share, by year, across the
+        twelve-county region, 2015 to 2025. Six lines: the three the page counts as the
+        cluster, which are resin, paint, and plastics and rubber products; two slices of
+        that third, plastics products and rubber products, which are not separate
+        industries beside it; and chemical manufacturing, drawn from outside the cluster
+        for comparison. Paint and coatings runs above every other line in every
+        year.</title></svg></div>
     <div id="trendtable"></div>
     <p class="src" id="trendsrc"></p>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">What the 2025 dip is</p>
+    <h2>Hold the county set still and paint is at an eleven-year high</h2>
+    <p class="lede" id="twistlede"></p>
+    <p class="fig-title" id="twisttitle"></p>
+    <p class="fig-sub">Both lines are paint concentration, and higher means more
+      concentrated here than in the country. The teal line holds the same five counties
+      every year; the grey line is the chart above, built on whichever six to nine
+      counties BLS disclosed that year. Neither line comes near 1.0&times;: the bottom of
+      this scale is near 5&times;.</p>
+    <div class="chart narrow"><svg id="twist" role="img" aria-labelledby="twist-t">
+      <title id="twist-t">Paint concentration by year on a fixed five-county base against
+        the all-disclosed line, 2015 to 2025. The fixed-base line ends at its
+        highest value of the series.</title></svg></div>
+    <div id="twisttable"></div>
+    <p class="src" id="twistsrc"></p>
+    <details class="disclose"><summary>How the same-five-counties line was derived from the
+      same county figures</summary>
+      <div id="fixednote"></div></details>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">Where the paint is</p>
+    <h2>One county holds three of every four paint jobs the bureau publishes</h2>
+    <p class="lede" id="heatlede"></p>
+    <p class="lede" id="heatlede2"></p>
+    <p class="fig-title" id="heattitle"></p>
+    <p class="fig-sub">Each cell is one industry in one county, latest year. A cell at
+      1.0&times; holds exactly its national share of those jobs; at 11.2&times;, eleven
+      times as much. Counties are sorted by the paint column, highest first, so the county
+      this section is about is the top row; the counties whose paint cell is withheld sit
+      beneath, ordered by plastics and rubber. Hatched cells are withheld and are never
+      drawn as a zero.</p>
+    <div class="chart"><svg id="heat" role="img" aria-labelledby="heat-t">
+      <title id="heat-t">Grid of concentration against the national share, by county and
+        industry. Six cells reach the darkest shade, and Cuyahoga&rsquo;s paint cell is the
+        one with the most jobs behind it.</title></svg></div>
+    <div id="heattable"></div>
+    <p class="src" id="heatsrc"></p>
+    <div class="note"><b>Who is in that cell.</b> The file counts separate sites, not
+      companies: one physical location is one site, so a firm with a head office and two
+      plants in the region counts three times. It never names an employer, so this grid
+      shows a concentration and not a firm. Sherwin-Williams is headquartered in Cleveland,
+      in Cuyahoga County, and RPM International in Medina, which posts the region&rsquo;s
+      fifth paint reading at 2.9&times;. A site is coded by what it does, so a corporate
+      campus can land in the same industry as a plant: the plain explanation for a coatings
+      cluster of this size, and not something the file measures.</div>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The honest caveat</p>
-    <h2>The highest concentrations sit on the smallest bases</h2>
-    <p class="lede">A location quotient is a ratio, so a county with six plants can post a
-      bigger number than a county with sixty. Plotted against the jobs behind it, the
-      dramatic figures move to the left where they belong.</p>
+    <h2>The highest concentrations sit on the fewest jobs</h2>
+    <p class="lede" id="scatterlede"></p>
+    <p class="fig-title" id="scattertitle"></p>
+    <p class="fig-sub">Each dot is one industry in one county, latest year. The further
+      UP, the more concentrated that industry is here than in the country. The further
+      RIGHT, the more jobs sit behind that number. The job axis is squeezed so the small
+      counts stay apart, and the ticks are spaced to match: twice as far right is four
+      times as many jobs, not twice as many.</p>
     <div class="chart"><svg id="scatter" role="img" aria-labelledby="scatter-t">
-      <title id="scatter-t">Location quotient against employment for every county and
-        industry in the latest year.</title></svg></div>
+      <title id="scatter-t">Concentration against employment for every disclosed county
+        and industry in the latest year. The largest ratios sit on the smallest job
+        counts.</title></svg></div>
+    <div class="legend" id="scatterkey"></div>
     <div id="scattertable"></div>
     <p class="src" id="scattersrc"></p>
   </div>
 </section>
 
-<section class="band">
+<section class="band tint">
   <div class="wrap">
-    <p class="takeaway">The map, as a grid</p>
-    <h2 id="heattitle">Every county against every industry</h2>
-    <p class="lede">Twelve counties, six industries, latest year. Hatched cells are ones
-      the bureau will not disclose &mdash; a withheld cell is not a zero, and is never drawn as
-      one.</p>
-    <div class="chart"><svg id="heat" role="img" aria-labelledby="heat-t">
-      <title id="heat-t">Grid of location quotient by county and industry.</title></svg></div>
-    <div id="heattable"></div>
-  </div>
-</section>
-
-<section class="band">
-  <div class="wrap">
-    <p class="takeaway">Show your work</p>
-    <h2>Why you can trust the number above</h2>
-    <p class="lede">The bureau publishes its own location quotient alongside the components. Every
-      cell computed here is checked against it. If the two ever diverge, this chart is where
-      it shows up first.</p>
-    <div class="chart"><svg id="resid" role="img" aria-labelledby="resid-t">
-      <title id="resid-t">Distribution of the difference between the computed and published
-        location quotient.</title></svg></div>
+    <p class="takeaway">Checked against the bureau</p>
+    <h2>Every cell lands inside the bureau&rsquo;s own rounding</h2>
+    <p class="lede" id="residlede"></p>
+    <p class="fig-title" id="residtitle"></p>
+    <p class="fig-sub">Each bar counts how many of our figures landed that far from the
+      bureau&rsquo;s published one. Zero is an exact match, and every bar sits inside the
+      bureau&rsquo;s own rounding. Read the shape this way: an error in the method would
+      pile the bars up on one side of zero, and a difference that is only rounding spreads
+      them evenly across the range, which is what happened.</p>
+    <div class="chart narrow"><svg id="resid" role="img" aria-labelledby="resid-t">
+      <title id="resid-t">Histogram of the difference between our computed figure and the
+        bureau&rsquo;s published one, bounded at plus and minus 0.005.</title></svg></div>
     <div id="residtable"></div>
-    <div class="note" id="defnote"></div>
+    <p class="src" id="residsrc"></p>
+    <details class="disclose"><summary>How the denominator was established, and what
+      breaks without it</summary>
+      <div id="defnote"></div></details>
   </div>
 </section>
 
 <section class="closer">
   <div class="wrap">
-    <p>A licensed number is a claim. A reproduced number is a measurement.</p>
+    <p>The region&rsquo;s strongest concentration is the one it never quotes.</p>
     <p class="sub" id="closersub"></p>
   </div>
 </section>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-more">Read next: <a href="../peers/">where the region sits against
+      other metro areas</a> on this same measure.</p>
+    <p class="foot-ask">If you run a coatings or plastics site in one of these counties,
+      the file cannot say why the cluster is here and you can. Write to
+      <b>jswanson@greaterakronchamber.org</b>, which is also where corrections go.</p>
+    <p class="foot-note" id="footcorr"></p>
+    <p class="foot-id">Polymer Industry Cluster &middot; Greater Akron Chamber &middot;
+      <a href="../index/">Evidence room</a></p>
+  </div>
+</footer>
 
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>The PIC Scorecard</title>
+<meta name="description" content="PIC internal scorecard: eighteen metrics with definitions, owners, cadences and targets. Award delivery and degree completions are computed from public federal and state records; the rows that need PIC's own registers are published as defined empty slots.">
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <strong>Polymer Industry Cluster</strong>
+    <span>Internal scorecard &middot; organisational performance</span>
+    <span class="proto">Internal working view</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">PIC&rsquo;s own scorecard &middot; measurement coverage, August 2026</p>
+    <h1>Public records fill eight of the fifteen rows PIC answers for, and
+      <em>none of the four on revenue</em>.</h1>
+    <p class="stand">The award register shows $79.2 million of the $85.3 million PIC has
+      won sitting on an executed line with a named recipient. It records no payment
+      against any of it, and the four rows that would tell a board whether PIC can pay
+      for itself are kept in registers a public repository may not carry.</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data from the PIC
+      award register, IPEDS and BLS &middot; August&nbsp;2026</p>
+    <!-- THE COLD OPEN. This page opened on 951px of headline, standfirst, coverage
+         squares and stat cards, so its first CHART began at 5,677px on desktop and
+         13,506px on a phone: six screens before a reader met a drawn mark. The stat
+         cards are not the problem and have not moved. What moved is the coverage
+         isotype, which was already the lead visual but was built from HTML squares, so
+         nothing on the page or in the gates could read it as evidence. It is drawn now,
+         and it says the half of the headline the squares never did: the four rows on
+         revenue are all blank. The detailed view is the scorecard table below. Guarded
+         by tools/coldopen.mjs. -->
+    <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
+      id="open-t">One square per metric on PIC&rsquo;s scorecard, in the four groups a
+      board reads. Filled squares are rows a public federal or state record computes,
+      outlines are rows whose measurement stays in PIC&rsquo;s own registers, and the
+      last run is cluster context PIC does not control. Eight of the fifteen accountable
+      rows are filled, and group A, the four rows on revenue, has none.</title></svg>
+      <p class="hero-cap">One square is one metric. Filled squares are the rows a public
+        record can fill, outlines are the rows waiting on a private copy, and the grey
+        run at the end is cluster context PIC does not control.</p></div>
+    <div class="hero-row" id="figs"></div>
+  </div>
+</section>
+
+<section class="gate">
+  <div class="wrap">
+    <p class="gate-k">Read this first</p>
+    <p class="gate-t">This is an internal working view, built only from public federal
+      and state data. It is not a published account of PIC&rsquo;s finances or
+      membership.</p>
+    <p class="gate-b">This repository is public and its history is permanent, so it
+      carries no member, applicant or personal data. Seven rows below are therefore
+      unpopulated on purpose: their measurement lives in PIC&rsquo;s membership register,
+      general ledger and drawdown records. Each one is published here with its
+      definition, cadence and target field ready, and with a visible empty state instead
+      of a figure. Filling them needs a copy of this page kept outside a public
+      repository, and nothing on this page should be read as an estimate of what those
+      cells would say.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The scorecard</p>
+    <h2>Seven of the fifteen rows PIC answers for are blank</h2>
+    <p class="lede">One row per metric, in the four groups a board reads in order. Groups
+      A, B and C are what PIC is accountable for. Group D is the regional economy PIC
+      works on and does not control, kept at the bottom, set apart, and never averaged
+      into anything above it.</p>
+
+    <p class="fig-title">Eight rows compute from public records, seven wait on a private
+      copy, three are context</p>
+    <p class="fig-sub">Status is marked twice: by the rule down the left edge and by the
+      current reading itself. A blank cell reads &ldquo;not published here&rdquo; and
+      never reads zero.</p>
+    <div class="legend" id="boardlegend"></div>
+    <div class="board" id="board"></div>
+    <p class="src" id="boardsrc"></p>
+
+    <div class="note"><b>What the target and owner columns mean.</b> No target here was
+      set by PIC. A target showing a figure is a ceiling fixed by a signed award
+      document; every other target reads &ldquo;not set&rdquo;, and that absence is the
+      finding rather than a gap in the build. No owner cell names a person, because this
+      repository holds no owner assignment for any row, and an EOS row without a named
+      owner is not yet a scorecard row.</div>
+
+    <p class="beat">The distinction the groups exist to hold: cluster health measures the
+      regional polymer economy, which PIC influences through award money, convening and
+      programs but does not control, while the scorecard measures what PIC itself is
+      accountable for. They must never be averaged or scored on one line. Letting
+      organisational growth stand in for regional outcomes, or regional growth stand in
+      for organisational performance, is the standard way economic-development reporting
+      goes wrong: the cluster adds jobs for reasons no association caused, and the
+      association reports them as delivery.</p>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">Group B &middot; award delivery</p>
+    <h2>Every award dollar without a named recipient sits inside one state grant</h2>
+    <p class="lede">The register carries three public awards. Two of them are fully
+      assigned: all seven EDA implementation awards are obligated straight to their
+      project leads, and the APEX workforce award is committed in one line. The
+      unassigned balance is entirely Ohio money, held in two workstreams whose sub-grants
+      are still being executed.</p>
+
+    <p class="fig-title">$6.2M of the $85.3M awarded has no named recipient yet, and all
+      of it is Ohio money</p>
+    <p class="fig-sub">One bar per public award, drawn to the same dollar scale. The
+      solid part is money on an executed line naming the organisation that holds it; the
+      hatched part is money awarded to PIC with the recipient not yet named.</p>
+    <div class="chart"><svg id="delivery" role="img" aria-labelledby="delivery-t">
+      <title id="delivery-t">Three public awards drawn to one dollar scale. The EDA Tech
+        Hub and APEX awards are fully assigned to named recipients; the Ohio Innovation
+        Hub carries the whole $6.2 million that has no named recipient yet.</title>
+    </svg></div>
+    <div id="deliverytable"></div>
+    <p class="src" id="deliverysrc"></p>
+
+    <p class="beat">One quantity is missing from that chart and cannot be drawn from any
+      public source: how much of the money has actually been paid. An obligation is a
+      legal commitment to pay, and an executed sub-grant is a signed agreement to pay.
+      Neither is a payment. The drawdown row in group B is empty for that reason, and it
+      is the row a board should ask about first, because a fully assigned award that has
+      disbursed nothing and a fully assigned award that has disbursed everything look
+      identical on this page.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">Group C &middot; talent</p>
+    <h2>Polymer credentials fell by more than half in 2022 and have not come back</h2>
+    <p class="lede">Federal education data covers the degree side of the talent question:
+      how many people finish a polymer credential at the three regional institutions each
+      year. It says nothing about PIC&rsquo;s own workforce programs, which are the two
+      empty rows in group C. Materials credentials at the same institutions moved the
+      other way over the same three years, rising from 20 to 33.</p>
+
+    <p class="fig-title">Polymer credentials ran near 120 a year for a decade, then
+      dropped to 54</p>
+    <p class="fig-sub">Credentials at every level, all polymer CIP codes at the three
+      regional institutions, by federal reporting year. Higher is more graduates. The two
+      pale columns are years this page does not use.</p>
+    <div class="chart"><svg id="talent" role="img" aria-labelledby="talent-t">
+      <title id="talent-t">Polymer credentials by year from 2014 to 2023. The series runs
+        between 118 and 179 through 2021, drops to 54 in 2022 and recovers only to 63 in
+        2023.</title>
+    </svg></div>
+    <div id="talenttable"></div>
+    <p class="src" id="talentsrc"></p>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">The objection</p>
+    <h2>Why a blank cell is worth more than a close-enough one</h2>
+    <p class="lede">The obvious complaint about this page is that seven blanks make a
+      poor board document, and that a rounded band or a rough share would at least give
+      the room something to talk about.</p>
+    <p class="beat">The answer is that a scorecard is read as a measurement, and a number
+      in a scorecard cell is treated as one for years after whoever typed it has
+      forgotten where it came from. Once a plausible membership figure sits in this
+      table, nobody re-derives it; they compare against it. The seven blanks are
+      therefore doing the work: each one names the register that holds the real number,
+      the definition that number has to satisfy, and the cadence it has to arrive on, so
+      that populating it later is a lookup rather than a judgment call. The cost of the
+      blank is one awkward board meeting. The cost of a plausible wrong number is a year
+      of decisions taken against it.</p>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="wrap">
+    <p>Public records answer where PIC&rsquo;s award money was assigned and say nothing
+      about whether PIC can pay for itself.</p>
+    <p class="sub">Eight of the fifteen accountable rows compute from federal and state
+      records: <b>$79.2 million</b> of $85.3 million awarded carries a named recipient,
+      and <b>63</b> polymer credentials were awarded in the region in 2023 against a
+      three-year average of 80. Seven rows, including all four on revenue and the one on
+      disbursement, are defined and empty. Three more are cluster context that belongs to
+      the region rather than to PIC, and they stay in their own group for that
+      reason.</p>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-k">The pages these rows are read from</p>
+    <ul class="foot-links">
+      <li><a href="../funding-map/">Where the award money goes</a>
+        <span>The register behind every figure in group B.</span></li>
+      <li><a href="../occupations/">The occupations inside the industry</a>
+        <span>The degree completions behind group C.</span></li>
+      <li><a href="../federal-money/">The other federal money</a>
+        <span>The routine contracting in group D.</span></li>
+    </ul>
+    <p class="foot-cta">Think a number here is wrong, or a definition would not survive
+      contact with the ledger? Name the row and what it fails against:
+      <b>jswanson@greaterakronchamber.org</b>.</p>
+    <p class="foot-id">Polymer Industry Cluster &middot; Greater Akron Chamber. Every
+      populated figure is recomputed from data already published on another page of this
+      site by <span class="mono">scorecard/derive_scorecard.py</span>.</p>
+  </div>
+</footer>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

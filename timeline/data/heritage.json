@@ -6,9 +6,9 @@
   "source": "NEO Polymer Wins register (internal), heritage and discoveries collections; only PROVEN rows and their public sources travel",
   "note": "Only rows the register labels PROVEN are shown. CLAIMED rows — where a date or a figure is recorded two ways — are held back rather than shown with a caveat.",
   "counts": {
-   "shown": 32,
+   "shown": 31,
    "heritage": 19,
-   "discoveries": 13,
+   "discoveries": 12,
    "dropped": {
     "label:CLAIMED": 5,
     "collection:shipped": 21,
@@ -17,7 +17,9 @@
    },
    "firstYear": 1898,
    "lastYear": 2012,
-   "sourcesStripped": 3
+   "sourcesStripped": 3,
+   "lastCoveredYear": 2016,
+   "merged": 1
   },
   "withheld": [
    {
@@ -45,6 +47,22 @@
     "label": "CLAIMED",
     "year": "2020"
    }
+  ],
+  "merged": [
+   {
+    "id": "D-003",
+    "into": "H-007",
+    "year": 1963,
+    "why": "The same register sentence, recorded once in each collection. A department is capacity, not a paper or a patent, so the heritage row is canonical and the discovery row is merged into it rather than counted again."
+   }
+  ],
+  "narrowed": [
+   {
+    "id": "D-004",
+    "overlapped": "H-008",
+    "year": 1965,
+    "why": "The row opened with H-008’s sentence about the 1965 institute and then added a separate 1994 paper. The founding stays in H-008; this row keeps only the 1994 discovery, which nothing else carries."
+   }
   ]
  },
  "eras": [
@@ -70,8 +88,8 @@
   },
   {
    "from": 2000,
-   "to": 2020,
-   "label": "2000–2019"
+   "to": 2013,
+   "label": "2000–2012"
   }
  ],
  "collections": [
@@ -113,7 +131,8 @@
     }
    ],
    "doNotSay": "August 29, 1898 or $100,000 capital as if printed on Goodyear’s current history page. That Charles Goodyear lived or worked in Akron. Any founding headcount.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1898
   },
   {
    "id": "H-003",
@@ -149,7 +168,8 @@
     }
    ],
    "doNotSay": "“12 employees at founding.” Collapsing the December 27 factory switch with the June 1910 plant. Any $10,000 figure. That Firestone’s first GR-S bale (ACS: 26 Apr 1942) was poured in Akron — ACS does not give the plant city.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1900
   },
   {
    "id": "H-006c",
@@ -169,7 +189,8 @@
     }
    ],
    "doNotSay": "That this is the UA rubber-chemistry course. That PIC created the Division.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1909
   },
   {
    "id": "H-005",
@@ -201,7 +222,8 @@
     }
    ],
    "doNotSay": "$200,000 or $50,000 founding capital (secondary disagreement; no primary opened). That General was one of the five original RRC patent-sharing signatories — ACS’s five are Firestone, Goodrich, Goodyear, Jersey Standard, U.S. Rubber.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1915
   },
   {
    "id": "H-006d",
@@ -213,7 +235,7 @@
    "year": 1920,
    "era": 1,
    "title": "Census records Akron’s 1910–1920 population tripling",
-   "oneLiner": "The 1920 Census counted Akron at 208,435 residents, up from 69,067 in 1910 — a 201.8 percent increase, the fastest among Ohio cities over 25,000. (Bureau of the Census, 1920 Ohio bulletin)",
+   "oneLiner": "The 1920 Census counted Akron at 208,435 residents, up from 69,067 in 1910, a 201.8 percent increase, the fastest among Ohio cities over 25,000. (Bureau of the Census, 1920 Ohio bulletin)",
    "sources": [
     {
      "url": "https://www2.census.gov/library/publications/decennial/1920/bulletins/demographics/population-oh-number-of-inhabitants.pdf",
@@ -225,7 +247,8 @@
     }
    ],
    "doNotSay": "That Census “proves” the growth was “driven entirely by rubber” — the bulletin does not say that. Any 1940–45 “population doubling” figure. Any rubber-employment headcount not in a named primary.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1920
   },
   {
    "id": "D-001",
@@ -253,7 +276,8 @@
     }
    ],
    "doNotSay": "That Semon invented PVC. That vinyl is an Akron trademark. Any $32 billion industry figure. That this is Ameripol (that is D-002). Any PIC lineage.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1933
   },
   {
    "id": "D-002",
@@ -285,7 +309,8 @@
     }
    ],
    "doNotSay": "“Akron invented synthetic rubber.” That Ameripol was the first synthetic rubber. The date 4 June 1940 as if ACS printed it. That the 51 wartime plants were in Akron. Any 800k/920k tonnage on this row. That PIC descends from Ameripol.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1940
   },
   {
    "id": "H-006b",
@@ -317,7 +342,8 @@
     }
    ],
    "doNotSay": "That this was one of the 51 production plants. That UA “manufactured the nation’s synthetic rubber.” Any wartime employment peak. Equating “Rubber Technical Institute” (UA marketing) with the NSF “Government Laboratories” without a primary that uses both names.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1944
   },
   {
    "id": "H-008b",
@@ -345,12 +371,13 @@
     }
    ],
    "doNotSay": "Do not say the Institute of Polymer Science was founded in 1956. UA’s history page dates that rename to 1964. Do not print a graduate-count unless UA names it.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1956
   },
   {
-   "id": "D-003",
-   "atom": "WIN-DIS-003",
-   "collection": "discoveries",
+   "id": "H-007",
+   "atom": "WIN-HER-012",
+   "collection": "heritage",
    "date": "1963-01-15",
    "datePrecision": "month",
    "dateDisplay": "Jan 1963",
@@ -376,32 +403,12 @@
      "note": ""
     }
    ],
-   "doNotSay": "“First polymer department in the world.” That Baer invented a polymer in 1963 (this row is a department). That CLiPS or Peak Nano is this win. That the department began at the 1967 Case–Western Reserve federation.",
-   "label": "PROVEN"
-  },
-  {
-   "id": "H-007",
-   "atom": "WIN-HER-012",
-   "collection": "heritage",
-   "date": "1963-07-01",
-   "datePrecision": "year",
-   "dateDisplay": "1963",
-   "year": 1963,
-   "era": 2,
-   "title": "Case Institute first standalone US polymer department",
-   "oneLiner": "Case Western Reserve’s macromolecular department states it was founded in January 1963 under Eric Baer as the first standalone U.S. polymer department.",
-   "sources": [
-    {
-     "url": "https://engineering.case.edu/macromolecular-science-and-engineering/about",
-     "note": ""
-    },
-    {
-     "url": "https://engineering.case.edu/macromolecular-science-and-engineering/history",
-     "note": ""
-    }
+   "doNotSay": "“First polymer department in the world.” That Baer invented a polymer in 1963 (this row is a department). That CLiPS or Peak Nano is this win. That the department began at the 1967 Case–Western Reserve federation. That this row and the register’s discovery row are two events: they are one, and the discovery row is merged into this one.",
+   "label": "PROVEN",
+   "mergedFrom": [
+    "D-003"
    ],
-   "doNotSay": "Do not say “first polymer department in the world.” Case’s own claim is first standalone US polymer group at an engineering school. Do not date the department to the 1967 Case–Western Reserve federation; the unit began at Case Institute.",
-   "label": "PROVEN"
+   "endYear": 1963
   },
   {
    "id": "H-008",
@@ -429,39 +436,8 @@
     }
    ],
    "doNotSay": "Do not call Kent Displays a PIC-era win. Do not collapse 1965 founding with the 1986 Glenn H. Brown naming or the 2018 AMLCI rename.",
-   "label": "PROVEN"
-  },
-  {
-   "id": "D-004",
-   "atom": "WIN-DIS-004",
-   "collection": "discoveries",
-   "date": "1965-07-01",
-   "datePrecision": "range",
-   "dateDisplay": "1965 / 1994",
-   "year": 1965,
-   "era": 2,
-   "title": "Brown founds Kent LCI; Yang–West–Chien–Doane demonstrate bistable cholesteric displays",
-   "oneLiner": "Kent State’s trustees authorized the Liquid Crystal Institute under Glenn H. Brown in 1965. In 1994 Yang, West, Chien, and Doane published bistable cholesteric display physics in the Journal of Applied Physics.",
-   "sources": [
-    {
-     "url": "https://www.kent.edu/amlci/our-legacy",
-     "note": "trustees 1965; Brown director 1965–83; Neubert 1995; ILCC 1965"
-    },
-    {
-     "url": "https://www.kent.edu/amlci/glenn-h-brown-liquid-crystal-institute",
-     "note": "named for Brown 1986; directors sequence"
-    },
-    {
-     "url": "https://pubs.aip.org/aip/jap/article/76/2/1331/497092/Control-of-reflectivity-and-bistability-in",
-     "note": "Yang, West, Chien, Doane, J. Appl. Phys. 76, 1331, 1994-07-15"
-    },
-    {
-     "url": "https://kentdisplays.com/history/",
-     "note": "1993 spinout is the product child, not this row"
-    }
-   ],
-   "doNotSay": "That Kent discovered liquid crystals (1888, Europe). That Doane invented PDLC as this row. That West’s PDLC is Doane’s cholesteric paper. That Fergason’s TN LCD is a Kent first. That Boogie Board is this discovery. Any licensee list for PDLC privacy glass.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1965
   },
   {
    "id": "H-009c",
@@ -489,7 +465,8 @@
     }
    ],
    "doNotSay": "Do not call EPIC a PIC ancestor in the legal-entity sense. Do not say it “succeeded.” Do not substitute PolymerOhio or Akron Tomorrow here; those lack a 1945–2000 founding date.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1984
   },
   {
    "id": "D-005",
@@ -521,7 +498,8 @@
     }
    ],
    "doNotSay": "That Kennedy invented living polymerization (Szwarc, anionic, 1956). That this paper is TAXUS. Any “more than one million surgeries” figure on this row. Any royalty. That PIC funded Kennedy.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1986
   },
   {
    "id": "D-011",
@@ -532,7 +510,7 @@
    "dateDisplay": "1987",
    "year": 1986,
    "era": 3,
-   "title": "Kent phase-separation PDLC — LC microdroplets formed by curing a resin solution",
+   "title": "Kent phase-separation PDLC: LC microdroplets formed by curing a resin solution",
    "oneLiner": "In 1987 Kent State was assigned US 4,688,900 (Doane, Chidichimo, Vaz) for liquid-crystal microdroplets that form spontaneously when a resin solution is cured. Fergason’s 1984 encapsulated-LC patent is earlier and different.",
    "sources": [
     {
@@ -549,7 +527,8 @@
     }
    ],
    "doNotSay": "That Kent invented PDLC first, full stop. That this is Fergason’s TN LCD. That West is an inventor on US 4,688,900. Unnamed 3M/Asahi/Polytronix licensees as proven. That this is the Boogie Board (cholesteric, D-004 / S-003).",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1987
   },
   {
    "id": "H-009b",
@@ -573,7 +552,8 @@
     }
    ],
    "doNotSay": "Do not call the buyback “greenmail” as a settled legal fact; Mercer and Goldsmith both denied it. Do not print a layoff headcount without a named primary. Do not say Goodyear “won for free.”",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1986
   },
   {
    "id": "H-009",
@@ -605,7 +585,8 @@
     }
    ],
    "doNotSay": "Do not say Continental–General closed in 1988. Do not say “three of the Big Four went foreign in 1988.” Do not print the $650 million or $628 million Continental prices here; no primary opened in this wave named the figure in-sentence. Do not say Firestone HQ stayed in Akron after 1991.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1988
   },
   {
    "id": "H-009d",
@@ -637,7 +618,8 @@
     }
    ],
    "doNotSay": "Do not say the Goodyear Polymer Center was built in 1998. Do not say UA archives’ 1991 photo caption (“opened the Goodyear Polymer Center”) overrides the Development Office’s January 1998 rename. Do not print the gift dollar amount; Plastics News “millions” was not opened.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1998
   },
   {
    "id": "D-008",
@@ -669,7 +651,8 @@
     }
    ],
    "doNotSay": "That Baer invented multilayer coextrusion (Schrenk / Dow). That CLiPS 2006 is the discovery date. That Peak Nano is this paper. PIC or P25.15 as this win. Any plant or jobs figure from a confidential Peak slide.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 2010
   },
   {
    "id": "D-006",
@@ -693,7 +676,8 @@
     }
    ],
    "doNotSay": "That this patent is TAXUS. “More than one million surgeries” (that is UA’s later product claim). $5 million to UA. That Puskas is still at UA (she later moved to Ohio State). That PIC licensed this.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1990
   },
   {
    "id": "D-012",
@@ -713,7 +697,8 @@
     }
    ],
    "doNotSay": "That West merely licensed PDLC. That this is the 1987 Doane/Vaz process patent. That this is Kent Displays / Boogie Board. Fergason as a Kent inventor. Any trade-press licensee list without a TTO primary.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1991
   },
   {
    "id": "H-009e",
@@ -745,7 +730,34 @@
     }
    ],
    "doNotSay": "Do not treat Kent’s “1990 selected” and NSF’s “Class of 1991” as the same day. Do not print an award dollar figure; the historical NSF abstract page did not load amounts. Do not call ALCOM a PIC win.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1991
+  },
+  {
+   "id": "D-004",
+   "atom": "WIN-DIS-004",
+   "collection": "discoveries",
+   "date": "1994-07-15",
+   "datePrecision": "day",
+   "dateDisplay": "15 Jul 1994",
+   "year": 1994,
+   "era": 3,
+   "title": "Yang, West, Chien and Doane demonstrate bistable cholesteric displays",
+   "oneLiner": "In 1994 Yang, West, Chien, and Doane published bistable cholesteric display physics in the Journal of Applied Physics.",
+   "sources": [
+    {
+     "url": "https://pubs.aip.org/aip/jap/article/76/2/1331/497092/Control-of-reflectivity-and-bistability-in",
+     "note": "Yang, West, Chien, Doane, J. Appl. Phys. 76, 1331, 1994-07-15"
+    },
+    {
+     "url": "https://kentdisplays.com/history/",
+     "note": "1993 spinout is the product child, not this row"
+    }
+   ],
+   "doNotSay": "That Brown’s 1965 founding of the Liquid Crystal Institute is this row; that is the heritage row H-008. That Kent discovered liquid crystals (1888, Europe). That Doane invented PDLC as this row. That West’s PDLC is Doane’s cholesteric paper. That Fergason’s TN LCD is a Kent first. That Boogie Board is this discovery. Any licensee list for PDLC privacy glass.",
+   "label": "PROVEN",
+   "narrowedFrom": "the 1965 founding sentence, which is H-008",
+   "endYear": 1994
   },
   {
    "id": "D-007",
@@ -769,7 +781,8 @@
     }
    ],
    "doNotSay": "$1 billion in LCD-film sales. $5 million to UA. The unnamed Japanese licensee as if identified. That APS (2002) is this patent. That PIC commercialized the film.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 1994
   },
   {
    "id": "H-010",
@@ -793,7 +806,8 @@
     }
    ],
    "doNotSay": "That AGPA is a legal ancestor of PIC. Any headcount or appropriation not on the UA history page.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 2001
   },
   {
    "id": "H-011",
@@ -817,7 +831,8 @@
     }
    ],
    "doNotSay": "$1 billion LCD-film sales. $5 million to UA. An unnamed Japanese licensee. That APS founding is a PIC outcome. That Third Frontier founded APS (company page does not say that).",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 2002
   },
   {
    "id": "H-012",
@@ -849,7 +864,8 @@
     }
    ],
    "doNotSay": "“$100 million into Akron.” Statewide SRI job counts as if they were NEO polymer jobs. That Third Frontier is PIC. That it founded Kent Displays or APS.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 2002
   },
   {
    "id": "D-010",
@@ -881,7 +897,8 @@
     }
    ],
    "doNotSay": "That BEVA is the gecko product. That UA discovered van der Waals gecko adhesion (Autumn et al.). That a gecko tape is sold from Akron. Any NSF-dollar figure as a win. PIC causation.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 2013
   },
   {
    "id": "D-013",
@@ -909,7 +926,8 @@
     }
    ],
    "doNotSay": "That this is TAXUS or US 4,946,899. That Puskas is still a UA faculty member. Any implant count. PIC causation.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 2005
   },
   {
    "id": "H-013",
@@ -933,7 +951,8 @@
     }
    ],
    "doNotSay": "$19 million, $31 million, or $40 million. That CLiPS invented coextrusion (Dow / Schrenk). That Advanced Hydro is a NEO plant. That PIC created CLiPS.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 2016
   },
   {
    "id": "H-014",
@@ -961,7 +980,8 @@
     }
    ],
    "doNotSay": "That Third Frontier paid for NPIC unless a primary says so. That this building is the PIC pilot facility. Any construction cost not in a named source.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 2010
   },
   {
    "id": "D-009",
@@ -993,7 +1013,8 @@
     }
    ],
    "doNotSay": "That Glenn invented aerogels (Kistler / silica). That the 2015 license is the invention. That Blueshift manufactures in NEO. “500 times stronger” without naming NASA T2 as the speaker. Any PIC cause.",
-   "label": "PROVEN"
+   "label": "PROVEN",
+   "endYear": 2012
   }
  ]
 }

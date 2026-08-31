@@ -1,0 +1,219 @@
+{
+ "_readme": [
+  "THE FIGURE REGISTRY. One entry per quantity that appears on more than one page.",
+  "",
+  "Every page here is built as an isolated artifact with its own data pull and its own",
+  "claims file, and verify_claims.py asserts each page against ITS OWN data. That is why",
+  "the per-page guards are strong and why nothing watched BETWEEN pages: a naive-reader",
+  "pass on 2026-08-29 found the hub calling the Tech Hub award 'about a year and a half'",
+  "of routine contracting while the dashboard called it '1.4 years', two different job",
+  "counts for the same year, and a concentration printed at two values. All passed.",
+  "",
+  "FIELDS, and the two that do the real work:",
+  "  value / display    the number and how it is written. also_printed_as lists other",
+  "                     legitimate renderings of the SAME value at other precisions.",
+  "  basis              WHAT IS COUNTED. Two figures that differ because they count",
+  "                     different things are not drift; they are two figures, and each",
+  "                     needs its own entry saying so. laborshed's 1,735,169 and",
+  "                     1,702,542 are both correct and both labelled PIC-12.",
+  "  observability      whether the true value is publicly knowable at all. A page that",
+  "                     states a value for something recorded here as unobservable is",
+  "                     asserting a fact nobody can check: cluster-health printed",
+  "                     'none of it spent' for a disbursement accountability describes as",
+  "                     'no public record exists'.",
+  "  status             agreed | unresolved | unverified. Unresolved means two pages",
+  "                     print different values and nobody has yet decided which is right;",
+  "                     it is recorded rather than quietly picked.",
+  "",
+  "tools/crosspage.mjs proposes candidates by reading the rendered pages. It cannot know",
+  "whether two figures are the same quantity, so it reports and a human decides. What",
+  "gets confirmed lands here, which is the part that can be asserted."
+ ],
+ "figures": {
+  "techhub_award": {
+   "value": 51001413,
+   "display": "$51.0M",
+   "also_printed_as": [
+    "$51,001,413",
+    "$51.0 million"
+   ],
+   "unit": "USD",
+   "basis": "EDA Sustainable Polymers Tech Hub, as awarded, nominal",
+   "vintage": "signed 2024",
+   "source": "usaspending + PIC award register",
+   "observability": "public",
+   "status": "agreed",
+   "pages": [
+    "federal-money",
+    "funding-map",
+    "accountability",
+    "scorecard",
+    "index",
+    "cluster-health"
+   ]
+  },
+  "techhub_award_2025_dollars": {
+   "value": 51263077,
+   "display": "$51.3 million",
+   "unit": "USD",
+   "basis": "the same award restated in 2025 dollars",
+   "differs_from": "techhub_award",
+   "why": "CPI-U rebasing, not a second award. A page comparing it against nominal contracting must say which ruler it is using.",
+   "observability": "public",
+   "status": "agreed",
+   "pages": [
+    "federal-money"
+   ]
+  },
+  "pilot_facility": {
+   "value": 18521985,
+   "display": "$18.52M",
+   "also_printed_as": [
+    "$18,521,985",
+    "$18.5M"
+   ],
+   "unit": "USD",
+   "basis": "Ohio Innovation Hub pilot facility line",
+   "observability": "public",
+   "status": "agreed",
+   "pages": [
+    "funding-map",
+    "accountability",
+    "scorecard"
+   ]
+  },
+  "award_disbursed": {
+   "value": null,
+   "display": "no public record exists",
+   "unit": "USD",
+   "basis": "money actually paid out against the executed lines",
+   "observability": "NOT PUBLICLY OBSERVABLE",
+   "why_unobservable": "The public record shows award and execution, never drawdown. A fully assigned award that has disbursed nothing and one that has disbursed everything look identical.",
+   "status": "agreed",
+   "forbidden": "No page may state a disbursed amount, including zero. cluster-health printed 'signed, none of it spent' on 2026-08-29, which asserts as fact something no source can support.",
+   "pages": [
+    "accountability",
+    "cluster-health"
+   ]
+  },
+  "neosmart_obligation": {
+   "value": 14999983,
+   "display": "$15.0 million",
+   "also_printed_as": [
+    "$14,999,983"
+   ],
+   "unit": "USD",
+   "basis": "NSF NEO-SMART Engine, obligated, appears under education/research NAICS not polymer codes",
+   "observability": "public",
+   "status": "agreed",
+   "pages": [
+    "federal-money"
+   ]
+  },
+  "neosmart_headline": {
+   "value": null,
+   "display": "REMOVED",
+   "unit": "USD",
+   "basis": "the NSF Engines Type 2 ten-year program ceiling, not this award",
+   "observability": "resolved",
+   "status": "agreed",
+   "resolved": "NSF award record 2532460 (api.nsf.gov, retrieved 2026-08-29) gives estimatedTotalAmt 14,999,983 and fundsObligatedAmt 7,499,984. The $160M is a program ceiling contingent on renewals across ten years; no source ties it to this award. timeline now prints the sourced figures and a guard fails if 160 appears in any amount, title or note.",
+   "pages": []
+  },
+  "pic12_jobs_all_residents": {
+   "value": 1735169,
+   "display": "1,735,169",
+   "unit": "jobs",
+   "basis": "every job located in the twelve counties, worker resident in ANY state",
+   "vintage": "LODES 2022",
+   "source": "lodes",
+   "observability": "public",
+   "status": "agreed",
+   "pages": [
+    "laborshed"
+   ]
+  },
+  "pic12_jobs_in_state": {
+   "value": 1702542,
+   "display": "1,702,542",
+   "unit": "jobs",
+   "basis": "the same twelve counties counting OHIO residents only",
+   "differs_from": "pic12_jobs_all_residents",
+   "why": "The peer comparison is built on an in-state basis so every region is measured the same way. Both are correct and both were labelled PIC-12, roughly 32,600 apart, which a reader found and could not reconcile.",
+   "status": "unresolved",
+   "action": "laborshed must name the basis wherever both appear, or the reader meets two totals for one place.",
+   "pages": [
+    "laborshed"
+   ]
+  },
+  "routine_federal_per_year": {
+   "value": 36606066,
+   "display": "$36.6M",
+   "unit": "USD/year",
+   "basis": "average annual ordinary federal contracting to polymer codes in the twelve counties",
+   "status": "agreed",
+   "conflict": "index prints $34.9M a year and the Tech Hub as 'about a year and a half' of it; cluster-health prints $36.6M a year and '1.4 years'. 51.0/34.9 = 1.46 and 51.0/36.6 = 1.39, so both internally consistent and mutually contradictory. federal-money's own text distinguishes an eight-year average from a finished-years-only average, which is probably the source of the split.",
+   "action": "RESOLVED on all three pages: index, cluster-health and federal-money now lead with the closed-year mean. federal-money still prints $34.9M, deliberately, to say why an eight-year mean that includes an unfinished year is the wrong basis for an annual rate.",
+   "pages": [
+    "index",
+    "cluster-health",
+    "federal-money"
+   ],
+   "observability": "public",
+   "resolved": "Computed from federal-money's own shipped data. $34,908,376 averages all EIGHT fiscal years INCLUDING the partial FY2026 at $23.0M; $36,606,066 averages the SEVEN finished years. An annual rate must not include a year that has not finished, so $36.6M (and 1.4 years) is the defensible pair. index's $34.9M and 'about a year and a half' understate the annual rate and overstate the award's reach.",
+   "also_printed_as": [
+    "$36.6 million",
+    "$36,606,066"
+   ]
+  },
+  "polymer_jobs_2025": {
+   "value": null,
+   "display": "DISPUTED",
+   "unit": "jobs",
+   "basis": "polymer employment across the twelve counties, 2025",
+   "status": "agreed",
+   "conflict": "cluster-health's hero says 24,030 counted in 2025; its own opening line says 23,457. 17,770 + 4,259 + 2,001 = 24,030 checks out, so the 23,457 is the one to trace.",
+   "pages": [
+    "cluster-health"
+   ],
+   "observability": "public",
+   "resolved": "Both correct, two bases. 24,030 is every published cell in 2025 (17,770 + 4,259 + 2,001, 24 cells). 23,457 is the BALANCED panel: the 21 counties published in every year since 2015, which is the only set that supports the three-year trend 25,281 to 24,259 to 23,457. The level and the trend need different bases and the page names neither.",
+   "action": "cluster-health must label each. Fix pending."
+  },
+  "polymer_concentration": {
+   "value": null,
+   "display": "DISPUTED",
+   "unit": "multiple of national share",
+   "basis": "plastics and rubber concentration in the twelve counties against the national share",
+   "status": "agreed",
+   "conflict": "2.32x on cluster-health, 2.44x on index, same subject.",
+   "pages": [
+    "index",
+    "cluster-health"
+   ],
+   "observability": "public",
+   "resolved": "NOT A CONFLICT, and this entry was my error. index says 'Rubber products, the industry Akron is named for, run 2.44 times'; cluster-health says 'Plastics and rubber, the industries the region is known for, run 2.32 times'. Rubber products is NAICS 3262 and plastics-and-rubber is 326, its parent. Two industries, two correct figures. The detector paired them on word overlap and I recorded the conflict without checking the labels.",
+   "action": "None on the pages. A registry entry is a claim like any other and this one was wrong."
+  },
+  "polymer_pay_premium": {
+   "value": null,
+   "display": "TWO BASES, BOTH PUBLISHED",
+   "also_printed_as": [
+    "1.21x",
+    "1.24 times"
+   ],
+   "unit": "ratio",
+   "basis": "median county-industry wage ratio against the county all-industry average. wages computes it over all six tracked NAICS codes and publishes 1.2078 as 1.21x. cluster-health computes it over the three-code measurement register (3252 + 3255 + 326) and publishes 1.2369 as 1.24 times. Neither page names its industry basis in the sentence carrying the number.",
+   "vintage": "2025 annual averages",
+   "source": "wages/data/wages.json latest_rows, recomputed both ways 2026-08-30",
+   "observability": "public",
+   "status": "unresolved",
+   "why": "Two pages state the same quantity in the same words and print different numbers, and this registry did not know. Found by a four-family council on wages that converged on the industry basis being wrong; the council's stated DIRECTION was refuted on checking (excluding 325 RAISES the premium rather than lowering it), but the basis question underneath it was real and led here. Neither figure is wrong. What is wrong is that they are presented as one quantity.",
+   "action": "Decide which basis the site states publicly, then make both pages say it in the sentence rather than in a methodology box. The register basis is the defensible one for a page about the cluster; the all-codes basis is the conservative one. This is John's call, not a build fix.",
+   "pages": [
+    "wages",
+    "cluster-health"
+   ]
+  }
+ }
+}

@@ -1,0 +1,16 @@
+Deliberately not linked from the hub, and not for the reason scorecard/ is unlinked. That
+page is withheld because it is an internal board view. This one is withheld because it is
+an unreviewed draft: it has not been through marketing or communications review, the seven
+open questions in README.md are unanswered, and the load-bearing one is whether the hero
+may lead with the $4,149,515 attribution figure rather than the $106.3 million headline.
+The page is built subtraction-led because that is the version that has to be seen before
+anybody can judge it, not because the decision has been made.
+
+Three sections ship a stated default in place of a decision, each marked on the page and
+listed in README.md: the roster is mode 0 (no roster, no names, no counts), the keeping
+rate renders no figure below a floor of six resolved commitments, and no slip record is
+published. Reachable by direct URL for people who are given it; not part of the published
+set, and not added to index/app.js while this file stands.
+
+Delete this file when the questions are answered and the page is cleared to publish. Adding
+the hub card is a separate, deliberate act.

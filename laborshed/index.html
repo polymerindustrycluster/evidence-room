@@ -6,32 +6,26 @@
 <meta name="color-scheme" content="light">
 <title>No County Is A Labor Market</title>
 <link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <header class="mast">
   <div class="wrap">
     <strong>Polymer Industry Cluster</strong>
-    <span>Cluster vitals &middot; the commute matrix</span>
+    <span>Cluster vitals &middot; where the workers live</span>
   </div>
 </header>
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">Where the people who work in each county live, 2022</p>
-    <h1>Most people working in Summit County <em>do not live there</em>.</h1>
-    <p class="stand">Every workforce claim PIC makes is scoped to a place &mdash; a county,
-      a city, a footprint &mdash; and every one assumes the people counted in that place
-      are from it. LEHD publishes the home county of every job in the country, so the
-      assumption is checkable. <b>Not one of the twelve counties reaches 69 percent, and
-      Summit, the cluster's center, is at 48.4.</b> That much is real, and on its own it
-      would be misleading: measured against 397 counties in 73 peer metros, <b>95 percent
-      of them are also below 69 percent</b> and the PIC-12 counties sit slightly above the
-      peer median. A county that does not contain its own workforce is what a metropolitan
-      area IS. The finding is what happens when the unit changes: <b>the county is not a
-      labor market, and the twelve-county footprint very nearly is</b> &mdash; 89.5 percent
-      of the jobs here are held by people who live here, which among regions of comparable
-      size is matched only by Pittsburgh.</p>
+    <p class="eyebrow">Who fills each county&rsquo;s jobs, 2022</p>
+    <h1>No county holds this labor market alone. <em>All twelve do</em>.</h1>
+    <p class="stand">Census payroll records name the home county of every job in
+      America, and they put Summit County&rsquo;s own residents at <b>48.4 percent</b>
+      of its 265,460 jobs. Before that number can mean anything, it has to survive one
+      comparison: the same measure, taken everywhere else.</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data U.S. Census LEHD LODES, 2019 and 2022 &middot; August&nbsp;2026</p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -39,33 +33,45 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The finding</p>
-    <h2>Every county against every county</h2>
-    <p class="lede">Each row is a county people work in; each column is a county they come
-      home to. A self-contained labor market would be a bright diagonal and nothing else
-      &mdash; that is the benchmark every cell is read against. <b>The diagonal is the
-      finding, and it is weak.</b> The last column is the share held by people living
-      outside the footprint entirely, so each row sums to one whole county's jobs.</p>
+    <h2>No county fills even seven of ten jobs with its own residents</h2>
+    <p class="lede" id="matrixlede"></p>
+    <div class="csel" id="csel" role="group" aria-label="Highlight one county"></div>
+    <p class="verdict" id="verdict"></p>
+    <p class="fig-title" id="matrixfigtitle"></p>
+    <p class="fig-sub" id="matrixsub"></p>
     <div class="chart"><svg id="matrix" role="img" aria-labelledby="matrix-t">
-      <title id="matrix-t">Twelve by twelve matrix of jobs by work county and home county,
-        with the self-supply diagonal marked.</title></svg></div>
-    <div id="matrixtable"></div>
+      <title id="matrix-t">Twelve by twelve matrix of jobs by work county and home
+        county. The share each county fills from home is weak everywhere: no county
+        reaches 70 percent, and four are under half.</title></svg></div>
     <p class="src" id="matrixsrc"></p>
+    <div id="matrixtable"></div>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The diagonal alone</p>
-    <h2 id="diagtitle">How much of each county's workforce is its own</h2>
-    <p class="lede">The diagonal of the matrix above, pulled out and ranked. The line at 50
-      percent is not a standard &mdash; it is the point at which a county stops being a
-      majority-resident workplace, which is the assumption most single-county claims rest
-      on without saying so.</p>
+    <h2 id="diagtitle">How much of each county&rsquo;s workforce is its own</h2>
+    <p class="lede">The diagonal of the matrix, pulled out and ranked. The line at half
+      is not an official standard. It is the point where a county stops filling most of
+      its own jobs with people who live there, the quiet assumption behind most
+      single-county workforce claims.</p>
+    <p class="fig-title" id="diagfigtitle"></p>
+    <p class="fig-sub">Each bar is one county&rsquo;s 2022 jobs. The longer the bar, the
+      more of that work goes to people who live in the county. Orange: under half.</p>
     <div class="chart"><svg id="diag" role="img" aria-labelledby="diag-t">
-      <title id="diag-t">Share of each county's jobs held by residents of that county.</title>
+      <title id="diag-t">Ranked bars of each county&rsquo;s jobs held by its own
+        residents. Four counties, including Summit, fall below half.</title>
     </svg></div>
+    <p class="src" id="diagsrc"></p>
     <div id="diagtable"></div>
     <div class="note" id="diagnote"></div>
+  </div>
+</section>
+
+<section class="band tint pull">
+  <div class="wrap">
+    <div class="pull-q" id="pullimport"></div>
   </div>
 </section>
 
@@ -73,37 +79,62 @@
   <div class="wrap">
     <p class="takeaway">The part that is not a commute</p>
     <h2>The imported workforce is two different things, and one of them never traveled</h2>
-    <p class="lede">Twelve percent of jobs here are held by people living outside the
-      footprint. Reported as one number it sounds like a commute shed. It is not: roughly
-      half comes from metros two hours away, where nobody drives daily. A 2019 pull tests
-      whether that is a pandemic effect &mdash; and it is not that either.</p>
+    <p class="lede">Reported as one number, that share sounds like a ring of people
+      driving in every morning. Of the part that can be grouped at all, roughly half comes
+      from metros two hours away, where nobody drives daily. Against the whole imported
+      share that is 29 percent, because the largest single piece of it lives in counties
+      too scattered to group. A 2019 pull tests whether remote work created the pattern.
+      It did not.</p>
+    <p class="fig-title" id="extfigtitle"></p>
+    <p class="fig-sub" id="extsub"></p>
     <div class="chart"><svg id="ext" role="img" aria-labelledby="ext-t">
-      <title id="ext-t">External sources of jobs, adjacent counties against distant metros,
-        2019 and 2022.</title></svg></div>
+      <title id="ext-t">External sources of jobs: adjacent counties stayed flat while
+        distant metros grew 13 percent from 2019 to 2022.</title></svg></div>
+    <p class="src" id="extsrc"></p>
     <div id="exttable"></div>
-    <div class="note" id="extnote"></div>
+    <p class="reading" id="extreading"></p>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">One paycheck</p>
+    <h2>About 27,000 of these jobs go home to Columbus</h2>
+    <p class="lede">Franklin County alone accounts for 26,960 of the jobs worked inside
+      the twelve counties, up from 23,506 in 2019. Picture one: a quality engineer whose
+      paycheck says Barberton and whose mortgage says Columbus, on site for launch
+      weeks and remote the rest. LODES counts her job in Summit County and her home two
+      hours south, and records no trip between them. She is illustrative, a composite
+      consistent with the data rather than a person in it; the counts are real.</p>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
-    <p class="takeaway">The reciprocal</p>
+    <p class="takeaway">The other direction</p>
     <h2>Where the people who live here work is a different question</h2>
-    <p class="lede">Every figure above is workplace-side: who fills the jobs that sit in a
-      county. It says nothing about where that county's own residents work, which is a
-      different population with a different denominator. Both directions are drawn here
-      because publishing one invites a reader to assume the other &mdash; and they do not
-      move together.</p>
+    <p class="lede">Everything above is workplace-side: who fills the jobs that sit in
+      a county. Where that county&rsquo;s own residents work is a different group of
+      people, counted against a different total. Both directions are drawn here because
+      publishing one invites the reader to assume the other, and the two do not move
+      together.</p>
+    <p class="fig-title" id="recipfigtitle"></p>
+    <p class="fig-sub">Each county gets two dots. The filled dot: of the jobs sitting in
+      the county, how many go to its own residents. The open dot: of the jobs its
+      residents hold, how many sit in the county. 2022.</p>
     <div class="chart"><svg id="recip" role="img" aria-labelledby="recip-t">
-      <title id="recip-t">For each county, the share of its jobs held by its own residents
-        against the share of its residents' jobs that sit in their own county.</title>
+      <title id="recip-t">Dumbbell chart. In nine counties the jobs are more local than
+        the residents; three run the other way, Cuyahoga widely, Summit by three points
+        and Mahoning by a tenth of one.</title>
     </svg></div>
     <div class="legend">
-      <span><i style="background:#008BA8"></i> Jobs here held by residents here</span>
-      <span><i style="background:#C85F0C"></i> Residents' jobs that sit in their own county</span>
+      <span><i class="dot" style="background:#008BA8"></i> Filled: jobs here held by
+        residents here</span>
+      <span><i class="ring"></i> Open: residents&rsquo; jobs that sit in their own
+        county</span>
     </div>
-    <div id="reciptable"></div>
     <p class="src" id="recipsrc"></p>
+    <div id="reciptable"></div>
   </div>
 </section>
 
@@ -111,41 +142,82 @@
   <div class="wrap">
     <p class="takeaway">The benchmark</p>
     <h2>Ninety-five percent of metropolitan counties look like this</h2>
-    <p class="lede">A county whose jobs are mostly held by outsiders is not a Northeast Ohio
-      condition. It is close to the definition of a metropolitan area, which the federal
-      government delineates using commuting flow. Measured the same way, 397 counties in 73
-      peer metros settle whether the pattern above is about this region or about the
-      country.</p>
+    <p class="lede">A county whose jobs are mostly held by outsiders is close to the
+      definition of a metropolitan area, which the federal government draws from
+      commuting flow. So the fair test is other metros. Measured identically, 397
+      counties in 73 peer metros settle whether the pattern above is about this region
+      or about the country.</p>
+    <p class="fig-title">The twelve counties sit inside the national pack, a little above
+      its middle</p>
+    <p class="fig-sub" id="benchsub"></p>
     <div class="chart"><svg id="bench" role="img" aria-labelledby="bench-t">
-      <title id="bench-t">Workplace containment for 397 counties in peer metropolitan areas,
-        with the twelve PIC counties marked.</title></svg></div>
-    <div id="benchtable"></div>
+      <title id="bench-t">Strip plot of how much of its own work each of 397 peer
+        metropolitan counties gives to its own residents, with the twelve PIC counties
+        marked; the middle PIC county sits above the middle peer county.</title></svg></div>
     <p class="src" id="benchsrc"></p>
+    <div id="benchtable"></div>
+    <p class="reading" id="benchreading"></p>
+  </div>
+</section>
+
+<section class="band tint pull">
+  <div class="wrap">
+    <div class="pull-q" id="pullpeers"></div>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
     <p class="takeaway">What is actually distinctive</p>
-    <h2>The county is not a labor market. The twelve-county region very nearly is.</h2>
-    <p class="lede">Raise the unit from the county to the footprint and the picture inverts.
-      Among regions of comparable size, only Pittsburgh holds as much of its own workforce
-      inside its own borders. Bigger regions contain more by construction, so this is drawn
-      against region size rather than as a ranking.</p>
+    <h2>The twelve-county region very nearly is a labor market</h2>
+    <p class="lede">Raise the unit from the county to the twelve counties together and the
+      picture inverts. Among regions of comparable size, only Pittsburgh holds more of its
+      own workforce inside its own borders, and it does that on eight counties rather than
+      twelve. A region with more counties keeps more work inside itself for arithmetic
+      reasons alone, so the bars are ordered by how many counties each region has.</p>
+    <p class="fig-title" id="regionsfigtitle"></p>
+    <p class="fig-sub">Each bar is one region. The longer the bar, the more of the work
+      inside it goes to people who also live inside it. Ordered by county count, largest
+      first; every single-state peer metro of six or more counties. Every bar counts only
+      the jobs held by residents of the region&rsquo;s own state, which is a narrower
+      basis than the charts above use and gives the twelve counties a smaller job
+      total.</p>
     <div class="chart"><svg id="regions" role="img" aria-labelledby="regions-t">
-      <title id="regions-t">Share of each region's jobs held by residents of that region,
-        for every peer region of six or more counties.</title></svg></div>
-    <div id="regionstable"></div>
+      <title id="regions-t">Ranked bars of how much of each region&rsquo;s work goes to
+        its own residents, counting the jobs held by residents of the region&rsquo;s own
+        state. PIC-12 keeps 89.5 percent inside its borders; only Pittsburgh
+        is higher, at 89.6 percent on eight counties.</title></svg></div>
     <p class="src" id="regionssrc"></p>
+    <div id="regionstable"></div>
+    <p class="reading" id="regionsreading"></p>
   </div>
 </section>
 
 <section class="closer">
   <div class="wrap">
-    <p>The footprint is not an administrative convenience. It is the smallest honest unit.</p>
+    <p>Twelve counties hold this labor market nearly whole. No one of them comes close alone.</p>
     <p class="sub" id="closersub"></p>
   </div>
 </section>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-k">Read next</p>
+    <ul class="foot-links">
+      <li><a href="../churn/">The churn engine</a>
+        <span>How many of these jobs start and end every quarter.</span></li>
+      <li><a href="../occupations/">Who does the work</a>
+        <span>What the industry staffs, and what it pays for it.</span></li>
+      <li><a href="../index/">The Evidence Room</a>
+        <span>Every page, each with its own sources and its own tests.</span></li>
+    </ul>
+    <p class="foot-cta">Think a number here is wrong? Name the sentence and what it fails
+      against: <b>jswanson@greaterakronchamber.org</b>.</p>
+    <p class="foot-id">Polymer Industry Cluster &middot; Greater Akron Chamber. Every
+      figure is rebuilt from free public data by the scripts in
+      <a href="https://github.com/polymerindustrycluster/evidence-room">the repository</a>.</p>
+  </div>
+</footer>
 
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>

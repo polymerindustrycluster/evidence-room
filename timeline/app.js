@@ -21,9 +21,9 @@ function loadData(file) {
    Structure
      1  data + scales
      2  layout        lane bands, collision packing, label placement
-     3  render        svg (wide) / cards (narrow)
+     3  render        svg (wide) / small multiples (narrow); 3a cadence, 3b prologue
      4  table + csv
-     5  interaction   filters, hover, panel, hash routing
+     5  interaction   filters, hover, panel
    ========================================================================= */
 
 (() => {
@@ -31,27 +31,45 @@ function loadData(file) {
 
   // Below this the lanes stop being readable as lanes and a card list is honest.
   const CARD_BREAKPOINT = 900;
-  // The window. 99 of 104 public events fall inside it; the five older ones are
-  // summarized in a band above rather than compressing the axis to nothing.
+  // The window. Most public events fall inside it; the older ones feed the cadence
+  // chart's "before" bars instead of compressing the axis to nothing.
   const WIN_FROM = new Date('2023-01-01');
   const WIN_TO = new Date('2030-01-01');
   const NOW = new Date('2026-08-13');
+  const NOW_ISO = '2026-08-13';
+  const NOW_LBL = '13 Aug 2026';
+  const DESIG_ISO = '2023-10-23';
+  const DESIG_YEAR = +DESIG_ISO.slice(0, 4);
+  const DESIG_LBL = '23 October 2023';
 
+  /* Page-local categorical palette, declared with a legend (five lanes is past the
+     three-hue story limit). Rebuilt 2026-08-28: Designations and Startups used to be two
+     teals 0.9 L* apart, which is one color at dot and chip size, and the Designations
+     teal was the same hex as the cadence chart's "since designation" story bar. This set
+     drops teal from four of the five lanes, spreads them over 24.7-48.5 L* (min pairwise
+     gap 5.4) and keeps every one at or above 4.5:1 on white, because these hues are read
+     as text in the lane names, the chips and the table. */
   const LANE_COLOR = {
-    desig: '#12798B', rd: '#8E3B62', work: '#9A6A08', startup: '#1A8A9E', infra: '#5E7A10',
+    desig: '#06414B', rd: '#78304F', work: '#9A6A08', startup: '#B0421A', infra: '#435F0B',
   };
+  // Horizon is a FILTER facet only (the chips below the H2). It no longer sizes the
+  // dots: three barely distinguishable radii read as importance, which the data never
+  // meant. One radius for every event; status is the fill, lane is the color.
   const HZ = {
-    quick: { r: 5.5, label: 'Under a year' },
-    mid: { r: 7, label: 'One to three years' },
-    long: { r: 8.5, label: 'Three years or more' },
+    quick: { label: 'Under a year' },
+    mid: { label: 'One to three years' },
+    long: { label: 'Three years or more' },
   };
   const HZ_ORDER = ['quick', 'mid', 'long'];
+  const DOT_R = 7;
 
   let DATA = null, IN = [], PRE = [];
   let HER = null;                       // heritage.json — the prologue's data
-  const HCOL = { heritage: '#585955', discoveries: '#8E3B62' };
+  // 12.3 L* apart, so the two heritage rows separate in grayscale as well as by row.
+  const HCOL = { heritage: '#3B3C38', discoveries: '#8E3B62' };
   const offLane = new Set(), offHz = new Set();
   let mode = null, lastW = 0, tip = null;
+  let tableExpanded = false;
 
   const viz = document.getElementById('viz');
   const panel = document.getElementById('panel');
@@ -74,6 +92,22 @@ function loadData(file) {
     }
     (kids || []).forEach((c) => n.appendChild(c));
     return n;
+  };
+  /* A paper plate behind SVG text that must sit over other ink. data-pv-plated marks
+     the text as deliberately plated so the collide gate does not report it. */
+  const plated = (g, s, x, y, opts) => {
+    const o = opts || {};
+    const fs = o.cw || 6.6;                 // rough char width for the plate
+    const wpx = s.length * fs + 8;
+    const anchor = o.anchor || 'start';
+    const px = anchor === 'end' ? x - wpx + 4 : anchor === 'middle' ? x - wpx / 2 : x - 4;
+    g.appendChild(el('rect', { x: px, y: y - 11.5, width: wpx, height: 15,
+      fill: '#fff', opacity: .92, rx: 2 }));
+    const t = el('text', { class: o.class || 'ann', x, y,
+      'text-anchor': anchor, 'data-pv-plated': '1' }, s);
+    if (o.fill) t.setAttribute('fill', o.fill);
+    g.appendChild(t);
+    return t;
   };
 
   /* ------------------------------------------------------------- 1 data */
@@ -119,11 +153,23 @@ function loadData(file) {
     if (want === mode && Math.abs(w - lastW) < 2) return;
     mode = want; lastW = w;
     viz.textContent = '';
-    (want === 'cards' ? renderCards : renderDiagram)(w);
+    (want === 'cards' ? renderPanels : renderDiagram)(w);
   }
 
+  /* The three page-wide moments, drawn as labeled vertical rules (the chart-craft
+     "labeled event line" idiom). Label STRINGS are editorial; the dates come from
+     the events themselves and are asserted in claims.json. */
+  const RULES = [
+    // "1 of 31" is the inventory's phrasing and reads as a rank; on the chart it is spelled
+    // out as membership, which is what it means.
+    { date: '2023-10-23', label: '23 Oct 2023 · EDA designates the Tech Hub, one of 31 nationwide', tier: 0 },
+    { date: '2024-07-02', label: '2 Jul 2024 · the $51M implementation grant', tier: 1 },
+    { date: '2024-12-01', label: 'Dec 2024 · five company R&D awards begin', tier: 2 },
+  ];
+
   function renderDiagram(W) {
-    const L = { left: 208, right: 26, top: 46, bot: 42, laneGap: 10, rowH: 30, padY: 16 };
+    const L = { left: 208, right: 26, top: 112, bot: 96, laneGap: 10, rowH: 30, padY: 16 };
+    const TIER_Y = [16, 34, 52];
     const plotW = W - L.left - L.right;
     const span = WIN_TO - WIN_FROM;
     const x = (d) => L.left + ((Math.min(Math.max(d, WIN_FROM), WIN_TO) - WIN_FROM) / span) * plotW;
@@ -137,16 +183,17 @@ function loadData(file) {
 
     let y = L.top;
     lanes.forEach((ln) => { ln.y = y; ln.h = ln.nRows * L.rowH + L.padY * 2; y += ln.h + L.laneGap; });
+    const laneBot = y - L.laneGap;
     const H = y + L.bot;
 
     const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
       'aria-label': ariaSummary() });
 
-    // year gridlines + labels
+    // year gridlines + labels (labels sit just above the lanes, under the rule labels)
     for (let yr = 2023; yr <= 2030; yr++) {
       const gx = x(new Date(`${yr}-01-01`));
-      svg.appendChild(el('line', { class: 'axis-rule', x1: gx, x2: gx, y1: L.top - 14, y2: y - L.laneGap }));
-      if (yr < 2030) svg.appendChild(el('text', { class: 'axis-y', x: gx + 7, y: L.top - 20 }, yr));
+      svg.appendChild(el('line', { class: 'axis-rule', x1: gx, x2: gx, y1: L.top - 12, y2: laneBot }));
+      if (yr < 2030) svg.appendChild(el('text', { class: 'axis-y', x: gx + 7, y: L.top - 18 }, yr));
     }
 
     // lane bands + names
@@ -160,23 +207,35 @@ function loadData(file) {
         shown === ln.all ? `${shown} events` : `${shown} of ${ln.all} events`));
     });
 
-    // the "as of" rule — bars/dots to its right are scheduled, not delivered
+    // a light tint over everything right of Today: the promise zone
     const nx = x(NOW);
-    svg.appendChild(el('line', { class: 'now-rule', x1: nx, x2: nx, y1: L.top - 14, y2: y - L.laneGap }));
-    svg.appendChild(el('text', { class: 'now-lab', x: nx + 8, y: y - L.laneGap + 20 }, 'Today'));
+    svg.appendChild(el('rect', { class: 'fwd-zone', x: nx, y: L.top - 12,
+      width: L.left + plotW - nx, height: laneBot - L.top + 12 }));
+
+    // the three labeled event rules, behind the dots
+    RULES.forEach((rl) => {
+      const rx = x(new Date(rl.date));
+      const ty = TIER_Y[rl.tier];
+      svg.appendChild(el('line', { class: 'ev-rule', x1: rx, x2: rx, y1: ty + 5, y2: laneBot }));
+      svg.appendChild(el('text', { class: 'rule-lab', x: rx + 6, y: ty }, rl.label));
+    });
+
+    // the "as of" rule — dots to its right are scheduled, not delivered
+    svg.appendChild(el('line', { class: 'now-rule', x1: nx, x2: nx, y1: L.top - 12, y2: laneBot }));
 
     // events
+    const pos = {};
     lanes.forEach((ln) => {
       const g = el('g', {});
       ln.evs.forEach((e) => {
         const cy = ln.y + L.padY + e._row * L.rowH + L.rowH / 2;
-        const r = (HZ[e.horizon] || HZ.mid).r;
+        pos[e.id] = { x: e._cx, y: cy };
         const node = el('g', { class: 'ev' + (e.delivered ? '' : ' fwd'), 'data-id': e.id,
           style: `--c:${LANE_COLOR[ln.key]}`,
           tabindex: '0', role: 'button',
           'aria-label': `${showDate(e)}. ${e.title}.` + (e.delivered ? '' : ' Scheduled, not delivered.') });
-        node.appendChild(el('circle', { class: 'hit', cx: e._cx, cy, r: Math.max(13, r + 7) }));
-        node.appendChild(el('circle', { class: 'dot', cx: e._cx, cy, r, fill: LANE_COLOR[ln.key],
+        node.appendChild(el('circle', { class: 'hit', cx: e._cx, cy, r: DOT_R + 7 }));
+        node.appendChild(el('circle', { class: 'dot', cx: e._cx, cy, r: DOT_R, fill: LANE_COLOR[ln.key],
           stroke: e.delivered ? '#fff' : LANE_COLOR[ln.key] }));
         // A white ring on a pale lane band still needs an anchor at small radii, or it
         // reads as a hole in the chart rather than a mark on it.
@@ -187,23 +246,160 @@ function loadData(file) {
       svg.appendChild(g);
     });
 
+    /* Leader-line labels for two single-dot moments (drawn last, never occluded).
+       Skipped when a filter hides the dot — a label with no mark is a lie. Both strings
+       are BUILT from the event they point at, so a label cannot outlive its row's wording
+       or date: the NSF label used to carry a $160M figure that existed nowhere but inside
+       that title, and the pilot label read "Nov 2027" while the record said Oct-Dec 2027. */
+    const ann = el('g', {});
+    const lab = (id) => IN.find((x) => x.id === id);
+    const nsfE = lab('E205'), nsf = pos['E205'];
+    if (nsf && nsfE) {
+      ann.appendChild(el('line', { class: 'leader', x1: nsf.x, x2: nsf.x,
+        y1: 78, y2: nsf.y - DOT_R - 3 }));
+      /* The amount is printed only when the row carries one as a FIELD. A figure that
+         lives in prose has nothing to check it against, which is how this label came to
+         read $160M for an award whose own record says $14,999,983. */
+      plated(ann, `${showDate(nsfE)} · NSF Engines award to NEO-SMART` +
+        (nsfE.amountShort ? `, ${nsfE.amountShort}` : ''), nsf.x - 6, 72,
+        { anchor: 'end', class: 'ann' });
+    }
+    const pfE = lab('F29'), pf = pos['F29'];
+    if (pf && pfE) {
+      // the leader slopes on purpose: a flat hairline would read as an axis
+      ann.appendChild(el('line', { class: 'leader', x1: pf.x + DOT_R + 2, x2: pf.x + 16,
+        y1: pf.y - 5, y2: pf.y - 13 }));
+      plated(ann, `pilot facility ready · ${showDate(pfE)}`, pf.x + 20, pf.y - 12,
+        { class: 'ann' });
+    }
+    svg.appendChild(ann);
+
+    /* The on-chart takeaway, in the bottom margin right of Today. Counts are computed
+       from the visible events so the sentence stays true under filters. */
+    svg.appendChild(el('text', { class: 'now-lab', x: nx + 10, y: laneBot + 22 },
+      `Today · ${NOW_LBL}`));
+    promiseLines().forEach((s, i) => {
+      svg.appendChild(el('text', { class: 'ann', x: nx + 10, y: laneBot + 42 + i * 17 }, s));
+    });
+
     viz.appendChild(svg);
     wireEvents(svg);
     buildLegend();
   }
 
-  function renderCards(W) {
-    const list = h('div', { class: 'cards' });
-    IN.filter(visible).slice().reverse().forEach((e) => {
-      const c = h('div', { class: 'card', style: `border-left-color:${LANE_COLOR[e.laneKey]}` }, [
-        h('div', { class: 'c-d', text: showDate(e) }),
-        h('div', { class: 'c-t', text: e.title }),
-        h('div', { class: 'c-o', text: `${e.lane} · ${e.org}` }),
-      ]);
-      if (!e.delivered) c.appendChild(h('span', { class: 'c-f', text: 'Scheduled, not delivered' }));
-      list.appendChild(c);
+  /* The same four lines under both layouts, computed from the visible events so a filter
+     can never leave the sentence describing dots that are hidden. */
+  function promiseLines() {
+    const sched = IN.filter((e) => visible(e) && !e.delivered);
+    const near = sched.filter((e) => e.date < '2027-01-01').length;
+    const far = sched.filter((e) => e.date >= '2027-01-01');
+    const ends = far.filter((e) => /end|completion/.test(e.title.toLowerCase())).length;
+    const pilot = far.some((e) => e.id === 'F29');
+    return ['Everything right of Today is a promise:',
+      `${sched.length} scheduled dates, ${near} due by end-2026;`,
+      `the other ${far.length}, 2027 to 2029, are ${pilot ? 'the pilot' : 'award and'}`,
+      pilot ? `plant and ${ends} award clocks running out.` : 'project clocks running out.'];
+  }
+
+  const M_RULES = [
+    { date: '2023-10-23', label: 'Oct 2023 · designation' },
+    { date: '2024-07-02', label: 'Jul 2024 · $51M grant' },
+    { date: '2024-12-01', label: 'Dec 2024 · R&D awards begin' },
+  ];
+
+  /* MOBILE, chart 3. Until 2026-08-28 a phone got 87 stacked cards, about 14,000px, under a
+     subtitle promising hollow dots, a Today rule and vertical event rules that were not on
+     the screen. The swimlane is re-laid-out as five small multiples instead: the lane names
+     become panel headings so the plot keeps the full width, and the shared axis, the Today
+     rule, the tinted promise zone and the three labeled event rules run through all five.
+     Every one of the 87 dots is still drawn, still solid-or-hollow, still tappable. */
+  function renderPanels(W) {
+    // TOP has to clear three tiers of rule label AND the year row under them; at 78 the
+    // "Dec 2024 · R&D awards begin" plate sat on the year labels and hid four of them.
+    const RIGHT = 8, TOP = 96, ROW = 20, HEADH = 24, GAP = 16, BOT = 104;
+    const TIER_Y = [14, 32, 50];
+    /* THE SCALE IS INSET BY THE WIDEST MARK'S OWN RADIUS. A dot is drawn AROUND its x, so
+       a time scale that starts at x=0 puts half of every mark at the window's opening
+       date outside the box: the first event's 13-unit tap target sat 10.8 units left of
+       the viewBox and its 6-unit dot 3.8. The wide layout never showed this because it
+       has a lane-name column; the panel layout moved the names above the plot to win the
+       full width and took the margin away with them. At 1440 overflow:visible lets that
+       ink land in the page gutter, but this layout only runs below ~900px, where the
+       shared sheet's overflow-x:auto box CLIPS it — and it is the TAP TARGET, so what was
+       lost was not decoration. Written off the radii rather than typed, so the inset
+       cannot drift from the marks it exists to hold. */
+    const HIT_R = 13, DOT_R = 6;
+    const LEFT = HIT_R;
+    const plotW = W - RIGHT - LEFT, plotR = LEFT + plotW;
+    const span = WIN_TO - WIN_FROM;
+    const x = (d) => LEFT + ((Math.min(Math.max(d, WIN_FROM), WIN_TO) - WIN_FROM) / span) * plotW;
+
+    const lanes = DATA.lanes.map((ln) => {
+      const evs = IN.filter((e) => e.laneKey === ln.key && visible(e))
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+      return { ...ln, evs, nRows: pack(evs, x, 15), all: IN.filter((e) => e.laneKey === ln.key).length };
     });
-    viz.appendChild(list);
+    let y = TOP;
+    lanes.forEach((ln) => { ln.y = y; ln.h = HEADH + ln.nRows * ROW + 8; y += ln.h + GAP; });
+    const laneBot = y - GAP;
+    const H = laneBot + BOT;
+
+    const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': ariaSummary() });
+
+    /* Paint order matters and cost a redraw to find: the panel grounds go down FIRST, so
+       the shared gridlines, the promise tint, the three event rules and the Today rule all
+       run visibly ACROSS the five panels instead of disappearing behind them. */
+    lanes.forEach((ln) => {
+      svg.appendChild(el('rect', { class: 'pnl-band', x: 0, y: ln.y + HEADH - 6,
+        width: W, height: ln.h - HEADH + 6, rx: 6 }));
+    });
+
+    for (let yr = 2023; yr <= 2030; yr++) {
+      const gx = x(new Date(`${yr}-01-01`));
+      svg.appendChild(el('line', { class: 'axis-rule', x1: gx, x2: gx, y1: TOP - 20, y2: laneBot }));
+      if (yr < 2030) svg.appendChild(el('text', { class: 'm-axis', x: gx + 4, y: TOP - 26 }, yr));
+    }
+
+    const nx = x(NOW);
+    svg.appendChild(el('rect', { class: 'fwd-zone', x: nx, y: TOP - 20,
+      width: plotR - nx, height: laneBot - TOP + 20 }));
+
+    M_RULES.forEach((rl, i) => {
+      const rx = x(new Date(rl.date));
+      svg.appendChild(el('line', { class: 'm-rule', x1: rx, x2: rx, y1: TIER_Y[i] + 5, y2: laneBot }));
+      plated(svg, rl.label, rx + 5, TIER_Y[i], { class: 'm-rule-lab', cw: 6.2 });
+    });
+    svg.appendChild(el('line', { class: 'now-rule', x1: nx, x2: nx, y1: TOP - 20, y2: laneBot }));
+
+    lanes.forEach((ln) => {
+      svg.appendChild(el('text', { class: 'pnl-name', x: 0, y: ln.y + 12,
+        fill: LANE_COLOR[ln.key] }, ln.name));
+      svg.appendChild(el('text', { class: 'pnl-count', x: plotR, y: ln.y + 12,
+        'text-anchor': 'end' },
+        ln.evs.length === ln.all ? `${ln.evs.length}` : `${ln.evs.length} of ${ln.all}`));
+      const g = el('g', {});
+      ln.evs.forEach((e) => {
+        const cy = ln.y + HEADH + 6 + e._row * ROW;
+        const node = el('g', { class: 'ev' + (e.delivered ? '' : ' fwd'), 'data-id': e.id,
+          style: `--c:${LANE_COLOR[ln.key]}`, tabindex: '0', role: 'button',
+          'aria-label': `${showDate(e)}. ${e.title}.` + (e.delivered ? '' : ' Scheduled, not delivered.') });
+        node.appendChild(el('circle', { class: 'hit', cx: e._cx, cy, r: HIT_R }));
+        node.appendChild(el('circle', { class: 'dot', cx: e._cx, cy, r: DOT_R, fill: LANE_COLOR[ln.key],
+          stroke: e.delivered ? '#fff' : LANE_COLOR[ln.key] }));
+        if (!e.delivered) node.appendChild(el('circle', { class: 'pip', cx: e._cx, cy, r: 1.5,
+          fill: LANE_COLOR[ln.key] }));
+        g.appendChild(node);
+      });
+      svg.appendChild(g);
+    });
+
+    svg.appendChild(el('text', { class: 'now-lab', x: 0, y: laneBot + 22 }, `Today · ${NOW_LBL}`));
+    promiseLines().forEach((s, i) => {
+      svg.appendChild(el('text', { class: 'ann', x: 0, y: laneBot + 42 + i * 16 }, s));
+    });
+
+    viz.appendChild(svg);
+    wireEvents(svg);
     buildLegend();
   }
 
@@ -211,9 +407,111 @@ function loadData(file) {
     const n = IN.filter(visible).length;
     const fwd = IN.filter((e) => visible(e) && !e.delivered).length;
     return `Timeline of ${n} public events from 2023 to 2029, in five workstream lanes: ` +
-      DATA.lanes.map((l) => l.name).join(', ') + '. Each dot is one dated event; dot size shows how ' +
-      `long that kind of work takes to show a result. ${fwd} events are hollow because they are ` +
-      'scheduled, not delivered. A dashed rule marks 13 August 2026. The same record is in the table below.';
+      DATA.lanes.map((l) => l.name).join(', ') + '. Each dot is one dated event; all dots are ' +
+      'the same size, and a dot sits lower within its lane only to clear an earlier dot, so ' +
+      `height is spacing and not rank. ${fwd} events are hollow because they are scheduled, not delivered. ` +
+      'A dashed rule marks 13 August 2026, and labeled vertical rules mark the October 2023 ' +
+      'designation, the July 2024 implementation grant and the December 2024 R&D award starts. ' +
+      'The same record is in the table below.';
+  }
+
+  /* ---------------------------------------------- 3a the cadence comparison */
+  // Delivered public events per year, before and after the designation, from the
+  // same record that feeds the calendar. CTX rows (century-scale context) excluded;
+  // the caveat beside the chart carries the record-keeping asymmetry.
+  const cadBox = document.getElementById('cadence');
+  let cadW = 0;
+
+  function cadenceData() {
+    const rec = PRE.filter((e) => e.tier !== 'CTX' && e.delivered)
+      .concat(IN.filter((e) => e.delivered));
+    const years = [2021, 2022, 2023, 2024, 2025, 2026];
+    const rows = years.map((yr) => {
+      const inYr = rec.filter((e) => +e.date.slice(0, 4) === yr);
+      return { yr,
+        before: inYr.filter((e) => e.date < DESIG_ISO).length,
+        since: inYr.filter((e) => e.date >= DESIG_ISO).length };
+    });
+    const before = rows.reduce((s, r) => s + r.before, 0);
+    const since = rows.reduce((s, r) => s + r.since, 0);
+    return { rows, before, since };
+  }
+
+  function renderCadence() {
+    if (!cadBox || !DATA) return;
+    const W = cadBox.clientWidth;
+    if (!W || Math.abs(W - cadW) < 2) return;
+    cadW = W;
+    cadBox.textContent = '';
+    const { rows, before, since } = cadenceData();
+    const narrow = W < 560;
+    const m = { t: 40, r: 12, b: narrow ? 56 : 44, l: 34 };
+    const Hpx = narrow ? 230 : 260;
+    const w = W - m.l - m.r, hp = Hpx - m.t - m.b;
+    const yMax = Math.max(...rows.map((r) => r.before + r.since)) + 4;
+    const ys = (v) => m.t + hp - (v / yMax) * hp;
+    const bw = Math.min(72, (w / rows.length) * 0.58);
+    const cx = (i) => m.l + (w / rows.length) * (i + 0.5);
+
+    const svg = el('svg', { viewBox: `0 0 ${W} ${Hpx}`, role: 'img',
+      'aria-label': `Bar chart of delivered public events per year, 2021 to 2026: ` +
+        rows.map((r) => `${r.yr}: ${r.before + r.since}`).join(', ') +
+        `. ${before} events fall before the 23 October 2023 designation and ${since} after; ` +
+        '2026 is counted through 13 August.' });
+
+    // y gridlines
+    [0, 10, 20, 30].forEach((v) => {
+      if (v > yMax) return;
+      svg.appendChild(el('line', { class: 'axis-rule', x1: m.l, x2: W - m.r,
+        y1: ys(v), y2: ys(v) }));
+      svg.appendChild(el('text', { class: 'axis-y cad-tick', x: m.l - 8, y: ys(v) + 4,
+        'text-anchor': 'end' }, String(v)));
+    });
+
+    rows.forEach((r, i) => {
+      const xc = cx(i);
+      let top = ys(0);
+      if (r.before) {
+        const y1 = ys(r.before);
+        svg.appendChild(el('rect', { class: 'cad-pre', x: xc - bw / 2, y: y1,
+          width: bw, height: top - y1 }));
+        top = y1 - 2;
+      }
+      if (r.since) {
+        const y1 = top - (ys(0) - ys(r.since));
+        // 2026 is eight and a half months, not twelve. A partial period drawn at full
+        // saturation reads as a complete one; lighten it and tag it under the axis.
+        svg.appendChild(el('rect', { class: 'cad-post' + (r.yr === 2026 ? ' partial' : ''),
+          x: xc - bw / 2, y: y1, width: bw, height: ys(0) - ys(r.since) }));
+        top = y1;
+      }
+      svg.appendChild(el('text', { class: 'cad-val', x: xc, y: top - 6,
+        'text-anchor': 'middle' }, String(r.before + r.since)));
+      svg.appendChild(el('text', { class: 'axis-y', x: xc, y: ys(0) + 18,
+        'text-anchor': 'middle' }, String(r.yr)));
+      if (r.yr === 2023) svg.appendChild(el('text', { class: 'cad-note', x: xc,
+        y: ys(0) + (narrow ? 34 : 33), 'text-anchor': 'middle' }, 'designation · 23 Oct'));
+      if (r.yr === 2026) svg.appendChild(el('text', { class: 'cad-note', x: xc,
+        y: ys(0) + (narrow ? 34 : 33), 'text-anchor': 'middle' }, 'to 13 Aug'));
+    });
+
+    // the two-phase annotation, stacked over the short early bars
+    svg.appendChild(el('text', { class: 'ann cad-ann-pre', x: m.l + 4, y: m.t + 8 },
+      `before · ${before} events in 34 months`));
+    svg.appendChild(el('text', { class: 'ann cad-ann-post', x: m.l + 4, y: m.t + 28 },
+      `since · ${since} delivered in 34 months`));
+
+    cadBox.appendChild(svg);
+
+    const pl = document.getElementById('pre-list');
+    if (pl && !pl.textContent) {
+      const bef = PRE.filter((e) => e.tier !== 'CTX' && e.delivered)
+        .concat(IN.filter((e) => e.delivered && e.date < DESIG_ISO))
+        .sort((a, b) => a.date < b.date ? -1 : 1);
+      pl.appendChild(h('b', { text: `The ${bef.length} before: ` }));
+      pl.appendChild(document.createTextNode(
+        bef.map((e) => `${showDate(e)}, ${e.title}`).join(' · ') + '.'));
+    }
   }
 
   /* ------------------------------------------------ 3b the prologue: why here */
@@ -243,6 +541,33 @@ function loadData(file) {
   const hDate = (e) => e.dateDisplay;
   const hKind = (e) => (HER.collections.find((c) => c.key === e.collection) || {}).name || e.collection;
 
+  /* Every heritage number the page prints is COUNTED from the rows the page draws, never
+     read off the register's own header. The header still ships and claims.json holds the
+     two to each other; but if they ever part, what a reader can count on the screen is
+     what the prose says. lastYear is the last row's own date; lastCoveredYear is the last
+     year any row still covers, and the two are not the same number — two rows are recorded
+     as spans that run past the last row's date. */
+  const hCount = () => ({
+    shown: HER.events.length,
+    heritage: HER.events.filter((e) => e.collection === 'heritage').length,
+    discoveries: HER.events.filter((e) => e.collection === 'discoveries').length,
+    firstYear: Math.min(...HER.events.map((e) => e.year)),
+    lastYear: Math.max(...HER.events.map((e) => e.year)),
+    lastCoveredYear: Math.max(...HER.events.map((e) => e.endYear)),
+    spans: HER.events.filter((e) => e.endYear > e.year).length,
+  });
+
+  /* Named labels for the load-bearing heritage events. Hand-authored strings; the
+     dates and rows they name are asserted in claims.json. Each label sits in the
+     annotation band under its row block, with a short leader to its dot. */
+  const HANN = [
+    { id: 'H-002', text: '1898 · Goodyear founded', anchor: 'start' },
+    { id: 'H-009e', text: '1991 · NSF ALCOM science center', anchor: 'middle' },
+    { id: 'D-001', text: '1926 · Semon plasticizes PVC', anchor: 'middle' },
+    { id: 'H-007', text: '1963 · first polymer department', anchor: 'middle' },
+    { id: 'D-009', text: '2012 · the last dated row', anchor: 'end' },
+  ];
+
   function renderPrologue() {
     if (!HER || !proBox) return;
     const W = proBox.clientWidth;
@@ -251,12 +576,36 @@ function loadData(file) {
     if (want === proMode && Math.abs(W - proW) < 2) return;
     proMode = want; proW = W;
     proBox.textContent = '';
-    (want === 'cards' ? renderHCards : renderHDiagram)(W);
+    (want === 'cards' ? renderHCompact : renderHDiagram)(W);
+  }
+
+  /* The sixth column is the run-out of the register, DRAWN rather than captioned. It is
+     computed, never typed.
+
+     Until 2026-08-29 it was typed "2013-2023" while the last era declared itself 2000 to
+     2019, so the two OVERLAPPED: any row from 2013 to 2019 was assigned to the era, and
+     the column could not fill from data whatever the register said. It then carried the
+     words "eleven years, nothing proven", which was a property of that bucketing and not
+     a reading of the record. The era now ends exactly where this column begins, and the
+     column reports what the register actually covers inside it \u2014 which is not nothing.
+     Two rows that begin in an earlier era are recorded as running on into it, the later
+     of them to 2016. What is true is that no NEW row is dated inside it. */
+  function voidSpec() {
+    const last = HER.eras[HER.eras.length - 1];
+    const from = last.to;
+    const to = DESIG_YEAR;
+    const runsIn = HER.events.filter((e) => e.endYear >= from);
+    const covered = runsIn.length ? Math.max(...runsIn.map((e) => e.endYear)) : from - 1;
+    return { from, to, covered, runsIn,
+      label: `${from}\u2013${to}`,
+      note: 'no new row starts',
+      foot: `then nothing to ${to}` };
   }
 
   function renderHDiagram(W) {
-    const L = { left: 150, right: 18, top: 46, bot: 30, rowH: 34, padY: 14, gap: 12 };
-    const plotW = W - L.left - L.right, eraW = plotW / HER.eras.length;
+    const L = { left: 150, right: 18, top: 46, bot: 76, rowH: 34, padY: 14, gap: 62 };
+    const nCol = HER.eras.length + 1;                 // five eras plus the void
+    const plotW = W - L.left - L.right, eraW = plotW / nCol;
     const xf = (e) => {
       const era = HER.eras[e.era];
       return L.left + e.era * eraW + ((yearFrac(e) - era.from) / (era.to - era.from)) * eraW;
@@ -268,12 +617,27 @@ function loadData(file) {
     });
     let y = L.top;
     rows.forEach((r) => { r.y = y; r.h = r.n * L.rowH + L.padY * 2; y += r.h + L.gap; });
-    const H = y + L.bot;
+    const H = y - L.gap + L.bot;
+    const V = voidSpec();
+    const hc = hCount();
     const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
-      'aria-label': `Two rows of ${HER.events.length} proven heritage events from ${HER.meta.counts.firstYear} ` +
-        `to ${HER.meta.counts.lastYear}, on five era columns of equal width: ` +
-        HER.eras.map((x) => x.label).join(', ') + '. Top row: what changed the region\u2019s capacity. ' +
-        'Bottom row: what was first understood here. Each dot is one dated event; the same rows are in the table below.' });
+      'aria-label': `Two rows of ${hc.shown} proven heritage events dated ${hc.firstYear} ` +
+        `to ${hc.lastYear}, running earlier to later across five era columns that are ` +
+        'each the same width however many years the era ran, so distance across is not years: ' +
+        HER.eras.map((x) => x.label).join(', ') + `, followed by a sixth column, ${V.label}, ` +
+        `in which no new row is dated. Two earlier rows are recorded as running on into that ` +
+        `column, the later of them to ${V.covered}, and each is drawn there as a bar. ` +
+        'Top row: what changed the region’s capacity. ' +
+        'Bottom row: what was first understood here. Named labels mark Goodyear 1898, PVC 1926, the first ' +
+        `polymer department 1963, the ALCOM center 1991 and the last dated row in ${hc.lastYear}. After ` +
+        `${V.covered} the register records nothing at all until the ${DESIG_YEAR} designation. ` +
+        'The same rows are in the table below.' });
+
+    /* The axis title, in the gutter beside the era labels. A banded time axis looks linear
+       and is not, so it says what horizontal distance means before a reader measures with
+       their eye. The arithmetic of the banding stays in the methods. */
+    svg.appendChild(el('text', { class: 'era-lab', x: 0, y: L.top - 34 }, 'one column per era'));
+    svg.appendChild(el('text', { class: 'era-lab', x: 0, y: L.top - 18 }, 'width is not years'));
 
     // era columns
     HER.eras.forEach((era, i) => {
@@ -284,9 +648,50 @@ function loadData(file) {
         'text-anchor': 'middle' }, era.label));
       if (i) svg.appendChild(el('line', { class: 'axis-rule', x1: x0, x2: x0, y1: L.top - 8, y2: y - L.gap }));
     });
-    // row labels, and a hairline between the two rows so the tenses read as two rows
-    rows.forEach((r, i) => {
-      if (i) svg.appendChild(el('line', { class: 'axis-rule', x1: 0, x2: W - L.right, y1: r.y - L.gap / 2, y2: r.y - L.gap / 2 }));
+    /* The run-out column: same width as the eras, and holding exactly what the register
+       puts in it. The two bars are the reason this is drawn rather than asserted — an
+       empty column and a column nobody could fill look identical, and only one of them
+       is a finding. */
+    (function voidCol() {
+      const x0 = L.left + HER.eras.length * eraW, yTop = L.top - 8, yBot = y - L.gap;
+      // a year is a slot, not a point: a row that stops in the block's first year has
+      // covered that year, and a zero-width bar would say it covered nothing
+      const vx = (yr) => x0 + ((yr - V.from + 1) / (V.to - V.from + 1)) * eraW;
+      svg.appendChild(el('rect', { class: 'era-band void', x: x0, y: yTop, width: eraW,
+        height: yBot - yTop }));
+      svg.appendChild(el('line', { class: 'void-edge', x1: x0, x2: x0, y1: yTop, y2: yBot }));
+      svg.appendChild(el('line', { class: 'void-edge', x1: x0 + eraW, x2: x0 + eraW,
+        y1: yTop, y2: yBot }));
+      svg.appendChild(el('text', { class: 'era-lab', x: x0 + eraW / 2, y: L.top - 20,
+        'text-anchor': 'middle' }, V.label));
+      // the rows that run in, each on its own row's line, ending at the year it stops
+      rows.forEach((r) => {
+        r.evs.filter((e) => e.endYear >= V.from).forEach((e) => {
+          const cy = r.y + L.padY + e._row * L.rowH + 10;
+          /* A rect, not a line. As a line this is a short wide horizontal stroke, which is
+             exactly the shape collide.mjs falls back on when a chart does not tag its own
+             axis: a 44px bar became "the axis" of a chart that has none, and every era
+             band was then reported as crossing it. Inset off the block edge so the bar
+             never reads as a tail on the last dot sitting just outside it. */
+          svg.appendChild(el('rect', { x: x0 + 5, y: cy - 1.5,
+            width: Math.max(2, vx(e.endYear) - x0 - 5), height: 3,
+            fill: HCOL[r.key], opacity: .5 }));
+          svg.appendChild(el('rect', { x: vx(e.endYear) - 1.5, y: cy - 5, width: 3,
+            height: 10, fill: HCOL[r.key] }));
+          svg.appendChild(el('text', { class: 'era-lab', x: vx(e.endYear) + 6, y: cy + 4,
+            fill: HCOL[r.key] }, `to ${e.endYear}`));
+        });
+      });
+      /* The note sits in the gap BETWEEN the two row blocks, not centred in the column:
+         centred, it landed on the very bars it exists to explain. It says only the thing
+         the bars cannot; the bars and their end years carry the rest. */
+      svg.appendChild(el('text', { class: 'void-note', x: x0 + eraW / 2,
+        y: rows[0].y + rows[0].h + 26, 'text-anchor': 'middle' }, V.note));
+      svg.appendChild(el('text', { class: 'void-lab', x: x0 + eraW / 2, y: yBot + 18,
+        'text-anchor': 'middle' }, V.foot));
+    })();
+    // row labels
+    rows.forEach((r) => {
       const words = r.name.split(' ');
       const l1 = words.slice(0, 2).join(' '), l2 = words.slice(2).join(' ');
       svg.appendChild(el('text', { class: 'lane-name', x: 0, y: r.y + 24, fill: HCOL[r.key] }, l1));
@@ -294,49 +699,150 @@ function loadData(file) {
       svg.appendChild(el('text', { class: 'lane-count', x: 0, y: r.y + (l2 ? 65 : 45) }, `${r.evs.length} events`));
     });
     // marks
+    const pos = {};
     rows.forEach((r) => {
       const g = el('g', {});
       r.evs.forEach((e) => {
         const cy = r.y + L.padY + e._row * L.rowH + 10;
+        pos[e.id] = { x: e._cx, y: cy, rowBot: r.y + r.h };
         const node = el('g', { class: 'ev hev', 'data-id': e.id, style: `--c:${HCOL[r.key]}`,
           tabindex: '0', role: 'button', 'aria-label': `${hDate(e)}. ${e.title}. ${r.name}.` });
         node.appendChild(el('circle', { class: 'hit', cx: e._cx, cy, r: 14 }));
         node.appendChild(el('circle', { class: 'dot', cx: e._cx, cy, r: 6.5, fill: HCOL[r.key] }));
-        node.appendChild(el('text', { class: 'yr-lab', x: e._cx, y: cy + 19, 'text-anchor': 'middle' },
-          String(e.year)));
         g.appendChild(node);
       });
       svg.appendChild(g);
     });
+    /* Named labels in the band under each row block, leader up to the dot. The labels are
+       de-collided into two tiers: adding the void column narrowed every era column, which
+       pushed "1963 · first polymer department" under the plate of "2012 · the last proven
+       row" and clipped it mid-word. collide.mjs cannot see this — both are plated on
+       purpose — so the spacing is computed here instead. */
+    const ann = el('g', {});
+    const CW = 6.9;                       // ann-name is 13px bold; ~6.9px a character
+    const placed = [];                    // [tier, x0, x1] of labels already laid down
+    HANN.map((a) => ({ a, p: pos[a.id] })).filter((r) => r.p)
+      .sort((r1, r2) => r1.p.x - r2.p.x)
+      .forEach(({ a, p }) => {
+        const w = a.text.length * CW + 8;
+        const x0 = a.anchor === 'end' ? p.x - w : a.anchor === 'middle' ? p.x - w / 2 : p.x - 4;
+        const x1 = x0 + w;
+        // per row: two labels in different row blocks sit at different heights and
+        // cannot collide, so they must not push each other down a tier
+        let tier = 0;
+        while (placed.some((q) => q[0] === tier && q[3] === p.rowBot &&
+          x0 < q[2] + 6 && x1 > q[1] - 6)) tier++;
+        placed.push([tier, x0, x1, p.rowBot]);
+        const ly = p.rowBot + 20 + tier * 19;
+        ann.appendChild(el('line', { class: 'leader', x1: p.x, x2: p.x,
+          y1: p.y + 9, y2: ly - 10 }));
+        plated(ann, a.text, p.x, ly, { anchor: a.anchor, class: 'ann-name', cw: CW });
+      });
+    svg.appendChild(ann);
+    /* No bottom caption any more: the void column says it in ink, and the old
+       right-anchored sentence was the figure's only floating text edge. */
+
     proBox.appendChild(svg);
     wireHEvents(svg);
+    buildHLegend();
+  }
+
+  function buildHLegend() {
     const lg = document.getElementById('pro-legend');
     lg.hidden = false; lg.textContent = '';
     HER.collections.forEach((c, i) => {
-      if (i) lg.appendChild(document.createTextNode(' \u00b7 '));
+      if (i) lg.appendChild(document.createTextNode(' · '));
       lg.appendChild(h('span', { class: 'sw', style: `background:${HCOL[c.key]}` }));
       lg.appendChild(h('b', { text: ' ' + c.name }));
-      lg.appendChild(document.createTextNode(' \u2014 ' + c.gloss));
+      lg.appendChild(document.createTextNode(': ' + c.gloss));
     });
-    lg.appendChild(document.createTextNode('. A dot sits at its first year; the columns are equal in width, not in years.'));
+    lg.appendChild(document.createTextNode(
+      '. A dot sits at its first year, and a bar in the last block is a row that began earlier ' +
+      'and is recorded as running on into it. Height inside a row is packing, not rank. ' +
+      'Tap any dot for the register’s sentence and source.'));
   }
 
-  function renderHCards() {
-    const list = h('div', { class: 'cards' });
-    HER.events.slice().sort((a, b) => a.date < b.date ? -1 : 1).forEach((e) => {
-      const src = e.sources.find((x) => x.url);
-      const c = h('div', { class: 'card', style: `border-left-color:${HCOL[e.collection]}` }, [
-        h('div', { class: 'c-d', text: hDate(e) }),
-        h('div', { class: 'c-t', text: e.title }),
-        h('div', { class: 'c-o', text: e.oneLiner }),
-      ]);
-      const foot = h('div', { class: 'c-o' }, [h('span', { class: 'c-k', style: `color:${HCOL[e.collection]}`, text: hKind(e) })]);
-      if (src) { foot.appendChild(document.createTextNode(' \u00b7 ')); foot.appendChild(h('a', { href: src.url, text: 'Source' })); }
-      c.appendChild(foot);
-      list.appendChild(c);
+  /* MOBILE, chart 1. Until 2026-08-28 this was a stack of cards, about 8,400px of them,
+     under a subtitle that told the reader to look at era columns and two rows. The form is
+     kept and transposed instead: the eras become stacked blocks, and inside each block the
+     same two collection rows carry the same dots at the same year positions. Nothing is
+     dropped or aggregated — every mark is here and still opens its source on tap. */
+  function renderHCompact(W) {
+    const GUT = 14, RIGHT = 8, ROW = 20, LABH = 20, PADB = 14;
+    const plotW = W - GUT - RIGHT;
+    const V = voidSpec();
+    const hc = hCount();
+    const cols = HER.eras.concat([{ from: V.from, to: V.to, label: V.label, isVoid: true }]);
+    const xf = (e) => {
+      const era = HER.eras[e.era];
+      return GUT + ((yearFrac(e) - era.from) / (era.to - era.from)) * plotW;
+    };
+    // measure first, draw second: the height has to be known before the viewBox exists
+    const blocks = cols.map((era, i) => {
+      const bands = era.isVoid ? [] : HER.collections.map((c) => {
+        const evs = HER.events.filter((e) => e.era === i && e.collection === c.key)
+          .sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+        return { key: c.key, evs, n: evs.length ? packBy(evs, xf, 20) : 0 };
+      }).filter((b) => b.evs.length);
+      return { era, bands };
     });
-    proBox.appendChild(list);
-    document.getElementById('pro-legend').hidden = true;
+    let y = 6;
+    blocks.forEach((b) => {
+      b.y = y; y += LABH;
+      b.bands.forEach((bd) => { bd.y = y; y += bd.n * ROW + 4; });
+      if (b.era.isVoid) { b.voidY = y; y += 64; }
+      y += PADB;
+    });
+    const H = y;
+
+    const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
+      'aria-label': `${hc.shown} proven heritage events in six stacked era blocks, ` +
+        HER.eras.map((x) => x.label).join(', ') + ` and a ${V.label} block in which no new row ` +
+        `is dated. Each block is one era and runs earlier to later across the screen, so distance ` +
+        'is not years. Inside each block the top row is what changed the region’s capacity and the ' +
+        `bottom row is what was first understood here. The last dated row is ${hc.lastYear}; ` +
+        `${V.runsIn.length} earlier rows are recorded as running on into the last block, the later ` +
+        `of them to ${V.covered}, and the register records nothing at all after that until the ` +
+        `${DESIG_YEAR} federal designation. The same rows are in the table below.` });
+
+    blocks.forEach((b) => {
+      svg.appendChild(el('text', { class: 'era-lab', x: 0, y: b.y + 11 }, b.era.label));
+      const bot = (b.era.isVoid ? b.voidY + 40 : (b.bands.length
+        ? b.bands[b.bands.length - 1].y + b.bands[b.bands.length - 1].n * ROW : b.y + LABH));
+      if (b.era.isVoid) {
+        svg.appendChild(el('rect', { class: 'era-band void', x: 0, y: b.y + LABH - 6,
+          width: W, height: 64, rx: 4 }));
+        svg.appendChild(el('text', { class: 'void-note', x: GUT, y: b.voidY + 8 },
+          'no new row starts here'));
+        // the bars the wide layout draws, as one line of text at this width
+        V.runsIn.slice().sort((a, b2) => a.endYear - b2.endYear).forEach((e, i) => {
+          svg.appendChild(el('text', { class: 'void-lab', x: GUT, y: b.voidY + 26 + i * 15,
+            fill: HCOL[e.collection] },
+            `${e.dateDisplay} runs in, to ${e.endYear} · ${hKind(e).toLowerCase()}`));
+        });
+        return;
+      }
+      b.bands.forEach((bd) => {
+        svg.appendChild(el('rect', { x: 0, y: bd.y, width: 3, height: bd.n * ROW - 4,
+          fill: HCOL[bd.key], rx: 1.5 }));
+        const g = el('g', {});
+        bd.evs.forEach((e) => {
+          const cy = bd.y + 9 + e._row * ROW;
+          const node = el('g', { class: 'ev hev', 'data-id': e.id, style: `--c:${HCOL[bd.key]}`,
+            tabindex: '0', role: 'button',
+            'aria-label': `${hDate(e)}. ${e.title}. ${hKind(e)}.` });
+          node.appendChild(el('circle', { class: 'hit', cx: e._cx, cy, r: 13 }));
+          node.appendChild(el('circle', { class: 'dot', cx: e._cx, cy, r: 6, fill: HCOL[bd.key] }));
+          g.appendChild(node);
+        });
+        svg.appendChild(g);
+      });
+      void bot;
+    });
+
+    proBox.appendChild(svg);
+    wireHEvents(svg);
+    buildHLegend();
   }
 
   function wireHEvents(svg) {
@@ -357,7 +863,7 @@ function loadData(file) {
     ptip = h('div', { class: 'tip' }, [
       h('div', { class: 't-d', text: hDate(e) }),
       h('div', { class: 't-t', text: e.title }),
-      h('div', { class: 't-o', text: hKind(e) + ' \u00b7 click for the source' }),
+      h('div', { class: 't-o', text: hKind(e) + ' · click for the source' }),
     ]);
     proBox.appendChild(ptip);
     const b = node.getBoundingClientRect(), v = proBox.getBoundingClientRect();
@@ -371,12 +877,12 @@ function loadData(file) {
   function openHPanel(e) {
     panel.textContent = '';
     panel.appendChild(h('button', { class: 'p-close', type: 'button', 'aria-label': 'Close',
-      onclick: closePanel, text: '\u00d7' }));
+      onclick: closePanel, text: '×' }));
     panel.appendChild(h('p', { class: 'p-kind', style: `color:${HCOL[e.collection]}`, text: hKind(e) }));
     panel.appendChild(h('h2', { id: 'panel-title', text: e.title }));
     panel.appendChild(h('dl', { class: 'p-meta' }, [
       h('div', {}, [h('dt', { text: 'Date' }), h('dd', { text: hDate(e) })]),
-      h('div', {}, [h('dt', { text: 'Register row' }), h('dd', { text: `${e.id} \u00b7 labeled ${e.label.toLowerCase()}` })]),
+      h('div', {}, [h('dt', { text: 'Register row' }), h('dd', { text: `${e.id} · labeled ${e.label.toLowerCase()}` })]),
     ]));
     panel.appendChild(h('p', { class: 'p-note p-one', text: e.oneLiner }));
     if (e.datePrecision === 'range') panel.appendChild(h('p', { class: 'p-note',
@@ -388,7 +894,7 @@ function loadData(file) {
       const li = h('li', {});
       if (sr.url) {
         li.appendChild(h('a', { href: sr.url, text: sr.url.replace(/^https?:\/\/(www\.)?/, '').split(/[/?#]/)[0] }));
-        if (sr.note) li.appendChild(document.createTextNode(' \u2014 ' + sr.note));
+        if (sr.note) li.appendChild(document.createTextNode(' · ' + sr.note));
       } else li.appendChild(document.createTextNode(sr.note));
       ul.appendChild(li);
     });
@@ -404,7 +910,7 @@ function loadData(file) {
     tb.textContent = '';
     HER.events.slice().sort((a, b) => a.date < b.date ? -1 : 1).forEach((e) => {
       const srcs = e.sources.filter((x) => x.url);
-      const td = h('td', {});
+      const td = h('td', { class: 't-src' });
       if (srcs.length) {
         td.appendChild(h('a', { href: srcs[0].url, text: 'Source' }));
         if (srcs.length > 1) td.appendChild(document.createTextNode(` +${srcs.length - 1}`));
@@ -420,20 +926,52 @@ function loadData(file) {
   }
 
   /* -------------------------------------------------------- 4 table + csv */
+  // Newest first, capped at the 12 most recent delivered events behind a "show all"
+  // disclosure — the story owns the scroll, the appendix owns the archive. The status
+  // column is gone: every default row is delivered (the caption says so once), and the
+  // scheduled rows appear at the end when expanded, each tagged inline.
 
   function buildTable() {
     const tb = document.querySelector('#dtable tbody');
     tb.textContent = '';
-    IN.filter(visible).forEach((e) => {
-      tb.appendChild(h('tr', {}, [
+    const del = IN.filter((e) => visible(e) && e.delivered)
+      .sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0);
+    const sch = IN.filter((e) => visible(e) && !e.delivered)
+      .sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+    const row = (e) => {
+      const tdE = h('td', {}, [document.createTextNode(e.title)]);
+      if (!e.delivered) tdE.appendChild(h('span', { class: 'badge', text: 'Scheduled' }));
+      return h('tr', {}, [
         h('td', { class: 't-date', text: showDate(e) }),
-        h('td', { text: e.title }),
+        tdE,
         h('td', { class: 't-lane', style: `color:${LANE_COLOR[e.laneKey]}`, text: e.lane }),
-        h('td', { text: e.org }),
-        h('td', { class: 't-st', text: e.delivered ? 'Delivered' : 'Scheduled' }),
-      ]));
+        h('td', { class: 't-org', text: e.org }),
+      ]);
+    };
+    const yrHead = (label) => h('tr', { class: 'yrhead' },
+      [h('th', { colspan: '4', scope: 'colgroup', text: label })]);
+    const cap = tableExpanded ? del.length : Math.min(12, del.length);
+    let curYr = null;
+    del.slice(0, cap).forEach((e) => {
+      const yr = e.date.slice(0, 4);
+      if (yr !== curYr) { tb.appendChild(yrHead(yr)); curYr = yr; }
+      tb.appendChild(row(e));
     });
+    if (tableExpanded && sch.length) {
+      tb.appendChild(yrHead(`Scheduled ahead · ${sch.length} dates`));
+      sch.forEach((e) => tb.appendChild(row(e)));
+    }
+    const btn = document.getElementById('showall');
+    if (btn) {
+      btn.hidden = del.length + sch.length <= cap;
+      btn.textContent = tableExpanded
+        ? 'Show the 12 most recent only'
+        : `Show all ${del.length} delivered and ${sch.length} scheduled events`;
+    }
   }
+  document.getElementById('showall').addEventListener('click', () => {
+    tableExpanded = !tableExpanded; buildTable();
+  });
 
   document.getElementById('csv').addEventListener('click', () => {
     const q = (s) => `"${String(s == null ? '' : s).replace(/"/g, '""')}"`;
@@ -492,9 +1030,22 @@ function loadData(file) {
     ]);
     if (e.horizon) meta.appendChild(h('div', {}, [h('dt', { text: 'Time to a result' }),
       h('dd', { text: HZ[e.horizon].label })]));
+    /* An amount shows only when the row carries one as a field, and never without the
+       record it came from. The basis is printed beside it because "the amount" of a
+       federal award is three different numbers and a bare figure does not say which. */
+    if (e.amount != null) {
+      meta.appendChild(h('div', {}, [h('dt', { text: 'Award' }),
+        h('dd', { text: `$${e.amount.toLocaleString('en-US')} ${e.amountBasis}` })]));
+      if (e.obligated != null) meta.appendChild(h('div', {}, [h('dt', { text: 'Of which' }),
+        h('dd', { text: `$${e.obligated.toLocaleString('en-US')} ${e.obligatedBasis}` })]));
+      if (e.awardId) meta.appendChild(h('div', {}, [h('dt', { text: 'Award record' }),
+        h('dd', { text: e.awardId })]));
+    }
     panel.appendChild(meta);
     const pn = precNote(e);
     if (pn) panel.appendChild(h('p', { class: 'p-note', text: pn }));
+    if (e.amountNote) panel.appendChild(h('p', { class: 'p-note', text: e.amountNote }));
+    if (e.amountSource) panel.appendChild(h('p', { class: 'p-note', text: e.amountSource }));
     if (!e.delivered) panel.appendChild(h('p', { class: 'p-note',
       text: 'This is a scheduled date drawn from the award or project record. It is not work already done.' }));
     panel.hidden = false; scrim.hidden = false;
@@ -548,15 +1099,18 @@ function loadData(file) {
       return s;
     };
     lg.appendChild(grp('Status', [
-      h('span', { class: 'item' }, [svgDot('#12798B', false), h('span', { text: 'Delivered' })]),
-      h('span', { class: 'item' }, [svgDot('#12798B', true), h('span', { text: 'Scheduled, not delivered' })]),
+      h('span', { class: 'item' }, [svgDot('#06414B', false), h('span', { text: 'Delivered' })]),
+      h('span', { class: 'item' }, [svgDot('#06414B', true), h('span', { text: 'Scheduled, not delivered' })]),
     ]));
-    lg.appendChild(grp('Dot size — time to a visible result', HZ_ORDER.map((k) => {
-      const s = document.createElementNS(NS, 'svg');
-      s.setAttribute('width', '22'); s.setAttribute('height', '22');
-      s.appendChild(el('circle', { cx: 11, cy: 11, r: HZ[k].r, fill: '#585955', stroke: '#fff' }));
-      return h('span', { class: 'item' }, [s, h('span', { text: HZ[k].label })]);
-    })));
+    lg.appendChild(grp('Size', [
+      h('span', { class: 'item' }, [h('span', { text: 'Every dot is the same size; the chips above filter by how long that kind of work takes to show a result.' })]),
+    ]));
+    /* A reader asked what the stacking meant and read the top sub-row as the important
+       one. It means nothing: dots are pushed down only when two dates are too close to
+       draw side by side. Saying so is cheaper than a layout that cannot be misread. */
+    lg.appendChild(grp('Height', [
+      h('span', { class: 'item' }, [h('span', { text: 'Within a workstream, a dot sits lower only because an earlier dot already holds that spot. Height is spacing, not rank.' })]),
+    ]));
     lg.hidden = false;
   }
 
@@ -573,55 +1127,196 @@ function loadData(file) {
     d.events.forEach((e) => { (new Date(e.date).getTime() >= from ? IN : PRE).push(e); });
     IN = IN.filter((e) => e.show || !e.delivered);
 
-    // The lede's numbers come from the data, never from the HTML — the static text is
-    // only what a reader sees before the JSON arrives (and it is what claims.json guards).
-    const hc = HER.meta.counts;
-    const put = (id, v) => { const n = document.getElementById(id); if (n) n.textContent = String(v); };
+    /* Every number in the prose comes from the data, never from the HTML — the static
+       text is only what a reader sees before the JSON arrives (and it is what claims.json
+       guards). Two counts on this page are close enough to be read as one and are not:
+         sinceDesig  delivered on or after the 23 October 2023 designation   (the pace band)
+         sinceOpen   delivered on or after the window opens, 1 January 2023  (the calendar)
+       They differ by exactly the rows dated between those two dates. Until 2026-08-29 both
+       were typed into the markup in five places and the page never said which was which,
+       so the only way to reconcile 68 with 69 was to add up the bars by hand. Both are
+       derived here and the difference is NAMED. */
+    const hc = Object.assign({}, HER.meta.counts, hCount());
+    const V = voidSpec();
+    /* One number, one name, however many sentences print it. These used to be ids, which
+       have to be unique, so a count wanted in three places became 68, 68 and 68 typed into
+       the markup and free to drift apart. */
+    const put = (key, v) => document.querySelectorAll(`[data-n="${key}"]`)
+      .forEach((n) => { n.textContent = String(v); });
+    const inDel = IN.filter((e) => e.delivered);
+    const gapRows = inDel.filter((e) => e.date < DESIG_ISO)
+      .sort((a, b) => a.date < b.date ? -1 : 1);
+    const { before, since } = cadenceData();
+    const sinceOpen = inDel.length;
+
     put('h-shown', hc.shown); put('h-first', hc.firstYear); put('h-last', hc.lastYear);
     put('h-her', hc.heritage); put('h-dis', hc.discoveries);
-    put('pro-range', `${hc.firstYear} to ${hc.lastYear}`);
+    put('h-covered', hc.lastCoveredYear); put('h-runsin', V.runsIn.length);
+    put('h-merged', (HER.meta.merged || []).length);
+    put('cad-before', before); put('cad-since', since);
+    put('op-open', sinceOpen);
+    put('n-fwd', IN.filter((e) => !e.delivered).length);
 
-    document.getElementById('topline').innerHTML = '';
-    [[hc.shown, `proven heritage events, ${hc.firstYear}\u2013${hc.lastYear}`],
-     [IN.length, 'public events shown'],
-     [IN.filter((e) => e.delivered).length, 'delivered since 2023'],
-     [IN.filter((e) => !e.delivered).length, 'scheduled ahead'],
-     [d.lanes.length, 'workstreams, in parallel']].forEach(([n, l]) => {
-      document.getElementById('topline').appendChild(h('li', {}, [
-        h('b', { text: String(n) }), h('span', { text: l })]));
-    });
-
-    // Context-tier rows (the old "Rubber Capital, 1900" one-liners) are superseded by the
-    // sourced heritage prologue above; only PIC-era pre-2023 events are listed here.
-    const preShown = PRE.filter((e) => e.tier !== 'CTX');
-    const pw = document.getElementById('pre-window');
-    if (preShown.length) {
-      pw.appendChild(h('p', {}, [
-        h('b', { text: 'Before this window. ' }),
-        document.createTextNode(preShown.map((e) => `${e.dateDisplay} ${e.title}`).join(' \u00b7 ') +
-          '. The timeline opens at the 2023 federal designation \u2014 the first event with money behind it. ' +
-          'Everything earlier is the heritage record above.'),
-      ]));
+    /* The award figure, written from the row's own fields. Until 29 August 2026 this page
+       printed $160M here, a number that lived nowhere but inside a typed event title and
+       sat an order of magnitude from what the federal money page reports for the same
+       award. The row now carries the amount, the basis, the obligation, the award id and
+       the record, and the sentence is assembled from them. */
+    const nsfFig = document.getElementById('nsf-figure');
+    const nsfRow = IN.find((e) => e.id === 'E205');
+    if (nsfFig && nsfRow && nsfRow.amount != null) {
+      nsfFig.textContent =
+        `$${nsfRow.amount.toLocaleString('en-US')} as its ${nsfRow.amountBasis}, ` +
+        `of which $${nsfRow.obligated.toLocaleString('en-US')} is ${nsfRow.obligatedBasis}, ` +
+        `on NSF award record ${nsfRow.awardId}. That total matches, to the dollar, what ` +
+        `the federal money page reports for this award from USAspending. The date here is ` +
+        `the date of public record; the award record’s own date is ` +
+        `${showDate({ date: nsfRow.awardDate, datePrecision: 'day' })}, and the agreement ` +
+        `runs to ${showDate({ date: nsfRow.periodEnd, datePrecision: 'day' })}.`;
     }
 
-    document.getElementById('m-source').textContent = d.meta.source;
-    document.getElementById('m-public').textContent = d.meta.publicOnly;
-    const dropped = hc.dropped['label:CLAIMED'] || 0;
-    document.getElementById('m-heritage').textContent =
-      `The heritage rows come from PIC\u2019s NEO Polymer Wins register, an internal file. Of its ` +
-      `${hc.shown + dropped} heritage and discovery rows, ${hc.shown} are labeled proven and appear here; ` +
-      `${dropped} labeled claimed are withheld. ${hc.sourcesStripped} internal source references were ` +
-      `stripped in the build, and every row shown carries at least one public source. Shipped products, ` +
-      `licenses and living capital are a different register and are not on this page.`;
-    const notes = document.getElementById('m-notes');
-    [['Each dot is one dated event, in the workstream that produced it.',],
-     ['Dot size is how long that kind of work takes to show a result — not how important it is.'],
-     ['Hollow dots to the right of the dashed rule are scheduled dates from the award record, not work already done.'],
-     ['Dates are shown at the precision they were recorded. Some events are known only to a month or a year, and are placed mid-period rather than pretending to a day.'],
-     ['The heritage chart above the record uses five era columns of equal width, so its axis is not linear; a dot sits at its first year, and clicking it opens the register’s sentence and source.'],
-    ].forEach(([t]) => notes.appendChild(h('li', { text: t })));
+    // The one sentence that holds 68 and 69 together, written from the rows themselves.
+    const rec = document.getElementById('cad-reconcile');
+    if (rec) {
+      rec.textContent = gapRows.length === 1
+        ? `The two counts differ by one row: ${showDate(gapRows[0])}, ` +
+          `${gapRows[0].title}, which lands after the window opens and before the designation.`
+        : `The two counts differ by the ${gapRows.length} rows dated between 1 January 2023 ` +
+          `and the designation: ` + gapRows.map((e) => `${showDate(e)}, ${e.title}`).join('; ') + '.';
+    }
 
-    buildFilters(); buildTable(); render();
+    /* The hero stat row, through the shared ceremony helper rather than a page-local
+       list: four cards, 2x2 on the measure rail, and exactly one carries the accent
+       because exactly one of them is the page's finding. Four, not five — the fifth
+       wrapped to its own row at 1280 and the workstream count already leads the
+       calendar H2. */
+    PV.figures([
+      ['', hc.shown, 'Proven heritage events',
+       `First dated ${hc.firstYear}, last ${hc.lastYear}`],
+      ['', before, 'Events, 34 months before', 'Up to the October 2023 designation'],
+      ['key', since, 'Delivered, 34 months since', 'The same span, to within a day'],
+      ['', IN.filter((e) => !e.delivered).length, 'Scheduled ahead',
+       'Dates on the record, not yet delivered'],
+    ]);
+
+    // The next three scheduled dates, straight from the record.
+    const watch = document.getElementById('watch');
+    if (watch) {
+      IN.filter((e) => !e.delivered && e.date > NOW_ISO)
+        .sort((a, b) => a.date < b.date ? -1 : 1).slice(0, 3)
+        .forEach((e) => watch.appendChild(h('li', {}, [
+          h('b', { text: showDate(e) }),
+          document.createTextNode(` ${e.title} · ${e.org}`),
+        ])));
+    }
+
+    /* The 104 is reconciled to what a reader can count on the page, in one place and from
+       the data: 87 drawn on the calendar, 5 before the window, 12 press-coverage rows that
+       are reporting ABOUT the cluster rather than things the cluster did. Typing any of
+       these would let the apparatus contradict itself, which is how it read before. */
+    const nCal = IN.length, nPre = PRE.length;
+    const nMedia = d.events.length - nCal - nPre;
+    const dropped = hc.dropped['label:CLAIMED'] || 0;
+    const nMerged = (HER.meta.merged || []).length;
+    /* Of the rows before the window, only the non-context ones reach the year-by-year
+       chart: the chart starts at 2021 and drops the two century-scale rows. Saying "5
+       predate the window and feed the chart" made a reader count 3 bars and come up 2
+       short, so the split is stated and computed. */
+    const nPreFed = PRE.filter((e) => e.tier !== 'CTX' && e.delivered).length;
+    const nPreCtx = nPre - nPreFed;
+    /* The methodology box is the shared one, injected between the last band and the
+       closer like every other page in the room. It used to be a hand-written section
+       with its own heading and its own "Reproduce this" renderer, which is how this page
+       ended up with a provenance block nobody else had to maintain. The meta below is an
+       inline literal rather than a data file's meta block because two registers feed this
+       page, and the reconciliation between them is computed here from both. */
+    PV.methodology({page: 'timeline', meta: {
+      fetched: '13 August 2026',
+      source: d.meta.source +
+        ` Of those ${d.events.length}, ${nCal} fall inside the 2023 to 2029 calendar window and are ` +
+        `drawn there: ${sinceOpen} delivered and ` +
+        `${IN.filter((e) => !e.delivered).length} scheduled. ${nPre} predate the window: ` +
+        `${nPreFed} of them are dated 2021 or later and are drawn in the year-by-year chart, and ` +
+        `${nPreCtx} are century-scale context rows that start before that chart does and are counted ` +
+        `nowhere on this page. The remaining ${nMedia} are press coverage of the cluster rather ` +
+        `than things the cluster did, and are held out of both charts.`,
+      sources:
+        `The heritage rows come from PIC’s NEO Polymer Wins register, an internal file, as of ` +
+        `14 August 2026. Of its ${hc.shown + nMerged + dropped} heritage and discovery rows, ` +
+        `${hc.shown + nMerged} are labeled proven; ${nMerged} of those records the same event as ` +
+        `another row, in the same words, and is merged into it, so ${hc.shown} appear here. ` +
+        `${dropped} labeled claimed are withheld. ` +
+        `${hc.sourcesStripped} internal source references were stripped in the build, and every row ` +
+        `shown carries at least one public source. Shipped products, licenses and living capital are ` +
+        `a different register and are not on this page.`,
+      row: `One row is one dated public event: something the cluster did, or had done to it, that ` +
+        `entered a public record on a date. The ${hc.shown} heritage rows are a separate register ` +
+        `and are not part of that count.`,
+      definition: 'Each dot is one dated event, in the workstream that produced it. Every dot is the ' +
+        'same size: color is the workstream, and a hollow ring with a center pip is a scheduled date. ' +
+        'The chips filter by how long that kind of work takes to show a result.',
+      bases: 'Dates are shown at the precision they were recorded. Some events are known only to a ' +
+        'month or a year, and are placed mid-period rather than pretending to a day. An event ' +
+        'recorded as a span sits at the start of that span, so the table can sort it against the ' +
+        'date a reader sees.',
+      stages: 'Vertical rules and named labels mark the load-bearing events; every other dot opens ' +
+        'its title, date and organization on click. Within a workstream a dot sits lower only to ' +
+        'clear an earlier dot: height is spacing, never rank or size.',
+      derived_note: `The year-by-year chart counts delivered public events per year from this same ` +
+        `record, and it counts two different spans that are easy to read as one. ${since} is the ` +
+        `count from the ${DESIG_LBL} designation, which is the pace comparison; ${sinceOpen} is the ` +
+        `count from 1 January 2023, when the calendar opens. The difference is the ` +
+        `${gapRows.length === 1 ? 'single row' : `${gapRows.length} rows`} dated between those two ` +
+        `dates. The 2026 bar covers 1 January to 13 August 2026 and is drawn lighter than the full ` +
+        `years beside it. The two century-scale context rows sit in the heritage strip and are not ` +
+        `counted in it.`,
+      composite_note: `The heritage strip gives every era the same space however many years it ran, ` +
+        `plus a sixth block, ${V.label}, so distance across it is not years. A dot sits at its ` +
+        `first year, and tapping it opens the register’s sentence and source. The sixth block ends ` +
+        `where the register’s coverage does, not where the eras happen to stop: until 2026-08-29 ` +
+        `the last era declared itself 2000 to 2019 while the block was labeled 2013 to 2023, which ` +
+        `made 2013 to 2019 unreachable and the block empty by construction rather than by evidence.`,
+      publicOnly: d.meta.publicOnly +
+        ' A quiet period on this timeline means nothing was published, not that nothing happened.',
+      /* An amount this page cannot source is an amount this page does not print. The
+         history is kept rather than tidied away, because the shape of the error is the
+         useful part. */
+      excludes: 'The July 2026 NSF Engines award carried $160M on this page until 29 August 2026. ' +
+        'That figure lived nowhere but inside a typed event title, with no amount field, no ' +
+        'source and no note, and sat an order of magnitude from what the federal money page ' +
+        'reports for the same award. It was removed, and then restored as a different number ' +
+        'with a record behind it: the award’s own estimated total, and the share of it ' +
+        'obligated so far, both from the NSF award record named beside them, and the total ' +
+        'agreeing to the dollar with the USAspending figure on the federal money page. What is ' +
+        'still not printed is the NSF Engines program ceiling, which is a decade-long maximum ' +
+        'contingent on renewals; no source here ties it to this award, and reading it as the ' +
+        'award is what produced the original error. CORRECTIONS.md carries the entry.',
+      scope: `The heritage dates ${hc.firstYear} to ${hc.lastYear} are the dates of the rows, not ` +
+        `the years the register covers. ${hc.spans} rows are recorded as spans, and the two longest ` +
+        `run past the last row’s date, the later of them to ${hc.lastCoveredYear}. So the record ` +
+        `holds no NEW proven row after ${hc.lastYear}, and nothing at all after ` +
+        `${hc.lastCoveredYear}: those are two different silences and the shorter one is the real ` +
+        `gap before the designation.`,
+      uncertain: 'Future milestones are drawn hollow because they are plans, not facts. A hollow ' +
+        'marker records an intention on a date and is not evidence the thing occurred.',
+      caution: 'Dates are the date of public record, which can trail the decision by weeks. The ' +
+        'order of two close events is not reliable.',
+      not_the_cluster: 'The heritage rows are why the region has this capacity, not what the cluster ' +
+        'did. None of them is a cluster outcome, and a discovery (a paper or a patent) is not a product.',
+      /* HER.meta.note says this in the register's own voice, with em-dashes the house
+         prose ban does not allow, so the sentence is rewritten here rather than piped
+         through. Same rule, same five withheld rows. */
+      note: 'Heritage rows appear only when PIC’s register labels them proven. Rows it labels ' +
+        'claimed, where a date or a figure is recorded two ways, are withheld rather than shown ' +
+        'with a caveat; the wartime synthetic-rubber program, its tonnage recorded four ways, is ' +
+        'one of them. The register is internal; only the proven rows and their public sources ' +
+        'travel to this page.',
+      small_numbers: `The year-by-year record was compiled after the designation, so its early years ` +
+        `are under-counted: ${before} is the fewest the before count can be, and ` +
+        `${Math.round(since / before)} times the most the jump can be.`,
+    }});
+
+    buildFilters(); buildTable(); render(); renderCadence();
     buildHTable(); renderPrologue();
   }).catch((err) => {
     viz.textContent = '';
@@ -631,5 +1326,5 @@ function loadData(file) {
   });
 
   let t;
-  window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => { render(); renderPrologue(); }, 130); });
+  window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => { render(); renderCadence(); renderPrologue(); }, 130); });
 })();

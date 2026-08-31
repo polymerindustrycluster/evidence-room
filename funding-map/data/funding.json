@@ -18,7 +18,7 @@
    "Private investment, in-kind contribution, and company R&D spending that sits alongside these awards.",
    "The NEO-SMART NSF Engine, which is a separate award to a separate lead organization.",
    "Partner-by-partner detail behind the aggregate match and cost-share figures.",
-   "A separate award number for Synthe6. There isn't one, and that is not an omission: Synthe6 is a workstream inside Ohio Innovation Hub grant SBIG20251005, delivered through a dated subgrant agreement rather than a separately numbered award."
+   "A separate award number for Synthe6. There isn’t one, and that is not an omission: Synthe6 is a workstream inside Ohio Innovation Hub grant SBIG20251005, delivered through a dated subgrant agreement rather than a separately numbered award."
   ],
   "scaleNote": [
    "Drawn to scale: the three source bars, their three match bars, the seven EDA ribbons, and the five Ohio workstream bands.",
@@ -31,10 +31,10 @@
    "Adding $20,954,667 in match and cost share to the $85,335,784 in awards gives the $106,290,451 total secured."
   ],
   "provenance": [
-   "EDA Sustainable Polymers Tech Hub: signed federal Notices of Award, cross-checked against USAspending.gov by award ID. The seven awards total $51,001,413 against a \"$51 million\" headline; partner match totals $7,164,030.",
+   "EDA Sustainable Polymers Tech Hub: signed federal Notices of Award, cross-checked against USAspending.gov by award ID. The seven awards total $51,001,413 against a “$51 million” headline; partner match totals $7,164,030.",
    "Ohio Innovation Hub: the executed state grant agreement (Grant Control No. SBIG20251005, appropriation 1956F8, Am. Sub. H.B. 33, 135th G.A.) and the contract-grade workstream budget, identical to the cent across the December 2024 contract-amendment exhibit and the September 2025 budget form.",
    "PIC Translational R&D sub-grants: executed sub-grant agreements. The University of Akron figure is $678,614, the executed amount written into the signed agreement.",
-   "Synthe6 cohort: $25,000 in one-time non-dilutive cash per company, confirmed in the grant agreement, the Bounce first amendment, and the startup grant administration agreement. The money is administered by Bounce Innovation Hub under a subgrant agreement dated 15 May 2025, which draws on Ohio Innovation Hub grant SBIG20251005 — Synthe6 is a workstream inside that grant, not a separate award, and has no award number of its own.",
+   "Synthe6 cohort: $25,000 in one-time non-dilutive cash per company, confirmed in the grant agreement, the Bounce first amendment, and the startup grant administration agreement. The money is administered by Bounce Innovation Hub under a subgrant agreement dated 15 May 2025, which draws on Ohio Innovation Hub grant SBIG20251005. Synthe6 is a workstream inside that grant, not a separate award, and has no award number of its own.",
    "Good Jobs Challenge (APEX): award ED25OIE0G0108 and the signed Notice of Award. Good Jobs Challenge is the funding program and APEX is the initiative it funds. They are one award described two ways, not two awards."
   ]
  },
@@ -70,7 +70,7 @@
    "mechanism": "hub",
    "mechanismTitle": "Greater Akron Polymer Innovation Hub",
    "mechanismLines": [],
-   "note": "The state award genuinely deploys through the hub, which allocates it across five workstreams. The workstream bands are drawn to scale against each other on an expanded scale — at the shared source scale the two smallest would be too thin to label.",
+   "note": "The state award genuinely deploys through the hub, which allocates it across five workstreams. The workstream bands are drawn to scale against each other on an expanded scale: at the shared source scale the two smallest would be too thin to label.",
    "awardId": "SBIG20251005",
    "awardIdLabel": "Grant Control No. "
   },
@@ -120,8 +120,8 @@
    "share": "19.17%",
    "tint": "rd",
    "chip": "TRANSLATIONAL",
-   "note": "PIC Translational R&D Funding — competitive awards up to $500K. $3.35M is executed across seven sub-grants; the balance is not yet sub-granted.",
-   "rider": "$3.35M executed in seven sub-grants"
+   "note": "PIC Translational R&D Funding: competitive awards up to $500K. $3.35M is executed across seven sub-grants; the balance is not yet sub-granted.",
+   "rider": "$3.35M executed so far"
   },
   {
    "id": "oh-startup",
@@ -147,6 +147,7 @@
    "id": "oh-workforce",
    "sourceId": "ohio",
    "name": "Workforce development",
+   "short": "Workforce",
    "amount": 1488000,
    "share": "4.76%",
    "tint": "hub",
@@ -259,7 +260,7 @@
      "programId": "eda-direct",
      "amount": 2650000,
      "awardId": "ED24HDQ0G0413",
-     "funds": "Innovation governance — a regional office of innovation for the Tech Hub"
+     "funds": "Innovation governance: a regional office of innovation for the Tech Hub"
     },
     {
      "programId": "oh-gov",
@@ -304,6 +305,7 @@
   {
    "id": "cwru",
    "name": "Case Western Reserve University",
+   "short": "Case Western Reserve",
    "awards": [
     {
      "programId": "oh-rd",

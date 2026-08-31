@@ -1,0 +1,280 @@
+/* accountability — page-local additions only. House anatomy (.mast/.hero/.band/.closer)
+   and the shared column system stay untouched so the layout gates keep applying.
+
+   THE ONE THING THIS STYLESHEET IS FOR: making an absent number look absent. Three
+   different kinds of nothing appear on this page and none of them may look like a small
+   value. The disbursement stage is a dashed outline with words inside it. A board row
+   awaiting a private register is a hatched cell with a chip. A commitment with no reading
+   yet is an outline ring rather than a filled disc. No hue is spent on absence anywhere:
+   colour would give it a value. */
+
+/* ---------------------------------------------------------------- the draft banner
+   Above the hero, on its own ground, because a draft flag placed below the headline is a
+   flag a reader meets after they have already believed the headline. The mast carries a
+   one-word marker for anyone who never scrolls past it.
+
+   ONE LINE, and the reason is measured. The three-paragraph version ran 241px, and with
+   the mast and the hero above it the lead figure's top sat at 1,547px — no chart in the
+   opening screen, which is the one composition rule this house does not bend. A banner
+   only has to say what it is; the rest of what that version said (which open questions
+   are unanswered, which sections carry a stated default) is said on the page where each
+   one appears, and in the README. */
+.draftgate{background:#F6E9E4;border-top:3px solid #9A4A2E;
+  border-bottom:1px solid var(--line);padding:11px 0 12px}
+.draftgate .wrap > *{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.dg-t{margin:0;font-size:15px;line-height:1.45;color:#4E3A32}
+.dg-t b{color:#8C4325;font-weight:900}
+
+/* Hero: tightened so the lead figure reaches the first screen. The byline is genre
+   furniture the standfirst does not replace; `margin:...auto` and never `margin:14px 0 0`,
+   because the shorthand at (0,2,0) beats pic-viz's `.hero .wrap > *{margin-left:auto}` and
+   would open a second left rail under the standfirst. */
+.hero{padding:26px 0 24px}
+.hero .byline{margin:14px auto 0;max-width:var(--measure);font-size:12.5px;line-height:1.5;
+  color:#BEDCE1}
+/* Three stat cards on a two-column grid would leave a hole in the second row. The key
+   figure takes the full measure and its accent rule with it, and the two supporting cards
+   sit beneath: a grid the reader can see was chosen, rather than a wrap. */
+.hero-row .figv.key{grid-column:1 / -1}
+
+/* ------------------------------------------------- the stat row, below the lead figure
+   The house component, moved out of the hero and restated for paper. It is the same three
+   findings; what changes is that they now read as the attribution chart's own summary
+   rather than as a KPI tile row a reader meets before any evidence. Page-design sanctions
+   exactly this trade, and it is what buys the chart its place in the first screen.
+
+   Every colour in .figv was written for the dark hero — a white rule at 30 percent, keys
+   at #9FCBD2, details at #B7D9DE. On cream they are close to invisible, so each one is
+   restated here rather than the component being forked. The accent goes to the key card
+   only, and it is INK, the same hue the bars are drawn in, because the number on that card
+   is the number the bottom bar draws. Lime is chrome on this site and never encodes. */
+.band .hero-row{margin:26px auto 0}
+.band .figv{border-top-color:#C9C3B8}
+.band .figv.key{border-top-color:var(--ink)}
+.band .figv .n{color:var(--text)}
+.band .figv.key .n{color:var(--ink)}
+.band .figv .k{color:var(--caption)}
+.band .figv .d{color:#4B5457}
+
+/* Figure chrome: every figure carries its own claim-title and how-to-read line, so the H2
+   does section work instead of doubling as the figure title. */
+.fig-title{margin:24px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
+  line-height:1.3;max-width:var(--measure);color:var(--text)}
+.fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure)}
+.fig-title + .fig-sub + .chart{margin-top:16px}
+.fig-sub + .legend{margin-top:14px}
+.fig-sub + .ledger,.fig-sub + .lists{margin-top:16px}
+
+/* The caveat beat is editorial narrative in body register. The page spends its one .note
+   callout on what the attribution chart does and does not license. */
+.beat{margin:24px 0 0;max-width:var(--measure);font-size:17px;line-height:1.6;
+  color:#394346}
+.beat a{font-weight:700}
+
+/* Pacing: alternate band grounds so the scroll reads as a wave rather than a loop. */
+.band.tint{background:#F4F1EC}
+
+/* ------------------------------------------------------------------ the ledger tables
+   Data, so they take the figure column. Two tables use this: the coalition register in
+   band C and the five-row reconciliation in band E. */
+.ledger{margin:16px 0 0;max-width:var(--figure)}
+.lg{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.lg caption{text-align:left;font-size:13.5px;line-height:1.5;color:#3A4448;padding:0 0 12px;
+  max-width:var(--measure)}
+.lg caption b{color:var(--hover)}
+.lg thead th{font-size:12px;letter-spacing:.09em;text-transform:uppercase;font-weight:900;
+  color:var(--caption);text-align:left;padding:0 10px 7px 0;
+  border-bottom:2px solid var(--text);vertical-align:bottom}
+.lg thead th.num{text-align:right}
+.lg thead th button{font:inherit;color:inherit;letter-spacing:inherit;background:none;
+  border:0;padding:0;cursor:pointer;text-transform:inherit}
+.lg thead th button:hover{color:var(--action)}
+.lg thead th button::after{content:"";display:inline-block;width:9px}
+.lg thead th[aria-sort="descending"] button::after{content:" \25BE"}
+.lg thead th[aria-sort="ascending"] button::after{content:" \25B4"}
+.lg thead th[aria-sort] button{color:var(--action)}
+.lg tbody th,.lg tbody td{padding:9px 10px 10px 0;border-bottom:1px solid var(--line);
+  vertical-align:top;font-size:13.5px;line-height:1.45;color:#3A4448;text-align:left}
+.lg tbody th{padding-left:12px;font-weight:900;font-size:14px;color:var(--text);
+  border-left:4px solid transparent}
+.lg td.num{text-align:right;font-weight:700;color:var(--text);white-space:nowrap}
+.lg tbody tr:nth-child(even) th,.lg tbody tr:nth-child(even) td{background:#F7F5F1}
+.band.tint .lg tbody tr:nth-child(even) th,
+.band.tint .lg tbody tr:nth-child(even) td{background:#EFEBE4}
+
+/* THE $1,000,000 RULE, drawn where it falls in the sort, with the cumulative share beside
+   it. This is the finding, so it is a row in the table rather than a caption under it. */
+.lg tr.rule th{padding:14px 12px 6px;border-left:0;border-bottom:2px solid var(--hover);
+  font-size:13px;font-weight:900;color:var(--hover);letter-spacing:.01em}
+.lg tr.rule th span{display:block;margin:3px 0 0;font-weight:400;color:#5A625E;
+  font-size:12.5px;letter-spacing:0}
+
+/* Participation kind. A left rule plus a chip, so neither colour vision nor a greyscale
+   print is load-bearing, and no kind is encoded by hue alone. */
+.lg .k-firm th{border-left-color:var(--ink)}
+.lg .k-university th{border-left-color:var(--c1)}
+.lg .k-administrator th{border-left-color:var(--c3)}
+.lg .k-program_aggregate th{border-left-color:var(--pv-axis)}
+.chip{display:inline-block;margin:3px 0 0;padding:2px 7px;border:1px solid #C9C3B8;
+  border-radius:10px;font-size:12.5px;font-weight:700;letter-spacing:.03em;color:#5A625E;
+  background:#FBFAF7;white-space:nowrap}
+.lg .k-program_aggregate .chip{border-style:dashed;color:#6C6455}
+.lg .sub{display:block;margin:2px 0 0;font-size:12.5px;color:var(--caption);
+  font-weight:400}
+.lg .notstated{color:#8A7F70;font-style:normal}
+
+.legend i.k-firm{background:var(--ink)}
+.legend i.k-university{background:var(--c1)}
+.legend i.k-administrator{background:var(--c3)}
+.legend i.k-program_aggregate{background:var(--pv-axis)}
+
+/* ------------------------------------------------------- the calibration statistic
+   A register that reports its own date-keeping is only worth reading if it refuses to
+   report a rate on a sample of two, so the block prints n and says what it will not print
+   until n reaches its floor. */
+.calib{margin:24px 0 0;max-width:var(--measure);background:#fff;
+  border:1px solid var(--line);border-left:4px solid var(--action);padding:16px 20px 18px}
+.band.tint .calib{background:#FBFAF8}
+.calib .c-k{margin:0;font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+  font-weight:900;color:var(--action)}
+.calib .c-n{margin:8px 0 0;font-size:30px;font-weight:900;letter-spacing:-.02em;
+  line-height:1.05;color:var(--ink);font-variant-numeric:tabular-nums}
+.calib .c-t{margin:8px 0 0;font-size:15px;line-height:1.5;color:#3A4448}
+.calib .c-d{margin:8px 0 0;font-size:12.5px;line-height:1.5;color:var(--caption)}
+.calib .c-d b{color:#8C4325}
+
+/* ------------------------------------------------------------------- promise register
+   One row per commitment, grouped by owner. Status is marked twice: the glyph and the
+   word, so the ring and the disc never carry the meaning alone. */
+.register{margin:18px 0 0;max-width:var(--figure)}
+.rg-grp{margin:22px 0 0;padding:0 0 6px;border-bottom:1px solid var(--line)}
+.rg-grp b{font-size:16px;font-weight:900;letter-spacing:-.01em;color:var(--text)}
+.rg-grp span{margin-left:8px;font-size:12.5px;color:var(--caption);
+  font-variant-numeric:tabular-nums}
+.rg{display:grid;grid-template-columns:118px 1fr 190px;gap:0 18px;padding:13px 0 14px;
+  border-bottom:1px solid var(--line)}
+.rg-d{font-size:13.5px;font-weight:900;color:var(--text);white-space:nowrap;
+  font-variant-numeric:tabular-nums;display:flex;gap:8px;align-items:baseline}
+.rg-d i{flex:none;width:11px;height:11px;border-radius:50%;display:inline-block;
+  border:2px solid var(--ink);background:radial-gradient(circle,var(--ink) 0 1.5px,
+    transparent 1.6px)}
+.rg-d i.on{background:var(--ink)}
+.rg-c{font-size:14px;line-height:1.45;color:var(--text);font-weight:700}
+.rg-m{display:block;margin:4px 0 0;font-size:12.5px;line-height:1.5;color:var(--caption);
+  font-weight:400}
+.rg-m b{color:#3A4448;font-weight:700}
+.rg-t{font-size:12.5px;line-height:1.5;color:#5A625E}
+.rg-t .tag{display:inline-block;padding:2px 7px;border-radius:10px;font-size:12.5px;
+  font-weight:700;letter-spacing:.03em;background:#EAF3F4;color:#0C6473;
+  border:1px solid #CBE1E4}
+.rg-t .tag.num{background:#F3EFE0;color:#7A5E12;border-color:#E0D6B8}
+.rg-t .tag.per{background:#F1EEE9;color:#5A625E;border-color:#DDD9D2}
+.rg-t .read{display:block;margin:5px 0 0;color:var(--caption)}
+
+/* The membership goal. Defined, sized like every other row, empty on purpose, and given
+   its reason on the page rather than in a footnote. A stated denominator with a hidden
+   numerator is the single most damaging thing this page could do to itself, so there is
+   no progress bar here and there never will be. */
+.goalrow{margin:26px 0 0;max-width:var(--figure);background:#fff;border:1px solid #C9C3B8;
+  border-left:4px dashed #A9A296;padding:16px 20px 18px}
+.band.tint .goalrow{background:#FBFAF8}
+.goalrow .g-k{margin:0;font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+  font-weight:900;color:#6C6455}
+.goalrow .g-t{margin:7px 0 0;font-size:16px;font-weight:900;color:var(--text);
+  letter-spacing:-.01em}
+.goalrow .g-b{margin:8px 0 0;font-size:13.5px;line-height:1.55;color:#4B4231;
+  max-width:var(--measure)}
+.goalrow .g-cell{display:inline-block;margin:10px 0 0;padding:4px 10px;
+  border:1px dashed #9A9284;border-radius:11px;font-size:12.5px;font-weight:700;
+  color:#6C6455;background:#FBFAF7}
+
+/* ------------------------------------------------------------------------ band F lists
+   No chart. The whole force of this section is that it is plain, and a chart would dress
+   it up. */
+.lists{margin:16px 0 0;max-width:var(--figure)}
+.lt{width:100%;border-collapse:collapse}
+.lt tbody th,.lt tbody td{padding:12px 12px 13px 0;border-bottom:1px solid var(--line);
+  vertical-align:top;font-size:13.5px;line-height:1.5;color:#3A4448;text-align:left}
+.lt tbody th{padding-left:12px;border-left:4px solid #A9A296;font-weight:900;font-size:14px;
+  color:var(--text);width:26%}
+.lt thead th{font-size:12px;letter-spacing:.09em;text-transform:uppercase;font-weight:900;
+  color:var(--caption);text-align:left;padding:0 10px 7px 0;
+  border-bottom:2px solid var(--text)}
+.lt thead th:first-child{padding-left:12px}
+.lt .age{display:block;margin:6px 0 0;font-size:12px;color:var(--caption);font-weight:400}
+.lt .perm{color:#6C6455;font-weight:700}
+.lt .from{display:block;margin:5px 0 0;font-size:12px;color:var(--caption)}
+
+.tgt{list-style:none;margin:0;padding:0}
+.tgt li{padding:11px 0 12px 12px;border-bottom:1px solid var(--line);
+  border-left:4px solid var(--ink);font-size:14px;line-height:1.45;color:var(--text);
+  font-weight:700}
+.tgt li b{display:block;font-size:13px;font-weight:900;color:var(--ink);
+  font-variant-numeric:tabular-nums}
+.tgt li span{display:block;margin:3px 0 0;font-size:12.5px;color:var(--caption);
+  font-weight:400}
+.tgt-none{margin:14px 0 0;max-width:var(--measure);font-size:14px;line-height:1.55;
+  color:#4B4231;padding:12px 14px;background:#F1EEE9;border-left:4px dashed #A9A296}
+
+/* Footer: site furniture on its own ground, so the story visibly ends. */
+.foot{background:var(--deep);color:#A8CDD4;padding:44px 0 52px;font-size:14px}
+.foot .wrap > *{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.foot-k{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:900;color:#7FB3BC}
+.foot-links{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:12px;
+  grid-template-columns:repeat(3,minmax(0,1fr))}
+.foot-links a{display:block;color:#fff;font-weight:900;text-decoration:none;
+  border-top:2px solid #1A8A9E;padding-top:9px}
+.foot-links a:hover{color:var(--lime)}
+.foot-links span{display:block;margin-top:4px;color:#8FBAC2;font-size:13px}
+.foot-cta{margin:28px 0 0;padding-top:18px;border-top:1px solid rgba(255,255,255,.16)}
+.foot-cta b{color:#fff;font-weight:700}
+.foot-id{margin:14px 0 0;font-size:13px;color:#93B6BD}
+.foot-id .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+
+@media (max-width:760px){
+  /* Every chart re-lays itself out per form below 760px (rows, labels above marks), so
+     the shared sideways-scroll fallback is switched off: the evidence belongs in the
+     first paint rather than behind a pan. */
+  .chart{overflow-x:visible;padding-bottom:0}
+  .chart svg{min-width:0}
+  .chart::after{content:none}
+  .fig-title{font-size:19px;margin-top:24px}
+  .dg-t{font-size:14.5px}
+
+  /* THE TABLES BECOME CARDS. A matrix does not survive a phone as a matrix, and a
+     sideways scroll would hide the small awards and the empty cells, which are the
+     argument in both tables. Each row becomes one card carrying its own column labels. */
+  .lg,.lg tbody,.lg tr,.lg th,.lg td,.lg caption,.lt,.lt tbody,.lt tr,.lt th,
+  .lt td{display:block}
+  .lg thead,.lt thead{display:none}
+  .lg tbody tr{margin:12px 0 0;padding:13px 15px;background:#fff;
+    border:1px solid var(--line);border-left-width:5px}
+  .lg tbody tr th,.lg tbody tr td{padding:0;border-bottom:0;background:none !important}
+  .lg tbody tr th{border-left:0}
+  .lg td{margin:8px 0 0}
+  .lg td.num{text-align:left}
+  .lg td::before{content:attr(data-l);display:block;font-size:12px;font-weight:900;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--caption);margin:0 0 2px}
+  .lg tr.k-firm{border-left-color:var(--ink)}
+  .lg tr.k-university{border-left-color:var(--c1)}
+  .lg tr.k-administrator{border-left-color:var(--c3)}
+  .lg tr.k-program_aggregate{border-left-color:var(--pv-axis)}
+  .lg tr.rule{background:none;border:0;border-top:2px solid var(--hover);padding:12px 0 0;
+    margin-top:16px}
+  .lg tr.rule th{padding:0;color:var(--hover)}
+
+  .lt tbody tr{margin:12px 0 0;padding:13px 15px;background:#fff;
+    border:1px solid var(--line);border-left:5px solid #A9A296}
+  .lt tbody th,.lt tbody td{padding:0;border-bottom:0;border-left:0;width:auto}
+  .lt td{margin:8px 0 0}
+  .lt td::before{content:attr(data-l);display:block;font-size:12px;font-weight:900;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--caption);margin:0 0 2px}
+
+  /* The register drops to one column: date and status on their own line above the
+     commitment, then the type and reading beneath it. */
+  .rg{grid-template-columns:1fr;gap:6px}
+  .rg-d{white-space:normal}
+  .register,.ledger,.lists,.goalrow{max-width:100%}
+  .foot-links{grid-template-columns:1fr}
+}

@@ -1,0 +1,44 @@
+{
+  "_note": "THE RECIPIENT TYPING. The spec asks for kind/role/county to be added to funding-map/data/funding.json itself, which is where they belong: bands A, B and C all depend on separating a check written to a company from a line naming a building or a programme, and hand-typing that split at render time is the error class CORRECTIONS.md already logs twice. That upstream edit is outside this draft's scope, so the typing lives here instead, as a committed page-local file with a build guard: derive_accountability.py fails if any recipient id in funding.json is missing from `kind`, and claims.json asserts that exactly two rows are program_aggregate and that they sum to $23,094,356. A new firm therefore cannot silently move the 29.2 percent. Fold this file into funding.json when the upstream patch lands, and delete it.",
+  "_county": "NOT COLLECTED. The spec's third field is a one-time collection from the award records. No shipped file in this repository carries a county for any recipient, and typing one from memory would be inventing data. The Band C table therefore ships without its county column, and the README names it as the one column the spec specifies that this draft cannot fill.",
+  "kind": {
+    "bioverde": "firm",
+    "flexsys": "firm",
+    "goodyear": "firm",
+    "university-of-akron": "university",
+    "huntsman": "firm",
+    "full-circle": "firm",
+    "greater-akron-chamber": "administrator",
+    "polymer-pilot-facility": "program_aggregate",
+    "peak-nano": "firm",
+    "promerus": "firm",
+    "cwru": "university",
+    "synthomer": "firm",
+    "polykinetix": "firm",
+    "aeris": "firm",
+    "ace-innovations": "firm",
+    "gelpure": "firm",
+    "materium": "firm",
+    "plastinuva": "firm",
+    "seauciel": "firm",
+    "tkm-ballistics": "firm",
+    "regional-workforce": "program_aggregate"
+  },
+  "kind_label": {
+    "firm": "Company",
+    "university": "University",
+    "administrator": "Administrator",
+    "capital_asset": "Capital asset",
+    "program_aggregate": "Programme aggregate"
+  },
+  "role_by_program": {
+    "eda-direct": "project lead",
+    "oh-facility": "program operator",
+    "oh-rd": "sub-grantee",
+    "oh-startup": "cohort awardee",
+    "oh-gov": "governance",
+    "oh-workforce": "program operator",
+    "apex-workforce": "program operator"
+  },
+  "role_note": "Role is a property of the programme an award line sits in, not of the organisation holding it, so it is derived from programId rather than typed per recipient. The University of Akron is a project lead on its EDA award and a sub-grantee on its state R&D award, and the table says both."
+}

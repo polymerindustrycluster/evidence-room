@@ -5,10 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>The PIC Evidence Room</title>
+<meta name="description" content="Ohio leads the country in plastics and rubber jobs. Free public data on what the work pays, who holds it, and where the federal money goes in Northeast Ohio, with every number checkable.">
 <link rel="stylesheet" href="../_shared/pic-viz.css">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<!-- Set synchronously, before first paint, so the one control on this page that needs
+     JavaScript (the county picker) is hidden rather than dead when there is none. Every
+     other thing on this page, the thirteen links above all, renders from this file. -->
+<script>document.documentElement.classList.add("js")</script>
 
 <header class="mast">
   <div class="wrap">
@@ -19,103 +24,467 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow" id="eyebrow">One evidence base</p>
-    <h1>Every number here has a source, an assertion, and <em>a way to be proved
-      wrong</em>.</h1>
-    <p class="stand">Built from free public data &mdash; federal payroll and wage records,
-      the census, energy and price series, federal spending, and the national record of
-      college degrees &mdash; plus PIC's own vault and grant intake. Each published sentence is a
-      re-runnable assertion; each carries the condition that would falsify it. Nothing here
-      is cleared for external use without the checks at the bottom of this page.</p>
-    <p class="stand"><dfn><b>PIC-12</b> and <b>NEO-14</b> are two different maps of the
-      same region: twelve counties for anything built from federal data, fourteen for
-      anything from PIC's own records. They share ten counties and are never mixed in one
-      figure.</dfn></p>
-    <div class="hero-row" id="figs"></div>
-  </div>
-</section>
+    <p class="eyebrow">Findings from free public data</p>
+    <!-- THE SECOND SENTENCE USED TO READ "That is the easiest claim here to prove." A
+         reader stopped on it twice: "That" can attach to the jobs rather than to the
+         claim, and "prove" is the word this hero corrected itself out of one paragraph
+         later, because the page checks its restatements rather than proving its findings.
+         The replacement refers to nothing and promises only what the dek promises. -->
+    <h1>Ohio is <em>first in the country</em> in plastics and rubber jobs. Nothing here is
+      easier to check.</h1>
+    <p class="stand">54,846 of those jobs against second-place Texas&rsquo;s 44,598, a lead
+      of 10,248, and every state disclosed in the Bureau of Labor Statistics count.
+      Underneath the ranking sit the questions a member firm argues about: what the work
+      pays, and who is available to do it.</p>
+    <!-- WHAT THIS PAGE ACTUALLY DOES, said in the hero. This line used to read "Every
+         number here has a source, an assertion, and a way to be proved wrong" — which is
+         circular in ordinary English (an assertion is a claim), and which promised more
+         than the page delivers: this page verifies that it copied the linked pages
+         faithfully, not that their findings are right. A naive reader hit the honest
+         version of that caveat far below and had to scroll back. It is the hero's job to
+         carry it. -->
+    <p class="stand dek">Every number here restates a finding from one of the pages below
+      and re-runs against that page&rsquo;s own data on every build.</p>
+    <!-- The hub says who wrote it in the same words every article does. It carries its own
+         numeric claims, so it takes the same accountability line; the fuller version of
+         this disclosure is in "How this was made" below. Guarded by tools/disclosure.mjs. -->
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; August&nbsp;2026</p>
+    <!-- THREE STAT CARDS, IN ONE ROW THAT CANNOT WRAP. The row was four on a two-column
+         grid, so it rendered as a 2x2 block against the house rule that hero stats never
+         wrap. The fourth card counted the site's own claims, which is apparatus, not a
+         finding; it now sits in the band that is about the apparatus. Each of these three
+         restates a number one of the linked pages publishes and is guarded in claims.json
+         against that page's own data file. Written here rather than through PV.figures()
+         so the hero survives with scripting off. -->
+    <!-- EVERY CARD SAYS WHICH WAY IS GOOD. All three used to state a magnitude and stop:
+         a naive reader could not tell whether 48.4 percent was alarming or normal, or
+         whether the annual contracting figure was the good news or the yardstick that
+         shrinks it, and the "1.2x" label named the measure instead of reading it. Card 3
+         also printed the ANSWER to a division whose other input sat four screens away, so
+         the one calculation a reader could try in the hero could not be tried at all; the
+         award is printed here now and 51.0 over 36.6 comes out at the 1.4 the card claims.
 
-<section class="band">
-  <div class="wrap">
-    <p class="takeaway">Start here</p>
-    <h2>The four that answer a question someone actually asked</h2>
-    <p class="lede">If you only open a few, open these. Each replaces a claim PIC currently
-      makes on assertion with one it can defend on evidence.</p>
-    <div class="cards lead" id="lead"></div>
-  </div>
-</section>
+         CARD 3 MOVED BASIS ON 2026-08-29, from an eight-year average to the seven finished
+         years. See the note on the federal-money card below, and CORRECTIONS.md.
 
-<section class="band">
-  <div class="wrap">
-    <p class="takeaway">The rest</p>
-    <h2 id="alltitle">Everything, by what it is for</h2>
-    <div class="cards" id="all"></div>
-  </div>
-</section>
-
-<section class="band">
-  <div class="wrap">
-    <p class="takeaway">Before anything leaves the building</p>
-    <h2>How to check this work</h2>
-    <div class="checks">
-      <div>
-        <h3>1. Re-run every claim</h3>
-        <pre>cd _data/build
-python verify_claims.py</pre>
-        <p>Every published sentence is an assertion against the data that produced it.
-          A failure means the sentence no longer matches its source &mdash; fix the
-          sentence or the computation, never the assertion.</p>
+         CARD 1 NAMES ITS UNIT. "40 of the 51 industry-county pairings" sat next to
+         cluster-health's "20 of 24 counties" and two readers took them for one count in
+         two shapes. They are different units, and this card says which one it is counting
+         rather than leaving the compound noun to carry it. -->
+    <div class="hero-row">
+      <div class="figv key">
+        <div class="n">1.2&times;</div>
+        <div class="k">what the middle pairing pays for every dollar the average job in
+          its county pays</div>
+        <div class="d">Higher is better for a worker. Polymer clears the local average in
+          40 of 51 disclosed pairings, one industry in one county</div>
       </div>
-      <div>
-        <h3>2. Read the falsification conditions</h3>
-        <pre>python verify_claims.py --list</pre>
-        <p>Each claim carries what would make it wrong. This output is the brief for a
-          hostile reviewer &mdash; it is the attack surface, written down by the person
-          who made the claims.</p>
+      <div class="figv">
+        <div class="n">48.4%</div>
+        <div class="k">of the jobs in Summit County are held by people who live in it</div>
+        <div class="d">Ashtabula, the most self-contained of the twelve counties, still
+          reaches only 68 percent. None of them staffs itself</div>
       </div>
-      <div>
-        <h3>3. Attack the manual claims first</h3>
-        <p>Claims quoted from documents rather than datasets cannot be machine-checked.
-          They print as <span class="mono">MANL</span> and are the most likely place a
-          wrong reading survives. They need a human or a council lane.</p>
-      </div>
-      <div>
-        <h3>4. Rebuild the data from origin</h3>
-        <pre>python fetch_*.py &amp;&amp; python derive_*.py</pre>
-        <p>Every dataset is reproducible from <span class="mono">_data/build/</span> with
-          free public APIs. Nothing depends on a private table, and nothing writes to
-          production.</p>
+      <div class="figv">
+        <div class="n">$36.6M</div>
+        <div class="k">a year, on average, in ordinary federal contracts, the seven
+          finished years 2019 to 2025</div>
+        <div class="d">The one-time $51.0M Tech Hub award is about 1.4 years of it. The
+          routine flow is the bigger number</div>
       </div>
     </div>
-    <div class="note" id="footnote"></div>
+  </div>
+</section>
+
+<!-- THE ONE CHART. A page whose masthead says "Interactive evidence" and whose argument is
+     that numbers should be inspectable carried no axis, bar, line or map anywhere: every
+     finding arrived as prose in a card, so no number on the page had a direction and the
+     hero's ranking had no shape. This band draws the H1's own claim and nothing else.
+
+     IT OPENS ON THE H2, WITH NO KICKER AND NO LEDE, ON PURPOSE. The two bands after it both
+     open kicker / H2 / lede, and the house limit is two consecutive; a third would have
+     made the page a template loop. The context a lede would have carried sits under the
+     chart in the source line instead, which is where a caveat about the measure belongs.
+
+     Bars are drawn by app.js from data/states.json, never hand-typed here. That file is a
+     cut of the peers page's own shipped dataset, and index-chart-states asserts the copy
+     still matches it state by state. -->
+<section class="band">
+  <div class="wrap">
+    <h2>Ohio&rsquo;s lead over Texas is wider than the gap from Texas down to eighth
+      place</h2>
+    <div class="chart reflow jsdrawn">
+      <svg id="states" role="img" aria-labelledby="statestitle"><title id="statestitle">Ranked
+        bars, the ten states with the most plastics and rubber jobs in 2024. Ohio leads on
+        54,846, then Texas on 44,598, Illinois on 43,168 and California on 41,042, down to
+        South Carolina on 26,733.</title></svg>
+    </div>
+    <div id="statestable"></div>
+    <p class="src">Jobs in plastics and rubber products manufacturing, 2024 annual averages
+      from the Bureau of Labor Statistics payroll census. Every state is disclosed, so
+      nothing is missing from this ranking. A count is only a count, though. Three of the
+      nine states behind Ohio pack the industry more densely into a smaller workforce:
+      Indiana, South Carolina and Wisconsin. That is the question the concentration page
+      below answers.</p>
+  </div>
+</section>
+
+<section class="band whatitis">
+  <div class="wrap">
+    <p class="takeaway">What this is</p>
+    <h2>A cluster checking its own claims in public</h2>
+    <!-- PIC WAS NEVER SPELLED OUT. The acronym appeared a dozen times, including inside a
+         data label, and a first-time reader finished the page not knowing who was asking
+         them to trust the numbers. "Cluster" had the same problem: it is in the H2 above
+         and in the masthead, and nothing said what one is. Both are glossed here, at the
+         first sentence of body prose on the page, and the expansion is guarded against the
+         publisher string in the funding map's own shipped data. -->
+    <p class="lede">The Polymer Industry Cluster, PIC for short, publishes numbers about the
+      plastics, rubber and coatings economy of Northeast Ohio: how many jobs it holds, what
+      they pay, who is available to fill them. A cluster is what its name says, the firms,
+      suppliers and labs of one industry packed into one place. Those numbers used to arrive
+      as bare claims. Here they arrive with the working shown.</p>
+    <p class="whatitis-body">Every page is built from federal data that costs nothing to
+      obtain, listed in the source registry below: the payroll census of covered jobs, the
+      file recording where workers live, degree completions, federal contract spending,
+      energy and producer prices. The analysis is scripted rather than hand-assembled, and
+      the analysis and graphics are by Claude (Anthropic), and John Swanson is responsible for what it says. Each reading of
+      what the numbers mean was sent to competing AI systems to be argued down before it
+      was published. Every sentence carrying a number is backed by a check that re-runs
+      against the source data on every build, and each one states the condition that would
+      prove it wrong.</p>
+    <p class="whatitis-body">This is working research by PIC staff. It is not official
+      statistics, and it is not a news operation. Where the federal record contradicts
+      something PIC has said, the page says so and the correction is dated in a log that is
+      only ever appended to. Everything here is free to reuse under CC BY 4.0, including the
+      derived data and the scripts, because a figure anyone can re-derive is the only kind
+      worth publishing.</p>
+  </div>
+</section>
+
+<!-- THE GALLERY. One band, not two.
+
+     It was two: a "Start here" band of four cards, then an "Everything" band holding the
+     other nine under a sort nothing rendered. That split cost the page twice. The band
+     openings were the third and fourth consecutive kicker/H2/lede against a house limit of
+     two, and the county picker sat in the second band while stating a verdict about all
+     thirteen pages, four of which a reader had already scrolled past. One band, one
+     picker, one taxonomy, every card under the group it belongs to and nowhere else.
+
+     EVERY CARD IS AN ANCHOR IN THIS FILE. They used to be built by app.js from an array,
+     which meant the front door to thirteen pages contained no link to any of them with
+     scripting off, or if one fetch failed. app.js now decorates these anchors (claim
+     counts, county flags, the verdict) and creates none of them.
+
+     Each card's finding sentence restates a number the linked page publishes, and each
+     restatement is guarded in this page's claims.json against THAT PAGE'S data file, so a
+     correction on a page fails the hub's gate instead of leaving a stale card behind.
+
+     data-geo = the geography the page's figures are BUILT ON, which is what the county
+     picker answers. "pic12" holds all twelve counties; "metros4" is the four metropolitan
+     areas the occupations file publishes wages for; "akron" is the single regional metro
+     the cost-of-living page prices; "national" and "register" pages contain no county
+     reading. -->
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">Everything</p>
+    <h2 id="alltitle">Everything here, by the question it answers</h2>
+    <p class="lede">The pages under Start here each answer a question a funder or a member
+      firm has already asked out loud. Most of these pages are built on the twelve counties
+      PIC measures against; a few use price metro areas, national series, or the public
+      registers of awards and dates.</p>
+
+    <!-- THE KEY, WHERE THE CHIPS ARE. Nine chip types ran down the gallery in two colours
+         with nothing explaining either, and their meanings sat two thousand pixels lower in
+         the methodology. A naive reader stopped decoding them after the second card, which
+         is the row that tells them whether a page covers their county. This also lists the
+         twelve counties, which the page named constantly and never once printed. -->
+    <p class="note"><b>Reading a card.</b> The teal chip names the geography the page&rsquo;s
+      figures were built on. <b>PIC-12</b> is the twelve counties PIC measures: Ashtabula,
+      Cuyahoga, Geauga, Lake, Lorain, Mahoning, Medina, Portage, Stark, Summit, Trumbull and
+      Wayne. The counts after it are the sentences on that page stored as checks that re-run
+      against the data, and, where a page has any, the few that rest instead on a document a
+      person read.</p>
+
+    <div class="picker">
+      <label for="county">Your county</label>
+      <select id="county">
+        <option value="">All twelve counties</option>
+      </select>
+      <p class="verdict" id="verdict" aria-live="polite"></p>
+    </div>
+
+    <h3 class="gname">Start here</h3>
+    <div class="cards lead">
+      <a class="card" href="../peers/" data-slug="peers" data-geo="pic12">
+        <h4>Where does Ohio rank among states, and Akron among metros?</h4>
+        <p class="ans">First in the country</p>
+        <p class="f">Ohio holds 54,846 plastics and rubber jobs, 10,248 more than
+          second-place Texas, with all 51 state geographies disclosed. Akron is 6th of the
+          155 metros that disclose, where 1st is the largest; 227 metros are withheld and
+          are simply unknown.</p>
+        <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+      <a class="card" href="../laborshed/" data-slug="laborshed" data-geo="pic12">
+        <h4>Where do the people who work in a county live?</h4>
+        <p class="f">Summit County&rsquo;s own residents hold 48.4 percent of its 265,460
+          jobs. Ashtabula is the most self-contained of the twelve and still reaches only 68
+          percent, so workforce policy set county by county is aimed at people who mostly
+          live somewhere else.</p>
+        <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+      <a class="card" href="../wages/" data-slug="wages" data-geo="pic12">
+        <h4>What does a polymer job pay against the average job in its county?</h4>
+        <p class="f">The middle pairing pays 1.2 times what the average job in its
+          county pays, and beats it in 40 of the 51 industry-county pairings the bureau can
+          disclose, a pairing being one polymer industry in one county. All eleven that miss
+          make plastics or rubber products.</p>
+        <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+      <a class="card" href="../federal-money/" data-slug="federal-money" data-geo="pic12">
+        <h4>How big is the Tech Hub award next to the federal money that arrives every
+          year?</h4>
+        <!-- THE BASIS IS NAMED BECAUSE THE BASIS IS THE WHOLE DISAGREEMENT. This card and
+             the hero card above printed $34.9 million a year, an average of all eight
+             fiscal years including a fiscal 2026 that has run about seven months and stands
+             at $23.0 million. An annual rate cannot include a year that has not finished:
+             the part-year drags the mean down, which understates the routine flow and
+             overstates how far the one-time award reaches. Both now print the seven
+             finished years at $36.6 million and 1.4 years, which is what the cluster-health
+             dashboard prints. _data/FIGURES.json routine_federal_per_year records it. -->
+        <p class="f">Ordinary federal contracting in chemicals and plastics across the
+          twelve counties has averaged $36.6 million a year across the seven finished fiscal
+          years, 2019 to 2025, ranging from $17.0 million to $51.6 million. Fiscal 2026 is
+          still running and is not in that average. The $51.0 million Tech Hub award, the
+          federal designation Akron won in October 2023, is about 1.4 years of that average,
+          and fiscal 2019 alone cleared the award line.</p>
+        <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+    </div>
+
+    <h3 class="gname">National position</h3>
+    <div class="cards">
+      <a class="card" href="../cluster-health/" data-slug="cluster-health" data-geo="pic12">
+        <h4>Which measures changed, and which only look like they did?</h4>
+        <p class="f">24,030 jobs in 2025, a floor rather than a total because the bureau
+          withheld 12 of the 36 county-industry figures. On the 21 figures published every
+          year since 2015, the only run that holds the same counties still, the count fell
+          802 in a year, from 24,259 to 23,457, a third straight fall. Three of the five
+          measures moved further than they usually move between years, and the loudest
+          change, federal contracting up from $22.5 million to $39.0 million, is not one of
+          them.</p>
+        <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+      <a class="card" href="../location-quotient/" data-slug="location-quotient" data-geo="pic12">
+        <h4>Which polymer industry is this region most concentrated in?</h4>
+        <!-- TWO CONCENTRATIONS, TWO INDUSTRIES, AND TWO READERS TOOK THEM FOR ONE FIGURE
+             AT TWO VALUES. This card said "Rubber products, the industry Akron is named
+             for, run 2.44 times" while the cluster-health dashboard says "Plastics and
+             rubber, the industries the region is known for, run 2.32 times". Rubber
+             products is NAICS 3262; plastics and rubber is NAICS 326, the family that
+             CONTAINS it. Both figures are right and neither moves. What was wrong is that
+             nothing on either page let a reader tell the two apart, so this card names both
+             codes and prints both values in one sentence, where the containment is visible.
+             Both are asserted against location-quotient's own shipped file. -->
+        <p class="f">Paint and coatings fill 5.96 times as large a share of local jobs as
+          they do of the country&rsquo;s, and have led all six polymer industries every year
+          since 2015. Rubber products alone, NAICS 3262, the narrow industry Akron is named
+          for, run 2.44 times; the wider plastics and rubber family that contains it, NAICS
+          326, runs 2.32 times. Concentration is what makes a region distinctive and what
+          leaves it exposed.</p>
+        <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+    </div>
+
+    <div class="cards one">
+      <a class="card" href="../patents/" data-slug="patents" data-geo="ohio">
+        <h4>Does the region still invent the thing it is named for?</h4>
+        <p class="f">Ohio filed 342 polymer patent applications in 2023, down a quarter
+          from 2015 and twice the fall of Ohio patenting overall, in a national polymer
+          field that barely moved. By inventor address, with the publication lag and the
+          address trap stated.</p>
+        <p class="meta"><span class="pill geo">Ohio + four cities</span></p>
+      </a>
+    </div>
+
+    <h3 class="gname">Workforce</h3>
+    <div class="cards">
+      <a class="card" href="../churn/" data-slug="churn" data-geo="pic12">
+        <h4>How much hiring and separating sits behind a flat job count?</h4>
+        <p class="f">111,529 hires and 111,361 separations across 55 quarters produced 168
+          net jobs. In the average quarter hires run 10.8 percent of the workforce and
+          separations 10.7 percent, which is how a churn engine that size nets out to
+          nothing.</p>
+        <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+      <a class="card" href="../occupations/" data-slug="occupations" data-geo="metros4">
+        <h4>Which occupations is the industry made of, and what do they pay here?</h4>
+        <p class="f">One job in nine is a molding-machine setter, and just over half the
+          country&rsquo;s setters work in this one industry. All four Northeast Ohio metros
+          pay the jobs that need a degree below the national rate.</p>
+        <p class="meta"><span class="pill geo">four metros</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+    </div>
+
+    <h3 class="gname">Money</h3>
+    <div class="cards one">
+      <a class="card" href="../funding-map/" data-slug="funding-map" data-geo="register">
+        <h4>Where did the public money go?</h4>
+        <p class="f">$106.3 million in all: $85.3 million across three public awards, plus
+          $21.0 million of matching money that came with them, drawn to scale across
+          twenty-one named recipients. The $51.0 million Tech Hub award is the largest of
+          the three and sits inside this total, not on top of it. The $36.6 million a year
+          of ordinary contracting, on the seven finished fiscal years, is separate and
+          recurring.</p>
+        <p class="meta"><span class="pill geo">awards</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+    </div>
+
+    <h3 class="gname">Operating conditions</h3>
+    <div class="cards">
+      <a class="card" href="../realwage/" data-slug="realwage" data-geo="akron">
+        <h4>What do these wages buy once local prices are counted?</h4>
+        <p class="f">Among the 56 metros with enough polymer employment to compare, Akron
+          is 33rd on weekly pay and 19th on what that pay buys, where 1st is best. Counting
+          local prices lifts it across the middle of the pack, not to the top.</p>
+        <p class="meta"><span class="pill geo">Akron metro</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+      <a class="card" href="../cost-scissors/" data-slug="cost-scissors" data-geo="national">
+        <h4>How much of the 2022 price spike came back out of finished polymer prices?</h4>
+        <p class="ans">Finished prices never came back down</p>
+        <p class="f">Natural gas gave back its whole 2022 spike, crude about half, resin
+          about a third, and finished polymer products none of it. The further a price sits
+          from the wellhead, the less of the spike came back out.</p>
+        <p class="meta"><span class="pill geo">national</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+    </div>
+
+    <h3 class="gname">Method and governance</h3>
+    <div class="cards">
+      <a class="card" href="../revisions/" data-slug="revisions" data-geo="national">
+        <h4>How much do these figures change after publication?</h4>
+        <p class="ans">Almost every number moves</p>
+        <p class="f">259 of 273 published months in three producer-price series, the
+          wholesale prices of chemicals, resin and plastic goods, were changed later by a
+          typical 0.15 percent. That the change is small is the finding, and the scope is
+          those three series only.</p>
+        <p class="meta"><span class="pill geo">national</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+      <!-- THE REPLICATION GUIDE. It is the only page here that makes no interpretive
+           claim about the region: it hands over method, so its card leads with what a
+           reader can DO rather than with a finding. data-geo is "method" because the page
+           is built on no geography at all, which is why the county picker never marks it:
+           a page that contains no county reading should not claim to cover one. -->
+      <a class="card" href="../sources/" data-slug="sources" data-geo="method">
+        <h4>How would another region rebuild all of this?</h4>
+        <p class="ans">Take the codes, they are the hard part</p>
+        <p class="f">Every dataset behind this site, with the exact filters applied to it,
+          what each one cannot tell you, which need a key and which cannot be fetched at
+          all. One question is carried the whole way, from the endpoint to the reading, and
+          the gaps we could not close are published beside it.</p>
+        <p class="meta"><span class="pill geo">method</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+      <a class="card" href="../timeline/" data-slug="timeline" data-geo="register">
+        <h4>Why is the cluster here, and what has it done since?</h4>
+        <p class="f">31 proven milestones, the first dated 1898 and the last 2012, explain
+          why the designation landed in Akron. A separate operating register counts what has
+          happened since: 68 public developments in the 34 months after October 2023, against
+          4 in the 34 months before.</p>
+        <p class="meta"><span class="pill geo">public record</span><span class="pill hit-flag">covers this county</span></p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- The act boundary: everything below is apparatus. This band opens on the callout rather
+     than on a kicker/H2/lede, which is what keeps it from being a third consecutive band
+     running the identical template. -->
+<section class="band alt">
+  <div class="wrap">
+    <p class="takeaway">Before anything leaves the building</p>
+    <h2>Every sentence here is a test that can fail</h2>
+    <!-- The counts below and in the paragraph after it are written by app.js from ONE
+         derived inventory: the cards above, intersected with the harness totals in
+         counts.json. The literals are the current values of that derivation, guarded by
+         index-inventory in claims.json, so a reader with scripting off sees a number the
+         gate has checked rather than a blank. counts.json is itself checked against every
+         artifact's own claims.json by index-counts-fresh, which is what stops a card
+         advertising 23 claims for a 27-claim page. -->
+    <p class="note"><b>The <span data-inv="pagesword">fourteen</span> pages here carry
+      <span data-inv="claims">401</span> checked claims, and
+      <span data-inv="manual">15</span> of them cannot be machine-checked.</b> Every
+      published sentence is stored as a check that re-runs against the data that produced
+      it, next to the condition that would prove it wrong. The exceptions are quoted from
+      project narratives, press releases and internal registers rather than from datasets,
+      so they name a source and what would prove them wrong but cannot be re-run. Attack
+      those first. More checks is not the same as more truth; it is more places this site
+      can be caught being wrong, which is the only sense in which the number is good
+      news.</p>
+    <!-- WHAT THE HUB DOES NOT LINK, SAID OUT LOUD. A reader handed the rendered pages met
+         two that no card leads to and could not tell whether they were withheld or simply
+         missed: the sentence above counts the published set and nothing accounted for the
+         difference between that set and the tree. This paragraph does, and every number in
+         it is written by app.js from the same counts.json the sentence above reads, so the
+         two can never disagree.
+
+         NEITHER PAGE IS CARDED, AND THAT IS A DECISION, NOT AN OVERSIGHT. Each ships a
+         .unlisted file at its own root giving its reason, and index-inventory in
+         claims.json fails the gate if a third artifact ever appears that is neither carded
+         here nor named there. The draft's own file says in terms that adding its hub card
+         is a separate, deliberate act; it is not this page's to take, and the two open
+         questions it is waiting on are a communications decision. Making the withholding
+         visible is what this page owes a reader in the meantime. -->
+    <p class="note" id="withheld"><b><span data-inv="withheldword">Two</span> further pages
+      are built and gated in this repository and are deliberately not linked from here.</b>
+      One is an internal board view of PIC&rsquo;s own performance: a populated copy would
+      carry member records a public repository with permanent history cannot hold. The other
+      is an unreviewed draft of the public scorecard, held back until communications review
+      answers the question its opening figure turns on, and it says on its own face that it
+      is a draft. Each states its reason in a file at its directory root, neither is counted
+      in the totals above, and putting either in the gallery above is a separate decision
+      that has not been taken.</p>
+    <details class="howto">
+      <summary>The commands, for anyone who wants to run them</summary>
+      <div class="checks">
+        <div>
+          <h3>Re-run every claim, or read what would break it</h3>
+          <pre>cd _data/build
+python verify_claims.py
+python verify_claims.py --list</pre>
+          <p>A failure means a published sentence no longer matches its source. Fix the
+            sentence or the computation, never the check.</p>
+        </div>
+        <div>
+          <h3>Rebuild the data from origin</h3>
+          <pre>python fetch_*.py &amp;&amp; python derive_*.py</pre>
+          <p>Every dataset is reproducible from <span class="mono">_data/build/</span> with
+            free public APIs. Nothing reads a private table, and nothing writes to
+            production.</p>
+        </div>
+      </div>
+    </details>
+    <p class="src">Re-running all of them is one command in
+      <a href="https://github.com/polymerindustrycluster/evidence-room">the repository</a>,
+      <span class="mono">python _data/build/verify_claims.py</span>, and the listing doubles
+      as the brief for a hostile reviewer.</p>
+    <p class="src">The federal sources behind these pages, named once so a reader can find
+      them. <dfn><b>QCEW</b> is the Quarterly Census of Employment and Wages, the payroll
+      count behind every jobs and wage figure here.</dfn>
+      <dfn><b>IPEDS</b> is the Integrated Postsecondary Education Data System, the federal
+      record of every degree conferred.</dfn>
+      <dfn><b>NAICS</b> is the North American Industry Classification System, the codes that
+      decide which employers count as polymer.</dfn>
+      <dfn><b>BEA</b> is the Bureau of Economic Analysis, which publishes regional price
+      levels, and <b>BLS</b> is the Bureau of Labor Statistics.</dfn></p>
   </div>
 </section>
 
 <section class="closer">
   <div class="wrap">
-    <p>Two footprints, three registers, and a suppression rule. Read those before quoting
-      anything.</p>
-    <p class="sub">Federal-data pages use <b>PIC-12</b>, matching the cluster-health
-      dashboard. Vault-sourced pages use <b>NEO-14</b>, which is how company records are
-      tagged. They share ten counties and never reconcile. PIC's measurement register is
-      <b>3252 + 3255 + 326</b> — NAICS 325 is context, not cluster. A withheld cell is
-      never a zero. All three rules are in
-      <span class="mono">_data/METHODS-SOP.md</span>. The footprints themselves are
-      canonically defined in <a href="https://github.com/polymerindustrycluster/pic-geo">pic-geo</a>,
-      a separate small package with its own tests; this repository carries a vendored copy at
-      <span class="mono">_data/build/footprints.py</span> so its scripts run from a clone with
-      nothing else installed, and pic-geo's test suite asserts the two never diverge.</p>
-    <p class="src">The federal sources behind these pages, named once so a reader can find
-      them: <dfn><b>QCEW</b> &mdash; the Quarterly Census of Employment and Wages, the
-      payroll count behind every jobs and wage figure here.</dfn>
-      <dfn><b>IPEDS</b> &mdash; the Integrated Postsecondary Education Data System, the
-      federal record of every degree conferred.</dfn>
-      <dfn><b>NAICS</b> &mdash; the North American Industry Classification System, the codes
-      that decide which employers count as polymer.</dfn>
-      <dfn><b>BEA</b> is the Bureau of Economic Analysis, which publishes regional price
-      levels; <b>BLS</b> is the Bureau of Labor Statistics.</dfn>
-      <dfn><b>TRL</b> &mdash; technology readiness level, a 1-to-9 scale from idea to
-      production.</dfn></p>
+    <p>The ranking opens the meeting. The pages here are what has to hold up in it.</p>
+    <p class="sub">If a sentence here is wrong, the fastest way to show it is the check
+      stored beside it in that page&rsquo;s claims file. Each one names, in advance, the
+      finding that would break the sentence.</p>
   </div>
 </section>
 

@@ -1,255 +1,250 @@
-/* WIDTHS COME FROM _shared/pic-viz.css. This page predated that file and carried its own
-   --wrap/--gut pair at 1500px, so it ran ~350px wider than every other artifact on the
-   site — the single biggest reason the collection reads as inconsistent even though each
-   page is internally tidy. Its own type, color and spacing are unchanged; only the column
-   is shared. _shared is linked BEFORE this file, so every rule here still wins. */
-/* =========================================================================
-   PIC portfolio timeline — styles
-   Sibling of web/funding-map. Same vocabulary: Aptos, brand palette, generous
-   whitespace, assertion headline, charcoal copy (never black).
-   The rule that is easy to break and must not be: never white text on #1A8A9E
-   (4.06:1). Dark surfaces are #0C6473 (6.8:1 with white).
-   Type floor: this page follows the deck's DESIGN-TYPE-FLOOR discipline in
-   spirit — nothing a reader needs is set as muted micro-type. 12.5px gray is
-   how the funding map's award IDs became invisible.
-   ========================================================================= */
+/* timeline — page-local additions only.
+   Migrated onto the house anatomy 2026-08-28. The page used to carry its own design
+   generation: a private teal palette that redefined the shared --ink token, its own font
+   stack, a .masthead, .section chrome, a hand-written methods section and a 1500px
+   column, none of which the rest of the site uses. All of that is gone; the mast, hero,
+   bands, methodology box, closer and the whole column system now come from
+   _shared/pic-viz.css, and nothing in this file redefines a shared token.
 
-/* PUBLIC CUT — the @font-face rules that were here loaded Aptos .ttf files.
-   Aptos is licensed to Microsoft and is not redistributed in this repository. The font
-   stacks below still name it, so a reader who has Aptos installed sees it; everyone else
-   falls through to Segoe UI and then to the system UI font, which is what the stacks are
-   for. Removed by stage/strip_licensed_fonts.py. */
+   What is left is what the bespoke figures actually need and the shared core does not
+   provide: the heritage era strip, the operating-record swimlane with its hollow-versus-
+   solid encoding, the cadence bars, the filter chips, the photo strip, the event panel,
+   and the archive tables with their per-form mobile re-layout. */
 
-:root {
-  --teal-900:#0C6473; --teal-700:#12798B; --teal-500:#1A8A9E; --teal-050:#EAF3F5;
-  --lime:#B8D637; --green-mid:#8FAE2B; --green-deep:#5E7A10; --green-ink:#1F2A04;
-  --orange:#E5673E; --orange-dk:#C24E27; --plum:#8E3B62;
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:16px;top:16px;z-index:60;background:#fff;padding:12px 18px;
+  box-shadow:0 4px 18px rgba(0,0,0,.18)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);
+  white-space:nowrap}
+:focus-visible{outline:2px solid var(--action);outline-offset:3px}
 
-  --ink:#3B3C38; --charcoal:#585955; --muted:#656661;
-  --line:#E2E4E3; --line-soft:#EEF0EF;
-  --bg:#FFFFFF; --bg-alt:#F7F8F7; --bg-tint:#F2F6F6;
-  --focus:#0C6473;
+/* Pacing. The alternate ground is a real step against the paper, not a hairline: the
+   scroll reads as acts (heritage, photographs, pace, calendar, promises, archive). */
+.band.tint{background:#EFE9E0}
 
-  /* One hue per lane. Chosen so no two adjacent lanes share a hue family, and
-     every one clears 4.5:1 as ink on white — these are used as text, not just fills. */
-  --lane-desig:#12798B;
-  --lane-rd:#8E3B62;
-  --lane-work:#9A6A08;
-  --lane-startup:#1A8A9E;
-  --lane-infra:#5E7A10;
+/* Byline. Genre furniture, not decoration: a page that asks to be checked says who made
+   it and when, under the standfirst. The hero's own caption ink, which clears AA at 13px. */
+.byline{margin:15px 0 0;font-size:13px;line-height:1.55;color:#B7D9DE}
+.hero .wrap > .byline{max-width:var(--measure)}
 
-  --r-sm:6px; --r-md:10px; --r-lg:16px;
-  --t-fast:140ms;
-  --font:'Aptos','Segoe UI Variable Text','Segoe UI',system-ui,-apple-system,Arial,sans-serif;
-  --font-display:'Aptos Display','Aptos','Segoe UI Variable Display','Segoe UI',system-ui,sans-serif;
+/* Per-figure chrome: every chart carries its own claim title and how-to-read line, so the
+   H2 does section work instead of doubling as the chart title (chart-craft.md). */
+.fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
+  line-height:1.3;max-width:var(--measure);color:var(--text)}
+.fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure)}
+.fig-title + .fig-sub + .chart{margin-top:16px}
+.pro-legend,.pre-list{margin:14px 0 0;font-size:14.5px;line-height:1.55;color:var(--pv-ink);
+  max-width:var(--measure)}
+.pro-legend .sw{display:inline-block;width:11px;height:11px;border-radius:50%;
+  vertical-align:-1px}
+.pre-list b,.pro-legend b{color:var(--ink)}
+.nojs{color:var(--caption)}
+/* The tooltips are absolutely positioned inside their own chart box. */
+.chart{position:relative}
+
+/* ------------------------------------------------------------------ filter chips
+   Five workstream chips and three horizon chips, on the text rail so the controls share
+   the prose edge rather than opening a second one. */
+.controls{display:flex;flex-wrap:wrap;gap:22px 40px;align-items:flex-start;margin:26px 0 0;
+  padding-bottom:20px;border-bottom:1px solid var(--line);max-width:var(--measure)}
+.ctl-h{display:block;font-weight:700;font-size:13.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--caption);margin-bottom:9px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:600 15px/1 var(--sans);padding:9px 15px;border-radius:999px;cursor:pointer;
+  background:#fff;border:1.5px solid var(--line);color:var(--pv-ink);
+  display:inline-flex;align-items:center;gap:8px;transition:background 140ms}
+.chip:hover{background:var(--paper)}
+.chip .sw{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
+.chip[aria-pressed="false"]{opacity:.42}
+.chip[aria-pressed="true"]{border-color:currentColor}
+.reset{margin-left:auto;align-self:center;font:600 15px/1 var(--sans);cursor:pointer;
+  background:var(--ink);color:#fff;border:0;border-radius:999px;padding:11px 20px}
+.legend .grp{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+.legend .lg-h{font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--caption)}
+.legend .item{display:inline-flex;align-items:center;gap:8px}
+
+/* -------------------------------------------------------------- the swimlane */
+.lane-band{fill:#F4F1EC}
+.lane-band.alt{fill:#fff}
+.lane-name{font:700 15px/1 var(--sans)}
+.lane-count{font:600 13.5px/1 var(--sans);fill:var(--caption)}
+.axis-y{font:600 14px/1 var(--sans);fill:var(--caption)}
+.axis-rule{stroke:var(--pv-grid);stroke-width:1}
+.now-rule{stroke:var(--pv-ink);stroke-width:1.5;stroke-dasharray:5 5}
+.now-lab{font:700 13px/1 var(--sans);fill:var(--pv-ink);letter-spacing:.06em;
+  text-transform:uppercase}
+.ev{cursor:pointer}
+.ev .dot{stroke:#fff;stroke-width:1.5}
+/* Forward-dated events must never read as delivered work. Hollow, not faded: a lighter
+   version of the same mark reads as "less important", which is wrong — a scheduled award
+   end is a different kind of thing, not a minor delivered one. A SOLID ring, not a dashed
+   one: at r=5.5 a 3/2.4 dash breaks into flecks and vanishes against the lane band.
+   --c is set per node in app.js and has to be a custom property rather than an inline
+   stroke="" attribute: SVG presentation attributes lose to ANY stylesheet rule, so
+   `.ev .dot{stroke:#fff}` silently repainted every forward ring white-on-white. */
+.ev.fwd .dot{fill:#fff !important;stroke:var(--c) !important;stroke-width:3}
+.ev.fwd .pip{pointer-events:none}
+.ev .hit{fill:transparent}
+.ev:hover .dot,.ev.on .dot{stroke:var(--text);stroke-width:2.5}
+
+/* annotation layer, shared by all three charts */
+.ann{font:600 12.5px/1.3 var(--sans);fill:var(--text)}
+.ann-name{font:700 13px/1 var(--sans);fill:var(--text)}
+.leader{stroke:#A9ACAA;stroke-width:1}
+.ev-rule{stroke:#C2C6C4;stroke-width:1.5}
+.rule-lab{font:600 12.5px/1 var(--sans);fill:var(--pv-ink)}
+.fwd-zone{fill:#F6F1E4;opacity:.55}
+
+/* -------------------------------------------------------------- the cadence bars */
+.cad-pre{fill:#8A8B87}
+.cad-post{fill:var(--ink)}
+.cad-post.partial{fill:#7FB4BE}
+.cad-val{font:700 12.5px/1 var(--sans);fill:var(--text);font-variant-numeric:tabular-nums}
+.cad-note{font:600 12.5px/1 var(--sans);fill:var(--caption)}
+.cad-ann-pre{fill:#6E6F6B}
+.cad-ann-post{fill:var(--ink)}
+
+/* -------------------------------------------------------- the heritage era strip */
+.era-band{fill:#fff}
+.era-band.alt{fill:#F1EEE9}
+.era-band.void{fill:#F4F2EC}
+.era-lab{font:700 13.5px/1 var(--sans);fill:var(--caption);letter-spacing:.04em}
+.void-lab{font:700 12.5px/1 var(--sans);fill:var(--caption);letter-spacing:.04em}
+.void-note{font:700 13px/1.25 var(--sans);fill:#8A5B22}
+.void-edge{stroke:#C9A46A;stroke-width:1.5;stroke-dasharray:4 4}
+
+/* Mobile small multiples. Both SVG charts re-lay out per form below 900px rather than
+   shrinking: the era strip stacks its blocks, the swimlane becomes five panels. */
+.pnl-name{font:700 14px/1 var(--sans)}
+.pnl-count{font:600 12.5px/1 var(--sans);fill:var(--caption)}
+.pnl-band{fill:#fff}
+.m-axis{font:600 12px/1 var(--sans);fill:var(--caption);font-variant-numeric:tabular-nums}
+.m-rule{stroke:#C2C6C4;stroke-width:1.5}
+.m-rule-lab{font:600 12px/1 var(--sans);fill:var(--pv-ink)}
+
+/* ------------------------------------------------------ tooltip and event panel */
+.tip{position:absolute;z-index:20;max-width:var(--tip);background:#fff;color:var(--text);
+  border:1px solid var(--line);padding:13px 15px;pointer-events:none;font-size:15px;
+  box-shadow:0 10px 34px rgba(12,100,115,.17)}
+.tip .t-d{font-weight:700;font-size:13.5px;color:var(--caption);letter-spacing:.05em;
+  text-transform:uppercase;margin-bottom:5px}
+.tip .t-t{font-weight:600;line-height:1.4}
+.tip .t-o{color:var(--pv-ink);font-size:14.5px;margin-top:6px}
+.scrim{position:fixed;inset:0;background:rgba(20,32,34,.42);z-index:40}
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(460px,100%);background:#fff;
+  z-index:50;overflow-y:auto;padding:30px 30px 44px;box-shadow:-14px 0 44px rgba(0,0,0,.2)}
+.panel h2{margin:6px 0 10px;font-size:26px;line-height:1.2;max-width:none;color:var(--text)}
+.panel h3{margin:20px 0 8px;font-size:15px;font-weight:700;line-height:1.2;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--caption)}
+.panel .p-kind{font-weight:700;font-size:13.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--action)}
+.panel .p-close{position:absolute;top:20px;right:22px;width:38px;height:38px;
+  border:1px solid var(--line);background:#fff;cursor:pointer;font-size:19px;line-height:1}
+.panel .p-meta{display:grid;gap:10px;margin:18px 0 0;padding:16px;background:var(--paper)}
+.panel .p-meta div{display:flex;gap:12px;font-size:15.5px}
+.panel .p-meta dt{font-weight:700;color:var(--caption);min-width:118px}
+.panel .p-note{margin-top:18px;color:var(--pv-ink);font-size:15.5px}
+.panel .p-one{font-size:16px;color:var(--text)}
+.panel .p-src{margin:0;padding-left:18px;font-size:14.5px;color:var(--pv-ink)}
+.panel .p-src li{margin-bottom:8px;overflow-wrap:anywhere}
+
+/* ---------------------------------------------------------------- the photo strip
+   A snap row under a thumb, a 3 + 2 wrap under a mouse. At 1440 the snap strip clipped
+   the third photo mid-caption with no cue that it scrolled, and read as broken. */
+.photos{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;margin:26px 0 0;
+  padding:0 0 10px;max-width:var(--figure)}
+.photos figure{flex:0 0 min(340px,82%);margin:0;scroll-snap-align:start}
+.photos img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;
+  background:var(--paper)}
+.photos figcaption{margin-top:8px;font-size:13.5px;line-height:1.45;color:var(--pv-ink)}
+@media (min-width:900px){
+  .photos{flex-wrap:wrap;overflow-x:visible;scroll-snap-type:none}
+  .photos figure{flex:0 0 calc((100% - 32px) / 3)}
 }
 
-*,*::before,*::after { box-sizing:border-box; }
-html { -webkit-text-size-adjust:100%; }
-body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--font);
-  font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased; }
-.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
-  clip:rect(0 0 0 0); white-space:nowrap; border:0; }
-.skip { position:absolute; left:-9999px; }
-.skip:focus { left:16px; top:16px; z-index:60; background:#fff; padding:12px 18px;
-  border-radius:var(--r-sm); box-shadow:0 4px 18px rgba(0,0,0,.18); }
-:focus-visible { outline:3px solid var(--focus); outline-offset:3px; border-radius:4px; }
+/* ------------------------------------------------------------- the archive tables */
+.pro-table{margin:26px 0 0;max-width:var(--figure)}
+.pro-table summary{cursor:pointer;color:var(--action);font-weight:700;font-size:16px;
+  max-width:var(--measure);margin:0 auto}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);background:#fff;margin-top:14px;
+  max-width:var(--figure)}
+.dtable{border-collapse:collapse;width:100%;min-width:820px;font-size:15.5px}
+.dtable th,.dtable td{text-align:left;padding:12px 16px;vertical-align:top;
+  border-bottom:1px solid var(--pv-grid)}
+.dtable thead th{background:var(--ink);color:#fff;font-size:14px;letter-spacing:.06em;
+  text-transform:uppercase;position:sticky;top:0}
+.dtable .t-date{white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--pv-ink)}
+.dtable .t-lane{white-space:nowrap;font-weight:600}
+.dtable .t-one{min-width:320px;color:var(--pv-ink);font-size:14.5px}
+#htable{min-width:960px}
+.yrhead th{position:sticky;top:43px;background:#F1EEE9;color:var(--ink);font-size:13.5px;
+  letter-spacing:.08em;text-transform:uppercase;padding:9px 16px;
+  border-bottom:1px solid var(--line)}
+.badge{display:inline-block;margin-left:10px;font-weight:700;font-size:12.5px;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--caption);
+  border:1.5px dashed var(--line);border-radius:999px;padding:2px 9px;vertical-align:1px}
+.linkish{background:none;border:0;padding:0;color:var(--action);cursor:pointer;
+  font:600 16px/1 var(--sans);text-decoration:underline;text-underline-offset:3px}
+.dl{margin:16px 0 0;max-width:var(--measure)}
+.dl-sep{color:var(--caption);margin:0 10px}
 
-/* ------------------------------------------------------------------ masthead */
-.masthead { background:linear-gradient(158deg,#0C6473 0%,#12798B 62%,#17879b 100%);
-  color:#fff; padding:clamp(46px,7vw,86px) 0 clamp(38px,5vw,60px); }
-.eyebrow { margin:0 0 14px; font-weight:700; font-size:14.5px; letter-spacing:.18em;
-  text-transform:uppercase; color:#BFE2E9; }
-.masthead h1 { margin:0; font-family:var(--font-display); font-weight:700;
-  font-size:clamp(34px,5.2vw,62px); line-height:1.05; letter-spacing:-.02em; max-width:var(--figure); }
-.lede { margin:20px 0 0; max-width:var(--measure); font-size:clamp(17px,1.5vw,20px);
-  color:rgba(255,255,255,.9); }
-.topline { list-style:none; display:flex; flex-wrap:wrap; gap:14px; margin:32px 0 0; padding:0; }
-.topline li { background:rgba(255,255,255,.11); border:1px solid rgba(255,255,255,.2);
-  border-radius:var(--r-md); padding:12px 18px; }
-.topline b { display:block; font-family:var(--font-display); font-size:30px; line-height:1.1; }
-.topline span { font-size:14.5px; color:#CFE6EB; }
+/* -------------------------------------------------- the promises list and asides */
+.watch-h{margin:26px 0 0;font-size:19px;font-weight:700;line-height:1.3;color:var(--ink);max-width:var(--measure)}
+.watch{margin:12px 0 0;padding-left:22px;color:var(--pv-ink);max-width:var(--measure)}
+.watch li{margin-bottom:10px}
+.watch b{color:var(--ink);font-variant-numeric:tabular-nums}
+.asides{display:grid;gap:18px;margin:28px 0 0;max-width:var(--figure)}
+@media (min-width:900px){.asides{grid-template-columns:1fr 1fr}}
+.aside{background:#fff;border:1px solid var(--line);border-left:4px solid var(--action);
+  padding:16px 20px}
+.aside h3{margin:0 0 6px;font-size:13.5px;font-weight:700;line-height:1.2;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--action)}
+.aside p{margin:0;font-size:15.5px;color:var(--pv-ink)}
 
-/* ------------------------------------------------------------------ sections */
-.section { padding:clamp(38px,5vw,66px) 0; }
-.section--alt { background:var(--bg-alt); border-top:1px solid var(--line); }
-.section--methods { background:var(--bg-tint); border-top:1px solid var(--line); }
-h2 { font-family:var(--font-display); font-size:clamp(24px,2.6vw,34px); margin:0 0 8px;
-  letter-spacing:-.01em; color:var(--teal-900); }
-h3 { font-size:19px; margin:0 0 10px; color:var(--teal-900); }
-.sub { margin:0 0 22px; color:var(--charcoal); }
+/* ---------------------------------------------------------------------- the foot */
+.foot{background:var(--paper);border-top:1px solid var(--line);padding:30px 0 42px}
+.foot .wrap > *{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.foot-lede{margin:0;font-size:15px;line-height:1.55;color:#3A4448}
+.foot-id{margin:12px 0 0;font-size:13px;color:var(--caption)}
+.foot-id a{color:var(--action);font-weight:900}
 
-/* ------------------------------------------------------------------ controls */
-.controls { display:flex; flex-wrap:wrap; gap:26px 40px; align-items:flex-start;
-  padding-bottom:22px; margin-bottom:20px; border-bottom:1px solid var(--line); }
-.ctl-h { display:block; font-weight:700; font-size:13.5px; letter-spacing:.1em;
-  text-transform:uppercase; color:var(--muted); margin-bottom:9px; }
-.chips { display:flex; flex-wrap:wrap; gap:8px; }
-.chip { font:600 15px/1 var(--font); padding:9px 15px; border-radius:999px; cursor:pointer;
-  background:#fff; border:1.5px solid var(--line); color:var(--charcoal);
-  display:inline-flex; align-items:center; gap:8px; transition:background var(--t-fast); }
-.chip:hover { background:var(--bg-alt); }
-.chip .sw { width:11px; height:11px; border-radius:3px; flex:0 0 auto; }
-.chip[aria-pressed="false"] { opacity:.42; }
-.chip[aria-pressed="true"] { border-color:currentColor; }
-.reset { margin-left:auto; align-self:center; font:600 15px/1 var(--font); cursor:pointer;
-  background:var(--teal-900); color:#fff; border:0; border-radius:999px; padding:11px 20px; }
-
-/* ------------------------------------------------- the pre-window summary band */
-.pre-window { border-left:5px solid var(--line); padding:2px 0 2px 20px; margin:0 0 26px;
-  color:var(--charcoal); font-size:16px; }
-.pre-window b { color:var(--teal-900); }
-
-/* ------------------------------------------------------------------ the viz */
-.viz { position:relative; }
-.viz svg { display:block; width:100%; height:auto; overflow:visible; }
-.nojs { color:var(--muted); }
-
-.lane-band { fill:var(--bg-alt); }
-.lane-band.alt { fill:#fff; }
-.lane-name { font:700 15px/1 var(--font); }
-.lane-count { font:600 13.5px/1 var(--font); fill:var(--muted); }
-.axis-y { font:600 14px/1 var(--font); fill:var(--muted); }
-.axis-rule { stroke:var(--line); stroke-width:1; }
-.now-rule { stroke:var(--charcoal); stroke-width:1.5; stroke-dasharray:5 5; }
-.now-lab { font:700 13px/1 var(--font); fill:var(--charcoal); letter-spacing:.06em;
-  text-transform:uppercase; }
-
-.ev { cursor:pointer; }
-.ev .dot { stroke:#fff; stroke-width:1.5; }
-/* Forward-dated events must never read as delivered work. Hollow, not faded:
-   a lighter version of the same mark reads as "less important", which is wrong —
-   a scheduled award end is not a minor delivered event, it is a different kind of
-   thing. A SOLID ring, not a dashed one: at r=5.5 a 3/2.4 dash pattern breaks into
-   flecks and vanishes against the lane band. Ring weight carries it instead. */
-/* --c is set per node in app.js. It has to be a CSS custom property rather than an
-   inline stroke="" attribute: SVG presentation attributes lose to ANY stylesheet rule,
-   so `.ev .dot { stroke:#fff }` silently repainted every forward ring white-on-white
-   and the marks vanished. */
-.ev.fwd .dot { fill:#fff !important; stroke:var(--c) !important; stroke-width:3; }
-.ev.fwd .pip { pointer-events:none; }
-.ev .hit { fill:transparent; }
-.ev:hover .dot, .ev.on .dot { stroke:var(--ink); stroke-width:2.5; }
-.ev.dim { opacity:.13; }
-.ev-lab { font:600 14px/1.25 var(--font); fill:var(--ink); pointer-events:none; }
-.ev-lab.dim { opacity:.13; }
-
-.tip { position:absolute; z-index:20; max-width:var(--tip); background:#fff; color:var(--ink);
-  border:1px solid var(--line); border-radius:var(--r-md); padding:13px 15px;
-  box-shadow:0 10px 34px rgba(12,100,115,.17); pointer-events:none; font-size:15px; }
-.tip .t-d { font-weight:700; font-size:13.5px; color:var(--muted); letter-spacing:.05em;
-  text-transform:uppercase; margin-bottom:5px; }
-.tip .t-t { font-weight:600; line-height:1.4; }
-.tip .t-o { color:var(--charcoal); font-size:14.5px; margin-top:6px; }
-
-/* ------------------------------------------------------------------ legend */
-.legend { display:flex; flex-wrap:wrap; gap:20px 34px; margin-top:26px; padding-top:20px;
-  border-top:1px solid var(--line); font-size:15px; color:var(--charcoal); }
-.legend .grp { display:flex; flex-wrap:wrap; gap:8px 18px; align-items:center; }
-.legend .lg-h { font-weight:700; font-size:13px; letter-spacing:.1em; text-transform:uppercase;
-  color:var(--muted); }
-.legend .item { display:inline-flex; align-items:center; gap:8px; }
-
-/* ------------------------------------------------------------------ cards (narrow) */
-.cards { display:grid; gap:12px; }
-.card { border:1px solid var(--line); border-left:5px solid var(--line); border-radius:var(--r-md);
-  background:#fff; padding:14px 16px; }
-.card .c-d { font-weight:700; font-size:14px; color:var(--muted); letter-spacing:.04em;
-  text-transform:uppercase; }
-.card .c-t { font-weight:600; margin-top:4px; line-height:1.42; }
-.card .c-o { color:var(--charcoal); font-size:15px; margin-top:6px; }
-.card .c-f { display:inline-block; margin-top:9px; font-weight:700; font-size:13px;
-  letter-spacing:.06em; text-transform:uppercase; color:var(--muted);
-  border:1.5px dashed var(--line); border-radius:999px; padding:4px 10px; }
-
-/* ------------------------------------------------------------------ table */
-.tablewrap { overflow-x:auto; border:1px solid var(--line); border-radius:var(--r-md);
-  background:#fff; }
-.dtable { border-collapse:collapse; width:100%; min-width:820px; font-size:15.5px; }
-.dtable th, .dtable td { text-align:left; padding:12px 16px; border-bottom:1px solid var(--line-soft);
-  vertical-align:top; }
-.dtable thead th { background:var(--teal-900); color:#fff; font-size:14px; letter-spacing:.06em;
-  text-transform:uppercase; position:sticky; top:0; }
-.dtable .t-date { white-space:nowrap; font-variant-numeric:tabular-nums; color:var(--charcoal); }
-.dtable .t-lane { white-space:nowrap; font-weight:600; }
-.dtable .t-st { white-space:nowrap; color:var(--charcoal); }
-.linkish { background:none; border:0; padding:0; color:var(--teal-700); font:600 16px/1 var(--font);
-  cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
-.dl { margin-top:16px; }
-
-/* ------------------------------------------------------------------ methods */
-.methods-grid { display:grid; gap:clamp(28px,5vw,60px); grid-template-columns:minmax(0,1fr); }
-@media (min-width:900px) { .methods-grid { grid-template-columns:1.25fr 1fr; } }
-.asof { color:var(--muted); font-size:15.5px; margin:0 0 14px; }
-.callout { border-left:4px solid var(--teal-500); padding-left:16px; color:var(--charcoal); }
-.notes { margin:0; padding-left:20px; color:var(--charcoal); }
-.notes li { margin-bottom:9px; }
-
-/* ------------------------------------------------------------------ panel */
-.scrim { position:fixed; inset:0; background:rgba(20,32,34,.42); z-index:40; }
-.panel { position:fixed; top:0; right:0; bottom:0; width:min(460px,100%); background:#fff;
-  z-index:50; overflow-y:auto; padding:30px 30px 44px; box-shadow:-14px 0 44px rgba(0,0,0,.2); }
-.panel h2 { font-size:26px; margin:6px 0 10px; color:var(--ink); }
-.panel .p-kind { font-weight:700; font-size:13.5px; letter-spacing:.12em; text-transform:uppercase;
-  color:var(--teal-700); }
-.panel .p-close { position:absolute; top:20px; right:22px; width:38px; height:38px; border-radius:50%;
-  border:1px solid var(--line); background:#fff; cursor:pointer; font-size:19px; line-height:1; }
-.panel .p-meta { display:grid; gap:10px; margin:18px 0 0; padding:16px; background:var(--bg-alt);
-  border-radius:var(--r-md); }
-.panel .p-meta div { display:flex; gap:12px; font-size:15.5px; }
-.panel .p-meta dt { font-weight:700; color:var(--muted); min-width:118px; }
-.panel .p-note { margin-top:18px; color:var(--charcoal); font-size:15.5px; }
-
-@media (prefers-reduced-motion:reduce) { * { transition:none !important; animation:none !important; } }
-
-/* ------------------------------------------------- the prologue: why here (2026-08-18) */
-/* Heritage sits ABOVE the operating record on an era-banded axis of its own. It keeps this
-   page's own visual generation (Aptos, teal, charcoal) and the shared column: prose blocks
-   are the measure, the era chart and the photo strip are the figure. */
-.kicker { margin:0 0 6px; font-weight:700; font-size:13.5px; letter-spacing:.14em;
-  text-transform:uppercase; color:var(--teal-700); }
-.sub--measure { max-width:var(--measure); }
-.section--prologue { background:var(--bg-tint); border-bottom:1px solid var(--line); }
-.section--prologue h2 { margin-bottom:10px; }
-.pro-viz { position:relative; margin-top:6px; }
-.pro-viz svg { display:block; width:100%; height:auto; overflow:visible; }
-.era-band { fill:#fff; }
-.era-band.alt { fill:#EEF3F3; }
-.era-lab { font:700 13.5px/1 var(--font); fill:var(--muted); letter-spacing:.04em; }
-.yr-lab { font:600 11.5px/1 var(--font); fill:var(--charcoal); pointer-events:none;
-  font-variant-numeric:tabular-nums; }
-.hev:hover .yr-lab, .hev:focus .yr-lab { fill:var(--ink); }
-.pro-legend { margin:14px 0 0; font-size:14.5px; color:var(--charcoal); max-width:var(--measure); }
-.pro-legend .sw { display:inline-block; width:11px; height:11px; border-radius:50%; vertical-align:-1px; }
-
-/* five public-domain stills. A row that scrolls in its own container — the page never
-   overflows — with the licence and the archive of record under every frame. */
-.photos { display:flex; gap:16px; overflow-x:auto; scroll-snap-type:x mandatory;
-  margin:30px 0 0; padding:0 0 10px; -webkit-overflow-scrolling:touch; }
-.photos figure { flex:0 0 min(340px, 82%); margin:0; scroll-snap-align:start; }
-.photos img { display:block; width:100%; height:auto; aspect-ratio:4/3; object-fit:cover;
-  border-radius:var(--r-sm); background:var(--bg-alt); }
-.photos figcaption { margin-top:8px; font-size:13.5px; line-height:1.45; color:var(--charcoal); }
-.photos figcaption a { color:var(--teal-700); text-decoration:underline; text-underline-offset:3px; }
-.photos-note { margin:6px 0 0; font-size:14.5px; color:var(--charcoal); max-width:var(--measure); }
-/* Desktop: wrap 3 + 2 instead of a horizontal scroller. A snap-strip is right under a thumb
-   and wrong under a mouse — at 1440 it clipped the third photo mid-caption with no cue that
-   it scrolled, and read as broken (seen 2026-08-18). Phone keeps the strip. */
-@media (min-width: 900px) {
-  .photos { flex-wrap:wrap; overflow-x:visible; scroll-snap-type:none; }
-  .photos figure { flex:0 0 calc((100% - 32px) / 3); }
+/* ------------------------------------------------------------ mobile re-layout */
+/* Both SVG charts re-lay out per form below 900px, so the shared sideways-scroll
+   fallback is switched off: the evidence belongs in the first paint, not behind a pan. */
+@media (max-width:760px){
+  .chart{overflow-x:visible;padding-bottom:0}
+  .chart svg{min-width:0}
+  .chart::after{content:none}
+  .fig-title{font-size:20px}
 }
-
-.pro-table { margin-top:26px; }
-.pro-table summary { cursor:pointer; font-weight:600; color:var(--teal-700); font-size:16px; }
-.pro-table .tablewrap { margin-top:14px; }
-.dtable .t-one { min-width:320px; color:var(--charcoal); font-size:14.5px; }
-#htable { min-width:960px; }
-.card .c-k { font-weight:700; font-size:13px; letter-spacing:.06em; text-transform:uppercase; }
-.card a { color:var(--teal-700); }
-
-.panel .p-one { font-size:16px; color:var(--ink); }
-.panel h3 { margin:20px 0 8px; font-size:15px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
-.panel .p-src { margin:0; padding-left:18px; font-size:14.5px; color:var(--charcoal); }
-.panel .p-src li { margin-bottom:8px; overflow-wrap:anywhere; }
-.panel .p-src a { color:var(--teal-700); }
+/* The cadence chart's two-phase annotation is set over the short early bars and has to
+   clear the tall 2025 bar. It used to be measured in Aptos, which this page named and the
+   rest of the site does not; on the house stack the same string renders about 10 percent
+   wider and the last letter landed on the bar in the same ink, so it vanished. One step
+   down at the width where the margin runs out, still at the 12px legibility floor. */
+@media (max-width:560px){.cad-ann-pre,.cad-ann-post{font-size:12px}}
+/* At 375 the four-column record clipped EVENT mid-word with two columns off-screen. A
+   sideways-scroll box is for genuine reference matrices; a record a reader is meant to
+   read becomes stacked entries instead. #htable is named because its own 960px floor is
+   at ID specificity and otherwise pushes the whole page wide the moment it is opened. */
+@media (max-width:719px){
+  .tablewrap{overflow-x:visible;border:0;background:none}
+  .dtable,#htable{min-width:0;display:block;width:100%}
+  .dtable thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .dtable tbody,.dtable tr,.dtable td,.dtable th{display:block}
+  .dtable tbody tr{border:1px solid var(--line);background:#fff;padding:13px 15px;
+    margin-bottom:10px}
+  .dtable td{border:0;padding:0}
+  .dtable td:empty{display:none}
+  .dtable td.t-date{font-weight:700;font-size:13.5px;color:var(--caption);
+    letter-spacing:.04em;text-transform:uppercase}
+  .dtable td.t-lane{margin-top:7px;font-size:13px;letter-spacing:.05em;
+    text-transform:uppercase;white-space:normal}
+  .dtable td.t-org,.dtable td.t-one{margin-top:4px;color:var(--pv-ink);font-size:14.5px}
+  .dtable td.t-one{min-width:0}
+  .dtable td.t-src{margin-top:7px;font-size:14.5px}
+  .dtable td:not([class]){margin-top:4px;font-weight:600;line-height:1.42;font-size:16px}
+  .dtable tr.yrhead{border:0;background:none;padding:0;margin:18px 0 8px}
+  .dtable .yrhead th{position:static;padding:7px 12px;border-bottom:0}
+}

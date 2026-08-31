@@ -3,10 +3,10 @@
   "claims": [
     {
       "id": "rw-flip",
-      "text": "Akron ranks 33rd of 56 polymer metros on nominal wages and 19th on price-adjusted wages.",
+      "text": "Akron ranks 33rd of 56 polymer metros on nominal wages and 19th on price-adjusted wages, a climb of 14 places; the comparison set is the 56 metros with at least 2,000 polymer jobs (standfirst, hero cards, slope figure title and annotation, mobile rank list). Extended 2026-08-27 from the rank-only assertion: the climb, the set size and the floor are now asserted too, because all three are hand-typed on the page.",
       "source": "BLS QCEW 2023 NAICS 326 metro weekly wage; BEA MARPP 2023 all-items price parity",
-      "assert": "[r for r in D['big'] if r['area']=='10420'][0]['big_rank_nominal'] == 33 and [r for r in D['big'] if r['area']=='10420'][0]['big_rank_real'] == 19",
-      "actual": "[(r['big_rank_nominal'], r['big_rank_real'], r['big_climb']) for r in D['big'] if r['area']=='10420']",
+      "assert": "(lambda a: a['big_rank_nominal'] == 33 and a['big_rank_real'] == 19 and a['big_climb'] == 14)([r for r in D['big'] if r['area']=='10420'][0]) and len(D['big']) == 56 and D['meta']['n_big'] == 56 and D['meta']['big_floor'] == 2000",
+      "actual": "[(r['big_rank_nominal'], r['big_rank_real'], r['big_climb'], len(D['big']), D['meta']['big_floor']) for r in D['big'] if r['area']=='10420']",
       "falsified_if": "Either source revises, or the 2,000-job floor changes. The floor is a CHOICE — it selects the comparison set, and a different floor gives a different rank. State the floor whenever the rank is quoted."
     },
     {
@@ -26,12 +26,99 @@
       "falsified_if": "Akron's price level falls relative to other metros. This claim exists to stop the page being read as a 'low cost of living' pitch — the advantage is relative to where the polymer industry sits, not to the country."
     },
     {
+      "id": "rw-strip-marks",
+      "text": "The strip subtitle hand-types three values: 235 metros, Akron at 92.9, the middle metro at 93.1 (strip fig-sub; svg title). Extended 2026-08-28: the band-1 gloss and hero card 2 now also state the PLAIN reading of that index, 'prices here run about 7 percent below the US average', so the bound on 100 minus Akron's price level is asserted too. Extended again 2026-08-28: Akron's tick and the median rule are 0.2 apart on this scale and render as one mark at 100% zoom, so the pair now carries a single label that states the gap ('median metro 93.1, 0.2 above Akron'). That 0.2 is asserted as the difference of the two ONE-DECIMAL values the page prints, so the label's subtraction closes against the label's own numbers.",
+      "source": "BEA MARPP 2023 all items; median convention matches the page's JS (sorted, floor(n/2))",
+      "assert": "len(D['metros']) == 235 and D['meta']['n_metros'] == 235 and abs([r for r in D['metros'] if r['area']=='10420'][0]['rpp'] - 92.9) <= 0.05 and abs(sorted(r['rpp'] for r in D['metros'])[len(D['metros'])//2] - 93.1) <= 0.05 and 6.5 <= 100 - [r for r in D['metros'] if r['area']=='10420'][0]['rpp'] <= 7.5 and (round(sorted(r['rpp'] for r in D['metros'])[len(D['metros'])//2]*10) - round([r for r in D['metros'] if r['area']=='10420'][0]['rpp']*10))/10 == 0.2",
+      "actual": "(len(D['metros']), [r['rpp'] for r in D['metros'] if r['area']=='10420'], sorted(r['rpp'] for r in D['metros'])[len(D['metros'])//2], round(100 - [r for r in D['metros'] if r['area']=='10420'][0]['rpp'], 2))",
+      "falsified_if": "A revision moves Akron's price level or the median off the one-decimal values typed in the subtitle, the disclosed-metro count leaves 235, or Akron's gap to the national average stops rounding to 7 percent. The plain reading and the index have to move together or the page contradicts itself."
+    },
+    {
+      "id": "rw-stretch-chicago",
+      "text": "The same paycheck stretches about 10 percent further in Akron than in Chicago (standfirst). The baseline is now named inside the clause: the standfirst's 10 percent is against Chicago and the hero card's 7 percent is against the US average, and a reader four lines apart could not tell them apart when neither carried its baseline.",
+      "source": "derived: Chicago RPP over Akron RPP, minus one",
+      "assert": "(lambda c, a: 0.095 <= c['rpp']/a['rpp'] - 1 <= 0.11)([r for r in D['big'] if 'Chicago' in r['name']][0], [r for r in D['big'] if r['area']=='10420'][0])",
+      "actual": "(lambda c, a: c['rpp']/a['rpp'] - 1)([r for r in D['big'] if 'Chicago' in r['name']][0], [r for r in D['big'] if r['area']=='10420'][0])",
+      "falsified_if": "Either metro's price parity revises enough that the ratio leaves 9.5-11 percent, so 'about 10 percent' no longer rounds from the data."
+    },
+    {
+      "id": "rw-rivals-fall",
+      "text": "The three steepest falls in the 56-metro ranking are San Francisco, Seattle and New York, falling 24 to 29 places (slope bracket annotation, svg title, lede's 'steepest falls' framing).",
+      "source": "derived: big_climb sorted ascending, first three",
+      "assert": "(lambda f: all(any(n in r['name'] for r in f) for n in ('San Francisco', 'Seattle', 'New York')) and min(-r['big_climb'] for r in f) == 24 and max(-r['big_climb'] for r in f) == 29)(sorted(D['big'], key=lambda r: r['big_climb'])[:3])",
+      "actual": "[(r['name'], r['big_climb']) for r in sorted(D['big'], key=lambda r: r['big_climb'])[:3]]",
+      "falsified_if": "A revision reorders the biggest fallers or moves the fall magnitudes off the 24-29 range typed in the bracket."
+    },
+    {
+      "id": "rw-fifth-less",
+      "text": "The industry's biggest employers sit where the same salary buys up to a fifth less than in Akron (scatter figure title; dropped from the closer 2026-08-28 to bring the closer under its 90-word budget). 'Biggest employers' means the five largest big-metro polymer employers; the maximum shortfall among them is Los Angeles at about 19 percent. Corrected 2026-08-27: the previous closer said 'a quarter less', which no metro on the page reaches (the maximum anywhere in the set is San Francisco at 21 percent).",
+      "source": "derived: 1 - Akron RPP / metro RPP over the five largest employers",
+      "assert": "(lambda t5, a, la: 0.165 <= max(1 - a['rpp']/r['rpp'] for r in t5) <= 0.215 and round(la['rpp'], 1) == 114.7 and 0.18 <= 1 - a['rpp']/la['rpp'] <= 0.20 and 110 < max(r['rpp'] for r in D['big']) <= 120)(sorted(D['big'], key=lambda r: -r['emp'])[:5], [r for r in D['big'] if r['area']=='10420'][0], [r for r in D['big'] if 'Los Angeles' in r['name']][0])",
+      "actual": "(lambda t5, a, la: ([(r['name'], round(1 - a['rpp']/r['rpp'], 3)) for r in t5], round(la['rpp'], 1), round(1 - a['rpp']/la['rpp'], 3), max(r['rpp'] for r in D['big'])))(sorted(D['big'], key=lambda r: -r['emp'])[:5], [r for r in D['big'] if r['area']=='10420'][0], [r for r in D['big'] if 'Los Angeles' in r['name']][0])",
+      "falsified_if": "Price parities revise so the largest shortfall among the top-five employers leaves 16.5-21.5 percent, and 'a fifth' stops being the honest round. Extended 2026-08-28 with the two things a reader needs to CHECK the claim rather than accept it: the Los Angeles price level printed in the band lede (114.7 against Akron's 92.9, a shortfall of about a fifth), and the fact that the highest price level in the plotted set still sits under the scatter's top gridline at 120. If any metro rises past 120, the axis stops labelling before the data ends and the top tick must move again."
+    },
+    {
+      "id": "rw-flips-outright",
+      "text": "14 of the 56 metros pay more on paper than Akron and buy less than Akron, New York, Los Angeles and Seattle among them (default verdict sentence, and the closer's qualifying paragraph, where the three named metros moved 2026-08-28 out of the display statement). The comparison target is now written into the sentence twice: 'pay more than Akron' and 'buy less than Akron' had both been left implicit.",
+      "source": "derived: nominal above Akron's and real below Akron's",
+      "assert": "(lambda F: len(F) == 14 and all(any(n in r['name'] for r in F) for n in ('New York', 'Los Angeles', 'Seattle')))((lambda a: [r for r in D['big'] if r['nominal'] > a['nominal'] and r['real'] < a['real']])([r for r in D['big'] if r['area']=='10420'][0]))",
+      "actual": "(lambda a: [(r['name'], r['nominal'], round(r['real'], 1)) for r in D['big'] if r['nominal'] > a['nominal'] and r['real'] < a['real']])([r for r in D['big'] if r['area']=='10420'][0])",
+      "falsified_if": "A revision changes the count of outright flips or drops any of the three named metros out of the set. The named metros are the ones a recruiter actually loses candidates to; if one leaves, the closer must be rewritten."
+    },
+    {
+      "id": "rw-offer-arithmetic",
+      "text": "Akron's average polymer paycheck is $1,238 a week ($64,400 a year over 52 weeks) and buys like $1,332; matching its buying power takes $1,365 a week in Chicago (about $71,000 a year) and $1,566 in San Francisco (about $81,400). The offer band also prints the three price levels the conversions run on: Akron 92.9, Chicago 102.5, San Francisco 117.6 (human-scale band, closer, comparator default and template). Rewritten 2026-08-28: the annual figures were rounded to the nearest thousand, which is why $71,000 and $64,000 subtracted to $7,000 while the section head said $6,600. Every annual figure on the page is now the nearest hundred, and the rival price levels are printed so a reader can rebuild the conversions instead of taking them on trust.",
+      "source": "derived: Akron nominal scaled by each rival's RPP ratio, annualized at 52 weeks",
+      "assert": "(lambda a, c, s: a['nominal'] == 1238 and abs(a['real'] - 1332.3) <= 0.5 and round(a['nominal']*52/100)*100 == 64400 and round(a['nominal']*c['rpp']/a['rpp']) == 1365 and round(a['nominal']*c['rpp']/a['rpp']*52/100)*100 == 71000 and round(a['nominal']*s['rpp']/a['rpp']) == 1566 and round(a['nominal']*s['rpp']/a['rpp']*52/100)*100 == 81400 and round(a['rpp'], 1) == 92.9 and round(c['rpp'], 1) == 102.5 and round(s['rpp'], 1) == 117.6)([r for r in D['big'] if r['area']=='10420'][0], [r for r in D['big'] if 'Chicago' in r['name']][0], [r for r in D['big'] if 'San Francisco' in r['name']][0])",
+      "actual": "(lambda a, c, s: (a['nominal'], a['real'], round(a['nominal']*52), round(a['nominal']*c['rpp']/a['rpp'], 1), round(a['nominal']*c['rpp']/a['rpp']*52), round(a['nominal']*s['rpp']/a['rpp'], 1), round(a['nominal']*s['rpp']/a['rpp']*52), round(a['rpp'], 1), round(c['rpp'], 1), round(s['rpp'], 1)))([r for r in D['big'] if r['area']=='10420'][0], [r for r in D['big'] if 'Chicago' in r['name']][0], [r for r in D['big'] if 'San Francisco' in r['name']][0])",
+      "falsified_if": "Any weekly or annual figure stops rounding to the hand-typed $1,238 / $64,400 / $1,365 / $71,000 / $1,566 / $81,400, or a price parity revises off the printed 92.9 / 102.5 / 117.6. The price levels are asserted because the page now invites the reader to redo the conversion with them; if a printed parity and the parity used in the arithmetic drift apart, the reader's recomputation stops matching the page's. Per-rival sentences composed by the picker are variants of this same arithmetic and are covered by it plus rw-flip; only the default state is asserted directly."
+    },
+    {
+      "id": "rw-wedge-closes",
+      "text": "The page's two most quotable numbers subtract to its third: the closing banner's $71,000 minus its $64,400 is exactly the $6,600 in the offer-band heading, and the offer band prints that subtraction. Added 2026-08-28 after a reader did the arithmetic on the shipped page and got $7,000: the banner carried Akron's annual wage rounded to the nearest thousand ($64,000) while the heading's wedge had been computed from the unrounded $64,376.",
+      "source": "derived: Akron and Chicago annual equivalents, each rounded to the nearest hundred exactly as printed",
+      "assert": "(lambda a, c: (lambda ak, chi: ak == 64400 and chi == 71000 and chi - ak == 6600)(round(a['nominal']*52/100)*100, round(a['nominal']*c['rpp']/a['rpp']*52/100)*100))([r for r in D['big'] if r['area']=='10420'][0], [r for r in D['big'] if 'Chicago' in r['name']][0])",
+      "actual": "(lambda a, c: (lambda ak, chi: (ak, chi, chi - ak))(round(a['nominal']*52/100)*100, round(a['nominal']*c['rpp']/a['rpp']*52/100)*100))([r for r in D['big'] if r['area']=='10420'][0], [r for r in D['big'] if 'Chicago' in r['name']][0])",
+      "falsified_if": "Either annual figure moves off the hundred it is printed at, so the banner's subtraction stops landing on the heading's $6,600. This claim exists to fail LOUDLY on exactly that: the page prints both sides of a subtraction and its answer, and a reader who checks and finds a gap stops trusting every other number here."
+    },
+    {
+      "id": "rw-floor-choice",
+      "text": "The 2,000-job floor selects the comparison set, so the slope table note prints what other floors give, recomputed from the shipped metro set: at a 1,000-job floor Akron climbs 15 places in a field of 99, at 2,000 it climbs 14 in a field of 56, and at 5,000 it climbs 7 in a field of 19. Akron climbs at every floor tested between 1,000 and 5,000. Added 2026-08-28: a reader asked whether the cutoff was chosen after the answer was known, and the honest reply is the sensitivity, not a rationale.",
+      "source": "derived: D['metros'] re-ranked on nominal and on real at each employment floor, the same arithmetic the page's climbAtFloor() runs",
+      "assert": "(lambda f: f(1000) == (99, 15) and f(2000) == (56, 14) and f(5000) == (19, 7) and all(f(x)[1] > 0 for x in (1000, 1500, 2000, 2500, 3000, 4000, 5000)))(lambda fl: (lambda S: (len(S), [r['area'] for r in sorted(S, key=lambda r: -r['nominal'])].index('10420') - [r['area'] for r in sorted(S, key=lambda r: -r['real'])].index('10420')))([r for r in D['metros'] if r['emp'] >= fl]))",
+      "actual": "[(fl, (lambda S: (len(S), [r['area'] for r in sorted(S, key=lambda r: -r['nominal'])].index('10420') - [r['area'] for r in sorted(S, key=lambda r: -r['real'])].index('10420')))([r for r in D['metros'] if r['emp'] >= fl])) for fl in (1000, 1500, 2000, 2500, 3000, 4000, 5000)]",
+      "falsified_if": "A revision changes the climb at 1,000 or 5,000 jobs off the two numbers the note prints, or Akron stops climbing at any floor in the tested range. If the direction ever fails at some floor, the note is no longer a sensitivity check and the page must say which floors it does not survive."
+    },
+    {
+      "id": "rw-scatter-scale",
+      "text": "The scatter's subtitle and its three-step size key state the ends of the circle scale, and the orange diagonal drawn across the plot is Akron's own buying power: the field floor is 2,000 polymer jobs, the largest metro is Chicago at about 33,400, and the Akron iso-line is $1,332. Added 2026-08-28: circle area was load-bearing for the figure title ('the biggest polymer employers sit where...') with no key to convert a circle into a job count, and none of the four drawn diagonals was the page's own headline number.",
+      "source": "derived: employment range across the 56-metro set, and Akron's real weekly wage",
+      "assert": "2000 <= min(r['emp'] for r in D['big']) < 2100 and round(max(r['emp'] for r in D['big'])/100)*100 == 33400 and max(D['big'], key=lambda r: r['emp'])['name'].startswith('Chicago') and round([r for r in D['big'] if r['area']=='10420'][0]['real']) == 1332",
+      "actual": "(min(r['emp'] for r in D['big']), max(r['emp'] for r in D['big']), max(D['big'], key=lambda r: r['emp'])['name'], [r['real'] for r in D['big'] if r['area']=='10420'])",
+      "falsified_if": "The employment range moves off the printed 2,000 and 33,400, the largest polymer metro stops being Chicago, or Akron's real wage stops rounding to the $1,332 drawn and labelled on the plot. The key is a scale claim: if the ends move, the circles no longer mean what the subtitle says they mean."
+    },
+    {
+      "id": "rw-single-year",
+      "text": "Everything on this page is the 2023 release; no earlier year ships with it, so the 14-place climb is shown without a track record (slope source line, and the drawn '2023 only, no track record' cue under the +14 annotation on both the desktop slope and the mobile rank list; the cue read 'one print' until 2026-08-28, which is trade jargon for a first release). This sentence must be replaced by a persistence test the moment prior-year pairs are added to the data.",
+      "source": "data file inventory: meta.year and the absence of any multi-year series",
+      "assert": "D['meta']['year'] == 2023 and 'trend' not in D and sorted(D.keys()) == ['big', 'home', 'meta', 'metros']",
+      "actual": "(D['meta']['year'], sorted(D.keys()))",
+      "falsified_if": "A rebuilt data file carries 2021/2022 pairs (or any 'trend' key). Then the honest move inverts: drop this disclaimer and show whether the climb repeats across releases."
+    },
+    {
       "id": "rw-metro-only",
-      "text": "This page is metro-level throughout and never uses the PIC-12 county footprint.",
-      "source": "BEA publishes price parities only for metros; they cannot be summed to counties",
-      "assert": "'METRO' in D['meta']['geography'] and all(len(r['area']) == 5 for r in D['metros'])",
-      "actual": "D['meta']['geography']",
-      "falsified_if": "Anyone joins this to county QCEW or to the vault. Cleveland and Canton withhold their 2023 polymer wage, so the region appears through Akron alone — that is a coverage limit, not a regional figure."
+      "text": "This page is metro-level throughout and never uses the PIC-12 county footprint; the region appears through the Akron metro area alone, because Cleveland and Canton have no disclosed 2023 polymer wage (band 1 gloss, slope source line, slope table note, methodology). Rewritten 2026-08-28: the pre-hero footprint banner that used to carry this was removed, so the sentence is now asserted where a reader actually meets it.",
+      "source": "BEA publishes price parities only for metros; they cannot be summed to counties. Absence of Cleveland and Canton is read off the shipped metro set, not asserted from memory.",
+      "assert": "'Metro, not county' in D['meta']['geography'] and all(len(r['area']) == 5 for r in D['metros']) and len([r for r in D['metros'] if 'Cleveland' in r['name'] or 'Canton' in r['name']]) == 0 and len([r for r in D['metros'] if r['area'] == '10420']) == 1",
+      "actual": "(D['meta']['geography'], [r['name'] for r in D['metros'] if 'Cleveland' in r['name'] or 'Canton' in r['name']])",
+      "falsified_if": "Anyone joins this to county QCEW or to the vault, or a later QCEW release discloses Cleveland or Canton. If either metro appears in the data, 'the region appears through Akron alone' is false on the page and in the byline scope, and both must be rewritten before the next publish."
+    },
+    {
+      "id": "rw-sources-named",
+      "text": "Both figure source lines and the byline name the same two sources and year: BLS QCEW and BEA Regional Price Parities, 2023 (slope source line, scatter source line, hero byline). Added 2026-08-28 because those strings are now hand-typed in the page rather than interpolated from meta.source, which the caveat-ink budget could not carry.",
+      "source": "data file meta.source, which the derive script writes from the fetch parameters",
+      "assert": "'QCEW' in D['meta']['source'] and 'Regional Price Parities' in D['meta']['source'] and str(D['meta']['year']) in D['meta']['source'] and D['meta']['year'] == 2023",
+      "falsified_if": "The page is rebuilt on a different vintage or a different price index, so the hand-typed attribution stops matching meta.source. Any year change must be made in three visible places, not one."
     }
   ]
 }

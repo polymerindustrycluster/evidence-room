@@ -102,12 +102,23 @@ dfn b{font-weight:900}
    beside the headline as a hole. It is the hero's whole emptiness problem. The stats fit
    inside 980 (four at a 130px minimum plus gaps is 634), so there was nothing to buy. */
 .hero .wrap > *{max-width:var(--figure)}
-.hero h1{font-size:clamp(31px,4.4vw,54px);max-width:var(--figure)}
+.hero .wrap > .hero-row{max-width:var(--measure)}
+.hero .wrap > h1{font-size:clamp(30px,3.8vw,46px);max-width:var(--measure);text-wrap:balance}
+.hero .wrap > .eyebrow{max-width:var(--measure)}
+/* Byline block. Fifteen per-page stylesheets each carried an identical copy of this and
+   the hub carried none, so the one page without it rendered its byline at standfirst
+   size, competing with the dek it sits under. Here, a new page inherits it by existing.
+   The class selector outranks the `> *` rule above, and the `auto` side margins are
+   load-bearing: a `margin:14px 0 0` shorthand drops the block onto the wrap's left edge,
+   151px outboard of the text rail. */
+.hero .wrap > .byline{margin:14px auto 0;max-width:var(--measure);font-size:13px;
+  line-height:1.5;color:#9CC4CA;letter-spacing:.02em}
+.pv-footprint .wrap{max-width:calc(var(--measure) + 64px)}
 .hero h1 em{font-style:normal;color:var(--lime)}
 .hero .stand{margin:16px 0 0;max-width:var(--measure);color:#C6E2E6;font-size:19px;line-height:1.55}
 
 /* hero figure — same sans, proportional figures (never tabular at display size) */
-.hero-row{display:flex;gap:38px;flex-wrap:wrap;margin:24px 0 0}
+.hero-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 40px;margin:28px 0 0;max-width:var(--measure)}
 .figv{border-top:3px solid rgba(255,255,255,.3);padding:13px 0 0;min-width:130px}
 .figv.key{border-color:var(--lime)}
 .figv .n{font-size:clamp(34px,4vw,52px);font-weight:900;line-height:1;letter-spacing:-.03em;
@@ -287,11 +298,36 @@ details.pv-table:not([open]) .pv-tablewrap{display:none}
    not work: labels are positioned in the same user units, so scaling them up collides
    them. So the chart keeps a legible minimum width and pans, which is what newsrooms
    do, and the table-view twin below every chart is the non-scrolling equivalent. */
+/* THE TABLET BAND, which the rule above stops one pixel short of covering.
+   The reasoning above is right and was applied only below 760px. Between 761px and the
+   ~1100px where the column finally reaches its 980px cap, the charts have no minimum and
+   shrink with the container: at a 768px viewport the column is 704px against a 1100-unit
+   viewBox, a 0.64 scale, and a 13.6px tick label paints at 8.7 real pixels. Fourteen of
+   sixteen pages did that on a portrait tablet or a half-screen window, and no gate saw it
+   because textsize.mjs only ever measured 390 and 1440 (fixed 2026-08-28, --sweep).
+   980px is not an arbitrary floor: it is --figure, so a chart in this band renders at the
+   same 0.891 scale it has on a wide screen rather than at some third size. */
+@media (min-width: 761px) and (max-width: 1099px){
+  .chart{overflow-x:auto;overscroll-behavior-x:contain;padding-bottom:6px}
+  .chart svg{min-width:980px}
+  .chart.narrow{overflow-x:visible}
+  .chart.narrow svg{min-width:0}
+  .chart::after{content:"Scroll the chart sideways \2192  or open the table below";
+    display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+    font-weight:700;color:var(--caption);padding:8px 0 0;position:sticky;left:0}
+  .chart.narrow::after{content:none}
+}
+
 @media (max-width: 760px){
   .chart{overflow-x:auto;overscroll-behavior-x:contain;padding-bottom:6px}
-  .chart svg{min-width:860px}
+  /* 900, not 860. At 860 a 15.5-unit tick in a ~1130-unit viewBox painted 11.8px at a
+     360px screen, just under the floor, on two pages. Widening the minimum is the SAFE
+     lever here and bumping the type is not: a wider minimum is a pure zoom, so marks and
+     labels scale together and no two of them can newly meet, whereas larger type in the
+     same user units moves labels toward each other. Costs 40px more pan. */
+  .chart svg{min-width:900px}
   /* type is in the same user units as the geometry, so it scales with the viewBox;
-     a modest bump plus the wider minimum lands tick labels near 11 CSS px */
+     a modest bump plus the wider minimum lands tick labels above the 12px floor */
   .pv-tick{font-size:15.5px}
   .pv-lab{font-size:16px}
   .pv-labq{font-size:15.5px}

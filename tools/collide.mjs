@@ -18,13 +18,28 @@ import {readdirSync} from "fs";
 import {pathToFileURL} from "url";
 import {chromium} from "./_browser.mjs";
 
-const names = process.argv.slice(2);
+/* ONE WIDTH IS NOT A TEST, AND THE INTERIOR IS NOT INTERPOLATION. This gate checked
+   1440 only, so every collision found by hand during the 2026-08-28 rebuild was invisible
+   to it: one chart collided at 390 and was clean at 1440, one was clean at both and
+   collided at 560, and one had TWO separate collision zones (390-600 and 761-860) because
+   the shared sheet collapses --measure below 760px, which makes a column get WIDER as the
+   viewport narrows. Whether two labels overlap is a question about rendered string lengths
+   against a column width that does not vary monotonically with the viewport, so the range
+   has to be sampled. --sweep does that; the bare call keeps the fast 1440 check. */
+const SWEEP = [360, 390, 430, 480, 560, 640, 700, 768, 820, 900, 1024, 1180, 1280, 1440];
+
+const args = process.argv.slice(2);
+const sweep = args.includes("--sweep");
+const names = args.filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
+const WIDTHS = sweep ? SWEEP : [1440];
 const b = await chromium.launch();
 let bad = 0;
 for (const n of list) {
-  const p = await b.newPage({viewport: {width: 1440, height: 1000}});
+ const found = [];
+ for (const W of WIDTHS) {
+  const p = await b.newPage({viewport: {width: W, height: 1000}});
   await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
   await p.waitForTimeout(900);
   const r = await p.evaluate(() => {
@@ -46,13 +61,45 @@ for (const n of list) {
           if (ox > MIN && oy > MIN)
             out.textOverText.push(`svg${si}: "${boxes[i].s}" x "${boxes[j].s}"`);
         }
-      // the baseline axis is the widest short horizontal line frame() draws
-      let axis = null, aw = 0;
-      svg.querySelectorAll("line").forEach(l => {
+      /* THE AXIS IDENTIFIES ITSELF. This used to take "the widest short horizontal
+         line", keeping the first at that width — and frame() draws gridlines before the
+         axis, at the same plot width, so it had always measured against the topmost
+         GRIDLINE. Everything below the first gridline read as past the axis, which is how
+         a label plate came to be reported as a bar crossing it. frame() now tags the real
+         one; the old heuristic stays as a fallback for charts that draw their own axis,
+         but takes the BOTTOM-most candidate rather than the first. */
+      let axis = null;
+      const tagged = svg.querySelector("line[data-pv-axis]");
+      if (tagged) axis = tagged.getBoundingClientRect();
+      else {
+        /* THE AXIS IS IDENTIFIED BY ITS INK, not its position. Picking the widest line
+           found the topmost gridline; picking the bottom-most found the LOWEST gridline,
+           which on a diverging chart sits well under the zero line. Both were guesses
+           about geometry. The axis is drawn in --pv-axis and the grid in --pv-grid, so
+           the ink says which is which; position is only the tiebreak. */
+        const AXIS_INK = "rgb(189, 183, 172)";
+        let aw = 0;
+        const cands = [...svg.querySelectorAll("line")]
+          .map(l => ({bb: l.getBoundingClientRect(), ink: getComputedStyle(l).stroke}))
+          .filter(c => c.bb.height < 3 && c.bb.width > 40);
+        const inked = cands.filter(c => c.ink === AXIS_INK);
+        (inked.length ? inked : cands).forEach(c => {
+          if (c.bb.width > aw) { aw = c.bb.width; axis = c.bb; }
+        });
+      }
+      /* A DIVERGING CHART'S AXIS IS ITS ZERO LINE, AND BARS ARE MEANT TO CROSS IT.
+         The straddle test below assumes the axis is the floor of the plot. On a chart
+         that diverges around zero it is the middle, and every negative bar is a
+         "violation". The signature is unambiguous: a gridline drawn BELOW the axis means
+         the plot continues past it, so the axis is not the floor. Skipping the test there
+         costs nothing, because a bar overshooting the bottom of a diverging plot is
+         caught by the out-of-frame check instead. Found when tagging the axis line made
+         this check accurate for the first time and churn lit up at all fourteen widths. */
+      const below = [...svg.querySelectorAll("line")].some(l => {
         const bb = l.getBoundingClientRect();
-        if (bb.height < 3 && bb.width > aw) { aw = bb.width; axis = bb; }
+        return axis && bb.height < 3 && bb.width > 100 && bb.top > axis.bottom + 4;
       });
-      if (axis) {
+      if (axis && !below) {
         svg.querySelectorAll("rect").forEach(el => {
           const bb = el.getBoundingClientRect();
           if (!bb.height || bb.width < 2) return;
@@ -86,6 +133,52 @@ for (const n of list) {
         if (bb.bottom > vb.bottom + 4 || bb.top < vb.top - 4)
           out.outside.push(`svg${si}: ${el.tagName} outside the box vertically`);
       });
+      /* HORIZONTALLY, THE TEST IS THE PAGE COLUMN, NOT THE SVG BOX. The header above has
+         always claimed to catch ink outside the viewBox; it only ever looked up and down,
+         and two agents found the same escape independently on 2026-08-28 (a right-anchored
+         award name starting at x=-19.5, an annotation ending 30 units past a 1100-unit
+         box). Measuring against the SVG flags 30 combinations, but 24 of them are the
+         ordinary idiom of a last tick label centred on the end of its axis, which
+         overhangs by half its width into a 32px gutter and harms nothing. Ink outside the
+         WRAP is the real defect: that is past the page column, into the margin, and it is
+         what the header meant. */
+      /* ...EXCEPT where the chart deliberately pans. Between 761 and 1099 the shared
+         sheet gives charts a 980px minimum inside an overflow-x:auto container, so ink
+         beyond the column is the pan idiom working as designed, not a spill. Testing
+         against the wrap without this exemption flagged six pages in that band on its
+         first run. A scrollable container is the signal. */
+      const box = svg.closest(".chart");
+      const pans = box && box.scrollWidth > box.clientWidth + 1;
+      /* CLIPPED INK, which no check here covered and which eyes found first. A row label
+         right-anchored at m.l - 10 can sit a few units left of the svg's own box. That is
+         invisible while nothing clips it, because overflow:visible paints it into the
+         gutter. Put the same chart in an overflow-x:auto container and those units are
+         GONE, and unlike ink past the right edge they cannot be scrolled to: scrolling
+         right moves content further left. Three pixels is the left stem of a capital, so
+         "North Carolina" rendered as "Vorth Carolina" on a 900px screen and every gate
+         passed. Only the left edge is unreachable, so only the left edge is tested. */
+      if (pans) {
+        const cb = box.getBoundingClientRect();
+        svg.querySelectorAll("text,rect,circle").forEach(el => {
+          const bb = el.getBoundingClientRect();
+          if (!bb.width && !bb.height) return;
+          if (bb.left < cb.left - 0.5) out.outside.push(
+            `svg${si}: <${el.tagName}> "${(el.textContent || "").trim().slice(0, 22)}" ` +
+            `clipped ${Math.round(cb.left - bb.left)}px off its left edge, unreachable`);
+        });
+      }
+      const wrap = pans ? null : svg.closest(".wrap");
+      if (wrap) {
+        const wb = wrap.getBoundingClientRect();
+        [...svg.querySelectorAll("text,rect,circle")].forEach(el => {
+          const bb = el.getBoundingClientRect();
+          if (!bb.width && !bb.height) return;
+          const over = Math.max(bb.right - wb.right, wb.left - bb.left);
+          if (over > 1) out.outside.push(
+            `svg${si}: <${el.tagName}> "${(el.textContent || "").trim().slice(0, 24)}" ` +
+            `${Math.round(over)}px past the page column`);
+        });
+      }
     });
     const uniq = a => [...new Set(a)];
     return {textOverText: uniq(out.textOverText), pastAxis: uniq(out.pastAxis),
@@ -95,11 +188,33 @@ for (const n of list) {
   if (r.pastAxis.length) issues.push(`${r.pastAxis.length} past-axis`);
   if (r.textOverText.length) issues.push(`${r.textOverText.length} text-collisions`);
   if (r.outside.length) issues.push(`${r.outside.length} outside-box`);
-  if (issues.length) bad++;
-  console.log(`${n.padEnd(18)} ${issues.length ? "FAIL  " + issues.join(", ") : "OK"}`);
-  [...r.pastAxis.slice(0, 2), ...r.textOverText.slice(0, 3), ...r.outside.slice(0, 2)]
-    .forEach(m => console.log("      " + m));
+  if (issues.length) {
+    const all = [...r.pastAxis, ...r.textOverText, ...r.outside];
+    found.push({W, issues, detail: all.slice(0, 12), elided: Math.max(0, all.length - 12)});
+  }
+  if (!sweep) {
+    console.log(`${n.padEnd(18)} ${issues.length ? "FAIL  " + issues.join(", ") : "OK"}`);
+    [...r.pastAxis, ...r.textOverText, ...r.outside].forEach(m => console.log("      " + m));
+  }
   await p.close();
+ }
+ if (found.length) bad++;
+ if (sweep) {
+   console.log(`${n.padEnd(18)} ${found.length
+     ? `FAIL  ${found.length}/${WIDTHS.length} widths: ` +
+       found.map(f => f.W).join(", ")
+     : `OK    clean at all ${WIDTHS.length} widths`}`);
+   /* Every finding at the narrowest failing width, in full. Printing three per width
+      handed one agent 4 of this page's 12 collisions, because the first chart's filled
+      the quota before the second was reached, and a list that silently truncates is a
+      list that gets half-fixed. Remaining widths are summarised by count. */
+   const worst = found[0];
+   if (worst) {
+     worst.detail.forEach(m => console.log(`      @${worst.W} ${m}`));
+     if (worst.elided) console.log(`      @${worst.W} ...and ${worst.elided} more`);
+     found.slice(1).forEach(f => console.log(`      @${f.W} ${f.issues.join(", ")}`));
+   }
+ }
 }
 await b.close();
 console.log(bad ? `\n${bad} artifact(s) with overlapping or out-of-frame marks`

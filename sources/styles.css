@@ -1,0 +1,262 @@
+/* sources/ — page-local chrome for the replication guide.
+ *
+ * The house sheet is built for pages whose body is a chart with prose around it. This
+ * page is the other shape: its body is a procedure and a reference table, and the two
+ * need structure the shared core does not carry. Everything here sits on the text rail
+ * with `auto` side margins, because this sheet loads after the core and a `margin:0 0 0`
+ * shorthand would beat the core's one-axis rule and drop the block off the rail. */
+
+/* THREE STATS, ONE ROW, NEVER WRAPPING — same override the hub carries. The shared
+   .hero-row is a two-column grid, so three cards render as a 2+1 block. */
+.hero .hero-row{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 24px}
+
+/* The cold-open strip. Sits on the text rail, not the figure rail: it is the first thing
+   a reader meets and its left edge has to be the headline's left edge. */
+.hero .wrap > .hero-viz{max-width:var(--measure);margin:24px auto 4px}
+.hero-viz svg{width:100%;height:auto;display:block;overflow:visible}
+
+/* Figure chrome: every chart carries its own claim-title and how-to-read line, so the H2
+   does section work instead of doubling as the chart title (chart-craft.md). */
+.fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
+  line-height:1.3;max-width:var(--measure);color:var(--text)}
+.fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure)}
+.fig-title + .fig-sub + .chart{margin-top:16px}
+
+/* THE CHARTS ON THIS PAGE RE-LAY OUT RATHER THAN PANNING. Every one is drawn into a
+   viewBox measured from its own container, so the render scale is exactly 1 and a 14-unit
+   label is 14px at every width. The shared sideways-scroll fallback exists for charts
+   drawn in fixed units, and would double-shrink these. */
+.chart.reflow{overflow-x:visible;padding-bottom:0}
+.chart.reflow svg{min-width:0}
+.chart.reflow::after{content:none}
+
+/* Body prose that is not a lede. The house sheet has .lede and .src and nothing between,
+   so a procedure's explanatory paragraphs had no register of their own. */
+.band .body{margin:14px auto 0;max-width:var(--measure);font-size:17px;line-height:1.62;
+  color:#333B3E}
+.band .sub-h{margin:38px auto 0;max-width:var(--measure);font-size:20px;font-weight:900;
+  letter-spacing:-.01em;color:var(--text);line-height:1.25}
+/* INSIDE A STEP, .body IS A STEP PARAGRAPH. The rule above centres at measure width in
+   the band's own wrap, which is right in the band and wrong inside a list item: the item
+   already carries 52px of padding for its numeral, so `margin:auto` centred the paragraph
+   in what was left and rendered it inset 88px and 175px narrower than every paragraph
+   around it. It shipped that way on the footprint paragraph in recipe 1, and no gate saw
+   it, because 451px is a legal width and the column audit checks the width a block lands
+   on rather than whether it lands on the same one as its own siblings. Found by looking
+   at it. */
+.steps > li > .body{margin-left:0;margin-right:0;max-width:none;font-size:16px;
+  line-height:1.6}
+
+/* The award reference table. Two columns so it fits a phone without scrolling, with the
+   identifier on its own line under the lead: it is a monospace string a reader retypes
+   into somebody else's search box, so it needs to be selectable and whole, not clipped. */
+.pv-table.awards table{min-width:0}
+.pv-table.awards th[scope=row]{line-height:1.35}
+.pv-table.awards th[scope=row] .code{display:block;width:fit-content;margin:4px 0 0;
+  font-size:13px;font-weight:700}
+
+/* THE PROCEDURE. A numbered list is the right element: the steps are ordered, a reader
+   returns to step 4, and an <ol> is what a screen reader announces as one. The numerals
+   are drawn rather than default-rendered so the step number reads as a step number at a
+   glance and not as a bullet. */
+.steps{margin:26px auto 0;max-width:var(--measure);padding:0;list-style:none;
+  counter-reset:step}
+.steps > li{counter-increment:step;position:relative;padding:0 0 0 52px;margin:0 0 30px}
+.steps > li::before{content:counter(step);position:absolute;left:0;top:1px;
+  width:34px;height:34px;border-radius:50%;background:var(--ink);color:#fff;
+  font-weight:900;font-size:15px;display:flex;align-items:center;justify-content:center;
+  font-variant-numeric:tabular-nums}
+.steps > li > h3{font-size:19px;font-weight:900;letter-spacing:-.01em;line-height:1.25;
+  margin:5px 0 0;color:var(--text)}
+.steps > li > p{margin:9px 0 0;font-size:16px;line-height:1.6;color:#333B3E}
+.steps.tight > li{margin:0 0 20px}
+.steps.tight > li > p{font-size:15.5px}
+
+/* A code, set so it cannot be mistaken for emphasis. These are the strings a reader has
+   to type into somebody else's search box, so they get a monospace face and a ground. */
+.code{font-family:ui-monospace,Consolas,monospace;font-size:14.5px;font-weight:700;
+  background:#E9E4DB;padding:1px 6px;color:#1F3236;letter-spacing:0}
+/* A path or a filename inside running prose. pic-viz.css defines .mono only inside the
+   methodology box, so an unqualified one rendered as body text everywhere else. */
+.band .mono{font-family:ui-monospace,Consolas,monospace;font-size:12.9px;
+  background:#E9E4DB;padding:1px 5px;overflow-wrap:anywhere}
+/* IT WRAPS, IT DOES NOT SCROLL. A <pre> with overflow-x:auto clipped this endpoint at
+   ".../cew/data/api/{ye" on a 390px screen, which is the one string on the page a reader
+   has to retype, on the page whose whole purpose is that they can. A wrapped URL is
+   uglier than a scrolled one and a clipped URL is useless, so it wraps. */
+.endpoint{margin:12px 0 0;font-family:ui-monospace,Consolas,monospace;font-size:13px;
+  background:#EFEBE3;border-left:3px solid var(--action);padding:11px 14px;
+  white-space:pre-wrap;overflow-wrap:anywhere;color:#1F3236;line-height:1.5}
+.formula{margin:12px 0 0;font-size:16px;font-weight:700;background:#EFEBE3;
+  border-left:3px solid var(--ink);padding:13px 16px;line-height:1.7;color:#1F3236}
+
+/* The one warning inside a step. Not the page's .note box: it is the trap belonging to
+   that step, and it has to sit inside the step's own indent rather than break out of it. */
+.warn{margin:11px 0 0;font-size:15px;line-height:1.55;color:#3A3A36;background:#F6EEF3;
+  border-left:3px solid var(--hover);padding:11px 15px}
+.warn b{color:var(--hover)}
+
+/* THE THREE CLASSIFICATIONS, side by side because the argument is that they are the same
+   decision three times. Stacked below the rail width they read as three sections, which
+   loses the parallel; that is a real cost of a phone and there is no way around it. */
+.tax{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;
+  margin:26px auto 0;max-width:var(--measure)}
+.tax .t{border-top:3px solid var(--ink);padding:12px 0 0}
+.tax .t h4{margin:0;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:900;color:var(--action)}
+.tax .t .w{margin:6px 0 0;font-size:19px;font-weight:900;letter-spacing:-.01em;
+  color:var(--text);line-height:1.2}
+.tax .t p{margin:7px 0 0;font-size:14px;line-height:1.5;color:#4A5255}
+.tax .t .s{margin:8px 0 0;font-size:12.5px;color:var(--caption)}
+/* THE SET, not its size. Each card now carries the codes it counts, folded so the three
+   cards still read as one parallel argument at rest. */
+.tax .t .codes{margin:9px 0 0}
+.tax .t .codes summary{cursor:pointer;color:var(--action);font-weight:700;font-size:13px}
+.tax .t .codes summary:hover{color:var(--hover)}
+.tax .t .codes dl{margin:7px 0 0;font-size:12.5px;line-height:1.45;
+  display:grid;grid-template-columns:auto 1fr;gap:2px 10px}
+.tax .t .codes dt{font-weight:900;color:#2A3A3E;font-variant-numeric:tabular-nums}
+.tax .t .codes dd{margin:0;color:#4A5255}
+
+/* THE REGISTER. Fourteen entries, each of which is a small document: three sentences of
+   plain language, an endpoint, a filter list and a dependency line. A grid of cards would
+   make them uniform-height and unreadable; a stack of ruled entries is what a reference
+   section looks like. */
+#registry{margin:26px auto 0;max-width:var(--measure)}
+.entry{border-top:1px solid var(--line);padding:20px 0 22px}
+.entry:first-child{border-top:2px solid var(--text)}
+.entry .hd{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.entry h4{margin:0;font-size:18px;font-weight:900;letter-spacing:-.01em;line-height:1.25;
+  color:var(--text)}
+.entry .agency{margin:4px 0 0;font-size:13px;color:var(--caption)}
+.entry .lines{margin:12px 0 0}
+.entry .lines p{margin:0 0 7px;font-size:15px;line-height:1.55;color:#333B3E}
+.entry .lines p:last-child{margin-bottom:0}
+.entry .lines b{color:var(--ink);letter-spacing:.02em}
+.entry .lines .no b{color:var(--hover)}
+.entry .ep{margin:12px 0 0;font-family:ui-monospace,Consolas,monospace;font-size:12.5px;
+  color:#3A4448;overflow-wrap:anywhere;background:#F1EEE9;padding:8px 11px}
+/* TERMS ARE NOT A LICENCE and the register keeps them visually apart from both the
+   plain-language lines and the chips: a public-domain series with a citation request is
+   a different obligation from CC BY, and printing nothing invited a reader to think no
+   term was published at all. */
+.entry .terms{margin:10px 0 0;font-size:13px;line-height:1.5;color:#4A5255}
+.entry .terms b{color:var(--ink);letter-spacing:.02em}
+.entry .dep{margin:10px 0 0;font-size:13px;color:var(--caption)}
+.entry details{margin:10px 0 0}
+.entry summary{cursor:pointer;color:var(--action);font-weight:700;font-size:13.5px;
+  padding:5px 0}
+.entry summary:hover{color:var(--hover)}
+.entry dl{margin:8px 0 0;font-size:13.5px;line-height:1.5}
+.entry dt{font-weight:900;color:#2A3A3E;margin:7px 0 0}
+.entry dd{margin:0;color:#3A4448}
+
+/* Chips. Three facts a reader scans for before reading a word: how you get it, whether
+   you need a key, and whether a licence binds what you do next. Colour is not the only
+   carrier: each chip says its own word. */
+/* 12px, not 11.5: the accessibility floor this repo asserts (tools/textsize.mjs) is a
+   RENDERED 12px, and a chip is real prose a reader has to read, not chart furniture. */
+.chip{font-size:12px;letter-spacing:.09em;text-transform:uppercase;font-weight:900;
+  padding:3px 8px;background:#E4E0D8;color:#3A4448;white-space:nowrap}
+.chip.api{background:#D6EBEF;color:#0A5764}
+.chip.bulk{background:#E7E3DA;color:#4A4438}
+.chip.portal{background:#EDE3EC;color:#7A2A5C}
+.chip.internal{background:#F6DCC6;color:#8A4508}
+.chip.key{background:#F6DCC6;color:#8A4508}
+.chip.lic{background:#E3EBD0;color:#4A5A16}
+
+/* The gaps. Same ruled-entry idiom as the register, because they are the same kind of
+   object: a thing with a name, a reason and a next action. */
+.gaps{margin:24px auto 0;max-width:var(--measure)}
+.gap{border-left:3px solid var(--hover);padding:2px 0 2px 16px;margin:0 0 22px}
+.gap h4{margin:0;font-size:17px;font-weight:900;letter-spacing:-.01em;color:var(--text)}
+.gap .pg{margin:4px 0 0;font-size:12px;letter-spacing:.11em;text-transform:uppercase;
+  font-weight:900;color:var(--caption)}
+.gap p{margin:8px 0 0;font-size:15px;line-height:1.55;color:#333B3E}
+.gap .fix{color:var(--caption);font-size:14px}
+
+/* Footer — the guide visibly ends on its own ground, identity then hub link then the one
+   licence this page is obliged to print. */
+.page-foot{background:var(--deep);color:#BEDDE2;padding:30px 0 38px;font-size:14px}
+.page-foot p{margin:0 0 6px;max-width:var(--measure);margin-left:auto;margin-right:auto}
+.page-foot p:last-child{margin-bottom:0}
+.page-foot b{color:#fff;letter-spacing:.06em}
+/* TWO LICENCES ARE CONDITIONS OF USE, not captions: they belong once per page, in the
+   footer, which is where boilerplate lives. Both require a LINK to the licence text, so
+   the anchor here is not decoration and must stay visible against the dark footer —
+   this block was set with textContent until 2026-08-29 and carried no link at all. */
+.foot-licence{margin-top:14px;font-size:12.5px;line-height:1.55;color:#8FB6BE}
+.foot-licence .attr{margin:0 0 7px}
+.foot-licence .attr:last-child{margin-bottom:0}
+.foot-licence a{color:#CFE7EC;text-decoration:underline}
+.foot-licence a:hover{color:#fff}
+
+@media (max-width:760px){
+  .tax{grid-template-columns:1fr;gap:20px}
+  .hero .hero-row{grid-template-columns:1fr}
+  .steps > li{padding-left:44px}
+  .steps > li::before{width:30px;height:30px;font-size:14px}
+}
+
+/* ============================================================ SECTION NAVIGATION
+   THIS PAGE IS 27,000 PIXELS TALL. Ten sections, a register of fourteen sources, four
+   recipes' worth of procedure, and until now no way to see that structure or move
+   through it: a reader who wanted the suppression rates scrolled past three recipes to
+   find them, and a reader who did not already know they existed never found them at
+   all. Length is the cost of being a reference; illegible length is not.
+
+   TWO PRESENTATIONS, ONE LIST. The rail is the better one and it only fits where the
+   page's own column leaves room for it: .wrap is 1044px wide and centred, so a 160px
+   rail with a gap needs (100vw - 1044) / 2 >= 176, which is 1396px. Below that the same
+   items become a sticky bar. There is no width at which a reader gets neither.
+
+   BOTH SIT AFTER THE HERO, which is not an aesthetic choice: the cold-open gate measures
+   where this page's first chart lands, sources is on the fixed list at 900px, and a bar
+   in the flow above the hero would push that chart down and fail it. */
+
+.docnav{display:none}
+.docbar{display:none}
+
+/* --- the rail, where the page's own margin has room for it --- */
+@media (min-width:1400px){
+  .docnav{display:block;position:fixed;top:96px;width:160px;
+    left:max(16px, calc(50vw - 522px - 176px));z-index:5}
+  .docnav h2{font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--caption);font-weight:900;margin:0 0 10px}
+  .docnav ol{list-style:none;margin:0;padding:0;
+    border-left:2px solid var(--line)}
+  .docnav a{display:block;padding:6px 0 6px 12px;margin-left:-2px;
+    border-left:2px solid transparent;
+    font-size:13px;line-height:1.3;color:#5A6A6E;text-decoration:none;font-weight:700}
+  .docnav a:hover{color:var(--hover)}
+  .docnav a[aria-current]{color:var(--ink);border-left-color:var(--ink)}
+}
+
+/* --- the bar, everywhere else. Scrolls sideways rather than wrapping to three rows:
+       a nav that changes height as you scroll past it moves the text under it. --- */
+@media (max-width:1399px){
+  .docbar{display:block;position:sticky;top:0;z-index:6;
+    background:rgba(250,249,246,.97);border-bottom:1px solid var(--line);
+    backdrop-filter:blur(6px)}
+  .docbar ol{list-style:none;display:flex;gap:2px;margin:0 auto;padding:0 20px;
+    max-width:calc(var(--figure) + 64px);overflow-x:auto;scrollbar-width:none}
+  .docbar ol::-webkit-scrollbar{display:none}
+  .docbar li{flex:0 0 auto}
+  .docbar a{display:block;padding:11px 10px;font-size:12.5px;line-height:1.2;
+    white-space:nowrap;color:#5A6A6E;text-decoration:none;font-weight:700;
+    border-bottom:2px solid transparent}
+  .docbar a[aria-current]{color:var(--ink);border-bottom-color:var(--ink)}
+  .docbar{position:sticky}
+  .docbar::after{content:"";position:absolute;top:0;right:0;bottom:1px;width:34px;
+    pointer-events:none;
+    background:linear-gradient(to right, rgba(250,249,246,0), rgba(250,249,246,.98))}
+}
+
+/* A jumped-to heading must not land under the sticky bar. */
+section[id]{scroll-margin-top:56px}
+@media (min-width:1400px){section[id]{scroll-margin-top:20px}}
+
+/* The substitution table's second line: where a value appears and how to find it. Small,
+   because it is reference under a label rather than prose, but above the 12px floor. */
+.swapnote{display:block;margin:5px 0 0;font-size:12.5px;font-weight:400;line-height:1.45;
+  color:#5A6A6E}

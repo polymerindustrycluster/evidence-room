@@ -1,0 +1,61 @@
+{
+ "meta": {
+  "source": "PIC funding map, EDA Sustainable Polymers Tech Hub. Figures verified against the signed federal Notices of Award.",
+  "row": "one EDA implementation award to one project lead",
+  "derived_note": "Copied from the funding map's own shipped dataset as of 2026-08-13 and re-aggregated for this page. Nothing is fetched: every figure here is the figure that file carries.",
+  "note": "The award is shown as awarded. 2 of the 7 implementation awards carry FY2024 award IDs; restating those into 2025 dollars raises the award total by 0.5%, which does not move the published ratio.",
+  "caution": "A competitive implementation grant and a procurement obligation are different instruments. They share a unit of account, dollars committed, and that is the only sense in which this page compares them."
+ },
+ "generated_on": "2026-08-28",
+ "name": "EDA Sustainable Polymers Tech Hub",
+ "agency": "U.S. Economic Development Administration",
+ "award": 51001413,
+ "match": 7164030,
+ "match_label": "partner match",
+ "fy2024_share": 9721802,
+ "award_2025_dollars": 51263077,
+ "leads": [
+  {
+   "name": "BioVerde",
+   "amount": 11122386,
+   "funds": "Bio-based butadiene",
+   "awardId": "ED25HDQ0G0038"
+  },
+  {
+   "name": "Flexsys",
+   "amount": 10093286,
+   "funds": "Safer anti-degradant, a 6PPD alternative",
+   "awardId": "ED25HDQ0G0013"
+  },
+  {
+   "name": "Goodyear",
+   "amount": 9390634,
+   "funds": "Polymer composite, liquid phase mixing",
+   "awardId": "ED25HDQ0G0036"
+  },
+  {
+   "name": "University of Akron",
+   "amount": 7071802,
+   "funds": "Workforce (WISE)",
+   "awardId": "ED24HDQ0G0452"
+  },
+  {
+   "name": "Huntsman",
+   "amount": 5970805,
+   "funds": "Carbon black and nanotubes from methane",
+   "awardId": "ED25HDQ0G0009"
+  },
+  {
+   "name": "Full Circle Technologies",
+   "amount": 4702500,
+   "funds": "Recycling, end-of-life tires",
+   "awardId": "ED25HDQ0G0030"
+  },
+  {
+   "name": "Greater Akron Chamber",
+   "amount": 2650000,
+   "funds": "Innovation governance: a regional office of innovation for the Tech Hub",
+   "awardId": "ED24HDQ0G0413"
+  }
+ ]
+}

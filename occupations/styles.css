@@ -1,0 +1,155 @@
+/* occupations — page-local additions only. House anatomy (.mast/.hero/.band/.closer)
+   and the shared column system stay untouched so the layout gates keep applying.
+   This file adds: per-figure chrome, the occupation selector, one stat band (the
+   page's register change), band-tint pacing, the footer, and the per-form mobile
+   re-layout override. Pattern copied from wages/styles.css (the worked exemplar). */
+
+/* A NARROW CHART STILL CLEARS THE TEXT COLUMN. The shared token is 640px against a 678px
+   measure, so a chart that opts into `narrow` would render NARROWER than the prose beside
+   it, and a chart is never allowed to be the narrowest thing in a band. Raised here rather
+   than on `.chart.narrow`, because columns.mjs probes the TOKEN to decide whether a width
+   is sanctioned: override the value and the audit follows. Same fix as location-quotient. */
+:root{--figure-narrow:min(720px, 100%)}
+
+/* Byline block. Genre furniture the data-vintage stamp in the masthead does not replace:
+   the hero stack is kicker → headline → standfirst → byline/date. Bound to --measure with
+   a selector that outranks the shared `.hero .wrap > *` figure cap (0,2,0), and the
+   horizontal margins stay `auto` — a `margin:16px 0 0` shorthand here would win against
+   the shared one-axis rule and left-rail the byline at x=150 while every other line of
+   prose centres at 301. */
+.hero .wrap > .byline{max-width:var(--measure);margin:16px auto 0;font-size:13px;
+  letter-spacing:.02em;color:#9FCBD2;line-height:1.5}
+.hero .wrap > .byline b{color:#DCEEF1;font-weight:700}
+
+/* THE SCOPE FURNITURE. A naive reader finished this hero believing that 51% of America's
+   molding-machine setters work in Northeast Ohio. Every number in it was correct; the frame
+   was not. Two measures with two geographies run through the page, and a correction 180
+   lines down does not reach a reader who has already formed the belief, so scope stops
+   being a caveat and becomes permanent furniture: a strip over the stat row that governs
+   it, and a tag on every band kicker naming that band's geography. Bound to --measure with
+   a selector that outranks the shared `.hero .wrap > *` figure cap, same as .byline. */
+.hero .wrap > .scopebar{max-width:var(--measure);margin:22px auto 0;padding:8px 0 8px 13px;
+  border-left:3px solid var(--lime);font-size:14.5px;line-height:1.45;color:#DCEEF1}
+/* The kicker tag reads as a label, not as more kicker: a boxed chip, one weight down, in
+   ink for the national bands and in the metro accent for the regional ones. It inherits
+   the kicker's uppercase, which is what makes it scan as a stamp. */
+.takeaway .scope{display:inline-block;margin-left:9px;padding:2px 7px;border-radius:3px;
+  font-size:12px;letter-spacing:.1em;font-weight:900;vertical-align:1px;
+  color:#0C6473;background:#DCEEF1;box-shadow:inset 0 0 0 1px #9FD2DA}
+.takeaway .scope.reg{color:#7A3A05;background:#FBEADC;box-shadow:inset 0 0 0 1px #E4B98E}
+/* The same stamp on the stat cards, because the strip above them states a rule and the
+   chip carries it on the number itself. The card a reader misread (51% of the nation's
+   molding-machine setters) is the one that most needed a label attached to it, and a label
+   on only that card would imply the other three were something else. */
+.figv .d .scope{display:block;width:fit-content;margin:0 0 7px;padding:2px 7px;
+  border-radius:3px;font-size:12px;letter-spacing:.1em;font-weight:900;
+  text-transform:uppercase;color:#0A3A44;background:#9FD2DA}
+/* A DEFINITION THAT DOES NOT LOOK LIKE ONE IS NOT READ AS ONE. The shared sheet strips
+   <dfn>'s italics and puts nothing in their place, so the page's one defined term read as
+   ordinary prose and a reader met "Zone 4" on the chart with nothing to say whether four
+   was a lot. The dotted rule is the ordinary cue and costs no height; the chart column and
+   the table header now also carry the reading, because a reader arrives at the chart first. */
+.band .lede dfn{border-bottom:1px dotted #8A9599}
+
+/* Figure chrome: every chart carries its own claim-title + how-to-read line, so the H2
+   does section work instead of doubling as the chart title (chart-craft.md). */
+.fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
+  line-height:1.3;max-width:var(--measure);color:var(--text)}
+.fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure)}
+.fig-title + .fig-sub + .chart{margin-top:16px}
+.fig-title + .fig-sub + .legend{margin-top:14px}
+/* A second figure inside one band needs air above it or it reads as a continuation of the
+   first figure's source line. */
+.src + .fig-title{margin-top:46px}
+
+/* THE LEGEND SITS ON THE FIGURE COLUMN AND ITS INK SITS ON THE TEXT RAIL.
+   The shared column audit classifies `.band .legend` as FIGURE — a legend is part of the
+   chart, not prose — so capping it at the measure would fail columns.mjs. But its swatches
+   are text-bearing, and left at figure width they start 151px left of every line of prose
+   on the page: a second text rail at the exact place page-design.md names. Padding keeps
+   the box on the sanctioned figure width while putting the first swatch on the measure
+   rail, which is what the one-rail law is actually about. Collapses to zero below 760px,
+   where the two columns are the same width by design. */
+.legend{padding-left:calc((var(--figure) - var(--measure)) / 2)}
+/* An ABSENCE named in the legend. The fourth metro is quoted in the prose and drawn
+   nowhere, which sent readers hunting through the chart for a series that was never
+   there. Set recessive so it reads as "not on this chart" rather than a fifth series. */
+.legend span.off{color:var(--caption);max-width:100%;align-items:flex-start}
+.legend span.off > span{min-width:0}
+.legend span.off i{margin-top:3px;flex:none}
+
+/* Occupation selector — 26 rows is too many for a button rail, so a native select:
+   compact, keyboard-native, and the default state tells the full story. */
+.osel{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:20px 0 0;
+  max-width:var(--measure)}
+.osel label{font:700 13px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;
+  color:#4A5457}
+.osel select{font:700 15px/1.2 var(--sans);color:var(--ink);background:#fff;
+  border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-height:44px;
+  max-width:100%}
+.osel select:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+.verdict{margin:14px 0 0;font-size:17px;line-height:1.55;max-width:var(--measure);
+  color:#243135}
+.verdict b{color:var(--ink)}
+
+/* Pacing: alternate band grounds so the scroll reads as a wave, not a loop. */
+.band.tint{background:#F4F1EC}
+
+/* The stat band — the page's one register change: the two paychecks at display size.
+   Capped at the MEASURE, not the figure: a stat row set wider than the prose is a second
+   text rail however symmetric it looks (page-design.md), and this pair sat 151px left of
+   every sentence around it. Two cards at 220px plus a 40px gap fit 678px with room. */
+.statgrid{display:flex;gap:40px;flex-wrap:wrap;margin:28px 0 0;max-width:var(--measure)}
+.statv{border-top:4px solid #9FD2DA;padding:16px 0 0;min-width:220px;flex:1}
+.statv.deg{border-top-color:#0C6473}
+.statv .n{font-size:clamp(40px,4.4vw,58px);font-weight:900;line-height:1;
+  letter-spacing:-.03em;font-variant-numeric:proportional-nums;color:var(--text)}
+.statv .k{margin:9px 0 0;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:900;color:#4A5457}
+.statv .d{margin:6px 0 0;font-size:14px;color:#5A625E;max-width:300px}
+
+/* Apparatus moved OFF the page and INTO the table twin. The caveat budget is 45 visible
+   words per figure — one source line and one limitation sentence — and everything a
+   reader only needs while reading the numbers themselves now sits inside the disclosure
+   that holds those numbers, at footnote scale, one weight. */
+.tnote{margin:14px 0 0;font-size:13px;line-height:1.55;color:var(--caption);
+  max-width:var(--measure)}
+
+/* Site-level end. The page used to stop dead on the closer: no related reading, no way to
+   reach a person, no org identity, and the O*NET licence stranded inline in a figure
+   caption. Three stages on a ground distinct from both the closer and the bands, every
+   line on the same text rail as the prose above it. */
+.foot{background:#EDE9E2;border-top:1px solid var(--line);padding:34px 0 40px;
+  font-size:14.5px;line-height:1.6;color:#3A4448}
+.foot .wrap > *{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.foot p{margin:0 0 12px}
+.foot a{color:var(--action)}
+.foot-kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:900;
+  color:var(--ink);margin:0 0 14px}
+.foot-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;
+  max-width:var(--measure);margin:0 auto 22px}
+.foot-card{display:block;text-decoration:none;color:var(--text);
+  border-top:3px solid var(--ink);padding:11px 0 0}
+.foot-card b{display:block;font-size:15px;font-weight:900;color:var(--ink);line-height:1.3}
+.foot-card span{display:block;margin:5px 0 0;font-size:13px;color:var(--caption);
+  line-height:1.5}
+.foot-card:hover b{color:var(--hover)}
+.foot-ask b{color:var(--ink);font-weight:700}
+.foot-note{font-size:13px;color:var(--caption)}
+.foot-id{margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:13px;
+  letter-spacing:.04em;color:var(--caption)}
+
+/* Mobile: this page re-lays every chart out per form (labels above marks, grouped
+   row stacks) — so the shared sideways-scroll fallback is switched off. The evidence
+   must be in the first paint, not behind a pan (chart-craft § mobile). */
+@media (max-width:760px){
+  .chart{overflow-x:visible;padding-bottom:0}
+  .chart svg{min-width:0}
+  .chart::after{content:none}
+  .fig-title{font-size:19px;margin-top:26px}
+  .src + .fig-title{margin-top:34px}
+  .statgrid{gap:24px}
+  .statv .n{font-size:42px}
+  .legend{gap:12px 16px}
+  .foot-grid{grid-template-columns:1fr;gap:14px}
+}

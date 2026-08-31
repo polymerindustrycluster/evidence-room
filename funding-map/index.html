@@ -3,70 +3,122 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Where The Public Money Goes</title>
-<meta name="description" content="An interactive map of the $106.3 million in public awards and match behind the Polymer Industry Cluster: three sources, seven programs, twenty-one recipients.">
 <meta name="color-scheme" content="light">
+<title>Where the public money goes</title>
+<meta name="description" content="Governments awarded $85.3 million to Akron polymers and partners promised $21.0 million beside it, $106.3 million in all: three awards, seven programs, twenty-one recipients.">
 <link rel="stylesheet" href="../_shared/pic-viz.css">
 <link rel="stylesheet" href="styles.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%230C6473'/><circle cx='16' cy='11' r='4' fill='%23B8D637'/><circle cx='10' cy='21' r='4' fill='%231A8A9E'/><circle cx='22' cy='21' r='4' fill='%231A8A9E'/></svg>">
 </head>
 <body>
 
 <a class="skip" href="#main">Skip to content</a>
 
-<header class="masthead">
+<header class="mast">
   <div class="wrap">
-    <p class="eyebrow">Polymer Industry Cluster &middot; Greater Akron</p>
-    <h1>Three public awards converge on one portfolio</h1>
-    <p class="standfirst">
-      Federal and state money reaches the Greater Akron polymer cluster through three separate awards
-      that behave in three different ways. This is every dollar of it, and every organization it reaches.
-    </p>
-
-    <div class="topline">
-      <div class="topline-total">
-        <p class="tt-value"><span id="total-count" data-value="106290451">$106.3M</span></p>
-        <p class="tt-label">awarded and committed across three public awards</p>
-        <p class="tt-sub"><strong>$85.3M</strong> in awards <span aria-hidden="true">+</span><span class="sr-only">plus</span> <strong>$21.0M</strong> in match and cost share</p>
-      </div>
-      <ul class="topline-sources" id="topline-sources">
-        <li class="ts ts--eda">
-          <p class="ts-amount">$51.00M</p>
-          <p class="ts-name">EDA Sustainable Polymers Tech Hub</p>
-          <p class="ts-match">+ $7.16M partner match</p>
-        </li>
-        <li class="ts ts--ohio">
-          <p class="ts-amount">$31.25M</p>
-          <p class="ts-name">Ohio Innovation Hub</p>
-          <p class="ts-match">+ $10.42M state cost share</p>
-        </li>
-        <li class="ts ts--apex">
-          <p class="ts-amount">$3.08M</p>
-          <p class="ts-name">Good Jobs Challenge (APEX)</p>
-          <p class="ts-match">+ $3.37M local match</p>
-        </li>
-      </ul>
-    </div>
+    <strong>Polymer Industry Cluster</strong>
+    <span>Public money &middot; Greater Akron</span>
   </div>
 </header>
 
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Public awards to the polymer cluster, as of August 2026</p>
+    <!-- THE HEADLINE NUMBER IS THE AWARDED MONEY, and it was $106 million until
+         2026-08-29. A reader given only the rendering met "$106 million" in the headline
+         and "governments awarded $85.3 million" in the very next line, then two more
+         totals in the stat cards, and had to reconcile four figures before the page
+         explained any of them. Both numbers were right and the page carried the
+         arithmetic four screens down. The headline now prints what governments actually
+         awarded; the standfirst adds the promise beside it and reaches $106.3 million in
+         the sentence after; and the stat row is the same addition laid out, so the first
+         screen carries the decomposition rather than the biggest figure. -->
+    <h1>Three public awards, <em>$85.3 million</em>, and no two move the money
+      the same way</h1>
+    <p class="stand">That is what governments committed to the Greater Akron polymer
+      cluster. Partners and the state promised $21.0 million more beside it, and the two
+      added together are the $106.3 million the region reports as secured. Of the money
+      actually awarded, $79.2 million already names who receives it. This is every dollar,
+      every program, and every organization it reaches.</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data signed federal
+      Notices of Award and the executed Ohio grant agreement &middot; Figures as of
+      <time datetime="2026-08-13">13 August&nbsp;2026</time></p>
+    <!-- THE COLD OPEN. This page opened on 2,389px of prose, machine cards and controls
+         before its first mark, and below 900px it drew no SVG at all: the phone reader met
+         the whole argument in words. The stat cards are not the problem and have not moved.
+         This strip is the shape of where the money lands, one row per named recipient,
+         ordered by size. It is deliberately a POORER view than the map below it, which
+         carries source, program, mechanism and match as well: this one keeps recipient and
+         dollars and nothing else, because its job is to show the shape and hand the reader
+         on. It renders at BOTH widths. Guarded by tools/coldopen.mjs. -->
+    <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
+      id="open-t">Every organization named so far as receiving this money, one row each,
+      ordered by size. Nine of the twenty-one clear a million dollars and hold ninety-six
+      percent of the $79.2 million named; twelve get under a million between them. The
+      longest single row is the polymer pilot facility at $18.5 million.</title></svg></div>
+    <div class="hero-row" id="figs"></div>
+  </div>
+</section>
+
 <main id="main">
 
-  <section class="section section--map" aria-labelledby="map-h">
+  <section class="band">
     <div class="wrap">
-      <div class="section-head">
-        <div>
-          <h2 id="map-h">Where it goes</h2>
-          <p class="lede">
-            Hue names the funding source. Within the Ohio stream, a tint step separates the two
-            company-facing programs &mdash; PIC Translational R&amp;D and Synthe6 startup awards &mdash; from the hub&rsquo;s own
-            workstreams. Every recipient row carries the program chips that fund it.
-          </p>
-        </div>
-        <div class="controls">
-          <button type="button" id="reset-view" class="btn btn--ghost" hidden>Reset view</button>
-        </div>
+      <p class="takeaway">Three machines</p>
+      <h2>Each award commits its money by a different route</h2>
+      <!-- TWO ACRONYMS EXPANDED BEFORE THEIR FIRST USE. A page arguing for a body's
+           transparency never said what that body is called: PIC ran through the machine
+           cards, the legend and the program names, and EDA titles the largest award, and
+           neither was written out anywhere on the page. An organisation's own acronym is
+           the one it never sees, because it uses it hourly. -->
+      <p class="lede">Meet the awards one at a time; the combined map follows. Each keeps
+        its color on every figure below. Two short names run through all three: PIC is the
+        Polymer Industry Cluster, the body that publishes this page, and EDA is the U.S.
+        Economic Development Administration, the federal agency behind two of the three
+        awards.</p>
+      <ol class="machines">
+        <li class="machine machine--eda">
+          <p class="m-kicker">Machine 1 &middot; EDA Sustainable Polymers Tech Hub &middot; <strong>$51.00M</strong> federal</p>
+          <p class="m-sent">EDA obligates each of its seven awards, meaning it commits the money straight to the project lead, so no federal dollar passes through PIC&rsquo;s hands.</p>
+          <p class="m-fact">Partners promised $7.16M alongside it. Largest check: BioVerde, $11.12M, for bio-based butadiene. <a href="#source/eda">Trace it on the map</a></p>
+        </li>
+        <li class="machine machine--ohio">
+          <p class="m-kicker">Machine 2 &middot; Ohio Innovation Hub &middot; <strong>$31.25M</strong> state</p>
+          <p class="m-sent">The state&rsquo;s grant lands in one Akron hub and splits five ways; the biggest slice, $18.52M, is a building.</p>
+          <p class="m-fact">The state promised $10.42M in cost share beside it. Its two company-facing slices, Translational R&amp;D and Synthe6, reach fourteen organizations. <a href="#source/ohio">Trace it on the map</a></p>
+        </li>
+        <li class="machine machine--apex">
+          <p class="m-kicker">Machine 3 &middot; Good Jobs Challenge (APEX) &middot; <strong>$3.08M</strong> federal</p>
+          <p class="m-sent">One workforce award, held by the Greater Akron Chamber, which signs for it as grantee, funds regional training aimed at 500 enrollments and 320 placements.</p>
+          <p class="m-fact">The local match commitment beside it, $3.37M, is larger than the award itself. <a href="#source/apex">Trace it on the map</a></p>
+        </li>
+      </ol>
+      <p class="src">Sources: signed federal Notices of Award; the executed Ohio grant
+        agreement (SBIG20251005). Award figures are amounts committed, not cash spent.</p>
+    </div>
+  </section>
+
+  <section class="band tint">
+    <div class="wrap">
+      <p class="takeaway">Where it goes</p>
+      <h2>Follow one dollar from its award to the organization that receives it</h2>
+      <p class="lede">This is the whole system on one page. Select any element to trace its
+        thread; full precision sits in its panel and in the table below.</p>
+
+      <div class="controls">
+        <label class="sr-only" for="finder">Find a recipient</label>
+        <select id="finder" class="finder">
+          <option value="">Find a recipient&hellip;</option>
+        </select>
+        <button type="button" id="reset-view" class="btn btn--ghost" hidden>Reset view</button>
       </div>
+
+      <p class="fig-title">Three machines, twenty-one recipients: the money lands unevenly</p>
+      <p class="fig-sub">
+        <span class="fig-sub-mode">Connectors into individual recipients are not to scale.</span>
+        Hatching is match money, promised alongside the award.
+      </p>
+
+      <div id="legend" class="legend" hidden></div>
 
       <noscript>
         <p class="noscript">
@@ -76,81 +128,149 @@
         </p>
       </noscript>
 
-      <div id="viz" class="viz" aria-busy="true">
-        <p class="viz-loading">Loading the funding data&hellip;</p>
+      <div class="chart">
+        <div id="viz" class="viz" aria-busy="true">
+          <p class="viz-loading">Loading the funding data&hellip;</p>
+        </div>
       </div>
 
-      <div id="legend" class="legend" hidden></div>
+      <p class="verdict">
+        Of the $85.3M awarded, $79.2M has reached a named recipient. More than half sits with the
+        seven direct federal awardees, and the single largest line is a building.
+      </p>
 
-      <div class="fnotes">
-        <p class="fn" id="fn-disclosure"></p>
-        <p class="fn" id="fn-scale"></p>
+      <p class="src" id="fn-disclosure"></p>
+      <p class="src">
+        Sources: signed federal Notices of Award; the executed Ohio grant agreement (SBIG20251005);
+        executed sub-grant agreements. Figures as of 13 August 2026.
+      </p>
+      <details class="disclose">
+        <summary>What is drawn to scale, and what this figure leaves out</summary>
+        <div class="disclose-body" id="fn-more"></div>
+      </details>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <p class="takeaway">What a line item buys</p>
+      <h2>Two award labels carry more than they say</h2>
+      <p class="lede">The map gives each award a few words. Two of those labels describe
+        work that a few words cannot hold.</p>
+      <div class="vignettes">
+        <article class="vig">
+          <p class="vig-kicker">Flexsys &middot; $10.09M &middot; EDA R&amp;D</p>
+          <h3>Replacing the tire additive behind the coho salmon die-offs</h3>
+          <p class="vig-body">
+            Nearly every tire on the road carries 6PPD, an anti-degradant that keeps rubber from
+            cracking. Its breakdown product, 6PPD-quinone, is the chemical a 2021 <cite>Science</cite>
+            paper identified as killing coho salmon in urban Pacific Northwest streams.
+            Flexsys&rsquo;s award funds development of a safer alternative in Akron.
+          </p>
+          <p class="vig-link"><a href="#recipient/flexsys">See the award</a></p>
+        </article>
+        <article class="vig">
+          <p class="vig-kicker">Full Circle Technologies &middot; $4.70M &middot; EDA R&amp;D</p>
+          <h3>Un-making a tire is the hard part</h3>
+          <p class="vig-body">
+            A tire is mostly vulcanized rubber, built never to melt back down, so recycling one into
+            new products is far harder than recycling a bottle. Full Circle&rsquo;s award funds
+            end-of-life tire recycling, the only recycling project among the seven direct federal
+            awards.
+          </p>
+          <p class="vig-link"><a href="#recipient/full-circle">See the award</a></p>
+        </article>
       </div>
     </div>
   </section>
 
-  <section class="section section--table" aria-labelledby="table-h">
+  <section class="band tint">
     <div class="wrap">
-      <div class="section-head">
-        <div>
-          <h2 id="table-h">Every award, in full</h2>
-          <p class="lede">
-            The same data as the map, at full precision. Source, program, recipient, amount and award ID
-            where one is public.
-          </p>
-        </div>
-        <div class="controls">
-          <a id="csv-link" class="btn" href="#" download="pic-funding-map.csv">Download the data (CSV)</a>
-        </div>
-      </div>
+      <p class="takeaway">The register</p>
+      <h2>Every award, in full</h2>
+      <!-- WHAT A ROW COUNTS, SAID BEFORE THE ROWS. A reader compared the finder above the
+           map, which lists an organization and everything it holds, with a row here, which
+           lists one award line, found BioVerde at $11.15M in one and $11,122,386 in the
+           other, and had nowhere to learn that the $25,000 between them is a second award.
+           The sentence is generated from the data so the example and the arithmetic cannot
+           drift from the file. -->
+      <p class="lede">
+        The same data as the map, at full precision, ranked by amount. An award ID appears
+        where the award carries one of its own. The nine equal Synthe6 cohort awards share one
+        row here; the CSV lists each company separately.
+        <span id="row-unit"></span>
+      </p>
+      <p class="controls">
+        <a id="csv-link" class="btn" href="#" download="pic-funding-map.csv">Download the data (CSV)</a>
+      </p>
       <div class="table-scroll">
         <table id="data-table" class="dtable">
-          <caption class="sr-only">Every public award reaching the Polymer Industry Cluster, by source, program and recipient.</caption>
+          <caption class="sr-only">Every public award reaching the Polymer Industry Cluster, ranked by amount.</caption>
           <thead>
             <tr>
-              <th scope="col">Source</th>
-              <th scope="col">Program</th>
               <th scope="col">Recipient</th>
               <th scope="col" class="num">Amount</th>
+              <th scope="col">Funded by</th>
               <th scope="col">Award ID</th>
               <th scope="col">What it funds</th>
             </tr>
           </thead>
           <tbody id="data-tbody">
-            <tr><td colspan="6">Loading&hellip;</td></tr>
+            <tr><td colspan="5">Loading&hellip;</td></tr>
           </tbody>
         </table>
       </div>
-      <div class="fnotes" id="table-note"></div>
+      <p class="table-more"><button type="button" id="table-toggle" class="btn btn--ghost"></button></p>
+      <p class="src" id="table-note"></p>
+      <details class="disclose">
+        <summary>The full reconciliation, line by line</summary>
+        <div class="disclose-body" id="recon-more"></div>
+      </details>
+      <details class="disclose">
+        <summary>Which signed document each figure comes from</summary>
+        <div class="disclose-body"><ul class="prov" id="prov-list"></ul></div>
+      </details>
     </div>
   </section>
 
-  <section class="section section--methods" aria-labelledby="methods-h">
-    <div class="wrap methods-grid">
-      <div>
-        <h2 id="methods-h">Methods and provenance</h2>
-        <p class="asof">Figures as of <time datetime="2026-08-13">13 August 2026</time>.</p>
-        <ul class="prov" id="prov-list"></ul>
-      </div>
-      <div>
-        <h3 id="notshown-h">What this doesn&rsquo;t show</h3>
-        <ul class="prov prov--warn" id="notshown-list"></ul>
-        <p class="rule-note">
-          Amounts of $1M or more are shown to two decimal places; amounts below $1M are rounded to
-          whole thousands. Full precision is in the table and the CSV.
-        </p>
-      </div>
-    </div>
+  <!-- PV.methodology() injects the "How we did this" band here, between the last story
+       band and the closer, exactly as it does on every other page. -->
+
+  <section class="closer">
+  <div class="wrap">
+    <p>Three machines, one ledger: every dollar of the $106.3 million, awarded and
+      promised, has a line on it.</p>
+    <p class="sub">Of the $85.3M awarded, $79.2M already has a named recipient, and the
+      largest single line among them, $18.52M, is a building rather than a company. The
+      other $6.17M sits in two Ohio workstreams: $2.64M of Translational R&amp;D not yet
+      sub-granted, and $3.52M running Synthe6 through Bounce. All of it is awarded or
+      committed money, not cash spent.</p>
+  </div>
   </section>
 
 </main>
 
 <footer class="foot">
   <div class="wrap">
-    <p>Polymer Industry Cluster &middot; Greater Akron Chamber</p>
-    <p class="foot-note">
-      Figures are awarded or committed amounts; disbursement follows milestones.
-    </p>
+    <p class="foot-k">Read next</p>
+    <ul class="foot-links">
+      <li><a href="../federal-money/">Is $51 million a lot?</a>
+        <span>The Tech Hub award set beside the federal money the region was already getting.</span></li>
+      <li><a href="../index/">The Evidence Room</a>
+        <span>Every page, each with its own sources and its own tests.</span></li>
+    </ul>
+    <p class="foot-cta">Think a figure here is wrong? Name the sentence and what it fails
+      against: <b>jswanson@greaterakronchamber.org</b>.</p>
+    <p class="foot-note">Correction, 29 August 2026: this page led with
+      <em>Three public awards, $106 million</em> one line above a standfirst saying
+      governments awarded $85.3 million. Both figures were right and the page carried the
+      arithmetic between them, but four screens down, so a reader met four totals before
+      any of them was explained. The headline now prints the $85.3 million governments
+      awarded; the $21.0 million partners and the state promised beside it, and the
+      $106.3 million the two make together, arrive in the next sentence and in the stat
+      row under it. No figure changed.</p>
+    <p class="foot-id">Polymer Industry Cluster &middot; Greater Akron Chamber.
+      Corrections are dated and appended, never silent.</p>
   </div>
 </footer>
 
@@ -168,21 +288,7 @@
   </div>
 </aside>
 
-<section class="band">
-  <div class="wrap">
-    <p class="takeaway">How we did this</p>
-    <h2>Sources, filters, and how to rebuild this page</h2>
-    <div id="repro"></div>
-  </div>
-</section>
-
-<script src="../_shared/sources.js"></script>
-<script>PVSources.render("funding-map", "repro", {limits: [
-  "This is the public money PIC helped win, not all public money reaching polymer work in the region. A program PIC was not part of does not appear here, and its absence is not evidence it does not exist.",
-  "Award figures are amounts announced or obligated, not cash spent. An obligation can be drawn down over several years, reduced, or de-obligated entirely.",
-  "Recipients are named as the award names them. Where an award passes through one organization to others, only the named recipient appears.",
-  "This page predates the shared house style and does not carry a claims file, so no sentence on it is checked by a re-runnable assertion."
-]});</script>
+<script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

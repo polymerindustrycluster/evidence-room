@@ -83,6 +83,62 @@ const PV = (() => {
     return node;
   }
 
+  /* MEASURED TYPE METRICS, because a leading constant is a guess about a face that a
+     stylesheet can change underneath it. The same defect shipped on four pages here: a
+     label and its sub-line share an anchor 13 to 16 units apart while the sheet raises
+     chart type below 760px to a face that paints an 18.75-unit line box, so every stacked
+     pair overlapped at every width in the band. Shortening the strings cannot fix that;
+     only measuring can.
+
+     Units are VIEWBOX units, which is what the geometry is drawn in. The probe sits on
+     the baseline at x=0 rather than parked off-canvas: getBBox reports in viewBox
+     coordinates, so a probe at y=-999 returns an ascent of 1014 and a leading computed
+     from it is nonsense. Memoised per class per svg, since a redraw asks repeatedly. */
+  const faceCache = new WeakMap();
+  function face(svg, cls = "pv-lab") {
+    let byCls = faceCache.get(svg);
+    if (!byCls) faceCache.set(svg, byCls = {});
+    /* KEYED BY THE FACE, NOT JUST THE CLASS. The sheet swaps chart type at 760px, so a
+       cache keyed on class alone returns the desktop metrics to a phone redraw after a
+       live resize — the exact staleness this helper exists to prevent. The probe is
+       created first so its computed size can be part of the key. */
+    const t = txt(svg, "Hxpg", {x: 0, y: 0, class: cls, opacity: 0});
+    const key = cls + "@" + (getComputedStyle(t).fontSize || "");
+    if (byCls[key]) { svg.removeChild(t); return byCls[key]; }
+    let m;
+    try {
+      const bb = t.getBBox();
+      m = {h: bb.height, ascent: -bb.y, descent: bb.height + bb.y};
+    } catch {
+      const fs = parseFloat(getComputedStyle(t).fontSize) || 14;
+      m = {h: fs * 1.32, ascent: fs * 1.02, descent: fs * 0.3};
+    }
+    svg.removeChild(t);
+    return (byCls[key] = m);
+  }
+
+  /* Baseline-to-baseline distance that clears both faces, plus air. Use this wherever a
+     line sits under another line; never a typed number. */
+  function lead(svg, upper = "pv-lab", lower = "pv-labq", air = 3) {
+    return Math.ceil(face(svg, upper).descent + face(svg, lower).ascent + air);
+  }
+
+  /* AN AXIS LABEL THAT CANNOT FIT IS PULLED BACK, NOT PAINTED OFF THE PAGE.
+     Charts that write their own axis label bypass frame(), so they bypassed the clamp
+     added there: churn's ran 6px past a 390px viewport with overflow:visible. Same rule,
+     callable. Measures the rendered string, because character count does not know the
+     face. */
+  function axlab(svg, s, a = {}) {
+    const t = txt(svg, s, Object.assign({class: "pv-axlab"}, a));
+    const vbW = svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width;
+    if (vbW) {
+      const len = t.getComputedTextLength();
+      const x = +(a.x || 0);
+      if (x + len > vbW - 2) t.setAttribute("x", Math.max(2, vbW - 2 - len));
+    }
+    return t;
+  }
+
   /* frame: solid hairline grid, recessive axes, no dashes */
   function frame(svg, {x, y, w, h, xs, ys, xt, yt, xfmt, yfmt, xlab, ylab, band}) {
     const g = el("g", {}, svg);
@@ -94,21 +150,68 @@ const PV = (() => {
       txt(g, yfmt ? yfmt(v) : v, {x: x - 10, y: ys(v) + 4, "text-anchor": "end",
         class: "pv-tick"});
     });
-    (xt || []).forEach(v => {
-      txt(g, xfmt ? xfmt(v) : v, {x: xs(v), y: y + h + 20, "text-anchor": "middle",
-        class: "pv-tick"});
-    });
-    el("line", {x1: x, y1: y + h, x2: x + w, y2: y + h,
+    /* THE TICK ROW'S DROP IS MEASURED, NOT TYPED. It was 20 units below the plot floor
+       while the bottom y-tick's baseline sits 4 below it, leaving 16 between two
+       baselines whose face paints a 16.84-unit box on the DESKTOP and 18.2 on a phone.
+       So the y-axis's lowest label and the x-axis's first one touched in the corner at
+       every width, on every chart that draws both. It surfaced as "0" against "2015" on
+       four pages; two of them worked around it locally by passing xt: [] and placing the
+       row themselves, which is the tell that the core was wrong. Below the collision
+       gate's 3px floor on desktop, which is why it survived so long.
+
+       Only the drop moves; the caller's bottom margin is unchanged, so a chart that was
+       already tight stays tight and the sweep says whether that is true. */
+    if ((xt || []).length) {
+      const drop = Math.max(20, 4 + lead(svg, "pv-tick", "pv-tick", 3));
+      (xt || []).forEach(v => {
+        txt(g, xfmt ? xfmt(v) : v, {x: xs(v), y: y + h + drop, "text-anchor": "middle",
+          class: "pv-tick"});
+      });
+    }
+    /* TAGGED, so a checker does not have to guess which line is the axis. collide.mjs
+       picked "the widest short horizontal line" and kept the FIRST at that width; frame()
+       draws gridlines before the axis and they span the same plot width, so the check had
+       always been measuring against the topmost GRIDLINE. It reported a label plate
+       overlapping a gridline as "a bar crosses the axis", which sent one diagnosis down
+       the wrong path entirely. */
+    el("line", {x1: x, y1: y + h, x2: x + w, y2: y + h, "data-pv-axis": "1",
       stroke: "var(--pv-axis)", "stroke-width": 1}, g);
-    if (xlab) txt(g, xlab, {x: x + w / 2, y: y + h + 46, "text-anchor": "middle",
-      class: "pv-axlab"});
-    if (ylab) txt(g, ylab, {x, y: y - 16, "text-anchor": "start", class: "pv-axlab"});
+    /* The x-axis label is centred on the PLOT, which sits right of the box centre whenever
+       the left margin exceeds the right — a 42/12 split offsets it by 15 units. That was
+       invisible while charts were drawn in more units than they were rendered in and the
+       whole thing shrank. Once a chart is drawn at its true size, a label as wide as the
+       plot overhangs the viewBox, and with overflow:visible it paints off the page: churn
+       pushed 6px past a 390px viewport. Clamp it into the box, measuring the rendered
+       string rather than guessing from character count. */
+    if (xlab) {
+      const t = txt(g, xlab, {x: x + w / 2, y: y + h + 46, "text-anchor": "middle",
+        class: "pv-axlab"});
+      const vbW = svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width;
+      if (vbW) {
+        const half = t.getComputedTextLength() / 2;
+        if (half * 2 < vbW - 4)
+          t.setAttribute("x", Math.min(Math.max(x + w / 2, half + 2), vbW - half - 2));
+      }
+    }
+    /* The y-axis label sits ABOVE the plot, anchored at the left margin, so a long one
+       runs off the right of a narrow chart: churn's "Share starting or ending" started at
+       x=42 and ran 334 units wide inside a 350-unit box, 6px past a 390px viewport. Pull
+       it back to the left edge rather than let it paint outside, and measure the rendered
+       string to decide, since character count does not know the face. */
+    if (ylab) {
+      const t = txt(g, ylab, {x, y: y - 16, "text-anchor": "start", class: "pv-axlab"});
+      const vbW = svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width;
+      if (vbW) {
+        const len = t.getComputedTextLength();
+        if (x + len > vbW - 2) t.setAttribute("x", Math.max(2, vbW - 2 - len));
+      }
+    }
     return g;
   }
 
   /* build the table-view twin from rows [{cells:[], head:bool}] */
   function tableView(id, caption, head, rows) {
-    return `<details class="pv-table"><summary>Table view &mdash; ${caption}</summary>
+    return `<details class="pv-table"><summary>Table view: ${caption}</summary>
       <div class="pv-tablewrap"><table>
         <caption>${caption}</caption>
         <thead><tr>${head.map(h => `<th scope="col">${h}</th>`).join("")}</tr></thead>
@@ -167,7 +270,19 @@ const PV = (() => {
        where an editorial desk sets a short time series. The svg still fills whatever box
        it is given via viewBox, so the caller changes nothing else. */
     if (opts.narrow) svg.closest(".chart")?.classList.add("narrow");
-    while (svg.childNodes.length > (opts.keep ?? 1)) svg.removeChild(svg.lastChild);
+    /* Keep the first N ELEMENT children, not the first N childNodes. Written as a
+       childNodes count, this silently ate the <title> on every chart whose markup was
+       indented (`<svg ...>\n  <title>`): childNodes[0] is then the whitespace text node,
+       so the kept slot held whitespace and the title was removed on first draw. Every
+       such chart shipped role="img" aria-labelledby pointing at an element that no
+       longer existed — a screen reader got no alternative at all, while the source
+       markup looked correct and every gate passed. Found 2026-08-28. */
+    const keep = opts.keep ?? 1;
+    let kept = 0;
+    for (const node of [...svg.childNodes]) {
+      if (node.nodeType === 1 && kept < keep) { kept++; continue; }
+      svg.removeChild(node);
+    }
     return {svg, W, H, m, w: W - m.l - m.r, h: H - m.t - m.b};
   }
 
@@ -201,7 +316,7 @@ const PV = (() => {
     b.className = "pv-footprint";
     // .wrap or it renders full-bleed at x=0, flush against the window edge, while every
     // other element on the page sits inside the centered column
-    b.innerHTML = `<div class="wrap"><b>${FP.label}</b> &mdash; ${FP.words} counties.
+    b.innerHTML = `<div class="wrap"><b>${FP.label}</b>: ${FP.words} counties.
       ${FP.note || ""}
       ${extra ? `<span class="d">${extra}</span>` : ""}
       ${FP.differs ? `<span class="d">${FP.differs}</span>` : ""}</div>`;
@@ -225,6 +340,25 @@ const PV = (() => {
      NOTE: it sits next to a PROTOTYPE flag on purpose. A registered mark on a draft
      implies clearance, so the flag has to stay louder than the logo. */
   const MARK = `<svg class="pv-mark" viewBox="-30 -30 289.182 294.048" role="img" aria-label="Polymer Industry Cluster" xmlns="http://www.w3.org/2000/svg"> <g id="pic-mark"> <path id="path2" d="m 1557.61,1759.91 -467.12,216.88 203.23,498.07 40.16,-16.38 -187.6,-459.77 429.59,-199.44 -18.26,-39.36" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path3" d="m 1313.8,2618.78 c -83.89,0 -152.13,-68.24 -152.13,-152.11 0,-83.89 68.24,-152.13 152.13,-152.13 83.87,0 152.12,68.24 152.12,152.13 0,83.87 -68.25,152.11 -152.12,152.11" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path4" d="m 256.441,1089.67 -35.511,24.91 389.636,555.58 495.664,335.55 24.31,-35.92 -489.044,-331.08 -385.055,-549.04" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path5" d="m 611.324,1638.49 -409.047,377.31 29.418,31.89 409.043,-377.31 -29.414,-31.89" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path6" d="m 626.031,1842.59 c -103.742,0 -188.148,-84.41 -188.148,-188.16 0,-103.74 84.406,-188.15 188.148,-188.15 103.75,0 188.157,84.41 188.157,188.15 0,103.75 -84.407,188.16 -188.157,188.16" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path7" d="m 1118.38,2139.88 c -83.88,0 -152.126,-68.24 -152.126,-152.13 0,-83.87 68.246,-152.11 152.126,-152.11 83.88,0 152.12,68.24 152.12,152.11 0,83.89 -68.24,152.13 -152.12,152.13" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path8" d="m 1566.74,1931.72 c -83.89,0 -152.13,-68.24 -152.13,-152.13 0,-83.87 68.24,-152.11 152.13,-152.11 83.88,0 152.12,68.24 152.12,152.11 0,83.89 -68.24,152.13 -152.12,152.13" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path9" d="m 216.984,2183.88 c -83.875,0 -152.1207,-68.25 -152.1207,-152.13 0,-83.89 68.2457,-152.13 152.1207,-152.13 83.887,0 152.129,68.24 152.129,152.13 0,83.88 -68.242,152.13 -152.129,152.13" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path10" d="M 238.684,1340.83 C 107.074,1340.83 0,1233.74 0,1102.13 0,970.512 107.074,863.441 238.684,863.441 c 131.613,0 238.695,107.071 238.695,238.689 0,131.61 -107.082,238.7 -238.695,238.7" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> </g> </svg>`;
+
+  /* The tab mark. The masthead MARK is white-filled for a dark strip, so used bare as a
+     favicon it disappears on a light tab. This wraps the same paths on the masthead's own
+     ground (--deeper) so the tab reads as the page's own header at 16px, and it is injected
+     here rather than written into fifteen <head>s so a new page inherits it by existing.
+     Data URI, so it survives bundling into a single self-contained file. */
+  function favicon() {
+    if (document.querySelector('link[rel="icon"]')) return;
+    const paths = MARK.slice(MARK.indexOf("<g"), MARK.lastIndexOf("</svg>"));
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-60 -60 349 354">' +
+      '<rect x="-60" y="-60" width="349" height="354" rx="52" fill="#052E36"/>' +
+      paths + "</svg>";
+    const link = document.createElement("link");
+    link.rel = "icon";
+    link.type = "image/svg+xml";
+    link.href = "data:image/svg+xml," + encodeURIComponent(svg);
+    document.head.appendChild(link);
+  }
 
   function mark() {
     const host = document.querySelector(".mast .wrap");
@@ -342,6 +476,8 @@ const PV = (() => {
       "no_industry", "not_a_commute", "split_is_judgment", "impact_is_separate",
       "no_raw_trends", "quarantine", "nominal", "no_deflator", "small_numbers",
       "publicOnly", "note", "peer_rule", "size_control",
+      /* patents: the three caveats a reader needs, published as limits */
+      "unit", "lag", "address_is_not_a_lab",
     ]);
     const METHOD = new Set([
       "definition", "bases", "stages", "baseline", "why", "why_corresponding",
@@ -353,6 +489,8 @@ const PV = (() => {
       "subfield_alt", "cip", "cip_groups", "groups", "neo", "measure", "industries",
       "benchmark", "demographics", "control", "polymer_bound", "baseline_year",
       "two_measures", "led_joined", "naics",
+      /* patents: mechanics of the pull, and the completeness cutoff */
+      "cpc", "geography", "last_complete_year",
     ]);
     const prose = ([, v]) => typeof v === "string" && v.trim().length >= 25;
     const limits = Object.entries(m).filter(e => prose(e) && LIMITS.has(e[0])).map(([, v]) => v);
@@ -407,7 +545,28 @@ const PV = (() => {
                   <span class="mono">${src.script}</span></p>` : ""}
               </div>`;
             }).join("")}
-          </details>`;
+          </details>
+          ${(() => {
+            /* LICENCE ATTRIBUTION IS AN OBLIGATION, NOT A COURTESY, and it belongs on
+               every page that USES the data rather than only on the one that describes
+               it. A hostile review on 2026-08-29 found IPEDS reaching this site through
+               the Urban Institute's portal under ODC-By 1.0, which requires attribution,
+               with none printed anywhere; and the O*NET credit rendered without the
+               registered-trademark symbol and with no link to CC BY 4.0, both of which
+               that licence explicitly requires ("The trademark symbol must be properly
+               displayed"). The compliant strings and the licence URLs were already in the
+               registry. Nothing rendered them. Emitted here, from the same by-artifact
+               list the block above uses, so a page cannot use a licensed source and omit
+               its credit. */
+            const cred = keys.map(k => R.sources[k])
+              .filter(src => src && src.attribution);
+            if (!cred.length) return "";
+            return `<div class="pv-src pv-attrib"><h4>Required attribution</h4>` +
+              cred.map(src => `<p class="pv-method-note">${src.attribution}` +
+                (src.licence_url
+                  ? ` <a href="${src.licence_url}" rel="license">Licence</a>.` : "") +
+                `</p>`).join("") + `</div>`;
+          })()}`;
         })()}
         <div>
           <h3>Data sources</h3>
@@ -428,24 +587,33 @@ const PV = (() => {
         <div>
           <h3>How we checked it</h3>
           <p>${list.length
-            ? `Every number on this page is written as a <b>test</b>, not a sentence &mdash;
-               <b>${list.length}</b> of them, each stating the condition that would prove it
-               wrong. ${auto.length} re-run automatically against the source data;
-               ${manual.length} rest on a document a person had to read.`
-            : (o.noClaimsNote || "This page makes no numeric claim of its own — every " +
+            ? `Every sentence on this page that carries a number also carries a written
+               condition that would prove it wrong. There are <b>${list.length}</b> of them.
+               ${manual.length === 0
+                 ? `All ${list.length} are re-checked against the source data each time the
+                    page is built, so a figure that stopped being true would break the build
+                    before it reached you.`
+                 : `${auto.length} are re-checked against the source data each time the page
+                    is built, so a figure that stopped being true would break the build
+                    before it reached you. The other ${manual.length} ${manual.length === 1
+                      ? "depends on a person having read a document correctly, so it is"
+                      : "depend on a person having read a document correctly, so they are"}
+                    the place to attack first.`}`
+            : (o.noClaimsNote || "This page makes no numeric claim of its own: every " +
                "figure on it is carried by the page it links to, and is checked there.")}</p>
-          <p>The work was done with <b>Claude (Anthropic)</b>, directed and reviewed by a
-            person. Figures are recomputed from the source data by script, and readings of
-            what they mean were sent to competing AI systems to be argued down. That is a
-            floor, not a guarantee: one mistyped federal classification code once erased a
-            university&rsquo;s degree program from a finding and passed every check, because
-            the checks were true of the data the mistake had already filtered. A reader
-            caught it.</p>
+          <p>Analysis and graphics by <b>Claude (Anthropic)</b>; <b>John Swanson</b> is
+            responsible for what this page says. Figures are recomputed from the source data by script, and readings
+            of what they mean were sent to competing AI systems to be argued down. None of
+            that guarantees the page is right. On another page in this series, one mistyped
+            federal classification code erased a university&rsquo;s degree program from a
+            finding and passed every check, because the checks were true of the data the
+            mistake had already filtered out. A reader caught it, and that is the failure
+            this section exists to make findable.</p>
         </div>
         <div>
           <h3>Corrections</h3>
           <p>Every figure here is rebuilt from free public data, so any of it can be
-            checked independently &mdash; and errors are expected to be found.</p>
+            checked independently, and errors are expected to be found.</p>
           <p>If you think something is wrong, say so:
             <b>${o.contact || "jswanson@greaterakronchamber.org"}</b>. The most useful note
             names the sentence and what you think it fails against.</p>
@@ -458,8 +626,9 @@ const PV = (() => {
     return sec;
   }
 
-  return {el, txt, ticks, frame, hoverable, showTip, hideTip, tableView, data, footprint,
-          methodology, figures, chart, footprintBanner, padGrid, mark, N,
+  return {el, txt, axlab, face, lead, ticks, frame, hoverable, showTip, hideTip, tableView, data, footprint,
+          methodology, figures, chart, footprintBanner, padGrid, mark, favicon, N,
           CAT, SEQ, GRAY, INK, usd, usdShort, reduced};
 })();
 PV.mark();
+PV.favicon();

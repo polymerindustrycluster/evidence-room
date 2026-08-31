@@ -1,0 +1,182 @@
+{
+ "meta": {
+  "source": "USPTO Open Data Portal, patent applications search, api.uspto.gov",
+  "row": "one filing year: how many patent applications in CPC C08 carry an inventor correspondence address in Ohio, and in each of the four metro anchor cities.",
+  "unit": "APPLICATIONS filed, not patents granted.",
+  "geography": "inventor correspondence address, by state code and by city name. This is NOT the PIC-12 county footprint: the filing carries a city and no county, so the four cities are anchors and never a regional total.",
+  "cpc": "C08, organic macromolecular compounds. One defensible definition of polymer and a choice, like every code choice on this site.",
+  "lag": "An application publishes about eighteen months after filing, so filing years after 2023 are undercounted by construction. They are fetched and flagged rather than dropped so the shape of the lag is visible.",
+  "address_is_not_a_lab": "The first record this script returned was assigned to an Akron company with the inventor resident in Luxembourg.",
+  "fetched": "2026-08-30",
+  "last_complete_year": 2023
+ },
+ "rows": [
+  {
+   "year": 2015,
+   "complete": true,
+   "ohio": 455,
+   "us_inv": 4495,
+   "us_inv_all": 344226,
+   "world": 10973,
+   "ohio_all": 13304,
+   "akron": 65,
+   "cleveland": 45,
+   "canton": 36,
+   "youngstown": 0
+  },
+  {
+   "year": 2016,
+   "complete": true,
+   "ohio": 420,
+   "us_inv": 4353,
+   "us_inv_all": 344702,
+   "world": 11220,
+   "ohio_all": 13042,
+   "akron": 68,
+   "cleveland": 47,
+   "canton": 30,
+   "youngstown": 0
+  },
+  {
+   "year": 2017,
+   "complete": true,
+   "ohio": 498,
+   "us_inv": 4855,
+   "us_inv_all": 353100,
+   "world": 12221,
+   "ohio_all": 13809,
+   "akron": 87,
+   "cleveland": 55,
+   "canton": 42,
+   "youngstown": 2
+  },
+  {
+   "year": 2018,
+   "complete": true,
+   "ohio": 392,
+   "us_inv": 4499,
+   "us_inv_all": 351862,
+   "world": 11839,
+   "ohio_all": 13383,
+   "akron": 52,
+   "cleveland": 48,
+   "canton": 23,
+   "youngstown": 0
+  },
+  {
+   "year": 2019,
+   "complete": true,
+   "ohio": 346,
+   "us_inv": 4438,
+   "us_inv_all": 360970,
+   "world": 11670,
+   "ohio_all": 12776,
+   "akron": 59,
+   "cleveland": 32,
+   "canton": 18,
+   "youngstown": 2
+  },
+  {
+   "year": 2020,
+   "complete": true,
+   "ohio": 367,
+   "us_inv": 4318,
+   "us_inv_all": 355500,
+   "world": 11789,
+   "ohio_all": 12118,
+   "akron": 53,
+   "cleveland": 46,
+   "canton": 23,
+   "youngstown": 0
+  },
+  {
+   "year": 2021,
+   "complete": true,
+   "ohio": 361,
+   "us_inv": 4048,
+   "us_inv_all": 353958,
+   "world": 11320,
+   "ohio_all": 11951,
+   "akron": 48,
+   "cleveland": 33,
+   "canton": 26,
+   "youngstown": 1
+  },
+  {
+   "year": 2022,
+   "complete": true,
+   "ohio": 353,
+   "us_inv": 3822,
+   "us_inv_all": 343883,
+   "world": 11162,
+   "ohio_all": 11515,
+   "akron": 46,
+   "cleveland": 42,
+   "canton": 34,
+   "youngstown": 2
+  },
+  {
+   "year": 2023,
+   "complete": true,
+   "ohio": 342,
+   "us_inv": 3516,
+   "us_inv_all": 338814,
+   "world": 10861,
+   "ohio_all": 11642,
+   "akron": 47,
+   "cleveland": 50,
+   "canton": 28,
+   "youngstown": 2
+  },
+  {
+   "year": 2024,
+   "complete": false,
+   "ohio": 325,
+   "us_inv": 3368,
+   "us_inv_all": 323963,
+   "world": 10588,
+   "ohio_all": 11142,
+   "akron": 75,
+   "cleveland": 47,
+   "canton": 22,
+   "youngstown": 1
+  },
+  {
+   "year": 2025,
+   "complete": false,
+   "ohio": 266,
+   "us_inv": 2612,
+   "us_inv_all": 196612,
+   "world": 8043,
+   "ohio_all": 6878,
+   "akron": 39,
+   "cleveland": 68,
+   "canton": 18,
+   "youngstown": 0
+  },
+  {
+   "year": 2026,
+   "complete": false,
+   "ohio": 20,
+   "us_inv": 272,
+   "us_inv_all": 22470,
+   "world": 733,
+   "ohio_all": 845,
+   "akron": 3,
+   "cleveland": 4,
+   "canton": 2,
+   "youngstown": 0
+  }
+ ],
+ "bases": {
+  "by_inventor": 8854,
+  "by_applicant": 3948
+ },
+ "trend_complete_years": {
+  "first": 2015,
+  "last": 2023,
+  "first_value": 455,
+  "last_value": 342,
+  "pct_change": -24.8
+ }
+}

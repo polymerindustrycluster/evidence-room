@@ -1,20 +1,117 @@
-/* location-quotient — page-specific only; tokens and chart chrome live in
-   ../_shared/pic-viz.css so every artifact in web/ stays one system. */
-.picker{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 0}
+/* location-quotient — page-local only. House anatomy (.mast/.hero/.band/.closer) and the
+   shared column system stay untouched so the layout gates keep applying. This file adds:
+   per-figure chrome, the register key + picker, band-tint pacing, the collapsed
+   provenance disclosure, and the per-form mobile re-layout override. */
+
+/* Byline block. Genre furniture the provenance sentence does not replace: the hero stack
+   is kicker → headline → standfirst → byline/date, and a data vintage in the masthead is
+   not authorship. It is bound to --measure with a selector that outranks the shared
+   `.hero .wrap > *` figure cap (0,2,0), or it would open a second text rail at the page's
+   most-viewed pixels. */
+/* `margin:18px auto 0`, and the `auto` is load-bearing. The shared one-axis rule sets
+   horizontal margins on `.hero .wrap > *` at (0,2,0); this selector is (0,3,0) and wins,
+   so a `margin:18px 0 0` shorthand here silently zeroes them and left-rails the byline
+   against the wrap at x=150 while every other line of prose centres at 301. Same trap the
+   closer paragraph fell into in the shared sheet, one page later. */
+.hero .wrap > .byline{max-width:var(--measure);margin:18px auto 0;font-size:13px;
+  letter-spacing:.02em;color:#9FCBD2;line-height:1.5}
+.hero .wrap > .byline b{color:#DCEEF1;font-weight:700}
+
+/* THE COLD-OPEN STRIP, pinned to the TEXT rail. The shared sheet caps `.hero .wrap > *`
+   at --figure (980px), so left alone this chart would start 151px outboard of the
+   headline it draws: the two-rail defect. This selector is (0,3,0) and beats it. The
+   `auto` side margins are load-bearing for the same reason they are on the byline one
+   rule up: a `margin:24px 0 4px` shorthand silently zeroes them and left-rails the whole
+   block against the wrap. */
+.hero .wrap > .hero-viz{max-width:var(--measure);margin:24px auto 4px}
+.hero-viz svg{width:100%;height:auto;display:block;overflow:visible}
+
+/* A NARROW CHART STILL CLEARS THE TEXT COLUMN. The shared token is 640px against a 678px
+   measure, so the two small-series charts on this page rendered NARROWER than the prose
+   beside them — a chart is never allowed to be the narrowest thing in the band. Raised
+   here rather than page-locally on `.chart.narrow`, because columns.mjs probes the TOKEN
+   to decide whether a width is sanctioned: override the value and the audit follows. */
+:root{--figure-narrow:min(720px, 100%)}
+
+/* Figure chrome: every chart carries its own claim-title and how-to-read line, so the H2
+   does section work instead of doubling as the chart title (chart-craft.md). */
+.fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
+  line-height:1.3;max-width:var(--measure);color:var(--text)}
+.fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure)}
+.fig-title + .fig-sub + .chart{margin-top:16px}
+
+/* Pacing: alternate band grounds so the scroll reads as a wave, not a loop. */
+.band.tint{background:#F4F1EC}
+
+/* The register key. The three chips below carry a real editorial distinction, and the
+   audit found it explained only in a title attribute — meaning behind a hover. It is a
+   visible line now. */
+.regkey{margin:22px 0 0;max-width:var(--measure);font-size:14px;line-height:1.55;
+  color:#4A5457}
+.regkey b{color:var(--ink);font-weight:900;letter-spacing:.08em;font-size:12.5px;
+  text-transform:uppercase}
+
+/* The chips read as buttons now. A reader looking at a static render sat in front of six
+   boxes with one filled in, unable to tell whether a control had been missed or a sentence
+   left over from another version — so the caption above them says outright that they are
+   pressable, and the unpressed ones carry a raised edge instead of a hairline. */
+.pickhint{margin:18px 0 0;max-width:var(--measure);font-size:13.5px;color:var(--caption)}
+.picker{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0;max-width:var(--figure)}
 .pick{background:#fff;border:1px solid var(--line);color:var(--pv-ink);font:inherit;
-  font-size:13.5px;padding:8px 14px;cursor:pointer;transition:all .14s}
+  font-size:13.5px;padding:8px 14px;cursor:pointer;transition:all .14s;min-height:38px;
+  display:inline-flex;align-items:baseline;gap:9px;
+  box-shadow:0 1px 0 var(--line), 0 2px 0 rgba(0,0,0,.05)}
+.pick[aria-pressed=true]{box-shadow:none}
 .pick:hover{border-color:var(--hover);color:var(--hover)}
 .pick[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff;
   font-weight:700}
 .pick:focus-visible{outline:2px solid var(--action);outline-offset:2px}
 
 /* NAICS register, per the 2026-08-11 crosswalk addendum. A context code must never be
-   mistakable for the measured cluster, so the label is on the control itself. */
-.pick{display:inline-flex;align-items:baseline;gap:9px}
+   mistakable for the measured cluster, so the label rides on the control itself. */
 .pick .reg{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:900;
   padding:2px 6px;border-radius:2px}
 .pick.reg-core .reg{background:var(--ink);color:#fff}
 .pick.reg-detail .reg{background:#E4E0D8;color:#3A4448}
 .pick.reg-context .reg{background:var(--hover);color:#fff}
-.pick[aria-pressed=true].reg-core .reg{background:#fff;color:var(--ink)}
 .pick[aria-pressed=true] .reg{background:#fff;color:var(--ink)}
+
+/* Provenance, demoted. The verification argument is a B-plot now: one sentence, one
+   chart, and the definition fight folded behind a disclosure the reader opens on
+   purpose (page-design.md, progressive disclosure). */
+.disclose{margin:26px 0 0;max-width:var(--measure);border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);padding:2px 0}
+.disclose > summary{cursor:pointer;padding:13px 2px;font-size:14px;font-weight:700;
+  color:var(--ink);list-style-position:outside}
+.disclose > summary:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+.disclose[open] > summary{border-bottom:1px solid var(--line)}
+.disclose > div{padding:14px 2px 18px;font-size:14.5px;line-height:1.6;color:#3A4448}
+.disclose b{color:var(--ink)}
+
+/* Site-level end. The page used to stop dead on the closer, so the story had no visible
+   finish: no related reading, no way to reach a person, no org identity. Three stages on a
+   ground distinct from both the closer and the bands, and every line on the same text rail
+   as the prose above it. */
+.foot{background:#EDE9E2;border-top:1px solid var(--line);padding:34px 0 40px;
+  font-size:14.5px;line-height:1.6;color:#3A4448}
+.foot .wrap > *{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.foot p{margin:0 0 12px}
+.foot a{color:var(--action)}
+.foot-more{font-size:16px;font-weight:700;color:var(--ink)}
+.foot-ask b{color:var(--ink);font-weight:700}
+.foot-note{font-size:13px;color:var(--caption)}
+.foot-id{margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:13px;
+  letter-spacing:.04em;color:var(--caption)}
+
+/* Mobile: this page re-lays every chart out per form (compact trend with the takeaway
+   plated inside the plot, angled heatmap headers, subject-first scatter, narrow
+   histogram) — so the shared sideways-scroll fallback is switched off. The evidence has
+   to be in the first paint, not behind a pan (chart-craft § mobile). */
+@media (max-width:760px){
+  .chart{overflow-x:visible;padding-bottom:0}
+  .chart svg{min-width:0}
+  .chart::after{content:none}
+  .fig-title{font-size:19px;margin-top:24px}
+  .picker{gap:6px}
+  .pick{font-size:13px;padding:7px 10px;gap:7px}
+}

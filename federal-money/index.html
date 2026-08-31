@@ -6,6 +6,7 @@
 <meta name="color-scheme" content="light">
 <title>The Other Federal Money</title>
 <link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -18,62 +19,161 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">Polymer obligations at place of performance, FY2019&ndash;2026</p>
-    <h1>Federal money has been landing on polymer work here <em>every year for eight
-      years</em>.</h1>
-    <p class="stand">PIC's funding map shows the awards PIC helped win. This shows the
-      background rate &mdash; ordinary federal contracting in chemical and plastics manufacturing
-      across the same <b>twelve</b> counties. It is the context that makes the Tech Hub
-      award legible as either large or ordinary, and PIC has never put the two side by
-      side. <b>Two limits bound everything below, and both are structural rather than
-      incidental.</b> The industry view filters to chemical and plastics manufacturing
-      codes only, so
-      <b>university and research awards are invisible to it by construction</b> &mdash; a
-      university files under 61xxxx. And place of performance is a <b>reported field on
-      the award</b>, not an observation of where the work happened.</p>
-    <p class="stand"><dfn><b>Obligation</b> &mdash; money the government has legally
-      committed to pay. It is a promise on the books, not cash already spent, and it is the
-      figure federal spending data reports.</dfn>
-      <dfn><b>Place of performance</b> is where the work is done, which is not always where
-      the company is headquartered.</dfn></p>
+    <p class="eyebrow">Is the Tech Hub award big?</p>
+    <h1>Routine federal contracts bring the region&rsquo;s polymer industry about
+      <em>$35 million a year</em>.</h1>
+    <p class="stand">The Tech Hub award is $51.0 million: a competitive grant from the
+      U.S. Economic Development Administration (EDA), the federal agency for regional
+      economic development, split across seven named local projects. Ordinary federal
+      contracting in chemical and plastics manufacturing across the same twelve counties
+      has run at $36.6 million a year over the seven finished fiscal years, so the award
+      is worth about <b>1.4 years</b> of money the region already gets.</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data USAspending.gov
+      and the PIC funding map &middot; August&nbsp;2026</p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
-    <p class="takeaway">The chart</p>
-    <h2>Eight years of polymer obligations, by fiscal year</h2>
-    <p class="lede">One bar per federal fiscal year. These are obligations recorded against
-      chemical (325) and plastics and rubber (326) industry codes, for work performed in
-      the region.</p>
+    <p class="takeaway">The comparison</p>
+    <h2>Set the award beside the money that was already coming</h2>
+    <p class="lede">One bar per federal budget year, which runs October to September. These
+      are obligations recorded against chemical (325) and plastics and rubber (326)
+      industry codes, for work performed in the twelve counties. The orange line is the
+      Tech Hub award, drawn at the same scale as the bars. In fiscal 2019 the routine flow alone came to
+      $51.6 million, $647,000 more than the whole award.</p>
+    <p class="deffn"><dfn><b>Obligation</b>: money the government has legally committed to
+      pay. It is a promise on the books, not cash already spent: the cash that actually
+      goes out, the <i>outlay</i>, can follow years later. The obligation is the figure
+      federal spending data reports.</dfn>
+      <dfn><b>In 2025 dollars</b>: older years marked up for inflation, so that a 2019
+      dollar and a 2025 dollar buy the same thing and the eight years can be compared.
+      <i>As awarded</i> is the smaller, unadjusted figure on the original paperwork; the
+      tables carry both. The award is shown as awarded, which is the one place this page
+      puts an unadjusted figure beside adjusted ones: restated into 2025 dollars it is
+      $51.3 million, and still about 1.4 years.</dfn></p>
+    <p class="fig-title">$51.0M of Tech Hub money is about 1.4 years of what already
+      arrives</p>
+    <p class="fig-sub">Each bar is one year of ordinary federal contracting with the
+      region&rsquo;s polymer industry, in 2025 dollars. A bar that passes the orange line
+      is a single year worth more than the whole Tech Hub award; the dashed line is the
+      eight-year average. Bar labels round to the nearest $0.1M, so subtracting a label
+      from the award line does not give the true gap; the two bars nearest that
+      line carry their exact distance from it instead. FY2026 is still running.</p>
     <div class="chart"><svg id="fy" role="img" aria-labelledby="fy-t">
-      <title id="fy-t">Federal polymer obligations by fiscal year.</title></svg></div>
+      <title id="fy-t">Federal polymer obligations by fiscal year in 2025 dollars, with the
+        EDA Tech Hub award drawn as a horizontal line across the bars. One of the eight
+        years, 2019, is worth more than the whole award on its own, by $647,000; the next
+        largest, 2021, falls $245,000 short of it.</title></svg></div>
     <div id="fytable"></div>
     <p class="src" id="fysrc"></p>
+    <div class="note"><b>Where the work is recorded.</b> Place of performance is a
+      reported field on the award, not an observation of where the work happened. A
+      centrally administered contract, or a prime performing through a subaward, can put
+      the county code somewhere other than the activity.</div>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">What it buys</p>
+    <h2>The largest recipient is a category defined by what it is not</h2>
+    <p class="lede">The same obligations, sorted by industry across all eight years and on
+      the same 2025-dollar basis. Every business in federal data is filed under a
+      six-digit industry number, the census code (NAICS), and the one at the top of this
+      chart, &ldquo;all other rubber product manufacturing,&rdquo; is the leftovers class
+      for rubber goods that fit none of the named ones. It takes more of the eight years
+      than any named industry does.</p>
+    <p class="fig-title">Two rubber-product codes hold 65% of eight years of money</p>
+    <p class="fig-sub">Federal obligations by six-digit industry code, FY2019 to FY2026
+      added together, in 2025 dollars. Each bar is one industry&rsquo;s eight-year total,
+      not a single year. Bar labels are shortened; the table carries the full census
+      names.</p>
+    <div class="chart"><svg id="na" role="img" aria-labelledby="na-t">
+      <title id="na-t">Federal polymer obligations by six-digit industry code, 2025
+        dollars. Two rubber-product codes hold most of the eight-year
+        total.</title></svg></div>
+    <div id="natable"></div>
+    <p class="src" id="nasrc"></p>
+    <p class="beat">The chart has two blind spots worth naming. University and research
+      awards file under education and research industry codes, so the National Science
+      Foundation&rsquo;s NEO-SMART Engine, $15.0 million, and TARDISS, another federally
+      funded research program, are real federal money in these counties that appears in
+      no bar above. And counting every industry in these twelve counties, rather than the
+      polymer codes alone, gives $235.5 billion over the same years, nearly all of it
+      aerospace, defense and health contracting with no polymer content. That is a count
+      of something else and the two are never added together, but it does fix the scale:
+      polymer-coded work is about one dollar in every 840 of federal contracting here.</p>
+    <p class="beat">Concentration is the thing to watch in this chart. The two rubber
+      codes hold 65% of eight years, and the second of them, tire manufacturing, put
+      $20.2 million into FY2022 and recorded nothing at all in FY2023: the region&rsquo;s
+      total fell $26.6 million between those two years, most of it from that one code,
+      which is why FY2023 is the shortest bar in the year-by-year chart. Whether that is a year without tire
+      contracting or a year without a recorded row, these files cannot say. Either way, a
+      total this concentrated moves when one code goes quiet, which is the sense in which
+      65% is a risk and not only a fact.</p>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
-    <p class="takeaway">What it buys</p>
-    <h2 id="natitle">Which industries the money actually goes to</h2>
-    <p class="lede">The same obligations, broken out by six-digit industry across all eight
-      years. The largest recipient is not the one you would guess &mdash; it is a
-      residual category defined by what it is not.</p>
-    <div class="chart"><svg id="na" role="img" aria-labelledby="na-t">
-      <title id="na-t">Federal polymer obligations by six-digit industry code.</title></svg></div>
-    <div id="natable"></div>
-    <div class="note" id="caveat"></div>
+    <p class="takeaway">The other kind of money</p>
+    <h2>The award money has names on it</h2>
+    <p class="lede">The routine flow is the government buying things, and it reaches this
+      page as industry categories with no buyer and no seller attached, so nothing here
+      can say which firms hold the $51.6 million recorded in fiscal 2019. The award reads
+      down to the project. It went to seven leads,
+      each with a named piece of work: $11.1 million to BioVerde for bio-based butadiene at
+      the top, and $2.7 million at the bottom to stand up a regional office of innovation
+      at the Greater Akron Chamber. The seven projects also carry $7.2 million in
+      non-federal partner match (money the region and its firms put up alongside
+      the award), which is not counted in the $51.0 million or anywhere else on this
+      page.</p>
+    <p class="fig-title">Seven named awards make up the $51.0M line</p>
+    <p class="fig-sub">EDA Tech Hub implementation awards by project lead, in the dollars
+      each was awarded. The bar under each amount is drawn against the largest award, so a
+      bar half as long is an award about half the size.</p>
+    <div class="leads" id="leads"></div>
+    <p class="src" id="leadsrc"></p>
   </div>
 </section>
 
 <section class="closer">
   <div class="wrap">
     <p>A number is big or small only against something.</p>
-    <p class="sub" id="closersub"></p>
+    <p class="sub">Routine federal polymer contracting in these twelve counties runs about
+      <b>$36.6 million a year</b> in 2025 dollars, counting the seven fiscal years that
+      have closed. Fiscal 2026 is still running, and averaging it in with the seven closed
+      years gives $34.9 million, which stretches the award to a year and a half; an annual
+      rate should not carry a year that has not finished, so the comparison here uses
+      closed years. The Tech Hub award, $51.0 million, is about 1.4 years of it, and in
+      fiscal 2019 the routine flow was larger than the whole award on its own. A competitive grant and a routine purchase order are two different
+      kinds of money, so what is compared here is rough size, not like for like. Whether
+      $36.6 million a year is healthy or thin for a cluster this size is a different
+      question, and these records (which count what was committed, not what was
+      needed) cannot answer it.</p>
   </div>
 </section>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-k">Read next</p>
+    <ul class="foot-links">
+      <li><a href="../funding-map/">Where the award goes</a>
+        <span>The same $51.0 million, traced from award to project.</span></li>
+      <li><a href="../location-quotient/">How concentrated it is</a>
+        <span>What the region has more of than the country does.</span></li>
+      <li><a href="../index/">The Evidence Room</a>
+        <span>Every page, each with its own sources and its own tests.</span></li>
+    </ul>
+    <p class="foot-cta">Think a number here is wrong? Name the sentence and what it fails
+      against: <b>jswanson@greaterakronchamber.org</b>.</p>
+    <p class="foot-id">Polymer Industry Cluster &middot; Greater Akron Chamber. Every
+      figure is rebuilt from free public data by the scripts in
+      <a href="https://github.com/polymerindustrycluster/evidence-room">the repository</a>.</p>
+  </div>
+</footer>
 
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>

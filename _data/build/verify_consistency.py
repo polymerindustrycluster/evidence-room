@@ -370,14 +370,26 @@ def check_footprint_prose(arts: list[str]) -> None:
             p = os.path.join(WEB, a, f)
             if os.path.isfile(p):
                 blob += _strip_comments(read(p))
+        # A county count is only a FOOTPRINT claim when the sentence is asserting the
+        # footprint's size. "The two share ten counties" states the OVERLAP between
+        # PIC-12 and NEO-14, which is true and has nothing to do with either total, and
+        # flagging it taught the writer to avoid a correct sentence rather than to fix a
+        # wrong one. A gate that fires on true prose gets satisfied by rewording, which
+        # is how a check stops meaning anything. Overlap and subset phrasings are exempt.
+        OVERLAP = r"(?:shares?|sharing|overlap(?:s|ping)?|in common|both|each of|of (?:those|these|the twelve|the fourteen))\s+(?:\w+\s+){0,3}$"
+        def _is_overlap(upto: str) -> bool:
+            return bool(re.search(OVERLAP, upto[-90:], re.I))
         for word, value in NUMBER_WORDS.items():
             if value == n:
                 continue
-            if re.search(rf"\b{word}\s+count(?:y|ies)\b", blob, re.I):
+            for m in re.finditer(rf"\b{word}\s+count(?:y|ies)\b", blob, re.I):
+                if _is_overlap(blob[:m.start()]):
+                    continue
                 err("footprint-prose", a,
                     f"prose says {word!r} counties but meta.footprint.n is {n}")
+                break
         for m in re.finditer(r"\b(\d{1,2})\s+count(?:y|ies)\b", blob, re.I):
-            if int(m.group(1)) != n:
+            if int(m.group(1)) != n and not _is_overlap(blob[:m.start()]):
                 err("footprint-prose", a,
                     f"prose says '{m.group(1)} counties' but meta.footprint.n is {n}")
 
@@ -454,6 +466,12 @@ def check_hub(arts: list[str]) -> None:
         if a == "index":
             continue
         if not re.search(rf"['\"/]{re.escape(a)}['\"/]", blob):
+            # An artifact may be deliberately unlisted (an internal working view kept out
+            # of the published set). Declaring it costs a file that states WHY, so the
+            # exemption is visible in review rather than silent in a gate.
+            if os.path.exists(os.path.join(WEB, a, ".unlisted")):
+                warn("hub", a, "unlisted on purpose — see " + a + "/.unlisted")
+                continue
             err("hub", a, "not linked from the hub — builds and ships but is unreachable")
 
 

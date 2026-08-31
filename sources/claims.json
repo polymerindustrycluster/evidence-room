@@ -1,0 +1,261 @@
+{
+  "data": "registry.json",
+  "claims": [
+    {
+      "id": "src-register-size",
+      "text": "Fifteen datasets build every page on this site, thirteen of them public and two internal records nobody can fetch, and seventy-six filter lines are published rather than described (standfirst, first hero card, second hero card, the register lede, the closer).",
+      "source": "_data/SOURCES.json, rendered by _data/build/derive_sources.py",
+      "assert": "D['totals']['n_sources'] == 15 and len(D['sources']) == 15 and D['totals']['n_public'] == 13 and D['totals']['n_public'] + D['totals']['n_no_endpoint'] == D['totals']['n_sources'] and D['totals']['n_filter_lines'] == 76 and D['totals']['n_filter_lines'] == sum(len(s['filters']) for s in D['sources'])",
+      "actual": "(D['totals']['n_sources'], D['totals']['n_public'], D['totals']['n_filter_lines'])",
+      "falsified_if": "A source is added to or removed from the registry, or a filter line is added to one, without the two hero cards and the closer moving with it. The second half of the assertion is the one that matters: it re-derives the filter count from the entries themselves rather than trusting the total the same script wrote, so a totals block that stopped agreeing with its own rows fails here rather than shipping. Moved 2026-08-30 from fourteen to fifteen when the USPTO patent-applications source entered the register with six filter lines, the day the patents page shipped."
+    },
+    {
+      "id": "src-keys-and-dead-ends",
+      "text": "Four of the fifteen sources need a free API key: the Census workforce indicators, the BEA regional price parities, FRED, and the USPTO patent-applications search. Two have no endpoint at all, and those two also have no script: the PIC public record and the heritage register (first hero card, the register lede, the closer, and the two register entries that print a no-endpoint line instead of a URL).",
+      "source": "SOURCES.json key_required, url and script fields",
+      "assert": "D['totals']['n_key_required'] == 4 and D['totals']['key_sources'] == ['bea_rpp', 'fred', 'qwi', 'uspto'] and D['totals']['n_no_endpoint'] == 2 and D['totals']['no_endpoint_sources'] == ['heritage_register', 'public_record'] and all(s['url'] is None and s['script'] is None for s in D['sources'] if s['route'] == 'internal') and all(s['url'] is not None for s in D['sources'] if s['route'] != 'internal')",
+      "actual": "(D['totals']['key_sources'], D['totals']['no_endpoint_sources'])",
+      "falsified_if": "An agency starts or stops requiring a key, or one of the two internal registers gains a public endpoint or a fetch script, at which point the page would be telling a replicator that something is unfetchable when it is not. The last clause is the guard in the other direction: a source that loses its URL would silently become a fourth dead end, and the page states the number two in three places."
+    },
+    {
+      "id": "src-codes-are-the-registry-codes",
+      "text": "Every industry code the recipe prints, and the ownership and aggregation filters beside them, are the values the registry records for the Quarterly Census of Employment and Wages FOR A COUNTY PULL: 325, 3252, 3255, 326, 3261, 3262, industry 10 for all industries, own_code 5 for private, own_code 0 for the all-ownership total, and county aggregation levels 70, 71, 75 and 76. The state levels 55, 57 and 58 appear in the registry only inside the one entry that describes a state pull (recipe steps 1 and 2).",
+      "source": "SOURCES.json sources.qcew.filters, verbatim",
+      "assert": "(lambda F: (lambda f, county, state: all(c in f for c in ('325', '3252', '3255', '326', '3261', '3262')) and '10 (all industries)' in f and 'own_code 5 (private)' in f and 'own_code 0 (total, all ownerships)' in f and all(a in county for a in ('70', '71', '75', '76')) and all(s not in county for s in ('55', '57', '58')) and '55/57/58' in state and 'STATE of Ohio' in state)(' '.join(F.values()), F['aggregation'].split('The US000')[0], F['provenance_page']))({kv[0]: kv[1] for s in D['sources'] if s['key'] == 'qcew' for kv in s['filters']})",
+      "actual": "[kv[0] for s in D['sources'] if s['key'] == 'qcew' for kv in s['filters']]",
+      "falsified_if": "The registry's own filter values stop containing a code the recipe teaches, which would mean the guide is telling a replicator to run a pull this site no longer runs. THE GEOGRAPHY CLAUSES ARE THE REPAIR. The earlier version of this check asserted only that 55, 57 and 58 appeared somewhere in the registry, and it passed while the recipe told readers to apply them to a county file that contains no such rows: they are state levels, recorded correctly for a state pull on another page. A machine check that vouches for a filter because it is right somewhere else is this page's own trap happening inside the page that teaches it, so this now pins the county levels to the county-file sentence and requires the state levels to stay inside the state-pull entry."
+    },
+    {
+      "id": "src-double-count",
+      "text": "Adding every industry code the pay page publishes gives 54,372 jobs; the two family codes alone hold 33,528, so 20,844 jobs are in the table twice. Every part code sits inside a family code, and the two are not the same thing as a family being exhausted by its parts: 9,498 of chemical manufacturing is never split out at this level (the third hero card, the double-count chart and its overhang annotation, the chart source line, the recipe's step-one warning).",
+      "source": "wages/data/wages.json latest_rows, 2025 annual averages, twelve counties",
+      "assert": "(lambda C, F, P: D['doublecount']['column_sum'] == 54372 and D['doublecount']['once_counted'] == 33528 and D['doublecount']['doubled'] == 20844 and D['doublecount']['column_sum'] - D['doublecount']['once_counted'] == D['doublecount']['doubled'] and sum(c['emp'] for c in P) == D['doublecount']['doubled'] and sum(c['emp'] for c in F) == D['doublecount']['once_counted'] and D['doublecount']['unsplit_chemistry'] == 9498 and all(c['parent'] in [f['code'] for f in F] for c in P) and len(F) == 2 and len(P) == 4)(D['codes'], [c for c in D['codes'] if c['level'] == 'family'], [c for c in D['codes'] if c['level'] == 'part'])",
+      "actual": "(D['doublecount']['column_sum'], D['doublecount']['once_counted'], D['doublecount']['doubled'])",
+      "falsified_if": "The pay page refetches and any of the three totals moves, or a part code stops nesting inside a family code in this site's own code list. The identity in the middle is the load-bearing clause: the overhang drawn on the chart is column minus once-counted, and it is separately asserted to equal the sum of the four part rows, so the chart cannot draw an overhang that is not the duplication it claims to be."
+    },
+    {
+      "id": "src-lq-worked",
+      "text": "The recipe's worked reading is Summit County, Ohio, area code 39153, plastics and rubber products, NAICS 326, at 3.27 times the national share on 3,824 jobs in 2025, and it is the largest 326 employment base in the file (recipe step 4, and the white callout on the cold-open strip).",
+      "source": "wages/data/wages.json latest_rows, the lq and area fields",
+      "assert": "(lambda w, R: w['county'] == 'Summit' and w['area'] == '39153' and w['naics'] == '326' and w['lq'] == 3.27 and w['emp'] == 3824 and w['year'] == 2025 and all(r['emp'] <= w['emp'] for r in R if r['naics'] == '326'))(D['lq']['worked'], D['readings'])",
+      "actual": "D['lq']['worked']",
+      "falsified_if": "That county's employment or concentration is revised, or another county overtakes Summit as the largest 326 base, at which point the recipe would be walking a reader to a number the site no longer prints. The last clause is what pins WHICH row the recipe teaches from: without it a refetch could silently move the worked example to a different county while every printed figure still agreed with itself."
+    },
+    {
+      "id": "src-lq-basis",
+      "text": "The recipe's arithmetic reproduces the number the page publishes. Summit County plastics and rubber in 2025: 3,824 private jobs over 259,944 all-ownership local jobs, divided by 700,170 over 155,685,781 nationally, gives 3.271, which rounds to the 3.27 BLS prints and this page publishes. The same four codes on a same-ownership basis — dividing by the 232,800 private local and 133,117,983 private national totals instead — give 3.123, 4.5 percent lower. The county file proves which basis is in force: its all-industry rows read 1.05, 0.88, 0.44 and 0.39 for private, local, state and federal ownership, and on a same-ownership basis every one of them would be exactly 1.00 (recipe step 3).",
+      "source": "_data/SOURCES.json worked_example, six components read off the 2025 area files for 39153 and US000, recomputed by derive_sources.py and checked against wages/data/wages.json",
+      "assert": "(lambda B, W: abs(B['local_industry_private'] / B['local_all_industry_all_ownerships'] / (B['national_industry_private'] / B['national_all_industry_all_ownerships']) - B['bls_basis']) < 5e-5 and abs(B['local_industry_private'] / B['local_all_industry_private'] / (B['national_industry_private'] / B['national_all_industry_private']) - B['same_basis']) < 5e-5 and B['bls_basis_2dp'] == B['bls_published'] == W['lq'] and B['local_industry_private'] == W['emp'] and B['same_basis_2dp'] != B['bls_basis_2dp'] and B['gap_pct'] < 0 and B['local_all_industry_private'] < B['local_all_industry_all_ownerships'] and B['self_check']['own_5_private_lq'] != 1.0)(D['lq']['basis'], D['lq']['worked'])",
+      "actual": "(D['lq']['basis']['bls_basis'], D['lq']['basis']['same_basis'], D['lq']['worked']['lq'])",
+      "falsified_if": "Either arithmetic stops reproducing from the six components it is printed with, or BLS's basis stops landing on the figure the pay page publishes for the same cell. THIS IS THE PAGE'S ACCEPTANCE TEST, and the page failed it: an outside reviewer with no access to this repository followed the rule this page stated, which held ownership constant across all four numbers, and landed on 3.123 against a published 3.27. Both are correct arithmetic on the same files; only one is a location quotient as the bureau computes it. The last clause is the reader's own check rather than ours — a same-ownership total divided by itself is 1.00 by construction, and BLS printing 1.05 for it is the file saying what its denominator is."
+    },
+    {
+      "id": "src-lq-provenance",
+      "text": "The 3.27 this page prints is BLS's own lq_annual_avg_emplvl column, not this site's recomputation of it. The two agree on all 601 comparable cells for the published figure and part on 2 of them for our own, which is what settles which one is being printed; our independent value for the worked cell is 3.271, and across 667 checked cells the two never differ by more than 0.005, half of the last digit the bureau prints (recipe step 3, the provenance paragraph).",
+      "source": "wages/data/wages.json trend against location-quotient/data/lq.json cells, which ship both the computed lq and BLS's lq_published",
+      "assert": "(lambda P: P['published_is'] == 'bls_column' and P['match_bls_column'] == P['cells_compared'] and P['cells_compared'] > 500 and P['separating_cells'] > 0 and P['match_our_recomputation'] == P['cells_compared'] - P['separating_cells'] and abs(P['residual']) <= P['verification']['max_abs_residual'] and P['verification']['max_abs_residual'] < 0.005 and P['verification']['cells_checked'] > 600)(D['lq']['provenance'])",
+      "actual": "D['lq']['provenance']",
+      "falsified_if": "The published figure stops matching BLS's column on any cell, or the two series stop disagreeing anywhere, at which point this page could no longer tell a reader which of the two it prints and the provenance sentence would be a guess. The separating clause is the load-bearing one: if the computed and published series agreed everywhere, the claim 'we print the bureau's' would be untestable from shipped data, and a replication guide is not entitled to assert a provenance it cannot demonstrate."
+    },
+    {
+      "id": "src-footprint-named",
+      "text": "The twelve counties behind every regional figure on this site are named on the page rather than counted at, each with the five-digit FIPS code the filter actually takes: Ashtabula 39007, Cuyahoga 39035, Geauga 39055, Lake 39085, Lorain 39093, Mahoning 39099, Medina 39103, Portage 39133, Stark 39151, Summit 39153, Trumbull 39155 and Wayne 39169, and the twenty-six occupation codes are listed in full beside them (the multi-county step, and the classification cards).",
+      "source": "wages/data/wages.json meta.footprint; occupations/data/viz-data.json pay",
+      "assert": "(lambda F, S: F['n'] == 12 and len(F['counties']) == F['n'] and F['label'] == 'PIC-12' and set(['Ashtabula', 'Trumbull']) <= set([c['name'] for c in F['counties']]) and all(len(c['fips']) == 5 and c['fips'].isdigit() and c['fips'][:2] == '39' for c in F['counties']) and len(set([c['fips'] for c in F['counties']])) == F['n'] and len(S) == D['classification']['soc']['n_codes'] == 26 and len({s['soc'] for s in S}) == 26 and all(s['occupation'] for s in S))(D['footprint'], D['socs'])",
+      "actual": "(D['footprint']['n'], len(D['socs']), [c['fips'] for c in D['footprint']['counties']][:3])",
+      "falsified_if": "The footprint gains or loses a county, or the occupation set changes, or a county loses its FIPS code, without the page's own list moving with it. Two transfer tests drove this claim. The first found a reader could enumerate about five of the eleven values they would need for their own region, and the county set was one of the six they could not; the counties were then named. The second, on 2026-08-30, rebuilt this page's target number from BLS and still had to leave the site, because a name is not a filter and the codes lived only in a build file no reader can open. Publishing the size of a set is not publishing the set, and publishing its labels is not publishing its keys."
+    },
+    {
+      "id": "src-lq-fragile",
+      "text": "The largest concentration reading this site publishes is Geauga County resin at 22.7 times the national share, and it rests on 491 jobs, fewer than five hundred (the orange callout on the cold-open strip, and the small-base rule in recipe step 5).",
+      "source": "wages/data/wages.json latest_rows",
+      "assert": "(lambda f, R: f['lq'] == 22.7 and f['emp'] == 491 and f['emp'] < 500 and f['county'] == 'Geauga' and f['naics'] == '3252' and f['lq'] == max(r['lq'] for r in R) and len([r for r in R if r['lq'] == f['lq']]) == 1)(D['lq']['fragile'], D['readings'])",
+      "actual": "(D['lq']['fragile'], max(r['lq'] for r in D['readings']))",
+      "falsified_if": "Another reading overtakes it, or its base moves above five hundred, at which point the strip's own caption stops being the small-base warning it is drawn to be. The uniqueness clause is deliberate: a tie would make 'the largest' ambiguous and the callout would name one of two."
+    },
+    {
+      "id": "src-lq-distribution",
+      "text": "Forty-five of the fifty-one concentration readings this site publishes sit above 1.0, and all fifty-one are drawn on the cold-open strip (the strip's own heading line and its text alternative).",
+      "source": "wages/data/wages.json, every 2025 row carrying a location quotient",
+      "assert": "D['lq']['n_readings'] == 51 and D['lq']['n_above_one'] == 45 and len(D['readings']) == 51 and len([r for r in D['readings'] if r['lq'] > 1]) == 45",
+      "actual": "(len(D['readings']), len([r for r in D['readings'] if r['lq'] > 1]))",
+      "falsified_if": "A county figure is disclosed or withheld in a later vintage, changing the count of readings, or a reading crosses 1.0. The strip states both numbers in its opening line, so a drift in either would leave the first sentence a reader meets disagreeing with the marks under it."
+    },
+    {
+      "id": "src-suppression-rates",
+      "text": "Every one of the 51 state geographies discloses its plastics and rubber employment. 155 of 382 metropolitan areas do, and 703 of 1,838 counties, so most metros and most counties are withheld (the suppression chart, its table, and the section lede).",
+      "source": "peers/data/peers.json visibility, from the by-industry national pull",
+      "assert": "(lambda S: S['state']['disclosed'] == 51 and S['state']['suppressed'] == 0 and S['metro']['disclosed'] == 155 and S['metro']['total'] == 382 and S['county']['disclosed'] == 703 and S['county']['total'] == 1838 and all(v['disclosed'] + v['suppressed'] == v['total'] for v in S.values()) and all(abs(v['share'] - v['disclosed'] / v['total'] * 100) < 0.05 for v in S.values()) and S['metro']['share'] < 50 and S['county']['share'] < 50)(D['suppression'])",
+      "actual": "D['suppression']",
+      "falsified_if": "A later vintage discloses or withholds differently, or the shares stop matching the counts they are drawn from. The two under-fifty clauses guard the section's claim in words rather than in digits: the heading says most metros and most counties do not disclose, and that sentence has to fail if the shares cross a half."
+    },
+    {
+      "id": "src-three-classifications",
+      "text": "This site defines its subject three times: six industry codes of which three are its register, twenty-six occupation codes, and ten education codes split three core and seven adjacent (the three classification cards).",
+      "source": "SOURCES.json ipeds filters for the education codes; occupations/data/viz-data.json for the occupation set; this site's own industry register",
+      "assert": "(lambda C: C['naics']['n_codes'] == 6 and C['naics']['n_register'] == 3 and C['soc']['n_codes'] == 26 and C['cip']['n_core'] == 3 and C['cip']['n_adjacent'] == 7 and len(C['cip']['core']) == 3 and len(C['cip']['adjacent']) == 7 and all(len(c['code']) == 6 for c in C['cip']['core'] + C['cip']['adjacent']) and len(set(c['code'] for c in C['cip']['core']) & set(c['code'] for c in C['cip']['adjacent'])) == 0)(D['classification'])",
+      "actual": "(D['classification']['naics']['n_codes'], D['classification']['soc']['n_codes'], D['classification']['cip']['n_core'], D['classification']['cip']['n_adjacent'])",
+      "falsified_if": "A code is added to or removed from any of the three sets. The disjointness clause is the one that carries the argument: the whole point of the education example is that core and adjacent are kept apart rather than merged, and a code appearing in both lists would make the boundary this section teaches meaningless while every count still looked right."
+    },
+    {
+      "id": "src-cip-boundary-price",
+      "text": "Counting only the three core education codes, the region's universities awarded 1,231 degrees between 2014 and 2023 across eight programmes. Counting the adjacent codes as well gives 1,490 across thirteen, a pipeline 21 percent larger from the same institutions in the same years (the boundary-call paragraph).",
+      "source": "occupations/data/viz-data.json programs, summed over by_year",
+      "assert": "(lambda C: C['degrees_core'] == 1231 and C['degrees_adjacent'] == 259 and C['degrees_both'] == 1490 and C['degrees_core'] + C['degrees_adjacent'] == C['degrees_both'] and C['programmes_core'] == 8 and C['programmes_adjacent'] == 5 and C['first_year'] == 2014 and C['last_year'] == 2023 and abs(C['lift_pct'] - 21.0) < 0.05 and abs(C['lift_pct'] - C['degrees_adjacent'] / C['degrees_core'] * 100) < 0.05)(D['classification']['cip'])",
+      "actual": "D['classification']['cip']['degrees_core'], D['classification']['cip']['degrees_both'], D['classification']['cip']['lift_pct']",
+      "falsified_if": "The degree file is refetched and either total moves, or the two stop summing to the third. This is the page's only worked consequence of a boundary call, and it is stated as a subtraction a reader can do in their head: 1,490 minus 1,231 is 259, and 259 over 1,231 is the 21 percent the sentence claims. The last clause recomputes that percentage rather than trusting the stored one."
+    },
+    {
+      "id": "src-vintage",
+      "text": "On the three producer-price series this site publishes, 259 of 273 published months were changed after they were first printed, by a typical 0.15 percent, and the largest single revision on record was 1.41 percent (the vintage section).",
+      "source": "revisions/data/revisions.json, first against latest vintage of each month",
+      "assert": "(lambda V: V['n_revised'] == 259 and V['n_published'] == 273 and V['n_series'] == 3 and abs(V['median_pct'] - 0.15) < 0.005 and abs(V['max_pct'] - 1.41) < 0.005 and V['n_revised'] < V['n_published'])(D['vintage'])",
+      "actual": "D['vintage']",
+      "falsified_if": "A new vintage revises another month, moves the median out of the band that rounds to 0.15 percent, or sets a new record above 1.41. The largest figure is recomputed here from the two index values rather than read off the stored percentage, because the page it comes from printed 1.42 until 2026-08-28 by rounding a rounded number, and a guide that tells a replicator to check our arithmetic has to do the division the way they would."
+    },
+    {
+      "id": "src-dependency-structure",
+      "text": "The Quarterly Census of Employment and Wages feeds nine pages, more than any other source, and nine of the eighteen artifacts in the register rest on a single dataset each (the dependency chart, its source line, and the chart's text alternative).",
+      "source": "SOURCES.json by_artifact, inverted",
+      "assert": "(lambda S, T: S[0]['key'] == 'qcew' and S[0]['n_pages'] == 9 and T['most_used_pages'] == 9 and all(s['n_pages'] < 9 for s in S[1:]) and T['n_single_source_pages'] == 9 and T['n_single_source_pages'] == len([p for p in D['pages'] if p['n_sources'] == 1]) and T['n_pages'] == len(D['pages']) and T['n_pages'] == 18)(D['sources'], D['totals'])",
+      "actual": "(D['sources'][0]['key'], D['sources'][0]['n_pages'], D['totals']['n_single_source_pages'], D['totals']['n_pages'])",
+      "falsified_if": "A page gains or loses a source without this chart moving. Corrected 2026-08-30 from eleven pages and six single-source pages: an editorial reviewer reading the RENDERED revisions page, with no access to this repository, noticed that its methodology box credited the employment census on a page built from three producer-price series. The registry did list qcew against revisions, so the box was printing the registry faithfully and the registry was wrong. That single false entry made QCEW look more central than it is AND made this site look better diversified than it is, and no gate here could see it: every check confirmed the page matched the registry, and none asked whether the registry matched the page. Corrected AGAIN 2026-08-30, from ten pages to nine: a second phantom entry, qcew against cost-scissors, whose own data and claims contain no agglvl, no own_code, no NAICS and no employment figure of any kind. Found by two independent reviewers reading the rendered page. Two false entries in one table, both inflating the same source, is a pattern rather than a slip, so the whole table was then audited programmatically: three more suspects surfaced and two were the audit's own false positives, which is worth recording next to the two real ones. Moved again 2026-08-30 when the patents page entered the register as the ninth single-source artifact."
+    },
+    {
+      "id": "src-licences-and-attribution",
+      "text": "Two of the fifteen sources state a licence that conditions use, and both require attribution: O*NET is CC BY 4.0 and IPEDS reaches this site through the Urban Institute's Education Data Portal under ODC-By 1.0. Both credits are printed in this page's footer, each carrying its licence name as a link and the elements its own licence requires — the registered-trademark symbol on the O*NET mark, and the portal version and access date for the ODC-By citation (the licence line under the register, and the footer).",
+      "source": "SOURCES.json licence, licence_url and attribution fields, rendered by derive_sources.py",
+      "assert": "(lambda A, T: D['totals']['n_licensed'] == 2 and D['totals']['licensed_sources'] == ['ipeds', 'onet_education'] and len(A) == 2 and sorted(a['key'] for a in A) == D['totals']['licensed_sources'] and all(a['licence'] and a['licence_url'] and a['licence_url'].startswith('https://') and len(a['text']) > 120 for a in A) and sorted(a['licence'] for a in A) == ['CC BY 4.0', 'ODC-By 1.0'] and 'O*NET® is a trademark of USDOL/ETA' in T['onet_education'] and 'CC BY 4.0' in T['onet_education'] and '30.3' in T['onet_education'] and 'ODC Attribution License' in T['ipeds'] and '0.26.1' in T['ipeds'] and '2026' in T['ipeds'] and 'Urban Institute' in T['ipeds'])(D['attributions'], {a['key']: a['text'] for a in D['attributions']})",
+      "actual": "[(a['key'], a['licence'], a['licence_url']) for a in D['attributions']]",
+      "falsified_if": "A source starts or stops stating a licence, or a required element drops out of either credit. THIS CHECK EXISTS BECAUSE THE PAGE FAILED IT. The IPEDS licence went unrecorded for a fortnight because the registry only knew how to recognise a Creative Commons string, so the page said 'exactly one states a licence' while serving portal data under ODC-By with no credit at all; and the O*NET credit, which was present, was non-compliant on two counts — no registered-trademark symbol, and set with textContent so there was no link to the licence anywhere on the page. Every element each licence names as a condition is asserted here rather than described, because an attribution that is nearly right reads exactly like one that is right."
+    },
+    {
+      "id": "src-route-mix",
+      "text": "Of the fifteen sources, six are bulk file downloads, six are API requests, two are internal records with no endpoint, and one is a web portal query, and how you get each one is derived from its endpoint rather than declared in the registry (the register chips, and the method note that states the rule).",
+      "source": "SOURCES.json url fields, classified by _data/build/derive_sources.py",
+      "assert": "(lambda R: R == {'bulk': 6, 'api': 6, 'internal': 2, 'portal': 1} and sum(R.values()) == 15 and R['internal'] == D['totals']['n_no_endpoint'])(D['totals']['routes'])",
+      "actual": "D['totals']['routes']",
+      "falsified_if": "An agency changes an endpoint, which is exactly the event this classification is meant to surface: a bulk file becoming an API, or an API acquiring a query string, changes what a replicator has to do and the chips on the register would say the old thing. The rule is derived, so it can be wrong about a source without the registry being wrong, which is why the page prints the rule next to the labels rather than only the labels."
+    },
+    {
+      "id": "src-gap-county-names",
+      "text": "Twelve origin counties on the labour-shed page carry a five-digit code and no place name, 31,433 jobs between them, because these origins are anywhere in the country and no national county crosswalk ships in this repository (the gaps section).",
+      "source": "laborshed/data/laborshed.json external.top, rows whose name falls back to the FIPS code",
+      "assert": "(lambda g: g['n'] == 12 and g['jobs'] == 31433 and g['page'] == 'laborshed' and g['close'])(one(g for g in D['gaps'] if g['id'] == 'county-names'))",
+      "actual": "[g for g in D['gaps'] if g['id'] == 'county-names']",
+      "falsified_if": "A crosswalk is added to the build, at which point the count should drop to zero and this gap should be deleted from the page rather than kept as a stale confession. It would also fail if the labour-shed data changed and the unnamed set moved, which is the point: a published gap that quietly stops matching its own page is worse than not publishing it."
+    },
+    {
+      "id": "src-pay-two-medians",
+      "text": "Recipe 2 prints both medians and their order: the middle of the 51 published cells pays 1.21x its county's average job, the middle of the 33,528 jobs pays 1.26x (the formula line, the units paragraph, and the closing paragraph of that recipe). The job figure is the HIGHER of the two, which is the reason the cell figure can stay the headline without flattering the finding.",
+      "source": "wages/data/wages.json latest_rows, re-derived by derive_sources.py",
+      "assert": "abs(D['wage']['median_pairing'] - 1.208) <= 0.007 and abs(D['wage']['median_job'] - 1.2597) <= 0.004 and D['wage']['median_job'] > D['wage']['median_pairing']",
+      "actual": "(D['wage']['median_pairing'], D['wage']['median_job'])",
+      "falsified_if": "Either median moves, or the job-weighted figure stops being the higher of the two. The ORDER is the load-bearing half: the recipe teaches that the easy statistic is the lower one, so a page publishing the harder one cannot be suspected of picking the flattering number. If that inverts, the paragraph is backwards and the build stops in derive_sources.py before it reaches here."
+    },
+    {
+      "id": "src-pay-denominators",
+      "text": "Recipe 2's second step prints both denominators against each other: 44 of the 51 published cells pay less than the same industry pays nationally, a middle cell of 0.88x, while 40 of the 51 pay more than the average job in their own county. Same cells, same year, opposite verdicts.",
+      "source": "wages/data/wages.json latest_rows",
+      "assert": "D['wage']['n_below_us'] == 44 and D['wage']['n_above_local'] == 40 and D['wage']['n_published'] == 51 and abs(D['wage']['median_vs_us'] - 0.881) <= 0.004",
+      "actual": "(D['wage']['n_below_us'], D['wage']['n_above_local'], D['wage']['median_vs_us'])",
+      "falsified_if": "Either count moves without the paragraph moving with it. The two counts are printed side by side precisely because they point opposite ways; if they ever stopped doing so the step would be teaching a choice that no longer has consequences."
+    },
+    {
+      "id": "src-pay-units",
+      "text": "Recipe 2 names all three units and counts each: 51 published cells out of 72 possible, six industry codes across twelve counties; 35 cells counted once per county at the finest detail published, of which 27 beat their county; and 33,528 jobs in the group cover, 29,080 of them in a group that out-pays its county.",
+      "source": "wages/data/wages.json latest_rows",
+      "assert": "(lambda W: W['n_published'] == 51 and W['n_possible'] == 72 and W['n_industries'] * W['n_counties'] == W['n_possible'] and W['dedup_rows'] == 35 and W['dedup_above'] == 27 and W['cover_rows'] == 23 and W['cover_jobs'] == 33528 and W['cover_jobs_above'] == 29080)(D['wage'])",
+      "actual": "(D['wage']['n_published'], D['wage']['dedup_rows'], D['wage']['cover_jobs'])",
+      "falsified_if": "Any of the three counts moves. They are printed together because the recipe's claim is that one table holds three defensible units, and a reader who cannot see all three will pick the first one and describe it as one of the others. The 72 is asserted as a product rather than a constant, so a footprint or code-set change fails here."
+    },
+    {
+      "id": "src-pay-drag",
+      "text": "Recipe 2 names the cell that pulls the two medians apart: the heaviest cell sitting below the cell median is Summit County plastics and rubber products at 1.01x on 3,824 jobs, which is one cell in 51 by the list count and 11 percent of the jobs by the other, and it is the same cell the first recipe worked.",
+      "source": "wages/data/wages.json latest_rows, heaviest row below the row median",
+      "assert": "(lambda g, W: g['ratio'] < W['median_pairing'] and g['emp'] == 3824 and g['county'] == 'Summit' and round(g['emp'] / W['cover_jobs'] * 100) == 11)(D['wage']['drag'], D['wage'])",
+      "actual": "D['wage']['drag']",
+      "falsified_if": "The heaviest below-median cell changes, which would make the named example wrong, or its share of the cover stops rounding to 11 percent. This claim is the evidence for the assertion beside it: 'the heavy cells sit low' is a statement about the distribution, and one named row with both its counts is what makes it checkable rather than plausible."
+    },
+    {
+      "id": "src-award-eda",
+      "text": "The award-lookup recipe prints all seven EDA implementation awards with their identifiers and amounts, and the seven amounts add to the published total of $51,001,413, so a reader can check the addition as well as the parts. Two of the seven carry ED24 rather than ED25 identifiers on the same designation, which the step warns about.",
+      "source": "federal-money/data/techhub.json leads",
+      "assert": "(lambda E: E['n'] == 7 and len(E['leads']) == 7 and sum(l['amount'] for l in E['leads']) == E['total'] == 51001413 and all(l['id'] for l in E['leads']) and len(set(l['id'] for l in E['leads'])) == 7 and len([l for l in E['leads'] if l['id'][:4] == 'ED24']) == 2)(D['awards']['eda'])",
+      "actual": "(D['awards']['eda']['n'], D['awards']['eda']['total'], [l['id'] for l in D['awards']['eda']['leads']])",
+      "falsified_if": "An award is added, removed or re-numbered, or the seven stop summing to the total. The sum is the point: the recipe asks a reader to add the parts and land on the published figure, and a page that asks that has to be sure it holds. The ED24 count is asserted because the step warns that filtering on the digits in an identifier splits a programme in half, and a warning with no live instance behind it is decoration."
+    },
+    {
+      "id": "src-award-nsf",
+      "text": "The worked award is NSF 2532460, made 13 July 2026, running 2026 to 2036, with an estimated total of $14,999,983 and $7,499,984 obligated for FY2026, which is 50 percent of it. The three quantities are printed separately because an announcement quotes whichever is largest.",
+      "source": "timeline/data/timeline.json, the event carrying awardId 2532460",
+      "assert": "(lambda A: A['id'] == '2532460' and A['estimated_total'] == 14999983 and A['obligated'] == 7499984 and abs(A['share_obligated'] - 0.5) < 0.001 and A['period_start'][:4] == '2026' and A['period_end'][:4] == '2036')(D['awards']['nsf'])",
+      "actual": "(D['awards']['nsf']['estimated_total'], D['awards']['nsf']['obligated'])",
+      "falsified_if": "The award record is restated, or the timeline event loses its identifier. Both figures come from the event the timeline publishes, so this claim also fails if the two pages stop agreeing, which is the failure that put the error below on this site in the first place."
+    },
+    {
+      "id": "src-award-error",
+      "text": "The award recipe publishes this site's own worst error rather than only its clean cases: we printed $160M for NSF award 2532460 against a record of $14,999,983, overstating a federal award by a factor of 10.7, and it stood until 29 August 2026.",
+      "source": "_data/FIGURES.json neosmart_headline; timeline README and event note",
+      "assert": "(lambda E: E['printed'] == 160000000 and E['actual'] == 14999983 and abs(E['factor'] - round(E['printed'] / E['actual'], 1)) < 0.05 and E['factor'] > 10)(D['awards']['error'])",
+      "actual": "D['awards']['error']",
+      "falsified_if": "The factor stops being computed from the two figures it sits between, or the corrected value moves without the multiple moving with it. This is the one claim on the page whose subject is the page's own publisher, and it is asserted like any other because an error printed as teaching material has to be as checkable as the findings around it."
+    },
+    {
+      "id": "src-deflator-table",
+      "text": "The basis section publishes the deflator it teaches: CPI-U annual averages on a 2019 base, moving 255.657 to 322.132, so general prices rose 26.0 percent across the window and a 2025 dollar buys what 79 cents bought in 2019.",
+      "source": "cost-scissors/data/scissors.json deflator block",
+      "assert": "(lambda F: F['base_year'] == '2019' and F['latest_year'] == '2025' and abs(F['inflation_pct'] - 26.0) <= 0.05 and abs(F['cpi_latest'] / F['cpi_base'] - 1.26) <= 0.005 and len(F['years']) >= 7)(D['deflator'])",
+      "actual": "(D['deflator']['inflation_pct'], D['deflator']['cpi_base'], D['deflator']['cpi_latest'])",
+      "falsified_if": "The price page reships its deflator on a different base or a later year and this section keeps teaching the old one. The recipe tells a reader to divide by these exact numbers, so a stale table here is a wrong instruction rather than a stale fact."
+    },
+    {
+      "id": "src-deflator-flip",
+      "text": "The worked example is that deflation moves the PEAK, not just the level: finished plastics and rubber prices reach 139.8 in cash and 110.9 deflated, and their dearest month is July 2026 in cash but August 2022 in real terms, nearly four years earlier. Resin at 125.4 in cash comes back to 99.6 deflated, essentially its 2019 level.",
+      "source": "cost-scissors/data/scissors.json series, deflated by its own CPI table",
+      "assert": "(lambda F: F['product']['real'] < F['product']['nominal'] and F['product']['real_peak'] != F['product']['cash_peak'] and F['product']['real_peak'][:4] == '2022' and abs(F['product']['real'] - 110.9) <= 0.6 and abs(F['resin']['real'] - 99.6) <= 0.6 and F['resin']['real'] < 100 < F['resin']['nominal'])(D['deflator'])",
+      "actual": "(D['deflator']['product'], D['deflator']['resin'])",
+      "falsified_if": "The peak stops moving under deflation, or resin stops crossing 100. Both are the lesson rather than decoration: the build fails in derive_sources.py before this claim runs if the peaks converge, because the section would then be teaching a difference that no longer exists. Resin crossing 100 is what makes 'gave the whole rise back' true in real terms and false in cash, which is the sharpest single case on the page."
+    },
+    {
+      "id": "src-shed-two-bases",
+      "text": "Recipe 3 prints both labour-shed totals and the identity joining them: the twelve counties held 1,735,169 jobs in 2022 counting a worker resident in any state and 1,702,542 counting Ohio residents only, 32,627 apart, with the same 1,524,279 held from inside sitting in both. The gap is entirely in the imported half, which is why the two are not rival estimates of one quantity.",
+      "source": "laborshed/data/laborshed.json totals; laborshed/data/bench.json regions",
+      "assert": "(lambda S: S['all_residents'] == 1735169 and S['in_state_only'] == 1702542 and S['gap'] == 32627 and S['inside'] == 1524279 and S['inside'] + S['outside_in_state'] == S['in_state_only'] and S['inside'] + S['outside_any_state'] == S['all_residents'] and S['all_residents'] - S['in_state_only'] == S['gap'])(D['shed'])",
+      "actual": "D['shed']",
+      "falsified_if": "Either total moves without the other, or the identity stops closing. The identity is the lesson rather than the totals: a replicator who pulls LODES will produce one of these two without noticing there was a choice, and the arithmetic is what shows the difference is a definition rather than an error. derive_sources.py fails the build before this claim runs if the two bases stop reconciling."
+    },
+    {
+      "id": "src-shed-outside",
+      "text": "Recipe 3's last step prints the outside half honestly: of the 210,890 jobs held from outside the twelve counties, the three named groups account for 208,338 of them, 57,302 from adjacent counties, 61,708 from distant metros and 89,328 from counties too scattered to group, which is the biggest of the three and the least examined. The remaining 2,552 are not in the grouping at all, and the page says so rather than letting three numbers read as a partition of a fourth.",
+      "source": "laborshed/data/laborshed.json external",
+      "assert": "(lambda E, S: E['adjacent'] + E['distant'] + E['other'] == S['external_classified'] and S['external_classified'] + S['external_unclassified'] == S['outside_any_state'] and S['external_unclassified'] > 0 and E['other'] > E['adjacent'] and E['other'] > E['distant'] and abs(S['share_imported'] - 0.1215) < 0.001)(D['shed']['external_split'], D['shed'])",
+      "actual": "(D['shed']['external_split'], D['shed']['external_classified'], D['shed']['external_unclassified'])",
+      "falsified_if": "The three groups stop summing to the classified figure, or the classified figure plus the unclassified remainder stops making the outside total. This claim exists because its own first version was WRONG: it asserted the three groups summed to 210,890 and they sum to 208,338. The gap is small, 1.2 percent, and a recipe teaching a reader to respect bases cannot quietly absorb a base it has not explained. If the remainder ever reaches zero the wording should change back, not the assertion."
+    },
+    {
+      "id": "src-contracting-partial-year",
+      "text": "Recipe 4 separates the finished years from the running one: fiscal 2019 to 2026 is eight years of which seven are closed, $225.8M was obligated across the closed years, and the $248.8M all-year figure is the more misleading of the two because $23.0M of it is a part-year.",
+      "source": "federal-money/data/federal.json naics rows",
+      "assert": "(lambda C: C['n_years'] == 8 and C['closed_years'] == 7 and C['closed_years'] == C['n_years'] - 1 and C['total_closed'] + C['partial_fy_amount'] == C['total_all'] and abs(C['total_closed'] / 1e6 - 225.8) < 0.1 and abs(C['partial_fy_amount'] / 1e6 - 23.0) < 0.1)(D['contracting'])",
+      "actual": "(D['contracting']['total_closed'], D['contracting']['partial_fy_amount'])",
+      "falsified_if": "A fiscal year closes and the split does not move with it, or the two parts stop making the whole. The step teaches that a running year is not a year, and it would be a poor place to print a total that quietly included one."
+    },
+    {
+      "id": "src-contracting-blind",
+      "text": "Recipe 4's last step names what its own filter cannot see: the NAICS cut reads eight industry codes and is blind by construction to university and research awards, which file under 61xxxx and 5417xx, so the $14,999,983 NSF award appears nowhere in these rows.",
+      "source": "federal-money/data/federal.json meta.excludes",
+      "assert": "(lambda C, A: C['n_codes'] == 8 and '61xxxx' in C['invisible'] and str(A['nsf']['estimated_total']) in C['invisible'].replace(',', '') or str(f\"{A['nsf']['estimated_total']:,}\") in C['invisible'])(D['contracting'], D['awards'])",
+      "actual": "(D['contracting']['n_codes'], D['contracting']['invisible'][:120])",
+      "falsified_if": "The exclusion note stops naming the codes it excludes or stops naming the award it misses. The whole step is that a code filter's blindness is invisible in its own output, so a vague version of this sentence would be worse than none: it has to name a specific award the reader can look up and fail to find."
+    },
+    {
+      "id": "src-swaps-complete",
+      "text": "The localisation section lists every value a reader would change to run these recipes on their own region, eight of them, and marks the two that cannot be supplied from here: their own counties' FIPS codes and their own industry's code set. The list is generated from the recipes' own values rather than typed.",
+      "source": "derived in derive_sources.py from the footprint, register, worked cell, labour shed and deflator that the recipes above already publish",
+      "assert": "(lambda S, F, W: len(S) == 8 and len([x for x in S if x['supply']]) == 2 and all(x['what'] and x['ours'] and x['yours'] and x['where'] and x['note'] for x in S) and any(F['label'] in x['ours'] for x in S) and any(','.join(W['register_naics']).replace(',', ', ') == x['ours'] for x in S))(D['swaps'], D['footprint'], D['wage'])",
+      "actual": "[(x['what'], x['supply']) for x in D['swaps']]",
+      "falsified_if": "A recipe starts depending on a value this list does not carry, or one of these stops being generated from the page it describes. Two transfer tests drove this section: in the second, a reviewer with no repo access could name every substitution except exactly these two, which is why they are marked as the reader's to find rather than left off."
+    }
+  ]
+}

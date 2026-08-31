@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Northeast Ohio Polymer Cluster Health</title>
+<meta name="description" content="Five measures of the Northeast Ohio polymer cluster: jobs, concentration, pay, degrees and federal money. Each carries its baseline, how far it normally moves, and what it cannot see.">
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <strong>Polymer Industry Cluster</strong>
+    <span>Cluster health</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">How is the cluster doing, measure by measure?</p>
+    <h1>Polymer jobs in Northeast Ohio have fallen for a <em>third straight year</em>.</h1>
+    <p class="stand" id="stand"></p>
+    <div class="hero-row" id="figs"></div>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Recomputed from the
+      published data of six pages in the Evidence Room, our public data archive
+      &middot; August&nbsp;2026</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">Where the five stand</p>
+    <h2>Each measure in its own range</h2>
+    <p class="lede" id="standlede"></p>
+    <div class="chart"><svg id="stand-chart" role="img" aria-labelledby="stand-t">
+      <title id="stand-t">Five measures of the polymer cluster, each shown as a dot on the
+        range of its own published years, from that measure&rsquo;s lowest year on the left
+        to its highest on the right. Employment sits at the bottom of its range, polymer
+        degrees near the bottom, pay against the national rate at the top, federal
+        contracting in the middle, and concentration, which has no better end, near the
+        middle.</title></svg></div>
+    <div class="legend">
+      <span><i style="background:#0C6473;border-radius:50%"></i> Where the measure sits
+        today, on a measure that has a better end</span>
+      <span><i style="background:#9A948A;border-radius:50%"></i> The one measure with no
+        better end</span>
+      <span><i class="ln" style="background:#D8D2C8"></i> Its own lowest to its own
+        highest published year</span>
+    </div>
+    <div id="standtable"></div>
+    <p class="src" id="standsrc"></p>
+    <div class="note" id="standnote"></div>
+    <p class="note"><b>How much of the fall is the tide.</b> The national industry is
+      falling too, and on the same three-code basis this page counts: private employment
+      in plastics and rubber, resin, and paint and coatings across the United States went
+      from 895,431 in 2023 to 857,188 in 2025, down 4.3 percent, while the region&rsquo;s
+      fixed-set count of those same industries fell 7.2 percent. Read together: about
+      three-fifths of the region&rsquo;s pace is the industry&rsquo;s own decline, and
+      the region is still falling faster than its industry. Neither half of that
+      sentence survives without the other.</p>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">How unusual the year was</p>
+    <h2>How far each measure moved, which is a different question from how it is doing</h2>
+    <p class="lede">This chart grades nothing. A bar is the SIZE of this year&rsquo;s step
+      against how far that measure usually steps, and the colour says whether the measure
+      rose or fell, not whether rising was good. The longest bar belongs to concentration,
+      the one measure on this page with no better end at all.</p>
+    <p class="fig-title" id="movetitle"></p>
+    <p class="fig-sub">Each bar is this year&rsquo;s change divided by how far that measure
+      usually moves between years, so a three-hundredths move in a wage ratio and a
+      $16 million move in contracting land on one axis. Past 1.0 the move beat the middle
+      of that measure&rsquo;s own earlier moves, which is what &ldquo;bigger than
+      usual&rdquo; means here and which about half of years do. The upright mark on each
+      row is the furthest that measure has ever moved in a single year.</p>
+    <div class="chart"><svg id="move" role="img" aria-labelledby="move-t">
+      <title id="move-t">Five measures of the polymer cluster, each showing this year&rsquo;s
+        change as a multiple of that measure&rsquo;s typical yearly change, against the full
+        range of its earlier moves. Concentration, employment and pay moved further than
+        usual; degrees and federal money did not.</title></svg></div>
+    <div class="legend">
+      <span><i style="background:#0C6473"></i> The measure rose</span>
+      <span><i style="background:#C85F0C"></i> The measure fell</span>
+      <span><i class="tick"></i> The furthest it has ever moved in one year</span>
+    </div>
+    <div id="movetable"></div>
+    <p class="src" id="movesrc"></p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">The five measures</p>
+    <h2>Each one, the baseline it is read against, and what it cannot see</h2>
+    <p class="lede">We have set no target for any of these five, so no tile reports
+      distance from one. Each reports a level, where that level sits in the measure&rsquo;s
+      own published range, which end of that range is the better one for the region where
+      there is one, a direction against a stated baseline, and the page it came from,
+      where the working is shown in full.</p>
+    <div class="tiles" id="tiles"></div>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">How to read a move</p>
+    <h2>How far these numbers normally move, and what nobody has measured</h2>
+    <p class="lede">The yardstick each bar is measured against is built one way for all
+      five measures. Take the measure&rsquo;s own published history, work out the change between every
+      consecutive pair of years, hold out the newest one, and compare it against the middle
+      and the largest of the rest. Half a measure&rsquo;s years land under its own middle
+      by construction, which is why a badge saying a move beat it is a prompt to look
+      rather than a verdict.</p>
+    <p class="body-note">That yardstick describes how far a series travels between
+      published years. It says nothing about revision, and the difference decides how much
+      weight a fresh figure can carry. A revision measure would say how far the year just
+      published will move once the agencies restate it, and this repository has measured
+      that for exactly three producer-price indexes, the prices factories charge for what
+      they make: 259 reference months of archived earlier releases, a middle revision of
+      0.15 percent of the level and a largest of 1.42 percent. For the employment, degree
+      and spending series on this page, nobody has measured it. The
+      <a href="../revisions/">revisions page</a> says so itself and names archived
+      employment releases as the file it needs.</p>
+    <div class="statgrid" id="statgrid"></div>
+    <div class="note" id="note"><b>Withheld is not zero.</b> Three of the five measures
+      are built from one employment figure per county per industry, and the Bureau of
+      Labor Statistics withholds a figure when publishing it would identify an employer.
+      The set it withholds changes from year to year, so a raw comparison of two annual
+      totals mixes real change with the bureau&rsquo;s publication decisions. Where that
+      applies, the direction on this page is read from the figures present in every
+      year.</div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <p class="takeaway">What would change these readings</p>
+    <h2>For four of the five, the next thing to move them is a data release</h2>
+    <p class="lede">A dashboard that never says what would change its own numbers invites
+      the reader to treat them as settled. Each of these is a live federal series with a
+      known refresh, and one of them is <span id="lagsub"></span> behind the others.</p>
+    <ul class="changes" id="changes"></ul>
+    <p class="body-note" id="scalesub"></p>
+  </div>
+</section>
+
+<section class="closer">
+  <div class="wrap">
+    <p id="closerline"></p>
+    <p class="sub" id="closersub"></p>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-lede">Every figure here is recomputed from the published data of the
+      page it links to, by one script in this folder. A correction on any of those pages
+      fails this page&rsquo;s checks until it is carried through.</p>
+    <p class="foot-id"><a href="../index/">The PIC Evidence Room</a>, our public data
+      pages &middot; Polymer Industry Cluster, Greater Akron Chamber</p>
+  </div>
+</footer>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

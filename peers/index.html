@@ -19,20 +19,15 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">Where Northeast Ohio actually sits, nationally</p>
+    <p class="eyebrow">Where Northeast Ohio actually sits</p>
     <h1>Ohio is <em>first in the country</em> in plastics and rubber employment.</h1>
-    <p class="stand">In plastics and rubber products manufacturing, private ownership, 2024 &mdash; and that clause has to
-      travel with the sentence, because it is a narrower industry than &ldquo;polymers&rdquo;
-      and a single year of a series the Bureau of Labor Statistics revises. Within it: first in absolute jobs, ahead
-      of California, Texas and Michigan, with all 51 state-level geographies disclosed.
-      No suppression asterisk. Several scope asterisks. The metro claim is smaller than
-      PIC has been saying, and this page says why.</p>
-    <p class="stand"><dfn><b>Suppressed</b> &mdash; the bureau withholds a figure when too few
-      employers exist for it to be published without identifying one of them. The jobs are
-      real; the number is simply not disclosed, which is not the same as zero.</dfn>
-      <dfn>An <b>establishment</b> is one physical site, not one company.</dfn>
-      <dfn><b>Concentration</b> here means the region's share of an industry measured
-      against the country's: 1.0 is exactly the national share.</dfn></p>
+    <p class="stand">That ranking rests on 54,846 jobs in 2024, counting private employers
+      only. Every state figure is published, all 51 of them, the 50 states and the District
+      of Columbia, so the state ranking is complete. The metro claims need more care, because
+      the bureau withholds <b>227 of the country&rsquo;s 382 metro areas</b>.</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data: the federal
+      Quarterly Census of Employment and Wages (QCEW), annual averages,
+      2015&ndash;2024 &middot; August&nbsp;2026</p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -40,31 +35,93 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The clean claim</p>
-    <h2 id="statetitle">Every state, plastics and rubber products</h2>
-    <p class="lede">States are the one geography the bureau barely suppresses &mdash; 51 of 51
-      disclosed. That makes this the most defensible comparison available, and it is the
-      one PIC should lead with in any funder conversation.</p>
+    <h2 id="statetitle">The top 20 states, and Ohio is first with no asterisk</h2>
+    <p class="lede">States are the one geography the bureau barely suppresses: 51 of 51
+      disclosed, none withheld. That makes this the most defensible comparison on the page.</p>
+    <p class="fig-title" id="statefig"></p>
+    <p class="fig-sub" id="statefigsub"></p>
     <div class="chart"><svg id="states" role="img" aria-labelledby="states-t">
-      <title id="states-t">Plastics and rubber products employment by state.</title></svg></div>
+      <title id="states-t">Plastics and rubber products employment by state, top 20 of 51
+        disclosed, 2024. Ohio leads.</title></svg></div>
     <div id="statestable"></div>
     <p class="src" id="statesrc"></p>
+    <p class="terms"><dfn><b>QCEW</b> is the Quarterly Census of Employment and Wages, the
+      federal count of jobs covered by unemployment insurance. <b>NAICS 326</b> is the
+      industry code for plastics and rubber products manufacturing, which is what every
+      number on this page counts.</dfn>
+      <dfn><b>Withheld</b> (the bureau&rsquo;s own word is suppressed): BLS will not publish a
+      figure when too few employers exist for it to be published without identifying one of
+      them. A <b>cell</b> is one such figure, for one area in one year in one industry. The
+      jobs in a withheld cell are real; the number is not disclosed, which is not the same
+      as zero.</dfn>
+      <dfn>An <b>establishment</b> is one physical site, not one company.</dfn>
+      <dfn>A <b>metro area</b> is the federal statistical region built out of whole counties
+      around a city. Akron&rsquo;s is Summit and Portage, and those two county figures add to
+      exactly its 6,910 jobs. Counties and metro areas are published as separate geographies
+      that do not sum into one another, so this page never adds a county figure to a metro
+      one.</dfn>
+      <dfn><b>Concentration</b> asks how much of the local job base an industry fills next to
+      how much it fills nationally. Above 1.0&times; is more than the country, below 1.0&times;
+      is less. Akron&rsquo;s 4.69&times; is nearly five times the national slice, and it reads
+      two ways: it is what the cluster is built on, and it means one industry&rsquo;s decade
+      moves more of Akron&rsquo;s job base than it does in all but seven of the 155 metros
+      that disclose.</dfn>
+      <dfn><b>Private ownership</b> counts private employers only, leaving out federal, state
+      and local government jobs. <b>Annual averages</b> are the twelve monthly counts
+      averaged.</dfn></p>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The narrow claim</p>
-    <h2 id="metrotitle">Akron among the metros we can see</h2>
-    <p class="lede">Each dot is a metro area: jobs across, concentration up. Akron sits in
-      a top-right quadrant almost nothing else occupies &mdash; large <em>and</em>
-      concentrated &mdash; <em>among the metros that disclose</em>. That qualifier is the
-      whole claim, not a caveat on it, and the box below explains why an earlier and more
-      flattering version of this sentence was wrong.</p>
+    <h2 id="metrotitle">Akron and Cleveland among the metros we can see</h2>
+    <p class="lede">Two counts over the same 155 metros the bureau discloses. Seventeen of
+      them carry 4,000 or more plastics and rubber jobs. In 37 of them, the industry fills at
+      least twice as much of the local job base as it does of the country&rsquo;s. Seven
+      metros are in both counts, and Akron is one; it is also the most concentrated of the
+      six biggest disclosed metros. Cleveland is the other half of the cluster&rsquo;s story,
+      bigger on jobs and much less concentrated, which is what a large diversified metro
+      looks like in this industry.</p>
+    <p class="fig-title" id="metrofig"></p>
+    <p class="fig-sub" id="metrofigsub"></p>
+    <div class="msearch">
+      <label for="mfind">Find a metro</label>
+      <input id="mfind" type="search" list="metrolist" autocomplete="off"
+        placeholder="Youngstown, Erie" spellcheck="false">
+      <datalist id="metrolist"></datalist>
+    </div>
+    <p class="mverdict" id="mverdict"></p>
     <div class="chart"><svg id="scatter" role="img" aria-labelledby="scatter-t">
-      <title id="scatter-t">Metro plastics and rubber employment against concentration.</title>
+      <title id="scatter-t">Metro plastics and rubber employment against concentration, 2024.
+        Akron sits in a shaded upper-right region occupied by seven of the 155 disclosed
+        metros; Cleveland sits further right and much lower.</title>
     </svg></div>
+    <div class="legend">
+      <span><i style="background:#C85F0C"></i> Akron</span>
+      <span><i style="background:#A32A78"></i> Cleveland</span>
+      <span><i style="background:#3D9CAC"></i> Other disclosed metros</span>
+      <span><i class="hatch"></i> Where the 227 withheld metros could be</span>
+    </div>
     <div id="scattertable"></div>
+    <p class="src" id="scatsrc"></p>
     <div class="note" id="bound"></div>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">Who else is up there</p>
+    <h2>The company Akron keeps is six factory towns</h2>
+    <p class="lede">Six other metros share that upper-right corner, and none of them is a big
+      city. Elkhart, Indiana builds most of the country&rsquo;s recreational vehicles. Hickory,
+      North Carolina makes furniture and fiber-optic cable. Erie, Pennsylvania runs injection
+      molding and mold-making shops. Greenville, South Carolina holds Michelin&rsquo;s North
+      American headquarters and BMW&rsquo;s only US assembly plant. Scranton and Greensboro fill
+      out the seven. What those towns make is not in the BLS file: it comes from the companies&rsquo;
+      and trade groups&rsquo; own public statements, and it is the one passage here we cannot
+      re-check against the data. Akron belongs in that company on the same terms. Its 6,910 jobs
+      sit across 117 establishments, which is a plant of about 59 people, repeated 117 times.</p>
   </div>
 </section>
 
@@ -72,11 +129,12 @@
   <div class="wrap">
     <p class="takeaway">What we cannot see</p>
     <h2>Most of the country is withheld, and that changes what a ranking means</h2>
-    <p class="lede">The bureau suppresses any cell that could identify an employer. For plastics
-      and rubber that removes most metros and most counties &mdash; including some of the
-      largest. This chart is the reason every rank on this page says "among disclosed".</p>
+    <p class="lede" id="vislede"></p>
+    <p class="fig-title">States are visible, metros mostly are not, counties least of all</p>
+    <p class="fig-sub" id="visfigsub"></p>
     <div class="chart"><svg id="vis" role="img" aria-labelledby="vis-t">
-      <title id="vis-t">Share of areas disclosed versus suppressed, by geography level.</title>
+      <title id="vis-t">Share of areas disclosed versus suppressed, by geography level, 2024.
+        States are fully disclosed; metros and counties are mostly withheld.</title>
     </svg></div>
     <div id="vistable"></div>
     <p class="src" id="vissrc"></p>
@@ -86,24 +144,36 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">Over time</p>
-    <h2 id="trendtitle">Akron against its real peers, not its assumed ones</h2>
-    <p class="lede">The peer set here was chosen by the data &mdash; the metros that
-      actually rank alongside Akron &mdash; rather than by which cities feel comparable.
-      Select one to bring it forward.</p>
-    <div class="picker" id="picker" role="group" aria-label="Choose a peer metro"></div>
+    <h2 id="trendtitle">Akron against the biggest disclosed metros</h2>
+    <p class="lede" id="trendlede"></p>
+    <p class="fig-title" id="trendfig"></p>
+    <p class="fig-sub" id="trendfigsub"></p>
+    <div class="picker" id="picker" role="group" aria-label="Choose a comparison metro"></div>
     <div class="chart"><svg id="trend" role="img" aria-labelledby="trend-t">
-      <title id="trend-t">Employment over time for Akron and peer metros.</title></svg></div>
+      <title id="trend-t">Employment over time for Akron and the largest disclosed metros,
+        2015 to 2024. Los Angeles declines steadily; Akron stays close to flat.</title></svg></div>
     <div id="trendtable"></div>
+    <p class="src" id="trendsrc"></p>
   </div>
 </section>
 
 <section class="closer">
   <div class="wrap">
-    <p>"Among the metros the bureau discloses" is four words. They are the difference between a
-      claim that survives a reviewer and one that does not.</p>
+    <p>&ldquo;Among the metros the bureau discloses&rdquo; is four words. They are the
+      difference between a claim that survives a reviewer and one that does not.</p>
     <p class="sub" id="closersub"></p>
   </div>
 </section>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-lede">Check it from your own seat: the finder above the scatter puts any
+      of the 155 disclosed metros on the chart, and the table under each figure carries
+      every row behind it.</p>
+    <p class="foot-id"><a href="../index/">The PIC Evidence Room</a> &middot; Polymer
+      Industry Cluster, Greater Akron Chamber</p>
+  </div>
+</footer>
 
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>

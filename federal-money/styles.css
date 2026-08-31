@@ -1,0 +1,91 @@
+/* federal-money — page-local additions only. House anatomy (.mast/.hero/.band/.closer)
+   and the shared column system stay untouched so the layout gates keep applying. This
+   file adds: per-figure chrome, a quieter definition line in the hero, the award-recipient
+   ladder (the page's one register change), band-tint pacing, and the per-form mobile
+   re-layout override. */
+
+/* Byline block: genre furniture that the standfirst does not replace. Capped at
+   --measure so it stays on the one text rail rather than opening a second one
+   (page-design § the column system) — and centred, not zero-margined.
+   `margin:18px 0 0` here would be the one-rail bug wearing a different hat: the shorthand
+   at (0,2,0) beats pic-viz's `.hero .wrap > *{margin-left:auto}` at the same specificity
+   because it loads later, so the block sat at the measure WIDTH but flush against the
+   figure's left edge — a second rail, 151px out, under a headline that was on the first.
+   Rendered and measured, because centres.mjs does not sample .byline and columns.mjs
+   never reads left edges. Colour is a shade above the sibling pages' byline grey: at
+   #9FC4CA on the hero ink this is 3.7:1, under the 4.5 floor for 13px text. */
+.hero .byline{margin:18px auto 0;max-width:var(--measure);font-size:13px;line-height:1.55;
+  letter-spacing:.01em;color:#BEDCE1}
+
+/* Footer: the site furniture that says the story ended and the page belongs to
+   something. Distinct ground from the closer above it, so the boundary is visible. */
+.foot{background:var(--deep);color:#A8CDD4;padding:44px 0 52px;font-size:14px}
+.foot .wrap > *{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.foot-k{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:900;color:#7FB3BC}
+.foot-links{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:12px;
+  grid-template-columns:repeat(3,minmax(0,1fr))}
+.foot-links a{display:block;color:#fff;font-weight:900;text-decoration:none;
+  border-top:2px solid #1A8A9E;padding-top:9px}
+.foot-links a:hover{color:var(--lime)}
+.foot-links span{display:block;margin-top:4px;color:#8FBAC2;font-size:13px}
+.foot-cta{margin:28px 0 0;padding-top:18px;border-top:1px solid rgba(255,255,255,.16)}
+.foot-cta b{color:#fff;font-weight:700}
+/* #7FA7AF on this ground is 4.4:1, a hair under the 4.5 floor for 13px type. */
+.foot-id{margin:14px 0 0;font-size:13px;color:#93B6BD}
+.foot-id a{color:#A8CDD4}
+
+/* The caveat BEAT — the strongest objection and the answer to it — is editorial narrative
+   in body register, so it is set below the lede and above the apparatus, not inside a
+   second callout box. Page-design allows one .note per page and this page spends it on
+   "where the work is recorded". */
+.beat{margin:24px 0 0;max-width:var(--measure);font-size:17px;line-height:1.6;
+  color:#394346}
+
+/* Detail that used to sit visible under each chart, moved inside the figure's own
+   table disclosure. Caption scale, one weight: this is depth, not the disclosure. */
+.tnote{margin:14px 0 4px;max-width:var(--measure);font-size:13px;line-height:1.6;
+  color:var(--caption)}
+
+/* Figure chrome: every chart carries its own claim-title + how-to-read line, so the H2
+   does section work instead of doubling as the chart title (chart-craft.md). */
+.fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
+  line-height:1.3;max-width:var(--measure);color:var(--text)}
+.fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure)}
+.fig-title + .fig-sub + .chart{margin-top:16px}
+
+/* The definition sits beside the first chart, where the word is first used, at caption
+   weight: jargon translation, not part of the argument, and not a second dek. */
+.deffn{margin:16px 0 0;max-width:var(--measure);font-size:15.5px;line-height:1.5;
+  color:#4E5654}
+.deffn dfn{font-style:normal}
+.deffn b{color:var(--ink)}
+
+/* Pacing: alternate band grounds so the scroll reads as a wave, not a loop. */
+.band.tint{background:#F4F1EC}
+
+/* The award ladder — the page's register change: seven named awards at display weight,
+   which is the one place on the page where the money has a face. */
+.leads{margin:26px 0 0;max-width:var(--figure);border-top:1px solid var(--line)}
+.lead{display:flex;gap:24px;align-items:baseline;padding:14px 0;
+  border-bottom:1px solid var(--line)}
+.lead .amt{font-size:26px;font-weight:900;letter-spacing:-.02em;line-height:1;
+  color:var(--ink);font-variant-numeric:tabular-nums;min-width:104px}
+.lead .who{font-size:17px;font-weight:900;color:var(--text);min-width:210px}
+.lead .what{font-size:14.5px;color:#5A625E;flex:1}
+.lead .bar{display:block;height:5px;background:var(--ink);opacity:.28;margin:8px 0 0}
+
+@media (max-width:760px){
+  /* Every chart on this page re-lays itself out per form below 760px (horizontal rows,
+     labels above marks), so the shared sideways-scroll fallback is switched off. The
+     evidence belongs in the first paint, not behind a pan (chart-craft § mobile). */
+  .chart{overflow-x:visible;padding-bottom:0}
+  .chart svg{min-width:0}
+  .chart::after{content:none}
+  .fig-title{font-size:19px;margin-top:24px}
+  .lead{display:block;padding:13px 0}
+  .lead .amt{font-size:23px}
+  .lead .who{display:block;margin:3px 0 0}
+  .lead .what{display:block;margin:2px 0 0}
+  .foot-links{grid-template-columns:1fr}
+}

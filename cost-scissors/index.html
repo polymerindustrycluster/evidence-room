@@ -6,6 +6,7 @@
 <meta name="color-scheme" content="light">
 <title>Nothing Came Back Down</title>
 <link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -18,16 +19,38 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">Feedstock, resin and product prices, indexed to January 2019</p>
-    <h1>Natural gas round-tripped completely. Finished polymer products are at
-      <em>an all-time high this month</em>.</h1>
-    <p class="stand">The 2022 price spike is over at the top of the chain and has barely
-      moved at the bottom of it, and the pattern in between is a clean ladder. Measure how
-      much of each price's rise has since come back and the answer falls monotonically with
-      distance from the wellhead: <b>gas has given back everything, crude about half, resin
-      about a third, and finished polymer products nothing at all</b>. An earlier version of
-      this page showed only the two ends and could describe the gap. Three stages explain
-      where in the chain it stuck.</p>
+    <p class="eyebrow">Prices along the polymer chain, 2015 to 2026</p>
+    <h1>Natural gas gave the whole spike back. Finished polymer products are at
+      <em>a record high, before inflation</em>.</h1>
+    <p class="stand">Gas has given back its whole 2022 spike, crude oil about half, resin
+      about a third, and finished polymer products none of it. Those are cash prices, and
+      the ordering holds after inflation too, which is why it means <b>somebody in this
+      chain ate the spike and somebody banked it</b>. The cluster has members on every
+      link.</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data from the federal energy and producer-price series,
+      January&nbsp;2015 to July&nbsp;2026
+      &middot; August&nbsp;2026</p>
+    <!-- THE COLD OPEN. This page opened on 1,886px of headline, standfirst, byline and
+         stat cards: two full screens before a reader met a single mark. The stat cards
+         are not the problem and have not moved. This strip is the headline claim drawn,
+         three prices on the January 2019 = 100 scale, each shown at its peak and today,
+         and it is the only chart a reader meets before any explanation, so it carries
+         its own reading and its own direction in its labels. The detailed versions are
+         the ladder and the line chart below. Guarded by tools/coldopen.mjs. -->
+    <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
+      id="open-t">Three prices along the polymer chain, each against its own January 2019
+      cost set to 100, drawn from its highest month to today. Natural gas has come all
+      the way back and now costs less than it did in 2019, resin has come part of the way,
+      and finished polymer products have not come back at all.</title></svg></div>
+    <!-- THE NOMINAL DISCLOSURE, ABOVE THE STAT CARDS RATHER THAN IN THE METHODOLOGY BOX.
+         Every series here is nominal, and until 2026-08-29 the page never said so: "+40%",
+         "a record high" and "somebody banked it" all read as real gains to a reader who
+         had no reason to think otherwise, over a stretch in which consumer prices rose a
+         quarter. The disclosure sits between the cold-open strip and the four stat cards
+         because the cards are where the unqualified levels are asserted, and the reader
+         meets it before them. Every figure in it is computed in app.js from the CPI table
+         now shipped in data/scissors.json, and guarded by cs-nominal-not-real. -->
+    <p class="realnote" id="realnote"></p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -35,35 +58,66 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The finding</p>
-    <h2>How much of each price rise has come back</h2>
-    <p class="lede">Each bar starts at the series' own peak since January 2019 and runs back
-      toward its base. A full bar means the price has completely round-tripped; an empty one
-      means it is still sitting at its high. Nothing about this ordering was designed &mdash;
-      it is what the four stages do.</p>
+    <h2>Each step away from the wellhead kept more of the 2022 rise, except the
+      power bill</h2>
+    <p class="lede">Gas gave back all of its run-up and now costs less than before the
+      spike; crude oil gave back about half, resin about a third, and finished polymer
+      products none at all. One feedstock breaks the pattern: Ohio industrial electricity
+      peaked this January, not in 2022, and has given back only about a quarter, which is
+      why it sits out of order in the chart below. <i>Feedstock</i> here means whatever
+      the plants buy at the front of the chain, so the power bill sits beside the gas and
+      the crude even though resin is not made from it. And four of the seven prices come
+      in pairs: the federal statistics measure resin twice and finished products twice,
+      once from the industries that make them and once as goods traded on the open
+      market. Every number this page later subtracts uses the makers&rsquo; pair.</p>
+    <p class="csel-q">Where do you sit?</p>
+    <div class="csel" id="csel" role="group" aria-label="Re-read the page from one seat in the chain"></div>
+    <p class="verdict" id="verdict"></p>
+    <p class="fig-title">Gas gave back its whole rise and then some; finished products
+      gave back none</p>
+    <p class="fig-sub">Each bar is one price. The longer the bar, the more of its run-up
+      has come back off. A full bar means the price is back to what it cost in January
+      2019; past the line, it costs less now than before the run-up started. Gas is the
+      worked example: on the scale in the next chart it peaked at 283 and now reads 93,
+      a fall of 190 against the 183 points it had gained above 100: 104% given
+      back, which is why its bar runs past the line.</p>
     <div class="chart"><svg id="ladder" role="img" aria-labelledby="ladder-t">
-      <title id="ladder-t">Share of each price rise since 2019 that has been retraced.</title>
+      <title id="ladder-t">Chart showing gas prices fully retraced their 2022 spike while
+        finished polymer product prices retraced none of theirs, with crude, resin and
+        electricity in between.</title>
     </svg></div>
     <div id="laddertable"></div>
     <p class="src" id="laddersrc"></p>
   </div>
 </section>
 
-<section class="band">
+<section class="band tint">
   <div class="wrap">
     <p class="takeaway">The whole chain</p>
-    <h2>Every series on one axis, because every series is rebased</h2>
-    <p class="lede">These are dollars per thousand cubic feet, cents per kilowatt-hour and
-      three different index bases &mdash; quantities that must never share a value axis.
-      Indexing each to its own January 2019 makes one axis honest, and the axis then reads
-      as percent change rather than as price.</p>
+    <h2>The spike moved down the chain and stopped at the finished product</h2>
+    <p class="lede">Henry Hub natural gas, the Louisiana pipeline junction whose
+      price is the national benchmark, rose to nearly three times its January 2019
+      price by August 2022, an index of 283, and fell all the way back. West Texas
+      Intermediate crude, the benchmark American oil, crested that June and kept about
+      half of its rise. Resin crested across 2021 and 2022 and still holds about two
+      thirds of its rise. The two finished-product lines climbed to about 40% above their
+      January 2019 price and have not come down: the wave weakened at every link until
+      the last one, where it set.</p>
+    <p class="fig-title">Feedstock spiked and fell; product prices climbed and stayed</p>
+    <p class="fig-sub">Each line is one price, with January 2019 set to 100: a line at
+      140 costs 40% more than it did then, and a line under 100 costs less. Color: one
+      series per chain link. Gray: related series, for context (each one named,
+      with the value it ends at, in the key below the chart).</p>
     <div class="chart"><svg id="lines" role="img" aria-labelledby="lines-t">
-      <title id="lines-t">Feedstock, resin and product prices indexed to January 2019.</title>
+      <title id="lines-t">Chart showing the 2022 feedstock spike collapsing while
+        finished-product prices climbed to about 40% above their 2019 base and stayed
+        there.</title>
     </svg></div>
-    <div class="legend">
-      <span><i class="ln" style="background:#A32A78"></i> Feedstock &mdash; gas, crude, power</span>
-      <span><i class="ln" style="background:#C85F0C"></i> Resin &mdash; what converters buy</span>
-      <span><i class="ln" style="background:#008BA8"></i> Product &mdash; what they sell</span>
-    </div>
+    <!-- Written from the data in app.js: every line, colored or gray, named with the
+         value it ends at, so no stroke on the chart is anonymous at either width.
+         Swatch heights carry the chart's weight ladder, so the key decodes the same
+         way the plot does when hue is unavailable. -->
+    <div class="legend" id="lineskey"></div>
     <div id="linestable"></div>
     <p class="src" id="linessrc"></p>
   </div>
@@ -71,27 +125,108 @@
 
 <section class="band">
   <div class="wrap">
-    <p class="takeaway">The spread</p>
-    <h2 id="spreadtitle">What a converter buys against what a converter sells</h2>
-    <p class="lede">One index subtracted from the other: finished-product prices minus resin
-      prices, both rebased to the same month. Above zero means output prices have risen
-      further than input prices since 2019. This is the single line most relevant to a PIC
-      member, and it is the one most easily misread &mdash; the note underneath says why.</p>
+    <p class="takeaway">The gap</p>
+    <h2>The squeeze became a cushion: 22.5 points under resin, now 14.3 over</h2>
+    <p class="lede">The line below tracks how far the price a parts maker charges
+      (a converter, in the trade: the plant that buys resin and moulds or extrudes it into
+      finished parts) has run ahead of the price it pays for resin. Both are
+      counted as growth since January 2019, so +14.3 means product prices have risen 14.3
+      percentage points more than resin prices, and below zero means resin rose more.
+      That was the converter&rsquo;s world through the shortage, bottoming 22.5 points
+      under in August 2021. The line crossed zero in August 2022 by eight hundredths of a
+      point, stayed above it, and in January 2026 reached +22.5, as far above zero
+      as the 2021 trough sat below it. It has not held there. Resin rose 23.2 points
+      between March and May 2026, nearly a quarter of its 2019 base, the cushion closed
+      to <b>+0.7, its thinnest month since September 2022</b>, and it reopened to +14.3 in
+      July. Three of the forty-eight months since the crossing have come in under a single
+      point: the crossing itself at +0.08 in August 2022, +0.58 the month after it, and
+      +0.71 in May 2026. The gray line asks the same question one link up, resin against
+      the industrial chemicals that feed it: a +19.2 windfall in September 2021 that has
+      since unwound to just below zero.</p>
+    <p class="reckon" id="gapmath"></p>
+    <p class="fig-title">Below zero through the squeeze, above it since 2022, and three
+      times by less than a point</p>
+    <p class="fig-sub">Above the zero line, product prices have grown more since 2019
+      than resin prices; below it, resin has grown more. One point is one percentage
+      point of growth: an index up 30% against one up 20% is a gap of ten points. Gray:
+      the same question one link up, resin against industrial chemicals.</p>
     <div class="chart"><svg id="spread" role="img" aria-labelledby="spread-t">
-      <title id="spread-t">Product price index minus resin price index since 2019.</title>
+      <title id="spread-t">Chart showing the product-minus-resin index gap running
+        negative through 2021 to a trough of 22.5 points under, crossing zero in August
+        2022, peaking at 22.5 points over in January 2026, falling to 0.7 points in May
+        2026 and standing at 14.3 points now, while the resin-minus-chemicals gap
+        unwound to zero.</title>
     </svg></div>
+    <!-- The gray comparator used to be the only line on this page a reader could not
+         check. It is a subtraction, resin minus industrial chemicals, and the chemicals
+         index was drawn in it, named in a table column and given a level nowhere: not in
+         a key, not in the ladder table, not in the level table, not in a source line. The
+         key below names both lines and prints the level each of the three underlying
+         indexes ends at, and the table beside it now carries the chemicals column, so the
+         second subtraction can be re-run exactly the way the first one can. -->
+    <div class="legend" id="spreadkey"></div>
     <div id="spreadtable"></div>
-    <div class="note" id="spreadnote"></div>
+    <p class="src" id="spreadsrc"></p>
+    <div class="note"><b>This is not a margin.</b> Labor, freight, energy, tooling and
+      packaging are in neither index, and several of those rose sharply over exactly this
+      period; a widening gap is entirely consistent with flat or falling
+      profitability. Two readings fit and the data cannot separate them: the industry
+      held price after input costs fell, or its other costs rose enough to require it.
+      Anyone quoting this line owes the reader both.</div>
+  </div>
+</section>
+
+<section class="band tint">
+  <div class="wrap">
+    <p class="takeaway">One part, priced through it</p>
+    <h2>What the scissors did to a dollar part</h2>
+    <p class="lede">The scissors is the page&rsquo;s namesake: two blades moving apart,
+      the cost of inputs rising as one and the price of the finished part as the other,
+      with the maker&rsquo;s margin caught between them. Take a part that left an Ohio
+      molding line at $1.00 in January 2019
+      and price it at the industry average ever since. In August 2021 it billed about
+      $1.14 while the resin going into it cost 36% more than in 2019: the part up 14,
+      resin up 36, which is the squeeze (the 22.5-point trough on the chart above,
+      absorbed at the machine). Today the same part bills about $1.40, its resin is up
+      25%, and the gas behind that resin costs 7% less than it did in 2019. The dollars
+      here are rounded to the cent and the percentages to the point, so they subtract to
+      about the gap, never exactly to it. The part is illustrative, priced by the industry
+      index rather than any member&rsquo;s quote, and its arc is the page in miniature: it
+      paid for the spike on the way up and kept the price after the spike left.</p>
+    <p class="ask">What would sharpen this band: one member&rsquo;s own quoted-price
+      history for a single part, January 2019 to now. The desk does not have one, so
+      nothing on this page is a member&rsquo;s number, and the dollar figures below are
+      the industry average translated into dollars.</p>
+    <div class="statgrid">
+      <div class="statv"><div class="n" id="v0"></div>
+        <div class="k">January 2019</div>
+        <div class="d">resin at its base</div></div>
+      <div class="statv"><div class="n" id="v1"></div>
+        <div class="k">August 2021</div>
+        <div class="d" id="v1d"></div></div>
+      <div class="statv"><div class="n" id="v2"></div>
+        <div class="k" id="v2k"></div>
+        <div class="d" id="v2d"></div></div>
+    </div>
   </div>
 </section>
 
 <section class="closer">
   <div class="wrap">
-    <p>Input costs normalized. Output prices did not, and the gap is now the widest it has
-      been.</p>
+    <p>Whether the last four years squeezed you or paid you depends on the link you
+      sold from.</p>
     <p class="sub" id="closersub"></p>
   </div>
 </section>
+
+<footer class="page-foot">
+  <div class="wrap">
+    <p class="foot-id"><b>Polymer Industry Cluster</b> &middot; Greater Akron Chamber
+      &middot; Evidence Room</p>
+    <p class="foot-links"><a href="../">All evidence-room pages</a> &middot; Corrections
+      and questions: jswanson@greaterakronchamber.org</p>
+  </div>
+</footer>
 
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>

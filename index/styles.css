@@ -1,30 +1,213 @@
 /* index — a gallery, so the cards carry the weight instead of charts */
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;
-  background:var(--line);border:1px solid var(--line);margin:30px 0 0}
-.cards.lead{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
-.card{background:#fff;padding:22px;display:block;text-decoration:none;color:inherit;
-  transition:background .14s}
-.card:hover,.card:focus-visible{background:#F1EEE9;outline:none}
-.card .grp{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:900;
-  color:var(--action);margin:0 0 9px}
-.card h3{font-size:19px;margin:0 0 7px;letter-spacing:-.02em;line-height:1.2}
-.card .q{margin:0 0 12px;font-size:14px;color:var(--caption);font-style:italic}
+
+/* CONTRAST, PAGE-LOCAL. The shared --action (#188295) measures 3.89:1 on the picker's
+   #F1EEE9 ground, 3.92:1 on the .band.alt tint and 4.28:1 on paper — under AA for every
+   size it is used at here (a 12px uppercase label, a 13px kicker, a 14.5px summary, body
+   links). Darkening it to #116575 takes those to 5.78 / 5.83 / 6.35 and changes nothing
+   else: same hue family, same one-accent-one-job mapping. Page-local because the fix
+   belongs to the whole site and the shared token is not this page's to move. */
+:root{--action:#116575}
+
+/* SHIPPED BUG, fixed here 2026-08-28. pic-viz.css sets
+   `.closer .wrap > p{font-size:clamp(20px,2.6vw,30px);font-weight:900}` at (0,2,1), which
+   display-scales ANY bare <p> in the closer. This page ended on a nine-line source
+   glossary set in 30px black — the page's parting image was a footnote. The glossary has
+   moved out of the closer entirely; these two rules stay as the guard, so a caption that
+   wanders back in is typeset as a caption. They carry the wrapper's own specificity
+   because that is what it takes to win, and they leave max-width on --measure so
+   tools/columns.mjs still sees `.closer p` on the text rail. Never patch this in
+   _shared/pic-viz.css: the display rule is correct for the closer's one big sentence. */
+.closer .wrap > p.src,
+.closer .wrap > p.note{font-size:13px;font-weight:400;letter-spacing:0;line-height:1.6;
+  color:#A8CDD4;max-width:var(--measure);margin:18px auto 0}
+
+/* The trust line, demoted from the H1 it used to be. Quieter than the standfirst above
+   it: it is the page's credential, not its finding. #9FC4CB measured 3.64:1 on the hero's
+   #0C6473 ground, so the credential was the least legible line in the hero; #C0DBE1 is
+   4.69:1 and still reads a step back from the standfirst's #C6E2E6. */
+.hero .stand.dek{font-size:16.5px;color:#C0DBE1;margin-top:14px}
+
+/* THREE STATS, ONE ROW, NEVER WRAPPING. The shared .hero-row is a two-column grid, so the
+   four cards this page used to carry rendered as a 2x2 block — the house rule is 3-4 cards
+   that never wrap, and cutting to three does nothing on a two-column grid. Three columns
+   plus a display size that fits the narrower cell is what makes the rule true rather than
+   asserted. The stats stay capped at --measure by the shared sheet, so the row is still on
+   the text rail. #9FCBD2 on the key line measured 3.87:1 at 12px; #C0DBE1 is 4.69:1. */
+.hero .hero-row{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 24px}
+.hero .figv .n{font-size:clamp(26px,2.6vw,34px)}
+.hero .figv .k{color:#C0DBE1}
+
+/* ------------------------------------------------------------------ the one chart
+
+   NO HOLE WITH SCRIPTING OFF. PV.chart() writes the viewBox at draw time, so an svg that
+   was never drawn still has none, and an undrawn svg with `width:100%;height:auto` paints a
+   labelled empty box 980 by 150. The container is what hides, and it stays hidden until
+   app.js says it drew something; the heading above it carries the finding as text either
+   way, so the failure state is a page with one fewer picture rather than a broken frame.
+
+   NEVER PUT THIS ON THE SVG ITSELF. It was written as `.chart svg:not([viewBox])
+   {display:none}`, which is the obvious form and is a shipped-bug generator: Chromium
+   computes an svg's intrinsic aspect ratio from the viewBox when the element is first laid
+   out, and an svg that was display:none at that moment never gets one back. The published
+   BUNDLE rendered the chart at zero by zero while the served source folder rendered it at
+   980 — and bundle, verify, collide, columns, claims and textsize all passed on the broken
+   file, because the only tool that could see it was a screenshot of the wrong build.
+   Measured 2026-08-28. */
+.chart.jsdrawn{display:none}
+.chart.jsdrawn.drawn{display:block}
+
+/* MOBILE RE-LAYOUT, NOT A SIDEWAYS PAN. pic-viz.css pins every chart to an 860px minimum
+   below 760px and asks the reader to scroll it, which is right for a matrix and wrong for
+   ten ranked bars: this chart re-draws at phone width with each state's name above its bar,
+   so there is nothing off-screen to pan to and the hint would be a lie. Page-local because
+   the shared sheet offers no opt-out. */
+@media (max-width:760px){
+  .chart.reflow{overflow-x:visible;padding-bottom:0}
+  .chart.reflow svg{min-width:0}
+  .chart.reflow::after{content:none}
+}
+
+/* ------------------------------------------------------------------ the gallery
+
+   THE GRID SITS ON THE TEXT RAIL. It used to sit at --figure while every line of prose sat
+   at --measure. Both were centred on one axis, which is the house pattern, but centring
+   only agrees with a rail when the blocks share a WIDTH: at 1075px the heading started at
+   199px and the first card at 49px, so the reader saw a 150px jump between the section
+   heading and the thing it heads. Cards are not charts. They are dense blocks of running
+   text — a question, a finding, a source flag — so the exemption that lets a chart break
+   out does not apply to them, and the fix is to put them on the reading column rather than
+   to widen the prose. Two columns instead of three is the price; the alignment is worth it.
+
+   The container rule is a box-shadow, not a border, so the first card's left edge IS the
+   grid's left edge and the rail check comes out exact rather than 1px off. */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;
+  background:var(--line);box-shadow:0 0 0 1px var(--line);max-width:var(--measure);
+  margin:14px 0 0}
+/* A group holding one page takes one column, so the card fills the row. On the two-column
+   grid PV.padGrid() correctly completed the row with an inert filler, and an empty white
+   box beside a single card reads as a page that failed to load rather than as a group with
+   one member in it. */
+.cards.one{grid-template-columns:1fr}
+
+/* The taxonomy, rendered. GRP defined seven groups and order[] sorted by them, and nothing
+   on the page drew a group — so the eyebrow repeated in pairs down the gallery and a
+   correct sort read as random. The subhead does the job the eyebrow was failing at, once
+   per group instead of once per card, and the per-card eyebrow is gone: it was the loudest
+   and least useful ink on every card. */
+.gname{font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:900;
+  color:var(--ink);max-width:var(--measure);margin:34px 0 0;padding:16px 0 0;
+  border-top:1px solid var(--line);line-height:1.3}
+
+/* A card was a block, so its slack fell BELOW the pill row: three cards in one row
+   put their pills on three different baselines, which reads as sloppy typesetting.
+   Column flex plus an auto top margin on the meta row pushes the slack above it, so
+   every pill row in a row shares one baseline whatever the finding length. */
+.card{background:#fff;padding:22px;display:flex;flex-direction:column;text-decoration:none;
+  color:inherit;transition:background .14s}
+.card:hover{background:#F1EEE9}
+/* KEYBOARD FOCUS ON THE SITE'S PRIMARY NAVIGATION. This was
+   `.card:hover,.card:focus-visible{background:#F1EEE9;outline:none}` — and because the
+   shared sheet only styles `[tabindex="0"]:focus-visible` while `<a class="card">` carries
+   no tabindex, nothing else painted a ring. A keyboard reader tabbing the thirteen links
+   on this page saw #fff shift to #F1EEE9, a 1.13:1 tint, and had no idea where they were.
+   The ring is 3px of --ink: 6.8:1 against the card and 5.9:1 against the hover tint, both
+   far above the 3:1 WCAG 2.2 focus-appearance floor. It is inset so the grid's 1px gaps
+   cannot clip it and it never overlaps the neighbouring card. */
+.card:focus-visible{background:#F1EEE9;outline:3px solid var(--ink);outline-offset:-3px}
+
+/* THE QUESTION LEADS. The band promises "everything here, by the question it answers", and
+   the question was a 14px italic grey caption under a 19px bold title that named a topic
+   ("The churn engine", "A number we own"). That is the hierarchy inverted: the title was
+   the loudest ink and the least discriminating line on the card. The question is the
+   heading now. A second line survives only where it states a finding worth reading before
+   the evidence — three cards have one; the other ten had topic labels and lost them. */
+.card h4{font-size:19px;font-weight:800;letter-spacing:-.015em;line-height:1.24;
+  margin:0 0 8px}
+.card .ans{margin:0 0 7px;font-size:15.5px;font-weight:800;color:var(--ink);
+  line-height:1.3}
 .card p.f{margin:0;font-size:15px;line-height:1.5;color:#26333A}
-.card .meta{margin:13px 0 0;font-size:12px;color:var(--caption);display:flex;gap:8px;
-  flex-wrap:wrap;align-items:center}
-.card .pill{background:#EDE9E2;padding:2px 8px;font-size:12px;letter-spacing:.04em}
-.card .pill.n14{background:#F2E7EE;color:var(--hover)}
-.card .pill.man{background:#F4F1EC;color:var(--hover)}
+.card .meta{margin:13px 0 0;margin-top:auto;padding-top:13px;font-size:12px;
+  color:var(--caption);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* GEOGRAPHY IS NOT APPARATUS. Every pill was the same beige chip, so "PIC-12" — the
+   footprint the figures were built on, and the thing the county picker answers — was
+   typeset identically to a claim count. The footprint keeps the chip, in the page's own
+   teal; the counts drop to plain caption text with a hairline divider, which is what they
+   are. */
+.card .pill.geo{background:#E1EDEF;color:var(--ink);padding:2px 8px;font-weight:700;
+  letter-spacing:.04em}
+.card .pill.apx{color:var(--caption);letter-spacing:.02em}
+.card .pill.apx + .pill.apx{border-left:1px solid var(--line);padding-left:10px}
+.card .pill.apx.man{color:var(--hover)}
 .cards.lead .card{border-left:3px solid var(--ink)}
-.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;
-  margin:30px 0 0}
-.checks h3{font-size:16px;margin:0 0 8px}
-.checks p{margin:10px 0 0;font-size:14.5px;color:#3A4448;line-height:1.55}
+
+/* ------------------------------------------------------------------ county picker
+   The default state is the whole gallery with nothing marked, so the page reads the same
+   printed as it does on screen. Selecting a county adds a flag; it never hides a card.
+   Hidden until the `js` class is set on <html>: a select that changes nothing is worse
+   than no select, and everything it filters is on the page either way. */
+.picker{display:none}
+/* `margin:24px auto 0`, never `24px 0 0`. This selector is (0,2,0), the same specificity
+   as the shared one-axis rule `.band .wrap > *{margin-left:auto;margin-right:auto}`, and
+   it is loaded after it — so a zero horizontal margin here wins and drops the picker onto
+   a second left rail 117px inside the prose. Measured 2026-08-28. */
+.js .picker{display:block;max-width:var(--measure);margin:24px auto 0;background:#F1EEE9;
+  border-left:3px solid var(--action);padding:16px 20px}
+.picker label{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:900;color:var(--action);margin:0 0 8px}
+.picker select{font-family:inherit;font-size:16px;padding:9px 12px;min-height:44px;
+  background:#fff;border:1px solid var(--line);color:var(--text);max-width:100%}
+.picker select:focus-visible{outline:2px solid var(--action);outline-offset:1px}
+.picker .verdict{margin:12px 0 0;font-size:15px;line-height:1.55;color:#3A4448}
+.picker .verdict b{color:var(--text)}
+/* Marked, never dimmed. Fading the cards a county is not in would tell a reader that a
+   national price series is less relevant to them, which is false: those pages contain
+   their county the way they contain everyone's. The flag adds information; nothing is
+   taken away. */
+.card .pill.hit-flag{display:none;background:var(--ink);color:#fff;padding:2px 8px}
+body.picked .card.hit{background:#F7FAFA;box-shadow:inset 3px 0 0 var(--action)}
+body.picked .cards.lead .card.hit{box-shadow:none;border-left-color:var(--action)}
+body.picked .card.hit .pill.hit-flag{display:inline}
+
+/* The act boundary. The gallery is the story; everything after this band is apparatus,
+   and a tint is what tells a scrolling reader that without a sentence saying so. The
+   generated methodology band below it stays on paper, so the two alternate. */
+.band.alt{background:#F2EFEA}
+.band.alt .note{background:#FAF9F7}
+.band.alt .checks pre,.band.alt .mono{background:#E7E2DA}
+/* This band opens on the callout instead of a lede, which is what stops it being a third
+   consecutive band running kicker / H2 / lede against a house limit of two. */
+.band.alt .note{margin-top:22px}
+
+/* ------------------------------------------------------------------ method disclosure
+   Four panels of shell commands used to sit between the gallery and the closer at full
+   band weight, on a page read by executives. The band now states the check in one line
+   and keeps the commands here. */
+.howto{margin:22px 0 0;max-width:var(--measure)}
+.howto summary{cursor:pointer;color:var(--action);font-weight:700;font-size:14.5px;
+  padding:6px 0}
+.howto summary:hover{color:var(--hover)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:26px;
+  margin:14px 0 0}
+.checks h3{font-size:15px;margin:0 0 8px}
+.checks p{margin:10px 0 0;font-size:14px;color:#3A4448;line-height:1.55}
 .checks pre{background:#F1EEE9;border-left:3px solid var(--action);padding:11px 14px;
   margin:0;font-size:12.5px;overflow-x:auto;font-family:ui-monospace,Consolas,monospace}
 .mono{font-family:ui-monospace,Consolas,monospace;font-size:.92em;background:#F1EEE9;
   padding:1px 5px}
+
 @media (max-width:640px){
-  .cards,.cards.lead{grid-template-columns:1fr}
+  /* One column for the stats too. Stacking on a phone is not the wrap the house rule
+     bans: there is no second column to wrap into. */
+  .hero .hero-row{grid-template-columns:1fr}
+  .cards{grid-template-columns:1fr}
   .card{padding:18px}
+  .picker select{width:100%}
 }
+
+/* "What this is" — the frame that tells a reader what kind of document this is
+   before they judge it as one. Body prose sits at the reading register, not the
+   lede register, so the frame reads as orientation rather than as a finding. */
+.whatitis{background:var(--paper-alt,#F1EEE9)}
+.whatitis-body{margin:14px 0 0;max-width:var(--measure);font-size:16.5px;
+  line-height:1.62;color:#3A4448}
