@@ -122,15 +122,11 @@
   "MI": [
    "laborshed"
   ],
-  "NAICS": [
-   "chain"
-  ],
   "NASA": [
    "timeline"
   ],
   "NEO": [
    "accountability",
-   "chain",
    "churn",
    "cluster-health",
    "collaboration",
@@ -217,8 +213,7 @@
    "occupations"
   ],
   "README": [
-   "accountability",
-   "programs"
+   "accountability"
   ],
   "RFID": [
    "chain"
@@ -254,9 +249,6 @@
   ],
   "UV": [
    "chain"
-  ],
-  "UW": [
-   "programs"
   ],
   "WISE": [
    "accountability"
