@@ -1132,9 +1132,10 @@ document.getElementById("linessrc").innerHTML =
     spr.filter(p => p.date.endsWith("-01-01") || keyed.has(p.date)).map(p =>
       [mon(p.date), PM[p.date].toFixed(0), RM[p.date].toFixed(0),
        p.date in CH ? CH[p.date].toFixed(0) : "—",
-       (p.v > 0 ? "+" : "") + p.v.toFixed(1),
-       p.date in CH ? (RM[p.date] - CH[p.date] > 0 ? "+" : "") +
-         (RM[p.date] - CH[p.date]).toFixed(1) : "—"]));
+       /* sp(), the page's own signed formatter (true minus), was defined at the top
+          and not used here — eleven table cells printed hyphen-negatives. 2026-08-31. */
+       sp(p.v),
+       p.date in CH ? sp(RM[p.date] - CH[p.date]) : "—"]));
 }
 
 /* --------------------------------------------------------------- the spread key

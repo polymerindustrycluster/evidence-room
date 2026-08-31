@@ -165,11 +165,12 @@
 
 /* ------------------------------------------------------------- the archive tables */
 .pro-table{margin:26px 0 0;max-width:var(--figure)}
-.pro-table summary{cursor:pointer;color:var(--action);font-weight:700;font-size:16px;
+.pro-table summary{cursor:pointer;color:var(--action);font-weight:700;font-size:13.5px;
   max-width:var(--measure);margin:0 auto}
 .tablewrap{overflow-x:auto;border:1px solid var(--line);background:#fff;margin-top:14px;
   max-width:var(--figure)}
-.dtable{border-collapse:collapse;width:100%;min-width:820px;font-size:15.5px}
+.dtable{border-collapse:collapse;width:100%;min-width:820px;font-size:15.5px;
+  font-variant-numeric:tabular-nums}
 .dtable th,.dtable td{text-align:left;padding:12px 16px;vertical-align:top;
   border-bottom:1px solid var(--pv-grid)}
 .dtable thead th{background:var(--ink);color:#fff;font-size:14px;letter-spacing:.06em;
@@ -198,7 +199,7 @@
 @media (min-width:900px){.asides{grid-template-columns:1fr 1fr}}
 .aside{background:#fff;border:1px solid var(--line);border-left:4px solid var(--action);
   padding:16px 20px}
-.aside h3{margin:0 0 6px;font-size:13.5px;font-weight:700;line-height:1.2;letter-spacing:.1em;
+.aside .aside-h{margin:0 0 6px;font-size:13.5px;font-weight:700;line-height:1.2;letter-spacing:.1em;
   text-transform:uppercase;color:var(--action)}
 .aside p{margin:0;font-size:15.5px;color:var(--pv-ink)}
 

@@ -41,7 +41,7 @@ const {el, txt, ticks, frame, hoverable, tableView, chart, face, figures, N, SEQ
 const D = await PV.data("viz-data.json");
 const M = D.meta;
 const money = v => v == null ? "—" : "$" + Math.round(v).toLocaleString("en-US");
-const pct = (v, d = 1) => v == null ? "—" : v.toFixed(d) + "%";
+const pct = (v, d = 1) => v == null ? "—" : (v.toFixed(d) + "%").replace(/^-/, "\u2212");
 const x = v => v == null ? "—" : v.toFixed(2) + "×";
 /* A RATIO IS READ, NOT COMPUTED, AT FIRST CONTACT. 0.93× is a correct number that asks the
    reader to do the subtraction and then to work out which way it points; "7% under" is the
@@ -374,7 +374,7 @@ function drawMixMobile() {
      "Share of everyone in the country with this job who works in this industry",
      "Jobs in the industry, 2024", "Projected change to 2034"],
     rows.map(r => [r.bls_title, pct(r.pct_of_industry), pct(r.pct_of_occupation),
-      N(r.emp_2024_k * 1000), (r.change_pct_2024_34 >= 0 ? "+" : "") + r.change_pct_2024_34 + "%"])),
+      N(r.emp_2024_k * 1000), (r.change_pct_2024_34 >= 0 ? "+" : "\u2212") + Math.abs(r.change_pct_2024_34) + "%"])),
     /* THE TWO NUMBERS A READER WILL GET, BOTH PRINTED, WITH THE REASON THEY DIFFER. Adding
        the job counts gives one answer and adding the printed bar shares gives another, and
        the page used to publish only the second. Both are stated here on the base a reader

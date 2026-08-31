@@ -82,7 +82,9 @@ html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
   max-width:var(--measure)}
 .machine{border:1px solid var(--line);border-left:5px solid var(--m,var(--eda));
   background:#fff;padding:18px 22px 16px}
-.machine--ohio{--m:var(--ohio)} .machine--apex{--m:var(--apex)}
+/* --eda made explicit 2026-08-31: it worked only because var(--m, var(--eda)) happens
+   to default to it, and the classes gate rightly called the modifier undefined. */
+.machine--eda{--m:var(--eda)} .machine--ohio{--m:var(--ohio)} .machine--apex{--m:var(--apex)}
 .m-kicker{margin:0 0 8px;font-size:12.5px;font-weight:700;letter-spacing:.08em;
   text-transform:uppercase;color:var(--caption)}
 .m-kicker strong{color:var(--text)}
@@ -166,7 +168,9 @@ html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
    A grid, not the shared inline row, because each lane key carries its own heading. */
 .legend{display:grid;gap:22px 44px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
   margin:20px auto 26px;padding-bottom:20px;border-bottom:1px solid var(--pv-grid)}
-.legend h3{font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
+/* .legend-h and .panel-h were h3s until 2026-08-31: 12px uppercase gray labels
+   sitting in the document outline as headings. Demoted in app.js; visuals identical. */
+.legend .legend-h{font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
   color:var(--caption);margin:0 0 12px}
 .legend ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px 18px}
 .legend li{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--pv-ink)}
@@ -238,7 +242,8 @@ html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 
 .table-scroll{overflow-x:auto;border:1px solid var(--line);background:#fff;
   margin:26px auto 0;max-width:var(--figure)}
-.dtable{width:100%;border-collapse:collapse;font-size:14.5px;min-width:700px}
+.dtable{width:100%;border-collapse:collapse;font-size:14.5px;min-width:700px;
+  font-variant-numeric:tabular-nums}
 .dtable th,.dtable td{text-align:left;padding:11px 16px;
   border-bottom:1px solid var(--pv-grid);vertical-align:top}
 .dtable thead th{position:sticky;top:0;background:var(--tint);color:var(--ink);
@@ -309,7 +314,7 @@ html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
   font-variant-numeric:tabular-nums}
 .panel-total .pt-l{margin:7px 0 0;font-size:13.5px;color:var(--caption)}
 .panel-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
-.panel h3{font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
+.panel .panel-h{font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
   color:var(--caption);margin:26px 0 12px}
 .award{border-left:3px solid var(--aw,var(--eda));padding:2px 0 2px 15px;margin-bottom:18px}
 .award-top{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
@@ -342,12 +347,12 @@ html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 .foot{background:var(--tint);color:var(--pv-ink);padding:44px 0 40px;font-size:14px;
   border-top:1px solid var(--line)}
 .foot .wrap > *{max-width:var(--measure);margin-left:auto;margin-right:auto}
-.foot-k{margin:0 0 14px;font-size:12.5px;font-weight:900;letter-spacing:.1em;
+.foot-k{margin:0 0 14px;font-size:12px;font-weight:900;letter-spacing:.1em;
   text-transform:uppercase;color:var(--caption)}
 .foot-links{list-style:none;margin:0 0 24px;padding:0;display:grid;gap:12px}
 .foot-links a{font-weight:900}
 .foot-links span{display:block;color:var(--caption);font-size:13.5px;margin-top:2px}
-.foot-cta{margin:0;padding-top:20px;border-top:1px solid var(--line)}
+.foot-cta{margin:0;padding-top:20px;border-top:1px solid var(--line);color:#A8CDD4}
 .foot-cta b{color:var(--ink)}
 /* The correction block sits above the identity line, at caption weight: it is a standing
    record a reader may quote, not a running caveat. Matches location-quotient's .foot-note. */

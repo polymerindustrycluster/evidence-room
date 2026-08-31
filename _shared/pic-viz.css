@@ -423,3 +423,21 @@ details.pv-table:not([open]) .pv-tablewrap{display:none}
    carried a verbatim copy. Sources' step-context override stays local to sources. */
 .band .body{margin:14px auto 0;max-width:var(--measure);font-size:17px;line-height:1.62;
   color:#333B3E}
+
+/* ------------------------------------------------------- FOOTER FURNITURE, PROMOTED
+ * 2026-08-31 ruling: .foot-id and .foot-links were defined on 13 and 7 pages and used
+ * unstyled on three more (an acknowledged-debt entry until tonight). The majority
+ * definition IS the house style; promoted verbatim from laborshed. Page-local footer
+ * rules that still exist override this, which is how funding-map keeps its dialect
+ * where it conforms and loses it where it drifted. */
+.foot-id{margin:14px 0 0;font-size:13px;color:#93B6BD}
+.foot-id a{color:#A8CDD4}
+.foot-links{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:12px;
+  grid-template-columns:repeat(3,minmax(0,1fr))}
+.foot-links a{display:block;color:#fff;font-weight:900;text-decoration:none;
+  border-top:2px solid #1A8A9E;padding-top:9px}
+.foot-links a:hover{color:var(--lime)}
+
+/* Band tint, promoted 2026-08-31: defined identically on federal-money, cost-scissors
+ * and patents, used unstyled on sources (the last classes-debt entry). One definition. */
+.band.tint{background:#F4F1EC}

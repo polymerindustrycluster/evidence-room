@@ -56,6 +56,12 @@ const CASES = [
    inject: s => s.replace("creativecommons.org/licenses/by/4.0/", "example.invalid/none")
                  .replace(/O\*NET(\u00ae|®) is a trademark/, "O*NET is a trademark")},
 
+  {gate: "style", page: "realwage", args: ["realwage"],
+   defect: "a negative number printed with the ASCII hyphen instead of the true minus " +
+           "(23 table cells shipped this way, found 2026-08-31)",
+   inject: s => s.replace("</head>", "<style></style></head>")
+                 .replace("<body>", "<body><p>The gap widened by -14% this year.</p>")},
+
   {gate: "measure", page: "churn", args: ["churn"],
    defect: "the compounding measure: a nested measure-capped box re-resolves 100% " +
            "against its parent and prose runs 488px wide (shipped 2026-08-31)",

@@ -25,6 +25,13 @@ const PV = (() => {
     return n;
   };
   const txt = (p, s, a) => { const n = el("text", a, p); n.textContent = s; return n; };
+  /* Negative numbers print with a true minus (U+2212), not the ASCII hyphen JS
+     produces: the hyphen is a third the width of the digits beside it and reads as a
+     stray dash. FT/Datawrapper practice; found 2026-08-31 when four axis ticks leaked
+     hyphens while every hand-written negative on the same pages used the minus.
+     Applied at the tick primitive so no caller can forget. */
+  const mneg = v => String(v).replace(/(^|[\s(])-(?=\d)/g, "$1\u2212");
+
   const CAT = ["#008BA8", "#C85F0C", "#A32A78"];
   const SEQ = ["#CFE8EC", "#9FD2DA", "#6BB8C4", "#3D9CAC", "#1A8A9E", "#0C6473"];
   const GRAY = "#B9B3A9", INK = "#0C6473";
@@ -147,7 +154,7 @@ const PV = (() => {
     (yt || []).forEach(v => {
       el("line", {x1: x, y1: ys(v), x2: x + w, y2: ys(v),
         stroke: "var(--pv-grid)", "stroke-width": 1}, g);
-      txt(g, yfmt ? yfmt(v) : v, {x: x - 10, y: ys(v) + 4, "text-anchor": "end",
+      txt(g, mneg(yfmt ? yfmt(v) : v), {x: x - 10, y: ys(v) + 4, "text-anchor": "end",
         class: "pv-tick"});
     });
     /* THE TICK ROW'S DROP IS MEASURED, NOT TYPED. It was 20 units below the plot floor
@@ -164,7 +171,7 @@ const PV = (() => {
     if ((xt || []).length) {
       const drop = Math.max(20, 4 + lead(svg, "pv-tick", "pv-tick", 3));
       (xt || []).forEach(v => {
-        txt(g, xfmt ? xfmt(v) : v, {x: xs(v), y: y + h + drop, "text-anchor": "middle",
+        txt(g, mneg(xfmt ? xfmt(v) : v), {x: xs(v), y: y + h + drop, "text-anchor": "middle",
           class: "pv-tick"});
       });
     }

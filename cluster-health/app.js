@@ -506,7 +506,7 @@ document.getElementById("statgrid").innerHTML = `
       charge, the middle revision moved the published level by
       ${R.median_pct.toFixed(2)} percent of it and the largest by
       ${R.max_pct.toFixed(2)} percent.</div></div>
-  <div class="statv warn"><div class="n">0</div>
+  <div class="statv flag"><div class="n">0</div>
     <div class="k">series here with a measured revision</div>
     <div class="d">Nobody has collected the earlier releases of the employment, degree or
       spending series on this page, so how far a fresh figure will move once it is restated

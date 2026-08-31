@@ -34,7 +34,11 @@ const avg = xs => xs.reduce((a, b) => a + b, 0) / xs.length;
 const pc1 = v => (v * 100).toFixed(1) + "%";
 const pcT = v => { const p = v * 100;
   return (Math.abs(p - Math.round(p)) < 1e-9 ? String(Math.round(p)) : p.toFixed(1)) + "%"; };
-const ptsT = v => (v > 0 ? "+" : "") + (Number.isInteger(v) ? v : v.toFixed(1));
+/* Signed points: + for gains, TRUE MINUS for losses. JS stringifies negatives with an
+   ASCII hyphen a third the width of the digits; every other negative on this page
+   already used \u2212 and these two ticks were the leak (found 2026-08-31). */
+const ptsT = v => (v > 0 ? "+" : "") + (Number.isInteger(v) ? v : v.toFixed(1))
+  .toString().replace(/^-/, "\u2212");
 
 /* ------------------------------------------------------------- derived facts */
 const tHires = Q.reduce((a, q) => a + q.hires, 0);

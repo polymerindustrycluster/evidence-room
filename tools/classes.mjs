@@ -39,10 +39,16 @@ const WEB = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 /* Acknowledged debt, ratcheted like coldopen: an entry tolerates a KNOWN unresolved
    class on a NAMED page; anything not listed fails. Fix a class, delete its entry. */
-const DEBT = (() => {
-  try { return JSON.parse(readFileSync(join(WEB, "_data", "classes-debt.json"), "utf-8")).debt || {}; }
+/* Two tolerated categories, one file: DEBT is a class that SHOULD be styled and is not
+   yet (fix it, delete the entry); HOOKS are classes styled by nothing ON PURPOSE because
+   app.js queries them (verified per page — delete when the hook dies). Kept separate so
+   debt reads as work owed and hooks read as architecture. */
+const LEDGER = (() => {
+  try { return JSON.parse(readFileSync(join(WEB, "_data", "classes-debt.json"), "utf-8")); }
   catch { return {}; }
 })();
+const DEBT = LEDGER.debt || {};
+const HOOKS = Object.fromEntries(Object.entries(LEDGER.hooks || {}).filter(([k]) => k !== "_readme"));
 
 /* Classes written onto elements by app.js at runtime. Each needs a reason, so this list
    cannot quietly become the place defects go to be forgotten. */
@@ -87,7 +93,7 @@ for (const page of pages) {
   for (const c of used) {
     usedOn.set(c, [...(usedOn.get(c) || []), page]);
     if (sharedDefined.has(c) || localDefined.has(c) || JS_ADDED.has(c)) continue;
-    if ((DEBT[c] || []).includes(page)) { debtHits++; continue; }
+    if ((DEBT[c] || []).includes(page) || (HOOKS[c] || []).includes(page)) { debtHits++; continue; }
     undef.push({page, cls: c});
   }
 }
