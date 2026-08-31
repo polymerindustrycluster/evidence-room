@@ -6,34 +6,85 @@
   "assumed_known = acronyms a general reader genuinely holds (adjudicated 2026-09-01);",
   "debt = bare first references shipped before the gate existed, keyed acronym -> pages.",
   "The edit fleet burns debt down; a NEW page or NEW acronym gets no debt entry.",
-  "POST/GET/JSON/README assumed: they appear only in the replication guide, whose reader is executing HTTP requests and knows the verbs."
+  "POST/GET/JSON/README assumed: they appear only in the replication guide, whose reader is executing HTTP requests and knows the verbs.",
+  "chain's PAN/RFID/UV/M&A/PE/OEM/NFM/LSR/HCR/RTV entries are inside verbatim vault self-descriptions that policy forbids rewriting; they stay as permanent adjudicated debt, glossed in the methodology instead.",
+  "State postal codes assumed: household knowledge, AP-accepted in lists."
  ],
  "assumed_known": [
-  "US",
-  "USA",
-  "OH",
-  "PDF",
-  "CSV",
+  "3D",
+  "AI",
+  "AK",
+  "AL",
   "API",
-  "URL",
+  "AR",
+  "AZ",
+  "CA",
+  "CEO",
+  "CO",
+  "CSV",
+  "CT",
+  "DC",
+  "DE",
+  "FL",
   "FY",
+  "GA",
+  "GDP",
+  "GET",
+  "HI",
+  "IA",
+  "ID",
+  "IL",
+  "IN",
+  "INC",
+  "IT",
+  "JSON",
+  "KS",
+  "KY",
+  "LA",
+  "LLC",
+  "MA",
+  "MD",
+  "ME",
+  "MI",
+  "MN",
+  "MO",
+  "MS",
+  "MT",
+  "NC",
+  "ND",
+  "NE",
+  "NH",
+  "NJ",
+  "NM",
+  "NV",
+  "NY",
+  "OH",
+  "OK",
+  "OR",
+  "PA",
+  "PDF",
+  "POST",
   "Q1",
   "Q2",
   "Q3",
   "Q4",
-  "AI",
-  "3D",
-  "LLC",
-  "INC",
-  "CEO",
   "R&D",
-  "IT",
-  "ID",
-  "GDP",
-  "POST",
-  "GET",
-  "JSON",
-  "README"
+  "README",
+  "RI",
+  "SC",
+  "SD",
+  "TN",
+  "TX",
+  "URL",
+  "US",
+  "USA",
+  "UT",
+  "VA",
+  "VT",
+  "WA",
+  "WI",
+  "WV",
+  "WY"
  ],
  "debt": {
   "ACE": [
@@ -41,6 +92,9 @@
   ],
   "ALCOM": [
    "timeline"
+  ],
+  "ALFRED": [
+   "cluster-health"
   ],
   "BEA": [
    "index"
@@ -56,16 +110,8 @@
   "CIP": [
    "scorecard"
   ],
-  "CLIENT": [
-   "accountability",
-   "cluster-health",
-   "federal-money",
-   "funding-map",
-   "scorecard",
-   "sources"
-  ],
-  "CPI": [
-   "sources"
+  "CWRU": [
+   "funding-map"
   ],
   "EDA": [
    "accountability",
@@ -76,24 +122,8 @@
   "EOS": [
    "scorecard"
   ],
-  "FIPS": [
-   "accountability",
-   "churn",
-   "cluster-health",
-   "location-quotient",
-   "occupations",
-   "peers",
-   "realwage",
-   "scorecard",
-   "wages"
-  ],
   "FWCI": [
    "reach"
-  ],
-  "GET": [
-   "accountability",
-   "federal-money",
-   "scorecard"
   ],
   "HS": [
    "occupations",
@@ -102,16 +132,17 @@
   "HTTP": [
    "patents"
   ],
-  "JSON": [
-   "federal-money",
-   "patents",
-   "scorecard"
-  ],
   "LEHD": [
    "laborshed"
   ],
+  "LMI": [
+   "sources"
+  ],
   "LODES": [
    "laborshed"
+  ],
+  "M&A": [
+   "chain"
   ],
   "MI": [
    "laborshed"
@@ -120,18 +151,7 @@
    "timeline"
   ],
   "NEO": [
-   "accountability",
-   "churn",
-   "cluster-health",
-   "federal-money",
-   "funding-map",
-   "index",
-   "location-quotient",
-   "occupations",
-   "peers",
-   "realwage",
-   "scorecard",
-   "wages"
+   "location-quotient"
   ],
   "NET": [
    "sources"
@@ -146,27 +166,11 @@
    "funding-map",
    "timeline"
   ],
-  "ODC": [
-   "accountability",
-   "cluster-health",
-   "occupations",
-   "scorecard"
-  ],
   "ODOD": [
    "accountability"
   ],
   "OEM": [
    "chain"
-  ],
-  "OEWS": [
-   "accountability",
-   "churn",
-   "cluster-health",
-   "location-quotient",
-   "peers",
-   "realwage",
-   "scorecard",
-   "wages"
   ],
   "OHIO": [
    "funding-map"
@@ -180,36 +184,24 @@
   "PAN": [
    "chain"
   ],
+  "PE": [
+   "chain"
+  ],
   "PIC": [
    "federal-money",
-   "laborshed",
-   "patents",
    "reach"
   ],
-  "POST": [
-   "accountability",
-   "cluster-health",
-   "federal-money",
-   "patents",
-   "scorecard",
-   "sources"
-  ],
   "QCEW": [
-   "occupations",
    "sources"
   ],
   "QWI": [
    "occupations"
   ],
-  "README": [
-   "accountability"
-  ],
   "RFID": [
    "chain"
   ],
   "RL": [
-   "occupations",
-   "sources"
+   "occupations"
   ],
   "RPM": [
    "location-quotient"
@@ -217,17 +209,11 @@
   "RPP": [
    "realwage"
   ],
-  "SMART": [
-   "federal-money",
-   "funding-map",
-   "timeline"
-  ],
-  "SOC": [
-   "occupations",
+  "SEC": [
    "sources"
   ],
-  "SOP": [
-   "index"
+  "SOC": [
+   "sources"
   ],
   "TKM": [
    "funding-map"
@@ -244,14 +230,8 @@
   "WORKS": [
    "laborshed"
   ],
-  "YYYY": [
-   "patents"
-  ],
-  "M&A": [
-   "chain"
-  ],
-  "PE": [
-   "chain"
+  "WV": [
+   "laborshed"
   ],
   "NFM": [
    "chain"
@@ -264,34 +244,6 @@
   ],
   "RTV": [
    "chain"
-  ],
-  "ALFRED": [
-   "cluster-health"
-  ],
-  "SIDE": [
-   "federal-money",
-   "funding-map"
-  ],
-  "CWRU": [
-   "funding-map"
-  ],
-  "WV": [
-   "laborshed"
-  ],
-  "KY": [
-   "laborshed"
-  ],
-  "NY": [
-   "laborshed"
-  ],
-  "WAC": [
-   "laborshed"
-  ],
-  "SEC": [
-   "sources"
-  ],
-  "LMI": [
-   "sources"
   ],
   "ETA": [
    "sources"

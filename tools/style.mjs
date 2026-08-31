@@ -97,10 +97,15 @@ for (const n of list) {
       if (/\d/.test(t)) continue;                       // FY2019, US000: codes, not acronyms
       if (/^[-–]\d/.test(text.slice(m.index + t.length, m.index + t.length + 3))) continue;  // PDM-5004, YYYY-01: an ID or format string, not an acronym
       if (/^[\u00AE\u2122]/.test(text.slice(m.index + t.length, m.index + t.length + 1))) continue;  // XR followed by the registered mark: a trademarked product name is its own gloss
+      const after = text.slice(m.index + t.length, m.index + t.length + 2);
+      const before = text.slice(Math.max(0, m.index - 1), m.index);
+      if (/^-[A-Z]/.test(after) || /-$/.test(before)) continue;  // CLIENT-SIDE, NEO-SMART: a hyphenated all-caps compound is emphasis or a proper name, and its parts are not acronyms to expand
       if (new RegExp("\\b" + t.toLowerCase() + "\\b").test(text)) continue;  // CAPS-for-emphasis: the page itself uses the word in lowercase
       const sent = text.slice(Math.max(0, text.lastIndexOf(".", m.index) + 1),
                               text.indexOf(".", m.index) + 1 || text.length);
       const glossed = /\(/.test(sent) ||
+        /short for|stands for|meaning the|that is,/.test(sent) ||
+        new RegExp("(?:scale|code|file|series|level|survey|form)\\s+" + t + "\\b").test(sent) ||
         new RegExp("[a-z][\\w'’-]*(?:\\s+[\\w'’&-]+){0,6}\\s*\\(" + t).test(text) ||
         /, (?:the|a|an) [a-z]/.test(sent.slice(sent.indexOf(t)));
       if (!glossed) out.push(["bare-first-reference:" + t, sent.replace(/\s+/g," ").trim().slice(0, 70)]);

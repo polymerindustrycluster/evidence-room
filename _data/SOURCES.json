@@ -4,7 +4,7 @@
   "have to hit and the EXACT filter values applied to it. It exists because an audit on",
   "2026-08-17 found only 3 of 20 datasets published a source URL and none published its",
   "industry or program codes, so the artifacts asserted reproducibility they did not",
-  "provide. A methodology box that names ‘BLS QCEW’ without naming NAICS 3252 tells a",
+  "provide. A methodology box that names ‘BLS QCEW (the Quarterly Census of Employment and Wages)’ without naming NAICS 3252 tells a",
   "reader where to start and not what was done.",
   "",
   "Every value below was extracted from the fetch scripts, not written from memory.",
@@ -28,9 +28,9 @@
     "NAICS codes": "10 (all industries), 31-33 (manufacturing), 325 (chemical manufacturing), 3252 (resin, synthetic rubber and fibers), 3255 (paint, coating and adhesive), 326 (plastics and rubber products), 3261 (plastics products), 3262 (rubber products)",
     "ownership": "own_code 5 (private) carries every industry row; own_code 0 (total, all ownerships) exists only on industry 10. Those are not two interchangeable choices: an industry row at own_code 0 does not exist to be picked.",
     "aggregation": "county area file: agglvl_code 70 is the all-ownership county total, 71 the county total by ownership, 74 NAICS sector, 75 NAICS 3-digit, 76 NAICS 4-digit, 77 5-digit, 78 6-digit. The US000 file uses 10, 11, 15, 16 and 18 for the same rungs. agglvl 50 to 58 are STATE levels and appear in no county file: 55 is three-digit, 56 four-digit, 57 five-digit and 58 six-digit.",
-    "geography": "county FIPS. The page’s own footprint, PIC-12, is 39007 Ashtabula, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39169 Wayne. The wider NEO-14 used by the vault pages is 39033 Crawford, 39035 Cuyahoga, 39055 Geauga, 39077 Huron, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39139 Richland, 39151 Stark, 39153 Summit, 39157 Tuscarawas, 39169 Wayne. Both are defined once in footprints.py, which is a vendored copy of the pic-geo package.",
+    "geography": "county FIPS (the federal numeric code that identifies each county). The page’s own footprint, PIC-12, is 39007 Ashtabula, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39169 Wayne. The wider NEO-14 used by the vault pages is 39033 Crawford, 39035 Cuyahoga, 39055 Geauga, 39077 Huron, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39139 Richland, 39151 Stark, 39153 Summit, 39157 Tuscarawas, 39169 Wayne. Both are defined once in footprints.py, which is a vendored copy of the pic-geo package.",
     "by_industry": "the same census sliced the other way, one file per NAICS across every area, at https://data.bls.gov/cew/data/api/{year}/a/industry/{naics}.csv. The disclosure rates published on the sources page are the 2024 annual file for 326, own_code 5: county rows are agglvl 75, metropolitan rows agglvl 45, state rows agglvl 55.",
-    "user_agent": "This source is on data.bls.gov, which serves a scripted request with any User-Agent or none. The 403 is on www.bls.gov, which the two OEWS files use, and the warning is filed on those rather than here.",
+    "user_agent": "This source is on data.bls.gov, which serves a scripted request with any User-Agent or none. The 403 is on www.bls.gov, which the two OEWS (the Occupational Employment and Wage Statistics survey) files use, and the warning is filed on those rather than here.",
     "note": "PIC’s own measurement register is 3252 + 3255 + 326. NAICS 325 is context, not cluster: it contains pharmaceuticals and agricultural chemicals.",
     "provenance_page": "fetch_provenance.py re-uses this source for one pull: 2016 annual, area 39000 which is the STATE of Ohio and not a county, own_code 5, industry 326+32521+325991 at agglvl 55/57/58, which are the state 3-, 5- and 6-digit levels. Those three agglvl codes belong to that state pull alone and return nothing from a county file."
    },
@@ -83,9 +83,9 @@
     "note": "Two earlier code entries did not exist and silently returned zero: 140320 (a transposition of 143201) and 143101 (materials science is in the 40 series, not 14). A core code returning zero across every year and institution is evidence of a bad code, not of no graduates.",
     "ipeds_cip": "fetch_ipeds_cip.py adds institution × CIP × year (used by talent and occupations)"
    },
-   "licence": "ODC-By 1.0",
+   "licence": "ODC (Open Data Commons)-By 1.0",
    "licence_url": "https://opendatacommons.org/licenses/by/1-0/",
-   "attribution": "Integrated Postsecondary Education Data System (IPEDS) Completions, via Education Data Portal v. 0.26.1, Urban Institute, accessed 18 August 2026, https://educationdata.urban.org/documentation/, made available under the ODC Attribution License.",
+   "attribution": "Integrated Postsecondary Education Data System (IPEDS) Completions, via Education Data Portal v. 0.26.1, Urban Institute, accessed 18 August 2026, https://educationdata.urban.org/documentation/, made available under the ODC (Open Data Commons) Attribution License.",
    "terms": "The underlying IPEDS collection is a public-domain federal series, but the route this site uses is not the federal one. Everything served through the Urban Institute’s Education Data Portal is licensed to the user under the Open Data Commons Attribution License (ODC-By) v1.0, which REQUIRES attribution and a citation naming the portal version and the access date: https://educationdata.urban.org/documentation/. Portal version 0.26.1 was released 2026-08-05 and was current at this site’s access date of 2026-08-18.",
    "script": "_data/build/fetch_ipeds.py, fetch_ipeds_national.py, fetch_intl.py, _data/build/fetch_ipeds_cip.py",
    "key_required": false
@@ -126,7 +126,7 @@
     "sheet": "MSA_M2024_dl",
     "geography": "metropolitan area, carrying the same non-nesting caveat as BEA RPP",
     "note": "One year only. This is a level, not a trend; the wage trend on the talent page comes from QWI instead.",
-    "user_agent": "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address. contact.py holds the single address this repository sends. data.bls.gov, which the QCEW pulls use, serves any of them."
+    "user_agent": "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address. contact.py holds the single address this repository sends. data.bls.gov, which the QCEW (the Quarterly Census of Employment and Wages) pulls use, serves any of them."
    },
    "terms": "Public domain. BLS asks to be cited as the source: https://www.bls.gov/bls/linksite.htm",
    "script": "_data/build/fetch_oews.py",
@@ -185,10 +185,10 @@
    "docs": "https://www.bls.gov/oes/tables.htm",
    "filters": {
     "sheet": "national_M2024_dl",
-    "occupations": "the SOC set read from oews.json (26 codes); the metro pull defines the set",
+    "occupations": "the SOC (the Standard Occupational Classification, the federal job-title code) set read from oews.json (26 codes); the metro pull defines the set",
     "dedupe": "51-2090 appears as broad and detailed with identical values; one row kept, detailed preferred",
     "note": "all industries; the ‘#’ ceiling ($115/hr, $239,200/yr) and ‘*’ are both null, never zero",
-    "user_agent": "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address. contact.py holds the single address this repository sends. data.bls.gov, which the QCEW pulls use, serves any of them."
+    "user_agent": "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address. contact.py holds the single address this repository sends. data.bls.gov, which the QCEW (the Quarterly Census of Employment and Wages) pulls use, serves any of them."
    },
    "terms": "Public domain. BLS asks to be cited as the source: https://www.bls.gov/bls/linksite.htm",
    "script": "_data/build/fetch_oews_national.py",
@@ -202,7 +202,7 @@
    "filters": {
     "element": "2.D.1 Required Level of Education, scale RL",
     "bins": "1-2 HS or less; 3-5 some college/associate; 6-7 bachelor’s; 8-12 graduate",
-    "join": ".00 variant preferred, else equal-weight mean of variants; broad SOC 51-2090 = mean of five-char stem",
+    "join": ".00 variant preferred, else equal-weight mean of variants; broad SOC (the Standard Occupational Classification, the federal job-title code) 51-2090 = mean of five-char stem",
     "job_zone": "30.x reports zones 1 and 2 as one band keyed 2; a zone-1 row reads the merged reference row",
     "attribution": "required on the page, printed in the education source line",
     "fetch": "the .zip is the artifact and returns 200. The same path with the .zip trimmed off is a directory that returns 403 to every User-Agent tried, including a contact address, so a reader who shortens the URL to browse the files meets a wall rather than a listing."
@@ -236,7 +236,7 @@
    "docs": "https://ohiolmi.com/Home/Projections/ProjectionsHome",
    "filters": {
     "geography": "JobsOhio Northeast (18 counties, superset of PIC-12) and the four MSAs; Ashtabula and Wayne appear only in region and state figures",
-    "row": "one industry or one SOC occupation × geography: 2022 base, 2032 projected, change, percent, annual openings split, median wage",
+    "row": "one industry or one SOC (the Standard Occupational Classification, the federal job-title code) occupation × geography: 2022 base, 2032 projected, change, percent, annual openings split, median wage",
     "projection_not_forecast": "a modelled path with no confidence band; historically under-calls turning points",
     "register_cannot_be_rebuilt": "3252 is published only inside bundle 3250A1 and 3255 only inside 3250A2; only 326/3261/3262 are clean",
     "access": "ohiolmi.com returns 403 to a scripted request, browser User-Agent or not, so this one is a manual download: open the directory in a browser and save the spreadsheet. Verified 2026-08-29."
