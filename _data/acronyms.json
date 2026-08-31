@@ -1,0 +1,326 @@
+{
+ "_readme": [
+  "AP's define-on-first-reference law, mechanized for the one slice a machine can see:",
+  "an all-caps token's FIRST occurrence on a page must sit in a sentence that glosses it",
+  "(a parenthetical, or an expansion). Two lists, both ratchets:",
+  "assumed_known = acronyms a general reader genuinely holds (adjudicated 2026-09-01);",
+  "debt = bare first references shipped before the gate existed, keyed acronym -> pages.",
+  "The edit fleet burns debt down; a NEW page or NEW acronym gets no debt entry.",
+  "POST/GET/JSON/README assumed: they appear only in the replication guide, whose reader is executing HTTP requests and knows the verbs."
+ ],
+ "assumed_known": [
+  "US",
+  "USA",
+  "OH",
+  "PDF",
+  "CSV",
+  "API",
+  "URL",
+  "FY",
+  "Q1",
+  "Q2",
+  "Q3",
+  "Q4",
+  "AI",
+  "3D",
+  "LLC",
+  "INC",
+  "CEO",
+  "R&D",
+  "IT",
+  "ID",
+  "GDP",
+  "POST",
+  "GET",
+  "JSON",
+  "README"
+ ],
+ "debt": {
+  "ACE": [
+   "funding-map"
+  ],
+  "AGEP": [
+   "collaboration"
+  ],
+  "ALCOM": [
+   "timeline"
+  ],
+  "BEA": [
+   "index"
+  ],
+  "BLS": [
+   "index",
+   "revisions"
+  ],
+  "BMW": [
+   "peers"
+  ],
+  "CC": [
+   "atlas",
+   "index"
+  ],
+  "CIP": [
+   "scorecard"
+  ],
+  "CLIENT": [
+   "accountability",
+   "cluster-health",
+   "federal-money",
+   "funding-map",
+   "scorecard",
+   "sources"
+  ],
+  "CPI": [
+   "sources"
+  ],
+  "EDA": [
+   "accountability",
+   "funding-map",
+   "scorecard",
+   "sources"
+  ],
+  "EOS": [
+   "scorecard"
+  ],
+  "FIPS": [
+   "accountability",
+   "churn",
+   "cluster-health",
+   "location-quotient",
+   "occupations",
+   "peers",
+   "realwage",
+   "scorecard",
+   "wages"
+  ],
+  "FWCI": [
+   "reach"
+  ],
+  "GET": [
+   "accountability",
+   "federal-money",
+   "scorecard"
+  ],
+  "HS": [
+   "occupations",
+   "sources"
+  ],
+  "HTTP": [
+   "patents"
+  ],
+  "JSON": [
+   "federal-money",
+   "patents",
+   "scorecard"
+  ],
+  "LEHD": [
+   "laborshed"
+  ],
+  "LODES": [
+   "laborshed"
+  ],
+  "MI": [
+   "laborshed"
+  ],
+  "NAICS": [
+   "chain"
+  ],
+  "NASA": [
+   "timeline"
+  ],
+  "NEO": [
+   "accountability",
+   "chain",
+   "churn",
+   "cluster-health",
+   "collaboration",
+   "federal-money",
+   "funding-map",
+   "index",
+   "location-quotient",
+   "occupations",
+   "peers",
+   "realwage",
+   "scorecard",
+   "wages"
+  ],
+  "NET": [
+   "sources"
+  ],
+  "NH": [
+   "timeline"
+  ],
+  "NHHC": [
+   "timeline"
+  ],
+  "NSF": [
+   "funding-map",
+   "timeline"
+  ],
+  "ODC": [
+   "accountability",
+   "cluster-health",
+   "occupations",
+   "scorecard"
+  ],
+  "ODOD": [
+   "accountability"
+  ],
+  "OEM": [
+   "chain"
+  ],
+  "OEWS": [
+   "accountability",
+   "churn",
+   "cluster-health",
+   "location-quotient",
+   "peers",
+   "realwage",
+   "scorecard",
+   "wages"
+  ],
+  "OHIO": [
+   "funding-map"
+  ],
+  "OLD": [
+   "reach"
+  ],
+  "PA": [
+   "laborshed"
+  ],
+  "PAN": [
+   "chain"
+  ],
+  "PI": [
+   "collaboration"
+  ],
+  "PIC": [
+   "collaboration",
+   "federal-money",
+   "laborshed",
+   "patents",
+   "reach"
+  ],
+  "POST": [
+   "accountability",
+   "cluster-health",
+   "federal-money",
+   "patents",
+   "scorecard",
+   "sources"
+  ],
+  "QCEW": [
+   "occupations",
+   "sources"
+  ],
+  "QWI": [
+   "occupations"
+  ],
+  "README": [
+   "accountability",
+   "programs"
+  ],
+  "RFID": [
+   "chain"
+  ],
+  "RL": [
+   "occupations",
+   "sources"
+  ],
+  "RPM": [
+   "location-quotient"
+  ],
+  "RPP": [
+   "realwage"
+  ],
+  "SMART": [
+   "collaboration",
+   "federal-money",
+   "funding-map",
+   "timeline"
+  ],
+  "SOC": [
+   "occupations",
+   "sources"
+  ],
+  "SOP": [
+   "index"
+  ],
+  "TKM": [
+   "funding-map"
+  ],
+  "USS": [
+   "timeline"
+  ],
+  "UV": [
+   "chain"
+  ],
+  "UW": [
+   "programs"
+  ],
+  "WISE": [
+   "accountability"
+  ],
+  "WORKS": [
+   "laborshed"
+  ],
+  "YYYY": [
+   "patents"
+  ],
+  "M&A": [
+   "chain"
+  ],
+  "PE": [
+   "chain"
+  ],
+  "NFM": [
+   "chain"
+  ],
+  "LSR": [
+   "chain"
+  ],
+  "HCR": [
+   "chain"
+  ],
+  "RTV": [
+   "chain"
+  ],
+  "ALFRED": [
+   "cluster-health"
+  ],
+  "SIDE": [
+   "federal-money",
+   "funding-map"
+  ],
+  "CWRU": [
+   "funding-map"
+  ],
+  "WV": [
+   "laborshed"
+  ],
+  "KY": [
+   "laborshed"
+  ],
+  "NY": [
+   "laborshed"
+  ],
+  "WAC": [
+   "laborshed"
+  ],
+  "SEC": [
+   "sources"
+  ],
+  "LMI": [
+   "sources"
+  ],
+  "ETA": [
+   "sources"
+  ],
+  "LOC": [
+   "timeline"
+  ],
+  "RD": [
+   "timeline"
+  ]
+ }
+}

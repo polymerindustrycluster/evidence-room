@@ -19,6 +19,10 @@ import {readdirSync} from "fs";
 import {pathToFileURL} from "url";
 import {chromium} from "./_browser.mjs";
 
+import {readFileSync as rfs} from "fs";
+let ACRO = {assumed_known: [], debt: {}};
+try { ACRO = JSON.parse(rfs(new URL("../_data/acronyms.json", import.meta.url), "utf-8")); } catch {}
+
 const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
@@ -28,10 +32,11 @@ let bad = 0, total = 0;
 for (const n of list) {
   const p = await b.newPage({viewport: {width: 1440, height: 1000}});
   await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
-  await p.waitForTimeout(900);
-  const hits = await p.evaluate(() => {
+  await p.waitForTimeout(1600)  /* 900 raced chain's 785 JS-rendered cards: the acronym inventory flapped between runs. 2026-09-01 */;
+  const hits = await p.evaluate(({assumed, debtPages}) => {
     const BANNED = /\b(crucial|delve|matters)\b/i;
     const out = [];
+    const pageText = [];
     const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     let t;
     while ((t = w.nextNode())) {
@@ -74,9 +79,34 @@ for (const n of list) {
          of drift — five pages used ×, one formatter wrote x. */
       if (!verbatim && /\d ?x(?=[\s.,)%])/.test(s))
         out.push(["x-for-times", ctx.slice(0, 70)]);
+      /* collect text for the page-level first-reference check below; table cells are
+         data, not prose, and the first-reference law is a prose law */
+      if (!verbatim && !el.closest("table")) pageText.push(s);
+    }
+    /* FIRST REFERENCE (AP law, the machine-checkable slice). An all-caps token's first
+       occurrence must sit in a sentence that glosses it: a parenthetical, or an
+       expansion. Everything else about jargon needs a human reader; this bit does not.
+       2026-09-01, after a cold reader met EDA, APEX and an unexpanded PIC with nothing. */
+    const seen = new Set();
+    const text = pageText.join(" ");
+    for (const m of text.matchAll(/\b([A-Z][A-Z&\d]{1,5})\b/g)) {
+      const t = m[1];
+      if (seen.has(t)) continue;
+      seen.add(t);
+      if (assumed.includes(t) || debtPages.includes(t)) continue;
+      if (/\d/.test(t)) continue;                       // FY2019, US000: codes, not acronyms
+      if (/^[-–]\d/.test(text.slice(m.index + t.length, m.index + t.length + 3))) continue;  // PDM-5004, YYYY-01: an ID or format string, not an acronym
+      if (/^[\u00AE\u2122]/.test(text.slice(m.index + t.length, m.index + t.length + 1))) continue;  // XR followed by the registered mark: a trademarked product name is its own gloss
+      if (new RegExp("\\b" + t.toLowerCase() + "\\b").test(text)) continue;  // CAPS-for-emphasis: the page itself uses the word in lowercase
+      const sent = text.slice(Math.max(0, text.lastIndexOf(".", m.index) + 1),
+                              text.indexOf(".", m.index) + 1 || text.length);
+      const glossed = /\(/.test(sent) ||
+        new RegExp("[a-z][\\w'’-]*(?:\\s+[\\w'’&-]+){0,6}\\s*\\(" + t).test(text) ||
+        /, (?:the|a|an) [a-z]/.test(sent.slice(sent.indexOf(t)));
+      if (!glossed) out.push(["bare-first-reference:" + t, sent.replace(/\s+/g," ").trim().slice(0, 70)]);
     }
     return out;
-  });
+  }, {assumed: ACRO.assumed_known || [], debtPages: Object.entries(ACRO.debt || {}).filter(([,v]) => v.includes("*") || v.includes(n)).map(([k]) => k)});
   total += hits.length;
   if (hits.length) {
     bad++;

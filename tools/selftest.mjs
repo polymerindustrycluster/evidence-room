@@ -56,6 +56,13 @@ const CASES = [
    inject: s => s.replace("creativecommons.org/licenses/by/4.0/", "example.invalid/none")
                  .replace(/O\*NET(\u00ae|®) is a trademark/, "O*NET is a trademark")},
 
+  {gate: "style", page: "peers", args: ["peers"],
+   defect: "a bare acronym on first reference: AP's define-on-first-reference law, the " +
+           "machine-checkable slice (a cold reader met EDA, APEX and an unexpanded PIC " +
+           "with nothing, 2026-09-01)",
+   inject: s => s.replace("<body>", "<body><p>The XQZV filter excludes those counties " +
+     "from every series on this page.</p>")},
+
   {gate: "style", page: "realwage", args: ["realwage"],
    defect: "a negative number printed with the ASCII hyphen instead of the true minus " +
            "(23 table cells shipped this way, found 2026-08-31)",
