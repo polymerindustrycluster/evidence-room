@@ -56,6 +56,14 @@ const CASES = [
    inject: s => s.replace("creativecommons.org/licenses/by/4.0/", "example.invalid/none")
                  .replace(/O\*NET(\u00ae|®) is a trademark/, "O*NET is a trademark")},
 
+  {gate: "measure", page: "churn", args: ["churn"],
+   defect: "the compounding measure: a nested measure-capped box re-resolves 100% " +
+           "against its parent and prose runs 488px wide (shipped 2026-08-31)",
+   /* Recreates the defect by un-pinning --measure on the methodology grid, restoring
+      the :root formula whose leftover 100% compounds inside the 678px container. */
+   inject: s => s.replace("</head>", "<style>.pv-method-grid{--measure:" +
+     "min(678px, calc(min(980px, 100%) * 0.72))}</style></head>")},
+
   {gate: "coldopen", page: "churn", args: ["churn"],
    defect: "a page whose first chart sinks below its recorded budget",
    inject: s => s.replace("</head>", "<style>.hero .wrap{padding-bottom:400px}</style></head>")},

@@ -92,7 +92,7 @@
 
 /* The one warning inside a step. Not the page's .note box: it is the trap belonging to
    that step, and it has to sit inside the step's own indent rather than break out of it. */
-.warn{margin:11px 0 0;font-size:15px;line-height:1.55;color:#3A3A36;background:#F6EEF3;
+.warn{margin:11px 0 0;font-size:15px;line-height:1.55;max-width:var(--measure);color:#3A3A36;background:#F6EEF3;
   border-left:3px solid var(--hover);padding:11px 15px}
 .warn b{color:var(--hover)}
 
