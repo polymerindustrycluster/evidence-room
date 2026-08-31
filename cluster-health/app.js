@@ -509,8 +509,8 @@ document.getElementById("statgrid").innerHTML = `
   <div class="statv flag"><div class="n">0</div>
     <div class="k">series here with a measured revision</div>
     <div class="d">Nobody has collected the earlier releases of the employment, degree or
-      spending series on this page, so how far a fresh figure will move once it is restated
-      is not known. Treat a one-year move in any tile as provisional.</div></div>`;
+      contracting series on this page, so how far a fresh figure will move once it is
+      restated is not known. Treat a one-year move in any tile as provisional.</div></div>`;
 
 /* -------------------------------------------------------------- what would change these */
 document.getElementById("changes").innerHTML = T.map(t =>
