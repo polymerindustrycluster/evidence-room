@@ -203,8 +203,8 @@ dfn b{font-weight:900}
  * Left edge stays the chart rail; that was already consistent and correct.
  * The two rules below carry the spacing the old below-chart margin provided, and the
  * .fig-title adjacency rule keeps working for charts that have no legend. */
-.fig-sub + .legend{margin-top:14px}
-.legend + .chart{margin-top:12px}
+.fig-sub + .legend{margin-top:10px}
+.legend + .chart{margin-top:8px}
 .legend span{display:inline-flex;align-items:center;gap:8px}
 .legend i{width:14px;height:14px;display:block;flex:none}
 .legend i.ln{height:3px}

@@ -931,7 +931,10 @@ function drawTrendAt(W, phone) {
        `average of ${Math.round(earlyMean)},`, `so ${Math.round(halfEarly)} a year`]
     : ["under this rule:", `half the ${EARLY[0]}–${EARLY[EARLY.length - 1]}`,
        `average of ${Math.round(earlyMean)},`, `so ${Math.round(halfEarly)} a year`];
-  rlab.forEach((s, i) => txt(svg, s, {x: rail, y: ys(halfEarly) - 8 + i * 17,
+  /* 19px, not 17: the step was tuned against the fallback face. Shipping Lato
+     (2026-08-31) raised the glyph box just past 17px and consecutive lines kissed at
+     the 700px sweep width. */
+  rlab.forEach((s, i) => txt(svg, s, {x: rail, y: ys(halfEarly) - 8 + i * 19,
     class: i ? "pv-labq" : "pv-lab", fill: i ? null : RULE}));
   /* SWATCHES, LIKE EVERY OTHER LEGEND ON THE PAGE. Coloured text alone was the weakest
      cue here and the only one of its kind, and the materials label was printed in a

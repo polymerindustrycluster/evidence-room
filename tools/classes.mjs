@@ -37,6 +37,13 @@ import {fileURLToPath} from "url";
 
 const WEB = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
+/* Acknowledged debt, ratcheted like coldopen: an entry tolerates a KNOWN unresolved
+   class on a NAMED page; anything not listed fails. Fix a class, delete its entry. */
+const DEBT = (() => {
+  try { return JSON.parse(readFileSync(join(WEB, "_data", "classes-debt.json"), "utf-8")).debt || {}; }
+  catch { return {}; }
+})();
+
 /* Classes written onto elements by app.js at runtime. Each needs a reason, so this list
    cannot quietly become the place defects go to be forgotten. */
 const JS_ADDED = new Set([
@@ -61,6 +68,7 @@ const sharedCss = readdirSync(join(WEB, "_shared")).filter(f => f.endsWith(".css
   .map(f => readFileSync(join(WEB, "_shared", f), "utf-8")).join("\n");
 const sharedDefined = classSelectors(sharedCss);
 
+let debtHits = 0;
 const usedOn = new Map();     // class -> [pages using it]
 const definedOn = new Map();  // class -> [pages defining it locally]
 const undef = [];
@@ -79,6 +87,7 @@ for (const page of pages) {
   for (const c of used) {
     usedOn.set(c, [...(usedOn.get(c) || []), page]);
     if (sharedDefined.has(c) || localDefined.has(c) || JS_ADDED.has(c)) continue;
+    if ((DEBT[c] || []).includes(page)) { debtHits++; continue; }
     undef.push({page, cls: c});
   }
 }
@@ -107,4 +116,4 @@ if (fail) {
   console.log("Define the class, promote it to _shared, or remove it from the markup.");
   process.exit(1);
 }
-console.log(`\x1b[32mclasses: clean\x1b[0m  (${pages.length} pages, ${usedOn.size} distinct classes, all resolve)`);
+console.log(`\x1b[32mclasses: clean\x1b[0m  (${pages.length} pages, ${usedOn.size} distinct classes${debtHits ? `, ${debtHits} acknowledged debt uses per _data/classes-debt.json` : ", all resolve"})`);
