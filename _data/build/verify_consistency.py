@@ -474,6 +474,30 @@ def check_hub(arts: list[str]) -> None:
                 continue
             err("hub", a, "not linked from the hub — builds and ships but is unreachable")
 
+    # A card in the HTML is not a card on screen: the hub's app.js removes any card whose
+    # slug is missing from index/data/counts.json (a card for a withheld page must not
+    # ship a dead link). That guard failed OPEN for five freshly promoted pages — each
+    # was live, carded in the HTML, and silently invisible, because nobody re-ran
+    # derive_index.py. A static-text check cannot see a runtime removal, so assert the
+    # inventory directly: every non-unlisted artifact must be in counts.json.
+    counts_path = os.path.join(hub, "data", "counts.json")
+    if os.path.isfile(counts_path):
+        try:
+            counted = set((load_json(counts_path).get("pages") or {}).keys())
+        except Exception as e:
+            err("hub", "index/data/counts.json", f"unreadable: {e}")
+            counted = None
+        if counted is not None:
+            for a in arts:
+                if a == "index" or a in counted:
+                    continue
+                if os.path.exists(os.path.join(WEB, a, ".unlisted")):
+                    continue
+                err("hub", a,
+                    "missing from index/data/counts.json, so the hub's app.js removes "
+                    "its card at runtime — the page is live but unreachable from the "
+                    "front door. Re-run _data/build/derive_index.py.")
+
 
 # ------------------------------------------------------------ 8. duplicate divergence
 def check_duplicates(arts: list[str]) -> None:
