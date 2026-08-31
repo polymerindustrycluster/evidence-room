@@ -58,8 +58,6 @@
 
 /* Detail that used to sit visible under a chart, moved into that figure's own table
    disclosure. Caption scale, one weight: this is depth, not the disclosure. */
-.tnote{margin:12px 0 4px;max-width:var(--measure);font-size:13px;line-height:1.6;
-  color:var(--caption)}
 
 /* Pacing. Seven bands ran the same template (kicker → H2 → lede → chart → source →
    table) in two runs of three, against the ≤2 rule, and the eye learned the loop. The

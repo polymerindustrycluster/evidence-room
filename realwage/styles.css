@@ -31,8 +31,6 @@
 
 /* Detail demoted out of a figure's visible caption and into the table disclosure it
    already opens. Caption scale, one weight: depth, not disclosure. */
-.tnote{margin:14px 0 4px;max-width:var(--measure);font-size:13px;line-height:1.6;
-  color:var(--caption)}
 
 /* Footer: the furniture that says the story ended and the page belongs to something.
    Distinct ground from the closer above it, so the boundary is visible. */

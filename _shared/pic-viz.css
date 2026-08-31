@@ -480,3 +480,14 @@ th.pv-sortable[aria-sort="descending"]::after{content:" ↓";opacity:1;color:var
    values are canonical; scorecard's 24px top margin was the only divergence and it loses. */
 .hero .wrap > .hero-viz{max-width:var(--measure);margin:26px auto 4px}
 .hero-viz svg{width:100%;height:auto;display:block;overflow:visible}
+
+/* Table-drawer notes, promoted 2026-09-01: five pages defined .tnote in three dialects,
+ * and every one left-aligned it (margin:...0...) so drawer prose sat on the FIGURE rail
+ * at 230 while the source line one block down centred on the TEXT rail at 381 — a reader
+ * called the raggedness before any instrument did. Four gates each had this bug's exact
+ * blind spot: columns (230 is a legal column), centres (samples centred-intent only),
+ * measure (width-only; these were exactly 678), the comb (consistent-everywhere reads as
+ * a register). Centred like every other measure-width prose block; the measure gate now
+ * checks the rail too. */
+.tnote{margin:14px auto 4px;max-width:var(--measure);font-size:13px;line-height:1.6;
+  color:var(--caption)}

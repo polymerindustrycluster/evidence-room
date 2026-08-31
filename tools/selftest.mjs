@@ -62,6 +62,13 @@ const CASES = [
    inject: s => s.replace("</head>", "<style></style></head>")
                  .replace("<body>", "<body><p>The gap widened by -14% this year.</p>")},
 
+  {gate: "measure", page: "federal-money", args: ["federal-money"],
+   defect: "measure-width prose on the wrong rail: table-drawer notes sat 678px wide at " +
+           "the figure rail while every neighbour centred on the text rail (shipped on " +
+           "five pages until 2026-09-01; a reader saw it before any gate)",
+   inject: s => s.replace("</head>", "<style>.tnote{margin-left:0 !important;" +
+     "margin-right:auto !important}</style></head>")},
+
   {gate: "measure", page: "churn", args: ["churn"],
    defect: "the compounding measure: a nested measure-capped box re-resolves 100% " +
            "against its parent and prose runs 488px wide (shipped 2026-08-31)",
