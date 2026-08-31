@@ -4,26 +4,36 @@
 a year of polymer work into the twelve counties, so the $51.0M award is worth roughly a
 year and a half of it. In FY2019 the routine flow alone was larger than the whole award.
 
-Sources: USAspending.gov spending_by_category, place of performance, FY2019–FY2026.
-Award figures cross-referenced from the funding map's own shipped file.
+Sources: USAspending.gov spending_by_category (yearly flow) and spending_by_award
+(the who-gets-it register), place of performance, FY2019–FY2026. Award figures
+cross-referenced from the funding map's own shipped file.
 
-**What a row is:** one obligation total for a single fiscal year, category and industry code
+**What a row is:** in federal.json, one obligation total for a single fiscal year,
+category and industry code. In awards.json, one prime contract award, whose amount is
+the award's WHOLE LIFE — a different basis, never summed with the first (see below).
 
 ```
 index.html          page shell, headline, ledes, figure titles
 styles.css          page-local CSS: figure chrome, award ladder, mobile re-layout
 app.js              charts and interaction
-claims.json         16 falsifiable assertions, re-run on every build
+claims.json         28 falsifiable assertions, re-run on every build
 data/federal.json   THE DATA (13 KB). Edit the builder, not this.
 data/techhub.json   DERIVED. Written by derive_techhub.py. Do not hand-edit.
+data/awards.json    DERIVED. Written by _data/build/derive_fed_awards.py from the raw
+                    spending_by_award pull. Recipients, the $500k+ register, per-code
+                    and per-agency totals. Do not hand-edit.
 derive_techhub.py   copies the EDA award across from funding-map/data/funding.json
 shots/              desktop.png, mobile.png
 ```
 
 ## One dollar basis
 
-Every chart on this page is in **2025 dollars**, using the `real` column that BLS CPI-U
-annual averages produced upstream. Nominal survives in the tables, the source lines and
+Every chart drawn from `federal.json` is in **2025 dollars**, using the `real` column
+that BLS CPI-U annual averages produced upstream. The one exception is the award
+register's company chart, which is in the dollars each award was signed in and says so
+on its axis: a whole-life award total spans years by construction, so a single-year CPI
+restatement is undefined on that basis, and mislabelling it as 2025 dollars would be
+the exact defect the rest of this section describes. Nominal survives in the tables, the source lines and
 the hero detail rows, which is where a reader ties back to USAspending. The previous
 version charted nominal bars under a real hero, so the hero read $98.2M and the bar under
 it read $87.6M with nothing reconciling them.
@@ -40,7 +50,15 @@ The hero detail line wraps past about thirty characters; keep replacements short
 ```
 cd ../_data/build && python derive_rest.py      # federal.json
 cd ../../federal-money && python3 derive_techhub.py   # techhub.json
+cd ../_data/build && python3 fetch_fed_awards.py && python3 derive_fed_awards.py
+                                                # awards.json (keyless; ~70 API pages)
 ```
+
+`fetch_fed_awards.py` walks USAspending's spending_by_award pagination to exhaustion
+(6,630 rows over 67 pages at first fetch) and refuses to write a pull under the
+4,000-row probe floor: a truncated register would silently mean something else. The
+raw pull is not committed; the derive reconciles every view back to the one total
+before writing.
 
 `derive_techhub.py` fetches nothing. It reads `funding-map/data/funding.json`, which is
 already in this repo and already verified against signed federal Notices of Award, and
@@ -70,6 +88,12 @@ it after any change to the funding map's data.
   the closed-year ratio (1.4 years) are printed beside the chart.
 - Two scopes live in `federal.json` and are never summed: polymer-NAICS rows (charted) and
   all-industry county rows ($235.5B, context only).
+- **The award register is a THIRD basis, and it is never summed with either.** An award's
+  amount in `awards.json` counts the award's whole life: a contract running since 2014
+  that the FY2019–FY2026 window touches carries every dollar since 2014, in the dollars
+  of the day. That is why the register totals $329.5M while the category rows sum to
+  $248.8M as awarded — same ledger, different windows. The `fed-award-basis-never-summed`
+  claim fails if either surface stops labelling its basis.
 - University and research awards are invisible to the NAICS view by construction. The NSF
   NEO-SMART Engine ($14,999,983) appears in no bar.
 - The footprint is PIC-12. The wider fourteen-county reading the vault calls NEO-14 adds
@@ -95,19 +119,22 @@ carry depth, not the disclosure itself.
 
 ## Known gaps
 
-- **Recipient names behind the procurement peaks.** `spending_by_category` returns
-  categories, not parties, so this page cannot say who holds FY2019's $51.6M peak. Closing it
-  needs a second pull: USAspending `spending_by_award` (or the bulk award archive),
-  filtered to place-of-performance county in the PIC-12, NAICS 325*/326*, FY2019–FY2026,
-  keeping `recipient_name` and `awarding_agency`. Until then the human-scale beat runs on
-  the award side, where the leads are named and public.
+- **Recipient names: CLOSED (2026-08-31).** The gap this section used to carry — the
+  category endpoint returns no parties — is closed by the `spending_by_award` pull and
+  the register band it feeds: 6,630 contracts, 193 named companies, 92% Department of
+  Defense. What the award view still cannot do is allocate a single fiscal year:
+  an award's total spans its life, so "who holds FY2019's $51.6M" remains unanswerable
+  from public files at this granularity, and the page now says exactly that where it
+  used to say nothing could be named at all.
 - **Reporting not done.** The piece ships at the named-public-instance rung. The interview
   ask, if a person picks it up: call Flexsys (the $10.1M 6PPD-alternative lead) and one
-  procurement-side plant manager. Three questions. (1) Did the Tech Hub award change what
-  you could attempt, against the federal work you already do? (2) How does a competitive
-  grant sit differently on your books than a procurement obligation? (3) What does a year
-  and a half of routine federal work look like from inside the plant? The quote slots into
-  the third band, above the award ladder. Status: ready to ship at rung 2.
+  procurement-side firm — RFD Beaufort, whose escape suits and life rafts are now named
+  in the register band, is the natural first call. Three questions. (1) Did the Tech Hub
+  award change what you could attempt, against the federal work you already do? (2) How
+  does a competitive grant sit differently on your books than a procurement obligation?
+  (3) What does a year and a half of routine federal work look like from inside the
+  plant? The quote slots into the register band, above the award ladder. Status: ready
+  to ship at rung 2.
 
 ## Run and publish
 
