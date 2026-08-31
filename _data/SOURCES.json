@@ -343,6 +343,31 @@
    },
    "script": "_data/build/fetch_collab.py, fetch_research_awards.py",
    "key_required": false
+  },
+  "vault": {
+   "name": "GAC-PIC vault company records (catalogue)",
+   "agency": "Internal: Polymer Industry Cluster",
+   "url": null,
+   "docs": null,
+   "filters": {
+    "footprint": "NEO-14 (vault-sourced pages), never PIC-12",
+    "note": "NOT public and NOT reproducible by a reader. Company self-descriptions are quoted as written and are never rewritten: a company that writes ‘injection moulding’ said that. Any public release of these records is gated on member consent (Linear POL-1011)."
+   },
+   "script": "_data/build/build_chain.py",
+   "key_required": false
+  },
+  "cbp": {
+   "name": "Census County Business Patterns",
+   "agency": "US Census Bureau",
+   "url": "https://api.census.gov/data/{year}/cbp",
+   "docs": "https://www.census.gov/data/developers/data-sets/cbp-nonemp-zbp/cbp-api.html",
+   "filters": {
+    "NAICS": "325 and 326",
+    "unit": "ESTABLISHMENTS: one physical site, not one company. A firm with three plants is three establishments.",
+    "note": "Census and PIC define a firm differently, so a coverage ratio can exceed 100 percent without the county being fully covered."
+   },
+   "script": "_data/build/fetch_cbp.py",
+   "key_required": true
   }
  },
  "worked_example": {
@@ -476,6 +501,10 @@
   "collaboration": [
    "openalex",
    "nsf_awards"
+  ],
+  "chain": [
+   "vault",
+   "cbp"
   ]
  }
 }

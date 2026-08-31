@@ -1,0 +1,1377 @@
+{
+ "spine": [
+  {
+   "key": "feedstock",
+   "label": "Raw materials & feedstock",
+   "supply": 12,
+   "demand": 26,
+   "demand_usd": 6070100
+  },
+  {
+   "key": "producers",
+   "label": "Producers & compounders",
+   "supply": 147,
+   "demand": 32,
+   "demand_usd": 7227133
+  },
+  {
+   "key": "converters",
+   "label": "Converters & fabricators",
+   "supply": 246,
+   "demand": 20,
+   "demand_usd": 4016073
+  },
+  {
+   "key": "oems",
+   "label": "OEMs & end-use brands",
+   "supply": 79,
+   "demand": 24,
+   "demand_usd": 5923100
+  },
+  {
+   "key": "recyclers",
+   "label": "Recyclers & reclaimers",
+   "supply": 21,
+   "demand": 11,
+   "demand_usd": 1595120
+  },
+  {
+   "key": "equipment",
+   "label": "Equipment & technology",
+   "supply": 88,
+   "demand": 22,
+   "demand_usd": 5549550
+  }
+ ],
+ "supply_meta": {
+  "neo_total": 785,
+  "unclassified": 174,
+  "cbp_estab": 653,
+  "cbp_emp": 41447
+ },
+ "intake": {
+  "n": 59,
+  "available": 2200000,
+  "total_req": 14652743,
+  "total_match": 10972468,
+  "median": 250000,
+  "mean": 248352,
+  "min": 25000,
+  "max": 500000,
+  "fund_rate": 0.1501425364520486,
+  "cum": [
+   {
+    "n": 1,
+    "amount": 25000.0,
+    "cum": 25000.0
+   },
+   {
+    "n": 2,
+    "amount": 25000.0,
+    "cum": 50000.0
+   },
+   {
+    "n": 3,
+    "amount": 25000.0,
+    "cum": 75000.0
+   },
+   {
+    "n": 4,
+    "amount": 25000.0,
+    "cum": 100000.0
+   },
+   {
+    "n": 5,
+    "amount": 25000.0,
+    "cum": 125000.0
+   },
+   {
+    "n": 6,
+    "amount": 25000.0,
+    "cum": 150000.0
+   },
+   {
+    "n": 7,
+    "amount": 25000.0,
+    "cum": 175000.0
+   },
+   {
+    "n": 8,
+    "amount": 25000.0,
+    "cum": 200000.0
+   },
+   {
+    "n": 9,
+    "amount": 25000.0,
+    "cum": 225000.0
+   },
+   {
+    "n": 10,
+    "amount": 25000.0,
+    "cum": 250000.0
+   },
+   {
+    "n": 11,
+    "amount": 25000.0,
+    "cum": 275000.0
+   },
+   {
+    "n": 12,
+    "amount": 25000.0,
+    "cum": 300000.0
+   },
+   {
+    "n": 13,
+    "amount": 25000.0,
+    "cum": 325000.0
+   },
+   {
+    "n": 14,
+    "amount": 25000.0,
+    "cum": 350000.0
+   },
+   {
+    "n": 15,
+    "amount": 25000.0,
+    "cum": 375000.0
+   },
+   {
+    "n": 16,
+    "amount": 25000.0,
+    "cum": 400000.0
+   },
+   {
+    "n": 17,
+    "amount": 50000.0,
+    "cum": 450000.0
+   },
+   {
+    "n": 18,
+    "amount": 75000.0,
+    "cum": 525000.0
+   },
+   {
+    "n": 19,
+    "amount": 85593.0,
+    "cum": 610593.0
+   },
+   {
+    "n": 20,
+    "amount": 90000.0,
+    "cum": 700593.0
+   },
+   {
+    "n": 21,
+    "amount": 100000.0,
+    "cum": 800593.0
+   },
+   {
+    "n": 22,
+    "amount": 100000.0,
+    "cum": 900593.0
+   },
+   {
+    "n": 23,
+    "amount": 120000.0,
+    "cum": 1020593.0
+   },
+   {
+    "n": 24,
+    "amount": 150000.0,
+    "cum": 1170593.0
+   },
+   {
+    "n": 25,
+    "amount": 175000.0,
+    "cum": 1345593.0
+   },
+   {
+    "n": 26,
+    "amount": 185900.0,
+    "cum": 1531493.0
+   },
+   {
+    "n": 27,
+    "amount": 200000.0,
+    "cum": 1731493.0
+   },
+   {
+    "n": 28,
+    "amount": 200000.0,
+    "cum": 1931493.0
+   },
+   {
+    "n": 29,
+    "amount": 200000.0,
+    "cum": 2131493.0
+   },
+   {
+    "n": 30,
+    "amount": 250000.0,
+    "cum": 2381493.0
+   },
+   {
+    "n": 31,
+    "amount": 250000.0,
+    "cum": 2631493.0
+   },
+   {
+    "n": 32,
+    "amount": 250000.0,
+    "cum": 2881493.0
+   },
+   {
+    "n": 33,
+    "amount": 250000.0,
+    "cum": 3131493.0
+   },
+   {
+    "n": 34,
+    "amount": 290120.0,
+    "cum": 3421613.0
+   },
+   {
+    "n": 35,
+    "amount": 300000.0,
+    "cum": 3721613.0
+   },
+   {
+    "n": 36,
+    "amount": 300000.0,
+    "cum": 4021613.0
+   },
+   {
+    "n": 37,
+    "amount": 300000.0,
+    "cum": 4321613.0
+   },
+   {
+    "n": 38,
+    "amount": 378000.0,
+    "cum": 4699613.0
+   },
+   {
+    "n": 39,
+    "amount": 390000.0,
+    "cum": 5089613.0
+   },
+   {
+    "n": 40,
+    "amount": 398640.0,
+    "cum": 5488253.0
+   },
+   {
+    "n": 41,
+    "amount": 400000.0,
+    "cum": 5888253.0
+   },
+   {
+    "n": 42,
+    "amount": 434000.0,
+    "cum": 6322253.0
+   },
+   {
+    "n": 43,
+    "amount": 450000.0,
+    "cum": 6772253.0
+   },
+   {
+    "n": 44,
+    "amount": 450000.0,
+    "cum": 7222253.0
+   },
+   {
+    "n": 45,
+    "amount": 460000.0,
+    "cum": 7682253.0
+   },
+   {
+    "n": 46,
+    "amount": 475000.0,
+    "cum": 8157253.0
+   },
+   {
+    "n": 47,
+    "amount": 497640.0,
+    "cum": 8654893.0
+   },
+   {
+    "n": 48,
+    "amount": 499200.0,
+    "cum": 9154093.0
+   },
+   {
+    "n": 49,
+    "amount": 499200.0,
+    "cum": 9653293.0
+   },
+   {
+    "n": 50,
+    "amount": 499450.0,
+    "cum": 10152743.0
+   },
+   {
+    "n": 51,
+    "amount": 500000.0,
+    "cum": 10652743.0
+   },
+   {
+    "n": 52,
+    "amount": 500000.0,
+    "cum": 11152743.0
+   },
+   {
+    "n": 53,
+    "amount": 500000.0,
+    "cum": 11652743.0
+   },
+   {
+    "n": 54,
+    "amount": 500000.0,
+    "cum": 12152743.0
+   },
+   {
+    "n": 55,
+    "amount": 500000.0,
+    "cum": 12652743.0
+   },
+   {
+    "n": 56,
+    "amount": 500000.0,
+    "cum": 13152743.0
+   },
+   {
+    "n": 57,
+    "amount": 500000.0,
+    "cum": 13652743.0
+   },
+   {
+    "n": 58,
+    "amount": 500000.0,
+    "cum": 14152743.0
+   },
+   {
+    "n": 59,
+    "amount": 500000.0,
+    "cum": 14652743.0
+   }
+  ],
+  "cum_desc": [
+   {
+    "n": 1,
+    "amount": 500000.0,
+    "cum": 500000.0
+   },
+   {
+    "n": 2,
+    "amount": 500000.0,
+    "cum": 1000000.0
+   },
+   {
+    "n": 3,
+    "amount": 500000.0,
+    "cum": 1500000.0
+   },
+   {
+    "n": 4,
+    "amount": 500000.0,
+    "cum": 2000000.0
+   },
+   {
+    "n": 5,
+    "amount": 500000.0,
+    "cum": 2500000.0
+   },
+   {
+    "n": 6,
+    "amount": 500000.0,
+    "cum": 3000000.0
+   },
+   {
+    "n": 7,
+    "amount": 500000.0,
+    "cum": 3500000.0
+   },
+   {
+    "n": 8,
+    "amount": 500000.0,
+    "cum": 4000000.0
+   },
+   {
+    "n": 9,
+    "amount": 500000.0,
+    "cum": 4500000.0
+   },
+   {
+    "n": 10,
+    "amount": 499450.0,
+    "cum": 4999450.0
+   },
+   {
+    "n": 11,
+    "amount": 499200.0,
+    "cum": 5498650.0
+   },
+   {
+    "n": 12,
+    "amount": 499200.0,
+    "cum": 5997850.0
+   },
+   {
+    "n": 13,
+    "amount": 497640.0,
+    "cum": 6495490.0
+   },
+   {
+    "n": 14,
+    "amount": 475000.0,
+    "cum": 6970490.0
+   },
+   {
+    "n": 15,
+    "amount": 460000.0,
+    "cum": 7430490.0
+   },
+   {
+    "n": 16,
+    "amount": 450000.0,
+    "cum": 7880490.0
+   },
+   {
+    "n": 17,
+    "amount": 450000.0,
+    "cum": 8330490.0
+   },
+   {
+    "n": 18,
+    "amount": 434000.0,
+    "cum": 8764490.0
+   },
+   {
+    "n": 19,
+    "amount": 400000.0,
+    "cum": 9164490.0
+   },
+   {
+    "n": 20,
+    "amount": 398640.0,
+    "cum": 9563130.0
+   },
+   {
+    "n": 21,
+    "amount": 390000.0,
+    "cum": 9953130.0
+   },
+   {
+    "n": 22,
+    "amount": 378000.0,
+    "cum": 10331130.0
+   },
+   {
+    "n": 23,
+    "amount": 300000.0,
+    "cum": 10631130.0
+   },
+   {
+    "n": 24,
+    "amount": 300000.0,
+    "cum": 10931130.0
+   },
+   {
+    "n": 25,
+    "amount": 300000.0,
+    "cum": 11231130.0
+   },
+   {
+    "n": 26,
+    "amount": 290120.0,
+    "cum": 11521250.0
+   },
+   {
+    "n": 27,
+    "amount": 250000.0,
+    "cum": 11771250.0
+   },
+   {
+    "n": 28,
+    "amount": 250000.0,
+    "cum": 12021250.0
+   },
+   {
+    "n": 29,
+    "amount": 250000.0,
+    "cum": 12271250.0
+   },
+   {
+    "n": 30,
+    "amount": 250000.0,
+    "cum": 12521250.0
+   },
+   {
+    "n": 31,
+    "amount": 200000.0,
+    "cum": 12721250.0
+   },
+   {
+    "n": 32,
+    "amount": 200000.0,
+    "cum": 12921250.0
+   },
+   {
+    "n": 33,
+    "amount": 200000.0,
+    "cum": 13121250.0
+   },
+   {
+    "n": 34,
+    "amount": 185900.0,
+    "cum": 13307150.0
+   },
+   {
+    "n": 35,
+    "amount": 175000.0,
+    "cum": 13482150.0
+   },
+   {
+    "n": 36,
+    "amount": 150000.0,
+    "cum": 13632150.0
+   },
+   {
+    "n": 37,
+    "amount": 120000.0,
+    "cum": 13752150.0
+   },
+   {
+    "n": 38,
+    "amount": 100000.0,
+    "cum": 13852150.0
+   },
+   {
+    "n": 39,
+    "amount": 100000.0,
+    "cum": 13952150.0
+   },
+   {
+    "n": 40,
+    "amount": 90000.0,
+    "cum": 14042150.0
+   },
+   {
+    "n": 41,
+    "amount": 85593.0,
+    "cum": 14127743.0
+   },
+   {
+    "n": 42,
+    "amount": 75000.0,
+    "cum": 14202743.0
+   },
+   {
+    "n": 43,
+    "amount": 50000.0,
+    "cum": 14252743.0
+   },
+   {
+    "n": 44,
+    "amount": 25000.0,
+    "cum": 14277743.0
+   },
+   {
+    "n": 45,
+    "amount": 25000.0,
+    "cum": 14302743.0
+   },
+   {
+    "n": 46,
+    "amount": 25000.0,
+    "cum": 14327743.0
+   },
+   {
+    "n": 47,
+    "amount": 25000.0,
+    "cum": 14352743.0
+   },
+   {
+    "n": 48,
+    "amount": 25000.0,
+    "cum": 14377743.0
+   },
+   {
+    "n": 49,
+    "amount": 25000.0,
+    "cum": 14402743.0
+   },
+   {
+    "n": 50,
+    "amount": 25000.0,
+    "cum": 14427743.0
+   },
+   {
+    "n": 51,
+    "amount": 25000.0,
+    "cum": 14452743.0
+   },
+   {
+    "n": 52,
+    "amount": 25000.0,
+    "cum": 14477743.0
+   },
+   {
+    "n": 53,
+    "amount": 25000.0,
+    "cum": 14502743.0
+   },
+   {
+    "n": 54,
+    "amount": 25000.0,
+    "cum": 14527743.0
+   },
+   {
+    "n": 55,
+    "amount": 25000.0,
+    "cum": 14552743.0
+   },
+   {
+    "n": 56,
+    "amount": 25000.0,
+    "cum": 14577743.0
+   },
+   {
+    "n": 57,
+    "amount": 25000.0,
+    "cum": 14602743.0
+   },
+   {
+    "n": 58,
+    "amount": 25000.0,
+    "cum": 14627743.0
+   },
+   {
+    "n": 59,
+    "amount": 25000.0,
+    "cum": 14652743.0
+   }
+  ],
+  "reach_cheapest": 29,
+  "reach_largest": 4,
+  "trl_hist": {
+   "2": 5,
+   "3": 22,
+   "4": 12,
+   "5": 7,
+   "6": 5,
+   "7": 6,
+   "8": 1,
+   "9": 1
+  },
+  "target_hist": {
+   "3": 1,
+   "4": 1,
+   "5": 14,
+   "6": 15,
+   "7": 10,
+   "8": 6,
+   "9": 12
+  },
+  "in_band": 41,
+  "jumps": [
+   {
+    "from": 3,
+    "to": 5,
+    "req": 300000.0,
+    "track": "PIC R&D",
+    "org": "Corporate"
+   },
+   {
+    "from": 8,
+    "to": 9,
+    "req": 25000.0,
+    "track": "Synthe6",
+    "org": "Industry"
+   },
+   {
+    "from": 9,
+    "to": 9,
+    "req": 500000.0,
+    "track": "PIC R&D",
+    "org": "Industry"
+   },
+   {
+    "from": 4,
+    "to": 8,
+    "req": 434000.0,
+    "track": "PIC R&D",
+    "org": "Corporate"
+   },
+   {
+    "from": 3,
+    "to": 6,
+    "req": 500000.0,
+    "track": "PIC R&D",
+    "org": "Startup"
+   },
+   {
+    "from": 5,
+    "to": 7,
+    "req": 120000.0,
+    "track": "Synthe6",
+    "org": "Startup"
+   },
+   {
+    "from": 4,
+    "to": 9,
+    "req": 100000.0,
+    "track": "Synthe6",
+    "org": "Startup"
+   },
+   {
+    "from": 3,
+    "to": 5,
+    "req": 450000.0,
+    "track": "PIC R&D",
+    "org": "Startup"
+   },
+   {
+    "from": 7,
+    "to": 7,
+    "req": 500000.0,
+    "track": "PIC R&D",
+    "org": "Startup"
+   },
+   {
+    "from": 4,
+    "to": 6,
+    "req": 499450.0,
+    "track": "PIC R&D",
+    "org": "Industry"
+   },
+   {
+    "from": 3,
+    "to": 5,
+    "req": 200000.0,
+    "track": "PIC R&D",
+    "org": "Startup"
+   },
+   {
+    "from": 3,
+    "to": 7,
+    "req": 25000.0,
+    "track": "PIC R&D",
+    "org": "Startup"
+   },
+   {
+    "from": 3,
+    "to": 9,
+    "req": 500000.0,
+    "track": "Both",
+    "org": "Startup"
+   },
+   {
+    "from": 4,
+    "to": 6,
+    "req": 499200.0,
+    "track": "Both",
+    "org": "Startup"
+   },
+   {
+    "from": 4,
+    "to": 5,
+    "req": 90000.0,
+    "track": "PIC R&D",
+    "org": "Startup"
+   },
+   {
+    "from": 7,
+    "to": 7,
+    "req": 500000.0,
+    "track": "PIC R&D",
+    "org": "Startup"
+   },
+   {
+    "from": 6,
+    "to": 8,
+    "req": 500000.0,
+    "track": "Both",
+    "org": "Startup"
+   },
+   {
+    "from": 3,
+    "to": 6,
+    "req": 290120.0,
+    "track": "PIC R&D",
+    "org": "University"
+   },
+   {
+    "from": 2,
+    "to": 5,
+    "req": 250000.0,
+    "track": "Synthe6",
+    "org": "Corporate"
+   },
+   {
+    "from": 3,
+    "to": 6,
+    "req": 85593.0,
+    "track": "PIC R&D",
+    "org": "University"
+   },
+   {
+    "from": 3,
+    "to": 6,
+    "req": 499200.0,
+    "track": "PIC R&D",
+    "org": "Corporate"
+   },
+   {
+    "from": 4,
+    "to": 5,
+    "req": 25000.0,
+    "track": "Synthe6",
+    "org": "Corporate"
+   },
+   {
+    "from": 3,
+    "to": 7,
+    "req": 75000.0,
+    "track": "Both",
+    "org": "Startup"
+   },
+   {
+    "from": 3,
+    "to": 6,
+    "req": 390000.0,
+    "track": "PIC R&D",
+    "org": "Industry"
+   },
+   {
+    "from": 7,
+    "to": 9,
+    "req": 500000.0,
+    "track": "Both",
+    "org": "Corporate"
+   },
+   {
+    "from": 2,
+    "to": 4,
+    "req": 25000.0,
+    "track": "Synthe6",
+    "org": "Startup"
+   },
+   {
+    "from": 6,
+    "to": 7,
+    "req": 300000.0,
+    "track": "PIC R&D",
+    "org": "Startup"
+   },
+   {
+    "from": 3,
+    "to": 9,
+    "req": 25000.0,
+    "track": "Both",
+    "org": "Startup"
+   },
+   {
+    "from": 3,
+    "to": 9,
+    "req": 25000.0,
+    "track": "Both",
+    "org": "Startup"
+   },
+   {
+    "from": 5,
+    "to": 6,
+    "req": 497640.0,
+    "track": "PIC R&D",
+    "org": "Corporate"
+   },
+   {
+    "from": 5,
+    "to": 8,
+    "req": 25000.0,
+    "track": "Synthe6",
+    "org": "Corporate"
+   },
+   {
+    "from": 4,
+    "to": 7,
+    "req": 175000.0,
+    "track": "PIC R&D",
+    "org": "Industry"
+   },
+   {
+    "from": 5,
+    "to": 6,
+    "req": 250000.0,
+    "track": "Synthe6",
+    "org": "Startup"
+   },
+   {
+    "from": 3,
+    "to": 5,
+    "req": 250000.0,
+    "track": "Synthe6",
+    "org": "Startup"
+   },
+   {
+    "from": 2,
+    "to": 5,
+    "req": 25000.0,
+    "track": "Synthe6",
+    "org": "Startup"
+   },
+   {
+    "from": 2,
+    "to": 6,
+    "req": 25000.0,
+    "track": "Synthe6",
+    "org": "Startup"
+   },
+   {
+    "from": 4,
+    "to": 6,
+    "req": 25000.0,
+    "track": "Synthe6",
+    "org": "Startup"
+   },
+   {
+    "from": 7,
+    "to": 9,
+    "req": 450000.0,
+    "track": "Both",
+    "org": "Startup"
+   },
+   {
+    "from": 6,
+    "to": 9,
+    "req": 500000.0,
+    "track": "Both",
+    "org": "University"
+   },
+   {
+    "from": 3,
+    "to": 5,
+    "req": 378000.0,
+    "track": "PIC R&D",
+    "org": "University"
+   },
+   {
+    "from": 5,
+    "to": 7,
+    "req": 460000.0,
+    "track": "Both",
+    "org": "Startup"
+   },
+   {
+    "from": 5,
+    "to": 7,
+    "req": 475000.0,
+    "track": "PIC R&D",
+    "org": "Startup"
+   },
+   {
+    "from": 3,
+    "to": 5,
+    "req": 25000.0,
+    "track": "Synthe6",
+    "org": "Startup"
+   },
+   {
+    "from": 3,
+    "to": 5,
+    "req": 300000.0,
+    "track": "Both",
+    "org": "Startup"
+   },
+   {
+    "from": 3,
+    "to": 6,
+    "req": 398640.0,
+    "track": "PIC R&D",
+    "org": "University"
+   },
+   {
+    "from": 3,
+    "to": 5,
+    "req": 25000.0,
+    "track": "Both",
+    "org": "Startup"
+   },
+   {
+    "from": 4,
+    "to": 9,
+    "req": 25000.0,
+    "track": "Both",
+    "org": "Startup"
+   },
+   {
+    "from": 3,
+    "to": 6,
+    "req": 500000.0,
+    "track": "PIC R&D",
+    "org": "Industry"
+   },
+   {
+    "from": 6,
+    "to": 9,
+    "req": 200000.0,
+    "track": "Synthe6",
+    "org": "Corporate"
+   },
+   {
+    "from": 4,
+    "to": 6,
+    "req": 185900.0,
+    "track": "PIC R&D",
+    "org": "Corporate"
+   },
+   {
+    "from": 7,
+    "to": 8,
+    "req": 25000.0,
+    "track": "Synthe6",
+    "org": "Corporate"
+   },
+   {
+    "from": 5,
+    "to": 8,
+    "req": 400000.0,
+    "track": "Both",
+    "org": "Startup"
+   },
+   {
+    "from": 7,
+    "to": 9,
+    "req": 200000.0,
+    "track": "Synthe6",
+    "org": "Startup"
+   },
+   {
+    "from": 2,
+    "to": 3,
+    "req": 25000.0,
+    "track": "Synthe6",
+    "org": "Other"
+   },
+   {
+    "from": 3,
+    "to": 5,
+    "req": 150000.0,
+    "track": "Synthe6",
+    "org": "Startup"
+   },
+   {
+    "from": 6,
+    "to": 8,
+    "req": 250000.0,
+    "track": "Synthe6",
+    "org": "Corporate"
+   },
+   {
+    "from": 4,
+    "to": 6,
+    "req": 50000.0,
+    "track": "Both",
+    "org": "Startup"
+   },
+   {
+    "from": 4,
+    "to": 7,
+    "req": 100000.0,
+    "track": "Synthe6",
+    "org": "Other"
+   },
+   {
+    "from": 3,
+    "to": 5,
+    "req": 25000.0,
+    "track": "Synthe6",
+    "org": "Startup"
+   }
+  ],
+  "req_by_trl": {
+   "2": [
+    25000.0,
+    25000.0,
+    25000.0,
+    25000.0,
+    250000.0
+   ],
+   "3": [
+    25000.0,
+    25000.0,
+    25000.0,
+    25000.0,
+    25000.0,
+    25000.0,
+    75000.0,
+    85593.0,
+    150000.0,
+    200000.0,
+    250000.0,
+    290120.0,
+    300000.0,
+    300000.0,
+    378000.0,
+    390000.0,
+    398640.0,
+    450000.0,
+    499200.0,
+    500000.0,
+    500000.0,
+    500000.0
+   ],
+   "4": [
+    25000.0,
+    25000.0,
+    25000.0,
+    50000.0,
+    90000.0,
+    100000.0,
+    100000.0,
+    175000.0,
+    185900.0,
+    434000.0,
+    499200.0,
+    499450.0
+   ],
+   "5": [
+    25000.0,
+    120000.0,
+    250000.0,
+    400000.0,
+    460000.0,
+    475000.0,
+    497640.0
+   ],
+   "6": [
+    200000.0,
+    250000.0,
+    300000.0,
+    500000.0,
+    500000.0
+   ],
+   "7": [
+    25000.0,
+    200000.0,
+    450000.0,
+    500000.0,
+    500000.0,
+    500000.0
+   ],
+   "8": [
+    25000.0
+   ],
+   "9": [
+    500000.0
+   ]
+  },
+  "track": {
+   "PIC R&D": 23,
+   "Synthe6": 21,
+   "Both": 15
+  },
+  "org": {
+   "Corporate": 12,
+   "Industry": 6,
+   "Startup": 34,
+   "University": 5,
+   "Other": 2
+  },
+  "ohio": 38,
+  "gate_pass": 54,
+  "gate_other": 5,
+  "other_positions": 6,
+  "no_stage": 1
+ },
+ "wp2025": [
+  {
+   "id": "P25.10",
+   "name": "CWRU (Wnek)",
+   "lo": 4,
+   "hi": 5,
+   "funded": true
+  },
+  {
+   "id": "P25.11",
+   "name": "Promerus + Los Alamos",
+   "lo": 4,
+   "hi": 4.6,
+   "funded": true
+  },
+  {
+   "id": "P25.12",
+   "name": "UA (Eagan)",
+   "lo": 3,
+   "hi": 4,
+   "tlo": 5,
+   "thi": 6,
+   "funded": true
+  },
+  {
+   "id": "P25.15",
+   "name": "Peak Nano + CWRU",
+   "lo": 3,
+   "hi": 3,
+   "tlo": 6,
+   "thi": 6,
+   "funded": true
+  },
+  {
+   "id": "P25.18",
+   "name": "Synthomer + NPIC",
+   "lo": 4,
+   "hi": 4,
+   "funded": true
+  },
+  {
+   "id": "SY-AUX",
+   "name": "Aeris Biosciences",
+   "lo": 5,
+   "hi": 5,
+   "tlo": 7,
+   "thi": 8,
+   "funded": true
+  },
+  {
+   "id": "SY-PKIN",
+   "name": "PolyKinetix",
+   "lo": 3,
+   "hi": 5,
+   "tlo": 8,
+   "thi": 8,
+   "funded": true
+  },
+  {
+   "id": "P25.01",
+   "name": "Unfunded proposal",
+   "lo": 3,
+   "hi": 3,
+   "tlo": 4,
+   "thi": 4,
+   "funded": false
+  },
+  {
+   "id": "P25.13",
+   "name": "Unfunded proposal",
+   "lo": 3,
+   "hi": 4,
+   "funded": false
+  },
+  {
+   "id": "P25.14",
+   "name": "Unfunded proposal",
+   "lo": 1,
+   "hi": 3,
+   "funded": false
+  },
+  {
+   "id": "P25.17",
+   "name": "Unfunded proposal",
+   "lo": 4,
+   "hi": 4,
+   "funded": false
+  }
+ ],
+ "counties": [
+  {
+   "county": "Crawford",
+   "known": 0,
+   "classified": 0,
+   "cbp_estab": 4,
+   "cbp_emp": 29
+  },
+  {
+   "county": "Cuyahoga",
+   "known": 175,
+   "classified": 126,
+   "cbp_estab": 164,
+   "cbp_emp": 8982
+  },
+  {
+   "county": "Geauga",
+   "known": 37,
+   "classified": 29,
+   "cbp_estab": 36,
+   "cbp_emp": 1935
+  },
+  {
+   "county": "Huron",
+   "known": 0,
+   "classified": 0,
+   "cbp_estab": 12,
+   "cbp_emp": 1564
+  },
+  {
+   "county": "Lake",
+   "known": 51,
+   "classified": 45,
+   "cbp_estab": 41,
+   "cbp_emp": 2626
+  },
+  {
+   "county": "Lorain",
+   "known": 32,
+   "classified": 29,
+   "cbp_estab": 43,
+   "cbp_emp": 2138
+  },
+  {
+   "county": "Mahoning",
+   "known": 23,
+   "classified": 20,
+   "cbp_estab": 18,
+   "cbp_emp": 928
+  },
+  {
+   "county": "Medina",
+   "known": 41,
+   "classified": 30,
+   "cbp_estab": 41,
+   "cbp_emp": 2017
+  },
+  {
+   "county": "Portage",
+   "known": 54,
+   "classified": 46,
+   "cbp_estab": 54,
+   "cbp_emp": 3937
+  },
+  {
+   "county": "Richland",
+   "known": 0,
+   "classified": 0,
+   "cbp_estab": 10,
+   "cbp_emp": 1146
+  },
+  {
+   "county": "Stark",
+   "known": 37,
+   "classified": 31,
+   "cbp_estab": 45,
+   "cbp_emp": 2409
+  },
+  {
+   "county": "Summit",
+   "known": 182,
+   "classified": 151,
+   "cbp_estab": 124,
+   "cbp_emp": 9067
+  },
+  {
+   "county": "Tuscarawas",
+   "known": 23,
+   "classified": 16,
+   "cbp_estab": 34,
+   "cbp_emp": 3184
+  },
+  {
+   "county": "Wayne",
+   "known": 80,
+   "classified": 50,
+   "cbp_estab": 27,
+   "cbp_emp": 1485
+  }
+ ]
+}
