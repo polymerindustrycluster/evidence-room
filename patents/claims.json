@@ -55,9 +55,9 @@
     },
     {
       "id": "pat-degree-echo",
-      "text": "The pipeline note restates the talent page's finding from that page's own shipped data: the region's polymer programs conferred 63 degrees in 2023 against an average of 139 a year through 2021 (the note in the city band).",
+      "text": "The pipeline note restates the talent page's finding from that page's own shipped data: the region's polymer programs conferred 63 degrees in 2023 against an average of 142 a year through 2021 (the note in the city band).",
       "source": "occupations/data/viz-data.json programs, group polymer, re-run here so the two pages cannot drift apart",
-      "assert": "(lambda tot: tot('2023') == 63 and 135 <= sum(tot(str(y)) for y in range(2014, 2022)) / 8 <= 143)(lambda y: sum(p['by_year'].get(y, 0) for p in D['occ']['programs'] if p['group'] == 'polymer'))",
+      "assert": "(lambda tot, E: tot('2023') == 63 and 140 <= sum(E) / len(E) <= 144)(lambda y: sum(p['by_year'].get(y, 0) for p in D['occ']['programs'] if p['group'] == 'polymer'), series(D['occ']['programs'], 'polymer', 2014, 2021))",
       "actual": "{y: sum(p['by_year'].get(str(y), 0) for p in D['occ']['programs'] if p['group'] == 'polymer') for y in range(2014, 2024)}",
       "falsified_if": "The talent page's data is refetched and the degree counts move, in which case this page's note is stale and fails here rather than waiting for a reader to put the two pages side by side, which is how this site's worst error was found."
     }

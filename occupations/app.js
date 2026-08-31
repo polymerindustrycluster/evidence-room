@@ -2,7 +2,7 @@
  *
  * THE ARC (each section's lede carries the previous section's conclusion forward):
  *   1. STAFFING  the industry is floor work; the distinctive engineer/scientist share
- *                is 4.0% and small.
+ *                is 4.2% and small.
  *   2. PAY       the floor is paid near the national rate; the distinctive degree
  *                group is paid under it in every metro. The chart is grouped by
  *                schooling band and each band's ratio-to-national is written on it.
@@ -168,7 +168,7 @@ const setters = MIX.find(m => m.soc === "51-4072");
 /* Card 4 used to read "the jobs the region CLAIMS DISTINCTION IN" under a national share,
    which is the page's whole scope problem in one sub-line: a regional referent hung on a
    number cut from the country. The distinction claim belongs where the regional numbers
-   are, and this card now says what 4.0% is a share OF. */
+   are, and this card now says what 4.2% is a share OF. */
 const US = `<span class="scope">United States</span>`;
 figures([
   ["key", pct(setters.pct_of_industry), "of the industry’s jobs", `${US}are molding-machine setters, one job in ${WORDS[Math.round(100 / setters.pct_of_industry)]}, 2024. It is the industry’s largest occupation, which makes staffing it the industry’s largest staffing problem`],
@@ -911,7 +911,7 @@ function drawTrendAt(W, phone) {
   });
   /* THE REFERENCE LINE THE CLAIM RESTS ON, labelled by what CROSSING it means and not by
      the arithmetic that put it there (that is in the table note). Its
-     label lives in the right margin rather than on the rule: a level line at 70 runs
+     label lives in the right margin rather than on the rule: a level line at 71 runs
      under the top of every column before 2022, so any in-plot caption would print on
      solid ink. Outside the plot it is legible and it still reads as the line's own. */
   const RULE = "#A32A78";
@@ -923,7 +923,7 @@ function drawTrendAt(W, phone) {
      three long ones. */
   /* THE BASELINE THE RULE IS HALF OF, PRINTED. The label used to name the window and the
      threshold and nothing in between, so a reader holding the only two figures on the page
-     — "between 118 and 179 a year" — could not get to 70 from either of them: half of 118
+     — "between 118 and 179 a year" — could not get to 71 from either of them: half of 118
      is 59 and half of 179 is 90. The average it is actually half of now appears, here and
      in the series annotation, so the arithmetic closes on the figure itself. */
   const rlab = phone

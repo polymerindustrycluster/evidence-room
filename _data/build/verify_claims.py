@@ -16,6 +16,8 @@ USAGE
 """
 import json, os, sys, math
 
+import ipeds_quarantine as QZ
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.abspath(os.path.join(HERE, "..", ".."))
 
@@ -39,10 +41,36 @@ def close(a, b, tol=1e-9):
     return abs(a - b) <= tol
 
 
+def series(programs, group, y0, y1, key="by_year"):
+    """Yearly sums for one program group, quarantined years EXCLUDED rather than zeroed.
+
+    A year the federal record does not carry and a year in which nobody graduated are
+    different facts, and `.get(year, 0)` cannot tell them apart. Every claim here that
+    ranged over years used that idiom, so the moment the 2020 quarantine landed the
+    2014-2021 average silently fell from a contaminated 139 to a fictional 124.5 -- the
+    suppressed year counted as zero degrees conferred. Both numbers are wrong; the
+    average over the seven years that exist is 142.
+
+    A year absent for an UNDECLARED reason raises instead of guessing, so a new hole in
+    the record fails a claim rather than quietly moving an average. A single programme
+    missing a year still contributes 0, which is a real zero for that programme.
+    """
+    rows = [p for p in programs if p["group"] == group]
+    out = []
+    for y in range(y0, y1 + 1):
+        if y in QZ.QUARANTINED:
+            continue
+        ys = str(y)
+        if not any(ys in p[key] for p in rows):
+            raise ValueError(f"{group}: no {y} in the record, and {y} is not quarantined")
+        out.append(sum(p[key].get(ys, 0) for p in rows))
+    return out
+
+
 ENV = {"one": one, "pct": pct, "close": close, "sum": sum, "len": len, "min": min,
        "max": max, "abs": abs, "round": round, "sorted": sorted, "set": set,
        "any": any, "all": all, "int": int, "float": float, "str": str,
-       "math": math, "list": list, "range": range}
+       "math": math, "list": list, "range": range, "series": series}
 
 
 def load(artifact, spec):
