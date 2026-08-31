@@ -1,0 +1,29 @@
+/* Patents' page-local chrome.
+ *
+ * Added 2026-08-31. patents/ linked only _shared/pic-viz.css and used five classes that
+ * existed solely in other pages' page-local stylesheets — .code 7 times, .tint and .body
+ * twice each, .warn and .hero-viz once. Thirteen uses, none of which resolved to a rule,
+ * so the page rendered them as plain paragraphs. tools/classes.mjs now fails on this.
+ * Rules are copied verbatim from the pages that already define them (sources/ for four,
+ * laborshed/ for .tint) rather than reinvented, so patents matches its siblings instead
+ * of acquiring a fifth dialect. They are page-local, not promoted to _shared, because
+ * the per-page definitions differ and reconciling them is a separate job. */
+
+/* from sources/styles.css */
+.hero-viz svg{width:100%;height:auto;display:block;overflow:visible}
+
+/* from sources/styles.css */
+.warn{margin:11px 0 0;font-size:15px;line-height:1.55;color:#3A3A36;background:#F6EEF3;
+  border-left:3px solid var(--hover);padding:11px 15px}
+
+/* from sources/styles.css */
+.code{font-family:ui-monospace,Consolas,monospace;font-size:14.5px;font-weight:700;
+  background:#E9E4DB;padding:1px 6px;color:#1F3236;letter-spacing:0}
+
+/* from federal-money/styles.css and cost-scissors/styles.css, identical in both */
+.band.tint{background:#F4F1EC}
+
+/* from sources/styles.css — body prose that is not a lede. The house sheet has .lede and
+   .src and nothing between, so explanatory paragraphs had no register of their own. */
+.band .body{margin:14px auto 0;max-width:var(--measure);font-size:17px;line-height:1.62;
+  color:#333B3E}
