@@ -37,13 +37,14 @@
     <p class="eyebrow">Polymer patent applications, by inventor address &middot; 2015&ndash;2023</p>
     <h1>American polymer patenting fell <em>by a fifth</em>. Ohio fell
       with it.</h1>
-    <p class="stand">The state whose rubber city named the industry filed 342 polymer
-      patent applications in 2023, down a quarter from 2015 and roughly in step with its
-      industry: filings with an American inventor fell 22 percent nationwide while
-      American patenting across <b>all</b> technologies barely moved. Ohio kept about a
-      tenth of the shrinking field. What is Ohio&rsquo;s own is quieter and separate:
-      its patenting across all technologies fell 12.5 percent against the
-      nation&rsquo;s 1.6, polymer and everything else alike.</p>
+    <p class="stand">Ohio, home of Akron and the American rubber industry, filed 342
+      polymer patent applications in 2023, down a quarter from 2015. American polymer
+      filings fell almost as far: applications with an American inventor were down
+      22 percent nationwide, while American patenting across <b>all</b> technologies
+      barely moved. Ohio kept about a tenth of those shrinking American polymer filings.
+      Ohio&rsquo;s own decline is a quieter, separate story. Its patenting across all
+      technologies fell 12.5 percent against the nation&rsquo;s 1.6 percent, and that
+      milder slide runs through polymer and everything else alike.</p>
     <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot;
       Analysis and graphics by Claude (Anthropic) &middot; Data USPTO Open Data Portal,
       applications by filing year &middot; August&nbsp;2026</p>
@@ -63,14 +64,16 @@
     <p class="lede">One series proves nothing by falling, so here are four on one scale.
       American polymer filings ended 2023 at <b>78.2</b> on a 2015 base of 100 while
       American filings across all technologies ended at 98.4: a polymer-specific
-      collapse, nationwide. Ohio&rsquo;s polymer line, at <b>75.2</b>, tracks its
-      industry a few points below it. And Ohio&rsquo;s all-technology line, at 87.5
-      against the nation&rsquo;s 98.4, is a separate, milder Ohio-wide decline that has
-      nothing particular to do with polymer.</p>
+      collapse, nationwide. Ohio&rsquo;s polymer line, at <b>75.2</b>, tracks American
+      polymer filings a few points below them. And Ohio&rsquo;s all-technology line,
+      at 87.5 against the nation&rsquo;s 98.4, is a separate, milder Ohio-wide decline
+      that has nothing particular to do with polymer.</p>
     <p class="fig-title">Four lines, two stories</p>
     <p class="fig-sub">Patent applications with a US inventor address, indexed to
-      2015 = 100, complete filing years only. Polymer (CPC C08) against all technology
-      classes, for Ohio and for the country.</p>
+      2015 = 100, and only complete filing years: years old enough that everything filed
+      in them has already published. Polymer means class C08 of the Cooperative Patent
+      Classification (CPC), the international system that files every patent by subject,
+      set against all technology classes, for Ohio and for the country.</p>
     <div class="chart"><svg id="idx" role="img" aria-labelledby="idx-t">
       <title id="idx-t">Line chart of patent applications indexed to 2015. American
         all-technology filings end 2023 at 98.4 and Ohio&rsquo;s at 87.5; American
@@ -82,13 +85,14 @@
       series filtered to US inventor addresses, fetched 2026-08-30. C08 is one defensible
       definition of polymer, and a choice.</p>
     <p class="warn"><b>The count with no address filter is a trap, and it nearly caught
-      this page.</b> Ask the same endpoint for C08 filings without naming a country and
+      this page.</b> Run the same request for C08 filings without naming a country and
       the series ends at 99: essentially flat. That number is every filing at the US
       Patent Office from anywhere on earth, and it holds level only because
-      foreign-origin filings filled the hole American ones left. A replication reviewer,
-      rebuilding this page&rsquo;s numbers from the rendered text alone, reproduced the
-      99 and could not reproduce the label on it, which is how the error surfaced before
-      publication. Filter the inventor country or say you did not.</p>
+      foreign-origin filings filled the hole American ones left. Before publication, a
+      reviewer rebuilt this page&rsquo;s numbers from the printed text alone. The 99 came
+      back the same. The sentence attached to it did not: the wording never said the
+      count was worldwide. That is how the error was caught. Filter the inventor
+      country or say you did not.</p>
   </div>
 </section>
 
@@ -97,11 +101,10 @@
     <p class="takeaway">The level, and the trap in the recent years</p>
     <h2>The last two bars always look like a collapse, and never are</h2>
     <p class="lede">A patent application publishes about eighteen months after it is
-      filed, so the newest filing years are undercounted by construction: read on
-      30 August 2026, the 2025 bar holds 266 and the 2026 bar holds 20. Neither is a
-      finding about Ohio. The solid bars are complete years and carry the real level;
-      the hollow bars are drawn so the shape of the lag is visible instead of taken on
-      trust.</p>
+      filed, so the newest filing years are undercounted by construction. Read on
+      30 August 2026, Ohio&rsquo;s polymer count for 2025 stood at 266 and its count for
+      2026 at 20. Neither is a finding about Ohio: both years are still filling. Only the
+      complete filing years carry the real level.</p>
     <p class="fig-title">Ohio polymer applications by filing year</p>
     <p class="fig-sub">Solid bars are complete filing years. Hollow bars are years still
       filling through the publication lag, drawn at their current count.</p>
@@ -111,9 +114,10 @@
         because the publication lag leaves them incomplete: 325, then 266, then 20.</title>
       </svg></div>
     <div id="barstable"></div>
-    <p class="src">Same pull as above. The peak year is 2017 at 498; measured peak to
-      2023 the fall is steeper, which is why this page indexes from 2015, the first year
-      fetched, rather than from the most flattering point.</p>
+    <p class="src">Same USPTO request as the chart above. Ohio&rsquo;s polymer filings
+      peaked in 2017 at 498, so measuring from that peak to 2023 would make the fall look
+      steeper than measuring from 2015. This page indexes from 2015, the first year
+      fetched, rather than from the year that would make the decline look worst.</p>
   </div>
 </section>
 
@@ -129,14 +133,14 @@
       carry a claim.</p>
     <div id="citytable"></div>
     <p class="src">Inventor correspondence address, city field, complete years only.
-      A city is not a metro area: these are the four anchor cities by name, and
-      suburban addresses fall outside them.</p>
+      A city is not a metro area: these four are the cities themselves, Akron,
+      Cleveland, Canton and Youngstown, and suburban addresses fall outside them.</p>
     <p class="note"><b>The pipeline echoes it.</b> The <a href="../occupations/">talent
       page</a> found the region&rsquo;s polymer programs conferred 63 degrees in 2023
-      against an average of 142 a year through 2021. Filings and degrees are different
-      instruments on different scopes, one statewide and one regional, and they are
-      falling together: the inputs to invention and its recorded outputs, both roughly
-      halved or headed there inside a decade.</p>
+      against an average of 142 a year through 2021. The two counts cover different
+      ground: filings are statewide, degrees are regional. They are falling together
+      anyway. The inputs to invention and its recorded outputs have both roughly halved,
+      or are headed there, inside a decade.</p>
   </div>
 </section>
 
@@ -147,17 +151,24 @@
     <p class="lede">Every count on this page keys on the <b>inventor&rsquo;s</b>
       correspondence address. Key on the <b>applicant&rsquo;s</b> instead, the company
       rather than the person, and Ohio&rsquo;s all-time polymer count drops from 8,854
-      to 3,948. Neither is wrong. They answer different questions: where inventors live
-      against who owns what they invent.</p>
-    <p class="body">The first record this page&rsquo;s pull ever returned makes the
+      to 3,948. All-time here carries no year filter at all: it is every filing year the
+      Patent Office holds, not the 2015 to 2023 window charted above. Neither is wrong.
+      They answer different questions: where inventors live against who owns what they
+      invent.</p>
+    <p class="body">The first record this page&rsquo;s request ever returned makes the
       point by itself: a tire-technology application assigned to The Goodyear Tire
       &amp; Rubber Company of Akron, Ohio, with the inventor resident in
       Colmar-Berg, Luxembourg. Counted by applicant, that is an Akron invention.
-      Counted by inventor, it is a Luxembourg one. This page counts inventors, because
-      its question is whether invention still happens here rather than who holds the
-      title, and a reader who wants the other answer now knows both numbers.</p>
-    <p class="body">For a replicator, the exact leaf fields, because guessing them is
-      the stall: the year filter is
+      Counted by inventor, it is a Luxembourg one. That single record runs the opposite
+      way from the two totals above, and both hold: switching to the applicant basis adds
+      filings like this one, where the company is in Ohio and the inventor is not, and
+      removes many more where the inventor is in Ohio and the company is not. This page
+      counts inventors, because its question is whether invention still happens here
+      rather than who holds the title, and a reader who wants the other answer now knows
+      both numbers.</p>
+    <p class="body">The rest of this paragraph is for a replicator rebuilding these
+      counts from the source. Guessing the exact leaf field names is what stops most
+      attempts, so here they are. The year filter is
       <b class="code">applicationMetaData.filingDate:[2015-01-01 TO 2015-12-31]</b>,
       the state is <b class="code">geographicRegionCode</b> and the country
       <b class="code">countryCode</b> on
@@ -170,12 +181,12 @@
 
 <section class="closer">
   <div class="wrap">
-    <p>The field is shrinking at home, and Ohio is shrinking with it.</p>
+    <p>The polymer field is shrinking at home, and Ohio is shrinking with it.</p>
     <p class="sub" id="closersub">American polymer filings fell 22 percent over the eight
-      complete years while American patenting overall fell 2; Ohio&rsquo;s polymer
-      filings fell 25 and its share of the shrinking American field held near one in
-      ten. The number to watch is not Ohio against the country. It is polymer against
-      everything else.</p>
+      complete years, while American patenting overall fell under 2. Ohio&rsquo;s polymer
+      filings fell 25 percent, and its share of those shrinking American polymer filings
+      held near one in ten. The number to watch is not Ohio against the country. It is
+      polymer against everything else.</p>
   </div>
 </section>
 

@@ -24,10 +24,11 @@ figures([
    "while American patenting overall fell " +
      Math.round((1 - LAST.us_inv_all / BASE.us_inv_all) * 100) + "%"],
   ["", N(LAST.ohio), "polymer applications filed from Ohio, 2023",
-   Math.round((1 - LAST.ohio / BASE.ohio) * 100) + "% below 2015, in step with the field"],
+   Math.round((1 - LAST.ohio / BASE.ohio) * 100) +
+     "% below 2015, in step with American polymer filings"],
   ["", (BASE.ohio / BASE.us_inv * 100).toFixed(1) + "% → " +
        (LAST.ohio / LAST.us_inv * 100).toFixed(1) + "%",
-   "Ohio’s share of the American field", "held near one in ten"],
+   "Ohio’s share of American polymer filings", "held near one in ten"],
 ]);
 
 /* ------------------------------------------------- chart 1: the three lines */
