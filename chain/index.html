@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Can Northeast Ohio Make This?</title>
+
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <strong>Polymer Industry Cluster</strong>
+    <span>Northeast Ohio &middot; 14 counties</span>
+    <span class="proto">Prototype &middot; not published data</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Can Northeast Ohio make this?</p>
+    <h1 id="takeaway">The region owns the middle of the polymer chain and <em>thins out at the molecule end</em>.</h1>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data GAC-PIC vault company records, Census County Business Patterns &middot; August&nbsp;2026</p>
+    <p class="stand" id="standfirst">
+      Every company PIC has classified in the fourteen counties, on the chain that turns a
+      molecule into a product and back. Type what you need to make.
+    </p>
+
+    <div class="query">
+      <label class="qbox" for="q">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8FBEC6" stroke-width="2.2"
+             aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.3-4.3"/></svg>
+        <input id="q" type="search" autocomplete="off" spellcheck="false"
+               placeholder="a process, a material, a product, or a company name">
+        <button class="qclear" id="qclear" type="button" aria-label="Clear the query" hidden>&times;</button>
+      </label>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Example queries"></div>
+
+    <div class="chainwrap">
+      <svg id="chain" viewBox="0 0 1240 516" role="img" aria-labelledby="chain-title">
+        <title id="chain-title">The polymer value chain across fourteen Northeast Ohio counties,
+          drawn as a ribbon whose width is the number of classified companies at each stage.</title>
+      </svg>
+      <div id="chainbars" role="group" aria-label="Companies at each stage of the chain"></div>
+    </div>
+
+    <div class="legend">
+      <span class="key"><i style="background:linear-gradient(90deg,#3D9CAC,#1A8A9E)"></i>
+        <b>Classified firms</b>: width is a linear count</span>
+      <span class="key">
+        <svg width="28" height="11" aria-hidden="true"><line x1="0" y1="6" x2="28" y2="6"
+          stroke="#EAF4F5" stroke-width="1.6" stroke-dasharray="5 4" opacity=".7"/></svg>
+        <b>Expected shape</b> if NEO matched the surrounding megaregion&rsquo;s mix</span>
+      <span class="key" id="scalenote"></span>
+    </div>
+  </div>
+</section>
+
+<section class="band paper">
+  <div class="wrap">
+    <h2 id="maptitle">PIC has classified nothing at all in three of its own counties.</h2>
+    <p class="lede">The map is not a count of firms: population would steal that story. It is a
+      coverage index: companies PIC has classified for every polymer or chemical manufacturing
+      establishment the Census counts in the same county.</p>
+    <div class="mapgrid">
+      <div>
+        <svg id="map" viewBox="0 0 660 470" role="img" aria-labelledby="map-title">
+          <title id="map-title">Choropleth of the fourteen Northeast Ohio counties shaded by how
+            much of the local polymer manufacturing base PIC has classified.</title>
+        </svg>
+      </div>
+      <div>
+        <div class="blank-list" id="blanks"></div>
+        <table class="cov">
+          <thead><tr><th>County</th><th>Classified</th><th>Census plants</th><th>Coverage</th></tr></thead>
+          <tbody id="covbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <p class="src" id="mapsrc"></p>
+  </div>
+</section>
+
+
+<section class="band paper" id="sdband" style="border-top:1px solid var(--line)">
+  <div class="wrap">
+    <p class="takeaway" style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+      font-weight:900;color:var(--action);margin:0 auto 10px">Supply against demand</p>
+    <h2>Applications cluster where cataloged companies are fewest</h2>
+    <p class="lede">PIC’s intake form and the vault use compatible value-chain taxonomies, so
+      the companies on record and the projects people want funded can sit on one spine.
+      They point opposite ways: converters have <b>12 cataloged companies for every 2026
+      application</b>; raw materials and feedstock has <b>one for every two</b>.
+      <b>Read that as coverage, not as competition.</b> It is applications measured against
+      how many companies the vault has classified, not against capacity, headcount
+      or output. Twelve raw-materials companies may be very large plants; 246 converters may
+      be small shops. And the two sides come from <b>different footprints</b> (intake
+      is PIC-12, the vault is NEO-14), so the ratio is indicative and is the one place
+      on this site where the two geographies touch. It is on the page for that reason.</p>
+    <div class="legend">
+      <span><i style="background:#1A8A9E"></i> Classified companies in the 14 counties</span>
+      <span><i style="background:#C85F0C"></i> 2026 applications naming that stage</span>
+    </div>
+    <div class="chart"><svg id="sd" role="img" aria-labelledby="sd-t">
+      <title id="sd-t">Classified companies and 2026 applications at each value-chain stage,
+        on separate scales.</title>
+    </svg></div>
+    <div id="sdtable"></div>
+    <p class="src">Two different units, drawn on two scales that meet at a shared center
+      line, never one axis, and never a ratio bar. A company can sit at more than one
+      stage and so can an application, so both sides sum to more than their totals. Companies:
+      GAC-PIC vault, 785 classified in NEO-14. Applications:
+      pic-innovation-intake-export-2026-07-07.csv, 59 rows. Six applications named a position
+      outside the taxonomy and one named none.</p>
+  </div>
+</section>
+
+<section class="band dark" id="evidence">
+  <div class="wrap">
+    <div class="reshead">
+      <div>
+        <h2 id="restitle">The evidence underneath</h2>
+        <p class="lede" id="ressub"></p>
+      </div>
+      <button class="copybtn" id="copycsv" type="button">Copy these rows as CSV</button>
+    </div>
+    <div class="cards" id="cards"></div>
+    <p class="src" id="ressrc"></p>
+  </div>
+</section>
+
+<section class="band methods">
+  <div class="wrap">
+    <h2 style="font-size:26px">What a row is, and what this cannot tell you</h2>
+    <div class="mgrid" id="methods"></div>
+  </div>
+</section>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

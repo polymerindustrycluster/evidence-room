@@ -1,0 +1,204 @@
+/* SVG TEXT IS AUTHORED IN viewBox UNITS, so declared px are not rendered px. This
+   diagram's viewBox is 1240 wide and it renders into the 980px figure column, a scale
+   of 0.790 — so a label must be declared at 15.7px to reach the 12px floor. The shared
+   chart classes are tuned for the standard 1100 viewBox and are too small here.
+   tools/textsize.mjs measures the RENDERED size and fails below 12. */
+/* These two artifacts predate _shared and sized every block in `ch` of its own font:
+   19/24/26/32/58/60/66/70/74/76/80/84ch across two pages, which rendered as a dozen
+   different rules. Prose takes --measure, anything holding data takes --figure. The
+   modal sheet keeps its own width on purpose: it is not in the page column. */
+:root{
+  --ink:#0C6473; --deep:#073F49; --deeper:#052E36;
+  --action:#188295; --hover:#995480; --caption:#656661; --lime:#B8D637;
+  --paper:#FAF9F7; --line:#DDD9D2; --text:#141A1C;
+  --t1:#CFE8EC; --t2:#9FD2DA; --t3:#6BB8C4; --t4:#3D9CAC; --t5:#1A8A9E; --t6:#0C6473;
+  --sans:Lato,"Segoe UI",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--text);font-family:var(--sans);
+  font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;font-weight:900;letter-spacing:-.02em;line-height:1.04}
+a{color:var(--action)}
+
+/* ---------------------------------------------------------------- masthead */
+.mast{background:var(--deeper);color:#EAF4F5;padding:14px 0;
+  border-bottom:1px solid rgba(255,255,255,.1)}
+.mast .wrap{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.mast strong{font-weight:900;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+.mast span{color:#7FB3BC;font-size:12px;letter-spacing:.04em}
+.mast .proto{margin-left:auto;color:var(--lime);font-size:12px;letter-spacing:.14em;
+  text-transform:uppercase;font-weight:700}
+
+/* -------------------------------------------------------------------- hero */
+/* This page called its opening section .stage and its headline .takeaway, which meant the
+   shared hero contract never applied and tools/centres.mjs had no .hero h1 to take the
+   page axis from: it fell back to the first block it could find and audited the page
+   against that. Ground, gradient, width cap and the stand rail now come from _shared.
+   What stays local is what this hero genuinely needs: it carries a live instrument, not
+   prose, so it opens tighter, closes almost flush against the legend, and sets a smaller
+   display size than a hero whose only job is a sentence. */
+.hero{padding:52px 0 8px}
+.hero h1{font-size:clamp(29px,3.5vw,46px)}
+.hero .stand{margin:12px auto 0 0;font-size:16.5px;line-height:1.5}
+/* .takeaway survives as a small band label on the paper bands, never as a headline. */
+.takeaway{max-width:var(--measure)}
+
+/* ------------------------------------------------------------------- query */
+.query{margin:20px 0 4px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+#q::-webkit-search-cancel-button,#q::-webkit-search-decoration{-webkit-appearance:none;
+  appearance:none;display:none}
+.qbox{flex:1 1 460px;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.09);
+  border:1px solid rgba(255,255,255,.26);border-radius:2px;padding:0 16px;
+  transition:border-color .14s,background .14s}
+.qbox:focus-within{border-color:var(--lime);background:rgba(255,255,255,.14)}
+.qbox svg{flex:none;opacity:.75}
+#q{flex:1;background:none;border:0;outline:0;color:#fff;font:inherit;font-size:18px;
+  padding:13px 0;font-weight:600;-webkit-appearance:none;appearance:none}
+#q::placeholder{color:#8FBEC6;font-weight:400}
+.qclear{background:none;border:0;color:#8FBEC6;font:inherit;cursor:pointer;padding:6px;
+  font-size:22px;line-height:1}
+.qclear:hover{color:#fff}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
+.chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#DCEEF0;
+  font:inherit;font-size:13px;padding:7px 13px;border-radius:100px;cursor:pointer;
+  transition:all .14s;white-space:nowrap}
+.chip:hover{background:var(--hover);border-color:var(--hover);color:#fff}
+.chip[aria-pressed=true]{background:var(--lime);border-color:var(--lime);color:#123}
+
+/* ------------------------------------------------------------------- chain */
+.chainwrap{margin:18px 0 0;position:relative}
+#chain{display:block;width:100%;height:auto}
+
+/* Small screens get a stacked bar reading of the same numbers. Scaling the wide
+   ribbon down makes its labels illegible, so the phone gets a different form. */
+#chainbars{display:none;margin:14px 0 0}
+.cbar{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:11px 0;
+  border-bottom:1px solid rgba(255,255,255,.13);cursor:pointer}
+.cbar:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+.cbar .cb-lab{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+  color:#9FCBD2;align-self:center}
+.cbar .cb-num{font-size:27px;font-weight:900;color:#fff;letter-spacing:-.02em;line-height:1}
+.cbar.thin .cb-num{color:var(--lime)}
+.cbar .cb-track{grid-column:1/-1;height:11px;background:rgba(255,255,255,.12);position:relative;
+  margin:5px 0 0}
+.cbar .cb-fill{position:absolute;inset:0 auto 0 0;background:var(--t5)}
+.cbar .cb-exp{position:absolute;top:-3px;bottom:-3px;width:2px;background:#EAF4F5;opacity:.8}
+.cbar .cb-sub{grid-column:1/-1;font-size:12px;color:#7FB3BC;margin:5px 0 0}
+.cbar[aria-pressed=true]{background:rgba(255,255,255,.07)}
+.cbar[aria-pressed=true] .cb-num{color:var(--lime)}
+.tierlab{font-size:15.7px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  fill:#9FCBD2}
+.tiernum{font-size:44px;font-weight:900;fill:#fff;letter-spacing:-.03em}
+.tiernum.thin{fill:var(--lime)}
+/* This label sits on the INK ground, not on paper: #7FB3BC read 2.94:1 there and
+   --pv-muted (a paper colour) read 1.36:1, which was my own wrong fix. #C6E2E6 is
+   the house muted FOR THE DARK GROUND and clears 5:1. */
+.tiersub{font-size:15.7px;fill:#C6E2E6}
+.tierhit{cursor:pointer}
+.tierhit:hover .tiernum{fill:var(--lime)}
+.tierhit:focus{outline:none}
+.tierhit:focus-visible rect.hit{stroke:var(--lime);stroke-width:2}
+.tier-on .tiernum{fill:var(--lime)}
+.expected{fill:none;stroke:#EAF4F5;stroke-width:1.5;stroke-dasharray:5 4;opacity:.62}
+.breakmark{font-size:15.7px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  fill:var(--lime)}
+/* On the ink ground: #7FB3BC reads 2.94:1 there. Same fix as .tiersub. */
+.axisnote{font-size:15.7px;fill:#C6E2E6}
+.legend{display:flex;gap:22px;flex-wrap:wrap;align-items:center;margin:6px 0 0;
+  padding:14px 0 34px;border-top:1px solid rgba(255,255,255,.14);font-size:13px;color:#A8CDD4}
+.legend b{color:#fff;font-weight:700}
+.key{display:inline-flex;align-items:center;gap:8px}
+.key i{width:26px;height:11px;display:block;border-radius:1px}
+
+/* ------------------------------------------------------------------- bands */
+.band{padding:64px 0}
+.band.paper{background:var(--paper)}
+.band h2{font-size:clamp(26px,3vw,38px);max-width:var(--measure)}
+.band .lede{margin:14px auto 0;max-width:var(--measure);font-size:18px;color:#394346}
+.src{margin:18px 0 0;font-size:13px;color:var(--caption);max-width:var(--measure);line-height:1.5}
+
+/* --------------------------------------------------------------------- map */
+.mapgrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:44px;
+  align-items:start;margin:34px 0 0}
+#map{display:block;width:100%;height:auto}
+/* The map is a 660-unit viewBox outside .chart, so on a phone it shrank to 350px — a
+   0.53 scale that rendered its 12px county labels at 6.4, the worst P3 failure in the
+   set. Holding it at its own viewBox width keeps the labels at 1:1 and lets the reader
+   pan, which is the same treatment every other chart gets. */
+@media (max-width:760px){
+  /* the immediate parent must scroll, or min-width pushes the whole page sideways */
+  .mapgrid > div:has(#map){overflow-x:auto;overscroll-behavior-x:contain}
+  #map{min-width:660px}
+}
+.county{stroke:#fff;stroke-width:1.2;cursor:pointer;transition:opacity .14s}
+.county:hover{opacity:.78}
+.county.on{stroke:var(--hover);stroke-width:3}
+/* map scale is 0.99 on desktop, so 12 renders at 11.9 — just under the P3 floor */
+.clab{font-size:15.7px;font-weight:700;pointer-events:none}
+.blank-list{border-left:3px solid var(--lime);padding:2px 0 2px 20px;margin:0 0 26px}
+.blank-list h3{font-size:20px;margin:0 0 8px}
+.blank-list p{margin:0 0 14px;color:#394346;font-size:15.5px}
+table.cov{width:100%;border-collapse:collapse;font-size:14px}
+table.cov th,table.cov td{text-align:right;padding:7px 8px;border-bottom:1px solid var(--line)}
+table.cov th:first-child,table.cov td:first-child{text-align:left}
+table.cov thead th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--caption);font-weight:700;border-bottom:2px solid var(--text)}
+table.cov tbody tr{cursor:pointer}
+table.cov tbody tr:hover{background:#F0EDE8}
+table.cov tr.zero td{color:var(--caption)}
+table.cov tr.zero td:first-child{color:var(--text);font-weight:700}
+.ratio{display:inline-block;min-width:44px}
+
+/* ----------------------------------------------------------------- results */
+.band.dark{background:var(--deep);color:#fff}
+.band.dark h2{color:#fff}
+.band.dark .lede{color:#B7D9DE}
+.band.dark .src{color:#7FB3BC}
+/* The evidence band header is a CONTROL ROW, not a composed block: a title beside a
+   Copy-CSV button. One-axis centring is for band CONTENT; a row whose right half is a
+   button reads as broken when its left half is centred, so it keeps the left rail. */
+.reshead{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
+  flex-wrap:wrap;margin:0 0 22px}
+.reshead .lede{margin-left:0;margin-right:auto}
+.copybtn{background:none;border:1px solid rgba(255,255,255,.4);color:#fff;font:inherit;
+  font-size:13px;padding:9px 16px;cursor:pointer;transition:all .14s;letter-spacing:.02em}
+.copybtn:hover{background:var(--hover);border-color:var(--hover)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1px;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.14)}
+.card{background:var(--deep);padding:20px;transition:background .14s}
+.card:hover{background:#0A5361}
+.card h3{font-size:19px;margin:0 0 5px}
+.card h3 a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(184,214,55,.5)}
+.card h3 a:hover{color:var(--lime)}
+.card .where{font-size:12.5px;color:#8FBEC6;letter-spacing:.02em;margin:0 0 12px}
+.card .badge{display:inline-block;font-size:12px;letter-spacing:.09em;text-transform:uppercase;
+  font-weight:800;padding:3px 8px;background:var(--lime);color:#123;margin:0 0 10px}
+.card .roles{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.card .role{font-size:12px;background:rgba(255,255,255,.13);padding:3px 9px;color:#DCEEF0}
+.card p.sum{margin:0;font-size:14px;color:#B7D9DE;line-height:1.5}
+.card .hits{margin:11px 0 0;font-size:12.5px;color:var(--lime)}
+.empty{padding:46px 0;text-align:center;color:#8FBEC6}
+.empty strong{display:block;color:#fff;font-size:22px;margin:0 0 8px;font-weight:900}
+
+/* --------------------------------------------------------------- methods */
+.band.methods{background:#F0EDE8;padding:52px 0}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:30px;
+  margin:26px 0 0}
+.mgrid h3{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--action);
+  margin:0 0 9px}
+.mgrid p{margin:0;font-size:14.5px;color:#394346;line-height:1.55}
+.mgrid b{font-weight:900;color:var(--text)}
+
+@media (max-width:900px){
+  .wrap{padding:0 20px}
+  .mapgrid{grid-template-columns:1fr;gap:30px}
+  .hero{padding-top:30px}
+  .band{padding:46px 0}
+  #chain{display:none}
+  #chainbars{display:block}
+  .legend{padding-top:16px}
+  .hero .stand{font-size:15.5px}
+  .chips{gap:6px}
+  .chip{font-size:12.5px;padding:6px 11px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

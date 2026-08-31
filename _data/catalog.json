@@ -1,25 +1,120 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-08-31 13:59",
-  "seconds": 6.3,
-  "scripts": 44,
+  "generated": "2026-08-31 15:04",
+  "seconds": 9.9,
+  "scripts": 46,
   "outputs_on_disk": 19,
   "outputs_claimed": 30,
   "orphan_outputs": 4,
   "registry_error": null,
   "flag_counts": {
-   "not_in_PIPELINES.md": 44,
-   "no_house_docstring": 40,
-   "no_traps_section": 40,
+   "not_in_PIPELINES.md": 46,
+   "no_house_docstring": 42,
+   "no_traps_section": 42,
    "output_missing_on_disk": 25,
-   "not_in_SOURCES.json": 18,
+   "not_in_SOURCES.json": 19,
    "meta_fetched_vs_mtime_gap": 12,
-   "import_error": 6,
-   "no_output_detected": 6
+   "import_error": 8,
+   "no_output_detected": 7,
+   "writes_outside_build": 1
   }
  },
  "scripts": [
+  {
+   "script": "build_chain.py",
+   "kind": "build",
+   "what_it_adds": "Build the derived dataset for the PIC composability instrument prototype.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 884
+   },
+   "hosts": [
+    "api.census.gov"
+   ],
+   "outputs": [],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {},
+   "writes_outside_build": [
+    "<path>/scratchpad"
+   ],
+   "witnesses": {
+    "static": [
+     "<path>/scratchpad"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "<path>/scratchpad": "static"
+   },
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [
+    "<outside-repo>/companies.json"
+   ],
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/companies.json'",
+   "registry_sources": [
+    "vault"
+   ],
+   "consuming_pages": [
+    "chain"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "import_error",
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "writes_outside_build"
+   ]
+  },
+  {
+   "script": "build_viz.py",
+   "kind": "build",
+   "what_it_adds": "Build the shared quantitative dataset for the rebuilt PIC prototypes.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 372
+   },
+   "hosts": [],
+   "outputs": [],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": []
+   },
+   "output_learned_by": {},
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [
+    "<outside-repo>/chain-data.json",
+    "<outside-repo>/companies.json"
+   ],
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/companies.json'",
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "import_error",
+    "no_house_docstring",
+    "no_output_detected",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json"
+   ]
+  },
   {
    "script": "derive_atlas.py",
    "kind": "derive",
@@ -169,6 +264,7 @@
    "observed_reads": [
     "accountability/claims.json",
     "atlas/claims.json",
+    "chain/claims.json",
     "churn/claims.json",
     "cluster-health/claims.json",
     "collaboration/claims.json",
@@ -177,8 +273,7 @@
     "funding-map/claims.json",
     "laborshed/claims.json",
     "location-quotient/claims.json",
-    "occupations/claims.json",
-    "patents/claims.json"
+    "occupations/claims.json"
    ],
    "import_error": null,
    "registry_sources": [],
@@ -705,7 +800,7 @@
     "observed": []
    },
    "output_learned_by": {},
-   "observed_stop": "SystemExit(derive_sources: no plain-language gloss or short name for ipeds_programs_census, ipeds_directory, ipeds_control_cips, scorecard_fos_polymer, openalex, nsf_awards. Every source needs what it is, what it is good for, and what it cannot tell you; the third is the most useful line on the page and the build refuses to publish a registry that has silently dropped one.)",
+   "observed_stop": "SystemExit(derive_sources: no plain-language gloss or short name for ipeds_programs_census, ipeds_directory, ipeds_control_cips, scorecard_fos_polymer, openalex, nsf_awards, vault, cbp. Every source needs what it is, what it is good for, and what it cannot tell you; the third is the most useful line on the page and the build refuses to publish a registry that has silently dropped one.)",
    "observed_network": [],
    "observed_reads": [
     "_data/SOURCES.json",
