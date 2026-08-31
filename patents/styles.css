@@ -13,7 +13,7 @@
 .hero-viz svg{width:100%;height:auto;display:block;overflow:visible}
 
 /* from sources/styles.css */
-.warn{margin:11px 0 0;font-size:15px;line-height:1.55;color:#3A3A36;background:#F6EEF3;
+.warn{margin:11px 0 0;font-size:15px;line-height:1.55;max-width:var(--measure);color:#3A3A36;background:#F6EEF3;
   border-left:3px solid var(--hover);padding:11px 15px}
 
 /* from sources/styles.css */
@@ -23,7 +23,3 @@
 /* from federal-money/styles.css and cost-scissors/styles.css, identical in both */
 .band.tint{background:#F4F1EC}
 
-/* from sources/styles.css — body prose that is not a lede. The house sheet has .lede and
-   .src and nothing between, so explanatory paragraphs had no register of their own. */
-.band .body{margin:14px auto 0;max-width:var(--measure);font-size:17px;line-height:1.62;
-  color:#333B3E}

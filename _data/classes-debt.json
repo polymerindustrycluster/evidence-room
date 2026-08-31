@@ -8,14 +8,33 @@
   "why they were not bulk-promoted to _shared the night they were found."
  ],
  "debt": {
-  "foot-id": ["churn", "cost-scissors", "sources"],
-  "foot-links": ["churn", "cost-scissors", "sources"],
-  "machine--eda": ["funding-map"],
-  "fig-sub-mode": ["funding-map"],
-  "tint": ["sources"],
-  "pro-viz": ["timeline"],
-  "ctl": ["timeline"],
-  "viz": ["timeline"],
-  "body": ["wages"]
+  "foot-id": [
+   "churn",
+   "cost-scissors",
+   "sources"
+  ],
+  "foot-links": [
+   "churn",
+   "cost-scissors",
+   "sources"
+  ],
+  "machine--eda": [
+   "funding-map"
+  ],
+  "fig-sub-mode": [
+   "funding-map"
+  ],
+  "tint": [
+   "sources"
+  ],
+  "pro-viz": [
+   "timeline"
+  ],
+  "ctl": [
+   "timeline"
+  ],
+  "viz": [
+   "timeline"
+  ]
  }
 }

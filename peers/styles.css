@@ -26,7 +26,10 @@
 /* Overflow from a source line lands INSIDE the figure's own table disclosure, where the
    reader who wants the arithmetic already is — instead of spending caption ink in front
    of the one who does not (page-design § caveat ink). */
-.tnote{margin:12px 0 0;font-size:13px;line-height:1.55;color:var(--caption)}
+/* max-width restored 2026-08-31: federal-money and laborshed define this same class
+   WITH the measure cap; this copy had lost it and table-drawer notes ran 980px wide. */
+.tnote{margin:12px 0 0;font-size:13px;line-height:1.55;color:var(--caption);
+  max-width:var(--measure)}
 
 /* Footer. One stage: what a reader can do here, then who published it, on the paper
    ground so the story visibly ends. */
