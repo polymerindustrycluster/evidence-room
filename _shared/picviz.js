@@ -489,7 +489,7 @@ const PV = (() => {
     ]);
     const METHOD = new Set([
       "definition", "bases", "stages", "baseline", "why", "why_corresponding",
-      "rebasing", "composite_note", "derived_note",
+      "rebasing", "composite_note", "derived_note", "membership_note",
     ]);
     const STRUCTURAL = new Set([
       "source", "sources", "url", "docs", "row", "fetched", "as_of", "years", "year",
