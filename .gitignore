@@ -4,7 +4,18 @@
 # is never copied into this tree in the first place, and this file stops it if someone
 # copies by hand later. From the 2026-08-17 public-release audit.
 
-# Raw fetched data — re-fetchable by construction via _data/build/fetch_*.py.
+# Raw fetched data. NOT re-fetchable by construction, and the earlier claim that it was
+# is withdrawn: on 2026-08-31 a second machine tried to rebuild from a clean clone and
+# could not. Two independent reasons. Sixty-five producer scripts existed only in the
+# internal tree, so several published pages had no path from source to page at all
+# (seven were added that day; the rest produce withheld pages and stay out). And of the
+# fetchers that WERE here, fetch_oews.py takes a 403 from BLS and
+# fetch_odjfs_projections.py fails TLS verification, so a page can be un-rebuildable
+# even with every script present. Treat a rebuild as something to TEST, never assert.
+#
+# The build cache itself is shared between machines through a private repository, not
+# this one — see README. What stays out of here permanently is below, on the merits
+# rather than on re-fetchability:
 # (_sbir_awards.csv carries PI emails; ohsos_bulk.json carries SoS filing records;
 # metroverse.json is CC BY-NC-SA + D&B-derived and may NEVER enter a public repo.)
 _data/build/*.json
@@ -15,9 +26,12 @@ _data/build/*.xlsx
 _data/build/*.txt
 _data/build/__pycache__/
 
-# Internal process docs stay internal. METHODS-SOP.md is the one public methods doc.
+# Internal process docs stay internal. Two exceptions ship: METHODS-SOP.md, the public
+# methods doc, and REBUILDING.md, which records which pages a stranger can actually
+# rebuild and which they cannot. The second is only useful in public.
 _data/*.md
 !_data/METHODS-SOP.md
+!_data/REBUILDING.md
 
 # Staging machinery is process, not product.
 stage/
