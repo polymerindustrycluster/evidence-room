@@ -67,10 +67,9 @@
     <p class="takeaway">The flow</p>
     <h2>Hires above the line, separations below, for 55 quarters</h2>
     <p class="lede">Both are flows: jobs starting and ending during the quarter, counted
-      by the Quarterly Workforce Indicators, the Census series that counts how many jobs
-      employers started and ended each quarter. Their difference is the <b>net flow</b>,
-      the line. A conventional employment chart shows something else: the headcount, which
-      the Census estimates separately. What follows is how big the movement is, which way
+      by the Quarterly Workforce Indicators, a Census series. Their difference is the
+      <b>net flow</b>, the line. A conventional employment chart shows the headcount
+      instead, estimated separately. What follows is how big the movement is, which way
       it has turned since 2012, and what it looks like on a 150-person floor.</p>
     <!-- Two titles, one per rendering. The narrow chart aggregates quarters into years,
          so the wide chart's per-quarter numbers would name marks a phone reader cannot
@@ -80,15 +79,15 @@
     <p class="fig-title only-narrow">About eight thousand jobs start and about eight
       thousand end in an average year</p>
     <p class="fig-sub" id="flowsub"></p>
-    <div class="chart"><svg id="flow" role="img" aria-labelledby="flow-t"><title id="flow-t">Quarterly hires and separations in plastics and rubber
-        manufacturing across twelve counties, drawn above and below a shared zero, with
-        net change as a flat line through the middle.</title></svg></div>
     <div class="legend">
       <span><i style="background:#1A8A9E"></i> Hires</span>
       <span><i style="background:#C85F0C"></i> Separations</span>
       <span class="only-wide"><i class="ln" style="background:#141A1C"></i> Net flow, the
         two added</span>
     </div>
+    <div class="chart"><svg id="flow" role="img" aria-labelledby="flow-t"><title id="flow-t">Quarterly hires and separations in plastics and rubber
+        manufacturing across twelve counties, drawn above and below a shared zero, with
+        net change as a flat line through the middle.</title></svg></div>
     <div id="flowtable"></div>
     <!-- The reconciliation sits between the table and the source line because that is
          where the two measures are printed side by side. -->
@@ -138,14 +137,14 @@
     <p class="fig-sub">How far the leaving rate runs ahead of the hiring rate, averaged
       over a year. Above the line more jobs ended than started; below it, more started.
       2012Q4&ndash;2025Q3.</p>
-    <div class="chart"><svg id="split" role="img" aria-labelledby="split-t"><title id="split-t">The gap between the separation rate and the hire rate, drawn
-        as a line around zero. It sits below zero for most of the 2010s, swings hard
-        negative during the 2021 to 2022 rehiring wave, and stays above zero from 2023
-        onward.</title></svg></div>
     <div class="legend">
       <span><i style="background:#C85F0C"></i> Leaving runs ahead of hiring</span>
       <span><i style="background:#1A8A9E"></i> Hiring runs ahead of leaving</span>
     </div>
+    <div class="chart"><svg id="split" role="img" aria-labelledby="split-t"><title id="split-t">The gap between the separation rate and the hire rate, drawn
+        as a line around zero. It sits below zero for most of the 2010s, swings hard
+        negative during the 2021 to 2022 rehiring wave, and stays above zero from 2023
+        onward.</title></svg></div>
     <div id="splittable"></div>
     <p class="src" id="splitsrc"></p>
   </div>

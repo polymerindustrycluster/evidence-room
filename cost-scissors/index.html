@@ -108,16 +108,12 @@
       140 costs 40% more than it did then, and a line under 100 costs less. Color: one
       series per chain link. Gray: related series, for context (each one named,
       with the value it ends at, in the key below the chart).</p>
+    <div class="legend" id="lineskey"></div>
     <div class="chart"><svg id="lines" role="img" aria-labelledby="lines-t">
       <title id="lines-t">Chart showing the 2022 feedstock spike collapsing while
         finished-product prices climbed to about 40% above their 2019 base and stayed
         there.</title>
     </svg></div>
-    <!-- Written from the data in app.js: every line, colored or gray, named with the
-         value it ends at, so no stroke on the chart is anonymous at either width.
-         Swatch heights carry the chart's weight ladder, so the key decodes the same
-         way the plot does when hue is unavailable. -->
-    <div class="legend" id="lineskey"></div>
     <div id="linestable"></div>
     <p class="src" id="linessrc"></p>
   </div>
@@ -150,6 +146,7 @@
       than resin prices; below it, resin has grown more. One point is one percentage
       point of growth: an index up 30% against one up 20% is a gap of ten points. Gray:
       the same question one link up, resin against industrial chemicals.</p>
+    <div class="legend" id="spreadkey"></div>
     <div class="chart"><svg id="spread" role="img" aria-labelledby="spread-t">
       <title id="spread-t">Chart showing the product-minus-resin index gap running
         negative through 2021 to a trough of 22.5 points under, crossing zero in August
@@ -157,14 +154,6 @@
         2026 and standing at 14.3 points now, while the resin-minus-chemicals gap
         unwound to zero.</title>
     </svg></div>
-    <!-- The gray comparator used to be the only line on this page a reader could not
-         check. It is a subtraction, resin minus industrial chemicals, and the chemicals
-         index was drawn in it, named in a table column and given a level nowhere: not in
-         a key, not in the ladder table, not in the level table, not in a source line. The
-         key below names both lines and prints the level each of the three underlying
-         indexes ends at, and the table beside it now carries the chemicals column, so the
-         second subtraction can be re-run exactly the way the first one can. -->
-    <div class="legend" id="spreadkey"></div>
     <div id="spreadtable"></div>
     <p class="src" id="spreadsrc"></p>
     <div class="note"><b>This is not a margin.</b> Labor, freight, energy, tooling and

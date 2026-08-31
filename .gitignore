@@ -44,9 +44,18 @@ shots/
 */shots/
 
 # Licensed fonts (Aptos — Microsoft). Code may name the font; files never ship.
+# The rule is about REDISTRIBUTION RIGHTS, not about fonts, so an OFL face that the site
+# is required to ship is an exception rather than a relaxation. Added 2026-08-31: the
+# shared sheet named Lato and shipped nothing, so every reader without Lato installed got
+# fallback metrics and no true 900 weight. Lato is SIL OFL 1.1 (see _shared/fonts/OFL.txt),
+# redistributable with its notice, 51 KB across six woff2 subsets. Aptos stays blocked:
+# it is ttf/otf and is not exempted below.
 */fonts/
 *.ttf
 *.otf
+!_shared/fonts/
+!_shared/fonts/*.woff2
+!_shared/fonts/OFL.txt
 
 # Bundles are built in CI for the shipped set only — a committed dist/ was a standing
 # leak vector (contaminated + font-embedded bundles found in the audit).

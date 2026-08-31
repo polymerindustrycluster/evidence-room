@@ -46,7 +46,19 @@ async function bundle(name) {
   for (const m of [...html.matchAll(/<link[^>]+rel=["']stylesheet["'][^>]*>/gi)]) {
     const href = /href=["']([^"']+)["']/.exec(m[0])?.[1];
     if (!href || /^https?:/i.test(href)) continue;
-    const css = await read(path.resolve(dir, href));
+    const cssPath = path.resolve(dir, href);
+    let css = await read(cssPath);
+    /* A stylesheet's relative url() is relative to the STYLESHEET, but once inlined it
+       resolves against the PAGE. _shared/pic-viz.css says url(fonts/x.woff2) and means
+       _shared/fonts/x.woff2; inlined into churn/index.html it would mean churn/fonts/.
+       Nothing caught this until Lato became the first font shipped from the shared sheet
+       (2026-08-31): three pages failed verify with ERR_FILE_NOT_FOUND and the rest were
+       about to render in a fallback face. Rewrite to page-relative before inlining. */
+    const cssDir = path.dirname(cssPath);
+    css = css.replace(/url\((['"]?)(?!https?:|data:|#|\/)([^'")]+)\1\)/gi, (whole, q, u) => {
+      const rel = path.relative(dir, path.resolve(cssDir, u)).split(path.sep).join("/");
+      return `url(${q}${rel}${q})`;
+    });
     html = html.replace(m[0], () => `<style>\n${css}\n</style>`);
   }
 
@@ -55,7 +67,7 @@ async function bundle(name) {
      request, so a relative font URL is not "degrades gracefully" - it is four guaranteed
      404s and a page rendered in a fallback face nobody chose. The files are local and
      about 220KB each; base64 costs a third more and stays far inside the size limit. */
-  for (const m of [...html.matchAll(/url\((['"]?)((?:fonts|assets)\/[^'")]+)\1\)/gi)]) {
+  for (const m of [...html.matchAll(/url\((['"]?)((?:\.\.\/)*(?:[\w.-]+\/)*(?:fonts|assets)\/[^'")]+)\1\)/gi)]) {
     const abs = path.resolve(dir, m[2]);
     if (!existsSync(abs)) { console.log(`  ${name}: missing ${m[2]}`); continue; }
     const ext = path.extname(abs).slice(1).toLowerCase();

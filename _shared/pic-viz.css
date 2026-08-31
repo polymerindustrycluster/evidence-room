@@ -1,3 +1,33 @@
+/* ---------------------------------------------------------------- LATO, SHIPPED
+ * Self-hosted 2026-08-31. Before this the stack NAMED Lato and shipped nothing, so the
+ * design rendered as intended only for readers who happened to have Lato installed —
+ * and the authoring machines did. Every gate measures geometry in a browser that has
+ * whatever fonts the runner has, so all sixteen passed while readers without Lato got
+ * fallback metrics, no true 900 weight, and chart labels spaced against the wrong glyph
+ * widths (see cost-scissors/app.js:617, which measures 9.6 user units per uppercase
+ * Lato character). tools/fonts.mjs now fails the build if a named family is not shipped.
+ * Lato is SIL Open Font License 1.1 — redistribution with the OFL notice is permitted;
+ * see _shared/fonts/OFL.txt. Subsets are Google's latin and latin-ext, 51 KB total.
+ * font-display:swap so text paints immediately in the fallback and reflows once. */
+@font-face{font-family:Lato;font-style:normal;font-weight:400;font-display:swap;
+  src:url("fonts/lato-400-latin.woff2") format("woff2");
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:Lato;font-style:normal;font-weight:400;font-display:swap;
+  src:url("fonts/lato-400-latin-ext.woff2") format("woff2");
+  unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:Lato;font-style:normal;font-weight:700;font-display:swap;
+  src:url("fonts/lato-700-latin.woff2") format("woff2");
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:Lato;font-style:normal;font-weight:700;font-display:swap;
+  src:url("fonts/lato-700-latin-ext.woff2") format("woff2");
+  unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+@font-face{font-family:Lato;font-style:normal;font-weight:900;font-display:swap;
+  src:url("fonts/lato-900-latin.woff2") format("woff2");
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;}
+@font-face{font-family:Lato;font-style:normal;font-weight:900;font-display:swap;
+  src:url("fonts/lato-900-latin-ext.woff2") format("woff2");
+  unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;}
+
 :root{
   --ink:#0C6473; --deep:#073F49; --deeper:#052E36; --action:#188295; --hover:#995480;
   --caption:#656661; --lime:#B8D637; --paper:#FAF9F7; --line:#DDD9D2; --text:#141A1C;
@@ -164,6 +194,17 @@ dfn b{font-weight:900}
 .pv-labq{font-size:13.6px;fill:var(--pv-muted)}
 .legend{display:flex;gap:20px;flex-wrap:wrap;margin:14px 0 0;font-size:13.5px;
   color:var(--pv-ink)}
+/* KEY BEFORE DATA (2026-08-31). The house convention moved: a legend renders ABOVE its
+ * chart, in reading order, so the reader holds the key before meeting the data instead
+ * of decoding, scanning down, and scanning back. This is the shared practice of the
+ * exemplars the room is built against: NYT colors category words directly above the
+ * graphic, Datawrapper places the scatter color key above the plot by default (and
+ * Silver Bulletin ships Datawrapper), The Pudding keys color in the prose itself.
+ * Left edge stays the chart rail; that was already consistent and correct.
+ * The two rules below carry the spacing the old below-chart margin provided, and the
+ * .fig-title adjacency rule keeps working for charts that have no legend. */
+.fig-sub + .legend{margin-top:10px}
+.legend + .chart{margin-top:8px}
 .legend span{display:inline-flex;align-items:center;gap:8px}
 .legend i{width:14px;height:14px;display:block;flex:none}
 .legend i.ln{height:3px}
@@ -351,3 +392,20 @@ details.pv-table:not([open]) .pv-tablewrap{display:none}
 .band .wrap > *,.hero .wrap > *,.closer .wrap > *,.pv-method .wrap > *,
 .pv-method-grid > *{margin-left:auto;margin-right:auto}
 .pv-method-grid{margin-left:auto;margin-right:auto}
+
+/* ------------------------------------------------------- FIGURE CHROME, PROMOTED
+ * Every chart carries its own claim-title plus a how-to-read line, so the H2 does
+ * section work instead of doubling as the chart title (chart-craft.md).
+ *
+ * PROMOTED TO SHARED 2026-08-31. This rule was written once, in federal-money's own
+ * page-local styles.css, and the MARKUP convention was then copied to sixteen other
+ * pages while the CSS was not. So .fig-title appeared 57 times across 17 pages and
+ * resolved to a rule on exactly one of them; everywhere else a chart's title rendered
+ * as body copy. Sixteen gates passed the entire time, because a <p class="fig-title">
+ * with no matching rule is a perfectly valid paragraph — nothing measured whether a
+ * class a page USES is a class the site DEFINES. tools/classes.mjs now does.
+ * The values are federal-money's, unchanged, so that page renders identically. */
+.fig-title{margin:30px 0 0;font-size:22px;font-weight:900;letter-spacing:-.01em;
+  line-height:1.3;max-width:var(--measure);color:var(--text)}
+.fig-sub{margin:6px 0 0;font-size:13.5px;color:var(--caption);max-width:var(--measure)}
+.fig-title + .fig-sub + .chart{margin-top:16px}

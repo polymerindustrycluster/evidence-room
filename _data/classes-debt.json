@@ -1,0 +1,21 @@
+{
+ "_readme": [
+  "Known classes that a page uses and nothing defines, recorded 2026-08-31 when the",
+  "classes gate landed. This file is a RATCHET, like coldopen.json: an entry here is",
+  "acknowledged debt the gate tolerates; any use NOT listed here fails the build. Fix a",
+  "class, remove its entry. Never add an entry to silence a failure on a NEW page - a",
+  "new page starts with zero debt. The per-page definitions of these differ, which is",
+  "why they were not bulk-promoted to _shared the night they were found."
+ ],
+ "debt": {
+  "foot-id": ["churn", "cost-scissors", "sources"],
+  "foot-links": ["churn", "cost-scissors", "sources"],
+  "machine--eda": ["funding-map"],
+  "fig-sub-mode": ["funding-map"],
+  "tint": ["sources"],
+  "pro-viz": ["timeline"],
+  "ctl": ["timeline"],
+  "viz": ["timeline"],
+  "body": ["wages"]
+ }
+}
