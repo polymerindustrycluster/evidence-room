@@ -60,10 +60,12 @@ today, and no gate notices.
 
 ## Where the build cache lives
 
-`_data/build/*.json` is gitignored here and shared between machines through a private
-repository. Three files never leave it on any path: `metroverse.json` (CC BY-NC-SA and
+`_data/build/*.json` is gitignored here and shared between machines through
+**[evidence-room-data](https://github.com/polymerindustrycluster/evidence-room-data)**,
+private, 82 pulls. Clone it and copy `build/*.json` into `_data/build/`. Four files never
+enter it on any path: `metroverse.json` (CC BY-NC-SA and
 D&B-derived), `ohsos_bulk.json` (Secretary of State filing records) and `_sbir_awards.csv`
-(carries PI email addresses). Verified 2026-08-31: no producer of any **published** page
+(carries PI email addresses) and `_ohsos_snapshots.jsonl`. Verified 2026-08-31: no producer of any **published** page
 reads any of the three.
 
 ## Credentials

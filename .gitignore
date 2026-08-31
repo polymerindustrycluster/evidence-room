@@ -14,7 +14,7 @@
 # even with every script present. Treat a rebuild as something to TEST, never assert.
 #
 # The build cache itself is shared between machines through a private repository, not
-# this one — see README. What stays out of here permanently is below, on the merits
+# this one: github.com/polymerindustrycluster/evidence-room-data (see _data/REBUILDING.md). What stays out of here permanently is below, on the merits
 # rather than on re-fetchability:
 # (_sbir_awards.csv carries PI emails; ohsos_bulk.json carries SoS filing records;
 # metroverse.json is CC BY-NC-SA + D&B-derived and may NEVER enter a public repo.)
