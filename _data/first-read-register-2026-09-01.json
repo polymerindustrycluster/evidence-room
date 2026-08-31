@@ -1,0 +1,2793 @@
+{
+ "generated": "2026-09-01",
+ "method": "22 independent cold readers, rendered prose only, 8-type taxonomy, severity 1-3",
+ "register": [
+  {
+   "page": "accountability",
+   "quote": "Those two award lines name the Greater Akron Chamber, PIC\u2019s own organisation: 4.9 percent of the $85,335,784 awarded.",
+   "type": "OTHER",
+   "severity": 3,
+   "why": "This is the first substantive sentence and 'Those two award lines' has no antecedent \u2014 I had not been shown any lines yet, so I stopped and scanned backward for something that wasn't there."
+  },
+  {
+   "page": "accountability",
+   "quote": "the Greater Akron Chamber, PIC\u2019s own organisation",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "PIC is never expanded anywhere on the page, and the apposition left me unsure whether PIC belongs to the Chamber or the Chamber to PIC."
+  },
+  {
+   "page": "accountability",
+   "quote": "The rest goes straight to six other EDA leads and five state workstreams.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "EDA is never expanded, and 'leads' and 'workstreams' are grant-administration insider words used as if I already knew the program structure."
+  },
+  {
+   "page": "accountability",
+   "quote": "4.9 percent of the $85,335,784 awarded",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "The $85,335,784 figure is used here before the next paragraph defines it as the total of three public awards."
+  },
+  {
+   "page": "accountability",
+   "quote": "All bars on one dollar scale. Read down: reported secured, awarded, reached by a named recipient, then on a line naming the Chamber. The detached bar is match, never part of the total.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "This narrates chart mechanics (bars, reading direction, a detached bar), and the first stage 'reported secured' carries no figure \u2014 I only learn it is $106.3 million in the closing line."
+  },
+  {
+   "page": "accountability",
+   "quote": "The other six EDA awards do not pass through it.",
+   "type": "DANGLING-TENSION",
+   "severity": 3,
+   "why": "I was told there are three public awards, then suddenly there are seven EDA awards; I had to re-read and infer that one public award splits into seven lines \u2014 the three-award structure (EDA, APEX, Ohio Innovation Hub) is never laid out as a trio."
+  },
+  {
+   "page": "accountability",
+   "quote": "EDA is fully assigned and APEX is fully assigned; the entire unassigned balance, $6,165,608, sits in the Ohio Innovation Hub at 80.3 percent, held in two workstreams.",
+   "type": "VOCAB-DRIFT",
+   "severity": 2,
+   "why": "'Assigned' is a third name for what the chart calls 'reached by a named recipient' and the table calls 'executed'; I only connected them by doing the subtraction myself."
+  },
+  {
+   "page": "accountability",
+   "quote": "sits in the Ohio Innovation Hub at 80.3 percent",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "80.3 percent of what is never stated \u2014 I guessed it means the unassigned share of that one award, but the sentence doesn't say."
+  },
+  {
+   "page": "accountability",
+   "quote": "APEX is fully assigned",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "APEX appears here for the first and only time with no expansion or description of what kind of award it is."
+  },
+  {
+   "page": "accountability",
+   "quote": "The dashed outline is the absence of a figure rather than a small one, and nothing on this page estimates what belongs in it.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "Prose about a dashed outline's meaning, and I had to infer from a previous sentence that the absent figure is payment."
+  },
+  {
+   "page": "accountability",
+   "quote": "Of the $3,748,500 startup-support workstream, $225,000 is the nine Synthe6 cohort cash awards and the balance is delivered through the Bounce sub-grant that runs the whole workstream, so publishing \u201c$3,523,500 unassigned\u201d without that sentence manufactures a problem PIC does not have.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "One sentence carries a workstream total, a carve-out, a delivery mechanism, a derived figure, and a meta-claim about publishing ethics \u2014 I read it three times."
+  },
+  {
+   "page": "accountability",
+   "quote": "the balance is delivered through the Bounce sub-grant",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "'Synthe6' and 'Bounce' are program/organisation names introduced with zero explanation of what they are."
+  },
+  {
+   "page": "accountability",
+   "quote": "The other gap, $2,642,108 of the $5,992,000 PIC Translational R&D allocation, is genuinely not yet sub-granted.",
+   "type": "DANGLING-TENSION",
+   "severity": 1,
+   "why": "I had to add $3,523,500 and $2,642,108 myself to confirm the two gaps compose the $6,165,608 unassigned balance; the page never closes the loop."
+  },
+  {
+   "page": "accountability",
+   "quote": "the largest single line in the assignment test is money assigned to a building that does not exist yet",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "'The assignment test' is used as a named thing but is never defined \u2014 I guessed it means the reached-a-named-recipient stage."
+  },
+  {
+   "page": "accountability",
+   "quote": "The rule falls at $1,000,000.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "I first read 'rule' as a regulation; it turns out to mean a horizontal divider line in the table, which only clicked at 'the eleven above the rule' later."
+  },
+  {
+   "page": "accountability",
+   "quote": "The chip on each row says what kind of participation the line records",
+   "type": "CHART-SPEAK",
+   "severity": 1,
+   "why": "'Chip' is UI-widget vocabulary narrating table furniture rather than the story."
+  },
+  {
+   "page": "accountability",
+   "quote": "An operator at an independent firm reading for a number they could win should read those two rows and not the eleven above the rule.",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "The table was declared 'one row per executed award line', but seven sub-grants plus nine cohort awards are here called 'those two rows' \u2014 sixteen lines versus two rows is never reconciled."
+  },
+  {
+   "page": "accountability",
+   "quote": "A hollow ring with a centre pip is scheduled and a solid disc is delivered",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "Pure legend-narration of mark shapes; I had to hold the encoding in my head to keep reading."
+  },
+  {
+   "page": "accountability",
+   "quote": "Owner attribution is on every row because a target that moves for a state controlling board is not PIC\u2019s slip.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "The phrase 'moves for' (slips because of?) plus the unglossed 'state controlling board' forced a re-read to extract the point that partner delays aren't PIC's fault."
+  },
+  {
+   "page": "accountability",
+   "quote": "The register also carries one standing rule, because without it a promise register creates a reason to stop publishing forward dates: only a date already published is eligible, so publishing a date can never be worse than withholding one.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "The incentive logic is compressed into one colon-chained sentence with a double negative at the end; I re-read it twice before the rule made sense."
+  },
+  {
+   "page": "accountability",
+   "quote": "On 12 December 2025 PolyKinetix was described as selected \u201c5 of 38\u201d.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "'5 of 38' is undecodable \u2014 ranked fifth of 38, or one of 5 winners from 38? The section is about denominator confusion, but the phrase itself gives me nothing to hold."
+  },
+  {
+   "page": "accountability",
+   "quote": "The internal board scorecard records eighteen rows, fifteen of which PIC answers for.",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "A second, unrelated 'eighteen' arrives immediately after 'eighteen dated commitments'; I paused to check whether these are the same eighteen and the page never distinguishes them."
+  },
+  {
+   "page": "accountability",
+   "quote": "Generated from the shipped files that carry each limitation, so a hand-maintained honesty list cannot go stale here.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "'Shipped files' (and 'this repository' earlier) is software-process language a general reader of a public page doesn't have \u2014 shipped where, by whom?"
+  },
+  {
+   "page": "accountability",
+   "quote": "The Tech Hub award is $51,001,413",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "'Tech Hub' appears here for the first time; only by arithmetic did I guess it is the largest of the three public awards mentioned at the top."
+  },
+  {
+   "page": "accountability",
+   "quote": "across the same twelve counties, FY2019 to FY2026, in constant 2025 dollars",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "'The same twelve counties' presumes a geography this page never established \u2014 same as what?"
+  },
+  {
+   "page": "accountability",
+   "quote": "so this page states the level and the limit and computes no ratio",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "'The limit' has no clear referent \u2014 the limit of the comparison? of the instrument? Minor snag at the end of an otherwise careful paragraph."
+  },
+  {
+   "page": "accountability",
+   "quote": "PIC holds $4,149,515 of the $106.3 million it reports securing",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "$106.3 million is quantified for the first time in the closing line; the opening chart stage 'reported secured' carried no number, and I had to add $85,335,784 and $20,954,667 myself to see where it comes from."
+  },
+  {
+   "page": "accountability",
+   "quote": "One of those eighteen carries a number that can be missed.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "Cryptic on both axes \u2014 which of the eighteen, and does 'missed' mean overlooked or unmet? I stalled on the closing line."
+  },
+  {
+   "page": "accountability",
+   "quote": "The award register behind bands A, B and C.",
+   "type": "VOCAB-DRIFT",
+   "severity": 2,
+   "why": "The charts above were narrated as 'stages'; the footer suddenly calls them 'bands A, B and C', labels used nowhere else in the prose."
+  },
+  {
+   "page": "atlas",
+   "quote": "Three, in Lowell, Big Rapids and Akron, hold over a third of that record.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "\"That record\" grammatically points back to institutions reporting, so I couldn't tell if the third is a third of degrees conferred, of institutions, or of reports \u2014 I had to guess degrees."
+  },
+  {
+   "page": "atlas",
+   "quote": "Three, in Lowell, Big Rapids and Akron, hold over a third of that record.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "The three institutions are named only by city and never by name; I know Akron but had no idea what university sits in Big Rapids, so the page's most important actors stayed anonymous."
+  },
+  {
+   "page": "atlas",
+   "quote": "It is a floor, not a census, and small enough to list whole: one dot, one institution.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "Three moves in one sentence \u2014 an ambiguous \"It\" (the record? the 147?), an unglossed floor/census metaphor on first use, and a chart mechanic \u2014 before any chart had been introduced; I re-read it."
+  },
+  {
+   "page": "atlas",
+   "quote": "sized by every degree and certificate it ever conferred under a polymer heading",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "\"Under a polymer heading\" implies some classification system that is never named or explained \u2014 heading of what?"
+  },
+  {
+   "page": "atlas",
+   "quote": "Each bar is one institution\u2019s lifetime completions across every polymer program it ever filed, 1991\u20132023: the twelve largest.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "The colon-appended \"the twelve largest\" arrives after the definition and date range, so I had to re-read to realize the chart shows only twelve institutions, not all 147."
+  },
+  {
+   "page": "atlas",
+   "quote": "lifetime completions",
+   "type": "VOCAB-DRIFT",
+   "severity": 2,
+   "why": "The opening paragraphs say \"degree or certificate\" and \"conferred\"; here the same thing suddenly becomes \"completions\" with no bridge, and I paused to confirm they were the same count."
+  },
+  {
+   "page": "atlas",
+   "quote": "the programs page ranks the same record the other way, because the two are different units and neither substitutes for the other",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "\"Ranks the same record the other way\" is abstract, and I had to backtrack to map \"the two\" onto institutions vs. programs \u2014 a page I haven't seen is invoked mid-explanation."
+  },
+  {
+   "page": "atlas",
+   "quote": "every polymer program it ever filed",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "\"Filed\" treats programs as paperwork lodged with the government \u2014 plausible given the opening, but the reporting mechanism behind the verb is never explained."
+  },
+  {
+   "page": "atlas",
+   "quote": "Since 1991, 147 American colleges and universities have reported a polymer degree or certificate to the federal government.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 1,
+   "why": "The lede says \"since 1991\" as if the record runs to the present, but the bar-chart caption later bounds it at 1991\u20132023; the endpoint is never reconciled."
+  },
+  {
+   "page": "chain",
+   "quote": "Every company PIC has classified in the fourteen counties, on the chain that turns a molecule into a product and back.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 3,
+   "why": "PIC is the first word of substance and is never expanded or explained anywhere on the page \u2014 I read the whole thing without learning what PIC is."
+  },
+  {
+   "page": "chain",
+   "quote": "in the fourteen counties",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "'the' fourteen counties assumes I already know which region this is; the next block finally says Northeast Ohio, so meaning arrives after the claim."
+  },
+  {
+   "page": "chain",
+   "quote": "Type what you need to make.",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "Abrupt imperative with no signal that this is a search-box instruction \u2014 I briefly read it as part of the argument."
+  },
+  {
+   "page": "chain",
+   "quote": "Classified firms: width is a linear count Expected shape if NEO matched the surrounding megaregion\u2019s mix",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "Legend labels run together as prose with no punctuation between them; I re-read to find where one label ends and the next begins."
+  },
+  {
+   "page": "chain",
+   "quote": "the surrounding megaregion\u2019s mix",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "Which megaregion? The term is never named or defined, yet the chart's 'expected shape' baseline depends entirely on it."
+  },
+  {
+   "page": "chain",
+   "quote": "PIC has classified nothing at all in three of its own counties.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "'its own counties' implies PIC's footprint differs from the fourteen just mentioned, but the PIC-12 vs NEO-14 distinction is only revealed two paragraphs later."
+  },
+  {
+   "page": "chain",
+   "quote": "The map is not a count of firms: population would steal that story.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "A map appears without introduction \u2014 I was reading about a ribbon \u2014 and 'population would steal that story' is cryptic; I had to infer it means raw counts would just mirror population."
+  },
+  {
+   "page": "chain",
+   "quote": "PIC\u2019s intake form and the vault use compatible value-chain taxonomies",
+   "type": "UNDEFINED-TERM",
+   "severity": 3,
+   "why": "'the vault' arrives with a definite article and no definition; I never learn what it is beyond guessing it is PIC's company database."
+  },
+  {
+   "page": "chain",
+   "quote": "so the companies on record and the projects people want funded can sit on one spine",
+   "type": "CHART-SPEAK",
+   "severity": 1,
+   "why": "'spine' is a chart-layout term smuggled into the argument; I only understood it after the later 'shared center line' sentence."
+  },
+  {
+   "page": "chain",
+   "quote": "converters have 12 cataloged companies for every 2026 application",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "I first parsed '2026' as a count of applications rather than a year, and 'converters' is an unglossed stage name \u2014 two decodings in one clause."
+  },
+  {
+   "page": "chain",
+   "quote": "cataloged companies",
+   "type": "VOCAB-DRIFT",
+   "severity": 2,
+   "why": "The same set of companies is called 'classified', 'cataloged', and 'on record' in the span of a few sentences; I paused to check whether these were different sets."
+  },
+  {
+   "page": "chain",
+   "quote": "Twelve raw-materials companies may be very large plants; 246 converters may be small shops.",
+   "type": "DANGLING-TENSION",
+   "severity": 3,
+   "why": "The sentence before used 12 as the converters' ratio; now twelve is the raw-materials company count and 246 appears from nowhere \u2014 I stopped and re-read to untangle which 12 was which."
+  },
+  {
+   "page": "chain",
+   "quote": "(intake is PIC-12, the vault is NEO-14)",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "Two coded geography names, never expanded; I inferred NEO-14 is the fourteen counties but PIC-12 is pure guesswork."
+  },
+  {
+   "page": "chain",
+   "quote": "so the ratio is indicative and is the one place on this site where the two geographies touch",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "One sentence carries the footprint mismatch, a hedge ('indicative' of what?), and a site-wide methodological claim; I re-read it."
+  },
+  {
+   "page": "chain",
+   "quote": "Two different units, drawn on two scales that meet at a shared center line, never one axis, and never a ratio bar.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "A verbless fragment narrating design decisions ('never one axis, and never a ratio bar') that defends the chart rather than telling me what it shows."
+  },
+  {
+   "page": "chain",
+   "quote": "so both sides sum to more than their totals",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "'sum to more than their totals' reads as self-contradictory on first pass; I re-read to work out that stage counts exceed distinct-company counts because of multi-stage membership."
+  },
+  {
+   "page": "chain",
+   "quote": "Companies: GAC-PIC vault, 785 classified in NEO-14.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "GAC-PIC is yet another unexpanded acronym stacked onto PIC, though by this point I accepted it as a source label."
+  },
+  {
+   "page": "chain",
+   "quote": "Applications: pic-innovation-intake-export-2026-07-07.csv, 59 rows.",
+   "type": "CHART-SPEAK",
+   "severity": 1,
+   "why": "A raw internal filename in the prose; honest as provenance but it made me feel I was reading the maker's notes, not a page written for me."
+  },
+  {
+   "page": "churn",
+   "quote": "Net employment is a legitimate outcome measure, and funders are entitled to score it.",
+   "type": "UNDEFINED-TERM",
+   "severity": 3,
+   "why": "\"Funders\" and \"a program\" appear for the first time in the final two sentences \u2014 I had to re-read the ending and reconsider what the whole page was for, since nothing earlier said this was about evaluating a program."
+  },
+  {
+   "page": "churn",
+   "quote": "The ledger nets them: 111,529 hires, 111,361 separations, +168.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "\"The ledger\" is unintroduced and these totals cover an unstated window \u2014 I only learned it was 2012Q1\u20132025Q3 in the last paragraph."
+  },
+  {
+   "page": "churn",
+   "quote": "No: the headcount fell by 719, to 17,725.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "Fell since when, and where? Neither the period nor the region/industry has been named in the prose at this point."
+  },
+  {
+   "page": "churn",
+   "quote": "That margin is a ledger of flows, and it is not the answer to whether the industry has more jobs.",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "The page labels the +168-vs-minus-719 conflict as two different measures (\"estimated separately\") but never explains how the flows ledger can net positive while the headcount falls by 719."
+  },
+  {
+   "page": "churn",
+   "quote": "The rise here is almost all on the leaving side",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "\"The rise\" presumes I already know churn rose \u2014 that fact is first shown two paragraphs later (\"the line settles above where it started\"), so I stopped to ask what rise was meant."
+  },
+  {
+   "page": "churn",
+   "quote": "This pull has no other industry or state to compare against.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "\"Pull\" is data-analyst insider language for a data extract; a general reader doesn't know a page can have a \"pull.\""
+  },
+  {
+   "page": "churn",
+   "quote": "Since 2023Q1 more jobs have ended than started every quarter, the second kind of churn, the bad one.",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "Stated here as a raw every-quarter fact, but the later chart caption says the streak is \"averaged over a year\" \u2014 I couldn't tell whether the 11-quarter run holds in raw quarters or only in the trailing-year average."
+  },
+  {
+   "page": "churn",
+   "quote": "The further RIGHT, the more plastics and rubber jobs the county has.",
+   "type": "VOCAB-DRIFT",
+   "severity": 2,
+   "why": "\"Rubber\" appears for the first time here \u2014 until this caption the page seemed to be about plastics alone, so the industry's scope quietly changed."
+  },
+  {
+   "page": "churn",
+   "quote": "Over the last four published quarters the cluster moved 9.6% of its jobs in a quarter.",
+   "type": "VOCAB-DRIFT",
+   "severity": 2,
+   "why": "\"The cluster\" arrives unintroduced as yet another name for the same thing already called \"here,\" \"this pull,\" \"the region,\" and \"the industry.\""
+  },
+  {
+   "page": "churn",
+   "quote": "One job in ten here starts and one in ten ends every quarter: about 14 in and 14 out at a 150-person plant.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "One in ten of 150 is 15, not 14 \u2014 I stopped to recheck the arithmetic; the 14 actually comes from the 9.6% rate that isn't given until much later. \"Here\" is also unlocated."
+  },
+  {
+   "page": "churn",
+   "quote": "about 1,327 events for every one job of that margin",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "The sentence carries the window, the event total, the margin, and this ratio; the compressed phrase \"one job of that margin\" made me re-read to work out what was being divided by what."
+  },
+  {
+   "page": "churn",
+   "quote": "They are job events, not people: a Summit-to-Stark move counts twice.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "Assumes I know Summit and Stark are counties \u2014 they are the first place names on the page and are never identified as counties here."
+  },
+  {
+   "page": "churn",
+   "quote": "which comes to 434 starts and ends across the four quarters",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "The setup says \"about 54\" and \"about 54\" per quarter, which multiplies to 432, not 434 \u2014 the rounding mismatch trips a reader who checks."
+  },
+  {
+   "page": "churn",
+   "quote": "Their difference is the net flow, the line.",
+   "type": "CHART-SPEAK",
+   "severity": 1,
+   "why": "\"The line\" points from the prose at a chart element I haven't seen described, a small jolt of chart mechanics inside a definition."
+  },
+  {
+   "page": "churn",
+   "quote": "the last four published quarters",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "\"Published\" hints at a data-release lag that is never explained \u2014 I briefly wondered why data ends at 2025Q3 and what an unpublished quarter would be."
+  },
+  {
+   "page": "cluster-health",
+   "quote": "and on the same three-code basis this page counts",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "\"three-code basis\" assumes I know industries are counted by numeric codes, and \"basis this page counts\" reads like it is missing a word (\"counts on\"?) \u2014 I re-read it to parse the grammar before the colon rescued me."
+  },
+  {
+   "page": "cluster-health",
+   "quote": "while the region\u2019s fixed-set count of those same industries fell 7.2 percent",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "\"fixed-set count\" is never defined \u2014 I guessed it means holding a fixed list of industries constant, but couldn't tell whether it also fixes establishments or geography, and the 7.2 percent hangs on it."
+  },
+  {
+   "page": "cluster-health",
+   "quote": "The longest bar belongs to concentration, the one measure on this page with no better end at all.",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "\"concentration\" \u2014 of what, measured how \u2014 arrives with no definition, and \"no better end at all\" needed a second pass to decode as \"neither rising nor falling is good\"."
+  },
+  {
+   "page": "cluster-health",
+   "quote": "A bar is the SIZE of this year\u2019s step against how far that measure usually steps",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "\"this year\" is never anchored to a year \u2014 the opening paragraph compares 2023 to 2025, a two-year fall, so I couldn't tell whether a \"step\" is one year or that whole span."
+  },
+  {
+   "page": "cluster-health",
+   "quote": "so a three-hundredths move in a wage ratio and a $16 million move in contracting land on one axis",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "Both figures arrive before I know what the wage ratio compares or what \"contracting\" is, and I can't tell whether these are this year's actual moves or invented examples."
+  },
+  {
+   "page": "cluster-health",
+   "quote": "Past 1.0 the move beat the middle of that measure\u2019s own earlier moves, which is what \u201cbigger than usual\u201d means here and which about half of years do.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "Two stacked which-clauses pointing at different antecedents, plus \"the middle\" standing in for an unnamed median, made me re-read once to get who does what."
+  },
+  {
+   "page": "cluster-health",
+   "quote": "We have set no target for any of these five, so no tile reports distance from one.",
+   "type": "VOCAB-DRIFT",
+   "severity": 2,
+   "why": "The display element has been a \"bar\" for two paragraphs, suddenly becomes a \"tile\" here, and later a \"badge\" \u2014 I couldn't tell if these are one element or three."
+  },
+  {
+   "page": "cluster-health",
+   "quote": "Each reports a level, where that level sits in the measure\u2019s own published range, which end of that range is the better one for the region where there is one, a direction against a stated baseline, and the page it came from, where the working is shown in full.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "A five-item list where each item carries its own subordinate clause \u2014 I lost the list structure at \"where there is one\" and had to re-read twice to separate items from qualifiers."
+  },
+  {
+   "page": "cluster-health",
+   "quote": "The yardstick each bar is measured against is built one way for all five measures.",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "The page names concentration, a wage ratio, contracting, employment, degree and spending \u2014 six labels for \"five measures\" \u2014 and never lists the five, so I couldn't resolve whether \"contracting\" and the \"spending series\" are the same thing."
+  },
+  {
+   "page": "cluster-health",
+   "quote": "It says nothing about revision, and the difference decides how much weight a fresh figure can carry.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "I had to stop to work out which \"difference\" was meant (travel-between-years versus revision), and \"decides how much weight a fresh figure can carry\" is abstract until the next sentence backfills it."
+  },
+  {
+   "page": "cluster-health",
+   "quote": "A revision measure would say how far the year just published will move once the agencies restate it, and this repository has measured that for exactly three producer-price indexes, the prices factories charge for what they make: 259 reference months of archived earlier releases, a middle revision of 0.15 percent of the level and a largest of 1.42 percent.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "One sentence carries a definition, an inventory claim, an inline gloss, and three statistics \u2014 and \"259 reference months\" plus \"0.15 percent of the level\" arrived before I understood what a reference month is; I gave up mid-sentence and restarted."
+  },
+  {
+   "page": "cluster-health",
+   "quote": "Each of these is a live federal series with a known refresh, and one of them is behind the others.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "Which series is behind, and behind in what sense (staler data? missed refresh?), is never said \u2014 the sentence raises a flag and drops it."
+  },
+  {
+   "page": "cluster-health",
+   "quote": "Every figure here is recomputed from the published data of the page it links to, by one script in this folder.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "\"this folder\" (like the earlier \"this repository\") addresses me as if I'm browsing a code repo rather than reading a page \u2014 a brief where-am-I snag."
+  },
+  {
+   "page": "cluster-health",
+   "quote": "How much of the fall is the tide.",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "As an opening line, \"the fall\" assumes I already know something fell \u2014 the metaphor only resolves once the 7.2 percent lands mid-paragraph."
+  },
+  {
+   "page": "collaboration",
+   "quote": "Two independent instruments, publications and federal awards, measured over thirteen years.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 3,
+   "why": "Verbless fragment that never says WHO is being measured \u2014 the two universities are never named up front, and I only inferred Case Western and Akron from the NEO-SMART sentence three paragraphs later."
+  },
+  {
+   "page": "collaboration",
+   "quote": "201 coauthored papers, seven classified in polymers, four joint federal awards worth $3.7 million, none starting after 2017 in this window.",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 3,
+   "why": "Four figures arrive before I know whose partnership this is; I re-read to decide whether \"none starting after 2017\" meant the papers or the awards, and \"this window\" is used as if already defined."
+  },
+  {
+   "page": "collaboration",
+   "quote": "An earlier page here said PIC could put the two polymer chairs in the same room",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 3,
+   "why": "\"PIC\" is never expanded anywhere, and \"the two polymer chairs\" (department chairs? endowed chairs? people?) is insider shorthand \u2014 I gave up on knowing what PIC is."
+  },
+  {
+   "page": "collaboration",
+   "quote": "The window closes before the largest relevant award exists.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "At this point I still don't know when the window closes \u2014 \"The series ends in 2024\" arrives two paragraphs later, and the start year (2012?) is never stated at all, only recoverable by arithmetic from \"thirteen years\"."
+  },
+  {
+   "page": "collaboration",
+   "quote": "That was an unbounded negative resting on data that was never about collaboration",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "\"Unbounded negative\" is a term of art dropped without definition; I slowed to work out it means a limitless claim of absence."
+  },
+  {
+   "page": "collaboration",
+   "quote": "Each tick at the base is one paper classified in polymers and plastics, or in biomaterials next to it, a subject classification, not a keyword.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "Three qualifications in one sentence, and \"or in biomaterials next to it\" is ambiguous \u2014 next to it on the chart, or adjacent in the classification scheme? I re-read it."
+  },
+  {
+   "page": "collaboration",
+   "quote": "but a reader who knows about it should not have to wonder whether this page does",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "The ellipsis \"whether this page does\" (does what \u2014 know about it?) made me back up to resolve the antecedent."
+  },
+  {
+   "page": "collaboration",
+   "quote": "They are drawn as individual ticks rather than a proportional band because there are few enough that a band would render as a sliver and read as zero.",
+   "type": "CHART-SPEAK",
+   "severity": 1,
+   "why": "Prose narrating the chart's own rendering choices (ticks, band, sliver) \u2014 I understood it, but it is mechanics talk, not the story."
+  },
+  {
+   "page": "collaboration",
+   "quote": "Case Western leads the NEO-SMART NSF Engine, awarded 14 July 2026",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "\"NSF Engine\" is a specific federal program name assumed known; a lay reader parses it as an odd metaphor before moving on."
+  },
+  {
+   "page": "collaboration",
+   "quote": "the CWRU-led NEO-SMART NSF Engine, July 2026, in which Akron is a core partner",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "\"Case Western\" earlier becomes bare \"CWRU\" here, and this sentence restates the paragraph-3 NEO-SMART caveat almost verbatim, so I paused to check whether I had missed a difference between the two tellings."
+  },
+  {
+   "page": "collaboration",
+   "quote": "The largest joint federal undertaking these two institutions have entered began eighteen months after this window closed.",
+   "type": "DANGLING-TENSION",
+   "severity": 1,
+   "why": "\"Largest\" invites comparison with the $3.7 million just cited, but no figure for NEO-SMART is ever given, so the superlative floats unsupported."
+  },
+  {
+   "page": "collaboration",
+   "quote": "so a low count here means not visible at this resolution",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "\"Means not visible\" is grammatically clipped (means \"not visible\", or means only that it is not visible?) \u2014 a small hitch at the end of an otherwise well-motivated sentence."
+  },
+  {
+   "page": "cost-scissors",
+   "quote": "The cluster has members on every link.",
+   "type": "UNDEFINED-TERM",
+   "severity": 3,
+   "why": "\"The cluster\" arrives with a definite article as if already introduced \u2014 I never learn what cluster this is or whose members these are, and the page never circles back to define it."
+  },
+  {
+   "page": "cost-scissors",
+   "quote": "on the scale in the next chart it peaked at 283 and now reads 93, a fall of 190 against the 183 points it had gained above 100: 104% given back, which is why its bar runs past the line.",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 3,
+   "why": "The index scale (January 2019 = 100) is only defined two paragraphs later, so I had to hold 283, 93, 190, 183 and 100 as raw numbers and re-read once the base was finally explained; the sentence also packs the whole subtraction into one breath."
+  },
+  {
+   "page": "cost-scissors",
+   "quote": "What would sharpen this band: one member\u2019s own quoted-price history for a single part, January 2019 to now.",
+   "type": "UNDEFINED-TERM",
+   "severity": 3,
+   "why": "\"This band\" names nothing that came before \u2014 the gap has been called the line, the cushion, and the scissors, but never a band \u2014 and I gave up trying to identify its referent."
+  },
+  {
+   "page": "cost-scissors",
+   "quote": "The desk does not have one, so nothing on this page is a member\u2019s number, and the dollar figures below are the industry average translated into dollars.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "\"The desk\" is newsroom insider shorthand; no desk, author, or organization has been introduced, so I didn't know who was speaking."
+  },
+  {
+   "page": "cost-scissors",
+   "quote": "the dollar figures below are the industry average translated into dollars",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "\"Below\" points onward, but the only dollar figures ($1.00, $1.14, $1.40) appeared in the paragraph above \u2014 I looked for a table further down that never came."
+  },
+  {
+   "page": "cost-scissors",
+   "quote": "That was the converter\u2019s world through the shortage, bottoming 22.5 points under in August 2021.",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "\"The shortage\" arrives with a definite article but no shortage has been mentioned; I had to infer a 2021 resin shortage from context."
+  },
+  {
+   "page": "cost-scissors",
+   "quote": "Resin rose 23.2 points between March and May 2026, nearly a quarter of its 2019 base, the cushion closed to +0.7, its thinnest month since September 2022, and it reopened to +14.3 in July.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "Five claims comma-spliced into one sentence; I re-read to sort which \"it\" reopened and to keep the 23.2 / +0.7 / +14.3 figures attached to the right things."
+  },
+  {
+   "page": "cost-scissors",
+   "quote": "the cushion closed to +0.7",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "The same gap is \"the line\" in one paragraph, \"the cushion\" here, \"the scissors\" in the next section, and \"this band\" at the end \u2014 four names for one concept."
+  },
+  {
+   "page": "cost-scissors",
+   "quote": "And four of the seven prices come in pairs: the federal statistics measure resin twice and finished products twice, once from the industries that make them and once as goods traded on the open market.",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "\"Seven prices\" is the first tally given; only five things had been named, so I stopped to back-count (gas, crude, resin, products, electricity, plus the duplicates) before the sentence made sense."
+  },
+  {
+   "page": "cost-scissors",
+   "quote": "Every number this page later subtracts uses the makers\u2019 pair.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "Cryptic forward reference \u2014 what the page will \"subtract\" and which two series constitute \"the makers' pair\" only become clear several sections later."
+  },
+  {
+   "page": "cost-scissors",
+   "quote": "Those are cash prices, and the ordering holds after inflation too, which is why it means somebody in this chain ate the spike and somebody banked it.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "Three ideas in one sentence (nominal prices, inflation-robustness, a distributional conclusion) joined by the clunky hinge \"which is why it means\"; \"cash prices\" is also unglossed and \"this chain\" is its first mention."
+  },
+  {
+   "page": "cost-scissors",
+   "quote": "One feedstock breaks the pattern: Ohio industrial electricity peaked this January, not in 2022, and has given back only about a quarter, which is why it sits out of order in the chart below.",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "\"Feedstock\" \u2014 and calling electricity one \u2014 is only defined in the following sentence, so I briefly backtracked; \"sits out of order in the chart below\" is also chart mechanics in the prose."
+  },
+  {
+   "page": "cost-scissors",
+   "quote": "West Texas Intermediate crude, the benchmark American oil, crested that June and kept about half of its rise.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 1,
+   "why": "\"That June\" forces me to fish the year (2022) out of the previous sentence's \"August 2022\" \u2014 a small dangling antecedent."
+  },
+  {
+   "page": "cost-scissors",
+   "quote": "the wave weakened at every link until the last one, where it set.",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "\"Set\" is doing quiet metaphorical work (set like concrete?) and took a beat to parse as \"the price rise became permanent\"."
+  },
+  {
+   "page": "cost-scissors",
+   "quote": "two blades moving apart, the cost of inputs rising as one and the price of the finished part as the other",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "Both blades are described as rising, so \"moving apart\" takes a moment to resolve into rising-at-different-rates rather than moving in opposite directions."
+  },
+  {
+   "page": "federal-money",
+   "quote": "the same twelve counties",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "\"Same\" points backward to nothing \u2014 this is the first mention of geography, the twelve counties are never named, and the page prose never says what region this is beyond a late mention of the Greater Akron Chamber."
+  },
+  {
+   "page": "federal-money",
+   "quote": "In fiscal 2019 the routine flow alone came to $51.6 million, $647,000 more than the whole award.",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "The $51.6M is in 2025 dollars but the award it's measured against is as-awarded; the next paragraph restates the award at $51.3 million, which shrinks the gap to roughly $300,000, and the $647,000 figure is never squared with that."
+  },
+  {
+   "page": "federal-money",
+   "quote": "the dashed line is the eight-year average",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "The headline average is $36.6M \"over the seven finished fiscal years,\" so at this point I couldn't tell which average the dashed line marks; the closing paragraph explains why closed years are used ($34.9M vs $36.6M) but the chart's guide line apparently uses the average the text disavows, and that is never reconciled."
+  },
+  {
+   "page": "federal-money",
+   "quote": "The two rubber codes hold 65% of eight years, and the second of them, tire manufacturing, put $20.2 million into FY2022 and recorded nothing at all in FY2023: the region\u2019s total fell $26.6 million between those two years, most of it from that one code, which is why FY2023 is the shortest bar in the year-by-year chart.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "Six numeric claims (65%, $20.2M, zero, $26.6M, \"most of it,\" shortest bar) in one sentence \u2014 I had to re-read to keep the FY2022/FY2023 arithmetic straight."
+  },
+  {
+   "page": "federal-money",
+   "quote": "It takes more of the eight years than any named industry does.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "\"More of the eight years\" reads as time on first pass, not money \u2014 it means more of the eight-year dollar total; the same idiom recurs as \"hold 65% of eight years.\""
+  },
+  {
+   "page": "federal-money",
+   "quote": "it reaches this page as industry categories with no buyer and no seller attached",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "The clause immediately before says the routine flow IS the government buying things, so \"no buyer attached\" reads as a contradiction until you work out it means the records don't identify agency or vendor."
+  },
+  {
+   "page": "federal-money",
+   "quote": "Bar labels round to the nearest $0.1M, so subtracting a label from the award line does not give the true gap; the two bars nearest that line carry their exact distance from it instead.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "Pure label-mechanics narration \u2014 \"subtracting a label from the award line\" and \"carry their exact distance from it\" made me re-read to figure out what the chart actually shows."
+  },
+  {
+   "page": "federal-money",
+   "quote": "averaging it in with the seven closed years gives $34.9 million, which stretches the award to a year and a half",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "I had to stop and verify the direction \u2014 a smaller average making the award cover MORE years \u2014 while also holding the still-running-FY2026 qualification and the closed-years rule in the same sentence."
+  },
+  {
+   "page": "federal-money",
+   "quote": "The Tech Hub award is $51.0 million",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "The page opens with a definite article on \"Tech Hub\" as if I already know it; the grant itself is defined in the same sentence, but what a Tech Hub is (a federal program? a place?) never is."
+  },
+  {
+   "page": "federal-money",
+   "quote": "These are obligations recorded against chemical (325) and plastics and rubber (326) industry codes",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "\"Obligations\" is used here but only defined in the following paragraph, and the bare code numbers 325/326 arrive four paragraphs before the NAICS explanation."
+  },
+  {
+   "page": "federal-money",
+   "quote": "over the seven finished fiscal years",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 1,
+   "why": "Which seven? The FY2019\u2013FY2026 window isn't stated until a chart caption several paragraphs later, so the definite article assumes a time frame I hadn't been given."
+  },
+  {
+   "page": "federal-money",
+   "quote": "the routine flow",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "One concept travels as \"ordinary federal contracting,\" \"the routine flow,\" and \"routine federal polymer contracting\" (with the sector likewise drifting from \"chemical and plastics manufacturing\" to \"polymer industry\" to \"polymer codes\"); connectable, but the plain definition of \"routine flow\" only arrives near the end."
+  },
+  {
+   "page": "federal-money",
+   "quote": "$11.1 million to BioVerde for bio-based butadiene at the top, and $2.7 million at the bottom to stand up a regional office of innovation at the Greater Akron Chamber",
+   "type": "CHART-SPEAK",
+   "severity": 1,
+   "why": "\"At the top\" and \"at the bottom\" are positions in a chart I haven't been shown yet at that point in the prose."
+  },
+  {
+   "page": "federal-money",
+   "quote": "TARDISS, another federally funded research program",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "A bare acronym with no expansion and, unlike NEO-SMART, no dollar figure \u2014 I couldn't tell why it was named or what size it is."
+  },
+  {
+   "page": "federal-money",
+   "quote": "The award reads down to the project.",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "\"Reads down to\" is an unusual idiom for \"is traceable to the project level\" \u2014 a beat of hesitation before the next sentence clarified it."
+  },
+  {
+   "page": "federal-money",
+   "quote": "That is a count of something else and the two are never added together, but it does fix the scale",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 1,
+   "why": "\"The two\" and \"never added together\" (by whom, where?) plus \"fix\" reading momentarily as \"repair\" rather than \"establish\" made me slow before the one-in-840 payoff landed."
+  },
+  {
+   "page": "federal-money",
+   "quote": "Name the sentence and what it fails against",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "\"Fails against\" is an insider testing idiom \u2014 I paused to work out it means which source or check the sentence contradicts."
+  },
+  {
+   "page": "funding-map",
+   "quote": "Machine 1 \u00b7 EDA Sustainable Polymers Tech Hub \u00b7 $51.00M federal",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "The previous sentence promised to introduce 'awards' and then the first one is labeled a 'Machine' with no explanation of the metaphor, so I paused to work out whether a machine was something different from an award."
+  },
+  {
+   "page": "funding-map",
+   "quote": "EDA is the U.S. Economic Development Administration, the federal agency behind two of the three awards",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "Only Machine 1 is ever explicitly tied to EDA in the prose \u2014 the workforce award's funder is never named \u2014 so I kept scanning for the second EDA award and never found it confirmed."
+  },
+  {
+   "page": "funding-map",
+   "quote": "EDA obligates each of its seven awards, meaning it commits the money straight to the project lead, so no federal dollar passes through PIC\u2019s hands.",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "'Seven awards' lands before I've been told the $51M Tech Hub is itself made of seven sub-awards, so on first read it seemed to say EDA has seven awards in total and I had to re-read against the 'three awards' just established."
+  },
+  {
+   "page": "funding-map",
+   "quote": "Largest check: BioVerde, $11.12M, for bio-based butadiene.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "Butadiene is assumed known; the page later glosses tire chemistry carefully (6PPD, vulcanized rubber) but this earlier chemical gets no such help."
+  },
+  {
+   "page": "funding-map",
+   "quote": "The state\u2019s grant lands in one Akron hub and splits five ways; the biggest slice, $18.52M, is a building.",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "I get the biggest slice but the state grant's own total never appears in the prose I read, so I couldn't place $18.52M against its whole (and mentally subtracting $51M from $85.3M still leaves two awards to split)."
+  },
+  {
+   "page": "funding-map",
+   "quote": "Its two company-facing slices, Translational R&D and Synthe6, reach fourteen organizations.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "Synthe6 is dropped in as a known program name; only two sections later do I learn it is a nine-company cohort, and 'Translational R&D' as a slice name is nearly as opaque."
+  },
+  {
+   "page": "funding-map",
+   "quote": "The local match commitment beside it, $3.37M, is larger than the award itself.",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "The workforce award's own dollar amount is never stated in the prose, so 'larger than the award itself' compares to a number I was never given."
+  },
+  {
+   "page": "funding-map",
+   "quote": "Connectors into individual recipients are not to scale. Hatching is match money, promised alongside the award.",
+   "type": "CHART-SPEAK",
+   "severity": 1,
+   "why": "This is graphic mechanics ('connectors', 'hatching') in the prose stream; as caption text it's defensible but it reads as the chart explaining itself."
+  },
+  {
+   "page": "funding-map",
+   "quote": "More than half sits with the seven direct federal awardees, and the single largest line is a building.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 1,
+   "why": "More than half of which figure \u2014 the $85.3M awarded or the $79.2M with named recipients? Both appear in the sentence before it."
+  },
+  {
+   "page": "funding-map",
+   "quote": "Full Circle\u2019s award funds end-of-life tire recycling, the only recycling project among the seven direct federal awards.",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "'Award' now names the seven sub-grants inside Machine 1 while the page's three headline items are also 'awards' (and also 'machines'), so I had to keep tracking which level 'award' meant."
+  },
+  {
+   "page": "funding-map",
+   "quote": "The nine equal Synthe6 cohort awards share one row here; the CSV lists each company separately.",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "'The CSV' arrives with a definite article though no CSV was mentioned before \u2014 the only data file introduced was data/funding.json."
+  },
+  {
+   "page": "funding-map",
+   "quote": "$3.52M running Synthe6 through Bounce",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "Bounce is never identified anywhere in the prose \u2014 I could tell it was some organization administering the cohort but gave up on knowing what it actually is."
+  },
+  {
+   "page": "funding-map",
+   "quote": "The other $6.17M sits in two Ohio workstreams: $2.64M of Translational R&D not yet sub-granted, and $3.52M running Synthe6 through Bounce.",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "I re-read twice: earlier these same two slices 'reach fourteen organizations' yet here part of them has reached no one, and my own arithmetic ($85.3M \u2212 $79.2M = $6.1M) doesn't visibly match the stated $6.17M because of rounding."
+  },
+  {
+   "page": "funding-map",
+   "quote": "The Evidence Room Every page, each with its own sources and its own tests.",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "'Its own tests' is never explained \u2014 I don't know what a page's tests are or what passing them would mean."
+  },
+  {
+   "page": "funding-map",
+   "quote": "Award figures are amounts committed, not cash spent.",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "The opening calls the $85.3M what governments 'committed', later totals call it 'awarded', and this line fuses the two terms without saying they are the same thing (while 'promised' means something different)."
+  },
+  {
+   "page": "funding-map",
+   "quote": "Correction, 29 August 2026: this page led with Three public awards, $106 million one line above a standfirst saying governments awarded $85.3 million.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 1,
+   "why": "The old headline is embedded mid-sentence with no visible delimiters in the text I read, so I had to re-parse where the quoted headline ended and the sentence resumed."
+  },
+  {
+   "page": "laborshed",
+   "quote": "The diagonal of the matrix, pulled out and ranked.",
+   "type": "UNDEFINED-TERM",
+   "severity": 3,
+   "why": "No matrix has been introduced anywhere on the page, so I could not picture what was pulled out or ranked and gave up."
+  },
+  {
+   "page": "laborshed",
+   "quote": "Against the whole imported share that is 29 percent, because the largest single piece of it lives in counties too scattered to group.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "On first pass it reads as 'the imported share equals 29 percent'; I had to re-read twice to see the denominator had switched from the groupable part to the whole imported share."
+  },
+  {
+   "page": "laborshed",
+   "quote": "Of the part that can be grouped at all, roughly half comes from metros two hours away, where nobody drives daily.",
+   "type": "UNDEFINED-TERM",
+   "severity": 3,
+   "why": "Grouped by what? Nothing has explained what grouping means here; I only worked it out from the following sentence's 'counties too scattered to group.'"
+  },
+  {
+   "page": "laborshed",
+   "quote": "Franklin County alone accounts for 26,960 of the jobs worked inside the twelve counties, up from 23,506 in 2019.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 3,
+   "why": "'The twelve counties' arrives here for the first time with a definite article \u2014 the page never names them or says it has widened from Summit County alone to a twelve-county region."
+  },
+  {
+   "page": "laborshed",
+   "quote": "the whole imported share",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "'Imported' is used here for the first time with no setup; I had to infer it means jobs filled by people living outside the county."
+  },
+  {
+   "page": "laborshed",
+   "quote": "Reported as one number, that share sounds like a ring of people driving in every morning.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "The last share named was residents at 48.4 percent, but the commuter-ring image fits its unstated complement \u2014 I paused to work out which population 'that share' covers."
+  },
+  {
+   "page": "laborshed",
+   "quote": "A 2019 pull tests whether remote work created the pattern. It did not.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "'Pull' is data-team insider speech for a data extract, and 'It did not' made me pause over whether the pull or remote work is the antecedent."
+  },
+  {
+   "page": "laborshed",
+   "quote": "LODES counts her job in Summit County and her home two hours south, and records no trip between them.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "LODES appears as a bare acronym, never expanded; I guessed it is the census payroll records from the opener but was not told."
+  },
+  {
+   "page": "laborshed",
+   "quote": "The line at half is not an official standard.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "It narrates a guide line on a chart I had not yet been shown or told about, so I had to infer that a 50 percent reference line exists."
+  },
+  {
+   "page": "laborshed",
+   "quote": "only Pittsburgh holds more of its own workforce inside its own borders",
+   "type": "VOCAB-DRIFT",
+   "severity": 2,
+   "why": "The page just taught me workplace-side and resident-side are different measures that 'do not move together,' yet this phrasing reads resident-side while the chart caption defines the bar workplace-side."
+  },
+  {
+   "page": "laborshed",
+   "quote": "Every bar counts only the jobs held by residents of the region\u2019s own state, which is a narrower basis than the charts above use and gives the twelve counties a smaller job total.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "Three methodological moves in one sentence \u2014 a restriction, a comparison to earlier charts, and a consequence \u2014 with no reason given for why the restriction exists; I slowed to hold it all."
+  },
+  {
+   "page": "laborshed",
+   "quote": "every single-state peer metro of six or more counties",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "'Peer' is never given a criterion and the 'single-state' restriction is unexplained, so I could not tell what population the bars actually cover."
+  },
+  {
+   "page": "laborshed",
+   "quote": "What the industry staffs, and what it pays for it.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "'The industry' \u2014 no industry has been named anywhere on this page, which until now was about all jobs in a county, so I had no idea what this teaser refers to."
+  },
+  {
+   "page": "laborshed",
+   "quote": "Each bar is one county\u2019s 2022 jobs.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 1,
+   "why": "The caption never says how many counties are on the chart \u2014 every county in America, or some subset."
+  },
+  {
+   "page": "laborshed",
+   "quote": "The twelve counties sit inside the national pack, a little above its middle",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 1,
+   "why": "The chart just defined two dots per county, and this takeaway does not say which of the two measures the twelve counties are above the middle on."
+  },
+  {
+   "page": "laborshed",
+   "quote": "a quality engineer whose paycheck says Barberton and whose mortgage says Columbus",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "A non-local does not know Barberton is in Summit County \u2014 which is the whole point of the example \u2014 until the next sentence quietly resolves it."
+  },
+  {
+   "page": "laborshed",
+   "quote": "Measured identically, 397 counties in 73 peer metros settle whether the pattern above is about this region or about the country.",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "'Peer' metros \u2014 peers by what standard? The selection rule is never stated at first use."
+  },
+  {
+   "page": "location-quotient",
+   "quote": "That is 5.96\u00d7 the national share, the strongest of the three industries this page counts as the cluster.",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 3,
+   "why": "The page opens on \"That\" with no antecedent and a ratio whose measure is not defined until the next section \u2014 I could not say what 5.96\u00d7 was multiplying until a paragraph later."
+  },
+  {
+   "page": "location-quotient",
+   "quote": "the strongest of the three industries this page counts as the cluster",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "\"The cluster\" and its three member industries are not named until two paragraphs later, so I held the term open while reading everything in between."
+  },
+  {
+   "page": "location-quotient",
+   "quote": "more than double the 2.44\u00d7 of the rubber products the region is named for",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "This assumes I already know which region this is and that it is famous for rubber \u2014 the region is never actually named anywhere in the prose."
+  },
+  {
+   "page": "location-quotient",
+   "quote": "It is also more than double the 2.44\u00d7 of the rubber products the region is named for, and it has led every year since 2015.",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "This reads as if rubber products is one of \"the three industries\" of the cluster, but a later chart note says rubber products is only a slice of a combined industry \u2014 I went back to re-check what the three were."
+  },
+  {
+   "page": "location-quotient",
+   "quote": "A reading that high means more coatings work per job here than the country has, in sites, in suppliers and in people who know it; it does not mean the industry is big.",
+   "type": "VOCAB-DRIFT",
+   "severity": 2,
+   "why": "\"Coatings\" arrives as a new name for what the rest of the page calls paint, and \"more coatings work per job\" is a ratio I could not picture \u2014 I re-read and settled for the gist."
+  },
+  {
+   "page": "location-quotient",
+   "quote": "Every figure is rebuilt from free federal files and matches the Bureau of Labor Statistics\u2019 own published figure to the last digit it prints.",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "The check section later describes differences spread evenly across a range, so I paused over whether the figures match exactly or only within rounding \u2014 the two claims are never reconciled in one place."
+  },
+  {
+   "page": "location-quotient",
+   "quote": "Every figure on this page compares two shares: how much of the region\u2019s jobs sit in an industry, against how much of the country\u2019s do.",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "The very next section gives raw job counts (24,030; 4,259) that are not comparisons of shares, so \"every figure\" is literally false \u2014 a small snag for a careful reader."
+  },
+  {
+   "page": "location-quotient",
+   "quote": "Paint sits far above that line: above 5.4\u00d7 for eleven straight years, and more than double whichever line is next.",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "\"That line\" means the 1.0\u00d7 level while \"whichever line is next\" means another industry's chart line \u2014 the same word carrying two meanings inside one sentence."
+  },
+  {
+   "page": "location-quotient",
+   "quote": "Ohio as a whole is already concentrated in paint at 3.78\u00d7, and these twelve counties are well above the state.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "First notice that the region is twelve counties, and they are never listed \u2014 until here the region was only \"a region of 1.70 million.\""
+  },
+  {
+   "page": "location-quotient",
+   "quote": "The whole cluster this page measures, resin plus paint plus plastics and rubber products, comes to 24,030 of the region\u2019s 1.70 million jobs, about one in seventy, and it is a floor: the bureau will not publish every county, so the true figure is higher.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "Cluster roster, two totals, a ratio, a floor claim and a disclosure caveat in one sentence \u2014 and I could not tell whether \"plastics and rubber products\" was one industry or two until a chart note much later."
+  },
+  {
+   "page": "location-quotient",
+   "quote": "Plastics products and rubber products are slices of that third line rather than industries standing beside it, and chemical manufacturing is drawn from outside the cluster for comparison, so the six lines are not one ranking.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "I had to re-read to separate \"plastics and rubber products\" (one line) from \"Plastics products\" and \"rubber products\" (its slices) while also absorbing the chemical-manufacturing exception and the not-one-ranking warning."
+  },
+  {
+   "page": "location-quotient",
+   "quote": "The teal line holds the same five counties every year; the grey line is the chart above, built on whichever six to nine counties BLS disclosed that year.",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "I am shown two versions of the same measure but never told why the fixed five-county line exists or what its agreement with the grey line is supposed to prove."
+  },
+  {
+   "page": "location-quotient",
+   "quote": "the grey line is the chart above",
+   "type": "CHART-SPEAK",
+   "severity": 1,
+   "why": "A line cannot be a chart \u2014 it took a beat to parse this as \"repeats the paint line from the chart above.\""
+  },
+  {
+   "page": "location-quotient",
+   "quote": "Counties are sorted by the paint column, highest first, so the county this section is about is the top row; the counties whose paint cell is withheld sit beneath, ordered by plastics and rubber.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "\"The county this section is about\" is never named in the prose, so the top row points at a county I cannot identify."
+  },
+  {
+   "page": "location-quotient",
+   "quote": "built on whichever six to nine counties BLS disclosed that year",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "\"BLS\" is never introduced as an acronym (the full name appears earlier without it), and \"disclosed\"/\"withheld\" lean on suppression rules the page never explains \u2014 why some counties go missing is left to inference."
+  },
+  {
+   "page": "location-quotient",
+   "quote": "If you run a coatings or plastics site in one of these counties, the file cannot say why the cluster is here and you can.",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "\"The file\" arrives out of nowhere \u2014 nothing on the page has been called a file except \"free federal files,\" so I paused over what exactly cannot speak."
+  },
+  {
+   "page": "occupations",
+   "quote": "All 26 occupations: the industry\u2019s fourteen largest hold 59.6% of its national employment, and every metro pays the six degree occupations further under the nation than the fourteen high-school-majority ones.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "Three claims in one sentence, two coined categories (\"degree occupations\", \"high-school-majority\") not yet defined, and metro pay appears inside a section just declared to count the whole country \u2014 I had to re-read."
+  },
+  {
+   "page": "occupations",
+   "quote": "The two fourteens are different lists: four of the largest occupations are degree jobs, not high-school-majority ones.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "The correction only lands after re-reading the prior sentence to discover there were two different fourteens at all."
+  },
+  {
+   "page": "occupations",
+   "quote": "the fourteen high-school-majority ones",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "Coined category used two sections before the education chart explains what the majority is a majority of."
+  },
+  {
+   "page": "occupations",
+   "quote": "All four figures below count the whole country, not Northeast Ohio.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "Unclear whether \"figures\" means four charts or four numbers, and the very next chart paragraph cites metro pay before the scope-change note arrives."
+  },
+  {
+   "page": "occupations",
+   "quote": "Only 5 of Akron\u2019s 25 published occupations are paid above the same job nationally, 11 of 25 in Cleveland, 5 of 22 in Canton-Massillon and 1 of 21 in Youngstown-Warren.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "\"Published occupations\" is agency shorthand, and the denominator silently drops from 26 to 25/22/21 with no reason given."
+  },
+  {
+   "page": "occupations",
+   "quote": "The degree band sits deeper under its diamonds than the floor band in every metro",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "A headline written in the chart\u2019s encoding \u2014 \"band\" first appears here and \"under its diamonds\" asks me to think in symbols instead of wages."
+  },
+  {
+   "page": "occupations",
+   "quote": "Scope changes back: this survey has no Ohio cut, so these are national figures used to sort the rows on both charts.",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "\"This survey\" points at a survey not yet introduced (O*NET is named only in the caption below), and \"Ohio cut\" is data-shop slang."
+  },
+  {
+   "page": "occupations",
+   "quote": "a notch left of the half-way rule is a degree-majority job",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "\"Rule\" meaning a drawn line is print jargon; I first tried to read it as a regulation."
+  },
+  {
+   "page": "occupations",
+   "quote": "The federal release reports the two lowest Job Zones as one band, so no row reads Zone 1 or Zone 2 alone, and the bands come from the education split rather than the Zone, so the two need not agree.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "Two unrelated caveats chained together; \"band\" switches meaning from the pay chart\u2019s row groups to merged Job Zones, and \"the two\" needed a re-read to bind."
+  },
+  {
+   "page": "occupations",
+   "quote": "a program recoded to a different federal program code would leave these counts without leaving the region",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "The \"leave the counts without leaving the region\" wordplay is a garden path; the caveat is good but the phrasing slowed me."
+  },
+  {
+   "page": "occupations",
+   "quote": "an average of 142 through 2021",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 1,
+   "why": "Average over an unstated window in the intro; the 2014 start year arrives four sections later."
+  },
+  {
+   "page": "occupations",
+   "quote": "floor work is the shape of it nationwide",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "\"Floor work\" is never defined \u2014 inferable as factory-floor jobs, but it cost a beat in the very first sentence."
+  },
+  {
+   "page": "occupations",
+   "quote": "Why the discount lands on exactly these jobs is a question these files cannot answer.",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "The same pay gap is called \"shortfall\", then \"discount\", later a \"gap\" \u2014 three names for one thing across the page."
+  },
+  {
+   "page": "occupations",
+   "quote": "The two occupations most nearly confined to this industry are both floor jobs.",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "Only tire builders were named; the second confined occupation is withheld to the chart, so the sentence half-delivers."
+  },
+  {
+   "page": "occupations",
+   "quote": "Those floor jobs are paid near the national rate in Akron and Cleveland.",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "\"Those floor jobs\" reaches back across an entire chart section for its referent."
+  },
+  {
+   "page": "patents",
+   "quote": "The state whose rubber city named the industry filed 342 polymer patent applications in 2023",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "Opens on a riddle \u2014 I had to decode that the state is Ohio and the rubber city is Akron, and I never resolved which industry Akron supposedly 'named'; the subject 'Ohio' only appears two sentences later."
+  },
+  {
+   "page": "patents",
+   "quote": "roughly in step with its industry: filings with an American inventor fell 22 percent nationwide",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 1,
+   "why": "'Filings' here has to mean polymer filings specifically, but the word polymer is absent from the clause, so I paused to confirm the 22 percent wasn't all patenting."
+  },
+  {
+   "page": "patents",
+   "quote": "What is Ohio\u2019s own is quieter and separate: its patenting across all technologies fell 12.5 percent against the nation\u2019s 1.6, polymer and everything else alike.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "Two comparisons plus the trailing qualifier 'polymer and everything else alike' \u2014 I slowed to work out what that tail modifies (that the Ohio-wide decline is uniform, not polymer-driven)."
+  },
+  {
+   "page": "patents",
+   "quote": "roughly in step with its industry",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "The national polymer-filing series is variously called 'its industry', 'the field', 'the shrinking American field', and 'American polymer filings' \u2014 calling a patent series an 'industry' made me double-check they were the same thing."
+  },
+  {
+   "page": "patents",
+   "quote": "indexed to 2015 = 100, complete filing years only",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "'Complete filing years' is used twice before the publication-lag paragraph two sections later explains why a filing year could be incomplete."
+  },
+  {
+   "page": "patents",
+   "quote": "Polymer (CPC C08) against all technology classes",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "CPC is never expanded (Cooperative Patent Classification); C08 gets a gloss one paragraph later but the acronym itself is assumed."
+  },
+  {
+   "page": "patents",
+   "quote": "Ask the same endpoint for C08 filings without naming a country",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "'Endpoint' is API-builder vocabulary dropped into reader-facing prose; a non-technical reader has no referent for it."
+  },
+  {
+   "page": "patents",
+   "quote": "reproduced the 99 and could not reproduce the label on it",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "I had to re-read this \u2014 'could not reproduce the label' is opaque phrasing for 'the number matched but the US-only claim attached to it didn't', and the whole replication-reviewer workflow is assumed known."
+  },
+  {
+   "page": "patents",
+   "quote": "read on 30 August 2026, the 2025 bar holds 266 and the 2026 bar holds 20",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "Never says which series these bars belong to \u2014 Ohio or national, polymer or all-tech; I inferred Ohio polymer only from the follow-up 'Neither is a finding about Ohio'."
+  },
+  {
+   "page": "patents",
+   "quote": "the hollow bars are drawn so the shape of the lag is visible instead of taken on trust",
+   "type": "CHART-SPEAK",
+   "severity": 1,
+   "why": "Bar mechanics are narrated here and then repeated nearly verbatim in the next caption line ('Solid bars are complete filing years. Hollow bars are years still filling...') \u2014 the same drawing decision explained twice."
+  },
+  {
+   "page": "patents",
+   "quote": "Same pull as above.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "'Pull' is insider shorthand for the data fetch; a first-time reader has no anchor for what a 'pull' is or what 'above' covers."
+  },
+  {
+   "page": "patents",
+   "quote": "The peak year is 2017 at 498",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "Peak of which series? Ohio polymer is my best inference from the surrounding numbers, but the sentence never says, and 498 exceeds every count named so far."
+  },
+  {
+   "page": "patents",
+   "quote": "which is why this page indexes from 2015, the first year fetched, rather than from the most flattering point",
+   "type": "OTHER",
+   "severity": 3,
+   "why": "I had to re-read to work out the direction: flattering to whom? Indexing from the 2017 peak would make the fall look steeper \u2014 so 'flattering' apparently means flattering to the decline narrative, which the reader must reconstruct."
+  },
+  {
+   "page": "patents",
+   "quote": "these are the four anchor cities by name",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "Four cities are asserted but only Akron and Youngstown are ever named; I stopped to hunt for the other two and they never appear."
+  },
+  {
+   "page": "patents",
+   "quote": "Filings and degrees are different instruments on different scopes, one statewide and one regional, and they are falling together",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "I slowed to assign which is statewide and which is regional (left to inference), while also absorbing 'instruments', 'scopes', and the inputs/outputs framing in one sentence."
+  },
+  {
+   "page": "patents",
+   "quote": "and Ohio\u2019s all-time polymer count drops from 8,854 to 3,948",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "'All-time' is undefined and doesn't square with the 2015-onward window everything else on the page uses \u2014 8,854 can't come from that window at ~400 filings a year, so I couldn't tell what period this covers."
+  },
+  {
+   "page": "patents",
+   "quote": "a tire-technology application assigned to The Goodyear Tire & Rubber Company of Akron, Ohio, with the inventor resident in Colmar-Berg, Luxembourg",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "The anecdote shows applicant-counting CREDITS Akron, yet the aggregate just said switching to applicant-counting HALVES Ohio's total \u2014 the two point in opposite directions and the page never reconciles why."
+  },
+  {
+   "page": "patents",
+   "quote": "For a replicator, the exact leaf fields, because guessing them is the stall",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "'The stall' is insider shorthand ('the thing that stalls replication'); the paragraph is honestly fenced off for replicators, but the framing phrase itself made me pause before skimming."
+  },
+  {
+   "page": "patents",
+   "quote": "American patenting overall fell 2",
+   "type": "DANGLING-TENSION",
+   "severity": 1,
+   "why": "Earlier the same quantity is given as 'the nation's 1.6' (matching the 98.4 index); the closing rounds it to 2 with no signal, and a numerate reader notices the two values don't match."
+  },
+  {
+   "page": "peers",
+   "quote": "That ranking rests on 54,846 jobs in 2024, counting private employers only.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 3,
+   "why": "The page opens on \"That ranking\" and a big number with no stated geography \u2014 I never learn from the prose whose 54,846 jobs these are (Ohio's? the region's?) or what the ranking ranks."
+  },
+  {
+   "page": "peers",
+   "quote": "Counties and metro areas are published as separate geographies that do not sum into one another, so this page never adds a county figure to a metro one.",
+   "type": "DANGLING-TENSION",
+   "severity": 3,
+   "why": "The sentence immediately before showed two county figures adding to exactly the metro's 6,910 jobs, so \"do not sum into one another\" reads as a flat contradiction I had to stop and puzzle over."
+  },
+  {
+   "page": "peers",
+   "quote": "Akron\u2019s 4.69\u00d7 is nearly five times the national slice, and it reads two ways: it is what the cluster is built on, and it means one industry\u2019s decade moves more of Akron\u2019s job base than it does in all but seven of the 155 metros that disclose.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "Three claims in one sentence, and \"one industry's decade moves more of Akron's job base\" is a compressed metaphor I re-read twice and still can only guess at (a decade of what, moving what?)."
+  },
+  {
+   "page": "peers",
+   "quote": "Akron\u2019s is Summit and Portage, and those two county figures add to exactly its 6,910 jobs.",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "\"its 6,910 jobs\" is delivered as if already known, but this is the first time the prose tells me Akron's job count \u2014 the headline fact arrives buried inside a definitions paragraph."
+  },
+  {
+   "page": "peers",
+   "quote": "it is also the most concentrated of the six biggest disclosed metros",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "\"The six biggest\" is a set the page never sets up \u2014 biggest by plastics jobs? by population? \u2014 and it collides with the seventeen-metro and seven-metro counts just given."
+  },
+  {
+   "page": "peers",
+   "quote": "Six other metros share that upper-right corner, and none of them is a big city.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "\"That upper-right corner\" narrates a scatter chart's geometry that the prose has not introduced yet (the scatter is only named two sections later)."
+  },
+  {
+   "page": "peers",
+   "quote": "\u201cAmong the metros the bureau discloses\u201d is four words.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "I counted: the quoted phrase is six words, not four, and for a numerate reader on a page about checkable numbers that miscount stops the eye cold."
+  },
+  {
+   "page": "peers",
+   "quote": "the finder above the scatter puts any of the 155 disclosed metros on the chart, and the table under each figure carries every row behind it",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "\"The finder above the scatter\" and \"the table under each figure\" are interface mechanics narrated in prose; \"carries every row behind it\" made me re-read to work out it means underlying data."
+  },
+  {
+   "page": "peers",
+   "quote": "The metro claims need more care, because the bureau withholds 227 of the country\u2019s 382 metro areas.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "\"The bureau\" appears before any agency is named (BLS/QCEW arrive a paragraph later), and it withholds figures, not areas \u2014 a small imprecision that registers."
+  },
+  {
+   "page": "peers",
+   "quote": "States are the one geography the bureau barely suppresses: 51 of 51 disclosed, none withheld.",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "\"Withholds,\" \"suppresses,\" and \"disclosed\" are all in play before the definitions paragraph finally says withheld and suppressed are the same thing."
+  },
+  {
+   "page": "peers",
+   "quote": "Two counts over the same 155 metros the bureau discloses.",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "\"Counts\" was just used for monthly employment counts (\"the twelve monthly counts averaged\"); here it suddenly means two tallies of metros, and the verbless fragment adds a beat of hesitation."
+  },
+  {
+   "page": "peers",
+   "quote": "Akron belongs in that company on the same terms.",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "\"On the same terms\" is ambiguous after a caveat about unverifiable company claims \u2014 same terms as the data, or same unverifiable terms as the town descriptions?"
+  },
+  {
+   "page": "peers",
+   "quote": "BLS will not publish a figure when too few employers exist for it to be published without identifying one of them.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 1,
+   "why": "The \"publish a figure ... for it to be published\" circularity makes a simple idea (few employers = identifiable) take two passes."
+  },
+  {
+   "page": "programs",
+   "quote": "One rule measures all three layers over the same years.",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "\"Layers\" has not been introduced; I had to stop and reconstruct that the three are technician programs, polymer degrees, and the peer trades."
+  },
+  {
+   "page": "programs",
+   "quote": "The six peer trades are here for one reason",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 1,
+   "why": "Six trades are announced but only three are named, plus \"their neighbours\" \u2014 I never learn the other three."
+  },
+  {
+   "page": "programs",
+   "quote": "One limit travels with the headline above and belongs down here rather than up there: this record sees only what colleges chose to file under the polymer codes, so no one has rebuilt this layer in the paperwork, which is not the same as no one having done it on the ground.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "Meta-talk about where the caveat lives, a \"so\" that is not actually causal, and a double-negative ending \u2014 I read it three times to get the point."
+  },
+  {
+   "page": "programs",
+   "quote": "what colleges chose to file under the polymer codes",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "\"The polymer codes\" is used bare \u2014 I am never told what coding or filing system this refers to."
+  },
+  {
+   "page": "programs",
+   "quote": "has declined in four of the five years since that can be compared",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "Garden-path syntax \u2014 \"since that can be compared\" forced a re-read, and why only five years are comparable is left for me to infer from the 2020 break mentioned afterwards."
+  },
+  {
+   "page": "programs",
+   "quote": "The line breaks at 2020, a year this record cannot see.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "Narrates the line's mechanics, and never says why a federal record is blind to 2020 \u2014 I stopped to wonder and got no answer."
+  },
+  {
+   "page": "programs",
+   "quote": "This one drops that filter and looks at all 168",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 1,
+   "why": "168 is the first appearance of the total universe of programs; the number lands before I know that is what it is."
+  },
+  {
+   "page": "programs",
+   "quote": "Programs kept being started, and about half never took hold.",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "\"Took hold\", \"got going\", and \"got past ten completions\" appear to be three names for the same threshold; I had to infer they are equivalent."
+  },
+  {
+   "page": "programs",
+   "quote": "Ferris State is the outlier to study",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "The institution is named with no state or context \u2014 I paused to wonder where and what Ferris State is."
+  },
+  {
+   "page": "programs",
+   "quote": "and it is the first interview to do",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "Newsroom shorthand in an odd grammatical shape \u2014 a question \"is the first interview to do\" \u2014 I re-read it to see it meant reporters should interview them first."
+  },
+  {
+   "page": "programs",
+   "quote": "Akron\u2019s polymer completions, every year the record covers.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "Unclear whether \"Akron\" is the University of Akron or the Akron region, and the next sentence's \"the region\" deepens rather than resolves it."
+  },
+  {
+   "page": "programs",
+   "quote": "The collapse is recent, steep, and top-heavy",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "\"Top-heavy\" is never unpacked \u2014 top of what: degree levels, the biggest programs? I could not resolve it."
+  },
+  {
+   "page": "programs",
+   "quote": "it ran through the same years the region\u2019s federal and state polymer awards arrived",
+   "type": "VOCAB-DRIFT",
+   "severity": 3,
+   "why": "Everywhere else on the page awarding means conferring credentials, so I first read \"awards\" as degrees conferred and the sentence made no sense; I had to re-read to guess it means funding awards."
+  },
+  {
+   "page": "programs",
+   "quote": "A technician pipeline built on top of a contracting anchor is a different proposition from one built on a stable anchor.",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "\"Anchor\" arrives as a bare metaphor with no antecedent noun \u2014 I inferred it means Akron's degree programs, but the sentence never says, and the metaphor is then load-bearing twice more."
+  },
+  {
+   "page": "programs",
+   "quote": "with the national middle half of the program code behind them",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 3,
+   "why": "\"The program code\" bare and \"middle half\" compressed \u2014 I could not work out exactly what band this is or what code it belongs to, and \"behind them\" is chart layering besides."
+  },
+  {
+   "page": "programs",
+   "quote": "The one candidate dissolved on inspection into a federal reporting change at a program that never stopped teaching.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "\"Dissolved on inspection into\" stacks the investigation, the finding, and the reclassification into one clause; elegant once parsed, but it cost a re-read."
+  },
+  {
+   "page": "programs",
+   "quote": "a figure whose caption has to forbid its own obvious inference is a figure the page is better without",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "An abstract aphorism about editorial process \u2014 inside-baseball for a reader \u2014 that I had to re-read to connect to the zero-states problem."
+  },
+  {
+   "page": "programs",
+   "quote": "a state at zero here is a filing habit rather than a confirmed absence",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "The table is introduced as \"all thirty states that have ever filed one,\" so how any state in it sits at zero is never reconciled for me."
+  },
+  {
+   "page": "programs",
+   "quote": "Substantive programs by state",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "\"Substantive\" is a new threshold word \u2014 presumably the more-than-ten rule, but it is never tied back to it."
+  },
+  {
+   "page": "programs",
+   "quote": "The federal Scorecard publishes earnings for polymer engineering bachelor\u2019s degrees at exactly five institutions",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "\"The federal Scorecard\" assumes I already know what the College Scorecard is; a two-word gloss would have removed the pause."
+  },
+  {
+   "page": "reach",
+   "quote": "A cluster that publishes with fifty countries is not a regional asset that happens to be here.",
+   "type": "OTHER",
+   "severity": 3,
+   "why": "The negation scope is ambiguous \u2014 I could not tell whether it means the cluster is MORE than regional (a global node) or NOT genuinely local (just passing through), and the page ends on it; also \"fifty countries\" appears here for the first time with no prior support."
+  },
+  {
+   "page": "reach",
+   "quote": "an earlier version of this page matched the word \u201cpolymer\u201d in the text and returned 4,037 papers, four fifths of whose largest partners were hospitals doing biomedical polymer research, a different field and a different cluster",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "\"four fifths of whose largest partners\" forced a re-read \u2014 four fifths of the papers? of the partner list? \u2014 while the sentence also carries the methods backstory, the count, and the hospital verdict in one breath."
+  },
+  {
+   "page": "reach",
+   "quote": "The split is by corresponding author, not first author",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "\"The split\" arrives before any split has been named; only several sentences later (teal vs orange) do you learn it means the direction-of-leadership division, so I read this sentence on credit."
+  },
+  {
+   "page": "reach",
+   "quote": "And the bound is a classification, not a keyword",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "\"The bound\" is used cold \u2014 I had to infer from the following anecdote that it means the boundary of which papers count as polymer papers."
+  },
+  {
+   "page": "reach",
+   "quote": "Both counts are shown for every major partner, and neither is subtracted from the other.",
+   "type": "VOCAB-DRIFT",
+   "severity": 2,
+   "why": "The two directions of collaboration have by now been called \"bring in / brings the region in\", teal/orange, joins/leads, and gravity/travel \u2014 so \"Both counts\" made me backtrack to work out which pair of names it resolves to."
+  },
+  {
+   "page": "reach",
+   "quote": "Collaboration is not impact, and this section answers its own question rather than being laid beside the last one.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "\"Laid beside the last one\" is opaque \u2014 I couldn't picture what comparing this section to the previous one would even mean, and \"the last one\" points at a section this page never shows me."
+  },
+  {
+   "page": "reach",
+   "quote": "Across ten years these papers carry co-authors at national laboratories, at a polymer company in Akron, and at universities on five continents.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "\"These papers\" has no antecedent on this page \u2014 which papers, which ten years, and which region is \"the region\" in the next sentence are all assumed from somewhere I haven't been."
+  },
+  {
+   "page": "reach",
+   "quote": "Reach and standing are different things.",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "Neither \"reach\" nor \"standing\" is pinned to the two counts explicitly; the reader has to do the mapping (standing\u2248leads/gravity, reach\u2248joins/travels) unaided."
+  },
+  {
+   "page": "reach",
+   "quote": "One mark per institution, placed where it is, sized by how many papers it shares with the region.",
+   "type": "CHART-SPEAK",
+   "severity": 1,
+   "why": "A legend narrated as verbless prose fragments \u2014 \"placed where it is\" took a beat to resolve to \"at the institution's geographic location\"."
+  },
+  {
+   "page": "reach",
+   "quote": "because at this scale one shared paper is a dot the eye cannot price",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "\"Price\" as a verb for judging a dot's weight is a poetic stretch that cost a moment; \"kept in the table\" also references a table I haven't been told exists."
+  },
+  {
+   "page": "reach",
+   "quote": "The subject classification for polymers and plastics leaves 1,448.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "\"The subject classification\" (definite article) assumes I know which taxonomy is meant \u2014 the system is never named."
+  },
+  {
+   "page": "realwage",
+   "quote": "The steepest falls are the places PIC competes with for people.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "PIC is never expanded or defined anywhere on the page, yet it recurs ('PIC's twelve-county footprint', 'PIC's standard recruiting line') as if I already know what organization this is."
+  },
+  {
+   "page": "realwage",
+   "quote": "Those price levels are published for metropolitan areas only, so PIC\u2019s twelve-county footprint cannot be scored at all: the region appears here as the Akron metro area alone, and Cleveland and Canton have no published 2023 polymer wage.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "Four claims in one sentence, and the Cleveland/Canton clause hangs off a different reason (a missing wage, not the metro-only price levels the 'so' points at) \u2014 I re-read to figure out why they drop out."
+  },
+  {
+   "page": "realwage",
+   "quote": "Akron\u2019s price level is almost exactly the metro median, and more than a hundred metros are cheaper.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "I had been told the comparison set is 56 metros, so 'more than a hundred metros are cheaper' implies a different, unstated universe; only the next chart subtitle reveals a 235-metro set."
+  },
+  {
+   "page": "realwage",
+   "quote": "These are averages across every job the federal wage count covers in each metro, not any one person\u2019s offer",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "The figure was introduced as 'Akron's average polymer paycheck,' but this reads as an average over every job in the metro, all industries \u2014 I re-read to decide which population the $1,238 covers."
+  },
+  {
+   "page": "realwage",
+   "quote": "$71,000 minus $64,400 is the $6,600 in the heading",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "I scanned for a heading containing $6,600 and there isn't one \u2014 the nearby bold line says 'has to clear $71,000 to beat Akron's $64,400' \u2014 so the cross-reference dangles."
+  },
+  {
+   "page": "realwage",
+   "quote": "Every metro on one dashed diagonal ends up with the same buying power, and the orange diagonal is Akron\u2019s own: every metro above it buys less.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "Prose narrating dashed lines and an orange line; I had to stop reading and mentally construct the scatter before the sentence meant anything."
+  },
+  {
+   "page": "realwage",
+   "quote": "BLS QCEW and BEA price parities, 2023.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "BLS and QCEW arrive as bare acronyms \u2014 BEA was spelled out earlier but the Bureau of Labor Statistics and its wage census never are."
+  },
+  {
+   "page": "realwage",
+   "quote": "BEA price parities",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "The body prose consistently says 'price level'; 'price parities' is a second name for the same thing, introduced only in a source credit and never connected."
+  },
+  {
+   "page": "realwage",
+   "quote": "Among the 56 metros with at least 2,000 polymer jobs, Akron is 33rd on the printed number and 19th on what it buys, a climb of 14 places.",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "'Polymer jobs' is used twice before its definition (NAICS 326, plastics and rubber products manufacturing) arrives in the third paragraph; guessable, but I noticed the gap."
+  },
+  {
+   "page": "realwage",
+   "quote": "ranked on the left by the wage printed on the paycheck, on the right by what that wage buys",
+   "type": "CHART-SPEAK",
+   "severity": 1,
+   "why": "Left/right/sloping-line mechanics arrive as running prose before I have any picture to hang them on."
+  },
+  {
+   "page": "realwage",
+   "quote": "So the top left is the worst trade a recruiter can make and the bottom right the best.",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "Brief pause over whose trade it is \u2014 the candidate takes the offer, the recruiter makes it \u2014 before the intended reading clicked."
+  },
+  {
+   "page": "realwage",
+   "quote": "The median is the middle value, with as many above as below, rather than the average, which a few very high earners can pull upward.",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "The gloss is clear, but the statistic being glossed is a median of metro price levels, and the example is about high earners \u2014 the illustration points at the wrong quantity."
+  },
+  {
+   "page": "realwage",
+   "quote": "Does the cluster pay better?",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "'The cluster' appears here for the first time with no antecedent \u2014 presumably the polymer industry cluster, but the page never used the word before this closing link."
+  },
+  {
+   "page": "revisions",
+   "quote": "Every chart on this site shows each month at its current value, which hides the Bureau of Labor Statistics revising that figure for years.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "\"revising that figure for years\" reads two ways (revises over a span of years vs. has been doing this for years), and \"at its current value\" only clicked on a second pass."
+  },
+  {
+   "page": "revisions",
+   "quote": "The claim here covers three producer-price series and no others",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "\"The claim\" points forward to a statistic that has not arrived yet, so I briefly looked back for a claim I had missed."
+  },
+  {
+   "page": "revisions",
+   "quote": "259 of 273 published months were later changed",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "Unclear whether 273 is month-observations pooled across all three series or months of one series, and no hint of what span of years that count covers."
+  },
+  {
+   "page": "revisions",
+   "quote": "rubber and plastic products is the goods made from it, priced product by product; plastics and rubber plants is those same goods priced plant by plant",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "The two series names are near-identical with the words flipped (\"rubber and plastic\" vs \"plastics and rubber\"), so I re-read to convince myself they were genuinely two different series."
+  },
+  {
+   "page": "revisions",
+   "quote": "Industrial chemicals, the series a resin buyer quotes, revises further than the two further down the chain",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "\"Resin buyer\" is assumed known and never explained why that person quotes this series; the \"further ... further\" repetition also snags."
+  },
+  {
+   "page": "revisions",
+   "quote": "Industrial chemicals typically moves 0.35% after publication, more than twice as far as either series downstream of it",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "Sits near \"a typical 0.15 percent\" from the opening with no note that one is the pooled figure and this is one series; I stopped to do the arithmetic to check they could both be true."
+  },
+  {
+   "page": "revisions",
+   "quote": "One bar per month priced.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "\"Per month priced\" parses oddly \u2014 I re-read it to get \"one bar for each month that was priced\" \u2014 and the passage narrates the chart's mechanics rather than its finding."
+  },
+  {
+   "page": "revisions",
+   "quote": "Panels run hardest-revising first.",
+   "type": "CHART-SPEAK",
+   "severity": 1,
+   "why": "\"Hardest-revising\" is a coinage and the sentence describes panel ordering, mechanics I would rather see than be told."
+  },
+  {
+   "page": "revisions",
+   "quote": "If the corrections sat mostly on one side, first estimates would be running consistently high or consistently low",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "Revisions, corrections, and \"changed\" are used interchangeably across the page; I briefly wondered whether corrections were something distinct from revisions."
+  },
+  {
+   "page": "revisions",
+   "quote": "one came back to within 0.001 index points of where it started",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 1,
+   "why": "\"Index points\" arrive here, but what an index reading is (and that levels mean nothing on their own) is only explained a paragraph later at 348.8."
+  },
+  {
+   "page": "revisions",
+   "quote": "A board deck built that October would have carried the annual number right and the monthly one backwards.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "I had to re-read to decode that \"right\" means correct and \"backwards\" means wrong in direction \u2014 the compressed verdict lands before any evidence for it."
+  },
+  {
+   "page": "revisions",
+   "quote": "What did not survive is the step: September measured against the month before it.",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "The page shows the annual comparison before and after (24.8 vs 23.1 percent) but never gives the month-over-month figures that supposedly flipped, so the \"backwards\" claim is left for me to take on faith."
+  },
+  {
+   "page": "revisions",
+   "quote": "Nothing in this archive moved more than six months after its first print, so price against the version published half a year later.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "\"Price against\" as a verb phrase stopped me cold, and \"first print\" is release-desk slang; a re-read yields \"compare with the version published six months later\"."
+  },
+  {
+   "page": "revisions",
+   "quote": "What these three price indexes did to margins, at the level.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "\"At the level\" dangles \u2014 at what level? \u2014 so the teaser reads like a truncated sentence."
+  },
+  {
+   "page": "scorecard",
+   "quote": "The award register shows $79.2 million of the $85.3 million PIC has won sitting on an executed line with a named recipient.",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "Two dollar figures and the phrase 'executed line' arrive before I know what PIC is, what the award register is, or what an executed line means."
+  },
+  {
+   "page": "scorecard",
+   "quote": "the $85.3 million PIC has won",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "PIC is never expanded or described anywhere on the page; I had to infer 'some kind of polymer industry association' from a much later sentence about 'the association'."
+  },
+  {
+   "page": "scorecard",
+   "quote": "sitting on an executed line with a named recipient",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "'Executed line' is used in the first sentence; the definition ('an executed sub-grant is a signed agreement to pay') only arrives many paragraphs later."
+  },
+  {
+   "page": "scorecard",
+   "quote": "The register carries three public awards. Two of them are fully assigned: all seven EDA implementation awards are obligated straight to their project leads, and the APEX workforce award is committed in one line.",
+   "type": "DANGLING-TENSION",
+   "severity": 3,
+   "why": "Three awards, then 'all seven EDA implementation awards' \u2014 I re-read twice and still cannot reconcile whether there are three awards or nine, or how seven awards count as 'two of them'."
+  },
+  {
+   "page": "scorecard",
+   "quote": "Polymer credentials ran near 120 a year for a decade, then dropped to 54",
+   "type": "DANGLING-TENSION",
+   "severity": 3,
+   "why": "The closing summary says '63 polymer credentials were awarded in the region in 2023 against a three-year average of 80' \u2014 54 vs 63 vs 80 are never reconciled, and I gave up trying to work out which number is current."
+  },
+  {
+   "page": "scorecard",
+   "quote": "$6.2M of the $85.3M awarded has no named recipient yet, and all of it is Ohio money",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "The lede says $79.2M of $85.3M is assigned, which leaves $6.1M, not $6.2M; the 0.1M gap is never explained and made me distrust one of the three figures."
+  },
+  {
+   "page": "scorecard",
+   "quote": "Materials credentials at the same institutions moved the other way over the same three years, rising from 20 to 33.",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "'Moved the other way' precedes any statement that polymer credentials fell (the drop headline comes after this sentence), and 'the same three years' refers back to years that were never given."
+  },
+  {
+   "page": "scorecard",
+   "quote": "how many people finish a polymer credential at the three regional institutions each year",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "The three institutions are never named, and the region itself is never pinned down, so I cannot tell what population these credential counts cover."
+  },
+  {
+   "page": "scorecard",
+   "quote": "all seven EDA implementation awards are obligated straight to their project leads",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "EDA is a bare acronym, 'obligated' is a term of art only defined later, and 'project leads' assumes I know the grant structure."
+  },
+  {
+   "page": "scorecard",
+   "quote": "Credentials at every level, all polymer CIP codes at the three regional institutions, by federal reporting year.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "'CIP codes' is federal-education insider vocabulary given no gloss."
+  },
+  {
+   "page": "scorecard",
+   "quote": "The two pale columns are years this page does not use.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "Narrates the chart's paint rather than the data, and never says why those years are excluded \u2014 which matters, since the 54-vs-63 confusion may hide there."
+  },
+  {
+   "page": "scorecard",
+   "quote": "Status is marked twice: by the rule down the left edge and by the current reading itself.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "'The rule down the left edge' is table mechanics plus typographic jargon; I could not picture what is marked or how."
+  },
+  {
+   "page": "scorecard",
+   "quote": "Two of them are fully assigned: all seven EDA implementation awards are obligated straight to their project leads, and the APEX workforce award is committed in one line.",
+   "type": "VOCAB-DRIFT",
+   "severity": 2,
+   "why": "Assigned, obligated, committed, and (elsewhere) 'on an executed line' all appear to mean the same state \u2014 money with a named recipient \u2014 and the page never says whether they differ."
+  },
+  {
+   "page": "scorecard",
+   "quote": "Seven rows, including all four on revenue and the one on disbursement, are defined and empty.",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "The same row was earlier 'the drawdown row' and the act was 'disbursed' and 'paid'; I paused to confirm drawdown and disbursement are one concept."
+  },
+  {
+   "page": "scorecard",
+   "quote": "outlines are the rows waiting on a private copy",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "First mention of 'a private copy' \u2014 a private copy of what, held by whom, is only explained two paragraphs later."
+  },
+  {
+   "page": "scorecard",
+   "quote": "The distinction the groups exist to hold: cluster health measures the regional polymer economy, which PIC influences through award money, convening and programs but does not control, while the scorecard measures what PIC itself is accountable for.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "One sentence carries a definition, a three-item influence list, a negation, and a contrast; I re-read it to find the main clause."
+  },
+  {
+   "page": "scorecard",
+   "quote": "Groups A, B and C are what PIC is accountable for.",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "The letters are introduced but Group A's content is never stated anywhere; B and C I could only reconstruct from later incidental mentions."
+  },
+  {
+   "page": "scorecard",
+   "quote": "The occupations inside the industry The degree completions behind group C.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "Reads as a run-on, and the label promises occupations while the description says degree completions \u2014 those are different things, so I could not tell what the link leads to."
+  },
+  {
+   "page": "scorecard",
+   "quote": "and the four rows that would tell a board whether PIC can pay for itself are kept in registers a public repository may not carry",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "'Kept in registers a public repository may not carry' stacks two unfamiliar frames (rows-in-registers, repository-carrying) and I re-read it; the 'four rows' also sits oddly against the 'seven rows' unpopulated a few paragraphs later until the very end reconciles them."
+  },
+  {
+   "page": "sources",
+   "quote": "An obligation is not an outlay, and a place is not an observation",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 3,
+   "why": "Neither 'obligation' nor 'outlay' is explained here \u2014 the next line is only 'What the two fields actually mean.', a caption with no content, so I never learned the distinction and gave up ('obligated' gets a gloss much later, 'outlay' and 'a place is not an observation' never do)."
+  },
+  {
+   "page": "sources",
+   "quote": "and how the sentences on this site are stored as checks that re-run are held back rather than half-written",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "I re-read this three times \u2014 'stored as checks that re-run are held back' parses several ways before you find that 'are held back' governs the whole list of coming features."
+  },
+  {
+   "page": "sources",
+   "quote": "This is the measure most regional strategies open with, it runs on the most accessible of the fifteen sources, and it exercises every trap worth learning at once",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "'The measure' is the subject of a whole recipe (choosing codes, downloading files) before the page ever names it as a location quotient several paragraphs later \u2014 I did the first two steps not knowing what I was computing."
+  },
+  {
+   "page": "sources",
+   "quote": "Worked questions, each carried the whole way from the endpoint to the reading, on the public federal data behind every page here.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "The very first sentence is a verbless fragment, and both 'endpoint' (API jargon) and 'the reading' (the page's private word for a computed value) are unglossed on first contact."
+  },
+  {
+   "page": "sources",
+   "quote": "so your all-industry denominator is the row carrying industry code 10 in the file you just downloaded",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "'Denominator' of what? No division has been introduced yet \u2014 the LQ formula arrives a section later, so this instruction floats without a purpose on first read."
+  },
+  {
+   "page": "sources",
+   "quote": "that is the bureau\u2019s own finished location quotient, on its own basis, and step six is about why the two differ",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "'Location quotient' is used here before its definition, and 'step six' made me stop and count \u2014 the prose sections are not visibly numbered, so I couldn't tell which part was step six."
+  },
+  {
+   "page": "sources",
+   "quote": "The US000 file numbers the same rungs 10, 11, 15, 16 and 18.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "The county list just gave seven rungs (70, 71, 74, 75, 76, 77, 78) and 'the same rungs' now has five numbers \u2014 I stopped to work out which maps to which and couldn't."
+  },
+  {
+   "page": "sources",
+   "quote": "Held constant at private, the worked cell below comes out lower.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "'The worked cell below' points at a table I can't see from the prose, and the actual number never appears in a sentence \u2014 so 'lower' has nothing to be lower than."
+  },
+  {
+   "page": "sources",
+   "quote": "Look at the rows for industry 10 at each own_code: on a same-ownership basis each of those would be exactly 1.00, because it would be dividing a total by itself. They are not.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "The logic is sound but I had to re-read to reconstruct why an all-industry row would equal 1.00 under the counterfactual rule \u2014 the inference chain (industry 10 = all industries, so same-ownership share = total/total) is left to the reader."
+  },
+  {
+   "page": "sources",
+   "quote": "This site\u2019s worked case, drawn at the top of this page: the largest county reading.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "The headline result of the whole first recipe is never stated as a number in the prose \u2014 it's 'drawn at the top of this page', which county and which value I never learn."
+  },
+  {
+   "page": "sources",
+   "quote": "and the smallest cells it publishes run from 0.09 to 22.7",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "The sentence sorts cells by size (jobs) but the range 0.09\u201322.7 is in ratio units \u2014 the unit switches mid-sentence and I re-read to see these were the LQs of the smallest cells, not their sizes."
+  },
+  {
+   "page": "sources",
+   "quote": "The question nobody asks out loud is what that median runs over, and there are at least three answers sitting in the same table.",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "Three answers are promised but only two ever arrive (the list median over cells and the job-weighted figure) \u2014 I kept waiting for the third."
+  },
+  {
+   "page": "sources",
+   "quote": "so this is the labour shed of a whole economy and never of your industry",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "'Labour shed' is used in the roadmap and again here as if known, and is never defined anywhere on the page \u2014 I inferred 'where a region's workers live' only from surrounding context."
+  },
+  {
+   "page": "sources",
+   "quote": "Notice what the identity says: the jobs held from inside the region are the same number on both bases.",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "'The identity' points at an equation that was never written down \u2014 I had to stop and construct 'total = internal + imported' myself before the sentence made sense."
+  },
+  {
+   "page": "sources",
+   "quote": "What the two denominators say about this region.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "This is a chart caption standing where the payoff should be \u2014 the page just said the two ratios 'point opposite ways at once, and here they do', and then never gives either number; the same stump pattern recurs ('What the years look like here.', 'Where the imported jobs come from.', 'The awards this cut is blind to.', 'What we printed, and what the record says.')."
+  },
+  {
+   "page": "sources",
+   "quote": "The top bar is that number; the bottom bar is the same jobs counted once. Bars start at zero.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "Pure narration of chart mechanics \u2014 top bar, bottom bar, axis origin \u2014 with neither total appearing in the prose itself."
+  },
+  {
+   "page": "sources",
+   "quote": "That is the test that put 325 outside this site\u2019s own register and 3252 inside it.",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "The opening said 'The concentration page reads six, adding the wider chemical family 325' \u2014 so 325 is both used by a page and outside the register, and nothing reconciles those two statements for me."
+  },
+  {
+   "page": "sources",
+   "quote": "Two of the seven above carry ED24 rather than ED25, on the same designation.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "'The seven above' is a table absent from the prose, and 'the same designation' names a concept I was never given \u2014 I couldn't check the claim or picture the seven."
+  },
+  {
+   "page": "sources",
+   "quote": "The recipes above are worked on twelve counties in Northeast Ohio and one industry.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "This is the first time the prose names the region and county count \u2014 everything earlier ('the largest county reading', 'here they do', 'this region') ran on an unnamed geography and mostly unnamed year."
+  },
+  {
+   "page": "sources",
+   "quote": "How far these series move after publication has been measured here.",
+   "type": "CHART-SPEAK",
+   "severity": 2,
+   "why": "A measurement is announced and never given in prose \u2014 'has been measured here' gestures at a figure I cannot see, right where I wanted the size of typical revisions."
+  },
+  {
+   "page": "sources",
+   "quote": "The registry holds the two lists separately rather than merging them, which means the judgement is inspectable instead of baked in.",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "'The registry' here and 'this site's register' / 'the register below' elsewhere \u2014 I couldn't tell whether these are one artifact or two."
+  },
+  {
+   "page": "sources",
+   "quote": "Take own_code 5 and count the rows whose disclosure_code is N.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "'N' is used bare \u2014 I guessed it means not-disclosed/withheld from context, but the letter is never expanded."
+  },
+  {
+   "page": "timeline",
+   "quote": "The July 2026 NSF Engines award is Its dot opens the record.",
+   "type": "OTHER",
+   "severity": 3,
+   "why": "The sentence breaks mid-clause \u2014 something is missing after 'is' \u2014 and I could not parse it at all."
+  },
+  {
+   "page": "timeline",
+   "quote": "the 2 bars in it are rows that began earlier and are recorded as running on, the later of them to 2016.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "'Bars' and 'rows' appear here for the first time with no anchor to 'dots' or 'events'; I re-read twice to work out that bars mean ongoing events."
+  },
+  {
+   "page": "timeline",
+   "quote": "The public record holds 4 events in the 34 months before the October 2023 federal designation and 68 delivered in the 34 months since.",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "Four numbers land in the first sentence before I know whose record this is, what counts as an 'event', or what was designated."
+  },
+  {
+   "page": "timeline",
+   "quote": "the October 2023 federal designation",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "Designated as what, by whom? The page leans on this phrase throughout and never once says what the designation actually is."
+  },
+  {
+   "page": "timeline",
+   "quote": "The century that explains why it landed in Akron is here too: 31 proven events, the first dated 1898 and the last 2012.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "'It' has no clear referent \u2014 the designation? the cluster? the industry? \u2014 and 'proven' is used before its meaning (backed by a named public source) arrives."
+  },
+  {
+   "page": "timeline",
+   "quote": "PIC\u2019s register can prove 19 events that changed the region\u2019s capacity and 12 scientific firsts, each against a named public source, and every mark below opens its source.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "'PIC' appears bare here; the expansion (Polymer Industry Cluster) only shows up several sections later inside a source note."
+  },
+  {
+   "page": "timeline",
+   "quote": "5 claimed rows are withheld rather than shown with a caveat",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "'Claimed rows' implies a claimed-vs-proven status system that is never explained; I inferred it but slowed to do so."
+  },
+  {
+   "page": "timeline",
+   "quote": "Source: the Polymer Industry Cluster\u2019s (PIC) merged event inventory, public rows only, 2021 through 13 August 2026.",
+   "type": "VOCAB-DRIFT",
+   "severity": 2,
+   "why": "Earlier sources were 'PIC\u2019s register' / 'NEO Polymer Wins register'; now it is a 'merged event inventory' \u2014 I could not tell whether these are one dataset or two."
+  },
+  {
+   "page": "timeline",
+   "quote": "Everything the cluster has publicly done since the 2023 federal designation, on one calendar; the window opens that January and the designation lands in October.",
+   "type": "DANGLING-TENSION",
+   "severity": 2,
+   "why": "'Since the designation' but the window opens ten months before it \u2014 the contradiction is only untangled two sentences later with the 69-vs-68 explanation."
+  },
+  {
+   "page": "timeline",
+   "quote": "The 2023 bar splits at the 23 October designation, so this count starts there.",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 2,
+   "why": "Which count starts where? I had to re-read this and the next sentence together to see it means the 68-since figure."
+  },
+  {
+   "page": "timeline",
+   "quote": "Vertical rules mark the designation, the $51M implementation grant and the December 2024 R&D starts.",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 2,
+   "why": "The $51M grant and 'R&D starts' both appear here for the first time with no word on who granted what or what started."
+  },
+  {
+   "page": "timeline",
+   "quote": "In September 2024 BioVerde CEO Dave Witte announced the company would move the bulk of its operations to Ohio, citing the grant.",
+   "type": "OTHER",
+   "severity": 2,
+   "why": "'The grant' is ambiguous \u2014 the $51M implementation grant from the previous section, or the company's own $11.1M award named in the very next sentence?"
+  },
+  {
+   "page": "timeline",
+   "quote": "the pilot facility\u2019s readiness target",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "First and only mention of a pilot facility, with a definite article as if I already knew about it."
+  },
+  {
+   "page": "timeline",
+   "quote": "A row recorded as a span sorts on the first date it shows, so the order down the column is the order of the dates in it.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "I re-read the final clause \u2014 'in it' has no clear referent, and the sorting rule and its consequence are packed into one breath."
+  },
+  {
+   "page": "timeline",
+   "quote": "the largest of the five company R&D awards",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "'The five' assumes a set I had not been introduced to; the set is only explained a paragraph later."
+  },
+  {
+   "page": "timeline",
+   "quote": "One dot per dated event, colored by its workstream.",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "'Workstream' is never defined and the workstreams are never named in the prose."
+  },
+  {
+   "page": "timeline",
+   "quote": "The two spans are the same length to within a day, so the seventeenfold gap is a change of pace.",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 1,
+   "why": "I had to do 68 \u00f7 4 myself; the arithmetic is only spelled out in a source note further down."
+  },
+  {
+   "page": "timeline",
+   "quote": "No archive on this page holds a cleared photograph of the university firsts, so none is shown.",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "'University firsts' after 'scientific firsts' made me pause to check they were the same thing; 'cleared' (rights-cleared) is also mildly insider."
+  },
+  {
+   "page": "timeline",
+   "quote": "On a wide screen the July 2026 NSF award is labeled on its own dot; on a narrow one, open the dot.",
+   "type": "CHART-SPEAK",
+   "severity": 1,
+   "why": "Narrates responsive-layout mechanics of the chart, and 'NSF' arrives bare before the fuller 'NSF Engines award' name."
+  },
+  {
+   "page": "timeline",
+   "quote": "This chart needs JavaScript. The same rows are in the table below it.",
+   "type": "OTHER",
+   "severity": 1,
+   "why": "This fallback line (it appears three times) sits mid-flow in the reading order and briefly reads as if addressed to me."
+  },
+  {
+   "page": "wages",
+   "quote": "The data are that census, which counts every job covered by unemployment insurance",
+   "type": "UNDEFINED-TERM",
+   "severity": 3,
+   "why": "No census has been mentioned before this sentence \u2014 'that census' has no antecedent, and the reader cannot resolve it until 'BLS QCEW' appears near the bottom of the page."
+  },
+  {
+   "page": "wages",
+   "quote": "Behind those 51 pairings are 33,528 jobs, and two of the six industries tracked here are groups holding the other four, so counting pairings is not the same as counting jobs.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 3,
+   "why": "Three claims in one sentence \u2014 a jobs total, a group/subset structure, and a counting caveat \u2014 and I had to re-read to parse 'groups holding the other four'."
+  },
+  {
+   "page": "wages",
+   "quote": "two of the six industries tracked here are groups holding the other four",
+   "type": "UNDEFINED-TERM",
+   "severity": 2,
+   "why": "The six industries are never listed anywhere on the page, so I cannot work out which two are the groups or which four sit inside them."
+  },
+  {
+   "page": "wages",
+   "quote": "The 1.21\u00d7 premium is real, and it is not particular to polymer.",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 3,
+   "why": "1.21\u00d7 arrives with a definite article as though already established, but the only medians given so far are 1.35\u00d7 and 1.01\u00d7; the figure is only explained three paragraphs later in the decade-trend passage, and I searched back for it."
+  },
+  {
+   "page": "wages",
+   "quote": "A pitch that rests on polymer paying specially is resting on the first comparison while sounding like the second, and the gap between them is the whole 1.25\u00d7 that manufacturing at large carries.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "I had to stop and map 'first' and 'second' back to the previous paragraph, then work out how a 1.21\u00d7-vs-0.99\u00d7 gap equals 'the whole 1.25\u00d7'."
+  },
+  {
+   "page": "wages",
+   "quote": "BLS QCEW annual averages, 2025: private manufacturing (NAICS 31-33) weekly wage by county against the same all-industry averages every ratio on this page uses.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "QCEW and NAICS both appear bare, never expanded, and the sentence reads as a sourcing footnote dropped into the prose flow."
+  },
+  {
+   "page": "wages",
+   "quote": "Same census, same year, same ownership basis.",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 2,
+   "why": "'Ownership basis' is an agency term a lay reader has no way to unpack \u2014 owned by whom, on what basis?"
+  },
+  {
+   "page": "wages",
+   "quote": "One overlap to hold: polymer sits inside its own comparator, at about one manufacturing job in six across the twelve counties, which pulls the manufacturing average slightly toward polymer and makes the 0.99\u00d7 mildly conservative rather than flattering.",
+   "type": "OVERSTUFFED-SENTENCE",
+   "severity": 2,
+   "why": "Four ideas chained \u2014 the overlap, its size, its direction of pull, and the conservative/flattering verdict \u2014 plus the semi-technical 'comparator'; I slowed noticeably."
+  },
+  {
+   "page": "wages",
+   "quote": "Polymer wins in 40 of the 51 pairings big enough for the Bureau of Labor Statistics to publish",
+   "type": "SCOPE-AMBIGUITY",
+   "severity": 1,
+   "why": "'Big enough to publish' hints at a suppression rule that is never explained, and leaves open how many pairings exist in total."
+  },
+  {
+   "page": "wages",
+   "quote": "It is the checkable version of the region\u2019s good-jobs claim.",
+   "type": "UNDEFINED-TERM",
+   "severity": 1,
+   "why": "The 'good-jobs claim' is referenced as if I already know it, but this page never states who claims what."
+  },
+  {
+   "page": "wages",
+   "quote": "every published number here is re-checked against it on each build",
+   "type": "JARGON-UNGLOSSED",
+   "severity": 1,
+   "why": "'On each build' is web-publishing insider language; a general reader doesn't know pages have builds."
+  },
+  {
+   "page": "wages",
+   "quote": "Bigger dot, more jobs, to the size key on the chart.",
+   "type": "CHART-SPEAK",
+   "severity": 1,
+   "why": "The clipped 'to the size key on the chart' narrates chart mechanics and doesn't parse as a sentence."
+  },
+  {
+   "page": "wages",
+   "quote": "Chemistry-side pairings pay about a third more than their county\u2019s average job, a median 1.35\u00d7, and every one of the 23 clears it.",
+   "type": "NUMBER-BEFORE-MEANING",
+   "severity": 1,
+   "why": "'The 23' is the first time the chemistry-pairing count appears, delivered as a definite reference, and 'clears it' makes me back-fill the antecedent."
+  },
+  {
+   "page": "wages",
+   "quote": "Same county, the other family: rubber-products work averages $1,028 a week",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "'Family' is a new word for the split previously called 'chemistry-side' versus 'plastics-and-rubber'."
+  },
+  {
+   "page": "wages",
+   "quote": "the cluster is not falling toward its surroundings, and it is not pulling away from them either",
+   "type": "VOCAB-DRIFT",
+   "severity": 1,
+   "why": "'The cluster' appears here for the first time in the prose for what has been 'polymer'/'polymer work' throughout."
+  }
+ ],
+ "byPage": {
+  "accountability": {
+   "findings": 29,
+   "s3": 4,
+   "point": true
+  },
+  "atlas": {
+   "findings": 9,
+   "s3": 0,
+   "point": true
+  },
+  "chain": {
+   "findings": 18,
+   "s3": 3,
+   "point": true
+  },
+  "churn": {
+   "findings": 15,
+   "s3": 1,
+   "point": true
+  },
+  "cluster-health": {
+   "findings": 14,
+   "s3": 2,
+   "point": true
+  },
+  "collaboration": {
+   "findings": 12,
+   "s3": 3,
+   "point": true
+  },
+  "cost-scissors": {
+   "findings": 15,
+   "s3": 3,
+   "point": true
+  },
+  "federal-money": {
+   "findings": 17,
+   "s3": 0,
+   "point": true
+  },
+  "funding-map": {
+   "findings": 16,
+   "s3": 0,
+   "point": true
+  },
+  "laborshed": {
+   "findings": 17,
+   "s3": 4,
+   "point": true
+  },
+  "location-quotient": {
+   "findings": 16,
+   "s3": 2,
+   "point": true
+  },
+  "occupations": {
+   "findings": 15,
+   "s3": 2,
+   "point": true
+  },
+  "patents": {
+   "findings": 19,
+   "s3": 2,
+   "point": true
+  },
+  "peers": {
+   "findings": 13,
+   "s3": 3,
+   "point": true
+  },
+  "programs": {
+   "findings": 20,
+   "s3": 3,
+   "point": true
+  },
+  "reach": {
+   "findings": 11,
+   "s3": 2,
+   "point": true
+  },
+  "realwage": {
+   "findings": 13,
+   "s3": 0,
+   "point": true
+  },
+  "revisions": {
+   "findings": 14,
+   "s3": 1,
+   "point": true
+  },
+  "scorecard": {
+   "findings": 19,
+   "s3": 2,
+   "point": true
+  },
+  "sources": {
+   "findings": 22,
+   "s3": 2,
+   "point": true
+  },
+  "timeline": {
+   "findings": 20,
+   "s3": 2,
+   "point": true
+  },
+  "wages": {
+   "findings": 15,
+   "s3": 3,
+   "point": true
+  }
+ },
+ "points": {
+  "accountability": "Of the $106.3 million PIC reports securing for the Northeast Ohio polymer cluster, only $4,149,515 actually sits on awar",
+  "atlas": "America's official record of polymer degrees is an undercount, and even that undercount is strikingly concentrated: just",
+  "chain": "The companies PIC has on record along Northeast Ohio's polymer value chain and the funding applications coming in point ",
+  "churn": "In Northeast Ohio's plastics (and rubber) industry, roughly one job in ten starts and one in ten ends every quarter, and",
+  "cluster-health": "The region's plastics cluster is shrinking faster than the same national industries \u2014 about three-fifths of its decline ",
+  "collaboration": "Measured directly with two independent data sources \u2014 coauthored papers and joint federal awards \u2014 the Akron\u2013Case Wester",
+  "cost-scissors": "The 2022 cost spike has fully unwound at the top of the plastics supply chain (gas, mostly oil, partly resin) but never ",
+  "federal-money": "The $51 million Tech Hub grant, for all its billing, equals only about 1.4 years of the routine federal contracting the ",
+  "funding-map": "Three government awards totaling $85.3 million \u2014 plus $21.0 million in match money promised alongside them, $106.3 milli",
+  "laborshed": "No single county here \u2014 Summit included \u2014 fills even half of its own jobs with its own residents, but widen the lens to ",
+  "location-quotient": "A twelve-county Ohio region is about six times as concentrated in paint and coatings manufacturing as the nation \u2014 a str",
+  "occupations": "Northeast Ohio's plastics industry can fill its factory-floor jobs from a national labor pool, but the degree-level engi",
+  "patents": "Ohio's polymer patenting has fallen about a quarter since 2015, but that mirrors a nationwide collapse specific to polym",
+  "peers": "Akron is one of only seven US metro areas whose plastics-and-rubber industry is both large (4,000+ jobs) and highly conc",
+  "programs": "The polymer technician training layer has collapsed in a way that polymer degrees and neighboring trades taught by the s",
+  "reach": "Counting only properly classified polymer papers (1,448, not the keyword-matched 4,037) and splitting each partnership b",
+  "realwage": "Akron's polymer wages look middling on paper (33rd of 56 metros), but once you adjust for what a dollar buys locally the",
+  "revisions": "First-published BLS producer-price figures for these three chemicals-and-plastics series are almost always revised after",
+  "scorecard": "Public records can show where almost all of PIC's $85.3 million in awards has been assigned, but nothing about whether t",
+  "sources": "Anyone with a browser can reproduce \u2014 and check \u2014 every number this site publishes about the Northeast Ohio plastics ind",
+  "timeline": "Akron's polymer cluster rests on a century of documented history, and since its October 2023 federal designation its pub",
+  "wages": "Polymer-industry jobs across twelve Northeast Ohio counties genuinely pay about a fifth more than the average job in the"
+ },
+ "table": [
+  {
+   "page": "laborshed",
+   "findings": 17,
+   "sev3": 4,
+   "load_per_1k_words": 54.0
+  },
+  {
+   "page": "accountability",
+   "findings": 29,
+   "sev3": 4,
+   "load_per_1k_words": 46.4
+  },
+  {
+   "page": "chain",
+   "findings": 18,
+   "sev3": 3,
+   "load_per_1k_words": 112.2
+  },
+  {
+   "page": "programs",
+   "findings": 20,
+   "sev3": 3,
+   "load_per_1k_words": 53.7
+  },
+  {
+   "page": "collaboration",
+   "findings": 12,
+   "sev3": 3,
+   "load_per_1k_words": 50.8
+  },
+  {
+   "page": "peers",
+   "findings": 13,
+   "sev3": 3,
+   "load_per_1k_words": 37.4
+  },
+  {
+   "page": "cost-scissors",
+   "findings": 15,
+   "sev3": 3,
+   "load_per_1k_words": 28.0
+  },
+  {
+   "page": "wages",
+   "findings": 15,
+   "sev3": 3,
+   "load_per_1k_words": 26.7
+  },
+  {
+   "page": "reach",
+   "findings": 11,
+   "sev3": 2,
+   "load_per_1k_words": 57.6
+  },
+  {
+   "page": "cluster-health",
+   "findings": 14,
+   "sev3": 2,
+   "load_per_1k_words": 48.3
+  },
+  {
+   "page": "scorecard",
+   "findings": 19,
+   "sev3": 2,
+   "load_per_1k_words": 38.1
+  },
+  {
+   "page": "patents",
+   "findings": 19,
+   "sev3": 2,
+   "load_per_1k_words": 37.3
+  },
+  {
+   "page": "location-quotient",
+   "findings": 16,
+   "sev3": 2,
+   "load_per_1k_words": 37.2
+  },
+  {
+   "page": "timeline",
+   "findings": 20,
+   "sev3": 2,
+   "load_per_1k_words": 32.2
+  },
+  {
+   "page": "occupations",
+   "findings": 15,
+   "sev3": 2,
+   "load_per_1k_words": 20.4
+  },
+  {
+   "page": "sources",
+   "findings": 22,
+   "sev3": 2,
+   "load_per_1k_words": 7.2
+  },
+  {
+   "page": "revisions",
+   "findings": 14,
+   "sev3": 1,
+   "load_per_1k_words": 47.6
+  },
+  {
+   "page": "churn",
+   "findings": 15,
+   "sev3": 1,
+   "load_per_1k_words": 32.2
+  },
+  {
+   "page": "atlas",
+   "findings": 9,
+   "sev3": 0,
+   "load_per_1k_words": 92.6
+  },
+  {
+   "page": "funding-map",
+   "findings": 16,
+   "sev3": 0,
+   "load_per_1k_words": 31.0
+  },
+  {
+   "page": "realwage",
+   "findings": 13,
+   "sev3": 0,
+   "load_per_1k_words": 25.2
+  },
+  {
+   "page": "federal-money",
+   "findings": 17,
+   "sev3": 0,
+   "load_per_1k_words": 23.7
+  }
+ ],
+ "caveats": [
+  "atlas and chain have small word counts; per-1k load inflates on small bases \u2014 rank primarily by sev-3 count",
+  "churn and occupations are post-pilot CONTROLS: they rank at/near the bottom on load, validating both the instrument and the recipe"
+ ]
+}
