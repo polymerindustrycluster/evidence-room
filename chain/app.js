@@ -354,7 +354,8 @@ function drawCoverage() {
 
   document.getElementById("mapsrc").innerHTML =
     `Coverage is PIC-classified companies divided by County Business Patterns 2023 establishments in
-     NAICS 325 and 326, same county. The two counts define a firm differently: PIC classifies
+     NAICS 325 and 326, the federal industry codes for chemical and plastics manufacturing, in
+     the same county. The two counts define a company differently: PIC classifies
      companies including distributors, machinery builders, and laboratories that Census files under
      other codes, so a county can exceed 100&nbsp;percent without being fully covered. Treat this as an
      indicator of where PIC’s knowledge is thin, not as a market share. Census totals for the fourteen
@@ -367,10 +368,11 @@ function drawMethods() {
       four Ohio sites counts once. Census counts establishments, so the two never reconcile exactly.`],
     ["The chain", `Six stages built from the vault’s <b>${tiers.length + enablers.length}</b>
       value-chain roles. A company can sit at more than one stage, so the stages sum to more than the
-      <b>${N(meta.neo_total)}</b> companies.`],
+      <b>${N(meta.neo_total)}</b> companies. The fifth stage, finished-product OEM, is the original
+      equipment manufacturer whose name goes on the object.`],
     ["The expected shape", `The dashed guide is the same vault’s <b>${N(meta.outside_total)}</b>
       companies outside the fourteen counties (Michigan, Pittsburgh, Columbus, Indiana),
-      rescaled to NEO’s total. It compares <b>mix</b>, not size, and both sides share one collection
+      rescaled to the fourteen-county total. It compares <b>mix</b>, not size, and both sides share one collection
       method.`],
     ["Unclassified is not incapable", `<b>${N(meta.unclassified)}</b> of ${N(meta.neo_total)} companies
       carry no value-chain role yet. They are absent from the ribbon and hatched on the map. Absence
@@ -439,9 +441,9 @@ function headline(hits) {
 
   if (!parts.length) {
     t.innerHTML = `The region owns the middle of the polymer chain and <em>thins out at the molecule end</em>.`;
-    sf.innerHTML = `All <b>${N(meta.neo_total)}</b> companies PIC has classified in the fourteen
-      counties, on the chain that turns a molecule into a product and back. Type what you need
-      to make.`;
+    sf.innerHTML = `All <b>${N(meta.neo_total)}</b> companies the Polymer Industry Cluster
+      (PIC) has classified in the fourteen counties of Northeast Ohio, on the chain that turns a
+      molecule into a product and back. Type what you need to make into the box below.`;
     return;
   }
   const cties = new Set(hits.map(h => h.c).filter(Boolean));

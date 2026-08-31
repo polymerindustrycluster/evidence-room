@@ -122,15 +122,11 @@
   "MI": [
    "laborshed"
   ],
-  "NAICS": [
-   "chain"
-  ],
   "NASA": [
    "timeline"
   ],
   "NEO": [
    "accountability",
-   "chain",
    "churn",
    "cluster-health",
    "collaboration",
