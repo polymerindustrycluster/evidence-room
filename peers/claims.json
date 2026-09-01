@@ -206,8 +206,8 @@
     {
       "id": "quadrant-towns",
       "verify": "manual",
-      "text": "Elkhart builds most of the country's recreational vehicles; Hickory makes furniture and fiber-optic cable; Erie runs injection molding and mold-making shops; Greenville holds Michelin's North American headquarters and BMW's only US assembly plant.",
-      "source": "Company and trade-association public statements (RV Industry Association on Elkhart; CommScope and the North Carolina furniture industry on Hickory; Michelin North America and BMW Manufacturing on Greenville). NOT from the BLS file this page is built on.",
+      "text": "Elkhart builds most of the country's recreational vehicles; Hickory makes furniture and fiber-optic cable; Erie runs injection molding and mold-making shops; Greenville holds Michelin's North American headquarters. BMW's only US assembly plant is next door in Spartanburg County, which the bureau counts as a separate metro area and which is not in the Greenville-Anderson-Greer row.",
+      "source": "Company and trade-association public statements (RV Industry Association on Elkhart; CommScope and the North Carolina furniture industry on Hickory; Michelin North America on Greenville; BMW Manufacturing, which brands the plant Plant Spartanburg, on the county it sits in). NOT from the BLS file this page is built on.",
       "falsified_if": "Any of the four descriptions is wrong or out of date — a plant closes, a headquarters moves, or the trade body stops making the Elkhart claim. This is the one passage on the page with no dataset behind it, and the page says so in its own text rather than letting the reader assume the harness covered it.",
       "checked_by": "Unverified in this build: needs one editor pass that opens each source and records the URL and date before publication."
     },

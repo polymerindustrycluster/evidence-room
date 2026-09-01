@@ -304,11 +304,15 @@ LIST2 = [
                          "grain of a member record is publishable in it. A populated copy "
                          "belongs outside it."},
     {"covers": ["b-disbursed"],
-     "not_here": "Award dollars disbursed",
+     "not_here": "Award dollars disbursed against the whole award total",
      "because": SC["meta"]["caution"],
      "because_from": "scorecard.json meta.caution",
-     "would_need": "A public disbursement record, or a decision to publish drawdown "
-                   "totals.",
+     "would_need": "A drawdown figure for the $31,250,000 Ohio Innovation Hub grant, a "
+                   "state award that publishes no drawdown, and a payment figure for "
+                   "EDA award ED25HDQ0G0009, which has no USAspending record of any "
+                   "kind. The payment stage above already prints the outlays that seven "
+                   "of the eight federal lines do publish; what no record covers is the "
+                   "whole $85,335,784.",
      "defined_on": DEFINED_ON, "fill_by": "on a decision to publish drawdown totals",
      "permanent_reason": None},
     {"covers": ["c-completions", "c-placements"],

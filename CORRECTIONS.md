@@ -13,6 +13,52 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-09-01, twelfth entry — thirty corrections, and twelve that did not survive
+
+Five verification agents re-derived every outstanding world-checked finding against primary
+sources, and every proposed change was then handed to a hostile refuter told to default to
+refused. **Thirty survived. Twelve were refuted and are not made. Twenty-one more were
+withdrawn by the verifiers themselves before reaching a refuter, and twenty-three could not
+be settled either way and are recorded as unverifiable rather than guessed at.** The
+refutation was not a formality: one refuter caught a proposed fix smuggling in an unsourced
+"world's first" superlative that this site's own vetted heritage record deliberately
+declines to make.
+
+**A page named the wrong federal series, in four places, *revisions*.** The chart title, the
+screen-reader description that is the only version of the figure a blind reader gets, the
+methodology block and the headline vignette all named a BLS series the page does not use,
+and the names collide with a real and different series, so a reader who looked it up would
+have found the wrong data and concluded we were right. The headline case also straddles an
+undisclosed BLS policy change, which the page now discloses, and a corrections-per-revised-
+month figure has been restated against the base it is actually computed on.
+
+**"The school the field is named for" is false in any reading, *programs*.** Polymer science
+is not named for the University of Akron: the word is Berzelius, 1833, and the institution
+was chartered as Buchtel College in 1870. The page also pointed the reader at the wrong
+number: the undergraduate line runs between zero and three in every year the record reports,
+so the two in 2023 carries one seventieth of the fall. The figure to hold is the master's
+line, 66 to 16, and graduate degrees are 42 of the 44 completions left. **The board vote was
+15 April 2025, not December 2024**, and the same wrong date sat inside the page's own "what
+we got wrong" box, so the correction was carrying the error. **Terra State's fiscal watch was
+March 2026**, not April. Two of the five institutions described as awarding polymer
+engineering degrees award engineering technology.
+
+**A named company's federal award was understated by $634, *timeline*.** Every other award on
+the page is given to the dollar.
+
+**The replication guide handed out two wrong instructions, *sources*.** It told a replicator
+that a federal file has no industry dimension when it has one, and it published a 2025 CPI-U
+figure that BLS does not publish as an annual average. A page that teaches has to be right
+about the file it teaches.
+
+**Also corrected:** the hub equated the $51.0M award with the October 2023 designation, which
+are different things, and stated the wrong licence for the scripts; *occupations* and
+*cluster-health* described a regional census of degree-granting institutions their files
+cannot supply; *accountability*'s accessible chart description misstated how many commitment
+dates have passed; *peers*' claim register still described the BMW sentence that was repaired
+this morning; and *scorecard* carried a universal negative about this repository that the
+repository's own shipped data falsifies.
+
 ## 2026-09-01, eleventh entry — anonymising the row was not enough, and the count moved
 
 Earlier today this log recorded that a named company's unsuccessful application had been
