@@ -13,6 +13,40 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-09-01, tenth entry — the lesson we told people to copy was wrong about its own record
+
+**The flagship self-correction misdescribed the error it teaches, *sources*.** The page
+nominates one section as "the section to copy": the account of this site printing $160M for
+NSF award 2532460 against a record of $14,999,983. Every figure in it is right. The
+characterisation was not. **Was:** the $160M is a programme ceiling, "the maximum the
+programme could reach across every recipient and every renewal", and "no source ties that
+ceiling to this award". **Is:** the $160M is **this award's own ten-year ceiling**, phased
+and contingent on milestones, and the awardee says so in print: $7.5 million in each of the
+first two years, $15 million in each of the next three, $20 million in each of the last
+five. That schedule sums to $160 million exactly, and its first tranche is the $7,499,984
+the NSF record shows obligated for FY2026. The award runs to 2036. Verified against the NSF
+awards API on 2026-09-01.
+
+So the real error was never "a number belonging to something else". It was **a
+milestone-contingent ceiling published as a value**, with no date range and no condition
+attached, which is a commoner and more useful mistake to teach. The "factor of 10.7" was
+also not like-for-like: it set a ten-year conditional ceiling against a two-year estimated
+total. Both figures are now given, against the estimate and against what is actually
+committed, and the definitions distinguish obligated, estimated total and contingent
+ceiling as three things that can all be true of one award at once.
+
+**The front page published a count the page it links corrects.** The hub's chain card said
+785 companies while the chain page's own standfirst says the regional count is 721, after
+64 Michigan rows joined on a county name. **Is:** 721 on both. The hub card is still not
+guarded by any claim, which is why it could drift in the first place.
+
+**The right-of-reply disclosure covered organisations and not people.** It was added to
+every page earlier today reading "No organisation named on this site was contacted before
+it was published." A named-entity sweep then counted **twenty living individuals** named
+across the site, mostly in the timeline and the heritage register. **Is:** "Nobody named on
+this site was contacted before it was published", and the sentence now says the people are
+characterised from public records too.
+
 ## 2026-09-01, ninth entry — a name that should not have been here, and a register that had stopped being rebuilt
 
 **A named company was published as an unsuccessful applicant, *timeline*.** One row read

@@ -144,7 +144,7 @@ PLAIN = {
           "them, on a definition that is the same in every county in the country.",
   "cannot": "It cannot tell you what a site actually makes beyond its industry code, it "
             "suppresses any cell small enough to identify an employer, and it counts a "
-            "different thing from PIC's own register: Census counts sites, PIC classifies "
+            "different thing from PIC’s own register: Census counts sites, PIC classifies "
             "companies, so a coverage ratio between them can pass 100 percent without the "
             "county being fully covered."},
  "ipeds_directory": {
@@ -161,7 +161,7 @@ PLAIN = {
         "the three polymer codes.",
   "good": "Counting what American colleges actually conferred under a polymer heading, "
           "year by year, on one consistent national definition.",
-  "cannot": "It sees only what a college CHOSE to report under a polymer code. Soft-matter "
+  "cannot": "It sees only the programmes a college chose to report under a polymer code. Soft-matter "
             "teaching filed under chemistry, physics or materials is invisible to it, and "
             "at least five institutions are confirmed to teach the subject while appearing "
             "here as nothing. A year with no completions is a filing gap, never a closure. "
@@ -186,14 +186,14 @@ PLAIN = {
             "occupation pays."},
  "openalex": {
   "is": "An open bibliographic index of published work and the institutions attached to it.",
-  "good": "Seeing who a region's researchers publish with, and where the work travels.",
+  "good": "Seeing who a region’s researchers publish with, and where the work travels.",
   "cannot": "Attribution rests on a convention: credit goes to the corresponding author, "
             "which is where a lab is, not necessarily where the work was done. Affiliation "
             "strings are noisy enough that a public library appeared as a leading polymer "
             "partner until it was quarantined by hand. Coverage favours indexed venues, so "
             "silence is not absence of work."},
  "nsf_awards": {
-  "is": "The National Science Foundation's own record of what it awarded, to whom, and when.",
+  "is": "The National Science Foundation’s own record of what it awarded, to whom, and when.",
   "good": "Establishing that a specific federal award exists, its size and its dates, from "
           "the awarding agency rather than from a press release.",
   "cannot": "The PRIME RECIPIENT is not the lead institution of the work, and reading it as "
@@ -201,7 +201,7 @@ PLAIN = {
             "is frequently issued as separate awards to each institution, so one award "
             "naming one university is not evidence that the other was uninvolved."},
  "usaspending_awards": {
-  "is": "The Treasury's award-level record of federal contracting, queried for prime "
+  "is": "The Treasury’s award-level record of federal contracting, queried for prime "
         "contracts only.",
   "good": "Setting one award against everything the federal government contracts for in the "
           "same counties and years, on the same filter.",
@@ -211,7 +211,7 @@ PLAIN = {
             "comparator twenty-six times too large. Place of performance is a filing field, "
             "not a statement about where work happened."},
  "vault": {
-  "is": "PIC's own catalogue of companies it has classified. It is not public and a reader "
+  "is": "PIC’s own catalogue of companies it has classified. It is not public and a reader "
         "cannot obtain it.",
   "good": "Describing a supply chain in more detail than any federal code can, using how "
           "companies describe themselves.",

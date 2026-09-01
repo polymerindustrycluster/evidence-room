@@ -639,9 +639,9 @@ const PV = (() => {
             href="https://github.com/polymerindustrycluster/evidence-room/issues/new?template=data-error.yml">open
             a data-error issue</a>. The most useful note names the sentence and what you
             think it fails against.</p>
-          <p><b>No organisation named on this site was contacted before it was
-            published.</b> Companies, colleges and institutions here are characterised from
-            public records, and none has been offered a right of reply. That is a real
+          <p><b>Nobody named on this site was contacted before it was published.</b>
+            Companies, colleges and institutions here are characterised from public records,
+            and so are the twenty or so people named in the record and the timeline, and none has been offered a right of reply. That is a real
             limitation of this work rather than an oversight of wording: a filing describes
             what an organisation reported, never what it knows about itself. If a page names
             yours and has it wrong, the two routes above reach a person, and the correction
