@@ -49,9 +49,19 @@ went stale. The ranking survives the gap and is stated as surviving it.
 on this site carries a written condition that ties it to its source" (*sources*) and
 "Every sentence here is tied to its source by a check that can fail" (*the front page*).
 Neither is true; the site carries 519 claims and contains far more than 519 numbers.
-**Is:** "Every claim here names the condition that would prove it wrong" — which is true
-of all 545 claims with no exceptions, is checkable, and is the stronger sentence. A false
-universal is usually hiding a true one nearby.
+**Is:** "Every claim here names the condition under which it stops matching its source"
+— true of all 545 claims with no exceptions, and honest about what the condition can
+settle. A false universal is usually hiding a true one nearby.
+
+The first attempt at that repair is worth recording, because the harness caught it. It
+read "names the condition that would prove it wrong", on the reasoning that all 545
+claims carry a falsifier and the sentence was therefore universally true. The disclosure
+gate rejected it: that exact phrase had been banned hours earlier as the site's largest
+overclaim, because a claim's condition runs against the data the page shipped with and
+can prove only that a sentence stopped matching its own file, never that it is wrong
+about the world. The gate was added the same day, on a cross-family review, after a
+transposed classification code moved a series by half while its assertion kept passing.
+It then caught the author of this entry reintroducing the same sentence.
 
 **BMW's plant is in a different metro from the one the sentence explains, *peers*.**
 **Was:** "Greenville, South Carolina holds Michelin's North American headquarters and the

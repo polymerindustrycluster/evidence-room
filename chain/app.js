@@ -452,8 +452,8 @@ function headline(hits) {
     sf.innerHTML = `<b>${N(meta.neo_total)}</b> rows the Polymer Industry Cluster (PIC)
       has tagged to the fourteen counties of Northeast Ohio, on the chain that turns a
       molecule into a product and back. <b>Sixty-four of them do not belong here.</b> They
-      are companies in Wayne County, <em>Michigan</em> &mdash; Detroit, Livonia, Plymouth,
-      Dearborn and fourteen other cities &mdash; joined to Wayne County, Ohio on the county
+      are companies in Wayne County, <em>Michigan</em> (Detroit, Livonia, Plymouth, Dearborn and
+      fourteen other cities), joined to Wayne County, Ohio on the county
       name with no state, so the corrected regional count is <b>721</b>. The repair is a
       change to the builder and is in progress; until it lands, read every Wayne row and
       every total on this page with that in mind. Type what you need to make into the box
