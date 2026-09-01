@@ -10,14 +10,14 @@ institutions.
 
 **What a dot is:** one institution — every program it ever filed under the three polymer
 CIP codes, aggregated. Area = lifetime completions; dark = any program still conferring in
-2023; light = all ended in the record; hollow diamond = confirmed to teach polymer science
-under codes this census cannot see. **Institutions, never individuals** (standing decision
+2023; light = no polymer-coded award in 2023; hollow diamond = confirmed to teach polymer
+science under codes this census cannot see. **Institutions, never individuals** (standing decision
 2026-08-19).
 
 ```
 index.html          page shell
 app.js              the map, the largest-records chart, and their table twins
-claims.json         7 assertions — 5 machine-checked, 2 manual
+claims.json         9 assertions — 7 machine-checked, 2 manual
 data/viz-data.json  THE DATA (~150 KB, mostly basemap paths). Edit the builders, not this.
 INTEGRATION-NOTE.md what the controller must wire before this page is reachable or shippable
 ```
@@ -47,9 +47,18 @@ The projection constants are the us-atlas ones (975×610, scale 1300, translate
 - **State rankings depend on the unit.** Michigan leads on institutions ever (15 to
   Ohio's 14); Ohio leads on substantive programs (the programs page). Neither substitutes
   for the other.
-- **Seven dots are city centroids** (pre-2009 closures — the directory's coordinate field
-  starts in 2009); each says so in its hover. One institution (Puerto Rico) sits outside
-  the projection and is named beside the map.
+- **Seven dots are city centroids** (they left the directory before its coordinate field
+  starts in 2009); each says so in its hover. Leaving the directory is not closing: three
+  of the seven rows are confirmed closures (Akron Machining Institute 2007; Acme Institute
+  of Technology's two Wisconsin campuses 1995), two are still operating (Westlawn; the Red
+  Wing campus of Minnesota State College Southeast), two are unestablished. One institution
+  (Puerto Rico) sits outside the projection and is named beside the map.
+- **The light flag is `active_programs == 0`**, which is "no completion filed under a
+  polymer CIP code in 2023" and nothing more. Never label it "ended" or "closed": four
+  light rows were confirmed still teaching the subject on 2026-09-01.
+- **147 counts unitids, not institutions.** Penn State, NYU and Acme each hold two rows,
+  so the distinct count is about 144 and the light count about 103. Disclosed in the
+  methodology; collapsing them is a data change and the named next step.
 - **No research layer yet, on purpose.** OpenAlex candidates are zero-verified and the
   API is metered; the absence is claimed on the page, not hidden.
 

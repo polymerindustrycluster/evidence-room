@@ -9,11 +9,13 @@
  *      comparative panel (largest records) is labeled as institution-level and points at
  *      the programs page for the program-level construct.
  *   2. Encodings: dot AREA = lifetime completions (sqrt radius); hue = any program still
- *      conferring in 2023 vs all ended; hollow diamond = confirmed census-invisible.
+ *      conferring in 2023 vs no polymer-coded award that year; hollow diamond = confirmed
+ *      census-invisible.
  *   3. Uncertainty: coordinate provenance per dot (seven city centroids named); the one
  *      institution outside the projection named in the caption; 'ever' vs 'still
  *      conferring' stated as different constructs and never shown as a ratio.
- *   4. Palette: sequential teal for the active/ended pair; ink for the diamonds.
+ *   4. Palette: sequential teal for the conferred-in-2023 / no-award-in-2023 pair; ink
+ *      for the diamonds.
  *   7. No axes on the map; the basemap is pre-projected AlbersUSA at build time.
  *
  * DESK EDIT, 2026-08-22. Converted to the one-column layer (LAYOUT-SPEC 4b) and rewritten
@@ -51,8 +53,9 @@ const D = await PV.data("viz-data.json");
 /* THE COLD OPEN (guarded by tools/coldopen.mjs). This page opened on 1,124 pixels of
    prose before its first mark. The strip is the record at its coarsest: every
    institution that ever filed, one tick, placed by the size of its lifetime record,
-   active teal-lime and ended pale, the three deep records named. It is deliberately a
-   POORER view than the map below: no geography, no hover, no diamonds. Its job is to
+   teal-lime where a polymer-coded award was filed in 2023 and pale where none was, the
+   three deep records named. It is deliberately a POORER view than the map below: no
+   geography, no hover, no diamonds. Its job is to
    show the shape of the record, many small and three enormous, and hand the reader on. */
 {
   const svg = document.getElementById("open");
@@ -72,16 +75,34 @@ const D = await PV.data("viz-data.json");
     const max = rows[rows.length - 1].total_awards;
     const lo = 10, hi = W - 10, y = 84;
     const x = v => lo + Math.sqrt(v / max) * (hi - lo);
-    const ACTIVE = "#B8D637", ENDED = "rgba(255,255,255,.34)";
+    const ACTIVE = "#B8D637", NO_AWARD_2023 = "rgba(255,255,255,.34)";
     /* key before data, in reading order */
-    txt(svg, "still conferring in 2023", {x: lo, y: 18, "font-size": 12.5,
+    const kA = txt(svg, "still conferring in 2023", {x: lo, y: 18, "font-size": 12.5,
       fill: ACTIVE, "font-weight": 700});
-    txt(svg, "ended", {x: lo + 172, y: 18, "font-size": 12.5,
-      fill: "rgba(255,255,255,.62)", "font-weight": 700});
+    /* THE KEY NAMES THE MEASUREMENT, NOT AN INFERENCE FROM IT. The pale key said
+       "ended", which a reader hears as "closed". The flag behind those ticks is
+       active_programs == 0: the institution filed no completion under one of the three
+       polymer CIP codes in the single year 2023. Westlawn is still building boats and
+       Northwest State still awards a plastics AAS; both are pale here, and both were
+       libelled by the old word.
+
+       The honest label is four times the length of the dishonest one, so its position is
+       measured rather than the hand-typed offset that carried "ended": both keys sit on
+       one line where the column can hold them, and the pale one drops to a second line
+       where it cannot. At 360px the old constant would have run the key past the frame,
+       which is the collide gate's failure and, worse, a key a narrow reader never sees. */
+    const KEY2 = "no polymer-coded award in 2023";
+    const wA = kA.getComputedTextLength ? kA.getComputedTextLength() : 148;
+    const probe = txt(svg, KEY2, {y: -99, "font-size": 12.5, "font-weight": 700});
+    const wB = probe.getComputedTextLength ? probe.getComputedTextLength() : 196;
+    probe.remove();
+    const inline = lo + wA + 20 + wB <= hi;
+    txt(svg, KEY2, {x: inline ? lo + wA + 20 : lo, y: inline ? 18 : 36,
+      "font-size": 12.5, fill: "rgba(255,255,255,.62)", "font-weight": 700});
     for (const r of rows)
       el("line", {x1: x(r.total_awards).toFixed(1), y1: y - 16,
         x2: x(r.total_awards).toFixed(1), y2: y + 16,
-        stroke: r.active_programs > 0 ? ACTIVE : ENDED, "stroke-width": 2}, svg);
+        stroke: r.active_programs > 0 ? ACTIVE : NO_AWARD_2023, "stroke-width": 2}, svg);
     /* One caption names the trio; per-tick labels collided (the three deep records sit
        within 15% of each other on a sqrt scale, and three 13px names do not fit there). */
     txt(svg, "the three deep records: Lowell, Big Rapids, Akron", {x: hi, y: y - 24,
@@ -177,8 +198,9 @@ figures([
   el("path", {d: D.basemap.nation, fill: "#F4F2EE", stroke: "none"}, g);
   el("path", {d: D.basemap.states, fill: "none", stroke: "#D8D3CA", "stroke-width": 1}, g);
   const r = v => 2 + Math.sqrt(v) * 0.32;
-  /* Light (ended) dots draw first, then dark (active), then the diamonds — the marks a
-     reader must be able to find are never buried under the ones they outnumber. */
+  /* Light (no award in 2023) dots draw first, then dark (conferring), then the diamonds
+     — the marks a reader must be able to find are never buried under the ones they
+     outnumber. */
   const order = [...D.dots].sort((a, b) => (still(a) ? 1 : 0) - (still(b) ? 1 : 0) || b.total_awards - a.total_awards);
   order.forEach(d => {
     const node = el("circle", {cx: d.x, cy: d.y, r: r(d.total_awards),
@@ -189,9 +211,10 @@ figures([
        ${d.programs} program${d.programs > 1 ? "s" : ""} · ${d.levels.split(",").join(", ")}<br>
        <span class="v">${N(d.total_awards)}</span> completions, ${yrs(d)}<br>
        ${still(d) ? `<span class="v">${d.active_programs}</span> still conferring, 2023`
-                  : "all programs ended in the record"}
+                  : `no polymer-coded award in 2023; last one ${d.last_year}`}
        ${d.coord_source.startsWith("hand") ? `<br><span style="font-size:12px">${d.coord_source}</span>` : ""}`,
-      `${Cap(d.name)}, ${d.city} ${d.state}: ${N(d.total_awards)} completions, ${yrs(d)}, ${still(d) ? "still conferring" : "ended"}`);
+      `${Cap(d.name)}, ${d.city} ${d.state}: ${N(d.total_awards)} completions, ${yrs(d)}, ` +
+      (still(d) ? "still conferring in 2023" : "no polymer-coded award in 2023"));
   });
   D.invisible.forEach(d => {
     const s = 7;
@@ -221,7 +244,7 @@ figures([
   });
   document.getElementById("maplegend").innerHTML =
     `<span><i style="background:${SEQ[5]};border-radius:50%"></i> still conferring, 2023</span>
-     <span><i style="background:${SEQ[1]};border-radius:50%;opacity:.7"></i> ended in the record</span>
+     <span><i style="background:${SEQ[1]};border-radius:50%;opacity:.7"></i> no polymer-coded award in 2023</span>
      <span><i style="background:var(--paper);box-shadow:inset 0 0 0 2px ${INK};transform:rotate(45deg)"></i> confirmed invisible to the census</span>`;
   const offp = D.off_projection[0];
   /* The caption’s first sentence is what a reader would otherwise get wrong about THIS
@@ -229,14 +252,19 @@ figures([
   document.getElementById("mapsrc").innerHTML =
     `<b>A big dot is a long record, not a large program today</b>: area is everything an
      institution ever conferred across 33 years, so a school that stopped in 1998 can
-     outdraw one teaching a full class this term. Seven institutions closed before the
-     federal directory carried coordinates in 2009 and sit at their city&rsquo;s centroid,
-     and each says so in its hover. One institution sits outside the frame entirely,
-     <b>${Cap(offp.name)}</b> (${offp.city}, PR; ${N(offp.total_awards)} completions,
-     ended), because the standard AlbersUSA projection carries no Puerto Rico inset; it is
-     in the register at the foot of this page with everything else. Alaska and Hawaii are
-     drawn in their usual insets and are empty because no polymer-coded institution has
-     ever filed from either. IPEDS completions by six-digit program code, 1991&ndash;2023,
+     outdraw one teaching a full class this term. Seven institutions left the federal
+     directory before it carried coordinates in 2009 and sit at their city&rsquo;s
+     centroid, and each says so in its hover. <b>Leaving the directory is not closing.</b>
+     Three of those seven rows are confirmed closures, Akron Machining Institute in 2007
+     and Acme Institute of Technology&rsquo;s two Wisconsin campuses in 1995, which is two
+     institutions across three rows; Westlawn Institute of Marine Technology and the Red
+     Wing campus of Minnesota State College Southeast are both still operating; the
+     remaining two are unestablished. One institution sits outside the frame entirely,
+     <b>${Cap(offp.name)}</b> (${offp.city}, PR; ${N(offp.total_awards)} completions, last
+     in ${offp.last_year}; the university is open), because the standard AlbersUSA
+     projection carries no Puerto Rico inset; it is in the register at the foot of this
+     page with everything else. Alaska and Hawaii are drawn in their usual insets and are
+     empty because no polymer-coded institution has ever filed from either. IPEDS completions by six-digit program code, 1991&ndash;2023,
      aggregated to institutions, joined to IPEDS directory coordinates.`;
   document.getElementById("mapnote").innerHTML =
     `<b>What the diamonds mean, and what this version leaves out.</b>
@@ -289,7 +317,8 @@ figures([
   });
   document.getElementById("toptable").innerHTML = tableView("top",
     "The twelve largest institutional records",
-    ["Institution", "State", "Programs", "Lifetime completions", "Years", "Still conferring"],
+    ["Institution", "State", "Programs", "Lifetime completions", "Years",
+     "Polymer-coded award 2023"],
     rows.map(d => [d.url ? `<a href="${d.url}" target="_blank" rel="noopener">${Cap(d.name)}</a>`
                          : Cap(d.name),
       stateCell(d.state), d.programs, N(d.total_awards), yrs(d),
@@ -304,7 +333,7 @@ figures([
       ? `<b>All ${rows.length} of these institutions still had a polymer program conferring
          in 2023</b>, which is why every bar is the same colour.`
       : `<b>${stillN} of these ${rows.length} still had a polymer program conferring in
-         2023</b>; the pale bars are the ones whose record has ended.`}
+         2023</b>; the pale bars are the ones with no polymer-coded award that year.`}
      <b>The three deepest records sum to ${N(awards3)} of the record&rsquo;s ${N(awardsAll)}
      completions, ${pct(awards3 / awardsAll)}</b>: ${Cap(top3[0].name)} in Lowell,
      Massachusetts, Ferris State in Big Rapids, Michigan, and the University of Akron. Each
@@ -335,7 +364,7 @@ figures([
   document.getElementById("maptable").innerHTML = tableView("map",
     "The full directory: every institution, largest record first",
     ["Institution", "City", "State", "Programs", "Levels", "Years", "Lifetime completions",
-     "Still conferring 2023", "Programs by code"],
+     "Polymer-coded award 2023", "Programs by code"],
     [...ALL].sort((a, b) => b.total_awards - a.total_awards)
       .map(d => [site(d), d.city, stateCell(d.state), d.programs, d.levels.split(",").join(", "),
         yrs(d), N(d.total_awards), still(d) ? `yes (${d.active_programs})` : "no",
@@ -343,8 +372,8 @@ figures([
   PV.tableTools("#maptable", {placeholder: "institution, city, state…"});
   document.getElementById("dirsrc").innerHTML =
     `Institution names link to the institution&rsquo;s own site wherever the federal
-     directory publishes one (140 of ${N(T.ever)}; the seven without are closures that
-     predate the directory&rsquo;s web field), and the last column links that
+     directory publishes one (140 of ${N(T.ever)}; the seven without a link left the
+     directory before the build&rsquo;s coordinate vintage), and the last column links that
      institution&rsquo;s page in the federal record, which lists its programs by code.
      <b>There are no program-level links because the record holds none</b>: a deep link to
      a specific programme page would be a guess. Levels are the award levels the
@@ -362,6 +391,45 @@ figures([
      ${Cap(D.top.name)}&rsquo;s ${N(D.top.total_awards)} completions. The research layer is
      the named next step.`;
 }
+
+/* THE PAGE’S OWN CORRECTIONS, standing together on the page where the error was made
+   (editorial standard rule 6, the same block the programs page carries). A reader could
+   have quoted the closure sentence at a named college, so the retraction belongs here and
+   not only in CORRECTIONS.md. */
+PV.whatWeGotWrong([
+  {when: "2026-09-01 &middot; found by a documentary check of the institutions themselves",
+   was: `This page said <b>&ldquo;Seven institutions closed before the federal directory
+     carried coordinates in 2009&rdquo;</b>, described the seven institutions without a
+     website link as &ldquo;closures&rdquo;, named the Puerto Rico row as
+     &ldquo;ended&rdquo;, and keyed every pale mark on the map, in the opening strip, in
+     the hover, in the screen-reader text and in both tables with the single word
+     <b>&ldquo;ended&rdquo;</b>.`,
+   is: `Three of the seven rows are confirmed closures, which is two institutions: Akron
+     Machining Institute in 2007 and Acme Institute of Technology&rsquo;s two Wisconsin
+     campuses in 1995. Westlawn Institute of Marine Technology and the Red Wing campus of
+     Minnesota State College Southeast are still operating; two are unestablished. The
+     Puerto Rico institution&rsquo;s last polymer-coded award was in 1999 and the
+     university is open. The pale key now says what the flag measures,
+     <b>no polymer-coded award in 2023</b>, because four pale institutions were confirmed
+     on 2026-09-01 to be still teaching the subject: Northwest State Community College,
+     Mid Michigan College, Davis Technical College and Skagit Valley College.`,
+   why: `The flag is one year of federal filings and it was published under a word that
+     reads as a verdict on the institution. Every gate on this page asked whether a
+     sentence matched the data; none asked whether a word claimed more than the data
+     could carry, and a closure is the kind of claim a college notices.`},
+  {when: "2026-09-01 &middot; same check",
+   was: `The 147 was presented throughout as a count of institutions.`,
+   is: `It is a count of federal identifiers. A retired identifier and its successor both
+     appear, so Penn State holds two rows and so does New York University, and Acme
+     Institute of Technology holds one for each of its two campuses. Collapsing them would
+     give about 144 distinct institutions and about 103 without a polymer-coded award in
+     2023. The page still prints 147 and 106 because every figure on it is built from
+     rows; the collapse is a change to the data rather than to the writing, and it is the
+     named next step. The overcount is stated in the methodology so that nobody has to
+     find it twice.`,
+   why: `The build joined the census to the federal directory by identifier and nothing
+     asked whether one institution could arrive under two of them.`},
+]);
 
 /* Standard methodology + AI disclosure. Generated, not written — see picviz.js. */
 const method = await PV.methodology({page: "atlas", meta: D.meta});
