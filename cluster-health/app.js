@@ -106,7 +106,7 @@ document.getElementById("stand").innerHTML =
    ${N(bal[0].balanced)} jobs in ${bal[0].year}, ${N(bal[1].balanced)} in ${bal[1].year}
    and ${N(bal[2].balanced)} in ${bal[2].year}. ${cap1(BASES.level.label)} gives a higher
    total, ${BASES.level.display}, on a basis that cannot carry a trend. Against their own
-   histories: ${[scale, talent, pay, cap].map(standLine).join("; ")}. Concentration, the
+   histories: ${[scale, talent, pay, cap].map(standLine).join("; ")}. Paint concentration, the
    fifth measure, has no better end.`;
 
 /* Each hero number's sub-line is that number's plain reading, because for three of the
@@ -448,8 +448,8 @@ document.getElementById("movesrc").innerHTML =
    data archive; employment, wage and contracting figures cover the ${FP.words} Northeast
    Ohio counties. What a measure usually moves is the middle of all its year-to-year
    changes, direction ignored, over every earlier pair of years in its own series. That
-   describes movement between published years, not the size of a future revision, which is
-   unmeasured for four of these five.`;
+   describes movement between published years, not the size of a future revision, which
+   nobody has measured for any of these five.`;
 
 /* ---------------------------------------------------------------------------- tiles */
 const drivers = t => t.drivers.map(d => `<li><span class="d-lab">${d.label}</span>
@@ -539,7 +539,7 @@ document.getElementById("closerline").textContent =
 document.getElementById("closersub").innerHTML =
   `That is the reading on ${WORDS[T.length]} measures, none of which has a target set for
    it. Against their own published years, ${[scale, talent, pay, cap].map(standLine)
-     .join(", ")}, and concentration has no better end to be read against at all. The five
+     .join(", ")}, and paint concentration has no better end to be read against at all. The five
    are not added into a score, because that needs weights nobody has set. ${withheld} of
    the ${D.register.possible_cells} county employment figures behind the first one are
    withheld rather than small, and the degree figure is the one to watch and the one to
