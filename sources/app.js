@@ -333,15 +333,15 @@ function drawTree() {
   const keyed = S.filter(s => s.key_required);
   const internal = S.filter(s => s.route === "internal");
   document.getElementById("estatelede").innerHTML =
-    `Every dataset this site draws on, in one table: what it is, who publishes it, how you
-     get it, and which pages rest on it. ${N(pub.length)} of the ${N(S.length)} are public;
+    `Every dataset this site draws on, in one table: who publishes it, how you get it, and
+     which pages rest on it. What each one is, and what it cannot tell you, is in the full
+     register further down. ${N(pub.length)} of the ${N(S.length)} are public;
      ${N(keyed.length)} need a free key; ${N(internal.length)} are PIC&rsquo;s own records and
      cannot be fetched by anybody. Sort any column; filter by name, agency or page.`;
   const route = s => s.route === "internal" ? "internal record, no endpoint" : (s.route_label || s.route);
   const rows = [...S].sort((x, y) => y.n_pages - x.n_pages || x.short.localeCompare(y.short)).map(s => [
     s.url ? `<a href="${s.docs || s.url}">${s.short}</a>` : s.short,
     s.agency,
-    s.is,
     route(s),
     s.key_required ? "yes" : "no",
     `${s.n_pages}: ${s.pages.map(p => `<a href="../${p}/">${p}</a>`).join(", ")}`,
@@ -349,15 +349,13 @@ function drawTree() {
   document.getElementById("estate").innerHTML =
     `<div class="pv-tablewrap"><table>
       <caption>The register behind this site, ${N(S.length)} datasets, largest footprint first</caption>
-      <thead><tr><th scope="col">Dataset</th><th scope="col">Publisher</th><th scope="col">What it is</th>
+      <thead><tr><th scope="col">Dataset</th><th scope="col">Publisher</th>
         <th scope="col">How you get it</th><th scope="col">Key needed</th><th scope="col">Pages that use it</th></tr></thead>
       <tbody>${rows.map(r => `<tr><th scope="row">${r[0]}</th>${r.slice(1).map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody>
     </table></div>`;
   PV.tableTools("#estate", {placeholder: "dataset, agency, page…"});
   document.getElementById("estatesrc").innerHTML =
-    `Drawn from the same register every recipe on this page reads, ${N(S.length)} entries.
-     What each dataset cannot tell you, the line to read first, is under each name in
-     the full register lower down.`;
+    `Drawn from the same register every recipe on this page reads, ${N(S.length)} entries.`;
 }
 
   document.getElementById("treetable").innerHTML = tableView("tree",
