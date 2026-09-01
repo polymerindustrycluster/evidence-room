@@ -3,11 +3,11 @@
   "claims": [
     {
       "id": "atlas-counts",
-      "text": "147 US institutions ever filed a polymer program in the federal record, 1991–2023, across 33 states, the District of Columbia and Puerto Rico, which is the 35 jurisdictions the hero card counts. This claim's prose read '35 states plus Puerto Rico' until 2026-08-31, which adds to 36 and drops the District of Columbia; the page itself has always printed the split correctly, and the assertion now pins the 33 as well as the 35. 41 institutions had a program still conferring in 2023. 'Ever' is a 33-year union and 'still conferring' a one-year snapshot — different constructs, never stated as a ratio.",
-      "source": "polymer-programs-db census, aggregated to institutions, source='ipeds' only",
-      "assert": "D['totals']['ever'] == 147 and D['totals']['active'] == 41 and D['totals']['states'] == 35 and len([x for x in D['states_list'] if x['state'] not in ('DC', 'PR')]) == 33 and len(D['states_list']) == 35 and len(D['dots']) == 146 and len(D['off_projection']) == 1 and D['off_projection'][0]['unitid'] == 242617 and D['totals']['active'] == sum(1 for d in D['dots'] + D['off_projection'] if d['active_programs'] > 0)",
+      "text": "147 US institutions ever filed a polymer program in the federal record, 1991–2023, across 33 states, the District of Columbia and Puerto Rico, which is the 35 jurisdictions the hero card counts. This claim's prose read '35 states plus Puerto Rico' until 2026-08-31, which adds to 36 and drops the District of Columbia; the page itself has always printed the split correctly, and the assertion now pins the 33 as well as the 35. 41 institutions had a program still conferring in 2023. 'Ever' is a 33-year union and 'still conferring' a one-year snapshot — different constructs, never stated as a ratio. Added 2026-09-01: the record holds 20,052 lifetime completions and no institution's last conferring year is 2020. Both are pinned here because until that date it held 20,859 and four institutions read 2020 — the federal mirror's duplicated year, quarantined on 2026-08-26 for every other page built on that mirror and left inside this one, which was then promoted to the public tree with it. The three counts above are the ones that survived the duplicate untouched, and their surviving is exactly why nothing here caught the ones that did not.",
+      "source": "polymer-programs-db census, aggregated to institutions, source='ipeds' only, with 2020 quarantined",
+      "assert": "D['totals']['ever'] == 147 and D['totals']['active'] == 41 and D['totals']['states'] == 35 and len([x for x in D['states_list'] if x['state'] not in ('DC', 'PR')]) == 33 and len(D['states_list']) == 35 and len(D['dots']) == 146 and len(D['off_projection']) == 1 and D['off_projection'][0]['unitid'] == 242617 and D['totals']['active'] == sum(1 for d in D['dots'] + D['off_projection'] if d['active_programs'] > 0) and sum(d['total_awards'] for d in D['dots'] + D['off_projection']) == 20052 and not [d for d in D['dots'] + D['off_projection'] if d['last_year'] == 2020] and D['quarantined'] == {'2020': 'the Urban Institute IPEDS mirror serves 2019 data under year=2020'}",
       "actual": "(D['totals'], len(D['dots']), [o['name'] for o in D['off_projection']])",
-      "falsified_if": "2024 data lands or IPEDS revises (the census probes every build); or the mixed-denominator trap re-enters — any sentence stating 41-of-147 as a survival rate fails the census's own documented kill of that headline."
+      "falsified_if": "2024 data lands or IPEDS revises (the census probes every build); or the mixed-denominator trap re-enters — any sentence stating 41-of-147 as a survival rate fails the census's own documented kill of that headline. Or Urban reloads completions-cip-6 and 2020 stops being a copy of 2019, at which point the year is real, the quarantine lifts, and this page is rebuilt rather than patched."
     },
     {
       "id": "atlas-mapped-complete",
@@ -19,11 +19,11 @@
     },
     {
       "id": "atlas-top-lowell",
-      "text": "The deepest institutional teaching record is UMass Lowell's: 2,929 lifetime completions across its polymer programs, still conferring.",
-      "source": "polymer-programs-db census, institution-level sum",
-      "assert": "'Massachusetts-Lowell' in D['top']['name'] and D['top']['total_awards'] == 2929 and D['top']['total_awards'] == max(d['total_awards'] for d in D['dots']) and (lambda t: t['active_programs'] > 0)(one(d for d in D['dots'] if d['unitid'] == D['top']['unitid']))",
+      "text": "The deepest institutional teaching record is UMass Lowell's: 2,830 lifetime completions across its polymer programs, still conferring. This claim asserted 2,929 from 2026-08-21 until 2026-09-01 and was green every day of it: the census beneath it counted the federal mirror's duplicated 2020, which is 2019 served a second time, and 99 of Lowell's completions were that duplicate. A claim can only be as true as the data it is checked against, which is the whole reason verify_series.py is a separate gate from this one.",
+      "source": "polymer-programs-db census, institution-level sum, with the quarantined 2020 removed (_data/build/atlas_reprojection_patch.py)",
+      "assert": "'Massachusetts-Lowell' in D['top']['name'] and D['top']['total_awards'] == 2830 and D['top']['total_awards'] == max(d['total_awards'] for d in D['dots']) and (lambda t: t['active_programs'] > 0)(one(d for d in D['dots'] if d['unitid'] == D['top']['unitid']))",
       "actual": "D['top']",
-      "falsified_if": "A revision or the 2024 vintage reorders the top — Akron's record is second and shrinking annual output means the gap now only widens, so a change here would signal a data problem before a real one."
+      "falsified_if": "A revision or the 2024 vintage reorders the top — Ferris State's record is second and Akron's third, and shrinking annual output means those gaps now only widen, so a change here would signal a data problem before a real one. The line read \"Akron's record is second\" until 2026-09-01; Akron has been third since the page was built, and nothing asserted the order, so the sentence was never checked by anything."
     },
     {
       "id": "atlas-top-three",
