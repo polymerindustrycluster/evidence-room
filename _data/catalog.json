@@ -1,21 +1,21 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-09-01 03:23",
-  "seconds": 2.1,
+  "generated": "2026-09-01 08:40",
+  "seconds": 2.2,
   "scripts": 53,
-  "outputs_on_disk": 8,
-  "outputs_claimed": 34,
+  "outputs_on_disk": 7,
+  "outputs_claimed": 35,
   "orphan_outputs": 1,
   "registry_error": null,
   "flag_counts": {
-   "not_in_PIPELINES.md": 51,
+   "not_in_PIPELINES.md": 53,
    "no_traps_section": 43,
    "no_house_docstring": 42,
-   "output_missing_on_disk": 32,
-   "not_in_SOURCES.json": 20,
-   "import_error": 16,
-   "no_output_detected": 13,
+   "output_missing_on_disk": 33,
+   "not_in_SOURCES.json": 21,
+   "import_error": 17,
+   "no_output_detected": 14,
    "meta_fetched_vs_mtime_gap": 3
   }
  },
@@ -185,38 +185,30 @@
    },
    "hosts": [],
    "outputs": [],
-   "page_outputs": [
-    "_data/build/churn/data/bench.json"
-   ],
-   "page_outputs_exist": {
-    "_data/build/churn/data/bench.json": false
-   },
+   "page_outputs": [],
+   "page_outputs_exist": {},
    "outputs_exist": {},
    "writes_outside_build": [],
    "witnesses": {
     "static": [],
-    "observed": [
-     "churn/data/bench.json"
-    ]
+    "observed": []
    },
-   "output_learned_by": {
-    "churn/data/bench.json": "observed"
-   },
-   "observed_stop": "open(bench.json,'w')",
+   "output_learned_by": {},
+   "observed_stop": null,
    "observed_network": [],
    "observed_reads": [
-    "churn/data/churn.json",
     "qwi_bench.json"
    ],
-   "import_error": null,
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/qwi_bench.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
    "freshness": [],
    "flags": [
+    "import_error",
+    "no_output_detected",
     "not_in_PIPELINES.md",
-    "not_in_SOURCES.json",
-    "output_missing_on_disk"
+    "not_in_SOURCES.json"
    ]
   },
   {
@@ -2440,7 +2432,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "qwi_bench.json": true
+    "qwi_bench.json": false
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -2467,17 +2459,10 @@
     "churn"
    ],
    "in_pipelines_md": false,
-   "freshness": [
-    {
-     "output": "qwi_bench.json",
-     "meta_fetched": "2026-09-01",
-     "file_mtime": "2026-09-01",
-     "bytes": 25593,
-     "row": "states: one (state, year, quarter) cell, emp a STOCK at quarter start and hires/seps FLOWS during it. age: one (age band, window) sum over the twelve counties and the window's quarters."
-    }
-   ],
+   "freshness": [],
    "flags": [
-    "not_in_PIPELINES.md"
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
    ]
   },
   {
@@ -2962,17 +2947,6 @@
    "bytes": 342410,
    "mtime": "2026-08-31",
    "meta": null,
-   "unreadable": null
-  },
-  "qwi_bench.json": {
-   "file": "qwi_bench.json",
-   "bytes": 25593,
-   "mtime": "2026-09-01",
-   "meta": {
-    "fetched": "2026-09-01",
-    "row": "states: one (state, year, quarter) cell, emp a STOCK at quarter start and hires/seps FLOWS during it. age: one (age band, window) sum over the twelve counties and the window's quarters.",
-    "source": "U.S. Census Quarterly Workforce Indicators (QWI), not seasonally adjusted"
-   },
    "unreadable": null
   }
  }
