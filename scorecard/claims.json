@@ -90,6 +90,14 @@
       "falsified_if": "A revision lifts 2022 above half of 2021, at which point 'more than halved' is wrong even if the fall remains large. The counts are administrative and in the low hundreds, so a single institution's late filing can move them; the row's trend cell prints all three window years for that reason rather than an arrow."
     },
     {
+       "id": "sc-talent-title",
+       "text": "The talent figure title and the chart's own accessible description: polymer credentials ran between 118 and 179 a year through 2021, averaging 142, then dropped to 54 in 2022 and recovered only to 63 in 2023. Every pre-drop year sits above the 2022 count.",
+       "source": "scorecard/data/scorecard.json talent.polymer, the drawn series with 2020 quarantined",
+       "assert": "min([p['n'] for p in D['sc']['talent']['polymer'] if p['year'] <= 2021]) == 118 and max([p['n'] for p in D['sc']['talent']['polymer'] if p['year'] <= 2021]) == 179 and round(sum([p['n'] for p in D['sc']['talent']['polymer'] if p['year'] <= 2021]) / len([p['n'] for p in D['sc']['talent']['polymer'] if p['year'] <= 2021])) == 142 and one(p for p in D['sc']['talent']['polymer'] if p['year'] == 2022)['n'] == 54 and one(p for p in D['sc']['talent']['polymer'] if p['year'] == 2023)['n'] == 63 and min([p['n'] for p in D['sc']['talent']['polymer'] if p['year'] <= 2021]) > 54 and min(p['year'] for p in D['sc']['talent']['polymer']) == 2014",
+       "actual": "[(p['year'], p['n']) for p in D['sc']['talent']['polymer']]",
+       "falsified_if": "A revision moves the pre-2022 low off 118 or the high off 179, or lifts 2022 above the lowest pre-drop year, at which point 'ran between 118 and 179 ... then dropped to 54' stops describing the drawn series. The mean is pinned too, because the title may be worded either way and a scalar standing in for this series has to stay true to it. Counts are administrative and in the low hundreds, so one institution's late filing can move them."
+      },
+    {
       "id": "sc-bachelor",
       "text": "Row c-bachelor: 6 bachelor-level polymer credentials in 2023, a three-year average of 10.3, down in each of the three years.",
       "source": "IPEDS completions, bachelor-level rows of the polymer CIP codes, via occupations/data/viz-data.json",
