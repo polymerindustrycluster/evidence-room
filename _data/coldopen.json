@@ -12,12 +12,25 @@
   "for new pages.",
   "",
   "The unfixed numbers are debts, recorded honestly rather than hidden behind a",
-  "threshold nobody meets. Lower them as pages are fixed."
+  "threshold nobody meets. Lower them as pages are fixed.",
+  "",
+  "PLATFORM, added 2026-09-01. Every number here was measured on macOS. On that day CI",
+  "began running this gate for the first time (it had run four of the twenty gates until",
+  "then), and four pages measured 3 to 40px higher on the Linux runner: text wraps",
+  "differently, so the prose above the first chart is a line or two taller. The numbers",
+  "below are now the LINUX measurements, because CI is the platform that enforces them and",
+  "a ratchet enforced on one platform and calibrated on another is not a ratchet.",
+  "",
+  "A local macOS run will therefore read comfortably under every entry. That is a real",
+  "weakness: a Mac-only regression of up to ~40px would pass locally and be caught only on",
+  "push. The fix is to make rendering deterministic across platforms rather than to",
+  "re-measure per platform, which means launching chromium with font hinting and subpixel",
+  "positioning disabled. That changes the measurement basis of nine pixel-measuring gates",
+  "at once, so it is filed as its own change (LEDGER ER-021) rather than ridden in here."
  ],
  "limit": 900,
  "fixed": [
   "wages",
-  "accountability",
   "scorecard",
   "funding-map",
   "location-quotient",
@@ -26,14 +39,15 @@
   "sources"
  ],
  "ceilings": {
-  "churn": 1642,
-  "cluster-health": 1079,
-  "federal-money": 1603,
+  "churn": 1677,
+  "cluster-health": 1119,
+  "federal-money": 1631,
   "index": 968,
   "laborshed": 1542,
   "occupations": 1626,
   "peers": 1339,
   "revisions": 1417,
-  "timeline": 1385
+  "timeline": 1385,
+  "accountability": 903
  }
 }
