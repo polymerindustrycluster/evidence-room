@@ -499,10 +499,14 @@ const PV = (() => {
       "publicOnly", "note", "peer_rule", "size_control", "basis", "comparator",
       /* patents: the three caveats a reader needs, published as limits */
       "unit", "lag", "address_is_not_a_lab",
+      /* churn: the retirement figure is modelled from an age band, not counted */
+      "estimate",
     ]);
     const METHOD = new Set([
       "definition", "bases", "stages", "baseline", "why", "why_corresponding",
       "rebasing", "composite_note", "derived_note", "membership_note",
+      /* churn: which QWI parameter actually controls seasonal adjustment */
+      "seasonadj",
     ]);
     const STRUCTURAL = new Set([
       "source", "sources", "url", "docs", "row", "fetched", "as_of", "years", "year",
@@ -511,7 +515,7 @@ const PV = (() => {
       "benchmark", "demographics", "control", "polymer_bound", "baseline_year",
       "two_measures", "led_joined", "naics",
       /* patents: mechanics of the pull, and the completeness cutoff */
-      "cpc", "geography", "last_complete_year",
+      "cpc", "geography", "last_complete_year", "producer",
     ]);
     const prose = ([, v]) => typeof v === "string" && v.trim().length >= 25;
     const limits = Object.entries(m).filter(e => prose(e) && LIMITS.has(e[0])).map(([, v]) => v);

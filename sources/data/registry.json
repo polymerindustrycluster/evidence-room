@@ -2017,11 +2017,11 @@
   }
  ],
  "checks": {
-  "n_pages": 17,
-  "n_claims": 443,
-  "n_manual": 15,
-  "this_page": 32,
-  "n_auto": 428
+  "n_pages": 22,
+  "n_claims": 519,
+  "n_manual": 21,
+  "this_page": 33,
+  "n_auto": 498
  },
  "vintage": {
   "n_revised": 259,
