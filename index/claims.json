@@ -34,7 +34,12 @@
     "cj_scorecard": "../../scorecard/claims.json",
     "cj_sources": "../../sources/claims.json",
     "cj_timeline": "../../timeline/claims.json",
-    "cj_wages": "../../wages/claims.json"
+    "cj_wages": "../../wages/claims.json",
+    "cj_atlas": "../../atlas/claims.json",
+    "cj_chain": "../../chain/claims.json",
+    "cj_collaboration": "../../collaboration/claims.json",
+    "cj_programs": "../../programs/claims.json",
+    "cj_reach": "../../reach/claims.json"
   },
   "claims": [
     {
@@ -48,8 +53,8 @@
     },
     {
       "id": "index-counts-fresh",
-      "text": "Every claim count this hub prints is read off the page it points at: for all sixteen artifacts, the row in counts.json equals the number of claims in that artifact's own claims.json, and its manual count equals the manual claims in it.",
-      "source": "index/data/counts.json against all sixteen artifact claims.json files, read directly",
+      "text": "Every claim count this hub prints is read off the page it points at: for all twenty-two artifacts, the row in counts.json equals the number of claims in that artifact's own claims.json, and its manual count equals the manual claims in it.",
+      "source": "index/data/counts.json against all twenty-two artifact claims.json files, read directly",
       "assert": "(lambda P: sorted(P) == sorted(k[3:] for k in D if k.startswith('cj_')) and all(P[s]['claims'] == len(D['cj_' + s]['claims']) and P[s]['manual'] == sum(1 for c in D['cj_' + s]['claims'] if c.get('verify') == 'manual') for s in P))(D['counts']['pages'])",
       "actual": "sorted((s, r['claims'], len(D['cj_' + s]['claims'])) for s, r in D['counts']['pages'].items() if r['claims'] != len(D['cj_' + s]['claims']))",
       "falsified_if": "A page gains or loses a claim and derive_index.py is not re-run, or an artifact is added to the tree without a cj_ entry here. THIS IS THE GUARD THAT WAS MISSING. index-counts-internal only ever checked counts.json against itself, so a stale file stayed internally consistent and kept passing: on 2026-08-29 every page had grown and the shipped file still said 292 claims across thirteen pages, which is how the cluster-health card advertised 23 claims for a page that says on its own face there are 27 of them. A hub card's claim count is a statement about another page, and the only honest way to hold one is to read that page. The fix is never to retype a count; it is to re-run derive_index.py.",
@@ -57,9 +62,9 @@
     },
     {
       "id": "index-inventory",
-      "text": "The hub links fifteen pages carrying 401 checked claims, 15 of which rest on a document a person read; and two further artifacts in the tree are deliberately not linked. Re-blessed 2026-08-30 when the patents page shipped with 7 claims: the first new analysis page since sources, filling the innovation gap four reviewers named, and the register grew to fifteen datasets with it.",
-      "source": "index/data/counts.json against the fourteen card anchors in index/index.html and the withheld-pages paragraph beside them; the exclusions are declared in scorecard/.unlisted and accountability/.unlisted",
-      "assert": "(lambda P, U, L: sorted(set(P) - U) == L and len(L) == 15 and U <= set(P) and len(P) - len(L) == 2 and D['counts']['n_pieces'] == len(P) and sum(P[s]['claims'] for s in L) == 401 and sum(P[s]['manual'] for s in L) == 15)(D['counts']['pages'], {'scorecard', 'accountability'}, ['churn', 'cluster-health', 'cost-scissors', 'federal-money', 'funding-map', 'laborshed', 'location-quotient', 'occupations', 'patents', 'peers', 'realwage', 'revisions', 'sources', 'timeline', 'wages'])",
+      "text": "The hub links twenty pages carrying 436 checked claims, 21 of which rest on a document a person read; and two further artifacts in the tree are deliberately not linked. Re-blessed 2026-08-31 when five workshop stories were promoted in one weekend: the education atlas, the technician-pipeline story, research reach, the collaboration story, and the supply-chain register. Previously re-blessed 2026-08-30 when the patents page shipped with 7 claims: the first new analysis page since sources, filling the innovation gap four reviewers named, and the register grew to fifteen datasets with it.",
+      "source": "index/data/counts.json against the twenty card anchors in index/index.html and the withheld-pages paragraph beside them; the exclusions are declared in scorecard/.unlisted and accountability/.unlisted",
+      "assert": "(lambda P, U, L: sorted(set(P) - U) == L and len(L) == 20 and U <= set(P) and len(P) - len(L) == 2 and D['counts']['n_pieces'] == len(P) and sum(P[s]['claims'] for s in L) == 436 and sum(P[s]['manual'] for s in L) == 21)(D['counts']['pages'], {'scorecard', 'accountability'}, ['atlas', 'chain', 'churn', 'cluster-health', 'collaboration', 'cost-scissors', 'federal-money', 'funding-map', 'laborshed', 'location-quotient', 'occupations', 'patents', 'peers', 'programs', 'reach', 'realwage', 'revisions', 'sources', 'timeline', 'wages'])",
       "actual": "(sorted(set(D['counts']['pages']) - {'scorecard', 'accountability'}), len(D['counts']['pages']), sum(p['claims'] for s, p in D['counts']['pages'].items() if s not in ('scorecard', 'accountability')), sum(p['manual'] for s, p in D['counts']['pages'].items() if s not in ('scorecard', 'accountability')))",
       "falsified_if": "A page is added to or removed from the tree, or any linked page gains or loses a claim. This is the only guard on the three inventory literals the page prints without scripting — fourteen pages, 373 claims, 15 manual — and on the count of withheld pages in the paragraph under them, and it is deliberately intolerant: those literals are a rendered snapshot of a computation app.js re-runs at load, so any drift has to be re-blessed by a person rather than absorbed. It is also the enforcement of the .unlisted convention: a bundled page makes no external requests and cannot read a .unlisted file at render time, so a new artifact that is neither carded here nor named in this assertion fails the gate until someone decides which it is. The 'two withheld' clause is what keeps the second sentence honest in the other direction: carding one of the two without deleting its .unlisted file, or deleting the file without carding it, breaks this before it reaches a reader."
     },
