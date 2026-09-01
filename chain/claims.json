@@ -1,48 +1,48 @@
 {
-  "data": {
-    "chain": "chain-data.json",
-    "viz": "viz-data.json"
+ "data": {
+  "chain": "chain-data.json",
+  "viz": "viz-data.json"
+ },
+ "claims": [
+  {
+   "id": "chain-neo-total",
+   "text": "785 rows carry a Northeast Ohio county tag. Sixty-four are companies in Wayne County, Michigan, joined to Wayne County, Ohio on the county name alone; the corrected regional count is 721 and the page says so.",
+   "source": "GAC-PIC vault company notes, extracted 2026-08-14; footprint NEO-14 (vault-tagged)",
+   "assert": "D['chain']['meta']['neo_total'] == 785",
+   "actual": "D['chain']['meta']['neo_total']",
+   "falsified_if": "The vault extract is re-run and companies are added, reclassified, or the in_neo14 flag changes. NOTE: this page uses NEO-14, not PIC-12 \u2014 the two share only 10 counties and will not reconcile with cluster-health. [2026-09-01: the assertion still pins 785 because that is what the DATA says, and pinning it is what will fail loudly when the builder is re-keyed on state. The sentence, not the assertion, is what had to move first.]"
   },
-  "claims": [
-    {
-      "id": "chain-neo-total",
-      "text": "785 companies are classified in the fourteen counties.",
-      "source": "GAC-PIC vault company notes, extracted 2026-08-14; footprint NEO-14 (vault-tagged)",
-      "assert": "D['chain']['meta']['neo_total'] == 785",
-      "actual": "D['chain']['meta']['neo_total']",
-      "falsified_if": "The vault extract is re-run and companies are added, reclassified, or the in_neo14 flag changes. NOTE: this page uses NEO-14, not PIC-12 \u2014 the two share only 10 counties and will not reconcile with cluster-health."
-    },
-    {
-      "id": "chain-unclassified",
-      "text": "174 of those companies carry no value-chain role and appear at no stage.",
-      "source": "GAC-PIC vault, polymer_value_chain field empty",
-      "assert": "D['chain']['meta']['unclassified'] == 174",
-      "actual": "D['chain']['meta']['unclassified']",
-      "falsified_if": "Classification work fills gaps. This number falling is progress, and every 'thin stage' claim on the page gets weaker as it does."
-    },
-    {
-      "id": "chain-cbp-benchmark",
-      "text": "Census counts 653 polymer and chemical establishments across the same counties.",
-      "source": "Census CBP 2023, NAICS 325 + 326, 14 counties",
-      "assert": "D['chain']['meta']['cbp_estab'] == 653",
-      "actual": "D['chain']['meta']['cbp_estab']",
-      "falsified_if": "A CBP vintage change. NOTE: CBP counts ESTABLISHMENTS (plants) and the vault counts COMPANIES \u2014 these never reconcile and are never divided except as a labeled coverage indicator."
-    },
-    {
-      "id": "chain-blank-counties",
-      "text": "Three counties have no classified companies at all.",
-      "source": "GAC-PIC vault against Census CBP, by county",
-      "assert": "len([c for c in D['chain']['counties'] if c['classified'] == 0]) == 3",
-      "actual": "[c['county'] for c in D['chain']['counties'] if c['classified'] == 0]",
-      "falsified_if": "Any company is classified in Huron, Richland or Crawford. This is a prospecting list, not a claim about the region."
-    },
-    {
-      "id": "chain-supply-demand",
-      "text": "The region is thinnest where the applications are thickest \u2014 12 companies against 26 applications at feedstock, 246 against 20 at conversion.",
-      "source": "GAC-PIC vault value_chain against the 2026 intake export value-chain position",
-      "assert": "one(s for s in D['viz']['spine'] if s['key']=='feedstock')['supply'] == 12 and one(s for s in D['viz']['spine'] if s['key']=='feedstock')['demand'] == 26 and one(s for s in D['viz']['spine'] if s['key']=='converters')['supply'] == 246",
-      "actual": "[(s['key'], s['supply'], s['demand']) for s in D['viz']['spine']]",
-      "falsified_if": "Either side is re-extracted. The two sides are DIFFERENT UNITS \u2014 companies and applications \u2014 on separate scales meeting at a center line, never one axis and never a ratio bar."
-    }
-  ]
+  {
+   "id": "chain-unclassified",
+   "text": "174 of those companies carry no value-chain role and appear at no stage.",
+   "source": "GAC-PIC vault, polymer_value_chain field empty",
+   "assert": "D['chain']['meta']['unclassified'] == 174",
+   "actual": "D['chain']['meta']['unclassified']",
+   "falsified_if": "Classification work fills gaps. This number falling is progress, and every 'thin stage' claim on the page gets weaker as it does."
+  },
+  {
+   "id": "chain-cbp-benchmark",
+   "text": "Census counts 653 polymer and chemical establishments across the same counties.",
+   "source": "Census CBP 2023, NAICS 325 + 326, 14 counties",
+   "assert": "D['chain']['meta']['cbp_estab'] == 653",
+   "actual": "D['chain']['meta']['cbp_estab']",
+   "falsified_if": "A CBP vintage change. NOTE: CBP counts ESTABLISHMENTS (plants) and the vault counts COMPANIES \u2014 these never reconcile and are never divided except as a labeled coverage indicator."
+  },
+  {
+   "id": "chain-blank-counties",
+   "text": "Three counties have no classified companies at all.",
+   "source": "GAC-PIC vault against Census CBP, by county",
+   "assert": "len([c for c in D['chain']['counties'] if c['classified'] == 0]) == 3",
+   "actual": "[c['county'] for c in D['chain']['counties'] if c['classified'] == 0]",
+   "falsified_if": "Any company is classified in Huron, Richland or Crawford. This is a prospecting list, not a claim about the region."
+  },
+  {
+   "id": "chain-supply-demand",
+   "text": "The region is thinnest where the applications are thickest \u2014 12 companies against 26 applications at feedstock, 246 against 20 at conversion.",
+   "source": "GAC-PIC vault value_chain against the 2026 intake export value-chain position",
+   "assert": "one(s for s in D['viz']['spine'] if s['key']=='feedstock')['supply'] == 12 and one(s for s in D['viz']['spine'] if s['key']=='feedstock')['demand'] == 26 and one(s for s in D['viz']['spine'] if s['key']=='converters')['supply'] == 246",
+   "actual": "[(s['key'], s['supply'], s['demand']) for s in D['viz']['spine']]",
+   "falsified_if": "Either side is re-extracted. The two sides are DIFFERENT UNITS \u2014 companies and applications \u2014 on separate scales meeting at a center line, never one axis and never a ratio bar."
+  }
+ ]
 }

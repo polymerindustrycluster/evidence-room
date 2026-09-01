@@ -36,18 +36,28 @@ which is why this table exists rather than a green checkmark.
 
 | Page data file | Producer | Result |
 |-|-|-|
+| `churn/data/bench.json` | `fetch_qwi_bench.py` → `derive_churn_bench.py` | **Exact by construction** — written by its producers on the first end-to-end run, 2026-09-01, and re-running overwrites the same shapes. The fetch is NOT keyless: `CENSUS_API_KEY` is required, and without it the API answers HTTP 200 with an HTML "Missing Key" page rather than an error, so a lenient caller writes an empty series that reads downstream exactly like a real zero. The fetcher refuses to write unless its all-ages control reproduces `churn/data/churn.json`'s own last four quarters to the job (71,771 / 6,626 / 7,157), which is a check against an answer already known rather than a check against itself. A refetch will differ wherever QWI has since re-benchmarked, which it does periodically and substantially. |
 | `programs/data/viz-data.json`, `layers.control.base` only | `fetch_ipeds_control_baserate.py` | **Exact by construction** — the block was written by its producer on the first end-to-end run, from the keyless Urban Institute completions endpoint, and re-running it overwrites the same key with the same shape. The producer will not write at all until it reproduces the page's already-published survival control (48%) from the live API, so a drifted pull fails loudly instead of quietly replacing one control with another. Everything else in this file still comes from the sibling census through `derive_programs.py` and is **untested here**; a refetch will differ wherever Urban has since restated a back year. |
 
-## Six published files have no producer anywhere
+## Published files with no producer anywhere
 
 Not in this repository and not in the internal tree. Searched with a control pattern that
 was required to match and did.
 
+`atlas/data/viz-data.json` ·
 `cluster-health/data/tide.json` ·
 `timeline/data/timeline.json` · `timeline/data/heritage.json` ·
 `sources/data/registry.json` · `wages/data/mfg.json` ·
 `federal-money/data/techhub.json` · `index/data/states.json` ·
 `accountability/data/*.json`
+
+**Added 2026-09-01.** `atlas/data/viz-data.json`. Its README named `project_atlas.mjs` as
+the producer from the day the page was written; that file has never existed in either tree,
+and `derive_atlas.py`, the step before it, reads a `polymer-programs-db/programs.sqlite`
+that is not in either tree either. The list missed it because the control-pattern search ran
+against files the repository ships, and a page promoted on 2026-08-31 arrived after it. The
+heading has carried a count since it was written and the count stopped matching the list; it
+is dropped here rather than replaced with a number that will drift again.
 
 **Corrected 2026-09-01.** `cluster-health/data/health.json` was on this list and does not
 belong on it: `cluster-health/derive_health.py` produces it, from the shipped data files of
@@ -62,6 +72,13 @@ defect in one cannot be fixed upstream and has to be edited in place. This is th
 reason the 2020 IPEDS quarantine is code-complete and data-incomplete: `cluster-health` and
 `scorecard` carry their own IPEDS series with the duplicated 2020 still in them, and there
 is no deriver to re-run.
+
+The atlas was the fourth, and was the one that reached readers: it shipped publicly on
+2026-08-31 with the duplicated year inside it, because its README told anyone who wanted to
+fix it to run a script that does not exist. It is corrected as of 2026-09-01 by
+`_data/build/atlas_reprojection_patch.py`, on the same pattern as `quarantine_patch.py` and
+`mirror_fix_patch.py`. **A missing producer is not only a rebuild problem. It is a
+correction-delivery problem**, and this file is where that should have been visible.
 
 ## Fetchers that do not currently work
 

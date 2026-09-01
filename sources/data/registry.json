@@ -1946,7 +1946,7 @@
     "amount": 23024545
    }
   ],
-  "invisible": "University and research awards are invisible to the NAICS view by construction: it filters to 325*/326* manufacturing codes, and a university files under 61xxxx or 5417xx. The NSF NEO-SMART Engine ($14,999,983) and TARDISS do not appear in the NAICS rows. The all-industry county rows do capture them.",
+  "invisible": "University and research awards are invisible to the NAICS view by construction: it filters to 325*/326* manufacturing codes, and a university files under 61xxxx or 5417xx. The NSF NEO-SMART Engine ($14,999,983 estimated, $7,499,984 obligated) and TARDISS do not appear in the NAICS rows. The all-industry county rows do capture them.",
   "place_caution": "Place of performance is a reported field on the award, not an observation of where the work happened. A centrally administered contract, or a prime performing through a subaward, can put the code somewhere other than the activity. An obligation is not an outlay.",
   "cpi_base": 2025
  },
@@ -2017,11 +2017,11 @@
   }
  ],
  "checks": {
-  "n_pages": 17,
-  "n_claims": 443,
-  "n_manual": 15,
-  "this_page": 32,
-  "n_auto": 428
+  "n_pages": 22,
+  "n_claims": 519,
+  "n_manual": 21,
+  "this_page": 33,
+  "n_auto": 498
  },
  "vintage": {
   "n_revised": 259,

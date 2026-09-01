@@ -207,8 +207,10 @@ function verdict() {
       ${WORDS[MIX.length] || MIX.length} largest hold
       ${pct(topShare)} of its national employment, and every metro pays
       the ${WORDS[ET.ba_plus_majority.length]} degree occupations further under the nation
-      than the ${WORDS[ET.hs_majority.length]} high-school-majority ones. Those are two
-      different fourteens: ${WORDS[MIX_NOT_HS] || MIX_NOT_HS} of the largest occupations are
+      than the ${WORDS[ET.hs_majority.length]} high-school-majority ones. The
+      ${WORDS[MIX.length] || MIX.length} largest and the
+      ${WORDS[ET.hs_majority.length]} high-school-majority are different lists:
+      ${WORDS[MIX_NOT_HS] || MIX_NOT_HS} of the largest occupations are
       not high-school-majority jobs. Pick an occupation to follow its row across the
       charts.`;
     return;

@@ -51,6 +51,16 @@ const CASES = [
    inject: s => s.replace(/Analysis and graphics by Claude \(Anthropic\)/,
      "Analysis and graphics J. Swanson")},
 
+  {gate: "disclosure", page: "wages", args: ["wages"],
+   defect: "the shared promise re-inflated to a condition that \"would prove it wrong\", " +
+           "claiming verification the checks do not perform (shipped on all 23 pages " +
+           "until 2026-09-01)",
+   /* The sentence lives once, in _shared/picviz.js, and is rendered into every page, so
+      the defect this reproduces arrives on the whole site in one commit. Injected into
+      the inlined script, which is where a bundle carries it. */
+   inject: s => s.replace("consistency check, not a check against the world",
+                          "written condition that would prove it wrong")},
+
   {gate: "disclosure", page: "occupations", args: ["occupations"],
    defect: "licensed data used without the trademark symbol or a link to the licence",
    inject: s => s.replace("creativecommons.org/licenses/by/4.0/", "example.invalid/none")

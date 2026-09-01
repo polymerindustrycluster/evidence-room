@@ -10,7 +10,7 @@
   },
   "disclosures": [
    "Figures are awarded or committed amounts; disbursement follows milestones.",
-   "All seven EDA figures are verified against signed federal Notices of Award.",
+   "Six of the seven EDA figures are verified against signed federal Notices of Award AND reconcile to the dollar against USAspending.gov. The seventh, ED25HDQ0G0009 to Huntsman at $5,970,805, has no USAspending record at all and is corroborated only by arithmetic against the award total.",
    "NEO-SMART is a separate CWRU-led NSF Engine award in which PIC is a core partner. It is not PIC money and is not on this diagram."
   ],
   "notShown": [
@@ -31,12 +31,38 @@
    "Adding $20,954,667 in match and cost share to the $85,335,784 in awards gives the $106,290,451 total secured."
   ],
   "provenance": [
-   "EDA Sustainable Polymers Tech Hub: signed federal Notices of Award, cross-checked against USAspending.gov by award ID. The seven awards total $51,001,413 against a “$51 million” headline; partner match totals $7,164,030.",
+   "EDA Sustainable Polymers Tech Hub: signed federal Notices of Award. Six of the seven cross-check to the dollar against USAspending.gov by award id, and they total $45,030,608. The seventh, ED25HDQ0G0009 to Huntsman at $5,970,805, has no USAspending record of any kind and the EDA award page names no company, so its execution is not verified: what corroborates it is arithmetic, $45,030,608 plus $5,970,805 being the $51,001,413 award. The page said all seven were cross-checked until 1 September 2026, which was a verification claim that had not itself been verified. The seven awards total $51,001,413 against a “$51 million” headline; partner match totals $7,164,030.",
    "Ohio Innovation Hub: the executed state grant agreement (Grant Control No. SBIG20251005, appropriation 1956F8, Am. Sub. H.B. 33, 135th G.A.) and the contract-grade workstream budget, identical to the cent across the December 2024 contract-amendment exhibit and the September 2025 budget form.",
    "PIC Translational R&D sub-grants: executed sub-grant agreements. The University of Akron figure is $678,614, the executed amount written into the signed agreement.",
    "Synthe6 cohort: $25,000 in one-time non-dilutive cash per company, confirmed in the grant agreement, the Bounce first amendment, and the startup grant administration agreement. The money is administered by Bounce Innovation Hub under a subgrant agreement dated 15 May 2025, which draws on Ohio Innovation Hub grant SBIG20251005. Synthe6 is a workstream inside that grant, not a separate award, and has no award number of its own.",
    "Good Jobs Challenge (APEX): award ED25OIE0G0108 and the signed Notice of Award. Good Jobs Challenge is the funding program and APEX is the initiative it funds. They are one award described two ways, not two awards."
-  ]
+  ],
+  "outlays": {
+   "source": "USAspending.gov award records, Total Outlays field, read by award id",
+   "asOf": "2026-09-01",
+   "lines": 7,
+   "obligated": 48114979.0,
+   "outlaid": 11642401.68,
+   "share": 0.24197,
+   "note": "Of the eight federal award lines in this register, seven carry a USAspending record and every one of those publishes an outlay. This is money the federal government reports having paid, not a milestone or a commitment.",
+   "no_record": {
+    "awardId": "ED25HDQ0G0009",
+    "name": "Huntsman",
+    "amount": 5970805,
+    "what": "No USAspending record of any kind, checked against every award-type group and by keyword search on 2026-09-01. That is an absent award row, not a zero outlay, so it carries no outlay field here and is outside the total above."
+   },
+   "not_federal": {
+    "awardId": "SBIG20251005",
+    "amount": 31250000,
+    "what": "The Ohio Innovation Hub grant is a state award and is not in USAspending. No public drawdown figure exists for it, which is why no figure on any page covers the whole $85,335,784."
+   },
+   "prior_award": {
+    "awardId": "ED24OIE0G0019",
+    "amount": 399672,
+    "outlay": 399672.0,
+    "what": "A completed Phase 1 Tech Hub award to the Greater Akron Chamber, fully outlaid. It sits outside this register's $85,335,784 and is never summed with it; the accountability page names it because the Chamber is its grantee."
+   }
+  }
  },
  "sources": [
   {
@@ -65,14 +91,15 @@
    "agency": "Ohio Department of Development",
    "award": 31250000,
    "matchAmount": 10417066,
-   "matchLabel": "state cost share",
+   "matchLabel": "local partner match",
    "hue": "ohio",
    "mechanism": "hub-allocated",
    "mechanismTitle": "Greater Akron Polymer Innovation Hub",
    "mechanismLines": [],
    "note": "The state award genuinely deploys through the hub, which allocates it across five workstreams. The workstream bands are drawn to scale against each other on an expanded scale: at the shared source scale the two smallest would be too thin to label.",
    "awardId": "SBIG20251005",
-   "awardIdLabel": "Grant Control No. "
+   "awardIdLabel": "Grant Control No. ",
+   "matchNote": "Promised by local partners, not by the state. The Governor's office announcement of 5 September 2024 puts the $31.25 million state award beside about $10.4 million matched by local partners; this page called it state cost share until 1 September 2026, which credited the state with money other organisations put in."
   },
   {
    "id": "apex",
@@ -174,7 +201,8 @@
      "amount": 11122386,
      "awardId": "ED25HDQ0G0038",
      "funds": "Bio-based butadiene",
-     "chip": "EDA R&D"
+     "chip": "EDA R&D",
+     "outlay": 3565254.7
     },
     {
      "programId": "oh-startup",
@@ -192,7 +220,8 @@
      "amount": 10093286,
      "awardId": "ED25HDQ0G0013",
      "funds": "Safer anti-degradant, a 6PPD alternative",
-     "chip": "EDA R&D"
+     "chip": "EDA R&D",
+     "outlay": 4289845.95
     }
    ]
   },
@@ -205,7 +234,8 @@
      "amount": 9390634,
      "awardId": "ED25HDQ0G0036",
      "funds": "Polymer composite, liquid phase mixing",
-     "chip": "EDA R&D"
+     "chip": "EDA R&D",
+     "outlay": 2144807.37
     }
    ]
   },
@@ -217,7 +247,8 @@
      "programId": "eda-direct",
      "amount": 7071802,
      "awardId": "ED24HDQ0G0452",
-     "funds": "Workforce (WISE)"
+     "funds": "Workforce (WISE)",
+     "outlay": 365123.32
     },
     {
      "programId": "oh-rd",
@@ -248,7 +279,8 @@
      "amount": 4702500,
      "awardId": "ED25HDQ0G0030",
      "funds": "Recycling, end-of-life tires",
-     "chip": "EDA R&D"
+     "chip": "EDA R&D",
+     "outlay": 599190.63
     }
    ]
   },
@@ -260,7 +292,8 @@
      "programId": "eda-direct",
      "amount": 2650000,
      "awardId": "ED24HDQ0G0413",
-     "funds": "Innovation governance: a regional office of innovation for the Tech Hub"
+     "funds": "Innovation governance: a regional office of innovation for the Tech Hub",
+     "outlay": 235282.9
     },
     {
      "programId": "oh-gov",
@@ -432,7 +465,8 @@
      "programId": "apex-workforce",
      "amount": 3084371,
      "awardId": "ED25OIE0G0108",
-     "funds": "APEX, targeting 500 enrollments and 320 placements"
+     "funds": "APEX, targeting 500 enrollments and 320 placements",
+     "outlay": 442896.81
     },
     {
      "programId": "oh-workforce",

@@ -16,7 +16,10 @@ index.html         page shell
 styles.css         page-local CSS: figure chrome, county selector, translator, mobile re-layout
 app.js             charts, selector, translator, appended methods blocks
 data/churn.json    THE DATA (8 KB). Edit the builder, not this.
-claims.json        26 assertions, one per published number
+data/bench.json    THE COMPARATOR + the age structure (16 KB). Same instrument, one
+                   parameter changed. Own producer: fetch_qwi_bench.py → derive_churn_bench.py.
+claims.json        39 assertions, one per published number. `data` is a MAP of two files
+                   (`ch` = churn.json, `b` = bench.json), so asserts read D['ch'][...].
 ```
 
 **Two measures, two questions.** This page publishes two Census numbers for the same
@@ -29,6 +32,15 @@ restate +168 as a jobs gain.
 
 ## The argument, beat by beat
 
+0. **Compared with what** (added 2026-09-01, and it goes FIRST because the hero asks the
+   magnitude question in the first ten seconds). Same measure, same industry code, same
+   four quarters: Ohio and the five other states with the largest plastics-and-rubber
+   payrolls, published whole, against the twelve counties summed. Three of the six churn
+   faster than the region and three slower; the region runs below Ohio in all five windows
+   tested. The answer to "is a tenth a lot" is no. The answer to "is the DIRECTION
+   ordinary" is also no: separations run ahead of hires in all seven and the region's
+   margin is the second-widest. Two panels because the two quantities differ by an order
+   of magnitude and one axis would hide the second.
 1. **The flow.** 111,529 hires and 111,361 separations for a +168 flow ledger. Diverging
    bars around a shared zero, net drawn as a line in the same unit. **The axis is signed:**
    starts are positive, ends are negative, so the net line is the two bar heights added.
@@ -47,6 +59,13 @@ restate +168 as a jobs gain.
    only Trumbull, Mahoning and Summit, plus whatever county is selected, because twelve
    names collide at 375px. Trumbull runs 13.5% on 402
    jobs (434 job events); Summit runs 8.2% on 4,019 (2,644 events, about 6.1 times as many).
+4b. **Who is nearest the door** (added 2026-09-01). The eight QWI age bands for the same
+   twelve counties. 55-and-older holds 28.3% of the jobs the Census discloses by age,
+   between 27.7% and 30.0% of all of them, up from 21.6% in 2012 with brackets that do not
+   overlap. The hire rate falls about tenfold from the 19-to-21 band to the 55-to-64
+   band. The 14-to-18 band is NOT drawn (one job in a thousand, 11 of 48 possible county-quarter cells,
+   74.7% hire rate): it is named in the figure subtitle and kept in the table. This beat is
+   what licenses the two caveats the page needed, below.
 5. **On a shop floor.** 10.8% at a 150-person plant is about sixteen starts and sixteen
    departures a quarter, five of each in a month, 65 replacement hires a year. The headcount
    input recomputes the same arithmetic for any payroll; the default state is guarded.
@@ -87,21 +106,38 @@ counting quarters would name marks the reader cannot see.
   ledger goes to +376, further from the stock, not nearer. Quarter by quarter the two point
   opposite ways in 8 of 54 comparisons. **Which one answers "did employment grow": the
   headcount.**
-- There is **no outside benchmark on this page**, and the reason is in the methodology box.
-  The comparisons here are internal: the cluster against its own 2012, and the twelve
-  counties against each other.
+- The outside benchmark is against **whole states**, and that is licensed by a measurement,
+  not by assumption: summing every disclosed Ohio county for this industry in 2025Q2 gives
+  a 10.4% hire rate against the 10.6% Ohio publishes as one unit, and the county sum
+  falls SHORT of the state total rather than exceeding it. It does NOT license a comparison
+  against a single county, where a cross-boundary move loses one of its two ends.
+- **9.6% is not the rate on any particular kind of job.** Age bands inside it run from 33.6%
+  a quarter to 4.8%, and QWI carries no occupation dimension at all, so this page cannot
+  say which occupations churn. Do not quote 9.6% as an operator's turnover rate.
+- **58 replacement hires a year is a PLANT'S burden, not regional training demand.** Most of
+  it is refilled from inside the industry. Age accounts for about three of the 58 and about
+  400 of the region's 6,626 annual hires, and that 400 is a FLOOR: industry exits need
+  Census Job-to-Job Flows, a different product this page does not carry.
+- **The retirement figure is an estimate, never a measurement.** It assumes the 55-to-64
+  band is spread evenly over ten single-year cohorts. QWI records separations and cannot
+  see retirement.
 
 ## What this page still owes
 
-- **A same-method outside comparator.** The QWI fetch carries `HirA,Sep` for NAICS 326 only.
-  The fair comparison needs the identical series, unadjusted as here, with `industry=00` and
-  `industry=31-33`, same twelve Ohio county FIPS, same quarters, requesting `Emp,HirA,Sep`.
-  `fetch_qwi_demand.py` already pulls `industry=00`, but only `Emp,EarnBeg`. Tested
-  2026-09-01: the call returns data at state and industry level, so this is a research gap
-  and not a data limit. The hero now says so instead of resting on "no comparator".
-  Publishing it is a new beat, not an edit: `churn-no-comparator` requires that the moment
-  a second series enters the pull, the page must publish the comparison rather than say it
-  has none.
+- **PAID 2026-09-01: the same-method outside comparator.** `churn-no-comparator` required
+  that the moment a second series entered the pull, the page publish the comparison rather
+  than say it had none. `fetch_qwi_bench.py` fetched it, the beat above publishes it, and
+  that claim was retired and replaced by `churn-comparator`,
+  `churn-comparator-persistence`, `churn-comparator-direction`, `churn-michigan-absent`
+  and `churn-aggregation-check`.
+- **A CROSS-INDUSTRY comparator, still owed.** The state comparison answers "is this region
+  unusual for plastics and rubber". It does not answer "is plastics and rubber unusual for
+  this region". That needs the identical series with `industry=00` and `industry=31-33` on
+  the same twelve county FIPS, requesting `Emp,HirA,Sep`; `fetch_qwi_demand.py` already
+  pulls `industry=00` but only `Emp,EarnBeg`.
+- **Job-to-Job Flows, for the pipeline number.** Retirement is the only source of
+  replacement demand this page can see. Industry exits need a different Census product, so
+  the 400-a-year figure is a floor and the page says so where it is used.
 - **The reason the ledger and the headcount part company.** Verified 2026-09-01 against the
   API and NOT publishable from this pull: inside every one of the 55 quarters the identity
   closes exactly, `Emp + HirA − Sep = EmpEnd`, with a largest residual of 5 jobs. The gap
@@ -143,7 +179,14 @@ counting quarters would name marks the reader cannot see.
 
 ```
 cd ../_data/build
-python derive_rest.py          # NOTE: absent from _data/build as of 2026-08-28
+python derive_rest.py               # data/churn.json
+python fetch_qwi_bench.py           # the comparator + age pull. NEEDS CENSUS_API_KEY:
+                                    # this API is NOT keyless and answers a missing key
+                                    # with HTTP 200 and an HTML page. Refuses to write
+                                    # unless it reproduces churn.json's own last four
+                                    # quarters exactly.
+python fetch_qwi_bench.py --check   # verify only, write nothing
+python derive_churn_bench.py        # data/bench.json
 ```
 
 ## Run and publish

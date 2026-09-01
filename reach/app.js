@@ -59,7 +59,7 @@ PV.figures([
   ["key", N(T.works), "polymer papers", `${D.meta.home.length} universities, 2015–2024`],
   ["", N(T.partners_shown), "partner institutions", `across ${T.countries} countries`],
   ["", pctf(T.led_share), "led from here", `a corresponding author at Akron or Case Western, on the ${N(T.attributable)} papers naming one`],
-  ["", pctf(T.top10_share), "in their field’s top tenth", "field- and age-weighted citations"]
+  ["", pctf(T.top10_share), "in their field’s top tenth", `field- and age-weighted citations, on the ${N(T.pct_n)} of ${N(T.works)} papers OpenAlex scores`]
 ]);
 
 /* --------------------------------------------------------------------- 1. the map */

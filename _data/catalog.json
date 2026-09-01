@@ -1,21 +1,21 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-09-01 03:23",
-  "seconds": 2.1,
-  "scripts": 51,
+  "generated": "2026-09-01 11:09",
+  "seconds": 2.2,
+  "scripts": 55,
   "outputs_on_disk": 7,
-  "outputs_claimed": 34,
+  "outputs_claimed": 37,
   "orphan_outputs": 1,
   "registry_error": null,
   "flag_counts": {
-   "not_in_PIPELINES.md": 51,
-   "no_traps_section": 43,
-   "no_house_docstring": 42,
-   "output_missing_on_disk": 32,
-   "not_in_SOURCES.json": 20,
-   "import_error": 16,
-   "no_output_detected": 13,
+   "not_in_PIPELINES.md": 55,
+   "no_house_docstring": 44,
+   "no_traps_section": 44,
+   "output_missing_on_disk": 35,
+   "not_in_SOURCES.json": 23,
+   "import_error": 17,
+   "no_output_detected": 14,
    "meta_fetched_vs_mtime_gap": 3
   }
  },
@@ -170,6 +170,45 @@
     "no_traps_section",
     "not_in_PIPELINES.md",
     "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "derive_churn_bench.py",
+   "kind": "derive",
+   "what_it_adds": "`fetch_qwi_bench.py` pulls raw cells; this turns them into the four things the page prints and nothing else: a ranked comparison of the region against six states on one window, the same ranking recomputed on four other windows so the position can be shown to persist rather than asserted, the eight age bands with their shares published as BRACKETS rather than points, and the retirement arithmetic labelled as the estimate it is.  python3 _data/build/derive_churn_bench.py",
+   "what_one_row_is": "`windows.<name>.rows[]` - one geography over one window: employment summed across that window's quarters, hires and separations summed over the same quarters, and the three rates that follow, sorted fastest first. The region is the twelve PIC-12 counties summed; a state is that state published as one unit. Comparable because `aggregation_check` measures the only thing that could make them incompar",
+   "traps": "- **A share of the disclosed bands is not a share of the workforce.** Two to three per cent of employment sits in withheld cells, so every band share here is published with `share_lo` (none of the residual belongs to this band) and `share_hi` (all of it does). The 55-and-older finding survives that bracket at both ends of the period, which is why it is publishable; a finding that did not would not be. - **The retirement number is an ESTIMATE and is named one in the data.** It assumes the 55-to-64 band is spread evenly over ten single-year cohorts, so a tenth of it reaches 65 each year. QWI can",
+   "docstring": {
+    "has_house_docstring": true,
+    "has_traps": true,
+    "length": 2672
+   },
+   "hosts": [],
+   "outputs": [],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": []
+   },
+   "output_learned_by": {},
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [
+    "qwi_bench.json"
+   ],
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/qwi_bench.json'",
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "import_error",
+    "no_output_detected",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json"
    ]
   },
   {
@@ -1073,6 +1112,101 @@
    "freshness": [],
    "flags": [
     "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_fed_contracts.py",
+   "kind": "fetch",
+   "what_it_adds": "The COMPARATOR the federal-money page needs: contracting against contracting.",
+   "what_one_row_is": "",
+   "traps": "learned by probe (2026-09-01): - POST api.usaspending.gov/api/v2/search/spending_by_category/{county,naics}/ — keyless. - award_type_codes on spending_by_award must come from ONE group and 422s otherwise. spending_by_category does NOT enforce that; a mixed list is accepted silently. Each group is therefore pulled on its own and summed here, where the arithmetic is visible. - This endpoint takes no naics_codes filter at these lengths; ask for the NAICS category and filter client-side, the same shape fetch_rest.py uses. - THE GROUPS MUST RECONCILE. Six disjoint groups pulled separately have to a",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": true,
+    "length": 2442
+   },
+   "hosts": [
+    "api.usaspending.gov"
+   ],
+   "outputs": [
+    "usaspending_contracts.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "usaspending_contracts.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "usaspending_contracts.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "usaspending_contracts.json": "static"
+   },
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_fed_outlays.py",
+   "kind": "fetch",
+   "what_it_adds": "What has actually been PAID against the federal award lines this site publishes.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 1996
+   },
+   "hosts": [
+    "api.usaspending.gov"
+   ],
+   "outputs": [
+    "fed_outlays.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "fed_outlays.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "fed_outlays.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "fed_outlays.json": "static"
+   },
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json",
     "output_missing_on_disk"
    ]
   },
@@ -2371,6 +2505,59 @@
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md"
+   ]
+  },
+  {
+   "script": "fetch_qwi_bench.py",
+   "kind": "fetch",
+   "what_it_adds": "The churn page printed a turnover rate and then declined to say whether it was high: \"no other industry or state is compared here.\" The decline named a comparator that was one request away on the series the page already uses, which makes it a research gap wearing a caveat's clothes. This fetch closes it on the SAME INSTRUMENT - same API, same table, same industry code, same quarters, same unadjusted series - along two axes the page never pulled:  GEOGRAPHY. NAICS 326 flows for Ohio and the five other states with the largest plastics-and-rubber payrolls (Illinois, Texas, California, Pennsylvani",
+   "what_one_row_is": "`states[FIPS].quarters[]` - one (state, year, quarter) cell of QWI at NAICS 326. `emp` is a STOCK on the first day of the quarter; `hires` and `seps` are FLOWS during it, so they never share an axis with employment. Identical in definition to the county rows the page already ships, which is the entire point: one parameter differs. `age[window][band][]` - one (county, year, quarter, age band) cell ",
+   "traps": "Every one of these was hit while building this file. - **The API is NOT keyless.** A request without `key=` returns HTTP **200** with an HTML page titled \"Missing Key\". A JSON parse raises on it; a lenient caller that catches and continues writes an empty series indistinguishable from a genuine zero. This file refuses to start without CENSUS_API_KEY and treats any non-JSON body as fatal. - **HTTP 204 is an answer and is not a zero.** Michigan returns 204 for every quarter from 2022Q1 on, at NAICS 326 AND at industry=00: the state stopped supplying records to the program. Recorded in `coverage`",
+   "docstring": {
+    "has_house_docstring": true,
+    "has_traps": true,
+    "length": 5046
+   },
+   "hosts": [
+    "api.census.gov"
+   ],
+   "outputs": [
+    "qwi_bench.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "qwi_bench.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "qwi_bench.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "qwi_bench.json": "static"
+   },
+   "observed_stop": "urlopen",
+   "observed_network": [
+    "http<path>/sa?get=Emp,HirA,Sep&for=state:39,17,48,06,42,18,26&industry=326&year=2012&quarter=1,2,3,4key=<redacted>"
+   ],
+   "observed_reads": [
+    "<outside-repo>/.env"
+   ],
+   "import_error": null,
+   "registry_sources": [
+    "qwi"
+   ],
+   "consuming_pages": [
+    "churn"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
    ]
   },
   {

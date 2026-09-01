@@ -52,6 +52,9 @@ function drawIdx() {
     xfmt: y => "’" + String(y).slice(2), ylab: "2015 = 100"});
   el("line", {x1: m.l, y1: ys(100), x2: m.l + w, y2: ys(100), stroke: INK,
     "stroke-width": 1, "stroke-dasharray": "4 3", opacity: .55}, svg);
+  /* THE RULE IS LABELLED BY MEANING, NOT LEFT AS A VALUE. It rides the same gutter and
+     the same de-collision loop as the end labels below, so it can never sit on one. */
+  const RULE = {lab: mob ? "2015 level" : "100 = the 2015 level", ref: true, y: ys(100)};
 
   const series = [
     {k: "us_inv_all", c: US,        wd: 2,   dash: "5 4", lab: mob ? "US, all" : "US, all classes"},
@@ -60,9 +63,11 @@ function drawIdx() {
     {k: "ohio",       c: OHIO,      wd: 3.5, dash: null,  lab: mob ? "Ohio poly." : "Ohio polymer"},
   ];
   /* End labels, de-collided the cost-scissors way. */
-  const ends = series.map(s => ({s, y: ys(idx(LAST, s.k))})).sort((a, b) => a.y - b.y);
+  const ends = [RULE, ...series.map(s => ({s, y: ys(idx(LAST, s.k))}))]
+    .sort((a, b) => a.y - b.y);
   for (let i = 1; i < ends.length; i++)
     if (ends[i].y - ends[i - 1].y < 17) ends[i].y = ends[i - 1].y + 17;
+  txt(svg, RULE.lab, {x: m.l + w + 20, y: RULE.y + 4, class: "pv-labq", fill: "#4A5A5E"});
 
   series.forEach(s => {
     const a = {d: "M" + C.map(r => `${xs(r.year)},${ys(idx(r, s.k))}`).join("L"),

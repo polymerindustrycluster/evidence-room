@@ -233,6 +233,28 @@ for r in us:
         names[r["code"]] = r["name"]
     else:
         by_fy_county[(r["fy"], r["name"])] += r["amount"]
+
+# THE COMPARATOR, ON ONE BASIS. The county rows above carry no award-type filter, so they
+# are every federal instrument there is; the NAICS rows beside them are procurement. The
+# page divided one by the other and published the quotient as a contracting ratio, which
+# was wrong by a factor of about thirty. fetch_fed_contracts.py pulls both series again
+# with award_type_codes A-D, so the ratio the page prints has a contracting numerator over
+# a contracting denominator. Both series live here; neither replaces the all-type rows,
+# which the page still needs to say what the old denominator was made of.
+fc = load("usaspending_contracts.json")
+ct_county = collections.defaultdict(float)
+ct_naics = collections.defaultdict(float)
+for r in fc["rows"]:
+    if r["amount"] is None:
+        continue
+    (ct_naics if r["kind"] == "naics" else ct_county)[r["fy"]] += r["amount"]
+_num = sum(real(v, fy) for fy, v in ct_naics.items())
+_den = sum(real(v, fy) for fy, v in ct_county.items())
+if not _num or not _den or not (10 < _den / _num < 100):
+    raise SystemExit(f"FATAL: the contracting ratio is {_den / _num if _num else 'n/a'}, "
+                     f"outside the 10-to-100 band this page's prose is written against. "
+                     f"A comparator that has moved by an order of magnitude needs a human "
+                     f"reading it, not a rebuild that publishes it.")
 out("federal-money", "federal.json", {
     "meta": {"source": "USAspending.gov spending_by_category, place of performance",
              "row": "one (fiscal year, category, code) obligation total",
@@ -249,8 +271,14 @@ out("federal-money", "federal.json", {
              "excludes": "University and research awards are INVISIBLE to the NAICS view by "
                          "construction: it filters to 325*/326* manufacturing codes, and a "
                          "university files under 61xxxx or 5417xx. The NSF NEO-SMART Engine "
-                         "($14,999,983) and TARDISS do not appear in the NAICS rows. The "
-                         "all-industry county rows do capture them."},
+                         "($14,999,983 estimated, $7,499,984 obligated) and TARDISS do not "
+                         "appear in the NAICS rows. The all-industry county rows do capture "
+                         "them.",
+             "comparator": "The county rows carry no award-type filter and are therefore "
+                           "every federal instrument: contracts, grants, loans, direct "
+                           "payments and other financial assistance. They are not a "
+                           "contracting figure and must never be the denominator under a "
+                           "contracting numerator. The contracts block does that job."},
     "inflation": "Dollars from different years are not the same dollars. Every row "
                  "carries BOTH the nominal obligation and the same figure restated in "
                  f"{CPI_BASE} dollars using BLS CPI-U annual averages. Any total spanning "
@@ -262,7 +290,20 @@ out("federal-money", "federal.json", {
               for (fy, c), v in sorted(by_fy_naics.items())],
     "counties": [{"fy": fy, "county": c, "amount": round(v),
                   "real": round(real(v, fy))}
-                 for (fy, c), v in sorted(by_fy_county.items())]})
+                 for (fy, c), v in sorted(by_fy_county.items())],
+    "contracts": {
+        "meta": {**fc["meta"],
+                 "why": "PRIME CONTRACTING ONLY, award_type_codes A-D, so the polymer "
+                        "numerator and the all-industry denominator are the same kind of "
+                        "money. Same CPI-U restatement as every other total on this page.",
+                 "vintage": "Pulled on its own date and NOT interchangeable row for row "
+                            "with the all-type series above, which is an older read of a "
+                            "live ledger. The ratio is computed inside this block."},
+        "award_type_totals": fc["award_type_totals"],
+        "counties": [{"fy": fy, "amount": round(v), "real": round(real(v, fy))}
+                     for fy, v in sorted(ct_county.items())],
+        "naics": [{"fy": fy, "amount": round(v), "real": round(real(v, fy))}
+                  for fy, v in sorted(ct_naics.items())]}})
 print(f"  {len(by_fy_naics)} naics-year rows, {len(by_fy_county)} county-year rows")
 
 # ---------------------------------------------------------------- 5. REVISIONS

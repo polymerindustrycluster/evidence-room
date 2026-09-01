@@ -16,6 +16,10 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+  # The width sweeps are minutes rather than seconds, so they run weekly instead of on
+  # every push. Monday morning, before anyone would present from this.
+  schedule:
+    - cron: "0 11 * * 1"
 
 # Least privilege by default; the deploy job raises what it needs.
 permissions:
@@ -43,16 +47,18 @@ jobs:
         run: |
           npm ci
           npx playwright install --with-deps chromium
-      - name: Build bundles
-        run: node tools/bundle.mjs
-      - name: Render gate
-        run: node tools/verify.mjs
-      - name: Collision gate
-        run: node tools/collide.mjs
-      - name: Claims harness
-        run: python _data/build/verify_claims.py
-      - name: Consistency harness
-        run: python _data/build/verify_consistency.py
+      # SEVENTEEN GATES, NOT FOUR. Until 2026-09-01 this job ran verify, collide,
+      # verify_claims and verify_consistency by hand while the local release ran twenty,
+      # so thirteen gates existed and guarded nothing that reached main. tools/all.mjs
+      # --fast runs everything except the two width sweeps: about ninety seconds against
+      # the ten minutes those two cost. It rebuilds dist/ itself as its first gate, which
+      # is why the separate bundle step is gone.
+      #
+      # --fast prints "A --fast pass is not a clean bill" in its own verdict, and it is
+      # right: the sweeps are the checks that found sub-12px text on 14 of 16 pages and
+      # ~50 collisions. They run in the `full` job below rather than not at all.
+      - name: Gates (all but the two width sweeps)
+        run: node tools/all.mjs --fast
       # The site is uploaded from this same checkout so deploy cannot ship anything
       # verify did not see. dist/ rides along; the pages themselves are the folders.
       - uses: actions/upload-pages-artifact@v3
@@ -73,3 +79,25 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # THE SLOW HALF, ON A SCHEDULE. The two 14-width sweeps plus the selftest that proves
+  # each gate still fails its own known defect. Never gated a push before; running them
+  # weekly is the difference between a check that exists and a check that runs.
+  full:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Full suite, all twenty gates
+        run: node tools/all.mjs

@@ -128,16 +128,18 @@ PV.figures([
    `the same work pays about a tenth less here than the U.S. average for it and about a
     quarter more than the average job in its own county. It has been under the U.S. rate
     in all ${WORDS[pay.standing.n_years]} published years.`],
-  /* NOT "none of it spent". The public record shows what was awarded and what was
-     assigned to a recipient, never what was drawn down, so an award that has paid out
-     nothing and one that has paid out everything are the same document here. Stating a
-     zero is as much a claim as stating a number, and this page can support neither.
+  /* NOT "none of it spent". Corrected 2026-09-01: the reason used to be that the public
+     record never shows drawdown, which was wrong. USAspending publishes an outlay figure
+     on the federal award lines and the accountability page carries it. What no record
+     covers is the WHOLE signed total, because the state grant publishes nothing, so a
+     figure for the whole would be part measured and part supplied. Stating a zero is as
+     much a claim as stating a number, and this page can support neither.
      _data/FIGURES.json registers the quantity as not publicly observable and
      tools/figures.mjs fails the build on any page that gives it a value. */
   ["", cap.value, "signed, " + WORDS[D.federal_awards.leads.length] + " named recipients",
    `signed for and assigned, worth about ${cap.drivers[2].value} of the contracting
-    already arriving. How much has been paid out is not in the public record, so no amount
-    is stated here, not even a zero.`],
+    already arriving. What has been paid out is published for the federal lines, not
+    here, so no amount is stated here, not even a zero.`],
 ]);
 
 /* ------------------------------------------------------------------- the standing chart
@@ -530,11 +532,13 @@ document.getElementById("scalesub").innerHTML =
    "Smaller every year" was a claim about the whole series, which rose in two of the last
    five. The page evidences three consecutive falls, so the closer says three.
    "Holding $51.0 million it has not spent" went the same way as the hero card: it stated
-   a drawdown of zero for a quantity nothing published can show. The closer now says what
-   the record holds and stops there. */
+   a drawdown of zero for a quantity this page does not carry. The closer now says what
+   the record holds and stops there. It said "no public record follows to the ground"
+   until 2026-09-01, which was a claim about the record; USAspending follows six of these
+   seven awards to the ground. What is true is that this page does not. */
 document.getElementById("closerline").textContent =
   `Three years smaller, paid above its towns and below its industry, holding ` +
-  `${cap.value.replace("M", " million")} in signed awards no public record follows ` +
+  `${cap.value.replace("M", " million")} in signed awards this page does not follow ` +
   `to the ground.`;
 document.getElementById("closersub").innerHTML =
   `That is the reading on ${WORDS[T.length]} measures, none of which has a target set for

@@ -199,7 +199,11 @@ their filter cannot see.
 > catch, which is the honest half.
 
 **What.** A short section on the claims harness: every numeric sentence carries a written
-condition that would prove it wrong, and they re-run on every build.
+condition tying it to the data it came from, and they re-run on every build. Renamed
+2026-09-01 from "a condition that would prove it wrong", which read as verification when the
+conditions only ever test consistency against the shipped data; this section is now the
+site's canonical account of what they catch and what they miss, linked from every page's
+methodology box.
 
 **Why.** Possibly the most transferable thing here and certainly the most unusual. No other
 Tech Hub is doing it, and the idea is cheap to copy even without our code.

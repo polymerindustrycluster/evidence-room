@@ -1,0 +1,40 @@
+name: Data error
+description: A number, figure or statement on a page looks wrong.
+title: "[data error] "
+labels: ["data error"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you. Every correction this site has published is dated and kept in
+        [CORRECTIONS.md](../blob/main/CORRECTIONS.md); yours will be treated the same way.
+        You do not need to be certain, and you do not need to know why it is wrong.
+  - type: input
+    id: page
+    attributes:
+      label: Which page
+      placeholder: e.g. programs, atlas, federal-money
+    validations: {required: true}
+  - type: input
+    id: figure
+    attributes:
+      label: Which figure, table or sentence
+      placeholder: e.g. the bar chart of completions, or the headline
+    validations: {required: true}
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What you think it should say, and why
+      description: |
+        The most useful note names the sentence and what you think it fails against — a
+        source, your own records, or first-hand knowledge of the place or organisation.
+    validations: {required: true}
+  - type: textarea
+    id: who
+    attributes:
+      label: If this is about your organisation
+      description: |
+        Optional. If you work for a company, college or institution named on a page, say
+        so. No named organisation was contacted before publication, so a correction from
+        you carries more weight than anything our checks can establish.
+    validations: {required: false}

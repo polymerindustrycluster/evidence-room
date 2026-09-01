@@ -67,10 +67,19 @@ const longDate = iso => {
 const A = D.attribution, S = D.staging, C = D.coalition, P = D.promises,
       R = D.reconcile, N = D.negative, X = D.context;
 
-/* ---------------------------------------------------------------- the second lock */
+/* ---------------------------------------------------------------- the second lock
+   S.disbursed is the payment figure for the WHOLE $85,335,784 and there is none: the state
+   grant publishes no drawdown and one federal award has no USAspending record at all. What
+   there is, and what this page drew as an absence until 2026-09-01, is S.outlays: the
+   federal lines that do publish one. So the lock now has two halves. No whole-total figure,
+   ever; and no outlay total unless it reconciles to the register it claims to sum. */
 if (S.disbursed !== null || S.disbursed === 0)
-  throw new Error("the disbursement stage arrived carrying a value; this page must never "
-                  + "render one, including a zero");
+  throw new Error("the disbursement stage arrived carrying a value for the award TOTAL; "
+                  + "this page must never render one, including a zero");
+if (!S.outlays || !(S.outlays.paid > 0) || !(S.outlays.base > 0)
+    || S.outlays.paid >= S.outlays.base || S.outlays.base >= A.stages[1].amount)
+  throw new Error("the federal outlay block is missing or does not sit inside the award "
+                  + "total it is a part of");
 if (N.vault_rows.some(r => r.current || r.sub))
   throw new Error("a board row awaiting a private register arrived carrying a figure");
 
@@ -332,15 +341,26 @@ function stageDesktop() {
     + ", both inside the state grant.",
     {x: m.l, y: y + 102, class: "pv-labq"});
 
-  // 3. disbursed: an outline at full weight with the words inside it, and no value
+  /* 3. paid out: the federal lines carry an outlay and are drawn solid; the dashed
+        outline behind them is the rest of the total, which publishes no drawdown figure
+        and is therefore an absence rather than a zero. Until 2026-09-01 the whole stage
+        was that outline and the page said the record never shows payment. It does. */
   y = m.t + 2 * rowH;
+  const OL = S.outlays;
   txt(svg, "Paid out to recipients", {x: m.l, y: y + 13, class: "pv-lab"});
-  txt(svg, "the stage this page cannot show", {x: m.l, y: y + 31, class: "pv-labq"});
+  txt(svg, "published for the federal lines only", {x: m.l, y: y + 31, class: "pv-labq"});
   el("rect", {x: m.l, y: y + 38, width: w, height: 28, fill: "none", stroke: "#9A9284",
     "stroke-width": 2, "stroke-dasharray": "7 5", rx: 3}, svg);
-  txt(svg, S.disbursed_label, {x: m.l + 16, y: y + 57, class: "pv-lab", fill: "#6C6455"});
-  txt(svg, "An award register records commitment and execution, never a payment.",
-    {x: m.l, y: y + 88, class: "pv-labq"});
+  el("rect", {x: m.l, y: y + 38, width: Math.max(3, xs(OL.paid) - m.l), height: 28,
+    fill: INK, rx: 3}, svg);
+  txt(svg, usd(OL.paid), {x: m.l + w + 12, y: y + 57, class: "pv-lab"});
+  txt(svg, `${pct1(OL.share)} of the federal lines`, {x: m.l + w + 12, y: y + 75,
+    class: "pv-labq"});
+  txt(svg, `Solid: what the federal record says has been paid against ${usd(OL.base)} on `
+    + `${OL.lines} federal award lines.`, {x: m.l, y: y + 88, class: "pv-labq"});
+  txt(svg, `Dashed: ${S.disbursed_label}. The state grant and one federal award publish `
+    + `no drawdown, so the remainder is unknown and not zero.`,
+    {x: m.l, y: y + 106, class: "pv-labq"});
 }
 
 function stageMobile() {
@@ -393,29 +413,39 @@ function stageMobile() {
       {x: m.l + 10, y: note + MOBLEAD * (2 + i), class: "pv-labq"}));
 
   b = note + MOBLEAD * (1 + S.gaps.length) + BLOCK;
+  const OL = S.outlays;
   txt(svg, "Paid out to recipients", {x: m.l, y: b, class: "pv-lab"});
-  txt(svg, "the stage this page cannot show", {x: m.l, y: b + MOBLEAD, class: "pv-labq"});
+  txt(svg, `${usd(OL.paid)}, ${pct1(OL.share)} of the federal lines`,
+    {x: m.l, y: b + MOBLEAD, class: "pv-labq"});
   const outY = b + BAR;
   el("rect", {x: m.l, y: outY, width: w, height: 22, fill: "none", stroke: "#9A9284",
     "stroke-width": 2, "stroke-dasharray": "7 5", rx: 3}, svg);
-  txt(svg, S.disbursed_label, {x: m.l + 10, y: outY + 15, class: "pv-labq",
-    fill: "#6C6455"});
-  svg.setAttribute("viewBox", `0 0 ${W} ${outY + 22 + m.b}`);
+  el("rect", {x: m.l, y: outY, width: Math.max(3, xs(OL.paid) - m.l), height: 22,
+    fill: INK, rx: 3}, svg);
+  txt(svg, `dashed: ${S.disbursed_label}`,
+    {x: m.l, y: outY + 22 + 18, class: "pv-labq"});
+  svg.setAttribute("viewBox", `0 0 ${W} ${outY + 22 + 18 + m.b}`);
 }
 
 (MOBILE.matches ? stageMobile : stageDesktop)();
 
 document.getElementById("stagetable").innerHTML = tableView("stage",
   "Each public award, the dollars assigned to a named recipient, and the balance with no "
-  + "recipient named yet. No column records a payment.",
+  + "recipient named yet. The last row is the federal payment record and is on a "
+  + "different base: the seven federal award lines that publish an outlay, not the "
+  + "three awards above it.",
   ["Award", "Awarded", "Named recipient", "Not yet named", "Share named"],
   S.sources.map(s => [s.name, usd(s.award), usd(s.assigned),
     s.unassigned ? usd(s.unassigned) : "none", pct1(s.pct)])
-    .concat([["Paid out", "no public record exists", "no public record exists",
-              "no public record exists", "no public record exists"]]));
+    .concat([["Paid out (federal lines)", usd(S.outlays.base), usd(S.outlays.paid),
+              "not published", pct1(S.outlays.share)]]));
 
 document.getElementById("stagesrc").innerHTML =
   `PIC award register and internal scorecard delivery rows as of ${D.as_of}. `
+  + `Payments from ${esc(S.outlays.source)}, read ${longDate(S.outlays.as_of)}; `
+  + `${esc(S.outlays.no_record.name)}&rsquo;s ${usd(S.outlays.no_record.amount)} award `
+  + `has no record there and the ${usd(S.outlays.not_federal.amount)} state grant is not `
+  + `a federal award, so neither is in the payment figure. `
   + `The two named gaps come from the register&rsquo;s own reconciliation note. `
   + `<b>${esc(D.meta.caution)}</b>`;
 
@@ -618,8 +648,8 @@ function swimlane(W, mob) {
   /* Shortened by hand for the narrow canvas rather than machine-truncated: the desktop
      sentence renders 404 units wide inside a 375-unit viewBox and pushes the page into
      horizontal scroll. */
-  txt(svg, mob ? `None of the ${P.rows.length} has resolved yet.`
-                : `Every mark is a hollow scheduled ring. None has resolved yet.`,
+  txt(svg, mob ? `The register records none of the ${P.rows.length} as delivered.`
+                : `Every mark is a hollow ring: none is recorded as delivered yet.`,
     {x: m.l, y: noteY, class: "pv-labq"});
 }
 
@@ -682,13 +712,13 @@ document.getElementById("promisesrc").innerHTML =
    says what a figure counted, which at this version is four of the five rows. */
 const UNSTATED = R.rows.filter(r => !r.counted).length;
 document.getElementById("figreconcile").textContent =
-  `${R.rows.length} published figures for one programme, and ${UNSTATED} of them do not `
+  `${R.rows.length} published figures, and ${UNSTATED} of them do not `
   + `say what they counted`;
 
 document.getElementById("reconcile").innerHTML = `
   <table class="lg">
-    <caption>Five published figures describing one R&amp;D competition, with the document
-      each came from. ${esc(R.standing_rule)}</caption>
+    <caption>Five published figures, four describing one R&amp;D competition and the
+      fifth describing one workforce award, with the document each came from. ${esc(R.standing_rule)}</caption>
     <thead><tr>
       <th scope="col">The published figure</th>
       <th scope="col">Published</th>

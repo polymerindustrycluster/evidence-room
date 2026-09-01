@@ -51,7 +51,7 @@
   },
   {
    "id": "prog-terra-loss",
-   "text": "Terra State's associate degree ran 25 unbroken years, 1991–2015, conferred 206 completions, and ended — the largest ended program in the record at a college that still operates. (Akron Machining Institute's 347 is larger, but the institution itself wound down.)",
+   "text": "Terra State's associate degree ran 25 unbroken years, 1991–2015, conferred 206 completions, and has filed none since — the largest stopped record at a college that still operates. (Akron Machining Institute's 347 is larger, but the institution itself wound down.)",
    "source": "polymer-programs-db census; closure verified against Terra State's current catalogue (narrowed to a single certificate)",
    "assert": "(lambda t: t['total_awards'] == 206 and (t['first_year'], t['last_year']) == (1991, 2015) and t['status'] == 'ended')(one(t for t in D['top_tech'] if 'TERRA' in t['institution'].upper())) and one(t for t in D['top_tech'] if 'MACHINING' in t['institution'].upper())['total_awards'] == 347",
    "actual": "[(t['institution'], t['total_awards'], t['first_year'], t['last_year'], t['status']) for t in D['top_tech'] if t['status'] != 'active']",

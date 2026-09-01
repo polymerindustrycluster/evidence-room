@@ -13,6 +13,293 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-09-01, eighth entry — the reader, who had no way in
+
+Three findings about this site's relationship with the people it writes about and the
+people who read it. None is a wrong number. All three are worse than a wrong number.
+
+**An internal note naming a third party was published on this site.**
+`programs/INTEGRATION-NOTE.md` and `atlas/INTEGRATION-NOTE.md` were tracked, deployed and
+served: both returned HTTP 200 from the public site. They carried the orchestration layer
+of the project, named private sibling repositories, and named an individual outside the
+project as an unresolved publication gate on a page about her sector, with no indication
+she knew. Both files are removed. The pages themselves were unaffected; nothing a reader
+came for was in them, which is exactly why nobody looked.
+
+**The site promised a way to report an error that did not exist.** The README and this
+log both said "Open an issue, the Data error template asks for the page, the figure, and
+what you think it should be." There was no template. `.github/` held one workflow and
+nothing else. The sentence had stood, unguarded by any check, on the document whose whole
+subject is being wrong in public. The template now exists and asks for those three things.
+The address in the corrections block is also a link now rather than text a reader has to
+retype, and the block carries the issue route beside it.
+
+**No organisation named on this site has ever been offered a right of reply, and the site
+did not say so.** Companies, colleges and institutions are characterised here from public
+records. A filing describes what an organisation reported, never what it knows about
+itself. Every page now says that in its corrections block, next to the two routes that
+reach a person. Saying it is not the same as doing it, and doing it is a separate piece of
+work that has not started.
+
+## 2026-09-01, seventh entry — the register behind the site, and a county in the wrong state
+
+An outside corroboration pass read fourteen pages against the world rather than against
+their own data, and a completeness sweep read every heading on the site against its own
+sets. Both found the same shape: a sentence that was true when written and was never
+re-checked as the thing underneath it grew.
+
+**Sixty-four Michigan companies were counted as Northeast Ohio, *chain*.** Wayne County
+exists in both Ohio and Michigan, and the company register joins on the county NAME with
+no state. Of eighty rows tagged Wayne, **sixty-four are in Wayne County, Michigan** —
+Detroit, Livonia, Plymouth, Dearborn, Westland and fourteen other cities — and sixteen
+are in Ohio. **Was:** "All 785 companies the Polymer Industry Cluster has classified in
+the fourteen counties of Northeast Ohio." **Is:** 785 county-tagged rows, of which the
+corrected regional count is **721**. The evidence cards had been rendering "Detroit,
+Wayne County" under a masthead reading "Northeast Ohio". The page now says so in its
+standfirst; the builder re-key is a separate change and is in progress. Two things made
+this survivable for so long: the register's producer hard-codes absolute paths to one
+Windows machine and cannot be re-run by anyone, and a blanket caveat saying "a county can
+exceed 100 percent" pre-explained the single loudest signal — Wayne was the only county
+over 100, at 185 percent, and 44 percent on its real Ohio rows.
+
+**The provenance page was behind the site it documents, *sources*.** **Was:** a section
+headed "All fifteen datasets, with what each one cannot tell you". **Is:** fifteen of the
+site's twenty-four, and eighteen of its twenty-three pages: the provenance of atlas,
+chain, collaboration, programs and reach is not on the page, and nor are OpenAlex, NSF
+awards, County Business Patterns, three IPEDS files, College Scorecard, a second
+USAspending endpoint or this project's own vault. The stall is honest — the build refuses
+to publish a source without a written statement of what it cannot tell you, and those
+nine statements are not written — but the page went on saying "all". No gate could see
+it: every gate checks the page against the register, and the register is the thing that
+went stale. The ranking survives the gap and is stated as surviving it.
+
+**Two false universals, on the two pages that teach the method.** **Was:** "Every number
+on this site carries a written condition that ties it to its source" (*sources*) and
+"Every sentence here is tied to its source by a check that can fail" (*the front page*).
+Neither is true; the site carries 519 claims and contains far more than 519 numbers.
+**Is:** "Every claim here names the condition under which it stops matching its source"
+— true of all 545 claims with no exceptions, and honest about what the condition can
+settle. A false universal is usually hiding a true one nearby.
+
+The first attempt at that repair is worth recording, because the harness caught it. It
+read "names the condition that would prove it wrong", on the reasoning that all 545
+claims carry a falsifier and the sentence was therefore universally true. The disclosure
+gate rejected it: that exact phrase had been banned hours earlier as the site's largest
+overclaim, because a claim's condition runs against the data the page shipped with and
+can prove only that a sentence stopped matching its own file, never that it is wrong
+about the world. The gate was added the same day, on a cross-family review, after a
+transposed classification code moved a series by half while its assertion kept passing.
+It then caught the author of this entry reintroducing the same sentence.
+
+**BMW's plant is in a different metro from the one the sentence explains, *peers*.**
+**Was:** "Greenville, South Carolina holds Michelin's North American headquarters and the
+only US assembly plant of BMW." **Is:** Michelin is right; BMW's plant is in Spartanburg
+County, which the bureau counts as a separate metro area and which is not in the
+Greenville-Anderson-Greer row the sentence is explaining. On a page whose premise is that
+a metro is built out of whole counties, that distinction is the page's own subject.
+
+**The register's own self-count was pinned to numbers the site outgrew.** The claim
+guarding it had recorded, in advance, that it was pinned to stale literals on purpose so
+that the next regeneration would fail loudly rather than let the paragraph re-render
+behind a reader. It did exactly that. **Was:** 443 claims across seventeen pages. **Is:**
+519 across twenty-two.
+
+## 2026-09-01, sixth entry — the chart furniture, the least-governed surface
+
+Two independent figure audits swept every chart on the site and found the same thing:
+the defects were not in the numbers. Every one of them lived in a HAND-TYPED string —
+an SVG `<title>` a screen reader announces, an HTML `fig-title`, a swatch key, an
+in-plot annotation tail. Strings COMPUTED in `app.js` were clean throughout. The claims
+apparatus binds sentences to data and nothing binds chart furniture to the sentences,
+so a passing suite and a false figure caption coexisted on fourteen pages.
+
+**A filing gap was published as a closure, *programs*.** The in-plot bar tail read
+", ended 2015" against Terra State, on the page whose own README says "'Ended' is not
+'closed'" and whose own source line records that Terra State narrowed to a single
+certificate that is still offered. The record's flag means only that no completion was
+filed for two years or more. **Was:** ", ended 2015"; the lede key "light bars ended";
+the note "the largest ended program ... ended 2015". **Is:** ", last filed 2015"; "light
+bars filed no polymer completion in 2023"; "the largest record that stopped ... last
+filed 2015". The same lede also claimed sixteen bars where the chart draws the largest
+eight; the chart's own subtitle had said eight all along. The DATA still ships
+`status:"ended"` for six of sixteen rows and still needs renaming to its predicate
+(`last_filing_year` / `zero_completions_2023`); that is a builder change and is
+referred, not done here.
+
+**An alt text carried a verdict the page withheld, *laborshed*.** The matrix
+description told a screen-reader user the share each county fills from home is "weak
+everywhere" while the chart's own callout said "whether that is low is what the
+benchmark below settles" — and the benchmark settles it the other way, 378 of 397 peer
+counties doing the same. **Was:** "weak everywhere". **Is:** the predicate only, plus
+the callout's own deferral. Separately, the peer-region description called its bars
+"Ranked" when the code sorts by county count, which the visible subtitle states
+correctly.
+
+**A figure title contradicted its own subtitle, *occupations*.** **Was:** "below half
+their 2014–2021 pace". **Is:** 2014–2020 — the period the subtitle, the annotated rule
+at 71 and `claims.json` all use. 2021 is itself a below-half year, so the title had put
+a fallen year inside its own baseline. The claim guarding this sentence QUOTES the
+figure title and states the correct period; it passed anyway, because the assertion
+reads the data and never the string.
+
+**A corrected number survived in the alt text, *sources*.** The dependency description
+still led QCEW "at eleven" after the 2026-08-30 correction to nine. **Is:** nine of
+eighteen. The same figure's title read "One source carries most of this site" over nine
+of eighteen, which is half. **Is:** "No other source feeds more than five of the
+eighteen pages" — the true sentence and the better one. The claim now asserts the
+runner-up at five rather than merely under nine.
+
+**A key named one footprint for two, *chain*.** The swatches read "Classified companies
+in the 14 counties" and "2026 applications naming that stage"; the second is PIC-12,
+twelve counties, which the lede says and the key did not. The first also called all 785
+vault companies "classified" when 611 carry a value-chain role. **Is:** both footprints
+named in the key and in the alt text, and the source line reads "the 611 of 785 NEO-14
+companies that carry a value-chain role".
+
+**"None has resolved" outran the register, *accountability*.** The earliest commitment
+is dated 15 August 2026, seventeen days past, and the chart draws no today rule.
+**Was:** "none has resolved". **Is:** "the register records no commitment as delivered",
+which is what the file supports. In the same band, a five-row table captioned "Five
+published figures describing one R&D competition" contained one row describing a
+workforce award instead, and a cell said "the only one of these four" in a table of
+five; both now scope themselves.
+
+**A denominator lived only in the alt text, *federal-money*.** "Two companies hold 56%
+of the contract dollars" rests on a $329.5M award-basis total that appeared nowhere on
+the figure and is a different measure from the $279.3M chart above it. The subtitle now
+names the base.
+
+**Two chart titles carried no claim, *patents*.** **Was:** "Four lines, two stories" and
+"Ohio polymer applications by filing year", with the finding left to the H2. **Is:**
+"Only the polymer lines fell far below their 2015 level" and "Ohio's three newest bars
+are still filling, not falling". The index chart's dashed rule at 100 was unlabelled on
+a vertical scale that starts at 73; the rule now reads "100 = the 2015 level" and both
+the subtitle and the alt text declare the crop. The page's meta description still said
+the national polymer field "barely moved" after commit 9a71687 corrected the standfirst;
+it fell 22 percent.
+
+**A map stated an encoding it does not use, *atlas*.** **Was:** "Area is every
+completion it ever conferred". The code is `r = 2 + sqrt(v) * 0.32`: with that floor,
+area spans about 67 times over a 1-to-2,830 range and the median dot draws roughly twice
+its proportional area. **Is:** a square-root radius with a stated minimum size, and the
+source line says the dots rank the record rather than compare areas. The encoding is
+unchanged; only the description of it was wrong.
+
+**Four more of the same family.** *churn*: a table captioned "Hire rate, separation rate
+and the gap" carried column headers reading "Hiring rate" and "Leaving rate" — three
+vocabularies for two concepts, announced by a screen reader on every cell. *reach*: an
+H2 read "A quarter" where the share is 22.65 percent and the page prints 23 percent
+three times, and the map lede promised one-paper institutions were "listed in the table
+under it" when that table holds the forty largest. *index*: the hub card for *revisions*
+named a "resin" producer-price series that does not exist in the file; the three are
+industrial chemicals, rubber and plastic products, and plastics and rubber plants.
+
+**What none of this changes:** no chart's data, no chart's encoding, no analysis. Every
+correction above is an editorial string that had drifted from the figure it sat on,
+which is precisely the surface no gate reads.
+
+## 2026-09-01, fifth entry — the money pages, corroborated against the record
+
+An outside corroboration pass read four money pages against the federal record itself
+rather than against their own data. Six published errors came back. One of them is
+this site's worst kind: a page whose entire argument is that a number needs a fair
+comparator had published an unfair one.
+
+**The comparator was the wrong kind of money, *federal-money*.** Band 2 set the polymer
+flow against "every industry in these twelve counties" and got $235.5 billion, "nearly
+all of it aerospace, defense and health contracting", and a ratio of one dollar in 840.
+The numerator was contracts. The denominator was every federal instrument there is, and
+about 85 cents in every dollar of it is direct payments and other financial assistance:
+Social Security, Medicare and veterans' benefits, which no manufacturer can bid for.
+**Was:** $235.5 billion, one dollar in every 840. **Is:** federal prime contracting of
+every industry in the same twelve counties, $9.2 billion in 2025 dollars, one dollar in
+every 33. The comparator was twenty-six times too large, in the direction that made the
+cluster look smaller. Both series are now pulled with the same award-type filter and the
+ratio is computed inside one block; the old claim guarded the quotient and never the
+units, which is why it passed on every run for as long as the sentence was wrong.
+
+**"No public record says what has been paid" was refuted, *accountability*.** The
+section heading, the figure title, an empty dashed third stage labelled *no public
+record exists*, and the figure-registry entry that licensed all three. USAspending
+publishes an outlay field on federal assistance awards and it is filled on seven of the
+eight federal lines in the register: **$11,642,402 against $48,114,979, 24.2 percent**.
+**Was:** an absence presented as a property of the record. **Is:** the stage is part
+filled, the bar carries the federal figure, and the remaining absence is named for what
+it actually is: the $31,250,000 state grant is not a federal award, and EDA award
+ED25HDQ0G0009 ($5,970,805, Huntsman) has no USAspending record of any kind, which is a
+missing row and not a payment of zero.
+
+**A verification claim that had not been verified, *funding-map*.** **Was:** "All seven
+EDA figures are verified against signed federal Notices of Award", cross-checked
+"against USAspending.gov by award ID". **Is:** six reconcile to the dollar and total
+$45,030,608; the seventh has no USAspending record and EDA's own award page names no
+company, so what corroborates it is arithmetic, not execution.
+
+**Three characterisations of named private companies.** *federal-money* called III
+Williams "one belting supplier" on the strength of a census code that holds 69 percent
+of its dollars; its line items are belts, hose assemblies, tube fittings, adapters and
+seals, and it is now "one industrial distributor, III Williams of Chardon", with the
+code named as a code. HDT's "$39 million of field air conditioners" gains the scope
+clause it needed: $35.1 million of it is one award opened in 2014, transferred from a
+General Services Administration schedule, carried into this window by the whole-life
+basis. And *funding-map* now attributes Full Circle's tire chemistry to the award
+document, which describes it, rather than to the company, whose own site describes
+industrial recycling and compounding.
+
+**Two figures on the wrong basis.** NEO-SMART's $15.0 million was printed inside an
+obligations paragraph and registered with the basis "obligated"; it is the estimated
+total of a ten-year cooperative agreement, of which **$7,499,984 is obligated**, and
+both pages and the registry now say which is which. And the $10.42 million beside the
+Ohio Innovation Hub grant was called **state cost share** on *funding-map* and inside
+*accountability*'s $20,954,667; every public record of that award, including the
+Governor's office announcement of 5 September 2024, describes it as matched by local
+partners. The figure was right and the promiser was wrong.
+
+**One thing the corroboration got wrong, recorded because it was checked.** The
+comparator error was reported as about thirty times; it is twenty-six. The benefit share
+of the old denominator was reported as 86 percent; it is 85.5. And MQM Solutions, flagged
+as at risk of reading as a failing firm, carries no sentence, label or annotation of the
+kind on any page: it is one bar among ten in a chart whose subtitle already states the
+whole-award-life basis.
+
+## 2026-09-01, fourth entry — the atlas re-projection, and a page with no producer
+
+The atlas carried a banner saying it was stale and must not be published until
+re-projected. It was published anyway, on 2026-08-31, banner and defect intact. The
+reason turns out to be worse than an oversight: **the script the banner told everyone
+to run does not exist in this repository, and never did.** `atlas/data/viz-data.json`
+is a shipped file with no producer, so the correction it needed could not be delivered
+by anyone who followed the instructions. A producer has now been written
+(`_data/build/atlas_reprojection_patch.py`, idempotent, with a `--check` mode that
+re-derives from the source API), and the atlas is listed in REBUILDING.md as what it
+actually is.
+
+**What was wrong.** The upstream mirror republished 2019's completions under the label
+2020 — the same defect the programs page had already quarantined. The atlas never got
+that quarantine, so every institution's lifetime record counted 2019 twice.
+
+**Verified before changing anything.** The whole 1991-2023 census was re-pulled from
+the source endpoint and reproduced the shipped file exactly — all 147 institutions on
+every field, zero mismatches — before a single year was removed. 2020 is
+byte-identical to 2019: 807 awards across 59 institutions.
+
+**What moved.** The record total **20,859 to 20,052**. The top three **7,651 to
+7,401**, and their share of the whole **36.7 to 36.9 percent**. Forty-four
+institutions' lifetime totals changed, including Lowell **2,929 to 2,830**, Ferris
+State **2,599 to 2,525**, and Akron **2,123 to 2,046**. Eighth and ninth place swap:
+Penn College now leads Case Western. Four institutions' spans end in 2019 rather than
+2020. The page's shape facts survive untouched and are now asserted: 147 institutions,
+41 conferring in the last year, 35 states, four diamonds.
+
+**Also corrected:** a claim's own falsification note said "Akron's record is second."
+Akron's record has always been third, and nothing had asserted the order.
+
+Separately and with no reader-facing change, the sources page's prose now exists in
+the HTML rather than only in JavaScript. Thirty-one paragraphs that a reader without
+JavaScript saw as empty captions — including the location-quotient worked arithmetic
+and the field-name recipes — are now real text, pinned by assertions. Three model
+families reading the page cold had each stopped there.
+
 ## 2026-09-01, third entry — the depth audit's second wave
 
 The flip-risk pass finished its sweep of the remaining ten pages. Both education

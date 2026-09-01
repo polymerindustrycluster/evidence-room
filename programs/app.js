@@ -379,10 +379,14 @@ figures([
       fill: active ? SEQ[5] : SEQ[1], rx: 3}, svg);
     txt(svg, rowLabel(r), {x: m.l - 12, y: y + bh - 3, "text-anchor": "end",
       class: active ? "pv-lab" : "pv-labq"});
-    /* "ended" and "unclear" are different states in this record and the chart says so:
-       a program quiet for one year is not a program that stopped. */
-    const tail = active ? "" : r.status === "ended"
-      ? `, ended ${r.last_year}` : `, last conferred ${r.last_year}`;
+    /* THE TAIL PRINTS THE MEASUREMENT, NOT A VERDICT. The record's "ended" flag means
+       only that no completion was filed for two years or more. This page's own source
+       line records that Terra State did NOT end: it narrowed to a single certificate
+       that is still offered, so a tail reading ", ended 2015" turned a filing gap into a
+       closure at the one college where the difference is documented. The year does the
+       work the two flags were for: quiet since last year reads differently from quiet
+       since 1999, and neither is a claim about a college. */
+    const tail = active ? "" : `, last filed ${r.last_year}`;
     txt(svg, `${N(r.total_awards)}${tail}`,
       {x: xs(r.total_awards) + 8, y: y + bh - 3, class: active ? "pv-lab" : "pv-labq"});
     hoverable(el("rect", {x: 0, y: y - 4, width: W, height: ROW, fill: "transparent"}, svg),
@@ -409,9 +413,10 @@ figures([
      to a single certificate.`;
   const terra = rows.find(r => /TERRA/i.test(r.institution));
   document.getElementById("worknote").innerHTML =
-    `<b>The largest ended program at a college that still operates is Terra State</b>:
-     <b>${N(terra.total_awards)}</b> completions over
-     ${terra.last_year - terra.first_year + 1} unbroken years, ended ${terra.last_year}.
+    `<b>The largest record that stopped at a college that still operates is Terra
+     State</b>: <b>${N(terra.total_awards)}</b> completions over
+     ${terra.last_year - terra.first_year + 1} unbroken years, last filed
+     ${terra.last_year}.
      (Akron Machining Institute&rsquo;s 347 is larger, but the institution itself wound
      down.) Terra State was placed under state fiscal watch in April 2026, and any
      conversation about routing money there needs that fact first.`;

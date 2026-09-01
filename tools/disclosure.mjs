@@ -11,12 +11,31 @@
  *
  * Checks the RENDERED page, with scripting on, so a JS-emitted byline is covered too.
  * One wording, everywhere: the same fact must not appear in five phrasings.
+ *
+ * It also asserts the OTHER thing a reader is owed about authorship, added 2026-09-01:
+ * what the site's own checks can and cannot establish. See the note above SCOPE below.
  */
 import {readdirSync, readFileSync} from "fs";
 import {pathToFileURL} from "url";
 import {chromium} from "./_browser.mjs";
 
 const CANON = "Analysis and graphics by Claude (Anthropic)";
+/* WHAT THE CHECKS ACTUALLY DO, asserted here for the reason the byline is.
+ *
+ * Until 2026-09-01 the methodology box promised that every numbered sentence carried "a
+ * written condition that would prove it wrong". The conditions run against the SHIPPED
+ * data: they establish that a sentence still matches its own file, and nothing about the
+ * world. A cross-family review called presenting that suite as verification the largest
+ * overclaim on the site, and the incident behind it is in CORRECTIONS.md — a transposed
+ * classification code moved a series by half while its assertion kept passing, because the
+ * assertion was true of the wrong number and of the right one.
+ *
+ * The sentence is prose authored ONCE in _shared/picviz.js and rendered into every page,
+ * which is the surface no page-level author ever reviews: it regressed onto 23 pages at
+ * once and can re-inflate the same way. Two assertions. A page that prints its check count
+ * must also print what the check cannot do, and no page may carry the old promise. */
+const SCOPE = "consistency check, not a check against the world";
+const OVERCLAIM = /condition that would prove it wrong|test that can fail/i;
 /* and the human who answers for it must be named in the same line */
 const OWNER = "John Swanson";
 /* Names that must never be the sole credit for analysis or graphics. */
@@ -54,6 +73,10 @@ for (const n of list) {
   }
   if (r.method && !r.method.includes("Claude (Anthropic)"))
     probs.push("methodology box drops the disclosure");
+  if (/carry a written condition/.test(r.method) && !r.method.includes(SCOPE))
+    probs.push("methodology box prints its check count without saying what the checks cannot do");
+  const over = r.text.match(OVERCLAIM);
+  if (over) probs.push(`claims a check would prove a sentence wrong: "${over[0]}"`);
 
   /* LICENCE ATTRIBUTION, WHICH IS AN OBLIGATION RATHER THAN A COURTESY. A hostile review
      on 2026-08-29 found IPEDS arriving through the Urban Institute's portal under ODC-By
@@ -81,6 +104,6 @@ for (const n of list) {
   await p.close();
 }
 await b.close();
-console.log(bad ? `\n${bad} page(s) do not disclose who wrote them`
-                : `\nall ${list.length} pages carry the same disclosure`);
+console.log(bad ? `\n${bad} page(s) do not disclose who wrote them, or overstate their own checks`
+                : `\nall ${list.length} pages carry the same disclosure and the same scope on their checks`);
 process.exit(bad ? 1 : 0);
