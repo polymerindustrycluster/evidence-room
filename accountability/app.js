@@ -618,8 +618,8 @@ function swimlane(W, mob) {
   /* Shortened by hand for the narrow canvas rather than machine-truncated: the desktop
      sentence renders 404 units wide inside a 375-unit viewBox and pushes the page into
      horizontal scroll. */
-  txt(svg, mob ? `None of the ${P.rows.length} has resolved yet.`
-                : `Every mark is a hollow scheduled ring. None has resolved yet.`,
+  txt(svg, mob ? `The register records none of the ${P.rows.length} as delivered.`
+                : `Every mark is a hollow ring: none is recorded as delivered yet.`,
     {x: m.l, y: noteY, class: "pv-labq"});
 }
 
@@ -682,13 +682,13 @@ document.getElementById("promisesrc").innerHTML =
    says what a figure counted, which at this version is four of the five rows. */
 const UNSTATED = R.rows.filter(r => !r.counted).length;
 document.getElementById("figreconcile").textContent =
-  `${R.rows.length} published figures for one programme, and ${UNSTATED} of them do not `
+  `${R.rows.length} published figures, and ${UNSTATED} of them do not `
   + `say what they counted`;
 
 document.getElementById("reconcile").innerHTML = `
   <table class="lg">
-    <caption>Five published figures describing one R&amp;D competition, with the document
-      each came from. ${esc(R.standing_rule)}</caption>
+    <caption>Five published figures, four describing one R&amp;D competition and the
+      fifth describing one workforce award, with the document each came from. ${esc(R.standing_rule)}</caption>
     <thead><tr>
       <th scope="col">The published figure</th>
       <th scope="col">Published</th>

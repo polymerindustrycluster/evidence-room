@@ -172,7 +172,7 @@ figures([
   const {svg} = chart("map", {W: COL, H});
   chartTitle(svg,
     `${glN} of the ${N(T.ever)} institutions sit in the eight states that touch the Great Lakes`,
-    "One dot is one institution. Area is every completion it ever conferred, 1991–2023.");
+    "One dot is one institution, sized by the square root of its 1991–2023 total.");
   const g = el("g", {transform: `translate(0,${TOP}) scale(${S.toFixed(6)})`}, svg);
   el("path", {d: D.basemap.nation, fill: "#F4F2EE", stroke: "none"}, g);
   el("path", {d: D.basemap.states, fill: "none", stroke: "#D8D3CA", "stroke-width": 1}, g);
@@ -227,9 +227,12 @@ figures([
   /* The caption’s first sentence is what a reader would otherwise get wrong about THIS
      chart: a big dot is a long record, not a big program now. */
   document.getElementById("mapsrc").innerHTML =
-    `<b>A big dot is a long record, not a large program today</b>: area is everything an
-     institution ever conferred across 33 years, so a school that stopped in 1998 can
-     outdraw one teaching a full class this term. Seven institutions closed before the
+    `<b>A big dot is a long record, not a large program today</b>: a dot&rsquo;s radius
+     follows the square root of everything an institution ever conferred across 33 years,
+     so a school that stopped in 1998 can outdraw one teaching a full class this term.
+     The scale also carries a minimum size so the smallest records stay visible, which
+     means the dots rank the record and do not compare areas: the largest is thousands of
+     times the smallest and is not drawn thousands of times its size. Seven institutions closed before the
      federal directory carried coordinates in 2009 and sit at their city&rsquo;s centroid,
      and each says so in its hover. One institution sits outside the frame entirely,
      <b>${Cap(offp.name)}</b> (${offp.city}, PR; ${N(offp.total_awards)} completions,

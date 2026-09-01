@@ -837,7 +837,7 @@ document.getElementById("revnote").innerHTML =
 
 document.getElementById("splittable").innerHTML = tableView("s",
   "Hire rate, separation rate and the gap, each averaged over a year",
-  ["Quarter", "Hiring rate", "Leaving rate", "Gap, points"],
+  ["Quarter", "Hire rate", "Separation rate", "Gap, points"],
   Q.map((q, i) => rHire[i] == null ? null
     : [label(q), pc1(rHire[i]), pc1(rSep[i]), ptsT(+spread[i].toFixed(2))]).filter(Boolean));
 /* This figure names its own source. It used to open "Derived from the same series",

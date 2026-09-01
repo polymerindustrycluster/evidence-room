@@ -13,6 +13,100 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-09-01, fourth entry — the chart furniture, the least-governed surface
+
+Two independent figure audits swept every chart on the site and found the same thing:
+the defects were not in the numbers. Every one of them lived in a HAND-TYPED string —
+an SVG `<title>` a screen reader announces, an HTML `fig-title`, a swatch key, an
+in-plot annotation tail. Strings COMPUTED in `app.js` were clean throughout. The claims
+apparatus binds sentences to data and nothing binds chart furniture to the sentences,
+so a passing suite and a false figure caption coexisted on fourteen pages.
+
+**A filing gap was published as a closure, *programs*.** The in-plot bar tail read
+", ended 2015" against Terra State, on the page whose own README says "'Ended' is not
+'closed'" and whose own source line records that Terra State narrowed to a single
+certificate that is still offered. The record's flag means only that no completion was
+filed for two years or more. **Was:** ", ended 2015"; the lede key "light bars ended";
+the note "the largest ended program ... ended 2015". **Is:** ", last filed 2015"; "light
+bars filed no polymer completion in 2023"; "the largest record that stopped ... last
+filed 2015". The same lede also claimed sixteen bars where the chart draws the largest
+eight; the chart's own subtitle had said eight all along. The DATA still ships
+`status:"ended"` for six of sixteen rows and still needs renaming to its predicate
+(`last_filing_year` / `zero_completions_2023`); that is a builder change and is
+referred, not done here.
+
+**An alt text carried a verdict the page withheld, *laborshed*.** The matrix
+description told a screen-reader user the share each county fills from home is "weak
+everywhere" while the chart's own callout said "whether that is low is what the
+benchmark below settles" — and the benchmark settles it the other way, 378 of 397 peer
+counties doing the same. **Was:** "weak everywhere". **Is:** the predicate only, plus
+the callout's own deferral. Separately, the peer-region description called its bars
+"Ranked" when the code sorts by county count, which the visible subtitle states
+correctly.
+
+**A figure title contradicted its own subtitle, *occupations*.** **Was:** "below half
+their 2014–2021 pace". **Is:** 2014–2020 — the period the subtitle, the annotated rule
+at 71 and `claims.json` all use. 2021 is itself a below-half year, so the title had put
+a fallen year inside its own baseline. The claim guarding this sentence QUOTES the
+figure title and states the correct period; it passed anyway, because the assertion
+reads the data and never the string.
+
+**A corrected number survived in the alt text, *sources*.** The dependency description
+still led QCEW "at eleven" after the 2026-08-30 correction to nine. **Is:** nine of
+eighteen. The same figure's title read "One source carries most of this site" over nine
+of eighteen, which is half. **Is:** "No other source feeds more than five of the
+eighteen pages" — the true sentence and the better one. The claim now asserts the
+runner-up at five rather than merely under nine.
+
+**A key named one footprint for two, *chain*.** The swatches read "Classified companies
+in the 14 counties" and "2026 applications naming that stage"; the second is PIC-12,
+twelve counties, which the lede says and the key did not. The first also called all 785
+vault companies "classified" when 611 carry a value-chain role. **Is:** both footprints
+named in the key and in the alt text, and the source line reads "the 611 of 785 NEO-14
+companies that carry a value-chain role".
+
+**"None has resolved" outran the register, *accountability*.** The earliest commitment
+is dated 15 August 2026, seventeen days past, and the chart draws no today rule.
+**Was:** "none has resolved". **Is:** "the register records no commitment as delivered",
+which is what the file supports. In the same band, a five-row table captioned "Five
+published figures describing one R&D competition" contained one row describing a
+workforce award instead, and a cell said "the only one of these four" in a table of
+five; both now scope themselves.
+
+**A denominator lived only in the alt text, *federal-money*.** "Two companies hold 56%
+of the contract dollars" rests on a $329.5M award-basis total that appeared nowhere on
+the figure and is a different measure from the $279.3M chart above it. The subtitle now
+names the base.
+
+**Two chart titles carried no claim, *patents*.** **Was:** "Four lines, two stories" and
+"Ohio polymer applications by filing year", with the finding left to the H2. **Is:**
+"Only the polymer lines fell far below their 2015 level" and "Ohio's three newest bars
+are still filling, not falling". The index chart's dashed rule at 100 was unlabelled on
+a vertical scale that starts at 73; the rule now reads "100 = the 2015 level" and both
+the subtitle and the alt text declare the crop. The page's meta description still said
+the national polymer field "barely moved" after commit 9a71687 corrected the standfirst;
+it fell 22 percent.
+
+**A map stated an encoding it does not use, *atlas*.** **Was:** "Area is every
+completion it ever conferred". The code is `r = 2 + sqrt(v) * 0.32`: with that floor,
+area spans about 67 times over a 1-to-2,830 range and the median dot draws roughly twice
+its proportional area. **Is:** a square-root radius with a stated minimum size, and the
+source line says the dots rank the record rather than compare areas. The encoding is
+unchanged; only the description of it was wrong.
+
+**Four more of the same family.** *churn*: a table captioned "Hire rate, separation rate
+and the gap" carried column headers reading "Hiring rate" and "Leaving rate" — three
+vocabularies for two concepts, announced by a screen reader on every cell. *reach*: an
+H2 read "A quarter" where the share is 22.65 percent and the page prints 23 percent
+three times, and the map lede promised one-paper institutions were "listed in the table
+under it" when that table holds the forty largest. *index*: the hub card for *revisions*
+named a "resin" producer-price series that does not exist in the file; the three are
+industrial chemicals, rubber and plastic products, and plastics and rubber plants.
+
+**What none of this changes:** no chart's data, no chart's encoding, no analysis. Every
+correction above is an editorial string that had drifted from the figure it sat on,
+which is precisely the surface no gate reads.
+
 ## 2026-09-01, third entry — the depth audit's second wave
 
 The flip-risk pass finished its sweep of the remaining ten pages. Both education
