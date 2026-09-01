@@ -255,6 +255,16 @@
       "actual": "(D['a']['meta']['below_floor'], D['a']['meta']['zero_awards'], [(r['name'], r['total'], r['awards']) for r in D['a']['recipients'] if 'SHERWIN' in r['name'] or 'AIRGAS' in r['name'] or 'III WILLIAMS' in r['name']])",
       "falsified_if": "Any printed figure in the long-tail beat drifts: the median, the counts, or the three companies' totals at the $0.1M rounding the prose uses. The one() calls are load-bearing: each name must match exactly one recipient row, so if a future refetch splits Airgas back into its two ledger spellings, this claim errors rather than silently halving the order count the page prints.",
       "official_check": "III Williams' $1.0M is $998,442 unrounded; the beat says 'a combined $1.0 million', which is the same rounding rule as every other figure on the page. The 271 zero-dollar awards are contract vehicles with nothing obligated yet, stated in the company table's note, and a zero here is the ledger's own zero rather than a withheld cell."
+    },
+    {
+      "id": "fed-tardiss-scoped",
+      "text": "TARDISS is expanded on first use as Transformation of American Rubber through Domestic Innovation for Supply Security and carries a size: an award to Ohio State University recorded at $26.0M estimated and $13.7M obligated. The page scopes it as natural rubber grown from domestic crops, upstream of the 325/326 manufacturing it counts, and names it as money the industry-code view cannot see rather than as a regional polymer asset.",
+      "source": "National Science Foundation award record, award 2330145, Ohio State University, read 2026-09-01: $25,996,432 estimated total and $13,698,899 obligated, an Engineering Research Center titled 'Transformation of American Rubber through Domestic Innovation for Supply Security'",
+      "verify": "manual",
+      "assert": null,
+      "actual": null,
+      "falsified_if": "Either printed figure leaves $26.0M or $13.7M at the award record, the expansion is restated, or the sentence starts reading TARDISS as a regional asset or as synthetic polymer work. Two absences are part of this claim and an edit that fills either one breaks it. The figures are attributed to the award record rather than to a present operating state, because a record is not an observation of today; upgrading 'is recorded at' into a present-tense claim about who runs the centre asserts something this repository cannot check. And an awardee address is not a place of performance, the same caution this page already applies to USAspending, so no county reading may be built on the awardee name.",
+      "official_check": "NEO-SMART, the other award named in the same paragraph, is guarded by fed-excludes-disclosed and comes from a data file. This one does not: no fetch script here pulls the TARDISS record, so it is checked by hand and says so. The paragraph was rewritten on 2026-09-01 because three cold readers met a bare acronym with no expansion and no size and could not tell why it was named."
     }
   ]
 }

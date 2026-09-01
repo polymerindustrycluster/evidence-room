@@ -1,7 +1,7 @@
 {
  "n_pieces": 22,
- "total_claims": 501,
- "total_manual": 21,
+ "total_claims": 502,
+ "total_manual": 22,
  "pages": {
   "accountability": {
    "claims": 25,
@@ -32,8 +32,8 @@
    "manual": 2
   },
   "federal-money": {
-   "claims": 29,
-   "manual": 0
+   "claims": 30,
+   "manual": 1
   },
   "funding-map": {
    "claims": 23,
