@@ -1,0 +1,75 @@
+# Verify on every push and pull request; deploy to GitHub Pages only from main.
+#
+# The repo IS the site: each artifact folder serves as a page (index.html + app.js +
+# data/), sharing _shared/ and _data/SOURCES.json exactly as they do in development.
+# What you can read in the repo is what a visitor runs — that is the point of publishing.
+#
+# The gates are the same four commands as local release (METHODS-SOP §7). They run on
+# pull requests too, so a contributor sees the failure before a maintainer does. dist/ is
+# not committed — a committed dist was a standing leak vector — so bundles are rebuilt
+# here for exactly what is in the repo, then gated, then uploaded.
+
+name: Verify and deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Least privilege by default; the deploy job raises what it needs.
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # `npm ci` installs playwright as a devDependency; the postinstall fetches the
+      # chromium binary. --with-deps adds the Linux libraries chromium needs to launch.
+      - name: Install
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Build bundles
+        run: node tools/bundle.mjs
+      - name: Render gate
+        run: node tools/verify.mjs
+      - name: Collision gate
+        run: node tools/collide.mjs
+      - name: Claims harness
+        run: python _data/build/verify_claims.py
+      - name: Consistency harness
+        run: python _data/build/verify_consistency.py
+      # The site is uploaded from this same checkout so deploy cannot ship anything
+      # verify did not see. dist/ rides along; the pages themselves are the folders.
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request'
+        with:
+          path: .
+
+  deploy:
+    needs: verify
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

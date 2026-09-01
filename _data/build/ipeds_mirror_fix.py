@@ -177,4 +177,4 @@ def _check():
 if __name__ == "__main__":
     import sys
     sys.exit(_check() if "--check" in sys.argv else
-             print(__doc__.strip().split("\n\n")[1]) or 0)
+             print((__doc__ or "").strip().split("\n\n")[1]) or 0)

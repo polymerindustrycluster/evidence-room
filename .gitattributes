@@ -1,0 +1,23 @@
+# Normalise line endings in the repository to LF.
+#
+# This tree is authored on Windows and built on ubuntu-latest in CI. Without this, every
+# file committed from Windows lands with CRLF, and the first contributor on macOS or Linux
+# produces a diff touching every line of every file they open — which buries the actual
+# change and makes `git blame` useless for finding out why a number is what it is.
+#
+# Working copies keep whatever their platform prefers; only what git stores is normalised.
+* text=auto eol=lf
+
+# Data files are line-normalised too — they are read by humans in diffs, and a corrected
+# figure should show as one changed line.
+*.json  text eol=lf
+*.csv   text eol=lf
+
+# Binary, never touched.
+*.png   binary
+*.jpg   binary
+*.ttf   binary
+*.otf   binary
+*.woff  binary
+*.woff2 binary
+*.pdf   binary
