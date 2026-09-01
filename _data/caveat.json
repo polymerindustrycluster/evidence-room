@@ -20,7 +20,7 @@
  "limit": 45,
  "ceilings": {
   "reach": 318,
-  "atlas": 257,
+  "atlas": 105,
   "cluster-health": 189,
   "collaboration": 161,
   "timeline": 160,

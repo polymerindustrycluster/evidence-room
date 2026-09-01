@@ -247,23 +247,11 @@ figures([
   document.getElementById("mapsrc").innerHTML =
     `<b>A big dot is a long record, not a large program today</b>: a dot&rsquo;s radius
      follows the square root of everything an institution ever conferred across 33 years,
-     so a school that stopped in 1998 can outdraw one teaching a full class this term.
-     The scale also carries a minimum size so the smallest records stay visible, which
-     means the dots rank the record and do not compare areas: the largest is thousands of
-     times the smallest and is not drawn thousands of times its size. Seven institutions left the federal
-     directory before it carried coordinates in 2009 and sit at their city&rsquo;s
-     centroid, and each says so in its hover. <b>Leaving the directory is not closing.</b>
-     Three of those seven rows are confirmed closures, Akron Machining Institute in 2007
-     and Acme Institute of Technology&rsquo;s two Wisconsin campuses in 1995, which is two
-     institutions across three rows; Westlawn Institute of Marine Technology and the Red
-     Wing campus of Minnesota State College Southeast are both still operating; the
-     remaining two are unestablished. One institution sits outside the frame entirely,
-     <b>${Cap(offp.name)}</b> (${offp.city}, PR; ${N(offp.total_awards)} completions, last
-     in ${offp.last_year}; the university is open), because the standard AlbersUSA
-     projection carries no Puerto Rico inset; it is in the register at the foot of this
-     page with everything else. Alaska and Hawaii are drawn in their usual insets and are
-     empty because no polymer-coded institution has ever filed from either. IPEDS completions by six-digit program code, 1991&ndash;2023,
-     aggregated to institutions, joined to IPEDS directory coordinates.`;
+     with a floor so the smallest records stay visible, so the dots rank the record and do
+     not compare areas. <b>Leaving the federal directory is not closing</b>, and which of
+     the early leavers actually closed is set out with the register below. IPEDS
+     completions by six-digit program code, 1991&ndash;2023, aggregated to institutions,
+     joined to IPEDS directory coordinates.`;
   document.getElementById("mapnote").innerHTML =
     `<b>What the diamonds mean, and what this version leaves out.</b>
      UChicago&rsquo;s molecular engineering school, Dartmouth, Rutgers and Brown are
@@ -356,9 +344,30 @@ figures([
     : Cap(d.name);
   const record = d => d.navigator
     ? `<a href="${d.navigator}" target="_blank" rel="noopener">federal record</a>` : "&ndash;";
+  /* THE FORENSICS LIVE HERE, NOT UNDER THE MAP. Until 2026-09-01 the map's source line
+     carried all of this and ran to 257 words, roughly six times the house budget for
+     apparatus under one figure, which a scored rubric named the page's severity-5 defect.
+     None of it is deleted: it is beside the rows it is about, which is also where a reader
+     who wants to check an institution actually is. */
+  /* offp is declared in the map block above and is not in scope here. The first version
+     of this move referenced it anyway, the page threw "offp is not defined", and the
+     whole register lede — including the closure repair — silently rendered as nothing.
+     A gate would not have caught it; loading the page did. */
+  const offp = D.off_projection[0];
   document.getElementById("dirlede").innerHTML =
     `Every dot on the map is a row here, largest record first, and so is the one institution
-     the projection could not place. Sort any column; filter by institution, city or state.`;
+     the projection could not place. Sort any column; filter by institution, city or state.
+     <b>Seven institutions left the federal directory before it carried coordinates in 2009</b>
+     and sit at their city&rsquo;s centroid, each saying so in its hover. Three of those seven
+     rows are confirmed closures, Akron Machining Institute in 2007 and Acme Institute of
+     Technology&rsquo;s two Wisconsin campuses in 1995, which is two institutions across three
+     rows; Westlawn Institute of Marine Technology and the Red Wing campus of Minnesota State
+     College Southeast are both still operating; the remaining two are unestablished.
+     <b>${Cap(offp.name)}</b> (${offp.city}, PR; ${N(offp.total_awards)} completions, last in
+     ${offp.last_year}; the university is open) is the row the map cannot draw, because the
+     standard AlbersUSA projection carries no Puerto Rico inset. Alaska and Hawaii are drawn
+     in their usual insets and are empty because no polymer-coded institution has ever filed
+     from either.`;
   document.getElementById("maptable").innerHTML = tableView("map",
     "The full directory: every institution, largest record first",
     ["Institution", "City", "State", "Programs", "Levels", "Years", "Lifetime completions",
