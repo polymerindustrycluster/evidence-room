@@ -37,11 +37,19 @@ which is why this table exists rather than a green checkmark.
 Not in this repository and not in the internal tree. Searched with a control pattern that
 was required to match and did.
 
-`cluster-health/data/health.json` · `cluster-health/data/tide.json` ·
+`cluster-health/data/tide.json` ·
 `timeline/data/timeline.json` · `timeline/data/heritage.json` ·
 `sources/data/registry.json` · `wages/data/mfg.json` ·
 `federal-money/data/techhub.json` · `index/data/states.json` ·
 `accountability/data/*.json`
+
+**Corrected 2026-09-01.** `cluster-health/data/health.json` was on this list and does not
+belong on it: `cluster-health/derive_health.py` produces it, from the shipped data files of
+six sibling pages, and re-running it reproduces every block except the one the IPEDS mirror
+correction patches on afterwards. The list said the search used "a control pattern that was
+required to match and did", which is the right method and did not save it here. Rebuild that
+file with `python3 cluster-health/derive_health.py` followed by
+`python3 _data/build/mirror_fix_patch.py`; the deriver alone reverts the Talent tile.
 
 For these the committed JSON **is** the source of truth. Nothing regenerates it, so a
 defect in one cannot be fixed upstream and has to be edited in place. This is the standing

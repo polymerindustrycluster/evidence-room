@@ -1,8 +1,8 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-09-01 01:03",
-  "seconds": 2.1,
+  "generated": "2026-09-01 02:29",
+  "seconds": 2.0,
   "scripts": 50,
   "outputs_on_disk": 7,
   "outputs_claimed": 33,
@@ -199,7 +199,7 @@
    "observed_reads": [
     "collab.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/collab.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/collab.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -240,7 +240,7 @@
    "observed_reads": [
     "fed_awards.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/fed_awards.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/fed_awards.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -338,7 +338,7 @@
    "observed_reads": [
     "lodes.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/lodes.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/lodes.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -379,7 +379,7 @@
    "observed_reads": [
     "lodes.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/lodes.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/lodes.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -471,7 +471,7 @@
     "occmix.json",
     "oews.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/oews.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/oews.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -524,7 +524,7 @@
    "observed_reads": [
     "pic12_geo.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/pic12_geo.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/pic12_geo.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -565,7 +565,7 @@
    "observed_reads": [
     "peers.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/peers.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/peers.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -661,7 +661,7 @@
    "observed_reads": [
     "reach.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/reach.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/reach.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -710,7 +710,7 @@
    "observed_reads": [
     "peers.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/peers.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/peers.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -751,7 +751,7 @@
    "observed_reads": [
     "qwi.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/qwi.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/qwi.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -947,7 +947,7 @@
     "<outside-repo>/.env",
     "fred.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/fred.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/fred.json'",
    "registry_sources": [
     "fred"
    ],
@@ -1141,7 +1141,7 @@
     {
      "output": "qcew.json",
      "meta_fetched": null,
-     "file_mtime": "2026-08-31",
+     "file_mtime": "2026-09-01",
      "bytes": 342410,
      "row": null
     }
@@ -1208,7 +1208,7 @@
     {
      "output": "intl.json",
      "meta_fetched": "2026-08-30",
-     "file_mtime": "2026-08-30",
+     "file_mtime": "2026-09-01",
      "bytes": 3751,
      "row": "one (institution, year): degrees conferred, and how many went to students on visas."
     }
@@ -1276,7 +1276,7 @@
     {
      "output": "ipeds.json",
      "meta_fetched": "2026-08-14",
-     "file_mtime": "2026-08-30",
+     "file_mtime": "2026-09-01",
      "bytes": 500088,
      "row": "one (institution, year, CIP-6, award level) count of DEGREES CONFERRED. majornum=1 only, so a double-major is counted once. race=99/sex=99 total rows only, so demographic detail is not double counted."
     }
@@ -1347,14 +1347,14 @@
     {
      "output": "ipeds.json",
      "meta_fetched": "2026-08-14",
-     "file_mtime": "2026-08-30",
+     "file_mtime": "2026-09-01",
      "bytes": 500088,
      "row": "one (institution, year, CIP-6, award level) count of DEGREES CONFERRED. majornum=1 only, so a double-major is counted once. race=99/sex=99 total rows only, so demographic detail is not double counted."
     },
     {
      "output": "ipeds_cip.json",
      "meta_fetched": "2026-08-31",
-     "file_mtime": "2026-08-31",
+     "file_mtime": "2026-09-01",
      "bytes": 266640,
      "row": "one (year, institution or geography, CIP-6, award level) count of DEGREES CONFERRED, race=99 and sex=99 (totals). First major only from 2000; majornum is null before 2000 so no filter is possible there."
     }
@@ -1424,7 +1424,7 @@
     {
      "output": "ipeds.json",
      "meta_fetched": "2026-08-14",
-     "file_mtime": "2026-08-30",
+     "file_mtime": "2026-09-01",
      "bytes": 500088,
      "row": "one (institution, year, CIP-6, award level) count of DEGREES CONFERRED. majornum=1 only, so a double-major is counted once. race=99/sex=99 total rows only, so demographic detail is not double counted."
     }
@@ -1639,7 +1639,7 @@
     {
      "output": "lodes_peers.json",
      "meta_fetched": "2026-08-31",
-     "file_mtime": "2026-08-31",
+     "file_mtime": "2026-09-01",
      "bytes": 108039,
      "row": "one region: the share of jobs held by its residents that sit in their own county, and the share that sit anywhere inside the region."
     }
@@ -1799,7 +1799,7 @@
     {
      "output": "occmix.json",
      "meta_fetched": "2026-08-31",
-     "file_mtime": "2026-08-31",
+     "file_mtime": "2026-09-01",
      "bytes": 553531,
      "row": "one occupation employed in one industry, NATIONALLY"
     }
@@ -2306,7 +2306,7 @@
     {
      "output": "qcew.json",
      "meta_fetched": null,
-     "file_mtime": "2026-08-31",
+     "file_mtime": "2026-09-01",
      "bytes": 342410,
      "row": null
     }
@@ -2725,7 +2725,7 @@
   {
    "file": "lodes_flows_cache.json",
    "bytes": 1233269,
-   "mtime": "2026-08-31",
+   "mtime": "2026-09-01",
    "meta": null,
    "unreadable": null
   }
@@ -2734,7 +2734,7 @@
   "intl.json": {
    "file": "intl.json",
    "bytes": 3751,
-   "mtime": "2026-08-30",
+   "mtime": "2026-09-01",
    "meta": {
     "fetched": "2026-08-30",
     "row": "one (institution, year): degrees conferred, and how many went to students on visas.",
@@ -2745,7 +2745,7 @@
   "ipeds.json": {
    "file": "ipeds.json",
    "bytes": 500088,
-   "mtime": "2026-08-30",
+   "mtime": "2026-09-01",
    "meta": {
     "fetched": "2026-08-14",
     "row": "one (institution, year, CIP-6, award level) count of DEGREES CONFERRED. majornum=1 only, so a double-major is counted once. race=99/sex=99 total rows only, so demographic detail is not double counted.",
@@ -2756,7 +2756,7 @@
   "ipeds_cip.json": {
    "file": "ipeds_cip.json",
    "bytes": 266640,
-   "mtime": "2026-08-31",
+   "mtime": "2026-09-01",
    "meta": {
     "fetched": "2026-08-31",
     "row": "one (year, institution or geography, CIP-6, award level) count of DEGREES CONFERRED, race=99 and sex=99 (totals). First major only from 2000; majornum is null before 2000 so no filter is possible there.",
@@ -2768,14 +2768,14 @@
   "lodes_flows_cache.json": {
    "file": "lodes_flows_cache.json",
    "bytes": 1233269,
-   "mtime": "2026-08-31",
+   "mtime": "2026-09-01",
    "meta": null,
    "unreadable": null
   },
   "lodes_peers.json": {
    "file": "lodes_peers.json",
    "bytes": 108039,
-   "mtime": "2026-08-31",
+   "mtime": "2026-09-01",
    "meta": {
     "fetched": "2026-08-31",
     "row": "one region: the share of jobs held by its residents that sit in their own county, and the share that sit anywhere inside the region.",
@@ -2786,7 +2786,7 @@
   "occmix.json": {
    "file": "occmix.json",
    "bytes": 553531,
-   "mtime": "2026-08-31",
+   "mtime": "2026-09-01",
    "meta": {
     "fetched": "2026-08-31",
     "row": "one occupation employed in one industry, NATIONALLY",
@@ -2797,7 +2797,7 @@
   "qcew.json": {
    "file": "qcew.json",
    "bytes": 342410,
-   "mtime": "2026-08-31",
+   "mtime": "2026-09-01",
    "meta": null,
    "unreadable": null
   }

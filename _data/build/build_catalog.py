@@ -321,12 +321,21 @@ def _scrub(obj):
     row readable without publishing the author's machine layout.
     """
     pat = re.compile(r"""(?:[A-Za-z]:[\\/]|\\\\)[^"'<>|\n]{3,}""")
+    # THAT PATTERN IS WINDOWS-ONLY, so on macOS and Linux this "last line of defence"
+    # defended nothing. The catalog in the tree on 2026-09-01 carried an absolute POSIX
+    # path with the author's home-directory name in it, through the ImportError channel
+    # the docstring above names, into a file that ships in the public cut. The two
+    # prefixes that can leak are known here, so they are matched literally: guessing at
+    # path shapes would scrub the https:// URLs the registry rows are full of.
+    roots = {os.path.abspath(WEB), os.path.realpath(WEB), os.path.expanduser("~")}
+    posix = sorted((r for r in roots if r not in ("", "/")), key=len, reverse=True)
+    posix_pat = re.compile("(?:" + "|".join(re.escape(r) for r in posix) + r")[^\"'<>|\n]*")
 
     def fix(text):
         def one(m):
             tail = re.split(r"[\\/]", m.group(0).rstrip("\\/"))[-1]
             return "<path>/" + tail if tail else "<path>"
-        return pat.sub(one, text)
+        return posix_pat.sub(one, pat.sub(one, text))
 
     if isinstance(obj, str):
         return fix(obj)

@@ -126,9 +126,33 @@ data = {
                       "detail": "a sub-slice of a core code; never add it to its parent",
                       "context": "outside the register. 325 sweeps in pharma, ag chemicals, "
                                  "industrial gas and explosives: 60% of its own figure."},
-        "composite_note": ("The composite is summed from counties and is OURS, not BLS's. "
-                           "Suppressed counties are counted in counties_suppressed and excluded "
-                           "from the sum, so the composite is a floor."),
+        # THE DIRECTION OF THE SUPPRESSION BIAS, WHICH THIS FILE HAD BACKWARDS TWICE.
+        # It first said "the composite is a floor" of everything, which is right about the
+        # summed counts and says nothing about the ratio. The page then carried a rewrite
+        # saying a withheld county "leaves the numerator and the denominator together", so
+        # the ratio read "more plausibly as a ceiling". Both are wrong about this
+        # arithmetic. `tot` below is own_code 0 for every county in COUNTIES, and BLS does
+        # not withhold a county's total employment; only the industry cell goes. So a
+        # withheld county leaves the NUMERATOR and stays in the DENOMINATOR, and the ratio
+        # is a floor that sags as disclosure thins. Checked, not argued: restricting the
+        # denominator to the counties that report raises the ratio in every one of the
+        # eleven years, for paint and for resin alike.
+        "composite_note": ("The region-wide figures on this page are summed from counties and are "
+                           "OURS, not BLS’s: the bureau publishes no location quotient for a custom "
+                           "geography. When a county is withheld for an industry it leaves the "
+                           "NUMERATOR only. The denominator is that county’s total employment across "
+                           "all owners, which the bureau does not withhold, so all twelve counties "
+                           "stay in it whatever happens to the industry cell. Both kinds of number "
+                           "here are therefore floors. The job and site counts are floors because the "
+                           "withheld counties’ jobs are simply missing from the total. The ratio is a "
+                           "floor that sags: it divides the jobs of the counties that report by the "
+                           "workforce of all twelve, so a county leaving the disclosed set pushes it "
+                           "down with no employer changing what it does. Paint’s apparent fall in "
+                           "2025, from 6.40 times the national share to 5.96, is that effect and not "
+                           "a change in the economy. It is why the page also draws a fixed "
+                           "five-county line: holding the county set still is the only basis on which "
+                           "a movement in this ratio is a movement in the region, and on that basis "
+                           "paint rose to an eleven-year high in the same year."),
         "fetched": "2026-08-14",
         "footprint": META[FOOTPRINT],
     },
