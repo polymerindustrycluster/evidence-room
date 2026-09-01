@@ -23,7 +23,7 @@
     <p class="eyebrow">A replication guide for other regions</p>
     <h1>You can rebuild this for your own region. <em>The codes are the hard part</em>,
       and they are all on this page.</h1>
-    <p class="stand"><b id="nrecipes">Worked questions</b> run the whole way here, from
+    <p class="stand"><b id="nrecipes">Five worked questions</b> run the whole way here, from
       the endpoint, the web address the data comes from, to the reading, the number you
       end up printing. They use only the public federal data behind every page on this
       site. The first one needs a browser, a spreadsheet and two file downloads: no key, no
@@ -103,6 +103,9 @@
           bureau&rsquo;s own finished location quotient, on its own basis, and step six
           is about why the two differ.</p>
         <p><b>The aggregation level is the county filter, and it is not the state one.</b>
+          In plain words: these are the bureau&rsquo;s own ownership and aggregation codes,
+          and each one says what a row is a total <em>of</em>, whether a whole county, one
+          kind of employer, or one width of industry code.
           Every row carries an <b class="code">agglvl_code</b> saying which rung of the
           geography-by-industry ladder it sits on, and the rungs are numbered separately
           per geography. In a county file, <b class="code">70</b> is the county total
@@ -152,27 +155,51 @@
           ownership constant across all four numbers, and this page taught that rule until
           2026-08-29. It is a coherent measure and it is not the one the bureau publishes.
           Held constant at private, the worked cell below comes out
-          <b id="samebasis">lower</b>. BLS divides private industry employment by
+          <b id="samebasis">3.12 rather than 3.27, 4.5% lower</b>. BLS divides private
+          industry employment by
           all-ownership totals, and the number every published location quotient on this
           site sits on is that one. Do not quietly switch the rule to whichever produces
           your figure: pick the bureau&rsquo;s if you want to be comparable to anybody
           else&rsquo;s, and say which you used either way.</p>
-        <p id="lqarith">The worked cell, with all six numbers.</p>
+        <p id="lqarith">
+          <b>The worked cell, both ways.</b> Summit County, 326, 2025. BLS&rsquo;s basis is
+          (3,824 &divide; 259,944) &divide; (700,170 &divide; 155,685,781) = <b>3.271</b>,
+          which rounds to the 3.27 the file prints and this page publishes. Holding
+          ownership at private throughout instead gives (3,824 &divide; 232,800) &divide;
+          (700,170 &divide; 133,117,983) = <b>3.123</b>. Same four files, same codes,
+          different measure. Read on 2026-08-29: local: own_code 5 industry 326 agglvl 75;
+          own_code 0 industry 10 agglvl 70; own_code 5 industry 10 agglvl 71. national
+          (US000): own_code 5 industry 326 agglvl 15; own_code 0 industry 10 agglvl 10;
+          own_code 5 industry 10 agglvl 11.</p>
         <p><b>The file proves its own denominator, and this is the check to run first.</b>
           Those area files carry a location-quotient column of their own,
           <b class="code">lq_annual_avg_emplvl</b>. Look at the rows for industry
           <b class="code">10</b> at each <b class="code">own_code</b>: on a
           same-ownership basis each of those would be exactly 1.00, because it would be
-          dividing a total by itself. <span id="ownlq">They are not.</span> That is the
-          bureau telling you, in its own file, what its denominator is.</p>
-        <p id="lqprov">Where the number on this page comes from.</p>
+          dividing a total by itself. <span id="ownlq">In this file they read 1.05 for
+          private, 0.88 for local government, 0.44 for state and 0.39 for federal.</span>
+          That is the bureau telling you, in its own file, what its denominator is.</p>
+        <p id="lqprov">
+          <b>Which of the two this page prints, and how that was settled.</b> The 3.27 above
+          is BLS&rsquo;s own <span class="mono">lq_annual_avg_emplvl</span> column, carried
+          through this site&rsquo;s pay page unchanged. That is not an assumption: the
+          concentration page computes its own value from components and ships BLS&rsquo;s
+          beside it, the two round apart on 2 of 601 cells, and the printed figure follows
+          the bureau&rsquo;s on 601 of 601 and ours on 599. Our independent recomputation of
+          this cell is 3.271, 0.00102 away, and across 667 checked cells the two never
+          differ by more than 0.004997, which is half of the last digit the bureau prints.
+          So: the number is the bureau&rsquo;s, we can reproduce it, and it is on the
+          bureau&rsquo;s mixed-ownership basis rather than the same-basis rule this page
+          used to teach.</p>
       </li>
       <li>
         <h3>Read it against 1.0, and only against 1.0</h3>
         <p>A reading of 1.0 means the industry fills exactly the same share of local jobs
           as it does of the country&rsquo;s. Above 1.0 the region is more concentrated
           than the country, below it, less. This site&rsquo;s worked case, drawn at the
-          top of this page: <b id="lqworked">the largest county reading</b>. The measure
+          top of this page: <b id="lqworked">Summit County, Ohio, which is area
+          <b class="code">39153</b> in that endpoint, reads <b>3.27</b> for plastics and
+          rubber, NAICS 326, in 2025, on 3,824 jobs</b>. The measure
           is a share of a share, so it has no unit and cannot be added, averaged across
           geographies, or compared between two different industry definitions.</p>
       </li>
@@ -215,7 +242,19 @@
           regional ratio down, not up. Report the ratio with the count of counties inside
           it, every time, and say the direction is unknown rather than guessing it, because
           that set moves between years.</p>
-        <p class="body" id="footprint">The footprint this site uses.</p>
+        <p class="body" id="footprint">
+          <b>The footprint behind every regional figure on this site is PIC-12</b>, and
+          these are the twelve counties, named because a reader replicating this needs the
+          set and not its size, each with the five-digit FIPS code the filter actually
+          takes: Ashtabula <b class="code">39007</b>, Cuyahoga <b class="code">39035</b>,
+          Geauga <b class="code">39055</b>, Lake <b class="code">39085</b>, Lorain
+          <b class="code">39093</b>, Mahoning <b class="code">39099</b>, Medina
+          <b class="code">39103</b>, Portage <b class="code">39133</b>, Stark
+          <b class="code">39151</b>, Summit <b class="code">39153</b>, Trumbull
+          <b class="code">39155</b>, Wayne <b class="code">39169</b>. A wider
+          fourteen-county definition is also in use in this project, and every page here
+          stamps which footprint it was built on in a banner, because two pages on two
+          footprints reconcile with nothing.</p>
       </li>
       <li>
         <h3>What it lands on here</h3>
@@ -270,7 +309,12 @@
           average job in the same county and you are asking whether the industry pays
           above its own town. Those two can point opposite ways at once, and here they
           do.</p>
-        <p class="body" id="paydenoms">The two measures this site publishes.</p>
+        <p class="body" id="paydenoms">
+          This site publishes both, for every cell. Against the same industry nationally,
+          <b>44 of the 51</b> published cells pay less than the industry pays elsewhere, a
+          middle cell of <b>0.88&times;</b>. Against the average job in the same county,
+          <b>40 of the 51</b> pay more. The same cells, the same year, opposite verdicts,
+          and both are true.</p>
         <p>Neither is the right one. They are different questions, and a page that prints
           one while its headline asks the other is the most common way this recipe goes
           wrong before the arithmetic even starts.</p>
@@ -281,17 +325,39 @@
           publish, and you want one number. You take the median. The question nobody asks
           out loud is what that median runs over, and there are at least three answers
           sitting in the same table.</p>
-        <p class="body" id="payunits">The three units, and what each one is a middle
-          of.</p>
-        <p class="formula" id="paymath">The two medians.</p>
-        <p class="body" id="paycover">What the job figure is a median of.</p>
+        <p class="body" id="payunits">
+          The table holds 51 published cells out of 72 possible, six industry codes across
+          twelve counties. Take the middle of those 51 and the unit is a <b>cell</b>.
+          <b>Count each county once and the unit is a county-industry.</b> The rule is to
+          keep the finest detail published for that county and drop the family above it:
+          where a county publishes 3252 or 3255, drop its 325 row; where it publishes 3261
+          or 3262, drop its 326. That leaves <b>35</b> rows, of which 27 pay above their
+          county. <b>Weight by employment and the unit is a job</b>, but only a coarser set
+          can carry that: the two industry groups taken once per county, 33,528 jobs, 29,080
+          of them in a group that out-pays its county.</p>
+        <p class="formula" id="paymath">
+          middle of 51 cells = 1.21&times; &nbsp;&middot;&nbsp; middle of 33,528 jobs =
+          1.26&times;</p>
+        <p class="body" id="paycover">
+          <b>Read the job figure with its boundary attached.</b> The only complete
+          non-overlapping set the published data offer is NAICS 325 and 326 taken once per
+          county, so that is what a job weighting can run over at all. It is wider than this
+          site&rsquo;s own measurement register of 3252, 3255, 326, which covers 24,030
+          jobs: <b>15,758</b> of the 33,528 weighted jobs, about 47 percent, are chemistry
+          the register calls context rather than cluster. The finer set cannot be weighted
+          because it is not published for every county. That is a real limit, not a rounding
+          note, and it is the reason the cell median stays the headline.</p>
         <p><b>The list median is the easy one to compute and the easy one to describe
           wrongly.</b> Sorting the cells and taking the middle one gives you the middle
           <em>cell</em>. Writing &ldquo;the typical job pays&rdquo; over it claims the middle
           <em>job</em>, which is a different statistic whenever the big cells sit to one
           side of the small ones. They usually do, because employment is concentrated and
           concentration is not symmetric.</p>
-        <p class="body" id="paydrag">Which cell does the pulling here.</p>
+        <p class="body" id="paydrag">
+          The heaviest cell sitting below the cell median is <b>Summit County plastics and
+          rubber products</b> at 1.01&times; on 3,824 jobs, the same cell the first recipe
+          worked. One cell in 51 by the list count, and 11 percent of the jobs by the other.
+          That is the gap between the two statistics, in one row.</p>
         <p class="warn"><b>This site published the wrong sentence over the right
           number.</b> The pay page read &ldquo;the typical polymer job pays 1.2 times what
           the average job in its county pays&rdquo; while the figure under it was a median over
@@ -302,8 +368,13 @@
       </li>
       <li>
         <h3>What it lands on here</h3>
-        <p class="body" id="paylands">What the two denominators say about this
-          region.</p>
+        <p class="body" id="paylands">
+          In 2025, across twelve counties: the middle cell pays <b>1.21&times;</b> what the
+          average job in its county pays, the middle job <b>1.26&times;</b>. Against the
+          same industries nationally the region pays <b>0.88&times;</b>, a discount rather
+          than a premium. It is a good industry to hold a job in relative to this region,
+          and this region is a cheap place to hire for it, and those are the same finding
+          read from two sides.</p>
         <p>Publish the unit in the sentence, not in a methodology note. If you can only
           print one figure, print the one that does not flatter you, and say which it is.
           Here the job-weighted figure is the higher of the two, which is exactly why the
@@ -347,7 +418,9 @@
       </li>
       <li>
         <h3>Know what one row is before you sum it</h3>
-        <p class="body" id="shedrow">What a row counts.</p>
+        <p class="body" id="shedrow">
+          one (home county, work county) count of JOBS, not people and not commuters. A
+          two-job worker appears twice.</p>
         <p><b>A job is not a person and a home is not a journey.</b> Somebody holding two
           jobs is two rows. The home end is an address on file, not evidence that anyone
           travelled: a fully remote worker who lives three states away and a worker who
@@ -361,9 +434,15 @@
           your own state. Add <b class="code">aux</b> and you have counted jobs held by
           residents of anywhere. Both are defensible; they answer different questions, and
           they differ by more than a rounding.</p>
-        <p class="body" id="shedbases">The two totals for this site&rsquo;s own
-          footprint.</p>
-        <p class="formula" id="shedidentity">The identity.</p>
+        <p class="body" id="shedbases">
+          In 2022, this site&rsquo;s twelve counties held <b>1,735,169</b> jobs counting a
+          worker resident in any state, and <b>1,702,542</b> counting Ohio residents only.
+          The two are <b>32,627</b> apart. Both were published here as the same footprint
+          before anyone noticed they were two different measures.</p>
+        <p class="formula" id="shedidentity">
+          1,524,279 held from inside &nbsp;+&nbsp; 178,263 from elsewhere in Ohio
+          &nbsp;=&nbsp; 1,702,542<br> 1,524,279 held from inside &nbsp;+&nbsp; 210,890 from
+          anywhere &nbsp;=&nbsp; 1,735,169</p>
         <p>Notice what those two sums say: the jobs held from inside the region are the
           <em>same number</em> on both bases. Every bit of the difference sits in the
           imported half. So the two totals are not rival estimates of one quantity, and
@@ -372,7 +451,15 @@
       </li>
       <li>
         <h3>Read the outside half, and do not over-read it</h3>
-        <p class="body" id="shedoutside">Where the imported jobs come from.</p>
+        <p class="body" id="shedoutside">
+          210,890 jobs are held from outside the twelve counties, which is 12.2 percent of
+          everything worked here. Of those, 208,338 fall into three groups: 57,302 from
+          counties next door, 61,708 from metropolitan areas hours away, and <b>89,328</b>
+          from counties scattered too thinly to group, which is the largest of the three at
+          42.9 percent and the least examined. <b>The other 2,552 are not in the grouping at
+          all.</b> That is 1.2 percent, small enough to round away and worth not rounding
+          away: three numbers printed under a fourth read as a partition of it, and these
+          are not one.</p>
         <p><b>Adjacent against distant is your judgment, not a published field.</b> The
           file gives you a home county code and nothing else. Any grouping into
           neighbouring and far-away is a line you drew, so draw it explicitly, print the
@@ -414,7 +501,12 @@
           urban consumers, annual averages, published free and without a key. Divide every
           figure by the index for its own year, then multiply by the index for the year
           you want to express everything in. Pick that base year once and print it.</p>
-        <p class="body" id="cpitable">The table this site uses.</p>
+        <p class="body" id="cpitable">
+          CPI-U, all items, U.S. city average, annual averages, 2019 to 2025, on a base of
+          2019. The index moved from <b>255.657</b> to <b>322.132</b>, so general prices
+          rose <b>26 percent</b> across the window and a 2025 dollar buys what 79 cents
+          bought in 2019. The divisor for any year is that year&rsquo;s index over
+          2019&rsquo;s: 2019 is 1, 2022 is 1.1447, 2025 is 1.26.</p>
         <p class="warn"><b>The index runs out before your data does.</b> Annual averages
           exist only for completed years, so a figure from the current year has no
           deflator of its own and has to borrow the last published one. That understates
@@ -423,7 +515,15 @@
       </li>
       <li>
         <h3>Now look at what moved</h3>
-        <p class="body" id="deflated">What changes on this site&rsquo;s own price page.</p>
+        <p class="body" id="deflated">
+          <b>Finished plastics and rubber prices.</b> Up to <b>139.8</b> in cash against a
+          2019 base of 100, which is the rise of about forty percent that page reported.
+          Deflated, <b>110.9</b>: a real rise of about 11 percent, not forty. And the
+          dearest month is not the same month. In cash it is <b>July 2026</b>; in real terms
+          it was <b>August 2022</b>, nearly four years earlier. <b>Resin</b> makes the
+          sharper case: <b>125.4</b> in cash still reads as a lasting increase, and at
+          <b>99.6</b> deflated it has given back the entire rise and sits essentially back
+          at its 2019 level.</p>
         <p><b>The peak is the one that catches people.</b> A series at a record high in
           cash can have peaked years earlier in real terms, and a page that says
           &ldquo;record high&rdquo; without a basis has told a reader something that is
@@ -437,7 +537,14 @@
           with a smaller number, or it reverses. Print which. A finding that holds on both
           bases is worth more than one that holds on the one you happened to pick, and you
           only know which you have if you check.</p>
-        <p class="body" id="deflordering">What survived here.</p>
+        <p class="body" id="deflordering">
+          That page&rsquo;s central finding is an ORDERING, that the cost spike was given
+          back at the wellhead, partly at resin, and not at all in finished products. Re-run
+          on the deflated series the ordering holds, because every link faces the same
+          general inflation. So the page may stay nominal and says that it rechecked. Its
+          <em>magnitudes</em> did not survive: forty percent became 11, and a record high
+          became a four-year-old peak. Both outcomes in one page, which is why the check is
+          worth running rather than reasoning about.</p>
       </li>
     </ol>
   </div>
@@ -466,7 +573,12 @@
       </li>
       <li>
         <h3>Decide which years you are allowed to compare</h3>
-        <p class="body" id="fedyears">What the years look like here.</p>
+        <p class="body" id="fedyears">
+          This site pulls fiscal 2019 to 2026, eight years, of which <b>seven are
+          finished</b>. Across the finished years the region&rsquo;s polymer manufacturers
+          were obligated <b>$225.8M</b>. Adding the part-year brings it to $248.8M, and that
+          larger number is the more misleading of the two, because $23.0M of it is however
+          much of 2026 had elapsed when the file was read.</p>
         <p><b>The current fiscal year is not a year.</b> It is however much of a year has
           elapsed, and putting it in a bar chart beside completed years draws a collapse
           that has not happened. Either exclude it or label it, and say which you did.</p>
@@ -476,14 +588,26 @@
       </li>
       <li>
         <h3>An obligation is not an outlay, and a place is not an observation</h3>
-        <p class="body" id="fedcaution">What the two fields actually mean.</p>
+        <p class="body" id="fedcaution">
+          Place of performance is a reported field on the award, not an observation of where
+          the work happened. A centrally administered contract, or a prime performing
+          through a subaward, can put the code somewhere other than the activity. An
+          obligation is not an outlay.</p>
         <p>An obligation is money a signed award commits the government to pay. An outlay
           is money that has actually left the Treasury. The totals this recipe returns are
           obligations, so they say what was committed and never what has been paid.</p>
       </li>
       <li>
         <h3>Now name what your filter cannot see</h3>
-        <p class="body" id="fedblind">The awards this cut is blind to.</p>
+        <p class="body" id="fedblind">
+          University and research awards are invisible to the NAICS view by construction: it
+          filters to 325*/326* manufacturing codes, and a university files under 61xxxx or
+          5417xx. The NSF NEO-SMART Engine ($14,999,983) and TARDISS do not appear in the
+          NAICS rows. The all-industry county rows do capture them. This cut sees <b>eight
+          industry codes</b>, led by all other rubber product manufacturing at $87.6M, tire
+          manufacturing (except retreading) at $77.8M, paint and coating manufacturing at
+          $23.5M. Everything else in the region&rsquo;s federal money is outside the frame
+          by construction, and the total does not know that.</p>
         <p><b>This is the step people skip, and it is the reason to run this recipe at
           all.</b> An industry filter returns a number, and the number is correct for what
           it counted. Nothing in the output says a whole class of award was never
@@ -515,7 +639,11 @@
           Most announcements quote a dollar figure and omit it, which is the point at which
           a number stops being checkable and becomes a claim. If a page you are reading
           gives a federal figure and no identifier, that is a finding about the page.</p>
-        <p class="body" id="edanote">The awards behind this region&rsquo;s Tech Hub.</p>
+        <p class="body" id="edanote">
+          The EDA Sustainable Polymers Tech Hub is seven implementation awards from the U.S.
+          Economic Development Administration, $51,001,413 between them. Each carries its
+          own identifier, and the seven amounts add to the total, so a reader can check the
+          addition as well as the parts.</p>
         <div id="edalist"></div>
         <p class="warn"><b>The fiscal year in an identifier is the year of the award
           action, not the year of the programme.</b> Two of the seven above carry
@@ -558,7 +686,12 @@
         <p>An award record carries several dollar figures and an announcement will quote
           whichever is largest. They mean different things and only one of them is money
           that has actually moved.</p>
-        <p class="body" id="nsfnums">The worked award, with all three.</p>
+        <p class="body" id="nsfnums">
+          NSF award <b class="code">2532460</b>, made 13 July 2026, runs 2026 to 2036. Its
+          record gives an estimated total of <b>$14,999,983</b> and <b>$7,499,984</b>
+          obligated FY2026, which is 50 percent of it. The programme it sits in is publicly
+          described with a much larger ten-year ceiling contingent on renewals, and no
+          source ties that ceiling to this award.</p>
         <p><b>Obligated</b> is money legally committed, and it is the only one with a
           number behind it today. <b>Estimated total</b> is what the award is expected to
           reach across its full period if every year is funded. A <b>programme ceiling</b>
@@ -568,7 +701,10 @@
       </li>
       <li>
         <h3>The one this site got wrong</h3>
-        <p class="body" id="awarderr">What we printed, and what the record says.</p>
+        <p class="body" id="awarderr">
+          <b>This site printed $160M for that award.</b> The record says $14,999,983. We
+          overstated a federal award by a factor of <b>10.7</b>, on a site whose premise is
+          that its numbers can be checked, and it stood until 29 August 2026.</p>
         <p>It was in a hand-typed event title, taken from a description rather than a
           record, and it sat on this site until a reader put two of our own pages side by
           side and found the same award carrying two figures an order of magnitude apart.
@@ -614,7 +750,12 @@
     <p class="lede">One idea, and you do not need our tooling to use it. It is here because
       it is the cheapest thing on this page to adopt and the only one that keeps working
       after the person who built the analysis has moved on.</p>
-    <p class="body" id="checkidea">What the harness does.</p>
+    <p class="body" id="checkidea">
+      Across seventeen pages this site carries <b>443</b> of them. 428 are re-run against
+      the source data every time the site is built, so a figure that stopped being true
+      breaks the build before anybody reads it. The other 15 rest on a person having read a
+      document correctly, which is why they are labelled and are the place to attack first.
+      This page alone carries 32.</p>
     <p class="body"><b>The discipline, not the code.</b> Write the sentence you intend to publish. Then,
       beside it, write the condition under which it would be false, as an expression over
       the data rather than as a note to yourself: not &ldquo;check this later&rdquo; but
@@ -622,7 +763,13 @@
       wrong if these three counts stop summing to that one&rdquo;. Re-run them whenever
       the data changes. A spreadsheet column of TRUE and FALSE does the job; the mechanism
       does not matter and the habit does.</p>
-    <p class="body" id="checkcaught">What it has actually caught here.</p>
+    <p class="body" id="checkcaught">
+      On this page, in one week: a recipe that printed three aggregation codes returning
+      nothing from the file it told you to download; a median described over the wrong unit;
+      three published figures asserted to sum to a fourth that they miss by 2,552; and a
+      source credited on a page that never used it, which had quietly made one dataset look
+      more central than it is. The first three were caught by a condition written next to
+      the sentence. The last was caught by a person reading the page.</p>
     <p class="warn"><b>It does not make a page right.</b> A check is only as good as the
       question it asks, and the failures on this site that hurt most were the ones no check
       was looking for: a filter that was valid for a different geography, a source credited
@@ -710,7 +857,11 @@
       <b>adjacent</b>: they feed the same employers and they are not the same thing. The
       site keeps the two lists separately rather than merging them, which means the
       judgement is inspectable instead of baked in.</p>
-    <p class="body" id="cipmath">The consequence is a number.</p>
+    <p class="body" id="cipmath">
+      Counting only the three core codes, the region&rsquo;s universities awarded
+      <b>1,231</b> degrees between 2014 and 2023, across eight programmes. Count the
+      adjacent codes too and it is <b>1,490</b> across thirteen: a pipeline 21% larger, from
+      the same institutions in the same years, because a line moved.</p>
     <p class="body">Neither answer is wrong. Publishing one without saying which line was
       drawn is.</p>
 
@@ -788,10 +939,15 @@
       file per industry across every area in the country, and that file is where these
       rates come from:</p>
     <pre class="endpoint">https://data.bls.gov/cew/data/api/{year}/a/industry/{naics}.csv</pre>
-    <p class="body" id="hidehow">Take <b class="code">own_code</b> 5, which is private
-      ownership, and count the rows whose <b class="code">disclosure_code</b> is
-      <b class="code">N</b>, the letter the bureau prints where it has withheld a cell. County rows are
-      <b class="code">agglvl_code</b> 75, metropolitan rows 45 and state rows 55.</p>
+    <p class="body" id="hidehow">
+      Take <b class="code">own_code</b> 5, which is private ownership, and count the rows
+      whose <b class="code">disclosure_code</b> is <b class="code">N</b>, the letter the
+      bureau prints where it has withheld a cell. County rows are
+      <b class="code">agglvl_code</b> 75, metropolitan rows 45 and state rows 55. The
+      figures drawn here are the <b>2024</b> annual file, and the year is load-bearing: the
+      2025 file gives 724 disclosed counties of 1,839 and carries no metropolitan rows at
+      all yet, read 2026-08-29. A reader who pulls the newest year and compares it to this
+      chart is looking at a different vintage, not at a disagreement.</p>
     <div class="chart reflow"><svg id="hide" role="img" aria-labelledby="hide-t">
       <title id="hide-t">Chart showing that all 51 state geographies disclose their
         plastics and rubber employment, while 155 of 382 metropolitan areas and 703 of
@@ -821,8 +977,12 @@
       day it was pulled, which is why every page here stamps a date in its masthead. If you
       re-run one of these recipes and land a little away from us, the first thing to check
       is not the arithmetic.</p>
-    <p class="body" id="vintagemath">How far these series move after publication has been
-      measured here.</p>
+    <p class="body" id="vintagemath">
+      This site measured it, on three producer-price series it publishes: <b>259 of the 273
+      published months</b> were changed after they were first printed, by a typical
+      <b>0.15%</b>. The largest single revision on record there was 1.41%. Small, and not
+      nothing: it is enough to move a figure quoted to one decimal place, and it is why a
+      number here is a number as of a date rather than a number.</p>
     <p class="body">So: stamp your own pull date on your own output, keep the raw file you
       pulled, and when you compare against somebody else&rsquo;s figure, compare the
       vintages before you compare the numbers. A difference of a fraction of a percent
@@ -878,7 +1038,11 @@
   <div class="wrap">
     <p>The URL is the cheap half. The codes, the ownership filter and the suppression rule
       are the part that took weeks, and they are the part worth giving away.</p>
-    <p class="sub" id="closersub"></p>
+    <p class="sub" id="closersub">
+      Every filter on this page is the value the fetch scripts actually apply, extracted
+      from them rather than written from memory, and 76 of them are published here. Two of
+      the fifteen sources cannot be fetched by anybody, which is said here rather than left
+      for you to discover.</p>
   </div>
 </section>
 

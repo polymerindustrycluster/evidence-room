@@ -14,6 +14,21 @@
  * Each printed code is pinned by a claim asserting it still appears in the registry's own
  * filter values, so the teaching cannot drift from the pull it describes.
  *
+ * AND SINCE 2026-09-01, SO IS EVERY SENTENCE OF THE RECIPES. This file used to inject
+ * twenty-three body paragraphs, plus eight inline runs of the same prose, from the
+ * registry at runtime. With scripting off the page was a list of contentless captions:
+ * "The worked cell, with all six numbers", "What a row counts", "The footprint this site
+ * uses", and a location-quotient step that named neither the formula's terms nor the
+ * numbers it worked. Three cold readers hit the same wall. On a page whose entire promise
+ * is that a stranger can follow it, prose that exists only after JavaScript runs is prose
+ * that is not published. Those sentences are now text in index.html, numbers written out,
+ * and every printed literal is pinned by an assertion in claims.json, which is the guard
+ * every other page here already uses for a number in a sentence: a refetch that moves a
+ * figure now fails the claims gate instead of silently re-rendering a paragraph nobody
+ * re-read. WHAT STAYS HERE: the charts, the generated tables, the register, the gaps and
+ * the localisation list, which are machine inventories a person should never retype, and
+ * countRecipes(), which counts the recipe sections rather than asserting a number.
+ *
  * EVERY CHART IS DRAWN INTO A VIEWBOX MEASURED FROM ITS OWN CONTAINER, so the render
  * scale is exactly 1 and a 14-unit label is 14 real pixels at every width. The house
  * default is a fixed-unit viewBox that pans sideways below 1100px; that hides the
@@ -426,26 +441,6 @@ function drawTax() {
               .join("")}
            ${C.cip.adjacent.map(c => `<dt>${c.code}</dt><dd>${c.name} &middot; adjacent</dd>`)
               .join("")}</dl></details>`);
-  document.getElementById("cipmath").innerHTML =
-    `Counting only the ${word(C.cip.n_core)} core codes, the region&rsquo;s universities
-     awarded <b>${N(C.cip.degrees_core)}</b> degrees between ${C.cip.first_year} and
-     ${C.cip.last_year}, across ${word(C.cip.programmes_core)} programmes. Count the
-     adjacent codes too and it is <b>${N(C.cip.degrees_both)}</b> across
-     ${word(C.cip.programmes_core + C.cip.programmes_adjacent)}: a pipeline
-     ${C.cip.lift_pct}% larger, from the same institutions in the same years, because a
-     line moved.`;
-}
-
-/* ------------------------------------------------------------------- vintage */
-function drawVintage() {
-  const V = D.vintage;
-  document.getElementById("vintagemath").innerHTML =
-    `This site measured it, on ${word(V.n_series)} producer-price series it publishes:
-     <b>${V.n_revised} of the ${V.n_published} published months</b> were changed after
-     they were first printed, by a typical <b>${V.median_pct}%</b>. The largest single
-     revision on record there was ${V.max_pct}%. Small, and not nothing: it is enough to
-     move a figure quoted to one decimal place, and it is why a number here is a number as
-     of a date rather than a number.`;
 }
 
 /* --------------------------------------------------------------- the register */
@@ -505,254 +500,11 @@ function drawRegistry() {
   }).join("");
 }
 
-/* ------------------------------------------------ the recipe's own worked arithmetic */
-/* THE ONE THING THIS PAGE EXISTS TO MAKE POSSIBLE is a reader landing on the number it
-   publishes. It failed that test: the rule it stated produced 3.123 against a published
-   3.27, because the stated rule held ownership constant and the bureau's does not. Both
-   arithmetics are printed here from the same six components, so the gap is explained
-   rather than discovered. */
-function drawRecipe() {
-  const B = D.lq.basis, P = D.lq.provenance, S = B.self_check, F = D.footprint;
-  document.getElementById("samebasis").innerHTML =
-    `<b>${B.same_basis_2dp}</b> rather than <b>${B.bls_basis_2dp}</b>,
-     ${Math.abs(B.gap_pct)}% lower`;
-
-  document.getElementById("lqarith").innerHTML =
-    `<b>The worked cell, both ways.</b> ${B.county} County, ${B.naics}, ${B.year}.
-     BLS&rsquo;s basis is (${N(B.local_industry_private)} &divide;
-     ${N(B.local_all_industry_all_ownerships)}) &divide; (${N(B.national_industry_private)}
-     &divide; ${N(B.national_all_industry_all_ownerships)}) =
-     <b>${B.bls_basis}</b>, which rounds to the ${B.bls_published} the file prints and this
-     page publishes. Holding ownership at private throughout instead gives
-     (${N(B.local_industry_private)} &divide; ${N(B.local_all_industry_private)}) &divide;
-     (${N(B.national_industry_private)} &divide; ${N(B.national_all_industry_private)}) =
-     <b>${B.same_basis}</b>. Same four files, same codes, different measure. Read on
-     ${B.read_on}: ${B.rows}`;
-
-  document.getElementById("ownlq").innerHTML =
-    `In this file they read ${S.own_5_private_lq} for private,
-     ${S.own_3_local_government_lq} for local government,
-     ${S.own_2_state_government_lq} for state and ${S.own_1_federal_lq} for federal.`;
-
-  document.getElementById("lqprov").innerHTML =
-    `<b>Which of the two this page prints, and how that was settled.</b> The
-     ${B.bls_published} above is BLS&rsquo;s own <span class="mono">lq_annual_avg_emplvl</span>
-     column, carried through this site&rsquo;s pay page unchanged. That is not an
-     assumption: the concentration page computes its own value from components and ships
-     BLS&rsquo;s beside it, the two round apart on
-     ${P.separating_cells} of ${N(P.cells_compared)} cells, and the printed figure follows
-     the bureau&rsquo;s on ${N(P.match_bls_column)} of ${N(P.cells_compared)} and ours on
-     ${N(P.match_our_recomputation)}. Our independent recomputation of this cell is
-     ${P.our_value_full}, ${Math.abs(P.residual)} away, and across
-     ${N(P.verification.cells_checked)} checked cells the two never differ by more than
-     ${P.verification.max_abs_residual}, which is half of the last digit the bureau prints.
-     So: the number is the bureau&rsquo;s, we can reproduce it, and it is on the bureau&rsquo;s
-     mixed-ownership basis rather than the same-basis rule this page used to teach.`;
-
-  document.getElementById("footprint").innerHTML =
-    `<b>The footprint behind every regional figure on this site is ${F.label}</b>, and
-     these are the ${word(F.n)} counties, named because a reader replicating this needs the
-     set and not its size, each with the five-digit FIPS code the filter actually takes:
-     ${F.counties.map(c => `${c.name} <b class="code">${c.fips}</b>`).join(", ")}. A wider
-     fourteen-county definition is
-     also in use in this project, and every page here stamps which footprint it was built
-     on in a banner, because two pages on two footprints reconcile with nothing.`;
-
-  const V = D.suppression_vintage;
-  document.getElementById("hidehow").insertAdjacentHTML("beforeend",
-    ` The figures drawn here are the <b>${V.published_year}</b> annual file, and the year
-      is load-bearing: the ${V.comparison_year} file gives ${N(V.comparison_county_disclosed)}
-      disclosed counties of ${N(V.comparison_county_total)} and carries no metropolitan
-      rows at all yet, read ${V.comparison_read_on}. A reader who pulls the newest year and
-      compares it to this chart is looking at a different vintage, not at a disagreement.`);
-}
-
-/* ------------------------------------------------------- recipe 2, the pay premium */
-/* THE UNIT OF THE MEDIAN, which is the whole reason this recipe exists. Every figure
-   is read from the pay page's own shipped file by derive_sources.py, including the cell
-   that drags the two statistics apart, so this cannot teach a value that page has
-   stopped publishing. */
-function drawPay() {
-  const W = D.wage;
-  if (!W) return;
-  const x = v => `${v.toFixed(2)}×`;
-
-  document.getElementById("paydenoms").innerHTML =
-    `This site publishes both, for every cell. Against the same industry nationally,
-     <b>${W.n_below_us} of the ${W.n_published}</b> published cells pay less than the
-     industry pays elsewhere, a middle cell of <b>${x(W.median_vs_us)}</b>. Against the
-     average job in the same county, <b>${W.n_above_local} of the ${W.n_published}</b>
-     pay more. The same cells, the same year, opposite verdicts, and both are true.`;
-
-  document.getElementById("payunits").innerHTML =
-    `The table holds ${W.n_published} published cells out of ${W.n_possible} possible,
-     ${word(W.n_industries)} industry codes across ${word(W.n_counties)} counties. Take
-     the middle of those ${W.n_published} and the unit is a <b>cell</b>.
-     <b>Count each county once and the unit is a county-industry.</b> The rule is to keep
-     the finest detail published for that county and drop the family above it: where a
-     county publishes ${W.register_naics[0]} or ${W.register_naics[1]}, drop its 325 row;
-     where it publishes 3261 or 3262, drop its 326. That leaves
-     <b>${W.dedup_rows}</b> rows, of which ${W.dedup_above} pay above their county.
-     <b>Weight by employment and the unit is a job</b>, but only a coarser set can carry
-     that: the two industry groups taken once per county, ${N(W.cover_jobs)} jobs,
-     ${N(W.cover_jobs_above)} of them in a group that out-pays its county.`;
-
-  /* THE POPULATION HAS TO BE NAMED, NOT JUST COUNTED. This recipe's whole lesson is that
-     a median is a median OF something; printing 33,528 without saying which codes it is
-     would commit the exact fault the section is about, and nearly half of it sits
-     outside the register the reader was handed two sections earlier. */
-  document.getElementById("paycover").innerHTML =
-    `<b>Read the job figure with its boundary attached.</b> The only complete
-     non-overlapping set the published data offer is NAICS
-     ${W.cover_naics.join(" and ")} taken once per county, so that is what a job weighting
-     can run over at all. It is wider than this site&rsquo;s own measurement register of
-     ${W.register_naics.join(", ")}, which covers ${N(W.register_jobs)} jobs:
-     <b>${N(W.cover_outside_register)}</b> of the ${N(W.cover_jobs)} weighted jobs, about
-     ${Math.round(W.cover_outside_register / W.cover_jobs * 100)} percent, are chemistry
-     the register calls context rather than cluster. The finer set cannot be weighted
-     because it is not published for every county. That is a real limit, not a
-     rounding note, and it is the reason the cell median stays the headline.`;
-
-  document.getElementById("paymath").innerHTML =
-    `middle of ${W.n_published} cells = ${x(W.median_pairing)} &nbsp;&middot;&nbsp;
-     middle of ${N(W.cover_jobs)} jobs = ${x(W.median_job)}`;
-
-  document.getElementById("paydrag").innerHTML =
-    `The heaviest cell sitting below the cell median is
-     <b>${W.drag.county} County ${W.drag.label.toLowerCase().replace(" & ", " and ")}</b> at
-     ${x(W.drag.ratio)} on ${N(W.drag.emp)} jobs, the same cell the first recipe worked.
-     One cell in ${W.n_published} by the list count, and ${
-       Math.round(W.drag.emp / W.cover_jobs * 100)} percent of the jobs by the other.
-     That is the gap between the two statistics, in one row.`;
-
-  document.getElementById("paylands").innerHTML =
-    `In ${W.year}, across ${word(W.n_counties)} counties: the middle cell pays
-     <b>${x(W.median_pairing)}</b> what the average job in its county pays, the middle
-     job <b>${x(W.median_job)}</b>. Against the same industries nationally the region
-     pays <b>${x(W.median_vs_us)}</b>, a discount rather than a premium. It is a good
-     industry to hold a job in relative to this region, and this region is a cheap place
-     to hire for it, and those are the same finding read from two sides.`;
-}
-
-/* ------------------------------------------------------- recipe 3, the labour shed */
-function drawShed() {
-  const S = D.shed;
-  if (!S) return;
-  const pct = (a, b) => (a / b * 100).toFixed(1);
-
-  document.getElementById("shedrow").innerHTML = S.row_is;
-
-  document.getElementById("shedbases").innerHTML =
-    `In ${S.year}, this site&rsquo;s twelve counties held <b>${N(S.all_residents)}</b>
-     jobs counting a worker resident in any state, and <b>${N(S.in_state_only)}</b>
-     counting ${S.state} residents only. The two are <b>${N(S.gap)}</b> apart. Both were
-     published here as the same footprint before anyone noticed they were two different
-     measures.`;
-
-  document.getElementById("shedidentity").innerHTML =
-    `${N(S.inside)} held from inside &nbsp;+&nbsp; ${N(S.outside_in_state)} from
-     elsewhere in ${S.state} &nbsp;=&nbsp; ${N(S.in_state_only)}<br>
-     ${N(S.inside)} held from inside &nbsp;+&nbsp; ${N(S.outside_any_state)} from
-     anywhere &nbsp;=&nbsp; ${N(S.all_residents)}`;
-
-  const E = S.external_split;
-  document.getElementById("shedoutside").innerHTML =
-    `${N(S.outside_any_state)} jobs are held from outside the twelve counties, which is
-     ${(S.share_imported * 100).toFixed(1)} percent of everything worked here. Of those,
-     ${N(S.external_classified)} fall into three groups: ${N(E.adjacent)} from counties
-     next door, ${N(E.distant)} from metropolitan areas hours away, and
-     <b>${N(E.other)}</b> from counties scattered too thinly to group, which is the
-     largest of the three at ${pct(E.other, S.external_classified)} percent and the least
-     examined. <b>The other ${N(S.external_unclassified)} are not in the grouping at
-     all.</b> That is ${pct(S.external_unclassified, S.outside_any_state)} percent, small
-     enough to round away and worth not rounding away: three numbers printed under a
-     fourth read as a partition of it, and these are not one.`;
-}
-
-/* ------------------------------------------------ recipe 4, federal contracting */
-function drawContracting() {
-  const C = D.contracting;
-  if (!C) return;
-  const M = v => `$${(v / 1e6).toFixed(1)}M`;
-
-  document.getElementById("fedyears").innerHTML =
-    `This site pulls fiscal ${C.first_fy} to ${C.last_fy}, ${word(C.n_years)} years, of
-     which <b>${word(C.closed_years)} are finished</b>. Across the finished years the
-     region&rsquo;s polymer manufacturers were obligated <b>${M(C.total_closed)}</b>. Adding
-     the part-year brings it to ${M(C.total_all)}, and that larger number is the more
-     misleading of the two, because ${M(C.partial_fy_amount)} of it is however much of
-     ${C.last_fy} had elapsed when the file was read.`;
-
-  document.getElementById("fedcaution").innerHTML = C.place_caution;
-
-  document.getElementById("fedblind").innerHTML =
-    `${C.invisible} This cut sees <b>${word(C.n_codes)} industry codes</b>, led by
-     ${C.top.map(t => `${t.name.toLowerCase()} at ${M(t.amount)}`).join(", ")}. Everything
-     else in the region&rsquo;s federal money is outside the frame by construction, and the
-     total does not know that.`;
-}
-
-/* ------------------------------------------------- the basis: nominal against real */
-/* Every figure recomputed here from the price page's own shipped table, with that page's
-   own clamp: the CPI annuals stop before the current year, so a current-year month
-   borrows the last published deflator and every real figure is an upper bound. */
-function drawDeflator() {
-  const F = D.deflator;
-  if (!F) return;
-  const yr = d => d.slice(0, 4);
-  const MON = ["January","February","March","April","May","June","July","August",
-    "September","October","November","December"];
-  const month = d => `${MON[+d.slice(5, 7) - 1]} ${yr(d)}`;
-
-  document.getElementById("cpitable").innerHTML =
-    `${F.index}, ${F.base_year} to ${F.latest_year}, on a base of ${F.base_year}. The
-     index moved from <b>${F.cpi_base}</b> to <b>${F.cpi_latest}</b>, so general prices
-     rose <b>${F.inflation_pct} percent</b> across the window and a
-     ${F.latest_year} dollar buys what
-     ${(100 / (1 + F.inflation_pct / 100)).toFixed(0)} cents bought in ${F.base_year}.
-     The divisor for any year is that year&rsquo;s index over
-     ${F.base_year}&rsquo;s: ${F.years.filter(y => [F.base_year, "2022", F.latest_year]
-       .includes(y.year)).map(y => `${y.year} is ${y.factor}`).join(", ")}.`;
-
-  document.getElementById("deflated").innerHTML =
-    `<b>Finished plastics and rubber prices.</b> Up to <b>${F.product.nominal}</b> in
-     cash against a ${F.base_year} base of 100, which is the rise of about forty percent
-     that page reported. Deflated, <b>${F.product.real}</b>: a real rise of about
-     ${Math.round(F.product.real - 100)} percent, not forty. And the dearest month is not
-     the same month. In cash it is <b>${month(F.product.cash_peak)}</b>; in real terms it
-     was <b>${month(F.product.real_peak)}</b>, nearly four years earlier.
-     <b>Resin</b> makes the sharper case: <b>${F.resin.nominal}</b> in cash still reads
-     as a lasting increase, and at <b>${F.resin.real}</b> deflated it has given back the
-     entire rise and sits essentially back at its ${F.base_year} level.`;
-
-  document.getElementById("deflordering").innerHTML =
-    `That page&rsquo;s central finding is an ORDERING, that the cost spike was given back
-     at the wellhead, partly at resin, and not at all in finished products. Re-run on the
-     deflated series the ordering holds, because every link faces the same general
-     inflation. So the page may stay nominal and says that it rechecked. Its
-     <em>magnitudes</em> did not survive: forty percent became
-     ${Math.round(F.product.real - 100)}, and a record high became a four-year-old peak.
-     Both outcomes in one page, which is why the check is worth running rather than
-     reasoning about.`;
-}
-
 /* --------------------------------------------------- checking one award, including ours */
 function drawAwards() {
   const A = D.awards;
   if (!A) return;
-  const M = v => `$${(v / 1e6).toFixed(v % 1e6 ? 1 : 0)}M`;
   const full = v => `$${N(v)}`;
-  const yr = d => d.slice(0, 4);
-  const MONTHS = ["January", "February", "March", "April", "May", "June", "July",
-    "August", "September", "October", "November", "December"];
-  const day = d => `${+d.slice(8, 10)} ${MONTHS[+d.slice(5, 7) - 1]} ${d.slice(0, 4)}`;
-
-  document.getElementById("edanote").innerHTML =
-    `The ${A.eda.name} is ${word(A.eda.n)} implementation awards from the
-     ${A.eda.agency}, ${full(A.eda.total)} between them. Each carries its own identifier,
-     and the ${word(A.eda.n)} amounts add to the total, so a reader can check the
-     addition as well as the parts.`;
-
   document.getElementById("edalist").innerHTML =
     /* TWO COLUMNS, NOT THREE. A third column for the identifier forced the table past
        420px, and at 390px the AMOUNT scrolled off the right edge: the reader lost the
@@ -770,21 +522,6 @@ function drawAwards() {
       <tfoot><tr><th scope="row">Total</th>
         <td><b>${full(A.eda.total)}</b></td></tr></tfoot>
     </table></div>`;
-
-  document.getElementById("nsfnums").innerHTML =
-    `NSF award <b class="code">${A.nsf.id}</b>, made ${day(A.nsf.award_date)}, runs
-     ${yr(A.nsf.period_start)} to ${yr(A.nsf.period_end)}. Its record gives an estimated
-     total of <b>${full(A.nsf.estimated_total)}</b> and
-     <b>${full(A.nsf.obligated)}</b> ${A.nsf.obligated_basis}, which is
-     ${Math.round(A.nsf.share_obligated * 100)} percent of it. The programme it sits in
-     is publicly described with a much larger ten-year ceiling contingent on renewals,
-     and no source ties that ceiling to this award.`;
-
-  document.getElementById("awarderr").innerHTML =
-    `<b>This site printed ${M(A.error.printed)} for that award.</b> The record says
-     ${full(A.error.actual)}. We overstated a federal award by a factor of
-     <b>${A.error.factor}</b>, on a site whose premise is that its numbers can be
-     checked, and it stood until ${day(A.error.corrected_on)}.`;
 }
 
 /* The standfirst counts the recipes rather than asserting a number, so shipping the next
@@ -887,24 +624,6 @@ function drawSwaps() {
           <span class="swapnote">${x.where}. ${x.note}</span></th>
         <td style="text-align:left">${x.ours}<br><em>${x.yours}</em></td></tr>`).join("")}
       </tbody></table></div>`;
-
-  const C = D.checks;
-  if (!C) return;
-  document.getElementById("checkidea").innerHTML =
-    `Across ${word(C.n_pages)} pages this site carries <b>${N(C.n_claims)}</b> of them.
-     ${N(C.n_auto)} are re-run against the source data every time the site is built, so a
-     figure that stopped being true breaks the build before anybody reads it. The other
-     ${C.n_manual} rest on a person having read a document correctly, which is why they
-     are labelled and are the place to attack first. This page alone carries
-     ${C.this_page}.`;
-
-  document.getElementById("checkcaught").innerHTML =
-    `On this page, in one week: a recipe that printed three aggregation codes returning
-     nothing from the file it told you to download; a median described over the wrong
-     unit; three published figures asserted to sum to a fourth that they miss by 2,552;
-     and a source credited on a page that never used it, which had quietly made one
-     dataset look more central than it is. The first three were caught by a condition
-     written next to the sentence. The last was caught by a person reading the page.`;
 }
 
 /* ------------------------------------------------------------------- the gaps */
@@ -921,27 +640,8 @@ function drawGaps() {
 }
 
 /* --------------------------------------------------------------------- assemble */
-/* THE WORKED READING CARRIES ITS AREA CODE, because the recipe's endpoint takes a
-   {fips} and a reader who cannot fill it in has been walked to a wall. This is the one
-   substitution a replicator has to make to land on the number this page prints. */
-document.getElementById("lqworked").innerHTML =
-  `${D.lq.worked.county} County, Ohio, which is area <b class="code">${D.lq.worked.area}</b>
-   in that endpoint, reads <b>${D.lq.worked.lq}</b> for ${D.lq.worked.short}, NAICS
-   ${D.lq.worked.naics}, in ${D.lq.worked.year}, on ${N(D.lq.worked.emp)} jobs`;
-document.getElementById("closersub").innerHTML =
-  `Every filter on this page is the value the fetch scripts actually apply, extracted from
-   them rather than written from memory, and ${T.n_filter_lines} of them are published
-   here. ${Word(T.n_no_endpoint)} of the ${word(T.n_sources)} sources cannot be fetched by
-   anybody, which is said here rather than left for you to discover.`;
-
 drawTax();
-drawVintage();
 countRecipes();
-drawRecipe();
-drawPay();
-drawShed();
-drawDeflator();
-drawContracting();
 drawSwaps();
 drawAwards();
 drawRegistry();
