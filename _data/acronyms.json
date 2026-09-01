@@ -94,6 +94,9 @@
   "ALCOM": [
    "timeline"
   ],
+  "ALFRED": [
+   "cluster-health"
+  ],
   "BEA": [
    "index"
   ],
@@ -126,6 +129,9 @@
   "HTTP": [
    "patents"
   ],
+  "IM": [
+   "federal-money"
+  ],
   "LEHD": [
    "laborshed"
   ],
@@ -146,6 +152,9 @@
   ],
   "MI": [
    "laborshed"
+  ],
+  "MQM": [
+   "federal-money"
   ],
   "NASA": [
    "timeline"
@@ -237,9 +246,6 @@
   ],
   "WV": [
    "laborshed"
-  ],
-  "ALFRED": [
-   "cluster-health"
   ]
  }
 }

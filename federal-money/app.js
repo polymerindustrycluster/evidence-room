@@ -609,7 +609,7 @@ document.getElementById("rcsrc").innerHTML =
   `USAspending.gov spending_by_award, prime contracts at place of performance in the
    twelve PIC-12 counties, chemical and plastics/rubber industry codes, awards with
    obligation activity FY2019&ndash;FY${fys.at(-1)}, retrieved ${R.meta.fetched}.
-   Grants are not in this view: the NSF and EDA money the page names elsewhere moves
+   Grants are not in this view: the National Science Foundation (NSF) and EDA money the page names elsewhere moves
    through award types these filters exclude.`;
 
 document.getElementById("rgtable").innerHTML = withNotes(tableView("rg",

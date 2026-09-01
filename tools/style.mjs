@@ -105,7 +105,7 @@ for (const n of list) {
                               text.indexOf(".", m.index) + 1 || text.length);
       const glossed = /\(/.test(sent) ||
         /short for|stands for|meaning the|that is,/.test(sent) ||
-        new RegExp("(?:scale|code|file|series|level|survey|form)\\s+" + t + "\\b").test(sent) ||
+        new RegExp("(?:scale|code|file|series|level|survey|form|supplier|maker|contractor|firm|company),?\\s+" + t + "\\b").test(sent) ||
         new RegExp("[A-Za-z][\\w'’-]*(?:\\s+[\\w'’&-]+){0,6}\\s*\\(" + t).test(text) ||  /* capital-led expansions count: "Archival FRED (ALFRED)" */
         /, (?:the|a|an) [a-z]/.test(sent.slice(sent.indexOf(t)));
       if (!glossed) out.push(["bare-first-reference:" + t, sent.replace(/\s+/g," ").trim().slice(0, 70)]);
