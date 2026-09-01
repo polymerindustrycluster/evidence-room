@@ -1,0 +1,43 @@
+{
+ "_readme": [
+  "The longest SOURCE LINE on each page, in words, measured at 1440x900 on 2026-09-01.",
+  "",
+  "page-design.md budgets apparatus ink at 45 words per figure: one source line plus at",
+  "most one limitation sentence, with the rest going to the methodology box or the",
+  "register. Nothing measured it until a scored editorial rubric found METHODOLOGY BALANCE",
+  "the weakest dimension on the site, failing at severity 4+ on 14 of 23 pages. The",
+  "measurement behind that verdict: 60 source lines over budget, 6,902 words of source-line",
+  "ink, one line of 318 words on reach and one of 257 on atlas.",
+  "",
+  "A RATCHET, not a target, for the reason coldopen is one: every page is already over, so",
+  "a hard line would fail the build today and be switched off by Friday. A page listed here",
+  "may only improve. A page NOT listed must clear 45 outright, so new apparatus cannot be",
+  "born in debt. Three pages already clear it: revisions, funding-map, realwage.",
+  "",
+  "Lower a number when you pay it down. Never lower one by DELETING a limitation: the",
+  "budget is about where apparatus lives, not about whether a reader is warned."
+ ],
+ "limit": 45,
+ "ceilings": {
+  "reach": 318,
+  "atlas": 257,
+  "cluster-health": 189,
+  "collaboration": 161,
+  "timeline": 160,
+  "churn": 148,
+  "programs": 128,
+  "accountability": 127,
+  "wages": 115,
+  "scorecard": 104,
+  "chain": 91,
+  "sources": 91,
+  "federal-money": 88,
+  "index": 85,
+  "cost-scissors": 75,
+  "laborshed": 72,
+  "occupations": 71,
+  "patents": 53,
+  "peers": 53,
+  "location-quotient": 50
+ }
+}

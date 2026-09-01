@@ -49,7 +49,7 @@
  */
 (async () => {
 "use strict";
-const {el, txt, ticks, frame, hoverable, tableView, chart, figures, N, onFill,
+const {el, txt, ticks, frame, hoverable, tableView, chart, chartTitle, figures, N, onFill,
        SEQ, GRAY, INK} = PV;
 const D = await PV.data("viz-data.json");
 
@@ -90,10 +90,6 @@ const COL = 728;
    floor as a smaller second line. x=0 in the viewBox IS the rail, because the svg fills the
    column exactly; starting the title at the plot’s left margin puts a second ragged edge
    beside the prose. An all-caps unit string is an axis label, not a title. */
-function chartTitle(svg, claim, unit) {
-  txt(svg, claim, {x: 0, y: 13, class: "pv-lab", fill: "var(--text)"});
-  if (unit) txt(svg, unit, {x: 0, y: 31, class: "pv-tick", fill: "var(--caption)"});
-}
 /* An axis cropped to its data, with the floor stated under the title. Lines only: a bar’s
    length encodes magnitude from zero and keeps its zero however much canvas that costs. */
 const span = (lo, hi) => v => (v - lo) / (hi - lo);

@@ -38,6 +38,7 @@ const GATES = [
   ["provenance",  "node",   ["tools/provenance.mjs"],        "the registry matches the page, not only the reverse"],
   ["alttext",     "node",   ["tools/alttext.mjs"],           "every chart carries a description"],
   ["furniture",   "node",   ["tools/furniture.mjs"],        "every number on a chart is said somewhere else on its page"],
+  ["caveat",      "node",   ["tools/caveat.mjs"],           "apparatus ink under a chart, ratcheted"],
   ["fonts",       "node",   ["tools/fonts.mjs"],             "every font this site names, this site ships"],
   ["classes",     "node",   ["tools/classes.mjs"],           "every class a page uses resolves to a rule"],
   ["legends",     "node",   ["tools/legends.mjs"],           "the reader gets the key before the data"],

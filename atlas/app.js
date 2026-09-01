@@ -47,7 +47,7 @@
  */
 (async () => {
 "use strict";
-const {el, txt, ticks, frame, hoverable, tableView, chart, figures, N, SEQ, INK} = PV;
+const {el, txt, ticks, frame, hoverable, tableView, chart, chartTitle, figures, N, SEQ, INK} = PV;
 const D = await PV.data("viz-data.json");
 
 /* THE COLD OPEN (guarded by tools/coldopen.mjs). This page opened on 1,124 pixels of
@@ -138,11 +138,6 @@ const stateCell = s => `${s}<span class="pv-sr"> ${STATE[s] || ""}</span>`;
 const COL = 728;
 /* A chart’s title is a CLAIM in body weight, ON the page rail, with the units as a smaller
    second line. x=0 in the viewBox IS the rail, because the svg fills the column exactly. */
-function chartTitle(svg, claim, unit) {
-  txt(svg, claim, {x: 1, y: 13, class: "pv-lab", fill: "var(--text)"});  /* x=1: at 360px several sizes put 1px of the first glyph left of the viewBox edge */
-  if (unit) txt(svg, unit, {x: 0, y: 31, class: "pv-tick", fill: "var(--caption)"});
-}
-
 /* Every institution in the record, mapped or not: 146 dots plus the one the projection
    cannot place. Any count that says "the record" is taken from this, never from the dots. */
 const ALL = [...D.dots, ...D.off_projection];

@@ -816,8 +816,24 @@ const PV = (() => {
     return sec;
   }
 
+  /* A CHART'S CLAIM, DRAWN ON THE CHART. The house rule is that no chart ships naked:
+     every figure carries its takeaway on the figure, not only in the prose around it.
+     This existed twice, as a local copy in atlas/app.js and another in programs/app.js,
+     and nowhere in _shared — so the two pages that follow the rule were the only two that
+     could, and 21 pages could not without copying it a third time.
+
+     The two copies had already drifted apart in a way a reader pays for: atlas passed
+     x=1 because at 360px several type sizes put a pixel of the first glyph left of the
+     viewBox edge, and programs still passed x=0, so the one other page with claim titles
+     clipped them on a phone. Divergence between two copies of eleven lines is the
+     cheapest possible demonstration of why this belongs in one place. */
+  function chartTitle(svg, claim, unit) {
+    txt(svg, claim, {x: 1, y: 13, class: "pv-lab", fill: "var(--text)"});
+    if (unit) txt(svg, unit, {x: 0, y: 31, class: "pv-tick", fill: "var(--caption)"});
+  }
+
   return {tableTools, onFill, whatWeGotWrong, el, txt, axlab, face, lead, ticks, frame, hoverable, showTip, hideTip, tableView, data, footprint,
-          methodology, figures, chart, footprintBanner, padGrid, mark, favicon, N,
+          methodology, figures, chart, chartTitle, footprintBanner, padGrid, mark, favicon, N,
           CAT, SEQ, GRAY, INK, usd, usdShort, reduced};
 })();
 PV.mark();
