@@ -18,6 +18,14 @@ PUBLISHES already reads its 2021-2023 window, so its finding was never affected 
 detected the duplication (dup_1920 = 11) and compensated, and only the shipped series is
 wrong.
 
+SUPERSEDED FOR BOTH FILES, 2026-08-31, AND KEPT FOR THE RECORD. `ipeds_mirror_fix.py`
+found that the duplicated 2020 was the first of three years the mirror filed a year late,
+and re-derived all of them from NCES; `mirror_fix_patch.py` writes a `source_correction`
+block into each file it corrects. This script now refuses to touch a file carrying one,
+because dropping 2020 from a corrected series would delete a real year. It is not deleted
+because the quarantine is still live for the programs page, which reads the same mirror
+and has not been re-derived.
+
 Run: python _data/build/quarantine_patch.py [--check]
 """
 import collections
@@ -58,11 +66,21 @@ def drop_years(rows, key="year"):
 
 changed = []
 
+
+def corrected(doc, rel):
+    """True if mirror_fix_patch.py has already re-filed this file's IPEDS years."""
+    if "source_correction" not in doc and "source_correction" not in doc.get("talent", {}):
+        return False
+    changed.append(f"{rel}: superseded by mirror_fix_patch.py, left alone")
+    return True
+
+
 # ---------------------------------------------------------------- cluster-health
 rel = "cluster-health/data/health.json"
 h = load(rel)
+SKIP_HEALTH = corrected(h, rel)
 before = len(h["completions"])
-h["completions"] = drop_years(h["completions"])
+h["completions"] = h["completions"] if SKIP_HEALTH else drop_years(h["completions"])
 if len(h["completions"]) != before:
     changed.append(f"{rel}: completions {before} -> {len(h['completions'])} rows")
 
@@ -75,7 +93,7 @@ if len(h["completions"]) != before:
 # selection below is an explicit allowlist rather than a shape heuristic.
 IPEDS_TILES = {"polymer degrees a year"}
 
-for tile in h.get("tiles", []):
+for tile in ([] if SKIP_HEALTH else h.get("tiles", [])):
     st = tile.get("standing")
     if not isinstance(st, dict) or not isinstance(st.get("series"), list):
         continue
@@ -99,19 +117,21 @@ for tile in h.get("tiles", []):
     st["basis"] = st["basis"].rstrip(".") + f". {QZ.CAPTION}."
     changed.append(f"{rel}: {st['basis_short']!r} standing -> {st['n_years']} years, "
                    f"'{st['rank_words']}'")
-declare(h)
-save(rel, h)
+if not SKIP_HEALTH:
+    declare(h)
+    save(rel, h)
 
 # ---------------------------------------------------------------- scorecard
 rel = "scorecard/data/scorecard.json"
 s = load(rel)
 tal = s["talent"]
-before = len(tal["polymer"])
-tal["polymer"] = drop_years(tal["polymer"])
-if len(tal["polymer"]) != before:
-    changed.append(f"{rel}: talent.polymer {before} -> {len(tal['polymer'])} rows")
-declare(tal)
-save(rel, s)
+if not corrected(s, rel):
+    before = len(tal["polymer"])
+    tal["polymer"] = drop_years(tal["polymer"])
+    if len(tal["polymer"]) != before:
+        changed.append(f"{rel}: talent.polymer {before} -> {len(tal['polymer'])} rows")
+    declare(tal)
+    save(rel, s)
 
 for c in changed:
     print("  " + c)

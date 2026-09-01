@@ -15,7 +15,7 @@
   "small_numbers": "The promise register holds eighteen rows and one of them carries a number that can be missed. A keeping rate computed over a handful of resolved commitments would be noise with a percent sign, so this page prints the count and no rate until 6 commitments have resolved.",
   "note": "Match and cost share are never summed into the staged bar. They are promises made at award time by organisations other than PIC, so they are drawn detached, with their own label."
  },
- "generated_on": "2026-08-28",
+ "generated_on": "2026-08-31",
  "as_of": "2026-08-13",
  "draft": {
   "status": "unreviewed draft",
@@ -1141,7 +1141,7 @@
     "because": "This repository is public and its history is permanent, so it carries no member, applicant or personal data. Every metric that would need PIC’s membership register, general ledger, pipeline or drawdown records is published here as a defined empty slot. Filling those rows requires a copy of this page kept outside a public repository.",
     "because_from": "scorecard.json meta.publicOnly",
     "would_need": "A membership-agreement and marketing-communications decision on what may be published, and at what grain.",
-    "defined_on": "2026-08-28",
+    "defined_on": "2026-08-31",
     "fill_by": null,
     "permanent_reason": "This repository is public and its history is permanent, so no grain of a member record is publishable in it. A populated copy belongs outside it."
    },
@@ -1153,7 +1153,7 @@
     "because": "An award register records what has been committed and executed. It records no payment, so no figure on this page is a measure of money spent. Obligated is not disbursed, and the disbursement row is empty for that reason rather than for lack of effort.",
     "because_from": "scorecard.json meta.caution",
     "would_need": "A public disbursement record, or a decision to publish drawdown totals.",
-    "defined_on": "2026-08-28",
+    "defined_on": "2026-08-31",
     "fill_by": "on a decision to publish drawdown totals",
     "permanent_reason": null
    },
@@ -1166,7 +1166,7 @@
     "because": "Held in PIC and APEX programme records, which this repository does not carry.",
     "because_from": "scorecard.json, the two empty group C rows",
     "would_need": "A quarterly reporting arrangement with ConxusNEO, the Ohio Manufacturers’ Association and the Polymer Sector Partnership.",
-    "defined_on": "2026-08-28",
+    "defined_on": "2026-08-31",
     "fill_by": "on a quarterly reporting arrangement",
     "permanent_reason": null
    },
@@ -1176,7 +1176,7 @@
     "because": "No page in this room ships a method for it that survives its own gates.",
     "because_from": "this page",
     "would_need": "A defensible method, published before the number.",
-    "defined_on": "2026-08-28",
+    "defined_on": "2026-08-31",
     "fill_by": null,
     "permanent_reason": "Until a method exists and is published first, the figure would be an assertion with a decimal point on it."
    },
@@ -1186,7 +1186,7 @@
     "because": "This page shows only events recorded as public. Internal operational milestones, and the record of which dates slipped, are deliberately not here.",
     "because_from": "timeline.json meta.publicOnly",
     "would_need": "A decision to emit the slip column, which cannot be un-made.",
-    "defined_on": "2026-08-28",
+    "defined_on": "2026-08-31",
     "fill_by": "on the slip-record decision (Open Question 3)",
     "permanent_reason": null
    },
@@ -1196,7 +1196,7 @@
     "because": "NEO-SMART is a separate CWRU-led NSF Engine award in which PIC is a core partner. It is not PIC money and is not on this diagram.",
     "because_from": "funding.json meta.disclosures",
     "would_need": "Nothing. It is correctly excluded, and it is named here so nobody thinks it was overlooked.",
-    "defined_on": "2026-08-28",
+    "defined_on": "2026-08-31",
     "fill_by": null,
     "permanent_reason": "It is not PIC money, so it will never appear on this page."
    }
@@ -1228,12 +1228,12 @@
    },
    {
     "figure": "The board’s talent rows",
-    "text": "Every one of the 11 tracked degree programmes that reports a 2019 count carries the identical count again for 2020 in the shipped occupations file, all 11 of them. Independent programmes do not repeat in lockstep, so this page reads the 2021-2023 window and uses neither of those two years.",
+    "text": "The federal mirror this series was built from ran a year behind from 2020 to 2022 and never served the 2022 collection year at all. Those three years are now taken from the NCES completions files directly, so the 2021-2023 window this page reads is three consecutive years rather than two years and a gap.",
     "from": "scorecard/data/scorecard.json meta.excludes"
    },
    {
     "figure": "The board’s talent rows",
-    "text": "The talent rows are administrative counts in the low tens. The polymer series ran 124, 54, 63 across 2021, 2022 and 2023, so a single year is a reading and not a direction.",
+    "text": "The talent rows are administrative counts in the low tens. The polymer series ran 54, 62, 63 across 2021, 2022 and 2023, so a single year is a reading and not a direction.",
     "from": "scorecard/data/scorecard.json meta.small_numbers"
    }
   ]

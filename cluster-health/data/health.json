@@ -239,23 +239,25 @@
    "materials": 23
   },
   {
-   "year": 2021,
+   "year": 2020,
    "polymer": 124,
    "materials": 20
   },
   {
-   "year": 2022,
+   "year": 2021,
    "polymer": 54,
    "materials": 29
+  },
+  {
+   "year": 2022,
+   "polymer": 62,
+   "materials": 21
   },
   {
    "year": 2023,
    "polymer": 63,
    "materials": 33
   }
- ],
- "completions_flat_pairs": [
-  2020
  ],
  "obligations": [
   {
@@ -961,13 +963,13 @@
    "standing": {
     "value": 63,
     "year": 2023,
-    "n_years": 9,
+    "n_years": 10,
     "span": [
      2014,
      2023
     ],
     "low": {
-     "year": 2022,
+     "year": 2021,
      "value": 54
     },
     "high": {
@@ -975,8 +977,8 @@
      "value": 179
     },
     "position": 0.072,
-    "rank_from_low": 2,
-    "rank_words": "second lowest of nine",
+    "rank_from_low": 3,
+    "rank_words": "third lowest of ten",
     "better_end": "high",
     "series": [
      {
@@ -1004,19 +1006,23 @@
       "value": 118
      },
      {
-      "year": 2021,
+      "year": 2020,
       "value": 124
      },
      {
-      "year": 2022,
+      "year": 2021,
       "value": 54
+     },
+     {
+      "year": 2022,
+      "value": 62
      },
      {
       "year": 2023,
       "value": 63
      }
     ],
-    "basis": "the same three institutions, 2014 to 2023. 2020 is not drawn: the federal mirror republished 2019 under that year.",
+    "basis": "the same three institutions, 2014 to 2023. 2020 to 2022 are taken from the NCES completions files: the federal mirror this series is otherwise built from ran a year behind and skipped one.",
     "basis_short": "polymer degrees a year",
     "merit_short": "more degrees is better",
     "merit": "More degrees out of the three programs is the better end. Nobody has set a number the region needs, and this range cannot see the two-year and certificate routes into the same plants.",
@@ -1027,22 +1033,22 @@
     "why": "A peer region would need a defensible peer set and PIC has named none. The programs’ own decade is the baseline that needs no choice made for it."
    },
    "direction": {
-    "value": 9,
-    "pct": 16.7,
-    "words": "up 9 on the year, and 65 percent below its 2016 high",
-    "short_move": "up 9 degrees",
+    "value": 1,
+    "pct": 1.6,
+    "words": "up 1 on the year, and 65 percent below its 2016 high",
+    "short_move": "up 1 degree",
     "of": "on the year",
     "streak": null
    },
    "band": {
     "latest_year": 2023,
-    "latest": 9,
-    "abs_latest": 9,
+    "latest": 1,
+    "abs_latest": 1,
     "median_prior": 17.5,
     "max_prior": 70,
     "n_prior": 8,
-    "beats": 2,
-    "typicals": 0.5143,
+    "beats": 0,
+    "typicals": 0.0571,
     "max_typicals": 4.0,
     "verdict": "ordinary",
     "steps": [
@@ -1073,23 +1079,23 @@
      },
      {
       "year": 2020,
-      "change": 0,
-      "typicals": 0.0
-     },
-     {
-      "year": 2021,
       "change": 6,
       "typicals": 0.3429
      },
      {
-      "year": 2022,
+      "year": 2021,
       "change": -70,
       "typicals": 4.0
      },
      {
+      "year": 2022,
+      "change": 8,
+      "typicals": 0.4571
+     },
+     {
       "year": 2023,
-      "change": 9,
-      "typicals": 0.5143
+      "change": 1,
+      "typicals": 0.0571
      }
     ]
    },
@@ -1270,8 +1276,14 @@
    }
   }
  ],
- "quarantined": {
-  "2020": "the Urban Institute IPEDS mirror serves 2019 data under year=2020"
- },
- "quarantine_caption": "2020 is not drawn: the federal mirror republished 2019 under that year"
+ "source_correction": {
+  "applied": "2026-08-31",
+  "by": "_data/build/mirror_fix_patch.py",
+  "why": "2020 to 2022 are taken from the NCES completions files: the federal mirror this series is otherwise built from ran a year behind and skipped one",
+  "source": "NCES IPEDS completions C2021_A-C2024_A, via fetch_ipeds_nces.py",
+  "repeated_years_after_fix": 0,
+  "was_flat_pairs": [
+   2020
+  ]
+ }
 }

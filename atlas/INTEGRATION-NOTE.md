@@ -1,7 +1,7 @@
 # Integration note — atlas
 
 What the controller must wire before this page is reachable or shippable. The page renders
-standalone (`python -m http.server 8899` → `/atlas/`), passes its claims gate (4 auto + 2
+standalone (`python -m http.server 8899` → `/atlas/`), passes its claims gate (5 auto + 2
 manual), and is deliberately NOT linked, catalogued, or deployed.
 
 ## Wiring (mechanical)

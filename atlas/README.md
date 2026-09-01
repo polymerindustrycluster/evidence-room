@@ -17,7 +17,7 @@ under codes this census cannot see. **Institutions, never individuals** (standin
 ```
 index.html          page shell
 app.js              the map, the largest-records chart, and their table twins
-claims.json         6 assertions — 4 machine-checked, 2 manual
+claims.json         7 assertions — 5 machine-checked, 2 manual
 data/viz-data.json  THE DATA (~150 KB, mostly basemap paths). Edit the builders, not this.
 INTEGRATION-NOTE.md what the controller must wire before this page is reachable or shippable
 ```
@@ -72,8 +72,8 @@ needs `d3-geo` and `topojson-client`, and neither is installed on this machine o
 through NODE_PATH, so it could not run.
 
 **What is still right:** the headline totals. 147 institutions ever, 41 still conferring in
-2023, 35 states. The rebuild reproduced all three exactly, and the page's six claims pass
-against them.
+2023, 35 states. The rebuild reproduced all three exactly, and the page's seven claims
+pass against them.
 
 **What is stale:** per-institution `total_awards`, which are inflated by one doubled 2019,
 and `last_year` for four institutions that read 2020 where the truth is 2019.

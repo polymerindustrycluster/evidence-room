@@ -54,11 +54,18 @@ def series(programs, group, y0, y1, key="by_year"):
     A year absent for an UNDECLARED reason raises instead of guessing, so a new hole in
     the record fails a claim rather than quietly moving an average. A single programme
     missing a year still contributes 0, which is a real zero for that programme.
+
+    A QUARANTINED YEAR THAT IS PRESENT IS NOT A HOLE. The 2020 quarantine was lifted for
+    the regional completions series on 2026-08-31, when the year was recovered from NCES
+    (`ipeds_mirror_fix.py`), while it is still live for the programs page, which reads the
+    same mirror. So the skip is conditional on the year actually being absent: a listed
+    year that the record now carries is used, and one it does not is still skipped rather
+    than counted as zero degrees conferred.
     """
     rows = [p for p in programs if p["group"] == group]
     out = []
     for y in range(y0, y1 + 1):
-        if y in QZ.QUARANTINED:
+        if y in QZ.QUARANTINED and not any(str(y) in p[key] for p in rows):
             continue
         ys = str(y)
         if not any(ys in p[key] for p in rows):

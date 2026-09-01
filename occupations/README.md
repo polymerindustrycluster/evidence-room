@@ -5,12 +5,13 @@ page answers in four beats, each carrying the last one's conclusion forward: the
 is mostly floor work (the distinctive engineer/scientist share is 4.0%); the metros pay
 that floor near the national rate but pay the degree occupations under it, in every metro;
 the degree occupations are exactly the engineer and scientist jobs; and the local polymer
-degree count ran 118–179 a year from 2014 through 2021, then 54 and 63.
+degree count ran 118–179 a year from 2014 through 2020, then 54, 62 and 63.
 
 Sources: BLS Employment Projections National Employment Matrix (2024–34, industry 326000);
 BLS Occupational Employment and Wage Statistics, May 2024, metropolitan and national files;
 O*NET 30.3 (U.S. Department of Labor, CC BY 4.0); IPEDS completions by CIP via the Urban
-Institute Education Data API; BLS QCEW 2024 (one regional estimate); Ohio Department of Job
+Institute Education Data API, with 2020–2022 read from the NCES completions files instead
+(see `_data/build/ipeds_mirror_fix.py`); BLS QCEW 2024 (one regional estimate); Ohio Department of Job
 and Family Services 2022–2032 occupation projections (JobsOhio Northeast).
 
 **What a row is:** one detailed occupation (six-digit SOC code) — its share of national
@@ -61,8 +62,8 @@ rest of the industry's fourteen largest occupations by national staffing share.
   lowest zones as one band. One SOC can hold several O*NET variants — the row says how it was
   joined.
 - **Degrees are not hires.** The programs section counts people finishing, not staying.
-- **The polymer-degree drop is two observed years (2022, 2023), broad across every polymer
-  program, while the materials programs held their 2014–2021 range.** A CIP recoding (a
+- **The polymer-degree drop is three observed years (2021, 2022, 2023), broad across every
+  polymer program, while the materials programs held their 2014–2020 range.** A CIP recoding (a
   program reclassified to a different six-digit code) would produce the same arithmetic
   without any real decline; the lede says so. Before treating the halving as a fact about
   people rather than about codes, confirm against the universities' own conferral counts
@@ -165,7 +166,7 @@ An independent visual reviewer read the rendered page at 1:1. What changed, and 
 - **The pipeline band's claim is drawn.** Its headline claims a time trend and its only
   figure was a 2021-2023 cross-section, with the decline carried in four lines of bracket
   text. There is now an annual chart, 2014 to 2023, polymer against materials, with a
-  reference rule at half the 2014-2021 polymer mean: both later years sit under it, which
+  reference rule at half the 2014-2020 polymer mean: all three later years sit under it, which
   is the claim, drawn. The rule value is computed from the yearly sums, never typed
   (`occ-trend-half-rule`). The program bars keep only the group brackets.
 - **The mix chart draws its title's benchmark.** "Outweighs every engineer and scientist
@@ -212,7 +213,7 @@ was which. What changed:
 - **Reference lines are labelled by what crossing them means.** The 4.0% rule keeps its
   name and gains a second line, "five occupations outweigh them on their own", counted off
   the data. The degree trend's rule now reads "under this rule: less than half the
-  2014-2021 pace, 70 a year" instead of stating the arithmetic that placed it.
+  2014-2020 pace, 71 a year" instead of stating the arithmetic that placed it.
 - **The Job Zone column had no header at all.** It now carries "preparation, 1 low, 5
   high", and the prose definition gives the scale rather than only the concept.
 - **Two readings that were missing entirely**: on the pay chart, that a metro's dot to the
@@ -316,3 +317,36 @@ evidence earlier. `_data/coldopen.json` still records the old 1,668 debt and sho
 tightened; that is a `_data` change.
 
 Claims 26 to 32. No claim was removed; no source data changed.
+
+## Sixth pass: the year the federal mirror never served
+
+The degree panel was one year short and one year mis-dated, and no gate could see it
+because every gate on this site asks whether the prose matches the data. Re-derived
+against the NCES completions files themselves (`_data/build/fetch_ipeds_nces.py`, keyless,
+`C2014_A` to `C2024_A`), the Urban Institute mirror this page reads turns out to have
+filed its 2020, 2021 and 2022 labels one collection year late, and then to have caught up
+at 2023 by skipping `C2023_A` outright. The check is not regional: US totals for CIP
+14.3201 read 330, 330, 360, 325, 264 at mirror years 2019 to 2023 against NCES 330, 360,
+325, 290, 264 at `C2020_A` to `C2024_A`. The 290 is in no year of the mirror.
+
+The 2020 quarantine was the first symptom of this, correctly diagnosed as a duplicate and
+wrongly assumed to end there. What changed on the page:
+
+- the series is ten consecutive years again, 2014 to 2023, and 2020 carries 124 rather
+  than a hole;
+- the drop year is 2021, not 2022, and there are **three** years under the half-rule
+  rather than two, running 54, 62, 63 — the last two rise off the low;
+- the old-pace baseline is 2014–2020, and its average, range and half-rule (142, 118–179,
+  71) are all unchanged, which is exactly why nothing caught this;
+- the three-year window average is 59.7, not 80.4. Two things moved it: the window's first
+  year was the wrong year, and 80.4 was the sum of thirteen rounded per-programme averages
+  where the three years themselves average 80.3. The deriver now computes it from counts;
+- the University of Akron's share of the region's polymer degrees is 62.0%, so the
+  programs figure title says 62% where it said two-thirds.
+
+`_data/build/ipeds_mirror_fix.py` carries the diagnosis, the correction table and a
+`--check` that re-derives all of it from NCES and fails on drift. `mirror_fix_patch.py`
+applies it to the shipped files, `derive_occupations.py` applies it at load, and
+`quarantine_patch.py` now refuses to touch a corrected file. **Still uncorrected:** the
+programs page draws a 1991–2023 national and Ohio series from the same mirror and carries
+the same three mis-dated years and the same missing collection year.

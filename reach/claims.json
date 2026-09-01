@@ -13,17 +13,17 @@
       "id": "rch-region-leads",
       "text": "A corresponding author sat in the region on about four fifths of the papers where one is identified.",
       "source": "as above; is_corresponding, populated on about 84 percent of the corpus",
-      "assert": "0.72 < D['totals']['led_share'] < 0.90",
+      "assert": "0.775 <= D['totals']['led_share'] < 0.8167",
       "actual": "(D['totals']['led'], D['totals']['joined'], D['totals']['no_corresponding'], D['totals']['led_share'])",
-      "falsified_if": "The led share leaves the 72-90 percent band the assertion holds it to. The 226 papers with no corresponding author flagged are excluded from the denominator and must stay excluded rather than assigned."
+      "falsified_if": "The led share leaves the band in which 'about four fifths' is the nearest simple fraction: below 0.775 three quarters is nearer, at 0.8167 and above five sixths is. The old band, 0.72 to 0.90, spanned three quarters through nine tenths and would have held the sentence steady while the fraction it prints went wrong in either direction. The 226 papers with no corresponding author flagged are excluded from the denominator and must stay excluded rather than assigned."
     },
     {
       "id": "rch-impact-top-decile",
       "text": "About a quarter of the region's polymer papers rank in the top tenth of their field and year.",
       "source": "OpenAlex citation_normalized_percentile, field- and age-normalized",
-      "assert": "D['totals']['top10_share'] > 0.20",
+      "assert": "0.225 <= D['totals']['top10_share'] < 0.29 and D['totals']['top10'] > D['totals']['pct_n'] / 10",
       "actual": "(D['totals']['top10'], D['totals']['pct_n'], D['totals']['top10_share'], D['totals']['top1_share'])",
-      "falsified_if": "The top-decile share drops toward the 10 percent you would expect by definition. That would mean the region's polymer output is ordinary for its field rather than well above it."
+      "falsified_if": "The top-decile share leaves the band in which 'about a quarter' is the nearest simple fraction: below 0.225 a fifth is nearer and the sentence has to say so, at 0.29 and above a third is. The old assertion was `> 0.20`, which a share of 21 percent, or of 99, would have passed while the printed fraction was wrong. The margin is thin on purpose and worth knowing: 309 of 1,364 is 22.65 percent, fifteen hundredths of a point above the floor, so the next OpenAlex refresh may well move this sentence to a fifth. The second clause keeps the finding itself, which is that the share exceeds the 10 percent the measure would give by definition."
     },
     {
       "id": "rch-median-not-mean",

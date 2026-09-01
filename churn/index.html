@@ -51,11 +51,18 @@
         <div class="d">a tenth of jobs start, a tenth end, each quarter. The last four
           published quarters run 9.6%</div></div>
     </div>
-    <p class="gauge"><b>Is a tenth of the jobs, every quarter, a lot?</b> This pull has no
-      other industry or state to compare against. What it can answer is which way the
-      movement runs, and that decides whether churn is good news. A payroll churns when people leave for better work, and it churns when a
-      plant cannot keep anyone. The rise here is almost all on the leaving side: since
-      2012 the separation rate, the share of jobs that end in a quarter, rose 1.9
+    <!-- THE DECLINE NOW NAMES WHAT IT IS DECLINING. The comparator is one request to the
+         series already used here, tested 2026-09-01 and returning data; leaving that
+         unsaid reads as a limit of the source rather than a gap in the work. The cost of
+         the added clause is paid inside the same paragraph, because the cold-open ratchet
+         is a ceiling and not a target: the roadmap sentence that followed lost the half
+         the next two sentences already carry. What fetching it would take is spelled out
+         in the methodology box. -->
+    <p class="gauge"><b>Is a tenth of the jobs, every quarter, a lot?</b> No other
+      industry or state is compared here, and the same Census series would answer it
+      cheaply. What this pull can answer is which way the movement runs. A payroll churns when people leave for better work, and it churns when a
+      plant cannot keep anyone. The rise since 2012 is almost all on the leaving side:
+      the separation rate, the share of jobs that end in a quarter, rose 1.9
       points; the hire rate rose 0.2. Since 2023Q1 more jobs have ended than started
       every quarter, the second kind of churn, the bad one.</p>
   </div>
@@ -98,20 +105,22 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The rate</p>
-    <h2>Turnover has risen since 2012 and has not come back down</h2>
+    <h2>Turnover sits above its 2012 level and has fallen every quarter since its 2022 peak</h2>
     <p class="lede">Churn rate is the share of jobs that start or end in a quarter: at
       10%, about one job in ten starts and another one in ten ends. Higher means more
       movement through the same payroll, not a gain or loss of jobs. Three readings of it
       run through this page, and they are not in conflict: 10.8% is the average across all
       55 published quarters, 8.5% is where 2012 sat, and 9.6% is the last four published
-      quarters. The pandemic spike is visible, and so is the fact that the line settles
-      above where it started.</p>
-    <p class="fig-title">The yearly average ends at 9.6%, about 1.1 points above
-      2012</p>
+      quarters. The pandemic spike is visible, and so is the long fall off it: the yearly
+      average has come down in every one of the 13 quarters since it peaked at 16.7% in
+      2022, and it still ends above where it started.</p>
+    <p class="fig-title">The yearly average has fallen every quarter since 2022 and still
+      ends 1.1 points above 2012, at 9.6%</p>
     <p class="fig-sub" id="ratesub"></p>
     <div class="chart"><svg id="rate" role="img" aria-labelledby="rate-t"><title id="rate-t">Quarterly churn rate with its trailing four-quarter average,
-        against a dashed reference line at the 2012 level. The average peaks in 2022 and
-        settles about a point above where it began.</title>
+        against a dashed reference line at the 2012 level. The average peaks in 2022,
+        falls in every quarter after it, and settles about a point above where it
+        began.</title>
     </svg></div>
     <div id="ratetable"></div>
     <p class="src" id="ratesrc"></p>

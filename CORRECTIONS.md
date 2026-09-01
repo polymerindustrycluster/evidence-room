@@ -13,6 +13,66 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-09-01, second entry — the depth audit's fix wave
+
+A new review layer — the flip-risk and comparator census — attacked every headline
+interpretation with alternative cuts, and a fix wave re-derived each finding before
+touching anything. Three audit premises died under re-derivation (recorded here with
+the corrections, because a check that can be wrong and caught is the only kind worth
+trusting). The changes a reader could have quoted:
+
+**The degrees series was mis-dated three years running, *occupations* (and echoed on
+*scorecard*, *cluster-health*, *patents*).** The upstream mirror served three
+collection years under the wrong labels and omitted one year entirely. Corrected
+series: 124 (2020), 54 (2021), 62 (2022), 63 (2023) — the halving happened a year
+earlier than every page said, a missing year (62) exists, and the three-year window
+average is 59.7, not 80.4. Each echoing sentence is corrected on its page.
+
+**"Roughly halved, alike" was neither, *patents*.** Ohio's non-polymer filings fell
+12 percent while polymer fell 25 — and against the national trend, polymer is the
+part of Ohio patenting holding up best (its share of US polymer filings rose). The
+sentence now states both halves; a claim guards them.
+
+**The hero stat row was on the disavowed basis, *federal-money*.** It printed $34.9M
+and 1.5 — the eight-year mean the page's own claim names as the figure not used —
+while every other surface printed $36.6M and 1.4. Aligned; both tolerance bands
+tightened below their flip thresholds. A robustness beat now prints the
+exclude-largest counterfactuals ($25.0M and 2.0 years without the top code; $13.7M
+and 3.7 years without the top two), guarded.
+
+**The average Chicago job already clears the bar, *realwage*.** The $71,000 line is
+a matched-offer threshold, and the page now says in prose what its interactive
+verdict said on click: Chicago's average polymer wage ($91,780) clears it, and 18 of
+56 big metros beat Akron on real wages. The Los Angeles "same salary" beat was a
+counterfactual no candidate faces (the real wages tie); rewritten. The hero's
+"below the middle metro" now names its 56-metro denominator inside the quotable span.
+
+**Both headline bases now speak, *laborshed*.** "No county fills even seven of ten"
+holds only counting every resident; on the in-state basis the page's own peer chart
+uses, Ashtabula fills 72.7 — the H2 now carries its basis. "Only Pittsburgh keeps
+more of its work inside itself" reverses on the resident side (we keep more of our
+people); both directions now print.
+
+**The label lied, not the counts, *churn*.** Thirteen surfaces said the flows were
+seasonally adjusted; the shipped data was unadjusted all along (the audit's own
+premise inverted — it read the label and indicted the counts). Relabelled
+everywhere; a claim now asserts the seasonality still present in the data. The H2's
+"has risen and not come back down" became the true shape: above its 2012 level,
+fallen every quarter since the 2022 peak.
+
+**The joint-paper series was a year stale and the run miscounted, *collaboration*.**
+Refreshed through 2025: 208 papers (eight in polymers), and the fall ran four years
+(2021-2024), not three, before 2025 rose to six. The standfirst now draws the shape
+the chart draws.
+
+**Route names replace a coarse flag, *funding-map*.** The H1 ("no two move the money
+the same way") was adjudicated true — the machine cards were right and the data
+field was too coarse to show it. The field now names the three routes and a claim
+asserts their distinctness.
+
+The hub inventory re-summed for all of the above: twenty linked pages, 451 checked
+claims, 19 of them resting on a document a person read.
+
 ## 2026-09-01 — nine corrections from the full-site first-read pass
 
 The register audit and a per-page re-derivation fleet finished sweeping every page.

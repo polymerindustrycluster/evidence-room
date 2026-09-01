@@ -82,7 +82,15 @@ for c, name in NEO.items():
                        "quarters_missing": miss,
                        "churn_rate": round(((h + s) / 2) / (e * 4), 4) if e else None})
 out("churn", "churn.json", {
-    "meta": {"source": "U.S. Census Quarterly Workforce Indicators (QWI), seasonally adjusted",
+    # NOT SEASONALLY ADJUSTED, and this line said the opposite until 2026-09-01. The API
+    # path is timeseries/qwi/sa, where "sa" is the SEX-BY-AGE table and not seasonal
+    # adjustment; adjustment is the separate `seasonadj` parameter, whose default is U
+    # (unadjusted). fetch_rest.qwi() never sets it. Checked against the API rather than
+    # read off the path: all 55 shipped quarters match seasonadj=U exactly, and
+    # seasonadj=S returns HTTP 204 for NAICS 326 at this geography, so no adjusted series
+    # exists to have been fetched. The winter/summer swing is still in these numbers,
+    # which is what the trailing four-quarter averages on the page are for.
+    "meta": {"source": "U.S. Census Quarterly Workforce Indicators (QWI), not seasonally adjusted",
              "naics": "326, plastics and rubber products manufacturing",
              "row": "one (county, year, quarter) cell; Emp is a STOCK at quarter start, "
                     "hires and separations are FLOWS during the quarter: never plot them "

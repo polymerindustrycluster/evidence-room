@@ -1,18 +1,18 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-08-31 20:41",
-  "seconds": 2.3,
-  "scripts": 49,
+  "generated": "2026-09-01 01:03",
+  "seconds": 2.1,
+  "scripts": 50,
   "outputs_on_disk": 7,
-  "outputs_claimed": 32,
+  "outputs_claimed": 33,
   "orphan_outputs": 1,
   "registry_error": null,
   "flag_counts": {
-   "not_in_PIPELINES.md": 49,
+   "not_in_PIPELINES.md": 50,
    "no_traps_section": 43,
    "no_house_docstring": 42,
-   "output_missing_on_disk": 30,
+   "output_missing_on_disk": 31,
    "not_in_SOURCES.json": 20,
    "import_error": 16,
    "no_output_detected": 13,
@@ -1433,6 +1433,58 @@
     "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "fetch_ipeds_nces.py",
+   "kind": "fetch",
+   "what_it_adds": "A keyless second reading of the same completions the Urban mirror serves, named by the collection year NCES itself puts in the file name, so the mirror's year labels can be checked rather than trusted. It is the evidence behind `ipeds_mirror_fix.py`.  WHY A SECOND SOURCE FOR A SERIES WE ALREADY FETCH. `fetch_ipeds_cip.py` reads the Urban Institute's IPEDS mirror, which is convenient (keyless, JSON, one call a year) and wrong about WHICH YEAR it is serving for three of the last four. `ipeds_mirror_fix.py` carries the diagnosis and the correction table; this file is the evidence behind it. NCES ",
+   "what_one_row_is": "One (collection year, institution, CIP-6, award level) count of awards conferred, sexes and races at their totals (`CTOTALT`), first major only (`MAJORNUM=1`), for the three institutions that are the regional polymer pipeline and the six CIP codes `fetch_ipeds_cip.py` already verified against the NCES CIP 2020 file.  THE YEAR IN THE FILE NAME IS THE COLLECTION YEAR. `C2023_A` is awards conferred b",
+   "traps": "- **The CSV is BOM-prefixed from C2023 on.** `UNITID` reads as `﻿UNITID` unless the file is opened `utf-8-sig`. A plain `utf-8` read silently matches no institution and reports zero completions for every year, which looks exactly like a program closing. - **`AWLEVEL` is zero-padded in some vintages and not in others** (\"05\" and \"5\" both appear across 2021-2024). Strip the padding before comparing. - **A revised file (`*_rv.csv`) ships inside the same zip** for years old enough to have one. This reads the unrevised file, which is what the Urban mirror also carries, so the two are comparable; a ",
+   "docstring": {
+    "has_house_docstring": true,
+    "has_traps": true,
+    "length": 2726
+   },
+   "hosts": [
+    "nces.ed.gov"
+   ],
+   "outputs": [
+    "ipeds_nces.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "ipeds_nces.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "ipeds_nces.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "ipeds_nces.json": "static"
+   },
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [
+    "ipeds"
+   ],
+   "consuming_pages": [
+    "accountability",
+    "cluster-health",
+    "occupations",
+    "scorecard"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
     "not_in_PIPELINES.md",
     "output_missing_on_disk"
    ]

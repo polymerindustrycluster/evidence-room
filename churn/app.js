@@ -70,10 +70,17 @@ const replMult = tHires / first.emp;
    they disagree in sign: the flow ledger nets +168 while the headcount falls 719. A
    reader met both, could not tell which one answered "did jobs grow", and finished
    unsure. Neither is wrong. QWI counts hires and separations as EVENTS during a quarter
-   and counts Emp as a HEADCOUNT on one day at the start of it; the two are estimated
-   separately and seasonally adjusted separately, so they are not required to add up and
-   routinely do not. The one that answers whether there are more jobs is the headcount.
-   Everything below derives that comparison rather than asserting it in prose. */
+   and counts Emp as a HEADCOUNT on one day at the start of it; the Census publishes the
+   two as separate estimates and they are not required to add up, which across this
+   series they do not, by about 1,100 jobs. The one that answers whether there are more
+   jobs is the headcount.
+   Everything below derives that comparison rather than asserting it in prose.
+
+   THIS PARAGRAPH USED TO BLAME SEPARATE SEASONAL ADJUSTMENT, and that explanation was
+   false: this pull is unadjusted (see derive_rest.py). The mechanism it was replaced
+   with is only what the shipped file can show. What the page still cannot say is WHY the
+   two part company, because the answer needs a column this pull does not carry; the
+   REFER is recorded in README.md. */
 const stockFall = first.emp - last.emp;                    // 719, a FALL, printed unsigned
 const stockPct = stockFall / first.emp * 100;
 /* Emp is the stock at quarter START, so the flows DURING quarter i are the ones that
@@ -148,22 +155,26 @@ function placeLabels(items, lh) {
 function drawFlow() {
   const mob = MOBILE.matches;
   /* SEASONALLY ADJUSTED is a term of art, and this is its first appearance on the page,
-     so it is translated here and used bare everywhere after. */
+     so it is translated here and used bare everywhere after. The translation was
+     BACKWARDS until 2026-09-01: it told the reader the winter and summer swing had been
+     taken out of a series that is not adjusted at all. The swing is still in the
+     quarterly bars, which is why every trend on this page is read off a four-quarter
+     average rather than off adjacent quarters. */
   /* NAICS 326 is spelled out HERE, not only in the source line under the chart. This
      caption is the code's first appearance in reading order, and a bare classification
      number above a chart is a term of art the reader has to carry until the small grey
      type below finally translates it. */
   document.getElementById("flowsub").textContent = mob
     ? `Hires above zero and separations below it in ${NAICS_NAME} (NAICS ${NAICS}), ` +
-      `${FP.words} counties summed, seasonally adjusted so the usual winter and summer ` +
-      `swing is taken out. Each bar is one calendar year, ${first.year} to ` +
+      `${FP.words} counties summed, not seasonally adjusted, so the usual winter and ` +
+      `summer swing is still in them. Each bar is one calendar year, ${first.year} to ` +
       `${last.year}; the pale last bar is three published quarters. Ends are plotted as ` +
       `negative jobs. Across all of them the flow ledger comes to ${N(tNet)} more starts ` +
       `than ends, too small to draw beside bars this size.`
     : `Quarterly hires (above zero) and separations (below it, as negative jobs) in ` +
-      `${NAICS_NAME} (NAICS ${NAICS}), ${FP.words} counties summed, seasonally adjusted ` +
-      `so the usual winter and summer swing is taken out, ${D.meta.span[0]} to ` +
-      `${D.meta.span[1]}. The net line is the two bars added.`;
+      `${NAICS_NAME} (NAICS ${NAICS}), ${FP.words} counties summed, not seasonally ` +
+      `adjusted, so the usual winter and summer swing is still in them, ` +
+      `${D.meta.span[0]} to ${D.meta.span[1]}. The net line is the two bars added.`;
   document.getElementById("flow-t").textContent = mob
     ? `Hires and separations in plastics and rubber manufacturing across ${FP.words} ` +
       `counties, totalled by year, hires drawn up from zero and separations down as ` +
@@ -769,8 +780,8 @@ document.getElementById("flowtable").innerHTML = tableView("f",
 document.getElementById("flowreconcile").innerHTML =
   `<b>Two measures, two questions.</b> Hires and separations are events counted through
    the quarter. The jobs column is a headcount taken on one day at the start of it. The
-   Census estimates them separately and seasonally adjusts them separately, so they are
-   not built to add up and mostly do not. <b>Net flow</b> answers how the ledger of starts
+   Census publishes them as separate estimates, so they are not required to add up and
+   across this series they do not. <b>Net flow</b> answers how the ledger of starts
    against ends came out. <b>The headcount</b> answers whether there are more jobs than
    there were, and it is the one to quote when the question is growth. Differencing the
    jobs column will not reproduce net flow, and in ${clashes.length} of the
@@ -883,9 +894,9 @@ meth.querySelector(".pv-method-grid").insertAdjacentHTML("beforeend", `
     <p>Across the period ${N(tHires)} jobs started and ${N(tSeps)} ended, so the region
       replaced about ${replMult.toFixed(1)} times its own opening workforce to finish with
       ${N(tNet)} more. The beginning-of-quarter count reads ${N(first.emp)} in
-      ${label(first)} against ${N(last.emp)} in ${label(last)}: the seasonally adjusted
-      stock and the seasonally adjusted flows are estimated separately and do not add up to
-      one another, which is why the net drawn on the flow chart is a ledger of flows rather
+      ${label(first)} against ${N(last.emp)} in ${label(last)}: the Census publishes the
+      headcount and the flows as separate estimates and they do not add up to one another,
+      which is why the net drawn on the flow chart is a ledger of flows rather
       than the change in the stock.</p>
     <p><b>Which of the two answers whether employment grew.</b> The headcount does. It is
       a count of jobs on a day, so a fall in it is fewer jobs; ${N(stockFall)} fewer here,
@@ -900,8 +911,9 @@ meth.querySelector(".pv-method-grid").insertAdjacentHTML("beforeend", `
       ${pairs.length} quarters the two headcount readings bracket, the flows still net
       ${netAligned >= 0 ? "+" : "−"}${N(Math.abs(netAligned))}. This is ordinary for
       QWI and not a defect in this pull; a flow count and a point-in-time count of the
-      same industry are separate estimates with separate reference periods, and each is
-      seasonally adjusted on its own.</p>
+      same industry are separate estimates with separate reference periods. Neither
+      series here is seasonally adjusted, so the quarterly swing is real movement in the
+      data and every trend on this page is read off a four-quarter average.</p>
     <p>Every published quarter carries all ${FP.words} counties, so no bar on the flow
       chart is a floor. ${last.year}Q4 is absent rather than zero: the Census has not
       published it. Below 760px the flow chart aggregates quarters into years, which
@@ -952,7 +964,7 @@ meth.querySelector(".pv-method-grid").insertAdjacentHTML("beforeend", `
     <summary><h3>What a fair comparison would need, and one number this page lacks</h3></summary>
     <p>Two pulls this page does not have, both from the same API and both cheap:</p>
     <ul>
-      <li>The identical QWI seasonally adjusted series with <span class="mono">industry=00</span>
+      <li>The identical QWI series, unadjusted as here, with <span class="mono">industry=00</span>
         (all industries) and <span class="mono">industry=31-33</span> (all manufacturing)
         for the same twelve Ohio county FIPS and the same quarters, requesting
         <span class="mono">Emp,HirA,Sep</span>. The site already pulls

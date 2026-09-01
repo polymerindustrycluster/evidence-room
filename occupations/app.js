@@ -8,8 +8,8 @@
  *                schooling band and each band's ratio-to-national is written on it.
  *   3. SCHOOLING which jobs those are: every degree-majority occupation is an
  *                engineer or scientist job.
- *   4. PIPELINE  the local polymer-degree count ran 118–179 a year 2014–2021, then
- *                54 and 63 — under half its earlier pace for two straight years.
+ *   4. PIPELINE  the local polymer-degree count ran 118–179 a year 2014–2020, then
+ *                54, 62 and 63 — under half its earlier pace for three straight years.
  *
  * THE GATE (web/README.md), answered:
  *   0. Dataset: one detailed occupation (six-digit federal occupation code) — its share
@@ -26,7 +26,7 @@
  *   3. Uncertainty: survey RSE in table and hover; withheld cells shown as withheld,
  *      never zero; the regional occupation counts are ESTIMATES and the note says so;
  *      the 2022–32 openings are a projection and are labeled as one; the degree drop is
- *      two observed years and the lede says what could fake it (a program recode).
+ *      three observed years and the lede says what could fake it (a program recode).
  *   4. Palette: the validated categorical for the three metros; a sequential teal ramp
  *      for the ORDINAL education levels; ink for the nation. One accent, one job.
  *   5. Interaction: one occupation selector (lookup rung of the ladder) that highlights
@@ -870,8 +870,8 @@ function drawEduMobile() {
 const matByYear = Object.fromEntries(progYears.map(y =>
   [y, D.programs.filter(p => p.group === "materials")
        .reduce((s, p) => s + (p.by_year[y] || 0), 0)]));
-const EARLY = progYears.filter(y => +y <= 2021);
-const LATE = progYears.filter(y => +y > 2021);
+const EARLY = progYears.filter(y => +y <= 2020);
+const LATE = progYears.filter(y => +y > 2020);
 /* Computed, never typed: the reference rule is half the mean of the early window, and the
    claim is that BOTH later years sit under it. */
 const earlyMean = EARLY.reduce((s, y) => s + polyByYear[y], 0) / EARLY.length;
@@ -1039,9 +1039,10 @@ function drawProgMobile() {
      under it. (1) Three institutions appear on the programs chart, but only two of them
      confer a POLYMER degree; Kent State is in the materials comparison group alone, so a
      reader counting the dark bars contradicted the heading immediately. (2) "More than
-     half" did not follow from the annotation beside it: 63 against 124 in 2021 is a 49%
-     fall. It IS more than half below the 2014-2021 average, which is what the figure title
-     and the rule have always said, so the heading now makes the claim the chart draws. */
+     half" did not follow from the annotation beside it: 63 against 124 in 2020 is a 49%
+     fall. It IS more than half below the 2014-2020 average, which is what the figure title
+     and the rule have always said, so the heading now makes the claim the chart draws.
+     The year 124 sits under moved on 2026-08-31; see _data/build/ipeds_mirror_fix.py. */
   const polyInst = new Set(D.programs.filter(p => p.group === "polymer").map(p => p.institution));
   document.getElementById("progtitle").textContent =
     `${Cap(WORDS[polyInst.size] || String(polyInst.size))} universities confer the polymer degrees, and the count has fallen below half its old pace`;
@@ -1058,17 +1059,22 @@ function drawProgMobile() {
   document.getElementById("trendsrc").innerHTML =
     `Integrated Postsecondary Education Data System completions, summed across the
      region&rsquo;s programs each year. The file ends at ${PT.latest_year}, the last year
-     available when this page was built, so the fall rests on two observed years.`;
+     available when this page was built, so the fall rests on ${WORDS[LATE.length] || LATE.length}
+     observed years. The 2020 to 2022 counts are read from the NCES completions files: the
+     mirror this series is otherwise built from filed those years a year late and served
+     one of them under no year at all.`;
   document.getElementById("progtable").innerHTML = withNote(tableView("prog",
     `Polymer and materials degrees conferred, by program, ${PT.latest_year} and ${WIN[0]}–${WIN[WIN.length - 1]} average`,
     ["Institution", "Program", "Level", String(PT.latest_year), `${WIN[0]}–${WIN[WIN.length - 1]} average`],
     progRows.map(r => [r.institution, `${r.program} (${r.cip.slice(0, 2)}.${r.cip.slice(2)})`, r.award, r.latest, r.window_avg.toFixed(1)])),
     `One row is one institution, program and award level, first major only, from the Urban
-     Institute&rsquo;s copy of the federal completions file. Programs with no completions in
+     Institute&rsquo;s copy of the federal completions file, with 2020 to 2022 taken from the
+     NCES files it mis-dated. Programs with no completions in
      the window are omitted, which is why the list has ${PT.institutions.length} names.`);
   document.getElementById("progsrc").innerHTML =
     `Integrated Postsecondary Education Data System completions by six-digit program code,
-     via the Urban Institute. Degrees count people finishing, not people hired or staying in
+     via the Urban Institute, corrected against NCES. Degrees count people finishing, not
+     people hired or staying in
      the region.`;
 }
 

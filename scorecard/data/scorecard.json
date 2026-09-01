@@ -8,10 +8,10 @@
   "publicOnly": "This repository is public and its history is permanent, so it carries no member, applicant or personal data. Every metric that would need PIC’s membership register, general ledger, pipeline or drawdown records is published here as a defined empty slot. Filling those rows requires a copy of this page kept outside a public repository.",
   "caution": "An award register records what has been committed and executed. It records no payment, so no figure on this page is a measure of money spent. Obligated is not disbursed, and the disbursement row is empty for that reason rather than for lack of effort.",
   "not": "No target on this page was set by PIC. A target cell showing a figure is a ceiling fixed by a signed award document, and every other target cell reads “not set”. No owner cell names a person, because this repository holds no owner assignment for any row.",
-  "small_numbers": "The talent rows are administrative counts in the low tens. The polymer series ran 124, 54, 63 across 2021, 2022 and 2023, so a single year is a reading and not a direction.",
-  "excludes": "Every one of the 11 tracked degree programmes that reports a 2019 count carries the identical count again for 2020 in the shipped occupations file, all 11 of them. Independent programmes do not repeat in lockstep, so this page reads the 2021-2023 window and uses neither of those two years."
+  "small_numbers": "The talent rows are administrative counts in the low tens. The polymer series ran 54, 62, 63 across 2021, 2022 and 2023, so a single year is a reading and not a direction.",
+  "excludes": "The federal mirror this series was built from ran a year behind from 2020 to 2022 and never served the 2022 collection year at all. Those three years are now taken from the NCES completions files directly, so the 2021-2023 window this page reads is three consecutive years rather than two years and a gap."
  },
- "generated_on": "2026-08-28",
+ "generated_on": "2026-09-01",
  "version": "1.0",
  "counts": {
   "rows": 18,
@@ -214,9 +214,9 @@
    "definition": "Credentials at every level awarded by the three regional institutions in CIP codes the occupations page classes as polymer, in the latest federal reporting year.",
    "cadence": "Annual, on the IPEDS completions release",
    "current": "63",
-   "sub": "2021-2023 average 80",
-   "trend": "volatile: 124, 54, 63",
-   "dir": "volatile",
+   "sub": "2021-2023 average 60",
+   "trend": "up three years: 54, 62, 63",
+   "dir": "up",
    "source": "IPEDS completions 2023",
    "owner": "not assigned",
    "target": "not set",
@@ -230,9 +230,9 @@
    "definition": "The subset of the row above awarded at bachelor level, across all three institutions. The entry point into the cluster’s technical workforce that does not require graduate school.",
    "cadence": "Annual, on the IPEDS completions release",
    "current": "6",
-   "sub": "2021-2023 average 10.3",
-   "trend": "down three years: 17, 8, 6",
-   "dir": "down",
+   "sub": "2021-2023 average 8.3",
+   "trend": "volatile: 8, 11, 6",
+   "dir": "volatile",
    "source": "IPEDS completions 2023",
    "owner": "not assigned",
    "target": "not set",
@@ -246,9 +246,9 @@
    "definition": "Credentials at every level in CIP codes the occupations page classes as materials rather than polymer, at the same three institutions and in the same year.",
    "cadence": "Annual, on the IPEDS completions release",
    "current": "33",
-   "sub": "2021-2023 average 27",
-   "trend": "up three years: 20, 29, 33",
-   "dir": "up",
+   "sub": "2021-2023 average 28",
+   "trend": "volatile: 29, 21, 33",
+   "dir": "volatile",
    "source": "IPEDS completions 2023",
    "owner": "not assigned",
    "target": "not set",
@@ -421,12 +421,16 @@
     "n": 118
    },
    {
-    "year": 2021,
+    "year": 2020,
     "n": 124
    },
    {
-    "year": 2022,
+    "year": 2021,
     "n": 54
+   },
+   {
+    "year": 2022,
+    "n": 62
    },
    {
     "year": 2023,
@@ -434,25 +438,34 @@
    }
   ],
   "polymer_window": [
-   124,
    54,
+   62,
    63
   ],
   "materials_window": [
-   20,
    29,
+   21,
    33
   ],
   "bachelor_window": [
-   17,
    8,
+   11,
    6
   ],
-  "dup_1920": 11,
-  "dup_all": true,
-  "quarantined": {
-   "2020": "the Urban Institute IPEDS mirror serves 2019 data under year=2020"
-  },
-  "quarantine_caption": "2020 is not drawn: the federal mirror republished 2019 under that year"
+  "polymer_trend": "up three years",
+  "materials_trend": "volatile",
+  "bachelor_trend": "volatile",
+  "source_correction": {
+   "applied": "2026-08-31",
+   "by": "_data/build/mirror_fix_patch.py",
+   "why": "2020 to 2022 are taken from the NCES completions files: the federal mirror this series is otherwise built from ran a year behind and skipped one",
+   "source": "NCES IPEDS completions C2021_A-C2024_A, via fetch_ipeds_nces.py",
+   "years_refiled": {
+    "2020": null,
+    "2021": 2020,
+    "2022": 2021
+   },
+   "year_backfilled": 2022
+  }
  }
 }

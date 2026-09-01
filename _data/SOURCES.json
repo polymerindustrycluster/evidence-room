@@ -70,7 +70,7 @@
    "key_required": false
   },
   "ipeds": {
-   "name": "IPEDS Completions, via the Urban Institute Education Data API",
+   "name": "IPEDS Completions, via the Urban Institute Education Data API, with three years read from NCES directly",
    "agency": "National Center for Education Statistics, served by the Urban Institute",
    "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/completions-cip-6/{year}/",
    "docs": "https://educationdata.urban.org/documentation/colleges.html",
@@ -81,13 +81,14 @@
     "race/sex": "race=99 and sex=99 are the total rows; race=8 is nonresident alien. The two partitions are aggregated separately and never crossed; this endpoint does not offer the cross-tab at CIP-6.",
     "national benchmark": "the same codes with no state filter, restricted to codes the footprint itself confers as a programme (which excludes 150607), since PIC-12’s entire history in it is two awards from one community college in one year",
     "note": "Two earlier code entries did not exist and silently returned zero: 140320 (a transposition of 143201) and 143101 (materials science is in the 40 series, not 14). A core code returning zero across every year and institution is evidence of a bad code, not of no graduates.",
-    "ipeds_cip": "fetch_ipeds_cip.py adds institution × CIP × year (used by talent and occupations)"
+    "ipeds_cip": "fetch_ipeds_cip.py adds institution × CIP × year (used by talent and occupations)",
+    "year labels": "The mirror’s year is the FALL of the academic year, so its 2023 is the NCES C2024_A file. That convention held through 2019 and again at 2023; in between, its 2020, 2021 and 2022 each served the collection year before the one they name, and C2023_A was served under no label at all. Those three years are therefore taken from the NCES completions files (https://nces.ed.gov/ipeds/datacenter/data/C{year}_A.zip, no key), by fetch_ipeds_nces.py; the correction table and its re-check are in _data/build/ipeds_mirror_fix.py. Degrees only: the recovered year also carries two postbaccalaureate certificates, which no other year of the series counts."
    },
    "licence": "ODC (Open Data Commons)-By 1.0",
    "licence_url": "https://opendatacommons.org/licenses/by/1-0/",
    "attribution": "Integrated Postsecondary Education Data System (IPEDS) Completions, via Education Data Portal v. 0.26.1, Urban Institute, accessed 18 August 2026, https://educationdata.urban.org/documentation/, made available under the ODC (Open Data Commons) Attribution License.",
    "terms": "The underlying IPEDS collection is a public-domain federal series, but the route this site uses is not the federal one. Everything served through the Urban Institute’s Education Data Portal is licensed to the user under the Open Data Commons Attribution License (ODC-By) v1.0, which REQUIRES attribution and a citation naming the portal version and the access date: https://educationdata.urban.org/documentation/. Portal version 0.26.1 was released 2026-08-05 and was current at this site’s access date of 2026-08-18.",
-   "script": "_data/build/fetch_ipeds.py, fetch_ipeds_national.py, fetch_intl.py, _data/build/fetch_ipeds_cip.py",
+   "script": "_data/build/fetch_ipeds.py, fetch_ipeds_national.py, fetch_intl.py, _data/build/fetch_ipeds_cip.py, _data/build/fetch_ipeds_nces.py",
    "key_required": false
   },
   "bea_rpp": {

@@ -344,6 +344,28 @@ detail drawer and both fallbacks are untouched apart from one label fix.
   entries for three statements about the world. Every other claim's text was updated
   to name where its sentence now sits.
 
+## Revision, 31 August 2026 — the mechanism field caught up with the H1 (append-only)
+
+The headline says no two of the three awards move the money the same way. The
+register said otherwise: `sources[].mechanism` read `direct` for the EDA Tech
+Hub and `direct` for APEX, one value for two different routes. The routes were
+never the same. EDA obligates the seven Tech Hub implementation awards straight
+to their project leads, so no federal dollar passes through PIC; the Greater
+Akron Chamber signs for APEX as its single grantee and funds regional training
+with it. Both facts were already on the page, in the machine cards, and both
+come from the signed Notices of Award.
+
+- **The field is now the route**: `direct-to-leads`, `hub-allocated`,
+  `single-grantee`. Nothing renders this field — it is inert data that a reader
+  or a later editor would nonetheless read as the register's own account of the
+  routes, and it disagreed with the page.
+- **A claim now guards the H1's second half.** `mechanism-distinct` asserts three
+  sources, three distinct mechanisms, and that each award's note still says how
+  its money reaches a recipient. `claims.json` is at 23 (20 machine-checked, 3
+  manual); the methods box counts these itself, so nothing was hand-typed.
+- **No published figure or sentence changed**, so there is no correction to date.
+
+
 ## Open questions for a human
 
 - ~~**Font licensing.**~~ Closed 28 August 2026: the page no longer names Aptos.
