@@ -1,8 +1,8 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-08-31 20:41",
-  "seconds": 2.3,
+  "generated": "2026-08-31 23:54",
+  "seconds": 2.0,
   "scripts": 49,
   "outputs_on_disk": 7,
   "outputs_claimed": 32,
@@ -199,7 +199,7 @@
    "observed_reads": [
     "collab.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/collab.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-b/_data/build/collab.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -240,7 +240,7 @@
    "observed_reads": [
     "fed_awards.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/fed_awards.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-b/_data/build/fed_awards.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -338,7 +338,7 @@
    "observed_reads": [
     "lodes.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/lodes.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-b/_data/build/lodes.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -379,7 +379,7 @@
    "observed_reads": [
     "lodes.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/lodes.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-b/_data/build/lodes.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -471,7 +471,7 @@
     "occmix.json",
     "oews.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/oews.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-b/_data/build/oews.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -524,7 +524,7 @@
    "observed_reads": [
     "pic12_geo.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/pic12_geo.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-b/_data/build/pic12_geo.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -565,7 +565,7 @@
    "observed_reads": [
     "peers.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/peers.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-b/_data/build/peers.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -661,7 +661,7 @@
    "observed_reads": [
     "reach.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/reach.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-b/_data/build/reach.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -710,7 +710,7 @@
    "observed_reads": [
     "peers.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/peers.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-b/_data/build/peers.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -751,7 +751,7 @@
    "observed_reads": [
     "qwi.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/qwi.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-b/_data/build/qwi.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -947,7 +947,7 @@
     "<outside-repo>/.env",
     "fred.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/fred.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-b/_data/build/fred.json'",
    "registry_sources": [
     "fred"
    ],

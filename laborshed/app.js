@@ -1150,10 +1150,23 @@ function drawRegionsMobile() {
 }
 
 const PGH = R.find(r => /^Pittsburgh/.test(r.name));
+/* THE DIRECTION TRAVELS WITH THE FIGURE, because the two directions disagree here and
+   the title used to name neither. "Keeps its work inside itself" is true of both the
+   workplace side (the work sitting in the region) and the resident side (the work its
+   residents hold), and the ranking reverses between them: Pittsburgh leads on the bars
+   drawn here, PIC-12 leads on the other measure by two hundredths of a point. The bars
+   are region_share_work, so that is what the title now says out loud, and the reversal
+   is stated in the reading line under the chart. Guarded by ls-only-pittsburgh-matches,
+   which now asserts BOTH sides rather than only the one drawn. */
+const PIC = R.find(r => r.kind === "footprint");
+/* Two decimals ONLY here. The two resident-side figures are 0.02 points apart and both
+   round to the same one-decimal value, so pct() would print the reversal as a pair of
+   identical numbers and read as a typo. */
+const pct2 = v => (v * 100).toFixed(2) + "%";
 document.getElementById("regionsfigtitle").textContent =
-  `The twelve counties keep ${pct(B.totals.work_region_share)} of their work inside ` +
-  `themselves; only Pittsburgh is higher, at ${pct(PGH.region_share_work)} on ` +
-  `${WORDS[PGH.counties]} counties`;
+  `Of the work that sits inside them, the twelve counties keep ` +
+  `${pct(B.totals.work_region_share)} for their own residents; only Pittsburgh keeps ` +
+  `more, ${pct(PGH.region_share_work)} on ${WORDS[PGH.counties]} counties`;
 
 /* -------------------------------------------------------- tables + prose slots */
 
@@ -1302,7 +1315,10 @@ document.getElementById("benchreading").innerHTML =
    Ashtabula reads ${pct(ashB.own_share_work)} on this chart and
    ${pct(strong.in_county)} on the charts above, because those count every resident of
    any state and this one counts only Ohio residents. Every county here moves the same
-   way for the same reason.`;
+   way for the same reason, and Ashtabula moves far enough to matter: on this narrower
+   count it is the one county of the twelve above the ${CEIL_PCT} percent line, which is
+   why the headline above opens <b>counting every job inside it</b> rather than leaving
+   the basis to be inferred.`;
 
 /* THE COLUMN HEADER NAMES THE BASIS, because this is the table where a reader who
    suspects two totals for one place goes to check, and it is the one printing the
@@ -1330,11 +1346,17 @@ document.getElementById("regionsreading").innerHTML =
    ${importedPctOhio} percent. The band earlier on this page counts a worker resident in
    any state and reads ${N(JOBS_ALL)} and ${importedPct} percent. Same twelve counties,
    same ${N(D.totals.home_inside_pic12)} jobs held from inside, two denominators. Among
-   comparable regions only Pittsburgh is higher, at
+   comparable regions only Pittsburgh keeps more, at
    ${pct(PGH.region_share_work)} on ${WORDS[PGH.counties]} counties rather than twelve. Read
    against this chart’s own size rule, that makes Pittsburgh the stronger figure and the
-   twelve counties the closest thing to it. Either way it is the claim the county-level
-   figures cannot make.`;
+   twelve counties the closest thing to it.
+   <b>That ranking is the workplace side, the work that sits inside a region.</b> On the
+   resident side, where each region’s own people work, it reverses:
+   ${pct2(PIC.region_share)} of PIC-12 residents’ jobs are inside PIC-12 against
+   Pittsburgh’s ${pct2(PGH.region_share)}. Two hundredths of a point is a tie in
+   everything but the sign, so the honest reading is that the two regions are level and
+   which one leads depends on which direction is asked. Either way it is the claim the
+   county-level figures cannot make.`;
 
 /* ------------------------------------------------------------- register breaks
    The two numbers each act was written to earn, promoted out of body prose into display
@@ -1405,7 +1427,8 @@ document.getElementById("closersub").innerHTML =
    below ${CEIL_PCT} percent. What survives is the twelve together:
    <b>${pct(B.totals.work_region_share)}</b> of their ${N(JOBS_OHIO)} jobs are held by
    people living inside them, counting Ohio residents on both sides as every region on
-   that chart is counted, a figure only Pittsburgh beats among comparable regions. A wider line
+   that chart is counted, a figure only Pittsburgh beats among comparable regions, and
+   only on that side of the measure. A wider line
    would hold more: the fourteen-county Northeast Ohio footprint adds
    ${WIDER_ADDS.slice(0, -1).join(", ")} and ${WIDER_ADDS.at(-1)}, and all but
    ${ADDS_OUT.join(" and ")} already rank among the ten largest outside sources of these

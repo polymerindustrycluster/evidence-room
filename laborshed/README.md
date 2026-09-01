@@ -40,6 +40,17 @@ at render time from the two shipped files, or guarded in claims.json.
   denominator; the 397-county benchmark is in-state-only on both sides so peers are
   measured identically (Summit 48.9% there vs 48.4% fully counted; Ashtabula 72.7% vs
   68.5%). The reading line under the benchmark explains the Ashtabula case.
+  **This is why the first H2 says "counting every job inside it".** "No county fills even
+  seven of ten jobs with its own residents" is true on the fullest denominator and FALSE
+  on the in-state one, where Ashtabula reads 72.7% and is the single county above the
+  line. `ls-no-county-is-a-market` asserts both halves. Never quote the seven-in-ten
+  sentence without its basis.
+- **The regions chart has two directions and they disagree.** The bars are the WORKPLACE
+  side, the work that sits inside a region: PIC-12 89.5%, Pittsburgh 89.6% on eight
+  counties, so Pittsburgh leads. On the RESIDENT side, where each region's own people
+  work, it reverses: PIC-12 90.93% against Pittsburgh's 90.91%. Two hundredths of a point
+  is a tie, and "only Pittsburgh keeps more of its work inside itself" is a one-direction
+  sentence that has to carry its direction (`ls-only-pittsburgh-matches` asserts both).
 - **Two totals for the twelve counties, and both are right.** 1,735,169 jobs on the
   all-residents basis (a worker resident in ANY state), 1,702,542 on the in-state basis
   the regions and benchmark charts use, 32,627 apart. The two outside shares that follow
