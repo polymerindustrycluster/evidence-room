@@ -13,6 +13,49 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-09-01, ninth entry — a name that should not have been here, and a register that had stopped being rebuilt
+
+**A named company was published as an unsuccessful applicant, *timeline*.** One row read
+"Materium Technologies NOT accepted into Synthe6 cohort 1 (no Ohio place of business)",
+on a site whose README withholds two entire pages on the stated ground that "naming an
+unsuccessful applicant is not something a funder gets to do". The row now describes the
+decision without naming the applicant. The company's later rows stay: it established Ohio
+operations and joined the cohort, and both are public and creditable.
+
+**Seventy-four companies carried a hidden verdict, *chain*.** The served register gave
+every company a `rel` field, and for 74 of them its value was `not_relevant` — an internal
+judgement about a named private firm, published in a file anyone can fetch, on a register
+whose own source note says any public release is gated on member consent. No page read the
+field. A field nothing renders is not a feature, it is a disclosure with no reader. It is
+gone from the data and from the builder that wrote it.
+
+**Two universals on the front page were false.** The hub said "Every page is built from
+federal data that costs nothing to obtain" and, in its rebuild instructions, "Nothing reads
+a private table." Three pages read private tables: chain from PIC's own company register,
+timeline and accountability from PIC project records. **Is:** twenty of twenty-three pages
+are built entirely from free federal data, and the three exceptions are named, with the
+warning that those three cannot be reproduced by a reader.
+
+**The sources register had stopped being rebuilt, and three published figures had drifted
+with it.** It held fifteen of twenty-four sources and eighteen of twenty-three pages. The
+build refuses to publish a source without a written statement of what it cannot tell you;
+nine had none, so the build failed and somebody stopped running it rather than writing
+them. Those nine are now written and the register is complete. Rebuilding it moved figures
+the page had been publishing from an older pull: **the region's universities awarded 1,175
+degrees on the three core codes between 2014 and 2023, not 1,231; 1,432 counting the
+adjacent codes, not 1,490; and the wider net is 22 percent larger, not 21.** Nothing was
+wrong with the arithmetic. The register it read had simply frozen, and every gate stayed
+green because each one checked the page against the register.
+
+**Two new checks ship with this, and both found something before they were trusted.** A
+set-equality check now fails the build when the published register and its own source file
+disagree, which is the drift above made loud. And `tools/furniture.mjs` asserts that every
+number printed on a chart is said somewhere else on its own page: hand-typed chart strings
+were the site's largest defect class, about thirty corrections, and nothing bound them to
+anything. On its first run over 262 numbers it found one — a 0.034 move printed in a
+*cluster-health* caption and asserted nowhere — which is now guarded by that figure's own
+claim.
+
 ## 2026-09-01, eighth entry — the reader, who had no way in
 
 Three findings about this site's relationship with the people it writes about and the

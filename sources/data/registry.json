@@ -43,7 +43,7 @@
     ],
     [
      "geography",
-     "county FIPS. The page\u2019s own footprint, PIC-12, is 39007 Ashtabula, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39169 Wayne. The wider NEO-14 used by the vault pages is 39033 Crawford, 39035 Cuyahoga, 39055 Geauga, 39077 Huron, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39139 Richland, 39151 Stark, 39153 Summit, 39157 Tuscarawas, 39169 Wayne. Both are defined once in footprints.py, which is a vendored copy of the pic-geo package."
+     "county FIPS (the federal numeric code that identifies each county). The page\u2019s own footprint, PIC-12, is 39007 Ashtabula, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39169 Wayne. The wider NEO-14 used by the vault pages is 39033 Crawford, 39035 Cuyahoga, 39055 Geauga, 39077 Huron, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39139 Richland, 39151 Stark, 39153 Summit, 39157 Tuscarawas, 39169 Wayne. Both are defined once in footprints.py, which is a vendored copy of the pic-geo package."
     ],
     [
      "by_industry",
@@ -51,7 +51,7 @@
     ],
     [
      "user_agent",
-     "This source is on data.bls.gov, which serves a scripted request with any User-Agent or none. The 403 is on www.bls.gov, which the two OEWS files use, and the warning is filed on those rather than here."
+     "This source is on data.bls.gov, which serves a scripted request with any User-Agent or none. The 403 is on www.bls.gov, which the two OEWS (the Occupational Employment and Wage Statistics survey) files use, and the warning is filed on those rather than here."
     ],
     [
      "note",
@@ -126,18 +126,18 @@
   },
   {
    "key": "ipeds",
-   "name": "IPEDS Completions, via the Urban Institute Education Data API",
+   "name": "IPEDS Completions, via the Urban Institute Education Data API, with three years read from NCES directly",
    "short": "IPEDS degree completions",
    "agency": "National Center for Education Statistics, served by the Urban Institute",
    "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/completions-cip-6/{year}/",
    "docs": "https://educationdata.urban.org/documentation/colleges.html",
-   "script": "_data/build/fetch_ipeds.py, fetch_ipeds_national.py, fetch_intl.py, _data/build/fetch_ipeds_cip.py",
+   "script": "_data/build/fetch_ipeds.py, fetch_ipeds_national.py, fetch_intl.py, _data/build/fetch_ipeds_cip.py, _data/build/fetch_ipeds_nces.py",
    "key_required": false,
    "route": "api",
    "route_label": "API request",
-   "licence": "ODC-By 1.0",
+   "licence": "ODC (Open Data Commons)-By 1.0",
    "licence_url": "https://opendatacommons.org/licenses/by/1-0/",
-   "attribution": "Integrated Postsecondary Education Data System (IPEDS) Completions, via Education Data Portal v. 0.26.1, Urban Institute, accessed 18 August 2026, https://educationdata.urban.org/documentation/, made available under the ODC Attribution License.",
+   "attribution": "Integrated Postsecondary Education Data System (IPEDS) Completions, via Education Data Portal v. 0.26.1, Urban Institute, accessed 18 August 2026, https://educationdata.urban.org/documentation/, made available under the ODC (Open Data Commons) Attribution License.",
    "terms": "The underlying IPEDS collection is a public-domain federal series, but the route this site uses is not the federal one. Everything served through the Urban Institute\u2019s Education Data Portal is licensed to the user under the Open Data Commons Attribution License (ODC-By) v1.0, which REQUIRES attribution and a citation naming the portal version and the access date: https://educationdata.urban.org/documentation/. Portal version 0.26.1 was released 2026-08-05 and was current at this site\u2019s access date of 2026-08-18.",
    "is": "The federal record of every degree and certificate conferred by every institution that takes federal student aid, filed by six-digit programme code.",
    "good": "Counting the graduates of named programmes at named institutions, year by year, against the same programmes nationally.",
@@ -170,6 +170,10 @@
     [
      "ipeds_cip",
      "fetch_ipeds_cip.py adds institution \u00d7 CIP \u00d7 year (used by talent and occupations)"
+    ],
+    [
+     "year labels",
+     "The mirror\u2019s year is the FALL of the academic year, so its 2023 is the NCES C2024_A file. That convention held through 2019 and again at 2023; in between, its 2020, 2021 and 2022 each served the collection year before the one they name, and C2023_A was served under no label at all. Those three years are therefore taken from the NCES completions files (https://nces.ed.gov/ipeds/datacenter/data/C{year}_A.zip, no key), by fetch_ipeds_nces.py; the correction table and its re-check are in _data/build/ipeds_mirror_fix.py. Degrees only: the recovered year also carries two postbaccalaureate certificates, which no other year of the series counts."
     ]
    ],
    "pages": [
@@ -220,6 +224,56 @@
    "n_pages": 3
   },
   {
+   "key": "ipeds_programs_census",
+   "name": "IPEDS completions by 6-digit CIP, 1991-2023 (the polymer-programs-db census)",
+   "short": "IPEDS polymer completions",
+   "agency": "National Center for Education Statistics, via the Urban Institute Education Data API",
+   "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/completions-cip-6",
+   "docs": "https://educationdata.urban.org/documentation/colleges.html",
+   "script": "derive_programs.py",
+   "key_required": false,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
+   "is": "Degree and certificate completions by six-digit programme code, 1991 to 2023, for the three polymer codes.",
+   "good": "Counting what American colleges actually conferred under a polymer heading, year by year, on one consistent national definition.",
+   "cannot": "It sees only what a college CHOSE to report under a polymer code. Soft-matter teaching filed under chemistry, physics or materials is invisible to it, and at least five institutions are confirmed to teach the subject while appearing here as nothing. A year with no completions is a filing gap, never a closure. 2024 returns HTTP 500 from the API and is probed on every build, so every recent figure is a floor.",
+   "filters": [
+    [
+     "polymer CIP codes",
+     "14.3201 Polymer/Plastics Engineering; 40.0507 Polymer Chemistry; 15.0607 Plastics and Polymer Engineering Technology"
+    ],
+    [
+     "years",
+     "1991-2023 (2024 returns HTTP 500 from the API and is probed on every build)"
+    ],
+    [
+     "majors",
+     "first majors only from 2000; the distinction does not exist before 2000 and filtering earlier years on it silently returns zero rows"
+    ],
+    [
+     "award levels",
+     "certificate levels canonicalised across the 2020 IPEDS renumbering (1->31, 2/3->32, 5/6->33) before any counting"
+    ],
+    [
+     "demographics",
+     "race=99, sex=99 (totals only)"
+    ],
+    [
+     "census build",
+     "sibling checkout polymer-programs-db: fetch_ipeds_national.py -> raw_ipeds_national.json, build_db.py -> programs.sqlite; derive_programs.py reads the sqlite and cross-checks every published number"
+    ]
+   ],
+   "pages": [
+    "atlas",
+    "programs"
+   ],
+   "n_pages": 2
+  },
+  {
    "key": "odjfs",
    "name": "Ohio LMI long-term employment projections, 2022\u20132032",
    "short": "Ohio LMI projections",
@@ -244,7 +298,7 @@
     ],
     [
      "row",
-     "one industry or one SOC occupation \u00d7 geography: 2022 base, 2032 projected, change, percent, annual openings split, median wage"
+     "one industry or one SOC (the Standard Occupational Classification, the federal job-title code) occupation \u00d7 geography: 2022 base, 2032 projected, change, percent, annual openings split, median wage"
     ],
     [
      "projection_not_forecast",
@@ -262,6 +316,60 @@
    "pages": [
     "cluster-health",
     "occupations"
+   ],
+   "n_pages": 2
+  },
+  {
+   "key": "openalex",
+   "name": "OpenAlex works and institutions",
+   "short": "OpenAlex publications",
+   "agency": "OurResearch (open, non-profit)",
+   "url": "https://api.openalex.org/works",
+   "docs": "https://docs.openalex.org/",
+   "script": "_data/build/fetch_reach.py, fetch_collab.py",
+   "key_required": false,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
+   "is": "An open bibliographic index of published work and the institutions attached to it.",
+   "good": "Seeing who a region's researchers publish with, and where the work travels.",
+   "cannot": "Attribution rests on a convention: credit goes to the corresponding author, which is where a lab is, not necessarily where the work was done. Affiliation strings are noisy enough that a public library appeared as a leading polymer partner until it was quarantined by hand. Coverage favours indexed venues, so silence is not absence of work.",
+   "filters": [
+    [
+     "institutions",
+     "I110152177 (University of Akron), I58956616 (Case Western Reserve University)"
+    ],
+    [
+     "subject bound",
+     "topics.subfield.id:2507, \u2018Polymers and Plastics\u2019. A CLASSIFICATION, not a keyword."
+    ],
+    [
+     "years",
+     "publication_year 2015-2024"
+    ],
+    [
+     "reported alongside",
+     "subfield 2502 \u2018Biomaterials\u2019, counted separately and never merged in"
+    ],
+    [
+     "taxonomy source",
+     "subfield ids confirmed against s3://openalex/data/jsonl/subfields, not inferred from documentation"
+    ],
+    [
+     "note",
+     "An earlier bound matched the full-text word \u2018polymer\u2019 and returned 4,037 works, four of whose five largest partners were hospitals. The classification returns 1,448. Author position uses is_corresponding, not first author, because in this field the first author is normally the graduate student."
+    ],
+    [
+     "one script deliberately omitted",
+     "fetch_openalex.py hits this same endpoint but is still on the old keyword bound and returns the superseded 4,037 figure. No published page reads its output, so it is left out rather than handing a reader a script that reproduces the wrong number. Audited 2026-08-17."
+    ]
+   ],
+   "pages": [
+    "collaboration",
+    "reach"
    ],
    "n_pages": 2
   },
@@ -345,6 +453,43 @@
    "n_pages": 1
   },
   {
+   "key": "cbp",
+   "name": "Census County Business Patterns",
+   "short": "Census business patterns",
+   "agency": "US Census Bureau",
+   "url": "https://api.census.gov/data/{year}/cbp",
+   "docs": "https://www.census.gov/data/developers/data-sets/cbp-nonemp-zbp/cbp-api.html",
+   "script": "_data/build/fetch_cbp.py",
+   "key_required": true,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
+   "is": "A yearly Census count of business ESTABLISHMENTS, meaning physical sites. A firm with three plants appears three times.",
+   "good": "How many polymer sites a county holds, and roughly how many people work in them, on a definition that is the same in every county in the country.",
+   "cannot": "It cannot tell you what a site actually makes beyond its industry code, it suppresses any cell small enough to identify an employer, and it counts a different thing from PIC's own register: Census counts sites, PIC classifies companies, so a coverage ratio between them can pass 100 percent without the county being fully covered.",
+   "filters": [
+    [
+     "NAICS",
+     "325 and 326"
+    ],
+    [
+     "unit",
+     "ESTABLISHMENTS: one physical site, not one company. A firm with three plants is three establishments."
+    ],
+    [
+     "note",
+     "Census and PIC define a firm differently, so a coverage ratio can exceed 100 percent without the county being fully covered."
+    ]
+   ],
+   "pages": [
+    "chain"
+   ],
+   "n_pages": 1
+  },
+  {
    "key": "heritage_register",
    "name": "NEO Polymer Wins register, heritage and discoveries collections",
    "short": "NEO Polymer Wins register",
@@ -390,6 +535,84 @@
    ],
    "pages": [
     "timeline"
+   ],
+   "n_pages": 1
+  },
+  {
+   "key": "ipeds_control_cips",
+   "name": "The same IPEDS pull for six peer technician CIPs (the control, on two populations)",
+   "short": "IPEDS control programmes",
+   "agency": "National Center for Education Statistics, via the Urban Institute Education Data API",
+   "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/completions-cip-6",
+   "docs": null,
+   "script": "derive_programs.py, fetch_ipeds_control_baserate.py",
+   "key_required": false,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
+   "is": "The identical pull run against six neighbouring technician programme codes, as a control.",
+   "good": "Telling whether something that happened to polymer programmes happened to comparable technical programmes too.",
+   "cannot": "It is a comparison set, not a second measurement of the cluster, and it inherits every blindness of the polymer census: both see reporting choices rather than teaching.",
+   "filters": [
+    [
+     "control CIP codes",
+     "48.0508 Welding; 48.0501 Machine Tool; 15.0613 Manufacturing Eng Tech; 47.0303 Industrial Mechanics and Maintenance; 15.0303 Electrical/Electronic Eng Tech; 15.0805 Mechanical Eng Tech"
+    ],
+    [
+     "rule",
+     "identical to the polymer census: substantive = more than 10 lifetime completions, active = a completion in 2023, same years, same award-level canonicalisation"
+    ],
+    [
+     "control build",
+     "sibling checkout polymer-programs-db: fetch_control_cips.py -> control_cips.json, read by derive_programs.py, for the survival control. The base-rate control is pulled in this repository by fetch_ipeds_control_baserate.py, keyless, and will not write until it reproduces the published 48% from the live API"
+    ],
+    [
+     "two populations",
+     "the SURVIVAL control counts substantive programs only (6,648 ever, 3,185 still, 48%); the BASE-RATE control counts every start with the size threshold OFF (8,736 ever, 23% at ten or fewer completions, 19% both tiny and brief), because thresholding on size would discard the population a start-and-fail rate is about. The two counts are of the same six trades under two different rules and must never be quoted against each other"
+    ]
+   ],
+   "pages": [
+    "programs"
+   ],
+   "n_pages": 1
+  },
+  {
+   "key": "ipeds_directory",
+   "name": "IPEDS institutional directory (coordinates and identity)",
+   "short": "IPEDS institution directory",
+   "agency": "National Center for Education Statistics, via the Urban Institute Education Data API",
+   "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/directory/{year}/",
+   "docs": null,
+   "script": "derive_atlas.py",
+   "key_required": false,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
+   "is": "The federal directory of institutions: who they are, and since 2009 where they are.",
+   "good": "Placing a college on a map and confirming its identity across years.",
+   "cannot": "The coordinate fields begin in 2009, so anything that stopped filing before then has no location and is placed by hand at its city centre. More importantly: a directory year omits institutions that were already gone, and absence from it is not evidence of closure. Several institutions missing from a recent year are open and teaching.",
+   "filters": [
+    [
+     "lookup",
+     "per-unitid, year 2023 with fallback to the institution\u2019s last active year"
+    ],
+    [
+     "trap",
+     "a year\u2019s directory omits institutions that closed before it, and the latitude/longitude fields begin in 2009: seven pre-2009 closures are placed at hand city centroids, stated per-dot"
+    ],
+    [
+     "projection",
+     "points and basemap pre-projected at build time into the us-atlas AlbersUSA frame (975x610, scale 1300, translate 487.5/305): NOT d3 defaults"
+    ]
+   ],
+   "pages": [
+    "atlas"
    ],
    "n_pages": 1
   },
@@ -480,6 +703,43 @@
    "n_pages": 1
   },
   {
+   "key": "nsf_awards",
+   "name": "NSF Awards API",
+   "short": "NSF award record",
+   "agency": "National Science Foundation",
+   "url": "https://api.nsf.gov/services/v1/awards.json",
+   "docs": "https://www.research.gov/common/webapi/awardapisearch-v1.htm",
+   "script": "_data/build/fetch_collab.py, fetch_research_awards.py",
+   "key_required": false,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
+   "is": "The National Science Foundation's own record of what it awarded, to whom, and when.",
+   "good": "Establishing that a specific federal award exists, its size and its dates, from the awarding agency rather than from a press release.",
+   "cannot": "The PRIME RECIPIENT is not the lead institution of the work, and reading it as such is the single error this project has made most often. Collaborative work is frequently issued as separate awards to each institution, so one award naming one university is not evidence that the other was uninvolved.",
+   "filters": [
+    [
+     "scope",
+     "every award to either university since 2012-01-01"
+    ],
+    [
+     "joint detection",
+     "two ways: one award naming investigators at both institutions by email domain, and NSF\u2019s \u2018Collaborative Research\u2019 mechanism, which issues a separate award per institution under an identical title"
+    ],
+    [
+     "note",
+     "Only awards NSF itself labels \u2018Collaborative Research\u2019 are counted as joint. Matching on shared title alone booked \u2018Graduate Research Fellowship Program\u2019: an institutional block grant every university receives separately, as a $1.1M joint project."
+    ]
+   ],
+   "pages": [
+    "collaboration"
+   ],
+   "n_pages": 1
+  },
+  {
    "key": "oews",
    "name": "BLS Occupational Employment and Wage Statistics, metropolitan file",
    "short": "OEWS metro wages",
@@ -512,7 +772,7 @@
     ],
     [
      "user_agent",
-     "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address. contact.py holds the single address this repository sends. data.bls.gov, which the QCEW pulls use, serves any of them."
+     "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address. contact.py holds the single address this repository sends. data.bls.gov, which the QCEW (the Quarterly Census of Employment and Wages) pulls use, serves any of them."
     ]
    ],
    "pages": [
@@ -545,7 +805,7 @@
     ],
     [
      "occupations",
-     "the SOC set read from oews.json (26 codes); the metro pull defines the set"
+     "the SOC (the Standard Occupational Classification, the federal job-title code) set read from oews.json (26 codes); the metro pull defines the set"
     ],
     [
      "dedupe",
@@ -557,7 +817,7 @@
     ],
     [
      "user_agent",
-     "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address. contact.py holds the single address this repository sends. data.bls.gov, which the QCEW pulls use, serves any of them."
+     "www.bls.gov returns 403 to a scripted request with no User-Agent and to one impersonating a browser, and 200 to one naming a contact address. contact.py holds the single address this repository sends. data.bls.gov, which the QCEW (the Quarterly Census of Employment and Wages) pulls use, serves any of them."
     ]
    ],
    "pages": [
@@ -594,7 +854,7 @@
     ],
     [
      "join",
-     ".00 variant preferred, else equal-weight mean of variants; broad SOC 51-2090 = mean of five-char stem"
+     ".00 variant preferred, else equal-weight mean of variants; broad SOC (the Standard Occupational Classification, the federal job-title code) 51-2090 = mean of five-char stem"
     ],
     [
      "job_zone",
@@ -616,12 +876,12 @@
   },
   {
    "key": "qwi",
-   "name": "Census Quarterly Workforce Indicators, seasonally adjusted",
+   "name": "Census Quarterly Workforce Indicators, not seasonally adjusted",
    "short": "Census QWI workforce indicators",
    "agency": "US Census Bureau / LEHD",
    "url": "https://api.census.gov/data/timeseries/qwi/sa",
    "docs": "https://www.census.gov/data/developers/data-sets/qwi.html",
-   "script": "_data/build/fetch_footprint.py, fetch_qwi_demand.py",
+   "script": "_data/build/fetch_footprint.py, fetch_qwi_demand.py, fetch_qwi_bench.py",
    "key_required": true,
    "route": "api",
    "route_label": "API request",
@@ -643,15 +903,117 @@
     ],
     [
      "geography",
-     "state 39, the twelve PIC-12 counties"
+     "state 39, the twelve PIC-12 counties; and states 39, 17, 48, 06, 42, 18 and 26 published whole, for the churn page\u2019s peer comparison"
+    ],
+    [
+     "agegrp",
+     "A00 (all ages) and A01 to A08, on the twelve PIC-12 counties, for the churn page\u2019s age structure. agegrp is a PREDICATE: asking for it in `get=` returns HTTP 204 with an empty body"
+    ],
+    [
+     "seasonadj",
+     "U (unadjusted), which is the API default and what every pull here uses. The `sa` in the path is the SEX-BY-AGE table, NOT seasonal adjustment; this registry called the series \u201cseasonally adjusted\u201d until 2026-09-01, when `seasonadj=U` was requested explicitly and returned identical values"
     ],
     [
      "note",
      "EarnBeg is average monthly earnings of employees who also worked for the same employer in the prior quarter: stable jobs rather than new hires."
+    ],
+    [
+     "caution",
+     "NOT keyless. A request without `key=` answers HTTP 200 with a web page titled \u201cMissing Key\u201d. HTTP 204 with an empty body is a real answer meaning no records, and is never a zero: Michigan returns 204 for every quarter from 2022Q1 at every industry."
     ]
    ],
    "pages": [
     "churn"
+   ],
+   "n_pages": 1
+  },
+  {
+   "key": "scorecard_fos_polymer",
+   "name": "College Scorecard field-of-study earnings and debt, polymer engineering",
+   "short": "College Scorecard earnings",
+   "agency": "U.S. Department of Education",
+   "url": "https://api.data.gov/ed/collegescorecard/v1/schools",
+   "docs": "https://collegescorecard.ed.gov/data/documentation/",
+   "script": "derive_programs.py",
+   "key_required": true,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
+   "is": "Federal earnings and debt figures for graduates of a named programme at a named institution.",
+   "good": "Attaching a real number to what a specific degree earned, from tax records rather than from a survey.",
+   "cannot": "It covers only students who took federal aid, so it is not all graduates. Its vintages differ by measure, so any ratio built across them mixes cohorts. And it reports what people who hold the degree earned, which is not what the occupation pays.",
+   "filters": [
+    [
+     "program",
+     "CIP 4-digit 1432, credential Bachelor\u2019s Degree"
+    ],
+    [
+     "vintages",
+     "latest = 2020 cohorts for 1-year earnings, 2022 file for 4-year earnings, 2019 file for debt; any ratio across them mixes cohorts"
+    ],
+    [
+     "dedupe",
+     "census_match=1 only - the Scorecard attaches Penn State Behrend\u2019s values to Main Campus too, and the duplicate reads as a sixth institution"
+    ],
+    [
+     "suppression",
+     "84% of cells are privacy-suppressed and suppression tracks program size; the five published institutions are the biggest programs, not a sample"
+    ],
+    [
+     "acquisition",
+     "sibling checkout polymer-programs-db/incoming/college-scorecard: fetch_scorecard.py -> scorecard_fos_polymer_tidy.csv, read by derive_programs.py"
+    ]
+   ],
+   "pages": [
+    "programs"
+   ],
+   "n_pages": 1
+  },
+  {
+   "key": "usaspending_awards",
+   "name": "USAspending award-level contract search",
+   "short": "USAspending prime contracts",
+   "agency": "US Treasury",
+   "url": "https://api.usaspending.gov/api/v2/search/spending_by_award/",
+   "docs": "https://api.usaspending.gov/",
+   "script": "_data/build/fetch_fed_awards.py",
+   "key_required": false,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": "Public domain federal spending data. USAspending states no additional licence.",
+   "is": "The Treasury's award-level record of federal contracting, queried for prime contracts only.",
+   "good": "Setting one award against everything the federal government contracts for in the same counties and years, on the same filter.",
+   "cannot": "It is filtered to prime contracts, so grants, loans and direct payments are deliberately outside it. Comparing a contract figure against all federal spending mixes those categories and was published here once, making the comparator twenty-six times too large. Place of performance is a filing field, not a statement about where work happened.",
+   "filters": [
+    [
+     "method",
+     "POST with a JSON body; keyless. Filters: one spanning time_period 2018-10-01 to 2026-09-30 (FY2019-FY2026), place_of_performance_locations listing the 12 PIC-12 county codes, award_type_codes A-D (prime contracts; grants, loans and direct payments excluded), and naics_codes."
+    ],
+    [
+     "NAICS",
+     "unlike the category endpoint, naics_codes IS sent to the API here, but it accepts only 2-, 4- or 6-digit codes: a 3-digit 325 returns 422 (\u2018only supported for lengths of 2, 4, and 6\u2019). The pull sends the eleven 4-digit codes 3251-3259, 3261 and 3262, the same industry scope the category pull filters client-side."
+    ],
+    [
+     "paging",
+     "limit 100, page walked while page_metadata.hasNext, to exhaustion: 6,630 rows over 67 pages at first fetch. A 40-page probe had 4,000 rows in hand and had NOT exhausted, so the fetcher asserts that floor and refuses to write a short pull. This is the register that closes the category pull\u2019s own 100-row cap, and it must never inherit a cap of its own."
+    ],
+    [
+     "basis",
+     "Award Amount is the award\u2019s WHOLE-LIFE obligation, not the slice inside the window: an award running since 2014 that the window touches carries every dollar since 2014. A different basis from the per-fiscal-year spending_by_category sums, and the two are never summed; the fed-award-basis-never-summed claim holds both surfaces to saying so."
+    ],
+    [
+     "geography",
+     "place of performance, a reported field on the award rather than an observation of where work happened"
+    ]
+   ],
+   "pages": [
+    "federal-money"
    ],
    "n_pages": 1
   },
@@ -707,6 +1069,39 @@
     "patents"
    ],
    "n_pages": 1
+  },
+  {
+   "key": "vault",
+   "name": "GAC-PIC vault company records (catalogue)",
+   "short": "PIC company catalogue",
+   "agency": "Internal: Polymer Industry Cluster",
+   "url": null,
+   "docs": null,
+   "script": "_data/build/build_chain.py",
+   "key_required": false,
+   "route": "internal",
+   "route_label": "internal record, no endpoint",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
+   "is": "PIC's own catalogue of companies it has classified. It is not public and a reader cannot obtain it.",
+   "good": "Describing a supply chain in more detail than any federal code can, using how companies describe themselves.",
+   "cannot": "It is a record of who PIC knows, not a census of who exists, so absence from it means only that PIC has not classified that company. Self-descriptions are quoted as written and never rewritten. It cannot be reproduced by anyone outside PIC, and any public release of the records themselves is gated on member consent.",
+   "filters": [
+    [
+     "footprint",
+     "NEO-14 (vault-sourced pages), never PIC-12"
+    ],
+    [
+     "note",
+     "NOT public and NOT reproducible by a reader. Company self-descriptions are quoted as written and are never rewritten: a company that writes \u2018injection moulding\u2019 said that. Any public release of these records is gated on member consent (Linear POL-1011)."
+    ]
+   ],
+   "pages": [
+    "chain"
+   ],
+   "n_pages": 1
   }
  ],
  "pages": [
@@ -745,6 +1140,15 @@
    "n_sources": 4
   },
   {
+   "slug": "programs",
+   "sources": [
+    "ipeds_control_cips",
+    "ipeds_programs_census",
+    "scorecard_fos_polymer"
+   ],
+   "n_sources": 3
+  },
+  {
    "slug": "scorecard",
    "sources": [
     "ipeds",
@@ -754,10 +1158,42 @@
    "n_sources": 3
   },
   {
+   "slug": "atlas",
+   "sources": [
+    "ipeds_directory",
+    "ipeds_programs_census"
+   ],
+   "n_sources": 2
+  },
+  {
+   "slug": "chain",
+   "sources": [
+    "cbp",
+    "vault"
+   ],
+   "n_sources": 2
+  },
+  {
    "slug": "churn",
    "sources": [
     "qcew",
     "qwi"
+   ],
+   "n_sources": 2
+  },
+  {
+   "slug": "collaboration",
+   "sources": [
+    "nsf_awards",
+    "openalex"
+   ],
+   "n_sources": 2
+  },
+  {
+   "slug": "federal-money",
+   "sources": [
+    "usaspending",
+    "usaspending_awards"
    ],
    "n_sources": 2
   },
@@ -781,13 +1217,6 @@
    "slug": "cost-scissors",
    "sources": [
     "fred"
-   ],
-   "n_sources": 1
-  },
-  {
-   "slug": "federal-money",
-   "sources": [
-    "usaspending"
    ],
    "n_sources": 1
   },
@@ -827,6 +1256,13 @@
    "n_sources": 1
   },
   {
+   "slug": "reach",
+   "sources": [
+    "openalex"
+   ],
+   "n_sources": 1
+  },
+  {
    "slug": "revisions",
    "sources": [
     "fred"
@@ -852,25 +1288,28 @@
   }
  ],
  "totals": {
-  "n_sources": 15,
-  "n_pages": 18,
-  "n_key_required": 4,
+  "n_sources": 24,
+  "n_pages": 23,
+  "n_key_required": 6,
   "key_sources": [
    "bea_rpp",
+   "cbp",
    "fred",
    "qwi",
+   "scorecard_fos_polymer",
    "uspto"
   ],
-  "n_no_endpoint": 2,
+  "n_no_endpoint": 3,
   "no_endpoint_sources": [
    "heritage_register",
-   "public_record"
+   "public_record",
+   "vault"
   ],
-  "n_filter_lines": 76,
+  "n_filter_lines": 118,
   "routes": {
    "bulk": 6,
-   "api": 6,
-   "internal": 2,
+   "api": 14,
+   "internal": 3,
    "portal": 1
   },
   "n_licensed": 2,
@@ -878,24 +1317,24 @@
    "ipeds",
    "onet_education"
   ],
-  "n_terms": 11,
-  "n_public": 13,
+  "n_terms": 12,
+  "n_public": 21,
   "most_used": "qcew",
   "most_used_pages": 9,
   "n_single_source_pages": 9,
   "single_source_pages": [
    "cost-scissors",
-   "federal-money",
    "funding-map",
    "laborshed",
    "location-quotient",
    "patents",
    "peers",
+   "reach",
    "revisions",
    "wages"
   ],
-  "n_build_scripts": 30,
-  "catalog_generated": "2026-08-30 14:17"
+  "n_build_scripts": 55,
+  "catalog_generated": "2026-09-01 15:35"
  },
  "footprint": {
   "key": "pic12",
@@ -1063,11 +1502,11 @@
  "attributions": [
   {
    "key": "ipeds",
-   "name": "IPEDS Completions, via the Urban Institute Education Data API",
+   "name": "IPEDS Completions, via the Urban Institute Education Data API, with three years read from NCES directly",
    "short": "IPEDS degree completions",
-   "licence": "ODC-By 1.0",
+   "licence": "ODC (Open Data Commons)-By 1.0",
    "licence_url": "https://opendatacommons.org/licenses/by/1-0/",
-   "text": "Integrated Postsecondary Education Data System (IPEDS) Completions, via Education Data Portal v. 0.26.1, Urban Institute, accessed 18 August 2026, https://educationdata.urban.org/documentation/, made available under the ODC Attribution License."
+   "text": "Integrated Postsecondary Education Data System (IPEDS) Completions, via Education Data Portal v. 0.26.1, Urban Institute, accessed 18 August 2026, https://educationdata.urban.org/documentation/, made available under the ODC (Open Data Commons) Attribution License."
   },
   {
    "key": "onet_education",
@@ -1609,10 +2048,12 @@
    "n_codes": 6,
    "n_register": 3,
    "sources": [
+    "cbp",
     "nem",
     "qcew",
     "qwi",
-    "usaspending"
+    "usaspending",
+    "usaspending_awards"
    ]
   },
   "soc": {
@@ -1676,12 +2117,12 @@
    "sources": [
     "ipeds"
    ],
-   "degrees_core": 1231,
-   "degrees_adjacent": 259,
-   "degrees_both": 1490,
+   "degrees_core": 1175,
+   "degrees_adjacent": 257,
+   "degrees_both": 1432,
    "programmes_core": 8,
    "programmes_adjacent": 5,
-   "lift_pct": 21.0,
+   "lift_pct": 21.9,
    "first_year": 2014,
    "last_year": 2023
   }
@@ -2070,11 +2511,11 @@
   {
    "id": "rebuild-commands",
    "page": "several",
-   "n": 7,
+   "n": 2,
    "jobs": null,
    "unit": "pages",
    "what": "Some pages name a rebuild script that is not in this repository",
-   "why": "The page READMEs that name derive_lq.py, derive_rest.py, fetch_peers.py tell a reader to run a file _data/build/ does not contain, so those pages ship a derived artifact that cannot be regenerated from this clone. The fetch scripts behind them are all present; it is the derivation step that is absent. Named here because a rebuild command that fails is worse than none: it reads as reproducibility.",
+   "why": "The page READMEs that name build_db.py, fetch_control_cips.py tell a reader to run a file _data/build/ does not contain, so those pages ship a derived artifact that cannot be regenerated from this clone. The fetch scripts behind them are all present; it is the derivation step that is absent. Named here because a rebuild command that fails is worse than none: it reads as reproducibility.",
    "close": "Ship the derivation scripts, or change those READMEs to say the shipped file is the artifact, the way the two internal registers in the register above already do."
   },
   {

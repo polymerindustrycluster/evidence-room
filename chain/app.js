@@ -449,15 +449,16 @@ function headline(hits) {
 
   if (!parts.length) {
     t.innerHTML = `The region owns the middle of the polymer chain and <em>thins out at the molecule end</em>.`;
-    sf.innerHTML = `<b>${N(meta.neo_total)}</b> rows the Polymer Industry Cluster (PIC)
-      has tagged to the fourteen counties of Northeast Ohio, on the chain that turns a
-      molecule into a product and back. <b>Sixty-four of them do not belong here.</b> They
-      are companies in Wayne County, <em>Michigan</em> (Detroit, Livonia, Plymouth, Dearborn and
-      fourteen other cities), joined to Wayne County, Ohio on the county
-      name with no state, so the corrected regional count is <b>721</b>. The repair is a
-      change to the builder and is in progress; until it lands, read every Wayne row and
-      every total on this page with that in mind. Type what you need to make into the box
-      below.`;
+    /* THIS MUST SAY WHAT THE STATIC DEK SAYS. On 2026-09-01 the rendered version was
+       rewritten to disclose the Michigan join and the static one was not, so a reader
+       without JavaScript met the old universal ("Every company ... classified in the
+       fourteen counties") while a reader with it met a bug report. Two deks, two findings,
+       one page. The detail belongs in the county band, not above the fold. */
+    sf.innerHTML = `The Polymer Industry Cluster&rsquo;s register of the companies that
+      turn a molecule into a product and back, across fourteen counties of Northeast Ohio.
+      It carries ${N(meta.neo_total)} county-tagged rows, of which 64 are Michigan
+      companies joined on a county name, so the regional count is <b>721</b> until the
+      register is re-keyed. Type what you need to make into the box below.`;
     return;
   }
   const cties = new Set(hits.map(h => h.c).filter(Boolean));
