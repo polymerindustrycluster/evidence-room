@@ -29,7 +29,7 @@
       site. The first one needs a browser, a spreadsheet and two file downloads: no key, no
       registration, and nothing from this repository. What costs you time is not the data,
       it is deciding which codes count as your industry, so that decision is worked
-      through rather than assumed. Also here: the fifteen datasets, what each one cannot
+      through rather than assumed. Also here: fifteen of the site&rsquo;s twenty-four datasets, what each one cannot
       tell you, and the traps that give a confidently wrong answer rather than an
       obviously wrong one.</p>
     <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Sources register compiled from the
@@ -751,12 +751,12 @@
 <section class="band" id="sec-checks" data-nav="How this is checked">
   <div class="wrap">
     <p class="takeaway">The part that is worth copying without our code</p>
-    <h2>Every number on this site carries a written condition that ties it to its source</h2>
+    <h2>Every claim on this site names the condition that would prove it wrong</h2>
     <p class="lede">One idea, and you do not need our tooling to use it. It is here because
       it is the cheapest thing on this page to adopt and the only one that keeps working
       after the person who built the analysis has moved on.</p>
     <p class="body" id="checkidea">
-      Across the twenty-two pages this site publishes it carries <b>519</b> of them. 498 are re-run
+      Across the twenty-two pages this site publishes, twenty listed on the front page and two not, it carries <b>519</b> of them. 498 are re-run
       against the source data every time the site is built, so a figure that stops
       matching its file breaks the build before anybody reads it. The other 21 rest on
       a person having read a document correctly, which is why they are labelled and are
@@ -1012,19 +1012,19 @@
 <section class="band" id="sec-register" data-nav="The register">
   <div class="wrap">
     <p class="takeaway">The register</p>
-    <h2>All fifteen datasets, with what each one cannot tell you</h2>
+    <h2>Fifteen of the site&rsquo;s twenty-four datasets, with what each one cannot tell you</h2>
     <p class="lede">Generated from the same file the pages themselves read, so it cannot
       drift from them. Each entry carries the endpoint, whether it needs a key or a
       registration, its licence where one is stated, the exact filter values applied to it,
       and every page here that rests on it. Two of the fifteen are internal records with
       no endpoint at all, and saying so plainly is the point of listing them.</p>
-    <p class="fig-title">No other source feeds more than five of the eighteen pages</p>
+    <p class="fig-title">No other source feeds more than five of the eighteen pages this register reaches</p>
     <p class="fig-sub">Pages resting on each dataset. The two marked in orange have no
       endpoint and no script: they cannot be fetched by anyone, including us. Bars start at
       zero.</p>
     <div class="chart reflow"><svg id="deps" role="img" aria-labelledby="deps-t">
       <title id="deps-t">Ranked bars of how many pages each of the fifteen datasets
-        feeds, led by the Quarterly Census of Employment and Wages at nine of eighteen,
+        feeds, led by the Quarterly Census of Employment and Wages at nine of eighteen, counted over this register and not over the whole site. <b>The register is behind the site.</b> It holds fifteen of the twenty-four sources this site now draws on and eighteen of its twenty-three pages: the provenance of atlas, chain, collaboration, programs and reach is not here, and nor are OpenAlex, NSF awards, County Business Patterns, three IPEDS files, College Scorecard, a second USAspending endpoint or this project&rsquo;s own vault. The rebuild is held up by design rather than neglect: the build refuses to publish a source without a plain statement of what it cannot tell you, and those nine statements are not written. Ranking survives the gap &mdash; none of the missing sources feeds more than two pages &mdash; but the denominator below is the register&rsquo;s, not the site&rsquo;s,
         with the next source at five and most feeding one page each.</title>
     </svg></div>
     <div id="depstable"></div>

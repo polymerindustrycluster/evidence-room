@@ -13,6 +13,59 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-09-01, seventh entry — the register behind the site, and a county in the wrong state
+
+An outside corroboration pass read fourteen pages against the world rather than against
+their own data, and a completeness sweep read every heading on the site against its own
+sets. Both found the same shape: a sentence that was true when written and was never
+re-checked as the thing underneath it grew.
+
+**Sixty-four Michigan companies were counted as Northeast Ohio, *chain*.** Wayne County
+exists in both Ohio and Michigan, and the company register joins on the county NAME with
+no state. Of eighty rows tagged Wayne, **sixty-four are in Wayne County, Michigan** —
+Detroit, Livonia, Plymouth, Dearborn, Westland and fourteen other cities — and sixteen
+are in Ohio. **Was:** "All 785 companies the Polymer Industry Cluster has classified in
+the fourteen counties of Northeast Ohio." **Is:** 785 county-tagged rows, of which the
+corrected regional count is **721**. The evidence cards had been rendering "Detroit,
+Wayne County" under a masthead reading "Northeast Ohio". The page now says so in its
+standfirst; the builder re-key is a separate change and is in progress. Two things made
+this survivable for so long: the register's producer hard-codes absolute paths to one
+Windows machine and cannot be re-run by anyone, and a blanket caveat saying "a county can
+exceed 100 percent" pre-explained the single loudest signal — Wayne was the only county
+over 100, at 185 percent, and 44 percent on its real Ohio rows.
+
+**The provenance page was behind the site it documents, *sources*.** **Was:** a section
+headed "All fifteen datasets, with what each one cannot tell you". **Is:** fifteen of the
+site's twenty-four, and eighteen of its twenty-three pages: the provenance of atlas,
+chain, collaboration, programs and reach is not on the page, and nor are OpenAlex, NSF
+awards, County Business Patterns, three IPEDS files, College Scorecard, a second
+USAspending endpoint or this project's own vault. The stall is honest — the build refuses
+to publish a source without a written statement of what it cannot tell you, and those
+nine statements are not written — but the page went on saying "all". No gate could see
+it: every gate checks the page against the register, and the register is the thing that
+went stale. The ranking survives the gap and is stated as surviving it.
+
+**Two false universals, on the two pages that teach the method.** **Was:** "Every number
+on this site carries a written condition that ties it to its source" (*sources*) and
+"Every sentence here is tied to its source by a check that can fail" (*the front page*).
+Neither is true; the site carries 519 claims and contains far more than 519 numbers.
+**Is:** "Every claim here names the condition that would prove it wrong" — which is true
+of all 545 claims with no exceptions, is checkable, and is the stronger sentence. A false
+universal is usually hiding a true one nearby.
+
+**BMW's plant is in a different metro from the one the sentence explains, *peers*.**
+**Was:** "Greenville, South Carolina holds Michelin's North American headquarters and the
+only US assembly plant of BMW." **Is:** Michelin is right; BMW's plant is in Spartanburg
+County, which the bureau counts as a separate metro area and which is not in the
+Greenville-Anderson-Greer row the sentence is explaining. On a page whose premise is that
+a metro is built out of whole counties, that distinction is the page's own subject.
+
+**The register's own self-count was pinned to numbers the site outgrew.** The claim
+guarding it had recorded, in advance, that it was pinned to stale literals on purpose so
+that the next regeneration would fail loudly rather than let the paragraph re-render
+behind a reader. It did exactly that. **Was:** 443 claims across seventeen pages. **Is:**
+519 across twenty-two.
+
 ## 2026-09-01, sixth entry — the chart furniture, the least-governed surface
 
 Two independent figure audits swept every chart on the site and found the same thing:
