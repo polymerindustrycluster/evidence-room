@@ -11,251 +11,213 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+
+*Edited 2026-09-01, the day they were written: the seven newest entries below were trimmed to this register — what the page said, what it says now, what caused it. Every figure, date and name in them is unchanged. What was removed is process: how the errors were found, by what, and in what order. That belongs in the project's working notes, not in front of a reader, and it is preserved there verbatim. The five older entries from the same day were already in this register and are untouched.*
+
 ---
 
-## 2026-09-01, twelfth entry — thirty corrections, and twelve that did not survive
+## 2026-09-01, twelfth entry — thirty corrections from a re-derivation of every open finding
 
-Five verification agents re-derived every outstanding world-checked finding against primary
-sources, and every proposed change was then handed to a hostile refuter told to default to
-refused. **Thirty survived. Twelve were refuted and are not made. Twenty-one more were
-withdrawn by the verifiers themselves before reaching a refuter, and twenty-three could not
-be settled either way and are recorded as unverifiable rather than guessed at.** The
-refutation was not a formality: one refuter caught a proposed fix smuggling in an unsourced
-"world's first" superlative that this site's own vetted heritage record deliberately
-declines to make.
+Every outstanding finding about the world was re-derived from primary sources before
+anything changed. Thirty corrections follow. Twelve proposed changes did not survive
+re-derivation and are not made; twenty-three findings could not be settled either way and
+are recorded as unverifiable rather than guessed at.
 
-**A page named the wrong federal series, in four places, *revisions*.** The chart title, the
-screen-reader description that is the only version of the figure a blind reader gets, the
-methodology block and the headline vignette all named a BLS series the page does not use,
-and the names collide with a real and different series, so a reader who looked it up would
-have found the wrong data and concluded we were right. The headline case also straddles an
-undisclosed BLS policy change, which the page now discloses, and a corrections-per-revised-
-month figure has been restated against the base it is actually computed on.
+**A page named the wrong federal series in four places, *revisions*.** **Was:** the chart
+title, the screen-reader description, the methodology block and the headline vignette all
+named a BLS series the page does not use, and the names collide with a real, different
+series. **Is:** the series the page actually draws, named the same way in all four places.
+The headline case straddles a BLS policy change that is now disclosed, and the
+corrections-per-revised-month figure is restated against the base it is computed on.
+**Cause:** hand-typed titles, never checked against the series identifier in the data.
 
-**"The school the field is named for" is false in any reading, *programs*.** Polymer science
-is not named for the University of Akron: the word is Berzelius, 1833, and the institution
-was chartered as Buchtel College in 1870. The page also pointed the reader at the wrong
-number: the undergraduate line runs between zero and three in every year the record reports,
-so the two in 2023 carries one seventieth of the fall. The figure to hold is the master's
-line, 66 to 16, and graduate degrees are 42 of the 44 completions left. **The board vote was
-15 April 2025, not December 2024**, and the same wrong date sat inside the page's own "what
-we got wrong" box, so the correction was carrying the error. **Terra State's fiscal watch was
-March 2026**, not April. Two of the five institutions described as awarding polymer
-engineering degrees award engineering technology.
+**"The school the field is named for," *programs*.** **Was:** that phrase, of the
+University of Akron. **Is:** removed. Polymer science is not named for the university: the
+word is Berzelius, 1833; the institution was chartered as Buchtel College in 1870.
+**Cause:** a flourish written for rhythm, guarded by no claim.
 
-**A named company's federal award was understated by $634, *timeline*.** Every other award on
-the page is given to the dollar.
+**The anchor pointed at the wrong number, *programs*.** **Was:** "graduated two polymer
+undergraduates" offered as the figure to hold. **Is:** the master's line, 66 to 16. The
+undergraduate line runs between zero and three in every year the record reports, so the two
+in 2023 carries one seventieth of the fall; graduate degrees are 42 of the 44 completions
+left. **Cause:** the smallest series was chosen for the sentence because it made the
+starkest number, not because it carried the fall.
 
-**The replication guide handed out two wrong instructions, *sources*.** It told a replicator
-that a federal file has no industry dimension when it has one, and it published a 2025 CPI-U
-figure that BLS does not publish as an annual average. A page that teaches has to be right
-about the file it teaches.
+**Two dates, *programs*.** **Was:** the board vote in December 2024; Terra State's fiscal
+watch in April 2026. **Is:** the board vote on 15 April 2025, adopting the president's
+recommendations, with four faculty leaving voluntarily; the fiscal watch in March 2026, the
+Auditor of State writing on 17 March and Directive 2026-009 following on 23 March.
+**Cause:** the December date also sat inside the page's own correction box, so the
+correction was carrying the error.
 
-**Also corrected:** the hub equated the $51.0M award with the October 2023 designation, which
-are different things, and stated the wrong licence for the scripts; *occupations* and
-*cluster-health* described a regional census of degree-granting institutions their files
-cannot supply; *accountability*'s accessible chart description misstated how many commitment
-dates have passed; *peers*' claim register still described the BMW sentence that was repaired
-this morning; and *scorecard* carried a universal negative about this repository that the
-repository's own shipped data falsifies.
+**Degree names, *programs*.** **Was:** five institutions "awarding polymer engineering
+bachelor's degrees". **Is:** two of the five award engineering technology degrees, and
+Western Washington's has been renamed. **Cause:** the programme names were typed from a
+list, not read from each institution's own catalogue.
 
-## 2026-09-01, eleventh entry — anonymising the row was not enough, and the count moved
+**A federal award understated by $634, *timeline*.** **Was:** a figure $634 below the
+record. **Is:** the record's figure, to the dollar, as every other award on the page is
+given. **Cause:** a transcription.
 
-Earlier today this log recorded that a named company's unsuccessful application had been
-published on the timeline, and that the row had been rewritten to describe the decision
-without naming the applicant. That was the wrong fix, and the reasoning behind it was worse
-than the fix.
+**Two wrong instructions in the replication guide, *sources*.** **Was:** that a federal
+origin-destination file has no industry dimension; a 2025 CPI-U annual figure. **Is:** the
+file has one, and the recipe uses it; BLS does not publish that 2025 figure as an annual
+average, and the guide now says which figure it hands out and why. **Cause:** a recipe
+written from memory of the file rather than from its documentation.
 
-The reasoning was that deleting the row would have falsified a headline: the page asserts
-four delivered events in the 34 months before the October 2023 federal designation and, at
-the time, 68 in the 34 months since, an exact seventeenfold ratio. The row was one of the
-68. So it was kept, anonymised, to protect the count.
+**The award and the designation, *the front page*.** **Was:** the $51.0M award equated with
+the October 2023 federal designation. **Is:** two events, ten months apart, named as two.
+**Was:** the scripts described as CC BY 4.0. **Is:** the repository dual-licenses; the
+scripts are under the MIT licence. **Cause:** two appositives nobody re-read.
 
-Two independent model families were asked to refute that decision and both did, on two
-separate grounds. **It was not anonymous.** The same page names the company joining the
-cohort four months later and establishing Ohio operations two months after that, in a
-cohort of nine; the date, the reason and the sequence identify it to anyone who reads the
-page. Pseudonymising a record while displaying its context is worse than either naming it
-or removing it, because it offers the appearance of confidentiality to a reader who cannot
-check and none at all to a reader who can. **And the count was never a reason.** As one of
-them put it: the evidence determines the headline, the headline does not determine which
-sensitive records remain evidence. A cadence of delivered events should not have counted a
-rejection in the first place, which is a filter outcome rather than an event.
+**A regional census the files cannot supply, *occupations* and *cluster-health*.** **Was:**
+"the region's three universities", and 63 polymer degrees attributed to three. **Is:** the
+chart draws the three institutions in its file and says so; the region has four conferring
+in these codes, Youngstown State inside PIC-12 among them; and only two, Case Western and
+Akron, file under a polymer code, so 63 is theirs. **Cause:** a hard-coded list of three
+unitids described as if it were a census.
 
-The row is removed. Every figure that rested on it has moved, and the page recomputes all
-of them from the register rather than printing them by hand: **103 dated events, not 104;
-86 inside the calendar window, not 87; 68 delivered there, not 69; 67 delivered since the
-designation, not 68; and 29 delivered in 2025, not 30.** The cadence ratio is 67 to 4,
-which is **close to seventeen times rather than exactly seventeen**. The exactness was a
-coincidence, and it was propping up a sentence that a removed record has now corrected.
+**Also corrected:** *accountability*'s accessible chart description misstated how many
+commitment dates had passed; *peers*' claim register still described the BMW sentence
+repaired earlier in the day; *scorecard* carried a universal negative about this repository
+that the repository's own shipped data falsifies.
+
+## 2026-09-01, eleventh entry — a removed row, and the count that moved with it
+
+**Was:** earlier in the day a row recording a named company's unsuccessful application was
+rewritten to describe the decision without naming the applicant, and kept, because it was
+one of the 68 events behind the page's exact seventeenfold cadence. **Is:** the row is
+removed. The anonymisation did not hold: the same page names the company joining the cohort
+four months later and establishing Ohio operations two months after that, in a cohort of
+nine, so the date, the reason and the sequence identified it to anyone who read the page.
+And the count was never a reason to keep it: a cadence of delivered events should not have
+counted a rejection, which is a filter outcome, not an event.
+
+Every figure that rested on the row has moved, and the page recomputes them from the
+register: **103 dated events, not 104; 86 inside the calendar window, not 87; 68 delivered
+there, not 69; 67 delivered since the designation, not 68; 29 delivered in 2025, not 30.**
+The cadence is 67 to 4, **close to seventeen times rather than exactly seventeen**.
+**Cause:** the first fix protected a headline number instead of the person the row named.
 
 ## 2026-09-01, tenth entry — the lesson we told people to copy was wrong about its own record
 
-**The flagship self-correction misdescribed the error it teaches, *sources*.** The page
-nominates one section as "the section to copy": the account of this site printing $160M for
-NSF award 2532460 against a record of $14,999,983. Every figure in it is right. The
-characterisation was not. **Was:** the $160M is a programme ceiling, "the maximum the
-programme could reach across every recipient and every renewal", and "no source ties that
-ceiling to this award". **Is:** the $160M is **this award's own ten-year ceiling**, phased
-and contingent on milestones, and the awardee says so in print: $7.5 million in each of the
-first two years, $15 million in each of the next three, $20 million in each of the last
-five. That schedule sums to $160 million exactly, and its first tranche is the $7,499,984
-the NSF record shows obligated for FY2026. The award runs to 2036. Verified against the NSF
-awards API on 2026-09-01.
+**The flagship self-correction misdescribed the error it teaches, *sources*.** **Was:** the
+$160M printed for NSF award 2532460 was "a programme ceiling, the maximum the programme
+could reach across every recipient and every renewal", and "no source ties that ceiling to
+this award". **Is:** the $160M is this award's own ten-year ceiling, phased and contingent
+on milestones, stated by the awardee in print: $7.5 million in each of the first two years,
+$15 million in each of the next three, $20 million in each of the last five. The schedule
+sums to $160 million exactly; its first tranche is the $7,499,984 the NSF record shows
+obligated for FY2026; the award runs to 2036. The real error was a milestone-contingent
+ceiling published as a value. The "factor of 10.7" set a ten-year ceiling against a two-year
+estimated total; both comparisons are now given. **Cause:** the correction was written from
+the NSF record alone and never against the awardee's own announcement.
 
-So the real error was never "a number belonging to something else". It was **a
-milestone-contingent ceiling published as a value**, with no date range and no condition
-attached, which is a commoner and more useful mistake to teach. The "factor of 10.7" was
-also not like-for-like: it set a ten-year conditional ceiling against a two-year estimated
-total. Both figures are now given, against the estimate and against what is actually
-committed, and the definitions distinguish obligated, estimated total and contingent
-ceiling as three things that can all be true of one award at once.
+**A count the front page contradicted.** **Was:** the hub's chain card said 785 companies
+while the chain page says 721. **Is:** 721 on both. **Cause:** the hub card is guarded by no
+claim.
 
-**The front page published a count the page it links corrects.** The hub's chain card said
-785 companies while the chain page's own standfirst says the regional count is 721, after
-64 Michigan rows joined on a county name. **Is:** 721 on both. The hub card is still not
-guarded by any claim, which is why it could drift in the first place.
-
-**The right-of-reply disclosure covered organisations and not people.** It was added to
-every page earlier today reading "No organisation named on this site was contacted before
-it was published." A named-entity sweep then counted **twenty living individuals** named
-across the site, mostly in the timeline and the heritage register. **Is:** "Nobody named on
-this site was contacted before it was published", and the sentence now says the people are
-characterised from public records too.
+**The right-of-reply disclosure covered organisations only.** **Was:** "No organisation
+named on this site was contacted before it was published." **Is:** "Nobody named on this
+site was contacted before it was published" — the site names some twenty living
+individuals, mostly in the timeline and the heritage register, and the sentence now covers
+them. **Cause:** the disclosure was written for companies and colleges and nobody counted
+the people.
 
 ## 2026-09-01, ninth entry — a name that should not have been here, and a register that had stopped being rebuilt
 
-**A named company was published as an unsuccessful applicant, *timeline*.** One row read
-"Materium Technologies NOT accepted into Synthe6 cohort 1 (no Ohio place of business)",
-on a site whose README withholds two entire pages on the stated ground that "naming an
-unsuccessful applicant is not something a funder gets to do". The row now describes the
-decision without naming the applicant. The company's later rows stay: it established Ohio
-operations and joined the cohort, and both are public and creditable.
+**A named company published as an unsuccessful applicant, *timeline*.** **Was:** "Materium
+Technologies NOT accepted into Synthe6 cohort 1 (no Ohio place of business)", on a site
+whose README withholds two entire pages because "naming an unsuccessful applicant is not
+something a funder gets to do". **Is:** see the eleventh entry: the row was first
+anonymised, then removed. The company's later rows stay; it established Ohio operations and
+joined the cohort, and both are public. **Cause:** an internal register row shipped without
+the README's own rule being applied to it.
 
-**Seventy-four companies carried a hidden verdict, *chain*.** The served register gave
-every company a `rel` field, and for 74 of them its value was `not_relevant` — an internal
-judgement about a named private firm, published in a file anyone can fetch, on a register
-whose own source note says any public release is gated on member consent. No page read the
-field. A field nothing renders is not a feature, it is a disclosure with no reader. It is
-gone from the data and from the builder that wrote it.
+**Seventy-four companies carried a hidden verdict, *chain*.** **Was:** every row in the
+served register carried a `rel` field, and for 74 named private firms its value was
+`not_relevant`, on a register whose own source note says any public release is gated on
+member consent. No page read the field. **Is:** gone from the data and from the builder.
+**Cause:** a field nothing rendered, so nothing reviewed it.
 
-**Two universals on the front page were false.** The hub said "Every page is built from
-federal data that costs nothing to obtain" and, in its rebuild instructions, "Nothing reads
-a private table." Three pages read private tables: chain from PIC's own company register,
-timeline and accountability from PIC project records. **Is:** twenty of twenty-three pages
-are built entirely from free federal data, and the three exceptions are named, with the
-warning that those three cannot be reproduced by a reader.
+**Two universals on the front page, *the front page*.** **Was:** "Every page is built from
+federal data that costs nothing to obtain" and "Nothing reads a private table." **Is:**
+twenty of twenty-three pages are built entirely from free federal data; chain reads PIC's
+own company register, and timeline and accountability read PIC project records, and all
+three are named as not reproducible by a reader. **Cause:** sentences that were true when
+written and never re-read as pages were added.
 
-**The sources register had stopped being rebuilt, and three published figures had drifted
-with it.** It held fifteen of twenty-four sources and eighteen of twenty-three pages. The
-build refuses to publish a source without a written statement of what it cannot tell you;
-nine had none, so the build failed and somebody stopped running it rather than writing
-them. Those nine are now written and the register is complete. Rebuilding it moved figures
-the page had been publishing from an older pull: **the region's universities awarded 1,175
-degrees on the three core codes between 2014 and 2023, not 1,231; 1,432 counting the
-adjacent codes, not 1,490; and the wider net is 22 percent larger, not 21.** Nothing was
-wrong with the arithmetic. The register it read had simply frozen, and every gate stayed
-green because each one checked the page against the register.
-
-**Two new checks ship with this, and both found something before they were trusted.** A
-set-equality check now fails the build when the published register and its own source file
-disagree, which is the drift above made loud. And `tools/furniture.mjs` asserts that every
-number printed on a chart is said somewhere else on its own page: hand-typed chart strings
-were the site's largest defect class, about thirty corrections, and nothing bound them to
-anything. On its first run over 262 numbers it found one — a 0.034 move printed in a
-*cluster-health* caption and asserted nowhere — which is now guarded by that figure's own
-claim.
+**The sources register had frozen, and three figures had drifted with it, *sources*.**
+**Was:** the register held fifteen of twenty-four sources and eighteen of twenty-three
+pages; the page said the region's universities awarded 1,231 degrees on the core codes,
+1,490 with the adjacent codes, 21 percent more. **Is:** all twenty-four and twenty-three;
+**1,175, 1,432, and 22 percent.** **Cause:** the build refuses to publish a source without
+a written statement of what it cannot tell you; nine had none, so the build failed and was
+not re-run. The page kept publishing the older pull. A check now fails the build when the
+register and its source file disagree, and a second, `tools/furniture.mjs`, fails it when a
+number printed on a chart is said nowhere else on its page; on its first run it found one,
+a 0.034 move in a *cluster-health* caption, now guarded by that figure's claim.
 
 ## 2026-09-01, eighth entry — the reader, who had no way in
 
-Three findings about this site's relationship with the people it writes about and the
-people who read it. None is a wrong number. All three are worse than a wrong number.
-
-**An internal note naming a third party was published on this site.**
+**An internal note naming a third party was published.** **Was:**
 `programs/INTEGRATION-NOTE.md` and `atlas/INTEGRATION-NOTE.md` were tracked, deployed and
-served: both returned HTTP 200 from the public site. They carried the orchestration layer
-of the project, named private sibling repositories, and named an individual outside the
-project as an unresolved publication gate on a page about her sector, with no indication
-she knew. Both files are removed. The pages themselves were unaffected; nothing a reader
-came for was in them, which is exactly why nobody looked.
+served, carrying the project's own process notes, the names of private sibling
+repositories, and an individual outside the project named as an unresolved publication gate
+on a page about her sector. **Is:** both removed. **Cause:** the deploy uploads every
+tracked file, and nothing a reader came for was in them, which is why nobody looked.
 
-**The site promised a way to report an error that did not exist.** The README and this
-log both said "Open an issue, the Data error template asks for the page, the figure, and
-what you think it should be." There was no template. `.github/` held one workflow and
-nothing else. The sentence had stood, unguarded by any check, on the document whose whole
-subject is being wrong in public. The template now exists and asks for those three things.
-The address in the corrections block is also a link now rather than text a reader has to
-retype, and the block carries the issue route beside it.
+**A way to report an error that did not exist.** **Was:** the README and this log said
+"Open an issue — the Data error template asks for the page, the figure, and what you think
+it should be." There was no template. **Is:** the template exists and asks for those three
+things; the address in every page's corrections block is a link, with the issue route
+beside it. **Cause:** a promise written before the thing it promised, and guarded by no
+check.
 
-**No organisation named on this site has ever been offered a right of reply, and the site
-did not say so.** Companies, colleges and institutions are characterised here from public
-records. A filing describes what an organisation reported, never what it knows about
-itself. Every page now says that in its corrections block, next to the two routes that
-reach a person. Saying it is not the same as doing it, and doing it is a separate piece of
-work that has not started.
+**No right of reply, and the site did not say so.** **Was:** companies, colleges and
+institutions characterised from public records with no disclosure that none had been
+contacted. **Is:** every page's corrections block says so. **Cause:** a filing describes
+what an organisation reported, never what it knows about itself, and the site had not
+admitted the difference.
 
 ## 2026-09-01, seventh entry — the register behind the site, and a county in the wrong state
 
-An outside corroboration pass read fourteen pages against the world rather than against
-their own data, and a completeness sweep read every heading on the site against its own
-sets. Both found the same shape: a sentence that was true when written and was never
-re-checked as the thing underneath it grew.
+**Sixty-four Michigan companies counted as Northeast Ohio, *chain*.** Wayne County exists in
+both Ohio and Michigan and the company register joins on the county name with no state. Of
+eighty rows tagged Wayne, sixty-four are in Wayne County, Michigan — Detroit, Livonia,
+Plymouth, Dearborn, Westland and fourteen other cities — and sixteen are in Ohio. **Was:**
+"All 785 companies the Polymer Industry Cluster has classified in the fourteen counties of
+Northeast Ohio." **Is:** 785 county-tagged rows, of which the corrected regional count is
+**721**; the page says so in its standfirst until the register is re-keyed. The evidence
+cards had rendered "Detroit, Wayne County" under a Northeast Ohio masthead. **Cause:** a
+join with no state, a producer that cannot be re-run, and a caveat saying "a county can
+exceed 100 percent" that pre-explained the one signal that would have caught it — Wayne was
+the only county over 100, at 185 percent, and 44 percent on its real Ohio rows.
 
-**Sixty-four Michigan companies were counted as Northeast Ohio, *chain*.** Wayne County
-exists in both Ohio and Michigan, and the company register joins on the county NAME with
-no state. Of eighty rows tagged Wayne, **sixty-four are in Wayne County, Michigan** —
-Detroit, Livonia, Plymouth, Dearborn, Westland and fourteen other cities — and sixteen
-are in Ohio. **Was:** "All 785 companies the Polymer Industry Cluster has classified in
-the fourteen counties of Northeast Ohio." **Is:** 785 county-tagged rows, of which the
-corrected regional count is **721**. The evidence cards had been rendering "Detroit,
-Wayne County" under a masthead reading "Northeast Ohio". The page now says so in its
-standfirst; the builder re-key is a separate change and is in progress. Two things made
-this survivable for so long: the register's producer hard-codes absolute paths to one
-Windows machine and cannot be re-run by anyone, and a blanket caveat saying "a county can
-exceed 100 percent" pre-explained the single loudest signal — Wayne was the only county
-over 100, at 185 percent, and 44 percent on its real Ohio rows.
+**The provenance page was behind the site it documents, *sources*.** **Was:** "All fifteen
+datasets, with what each one cannot tell you." **Is:** fifteen of the site's twenty-four,
+and eighteen of its twenty-three pages, stated as such until the register was rebuilt later
+the same day (ninth entry). **Cause:** every gate checks the page against the register, and
+the register was the thing that had gone stale.
 
-**The provenance page was behind the site it documents, *sources*.** **Was:** a section
-headed "All fifteen datasets, with what each one cannot tell you". **Is:** fifteen of the
-site's twenty-four, and eighteen of its twenty-three pages: the provenance of atlas,
-chain, collaboration, programs and reach is not on the page, and nor are OpenAlex, NSF
-awards, County Business Patterns, three IPEDS files, College Scorecard, a second
-USAspending endpoint or this project's own vault. The stall is honest — the build refuses
-to publish a source without a written statement of what it cannot tell you, and those
-nine statements are not written — but the page went on saying "all". No gate could see
-it: every gate checks the page against the register, and the register is the thing that
-went stale. The ranking survives the gap and is stated as surviving it.
-
-**Two false universals, on the two pages that teach the method.** **Was:** "Every number
-on this site carries a written condition that ties it to its source" (*sources*) and
-"Every sentence here is tied to its source by a check that can fail" (*the front page*).
-Neither is true; the site carries 519 claims and contains far more than 519 numbers.
-**Is:** "Every claim here names the condition under which it stops matching its source"
-— true of all 545 claims with no exceptions, and honest about what the condition can
-settle. A false universal is usually hiding a true one nearby.
-
-The first attempt at that repair is worth recording, because the harness caught it. It
-read "names the condition that would prove it wrong", on the reasoning that all 545
-claims carry a falsifier and the sentence was therefore universally true. The disclosure
-gate rejected it: that exact phrase had been banned hours earlier as the site's largest
-overclaim, because a claim's condition runs against the data the page shipped with and
-can prove only that a sentence stopped matching its own file, never that it is wrong
-about the world. The gate was added the same day, on a cross-family review, after a
-transposed classification code moved a series by half while its assertion kept passing.
-It then caught the author of this entry reintroducing the same sentence.
+**Two false universals on the two pages that teach the method.** **Was:** "Every number on
+this site carries a written condition that ties it to its source" (*sources*) and "Every
+sentence here is tied to its source by a check that can fail" (*the front page*). Neither is
+true: the site carries 519 claims and far more than 519 numbers. **Is:** "Every claim here
+names the condition under which it stops matching its source," true of all 545 claims, and
+honest about what such a condition can settle: that a sentence stopped matching its own
+file, never that it is right about the world. **Cause:** a universal written for force.
 
 **BMW's plant is in a different metro from the one the sentence explains, *peers*.**
 **Was:** "Greenville, South Carolina holds Michelin's North American headquarters and the
 only US assembly plant of BMW." **Is:** Michelin is right; BMW's plant is in Spartanburg
-County, which the bureau counts as a separate metro area and which is not in the
-Greenville-Anderson-Greer row the sentence is explaining. On a page whose premise is that
-a metro is built out of whole counties, that distinction is the page's own subject.
+County, a separate metro area that is not in the Greenville-Anderson-Greer row. **Cause:** a
+city name that straddles a county line.
 
-**The register's own self-count was pinned to numbers the site outgrew.** The claim
-guarding it had recorded, in advance, that it was pinned to stale literals on purpose so
-that the next regeneration would fail loudly rather than let the paragraph re-render
-behind a reader. It did exactly that. **Was:** 443 claims across seventeen pages. **Is:**
-519 across twenty-two.
+**The register's self-count was pinned to numbers the site outgrew, *sources*.** **Was:**
+443 claims across seventeen pages. **Is:** 519 across twenty-two. **Cause:** the guarding
+claim was pinned to stale literals deliberately so that the next regeneration would fail
+loudly rather than let the paragraph re-render behind a reader; it did.
 
 ## 2026-09-01, sixth entry — the chart furniture, the least-governed surface
 
