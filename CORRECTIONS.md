@@ -13,6 +13,47 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-09-01, third entry — the depth audit's second wave
+
+The flip-risk pass finished its sweep of the remaining ten pages. Both education
+beats survived full independent replication; the corrections below are what did not.
+
+**"Concentration fell" was a disclosure artifact, *cluster-health* and
+*location-quotient*.** Lorain's paint cell went dark in 2025; the moving-set
+composite kept all twelve counties in its denominator and manufactured a fall. On
+the fixed county set the reading ROSE to an eleven-year high. **Was:** down 0.44 to
+5.96, fourth lowest of eleven, the longest bar, "a step toward looking like the
+country." **Is:** up 0.11 to 7.68 on the fixed set, the highest standing of eleven,
+the longest bar belongs to employment, and the tile sentence reversed. The
+suppression note that licensed the old reading stated the direction backwards ("a
+ceiling" — it is a floor that sags) and is corrected at its source. The guard now
+asserts both bases and their divergence, so a county going dark can never again
+read as an industry shrinking.
+
+**The tide was measured on the wrong window, *cluster-health*.** On the headline's
+own 2022-2025 window the industry accounts for about seven-tenths of the gap, not
+three-fifths.
+
+**"The ordering holds after inflation too" was checked at the wrong level,
+*cost-scissors*.** In posted prices the story stands; deflated, the middle
+reorders — resin's real spike is essentially all given back, finished products
+about a quarter. The page now says both, the meta note states what was actually
+checked, and the zero-crossing beat carries the revision-band caveat its own
+archive implies.
+
+**Smaller record fixes:** atlas's opener drew 146 ticks under a hand-typed 147 (now
+147 drawn, caption derived) and a tile guard-rail sentence denying a set membership
+that is true; timeline's "the register records nothing at all until 2023" is a
+silence in the proven rows, not the register, and its 17-times pace now names what
+it counts; revisions' "largest single revision" was a net of three (largest single
+is 1.40 percent), its "half of all revisions" was the wrong unit (half of revised
+months), and the 2026-08-28 correction finally reached the SVG title and README;
+sources' "forty-five of fifty-one readings" counted groups beside their own parts
+and now says so. And the programs page gains the comparison it was missing: against
+8,736 peer-trade programs pulled by the same rule, polymer technician programs
+failed to take hold at about two and a half times the base rate — a control that
+reproduces the page's own published figures before it writes.
+
 ## 2026-09-01, second entry — the depth audit's fix wave
 
 A new review layer — the flip-risk and comparator census — attacked every headline
