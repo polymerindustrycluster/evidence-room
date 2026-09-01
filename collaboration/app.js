@@ -28,8 +28,27 @@ const COL = 728;
 const {el, txt, ticks, frame, hoverable, tableView, chart, CAT, SEQ, GRAY, INK, N} = PV;
 const D = await PV.data("collaboration.json");
 
-/* THE COLD OPEN (guarded by tools/coldopen.mjs). Thirteen year-columns of joint output,
-   no numbers but the endpoints. Poorer than the record chart below on purpose. */
+/* THE SHAPE, DERIVED FROM THE SERIES INSTEAD OF COUNTED ONCE BY HAND. The standfirst, the
+   cold open, the closer and a claim all describe one movement, and until 2026-08-31 three
+   of them said "the last three years fall" with the three hard-set. The pull that day
+   added 2025, which rose off the floor, and one sentence went false in three places at
+   once. What the page says about the run is now computed: the lowest year, the number of
+   consecutive falls into it, and whatever the series has done since. */
+const TROUGH_I = D.series.reduce((a, r, i) => (r.joint < D.series[a].joint ? i : a), 0);
+let FALL_FROM = TROUGH_I;
+while (FALL_FROM > 0 && D.series[FALL_FROM - 1].joint > D.series[FALL_FROM].joint) FALL_FROM--;
+const FALLS = TROUGH_I - FALL_FROM;            // consecutive falling years into the trough
+const TROUGH = D.series[TROUGH_I];
+const AFTER = D.series.slice(TROUGH_I + 1);    // years the series has run since the trough
+const WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
+  "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen",
+  "seventeen", "eighteen", "nineteen", "twenty"];
+const word = n => WORDS[n] || String(n);
+
+/* THE COLD OPEN (guarded by tools/coldopen.mjs). One column per year of joint output, no
+   numbers but the endpoints. Poorer than the record chart below on purpose. The amber
+   columns are the run of consecutive falls into the lowest year, taken from the data
+   rather than fixed at three. */
 {
   const svg = document.getElementById("open");
   if (svg) {
@@ -42,19 +61,28 @@ const D = await PV.data("collaboration.json");
       const h = (base - top) * r.joint / max;
       PV.el("rect", {x: (lo + i * bw + 2).toFixed(1), y: (base - h).toFixed(1),
         width: (bw - 4).toFixed(1), height: h.toFixed(1),
-        fill: i >= S.length - 3 ? "#FFD09A" : "rgba(255,255,255,.42)"}, svg);
+        fill: i > FALL_FROM && i <= TROUGH_I ? "#FFD09A" : "rgba(255,255,255,.42)"}, svg);
     });
     PV.txt(svg, String(S[0].year), {x: lo + bw / 2, y: H - 8, "text-anchor": "middle",
       "font-size": 12.5, fill: "#C6E2E6"});
     PV.txt(svg, String(S[S.length - 1].year), {x: lo + (S.length - .5) * bw, y: H - 8,
       "text-anchor": "middle", "font-size": 12.5, fill: "#C6E2E6"});
-    PV.txt(svg, "coauthored works per year · the last three fall", {x: lo, y: 16,
+    PV.txt(svg, AFTER.length
+      ? `coauthored works per year · ${word(FALLS)} falls, then ${AFTER.at(-1).joint}`
+      : `coauthored works per year · the last ${word(FALLS)} fall`, {x: lo, y: 16,
       "font-size": 12.5, fill: "#C6E2E6"});
   }
 }
 const S = D.series, T = D.totals;
 const usd = n => "$" + Math.round(n).toLocaleString("en-US");
 const pk = S.find(r => r.year === T.peak_year), last = S.at(-1);
+/* The years that carry a joint paper in either subject, and the run of empty years before
+   the most recent one. The page used to print "the last joint paper in either subject was
+   2020", which was a four-year silence stated as a date; the 2025 pull put one polymer
+   paper on the board and turned that sentence into its own opposite. The silence is what
+   the sentence was about, so the silence is what it now measures. */
+const SUBJ_YEARS = S.filter(r => r.polymer + r.bio).map(r => r.year);
+const SUBJ_GAP = SUBJ_YEARS.length > 1 ? SUBJ_YEARS.at(-1) - SUBJ_YEARS.at(-2) - 1 : 0;
 
 PV.figures([
   ["key", N(T.coauthored), "coauthored papers", `since ${S[0].year}, both universities named`],
@@ -63,8 +91,8 @@ PV.figures([
      the exact inverse of the method, and sat directly under a standfirst saying so. */
   ["", N(T.coauthored_polymer), "classified in polymers", "subfield 2507, not a keyword match"],
   ["", String(T.joint_awards), "joint federal awards", usd(T.joint_award_dollars) + " combined"],
-  /* Bounded to the window on purpose: the award data ends in 2024 and cannot speak to what
-     started after it. CWRU leads the NEO-SMART NSF Engine, awarded 2026-07-14, and Akron
+  /* Bounded to the window on purpose: the award data ends with the window and cannot speak
+     to what started after it. CWRU leads the NEO-SMART NSF Engine, awarded 2026-07-14, and Akron
        is among its core partners — outside this
      series, and BOTH facts are named in the prose. The page used to raise the award twice and
        answer only who led it, which left the one question a reader actually has — are these
@@ -91,9 +119,9 @@ PV.figures([
     const x = xs(i) - bw / 2;
     el("rect", {x, y: ys(r.joint), width: bw, height: m.t + h - ys(r.joint),
       fill: CAT[0]}, svg);
-    /* TICKS, not a nested bar. There are seven polymer-classified papers in thirteen years,
+    /* TICKS, not a nested bar. There are eight polymer-classified papers in fourteen years,
        so a proportional sub-bar renders as a one-pixel sliver and reads as zero. One tick per
-       paper makes seven papers look like seven papers, which is the honest size. */
+       paper makes eight papers look like eight papers, which is the honest size. */
     for (let k = 0; k < r.polymer; k++)
       el("rect", {x: x + 2, y: m.t + h - 5 - k * 7, width: bw - 4, height: 4,
         fill: CAT[1]}, svg);
@@ -123,8 +151,9 @@ PV.figures([
      “polymer” in the text returned 24 of these papers; the subject classification returns
      <b>${T.polymer_total}</b>, with ${T.bio_total} more in biomaterials,
      ${T.subject_total} of ${T.coauthored} works, about
-     ${Math.round(T.subject_total / T.coauthored * 100)} percent. <b>The last joint paper in
-     either subject was ${T.last_subject_year}.</b> A coauthored paper is evidence that two
+     ${Math.round(T.subject_total / T.coauthored * 100)} percent. <b>The ${word(SUBJ_GAP)} years
+     from ${SUBJ_YEARS.at(-2) + 1} to ${T.last_subject_year - 1} carry no joint paper in
+     either subject, and ${T.last_subject_year} carries one.</b> A coauthored paper is evidence that two
      people worked together, not that two institutions have a relationship;
      ${T.coauthored} works over ${S.length} years is roughly
      ${(T.coauthored / S.length).toFixed(0)} a year between universities that publish
@@ -254,18 +283,20 @@ document.getElementById("closersub").innerHTML =
    <b>What the measurement found instead is harder to dismiss and more useful.</b> The
    collaboration is real and substantial, and it is almost never about polymers.
    <b>Of ${T.coauthored} joint papers, ${T.polymer_total} are classified in polymers and
-   plastics and ${T.bio_total} in biomaterials, and the last of either was
-   ${T.last_subject_year}.</b> Two universities anchoring a polymer cluster have published
-   together ${T.coauthored} times in thirteen years and ${Math.round((1 - T.subject_total / T.coauthored) * 100)}
-   percent of it was something else. The joint work has also fallen in each of the last three
-   years, from
-   ${S.find(r => r.year === 2021).per_1k_akron} joint works per thousand of Akron’s output in
-   2021 to ${S.find(r => r.year === 2023).per_1k_akron} in 2023 and
-   ${last.per_1k_akron} in ${last.year}, after controlling for Akron’s own contraction. No
-   new joint federal award has started since ${T.newest_joint_award_year}.
-   <b>The series is noisy and the decline is three years old, not six:</b> the controlled
-   rate was still ${S.find(r => r.year === 2020).per_1k_akron} in 2020, so this is a recent
-   turn and not a long slide. <b>That is a live question PIC is positioned to
+   plastics and ${T.bio_total} in biomaterials, ${T.subject_total} in all, and
+   ${word(SUBJ_GAP)} of the last ${word(SUBJ_GAP + 1)} years carry neither.</b> Two
+   universities anchoring a polymer cluster have published
+   together ${T.coauthored} times in ${word(S.length)} years and ${Math.round((1 - T.subject_total / T.coauthored) * 100)}
+   percent of it was something else. <b>The joint work thinned too, and it thinned
+   recently.</b> The controlled rate fell in ${word(FALLS)} straight years, from
+   ${S[FALL_FROM].per_1k_akron} joint works per thousand of Akron’s output in
+   ${S[FALL_FROM].year} to ${TROUGH.per_1k_akron} in ${TROUGH.year}, and came back to
+   ${last.per_1k_akron} in ${last.year} on ${last.joint} papers. One year up from a floor of
+   ${TROUGH.joint} is the shape a run of counts this small makes on its own, so the rise is
+   recorded here and is not read as a recovery: the rate is still
+   ${Math.round((1 - last.per_1k_akron / pk.per_1k_akron) * 100)} percent below the
+   ${T.peak_year} peak. No new joint federal award has started since
+   ${T.newest_joint_award_year}. <b>That is a live question PIC is positioned to
    ask</b>, and it is a different conversation from the one an unbounded negative would have
    started. <b>The limit stays in force:</b> ${D.meta.what_a_null_would_mean}`;
 

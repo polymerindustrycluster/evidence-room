@@ -3,9 +3,9 @@
   "claims": [
     {
       "id": "atlas-counts",
-      "text": "147 US institutions ever filed a polymer program in the federal record, 1991–2023, across 35 states plus Puerto Rico; 41 had a program still conferring in 2023. 'Ever' is a 33-year union and 'still conferring' a one-year snapshot — different constructs, never stated as a ratio.",
+      "text": "147 US institutions ever filed a polymer program in the federal record, 1991–2023, across 33 states, the District of Columbia and Puerto Rico, which is the 35 jurisdictions the hero card counts. This claim's prose read '35 states plus Puerto Rico' until 2026-08-31, which adds to 36 and drops the District of Columbia; the page itself has always printed the split correctly, and the assertion now pins the 33 as well as the 35. 41 institutions had a program still conferring in 2023. 'Ever' is a 33-year union and 'still conferring' a one-year snapshot — different constructs, never stated as a ratio.",
       "source": "polymer-programs-db census, aggregated to institutions, source='ipeds' only",
-      "assert": "D['totals']['ever'] == 147 and D['totals']['active'] == 41 and D['totals']['states'] == 35 and len(D['dots']) == 146 and len(D['off_projection']) == 1 and D['off_projection'][0]['unitid'] == 242617 and D['totals']['active'] == sum(1 for d in D['dots'] + D['off_projection'] if d['active_programs'] > 0)",
+      "assert": "D['totals']['ever'] == 147 and D['totals']['active'] == 41 and D['totals']['states'] == 35 and len([x for x in D['states_list'] if x['state'] not in ('DC', 'PR')]) == 33 and len(D['states_list']) == 35 and len(D['dots']) == 146 and len(D['off_projection']) == 1 and D['off_projection'][0]['unitid'] == 242617 and D['totals']['active'] == sum(1 for d in D['dots'] + D['off_projection'] if d['active_programs'] > 0)",
       "actual": "(D['totals'], len(D['dots']), [o['name'] for o in D['off_projection']])",
       "falsified_if": "2024 data lands or IPEDS revises (the census probes every build); or the mixed-denominator trap re-enters — any sentence stating 41-of-147 as a survival rate fails the census's own documented kill of that headline."
     },

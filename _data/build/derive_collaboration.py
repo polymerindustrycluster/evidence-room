@@ -58,12 +58,12 @@ awards = C["joint_awards"]
 gap_since = max((a["start"] or "")[-4:] for a in awards) if awards else None
 
 out = {"meta": dict(C["meta"],
-                    control="Each university's own annual output is carried beside the "
+                    control="Each university’s own annual output is carried beside the "
                             "joint count, because a joint series alone cannot tell a "
                             "thinning relationship from an indexing lag or from one "
                             "partner shrinking.",
                     row="one year: works listing both institutions, works matching "
-                        "'polymer', and each institution's own total output."),
+                        "‘polymer’, and each institution’s own total output."),
        "totals": dict(C["totals"], peak_year=pk["year"], peak_joint=pk["joint"],
                       last_year=last["year"], last_joint=last["joint"],
                       newest_joint_award_year=gap_since,
@@ -75,7 +75,11 @@ out = {"meta": dict(C["meta"],
 
 p = os.path.join(WEB, "collaboration", "data", "collaboration.json")
 os.makedirs(os.path.dirname(p), exist_ok=True)
-json.dump(out, open(p, "w", encoding="utf-8"), separators=(",", ":"))
+# indent=1, which is what the committed file has always carried and what .gitattributes
+# asks for: a corrected figure should show as one changed line in a diff. Written compact,
+# the 2026-08-31 refresh would have landed as one deleted line and one added line, and the
+# fourteen numbers that moved would have been unreviewable.
+json.dump(out, open(p, "w", encoding="utf-8"), indent=1)
 print(f"wrote {p}")
 print(f"  {out['totals']['coauthored']} coauthored works, "
       f"{out['totals']['coauthored_polymer']} polymer-matching")

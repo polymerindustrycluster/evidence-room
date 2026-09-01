@@ -2,35 +2,35 @@
  "meta": {
   "question": "Do the University of Akron and Case Western Reserve collaborate, and on polymer work specifically?",
   "sources": "OpenAlex works listing both institutions; NSF awards API, awards to either institution since 2012.",
-  "row": "one year: works listing both institutions, works matching ‘polymer’, and each institution’s own total output.",
+  "row": "one year: works listing both institutions, works matching \u2018polymer\u2019, and each institution\u2019s own total output.",
   "two_measures": "Publications and federal awards are independent instruments aimed at the same proposition, which is what makes this triangulation rather than juxtaposition. They can disagree.",
-  "polymer_bound": "Polymer relevance is OpenAlex subfield 2507, ‘Polymers and Plastics’, a classification rather than a keyword. Biomaterials is a separate subfield (2502) and is counted beside it, never merged into it. The unbounded coauthorship count is published alongside both.",
-  "what_a_null_would_mean": "This instrument can demonstrate collaboration and CANNOT demonstrate its absence. OpenAlex affiliation coverage is incomplete, NSF’s co-PI field lists signatories rather than the coalition, and neither sees industry contracts, consortium membership, joint teaching or a conversation. A low count means not detectable at this resolution.",
+  "polymer_bound": "Polymer relevance is OpenAlex subfield 2507, \u2018Polymers and Plastics\u2019, a classification rather than a keyword. Biomaterials is a separate subfield (2502) and is counted beside it, never merged into it. The unbounded coauthorship count is published alongside both.",
+  "what_a_null_would_mean": "This instrument can demonstrate collaboration and CANNOT demonstrate its absence. OpenAlex affiliation coverage is incomplete, NSF\u2019s co-PI field lists signatories rather than the coalition, and neither sees industry contracts, consortium membership, joint teaching or a conversation. A low count means not detectable at this resolution.",
   "subfield": "2507",
   "subfield_alt": "2502",
   "years": [
    2012,
-   2024
+   2025
   ],
-  "fetched": "2026-08-17",
-  "control": "Each university’s own annual output is carried beside the joint count, because a joint series alone cannot tell a thinning relationship from an indexing lag or from one partner shrinking."
+  "fetched": "2026-08-31",
+  "control": "Each university\u2019s own annual output is carried beside the joint count, because a joint series alone cannot tell a thinning relationship from an indexing lag or from one partner shrinking."
  },
  "totals": {
-  "coauthored": 201,
-  "coauthored_polymer": 7,
+  "coauthored": 208,
+  "coauthored_polymer": 8,
   "joint_awards": 4,
   "joint_award_dollars": 3670535,
   "nsf_akron": 245,
-  "nsf_cwru": 366,
+  "nsf_cwru": 367,
   "peak_year": 2018,
   "peak_joint": 29,
-  "last_year": 2024,
-  "last_joint": 2,
+  "last_year": 2025,
+  "last_joint": 6,
   "newest_joint_award_year": "2017",
-  "polymer_total": 7,
+  "polymer_total": 8,
   "bio_total": 11,
-  "subject_total": 18,
-  "last_subject_year": 2020
+  "subject_total": 19,
+  "last_subject_year": 2025
  },
  "series": [
   {
@@ -39,7 +39,7 @@
    "polymer": 0,
    "bio": 0,
    "akron": 1175,
-   "cwru": 4652,
+   "cwru": 4653,
    "per_1k_akron": 10.21
   },
   {
@@ -48,7 +48,7 @@
    "polymer": 0,
    "bio": 0,
    "akron": 1341,
-   "cwru": 4545,
+   "cwru": 4547,
    "per_1k_akron": 9.69
   },
   {
@@ -56,18 +56,18 @@
    "joint": 19,
    "polymer": 1,
    "bio": 2,
-   "akron": 1393,
-   "cwru": 4808,
-   "per_1k_akron": 13.64
+   "akron": 1394,
+   "cwru": 4810,
+   "per_1k_akron": 13.63
   },
   {
    "year": 2015,
    "joint": 24,
    "polymer": 0,
    "bio": 2,
-   "akron": 1556,
-   "cwru": 4869,
-   "per_1k_akron": 15.42
+   "akron": 1555,
+   "cwru": 4871,
+   "per_1k_akron": 15.43
   },
   {
    "year": 2016,
@@ -75,7 +75,7 @@
    "polymer": 1,
    "bio": 1,
    "akron": 1371,
-   "cwru": 5058,
+   "cwru": 5099,
    "per_1k_akron": 10.94
   },
   {
@@ -83,72 +83,81 @@
    "joint": 24,
    "polymer": 1,
    "bio": 4,
-   "akron": 1174,
-   "cwru": 5485,
-   "per_1k_akron": 20.44
+   "akron": 1175,
+   "cwru": 5492,
+   "per_1k_akron": 20.43
   },
   {
    "year": 2018,
    "joint": 29,
    "polymer": 0,
    "bio": 1,
-   "akron": 1158,
-   "cwru": 5534,
-   "per_1k_akron": 25.04
+   "akron": 1167,
+   "cwru": 5532,
+   "per_1k_akron": 24.85
   },
   {
    "year": 2019,
    "joint": 11,
    "polymer": 2,
    "bio": 0,
-   "akron": 946,
-   "cwru": 5704,
-   "per_1k_akron": 11.63
+   "akron": 941,
+   "cwru": 5701,
+   "per_1k_akron": 11.69
   },
   {
    "year": 2020,
    "joint": 22,
    "polymer": 2,
    "bio": 1,
-   "akron": 1009,
-   "cwru": 6468,
-   "per_1k_akron": 21.8
+   "akron": 1010,
+   "cwru": 6474,
+   "per_1k_akron": 21.78
   },
   {
    "year": 2021,
    "joint": 16,
    "polymer": 0,
    "bio": 0,
-   "akron": 783,
-   "cwru": 6199,
-   "per_1k_akron": 20.43
+   "akron": 782,
+   "cwru": 6202,
+   "per_1k_akron": 20.46
   },
   {
    "year": 2022,
-   "joint": 9,
+   "joint": 10,
    "polymer": 0,
    "bio": 0,
    "akron": 694,
-   "cwru": 6287,
-   "per_1k_akron": 12.97
+   "cwru": 6313,
+   "per_1k_akron": 14.41
   },
   {
    "year": 2023,
    "joint": 5,
    "polymer": 0,
    "bio": 0,
-   "akron": 696,
-   "cwru": 6585,
-   "per_1k_akron": 7.18
+   "akron": 697,
+   "cwru": 6621,
+   "per_1k_akron": 7.17
   },
   {
    "year": 2024,
    "joint": 2,
    "polymer": 0,
    "bio": 0,
-   "akron": 722,
-   "cwru": 6195,
-   "per_1k_akron": 2.77
+   "akron": 741,
+   "cwru": 6242,
+   "per_1k_akron": 2.7
+  },
+  {
+   "year": 2025,
+   "joint": 6,
+   "polymer": 1,
+   "bio": 0,
+   "akron": 655,
+   "cwru": 6368,
+   "per_1k_akron": 9.16
   }
  ],
  "joint_awards": [

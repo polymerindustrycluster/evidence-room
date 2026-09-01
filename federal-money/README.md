@@ -136,6 +136,29 @@ carry depth, not the disclosure itself.
   plant? The quote slots into the register band, above the award ladder. Status: ready
   to ship at rung 2.
 
+## Revision, 31 August 2026 — the hero row moved to the basis the page argues for
+
+- **The stat row printed the basis the page rejects.** In display type it read `$34.9M`
+  and `1.5`, the eight-year mean and its ratio, while the H1, the standfirst, the figure
+  title and the closer all printed `$36.6M` and `1.4`, and the closer said in as many
+  words that an annual rate should not carry a year that has not finished. The first
+  screen argued against the rest of the page in the largest numerals on it. The cards now
+  lead with the closed-year basis; the eight-year one moved to their detail lines, so both
+  bases still sit on the first screen and the one the page uses is the one it shows.
+- **Two claim tolerances were looser than the number they guarded.** The closed-year mean
+  is `$36,606,065.57` and `$43,934.43` more would print `$36.7M`; the eight-year mean is
+  `$34,908,375.50` and `$41,624.50` more would print `$35.0M`. Both claims allowed
+  `±$50,000`, so either print could have drifted with the gate green. Both are `±$40,000`
+  now. `fed-annual-rate`'s own note claimed 50k was "tighter than the 50k that would
+  flip" the print, which is not a sentence that can be true; it now states the arithmetic.
+- **The exclude-the-largest check is now printed**, beside the concentration beat it
+  follows from: drop the leftovers code from the seven finished years and the routine flow
+  falls from `$36.6M` a year to `$25.0M` (the award becomes 2.0 years of what is left);
+  drop tire manufacturing too and it is `$13.7M` and 3.7 years. Guarded by
+  `fed-excl-top-codes`. The exclusions are sensitivity, not an alternative headline, and
+  they run in the unflattering direction for a page arguing the award is about a year and
+  a half of routine money.
+
 ## Run and publish
 
 ```

@@ -185,15 +185,21 @@ const esc = s => (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;");
    read "a year, on average", which says what the arithmetic is and not what the figure is
    for: it is the yardstick, the money already arriving that the award gets measured
    against, and a reader who does not know that cannot tell whether a bigger one would be
-   good news. The third card carries the finished-year average it comes from, because
-   "1.4 counting finished years only" asked the reader to trust a ratio whose denominator
-   the page never printed. */
+   good news.
+   THE ROW USED TO PRINT THE BASIS THE PAGE REJECTS. Until 2026-08-31 the display type
+   read $34.9M and 1.5, the eight-year mean and its ratio, while the H1, the standfirst,
+   the figure title and the closer all printed $36.6M and 1.4 and the closer said in as
+   many words that an annual rate should not carry a year that has not finished. The
+   first screen argued against the rest of the page in the largest numerals on it. The
+   cards now lead with the closed-year basis and carry the eight-year one underneath, so
+   both bases are still on the first screen and the one the page uses is the one it
+   shows. Detail lines wrap past about thirty characters; both of these sit under. */
 PV.figures([
-  ["key", short(avgReal), "a year the region already gets",
-   `${fys.length}-year average, 2025 dollars`],
+  ["key", short(avgClosed), "a year the region already gets",
+   `${closed.length} finished years, 2025 dollars`],
   ["", short(award), "the Tech Hub award", `${A.leads.length} awards, as awarded`],
-  ["", years.toFixed(1), "routine years to match it",
-   `${yearsClosed.toFixed(1)} on ${short(avgClosed)}, finished years`],
+  ["", yearsClosed.toFixed(1), "routine years to match it",
+   `${years.toFixed(1)} with fiscal ${PARTIAL} in`],
   ["", short(totalReal), "eight-year total",
    `${short(totalNom)} in the dollars of the day`]
 ]);
