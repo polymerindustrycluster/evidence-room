@@ -1,21 +1,21 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-09-01 10:20",
+  "generated": "2026-09-01 11:09",
   "seconds": 2.2,
-  "scripts": 53,
-  "outputs_on_disk": 9,
-  "outputs_claimed": 36,
+  "scripts": 55,
+  "outputs_on_disk": 7,
+  "outputs_claimed": 37,
   "orphan_outputs": 1,
   "registry_error": null,
   "flag_counts": {
-   "not_in_PIPELINES.md": 53,
+   "not_in_PIPELINES.md": 55,
    "no_house_docstring": 44,
    "no_traps_section": 44,
-   "output_missing_on_disk": 32,
-   "not_in_SOURCES.json": 22,
-   "import_error": 16,
-   "no_output_detected": 13,
+   "output_missing_on_disk": 35,
+   "not_in_SOURCES.json": 23,
+   "import_error": 17,
+   "no_output_detected": 14,
    "meta_fetched_vs_mtime_gap": 3
   }
  },
@@ -170,6 +170,45 @@
     "no_traps_section",
     "not_in_PIPELINES.md",
     "output_missing_on_disk"
+   ]
+  },
+  {
+   "script": "derive_churn_bench.py",
+   "kind": "derive",
+   "what_it_adds": "`fetch_qwi_bench.py` pulls raw cells; this turns them into the four things the page prints and nothing else: a ranked comparison of the region against six states on one window, the same ranking recomputed on four other windows so the position can be shown to persist rather than asserted, the eight age bands with their shares published as BRACKETS rather than points, and the retirement arithmetic labelled as the estimate it is.  python3 _data/build/derive_churn_bench.py",
+   "what_one_row_is": "`windows.<name>.rows[]` - one geography over one window: employment summed across that window's quarters, hires and separations summed over the same quarters, and the three rates that follow, sorted fastest first. The region is the twelve PIC-12 counties summed; a state is that state published as one unit. Comparable because `aggregation_check` measures the only thing that could make them incompar",
+   "traps": "- **A share of the disclosed bands is not a share of the workforce.** Two to three per cent of employment sits in withheld cells, so every band share here is published with `share_lo` (none of the residual belongs to this band) and `share_hi` (all of it does). The 55-and-older finding survives that bracket at both ends of the period, which is why it is publishable; a finding that did not would not be. - **The retirement number is an ESTIMATE and is named one in the data.** It assumes the 55-to-64 band is spread evenly over ten single-year cohorts, so a tenth of it reaches 65 each year. QWI can",
+   "docstring": {
+    "has_house_docstring": true,
+    "has_traps": true,
+    "length": 2672
+   },
+   "hosts": [],
+   "outputs": [],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": []
+   },
+   "output_learned_by": {},
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [
+    "qwi_bench.json"
+   ],
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/qwi_bench.json'",
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "import_error",
+    "no_output_detected",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json"
    ]
   },
   {
@@ -1096,7 +1135,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "usaspending_contracts.json": true
+    "usaspending_contracts.json": false
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1115,19 +1154,12 @@
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
-   "freshness": [
-    {
-     "output": "usaspending_contracts.json",
-     "meta_fetched": "2026-09-01",
-     "file_mtime": "2026-09-01",
-     "bytes": 13551,
-     "row": "one (fiscal year, category, code) PRIME CONTRACT obligation total"
-    }
-   ],
+   "freshness": [],
    "flags": [
     "no_house_docstring",
     "not_in_PIPELINES.md",
-    "not_in_SOURCES.json"
+    "not_in_SOURCES.json",
+    "output_missing_on_disk"
    ]
   },
   {
@@ -1150,7 +1182,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "fed_outlays.json": true
+    "fed_outlays.json": false
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1169,20 +1201,13 @@
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
-   "freshness": [
-    {
-     "output": "fed_outlays.json",
-     "meta_fetched": "2026-09-01",
-     "file_mtime": "2026-09-01",
-     "bytes": 1995,
-     "row": "one federal award line"
-    }
-   ],
+   "freshness": [],
    "flags": [
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "not_in_SOURCES.json"
+    "not_in_SOURCES.json",
+    "output_missing_on_disk"
    ]
   },
   {
@@ -1250,7 +1275,7 @@
     {
      "output": "qcew.json",
      "meta_fetched": null,
-     "file_mtime": "2026-09-01",
+     "file_mtime": "2026-08-31",
      "bytes": 342410,
      "row": null
     }
@@ -1317,7 +1342,7 @@
     {
      "output": "intl.json",
      "meta_fetched": "2026-08-30",
-     "file_mtime": "2026-09-01",
+     "file_mtime": "2026-08-30",
      "bytes": 3751,
      "row": "one (institution, year): degrees conferred, and how many went to students on visas."
     }
@@ -1385,7 +1410,7 @@
     {
      "output": "ipeds.json",
      "meta_fetched": "2026-08-14",
-     "file_mtime": "2026-09-01",
+     "file_mtime": "2026-08-30",
      "bytes": 500088,
      "row": "one (institution, year, CIP-6, award level) count of DEGREES CONFERRED. majornum=1 only, so a double-major is counted once. race=99/sex=99 total rows only, so demographic detail is not double counted."
     }
@@ -1456,14 +1481,14 @@
     {
      "output": "ipeds.json",
      "meta_fetched": "2026-08-14",
-     "file_mtime": "2026-09-01",
+     "file_mtime": "2026-08-30",
      "bytes": 500088,
      "row": "one (institution, year, CIP-6, award level) count of DEGREES CONFERRED. majornum=1 only, so a double-major is counted once. race=99/sex=99 total rows only, so demographic detail is not double counted."
     },
     {
      "output": "ipeds_cip.json",
      "meta_fetched": "2026-08-31",
-     "file_mtime": "2026-09-01",
+     "file_mtime": "2026-08-31",
      "bytes": 266640,
      "row": "one (year, institution or geography, CIP-6, award level) count of DEGREES CONFERRED, race=99 and sex=99 (totals). First major only from 2000; majornum is null before 2000 so no filter is possible there."
     }
@@ -1589,7 +1614,7 @@
     {
      "output": "ipeds.json",
      "meta_fetched": "2026-08-14",
-     "file_mtime": "2026-09-01",
+     "file_mtime": "2026-08-30",
      "bytes": 500088,
      "row": "one (institution, year, CIP-6, award level) count of DEGREES CONFERRED. majornum=1 only, so a double-major is counted once. race=99/sex=99 total rows only, so demographic detail is not double counted."
     }
@@ -1804,7 +1829,7 @@
     {
      "output": "lodes_peers.json",
      "meta_fetched": "2026-08-31",
-     "file_mtime": "2026-09-01",
+     "file_mtime": "2026-08-31",
      "bytes": 108039,
      "row": "one region: the share of jobs held by its residents that sit in their own county, and the share that sit anywhere inside the region."
     }
@@ -1964,7 +1989,7 @@
     {
      "output": "occmix.json",
      "meta_fetched": "2026-08-31",
-     "file_mtime": "2026-09-01",
+     "file_mtime": "2026-08-31",
      "bytes": 553531,
      "row": "one occupation employed in one industry, NATIONALLY"
     }
@@ -2471,7 +2496,7 @@
     {
      "output": "qcew.json",
      "meta_fetched": null,
-     "file_mtime": "2026-09-01",
+     "file_mtime": "2026-08-31",
      "bytes": 342410,
      "row": null
     }
@@ -2480,6 +2505,59 @@
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md"
+   ]
+  },
+  {
+   "script": "fetch_qwi_bench.py",
+   "kind": "fetch",
+   "what_it_adds": "The churn page printed a turnover rate and then declined to say whether it was high: \"no other industry or state is compared here.\" The decline named a comparator that was one request away on the series the page already uses, which makes it a research gap wearing a caveat's clothes. This fetch closes it on the SAME INSTRUMENT - same API, same table, same industry code, same quarters, same unadjusted series - along two axes the page never pulled:  GEOGRAPHY. NAICS 326 flows for Ohio and the five other states with the largest plastics-and-rubber payrolls (Illinois, Texas, California, Pennsylvani",
+   "what_one_row_is": "`states[FIPS].quarters[]` - one (state, year, quarter) cell of QWI at NAICS 326. `emp` is a STOCK on the first day of the quarter; `hires` and `seps` are FLOWS during it, so they never share an axis with employment. Identical in definition to the county rows the page already ships, which is the entire point: one parameter differs. `age[window][band][]` - one (county, year, quarter, age band) cell ",
+   "traps": "Every one of these was hit while building this file. - **The API is NOT keyless.** A request without `key=` returns HTTP **200** with an HTML page titled \"Missing Key\". A JSON parse raises on it; a lenient caller that catches and continues writes an empty series indistinguishable from a genuine zero. This file refuses to start without CENSUS_API_KEY and treats any non-JSON body as fatal. - **HTTP 204 is an answer and is not a zero.** Michigan returns 204 for every quarter from 2022Q1 on, at NAICS 326 AND at industry=00: the state stopped supplying records to the program. Recorded in `coverage`",
+   "docstring": {
+    "has_house_docstring": true,
+    "has_traps": true,
+    "length": 5046
+   },
+   "hosts": [
+    "api.census.gov"
+   ],
+   "outputs": [
+    "qwi_bench.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "qwi_bench.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "qwi_bench.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "qwi_bench.json": "static"
+   },
+   "observed_stop": "urlopen",
+   "observed_network": [
+    "http<path>/sa?get=Emp,HirA,Sep&for=state:39,17,48,06,42,18,26&industry=326&year=2012&quarter=1,2,3,4key=<redacted>"
+   ],
+   "observed_reads": [
+    "<outside-repo>/.env"
+   ],
+   "import_error": null,
+   "registry_sources": [
+    "qwi"
+   ],
+   "consuming_pages": [
+    "churn"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
    ]
   },
   {
@@ -2890,27 +2968,16 @@
   {
    "file": "lodes_flows_cache.json",
    "bytes": 1233269,
-   "mtime": "2026-09-01",
+   "mtime": "2026-08-31",
    "meta": null,
    "unreadable": null
   }
  ],
  "outputs": {
-  "fed_outlays.json": {
-   "file": "fed_outlays.json",
-   "bytes": 1995,
-   "mtime": "2026-09-01",
-   "meta": {
-    "fetched": "2026-09-01",
-    "row": "one federal award line",
-    "source": "USAspending.gov spending_by_award, Total Outlays, by award id"
-   },
-   "unreadable": null
-  },
   "intl.json": {
    "file": "intl.json",
    "bytes": 3751,
-   "mtime": "2026-09-01",
+   "mtime": "2026-08-30",
    "meta": {
     "fetched": "2026-08-30",
     "row": "one (institution, year): degrees conferred, and how many went to students on visas.",
@@ -2921,7 +2988,7 @@
   "ipeds.json": {
    "file": "ipeds.json",
    "bytes": 500088,
-   "mtime": "2026-09-01",
+   "mtime": "2026-08-30",
    "meta": {
     "fetched": "2026-08-14",
     "row": "one (institution, year, CIP-6, award level) count of DEGREES CONFERRED. majornum=1 only, so a double-major is counted once. race=99/sex=99 total rows only, so demographic detail is not double counted.",
@@ -2932,7 +2999,7 @@
   "ipeds_cip.json": {
    "file": "ipeds_cip.json",
    "bytes": 266640,
-   "mtime": "2026-09-01",
+   "mtime": "2026-08-31",
    "meta": {
     "fetched": "2026-08-31",
     "row": "one (year, institution or geography, CIP-6, award level) count of DEGREES CONFERRED, race=99 and sex=99 (totals). First major only from 2000; majornum is null before 2000 so no filter is possible there.",
@@ -2944,14 +3011,14 @@
   "lodes_flows_cache.json": {
    "file": "lodes_flows_cache.json",
    "bytes": 1233269,
-   "mtime": "2026-09-01",
+   "mtime": "2026-08-31",
    "meta": null,
    "unreadable": null
   },
   "lodes_peers.json": {
    "file": "lodes_peers.json",
    "bytes": 108039,
-   "mtime": "2026-09-01",
+   "mtime": "2026-08-31",
    "meta": {
     "fetched": "2026-08-31",
     "row": "one region: the share of jobs held by its residents that sit in their own county, and the share that sit anywhere inside the region.",
@@ -2962,7 +3029,7 @@
   "occmix.json": {
    "file": "occmix.json",
    "bytes": 553531,
-   "mtime": "2026-09-01",
+   "mtime": "2026-08-31",
    "meta": {
     "fetched": "2026-08-31",
     "row": "one occupation employed in one industry, NATIONALLY",
@@ -2973,20 +3040,8 @@
   "qcew.json": {
    "file": "qcew.json",
    "bytes": 342410,
-   "mtime": "2026-09-01",
+   "mtime": "2026-08-31",
    "meta": null,
-   "unreadable": null
-  },
-  "usaspending_contracts.json": {
-   "file": "usaspending_contracts.json",
-   "bytes": 13551,
-   "mtime": "2026-09-01",
-   "meta": {
-    "fetched": "2026-09-01",
-    "row": "one (fiscal year, category, code) PRIME CONTRACT obligation total",
-    "source": "USAspending.gov spending_by_category, place of performance, award_type_codes A-D",
-    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
-   },
    "unreadable": null
   }
  }
