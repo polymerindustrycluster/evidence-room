@@ -34,7 +34,14 @@ import json, os, re, time, urllib.parse, urllib.request, collections
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 from contact import UA  # noqa: E402  (one address, see contact.py)
-YEARS = list(range(2012, 2025))
+# THE WINDOW ENDS AT THE LAST COMPLETE PUBLICATION YEAR, and it is hand-set, because a
+# publication year that is still running looks exactly like a collapse in joint output.
+# It is guarded: col-no-new-joint-award asserts the window's end year, so extending this
+# range without re-reading the page's shape sentences fails the claims gate rather than
+# shipping a stale one. It went stale once: the pull ran on 2026-08-17 with the range
+# stopping at 2024, and by 2026-08-31 OpenAlex was returning six joint works for 2025,
+# a tripling off the 2024 floor the page called the third year of a fall.
+YEARS = list(range(2012, 2026))
 NSF = "https://api.nsf.gov/services/v1/awards.json"
 OA = "https://api.openalex.org/works"
 
@@ -65,6 +72,14 @@ def get(url, tries=4):
                 print(f"    FAILED {url[:110]}: {e}")
                 return None
             time.sleep(2 + 3 * i)
+
+
+# HOUSE STYLE REACHES INTO THE META STRINGS. Everything written into `meta` below is
+# rendered as prose on the page, in the figure source line and in the generated methodology
+# box, so tools/style.mjs reads it as published writing: typographer's quotes only. The
+# 2026-08-31 refresh regenerated this file with ASCII apostrophes and the style gate failed
+# on six text nodes the page had been shipping correctly, because the committed JSON had
+# been hand-corrected after the last pull and the generator never was.
 
 
 # ---------------------------------------------------------------- 1. NSF awards
@@ -241,13 +256,13 @@ out = {"meta": {
                     "the same proposition, which is what makes this triangulation rather "
                     "than juxtaposition. They can disagree.",
     "polymer_bound": (
-        f"Polymer relevance is OpenAlex subfield {SUBFIELD}, 'Polymers and Plastics', a "
+        f"Polymer relevance is OpenAlex subfield {SUBFIELD}, ‘Polymers and Plastics’, a "
         f"classification rather than a keyword. Biomaterials is a separate subfield "
         f"({SUBFIELD_ALT}) and is counted beside it, never merged into it. The unbounded "
         f"coauthorship count is published alongside both."),
     "what_a_null_would_mean": "This instrument can demonstrate collaboration and CANNOT "
                               "demonstrate its absence. OpenAlex affiliation coverage is "
-                              "incomplete, NSF's co-PI field lists signatories rather than "
+                              "incomplete, NSF’s co-PI field lists signatories rather than "
                               "the coalition, and neither sees industry contracts, "
                               "consortium membership, joint teaching or a conversation. A "
                               "low count means not detectable at this resolution.",
@@ -266,5 +281,5 @@ out = {"meta": {
 p = os.path.join(HERE, "collab.json")
 json.dump(out, open(p, "w", encoding="utf-8"), separators=(",", ":"))
 print(f"\nwrote {p}")
-print(f"  {tot_co} coauthored works 2012-2024, {tot_poly} polymer-matching")
+print(f"  {tot_co} coauthored works {YEARS[0]}-{YEARS[-1]}, {tot_poly} polymer-matching")
 print(f"  {len(joint)} joint NSF awards, ${sum(r['amount'] for r in joint):,.0f}")

@@ -1,22 +1,21 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-08-31 20:41",
-  "seconds": 2.3,
+  "generated": "2026-09-01 00:03",
+  "seconds": 0.4,
   "scripts": 49,
-  "outputs_on_disk": 7,
-  "outputs_claimed": 32,
-  "orphan_outputs": 1,
+  "outputs_on_disk": 0,
+  "outputs_claimed": 33,
+  "orphan_outputs": 0,
   "registry_error": null,
   "flag_counts": {
    "not_in_PIPELINES.md": 49,
    "no_traps_section": 43,
    "no_house_docstring": 42,
-   "output_missing_on_disk": 30,
+   "output_missing_on_disk": 35,
    "not_in_SOURCES.json": 20,
-   "import_error": 16,
-   "no_output_detected": 13,
-   "meta_fetched_vs_mtime_gap": 3
+   "import_error": 18,
+   "no_output_detected": 14
   }
  },
  "scripts": [
@@ -199,7 +198,7 @@
    "observed_reads": [
     "collab.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/collab.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-c/_data/build/collab.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -240,7 +239,7 @@
    "observed_reads": [
     "fed_awards.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/fed_awards.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-c/_data/build/fed_awards.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -338,7 +337,7 @@
    "observed_reads": [
     "lodes.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/lodes.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-c/_data/build/lodes.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -379,7 +378,7 @@
    "observed_reads": [
     "lodes.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/lodes.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-c/_data/build/lodes.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -408,39 +407,32 @@
     "data.bls.gov"
    ],
    "outputs": [],
-   "page_outputs": [
-    "_data/build/location-quotient/data/lq.json"
-   ],
-   "page_outputs_exist": {
-    "_data/build/location-quotient/data/lq.json": false
-   },
+   "page_outputs": [],
+   "page_outputs_exist": {},
    "outputs_exist": {},
    "writes_outside_build": [],
    "witnesses": {
     "static": [],
-    "observed": [
-     "location-quotient/data/lq.json"
-    ]
+    "observed": []
    },
-   "output_learned_by": {
-    "location-quotient/data/lq.json": "observed"
-   },
-   "observed_stop": "open(lq.json,'w')",
+   "output_learned_by": {},
+   "observed_stop": null,
    "observed_network": [],
    "observed_reads": [
     "qcew.json"
    ],
-   "import_error": null,
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-c/_data/build/qcew.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
    "freshness": [],
    "flags": [
+    "import_error",
     "no_house_docstring",
+    "no_output_detected",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "not_in_SOURCES.json",
-    "output_missing_on_disk"
+    "not_in_SOURCES.json"
    ]
   },
   {
@@ -468,10 +460,9 @@
    "observed_stop": null,
    "observed_network": [],
    "observed_reads": [
-    "occmix.json",
-    "oews.json"
+    "occmix.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/oews.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-c/_data/build/occmix.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -524,7 +515,7 @@
    "observed_reads": [
     "pic12_geo.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/pic12_geo.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-c/_data/build/pic12_geo.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -565,7 +556,7 @@
    "observed_reads": [
     "peers.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/peers.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-c/_data/build/peers.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -661,7 +652,7 @@
    "observed_reads": [
     "reach.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/reach.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-c/_data/build/reach.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -710,7 +701,7 @@
    "observed_reads": [
     "peers.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/peers.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-c/_data/build/peers.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -751,7 +742,7 @@
    "observed_reads": [
     "qwi.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/qwi.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-c/_data/build/qwi.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -947,7 +938,7 @@
     "<outside-repo>/.env",
     "fred.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/fred.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-c/_data/build/fred.json'",
    "registry_sources": [
     "fred"
    ],
@@ -1092,13 +1083,11 @@
     "data.bls.gov"
    ],
    "outputs": [
-    "qcew.json",
     "qwi.json"
    ],
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "qcew.json": true,
     "qwi.json": false
    },
    "writes_outside_build": [],
@@ -1106,21 +1095,18 @@
     "static": [
      "qwi.json"
     ],
-    "observed": [
-     "qcew.json"
-    ]
+    "observed": []
    },
    "output_learned_by": {
-    "qcew.json": "observed",
     "qwi.json": "static"
    },
-   "observed_stop": "open(qcew.json,'w')",
+   "observed_stop": null,
    "observed_network": [],
    "observed_reads": [
     "<outside-repo>/.env",
     "qcew.json"
    ],
-   "import_error": null,
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/wt-fix-c/_data/build/qcew.json'",
    "registry_sources": [
     "qcew",
     "qwi"
@@ -1137,16 +1123,9 @@
     "wages"
    ],
    "in_pipelines_md": false,
-   "freshness": [
-    {
-     "output": "qcew.json",
-     "meta_fetched": null,
-     "file_mtime": "2026-08-31",
-     "bytes": 342410,
-     "row": null
-    }
-   ],
+   "freshness": [],
    "flags": [
+    "import_error",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
@@ -1173,7 +1152,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "intl.json": true
+    "intl.json": false
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1204,19 +1183,12 @@
     "scorecard"
    ],
    "in_pipelines_md": false,
-   "freshness": [
-    {
-     "output": "intl.json",
-     "meta_fetched": "2026-08-30",
-     "file_mtime": "2026-08-30",
-     "bytes": 3751,
-     "row": "one (institution, year): degrees conferred, and how many went to students on visas."
-    }
-   ],
+   "freshness": [],
    "flags": [
     "no_house_docstring",
     "no_traps_section",
-    "not_in_PIPELINES.md"
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
    ]
   },
   {
@@ -1239,7 +1211,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "ipeds.json": true
+    "ipeds.json": false
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1272,20 +1244,12 @@
     "scorecard"
    ],
    "in_pipelines_md": false,
-   "freshness": [
-    {
-     "output": "ipeds.json",
-     "meta_fetched": "2026-08-14",
-     "file_mtime": "2026-08-30",
-     "bytes": 500088,
-     "row": "one (institution, year, CIP-6, award level) count of DEGREES CONFERRED. majornum=1 only, so a double-major is counted once. race=99/sex=99 total rows only, so demographic detail is not double counted."
-    }
-   ],
+   "freshness": [],
    "flags": [
-    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
-    "not_in_PIPELINES.md"
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
    ]
   },
   {
@@ -1310,8 +1274,8 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "ipeds.json": true,
-    "ipeds_cip.json": true
+    "ipeds.json": false,
+    "ipeds_cip.json": false
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1343,25 +1307,10 @@
     "scorecard"
    ],
    "in_pipelines_md": false,
-   "freshness": [
-    {
-     "output": "ipeds.json",
-     "meta_fetched": "2026-08-14",
-     "file_mtime": "2026-08-30",
-     "bytes": 500088,
-     "row": "one (institution, year, CIP-6, award level) count of DEGREES CONFERRED. majornum=1 only, so a double-major is counted once. race=99/sex=99 total rows only, so demographic detail is not double counted."
-    },
-    {
-     "output": "ipeds_cip.json",
-     "meta_fetched": "2026-08-31",
-     "file_mtime": "2026-08-31",
-     "bytes": 266640,
-     "row": "one (year, institution or geography, CIP-6, award level) count of DEGREES CONFERRED, race=99 and sex=99 (totals). First major only from 2000; majornum is null before 2000 so no filter is possible there."
-    }
-   ],
+   "freshness": [],
    "flags": [
-    "meta_fetched_vs_mtime_gap",
-    "not_in_PIPELINES.md"
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
    ]
   },
   {
@@ -1385,7 +1334,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "ipeds.json": true,
+    "ipeds.json": false,
     "ipeds_national.json": false
    },
    "writes_outside_build": [],
@@ -1420,17 +1369,8 @@
     "scorecard"
    ],
    "in_pipelines_md": false,
-   "freshness": [
-    {
-     "output": "ipeds.json",
-     "meta_fetched": "2026-08-14",
-     "file_mtime": "2026-08-30",
-     "bytes": 500088,
-     "row": "one (institution, year, CIP-6, award level) count of DEGREES CONFERRED. majornum=1 only, so a double-major is counted once. race=99/sex=99 total rows only, so demographic detail is not double counted."
-    }
-   ],
+   "freshness": [],
    "flags": [
-    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
@@ -1551,30 +1491,35 @@
     "lehd.ces.census.gov"
    ],
    "outputs": [
+    "lodes_flows_cache.json",
     "lodes_peers.json"
    ],
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "lodes_peers.json": true
+    "lodes_flows_cache.json": false,
+    "lodes_peers.json": false
    },
    "writes_outside_build": [],
    "witnesses": {
     "static": [
+     "lodes_flows_cache.json",
      "lodes_peers.json"
     ],
-    "observed": [
-     "lodes_peers.json"
-    ]
+    "observed": []
    },
    "output_learned_by": {
-    "lodes_peers.json": "observed"
+    "lodes_flows_cache.json": "static",
+    "lodes_peers.json": "static"
    },
-   "observed_stop": "open(lodes_peers.json,'w')",
-   "observed_network": [],
-   "observed_reads": [
-    "lodes_flows_cache.json"
+   "observed_stop": "SystemExit(FATAL: no flows read. A zero here is a bug, not an empty country.)",
+   "observed_network": [
+    "http<path>/oh_xwalk.csv.gz",
+    "http<path>/oh_od_main_JT00_2022.csv.gz",
+    "http<path>/pa_xwalk.csv.gz",
+    "http<path>/pa_od_main_JT00_2022.csv.gz"
    ],
+   "observed_reads": [],
    "import_error": null,
    "registry_sources": [
     "lodes"
@@ -1583,19 +1528,12 @@
     "laborshed"
    ],
    "in_pipelines_md": false,
-   "freshness": [
-    {
-     "output": "lodes_peers.json",
-     "meta_fetched": "2026-08-31",
-     "file_mtime": "2026-08-31",
-     "bytes": 108039,
-     "row": "one region: the share of jobs held by its residents that sit in their own county, and the share that sit anywhere inside the region."
-    }
-   ],
+   "freshness": [],
    "flags": [
     "no_house_docstring",
     "no_traps_section",
-    "not_in_PIPELINES.md"
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
    ]
   },
   {
@@ -1716,7 +1654,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "occmix.json": true
+    "occmix.json": false
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1743,19 +1681,12 @@
     "occupations"
    ],
    "in_pipelines_md": false,
-   "freshness": [
-    {
-     "output": "occmix.json",
-     "meta_fetched": "2026-08-31",
-     "file_mtime": "2026-08-31",
-     "bytes": 553531,
-     "row": "one occupation employed in one industry, NATIONALLY"
-    }
-   ],
+   "freshness": [],
    "flags": [
     "no_house_docstring",
     "no_traps_section",
-    "not_in_PIPELINES.md"
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
    ]
   },
   {
@@ -2214,7 +2145,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "qcew.json": true
+    "qcew.json": false
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -2250,19 +2181,12 @@
     "wages"
    ],
    "in_pipelines_md": false,
-   "freshness": [
-    {
-     "output": "qcew.json",
-     "meta_fetched": null,
-     "file_mtime": "2026-08-31",
-     "bytes": 342410,
-     "row": null
-    }
-   ],
+   "freshness": [],
    "flags": [
     "no_house_docstring",
     "no_traps_section",
-    "not_in_PIPELINES.md"
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
    ]
   },
   {
@@ -2669,85 +2593,6 @@
    ]
   }
  ],
- "orphan_outputs": [
-  {
-   "file": "lodes_flows_cache.json",
-   "bytes": 1233269,
-   "mtime": "2026-08-31",
-   "meta": null,
-   "unreadable": null
-  }
- ],
- "outputs": {
-  "intl.json": {
-   "file": "intl.json",
-   "bytes": 3751,
-   "mtime": "2026-08-30",
-   "meta": {
-    "fetched": "2026-08-30",
-    "row": "one (institution, year): degrees conferred, and how many went to students on visas.",
-    "source": "IPEDS completions via the Urban Institute API, CIP 143201, national, 2012-2023, majornum=1, sex=99 with the race dimension broken out. race=99 is the total row; race=8 is nonresident alien."
-   },
-   "unreadable": null
-  },
-  "ipeds.json": {
-   "file": "ipeds.json",
-   "bytes": 500088,
-   "mtime": "2026-08-30",
-   "meta": {
-    "fetched": "2026-08-14",
-    "row": "one (institution, year, CIP-6, award level) count of DEGREES CONFERRED. majornum=1 only, so a double-major is counted once. race=99/sex=99 total rows only, so demographic detail is not double counted.",
-    "source": "IPEDS completions, via the Urban Institute Education Data API"
-   },
-   "unreadable": null
-  },
-  "ipeds_cip.json": {
-   "file": "ipeds_cip.json",
-   "bytes": 266640,
-   "mtime": "2026-08-31",
-   "meta": {
-    "fetched": "2026-08-31",
-    "row": "one (year, institution or geography, CIP-6, award level) count of DEGREES CONFERRED, race=99 and sex=99 (totals). First major only from 2000; majornum is null before 2000 so no filter is possible there.",
-    "source": "IPEDS completions by 6-digit CIP, via the Urban Institute Education Data API",
-    "counts": "{\"institution_rows\": 344, \"ohio_rows\": 455, \"us_rows\": 781}"
-   },
-   "unreadable": null
-  },
-  "lodes_flows_cache.json": {
-   "file": "lodes_flows_cache.json",
-   "bytes": 1233269,
-   "mtime": "2026-08-31",
-   "meta": null,
-   "unreadable": null
-  },
-  "lodes_peers.json": {
-   "file": "lodes_peers.json",
-   "bytes": 108039,
-   "mtime": "2026-08-31",
-   "meta": {
-    "fetched": "2026-08-31",
-    "row": "one region: the share of jobs held by its residents that sit in their own county, and the share that sit anywhere inside the region.",
-    "source": "LEHD LODES8 origin-destination, 2022, segment JT00 (all jobs), `main` files for OH, PA, MI, IN, IL, WI, NY, NC, SC, TN, MO, MN, with LODES' own county-to-CBSA crosswalk."
-   },
-   "unreadable": null
-  },
-  "occmix.json": {
-   "file": "occmix.json",
-   "bytes": 553531,
-   "mtime": "2026-08-31",
-   "meta": {
-    "fetched": "2026-08-31",
-    "row": "one occupation employed in one industry, NATIONALLY",
-    "source": "BLS Employment Projections, National Employment Matrix, industry->occupation"
-   },
-   "unreadable": null
-  },
-  "qcew.json": {
-   "file": "qcew.json",
-   "bytes": 342410,
-   "mtime": "2026-08-31",
-   "meta": null,
-   "unreadable": null
-  }
- }
+ "orphan_outputs": [],
+ "outputs": {}
 }

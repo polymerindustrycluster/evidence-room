@@ -11,11 +11,11 @@
   },
   {
    "id": "col-thinning-is-real",
-   "text": "Joint output peaked at 29 papers in 2018, moved up and down for the three years after it, then fell in each of the last three years to two papers in 2024; the controlled rate fell by more than two thirds from that same peak. This guards the standfirst's shape sentence, the hero chart's description and the closer.",
+   "text": "Joint output peaked at 29 papers in 2018, dropped to 11, came back to 22 in 2020, then fell in four straight years to two papers in 2024 and rose to six in 2025; the controlled rate is still 63 percent below the peak. This guards the standfirst's shape sentence, the hero chart's description, the cold open's label and the closer. THE SHAPE MOVED TWICE ON 2026-08-31. The page had been fetched on 2026-08-17 with the window hand-stopped at 2024 and said joint output 'has fallen in each of the last three' years. First, the same keyless OpenAlex call now returns 2025, and 2025 tripled off the 2024 floor. Second, deriving the run instead of counting it showed the run was never three: 2021 already fell from 2020, so the falls into the trough are FOUR, and the sentence before it that put 2021 in a three-year wobble was describing a shape the chart did not draw. The fall is still real and the rebound is one year on six papers, so the page reports both and headlines neither: app.js walks the run back from the lowest year rather than carrying a hand-set three.",
    "source": "as above; joint works per 1,000 of Akron's own annual output",
-   "assert": "1 - D['series'][-1]['per_1k_akron'] / max(r['per_1k_akron'] for r in D['series']) > 0.66 and D['totals']['peak_year'] == 2018 and D['totals']['peak_joint'] == 29 and max(r['joint'] for r in D['series']) == 29 and (lambda s: s[2019] < s[2018] and s[2020] > s[2019] and s[2021] < s[2020] and s[2022] < s[2021] and s[2023] < s[2022] and s[2024] < s[2023] and s[2024] == 2)({r['year']: r['joint'] for r in D['series']})",
+   "assert": "D['totals']['peak_year'] == 2018 and D['totals']['peak_joint'] == 29 and max(r['joint'] for r in D['series']) == 29 and D['series'][-1]['year'] == 2025 and (lambda s: s[2019] < s[2018] and s[2020] > s[2019] and s[2021] < s[2020] and s[2022] < s[2021] and s[2023] < s[2022] and s[2024] < s[2023] and s[2024] == 2 and s[2024] == min(s.values()) and s[2025] == 6)({r['year']: r['joint'] for r in D['series']}) and (lambda q: q[2021] < q[2020] and q[2022] < q[2021] and q[2023] < q[2022] and q[2024] < q[2023] and q[2025] > q[2024])({r['year']: r['per_1k_akron'] for r in D['series']}) and round((1 - D['series'][-1]['per_1k_akron'] / max(r['per_1k_akron'] for r in D['series'])) * 100) == 63",
    "actual": "[(r['year'], r['joint'], r['akron'], r['per_1k_akron']) for r in D['series']]",
-   "falsified_if": "The controlled rate recovers, the peak moves off 2018 or off 29 works, the three years after the peak stop moving up and down, or any of the last three years stops falling. Any of those and the standfirst is describing a shape the chart beneath it does not draw, which is the defect this claim was widened to catch: the sentence used to say joint output held near its high through 2021 while the chart showed 29 in 2018, 11 in 2019 and 16 in 2021. NOTE the final year is the least-indexed and must not carry this claim alone — the 2018-2023 movement has to hold on its own."
+   "falsified_if": "The peak moves off 2018 or off 29 works, 2019 stops being the drop or 2020 the rebound, the run of four falls into 2024 breaks or lengthens, 2024 stops being the lowest year at two papers, 2025 stops printing six, the controlled rate stops falling across the same four years or stops rebounding after them, or the end-of-series gap to the peak stops rounding to 63 percent. Any of those and the standfirst, the cold-open label and the closer are describing a shape the chart beneath them does not draw. The 2020 boundary is asserted in both directions because it is what makes the run FOUR rather than three or five, and a hand-set three is the error this claim was rewritten to catch. The falls are asserted on the COUNTS and again on the CONTROLLED RATE, because the closer walks the reader down the rate and the two series could diverge. NOTE the final year is the least-indexed and must not carry this claim alone: the 2018-2024 movement holds without it."
   },
   {
    "id": "col-not-indexing-lag",
@@ -23,15 +23,15 @@
    "source": "OpenAlex, each institution's own works per year",
    "assert": "D['series'][-1]['cwru'] >= [r['cwru'] for r in D['series'] if r['year'] == D['totals']['peak_year']][0]",
    "actual": "[(r['year'], r['akron'], r['cwru']) for r in D['series'][-4:]]",
-   "falsified_if": "Case Western's own recent output drops below its level at the joint peak, which would mean the index is thin on recent years and the joint decline cannot be separated from it."
+   "falsified_if": "Case Western's own output drops below its level at the joint peak, which would mean the index is thin on recent years and the joint decline cannot be separated from it. It is the guard that matters most on a refresh: the 2025 year was added on 2026-08-31 and Case Western's own output that year, 6,368, is well above the 5,532 it published in the 2018 peak year, so the series end is not an indexing artifact."
   },
   {
    "id": "col-no-new-joint-award",
-   "text": "Within the window measured here, 2012 to 2024, no new joint federal award started after 2017.",
+   "text": "Within the window measured here, 2012 to 2025, no new joint federal award started after 2017.",
    "source": "NSF awards API, awards to either institution since 2012, Collaborative Research mechanism only",
-   "assert": "max(int((a['start'] or '0000')[-4:]) for a in D['joint_awards']) <= 2017 and D['meta']['years'][1] <= 2024",
+   "assert": "max(int((a['start'] or '0000')[-4:]) for a in D['joint_awards']) <= 2017 and D['meta']['years'][1] == 2025",
    "actual": "[(a['start'], a['amount'], a['title'][:60]) for a in D['joint_awards']] + [('window', D['meta']['years'])]",
-   "falsified_if": "A joint award starting after 2017 and on or before 2024 appears, OR the pull is extended past 2024 without re-reading this sentence. LIMIT, and it has already bitten: the unbounded form of this claim ('none since 2017') was refutable from PIC's own timeline page, which records the CWRU-led NEO-SMART NSF Engine awarded 2026-07-14. That award is outside this window, so the arithmetic held while the sentence did not — which is why the window is now asserted beside the maximum. Separately, this sees NSF only: a joint NIH, DOE, EDA or state award would not appear here and would not falsify the arithmetic while still making the sentence misleading."
+   "falsified_if": "A joint award starting after 2017 and inside the window appears, OR the pull is extended past 2025 without re-reading this sentence. The window end is asserted as an EQUALITY for exactly that reason, and it did its job on 2026-08-31: the pull moved from 2024 to 2025 and this claim failed until every sentence carrying a window year had been re-read. LIMIT, and it has already bitten: the unbounded form of this claim ('none since 2017') was refutable from PIC's own timeline page, which records the CWRU-led NEO-SMART NSF Engine awarded 2026-07-14. That award is outside this window, so the arithmetic held while the sentence did not. Separately, this sees NSF only: a joint NIH, DOE, EDA or state award would not appear here and would not falsify the arithmetic while still making the sentence misleading."
   },
   {
    "id": "col-cannot-prove-absence",
@@ -44,11 +44,11 @@
   },
   {
    "id": "col-rarely-about-polymers",
-   "text": "Of 201 joint papers, seven are classified in polymers and plastics and eleven in biomaterials, and the last of either was 2020.",
+   "text": "Of 208 joint papers, eight are classified in polymers and plastics and eleven in biomaterials, nineteen in all, about nine percent. The four years 2021 to 2024 carry no joint paper in either subject; 2025 carries one, the first since 2020.",
    "source": "OpenAlex subfields 2507 and 2502, confirmed against the s3://openalex snapshot; a classification, not a keyword",
-   "assert": "D['totals']['subject_total'] < 0.15 * D['totals']['coauthored'] and D['totals']['last_subject_year'] <= 2020",
-   "actual": "(D['totals']['polymer_total'], D['totals']['bio_total'], D['totals']['coauthored'], D['totals']['last_subject_year'])",
-   "falsified_if": "The subject share rises above 15 percent, or a joint paper appears in either subject after 2020. THIS NUMBER MOVED WHEN THE BOUND DID: the full-text keyword 'polymer' returned 24 of these papers and the subject classification returns 7, because the keyword counted any paper that mentioned the word. The larger number was the one published first."
+   "assert": "D['totals']['subject_total'] < 0.15 * D['totals']['coauthored'] and D['totals']['polymer_total'] == 8 and D['totals']['bio_total'] == 11 and D['totals']['last_subject_year'] == 2025 and all(r['polymer'] + r['bio'] == 0 for r in D['series'] if 2021 <= r['year'] <= 2024) and one(r['polymer'] for r in D['series'] if r['year'] == 2025) == 1 and sorted(r['year'] for r in D['series'] if r['polymer'] + r['bio'])[-2] == 2020",
+   "actual": "[(r['year'], r['polymer'], r['bio']) for r in D['series']] + [(D['totals']['coauthored'], D['totals']['subject_total'], D['totals']['last_subject_year'])]",
+   "falsified_if": "The subject share rises above 15 percent, either subject count moves off eight and eleven, or the four-year silence from 2021 to 2024 gains a paper. THE SENTENCE THIS GUARDS WAS INVERTED BY A REFRESH: it read 'the last of either was 2020', which was a four-year silence written as a date, and the 2026-08-31 pull put one polymer paper in 2025 and made it read as recency. It now measures the silence, which is what it was always about. THIS NUMBER ALSO MOVED WHEN THE BOUND DID: the full-text keyword 'polymer' returned 24 of these papers and the subject classification returns eight, because the keyword counted any paper that mentioned the word. The larger number was the one published first."
   }
  ]
 }

@@ -49,7 +49,7 @@
    "matchAmount": 7164030,
    "matchLabel": "partner match",
    "hue": "eda",
-   "mechanism": "direct",
+   "mechanism": "direct-to-leads",
    "mechanismTitle": "Direct federal awards",
    "mechanismLines": [
     "Obligated to each project lead.",
@@ -67,7 +67,7 @@
    "matchAmount": 10417066,
    "matchLabel": "state cost share",
    "hue": "ohio",
-   "mechanism": "hub",
+   "mechanism": "hub-allocated",
    "mechanismTitle": "Greater Akron Polymer Innovation Hub",
    "mechanismLines": [],
    "note": "The state award genuinely deploys through the hub, which allocates it across five workstreams. The workstream bands are drawn to scale against each other on an expanded scale: at the shared source scale the two smallest would be too thin to label.",
@@ -84,7 +84,7 @@
    "matchAmount": 3373571,
    "matchLabel": "local match",
    "hue": "apex",
-   "mechanism": "direct",
+   "mechanism": "single-grantee",
    "mechanismTitle": "APEX workforce initiative",
    "mechanismLines": [
     "Greater Akron Chamber as grantee."
