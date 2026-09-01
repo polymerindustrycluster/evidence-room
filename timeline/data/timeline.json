@@ -242,7 +242,12 @@
    "tier": "MEDIA",
    "org": "PIC",
    "delivered": true,
-   "show": false
+   "show": false,
+   "claim": "$5B economic impact and 4,000 jobs",
+   "claimBasis": "a projection published in a PIC op-ed, not a measurement. The op-ed states no geography, no industry scope and no horizon for either figure, so neither can be checked against a federal series as written.",
+   "claimContext": "For scale, and not as agreement: the Akron, OH MSA's entire plastics and rubber products manufacturing sector (NAICS 326) employed 6,910 people across 117 establishments in the 2024 annual average. The projected 4,000 jobs is close to three fifths of that whole existing base.",
+   "claimSource": "peers/data/peers.json, metros.326 subject (Akron, OH MSA, area C1042, 2024): emp 6910, estabs 117, location quotient 4.69. BLS QCEW open data, private ownership, annual averages, the same file the peers page publishes.",
+   "claimNote": "Not drawn. This is a MEDIA row and no MEDIA row is shown, so the page prints neither figure. They are recorded here because the register recorded them, with the scale beside them, so the claim cannot travel out of this file without its denominator. Recording a projection is not endorsing it."
   },
   {
    "id": "E025",

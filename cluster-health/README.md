@@ -39,8 +39,15 @@ The revision calibration in the tinted band comes from `revisions/data/revisions
 
 ```
 python3 derive_health.py          # from anywhere; writes data/health.json
+python3 ../_data/build/mirror_fix_patch.py   # REQUIRED: re-applies the IPEDS mirror correction
 node ../tools/bundle.mjs cluster-health
 ```
+
+**`derive_health.py` alone does not reproduce the shipped file.** The Talent tile carries
+the IPEDS mirror correction, which `_data/build/mirror_fix_patch.py` applies on top and
+which the deriver knows nothing about. Running the deriver by itself silently reverts the
+talent standing to ten mis-filed years and drops the `source_correction` block. The patch
+is idempotent, so running it after every derive is safe and skipping it is not.
 
 `derive_health.py` fetches nothing and reads nothing outside this repository. If a source
 page's data changes, re-run it, then re-run the claims: **the assertions re-derive their
@@ -59,6 +66,19 @@ fails the gate rather than shipping.
 - **No tile reports distance from a target, because PIC has set none.** Every baseline on
   the page is either the measure's own past or the national share. If PIC ever sets a
   target, that is a new field and a new sentence, not a re-reading of these.
+- **Two of the five tiles read their LEVEL and their MOVEMENT on different bases, and say
+  so.** Scale reports every county figure the bureau published (24,030) and measures the
+  move on the counties published in every year (23,457). Distinctiveness does the same
+  from 2026-09-01: the level is the published composite (5.96x) and the move and the range
+  are the five counties published in all eleven years (7.68x). The two are readings on
+  different geographies, neither is a correction of the other, and neither may be quoted
+  without its basis. **Why it changed:** `lq.json`'s composite divides the jobs of the
+  counties that report by the workforce of all twelve, because BLS withholds an industry
+  cell and never a county's total employment. So the published ratio sags whenever
+  disclosure thins, and this tile had been reading that sag as economics. Paint's 2025
+  "fall" from 6.40x to 5.96x is Lorain going withheld; on the counties published in both
+  years the composite rose, and on the fixed five it reached an eleven-year high. The
+  movement chart's longest bar was that artefact and is now employment.
 - **STANDING and MOVEMENT are two questions and the page keeps them in two bands.** The
   standing chart puts each level on its own published range, lowest year at the left and
   highest at the right, and marks which end is the better one for the region. The movement

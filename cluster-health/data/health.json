@@ -10,7 +10,7 @@
   "scope": "The three industries counted here are the census codes for resin and synthetic rubber (3252), paint and coatings (3255) and plastics and rubber products (326). The wider chemicals code 325 sweeps in pharmaceuticals, agricultural chemicals and industrial gas, about 60 percent of its own figure, and is context rather than cluster.",
   "not": "This page carries no measure of output, productivity, exports, private investment or company formation, because no page in this room ships one yet. Five measures are not the health of an economy.",
   "geography": "Every employment, wage and contracting figure is on the twelve counties PIC treats as its region. The degree completions are three named universities and the openings estimate beside them is a state projection for an eighteen-county region: they are printed side by side and never divided into one another.",
-  "fetched": "2026-08-18",
+  "fetched": "2026-08-31",
   "footprint": {
    "key": "pic12",
    "n": 12,
@@ -581,11 +581,30 @@
    "short": "paint against the U.S. share",
    "question": "Is this cluster unusual, or just present?",
    "value": "5.96×",
-   "unit": "the national share",
+   "unit": "the national share, on every county published for 2025",
+   "bases": {
+    "level": {
+     "value": 5.9635,
+     "display": "5.96×",
+     "cells": 7,
+     "of_cells": 12,
+     "label": "every county figure published for 2025",
+     "why": "A level is the fullest reading the bureau published for the year, and it is a floor. A withheld county leaves the numerator and stays in the denominator, because its total workforce is published even when its industry cell is not, so thinner disclosure pushes this number down by itself."
+    },
+    "trend": {
+     "value": 7.6825,
+     "display": "7.68×",
+     "cells": 5,
+     "of_cells": 12,
+     "label": "the five counties published in every year since 2015",
+     "why": "A trend needs one fixed set of counties, or the bureau’s disclosure decisions read as concentration appearing and vanishing. This is the only basis on which the move below is a move in the economy, and it is the fixed base the concentration page already publishes."
+    },
+    "note": "Two readings for 2025, on two bases, both correct. 5.96× is every county the bureau published; 7.68× is the five counties it published in every one of the eleven years. The second is higher because it drops counties whose paint and coatings jobs are withheld while their whole workforce still counts. They are readings on different geographies and neither is a correction of the other."
+   },
    "reading": "Paint and coatings is the most concentrated of the three: these twelve counties hold about six times the share of it that the country does. Plastics and rubber, the industries the region is known for, run 2.32 times.",
-   "means": "A high share cuts both ways. Six times the country’s concentration is what makes these counties worth a buyer’s flight, and it is what ties local payroll to one industry’s cycle. This year’s fall moves them a step toward looking like the country, which costs some of each.",
+   "means": "A high share cuts both ways. Six times the country’s concentration is what makes these counties worth a buyer’s flight, and it is what ties local payroll to one industry’s cycle. The published reading fell this year and the fall is the bureau’s rather than the region’s: Lorain (465 jobs at 11.16 times the national share) left the published set and Geauga (100 jobs at 6.49 times) entered it, and a county that goes withheld takes its jobs out of the top of the ratio while its whole workforce stays in the bottom. Both balanced readings rose. On the six counties published in both years the composite went 5.76× to 5.82×, and on the five published in every year it reached 7.68×, the highest of the eleven. Nothing here moved a step toward looking like the country.",
    "standing": {
-    "value": 5.9635,
+    "value": 7.682483,
     "year": 2025,
     "n_years": 11,
     "span": [
@@ -593,65 +612,65 @@
      2025
     ],
     "low": {
-     "year": 2016,
-     "value": 5.4046
+     "year": 2020,
+     "value": 7.03771
     },
     "high": {
-     "year": 2023,
-     "value": 6.4871
+     "year": 2025,
+     "value": 7.682483
     },
-    "position": 0.5163,
-    "rank_from_low": 4,
-    "rank_words": "fourth lowest of eleven",
+    "position": 1.0,
+    "rank_from_low": 11,
+    "rank_words": "highest of eleven years",
     "better_end": null,
     "series": [
      {
       "year": 2015,
-      "value": 5.4564
+      "value": 7.13662
      },
      {
       "year": 2016,
-      "value": 5.4046
+      "value": 7.07634
      },
      {
       "year": 2017,
-      "value": 5.5614
+      "value": 7.251668
      },
      {
       "year": 2018,
-      "value": 6.2664
+      "value": 7.216964
      },
      {
       "year": 2019,
-      "value": 6.1515
+      "value": 7.056376
      },
      {
       "year": 2020,
-      "value": 6.1796
+      "value": 7.03771
      },
      {
       "year": 2021,
-      "value": 6.1809
+      "value": 7.117964
      },
      {
       "year": 2022,
-      "value": 6.4007
+      "value": 7.329607
      },
      {
       "year": 2023,
-      "value": 6.4871
+      "value": 7.646256
      },
      {
       "year": 2024,
-      "value": 6.4005
+      "value": 7.568338
      },
      {
       "year": 2025,
-      "value": 5.9635
+      "value": 7.682483
      }
     ],
-    "basis": "the same composite for paint and coatings, 2015 to 2025",
-    "basis_short": "paint against the U.S. share",
+    "basis": "the same composite for paint and coatings on the five counties published in every year, 2015 to 2025",
+    "basis_short": "paint on the fixed county set",
     "merit_short": "no better end",
     "merit": "This measure has no better end. A high share is what makes these counties worth a buyer’s flight and what ties local payroll to one industry’s cycle, so a move in either direction buys one and costs the other. It is shown here without a merit direction rather than being given one it does not have.",
     "fmt": "x2"
@@ -661,81 +680,82 @@
     "why": "A share against the country needs no peer region chosen for it and no target set for it, and PIC has set none. At 1.0 the counties look like the country; above it they hold more of this work than their size implies."
    },
    "direction": {
-    "value": -0.44,
-    "pct": -6.8,
-    "words": "down from 6.40× to 5.96× the national share, a fall of 0.44",
-    "short_move": "down 0.44, to 5.96×",
-    "of": "on the year",
+    "value": 0.11,
+    "pct": 1.5,
+    "words": "up from 7.57× to 7.68× the national share, a rise of 0.11, on the five counties published in every year",
+    "short_move": "up 0.11, to 7.68×",
+    "of": "on the counties published in every year",
+    "raw": -0.44,
     "streak": null
    },
    "band": {
     "latest_year": 2025,
-    "latest": -0.437,
-    "abs_latest": 0.437,
-    "median_prior": 0.0866,
-    "max_prior": 0.705,
+    "latest": 0.114145,
+    "abs_latest": 0.114145,
+    "median_prior": 0.080254,
+    "max_prior": 0.316649,
     "n_prior": 9,
-    "beats": 8,
-    "typicals": 5.0462,
-    "max_typicals": 8.1409,
+    "beats": 5,
+    "typicals": 1.4223,
+    "max_typicals": 3.9456,
     "verdict": "above",
     "steps": [
      {
       "year": 2016,
-      "change": -0.0518,
-      "typicals": 0.5982
+      "change": -0.06028,
+      "typicals": 0.7511
      },
      {
       "year": 2017,
-      "change": 0.1568,
-      "typicals": 1.8106
+      "change": 0.175328,
+      "typicals": 2.1847
      },
      {
       "year": 2018,
-      "change": 0.705,
-      "typicals": 8.1409
+      "change": -0.034704,
+      "typicals": 0.4324
      },
      {
       "year": 2019,
-      "change": -0.1149,
-      "typicals": 1.3268
+      "change": -0.160588,
+      "typicals": 2.001
      },
      {
       "year": 2020,
-      "change": 0.0281,
-      "typicals": 0.3245
+      "change": -0.018666,
+      "typicals": 0.2326
      },
      {
       "year": 2021,
-      "change": 0.0013,
-      "typicals": 0.015
-     },
-     {
-      "year": 2022,
-      "change": 0.2198,
-      "typicals": 2.5381
-     },
-     {
-      "year": 2023,
-      "change": 0.0864,
-      "typicals": 0.9977
-     },
-     {
-      "year": 2024,
-      "change": -0.0866,
+      "change": 0.080254,
       "typicals": 1.0
      },
      {
+      "year": 2022,
+      "change": 0.211643,
+      "typicals": 2.6372
+     },
+     {
+      "year": 2023,
+      "change": 0.316649,
+      "typicals": 3.9456
+     },
+     {
+      "year": 2024,
+      "change": -0.077918,
+      "typicals": 0.9709
+     },
+     {
       "year": 2025,
-      "change": -0.437,
-      "typicals": 5.0462
+      "change": 0.114145,
+      "typicals": 1.4223
      }
     ]
    },
-   "blind": "Five of the twelve counties are withheld for paint and coatings, so this is a reading on the seven that report. The withheld ones are the small ones, which are usually the least concentrated.",
+   "blind": "Five of the twelve counties are withheld for paint and coatings, so the 5.96× is a reading on the seven that report. Their workforce still counts in the bottom of the ratio, so that reading is a floor and it sags whenever the bureau publishes less. The move and the range are read on the fixed set for that reason. What no basis here can see is the withheld counties themselves.",
    "vintage": {
     "as_of": "2025 annual averages",
-    "changes_it": "A county entering or leaving disclosure moves the composite without any employer changing what it does."
+    "changes_it": "A county entering or leaving disclosure moves the published composite without any employer changing what it does, which is why the move and the range on this tile are read on the counties published in every year."
    },
    "link": {
     "href": "../location-quotient/",
@@ -1103,7 +1123,7 @@
     {
      "label": "Polymer programs, 2023",
      "value": "63",
-     "note": "against a three-year average of 80.4"
+     "note": "against a three-year average of 59.7"
     },
     {
      "label": "Materials programs, 2023",

@@ -32,16 +32,30 @@ before the editorial passes, and two drop or change a block outright. Running th
 comparing would silently downgrade published pages. That is worse than not running them,
 which is why this table exists rather than a green checkmark.
 
+## Verified 2026-09-01
+
+| Page data file | Producer | Result |
+|-|-|-|
+| `programs/data/viz-data.json`, `layers.control.base` only | `fetch_ipeds_control_baserate.py` | **Exact by construction** — the block was written by its producer on the first end-to-end run, from the keyless Urban Institute completions endpoint, and re-running it overwrites the same key with the same shape. The producer will not write at all until it reproduces the page's already-published survival control (48%) from the live API, so a drifted pull fails loudly instead of quietly replacing one control with another. Everything else in this file still comes from the sibling census through `derive_programs.py` and is **untested here**; a refetch will differ wherever Urban has since restated a back year. |
+
 ## Six published files have no producer anywhere
 
 Not in this repository and not in the internal tree. Searched with a control pattern that
 was required to match and did.
 
-`cluster-health/data/health.json` · `cluster-health/data/tide.json` ·
+`cluster-health/data/tide.json` ·
 `timeline/data/timeline.json` · `timeline/data/heritage.json` ·
 `sources/data/registry.json` · `wages/data/mfg.json` ·
 `federal-money/data/techhub.json` · `index/data/states.json` ·
 `accountability/data/*.json`
+
+**Corrected 2026-09-01.** `cluster-health/data/health.json` was on this list and does not
+belong on it: `cluster-health/derive_health.py` produces it, from the shipped data files of
+six sibling pages, and re-running it reproduces every block except the one the IPEDS mirror
+correction patches on afterwards. The list said the search used "a control pattern that was
+required to match and did", which is the right method and did not save it here. Rebuild that
+file with `python3 cluster-health/derive_health.py` followed by
+`python3 _data/build/mirror_fix_patch.py`; the deriver alone reverts the Talent tile.
 
 For these the committed JSON **is** the source of truth. Nothing regenerates it, so a
 defect in one cannot be fixed upstream and has to be edited in place. This is the standing

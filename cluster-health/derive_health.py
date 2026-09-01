@@ -247,7 +247,124 @@ lead = conc[0]
 lead_every_year = all(
     max((c for c in lq["composite"] if c["year"] == y and c["register"] == "core"),
         key=lambda c: c["lq"])["naics"] == lead["naics"] for y in lq_years)
-conc_band = band([(y, comp[(lead["naics"], y)]["lq"]) for y in lq_years])
+
+# THE FIXED-SET COMPOSITE, and why this tile now reads its MOVEMENT off one.
+#
+# The Scale tile above refuses to read a movement off a moving county set. This tile did
+# exactly that until 2026-09-01, and published a disclosure artefact as the largest move
+# on the page. lq.json's composite sums whichever counties BLS disclosed that year over a
+# denominator that always carries all twelve, because a county's TOTAL employment is never
+# withheld and only its industry cell is. A county leaving disclosure therefore takes its
+# jobs out of the numerator and leaves its whole workforce in the denominator, and the
+# ratio falls with nobody changing what they do.
+#
+# Paint's published 2025 "fall" from 6.40x to 5.96x is that and nothing else. Two balanced
+# readings say so and both are computed below rather than asserted: on the counties
+# disclosed in BOTH of the last two years the composite ROSE, and on the five disclosed in
+# all eleven it rose to the highest reading of the series.
+#
+# The construction is the location-quotient page's own published fixed-base line (its
+# disclosure-twist section, claim lq-paint-fixed-base), recomputed here from the same
+# shipped cells so the two pages cannot drift apart. The national share is recovered by
+# inverting the bureau's own definition, lq = (emp / local_total) / nat, from every
+# disclosed county; they agree to better than one part in a thousand, which is the check
+# that this is the bureau's arithmetic and not a reconstruction of it.
+LQ_CNTY = [a["code"] for a in lq["areas"] if a["code"] not in ("39000", "US000")]
+LQ_NAME = {a["code"]: a["name"] for a in lq["areas"]}
+
+
+def nat_share(year, naics):
+    v = [(c["emp"] / c["local_total"]) / c["lq"] for c in lq["cells"]
+         if c["year"] == year and c["naics"] == naics and c["lq"] and c["emp"]
+         and c["local_total"] and c["area"] in LQ_CNTY]
+    if not v:
+        raise ValueError(f"no disclosed county cell for {naics} in {year}")
+    if max(v) / min(v) - 1 > 1e-3:
+        raise ValueError(f"disclosed counties disagree on the national share, {naics} {year}")
+    return sum(v) / len(v)
+
+
+def disclosed_in(year, naics):
+    return {a for a in LQ_CNTY
+            if any(c["year"] == year and c["area"] == a and c["naics"] == naics and c["lq"]
+                   for c in lq["cells"])}
+
+
+def region_jobs(year):
+    """The LQ's own denominator: every county's total employment across all owners.
+
+    Read off whichever industry row carries it, because the builder writes local_total on
+    every row of a county-year including the withheld ones. That is the whole mechanism
+    this section is about, so it is taken from the file rather than assumed.
+    """
+    seen = {c["area"]: c["local_total"] for c in lq["cells"]
+            if c["year"] == year and c["area"] in LQ_CNTY and c["local_total"]}
+    if len(seen) != len(LQ_CNTY):
+        raise ValueError(f"missing a county workforce total in {year}")
+    return sum(seen.values())
+
+
+def composite_on(year, naics, counties):
+    sel = [c for c in lq["cells"]
+           if c["year"] == year and c["naics"] == naics and c["area"] in counties]
+    return (sum(c["emp"] for c in sel) / region_jobs(year)) / nat_share(year, naics)
+
+
+def fixed_series(naics):
+    """Concentration on the counties BLS discloses in EVERY year.
+
+    The concentration analogue of the Scale tile's balanced panel. The denominator is the
+    same always-disclosed counties, not the whole region, so the level is a reading on a
+    narrower geography than the tile's headline and may never travel unlabelled.
+    """
+    always = sorted(set.intersection(*(disclosed_in(y, naics) for y in lq_years)))
+    out = []
+    for y in lq_years:
+        sel = [c for c in lq["cells"]
+               if c["year"] == y and c["naics"] == naics and c["area"] in always]
+        out.append((y, (sum(c["emp"] for c in sel) / sum(c["local_total"] for c in sel))
+                       / nat_share(y, naics)))
+    return always, out
+
+
+fixed_counties, fixed_lead = fixed_series(lead["naics"])
+fixed_now, fixed_prev = fixed_lead[-1][1], fixed_lead[-2][1]
+conc_band = band(fixed_lead)
+
+# Who moved in and out of the published set between the last two years, and what the
+# composite does on the counties that stayed in it. Both are derived, so the tile names
+# the mechanism instead of asserting it.
+d_prev, d_now = disclosed_in(LATEST - 1, lead["naics"]), disclosed_in(LATEST, lead["naics"])
+left = sorted(d_prev - d_now, key=lambda a: -next(
+    c["emp"] for c in lq["cells"]
+    if c["year"] == LATEST - 1 and c["area"] == a and c["naics"] == lead["naics"]))
+entered = sorted(d_now - d_prev)
+cell_of = lambda y, a: next(c for c in lq["cells"] if c["year"] == y and c["area"] == a
+                            and c["naics"] == lead["naics"])
+pair = {y: composite_on(y, lead["naics"], d_prev & d_now) for y in (LATEST - 1, LATEST)}
+
+# The three readings of the same year-on-year move, and whether they agree. The tile only
+# claims a disclosure artefact when the published basis and the two balanced ones actually
+# disagree in SIGN; when they agree it says so plainly instead.
+moved_pub = lead["lq"] - lead["prev"]
+moved_pair = pair[LATEST] - pair[LATEST - 1]
+moved_fixed = fixed_now - fixed_prev
+artefact = (moved_pub < 0) != (moved_fixed < 0) and (moved_pub < 0) != (moved_pair < 0)
+
+
+def _swap_phrase():
+    out = ", ".join(f"{LQ_NAME[a]} ({fmt_n(cell_of(LATEST - 1, a)['emp'])} jobs at "
+                    f"{cell_of(LATEST - 1, a)['lq']:.2f} times the national share)"
+                    for a in left)
+    inn = ", ".join(f"{LQ_NAME[a]} ({fmt_n(cell_of(LATEST, a)['emp'])} jobs at "
+                    f"{cell_of(LATEST, a)['lq']:.2f} times)" for a in entered)
+    if left and entered:
+        return f"{out} left the published set and {inn} entered it"
+    if left:
+        return f"{out} left the published set"
+    if entered:
+        return f"{inn} entered the published set"
+    return "the published set did not change"
 
 # ------------------------------------------------------------------ 3. JOB QUALITY
 latest_reg = [r for r in wg["latest_rows"]
@@ -456,7 +573,39 @@ tiles = [
         "short": "paint against the U.S. share",
         "question": "Is this cluster unusual, or just present?",
         "value": f"{lead['lq']:.2f}×",
-        "unit": "the national share",
+        "unit": f"the national share, on every county published for {LATEST}",
+        # TWO READINGS FOR ONE YEAR, AND BOTH ARE RIGHT, exactly as the Scale tile above.
+        # The LEVEL is every county the bureau published; the MOVEMENT and the range are
+        # the counties it published in every year, because the published set moves and a
+        # ratio built on a moving set falls when disclosure thins. Neither is fixable into
+        # the other and neither may travel unlabelled.
+        "bases": {
+            "level": {"value": lead["lq"], "display": f"{lead['lq']:.2f}×",
+                      "cells": lead["counties_counted"], "of_cells": 12,
+                      "label": f"every county figure published for {LATEST}",
+                      "why": ("A level is the fullest reading the bureau published for the "
+                              "year, and it is a floor. A withheld county leaves the "
+                              "numerator and stays in the denominator, because its total "
+                              "workforce is published even when its industry cell is not, "
+                              "so thinner disclosure pushes this number down by itself.")},
+            "trend": {"value": round(fixed_now, 4), "display": f"{fixed_now:.2f}×",
+                      "cells": len(fixed_counties), "of_cells": 12,
+                      "label": (f"the {WORDS[len(fixed_counties)]} counties published in "
+                                f"every year since {lq_years[0]}"),
+                      "why": ("A trend needs one fixed set of counties, or the bureau’s "
+                              "disclosure decisions read as concentration appearing and "
+                              "vanishing. This is the only basis on which the move below "
+                              "is a move in the economy, and it is the fixed base the "
+                              "concentration page already publishes.")},
+            "note": (f"Two readings for {LATEST}, on two bases, both correct. "
+                     f"{lead['lq']:.2f}× is every county the bureau published; "
+                     f"{fixed_now:.2f}× is the {WORDS[len(fixed_counties)]} counties it "
+                     f"published in every one of the {WORDS[len(lq_years)]} years. The "
+                     f"second is higher because it drops counties whose "
+                     f"{lead['label'].lower()} jobs are withheld while their whole "
+                     f"workforce still counts. They are readings on different geographies "
+                     f"and neither is a correction of the other."),
+        },
         "reading": (f"{lead['label']} is the most concentrated of the three: these twelve "
                     f"counties hold about {WORDS[round(lead['lq'])]} times the share of it "
                     f"that the country does. Plastics and rubber, the industries the region "
@@ -465,17 +614,30 @@ tiles = [
         "means": (f"A high share cuts both ways. {WORDS[round(lead['lq'])].capitalize()} "
                   f"times the country’s concentration is what makes these counties worth "
                   f"a buyer’s flight, and it is what ties local payroll to one industry’s "
-                  f"cycle. This year’s fall moves them a step toward looking like the "
-                  f"country, which costs some of each."),
+                  f"cycle. " + (
+                  f"The published reading fell this year and the fall is the bureau’s "
+                  f"rather than the region’s: {_swap_phrase()}, and a county that goes "
+                  f"withheld takes its jobs out of the top of the ratio while its whole "
+                  f"workforce stays in the bottom. Both balanced readings rose. On the "
+                  f"{WORDS[len(d_prev & d_now)]} counties published in both years the "
+                  f"composite went {pair[LATEST - 1]:.2f}× to {pair[LATEST]:.2f}×, and on "
+                  f"the {WORDS[len(fixed_counties)]} published in every year it reached "
+                  f"{fixed_now:.2f}×, the highest of the {WORDS[len(lq_years)]}. Nothing "
+                  f"here moved a step toward looking like the country."
+                  if artefact else
+                  f"On the {WORDS[len(fixed_counties)]} counties published in every year, "
+                  f"the only basis a move can be read off, it went {fixed_prev:.2f}× to "
+                  f"{fixed_now:.2f}×. The published reading moved the same way, so this "
+                  f"one is the region and not the bureau’s disclosure.")),
         # THE ONE MEASURE WITH NO BETTER END, and the page says so rather than colouring
         # it as if it had one. A reader was told the longest bar on the movement chart was
         # the measure the page itself calls double-edged; encoding merit here without
         # admitting this exception would repeat that in a new place.
-        "standing": dict(standing([(y, comp[(lead["naics"], y)]["lq"]) for y in lq_years],
-                                  None),
-                         basis=(f"the same composite for {lead['label'].lower()}, "
-                                f"{lq_years[0]} to {lq_years[-1]}"),
-                         basis_short="paint against the U.S. share",
+        "standing": dict(standing(fixed_lead, None),
+                         basis=(f"the same composite for {lead['label'].lower()} on the "
+                                f"{WORDS[len(fixed_counties)]} counties published in every "
+                                f"year, {lq_years[0]} to {lq_years[-1]}"),
+                         basis_short="paint on the fixed county set",
                          merit_short="no better end",
                          merit=("This measure has no better end. A high share is what "
                                 "makes these counties worth a buyer’s flight and what "
@@ -491,25 +653,37 @@ tiles = [
                     "like the country; above it they hold more of this work than their "
                     "size implies."),
         },
+        # ON THE FIXED SET, like the Scale tile's move. The published-basis change is
+        # kept as `raw` because the page prints it in the tile's own prose and a reader
+        # who subtracts 6.40 from 5.96 must find it here rather than a contradiction.
         "direction": {
-            "value": round(lead["lq"] - lead["prev"], 2),
-            "pct": round((lead["lq"] / lead["prev"] - 1) * 100, 1),
-            "words": (f"down from {lead['prev']:.2f}× to {lead['lq']:.2f}× the national "
-                      f"share, a fall of {abs(lead['lq'] - lead['prev']):.2f}"),
-            "short_move": (f"down {abs(lead['lq'] - lead['prev']):.2f}, "
-                           f"to {lead['lq']:.2f}×"),
-            "of": "on the year",
+            "value": round(moved_fixed, 2),
+            "pct": round((fixed_now / fixed_prev - 1) * 100, 1),
+            "words": (f"{'up' if moved_fixed >= 0 else 'down'} from {fixed_prev:.2f}× to "
+                      f"{fixed_now:.2f}× the national share, a "
+                      f"{'rise' if moved_fixed >= 0 else 'fall'} of {abs(moved_fixed):.2f}, "
+                      f"on the {WORDS[len(fixed_counties)]} counties published in every "
+                      f"year"),
+            "short_move": (f"{'up' if moved_fixed >= 0 else 'down'} {abs(moved_fixed):.2f}, "
+                           f"to {fixed_now:.2f}×"),
+            "of": "on the counties published in every year",
+            "raw": round(moved_pub, 2),
             "streak": None,
         },
         "band": conc_band,
         "blind": (f"{WORDS[lead['counties_suppressed']].capitalize()} of the twelve "
-                  f"counties are withheld for {lead['label'].lower()}, so this is a reading "
-                  f"on the {WORDS[lead['counties_counted']]} that report. The withheld ones "
-                  f"are the small ones, which are usually the least concentrated."),
+                  f"counties are withheld for {lead['label'].lower()}, so the "
+                  f"{lead['lq']:.2f}× is a reading on the {WORDS[lead['counties_counted']]} "
+                  f"that report. Their workforce still counts in the bottom of the ratio, "
+                  f"so that reading is a floor and it sags whenever the bureau publishes "
+                  f"less. The move and the range are read on the fixed set for that reason. "
+                  f"What no basis here can see is the withheld counties themselves."),
         "vintage": {
             "as_of": f"{LATEST} annual averages",
-            "changes_it": ("A county entering or leaving disclosure moves the composite "
-                           "without any employer changing what it does."),
+            "changes_it": ("A county entering or leaving disclosure moves the published "
+                           "composite without any employer changing what it does, which is "
+                           "why the move and the range on this tile are read on the "
+                           "counties published in every year."),
         },
         "link": {"href": "../location-quotient/", "label": "How concentrated it is"},
         "drivers": [

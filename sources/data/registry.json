@@ -1245,6 +1245,54 @@
     "mean_abs_residual": 0.002542,
     "max_abs_residual": 0.004997
    }
+  },
+  "reference": {
+   "_what": "How high 22.7 actually is, for a reader who has no scale for a location quotient. The page's largest reading is compared against every county-by-four-digit private cell the bureau DISCLOSES in the same twelve counties and the same year, not against the six polymer codes it happens to publish. It is high and it is not the highest: four cells read higher, three of them primary metals in Mahoning and Trumbull and one basic chemicals in Ashtabula. This does not soften the small-base warning; it is the other half of it. A reading can be the largest a page publishes and still be ordinary for the place.",
+   "universe": "county x 4-digit NAICS, private ownership (own_code 5, agglvl_code 76), disclosed cells only",
+   "year": 2025,
+   "counties": 12,
+   "n_cells": 1732,
+   "rank": 5,
+   "subject": {
+    "county": "Geauga",
+    "naics": "3252",
+    "lq": 22.7,
+    "emp": 491
+   },
+   "above": [
+    {
+     "county": "Mahoning",
+     "naics": "3313",
+     "label": "Alumina and aluminum production",
+     "lq": 35.04,
+     "emp": 1230
+    },
+    {
+     "county": "Trumbull",
+     "naics": "3312",
+     "label": "Steel product manufacturing from purchased steel",
+     "lq": 31.61,
+     "emp": 760
+    },
+    {
+     "county": "Trumbull",
+     "naics": "3313",
+     "label": "Alumina and aluminum production",
+     "lq": 29.56,
+     "emp": 724
+    },
+    {
+     "county": "Ashtabula",
+     "naics": "3251",
+     "label": "Basic chemical manufacturing",
+     "lq": 24.86,
+     "emp": 717
+    }
+   ],
+   "url": "https://data.bls.gov/cew/data/api/{year}/a/area/{fips}.csv",
+   "read_on": "2026-09-01",
+   "how": "One annual area file per county from the endpoint this page already prints, keyless; keep own_code 5 and agglvl_code 76, drop rows whose disclosure_code is N, read lq_annual_avg_emplvl. The subject cell comes back at 22.70 on 491 jobs, which is the reading and the base this file already carried, and that agreement is the check.",
+   "not_a_producer": "No script in this repository writes this block; registry.json is one of the published files that has no producer (_data/REBUILDING.md), so it is edited in place and its derivation is printed here instead. The claim on it can only check the file against itself and the shipped fragile cell; re-deriving it means re-running the recipe in `how`."
   }
  },
  "readings": [

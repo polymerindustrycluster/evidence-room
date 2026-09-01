@@ -306,15 +306,16 @@
    "script": "derive_atlas.py"
   },
   "ipeds_control_cips": {
-   "name": "The same IPEDS pull for six peer technician CIPs (the control)",
+   "name": "The same IPEDS pull for six peer technician CIPs (the control, on two populations)",
    "agency": "National Center for Education Statistics, via the Urban Institute Education Data API",
    "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/completions-cip-6",
    "filters": {
     "control CIP codes": "48.0508 Welding; 48.0501 Machine Tool; 15.0613 Manufacturing Eng Tech; 47.0303 Industrial Mechanics and Maintenance; 15.0303 Electrical/Electronic Eng Tech; 15.0805 Mechanical Eng Tech",
     "rule": "identical to the polymer census: substantive = more than 10 lifetime completions, active = a completion in 2023, same years, same award-level canonicalisation",
-    "control build": "sibling checkout polymer-programs-db: fetch_control_cips.py -> control_cips.json, read by derive_programs.py"
+    "control build": "sibling checkout polymer-programs-db: fetch_control_cips.py -> control_cips.json, read by derive_programs.py, for the survival control. The base-rate control is pulled in this repository by fetch_ipeds_control_baserate.py, keyless, and will not write until it reproduces the published 48% from the live API",
+    "two populations": "the SURVIVAL control counts substantive programs only (6,648 ever, 3,185 still, 48%); the BASE-RATE control counts every start with the size threshold OFF (8,736 ever, 23% at ten or fewer completions, 19% both tiny and brief), because thresholding on size would discard the population a start-and-fail rate is about. The two counts are of the same six trades under two different rules and must never be quoted against each other"
    },
-   "script": "derive_programs.py"
+   "script": "derive_programs.py, fetch_ipeds_control_baserate.py"
   },
   "scorecard_fos_polymer": {
    "name": "College Scorecard field-of-study earnings and debt, polymer engineering",

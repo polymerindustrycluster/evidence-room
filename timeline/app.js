@@ -590,16 +590,35 @@ function loadData(file) {
      column reports what the register actually covers inside it \u2014 which is not nothing.
      Two rows that begin in an earlier era are recorded as running on into it, the later
      of them to 2016. What is true is that no NEW row is dated inside it. */
+  /* WHOSE SILENCE IT IS. The strings below used to say the REGISTER records nothing at all
+     after the last covered year, and the register's own file refutes that: it holds a row
+     dated 2020 that it labels claimed, which this page withholds rather than shows with a
+     caveat, and it holds rows in three other collections that this heritage view drops
+     outright. The silence is real and it belongs to the PROVEN heritage and discovery rows,
+     which is exactly what the figure title above the chart has always said. These are
+     counted here, from the register's own meta, so the sentence cannot outrun the file. */
   function voidSpec() {
     const last = HER.eras[HER.eras.length - 1];
     const from = last.to;
     const to = DESIG_YEAR;
     const runsIn = HER.events.filter((e) => e.endYear >= from);
     const covered = runsIn.length ? Math.max(...runsIn.map((e) => e.endYear)) : from - 1;
-    return { from, to, covered, runsIn,
+    const yr = (w) => parseInt(String(w.year), 10);
+    const withheldIn = (HER.meta.withheld || []).filter((w) => yr(w) >= from && yr(w) <= to);
+    const otherColl = Object.entries(HER.meta.counts.dropped || {})
+      .filter(([k]) => k.startsWith('collection:'))
+      .reduce((s, [, v]) => s + v, 0);
+    /* One sentence, two readers (the wide diagram's aria and the stacked one's), written
+       once so the two cannot say different things about the same file. */
+    const n = withheldIn.length;
+    const whose = `That is a silence in the proven rows, not in the register: ` +
+      `${n} row${n === 1 ? '' : 's'} it labels claimed ${n === 1 ? 'falls' : 'fall'} inside ` +
+      `that window and ${n === 1 ? 'is' : 'are'} withheld here, and ${otherColl} rows in its ` +
+      `other collections are outside this view altogether.`;
+    return { from, to, covered, runsIn, withheldIn, otherColl, whose,
       label: `${from}\u2013${to}`,
-      note: 'no new row starts',
-      foot: `then nothing to ${to}` };
+      note: 'no new proven row starts',
+      foot: `then no proven row to ${to}` };
   }
 
   function renderHDiagram(W) {
@@ -625,12 +644,13 @@ function loadData(file) {
         `to ${hc.lastYear}, running earlier to later across five era columns that are ` +
         'each the same width however many years the era ran, so distance across is not years: ' +
         HER.eras.map((x) => x.label).join(', ') + `, followed by a sixth column, ${V.label}, ` +
-        `in which no new row is dated. Two earlier rows are recorded as running on into that ` +
+        `in which no new proven row is dated. Two earlier rows are recorded as running on into that ` +
         `column, the later of them to ${V.covered}, and each is drawn there as a bar. ` +
         'Top row: what changed the region’s capacity. ' +
         'Bottom row: what was first understood here. Named labels mark Goodyear 1898, PVC 1926, the first ' +
         `polymer department 1963, the ALCOM center 1991 and the last dated row in ${hc.lastYear}. After ` +
-        `${V.covered} the register records nothing at all until the ${DESIG_YEAR} designation. ` +
+        `${V.covered} no proven row is dated or still running until the ${DESIG_YEAR} designation. ` +
+        `${V.whose} ` +
         'The same rows are in the table below.' });
 
     /* The axis title, in the gutter beside the era labels. A banded time axis looks linear
@@ -797,13 +817,14 @@ function loadData(file) {
 
     const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
       'aria-label': `${hc.shown} proven heritage events in six stacked era blocks, ` +
-        HER.eras.map((x) => x.label).join(', ') + ` and a ${V.label} block in which no new row ` +
-        `is dated. Each block is one era and runs earlier to later across the screen, so distance ` +
+        HER.eras.map((x) => x.label).join(', ') + ` and a ${V.label} block in which no new proven ` +
+        `row is dated. Each block is one era and runs earlier to later across the screen, so distance ` +
         'is not years. Inside each block the top row is what changed the region’s capacity and the ' +
         `bottom row is what was first understood here. The last dated row is ${hc.lastYear}; ` +
         `${V.runsIn.length} earlier rows are recorded as running on into the last block, the later ` +
-        `of them to ${V.covered}, and the register records nothing at all after that until the ` +
-        `${DESIG_YEAR} federal designation. The same rows are in the table below.` });
+        `of them to ${V.covered}, and no proven row is dated or still running after that until ` +
+        `the ${DESIG_YEAR} federal designation. ${V.whose} ` +
+        'The same rows are in the table below.' });
 
     blocks.forEach((b) => {
       svg.appendChild(el('text', { class: 'era-lab', x: 0, y: b.y + 11 }, b.era.label));
@@ -812,8 +833,9 @@ function loadData(file) {
       if (b.era.isVoid) {
         svg.appendChild(el('rect', { class: 'era-band void', x: 0, y: b.y + LABH - 6,
           width: W, height: 64, rx: 4 }));
+        // the wide layout's own note, not a second copy of it typed at this width
         svg.appendChild(el('text', { class: 'void-note', x: GUT, y: b.voidY + 8 },
-          'no new row starts here'));
+          `${V.note} here`));
         // the bars the wide layout draws, as one line of text at this width
         V.runsIn.slice().sort((a, b2) => a.endYear - b2.endYear).forEach((e, i) => {
           svg.appendChild(el('text', { class: 'void-lab', x: GUT, y: b.voidY + 26 + i * 15,
@@ -1175,6 +1197,32 @@ function loadData(file) {
         `runs to ${showDate({ date: nsfRow.periodEnd, datePrecision: 'day' })}.`;
     }
 
+    /* WHAT THE PACE COUNTS, AND WHAT IT LEAVES OUT. Seventeen times is a ratio between two
+       filtered counts, and until 2026-09-01 the page named the filter nowhere: the register
+       carries dated rows it files as media coverage, and this page drops every one of them
+       because it shows only rows marked public-and-shown. Every one of those rows falls
+       AFTER the designation, so the exclusion is conservative and counting them would make
+       the gap wider, not narrower - which is exactly why it has to be said out loud rather
+       than left for a reader to find. The other direction is the fragile one and it is
+       computed here too: the before count is four, and one more pre-designation row takes
+       the ratio from seventeen to under fourteen. */
+    const scope = document.getElementById('cad-scope');
+    if (scope) {
+      const media = DATA.events.filter((e) => e.tier === 'MEDIA' && e.delivered && !e.show);
+      const ctx = DATA.events.filter((e) => e.tier === 'CTX').length;
+      const mediaSince = media.filter((e) => e.date >= DESIG_ISO).length;
+      const withMedia = Math.round(((since + mediaSince) / before) * 10) / 10;
+      const oneMore = Math.round((since / (before + 1)) * 10) / 10;
+      scope.textContent =
+        `What is counted: delivered rows the inventory marks as public and shows. That ` +
+        `leaves out ${media.length} dated rows it files as media coverage, press and social ` +
+        `mentions rather than events, and ${ctx} rows of pre-1920 context. All ` +
+        `${mediaSince} of the media rows fall after the designation, so counting them would ` +
+        `put the ratio at ${withMedia} times rather than ${Math.round(since / before)}. The ` +
+        `ratio is fragile in the other direction: one more row before the designation takes ` +
+        `it to ${oneMore}.`;
+    }
+
     // The one sentence that holds 68 and 69 together, written from the rows themselves.
     const rec = document.getElementById('cad-reconcile');
     if (rec) {
@@ -1294,9 +1342,10 @@ function loadData(file) {
       scope: `The heritage dates ${hc.firstYear} to ${hc.lastYear} are the dates of the rows, not ` +
         `the years the register covers. ${hc.spans} rows are recorded as spans, and the two longest ` +
         `run past the last row’s date, the later of them to ${hc.lastCoveredYear}. So the record ` +
-        `holds no NEW proven row after ${hc.lastYear}, and nothing at all after ` +
+        `holds no NEW proven row after ${hc.lastYear}, and no proven row at all after ` +
         `${hc.lastCoveredYear}: those are two different silences and the shorter one is the real ` +
-        `gap before the designation.`,
+        `gap before the designation. Both are silences in the PROVEN heritage and discovery ` +
+        `rows, which is all this page draws, and not in the register behind them. ${V.whose}`,
       uncertain: 'Future milestones are drawn hollow because they are plans, not facts. A hollow ' +
         'marker records an intention on a date and is not evidence the thing occurred.',
       caution: 'Dates are the date of public record, which can trail the decision by weeks. The ' +

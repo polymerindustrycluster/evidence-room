@@ -1,18 +1,18 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-09-01 01:03",
+  "generated": "2026-09-01 03:23",
   "seconds": 2.1,
-  "scripts": 50,
+  "scripts": 51,
   "outputs_on_disk": 7,
-  "outputs_claimed": 33,
+  "outputs_claimed": 34,
   "orphan_outputs": 1,
   "registry_error": null,
   "flag_counts": {
-   "not_in_PIPELINES.md": 50,
+   "not_in_PIPELINES.md": 51,
    "no_traps_section": 43,
    "no_house_docstring": 42,
-   "output_missing_on_disk": 31,
+   "output_missing_on_disk": 32,
    "not_in_SOURCES.json": 20,
    "import_error": 16,
    "no_output_detected": 13,
@@ -199,7 +199,7 @@
    "observed_reads": [
     "collab.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/collab.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/collab.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -240,7 +240,7 @@
    "observed_reads": [
     "fed_awards.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/fed_awards.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/fed_awards.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -338,7 +338,7 @@
    "observed_reads": [
     "lodes.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/lodes.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/lodes.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -379,7 +379,7 @@
    "observed_reads": [
     "lodes.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/lodes.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/lodes.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -471,7 +471,7 @@
     "occmix.json",
     "oews.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/oews.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/oews.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -524,7 +524,7 @@
    "observed_reads": [
     "pic12_geo.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/pic12_geo.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/pic12_geo.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -565,7 +565,7 @@
    "observed_reads": [
     "peers.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/peers.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/peers.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -661,7 +661,7 @@
    "observed_reads": [
     "reach.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/reach.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/reach.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -710,7 +710,7 @@
    "observed_reads": [
     "peers.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/peers.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/peers.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -751,7 +751,7 @@
    "observed_reads": [
     "qwi.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/qwi.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/qwi.json'",
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
@@ -947,7 +947,7 @@
     "<outside-repo>/.env",
     "fred.json"
    ],
-   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/claude-501/-Users-johnswanson/3616dbda-dafc-4670-9241-daadc8892e21/scratchpad/evidence-room/_data/build/fred.json'",
+   "import_error": "FileNotFoundError: [Errno 2] No such file or directory: '<path>/fred.json'",
    "registry_sources": [
     "fred"
    ],
@@ -1362,6 +1362,62 @@
    "flags": [
     "meta_fetched_vs_mtime_gap",
     "not_in_PIPELINES.md"
+   ]
+  },
+  {
+   "script": "fetch_ipeds_control_baserate.py",
+   "kind": "fetch",
+   "what_it_adds": "The programs page publishes two different comparisons and only one of them had a control. The SURVIVAL comparison has had one since 2026-08-26 (six peer technician CIPs, same rule, same years: 27% polymer against 48% control). The BASE RATE - 57% of all 168 polymer technician programs ever started conferred ten or fewer completions, 45% were both tiny and brief - stood alone with no denominator but itself, and a reader had no way to know whether \"half of new starts fail\" is a fact about polymer or a fact about American technician programs. It is a fact about polymer: the same six trades, pulle",
+   "what_one_row_is": "One (CIP-6, institution, canonicalised award level) at associate or certificate level, with a completions count for every year it conferred, 1991-2023. A PROGRAM, not a year and not a graduate: it is counted once no matter how long it ran, and it is enumerated from the union of all years, because a program with no completions in a given year is invisible in that year. `tiny` is ten or fewer comple",
+   "traps": "- **The two control figures are pulled the same way and still do not match to the unit.** This file reproduces the page's published survival control - 48% - to the point, on 6,685 substantive programs ever against the page's 6,648, and 3,178 still conferring against 3,185 (0.6% and 0.2%). The rule is identical; the pull is not the same pull. The shipped figure came from the sibling census's `fetch_control_cips.py` on 2026-08-21 and this one from the live API in 2026-09-01, and the Urban mirror restates back years. The reproduction is what licenses the base-rate numbers here; it is NOT a second",
+   "docstring": {
+    "has_house_docstring": true,
+    "has_traps": true,
+    "length": 5189
+   },
+   "hosts": [
+    "educationdata.urban.org"
+   ],
+   "outputs": [
+    "ipeds_control_baserate.json"
+   ],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {
+    "ipeds_control_baserate.json": false
+   },
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [
+     "ipeds_control_baserate.json"
+    ],
+    "observed": []
+   },
+   "output_learned_by": {
+    "ipeds_control_baserate.json": "static"
+   },
+   "observed_stop": "sys.exit(no rows returned: the endpoint moved, or the CIP list is wrong. A silent zero here would publish a control of nothing.)",
+   "observed_network": [
+    "http<path>/?cipcode_6digit=480508&race=99&sex=99",
+    "http<path>/?cipcode_6digit=480508&race=99&sex=99",
+    "http<path>/?cipcode_6digit=480508&race=99&sex=99",
+    "http<path>/?cipcode_6digit=480508&race=99&sex=99"
+   ],
+   "observed_reads": [
+    "programs/data/viz-data.json"
+   ],
+   "import_error": null,
+   "registry_sources": [
+    "ipeds_control_cips"
+   ],
+   "consuming_pages": [
+    "programs"
+   ],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "not_in_PIPELINES.md",
+    "output_missing_on_disk"
    ]
   },
   {

@@ -2,7 +2,7 @@
 
 What the controller must wire before this page is reachable or shippable. The page renders
 standalone today (`python -m http.server 8899` → `/programs/`), passes its claims gate
-(9 auto + 2 manual), and is deliberately NOT linked, catalogued, or deployed.
+(10 auto + 2 manual), and is deliberately NOT linked, catalogued, or deployed.
 
 ## Wiring (mechanical)
 
@@ -12,7 +12,9 @@ standalone today (`python -m http.server 8899` → `/programs/`), passes its cla
 2. **Catalog.** Re-run `_data/build/build_catalog.py` so `_data/catalog.json` and
    `_data/CATALOG.md` carry the page and its three source registrations
    (`ipeds_programs_census`, `ipeds_control_cips`, `scorecard_fos_polymer` — already in
-   `_data/SOURCES.json`).
+   `_data/SOURCES.json`). `_data/catalog.json` also carries
+   `fetch_ipeds_control_baserate.py`, which is the one producer of page data that lives in
+   THIS repository rather than the sibling census.
 3. **Gates.** `npm run gates` for the full battery (bundle, render, collide, claims,
    consistency, columns, centres) before any deploy.
 4. **Shots.** Capture `shots/desktop.png` and `shots/mobile.png` once the page is final.
