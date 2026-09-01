@@ -29,7 +29,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "..", "..", "occupations", "data", "viz-data.json")
 
 
-import ipeds_quarantine as QZ
+import ipeds_mirror_fix as MF
 
 
 def load(name):
@@ -40,10 +40,12 @@ occ, oews, nat, onet, ipeds, qcew, odjfs = (load(f) for f in (
     "occmix.json", "oews.json", "oews_national.json", "onet_education.json",
     "ipeds_cip.json", "qcew.json", "odjfs_projections.json"))
 # The degree panel is the only IPEDS-fed part of this page, and it inherits the federal
-# mirror's republished 2020 (see ipeds_quarantine.py). Dropped at load, so the ten-year
-# window, the per-programme by_year map and the window average all count real years only.
-ipeds["rows"] = QZ.drop(ipeds["rows"])
-ipeds.setdefault("meta", {})["quarantined"] = {str(y): w for y, w in QZ.QUARANTINED.items()}
+# mirror's year fault: a republished 2020, two more years filed a year late behind it, and
+# one collection year served under no label at all (see ipeds_mirror_fix.py). Re-filed and
+# backfilled at load, so the ten-year window, the per-programme by_year map and the window
+# average all count real years, each under its own name.
+ipeds["rows"] = MF.apply_rows(ipeds["rows"])
+ipeds.setdefault("meta", {})["source_correction"] = MF.CAPTION
 
 SOC = oews["meta"]["occupations"]                     # the one occupation set
 METROS = oews["meta"]["metros"]
@@ -199,7 +201,11 @@ for p in progs.values():
 programs.sort(key=lambda p: (p["institution"], p["group"] != "polymer", p["cip"], p["award_level"]))
 insts = sorted({p["institution"] for p in programs})
 polymer_latest = sum(p["latest"] for p in programs if p["group"] == "polymer")
-polymer_window = round(sum(p["window_avg"] for p in programs if p["group"] == "polymer"), 1)
+# FROM THE COUNTS, NEVER BY ADDING ROUNDED AVERAGES, the same rule the staffing shares
+# above follow. Summing the thirteen rounded per-programme window averages published 80.4
+# where the three years themselves average 80.3: thirteen roundings, netting a tenth.
+polymer_window = round(sum(sum(p["by_year"].get(str(y), 0) for p in programs
+                               if p["group"] == "polymer") for y in WINDOW) / len(WINDOW), 1)
 
 # ------------------------------------------------------------------------ meta + write
 today = time.strftime("%Y-%m-%d")
@@ -273,9 +279,11 @@ out = {
     "education": edu,
     "education_totals": {"ba_plus_majority": ba_plus_majority, "hs_majority": hs_majority,
                          "n": len(edu)},
-    "quarantined": {str(y): w for y, w in QZ.QUARANTINED.items()},
-    "gaps": {"kind": "quarantine+sparse",
-             "reason": QZ.CAPTION + "; a programme with no completions in a year has no row"},
+    "source_correction": {"why": MF.CAPTION,
+                          "years_refiled": {str(k): v for k, v in MF.LAG.items()},
+                          "year_backfilled": MF.BACKFILL_YEAR},
+    "gaps": {"kind": "correction+sparse",
+             "reason": MF.CAPTION + "; a programme with no completions in a year has no row"},
     "programs": programs,
     "program_totals": {"institutions": insts, "latest_year": LATEST, "window": WINDOW,
                        "polymer_awards_latest": polymer_latest,

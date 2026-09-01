@@ -131,16 +131,21 @@ source page fails this page's gate instead of leaving a stale board number behin
 - No footprint banner. The page is not county-scoped as a whole (the award rows have no
   county at all); the two rows that are county-scoped name PIC-12 in their own source
   cell.
-- **A data-integrity reading, reported and not corrected.** Every one of the eleven
-  tracked degree programmes that reports a 2019 count in
-  `occupations/data/viz-data.json` carries the identical count again for 2020, so the
-  polymer series prints 118 twice. Independent programmes do not repeat in lockstep. This
-  page draws those two columns pale, reads the 2021–2023 window instead, and guards the
-  observation in `sc-dup-1920`. The claim asserts the repetition, not its cause: nothing
-  here establishes which of the two years, if either, is the real one. It belongs to the
-  occupations page's fetch script to resolve.
+- **A data-integrity reading, now resolved upstream.** This page found that every one of
+  the tracked degree programmes repeated its 2019 count under 2020 in
+  `occupations/data/viz-data.json`, drew both columns pale, and read the 2021–2023 window
+  instead. On 2026-08-31 the repetition turned out to be the first of three years the
+  Urban mirror filed a collection year late, and its catch-up skipped `C2023_A` outright.
+  Those three years now come from the NCES completions files
+  (`_data/build/ipeds_mirror_fix.py`), the series is ten consecutive years, and
+  `sc-dup-1920` guards the correction instead of the defect. The window this page
+  publishes never changed; one of the three years in it was the wrong year.
 
 ## Update log
 
+- **1.1 (2026-08-31)** — the talent rows re-derived on the corrected IPEDS years: the
+  window reads 54, 62, 63 rather than 124, 54, 63, its average 60 rather than 80, and the
+  bachelor and materials rows compute their own direction word instead of carrying a typed
+  one. 19 claims, 0 manual.
 - **1.0 (2026-08-28)** — first build. Register as of 2026-08-13; IPEDS through 2023;
   QCEW 2024; USAspending FY2019–FY2026. 18 claims, 0 manual.

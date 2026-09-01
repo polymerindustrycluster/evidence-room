@@ -1,6 +1,6 @@
 {
  "n_pieces": 22,
- "total_claims": 488,
+ "total_claims": 489,
  "total_manual": 21,
  "pages": {
   "accountability": {
@@ -52,7 +52,7 @@
    "manual": 0
   },
   "patents": {
-   "claims": 7,
+   "claims": 8,
    "manual": 0
   },
   "peers": {

@@ -75,51 +75,51 @@
     },
     {
       "id": "sc-polymer-latest",
-      "text": "Hero card 4, row c-polymer and the closer: 63 polymer credentials were awarded in the region in 2023, against a three-year average of 80.",
+      "text": "Hero card 4, row c-polymer and the closer: 63 polymer credentials were awarded in the region in 2023, against a three-year average of 60.",
       "source": "IPEDS completions through 2023 at three regional institutions, via occupations/data/viz-data.json",
-      "assert": "sum(p['latest'] for p in D['occ']['programs'] if p['group'] == 'polymer') == 63 and D['occ']['program_totals']['polymer_awards_latest'] == 63 and D['occ']['program_totals']['latest_year'] == 2023 and D['sc']['talent']['polymer'][-1]['n'] == 63 and D['sc']['talent']['polymer_window'] == [124, 54, 63] and round(sum(D['sc']['talent']['polymer_window']) / 3) == 80 and len(D['occ']['program_totals']['institutions']) == 3",
+      "assert": "sum(p['latest'] for p in D['occ']['programs'] if p['group'] == 'polymer') == 63 and D['occ']['program_totals']['polymer_awards_latest'] == 63 and D['occ']['program_totals']['latest_year'] == 2023 and D['sc']['talent']['polymer'][-1]['n'] == 63 and D['sc']['talent']['polymer_window'] == [54, 62, 63] and round(sum(D['sc']['talent']['polymer_window']) / 3) == 60 and len(D['occ']['program_totals']['institutions']) == 3",
       "actual": "(sum(p['latest'] for p in D['occ']['programs'] if p['group'] == 'polymer'), D['sc']['talent']['polymer_window'])",
-      "falsified_if": "An IPEDS revision moves any of the three window years, a newer completions year is fetched, or the occupations page re-classifies a CIP code between its polymer and materials groups. This page inherits that classification rather than making its own, so a change there changes this number without any edit here, which is the reason the claim re-runs against that file."
+      "falsified_if": "An IPEDS revision moves any of the three window years, a newer completions year is fetched, or the occupations page re-classifies a CIP code between its polymer and materials groups. This page inherits that classification rather than making its own, so a change there changes this number without any edit here. The window average read 80 until 2026-08-31: the window's first year turned out to be the wrong year and one year of the three was missing entirely. See _data/build/ipeds_mirror_fix.py."
     },
     {
       "id": "sc-polymer-2022",
-      "text": "The talent chart annotation: credentials more than halved in 2022, from 124 to 54.",
+      "text": "The talent chart annotation: credentials more than halved in 2021, from 124 to 54.",
       "source": "IPEDS completions by year, occupations/data/viz-data.json programs.by_year",
-      "assert": "sum(p['by_year'].get('2021', 0) for p in D['occ']['programs'] if p['group'] == 'polymer') == 124 and sum(p['by_year'].get('2022', 0) for p in D['occ']['programs'] if p['group'] == 'polymer') == 54 and 54 * 2 < 124",
-      "actual": "[(y, sum(p['by_year'].get(y, 0) for p in D['occ']['programs'] if p['group'] == 'polymer')) for y in ('2021', '2022', '2023')]",
-      "falsified_if": "A revision lifts 2022 above half of 2021, at which point 'more than halved' is wrong even if the fall remains large. The counts are administrative and in the low hundreds, so a single institution's late filing can move them; the row's trend cell prints all three window years for that reason rather than an arrow."
+      "assert": "sum(p['by_year'].get('2020', 0) for p in D['occ']['programs'] if p['group'] == 'polymer') == 124 and sum(p['by_year'].get('2021', 0) for p in D['occ']['programs'] if p['group'] == 'polymer') == 54 and 54 * 2 < 124 and (lambda s: min(range(1, len(s)), key=lambda i: s[i]['n'] - s[i - 1]['n']) == [p['year'] for p in s].index(2021))(D['sc']['talent']['polymer'])",
+      "actual": "[(y, sum(p['by_year'].get(y, 0) for p in D['occ']['programs'] if p['group'] == 'polymer')) for y in ('2019', '2020', '2021', '2022', '2023')]",
+      "falsified_if": "A revision lifts the year after the peak-to-trough fall above half the year before it, at which point 'more than halved' is wrong even if the fall remains large, or the steepest one-year fall in the drawn series stops being the one the annotation names. The chart finds that year rather than being told it, because the year moved once already: this annotation read 2022 until 2026-08-31, when the mirror's mis-dated years were re-filed. The counts are administrative and in the low hundreds, so a single institution's late filing can move them."
     },
     {
-       "id": "sc-talent-title",
-       "text": "The talent figure title and the chart's own accessible description: polymer credentials ran between 118 and 179 a year through 2021, averaging 142, then dropped to 54 in 2022 and recovered only to 63 in 2023. Every pre-drop year sits above the 2022 count.",
-       "source": "scorecard/data/scorecard.json talent.polymer, the drawn series with 2020 quarantined",
-       "assert": "min([p['n'] for p in D['sc']['talent']['polymer'] if p['year'] <= 2021]) == 118 and max([p['n'] for p in D['sc']['talent']['polymer'] if p['year'] <= 2021]) == 179 and round(sum([p['n'] for p in D['sc']['talent']['polymer'] if p['year'] <= 2021]) / len([p['n'] for p in D['sc']['talent']['polymer'] if p['year'] <= 2021])) == 142 and one(p for p in D['sc']['talent']['polymer'] if p['year'] == 2022)['n'] == 54 and one(p for p in D['sc']['talent']['polymer'] if p['year'] == 2023)['n'] == 63 and min([p['n'] for p in D['sc']['talent']['polymer'] if p['year'] <= 2021]) > 54 and min(p['year'] for p in D['sc']['talent']['polymer']) == 2014",
-       "actual": "[(p['year'], p['n']) for p in D['sc']['talent']['polymer']]",
-       "falsified_if": "A revision moves the pre-2022 low off 118 or the high off 179, or lifts 2022 above the lowest pre-drop year, at which point 'ran between 118 and 179 ... then dropped to 54' stops describing the drawn series. The mean is pinned too, because the title may be worded either way and a scalar standing in for this series has to stay true to it. Counts are administrative and in the low hundreds, so one institution's late filing can move them."
-      },
+      "id": "sc-talent-title",
+      "text": "The talent figure title and the chart's own accessible description: polymer credentials ran between 118 and 179 a year through 2020, averaging 142, then dropped to 54 in 2021 and recovered only to 62 and then 63. Every pre-drop year sits above the 2021 count.",
+      "source": "scorecard/data/scorecard.json talent.polymer, the drawn series with 2020 quarantined",
+      "assert": "min([p['n'] for p in D['sc']['talent']['polymer'] if p['year'] <= 2020]) == 118 and max([p['n'] for p in D['sc']['talent']['polymer'] if p['year'] <= 2020]) == 179 and round(sum([p['n'] for p in D['sc']['talent']['polymer'] if p['year'] <= 2020]) / len([p['n'] for p in D['sc']['talent']['polymer'] if p['year'] <= 2020])) == 142 and one(p for p in D['sc']['talent']['polymer'] if p['year'] == 2021)['n'] == 54 and one(p for p in D['sc']['talent']['polymer'] if p['year'] == 2022)['n'] == 62 and one(p for p in D['sc']['talent']['polymer'] if p['year'] == 2023)['n'] == 63 and min([p['n'] for p in D['sc']['talent']['polymer'] if p['year'] <= 2020]) > 54 and min(p['year'] for p in D['sc']['talent']['polymer']) == 2014 and [p['year'] for p in D['sc']['talent']['polymer']] == list(range(2014, 2024))",
+      "actual": "[(p['year'], p['n']) for p in D['sc']['talent']['polymer']]",
+      "falsified_if": "A revision moves the pre-drop low off 118 or the high off 179, or lifts 2021 above the lowest pre-drop year, at which point 'ran between 118 and 179 ... then dropped to 54' stops describing the drawn series. The mean is pinned too, because the title may be worded either way and a scalar standing in for a range has to be the range's own. The last clause requires ten consecutive years with no hole: the series carried a gap at 2020 until 2026-08-31, and the gap was an artifact of the mirror's dating rather than a missing year."
+    },
     {
       "id": "sc-bachelor",
-      "text": "Row c-bachelor: 6 bachelor-level polymer credentials in 2023, a three-year average of 10.3, down in each of the three years.",
+      "text": "Row c-bachelor: 6 bachelor-level polymer credentials in 2023, a three-year average of 8.3, running 8, 11 and 6 across the window rather than in one direction.",
       "source": "IPEDS completions, bachelor-level rows of the polymer CIP codes, via occupations/data/viz-data.json",
-      "assert": "D['sc']['talent']['bachelor_window'] == [17, 8, 6] and (lambda b: b[0] > b[1] > b[2])(D['sc']['talent']['bachelor_window']) and sum(p['by_year'].get('2023', 0) for p in D['occ']['programs'] if p['group'] == 'polymer' and p['award'] == 'Bachelor') == 6 and round(sum(D['sc']['talent']['bachelor_window']) / 3, 1) == 10.3",
+      "assert": "D['sc']['talent']['bachelor_window'] == [8, 11, 6] and D['sc']['talent']['bachelor_trend'] == 'volatile' and sum(p['by_year'].get('2023', 0) for p in D['occ']['programs'] if p['group'] == 'polymer' and p['award'] == 'Bachelor') == 6 and round(sum(D['sc']['talent']['bachelor_window']) / 3, 1) == 8.3",
       "actual": "D['sc']['talent']['bachelor_window']",
-      "falsified_if": "A revision breaks the strictly falling order. The words 'down three years' are not survivable on a flat or rising middle year, and with counts this small a single programme's filing decides it: six is a number of people, not a rate."
+      "falsified_if": "Any of the three window values moves. The row's direction word is computed from those three rather than typed, which is the fix for the sentence this claim used to guard: it read 'down in each of the three years' against a window that, once the mirror's mis-dated years were re-filed, runs 8, 11, 6. With counts this small a single programme's filing decides it: six is a number of people, not a rate."
     },
     {
       "id": "sc-materials",
-      "text": "Row c-materials and the band-3 lede: materials credentials rose from 20 to 33 over the same three years, moving opposite to polymer.",
+      "text": "Row c-materials and the band-3 lede: materials credentials ran 29, 21 and 33 across the same three years, ending higher than they started while polymer credentials stayed near their low.",
       "source": "IPEDS completions, materials CIP codes at the same institutions, via occupations/data/viz-data.json",
-      "assert": "D['sc']['talent']['materials_window'] == [20, 29, 33] and (lambda m: m[0] < m[1] < m[2])(D['sc']['talent']['materials_window']) and sum(p['latest'] for p in D['occ']['programs'] if p['group'] == 'materials') == 33 and D['sc']['talent']['materials_window'][-1] > D['sc']['talent']['polymer_window'][-1] / 2",
+      "assert": "D['sc']['talent']['materials_window'] == [29, 21, 33] and D['sc']['talent']['materials_window'][-1] > D['sc']['talent']['materials_window'][0] and D['sc']['talent']['materials_trend'] == 'volatile' and sum(p['latest'] for p in D['occ']['programs'] if p['group'] == 'materials') == 33 and D['sc']['talent']['materials_window'][-1] > D['sc']['talent']['polymer_window'][-1] / 2",
       "actual": "(D['sc']['talent']['materials_window'], D['sc']['talent']['polymer_window'])",
-      "falsified_if": "A revision breaks the rise, or the two series stop moving in opposite directions, which is the only reason the materials row is on the page at all. One of the two materials programmes began reporting in 2022, so part of the rise is a programme appearing rather than growth, and the sentence claims direction only."
+      "falsified_if": "The materials window stops ending above where it starts, or its direction word stops being computed from the three values. The sentence read 'rose from 20 to 33, moving opposite to polymer' until 2026-08-31; on the corrected years the window is 29, 21, 33 and polymer rises too, so neither the monotone rise nor the opposition survived and both went. One of the two materials programmes began reporting inside this window, so part of the movement is a programme appearing rather than growth."
     },
     {
       "id": "sc-dup-1920",
-      "text": "The chart's limitation note: every one of the eleven tracked degree programmes that reports a 2019 count carried the identical count again for 2020 in the federal mirror. This page already read the 2021 to 2023 window instead, so no figure it publishes was affected; the duplicated year is now dropped from the series it draws as well.",
+      "text": "The chart's limitation note: the federal mirror behind this series filed 2020, 2021 and 2022 a year late and never served one collection year at all, so those three years are read from the NCES completions files instead. The window this page publishes is unchanged and is now three consecutive years rather than two years and a gap.",
       "source": "occupations/data/viz-data.json programs.by_year, read as shipped",
-      "assert": "D['sc']['talent']['dup_1920'] == 11 and D['sc']['talent']['dup_all'] and D['sc']['talent']['window'] == [2021, 2022, 2023] and all(r['year'] != 2020 for r in D['sc']['talent']['polymer']) and '2020' in D['sc']['talent']['quarantined'] and all(p['by_year'].get('2020') is None for p in D['occ']['programs'])",
-      "actual": "[(p['institution'], p['cip'], p['award'], p['by_year'].get('2019'), p['by_year'].get('2020')) for p in D['occ']['programs'] if '2019' in p['by_year']]",
-      "falsified_if": "The published window stops excluding 2020, or the duplicated year returns to the drawn series, or the record that eleven programmes were affected is lost. This page found the defect and compensated for it before any gate did; what changed is that the series it renders no longer carries the fabricated point as context."
+      "assert": "D['sc']['talent']['source_correction']['year_backfilled'] == 2022 and D['sc']['talent']['window'] == [2021, 2022, 2023] and [p['year'] for p in D['sc']['talent']['polymer']] == list(range(2014, 2024)) and sum(p['by_year'].get('2020', 0) for p in D['occ']['programs'] if p['group'] == 'polymer') == 124 and not [p for p in D['occ']['programs'] if p['by_year'].get('2019') is not None and p['by_year'].get('2019') == p['by_year'].get('2020')] and 'NCES completions files' in D['sc']['meta']['excludes']",
+      "actual": "(D['sc']['talent']['source_correction'], D['sc']['talent']['window'], [p['year'] for p in D['sc']['talent']['polymer']])",
+      "falsified_if": "The correction is reverted, the drawn series loses a year again, or the 2019 and 2020 counts return to being identical programme by programme. This page found the duplicated year before any gate did and compensated for it by reading a later window; what it could not see was that the duplicate was the first of three years filed late, and that the mirror's catch-up skipped a collection year outright. The window it published was right the whole time and one of the three years in it was the wrong year."
     },
     {
       "id": "sc-context-emp",

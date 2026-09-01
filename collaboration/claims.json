@@ -5,9 +5,9 @@
    "id": "col-they-do-collaborate",
    "text": "The University of Akron and Case Western Reserve have coauthored more than 200 works since 2012 and hold four joint federal awards.",
    "source": "OpenAlex works listing both institutions; NSF awards API",
-   "assert": "D['totals']['coauthored'] > 150 and D['totals']['joint_awards'] >= 3",
+   "assert": "200 < D['totals']['coauthored'] < 300 and D['totals']['joint_awards'] == 4",
    "actual": "(D['totals']['coauthored'], D['totals']['joint_awards'], D['totals']['joint_award_dollars'])",
-   "falsified_if": "Either measure collapses. This is the claim that refutes the deleted 'nothing suggests they have met' line; if it fails, that line was closer to right than this page is and the page must be withdrawn, not softened. This claim is about collaboration EXISTING, which is what refutes 'never convened'. It is deliberately independent of whether the collaboration is about polymers — see col-rarely-about-polymers, which says it mostly is not."
+   "falsified_if": "Either measure stops matching the words beside it: the coauthored count falling to 200 or below makes 'more than 200' false, reaching 300 makes it the wrong floor to print, and the award count leaving four contradicts a heading that spells the number out. The old assertion was `> 150` against a text reading 'more than 200' and `>= 3` against a text and a heading both reading 'four', so a count of 151 and three awards would have passed while the page said otherwise. This is the claim that refutes the deleted 'nothing suggests they have met' line; if it fails, that line was closer to right than this page is and the page must be withdrawn, not softened. It is about collaboration EXISTING, and is deliberately independent of whether the collaboration is about polymers — see col-rarely-about-polymers, which says it mostly is not."
   },
   {
    "id": "col-thinning-is-real",

@@ -244,9 +244,11 @@ PV.figures([
 
 /* ------------------------------------------------------------------- 3. impact */
 {
-  /* A DISTRIBUTION, not an average. The mean FWCI here is 2.44 and the median is 1.15 —
-     a long right tail pulls the mean to more than double the typical paper, so quoting the
-     mean would describe a handful of papers and imply it described all of them. */
+  /* A DISTRIBUTION, not an average. The mean FWCI here is 2.02 and the median is 1.10:
+     a long right tail pulls the mean to nearly twice the typical paper, so quoting the
+     mean would describe a handful of papers and imply it described all of them. The two
+     figures were 2.44 and 1.15 when this note was written and neither is the shipped
+     number now; read them off D.totals rather than off this comment. */
   const dec = D.fwci_deciles;
   const LAB = ["10th", "25th", "median", "75th", "90th"];
   const {svg, m, w, h} = chart("impact", {W: COL, H: 252, m: {t: 40, r: 8, b: 58, l: 44}});

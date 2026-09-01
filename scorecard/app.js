@@ -474,15 +474,14 @@ document.getElementById("deliverysrc").innerHTML =
   + `<b>These are commitments, not payments.</b>`;
 
 /* ================================================================== 3. talent
-   One series, one bar per year, change over time: columns. No year is drawn pale any
-   more: the duplicated 2020 is quarantined out of the series entirely, see below. */
-/* Was [2019, 2020]: both halves of the duplicated pair were drawn pale and labelled
-   "repeated in the source file", because with the pair sitting side by side there was no way
-   to tell from THIS file which of the two was the real year. There is now. The mirror
-   republished 2019 under 2020, so 2019 is the genuine observation and 2020 is the copy, and
-   the copy is quarantined out of the series entirely rather than greyed inside it. Paling
-   2019 would now mark a real year as suspect with nothing beside it to explain why. The
-   window this page reads is unchanged and was always right. */
+   One series, one bar per year, change over time: columns. No year is drawn pale and none
+   is missing: the series is ten consecutive years again, see below. */
+/* Was [2019, 2020]: both halves of a duplicated pair were drawn pale and labelled
+   "repeated in the source file", then the copy was quarantined out of the series entirely.
+   On 2026-08-31 the duplicate turned out to be the first of three years the federal mirror
+   filed a year late, and the catch-up skipped a collection year outright. All three now
+   come from the NCES completions files, the skipped year is back, and 2020 carries an
+   observation of its own again. See _data/build/ipeds_mirror_fix.py. */
 const EXCLUDED = [];
 const tal = TAL.polymer;
 
@@ -510,12 +509,13 @@ function talentDesktop() {
   /* The annotation names its own year and both values, so it needs no leader. The first
      version drew one down the right-hand side of the plot and a screenshot showed it
      connecting the text to nothing a reader could follow. */
-  const i22 = tal.findIndex(p => p.year === 2022);
-  txt(svg, `Credentials more than halved in ${tal[i22].year}, from `
-    + `${tal[i22 - 1].n} to ${tal[i22].n}, and ${tal.at(-1).year} recovered only to `
+  const drop = tal.reduce((worst, p, i) => i && p.n - tal[i - 1].n < tal[worst].n - tal[worst - 1].n
+    ? i : worst, 1);
+  txt(svg, `Credentials more than halved in ${tal[drop].year}, from `
+    + `${tal[drop - 1].n} to ${tal[drop].n}, and ${tal.at(-1).year} recovered only to `
     + `${tal.at(-1).n}.`, {x: m.l + 4, y: 30, class: "pv-lab"});
-  txt(svg, `2020 is missing: the source file repeated 2019 under it, so this page `
-    + `reads ${TAL.window[0]} to ${TAL.window.at(-1)}.`,
+  txt(svg, `${TAL.window[0] - 1} to ${TAL.window[1]} are read from the NCES files: the `
+    + `mirror behind the rest filed them late and skipped one.`,
     {x: m.l + 4, y: 52, class: "pv-labq"});
 
   tal.forEach((p, i) => {
@@ -552,8 +552,8 @@ function talentMobile() {
 
 document.getElementById("talenttable").innerHTML = tableView("tal",
   "Credentials awarded by the three regional institutions in polymer CIP codes, by "
-  + "federal reporting year. 2020 is absent: the federal mirror republished 2019 under it, "
-    + "so the year carries no observation of its own and is not drawn.",
+  + "federal reporting year. The 2020 to 2022 counts come from the NCES completions files "
+    + "rather than the mirror behind the rest of the series, which filed them a year late.",
   ["Year", "Polymer credentials"],
   tal.map(p => [String(p.year) + (EXCLUDED.includes(p.year) ? " (repeated)" : ""),
     String(p.n)]));

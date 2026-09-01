@@ -110,19 +110,19 @@
     },
     {
       "id": "talent-move",
-      "text": "Talent tile: the nine-degree rise from 2022 to 2023 is inside the range this measure normally moves, larger than only two of its eight earlier moves.",
+      "text": "Talent tile: the one-degree rise from 2022 to 2023 is inside the range this measure normally moves, smaller than every one of its eight earlier moves.",
       "source": "IPEDS completions 2014-2023, via occupations/data/viz-data.json",
-      "assert": "D['h']['tiles'][3]['band']['latest'] == 9 and D['h']['tiles'][3]['band']['beats'] == 2 and D['h']['tiles'][3]['band']['n_prior'] == 8 and D['h']['tiles'][3]['band']['verdict'] == 'ordinary' and D['h']['tiles'][3]['band']['max_prior'] == 70",
+      "assert": "D['h']['tiles'][3]['band']['latest'] == 1 and D['h']['tiles'][3]['band']['beats'] == 0 and D['h']['tiles'][3]['band']['n_prior'] == 8 and D['h']['tiles'][3]['band']['verdict'] == 'ordinary' and D['h']['tiles'][3]['band']['max_prior'] == 70",
       "actual": "D['h']['tiles'][3]['band']",
-      "falsified_if": "The verdict word on this tile is 'ordinary'. It fails the moment the latest move is larger than half the earlier ones, which the next IPEDS release could do on its own without any change in the level."
+      "falsified_if": "The move, the count of earlier moves it beats, or the verdict changes. It read a nine-degree rise until 2026-08-31, when the federal mirror's mis-dated years were re-filed and the year before this one turned out to be 62 rather than 54: the same latest count, a different move. A tile that reports a move has to name which two years it is between, and this is the guard that they are the right two."
     },
     {
       "id": "talent-two-years-identical",
-      "text": "Talent tile vintage line and the methodology note: the federal mirror republished 2019's award counts under 2020, identically, for every one of the programmes. It is a property of the source file rather than of the schools, and the year is now quarantined out of this page and of the shared completions file rather than drawn.",
+      "text": "Talent tile vintage line and the methodology note: the federal mirror filed 2020, 2021 and 2022 a year late and served one collection year under no year at all. Those three years now come from the NCES completions files, so the series is ten consecutive years and 2020 carries an observation of its own. It is a property of the source file rather than of the schools.",
       "source": "IPEDS completions by year and program, via occupations/data/viz-data.json",
-      "assert": "D['h']['completions_flat_pairs'] == [2020] and all(p['by_year'].get('2020') is None for p in D['occ']['programs']) and all(r.get('year') != 2020 for r in D['h']['completions']) and '2020' in D['h']['quarantined']",
-      "actual": "(D['h']['completions_flat_pairs'], [(p['institution'], p['by_year'].get('2019'), p['by_year'].get('2020')) for p in D['occ']['programs'] if '2019' in p['by_year']])",
-      "falsified_if": "2020 reappears in either file, or the record of WHY it was removed (completions_flat_pairs) is lost, or this page stops declaring the quarantine so a reader meets a gap with no reason attached. The claim used to assert the duplication was PRESENT; it now asserts it was found and removed, which is the same fact one step later.",
+      "assert": "D['h']['source_correction']['repeated_years_after_fix'] == 0 and [r['year'] for r in D['h']['completions']] == list(range(2014, 2024)) and one(r for r in D['h']['completions'] if r['year'] == 2020)['polymer'] == 124 and sum(p['by_year'].get('2020', 0) for p in D['occ']['programs'] if p['group'] == 'polymer') == 124 and not [p for p in D['occ']['programs'] if p['by_year'].get('2019') is not None and p['by_year'].get('2019') == p['by_year'].get('2020')] and D['h']['source_correction']['why'].startswith('2020 to 2022')",
+      "actual": "([r['year'] for r in D['h']['completions']], D['h']['source_correction'])",
+      "falsified_if": "The correction is reverted, a year goes missing from the drawn record again, or 2019 and 2020 return to being identical programme by programme. This claim guarded a quarantine until 2026-08-31; the quarantine was right about the duplicate and wrong about its size, because the duplicate was the first of three years the mirror filed late. See _data/build/ipeds_mirror_fix.py.",
       "official_check": "NCES IPEDS Completions survey, 2019-20 and 2020-21 collection years, CIP 40.1002 and 14.3201 at the three institutions."
     },
     {
@@ -280,11 +280,11 @@
     },
     {
       "id": "standing-talent",
-      "text": "Standing chart and Talent supply tile: 63 polymer degrees in 2023 is the second lowest of the nine years the record actually carries, against a high of 179 in 2016. Nine, not ten: 2020 is quarantined and is not counted as a year of data.",
+      "text": "Standing chart and Talent supply tile: 63 polymer degrees in 2023 is the third lowest of the ten years the record carries, against a high of 179 in 2016 and a low of 54 in 2021.",
       "source": "IPEDS completions for the three named institutions, via occupations/data/viz-data.json",
-      "assert": "(lambda ser, s: s['value'] == ser[max(ser)] and s['low']['value'] == min(ser.values()) and s['low']['year'] == 2022 and s['high']['value'] == max(ser.values()) and s['high']['year'] == 2016 and s['rank_from_low'] == 2 and s['n_years'] == len(ser) == 9 and 2020 not in ser and s['rank_words'].endswith('of nine') and s['better_end'] == 'high')({y: sum(p['by_year'].get(str(y), 0) for p in D['occ']['programs'] if p['group'] == 'polymer') for y in sorted({int(y) for p in D['occ']['programs'] for y in p['by_year']})}, D['h']['tiles'][3]['standing'])",
+      "assert": "(lambda ser, s: s['value'] == ser[max(ser)] and s['low']['value'] == min(ser.values()) and s['low']['year'] == 2021 and s['high']['value'] == max(ser.values()) and s['high']['year'] == 2016 and s['rank_from_low'] == 3 and s['n_years'] == len(ser) == 10 and sorted(ser) == list(range(2014, 2024)) and s['rank_words'].endswith('of ten') and s['better_end'] == 'high')({y: sum(p['by_year'].get(str(y), 0) for p in D['occ']['programs'] if p['group'] == 'polymer') for y in sorted({int(y) for p in D['occ']['programs'] for y in p['by_year']})}, D['h']['tiles'][3]['standing'])",
       "actual": "D['h']['tiles'][3]['standing']",
-      "falsified_if": "The count of years drawn stops matching the count of years in the shared file, or the rank, the low or the high moves. n_years is pinned at 9 deliberately: a tile that counts a quarantined year as a year of data was the defect here, and 'of ten' was printed for months."
+      "falsified_if": "The count of years drawn stops matching the count of years in the shared file, or the rank, the low or the high moves. The count of years moved from nine to ten on 2026-08-31, when the year the quarantine had removed turned out to be misfiled rather than fabricated and was recovered from NCES, and the low moved with it from 2022 to 2021. The rank is recomputed from the drawn series rather than typed, so a tile that ranks a value has to rank it against the years it actually draws."
     },
     {
       "id": "standing-capital",

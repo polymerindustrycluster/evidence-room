@@ -126,15 +126,39 @@ MAT_LATEST = completions("materials")
 MAT_WINDOW = [completions("materials", year=y) for y in WINDOW]
 N_INSTITUTIONS = len(OCC["program_totals"]["institutions"])
 
-# A DATA-INTEGRITY READING, reported rather than corrected. Every one of the thirteen
-# tracked programmes carries an identical count for 2019 and 2020 in the shipped file.
-# Thirteen independent programmes do not repeat themselves in lockstep, so this page
-# reads the 2021-2023 window and treats those two years as unusable. Recorded here as a
-# checkable fact, not as an accusation: the finding is the repetition, not its cause.
+# A DATA-INTEGRITY READING, inherited rather than made here. This page read a duplicated
+# 2019/2020 out of the shipped occupations file and excluded both years. The duplicate
+# turned out to be the first symptom of a longer fault: the federal mirror ran a year
+# behind from 2020 to 2022 and then skipped a collection year entirely. Those three years
+# now come from the NCES completions files (`_data/build/ipeds_mirror_fix.py`), the
+# series is whole, and the exclusion no longer applies. Read from the corrected file so
+# this page cannot go stale against it, and asserted so a reverted correction is loud.
+CORRECTION = OCC.get("source_correction")
+if not CORRECTION:
+    raise SystemExit("occupations/data/viz-data.json carries no source_correction: run "
+                     "_data/build/mirror_fix_patch.py before this file.")
 DUP_1920 = [p for p in OCC["programs"]
             if "2019" in p["by_year"] and "2020" in p["by_year"]
             and p["by_year"]["2019"] == p["by_year"]["2020"]]
-DUP_ALL = len(DUP_1920) == len([p for p in OCC["programs"] if "2019" in p["by_year"]])
+if DUP_1920:
+    raise SystemExit("%d programmes still repeat 2019 under 2020 after the correction."
+                     % len(DUP_1920))
+
+
+# The direction word was typed into three rows -- "down three years", "up three years" --
+# and two of the three stopped being true the moment the window carried its right years.
+# A word that describes the numbers beside it is computed from them.
+def trend_words(w):
+    """Three window values, and what may honestly be said about their order."""
+    if w[0] < w[1] < w[2]:
+        return "up three years", "up"
+    if w[0] > w[1] > w[2]:
+        return "down three years", "down"
+    return "volatile", "volatile"
+
+
+POLY_TREND, MAT_TREND, BACH_TREND = (trend_words(w) for w in (POLY_WINDOW, MAT_WINDOW,
+                                                              BACH_WINDOW))
 
 # ------------------------------------------------------------------- D. cluster context
 FED_FYS = sorted({r["fy"] for r in FED["naics"]})
@@ -286,8 +310,8 @@ row(id="c-polymer", group="C", status="public",
     cadence="Annual, on the IPEDS completions release",
     current=str(POLY_LATEST),
     sub="%d-%d average %d" % (WINDOW[0], WINDOW[-1], round(POLY_AVG)),
-    trend="volatile: %s" % ", ".join(str(n) for n in POLY_WINDOW),
-    dir="volatile",
+    trend="%s: %s" % (POLY_TREND[0], ", ".join(str(n) for n in POLY_WINDOW)),
+    dir=POLY_TREND[1],
     source="IPEDS completions %d" % IPEDS_YEAR)
 row(id="c-bachelor", group="C", status="public",
     metric="Bachelor-level polymer credentials",
@@ -298,8 +322,8 @@ row(id="c-bachelor", group="C", status="public",
     current=str(BACH_LATEST),
     sub="%d-%d average %.1f" % (WINDOW[0], WINDOW[-1],
                                 sum(BACH_WINDOW) / len(BACH_WINDOW)),
-    trend="down three years: %s" % ", ".join(str(n) for n in BACH_WINDOW),
-    dir="down",
+    trend="%s: %s" % (BACH_TREND[0], ", ".join(str(n) for n in BACH_WINDOW)),
+    dir=BACH_TREND[1],
     source="IPEDS completions %d" % IPEDS_YEAR)
 row(id="c-materials", group="C", status="public",
     metric="Materials-program credentials awarded, region",
@@ -310,8 +334,8 @@ row(id="c-materials", group="C", status="public",
     current=str(MAT_LATEST),
     sub="%d-%d average %d" % (WINDOW[0], WINDOW[-1],
                               round(sum(MAT_WINDOW) / len(MAT_WINDOW))),
-    trend="up three years: %s" % ", ".join(str(n) for n in MAT_WINDOW),
-    dir="up",
+    trend="%s: %s" % (MAT_TREND[0], ", ".join(str(n) for n in MAT_WINDOW)),
+    dir=MAT_TREND[1],
     source="IPEDS completions %d" % IPEDS_YEAR)
 row(id="c-completions", group="C", status="vault",
     metric="Completions of a PIC-funded training program",
@@ -422,12 +446,12 @@ doc = {
                          "The polymer series ran %s across %d, %d and %d, so a single "
                          "year is a reading and not a direction."
                          % (", ".join(str(n) for n in POLY_WINDOW), *WINDOW),
-        "excludes": "Every one of the %d tracked degree programmes that reports a 2019 "
-                    "count carries the identical count again for 2020 in the shipped "
-                    "occupations file, all %d of them. Independent programmes do not "
-                    "repeat in lockstep, so this page reads the %d-%d window and uses "
-                    "neither of those two years."
-                    % (len(DUP_1920), len(DUP_1920), WINDOW[0], WINDOW[-1]),
+        "excludes": "The federal mirror this series was built from ran a year behind "
+                    "from 2020 to 2022 and never served the 2022 collection year at "
+                    "all. Those three years are now taken from the NCES completions "
+                    "files directly, so the %d-%d window this page reads is three "
+                    "consecutive years rather than two years and a gap."
+                    % (WINDOW[0], WINDOW[-1]),
     },
     "generated_on": datetime.date.today().isoformat(),
     "version": "1.0",
@@ -439,7 +463,8 @@ doc = {
     "talent": {"year": IPEDS_YEAR, "window": WINDOW, "institutions": N_INSTITUTIONS,
                "polymer": POLY, "polymer_window": POLY_WINDOW,
                "materials_window": MAT_WINDOW, "bachelor_window": BACH_WINDOW,
-               "dup_1920": len(DUP_1920), "dup_all": DUP_ALL},
+               "polymer_trend": POLY_TREND[0], "materials_trend": MAT_TREND[0],
+               "bachelor_trend": BACH_TREND[0], "source_correction": CORRECTION},
 }
 
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
