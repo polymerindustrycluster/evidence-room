@@ -13,6 +13,69 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-09-01, fourth entry — the money pages, corroborated against the record
+
+An outside corroboration pass read four money pages against the federal record itself
+rather than against their own data. Six published errors came back. One of them is
+this site's worst kind: a page whose entire argument is that a number needs a fair
+comparator had published an unfair one.
+
+**The comparator was the wrong kind of money, *federal-money*.** Band 2 set the polymer
+flow against "every industry in these twelve counties" and got $235.5 billion, "nearly
+all of it aerospace, defense and health contracting", and a ratio of one dollar in 840.
+The numerator was contracts. The denominator was every federal instrument there is, and
+about 85 cents in every dollar of it is direct payments and other financial assistance:
+Social Security, Medicare and veterans' benefits, which no manufacturer can bid for.
+**Was:** $235.5 billion, one dollar in every 840. **Is:** federal prime contracting of
+every industry in the same twelve counties, $9.2 billion in 2025 dollars, one dollar in
+every 33. The comparator was twenty-six times too large, in the direction that made the
+cluster look smaller. Both series are now pulled with the same award-type filter and the
+ratio is computed inside one block; the old claim guarded the quotient and never the
+units, which is why it passed on every run for as long as the sentence was wrong.
+
+**"No public record says what has been paid" was refuted, *accountability*.** The
+section heading, the figure title, an empty dashed third stage labelled *no public
+record exists*, and the figure-registry entry that licensed all three. USAspending
+publishes an outlay field on federal assistance awards and it is filled on seven of the
+eight federal lines in the register: **$11,642,402 against $48,114,979, 24.2 percent**.
+**Was:** an absence presented as a property of the record. **Is:** the stage is part
+filled, the bar carries the federal figure, and the remaining absence is named for what
+it actually is: the $31,250,000 state grant is not a federal award, and EDA award
+ED25HDQ0G0009 ($5,970,805, Huntsman) has no USAspending record of any kind, which is a
+missing row and not a payment of zero.
+
+**A verification claim that had not been verified, *funding-map*.** **Was:** "All seven
+EDA figures are verified against signed federal Notices of Award", cross-checked
+"against USAspending.gov by award ID". **Is:** six reconcile to the dollar and total
+$45,030,608; the seventh has no USAspending record and EDA's own award page names no
+company, so what corroborates it is arithmetic, not execution.
+
+**Three characterisations of named private companies.** *federal-money* called III
+Williams "one belting supplier" on the strength of a census code that holds 69 percent
+of its dollars; its line items are belts, hose assemblies, tube fittings, adapters and
+seals, and it is now "one industrial distributor, III Williams of Chardon", with the
+code named as a code. HDT's "$39 million of field air conditioners" gains the scope
+clause it needed: $35.1 million of it is one award opened in 2014, transferred from a
+General Services Administration schedule, carried into this window by the whole-life
+basis. And *funding-map* now attributes Full Circle's tire chemistry to the award
+document, which describes it, rather than to the company, whose own site describes
+industrial recycling and compounding.
+
+**Two figures on the wrong basis.** NEO-SMART's $15.0 million was printed inside an
+obligations paragraph and registered with the basis "obligated"; it is the estimated
+total of a ten-year cooperative agreement, of which **$7,499,984 is obligated**, and
+both pages and the registry now say which is which. And the $10.42 million beside the
+Ohio Innovation Hub grant was called **state cost share** on *funding-map* and inside
+*accountability*'s $20,954,667; every public record of that award, including the
+Governor's office announcement of 5 September 2024, describes it as matched by local
+partners. The figure was right and the promiser was wrong.
+
+**One thing the corroboration got wrong, recorded because it was checked.** The
+comparator error was reported as about thirty times; it is twenty-six. The benefit share
+of the old denominator was reported as 86 percent; it is 85.5. And MQM Solutions, flagged
+as at risk of reading as a failing firm, carries no sentence, label or annotation of the
+kind on any page: it is one bar among ten in a chart whose subtitle already states the
+whole-award-life basis.
 ## 2026-09-01, fourth entry — the atlas re-projection, and a page with no producer
 
 The atlas carried a banner saying it was stale and must not be published until

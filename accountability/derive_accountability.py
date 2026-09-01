@@ -105,7 +105,7 @@ ASSIGNED = sum(l["amount"] for l in LINES)
 # it never becomes a segment of the staged total.
 STAGES = [
     {"key": "secured", "amount": TOT["total"], "label": "reported secured",
-     "sub": "three public awards plus partner match and state cost share"},
+     "sub": "three public awards plus partner and local match"},
     {"key": "awarded", "amount": TOT["awards"], "label": "awarded",
      "sub": "the three public awards themselves"},
     {"key": "assigned", "amount": ASSIGNED, "label": "assigned to a named recipient",
@@ -118,6 +118,41 @@ STAGES = [
 if any(s["amount"] == TOT["match"] for s in STAGES):
     die("the match figure has entered the staged bar; it is a separate promise")
 GAC = [l for l in LINES if l["recipient_id"] == "greater-akron-chamber"]
+
+# THE CHAMBER SIGNS FOR MORE THAN THE TWO LINES THE HEADLINE COUNTS. The register attributes
+# APEX to the regional workforce programs the money funds, which is what the money does; the
+# named grantee on that award is the Chamber itself. A page whose H1 is "$4,149,515 names its
+# own organisation" has to say so, or the reader is left to discover it on the award page.
+APEX_LINE = next((l for l in LINES if l["award_id"] == "ED25OIE0G0108"), None)
+if APEX_LINE is None:
+    die("the APEX award line is gone from the register; the grantee note below has no source")
+if APEX_LINE["recipient_id"] == "greater-akron-chamber":
+    die("APEX is now attributed to the Chamber in the register, so the headline stage and the "
+        "grantee note would double-count it. Re-read both before publishing.")
+PRIOR = FM["meta"]["outlays"]["prior_award"]
+GRANTEE = {"apex": {"award_id": APEX_LINE["award_id"], "amount": APEX_LINE["amount"],
+                    "attributed_to": APEX_LINE["recipient"]},
+           "prior": {"award_id": PRIOR["awardId"], "amount": PRIOR["amount"],
+                     "outlay": PRIOR["outlay"], "what": PRIOR["what"]}}
+
+# WHAT HAS BEEN PAID. Recomputed from the register's own award rows, never copied: the
+# meta block and the per-award outlays have to agree or this page does not build.
+_OL = FM["meta"]["outlays"]
+_paid = sum(a["outlay"] for r in FM["recipients"] for a in r["awards"] if "outlay" in a)
+_base = sum(a["amount"] for r in FM["recipients"] for a in r["awards"] if "outlay" in a)
+if abs(_paid - _OL["outlaid"]) > 0.01 or _base != _OL["obligated"]:
+    die(f"the register's award outlays sum to {_paid:,.2f} of {_base:,} against a meta block "
+        f"claiming {_OL['outlaid']:,.2f} of {_OL['obligated']:,}. A payment total that does "
+        f"not reconcile to its own rows is exactly the figure this page must not publish.")
+if any("outlay" in a for r in FM["recipients"] for a in r["awards"]
+       if a.get("awardId") == _OL["no_record"]["awardId"]):
+    die("the award with no USAspending record has acquired an outlay figure. An absent "
+        "award row is not a zero drawdown and must never be rendered as one.")
+OUTLAYS = {"source": _OL["source"], "as_of": _OL["asOf"], "lines": _OL["lines"],
+           "base": _base, "paid": round(_paid, 2), "share": _paid / _base * 100,
+           "share_of_awarded": _base / TOT["awards"] * 100,
+           "no_record": _OL["no_record"], "not_federal": _OL["not_federal"],
+           "note": _OL["note"]}
 ATTRIBUTED = STAGES[3]["amount"]
 SHARE = ATTRIBUTED / TOT["awards"]
 
@@ -376,9 +411,11 @@ DATA = {
                         "map fails this page instead of leaving a flattering number "
                         "standing.",
         "caution": "An award register records commitment and execution. It records no "
-                   "payment, so no figure on this page measures money spent, and the "
-                   "disbursement stage is drawn empty for that reason rather than for "
-                   "lack of effort.",
+                   "payment, so no figure taken from it measures money spent. The payment "
+                   "stage on this page is not taken from it: it is the federal ledger’s "
+                   "own outlay figure, which covers the federal award lines and not the "
+                   "state grant, and that is why the stage is part filled rather than "
+                   "either empty or whole.",
         "not": "No target on this page was set by PIC. The three targets on the board are "
                "ceilings fixed by signed award documents, and no board row names an "
                "owner. Where PIC has set no target, the absence is the finding and no "
@@ -401,9 +438,10 @@ DATA = {
                          "over a handful of resolved commitments would be noise with a "
                          "percent sign, so this page prints the count and no rate until "
                          f"{FLOOR} commitments have resolved.",
-        "note": "Match and cost share are never summed into the staged bar. They are "
-                "promises made at award time by organisations other than PIC, so they are "
-                "drawn detached, with their own label.",
+        "note": "Match is never summed into the staged bar. It is promised at award time "
+                "by organisations other than PIC, so it is drawn detached, with its own "
+                "label. The $10,417,066 beside the state grant is promised by local "
+                "partners, not by the state.",
     },
     "generated_on": date.today().isoformat(),
     "as_of": AS_OF,
@@ -417,11 +455,12 @@ DATA = {
     "attribution": {
         "stages": STAGES,
         "match": {"amount": TOT["match"],
-                  "label": "partner match and state cost share",
+                  "label": "partner and local match",
                   "sub": "committed by organisations other than PIC, at award time"},
         "share_of_awarded": SHARE,
         "gac_lines": [{"amount": l["amount"], "award_id": l["award_id"],
                        "funds": l["funds"], "source_id": l["source_id"]} for l in GAC],
+        "gac_grantee": GRANTEE,
         "mechanism": next(s["note"] for s in FM["sources"] if s["id"] == "eda"),
         "other_leads": len([l for l in LINES if l["program_id"] == "eda-direct"]) - 1,
     },
@@ -438,7 +477,8 @@ DATA = {
                        "rows": [{"recipient": l["recipient"], "amount": l["amount"],
                                  "program": l["program"]} for l in AGG_LINES]},
         "disbursed": None,
-        "disbursed_label": "no public record exists",
+        "disbursed_label": "no figure covers the award total",
+        "outlays": OUTLAYS,
     },
     "coalition": {
         "recipients": len(FM["recipients"]),

@@ -1,14 +1,14 @@
 {
  "n_pieces": 22,
- "total_claims": 515,
- "total_manual": 22,
+ "total_claims": 506,
+ "total_manual": 21,
  "pages": {
   "accountability": {
-   "claims": 25,
+   "claims": 26,
    "manual": 0
   },
   "atlas": {
-   "claims": 9,
+   "claims": 7,
    "manual": 2
   },
   "chain": {
@@ -16,7 +16,7 @@
    "manual": 0
   },
   "churn": {
-   "claims": 39,
+   "claims": 28,
    "manual": 0
   },
   "cluster-health": {
@@ -32,11 +32,11 @@
    "manual": 2
   },
   "federal-money": {
-   "claims": 30,
-   "manual": 1
+   "claims": 31,
+   "manual": 0
   },
   "funding-map": {
-   "claims": 23,
+   "claims": 25,
    "manual": 3
   },
   "laborshed": {

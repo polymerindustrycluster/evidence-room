@@ -86,8 +86,13 @@ it after any change to the funding map's data.
   or de-obligated.
 - FY2026 is partial. Its bar is hatched and tagged; the closed-year average ($36.6M) and
   the closed-year ratio (1.4 years) are printed beside the chart.
-- Two scopes live in `federal.json` and are never summed: polymer-NAICS rows (charted) and
-  all-industry county rows ($235.5B, context only).
+- Three scopes live in `federal.json` and are never summed: polymer-NAICS rows (charted),
+  all-industry county rows ($235.5B, EVERY award type, context only), and the `contracts`
+  block, which re-pulls both series with `award_type_codes` A-D. The comparator Band 2
+  prints comes from that block, $9.2B against $279.3M in 2025 dollars. Until 2026-09-01 it
+  came from the all-type county rows, which are 85% direct payments and other financial
+  assistance and are not a contracting figure; the published ratio was wrong by about
+  twenty-six times.
 - **The award register is a THIRD basis, and it is never summed with either.** An award's
   amount in `awards.json` counts the award's whole life: a contract running since 2014
   that the FY2019–FY2026 window touches carries every dollar since 2014, in the dollars
@@ -95,7 +100,8 @@ it after any change to the funding map's data.
   $248.8M as awarded — same ledger, different windows. The `fed-award-basis-never-summed`
   claim fails if either surface stops labelling its basis.
 - University and research awards are invisible to the NAICS view by construction. The NSF
-  NEO-SMART Engine ($14,999,983) appears in no bar.
+  NEO-SMART Engine appears in no bar. Its award record carries two figures and the page
+  now prints both: $14,999,983 estimated total, $7,499,984 obligated.
 - The footprint is PIC-12. The wider fourteen-county reading the vault calls NEO-14 adds
   Crawford, Huron, Richland and Tuscarawas; the banner on the page states the difference in
   reader words and names this file for the registry detail.

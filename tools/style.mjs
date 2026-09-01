@@ -105,7 +105,7 @@ for (const n of list) {
                               text.indexOf(".", m.index) + 1 || text.length);
       const glossed = /\(/.test(sent) ||
         /short for|stands for|meaning the|that is,/.test(sent) ||
-        new RegExp("(?:scale|code|file|series|level|survey|form|supplier|maker|contractor|firm|company),?\\s+" + t + "\\b").test(sent) ||
+        new RegExp("(?:scale|code|file|series|level|survey|form|supplier|distributor|maker|contractor|firm|company),?\\s+" + t + "\\b").test(sent) ||
         new RegExp(t + "\\s+is\\s+the\\s+(?:federal\\s+|U\\.S\\.\\s+)?" + t[0] + "[a-z]+").test(sent) ||
         new RegExp("[A-Za-z][\\w'’-]*(?:\\s+[\\w'’&-]+){0,6}\\s*\\(" + t).test(text) ||  /* capital-led expansions count: "Archival FRED (ALFRED)" */
         /, (?:the|a|an) [a-z]/.test(sent.slice(sent.indexOf(t)));

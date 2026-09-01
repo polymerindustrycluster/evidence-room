@@ -248,11 +248,11 @@
     },
     {
       "id": "no-disbursed-amount-anywhere",
-      "text": "Hero card 4, the Capital tile and the closer: the page states no disbursed amount for the signed awards, including no zero, and says the record cannot show one.",
+      "text": "Hero card 4, the Capital tile and the closer: the page states no disbursed amount for the signed awards, including no zero, and says why. Corrected 1 September 2026: the reason it gives is no longer that the record cannot show payment, because USAspending shows it on the federal lines. It is that no record covers the WHOLE signed total, and this page does not carry the federal part.",
       "source": "_data/FIGURES.json, which registers award_disbursed as NOT PUBLICLY OBSERVABLE, and the accountability page it agrees with",
       "assert": "(lambda blob: all(p not in blob for p in ('none of it spent', 'none of it disbursed', 'none of it drawn', 'nothing spent', 'zero spent', 'not money spent', 'it has not spent', 'unspent', 'yet to be spent')) and 'no public record exists' in D['h']['tiles'][4]['blind'])(str(D['h']).lower())",
       "actual": "D['h']['tiles'][4]['blind'][:200]",
-      "falsified_if": "Any of those phrasings returning to the derived file. A stated zero is as much a claim as a stated number and the record supports neither: a fully assigned award that has disbursed nothing and one that has disbursed everything are the same document in public. This claim guards the DERIVED file; tools/figures.mjs guards the rendered page, which is where the phrase shipped from."
+      "falsified_if": "Any of those phrasings returning to the derived file. A stated zero is as much a claim as a stated number, and no public source carries the whole-total figure this tile would need. The sentence that used to sit here said a fully assigned award that has disbursed nothing and one that has disbursed everything are the same document in public. For the federal lines that was wrong: USAspending publishes an outlay on each of them, which the accountability page now carries. This claim guards the DERIVED file; tools/figures.mjs guards the rendered page, which is where the phrase shipped from."
     },
     {
       "id": "standing-scale",

@@ -483,26 +483,20 @@ const PV = (() => {
       "two_footprints_never_compared", "uncertain", "scope", "not_the_cluster",
       "no_industry", "not_a_commute", "split_is_judgment", "impact_is_separate",
       "no_raw_trends", "quarantine", "nominal", "no_deflator", "small_numbers",
-      "publicOnly", "note", "peer_rule", "size_control", "basis",
-      /* churn's comparator: the retirement figure is arithmetic on an assumption the
-         source cannot check, and saying so changes how the number should be read. */
-      "estimate",
+      "publicOnly", "note", "peer_rule", "size_control", "basis", "comparator",
       /* patents: the three caveats a reader needs, published as limits */
       "unit", "lag", "address_is_not_a_lab",
     ]);
     const METHOD = new Set([
       "definition", "bases", "stages", "baseline", "why", "why_corresponding",
       "rebasing", "composite_note", "derived_note", "membership_note",
-      /* QWI: which series was actually requested. Not a caveat, a definition — the `sa`
-         in the API path is the sex-by-age table and adjustment is a separate parameter. */
-      "seasonadj",
     ]);
     const STRUCTURAL = new Set([
       "source", "sources", "url", "docs", "row", "fetched", "as_of", "years", "year",
       "span", "footprint", "title", "question", "home", "bounds", "basemap", "subfield",
       "subfield_alt", "cip", "cip_groups", "groups", "neo", "measure", "industries",
       "benchmark", "demographics", "control", "polymer_bound", "baseline_year",
-      "two_measures", "led_joined", "naics", "producer",
+      "two_measures", "led_joined", "naics",
       /* patents: mechanics of the pull, and the completeness cutoff */
       "cpc", "geography", "last_complete_year",
     ]);

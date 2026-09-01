@@ -25,7 +25,8 @@
   },
   "scope": "Obligations at place of performance in the 12 PIC-12 counties. NAICS rows are filtered to 325* and 326*, chemical and plastics/rubber. County rows are all industries and are an order of magnitude larger; the two are shown separately and never summed.",
   "caution": "Place of performance is a reported field on the award, not an observation of where the work happened. A centrally administered contract, or a prime performing through a subaward, can put the code somewhere other than the activity. An obligation is not an outlay.",
-  "excludes": "University and research awards are invisible to the NAICS view by construction: it filters to 325*/326* manufacturing codes, and a university files under 61xxxx or 5417xx. The NSF NEO-SMART Engine ($14,999,983) and TARDISS do not appear in the NAICS rows. The all-industry county rows do capture them."
+  "excludes": "University and research awards are invisible to the NAICS view by construction: it filters to 325*/326* manufacturing codes, and a university files under 61xxxx or 5417xx. The NSF NEO-SMART Engine ($14,999,983 estimated, $7,499,984 obligated) and TARDISS do not appear in the NAICS rows. The all-industry county rows do capture them.",
+  "comparator": "The county rows carry no award-type filter and are therefore every federal instrument: contracts, grants, loans, direct payments and other financial assistance. They are not a contracting figure and must never be the denominator under a contracting numerator. The contracts block does that job."
  },
  "inflation": "Dollars from different years are not the same dollars. Every row carries BOTH the nominal obligation and the same figure restated in 2025 dollars using BLS CPI-U annual averages. Any total spanning more than one year must use the real column; the nominal one is kept so a reader can reconcile against USAspending itself.",
  "cpi_base": 2025,
@@ -892,5 +893,138 @@
    "amount": 531212675,
    "real": 531212675
   }
- ]
+ ],
+ "contracts": {
+  "meta": {
+   "source": "USAspending.gov spending_by_category, place of performance, award_type_codes A-D",
+   "row": "one (fiscal year, category, code) PRIME CONTRACT obligation total",
+   "footprint": {
+    "key": "pic12",
+    "n": 12,
+    "label": "PIC-12",
+    "counties": [
+     "Ashtabula",
+     "Cuyahoga",
+     "Geauga",
+     "Lake",
+     "Lorain",
+     "Mahoning",
+     "Medina",
+     "Portage",
+     "Stark",
+     "Summit",
+     "Trumbull",
+     "Wayne"
+    ],
+    "note": "PIC’s official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
+    "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the vault’s NEO-14 includes."
+   },
+   "why": "prime contracting only, award_type_codes A-D, so the polymer numerator and the all-industry denominator are the same kind of money. Same CPI-U restatement as every other total on this page.",
+   "filters": {
+    "time_period": "2018-10-01 to 2026-09-30",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "place_of_performance": "the 12 PIC-12 counties"
+   },
+   "fetched": "2026-09-01",
+   "vintage": "Pulled on its own date and not interchangeable row for row with the all-type series above, which is an older read of a live ledger. The ratio is computed inside this block."
+  },
+  "award_type_totals": {
+   "contracts": 8228304542,
+   "idv": 0,
+   "grants": 13571375256,
+   "loans": 9333041098,
+   "direct": 179508622215,
+   "other": 3810049137,
+   "all": 214458825136
+  },
+  "counties": [
+   {
+    "fy": 2019,
+    "amount": 948982214,
+    "real": 1195733105
+   },
+   {
+    "fy": 2020,
+    "amount": 1216775283,
+    "real": 1514472937
+   },
+   {
+    "fy": 2021,
+    "amount": 1042643633,
+    "real": 1239505771
+   },
+   {
+    "fy": 2022,
+    "amount": 1065310069,
+    "real": 1172610969
+   },
+   {
+    "fy": 2023,
+    "amount": 1384189418,
+    "real": 1463369803
+   },
+   {
+    "fy": 2024,
+    "amount": 856703490,
+    "real": 879761830
+   },
+   {
+    "fy": 2025,
+    "amount": 996662741,
+    "real": 996662741
+   },
+   {
+    "fy": 2026,
+    "amount": 717037693,
+    "real": 717037693
+   }
+  ],
+  "naics": [
+   {
+    "fy": 2019,
+    "amount": 40990021,
+    "real": 51648097
+   },
+   {
+    "fy": 2020,
+    "amount": 25549182,
+    "real": 31800074
+   },
+   {
+    "fy": 2021,
+    "amount": 42694780,
+    "real": 50756005
+   },
+   {
+    "fy": 2022,
+    "amount": 39580949,
+    "real": 43567649
+   },
+   {
+    "fy": 2023,
+    "amount": 16040530,
+    "real": 16958104
+   },
+   {
+    "fy": 2024,
+    "amount": 21945590,
+    "real": 22536260
+   },
+   {
+    "fy": 2025,
+    "amount": 38976269,
+    "real": 38976269
+   },
+   {
+    "fy": 2026,
+    "amount": 23105056,
+    "real": 23105056
+   }
+  ]
+ }
 }

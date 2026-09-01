@@ -125,9 +125,12 @@ fails the gate rather than shipping.
   all — not even a zero.** `$51.0M` is what is written into signed awards naming
   organizations; `$54.1M` is the announced federal total; the difference is a workforce
   award with no published recipient breakdown. How much has been DRAWN DOWN is a different
-  quantity and the public record cannot show it: award and execution are published,
-  drawdown is not, so a fully assigned award that has paid out nothing and one that has
-  paid out everything are the same document. The page shipped "signed, none of it spent",
+  quantity, and no public record covers the whole of it. Corrected 2026-09-01: this
+  paragraph used to say drawdown is not published at all, which was wrong. USAspending
+  publishes an outlay on each of the federal award lines and *accountability* now carries
+  them; the state grant publishes none, so the whole-total figure this tile would need
+  still does not exist and this page carries no part of it. The page shipped "signed,
+  none of it spent",
   which a reader finished believing was a measured zero. `_data/FIGURES.json` registers
   `award_disbursed` as NOT PUBLICLY OBSERVABLE, `tools/figures.mjs` fails the build on any
   page that gives it a value, and claim `no-disbursed-amount-anywhere` guards the derived

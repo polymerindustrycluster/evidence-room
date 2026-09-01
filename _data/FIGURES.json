@@ -84,16 +84,31 @@
   },
   "award_disbursed": {
    "value": null,
-   "display": "no public record exists",
+   "display": "no single figure covers the award total",
    "unit": "USD",
-   "basis": "money actually paid out against the executed lines",
+   "basis": "money paid out against the whole $85,335,784 of executed lines",
    "observability": "NOT PUBLICLY OBSERVABLE",
-   "why_unobservable": "The public record shows award and execution, never drawdown. A fully assigned award that has disbursed nothing and one that has disbursed everything look identical.",
+   "why_unobservable": "No public record covers the AWARD TOTAL. The $31,250,000 state grant publishes no drawdown, and one of the eight federal award lines (ED25HDQ0G0009, $5,970,805) has no USAspending record at all, so any figure spanning the whole total would be part measured and part invented.",
    "status": "agreed",
-   "forbidden": "No page may state a disbursed amount, including zero. cluster-health printed 'signed, none of it spent' on 2026-08-29, which asserts as fact something no source can support.",
+   "forbidden": "No page may state a disbursed amount for the AWARD TOTAL, including zero. cluster-health printed 'signed, none of it spent' on 2026-08-29, which asserts as fact something no source supports. CORRECTED 2026-09-01: this entry used to say the public record shows drawdown NEVER, and accountability built an empty stage and an H2 on that. USAspending publishes outlays on the federal lines; see federal_outlays. What is unobservable is the total, not the concept.",
    "pages": [
     "accountability",
     "cluster-health"
+   ]
+  },
+  "federal_outlays": {
+   "value": 11642401.68,
+   "display": "$11,642,402",
+   "also_printed_as": [
+    "24.2 percent",
+    "$11.6 million"
+   ],
+   "unit": "USD",
+   "basis": "USAspending Total Outlays summed across the seven federal award lines that carry a record, against their $48,114,979 of obligations, read 2026-09-01",
+   "observability": "public",
+   "status": "agreed",
+   "pages": [
+    "accountability"
    ]
   },
   "neosmart_obligation": {
@@ -103,7 +118,21 @@
     "$14,999,983"
    ],
    "unit": "USD",
-   "basis": "NSF NEO-SMART Engine, obligated, appears under education/research NAICS not polymer codes",
+   "basis": "NSF NEO-SMART Engine, ESTIMATED TOTAL of the ten-year cooperative agreement. NSF award record 2532460 gives estimatedTotalAmt 14,999,983 and fundsObligatedAmt 7,499,984, so $15.0M is not an obligated figure and must never be printed inside an obligations frame without saying which it is. Corrected 2026-09-01; this field said 'obligated' and federal-money printed the estimate in a paragraph about obligations.",
+   "observability": "public",
+   "status": "agreed",
+   "pages": [
+    "federal-money"
+   ]
+  },
+  "neosmart_obligated": {
+   "value": 7499984,
+   "display": "$7.5 million",
+   "also_printed_as": [
+    "$7,499,984"
+   ],
+   "unit": "USD",
+   "basis": "NSF award 2532460 fundsObligatedAmt, FY2026, read 2026-09-01",
    "observability": "public",
    "status": "agreed",
    "pages": [
