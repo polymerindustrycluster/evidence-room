@@ -13,6 +13,44 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-09-01, fourth entry — the atlas re-projection, and a page with no producer
+
+The atlas carried a banner saying it was stale and must not be published until
+re-projected. It was published anyway, on 2026-08-31, banner and defect intact. The
+reason turns out to be worse than an oversight: **the script the banner told everyone
+to run does not exist in this repository, and never did.** `atlas/data/viz-data.json`
+is a shipped file with no producer, so the correction it needed could not be delivered
+by anyone who followed the instructions. A producer has now been written
+(`_data/build/atlas_reprojection_patch.py`, idempotent, with a `--check` mode that
+re-derives from the source API), and the atlas is listed in REBUILDING.md as what it
+actually is.
+
+**What was wrong.** The upstream mirror republished 2019's completions under the label
+2020 — the same defect the programs page had already quarantined. The atlas never got
+that quarantine, so every institution's lifetime record counted 2019 twice.
+
+**Verified before changing anything.** The whole 1991-2023 census was re-pulled from
+the source endpoint and reproduced the shipped file exactly — all 147 institutions on
+every field, zero mismatches — before a single year was removed. 2020 is
+byte-identical to 2019: 807 awards across 59 institutions.
+
+**What moved.** The record total **20,859 to 20,052**. The top three **7,651 to
+7,401**, and their share of the whole **36.7 to 36.9 percent**. Forty-four
+institutions' lifetime totals changed, including Lowell **2,929 to 2,830**, Ferris
+State **2,599 to 2,525**, and Akron **2,123 to 2,046**. Eighth and ninth place swap:
+Penn College now leads Case Western. Four institutions' spans end in 2019 rather than
+2020. The page's shape facts survive untouched and are now asserted: 147 institutions,
+41 conferring in the last year, 35 states, four diamonds.
+
+**Also corrected:** a claim's own falsification note said "Akron's record is second."
+Akron's record has always been third, and nothing had asserted the order.
+
+Separately and with no reader-facing change, the sources page's prose now exists in
+the HTML rather than only in JavaScript. Thirty-one paragraphs that a reader without
+JavaScript saw as empty captions — including the location-quotient worked arithmetic
+and the field-name recipes — are now real text, pinned by assertions. Three model
+families reading the page cold had each stopped there.
+
 ## 2026-09-01, third entry — the depth audit's second wave
 
 The flip-risk pass finished its sweep of the remaining ten pages. Both education
