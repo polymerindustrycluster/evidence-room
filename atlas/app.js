@@ -60,7 +60,15 @@ const D = await PV.data("viz-data.json");
     const W = Math.round(svg.getBoundingClientRect().width) || 720;
     const H = 132;
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-    const rows = D.dots.slice().sort((a, b) => a.total_awards - b.total_awards);
+    /* EVERY institution, not every DOT. The strip places an institution by the size of its
+       lifetime record and nothing else, so the one the AlbersUSA frame cannot carry (San
+       German, Puerto Rico) belongs here even though it cannot go on the map: a size axis
+       has no projection to fall off. Drawing D.dots alone put 146 ticks under a caption
+       that said 147 and showed 105 of the record's 106 ended institutions, which is the
+       rule stated below `ALL` - any count that says "the record" is taken from ALL, never
+       from the dots - broken in the one figure that had no data reason to break it. The
+       caption now counts what was drawn, so the two cannot drift apart again. */
+    const rows = [...D.dots, ...D.off_projection].sort((a, b) => a.total_awards - b.total_awards);
     const max = rows[rows.length - 1].total_awards;
     const lo = 10, hi = W - 10, y = 84;
     const x = v => lo + Math.sqrt(v / max) * (hi - lo);
@@ -78,7 +86,7 @@ const D = await PV.data("viz-data.json");
        within 15% of each other on a sqrt scale, and three 13px names do not fit there). */
     txt(svg, "the three deep records: Lowell, Big Rapids, Akron", {x: hi, y: y - 24,
       "text-anchor": "end", "font-size": 13, fill: "#fff", "font-weight": 700});
-    txt(svg, "147 institutions, placed by lifetime record size",
+    txt(svg, `${rows.length} institutions, placed by lifetime record size`,
       {x: lo, y: H - 8, "font-size": 12.5, fill: "#C6E2E6"});
   }
 }
@@ -136,9 +144,17 @@ figures([
   ["key", N(T.ever), "institutions, ever",
    `have reported at least one polymer degree or certificate since 1991. A floor: the
     record misses programs housed under other headings.`],
+  /* THE GUARD-RAIL USED TO SAY SOMETHING FALSE. "It is not the survivors of the 147" was
+     written to stop a reader computing 41/147, and it stopped them by denying set
+     membership: all 41 of these institutions ARE among the 147, and a reader who checks
+     the register finds them there. A guard that can be caught out teaches the reader to
+     ignore the next one. What is actually wrong with the ratio is the DENOMINATOR and the
+     UNIT, so that is what this now says. */
   ["", N(T.active), "were still awarding in 2023",
-   `a single year’s count. It is not the survivors of the ${N(T.ever)}: the two answer
-    different questions, and this page never divides one by the other.`],
+   `a single year’s count, taken from the same ${N(T.ever)}. Dividing the two is not a
+    survival rate: the denominator is a 33-year union that counts colleges shut for
+    decades, and survival on this record is measured program by program and above a size
+    threshold, which is a different page. This one never divides one by the other.`],
   ["", N(T.states), "states and territories",
    `${realStates} states, plus the District of Columbia and Puerto Rico. ${solo} of the
     ${N(T.states)} hold exactly one institution.`],

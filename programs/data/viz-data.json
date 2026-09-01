@@ -194,7 +194,85 @@
     "150303": "Electrical/Electronic Engineering Technology",
     "150805": "Mechanical Engineering Technology"
    },
-   "rule": "substantive = >10 total awards; active = a completion in 2023; same rule as the polymer census"
+   "rule": "substantive = >10 total awards; active = a completion in 2023; same rule as the polymer census",
+   "base": {
+    "ever": 8736,
+    "le10_awards": 2051,
+    "le5_years": 2967,
+    "both": 1693,
+    "le10_awards_pct": 23,
+    "le5_years_pct": 34,
+    "both_pct": 19,
+    "per_cip": {
+     "Welding Technology": {
+      "ever": 2639,
+      "le10_awards": 373,
+      "le5_years": 661,
+      "both": 309,
+      "le10_awards_pct": 14,
+      "le5_years_pct": 25,
+      "both_pct": 12
+     },
+     "Machine Tool Technology": {
+      "ever": 1171,
+      "le10_awards": 339,
+      "le5_years": 448,
+      "both": 272,
+      "le10_awards_pct": 29,
+      "le5_years_pct": 38,
+      "both_pct": 23
+     },
+     "Manufacturing Engineering Technology": {
+      "ever": 856,
+      "le10_awards": 352,
+      "le5_years": 387,
+      "both": 290,
+      "le10_awards_pct": 41,
+      "le5_years_pct": 45,
+      "both_pct": 34
+     },
+     "Industrial Mechanics and Maintenance": {
+      "ever": 1175,
+      "le10_awards": 330,
+      "le5_years": 449,
+      "both": 271,
+      "le10_awards_pct": 28,
+      "le5_years_pct": 38,
+      "both_pct": 23
+     },
+     "Electrical/Electronic Engineering Technology": {
+      "ever": 2228,
+      "le10_awards": 480,
+      "le5_years": 805,
+      "both": 407,
+      "le10_awards_pct": 22,
+      "le5_years_pct": 36,
+      "both_pct": 18
+     },
+     "Mechanical Engineering Technology": {
+      "ever": 667,
+      "le10_awards": 177,
+      "le5_years": 217,
+      "both": 144,
+      "le10_awards_pct": 27,
+      "le5_years_pct": 33,
+      "both_pct": 22
+     }
+    },
+    "ratio_le10": 2.48,
+    "ratio_both": 2.37,
+    "rule": "all associate and certificate programs under the six peer trade CIPs, no size threshold; tiny = 10 or fewer lifetime completions, brief = a run of 5 years or less, both = the conjunction; certificate levels canonicalised across the 2020 renumbering and 2020 dropped, exactly as on the polymer side",
+    "bound": "upper bound on both sides: the mirror never served the C2023_A collection year, and a missing year of completions can only push a program into the tiny bucket, never out of it",
+    "reproduces": {
+     "published_survive_pct": 48,
+     "refetched_survive_pct": 48,
+     "published_ever": 6648,
+     "refetched_ever": 6685,
+     "published_still": 3185,
+     "refetched_still": 3178,
+     "note": "same rule, different pull dates (census 2026-08-21, this file live); the rate reproduces to the point, the counts to within 0.6%. The page keeps the census figure for survival so one number has one producer."
+    }
+   }
   },
   "substantive_min": 10
  },

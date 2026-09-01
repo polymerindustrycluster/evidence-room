@@ -1,6 +1,6 @@
 {
  "n_pieces": 22,
- "total_claims": 495,
+ "total_claims": 499,
  "total_manual": 21,
  "pages": {
   "accountability": {
@@ -60,7 +60,7 @@
    "manual": 1
   },
   "programs": {
-   "claims": 11,
+   "claims": 12,
    "manual": 2
   },
   "reach": {
@@ -80,11 +80,11 @@
    "manual": 0
   },
   "sources": {
-   "claims": 32,
+   "claims": 33,
    "manual": 0
   },
   "timeline": {
-   "claims": 31,
+   "claims": 33,
    "manual": 4
   },
   "wages": {

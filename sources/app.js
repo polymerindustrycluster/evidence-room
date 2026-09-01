@@ -113,10 +113,24 @@ function drawStrip() {
     return out;
   };
 
+  /* TWO LEVELS OF ONE HIERARCHY, ON ONE AXIS. The 51 is a count of published CELLS, and
+     23 of them are three-digit groups with the 28 four-digit parts of those same groups
+     drawn beside them. That is not a defect in the chart, which is a distribution of
+     readings rather than a total, but it is the exact move this page spends a whole band
+     telling a reader never to make with employment, and the count was going out with no
+     clause saying which it was. Split here rather than typed, off the same file the dots
+     come from, so the two can never disagree. */
+  const three = (D.readings || []).filter(r => String(r.naics).length === 3);
+  const four = (D.readings || []).filter(r => String(r.naics).length === 4);
+  const above = rs => rs.filter(r => r.lq > 1).length;
   const headL = wrap(`${Word(L.n_above_one)} of the ${word(L.n_readings)} concentration ` +
     `readings on this site sit above 1.0.`, HEAD, w);
   const subL = wrap("Each dot is one industry in one county in 2025. The scale is " +
-    "logarithmic, because the readings span a factor of 250.", NOTE, w);
+    "logarithmic, because the readings span a factor of 250. These are published cells, " +
+    `not independent readings: ${three.length} are three-digit groups and ${four.length} ` +
+    "are the four-digit parts inside those same groups, which is a distribution and never " +
+    `a total. Apart, ${above(three)} of the groups and ${above(four)} of the parts sit ` +
+    "above 1.0.", NOTE, w);
 
   const LO = Math.log10(0.07), HI = Math.log10(30);
   const X = v => 1 + (Math.log10(v) - LO) / (HI - LO) * w;
