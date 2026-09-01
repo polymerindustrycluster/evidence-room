@@ -1,7 +1,8 @@
 {
   "data": {
     "f": "federal.json",
-    "h": "techhub.json"
+    "h": "techhub.json",
+    "a": "awards.json"
   },
   "claims": [
     {
@@ -184,6 +185,67 @@
       "assert": "(lambda R, A: (lambda by: len([y for y in by if by[y] > A]) == 1 and max(by, key=lambda y: by[y]) == 2019 and 630000 < by[2019] - A < 660000 and 235000 < A - by[2021] < 255000)({r['fy']: sum(x['real'] for x in R if x['fy'] == r['fy']) for r in R}))(D['f']['naics'], D['h']['award'])",
       "actual": "sorted({r['fy']: round(sum(x['real'] for x in D['f']['naics'] if x['fy'] == r['fy'])) for r in D['f']['naics']}.items())",
       "falsified_if": "A second year crosses the award line, or 2019 stops being the only one. Added 2026-08-30 after three model families and an editorial reviewer independently found the chart's TEXT ALTERNATIVE claiming two years while the chart's own annotations beside the award line said one beat it and one fell short. The annotations were right. Nothing on this site compared the two, so a screen-reader user and a sighted reader were handed different findings from one figure."
+    },
+    {
+      "id": "fed-award-basis-never-summed",
+      "text": "THE REGISTER'S BASIS LAW. The award view totals $329.5M across 6,630 prime contracts, on a whole-life basis: an award the FY2019-FY2026 window touches carries every dollar of its life, outside years included. The category view's $248.8M as awarded counts only in-window per-year slices of the same ledger. The two bases are never summed, and the data file's own meta says so.",
+      "source": "awards.json meta against the federal.json nominal sum; same law as the county/NAICS never-sum note in fed-county-scope",
+      "assert": "'NEVER summed' in D['a']['meta']['basis'] and round(D['a']['meta']['total'] / 1e5) == 3295 and D['a']['meta']['award_count'] == 6630 and abs(D['a']['meta']['total'] - sum(r['amount'] for r in D['f']['naics'])) > 50_000_000",
+      "actual": "(D['a']['meta']['total'], sum(r['amount'] for r in D['f']['naics']), D['a']['meta']['basis'][:80])",
+      "falsified_if": "A refetch restates the total off a printed $329.5M, the basis sentence is dropped from the meta (which is the surface the page's table notes and figure subtitles are written against), or the two bases drift within $50M of each other, at which point a reader could conflate them without a large error and the page's warning would need rewording rather than deletion. Today the gap is $80.7M, 32% of the smaller figure: an award's life is longer than the window.",
+      "official_check": "This is deliberately the same law as fed-county-scope's never-sum rule for county rows: two counts of different things may share a page only while every surface names which one it is printing."
+    },
+    {
+      "id": "fed-awards-complete",
+      "text": "NO SILENT TRUNCATION. The pull walked USAspending's pagination to exhaustion: 6,630 awards over 67 pages, where a 40-page probe had 4,000 rows in hand and had not exhausted. Every dollar appears exactly once: the 73 register rows plus the 6,557 below-floor awards partition the file, and the 193 recipient rows re-sum to the same total.",
+      "source": "awards.json internal reconciliation; fetch_fed_awards.py asserts hasNext exhaustion and a 4,000-row probe floor at fetch time",
+      "assert": "D['a']['meta']['award_count'] == D['a']['meta']['register']['count'] + D['a']['meta']['below_floor']['count'] and len(D['a']['register']) == D['a']['meta']['register']['count'] == 73 and D['a']['meta']['below_floor']['count'] == 6557 and abs(D['a']['meta']['register']['total'] + D['a']['meta']['below_floor']['total'] - D['a']['meta']['total']) < 2 and len(D['a']['recipients']) == D['a']['meta']['recipient_count'] == 193 and abs(sum(r['total'] for r in D['a']['recipients']) - D['a']['meta']['total']) < len(D['a']['recipients'])",
+      "actual": "(D['a']['meta']['award_count'], D['a']['meta']['register'], D['a']['meta']['below_floor'], len(D['a']['recipients']), sum(r['total'] for r in D['a']['recipients']))",
+      "falsified_if": "A refetch changes any count, or the three views stop partitioning the one total (tolerance is rounding only: under $2 on the register split, under a dollar per row on the recipient re-sum). This claim exists because this repository has shipped silently truncated pulls before: the category pull's own registry entry records a 100-row cap it cannot see past, and the probe for THIS pull stopped at 4,000 rows looking complete."
+    },
+    {
+      "id": "fed-dod-share",
+      "text": "The Department of Defense placed 92 cents of every award dollar: 6,253 of the 6,630 contracts. The page prints 92 in the lede and the chart's text alternative.",
+      "source": "awards.json agencies view over the award-basis total",
+      "assert": "round(one(a['total'] for a in D['a']['agencies'] if a['agency'] == 'Department of Defense') / D['a']['meta']['total'] * 100) == 92 and one(a['awards'] for a in D['a']['agencies'] if a['agency'] == 'Department of Defense') == 6253 and D['a']['agencies'][0]['agency'] == 'Department of Defense'",
+      "actual": "[(a['agency'], round(a['total'] / D['a']['meta']['total'] * 100), a['awards']) for a in D['a']['agencies'][:3]]",
+      "falsified_if": "A refetch moves the share off a rounded 92, another agency overtakes Defense, or the award count changes. The share is 91.7 unrounded, so a genuine drift of half a point flips the printed figure to 91 and fails here before it reaches a reader."
+    },
+    {
+      "id": "fed-top-recipient-rfd",
+      "text": "RFD Beaufort is the largest recipient at $104.1M across 54 contracts, every dollar of it filed under the leftovers code 326299, with the Department of Defense as buyer; its register rows are inflatable life rafts and submarine escape equipment bought through the Defense Logistics Agency.",
+      "source": "awards.json recipients view and the register rows' own descriptions",
+      "assert": "'RFD BEAUFORT' in D['a']['recipients'][0]['name'] and round(D['a']['recipients'][0]['total'] / 1e5) == 1041 and D['a']['recipients'][0]['awards'] == 54 and D['a']['recipients'][0]['naics'] == '326299' and D['a']['recipients'][0]['naics_share'] > 0.999 and D['a']['recipients'][0]['agency'] == 'Department of Defense' and any('RAFT' in (r['what'] or '') for r in D['a']['register'] if 'RFD' in r['recipient']) and any('SUBMARINE ESCAPE' in (r['what'] or '') for r in D['a']['register'] if 'RFD' in r['recipient']) and sum(1 for r in D['a']['register'] if 'RFD' in r['recipient'] and r['sub_agency'] == 'Defense Logistics Agency') > 0.8 * sum(1 for r in D['a']['register'] if 'RFD' in r['recipient'])",
+      "actual": "(D['a']['recipients'][0]['name'], D['a']['recipients'][0]['total'], D['a']['recipients'][0]['awards'], D['a']['recipients'][0]['naics'], [(r['what'] or '')[:30] for r in D['a']['register'] if 'RFD' in r['recipient']][:4])",
+      "falsified_if": "Another company overtakes RFD Beaufort, its total is restated off a printed $104.1M, an award files under a different code (the naics_share test fails below 99.9%), or the register rows stop carrying the raft and escape-suit descriptions the lede and the Band 2 payoff are written from. The description tests are the guard on the words 'life rafts and escape suits': the page says what the company sells because the contracting record says it, not from outside knowledge.",
+      "official_check": "In the raw pull, $53.4M of RFD's rows say life raft and $50.7M say submarine escape; the lede orders the products raft-first to match. The company also holds one mobile shoot house and one cylinder order; 'almost entirely' in the H2 covers the 99.1%, not 100%."
+    },
+    {
+      "id": "fed-leftovers-resolved",
+      "text": "THE PAYOFF ON BAND 2'S ADMITTED OPACITY. On the award basis the leftovers code 326299 holds $105.1M, and 99% of it is RFD Beaufort. The same code's in-window total on the industry chart is $98.2M in 2025 dollars: two windows on one ledger, reconciled in words in the company table's note, never added. The tire code 326211 resolves the same way: 99% Goodyear.",
+      "source": "awards.json codes view against the federal.json 326299 rows the industry chart draws",
+      "assert": "D['a']['codes'][0]['naics'] == '326299' and round(D['a']['codes'][0]['total'] / 1e5) == 1051 and round(D['a']['codes'][0]['top']['share'] * 100) == 99 and 'RFD' in D['a']['codes'][0]['top']['name'] and round(sum(r['real'] for r in D['f']['naics'] if r['code'] == '326299') / 1e5) == 982 and round(one(c['top']['share'] for c in D['a']['codes'] if c['naics'] == '326211') * 100) == 99 and 'GOODYEAR' in one(c['top']['name'] for c in D['a']['codes'] if c['naics'] == '326211')",
+      "actual": "(D['a']['codes'][0], sum(r['real'] for r in D['f']['naics'] if r['code'] == '326299'))",
+      "falsified_if": "326299 stops being the largest code on the award basis, either concentration share moves off a rounded 99 (the chart's right-rail annotation prints both), the award-basis total stops printing as $105.1M, or the category-basis figure the reconciliation note prints stops being $98.2M. Both bases appear in one sentence of the table note, which is exactly where a drifted number would ship as a wrong published figure.",
+      "official_check": "The 2026-08 version of this page called the top industry bar 'a category defined by what it is not' and could go no further; the README carried recipient names as a known gap. This claim is that gap closing: the opacity was an artifact of the category endpoint, not of the world."
+    },
+    {
+      "id": "fed-two-company-share",
+      "text": "Two companies, RFD Beaufort and Goodyear, hold 56% of the award-basis total. Goodyear is second at $79.0M across 35 contracts (its two ledger spellings merged), and its register rows name Israel and Foreign Military Sales.",
+      "source": "awards.json recipients view; Goodyear register descriptions",
+      "assert": "round((D['a']['recipients'][0]['total'] + D['a']['recipients'][1]['total']) / D['a']['meta']['total'] * 100) == 56 and 'GOODYEAR' in D['a']['recipients'][1]['name'] and round(D['a']['recipients'][1]['total'] / 1e5) == 790 and D['a']['recipients'][1]['awards'] == 35 and D['a']['recipients'][1]['naics'] == '326211' and any('ISRAEL' in (r['what'] or '') for r in D['a']['register'] if 'GOODYEAR' in r['recipient']) and any('FOREIGN MILITARY SALES' in (r['what'] or '') for r in D['a']['register'] if 'GOODYEAR' in r['recipient'])",
+      "actual": "(D['a']['recipients'][1]['name'], D['a']['recipients'][1]['total'], D['a']['recipients'][1]['awards'], round((D['a']['recipients'][0]['total'] + D['a']['recipients'][1]['total']) / D['a']['meta']['total'] * 100))",
+      "falsified_if": "The pair's share moves off a rounded 56 (the figure title and the mobile chart's headline both print it), the ranking reorders, Goodyear's total leaves a printed $79.0M, or its register rows stop naming Israel and Foreign Military Sales, which is what licenses the lede's 'some sold on to allies' clause. The 35-award count is the merged figure: the ledger spells this company two ways and the derive folds them, so a count of 33 here means the merge silently broke.",
+      "official_check": "55.6% unrounded. On the category basis the parallel figure is fed-toptwo-share's 65% of eight-year dollars held by two CODES; the echo in the two figure titles is deliberate and the two shares are on different bases, which each title states."
+    },
+    {
+      "id": "fed-long-tail",
+      "text": "Below the $500k register floor sit 6,557 awards with a median size of $1,500. Sherwin-Williams reaches $23.4M on 2,049 orders, Airgas $16.0M on 2,134, and III Williams appears 479 times for a combined $1.0M. The 73 register rows carry $246.0M of the $329.5M total. 271 awards carry zero dollars.",
+      "source": "awards.json meta and recipients view; the beat between the two drawers prints these",
+      "assert": "D['a']['meta']['register_floor'] == 500_000 and D['a']['meta']['below_floor']['median'] == 1500 and round(D['a']['meta']['register']['total'] / 1e5) == 2460 and D['a']['meta']['zero_awards'] == 271 and round(one(r['total'] for r in D['a']['recipients'] if 'SHERWIN' in r['name']) / 1e5) == 234 and one(r['awards'] for r in D['a']['recipients'] if 'SHERWIN' in r['name']) == 2049 and round(one(r['total'] for r in D['a']['recipients'] if 'AIRGAS' in r['name']) / 1e5) == 160 and one(r['awards'] for r in D['a']['recipients'] if 'AIRGAS' in r['name']) == 2134 and one(r['awards'] for r in D['a']['recipients'] if 'III WILLIAMS' in r['name']) == 479 and round(one(r['total'] for r in D['a']['recipients'] if 'III WILLIAMS' in r['name']) / 1e5) == 10",
+      "actual": "(D['a']['meta']['below_floor'], D['a']['meta']['zero_awards'], [(r['name'], r['total'], r['awards']) for r in D['a']['recipients'] if 'SHERWIN' in r['name'] or 'AIRGAS' in r['name'] or 'III WILLIAMS' in r['name']])",
+      "falsified_if": "Any printed figure in the long-tail beat drifts: the median, the counts, or the three companies' totals at the $0.1M rounding the prose uses. The one() calls are load-bearing: each name must match exactly one recipient row, so if a future refetch splits Airgas back into its two ledger spellings, this claim errors rather than silently halving the order count the page prints.",
+      "official_check": "III Williams' $1.0M is $998,442 unrounded; the beat says 'a combined $1.0 million', which is the same rounding rule as every other figure on the page. The 271 zero-dollar awards are contract vehicles with nothing obligated yet, stated in the company table's note, and a zero here is the ledger's own zero rather than a withheld cell."
     }
   ]
 }

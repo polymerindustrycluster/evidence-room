@@ -37,6 +37,7 @@ const PRINTS = {
   oews:            ["oews", "soc", "occ", "wage", "metro"],
   oews_national:   ["oews", "soc", "occ", "national"],
   usaspending:     ["usaspend", "obligat", "award", "fain", "fy", "naics"],
+  usaspending_awards: ["spending_by_award", "recipient", "award_count", "sub_agency"],
   onet_education:  ["onet", "job_zone", "jobzone", "education", "schooling"],
   nem:             ["projection", "matrix", "326000", "occupation"],
   odjfs:           ["projection", "opening", "2032", "ohio", "odjfs"],

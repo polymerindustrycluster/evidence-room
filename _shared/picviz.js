@@ -483,7 +483,7 @@ const PV = (() => {
       "two_footprints_never_compared", "uncertain", "scope", "not_the_cluster",
       "no_industry", "not_a_commute", "split_is_judgment", "impact_is_separate",
       "no_raw_trends", "quarantine", "nominal", "no_deflator", "small_numbers",
-      "publicOnly", "note", "peer_rule", "size_control",
+      "publicOnly", "note", "peer_rule", "size_control", "basis",
       /* patents: the three caveats a reader needs, published as limits */
       "unit", "lag", "address_is_not_a_lab",
     ]);

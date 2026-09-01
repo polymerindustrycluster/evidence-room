@@ -148,6 +148,22 @@
    "script": "_data/build/fetch_rest.py",
    "key_required": false
   },
+  "usaspending_awards": {
+   "name": "USAspending award-level contract search",
+   "agency": "US Treasury",
+   "url": "https://api.usaspending.gov/api/v2/search/spending_by_award/",
+   "docs": "https://api.usaspending.gov/",
+   "filters": {
+    "method": "POST with a JSON body; keyless. Filters: one spanning time_period 2018-10-01 to 2026-09-30 (FY2019-FY2026), place_of_performance_locations listing the 12 PIC-12 county codes, award_type_codes A-D (prime contracts; grants, loans and direct payments excluded), and naics_codes.",
+    "NAICS": "unlike the category endpoint, naics_codes IS sent to the API here, but it accepts only 2-, 4- or 6-digit codes: a 3-digit 325 returns 422 (‘only supported for lengths of 2, 4, and 6’). The pull sends the eleven 4-digit codes 3251-3259, 3261 and 3262, the same industry scope the category pull filters client-side.",
+    "paging": "limit 100, page walked while page_metadata.hasNext, to exhaustion: 6,630 rows over 67 pages at first fetch. A 40-page probe had 4,000 rows in hand and had NOT exhausted, so the fetcher asserts that floor and refuses to write a short pull. This is the register that closes the category pull’s own 100-row cap, and it must never inherit a cap of its own.",
+    "basis": "Award Amount is the award’s WHOLE-LIFE obligation, not the slice inside the window: an award running since 2014 that the window touches carries every dollar since 2014. A different basis from the per-fiscal-year spending_by_category sums, and the two are never summed; the fed-award-basis-never-summed claim holds both surfaces to saying so.",
+    "geography": "place of performance, a reported field on the award rather than an observation of where work happened"
+   },
+   "terms": "Public domain federal spending data. USAspending states no additional licence.",
+   "script": "_data/build/fetch_fed_awards.py",
+   "key_required": false
+  },
   "public_record": {
    "name": "PIC public record, dated milestones",
    "agency": "Polymer Industry Cluster",
@@ -445,7 +461,8 @@
    "fred"
   ],
   "federal-money": [
-   "usaspending"
+   "usaspending",
+   "usaspending_awards"
   ],
   "funding-map": [
    "usaspending"
