@@ -49,7 +49,7 @@
  */
 (async () => {
 "use strict";
-const {el, txt, ticks, frame, hoverable, tableView, chart, figures, N, onFill,
+const {el, txt, ticks, frame, hoverable, tableView, chart, chartTitle, figures, N, onFill,
        SEQ, GRAY, INK} = PV;
 const D = await PV.data("viz-data.json");
 
@@ -90,10 +90,6 @@ const COL = 728;
    floor as a smaller second line. x=0 in the viewBox IS the rail, because the svg fills the
    column exactly; starting the title at the plot’s left margin puts a second ragged edge
    beside the prose. An all-caps unit string is an axis label, not a title. */
-function chartTitle(svg, claim, unit) {
-  txt(svg, claim, {x: 0, y: 13, class: "pv-lab", fill: "var(--text)"});
-  if (unit) txt(svg, unit, {x: 0, y: 31, class: "pv-tick", fill: "var(--caption)"});
-}
 /* An axis cropped to its data, with the floor stated under the title. Lines only: a bar’s
    length encodes magnitude from zero and keeps its zero however much canvas that costs. */
 const span = (lo, hi) => v => (v - lo) / (hi - lo);
@@ -418,8 +414,10 @@ figures([
      ${terra.last_year - terra.first_year + 1} unbroken years, last filed
      ${terra.last_year}.
      (Akron Machining Institute&rsquo;s 347 is larger, but the institution itself wound
-     down.) Terra State was placed under state fiscal watch in April 2026, and any
-     conversation about routing money there needs that fact first.`;
+     down.) Terra State was placed under state fiscal watch in March 2026: the
+     Auditor of State wrote to the Chancellor on 17 March and Directive 2026-009 followed on
+     23 March. Any conversation about routing money there needs that fact first.
+     The college remains open and operating.`;
 }
 
 /* ---------------------------------------- the states: table twin only, by design.
@@ -480,16 +478,23 @@ figures([
      2016 to <b>${N(D.ua.latest)}</b> in 2023 (<b>${pct(D.ua.pct_off)}</b> down), with
      master&rsquo;s <b>${D.ua.masters_2016} &rarr; ${D.ua.masters_2023}</b>, doctorates
      <b>${D.ua.doctorate_2016} &rarr; ${D.ua.doctorate_2023}</b>, and an undergraduate line
-     across those eight years of <b>${D.ua.bachelor_2016_2023.join(", ")}</b>. That last
-     figure is the one to hold: <b>two</b> polymer undergraduates in 2023, at the school the
-     field is named for. (IPEDS completions, Akron Main Campus, the three polymer codes, all
+     across those eight years of <b>${D.ua.bachelor_2016_2023.join(", ")}</b>. The figure to hold is the
+     master&rsquo;s line, <b>66 to 16</b>: of the 70-completion fall, 50 are master&rsquo;s and
+     19 are doctorates, and graduate degrees are 42 of the 44 completions left in 2023. The
+     undergraduate line runs between zero and three in every year this record reports
+     (2020 is quarantined, not zero), so the two in 2023 is a small number in a small
+     series, not the shape of the fall. (IPEDS completions, Akron Main Campus, the three polymer codes, all
      levels.)`;
   document.getElementById("uanote").innerHTML =
-    `<b>What the institutional record adds.</b> The 2020 cuts were university-wide, not
+    `<b>What the institutional record adds.</b> Akron&rsquo;s departments of polymer science
+     and polymer engineering were merged into a college of their own in July 1988 and
+     renamed a School in 2020. The 2020 cuts were university-wide, not
      polymer-specific: a $65M gap, 178 positions, six of eleven colleges eliminated; polymer
-     survived, downgraded from College to School. In December 2024 a merger proposal would
-     have cut ten polymer faculty, and <b>the board voted not to cut</b>, through a formal
-     retrenchment committee whose report is public. The completions collapse is real and
+     survived, downgraded from College to School. In November 2024 a merger proposal would
+     have cut ten polymer faculty, and on 15 April 2025 the board adopted the president&rsquo;s
+     recommendations in a form that <b>retrenched nobody</b>, voluntary departures and other
+     savings having removed the need, on the advice of a formal retrenchment committee whose
+     report is public. The completions collapse is real and
      precedes both events, and it ran through the same years in which $7.1M of federal Tech
      Hub money and a share of a $31.25M state Innovation Hub award arrived. Institutional
      investment rose while the academic pipeline fell, at the same institution over the same

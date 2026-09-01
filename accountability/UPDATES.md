@@ -33,7 +33,7 @@ Newest first. Every entry names the date, what changed in the reading, and what 
 
 ### Due at the next quarter close (2026-09-30)
 
-- Read the promise register. Four commitments resolve before that date: F02 (15 August 2026,
+- Read the promise register. Two commitments resolve before that date: F02 (15 August 2026,
   already past at the register's opening and unread against it), F04 (9 September 2026), and
   nothing else until October. Record each as `delivered`, `moved` or `missed`, and append a
   dated `history[]` entry for any date that moved.

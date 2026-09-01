@@ -1183,10 +1183,10 @@
     "covers": [
      "b-disbursed"
     ],
-    "not_here": "Award dollars disbursed",
-    "because": "An award register records what has been committed and executed. It records no payment, so no figure on this page is a measure of money spent. Obligated is not disbursed, and the disbursement row is empty for that reason rather than for lack of effort.",
-    "because_from": "scorecard.json meta.caution",
-    "would_need": "A public disbursement record, or a decision to publish drawdown totals.",
+    "not_here": "Award dollars disbursed against the whole award total",
+    "because": "An award register records what has been committed and executed, and records no payment, so no figure taken from it measures money spent. The payment stage above is not taken from that register: it is the federal ledger’s own outlay figure, and it covers the federal award lines that publish one, not the whole $85,335,784. That whole-total figure is the one this row is empty for.",
+    "because_from": "funding.json meta.outlays",
+    "would_need": "A drawdown figure for Ohio Innovation Hub grant SBIG20251005, and a USAspending record for EDA award ED25HDQ0G0009. Those two are all that stands between the outlay total above and a figure for the whole award total.",
     "defined_on": "2026-08-31",
     "fill_by": "on a decision to publish drawdown totals",
     "permanent_reason": null

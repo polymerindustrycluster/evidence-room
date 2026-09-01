@@ -50,12 +50,22 @@ Object.values(rec).forEach(a => a.sort((x, y) => x.vintage.localeCompare(y.vinta
 const SERIES = [...new Set(D.all.map(r => r.series))];
 const LABEL = {};
 P.forEach(p => { LABEL[p.series] = p.label; });
-/* Hand-shortened panel names. Two of the three are "rubber and plastics" in different
-   words, so each carries the thing that separates them (a commodity index priced at the
-   point of sale, an industry index for the plants that make them). */
+/* Hand-shortened panel names, taken from the titles BLS actually publishes. Two of them
+   read "Industrial chemicals" and "Rubber and plastic products", and both of those are
+   the titles of OTHER real series one step away in the same tree: WPU061, Industrial
+   chemicals, is a child of WPU06, whose own title is Chemicals and allied products; and
+   WPU07, Rubber and plastic products, is the parent of WPU072, whose own title is
+   Plastic products. A reader who looked either name up landed on a different series.
+   PCU326326 keeps a gloss rather than its published title (Plastics and Rubber Products
+   Manufacturing, NAICS 326): it prices the output of the plants, where the other two
+   price commodities at the point of sale. BLS files rubber in 071, so 072 is plastics
+   only; PCU326326's coverage overlaps those plastic products and does not extend to
+   WPU06's chemicals, which are a different industry (NAICS 325). index.html names these
+   series in prose too — lede, fig-title and the chart's alt text — and must move with
+   them, as must the claim text in claims.json. */
 const SHORT = {
-  WPU06: "Industrial chemicals",
-  WPU072: "Rubber and plastic products",
+  WPU06: "Chemicals and allied products",
+  WPU072: "Plastic products",
   PCU326326: "Plastics and rubber plants",
 };
 const CODE = {WPU06: "WPU06, commodity index", WPU072: "WPU072, commodity index",
@@ -667,7 +677,17 @@ await PV.methodology({page: "revisions",
     "carry the smallest revisions only because they have had the least time to be " +
     "revised. The six-month settling figure in the closer is what a seven-year archive " +
     "shows, not a rule the BLS publishes: a benchmark revision could reach further back " +
-    "than anything in this record has.",
+    "than anything in this record has. This record also straddles a change of policy. " +
+    "Before 14 December 2021 a reference month was revised once, four months after its " +
+    "first print; from that release the PPI republished interim values every month " +
+    "across the three months between a first print and its final, beginning with the " +
+    "reference months August to October 2021, and from the same release it printed " +
+    "index levels to three decimal places rather than one. Counts of corrections are " +
+    "therefore not comparable across that date: every revised month here before August " +
+    "2021 carries exactly one correction, while months after it commonly carry four, " +
+    "so the corrections-each figure at the top of this page, and the mean corrections " +
+    "per revised month in the table of revision sizes, are averages across two regimes " +
+    "rather than a rate either side has.",
   excludes: "A revision is only visible where ALFRED archived a vintage. A month showing " +
     "one value is not evidence it never moved; it may be evidence nobody kept the " +
     "earlier print.",
@@ -696,7 +716,8 @@ await PV.methodology({page: "revisions",
   uncertain: "Why September 2021 moved is not in this data. ALFRED archives values, not " +
     "the reasons for them, so the cause of the largest revision here is unreported. The " +
     "question we would put to the BLS Producer Price Index section: which late " +
-    "respondent reports or recomputations moved industrial chemicals for September 2021, " +
+    "respondent reports or recomputations moved WPU06, chemicals and allied products, " +
+    "for September 2021, " +
     "and whether a correction of that size is routine for that month of the year.",
   /* THE REPORTING THIS PAGE DOES NOT HAVE, NAMED. A page whose only human beat is a
      translated vignette should say so and say who it would call, rather than let the

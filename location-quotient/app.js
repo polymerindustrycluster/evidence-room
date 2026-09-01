@@ -1299,9 +1299,10 @@ document.getElementById("residtable").innerHTML = tableView("v",
    ["Cells withheld by BLS", N(D.cells.filter(c => c.suppressed).length)]]);
 document.getElementById("defnote").innerHTML =
   `<b>Which denominator, and how we know.</b> ${D.meta.definition} The intuitive
-   alternative, private employment over private employment, is wrong by 0.19 on average and
-   by as much as 1.03, which is the distance between &ldquo;twice the national
-   average&rdquo; and &ldquo;three times.&rdquo; This chart is the tripwire: if BLS changes
+   alternative, private employment over private employment, is wrong by 0.16 on average
+   across these same ${N(D.meta.verification.cells_checked)} cells, and by as much as 1.44
+   at the worst of them: Geauga County resin in 2025, which the bureau&rsquo;s basis puts at
+   22.70&times; and the intuitive one at 21.27&times;. This chart is the tripwire: if BLS changes
    its method, or ours drifts, the divergence shows up here before it reaches a funder.
    Team NEO&rsquo;s 2.69&times; is a Lightcast product, one number for one year with no
    decomposition and no way for anyone outside the licence to check it. The components are

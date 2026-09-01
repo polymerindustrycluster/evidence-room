@@ -776,11 +776,13 @@ tiles = [
         "question": "Who is coming out of the schools?",
         "value": fmt_n(polymer[deg_latest]),
         "unit": "polymer degrees a year",
-        "reading": (f"The three universities in the region conferred "
-                    f"{polymer[deg_latest]} polymer degrees in {deg_latest}, against "
+        "reading": (f"The polymer degrees come from "
+                    f"{WORDS[len({p['institution'] for p in occ['programs'] if p['group'] == 'polymer'})]}"
+                    f" of the three institutions counted here, and they conferred "
+                    f"{polymer[deg_latest]} in {deg_latest}, against "
                     f"{polymer[deg_peak_year]} in {deg_peak_year}, their own high. "
-                    f"Materials degrees, the other group of programs these three schools "
-                    f"count here, held at {materials[deg_latest]}."),
+                    f"Materials degrees, the other group of programs, held at "
+                    f"{materials[deg_latest]}."),
         "standing": dict(standing([(y, polymer[y]) for y in prog_years], "high"),
                          basis=(f"the same three institutions, {prog_years[0]} to "
                                 f"{prog_years[-1]}"),

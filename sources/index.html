@@ -411,10 +411,19 @@
           <b class="code">aux</b> is the other file, and it is the one people forget: jobs
           worked in the state by residents of somewhere else. Which of the two you take,
           or whether you take both, is the whole of step three.</p>
-        <p class="warn"><b>There is no industry dimension in this file.</b>
-          <b class="code">JT00</b> means all jobs in all sectors, so this is the labour
-          shed of a whole economy and never of your industry. If you need the industry cut
-          it is not here and you should stop looking for it in this file.</p>
+        <p class="warn"><b>The industry cut in this file is three columns wide, and it is
+          coarser than this site&rsquo;s subject.</b> Every row carries
+          <b class="code">SI01</b>, <b class="code">SI02</b> and <b class="code">SI03</b>
+          beside the <b class="code">S000</b> total, and the three sum to it:
+          goods-producing (NAICS 11, 21, 23 and 31-33), trade, transportation and
+          utilities, and all other services. <b class="code">JT00</b> is the job-type
+          flag, meaning all jobs rather than primary or private-only ones, and it is not a
+          sector filter. No NAICS code of any width appears in the file, so no polymer
+          labour shed can be built from it. A goods-producing one can, and
+          <b class="code">SI01</b> is the column to take, but goods-producing is not
+          manufacturing, and agriculture, mining and construction sit in that same column.
+          Until 2026-09-01 this step said the file had no industry dimension at all and
+          told you to stop looking for one.</p>
       </li>
       <li>
         <h3>Know what one row is before you sum it</h3>
@@ -503,10 +512,18 @@
           you want to express everything in. Pick that base year once and print it.</p>
         <p class="body" id="cpitable">
           CPI-U, all items, U.S. city average, annual averages, 2019 to 2025, on a base of
-          2019. The index moved from <b>255.657</b> to <b>322.132</b>, so general prices
+          2019. The index moved from <b>255.657</b> to <b>321.943</b>, so general prices
           rose <b>26 percent</b> across the window and a 2025 dollar buys what 79 cents
           bought in 2019. The divisor for any year is that year&rsquo;s index over
           2019&rsquo;s: 2019 is 1, 2022 is 1.1447, 2025 is 1.26.</p>
+        <p class="warn"><b>The 2025 average is eleven months, and the bureau says so.</b>
+          This series has no October 2025 value. It returns a dash for that month, with the
+          footnote &ldquo;Data unavailable due to the 2025 lapse in appropriations&rdquo;,
+          and the published annual average of 321.943 is the mean of the eleven months that
+          do exist, to the digit. Use it, because it is what BLS published, but a completed
+          year with a hole in it is not the same object as the other six, and a page that
+          tells you to stamp your vintage should tell you that too. This step printed
+          322.132 until 2026-09-01.</p>
         <p class="warn"><b>The index runs out before your data does.</b> Annual averages
           exist only for completed years, so a figure from the current year has no
           deflator of its own and has to borrow the last published one. That understates
@@ -767,7 +784,7 @@
       it is the cheapest thing on this page to adopt and the only one that keeps working
       after the person who built the analysis has moved on.</p>
     <p class="body" id="checkidea">
-      Across the twenty-two pages this site publishes, twenty listed on the front page and two not, it carries <b>519</b> of them. 498 are re-run
+      Across the twenty-two pages this tally covers, twenty listed on the front page and two not, it carries <b>519</b> of them. The tally is generated for the hub and skips it, so the hub is a twenty-third page whose own 26 claims sit outside every figure in this paragraph: 545 across 23 site-wide. 498 of the 519 are re-run
       against the source data every time the site is built, so a figure that stops
       matching its file breaks the build before anybody reads it. The other 21 rest on
       a person having read a document correctly, which is why they are labelled and are

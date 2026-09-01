@@ -55,7 +55,7 @@
    "source": "polymer-programs-db census; closure verified against Terra State's current catalogue (narrowed to a single certificate)",
    "assert": "(lambda t: t['total_awards'] == 206 and (t['first_year'], t['last_year']) == (1991, 2015) and t['status'] == 'ended')(one(t for t in D['top_tech'] if 'TERRA' in t['institution'].upper())) and one(t for t in D['top_tech'] if 'MACHINING' in t['institution'].upper())['total_awards'] == 347",
    "actual": "[(t['institution'], t['total_awards'], t['first_year'], t['last_year'], t['status']) for t in D['top_tech'] if t['status'] != 'active']",
-   "falsified_if": "Terra State resumes conferring under this CIP (the college still runs one certificate — a revival is possible and would be the better story), or a larger ended program surfaces at an operating college. Separately: Terra State entered state fiscal watch in April 2026, which is a fact about the college, not this record."
+   "falsified_if": "Terra State resumes conferring under this CIP (the college still runs one certificate — a revival is possible and would be the better story), or a larger ended program surfaces at an operating college. Separately: Terra State entered state fiscal watch in March 2026 (Auditor of State letter 17 March, ODHE Directive 2026-009 of 23 March), which is a fact about the college, not this record."
   },
   {
    "id": "prog-ua-collapse",
