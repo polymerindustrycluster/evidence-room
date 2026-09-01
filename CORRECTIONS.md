@@ -13,108 +13,7 @@ page, the figure, and what you think it should be.
 
 ---
 
-## 2026-09-01, fourth entry — the money pages, corroborated against the record
-
-An outside corroboration pass read four money pages against the federal record itself
-rather than against their own data. Six published errors came back. One of them is
-this site's worst kind: a page whose entire argument is that a number needs a fair
-comparator had published an unfair one.
-
-**The comparator was the wrong kind of money, *federal-money*.** Band 2 set the polymer
-flow against "every industry in these twelve counties" and got $235.5 billion, "nearly
-all of it aerospace, defense and health contracting", and a ratio of one dollar in 840.
-The numerator was contracts. The denominator was every federal instrument there is, and
-about 85 cents in every dollar of it is direct payments and other financial assistance:
-Social Security, Medicare and veterans' benefits, which no manufacturer can bid for.
-**Was:** $235.5 billion, one dollar in every 840. **Is:** federal prime contracting of
-every industry in the same twelve counties, $9.2 billion in 2025 dollars, one dollar in
-every 33. The comparator was twenty-six times too large, in the direction that made the
-cluster look smaller. Both series are now pulled with the same award-type filter and the
-ratio is computed inside one block; the old claim guarded the quotient and never the
-units, which is why it passed on every run for as long as the sentence was wrong.
-
-**"No public record says what has been paid" was refuted, *accountability*.** The
-section heading, the figure title, an empty dashed third stage labelled *no public
-record exists*, and the figure-registry entry that licensed all three. USAspending
-publishes an outlay field on federal assistance awards and it is filled on seven of the
-eight federal lines in the register: **$11,642,402 against $48,114,979, 24.2 percent**.
-**Was:** an absence presented as a property of the record. **Is:** the stage is part
-filled, the bar carries the federal figure, and the remaining absence is named for what
-it actually is: the $31,250,000 state grant is not a federal award, and EDA award
-ED25HDQ0G0009 ($5,970,805, Huntsman) has no USAspending record of any kind, which is a
-missing row and not a payment of zero.
-
-**A verification claim that had not been verified, *funding-map*.** **Was:** "All seven
-EDA figures are verified against signed federal Notices of Award", cross-checked
-"against USAspending.gov by award ID". **Is:** six reconcile to the dollar and total
-$45,030,608; the seventh has no USAspending record and EDA's own award page names no
-company, so what corroborates it is arithmetic, not execution.
-
-**Three characterisations of named private companies.** *federal-money* called III
-Williams "one belting supplier" on the strength of a census code that holds 69 percent
-of its dollars; its line items are belts, hose assemblies, tube fittings, adapters and
-seals, and it is now "one industrial distributor, III Williams of Chardon", with the
-code named as a code. HDT's "$39 million of field air conditioners" gains the scope
-clause it needed: $35.1 million of it is one award opened in 2014, transferred from a
-General Services Administration schedule, carried into this window by the whole-life
-basis. And *funding-map* now attributes Full Circle's tire chemistry to the award
-document, which describes it, rather than to the company, whose own site describes
-industrial recycling and compounding.
-
-**Two figures on the wrong basis.** NEO-SMART's $15.0 million was printed inside an
-obligations paragraph and registered with the basis "obligated"; it is the estimated
-total of a ten-year cooperative agreement, of which **$7,499,984 is obligated**, and
-both pages and the registry now say which is which. And the $10.42 million beside the
-Ohio Innovation Hub grant was called **state cost share** on *funding-map* and inside
-*accountability*'s $20,954,667; every public record of that award, including the
-Governor's office announcement of 5 September 2024, describes it as matched by local
-partners. The figure was right and the promiser was wrong.
-
-**One thing the corroboration got wrong, recorded because it was checked.** The
-comparator error was reported as about thirty times; it is twenty-six. The benefit share
-of the old denominator was reported as 86 percent; it is 85.5. And MQM Solutions, flagged
-as at risk of reading as a failing firm, carries no sentence, label or annotation of the
-kind on any page: it is one bar among ten in a chart whose subtitle already states the
-whole-award-life basis.
-## 2026-09-01, fourth entry — the atlas re-projection, and a page with no producer
-
-The atlas carried a banner saying it was stale and must not be published until
-re-projected. It was published anyway, on 2026-08-31, banner and defect intact. The
-reason turns out to be worse than an oversight: **the script the banner told everyone
-to run does not exist in this repository, and never did.** `atlas/data/viz-data.json`
-is a shipped file with no producer, so the correction it needed could not be delivered
-by anyone who followed the instructions. A producer has now been written
-(`_data/build/atlas_reprojection_patch.py`, idempotent, with a `--check` mode that
-re-derives from the source API), and the atlas is listed in REBUILDING.md as what it
-actually is.
-
-**What was wrong.** The upstream mirror republished 2019's completions under the label
-2020 — the same defect the programs page had already quarantined. The atlas never got
-that quarantine, so every institution's lifetime record counted 2019 twice.
-
-**Verified before changing anything.** The whole 1991-2023 census was re-pulled from
-the source endpoint and reproduced the shipped file exactly — all 147 institutions on
-every field, zero mismatches — before a single year was removed. 2020 is
-byte-identical to 2019: 807 awards across 59 institutions.
-
-**What moved.** The record total **20,859 to 20,052**. The top three **7,651 to
-7,401**, and their share of the whole **36.7 to 36.9 percent**. Forty-four
-institutions' lifetime totals changed, including Lowell **2,929 to 2,830**, Ferris
-State **2,599 to 2,525**, and Akron **2,123 to 2,046**. Eighth and ninth place swap:
-Penn College now leads Case Western. Four institutions' spans end in 2019 rather than
-2020. The page's shape facts survive untouched and are now asserted: 147 institutions,
-41 conferring in the last year, 35 states, four diamonds.
-
-**Also corrected:** a claim's own falsification note said "Akron's record is second."
-Akron's record has always been third, and nothing had asserted the order.
-
-Separately and with no reader-facing change, the sources page's prose now exists in
-the HTML rather than only in JavaScript. Thirty-one paragraphs that a reader without
-JavaScript saw as empty captions — including the location-quotient worked arithmetic
-and the field-name recipes — are now real text, pinned by assertions. Three model
-families reading the page cold had each stopped there.
-
-## 2026-09-01, fifth entry — the chart furniture, the least-governed surface
+## 2026-09-01, sixth entry — the chart furniture, the least-governed surface
 
 Two independent figure audits swept every chart on the site and found the same thing:
 the defects were not in the numbers. Every one of them lived in a HAND-TYPED string —
@@ -207,6 +106,108 @@ industrial chemicals, rubber and plastic products, and plastics and rubber plant
 **What none of this changes:** no chart's data, no chart's encoding, no analysis. Every
 correction above is an editorial string that had drifted from the figure it sat on,
 which is precisely the surface no gate reads.
+
+## 2026-09-01, fifth entry — the money pages, corroborated against the record
+
+An outside corroboration pass read four money pages against the federal record itself
+rather than against their own data. Six published errors came back. One of them is
+this site's worst kind: a page whose entire argument is that a number needs a fair
+comparator had published an unfair one.
+
+**The comparator was the wrong kind of money, *federal-money*.** Band 2 set the polymer
+flow against "every industry in these twelve counties" and got $235.5 billion, "nearly
+all of it aerospace, defense and health contracting", and a ratio of one dollar in 840.
+The numerator was contracts. The denominator was every federal instrument there is, and
+about 85 cents in every dollar of it is direct payments and other financial assistance:
+Social Security, Medicare and veterans' benefits, which no manufacturer can bid for.
+**Was:** $235.5 billion, one dollar in every 840. **Is:** federal prime contracting of
+every industry in the same twelve counties, $9.2 billion in 2025 dollars, one dollar in
+every 33. The comparator was twenty-six times too large, in the direction that made the
+cluster look smaller. Both series are now pulled with the same award-type filter and the
+ratio is computed inside one block; the old claim guarded the quotient and never the
+units, which is why it passed on every run for as long as the sentence was wrong.
+
+**"No public record says what has been paid" was refuted, *accountability*.** The
+section heading, the figure title, an empty dashed third stage labelled *no public
+record exists*, and the figure-registry entry that licensed all three. USAspending
+publishes an outlay field on federal assistance awards and it is filled on seven of the
+eight federal lines in the register: **$11,642,402 against $48,114,979, 24.2 percent**.
+**Was:** an absence presented as a property of the record. **Is:** the stage is part
+filled, the bar carries the federal figure, and the remaining absence is named for what
+it actually is: the $31,250,000 state grant is not a federal award, and EDA award
+ED25HDQ0G0009 ($5,970,805, Huntsman) has no USAspending record of any kind, which is a
+missing row and not a payment of zero.
+
+**A verification claim that had not been verified, *funding-map*.** **Was:** "All seven
+EDA figures are verified against signed federal Notices of Award", cross-checked
+"against USAspending.gov by award ID". **Is:** six reconcile to the dollar and total
+$45,030,608; the seventh has no USAspending record and EDA's own award page names no
+company, so what corroborates it is arithmetic, not execution.
+
+**Three characterisations of named private companies.** *federal-money* called III
+Williams "one belting supplier" on the strength of a census code that holds 69 percent
+of its dollars; its line items are belts, hose assemblies, tube fittings, adapters and
+seals, and it is now "one industrial distributor, III Williams of Chardon", with the
+code named as a code. HDT's "$39 million of field air conditioners" gains the scope
+clause it needed: $35.1 million of it is one award opened in 2014, transferred from a
+General Services Administration schedule, carried into this window by the whole-life
+basis. And *funding-map* now attributes Full Circle's tire chemistry to the award
+document, which describes it, rather than to the company, whose own site describes
+industrial recycling and compounding.
+
+**Two figures on the wrong basis.** NEO-SMART's $15.0 million was printed inside an
+obligations paragraph and registered with the basis "obligated"; it is the estimated
+total of a ten-year cooperative agreement, of which **$7,499,984 is obligated**, and
+both pages and the registry now say which is which. And the $10.42 million beside the
+Ohio Innovation Hub grant was called **state cost share** on *funding-map* and inside
+*accountability*'s $20,954,667; every public record of that award, including the
+Governor's office announcement of 5 September 2024, describes it as matched by local
+partners. The figure was right and the promiser was wrong.
+
+**One thing the corroboration got wrong, recorded because it was checked.** The
+comparator error was reported as about thirty times; it is twenty-six. The benefit share
+of the old denominator was reported as 86 percent; it is 85.5. And MQM Solutions, flagged
+as at risk of reading as a failing firm, carries no sentence, label or annotation of the
+kind on any page: it is one bar among ten in a chart whose subtitle already states the
+whole-award-life basis.
+
+## 2026-09-01, fourth entry — the atlas re-projection, and a page with no producer
+
+The atlas carried a banner saying it was stale and must not be published until
+re-projected. It was published anyway, on 2026-08-31, banner and defect intact. The
+reason turns out to be worse than an oversight: **the script the banner told everyone
+to run does not exist in this repository, and never did.** `atlas/data/viz-data.json`
+is a shipped file with no producer, so the correction it needed could not be delivered
+by anyone who followed the instructions. A producer has now been written
+(`_data/build/atlas_reprojection_patch.py`, idempotent, with a `--check` mode that
+re-derives from the source API), and the atlas is listed in REBUILDING.md as what it
+actually is.
+
+**What was wrong.** The upstream mirror republished 2019's completions under the label
+2020 — the same defect the programs page had already quarantined. The atlas never got
+that quarantine, so every institution's lifetime record counted 2019 twice.
+
+**Verified before changing anything.** The whole 1991-2023 census was re-pulled from
+the source endpoint and reproduced the shipped file exactly — all 147 institutions on
+every field, zero mismatches — before a single year was removed. 2020 is
+byte-identical to 2019: 807 awards across 59 institutions.
+
+**What moved.** The record total **20,859 to 20,052**. The top three **7,651 to
+7,401**, and their share of the whole **36.7 to 36.9 percent**. Forty-four
+institutions' lifetime totals changed, including Lowell **2,929 to 2,830**, Ferris
+State **2,599 to 2,525**, and Akron **2,123 to 2,046**. Eighth and ninth place swap:
+Penn College now leads Case Western. Four institutions' spans end in 2019 rather than
+2020. The page's shape facts survive untouched and are now asserted: 147 institutions,
+41 conferring in the last year, 35 states, four diamonds.
+
+**Also corrected:** a claim's own falsification note said "Akron's record is second."
+Akron's record has always been third, and nothing had asserted the order.
+
+Separately and with no reader-facing change, the sources page's prose now exists in
+the HTML rather than only in JavaScript. Thirty-one paragraphs that a reader without
+JavaScript saw as empty captions — including the location-quotient worked arithmetic
+and the field-name recipes — are now real text, pinned by assertions. Three model
+families reading the page cold had each stopped there.
 
 ## 2026-09-01, third entry — the depth audit's second wave
 
