@@ -419,12 +419,25 @@ const PV = (() => {
      It reads the page's own data meta and its claims file, so a page that adds a
      limitation to its meta gets it published here automatically.
 
-     The AI paragraph is not optional and not boilerplate. Every page in this project
-     was built by a language model, and one of them published a false finding — a
-     transposed CIP code that erased a whole university's degree program and survived
-     a passing assertion suite because the assertions were true of the filtered data.
-     A reader is entitled to know that, to know what was checked, and to know what was
-     not. Disclosure that only appears when the work went well is not disclosure. */
+     The AI credit is not optional and not boilerplate: every page in this project was
+     built by a language model, and a reader is entitled to know that on every page.
+     tools/disclosure.mjs asserts it here and in the byline.
+
+     WHAT THIS BLOCK SAYS ABOUT THE CHECKS WAS RENAMED 2026-09-01. It used to promise
+     that every numbered sentence "carries a written condition that would prove it
+     wrong", which reads as verification and is not: the conditions run against the
+     SHIPPED DATA, so they prove a sentence still matches its own file and nothing more.
+     One page said institutions had "closed" while its claim passed, because the claim
+     counted rows and the sentence asserted a meaning. The wording here now says
+     consistency check and says what it cannot catch.
+
+     THE APPARATUS ESSAY LIVES ON ONE PAGE, NOT TWENTY-THREE. This block used to inject
+     ~200 identical words into every page, including a 95-word account of a transposed
+     CIP code that erased a university's degree program and survived a passing assertion
+     suite. Repeated verbatim 23 times it was 12% of the corpus, and Layer 5 of the house
+     skill says state it once on a methods page. It now lives in sources/#sec-checks,
+     which every page links to from here. Keep it that way: a paragraph added here is a
+     paragraph added to every page in the tree. */
   async function methodology(opts = {}) {
     const o = Object.assign({claims: "claims.json"}, opts);
     /* A page that supplies noClaimsNote is TELLING us it has no claims file, so do not go
@@ -595,33 +608,27 @@ const PV = (() => {
         <div>
           <h3>How we checked it</h3>
           <p>${list.length
-            ? `Every sentence on this page that carries a number also carries a written
-               condition that would prove it wrong. There are <b>${list.length}</b> of them.
-               ${manual.length === 0
-                 ? `All ${list.length} are re-checked against the source data each time the
-                    page is built, so a figure that stopped being true would break the build
-                    before it reached you.`
-                 : `${auto.length} are re-checked against the source data each time the page
-                    is built, so a figure that stopped being true would break the build
-                    before it reached you. The other ${manual.length} ${manual.length === 1
-                      ? "depends on a person having read a document correctly, so it is"
-                      : "depend on a person having read a document correctly, so they are"}
-                    the place to attack first.`}`
+            ? `<b>${list.length}</b> sentences on this page carry a written condition tying
+               each one to the data it came from, and ${manual.length === 0
+                 ? `all ${auto.length}` : auto.length} of them re-run on every build. That is
+               a consistency check, not a check against the world: a sentence that matches
+               its data file and still misreads what happened passes.${manual.length === 0
+                 ? "" : manual.length === 1
+                   ? ` One rests on a person having read a document correctly instead, so
+                       attack that one first.`
+                   : ` The other ${manual.length} rest on a person having read a document
+                       correctly instead, so attack those first.`}`
             : (o.noClaimsNote || "This page makes no numeric claim of its own: every " +
-               "figure on it is carried by the page it links to, and is checked there.")}</p>
+               "figure on it is carried by the page it links to, and is checked there.")}
+            What the checks have missed is dated in <a href="https://github.com/polymerindustrycluster/evidence-room/blob/main/CORRECTIONS.md">the
+            corrections log</a>.</p>
           <p>Analysis and graphics by <b>Claude (Anthropic)</b>; <b>John Swanson</b> is
-            responsible for what this page says. Figures are recomputed from the source data by script, and readings
-            of what they mean were sent to competing AI systems to be argued down. None of
-            that guarantees the page is right. On another page in this series, one mistyped
-            federal classification code erased a university&rsquo;s degree program from a
-            finding and passed every check, because the checks were true of the data the
-            mistake had already filtered out. A reader caught it, and that is the failure
-            this section exists to make findable.</p>
+            responsible for what this page says. The method page sets out
+            <a href="${o.page === "sources" ? "#sec-checks" : "../sources/#sec-checks"}">what
+            these checks catch and what they miss</a>.</p>
         </div>
         <div>
           <h3>Corrections</h3>
-          <p>Every figure here is rebuilt from free public data, so any of it can be
-            checked independently, and errors are expected to be found.</p>
           <p>If you think something is wrong, say so:
             <b>${o.contact || "jswanson@greaterakronchamber.org"}</b>. The most useful note
             names the sentence and what you think it fails against.</p>

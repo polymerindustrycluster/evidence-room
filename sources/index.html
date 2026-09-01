@@ -740,22 +740,31 @@
   </div>
 </section>
 
-<!-- ACT 1e: HOW THIS PAGE POLICES ITSELF. Last, and short, because it is about us and
-     the page's value is that it is not. Kept because the idea transfers even to somebody
-     who never runs our code. -->
+<!-- ACT 1e: HOW THIS PAGE POLICES ITSELF. Kept because the idea transfers even to
+     somebody who never runs our code.
+
+     THIS SECTION IS THE SITE'S CANONICAL ACCOUNT OF ITS OWN CHECKS (2026-09-01). The
+     apparatus essay used to be injected into all 23 pages by _shared/picviz.js, ~200
+     identical words each, the war story below included. Every page's methodology box now
+     links here instead. If the account needs extending, extend it HERE; a paragraph added
+     to the shared block is a paragraph added to every page in the tree. -->
 <section class="band" id="sec-checks" data-nav="How this is checked">
   <div class="wrap">
     <p class="takeaway">The part that is worth copying without our code</p>
-    <h2>Every number on this site carries a written condition that would prove it wrong</h2>
+    <h2>Every number on this site carries a written condition that ties it to its source</h2>
     <p class="lede">One idea, and you do not need our tooling to use it. It is here because
       it is the cheapest thing on this page to adopt and the only one that keeps working
       after the person who built the analysis has moved on.</p>
     <p class="body" id="checkidea">
-      Across seventeen pages this site carries <b>443</b> of them. 428 are re-run against
-      the source data every time the site is built, so a figure that stopped being true
-      breaks the build before anybody reads it. The other 15 rest on a person having read a
-      document correctly, which is why they are labelled and are the place to attack first.
-      This page alone carries 32.</p>
+      Across twenty-two artifacts this site carries <b>519</b> of them. 498 are re-run
+      against the source data every time the site is built, so a figure that stops
+      matching its file breaks the build before anybody reads it. The other 21 rest on
+      a person having read a document correctly, which is why they are labelled and are
+      the place to attack first. This page alone carries 33.</p>
+    <p class="body"><b>What the conditions prove, and what they do not.</b> They run
+      against the data a page shipped with, so a green board means every sentence still
+      matches its own file. It does not mean the file is right about the world, and it does
+      not mean the sentence reads the file correctly.</p>
     <p class="body"><b>The discipline, not the code.</b> Write the sentence you intend to publish. Then,
       beside it, write the condition under which it would be false, as an expression over
       the data rather than as a note to yourself: not &ldquo;check this later&rdquo; but
@@ -770,6 +779,14 @@
       source credited on a page that never used it, which had quietly made one dataset look
       more central than it is. The first three were caught by a condition written next to
       the sentence. The last was caught by a person reading the page.</p>
+    <p class="body"><b>The one that got through.</b> On an unpublished page in this
+      series, one transposed federal classification code erased a university&rsquo;s degrees
+      from a finding, and the condition beside the sentence kept passing: it tested that the
+      last value sat below three quarters of the peak, and that was true of the wrong number
+      and of the right one. The sentence was out by half. Figures here are recomputed from
+      the source data by script rather than typed, and every reading of what they mean is
+      sent to competing AI systems to be argued down before publication. None of that found
+      it.</p>
     <p class="warn"><b>It does not make a page right.</b> A check is only as good as the
       question it asks, and the failures on this site that hurt most were the ones no check
       was looking for: a filter that was valid for a different geography, a source credited
