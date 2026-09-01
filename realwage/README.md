@@ -21,6 +21,20 @@ data/realwage.json   THE DATA (76 KB). Edit the builder, not this.
 - Ranks are among the **56 metros with at least 2,000 polymer jobs** (a stated choice);
   a different floor gives a different rank. The all-metro set (235 disclosed) appears
   only on the price strip.
+- **The crossing is a fact about that 56, not about American metros.** Akron is 33rd of
+  56 on the paycheck and 19th on what it buys, so it crosses the middle. Across all 235
+  disclosed metros it is 92nd and 78th: above the middle on *both*. The H1 names the 56
+  inside its own emphasized span for that reason (`rw-crosses-median` asserts both
+  readings). Never quote "below the middle" without the field.
+- **$71,000 is a matching threshold, not a Chicago wage.** It is what a Chicago offer
+  must reach to buy what Akron's $64,400 buys. The average Chicago polymer job pays
+  $1,765 a week (about $91,800 a year) and clears it, and after prices still buys $1,722
+  a week against Akron's $1,332. The adjustment cuts Chicago's edge from $527 a week to
+  $390; it does not reverse it (`rw-chicago-clears`).
+- **Los Angeles is a tie on real wages, not a win.** $1,518 a week against Akron's
+  $1,238, buying $1,323 against $1,332. "The same salary buys a fifth less" is a
+  price-level counterfactual the scatter's diagonals draw, and no candidate faces it
+  (`rw-la-is-a-tie`).
 - **One year, no track record.** Only the 2023 release ships with this page; the 14-place
   climb has no visible track record here. The `rw-single-year` claim pins this: if
   2021/2022 pairs are ever added to the data, that claim fails on purpose and the
