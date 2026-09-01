@@ -598,7 +598,7 @@ document.getElementById("rctable").innerHTML = withNotes(tableView("rc",
   `Company names are the federal ledger&rsquo;s own spellings, title-cased, with
    punctuation variants merged (${R.meta.name_variants_merged} merges; Goodyear and
    Airgas each file under two). ${R.meta.zero_awards} of the ${N(R.meta.award_count)}
-   awards carry zero dollars: a contract vehicle with nothing obligated on it yet.
+   awards carry zero dollars: an agreement in place with nothing committed against it yet.
    The leftovers-class total on this basis, ${short(code299.total)}, is not the
    ${short(top.real)} the industry chart draws for the same code: the chart counts only
    dollars recorded inside the eight years, restated in 2025 dollars, while an
