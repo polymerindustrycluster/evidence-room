@@ -32,6 +32,12 @@ before the editorial passes, and two drop or change a block outright. Running th
 comparing would silently downgrade published pages. That is worse than not running them,
 which is why this table exists rather than a green checkmark.
 
+## Verified 2026-09-01
+
+| Page data file | Producer | Result |
+|-|-|-|
+| `programs/data/viz-data.json`, `layers.control.base` only | `fetch_ipeds_control_baserate.py` | **Exact by construction** — the block was written by its producer on the first end-to-end run, from the keyless Urban Institute completions endpoint, and re-running it overwrites the same key with the same shape. The producer will not write at all until it reproduces the page's already-published survival control (48%) from the live API, so a drifted pull fails loudly instead of quietly replacing one control with another. Everything else in this file still comes from the sibling census through `derive_programs.py` and is **untested here**; a refetch will differ wherever Urban has since restated a back year. |
+
 ## Six published files have no producer anywhere
 
 Not in this repository and not in the internal tree. Searched with a control pattern that

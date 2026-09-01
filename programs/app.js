@@ -270,6 +270,25 @@ figures([
     {label: "Five years or less", v: B.le5_years, p: B.le5_years_pct, c: SEQ[3]},
     {label: "Both at once", v: B.both, p: B.both_pct, c: SEQ[5]},
   ];
+  /* THE BASE RATE HAD NO CONTROL UNTIL 2026-09-01, AND THE SURVIVAL SPINE HAD ONE SINCE
+     2026-08-26. Three bars saying "half of all starts came to nothing" is a fact about
+     nothing until a reader knows what half means for a technician program in general, and
+     until this sentence the page's own answer to that was three sections away and measured
+     on a different population (substantive programs only). The control here is the SAME six
+     peer trades, pulled from the same endpoint on the same rule, and counted with the size
+     threshold OFF - which is the only way to compare start-and-fail rates at all.
+     `fetch_ipeds_control_baserate.py` reproduces the page's published survival control to
+     the point before it will write this block, so the two comparisons rest on one pull. */
+  const CB = L.control.base;
+  document.getElementById("basecontrol").textContent =
+    `The trades next door are the control here too: of the ${N(CB.ever)} peer-trade ` +
+    `technician programs the same pull finds under the same rule, ${pct(CB.le10_awards_pct)} ` +
+    `stayed tiny and ${pct(CB.both_pct)} were both tiny and brief, so a polymer technician ` +
+    /* One decimal in prose, two in the file. The ratio is a quotient of two ROUNDED
+       percentages, so "about 2.48" claims a precision the inputs do not carry; the exact
+       2.48 stays in the data and in prog-base-rate-control, where it can be checked. */
+    `program started since 1991 came to nothing about ${Math.round(CB.ratio_le10 * 10) / 10} ` +
+    `times as often as one in the trades taught in the same buildings.`;
   const ROW = 42;
   const {svg, W, m, w} = chart("base", {W: COL, rows: rows.length, rowH: ROW,
     m: {t: 66, r: 24, b: 56, l: 198}});
@@ -305,7 +324,12 @@ figures([
      fewer completions ever AND a run of five years or less, not either. (All ${B.ever}
      associate and certificate programs under the polymer codes, no size threshold;
      certificate award levels canonicalised across the bureau&rsquo;s 2020 renumbering, which
-     is the correction described in &ldquo;What we got wrong&rdquo; below.)`;
+     is the correction described in &ldquo;What we got wrong&rdquo; below.) Every share on
+     this chart is an <b>upper</b> bound, and so is the control&rsquo;s: the federal mirror
+     never served one collection year of completions, and a year missing from a lifetime
+     total can only push a program into the &ldquo;ten or fewer&rdquo; bucket, never out of
+     it. The hole is the same on both sides, which is why the comparison is steadier than
+     either number in it.`;
   const OH = D.ohio;
   document.getElementById("basenote").innerHTML =
     `<b>Ohio makes the base rate concrete.</b> Of the state&rsquo;s <b>${OH.tech_ever}</b>

@@ -217,7 +217,7 @@ PV.figures([
    .chart div at figure width keeps the column audit applicable, and the three panels
    share a y domain so the eye can compare across them. */
 const MOBILE = matchMedia("(max-width: 760px)");
-const LIM = 1.75;                     // headroom above the 1.42% extreme for the labels
+const LIM = 1.75;                     // headroom above the 1.415% extreme for the labels
 const YT = [-1.5, -1, -0.5, 0.5, 1, 1.5];
 const ytLab = v => (v > 0 ? "+" : MINUS) + Math.abs(v).toFixed(1) + "%";
 

@@ -15,7 +15,7 @@ year undercounts, because a program with no completions that year is invisible i
 ```
 index.html          page shell
 app.js              seven charts and their table twins
-claims.json         11 assertions — 9 machine-checked against data/viz-data.json, 2 manual
+claims.json         12 assertions — 10 machine-checked against data/viz-data.json, 2 manual
 data/viz-data.json  THE DATA (18 KB). Edit the deriver, not this.
 INTEGRATION-NOTE.md what the controller must wire before this page is reachable or shippable
 ```
@@ -38,6 +38,17 @@ python derive_programs.py          # -> ../../programs/data/viz-data.json, with 
 
 Set `PROGRAMS_DB` if the sibling checkout is elsewhere.
 
+The base rate's control does NOT come through that sibling. It is pulled in this repository,
+keyless, from the same public endpoint, and merged into the page file in place:
+
+```
+python3 _data/build/fetch_ipeds_control_baserate.py --check   # pull and verify, write nothing
+python3 _data/build/fetch_ipeds_control_baserate.py           # and write layers.control.base
+```
+
+It refuses to write unless it first reproduces the page's own published survival control
+(48%) to the point from the live API, which is what licenses the base-rate numbers beside it.
+
 ## Read before quoting anything from this page
 
 - **Every count is a floor, not a census.** IPEDS records the CIP an institution *chose*;
@@ -46,6 +57,16 @@ Set `PROGRAMS_DB` if the sibling checkout is elsewhere.
 - **"Ended" is not "closed."** Institutions keep teaching under other codes; three of nine
   named closures failed a catalogue check in this project's history. No named-casualty
   list without one.
+- **Both comparisons have the same control, on two different populations.** Survival counts
+  substantive programs only (more than ten completions); the base rate counts every start
+  with the threshold off, because thresholding on size throws away the population the number
+  is about. Never quote 8,736 against 6,648: they are two counts of the same six trades under
+  two different rules, and the page states which is which.
+- **Every "tiny" share on this page is an UPPER bound, on both sides.** The Urban mirror
+  never served the `C2023_A` collection year (`_data/build/ipeds_mirror_fix.py` names this
+  page as still carrying that hole), and a year missing from a lifetime total can only push a
+  program into the ten-or-fewer bucket, never out of it. The hole is the same on both sides,
+  so the ratio between them is steadier than either level in it.
 - **The survival comparison is a construct, and the construct is stated**: substantive =
   more than ten lifetime completions; active = a completion in 2023. Moving the threshold
   moves the rates (28% → 71% with a stricter one, in the census's own README); the control
