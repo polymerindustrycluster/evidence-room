@@ -144,8 +144,8 @@
       they pay, who is available to fill them. A cluster is what its name says, the firms,
       suppliers and labs of one industry packed into one place. Those numbers used to arrive
       as bare claims. Here they arrive with the working shown.</p>
-    <p class="whatitis-body">Every page is built from federal data that costs nothing to
-      obtain, listed in the source registry below: the payroll census of covered jobs, the
+    <p class="whatitis-body">Twenty of the twenty-three pages are built entirely from
+      federal data that costs nothing to obtain, listed in the source registry below: the payroll census of covered jobs, the
       file recording where workers live, degree completions, federal contract spending,
       energy and producer prices. The analysis is scripted rather than hand-assembled, and
       the analysis and graphics are by Claude (Anthropic), and John Swanson is responsible for what it says. Each reading of
@@ -351,7 +351,7 @@
       </a>
       <a class="card" href="../chain/" data-slug="chain" data-geo="NEO-14">
         <h4>Which links of the polymer supply chain does the region actually hold?</h4>
-        <p class="f">785 companies classified into six tiers and four enabler roles, against
+        <p class="f">721 companies classified into six tiers and four enabler roles, against
           the Census count of what each county holds. The coverage is real and so are the
           gaps: three counties where Census sees plants this register has not classified.</p>
         <p class="meta"><span class="pill geo">NEO-14</span></p>
@@ -498,9 +498,14 @@ python verify_claims.py --list</pre>
         <div>
           <h3>Rebuild the data from origin</h3>
           <pre>python fetch_*.py &amp;&amp; python derive_*.py</pre>
-          <p>Every dataset is reproducible from <span class="mono">_data/build/</span> with
-            free public APIs. Nothing reads a private table, and nothing writes to
-            production.</p>
+          <p>Nothing writes to production. Most datasets rebuild from <span
+            class="mono">_data/build/</span> with free public APIs, but <b>three pages do
+            read a private table and you cannot reproduce those</b>: the company register
+            behind <a href="../chain/">chain</a> is PIC&rsquo;s own and is not public, and
+            <a href="../timeline/">timeline</a> and <a
+            href="../accountability/">accountability</a> draw part of their rows from PIC
+            project records. Each of the three says so where it uses them, and the source
+            registry marks all three as not reproducible by a reader.</p>
         </div>
       </div>
     </details>

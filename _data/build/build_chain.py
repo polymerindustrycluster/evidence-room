@@ -177,7 +177,12 @@ for r in recs:
         # Pipeline states never leave the vault (chain_detag.py, 2026-08-31): the shipped
         # field is a binary member highlight, so a rebuild cannot resurrect the CRM tags.
         **({"member": True} if (r.get("membership_status") == "current") else {}),
-        "rel": r.get("polymer_ecosystem_relevance") or "",
+        # "rel" (polymer_ecosystem_relevance) was emitted here until 2026-09-01 and
+        # read by nothing. It shipped an internal judgement about 74 named private
+        # companies — "not_relevant" — in a file this site serves publicly, on a
+        # register whose own source note says any public release of these records is
+        # gated on member consent. A field no page renders is not a feature, it is a
+        # disclosure with no reader.
         "b": blob,
     })
 

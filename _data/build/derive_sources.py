@@ -137,6 +137,89 @@ def licence_of(src):
 # Harvested from the glosses the pages already carry, so the site says one thing.
 # Every source needs all three; the build fails below if one is missing.
 PLAIN = {
+ "cbp": {
+  "is": "A yearly Census count of business ESTABLISHMENTS, meaning physical sites. A firm "
+        "with three plants appears three times.",
+  "good": "How many polymer sites a county holds, and roughly how many people work in "
+          "them, on a definition that is the same in every county in the country.",
+  "cannot": "It cannot tell you what a site actually makes beyond its industry code, it "
+            "suppresses any cell small enough to identify an employer, and it counts a "
+            "different thing from PIC’s own register: Census counts sites, PIC classifies "
+            "companies, so a coverage ratio between them can pass 100 percent without the "
+            "county being fully covered."},
+ "ipeds_directory": {
+  "is": "The federal directory of institutions: who they are, and since 2009 where they "
+        "are.",
+  "good": "Placing a college on a map and confirming its identity across years.",
+  "cannot": "The coordinate fields begin in 2009, so anything that stopped filing before "
+            "then has no location and is placed by hand at its city centre. More "
+            "importantly: a directory year omits institutions that were already gone, and "
+            "absence from it is not evidence of closure. Several institutions missing from "
+            "a recent year are open and teaching."},
+ "ipeds_programs_census": {
+  "is": "Degree and certificate completions by six-digit programme code, 1991 to 2023, for "
+        "the three polymer codes.",
+  "good": "Counting what American colleges actually conferred under a polymer heading, "
+          "year by year, on one consistent national definition.",
+  "cannot": "It sees only the programmes a college chose to report under a polymer code. Soft-matter "
+            "teaching filed under chemistry, physics or materials is invisible to it, and "
+            "at least five institutions are confirmed to teach the subject while appearing "
+            "here as nothing. A year with no completions is a filing gap, never a closure. "
+            "2024 returns HTTP 500 from the API and is probed on every build, so every "
+            "recent figure is a floor."},
+ "ipeds_control_cips": {
+  "is": "The identical pull run against six neighbouring technician programme codes, as a "
+        "control.",
+  "good": "Telling whether something that happened to polymer programmes happened to "
+          "comparable technical programmes too.",
+  "cannot": "It is a comparison set, not a second measurement of the cluster, and it "
+            "inherits every blindness of the polymer census: both see reporting choices "
+            "rather than teaching."},
+ "scorecard_fos_polymer": {
+  "is": "Federal earnings and debt figures for graduates of a named programme at a named "
+        "institution.",
+  "good": "Attaching a real number to what a specific degree earned, from tax records "
+          "rather than from a survey.",
+  "cannot": "It covers only students who took federal aid, so it is not all graduates. Its "
+            "vintages differ by measure, so any ratio built across them mixes cohorts. And "
+            "it reports what people who hold the degree earned, which is not what the "
+            "occupation pays."},
+ "openalex": {
+  "is": "An open bibliographic index of published work and the institutions attached to it.",
+  "good": "Seeing who a region’s researchers publish with, and where the work travels.",
+  "cannot": "Attribution rests on a convention: credit goes to the corresponding author, "
+            "which is where a lab is, not necessarily where the work was done. Affiliation "
+            "strings are noisy enough that a public library appeared as a leading polymer "
+            "partner until it was quarantined by hand. Coverage favours indexed venues, so "
+            "silence is not absence of work."},
+ "nsf_awards": {
+  "is": "The National Science Foundation’s own record of what it awarded, to whom, and when.",
+  "good": "Establishing that a specific federal award exists, its size and its dates, from "
+          "the awarding agency rather than from a press release.",
+  "cannot": "The PRIME RECIPIENT is not the lead institution of the work, and reading it as "
+            "such is the single error this project has made most often. Collaborative work "
+            "is frequently issued as separate awards to each institution, so one award "
+            "naming one university is not evidence that the other was uninvolved."},
+ "usaspending_awards": {
+  "is": "The Treasury’s award-level record of federal contracting, queried for prime "
+        "contracts only.",
+  "good": "Setting one award against everything the federal government contracts for in the "
+          "same counties and years, on the same filter.",
+  "cannot": "It is filtered to prime contracts, so grants, loans and direct payments are "
+            "deliberately outside it. Comparing a contract figure against all federal "
+            "spending mixes those categories and was published here once, making the "
+            "comparator twenty-six times too large. Place of performance is a filing field, "
+            "not a statement about where work happened."},
+ "vault": {
+  "is": "PIC’s own catalogue of companies it has classified. It is not public and a reader "
+        "cannot obtain it.",
+  "good": "Describing a supply chain in more detail than any federal code can, using how "
+          "companies describe themselves.",
+  "cannot": "It is a record of who PIC knows, not a census of who exists, so absence from it "
+            "means only that PIC has not classified that company. Self-descriptions are "
+            "quoted as written and never rewritten. It cannot be reproduced by anyone "
+            "outside PIC, and any public release of the records themselves is gated on "
+            "member consent."},
  "qcew": {
   "is": "A census, not a survey. It counts every job covered by unemployment insurance, "
         "from returns employers already have to file, so it carries no sampling error and "
@@ -283,6 +366,15 @@ PLAIN = {
 # Occupation Data, Job Zones, Job Zone Refe...". Every registry key needs one; the build
 # fails below if a source is added without it.
 SHORT = {
+    "cbp": "Census business patterns",
+    "ipeds_directory": "IPEDS institution directory",
+    "ipeds_programs_census": "IPEDS polymer completions",
+    "ipeds_control_cips": "IPEDS control programmes",
+    "scorecard_fos_polymer": "College Scorecard earnings",
+    "openalex": "OpenAlex publications",
+    "nsf_awards": "NSF award record",
+    "usaspending_awards": "USAspending prime contracts",
+    "vault": "PIC company catalogue",
     "qcew": "QCEW employment and wages",
     "uspto": "USPTO patent applications",
     "usaspending": "USAspending awards",

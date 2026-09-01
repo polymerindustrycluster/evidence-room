@@ -146,6 +146,69 @@ def check_registry_coverage(reg: dict, arts: list[str]) -> None:
             warn("registry-coverage", k, "source entry no artifact uses")
 
 
+# ------------------------------------------ 2b. the published register vs its own source
+def check_published_register(reg: dict, arts: list[str]) -> None:
+    """Does the register the READER sees still match the register the site is built from?
+
+    WHY. `check_registry_coverage` above guards _data/SOURCES.json against itself and
+    against the artifact folders. Nothing guarded the copy a reader actually reads:
+    sources/data/registry.json, which derive_sources.py writes and which the sources page
+    renders. On 2026-09-01 that copy was found **nine sources and five pages behind** its
+    own source file, while the page published a section headed "All fifteen datasets".
+    The site drew on twenty-four. The provenance of atlas, chain, collaboration, programs
+    and reach was absent from the page whose entire job is provenance.
+
+    Not one of the twenty gates could see it, and the reason is worth stating because it
+    generalises: every gate checked the PAGE against the REGISTER, and the register was
+    the thing that had gone stale. A derived copy can drift arbitrarily far while
+    everything downstream of it stays green. This is the same shape as the hub inventory,
+    the catalog, and the chain county register.
+
+    The stall was honest, which is why it lasted: derive_sources.py refuses to publish a
+    source with no plain-language gloss of what it CANNOT tell you, none of the nine had
+    one, so the build failed loudly and somebody stopped re-running it rather than writing
+    nine paragraphs. The gate worked; the response to the gate is what failed. This check
+    makes the drift itself the failure, so not-re-running is no longer a quiet option.
+    """
+    published = load_json(os.path.join("sources", "data", "registry.json"))
+    if published is None:
+        err("published-register", "sources/data/registry.json", "missing")
+        return
+
+    src_keys = set(reg.get("sources", {}))
+    pub_keys = {s.get("key") for s in published.get("sources", []) if s.get("key")}
+    for k in sorted(src_keys - pub_keys):
+        err("published-register", k,
+            "in _data/SOURCES.json but not on the sources page — a source the site draws "
+            "on whose provenance no reader can see. Re-run derive_sources.py; if it "
+            "refuses, this source is missing its 'what it cannot tell you' gloss.")
+    for k in sorted(pub_keys - src_keys):
+        err("published-register", k,
+            "published on the sources page but absent from _data/SOURCES.json — the page "
+            "credits a source the site no longer draws on")
+
+    art_slugs = set(reg.get("by_artifact", {}))
+    pub_slugs = {p.get("slug") for p in published.get("pages", []) if p.get("slug")}
+    for a in sorted(art_slugs - pub_slugs):
+        err("published-register", a,
+            "has provenance in _data/SOURCES.json that the sources page does not show — "
+            "a reader cannot find out where this page's data came from")
+    for a in sorted(pub_slugs - art_slugs):
+        err("published-register", a,
+            "listed on the sources page with no by_artifact row behind it")
+
+    # The register also states its own size in prose. A count that agrees with a stale
+    # register is the failure this check exists to stop, so assert against the SOURCE.
+    totals = published.get("totals") or {}
+    if totals.get("n_sources") not in (None, len(src_keys)):
+        err("published-register", "totals.n_sources",
+            f"register says {totals.get('n_sources')} sources; _data/SOURCES.json has "
+            f"{len(src_keys)}")
+    if totals.get("n_pages") not in (None, len(art_slugs)):
+        err("published-register", "totals.n_pages",
+            f"register says {totals.get('n_pages')} pages; _data/SOURCES.json has "
+            f"{len(art_slugs)}")
+
 # ------------------------------------------------------------------ 3. required files
 def check_required_files(arts: list[str]) -> None:
     for a in arts:
@@ -607,6 +670,7 @@ def main() -> int:
     check_meta_classified(arts)
     check_registry_scripts(reg)
     check_registry_coverage(reg, arts)
+    check_published_register(reg, arts)
     check_required_files(arts)
     check_methodology(arts)
     check_footprint_prose(arts)

@@ -13,6 +13,83 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-09-01, tenth entry — the lesson we told people to copy was wrong about its own record
+
+**The flagship self-correction misdescribed the error it teaches, *sources*.** The page
+nominates one section as "the section to copy": the account of this site printing $160M for
+NSF award 2532460 against a record of $14,999,983. Every figure in it is right. The
+characterisation was not. **Was:** the $160M is a programme ceiling, "the maximum the
+programme could reach across every recipient and every renewal", and "no source ties that
+ceiling to this award". **Is:** the $160M is **this award's own ten-year ceiling**, phased
+and contingent on milestones, and the awardee says so in print: $7.5 million in each of the
+first two years, $15 million in each of the next three, $20 million in each of the last
+five. That schedule sums to $160 million exactly, and its first tranche is the $7,499,984
+the NSF record shows obligated for FY2026. The award runs to 2036. Verified against the NSF
+awards API on 2026-09-01.
+
+So the real error was never "a number belonging to something else". It was **a
+milestone-contingent ceiling published as a value**, with no date range and no condition
+attached, which is a commoner and more useful mistake to teach. The "factor of 10.7" was
+also not like-for-like: it set a ten-year conditional ceiling against a two-year estimated
+total. Both figures are now given, against the estimate and against what is actually
+committed, and the definitions distinguish obligated, estimated total and contingent
+ceiling as three things that can all be true of one award at once.
+
+**The front page published a count the page it links corrects.** The hub's chain card said
+785 companies while the chain page's own standfirst says the regional count is 721, after
+64 Michigan rows joined on a county name. **Is:** 721 on both. The hub card is still not
+guarded by any claim, which is why it could drift in the first place.
+
+**The right-of-reply disclosure covered organisations and not people.** It was added to
+every page earlier today reading "No organisation named on this site was contacted before
+it was published." A named-entity sweep then counted **twenty living individuals** named
+across the site, mostly in the timeline and the heritage register. **Is:** "Nobody named on
+this site was contacted before it was published", and the sentence now says the people are
+characterised from public records too.
+
+## 2026-09-01, ninth entry — a name that should not have been here, and a register that had stopped being rebuilt
+
+**A named company was published as an unsuccessful applicant, *timeline*.** One row read
+"Materium Technologies NOT accepted into Synthe6 cohort 1 (no Ohio place of business)",
+on a site whose README withholds two entire pages on the stated ground that "naming an
+unsuccessful applicant is not something a funder gets to do". The row now describes the
+decision without naming the applicant. The company's later rows stay: it established Ohio
+operations and joined the cohort, and both are public and creditable.
+
+**Seventy-four companies carried a hidden verdict, *chain*.** The served register gave
+every company a `rel` field, and for 74 of them its value was `not_relevant` — an internal
+judgement about a named private firm, published in a file anyone can fetch, on a register
+whose own source note says any public release is gated on member consent. No page read the
+field. A field nothing renders is not a feature, it is a disclosure with no reader. It is
+gone from the data and from the builder that wrote it.
+
+**Two universals on the front page were false.** The hub said "Every page is built from
+federal data that costs nothing to obtain" and, in its rebuild instructions, "Nothing reads
+a private table." Three pages read private tables: chain from PIC's own company register,
+timeline and accountability from PIC project records. **Is:** twenty of twenty-three pages
+are built entirely from free federal data, and the three exceptions are named, with the
+warning that those three cannot be reproduced by a reader.
+
+**The sources register had stopped being rebuilt, and three published figures had drifted
+with it.** It held fifteen of twenty-four sources and eighteen of twenty-three pages. The
+build refuses to publish a source without a written statement of what it cannot tell you;
+nine had none, so the build failed and somebody stopped running it rather than writing
+them. Those nine are now written and the register is complete. Rebuilding it moved figures
+the page had been publishing from an older pull: **the region's universities awarded 1,175
+degrees on the three core codes between 2014 and 2023, not 1,231; 1,432 counting the
+adjacent codes, not 1,490; and the wider net is 22 percent larger, not 21.** Nothing was
+wrong with the arithmetic. The register it read had simply frozen, and every gate stayed
+green because each one checked the page against the register.
+
+**Two new checks ship with this, and both found something before they were trusted.** A
+set-equality check now fails the build when the published register and its own source file
+disagree, which is the drift above made loud. And `tools/furniture.mjs` asserts that every
+number printed on a chart is said somewhere else on its own page: hand-typed chart strings
+were the site's largest defect class, about thirty corrections, and nothing bound them to
+anything. On its first run over 262 numbers it found one — a 0.034 move printed in a
+*cluster-health* caption and asserted nowhere — which is now guarded by that figure's own
+claim.
+
 ## 2026-09-01, eighth entry — the reader, who had no way in
 
 Three findings about this site's relationship with the people it writes about and the

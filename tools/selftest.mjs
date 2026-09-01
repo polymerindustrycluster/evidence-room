@@ -46,6 +46,12 @@ const CASES = [
    inject: s => s.replace("</head>", "<style>@media(min-width:761px) and (max-width:1099px)" +
      "{.chart svg{margin-left:-30px !important}}</style></head>")},
 
+  {gate: "furniture", page: "occupations", args: ["occupations"],
+   defect: "a figure title carrying a number the page states nowhere, the shape of the " +
+           "'2014-2021 pace' caption that shipped over a 2014-2020 chart and passed every gate",
+   inject: s => s.replace("</body>",
+     '<div class="chart"><p class="fig-title">A 9,481 this page states nowhere else.</p></div></body>')},
+
   {gate: "disclosure", page: "churn", args: ["churn"],
    defect: "a byline crediting a person for analysis a model produced",
    inject: s => s.replace(/Analysis and graphics by Claude \(Anthropic\)/,

@@ -1,8 +1,8 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
-  "generated": "2026-09-01 11:09",
-  "seconds": 2.2,
+  "generated": "2026-09-01 16:11",
+  "seconds": 2.1,
   "scripts": 55,
   "outputs_on_disk": 7,
   "outputs_claimed": 37,
@@ -12,10 +12,10 @@
    "not_in_PIPELINES.md": 55,
    "no_house_docstring": 44,
    "no_traps_section": 44,
-   "output_missing_on_disk": 35,
+   "output_missing_on_disk": 36,
    "not_in_SOURCES.json": 23,
    "import_error": 17,
-   "no_output_detected": 14,
+   "no_output_detected": 13,
    "meta_fetched_vs_mtime_gap": 3
   }
  },
@@ -817,20 +817,38 @@
    },
    "hosts": [],
    "outputs": [],
-   "page_outputs": [],
-   "page_outputs_exist": {},
+   "page_outputs": [
+    "_data/build/sources/data/registry.json"
+   ],
+   "page_outputs_exist": {
+    "_data/build/sources/data/registry.json": false
+   },
    "outputs_exist": {},
    "writes_outside_build": [],
    "witnesses": {
     "static": [],
-    "observed": []
+    "observed": [
+     "sources/data/registry.json"
+    ]
    },
-   "output_learned_by": {},
-   "observed_stop": "SystemExit(derive_sources: no plain-language gloss or short name for usaspending_awards, ipeds_programs_census, ipeds_directory, ipeds_control_cips, scorecard_fos_polymer, openalex, nsf_awards, vault, cbp. Every source needs what it is, what it is good for, and what it cannot tell you; the third is the most useful line on the page and the build refuses to publish a registry that has silently dropped one.)",
+   "output_learned_by": {
+    "sources/data/registry.json": "observed"
+   },
+   "observed_stop": "open(registry.json,'w')",
    "observed_network": [],
    "observed_reads": [
     "_data/SOURCES.json",
-    "_data/catalog.json"
+    "_data/catalog.json",
+    "cost-scissors/data/scissors.json",
+    "federal-money/data/federal.json",
+    "federal-money/data/techhub.json",
+    "index/data/counts.json",
+    "laborshed/data/bench.json",
+    "laborshed/data/laborshed.json",
+    "location-quotient/data/lq.json",
+    "occupations/data/viz-data.json",
+    "peers/data/peers.json",
+    "revisions/data/revisions.json"
    ],
    "import_error": null,
    "registry_sources": [],
@@ -838,9 +856,9 @@
    "in_pipelines_md": false,
    "freshness": [],
    "flags": [
-    "no_output_detected",
     "not_in_PIPELINES.md",
-    "not_in_SOURCES.json"
+    "not_in_SOURCES.json",
+    "output_missing_on_disk"
    ]
   },
   {
