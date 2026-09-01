@@ -13,6 +13,37 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-08-31 — three corrections, found by re-derivation
+
+A companion pass re-derived the arithmetic behind every headline sentence, page by
+page, and three published statements did not survive their own numbers.
+
+**One verb carried two very different declines, *patents*.** The city band said the
+inputs and outputs of invention "have both roughly halved, or are headed there."
+Degrees have: 142 a year to 63 is a 56 percent fall. Ohio's polymer filings have
+not: 455 to 342 is about a quarter. **Was:** both roughly halved. **Is:** degrees
+more than halved; filings fell by about a quarter, each stated at its own size.
+**Cause:** a sentence written for rhythm, not from the two series it summarized, and
+no claim guarded the characterization. The guard now lives in `pat-degree-echo`.
+
+**A source line implied a calibration that does not exist, *cluster-health*.** The
+movement chart's source note said revision is "unmeasured for four of these five"
+measures, implying one is measured. The page's own stat band prints zero for
+"series here with a measured revision," and a claim guards that zero. **Was:**
+unmeasured for four of five. **Is:** unmeasured for all five; the one measured
+noise floor in this project belongs to the price series on the revisions page.
+**Cause:** the sentence survived from a draft in which the price series sat on this
+page.
+
+**A standfirst contradicted the chart beneath it, *collaboration*.** It said the
+joint-paper series "held near its high through 2021." The chart shows the peak at
+29 papers in 2018, then 11 in 2019 and 16 in 2021 — a noisy fall, not a plateau,
+and the page's own closer calls the series noisy. **Was:** held near its high
+through 2021. **Is:** a 2018 peak, three uneven years, then three straight falls.
+**Cause:** the standfirst was written from the finding's direction rather than the
+series' shape; `col-thinning-is-real` now asserts the peak year, the peak value,
+and each of the last three falls.
+
 ## 2026-08-30 — four corrections, and one this repository cannot make
 
 Fifty-six independent reviews, four model families over every page, each reading only the
