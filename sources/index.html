@@ -23,9 +23,10 @@
     <p class="eyebrow">A replication guide for other regions</p>
     <h1>You can rebuild this for your own region. <em>The codes are the hard part</em>,
       and they are all on this page.</h1>
-    <p class="stand"><b id="nrecipes">Worked questions</b>, each carried the whole way
-      from the endpoint to the reading, on the public federal data behind every page here.
-      The first one needs a browser, a spreadsheet and two file downloads: no key, no
+    <p class="stand"><b id="nrecipes">Worked questions</b> run the whole way here, from
+      the endpoint, the web address the data comes from, to the reading, the number you
+      end up printing. They use only the public federal data behind every page on this
+      site. The first one needs a browser, a spreadsheet and two file downloads: no key, no
       registration, and nothing from this repository. What costs you time is not the data,
       it is deciding which codes count as your industry, so that decision is worked
       through rather than assumed. Also here: the fifteen datasets, what each one cannot
@@ -55,11 +56,14 @@
   <div class="wrap">
     <p class="takeaway">The worked question</p>
     <h2>Is your region unusually concentrated in an industry?</h2>
-    <p class="lede">This is the measure most regional strategies open with, it runs on the
+    <p class="lede">The measure is the location quotient: the share of local jobs an
+      industry fills, divided by the share it fills nationally. It is what most regional
+      strategies open with, it runs on the
       most accessible of the fifteen sources, and it exercises every trap worth learning
       at once: which codes count as your industry, what happens when you add a code family
       to its own parts, what a blank cell means, and what the answer does not tell you.
-      Seven steps. Nothing below needs anything from this repository.</p>
+      Seven steps, worked here on the twelve Northeast Ohio counties this site covers.
+      Nothing below needs anything from this repository.</p>
 
     <ol class="steps">
       <li>
@@ -87,9 +91,9 @@
           <b class="code">a</b> is the annual average.
           Take annual averages rather than a quarter, because these series are not
           seasonally adjusted and adjacent quarters are not comparable. One area file
-          already holds every industry level for that area, so your all-industry
-          denominator is the row carrying industry code <b class="code">10</b> in the file
-          you just downloaded. Download one more file, for area
+          already holds every industry level for that area, so the all-industry total you
+          will divide by is the row carrying industry code <b class="code">10</b> in the
+          file you just downloaded. Download one more file, for area
           <b class="code">US000</b>, and it holds the national pair. The employment count
           you divide is the column named <b class="code">annual_avg_emplvl</b>. Do not
           reach for <b class="code">lq_annual_avg_emplvl</b> beside it: that is the
@@ -104,7 +108,9 @@
           code, <b class="code">76</b> four-digit, <b class="code">77</b> five-digit
           and <b class="code">78</b> six-digit. So
           326 is <b class="code">75</b> and 3252 is <b class="code">76</b>. The
-          <b class="code">US000</b> file numbers the same rungs
+          <b class="code">US000</b> file numbers the same ladder from
+          <b class="code">10</b> rather than 70, and it is not a rung-for-rung translation
+          of the county list. The ones this recipe needs there are
           <b class="code">10</b>, <b class="code">11</b>, <b class="code">15</b>,
           <b class="code">16</b> and <b class="code">18</b>. The 50-to-58 block belongs to
           STATE files and appears in no county file at all, and it has four rungs of its
@@ -214,12 +220,12 @@
       </li>
     </ol>
 
-    <p class="note"><b>What this page is not yet.</b> Two more worked questions, the
-      labour shed and federal contracting, the nominal-against-real question, and how the
-      sentences on this site are stored as checks that re-run are held back rather than
-      half-written; each one is specified, ordered and given its own acceptance test in
-      <a href="ROADMAP.md">sources/ROADMAP.md</a>, so a reader can see exactly what is
-      coming instead of taking a promise.</p>
+    <p class="note"><b>What this note used to defer.</b> Four things stood here as still
+      to come: the labour shed, federal contracting, the dollars-across-years question,
+      and how the sentences on this site are stored as checks that re-run. All four are
+      now sections below. <a href="ROADMAP.md">sources/ROADMAP.md</a> keeps the
+      specification and the acceptance test behind each, because a shipped recipe is not a
+      closed one.</p>
   </div>
 </section>
 
@@ -306,7 +312,8 @@
   <div class="wrap">
     <p class="takeaway">The third worked question</p>
     <h2>Where do the people who work here actually live?</h2>
-    <p class="lede">Most economic development offices have never pulled this one, which is
+    <p class="lede">The labour shed is the area the people who work in a place actually
+      live in. Most economic development offices have never pulled this one, which is
       the reason it is here: it answers the question a single county cannot, and it is the
       cleanest demonstration on this page that a place can have two totals that are both
       right. Four steps. It is a bulk download rather than an API, so read step one before
@@ -349,7 +356,7 @@
         <p class="body" id="shedbases">The two totals for this site&rsquo;s own
           footprint.</p>
         <p class="formula" id="shedidentity">The identity.</p>
-        <p>Notice what the identity says: the jobs held from inside the region are the
+        <p>Notice what those two sums say: the jobs held from inside the region are the
           <em>same number</em> on both bases. Every bit of the difference sits in the
           imported half. So the two totals are not rival estimates of one quantity, and
           treating the gap as error is the mistake. Pick the basis your comparison needs,
@@ -462,6 +469,9 @@
       <li>
         <h3>An obligation is not an outlay, and a place is not an observation</h3>
         <p class="body" id="fedcaution">What the two fields actually mean.</p>
+        <p>An obligation is money a signed award commits the government to pay. An outlay
+          is money that has actually left the Treasury. The totals this recipe returns are
+          obligations, so they say what was committed and never what has been paid.</p>
       </li>
       <li>
         <h3>Now name what your filter cannot see</h3>
@@ -690,7 +700,7 @@
       wrote its boundary down. Programmes in polymer and plastics are
       <b>core</b>. Materials, mechanical, chemical and general chemistry programmes are
       <b>adjacent</b>: they feed the same employers and they are not the same thing. The
-      registry holds the two lists separately rather than merging them, which means the
+      site keeps the two lists separately rather than merging them, which means the
       judgement is inspectable instead of baked in.</p>
     <p class="body" id="cipmath">The consequence is a number.</p>
     <p class="body">Neither answer is wrong. Publishing one without saying which line was
@@ -729,7 +739,8 @@
         industry? Yes means keep it, no means it is context, and cannot-tell means it is
         a boundary call and belongs in the next step rather than in the main list. That
         is the test that put <b class="code">325</b> outside this site&rsquo;s own
-        register and <b class="code">3252</b> inside it.</p></li>
+        register and <b class="code">3252</b> inside it. The concentration page still
+        draws 325, but beside the cluster as context rather than as part of it.</p></li>
       <li><h3>Write down the boundary calls as calls</h3><p>For every code somebody
         reasonable would argue about, keep it in a separate named group, the way the
         education codes here are split into core and adjacent. Then either answer can be
@@ -769,8 +780,9 @@
       file per industry across every area in the country, and that file is where these
       rates come from:</p>
     <pre class="endpoint">https://data.bls.gov/cew/data/api/{year}/a/industry/{naics}.csv</pre>
-    <p class="body" id="hidehow">Take <b class="code">own_code</b> 5 and count the rows
-      whose <b class="code">disclosure_code</b> is <b class="code">N</b>. County rows are
+    <p class="body" id="hidehow">Take <b class="code">own_code</b> 5, which is private
+      ownership, and count the rows whose <b class="code">disclosure_code</b> is
+      <b class="code">N</b>, the letter the bureau prints where it has withheld a cell. County rows are
       <b class="code">agglvl_code</b> 75, metropolitan rows 45 and state rows 55.</p>
     <div class="chart reflow"><svg id="hide" role="img" aria-labelledby="hide-t">
       <title id="hide-t">Chart showing that all 51 state geographies disclose their
