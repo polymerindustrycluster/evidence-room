@@ -13,6 +13,36 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-09-01, eleventh entry — anonymising the row was not enough, and the count moved
+
+Earlier today this log recorded that a named company's unsuccessful application had been
+published on the timeline, and that the row had been rewritten to describe the decision
+without naming the applicant. That was the wrong fix, and the reasoning behind it was worse
+than the fix.
+
+The reasoning was that deleting the row would have falsified a headline: the page asserts
+four delivered events in the 34 months before the October 2023 federal designation and, at
+the time, 68 in the 34 months since, an exact seventeenfold ratio. The row was one of the
+68. So it was kept, anonymised, to protect the count.
+
+Two independent model families were asked to refute that decision and both did, on two
+separate grounds. **It was not anonymous.** The same page names the company joining the
+cohort four months later and establishing Ohio operations two months after that, in a
+cohort of nine; the date, the reason and the sequence identify it to anyone who reads the
+page. Pseudonymising a record while displaying its context is worse than either naming it
+or removing it, because it offers the appearance of confidentiality to a reader who cannot
+check and none at all to a reader who can. **And the count was never a reason.** As one of
+them put it: the evidence determines the headline, the headline does not determine which
+sensitive records remain evidence. A cadence of delivered events should not have counted a
+rejection in the first place, which is a filter outcome rather than an event.
+
+The row is removed. Every figure that rested on it has moved, and the page recomputes all
+of them from the register rather than printing them by hand: **103 dated events, not 104;
+86 inside the calendar window, not 87; 68 delivered there, not 69; 67 delivered since the
+designation, not 68; and 29 delivered in 2025, not 30.** The cadence ratio is 67 to 4,
+which is **close to seventeen times rather than exactly seventeen**. The exactness was a
+coincidence, and it was propping up a sentence that a removed record has now corrected.
+
 ## 2026-09-01, tenth entry — the lesson we told people to copy was wrong about its own record
 
 **The flagship self-correction misdescribed the error it teaches, *sources*.** The page

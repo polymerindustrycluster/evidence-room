@@ -3,10 +3,10 @@
   "title": "What the cluster has actually done",
   "asOf": "2026-08-13",
   "publisher": "Polymer Industry Cluster",
-  "source": "Merged from eight independent internal and public records: the operational status reports, the funding and award files, the deck\u2019s verified facts and the quote bank\u2019s primary-press dates. 487 raw rows reduced to 104 dated events.",
+  "source": "Merged from eight independent internal and public records: the operational status reports, the funding and award files, the deck\u2019s verified facts and the quote bank\u2019s primary-press dates. 487 raw rows reduced to 103 dated events.",
   "publicOnly": "This page shows only events recorded as public. Internal operational milestones, and the record of which dates slipped, are deliberately not here.",
   "counts": {
-   "events": 104,
+   "events": 103,
    "delivered": 86,
    "forward": 18
   }
@@ -708,20 +708,6 @@
    "horizon": "mid",
    "tier": "HERO",
    "org": "PIC / Bounce / Downtown Akron Partnership",
-   "delivered": true,
-   "show": true
-  },
-  {
-   "id": "E096",
-   "date": "2025-09-30",
-   "datePrecision": "day",
-   "dateDisplay": "2025-09-30",
-   "title": "A Synthe6 cohort 1 applicant was declined for having no Ohio place of business",
-   "lane": "Startups & capital",
-   "laneKey": "startup",
-   "horizon": "quick",
-   "tier": "MILE",
-   "org": "",
    "delivered": true,
    "show": true
   },
