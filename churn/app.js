@@ -7,10 +7,13 @@
    zero rather than a second pair of lines, so it cannot be mistaken for a repeat of the
    rate chart and so its own zero is a real anchor rather than a truncated axis.
 
-   No same-method outside comparator exists in this pull (the QWI fetch carries HirA and Sep
-   for NAICS 326 only), so "compared with what" is answered internally: the cluster against
-   its own 2012, and the twelve counties against each other. What an outside comparison
-   would need is stated in the methods block below, not left as a refusal in the body.
+   The page's first act is now the COMPARISON, because the magnitude question was being
+   asked in the hero and answered nowhere. bench.json carries the same measure, same
+   industry code and same quarters for Ohio and the five other states with the biggest
+   plastics-and-rubber payrolls, plus the eight age bands for the same twelve counties.
+   Both are the identical instrument with one parameter changed, which is what makes them
+   comparable at all; the county-sum-against-whole-state check that licenses the geography
+   comparison runs in the fetch and prints under the chart.
 
    Every chart re-lays itself out per form below 760px: annual bars, compact lines, a
    re-scaled scatter. No sideways-scroll hint, evidence in the first paint. */
@@ -18,6 +21,10 @@
 "use strict";
 const {el, txt, ticks, frame, hoverable, tableView, SEQ, CAT, GRAY, INK} = PV;
 const D = await PV.data("churn.json");
+/* The comparator and the age structure. A second file rather than a second block inside
+   churn.json, so churn.json keeps one producer (derive_rest.py) and this keeps its own
+   (fetch_qwi_bench.py then derive_churn_bench.py). claims.json reads both. */
+const BN = await PV.data("bench.json");
 const FP = PV.footprint(D.meta);
 /* The industry code and its name, split on the FIRST comma. `meta.naics` is one field
    holding both ("326, plastics and rubber products manufacturing"), and splitting it on
@@ -39,6 +46,9 @@ const pcT = v => { const p = v * 100;
    already used \u2212 and these two ticks were the leak (found 2026-08-31). */
 const ptsT = v => (v > 0 ? "+" : "") + (Number.isInteger(v) ? v : v.toFixed(1))
   .toString().replace(/^-/, "\u2212");
+/* Two decimals, for the one quantity on this page that lives between 0.06 and 0.90 of a
+   point. ptsT would print 0.058 as +0.1, which is a rounding lie of nearly double. */
+const pts2 = v => (v > 0 ? "+" : "") + v.toFixed(2).replace(/^-/, "\u2212");
 
 /* ------------------------------------------------------------- derived facts */
 const tHires = Q.reduce((a, q) => a + q.hires, 0);
@@ -729,6 +739,244 @@ function verdict() {
 }
 verdict();
 
+/* ================================== 0. COMPARED WITH WHAT (the answer, first)
+
+   Two panels, one row order, one shared set of names. They are two panels rather than one
+   because the two quantities differ by an order of magnitude: turnover runs 7% to 11%, and
+   the amount by which ending runs ahead of starting runs 0.06 to 0.9 of a point. Drawn on
+   one axis the second is invisible, which is the failure this page's own rule about stocks
+   and flows exists to prevent.
+
+   The bars start at zero. A truncated axis would make a 7.1% and an 11.1% look like a
+   chasm, and the finding here is the opposite of a chasm: they are all in the same
+   neighbourhood, and the region is in the middle of it. */
+const PW = BN.windows.now;
+const PROWS = PW.rows;                                   // already sorted, fastest first
+const PME = PROWS.find(r => r.kind === "region");
+const PRANK = PROWS.indexOf(PME) + 1;
+const PGAPRANK = [...PROWS].sort((a, b) => b.gap_pts - a.gap_pts).indexOf(PME) + 1;
+const PWIDEST = [...PROWS].sort((a, b) => b.gap_pts - a.gap_pts)[0];
+const MICH = BN.coverage.find(c => c.state === "26");
+const AGGC = BN.aggregation_check;
+/* Every window the region's position was tested on, so persistence is drawn from the data
+   rather than asserted. `slower` is the count of states below it. */
+const PWINS = Object.entries(BN.windows);
+const ALWAYS_SLOWER = Math.min(...PWINS.map(([, w]) => w.slower));
+const BELOW_OHIO = PWINS.filter(([, w]) => {
+  const me = w.rows.find(r => r.kind === "region");
+  const oh = w.rows.find(r => r.geo === "39");
+  return me.churn_rate < oh.churn_rate;
+}).length;
+
+function drawPeer() { MOBILE.matches ? peerVariant(colW("peer"), 0, true)
+                                     : peerVariant(1100, 0, false); }
+
+function peerVariant(W, _H, mob) {
+  const rowH = mob ? 30 : 34;
+  const n = PROWS.length;
+  const m = mob ? {t: 54, r: 12, b: 16, l: 96} : {t: 62, r: 20, b: 18, l: 152};
+  const bandH = n * rowH;
+  /* Wide: the panels sit side by side. Narrow: the second sits under the first, with its
+     own heading and its own row names, because a 96px name column plus two plots does not
+     fit a phone and shrinking both is how the small quantity disappears. */
+  const H = mob ? m.t + bandH + 40 + m.t + bandH + m.b : m.t + bandH + m.b;
+  const {svg} = PV.chart("peer", {W, H});
+  const gap = mob ? 0 : 74;
+  const wA = mob ? W - m.l - m.r : Math.round((W - m.l - m.r - gap) * 0.63);
+  const wB = mob ? W - m.l - m.r : W - m.l - m.r - gap - wA;
+  const xA0 = m.l, xB0 = mob ? m.l : m.l + wA + gap;
+  const yB0 = mob ? m.t + bandH + 40 + m.t : m.t;
+
+  const hiC = Math.max(...PROWS.map(r => r.churn_rate)) * 1.16;
+  const hiG = Math.max(...PROWS.map(r => r.gap_pts)) * 1.24;
+  const loG = Math.min(0, Math.min(...PROWS.map(r => r.gap_pts)) * 1.2);
+  const xa = v => xA0 + (v / hiC) * wA;
+  const xb = v => xB0 + ((v - loG) / (hiG - loG)) * wB;
+  const yr = (i, base) => base + i * rowH + rowH / 2;
+
+  /* Panel heads. They carry the unit and the direction, so neither plot depends on the
+     subtitle above the figure to be readable on its own. */
+  /* Panel heads start at the SVG's own left edge on a phone, not at the plot's. Set at
+     the plot edge they began 96 units in and ran 15 to 23 units past the page column at
+     every width from 360 to 700; a heading that leaves the column is not a heading. */
+  txt(svg, mob ? "Starting or ending, each quarter"
+               : "Share of jobs starting or ending, each quarter",
+    {x: mob ? 0 : xA0, y: m.t - 32, class: "pv-lab"});
+  /* Short enough to fit the panel it heads. The long form ran 28 units past the page
+     column at 1180 and above; the sentence it was trying to be lives in the subtitle. */
+  txt(svg, mob ? "Separations ahead of hires"
+               : "Separations ahead of hires, in points",
+    {x: mob ? 0 : xB0, y: yB0 - 32, class: "pv-lab"});
+
+  /* Panel A: bars from zero, on a tagged category axis. The tag is not decoration:
+     collide.mjs identifies the axis by `data-pv-axis` and falls back to "the widest flat
+     line" when none exists, which on this chart picked the longest dumbbell stem in the
+     right panel and reported the bar sharing that row as crossing it. */
+  el("line", {x1: xA0, y1: m.t + bandH, x2: xA0 + wA, y2: m.t + bandH,
+    "data-pv-axis": "1", stroke: "var(--pv-axis)", "stroke-width": 1}, svg);
+  ticks(0, hiC, mob ? 3 : 5).forEach(v => {
+    el("line", {x1: xa(v), y1: m.t, x2: xa(v), y2: m.t + bandH,
+      stroke: "var(--pv-grid)", "stroke-width": 1}, svg);
+    txt(svg, pcT(v), {x: xa(v), y: m.t - 10, "text-anchor": "middle", class: "pv-tick"});
+  });
+  /* Panel B: the zero rule is the anchor, and it is labelled by what standing on it
+     MEANS rather than by the digit. */
+  el("line", {x1: xb(0), y1: yB0, x2: xb(0), y2: yB0 + bandH, stroke: "var(--pv-ink)",
+    "stroke-width": 1.4}, svg);
+  txt(svg, mob ? "as many start as end" : "on this line, as many jobs start as end",
+    {x: xb(0) + 5, y: yB0 - 12, class: "pv-labq"});
+
+  PROWS.forEach((r, i) => {
+    const me = r.kind === "region";
+    const yA = yr(i, m.t), yB = yr(i, yB0);
+    const nm = me ? "This region" : r.name;
+    /* Row names, once per panel on the narrow rendering because the panels are stacked
+       and a name 300px above its own dot names nothing. */
+    const names = mob ? [[m.l - 8, yA], [m.l - 8, yB]] : [[m.l - 12, yA]];
+    names.forEach(([nx, ny]) => txt(svg, nm, {x: nx, y: ny + 4, "text-anchor": "end",
+      class: me ? "pv-lab" : "pv-labq", fill: me ? INK : "var(--pv-ink)"}));
+    el("rect", {x: xa(0), y: yA - rowH * 0.30, width: Math.max(1, xa(r.churn_rate) - xa(0)),
+      height: rowH * 0.60, fill: me ? INK : GRAY}, svg);
+    txt(svg, pc1(r.churn_rate), {x: xa(r.churn_rate) + 6, y: yA + 4,
+      class: me ? "pv-lab" : "pv-labq"});
+    const gpos = r.gap_pts > 0;
+    el("line", {x1: xb(0), y1: yB, x2: xb(r.gap_pts), y2: yB,
+      stroke: gpos ? CAT[1] : SEQ[4], "stroke-width": 2, opacity: me ? 1 : .5}, svg);
+    el("circle", {cx: xb(r.gap_pts), cy: yB, r: me ? 7 : 5,
+      fill: gpos ? CAT[1] : SEQ[4], stroke: me ? INK : "var(--paper)",
+      "stroke-width": me ? 2.5 : 1.2}, svg);
+    txt(svg, pts2(r.gap_pts), {x: xb(r.gap_pts) + 11, y: yB + 4,
+      class: me ? "pv-lab" : "pv-labq"});
+    hoverable(el("rect", {x: xA0, y: yA - rowH / 2, width: wA, height: rowH,
+      fill: "transparent"}, svg),
+      `<b>${nm}</b><br>churn <span class="v">${pc1(r.churn_rate)}</span> a quarter<br>
+       starting <span class="v">${pc1(r.hire_rate)}</span>, ending
+       <span class="v">${pc1(r.sep_rate)}</span><br>
+       <span class="v">${N(r.emp / r.quarters)}</span> jobs`,
+      `${nm}: churn ${pc1(r.churn_rate)}, starting ${pc1(r.hire_rate)}, ending ${pc1(r.sep_rate)}`);
+  });
+
+  /* Annotations last, so nothing draws over them. The claim of the left panel is the
+     region's POSITION, so the annotation counts the rows above and below it. */
+  {
+    /* Inside the region's own bar, in paper on ink. Set below the bar it belongs to, it
+       printed across the next state's bar and read as that state's label. */
+    const yMe = yr(PRANK - 1, m.t);
+    const s = mob ? `${PW.faster} faster, ${PW.slower} slower`
+                  : `${PW.faster} states churn faster, ${PW.slower} churn slower`;
+    txt(svg, s, {x: xA0 + 10, y: yMe + 4, class: "pv-lab", fill: "var(--paper)"});
+  }
+}
+
+/* ============================== 4b. WHO IS NEAREST THE DOOR (the age structure)
+
+   One dumbbell per age band: where the band's hire rate sits, where its separation rate
+   sits, and the line between them. Same two colours the flow chart uses, same meaning, so
+   the reader learns one vocabulary and reuses it.
+
+   The horizontal scale keeps its zero and covers the whole range, teenage band included.
+   That compresses the older bands, and the compression IS the finding: a band hiring at
+   4% and a band hiring at 37% cannot both look busy. Values a reader wants to the tenth
+   are in the table and in every dot's hover. */
+const AGE = BN.age.now, AGEB = BN.age.base;
+const AOLD = AGE.older, AOLDB = AGEB.older;
+const LAD = BN.ladder;
+const RET = BN.retirement;
+const bandChurn = b => (b.hire_rate + b.sep_rate) / 2;
+const ATOP = AGE.bands.find(b => b.band === LAD.top);
+const ABOT = AGE.bands.find(b => b.band === LAD.bottom);
+
+function drawAge() { MOBILE.matches ? ageVariant(colW("age"), true)
+                                    : ageVariant(1100, false); }
+
+function ageVariant(W, mob) {
+  /* THE TEENAGE BAND IS OFF THIS SCALE, ON PURPOSE AND IN WRITING. It starts 74.7% of its
+     jobs in a quarter, twice the next band, and it is one job in a thousand here, drawn
+     from 11 of its 48 possible county-quarter cells. Drawn in, it took 60% of the plot for 0.1% of the
+     workforce and squeezed the other seven bands into the left quarter. It keeps its row
+     in the table and its numbers in the figure's own note; what it does not get is the
+     resolution of every band a reader came for. */
+  const OFF = AGE.bands.find(b => b.band === "A01");
+  const rows = AGE.bands.filter(b => b !== OFF);
+  /* Two label lines per row on a phone (band, then its weight), so the row has to hold
+     two baselines clear of each other: at 13 units apart their boxes overlapped at every
+     width the sweep tests, which reads as fine and measures as a collision. */
+  const rowH = mob ? 46 : 38;
+  const m = mob ? {t: 50, r: 40, b: 22, l: 104} : {t: 58, r: 74, b: 24, l: 196};
+  const h = rows.length * rowH, H = m.t + h + m.b;
+  const {svg} = PV.chart("age", {W, H});
+  const w = W - m.l - m.r;
+  const hi = Math.max(...rows.map(b => Math.max(b.hire_rate, b.sep_rate))) * 1.06;
+  const xs = v => m.l + (v / hi) * w;
+  const yr = i => m.t + i * rowH + rowH / 2;
+  /* Tagged, for the same reason as the comparison chart above: unlabelled, the widest
+     dumbbell stem gets read as this chart's axis. */
+  el("line", {x1: m.l, y1: m.t + h, x2: m.l + w, y2: m.t + h, "data-pv-axis": "1",
+    stroke: "var(--pv-axis)", "stroke-width": 1}, svg);
+  ticks(0, hi, mob ? 3 : 5).forEach(v => {
+    el("line", {x1: xs(v), y1: m.t, x2: xs(v), y2: m.t + h,
+      stroke: "var(--pv-grid)", "stroke-width": 1}, svg);
+    txt(svg, pcT(v), {x: xs(v), y: m.t - 10, "text-anchor": "middle", class: "pv-tick"});
+  });
+  txt(svg, mob ? "Share of the band’s jobs, a quarter"
+               : "Share of the band’s own jobs starting or ending, each quarter",
+    {x: mob ? 0 : m.l, y: m.t - 30, class: "pv-lab"});
+
+  rows.forEach((b, i) => {
+    const y = yr(i);
+    /* The band's name and its weight in one label: a rate on 5% of the jobs and a rate on
+       23% of them are not the same fact, and a reader should not have to cross to the
+       table to learn which is which. */
+    txt(svg, mob ? b.label : `${b.label} · ${pcT(b.share)} of jobs`,
+      {x: m.l - 12, y: y + (mob ? -6 : 4), "text-anchor": "end", class: "pv-lab"});
+    if (mob) txt(svg, `${pcT(b.share)} of jobs`, {x: m.l - 12, y: y + 18,
+      "text-anchor": "end", class: "pv-labq"});
+    el("line", {x1: xs(b.hire_rate), y1: y, x2: xs(b.sep_rate), y2: y,
+      stroke: "var(--pv-axis)", "stroke-width": 2}, svg);
+    el("circle", {cx: xs(b.hire_rate), cy: y, r: mob ? 5 : 6, fill: SEQ[4],
+      stroke: "var(--paper)", "stroke-width": 1.4}, svg);
+    el("circle", {cx: xs(b.sep_rate), cy: y, r: mob ? 5 : 6, fill: CAT[1],
+      stroke: "var(--paper)", "stroke-width": 1.4}, svg);
+    hoverable(el("rect", {x: m.l, y: y - rowH / 2, width: w, height: rowH,
+      fill: "transparent"}, svg),
+      `<b>${b.label}</b><br><span class="v">${pcT(b.share)}</span> of the jobs the Census
+       discloses by age<br>starting <span class="v">${pc1(b.hire_rate)}</span>, ending
+       <span class="v">${pc1(b.sep_rate)}</span> a quarter<br>
+       <span class="v">${b.cells}</span> of ${b.cells_expected} possible cells disclosed`,
+      `${b.label}: starting ${pc1(b.hire_rate)}, ending ${pc1(b.sep_rate)}`);
+  });
+
+  /* Annotations last, so nothing draws over them. Two, both on the rows the section's
+     claim is about, both anchored to their own dots rather than floated in a margin.
+     `fit` keeps a label inside the SVG: estimated from the character count, because
+     getComputedTextLength returns 0 until the node is in the document, and a label that
+     runs off the right edge is invisible rather than wrong. */
+  const fit = (str, x, fs) => Math.max(m.l, Math.min(x, W - 6 - str.length * fs * 0.92));
+  {
+    const iBot = rows.indexOf(ABOT);
+    const s = mob ? `a tenth of the top band`
+                  : `a ${pc1(ABOT.hire_rate)} hire rate, about a tenth of the ${ATOP.label} band’s ${pc1(ATOP.hire_rate)}`;
+    const ax = fit(s, xs(ABOT.sep_rate) + 16, mob ? 6.6 : 7.2);
+    plate(svg, s, ax, yr(iBot) + 4, mob ? 6.6 : 7.2);
+    txt(svg, s, {x: ax, y: yr(iBot) + 4, class: "pv-lab", fill: SEQ[4]});
+  }
+  {
+    const iOld = rows.findIndex(b => b.band === "A08");
+    const o = rows[iOld];
+    const mult = (o.sep_rate / o.hire_rate).toFixed(1);
+    const s = mob ? `${mult}× the hire rate`
+                  : `at 65 and older, jobs end at ${mult} times the rate they start`;
+    const ax = fit(s, xs(o.sep_rate) + 16, mob ? 6.6 : 7.2);
+    plate(svg, s, ax, yr(iOld) + 4, mob ? 6.6 : 7.2);
+    txt(svg, s, {x: ax, y: yr(iOld) + 4, class: "pv-lab", fill: CAT[1]});
+  }
+  /* THE BAND THAT IS NOT DRAWN IS NAMED IN THE FIGURE'S SUBTITLE, NOT ON THE PLOT. A note
+     set inside the SVG has to be broken into lines by hand and the same string cannot fit
+     1,100 units and 350: the first attempt ran off the right edge at both widths, which
+     makes a disclosure invisible rather than wrong. HTML wraps. The subtitle is the same
+     reading context as the chart and sits directly above it. */
+}
+
 /* ============================================ 5. what it is on a shop floor */
 const FLOOR = 150;
 const perYr = hc => hc * meanChurn * 4;            // replacement hires in a year
@@ -769,6 +1017,48 @@ calc();
    a difference of two event counts, Jobs is a headcount on one day, and the two are
    estimated separately. Both headers now name their own instrument, so the invitation is
    withdrawn at the point it was issued rather than corrected in a caption below. */
+/* The comparison's table and source line. Michigan is IN the table, with the reason its
+   cells are empty, because a state the selection rule picks and the data cannot serve is
+   a fact about the comparison rather than a state to leave out of it. */
+document.getElementById("peertable").innerHTML = tableView("p",
+  "Turnover by geography, last four published quarters",
+  ["Where", "Churn rate", "Hire rate", "Separation rate", "Separations ahead by, points",
+   "Average jobs"],
+  PROWS.map(r => [r.kind === "region" ? "This region, 12 counties" : r.name,
+    pc1(r.churn_rate), pc1(r.hire_rate), pc1(r.sep_rate),
+    pts2(r.gap_pts), N(r.emp / r.quarters)])
+    .concat(MICH ? [[MICH.name, "—", "—", "—", "—",
+      `no records after ${MICH.last_usable}`]] : []));
+document.getElementById("peersrc").textContent =
+  `Source: ${D.meta.source}, NAICS ${NAICS}, ${PW.quarters[0]} to ` +
+  `${PW.quarters.at(-1)}. States are published whole; this region is the ${FP.label} ` +
+  `counties summed. The six states are Ohio and the five others with the largest ` +
+  `plastics and rubber payrolls, the same six at both ends of this page’s window. The ` +
+  `position holds: in all ${PWINS.length} windows tested, including 2012 alone and the ` +
+  `whole 2012 to 2025 span, ${ALWAYS_SLOWER} states sit below this region and it sits ` +
+  `below Ohio in ${BELOW_OHIO} of ${PWINS.length}. ${MICH.name} has no usable figures ` +
+  `after ${MICH.last_usable}: the state stopped supplying records to the program, at ` +
+  `every industry, not only this one.`;
+
+/* The age figure. `share` is of the jobs the Census discloses BY AGE, which is not all of
+   them; the residual is printed here rather than spread across the bands, and the
+   55-and-older finding is given as the range that residual allows. */
+document.getElementById("agetable").innerHTML = tableView("a",
+  "Turnover by age band, last four published quarters",
+  ["Age band", "Share of disclosed jobs", "Hire rate", "Separation rate", "Churn rate",
+   "County-quarters disclosed"],
+  AGE.bands.map(b => [b.label, pcT(b.share), pc1(b.hire_rate), pc1(b.sep_rate),
+    pc1(bandChurn(b)), `${b.cells} of ${b.cells_expected}`]));
+document.getElementById("agesrc").textContent =
+  `Source: ${D.meta.source}, NAICS ${NAICS}, ${FP.label} counties summed by age band, ` +
+  `${PW.quarters[0]} to ${PW.quarters.at(-1)}. Bands do not sum to the all-ages total: ` +
+  `withheld county-quarter cells leave ${pc1(AGE.residual_share)} of jobs outside them, ` +
+  `so shares here are of the ${N(AGE.disclosed_emp / 4)} jobs the Census does disclose ` +
+  `by age. Against all ${N(AGE.control.emp / 4)}, the 55-and-older share is between ` +
+  `${pc1(AOLD.share_lo)} and ${pc1(AOLD.share_hi)}; in 2012 the same bracket ran ` +
+  `${pc1(AOLDB.share_lo)} to ${pc1(AOLDB.share_hi)}, and the two do not overlap, so the ` +
+  `rise survives the worst reading of the withheld cells.`;
+
 document.getElementById("flowtable").innerHTML = tableView("f",
   "Quarterly hires, separations, the net flow of the two, and the separately counted headcount",
   ["Quarter", "Hires", "Separations", "Net flow", "Jobs at quarter start", "Counties"],
@@ -861,7 +1151,7 @@ document.getElementById("countysrc").textContent =
 
 
 /* ---------------------------------------------------------------- assemble */
-function drawAll() { drawFlow(); drawRate(); drawSplit(); drawCounty(); }
+function drawAll() { drawPeer(); drawFlow(); drawRate(); drawSplit(); drawCounty(); drawAge(); }
 drawAll();
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);
@@ -939,11 +1229,12 @@ meth.querySelector(".pv-method-grid").insertAdjacentHTML("beforeend", `
       is the quarterly figure used everywhere else on this page.</p>
   </details>
   <details class="fold">
-    <summary><h3>Why there is no outside comparison here</h3></summary>
-    <p>An earlier version of this page ended with a peer comparison: six counties picked
-      off a national ranking of payroll records, with Greenville County, South Carolina
-      shown as holding its workers nearly twice as well. It was removed rather than fixed,
-      for three reasons.</p>
+    <summary><h3>Why the earlier county peer comparison came down</h3></summary>
+    <p>The comparison at the top of this page is against whole states. An earlier version
+      ended with a different one: six COUNTIES picked off a national ranking of payroll
+      records, with Greenville County, South Carolina shown as holding its workers nearly
+      twice as well. That one was removed rather than fixed, for three reasons, and the
+      third is the one that decided which comparison replaced it.</p>
     <p><b>One.</b> A ratio of churn rates is not a ratio of retention.
       ${pc1(meanChurn)} quarterly churn against a peer at half that is roughly
       ${(100 - meanChurn * 100).toFixed(0)}% retention against
@@ -953,29 +1244,59 @@ meth.querySelector(".pv-method-grid").insertAdjacentHTML("beforeend", `
       concentration, then measured as a single county against twelve summed ones. The
       geography did not match itself.</p>
     <p><b>Three.</b> Summing counties counts a worker moving from Summit to Stark as a
-      separation and a hire. That event pair cannot occur inside a one-county peer, so
-      the regional rate is inflated against any single-county benchmark by an amount QWI
-      cannot measure, and no correction factor exists.</p>
+      separation and a hire, and a one-county peer records only one end of that move. This
+      page used to call the resulting bias unmeasurable. It is measurable against a whole
+      state, which is the comparison the page now publishes: summing every Ohio county the
+      Census discloses for NAICS ${NAICS} in ${AGGC.quarter} gives a hire rate of
+      ${pc1(AGGC.county_hire_rate)} against the ${pc1(AGGC.state_hire_rate)} Ohio
+      publishes as one unit, and the county sum lands
+      ${N(AGGC.state.emp - AGGC.county_sum.emp)} jobs SHORT of the state total rather than
+      over it, which is about the employment in the ${AGGC.counties_withheld} counties
+      withheld. Summing does not inflate the flows. That licenses a twelve-county rate
+      beside a whole-state rate; it does not license one beside a single county, where the
+      lost end of each cross-boundary move is a real difference and still unquantified.</p>
     <p>QWI also cannot support the word &ldquo;holds.&rdquo; It counts separations without
       distinguishing a quit from a layoff from a plant closing, so nothing in this data
       says whether an employer kept anyone.</p>
   </details>
   <details class="fold">
-    <summary><h3>What a fair comparison would need, and one number this page lacks</h3></summary>
-    <p>Two pulls this page does not have, both from the same API and both cheap:</p>
+    <summary><h3>What the comparison at the top is, and three it still is not</h3></summary>
+    <p>It is <span class="mono">industry=326</span> on <span class="mono">for=state:</span>
+      for seven states, unadjusted, over ${PW.quarters[0]} to ${PW.quarters.at(-1)}: the
+      identical request the county pull makes with the geography changed. The six states
+      are Ohio and the five others with the largest plastics and rubber payrolls, a rule
+      that picks the same six in 2012Q1, 2021Q4 and 2025Q3, so the peer group is not an
+      artefact of the quarter it was chosen in. ${MICH.name} ranks next by the same rule
+      and has no usable figures after ${MICH.last_usable}; the gap covers every industry,
+      not this one, so it is the state leaving the program rather than a suppressed cell.
+      Ranked ${PROWS.length} of ${PROWS.length}, this region comes ${ORD[PRANK]}.</p>
+    <p>Three comparisons this page still does not carry:</p>
     <ul>
-      <li>The identical QWI series, unadjusted as here, with <span class="mono">industry=00</span>
-        (all industries) and <span class="mono">industry=31-33</span> (all manufacturing)
-        for the same twelve Ohio county FIPS and the same quarters, requesting
-        <span class="mono">Emp,HirA,Sep</span>. The site already pulls
+      <li>The same series with <span class="mono">industry=00</span> (all industries) and
+        <span class="mono">industry=31-33</span> (all manufacturing) for the same twelve
+        counties, which would say whether plastics and rubber churns unlike its neighbours
+        rather than unlike itself elsewhere. The site pulls
         <span class="mono">industry=00</span> for earnings, but only
-        <span class="mono">Emp,EarnBeg</span>, so the flow variables are missing. Same
-        pipeline, same suppression rules, same summing bias on both sides.</li>
-      <li>A single county against a single county on NAICS ${NAICS}, which is the only way
-        to drop the cross-county double count instead of arguing about its size.</li>
+        <span class="mono">Emp,EarnBeg</span>, so the flow variables are missing.</li>
+      <li>A single county against a single county, which is the only way to remove the
+        lost end of a cross-boundary move rather than bound it.</li>
+      <li>Census Job-to-Job Flows, a separate product, which is what separates a worker
+        leaving plastics and rubber altogether from one moving to the plant next door. Its
+        absence is why the retirement figure in the age section is a floor on replacement
+        demand and not a total.</li>
     </ul>
-    <p>Until one of those is pulled, the comparisons on this page are internal: the
-      cluster against its own 2012, and the ${FP.words} counties against each other.</p>
+    <p><b>The age estimate, stated as arithmetic.</b> ${N(RET.avg_jobs_5564)} of the
+      region&rsquo;s ${N(RET.avg_jobs)} jobs are held by someone 55 to 64. Spread evenly
+      over ten single-year cohorts, ${N(RET.annual)} of them reach 65 a year, which is
+      ${(RET.annual_share * 100).toFixed(1)}% of all jobs here and about
+      ${N(RET.annual)} of the ${N(RET.hires_year)} hires the region makes in a year. The
+      even spread is an assumption and the Census cannot check it: QWI records separations,
+      not retirements. The 65-and-older band recorded ${N(RET.observed_65plus_seps)}
+      separations across the same four quarters, which is the size a flow of about
+      ${N(RET.annual)} a year into that band would have to support. Read that as coherence
+      and not as confirmation: the 65-and-older share of these jobs has roughly tripled
+      since 2012, so the band is not in a steady state and the two figures were never
+      required to agree.</p>
     <p>The missing number is how far past Census revisions have moved these same quarters.
       Answering it needs older editions of the series, saved before each revision, which
       this page does not carry. So the ${gapPts.toFixed(1)}-point rise is reported as an
