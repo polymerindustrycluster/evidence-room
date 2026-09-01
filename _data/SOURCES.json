@@ -39,18 +39,21 @@
    "key_required": false
   },
   "qwi": {
-   "name": "Census Quarterly Workforce Indicators, seasonally adjusted",
+   "name": "Census Quarterly Workforce Indicators, not seasonally adjusted",
    "agency": "US Census Bureau / LEHD",
    "url": "https://api.census.gov/data/timeseries/qwi/sa",
    "docs": "https://www.census.gov/data/developers/data-sets/qwi.html",
    "filters": {
     "variables": "Emp, HirA, Sep, EarnBeg",
     "industry": "326 (plastics and rubber products manufacturing); 00 (all industries) as the benchmark on the talent demand chart",
-    "geography": "state 39, the twelve PIC-12 counties",
-    "note": "EarnBeg is average monthly earnings of employees who also worked for the same employer in the prior quarter: stable jobs rather than new hires."
+    "geography": "state 39, the twelve PIC-12 counties; and states 39, 17, 48, 06, 42, 18 and 26 published whole, for the churn page’s peer comparison",
+    "agegrp": "A00 (all ages) and A01 to A08, on the twelve PIC-12 counties, for the churn page’s age structure. agegrp is a PREDICATE: asking for it in `get=` returns HTTP 204 with an empty body",
+    "seasonadj": "U (unadjusted), which is the API default and what every pull here uses. The `sa` in the path is the SEX-BY-AGE table, NOT seasonal adjustment; this registry called the series “seasonally adjusted” until 2026-09-01, when `seasonadj=U` was requested explicitly and returned identical values",
+    "note": "EarnBeg is average monthly earnings of employees who also worked for the same employer in the prior quarter: stable jobs rather than new hires.",
+    "caution": "NOT keyless. A request without `key=` answers HTTP 200 with a web page titled “Missing Key”. HTTP 204 with an empty body is a real answer meaning no records, and is never a zero: Michigan returns 204 for every quarter from 2022Q1 at every industry."
    },
    "terms": "Public domain. The Census Bureau asks to be cited as the source of the original data: https://www.census.gov/about/policies/citation.html",
-   "script": "_data/build/fetch_footprint.py, fetch_qwi_demand.py",
+   "script": "_data/build/fetch_footprint.py, fetch_qwi_demand.py, fetch_qwi_bench.py",
    "key_required": true
   },
   "lodes": {
