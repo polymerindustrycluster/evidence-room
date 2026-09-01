@@ -893,7 +893,7 @@ function drawSwaps() {
   document.getElementById("checkidea").innerHTML =
     `Across ${word(C.n_pages)} pages this site carries <b>${N(C.n_claims)}</b> of them.
      ${N(C.n_auto)} are re-run against the source data every time the site is built, so a
-     figure that stopped being true breaks the build before anybody reads it. The other
+     figure that stops matching its file breaks the build before anybody reads it. The other
      ${C.n_manual} rest on a person having read a document correctly, which is why they
      are labelled and are the place to attack first. This page alone carries
      ${C.this_page}.`;

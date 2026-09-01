@@ -150,9 +150,9 @@
       energy and producer prices. The analysis is scripted rather than hand-assembled, and
       the analysis and graphics are by Claude (Anthropic), and John Swanson is responsible for what it says. Each reading of
       what the numbers mean was sent to competing AI systems to be argued down before it
-      was published. Every sentence carrying a number is backed by a check that re-runs
-      against the source data on every build, and each one states the condition that would
-      prove it wrong.</p>
+      was published. Every sentence carrying a number is tied by a re-running check to the
+      data file it came from, which catches a sentence that drifts from that file but
+      not a file that is wrong.</p>
     <p class="whatitis-body">This is working research by PIC staff. It is not official
       statistics, and it is not a news operation. Where the federal record contradicts
       something PIC has said, the page says so and the correction is dated in a log that is
@@ -439,7 +439,7 @@
 <section class="band alt">
   <div class="wrap">
     <p class="takeaway">Before anything leaves the building</p>
-    <h2>Every sentence here is a test that can fail</h2>
+    <h2>Every sentence here is tied to its source by a check that can fail</h2>
     <!-- The counts below and in the paragraph after it are written by app.js from ONE
          derived inventory: the cards above, intersected with the harness totals in
          counts.json. The literals are the current values of that derivation, guarded by
@@ -450,10 +450,13 @@
     <p class="note"><b>The <span data-inv="pagesword">twenty</span> pages here carry
       <span data-inv="claims">457</span> checked claims, and
       <span data-inv="manual">21</span> of them cannot be machine-checked.</b> Every
-      published sentence is stored as a check that re-runs against the data that produced
-      it, next to the condition that would prove it wrong. The exceptions are quoted from
+      published sentence is stored beside a condition that ties it to the data file it
+      came from, and that condition re-runs on every build. It is a consistency check, not
+      a check against the world: a sentence that matches its file and still misreads what
+      happened passes. The exceptions are quoted from
       project narratives, press releases and internal registers rather than from datasets,
-      so they name a source and what would prove them wrong but cannot be re-run. Attack
+      so they name a source and the finding that would contradict them, but cannot be
+      re-run. Attack
       those first. More checks is not the same as more truth; it is more places this site
       can be caught being wrong, which is the only sense in which the number is good
       news.</p>
@@ -518,10 +521,12 @@ python verify_claims.py --list</pre>
 
 <section class="closer">
   <div class="wrap">
-    <p>The ranking opens the meeting. The pages here are what has to hold up in it.</p>
-    <p class="sub">If a sentence here is wrong, the fastest way to show it is the check
-      stored beside it in that page&rsquo;s claims file. Each one names, in advance, the
-      finding that would break the sentence.</p>
+    <p>If a sentence here is wrong, the check stored beside it is the fastest way to
+      show it.</p>
+    <p class="sub">Each check names, in advance, the finding that would break the sentence
+      it guards, and ties that sentence to the data file it came from rather than to the
+      world. Where that was not enough, the correction is dated in a log that is only ever
+      appended to.</p>
   </div>
 </section>
 
