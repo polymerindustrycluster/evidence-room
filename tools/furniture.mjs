@@ -36,6 +36,17 @@
  * on the strength of 2015, and what caught that one was a person. The word half of this
  * class is pinned by DO-NOT-SAY rails in the kits and is not gateable.
  *
+ * WHAT THE ROUNDING RULE COSTS, named because a hostile reviewer named it first. A
+ * cross-family refutation on 2026-09-01 pointed out that excusing a token whose three
+ * significant digits open a longer number on the page admits a real drift: "$18.5 million"
+ * is satisfied by anything from roughly $18.450m to $18.550m, so a caption left behind by a
+ * value that moved inside that window passes here. It also observed that one rounded token
+ * can satisfy several distinct chart values, because the match is not one-to-one. Both are
+ * true. The alternative — demanding exact string identity between a caption and the prose —
+ * would fail every correctly-rounded caption on the site and would be switched off within a
+ * week, which is the more expensive failure. The gap is recorded rather than closed, and it
+ * is the gap a person reading the page still has to cover.
+ *
  * FALSE POSITIVES ARE THE WHOLE DESIGN PROBLEM, so the token rules are deliberately
  * generous and were tuned by running this against a site whose answer was already known,
  * per the house rule that a check is not trusted until it has failed on a case whose

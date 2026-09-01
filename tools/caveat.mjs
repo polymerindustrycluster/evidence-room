@@ -23,6 +23,15 @@
  * earlier draft of this file counted .fig-sub too and would have flagged legitimate
  * explanatory subtitles as debt, which is how a gate teaches people to ignore it.
  *
+ * THE INCENTIVE THIS CREATES, named by the same refutation. A word-count ratchet rewards
+ * deleting a limitation to make a number fall, which would be the opposite of what the
+ * budget is for. One partial guard already exists and it is worth knowing about: a caveat
+ * moved into the methodology block has to be classified in _shared/picviz.js as LIMITS,
+ * METHOD or STRUCTURAL, and verify_consistency.py fails the build on an unclassified meta
+ * key, so apparatus cannot be quietly dropped on the way out of a source line. Nothing
+ * stops a limitation being deleted outright. That is a human check, and it is why the debt
+ * file says in its own readme never to lower a number by deleting a warning.
+ *
  * WHAT IT CANNOT DO. It counts words, not judgment. A tight 44-word source line that omits
  * the one caveat a reader needs passes here and is worse than a 60-word line that carries
  * it. Trimming is an editorial act: move the detail into the methodology block or the
