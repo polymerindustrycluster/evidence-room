@@ -13,6 +13,34 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-09-01, eighth entry — the reader, who had no way in
+
+Three findings about this site's relationship with the people it writes about and the
+people who read it. None is a wrong number. All three are worse than a wrong number.
+
+**An internal note naming a third party was published on this site.**
+`programs/INTEGRATION-NOTE.md` and `atlas/INTEGRATION-NOTE.md` were tracked, deployed and
+served: both returned HTTP 200 from the public site. They carried the orchestration layer
+of the project, named private sibling repositories, and named an individual outside the
+project as an unresolved publication gate on a page about her sector, with no indication
+she knew. Both files are removed. The pages themselves were unaffected; nothing a reader
+came for was in them, which is exactly why nobody looked.
+
+**The site promised a way to report an error that did not exist.** The README and this
+log both said "Open an issue, the Data error template asks for the page, the figure, and
+what you think it should be." There was no template. `.github/` held one workflow and
+nothing else. The sentence had stood, unguarded by any check, on the document whose whole
+subject is being wrong in public. The template now exists and asks for those three things.
+The address in the corrections block is also a link now rather than text a reader has to
+retype, and the block carries the issue route beside it.
+
+**No organisation named on this site has ever been offered a right of reply, and the site
+did not say so.** Companies, colleges and institutions are characterised here from public
+records. A filing describes what an organisation reported, never what it knows about
+itself. Every page now says that in its corrections block, next to the two routes that
+reach a person. Saying it is not the same as doing it, and doing it is a separate piece of
+work that has not started.
+
 ## 2026-09-01, seventh entry — the register behind the site, and a county in the wrong state
 
 An outside corroboration pass read fourteen pages against the world rather than against

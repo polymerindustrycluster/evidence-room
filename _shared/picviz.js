@@ -633,9 +633,19 @@ const PV = (() => {
         </div>
         <div>
           <h3>Corrections</h3>
-          <p>If you think something is wrong, say so:
-            <b>${o.contact || "jswanson@greaterakronchamber.org"}</b>. The most useful note
-            names the sentence and what you think it fails against.</p>
+          <p>If you think something is wrong, say so. Write to
+            <a href="mailto:${o.contact || "jswanson@greaterakronchamber.org"}"><b>${o.contact
+            || "jswanson@greaterakronchamber.org"}</b></a>, or <a
+            href="https://github.com/polymerindustrycluster/evidence-room/issues/new?template=data-error.yml">open
+            a data-error issue</a>. The most useful note names the sentence and what you
+            think it fails against.</p>
+          <p><b>No organisation named on this site was contacted before it was
+            published.</b> Companies, colleges and institutions here are characterised from
+            public records, and none has been offered a right of reply. That is a real
+            limitation of this work rather than an oversight of wording: a filing describes
+            what an organisation reported, never what it knows about itself. If a page names
+            yours and has it wrong, the two routes above reach a person, and the correction
+            is dated and published like every other.</p>
         </div>
       </div>
     </div>`;
