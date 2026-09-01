@@ -13,6 +13,53 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-09-01 — nine corrections from the full-site first-read pass
+
+The register audit and a per-page re-derivation fleet finished sweeping every page.
+The data layer survived intact — no number, derivation, or chart changed — but nine
+published sentences had drifted from the figures beneath them. Four drift classes:
+a wrong basis, rounding toward the finding, generosity toward ourselves, and
+staleness.
+
+**The hero was on the basis its own claim disavows, *federal-money*.** The H1 said
+"about $35 million a year" — the eight-year mean that `fed-annual-rate` names as the
+figure NOT used, because it averages in a fiscal year still in progress. The headline
+basis (`fed-closed-average`) is the seven closed years' $36.6M. **Was:** about $35
+million. **Is:** about $37 million.
+
+**An average read as all-industry, *realwage*.** "Averages across every job the
+federal wage count covers in each metro" → "every **polymer** job…". The figures were
+always polymer-scoped; the sentence wasn't.
+
+**An exact-match claim the check band contradicts, *location-quotient*.** "Matches
+the Bureau of Labor Statistics' own published figure to the last digit it prints" →
+"where the bureau publishes its own, the two agree to every digit it prints." Same
+page: the standfirst implied rubber products was a fourth cluster industry; it is a
+slice of plastics and rubber products, and now says so.
+
+**A standfirst more generous than its own bands, *accountability*.** "The rest goes
+straight to the organisations delivering the work" — but $6,165,608 names no
+recipient yet and $23,094,356 names a programme or a building. **Is:** the three-way
+split the page's own figures support ($4.1M names the Chamber, $51.9M a firm or
+university, $29.3M a programme, a building, or nobody yet), guarded by the new
+`acc-hero-split`. The nearby "the funders pay those other recipients directly"
+becomes commitment language: an obligation is not an outlay.
+
+**A title that understated the fall, *scorecard*.** "Ran near 120 a year for a
+decade, then dropped to 54" → "between 118 and 179 a year through 2021, then dropped
+to 54." The old form made a 65 percent fall look like 48. Guarded by `sc-talent-title`.
+
+**Two roundings that leaned toward the finding, *programs*.** "Barely one in four
+still awarding" (27.4% — above one in four) → "just 20 of 73, a little over one in
+four"; "lost three programs in four" (72.6%) → "lost nearly three programs in four."
+
+**A duration the settle data contradicts, *revisions*.** "Revising that figure for
+years" → "for months afterwards," which is what `rev-settle` measures.
+
+**A not-yet list of things that had shipped, *sources*.** The "what this page is not
+yet" note still promised the labour shed, federal contracting, the nominal-real
+question, and the held-back sentences — all four now live. Rewritten to say so.
+
 ## 2026-08-31 — three corrections, found by re-derivation
 
 A companion pass re-derived the arithmetic behind every headline sentence, page by
