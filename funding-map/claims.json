@@ -11,7 +11,7 @@
     },
     {
       "id": "hero-awards-match",
-      "text": "$85.3M awarded by government, plus $21.0M partners and the state promised to add, the match and cost share. The $85.3M is the H1's key figure and the hero's first stat card; the $21.0M is the second card and the standfirst's 'promised $21.0 million more beside it'; the verdict and the closer carry $85.3M and the table foots against $85,335,784. The match is labelled 'promised, not awarded' on its own card because it is money others agreed to put in, not government money and not money spent, and reading it as awarded is what the old $106 million headline invited.",
+      "text": "$85.3M awarded by government, plus $21.0M partners promised to add beside it, the match and cost share. The $85.3M is the H1's key figure and the hero's first stat card; the $21.0M is the second card and the standfirst's 'promised $21.0 million more beside it'; the verdict and the closer carry $85.3M and the table foots against $85,335,784. The match is labelled 'promised, not awarded' on its own card because it is money others agreed to put in, not government money and not money spent, and reading it as awarded is what the old $106 million headline invited.",
       "source": "meta.totals.awards and meta.totals.match",
       "assert": "D['meta']['totals']['awards'] == 85335784 and D['meta']['totals']['match'] == 20954667 and abs(D['meta']['totals']['awards'] / 1e6 - 85.3) <= 0.05 and abs(D['meta']['totals']['match'] / 1e6 - 21.0) <= 0.05",
       "actual": "(D['meta']['totals']['awards'], D['meta']['totals']['match'])",
@@ -19,11 +19,29 @@
     },
     {
       "id": "tile-figures",
-      "text": "The three award figures and the match promised beside each: $51.00M + $7.16M partner match; $31.25M + $10.42M state cost share; $3.08M + $3.37M local match (hand-typed in the machines band, each award in a kicker and its match in the fact line below it; the footer's 'Is $51 million a lot?' link rounds the first).",
+      "text": "The three award figures and the match promised beside each: $51.00M + $7.16M partner match; $31.25M + $10.42M local partner match; $3.08M + $3.37M local match (hand-typed in the machines band, each award in a kicker and its match in the fact line below it; the footer's 'Is $51 million a lot?' link rounds the first).",
       "source": "sources[] award and matchAmount",
-      "assert": "(lambda s: s['award'] == 51001413 and s['matchAmount'] == 7164030)(one(x for x in D['sources'] if x['id'] == 'eda')) and (lambda s: s['award'] == 31250000 and s['matchAmount'] == 10417066)(one(x for x in D['sources'] if x['id'] == 'ohio')) and (lambda s: s['award'] == 3084371 and s['matchAmount'] == 3373571)(one(x for x in D['sources'] if x['id'] == 'apex'))",
+      "assert": "(lambda s: s['award'] == 51001413 and s['matchAmount'] == 7164030)(one(x for x in D['sources'] if x['id'] == 'eda')) and (lambda s: s['award'] == 31250000 and s['matchAmount'] == 10417066 and s['matchLabel'] == 'local partner match')(one(x for x in D['sources'] if x['id'] == 'ohio')) and (lambda s: s['award'] == 3084371 and s['matchAmount'] == 3373571)(one(x for x in D['sources'] if x['id'] == 'apex')) and not any('state cost share' in s['matchLabel'] for s in D['sources'])",
       "actual": "[(s['id'], s['award'], s['matchAmount']) for s in D['sources']]",
-      "falsified_if": "Any of the six figures revises, so a hand-typed tile or machine kicker no longer matches its award."
+      "falsified_if": "Any of the six figures revises, so a hand-typed tile or machine kicker no longer matches its award, or the Ohio match is credited to the state again. The label half was added on 1 September 2026: the machine card read 'The state promised $10.42M in cost share', and every public record of the award, including the Governor's office announcement of 5 September 2024, describes about $10.4 million matched by LOCAL PARTNERS. The figure was right and the promiser was wrong, which is the kind of error a figure-only guard cannot see."
+    },
+    {
+      "id": "eda-verification-honest",
+      "text": "THE VERIFICATION CLAIM, ITSELF VERIFIED. Six of the seven EDA awards reconcile to the dollar against USAspending by award id and total $45,030,608; the seventh, ED25HDQ0G0009 to Huntsman at $5,970,805, has no USAspending record and is corroborated only by the arithmetic that $45,030,608 plus $5,970,805 is the $51,001,413 award. The page said all seven were cross-checked until 1 September 2026.",
+      "source": "meta.disclosures and meta.provenance against the outlay pull; USAspending returns no row for ED25HDQ0G0009 in any award-type group or by keyword",
+      "assert": "D['meta']['outlays']['no_record']['awardId'] == 'ED25HDQ0G0009' and D['meta']['outlays']['no_record']['amount'] == 5970805 and D['meta']['outlays']['obligated'] + D['meta']['outlays']['no_record']['amount'] == 51001413 + 3084371 and sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct' and 'outlay' in w) == 45030608 and not any('All seven EDA figures are verified' in t for t in D['meta']['disclosures']) and any('ED25HDQ0G0009' in t for t in D['meta']['provenance'])",
+      "actual": "[(w.get('awardId'), w['amount'], w.get('outlay')) for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct']",
+      "falsified_if": "The six that reconcile stop totalling $45,030,608, the Huntsman award acquires or loses its exception, or the blanket 'all seven are cross-checked' wording returns. A verification claim is a claim, and this one was unverified for as long as it was published: six awards were checked against USAspending and the seventh was never findable there, which the sentence covered rather than stated.",
+      "official_check": "If EDA or USAspending publishes ED25HDQ0G0009, this claim fails and the wording goes back to seven. That is the intended outcome, not a defect."
+    },
+    {
+      "id": "federal-outlays-published",
+      "text": "The register now carries what the federal government reports having PAID: $11,642,401.68 against $48,114,979 across the seven federal award lines that have a USAspending record, 24.2 percent. The state grant and one federal award carry no outlay figure and no page invents one.",
+      "source": "USAspending Total Outlays by award id, read 2026-09-01, carried on the award objects",
+      "assert": "abs(D['meta']['outlays']['outlaid'] - 11_642_401.68) < 0.01 and D['meta']['outlays']['obligated'] == 48_114_979 and D['meta']['outlays']['lines'] == 7 and round(D['meta']['outlays']['share'] * 100, 1) == 24.2 and abs(sum(w['outlay'] for r in D['recipients'] for w in r['awards'] if 'outlay' in w) - D['meta']['outlays']['outlaid']) < 0.01 and len([w for r in D['recipients'] for w in r['awards'] if 'outlay' in w]) == 7 and not any('outlay' in w for r in D['recipients'] for w in r['awards'] if w.get('awardId') == 'ED25HDQ0G0009')",
+      "actual": "(D['meta']['outlays'], [(w.get('awardId'), w.get('outlay')) for r in D['recipients'] for w in r['awards'] if w.get('awardId')])",
+      "falsified_if": "The per-award outlays stop adding to the stated total, an eighth line acquires one without the base moving, or the Huntsman award is given an outlay of any value including zero. The last test is the one that matters: an absent award row and a zero drawdown are different findings, and only one of them is true here.",
+      "official_check": "Outlays move with every drawdown, so this figure is dated on the page rather than presented as standing. What is not dated is the correction it forces: accountability published 'no public record says what has been paid' while seven award pages published exactly that."
     },
     {
       "id": "three-machines-shape",
