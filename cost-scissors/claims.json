@@ -75,11 +75,11 @@
     },
     {
       "id": "cs-elec-exception",
-      "text": "Ohio industrial electricity is the exception named in the ladder lede: its peak month is January 2026, not 2022, and it has given back only about a quarter of its rise.",
+      "text": "Ohio industrial electricity is the exception named in the ladder lede: its peak month is January 2026, not 2022, it has given back only about a quarter of its rise, and its record stops in May 2026 while the other seven series run to July 2026.",
       "source": "EIA Ohio industrial electricity price, monthly",
-      "assert": "(lambda e: e['peak']['date'] == '2026-01-01' and 0.22 <= e['retraced'] <= 0.32)(one(s for s in D['series'] if 'electricity' in s['label'].lower()))",
-      "actual": "(lambda e: (e['peak']['date'], e['retraced'], e['now']['index']))(one(s for s in D['series'] if 'electricity' in s['label'].lower()))",
-      "falsified_if": "A new month prints above the January 2026 level (the 'peaked this January' sentence dates immediately), or the retracement leaves 22-32%."
+      "assert": "(lambda e: e['peak']['date'] == '2026-01-01' and 0.22 <= e['retraced'] <= 0.32 and e['now']['date'] == '2026-05-01')(one(s for s in D['series'] if 'electricity' in s['label'].lower())) and max(s['now']['date'] for s in D['series'] if 'electricity' not in s['label'].lower()) == '2026-07-01'",
+      "actual": "[(s['label'], s['now']['date']) for s in D['series']] + [(lambda e: (e['peak']['date'], e['retraced'], e['now']['index']))(one(s for s in D['series'] if 'electricity' in s['label'].lower()))]",
+      "falsified_if": "A new month prints above the January 2026 level (the 'peaked this January' sentence dates immediately), or the retracement leaves 22-32%. EIA publishing June 2026 also fails this claim, and correctly so: the lede prints the May cut-off as a fact, so the sentence has to be re-read the moment the series catches up with the other seven."
     },
     {
       "id": "cs-elec-out-of-order",

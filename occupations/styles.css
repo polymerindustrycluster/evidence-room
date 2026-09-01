@@ -112,8 +112,6 @@
    words per figure — one source line and one limitation sentence — and everything a
    reader only needs while reading the numbers themselves now sits inside the disclosure
    that holds those numbers, at footnote scale, one weight. */
-.tnote{margin:14px 0 0;font-size:13px;line-height:1.55;color:var(--caption);
-  max-width:var(--measure)}
 
 /* Site-level end. The page used to stop dead on the closer: no related reading, no way to
    reach a person, no org identity, and the O*NET licence stranded inline in a figure

@@ -26,12 +26,12 @@
   "sources"
  ],
  "ceilings": {
-  "churn": 1672,
+  "churn": 1642,
   "cluster-health": 1079,
-  "federal-money": 1629,
+  "federal-money": 1603,
   "index": 968,
   "laborshed": 1542,
-  "occupations": 1633,
+  "occupations": 1626,
   "peers": 1339,
   "revisions": 1417,
   "timeline": 1385

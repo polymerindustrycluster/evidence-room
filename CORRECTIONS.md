@@ -13,6 +13,84 @@ page, the figure, and what you think it should be.
 
 ---
 
+## 2026-09-01 — nine corrections from the full-site first-read pass
+
+The register audit and a per-page re-derivation fleet finished sweeping every page.
+The data layer survived intact — no number, derivation, or chart changed — but nine
+published sentences had drifted from the figures beneath them. Four drift classes:
+a wrong basis, rounding toward the finding, generosity toward ourselves, and
+staleness.
+
+**The hero was on the basis its own claim disavows, *federal-money*.** The H1 said
+"about $35 million a year" — the eight-year mean that `fed-annual-rate` names as the
+figure NOT used, because it averages in a fiscal year still in progress. The headline
+basis (`fed-closed-average`) is the seven closed years' $36.6M. **Was:** about $35
+million. **Is:** about $37 million.
+
+**An average read as all-industry, *realwage*.** "Averages across every job the
+federal wage count covers in each metro" → "every **polymer** job…". The figures were
+always polymer-scoped; the sentence wasn't.
+
+**An exact-match claim the check band contradicts, *location-quotient*.** "Matches
+the Bureau of Labor Statistics' own published figure to the last digit it prints" →
+"where the bureau publishes its own, the two agree to every digit it prints." Same
+page: the standfirst implied rubber products was a fourth cluster industry; it is a
+slice of plastics and rubber products, and now says so.
+
+**A standfirst more generous than its own bands, *accountability*.** "The rest goes
+straight to the organisations delivering the work" — but $6,165,608 names no
+recipient yet and $23,094,356 names a programme or a building. **Is:** the three-way
+split the page's own figures support ($4.1M names the Chamber, $51.9M a firm or
+university, $29.3M a programme, a building, or nobody yet), guarded by the new
+`acc-hero-split`. The nearby "the funders pay those other recipients directly"
+becomes commitment language: an obligation is not an outlay.
+
+**A title that understated the fall, *scorecard*.** "Ran near 120 a year for a
+decade, then dropped to 54" → "between 118 and 179 a year through 2021, then dropped
+to 54." The old form made a 65 percent fall look like 48. Guarded by `sc-talent-title`.
+
+**Two roundings that leaned toward the finding, *programs*.** "Barely one in four
+still awarding" (27.4% — above one in four) → "just 20 of 73, a little over one in
+four"; "lost three programs in four" (72.6%) → "lost nearly three programs in four."
+
+**A duration the settle data contradicts, *revisions*.** "Revising that figure for
+years" → "for months afterwards," which is what `rev-settle` measures.
+
+**A not-yet list of things that had shipped, *sources*.** The "what this page is not
+yet" note still promised the labour shed, federal contracting, the nominal-real
+question, and the held-back sentences — all four now live. Rewritten to say so.
+
+## 2026-08-31 — three corrections, found by re-derivation
+
+A companion pass re-derived the arithmetic behind every headline sentence, page by
+page, and three published statements did not survive their own numbers.
+
+**One verb carried two very different declines, *patents*.** The city band said the
+inputs and outputs of invention "have both roughly halved, or are headed there."
+Degrees have: 142 a year to 63 is a 56 percent fall. Ohio's polymer filings have
+not: 455 to 342 is about a quarter. **Was:** both roughly halved. **Is:** degrees
+more than halved; filings fell by about a quarter, each stated at its own size.
+**Cause:** a sentence written for rhythm, not from the two series it summarized, and
+no claim guarded the characterization. The guard now lives in `pat-degree-echo`.
+
+**A source line implied a calibration that does not exist, *cluster-health*.** The
+movement chart's source note said revision is "unmeasured for four of these five"
+measures, implying one is measured. The page's own stat band prints zero for
+"series here with a measured revision," and a claim guards that zero. **Was:**
+unmeasured for four of five. **Is:** unmeasured for all five; the one measured
+noise floor in this project belongs to the price series on the revisions page.
+**Cause:** the sentence survived from a draft in which the price series sat on this
+page.
+
+**A standfirst contradicted the chart beneath it, *collaboration*.** It said the
+joint-paper series "held near its high through 2021." The chart shows the peak at
+29 papers in 2018, then 11 in 2019 and 16 in 2021 — a noisy fall, not a plateau,
+and the page's own closer calls the series noisy. **Was:** held near its high
+through 2021. **Is:** a 2018 peak, three uneven years, then three straight falls.
+**Cause:** the standfirst was written from the finding's direction rather than the
+series' shape; `col-thinning-is-real` now asserts the peak year, the peak value,
+and each of the last three falls.
+
 ## 2026-08-30 — four corrections, and one this repository cannot make
 
 Fifty-six independent reviews, four model families over every page, each reading only the

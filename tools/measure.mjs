@@ -75,18 +75,37 @@ for (const name of pages) {
          named ancestor (aside cards, source boxes) */
       const keys = [...e.classList];
       allowKeys.forEach(k => { if (!keys.includes(k) && e.closest("." + CSS.escape(k) + ", " + k)) keys.push(k); });
-      out.push({w: Math.round(r.width), cls: e.className || "(bare)", keys,
+      out.push({w: Math.round(r.width), left: Math.round(r.left),
+                cls: e.className || "(bare)", keys,
                 txt: e.textContent.trim().slice(0, 44)});
     });
     return out;
   }, Object.keys(allow));
+  /* THE RAIL, self-calibrated. A block can hold the measure and still sit on the wrong
+     rail: five pages' table-drawer notes were 678px wide at the FIGURE rail while every
+     neighbour centred on the TEXT rail — a reader saw it before any gate did, because
+     columns accepts any legal column, centres samples centred-intent only, this gate
+     checked width alone, and the comb reads consistent-everywhere as a register. The
+     modal left edge of a page's own prose IS its rail (layer-agnostic: story pages have
+     one left rail, evidence pages a centred one); an off-modal block answers to the same
+     whitelist as an off-measure one. 2026-09-01. */
+  const railCounts = new Map();
+  rows.forEach(r => { if (Math.abs(r.w - MEASURE) <= TOL)
+    railCounts.set(r.left, (railCounts.get(r.left) || 0) + 1); });
+  const RAIL = [...railCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0];
   for (const row of rows) {
     checked++;
-    if (Math.abs(row.w - MEASURE) <= TOL) continue;
     const excuse = row.keys.find(k => allow[k] && (allow[k].includes("*") || allow[k].includes(name)));
-    if (excuse) { tolerated++; continue; }
-    console.log(`  \x1b[31mOFF-MEASURE\x1b[0m ${name}  <p class="${row.cls}"> at ${row.w}px against the ${MEASURE}px measure  "${row.txt}"`);
-    fail++;
+    if (Math.abs(row.w - MEASURE) > TOL) {
+      if (excuse) { tolerated++; continue; }
+      console.log(`  \x1b[31mOFF-MEASURE\x1b[0m ${name}  <p class="${row.cls}"> at ${row.w}px against the ${MEASURE}px measure  "${row.txt}"`);
+      fail++; continue;
+    }
+    if (RAIL !== undefined && Math.abs(row.left - RAIL) > TOL) {
+      if (excuse) { tolerated++; continue; }
+      console.log(`  \x1b[31mOFF-RAIL\x1b[0m ${name}  <p class="${row.cls}"> at left=${row.left} against the page's ${RAIL}px rail  "${row.txt}"`);
+      fail++;
+    }
   }
   await p.close();
 }

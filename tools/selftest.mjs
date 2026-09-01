@@ -56,11 +56,25 @@ const CASES = [
    inject: s => s.replace("creativecommons.org/licenses/by/4.0/", "example.invalid/none")
                  .replace(/O\*NET(\u00ae|®) is a trademark/, "O*NET is a trademark")},
 
+  {gate: "style", page: "peers", args: ["peers"],
+   defect: "a bare acronym on first reference: AP's define-on-first-reference law, the " +
+           "machine-checkable slice (a cold reader met EDA, APEX and an unexpanded PIC " +
+           "with nothing, 2026-09-01)",
+   inject: s => s.replace("<body>", "<body><p>The XQZV filter excludes those counties " +
+     "from every series on this page.</p>")},
+
   {gate: "style", page: "realwage", args: ["realwage"],
    defect: "a negative number printed with the ASCII hyphen instead of the true minus " +
            "(23 table cells shipped this way, found 2026-08-31)",
    inject: s => s.replace("</head>", "<style></style></head>")
                  .replace("<body>", "<body><p>The gap widened by -14% this year.</p>")},
+
+  {gate: "measure", page: "federal-money", args: ["federal-money"],
+   defect: "measure-width prose on the wrong rail: table-drawer notes sat 678px wide at " +
+           "the figure rail while every neighbour centred on the text rail (shipped on " +
+           "five pages until 2026-09-01; a reader saw it before any gate)",
+   inject: s => s.replace("</head>", "<style>.tnote{margin-left:0 !important;" +
+     "margin-right:auto !important}</style></head>")},
 
   {gate: "measure", page: "churn", args: ["churn"],
    defect: "the compounding measure: a nested measure-capped box re-resolves 100% " +

@@ -117,7 +117,11 @@ function drawChain(hits) {
   const outSum = tiers.reduce((a,t) => a + t.outside, 0);
   const expected = tiers.map(t => t.outside * (neoSum / outSum));
 
-  while (chainSvg.childNodes.length > 1) chainSvg.removeChild(chainSvg.lastChild);
+  /* Keep the <title> the svg's aria-labelledby points to: the old loop kept exactly
+     one child, and that child was the leading whitespace text node, so every redraw
+     deleted the chart's accessible name. Found by a first-read editor, 2026-09-01. */
+  [...chainSvg.childNodes].forEach(n => {
+    if (!(n.nodeType === 1 && n.tagName.toLowerCase() === "title")) chainSvg.removeChild(n); });
 
   const defs = el("defs");
   const grad = el("linearGradient", {id:"ribbon", x1:"0", y1:"0", x2:"1", y2:"0"});
@@ -279,7 +283,8 @@ function drawMap(hits) {
   const shade = r => r <= 0 ? "url(#nodata)"
     : ramp[Math.min(ramp.length-1, Math.floor(r / .32))];
 
-  while (mapSvg.childNodes.length > 1) mapSvg.removeChild(mapSvg.lastChild);
+  [...mapSvg.childNodes].forEach(n => {
+    if (!(n.nodeType === 1 && n.tagName.toLowerCase() === "title")) mapSvg.removeChild(n); });
   const defs = el("defs");
   const nd = el("pattern", {id:"nodata", width:"8", height:"8",
     patternUnits:"userSpaceOnUse", patternTransform:"rotate(45)"});
@@ -354,7 +359,8 @@ function drawCoverage() {
 
   document.getElementById("mapsrc").innerHTML =
     `Coverage is PIC-classified companies divided by County Business Patterns 2023 establishments in
-     NAICS 325 and 326, same county. The two counts define a firm differently: PIC classifies
+     NAICS 325 and 326, the federal industry codes for chemical and plastics manufacturing, in
+     the same county. The two counts define a company differently: PIC classifies
      companies including distributors, machinery builders, and laboratories that Census files under
      other codes, so a county can exceed 100&nbsp;percent without being fully covered. Treat this as an
      indicator of where PIC’s knowledge is thin, not as a market share. Census totals for the fourteen
@@ -367,11 +373,15 @@ function drawMethods() {
       four Ohio sites counts once. Census counts establishments, so the two never reconcile exactly.`],
     ["The chain", `Six stages built from the vault’s <b>${tiers.length + enablers.length}</b>
       value-chain roles. A company can sit at more than one stage, so the stages sum to more than the
-      <b>${N(meta.neo_total)}</b> companies.`],
+      <b>${N(meta.neo_total)}</b> companies. The fifth stage, finished-product OEM, is the original
+      equipment manufacturer whose name goes on the object.`],
     ["The expected shape", `The dashed guide is the same vault’s <b>${N(meta.outside_total)}</b>
       companies outside the fourteen counties (Michigan, Pittsburgh, Columbus, Indiana),
-      rescaled to NEO’s total. It compares <b>mix</b>, not size, and both sides share one collection
-      method.`],
+      rescaled to the fourteen-county total. It compares <b>mix</b>, not size, and both sides share one collection
+      method. What draws it is the <b>${N(tiers.reduce((a, t) => a + t.outside, 0))}</b> stage
+      assignments those companies carry, counted the same way as the stage numbers above. A company
+      with no stage recorded never reaches the guide. This page does not publish how many of the
+      ${N(meta.outside_total)} carry one.`],
     ["Unclassified is not incapable", `<b>${N(meta.unclassified)}</b> of ${N(meta.neo_total)} companies
       carry no value-chain role yet. They are absent from the ribbon and hatched on the map. Absence
       here is missing evidence, never a finding.`],
@@ -439,9 +449,9 @@ function headline(hits) {
 
   if (!parts.length) {
     t.innerHTML = `The region owns the middle of the polymer chain and <em>thins out at the molecule end</em>.`;
-    sf.innerHTML = `All <b>${N(meta.neo_total)}</b> companies PIC has classified in the fourteen
-      counties, on the chain that turns a molecule into a product and back. Type what you need
-      to make.`;
+    sf.innerHTML = `All <b>${N(meta.neo_total)}</b> companies the Polymer Industry Cluster
+      (PIC) has classified in the fourteen counties of Northeast Ohio, on the chain that turns a
+      molecule into a product and back. Type what you need to make into the box below.`;
     return;
   }
   const cties = new Set(hits.map(h => h.c).filter(Boolean));

@@ -91,7 +91,11 @@ body{margin:0;background:var(--paper);color:var(--text);font-family:var(--sans);
    the single largest reason those pages read as composed rather than assembled. */
 .wrap{max-width:calc(var(--figure) + 64px);margin:0 auto;padding:0 32px}
 .mast .dateline{margin-left:auto;font-size:12.5px;color:#9FCBD2;letter-spacing:.02em}
-h1,h2,h3{margin:0;font-weight:900;letter-spacing:-.02em;line-height:1.06;text-wrap:balance}
+/* pretty, not balance, for section heads (2026-09-01): balance splits a 2.2-line h2
+   into three EQUAL short lines, so headings read narrower than the prose beside them —
+   a reader flagged it as a width bug. pretty fills the lines and only guards the
+   orphan. The hero h1 keeps balance below: display heads want even lines. */
+h1,h2,h3{margin:0;font-weight:900;letter-spacing:-.02em;line-height:1.06;text-wrap:pretty}
 p{margin:0 0 1.1em} a{color:var(--action)}
 /* <dfn> is the right element for the defining instance of a term — it is what tells a
    screen reader "this is where the word is explained," and it is what the copy audit reads
@@ -480,3 +484,14 @@ th.pv-sortable[aria-sort="descending"]::after{content:" ↓";opacity:1;color:var
    values are canonical; scorecard's 24px top margin was the only divergence and it loses. */
 .hero .wrap > .hero-viz{max-width:var(--measure);margin:26px auto 4px}
 .hero-viz svg{width:100%;height:auto;display:block;overflow:visible}
+
+/* Table-drawer notes, promoted 2026-09-01: five pages defined .tnote in three dialects,
+ * and every one left-aligned it (margin:...0...) so drawer prose sat on the FIGURE rail
+ * at 230 while the source line one block down centred on the TEXT rail at 381 — a reader
+ * called the raggedness before any instrument did. Four gates each had this bug's exact
+ * blind spot: columns (230 is a legal column), centres (samples centred-intent only),
+ * measure (width-only; these were exactly 678), the comb (consistent-everywhere reads as
+ * a register). Centred like every other measure-width prose block; the measure gate now
+ * checks the rail too. */
+.tnote{margin:14px auto 4px;max-width:var(--measure);font-size:13px;line-height:1.6;
+  color:var(--caption)}

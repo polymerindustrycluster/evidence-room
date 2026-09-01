@@ -19,9 +19,15 @@
  */
 (async () => {
 "use strict";
-const {el, txt, ticks, frame, hoverable, tableView, SEQ, INK} = PV;
+const {el, txt, ticks, frame, hoverable, tableView, SEQ, INK, N} = PV;
 const D = await PV.data("federal.json");
 const A = await PV.data("techhub.json");
+/* The award-level view of the same ledger. ONE WARNING GOVERNS EVERYTHING BUILT FROM IT:
+   R amounts are award-lifetime obligations (an award the window touches carries every
+   dollar of its life, outside years included), so they are never summed with D's
+   per-fiscal-year rows and never share a chart with them. The fed-award-basis-never-
+   summed claim fails if either surface stops saying so. */
+const R = await PV.data("awards.json");
 /* READER WORDS, NOT REGISTER WORDS. The footprint note used to say the counties this page
    drops are ones "the vault's NEO-14 includes" — a sentence about an internal registry,
    addressed to nobody who reads the page. Rewritten in data/federal.json so the generated
@@ -126,6 +132,41 @@ const trough = fys.reduce((a, b) => real[b] < real[a] ? b : a);
 const troughMissing = codes.filter(c => !c.years.has(trough) && c.years.size >= 5)
   .sort((a, b) => b.real - a.real)[0];
 const troughWord = troughMissing ? label(troughMissing).split(" ")[0].toLowerCase() : "";
+
+/* ---- the award register's own derived facts, all on the award-lifetime basis ---- */
+const awTotal = R.meta.total;
+const recips = R.recipients;                    // every company, sorted by total
+const topR = recips.slice(0, 10);
+const dod = R.agencies.find(a => a.agency === "Department of Defense");
+const dodShare = dod.total / awTotal;
+const twoShare = (recips[0].total + recips[1].total) / awTotal;
+const code299 = R.codes.find(c => c.naics === "326299");
+const code211 = R.codes.find(c => c.naics === "326211");
+/* Hand-shortened chart labels, the SHORT-map pattern: the ledger's own spellings are
+   seventy-character all-caps legal names and belong in the table, not on a bar. */
+const RSHORT = {
+  "RFD BEAUFORT INC.": "RFD Beaufort",
+  "GOODYEAR TIRE & RUBBER COMPANY, THE": "Goodyear Tire & Rubber",
+  "HDT EXPEDITIONARY SYSTEMS INC": "HDT Expeditionary Systems",
+  "THE SHERWIN-WILLIAMS COMPANY": "Sherwin-Williams",
+  "STRATEGIC TECHNOLOGY ENTERPRISES, INC.": "Strategic Tech Enterprises",
+  "AIRGAS USA, LLC": "Airgas",
+  "MQM SOLUTIONS INC": "MQM Solutions",
+  "US LABEL & RIBBON GROUP, INC": "US Label & Ribbon",
+  "CONTITECH USA, INC": "ContiTech",
+  "DURAMAX MARINE, LLC": "Duramax Marine",
+};
+const rlabel = r => RSHORT[r.name] || Cap(r.name);
+/* Title-case for ledger names in table cells (atlas's Cap), with two fixes that page
+   earned the hard way: capitalise only after a real word gap, never after an apostrophe
+   (atlas's \b version printed "Duke'S Aerospace"), and emit the typographic apostrophe,
+   because a ledger name lands in a prose cell and the style gate reads it as prose.
+   Initialisms the fold-down would mangle are restored by hand. */
+const Cap = s => (s || "").toLowerCase()
+  .replace(/(^|[\s\-./(&])([a-z])/g, (m0, p, c) => p + c.toUpperCase())
+  .replace(/'/g, "’")
+  .replace(/\b(Llc|Rfd|Hdt|Mqm|Usa|Iii|Idiq|Jwod)\b/g, m => m.toUpperCase());
+const esc = s => (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;");
 
 /* The all-industry county total is stated in Band 2's prose rather than injected here.
    It is a caveat that changes how the polymer bars should be read, so it has to survive
@@ -397,6 +438,77 @@ function codesMobile() {
   });
 }
 
+/* ========================================== 2b. the award register, by company */
+function drawRecips() { MOBILE.matches ? recipsMobile() : recipsDesktop(); }
+
+function recipsDesktop() {
+  const m = {t: 44, r: 260, b: 60, l: 240}, rowH = 34;
+  const {svg, W, w, h} = PV.chart("rc", {W: 1100, rows: topR.length, rowH, m});
+  /* Same axis law as the industry chart: round the domain up to the next $25M so the
+     longest bar has a tick to measure against. */
+  const maxV = Math.ceil(topR[0].total / 25e6) * 25e6;
+  const xs = v => m.l + (v / maxV) * w;
+  frame(svg, {x: m.l, y: m.t, w, h, xs, ys: () => 0, xt: ticks(0, maxV, 5), yt: [],
+    xfmt: short,
+    xlab: "Each company’s contract total, whole award lives, dollars of the day"});
+  topR.forEach((r, i) => {
+    const y = m.t + i * rowH + 7, bh = 20;
+    /* The two dark bars are the holders of the two rubber codes the industry chart
+       darkens: same encoding, one page. Bar length already carries the amount. */
+    el("rect", {x: m.l, y, width: Math.max(3, xs(r.total) - m.l), height: bh,
+      fill: i < 2 ? INK : SEQ[3], rx: 4}, svg);
+    txt(svg, rlabel(r), {x: m.l - 12, y: y + bh - 5, "text-anchor": "end",
+      class: "pv-labq"});
+    const inside = xs(r.total) - m.l > w * 0.72;
+    txt(svg, short(r.total), inside
+      ? {x: xs(r.total) - 10, y: y + bh - 5, "text-anchor": "end", class: "pv-lab",
+         fill: "var(--paper)"}
+      : {x: xs(r.total) + 10, y: y + bh - 5, class: "pv-lab"});
+    hoverable(el("rect", {x: 0, y: y - 7, width: W, height: rowH, fill: "transparent"},
+      svg), `<b>${esc(Cap(r.name))}</b><br><span class="v">${usd(r.total)}</span>
+      across ${r.awards} award${r.awards === 1 ? "" : "s"}<br>
+      chief buyer ${esc(r.agency)}<br>files mostly under ${r.naics},
+      ${esc(r.naics_name.toLowerCase())}`,
+      `${Cap(r.name)}: ${usd(r.total)} across ${r.awards} awards`);
+  });
+  /* Right rail: the two dark bars, decoded where the eye meets them. Drawn last. */
+  const rail = m.l + w + 16;
+  el("path", {d: `M${rail - 6},${m.t + 5} h6 V${m.t + 2 * rowH - 5} h-6`, fill: "none",
+    stroke: INK, "stroke-width": 1.8}, svg);
+  [`The two dark bars hold the`, `two rubber codes above:`,
+   `${Math.round(code299.top.share * 100)}% of the leftovers-class`,
+   `dollars are RFD Beaufort’s`, `life rafts and escape suits,`,
+   `${Math.round(code211.top.share * 100)}% of the tire dollars`, `are Goodyear’s.`]
+    .forEach((s, i) => txt(svg, s, {x: rail + 8, y: m.t + 18 + i * 17,
+      class: i ? "pv-labq" : "pv-lab", fill: i ? null : INK}));
+}
+
+function recipsMobile() {
+  const m = {t: 64, r: 10, b: 30, l: 10}, W = 375, rowH = 44;
+  const H = m.t + topR.length * rowH + m.b;
+  const {svg, w} = PV.chart("rc", {W, H, m});
+  const maxV = topR[0].total;
+  const xs = v => m.l + (v / maxV) * w;
+  /* The figure title sits in HTML just above, so the header here carries what the
+     desktop right rail carries instead: the key to the two dark bars. */
+  txt(svg, `The dark bars are the two rubber codes above:`,
+    {x: m.l, y: 18, class: "pv-lab", fill: INK});
+  txt(svg, `${Math.round(code299.top.share * 100)}% of the leftovers code is RFD Beaufort,`,
+    {x: m.l, y: 36, class: "pv-labq"});
+  txt(svg, `${Math.round(code211.top.share * 100)}% of the tire code is Goodyear.`,
+    {x: m.l, y: 54, class: "pv-labq"});
+  topR.forEach((r, i) => {
+    const y = m.t + i * rowH;
+    txt(svg, `${rlabel(r)} · ${short(r.total)}`, {x: m.l, y: y + 13, class: "pv-labq"});
+    el("rect", {x: m.l, y: y + 19, width: Math.max(3, xs(r.total) - m.l), height: 14,
+      fill: i < 2 ? INK : SEQ[3], rx: 3}, svg);
+    hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, svg),
+      `<b>${esc(Cap(r.name))}</b><br><span class="v">${usd(r.total)}</span>
+       across ${r.awards} award${r.awards === 1 ? "" : "s"}`,
+      `${Cap(r.name)}: ${usd(r.total)}`);
+  });
+}
+
 /* ================================================= 3. the award, lead by lead */
 {
   const wide = A.leads[0].amount;
@@ -475,8 +587,59 @@ document.getElementById("nasrc").innerHTML =
      ? `, and two codes both print ${short(tie.real)} while differing below the rounding`
      : ""}; the table has the exact figures.`;
 
+/* The chart's twin holds every company, so the top-ten cut above drops no dollars a
+   reader cannot recover: all 193 are here, sortable and filterable. */
+document.getElementById("rctable").innerHTML = withNotes(tableView("rc",
+  "Every company in the award-level view",
+  ["Company", "Contract total", "Awards", "Chief buyer", "Industry code",
+   "Largest award"],
+  recips.map(r => [esc(Cap(r.name)), usd(r.total), r.awards, esc(r.agency), r.naics,
+    usd(r.largest.amount)])),
+  `Company names are the federal ledger&rsquo;s own spellings, title-cased, with
+   punctuation variants merged (${R.meta.name_variants_merged} merges; Goodyear and
+   Airgas each file under two). ${R.meta.zero_awards} of the ${N(R.meta.award_count)}
+   awards carry zero dollars: an agreement in place with nothing committed against it yet.
+   The leftovers-class total on this basis, ${short(code299.total)}, is not the
+   ${short(top.real)} the industry chart draws for the same code: the chart counts only
+   dollars recorded inside the eight years, restated in 2025 dollars, while an
+   award&rsquo;s total carries its whole life in the dollars of the day. Two windows on
+   one ledger, and this page never adds them.`);
+PV.tableTools("#rctable", {placeholder: "company, agency, industry code…"});
+document.getElementById("rcsrc").innerHTML =
+  `USAspending.gov spending_by_award, prime contracts at place of performance in the
+   twelve PIC-12 counties, chemical and plastics/rubber industry codes, awards with
+   obligation activity FY2019&ndash;FY${fys.at(-1)}, retrieved ${R.meta.fetched}.
+   Grants are not in this view: the National Science Foundation (NSF) and EDA money the page names elsewhere moves
+   through award types these filters exclude.`;
+
+document.getElementById("rgtable").innerHTML = withNotes(tableView("rg",
+  "The award register: every contract of $500,000 or more",
+  ["Recipient", "Award total", "Buying office", "Industry code", "Years",
+   "What the record says it bought", "Federal record"],
+  R.register.map(r => [esc(Cap(r.recipient)), usd(r.amount), esc(r.sub_agency), r.naics,
+    `${(r.start || "").slice(0, 4)}–${(r.end || "").slice(0, 4)}`,
+    /* Verbatim, capitals and all: the record's own entries are thick with initialisms
+       (FMS, GSA, ECU, JSEW) that a case-fold would turn to noise. */
+    esc(r.what),
+    `<a href="https://www.usaspending.gov/award/${r.usaspending_id}" target="_blank"
+        rel="noopener">open</a>`])),
+  `Descriptions are the contracting record&rsquo;s own entries, verbatim, and some
+   arrive truncated from the source system: RFD Beaufort&rsquo;s biggest orders read
+   &ldquo;SUBMARINE ESCAPE IM&rdquo;, cut by the ledger itself. Years are the
+   award&rsquo;s period of performance, which is how a contract signed in 2014 sits in
+   an FY2019&ndash;FY2026 file: the window matches activity, and the total then counts
+   the whole award. The link opens the award&rsquo;s own page on USAspending, every
+   modification included.`);
+PV.tableTools("#rgtable", {placeholder: "recipient, office, what it bought…"});
+document.getElementById("rgsrc").innerHTML =
+  `Same pull as the chart above. The ${R.register.length} contracts of
+   ${usd(R.meta.register_floor)} or more carry ${short(R.meta.register.total)} of the
+   ${short(awTotal)} total; the ${N(R.meta.below_floor.count)} smaller awards (median
+   ${usd(R.meta.below_floor.median)}) are each too small to list and all counted in the
+   company table above.`;
+
 /* ------------------------------------------------------------------------ assemble */
-function drawAll() { drawYears(); drawCodes(); }
+function drawAll() { drawYears(); drawCodes(); drawRecips(); }
 drawAll();
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);
@@ -487,6 +650,12 @@ MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
    first screen on a phone. It belongs where the twelve counties are first argued about. */
 document.querySelector(".hero").after(PV.footprintBanner(FP));
 
-/* Standard methodology + AI disclosure. Generated, not written — see picviz.js. */
+/* Standard methodology + AI disclosure. Generated, not written — see picviz.js. The
+   award register's basis warning joins the published Limitations as a classified meta
+   key ("basis" is in picviz.js's LIMITS set): handing the box only federal.json's own
+   meta would leave the page's third dollar basis stated nowhere in the generated
+   apparatus. */
+D.meta.basis = R.meta.basis;
+D.meta.sources = R.meta.source;   // the award pull joins the visible Data sources list
 await PV.methodology({page: "federal-money", meta: D.meta});
 })();

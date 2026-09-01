@@ -1166,7 +1166,7 @@ function loadData(file) {
     const nsfRow = IN.find((e) => e.id === 'E205');
     if (nsfFig && nsfRow && nsfRow.amount != null) {
       nsfFig.textContent =
-        `$${nsfRow.amount.toLocaleString('en-US')} as its ${nsfRow.amountBasis}, ` +
+        ` The award is $${nsfRow.amount.toLocaleString('en-US')} as its ${nsfRow.amountBasis}, ` +
         `of which $${nsfRow.obligated.toLocaleString('en-US')} is ${nsfRow.obligatedBasis}, ` +
         `on NSF award record ${nsfRow.awardId}. That total matches, to the dollar, what ` +
         `the federal money page reports for this award from USAspending. The date here is ` +

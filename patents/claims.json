@@ -55,11 +55,11 @@
     },
     {
       "id": "pat-degree-echo",
-      "text": "The pipeline note restates the talent page's finding from that page's own shipped data: the region's polymer programs conferred 63 degrees in 2023 against an average of 142 a year through 2021 (the note in the city band).",
-      "source": "occupations/data/viz-data.json programs, group polymer, re-run here so the two pages cannot drift apart",
-      "assert": "(lambda tot, E: tot('2023') == 63 and 140 <= sum(E) / len(E) <= 144)(lambda y: sum(p['by_year'].get(y, 0) for p in D['occ']['programs'] if p['group'] == 'polymer'), series(D['occ']['programs'], 'polymer', 2014, 2021))",
-      "actual": "{y: sum(p['by_year'].get(str(y), 0) for p in D['occ']['programs'] if p['group'] == 'polymer') for y in range(2014, 2024)}",
-      "falsified_if": "The talent page's data is refetched and the degree counts move, in which case this page's note is stale and fails here rather than waiting for a reader to put the two pages side by side, which is how this site's worst error was found."
+      "text": "The pipeline note restates the talent page's finding from that page's own shipped data and states the two declines at their own sizes rather than pooling them: the region's polymer programs conferred 63 degrees in 2023 against an average of 142 a year through 2021, down 56 percent, while Ohio's polymer filings went from 455 in 2015 to 342 in 2023, down 25 percent (the note in the city band).",
+      "source": "occupations/data/viz-data.json programs, group polymer, re-run here so the two pages cannot drift apart, against patents/data/patents.json rows for the filing side of the same sentence",
+      "assert": "(lambda tot, E, C: (lambda avg: tot('2023') == 63 and 140 <= avg <= 144 and 0.54 <= 1 - tot('2023') / avg <= 0.58 and 0.24 <= 1 - C[-1]['ohio'] / C[0]['ohio'] <= 0.26 and (1 - tot('2023') / avg) - (1 - C[-1]['ohio'] / C[0]['ohio']) >= 0.25)(sum(E) / len(E)))(lambda y: sum(p['by_year'].get(y, 0) for p in D['occ']['programs'] if p['group'] == 'polymer'), series(D['occ']['programs'], 'polymer', 2014, 2021), [r for r in D['p']['rows'] if r['complete']])",
+      "actual": "({y: sum(p['by_year'].get(str(y), 0) for p in D['occ']['programs'] if p['group'] == 'polymer') for y in range(2014, 2024)}, [(r['year'], r['ohio']) for r in D['p']['rows'] if r['complete']])",
+      "falsified_if": "The talent page's data is refetched and the degree counts move, in which case this page's note is stale and fails here rather than waiting for a reader to put the two pages side by side, which is how this site's worst error was found. It also fails if the two declines close to within a quarter of each other, because the note now states them separately: it used to say both had 'roughly halved', which was true of the degrees at 56 percent and not of the filings at 25 percent, and one verb carried both."
     }
   ]
 }

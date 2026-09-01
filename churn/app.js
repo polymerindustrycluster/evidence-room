@@ -476,7 +476,7 @@ function splitVariant(W, H, mob) {
      read off the source line. It now says what the height MEANS; the subtraction is in
      splitsrc. */
   PV.axlab(svg, mob ? "↑ more jobs ended than started"
-                    : "Gap between leaving and hiring, in points ↑ above zero, more jobs ended than started",
+                    : "Gap between separations and hires, in points ↑ above zero, more jobs ended than started",
     {x: m.l, y: m.t - 24});
 
   /* Area on both sides of zero, clipped rather than hand-split at the crossings. */
@@ -515,14 +515,14 @@ function splitVariant(W, H, mob) {
   el("line", {x1: xs(iSince), y1: m.t + 6, x2: xs(iSince), y2: m.t + h,
     stroke: "var(--hover)", "stroke-width": 1, "stroke-dasharray": "4 3"}, svg);
   if (mob) {
-    txt(svg, `${sepSince} on: leaving ahead`, {x: m.l + w, y: m.t - 4,
+    txt(svg, `${sepSince} on: separations ahead`, {x: m.l + w, y: m.t - 4,
       "text-anchor": "end", class: "pv-lab", fill: CAT[1]});
     txt(svg, "2012: hiring ahead", {x: m.l + 4, y: ys(spread[3]) + 20, class: "pv-labq",
       fill: SEQ[5]});
   } else {
     txt(svg, `2012: hiring ran ${Math.abs(spread[3]).toFixed(1)} points ahead`,
       {x: xs(4), y: ys(spread[3]) + 24, class: "pv-lab", fill: SEQ[5]});
-    txt(svg, "leaving runs ahead",
+    txt(svg, "separations run ahead",
       {x: m.l + w + 10, y: ys(spread.at(-1)) - 6, class: "pv-lab", fill: CAT[1]});
     txt(svg, `since ${sepSince}: ${sepRun} quarters`,
       {x: m.l + w + 10, y: ys(spread.at(-1)) + 12, class: "pv-labq"});
@@ -825,7 +825,7 @@ document.getElementById("revnote").innerHTML =
    sat above its 2012 level in ${aboveBase} of the ${nRoll} quarters it covers.`;
 
 document.getElementById("splittable").innerHTML = tableView("s",
-  "Hiring rate, leaving rate and the gap, each averaged over a year",
+  "Hire rate, separation rate and the gap, each averaged over a year",
   ["Quarter", "Hiring rate", "Leaving rate", "Gap, points"],
   Q.map((q, i) => rHire[i] == null ? null
     : [label(q), pc1(rHire[i]), pc1(rSep[i]), ptsT(+spread[i].toFixed(2))]).filter(Boolean));

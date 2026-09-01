@@ -28,7 +28,7 @@ HOW FAR A MEASURE USUALLY MOVES, AND WHAT THAT IS NOT
 
   This is a HISTORY yardstick, not a REVISION one. It says how far the series has moved
   between published years. It does not say how far a future revision will move the year
-  just published, because for four of these five measures nobody has measured that. The
+  just published, because for none of these five measures has anybody measured that. The
   one place it HAS been measured in this repo is the producer-price series on the
   revisions page: 259 reference months of archived vintages, a median revision of 0.15
   percent of the level and a largest of 1.42 percent. Those numbers are read in here and

@@ -22,14 +22,16 @@
   <div class="wrap">
     <p class="eyebrow">Polymer research from Akron and Case Western, 2015&ndash;2024</p>
     <h1>The region’s polymer research reaches more than 600 institutions in 50
-      countries, and <em>four papers in five are led from here</em>.</h1>
-    <p class="stand">Across ten years these papers carry co-authors at national
-      laboratories, at a polymer company in Akron, and at universities on five continents.
-      A single collaboration count cannot separate two questions: <b>who does the region
-      bring in, and who brings the region in?</b></p>
+      countries, and <em>four of its papers in five are led from here</em>, of the 1,222 that
+      name a corresponding author.</h1>
+    <p class="stand">That research is published by the region’s two universities, the
+      University of Akron and Case Western Reserve. Between 2015 and 2024 their polymer papers
+      carried co-authors at national laboratories, at a polymer company in Akron, and at
+      universities on five continents. A single collaboration count cannot separate two
+      questions: <b>who does the region bring in, and who brings the region in?</b></p>
     <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data OpenAlex works and institutions &middot; August&nbsp;2026</p>
     <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
-      id="open-t">All 1,448 coauthored works drawn as one bar split three ways: 985 led from the region, 237 led by the partner, 226 naming no corresponding author.</title></svg></div>
+      id="open-t">All 1,448 coauthored works drawn as one bar split three ways: 985 led from here, 237 led from there, 226 naming no corresponding author.</title></svg></div>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -38,19 +40,22 @@
   <div class="wrap">
     <p class="takeaway">The network</p>
     <h2>Every institution on a polymer paper with Akron or Case Western</h2>
-    <p class="lede">Two rules decide what is counted. The split is by <b>corresponding
-      author</b>, not first author, because in this field the first author is normally the
-      graduate student who ran the experiment while the corresponding author is the
-      investigator whose lab it is. And the bound is a classification, not a keyword: an
-      earlier version of this page matched the word &ldquo;polymer&rdquo; in the text and
-      returned 4,037 papers, four fifths of whose largest partners were hospitals doing
-      biomedical polymer research, a different field and a different cluster. The subject
-      classification for polymers and plastics leaves 1,448.
-      One mark per institution, placed where it is, sized by how many papers
-      it shares with the region. Color says which way the work flowed: teal where a
-      corresponding author sat here, orange where the region joined a project someone else
-      was leading. Institutions appearing on a single paper are left off the map and kept in
-      the table, because at this scale one shared paper is a dot the eye cannot price.</p>
+    <p class="lede">Two rules decide what is counted. The first rule decides which side led
+      a paper: the credit goes to the <b>corresponding author</b>, not the first author,
+      because in this field the first author is normally the graduate student who ran the
+      experiment while the corresponding author is the investigator whose lab it is. The
+      second rule sets the boundary of which papers count as polymer papers, and that
+      boundary is a subject classification rather than a keyword. An earlier version of this
+      page searched for the word &ldquo;polymer&rdquo; in the text and returned 4,037 papers.
+      Four of its five largest partners were hospitals doing biomedical polymer research, a
+      different field and a different cluster. Bounding the count instead by OpenAlex’s
+      subject classification for polymers and plastics, the topic label the database assigns
+      to every paper, leaves 1,448. The map draws one mark for each institution at its own
+      location, sized by how many papers it shares with the region. Color says which way the
+      work flowed: teal where a corresponding author sat here, orange where the region joined
+      a project someone else was leading. Institutions that appear on a single shared paper
+      are left off the map and listed in the table under it, because at this scale a
+      one-paper dot is too small to read.</p>
     <div class="legend">
       <span><i style="background:#008BA8"></i> Mostly led from here</span>
       <span><i style="background:#C85F0C"></i> Mostly led from there</span>
@@ -67,18 +72,19 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">Which direction</p>
-    <h2>The region leads four papers in five</h2>
-    <p class="lede">Reach and standing are different things. A region that always joins other
-      people’s projects has collaborators but not gravity; one that always leads has gravity
-      but may not travel. Both counts are shown for every major partner, and neither is
+    <h2>The region leads four papers in five of those that name a corresponding author</h2>
+    <p class="lede">Reach and standing are different things, and this page counts both. A
+      region that mostly joins other people’s projects travels widely but leads little. A
+      region that mostly leads has standing at home but may not travel. So every major partner
+      carries two counts, papers led from here and papers led from there, and neither count is
       subtracted from the other.</p>
     <div class="legend">
-      <span><i style="background:#008BA8"></i> Corresponding author here</span>
-      <span><i style="background:#C85F0C"></i> Corresponding author there</span>
+      <span><i style="background:#008BA8"></i> Led from here</span>
+      <span><i style="background:#C85F0C"></i> Led from there</span>
     </div>
     <div class="chart"><svg id="dir" role="img" aria-labelledby="dir-t">
-      <title id="dir-t">For the largest partner institutions, papers where a corresponding
-        author sat in the region against papers where one did not.</title></svg></div>
+      <title id="dir-t">For the largest partner institutions, papers led from here against
+        papers led from there.</title></svg></div>
     <div id="dirtable"></div>
     <p class="src" id="dirsrc"></p>
   </div>
@@ -88,12 +94,14 @@
   <div class="wrap">
     <p class="takeaway">Whether it lands</p>
     <h2>A quarter of these papers sit in the top tenth of their field</h2>
-    <p class="lede">Collaboration is not impact, and this section answers its own question
-      rather than being laid beside the last one. Raw citation counts are not used: a 2015
-      paper has had a decade to accumulate them and a 2024 paper has had months, so a raw
-      trend would draw the calendar. This is field-weighted citation impact, which normalises
-      for both field and age: 1.0 is the world average for a paper of that kind and
-      vintage.</p>
+    <p class="lede">Collaboration is not impact. Whether the work lands is a separate
+      question, and this section answers it on its own rather than plotting it against the
+      partner counts above. Raw citation counts are not used: a 2015 paper has had a decade to
+      accumulate them and a 2024 paper has had months, so a raw trend would draw the calendar.
+      The measure here is field-weighted citation impact (FWCI), where 1.0 is the world
+      average for a paper of that field and age. The top tenth is a rank OpenAlex gives
+      each paper against others of its own field and year, and 309 of the 1,364 papers
+      that carry a score sit in it.</p>
     <div class="chart"><svg id="impact" role="img" aria-labelledby="impact-t">
       <title id="impact-t">Distribution of field-weighted citation impact for the region’s
         polymer papers, against the world average of 1.0.</title></svg></div>
@@ -104,8 +112,8 @@
 
 <section class="closer">
   <div class="wrap">
-    <p>A cluster that publishes with fifty countries is not a regional asset that happens
-      to be here.</p>
+    <p>A cluster whose papers reach 50 countries is more than a regional asset that happens
+      to sit here. The region leads most of that work rather than joining it.</p>
     <p class="sub" id="closersub"></p>
   </div>
 </section>

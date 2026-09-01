@@ -474,8 +474,8 @@ document.getElementById("deliverysrc").innerHTML =
   + `<b>These are commitments, not payments.</b>`;
 
 /* ================================================================== 3. talent
-   One series, ten years, change over time: columns. Two years are drawn pale because the
-   file repeats itself across them and this page does not read them. */
+   One series, one bar per year, change over time: columns. No year is drawn pale any
+   more: the duplicated 2020 is quarantined out of the series entirely, see below. */
 /* Was [2019, 2020]: both halves of the duplicated pair were drawn pale and labelled
    "repeated in the source file", because with the pair sitting side by side there was no way
    to tell from THIS file which of the two was the real year. There is now. The mirror
@@ -514,8 +514,8 @@ function talentDesktop() {
   txt(svg, `Credentials more than halved in ${tal[i22].year}, from `
     + `${tal[i22 - 1].n} to ${tal[i22].n}, and ${tal.at(-1).year} recovered only to `
     + `${tal.at(-1).n}.`, {x: m.l + 4, y: 30, class: "pv-lab"});
-  txt(svg, `The two pale columns repeat each other in the source file, so this page `
-    + `reads ${TAL.window[0]} to ${TAL.window.at(-1)} instead.`,
+  txt(svg, `2020 is missing: the source file repeated 2019 under it, so this page `
+    + `reads ${TAL.window[0]} to ${TAL.window.at(-1)}.`,
     {x: m.l + 4, y: 52, class: "pv-labq"});
 
   tal.forEach((p, i) => {

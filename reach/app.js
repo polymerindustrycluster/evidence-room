@@ -14,7 +14,7 @@
  * WHAT IS UNCERTAIN, AND HOW IT SHOWS
  *   Affiliation strings are resolved to institutions by a parser that guesses. One guess
  *   was implausible enough to quarantine (see the source note), and the page reports what
- *   the quarantine moved. 627 works name no corresponding author at all and are counted
+ *   the quarantine moved. 226 works name no corresponding author at all and are counted
  *   in the total but assigned to neither direction.
  */
 /* THE COLUMN, 1:1. LAYOUT-SPEC rule 2 — a 1100-unit viewBox scaled into a 728px column
@@ -35,8 +35,8 @@ const D = await PV.data("reach.json");
     const W = Math.round(svg.getBoundingClientRect().width) || 720, H = 118;
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
     const T = D.totals, lo = 10, hi = W - 10, y = 58;
-    const parts = [["led from the region", T.led, "#B8D637"],
-                   ["led by the partner", T.joined, "rgba(255,255,255,.42)"],
+    const parts = [["led from here", T.led, "#B8D637"],
+                   ["led from there", T.joined, "rgba(255,255,255,.42)"],
                    ["no corresponding author", T.no_corresponding, "rgba(255,255,255,.18)"]];
     let x = lo;
     const total = parts.reduce((s, p) => s + p[1], 0);
@@ -46,9 +46,9 @@ const D = await PV.data("reach.json");
         fill: col}, svg);
       x += w;
     }
-    PV.txt(svg, "led from the region: " + N(T.led) + " of " + N(total) + " works",
+    PV.txt(svg, "led from here: " + N(T.led) + " of " + N(total) + " works",
       {x: lo, y: 26, "font-size": 13.5, fill: "#B8D637", "font-weight": 700});
-    PV.txt(svg, "partner-led " + N(T.joined) + " · no corresponding author " + N(T.no_corresponding),
+    PV.txt(svg, "led from there " + N(T.joined) + " · no corresponding author " + N(T.no_corresponding),
       {x: lo, y: H - 8, "font-size": 12.5, fill: "#C6E2E6"});
   }
 }
@@ -58,7 +58,7 @@ const pctf = v => (v * 100).toFixed(0) + "%";
 PV.figures([
   ["key", N(T.works), "polymer papers", `${D.meta.home.length} universities, 2015–2024`],
   ["", N(T.partners_shown), "partner institutions", `across ${T.countries} countries`],
-  ["", pctf(T.led_share), "led from here", "a corresponding author at Akron or Case Western"],
+  ["", pctf(T.led_share), "led from here", `a corresponding author at Akron or Case Western, on the ${N(T.attributable)} papers naming one`],
   ["", pctf(T.top10_share), "in their field’s top tenth", "field- and age-weighted citations"]
 ]);
 
@@ -203,8 +203,8 @@ PV.figures([
     txt(svg, p.total, {x: xs(p.total) + 8, y: y + 15, class: "pv-lab"});
     hoverable(el("rect", {x: m.l, y, width: w, height: 20, fill: "transparent"}, svg),
       `<b>${p.name}</b>${p.country ? " · " + p.country : ""}<br>
-       corresponding author here <span class="v">${p.led}</span><br>
-       corresponding author there <span class="v">${p.joined}</span>`,
+       led from here <span class="v">${p.led}</span><br>
+       led from there <span class="v">${p.joined}</span>`,
       `${p.name}: ${p.led} led here, ${p.joined} led there`);
   });
   document.getElementById("dirtable").innerHTML = tableView("dr",
@@ -288,9 +288,9 @@ PV.figures([
 document.getElementById("closersub").innerHTML =
   `<b>${N(T.works)} papers, ${N(T.partners_shown)} institutions, ${T.countries} countries,
    and ${pctf(T.top10_share)} of the work in the top tenth of its field.</b> The reason to
-   measure this is not the size of the number. It is that PIC’s case for the cluster rests
-   on assets that can be named, and until now the research network was described in
-   adjectives. <b>What the page does not say:</b> it has no peer benchmark, so it cannot
+   measure this is not the size of the number. It is that the case made by the Polymer
+   Industry Cluster (PIC), an initiative of the Greater Akron Chamber, rests on assets that
+   can be named, and until now the research network was described in adjectives. <b>What the page does not say:</b> it has no peer benchmark, so it cannot
    tell you whether ${N(T.partners_shown)} partners is many for a region this size. It counts
    papers, which are not products, patents or hires. <b>And ${pctf(T.us_share)} of the
    collaboration is domestic while ${pctf((D.countries.find(c => c.code === "CN") || {share: 0}).share)}

@@ -26,6 +26,14 @@
       "falsified_if": "A revision or the 2024 vintage reorders the top — Akron's record is second and shrinking annual output means the gap now only widens, so a change here would signal a data problem before a real one."
     },
     {
+      "id": "atlas-top-three",
+      "text": "Standfirst and the third band's headline: the three deepest records are the University of Massachusetts Lowell, Ferris State University in Big Rapids, Michigan, and the University of Akron, and between them they hold more than a third of every degree and certificate in the record.",
+      "source": "atlas/data/viz-data.json dots and off_projection, total_awards",
+      "assert": "(lambda t, A: [d['city'] for d in t] == ['Lowell', 'Big Rapids', 'Akron'] and 'Massachusetts-Lowell' in t[0]['name'] and 'Ferris State' in t[1]['name'] and 'Akron' in t[2]['name'] and sum(d['total_awards'] for d in t) * 3 > A and sum(d['total_awards'] for d in t) * 2 < A)(sorted((D['dots'] + D['off_projection']), key=lambda d: -d['total_awards'])[:3], sum(d['total_awards'] for d in (D['dots'] + D['off_projection'])))",
+      "actual": "([(d['name'], d['city'], d['total_awards']) for d in sorted((D['dots'] + D['off_projection']), key=lambda d: -d['total_awards'])[:3]], sum(d['total_awards'] for d in (D['dots'] + D['off_projection'])))",
+      "falsified_if": "A restated year changes the order of the top three, moves any of them out of Lowell, Big Rapids or Akron, or takes their combined share below a third. The upper bound is asserted too: if the three ever passed half the record, 'more than a third' would be understating it and the standfirst would have to be rewritten rather than left technically true."
+    },
+    {
       "id": "atlas-mi-oh-construct",
       "text": "At institution level Michigan leads with 15 institutions ever to Ohio's 14 — while the programs page shows Ohio first on substantive programs. Institutions and programs are different units; both rankings are true and the page says so rather than picking the flattering one.",
       "source": "polymer-programs-db census, both aggregations",

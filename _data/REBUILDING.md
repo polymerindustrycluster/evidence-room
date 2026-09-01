@@ -18,6 +18,7 @@ untested, not assumed working.
 | `location-quotient/data/lq.json` | `derive_lq.py` | Data exact (`naics`, `areas`, `cells`, `composite` all identical). `meta` prose is older than the page. |
 | `churn/data/churn.json` | `derive_rest.py` | Data exact; `meta` prose older. |
 | `federal-money/data/federal.json` | `derive_rest.py` | Data exact; `meta` prose older. |
+| `federal-money/data/awards.json` | `fetch_fed_awards.py` → `derive_fed_awards.py` | **Exact by construction** — committed from the first end-to-end run, 2026-08-31. The fetch is keyless, so a clean clone can re-run it; a refetch will differ wherever USAspending has since restated an award, and the fetcher fails loudly below its 4,000-row probe floor rather than writing a truncated register. |
 | `revisions/data/revisions.json` | `derive_rest.py` | Data exact; `meta` prose older. |
 | `wages/data/wages.json` | `derive_rest.py` | Data exact; `meta` prose older. |
 | `cost-scissors/data/scissors.json` | `derive_rest.py` | **Stale.** Output has no `deflator` block; the page ships one. |

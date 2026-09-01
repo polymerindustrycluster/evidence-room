@@ -50,15 +50,17 @@
 
 <section class="band">
   <div class="wrap">
-    <p class="takeaway">The diagonal alone</p>
+    <p class="takeaway">Each county alone</p>
     <h2 id="diagtitle">How much of each county&rsquo;s workforce is its own</h2>
-    <p class="lede">The diagonal of the matrix, pulled out and ranked. The line at half
-      is not an official standard. It is the point where a county stops filling most of
+    <p class="lede">One number for each county, pulled from the chart above and ranked:
+      the share of its jobs held by its own residents. The chart below marks half, not
+      as an official standard but as the point where a county stops filling most of
       its own jobs with people who live there, the quiet assumption behind most
       single-county workforce claims.</p>
     <p class="fig-title" id="diagfigtitle"></p>
-    <p class="fig-sub">Each bar is one county&rsquo;s 2022 jobs. The longer the bar, the
-      more of that work goes to people who live in the county. Orange: under half.</p>
+    <p class="fig-sub">Each of the twelve bars is one county&rsquo;s 2022 jobs. The
+      longer the bar, the more of that work goes to people who live in the county.
+      Orange: under half.</p>
     <div class="chart"><svg id="diag" role="img" aria-labelledby="diag-t">
       <title id="diag-t">Ranked bars of each county&rsquo;s jobs held by its own
         residents. Four counties, including Summit, fall below half.</title>
@@ -79,12 +81,16 @@
   <div class="wrap">
     <p class="takeaway">The part that is not a commute</p>
     <h2>The imported workforce is two different things, and one of them never traveled</h2>
-    <p class="lede">Reported as one number, that share sounds like a ring of people
-      driving in every morning. Of the part that can be grouped at all, roughly half comes
-      from metros two hours away, where nobody drives daily. Against the whole imported
-      share that is 29 percent, because the largest single piece of it lives in counties
-      too scattered to group. A 2019 pull tests whether remote work created the pattern.
-      It did not.</p>
+    <p class="lede">The imported workforce is every job inside the twelve counties held
+      by someone who lives outside them. Reported as one number, it sounds like a ring
+      of people driving in every morning. The chart below splits it by home county into
+      adjacent counties, close enough for a daily drive; distant Ohio metros, roughly
+      two hours away, where nobody drives daily; and everywhere else, counties too
+      scattered to group. Within the two named groups, roughly half the jobs come from
+      the distant metros. Those same distant-metro jobs are 29 percent of the whole
+      imported workforce, a smaller share of a bigger total, because the largest single piece of the whole is the scattered
+      everywhere-else group. The same payroll records for 2019 test whether remote work
+      created the pattern; they show it was already there before the pandemic.</p>
     <p class="fig-title" id="extfigtitle"></p>
     <p class="fig-sub" id="extsub"></p>
     <div class="chart"><svg id="ext" role="img" aria-labelledby="ext-t">
@@ -100,12 +106,14 @@
   <div class="wrap">
     <p class="takeaway">One paycheck</p>
     <h2>About 27,000 of these jobs go home to Columbus</h2>
-    <p class="lede">Franklin County alone accounts for 26,960 of the jobs worked inside
-      the twelve counties, up from 23,506 in 2019. Picture one: a quality engineer whose
-      paycheck says Barberton and whose mortgage says Columbus, on site for launch
-      weeks and remote the rest. LODES counts her job in Summit County and her home two
-      hours south, and records no trip between them. She is illustrative, a composite
-      consistent with the data rather than a person in it; the counts are real.</p>
+    <p class="lede">Franklin County, home of Columbus, alone accounts for 26,960 of the
+      jobs worked inside the twelve counties, Summit and its eleven neighbors, up from
+      23,506 in 2019. Picture one: a quality engineer whose paycheck says Barberton, in
+      Summit County, and whose mortgage says Columbus, on site for launch weeks and
+      remote the rest. LODES, the Census file behind every chart here, counts her job in
+      Summit County and her home two hours south, and records no trip between them. She
+      is illustrative, a composite consistent with the data rather than a person in it;
+      the counts are real.</p>
   </div>
 </section>
 
@@ -144,11 +152,13 @@
     <h2>Ninety-five percent of metropolitan counties look like this</h2>
     <p class="lede">A county whose jobs are mostly held by outsiders is close to the
       definition of a metropolitan area, which the federal government draws from
-      commuting flow. So the fair test is other metros. Measured identically, 397
-      counties in 73 peer metros settle whether the pattern above is about this region
-      or about the country.</p>
-    <p class="fig-title">The twelve counties sit inside the national pack, a little above
-      its middle</p>
+      commuting flow. So the fair test is other metros. The peers are the 73 metros
+      that sit inside one state and are big enough to clear a minimum job count.
+      Measured identically, 378 of their 397 counties, 95.2 percent, also fill fewer
+      than seven of ten jobs with their own residents. The pattern above is about the
+      country, not this region.</p>
+    <p class="fig-title">On the share of jobs held by own residents, the twelve counties
+      sit inside the national pack, a little above its middle</p>
     <p class="fig-sub" id="benchsub"></p>
     <div class="chart"><svg id="bench" role="img" aria-labelledby="bench-t">
       <title id="bench-t">Strip plot of how much of its own work each of 397 peer
@@ -171,17 +181,18 @@
     <p class="takeaway">What is actually distinctive</p>
     <h2>The twelve-county region very nearly is a labor market</h2>
     <p class="lede">Raise the unit from the county to the twelve counties together and the
-      picture inverts. Among regions of comparable size, only Pittsburgh holds more of its
-      own workforce inside its own borders, and it does that on eight counties rather than
+      picture inverts. Among regions of comparable size, only Pittsburgh keeps more of
+      its work inside itself, and it does that on eight counties rather than
       twelve. A region with more counties keeps more work inside itself for arithmetic
       reasons alone, so the bars are ordered by how many counties each region has.</p>
     <p class="fig-title" id="regionsfigtitle"></p>
     <p class="fig-sub">Each bar is one region. The longer the bar, the more of the work
-      inside it goes to people who also live inside it. Ordered by county count, largest
-      first; every single-state peer metro of six or more counties. Every bar counts only
-      the jobs held by residents of the region&rsquo;s own state, which is a narrower
-      basis than the charts above use and gives the twelve counties a smaller job
-      total.</p>
+      inside it goes to people who also live inside it. Shown: every peer metro of six
+      or more counties, ordered by county count, largest first. One counting rule
+      changes here, the same change as on the benchmark above: these files count only
+      jobs held by residents of the region&rsquo;s own state, where the charts earlier
+      on the page count residents of any state. That is why the twelve counties carry a
+      smaller job total here.</p>
     <div class="chart"><svg id="regions" role="img" aria-labelledby="regions-t">
       <title id="regions-t">Ranked bars of how much of each region&rsquo;s work goes to
         its own residents, counting the jobs held by residents of the region&rsquo;s own
@@ -207,9 +218,10 @@
       <li><a href="../churn/">The churn engine</a>
         <span>How many of these jobs start and end every quarter.</span></li>
       <li><a href="../occupations/">Who does the work</a>
-        <span>What the industry staffs, and what it pays for it.</span></li>
+        <span>What the polymer industry staffs, and what it pays for it.</span></li>
       <li><a href="../index/">The Evidence Room</a>
-        <span>Every page, each with its own sources and its own tests.</span></li>
+        <span>Every page, each with its own sources and its own checks that its numbers
+        have to pass.</span></li>
     </ul>
     <p class="foot-cta">Think a number here is wrong? Name the sentence and what it fails
       against: <b>jswanson@greaterakronchamber.org</b>.</p>

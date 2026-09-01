@@ -406,8 +406,8 @@ function stageMobile() {
 (MOBILE.matches ? stageMobile : stageDesktop)();
 
 document.getElementById("stagetable").innerHTML = tableView("stage",
-  "Each public award, the dollars on an executed line naming the organisation that holds "
-  + "them, and the balance with no recipient named yet. No column records a payment.",
+  "Each public award, the dollars assigned to a named recipient, and the balance with no "
+  + "recipient named yet. No column records a payment.",
   ["Award", "Awarded", "Named recipient", "Not yet named", "Share named"],
   S.sources.map(s => [s.name, usd(s.award), usd(s.assigned),
     s.unassigned ? usd(s.unassigned) : "none", pct1(s.pct)])
@@ -442,7 +442,7 @@ function ruleRow() {
   return `<tr class="rule"><th colspan="5" scope="row">
     The $${(1e6).toLocaleString("en-US")} rule
     <span>${C.above.n} lines above it hold ${usd(C.above.sum)},
-      ${pct1(C.above.share)} of every dollar that has reached a recipient.
+      ${pct1(C.above.share)} of every assigned dollar.
       The ${C.below.n} below it hold ${usd(C.below.sum)}, ${pct1(C.below.share)}.</span>
   </th></tr>`;
 }
@@ -757,7 +757,7 @@ document.getElementById("cannot").innerHTML = `
 document.getElementById("negsrc").innerHTML =
   `Internal scorecard as of ${D.as_of}: ${N.counts.rows} rows, ${N.counts.accountable} of `
   + `them accountable, ${N.counts.vault} published as defined empty slots. Both lists are `
-  + `generated from the shipped files that carry each limitation, so neither can go stale `
+  + `generated from the published data files that carry each limitation, so neither can go stale `
   + `here. <b>${esc(X.defects[3].text)}</b>`;
 
 /* Generated methodology box, then the closer. No footprint banner: the page is not

@@ -1,14 +1,14 @@
 {
  "n_pieces": 22,
- "total_claims": 478,
+ "total_claims": 488,
  "total_manual": 21,
  "pages": {
   "accountability": {
-   "claims": 24,
+   "claims": 25,
    "manual": 0
   },
   "atlas": {
-   "claims": 6,
+   "claims": 7,
    "manual": 2
   },
   "chain": {
@@ -32,7 +32,7 @@
    "manual": 2
   },
   "federal-money": {
-   "claims": 21,
+   "claims": 28,
    "manual": 0
   },
   "funding-map": {
@@ -76,7 +76,7 @@
    "manual": 2
   },
   "scorecard": {
-   "claims": 18,
+   "claims": 19,
    "manual": 0
   },
   "sources": {

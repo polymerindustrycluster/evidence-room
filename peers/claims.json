@@ -131,7 +131,7 @@
     },
     {
       "id": "akron-lq-rank-8",
-      "text": "Akron's 4.69x is higher than all but seven of the 155 metros that disclose.",
+      "text": "Akron ranks eighth on concentration among the 155 metros that disclose, so seven of them are more concentrated than its 4.69x (glossary).",
       "source": "BLS QCEW 2024, lq_annual_avg_emplvl, NAICS 326, private. Rank among disclosed metros by concentration.",
       "assert": "D['metros']['326']['rank_lq'] == 8 and D['metros']['326']['of_disclosed'] == 155 and len([p for p in D['metro_scatter'] if p['lq'] > D['metros']['326']['subject_lq']]) == 7",
       "actual": "(D['metros']['326']['rank_lq'], sorted((p['lq'], p['name']) for p in D['metro_scatter'] if p['lq'] > D['metros']['326']['subject_lq']))",
@@ -220,7 +220,7 @@
     },
     {
       "id": "akron-per-site",
-      "text": "Akron's 6,910 plastics and rubber jobs sit across 117 establishments, about 59 a site.",
+      "text": "Akron's 6,910 plastics and rubber jobs sit across 117 establishments, an average of about 59 people a site, and the page says on the same line that the average is taken across sites of every size and describes no single plant.",
       "assert": "round(one(p for p in D['metro_scatter'] if p['area'] == 'C1042')['estabs']) == 117 and round(one(p for p in D['metro_scatter'] if p['area'] == 'C1042')['emp'] / one(p for p in D['metro_scatter'] if p['area'] == 'C1042')['estabs']) == 59",
       "source": "BLS QCEW open data, 2024, Akron OH MSA, NAICS 326, private ownership.",
       "falsified_if": "A revision moves Akron's establishment count off 117 or the jobs-per-site average off 59 when rounded. This is an ARITHMETIC MEAN across sites of every size, not a typical plant: it is used to give the aggregate a human scale, never as evidence about any particular employer."

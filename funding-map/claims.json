@@ -35,7 +35,7 @@
     },
     {
       "id": "bioverde-largest-eda",
-      "text": "Largest federal check: BioVerde, $11.12M, for bio-based butadiene (machine 1 fact). BioVerde also holds a $25,000 Synthe6 cohort award, so its ORGANIZATION total is $11,147,386, which the finder renders as $11.15M and the panel prints in full. That $25,000 is the whole of the gap a reader found between 'BioVerde · $11.15M' in the finder and $11,122,386 in the register, and it is now named in both places: the finder option says 'across two awards' and the register lede works the example through. Six organizations hold more than one award; BioVerde is the largest of them, which is how the generated sentence picks it.",
+      "text": "Largest federal check: BioVerde, $11.12M, for bio-based butadiene, glossed on the page as the building block of synthetic rubber (machine 1 fact). BioVerde also holds a $25,000 Synthe6 cohort award, so its ORGANIZATION total is $11,147,386, which the finder renders as $11.15M and the panel prints in full. That $25,000 is the whole of the gap a reader found between 'BioVerde · $11.15M' in the finder and $11,122,386 in the register, and it is now named in both places: the finder option says 'across two awards' and the register lede works the example through. Six organizations hold more than one award; BioVerde is the largest of them, which is how the generated sentence picks it.",
       "source": "eda-direct awards ranked by amount; recipients[].awards[] totals",
       "assert": "(lambda rows: sorted(rows, key=lambda x: -x[1])[0] == ('BioVerde', 11122386))([(r['name'], w['amount']) for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct']) and 'butadiene' in one(w for r in D['recipients'] if r['name'] == 'BioVerde' for w in r['awards'] if w['programId'] == 'eda-direct')['funds'].lower() and (lambda multi: len(multi) == 6 and (lambda ex: ex['name'] == 'BioVerde' and sum(w['amount'] for w in ex['awards']) == 11147386 and len(ex['awards']) == 2 and sorted(w['amount'] for w in ex['awards']) == [25000, 11122386])(sorted(multi, key=lambda r: -sum(w['amount'] for w in r['awards']))[0]))([r for r in D['recipients'] if len(r['awards']) > 1])",
       "actual": "[(r['name'], [w['amount'] for w in r['awards']]) for r in D['recipients'] if len(r['awards']) > 1]",
@@ -75,15 +75,15 @@
     },
     {
       "id": "unrouted-split",
-      "text": "The unrouted money splits into $2.64M of Translational R&D not yet passed on to a named recipient and $3.52M running Synthe6 through Bounce, and those are the only two workstreams holding any (A3 annotation, which says 'not yet passed on'; the fourth hero stat card's 'held in two Ohio spending lines'; the reconciliation sentence under the register, which keeps the contract wording 'not yet written into a sub-grant'; the closer).",
+      "text": "The unrouted money splits into $2.64M of Translational R&D not yet passed on to a named recipient and $3.52M running Synthe6 through Bounce, and those are the only two workstreams holding any (A3 annotation, which says 'not yet passed on'; the fourth hero stat card's 'held in two Ohio spending lines'; the reconciliation sentence under the register, which keeps the contract wording 'not yet written into a sub-grant' and identifies Bounce Innovation Hub at its first appearance in prose; the closer). The two parts round to $2.64M and $3.52M and add to $6.16M while the balance itself rounds to $6.17M, so the closer states that gap under the figures rather than restating either figure to hide it. Both roundings are asserted, so a revision that closes the gap takes the sentence with it.",
       "source": "program amounts minus their executed sub-awards",
-      "assert": "(lambda bal: bal == {'oh-rd': 2642108, 'oh-startup': 3523500})({p['id']: p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) for p in D['programs'] if p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) != 0})",
+      "assert": "(lambda bal: bal == {'oh-rd': 2642108, 'oh-startup': 3523500} and round(round(bal['oh-rd'] / 1e6, 2) + round(bal['oh-startup'] / 1e6, 2), 2) == 6.16 and round(sum(bal.values()) / 1e6, 2) == 6.17)({p['id']: p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) for p in D['programs'] if p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) != 0})",
       "actual": "{p['id']: p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) for p in D['programs']}",
-      "falsified_if": "A new Translational sub-grant executes, a workstream budget revises, or a third program stops routing all of its money to named recipients, so either balance moves or 'two Ohio workstreams' stops being the count."
+      "falsified_if": "A new Translational sub-grant executes, a workstream budget revises, or a third program stops routing all of its money to named recipients, so either balance moves or 'two Ohio workstreams' stops being the count. The display rounding is asserted beside the dollars for the same reason: if a revision makes the two parts add exactly to the balance, the closer's reconciliation sentence is describing arithmetic that no longer happens and has to come off the page."
     },
     {
       "id": "concentration-half",
-      "text": "More than half of the awarded money sits with the seven direct federal awardees (verdict sentence).",
+      "text": "More than half of the $85.3M awarded sits with the seven Tech Hub project leads (verdict sentence, which now prints the denominator because half of $85.3M and half of $79.2M are different sentences).",
       "source": "eda-direct sum over meta.totals.awards",
       "assert": "(lambda e, t: e > 0.55 * t)(sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct'), D['meta']['totals']['awards'])",
       "actual": "sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct') / D['meta']['totals']['awards']",
@@ -107,7 +107,7 @@
     },
     {
       "id": "company-facing-fourteen",
-      "text": "The Ohio hub's two company-facing slices, Translational R&D and Synthe6, reach fourteen organizations (machine 2 fact).",
+      "text": "Two of the Ohio hub's five slices reach companies directly, Translational R&D and Synthe6, and they have reached fourteen organizations so far (machine 2 fact). Both are glossed there, and the 'so far' is load-bearing: the same two slices still hold the $6.17M that has reached nobody.",
       "source": "distinct recipients holding an oh-rd or oh-startup award",
       "assert": "len(set(r['id'] for r in D['recipients'] for w in r['awards'] if w['programId'] in ('oh-rd', 'oh-startup'))) == 14",
       "actual": "sorted(set(r['id'] for r in D['recipients'] for w in r['awards'] if w['programId'] in ('oh-rd', 'oh-startup')))",
@@ -131,7 +131,7 @@
     },
     {
       "id": "fullcircle-award",
-      "text": "Full Circle Technologies holds $4.70M, the only recycling project among the seven direct federal awards (vignette).",
+      "text": "Full Circle Technologies holds $4.70M, the only recycling project among the Tech Hub's seven implementation awards (vignette). The page calls that inner level implementation awards throughout, so award names one level only.",
       "source": "eda-direct awards' funds strings",
       "assert": "(lambda ws: len([w for w in ws if 'ecycling' in w['funds']]) == 1 and one(w for w in ws if 'ecycling' in w['funds'])['amount'] == 4702500)([w for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct' and w.get('funds')])",
       "actual": "[(w['funds'], w['amount']) for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct']",
@@ -168,7 +168,7 @@
     },
     {
       "id": "table-cohort-fold",
-      "text": "The award register ranks nineteen rows and shows the ten largest until the reader opens the rest; the nine equal Synthe6 cohort awards fold into one of those rows, and the CSV still carries all twenty-seven award lines (register lede, the 'Show all 19 rows' control, the folded row's own label).",
+      "text": "The award register ranks nineteen rows and shows the ten largest until the reader opens the rest; the nine equal Synthe6 cohort awards fold into one of those rows, and the CSV below the lede still carries all twenty-seven award lines (register lede, the 'Show all 19 rows' control, the folded row's own label).",
       "source": "recipients[].awards[]: every award line, with the oh-startup lines summed into one display row",
       "assert": "len([w for r in D['recipients'] for w in r['awards']]) == 27 and (lambda rows: len(rows) == 19 and sorted(rows, reverse=True)[9] > sorted(rows, reverse=True)[10])([w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] != 'oh-startup'] + [sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == 'oh-startup')])",
       "actual": "(len([w for r in D['recipients'] for w in r['awards']]), sorted([w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] != 'oh-startup'] + [sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == 'oh-startup')], reverse=True)[8:12])",
