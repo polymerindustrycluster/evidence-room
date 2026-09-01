@@ -1165,7 +1165,8 @@ function loadData(file) {
     document.getElementById('table-note').textContent =
       `The ${fmtFull(DATA.meta.totals.awards - rowSum)} difference is Ohio money committed but not ` +
       `yet written into a sub-grant: ${fmtFull(rd)} of PIC Translational R&D, and ${fmtFull(s6)} of ` +
-      `the startup-support workstream delivered through the Bounce sub-grant that runs Synthe6.`;
+      `the startup-support workstream, delivered through a sub-grant to Bounce Innovation Hub, ` +
+      `the Akron organization that runs Synthe6.`;
 
     /* WHAT ONE ROW COUNTS, WORKED THROUGH ON THE PAGE'S OWN LARGEST CASE. Generated, so
        the example moves if the file does: the organization named is whichever multi-award

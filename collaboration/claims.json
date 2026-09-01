@@ -11,11 +11,11 @@
   },
   {
    "id": "col-thinning-is-real",
-   "text": "Joint output fell by more than two thirds from its 2018 peak even after controlling for Akron's own contraction.",
+   "text": "Joint output peaked at 29 papers in 2018, moved up and down for the three years after it, then fell in each of the last three years to two papers in 2024; the controlled rate fell by more than two thirds from that same peak. This guards the standfirst's shape sentence, the hero chart's description and the closer.",
    "source": "as above; joint works per 1,000 of Akron's own annual output",
-   "assert": "1 - D['series'][-1]['per_1k_akron'] / max(r['per_1k_akron'] for r in D['series']) > 0.66",
-   "actual": "[(r['year'], r['joint'], r['akron'], r['per_1k_akron']) for r in D['series'] if r['year'] in (2018, 2023, 2024)]",
-   "falsified_if": "The controlled rate recovers. NOTE the final year is the least-indexed and must not carry this claim alone — the 2018-2023 movement has to hold on its own."
+   "assert": "1 - D['series'][-1]['per_1k_akron'] / max(r['per_1k_akron'] for r in D['series']) > 0.66 and D['totals']['peak_year'] == 2018 and D['totals']['peak_joint'] == 29 and max(r['joint'] for r in D['series']) == 29 and (lambda s: s[2019] < s[2018] and s[2020] > s[2019] and s[2021] < s[2020] and s[2022] < s[2021] and s[2023] < s[2022] and s[2024] < s[2023] and s[2024] == 2)({r['year']: r['joint'] for r in D['series']})",
+   "actual": "[(r['year'], r['joint'], r['akron'], r['per_1k_akron']) for r in D['series']]",
+   "falsified_if": "The controlled rate recovers, the peak moves off 2018 or off 29 works, the three years after the peak stop moving up and down, or any of the last three years stops falling. Any of those and the standfirst is describing a shape the chart beneath it does not draw, which is the defect this claim was widened to catch: the sentence used to say joint output held near its high through 2021 while the chart showed 29 in 2018, 11 in 2019 and 16 in 2021. NOTE the final year is the least-indexed and must not carry this claim alone — the 2018-2023 movement has to hold on its own."
   },
   {
    "id": "col-not-indexing-lag",
