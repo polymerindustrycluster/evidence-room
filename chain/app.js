@@ -378,7 +378,10 @@ function drawMethods() {
     ["The expected shape", `The dashed guide is the same vault’s <b>${N(meta.outside_total)}</b>
       companies outside the fourteen counties (Michigan, Pittsburgh, Columbus, Indiana),
       rescaled to the fourteen-county total. It compares <b>mix</b>, not size, and both sides share one collection
-      method.`],
+      method. What draws it is the <b>${N(tiers.reduce((a, t) => a + t.outside, 0))}</b> stage
+      assignments those companies carry, counted the same way as the stage numbers above. A company
+      with no stage recorded never reaches the guide. This page does not publish how many of the
+      ${N(meta.outside_total)} carry one.`],
     ["Unclassified is not incapable", `<b>${N(meta.unclassified)}</b> of ${N(meta.neo_total)} companies
       carry no value-chain role yet. They are absent from the ribbon and hatched on the map. Absence
       here is missing evidence, never a finding.`],
