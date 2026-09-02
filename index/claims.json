@@ -2,6 +2,7 @@
   "_note": "The hub restates a number from every page it links to. Each restatement is re-run HERE against THAT PAGE'S OWN shipped data file, so a correction on a page fails this page's gate instead of leaving a stale card behind. That is the defect this file exists to catch: the editorial contract says hub cards stay in sync with corrected pages, and nothing enforced it. Paths climb out of index/data/ on purpose.",
   "data": {
     "counts": "counts.json",
+    "reg": "../../sources/data/registry.json",
     "peers": "../../peers/data/peers.json",
     "lq": "../../location-quotient/data/lq.json",
     "ls": "../../laborshed/data/laborshed.json",
@@ -19,8 +20,11 @@
     "st": "states.json",
     "ch2": "../../cluster-health/data/health.json",
     "cj_accountability": "../../accountability/claims.json",
+    "cj_atlas": "../../atlas/claims.json",
+    "cj_chain": "../../chain/claims.json",
     "cj_churn": "../../churn/claims.json",
     "cj_cluster-health": "../../cluster-health/claims.json",
+    "cj_collaboration": "../../collaboration/claims.json",
     "cj_cost-scissors": "../../cost-scissors/claims.json",
     "cj_federal-money": "../../federal-money/claims.json",
     "cj_funding-map": "../../funding-map/claims.json",
@@ -29,6 +33,8 @@
     "cj_occupations": "../../occupations/claims.json",
     "cj_patents": "../../patents/claims.json",
     "cj_peers": "../../peers/claims.json",
+    "cj_programs": "../../programs/claims.json",
+    "cj_reach": "../../reach/claims.json",
     "cj_realwage": "../../realwage/claims.json",
     "cj_revisions": "../../revisions/claims.json",
     "cj_scorecard": "../../scorecard/claims.json",
@@ -48,20 +54,29 @@
     },
     {
       "id": "index-counts-fresh",
-      "text": "Every claim count this hub prints is read off the page it points at: for all sixteen artifacts, the row in counts.json equals the number of claims in that artifact's own claims.json, and its manual count equals the manual claims in it.",
-      "source": "index/data/counts.json against all sixteen artifact claims.json files, read directly",
+      "text": "Every claim count this hub prints is read off the page it points at: for all twenty-two artifacts, the row in counts.json equals the number of claims in that artifact's own claims.json, and its manual count equals the manual claims in it.",
+      "source": "index/data/counts.json against all twenty-two artifact claims.json files, read directly",
       "assert": "(lambda P: sorted(P) == sorted(k[3:] for k in D if k.startswith('cj_')) and all(P[s]['claims'] == len(D['cj_' + s]['claims']) and P[s]['manual'] == sum(1 for c in D['cj_' + s]['claims'] if c.get('verify') == 'manual') for s in P))(D['counts']['pages'])",
       "actual": "sorted((s, r['claims'], len(D['cj_' + s]['claims'])) for s, r in D['counts']['pages'].items() if r['claims'] != len(D['cj_' + s]['claims']))",
-      "falsified_if": "A page gains or loses a claim and derive_index.py is not re-run, or an artifact is added to the tree without a cj_ entry here. THIS IS THE GUARD THAT WAS MISSING. index-counts-internal only ever checked counts.json against itself, so a stale file stayed internally consistent and kept passing: on 2026-08-29 every page had grown and the shipped file still said 292 claims across thirteen pages, which is how the cluster-health card advertised 23 claims for a page that says on its own face there are 27 of them. A hub card's claim count is a statement about another page, and the only honest way to hold one is to read that page. The fix is never to retype a count; it is to re-run derive_index.py.",
+      "falsified_if": "A page gains or loses a claim and derive_index.py is not re-run, or an artifact is added to the tree without a cj_ entry here. THIS IS THE GUARD THAT WAS MISSING. index-counts-internal only ever checked counts.json against itself, so a stale file stayed internally consistent and kept passing: on 2026-08-29 every page had grown and the shipped file still said 292 claims across thirteen pages, which is how the cluster-health card advertised 23 claims for a page that says on its own face there are 27 of them. A hub card's claim count is a statement about another page, and the only honest way to hold one is to read that page. The fix is never to retype a count; it is to re-run derive_index.py. Widened 2026-09-01 from sixteen artifacts to twenty-two. The enumeration below is the gate's strength and was also its trap: because this assertion names each artifact by hand in the data map, five pages promoted after the last generation — atlas, chain, collaboration, programs and reach — had no cj_ entry, so re-running derive_index.py produced a counts.json this claim could not read and the whole gate died on a KeyError. For a fortnight the only procedure that left the suite green was the hand-edit counts.json's own note forbids, which is how the shipped file came to be patched by hand on 2026-08-31. A guard that makes the correct action fail is a guard that teaches people to do the wrong one. The enumeration stays — a new artifact SHOULD fail here until someone wires it up — but the failure has to be this claim reporting a missing page, not a traceback, and the fix is always to add the cj_ entry rather than to touch the generated file.",
       "official_check": "python _data/build/derive_index.py, then git diff index/data/counts.json — an empty diff is the pass."
     },
     {
       "id": "index-inventory",
-      "text": "The hub links fifteen pages carrying 408 checked claims, 15 of which rest on a document a person read; and two further artifacts in the tree are deliberately not linked. Re-blessed 2026-08-31 when federal-money's award register shipped with 7 new claims: the spending_by_award pull that names who gets the routine money, closing the recipient-name gap that page's README had carried since it was built. Previously re-blessed 2026-08-30 when the patents page shipped with 7 claims.",
-      "source": "index/data/counts.json against the fourteen card anchors in index/index.html and the withheld-pages paragraph beside them; the exclusions are declared in scorecard/.unlisted and accountability/.unlisted",
-      "assert": "(lambda P, U, L: sorted(set(P) - U) == L and len(L) == 15 and U <= set(P) and len(P) - len(L) == 2 and D['counts']['n_pieces'] == len(P) and sum(P[s]['claims'] for s in L) == 408 and sum(P[s]['manual'] for s in L) == 15)(D['counts']['pages'], {'scorecard', 'accountability'}, ['churn', 'cluster-health', 'cost-scissors', 'federal-money', 'funding-map', 'laborshed', 'location-quotient', 'occupations', 'patents', 'peers', 'realwage', 'revisions', 'sources', 'timeline', 'wages'])",
+      "text": "The hub links twenty pages carrying 443 checked claims, 21 of which rest on a document a person read; and two further artifacts in the tree are deliberately not linked. Re-blessed 2026-09-01 when the census was reconciled with the tree: five pages that had been promoted and carded — atlas, chain, collaboration, programs and reach — were absent from counts.json, and because the hub removes a card whose slug it cannot find there, all five were being deleted from the gallery at render time. Previously re-blessed 2026-08-31 when federal-money's award register shipped with 7 new claims: the spending_by_award pull that names who gets the routine money, closing the recipient-name gap that page's README had carried since it was built.",
+      "source": "index/data/counts.json against the twenty card anchors in index/index.html and the withheld-pages paragraph beside them; the exclusions are declared in scorecard/.unlisted and accountability/.unlisted",
+      "assert": "(lambda P, U, L: sorted(set(P) - U) == L and len(L) == 20 and U <= set(P) and len(P) - len(L) == 2 and D['counts']['n_pieces'] == len(P) and sum(P[s]['claims'] for s in L) == 443 and sum(P[s]['manual'] for s in L) == 21)(D['counts']['pages'], {'scorecard', 'accountability'}, [\"atlas\", \"chain\", \"churn\", \"cluster-health\", \"collaboration\", \"cost-scissors\", \"federal-money\", \"funding-map\", \"laborshed\", \"location-quotient\", \"occupations\", \"patents\", \"peers\", \"programs\", \"reach\", \"realwage\", \"revisions\", \"sources\", \"timeline\", \"wages\"])",
       "actual": "(sorted(set(D['counts']['pages']) - {'scorecard', 'accountability'}), len(D['counts']['pages']), sum(p['claims'] for s, p in D['counts']['pages'].items() if s not in ('scorecard', 'accountability')), sum(p['manual'] for s, p in D['counts']['pages'].items() if s not in ('scorecard', 'accountability')))",
-      "falsified_if": "A page is added to or removed from the tree, or any linked page gains or loses a claim. This is the only guard on the three inventory literals the page prints without scripting — fourteen pages, 373 claims, 15 manual — and on the count of withheld pages in the paragraph under them, and it is deliberately intolerant: those literals are a rendered snapshot of a computation app.js re-runs at load, so any drift has to be re-blessed by a person rather than absorbed. It is also the enforcement of the .unlisted convention: a bundled page makes no external requests and cannot read a .unlisted file at render time, so a new artifact that is neither carded here nor named in this assertion fails the gate until someone decides which it is. The 'two withheld' clause is what keeps the second sentence honest in the other direction: carding one of the two without deleting its .unlisted file, or deleting the file without carding it, breaks this before it reaches a reader."
+      "falsified_if": "A page is added to or removed from the tree, or any linked page gains or loses a claim. This is the only guard on the three inventory literals the page prints without scripting — twenty pages, 443 claims, 21 manual — and on the count of withheld pages in the paragraph under them, and it is deliberately intolerant: those literals are a rendered snapshot of a computation app.js re-runs at load, so any drift has to be re-blessed by a person rather than absorbed. It is also the enforcement of the .unlisted convention: a bundled page makes no external requests and cannot read a .unlisted file at render time, so a new artifact that is neither carded here nor named in this assertion fails the gate until someone decides which it is. The 'two withheld' clause is what keeps the second sentence honest in the other direction: carding one of the two without deleting its .unlisted file, or deleting the file without carding it, breaks this before it reaches a reader. What it does NOT check is the printed word itself, and on 2026-09-01 that gap showed: this claim asserted fifteen linked pages and passed while the paragraph beside it said 'fourteen', because app.js's number-to-word table stopped at fourteen and the fifteenth page rendered as a digit next to a stale spelled-out literal. The table now runs past the size of the tree, but the literals are still a person's job to re-bless."
+    },
+    {
+      "id": "index-counts-downstream",
+      "text": "The sources page's own tally of the harness matches this one. Its checks block reports the same page count, claim count and manual count as counts.json, and the automatic figure it prints is the difference of the other two.",
+      "source": "sources/data/registry.json checks, built from index/data/counts.json by derive_sources.py and rendered as prose in sources/app.js",
+      "assert": "(lambda C, K: K['n_pages'] == len(C['pages']) and K['n_claims'] == C['total_claims'] and K['n_manual'] == C['total_manual'] and K['this_page'] == C['pages']['sources']['claims'] and K['n_auto'] == K['n_claims'] - K['n_manual'])(D['counts'], D['reg']['checks'])",
+      "actual": "(D['reg']['checks'], len(D['counts']['pages']), D['counts']['total_claims'], D['counts']['total_manual'])",
+      "falsified_if": "counts.json is regenerated and derive_sources.py is not re-run after it. THIS SURFACE WAS UNGUARDED UNTIL 2026-09-01 and was wrong when the guard was written: the sources page was telling readers this site carries 443 claims across seventeen pages while counts.json said 450, because the hand-patch that added federal-money's seven award claims never reached the page that quotes the total. These numbers are published in four places — the generated census, the hub's scripted paragraph, the hub's static literals, and this sentence on the sources page — and the first three were checked against each other while the fourth was left to be correct by habit. It is asserted against counts.json's own totals rather than re-summed here, so it cannot pass by reproducing the same mistake twice. The fix is never to edit registry.json; it is to run derive_index.py and then derive_sources.py, in that order.",
+      "official_check": "python derive_index.py && python derive_sources.py, then git diff index/data/counts.json sources/data/registry.json — an empty diff is the pass."
     },
     {
       "id": "index-pic-name",

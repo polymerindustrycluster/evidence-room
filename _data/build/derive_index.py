@@ -4,12 +4,28 @@ The index used to carry hand-typed claim counts per card. They drifted the momen
 claim was added anywhere else — the page said 61 while the harness said 62, and said
 "sixteen pieces" next to a figure reading 17. Numbers a human retypes are numbers that
 go stale, so these are generated.
+
+WHAT THIS FILE COUNTS, AND WHY IT IS THE WHOLE TREE. Every artifact that renders gets a
+row, carded or not. The hub prints a smaller number — the cards it actually links — and
+app.js derives that by intersecting these rows with the gallery. Keeping the census
+wider than the gallery is what makes a forgotten artifact loud: index-inventory asserts
+every row here is either carded on the hub or one of the pages that ships a `.unlisted`
+file, so a new page cannot reach the tree without someone deciding which it is. Narrow
+this to the linked pages and that guard has nothing left to compare.
+
+RE-RUN THIS AFTER ANY CLAIM CHANGES, ANYWHERE. On 2026-08-31 the shipped file was still
+describing a seventeen-page tree that had grown to twenty-two, and the only procedure
+anyone could follow was the hand-edit the note below forbids: index/claims.json
+enumerated the artifacts it knew by name, so regenerating threw a KeyError on the five
+it did not. Regeneration is the safe path again; the enumeration is checked rather than
+assumed. The five missing pages were not merely uncounted — the hub deletes a card whose
+slug it cannot find here, so atlas, chain, collaboration, programs and reach were being
+removed from the gallery before a reader saw them.
 """
 import json, os, glob
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.abspath(os.path.join(HERE, "..", ".."))
-LEGACY = {"funding-map", "timeline"}          # predate the shared core, carry no claims
 
 pages = {}
 for p in sorted(glob.glob(os.path.join(WEB, "*", "claims.json"))):
@@ -21,14 +37,18 @@ for p in sorted(glob.glob(os.path.join(WEB, "*", "claims.json"))):
     pages[slug] = {"claims": len(cl),
                    "manual": sum(1 for c in cl if c.get("verify") == "manual")}
 
-# every artifact folder that renders, whether or not it carries claims
+# Every artifact folder that renders, whether or not it carries claims. Today all of them
+# do, so this loop adds nothing; it stays because a page that ships without a claims file
+# still has to appear in the census. It gets a zero row rather than being skipped, which
+# is what makes index-counts-fresh fail on it — a row with no cj_ entry beside it — instead
+# of the page quietly not existing as far as the hub is concerned.
 arts = sorted(d for d in os.listdir(WEB)
               if os.path.isdir(os.path.join(WEB, d))
               and not d.startswith(("_", "."))
               and d not in ("dist", "tools", "node_modules", "shots", "index")
               and os.path.exists(os.path.join(WEB, d, "index.html")))
 for a in arts:
-    pages.setdefault(a, {"claims": 0, "manual": 0, "legacy": a in LEGACY})
+    pages.setdefault(a, {"claims": 0, "manual": 0})
 
 out = {"n_pieces": len(arts),
        "total_claims": sum(v["claims"] for v in pages.values()),

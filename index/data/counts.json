@@ -1,10 +1,18 @@
 {
- "n_pieces": 17,
- "total_claims": 450,
- "total_manual": 15,
+ "n_pieces": 22,
+ "total_claims": 485,
+ "total_manual": 21,
  "pages": {
   "accountability": {
    "claims": 24,
+   "manual": 0
+  },
+  "atlas": {
+   "claims": 6,
+   "manual": 2
+  },
+  "chain": {
+   "claims": 5,
    "manual": 0
   },
   "churn": {
@@ -14,6 +22,10 @@
   "cluster-health": {
    "claims": 37,
    "manual": 0
+  },
+  "collaboration": {
+   "claims": 6,
+   "manual": 1
   },
   "cost-scissors": {
    "claims": 32,
@@ -45,6 +57,14 @@
   },
   "peers": {
    "claims": 29,
+   "manual": 1
+  },
+  "programs": {
+   "claims": 11,
+   "manual": 2
+  },
+  "reach": {
+   "claims": 7,
    "manual": 1
   },
   "realwage": {

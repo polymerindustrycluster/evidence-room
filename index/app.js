@@ -40,8 +40,15 @@
    the paragraph removes itself in a cut of the tree where the unlisted pages were never
    copied — where the difference really is nothing, saying "two" would be the new lie. */
 const CARDS = [...document.querySelectorAll(".card[data-slug]")];
+/* Runs past the size of the tree on purpose. It stopped at "fourteen", and the moment a
+   fifteenth page was counted the hub printed "The 15 pages here carry…" as a bare digit
+   beside a spelled-out literal reading "fourteen" — two different numbers, in two
+   different registers, in one sentence. A table that silently degrades to digits is a
+   table that hides the drift it should announce. */
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight",
-  "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"];
+  "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen",
+  "seventeen", "eighteen", "nineteen", "twenty", "twenty-one", "twenty-two",
+  "twenty-three", "twenty-four", "twenty-five", "twenty-six"];
 const word = n => WORDS[n] || String(n);
 /* Sentence-start form. `word()` alone rendered "…says nothing about Cuyahoga. eight of
    the twelve…" in the picker verdict — a lowercase word opening a sentence. */
