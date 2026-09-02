@@ -40,8 +40,20 @@
    the paragraph removes itself in a cut of the tree where the unlisted pages were never
    copied — where the difference really is nothing, saying "two" would be the new lie. */
 const CARDS = [...document.querySelectorAll(".card[data-slug]")];
+/* THE TABLE HAS TO REACH THE NUMBERS THE PAGE ACTUALLY PRINTS. It stopped at "fourteen"
+   while the hub counts 20 live pages, so `word(20)` fell through to String(20) and the
+   front page rendered "The 20 pages here carry 474 checked claims" — a bare digit beside
+   a spelled-out "21 of them", in the site's first sentence. index-inventory passed
+   throughout because it reads counts.json and never the printed word. Extended past every
+   count this page can reach: 23 artifacts today, and the tens are here so a site twice
+   this size still spells its own totals. */
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight",
-  "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"];
+  "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen",
+  "seventeen", "eighteen", "nineteen", "twenty", "twenty-one", "twenty-two",
+  "twenty-three", "twenty-four", "twenty-five", "twenty-six", "twenty-seven",
+  "twenty-eight", "twenty-nine", "thirty", "thirty-one", "thirty-two", "thirty-three",
+  "thirty-four", "thirty-five", "thirty-six", "thirty-seven", "thirty-eight",
+  "thirty-nine", "forty"];
 const word = n => WORDS[n] || String(n);
 /* Sentence-start form. `word()` alone rendered "…says nothing about Cuyahoga. eight of
    the twelve…" in the picker verdict — a lowercase word opening a sentence. */
