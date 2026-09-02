@@ -9,7 +9,9 @@ import json, os, glob
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.abspath(os.path.join(HERE, "..", ".."))
-LEGACY = {"funding-map", "timeline"}          # predate the shared core, carry no claims
+# funding-map and timeline predate the shared core. The comment here used to say they
+#   carry no claims; they carry 22 and 31. The flag marks provenance, not emptiness.
+LEGACY = {"funding-map", "timeline"}   # predate the shared core; the flag is provenance
 
 pages = {}
 for p in sorted(glob.glob(os.path.join(WEB, "*", "claims.json"))):
@@ -38,6 +40,11 @@ out = {"n_pieces": len(arts),
                "hand-edit — the index's own claim asserts these match the harness."}
 p = os.path.join(WEB, "index", "data", "counts.json")
 os.makedirs(os.path.dirname(p), exist_ok=True)
-json.dump(out, open(p, "w", encoding="utf-8"), indent=1)
+# Trailing newline, so a rebuild is byte-identical to the shipped file. Without it every
+# regeneration showed a one-line diff on the last brace, which trains a reader of
+# `git status` to expect noise from the one command the note above tells them to run.
+with open(p, "w", encoding="utf-8") as fh:
+    json.dump(out, fh, indent=1)
+    fh.write("\n")
 print(f"wrote {p}\n  {out['n_pieces']} pieces, {out['total_claims']} claims, "
       f"{out['total_manual']} manual")
