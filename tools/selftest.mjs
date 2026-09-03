@@ -21,11 +21,17 @@
  * SHIPPED here, and a gate that cannot fail its own fixture is reported as untrustworthy
  * whatever the board says.
  *
- * Injections are applied to a COPY of a dist artifact and reverted in a finally block. A
- * crash mid-run leaves .selftest-backup files; delete them and re-bundle.
+ * Injections are applied to a COPY and reverted in a finally block. Dist backups sit next
+ * to their bundle; source-data backups live in the system temp directory so their mere
+ * presence cannot make the bundle-freshness gate fail before the injection. A crash may
+ * leave an `evidence-room-selftest-*` temp directory or a dist `.selftest-backup`; the original
+ * path is never the backup.
  */
-import {readFileSync, writeFileSync, copyFileSync, unlinkSync, existsSync} from "fs";
+import {readFileSync, writeFileSync, copyFileSync, unlinkSync, existsSync,
+        statSync, utimesSync, mkdtempSync, rmdirSync} from "fs";
 import {spawnSync} from "child_process";
+import {tmpdir} from "os";
+import {join} from "path";
 
 const CASES = [
   {gate: "textsize", page: "laborshed", args: ["--sweep", "laborshed"],
@@ -149,34 +155,59 @@ const CASES = [
       `<p class="stand">` and the fixture went stale the moment that page was restructured,
       which the harness caught and reported as stale rather than as a passing gate. */
    inject: s => s.replace("<body>", '<body><p>The award is signed, none of it spent.</p>')},
+
+  {gate: "consistency", page: "sources", file: "index/data/counts.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[published-register\] checks\.n_claims/,
+   defect: "the sources page's copied claim census drifting from the generated index census",
+   /* Mutate only the independently owned page row. Leaving both copied summaries stale
+      ensures that an implementation which trusts counts.total_claims cannot pass its own
+      fixture; the guard must re-derive the census exactly as derive_sources.py does. */
+   inject: s => {
+     const d = JSON.parse(s);
+     d.pages.wages.claims += 1;
+     return JSON.stringify(d, null, 1) + "\n";
+   }},
 ];
 
 const only = process.argv.slice(2).filter(a => !a.startsWith("--"));
-const run = (gate, args) => spawnSync("node", [`tools/${gate}.mjs`, ...args],
-  {encoding: "utf8"}).status ?? 1;
+const run = c => {
+  const r = spawnSync(c.command || "node",
+    c.command ? c.args : [`tools/${c.gate}.mjs`, ...c.args], {encoding: "utf8"});
+  return {status: r.status ?? 1, output: (r.stdout || "") + (r.stderr || "")};
+};
 
 let trusted = 0, broken = [];
 for (const c of CASES) {
   if (only.length && !only.includes(c.gate)) continue;
-  const f = c.file || `dist/${c.page}.html`, bak = `${f}.selftest-backup`;
+  const f = c.file || `dist/${c.page}.html`;
   if (!existsSync(f)) { console.log(`SKIP  ${c.gate} — ${f} missing, run bundle first`); continue; }
+  const backupDir = c.file ? mkdtempSync(join(tmpdir(), "evidence-room-selftest-")) : null;
+  const bak = backupDir ? join(backupDir, "original") : `${f}.selftest-backup`;
+  const originalTimes = statSync(f);
   copyFileSync(f, bak);
   let before, after;
   try {
-    before = run(c.gate, c.args);                       // must be clean to start
+    before = run(c);                                    // must be clean to start
     const src = readFileSync(bak, "utf8");
     const hurt = c.inject(src);
     if (hurt === src) throw new Error("injection changed nothing — the fixture is stale");
     writeFileSync(f, hurt);
-    after = run(c.gate, c.args);                        // must now fail
+    utimesSync(f, originalTimes.atime, originalTimes.mtime);
+    after = run(c);                                     // must now fail
   } finally {
     copyFileSync(bak, f);
     unlinkSync(bak);
+    utimesSync(f, originalTimes.atime, originalTimes.mtime);
+    if (backupDir) rmdirSync(backupDir);
   }
-  const ok = before === 0 && after !== 0;
+  const named = !c.expect || c.expect.test(after.output);
+  const ok = before.status === 0 && after.status !== 0 && named;
   if (ok) trusted++; else broken.push(c);
   console.log(`${ok ? "  ok  " : "BROKEN"} ${c.gate.padEnd(11)} ${c.page.padEnd(15)} ` +
-    `clean=${before === 0 ? "pass" : "FAIL"} injected=${after !== 0 ? "FAIL" : "pass"}  ${c.defect}`);
+    `clean=${before.status === 0 ? "pass" : "FAIL"} ` +
+    `injected=${after.status !== 0 ? "FAIL" : "pass"}` +
+    `${named ? "" : " wrong-failure"}  ${c.defect}`);
 }
 
 console.log("");
