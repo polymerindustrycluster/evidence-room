@@ -33,7 +33,13 @@
   --caption:#656661; --lime:#B8D637; --paper:#FAF9F7; --line:#DDD9D2; --text:#141A1C;
   /* validated categorical — see picviz.js header */
   --c1:#008BA8; --c2:#C85F0C; --c3:#A32A78;
-  --pv-grid:#E4E0D8; --pv-axis:#BDB7AC; --pv-ink:#3A4448; --pv-muted:#7C837F;
+  --pv-grid:#E4E0D8; --pv-axis:#BDB7AC; --pv-ink:#3A4448; --pv-muted:#6A716D;
+  /* --pv-muted was #7C837F: 3.76:1 on paper, under the 4.5:1 AA line for text this
+     size. It paints axis ticks, axis titles and secondary labels, which is functional
+     text on every chart in the repository, ~500 marks. Darkened to the first value that
+     clears AA in the browser's own arithmetic (4.49 at #6E7571 was one hundredth short)
+     while staying visibly secondary to --pv-ink. The workshop tree carried this from
+     2026-08-22; the public tree shipped the old value for eleven days. */
   --sans:Lato,"Segoe UI",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
   /* ONE COLUMN SYSTEM. Everything derives from --figure; nothing is sized independently.
      The previous version had three: a text measure in `ch` of a FIXED font (pinned at
