@@ -2,9 +2,9 @@
 
 The atlas maps INSTITUTIONS, never people (standing decision 2026-08-19), and in v1 it
 maps the TEACHING layer only: every institution that ever filed a polymer-group program
-in IPEDS (the polymer-programs-db census), plus the four institutions CONFIRMED to teach
-polymer science invisibly under chemistry codes. The OpenAlex research layer is named,
-not mapped: its candidate list is zero-verified and the API is metered — mapping
+in IPEDS (the polymer-programs-db census), plus four documented examples of polymer or
+materials teaching absent from that census. The OpenAlex research layer is named,
+not mapped: its candidate institutions have not been individually verified — mapping
 unverified rows would put dots on a map that no claim could defend.
 
 Coordinates come from the IPEDS directory (same Urban Institute API, keyless). The
@@ -46,8 +46,8 @@ HAND_COORDS = {
     238148: (44.0886, -87.6576, "hand: Manitowoc WI city centroid — pre-2009 closure"),
 }
 
-# Confirmed census-invisible institutions — the four the census README names as verified
-# cases of polymer science taught under chemistry/chemical-engineering codes. Hand rows,
+# Documented polymer/materials teaching absent from the selected census. These four
+# examples do not share one verified filing-code explanation. Hand rows,
 # hand coordinates, and the page marks them as a different thing entirely.
 INVISIBLE = [
     {"name": "University of Chicago (Pritzker School of Molecular Engineering)",

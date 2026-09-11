@@ -1,8 +1,8 @@
-/* The hollowing of polymer education, 1991-2023.
+/* Polymer education’s 2016–2023 decline, within the longer 1991–2023 record.
  *
- * THE THESIS (editorial standard rule 7): "Northeast Ohio wants to rebuild its polymer
- * technician pipeline. Of the three layers of polymer education, it is the only one that
- * did not hold."
+ * Current thesis: among substantive selected-code records, technician programs have a
+ * lower 2023 active share than degrees or peer trades. This is reporting continuity,
+ * not verified closure, stability, or a historical-first claim.
  *
  * THE HEADLINE CHANGED ON 2026-08-26, and the reason is worth keeping. It used to end "in
  * 33 years of the federal record, no one has done it" - a universal negative drawn from an
@@ -35,7 +35,7 @@
  *      same award levels, different field. The earnings panel carries the national
  *      interquartile band for the program code.
  *   2. Encodings: line position = completions per year (axis cropped, floor stated); bar
- *      length = survival rate, program count, lifetime completions (all linear from zero);
+ *      length = 2023 active share, program count, lifetime completions (all linear from zero);
  *      dot position = median earnings (linear, axis floor stated).
  *   3. Uncertainty: every count is a floor and the hero says so; "ended" is not "closed"
  *      and no named closure ships without a catalogue check; suppressed Scorecard cells
@@ -49,11 +49,34 @@
  */
 (async () => {
 "use strict";
-const {el, txt, ticks, frame, hoverable, tableView, chart, chartTitle, figures, N, onFill,
+const {el, txt, ticks, frame, hoverable, tableView, chart: baseChart, figures, N, onFill,
        SEQ, GRAY, INK} = PV;
 const D = await PV.data("viz-data.json");
+const MOBILE = window.innerWidth < 600;
+const COL = Math.round(document.querySelector("#spine").parentElement.getBoundingClientRect().width) || 728;
+function chart(id, opts) {
+  if (MOBILE) {
+    const row = ["spine", "base", "working", "pay"].includes(id);
+    opts = {...opts, m: {...opts.m, t: row ? 34 : 36, l: row ? 24 : 48,
+      r: row ? 38 : 24, b: 52}};
+    if (!row) opts.H = 290;
+  }
+  return baseChart(id, opts);
+}
+function chartTitle(svg, claim, unit) {
+  const heading = document.createElement("p");
+  heading.className = "chart-heading";
+  heading.textContent = claim;
+  svg.before(heading);
+  if (unit) {
+    const caption = document.createElement("p");
+    caption.className = "chart-unit";
+    caption.textContent = unit;
+    svg.before(caption);
+  }
+}
 
-/* THE COLD OPEN (guarded by tools/coldopen.mjs). Three survival bars, nothing else: the
+/* THE COLD OPEN (guarded by tools/coldopen.mjs). Three 2023 active-share bars: the
    page's whole argument at its coarsest. Deliberately poorer than the spine below — no
    counts, no rule, no table. */
 {
@@ -64,7 +87,7 @@ const D = await PV.data("viz-data.json");
     const rows = [["Polymer technician", D.layers.technician.survive_pct, "#FFD09A"],
                   ["Polymer degree", D.layers.degree.survive_pct, "#C6E2E6"],
                   ["The trades next door", D.layers.control.survive_pct, "#C6E2E6"]];
-    const lab = 214, lo = lab + 10, hi = W - 56;
+    const lab = MOBILE ? 153 : 214, lo = lab + 10, hi = W - 40;
     rows.forEach(([name, pct, col], i) => {
       const y = 22 + i * 38;
       PV.txt(svg, name, {x: lab, y: y + 5, "text-anchor": "end", "font-size": 13.5,
@@ -74,7 +97,7 @@ const D = await PV.data("viz-data.json");
       PV.txt(svg, pct + "%", {x: lo + (hi - lo) * pct / 100 + 8, y: y + 5,
         "font-size": 13.5, fill: "#fff", "font-weight": 700});
     });
-    PV.txt(svg, "still conferring in 2023", {x: lo, y: H - 6,
+    PV.txt(svg, "still conferring in 2023", {x: MOBILE ? 0 : lo, y: H - 6,
       "font-size": 12.5, fill: "#C6E2E6"});
   }
 }
@@ -85,7 +108,6 @@ const money = v => v == null ? "—" : "$" + Math.round(v).toLocaleString("en-US
 /* THE COLUMN, 1:1. The svg viewBox is the figure width in page pixels, so 14px inside a
    chart is 14px on the page. A 1100-unit viewBox scaled into a 728px column rendered its
    tick labels at 8px, under the legibility floor. LAYOUT-SPEC rules 2 and 4. */
-const COL = 728;
 /* A chart’s title is a CLAIM in body weight, ON the page rail, with the units and the axis
    floor as a smaller second line. x=0 in the viewBox IS the rail, because the svg fills the
    column exactly; starting the title at the plot’s left margin puts a second ragged edge
@@ -121,19 +143,18 @@ const awardWords = a => /<1/.test(a) ? "short cert" : /1-2/.test(a) ? "1-2 yr ce
    The tiles are the finding, not the setup, and the third is the human anchor: a place, a
    year, and a number small enough to picture. The fourth is the thesis as a quantity. */
 figures([
-  ["key", pct(L.technician.survive_pct), "of technician programs survived",
-   `${N(L.technician.still)} of the ${N(L.technician.ever)} that ever got going were still
-    awarding a credential in 2023. The trades next door held ${pct(L.control.survive_pct)},
+  ["key", pct(L.technician.survive_pct), "of substantive technician programs active in 2023",
+   `${N(L.technician.still)} of ${N(L.technician.ever)} programs above ten lifetime completions
+    reported a completion in 2023. The peer trades reached ${pct(L.control.survive_pct)},
     polymer degrees ${pct(L.degree.survive_pct)}.`],
-  ["", pct(D.base.both_pct), "of new starts never took hold",
-   `${D.base.both} of the ${D.base.ever} technician programs launched since 1991 were both
-    tiny and short-lived: ten or fewer completions ever, and a run of five years or less.`],
-  ["", String(D.ua.bachelor_2016_2023.at(-1)), "Akron polymer undergraduates, 2023",
-   `At the world’s flagship polymer school, whose polymer completions of every kind are
-    ${pct(D.ua.pct_off)} below its own 2016 peak.`],
-  ["", "0", "programs rebuilt in 33 years",
-   `No substantial technician program in this record died and came back. The one candidate
-    turned out to be a change in federal paperwork.`],
+  ["", pct(D.base.both_pct), "of technician records both small and brief",
+   `${D.base.both} of ${D.base.ever} records: ten or fewer lifetime completions and
+    a first-to-last reporting span of five years or less, inclusive. Neither measure establishes failure.`],
+  ["", String(D.ua.latest), "Akron completions in the selected codes, 2023",
+   `${D.ua.masters_2023} master’s degrees, ${D.ua.doctorate_2023} doctorates and
+    ${D.ua.bachelor_2016_2023.at(-1)} bachelor’s degrees.`],
+  ["", pct(D.ua.pct_off), "below Akron’s 2016 completions peak",
+   `The selected-code record ends in 2023 and does not measure subsequent grant outcomes.`],
 ]);
 
 /* ------------------------------------------- THE HERO GRAPHIC: the spine chart.
@@ -159,18 +180,18 @@ figures([
   const ROW = 110;
   const {svg, W, m, w} = chart("spine", {W: COL, rows: rows.length, rowH: ROW,
     m: {t: 72, r: 20, b: 60, l: 170}});
-  const maxV = 52;
+  const maxV = MOBILE ? 60 : 52;
   const xs = v => m.l + (v / maxV) * w;                      // LINEAR from zero
   frame(svg, {x: m.l, y: m.t, w, h: rows.length * ROW, xs, ys: () => 0,
     xt: [0, 10, 20, 30, 40, 50], yt: [], xfmt: v => v + "%",
-    xlab: "Share of programs still conferring in 2023"});
-  chartTitle(svg, "Two of these three layers held. The technician layer did not",
+    xlab: MOBILE ? "Share active in 2023" : "Share of programs still conferring in 2023"});
+  chartTitle(svg, "Technician programs have the lowest 2023 reporting rate",
     "Programs with more than ten lifetime completions, still conferring in 2023. Bars start at zero.");
   rows.forEach((r, i) => {
     const y = m.t + i * ROW + 8, bh = 54;
     el("rect", {x: m.l, y, width: Math.max(2, xs(r.d.survive_pct) - m.l), height: bh,
       fill: r.c, rx: 3}, svg);
-    txt(svg, r.label, {x: m.l - 12, y: y + bh / 2 + 5, "text-anchor": "end", class: "pv-lab"});
+    txt(svg, r.label, {x: MOBILE ? m.l : m.l - 12, y: MOBILE ? y - 12 : y + bh / 2 + 5, "text-anchor": MOBILE ? "start" : "end", class: "pv-lab"});
     /* The count sits ON the bar, so its colour is derived from the bar it sits on rather
        than picked: teal at SEQ[5] wants white, the gray control and the pale SEQ[2] want
        ink, and a hard-coded choice would be wrong for one of the three. */
@@ -181,22 +202,18 @@ figures([
     hoverable(el("rect", {x: 0, y: y - 12, width: W, height: bh + 24, fill: "transparent"}, svg),
       `<b>${r.full}</b><br><span class="v">${N(r.d.ever)}</span> programs past ten completions
        &middot; <span class="v">${N(r.d.still)}</span> still conferring
-       &middot; <span class="v">${pct(r.d.survive_pct)}</span> survive`,
-      `${r.full}: ${pct(r.d.survive_pct)} survive (${r.d.still} of ${r.d.ever})`);
+       &middot; <span class="v">${pct(r.d.survive_pct)}</span> active in 2023`,
+      `${r.full}: ${pct(r.d.survive_pct)} active in 2023 (${r.d.still} of ${r.d.ever})`);
   });
   document.getElementById("spinesrc").innerHTML =
-    `Seventy-three programs is a small number and the gap has to be read with that in mind:
-     the technician share could plausibly be anywhere from 19 to 39 percent, and the trades
-     and the degrees could differ from each other by ten points either way. What survives
-     those margins is the shape. The trades and the polymer degrees are indistinguishable
-     from each other; the technician layer sits below both by more than the margins allow.
-     Counts are floors, because the record only sees what institutions filed under polymer
+    `The technician share falls below both comparison groups. This is a descriptive comparison of observed
+     filing records. Counts are floors because the record only sees what institutions filed under polymer
      codes, and a program quiet in 2023 is &ldquo;not conferring&rdquo; rather than
      &ldquo;closed&rdquo;. (IPEDS 1991&ndash;2023 via the Urban Institute API, 2020 excluded;
      construct details in the methodology below.)`;
   document.getElementById("spinetable").innerHTML = tableView("spine",
-    "Program survival by layer, programs past ten lifetime completions",
-    ["Layer", "Programs ever", "Still conferring 2023", "Survive"],
+    "Active share by layer, programs past ten lifetime completions",
+    ["Layer", "Programs ever", "Active in 2023", "Active share"],
     rows.map(r => [r.full, N(r.d.ever), N(r.d.still), pct(r.d.survive_pct)]));
 }
 
@@ -211,7 +228,7 @@ figures([
   const lo = 300, hi = 1010, f = span(lo, hi);
   const ys = v => m.t + h - f(v) * h;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys, yt: [400, 600, 800, 1000],
-    xt: [1991, 2000, 2010, 2016, 2023]});
+    xt: MOBILE ? [1991, 2007, 2023] : [1991, 2000, 2010, 2016, 2023]});
   chartTitle(svg, "Completions doubled off the 2007 floor, then fell a third from the 2016 peak");
     /* The unit line lives in HTML, not in the svg: at phone widths this sentence runs
        three lines, and an svg <text> neither wraps nor clips politely (collide caught it
@@ -266,26 +283,20 @@ figures([
     {label: "Five years or less", v: B.le5_years, p: B.le5_years_pct, c: SEQ[3]},
     {label: "Both at once", v: B.both, p: B.both_pct, c: SEQ[5]},
   ];
-  /* THE BASE RATE HAD NO CONTROL UNTIL 2026-09-01, AND THE SURVIVAL SPINE HAD ONE SINCE
-     2026-08-26. Three bars saying "half of all starts came to nothing" is a fact about
-     nothing until a reader knows what half means for a technician program in general, and
-     until this sentence the page's own answer to that was three sections away and measured
-     on a different population (substantive programs only). The control here is the SAME six
-     peer trades, pulled from the same endpoint on the same rule, and counted with the size
-     threshold OFF - which is the only way to compare start-and-fail rates at all.
-     `fetch_ipeds_control_baserate.py` reproduces the page's published survival control to
-     the point before it will write this block, so the two comparisons rest on one pull. */
+  /* The base-rate comparison includes all records, with no size threshold, under the
+     same six peer-trade CIPs as the substantive reporting comparison. The polymer census
+     and peer-trade base-rate control have different pull dates. Matching a rounded
+     reporting rate does not establish identical source coverage. */
   const CB = L.control.base;
   document.getElementById("basecontrol").textContent =
     `The trades next door are the control here too: of the ${N(CB.ever)} peer-trade ` +
-    `technician programs the same pull finds under the same rule, ${pct(CB.le10_awards_pct)} ` +
-    `stayed tiny and ${pct(CB.both_pct)} were both tiny and brief, so a polymer technician ` +
-    /* One decimal in prose, two in the file. The ratio is a quotient of two ROUNDED
-       percentages, so "about 2.48" claims a precision the inputs do not carry; the exact
-       2.48 stays in the data and in prog-base-rate-control, where it can be checked. */
-    `program started since 1991 came to nothing about ${Math.round(CB.ratio_le10 * 10) / 10} ` +
-    `times as often as one in the trades taught in the same buildings.`;
-  const ROW = 42;
+    `technician program records counted under the same rule, ${pct(CB.le10_awards_pct)} ` +
+    `were small and ${pct(CB.both_pct)} were both small and brief. The small-record share ` +
+    /* Ratios use unrounded count-based shares; round once for the displayed sentence. */
+    `was about ${((B.le10_awards / B.ever) / (CB.le10_awards / CB.ever)).toFixed(1)} times as high for polymer technician records ` +
+    `(${N(B.le10_awards)} of ${N(B.ever)}, against ${N(CB.le10_awards)} of ${N(CB.ever)}). ` +
+    `The polymer census and peer-trade control use different pull dates; revisions may affect the comparison.`;
+  const ROW = MOBILE ? 88 : 42;
   const {svg, W, m, w} = chart("base", {W: COL, rows: rows.length, rowH: ROW,
     m: {t: 66, r: 24, b: 56, l: 198}});
   /* The three row-label margins below were sized against desktop type; the story
@@ -294,47 +305,43 @@ figures([
      promotion shipped with it. Widened to the longest label plus headroom. 2026-09-01. */
   const xs = v => m.l + (v / B.ever) * w;                    // LINEAR from zero, of 168
   frame(svg, {x: m.l, y: m.t, w, h: rows.length * ROW, xs, ys: () => 0,
-    xt: [0, 42, 84, 126, 168], yt: [],
-    xlab: `Programs, of all ${B.ever} started since 1991`});
-  chartTitle(svg, "Four in every ten technician programs started since 1991 were both tiny and brief",
-    `All ${B.ever} associate and certificate programs under the polymer codes, no size threshold. Bars start at zero.`);
+    xt: MOBILE ? [0, 84, 168] : [0, 42, 84, 126, 168], yt: [],
+    xlab: MOBILE ? `Records, of ${B.ever}` : `Program records, of all ${B.ever} since 1991`});
+  chartTitle(svg, "45% of technician records were both small and brief",
+    `All ${B.ever} associate and certificate program records under the polymer codes, no size threshold. Bars start at zero.`);
   el("line", {x1: xs(B.ever / 2), y1: m.t - 6, x2: xs(B.ever / 2), y2: m.t + rows.length * ROW,
     stroke: "var(--pv-axis)", "stroke-width": 1, opacity: .55}, svg);
-  txt(svg, "half", {x: xs(B.ever / 2), y: m.t - 12, "text-anchor": "middle", class: "pv-labq"});
+  if (!MOBILE) txt(svg, "half", {x: xs(B.ever / 2), y: m.t - 12, "text-anchor": "middle", class: "pv-labq"});
   rows.forEach((r, i) => {
     const y = m.t + i * ROW + 8, bh = 26;
     el("rect", {x: m.l, y, width: Math.max(2, xs(r.v) - m.l), height: bh, fill: r.c, rx: 3}, svg);
-    txt(svg, r.label, {x: m.l - 12, y: y + bh - 9, "text-anchor": "end", class: "pv-lab"});
-    txt(svg, `${r.v} programs, ${pct(r.p)}`, {x: xs(r.v) + 10, y: y + bh - 9, class: "pv-lab"});
+    txt(svg, r.label, {x: MOBILE ? m.l : m.l - 12, y: MOBILE ? y - 10 : y + bh - 9, "text-anchor": MOBILE ? "start" : "end", class: "pv-lab"});
+    txt(svg, `${r.v} records, ${pct(r.p)}`, {x: MOBILE ? m.l : xs(r.v) + 10, y: MOBILE ? y + bh + 18 : y + bh - 9, class: "pv-lab"});
     hoverable(el("rect", {x: 0, y: y - 8, width: W, height: bh + 16, fill: "transparent"}, svg),
-      `<b>${r.label}</b><br><span class="v">${r.v}</span> of ${B.ever} programs
+      `<b>${r.label}</b><br><span class="v">${r.v}</span> of ${B.ever} program records
        (<span class="v">${pct(r.p)}</span>)`,
       `${r.label}: ${r.v} of ${B.ever} (${pct(r.p)})`);
   });
   document.getElementById("basetable").innerHTML = tableView("base",
-    `All ${B.ever} technician programs since 1991, by fate`,
-    ["Measure", "Programs", "Share"],
+    `All ${B.ever} technician records since 1991, by size and duration`,
+    ["Measure", "Records", "Share"],
     rows.map(r => [r.label, r.v, pct(r.p)]));
   document.getElementById("basesrc").innerHTML =
     `The half-line is the reading, and &ldquo;both at once&rdquo; is the strict test: ten or
      fewer completions ever AND a run of five years or less, not either. (All ${B.ever}
-     associate and certificate programs under the polymer codes, no size threshold;
+     associate and certificate records under the polymer codes, no size threshold;
      certificate award levels canonicalised across the bureau&rsquo;s 2020 renumbering, which
-     is the correction described in &ldquo;What we got wrong&rdquo; below.) Every share on
-     this chart is an <b>upper</b> bound, and so is the control&rsquo;s: the federal mirror
-     never served one collection year of completions, and a year missing from a lifetime
-     total can only push a program into the &ldquo;ten or fewer&rdquo; bucket, never out of
-     it. The hole is the same on both sides, which is why the comparison is steadier than
-     either number in it.`;
+     is the correction described in &ldquo;What we got wrong&rdquo; below.) Missing source
+     years can understate lifetime totals and reporting spans, changing threshold membership.
+     Recovered years may also add records, so these are snapshot shares, not failure
+     probabilities. The same mirror is used on both sides, but missingness may affect
+     fields differently; a shared source does not guarantee that the ratio is unaffected.`;
   const OH = D.ohio;
   document.getElementById("basenote").innerHTML =
     `<b>Ohio makes the base rate concrete.</b> Of the state&rsquo;s <b>${OH.tech_ever}</b>
-     technician programs, <b>${OH.never_took_off}</b> never reached ten completions. Edison
-     State tried three times; Lakeland launched two certificates in the same year, one
-     completion each; Kent State tried twice. <b>The University of Akron itself failed at
-     this layer twice</b>, an associate degree and a certificate, nine completions between
-     them. The country&rsquo;s flagship polymer school could not make a technician program
-     stick, and the record of the attempts is in the table below.`;
+     technician records, <b>${OH.never_took_off}</b> reported ten or fewer lifetime completions.
+     Akron has two such records, an associate degree and a certificate, with nine completions
+     between them. These records do not establish separate failed attempts or current capacity.`;
   document.getElementById("ohiotable").innerHTML = tableView("ohio",
     `Ohio’s ${OH.tech_ever} technician programs, largest first`,
     ["Institution", "Award", "Run", "Lifetime completions", "Status in the record"],
@@ -357,13 +364,13 @@ figures([
   rows.forEach(r => { const k = shortInst(r.institution); seen[k] = (seen[k] || 0) + 1; });
   const rowLabel = r => seen[shortInst(r.institution)] > 1
     ? `${shortInst(r.institution)}, ${awardWords(r.award)}` : shortInst(r.institution);
-  const ROW = 24;
+  const ROW = MOBILE ? 76 : 24;
   const {svg, W, m, w} = chart("working", {W: COL, rows: rows.length, rowH: ROW,
     m: {t: 66, r: 30, b: 54, l: 242}});
   const maxV = rows[0].total_awards * 1.08;
   const xs = v => m.l + (v / maxV) * w;                      // LINEAR from zero
   frame(svg, {x: m.l, y: m.t, w, h: rows.length * ROW, xs, ys: () => 0,
-    xt: ticks(0, maxV, 4), yt: [], xlab: "Lifetime completions, 1991–2023"});
+    xt: ticks(0, maxV, MOBILE ? 3 : 4), yt: [], xlab: "Lifetime completions, 1991–2023"});
   chartTitle(svg, "One program conferred more than the next two combined, and it is in Michigan");
     document.getElementById("workingsub").textContent =
       `The largest ${SHOWN} of the ${all.length} US polymer technician programs that ever ` +
@@ -373,7 +380,7 @@ figures([
     const active = r.status === "active";
     el("rect", {x: m.l, y, width: Math.max(2, xs(r.total_awards) - m.l), height: bh,
       fill: active ? SEQ[5] : SEQ[1], rx: 3}, svg);
-    txt(svg, rowLabel(r), {x: m.l - 12, y: y + bh - 3, "text-anchor": "end",
+    txt(svg, rowLabel(r), {x: MOBILE ? m.l : m.l - 12, y: MOBILE ? y - 9 : y + bh - 3, "text-anchor": MOBILE ? "start" : "end",
       class: active ? "pv-lab" : "pv-labq"});
     /* THE TAIL PRINTS THE MEASUREMENT, NOT A VERDICT. The record's "ended" flag means
        only that no completion was filed for two years or more. This page's own source
@@ -384,7 +391,7 @@ figures([
        since 1999, and neither is a claim about a college. */
     const tail = active ? "" : `, last filed ${r.last_year}`;
     txt(svg, `${N(r.total_awards)}${tail}`,
-      {x: xs(r.total_awards) + 8, y: y + bh - 3, class: active ? "pv-lab" : "pv-labq"});
+      {x: MOBILE ? m.l : xs(r.total_awards) + 8, y: MOBILE ? y + bh + 18 : y + bh - 3, class: active ? "pv-lab" : "pv-labq"});
     hoverable(el("rect", {x: 0, y: y - 4, width: W, height: ROW, fill: "transparent"}, svg),
       `<b>${Cap(r.institution)}</b> (${r.state})<br>${r.award}<br>
        <span class="v">${N(r.total_awards)}</span> completions, ${r.first_year}–${r.last_year}
@@ -449,10 +456,10 @@ figures([
   const lo = 20, hi = 122, f = span(lo, hi);
   const ys = v => m.t + h - f(v) * h;
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys, yt: [25, 50, 75, 100],
-    xt: [1991, 2000, 2010, 2016, 2023]});
+    xt: MOBILE ? [1991, 2007, 2023] : [1991, 2000, 2010, 2016, 2023]});
   chartTitle(svg, `Akron’s polymer completions are ${pct(D.ua.pct_off)} below its own 2016 peak`,
     "University of Akron polymer completions per year, all levels. Axis starts at 20, not zero.");
-  const path = rows.map((r, i) => `${i ? "L" : "M"}${xs(r.year)},${ys(r.awards)}`).join("");
+  const path = rows.map((r, i) => `${i && r.year - rows[i - 1].year === 1 ? "L" : "M"}${xs(r.year)},${ys(r.awards)}`).join("");
   el("path", {d: path, fill: "none", stroke: SEQ[5], "stroke-width": 2.5}, svg);
   const peakAll = rows.reduce((a, r) => r.awards > a.awards ? r : a);
   const last = rows[rows.length - 1];
@@ -474,38 +481,28 @@ figures([
     "University of Akron polymer completions per year",
     ["Year", "Completions"], rows.map(r => [r.year, N(r.awards)]));
   document.getElementById("uasrc").innerHTML =
-    `The composition is worse than the total: from ${N(D.ua.peak_recent)} completions in
+    `Graduate degrees account for most of the decline: from ${N(D.ua.peak_recent)} completions in
      2016 to <b>${N(D.ua.latest)}</b> in 2023 (<b>${pct(D.ua.pct_off)}</b> down), with
      master&rsquo;s <b>${D.ua.masters_2016} &rarr; ${D.ua.masters_2023}</b>, doctorates
      <b>${D.ua.doctorate_2016} &rarr; ${D.ua.doctorate_2023}</b>, and an undergraduate line
-     across those eight years of <b>${D.ua.bachelor_2016_2023.join(", ")}</b>. The figure to hold is the
-     master&rsquo;s line, <b>66 to 16</b>: of the 70-completion fall, 50 are master&rsquo;s and
-     19 are doctorates, and graduate degrees are 42 of the 44 completions left in 2023. The
-     undergraduate line runs between zero and three in every year this record reports
+     across those eight years of <b>${D.ua.bachelor_2016_2023.map(v => v == null ? "no data" : v).join(", ")}</b>. Of the 70-completion fall,
+     50 are master&rsquo;s, 19 are doctorates and one is a bachelor&rsquo;s degree;
+     graduate degrees are 42 of the 44 completions left in 2023. The
+     undergraduate line runs between zero and three in each reported year from 2016 to 2023
      (2020 is quarantined, not zero), so the two in 2023 is a small number in a small
      series, not the shape of the fall. (IPEDS completions, Akron Main Campus, the three polymer codes, all
      levels.)`;
   document.getElementById("uanote").innerHTML =
-    `<b>What the institutional record adds.</b> Akron&rsquo;s departments of polymer science
-     and polymer engineering were merged into a college of their own in July 1988 and
-     renamed a School in 2020. The 2020 cuts were university-wide, not
-     polymer-specific: a $65M gap, 178 positions, six of eleven colleges eliminated; polymer
-     survived, downgraded from College to School. In November 2024 a merger proposal would
-     have cut ten polymer faculty, and on 15 April 2025 the board adopted the president&rsquo;s
-     recommendations in a form that <b>retrenched nobody</b>, voluntary departures and other
-     savings having removed the need, on the advice of a formal retrenchment committee whose
-     report is public. The completions collapse is real and
-     precedes both events, and it ran through the same years in which $7.1M of federal Tech
-     Hub money and a share of a $31.25M state Innovation Hub award arrived. Institutional
-     investment rose while the academic pipeline fell, at the same institution over the same
-     years. The page does not claim the money caused the fall: completions lag enrolment by two to four
-     years, so this is a fact about timing.`;
+    `<b>The series ends in 2023.</b> This record measures completions through 2023.
+     Subsequent institutional changes and grant awards require later completions data
+     before their timing or outcomes can be compared. The earlier claim that regional
+     grant investment rose during the same years as this decline has been withdrawn.`;
 }
 
 /* ------------------------------------------------------------ 7. what it pays */
 {
   const rows = D.pay;
-  const ROW = 36;
+  const ROW = MOBILE ? 70 : 36;
   const {svg, W, m, w} = chart("pay", {W: COL, rows: rows.length, rowH: ROW,
     m: {t: 78, r: 20, b: 54, l: 172}});
   const lo = 50000;
@@ -513,12 +510,12 @@ figures([
   const hi = Math.max(...vals, rows[0].earn_4yr_p75_national || 0) * 1.05;
   const xs = v => m.l + ((v - lo) / (hi - lo)) * w;          // position, not length
   frame(svg, {x: m.l, y: m.t, w, h: rows.length * ROW, xs, ys: () => 0,
-    xt: ticks(lo, hi, 5), yt: [], xfmt: v => "$" + Math.round(v / 1000) + "k",
+    xt: ticks(lo, hi, MOBILE ? 3 : 5), yt: [], xfmt: v => "$" + Math.round(v / 1000) + "k",
     band: [rows[0].earn_4yr_p25_national, rows[0].earn_4yr_p75_national],
-    xlab: "Median earnings after a polymer engineering bachelor’s degree"});
+    xlab: "Median earnings"});
   chartTitle(svg, "Every institution the Scorecard publishes clears $87,000 four years out",
     "Median earnings by institution, against the national middle half. Axis starts at $50,000.");
-  txt(svg, "national middle half, 4 years out", {x: xs(rows[0].earn_4yr_p25_national),
+  if (!MOBILE) txt(svg, "national middle half, 4 years out", {x: xs(rows[0].earn_4yr_p25_national),
     y: m.t - 8, class: "pv-labq"});
   rows.forEach((r, i) => {
     const y = m.t + i * ROW + 18;
@@ -531,7 +528,7 @@ figures([
     if (r.earn_4yr != null)
       el("circle", {cx: xs(r.earn_4yr), cy: y, r: 5.5, fill: SEQ[5],
         stroke: "var(--paper)", "stroke-width": 1.5}, svg);
-    txt(svg, shortInst(r.institution), {x: m.l - 12, y: y + 4, "text-anchor": "end",
+    txt(svg, shortInst(r.institution), {x: MOBILE ? m.l : m.l - 12, y: MOBILE ? y - 14 : y + 4, "text-anchor": MOBILE ? "start" : "end",
       class: "pv-lab"});
     const nat = rows[0].earn_4yr_national;
     hoverable(el("rect", {x: 0, y: y - 18, width: W, height: ROW, fill: "transparent"}, svg),
@@ -567,16 +564,50 @@ figures([
 {
   document.getElementById("closersub").innerHTML =
     `The numbers behind the sentence: <b>${pct(L.technician.survive_pct)}</b> technician
-     survival against <b>${pct(L.degree.survive_pct)}</b> for degrees and
+     active share in 2023 against <b>${pct(L.degree.survive_pct)}</b> for degrees and
      <b>${pct(L.control.survive_pct)}</b> for the peer trades; <b>${pct(D.base.both_pct)}</b>
-     of all ${D.base.ever} starts both tiny and short-lived; the anchor
-     <b>${pct(D.ua.pct_off)}</b> below its own 2016 peak. The one program with three unbroken
-     decades is Ferris State&rsquo;s, and why it held is the first interview, not a fact this
-     dataset can supply.`;
+     of all ${D.base.ever} records both small and brief; Akron completions in the selected
+     codes <b>${pct(D.ua.pct_off)}</b> below their 2016 peak. These measures describe federal
+     filings; verifying current teaching requires institutional evidence.`;
 }
 
 /* The page’s own corrections, standing together — editorial standard rule 6. */
 PV.whatWeGotWrong([
+  {when: "2026-09-08 &middot; ratio review",
+   was: `The small-record comparison said about 2.5 times. Its stored ratio was 2.48,
+     and the small-and-brief ratio was 2.37.`,
+   is: `The count-based ratios are ${L.control.base.ratio_le10.toFixed(2)} for small records
+     (${N(D.base.le10_awards)}/${N(D.base.ever)} divided by ${N(L.control.base.le10_awards)}/${N(L.control.base.ever)})
+     and ${L.control.base.ratio_both.toFixed(2)} for small-and-brief records
+     (${N(D.base.both)}/${N(D.base.ever)} divided by ${N(L.control.base.both)}/${N(L.control.base.ever)}).
+     The displayed small-record comparison is about ${((D.base.le10_awards / D.base.ever) /
+       (L.control.base.le10_awards / L.control.base.ever)).toFixed(1)} times.`,
+   why: `Dividing integer-rounded percentages instead of the underlying shares inflated
+     both ratios. The calculation now uses each numerator and its own denominator before rounding.`},
+  {when: "2026-09-08 &middot; time-window review",
+   was: `The browser and methodology title said &ldquo;The Hollowing of Polymer Education&rdquo;;
+     the article&rsquo;s longer record began in 1991, leaving the decline&rsquo;s time window implicit.`,
+   is: `The title now dates the decline to 2016&ndash;2023. Selected-code completions were
+     ${N(M.first.awards)} in ${M.first.year}, reached ${N(M.peak.awards)} in ${M.peak.year},
+     and were ${N(M.latest.awards)} in ${M.latest.year}. The fall is from the 2016 peak;
+     the 2023 total remains above the 1991 starting point.`,
+   why: `An undated interpretive title could turn a decline from a peak into an unsupported
+     claim of decline across the full historical window.`},
+  {when: "2026-09-08 &middot; definition and chronology review",
+   was: `&ldquo;Never took hold&rdquo; described both 95 of 168 records and a 45% group.
+     The page called the other education layers stable, implied the next rebuilt program
+     would be a historical first, and placed later grant investment in the same years as
+     a completions decline ending in 2023. Ferris State was described as 33 unbroken years.`,
+   is: `Small means ten or fewer lifetime completions: 95 of 168 (57%). Brief means a
+     first-to-last reporting span of five years or less: 91 (54%). Both describes 75 (45%).
+     The substantive-program comparison is 20 of 73 technician records active in 2023,
+     against 37 of 77 degree records and 3,185 of 6,648 peer-trade records. It establishes
+     neither stability nor a historical first. Akron&rsquo;s 44 selected-code completions
+     include 42 graduate degrees. Later grant outcomes are outside the series. Ferris spans
+     1991&ndash;2023 with 32 counted years because 2020 is quarantined.`,
+   why: `Several different measures were given one label, and administrative-record
+     absence was extended into claims about failure, history and grant timing. The
+     corrected language states the measured population and keeps the missing year visible.`},
   {when: "2026-08-26 · found by an editorial audit, confirmed against the live API",
    was: "Every chart on this page counted a 2020, and the completions line described a flat pandemic year.",
    is: "There is no 2020 in this record. The federal mirror republishes 2019’s award counts under year=2020 - identical totals and identical institution sets, with the 2020 certificate codes applied over the top. Verified across all six census codes and reproduced nationally and in three states. The year is dropped, the line is drawn broken, and lifetime totals fall slightly because they no longer count 2019 twice: Ferris State 1,282 to 1,253, the started-and-failed base rate 43% to 45%.",

@@ -752,7 +752,7 @@ function drawExtMobile() {
 }
 
 document.getElementById("extfigtitle").textContent =
-  `Distant residence grew ${distGrew}% since 2019; adjacent commuting grew ${adjGrew}%`;
+  `Jobs held by distant residents grew ${distGrew}% since 2019; adjacent residents, ${adjGrew}%`;
 
 /* ------------------------------------------- 4. the reciprocal (dumbbell) */
 function drawRecip() { MOBILE.matches ? drawRecipMobile() : drawRecipDesktop(); }
@@ -1222,7 +1222,7 @@ document.getElementById("diagnote").innerHTML =
    ${pct(1 - summit.in_county)} of them are held by people who live somewhere else. Two
    readings stay off the table. None of this is a commute: the home address is a
    residence on file, not evidence that anyone travelled. And none of it is specific to
-   the polymer cluster, because LODES records no industry at this level of detail.`;
+   the polymer cluster: these are all-job totals, and the source cannot isolate polymer industries.`;
 
 document.getElementById("exttable").innerHTML = withNote(tableView("ex",
   "Largest external sources of PIC-12 jobs",

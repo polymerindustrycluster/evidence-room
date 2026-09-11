@@ -2,9 +2,9 @@
  *
  * THE GATE (web/README.md), answered:
  *   0. Dataset: every institution that ever filed a polymer-group program in IPEDS
- *      1991-2023 (the polymer-programs-db census), aggregated to one row per institution
+ *      1991-2023 (the polymer-programs-db census), aggregated to one row per institution ID
  *      and joined to IPEDS directory coordinates; plus the four institutions CONFIRMED to
- *      teach polymer science under chemistry codes, as hand rows.
+ *      have documented polymer or materials teaching absent from the census, as hand rows.
  *   1. Benchmark: none — this is a directory drawn as a map, not a comparison. The one
  *      comparative panel (largest records) is labeled as institution-level and points at
  *      the programs page for the program-level construct.
@@ -47,8 +47,20 @@
  */
 (async () => {
 "use strict";
-const {el, txt, ticks, frame, hoverable, tableView, chart, chartTitle, figures, N, SEQ, INK} = PV;
+const {el, txt, ticks, frame, hoverable, tableView, chart, figures, N, SEQ, INK} = PV;
 const D = await PV.data("viz-data.json");
+function chartTitle(svg, claim, unit) {
+  const heading = document.createElement("p");
+  heading.className = "chart-heading";
+  heading.textContent = claim;
+  svg.before(heading);
+  if (unit) {
+    const caption = document.createElement("p");
+    caption.className = "chart-unit";
+    caption.textContent = unit;
+    svg.before(caption);
+  }
+}
 
 /* THE COLD OPEN (guarded by tools/coldopen.mjs). This page opened on 1,124 pixels of
    prose before its first mark. The strip is the record at its coarsest: every
@@ -105,9 +117,9 @@ const D = await PV.data("viz-data.json");
         stroke: r.active_programs > 0 ? ACTIVE : NO_AWARD_2023, "stroke-width": 2}, svg);
     /* One caption names the trio; per-tick labels collided (the three deep records sit
        within 15% of each other on a sqrt scale, and three 13px names do not fit there). */
-    txt(svg, "the three deep records: Lowell, Big Rapids, Akron", {x: hi, y: y - 24,
+    txt(svg, W < 600 ? "Largest: Lowell, Big Rapids, Akron" : "the three deep records: Lowell, Big Rapids, Akron", {x: hi, y: y - 24,
       "text-anchor": "end", "font-size": 13, fill: "#fff", "font-weight": 700});
-    txt(svg, `${rows.length} institutions, placed by lifetime record size`,
+    txt(svg, `${rows.length} institution records, placed by lifetime record size`,
       {x: lo, y: H - 8, "font-size": 12.5, fill: "#C6E2E6"});
   }
 }
@@ -135,7 +147,8 @@ const stateCell = s => `${s}<span class="pv-sr"> ${STATE[s] || ""}</span>`;
 
 /* THE COLUMN, 1:1. The svg viewBox is the figure width in page pixels, so 14px inside a
    chart is 14px on the page (LAYOUT-SPEC rules 2 and 4). */
-const COL = 728;
+const COL = Math.round(document.querySelector("#map").parentElement.getBoundingClientRect().width) || 728;
+const MOBILE = window.innerWidth < 600;
 /* A chart’s title is a CLAIM in body weight, ON the page rail, with the units as a smaller
    second line. x=0 in the viewBox IS the rail, because the svg fills the column exactly. */
 /* Every institution in the record, mapped or not: 146 dots plus the one the projection
@@ -157,9 +170,9 @@ const realStates = D.states_list.filter(s => s.state !== "DC" && s.state !== "PR
    in words a reader can hold, and the ban on dividing the first two rides on the second
    tile, which is the sentence that would be false without it. */
 figures([
-  ["key", N(T.ever), "institutions, ever",
-   `have reported at least one polymer degree or certificate since 1991. A floor: the
-    record misses programs housed under other headings.`],
+  ["key", N(T.ever), "institution records, ever",
+   `one federal institution identifier per record. Some schools have more than one;
+    teaching reported under other subject headings is missing.`],
   /* THE GUARD-RAIL USED TO SAY SOMETHING FALSE. "It is not the survivors of the 147" was
      written to stop a reader computing 41/147, and it stopped them by denying set
      membership: all 41 of these institutions ARE among the 147, and a reader who checks
@@ -173,22 +186,22 @@ figures([
     threshold, which is a different page. This one never divides one by the other.`],
   ["", N(T.states), "states and territories",
    `${realStates} states, plus the District of Columbia and Puerto Rico. ${solo} of the
-    ${N(T.states)} hold exactly one institution.`],
-  ["", String(D.invisible.length), "teach it where the record cannot look",
-   `confirmed to teach polymer science under a chemistry heading. They are the hollow
-    diamonds, and there are certainly more.`],
+    ${N(T.states)} hold exactly one institution record.`],
+  ["", String(D.invisible.length), "documented teaching outside this record",
+   `polymer or materials teaching absent from this selected census. The hollow
+    diamonds are four documented examples, not an exhaustive list.`],
 ]);
 
 /* ------------------------------------------------------------------ the map */
 {
   /* 975x610 is the us-atlas frame the basemap was projected into at build time. S scales
      that frame into the column; TOP leaves room for the claim title above it. */
-  const S = COL / 975, TOP = 46;
+  const S = COL / 975, TOP = 12;
   const H = Math.round(TOP + 610 * S);
   const {svg} = chart("map", {W: COL, H});
   chartTitle(svg,
-    `${glN} of the ${N(T.ever)} institutions sit in the eight states that touch the Great Lakes`,
-    "One dot is one institution, sized by the square root of its 1991–2023 total.");
+    `${glN} of the ${N(T.ever)} institution records sit in the eight states that touch the Great Lakes`,
+    "One dot is one institution record, sized by the square root of its 1991–2023 total.");
   const g = el("g", {transform: `translate(0,${TOP}) scale(${S.toFixed(6)})`}, svg);
   el("path", {d: D.basemap.nation, fill: "#F4F2EE", stroke: "none"}, g);
   el("path", {d: D.basemap.states, fill: "none", stroke: "#D8D3CA", "stroke-width": 1}, g);
@@ -216,10 +229,39 @@ figures([
     const node = el("path", {d: `M${d.x},${d.y - s}L${d.x + s},${d.y}L${d.x},${d.y + s}L${d.x - s},${d.y}Z`,
       fill: "var(--paper)", stroke: INK, "stroke-width": 2.2}, g);
     hoverable(node,
-      `<b>${d.name}</b><br>${d.city}, ${d.state}<br>Confirmed to teach polymer science under
-       chemistry or chemical-engineering codes, and so <b>invisible to this census</b>. No
-       completions count exists for it here, which is the point.`,
-      `${d.name}: confirmed census-invisible polymer teaching`);
+      `<b>${d.name}</b><br>${d.city}, ${d.state}<br>Documented polymer or materials teaching
+       <b>absent from this selected census</b>. No completions count is included here;
+       the diamond does not identify its federal filing code.`,
+      `${d.name}: documented teaching absent from this census`);
+  });
+  const focusRing = el("circle", {r: 14, fill: "none", stroke: INK,
+    "stroke-width": 3, "pointer-events": "none", visibility: "hidden"}, g);
+  const picker = document.getElementById("map-institution");
+  const choices = [...ALL].sort((a, b) => Cap(a.name).localeCompare(Cap(b.name)));
+  choices.forEach((d, i) => {
+    const option = document.createElement("option");
+    option.value = String(i);
+    option.textContent = `${Cap(d.name)} (${d.city}, ${d.state})`;
+    picker.appendChild(option);
+  });
+  picker.addEventListener("change", () => {
+    const d = picker.value === "" ? null : choices[Number(picker.value)];
+    const detail = document.getElementById("map-selection");
+    if (!d) {
+      focusRing.setAttribute("visibility", "hidden");
+      detail.textContent = "Choose a name to read its location, recorded completions and 2023 reporting status.";
+      return;
+    }
+    const placed = Number.isFinite(d.x) && Number.isFinite(d.y);
+    detail.textContent = `${Cap(d.name)}, ${d.city}, ${d.state}: ${N(d.total_awards)} recorded completions, ${yrs(d)}. ` +
+      (still(d) ? "Reported a polymer-coded completion in 2023." : `No polymer-coded completion in 2023; last reported ${d.last_year}.`) +
+      (placed ? " Its location is ringed on the map." : " Outside the map projection; included in the directory.");
+    focusRing.setAttribute("visibility", placed ? "visible" : "hidden");
+    if (placed) {
+      focusRing.setAttribute("cx", d.x);
+      focusRing.setAttribute("cy", d.y);
+      focusRing.setAttribute("r", r(d.total_awards) + 7);
+    }
   });
   /* THREE ANCHORS, NOT 147 (LAYOUT-SPEC rule 6). The three places the hero names are the
      three a reader should be able to find without hovering; everything else is the hover
@@ -233,7 +275,7 @@ figures([
   ANCHORS.forEach(a => {
     const d = D.dots.find(x => x.name === a.name);
     if (!d) return;
-    txt(svg, a.label, {x: d.x * S + a.dx, y: d.y * S + TOP + a.dy, "text-anchor": a.at,
+    txt(svg, a.label, {x: d.x * S + (MOBILE ? a.dx * .5 : a.dx), y: d.y * S + TOP + a.dy, "text-anchor": a.at,
       class: "pv-lab", fill: "var(--text)", stroke: "var(--paper)", "stroke-width": 3.5,
       "paint-order": "stroke", "stroke-linejoin": "round"});
   });
@@ -246,34 +288,34 @@ figures([
      chart: a big dot is a long record, not a big program now. */
   document.getElementById("mapsrc").innerHTML =
     `<b>A big dot is a long record, not a large program today</b>: a dot&rsquo;s radius
-     follows the square root of everything an institution ever conferred across 33 years,
-     with a floor so the smallest records stay visible, so the dots rank the record and do
+     follows the square root of the institution’s cumulative conferrals in the selected codes,
+     with a floor keeping small records visible, so the dots rank the record and do
      not compare areas. <b>Leaving the federal directory is not closing</b>, and which of
      the early leavers actually closed is set out with the register below. IPEDS
-     completions by six-digit program code, 1991&ndash;2023, aggregated to institutions,
+     completions by six-digit program code, 1991&ndash;2023, aggregated to institution identifiers,
      joined to IPEDS directory coordinates.`;
   document.getElementById("mapnote").innerHTML =
     `<b>What the diamonds mean, and what this version leaves out.</b>
      UChicago&rsquo;s molecular engineering school, Dartmouth, Rutgers and Brown are
-     <b>confirmed</b> to teach polymer science under headings this census cannot see, so
+     documented examples of polymer or materials teaching absent from this census, so
      they are drawn at the same scale as everything it catches and the blind spot is on the
      map itself. A research layer, institution-level polymer output from OpenAlex, is
-     deliberately absent from this version: its candidate list is zero-verified and the API
-     is metered, so it is the named next step rather than a silent omission.`;
+     absent from this version: its candidate institutions have not been individually
+     verified. This edition maps teaching records.`;
 }
 
 /* -------------------------------------------------------- the largest records */
 {
   const rows = ranked.slice(0, 12);
-  const ROW = 26;
+  const ROW = MOBILE ? 64 : 26;
   const {svg, W, m, w} = chart("top", {W: COL, rows: rows.length, rowH: ROW,
-    m: {t: 62, r: 52, b: 32, l: 172}});
+    m: {t: MOBILE ? 28 : 62, r: 52, b: 32, l: MOBILE ? 4 : 172}});
   const maxV = rows[0].total_awards * 1.06;
   const xs = v => m.l + (v / maxV) * w;                     // LINEAR from zero
   frame(svg, {x: m.l, y: m.t, w, h: rows.length * ROW, xs, ys: () => 0,
     xt: ticks(0, maxV, 4), yt: []});
   chartTitle(svg, "The fourth largest record is just over half the size of the third",
-    "Every polymer program the institution ever filed, summed. Axis starts at zero.");
+    "Every polymer program filed under the institution identifier, summed. Axis starts at zero.");
   /* The row label is the institution, short enough to leave the bars room: 330 units of a
      1100-unit box for names was a fifth of the figure saying what the table says in full.
      The full name rides in the tooltip and in both tables. */
@@ -292,7 +334,7 @@ figures([
     const y = m.t + i * ROW + 4, bh = 17;
     el("rect", {x: m.l, y, width: Math.max(2, xs(d.total_awards) - m.l), height: bh,
       fill: still(d) ? SEQ[5] : SEQ[1], rx: 3}, svg);
-    txt(svg, short(d.name), {x: m.l - 10, y: y + bh - 4, "text-anchor": "end",
+    txt(svg, short(d.name), {x: MOBILE ? m.l : m.l - 10, y: MOBILE ? y - 8 : y + bh - 4, "text-anchor": MOBILE ? "start" : "end",
       class: still(d) ? "pv-lab" : "pv-labq"});
     txt(svg, N(d.total_awards), {x: xs(d.total_awards) + 8, y: y + bh - 4,
       class: still(d) ? "pv-lab" : "pv-labq"});
@@ -316,19 +358,18 @@ figures([
   const stillN = rows.filter(still).length;
   document.getElementById("topsrc").innerHTML =
     `${stillN === rows.length
-      ? `<b>All ${rows.length} of these institutions still had a polymer program conferring
+      ? `<b>All ${rows.length} of these institution records still had a polymer program conferring
          in 2023</b>, which is why every bar is the same colour.`
       : `<b>${stillN} of these ${rows.length} still had a polymer program conferring in
          2023</b>; the pale bars are the ones with no polymer-coded award that year.`}
      <b>The three deepest records sum to ${N(awards3)} of the record&rsquo;s ${N(awardsAll)}
      completions, ${pct(awards3 / awardsAll)}</b>: ${Cap(top3[0].name)} in Lowell,
      Massachusetts, Ferris State in Big Rapids, Michigan, and the University of Akron. Each
-     bar is an institution-level total, every program it ever filed under the polymer
+     bar totals the programs filed under one federal institution identifier in the polymer
      headings, summed. The state ranking depends on which unit you pick: Michigan has
-     ${D.states_list[0].ever} institutions ever to Ohio&rsquo;s
+     ${D.states_list[0].ever} institution records ever to Ohio&rsquo;s
      ${D.states_list.find(s => s.state === "OH").ever}, while Ohio leads on substantive
-     <i>programs</i> over on the programs page. Both are true, and neither substitutes for
-     the other.`;
+     <i>programs</i> over on the programs page. The units differ.`;
 }
 
 /* ------------------------------------------------------- the register (appendix)
@@ -357,7 +398,7 @@ figures([
   document.getElementById("dirlede").innerHTML =
     `Every dot on the map is a row here, largest record first, and so is the one institution
      the projection could not place. Sort any column; filter by institution, city or state.
-     <b>Seven institutions left the federal directory before it carried coordinates in 2009</b>
+     <b>Seven records left the federal directory before it carried coordinates in 2009</b>
      and sit at their city&rsquo;s centroid, each saying so in its hover. Three of those seven
      rows are confirmed closures, Akron Machining Institute in 2007 and Acme Institute of
      Technology&rsquo;s two Wisconsin campuses in 1995, which is two institutions across three
@@ -369,7 +410,7 @@ figures([
      in their usual insets and are empty because no polymer-coded institution has ever filed
      from either.`;
   document.getElementById("maptable").innerHTML = tableView("map",
-    "The full directory: every institution, largest record first",
+    "The full directory: every institution record, largest first",
     ["Institution", "City", "State", "Programs", "Levels", "Years", "Lifetime completions",
      "Polymer-coded award 2023", "Programs by code"],
     [...ALL].sort((a, b) => b.total_awards - a.total_awards)
@@ -391,12 +432,12 @@ figures([
 /* closer */
 {
   document.getElementById("closersub").innerHTML =
-    `${N(T.ever)} institutions have reported a polymer degree or certificate since 1991;
+    `${N(T.ever)} institution records contain polymer awards since 1991;
      ${N(T.active)} were still awarding one in 2023; the record reaches ${realStates}
-     states, the District of Columbia and Puerto Rico; ${D.invisible.length} more teach
-     polymer science where the record cannot look. The deepest record is
-     ${Cap(D.top.name)}&rsquo;s ${N(D.top.total_awards)} completions. The research layer is
-     the named next step.`;
+     states, the District of Columbia and Puerto Rico; ${D.invisible.length} additional
+     examples of polymer or materials teaching are absent from this census. The deepest record is
+     ${Cap(D.top.name)}&rsquo;s ${N(D.top.total_awards)} completions. Research output is
+     not mapped in this edition.`;
 }
 
 /* THE PAGE’S OWN CORRECTIONS, standing together on the page where the error was made

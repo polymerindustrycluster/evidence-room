@@ -43,11 +43,11 @@
     },
     {
       "id": "rev-settle",
-      "text": "No month changed more than six months after its first print, and 250 of the 259 revised months had stopped moving inside four (closer, distribution table).",
+      "text": "In the held archive, the largest gap between the calendar months of first publication and last observed change is six months; 250 of 259 revised observations have a gap no greater than four months. Recent observations have had less time to change, so this is not a future revision deadline.",
       "source": "for each revised month, the gap in months between the vintage that first published it and the vintage that last changed it",
       "assert": "(lambda lags: max(lags) == 6 and len([v for v in lags if v <= 4]) == 250 and len(lags) == 259)([(lambda a, b: (int(b[:4]) - int(a[:4])) * 12 + int(b[5:7]) - int(a[5:7]))(p['path'][0]['from'], p['path'][-1]['from']) for p in D['periods']])",
       "actual": "sorted(set((lambda a, b: (int(b[:4]) - int(a[:4])) * 12 + int(b[5:7]) - int(a[5:7]))(p['path'][0]['from'], p['path'][-1]['from']) for p in D['periods']))",
-      "falsified_if": "Any month turns out to have moved more than six months after first print, or the count settled within four leaves 250. The closer tells a reader to price against the version published about half a year later, which is advice this claim alone supports; if a benchmark revision ever reaches further back than six months the advice is wrong and has to be withdrawn, not softened. The bound is what a 2019-2026 monthly archive shows, not a rule the BLS publishes, and the methodology box says so."
+      "falsified_if": "The observed month gaps or their counts change when the archive is extended. Calendar-month differences are not exact elapsed durations, and recent observations are right-censored."
     },
     {
       "id": "rev-max",
@@ -154,12 +154,20 @@
       "falsified_if": "Either step leaves the band that rounds to its printed value, or the two stop having opposite signs, which is the whole point of the beat."
     },
     {
+      "id": "rev-bls-revision-policy",
+      "verify": "manual",
+      "text": "BLS states that producer price indexes may be revised for four months after originally scheduled publication, with a separate five-year seasonal-factor window for seasonally adjusted series. WPU06, WPU072 and PCU326326 are unadjusted. This is the published policy, not a guarantee inferred from this archive.",
+      "source": "BLS PPI release Table 1 footnote 2, https://www.bls.gov/news.release/ppi.htm ; FRED series metadata https://fred.stlouisfed.org/series/WPU06 , https://fred.stlouisfed.org/series/WPU072 , https://fred.stlouisfed.org/series/PCU326326 . Independently checked 2026-09-11. Release delays in the archive have not been independently established as the cause of individual later revisions.",
+      "reviewer": "H1 of the 2026-09-10 narrative audit, which held that a six-month bound read off a finite, right-censored archive cannot be published as forward advice. Resolved against the primary source rather than the archive.",
+      "falsified_if": "BLS changes its stated revision policy or one of these three series changes seasonal-adjustment status. The page does not infer the cause of any observed publication delay."
+    },
+    {
       "id": "qwi-restates-history",
       "verify": "manual",
-      "text": "The Quarterly Workforce Indicators restate whole histories each time they are rebuilt, and how far they move is not measured on this page (closer).",
-      "source": "Census LEHD QWI release documentation; the QWI series the churn page is built on (churn/data/churn.json meta.source). No archived QWI vintages are fetched anywhere in this repo, so nothing here can re-run this assertion.",
+      "text": "Census releases full QWI time-series revisions when the underlying state-level QWI are revised. This page does not measure their magnitude or claim every observation changes.",
+      "source": "Census LEHD, National QWI, Release Frequency: https://lehd.ces.census.gov/data/qwi_national.html . Independently checked 2026-09-11: full time-series revisions accompany underlying state-level revisions.",
       "reviewer": "flagged as the page's open data need: archived QWI and county-employment vintages",
-      "falsified_if": "A vintage-to-vintage comparison of QWI, once those vintages are fetched, shows revisions no larger than the three PPI series here. That would remove the reason the closer points this method at the employment series next, and the sentence would have to go."
+      "falsified_if": "Census changes its full-history revision policy, or this page begins measuring revision magnitude and fails to update its limitation. Small or zero changes in individual observations do not refute a policy of recalculating the full series."
     },
     {
       "id": "rev-vignette-year",

@@ -101,7 +101,12 @@ any of it was. Both were omissions, so these are clarifications and not correcti
 
 ## Open items for the next pass
 
-- Claim `lq-coatings-anchor` is MANUAL. Attach the SEC annual-report cover-page links for Sherwin-Williams (Cleveland) and RPM International (Medina) before re-publishing.
+- Claim `lq-coatings-anchor` is MANUAL. The SEC annual-report cover-page links are attached
+  (2026-09-11) and the gate is satisfied: Sherwin-Williams FY2025 10-K filed 2026-02-19,
+  `1 Sherwin Way, Cleveland, Ohio 44113-2206`; RPM International FY2026 10-K filed
+  2026-07-22, `2628 Pearl Road, Medina, Ohio 44256`. Both are in the claim's `source`.
+  A headquarters address is context for a coatings concentration, never evidence of an
+  employment share — QCEW names no employer, and the note beside the heatmap says so.
 - The reciprocal link is missing: this page links out to `../peers/`, and `peers/` does not link back.
 - The hub card in `index/app.js` still carries the old title and question. It should read as the paint finding.
 

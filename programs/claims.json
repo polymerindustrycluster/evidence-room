@@ -3,11 +3,11 @@
  "claims": [
   {
    "id": "prog-spine-hollowing",
-   "text": "Of the programs that ever passed ten completions, 27% of polymer technician programs still conferred in 2023, against 48% of polymer degree programs and 48% of the six peer trades taught in the same buildings. The technician layer is the outlier, and it is the only one: the other two are statistically indistinguishable from each other (48.1% against 47.9%, p=0.98), while the technician layer sits about 20 points below both (p=0.0005). On 73 programs the interval around that 27% runs from 19% to 39%, and all of it lies below the other two layers.",
+   "text": "Among substantive programs (more than ten lifetime completions), 20 of 73 polymer technician records were active in 2023 (27%), versus 37 of 77 degree records and 3,185 of 6,648 peer-trade records (48% each). Active means a reported completion in 2023. These shares do not establish closure or stability.",
    "source": "polymer-programs-db census (IPEDS 1991-2023, 2020 quarantined) plus control_cips.json: same rule, same years, same certificate canonicalisation on both sides",
    "assert": "D['layers']['technician']['survive_pct'] == 27 and D['layers']['degree']['survive_pct'] == 48 and D['layers']['control']['survive_pct'] == 48 and D['layers']['technician']['survive_pct'] < D['layers']['control']['survive_pct'] and (D['layers']['technician']['still'], D['layers']['technician']['ever']) == (20, 73) and (D['layers']['degree']['still'], D['layers']['degree']['ever']) == (37, 77) and (D['layers']['control']['still'], D['layers']['control']['ever']) == (3185, 6648)",
    "actual": "{k: (v['still'], v['ever'], v['survive_pct']) for k, v in D['layers'].items() if isinstance(v, dict)}",
-   "falsified_if": "The ORDER changes. Technician no longer clearly below the control kills the hollowing claim outright, because then this is a story about technical education rather than about polymers. It also dies if the two sides stop being measured the same way: both must stay above ten lifetime completions, active must mean a completion in the final year, certificate award levels must be canonicalised, and 2020 must be excluded on BOTH sides. Two of those four were false on the control side until 2026-08-26, and the published gap was 8 points instead of 20. On 73 programs the technician rate carries a plus-or-minus of about ten points, so a gap under ten points would not be reportable at all. Quote the interval with the number."
+   "falsified_if": "Any named numerator or denominator changes, or the technician share ceases to be lower than either comparator. All three must retain the greater-than-ten threshold, positive final-year completion test, certificate canonicalisation and 2020 exclusion. These administrative-record shares do not establish a causal difference or stability."
   },
   {
    "id": "prog-series-shape",
@@ -19,25 +19,25 @@
   },
   {
    "id": "prog-base-rate",
-   "text": "Of all 168 US polymer technician programs since 1991, 95 (57%) conferred ten or fewer completions in their entire existence, 91 (54%) ran five years or less, and 75 (45%) were both: started and failed. Anyone proposing to rebuild this layer is proposing to beat close to a coin-flip base rate.",
+   "text": "Of 168 polymer technician records since 1991, 95 (57%) are small: ten or fewer recorded lifetime completions. 91 (54%) are brief: first-to-last reporting span of five years or less, inclusive. 75 (45%) satisfy both. These overlapping measures do not establish failed programs.",
    "source": "polymer-programs-db census, associate and certificate levels, no size threshold, 2020 quarantined",
    "assert": "D['base']['ever'] == 168 and D['base']['le10_awards'] == 95 and D['base']['le5_years'] == 91 and D['base']['both'] == 75 and D['base']['both_pct'] == 45",
    "actual": "D['base']",
-   "falsified_if": "The counts move when 2024 data lands or IPEDS revises, or the certificate-level canonicalisation changes. These are only right AFTER the 2020 award-level recode is corrected AND the duplicated 2020 is removed: an uncanonicalised rebuild splits programs and inflates every number here, while leaving 2020 in doubles a year inside every lifetime total, which moved four programs back across the ten-award line on 2026-08-26. DIRECTION, since this one is known and one-way: 57% and 45% are UPPER bounds. The Urban mirror ran three collection years late and then skipped C2023_A entirely (ipeds_mirror_fix.py names this page as still carrying it), and a year missing from a lifetime total can only move a program INTO the ten-or-fewer bucket, never out of it. Recovering the year can only lower these shares."
+   "falsified_if": "Any named numerator or denominator changes under a source revision, certificate recode or recovered year. The small threshold includes exactly ten; brief measures inclusive calendar span, not count of positive years. Missing source years can change threshold membership and add records to the denominator, so the shares are not failure probabilities or guaranteed bounds on a complete census."
   },
   {
    "id": "prog-base-rate-control",
-   "text": "The base rate has a control, and it is the same six peer trades the survival spine uses. Of 8,736 peer-trade technician programs started since 1991, 2,051 (23%) conferred ten or fewer completions ever, 2,967 (34%) ran five years or less, and 1,693 (19%) were both. Against polymer's 57% and 45%, polymer technician programs came to nothing about 2.5 times as often on the tiny test and 2.4 times as often on the strict one. It is not a pooling artifact: every one of the six trades sits below polymer on both tests separately, from Welding at 14% and 12% to Manufacturing Engineering Technology at 41% and 34%.",
+   "text": "Of 8,736 peer-trade technician records, 2,051 (23%) are small, 2,967 (34%) brief, and 1,693 (19%) both. Polymer's small-record share is about 2.4 times the peer-trade share; the small-and-brief ratio is about 2.3. Both ratios use unrounded count-based shares and compare record size and duration. All six trades have lower small and small-and-brief shares separately. The 2023 active-share comparison uses an earlier pull with the same rule; matching rounded rates do not make the two snapshots identical.",
    "source": "_data/build/fetch_ipeds_control_baserate.py — the same Urban Institute completions-cip-6 endpoint, the same six CIP codes, the same 1991–2023 span, the same certificate canonicalisation, the same 2020 quarantine, and the size threshold OFF on both sides",
-   "assert": "(lambda C: C['ever'] == 8736 and (C['le10_awards'], C['le10_awards_pct']) == (2051, 23) and (C['le5_years'], C['le5_years_pct']) == (2967, 34) and (C['both'], C['both_pct']) == (1693, 19) and C['ratio_le10'] == round(D['base']['le10_awards_pct'] / C['le10_awards_pct'], 2) == 2.48 and C['ratio_both'] == round(D['base']['both_pct'] / C['both_pct'], 2) == 2.37 and len(C['per_cip']) == 6 and all(v['le10_awards_pct'] < D['base']['le10_awards_pct'] and v['both_pct'] < D['base']['both_pct'] for v in C['per_cip'].values()) and C['reproduces']['refetched_survive_pct'] == C['reproduces']['published_survive_pct'] == D['layers']['control']['survive_pct'])(D['layers']['control']['base'])",
+   "assert": "(lambda C: C['ever'] == 8736 and (C['le10_awards'], C['le10_awards_pct']) == (2051, 23) and (C['le5_years'], C['le5_years_pct']) == (2967, 34) and (C['both'], C['both_pct']) == (1693, 19) and C['ratio_le10'] == round((D['base']['le10_awards'] / D['base']['ever']) / (C['le10_awards'] / C['ever']), 2) and C['ratio_both'] == round((D['base']['both'] / D['base']['ever']) / (C['both'] / C['ever']), 2) and len(C['per_cip']) == 6 and all(sum(v[k] for v in C['per_cip'].values()) == C[k] for k in ('ever', 'le10_awards', 'le5_years', 'both')) and all(v['le10_awards'] / v['ever'] < D['base']['le10_awards'] / D['base']['ever'] and v['both'] / v['ever'] < D['base']['both'] / D['base']['ever'] for v in C['per_cip'].values()) and C['reproduces']['refetched_survive_pct'] == C['reproduces']['published_survive_pct'] == D['layers']['control']['survive_pct'])(D['layers']['control']['base'])",
    "actual": "{k: v for k, v in D['layers']['control']['base'].items() if k not in ('per_cip', 'rule', 'bound')}",
-   "falsified_if": "The ORDER changes: any one of the six trades rising above polymer on either test would mean the pooled ratio is carried by the others and the sentence has to name which. The ratio also dies if the two sides stop being the same measurement — the control's own producer refuses to write this block unless it first reproduces the page's published survival control (48%) to the point, which is the check that catches a drifted pull. Both sides are UPPER bounds for the same one-directional reason as prog-base-rate (the skipped C2023_A collection year), and the hole is in the same mirror on both sides, so the ratio moves less than either level. This is a comparison of START-AND-FAIL rates, never of survival: the survival spine counts substantive programs only and this counts every start, and the two populations must never be mixed."
+   "falsified_if": "Any named count, share or ratio changes, a pooled count differs from its six components, or a peer field's small or small-and-brief share exceeds polymer's. Ratios must divide unrounded shares, each with its own all-record denominator; integer-rounded percentages are display labels. The two populations use different pull dates as well as different size filters: reproducing a rounded 48% does not prove identical counts or source completeness. Missingness may affect fields differently; a shared mirror does not guarantee that the ratio is unchanged."
   },
   {
    "id": "prog-ohio-never-took-off",
-   "text": "Of Ohio's 22 technician programs, 13 never reached ten completions. The University of Akron itself appears twice among the 13 — the flagship polymer school could not make a technician program stick.",
+   "text": "Of Ohio's 22 technician records, 13 have ten or fewer lifetime completions, including one at exactly ten. Two Akron records total nine completions. The size measure does not establish separate failed attempts or current capacity.",
    "source": "polymer-programs-db census, Ohio rows",
-   "assert": "D['ohio']['tech_ever'] == 22 and D['ohio']['never_took_off'] == 13 and sum(1 for p in D['ohio']['programs'] if p['total_awards'] <= 10 and 'AKRON MAIN' in p['institution'].upper()) == 2 and sum(1 for p in D['ohio']['programs'] if p['total_awards'] <= 10 and 'EDISON' in p['institution'].upper()) == 3",
+   "assert": "D['ohio']['tech_ever'] == 22 and D['ohio']['never_took_off'] == 13 and sum(1 for p in D['ohio']['programs'] if p['total_awards'] <= 10) == 13 and any(p['total_awards'] == 10 for p in D['ohio']['programs']) and sum(1 for p in D['ohio']['programs'] if p['total_awards'] <= 10 and 'AKRON MAIN' in p['institution'].upper()) == 2 and sum(p['total_awards'] for p in D['ohio']['programs'] if p['total_awards'] <= 10 and 'AKRON MAIN' in p['institution'].upper()) == 9",
    "actual": "[(p['institution'], p['total_awards']) for p in D['ohio']['programs'] if p['total_awards'] <= 10]",
    "falsified_if": "A late completion pushes any of the 13 over ten (the record is live at the bottom: one graduating class changes membership), or a catalogue check shows one of the 13 running substantively under a code this census cannot see — the 'ended is not closed' trap applies to small programs hardest."
   },
@@ -59,7 +59,7 @@
   },
   {
    "id": "prog-ua-collapse",
-   "text": "The University of Akron's polymer completions fell from 114 in 2016 to 44 in 2023, a drop of 61%, with master's degrees going 66 to 16, doctorates 45 to 26, and an undergraduate line across those eight years of 3, 1, 0, 3, no data, 0, 0, 2. The flagship graduated two polymer undergraduates in 2023.",
+   "text": "Akron completions in the three selected polymer codes fell from 114 in 2016 to 44 in 2023 (61%). Graduate degrees supplied 42 of the 44: master's 16, doctorates 26. The bachelor's count was two, within a zero-to-three range across the reported 2016–2023 years; 2020 is missing. Master's degrees account for 50 of the 70-completion decline and doctorates 19.",
    "source": "polymer-programs-db census, unitid 200800, 2020 quarantined",
    "assert": "D['ua']['recent']['2016'] == 114 and D['ua']['latest'] == 44 and D['ua']['pct_off'] == 61 and (D['ua']['masters_2016'], D['ua']['masters_2023']) == (66, 16) and (D['ua']['doctorate_2016'], D['ua']['doctorate_2023']) == (45, 26) and D['ua']['bachelor_2016_2023'] == [3, 1, 0, 3, None, 0, 0, 2] and D['ua']['bachelor_2016_2023'][-1] == 2",
    "actual": "D['ua']",
@@ -86,16 +86,24 @@
    "text": "This dataset contains no verified example of a substantial polymer technician program dying and being rebuilt. The one candidate dissolved on inspection into a federal reporting change at a continuously running program.",
    "source": "polymer-programs-db STORY-SPEC.md Act 4 (the retraction): the Wichita State 'rebuild' was the 2020 certificate-level recode splitting one continuous program into an apparent death and an apparent birth; verified same unitid, unbroken teaching",
    "verify": "manual",
-   "checked_by": "Claude (2026-08-21 build), against the census's own retraction record; the retraction itself was triggered by re-checking a finding that looked too clean",
+   "checked_by": "Codex (2026-09-08) re-read the held STORY-SPEC.md retraction. This verifies the recorded candidate's withdrawal, not a universal absence of rebuilds or a fresh catalogue survey.",
    "falsified_if": "Someone identifies a program that conferred substantively, stopped for two or more real years (not a code change), and returned to substantive conferral. Finding one would IMPROVE PIC's position — it would be the existence proof the rebuild argument currently lacks."
   },
   {
-   "id": "prog-anchor-tension",
-   "text": "The anchor institution's polymer pipeline contracted through the same years in which $7.1M of EDA Tech Hub money and a share of the $31.25M Ohio Innovation Hub award arrived. Rising institutional investment, falling academic pipeline, same institution, same years.",
-   "source": "Award documents in ohio-econdev-corpus (12_eda-tech-hubs: SPTH designation and award; 09_ohio-innovation-hubs: Akron/PIC $31.25M) set against the UA completions series above",
+   "id": "prog-grant-announcement-chronology",
+      "text": "EDA announced planned Tech Hub implementation funding on July 2, 2024; Ohio's state Innovation Hub announcement is dated September 2024. Both follow the completions series endpoint of 2023. These are announcement dates, not proof of cash receipts at Akron.",
+      "source": "https://content.govdelivery.com/accounts/USEDA/bulletins/3a61a13 ; https://dam.assets.ohio.gov/image/upload/development.ohio.gov/annualreports/Development-Annual-Report-2025.pdf#page=10",
    "verify": "manual",
-   "checked_by": "Claude (2026-08-21 build), against the award announcements and the IPEDS series; the UA sub-award figure of $7.1M is from PIC project records",
-   "falsified_if": "UA completions turn upward in the 2024–25 vintages (completions lag enrolment 2–4 years, so money arriving in 2024 could not appear here yet — the tension is about timing, not causation, and the sentence must never claim the money caused the fall)."
+      "checked_by": "Codex, 2026-09-08: read the accessible official USEDA bulletin, dated July 2, 2024, naming Sustainable Polymers among selected hubs with amounts to be finalized. Independently read the held full EDA announcement and the four-page Ohio announcement captured August 21, 2026, with original URLs recorded in the public-source corpus manifests. The Ohio PDF body says September 6, 2024; its URL slug says 0905, so the article uses the unambiguous month. The original Ohio announcement URL now returns 404; the source link uses the official FY2025 annual report, PDF page 10 / printed page 18, independently read from the held complete report, whose caption explicitly says September 2024. These primary documents replace the earlier search-extract-only check. No university cash-receipt date is asserted.",
+   "falsified_if": "The official announcements carry different dates, or later completions data are added. The comparison must not substitute an earlier designation or a later cash disbursement for these named announcement events."
+  },
+  {
+   "id": "prog-anchor-endpoint",
+   "text": "The completions series ends in 2023, so it cannot measure outcomes of grant awards after that endpoint. The earlier same-years investment comparison is withdrawn.",
+   "source": "IPEDS selected-code completions series, University of Akron Main Campus",
+   "assert": "max(D['ua']['series']) == '2023' and max(r['year'] for r in D['series']) == 2023 and D['ua']['masters_2023'] + D['ua']['doctorate_2023'] == 42 and D['ua']['latest'] == 44",
+   "actual": "(max(D['ua']['series']),D['ua']['masters_2023']+D['ua']['doctorate_2023'],D['ua']['latest'])",
+   "falsified_if": "A later completions vintage extends the endpoint. Any grant-outcome comparison then requires matching award dates, recipient scope and an appropriate time window."
   }
  ]
 }

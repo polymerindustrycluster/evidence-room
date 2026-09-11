@@ -90,12 +90,12 @@ if (N.vault_rows.some(r => r.current || r.sub))
    dark slab where the chart should be is the composition page-design names outright, and
    moving them here is the trade it prescribes. They read as the chart's summary now. */
 figures([
-  ["key", usd(A.stages[3].amount), "on award lines naming the Greater Akron Chamber",
+  ["key", usd(A.stages[3].amount), "assigned to the Greater Akron Chamber as destination",
    `${pct1(A.share_of_awarded * 100)} of ${usd(S.awarded)} awarded`],
   ["", String(P.rows.length), "dated commitments on the public record",
    `${P.by_type.numeric_outcome} carries a numeric outcome target`],
   ["", `${N.counts.vault} of ${N.counts.accountable}`,
-   "rows PIC answers for that no public record can fill",
+   "rows PIC answers for awaiting private records",
    `and ${N.counts.owners_assigned === 0 ? "no row" : N.counts.owners_assigned + " rows"} `
    + "on the board names an owner"],
 ]);
@@ -799,7 +799,7 @@ await PV.methodology({
   definitions: `Of the ${usd(S.awarded)} awarded across three public awards, `
     + `${usd(S.assigned)} sits on ${C.lines} executed lines naming ${C.recipients} `
     + `recipients, and ${usd(A.stages[3].amount)} of that is on the two lines naming the `
-    + `Greater Akron Chamber, ${pct1(A.share_of_awarded * 100)} of the awards. The `
+    + `Greater Akron Chamber as destination, ${pct1(A.share_of_awarded * 100)} of the awards. The `
     + `promise register holds ${P.rows.length} dated commitments: `
     + `${P.by_type.numeric_outcome} numeric outcome target, ${P.by_type.milestone} `
     + `milestones and ${P.by_type.period_end} award-period end dates, which are counted `

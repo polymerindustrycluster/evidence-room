@@ -121,17 +121,14 @@ const rows = S.filter(s => s.retraced !== null && s.stage !== "context")
    What deflating does change is any single level read as a gain, so the two readings that
    move most are published in the hero, next to the cards that assert them.
 
-   THE DEFLATOR IS COARSE AND THE PAGE SAYS SO. data/scissors.json ships the CPI-U annual
-   averages, the same table federal-money uses to restate dollars. Annual, not monthly, and
-   it stops at 2025, so a 2026 month is deflated by the 2025 factor. That UNDERSTATES the
-   adjustment by whatever prices have done since, which makes every real figure here an
-   upper bound: the real gain is at most what is printed, and the real retracement at
-   least. Stated that way the coarseness cannot flatter the page. */
+   THE DEFLATOR IS COARSE AND THE PAGE SAYS SO. The table contains annual means of
+   published months, including eleven months in 2025 (October unavailable). Monthly
+   price indexes use the 2019 annual CPI denominator, not January CPI. A 2026 month
+   carries the 2025 factor; the error direction is unknown, so no bound is claimed. */
 const CPI = D.deflator.values;
 const CPIB = CPI[D.deflator.base_year];
 const CPIL = D.deflator.latest_year;
-/* Clamped, not extrapolated: a year past the table takes the last real average rather
-   than a guess, and the direction of that error is stated above and on the page. */
+/* A year past the observation table carries its latest factor without extrapolation. */
 const defl = d => CPI[d.slice(0, 4) in CPI ? d.slice(0, 4) : CPIL] / CPIB;
 const realPts = s => s.points.filter(p => p.date >= s.base)
                              .map(p => ({date: p.date, v: p.index / defl(p.date)}));
@@ -145,16 +142,16 @@ const INFL = (CPI[CPIL] / CPIB - 1) * 100;
 {
   const pk = realPeak(prodMfg);
   document.getElementById("realnote").innerHTML =
-    `<b>These are cash prices, before inflation.</b> Every series here is money actually
-     invoiced, indexed to January 2019 and never adjusted for the general rise in prices
+    `<b>These are cash prices, before inflation.</b> Every series here reports nominal
+     prices, indexed to January 2019 and never adjusted for the general rise in prices
      since; on the consumer price index (BLS CPI-U, all items) consumer prices themselves
-     rose ${INFL.toFixed(1)}% between the ${D.deflator.base_year} and ${CPIL} annual
-     averages. The ordering below survives that, because every link faces the same
-     inflation, and it was rechecked on the deflated series rather than assumed. Single
-     levels do not survive it: in real terms finished
+     rose ${INFL.toFixed(1)}% from the ${D.deflator.base_year} annual average to the
+     ${CPIL} mean of eleven published months (October unavailable). Carrying that factor
+     into 2026 is an approximation, with no known error direction. Under this annual-CPI
+     approximation, the stage ordering still holds. Finished
      products are up about ${(realNow(prodMfg) - 100).toFixed(0)}% rather than
      ${(prodMfg.now.index - 100).toFixed(0)}%, their dearest month was ${monF(pk.date)}
-     and not the latest one, and resin is back to roughly its January 2019 price
+     and not the latest one, and resin is roughly back to 100
      (${realNow(resinMfg).toFixed(0)} on the same scale, against
      ${resinMfg.now.index.toFixed(0)} in cash). The deflator, its limits and the arithmetic
      are in the methodology box.`;
@@ -256,7 +253,7 @@ function verdict() {
     and sits at its peak. Your prices have risen ${sp(last.v)} percentage points more than
     resin since 2019, against ${sp(sTrough.v)} at the bottom of the 2021 squeeze, though
     the gap came within a point of closing in ${monF(sDip.date)}, and it is not a margin:
-    labor, freight, energy and packaging are in neither series.`;
+    these series do not measure your full costs.`;
 }
 {
   const host = document.getElementById("csel");
@@ -1181,8 +1178,8 @@ document.getElementById("closersub").innerHTML =
   `<b>The wellhead gave back its whole spike and then some (${pct(gas.retraced)}); resin
    makers about a third; finished products none.</b> The converter&rsquo;s gap ran ${sp(sTrough.v)}
    points at the bottom of the 2021 squeeze and stands ${sp(last.v)} now, and a gap
-   between two indexes is not a margin: labor, freight, energy and packaging are in
-   neither series.
+   between two indexes is not a margin: these series do not measure a producer&rsquo;s
+   full costs.
    It has not been steady either. Resin rose ${sDipResin.toFixed(1)} points in two
    months this spring and the gap closed to +${sDip.v.toFixed(1)}; the next resin move
    decides whether it holds.`;

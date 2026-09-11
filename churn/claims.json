@@ -150,11 +150,11 @@
     },
     {
       "id": "churn-comparator-direction",
-      "text": "Over the last four published quarters more jobs ended than started in all seven geographies, and this region's margin of 0.74 points is the second-widest, behind California's 0.90.",
+      "text": "Over the last four published quarters more jobs ended than started in all seven geographies, so the H2 and the hero gauge claim size rather than direction: this region's margin of 0.74 points is the second-widest, behind California's 0.90, and more than double the 0.29-point median of the six states.",
       "source": "bench.json: separation rate minus hire rate, in percentage points, same window",
-      "assert": "(lambda W: all(r['gap_pts'] > 0 for r in W['rows']) and W['gap_rank'] == 2 and round(one(r for r in W['rows'] if r['kind'] == 'region')['gap_pts'], 2) == 0.74 and round(max(r['gap_pts'] for r in W['rows']), 2) == 0.90 and one(r for r in W['rows'] if r['gap_pts'] == max(x['gap_pts'] for x in W['rows']))['name'] == 'California')(D['b']['windows']['now'])",
+      "assert": "(lambda W: all(r['gap_pts'] > 0 for r in W['rows']) and W['gap_rank'] == 2 and round(one(r for r in W['rows'] if r['kind'] == 'region')['gap_pts'], 2) == 0.74 and round(max(r['gap_pts'] for r in W['rows']), 2) == 0.90 and one(r for r in W['rows'] if r['gap_pts'] == max(x['gap_pts'] for x in W['rows']))['name'] == 'California' and round(W['state_median_gap_pts'], 2) == 0.29 and round(one(r for r in W['rows'] if r['kind'] == 'region')['gap_pts'] / W['state_median_gap_pts'], 2) > 2)(D['b']['windows']['now'])",
       "actual": "sorted(((round(r['gap_pts'], 3), r['name']) for r in D['b']['windows']['now']['rows']), reverse=True)",
-      "falsified_if": "Any geography's margin turns negative, the region stops ranking second, or either printed margin moves by a hundredth. THIS IS A SMALL DIFFERENCE OF TWO LARGE RATES and is the most revision-exposed number in the comparison; the ordering of the middle of the field is not stable and the page does not print it. What IS stable is the sign and the region's place near the top of it: the same second rank holds since 2023Q1, across 2012 to 2019, and across the whole window."
+      "falsified_if": "Any geography's margin turns negative, the region stops ranking second, the state median moves by a hundredth, the region's margin stops running at more than twice it, or either printed margin moves by a hundredth. THIS IS A SMALL DIFFERENCE OF TWO LARGE RATES and is the most revision-exposed number in the comparison; the ordering of the middle of the field is not stable and the page does not print it. What IS stable is the sign and the region's place near the top of it: the same second rank holds since 2023Q1, across 2012 to 2019, and across the whole window. The prose said 'the direction is not [ordinary]' until 2026-09-11, which this claim's own first conjunct had already refuted."
     },
     {
       "id": "churn-michigan-absent",

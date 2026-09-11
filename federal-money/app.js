@@ -49,10 +49,10 @@ const usd = v => "$" + Math.round(v).toLocaleString("en-US");
    down and the smallest of the seven Tech Hub awards was published a hundred thousand
    dollars light. Rounding the integer to the tenth-of-a-million first is exact, and it is
    the same defect class as an axis whose tick labels round-lie. */
-const short = v => v >= 1e9 ? "$" + (Math.round(v / 1e8) / 10).toFixed(1) + "B"
+const short = v => v < 0 ? "−" + short(-v) : v >= 1e9 ? "$" + (Math.round(v / 1e8) / 10).toFixed(1) + "B"
                  : v >= 1e6 ? (v % 1e6 ? "$" + (Math.round(v / 1e5) / 10).toFixed(1) + "M"
                                        : "$" + (v / 1e6).toFixed(0) + "M")
-                 : v ? "$" + Math.round(v / 1e3) + "k" : "$0";
+                 : v >= 1e3 ? "$" + Math.round(v / 1e3) + "k" : usd(v);
 /* A paper plate behind a label that has to cross a reference line (cost-scissors
    pattern). Marked data-pv-plated so collide.mjs reads the covering as deliberate. */
 const plate = (parent, s, x, y, fs = 7.4) => el("rect", {x: x - s.length * fs / 2 - 4,
@@ -121,17 +121,41 @@ const SHORT = {
   "326299": "Rubber products, all other", "326211": "Tire manufacturing",
   "325510": "Paint and coatings", "326122": "Plastics pipe and fittings",
   "325998": "Chemical products, all other", "325120": "Industrial gases",
-  "326220": "Hoses and belting", "325413": "In-vitro diagnostics"
+  "326220": "Hoses and belting", "325413": "In-vitro diagnostics",
+  "325110": "Petrochemicals",
+  "325130": "Synthetic dyes and pigments",
+  "325180": "Other inorganic chemicals",
+  "325194": "Cyclic and wood chemicals",
+  "325199": "Other organic chemicals",
+  "325211": "Plastics materials and resins",
+  "325212": "Synthetic rubber",
+  "325220": "Synthetic fibers",
+  "325320": "Agricultural chemicals",
+  "325411": "Medicinal and botanical goods",
+  "325412": "Pharmaceutical preparations",
+  "325414": "Biological products",
+  "325520": "Adhesives",
+  "325611": "Soap and detergents",
+  "325612": "Polish and sanitation goods",
+  "325910": "Printing ink",
+  "325920": "Explosives",
+  "325991": "Resin compounding",
+  "325992": "Photographic goods and toner",
+  "326111": "Plastic bags and pouches",
+  "326112": "Plastics packaging film",
+  "326113": "Other plastics film and sheet",
+  "326121": "Plastics profile shapes",
+  "326130": "Laminated plastics shapes",
+  "326140": "Polystyrene foam products",
+  "326160": "Plastics bottles",
+  "326191": "Plastics plumbing fixtures",
+  "326199": "Other plastics products",
+  "326291": "Mechanical rubber goods"
 };
 const label = c => SHORT[c.code] || c.name;
-/* The trough. FY2023 is the lowest year on the chart and the reader's eye goes straight
-   to it, so the chart says what the records show: the code that carried the two years
-   around it has no row that year. An absent row is a year with no recorded obligation,
-   which is not the same as a confirmed zero. */
-const trough = fys.reduce((a, b) => real[b] < real[a] ? b : a);
-const troughMissing = codes.filter(c => !c.years.has(trough) && c.years.size >= 5)
-  .sort((a, b) => b.real - a.real)[0];
-const troughWord = troughMissing ? label(troughMissing).split(" ")[0].toLowerCase() : "";
+/* The lowest year remains visible; exhaustive pages show tire obligations in it. */
+const trough = closed.reduce((a, b) => real[b] < real[a] ? b : a);
+const troughTires = sumBy("real", r => r.fy === trough && r.code === "326211");
 
 /* ---- the award register's own derived facts, all on the award-lifetime basis ---- */
 const awTotal = R.meta.total;
@@ -275,7 +299,7 @@ function yearsDesktop() {
      line, rather than twice here and again on the phone layout. */
   txt(svg, `FY${clears[0]} beat the whole award on its own, by ${short(over)}.`,
     {x: m.l + 4, y: 24, class: "pv-lab"});
-  txt(svg, `FY${nearFy} fell ${short(gap)} short of it.`,
+  txt(svg, `FY${clears[1]} also exceeded it. FY${nearFy} fell ${short(gap)} short.`,
     {x: m.l + 4, y: 42, class: "pv-labq"});
   /* A REFERENCE LINE IS LABELLED BY WHAT CROSSING IT MEANS. This label used to read
      "award $51.0M = about 1.5 routine years", which is the arithmetic: it left the reader
@@ -289,18 +313,6 @@ function yearsDesktop() {
   txt(svg, `eight-year average ${short(avgReal)} a year`,
     {x: xs(fys.indexOf(trough)) + 10, y: ys(avgReal) - 9, class: "pv-labq", fill: INK});
 
-  if (troughMissing) {
-    const tx = xs(fys.indexOf(trough)) + 10;
-    txt(svg, `No ${label(troughMissing).toLowerCase()} obligation`,
-      {x: tx, y: ys(maxV * 0.484), class: "pv-labq"});
-    txt(svg, `appears in FY${trough}.`, {x: tx, y: ys(maxV * 0.428), class: "pv-labq"});
-    /* A leader, because the note runs right across the FY2024 column and words were the
-       only thing binding it to the FY2023 bar. Vertical on purpose: collide.mjs reads any
-       flat mark under 3px tall as an axis, so a horizontal leader would report as a bar
-       crossing the axis. */
-    el("line", {x1: tx + 2, y1: ys(maxV * 0.428) + 7, x2: tx + 2, y2: ys(real[trough]) - 5,
-      stroke: "var(--pv-axis)", "stroke-width": 1.2}, svg);
-  }
   /* "partial year" is the register word for a bar that is a running total. The reader
      needs to know the year is not over, which is what the hatching means. */
   txt(svg, "still running", {x: xs(fys.indexOf(PARTIAL)) + bw / 2,
@@ -350,7 +362,7 @@ function yearsMobile() {
   fys.forEach((fy, i) => {
     const y = m.t + i * rowH, v = real[fy];
     const tag = fy === PARTIAL ? " · still running"
-      : (troughMissing && fy === trough) ? ` · no ${troughWord} obligations` : "";
+      : fy === trough ? " · lowest full year" : "";
     const t = txt(svg, `FY${fy} · ${short(v)}${tag}`, {x: m.l, y: y + 12,
       class: "pv-labq"});
     const right = m.l + t.getComputedTextLength();
@@ -363,9 +375,9 @@ function yearsMobile() {
 
   /* Same reading as the desktop chart: the orange rule is labelled by what passing it
      means, not by its value alone. */
-  txt(svg, `Bars past the orange line beat the award. FY${clears[0]} did.`,
+  txt(svg, `FY${clears.join(" and FY")} beat the award.`,
     {x: m.l, y: 18, class: "pv-labq"});
-  txt(svg, `By ${short(over)}. FY${nearFy} fell ${short(gap)} short.`,
+  txt(svg, `FY${clears[0]}: ${short(over)} over. FY${nearFy}: ${short(gap)} under.`,
     {x: m.l, y: 36, class: "pv-labq"});
   txt(svg, `award ${short(award)}`, {x: xs(award), y: 58, "text-anchor": "end",
     class: "pv-labq", fill: AWARD});
@@ -392,7 +404,7 @@ function codesDesktop() {
     const y = m.t + i * rowH + 7, bh = 20;
     /* One hue, two tints: the darker pair is the group the annotation names. Bar length
        already carries the amount, so a full value ramp would double-encode it. */
-    el("rect", {x: m.l, y, width: Math.max(3, xs(r.real) - m.l), height: bh,
+    el("rect", {x: m.l, y, width: Math.max(0, xs(r.real) - m.l), height: bh,
       fill: i < 2 ? INK : SEQ[3], rx: 4}, svg);
     txt(svg, label(r), {x: m.l - 12, y: y + bh - 5, "text-anchor": "end",
       class: "pv-labq"});
@@ -417,7 +429,7 @@ function codesDesktop() {
      dollars in every three" is the sentence a reader repeats. "Residual bucket" was the
      census word for a class defined by what does not fit anywhere else. */
   [`Two rubber-product codes`, `hold ${Math.round(topTwoShare * 100)}% of eight years`,
-   `of money, about two dollars`, `in every three. The larger`, `is a leftovers class.`]
+   `of money. The larger`, `is a leftovers class.`]
     .forEach((s, i) => txt(svg, s, {x: rail + 8, y: m.t + 18 + i * 17,
       class: i ? "pv-labq" : "pv-lab", fill: i ? null : INK}));
 }
@@ -428,14 +440,14 @@ function codesMobile() {
   const {svg, w} = PV.chart("na", {W, H, m});
   const maxV = top.real;
   const xs = v => m.l + (v / maxV) * w;
-  txt(svg, `Two rubber codes hold ${Math.round(topTwoShare * 100)}%, two dollars in three`,
+  txt(svg, `Two rubber codes hold ${Math.round(topTwoShare * 100)}% of the total`,
     {x: m.l, y: 20, class: "pv-lab", fill: INK});
   txt(svg, `FY${fys[0]}–FY${fys.at(-1)} added up, 2025 dollars`,
     {x: m.l, y: 38, class: "pv-labq"});
   codes.forEach((r, i) => {
     const y = m.t + i * rowH;
     txt(svg, `${label(r)} · ${short(r.real)}`, {x: m.l, y: y + 13, class: "pv-labq"});
-    el("rect", {x: m.l, y: y + 19, width: Math.max(3, xs(r.real) - m.l), height: 14,
+    el("rect", {x: m.l, y: y + 19, width: Math.max(0, xs(r.real) - m.l), height: 14,
       fill: i < 2 ? INK : SEQ[3], rx: 3}, svg);
     hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, svg),
       `<b>${r.code} &middot; ${r.name}</b><br><span class="v">${usd(r.real)}</span>
@@ -569,11 +581,9 @@ document.getElementById("fytable").innerHTML = withNotes(tableView("y",
    ${A.meta.source} ${A.meta.note} ${D.meta.scope}`);
 document.getElementById("fysrc").innerHTML =
   `${D.meta.source}, in the twelve PIC-12 counties, marked up to 2025 dollars with the
-   federal consumer price index (BLS CPI-U annual averages). FY${PARTIAL} is not over: its
+   federal consumer price index (BLS CPI-U; 2025 averages eleven months). FY${PARTIAL} is not over: its
    bar is the year so far, drawn hatched, and not comparable to the seven finished years.
-   A year with no row for an industry (FY${trough} for
-   ${label(troughMissing).toLowerCase()}) means nothing was recorded. Whether the true
-   figure was zero, these files cannot say.`;
+   Tire manufacturing in FY${trough} accounts for ${short(troughTires)} in 2025 dollars.`;
 
 document.getElementById("natable").innerHTML = withNotes(tableView("n",
   "Federal polymer obligations by industry code",
@@ -582,16 +592,16 @@ document.getElementById("natable").innerHTML = withNotes(tableView("n",
   `${top.name} (${top.code}) leads the eight-year total while
    ${second.name.split("(")[0].trim()} (${second.code}) leads several single years, so a
    one-year ranking would not reproduce this order. Bar labels on the chart are shortened
-   by hand; the census names above are the full ones.`);
-document.getElementById("nasrc").innerHTML =
-  `${D.meta.source}, added up FY${fys[0]}–FY${fys.at(-1)} in 2025 dollars. Pair every
-   industry with every year (${codes.length} industries by ${fys.length} years) and only
-   ${D.naics.length} of the ${codes.length * fys.length} pairs carry an obligation at all;
-   a missing one is a year with nothing recorded for that industry, rather than a confirmed
-   zero. Every bar label is rounded to the nearest $0.1M, so the eight add to
-   $${(codeDimes / 10).toFixed(1)}M against the ${short(totalReal)} eight-year total${tie
+   by hand; the census names above are the full ones. Rounded to $0.1M, the industry totals
+   add to $${(codeDimes / 10).toFixed(1)}M against the ${short(totalReal)} eight-year total${tie
      ? `, and two codes both print ${short(tie.real)} while differing below the rounding`
-     : ""}; the table has the exact figures.`;
+     : ""}; the table has the exact figures.`);
+document.getElementById("nasrc").innerHTML =
+  `USAspending.gov prime-contract obligations by reported place of performance,
+   FY${fys[0]}–FY${fys.at(-1)}, in 2025 dollars. Of ${codes.length * fys.length}
+   industry-year combinations, ${D.naics.length} have reported net amounts; missing
+   combinations are not confirmed zeros. FY${PARTIAL} is partial. Rounded chart labels
+   can differ from exact table values.`;
 
 /* The chart's twin holds every company, so the top-ten cut above drops no dollars a
    reader cannot recover: all 193 are here, sortable and filterable. */

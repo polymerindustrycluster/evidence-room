@@ -10,44 +10,45 @@
   {
    "key": "producers",
    "label": "Producers & compounders",
-   "supply": 147,
+   "supply": 137,
    "demand": 32,
    "demand_usd": 7227133
   },
   {
    "key": "converters",
    "label": "Converters & fabricators",
-   "supply": 246,
+   "supply": 235,
    "demand": 20,
    "demand_usd": 4016073
   },
   {
    "key": "oems",
    "label": "OEMs & end-use brands",
-   "supply": 79,
+   "supply": 70,
    "demand": 24,
    "demand_usd": 5923100
   },
   {
    "key": "recyclers",
    "label": "Recyclers & reclaimers",
-   "supply": 21,
+   "supply": 20,
    "demand": 11,
    "demand_usd": 1595120
   },
   {
    "key": "equipment",
    "label": "Equipment & technology",
-   "supply": 88,
+   "supply": 81,
    "demand": 22,
    "demand_usd": 5549550
   }
  ],
  "supply_meta": {
-  "neo_total": 785,
-  "unclassified": 174,
-  "cbp_estab": 653,
-  "cbp_emp": 41447
+  "neo_total": 710,
+  "unclassified": 144,
+  "cbp_estab": 684,
+  "cbp_emp": 43242,
+  "spine_classified": 490
  },
  "intake": {
   "n": 59,
@@ -1276,35 +1277,40 @@
  ],
  "counties": [
   {
-   "county": "Crawford",
-   "known": 0,
-   "classified": 0,
-   "cbp_estab": 4,
-   "cbp_emp": 29
+   "county": "Ashtabula",
+   "fips": "39007",
+   "known": 21,
+   "classified": 15,
+   "cbp_estab": 38,
+   "cbp_emp": 3183
+  },
+  {
+   "county": "Columbiana",
+   "fips": "39029",
+   "known": 4,
+   "classified": 4,
+   "cbp_estab": 7,
+   "cbp_emp": 865
   },
   {
    "county": "Cuyahoga",
-   "known": 175,
-   "classified": 126,
+   "fips": "39035",
+   "known": 174,
+   "classified": 125,
    "cbp_estab": 164,
    "cbp_emp": 8982
   },
   {
    "county": "Geauga",
+   "fips": "39055",
    "known": 37,
    "classified": 29,
    "cbp_estab": 36,
    "cbp_emp": 1935
   },
   {
-   "county": "Huron",
-   "known": 0,
-   "classified": 0,
-   "cbp_estab": 12,
-   "cbp_emp": 1564
-  },
-  {
    "county": "Lake",
+   "fips": "39085",
    "known": 51,
    "classified": 45,
    "cbp_estab": 41,
@@ -1312,6 +1318,7 @@
   },
   {
    "county": "Lorain",
+   "fips": "39093",
    "known": 32,
    "classified": 29,
    "cbp_estab": 43,
@@ -1319,6 +1326,7 @@
   },
   {
    "county": "Mahoning",
+   "fips": "39099",
    "known": 23,
    "classified": 20,
    "cbp_estab": 18,
@@ -1326,6 +1334,7 @@
   },
   {
    "county": "Medina",
+   "fips": "39103",
    "known": 41,
    "classified": 30,
    "cbp_estab": 41,
@@ -1333,20 +1342,15 @@
   },
   {
    "county": "Portage",
+   "fips": "39133",
    "known": 54,
    "classified": 46,
    "cbp_estab": 54,
    "cbp_emp": 3937
   },
   {
-   "county": "Richland",
-   "known": 0,
-   "classified": 0,
-   "cbp_estab": 10,
-   "cbp_emp": 1146
-  },
-  {
    "county": "Stark",
+   "fips": "39151",
    "known": 37,
    "classified": 31,
    "cbp_estab": 45,
@@ -1354,13 +1358,23 @@
   },
   {
    "county": "Summit",
+   "fips": "39153",
    "known": 182,
    "classified": 151,
    "cbp_estab": 124,
    "cbp_emp": 9067
   },
   {
+   "county": "Trumbull",
+   "fips": "39155",
+   "known": 15,
+   "classified": 13,
+   "cbp_estab": 12,
+   "cbp_emp": 486
+  },
+  {
    "county": "Tuscarawas",
+   "fips": "39157",
    "known": 23,
    "classified": 16,
    "cbp_estab": 34,
@@ -1368,10 +1382,16 @@
   },
   {
    "county": "Wayne",
-   "known": 80,
-   "classified": 50,
+   "fips": "39169",
+   "known": 16,
+   "classified": 12,
    "cbp_estab": 27,
    "cbp_emp": 1485
   }
- ]
+ ],
+ "demand_footprint": {
+  "n": 59,
+  "ohio": 38,
+  "filtered": false
+ }
 }

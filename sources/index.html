@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>How To Rebuild This</title>
-<meta name="description" content="The public replication guide for the PIC Evidence Room: twenty-four datasets, the exact codes and filters, one worked question carried from endpoint to reading, and the traps that produce a confidently wrong answer.">
+<meta name="description" content="The public replication guide for the PIC Evidence Room: twenty-seven sources, the exact codes and filters, worked questions carried from endpoint to reading, and the traps that produce a confidently wrong answer.">
 <link rel="stylesheet" href="../_shared/pic-viz.css">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
 
 <header class="mast">
   <div class="wrap">
@@ -18,6 +19,7 @@
   </div>
 </header>
 
+<main id="main-content" tabindex="-1">
 <section class="hero" id="sec-top" data-nav="Top">
   <div class="wrap">
     <p class="eyebrow">A replication guide for other regions</p>
@@ -25,15 +27,16 @@
       and they are all on this page.</h1>
     <p class="stand"><b id="nrecipes">Five worked questions</b> run the whole way here, from
       the endpoint, the web address the data comes from, to the reading, the number you
-      end up printing. They use only the public federal data behind every page on this
-      site. The first one needs a browser, a spreadsheet and two file downloads: no key, no
+      end up printing. They use the public sources behind these analyses.
+      The first one needs a browser, a spreadsheet and two file downloads: no key, no
       registration, and nothing from this repository. What costs you time is not the data,
       it is deciding which codes count as your industry, so that decision is worked
-      through rather than assumed. Also here: all twenty-four of the site&rsquo;s datasets, what each one cannot
+      through rather than assumed. Also here: all twenty-seven of the site&rsquo;s sources, what each one cannot
       tell you, and the traps that give a confidently wrong answer rather than an
       obviously wrong one.</p>
-    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Sources register compiled from the
-      fetch scripts, August&nbsp;2026</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot;
+      Analysis and graphics by Claude (Anthropic), updated with Codex (OpenAI)
+      &middot; Sources register updated September&nbsp;2026</p>
     <!-- THE COLD OPEN. The page leads on the concentration recipe, so the first mark a
          reader meets is that recipe's own output: every concentration reading this site
          publishes, on one scale, against the 1.0 line that is the whole point of the
@@ -62,7 +65,7 @@
 <section class="band" id="sec-estate" data-nav="The data">
   <div class="wrap">
     <p class="takeaway">The data estate</p>
-    <h2>Twenty-four datasets, one row each</h2>
+    <h2>Twenty-seven sources, one row each</h2>
     <p class="lede" id="estatelede"></p>
     <div class="pv-table" id="estate"></div>
     <p class="src" id="estatesrc"></p>
@@ -78,7 +81,7 @@
     <p class="lede">The measure is the location quotient: the share of local jobs an
       industry fills, divided by the share it fills nationally. It is what most regional
       strategies open with, it runs on the
-      most accessible of the twenty-four sources, and it exercises every trap worth learning
+      most accessible of the twenty-seven sources, and it exercises every trap worth learning
       at once: which codes count as your industry, what happens when you add a code family
       to its own parts, what a blank cell means, and what the answer does not tell you.
       Seven steps, worked here on the twelve Northeast Ohio counties this site covers.
@@ -234,6 +237,11 @@
           in Mahoning and Trumbull and one basic-chemical cell in Ashtabula read higher. A
           reading can be the largest a page publishes and still be ordinary for the place,
           and without a reference distribution a reader has no way to tell which.</p>
+        <p>The reference distribution is a
+          <a href="../sources/reference-lq-2025.json">dated derived snapshot, read 1 September 2026</a>,
+          preserved from the published version. Its raw county responses are not included;
+          rebuilding this guide preserves the snapshot and checks its subject and year,
+          rather than re-fetching the full comparison universe.</p>
       </li>
       <li>
         <h3>If your region is more than one county, you have to build it yourself</h3>
@@ -259,7 +267,7 @@
           it, every time, and say the direction is unknown rather than guessing it, because
           that set moves between years.</p>
         <p class="body" id="footprint">
-          <b>The footprint behind every regional figure on this site is PIC-12</b>, and
+          <b>The county aggregate used for the wage analysis is PIC-12</b>, and
           these are the twelve counties, named because a reader replicating this needs the
           set and not its size, each with the five-digit FIPS code the filter actually
           takes: Ashtabula <b class="code">39007</b>, Cuyahoga <b class="code">39035</b>,
@@ -267,10 +275,9 @@
           <b class="code">39093</b>, Mahoning <b class="code">39099</b>, Medina
           <b class="code">39103</b>, Portage <b class="code">39133</b>, Stark
           <b class="code">39151</b>, Summit <b class="code">39153</b>, Trumbull
-          <b class="code">39155</b>, Wayne <b class="code">39169</b>. A wider
-          fourteen-county definition is also in use in this project, and every page here
-          stamps which footprint it was built on in a banner, because two pages on two
-          footprints reconcile with nothing.</p>
+          <b class="code">39155</b>, Wayne <b class="code">39169</b>. The chain page uses these twelve counties plus
+          Columbiana and Tuscarawas. Metro areas, Ohio totals and national comparisons
+          have their own boundaries; compare figures only after matching their county sets.</p>
       </li>
       <li>
         <h3>What it lands on here</h3>
@@ -348,27 +355,27 @@
           keep the finest detail published for that county and drop the family above it:
           where a county publishes 3252 or 3255, drop its 325 row; where it publishes 3261
           or 3262, drop its 326. That leaves <b>35</b> rows, of which 27 pay above their
-          county. <b>Weight by employment and the unit is a job</b>, but only a coarser set
+          county. <b>Weight the group-average ratios by employment</b>; a coarser set
           can carry that: the two industry groups taken once per county, 33,528 jobs, 29,080
           of them in a group that out-pays its county.</p>
         <p class="formula" id="paymath">
-          middle of 51 cells = 1.21&times; &nbsp;&middot;&nbsp; middle of 33,528 jobs =
-          1.26&times;</p>
+          median of 51 cell-average ratios = 1.21&times; &nbsp;&middot;&nbsp;
+          employment-weighted median of group-average ratios = 1.26&times;</p>
         <p class="body" id="paycover">
-          <b>Read the job figure with its boundary attached.</b> The only complete
+          <b>Read the weighted group figure with its boundary attached.</b> The only complete
           non-overlapping set the published data offer is NAICS 325 and 326 taken once per
           county, so that is what a job weighting can run over at all. It is wider than this
           site&rsquo;s own measurement register of 3252, 3255, 326, which covers 24,030
           jobs: <b>15,758</b> of the 33,528 weighted jobs, about 47 percent, are chemistry
           the register calls context rather than cluster. The finer set cannot be weighted
           because it is not published for every county. That is a real limit, not a rounding
-          note, and it is the reason the cell median stays the headline.</p>
+          note. Neither statistic reveals the distribution of individual pay.</p>
         <p><b>The list median is the easy one to compute and the easy one to describe
           wrongly.</b> Sorting the cells and taking the middle one gives you the middle
           <em>cell</em>. Writing &ldquo;the typical job pays&rdquo; over it claims the middle
-          <em>job</em>, which is a different statistic whenever the big cells sit to one
-          side of the small ones. They usually do, because employment is concentrated and
-          concentration is not symmetric.</p>
+          <em>job</em>, which this table cannot identify. Employment weighting still uses
+          each group&rsquo;s average. It does not reveal what the middle worker earns
+          within or across those groups.</p>
         <p class="body" id="paydrag">
           The heaviest cell sitting below the cell median is <b>Summit County plastics and
           rubber products</b> at 1.01&times; on 3,824 jobs, the same cell the first recipe
@@ -379,23 +386,26 @@
           the average job in its county pays&rdquo; while the figure under it was a median over
           cells. The number was correct and the sentence was not, and a reader reported
           believing a stronger claim than the page was making. The fix was not a new
-          number: it was naming the unit in the sentence and computing the job-weighted
-          figure beside it, so a reader can see both.</p>
+          number: it was naming the unit in the sentence. The weighted figure beside it
+          also summarizes group averages; it is not a repair that recovers individual pay.</p>
       </li>
       <li>
         <h3>What it lands on here</h3>
         <p class="body" id="paylands">
           In 2025, across twelve counties: the middle cell pays <b>1.21&times;</b> what the
-          average job in its county pays, the middle job <b>1.26&times;</b>. Against the
-          same industries nationally the region pays <b>0.88&times;</b>, a discount rather
-          than a premium. It is a good industry to hold a job in relative to this region,
-          and this region is a cheap place to hire for it, and those are the same finding
-          read from two sides.</p>
-        <p>Publish the unit in the sentence, not in a methodology note. If you can only
-          print one figure, print the one that does not flatter you, and say which it is.
-          Here the job-weighted figure is the higher of the two, which is exactly why the
-          lower one can stay the headline without anyone suspecting a thumb on the
-          scale.</p>
+          average job in its county pays; the employment-weighted median of the broader
+          group-average ratios is <b>1.26&times;</b>. Against the same industries nationally,
+          the median cell-average ratio is <b>0.88&times;</b>. These are descriptive
+          comparisons of group means, not evidence of an individual wage premium or a
+          causal effect of choosing this industry.</p>
+        <p>Publish the unit and the comparator in the sentence. Employment weighting gives
+          larger groups more influence, but the underlying observations remain averages.
+          The pay article also compares local manufacturing wages, a more relevant
+          benchmark for a manufacturing job than every job in the county.</p>
+        <p class="warn"><b>Correction &middot; 8 September 2026.</b> This recipe called
+          1.26&times; the pay of the middle of 33,528 jobs. It is the employment-weighted
+          median of county-industry average wage ratios. Individual median pay cannot be
+          calculated from these group means.</p>
       </li>
     </ol>
   </div>
@@ -529,9 +539,9 @@
         <p class="body" id="cpitable">
           CPI-U, all items, U.S. city average, annual averages, 2019 to 2025, on a base of
           2019. The index moved from <b>255.657</b> to <b>321.943</b>, so general prices
-          rose <b>26 percent</b> across the window and a 2025 dollar buys what 79 cents
+          rose <b>25.9 percent</b> across the window and a 2025 dollar buys what 79 cents
           bought in 2019. The divisor for any year is that year&rsquo;s index over
-          2019&rsquo;s: 2019 is 1, 2022 is 1.1447, 2025 is 1.26.</p>
+          2019&rsquo;s: 2019 is 1, 2022 is 1.1447, 2025 is 1.2593.</p>
         <p class="warn"><b>The 2025 average is eleven months, and the bureau says so.</b>
           This series has no October 2025 value. It returns a dash for that month, with the
           footnote &ldquo;Data unavailable due to the 2025 lapse in appropriations&rdquo;,
@@ -542,16 +552,21 @@
           322.132 until 2026-09-01.</p>
         <p class="warn"><b>The index runs out before your data does.</b> Annual averages
           exist only for completed years, so a figure from the current year has no
-          deflator of its own and has to borrow the last published one. That understates
-          the adjustment by whatever prices have done since, which makes every real figure
-          computed that way an upper bound. Say so rather than letting it pass as exact.</p>
+          deflator of its own. This example carries the 2025 index into 2026 as an
+          approximation. Its direction of error depends on subsequent prices; it is not
+          a guaranteed upper bound.</p>
+        <p class="warn"><b>Correction &middot; 8 September 2026.</b> The worked table and
+          claim still used 322.132 after the prose had changed to 321.943. They now use
+          the verified BLS observations shipped with the federal article: eleven available
+          months in 2025. The corresponding rise is 25.9 percent; the worked finished-product
+          real index below moves from 110.9 to 111.0.</p>
       </li>
       <li>
         <h3>Now look at what moved</h3>
         <p class="body" id="deflated">
           <b>Finished plastics and rubber prices.</b> Up to <b>139.8</b> in cash against a
           2019 base of 100, which is the rise of about forty percent that page reported.
-          Deflated, <b>110.9</b>: a real rise of about 11 percent, not forty. And the
+          Deflated, <b>111.0</b>: a real rise of about 11 percent, not forty. And the
           dearest month is not the same month. In cash it is <b>July 2026</b>; in real terms
           it was <b>August 2022</b>, nearly four years earlier. <b>Resin</b> makes the
           sharper case: <b>125.4</b> in cash still reads as a lasting increase, and at
@@ -602,16 +617,20 @@
           <b class="code">county</b> are the two this site asks for.</p>
         <pre class="endpoint">POST https://api.usaspending.gov/api/v2/search/spending_by_category/naics/</pre>
         <p>Filter on place of performance for your counties and on the fiscal years you
-          want. No key, no registration.</p>
+          want. Select prime-contract award types A&ndash;D for the manufacturing view.
+          Follow every response&rsquo;s pagination metadata until it reports no next page;
+          filtering the first page alone can discard smaller categories. Retain negative
+          obligations, which record de-obligations. No key, no registration.</p>
       </li>
       <li>
         <h3>Decide which years you are allowed to compare</h3>
         <p class="body" id="fedyears">
           This site pulls fiscal 2019 to 2026, eight years, of which <b>seven are
-          finished</b>. Across the finished years the region&rsquo;s polymer manufacturers
-          were obligated <b>$225.8M</b>. Adding the part-year brings it to $248.8M, and that
-          larger number is the more misleading of the two, because $23.0M of it is however
-          much of 2026 had elapsed when the file was read.</p>
+          finished</b>. Across the finished years the chemical and plastics/rubber
+          prime-contract view totals <b>$289.5M in 2025 dollars</b>. Adding the part-year
+          brings it to $313.6M; $24.2M is however much of FY2026 had elapsed when the file
+          was read on 8 September 2026. For reconciliation with the source, the nominal
+          totals are $254.4M closed and $278.6M including the partial year.</p>
         <p><b>The current fiscal year is not a year.</b> It is however much of a year has
           elapsed, and putting it in a bar chart beside completed years draws a collapse
           that has not happened. Either exclude it or label it, and say which you did.</p>
@@ -633,13 +652,16 @@
       <li>
         <h3>Now name what your filter cannot see</h3>
         <p class="body" id="fedblind">
-          University and research awards are invisible to the NAICS view by construction: it
-          filters to 325*/326* manufacturing codes, and a university files under 61xxxx or
-          5417xx. The NSF NEO-SMART Engine ($14,999,983) and TARDISS do not appear in the
-          NAICS rows. The all-industry county rows do capture them. This cut sees <b>eight
-          industry codes</b>, led by all other rubber product manufacturing at $87.6M, tire
-          manufacturing (except retreading) at $77.8M, paint and coating manufacturing at
-          $23.5M. Everything else in the region&rsquo;s federal money is outside the frame
+          Research grants are excluded by the prime-contract award-type filter, A&ndash;D.
+          Contract NAICS classifies the supplies or services acquired; institutional
+          identity does not determine that code. This view also selects 325*/326*
+          manufacturing codes. The NSF NEO-SMART Engine ($14,999,983) and TARDISS do not appear in the
+          NAICS rows. The all-type county view can include grants whose reported performance
+          location is inside the footprint. This cut sees <b>37 industry codes</b>, led by
+          all other rubber product manufacturing at $87.6M, tire manufacturing (except
+          retreading) at $80.1M, and paint and coating manufacturing at $23.6M in nominal
+          source dollars across the full window, including partial FY2026. Everything else
+          in the region&rsquo;s federal money is outside the frame
           by construction, and the total does not know that.</p>
         <p><b>This is the step people skip, and it is the reason to run this recipe at
           all.</b> An industry filter returns a number, and the number is correct for what
@@ -647,6 +669,13 @@
           eligible. Write the sentence naming what your filter excludes and print it next
           to the total, every time, because a reader cannot infer it and you will forget
           it within a month.</p>
+        <p class="warn"><b>Correction &middot; 8 September 2026.</b> The old recipe stopped
+          at the first results page, reporting eight codes, $225.8M across closed years
+          and $248.8M including FY2026 in nominal dollars. Complete pagination yields
+          37 codes, $254.4M closed and $278.6M including the partial year. The comparison
+          above now uses constant 2025 dollars; nominal amounts remain labelled for audit.
+          The exclusion explanation also used institutional industry codes: grants are
+          excluded here by award type, while contract NAICS identifies what is purchased.</p>
       </li>
     </ol>
   </div>
@@ -795,19 +824,21 @@
 <section class="band" id="sec-checks" data-nav="How this is checked">
   <div class="wrap">
     <p class="takeaway">The part that is worth copying without our code</p>
-    <h2>Every claim on this site names the condition under which it stops matching its source</h2>
+    <h2>Each registered claim names the condition under which it stops matching its source</h2>
     <p class="lede">One idea, and you do not need our tooling to use it. It is here because
       it is the cheapest thing on this page to adopt and the only one that keeps working
       after the person who built the analysis has moved on.</p>
     <p class="body" id="checkidea">
-      Across the twenty-two pages this tally covers, twenty listed on the front page and two not, it carries <b>519</b> of them. The tally is generated for the hub and skips it, so the hub is a twenty-third page whose own 26 claims sit outside every figure in this paragraph: 545 across 23 site-wide. 498 of the 519 are re-run
-      against the source data every time the site is built, so a figure that stops
-      matching its file breaks the build before anybody reads it. The other 21 rest on
+      Across the twenty-two article pages, excluding the hub, this tally carries
+      <b>526</b> claims. The hub adds 29, making 555 across all 23 site pages.
+      Of the 526 article claims, 504 are re-run
+      against the shipped data in the verification suite, so a registered figure that
+      stops matching its assertion fails that check. The other 22 rest on
       a person having read a document correctly, which is why they are labelled and are
-      the place to attack first. This page alone carries 33.</p>
+      the place to attack first. This page alone carries 34.</p>
     <p class="body"><b>What the conditions prove, and what they do not.</b> They run
-      against the data a page shipped with, so a green board means every sentence still
-      matches its own file. It does not mean the file is right about the world, and it does
+      against the data a page shipped with, so a green board means the registered
+      assertions pass against those files. It does not mean the file is right about the world, and it does
       not mean the sentence reads the file correctly.</p>
     <p class="body"><b>The discipline, not the code.</b> Write the sentence you intend to publish. Then,
       beside it, write the condition under which it would be false, as an expression over
@@ -870,8 +901,8 @@
         If your total is lower than ours, count how many cells you have against how many
         we say we had.</p></li>
       <li><h3>A different geography</h3><p>County, metropolitan area and state are
-        published separately and do not nest. Three metros overlapping a twelve-county
-        region do not sum to it, and a custom region is yours to build rather than the
+        published separately. Metros overlapping a county region do not necessarily
+        sum to it, and a custom region is yours to build rather than the
         bureau&rsquo;s to publish.</p></li>
     </ol>
 
@@ -930,9 +961,11 @@
       breaks people</h3>
     <p class="body">County, metropolitan area and state are three separate geographies,
       published separately, and they do not sum into one another. A metro is a set of whole
-      counties, so the Akron metro is Summit plus Portage, and the twelve counties this
-      site measures are overlapped by three metros, each of which reaches into territory
-      the twelve exclude. That forbids three things outright: adding metro figures to get a
+      counties. Under the July 2023 delineation, four metros overlap PIC-12: Akron,
+      Canton-Massillon, Cleveland and Youngstown-Warren. Akron, Cleveland and Youngstown-Warren
+      lie entirely inside PIC-12. Canton-Massillon also includes Carroll County, outside
+      PIC-12; Wayne County belongs to the Wooster micropolitan area. These areas therefore
+      do not tile PIC-12 exactly. That forbids three things outright: adding metro figures to get a
       region, treating a metro price level as a county price level, and putting a county
       figure in the same sentence as a metro figure without naming both. This site has
       already had a defect from crossing that line, which is why the geography a page is
@@ -1056,19 +1089,19 @@
 <section class="band" id="sec-register" data-nav="The register">
   <div class="wrap">
     <p class="takeaway">The register</p>
-    <h2>All twenty-four datasets, with what each one cannot tell you</h2>
+    <h2>All twenty-seven sources, with what each one cannot tell you</h2>
     <p class="lede">Generated from the same file the pages themselves read, so it cannot
       drift from them. Each entry carries the endpoint, whether it needs a key or a
       registration, its licence where one is stated, the exact filter values applied to it,
-      and every page here that rests on it. Three of the twenty-four are internal records with
+      and every page here that rests on it. Three of the twenty-seven are internal records with
       no endpoint at all, and saying so plainly is the point of listing them.</p>
     <p class="fig-title">No other source feeds more than five of the twenty-three pages</p>
     <p class="fig-sub">Pages resting on each dataset. The two marked in orange have no
       endpoint and no script: they cannot be fetched by anyone, including us. Bars start at
       zero.</p>
     <div class="chart reflow"><svg id="deps" role="img" aria-labelledby="deps-t">
-      <title id="deps-t">Ranked bars of how many pages each of the twenty-four datasets
-        feeds, led by the Quarterly Census of Employment and Wages at nine of twenty-three. Until 2026-09-01 this register held only fifteen of the twenty-four sources and eighteen of the twenty-three pages, because the build refuses to publish a source without a written statement of what it cannot tell you and nine of them had none. Those nine are written and the register is complete,
+      <title id="deps-t">Ranked bars of how many pages each of the twenty-seven sources
+        feeds, led by the Quarterly Census of Employment and Wages at nine of twenty-three,
         with the next source at five and most feeding one page each.</title>
     </svg></div>
     <div id="depstable"></div>
@@ -1092,6 +1125,16 @@
       costs, and what would close it. Every one is recorded in the affected
       page&rsquo;s own notes as well.</p>
     <div class="gaps" id="gaps"></div>
+    <p class="warn"><b>Correction &middot; 8 September 2026.</b> This guide attributed
+      Cleveland&rsquo;s missing trend to nondisclosure. The earlier metro, C1746, discloses
+      all nine years from 2015 through 2023. C1741 adds Ashtabula in 2024: a code and
+      boundary change, not withheld history. The earlier series is now shown separately
+      on the peers page.</p>
+    <p class="body">The disclosure comparison above has 51 state geographies: the 50 states plus
+      Puerto Rico. The District of Columbia is absent from this industry file.</p>
+    <p class="warn"><b>Correction &middot; 8 September 2026.</b> The price-spike page uses
+      BLS CPI as well as FRED. Adding that missing dependency changes the number of
+      pages with one registered dataset from nine to eight; the source count stays 27.</p>
   </div>
 </section>
 
@@ -1100,13 +1143,22 @@
     <p>The URL is the cheap half. The codes, the ownership filter and the suppression rule
       are the part that took weeks, and they are the part worth giving away.</p>
     <p class="sub" id="closersub">
-      Every filter on this page is the value the fetch scripts actually apply, extracted
-      from them rather than written from memory, and 76 of them are published here. Two of
-      the twenty-four sources cannot be fetched by anybody, which is said here rather than left
+      The 156 filter lines on this page record the scripts&rsquo; selections and documented
+      source choices, including the manual announcement checks. Three of
+      the twenty-seven sources are internal records without public endpoints, which is said here rather than left
       for you to discover.</p>
+    <p class="sub"><b>Updated 8 September 2026.</b> The register grows from 24 to 27 sources
+      with CPI observations and the two dated funding announcements. It now lists 152
+      filter lines and five keyed sources; the matched BEA archive is a keyless download.
+      Article claims grow from 519 to 524, including 34 on this guide. The 23 registered
+      site pages include the hub; the article tally covers the other 22.</p>
+    <p class="sub"><b>Updated 11 September 2026.</b> The chain source corrections bring
+      the register to 156 filter lines. The article tally is now 526 claims, 504 automatic
+      and 22 documentary; the hub adds 29 claims for 555 site-wide.</p>
   </div>
 </section>
 
+</main>
 <footer class="page-foot">
   <div class="wrap">
     <p class="foot-id"><b>Polymer Industry Cluster</b> &middot; Greater Akron Chamber

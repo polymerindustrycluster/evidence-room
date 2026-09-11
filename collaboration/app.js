@@ -219,9 +219,10 @@ PV.figures([
     ["Year", "Akron works", "Case Western works", "Joint", "Joint per 1,000 of Akron"],
     S.map(r => [r.year, N(r.akron), N(r.cwru), r.joint, r.per_1k_akron]));
   document.getElementById("controlsrc").innerHTML =
-    `${D.meta.control} <b>Indexing lag is excluded</b> because Case Western’s own output is
-     ${N(pk.cwru)} in ${T.peak_year} and ${N(last.cwru)} in ${last.year}: the index is
-     not simply missing recent years. <b>Akron shrinking is not the whole story either:</b>
+    `${D.meta.control} Case Western’s indexed output is
+     ${N(pk.cwru)} in ${T.peak_year} and ${N(last.cwru)} in ${last.year}.
+     That comparison cannot exclude different indexing delays for joint papers.
+     <b>The decline also appears as a share of Akron’s output:</b>
      Akron’s own output fell from ${N(pk.akron)} to ${N(last.akron)}, about
      ${Math.round((1 - last.akron / pk.akron) * 100)} percent, while joint work per thousand
      of that output fell from ${pk.per_1k_akron} to ${last.per_1k_akron}, about

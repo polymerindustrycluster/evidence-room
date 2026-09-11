@@ -10,7 +10,7 @@ Source: U.S. EIA (Henry Hub, Ohio industrial electricity) and FRED/BLS producer 
 index.html      page shell
 styles.css      page-local chrome: figure headers, seat selector, vignette stat band, mobile re-layout
 app.js          charts and interaction (all derived numbers recomputed from data/scissors.json)
-data/scissors.json THE DATA (35 KB). Edit the builder, not this.
+data/scissors.json THE DATA. Sync the deflator with the scoped recipe below.
 shots/          desktop.png, mobile.png
 ```
 
@@ -21,27 +21,40 @@ cd ../_data/build
 python fetch_rest.py && python fetch_chain_prices.py   # refreshes the raw fred.json pull
 ```
 
-Raw pulls live beside those scripts so a derivation can be re-run without re-fetching. **Known gap (2026-08-27):** the derivation step that turns `fred.json` into `data/scissors.json` (rebasing, `retraced`, peaks) is not present in `_data/build/` in this checkout — the previous README pointed at a `derive_rest.py` that does not exist. Until that script is restored, `data/scissors.json` is the frozen derived artifact of the 2026-08-15 fetch; every number on the page is recomputed from it by `app.js` and re-checked by `claims.json`. **Its `meta` prose was hand-edited on 2026-08-28** (ASCII arrows typeset, em-dashes and shouted capitals removed, `row` rewritten in reader words, `definition` and `scope` added to carry the retracement formula and the missing-comparator limitation into the methodology box). No series value was touched. When the derivation script is restored it must emit these strings, or the edit is lost on the next rebuild.
+The nominal price snapshot remains the frozen derived artifact of the 2026-08-15 fetch. The broad `_data/build/derive_rest.py` now exists, but does not reproduce the later deflator and metadata additions, so running it alone would discard corrections. Its nominal inputs must not be refreshed as part of a CPI-only update.
+
+From the repository root, synchronize the verified federal CPI dependency without touching nominal observations:
+
+```
+python -B _data/build/sync_scissors_deflator.py --write
+python -B _data/build/sync_scissors_deflator.py --check
+python -B -m unittest discover -s _data/build -p "test_scissors_deflator.py" -v
+python -B _data/build/verify_claims.py cost-scissors
+```
+
+The sync changes only `deflator` and `meta.nominal`; it preserves the nominal series, August 15 retrieval date and unrelated metadata. It copies `federal-money/data/federal.json`'s verified observations and provenance. Source-value or month-coverage disagreement fails closed. A changed upstream year range requires reviewing the recipe. The full price rebuild remains a separate task.
 
 **`data/scissors.json` was hand-edited again on 2026-08-29, and this time it gained data, not only prose.** Three changes, all of which the restored derivation must reproduce or they are lost:
 
 - `meta.nominal` added — the LIMITS-classified sentence that the whole page is nominal, what that excludes, why the page stays nominal, and which readings do not survive deflation. `nominal` is already an allowed key in `picviz.js`'s meta allowlist, so it publishes into the methodology box under Limitations.
 - `meta.fetched: "2026-08-15"` added — copied from the `meta` block `_data/build/fetch_chain_prices.py` writes, not invented. Every other page carries it; without it the shared core silently skipped the masthead "Data as of" dateline and the "Retrieved" line in the methodology box, at BOTH widths (the reader who reported it as a mobile-only gap was being generous).
-- **a new top-level `deflator` block** — BLS CPI-U all-items annual averages, 2018 to 2025, base year 2019, copied from `federal-money/data/federal.json`, which is the same table this site already uses to restate dollars into 2025 terms. It redraws nothing. It exists so the hero's real-terms paragraph and `cs-nominal-not-real` are computed from a shipped table rather than typed, and so a reader can repeat the division. Its own `caution` field carries the limitation: the averages are annual, not monthly, and stop at 2025, so a 2026 month takes the 2025 factor and every real figure on the page is an upper bound on the gain. `federal-money`'s copy carries a 2026 row that duplicates 2025; that row is deliberately NOT shipped here, and `app.js` clamps to the last real average instead, so nothing silently deflates 2026 by a made-up number.
+- **a new top-level `deflator` block** — added August 29, then corrected September 8. It now copies the federal page’s 2019–2025 observation table and source receipt. The 2025 value is 321.943, the mean of eleven published months (October unavailable), not a full twelve-month annual average. The unused 2018 row was removed because it is outside that verified upstream table. No 2026 observation is invented: 2026 months explicitly carry the 2025 factor. Annual CPI approximates monthly purchasing power; the denominator is the 2019 annual mean, not January CPI. No upper or lower bound follows from this approximation.
 
 ## Read before quoting anything from this page
 
-- **Every number on this page is NOMINAL.** Not one series is deflated. Consumer prices rose 26.0% between the 2019 and 2025 CPI-U annual averages, so "+40%" is a cash figure and about +11% in real terms, and "a record high" is a cash record whose real-terms equivalent was set back in August 2022. Quote a LEVEL from here and you are quoting cash. What is safe to quote across the inflation is the ORDERING between links and the SIGN and SHAPE of the gap, both of which were rechecked on deflated series (`cs-nominal-ordering-holds`). The hero says all of this above the stat cards; do not strip it.
+- **Every plotted price series is NOMINAL.** A separate real-terms paragraph uses an annual-CPI approximation. The 2025 eleven-month CPI-U mean is 25.9% above the 2019 annual average, so "+40%" is a cash figure and about +11% in real terms, and "a record high" is a cash record whose real-terms equivalent was set back in August 2022. Quote a LEVEL from here and you are quoting cash. What is safe to quote across the inflation is the ORDERING between links and the SIGN and SHAPE of the gap, both of which were rechecked on deflated series (`cs-nominal-ordering-holds`). The hero says all of this above the stat cards; do not strip it.
 - **The published gap is one decimal (+14.3), and it is NOT the difference of the rounded indexes.** 140 − 125 = 15; the gap is 139.76 − 125.44 = 14.32. If you quote it, quote the tenth, and if you show the legs, show them at two decimals — the reconciliation block does both. Same at the trough: 114 and 136 give −22, the gap is −22.50.
 - Series are in $/mcf, ¢/kWh and index points. They are rebased to 100 at 2019-01 so that ONE axis is honest. This page exists partly to avoid the dual-axis anti-pattern.
 - Two constructed units carry the page, and both are stated as a READING on the figure rather than as arithmetic. (1) Share of a run-up given back, on the ladder: 0% still holds the whole run-up, 100% is back to the January 2019 price, past 100% is cheaper than before the run-up started. (2) The gap between two same-based indexes, on the spread chart: one point is one percentage point of price growth since January 2019, above zero means product prices grew more, below zero means resin did. The formulas live in the source lines and `meta.definition`, not on the axes.
 - An index shows movement from the base month only — a series that starts high and stays flat looks like one that is cheap and flat.
-- The spread chart is a difference of two same-based indexes, which is legitimate. It is NOT a margin: labor, freight, energy and packaging are in neither index.
+- The spread chart is a difference of two same-based selling-price indexes, not a margin. It does not separately measure labor, freight, energy, packaging or a producer's full costs. Selling prices may reflect those costs; the indexes do not separate their contributions. See the [BLS PPI overview](https://www.bls.gov/ppi/overview.htm).
 - The gray reference line is the resin maker's version of the same computation (resin manufacturing minus industrial chemicals) — the only same-method comparator the shipped data allow. Since 2026-08-29 the industrial chemicals index states its own levels in three places (the gap chart's key, the level table under the line chart, and a `Chemicals` column in the spread table), so both legs of that subtraction are checkable; a comparator that cannot state its own values does not belong on a page whose premise is checkability, and the standing rule is that it comes off the chart rather than staying unnamed. No economy-wide (total manufacturing) comparator is drawn because no such input pair is in `data/`; the page says so under Limitations in the methodology box (`meta.scope`) rather than implying the polymer gap is unusual.
 - The seat selector re-emphasizes and restates; it never recomputes. Claims guard the default state and the data ingredients of each per-seat sentence.
 - "Above zero every month since August 2022" is true and thin. Three of those 48 months came in under a single point: August 2022 (+0.08, the crossing itself), September 2022 (+0.58) and May 2026 (+0.71). Quote the run without those three and you are quoting a stronger claim than the data make.
 
 ## Corrections
+
+- **2026-09-08 (AI-assisted CPI dependency correction)** — **Was:** the local deflator still copied 322.132 for 2025 and described all entries as annual averages. The page reported 26.0% and claimed carrying 2025 CPI into 2026 made gains upper bounds and retracement lower bounds. **Is:** 321.943, from the federal page’s verified eleven published months, gives 25.9%. October is unavailable. Annual CPI and the 2026 carry-forward are approximations with unknown error direction; the bounds are explicitly retracted. **Cause:** the downstream copy did not follow the federal correction, and the earlier explanation assumed inflation’s future direction. Nominal prices and the historical entries below are unchanged. The other rounded comparisons remain about +11% for products versus +40% cash, a real peak in August 2022, resin 100 versus 125 cash, and a gap of +11.4 versus +14.3 points. The scoped recipe and regressions above guard the dependency and preserve the nominal snapshot.
 
 - **2026-08-29 (third pass, naive-reader audit)** — **The page never said its prices were
   nominal.** Every series is rebased to January 2019 and read morally off that rebasing

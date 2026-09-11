@@ -1,8 +1,8 @@
 {
  "meta": {
   "source": "This page\u2019s own dataset is _data/SOURCES.json (the source registry) and _data/catalog.json (the generated inventory of build scripts), joined to five shipped page files: wages for the concentration reading and the industry-code arithmetic, occupations for the education-boundary example, peers for the disclosure rates, revisions for how far these series move after publication, and laborshed for the measured gap.",
-  "row": "One row of the register is one dataset: its endpoint, the exact filter values applied to it, whether it needs a key, and every page here that rests on it.",
-  "fetched": "2026-08-29",
+  "row": "One row of the register is one source: its endpoint, the exact filter values applied to it, whether it needs a key, and every page here that rests on it.",
+  "fetched": "2026-09-08",
   "definition": "How you get it is DERIVED from the endpoint\u2019s shape, not declared in the registry, and the four tests run IN THIS ORDER: no endpoint at all is an internal record; then a URL ending in a file extension is a bulk download; then a URL with an api path segment is an API request; then a URL ending in a directory is a bulk download; and anything left is a portal query. The order is printed because it decides the answer rather than describing it: two of these endpoints end in a directory AND carry an api segment, and reading the tests in a different order relabels them. The rule is on the page so a reader can disagree with a label rather than inherit it.",
   "why": "The register lists only the sources behind the analyses published in this repository. The internal series has more pages and more sources, and their absence is stated rather than left to be discovered.",
   "scope": "This page hands over method, not data. It does not republish any source, and following it will not give you these numbers: it will give you the same numbers for your own region, which is the point.",
@@ -17,7 +17,7 @@
    "agency": "Bureau of Labor Statistics",
    "url": "https://data.bls.gov/cew/data/api/{year}/{qtr}/area/{fips}.csv",
    "docs": "https://www.bls.gov/cew/additional-resources/open-data/csv-data-slices.htm",
-   "script": "_data/build/fetch_qcew.py, fetch_footprint.py, fetch_provenance.py",
+   "script": "_data/build/fetch_qcew.py, fetch_footprint.py, fetch_provenance.py, fetch_peers.py",
    "key_required": false,
    "route": "bulk",
    "route_label": "bulk file download",
@@ -43,7 +43,7 @@
     ],
     [
      "geography",
-     "county FIPS (the federal numeric code that identifies each county). The page\u2019s own footprint, PIC-12, is 39007 Ashtabula, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39169 Wayne. The wider NEO-14 used by the vault pages is 39033 Crawford, 39035 Cuyahoga, 39055 Geauga, 39077 Huron, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39139 Richland, 39151 Stark, 39153 Summit, 39157 Tuscarawas, 39169 Wayne. Both are defined once in footprints.py, which is a vendored copy of the pic-geo package."
+     "county FIPS (the federal numeric code that identifies each county). The page\u2019s own footprint, PIC-12, is 39007 Ashtabula, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39169 Wayne. The chain page uses a separate 14-county company-register boundary, documented in its data. The legacy NEO14 constant in footprints.py is a different county set and must not be substituted for that boundary."
     ],
     [
      "by_industry",
@@ -60,6 +60,26 @@
     [
      "provenance_page",
      "fetch_provenance.py re-uses this source for one pull: 2016 annual, area 39000 which is the STATE of Ohio and not a county, own_code 5, industry 326+32521+325991 at agglvl 55/57/58, which are the state 3-, 5- and 6-digit levels. Those three agglvl codes belong to that state pull alone and return nothing from a county file."
+    ],
+    [
+     "state_universe",
+     "The held 2024 private NAICS 326 state slice contains all 50 states plus Puerto Rico (72000); DC (11000) is absent. Membership is asserted by FIPS identities, not inferred from a count of 51."
+    ],
+    [
+     "metro_vintage",
+     "The current real-wage comparison uses private NAICS 326 annual-average wages and employment for 2024, with metro rows at agglvl 45. QCEW adopted OMB bulletin 23-01 (2023-07-21) in 2024. Cleveland changes from C1746 through 2023 to C1741 in 2024 and adds Ashtabula; continuing a code does not establish constant boundaries. Detailed-industry metro publication ended beginning Q3 2025. Source notices: https://www.bls.gov/cew/notices/2024/new-metropolitan-statistical-area-delineations-for-2024.htm and https://www.bls.gov/cew/notices/2025/change-in-the-presentation-of-metropolitan-statistical-area-data-in-qcew.htm"
+    ],
+    [
+     "wage_comparison",
+     "The wages page includes broad chemical manufacturing 325 and plastics/rubber 326, plus their separately disclosed parts. Broad 325 includes pharmaceuticals and agricultural chemicals. The complete non-overlapping group comparison weights county/group-average pay ratios by jobs; it is not an individual wage distribution. Private manufacturing 31-33 is a separate comparator; industry 10 all-ownership county pay is the local all-jobs benchmark."
+    ],
+    [
+     "cluster_health_workplaces",
+     "own_code 5; annual qtr a; NAICS 326; years 2015-2025. Fixed PIC-12 county set, Ohio 39000, US000 and all five Ohio-bordering states 18000/21000/26000/42000/54000. annual_avg_emplvl and annual_avg_estabs are annual averages, not same-establishment panel records. Manufacturing 31-33 is separately labelled PIC-12 context. cluster-health/derive_health.py --workplaces-only transforms held by-area/by-industry extracts; source hashes and overlap checks are in cluster-health/data/workplaces.json. This is a held-snapshot comparison, not a new bulk upstream revision audit."
+    ],
+    [
+     "reproducibility",
+     "County and by-industry extracts are acquired separately. The published geography/workplace changes were rederived from held QCEW inputs; a current API request can return a different revision. Public derived files record the input hashes and dated scope."
     ]
    ],
    "pages": [
@@ -82,7 +102,7 @@
    "agency": "US Treasury",
    "url": "https://api.usaspending.gov/api/v2/search/spending_by_category/{category}/",
    "docs": "https://api.usaspending.gov/",
-   "script": "_data/build/fetch_rest.py",
+   "script": "_data/build/fetch_rest.py, fetch_fed_contracts.py, federal_categories.py",
    "key_required": false,
    "route": "api",
    "route_label": "API request",
@@ -100,11 +120,11 @@
     ],
     [
      "NAICS",
-     "not sent to the API. A naics_codes filter returns 422, so the pull asks for the NAICS category over a county place-of-performance list and keeps 325* and 326* CLIENT-SIDE, in fetch_rest.py. University and research awards are invisible by construction either way: a university files under 61xxxx."
+     "Not sent to the category API. Acquire all pages for a fiscal year/category, then retain 325* and 326* client-side. These include chemical and plastics/rubber manufacturing; university/research grants are excluded from the prime-contract manufacturing view by the award-type and industry filters."
     ],
     [
      "paging",
-     "limit 100 per fiscal year per category, not paged. Anything past the hundredth result for a year is absent, and the file cannot tell you how much."
+     "limit=100, starting page=1; validate page_metadata.page, hasNext and next through a terminal hasNext=false,next=null. Malformed, missing, duplicate or non-finite rows fail. Keep signed obligations, including de-obligations, and apply the industry filter only after exhaustion."
     ],
     [
      "geography",
@@ -113,6 +133,22 @@
     [
      "note",
      "Obligations are money legally committed, not cash spent."
+    ],
+    [
+     "award_types",
+     "Primary NAICS rows and the same-basis all-industry contracting comparator use award_type_codes A, B, C, D (prime contracts). Separately labelled all-type county context has no award-type filter and must never be used as the contracting denominator."
+    ],
+    [
+     "time",
+     "spending_level=transactions; one October 1-September 30 window per fiscal year FY2019-FY2026. FY2019-FY2025 are completed years; FY2026 is a partial snapshot excluded from the annual average."
+    ],
+    [
+     "reconciliation",
+     "The all-type context separately queries contracts, indefinite-delivery vehicles (IDV), grants, loans, direct payments and other assistance. Their signed sum can differ from a separately queried live total; retain and disclose the unallocated remainder rather than asserting exact reconciliation."
+    ],
+    [
+     "snapshot",
+     "Complete category acquisition dated 2026-09-08; request/response hashes and terminal pagination receipts identify the pull. derive_federal.py produces the public fiscal-year file; derive_rest.py delegates that transformation. A future request may revise obligations."
     ]
    ],
    "pages": [
@@ -185,6 +221,53 @@
    "n_pages": 4
   },
   {
+   "key": "bls_cpi",
+   "name": "BLS CPI-U, all items, U.S. city average",
+   "short": "BLS consumer prices",
+   "agency": "Bureau of Labor Statistics",
+   "url": "https://api.bls.gov/publicAPI/v2/timeseries/data/CUUR0000SA0?startyear=2019&endyear=2025&annualaverage=true",
+   "docs": "https://www.bls.gov/developers/api_signature_v2.htm",
+   "script": "_data/build/fetch_federal_cpi.py, derive_federal.py",
+   "key_required": false,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": "Public domain. BLS asks to be cited as the source: https://www.bls.gov/bls/linksite.htm",
+   "is": "BLS monthly CPI-U, all items, U.S. city average, not seasonally adjusted; annual means provide a common purchasing-power basis.",
+   "good": "Restating dollars from different years on one stated price basis.",
+   "cannot": "Calendar-year consumer prices only approximate fiscal-year prices and industrial input costs. The 2025 mean uses eleven published months because October is missing; FY2026 carries the 2025 index as an approximation.",
+   "filters": [
+    [
+     "series",
+     "CUUR0000SA0, monthly not-seasonally-adjusted all-items CPI-U, U.S. city average; years 2019-2025."
+    ],
+    [
+     "annual_means",
+     "Exclude M13 summary rows and unavailable observations, then average the published monthly values and round to three decimals. Years 2019-2024 contain twelve months; 2025 contains eleven, with October unavailable, giving 321.943. Missing October is not imputed."
+    ],
+    [
+     "price_basis",
+     "Constant 2025 dollars: multiply signed nominal obligations by 2025 CPI / fiscal-year-labelled calendar CPI. Calendar-year prices approximate fiscal-year prices; FY2026 carries the 2025 index as an explicit approximation."
+    ],
+    [
+     "snapshot",
+     "BLS monthly response acquired 2026-09-08; response hash and annual monthly membership are carried in federal-money/data/federal.json cpi_observations. Future CPI revisions may change the result."
+    ],
+    [
+     "derivation",
+     "fetch_federal_cpi.py writes monthly response plus annual means into an explicit fresh output directory; derive_federal.py consumes these verified observations. The unrelated older long-history CPI cache is not overwritten."
+    ]
+   ],
+   "pages": [
+    "cluster-health",
+    "cost-scissors",
+    "federal-money"
+   ],
+   "n_pages": 3
+  },
+  {
    "key": "fred",
    "name": "FRED producer price and commodity series",
    "short": "FRED price series",
@@ -225,7 +308,7 @@
   },
   {
    "key": "ipeds_programs_census",
-   "name": "IPEDS completions by 6-digit CIP, 1991-2023 (the polymer-programs-db census)",
+   "name": "IPEDS completions by 6-digit CIP, held polymer-program census, 1991-2023",
    "short": "IPEDS polymer completions",
    "agency": "National Center for Education Statistics, via the Urban Institute Education Data API",
    "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/completions-cip-6",
@@ -248,7 +331,7 @@
     ],
     [
      "years",
-     "1991-2023 (2024 returns HTTP 500 from the API and is probed on every build)"
+     "Held 1991-2023 record from the 2026-08-21 census build. Quarantine mirror year 2020, which repeats 2019. The mirror year/collection mismatch and missing collection limit continuity; a derivation does not probe current API availability."
     ],
     [
      "majors",
@@ -264,12 +347,66 @@
     ],
     [
      "census build",
-     "sibling checkout polymer-programs-db: fetch_ipeds_national.py -> raw_ipeds_national.json, build_db.py -> programs.sqlite; derive_programs.py reads the sqlite and cross-checks every published number"
+     "derive_programs.py transforms a held SQLite program census and companion extracts; it does not reacquire the national record. Configure PROGRAMS_DB to the held database. The public derived file is shipped; the full source database is not included in this repository."
+    ],
+    [
+     "definitions",
+     "One program record is institution identifier x CIP x award level. Substantive: more than 10 recorded lifetime completions. Active: positive completion in the final reported year 2023. Small: at most 10. Brief: inclusive first-to-last reported calendar-year span at most 5, not the number of positive years. Small-and-brief means both."
+    ],
+    [
+     "interpretation",
+     "Selected-code reporting is not institutional survival, teaching closure, a failed start or a historical first. Missing years can change both threshold membership and denominators; the snapshot shares are not failure probabilities or guaranteed bounds on a complete census."
+    ],
+    [
+     "reproducibility",
+     "Snapshot reconciliation against held inputs is distinct from live acquisition. The completed update rechecked public program aggregates against the held census without a new national API pull."
     ]
    ],
    "pages": [
     "atlas",
     "programs"
+   ],
+   "n_pages": 2
+  },
+  {
+   "key": "nsf_awards",
+   "name": "NSF Awards API",
+   "short": "NSF award record",
+   "agency": "National Science Foundation",
+   "url": "https://api.nsf.gov/services/v1/awards.json",
+   "docs": "https://www.research.gov/common/webapi/awardapisearch-v1.htm",
+   "script": "_data/build/fetch_collab.py, fetch_research_awards.py, fetch_federal_research.py",
+   "key_required": false,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
+   "is": "The National Science Foundation\u2019s own record of what it awarded, to whom, and when.",
+   "good": "Establishing that a specific federal award exists, its size and its dates, from the awarding agency rather than from a press release.",
+   "cannot": "The PRIME RECIPIENT is not the lead institution of the work, and reading it as such is the single error this project has made most often. Collaborative work is frequently issued as separate awards to each institution, so one award naming one university is not evidence that the other was uninvolved.",
+   "filters": [
+    [
+     "scope",
+     "Collaboration analyses: every award to the two selected universities since 2012-01-01. The federal-money exclusion note instead retrieves two named awards by exact identifier, as described separately below."
+    ],
+    [
+     "joint detection",
+     "two ways: one award naming investigators at both institutions by email domain, and NSF\u2019s \u2018Collaborative Research\u2019 mechanism, which issues a separate award per institution under an identical title"
+    ],
+    [
+     "note",
+     "Only awards NSF itself labels \u2018Collaborative Research\u2019 are counted as joint. Matching on shared title alone booked \u2018Graduate Research Fellowship Program\u2019: an institutional block grant every university receives separately, as a $1.1M joint project."
+    ],
+    [
+     "federal_money",
+     "Exact award IDs 2532460 and 2330145, fetched from https://api.nsf.gov/services/v1/awards/{id}.json by fetch_federal_research.py. Preserve estimated award amount and obligated amount as different fields; these research awards illustrate exclusions from the prime-contract North American Industry Classification System (NAICS) scope, not additions to its totals."
+    ]
+   ],
+   "pages": [
+    "collaboration",
+    "federal-money"
    ],
    "n_pages": 2
   },
@@ -417,34 +554,54 @@
   },
   {
    "key": "bea_rpp",
-   "name": "BEA Regional Price Parities",
+   "name": "BEA Regional Price Parities, metropolitan archive (MARPP)",
    "short": "BEA regional price parities",
    "agency": "Bureau of Economic Analysis",
-   "url": "https://apps.bea.gov/api/data/",
-   "docs": "https://apps.bea.gov/API/signup/",
-   "script": "_data/build/fetch_bea.py, fetch_rpp.py",
-   "key_required": true,
-   "route": "api",
-   "route_label": "API request",
+   "url": "https://apps.bea.gov/regional/zip/MARPP.zip",
+   "docs": "https://www.bea.gov/help/faq/109",
+   "script": "_data/build/fetch_rpp.py",
+   "key_required": false,
+   "route": "bulk",
+   "route_label": "bulk file download",
    "licence": null,
    "licence_url": null,
    "attribution": null,
    "terms": "Public domain. BEA publishes citation guidelines: https://www.bea.gov/help/guidelines-for-citing-bea",
    "is": "A price level rather than a price: an index with the national average set to 100, saying what a fixed basket costs in one metropolitan area against another.",
    "good": "Turning a nominal wage into what it actually buys where it is earned.",
-   "cannot": "It is published for metropolitan areas, which neither nest inside nor tile a county footprint. Three metros that overlap a twelve-county region cannot be added into a figure for that region.",
+   "cannot": "It is published for metropolitan areas, whose coverage differs from a county footprint. Metros overlapping PIC-12 cannot be added into its total: Canton-Massillon includes Carroll outside PIC-12, while Wayne belongs to the Wooster micropolitan area.",
    "filters": [
     [
      "dataset",
-     "Regional, RPP by metropolitan statistical area"
+     "Official metropolitan price-parity archive (MARPP), supplied as a zip archive; MARPP_MSA_2008_2024.csv and MARPP__Footnotes.html from the 2026-02-19 release."
+    ],
+    [
+     "rows",
+     "2024 column; LineCode 1 (all items); GeoName contains Metropolitan Statistical Area. LineCode 3 (housing rents) is contextual data, not the all-items wage deflator."
     ],
     [
      "base",
-     "a fixed national basket, US average = 100"
+     "US average price level = 100. Adjusted weekly pay is the QCEW industry-average weekly wage divided by RPP / 100."
     ],
     [
-     "note",
-     "Published at METRO, which neither nests inside nor tiles PIC-12. Akron, Cleveland-Elyria and Youngstown-Warren each include territory the footprint excludes. Do not sum the three and call it PIC-12."
+     "geography",
+     "Both 2024 QCEW and the archive footnote use OMB bulletin 23-01, dated 2023-07-21. Match metro identifiers only after establishing that common definition. These are metro comparisons, not a PIC-12 county aggregate."
+    ],
+    [
+     "scope",
+     "Private NAICS 326 in 2024: 155 disclosed QCEW metro rows match BEA; 227 QCEW rows are explicitly suppressed, zero otherwise unmatched. Rank comparison uses the 29 matched metros with at least 2,000 jobs. Akron and Cleveland are included; record absence alone is not classified as suppression."
+    ],
+    [
+     "acquisition",
+     "python _data/build/fetch_rpp.py --output-dir <fresh-cache>; optional --archive <held-MARPP.zip> extracts an already acquired official zip archive. The destination must be new. Exact CSV, footnotes and receipt are retained; no API key is needed."
+    ],
+    [
+     "derivation",
+     "derive_realwage.py requires --rpp-csv, --rpp-footnotes and --rpp-receipt, plus --qcew-receipt and --qcew-adoption-notice for the annotated QCEW source. It verifies actual input bytes and compares the parsed BEA defining statement with the QCEW adoption. Local classification also requires --metro-counties and --metro-counties-receipt, derived from Census OMB 23-01 county delineations: https://www2.census.gov/programs-surveys/metro-micro/geographies/reference-files/2023/delineation-files/list1_2023.xlsx. Every intersecting area has an explicit disposition. The QCEW notice is a preserved web-tool rendering; its hash verifies custody, not agency accuracy. The annotation preserves its parent hash and data rows. The old keyed RPP cache is not this input. fetch_bea.py acquires county GDP (CAGDP2), a different measure."
+    ],
+    [
+     "snapshot",
+     "Archive acquired 2026-09-08; release 2026-02-19, new 2024 and revised 2008-2023 estimates. Archive SHA256 5dbf2e6ac2af222cc9abc205586c9b480344d89392752eb689c3ec823a34c83e. Exact extract hashes appear in realwage/data/realwage.json source_receipts; future downloads may revise."
     ]
    ],
    "pages": [
@@ -459,7 +616,7 @@
    "agency": "US Census Bureau",
    "url": "https://api.census.gov/data/{year}/cbp",
    "docs": "https://www.census.gov/data/developers/data-sets/cbp-nonemp-zbp/cbp-api.html",
-   "script": "_data/build/fetch_cbp.py",
+   "script": "_data/build/repair_chain.py",
    "key_required": true,
    "route": "api",
    "route_label": "API request",
@@ -468,8 +625,8 @@
    "attribution": null,
    "terms": null,
    "is": "A yearly Census count of business ESTABLISHMENTS, meaning physical sites. A firm with three plants appears three times.",
-   "good": "How many polymer sites a county holds, and roughly how many people work in them, on a definition that is the same in every county in the country.",
-   "cannot": "It cannot tell you what a site actually makes beyond its industry code, it suppresses any cell small enough to identify an employer, and it counts a different thing from PIC\u2019s own register: Census counts sites, PIC classifies companies, so a coverage ratio between them can pass 100 percent without the county being fully covered.",
+   "good": "Comparing chemical manufacturing and plastics/rubber establishments and their disclosed employment across counties using the same industry codes.",
+   "cannot": "It cannot tell you what a site actually makes beyond its industry code, it suppresses any cell small enough to identify an employer, and it counts a different thing from PIC\u2019s own register: Census counts sites, PIC classifies company records. Dividing those records by establishments does not measure how completely PIC has identified a county\u2019s businesses.",
    "filters": [
     [
      "NAICS",
@@ -481,7 +638,19 @@
     ],
     [
      "note",
-     "Census and PIC define a firm differently, so a coverage ratio can exceed 100 percent without the county being fully covered."
+     "The page compares chemical manufacturing (325) and plastics/rubber products (326). These broad groups are not the narrower PIC industry register. Census establishments and PIC company records are different units; their quotient is not a coverage rate."
+    ],
+    [
+     "geography",
+     "The company-register 14-county boundary: 39007 Ashtabula, 39029 Columbiana, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39157 Tuscarawas, 39169 Wayne. This contains PIC-12 plus Columbiana and Tuscarawas; it differs from the legacy NEO14 constant in footprints.py."
+    ],
+    [
+     "query",
+     "County Business Patterns (CBP), 2023; get NAME,ESTAB,EMP (area name, establishments, employees); for county:*; in state:39; NAICS2017=325 and NAICS2017=326 in separate requests, then select the fourteen county FIPS. Both responses were acquired on 2026-09-11 and retained with SHA256 receipts."
+    ],
+    [
+     "rebuild",
+     "repair_chain.py reads the two cached raw responses without a network call. fetch_cbp.py is a separate size-class investigation using PIC-12 and narrower industry codes; it does not produce this page\u2019s Census comparison."
     ]
    ],
    "pages": [
@@ -540,7 +709,7 @@
   },
   {
    "key": "ipeds_control_cips",
-   "name": "The same IPEDS pull for six peer technician CIPs (the control, on two populations)",
+   "name": "IPEDS snapshots for six peer technician trades",
    "short": "IPEDS control programmes",
    "agency": "National Center for Education Statistics, via the Urban Institute Education Data API",
    "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/completions-cip-6",
@@ -563,15 +732,19 @@
     ],
     [
      "rule",
-     "identical to the polymer census: substantive = more than 10 lifetime completions, active = a completion in 2023, same years, same award-level canonicalisation"
+     "Same selected years and award-level canonicalisation as the polymer census. Substantive: >10 lifetime completions; active: a reported completion in 2023. Small: <=10; brief: inclusive first-to-last reporting span <=5; small-and-brief: both."
     ],
     [
      "control build",
-     "sibling checkout polymer-programs-db: fetch_control_cips.py -> control_cips.json, read by derive_programs.py, for the survival control. The base-rate control is pulled in this repository by fetch_ipeds_control_baserate.py, keyless, and will not write until it reproduces the published 48% from the live API"
+     "The 2023 active-share comparison reads a held control_cips.json snapshot through derive_programs.py. The separate base-rate control was acquired by fetch_ipeds_control_baserate.py. A later live acquisition and a held census are not the same source vintage."
     ],
     [
      "two populations",
-     "the SURVIVAL control counts substantive programs only (6,648 ever, 3,185 still, 48%); the BASE-RATE control counts every start with the size threshold OFF (8,736 ever, 23% at ten or fewer completions, 19% both tiny and brief), because thresholding on size would discard the population a start-and-fail rate is about. The two counts are of the same six trades under two different rules and must never be quoted against each other"
+     "The substantive reporting comparison uses 6,648 records, 3,185 active in 2023 (48%). The separate all-record base-rate snapshot uses 8,736 records; 2,051 small, 2,967 brief and 1,693 both. Its refetched substantive control was 6,685/3,178, rounding to the same 48%; matching rounded rates does not make the counts or source dates identical."
+    ],
+    [
+     "limitations",
+     "Missing years may alter threshold membership and the denominator on each side. Shared mirror gaps do not guarantee that error cancels in a ratio. These are descriptive reporting shares, not failure probabilities."
     ]
    ],
    "pages": [
@@ -604,11 +777,15 @@
     ],
     [
      "trap",
-     "a year\u2019s directory omits institutions that closed before it, and the latitude/longitude fields begin in 2009: seven pre-2009 closures are placed at hand city centroids, stated per-dot"
+     "A directory year can omit an institution that stopped reporting under that identifier; absence is not proof of closure. Coordinate fields begin in 2009. Seven records without usable coordinates were placed at documented city centroids, with per-record provenance."
     ],
     [
      "projection",
      "points and basemap pre-projected at build time into the us-atlas AlbersUSA frame (975x610, scale 1300, translate 487.5/305): NOT d3 defaults"
+    ],
+    [
+     "identity",
+     "Totals count federal institution identifiers, which can change through reorganizations or recoding. Reporting in 2023 is a dated completion measure, not a current catalogue of teaching."
     ]
    ],
    "pages": [
@@ -633,11 +810,11 @@
    "terms": "Public domain. The Census Bureau asks to be cited as the source of the original data: https://www.census.gov/about/policies/citation.html",
    "is": "A count of JOBS, each one linking the census block where the job is to the block where its holder\u2019s address is on file. LODES8 is the current vintage and JT00 is the segment meaning all jobs in all sectors.",
    "good": "Where the people who work in a place live, and the reciprocal: where the people who live in a place work.",
-   "cannot": "It is not a commute. Nothing in it counts a trip, and the home end is a residence on file rather than evidence that anyone travelled. It carries no industry dimension at all, so a polymer-only version of a labour shed cannot be built from it.",
+   "cannot": "It is not a commute. Nothing in it counts a trip, and the home end is a residence on file rather than evidence that anyone travelled. Its three broad industry groups cannot isolate polymer industries. The page uses all-job totals for the whole economy.",
    "filters": [
     [
      "segment",
-     "JT00, meaning all jobs in all sectors. LODES origin-destination carries NO industry dimension, so this is the whole economy and never the polymer cluster."
+     "JT00 all jobs, using S000 all-industry totals. LODES origin-destination has three broad industry groups, but cannot isolate polymer industries."
     ],
     [
      "files",
@@ -653,7 +830,7 @@
     ],
     [
      "note",
-     "Both ends are employer-reported addresses. The home end is a residence on file, not evidence anyone travelled."
+     "Both ends are addresses on file. The home end is a residence record, not evidence anyone travelled."
     ]
    ],
    "pages": [
@@ -699,43 +876,6 @@
    ],
    "pages": [
     "occupations"
-   ],
-   "n_pages": 1
-  },
-  {
-   "key": "nsf_awards",
-   "name": "NSF Awards API",
-   "short": "NSF award record",
-   "agency": "National Science Foundation",
-   "url": "https://api.nsf.gov/services/v1/awards.json",
-   "docs": "https://www.research.gov/common/webapi/awardapisearch-v1.htm",
-   "script": "_data/build/fetch_collab.py, fetch_research_awards.py",
-   "key_required": false,
-   "route": "api",
-   "route_label": "API request",
-   "licence": null,
-   "licence_url": null,
-   "attribution": null,
-   "terms": null,
-   "is": "The National Science Foundation\u2019s own record of what it awarded, to whom, and when.",
-   "good": "Establishing that a specific federal award exists, its size and its dates, from the awarding agency rather than from a press release.",
-   "cannot": "The PRIME RECIPIENT is not the lead institution of the work, and reading it as such is the single error this project has made most often. Collaborative work is frequently issued as separate awards to each institution, so one award naming one university is not evidence that the other was uninvolved.",
-   "filters": [
-    [
-     "scope",
-     "every award to either university since 2012-01-01"
-    ],
-    [
-     "joint detection",
-     "two ways: one award naming investigators at both institutions by email domain, and NSF\u2019s \u2018Collaborative Research\u2019 mechanism, which issues a separate award per institution under an identical title"
-    ],
-    [
-     "note",
-     "Only awards NSF itself labels \u2018Collaborative Research\u2019 are counted as joint. Matching on shared title alone booked \u2018Graduate Research Fellowship Program\u2019: an institutional block grant every university receives separately, as a $1.1M joint project."
-    ]
-   ],
-   "pages": [
-    "collaboration"
    ],
    "n_pages": 1
   },
@@ -875,6 +1015,88 @@
    "n_pages": 1
   },
   {
+   "key": "programs_eda_announcement",
+   "name": "EDA Sustainable Polymers Tech Hub planned implementation-funding announcement",
+   "short": "EDA funding announcement",
+   "agency": "U.S. Economic Development Administration",
+   "url": "https://content.govdelivery.com/accounts/USEDA/bulletins/3a61a13",
+   "docs": null,
+   "script": null,
+   "key_required": false,
+   "route": "portal",
+   "route_label": "web portal query",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
+   "is": "The July 2024 announcement of planned EDA Tech Hubs implementation funding.",
+   "good": "Dating the federal funding announcement against the education series.",
+   "cannot": "An announced allocation is not paid cash, a university receipt, or evidence of a training outcome.",
+   "filters": [
+    [
+     "date",
+     "2024-07-02."
+    ],
+    [
+     "grain",
+     "Dated public announcement of planned implementation funding, not a university cash receipt or a completion outcome."
+    ],
+    [
+     "use",
+     "The programs series ends in 2023; this later announcement cannot establish that the grant arrived during the measured decline or affected that outcome."
+    ],
+    [
+     "reproducibility",
+     "Manual documentary check of EDA\u2019s original July 2 bulletin, retrieved and privately preserved with a SHA256 receipt on 2026-09-08. The separately held EDA press release corroborates it; its current URL returned 403. The wording is limited to planned funding, not final disbursement."
+    ]
+   ],
+   "pages": [
+    "programs"
+   ],
+   "n_pages": 1
+  },
+  {
+   "key": "programs_ohio_announcement",
+   "name": "Ohio Development Annual Report 2025, Innovation Hub announcement chronology",
+   "short": "Ohio funding announcement",
+   "agency": "Ohio Department of Development",
+   "url": "https://dam.assets.ohio.gov/image/upload/development.ohio.gov/annualreports/Development-Annual-Report-2025.pdf",
+   "docs": null,
+   "script": null,
+   "key_required": false,
+   "route": "portal",
+   "route_label": "web portal query",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
+   "is": "Ohio\u2019s 2025 Development annual report, which dates the local Innovation Hub announcement to September 2024.",
+   "good": "Dating the state announcement against the education series.",
+   "cannot": "The announcement date does not establish when a university received cash or whether the funding changed a programme\u2019s completions.",
+   "filters": [
+    [
+     "location",
+     "Printed page 18 (PDF page 10) of the 2025 annual report; state Innovation Hub announcement dated September 2024."
+    ],
+    [
+     "grain",
+     "Dated public announcement, not a university cash receipt or a completion outcome."
+    ],
+    [
+     "use",
+     "The selected completions series ends in 2023, before this announcement. No exact September day or university disbursement date is asserted."
+    ],
+    [
+     "reproducibility",
+     "Manual documentary check on 2026-09-08 of the held, provenance-recorded original annual-report PDF, acquired 2026-08-18 from this official URL. The page caption explicitly dates the announcement to September 2024. The original announcement is also held, but its current URL returned 404; the report is linked for access. Neither source proves disbursement or program outcomes."
+    ]
+   ],
+   "pages": [
+    "programs"
+   ],
+   "n_pages": 1
+  },
+  {
    "key": "qwi",
    "name": "Census Quarterly Workforce Indicators, not seasonally adjusted",
    "short": "Census QWI workforce indicators",
@@ -964,7 +1186,7 @@
     ],
     [
      "acquisition",
-     "sibling checkout polymer-programs-db/incoming/college-scorecard: fetch_scorecard.py -> scorecard_fos_polymer_tidy.csv, read by derive_programs.py"
+     "derive_programs.py reads a held field-of-study tidy CSV filtered to census_match=1. This update reconciled that snapshot; it did not refresh the current Scorecard API. Rebuilding the display requires the held companion extract, which is not included as a raw file in this repository."
     ]
    ],
    "pages": [
@@ -1001,7 +1223,7 @@
     ],
     [
      "paging",
-     "limit 100, page walked while page_metadata.hasNext, to exhaustion: 6,630 rows over 67 pages at first fetch. A 40-page probe had 4,000 rows in hand and had NOT exhausted, so the fetcher asserts that floor and refuses to write a short pull. This is the register that closes the category pull\u2019s own 100-row cap, and it must never inherit a cap of its own."
+     "The held 2026-08-31 award-register snapshot recorded 6,630 rows over 67 pages at limit 100, walked while page_metadata.hasNext. The original fetcher retains a 4,000-row probe floor and duplicate checks. This separately dated award-lifetime register was not refreshed with the 2026-09-08 transaction-category acquisition and cannot repair missing category pages."
     ],
     [
      "basis",
@@ -1010,6 +1232,10 @@
     [
      "geography",
      "place of performance, a reported field on the award rather than an observation of where work happened"
+    ],
+    [
+     "snapshot",
+     "Held 2026-08-31 award summaries, not the current fiscal-year flow and not a fresh acquisition in this update. Award Amount is whole-life obligations; do not add it to transaction-year totals or treat it as obligations inside the query window."
     ]
    ],
    "pages": [
@@ -1077,7 +1303,7 @@
    "agency": "Internal: Polymer Industry Cluster",
    "url": null,
    "docs": null,
-   "script": "_data/build/build_chain.py",
+   "script": "_data/build/repair_chain.py",
    "key_required": false,
    "route": "internal",
    "route_label": "internal record, no endpoint",
@@ -1091,11 +1317,15 @@
    "filters": [
     [
      "footprint",
-     "NEO-14 (vault-sourced pages), never PIC-12"
+     "The company-register 14-county boundary: 39007 Ashtabula, 39029 Columbiana, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39157 Tuscarawas, 39169 Wayne. This contains PIC-12 plus Columbiana and Tuscarawas; it differs from the legacy NEO14 constant in footprints.py."
     ],
     [
      "note",
      "NOT public and NOT reproducible by a reader. Company self-descriptions are quoted as written and are never rewritten: a company that writes \u2018injection moulding\u2019 said that. Any public release of these records is gated on member consent (Linear POL-1011)."
+    ],
+    [
+     "rebuild",
+     "The scoped offline repair reads the held SQLite extract and the previously published company fields. It is not a full catalogue rebuild or verification of current company capabilities."
     ]
    ],
    "pages": [
@@ -1121,11 +1351,23 @@
   {
    "slug": "cluster-health",
    "sources": [
+    "bls_cpi",
     "fred",
     "ipeds",
     "odjfs",
     "qcew",
     "usaspending"
+   ],
+   "n_sources": 6
+  },
+  {
+   "slug": "programs",
+   "sources": [
+    "ipeds_control_cips",
+    "ipeds_programs_census",
+    "programs_eda_announcement",
+    "programs_ohio_announcement",
+    "scorecard_fos_polymer"
    ],
    "n_sources": 5
   },
@@ -1140,13 +1382,14 @@
    "n_sources": 4
   },
   {
-   "slug": "programs",
+   "slug": "federal-money",
    "sources": [
-    "ipeds_control_cips",
-    "ipeds_programs_census",
-    "scorecard_fos_polymer"
+    "bls_cpi",
+    "nsf_awards",
+    "usaspending",
+    "usaspending_awards"
    ],
-   "n_sources": 3
+   "n_sources": 4
   },
   {
    "slug": "scorecard",
@@ -1190,10 +1433,10 @@
    "n_sources": 2
   },
   {
-   "slug": "federal-money",
+   "slug": "cost-scissors",
    "sources": [
-    "usaspending",
-    "usaspending_awards"
+    "bls_cpi",
+    "fred"
    ],
    "n_sources": 2
   },
@@ -1212,13 +1455,6 @@
     "public_record"
    ],
    "n_sources": 2
-  },
-  {
-   "slug": "cost-scissors",
-   "sources": [
-    "fred"
-   ],
-   "n_sources": 1
   },
   {
    "slug": "funding-map",
@@ -1288,11 +1524,10 @@
   }
  ],
  "totals": {
-  "n_sources": 24,
+  "n_sources": 27,
   "n_pages": 23,
-  "n_key_required": 6,
+  "n_key_required": 5,
   "key_sources": [
-   "bea_rpp",
    "cbp",
    "fred",
    "qwi",
@@ -1305,25 +1540,24 @@
    "public_record",
    "vault"
   ],
-  "n_filter_lines": 118,
+  "n_filter_lines": 156,
   "routes": {
-   "bulk": 6,
+   "bulk": 7,
    "api": 14,
    "internal": 3,
-   "portal": 1
+   "portal": 3
   },
   "n_licensed": 2,
   "licensed_sources": [
    "ipeds",
    "onet_education"
   ],
-  "n_terms": 12,
-  "n_public": 21,
+  "n_terms": 13,
+  "n_public": 24,
   "most_used": "qcew",
   "most_used_pages": 9,
-  "n_single_source_pages": 9,
+  "n_single_source_pages": 8,
   "single_source_pages": [
-   "cost-scissors",
    "funding-map",
    "laborshed",
    "location-quotient",
@@ -1333,8 +1567,8 @@
    "revisions",
    "wages"
   ],
-  "n_build_scripts": 55,
-  "catalog_generated": "2026-09-01 15:43"
+  "n_build_scripts": 58,
+  "catalog_generated": "2026-09-11 11:52"
  },
  "footprint": {
   "key": "pic12",
@@ -1391,7 +1625,7 @@
    }
   ],
   "note": "PIC's official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
-  "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the vault's NEO-14 includes."
+  "differs": "The chain register uses its CODEBOOK county set, adding Columbiana and Tuscarawas. It differs from the legacy NEO14 constant in pic-geo."
  },
  "socs": [
   {
@@ -1622,6 +1856,121 @@
   "comparison_county_total": 1839,
   "comparison_metro_rows": 0
  },
+ "state_ids": [
+  "01000",
+  "02000",
+  "04000",
+  "05000",
+  "06000",
+  "08000",
+  "09000",
+  "10000",
+  "12000",
+  "13000",
+  "15000",
+  "16000",
+  "17000",
+  "18000",
+  "19000",
+  "20000",
+  "21000",
+  "22000",
+  "23000",
+  "24000",
+  "25000",
+  "26000",
+  "27000",
+  "28000",
+  "29000",
+  "30000",
+  "31000",
+  "32000",
+  "33000",
+  "34000",
+  "35000",
+  "36000",
+  "37000",
+  "38000",
+  "39000",
+  "40000",
+  "41000",
+  "42000",
+  "44000",
+  "45000",
+  "46000",
+  "47000",
+  "48000",
+  "49000",
+  "50000",
+  "51000",
+  "53000",
+  "54000",
+  "55000",
+  "56000",
+  "72000"
+ ],
+ "cleveland_history": [
+  {
+   "year": 2024,
+   "area": "C1741",
+   "emp": 8794.0,
+   "suppressed": false
+  },
+  {
+   "year": 2015,
+   "area": "C1746",
+   "emp": 7595.0,
+   "suppressed": false
+  },
+  {
+   "year": 2016,
+   "area": "C1746",
+   "emp": 7585.0,
+   "suppressed": false
+  },
+  {
+   "year": 2017,
+   "area": "C1746",
+   "emp": 7600.0,
+   "suppressed": false
+  },
+  {
+   "year": 2018,
+   "area": "C1746",
+   "emp": 7523.0,
+   "suppressed": false
+  },
+  {
+   "year": 2019,
+   "area": "C1746",
+   "emp": 7500.0,
+   "suppressed": false
+  },
+  {
+   "year": 2020,
+   "area": "C1746",
+   "emp": 7210.0,
+   "suppressed": false
+  },
+  {
+   "year": 2021,
+   "area": "C1746",
+   "emp": 7370.0,
+   "suppressed": false
+  },
+  {
+   "year": 2022,
+   "area": "C1746",
+   "emp": 7736.0,
+   "suppressed": false
+  },
+  {
+   "year": 2023,
+   "area": "C1746",
+   "emp": 7550.0,
+   "suppressed": false
+  }
+ ],
  "lq": {
   "worked": {
    "county": "Summit",
@@ -1643,50 +1992,7 @@
   },
   "n_readings": 51,
   "n_above_one": 45,
-  "basis": {
-   "year": 2025,
-   "area": "39153",
-   "county": "Summit",
-   "naics": "326",
-   "read_on": "2026-08-29",
-   "rows": "local: own_code 5 industry 326 agglvl 75; own_code 0 industry 10 agglvl 70; own_code 5 industry 10 agglvl 71. national (US000): own_code 5 industry 326 agglvl 15; own_code 0 industry 10 agglvl 10; own_code 5 industry 10 agglvl 11.",
-   "local_industry_private": 3824,
-   "local_all_industry_all_ownerships": 259944,
-   "local_all_industry_private": 232800,
-   "national_industry_private": 700170,
-   "national_all_industry_all_ownerships": 155685781,
-   "national_all_industry_private": 133117983,
-   "bls_basis": 3.271,
-   "bls_basis_2dp": 3.27,
-   "bls_published": 3.27,
-   "same_basis": 3.123,
-   "same_basis_2dp": 3.12,
-   "gap_pct": -4.5,
-   "self_check": {
-    "_what": "The county file proves its own denominator. Each ownership TOTAL row carries a location quotient of its own, and on a same-ownership basis every one of them would be exactly 1.00 by construction. They are not.",
-    "own_5_private_lq": 1.05,
-    "own_3_local_government_lq": 0.88,
-    "own_2_state_government_lq": 0.44,
-    "own_1_federal_lq": 0.39
-   }
-  },
-  "provenance": {
-   "cells_compared": 601,
-   "match_bls_column": 601,
-   "match_our_recomputation": 599,
-   "separating_cells": 2,
-   "published_is": "bls_column",
-   "our_value": 3.27,
-   "our_value_full": 3.271,
-   "residual": 0.00102,
-   "verification": {
-    "cells_checked": 667,
-    "mean_abs_residual": 0.002542,
-    "max_abs_residual": 0.004997
-   }
-  },
   "reference": {
-   "_what": "How high 22.7 actually is, for a reader who has no scale for a location quotient. The page's largest reading is compared against every county-by-four-digit private cell the bureau DISCLOSES in the same twelve counties and the same year, not against the six polymer codes it happens to publish. It is high and it is not the highest: four cells read higher, three of them primary metals in Mahoning and Trumbull and one basic chemicals in Ashtabula. This does not soften the small-base warning; it is the other half of it. A reading can be the largest a page publishes and still be ordinary for the place.",
    "universe": "county x 4-digit NAICS, private ownership (own_code 5, agglvl_code 76), disclosed cells only",
    "year": 2025,
    "counties": 12,
@@ -1730,8 +2036,57 @@
    ],
    "url": "https://data.bls.gov/cew/data/api/{year}/a/area/{fips}.csv",
    "read_on": "2026-09-01",
-   "how": "One annual area file per county from the endpoint this page already prints, keyless; keep own_code 5 and agglvl_code 76, drop rows whose disclosure_code is N, read lq_annual_avg_emplvl. The subject cell comes back at 22.70 on 491 jobs, which is the reading and the base this file already carried, and that agreement is the check.",
-   "not_a_producer": "No script in this repository writes this block; registry.json is one of the published files that has no producer (_data/REBUILDING.md), so it is edited in place and its derivation is printed here instead. The claim on it can only check the file against itself and the shipped fragile cell; re-deriving it means re-running the recipe in `how`."
+   "how": "One annual area file per county; keep own_code 5 and agglvl_code 76, drop disclosure_code N, read lq_annual_avg_emplvl. Rank Geauga 3252 against all disclosed four-digit industry cells across PIC-12.",
+   "provenance": {
+    "repository": "https://github.com/PolymerIndustryCluster/evidence-room",
+    "commit": "db1ed7f1f398bd35f6fc8bd42da2e9ffc28da43d",
+    "path": "sources/data/registry.json",
+    "pointer": "/lq/reference",
+    "extracted_on": "2026-09-08",
+    "custody": "Preserved numerical fields from the versioned published derived snapshot. Its original note states that no script produced this block; the raw county responses are not included in this snapshot. This extraction is not a fresh source pull or an independent recomputation of the 1,732-cell universe."
+   }
+  },
+  "basis": {
+   "year": 2025,
+   "area": "39153",
+   "county": "Summit",
+   "naics": "326",
+   "read_on": "2026-08-29",
+   "rows": "local: own_code 5 industry 326 agglvl 75; own_code 0 industry 10 agglvl 70; own_code 5 industry 10 agglvl 71. national (US000): own_code 5 industry 326 agglvl 15; own_code 0 industry 10 agglvl 10; own_code 5 industry 10 agglvl 11.",
+   "local_industry_private": 3824,
+   "local_all_industry_all_ownerships": 259944,
+   "local_all_industry_private": 232800,
+   "national_industry_private": 700170,
+   "national_all_industry_all_ownerships": 155685781,
+   "national_all_industry_private": 133117983,
+   "bls_basis": 3.271,
+   "bls_basis_2dp": 3.27,
+   "bls_published": 3.27,
+   "same_basis": 3.123,
+   "same_basis_2dp": 3.12,
+   "gap_pct": -4.5,
+   "self_check": {
+    "_what": "The county file proves its own denominator. Each ownership TOTAL row carries a location quotient of its own, and on a same-ownership basis every one of them would be exactly 1.00 by construction. They are not.",
+    "own_5_private_lq": 1.05,
+    "own_3_local_government_lq": 0.88,
+    "own_2_state_government_lq": 0.44,
+    "own_1_federal_lq": 0.39
+   }
+  },
+  "provenance": {
+   "cells_compared": 601,
+   "match_bls_column": 601,
+   "match_our_recomputation": 599,
+   "separating_cells": 2,
+   "published_is": "bls_column",
+   "our_value": 3.27,
+   "our_value_full": 3.271,
+   "residual": 0.00102,
+   "verification": {
+    "cells_checked": 667,
+    "mean_abs_residual": 0.002542,
+    "max_abs_residual": 0.004997
+   }
   }
  },
  "readings": [
@@ -2145,7 +2500,8 @@
   "n_counties": 12,
   "n_possible": 72,
   "median_pairing": 1.2078,
-  "median_job": 1.2597,
+  "median_group_weighted": 1.2597,
+  "median_unit": "county-industry group-average wage ratios; not individual pay",
   "n_above_local": 40,
   "n_below_us": 44,
   "median_vs_us": 0.8813,
@@ -2239,18 +2595,160 @@
   }
  },
  "deflator": {
-  "index": "CPI-U, all items, U.S. city average, annual averages",
+  "index": "CPI-U, all items, U.S. city average; annual means of published months",
   "base_year": "2019",
   "latest_year": "2025",
-  "source": "BLS, as shipped in this site's federal-money/data/federal.json",
-  "caution": "Annual averages, not monthly, and the table carries no 2026 average. A real-terms reading of a 2026 month therefore uses the 2025 deflator and understates the adjustment by whatever prices have done since, so every real figure quoted on this page is an upper bound.",
+  "source": "https://api.bls.gov/publicAPI/v2/timeseries/data/CUUR0000SA0?startyear=2019&endyear=2025&annualaverage=true",
+  "caution": "2025 is the mean of eleven available monthly observations; October is unavailable. 2026 carries the 2025 index as an approximation.",
+  "observations": {
+   "meta": {
+    "source": "BLS CPI-U CUUR0000SA0 monthly observations",
+    "url": "https://api.bls.gov/publicAPI/v2/timeseries/data/CUUR0000SA0?startyear=2019&endyear=2025&annualaverage=true",
+    "fetched": "2026-09-08T16:22:39.169241+00:00",
+    "sha256": "7af1b1049be83f1ce532989a913c789225f16d316bf8f16e579d337f9798e4d1"
+   },
+   "rows": [
+    {
+     "year": 2019,
+     "cpi": 255.657,
+     "months": 12,
+     "periods": [
+      "M01",
+      "M02",
+      "M03",
+      "M04",
+      "M05",
+      "M06",
+      "M07",
+      "M08",
+      "M09",
+      "M10",
+      "M11",
+      "M12"
+     ]
+    },
+    {
+     "year": 2020,
+     "cpi": 258.811,
+     "months": 12,
+     "periods": [
+      "M01",
+      "M02",
+      "M03",
+      "M04",
+      "M05",
+      "M06",
+      "M07",
+      "M08",
+      "M09",
+      "M10",
+      "M11",
+      "M12"
+     ]
+    },
+    {
+     "year": 2021,
+     "cpi": 270.97,
+     "months": 12,
+     "periods": [
+      "M01",
+      "M02",
+      "M03",
+      "M04",
+      "M05",
+      "M06",
+      "M07",
+      "M08",
+      "M09",
+      "M10",
+      "M11",
+      "M12"
+     ]
+    },
+    {
+     "year": 2022,
+     "cpi": 292.655,
+     "months": 12,
+     "periods": [
+      "M01",
+      "M02",
+      "M03",
+      "M04",
+      "M05",
+      "M06",
+      "M07",
+      "M08",
+      "M09",
+      "M10",
+      "M11",
+      "M12"
+     ]
+    },
+    {
+     "year": 2023,
+     "cpi": 304.702,
+     "months": 12,
+     "periods": [
+      "M01",
+      "M02",
+      "M03",
+      "M04",
+      "M05",
+      "M06",
+      "M07",
+      "M08",
+      "M09",
+      "M10",
+      "M11",
+      "M12"
+     ]
+    },
+    {
+     "year": 2024,
+     "cpi": 313.689,
+     "months": 12,
+     "periods": [
+      "M01",
+      "M02",
+      "M03",
+      "M04",
+      "M05",
+      "M06",
+      "M07",
+      "M08",
+      "M09",
+      "M10",
+      "M11",
+      "M12"
+     ]
+    },
+    {
+     "year": 2025,
+     "cpi": 321.943,
+     "months": 11,
+     "periods": [
+      "M01",
+      "M02",
+      "M03",
+      "M04",
+      "M05",
+      "M06",
+      "M07",
+      "M08",
+      "M09",
+      "M11",
+      "M12"
+     ]
+    }
+   ]
+  },
   "cpi_base": 255.657,
-  "cpi_latest": 322.132,
-  "inflation_pct": 26.0,
+  "cpi_latest": 321.943,
+  "inflation_pct": 25.9,
   "product": {
    "label": "PPI: plastics and rubber products manufacturing",
    "nominal": 139.8,
-   "real": 110.9,
+   "real": 111.0,
    "real_peak": "2022-08-01",
    "cash_peak": "2026-07-01",
    "unit": "index",
@@ -2266,11 +2764,6 @@
    "stage": "resin"
   },
   "years": [
-   {
-    "year": "2018",
-    "cpi": 251.107,
-    "factor": 0.9822
-   },
    {
     "year": "2019",
     "cpi": 255.657,
@@ -2303,8 +2796,8 @@
    },
    {
     "year": "2025",
-    "cpi": 322.132,
-    "factor": 1.26
+    "cpi": 321.943,
+    "factor": 1.2593
    }
   ]
  },
@@ -2326,7 +2819,7 @@
   },
   "external_classified": 208338,
   "external_unclassified": 2552,
-  "no_industry": "LODES origin-destination carries NO industry dimension. This is the labor shed of the whole economy, NOT of the polymer cluster. Industry detail exists only in the WAC workplace files and cannot be crossed with residence.",
+  "no_industry": "This page uses all-job totals for the whole economy. LODES origin-destination includes three broad industry groups (SI01-SI03), but cannot isolate polymer industries.",
   "not_a_commute": "The home end is a residence on file, not evidence of a journey. Nothing here counts a trip.",
   "row_is": "one (home county, work county) count of JOBS, not people and not commuters. A two-job worker appears twice."
  },
@@ -2335,10 +2828,13 @@
   "last_fy": 2026,
   "n_years": 8,
   "closed_years": 7,
-  "total_all": 248801869,
-  "total_closed": 225777324,
-  "partial_fy_amount": 23024545,
-  "n_codes": 8,
+  "total_all": 278594940,
+  "total_closed": 254427722,
+  "total_all_real": 313642526,
+  "total_closed_real": 289475308,
+  "partial_fy_real": 24167218,
+  "partial_fy_amount": 24167218,
+  "n_codes": 37,
   "top": [
    {
     "name": "All Other Rubber Product Manufacturing",
@@ -2346,49 +2842,49 @@
    },
    {
     "name": "Tire Manufacturing (except Retreading)",
-    "amount": 77830825
+    "amount": 80067349
    },
    {
     "name": "Paint and Coating Manufacturing",
-    "amount": 23490845
+    "amount": 23643880
    }
   ],
   "by_fy": [
    {
     "fy": 2019,
-    "amount": 40990023
+    "amount": 47560968
    },
    {
     "fy": 2020,
-    "amount": 25549182
+    "amount": 32323894
    },
    {
     "fy": 2021,
-    "amount": 42694780
+    "amount": 46895880
    },
    {
     "fy": 2022,
-    "amount": 39580949
+    "amount": 42687081
    },
    {
     "fy": 2023,
-    "amount": 16040531
+    "amount": 19379052
    },
    {
     "fy": 2024,
-    "amount": 21945590
+    "amount": 24364241
    },
    {
     "fy": 2025,
-    "amount": 38976269
+    "amount": 41216606
    },
    {
     "fy": 2026,
-    "amount": 23024545
+    "amount": 24167218
    }
   ],
-  "invisible": "University and research awards are invisible to the NAICS view by construction: it filters to 325*/326* manufacturing codes, and a university files under 61xxxx or 5417xx. The NSF NEO-SMART Engine ($14,999,983 estimated, $7,499,984 obligated) and TARDISS do not appear in the NAICS rows. The all-industry county rows do capture them.",
-  "place_caution": "Place of performance is a reported field on the award, not an observation of where the work happened. A centrally administered contract, or a prime performing through a subaward, can put the code somewhere other than the activity. An obligation is not an outlay.",
+  "invisible": "Research grants are excluded by this view\u2019s prime-contract award-type filter (A-D). Contract NAICS classifies the supplies or services acquired; a university\u2019s identity does not determine that code. The view also filters to 325*/326* manufacturing codes and reported PIC-12 place of performance. An awardee address does not establish manufacturing activity in PIC-12. The NSF NEO-SMART Engine ($14,999,983 estimated, $7,499,984 obligated) and TARDISS do not appear in the NAICS rows. The all-type county view can include research grants when their reported performance location is within the footprint.",
+  "place_caution": "Place of performance is a REPORTED FIELD on the award, not an observation of where work happened: a centrally administered contract or a prime performing through a subaward can put the code somewhere other than the activity. An obligation is not an outlay.",
   "cpi_base": 2025
  },
  "swaps": [
@@ -2459,10 +2955,12 @@
  ],
  "checks": {
   "n_pages": 22,
-  "n_claims": 519,
-  "n_manual": 21,
-  "this_page": 33,
-  "n_auto": 498
+  "n_claims": 526,
+  "n_manual": 22,
+  "this_page": 34,
+  "n_auto": 504,
+  "n_hub_claims": 29,
+  "n_site_claims": 555
  },
  "vintage": {
   "n_revised": 259,
@@ -2484,11 +2982,11 @@
   {
    "id": "award-parties",
    "page": "federal-money",
-   "what": "No recipient names behind the procurement peaks",
+   "what": "The award register is a separately dated snapshot",
    "n": null,
    "jobs": null,
-   "why": "The USAspending endpoint used here returns categories rather than parties, so the page cannot say who holds the largest year.",
-   "close": "A second pull against spending_by_award, or the bulk award archive, keeping recipient_name and awarding_agency."
+   "why": "The category totals were refreshed on 8 September 2026. The separate recipient register is a 31 August snapshot whose original raw response is unavailable; it is not a reconciliation of the refreshed totals.",
+   "close": "Refresh the award-level records with preserved raw responses and reconcile fiscal-year transactions before assigning the peaks to recipients."
   },
   {
    "id": "qwi-vintages",
@@ -2521,11 +3019,11 @@
   {
    "id": "cleveland-trend",
    "page": "peers",
-   "what": "One peer metro has no time series",
+   "what": "Cleveland\u2019s metro boundary changes in 2024",
    "n": null,
    "jobs": null,
-   "why": "Cleveland clears the size test and fails the disclosure test: it does not carry enough disclosed years to draw a line, so it appears as a single ghosted point with the absence labelled.",
-   "close": "Re-fetch that metro\u2019s industry series year by year, recording each year\u2019s disclosure code so the number of withheld years can be published rather than deduced."
+   "why": "The earlier C1746 metro discloses every year from 2015 through 2023. The C1741 metro adds Ashtabula in 2024. A missing line under the newer code was wrongly described as withheld data; it is a geography break.",
+   "close": "The peers page now shows the earlier disclosed history separately. A continuous comparison needs a constant-boundary county aggregation; do not splice the two metro definitions."
   }
  ],
  "onet_attribution": "This page includes information from the O*NET 30.3 Database by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA), used under the CC BY 4.0 license. O*NET is a trademark of USDOL/ETA. PIC has modified some of this information; USDOL/ETA has not approved, endorsed, or tested these modifications."

@@ -26,7 +26,11 @@ THE RULE THIS FILE ENFORCES
   if a vault row ever acquires a value, because the failure this page exists to prevent
   is a plausible-looking number appearing where a real one was never collected.
 """
-import json, os, datetime
+import argparse, json, os, datetime
+
+parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
+parser.add_argument("--federal-only", action="store_true", help="Preserve the existing nonfederal snapshot")
+args = parser.parse_args()
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.abspath(os.path.join(HERE, ".."))
@@ -161,8 +165,11 @@ POLY_TREND, MAT_TREND, BACH_TREND = (trend_words(w) for w in (POLY_WINDOW, MAT_W
                                                               BACH_WINDOW))
 
 # ------------------------------------------------------------------- D. cluster context
-FED_FYS = sorted({r["fy"] for r in FED["naics"]})
-FED_AVG = sum(r["real"] for r in FED["naics"]) / len(FED_FYS)
+FED_FYS = list(range(2019, 2026))
+FED_CLOSED = [r for r in FED["naics"] if r["fy"] in FED_FYS]
+if sorted({r["fy"] for r in FED_CLOSED}) != FED_FYS:
+    raise SystemExit("federal context requires every completed fiscal year FY2019-FY2025")
+FED_AVG = sum(r["real"] for r in FED_CLOSED) / len(FED_FYS)
 REGION_EMP = OCC["region"]["emp"]
 OHIO_RANK = PEERS["states"]["326"]
 
@@ -367,13 +374,14 @@ row(id="d-emp", group="D", status="context",
     href="../occupations/")
 row(id="d-federal", group="D", status="context",
     metric="Routine federal obligations to regional polymer firms",
-    definition="Federal contracting obligations recorded against chemical and plastics "
-               "industry codes at place of performance in the twelve counties, averaged "
-               "over the fiscal years on file, in 2025 dollars.",
+    definition="Federal prime-contract obligations under chemical and plastics/rubber "
+               "manufacturing codes at place of performance in the twelve counties, "
+               "averaged over the seven completed fiscal years FY2019-FY2025, in 2025 "
+               "dollars. Unfinished FY2026 is excluded. This average is not a forecast.",
     owner="outside PIC",
     cadence="Annual, as USAspending posts",
     current="%s a year" % short(FED_AVG),
-    sub="FY%d-FY%d average" % (FED_FYS[0], FED_FYS[-1]),
+    sub="FY%d-FY%d average, seven completed years" % (FED_FYS[0], FED_FYS[-1]),
     trend="see the federal-money page",
     source="Federal-money page",
     href="../federal-money/")
@@ -466,6 +474,21 @@ doc = {
                "polymer_trend": POLY_TREND[0], "materials_trend": MAT_TREND[0],
                "bachelor_trend": BACH_TREND[0], "source_correction": CORRECTION},
 }
+
+if args.federal_only:
+    # Keep the existing nonfederal snapshot, including dated talent corrections.
+    previous = load("scorecard", "data", "scorecard.json")
+    if previous["counts"] != COUNTS:
+        raise SystemExit("scoped federal refresh requires unchanged scorecard counts")
+    federal_row = next(r for r in doc["rows"] if r["id"] == "d-federal")
+    matches = [i for i, r in enumerate(previous["rows"]) if r["id"] == "d-federal"]
+    if len(matches) != 1:
+        raise SystemExit("expected one existing d-federal context row")
+    if any(previous["rows"][matches[0]][key] != federal_row[key]
+           for key in ("group", "status", "owner")):
+        raise SystemExit("scoped federal refresh requires the existing context classification")
+    previous["rows"][matches[0]] = federal_row
+    doc = previous
 
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 json.dump(doc, open(OUT, "w", encoding="utf-8"), indent=1, ensure_ascii=False)

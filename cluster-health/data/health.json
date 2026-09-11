@@ -5,12 +5,12 @@
   "row": "One row is one measure in one year: its level, the baseline it is read against, and every year-over-year change the same measure has made in its published history.",
   "definition": "How far a measure usually moves is worked out the same way for all five. Take the measure’s own published history, compute the change between every consecutive pair of years, hold out the latest one, and compare it against the median and the largest of the earlier changes. A move at or below the median is an ordinary year for that measure, which by construction about half of years are; a move larger than every earlier one has no precedent in the series.",
   "baseline": "Each tile states the baseline it is read against and why that one. PIC has set no target for any of these five measures, so no tile reports distance from a target. What each tile does report instead is where the level sits in the same measure’s own published range, which end of that range is the better one for the region where there is one, and how far this year’s step was by that measure’s own history. The five are never added into a score, because that would need weights nobody has set.",
-  "caution": "What is measured here is how far a published series has moved between years. That is not the same as how far a future revision will move the year just published, which this repository has measured for exactly three producer-price indexes (the prices factories charge for their output), on the revisions page, and for none of the employment, degree or spending series here.",
+  "caution": "What is measured here is how far a published series has moved between years. That is not the same as how far a future revision will move the year just published, which this repository has measured for exactly three producer-price indexes (the prices factories charge for their output), on the revisions page, and for none of the employment, degree or spending series here. Federal contracting retains signed obligations, including de-obligations. Calendar-year CPI approximates fiscal-year prices; the 2025 index uses eleven published months because October is unavailable, and FY2026 uses that same index.",
   "suppression": "A county figure the bureau withholds is never a zero. Three of the five measures are built from one figure per county per industry, and the set the bureau publishes changes year to year, so for those three the movement is judged on the figures present in every year rather than on the raw total.",
-  "scope": "The three industries counted here are the census codes for resin and synthetic rubber (3252), paint and coatings (3255) and plastics and rubber products (326). The wider chemicals code 325 sweeps in pharmaceuticals, agricultural chemicals and industrial gas, about 60 percent of its own figure, and is context rather than cluster.",
+  "scope": "The three industries counted here are the census codes for resin and synthetic rubber (3252), paint and coatings (3255) and plastics and rubber products (326). The wider chemicals code 325 sweeps in pharmaceuticals, agricultural chemicals and industrial gas, about 60 percent of its own figure, and is context rather than cluster. The contracting series uses the broader NAICS 325 and 326 scope, not the three-industry employment register.",
   "not": "This page carries no measure of output, productivity, exports, private investment or company formation, because no page in this room ships one yet. Five measures are not the health of an economy.",
   "geography": "Every employment, wage and contracting figure is on the twelve counties PIC treats as its region. The degree completions are three named universities and the openings estimate beside them is a state projection for an eighteen-county region: they are printed side by side and never divided into one another.",
-  "fetched": "2026-08-31",
+  "fetched": "2026-09-08",
   "footprint": {
    "key": "pic12",
    "n": 12,
@@ -262,42 +262,42 @@
  "obligations": [
   {
    "fy": 2019,
-   "real": 51648098,
+   "real": 59892432,
    "open": false
   },
   {
    "fy": 2020,
-   "real": 31800074,
+   "real": 40208689,
    "open": false
   },
   {
    "fy": 2021,
-   "real": 50756006,
+   "real": 55717606,
    "open": false
   },
   {
    "fy": 2022,
-   "real": 43567649,
+   "real": 46959071,
    "open": false
   },
   {
    "fy": 2023,
-   "real": 16958103,
+   "real": 20475578,
    "open": false
   },
   {
    "fy": 2024,
-   "real": 22536260,
+   "real": 25005326,
    "open": false
   },
   {
    "fy": 2025,
-   "real": 38976269,
+   "real": 41216606,
    "open": false
   },
   {
    "fy": 2026,
-   "real": 23024545,
+   "real": 24167218,
    "open": true
   }
  ],
@@ -309,7 +309,7 @@
   "largest_award": 11122386,
   "mean_award": 7285916
  },
- "moved_more_than_usual": 3,
+ "moved_more_than_usual": 4,
  "standing_summary": {
   "with_merit": [
    "Scale",
@@ -785,18 +785,18 @@
    "short": "pay against its industry",
    "question": "Are these good jobs?",
    "value": "1.24× / 0.90×",
-   "unit": "its county / its industry nationally",
+   "unit": "median county-industry average wage ratios",
    "value_parts": [
     {
      "v": "1.24×",
-     "k": "the average job in its own county"
+     "k": "median ratio to county all-industry average wage"
     },
     {
      "v": "0.90×",
-     "k": "the same industry across the country"
+     "k": "median ratio to national industry average wage"
     }
    ],
-   "reading": "The typical polymer job out-pays the average job in its own county by 1.24 times, and pays 0.90 times what the same industry averages nationally. Both are true at once, and 15 of the 24 published county figures, holding 12,896 of the 24,030 jobs, sit in both states.",
+   "reading": "Across 24 published county-industry pairings, the unweighted median average-wage ratio is 1.24 times the county all-industry average and 0.90 times the national average for the same industry. 15 of those 24 pairings, holding 12,896 of the 24,030 jobs, have average wages above the county baseline and below the national industry baseline. These are group averages, not any individual worker’s pay.",
    "standing": {
     "value": 0.895238,
     "year": 2025,
@@ -863,20 +863,20 @@
       "value": 0.895238
      }
     ],
-    "basis": "the same median ratio against the national rate, 2015 to 2025",
+    "basis": "the unweighted median county-industry average wage ratio against its national industry, 2015 to 2025",
     "basis_short": "pay against its industry",
     "merit_short": "nearer parity is better",
-    "merit": "Closer to the national rate is the better end. It has not reached it: the ratio is under 1.0 in every one of the eleven published years, so the best year in this range is still a year paying less than the country does for the same work.",
+    "merit": "Closer to the national rate is the better end. It has not reached it: the ratio is under 1.0 in every one of the eleven published years, so the best year in this range still has a median county-industry average wage ratio below national industry parity.",
     "fmt": "x3"
    },
    "baseline": {
     "name": "two baselines, because one of them flatters",
-    "why": "Against the county average it answers whether this is good work to have here; against the same industry nationally, whether this is a good place to do it. A recruiting number that carries only the first is choosing the flattering half."
+    "why": "Each county-industry average wage is divided by its county all-industry average or its national industry average, then each set of ratios is summarized by an unweighted median. This tile uses NAICS 3252, 3255 and 326; the linked wages story covers six tracked codes and therefore has a different median. Neither statistic measures individual pay."
    },
    "direction": {
     "value": 0.034,
     "pct": 4.0,
-    "words": "the national side rose from 0.861× to 0.895× of the U.S. rate for the same work",
+    "words": "the median county-industry average wage ratio rose from 0.861× to 0.895× of the national industry average",
     "short_move": "up 0.03, to 0.90×",
     "of": "on the year, on the national side",
     "streak": null
@@ -948,13 +948,13 @@
    "drivers": [
     {
      "label": "Beats its own county",
-     "value": "20 of 24 counties",
+     "value": "20 of 24 county-industry pairings",
      "note": "median 1.24 times the county all-industry average"
     },
     {
-     "label": "Beats its industry nationally",
-     "value": "5 of 24 counties",
-     "note": "median 0.90 times the U.S. average for the same work"
+     "label": "Meets or exceeds its industry nationally",
+     "value": "5 of 24 county-industry pairings",
+     "note": "median 0.90 times the national industry average wage"
     },
     {
      "label": "Weekly wage per covered job",
@@ -1150,13 +1150,13 @@
    "id": "capital",
    "dimension": "Capital",
    "short": "federal contracting a year",
-   "question": "Is public money arriving, and where does it land?",
+   "question": "How much federal money is committed?",
    "value": "$51.0M",
    "unit": "written into signed federal awards",
-   "reading": "$51.0 million of the $54.1 million in federal awards on the funding map is written into signed awards naming seven organizations. That is what the record shows: money signed for and assigned to a named recipient. How much of it has been paid out is a different quantity, and no figure on this page or in the public record is a measure of it.",
-   "means": "A bigger number here is good news for the region only once the money reaches the ground, and nothing published tracks that. Read $51.0M as a queue with seven names on it, of unknown length. The change printed beside it, up $16.44M, belongs to a different series: the year-on-year move in routine contracting, money already flowing to plants here.",
+   "reading": "$51.0 million of the $54.1 million in federal awards on the funding map is written into signed awards naming seven organizations. That is what the record shows: money signed for and assigned to a named recipient. How much of it has been paid out is a different quantity, and this page does not carry a total for it.",
+   "means": "Read $51.0M as signed awards naming seven organizations. The change printed beside it, up $16.21M, belongs to a different series: the year-on-year move in routine contracting, signed obligations recorded for work in these counties, rather than payments.",
    "standing": {
-    "value": 38976269,
+    "value": 41216606,
     "year": 2025,
     "n_years": 7,
     "span": [
@@ -1165,106 +1165,106 @@
     ],
     "low": {
      "year": 2023,
-     "value": 16958103
+     "value": 20475578
     },
     "high": {
      "year": 2019,
-     "value": 51648098
+     "value": 59892432
     },
-    "position": 0.6347,
+    "position": 0.5262,
     "rank_from_low": 4,
     "rank_words": "middle of seven years",
     "better_end": "high",
     "series": [
      {
       "year": 2019,
-      "value": 51648098
+      "value": 59892432
      },
      {
       "year": 2020,
-      "value": 31800074
+      "value": 40208689
      },
      {
       "year": 2021,
-      "value": 50756006
+      "value": 55717606
      },
      {
       "year": 2022,
-      "value": 43567649
+      "value": 46959071
      },
      {
       "year": 2023,
-      "value": 16958103
+      "value": 20475578
      },
      {
       "year": 2024,
-      "value": 22536260
+      "value": 25005326
      },
      {
       "year": 2025,
-      "value": 38976269
+      "value": 41216606
      }
     ],
     "basis": "routine contracting in the seven closed fiscal years, FY2019 to FY2025, in 2025 dollars",
     "basis_short": "routine contracting a year",
-    "merit_short": "more arriving is better",
+    "merit_short": "more obligated is better",
     "year_prefix": "FY",
-    "merit": "More federal money actually contracted to plants here is the better end, and this is the one capital series on the page that is money arriving rather than money promised. The signed awards above have no standing here at all, because drawdown is not published.",
+    "merit": "More contract obligations is the declared better end of this range. Obligations commit federal money; they do not establish payment or local economic impact. The signed awards above are a separate total without a comparable annual history on this page.",
     "fmt": "usd_m2"
    },
    "baseline": {
-    "name": "routine federal contracting, $36.6 million a year in 2025 dollars",
-    "why": "An award is only large or small against the money that was already arriving. Averaged over the seven closed fiscal years, FY2019 to FY2025; FY2026 is still open and is left out of the average."
+    "name": "routine federal contracting, $41.4 million a year in 2025 dollars",
+    "why": "The comparison is the existing annual flow of contract obligations. Averaged over the seven closed fiscal years, FY2019 to FY2025; FY2026 is still open and is left out of the average."
    },
    "direction": {
-    "value": 16440009,
-    "pct": 72.9,
-    "words": "routine contracting rose to $38.98M in FY2025 from $22.54M, a rise of $16.44M and 73 percent higher",
-    "short_move": "Contracting up $16.44M",
+    "value": 16211280,
+    "pct": 64.8,
+    "words": "routine contracting rose to $41.22M in FY2025 from $25.01M, a rise of $16.21M and 65 percent higher",
+    "short_move": "Contracting up $16.21M",
     "of": "in routine contracting on the year, which is not the $51.0M above",
     "streak": null
    },
    "band": {
     "latest_year": 2025,
-    "latest": 16440009,
-    "abs_latest": 16440009,
-    "median_prior": 18955932,
-    "max_prior": 26609546,
+    "latest": 16211280,
+    "abs_latest": 16211280,
+    "median_prior": 15508917,
+    "max_prior": 26483493,
     "n_prior": 5,
-    "beats": 2,
-    "typicals": 0.8673,
-    "max_typicals": 1.4038,
-    "verdict": "ordinary",
+    "beats": 3,
+    "typicals": 1.0453,
+    "max_typicals": 1.7076,
+    "verdict": "above",
     "steps": [
      {
       "year": 2020,
-      "change": -19848024,
-      "typicals": 1.0471
+      "change": -19683743,
+      "typicals": 1.2692
      },
      {
       "year": 2021,
-      "change": 18955932,
+      "change": 15508917,
       "typicals": 1.0
      },
      {
       "year": 2022,
-      "change": -7188357,
-      "typicals": 0.3792
+      "change": -8758535,
+      "typicals": 0.5647
      },
      {
       "year": 2023,
-      "change": -26609546,
-      "typicals": 1.4038
+      "change": -26483493,
+      "typicals": 1.7076
      },
      {
       "year": 2024,
-      "change": 5578157,
-      "typicals": 0.2943
+      "change": 4529748,
+      "typicals": 0.2921
      },
      {
       "year": 2025,
-      "change": 16440009,
-      "typicals": 0.8673
+      "change": 16211280,
+      "typicals": 1.0453
      }
     ]
    },
@@ -1276,16 +1276,16 @@
     },
     {
      "label": "Routine contracting, FY2025",
-     "value": "$38.98M",
-     "note": "federal contracts and grants written to polymer plants in the twelve counties, in 2025 dollars, against $22.54M the year before"
+     "value": "$41.22M",
+     "note": "prime-contract obligations, NAICS 325 and 326, reported place of performance in the twelve counties, in 2025 dollars, against $25.01M the year before"
     },
     {
      "label": "The award, in years of routine contracting",
-     "value": "1.4 years",
-     "note": "$51.0M divided by the $36.6M a year that was already arriving"
+     "value": "1.2 years",
+     "note": "$51.0M divided by the $41.4M annual average of contract obligations"
     }
    ],
-   "blind": "How much of the signed money has actually been paid out, across the whole of it: no public record exists. USAspending does publish an outlay figure on the federal award lines, and the accountability page carries it; the state grant publishes none and one federal award has no record there at all, so a figure covering the whole would be part measured and part supplied by whoever wrote it. This page therefore states no disbursed amount, and that includes not stating a zero. The contracting series also filters on manufacturing industry codes, so university and research awards are invisible to it: a $15.0M National Science Foundation Engines award, estimated total, appears in no figure here. Place of performance is a field reported on the award, not an observation of where work happened.",
+   "blind": "How much of the signed money has actually been paid out, across the whole of it: no public record exists. USAspending does publish an outlay figure on the federal award lines, and the accountability page carries it; the state grant publishes none and one federal award has no record there at all, so a figure covering the whole would be part measured and part supplied by whoever wrote it. This page therefore states no disbursed amount, and that includes not stating a zero. The contracting series filters to prime contracts (types A–D), with NAICS 325 and 326 manufacturing codes; university and research grants are excluded. Place of performance is reported on the award, not an observation of where work happened.",
    "vintage": {
     "as_of": "USAspending, the government’s own record of what it contracts and grants, through FY2026 in 2025 dollars",
     "changes_it": "FY2026 is a partial year and is excluded from every average here. USAspending keeps adding awards for months after a year closes."

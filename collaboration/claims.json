@@ -19,11 +19,11 @@
   },
   {
    "id": "col-not-indexing-lag",
-   "text": "The decline is not an artifact of incomplete indexing: Case Western's own output is higher at the end of the series than at the joint peak.",
+   "text": "Case Western's indexed output at the end of the series is at least as high as at the joint peak. That comparison cannot rule out delays in indexing joint papers.",
    "source": "OpenAlex, each institution's own works per year",
    "assert": "D['series'][-1]['cwru'] >= [r['cwru'] for r in D['series'] if r['year'] == D['totals']['peak_year']][0]",
    "actual": "[(r['year'], r['akron'], r['cwru']) for r in D['series'][-4:]]",
-   "falsified_if": "Case Western's own output drops below its level at the joint peak, which would mean the index is thin on recent years and the joint decline cannot be separated from it. It is the guard that matters most on a refresh: the 2025 year was added on 2026-08-31 and Case Western's own output that year, 6,368, is well above the 5,532 it published in the 2018 peak year, so the series end is not an indexing artifact."
+   "falsified_if": "Case Western's indexed output drops below its level in the joint peak year. This checks the stated comparison only; neither outcome identifies indexing delay or its absence."
   },
   {
    "id": "col-no-new-joint-award",

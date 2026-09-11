@@ -616,9 +616,9 @@ function trendLines(svg, xs, ys, mobile) {
   return out;
 }
 
-/* Cleveland has a 2024 figure and no line: this comparison keeps metros that published at
-   least eight of the ten years, and Cleveland's earlier years are withheld too often to
-   clear that. An absence this load-bearing is drawn as a ghost, not left off the chart. */
+/* Cleveland has a 2024 figure and no line: the new C1741 boundary adds Ashtabula to
+   the former C1746 metro. Its disclosed 2015–2023 values cannot be spliced into
+   the new area's series. The boundary break is marked beside the 2024 point. */
 function clevelandGhost(svg, xs, ys, mobile) {
   const cx = xs(YRS.at(-1)), cy = ys(cle.emp);
   el("circle", {cx, cy, r: mobile ? 5 : 7, fill: "none", stroke: CAT[2],
@@ -627,7 +627,7 @@ function clevelandGhost(svg, xs, ys, mobile) {
     cx - (mobile ? 10 : 14), cy + (mobile ? -8 : 4),
     {cls: "pv-lab", fs: mobile ? 7.6 : 6.6, anchor: "end", fill: CAT[2]});
   if (!mobile)
-    plated(svg, "too few published years to draw a line", cx - 14, cy - 13, {anchor: "end"});
+    plated(svg, "metro boundary changed in 2024", cx - 14, cy - 13, {anchor: "end"});
 }
 
 function trendDesktop() {
@@ -855,10 +855,10 @@ document.getElementById("trendfigsub").textContent =
   `dark teal, and the seven other metros you can pick left in grey. Cleveland has no line, ` +
   `for the reason marked beside its ${D.cross_year} point.`;
 document.getElementById("trendsrc").innerHTML =
-  `${D.meta.source}, ${YRS[0]}&ndash;${YRS.at(-1)}, NAICS 326. A metro qualified for this
-   comparison by finishing in the top 30 by ${D.cross_year} jobs and publishing at least
-   eight of the ten years, which leaves ${TR.length}. Cleveland, ${ord(cleRank)} by
-   ${D.cross_year} jobs, misses that bar and appears as a ghosted ${D.cross_year} point.`;
+  `BLS QCEW, NAICS 326, ${YRS[0]}&ndash;${YRS.at(-1)}. These ${TR.length} metros finished
+   in the ${D.cross_year} top 30 and disclose at least eight years. Cleveland&rsquo;s
+   ${D.cross_year} point uses an expanded boundary; its disclosed 2015&ndash;2023 history
+   is separate. Unchanged metro codes do not prove unchanged boundaries.`;
 
 document.getElementById("closersub").innerHTML =
   `Ohio&rsquo;s first place is complete and quotable in <b>NAICS 326, private ownership,
@@ -901,9 +901,7 @@ await PV.methodology({
       "only: the annual average of the twelve monthly counts. The employment column counts " +
       "jobs covered by unemployment insurance, so a row counts jobs rather than people or " +
       "companies.",
-    derived_note: "Every rank on this page is a rank among disclosed areas. This build " +
-      "also counts how many withheld metros run more establishments than Akron does. Ten " +
-      "do. A plain national rank would only be safe if that count were zero."},
+    derived_note: D.meta.derived_note},
   definitions:
     `Concentration is the QCEW location quotient: the industry&rsquo;s share of an area&rsquo;s
      private jobs divided by its share of private jobs nationwide. The metro scatter plots

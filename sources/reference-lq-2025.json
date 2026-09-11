@@ -1,0 +1,25 @@
+{
+ "universe": "county x 4-digit NAICS, private ownership (own_code 5, agglvl_code 76), disclosed cells only",
+ "year": 2025,
+ "counties": 12,
+ "n_cells": 1732,
+ "rank": 5,
+ "subject": {"county": "Geauga", "naics": "3252", "lq": 22.7, "emp": 491},
+ "above": [
+  {"county": "Mahoning", "naics": "3313", "label": "Alumina and aluminum production", "lq": 35.04, "emp": 1230},
+  {"county": "Trumbull", "naics": "3312", "label": "Steel product manufacturing from purchased steel", "lq": 31.61, "emp": 760},
+  {"county": "Trumbull", "naics": "3313", "label": "Alumina and aluminum production", "lq": 29.56, "emp": 724},
+  {"county": "Ashtabula", "naics": "3251", "label": "Basic chemical manufacturing", "lq": 24.86, "emp": 717}
+ ],
+ "url": "https://data.bls.gov/cew/data/api/{year}/a/area/{fips}.csv",
+ "read_on": "2026-09-01",
+ "how": "One annual area file per county; keep own_code 5 and agglvl_code 76, drop disclosure_code N, read lq_annual_avg_emplvl. Rank Geauga 3252 against all disclosed four-digit industry cells across PIC-12.",
+ "provenance": {
+  "repository": "https://github.com/PolymerIndustryCluster/evidence-room",
+  "commit": "db1ed7f1f398bd35f6fc8bd42da2e9ffc28da43d",
+  "path": "sources/data/registry.json",
+  "pointer": "/lq/reference",
+  "extracted_on": "2026-09-08",
+  "custody": "Preserved numerical fields from the versioned published derived snapshot. Its original note states that no script produced this block; the raw county responses are not included in this snapshot. This extraction is not a fresh source pull or an independent recomputation of the 1,732-cell universe."
+ }
+}

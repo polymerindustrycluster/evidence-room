@@ -133,8 +133,11 @@ const CASES = [
       This is the entry exactly as it shipped: cost-scissors is built from FRED price
       series and credited the BLS employment census for months. */
    file: "_data/SOURCES.json",
-   inject: s => s.replace('"cost-scissors": [\n   "fred"\n  ]',
-                          '"cost-scissors": [\n   "fred",\n   "qcew"\n  ]')},
+    inject: s => {
+      const registry = JSON.parse(s);
+      registry.by_artifact["cost-scissors"].push("qcew");
+      return JSON.stringify(registry, null, 1) + "\n";
+    }},
 
   {gate: "alttext", page: "wages", args: ["wages"],
    defect: "a chart shipped with no accessible description at all",

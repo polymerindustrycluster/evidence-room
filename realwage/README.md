@@ -2,8 +2,10 @@
 
 **Does the polymer paycheck buy more in Akron than where the industry's rivals sit?**
 
-Source: BLS QCEW 2023 NAICS 326 metro average weekly wage; BEA Regional Price Parities
-2023 (MARPP, all items).
+Source: BLS QCEW 2024 NAICS 326 private metro average weekly wage; BEA Regional Price
+Parities 2024 (MARPP, all items), February 19, 2026 release. Both use OMB bulletin
+23-01 boundaries (July 21, 2023), explicitly declared in the BEA ZIP footnotes and
+the [BLS transition notice](https://www.bls.gov/cew/notices/2024/new-metropolitan-statistical-area-delineations-for-2024.htm).
 
 **What a row is:** one metro: nominal average weekly wage, its all-items price level
 (US average = 100), and the wage restated in national-average purchasing power
@@ -16,7 +18,83 @@ app.js          charts and interaction (all derived numbers recomputed from data
 data/realwage.json   THE DATA (76 KB). Edit the builder, not this.
 ```
 
-## Read before quoting anything from this page
+## Current comparison and correction, 2026-09-08
+
+Akron ranks **13th nominal and 8th adjusted among 29 matched metros with 2,000+ jobs**;
+both ranks are above the middle. Among all 155 matched metros, Akron ranks **60th
+nominal and 48th adjusted**. All 155 disclosed wage rows match the price file.
+The remaining 227 source rows are explicitly suppressed. The output carries each
+exclusion's source ID and reason; join absence is never converted into suppression.
+Cleveland is included; Canton, Chicago and New York are withheld in 2024.
+
+The earlier 2023 comparison joined different boundary vintages and its 33rd-to-19th
+rank among 56 metros is withdrawn. Cleveland's 2023 wage was disclosed under old
+C1746 ($1,149, 7,550 jobs); the failure to join it to new BEA17410 was not suppression.
+The change between editions is not a trend. Los Angeles now buys $1,680 against
+Akron's $1,383; its higher wage advantage survives price adjustment.
+
+Rebuild from held source files without fetching or overwriting the raw cache:
+
+```powershell
+python _data/build/derive_realwage.py --peers <private-cache>/peers-2024-boundaries.json --qcew-receipt <private-cache>/qcew-2024-verified-boundary-receipt.json --qcew-adoption-notice <private-cache>/qcew-2024-adoption.web.json --rpp-zip <private-cache>/MARPP.zip --rpp-receipt <private-cache>/rpp-receipt.json --metro-counties <private-cache>/pic12-intersecting-cbsas-2023.csv --metro-counties-receipt <private-cache>/pic12-intersecting-cbsas-2023-receipt.json
+python -B -m unittest discover -s _data/build -p test_geography_checks.py -v
+python -B _data/build/verify_claims.py realwage
+```
+
+Acquire the [BEA archive](https://apps.bea.gov/regional/zip/MARPP.zip) in private
+source custody; the producer verifies its boundary footnote, duplicate keys and year.
+For a repository-friendly cache, `fetch_rpp.py --output-dir <fresh-private-cache>`
+downloads the public ZIP and preserves its CSV, boundary footnote and hash receipt.
+Pass those with `--rpp-csv <cache>/MARPP_MSA_2008_2024.csv --rpp-footnotes
+<cache>/MARPP__Footnotes.html` instead of `--rpp-zip`. `--archive <held-MARPP.zip>`
+on the fetcher extracts an already held download. Existing output directories are refused.
+Output SHA-256 receipts identify the exact input files. No same-year metro wage/price
+join is accepted merely because names or numeric codes resemble each other.
+
+The existing BEA acquisition receipt is required, not merely copied into output:
+the producer compares the actual CSV and footnote bytes with their recorded hashes
+and sizes, and also the archive bytes when using zip mode. It parses the bulletin
+from the footnotes' defining statement and checks it against wage and Census vintages.
+These checks bind the held source edition; they cannot independently prove agency truth.
+
+The Census county extract contains every county row for the CBSAs intersecting canonical
+PIC-12 and is checked against its own receipt. The receipt carries complete per-CBSA
+county sets generated from the original Census workbook, including counties outside
+PIC-12; rehashing a truncated CSV cannot satisfy this membership check. It identifies Akron, Canton-Massillon,
+Cleveland and Youngstown-Warren as intersecting metros. Youngstown-Warren is disclosed
+but falls below the displayed 2,000-job floor. Wayne belongs to the Wooster micropolitan
+area, outside this metro price universe. Every intersecting CBSA has a coverage disposition;
+the `home` flag is derived from membership, not a three-metro literal.
+
+The QCEW boundary receipt must identify the exact input SHA-256, cross-section year,
+OMB vintage and official BLS adoption notice. The producer hashes the supplied notice
+bytes, checks the adoption statement, and compares its documented vintage with the
+extract's explicit year-specific provenance before joining. The retained `.web.json`
+is a labeled web-tool representation of the official page, not original HTTP HTML.
+Mismatch aborts the dataset; row-level absence/disclosure accounting begins afterward.
+
+To annotate an old held extract without altering its rows or original file, run
+`python _data/build/fetch_peers.py --boundary-notice <held-notice> --annotate-existing
+<original-peers.json> --output <new-peers-2024-boundaries.json>`. The output records
+the parent SHA-256 and only the verified 2024 boundary provenance. An existing output
+or contradictory prior annotation is refused. The accompanying receipt must identify
+the annotated input hash and its parent hash; both the old and new receipts stay in
+source custody. A fresh `fetch_peers.py --boundary-notice <held-notice>` acquisition
+carries the same verified 2024 provenance; no boundary claim is inferred for other years.
+
+The 2,000-job floor was already present in initial public commit `2e95ff6` (August 18,
+2026), whose source comment described concentrating on metros with larger industry
+employment. We retain it for editorial continuity; it was not selected for the
+corrected 2024 result. The history does not establish why the original author chose
+exactly 2,000 or whether the original choice preceded the old results. It is not a
+statistical reliability threshold. The page shows all-metro ranks and 1,000/5,000-job
+sensitivity beside it. Equal
+published wage values share rank. The offer comparator translates a wage using
+`wage * destination_RPP / origin_RPP`; these industry averages do not identify pay
+for the same role, hours or person. Detailed-industry QCEW metro publication ended
+beginning Q3 2025, so this is a dated comparison, not a refreshable current-offer feed.
+
+## Previous edition notes (superseded by the correction above)
 
 - Ranks are among the **56 metros with at least 2,000 polymer jobs** (a stated choice);
   a different floor gives a different rank. The all-metro set (235 disclosed) appears

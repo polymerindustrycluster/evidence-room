@@ -3,9 +3,9 @@
   "claims": [
     {
       "id": "oh-rank-1",
-      "text": "Ohio is first in the nation in plastics and rubber products employment.",
+      "text": "Ohio was first in the nation in plastics and rubber products employment in 2024.",
       "source": "BLS QCEW by-industry 2024, NAICS 326, private ownership",
-      "assert": "D['states']['326']['rank_emp'] == 1",
+      "assert": "D['meta']['cross_year'] == 2024 and D['states']['326']['rank_emp'] == 1",
       "actual": "D['states']['326']['rank_emp']",
       "falsified_if": "A 2024 revision moves another state above Ohio, or BLS restates NAICS 326.",
       "official_check": "Rank computed directly from BLS annual_avg_emplvl; no derived quantity."
@@ -19,12 +19,12 @@
       "falsified_if": "BLS begins suppressing a state cell for NAICS 326."
     },
     {
-      "id": "states-51-are-dc",
-      "text": "The 51 state geographies are the 50 states and the District of Columbia.",
-      "source": "BLS QCEW state-level area codes, 2024. QCEW publishes Puerto Rico and the Virgin Islands under their own codes; a 51-row state universe is therefore the 50 states plus DC.",
-      "assert": "D['states']['326']['of_disclosed'] + D['states']['326']['suppressed'] == 51 and D['visibility']['state']['disclosed'] == 51",
-      "actual": "(D['states']['326']['of_disclosed'], D['visibility']['state']['disclosed'])",
-      "falsified_if": "The state universe moves off 51 rows, in which case the identification is wrong and the hero sentence has to be rewritten. NOTE: the count is machine-checked, the identification of the 51st as DC is a DEDUCTION from how QCEW codes areas and is not checked here — the shipped file carries only the top 25 states by name. Added 2026-08-28 because the page printed 51 four times without ever saying what the extra one was, and a reader checking the page for errors flags that as one."
+      "id": "states-51-membership",
+      "text": "The 51 state-level records are all 50 states plus Puerto Rico; DC is absent.",
+      "source": "BLS QCEW source area IDs, 2024 private NAICS326. derive_peers.py validates exact membership against state FIPS; test_geography_checks.py rejects the old equal-count DC substitution.",
+      "assert": "len(D['state_ids'])==51 and len(set(D['state_ids']))==51 and '72000' in D['state_ids'] and '11000' not in D['state_ids'] and D['states']['326']['of_disclosed']==51",
+      "actual": "D['state_ids']",
+      "falsified_if": "Any source ID changes, is duplicated or missing. The producer checks the complete expected set; counting 51 alone is insufficient."
     },
     {
       "id": "oh-rank-lq-4",
@@ -197,19 +197,19 @@
     },
     {
       "id": "cleveland-no-series",
-      "text": "Cleveland has no line on the trend chart: it is 4th by 2024 jobs and absent from the trend extract.",
-      "source": "BLS QCEW 2015-2024, NAICS 326. Extract rule in _data/build/derive_peers.py: top-30 by 2024 employment AND at least eight disclosed years.",
-      "assert": "'326|C1741' not in D['trend'] and any(p['area'] == 'C1741' for p in D['metro_scatter']) and [p['area'] for p in sorted(D['metro_scatter'], key=lambda p: -p['emp'])].index('C1741') < 30",
-      "actual": "sorted(k for k in D['trend'] if k.startswith('326|'))",
-      "falsified_if": "A rebuild adds a Cleveland series, in which case the ghost point and its caption come off the chart and Cleveland joins the picker. Because Cleveland clears the top-30 half of the rule, the only way it can fail the rule is the eight-year minimum — that is a deduction from the shipped builder, not a count of Cleveland's disclosed years, which the committed data does not carry."
+      "text": "Cleveland's old C1746 geography disclosed all nine 2015–2023 employment values; the new C1741 is shown separately for 2024 because its boundary adds Ashtabula.",
+      "source": "BLS QCEW source rows retained in cleveland_history; https://www.bls.gov/cew/notices/2024/new-metropolitan-statistical-area-delineations-for-2024.htm and OMB bulletin 23-01.",
+      "assert": "sorted(r['year'] for r in D['cleveland_history'] if r['area']=='C1746' and not r['suppressed'] and r['emp'])==list(range(2015,2024)) and any(r['area']=='C1741' and r['year']==2024 and not r['suppressed'] for r in D['cleveland_history']) and '326|C1741' not in D['trend']",
+      "actual": "D['cleveland_history']",
+      "falsified_if": "Any old-boundary year is actually suppressed or absent, or the page joins the incompatible boundaries into one line. A new constant-county reconstruction requires its own evidence."
     },
     {
       "id": "quadrant-towns",
       "verify": "manual",
-      "text": "Elkhart builds most of the country's recreational vehicles; Hickory makes furniture and fiber-optic cable; Erie runs injection molding and mold-making shops; Greenville holds Michelin's North American headquarters. BMW's only US assembly plant is next door in Spartanburg County, which the bureau counts as a separate metro area and which is not in the Greenville-Anderson-Greer row.",
-      "source": "Company and trade-association public statements (RV Industry Association on Elkhart; CommScope and the North Carolina furniture industry on Hickory; Michelin North America on Greenville; BMW Manufacturing, which brands the plant Plant Spartanburg, on the county it sits in). NOT from the BLS file this page is built on.",
-      "falsified_if": "Any of the four descriptions is wrong or out of date — a plant closes, a headquarters moves, or the trade body stops making the Elkhart claim. This is the one passage on the page with no dataset behind it, and the page says so in its own text rather than letting the reader assume the harness covered it.",
-      "checked_by": "Unverified in this build: needs one editor pass that opens each source and records the URL and date before publication."
+      "text": "Elkhart has recreational-vehicle manufacturing; Hickory makes furniture and fiber-optic cable; Erie has mold-making shops; Greenville holds Michelin’s North American headquarters. BMW’s assembly plant is in Spartanburg County, outside the Greenville-Anderson-Greer metro row. These are industry-presence descriptions, not production-share claims.",
+      "source": "BLS 2024 annual private-industry county files: https://data.bls.gov/cew/data/api/2024/a/area/18039.csv (336213 and 336214); https://data.bls.gov/cew/data/api/2024/a/area/37035.csv (337121); https://data.bls.gov/cew/data/api/2024/a/area/42049.csv (333511). Corning campus announcement dated 2023-03-29, linked in the article; https://michelinmedia.com/pages/blog/detail/article/c0/a1370/ ; https://www.bmwgroup-werke.com/spartanburg/en.html . Census 2023 delineation workbook and Census geocoder place BMW’s listed address in Spartanburg County, CBSA 43900, not Greenville CBSA 24860.",
+      "falsified_if": "A named industry is absent from the cited county source, the headquarters or plant location changes, or the applicable metropolitan delineation places the plant inside the Greenville row. Employment in an industry does not verify a share of national production.",
+      "checked_by": "Documentary audit 2026-09-10; controller retrieved and retained three primary BLS county CSVs on 2026-09-11 and verified positive disclosed employment for all four cited industries. Corning, Michelin and BMW primary pages rechecked 2026-09-11."
     },
     {
       "id": "byline-window",

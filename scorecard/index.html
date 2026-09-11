@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
 
 <header class="mast">
   <div class="wrap">
@@ -19,6 +20,7 @@
   </div>
 </header>
 
+<main id="main-content" tabindex="-1">
 <section class="hero">
   <div class="wrap">
     <p class="eyebrow">PIC&rsquo;s own scorecard &middot; measurement coverage, August 2026</p>
@@ -28,12 +30,13 @@
       Akron Chamber, has won $85.3 million in public grant money, and almost all of it
       already has a named recipient. The award register shows $79.2 million of it on an
       executed line, which is a signed agreement naming the organisation that will
-      receive the money. The register records no payment against any of it. The four rows
+      receive the money. The register records commitment rather than payment: the federal
+      ledger fills part of that stage, and no public figure covers the whole of it. The four rows
       that would tell a board whether PIC can pay for itself are measured in
       PIC&rsquo;s membership register and general ledger, and this public repository
       carries neither.</p>
     <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data from the PIC
-      award register, IPEDS and BLS &middot; August&nbsp;2026</p>
+      award register, IPEDS and BLS &middot; August&nbsp;2026 &middot; Federal context updated by Codex (OpenAI), 8 September 2026</p>
     <!-- THE COLD OPEN. This page opened on 951px of headline, standfirst, coverage
          squares and stat cards, so its first CHART began at 5,677px on desktop and
          13,506px on a phone: six screens before a reader met a drawn mark. The stat
@@ -144,11 +147,19 @@
     <div id="deliverytable"></div>
     <p class="src" id="deliverysrc"></p>
 
-    <p class="beat">One quantity is missing from that chart and cannot be drawn from any
-      public source: how much of the money has actually been paid. An obligation is a
+    <p class="beat">One quantity on that chart has no figure that covers the whole of it:
+      how much of the money has actually been paid. An obligation is a
       legal commitment to pay, and an executed sub-grant is a signed agreement to pay.
-      Neither is a payment. The disbursement row in group B, the money actually paid
-      out, is empty for that reason. It is the row a board should ask about first,
+      Neither is a payment. Part of the payment stage is public.
+      <a href="../accountability/">USAspending publishes an outlay</a> on seven of the
+      eight federal lines in this register, $11,642,402 of $48,114,979, which is 24.2
+      percent of their value. Those award lines account for 56.4 percent of the
+      $85.3&nbsp;million counted here. The
+      $31,250,000 state grant is not a federal award and this register has no public
+      drawdown figure for it. The recorded USAspending search found no entry for EDA
+      award ED25HDQ0G0009. The disbursement row in
+      group B stays empty because no single figure spans the register, not because
+      nothing has been paid. It is still the row a board should ask about first,
       because a fully assigned award that has disbursed nothing and a fully assigned
       award that has disbursed everything look identical on this page.</p>
   </div>
@@ -159,10 +170,13 @@
     <p class="takeaway">Group C &middot; talent</p>
     <h2>Polymer credentials fell by more than half in 2021 and have come back only a little</h2>
     <p class="lede">Federal education data covers the degree side of the talent question:
-      how many people finish a polymer credential each year at the three regional
-      universities that confer them, Case Western Reserve, Kent State and the University
-      of Akron. It says nothing about PIC&rsquo;s own workforce programs, which are the
-      two empty rows in group C. Materials credentials at those same universities ran 29,
+      how many people finish a polymer credential each year at the two universities in
+      this file that confer them, Case Western Reserve and the University of Akron. Kent
+      State is carried alongside them for the adjacent materials degrees and confers no
+      polymer credential here. The completions query names three institutions rather than
+      asking the region, so the universities counted are the universities in the file.
+      It says nothing about PIC&rsquo;s own workforce programs, which are the
+      two empty rows in group C. Materials credentials at Case Western and Kent State ran 29,
       21 and 33 across the same three years, 2021 to 2023, ending higher than they started
       while polymer credentials stayed near their low.</p>
 
@@ -202,6 +216,11 @@
       that populating it later is a lookup rather than a judgment call. The cost of the
       blank is one awkward board meeting. The cost of a plausible wrong number is a year
       of decisions taken against it.</p>
+    <p class="note">Correction, 8 September 2026. Was: group D showed $34.9 million
+      a year across FY2019–FY2026, including a partial year. Is: $41.4 million across the
+      seven completed years FY2019–FY2025. Cause: the upstream category query stopped at
+      its first page, its consumer price index (CPI) base was incorrect, and this comparison
+      included unfinished FY2026. This remains regional context, not a measure of PIC performance.</p>
   </div>
 </section>
 
@@ -211,14 +230,18 @@
       about whether PIC can pay for itself.</p>
     <p class="sub">Eight of the fifteen accountable rows compute from federal and state
       records: <b>$79.2 million</b> of $85.3 million awarded carries a named recipient,
-      and <b>63</b> polymer credentials were awarded in the region in 2023 against a
+      and <b>63</b> polymer credentials were awarded at the institutions in this file in 2023 against a
       three-year average of 60. Seven rows, including all four on revenue and the one on
-      disbursement, are defined and empty. Three more are cluster context that belongs to
+      disbursement, are defined and empty. The disbursement row is empty because no public
+      figure spans the register, not because nothing has been paid: the federal ledger
+      publishes an outlay on seven of the eight federal lines, and the state grant
+      has no drawdown figure in this register. Three more are cluster context that belongs to
       the region rather than to PIC, and they stay in their own group for that
       reason.</p>
   </div>
 </section>
 
+</main>
 <footer class="foot">
   <div class="wrap">
     <p class="foot-k">The pages these rows are read from</p>

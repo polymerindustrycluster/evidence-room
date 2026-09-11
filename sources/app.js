@@ -60,7 +60,7 @@ figures([
   /* NOT "public datasets": two of the fourteen are internal records nobody can fetch,
      which the page itself says four sections down. A card that rounds that away is the
      page contradicting itself above the fold. */
-  ["key", String(T.n_sources), "datasets behind every page here",
+  ["key", String(T.n_sources), "sources behind every page here",
    `${Word(T.n_public)} public. ${Word(T.n_key_required)} need a free key.
     ${Word(T.n_no_endpoint)} have no endpoint at all`],
   ["", String(T.n_filter_lines), "filter lines published, not described",
@@ -348,7 +348,7 @@ function drawTree() {
   ]);
   document.getElementById("estate").innerHTML =
     `<div class="pv-tablewrap"><table>
-      <caption>The register behind this site, ${N(S.length)} datasets, largest footprint first</caption>
+      <caption>The register behind this site, ${N(S.length)} sources, largest footprint first</caption>
       <thead><tr><th scope="col">Dataset</th><th scope="col">Publisher</th>
         <th scope="col">How you get it</th><th scope="col">Key needed</th><th scope="col">Pages that use it</th></tr></thead>
       <tbody>${rows.map(r => `<tr><th scope="row">${r[0]}</th>${r.slice(1).map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody>
@@ -425,8 +425,7 @@ function drawDeps() {
   document.getElementById("depssrc").innerHTML =
     `Read from <span class="mono">_data/SOURCES.json</span>, which maps every page to the ` +
     `sources it rests on. ${Word(T.n_single_source_pages)} of the ${word(T.n_pages)} pages ` +
-    `rest on a single dataset, so a change at one agency would take all of ` +
-    `${T.n_single_source_pages === 1 ? "it" : "them"} at once.`;
+    `rest on a single dataset each; a revision to that dataset can change the page’s evidence.`;
 }
 
 /* ---------------------------------------------------- the three classifications */

@@ -28,8 +28,9 @@ python derive_peers.py
 
 ## Read before quoting anything from this page
 
-- **The state claim is complete.** 51 of 51 states disclosed, zero suppressed. Ohio is
-  first with 54,846 jobs, 10,248 clear of second-place Texas. This is the number to lead
+- **The state claim covers all 50 states plus Puerto Rico.** All 51 state-level records
+  disclose; DC is absent. The exact FIPS membership is asserted, not inferred from 51. Ohio is
+  first in 2024 with 54,846 jobs, 10,248 clear of second-place Texas. This is the number to lead
   with in any funder conversation because it carries no asterisk.
 - **The metro claim is a rank among the disclosed, and nothing more.** Cleveland is 4th
   and Akron 6th of the **155 metros that disclose**. 227 metros are withheld; their
@@ -54,13 +55,10 @@ python derive_peers.py
 
 ## Known data gaps
 
-- **Cleveland has no time series here.** The trend extract in `derive_peers.py` keeps
-  metros that finished top-30 by 2024 employment *and* carry at least eight disclosed
-  years. Cleveland clears the first test and fails the second, so the chart shows it as a
-  single ghosted 2024 point with the absence labelled. Closing this needs a re-fetch of
-  QCEW by-industry NAICS 326, private ownership, annual averages, area `C1741`, for
-  2015&ndash;2024, recording each year's `disclosure_code` so the number of withheld years
-  can be published rather than deduced.
+- **Cleveland crosses a boundary break.** C1746 (Cleveland-Elyria) discloses all nine
+  2015–2023 values. The new C1741 boundary includes Ashtabula beginning 2024 and is
+  shown as a separate point. This is not earlier-year suppression. Other lines are
+  histories of reported areas, not independently rebuilt constant-county panels.
 - Three of the 24 series carry a one- or two-year gap where that metro's cell was
   withheld. The line connects across the gap; the trend table's note says so.
 - **Wording fix, 2026-08-28.** The trend lede called these &ldquo;the 24 metros with a full

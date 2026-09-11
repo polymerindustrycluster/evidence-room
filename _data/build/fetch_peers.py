@@ -6,7 +6,10 @@ metros are withheld for NAICS 326, including Chicago, New York and Atlanta. A ra
 that ignores that is wrong, so suppression is carried through as a first-class value and
 the establishment count (disclosed far more often than employment) comes with it.
 """
-import csv, io, json, os, time, urllib.request, urllib.error, collections
+import argparse, csv, hashlib, io, json, os, time, urllib.request, urllib.error, collections
+from datetime import date
+from pathlib import Path
+from geography_checks import qcew_boundary_metadata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 from contact import UA  # noqa: E402  (one address, see contact.py)
@@ -53,40 +56,70 @@ def rows_from(txt, year, naics):
     return out
 
 
-rows = []
-jobs = [(CROSS_YEAR, n) for n in NAICS] + \
-       [(y, n) for n in TREND for y in TREND_YEARS if not (y == CROSS_YEAR and n in NAICS)]
-for year, naics in jobs:
-    txt = fetch(f"https://data.bls.gov/cew/data/api/{year}/a/industry/{naics}.csv")
-    if not txt:
-        print(f"  {year} {naics}: not published", flush=True); continue
-    got = rows_from(txt, year, naics)
-    rows += got
-    print(f"  {year} {naics}: {len(got)} rows "
-          f"({sum(1 for r in got if r['suppressed'])} suppressed)", flush=True)
-    time.sleep(0.4)
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
+    parser.add_argument('--boundary-notice', required=True, type=Path,
+                        help='Held official 2024 adoption notice, raw HTML or recorded web-tool JSON')
+    parser.add_argument('--annotate-existing', type=Path,
+                        help='Annotate held peers in a separate output without fetching or changing rows')
+    parser.add_argument('--output', type=Path)
+    args = parser.parse_args(argv)
+    boundaries = qcew_boundary_metadata(args.boundary_notice.read_bytes())
+    if args.annotate_existing:
+        if args.output is None or args.output.exists():
+            parser.error('--annotate-existing requires a new explicit --output path')
+        parent_bytes = args.annotate_existing.read_bytes()
+        annotated = json.loads(parent_bytes)
+        if annotated['meta'].get('cross_year') != CROSS_YEAR:
+            parser.error('Held extract does not identify the verified 2024 cross-section')
+        existing = annotated['meta'].get('metro_boundary_vintages', {})
+        if existing and existing != boundaries:
+            parser.error('Existing boundary provenance conflicts with the verified 2024 notice')
+        annotated['meta']['metro_boundary_vintages'] = boundaries
+        annotated['meta']['boundary_annotation_parent_sha256'] = hashlib.sha256(parent_bytes).hexdigest()
+        args.output.write_text(json.dumps(annotated, separators=(',', ':')), encoding='utf-8')
+        print(f'Annotated held source without changing rows: {args.output}')
+        return
 
-titles = {}
-txt = fetch("https://data.bls.gov/cew/doc/titles/area/area_titles.csv")
-if txt:
-    titles = {r["area_fips"]: r["area_title"]
-              for r in csv.DictReader(io.StringIO(txt))}
+    rows = []
+    jobs = [(CROSS_YEAR, n) for n in NAICS] + \
+           [(y, n) for n in TREND for y in TREND_YEARS if not (y == CROSS_YEAR and n in NAICS)]
+    for year, naics in jobs:
+        txt = fetch(f"https://data.bls.gov/cew/data/api/{year}/a/industry/{naics}.csv")
+        if not txt:
+            print(f"  {year} {naics}: not published", flush=True); continue
+        got = rows_from(txt, year, naics)
+        rows += got
+        print(f"  {year} {naics}: {len(got)} rows "
+              f"({sum(1 for r in got if r['suppressed'])} suppressed)", flush=True)
+        time.sleep(0.4)
 
-out = {"meta": {
-    "source": "BLS QCEW open data, by-industry files, annual averages",
-    "url": "https://data.bls.gov/cew/data/api/{year}/a/industry/{naics}.csv",
-    "row": "one (year, area, NAICS) annual-average cell, private ownership. `emp` counts "
-           "JOBS covered by unemployment insurance.",
-    "cross_year": CROSS_YEAR, "trend_naics": TREND, "trend_years": TREND_YEARS,
-    "suppression": "disclosure_code 'N' → suppressed:true. Employment is withheld far more "
-                   "often than establishment counts, so a ranking on employment alone "
-                   "systematically omits the largest metros. Any rank stated from this file "
-                   "is a rank AMONG DISCLOSED AREAS and must say so.",
-    "fetched": "2026-08-14"},
-  "titles": titles, "rows": rows}
-p = os.path.join(HERE, "peers.json")
-json.dump(out, open(p, "w", encoding="utf-8"), separators=(",", ":"))
-print(f"\nwrote {p}  {round(os.path.getsize(p)/1024)} KB  {len(rows)} rows")
-c = collections.Counter((r["kind"], r["suppressed"]) for r in rows if r["year"] == CROSS_YEAR)
-for k in ("metro", "county", "state", "national"):
-    print(f"  {CROSS_YEAR} {k:9s} disclosed {c[(k, False)]:5d}  suppressed {c[(k, True)]:5d}")
+    titles = {}
+    txt = fetch("https://data.bls.gov/cew/doc/titles/area/area_titles.csv")
+    if txt:
+        titles = {r["area_fips"]: r["area_title"]
+                  for r in csv.DictReader(io.StringIO(txt))}
+
+    out = {"meta": {
+        "source": "BLS QCEW open data, by-industry files, annual averages",
+        "url": "https://data.bls.gov/cew/data/api/{year}/a/industry/{naics}.csv",
+        "row": "one (year, area, NAICS) annual-average cell, private ownership. `emp` counts "
+               "JOBS covered by unemployment insurance.",
+        "cross_year": CROSS_YEAR, "trend_naics": TREND, "trend_years": TREND_YEARS,
+        "metro_boundary_vintages": boundaries,
+        "suppression": "disclosure_code 'N' → suppressed:true. Employment is withheld far more "
+                       "often than establishment counts, so a ranking on employment alone "
+                       "systematically omits the largest metros. Any rank stated from this file "
+                       "is a rank AMONG DISCLOSED AREAS and must say so.",
+        "fetched": date.today().isoformat()},
+      "titles": titles, "rows": rows}
+    p = args.output or os.path.join(HERE, "peers.json")
+    json.dump(out, open(p, "w", encoding="utf-8"), separators=(",", ":"))
+    print(f"\nwrote {p}  {round(os.path.getsize(p)/1024)} KB  {len(rows)} rows")
+    c = collections.Counter((r["kind"], r["suppressed"]) for r in rows if r["year"] == CROSS_YEAR)
+    for k in ("metro", "county", "state", "national"):
+        print(f"  {CROSS_YEAR} {k:9s} disclosed {c[(k, False)]:5d}  suppressed {c[(k, True)]:5d}")
+
+
+if __name__ == '__main__':
+    main()

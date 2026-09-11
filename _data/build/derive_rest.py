@@ -154,9 +154,9 @@ out("cost-scissors", "scissors.json", {
                                 "annual-average base would show. The stage ORDERING below is "
                                 "robust to that; the exact percentages are not.",
              "not_margin": "An output index rising faster than an input index is NOT a "
-                           "margin. Labor, freight, energy and packaging are not in either "
-                           "series. It is a spread between two published indices, and that "
-                           "is all it is."},
+                           "margin. These selling-price indexes do not separately measure "
+                           "labor, freight, energy, packaging or a producer’s full costs. "
+                           "It is a gap between two published indexes."},
     "series": scissors})
 print(f"  {len(scissors)} series, indexed to {BASE}")
 
@@ -208,103 +208,9 @@ out("wages", "wages.json", {
 print(f"  {len(wage_rows)} latest-year rows, {len(trend)} trend rows")
 
 # ------------------------------------------------------------ 4. FEDERAL MONEY
-print("federal-money")
-# BLS CPI-U, annual averages, 1982-84 = 100. Data journalism's rule: always adjust when
-# comparing dollars across years. An eight-year nominal sum understates the real total by
-# about 3% here — small, but "about $249M" and "about $257M" are different sentences and
-# only one of them is the answer to "how much did the region actually get".
-CPI_BASE = 2025
-CPI = {2018: 251.107, 2019: 255.657, 2020: 258.811, 2021: 270.970, 2022: 292.655,
-       2023: 304.702, 2024: 313.689, 2025: 322.132, 2026: 322.132}
-def real(v, fy):
-    """Nominal dollars restated in CPI_BASE dollars. Years past the last published CPI
-    annual average are carried at that average rather than extrapolated."""
-    return v * CPI[CPI_BASE] / CPI.get(fy, CPI[CPI_BASE])
-
-us = load("usaspending.json")["rows"]
-by_fy_naics = collections.defaultdict(float)
-by_fy_county = collections.defaultdict(float)
-names = {}
-for r in us:
-    if r["amount"] is None:
-        continue
-    if r["kind"] == "naics":
-        by_fy_naics[(r["fy"], r["code"])] += r["amount"]
-        names[r["code"]] = r["name"]
-    else:
-        by_fy_county[(r["fy"], r["name"])] += r["amount"]
-
-# THE COMPARATOR, ON ONE BASIS. The county rows above carry no award-type filter, so they
-# are every federal instrument there is; the NAICS rows beside them are procurement. The
-# page divided one by the other and published the quotient as a contracting ratio, which
-# was wrong by a factor of about thirty. fetch_fed_contracts.py pulls both series again
-# with award_type_codes A-D, so the ratio the page prints has a contracting numerator over
-# a contracting denominator. Both series live here; neither replaces the all-type rows,
-# which the page still needs to say what the old denominator was made of.
-fc = load("usaspending_contracts.json")
-ct_county = collections.defaultdict(float)
-ct_naics = collections.defaultdict(float)
-for r in fc["rows"]:
-    if r["amount"] is None:
-        continue
-    (ct_naics if r["kind"] == "naics" else ct_county)[r["fy"]] += r["amount"]
-_num = sum(real(v, fy) for fy, v in ct_naics.items())
-_den = sum(real(v, fy) for fy, v in ct_county.items())
-if not _num or not _den or not (10 < _den / _num < 100):
-    raise SystemExit(f"FATAL: the contracting ratio is {_den / _num if _num else 'n/a'}, "
-                     f"outside the 10-to-100 band this page's prose is written against. "
-                     f"A comparator that has moved by an order of magnitude needs a human "
-                     f"reading it, not a rebuild that publishes it.")
-out("federal-money", "federal.json", {
-    "meta": {"source": "USAspending.gov spending_by_category, place of performance",
-             "row": "one (fiscal year, category, code) obligation total",
-             "footprint": META[FOOTPRINT],
-             "scope": f"Obligations at place of performance in the {META[FOOTPRINT]['n']} "
-                      f"{META[FOOTPRINT]['label']} counties. NAICS rows are filtered to 325* "
-                      "and 326*, chemical and plastics/rubber. County rows are ALL "
-                      "industries and are an order of magnitude larger; the two are shown "
-                      "separately and never summed.",
-             "caution": "Place of performance is a REPORTED FIELD on the award, not an "
-                        "observation of where work happened: a centrally administered "
-                        "contract or a prime performing through a subaward can put the code "
-                        "somewhere other than the activity. An obligation is not an outlay.",
-             "excludes": "University and research awards are INVISIBLE to the NAICS view by "
-                         "construction: it filters to 325*/326* manufacturing codes, and a "
-                         "university files under 61xxxx or 5417xx. The NSF NEO-SMART Engine "
-                         "($14,999,983 estimated, $7,499,984 obligated) and TARDISS do not "
-                         "appear in the NAICS rows. The all-industry county rows do capture "
-                         "them.",
-             "comparator": "The county rows carry no award-type filter and are therefore "
-                           "every federal instrument: contracts, grants, loans, direct "
-                           "payments and other financial assistance. They are not a "
-                           "contracting figure and must never be the denominator under a "
-                           "contracting numerator. The contracts block does that job."},
-    "inflation": "Dollars from different years are not the same dollars. Every row "
-                 "carries BOTH the nominal obligation and the same figure restated in "
-                 f"{CPI_BASE} dollars using BLS CPI-U annual averages. Any total spanning "
-                 "more than one year must use the real column; the nominal one is kept so "
-                 "a reader can reconcile against USAspending itself.",
-    "cpi_base": CPI_BASE, "cpi": CPI,
-    "naics": [{"fy": fy, "code": c, "name": names.get(c, c), "amount": round(v),
-               "real": round(real(v, fy))}
-              for (fy, c), v in sorted(by_fy_naics.items())],
-    "counties": [{"fy": fy, "county": c, "amount": round(v),
-                  "real": round(real(v, fy))}
-                 for (fy, c), v in sorted(by_fy_county.items())],
-    "contracts": {
-        "meta": {**fc["meta"],
-                 "why": "PRIME CONTRACTING ONLY, award_type_codes A-D, so the polymer "
-                        "numerator and the all-industry denominator are the same kind of "
-                        "money. Same CPI-U restatement as every other total on this page.",
-                 "vintage": "Pulled on its own date and NOT interchangeable row for row "
-                            "with the all-type series above, which is an older read of a "
-                            "live ledger. The ratio is computed inside this block."},
-        "award_type_totals": fc["award_type_totals"],
-        "counties": [{"fy": fy, "amount": round(v), "real": round(real(v, fy))}
-                     for fy, v in sorted(ct_county.items())],
-        "naics": [{"fy": fy, "amount": round(v), "real": round(real(v, fy))}
-                  for fy, v in sorted(ct_naics.items())]}})
-print(f"  {len(by_fy_naics)} naics-year rows, {len(by_fy_county)} county-year rows")
+# A scoped producer also permits federal-only rebuilding from a private raw directory.
+from derive_federal import derive as derive_federal
+out("federal-money", "federal.json", derive_federal(os.environ.get("FEDERAL_RAW_DIR", HERE)))
 
 # ---------------------------------------------------------------- 5. REVISIONS
 print("revisions")

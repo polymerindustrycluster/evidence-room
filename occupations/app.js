@@ -171,10 +171,10 @@ const setters = MIX.find(m => m.soc === "51-4072");
    are, and this card now says what 4.2% is a share OF. */
 const US = `<span class="scope">United States</span>`;
 figures([
-  ["key", pct(setters.pct_of_industry), "of the industry’s jobs", `${US}are molding-machine setters, one job in ${WORDS[Math.round(100 / setters.pct_of_industry)]}, 2024. It is the industry’s largest occupation, which makes staffing it the industry’s largest staffing problem`],
-  ["", pct(setters.pct_of_occupation, 0), "of the nation’s molding-machine setters", `${US}work in plastics and rubber manufacturing, counted across the country: few other employers bid for them, and few others to hire from`],
+  ["key", pct(setters.pct_of_industry), "of the industry’s jobs", `${US}are molding-machine setters, one job in ${WORDS[Math.round(100 / setters.pct_of_industry)]}, 2024. It is the industry’s largest occupation in the published national mix`],
+  ["", pct(setters.pct_of_occupation, 0), "of the nation’s molding-machine setters", `${US}work in plastics and rubber manufacturing, counted across the country. This share describes employment, not competition to hire`],
   ["", N(D.mix_totals.industry_emp_2024_k * 1000), "jobs in the industry", `${US}in 2024, and the base the ${pct(setters.pct_of_industry)} and ${pct(D.mix_totals.eng_sci_share_pct)} are cut from`],
-  ["", pct(D.mix_totals.eng_sci_share_pct), "engineers, scientists, technicians", `${US}of all jobs in the industry: the work a polymer region is known for is a small share of it`],
+  ["", pct(D.mix_totals.eng_sci_share_pct), "engineers, scientists, technicians", `${US}a small share of the national industry total`],
 ]);
 
 /* The byline's month is read from the data vintage rather than typed, so it cannot drift
@@ -1044,10 +1044,15 @@ function drawProgMobile() {
      half" did not follow from the annotation beside it: 63 against 124 in 2020 is a 49%
      fall. It IS more than half below the 2014-2020 average, which is what the figure title
      and the rule have always said, so the heading now makes the claim the chart draws.
-     The year 124 sits under moved on 2026-08-31; see _data/build/ipeds_mirror_fix.py. */
+     The year 124 sits under moved on 2026-08-31; see _data/build/ipeds_mirror_fix.py.
+     (3) "Two universities confer the polymer degrees" asserted a closed REGIONAL universe
+     six lines above the lede that disclaims it: the completions query names three
+     institutions rather than asking the region, and Youngstown State confers under the
+     same materials code and is absent. The heading now says what the count is a count of,
+     which is the file. 2026-09-11. */
   const polyInst = new Set(D.programs.filter(p => p.group === "polymer").map(p => p.institution));
   document.getElementById("progtitle").textContent =
-    `${Cap(WORDS[polyInst.size] || String(polyInst.size))} universities confer the polymer degrees, and the count has fallen below half its old pace`;
+    `${Cap(WORDS[polyInst.size] || String(polyInst.size))} universities in this file confer the polymer degrees, and the count has fallen below half its old pace`;
   document.getElementById("trendtable").innerHTML = withNote(tableView("trend",
     `Polymer and materials degrees conferred a year, ${progYears[0]}–${progYears[progYears.length - 1]}`,
     ["Year", "Polymer programs", "Materials programs"],
@@ -1060,7 +1065,7 @@ function drawProgMobile() {
      program code would leave these counts without leaving the region.`);
   document.getElementById("trendsrc").innerHTML =
     `Integrated Postsecondary Education Data System completions, summed across the
-     region&rsquo;s programs each year. The file ends at ${PT.latest_year}, the last year
+     selected programs each year. The file ends at ${PT.latest_year}, the last year
      available when this page was built, so the fall rests on ${WORDS[LATE.length] || LATE.length}
      observed years. The 2020 to 2022 counts are read from the NCES completions files: the
      mirror this series is otherwise built from filed those years a year late and served
@@ -1075,9 +1080,8 @@ function drawProgMobile() {
      the window are omitted, which is why the list has ${PT.institutions.length} names.`);
   document.getElementById("progsrc").innerHTML =
     `Integrated Postsecondary Education Data System completions by six-digit program code,
-     via the Urban Institute, corrected against NCES. Degrees count people finishing, not
-     people hired or staying in
-     the region.`;
+     via the Urban Institute, corrected against NCES. These are conferrals, not unique
+     graduates, hires or people staying in the region.`;
 }
 
 /* The O*NET licence is a condition of use, not a caption. It ran inline under the

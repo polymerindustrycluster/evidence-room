@@ -1,0 +1,1931 @@
+{
+ "meta": {
+  "source": "BLS QCEW annual-average files; held by-area and by-industry extracts",
+  "row": "One private-ownership (own=5), NAICS 326 area-year; manufacturing benchmark NAICS 31–33 separately.",
+  "method": "Annual-average jobs and establishments. Establishments are rounded averages of quarterly counts, not unique businesses or a panel of the same sites.",
+  "limitations": "Repeated aggregate observations cannot identify changes within surviving plants, productivity, automation, or labor shortages. State comparators are larger geographies; Ohio and the US include PIC-12.",
+  "fetched": "2026-08-14",
+  "footprint": {
+   "key": "pic12",
+   "n": 12,
+   "label": "PIC-12",
+   "counties": [
+    "Ashtabula",
+    "Cuyahoga",
+    "Geauga",
+    "Lake",
+    "Lorain",
+    "Mahoning",
+    "Medina",
+    "Portage",
+    "Stark",
+    "Summit",
+    "Trumbull",
+    "Wayne"
+   ],
+   "note": "PIC's official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
+   "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the vault's NEO-14 includes."
+  }
+ },
+ "years": [
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024,
+  2025
+ ],
+ "base_year": 2022,
+ "ownership": "5",
+ "naics": "326",
+ "groups": [
+  {
+   "name": "PIC-12",
+   "naics": "326",
+   "series": [
+    {
+     "year": 2015,
+     "jobs": 19368.0,
+     "establishments": 385.0
+    },
+    {
+     "year": 2016,
+     "jobs": 19410.0,
+     "establishments": 376.0
+    },
+    {
+     "year": 2017,
+     "jobs": 19315.0,
+     "establishments": 375.0
+    },
+    {
+     "year": 2018,
+     "jobs": 19336.0,
+     "establishments": 372.0
+    },
+    {
+     "year": 2019,
+     "jobs": 19649.0,
+     "establishments": 364.0
+    },
+    {
+     "year": 2020,
+     "jobs": 18763.0,
+     "establishments": 359.0
+    },
+    {
+     "year": 2021,
+     "jobs": 19401.0,
+     "establishments": 357.0
+    },
+    {
+     "year": 2022,
+     "jobs": 19811.0,
+     "establishments": 361.0
+    },
+    {
+     "year": 2023,
+     "jobs": 19530.0,
+     "establishments": 367.0
+    },
+    {
+     "year": 2024,
+     "jobs": 18594.0,
+     "establishments": 375.0
+    },
+    {
+     "year": 2025,
+     "jobs": 17770.0,
+     "establishments": 364.0
+    }
+   ],
+   "windows": [
+    {
+     "start": 2022,
+     "end": 2025,
+     "jobs_pct": -10.302357,
+     "establishments_pct": 0.831025,
+     "jobs_per_establishment_pct": -11.041624
+    },
+    {
+     "start": 2015,
+     "end": 2025,
+     "jobs_pct": -8.250723,
+     "establishments_pct": -5.454545,
+     "jobs_per_establishment_pct": -2.957495
+    },
+    {
+     "start": 2019,
+     "end": 2025,
+     "jobs_pct": -9.562828,
+     "establishments_pct": 0.0,
+     "jobs_per_establishment_pct": -9.562828
+    },
+    {
+     "start": 2022,
+     "end": 2024,
+     "jobs_pct": -6.143052,
+     "establishments_pct": 3.878116,
+     "jobs_per_establishment_pct": -9.647045
+    },
+    {
+     "start": 2023,
+     "end": 2025,
+     "jobs_pct": -9.011777,
+     "establishments_pct": -0.817439,
+     "jobs_per_establishment_pct": -8.261874
+    },
+    {
+     "start": 2024,
+     "end": 2025,
+     "jobs_pct": -4.431537,
+     "establishments_pct": -2.933333,
+     "jobs_per_establishment_pct": -1.543479
+    }
+   ]
+  },
+  {
+   "name": "Ohio",
+   "naics": "326",
+   "series": [
+    {
+     "year": 2015,
+     "jobs": 55955.0,
+     "establishments": 874.0
+    },
+    {
+     "year": 2016,
+     "jobs": 56745.0,
+     "establishments": 865.0
+    },
+    {
+     "year": 2017,
+     "jobs": 57355.0,
+     "establishments": 871.0
+    },
+    {
+     "year": 2018,
+     "jobs": 57881.0,
+     "establishments": 860.0
+    },
+    {
+     "year": 2019,
+     "jobs": 58260.0,
+     "establishments": 854.0
+    },
+    {
+     "year": 2020,
+     "jobs": 54518.0,
+     "establishments": 842.0
+    },
+    {
+     "year": 2021,
+     "jobs": 56850.0,
+     "establishments": 842.0
+    },
+    {
+     "year": 2022,
+     "jobs": 57489.0,
+     "establishments": 857.0
+    },
+    {
+     "year": 2023,
+     "jobs": 56186.0,
+     "establishments": 890.0
+    },
+    {
+     "year": 2024,
+     "jobs": 54846.0,
+     "establishments": 917.0
+    },
+    {
+     "year": 2025,
+     "jobs": 53420.0,
+     "establishments": 925.0
+    }
+   ],
+   "windows": [
+    {
+     "start": 2022,
+     "end": 2025,
+     "jobs_pct": -7.077876,
+     "establishments_pct": 7.934656,
+     "jobs_per_establishment_pct": -13.908908
+    },
+    {
+     "start": 2015,
+     "end": 2025,
+     "jobs_pct": -4.530426,
+     "establishments_pct": 5.83524,
+     "jobs_per_establishment_pct": -9.794154
+    },
+    {
+     "start": 2019,
+     "end": 2025,
+     "jobs_pct": -8.307587,
+     "establishments_pct": 8.313817,
+     "jobs_per_establishment_pct": -15.345599
+    },
+    {
+     "start": 2022,
+     "end": 2024,
+     "jobs_pct": -4.597401,
+     "establishments_pct": 7.001167,
+     "jobs_per_establishment_pct": -10.839665
+    },
+    {
+     "start": 2023,
+     "end": 2025,
+     "jobs_pct": -4.922935,
+     "establishments_pct": 3.932584,
+     "jobs_per_establishment_pct": -8.520445
+    },
+    {
+     "start": 2024,
+     "end": 2025,
+     "jobs_pct": -2.600007,
+     "establishments_pct": 0.87241,
+     "jobs_per_establishment_pct": -3.442386
+    }
+   ]
+  },
+  {
+   "name": "United States",
+   "naics": "326",
+   "series": [
+    {
+     "year": 2015,
+     "jobs": 686517.0,
+     "establishments": 13127.0
+    },
+    {
+     "year": 2016,
+     "jobs": 700529.0,
+     "establishments": 13170.0
+    },
+    {
+     "year": 2017,
+     "jobs": 714191.0,
+     "establishments": 13207.0
+    },
+    {
+     "year": 2018,
+     "jobs": 729576.0,
+     "establishments": 13234.0
+    },
+    {
+     "year": 2019,
+     "jobs": 730565.0,
+     "establishments": 13260.0
+    },
+    {
+     "year": 2020,
+     "jobs": 692365.0,
+     "establishments": 13347.0
+    },
+    {
+     "year": 2021,
+     "jobs": 721275.0,
+     "establishments": 13537.0
+    },
+    {
+     "year": 2022,
+     "jobs": 746593.0,
+     "establishments": 13914.0
+    },
+    {
+     "year": 2023,
+     "jobs": 733910.0,
+     "establishments": 14200.0
+    },
+    {
+     "year": 2024,
+     "jobs": 719721.0,
+     "establishments": 14375.0
+    },
+    {
+     "year": 2025,
+     "jobs": 700170.0,
+     "establishments": 14538.0
+    }
+   ],
+   "windows": [
+    {
+     "start": 2022,
+     "end": 2025,
+     "jobs_pct": -6.21798,
+     "establishments_pct": 4.484692,
+     "jobs_per_establishment_pct": -10.243291
+    },
+    {
+     "start": 2015,
+     "end": 2025,
+     "jobs_pct": 1.988734,
+     "establishments_pct": 10.748838,
+     "jobs_per_establishment_pct": -7.909883
+    },
+    {
+     "start": 2019,
+     "end": 2025,
+     "jobs_pct": -4.160479,
+     "establishments_pct": 9.638009,
+     "jobs_per_establishment_pct": -12.585496
+    },
+    {
+     "start": 2022,
+     "end": 2024,
+     "jobs_pct": -3.599284,
+     "establishments_pct": 3.31321,
+     "jobs_per_establishment_pct": -6.690813
+    },
+    {
+     "start": 2023,
+     "end": 2025,
+     "jobs_pct": -4.597294,
+     "establishments_pct": 2.380282,
+     "jobs_per_establishment_pct": -6.815351
+    },
+    {
+     "start": 2024,
+     "end": 2025,
+     "jobs_pct": -2.716469,
+     "establishments_pct": 1.133913,
+     "jobs_per_establishment_pct": -3.807212
+    }
+   ]
+  },
+  {
+   "name": "Indiana",
+   "naics": "326",
+   "series": [
+    {
+     "year": 2015,
+     "jobs": 38588.0,
+     "establishments": 500.0
+    },
+    {
+     "year": 2016,
+     "jobs": 39669.0,
+     "establishments": 500.0
+    },
+    {
+     "year": 2017,
+     "jobs": 40140.0,
+     "establishments": 497.0
+    },
+    {
+     "year": 2018,
+     "jobs": 41198.0,
+     "establishments": 507.0
+    },
+    {
+     "year": 2019,
+     "jobs": 40117.0,
+     "establishments": 515.0
+    },
+    {
+     "year": 2020,
+     "jobs": 36915.0,
+     "establishments": 532.0
+    },
+    {
+     "year": 2021,
+     "jobs": 38976.0,
+     "establishments": 523.0
+    },
+    {
+     "year": 2022,
+     "jobs": 39640.0,
+     "establishments": 523.0
+    },
+    {
+     "year": 2023,
+     "jobs": 38224.0,
+     "establishments": 512.0
+    },
+    {
+     "year": 2024,
+     "jobs": 37661.0,
+     "establishments": 514.0
+    },
+    {
+     "year": 2025,
+     "jobs": 37826.0,
+     "establishments": 515.0
+    }
+   ],
+   "windows": [
+    {
+     "start": 2022,
+     "end": 2025,
+     "jobs_pct": -4.576186,
+     "establishments_pct": -1.529637,
+     "jobs_per_establishment_pct": -3.093874
+    },
+    {
+     "start": 2015,
+     "end": 2025,
+     "jobs_pct": -1.974707,
+     "establishments_pct": 3.0,
+     "jobs_per_establishment_pct": -4.829813
+    },
+    {
+     "start": 2019,
+     "end": 2025,
+     "jobs_pct": -5.710796,
+     "establishments_pct": 0.0,
+     "jobs_per_establishment_pct": -5.710796
+    },
+    {
+     "start": 2022,
+     "end": 2024,
+     "jobs_pct": -4.992432,
+     "establishments_pct": -1.720841,
+     "jobs_per_establishment_pct": -3.328875
+    },
+    {
+     "start": 2023,
+     "end": 2025,
+     "jobs_pct": -1.041231,
+     "establishments_pct": 0.585938,
+     "jobs_per_establishment_pct": -1.617689
+    },
+    {
+     "start": 2024,
+     "end": 2025,
+     "jobs_pct": 0.438119,
+     "establishments_pct": 0.194553,
+     "jobs_per_establishment_pct": 0.243094
+    }
+   ]
+  },
+  {
+   "name": "Kentucky",
+   "naics": "326",
+   "series": [
+    {
+     "year": 2015,
+     "jobs": 16717.0,
+     "establishments": 204.0
+    },
+    {
+     "year": 2016,
+     "jobs": 16784.0,
+     "establishments": 199.0
+    },
+    {
+     "year": 2017,
+     "jobs": 17288.0,
+     "establishments": 192.0
+    },
+    {
+     "year": 2018,
+     "jobs": 17484.0,
+     "establishments": 197.0
+    },
+    {
+     "year": 2019,
+     "jobs": 17186.0,
+     "establishments": 198.0
+    },
+    {
+     "year": 2020,
+     "jobs": 16399.0,
+     "establishments": 212.0
+    },
+    {
+     "year": 2021,
+     "jobs": 16937.0,
+     "establishments": 231.0
+    },
+    {
+     "year": 2022,
+     "jobs": 16968.0,
+     "establishments": 258.0
+    },
+    {
+     "year": 2023,
+     "jobs": 16374.0,
+     "establishments": 282.0
+    },
+    {
+     "year": 2024,
+     "jobs": 15958.0,
+     "establishments": 303.0
+    },
+    {
+     "year": 2025,
+     "jobs": 16129.0,
+     "establishments": 312.0
+    }
+   ],
+   "windows": [
+    {
+     "start": 2022,
+     "end": 2025,
+     "jobs_pct": -4.944602,
+     "establishments_pct": 20.930233,
+     "jobs_per_establishment_pct": -21.396497
+    },
+    {
+     "start": 2015,
+     "end": 2025,
+     "jobs_pct": -3.517378,
+     "establishments_pct": 52.941176,
+     "jobs_per_establishment_pct": -36.915208
+    },
+    {
+     "start": 2019,
+     "end": 2025,
+     "jobs_pct": -6.150355,
+     "establishments_pct": 57.575758,
+     "jobs_per_establishment_pct": -40.441571
+    },
+    {
+     "start": 2022,
+     "end": 2024,
+     "jobs_pct": -5.952381,
+     "establishments_pct": 17.44186,
+     "jobs_per_establishment_pct": -19.919849
+    },
+    {
+     "start": 2023,
+     "end": 2025,
+     "jobs_pct": -1.496275,
+     "establishments_pct": 10.638298,
+     "jobs_per_establishment_pct": -10.967787
+    },
+    {
+     "start": 2024,
+     "end": 2025,
+     "jobs_pct": 1.071563,
+     "establishments_pct": 2.970297,
+     "jobs_per_establishment_pct": -1.843963
+    }
+   ]
+  },
+  {
+   "name": "Michigan",
+   "naics": "326",
+   "series": [
+    {
+     "year": 2015,
+     "jobs": 39712.0,
+     "establishments": 608.0
+    },
+    {
+     "year": 2016,
+     "jobs": 41567.0,
+     "establishments": 631.0
+    },
+    {
+     "year": 2017,
+     "jobs": 42222.0,
+     "establishments": 642.0
+    },
+    {
+     "year": 2018,
+     "jobs": 42823.0,
+     "establishments": 642.0
+    },
+    {
+     "year": 2019,
+     "jobs": 42492.0,
+     "establishments": 665.0
+    },
+    {
+     "year": 2020,
+     "jobs": 36657.0,
+     "establishments": 679.0
+    },
+    {
+     "year": 2021,
+     "jobs": 38562.0,
+     "establishments": 699.0
+    },
+    {
+     "year": 2022,
+     "jobs": 39606.0,
+     "establishments": 759.0
+    },
+    {
+     "year": 2023,
+     "jobs": 39949.0,
+     "establishments": 819.0
+    },
+    {
+     "year": 2024,
+     "jobs": 39518.0,
+     "establishments": 780.0
+    },
+    {
+     "year": 2025,
+     "jobs": 37723.0,
+     "establishments": 816.0
+    }
+   ],
+   "windows": [
+    {
+     "start": 2022,
+     "end": 2025,
+     "jobs_pct": -4.75433,
+     "establishments_pct": 7.509881,
+     "jobs_per_establishment_pct": -11.40752
+    },
+    {
+     "start": 2015,
+     "end": 2025,
+     "jobs_pct": -5.008562,
+     "establishments_pct": 34.210526,
+     "jobs_per_establishment_pct": -29.222066
+    },
+    {
+     "start": 2019,
+     "end": 2025,
+     "jobs_pct": -11.223289,
+     "establishments_pct": 22.706767,
+     "jobs_per_establishment_pct": -27.651332
+    },
+    {
+     "start": 2022,
+     "end": 2024,
+     "jobs_pct": -0.222189,
+     "establishments_pct": 2.766798,
+     "jobs_per_establishment_pct": -2.908514
+    },
+    {
+     "start": 2023,
+     "end": 2025,
+     "jobs_pct": -5.572104,
+     "establishments_pct": -0.3663,
+     "jobs_per_establishment_pct": -5.224943
+    },
+    {
+     "start": 2024,
+     "end": 2025,
+     "jobs_pct": -4.542234,
+     "establishments_pct": 4.615385,
+     "jobs_per_establishment_pct": -8.753606
+    }
+   ]
+  },
+  {
+   "name": "Pennsylvania",
+   "naics": "326",
+   "series": [
+    {
+     "year": 2015,
+     "jobs": 36819.0,
+     "establishments": 637.0
+    },
+    {
+     "year": 2016,
+     "jobs": 38586.0,
+     "establishments": 633.0
+    },
+    {
+     "year": 2017,
+     "jobs": 39995.0,
+     "establishments": 635.0
+    },
+    {
+     "year": 2018,
+     "jobs": 40106.0,
+     "establishments": 635.0
+    },
+    {
+     "year": 2019,
+     "jobs": 40448.0,
+     "establishments": 639.0
+    },
+    {
+     "year": 2020,
+     "jobs": 38831.0,
+     "establishments": 639.0
+    },
+    {
+     "year": 2021,
+     "jobs": 39771.0,
+     "establishments": 630.0
+    },
+    {
+     "year": 2022,
+     "jobs": 41350.0,
+     "establishments": 632.0
+    },
+    {
+     "year": 2023,
+     "jobs": 39930.0,
+     "establishments": 642.0
+    },
+    {
+     "year": 2024,
+     "jobs": 39698.0,
+     "establishments": 644.0
+    },
+    {
+     "year": 2025,
+     "jobs": 39347.0,
+     "establishments": 638.0
+    }
+   ],
+   "windows": [
+    {
+     "start": 2022,
+     "end": 2025,
+     "jobs_pct": -4.844015,
+     "establishments_pct": 0.949367,
+     "jobs_per_establishment_pct": -5.738898
+    },
+    {
+     "start": 2015,
+     "end": 2025,
+     "jobs_pct": 6.86602,
+     "establishments_pct": 0.156986,
+     "jobs_per_establishment_pct": 6.698519
+    },
+    {
+     "start": 2019,
+     "end": 2025,
+     "jobs_pct": -2.722013,
+     "establishments_pct": -0.156495,
+     "jobs_per_establishment_pct": -2.56954
+    },
+    {
+     "start": 2022,
+     "end": 2024,
+     "jobs_pct": -3.995163,
+     "establishments_pct": 1.898734,
+     "jobs_per_establishment_pct": -5.784073
+    },
+    {
+     "start": 2023,
+     "end": 2025,
+     "jobs_pct": -1.460055,
+     "establishments_pct": -0.623053,
+     "jobs_per_establishment_pct": -0.84225
+    },
+    {
+     "start": 2024,
+     "end": 2025,
+     "jobs_pct": -0.884176,
+     "establishments_pct": -0.931677,
+     "jobs_per_establishment_pct": 0.047948
+    }
+   ]
+  },
+  {
+   "name": "West Virginia",
+   "naics": "326",
+   "series": [
+    {
+     "year": 2015,
+     "jobs": 3365.0,
+     "establishments": 50.0
+    },
+    {
+     "year": 2016,
+     "jobs": 3346.0,
+     "establishments": 47.0
+    },
+    {
+     "year": 2017,
+     "jobs": 3332.0,
+     "establishments": 46.0
+    },
+    {
+     "year": 2018,
+     "jobs": 3407.0,
+     "establishments": 46.0
+    },
+    {
+     "year": 2019,
+     "jobs": 3521.0,
+     "establishments": 45.0
+    },
+    {
+     "year": 2020,
+     "jobs": 3633.0,
+     "establishments": 49.0
+    },
+    {
+     "year": 2021,
+     "jobs": 3849.0,
+     "establishments": 51.0
+    },
+    {
+     "year": 2022,
+     "jobs": 4202.0,
+     "establishments": 53.0
+    },
+    {
+     "year": 2023,
+     "jobs": 4105.0,
+     "establishments": 53.0
+    },
+    {
+     "year": 2024,
+     "jobs": 4258.0,
+     "establishments": 59.0
+    },
+    {
+     "year": 2025,
+     "jobs": 4335.0,
+     "establishments": 63.0
+    }
+   ],
+   "windows": [
+    {
+     "start": 2022,
+     "end": 2025,
+     "jobs_pct": 3.165159,
+     "establishments_pct": 18.867925,
+     "jobs_per_establishment_pct": -13.210263
+    },
+    {
+     "start": 2015,
+     "end": 2025,
+     "jobs_pct": 28.826152,
+     "establishments_pct": 26.0,
+     "jobs_per_establishment_pct": 2.242977
+    },
+    {
+     "start": 2019,
+     "end": 2025,
+     "jobs_pct": 23.118432,
+     "establishments_pct": 40.0,
+     "jobs_per_establishment_pct": -12.058263
+    },
+    {
+     "start": 2022,
+     "end": 2024,
+     "jobs_pct": 1.332699,
+     "establishments_pct": 11.320755,
+     "jobs_per_establishment_pct": -8.972321
+    },
+    {
+     "start": 2023,
+     "end": 2025,
+     "jobs_pct": 5.602923,
+     "establishments_pct": 18.867925,
+     "jobs_per_establishment_pct": -11.159446
+    },
+    {
+     "start": 2024,
+     "end": 2025,
+     "jobs_pct": 1.808361,
+     "establishments_pct": 6.779661,
+     "jobs_per_establishment_pct": -4.655662
+    }
+   ]
+  },
+  {
+   "name": "PIC-12 manufacturing",
+   "naics": "31-33",
+   "series": [
+    {
+     "year": 2015,
+     "jobs": 233488.0,
+     "establishments": 6211.0
+    },
+    {
+     "year": 2016,
+     "jobs": 228183.0,
+     "establishments": 6165.0
+    },
+    {
+     "year": 2017,
+     "jobs": 225682.0,
+     "establishments": 6104.0
+    },
+    {
+     "year": 2018,
+     "jobs": 229447.0,
+     "establishments": 6040.0
+    },
+    {
+     "year": 2019,
+     "jobs": 228015.0,
+     "establishments": 6031.0
+    },
+    {
+     "year": 2020,
+     "jobs": 212186.0,
+     "establishments": 6017.0
+    },
+    {
+     "year": 2021,
+     "jobs": 213861.0,
+     "establishments": 6022.0
+    },
+    {
+     "year": 2022,
+     "jobs": 219762.0,
+     "establishments": 6064.0
+    },
+    {
+     "year": 2023,
+     "jobs": 220995.0,
+     "establishments": 6085.0
+    },
+    {
+     "year": 2024,
+     "jobs": 219623.0,
+     "establishments": 6113.0
+    },
+    {
+     "year": 2025,
+     "jobs": 216335.0,
+     "establishments": 6084.0
+    }
+   ],
+   "windows": [
+    {
+     "start": 2022,
+     "end": 2025,
+     "jobs_pct": -1.559414,
+     "establishments_pct": 0.329815,
+     "jobs_per_establishment_pct": -1.883019
+    },
+    {
+     "start": 2015,
+     "end": 2025,
+     "jobs_pct": -7.346416,
+     "establishments_pct": -2.044759,
+     "jobs_per_establishment_pct": -5.412326
+    },
+    {
+     "start": 2019,
+     "end": 2025,
+     "jobs_pct": -5.12247,
+     "establishments_pct": 0.878793,
+     "jobs_per_establishment_pct": -5.948984
+    },
+    {
+     "start": 2022,
+     "end": 2024,
+     "jobs_pct": -0.06325,
+     "establishments_pct": 0.808047,
+     "jobs_per_establishment_pct": -0.864314
+    },
+    {
+     "start": 2023,
+     "end": 2025,
+     "jobs_pct": -2.108645,
+     "establishments_pct": -0.016434,
+     "jobs_per_establishment_pct": -2.092555
+    },
+    {
+     "start": 2024,
+     "end": 2025,
+     "jobs_pct": -1.497111,
+     "establishments_pct": -0.474399,
+     "jobs_per_establishment_pct": -1.027587
+    }
+   ]
+  }
+ ],
+ "counties": [
+  {
+   "area": "39153",
+   "name": "Summit",
+   "jobs_2022": 4340.0,
+   "jobs_2025": 3824.0,
+   "jobs_change": -516.0,
+   "establishments_2022": 74.0,
+   "establishments_2025": 76.0,
+   "establishments_change": 2.0
+  },
+  {
+   "area": "39007",
+   "name": "Ashtabula",
+   "jobs_2022": 1745.0,
+   "jobs_2025": 1352.0,
+   "jobs_change": -393.0,
+   "establishments_2022": 21.0,
+   "establishments_2025": 20.0,
+   "establishments_change": -1.0
+  },
+  {
+   "area": "39035",
+   "name": "Cuyahoga",
+   "jobs_2022": 2333.0,
+   "jobs_2025": 2037.0,
+   "jobs_change": -296.0,
+   "establishments_2022": 62.0,
+   "establishments_2025": 66.0,
+   "establishments_change": 4.0
+  },
+  {
+   "area": "39055",
+   "name": "Geauga",
+   "jobs_2022": 2149.0,
+   "jobs_2025": 1865.0,
+   "jobs_change": -284.0,
+   "establishments_2022": 28.0,
+   "establishments_2025": 27.0,
+   "establishments_change": -1.0
+  },
+  {
+   "area": "39151",
+   "name": "Stark",
+   "jobs_2022": 1307.0,
+   "jobs_2025": 1031.0,
+   "jobs_change": -276.0,
+   "establishments_2022": 31.0,
+   "establishments_2025": 27.0,
+   "establishments_change": -4.0
+  },
+  {
+   "area": "39099",
+   "name": "Mahoning",
+   "jobs_2022": 724.0,
+   "jobs_2025": 575.0,
+   "jobs_change": -149.0,
+   "establishments_2022": 20.0,
+   "establishments_2025": 19.0,
+   "establishments_change": -1.0
+  },
+  {
+   "area": "39169",
+   "name": "Wayne",
+   "jobs_2022": 792.0,
+   "jobs_2025": 664.0,
+   "jobs_change": -128.0,
+   "establishments_2022": 16.0,
+   "establishments_2025": 14.0,
+   "establishments_change": -2.0
+  },
+  {
+   "area": "39085",
+   "name": "Lake",
+   "jobs_2022": 1270.0,
+   "jobs_2025": 1172.0,
+   "jobs_change": -98.0,
+   "establishments_2022": 24.0,
+   "establishments_2025": 24.0,
+   "establishments_change": 0.0
+  },
+  {
+   "area": "39133",
+   "name": "Portage",
+   "jobs_2022": 2824.0,
+   "jobs_2025": 2829.0,
+   "jobs_change": 5.0,
+   "establishments_2022": 35.0,
+   "establishments_2025": 39.0,
+   "establishments_change": 4.0
+  },
+  {
+   "area": "39155",
+   "name": "Trumbull",
+   "jobs_2022": 343.0,
+   "jobs_2025": 365.0,
+   "jobs_change": 22.0,
+   "establishments_2022": 12.0,
+   "establishments_2025": 10.0,
+   "establishments_change": -2.0
+  },
+  {
+   "area": "39103",
+   "name": "Medina",
+   "jobs_2022": 1129.0,
+   "jobs_2025": 1160.0,
+   "jobs_change": 31.0,
+   "establishments_2022": 21.0,
+   "establishments_2025": 25.0,
+   "establishments_change": 4.0
+  },
+  {
+   "area": "39093",
+   "name": "Lorain",
+   "jobs_2022": 855.0,
+   "jobs_2025": 896.0,
+   "jobs_change": 41.0,
+   "establishments_2022": 17.0,
+   "establishments_2025": 17.0,
+   "establishments_change": 0.0
+  }
+ ],
+ "source_cells": [
+  {
+   "area": "39153",
+   "year": 2015,
+   "jobs": 4445.0,
+   "establishments": 77.0
+  },
+  {
+   "area": "39035",
+   "year": 2015,
+   "jobs": 2260.0,
+   "establishments": 61.0
+  },
+  {
+   "area": "39133",
+   "year": 2015,
+   "jobs": 2708.0,
+   "establishments": 44.0
+  },
+  {
+   "area": "39151",
+   "year": 2015,
+   "jobs": 1186.0,
+   "establishments": 34.0
+  },
+  {
+   "area": "39055",
+   "year": 2015,
+   "jobs": 2499.0,
+   "establishments": 28.0
+  },
+  {
+   "area": "39085",
+   "year": 2015,
+   "jobs": 1119.0,
+   "establishments": 31.0
+  },
+  {
+   "area": "39093",
+   "year": 2015,
+   "jobs": 694.0,
+   "establishments": 20.0
+  },
+  {
+   "area": "39103",
+   "year": 2015,
+   "jobs": 1023.0,
+   "establishments": 21.0
+  },
+  {
+   "area": "39099",
+   "year": 2015,
+   "jobs": 586.0,
+   "establishments": 20.0
+  },
+  {
+   "area": "39169",
+   "year": 2015,
+   "jobs": 607.0,
+   "establishments": 14.0
+  },
+  {
+   "area": "39153",
+   "year": 2016,
+   "jobs": 4460.0,
+   "establishments": 78.0
+  },
+  {
+   "area": "39035",
+   "year": 2016,
+   "jobs": 2328.0,
+   "establishments": 63.0
+  },
+  {
+   "area": "39133",
+   "year": 2016,
+   "jobs": 2814.0,
+   "establishments": 41.0
+  },
+  {
+   "area": "39151",
+   "year": 2016,
+   "jobs": 1209.0,
+   "establishments": 35.0
+  },
+  {
+   "area": "39055",
+   "year": 2016,
+   "jobs": 2416.0,
+   "establishments": 27.0
+  },
+  {
+   "area": "39085",
+   "year": 2016,
+   "jobs": 1085.0,
+   "establishments": 28.0
+  },
+  {
+   "area": "39093",
+   "year": 2016,
+   "jobs": 685.0,
+   "establishments": 18.0
+  },
+  {
+   "area": "39103",
+   "year": 2016,
+   "jobs": 1071.0,
+   "establishments": 22.0
+  },
+  {
+   "area": "39099",
+   "year": 2016,
+   "jobs": 634.0,
+   "establishments": 20.0
+  },
+  {
+   "area": "39169",
+   "year": 2016,
+   "jobs": 599.0,
+   "establishments": 11.0
+  },
+  {
+   "area": "39153",
+   "year": 2017,
+   "jobs": 4289.0,
+   "establishments": 77.0
+  },
+  {
+   "area": "39035",
+   "year": 2017,
+   "jobs": 2310.0,
+   "establishments": 61.0
+  },
+  {
+   "area": "39133",
+   "year": 2017,
+   "jobs": 2779.0,
+   "establishments": 40.0
+  },
+  {
+   "area": "39151",
+   "year": 2017,
+   "jobs": 1251.0,
+   "establishments": 35.0
+  },
+  {
+   "area": "39055",
+   "year": 2017,
+   "jobs": 2462.0,
+   "establishments": 28.0
+  },
+  {
+   "area": "39085",
+   "year": 2017,
+   "jobs": 1049.0,
+   "establishments": 25.0
+  },
+  {
+   "area": "39093",
+   "year": 2017,
+   "jobs": 673.0,
+   "establishments": 16.0
+  },
+  {
+   "area": "39103",
+   "year": 2017,
+   "jobs": 1107.0,
+   "establishments": 24.0
+  },
+  {
+   "area": "39099",
+   "year": 2017,
+   "jobs": 650.0,
+   "establishments": 21.0
+  },
+  {
+   "area": "39169",
+   "year": 2017,
+   "jobs": 603.0,
+   "establishments": 12.0
+  },
+  {
+   "area": "39153",
+   "year": 2018,
+   "jobs": 4263.0,
+   "establishments": 75.0
+  },
+  {
+   "area": "39035",
+   "year": 2018,
+   "jobs": 2373.0,
+   "establishments": 64.0
+  },
+  {
+   "area": "39133",
+   "year": 2018,
+   "jobs": 2783.0,
+   "establishments": 39.0
+  },
+  {
+   "area": "39151",
+   "year": 2018,
+   "jobs": 1282.0,
+   "establishments": 35.0
+  },
+  {
+   "area": "39055",
+   "year": 2018,
+   "jobs": 2402.0,
+   "establishments": 29.0
+  },
+  {
+   "area": "39085",
+   "year": 2018,
+   "jobs": 1024.0,
+   "establishments": 24.0
+  },
+  {
+   "area": "39093",
+   "year": 2018,
+   "jobs": 649.0,
+   "establishments": 15.0
+  },
+  {
+   "area": "39103",
+   "year": 2018,
+   "jobs": 1076.0,
+   "establishments": 24.0
+  },
+  {
+   "area": "39099",
+   "year": 2018,
+   "jobs": 635.0,
+   "establishments": 20.0
+  },
+  {
+   "area": "39169",
+   "year": 2018,
+   "jobs": 647.0,
+   "establishments": 11.0
+  },
+  {
+   "area": "39153",
+   "year": 2019,
+   "jobs": 4531.0,
+   "establishments": 75.0
+  },
+  {
+   "area": "39035",
+   "year": 2019,
+   "jobs": 2239.0,
+   "establishments": 61.0
+  },
+  {
+   "area": "39133",
+   "year": 2019,
+   "jobs": 2908.0,
+   "establishments": 39.0
+  },
+  {
+   "area": "39151",
+   "year": 2019,
+   "jobs": 1255.0,
+   "establishments": 33.0
+  },
+  {
+   "area": "39055",
+   "year": 2019,
+   "jobs": 2421.0,
+   "establishments": 29.0
+  },
+  {
+   "area": "39085",
+   "year": 2019,
+   "jobs": 1150.0,
+   "establishments": 25.0
+  },
+  {
+   "area": "39093",
+   "year": 2019,
+   "jobs": 647.0,
+   "establishments": 14.0
+  },
+  {
+   "area": "39103",
+   "year": 2019,
+   "jobs": 1044.0,
+   "establishments": 20.0
+  },
+  {
+   "area": "39099",
+   "year": 2019,
+   "jobs": 665.0,
+   "establishments": 21.0
+  },
+  {
+   "area": "39169",
+   "year": 2019,
+   "jobs": 680.0,
+   "establishments": 11.0
+  },
+  {
+   "area": "39153",
+   "year": 2020,
+   "jobs": 4334.0,
+   "establishments": 73.0
+  },
+  {
+   "area": "39035",
+   "year": 2020,
+   "jobs": 2202.0,
+   "establishments": 61.0
+  },
+  {
+   "area": "39133",
+   "year": 2020,
+   "jobs": 2715.0,
+   "establishments": 37.0
+  },
+  {
+   "area": "39151",
+   "year": 2020,
+   "jobs": 1256.0,
+   "establishments": 29.0
+  },
+  {
+   "area": "39055",
+   "year": 2020,
+   "jobs": 2213.0,
+   "establishments": 27.0
+  },
+  {
+   "area": "39085",
+   "year": 2020,
+   "jobs": 1005.0,
+   "establishments": 25.0
+  },
+  {
+   "area": "39093",
+   "year": 2020,
+   "jobs": 713.0,
+   "establishments": 16.0
+  },
+  {
+   "area": "39103",
+   "year": 2020,
+   "jobs": 1078.0,
+   "establishments": 22.0
+  },
+  {
+   "area": "39099",
+   "year": 2020,
+   "jobs": 665.0,
+   "establishments": 22.0
+  },
+  {
+   "area": "39169",
+   "year": 2020,
+   "jobs": 648.0,
+   "establishments": 12.0
+  },
+  {
+   "area": "39153",
+   "year": 2021,
+   "jobs": 4344.0,
+   "establishments": 75.0
+  },
+  {
+   "area": "39035",
+   "year": 2021,
+   "jobs": 2211.0,
+   "establishments": 58.0
+  },
+  {
+   "area": "39133",
+   "year": 2021,
+   "jobs": 2821.0,
+   "establishments": 37.0
+  },
+  {
+   "area": "39151",
+   "year": 2021,
+   "jobs": 1357.0,
+   "establishments": 31.0
+  },
+  {
+   "area": "39055",
+   "year": 2021,
+   "jobs": 2218.0,
+   "establishments": 28.0
+  },
+  {
+   "area": "39085",
+   "year": 2021,
+   "jobs": 1033.0,
+   "establishments": 24.0
+  },
+  {
+   "area": "39093",
+   "year": 2021,
+   "jobs": 837.0,
+   "establishments": 15.0
+  },
+  {
+   "area": "39103",
+   "year": 2021,
+   "jobs": 1072.0,
+   "establishments": 21.0
+  },
+  {
+   "area": "39099",
+   "year": 2021,
+   "jobs": 709.0,
+   "establishments": 21.0
+  },
+  {
+   "area": "39169",
+   "year": 2021,
+   "jobs": 797.0,
+   "establishments": 14.0
+  },
+  {
+   "area": "39153",
+   "year": 2022,
+   "jobs": 4340.0,
+   "establishments": 74.0
+  },
+  {
+   "area": "39035",
+   "year": 2022,
+   "jobs": 2333.0,
+   "establishments": 62.0
+  },
+  {
+   "area": "39133",
+   "year": 2022,
+   "jobs": 2824.0,
+   "establishments": 35.0
+  },
+  {
+   "area": "39151",
+   "year": 2022,
+   "jobs": 1307.0,
+   "establishments": 31.0
+  },
+  {
+   "area": "39055",
+   "year": 2022,
+   "jobs": 2149.0,
+   "establishments": 28.0
+  },
+  {
+   "area": "39085",
+   "year": 2022,
+   "jobs": 1270.0,
+   "establishments": 24.0
+  },
+  {
+   "area": "39093",
+   "year": 2022,
+   "jobs": 855.0,
+   "establishments": 17.0
+  },
+  {
+   "area": "39103",
+   "year": 2022,
+   "jobs": 1129.0,
+   "establishments": 21.0
+  },
+  {
+   "area": "39099",
+   "year": 2022,
+   "jobs": 724.0,
+   "establishments": 20.0
+  },
+  {
+   "area": "39169",
+   "year": 2022,
+   "jobs": 792.0,
+   "establishments": 16.0
+  },
+  {
+   "area": "39153",
+   "year": 2023,
+   "jobs": 4328.0,
+   "establishments": 76.0
+  },
+  {
+   "area": "39035",
+   "year": 2023,
+   "jobs": 2185.0,
+   "establishments": 65.0
+  },
+  {
+   "area": "39133",
+   "year": 2023,
+   "jobs": 2821.0,
+   "establishments": 35.0
+  },
+  {
+   "area": "39151",
+   "year": 2023,
+   "jobs": 1274.0,
+   "establishments": 30.0
+  },
+  {
+   "area": "39055",
+   "year": 2023,
+   "jobs": 2020.0,
+   "establishments": 28.0
+  },
+  {
+   "area": "39085",
+   "year": 2023,
+   "jobs": 1283.0,
+   "establishments": 23.0
+  },
+  {
+   "area": "39093",
+   "year": 2023,
+   "jobs": 900.0,
+   "establishments": 18.0
+  },
+  {
+   "area": "39103",
+   "year": 2023,
+   "jobs": 1162.0,
+   "establishments": 21.0
+  },
+  {
+   "area": "39099",
+   "year": 2023,
+   "jobs": 662.0,
+   "establishments": 19.0
+  },
+  {
+   "area": "39169",
+   "year": 2023,
+   "jobs": 825.0,
+   "establishments": 18.0
+  },
+  {
+   "area": "39153",
+   "year": 2024,
+   "jobs": 3960.0,
+   "establishments": 77.0
+  },
+  {
+   "area": "39035",
+   "year": 2024,
+   "jobs": 2192.0,
+   "establishments": 69.0
+  },
+  {
+   "area": "39133",
+   "year": 2024,
+   "jobs": 2950.0,
+   "establishments": 40.0
+  },
+  {
+   "area": "39151",
+   "year": 2024,
+   "jobs": 1192.0,
+   "establishments": 29.0
+  },
+  {
+   "area": "39055",
+   "year": 2024,
+   "jobs": 1871.0,
+   "establishments": 28.0
+  },
+  {
+   "area": "39085",
+   "year": 2024,
+   "jobs": 1278.0,
+   "establishments": 23.0
+  },
+  {
+   "area": "39093",
+   "year": 2024,
+   "jobs": 849.0,
+   "establishments": 19.0
+  },
+  {
+   "area": "39103",
+   "year": 2024,
+   "jobs": 1179.0,
+   "establishments": 23.0
+  },
+  {
+   "area": "39099",
+   "year": 2024,
+   "jobs": 627.0,
+   "establishments": 19.0
+  },
+  {
+   "area": "39169",
+   "year": 2024,
+   "jobs": 736.0,
+   "establishments": 16.0
+  },
+  {
+   "area": "39153",
+   "year": 2025,
+   "jobs": 3824.0,
+   "establishments": 76.0
+  },
+  {
+   "area": "39035",
+   "year": 2025,
+   "jobs": 2037.0,
+   "establishments": 66.0
+  },
+  {
+   "area": "39133",
+   "year": 2025,
+   "jobs": 2829.0,
+   "establishments": 39.0
+  },
+  {
+   "area": "39151",
+   "year": 2025,
+   "jobs": 1031.0,
+   "establishments": 27.0
+  },
+  {
+   "area": "39055",
+   "year": 2025,
+   "jobs": 1865.0,
+   "establishments": 27.0
+  },
+  {
+   "area": "39085",
+   "year": 2025,
+   "jobs": 1172.0,
+   "establishments": 24.0
+  },
+  {
+   "area": "39093",
+   "year": 2025,
+   "jobs": 896.0,
+   "establishments": 17.0
+  },
+  {
+   "area": "39103",
+   "year": 2025,
+   "jobs": 1160.0,
+   "establishments": 25.0
+  },
+  {
+   "area": "39099",
+   "year": 2025,
+   "jobs": 575.0,
+   "establishments": 19.0
+  },
+  {
+   "area": "39169",
+   "year": 2025,
+   "jobs": 664.0,
+   "establishments": 14.0
+  },
+  {
+   "area": "39007",
+   "year": 2015,
+   "jobs": 1705.0,
+   "establishments": 23.0
+  },
+  {
+   "area": "39155",
+   "year": 2015,
+   "jobs": 536.0,
+   "establishments": 12.0
+  },
+  {
+   "area": "39007",
+   "year": 2016,
+   "jobs": 1581.0,
+   "establishments": 21.0
+  },
+  {
+   "area": "39155",
+   "year": 2016,
+   "jobs": 528.0,
+   "establishments": 12.0
+  },
+  {
+   "area": "39007",
+   "year": 2017,
+   "jobs": 1619.0,
+   "establishments": 23.0
+  },
+  {
+   "area": "39155",
+   "year": 2017,
+   "jobs": 523.0,
+   "establishments": 13.0
+  },
+  {
+   "area": "39007",
+   "year": 2018,
+   "jobs": 1728.0,
+   "establishments": 23.0
+  },
+  {
+   "area": "39155",
+   "year": 2018,
+   "jobs": 474.0,
+   "establishments": 13.0
+  },
+  {
+   "area": "39007",
+   "year": 2019,
+   "jobs": 1755.0,
+   "establishments": 24.0
+  },
+  {
+   "area": "39155",
+   "year": 2019,
+   "jobs": 354.0,
+   "establishments": 12.0
+  },
+  {
+   "area": "39007",
+   "year": 2020,
+   "jobs": 1647.0,
+   "establishments": 23.0
+  },
+  {
+   "area": "39155",
+   "year": 2020,
+   "jobs": 287.0,
+   "establishments": 12.0
+  },
+  {
+   "area": "39007",
+   "year": 2021,
+   "jobs": 1702.0,
+   "establishments": 20.0
+  },
+  {
+   "area": "39155",
+   "year": 2021,
+   "jobs": 300.0,
+   "establishments": 13.0
+  },
+  {
+   "area": "39007",
+   "year": 2022,
+   "jobs": 1745.0,
+   "establishments": 21.0
+  },
+  {
+   "area": "39155",
+   "year": 2022,
+   "jobs": 343.0,
+   "establishments": 12.0
+  },
+  {
+   "area": "39007",
+   "year": 2023,
+   "jobs": 1748.0,
+   "establishments": 21.0
+  },
+  {
+   "area": "39155",
+   "year": 2023,
+   "jobs": 322.0,
+   "establishments": 13.0
+  },
+  {
+   "area": "39007",
+   "year": 2024,
+   "jobs": 1428.0,
+   "establishments": 19.0
+  },
+  {
+   "area": "39155",
+   "year": 2024,
+   "jobs": 332.0,
+   "establishments": 13.0
+  },
+  {
+   "area": "39007",
+   "year": 2025,
+   "jobs": 1352.0,
+   "establishments": 20.0
+  },
+  {
+   "area": "39155",
+   "year": 2025,
+   "jobs": 365.0,
+   "establishments": 10.0
+  }
+ ],
+ "receipts": [
+  {
+   "file": "qcew.json",
+   "sha256": "2c6b7acf2d156ddaf52645fe7e5528cca8ada3c31750f0c7b5dea843a1fb6faf"
+  },
+  {
+   "file": "peers.json",
+   "sha256": "656a360f264c2295066e3b4893f8ca8209a5dd0bb17461bef8ebf7aa20271da4"
+  }
+ ],
+ "vintage_check": {
+  "compared_cells": 154,
+  "differences": [],
+  "note": "Agreement between two held extracts is not a fresh upstream revision audit. By-area cache has no fetch timestamp; by-industry timestamp is from its metadata."
+ },
+ "annual_evidence": {
+  "url": "https://www.bls.gov/cew/downloadable-data-files.htm",
+  "rule": "BLS provides annual averages only for entire years.",
+  "bulletin": "https://www.bls.gov/cew/notices/",
+  "bulletin_2025_release": "2026-08-28"
+ },
+ "peer_selection": "All five states bordering Ohio, selected geographically before inspecting changes. Stable state boundaries avoid the metro-definition break. These are context comparators, not matched industrial twins."
+}

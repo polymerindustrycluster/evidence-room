@@ -1,7 +1,9 @@
-# The Hollowing of Polymer Education
+# Polymer Education’s 2016–2023 Decline
 
-**Which layer of polymer education contracted, by how much, and against what baseline —
-every US polymer degree and certificate program in the federal record, 1991–2023.**
+**Which selected-code program records still reported completions in 2023?** The technician
+active share is lower than either polymer degrees or six peer technician trades under
+the same substantive-program rule. The scope is three named polymer CIPs, 1991–2023;
+2020 is quarantined. This is not a count of all polymer teaching or current capacity.
 
 Sources: IPEDS completions by six-digit CIP via the Urban Institute Education Data API
 (the polymer-programs-db census build of 2026-08-21); the same pull re-run for six peer
@@ -15,9 +17,8 @@ year undercounts, because a program with no completions that year is invisible i
 ```
 index.html          page shell
 app.js              seven charts and their table twins
-claims.json         12 assertions — 10 machine-checked against data/viz-data.json, 2 manual
+claims.json         quantitative guards plus explicitly documentary claims
 data/viz-data.json  THE DATA (18 KB). Edit the deriver, not this.
-INTEGRATION-NOTE.md what the controller must wire before this page is reachable or shippable
 ```
 
 ## Rebuild the data
@@ -46,7 +47,7 @@ python3 _data/build/fetch_ipeds_control_baserate.py --check   # pull and verify,
 python3 _data/build/fetch_ipeds_control_baserate.py           # and write layers.control.base
 ```
 
-It refuses to write unless it first reproduces the page's own published survival control
+It refuses to write unless it first reproduces the page's own published 2023 active-share control
 (48%) to the point from the live API, which is what licenses the base-rate numbers beside it.
 
 ## Read before quoting anything from this page
@@ -57,19 +58,24 @@ It refuses to write unless it first reproduces the page's own published survival
 - **"Ended" is not "closed."** Institutions keep teaching under other codes; three of nine
   named closures failed a catalogue check in this project's history. No named-casualty
   list without one.
-- **Both comparisons have the same control, on two different populations.** Survival counts
+- **Definitions are fixed.** Small = ten or fewer lifetime completions; brief = first-to-last
+  reporting span of five calendar years or less, inclusive; substantive = more than ten
+  lifetime completions; active = a positive completion in 2023. Small and brief overlaps
+  both sets. Neither is a failed-start measure.
+- **Both comparisons use the same six trades, on two different populations and pull dates.** The 2023 active-share comparison counts
   substantive programs only (more than ten completions); the base rate counts every start
   with the threshold off, because thresholding on size throws away the population the number
   is about. Never quote 8,736 against 6,648: they are two counts of the same six trades under
   two different rules, and the page states which is which.
-- **Every "tiny" share on this page is an UPPER bound, on both sides.** The Urban mirror
+- **Missing years affect both threshold membership and coverage.** The Urban mirror
   never served the `C2023_A` collection year (`_data/build/ipeds_mirror_fix.py` names this
-  page as still carrying that hole), and a year missing from a lifetime total can only push a
-  program into the ten-or-fewer bucket, never out of it. The hole is the same on both sides,
-  so the ratio between them is steadier than either level in it.
-- **The survival comparison is a construct, and the construct is stated**: substantive =
+  page as still carrying that hole). A missing year can understate a record's lifetime
+  completions or reporting span. Recovered years may also add records to the denominator.
+  These snapshot shares are not failure probabilities; a shared mirror does not guarantee
+  cancellation in the ratio between fields.
+- **The active-share comparison is a construct, and the construct is stated**: substantive =
   more than ten lifetime completions; active = a completion in 2023. Moving the threshold
-  moves the rates (28% → 71% with a stricter one, in the census's own README); the control
+  moves the rates; the control
   uses the identical rule, which is what makes the comparison a comparison.
 - **The 2020 certificate recode is corrected before counting.** Uncorrected, it splits
   continuous programs and manufactures a phantom 2018–19 closure wave — written up,
@@ -86,8 +92,17 @@ It refuses to write unless it first reproduces the page's own published survival
   and any debt-to-earnings ratio mixes cohorts.
 - **This page contains none of the words** career, pathway, K-12, or roadmap. It is a data
   page about programs and completions; anything built on it for other audiences is a
-  separate artifact with separate owners — and workforce interpretation for Northeast Ohio
-  is co-authored, not asserted (see INTEGRATION-NOTE).
+  separate artifact with separate owners; workforce interpretation needs additional evidence.
+
+## Revision of 2026-09-08
+
+The page separates the 57% small-record share from the 45% small-and-brief share, removes
+historical-first and stability claims, preserves Akron's graduate contribution (42 of 44
+completions in 2023), and replaces the unsupported grant overlap with the later 2024
+announcement chronology. The national and Akron annual series, threshold counts, top
+technician records and degree composition were rechecked against the held sibling census.
+The missing 2020 remains missing in both line charts. All six evidence charts re-layout
+at phone width; table records remain available. See the dated in-page correction.
 
 ## Run and publish
 

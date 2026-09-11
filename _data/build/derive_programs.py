@@ -234,7 +234,7 @@ check("institutions", len(pay_rows), 5)
 
 # ------------------------------------------------------------------------ meta
 meta = {
-    "title": "The hollowing of polymer education",
+    "title": "Polymer education’s 2016–2023 decline",
     "question": "Which layer of polymer education contracted, by how much, and against what baseline?",
     "source": "IPEDS completions by six-digit CIP, 1991–2023, via the Urban Institute Education Data API; the polymer-programs-db census build of 2026-08-21",
     "sources": "College Scorecard field-of-study files (earnings and debt by institution × program); the same IPEDS pull re-run for six peer technician CIPs as a control",
@@ -243,8 +243,8 @@ meta = {
     "span": "1991–2023",
     "cip": "Polymer group: 14.3201 Polymer/Plastics Engineering, 40.0507 Polymer Chemistry, 15.0607 Plastics and Polymer Engineering Technology. Control: 48.0508, 48.0501, 15.0613, 47.0303, 15.0303, 15.0805.",
     "row": "One row is one (institution, program CIP, award level) with a completions count for every year it conferred, 1991–2023. Programs are enumerated from the union of all years: a single year undercounts, because a program with no completions that year is invisible in it.",
-    "definition": "Substantive means more than ten completions over the program's life; the control was pulled with the same rule, the same years and the same active test, which is what makes the survival comparison a comparison. Active means a completion in 2023, the final year of the series; a program quiet for one year is 'unclear', for two or more 'ended'.",
-    "excludes": "Counts only programs institutions chose to file under three polymer CIP codes in IPEDS. Rubber and coatings have no CIP and cannot be separated; programs housed under chemistry or chemical engineering (UChicago, Dartmouth, Rutgers and Brown are confirmed cases) are invisible; non-degree training is out of scope; 2024 is missing. A floor, not a census.",
+    "definition": "Substantive means more than ten recorded lifetime completions. Active means at least one reported completion in 2023. Small means ten or fewer lifetime completions. Brief means a first-to-last reporting span of five calendar years or less, inclusive; it does not mean the number of years with a positive completion. Small and brief is the conjunction of those two tests. The comparison applies the same rules to the six peer trades. None of these measures establishes closure, failure or current training capacity.",
+    "excludes": "Counts only programs institutions chose to file under three polymer CIP codes in IPEDS. Rubber and coatings have no CIP and cannot be separated. UChicago, Dartmouth, Rutgers and Brown have documented polymer or materials teaching absent from this selected census; the four do not share one verified filing-code explanation. Non-degree training is out of scope; 2024 is missing. A floor, not a census.",
     "caution": "'Ended' in the federal record is not 'closed' on the ground: institutions keep teaching under other codes, and three of nine named closures failed a catalogue check in this project's own history. No named-casualty list appears here without one.",
     "note": "Certificate award levels were renumbered by IPEDS in 2020; uncorrected, the renumbering manufactures a wave of phantom 2018–19 closures. Codes are canonicalised before any counting, and the phantom wave was written up and retracted in the census's own story spec.",
     "small_numbers": "The earnings panel rests on the five institutions the Scorecard publishes unsuppressed for polymer engineering bachelor's degrees: 84% of cells are privacy-suppressed and suppression tracks program size, so the five are the biggest programs, not a sample.",

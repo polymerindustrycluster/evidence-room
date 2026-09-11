@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
 
 <header class="mast">
   <div class="wrap">
@@ -17,9 +18,10 @@
   </div>
 </header>
 
+<main id="main-content" tabindex="-1">
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">Do polymer jobs beat their towns?</p>
+    <p class="eyebrow">Chemical, plastics and rubber manufacturing pay</p>
     <!-- THE UNIT IS IN THE HEADLINE, because a reader took it for a different one. This
          said "The typical polymer job pays 1.2 times", and the number under it is a median
          over PAIRINGS, not over jobs: the largest pairings sit below it (Cuyahoga plastics
@@ -27,19 +29,23 @@
          claim the page never made. The pairing is now named in the H1 and defined in the
          first clause of the standfirst, and the job-weighted figure is computed and printed
          on the median card beside it rather than left for the reader to assume. -->
-    <h1>The middle polymer pairing pays <em>1.2 times</em> what the average job in its
-      county pays.</h1>
-    <p class="stand">A pairing is one polymer industry in one county: ask what that work
-      pays against the average job in that same county. Polymer wins in 40 of the 51
-      pairings big enough for the Bureau of Labor Statistics to publish, and all eleven
-      it loses make plastics or rubber. Behind those 51 pairings are 33,528 jobs. Two of
-      the six industries are groups: chemical manufacturing holds resins and paints, and
-      plastics and rubber products holds plastics products and rubber products, so a
-      county&rsquo;s plastics-products jobs sit in two rows and counting pairings is not
-      the same as counting jobs.</p>
-    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data: the Bureau of Labor
+    <h1>These industries out-pay the town average.<br><em>Against manufacturing, pay is level.</em></h1>
+    <p class="stand">The middle county-industry average is 0.99 times its county’s manufacturing
+      average, compared with 1.21 times the all-jobs average. This is a descriptive
+      comparison, not evidence that an industry causes higher pay. A pairing is one
+      tracked industry in one county. The cover includes all chemical manufacturing
+      (NAICS 325), including pharmaceuticals and agricultural chemicals, and plastics
+      and rubber products (326); it is broader than PIC’s 3252 + 3255 + 326 register.
+      Forty of 51 published pairings beat their county’s all-jobs average.
+      Parent groups and their subgroups overlap, so pairings are not separate job counts.
+      The broad cover contains 33,528 jobs, counted once.</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic), updated with Codex (OpenAI) &middot; Data: the Bureau of Labor
       Statistics Quarterly Census of Employment and Wages (QCEW), annual averages
-      2015&ndash;2025 &middot; August&nbsp;2026</p>
+      2015&ndash;2025 &middot; September&nbsp;2026</p>
+    <p class="byline"><b>Correction, September 8, 2026:</b> the 1.26× statistic previously
+      described as the middle job is an employment-weighted median of group-average
+      wage ratios. These aggregate data cannot identify the median worker’s pay.
+      The broad chemical/plastics/rubber cover and manufacturing comparison now lead.</p>
     <!-- THE COLD OPEN. This page opened on 900px of headline, standfirst and stat cards,
          so the first chart began at 1,818px: a reader scrolled two full screens before
          seeing a single mark. The stat cards are not the problem and have not moved. This
@@ -164,11 +170,11 @@
       whole 1.25&times; that manufacturing at large carries.</p>
     <p class="src">BLS QCEW annual averages, 2025: private manufacturing (NAICS 31-33)
       weekly wage by county against the same all-industry averages every ratio on this
-      page uses. Same census, same year, same ownership basis. Fetched 2026-08-30.
-      One overlap to hold: polymer sits inside its own comparator, at about one
-      manufacturing job in six across the twelve counties, which pulls the manufacturing
-      average slightly toward polymer and makes the 0.99&times; mildly conservative
-      rather than flattering.</p>
+      page uses. Same census and year; both industry wages use private ownership,
+      while the all-jobs county average includes public and private ownership. Fetched 2026-08-30.
+      The broad chemical/plastics/rubber cover is about one manufacturing job in six
+      across the twelve counties and is included in this comparator. The figures do
+      not isolate pay at other factories or control for occupations, hours or worker mix.</p>
   </div>
 </section>
 
@@ -218,6 +224,7 @@
   </div>
 </section>
 
+</main>
 <footer class="foot">
   <div class="wrap">
     <p class="foot-lede">Read it from your own seat: the twelve buttons above the first

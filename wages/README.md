@@ -1,6 +1,19 @@
 # Does The Cluster Pay Better
 
-**Do polymer jobs out-pay their towns?**
+**Chemical, plastics and rubber industry averages exceed all-jobs pay, but are level
+with manufacturing.**
+
+Correction, 2026-09-08: the employment-weighted median is **1.26× across group-average
+wage ratios**, not median individual job/worker pay. QCEW aggregate means and headcounts
+cannot identify the wage distribution within those groups. The broad NAICS325 +326
+cover includes chemistry outside PIC's narrower 3252 +3255 +326 register. The broad
+cover contains 33,528 jobs; the narrow cover contains 24,030 and its employment-weighted
+median group-average ratio is **1.17×** the county all-jobs wage, beside broad **1.26×**.
+Both statistics weight industry group means, not individual wage observations. The median
+of 51 county-industry wage ratios is **0.99× county private manufacturing**, versus
+**1.21× the county all-ownership, all-industry average**. Neither establishes causality
+or controls for occupational mix or hours. Historical revision notes below describe the
+previous framing and are superseded on this point.
 
 Source: BLS QCEW annual averages, 2015–2025. Coverage: the PIC-12 footprint — twelve
 Northeast Ohio counties (Ashtabula, Cuyahoga, Geauga, Lake, Lorain, Mahoning, Medina,
@@ -28,9 +41,9 @@ Raw pulls live beside that script so a derivation can be re-run without re-fetch
 
 ## Read before quoting anything from this page
 
-- The comparison is against each county's own all-industry average, which controls for local
-  cost and local labour markets. Beating the national average while trailing your own town is
-  not a good job in that town.
+- The all-jobs comparison uses each county's own all-ownership average. It supplies
+  local context; it does not statistically control for prices, hours or worker mix.
+  The manufacturing comparison uses private ownership on both industry sides.
 - Average weekly wage moves with hours and occupational mix, not only pay rates. A plant on
   overtime looks like a pay rise.
 - Withheld cells are absent, not zero, which is why 2025 has 51 rows and not 72 (6 tracked

@@ -82,7 +82,12 @@ WHAT THIS CATALOG DOES NOT SEE — two other data planes exist and are catalogue
 OUTPUTS. `_data/catalog.json` (machine, complete) and `_data/CATALOG.md` (human, sorted by
 what needs attention first). Both are regenerated from scratch every run; nothing is
 hand-edited into either. `PIPELINES.md` keeps the DECISIONS; this keeps the INVENTORY.
+
+Use --static-only to inventory source text and held files without importing any script.
+That mode explicitly records observation as not run. Inferred outputs are not a rebuild
+or import-success verdict; it is suitable for a catalogue refresh during a source audit.
 """
+import argparse
 import ast
 import builtins
 import glob
@@ -369,7 +374,11 @@ def _portable(path):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Inventory scripts and held files; use --static-only to avoid imports.")
+    parser.add_argument("--static-only", action="store_true")
+    args = parser.parse_args()
     t0 = time.time()
+    static_only = args.static_only
     scripts = sorted({os.path.basename(p) for g in SCRIPT_GLOBS for p in glob.glob(os.path.join(HERE, g))}
                      - INFRA)
     rec_out = recorded_outputs()
@@ -381,7 +390,9 @@ def main():
         path = os.path.join(HERE, name)
         doc, src = docstring_of(path)
         static = static_outputs(src)
-        obs = observe(path)
+        obs = ({"writes": [], "reads": [], "network": [], "shell": [],
+                "stopped_at": "not_run_static_only", "import_error": None,
+                "import_timeout": False} if static_only else observe(path))
         # The static regex cannot tell a READ from a WRITE — `os.path.join(HERE, "patents.json")`
         # in derive_credit.py is an input. So the OBSERVED witness is authoritative wherever it
         # saw a write; static is the fallback only when observation saw nothing (import error,
@@ -425,6 +436,8 @@ def main():
         disagree = False  # replaced by per-output provenance in `output_learned_by`
 
         flags = []
+        if static_only:
+            flags.append("observation_not_run")
         if doc.get("error"):
             flags.append("syntax_error")
         if not doc.get("has_house_docstring"):
@@ -523,6 +536,7 @@ def main():
                      and o not in ("catalog.json",))
     summary = {
         "generated": time.strftime("%Y-%m-%d %H:%M"),
+        "mode": "static-only" if static_only else "guarded-import",
         "seconds": round(time.time() - t0, 1),
         "scripts": len(rows),
         "outputs_on_disk": len(rec_out),
@@ -537,7 +551,8 @@ def main():
     summary["flag_counts"] = dict(sorted(summary["flag_counts"].items(), key=lambda kv: -kv[1]))
 
     cat = {"meta": {"what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with "
-                                    "python _data/build/build_catalog.py. Decisions live in PIPELINES.md.",
+                                    "python _data/build/build_catalog.py" + (" --static-only" if static_only else "") +
+                                    ". Decisions live in PIPELINES.md.",
                     **summary},
            "scripts": rows,
            "orphan_outputs": [rec_out[o] for o in orphans],
@@ -557,11 +572,14 @@ def write_md(cat):
          f"**Generated {m['generated']}** by `build_catalog.py` in {m['seconds']}s. **Do not edit; regenerate.** "
          "This is the INVENTORY. Decisions, scope, and traps that need judgment are in `PIPELINES.md`; "
          "the rules a machine cannot check are in `METHODS-SOP.md`.", "",
+         f"**Mode: {m['mode']}.** Static-only mode does not import scripts or verify execution; "
+         "its output paths are inferred from source text and held-file metadata.", "",
          f"{m['scripts']} scripts · {m['outputs_on_disk']} output files on disk · "
          f"{m['outputs_claimed']} claimed by a script · **{m['orphan_outputs']} orphan outputs no script claims**", "",
          "## What needs attention", "",
          "| flag | scripts | means |", "|-|-|-|"]
     MEAN = {
+        "observation_not_run": "static-only refresh; module execution and outputs were not observed",
         "not_in_PIPELINES.md": "the decisions register does not mention this script",
         "not_in_SOURCES.json": "no registry source names it — its data cannot show a 'Reproduce this' block",
         "no_house_docstring": "missing WHAT IT ADDS / WHAT ONE ROW IS — a reader cannot tell what a row is without opening the code",
@@ -569,7 +587,7 @@ def write_md(cat):
         "no_registered_consumer": "a registry source names it but no published page maps to that source",
         "no_output_detected": "neither static regex nor guarded import found a write — check by hand",
         "output_missing_on_disk": "the script targets an output that is not present — never run, or output moved",
-        "writes_outside_build": "writes to a path outside _data/build/ — one still points at a dead scratchpad",
+        "writes_outside_build": "inferred or observed output path outside the public tree; static-only mode does not establish a write",
         "import_error": "the module raised on guarded import — see the row",
         "import_timeout": f"module-level code ran >{IMPORT_TIMEOUT_S}s before any guarded call",
         "meta_fetched_vs_mtime_gap": "output's own meta.fetched differs from file mtime by >3 days — fetcher forgot to stamp, or file was copied",
@@ -579,8 +597,8 @@ def write_md(cat):
         L.append(f"| `{k}` | {v} | {MEAN.get(k, '')} |")
     L += ["", "## Scripts", "",
           "Sorted: most flags first, then name. `▲` = registry source(s) · `→` = pages that consume it. "
-          "Outputs marked ᵃ were learned by static regex (the script fetches before it writes, so the guarded import "
-          "stopped at the network call); ᵇ were attributed via the output's own meta.source; unmarked outputs were witnessed being written.", ""]
+          "Outputs marked ᵃ were inferred by static regex; ᵇ were attributed via the output's "
+          "own meta.source; unmarked outputs were witnessed by guarded import. Static-only mode has no witnessed outputs.", ""]
     for r in sorted(cat["scripts"], key=lambda r: (-len(r["flags"]), r["script"])):
         L.append(f"### `{r['script']}`")
         if r["flags"]:

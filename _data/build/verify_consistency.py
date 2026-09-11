@@ -657,7 +657,7 @@ def check_catalog() -> None:
         if "import_error" in r.get("flags", []) or "syntax_error" in r.get("flags", []):
             warn("catalog", r["script"], f"catalog says it does not import: {r.get('import_error') or 'syntax'}")
         if "writes_outside_build" in r.get("flags", []):
-            warn("catalog", r["script"], f"writes outside the web tree: {r.get('writes_outside_build')}")
+            warn("catalog", r["script"], f"catalogued external target (inferred unless observed): {r.get('writes_outside_build')}")
     n_orph = len(cat.get("orphan_outputs", []))
     if n_orph:
         warn("catalog", "_data/build", f"{n_orph} output file(s) no script claims — see CATALOG.md 'Orphan outputs'")

@@ -53,7 +53,7 @@ from footprints import PIC12, NEO14
 HERE = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.abspath(os.path.join(HERE, "..", ".."))
 
-FETCHED = "2026-08-29"
+FETCHED = "2026-09-08"
 
 
 def median(values):
@@ -66,9 +66,10 @@ def median(values):
 
 
 def weighted_median(pairs):
-    """Median of a population, each row carrying a weight. The row where the running
-    weight first reaches half the total, which is a DIFFERENT row from the middle of the
-    list whenever the heavy rows sit to one side. That difference is the lesson."""
+    """Weighted median of row values: the first value reaching half the weight.
+    When values are group-average wage ratios and weights are employment, this remains
+    a statistic of group averages. It does not recover individual workers' median pay.
+    """
     v = sorted(pairs, key=lambda t: t[0])
     half = sum(w for _, w in v) / 2
     run = 0.0
@@ -137,16 +138,34 @@ def licence_of(src):
 # Harvested from the glosses the pages already carry, so the site says one thing.
 # Every source needs all three; the build fails below if one is missing.
 PLAIN = {
+ "programs_eda_announcement": {
+  "is": "The July 2024 announcement of planned EDA Tech Hubs implementation funding.",
+  "good": "Dating the federal funding announcement against the education series.",
+  "cannot": "An announced allocation is not paid cash, a university receipt, or evidence "
+            "of a training outcome."},
+ "programs_ohio_announcement": {
+  "is": "Ohio’s 2025 Development annual report, which dates the local Innovation Hub "
+        "announcement to September 2024.",
+  "good": "Dating the state announcement against the education series.",
+  "cannot": "The announcement date does not establish when a university received cash "
+             "or whether the funding changed a programme’s completions."},
+ "bls_cpi": {
+  "is": "BLS monthly CPI-U, all items, U.S. city average, not seasonally adjusted; "
+        "annual means provide a common purchasing-power basis.",
+  "good": "Restating dollars from different years on one stated price basis.",
+  "cannot": "Calendar-year consumer prices only approximate fiscal-year prices and "
+            "industrial input costs. The 2025 mean uses eleven published months because "
+            "October is missing; FY2026 carries the 2025 index as an approximation."},
  "cbp": {
   "is": "A yearly Census count of business ESTABLISHMENTS, meaning physical sites. A firm "
         "with three plants appears three times.",
-  "good": "How many polymer sites a county holds, and roughly how many people work in "
-          "them, on a definition that is the same in every county in the country.",
+  "good": "Comparing chemical manufacturing and plastics/rubber establishments and "
+          "their disclosed employment across counties using the same industry codes.",
   "cannot": "It cannot tell you what a site actually makes beyond its industry code, it "
             "suppresses any cell small enough to identify an employer, and it counts a "
             "different thing from PIC’s own register: Census counts sites, PIC classifies "
-            "companies, so a coverage ratio between them can pass 100 percent without the "
-            "county being fully covered."},
+            "company records. Dividing those records by establishments does not measure "
+            "how completely PIC has identified a county’s businesses."},
  "ipeds_directory": {
   "is": "The federal directory of institutions: who they are, and since 2009 where they "
         "are.",
@@ -247,9 +266,9 @@ PLAIN = {
   "good": "Where the people who work in a place live, and the reciprocal: where the people "
           "who live in a place work.",
   "cannot": "It is not a commute. Nothing in it counts a trip, and the home end is a "
-            "residence on file rather than evidence that anyone travelled. It carries no "
-            "industry dimension at all, so a polymer-only version of a labour shed cannot "
-            "be built from it."},
+            "residence on file rather than evidence that anyone travelled. Its three "
+            "broad industry groups cannot isolate polymer industries. The page uses "
+            "all-job totals for the whole economy."},
  "ipeds": {
   "is": "The federal record of every degree and certificate conferred by every institution "
         "that takes federal student aid, filed by six-digit programme code.",
@@ -263,9 +282,10 @@ PLAIN = {
   "is": "A price level rather than a price: an index with the national average set to 100, "
         "saying what a fixed basket costs in one metropolitan area against another.",
   "good": "Turning a nominal wage into what it actually buys where it is earned.",
-  "cannot": "It is published for metropolitan areas, which neither nest inside nor tile a "
-            "county footprint. Three metros that overlap a twelve-county region cannot be "
-            "added into a figure for that region."},
+  "cannot": "It is published for metropolitan areas, whose coverage differs from a county "
+            "footprint. Metros overlapping PIC-12 cannot be added into its total: "
+            "Canton-Massillon includes Carroll outside PIC-12, while Wayne belongs to "
+            "the Wooster micropolitan area."},
  "fred": {
   "is": "The St Louis Fed’s distribution of federal price series: producer price indexes "
         "and commodity spot prices, served from one API under one key.",
@@ -366,6 +386,9 @@ PLAIN = {
 # Occupation Data, Job Zones, Job Zone Refe...". Every registry key needs one; the build
 # fails below if a source is added without it.
 SHORT = {
+    "bls_cpi": "BLS consumer prices",
+    "programs_eda_announcement": "EDA funding announcement",
+    "programs_ohio_announcement": "Ohio funding announcement",
     "cbp": "Census business patterns",
     "ipeds_directory": "IPEDS institution directory",
     "ipeds_programs_census": "IPEDS polymer completions",
@@ -537,6 +560,22 @@ def build():
         "n_readings": len(lq_rows),
         "n_above_one": sum(1 for r in lq_rows if r["lq"] > 1),
     }
+
+    # The published reference distribution was an in-place derived snapshot, not
+    # output from a missing fetcher. Preserve that versioned evidence separately so
+    # rebuilding this guide cannot erase it or present it as a fresh source pull.
+    reference = load(WEB, "sources", "reference-lq-2025.json")
+    subject = {key: lq["fragile"][key] for key in ("county", "naics", "lq", "emp")}
+    if (reference["year"] != W["meta"]["latest"] or reference["subject"] != subject
+            or W["meta"]["footprint"]["key"] != "pic12"
+            or reference["counties"] != len(PIC12)):
+        raise SystemExit("derive_sources: the dated LQ reference snapshot no longer "
+                         "matches the subject, year or footprint. Re-run its source "
+                         "recipe and record a new receipt before publishing.")
+    if (len(reference["above"]) + 1 != reference["rank"]
+            or not all(r["lq"] > subject["lq"] for r in reference["above"])):
+        raise SystemExit("derive_sources: invalid rank in the LQ reference snapshot")
+    lq["reference"] = reference
 
     # ------------------------------------------- what basis that reading is actually on
     # THE PAGE FAILED ITS OWN ACCEPTANCE TEST HERE. It told a reader to hold ownership
@@ -741,11 +780,12 @@ def build():
                   "gazetteer is the other option; check that whichever is chosen covers "
                   "out-of-state origins before wiring it in."},
         {"id": "award-parties", "page": "federal-money",
-         "what": "No recipient names behind the procurement peaks", "n": None, "jobs": None,
-         "why": "The USAspending endpoint used here returns categories rather than "
-                "parties, so the page cannot say who holds the largest year.",
-         "close": "A second pull against spending_by_award, or the bulk award archive, "
-                  "keeping recipient_name and awarding_agency."},
+         "what": "The award register is a separately dated snapshot", "n": None, "jobs": None,
+         "why": "The category totals were refreshed on 8 September 2026. The separate "
+                "recipient register is a 31 August snapshot whose original raw response "
+                "is unavailable; it is not a reconciliation of the refreshed totals.",
+         "close": "Refresh the award-level records with preserved raw responses and "
+                  "reconcile fiscal-year transactions before assigning the peaks to recipients."},
         {"id": "qwi-vintages", "page": "revisions",
          "what": "No archive of past QWI releases", "n": None, "jobs": None,
          "why": "The programme restates whole histories when it re-benchmarks, and "
@@ -780,13 +820,13 @@ def build():
                   "shipped file is the artifact, the way the two internal registers in "
                   "the register above already do."},
         {"id": "cleveland-trend", "page": "peers",
-         "what": "One peer metro has no time series", "n": None, "jobs": None,
-         "why": "Cleveland clears the size test and fails the disclosure test: it does "
-                "not carry enough disclosed years to draw a line, so it appears as a "
-                "single ghosted point with the absence labelled.",
-         "close": "Re-fetch that metro’s industry series year by year, recording each "
-                  "year’s disclosure code so the number of withheld years can be "
-                  "published rather than deduced."},
+         "what": "Cleveland’s metro boundary changes in 2024", "n": None, "jobs": None,
+         "why": "The earlier C1746 metro discloses every year from 2015 through 2023. "
+                "The C1741 metro adds Ashtabula in 2024. A missing line under the newer "
+                "code was wrongly described as withheld data; it is a geography break.",
+         "close": "The peers page now shows the earlier disclosed history separately. "
+                  "A continuous comparison needs a constant-boundary county aggregation; "
+                  "do not splice the two metro definitions."},
     ]
 
     meta = {
@@ -796,7 +836,7 @@ def build():
                   "industry-code arithmetic, occupations for the education-boundary "
                   "example, peers for the disclosure rates, revisions for how far these "
                   "series move after publication, and laborshed for the measured gap.",
-        "row": "One row of the register is one dataset: its endpoint, the exact filter "
+        "row": "One row of the register is one source: its endpoint, the exact filter "
                "values applied to it, whether it needs a key, and every page here that "
                "rests on it.",
         "fetched": FETCHED,
@@ -840,6 +880,11 @@ def build():
     # and the twenty-six SOC codes were two of the missing six, and both were one join
     # away from a file this page already reads.
     footprint = dict(W["meta"]["footprint"])
+    if footprint["key"] == "pic12":
+        chain_counties = {c["county"] for c in load(WEB, "chain", "data", "chain-data.json")["counties"]}
+        added = sorted(chain_counties - set(footprint["counties"]))
+        footprint["differs"] = ("The chain register uses its CODEBOOK county set, adding " +
+                                " and ".join(added) + ". It differs from the legacy NEO14 constant in pic-geo.")
     if len(footprint["counties"]) != footprint["n"]:
         raise SystemExit("derive_sources: the footprint's own count and its own list "
                          "disagree, which is the defect this listing exists to prevent.")
@@ -906,11 +951,9 @@ def build():
                          "trademark symbol on the mark and name USDOL/ETA.")
 
     # ================================================================ RECIPE 2, THE PAY
-    # WHAT THE MEDIAN IS OVER. The pay page said "the typical polymer job pays 1.2 times"
-    # when the figure was a median over ROWS, and its heaviest rows sit below it. Both
-    # statistics are defensible; only one matches that sentence. A replicator computes the
-    # row median first, because it is the easy one, and will write the job sentence over
-    # it unless someone says so out loud.
+    # Both statistics summarize county-industry average wage ratios. Employment
+    # weighting changes the weight of each group; it supplies no within-group pay
+    # distribution and therefore cannot support a claim about the median worker.
     #
     # Every number below is read from the pay page's own shipped file, so this recipe
     # cannot teach a value that page has stopped publishing.
@@ -925,13 +968,7 @@ def build():
     # two units are interchangeable.
     cover = [r for r in pay_rows if r["naics"] in ("325", "326")]
     med_pair = median([r["vs_local_all"] for r in pay_rows])
-    med_job = weighted_median([(r["vs_local_all"], r["emp"]) for r in cover])
-    if not med_job > med_pair:
-        raise SystemExit(
-            "derive_sources: the job-weighted median is no longer above the pairing "
-            "median. The recipe's whole point is that the easy statistic is the LOWER "
-            "one, so publishing the harder one cannot be read as flattering the finding. "
-            "That sentence would now be backwards. Re-read before publishing.")
+    med_group_weighted = weighted_median([(r["vs_local_all"], r["emp"]) for r in cover])
 
     # The single row that most moves the two apart: the heaviest one sitting below the
     # pairing median. Named on the page, because "the heavy rows are low" is an assertion
@@ -969,7 +1006,8 @@ def build():
         "n_counties": len(pay_counties),
         "n_possible": len(pay_naics) * len(pay_counties),
         "median_pairing": round(med_pair, 4),
-        "median_job": round(med_job, 4),
+        "median_group_weighted": round(med_group_weighted, 4),
+        "median_unit": "county-industry group-average wage ratios; not individual pay",
         "n_above_local": len([r for r in pay_rows if r["vs_local_all"] > 1]),
         "n_below_us": len([r for r in pay_rows if r.get("vs_us") and r["vs_us"] < 1]),
         "median_vs_us": round(median([r["vs_us"] for r in pay_rows if r.get("vs_us")]), 4),
@@ -1051,13 +1089,15 @@ def build():
     # reverses outright, which is the entire argument for stating a basis, made out of
     # the site's own mistake rather than a hypothetical.
     #
-    # Recomputed here from that page's shipped table, with the same clamp it uses: the
-    # CPI-U annuals stop at 2025, so a 2026 month is deflated by the 2025 average and
-    # every real figure is therefore an upper bound on the price and a lower bound on
-    # the adjustment.
+    # Recompute the worked price series using the independently verified federal CPI
+    # observations. The price page synchronizes its copied CPI to these observations.
+    # Carrying the 2025 index into 2026 is an approximation, not a guaranteed bound.
     SC = load(WEB, "cost-scissors", "data", "scissors.json")
     DEF = SC["deflator"]
-    cpi, base, last = DEF["values"], DEF["base_year"], DEF["latest_year"]
+    FM = load(WEB, "federal-money", "data", "federal.json")
+    observations = FM["cpi_observations"]
+    cpi = {str(r["year"]): r["cpi"] for r in observations["rows"]}
+    base, last = DEF["base_year"], max(cpi)
 
     def factor(year):
         return cpi[min(year, last)] / cpi[base]
@@ -1095,7 +1135,10 @@ def build():
 
     deflator = {
         "index": DEF["index"], "base_year": base, "latest_year": last,
-        "source": DEF["source"], "caution": DEF["caution"],
+        "source": observations["meta"]["url"],
+        "caution": "2025 is the mean of eleven available monthly observations; October "
+                   "is unavailable. 2026 carries the 2025 index as an approximation.",
+        "observations": observations,
         "cpi_base": cpi[base], "cpi_latest": cpi[last],
         "inflation_pct": round((cpi[last] / cpi[base] - 1) * 100, 1),
         "product": product, "resin": resin,
@@ -1114,7 +1157,6 @@ def build():
     #
     # Sequenced after D4 deliberately: this is the first recipe whose output is dollars
     # across years, so the basis decision has to exist before it.
-    FM = load(WEB, "federal-money", "data", "federal.json")
     fm_rows = FM["naics"]
     fys = sorted({r["fy"] for r in fm_rows})
     by_fy = {}
@@ -1136,6 +1178,9 @@ def build():
         "closed_years": len(closed),
         "total_all": sum(by_fy.values()),
         "total_closed": sum(by_fy[y] for y in closed),
+        "total_all_real": sum(r["real"] for r in fm_rows),
+        "total_closed_real": sum(r["real"] for r in fm_rows if r["fy"] in closed),
+        "partial_fy_real": sum(r["real"] for r in fm_rows if r["fy"] == partial),
         "partial_fy_amount": by_fy[partial],
         "n_codes": len({r["code"] for r in fm_rows}),
         "top": [{"name": n, "amount": v} for n, v in ranked[:3]],
@@ -1254,11 +1299,14 @@ def build():
         "this_page": CN["pages"].get("sources", {}).get("claims", 0),
     }
     checks["n_auto"] = checks["n_claims"] - checks["n_manual"]
+    checks["n_hub_claims"] = len(load(WEB, "index", "claims.json")["claims"])
+    checks["n_site_claims"] = checks["n_claims"] + checks["n_hub_claims"]
 
     out = {"meta": meta, "sources": sources, "pages": pages, "totals": totals,
            "footprint": footprint, "socs": socs, "attributions": attributions,
            "codes": codes, "doublecount": doublecount, "suppression": supp,
            "suppression_vintage": supp_vintage,
+           "state_ids": P["state_ids"], "cleveland_history": P["cleveland_history"],
            "lq": lq, "readings": readings, "classification": classification,
            "wage": wage, "awards": awards, "deflator": deflator, "shed": shed,
            "contracting": contracting, "swaps": swaps, "checks": checks,

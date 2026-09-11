@@ -2,7 +2,7 @@
 
 WHAT ONE ROW IS
   One (home county, work county) count of JOBS. Not people: a worker holding two jobs is
-  counted twice. Not commuters: both ends are employer-reported addresses, so the home end
+  counted twice. Not commuters: both ends are addresses on file, so the home end
   is a residence on file, not evidence that anyone travelled.
 
 THE FORM DECISION
@@ -17,10 +17,10 @@ THE BENCHMARK
   comparison every cell is read against, and it is why the diagonal gets its own scale.
 
 WHAT IS UNCERTAIN
-  LODES carries NO industry dimension, so this is the whole economy and never the polymer
-  cluster. And the imported share is two different things — adjacent counties that are
-  plausibly commuting, and distant metros that are residence-of-record — which the 2019
-  baseline shows was already true before the pandemic. They are never summed.
+  This extraction uses all-job totals, not the polymer cluster. LODES OD's three broad
+  industry groups cannot isolate polymer industries. Adjacent and distant counties are
+  residence groups; neither measures trips or telework. Distant residence existed in
+  2019, which does not identify how the pandemic affected it.
 """
 import json, os, collections
 from footprints import PIC12, META
@@ -94,14 +94,13 @@ out = {"meta": dict(
     source=meta22["source"],
     row=meta22["row"],
     footprint=META["pic12"],
-    no_industry=meta22["no_industry"],
+    no_industry="This page uses all-job totals for the whole economy. LODES "
+                "origin-destination includes three broad industry groups (SI01-SI03), "
+                "but cannot isolate polymer industries.",
     not_a_commute="The home end is a residence on file, not evidence of a journey. Nothing "
                   "here counts a trip.",
-    baseline="A 2019 pull tests whether the distant-metro share is a pandemic effect. It is "
-             "not: Franklin County was already the largest external source in 2019 at "
-             "23,506 jobs, and adjacent-county inflow has been flat (+1%) while distant "
-             "metros grew 13%. The two categories were always different things and are "
-             "never summed.",
+    baseline="The 2019 records establish that distant residence existed before the "
+             "pandemic. They do not identify a pandemic effect, commuting or telework.",
     split_is_judgment="Adjacent versus distant is a judgment about distance, not a field "
                       "LODES publishes.",
     year=2022, baseline_year=2019),

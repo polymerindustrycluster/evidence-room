@@ -14,7 +14,7 @@
  "claims": [
   {
    "id": "acc-hero",
-   "text": "Headline, standfirst and the stat row under the lead figure: of the $106.3 million PIC reports securing, $4,149,515 sits on award lines naming PIC's own organisation, 4.9 percent of the $85,335,784 awarded; the page carries 18 dated commitments; 7 of the 15 rows PIC answers for cannot be filled from any public record.",
+   "text": "Headline, standfirst and the stat row under the lead figure: of the $106.3 million PIC reports securing, $4,149,515 sits on award lines naming PIC's own organisation as destination, 4.9 percent of the $85,335,784 awarded; the page carries 18 dated commitments; 7 of the 15 rows PIC answers for are published as empty slots awaiting private records.",
    "source": "funding-map/data/funding.json recipients[greater-akron-chamber] and meta.totals; timeline/data/timeline.json events where delivered is false; scorecard/data/scorecard.json counts",
    "assert": "sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) == 4149515 and round(sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) / D['fm']['meta']['totals']['awards'], 3) == 0.049 and len([e for e in D['tl']['events'] if not e['delivered']]) == 18 and D['sc']['counts']['vault'] == 7 and D['sc']['counts']['accountable'] == 15",
    "actual": "(sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']), round(sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) / D['fm']['meta']['totals']['awards'], 3), len([e for e in D['tl']['events'] if not e['delivered']]), D['sc']['counts']['vault'], D['sc']['counts']['accountable'])",
@@ -23,7 +23,7 @@
   },
   {
    "id": "acc-hero-split",
-   "text": "Standfirst, the three-way split of the $85,335,784 awarded: $4,149,515 sits on the two lines naming PIC's own organisation, $51,926,305 on lines naming a firm or university doing the work, and the remaining $29,259,964 on lines naming a programme or a building, or on no line at all. The standfirst prints the last two rounded, at $51.9 million and $29.3 million.",
+   "text": "Standfirst, the three-way split of the $85,335,784 awarded: $4,149,515 sits on the two lines naming PIC's own organisation as destination, $51,926,305 on lines naming a firm or university doing the work, and the remaining $29,259,964 on lines naming a programme or a building, or on no line at all. The standfirst prints the last two rounded, at $51.9 million and $29.3 million.",
    "source": "funding-map/data/funding.json recipients and meta.totals, each recipient classified by accountability/data/recipient_types.json kind",
    "assert": "sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'administrator' for a in r['awards']) == 4149515 and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] in set(['firm', 'university']) for a in r['awards']) == 51926305 and round(sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] in set(['firm', 'university']) for a in r['awards']) / 1000000, 1) == 51.9 and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) + (D['fm']['meta']['totals']['awards'] - sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'])) == 29259964 and round((sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) + (D['fm']['meta']['totals']['awards'] - sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']))) / 1000000, 1) == 29.3 and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'administrator' for a in r['awards']) + sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] in set(['firm', 'university']) for a in r['awards']) + sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) + (D['fm']['meta']['totals']['awards'] - sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'])) == D['fm']['meta']['totals']['awards'] and sorted(k for k in D['rt']['kind'] if D['rt']['kind'][k] == 'administrator') == ['greater-akron-chamber']",
    "actual": "(sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'administrator' for a in r['awards']), sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] in set(['firm', 'university']) for a in r['awards']), sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']), (D['fm']['meta']['totals']['awards'] - sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'])), D['fm']['meta']['totals']['awards'])",
@@ -32,7 +32,7 @@
   },
   {
    "id": "acc-attribution",
-   "text": "Band A, the four stages: $106,290,451 reported secured, $85,335,784 awarded, $79,170,176 on an executed line naming a recipient, $4,149,515 on lines naming the Greater Akron Chamber. Match is never summed into that bar.",
+   "text": "Band A, the four stages: $106,290,451 reported secured, $85,335,784 awarded, $79,170,176 on an executed line naming a recipient, $4,149,515 on lines naming the Greater Akron Chamber as destination. Match is never summed into that bar.",
    "source": "funding-map/data/funding.json meta.totals and recipients[]",
    "assert": "D['fm']['meta']['totals']['total'] == 106290451 and D['fm']['meta']['totals']['awards'] == 85335784 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']) == 79170176 and D['fm']['meta']['totals']['match'] == 20954667 and D['fm']['meta']['totals']['awards'] + D['fm']['meta']['totals']['match'] == D['fm']['meta']['totals']['total']",
    "actual": "(D['fm']['meta']['totals'], sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']))",
@@ -56,7 +56,7 @@
   },
   {
    "id": "acc-staging",
-   "text": "Band B: 92.8 percent of the awards have reached a named recipient. EDA is 100 percent assigned, APEX is 100 percent assigned, and the entire $6,165,608 unassigned balance sits in the Ohio Innovation Hub at 80.3 percent.",
+   "text": "Band B: 92.8 percent of the awards are assigned to a named destination. EDA is 100 percent assigned, APEX is 100 percent assigned, and the entire $6,165,608 unassigned balance sits in the Ohio Innovation Hub at 80.3 percent.",
    "source": "scorecard/data/scorecard.json delivery, recomputed there from the same award register",
    "assert": "D['sc']['delivery']['awarded'] == 85335784 and D['sc']['delivery']['assigned'] == 79170176 and D['sc']['delivery']['unassigned'] == 6165608 and round(pct(D['sc']['delivery']['assigned'], D['sc']['delivery']['awarded']), 1) == 92.8 and one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'eda')['pct'] == 100.0 and one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'apex')['pct'] == 100.0 and round(one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'ohio')['pct'], 1) == 80.3 and one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'ohio')['unassigned'] == D['sc']['delivery']['unassigned']",
    "actual": "(D['sc']['delivery']['awarded'], D['sc']['delivery']['assigned'], D['sc']['delivery']['unassigned'], [s['pct'] for s in D['sc']['delivery']['sources']])",
@@ -208,11 +208,11 @@
   },
   {
    "id": "acc-additionality",
-   "text": "Band F, closing prose: the Tech Hub award is $51,001,413 against a background rate of about $34.9 million a year in routine federal obligations to regional polymer firms across the same twelve counties, FY2019 to FY2026, in constant 2025 dollars. No ratio is computed.",
+   "text": "Band F, closing prose: the Tech Hub award is $51,001,413 against $41.4 million a year in federal prime-contract obligations under chemical and plastics/rubber manufacturing codes across the same twelve counties, averaged over the seven completed fiscal years FY2019-FY2025 in constant 2025 dollars. Unfinished FY2026 is excluded. No ratio is computed.",
    "source": "federal-money/data/techhub.json award; federal-money/data/federal.json naics rows, real column, PIC-12 footprint",
-   "assert": "D['hub']['award'] == 51001413 and round(sum(r['real'] for r in D['fed']['naics']) / len(set(r['fy'] for r in D['fed']['naics'])) / 1e6, 1) == 34.9 and D['fed']['meta']['footprint']['n'] == 12 and min(r['fy'] for r in D['fed']['naics']) == 2019 and max(r['fy'] for r in D['fed']['naics']) == 2026",
-   "actual": "(D['hub']['award'], round(sum(r['real'] for r in D['fed']['naics']) / len(set(r['fy'] for r in D['fed']['naics'])) / 1e6, 1), D['fed']['meta']['footprint']['n'])",
-   "falsified_if": "USAspending posts a revision that moves the annual average off $34.9 million, or a fiscal year enters or leaves the file and the denominator changes without the sentence changing. If the instrument caveat beside this sentence is ever cut in review, the sentence goes with it: the bare ratio is the impact multiplier every grantee prints, and it is the genre this page exists to avoid."
+   "assert": "D['hub']['award'] == D['acc']['context']['techhub_award'] == 51001413 and sorted(set(r['fy'] for r in D['fed']['naics'] if 2019 <= r['fy'] <= 2025)) == list(range(2019, 2026)) and abs(D['acc']['context']['background_rate'] - sum(r['real'] for r in D['fed']['naics'] if 2019 <= r['fy'] <= 2025) / 7) < 0.01 and round(D['acc']['context']['background_rate'] / 1e6, 1) == 41.4 and D['acc']['context']['background_years'] == [2019, 2025] and D['fed']['meta']['footprint']['n'] == D['acc']['context']['background_counties'] == 12",
+   "actual": "(D['hub']['award'], D['acc']['context']['background_rate'], D['acc']['context']['background_years'], D['fed']['meta']['footprint']['n'])",
+   "falsified_if": "A revision moves the completed-year average off $41.4 million, any of the seven years is missing, FY2026 enters the average, or the local derived rate differs from the upstream computation. The instrument caveat must remain beside this comparison: it establishes scale, not additionality."
   },
   {
    "id": "acc-generated-fresh",

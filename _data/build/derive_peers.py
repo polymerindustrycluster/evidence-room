@@ -15,7 +15,8 @@ from footprints import PIC12, META
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.abspath(os.path.join(HERE, "..", ".."))
-SRC = json.load(open(os.path.join(HERE, "peers.json"), encoding="utf-8"))
+RAW = os.environ.get("EVIDENCE_RAW_DIR", HERE)
+SRC = json.load(open(os.path.join(RAW, "peers.json"), encoding="utf-8"))
 T, ROWS = SRC["titles"], SRC["rows"]
 CROSS = SRC["meta"]["cross_year"]
 AKRON, OHIO, US = "C1042", "39000", "US000"
@@ -89,6 +90,18 @@ out = {"gaps": GAPS,
 # 1. the robust comparison: states
 out["states"] = {n: rank_block(CROSS, n, "state", OHIO) for n in
                  ("325", "326", "3261", "3262")}
+from geography_checks import assert_state_universe
+state_ids = sorted(r["area"] for r in idx[(CROSS, "326", "state")])
+assert_state_universe(state_ids)
+out["state_ids"] = state_ids
+out["cleveland_history"] = [
+    {"year": r["year"], "area": r["area"], "emp": r["emp"], "suppressed": r["suppressed"]}
+    for r in ROWS if r["naics"] == "326" and r["area"] in ("C1746", "C1741")]
+out["meta"]["derived_note"] = (
+    "Every rank is among disclosed areas. Establishment counts do not bound employment "
+    "or national rank. The state-level input contains the 50 states plus Puerto Rico; "
+    "DC is absent. Metro boundaries changed in 2024; a continuing code alone does not "
+    "establish a constant-geography employment series.")
 
 # 2. the interesting one: metros
 out["metros"] = {n: rank_block(CROSS, n, "metro", AKRON) for n in

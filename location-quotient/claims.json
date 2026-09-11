@@ -206,11 +206,11 @@
     {
       "id": "lq-coatings-anchor",
       "text": "The Sherwin-Williams Company is headquartered in Cleveland, in Cuyahoga County, and RPM International is headquartered in Medina, Ohio (the human-scale note beside the heatmap).",
-      "source": "Company headquarters addresses as stated on each firm's SEC annual-report cover page. QCEW cannot name an employer, so this is context for the concentration and not evidence of it, and the note says so.",
+      "source": "Company headquarters addresses as stated on each firm's SEC annual-report cover page, Address of Principal Executive Offices. Sherwin-Williams, Form 10-K for the fiscal year ended 31 December 2025, filed 2026-02-19: https://www.sec.gov/Archives/edgar/data/89800/000008980026000008/shw-20251231.htm - '1 Sherwin Way Cleveland, Ohio 44113-2206', and Item 2 Properties names Cleveland as the global headquarters. RPM International, Form 10-K for the fiscal year ended 31 May 2026, filed 2026-07-22: https://www.sec.gov/Archives/edgar/data/110621/000119312526312142/0001193125-26-312142-index.htm (primary document rpm-20260531.htm) - '2628 Pearl Road, Medina, Ohio 44256', and Item 2 Properties names Medina as the corporate headquarters. Both links read 2026-09-10 and re-checked 2026-09-11. QCEW cannot name an employer, so this is context for the concentration and not evidence of it, and the note says so.",
       "verify": "manual",
       "assert": "",
-      "falsified_if": "Either company relocates its headquarters out of the named county, or the sentence is read as attributing the county's location quotient to those firms rather than offering the plain explanation for a coatings cluster of this size.",
-      "checked_by": "needs a human to attach the SEC filing links before this page is re-published"
+      "falsified_if": "Either company relocates its headquarters out of the named county, or a later 10-K cover page names a different city, or the sentence is read as attributing the county's location quotient to those firms rather than offering the plain explanation for a coatings cluster of this size. A headquarters is not an employment share and this claim never stands as evidence of one: the county figure is summed from QCEW site counts, which name no employer. Sherwin-Williams completed a new Cleveland headquarters during 2025 and the cover-page address moved to 1 Sherwin Way; the city and county did not change, and any older citation to 101 West Prospect Avenue is retired. 'In Cuyahoga County' is asserted about Cleveland, not quoted from the filing, which names city and state only.",
+      "checked_by": "SEC EDGAR cover pages attached 2026-09-11 from the documentary review of 2026-09-10 (claim lq-coatings-anchor, VERIFIED); both URLs re-fetched and the addresses re-read on 2026-09-11. The gate this line carried is satisfied and the published sentence needed no change."
     },
     {
       "id": "lq-cluster-size",

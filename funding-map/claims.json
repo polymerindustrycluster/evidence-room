@@ -173,16 +173,16 @@
     },
     {
       "id": "sixppd-coho",
-      "text": "6PPD-quinone, 6PPD's breakdown product, was identified in a 2021 Science paper as the chemical killing coho salmon in urban Pacific Northwest streams; 6PPD is used in nearly every tire (Flexsys vignette).",
+      "text": "6PPD-quinone, a breakdown product of the widely used tire anti-degradant 6PPD, was identified in a 2021 Science paper as the chemical killing coho salmon in urban Pacific Northwest streams (Flexsys vignette).",
       "verify": "manual",
-      "source": "Tian et al., 'A ubiquitous tire rubber-derived chemical induces acute mortality in coho salmon', Science 371(6525):185-189 (2021), doi:10.1126/science.abd6951; citation web-verified against science.org on 2026-08-27",
+      "source": "Tian et al., Science 371(6525):185-189, print 2021-01-08, https://doi.org/10.1126/science.abd6951 (PMID 33273063); https://www.epa.gov/chemical-research/6ppd-quinone . DOI and abstract rechecked 2026-09-10; EPA rechecked 2026-09-11. Widespread use does not establish a precise share of tires.",
       "falsified_if": "The 6PPD-quinone attribution is retracted or materially revised, or 6PPD stops being the industry-standard tire anti-degradant."
     },
     {
       "id": "tire-thermoset",
-      "text": "A tire is mostly vulcanized rubber and cannot be melted back down the way a thermoplastic bottle can (Full Circle vignette).",
+      "text": "A tire’s vulcanized rubber cannot simply be melted and remolded like a thermoplastic bottle (Full Circle vignette).",
       "verify": "manual",
-      "source": "Standard polymer chemistry: sulfur vulcanization crosslinks are not melt-reprocessable; tires are elastomer composites with steel and fabric reinforcement, hence 'mostly'.",
+      "source": "Kumar et al., Advances in recycling of waste vulcanized rubber products via different sustainable approaches, Materials Advances 2024, 5, 7584–7600, https://doi.org/10.1039/D4MA00379A . Reviewed 2026-09-10. The crosslinked network prevents simple thermoplastic remelting; this does not rule out devulcanization or other recycling methods, and makes no claim about the rubber mass share of a tire.",
       "falsified_if": "A materials reviewer disputes the thermoset characterization as stated."
     },
     {

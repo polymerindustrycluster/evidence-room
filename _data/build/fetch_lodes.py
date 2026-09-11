@@ -2,20 +2,20 @@
 
 ACS says how many credential-holders live in the footprint. QCEW says how many jobs sit
 in it. Neither says whether those are the same people, and for a cluster whose recruiting
-pitch is regional, that is the load-bearing question: how far does the commute reach, and
+pitch is regional, that is the load-bearing question: where do jobholders live, and
 how much of the workforce is imported from outside the footprint entirely?
 
 LODES answers it from the same LEHD job-level frame that produces QWI.
 
 WHAT A ROW IS
   One (home county, work county) count of JOBS, not people and not commuters. A worker
-  holding two jobs appears twice. Both ends are assigned by employer-reported address:
+  holding two jobs appears twice. Both ends are addresses on file:
   the work end is the establishment, the home end is the worker's residence on file.
 
-  Segment JT00 = all jobs, all sectors. LODES origin-destination carries NO industry
-  dimension, so this is the labor shed of the whole economy, NOT of the polymer cluster.
-  Do not describe it as the cluster's workforce. (Industry detail exists only in the WAC
-  workplace files, at 2-digit CNS sectors, which cannot be crossed with residence.)
+  JT00 = all jobs. This extraction uses S000, the all-industry total. LODES OD also
+  provides three broad industry groups (SI01-SI03), not polymer industries. WAC and RAC
+  contain finer sectors but do not supply polymer-specific origin-destination links.
+  Census specification: https://lehd.ces.census.gov/data/lodes/LODES8/LODESTechDoc8.0.pdf p5.
 
 FOOTPRINT: PIC-12 work end, per footprints.py — federal source. The HOME end is
 deliberately unbounded: the whole point is to see how much labor arrives from outside.
@@ -100,18 +100,13 @@ out = {"meta": {
     "footprint_note": "The WORK end is bounded to PIC-12. The HOME end is deliberately "
                       "unbounded, because the question is how much labor arrives from "
                       "outside the footprint.",
-    "no_industry": "LODES origin-destination carries NO industry dimension. This is the "
-                   "labor shed of the whole economy, NOT of the polymer cluster. Industry "
-                   "detail exists only in the WAC workplace files and cannot be crossed "
-                   "with residence.",
+    "no_industry": "This page uses all-job totals for the whole economy. LODES "
+                   "origin-destination includes three broad industry groups (SI01-SI03), "
+                   "but cannot isolate polymer industries.",
     "remote_work_caution": "The home end is the residence on file, NOT evidence of a "
-                           "commute. Franklin County (Columbus) is the single largest "
-                           "external source of PIC-12 jobs and is a two-hour drive; "
-                           "Hamilton, Montgomery and Lucas are similar. Post-2020 these "
-                           "are remote or hybrid arrangements, not a labor shed. Treat "
-                           "ADJACENT counties as commuting and DISTANT metros as "
-                           "residence-of-record. Do not sum them into one 'imported "
-                           "workforce' figure.",
+                           "commute. Adjacent counties and distant metros are both "
+                           "residence-of-record groups. Distance alone does not establish "
+                           "travel frequency, remote work or hybrid arrangements.",
     "totals": {"jobs_worked_in_pic12": total,
                "home_inside_pic12": inside,
                "home_outside_pic12": total - inside,

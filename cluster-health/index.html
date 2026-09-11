@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
 
 <header class="mast">
   <div class="wrap">
@@ -18,15 +19,40 @@
   </div>
 </header>
 
+<main id="main-content" tabindex="-1">
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">How is the cluster doing, measure by measure?</p>
-    <h1>Polymer jobs in Northeast Ohio have fallen for a <em>third straight year</em>.</h1>
+    <p class="eyebrow">Northeast Ohio plastics and rubber products &middot; 2022–2025</p>
+    <h1>The region has fewer plastics-and-rubber jobs at roughly as many workplaces.</h1>
     <p class="stand" id="stand"></p>
     <div class="hero-row" id="figs"></div>
-    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Recomputed from the
-      published data of six pages in the Evidence Room, our public data archive
-      &middot; August&nbsp;2026</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic), updated with Codex (OpenAI) &middot; Recomputed from
+      QCEW annual files and the linked Evidence Room data
+      &middot; Updated September&nbsp;2026</p>
+  </div>
+</section>
+
+<section class="band" id="workplaces">
+  <div class="wrap">
+    <p class="takeaway">Jobs and workplaces</p>
+    <h2>The recent job decline outpaced the change in workplaces</h2>
+    <p class="lede" id="workplaceslede"></p>
+    <p class="fig-title">Jobs fell after 2022; the establishment count ended close to its starting point</p>
+    <p class="fig-sub">PIC-12 private plastics and rubber products (NAICS 326). Annual averages, indexed to 2022 = 100. One scale for both series.</p>
+    <div class="legend"><span><i class="ln" style="background:#C85F0C"></i>Jobs</span><span><i class="ln" style="background:#0C6473"></i>Establishments</span></div>
+    <div class="chart"><svg id="workplaces-chart" role="img" aria-labelledby="workplaces-t"><title id="workplaces-t">PIC-12 private plastics-and-rubber jobs fell 10.3 percent from 2022 to 2025, while annual-average establishments rose 0.8 percent. Both series are indexed to 2022.</title></svg></div>
+    <p class="src">Source: <a href="https://data.bls.gov/cew/doc/access/csv_data_slices.htm">BLS QCEW annual files</a>, private ownership, NAICS 326, all twelve PIC counties. Establishments are workplaces reported in the records, not unique companies.</p>
+    <div id="workplacestable"></div>
+    <p class="body-note" id="workplaceswindows"></p>
+    <p class="note">These are repeated totals, not a panel following the same plants. Openings and closures can offset each other; QCEW industry reclassification and changes in multi-unit employer reporting can also affect establishment counts. Jobs per establishment is not productivity, and these records cannot identify automation or labor shortages as the cause.</p>
+    <h2>The national industry lost jobs too</h2>
+    <p class="lede" id="workplacescompare"></p>
+    <div id="workplacesbenchmarks"></div>
+    <p class="src">State comparisons cover every state bordering Ohio, selected by geography. They provide context, not a matched peer experiment. State boundaries are stable; Ohio and the United States include PIC-12. The manufacturing row uses NAICS 31–33 separately.</p>
+    <h2>Summit had the largest county job decline</h2>
+    <p class="lede" id="workplacescounty"></p>
+    <div id="workplacescounties"></div>
+    <p class="note"><b>Updated 8 September 2026.</b> The jobs-and-workplaces comparison adds establishments and wider time windows to the existing jobs finding. The former national-tide note described a ratio of two growth rates as the share of the regional decline accounted for by the industry. That attribution has been removed: the comparison measures different rates of change and does not explain their causes.</p>
   </div>
 </section>
 
@@ -47,13 +73,13 @@
       <title id="stand-t">Five measures of the polymer cluster, each shown as a dot on the
         range of its own published years, from that measure&rsquo;s lowest year on the left
         to its highest on the right. Employment sits at the bottom of its range, polymer
-        degrees near the bottom, pay against the national rate at the top, federal
+        degrees near the bottom, the median county-industry wage ratio against its national industry at the top, federal
         contracting in the middle, and paint concentration, which has no better end, at the
         top of its range.</title></svg></div>
     <div id="standtable"></div>
     <p class="src" id="standsrc"></p>
     <div class="note" id="standnote"></div>
-    <p class="note"><b>How much of the fall in jobs is the tide.</b> The national
+    <p class="note"><b>The broader industry comparison.</b> The national
       industry is falling too, counted on the same three federal industry codes this page
       counts on: plastics and rubber, resin, and paint and coatings. The headline run is
       three falls in a row, 2022 to 2025, and the tide is read across the same three years,
@@ -61,10 +87,8 @@
       three. Private employment in those three across the United States went from 909,558
       in 2022 to 857,188 in 2025, down 5.8 percent. The region&rsquo;s own count of the
       same three fell 8.0 percent over those years, measured on the counties that publish a
-      figure in every year. Read together: about seven-tenths of the region&rsquo;s pace is
-      the industry&rsquo;s own decline, because 5.8 divided by 8.0 is 0.72. The region is
-      still falling faster than its industry. Neither half of that reading survives without
-      the other.</p>
+      figure in every year. The region fell faster. Comparing these two rates does not
+      identify how much of the regional loss was caused by national conditions.</p>
   </div>
 </section>
 
@@ -83,9 +107,9 @@
     <p class="fig-title" id="movetitle"></p>
     <p class="fig-sub">Each bar is that measure&rsquo;s latest change divided by how far
       it usually moves between years. Dividing lets moves in different units share one
-      axis. In the latest year pay against the national rate moved 0.034, from 0.861 to
-      0.895 times that rate. Federal contracting moved $16.44 million, from $22.54 million
-      to $38.98 million a year. Both are drawn to the same scale. Past 1.0, the move was bigger than the middle one of that measure&rsquo;s own
+      axis. In the latest year the median county-industry wage ratio against its national industry moved 0.034, from 0.861 to
+      0.895 times that rate. Federal contract obligations moved $16.21 million, from $25.01 million
+      in FY2024 to $41.22 million in FY2025, in 2025 dollars. Both are drawn to the same scale. Past 1.0, the move was bigger than the middle one of that measure&rsquo;s own
       earlier moves, which is all &ldquo;bigger than usual&rdquo; means here. About half
       of years clear it. The upright mark on each row is the furthest that measure has
       ever moved in a single year.</p>
@@ -98,9 +122,16 @@
       <title id="move-t">Five measures of the polymer cluster, each showing this year&rsquo;s
         change as a multiple of that measure&rsquo;s typical yearly change, against the full
         range of its earlier moves. Employment, concentration and pay moved further than
-        usual; degrees and federal money did not.</title></svg></div>
+        usual, as did federal contracting; degrees did not.</title></svg></div>
     <div id="movetable"></div>
     <p class="src" id="movesrc"></p>
+    <p class="note"><b>Corrected 8 September 2026.</b> Completing the federal-data pagination
+      and correcting the inflation input changes FY2025 contracting from $38.98 million
+      to $41.22 million, and the FY2019–2025 annual average from $36.6 million to $41.4 million.
+      The latest move now exceeds the median earlier move, so four of the five measures
+      moved further than usual. These are signed prime-contract obligations under NAICS 325
+      and 326, recorded at place of performance, not payments. The
+      <a href="../federal-money/">federal-money article</a> carries the full correction and source details.</p>
     <p class="note"><b>The longest bar here used to belong to concentration, and that was
       a disclosure artifact, not a move.</b> That bar was measured on whichever counties the bureau published each
       year. Withholding takes a county out of the top of the concentration ratio and leaves
@@ -126,6 +157,7 @@
       against a baseline it names, and it links to the page the figure came from, where
       the working is shown in full.</p>
     <div class="tiles" id="tiles"></div>
+    <p class="note"><b>Corrected 8 September 2026.</b> The Job quality tile previously described a “typical polymer job” and counted wage comparisons as counties. Its figures are unweighted median county-industry average-wage ratios, and its counts refer to county-industry pairings. The values are unchanged.</p>
   </div>
 </section>
 
@@ -134,7 +166,7 @@
     <p class="takeaway">How to read a move</p>
     <h2>How far these numbers normally move, and what nobody has measured</h2>
     <p class="lede">The yardstick each bar is measured against is built one way for all
-      five measures: jobs, paint concentration, pay against the national rate, polymer degrees
+      five measures: jobs, paint concentration, the median county-industry wage ratio against its national industry, polymer degrees
       and federal contracting. Take the measure&rsquo;s own published history, work out
       the change between every consecutive pair of years, hold out the newest one, and
       compare it against the middle and the largest of the rest. Half a measure&rsquo;s
@@ -148,7 +180,7 @@
       track the prices factories charge for what they make. A reference month is one month
       of one of those indexes, paired with what the index first published for that month.
       The archived releases cover 259 such months. Across them the middle revision moved
-      the published level by 0.15 percent and the largest moved it by 1.42 percent. For
+      the published level by 0.15 percent and the largest moved it by 1.41 percent. For
       the employment, degree and contracting series on this page, nobody has measured
       revision at all. The <a href="../revisions/">revisions page</a> says so itself and
       names archived employment releases as the file it needs.</p>
@@ -184,11 +216,13 @@
   </div>
 </section>
 
+</main>
 <footer class="foot">
   <div class="wrap">
-    <p class="foot-lede">Every figure here is recomputed from the published data of the
-      page it links to, by a single script published alongside this page. A correction on
-      any of those pages fails this page&rsquo;s checks until it is carried through.</p>
+    <p class="foot-lede">Every figure here is recomputed from QCEW annual files or the
+      published data of the linked Evidence Room pages, using code published alongside
+      this page. Source hashes identify the held QCEW files; checks compare the derived
+      figures with their inputs.</p>
     <p class="foot-id"><a href="../index/">The PIC Evidence Room</a>, our public data
       pages &middot; Polymer Industry Cluster, Greater Akron Chamber</p>
   </div>

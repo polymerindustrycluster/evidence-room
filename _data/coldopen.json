@@ -36,17 +36,17 @@
   "location-quotient",
   "realwage",
   "cost-scissors",
-  "sources"
+  "sources",
+  "index"
  ],
  "ceilings": {
   "churn": 1677,
-  "cluster-health": 1119,
+  "cluster-health": 1085,
   "federal-money": 1631,
-  "index": 968,
   "laborshed": 1542,
-  "occupations": 1626,
+  "occupations": 1555,
   "peers": 1339,
-  "revisions": 1417,
+  "revisions": 1330,
   "timeline": 1385,
   "accountability": 903
  }

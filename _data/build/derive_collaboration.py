@@ -1,13 +1,13 @@
 """Shape the collaboration measures for the page, and carry the control series with them.
 
 The page's whole risk is a false trend. Joint output falls from 29 works in 2018 to 2 in
-2024, and there are two innocent explanations that have to be excluded on the page rather
+2024, and there are two alternative explanations that have to be considered on the page rather
 than in a footnote:
 
   1. INDEXING LAG. OpenAlex indexes recent years incompletely, so any series ending at the
-     present droops. Excluded by carrying each university's OWN total output beside the
-     joint count: Case Western's is flat-to-rising through 2024, so the platform is not
-     simply missing recent work.
+     present can droop. Each university's OWN total output provides context, but cannot
+     exclude different indexing delays for the joint subset. An aggregate increase does
+     not prove complete indexing.
   2. ONE PARTNER SHRINKING. If Akron's whole research output halved, joint work would fall
      with it and say nothing about the relationship. It DID nearly halve — so the page
      reports joint work as a SHARE of Akron's output as well as a count, because that is
@@ -27,8 +27,8 @@ C = json.load(open(os.path.join(HERE, "collab.json"), encoding="utf-8"))
 # comparison. If the key is missing, fail — never fall back to a partial control.
 if "own" not in C:
     raise SystemExit("collab.json has no `own` series — re-run fetch_collab.py. The joint "
-                     "trend must not be published without the control that separates it "
-                     "from indexing lag and from one partner shrinking.")
+                     "trend must not be published without the institutional-output "
+                     "comparison. That comparison cannot exclude indexing delays.")
 OWN = {r["year"]: {"akron": r["akron"], "cwru": r["cwru"]} for r in C["own"]}
 
 co = {r["year"]: r["works"] for r in C["coauthorship"]}

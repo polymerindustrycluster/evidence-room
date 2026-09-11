@@ -5,6 +5,13 @@
   },
   "claims": [
     {
+      "id": "narrow-weighted-group-median",
+      "text": "Narrow NAICS 3252+3255+326 covers 24,030 jobs and has an employment-weighted median group-average ratio of 1.17x its county all-jobs wage. The broad 325+326 result is 1.26x. Neither is an individual wage median.",
+      "source": "Disclosed 2025 county group-average ratios, non-overlapping narrow industry cover",
+      "assert": "(lambda G: len(G)==24 and len(set((r['area'],r['naics']) for r in G))==len(G) and all(r['emp']>0 for r in G) and sum(r['emp'] for r in G)==24030 and round(min(r['vs_local_all'] for r in G if sum(q['emp'] for q in G if q['vs_local_all']<=r['vs_local_all'])>=sum(q['emp'] for q in G)/2),2)==1.17)([r for r in D['w']['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('3252','3255','326')])",
+      "falsified_if": "The narrow cover's 24 disclosed county-industry groups, job count or weighted group-median rounding changes, or group identities duplicate or weights become nonpositive. This cannot establish individual pay."
+    },
+    {
       "id": "wage-premium-count",
       "text": "In 40 of the 51 county-industry pairings BLS can publish, polymer pay beats the county's all-industry average (standfirst, hero card, default verdict sentence, closer). The hero card's own detail line now carries the de-duplicated correction, 27 of 35, so a reader who stops at the cards does not leave with the inflated framing.",
       "source": "BLS QCEW weekly wage, county NAICS against county all-industry",
@@ -14,7 +21,7 @@
     },
     {
       "id": "headline-median-premium",
-      "text": "The middle polymer pairing pays 1.2 times what the average job in its county pays; the median across the 51 published pairings is 1.21x (H1, hero card, over-time fig-title, closer). Reworded 2026-08-29 after a naive reader reported believing a stronger claim than the page makes: the H1 read 'The typical polymer job pays 1.2 times', which asserts a median over JOBS, and this number is a median over ROWS whose heaviest members sit below it (Cuyahoga plastics and rubber, 0.87x on 2,037 jobs). The unit is now named in the H1, defined in the standfirst's first clause, and the job-weighted figure is computed and printed on the same card, guarded by job-weighted-median below.",
+      "text": "The median of the 51 published county-industry average wage ratios is 1.21x its county all-jobs average. These are chemical/plastics/rubber industry groups, not individual jobs.",
       "source": "median of vs_local_all across disclosed 2025 cells",
       "assert": "abs((lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_local_all'] for r in D['w']['latest_rows'] if r.get('vs_local_all')]) - 1.208) <= 0.007",
       "actual": "(lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_local_all'] for r in D['w']['latest_rows'] if r.get('vs_local_all')])",
@@ -22,11 +29,11 @@
     },
     {
       "id": "job-weighted-median",
-      "text": "Hero median card, methodology and closer: weight by employment rather than by rows and the middle JOB sits at 1.26x, above the 1.21x middle pairing, with 29,080 of the 33,528 jobs in a group that out-pays its county's average job. The weighting runs over the group-level cover (325 and 326 taken once per county), which is the only complete non-overlapping set the published data offer, so it is a coarser unit than a pairing and the page says so. Added 2026-08-29: the point of printing it is that it is the HIGHER of the two, which is why the pairing median can stay the headline without flattering the finding.",
+      "text": "The employment-weighted median of non-overlapping NAICS325/326 county group-average wage ratios is 1.26x. The groups cover 33,528 jobs, of which 29,080 sit in groups averaging above their county all-jobs wage. This is not the median individual wage.",
       "source": "employment-weighted median of vs_local_all over the group rows (NAICS 325 and 326), 2025",
-      "assert": "(lambda G: len(G) == 23 and sum(r['emp'] for r in G) == 33528 and sum(r['emp'] for r in G if r['vs_local_all'] > 1) == 29080 and len(set(r['vs_local_all'] for r in G)) == len(G) and (lambda w: abs(w - 1.2597) <= 0.004 and w > 1.215)(min(r['vs_local_all'] for r in G if sum(q['emp'] for q in G if q['vs_local_all'] <= r['vs_local_all']) >= sum(q['emp'] for q in G) / 2)))([r for r in D['w']['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('325', '326')])",
+      "assert": "(lambda G: len(G) == 23 and len(set((r['area'],r['naics']) for r in G)) == len(G) and all(r['emp']>0 for r in G) and sum(r['emp'] for r in G) == 33528 and sum(r['emp'] for r in G if r['vs_local_all'] > 1) == 29080 and abs(min(r['vs_local_all'] for r in G if sum(q['emp'] for q in G if q['vs_local_all'] <= r['vs_local_all']) >= sum(q['emp'] for q in G) / 2) - 1.2597) <= 0.004)([r for r in D['w']['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('325', '326')])",
       "actual": "(lambda G: (len(G), sum(r['emp'] for r in G), sum(r['emp'] for r in G if r['vs_local_all'] > 1), min(r['vs_local_all'] for r in G if sum(q['emp'] for q in G if q['vs_local_all'] <= r['vs_local_all']) >= sum(q['emp'] for q in G) / 2)))([r for r in D['w']['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('325', '326')])",
-      "falsified_if": "The job-weighted median stops rounding to 1.26x, or drops to or below the pairing median of 1.21x, at which point stating the pairing figure in the headline would overstate rather than understate and the headline would have to move. Two ties in the guard, both deliberate: the distinct-values check is what makes this assertion's 'smallest value whose cumulative jobs reach half' identical to the page's running-total implementation, and the 33,528 total ties this claim to jobs-counted-once so the two cannot drift apart. The crossing is not comfortable - Summit chemicals carries the running total to 47.8 percent and Ashtabula plastics and rubber to 51.8 - so a revision moving either county's employment could move this without moving any premium."
+      "falsified_if": "The weighted median no longer rounds to 1.26 or either named job count changes. Group means cannot identify the individual wage distribution, regardless of this numerical check."
     },
     {
       "id": "jobs-counted-once",
@@ -222,8 +229,8 @@
     },
     {
       "id": "footprint-excludes-four",
-      "text": "The methodology coverage note says the wider fourteen-county definition of the region adds Crawford, Huron, Richland and Tuscarawas, and that figures on this page cannot be compared with fourteen-county figures published elsewhere. The old wording, 'the two never reconcile', named no risk a reader could act on.",
-      "source": "meta.footprint.counties (PIC-12), rewritten out of tracker shorthand for the reader",
+      "text": "The methodology distinguishes the chain page’s PIC-12 plus Columbiana and Tuscarawas from the legacy fourteen-county geography module. The legacy set includes Crawford, Huron, Richland and Tuscarawas but omits Ashtabula and Trumbull. This page uses PIC-12, which excludes those four legacy-only counties. Readers must match county sets before comparing totals.",
+      "source": "meta.footprint.counties (PIC-12), chain/data/chain-data.json CODEBOOK footprint, and the unchanged legacy _data/build/footprints.py definitions",
       "assert": "set(D['w']['meta']['footprint']['counties']) & {'Crawford','Huron','Richland','Tuscarawas'} == set() and len(D['w']['meta']['footprint']['counties']) == 12",
       "actual": "sorted(set(D['w']['meta']['footprint']['counties']) & {'Crawford','Huron','Richland','Tuscarawas'})",
       "falsified_if": "Any of those four counties enters this page's footprint, or the footprint stops being the twelve-county set."
@@ -238,12 +245,12 @@
     },
     {
       "id": "byline-date",
-      "text": "The byline is dated August 2026, the month this revision was built.",
+      "text": "The byline is dated September 2026, the month of the geography and wage-interpretation correction.",
       "verify": "manual",
-      "source": "wages/README.md revision log: this page was rebuilt 2026-08-28 and revised again 2026-08-29, both inside the month the byline names",
+      "source": "wages/README.md correction dated 2026-09-08",
       "checked_by": "the person directing the build",
       "assert": "None",
-      "falsified_if": "The page is rebuilt or republished in a later month and the byline still reads August 2026 - the date is not derivable from the data, so it has to be re-set by hand at each revision."
+      "falsified_if": "A later revision still claims September 2026 as its revision month."
     },
     {
       "id": "closer-both-halves",
@@ -255,7 +262,7 @@
     },
     {
       "id": "wage-vs-mfg-level",
-      "text": "The factory-baseline band: measured against its own county's manufacturing wage instead of the all-jobs average, the middle polymer pairing pays 0.99x, with 23 of the 51 published pairings above their county's manufacturing average. Dead level with the factory next door.",
+      "text": "The median county-industry mean is 0.99x its own county manufacturing mean; 23 of 51 pairings exceed that comparator. This descriptive comparison does not establish a causal industry premium.",
       "source": "wages/data/wages.json latest_rows joined to wages/data/mfg.json counties, same census, same year, same ownership basis",
       "assert": "(lambda R, M: (lambda v: 0.984 <= sorted(v)[len(v)//2] <= 0.992 and len(v) == 51 and len([x for x in v if x > 1]) == 23)([r['weekly_wage'] / M['counties'][r['name']]['mfg_weekly_wage'] for r in R if r.get('vs_local_all')]))([r for r in D['w']['latest_rows'] if r.get('vs_local_all')], D['m'])",
       "actual": "sorted(round(r['weekly_wage'] / D['m']['counties'][r['name']]['mfg_weekly_wage'], 3) for r in D['w']['latest_rows'] if r.get('vs_local_all'))[20:31]",
@@ -271,7 +278,7 @@
     },
     {
       "id": "wage-mfg-overlap",
-      "text": "The factory-baseline band names its own overlap: the polymer cover (325 and 326, 33,528 jobs) is about one manufacturing job in six across the twelve counties' 216,335 private manufacturing jobs, so polymer sits inside its own comparator and the 0.99x is mildly conservative.",
+      "text": "The broad chemical/plastics/rubber cover, NAICS325 and326, has 33,528 jobs out of 216,335 private manufacturing jobs, about one in six. The comparator includes the compared industries and does not identify other-factory pay.",
       "source": "wages/data/wages.json cover against wages/data/mfg.json county mfg_emp",
       "assert": "(lambda cover, mfg: 0.14 <= cover / mfg <= 0.17 and mfg == 216335)(sum(r['emp'] for r in D['w']['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('325', '326')), sum(c['mfg_emp'] for c in D['m']['counties'].values()))",
       "actual": "(sum(r['emp'] for r in D['w']['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('325','326')), sum(c['mfg_emp'] for c in D['m']['counties'].values()))",

@@ -21,22 +21,27 @@ here is what a machine cannot adjudicate.
 |---|---|
 | which sources a page rests on, with exact filter values | `_data/SOURCES.json` |
 | which script produces which dataset | `_data/SOURCES.json` → `script` |
-| whether every published sentence still holds | `python _data/build/verify_claims.py` |
+| whether recorded assertions still agree with their input data | `python _data/build/verify_claims.py` |
 | whether the records that should agree do agree | `python _data/build/verify_consistency.py` |
 | whether a page renders without breaking | `node tools/verify.mjs` |
 | whether marks collide or leave frame | `node tools/collide.mjs` |
 | what changed after publication, and why | `CORRECTIONS.md` |
-| what each page claims, its exposure, and whether it may be published | `_data/ARTIFACT-REVIEW.md` — **internal, not published.** Every page in this repository is one the review cleared; pages it did not clear are absent rather than hidden, and the staging script fails if one appears. |
+| what each page claims, its exposure, and whether it may be published | The owner's **private** artifact-review record. Unreleased source material stays outside this public repository. Public changes are authored here and reviewed before merge; the former staging script is retired. |
 
 ---
 
 # 1. Definitions that must be decided, not inferred
 
 **The footprint.** PIC-12 is PIC's official twelve-county set and the one the cluster-health
-dashboard uses; NEO-14 is inherited from the vault. They share ten counties. **Federal-data
-pages use PIC-12. Vault-sourced pages use NEO-14. A page never mixes them.** If a page must
-show both — a deliberate comparison — it says so in its own prose *and* in its limitations,
-and the harness's footprint check will need an explicit exemption rather than a silent pass.
+dashboard uses. The chain register's CODEBOOK NEO-14 includes all twelve plus Columbiana
+and Tuscarawas. It is a different set from the legacy NEO14 constant in pic-geo and the
+vendored footprints.py; that legacy set shares only ten PIC counties. **Use the explicit
+county list attached to each source, not the label alone.** Regional federal county
+aggregates use PIC-12; chain company records use their CODEBOOK rule. National,
+state, metro and county comparisons name their own geography. A metro is not a county
+footprint, and a shared code or year does not prove two sources use the same boundaries.
+If a page deliberately compares footprints, it says so in its prose and limitations, and
+the harness's footprint check needs an explicit exemption rather than a silent pass.
 
 **Where a company is.** Decide per dataset and state it: headquarters, plant site, grant
 recipient, or inventor residence are four different questions and produce four different
@@ -129,13 +134,10 @@ can find out what happened to it.
 One command, not a checklist to remember:
 
 ```powershell
-node tools/verify.mjs           # renders, provenance present
-node tools/collide.mjs          # no overlapping or out-of-frame marks
-python _data/build/verify_claims.py        # every sentence still holds
-python _data/build/verify_consistency.py   # records that should agree, do
-node tools/bundle.mjs           # rebuild — shared-file edits stale EVERY bundle
+node tools/all.mjs              # rebuilds bundles, then runs the complete gate suite
 ```
 
+The `--fast` subset reports its skipped checks and is not the complete release check.
 Then the part no command covers:
 
 1. **Read the Limitations section** of every page whose flag is coming off. Presence is

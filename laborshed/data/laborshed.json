@@ -29,9 +29,9 @@
     "Tuscarawas"
    ]
   },
-  "no_industry": "LODES origin-destination carries NO industry dimension. This is the labor shed of the whole economy, NOT of the polymer cluster. Industry detail exists only in the WAC workplace files and cannot be crossed with residence.",
+  "no_industry": "This page uses all-job totals for the whole economy. LODES origin-destination includes three broad industry groups (SI01-SI03), but cannot isolate polymer industries.",
   "not_a_commute": "The home end is a residence on file, not evidence of a journey. Nothing here counts a trip.",
-  "baseline": "A 2019 pull tests whether the distant-metro share is a pandemic effect. It is not: Franklin County was already the largest external source in 2019 at 23,506 jobs, and adjacent-county inflow has been flat (+1%) while distant metros grew 13%. The two categories were always different things and are never summed.",
+  "baseline": "The 2019 records establish that distant residence existed before the pandemic. They do not identify a pandemic effect, commuting or telework.",
   "split_is_judgment": "Adjacent versus distant is a judgment about distance, not a field LODES publishes.",
   "year": 2022,
   "baseline_year": 2019

@@ -1,173 +1,157 @@
 # The Other Federal Money
 
-**Is the Tech Hub award big?** Routine federal contracting already puts about $35 million
-a year of polymer work into the twelve counties, so the $51.0M award is worth roughly a
-year and a half of it. In FY2019 the routine flow alone was larger than the whole award.
+**How large is the Tech Hub award beside existing federal procurement?** Prime contracts
+under chemical and plastics/rubber manufacturing codes average **$41.4 million a year in
+2025 dollars** across FY2019–FY2025 in PIC-12. The $51.0 million EDA implementation award
+is about **1.2 average years**. Finished years range from $20.5 million to $59.9 million;
+the average does not establish recurring demand or forecast the next year.
 
-Sources: USAspending.gov spending_by_category (yearly flow) and spending_by_award
-(the who-gets-it register), place of performance, FY2019–FY2026. Award figures
-cross-referenced from the funding map's own shipped file.
+The industry-year series was refreshed on 8 September 2026. The company register retains
+its separately dated 31 August 2026 snapshot.
 
-**What a row is:** in federal.json, one obligation total for a single fiscal year,
-category and industry code. In awards.json, one prime contract award, whose amount is
-the award's WHOLE LIFE — a different basis, never summed with the first (see below).
+## Sources and units
 
+- `data/federal.json`: one signed transaction-obligation total per fiscal year and
+  industry code. The primary NAICS rows and contracting comparator both use prime
+  contract award types A–D, reported place of performance in PIC-12, FY2019–FY2026.
+  All 325*/326* categories are retained after exhaustive category pagination.
+- `data/awards.json`: a prime award's **whole-life obligation**, including obligations
+  outside the FY2019–FY2026 activity window. Its $329.5M, 6,630 contracts and 193 companies
+  describe the earlier award-register snapshot. They are never added to the annual series.
+- `data/techhub.json`: seven EDA implementation awards reaggregated from
+  `funding-map/data/funding.json`, totaling $51,001,413; $7.2M partner match is excluded.
+- `claims.json`: runnable guards for the quantities the article prints.
+- `app.js`: desktop and phone charts; all 37 industry categories remain visible and the
+  full table carries Census names. `index.html` carries the argument and dated correction.
+
+An obligation is a commitment, not an outlay. The transaction series keeps negative
+de-obligations, which reduce the sum. Zero amounts and an absent category row are distinct.
+Place of performance is a reported field, not a direct observation of local economic activity.
+The 325*/326* scope includes chemistry beyond the narrower cluster measurement register.
+
+## Inflation adjustment
+
+The fiscal-year charts use the `real` column. Nominal dollars remain in the tables for
+source reconciliation. BLS CPI-U, all items, U.S. city average, not seasonally adjusted
+(CUUR0000SA0), supplies the monthly observations. The producer computes each calendar-year
+mean from those observations.
+
+The **2025 index is 321.943, based on eleven published months**. BLS marks October 2025
+unavailable because of the lapse in appropriations. The held CPI file had incorrectly
+labelled this as twelve months, and the former federal derivation separately hardcoded
+322.132. The article now discloses the missing month. Calendar-year CPI approximates
+prices over federal fiscal years, which begin the preceding October. FY2026 is carried
+at the 2025 index rather than extrapolated; it is partial and excluded from the headline
+average.
+
+The Tech Hub line is $51.0M as awarded. Restating the awards carrying FY2024 IDs produces
+$51.3M in 2025 dollars; either basis rounds to 1.2 finished-year averages. A competitive
+implementation grant and a procurement commitment differ in purpose; this comparison
+establishes scale, not additionality or economic impact.
+
+## Acquisition and rebuild
+
+Raw acquisition writes into an explicitly chosen private directory and refuses to replace
+an existing compiled pull. Each request/response receipt records the filter, page, timestamp,
+response hash and terminal pagination. Category rows are filtered only after the last page.
+Malformed responses, missing amounts, duplicate category codes, invalid next-page pointers
+and request failures stop the build.
+
+The private compiled inputs retain each page's response text with its SHA256 and request
+receipt. The producer replays those bytes, verifies every page and filter, and reproduces
+the category rows and award-type totals before inflation adjustment. Only pagination
+summaries enter the public data file. The acquisition's 0.01% residual threshold and the
+producer's 10-to-100 comparator band are coarse review triggers; they do not establish
+reconciliation or validate the displayed figure. The residual is disclosed separately,
+and the article claim checks the printed one-in-29 contracting comparison.
+
+From the repository root, with a fresh directory selected:
+
+```powershell
+$raw = "<fresh-private-directory>"
+$env:FEDERAL_RAW_DIR = $raw
+python _data/build/fetch_rest.py usaspending
+python _data/build/fetch_fed_contracts.py --output-dir $raw
+python _data/build/fetch_federal_cpi.py --output-dir $raw
+python _data/build/fetch_federal_research.py --output-dir $raw
+python _data/build/derive_federal.py --raw-dir $raw
+python federal-money/derive_techhub.py
+python -m unittest discover -s _data/build -p test_federal_categories.py -v
+python -B _data/build/verify_claims.py federal-money
+python -B _data/build/verify_series.py federal-money
 ```
-index.html          page shell, headline, ledes, figure titles
-styles.css          page-local CSS: figure chrome, award ladder, mobile re-layout
-app.js              charts and interaction
-claims.json         28 falsifiable assertions, re-run on every build
-data/federal.json   THE DATA (13 KB). Edit the builder, not this.
-data/techhub.json   DERIVED. Written by derive_techhub.py. Do not hand-edit.
-data/awards.json    DERIVED. Written by _data/build/derive_fed_awards.py from the raw
-                    spending_by_award pull. Recipients, the $500k+ register, per-code
-                    and per-agency totals. Do not hand-edit.
-derive_techhub.py   copies the EDA award across from funding-map/data/funding.json
-shots/              desktop.png, mobile.png
+
+`derive_rest.py` calls the same federal producer for full-site builds. The dedicated
+producer avoids rebuilding unrelated articles. The registry, `_data/SOURCES.json`,
+records the endpoints and filters.
+
+The award-register producer remains `fetch_fed_awards.py` → `derive_fed_awards.py`.
+Its original raw pull was unavailable in the source holdings used for this revision.
+The retained published register was checked internally; the complete annual acquisition
+does not independently verify that older register. A new award pull is a new source
+vintage and must be reviewed before replacing those company amounts.
+
+## Correction: 8 September 2026
+
+The old category fetch stopped at its first 100 results, then filtered for chemistry
+and polymers. Completing every year expands the retained series from 39 industry-year
+rows across eight industries to 224 rows across 37 industries. FY2023's complete total
+is $19,379,051.30 nominal, including $1,175,828.84 of tire manufacturing. The former
+claim that no tire obligation appeared was false.
+
+The revised series totals $278.6M nominal and $313.6M in 2025 dollars, up from $248.8M
+and $279.3M. Completing pagination, correcting CPI, and incorporating current ledger
+revisions raises the finished-year mean from $36.6M to $41.4M and changes the award ratio
+from 1.4 to 1.2 years. FY2019 and FY2021 both exceed the award. The two leading rubber
+codes now account for 58%, previously 65%.
+
+Tire obligations decline from $20.2M to $1.2M in 2025 dollars between FY2022 and FY2023,
+accounting for about 71% of the $26.5M regional decline. Excluding all-other rubber
+reduces the finished-year mean to $29.8M (1.7 award-years); excluding tires too gives
+$18.1M (2.8 years). These are sensitivity checks, not alternate definitions of the headline.
+
+## Comparator and current limits
+
+The contracting denominator is $9.2B in 2025 dollars; polymer-coded work is about one
+dollar in every 29. Both sides use the same award types and fiscal-year window.
+
+The separately acquired all-type county context is $238.3B in 2025 dollars. It includes
+grants, loans, direct payments and other assistance as well as contracts. Its six separately
+queried award groups leave an **unresolved $8.5M nominal remainder**, about 0.004% of the
+$214.6B nominal unfiltered total. The remainder is stated in the methodology and is not
+assigned to a guessed category. Direct payments and other assistance are about 85% of
+that nominal total. The historical September 1 correction retains its original $235.5B
+vintage; it is not the refreshed current total.
+
+The prime-contract award-type filter excludes research grants. NEO-SMART and TARDISS
+illustrate that boundary; TARDISS is not presented as a
+measured PIC-12 research award. The records cannot allocate company shares of a particular
+fiscal year's total or establish who would win a future procurement.
+
+TARDISS is excluded by the prime-contract award-type filter. The former article text
+incorrectly implied that natural rubber falls outside NAICS 325/326. The
+[2022 Census NAICS manual, industry group 3262](https://www.census.gov/naics/reference_files_tools/2022_NAICS_Manual.pdf#page=210)
+includes products made from natural, synthetic, or reclaimed rubber. This source-scope
+explanation was corrected on 8 September 2026; no numerical series changed.
+
+Also corrected on 8 September 2026: the metadata formerly asserted that a university
+files under 61xxxx or 5417xx. That universal coding claim was unsupported.
+[FAR 19.102(b)](https://www.acquisition.gov/far/19.102) assigns contract NAICS by the
+principal purpose of the supplies or services acquired. A recipient's identity does
+not determine the contract code, and its address does not establish manufacturing
+activity in PIC-12. The producer and rebuilt metadata now state these limits.
+
+## Preview and release checks
+
+```powershell
+python -m http.server 8899
+# http://localhost:8899/federal-money/
+node tools/bundle.mjs federal-money
+node tools/verify.mjs federal-money
+node tools/collide.mjs federal-money
 ```
 
-## One dollar basis
-
-Every chart drawn from `federal.json` is in **2025 dollars**, using the `real` column
-that BLS CPI-U annual averages produced upstream. The one exception is the award
-register's company chart, which is in the dollars each award was signed in and says so
-on its axis: a whole-life award total spans years by construction, so a single-year CPI
-restatement is undefined on that basis, and mislabelling it as 2025 dollars would be
-the exact defect the rest of this section describes. Nominal survives in the tables, the source lines and
-the hero detail rows, which is where a reader ties back to USAspending. The previous
-version charted nominal bars under a real hero, so the hero read $98.2M and the bar under
-it read $87.6M with nothing reconciling them.
-
-Real and nominal are the page's most-used constructed unit, so they are translated rather
-than named: the Band 1 `.deffn` block defines "in 2025 dollars" and "as awarded" in plain
-words, and the hero row pairs "in 2025 dollars" with "in the dollars of the day" one card
-across so the contrast lands on the first screen. Later references use the technical
-phrase alone, which is what a numerate reader wants and what ties back to the source.
-The hero detail line wraps past about thirty characters; keep replacements shorter.
-
-## Rebuild the data
-
-```
-cd ../_data/build && python derive_rest.py      # federal.json
-cd ../../federal-money && python3 derive_techhub.py   # techhub.json
-cd ../_data/build && python3 fetch_fed_awards.py && python3 derive_fed_awards.py
-                                                # awards.json (keyless; ~70 API pages)
-```
-
-`fetch_fed_awards.py` walks USAspending's spending_by_award pagination to exhaustion
-(6,630 rows over 67 pages at first fetch) and refuses to write a pull under the
-4,000-row probe floor: a truncated register would silently mean something else. The
-raw pull is not committed; the derive reconciles every view back to the one total
-before writing.
-
-`derive_techhub.py` fetches nothing. It reads `funding-map/data/funding.json`, which is
-already in this repo and already verified against signed federal Notices of Award, and
-re-aggregates the seven EDA implementation awards into the shape this page charts. Re-run
-it after any change to the funding map's data.
-
-## Read before quoting anything from this page
-
-- The award line is a **competitive implementation grant**; the bars are **procurement
-  obligations**. Different instruments, one unit of account. The comparison claimed is of
-  order of magnitude, not of like for like. The award is charted **as awarded** while the
-  bars are in 2025 dollars; Band 1's `.deffn` prints the restated award ($51.3M) and shows
-  the ratio does not move, guarded by `fed-award-basis`.
-- **Rounding does not close, and the page says so in all three places it shows.** Every
-  `$X.XM` is rounded to the nearest $0.1M, so rounded figures do not always add or subtract
-  to the totals printed beside them: the two gaps to the award line ($647k over, $245k
-  under, against labels that subtract to $200k), the seven award amounts (exactly
-  $51,001,413, printed as seven figures adding to $51.1M), and the eight industry bar
-  labels ($279.2M against a $279.3M total, with two codes both printing $23.5M).
-  `fed-2019-clears`, `fed-award-total` and `fed-label-rounding` each fail if one of those
-  reconciliations goes stale. A reader who checks and finds a gap stops trusting the rest
-  of the page, so a rounding step is stated, never left to be discovered.
-- Place of performance is where work is reported, not where a company is headquartered.
-- An obligation is not an outlay. It is money committed, which may be spent across years
-  or de-obligated.
-- FY2026 is partial. Its bar is hatched and tagged; the closed-year average ($36.6M) and
-  the closed-year ratio (1.4 years) are printed beside the chart.
-- Three scopes live in `federal.json` and are never summed: polymer-NAICS rows (charted),
-  all-industry county rows ($235.5B, EVERY award type, context only), and the `contracts`
-  block, which re-pulls both series with `award_type_codes` A-D. The comparator Band 2
-  prints comes from that block, $9.2B against $279.3M in 2025 dollars. Until 2026-09-01 it
-  came from the all-type county rows, which are 85% direct payments and other financial
-  assistance and are not a contracting figure; the published ratio was wrong by about
-  twenty-six times.
-- **The award register is a THIRD basis, and it is never summed with either.** An award's
-  amount in `awards.json` counts the award's whole life: a contract running since 2014
-  that the FY2019–FY2026 window touches carries every dollar since 2014, in the dollars
-  of the day. That is why the register totals $329.5M while the category rows sum to
-  $248.8M as awarded — same ledger, different windows. The `fed-award-basis-never-summed`
-  claim fails if either surface stops labelling its basis.
-- University and research awards are invisible to the NAICS view by construction. The NSF
-  NEO-SMART Engine appears in no bar. Its award record carries two figures and the page
-  now prints both: $14,999,983 estimated total, $7,499,984 obligated.
-- The footprint is PIC-12. The wider fourteen-county reading the vault calls NEO-14 adds
-  Crawford, Huron, Richland and Tuscarawas; the banner on the page states the difference in
-  reader words and names this file for the registry detail.
-
-## Where the apparatus lives
-
-Caveat ink beside a figure is capped at a source line plus one limitation sentence. The
-rest is not deleted, it is relocated, and this is the map:
-
-| What | Where it renders |
-|---|---|
-| Source, period, dollar basis, partial-year warning | the `.src` line under each figure |
-| Nominal totals, closed-year basis, award-line provenance, scope | inside that figure's own table-view disclosure (`.tnote`) |
-| What the NAICS filter cannot see; the all-industry county scope | Band 2 editorial prose, in body register, static HTML |
-| Place of performance as a reported field | the page's single `.note` callout, in Band 1 |
-| Fetch scripts, endpoints, filters, `derive_techhub.py` | the generated "Reproduce this" disclosure, and this file |
-| Plain-language reading of every constructed unit | the reference-line label, the axis title, and the `.deffn` block in Band 1 |
-
-Nothing that changes how a number should be read sits behind a disclosure. The disclosures
-carry depth, not the disclosure itself.
-
-## Known gaps
-
-- **Recipient names: CLOSED (2026-08-31).** The gap this section used to carry — the
-  category endpoint returns no parties — is closed by the `spending_by_award` pull and
-  the register band it feeds: 6,630 contracts, 193 named companies, 92% Department of
-  Defense. What the award view still cannot do is allocate a single fiscal year:
-  an award's total spans its life, so "who holds FY2019's $51.6M" remains unanswerable
-  from public files at this granularity, and the page now says exactly that where it
-  used to say nothing could be named at all.
-- **Reporting not done.** The piece ships at the named-public-instance rung. The interview
-  ask, if a person picks it up: call Flexsys (the $10.1M 6PPD-alternative lead) and one
-  procurement-side firm — RFD Beaufort, whose escape suits and life rafts are now named
-  in the register band, is the natural first call. Three questions. (1) Did the Tech Hub
-  award change what you could attempt, against the federal work you already do? (2) How
-  does a competitive grant sit differently on your books than a procurement obligation?
-  (3) What does a year and a half of routine federal work look like from inside the
-  plant? The quote slots into the register band, above the award ladder. Status: ready
-  to ship at rung 2.
-
-## Revision, 31 August 2026 — the hero row moved to the basis the page argues for
-
-- **The stat row printed the basis the page rejects.** In display type it read `$34.9M`
-  and `1.5`, the eight-year mean and its ratio, while the H1, the standfirst, the figure
-  title and the closer all printed `$36.6M` and `1.4`, and the closer said in as many
-  words that an annual rate should not carry a year that has not finished. The first
-  screen argued against the rest of the page in the largest numerals on it. The cards now
-  lead with the closed-year basis; the eight-year one moved to their detail lines, so both
-  bases still sit on the first screen and the one the page uses is the one it shows.
-- **Two claim tolerances were looser than the number they guarded.** The closed-year mean
-  is `$36,606,065.57` and `$43,934.43` more would print `$36.7M`; the eight-year mean is
-  `$34,908,375.50` and `$41,624.50` more would print `$35.0M`. Both claims allowed
-  `±$50,000`, so either print could have drifted with the gate green. Both are `±$40,000`
-  now. `fed-annual-rate`'s own note claimed 50k was "tighter than the 50k that would
-  flip" the print, which is not a sentence that can be true; it now states the arithmetic.
-- **The exclude-the-largest check is now printed**, beside the concentration beat it
-  follows from: drop the leftovers code from the seven finished years and the routine flow
-  falls from `$36.6M` a year to `$25.0M` (the award becomes 2.0 years of what is left);
-  drop tire manufacturing too and it is `$13.7M` and 3.7 years. Guarded by
-  `fed-excl-top-codes`. The exclusions are sensitivity, not an alternative headline, and
-  they run in the unflattering direction for a page arguing the award is about a year and
-  a half of routine money.
-
-## Run and publish
-
-```
-cd .. && python -m http.server 8899     # http://localhost:8899/federal-money/
-node ../tools/bundle.mjs federal-money          # → ../dist/federal-money.html
-```
+Read the page at desktop and 375px, including keyboard-accessible marks and tables.
+A passing arithmetic guard cannot establish correct source acquisition; the pagination
+regression deliberately places a tire category after page one, where the old extractor
+loses it, and tests invalid pagination and the missing CPI month.

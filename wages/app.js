@@ -115,15 +115,8 @@ const jobsTip = r => {
   const p = CHEM.has(r.naics) ? "325" : "326";
   return byC[r.name][p] ? n + ", counted again in this county’s group row" : n;
 };
-/* THE HEADLINE STATES A MEDIAN OVER PAIRINGS, AND NOW SAYS SO. The same overlap makes
-   the second half of the reader's finding: 1.21x is the middle of 51 ROWS, and the
-   heaviest rows sit below it (Cuyahoga plastics & rubber, 0.87x on 2,037 jobs), so
-   "the typical polymer job pays 1.2 times" asserted something the median never
-   measured. The job-weighted version IS computable from the shipped file, because the
-   group-level cover carries employment on every row: sort those rows by premium and
-   walk the jobs to the half-way mark. It lands ABOVE the pairing median, so the
-   headline understates rather than overstates, which is the only reason the pairing
-   figure can stay the headline honestly. Both are printed on the median card. */
+/* This weights group-average ratios by employment. Within-group wage distributions
+   are unavailable: this cannot recover the median individual job or worker wage. */
 const wmed = pairs => {
   const s = [...pairs].sort((a, b) => a[0] - b[0]);
   const T = s.reduce((t, p) => t + p[1], 0);
@@ -138,8 +131,9 @@ const jobsAbove = famRows.filter(r => r.vs_local_all > 1).reduce((s, r) => s + r
    group and the counties come to a different, also-correct total, because that list
    leaves out everything in 325 the threshold never splits out. Naming it is what stops
    a reader meeting two job counts for "the polymer cluster" and assuming one is wrong. */
-const jobsNarrow = rows.filter(r => ["3252", "3255", "326"].includes(r.naics))
-  .reduce((s, r) => s + r.emp, 0);
+const narrowRows = rows.filter(r => ["3252", "3255", "326"].includes(r.naics));
+const jobsNarrow = narrowRows.reduce((s, r) => s + r.emp, 0);
+const narrowMed = wmed(narrowRows.map(r => [r.vs_local_all, r.emp]));
 
 const counties = Object.keys(byC).sort();
 const top = rows[0], bot = rows.at(-1);
@@ -169,8 +163,10 @@ PV.figures([
     instead: ${dAbove} of ${dedup.length}.`],
   ["key", medPrem.toFixed(2) + "×", "median premium, over pairings",
    `the middle of the ${rows.length} pairings pays a fifth more than its county’s average
-    job. Weight by jobs instead of by rows and the middle of ${N(jobsOnce)} jobs sits at
-    ${jobMed.toFixed(2)}×.`],
+    job. The employment-weighted median of group-average ratios is
+    ${jobMed.toFixed(2)}× for broad 325+326 (${N(jobsOnce)} jobs), versus
+    ${narrowMed.toFixed(2)}× for narrow 3252+3255+326 (${N(jobsNarrow)} jobs).
+    Both weight group means; neither is median worker pay.`],
   ["", `${usBelow} of ${rows.length}`, "pay under their own industry nationally",
    `the typical one about 12 percent less (${usMed.toFixed(2)}×). ${qBeatTrail} pairings
     are in both counts, which is how ${above} and ${usBelow} fit inside ${rows.length}.`],
@@ -676,8 +672,8 @@ document.getElementById("trendsrc").innerHTML =
 document.getElementById("closersub").innerHTML =
   `${above} of ${rows.length} pairings beat their county&rsquo;s average job, a
    <b>${medPrem.toFixed(2)}×</b> median across pairings that has held for a decade
-   (<b>${jobMed.toFixed(2)}×</b> if you weight the ${N(jobsOnce)} jobs instead of the
-   rows), and <b>${usBelow} of ${rows.length}</b> still pay under their own
+   (<b>${jobMed.toFixed(2)}×</b> as an employment-weighted median of group-average ratios),
+   and <b>${usBelow} of ${rows.length}</b> still pay under their own
    industry&rsquo;s national average. Both halves are checkable from the same public
    file, and the honest recruiting pitch carries both.`;
 
@@ -825,15 +821,16 @@ const meth = await PV.methodology({page: "wages", meta: D.meta,
     only as clear as the industry list under it: narrow the list to the two published
     chemistry parts plus plastics-and-rubber, dropping the rest of chemical
     manufacturing, and the same ${FP.words} counties give ${N(jobsNarrow)} instead.
+    This narrow 3252+3255+326 cover has an employment-weighted median group-average
+    ratio of ${narrowMed.toFixed(2)}&times; the county all-jobs wage, beside
+    ${jobMed.toFixed(2)}&times; for broad 325+326.
     This page keeps all of 325, which is where its highest-paying rows are.
-    Which median the headline states: ${medPrem.toFixed(2)}&times; is the middle of the
-    ${rows.length} published PAIRINGS, and it is the figure the headline, the cards and
-    the over-time chart all state. Weighting the group-level cover by employment instead
-    puts the middle JOB at ${jobMed.toFixed(2)}&times;, and ${N(jobsAbove)} of the
-    ${N(jobsOnce)} jobs sit in a group paying above its county average. The job-weighted
-    figure is the higher of the two, so the headline understates rather than overstates;
-    it is also the coarser one, since the only complete cover the data publish is whole
-    groups, and it is not the number the page headlines.`});
+    ${medPrem.toFixed(2)}&times; is the middle of the ${rows.length} published
+    county-industry average ratios. Weighting the non-overlapping group-level cover
+    by employment gives a median group-average ratio of ${jobMed.toFixed(2)}&times;.
+    ${N(jobsAbove)} of the ${N(jobsOnce)} jobs sit in groups whose average exceeds
+    the county average. Neither statistic identifies individual pay: the source
+    contains group means and headcounts, not the wage distribution within each group.`});
 
 /* Which counties, in reader words, filed under the sources it qualifies. */
 {
@@ -843,10 +840,10 @@ const meth = await PV.methodology({page: "wages", meta: D.meta,
     const p = document.createElement("p");
     p.className = "pv-method-note";
     p.textContent = `Coverage: the cluster’s official ${FP.words}-county footprint ` +
-      `(${FP.counties.join(", ")}), all in Northeast Ohio. A wider fourteen-county ` +
-      `definition of the region, used by some other sources, adds Crawford, Huron, ` +
-      `Richland and Tuscarawas, so figures on this page cannot be compared with ` +
-      `fourteen-county figures published elsewhere.`;
+      `(${FP.counties.join(", ")}), all in Northeast Ohio. The chain page uses these twelve counties plus ` +
+      `Columbiana and Tuscarawas. The legacy fourteen-county definition in the shared ` +
+      `geography module instead includes Crawford, Huron, Richland and Tuscarawas and ` +
+      `omits Ashtabula and Trumbull. Match county sets before comparing regional totals.`;
     h.parentNode.appendChild(p);
   }
 }

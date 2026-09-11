@@ -11,6 +11,413 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-11 — Education scope, recruiting claims and chain captions
+
+**Was:** The occupations opening and several captions described selected program
+conferrals as the region's training total. Its closing sentence said floor jobs could
+recruit nationally while degree jobs had to be trained locally; a stat card called
+the largest occupation the largest staffing problem. The chain's generated opening
+still called Census establishments polymer plants, and its methods said unclassified
+records were hatched on a map that now shows classified counts.
+
+**Is:** The occupations page separates national staffing, metro wage comparisons and
+conferrals in the selected institution/program records. The data do not establish
+recruiting reach, unique graduates, local retention or a worker shortage. The chain
+opening describes a company-record inventory; Census establishments remain separate
+industry context, and unclassified records are excluded from the classified-count map.
+
+**Cause:** Partial wording corrections had not reached every generated caption and
+opening sentence. The claims' descriptions now follow the corrected scope. Source
+observations and numerical assertions are unchanged. Shorter opening text also moves
+the first chart earlier without removing the scope qualifications.
+
+## 2026-09-11 — Chain geography and the invalid coverage comparison
+
+**Was:** The chain page counted 785 regional records, using a county-name join that
+admitted 64 Wayne County, Michigan records, one nonregional company address and ten
+records without an address. Its Census context used a different fourteen-county set,
+giving 653 establishments and 41,447 employees. A ratio of company records to Census
+establishments shaded the map and suggested where the register was incomplete.
+
+**Is:** Applying the held extract’s county-and-state rule leaves 710 qualifying records,
+566 with mapped roles. All 75 excluded names remain disclosed by reason. The map,
+county table and Census context now use the CODEBOOK boundary: PIC-12 plus Columbiana
+and Tuscarawas. The cached 2023 Census responses give 684 establishments and 43,242
+reported employees for NAICS 325 and 326 on that boundary. The map shows direct record
+counts; the incompatible company/establishment quotient and its ranking are removed.
+The separate application comparison covers all 59 applications, 38 in Ohio, and is not
+a measure of market demand.
+
+**Cause:** A county-name homonym and conflicting county lists affected both the regional
+and comparison populations. The replacement offline repair validates source bytes,
+county cells and retained source fields. Neither a headquarters filter nor a missing
+address establishes the absence of regional plants.
+
+## 2026-09-11 — Historical contributions are not blanket scientific firsts
+
+**Was:** All twelve research rows were labeled scientific firsts, including the 1940
+Ameripol product introduction. Chart labels omitted attribution from university
+priority claims. The 2005 Puskas paper attributed the coauthor group to Akron and linked
+a different 2009 paper as its repository record. Other sentences attributed EPIC’s
+1984 date and a dues-model conclusion, Goodyear’s retained headquarters, and an exact
+innovation-center size to sources that did not establish those clauses.
+
+**Is:** The same 31 events are displayed as 20 heritage events and 11 research
+contributions. Ameripol moves to heritage. Institutional priority claims remain
+attributed; chart labels do not assert an independent national first. The Puskas
+sentence names a collaborative paper without assigning all authors to Akron; the
+unrelated repository record is removed. EPIC’s date is attributed to a historical
+timeline citing Mark D. Bowles, and the unsupported dues-model conclusion is removed.
+The Goodyear row states the documented buyout. The innovation-center row states the
+documented 2010 completion without unsupported size or season. The Kent paper/patent
+display date now reads 1986–87.
+
+**Cause:** The source review checked event wording and attribution separately from
+the register’s editorial PROVEN label. A source supporting an event does not
+automatically support every clause attached to it. Public projection corrections
+preserve original event IDs and do not alter the internal register.
+
+## 2026-09-11 — Narrative claims must match their denominators and limits
+
+**Was:** Hub cards retained superseded claims about a flat headcount, six cluster
+industries, 721 classified companies, an Atlas size threshold and historical causation.
+Scorecard said no payment evidence existed despite the federal outlays shown by its
+companion page. Churn inferred a cause that its separation data cannot identify.
+Education headings turned a named-institution extract into a regional universe.
+Revision guidance turned an observed archive limit into a future deadline.
+
+**Is:** Cards match the corrected articles. Scorecard distinguishes partial outlay
+coverage from the unmeasured whole; Accountability separates destination from awards
+signed for and from cash held. Churn identifies the size of the separation gap while
+leaving quits and layoffs unresolved. Education counts stay scoped to institutions in
+the file. Reach states the mapped subset and the 309 of 1,364 scored-paper denominator
+(22.7 percent). Revision guidance cites BLS policy and bounds the archive observation;
+QWI history revisions are tied to changes in underlying state data. The largest PPI
+revision reads 1.41 percent consistently, calculated from the original index levels
+rather than rounding an already rounded change.
+
+**Cause:** Correct numerical cells can still produce a misleading headline when its
+unit, population, attribution or causal interpretation changes. Paint’s comparison on
+a fixed county set already existed; the standfirst now makes its changing disclosed
+county count explicit.
+
+## 2026-09-11 — Institution records are not distinct schools
+
+**Was:** Atlas disclosed duplicate federal institution identifiers in its methodology,
+but its headline still called the 147 records “places,” and several chart labels counted
+them as distinct institutions. It also described that total as a floor for school counts.
+
+**Is:** The headline, count labels and directory identify institution records. Each
+record follows a federal identifier; one school can hold more than one. Missing
+subject codes and duplicate identifiers are different limitations, so the total is
+not presented as a lower bound on distinct schools.
+
+**Cause:** The earlier correction reached the methodology without reaching the labels
+readers see first. No rows, completion counts or coordinates changed; this correction
+does not claim a newly deduplicated school total.
+
+## 2026-09-11 — Documentary descriptions and event-count fallbacks
+
+**Was:** The Atlas attributed all four teaching examples outside its census to chemistry
+or chemical-engineering filing codes. Peers described a national RV production majority
+and injection molding without sufficient evidence. The tire vignette asserted a rubber
+composition share. Timeline called every photo public domain, described all three 1941
+frames as rubber or fuel-tank work, and retained 68/69 in static event-count text.
+
+**Is:** The four teaching examples do not share one established filing-code explanation.
+Peer descriptions identify documented industry presence, with direct sources, without
+claiming production shares. The tire explanation concerns the crosslinked rubber’s
+resistance to simple remelting, not its mass share. Photo captions identify aircraft
+subassembly, fuel-tank manufacture and rubber processing; rights wording follows the
+archives’ records. Timeline’s fallbacks now match its data: 67 delivered since designation,
+68 since the calendar opened, and 18 scheduled. Funding-map’s introduction describes
+named allocations and acknowledges that some awarded funds remain unassigned.
+
+**Cause:** A documentary audit found unsupported generalizations and stale repeated text.
+The sources include [BLS county industry records](https://data.bls.gov/cew/data/api/2024/a/area/18039.csv),
+the [rubber-recycling review](https://doi.org/10.1039/D4MA00379A), and the
+[Library of Congress aircraft-dock record](https://hdl.loc.gov/loc.pnp/fsac.1a35066).
+Education completion data, funding amounts and Timeline event rows are unchanged.
+
+## 2026-09-10 — Publication controls and historical attribution
+
+**Was:** The collaboration page said indexing delay was excluded because one
+university's overall indexed output rose. Timeline described earlier discoveries as
+the reason the cluster exists and stated the register's discovery definition universally.
+
+**Is:** The joint-paper rate falls even relative to Akron's indexed output. University
+totals provide context, but cannot rule out different indexing delays for joint papers.
+Timeline's earlier events provide historical context, without claiming to explain the
+cluster's formation or crediting them as PIC outcomes. Its discovery definition is
+explicitly the definition used by this register.
+
+**Cause:** Descriptive comparisons and editorial classifications were written as
+stronger explanatory claims. The underlying counts and event records are unchanged.
+
+## 2026-09-10 — Residence records, price gaps and source limits
+
+**Was:** The labor-shed page said one group never traveled, treated adjacent residence
+as commuting, and ruled out a pandemic effect from a 2019 baseline. Its README also
+described distant residents as half the entire imported workforce. Source notes said
+LODES origin-destination data had no industry dimension. The price page said other
+input costs were absent from its two indexes, and a related link implied measured margins.
+
+**Is:** Residence and workplace records establish neither trips nor telework. Distant
+residence predates the pandemic; its later causes remain unknown. Distant residents
+account for roughly half of the adjacent-plus-distant groups, or 29% of all externally
+resident jobholders. LODES provides three broad industry groups, but cannot isolate
+polymer industries; this page uses all-job totals. The price indexes measure selling
+prices, which can reflect other costs without separately measuring them or profit margins.
+
+**Cause:** Interpretation exceeded the source fields. The [Census LODES specification,
+page 5](https://lehd.ces.census.gov/data/lodes/LODES8/LODESTechDoc8.0.pdf) and
+[BLS PPI definition](https://www.bls.gov/ppi/overview.htm) support the narrower readings.
+Numerical observations are unchanged. The QWI manual check now cites Census's revision
+policy and separates that policy from the unmeasured size of revisions.
+
+## 2026-09-09 — Federal category-share check note
+
+**Was:** The two-company claim's documentary check note still described the separate
+two-category share as 65% of eight-year contract dollars.
+
+**Is:** The category share is 58%, as the chart and its automated assertion already
+state. The two-company share remains 56% on the separate award-value basis.
+
+**Cause:** A supporting check note retained the earlier category total after the
+federal data correction. This correction changes the note, not either chart or its
+denominator.
+
+## 2026-09-08 — The price page's second source
+
+**Was:** The source registry listed only FRED for the price-spike page and counted nine
+pages as relying on a single registered dataset.
+
+**Is:** The page also uses BLS CPI for its real-price explanation. Both sources are
+registered, and eight of the 23 registered pages rely on a single dataset each.
+
+**Cause:** The registry missed the copied inflation dependency. The regenerated source
+guide and its count assertion now include it. A revision affects pages using that
+dataset; it does not imply every page with one source shares the same agency.
+
+## 2026-09-08 — Price-page inflation dependency
+
+**Was:** The price-spike page copied a 2025 consumer-price index of 322.132 from the
+earlier federal-money data, reporting 26.0% inflation since 2019. It described its
+2026 real-price estimates as guaranteed upper bounds and retracements as lower bounds.
+
+**Is:** The dependent calculation uses the verified 321.943 index, the mean of eleven
+published 2025 months; October is unavailable. Inflation since 2019 rounds to 25.9%.
+Carrying that index into 2026 is an approximation whose error direction is unknown.
+The resin retracement estimate rounds to 101% of its real rise, previously 102%.
+All nominal price observations, dates and chart series are unchanged.
+
+**Cause:** Correcting the federal source did not automatically update a copied deflator
+on another page. A scoped synchronization and check now ties this dependent table to
+the verified observations. An unknown future price change cannot establish a bound.
+
+## 2026-09-08 — Comparison units and the smaller regional metro
+
+**Was:** The hub described Youngstown–Warren's exclusion from the 29-metro display
+without stating its adjusted wage position among all 155 matches. The Programs card
+and base-rate chart mixed programs and administrative program records; the ratio
+paragraph displayed rounded percentages without its raw count basis. The wage-card
+check allowed values that could round to 1.20 while the card printed 1.21.
+
+**Is:** Youngstown–Warren ranks 45th after price adjustment among all 155 matches,
+above Akron's 48th; its 960 jobs exclude it solely under the 2,000-job display cutoff.
+The card, picker and wage page state both facts. The education comparison identifies
+program records and prints 95 of 168 against 2,051 of 8,736 beside the approximately
+2.4-times ratio. The wage assertion requires the exact displayed rounding, 1.21.
+
+**Cause:** Final review distinguished a display cutoff from the result it excludes,
+and a source-record unit from a claim about teaching continuity. These changes clarify
+existing data; no wage rank, program count or ratio changes. Dormant county labels
+were also removed from five national, register and method cards, and the federal
+industry-total caption now identifies FY2026 as partial beside the chart.
+
+## 2026-09-08 — Hub coverage and the headline threshold
+
+**Was:** the hub county selector and cost-of-living card marked only Akron and Cleveland
+as covered. Mahoning and Trumbull were therefore labelled as having no local price
+comparison, although Youngstown–Warren has disclosed wage and price data in the matched
+2024 sample.
+
+**Is:** All three disclosed regional metros are covered. Youngstown–Warren is among the 155
+disclosed matched metros, with 960 plastics and rubber jobs. It falls below the
+2,000-job threshold for the 29-metro headline ranking, which is now stated explicitly.
+Canton–Massillon's wage data are source-suppressed; Wayne is in the Wooster micropolitan
+area and is outside this metropolitan comparison. Ashtabula remains included through
+Cleveland's current boundary.
+
+**Cause:** The hub retained a two-metro coverage rule after the matched source restored
+Youngstown–Warren to the article's regional comparison. Geographic coverage and the
+headline employment threshold are different filters. The hub claim now checks the
+three disclosed regional identifiers, Youngstown's job count and threshold exclusion,
+and Canton's explicit source-suppression record. No source data or metro ranks changed.
+
+## 2026-09-08 — Local metro membership
+
+**Was:** The source guide described three metropolitan areas overlapping PIC-12 and
+said each extended outside the footprint. The real-wage data's local classification
+omitted Youngstown-Warren.
+
+**Is:** Census county delineations identify four intersecting metropolitan areas.
+Akron, Cleveland and Youngstown-Warren are wholly inside PIC-12; Canton-Massillon also
+includes Carroll County outside it. Wayne County is in the Wooster micropolitan area.
+Youngstown's 960 jobs were already included among the 155 disclosed matched metros;
+it is now classified as local and remains below the 2,000-job display threshold.
+Canton is source-suppressed in this wage vintage. All five local areas now have an
+explicit disposition. Wage values and ranks are unchanged.
+
+**Cause:** A literal list substituted for county membership and conflated the displayed
+sample with the region's metropolitan coverage. The classification now derives from
+the Census county table, keeping overlap, disclosure and the display threshold separate.
+
+## 2026-09-08 — Program comparisons before rounding
+
+**Was:** The technician-program comparison divided rounded percentages, giving ratios
+of 2.48 and 2.37 and describing the small-program comparison as about 2.5 times.
+
+**Is:** The comparison now divides the underlying count shares: 95 of 168 against
+2,051 of 8,736 gives 2.41, or about 2.4 times. For programs classified as both small
+and brief, 75 of 168 against 1,693 of 8,736 gives 2.30, or about 2.3 times. The counts
+and classifications are unchanged; these remain administrative comparisons, not
+failure probabilities.
+
+**Cause:** Rounding each percentage before dividing inflated both ratios. The producer
+now calculates from counts and rounds only the resulting ratio.
+
+## 2026-09-08 — Comparator and chronology follow-up
+
+**Was:** The federal correction below gave the two rubber codes' 58% share without
+identifying its price basis. Accountability and Scorecard retained the superseded
+annual federal comparison. Health pay wording could be read as individual wages or
+counts of counties; the Programs title described a decline without dates.
+
+**Is:** The 58% share is in constant 2025 dollars (60.2% in nominal dollars).
+Accountability and Scorecard use $41.4M across seven completed fiscal years.
+Contract NAICS identifies the purchased product or service; it does not establish
+the awardee's research activity, and the selected rubber codes include natural rubber.
+Health pay statistics describe county-industry group averages and pairings.
+Programs describes the 2016–2023 decline and shows that 2023 remains above 1991;
+both funding announcements postdate the measured series.
+
+The real-wage page now also shows Akron's ranks across all 155 disclosed matched
+metros (60th before, 48th after price adjustment), alongside the inherited
+2,000-job cutoff comparison. The narrow industry group's employment-weighted
+median wage ratio is 1.17; the broader group's is 1.26. These are group statistics,
+not individual pay or estimated effects of locating in the region. The hub shows
+both all-job and manufacturing pay comparisons.
+
+**Cause:** Final source and reader checks exposed omitted comparator labels,
+dependent prose that had not followed the corrected inputs, and a title that
+outlasted its measurement window. Threshold sensitivity and alternative time
+windows make those choices visible. Earlier entries remain unchanged.
+
+## 2026-09-08 — Federal categories and inflation
+
+**Was:** Polymer contracting averaged $36.6M annually in 2025 dollars, making the
+$51.0M Tech Hub award about 1.4 years. No tire obligation appeared in FY2023; only
+FY2019 exceeded the award; two rubber codes held 65% of the total.
+
+**Is:** Complete results give $41.4M a year over FY2019–FY2025 and about 1.2 award-years.
+FY2019 and FY2021 exceed the award. FY2023 includes $1,175,828.84 nominal tire
+obligations. The eight-year series, including partial FY2026, totals $278.6M nominal
+and $313.6M in 2025 dollars; the two rubber codes hold 58%. The comparison with all
+prime contracting is one polymer dollar in every 29. Annual transactions and the
+separately dated award-lifetime register remain different measures.
+
+**Cause:** Both category fetchers stopped after 100 results before filtering by industry.
+They now exhaust pagination and retain signed obligations. An unsupported CPI constant
+of 322.132 is replaced by 321.943, recomputed from the eleven published 2025 months;
+October was unavailable. Two previously held FY2026 cells also revised upstream.
+The separately queried all-type decomposition leaves an explicitly unallocated $8.5M
+nominal remainder (0.004%); it is not described as an exact reconciliation. The source
+guide's CPI example consequently changes from 110.9 to 111.0 and inflation from 26.0%
+to 25.9%. Dependent hub and cluster-health comparisons use the corrected inputs.
+
+## 2026-09-08 — Wage geography and the meaning of a wage statistic
+
+**Was:** The cost-adjusted comparison joined 2023 wages to prices with different metro
+boundaries. Akron ranked 33rd then 19th among 56 and was said to cross the median.
+Cleveland's missing comparison was attributed to suppression. The state comparison
+described 51 rows as 50 states plus DC. A 1.26x wage statistic described the middle job.
+
+**Is:** Matched 2024 wage and price sources on the same OMB 23-01 delineation place Akron
+13th then 8th among 29 metros with at least 2,000 industry jobs, above both medians.
+There are 155 disclosed matched metros and 227 suppressed source rows. Cleveland is
+included; Los Angeles remains ahead after adjustment, while Chicago and New York are
+withheld in this vintage. The states are the 50 states plus Puerto Rico, with DC absent;
+Ohio remains first. Cleveland's old area has nine disclosed years, 2015–2023; its new
+area adds Ashtabula in 2024 and is shown separately. Current county coverage reflects
+that addition. The 1.26x figure is an employment-weighted median of group-average
+ratios, not median individual pay. The median county-industry pairing is 0.99x local
+manufacturing pay and 1.21x all-jobs pay; broad chemicals, plastics and rubber coverage
+is named explicitly.
+
+**Cause:** Matching codes or counting rows did not establish geography, jurisdiction or
+disclosure status. Group means and headcounts do not recover individual wage
+distributions. Differences between these editions are not a measured time trend, and
+the all-jobs comparison does not establish an industry-specific causal premium.
+
+## 2026-09-08 — Programs: definitions, continuity and grant timing
+
+**Was:** “Never took hold” described both 95 of 168 technician records and the 45%
+small-and-brief subset. Other education layers were said to have held; the next rebuild
+was called a historical first. Ferris had “33 unbroken years.” Regional grants were
+placed in the same years as a decline ending in 2023. Akron's opening foregrounded two
+undergraduates without its 42 graduate completions.
+
+**Is:** Small means at most ten recorded lifetime completions (95/168, 57%); brief means
+an inclusive first-to-last reporting span of at most five calendar years (91/168, 54%);
+both is 75/168 (45%). Substantive means more than ten; active means a reported completion
+in 2023. The comparisons establish neither stability nor a historical first. Ferris has
+32 counted years because 2020 is quarantined. Akron's 44 selected-code completions
+include 42 graduate degrees, and its chart now breaks across 2020. The named grant
+announcements were in 2024, after the series endpoint, so this series cannot measure
+their outcomes. Missing years may affect both threshold membership and denominators;
+these shares are not failure probabilities or guaranteed bounds on a complete census.
+
+**Cause:** Administrative measures shared an imprecise label, missing records became
+claims about failed starts, and announcements after the endpoint were treated as
+overlapping investment. A chart also bridged a year its table correctly omitted.
+
+## 2026-09-08 — Jobs, workplaces and the national comparison
+
+**Was:** Cluster health opened with broader polymer job losses without a workplace
+comparison. A national-to-regional ratio of growth rates was described as the share
+of regional decline accounted for by national conditions.
+
+**Is:** The opening now shows private plastics-and-rubber jobs falling from 19,811 to
+17,770 during 2022–2025, while annual-average establishments moved from 361 to 364.
+Both fell over the full decade and in the final year, so roughly stable workplaces is
+limited to the recent window. State, national and county comparisons accompany it.
+The broader three-industry register remains separately labelled, with a descriptive
+national comparison and no causal share assigned.
+
+**Cause:** Adding establishments and alternative windows exposes a distinction the
+jobs-only opening did not measure. Dividing growth rates cannot identify causes, and
+aggregate establishments cannot show what happened inside the same plants.
+
+## 2026-09-08 — Directory summaries and the scope of verification
+
+**Was:** The hub said national patenting had barely moved while its article reported
+a 22% decline. It repeated outdated program, wage and federal summaries. Repository
+documentation implied every sentence had a check and upstream refreshes reproduced
+identical bytes.
+
+**Is:** Directory summaries match the linked articles, including the 22% patent decline.
+Readers reach articles through four direct choices before the detailed gallery and
+methods. Documentation distinguishes recorded assertions, independently checked
+source inputs, pinned rebuilds and live refreshes. Program charts and the Atlas retain
+their records in mobile layouts; keyboard access and article landmarks are added.
+
+**Cause:** Parallel summaries and broad verification promises had drifted from the
+underlying evidence. A passing assertion suite does not establish complete source
+acquisition, validate every sentence or prevent upstream revisions.
+
+---
+
 
 *Edited 2026-09-01, the day they were written: the seven newest entries below were trimmed to this register — what the page said, what it says now, what caused it. Every figure, date and name in them is unchanged. What was removed is process: how the errors were found, by what, and in what order. That belongs in the project's working notes, not in front of a reader, and it is preserved there verbatim. The five older entries from the same day were already in this register and are untouched.*
 

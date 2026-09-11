@@ -1,17 +1,18 @@
 # The Polymer Programs Atlas
 
-**Where has polymer science been taught in the United States — every institution in the
+**Where has polymer science been taught in the United States — each institution record in the
 federal record, 1991–2023, on one map?**
 
 Sources: IPEDS completions by six-digit CIP (the polymer-programs-db census build of
-2026-08-21) aggregated to institutions; IPEDS directory coordinates; both via the Urban
-Institute Education Data API, keyless. Four hand rows for the confirmed census-invisible
-institutions.
+2026-08-21) aggregated to institution identifiers; IPEDS directory coordinates; both via the Urban
+Institute Education Data API, keyless. Four hand rows identify documented polymer or
+materials teaching absent from the selected census.
 
-**What a dot is:** one institution — every program it ever filed under the three polymer
+**What a dot is:** one federal institution identifier — programs filed under the three polymer
 CIP codes, aggregated. Area = lifetime completions; dark = any program still conferring in
-2023; light = no polymer-coded award in 2023; hollow diamond = confirmed to teach polymer
-science under codes this census cannot see. **Institutions, never individuals** (standing decision
+2023; light = no polymer-coded award in 2023; hollow diamond = documented polymer or
+materials teaching absent from the census. One school can hold multiple identifiers.
+**Institution records, never individuals** (standing decision
 2026-08-19).
 
 ```
@@ -71,8 +72,8 @@ translate [487.5, 305]) — NOT d3's defaults. Whoever writes the projector will
 - **147 counts unitids, not institutions.** Penn State, NYU and Acme each hold two rows,
   so the distinct count is about 144 and the light count about 103. Disclosed in the
   methodology; collapsing them is a data change and the named next step.
-- **No research layer yet, on purpose.** OpenAlex candidates are zero-verified and the
-  API is metered; the absence is claimed on the page, not hidden.
+- **No research layer in this edition.** The OpenAlex candidate institutions have not
+  been individually verified; the page identifies this limit of its teaching map.
 
 ## Run and publish
 
@@ -127,3 +128,13 @@ nowhere. That correction has only been derived for three institutions and six CI
 this page is national and 33 years deep, so it carries the same one-year lag as the programs
 page does. Removing the duplicate is the part that is derivable today, and leaving it in
 because a larger correction exists would be the worse of the two errors.
+
+## Phone layout revision, 2026-09-08
+
+The map now fits its full projected US extent to the reading column, with explicit
+orientation and inset information. A native keyboard-accessible institution selector
+exposes every federal identifier, including the Puerto Rico record outside the projection,
+and rings mapped selections. All twelve ranking bars re-layout with labels above the bars
+on phones. The full directory and table tools remain available. No records or coordinates
+were removed or changed. The held census reproduces all institutional completion totals;
+this is a snapshot reconciliation, not a refreshed current-training census.

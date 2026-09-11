@@ -14,8 +14,8 @@ const D = await PV.data("realwage.json");
 const M = D.metros, B = D.big;
 const N = n => Math.round(n).toLocaleString("en-US");
 const usd = v => "$" + N(v);
-const short = s => s.split(" (")[0].split("-")[0].split(",")[0];
-const full = s => s.split(" (")[0];
+const short = s => s.replace(/'/g, "’").split(" (")[0].split("-")[0].split(",")[0];
+const full = s => s.replace(/'/g, "’").split(" (")[0];
 const ord = n => { const s = ["th", "st", "nd", "rd"], v = n % 100;
   return n + (s[(v - 20) % 10] || s[v] || s[0]); };
 /* true minus for drops (2026-08-31): 23 table cells printed JS hyphens */
@@ -26,7 +26,7 @@ const cheaper = M.filter(r => r.rpp < AK.rpp).length;
 /* The offer arithmetic behind the comparator: the same dollars restated at another
    metro's price level. eqBasket translates Akron's real value; eqOffer is the nominal
    offer a rival has to write to match Akron's average. */
-const eqBasket = r => AK.real * r.rpp / AK.rpp;
+
 const eqOffer = r => AK.nominal * r.rpp / AK.rpp;
 /* Metros that pay more on paper and buy less — the outright flips. */
 const flips = B.filter(r => r.nominal > AK.nominal && r.real < AK.real);
@@ -122,7 +122,7 @@ PV.figures([
   ["", usd(AK.real), "a week: what Akron’s wage buys",
    `${usd(AK.nominal)} on the paycheck, at a price level of ${AK.rpp.toFixed(1)}: prices here run about ${Math.round(100 - AK.rpp)} percent below the US average, so the same dollars go further`],
   ["", `${cheaper}`, `of ${M.length} priced US metros are cheaper`,
-   "the yardstick, not the good news: Akron’s prices sit in the middle of the metro range, so the argument here is not that the region is cheap"]
+   "this comparison covers disclosed industry data, not all US metros"]
 ]);
 
 /* ------------------------------------------------ comparator: picker + verdict */
@@ -135,13 +135,13 @@ function verdict() {
   if (!r) {
     v.innerHTML = `<b>Across all ${B.length} metros:</b> Akron’s polymer average is
       ${usd(AK.nominal)} a week, which buys like ${usd(AK.real)} at national prices.
-      ${flips.length} of them, New York and Los Angeles among them, pay more than Akron
+      ${flips.length} of them, Seattle and Phoenix among them, pay more than Akron
       on paper and buy less than Akron once local prices are counted. Pick the metro you
       are recruiting against to price the difference.`;
     return;
   }
-  const s1 = `<b>${full(r.name)}:</b> ${usd(AK.real)} in Akron buys what
-    ${usd(eqBasket(r))} buys in ${short(r.name)}.`;
+  const s1 = `<b>${full(r.name)}:</b> matching Akron’s ${usd(AK.nominal)} average
+    paycheck at local prices takes ${usd(eqOffer(r))} here.`;
   const s2 = `It ranks ${ord(r.big_rank_nominal)} of ${B.length} on paper and
     ${ord(r.big_rank_real)} in what the paycheck buys; Akron ranks
     ${ord(AK.big_rank_nominal)} and ${ord(AK.big_rank_real)}.`;
@@ -169,8 +169,7 @@ function verdict() {
 
 {
   const host = document.getElementById("msel");
-  const RIVALS = ["Chicago", "New York", "Los Angeles", "Boston", "Houston",
-    "Minneapolis", "Seattle", "San Francisco"];
+  const RIVALS = ["Cleveland", "Los Angeles", "Boston", "Seattle", "Phoenix"];
   const byShort = new Map(B.map(r => [short(r.name), r]));
   const sync = () => {
     host.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed",
@@ -193,9 +192,9 @@ function verdict() {
   mk("Everywhere", null);
   RIVALS.forEach(n => { const r = byShort.get(n); if (r) mk(n, r.area); });
   const sel = document.createElement("select");
-  sel.setAttribute("aria-label", "All 56 metros with 2,000 or more polymer jobs");
+  sel.setAttribute("aria-label", `All ${B.length} matched metros with 2,000 or more polymer jobs`);
   const opt0 = document.createElement("option");
-  opt0.value = ""; opt0.textContent = "More of the 56…";
+  opt0.value = ""; opt0.textContent = `More of the ${B.length}…`;
   sel.appendChild(opt0);
   [...B].filter(r => r.area !== AK.area)
     .sort((a, b) => short(a.name).localeCompare(short(b.name)))
@@ -393,9 +392,9 @@ const withNotes = (html, notes) =>
    with a rationale: recompute the climb at other floors and print what comes back. */
 const climbAtFloor = floor => {
   const S = M.filter(r => r.emp >= floor);
-  const iN = [...S].sort((a, b) => b.nominal - a.nominal).findIndex(r => r.area === AK.area);
-  const iR = [...S].sort((a, b) => b.real - a.real).findIndex(r => r.area === AK.area);
-  return {n: S.length, climb: iN - iR};
+  const iN = S.filter(r => r.nominal > AK.nominal).length;
+  const iR = S.filter(r => r.real > AK.real).length;
+  return {n: S.length, nominal: iN + 1, real: iR + 1};
 };
 const FLO = climbAtFloor(1000), FHI = climbAtFloor(5000);
 
@@ -409,17 +408,23 @@ document.getElementById("slopetable").innerHTML = withNotes(tableView("sl",
   `${D.meta.row} Full source: ${D.meta.source}. (MARPP is BEA’s table of metro price
    parities; “all items” means the whole shopping list, not rent alone.) The field is cut
    to the ${B.length} metros with at least ${N(D.meta.big_floor)} polymer jobs, so the
-   ranking runs against places that actually do this work rather than against every metro
-   in the country. That floor is a choice, so here is what other floors give: at
-   ${N(1000)} jobs Akron climbs ${FLO.climb} places in a field of ${FLO.n}, and at
-   ${N(5000)} it climbs ${FHI.climb} in a field of ${FHI.n}. Akron climbs at every floor
-   tested; how far it climbs depends on how many metros are left above it to pass.
-   ${D.meta.suppression}`);
+   chart concentrates on metros with larger industry employment. The 2,000-job cutoff
+   already appeared in the initial public release of August 18, 2026; it is retained
+   for continuity, not selected for this corrected result. It is an editorial scope
+   choice, not a statistical reliability threshold. Among all ${M.length} matched
+   metros Akron ranks ${AK.rank_nominal} on wages and ${AK.rank_real} after prices.
+   At a ${N(1000)}-job floor it ranks ${FLO.nominal} and ${FLO.real} of ${FLO.n}; at
+   ${N(5000)} it ranks ${FHI.nominal} and ${FHI.real} of ${FHI.n}. The ranks depend on
+   the comparison set. The history does not establish why the original author picked
+   exactly 2,000 or whether the original choice preceded seeing the old results.
+   ${D.meta.suppression} Cleveland is included; Canton, Chicago and New York are
+   explicitly withheld in ${D.meta.year}. Youngstown-Warren is included in the full
+   matched set but falls below the displayed job threshold. Wayne County belongs to
+   the Wooster micropolitan area, outside this metropolitan price comparison.`);
 document.getElementById("slopesrc").innerHTML =
-  `Source: BLS QCEW and BEA Regional Price Parities, ${D.meta.year}. Metros where BLS
-   will not publish a polymer wage are missing, Cleveland and Canton among them. Both
-   agencies revise later, so read the ${AK.big_climb}-place climb as one year’s
-   reading.`;
+  `Source: BLS QCEW and BEA Regional Price Parities, ${D.meta.year}; matched OMB 23-01
+   boundaries. Shown: ${B.length} disclosed metros with ${N(D.meta.big_floor)}+ jobs.
+   Ties share rank. Changes from the withdrawn 2023 edition are not trends.`;
 
 /* -------------------------------------------------------- 2. price strip */
 function drawStrip() { drawStripVariant(MOBILE.matches); }
@@ -472,9 +477,7 @@ function drawStripVariant(mobile) {
   el("line", {x1: xs(mRpp), y1: m.t + 6, x2: xs(mRpp), y2: m.t + h, stroke: INK,
     "stroke-width": 1.5, "stroke-dasharray": "4 3"}, svg);
   el("circle", {cx: xs(mRpp), cy: m.t + 6, r: 3, fill: INK}, svg);
-  const mLab = mobile
-    ? `median ${mRpp.toFixed(1)}, ${gap.toFixed(1)} above Akron`
-    : `median metro ${mRpp.toFixed(1)}, ${gap.toFixed(1)} above Akron: effectively the same place`;
+  const mLab = `median ${mRpp.toFixed(1)}, ${Math.abs(gap).toFixed(1)} ${gap >= 0 ? "above" : "below"} Akron`;
   const mx = clamp(xs(mRpp), lw(mLab.length));
   plate(svg, mLab, mx, m.t - 12, 8.2, "middle");
   txt(svg, mLab, {x: mx, y: m.t - 12, "text-anchor": "middle", class: "pv-lab"});
@@ -493,9 +496,9 @@ function drawStripVariant(mobile) {
 {
   const ext = [...M].sort((a, b) => a.rpp - b.rpp);
   document.getElementById("striptable").innerHTML = tableView("st",
-    "Cheapest and most expensive metros by price level",
+    "All matched metros by price level",
     ["Metro", "Price level", "Polymer jobs"],
-    ext.slice(0, 6).concat(ext.slice(-6)).map(r =>
+    ext.map(r =>
       [full(r.name), r.rpp.toFixed(1), N(r.emp)]));
   const mRpp = med(M.map(r => r.rpp));
   /* The page's one .note box, at the ~80-word budget: the percentile reading of the
@@ -505,11 +508,9 @@ function drawStripVariant(mobile) {
   document.getElementById("cheapnote").innerHTML =
     `<b>${cheaper} of ${M.length} metros have a lower price level than Akron.</b> It sits
      at ${AK.rpp.toFixed(1)} against a median metro of ${mRpp.toFixed(1)}: the
-     ${Math.round(cheaper / M.length * 100)}th percentile, which is another way of saying
-     typical. The familiar “low cost of living” line holds only against the national
-     average of 100, and that average is pulled up by a handful of very expensive places
-     most Ohioans will never compete with for a job. PIC’s advantage is relative to this
-     industry’s geography, not to the country.`;
+     ${Math.round(cheaper / M.length * 100)}th percentile in this disclosed sample.
+     That is below the sample median, not the cheapest end. The national benchmark
+     of 100 weights spending, while this metro median gives each included metro one place.`;
 }
 
 /* ------------------------------------------------------------ 3. scatter */
@@ -519,16 +520,18 @@ function drawScatterVariant(mobile) {
   /* The domain and its tick strings come first, because the LEFT MARGIN is measured off
      those strings and the domain does not depend on the margin. */
   const nx = B.map(r => r.nominal), ry = B.map(r => r.rpp);
-  const x0 = Math.min(...nx) * .95, x1 = Math.max(...nx) * 1.04;
+  const x0 = Math.floor(Math.min(...nx) / 100) * 100;
+  const x1 = Math.ceil(Math.max(...nx) / 100) * 100;
   /* THE AXIS MUST LABEL PAST THE DATA. At +2 the top gridline came out at 110 while San
      Francisco, Los Angeles, New York, Seattle, Miami, Boston and San Diego all plotted
      above it, so the figure title's "up to a fifth less" pointed at a band of the chart
      with no numbers in it. +3 puts the last tick at 120, above the highest metro. */
-  const y0 = Math.min(...ry) - 2, y1 = Math.max(...ry) + 3;
+  const y0 = Math.floor(Math.min(...ry) / 10) * 10;
+  const y1 = Math.ceil(Math.max(...ry) / 10) * 10;
   const yt = ticks(y0, y1, mobile ? 4 : 6);
   const yfmt = v => v.toFixed(0);
   const boxW = mobile ? 375 : 1100;
-  const gut = gutter("scatter", boxW, yt.map(v => [yfmt(v), "pv-tick"]), TICK_GAP);
+  const gut = gutter("scatter", boxW, yt.map(v => [yfmt(v), "pv-tick"]), TICK_GAP) + 4;
   const opts = mobile
     ? {W: boxW, H: 404, m: {t: 58, r: 12, b: 50, l: gut}}
     : {W: boxW, H: 520, m: {t: 44, r: 71, b: 66, l: gut}};
@@ -538,10 +541,17 @@ function drawScatterVariant(mobile) {
   frame(svg, {x: m.l, y: m.t, w, h, xs, ys,
     xt: ticks(x0, x1, mobile ? 3 : 6), yt,
     xfmt: usd, yfmt,
-    /* Dollars need no direction; an index does, so the vertical title says which way is
+  /* Dollars need no direction; an index does, so the vertical title says which way is
        dearer before a reader has to work it out from the tick numbers. */
     xlab: mobile ? "Average weekly wage →" : "Average weekly wage on the paycheck →",
     ylab: mobile ? null : "↑ More expensive · price level (US = 100)"});
+  // Endpoint ticks belong inside the figure, including the newly labelled $2,000 edge.
+  svg.querySelectorAll('.pv-tick').forEach(node => {
+    if (Number(node.getAttribute('y')) <= m.t + h + 8) return; // keep y ticks right-aligned
+    const box = node.getBBox();
+    if (box.x + box.width > W - 2) node.setAttribute('text-anchor', 'end');
+    if (box.x < 2) node.setAttribute('text-anchor', 'start');
+  });
   /* At 375px the one-line desktop title runs off the canvas, and the version that fitted
      dropped "(US = 100)" — which is the only thing on the chart that says what 100 means.
      Two lines keep the direction AND the anchor at the width where the reader has least
@@ -598,10 +608,14 @@ function drawScatterVariant(mobile) {
     if (!isoLabel.includes(real) || pts[0][2] <= x0 + 2 || pts[0][2] >= x1 - 90) return;
     const me = real === AKISO;
     const s = me ? `Akron buys ${usd(real)}` : `buys ${usd(real)}`;
-    el("circle", {cx: pts[0][0], cy: pts[0][1], r: me ? 3.5 : 2.5,
+    // Stagger the neighbouring $1,500 label along its own line so Akron's longer
+    // label has clear horizontal space at every desktop scale.
+    const anchor = !mobile && real === 1500 ? pts.find(p => p[1] <= isoY - 28) || pts[0] : pts[0];
+    const labelY = !mobile && real === 1500 ? anchor[1] + 4 : isoY;
+    el("circle", {cx: anchor[0], cy: anchor[1], r: me ? 3.5 : 2.5,
       fill: me ? CAT[1] : "var(--pv-axis)"}, svg);
-    plate(svg, s, pts[0][0] + 7, isoY, mobile ? 8.2 : 7.2);
-    txt(svg, s, {x: pts[0][0] + 7, y: isoY, class: me ? "pv-lab" : "pv-labq",
+    plate(svg, s, anchor[0] + 7, labelY, mobile ? 8.2 : 7.2);
+    txt(svg, s, {x: anchor[0] + 7, y: labelY, class: me ? "pv-lab" : "pv-labq",
       ...(me ? {fill: CAT[1]} : {})});
   });
   const rmax = Math.max(...B.map(r => r.emp));
@@ -631,9 +645,13 @@ function drawScatterVariant(mobile) {
       const lvl = (placedLbl[key] = (placedLbl[key] || 0) + 1) - 1;
       // A stepped label must not leave the plot; the ceiling is the last defence.
       const ly = Math.max(m.t + 12, ys(r.rpp) - rad - 6 - lvl * 16);
-      txt(svg, short(r.name), {x: xs(r.nominal), y: ly,
+      const labelNode = txt(svg, short(r.name), {x: xs(r.nominal), y: ly,
         "text-anchor": "middle", class: me || pick ? "pv-lab" : "pv-labq",
         ...(me ? {fill: CAT[1]} : pick ? {fill: CAT[2]} : {})});
+      const box = labelNode.getBBox();
+      const dx = box.x < m.l ? m.l - box.x
+        : box.x + box.width > W - m.r ? W - m.r - box.x - box.width : 0;
+      if (dx) labelNode.setAttribute("x", xs(r.nominal) + dx);
     }
     hoverable(el("circle", {cx: xs(r.nominal), cy: ys(r.rpp), r: Math.max(rad, 11),
       fill: "transparent"}, svg),
@@ -665,7 +683,7 @@ function drawScatterVariant(mobile) {
       opacity: .94, rx: 3, "data-pv-plated": "1"}, svg);
     txt(svg, "Circle size = polymer jobs", {x: kx - 8, y: ky - 20, class: "pv-labq"});
     let cx = kx + 8;
-    [2000, 10000, 30000].forEach(e => {
+    [2000, 5000, 10000].forEach(e => {
       const rr = rEmp(e);
       el("circle", {cx, cy: ky + 2, r: rr, fill: SEQ[3], opacity: .5,
         stroke: "var(--paper)", "stroke-width": 2}, svg);
@@ -678,9 +696,9 @@ function drawScatterVariant(mobile) {
 document.getElementById("scattertable").innerHTML = withNotes(tableView("sc",
   "Largest polymer metros by employment",
   ["Metro", "Jobs", "On paper", "Price level", "Buys"],
-  [...B].sort((a, b) => b.emp - a.emp).slice(0, 20).map(r =>
+  [...B].sort((a, b) => b.emp - a.emp).map(r =>
     [full(r.name), N(r.emp), usd(r.nominal), r.rpp.toFixed(1), usd(r.real)])),
-  `Twenty largest employers of the ${B.length} plotted; every metro in the set is drawn.
+  `All ${B.length} matched metros above the 2,000-job floor; every metro in the set is drawn.
    It maps the trade-off a recruiter is already making without drawing it.`);
 /* This figure carries its own attribution: screenshotted alone it must still name where
    the two axes come from, which the subtitle above it does not do. */
@@ -694,11 +712,10 @@ document.getElementById("closersub").innerHTML =
   `<b>Akron’s polymer wage is ${usd(AK.nominal)} a week,
    ${AK.nominal < med(B.map(r => r.nominal)) ? "below" : "above"} the median polymer
    metro; adjusted for local prices it is ${usd(AK.real)},
-   ${AK.real > med(B.map(r => r.real)) ? "above" : "below"} it.</b> Against New York, Los
-   Angeles or Seattle the bigger paycheck buys less outright. The gap is worth
-   ${AK.big_climb} places, and it is smaller than “cost of living” is usually made to
-   carry: ${cheaper} metros are cheaper than this one, so PIC should retire the word
-   “cheap” and argue the checkable version instead.`;
+   ${AK.real > med(B.map(r => r.real)) ? "above" : "below"} it.</b> Prices move its
+   position by ${AK.big_climb} places among ${B.length} matched metros with 2,000+
+   jobs. Both positions are above the middle in this sample. Withheld metros remain
+   unranked, and industry averages are not evidence about the same occupation.`;
 
 /* --------------------------------------------------------- 0. the cold open */
 /* The hero strip: the same 56 metros ticked twice, once by the wage on the paycheck and
@@ -776,7 +793,7 @@ function drawOpen() {
   /* The takeaway, with a verb, and the reading under it. A ratio, an index or a rank would
      need its direction spelled out; dollars a week still need to be told which way is good,
      because nothing about a tick strip says so. */
-  wrapTo(`Akron: below the middle metro on paper, above it once local prices count.`, w)
+  wrapTo(`Akron: ${ord(AK.big_rank_nominal)} on paper, ${ord(AK.big_rank_real)} once local prices count, among ${B.length} matched metros.`, w)
     .forEach(s => { put(s, {x: m.l, y, fill: WHITE}); y += 19; });
   y += 3;
   wrapTo(`One tick per metro. Further right is more money a week: better for a worker.`, w)

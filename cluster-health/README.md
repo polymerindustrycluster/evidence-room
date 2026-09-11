@@ -4,11 +4,66 @@
 stated baseline and against how far that same measure normally moves in a year, each
 handing the reader to the page that shows the working.
 
-This is the Evidence Room's front door and a **maintained data product**, not an article.
-It carries an update commitment: see "The update contract" below before changing anything.
+The opening finding compares jobs and workplaces; the five-measure view follows it.
+The page carries an update commitment: see "The update contract" below before changing anything.
 
-Sources: no fetches. Every figure is recomputed from the shipped `data/*.json` of six
-pages in this repository.
+Sources: no fetches. The five measures are recomputed from the shipped `data/*.json` of six
+pages. The jobs/workplaces story derives held QCEW by-area and by-industry annual files.
+
+## Jobs and workplaces, updated 8 September 2026
+
+Private NAICS 326, PIC-12, annual averages: 19,811 jobs and 361 establishments in 2022;
+17,770 jobs and 364 establishments in 2025. Jobs fell 10.3%, establishments rose 0.8%.
+The complete 2015–2025 series contains 132 disclosed county-year observations.
+Over the full decade, both jobs and establishments fell (19,368 / 385 in 2015).
+Both also fell in 2024–2025. “Roughly stable workplaces” describes the recent three-year
+window, not a continuous rise or the full decade.
+
+2022 is the job peak across all eleven observations; the establishment minimum is 357
+in 2021. The recent window starts three consecutive annual job declines. From the
+pre-pandemic 2019 baseline to 2025, jobs fell 9.6% and establishments were unchanged at
+364. The page exposes both windows and the full decade, rather than treating 2022 as a
+neutral long-run baseline. PIC-12 establishment growth of 0.8% in 2022–2025 trails Ohio
+(7.9%) and the United States (4.5%).
+
+The same industry lost jobs in Ohio (7.1%) and nationally (6.2%) over 2022–2025, while
+establishments increased. All five states bordering Ohio are shown as geographic context,
+selected before inspecting their changes; stable state geography avoids metro-boundary
+changes. PIC-12 jobs fell faster than each of them. This is not a matched-peer or causal
+experiment. A separate NAICS 31–33 row shows PIC-12 manufacturing jobs fell 1.6%.
+
+Eight counties lost jobs and four gained. Summit's decline was largest: 4,340 to 3,824,
+with establishments rising 74 to 76. This is a county total, not a panel of the same plants.
+Establishments are rounded annual averages of quarterly counts, not unique companies.
+County establishment gains and losses are shown beside the regional net; they are
+changes in county totals, not firm churn. Industry reclassification and multi-unit
+employer reporting changes can also affect QCEW counts.
+Jobs per establishment does not measure productivity. No automation, labor-shortage,
+surviving-plant, or causal national-tide claim follows from these records.
+
+```powershell
+python cluster-health/derive_health.py --workplaces-only --source-dir PATH_TO_HELD_BUILD
+python cluster-health/derive_health.py --workplaces-only --source-dir PATH_TO_HELD_BUILD --check
+python -m unittest discover -s cluster-health -p test_workplaces.py
+```
+
+This mode writes only `data/workplaces.json`. Source-specific transformation lives in
+`derive_workplaces.py`; it fails on missing, duplicate, withheld or nonpositive required
+cells and checks local jobs against `wages.json`. Source hashes, county cells, six alternate
+windows per comparator, and selection rules ship in the derived file. By-area and
+by-industry extracts agree on 154 overlapping area-years for jobs and establishments.
+The latter is dated 2026-08-14; the former has no recorded retrieval timestamp. Agreement
+between held files is not an upstream revision audit.
+
+[BLS annual-file documentation](https://www.bls.gov/cew/downloadable-data-files.htm)
+states annual averages are provided only for entire years. The 2025 annual bulletin
+was released 2026-08-28 according to [BLS notices](https://www.bls.gov/cew/notices/).
+The held annual extract is not a year-to-date series; these release facts do not imply
+the held snapshot contains every subsequent revision.
+
+Correction: the former national-tide note treated a ratio of growth rates as the share
+of regional decline accounted for by national conditions. The matched descriptive
+comparison remains; the causal attribution has been removed.
 
 **What a row is:** one measure in one year, carrying its level, the baseline it is read
 against, and every year-over-year change the same measure has made in its published
@@ -19,11 +74,29 @@ index.html          page shell, headline, section prose, figure chrome
 styles.css          page-local CSS: the tile rows, the four-across hero, mobile re-layout
 app.js              the standing chart, the movement chart, the five tiles, the closer
 derive_health.py    THE DERIVATION. Reads six pages' data files, writes data/health.json
-data/health.json    DERIVED (52 KB). Edit derive_health.py, never this file
-claims.json         36 falsifiable assertions, all re-run on every build, none manual
+data/health.json    DERIVED. Edit derive_health.py, never this file
+claims.json         Falsifiable assertions, all re-run on every build
 ```
 
 ## The five measures, and where each one comes from
+
+Federal integration corrected 8 September 2026: FY2025 prime-contract obligations are
+$41.22M, against $25.01M in FY2024, up $16.21M (65%) in 2025 dollars. The closed-year
+FY2019–FY2025 average is $41.4M, with a $20.48M low in FY2023 and a $59.89M high in
+FY2019. The $51.0M signed-award comparison is therefore 1.2 years of ordinary contract
+obligations. The latest move is 1.05 times the median earlier annual move and beats
+three of five earlier moves. Four of the five health measures now move more than their
+own prior median; degrees are the exception.
+
+These replace $38.98M for FY2025, $22.54M for FY2024, a $36.6M baseline and a 1.4-year
+award comparison. Complete federal category pagination and the corrected CPI input
+changed the figures. The producer reads `federal-money/data/federal.json`; the
+[federal-money article](../federal-money/) documents acquisition and inflation changes.
+Scope is prime contracts, award types A–D, NAICS 325 and 326, reported place of
+performance in PIC-12. These are signed obligations including de-obligations, not
+outlays. Calendar-year CPI approximates fiscal-year prices; the 2025 index uses eleven
+published months because October is unavailable, and FY2026 carries that index.
+FY2026 remains excluded from the closed-year average and standing.
 
 | Tile | Measure | Source page | Source file |
 | --- | --- | --- | --- |
@@ -89,10 +162,16 @@ fails the gate rather than shipping.
   verdict on the cluster, and the five are never combined into one, because a composite
   needs weights nobody has set.
 - **A position in a range is not a grade, and Job quality is the standing proof.** It sits
-  at the top of its own eleven-year range and is under the national rate for the same work
+  at the top of its own eleven-year range and its median county-industry average wage
+  ratio is below national industry parity
   in every one of those years. Claim `standing-pay-top-of-range-is-not-parity` fails the
   build if the ratio ever reaches 1.0, at which point the note that uses this row as its
   worked example has to be rewritten rather than left standing.
+- **Pay ratios describe county-industry averages, not a typical worker.** The unweighted
+  medians use the 24 published pairings for NAICS 3252, 3255 and 326: 1.24 times the county
+  all-industry average and 0.90 times the national industry average. Twenty pairings exceed
+  their county baseline; five meet or exceed their national industry baseline. The linked
+  wages story uses six tracked codes and has a different median.
 - **Merit direction is DECLARED in `derive_health.py`, never inferred from the data.**
   Four measures carry `better_end: "high"`; Distinctiveness carries `None` and is drawn
   grey. Claim `standing-merit-is-declared-not-inferred` fails if a fifth appears or if any
@@ -174,12 +253,9 @@ beats) is the product. Any change to it is dated and explained here, never silen
 
 ## Known gaps
 
-- **The source registry row for this page is wrong in `_data/SOURCES.json`.** It lists
-  `bea_rpp` and `oews`, which this page never reads, and omits `odjfs`, which supplies the
-  annual-openings figure on the Talent tile. The correct set is
-  `["qcew", "ipeds", "odjfs", "usaspending", "fred"]`. The row was added outside this
-  folder and this page cannot edit it; the "Reproduce this" block will over-claim until
-  someone does.
+- **The source registry is `_data/SOURCES.json`.** Its current cluster-health row names
+  `qcew`, `ipeds`, `odjfs`, `usaspending` and `fred`, matching the source families used
+  here. Source-page links and the QCEW held-file receipt provide the narrower filters.
 - **No measure of output, productivity, exports, private investment or company
   formation.** No page in this room ships one yet, and five measures are not the health of
   an economy. The page says so in its own limitations.

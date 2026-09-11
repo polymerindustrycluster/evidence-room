@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
 
 <header class="mast">
   <div class="wrap">
@@ -17,20 +18,20 @@
   </div>
 </header>
 
+<main id="main-content" tabindex="-1">
 <section class="hero">
   <div class="wrap">
     <p class="eyebrow">Is the Tech Hub award big?</p>
     <h1>Routine federal contracts bring the region&rsquo;s polymer industry about
-      <em>$37 million a year</em>.</h1>
-    <p class="stand">The Tech Hub award is $51.0 million: a competitive grant from the
-      U.S. Economic Development Administration (EDA), the federal agency for regional
-      development, to build up the region&rsquo;s polymer industry across seven named
-      projects. Routine federal contracting in chemical and plastics manufacturing across
-      twelve Northeast Ohio counties has run at $36.6 million a year over the seven
-      finished years, 2019 to 2025, so the award is worth about <b>1.4 years</b> of what
-      the region already gets.</p>
-    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster (PIC) desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data USAspending.gov
-      and the PIC funding map &middot; August&nbsp;2026</p>
+      <em>$41 million a year</em>.</h1>
+    <p class="stand">The $51.0 million Tech Hub award is a competitive grant from the
+      U.S. Economic Development Administration (EDA) for seven named polymer projects.
+      Federal prime contracting under chemical and plastics/rubber manufacturing codes
+      across twelve Northeast Ohio counties averaged $41.4 million a year over seven
+      finished fiscal years, 2019–2025, in 2025 dollars. Those years ranged from
+      $20.5 million to $59.9 million; the award is about <b>1.2 average years</b> of that flow.</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster (PIC) desk &middot; Analysis and graphics by Claude (Anthropic), updated with Codex (OpenAI) &middot; Data USAspending.gov
+      and the PIC funding map &middot; September&nbsp;2026</p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -42,30 +43,32 @@
     <p class="lede">One bar per federal budget year, which runs October to September. Each
       counts obligations under the census industry codes for chemical (325) and plastics
       and rubber (326), for work in the twelve counties. In fiscal 2019 that routine flow,
-      the government simply buying things, came to $51.6 million, $647,000 more than the
+      the government simply buying things, came to $59.9 million, $8.9 million more than the
       whole award.</p>
     <p class="deffn"><dfn><b>Obligation</b>: money the government has legally committed to
       pay. It is a promise on the books, not cash already spent: the cash that actually
       goes out, the <i>outlay</i>, can follow years later.</dfn>
       <dfn><b>In 2025 dollars</b>: older years marked up for inflation, so that a 2019
-      dollar and a 2025 dollar buy the same thing.
+      dollar and a 2025 dollar are compared on a common price basis. Calendar-year consumer
+      price index (CPI) values approximate prices within federal fiscal years. The 2025 base averages eleven
+      published months; October was unavailable during the lapse in appropriations.
+      FY2026 uses the same index until a completed-year average is available.
       <i>As awarded</i> is the smaller, unadjusted figure on the original paperwork. The
       award is the one unadjusted figure here: restated
-      into 2025 dollars it is $51.3 million, still about 1.4 years, and fiscal 2019 clears
+      into 2025 dollars it is $51.3 million, still about 1.2 years, and fiscal 2019 clears
       it on that basis too.</dfn></p>
-    <p class="fig-title">$51.0M of Tech Hub money is about 1.4 years of what already
+    <p class="fig-title">$51.0M of Tech Hub money is about 1.2 years of what already
       arrives</p>
     <p class="fig-sub">Each bar is one year of that routine contracting, in 2025 dollars.
       The orange line is the Tech Hub award at the same scale, so a bar that passes it is
       a single year worth more than the whole award. The dashed line averages all eight
-      bars, FY2026 included, so it runs below the $36.6 million a year the finished years
+      bars, FY2026 included, so it runs below the $41.4 million a year the finished years
       give. Bar labels are rounded, so the two bars nearest the award line carry their
-      exact distance from it.</p>
+      distance from it, also rounded.</p>
     <div class="chart"><svg id="fy" role="img" aria-labelledby="fy-t">
       <title id="fy-t">Federal polymer obligations by fiscal year in 2025 dollars, with the
-        EDA Tech Hub award drawn as a horizontal line across the bars. One of the eight
-        years, 2019, is worth more than the whole award on its own, by $647,000; the next
-        largest, 2021, falls $245,000 short of it.</title></svg></div>
+        EDA Tech Hub award drawn as a horizontal line across the bars. Two years,
+        2019 and 2021, exceed the award. FY2019 reaches $59.9 million and FY2021 $55.7 million.</title></svg></div>
     <div id="fytable"></div>
     <p class="src" id="fysrc"></p>
     <div class="note"><b>Where the work is recorded.</b> Place of performance is a
@@ -87,9 +90,9 @@
       than any named industry does, and the award view in the next section opens the
       box: on that view, 99 cents in every dollar under this code belong to one
       company&rsquo;s life rafts and escape suits.</p>
-    <p class="fig-title">Two rubber-product codes hold 65% of eight years of money</p>
-    <p class="fig-sub">Federal obligations by six-digit industry code, FY2019 to FY2026
-      added together, in 2025 dollars. Each bar is one industry&rsquo;s eight-year total,
+    <p class="fig-title">Two rubber-product codes hold 58% of eight years of money</p>
+    <p class="fig-sub">Federal obligations by six-digit industry code, FY2019 to partial FY2026
+      added together, in 2025 dollars. Each bar is one industry&rsquo;s total for that window,
       not a single year. Bar labels are shortened; the table carries the full census
       names.</p>
     <div class="chart"><svg id="na" role="img" aria-labelledby="na-t">
@@ -107,24 +110,25 @@
          counties, and where an engineering research center performs is not the awardee
          address. It makes no present-tense claim about who runs the centre: the figures
          are scoped to the award record, which is a record and not an observation of
-         today. It is natural rubber from domestic crops, agricultural feedstock, NOT the synthetic
-         polymer manufacturing under 325 and 326, and the scoping clause is the point of
-         naming it at all. -->
+         today. The research grant is excluded by the prime-contract award-type filter.
+         NAICS 326 includes rubber goods made from natural, synthetic, or reclaimed rubber;
+         the material is not an exclusion criterion. -->
         <p class="beat">The chart has two blind spots worth naming. University and research
-      awards file under education and research industry codes, so two streams of real
-      federal money in these counties appear in no bar above. The National Science
+      grants are outside this prime-contract view, which also requires manufacturing
+      industry codes. Two research awards illustrate that boundary. The National Science
       Foundation&rsquo;s NEO-SMART Engine is one: estimated at $15.0 million, of which
       $7.5 million is obligated. TARDISS is a second and a looser fit: Transformation of
       American Rubber through Domestic Innovation for Supply Security, an engineering
       research center funded by the same agency, whose award to Ohio State University ran
       to 31 August 2026 and is recorded at $26.0 million estimated and $13.7 million
-      obligated. Its subject is natural rubber grown from domestic crops, which sits
-      upstream of the synthetic polymer manufacturing these codes count, so it is named
-      here as money the codes cannot see rather than as a regional polymer asset. And to
+      obligated. Its subject is natural rubber grown from domestic crops. This research
+      grant is excluded by the chart’s prime-contract filter; NAICS 326 includes goods
+      made from natural rubber. The award illustrates a type of funding this chart excludes,
+      and its awardee address does not establish where the research is performed. And to
       set the polymer flow against everything the federal government buys here, count
       federal prime contracting of every industry in these twelve counties: $9.2 billion
       over the same years in 2025 dollars, of which polymer-coded work is about one
-      dollar in every 33.</p>
+      dollar in every 29.</p>
     <p class="beat">That comparator replaced one twenty-six times larger, and the reason
       it was wrong is this page&rsquo;s own argument turned on itself. Until 1 September
       2026 the figure printed here was $235.5 billion, which counts every kind of federal
@@ -135,20 +139,24 @@
       840. A page whose whole argument is that a number means nothing without a fair
       comparator had published an unfair one, in the direction that made the cluster look
       twenty-six times smaller than the contracting record shows.</p>
-    <p class="beat">Concentration is the thing to watch in this chart. The two rubber
-      codes hold 65% of the eight-year total. The second of them is tire manufacturing,
-      which put $20.2 million into FY2022 and recorded nothing at all in FY2023. The
-      region&rsquo;s total fell $26.6 million between those two years, most of it from
-      that one code, which is why FY2023 is the shortest bar in the year-by-year chart.
-      Whether that is a year without tire contracting or a year without a recorded row,
-      these files cannot say. Either way, a
-      total this concentrated moves when one code goes quiet, which is the sense in which
-      65% is a risk and not only a fact.</p>
+    <p class="beat">The two rubber codes hold 58% of the eight-year total. Tire
+      manufacturing fell from $20.2 million in FY2022 to $1.2 million in FY2023,
+      in 2025 dollars. That $18.9 million reduction accounts for about 71% of the
+      region&rsquo;s $26.5 million decline between those years. FY2023 remains the
+      lowest finished year, but it was never a year without recorded tire obligations.</p>
+    <p class="note"><b>Correction, 8 September 2026.</b> The earlier version stopped at
+      the first page of industry results and falsely said FY2023 had no tire obligation.
+      The complete source records $1,175,828.84 in that category, in dollars of the day.
+      Completing every fiscal year raises the finished-year average from $36.6 million
+      to $41.4 million in 2025 dollars and changes the award comparison from 1.4 to
+      1.2 years. Two years exceed the award, where the incomplete series showed one.
+      The rebuild also corrects the CPI base from 322.132 to 321.943 and incorporates
+      current source revisions.</p>
     <p class="beat">That concentration also moves the yardstick the award is measured
       against. Take the leftovers code out of the seven finished years and the routine
-      flow falls from $36.6 million a year to $25.0 million, which makes the award 2.0
-      years of what is left rather than 1.4; take tire manufacturing out as well and the
-      flow is $13.7 million and the award is 3.7 years. Neither exclusion is the honest
+      flow falls from $41.4 million a year to $29.8 million, which makes the award 1.7
+      years of what is left; take tire manufacturing out as well and the
+      flow is $18.1 million and the award is 2.8 years. Neither exclusion is the honest
       basis for the comparison, because both codes are federal money genuinely arriving
       in these counties, and each is very nearly one company, both named in the next
       section.</p>
@@ -161,7 +169,7 @@
     <h2>The leftovers class is almost entirely one company making escape gear</h2>
     <p class="lede">The industry chart can say what kind of company the money went to,
       and not which one. The contracts themselves carry names. Asked award by award
-      instead of year by year, the same federal ledger returns 193 companies holding 6,630
+      instead of year by year, its 31 August 2026 snapshot records 193 companies holding 6,630
       prime contracts, the ones signed directly with the government. The buyer is
       mostly one: the Department of Defense placed 92 cents of every dollar. The largest
       holder is the survival-equipment maker RFD Beaufort, with $104 million for
@@ -214,7 +222,7 @@
     <h2>The award money has names on it</h2>
     <p class="lede">The register above names who sells and who buys. What it cannot do is
       say who holds any single year: an award&rsquo;s total counts its whole life, so
-      nothing on this page can split the $51.6 million recorded in fiscal 2019 among
+      nothing on this page can split the $59.9 million recorded in fiscal 2019 among
       firms. The award money is traceable to the project instead. It went to seven leads,
       the organizations that each run one piece of the work: the largest is $11.1 million
       to BioVerde for bio-based butadiene, and the smallest is $2.7 million to stand up a
@@ -235,20 +243,21 @@
   <div class="wrap">
     <p>A number is big or small only against something.</p>
     <p class="sub">The routine flow in these twelve counties runs about
-      <b>$36.6 million a year</b> in 2025 dollars, counting the seven fiscal years that
+      <b>$41.4 million a year</b> in 2025 dollars, counting the seven fiscal years that
       have closed. Fiscal 2026 is still running. Averaging it in with the seven closed
-      years pulls the yearly figure down to $34.9 million, and a smaller yearly figure
-      stretches the award further, to a year and a half. An annual rate should not carry a
+      years pulls the yearly figure down to $39.2 million, and a smaller yearly figure
+      stretches the award further, to 1.3 years. An annual rate should not carry a
       year that has not finished, so the comparison here uses closed years. The Tech Hub
-      award, $51.0 million, is about 1.4 years of it, and in fiscal 2019 the routine flow
+      award, $51.0 million, is about 1.2 years of it, and in fiscal 2019 the routine flow
       was larger than the whole award on its own. A competitive grant and a routine
       purchase order are two different kinds of money, so what is compared here is rough size, not like for like. Whether
-      $36.6 million a year is healthy or thin for a cluster this size is a different
+      $41.4 million a year is healthy or thin for a cluster this size is a different
       question, and these records (which count what was committed, not what was
       needed) cannot answer it.</p>
   </div>
 </section>
 
+</main>
 <footer class="foot">
   <div class="wrap">
     <p class="foot-k">Read next</p>

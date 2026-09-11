@@ -5,14 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>The PIC Evidence Room</title>
-<meta name="description" content="Ohio leads the country in plastics and rubber jobs. Free public data on what the work pays, who holds it, and where the federal money goes in Northeast Ohio, with every number checkable.">
+<meta name="description" content="Public-data stories about Northeast Ohio polymer jobs, pay, training and investment. Read a finding, inspect its limits, and follow its sources.">
 <link rel="stylesheet" href="../_shared/pic-viz.css">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<!-- Set synchronously, before first paint, so the one control on this page that needs
-     JavaScript (the county picker) is hidden rather than dead when there is none. Every
-     other thing on this page, the thirteen links above all, renders from this file. -->
+<a class="skip-link" href="#main-content">Skip to stories</a>
+
 <script>document.documentElement.classList.add("js")</script>
 
 <header class="mast">
@@ -22,93 +21,27 @@
   </div>
 </header>
 
-<section class="hero">
+<main id="main-content" tabindex="-1">
+<section class="hero hub-hero">
   <div class="wrap">
-    <p class="eyebrow">Findings from free public data</p>
-    <!-- THE SECOND SENTENCE USED TO READ "That is the easiest claim here to prove." A
-         reader stopped on it twice: "That" can attach to the jobs rather than to the
-         claim, and "prove" is the word this hero corrected itself out of one paragraph
-         later, because the page checks its restatements rather than proving its findings.
-         The replacement refers to nothing and promises only what the dek promises. -->
-    <h1>Ohio is <em>first in the country</em> in plastics and rubber jobs. Nothing here is
-      easier to check.</h1>
-    <p class="stand">54,846 of those jobs against second-place Texas&rsquo;s 44,598, a lead
-      of 10,248, and every state disclosed in the Bureau of Labor Statistics count.
-      Underneath the ranking sit the questions a member firm argues about: what the work
-      pays, and who is available to do it.</p>
-    <!-- WHAT THIS PAGE ACTUALLY DOES, said in the hero. This line used to read "Every
-         number here has a source, an assertion, and a way to be proved wrong" — which is
-         circular in ordinary English (an assertion is a claim), and which promised more
-         than the page delivers: this page verifies that it copied the linked pages
-         faithfully, not that their findings are right. A naive reader hit the honest
-         version of that caveat far below and had to scroll back. It is the hero's job to
-         carry it. -->
-    <p class="stand dek">Every number here restates a finding from one of the pages below
-      and re-runs against that page&rsquo;s own data on every build.</p>
-    <!-- The hub says who wrote it in the same words every article does. It carries its own
-         numeric claims, so it takes the same accountability line; the fuller version of
-         this disclosure is in "How this was made" below. Guarded by tools/disclosure.mjs. -->
-    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; August&nbsp;2026</p>
-    <!-- THREE STAT CARDS, IN ONE ROW THAT CANNOT WRAP. The row was four on a two-column
-         grid, so it rendered as a 2x2 block against the house rule that hero stats never
-         wrap. The fourth card counted the site's own claims, which is apparatus, not a
-         finding; it now sits in the band that is about the apparatus. Each of these three
-         restates a number one of the linked pages publishes and is guarded in claims.json
-         against that page's own data file. Written here rather than through PV.figures()
-         so the hero survives with scripting off. -->
-    <!-- EVERY CARD SAYS WHICH WAY IS GOOD. All three used to state a magnitude and stop:
-         a naive reader could not tell whether 48.4 percent was alarming or normal, or
-         whether the annual contracting figure was the good news or the yardstick that
-         shrinks it, and the "1.2x" label named the measure instead of reading it. Card 3
-         also printed the ANSWER to a division whose other input sat four screens away, so
-         the one calculation a reader could try in the hero could not be tried at all; the
-         award is printed here now and 51.0 over 36.6 comes out at the 1.4 the card claims.
-
-         CARD 3 MOVED BASIS ON 2026-08-29, from an eight-year average to the seven finished
-         years. See the note on the federal-money card below, and CORRECTIONS.md.
-
-         CARD 1 NAMES ITS UNIT. "40 of the 51 industry-county pairings" sat next to
-         cluster-health's "20 of 24 counties" and two readers took them for one count in
-         two shapes. They are different units, and this card says which one it is counting
-         rather than leaving the compound noun to carry it. -->
-    <div class="hero-row">
-      <div class="figv key">
-        <div class="n">1.2&times;</div>
-        <div class="k">what the middle pairing pays for every dollar the average job in
-          its county pays</div>
-        <div class="d">Higher is better for a worker. Polymer clears the local average in
-          40 of 51 disclosed pairings, one industry in one county</div>
-      </div>
-      <div class="figv">
-        <div class="n">48.4%</div>
-        <div class="k">of the jobs in Summit County are held by people who live in it</div>
-        <div class="d">Ashtabula, the most self-contained of the twelve counties, still
-          reaches only 68 percent. None of them staffs itself</div>
-      </div>
-      <div class="figv">
-        <div class="n">$36.6M</div>
-        <div class="k">a year, on average, in ordinary federal contracts, the seven
-          finished years 2019 to 2025</div>
-        <div class="d">The one-time $51.0M Tech Hub award is about 1.4 years of it. The
-          routine flow is the bigger number</div>
-      </div>
-    </div>
+    <p class="eyebrow">The PIC Evidence Room</p>
+    <h1>The polymer economy,<br><em>with the working shown.</em></h1>
+    <p class="stand">Public-data stories from the Polymer Industry Cluster (PIC) about jobs,
+      pay, training and investment in Northeast Ohio. Read a finding, inspect its limits,
+      and follow its sources.</p>
+    <nav class="first-reads" aria-label="Start with a question">
+      <a href="../peers/">Where do we rank?</a>
+      <a href="../wages/">What does the work pay?</a>
+      <a href="../programs/">What happened to training?</a>
+      <a href="../federal-money/">Where does federal money go?</a>
+    </nav>
+    <p class="hub-links"><a href="#alltitle">Browse every story</a> &middot;
+      <a href="#methods">Methods and corrections</a> &middot;
+      <a href="https://polymerindustrycluster.github.io/">PIC public tools directory</a></p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic), updated with Codex (OpenAI) &middot; Updated September&nbsp;2026</p>
   </div>
 </section>
 
-<!-- THE ONE CHART. A page whose masthead says "Interactive evidence" and whose argument is
-     that numbers should be inspectable carried no axis, bar, line or map anywhere: every
-     finding arrived as prose in a card, so no number on the page had a direction and the
-     hero's ranking had no shape. This band draws the H1's own claim and nothing else.
-
-     IT OPENS ON THE H2, WITH NO KICKER AND NO LEDE, ON PURPOSE. The two bands after it both
-     open kicker / H2 / lede, and the house limit is two consecutive; a third would have
-     made the page a template loop. The context a lede would have carried sits under the
-     chart in the source line instead, which is where a caveat about the measure belongs.
-
-     Bars are drawn by app.js from data/states.json, never hand-typed here. That file is a
-     cut of the peers page's own shipped dataset, and index-chart-states asserts the copy
-     still matches it state by state. -->
 <section class="band">
   <div class="wrap">
     <h2>Ohio&rsquo;s lead over Texas is wider than the gap from Texas down to eighth
@@ -121,95 +54,32 @@
     </div>
     <div id="statestable"></div>
     <p class="src">Jobs in plastics and rubber products manufacturing, 2024 annual averages
-      from the Bureau of Labor Statistics payroll census. Every state is disclosed, so
-      nothing is missing from this ranking. A count is only a count, though. Three of the
+      from the Bureau of Labor Statistics payroll census. All 50 states and Puerto Rico are disclosed; DC is absent.
+      The chart shows the ten largest states. A count is only a count, though. Three of the
       nine states behind Ohio pack the industry more densely into a smaller workforce:
       Indiana, South Carolina and Wisconsin. That is the question the concentration page
-      below answers.</p>
+      answers.</p>
   </div>
 </section>
 
-<section class="band whatitis">
-  <div class="wrap">
-    <p class="takeaway">What this is</p>
-    <h2>A cluster checking its own claims in public</h2>
-    <!-- PIC WAS NEVER SPELLED OUT. The acronym appeared a dozen times, including inside a
-         data label, and a first-time reader finished the page not knowing who was asking
-         them to trust the numbers. "Cluster" had the same problem: it is in the H2 above
-         and in the masthead, and nothing said what one is. Both are glossed here, at the
-         first sentence of body prose on the page, and the expansion is guarded against the
-         publisher string in the funding map's own shipped data. -->
-    <p class="lede">The Polymer Industry Cluster, PIC for short, publishes numbers about the
-      plastics, rubber and coatings economy of Northeast Ohio: how many jobs it holds, what
-      they pay, who is available to fill them. A cluster is what its name says, the firms,
-      suppliers and labs of one industry packed into one place. Those numbers used to arrive
-      as bare claims. Here they arrive with the working shown.</p>
-    <p class="whatitis-body">Twenty of the twenty-three pages are built entirely from
-      federal data that costs nothing to obtain, listed in the source registry below: the payroll census of covered jobs, the
-      file recording where workers live, degree completions, federal contract spending,
-      energy and producer prices. The analysis is scripted rather than hand-assembled, and
-      the analysis and graphics are by Claude (Anthropic), and John Swanson is responsible for what it says. Each reading of
-      what the numbers mean was sent to competing AI systems to be argued down before it
-      was published. Every sentence carrying a number is tied by a re-running check to the
-      data file it came from, which catches a sentence that drifts from that file but
-      not a file that is wrong.</p>
-    <p class="whatitis-body">This is working research by PIC staff. It is not official
-      statistics, and it is not a news operation. Where the federal record contradicts
-      something PIC has said, the page says so and the correction is dated in a log that is
-      only ever appended to. Everything this site produces is free to reuse: the text, figures and derived
-      data under CC BY 4.0, the scripts under the MIT licence, because a figure anyone can re-derive is
-      the only kind worth publishing. The federal data underneath is public domain, except
-      for two of the twenty-four sources, which reach this site under licences that require
-      attribution and are credited on the pages that use them.</p>
-  </div>
-</section>
-
-<!-- THE GALLERY. One band, not two.
-
-     It was two: a "Start here" band of four cards, then an "Everything" band holding the
-     other nine under a sort nothing rendered. That split cost the page twice. The band
-     openings were the third and fourth consecutive kicker/H2/lede against a house limit of
-     two, and the county picker sat in the second band while stating a verdict about all
-     thirteen pages, four of which a reader had already scrolled past. One band, one
-     picker, one taxonomy, every card under the group it belongs to and nowhere else.
-
-     EVERY CARD IS AN ANCHOR IN THIS FILE. They used to be built by app.js from an array,
-     which meant the front door to thirteen pages contained no link to any of them with
-     scripting off, or if one fetch failed. app.js now decorates these anchors (claim
-     counts, county flags, the verdict) and creates none of them.
-
-     Each card's finding sentence restates a number the linked page publishes, and each
-     restatement is guarded in this page's claims.json against THAT PAGE'S data file, so a
-     correction on a page fails the hub's gate instead of leaving a stale card behind.
-
-     data-geo = the geography the page's figures are BUILT ON, which is what the county
-     picker answers. "pic12" holds all twelve counties; "metros4" is the four metropolitan
-     areas the occupations file publishes wages for; "akron" is the single regional metro
-     the cost-of-living page prices; "national" and "register" pages contain no county
-     reading. -->
 <section class="band">
   <div class="wrap">
-    <p class="takeaway">Everything</p>
+    <p class="takeaway">Choose a story</p>
     <h2 id="alltitle">Everything here, by the question it answers</h2>
-    <p class="lede">The pages under Start here each answer a question a funder or a member
-      firm has already asked out loud. Most of these pages are built on the twelve counties
-      PIC measures against; a few use price metro areas, national series, or the public
-      registers of awards and dates.</p>
+    <p class="lede">Start with a question below. Each story names its industry, geography,
+      period and limits. The county selector marks geographic coverage; it keeps every
+      story available.</p>
 
-    <!-- THE KEY, WHERE THE CHIPS ARE. Nine chip types ran down the gallery in two colours
-         with nothing explaining either, and their meanings sat two thousand pixels lower in
-         the methodology. A naive reader stopped decoding them after the second card, which
-         is the row that tells them whether a page covers their county. This also lists the
-         twelve counties, which the page named constantly and never once printed. -->
-    <p class="note"><b>Reading a card.</b> The teal chip names the geography the page&rsquo;s
-      figures were built on. <b>PIC-12</b> is the twelve counties PIC measures: Ashtabula,
-      Cuyahoga, Geauga, Lake, Lorain, Mahoning, Medina, Portage, Stark, Summit, Trumbull and
-      Wayne. The counts after it are the sentences on that page stored as checks that re-run
-      against the data, and, where a page has any, the few that rest instead on a document a
-      person read.</p>
+    <details class="howto card-key"><summary>What the geography labels and claim counts mean</summary>
+      <p class="note">The teal label names the geography used in that story.
+      <b>PIC-12</b> means Ashtabula, Cuyahoga, Geauga, Lake, Lorain, Mahoning, Medina,
+      Portage, Stark, Summit, Trumbull and Wayne counties. Other stories use metro,
+      state or national records. Claim counts describe checks against the underlying
+      files; manual claims depend on a cited document.</p>
+    </details>
 
     <div class="picker">
-      <label for="county">Your county</label>
+      <label for="county">Check county coverage</label>
       <select id="county">
         <option value="">All twelve counties</option>
       </select>
@@ -222,7 +92,7 @@
         <h4>Where does Ohio rank among states, and Akron among metros?</h4>
         <p class="ans">First in the country</p>
         <p class="f">Ohio holds 54,846 plastics and rubber jobs, 10,248 more than
-          second-place Texas, with all 51 state geographies disclosed. Akron is 6th of the
+          second-place Texas, with all 50 states and Puerto Rico disclosed; DC is absent. Akron is 6th of the
           155 metros that disclose, where 1st is the largest; 227 metros are withheld and
           are simply unknown.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
@@ -230,37 +100,29 @@
       <a class="card" href="../laborshed/" data-slug="laborshed" data-geo="pic12">
         <h4>Where do the people who work in a county live?</h4>
         <p class="f">Summit County&rsquo;s own residents hold 48.4 percent of its 265,460
-          jobs. Ashtabula is the most self-contained of the twelve and still reaches only 68
-          percent, so workforce policy set county by county is aimed at people who mostly
-          live somewhere else.</p>
+          jobs. Ashtabula is the most self-contained of the twelve at 68
+          percent. Every county draws some workers from outside its boundary; the balance
+          varies by county. These are jobs across all industries, not polymer jobs alone.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
       <a class="card" href="../wages/" data-slug="wages" data-geo="pic12">
-        <h4>What does a polymer job pay against the average job in its county?</h4>
-        <p class="f">The middle pairing pays 1.2 times what the average job in its
-          county pays, and beats it in 40 of the 51 industry-county pairings the bureau can
-          disclose, a pairing being one polymer industry in one county. All eleven that miss
-          make plastics or rubber products.</p>
+        <h4>How does chemical, plastics and rubber pay compare with other factory work?</h4>
+        <p class="f">Across 51 county-industry pairings, median group-average pay is
+          0.99 times county manufacturing pay and 1.21 times county all-jobs pay.
+          These are group averages, not individual workers&rsquo; wages. The comparisons
+          describe pay; they do not establish a causal industry premium.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
       <a class="card" href="../federal-money/" data-slug="federal-money" data-geo="pic12">
         <h4>How big is the Tech Hub award next to the federal money that arrives every
           year?</h4>
-        <!-- THE BASIS IS NAMED BECAUSE THE BASIS IS THE WHOLE DISAGREEMENT. This card and
-             the hero card above printed $34.9 million a year, an average of all eight
-             fiscal years including a fiscal 2026 that has run about seven months and stands
-             at $23.0 million. An annual rate cannot include a year that has not finished:
-             the part-year drags the mean down, which understates the routine flow and
-             overstates how far the one-time award reaches. Both now print the seven
-             finished years at $36.6 million and 1.4 years, which is what the cluster-health
-             dashboard prints. _data/FIGURES.json routine_federal_per_year records it. -->
-        <p class="f">Ordinary federal contracting in chemicals and plastics across the
-          twelve counties has averaged $36.6 million a year across the seven finished fiscal
-          years, 2019 to 2025, ranging from $17.0 million to $51.6 million. Fiscal 2026 is
-          still running and is not in that average. The $51.0 million Tech Hub award, the
-          implementation grant that followed the federal designation Akron won in October
-          2023, is about 1.4 years of that average,
-          and fiscal 2019 alone cleared the award line.</p>
+
+        <p class="f">Federal contract obligations for work performed in the twelve counties, under
+          chemical and plastics/rubber industry codes, averaged $41.4 million a year in
+          2025 dollars across fiscal 2019–2025. Annual totals ranged from $20.5 million to
+          $59.9 million. The one-time $51.0 million Tech Hub award is about 1.2 years of
+          that average. Fiscal 2026 is incomplete and excluded; 2019 and 2021 each exceeded
+          the award.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
     </div>
@@ -268,29 +130,18 @@
     <h3 class="gname">National position</h3>
     <div class="cards">
       <a class="card" href="../cluster-health/" data-slug="cluster-health" data-geo="pic12">
-        <h4>Which measures changed, and which only look like they did?</h4>
-        <p class="f">24,030 jobs in 2025, a floor rather than a total because the bureau
-          withheld 12 of the 36 county-industry figures. On the 21 figures published every
-          year since 2015, the only run that holds the same counties still, the count fell
-          802 in a year, from 24,259 to 23,457, a third straight fall. Three of the five
-          measures moved further than they usually move between years, and the loudest
-          change, federal contracting up from $22.5 million to $39.0 million, is not one of
-          them.</p>
+        <h4>Are jobs and workplaces moving together?</h4>
+        <p class="f">Private plastics and rubber jobs fell from 19,811 in 2022 to 17,770 in
+          2025, down 10.3 percent, while establishments moved from 361 to 364. These are
+          annual averages across the twelve counties, not a panel of the same factories.
+          The article compares Ohio and US changes before considering what is distinctive.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
       <a class="card" href="../location-quotient/" data-slug="location-quotient" data-geo="pic12">
         <h4>Which polymer industry is this region most concentrated in?</h4>
-        <!-- TWO CONCENTRATIONS, TWO INDUSTRIES, AND TWO READERS TOOK THEM FOR ONE FIGURE
-             AT TWO VALUES. This card said "Rubber products, the industry Akron is named
-             for, run 2.44 times" while the cluster-health dashboard says "Plastics and
-             rubber, the industries the region is known for, run 2.32 times". Rubber
-             products is NAICS 3262; plastics and rubber is NAICS 326, the family that
-             CONTAINS it. Both figures are right and neither moves. What was wrong is that
-             nothing on either page let a reader tell the two apart, so this card names both
-             codes and prints both values in one sentence, where the containment is visible.
-             Both are asserted against location-quotient's own shipped file. -->
+
         <p class="f">Paint and coatings fill 5.96 times as large a share of local jobs as
-          they do of the country&rsquo;s, and have led all six polymer industries every year
+          they do of the country&rsquo;s, and have led the three cluster industries every year
           since 2015. Rubber products alone, NAICS 3262, the narrow industry Akron is named
           for, run 2.44 times; the wider plastics and rubber family that contains it, NAICS
           326, runs 2.32 times. Concentration is what makes a region distinctive and what
@@ -302,10 +153,10 @@
     <div class="cards one">
       <a class="card" href="../patents/" data-slug="patents" data-geo="ohio">
         <h4>Does the region still invent the thing it is named for?</h4>
-        <p class="f">Ohio filed 342 polymer patent applications in 2023, down a quarter
-          from 2015 and twice the fall of Ohio patenting overall, in a national polymer
-          field that barely moved. By inventor address, with the publication lag and the
-          address trap stated.</p>
+        <p class="f">Ohio inventor addresses account for 342 polymer patent applications in 2023,
+          down 25 percent from 2015. The comparable US-inventor count fell 22 percent.
+          The article separates this national decline from Ohio&rsquo;s wider patent trend
+          and explains the publication lag and address limits.</p>
         <p class="meta"><span class="pill geo">Ohio + four cities</span></p>
       </a>
     </div>
@@ -313,18 +164,17 @@
     <h3 class="gname">Workforce</h3>
     <div class="cards">
       <a class="card" href="../churn/" data-slug="churn" data-geo="pic12">
-        <h4>How much hiring and separating sits behind a flat job count?</h4>
-        <p class="f">111,529 hires and 111,361 separations across 55 quarters produced 168
-          net jobs. In the average quarter hires run 10.8 percent of the workforce and
-          separations 10.7 percent, which is how a churn engine that size nets out to
-          nothing.</p>
+        <h4>How much hiring and separating sits behind a headcount that fell?</h4>
+        <p class="f">111,529 hires and 111,361 separations across 55 quarters produced a net flow of 168 jobs. In the average quarter hires run 10.8 percent of the workforce and
+          separations 10.7 percent, which is how a churn engine that size produces a net
+          flow of +168 while the headcount falls 719.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
       <a class="card" href="../occupations/" data-slug="occupations" data-geo="metros4">
         <h4>Which occupations is the industry made of, and what do they pay here?</h4>
         <p class="f">One job in nine is a molding-machine setter, and just over half the
-          country&rsquo;s setters work in this one industry. All four Northeast Ohio metros
-          pay the jobs that need a degree below the national rate.</p>
+          country&rsquo;s setters work in this one industry. Across the selected degree-level occupations, the median metro-to-national
+          pay ratio is below one in each of the four Northeast Ohio metros.</p>
         <p class="meta"><span class="pill geo">four metros</span><span class="pill hit-flag">covers this county</span></p>
       </a>
     </div>
@@ -336,35 +186,37 @@
         <p class="f">$106.3 million in all: $85.3 million across three public awards, plus
           $21.0 million of matching money that came with them, drawn to scale across
           twenty-one named recipients. The $51.0 million Tech Hub award is the largest of
-          the three and sits inside this total, not on top of it. The $36.6 million a year
-          of ordinary contracting, on the seven finished fiscal years, is separate and
-          recurring.</p>
-        <p class="meta"><span class="pill geo">awards</span><span class="pill hit-flag">covers this county</span></p>
+          the three and sits inside this total, not on top of it. Routine federal contracting is a separate measure, compared in the federal-money story.</p>
+        <p class="meta"><span class="pill geo">awards</span></p>
       </a>
     </div>
 
     <h3 class="gname">Operating conditions</h3>
     <div class="cards">
-      <a class="card" href="../realwage/" data-slug="realwage" data-geo="akron">
+      <a class="card" href="../realwage/" data-slug="realwage" data-geo="price-metros3">
         <h4>What do these wages buy once local prices are counted?</h4>
-        <p class="f">Among the 56 metros with enough polymer employment to compare, Akron
-          is 33rd on weekly pay and 19th on what that pay buys, where 1st is best. Counting
-          local prices lifts it across the middle of the pack, not to the top.</p>
-        <p class="meta"><span class="pill geo">Akron metro</span><span class="pill hit-flag">covers this county</span></p>
+        <p class="f">Among 29 matched metros with at least 2,000 plastics and rubber jobs in
+          2024, Akron ranks 13th on industry-average weekly pay and 8th after adjusting
+          for local price levels. It is above the sample midpoint on both measures.
+          Cleveland also clears that threshold. Among all 155 disclosed matched metros,
+          Youngstown–Warren ranks 45th after adjustment, ahead of Akron at 48th. Its 960 jobs
+          exclude it from the headline ranking solely because of the 2,000-job threshold. Canton–Massillon&rsquo;s
+          wage data are source-suppressed. These are metro readings on matched 2024 boundaries.</p>
+        <p class="meta"><span class="pill geo">three regional metros</span><span class="pill hit-flag">covers this county</span></p>
       </a>
       <a class="card" href="../chain/" data-slug="chain" data-geo="NEO-14">
-        <h4>Which links of the polymer supply chain does the region actually hold?</h4>
-        <p class="f">721 companies classified into six tiers and four enabler roles, against
-          the Census count of what each county holds. The coverage is real and so are the
-          gaps: three counties where Census sees plants this register has not classified.</p>
+        <h4>Which links of the polymer supply chain appear in this register?</h4>
+        <p class="f">710 company records carry a qualifying address in the fourteen counties;
+          566 have a classified role. The register contains more fabricators than monomer
+          producers, but it does not measure regional capacity or market share.</p>
         <p class="meta"><span class="pill geo">NEO-14</span></p>
       </a>
       <a class="card" href="../programs/" data-slug="programs" data-geo="national">
-        <h4>Can a region rebuild a technician pipeline nobody has sustained?</h4>
-        <p class="f">In 33 years of the federal record, polymer technician programs survive
-          at 27 percent; polymer degree programs and the adjacent trades both hold 48. The
-          layer Northeast Ohio wants to rebuild is the one the record says has never held
-          anywhere.</p>
+        <h4>What happened to the polymer technician pipeline?</h4>
+        <p class="f">Among records with more than ten completions in 1991–2023,
+          20 of 73 technician records (27 percent) reported a completion in 2023, against
+          48 percent of degree records and selected peer-trade records. Reporting under these codes does
+          not establish whether teaching closed, changed labels or moved format.</p>
         <p class="meta"><span class="pill geo">national</span></p>
       </a>
       <a class="card" href="../reach/" data-slug="reach" data-geo="national">
@@ -383,19 +235,20 @@
       </a>
       <a class="card" href="../atlas/" data-slug="atlas" data-geo="national">
         <h4>Where can you learn polymer science in America?</h4>
-        <p class="f">147 institutions have run a substantive polymer program since 1991 and
-          41 still confer. The deepest records sit in Lowell, Big Rapids and Akron, and the
+        <p class="f">147 federal institution identifiers appear in the selected completion records
+          since 1991, and
+          41 reported completions in 2023. The deepest records sit in Lowell, Big Rapids and Akron, and the
           national count is a floor, not a census: four institutions we can name teach
           polymer science where the coding system cannot see them.</p>
         <p class="meta"><span class="pill geo">national</span></p>
       </a>
       <a class="card" href="../cost-scissors/" data-slug="cost-scissors" data-geo="national">
         <h4>How much of the 2022 price spike came back out of finished polymer prices?</h4>
-        <p class="ans">Finished prices never came back down</p>
+        <p class="ans">Finished prices remain elevated, before inflation</p>
         <p class="f">Natural gas gave back its whole 2022 spike, crude about half, resin
           about a third, and finished polymer products none of it. The further a price sits
           from the wellhead, the less of the spike came back out.</p>
-        <p class="meta"><span class="pill geo">national</span><span class="pill hit-flag">covers this county</span></p>
+        <p class="meta"><span class="pill geo">national</span></p>
       </a>
     </div>
 
@@ -409,13 +262,9 @@
           from them, were changed later by a
           typical 0.15 percent. That the change is small is the finding, and the scope is
           those three series only.</p>
-        <p class="meta"><span class="pill geo">national</span><span class="pill hit-flag">covers this county</span></p>
+        <p class="meta"><span class="pill geo">national</span></p>
       </a>
-      <!-- THE REPLICATION GUIDE. It is the only page here that makes no interpretive
-           claim about the region: it hands over method, so its card leads with what a
-           reader can DO rather than with a finding. data-geo is "method" because the page
-           is built on no geography at all, which is why the county picker never marks it:
-           a page that contains no county reading should not claim to cover one. -->
+
       <a class="card" href="../sources/" data-slug="sources" data-geo="method">
         <h4>How would another region rebuild all of this?</h4>
         <p class="ans">Take the codes, they are the hard part</p>
@@ -423,70 +272,55 @@
           what each one cannot tell you, which need a key and which cannot be fetched at
           all. One question is carried the whole way, from the endpoint to the reading, and
           the gaps we could not close are published beside it.</p>
-        <p class="meta"><span class="pill geo">method</span><span class="pill hit-flag">covers this county</span></p>
+        <p class="meta"><span class="pill geo">method</span></p>
       </a>
       <a class="card" href="../timeline/" data-slug="timeline" data-geo="register">
         <h4>Why is the cluster here, and what has it done since?</h4>
-        <p class="f">31 proven milestones, the first dated 1898 and the last 2012, explain
-          why the designation landed in Akron. A separate operating register counts what has
-          happened since: 68 public developments in the 34 months after October 2023, against
+        <p class="f">31 documented milestones, the first dated 1898 and the last 2012, provide
+          historical context for the cluster. A separate operating register counts what has
+          happened since: 67 public developments in the 34 months after October 2023, against
           4 in the 34 months before.</p>
-        <p class="meta"><span class="pill geo">public record</span><span class="pill hit-flag">covers this county</span></p>
+        <p class="meta"><span class="pill geo">public record</span></p>
       </a>
     </div>
   </div>
 </section>
 
-<!-- The act boundary: everything below is apparatus. This band opens on the callout rather
-     than on a kicker/H2/lede, which is what keeps it from being a third consecutive band
-     running the identical template. -->
-<section class="band alt">
+<section class="band alt" id="methods">
   <div class="wrap">
-    <p class="takeaway">Before anything leaves the building</p>
-    <h2>Every claim here names the condition under which it stops matching its source</h2>
-    <!-- The counts below and in the paragraph after it are written by app.js from ONE
-         derived inventory: the cards above, intersected with the harness totals in
-         counts.json. The literals are the current values of that derivation, guarded by
-         index-inventory in claims.json, so a reader with scripting off sees a number the
-         gate has checked rather than a blank. counts.json is itself checked against every
-         artifact's own claims.json by index-counts-fresh, which is what stops a card
-         advertising 23 claims for a 27-claim page. -->
-    <p class="note"><b>The <span data-inv="pagesword">twenty</span> pages here carry
-      <span data-inv="claims">474</span> checked claims, and
-      <span data-inv="manual">21</span> of them cannot be machine-checked.</b> Every
-      published sentence is stored beside a condition that ties it to the data file it
-      came from, and that condition re-runs on every build. It is a consistency check, not
-      a check against the world: a sentence that matches its file and still misreads what
-      happened passes. The exceptions are quoted from
-      project narratives, press releases and internal registers rather than from datasets,
-      so they name a source and the finding that would contradict them, but cannot be
-      re-run. Attack
-      those first. More checks is not the same as more truth; it is more places this site
-      can be caught being wrong, which is the only sense in which the number is good
-      news.</p>
-    <!-- WHAT THE HUB DOES NOT LINK, SAID OUT LOUD. A reader handed the rendered pages met
-         two that no card leads to and could not tell whether they were withheld or simply
-         missed: the sentence above counts the published set and nothing accounted for the
-         difference between that set and the tree. This paragraph does, and every number in
-         it is written by app.js from the same counts.json the sentence above reads, so the
-         two can never disagree.
+    <p class="takeaway">Methods and accountability</p>
+    <h2>How to check and reuse a finding</h2>
 
-         NEITHER PAGE IS CARDED, AND THAT IS A DECISION, NOT AN OVERSIGHT. Each ships a
-         .unlisted file at its own root giving its reason, and index-inventory in
-         claims.json fails the gate if a third artifact ever appears that is neither carded
-         here nor named there. The draft's own file says in terms that adding its hub card
-         is a separate, deliberate act; it is not this page's to take, and the two open
-         questions it is waiting on are a communications decision. Making the withholding
-         visible is what this page owes a reader in the meantime. -->
-    <p class="note" id="withheld"><b><span data-inv="withheldword">Two</span> further pages
-      are built and gated in this repository and are deliberately not linked from here.</b>
-      One is an internal board view of PIC&rsquo;s own performance: a populated copy would
-      carry member records a public repository with permanent history cannot hold. The other
-      is an unreviewed draft of the public scorecard, held back until communications review
-      answers the question its opening figure turns on, and it says on its own face that it
-      is a draft. Each states its reason in a file at its directory root, neither is counted
-      in the totals above, and putting either in the gallery above is a separate decision
-      that has not been taken.</p>
+    <p class="note">Each story links its source data and states what would contradict its
+      claims. Automated checks test those statements against the files, so a mistaken
+      interpretation can still pass. Manual claims identify their documentary source.
+      John Swanson is responsible for the publication; this is working research by PIC
+      staff, not official statistics.</p>
+    <p class="note"><b>Correction · 8 September 2026.</b> The patent card previously called
+      national polymer filing activity almost unchanged. The comparable US-inventor series
+      fell 22 percent from 2015 to 2023. Routine federal contracting now averages
+      $41.4 million rather than $36.6 million after complete pagination and corrected
+      inflation conversion; the award comparison changes from 1.4 to 1.2 years.
+      The timeline card now reads 67 developments rather than 68, matching its source
+      after a previously removed record. The earlier patent card retained a worldwide comparator
+      after the article had corrected it. Geographic and workforce summaries now state
+      their measured populations. The real-wage comparison now uses matched 2024
+      boundaries: Akron ranks 13th and 8th among 29 metros, replacing 33rd and 19th
+      among 56 in the mismatched 2023 comparison. The county selector now includes
+      Ashtabula in Cleveland&rsquo;s 2024 metro coverage; it previously treated the county
+      as outside that metro. See the <a href="../CORRECTIONS.md">correction log</a>
+      and each article&rsquo;s dated notes.</p>
+    <p class="note"><b>Further correction · 8 September 2026.</b> The county selector and
+      cost-of-living card omitted Youngstown–Warren even though its wage data are disclosed.
+      Mahoning and Trumbull now show coverage, with an explicit distinction between the
+      155-metro sample and the 29-metro headline ranking: Youngstown–Warren&rsquo;s 960 jobs
+      fall below the 2,000-job threshold. Canton–Massillon is source-suppressed; Wayne is
+      in the Wooster micropolitan area and is outside this metropolitan comparison.</p>
+    <p class="src">Text, figures and derived data are available under CC BY 4.0; scripts
+      are MIT licensed. Underlying sources retain their own terms, listed in the
+      <a href="../sources/">source guide</a>. For tools to find help, learn or reuse this
+      work, visit the <a href="https://polymerindustrycluster.github.io/">PIC public directory</a>.</p>
+
     <details class="howto">
       <summary>The commands, for anyone who wants to run them</summary>
       <div class="checks">
@@ -500,15 +334,11 @@ python verify_claims.py --list</pre>
         </div>
         <div>
           <h3>Rebuild the data from origin</h3>
-          <pre>python fetch_*.py &amp;&amp; python derive_*.py</pre>
-          <p>Nothing writes to production. Most datasets rebuild from <span
-            class="mono">_data/build/</span> with free public APIs, but <b>three pages do
-            read a private table and you cannot reproduce those</b>: the company register
-            behind <a href="../chain/">chain</a> is PIC&rsquo;s own and is not public, and
-            <a href="../timeline/">timeline</a> and <a
-            href="../accountability/">accountability</a> draw part of their rows from PIC
-            project records. Each of the three says so where it uses them, and the source
-            registry marks all three as not reproducible by a reader.</p>
+          <p>Start with the <a href="../sources/">source-by-source replication guide</a>.
+            Acquisition scripts have different inputs and availability limits; there is
+            no single wildcard command that rebuilds every source. The company register
+            behind <a href="../chain/">chain</a> is not public, and some
+            <a href="../timeline/">timeline</a> rows come from PIC project records.</p>
         </div>
       </div>
     </details>
@@ -538,6 +368,8 @@ python verify_claims.py --list</pre>
       appended to.</p>
   </div>
 </section>
+
+</main>
 
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>

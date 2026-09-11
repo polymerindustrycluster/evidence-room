@@ -42,8 +42,21 @@ DISCLOSURE CHURN
   publication decisions. Where that applies, this script also builds a BALANCED PANEL
   of the cells present in every year, and the movement is judged on that.
 """
+import argparse
 import json
 import os
+import sys
+
+# The employment investigation has independent held inputs and writes only its own file.
+# Keep it callable through this page's producer without rebuilding unrelated measures.
+if '--workplaces-only' in sys.argv:
+    sys.argv.remove('--workplaces-only')
+    from derive_workplaces import main
+    main()
+    raise SystemExit(0)
+
+# Full mode accepts no arguments: misspelled workplace flags must never rebuild it.
+argparse.ArgumentParser(description=__doc__, allow_abbrev=False).parse_args()
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.abspath(os.path.join(HERE, ".."))
@@ -700,46 +713,49 @@ tiles = [
         "short": "pay against its industry",
         "question": "Are these good jobs?",
         "value": f"{median(local):.2f}× / {median(nat):.2f}×",
-        "unit": "its county / its industry nationally",
+        "unit": "median county-industry average wage ratios",
         # Two numbers in one tile read as one figure with a slash in it. Split them so
         # each carries its own label instead of asking the reader to pair by position.
         "value_parts": [
-            {"v": f"{median(local):.2f}×", "k": "the average job in its own county"},
-            {"v": f"{median(nat):.2f}×", "k": "the same industry across the country"},
+            {"v": f"{median(local):.2f}×", "k": "median ratio to county all-industry average wage"},
+            {"v": f"{median(nat):.2f}×", "k": "median ratio to national industry average wage"},
         ],
-        "reading": (f"The typical polymer job out-pays the average job in its own county "
-                    f"by {median(local):.2f} times, and pays {median(nat):.2f} times what "
-                    f"the same industry averages nationally. Both are true at once, and "
-                    f"{len(both)} of the {len(latest_reg)} published county figures, holding "
+        "reading": (f"Across {len(latest_reg)} published county-industry pairings, the unweighted "
+                    f"median average-wage ratio is {median(local):.2f} times the county "
+                    f"all-industry average and {median(nat):.2f} times the national average "
+                    f"for the same industry. {len(both)} of those {len(latest_reg)} pairings, holding "
                     f"{fmt_n(sum(r['emp'] for r in both))} of the "
-                    f"{fmt_n(emp_total)} jobs, sit in both states."),
+                    f"{fmt_n(emp_total)} jobs, have average wages above the county baseline "
+                    f"and below the national industry baseline. These are group averages, "
+                    f"not any individual worker’s pay."),
         # THE EXAMPLE THAT KEEPS THE RANGE HONEST. This measure is at the TOP of its own
         # published range and below the national rate for the same work in every year of
         # it. A range position is a comparison with its own history and nothing more; read
         # as a grade it would say the pay question is solved, which it is not.
         "standing": dict(standing([(y, v) for y, v, _, _, _ in nat_series], "high"),
-                         basis=(f"the same median ratio against the national rate, "
+                         basis=(f"the unweighted median county-industry average wage ratio against its national industry, "
                                 f"{YEARS[0]} to {YEARS[-1]}"),
                          basis_short="pay against its industry",
                          merit_short="nearer parity is better",
                          merit=(f"Closer to the national rate is the better end. It has "
                                 f"not reached it: the ratio is under 1.0 in every one of "
                                 f"the {WORDS[len(nat_series)]} published years, so the "
-                                f"best year in this range is still a year paying less "
-                                f"than the country does for the same work."),
+                                f"best year in this range still has a median county-industry "
+                                f"average wage ratio below national industry parity."),
                          fmt="x3"),
         "baseline": {
             "name": "two baselines, because one of them flatters",
-            "why": ("Against the county average it answers whether this is good work to "
-                    "have here; against the same industry nationally, whether this is a "
-                    "good place to do it. A recruiting number that carries only the first "
-                    "is choosing the flattering half."),
+            "why": ("Each county-industry average wage is divided by its county all-industry "
+                    "average or its national industry average, then each set of ratios is "
+                    "summarized by an unweighted median. This tile uses NAICS 3252, 3255 and "
+                    "326; the linked wages story covers six tracked codes and therefore "
+                    "has a different median. Neither statistic measures individual pay."),
         },
         "direction": {
             "value": round(nat_series[-1][1] - nat_series[-2][1], 4),
             "pct": round((nat_series[-1][1] / nat_series[-2][1] - 1) * 100, 1),
-            "words": (f"the national side rose from {nat_series[-2][1]:.3f}× to "
-                      f"{nat_series[-1][1]:.3f}× of the U.S. rate for the same work"),
+            "words": (f"the median county-industry average wage ratio rose from {nat_series[-2][1]:.3f}× to "
+                      f"{nat_series[-1][1]:.3f}× of the national industry average"),
             "short_move": (f"up {abs(nat_series[-1][1] - nat_series[-2][1]):.2f}, "
                            f"to {nat_series[-1][1]:.2f}×"),
             "of": "on the year, on the national side",
@@ -748,11 +764,11 @@ tiles = [
         "band": pay_band,
         "drivers": [
             {"label": "Beats its own county",
-             "value": f"{sum(1 for v in local if v > 1)} of {len(local)} counties",
+             "value": f"{sum(1 for v in local if v > 1)} of {len(local)} county-industry pairings",
              "note": f"median {median(local):.2f} times the county all-industry average"},
-            {"label": "Beats its industry nationally",
-             "value": f"{sum(1 for v in nat if v >= 1)} of {len(nat)} counties",
-             "note": f"median {median(nat):.2f} times the U.S. average for the same work"},
+            {"label": "Meets or exceeds its industry nationally",
+             "value": f"{sum(1 for v in nat if v >= 1)} of {len(nat)} county-industry pairings",
+             "note": f"median {median(nat):.2f} times the national industry average wage"},
             {"label": "Weekly wage per covered job",
              "value": "$" + fmt_n(nat_series[-1][2]),
              "note": (f"against $" + fmt_n(nat_series[-1][3]) +
@@ -776,12 +792,10 @@ tiles = [
         "question": "Who is coming out of the schools?",
         "value": fmt_n(polymer[deg_latest]),
         "unit": "polymer degrees a year",
-        "reading": (f"The polymer degrees come from "
-                    f"{WORDS[len({p['institution'] for p in occ['programs'] if p['group'] == 'polymer'})]}"
-                    f" of the three institutions counted here, and they conferred "
+        "reading": (f"The University of Akron and Case Western confer the polymer degrees: "
                     f"{polymer[deg_latest]} in {deg_latest}, against "
                     f"{polymer[deg_peak_year]} in {deg_peak_year}, their own high. "
-                    f"Materials degrees, the other group of programs, held at "
+                    f"The other group of programs here, materials degrees at Case Western and Kent State, held at "
                     f"{materials[deg_latest]}."),
         "standing": dict(standing([(y, polymer[y]) for y in prog_years], "high"),
                          basis=(f"the same three institutions, {prog_years[0]} to "
@@ -841,48 +855,42 @@ tiles = [
         "id": "capital",
         "dimension": "Capital",
         "short": "federal contracting a year",
-        "question": "Is public money arriving, and where does it land?",
+        "question": "How much federal money is committed?",
         "value": "$" + f"{federal_org_named / 1e6:.1f}M",
         "unit": "written into signed federal awards",
-        # WHAT THE RECORD SHOWS, AND WHAT IT CANNOT. This tile used to say "none of it
-        # spent", which a reader finished believing was a measured zero. It is not: the
-        # public record shows AWARD and EXECUTION and never DRAWDOWN, so a fully assigned
-        # award that has paid out nothing and one that has paid out everything are the
-        # same document here. Stating zero is as much a claim as stating a number, and
-        # this page may state neither. _data/FIGURES.json carries the rule.
+        # This page does not carry an outlay total for the signed awards. The
+        # accountability page reports the available federal outlays separately.
         "reading": (f"${federal_org_named / 1e6:.1f} million of the "
                     f"${federal_announced / 1e6:.1f} million in federal awards on the "
                     f"funding map is written into signed awards naming "
                     f"{WORDS[len(eda_leads)]} organizations. That is what the record "
                     f"shows: money signed for and assigned to a named recipient. How much "
-                    f"of it has been paid out is a different quantity, and no figure on "
-                    f"this page or in the public record is a measure of it."),
-        "means": (f"A bigger number here is good news for the region only once the money "
-                  f"reaches the ground, and nothing published tracks that. Read "
-                  f"${federal_org_named / 1e6:.1f}M as a queue with "
-                  f"{WORDS[len(eda_leads)]} names on it, of unknown length. The change "
+                    f"of it has been paid out is a different quantity, and this page "
+                    f"does not carry a total for it."),
+        "means": (f"Read ${federal_org_named / 1e6:.1f}M as signed awards naming "
+                  f"{WORDS[len(eda_leads)]} organizations. The change "
                   f"printed beside it, up "
                   f"${(fy_real[closed[-1]] - fy_real[closed[-2]]) / 1e6:.2f}M, belongs to "
                   f"a different series: the year-on-year move in routine contracting, "
-                  f"money already flowing to plants here."),
+                  f"signed obligations recorded for work in these counties, rather than payments."),
         "standing": dict(standing([(y, fy_real[y]) for y in closed], "high"),
                          basis=(f"routine contracting in the {WORDS[len(closed)]} closed "
                                 f"fiscal years, FY{closed[0]} to FY{closed[-1]}, in "
                                 f"{fed['cpi_base']} dollars"),
                          basis_short="routine contracting a year",
-                         merit_short="more arriving is better",
+                         merit_short="more obligated is better",
                          year_prefix="FY",
-                         merit=("More federal money actually contracted to plants here is "
-                                "the better end, and this is the one capital series on "
-                                "the page that is money arriving rather than money "
-                                "promised. The signed awards above have no standing here "
-                                "at all, because drawdown is not published."),
+                         merit=("More contract obligations is the declared better end of "
+                                "this range. Obligations commit federal money; they do "
+                                "not establish payment or local economic impact. The signed "
+                                "awards above are a separate total without a comparable "
+                                "annual history on this page."),
                          fmt="usd_m2"),
         "baseline": {
             "name": (f"routine federal contracting, ${closed_avg / 1e6:.1f} million a year "
                      f"in {fed['cpi_base']} dollars"),
-            "why": ("An award is only large or small against the money that was already "
-                    "arriving. Averaged over the "
+            "why": ("The comparison is the existing annual flow of contract obligations. "
+                    "Averaged over the "
                     f"{WORDS[len(closed)]} closed fiscal years, FY{closed[0]} to "
                     f"FY{closed[-1]}; "
                     f"FY{OPEN_FY} is still open and is left out of the average."),
@@ -917,24 +925,25 @@ tiles = [
                       f"Hubs program, each one a signed document naming its recipient")},
             {"label": "Routine contracting, FY" + str(closed[-1]),
              "value": "$" + f"{fy_real[closed[-1]] / 1e6:.2f}M",
-             "note": (f"federal contracts and grants written to polymer plants in the "
-                      f"twelve counties, in {fed['cpi_base']} dollars, against "
+             "note": (f"prime-contract obligations, NAICS 325 and 326, reported place of "
+                      f"performance in the twelve counties, in {fed['cpi_base']} dollars, against "
                       f"${fy_real[closed[-2]] / 1e6:.2f}M the year before")},
             {"label": "The award, in years of routine contracting",
              "value": f"{sum(a for _, a in eda_leads) / closed_avg:.1f} years",
              "note": (f"${sum(a for _, a in eda_leads) / 1e6:.1f}M divided by the "
-                      f"${closed_avg / 1e6:.1f}M a year that was already arriving")},
+                      f"${closed_avg / 1e6:.1f}M annual average of contract obligations")},
         ],
-        "blind": ("How much of the signed money has actually been paid out: no public "
-                  "record exists. The record shows what was awarded and what was assigned "
-                  "to a recipient, never what was drawn down, so a fully assigned award "
-                  "that has disbursed nothing and one that has disbursed everything look "
-                  "identical here. This page therefore states no disbursed amount, and "
-                  "that includes not stating a zero. The contracting series also filters "
-                  "on manufacturing industry codes, so university and research awards are "
-                  "invisible to it: a $15.0M National Science Foundation Engines award "
-                  "appears in no figure here. Place of performance is a field reported on "
-                  "the award, not an observation of where work happened."),
+        "blind": ("How much of the signed money has actually been paid out, across the "
+                  "whole of it: no public record exists. USAspending does publish an "
+                  "outlay figure on the federal award lines, and the accountability page "
+                  "carries it; the state grant publishes none and one federal award has "
+                  "no record there at all, so a figure covering the whole would be part "
+                  "measured and part supplied by whoever wrote it. This page therefore "
+                  "states no disbursed amount, and that includes not stating a zero. "
+                  "The contracting series filters to prime contracts (types A–D), with "
+                  "NAICS 325 and 326 manufacturing codes; university and research grants "
+                  "are excluded. Place of performance is reported on the award, not an "
+                  "observation of where work happened."),
         "vintage": {
             "as_of": (f"USAspending, the government’s own record of what it contracts and "
                       f"grants, through FY{OPEN_FY} in {fed['cpi_base']} dollars"),
@@ -984,7 +993,11 @@ health = {
                     "will move the year just published, which this repository has "
                     "measured for exactly three producer-price indexes (the prices "
                     "factories charge for their output), on the revisions page, and for "
-                    "none of the employment, degree or spending series here."),
+                    "none of the employment, degree or spending series here. Federal "
+                    "contracting retains signed obligations, including de-obligations. "
+                    "Calendar-year CPI approximates fiscal-year prices; the 2025 index "
+                    "uses eleven published months because October is unavailable, and "
+                    "FY2026 uses that same index."),
         "suppression": ("A county figure the bureau withholds is never a zero. Three of "
                         "the five measures are built from one figure per county per "
                         "industry, and the set the bureau publishes changes year to year, "
@@ -994,7 +1007,9 @@ health = {
                   "synthetic rubber (3252), paint and coatings (3255) and plastics and "
                   "rubber products (326). The wider chemicals code 325 sweeps in "
                   "pharmaceuticals, agricultural chemicals and industrial gas, about 60 "
-                  "percent of its own figure, and is context rather than cluster."),
+                  "percent of its own figure, and is context rather than cluster. The "
+                  "contracting series uses the broader NAICS 325 and 326 scope, not the "
+                  "three-industry employment register."),
         "not": ("This page carries no measure of output, productivity, exports, private "
                 "investment or company formation, because no page in this room ships one "
                 "yet. Five measures are not the health of an economy."),
@@ -1003,7 +1018,7 @@ health = {
                       "the openings estimate beside them is a state projection for an "
                       "eighteen-county region: they are printed side by side and never "
                       "divided into one another."),
-        "fetched": max(lq["meta"]["fetched"], occ["meta"]["fetched"], fm["meta"]["asOf"]),
+        "fetched": max(lq["meta"]["fetched"], occ["meta"]["fetched"], fm["meta"]["asOf"], fed["meta"]["fetched"]),
         "footprint": wg["meta"]["footprint"],
     },
     "asof": {

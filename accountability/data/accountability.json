@@ -1238,10 +1238,10 @@
  },
  "context": {
   "techhub_award": 51001413,
-  "background_rate": 34908375.5,
+  "background_rate": 41353615.428571425,
   "background_years": [
    2019,
-   2026
+   2025
   ],
   "background_counties": 12,
   "defects": [
@@ -1257,7 +1257,7 @@
    },
    {
     "figure": "The background rate of routine federal money",
-    "text": "Place of performance is a reported field on the award, not an observation of where the work happened. A centrally administered contract, or a prime performing through a subaward, can put the code somewhere other than the activity. An obligation is not an outlay.",
+    "text": "Place of performance is a REPORTED FIELD on the award, not an observation of where work happened: a centrally administered contract or a prime performing through a subaward can put the code somewhere other than the activity. An obligation is not an outlay.",
     "from": "federal-money/data/federal.json meta.caution"
    },
    {

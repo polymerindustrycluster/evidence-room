@@ -1,7 +1,7 @@
 {
  "n_pieces": 22,
- "total_claims": 519,
- "total_manual": 21,
+ "total_claims": 526,
+ "total_manual": 22,
  "pages": {
   "accountability": {
    "claims": 26,
@@ -12,7 +12,7 @@
    "manual": 2
   },
   "chain": {
-   "claims": 5,
+   "claims": 6,
    "manual": 0
   },
   "churn": {
@@ -20,7 +20,7 @@
    "manual": 0
   },
   "cluster-health": {
-   "claims": 37,
+   "claims": 42,
    "manual": 0
   },
   "collaboration": {
@@ -32,7 +32,7 @@
    "manual": 2
   },
   "federal-money": {
-   "claims": 31,
+   "claims": 32,
    "manual": 0
   },
   "funding-map": {
@@ -60,7 +60,7 @@
    "manual": 1
   },
   "programs": {
-   "claims": 12,
+   "claims": 13,
    "manual": 2
   },
   "reach": {
@@ -68,19 +68,19 @@
    "manual": 1
   },
   "realwage": {
-   "claims": 17,
+   "claims": 13,
    "manual": 0
   },
   "revisions": {
-   "claims": 22,
-   "manual": 2
+   "claims": 23,
+   "manual": 3
   },
   "scorecard": {
    "claims": 19,
    "manual": 0
   },
   "sources": {
-   "claims": 33,
+   "claims": 34,
    "manual": 0
   },
   "timeline": {
@@ -88,7 +88,7 @@
    "manual": 4
   },
   "wages": {
-   "claims": 34,
+   "claims": 35,
    "manual": 1
   }
  },
