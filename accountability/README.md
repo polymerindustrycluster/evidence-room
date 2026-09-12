@@ -79,8 +79,9 @@ a page rendering yesterday's arithmetic fails loudly.
   of routine federal obligations (bands A, B, C, and the additionality sentence in F).
 - `public_record` — the compiled public event register behind the promise register and the
   three R&D counts (bands D and E).
-- `qcew` — the 364 plastics and rubber establishments across the twelve PIC counties, the
-  one line of context beside the membership goal (band D).
+- `qcew` — the 365 plastics and rubber establishments across the twelve PIC counties, the
+  one line of context beside the membership goal (band D). The count follows the bureau's
+  11 September 2026 re-read of the 2025 annual averages, recorded in CORRECTIONS.md.
 - `ipeds` — the two board talent-row defects quoted verbatim in the band F source line.
 
 Every other gate passes: 24 of 24 claims, no collisions, all elements on-column at seven

@@ -11,6 +11,68 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-12 — The bureau revised 2025 after first publication, and six pages had not followed
+
+**Was:** Every 2025 employment figure on cluster-health, location-quotient, wages,
+accountability, the hub and the sources guide was the Bureau of Labor Statistics' first
+publication of that year. cluster-health printed 24,030 jobs in the three-industry register, a balanced-panel
+total of 23,457 after a fall of 802, industry moves of 824 down, 393 down and 461 up (a net
+fall of 756 on every published cell), 12,896 jobs in the two-sided pay set, and a national
+register of 857,188 jobs, down 5.8 percent against the region's 8.0 percent. Its workplaces
+chart, the hub card and the accountability context line counted 364 plastics and rubber
+establishments in 2025, up 0.8 percent from 361 and unchanged from 2019, with the county
+changes over 2022 to 2025 reconciling to a net three. location-quotient
+printed 24,030 cluster jobs, 4,259 paint jobs with 3,258 of them in Cuyahoga, a largest
+disclosed cell of 5,780 jobs, and resin on its fixed four counties climbing to 6.45 times
+the national share. wages printed 24,030 narrow-cover jobs, 33,528 broad-cover jobs, a
+column sum of 54,372, an overlap of 20,844, and 20,463 of 26,402 jobs in the de-duplicated
+set. The sources guide's worked examples repeated the wages figures, put 9,498 chemical jobs
+outside any published part code, and gave 3.271 as this site's own value for the worked
+location-quotient cell, a residual of 0.00102 against the bureau's 3.27.
+
+**Is:** The 2025 rows for Ohio, the United States and the twelve counties were re-read from
+the bureau's own area files on 11 September 2026, after the first publication of that year
+was found already revised; 80 of 154 cells moved. The register level is 24,032, the balanced
+panel 23,459 after a fall of 800, the industry moves 824 down, 395 down and 465 up (a net
+fall of 754 on every published cell, which is not the balanced-panel 800 and is not meant to
+be), the two-sided pay set 12,900 jobs, the national register 857,341, down 5.7 percent
+against the region's 7.9 percent. Establishments are 365, up 1.1 percent from 361, so the
+county changes over 2022 to 2025 reconcile to a net four; the 2019 count was 364, so the
+2019 comparison now reads one more rather than unchanged. location-quotient: 24,032 cluster
+jobs, 4,257 paint jobs with 3,256 in Cuyahoga, a largest cell of 5,778, resin on the fixed
+four at 6.47. wages: 24,032 and 33,529, a column sum of 54,375, an overlap of 20,846, and
+20,464 of 26,403. The sources guide follows the wages figures, puts 9,497 chemical jobs
+outside any published part code, and gives 3.272 for the worked cell, a residual of 0.00208,
+still inside the half-digit the bureau prints; its claim tallies also rise by the three
+guards the federal-money page gained the same day. Four printed roundings moved: 5.8 to 5.7 percent, 8.0 to 7.9 percent,
+0.8 to 1.1 percent, 6.45 to 6.47. These rounded displays did not move: 1.24, 0.90, 1.17,
+1.26, 5.96, 7.68, 11.2, 1.46, 18 percent, 76 percent, one job in seventy. Behind them the
+guarded values moved and the guards now pin the new ones: paint 5.9594 on the published
+counties and 7.6774 on the fixed five, the pay median 1.2375, Cuyahoga paint 11.1984. Not
+re-read: the five bordering states' 2025 rows, which remain first-publication figures and
+may revise the same way; the workplaces comparison says so in its data.
+
+**Cause:** The re-read reached the data files on 11 September and the sentences that quote
+them were not re-derived, so the data on disk disagreed with the published figures it feeds
+until this entry; run page by page, the claims harness reported 33 failing guards across the
+six pages once the sources registry was regenerated from the revised inputs. Two further defects surfaced on the way. The dashboard file had been regenerated
+before two of its inputs were, so it printed industry moves of 393 and 461 beside inputs that
+said 395 and 465; it is rebuilt here from its inputs in the documented order, deriver then
+mirror patch. And the correction had been recorded by hand inside two generated data files,
+where nothing regenerates it: the rebuild erased the block in the dashboard file, and the one
+in the workplaces file will go the same way at its next rebuild. This entry is the record.
+One more defect was fixed on the way and one limit stays open. The location-quotient and
+workplaces data files carried their August fetch stamps (14 August 2026) although their 2025
+rows are the September re-read, so those pages' data-as-of lines predated a row they carry.
+A committed, idempotent patch, `_data/build/qcew_2025_vintage_patch.py`, now stamps the
+re-read date and its scope into both files' metadata, and the dashboard inherits the date.
+A patch rather than a rebuild because the location-quotient deriver in the tree no longer
+reproduces the shipped file's metadata (the file carries a longer, hand-polished definition
+than the script writes, and a regenerated file failed the style gate); reconciling that
+script to its file is the open item. The suite's summary line had reported four failing
+claims when there were 28, because it prints only the first few ids; the per-page verifier is
+the count.
+
 ## 2026-09-11 — Education scope, recruiting claims and chain captions
 
 **Was:** The occupations opening and several captions described selected program

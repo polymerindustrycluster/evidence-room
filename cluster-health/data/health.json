@@ -10,7 +10,7 @@
   "scope": "The three industries counted here are the census codes for resin and synthetic rubber (3252), paint and coatings (3255) and plastics and rubber products (326). The wider chemicals code 325 sweeps in pharmaceuticals, agricultural chemicals and industrial gas, about 60 percent of its own figure, and is context rather than cluster. The contracting series uses the broader NAICS 325 and 326 scope, not the three-industry employment register.",
   "not": "This page carries no measure of output, productivity, exports, private investment or company formation, because no page in this room ships one yet. Five measures are not the health of an economy.",
   "geography": "Every employment, wage and contracting figure is on the twelve counties PIC treats as its region. The degree completions are three named universities and the openings estimate beside them is a state projection for an eighteen-county region: they are printed side by side and never divided into one another.",
-  "fetched": "2026-09-08",
+  "fetched": "2026-09-11",
   "footprint": {
    "key": "pic12",
    "n": 12,
@@ -132,9 +132,9 @@
    },
    {
     "year": 2025,
-    "emp": 24030.0,
+    "emp": 24032.0,
     "cells": 24,
-    "balanced": 23457.0
+    "balanced": 23459.0
    }
   ],
   "balanced_cells": 21
@@ -204,7 +204,7 @@
    "year": 2025,
    "ratio": 0.8952,
    "local": 1429,
-   "national": 1505
+   "national": 1506
   }
  ],
  "completions": [
@@ -302,7 +302,7 @@
   }
  ],
  "human_scale": {
-  "jobs_lost": 802,
+  "jobs_lost": 800,
   "nearest_county": "Lorain",
   "nearest_county_emp": 896.0,
   "largest_award_name": "BioVerde",
@@ -375,31 +375,31 @@
    "dimension": "Scale",
    "short": "jobs counted",
    "question": "How many jobs is this?",
-   "value": "24,030",
+   "value": "24,032",
    "unit": "jobs, every county figure published for 2025",
    "bases": {
     "level": {
-     "value": 24030.0,
-     "display": "24,030",
+     "value": 24032.0,
+     "display": "24,032",
      "cells": 24,
      "of_cells": 36,
      "label": "every county figure published for 2025",
      "why": "A level is the fullest count the bureau published for the year, and it is a floor, because a withheld figure is not a zero."
     },
     "trend": {
-     "value": 23457.0,
-     "display": "23,457",
+     "value": 23459.0,
+     "display": "23,459",
      "cells": 21,
      "of_cells": 36,
      "label": "the 21 county figures published in every year since 2015",
      "why": "A trend needs one fixed set of counties, or the bureau’s disclosure decisions read as jobs appearing and vanishing. This is the only basis that supports the three-year run."
     },
-    "note": "Two totals for 2025, on two bases, both correct. 24,030 is every published figure; 23,457 is the fixed set. They differ by 573 jobs, which is the counties that report in some years and not others."
+    "note": "Two totals for 2025, on two bases, both correct. 24,032 is every published figure; 23,459 is the fixed set. They differ by 573 jobs, which is the counties that report in some years and not others."
    },
-   "reading": "24,030 jobs in the three industries the cluster measures itself by, counted across the twelve counties in 2025, on every county figure the bureau published for the year. It is a floor rather than a total: the Bureau of Labor Statistics publishes one figure per county per industry, and it withheld 12 of the 36 to keep single employers unidentifiable.",
-   "means": "That count cannot carry a trend, because the set of counties in it changes from year to year. On the 21 county figures published in every year since 2015, the only run that holds the same set of counties still, the total went 25,281 in 2023, then 24,259, then 23,457. That is the third straight fall, and fewer jobs is the bad direction here. The two totals for 2025 differ by 573 jobs and each is labelled wherever it appears.",
+   "reading": "24,032 jobs in the three industries the cluster measures itself by, counted across the twelve counties in 2025, on every county figure the bureau published for the year. It is a floor rather than a total: the Bureau of Labor Statistics publishes one figure per county per industry, and it withheld 12 of the 36 to keep single employers unidentifiable.",
+   "means": "That count cannot carry a trend, because the set of counties in it changes from year to year. On the 21 county figures published in every year since 2015, the only run that holds the same set of counties still, the total went 25,281 in 2023, then 24,259, then 23,459. That is the third straight fall, and fewer jobs is the bad direction here. The two totals for 2025 differ by 573 jobs and each is labelled wherever it appears.",
    "standing": {
-    "value": 23457.0,
+    "value": 23459.0,
     "year": 2025,
     "n_years": 11,
     "span": [
@@ -408,7 +408,7 @@
     ],
     "low": {
      "year": 2025,
-     "value": 23457.0
+     "value": 23459.0
     },
     "high": {
      "year": 2022,
@@ -461,7 +461,7 @@
      },
      {
       "year": 2025,
-      "value": 23457.0
+      "value": 23459.0
      }
     ],
     "basis": "the 21 county figures published in every year since 2015",
@@ -475,23 +475,23 @@
     "why": "A year is the shortest step this series takes, and comparing the same set of counties is the only way to hold the measurement frame still while the economy moves."
    },
    "direction": {
-    "value": -802,
+    "value": -800,
     "pct": -3.3,
-    "words": "down 802 jobs, 3.3 percent, on the county figures published in both years",
-    "short_move": "down 802 jobs",
+    "words": "down 800 jobs, 3.3 percent, on the county figures published in both years",
+    "short_move": "down 800 jobs",
     "of": "on the county figures published in both years",
-    "raw": -756,
+    "raw": -754,
     "streak": 3
    },
    "band": {
     "latest_year": 2025,
-    "latest": -802.0,
-    "abs_latest": 802.0,
+    "latest": -800.0,
+    "abs_latest": 800.0,
     "median_prior": 341.0,
     "max_prior": 1047.0,
     "n_prior": 9,
     "beats": 7,
-    "typicals": 2.3519,
+    "typicals": 2.346,
     "max_typicals": 3.0704,
     "verdict": "above",
     "steps": [
@@ -542,12 +542,12 @@
      },
      {
       "year": 2025,
-      "change": -802.0,
-      "typicals": 2.3519
+      "change": -800.0,
+      "typicals": 2.346
      }
     ]
    },
-   "blind": "12 of the 36 county-by-industry figures are withheld so no employer can be identified from them. A withheld figure is not a zero, and the jobs behind it are not in the 24,030.",
+   "blind": "12 of the 36 county-by-industry figures are withheld so no employer can be identified from them. A withheld figure is not a zero, and the jobs behind it are not in the 24,032.",
    "vintage": {
     "as_of": "2025 annual averages",
     "changes_it": "The Bureau of Labor Statistics revises these county figures, which come from its Quarterly Census of Employment and Wages, when employers refile. A new annual release replaces this figure outright."
@@ -564,16 +564,16 @@
     },
     {
      "label": "Paint and coatings",
-     "value": "down 393 jobs",
-     "note": "4,259 jobs across seven published counties, the same count as last year"
+     "value": "down 395 jobs",
+     "note": "4,257 jobs across seven published counties, the same count as last year"
     },
     {
      "label": "Resin and synthetic rubber",
-     "value": "up 461 jobs",
+     "value": "up 465 jobs",
      "note": "a county came back into disclosure, from four counties to five, so this rise is partly the bureau publishing more"
     }
    ],
-   "drivers_note": "Add these three and you get a fall of 756, which is the change across every county published this year. The 802 above is measured on the smaller set published in both years, so the two differ and the three do not sum to it."
+   "drivers_note": "Add these three and you get a fall of 754, which is the change across every county published this year. The 800 above is measured on the smaller set published in both years, so the two differ and the three do not sum to it."
   },
   {
    "id": "concentration",
@@ -584,7 +584,7 @@
    "unit": "the national share, on every county published for 2025",
    "bases": {
     "level": {
-     "value": 5.9635,
+     "value": 5.9594,
      "display": "5.96×",
      "cells": 7,
      "of_cells": 12,
@@ -592,7 +592,7 @@
      "why": "A level is the fullest reading the bureau published for the year, and it is a floor. A withheld county leaves the numerator and stays in the denominator, because its total workforce is published even when its industry cell is not, so thinner disclosure pushes this number down by itself."
     },
     "trend": {
-     "value": 7.6825,
+     "value": 7.6774,
      "display": "7.68×",
      "cells": 5,
      "of_cells": 12,
@@ -602,9 +602,9 @@
     "note": "Two readings for 2025, on two bases, both correct. 5.96× is every county the bureau published; 7.68× is the five counties it published in every one of the eleven years. The second is higher because it drops counties whose paint and coatings jobs are withheld while their whole workforce still counts. They are readings on different geographies and neither is a correction of the other."
    },
    "reading": "Paint and coatings is the most concentrated of the three: these twelve counties hold about six times the share of it that the country does. Plastics and rubber, the industries the region is known for, run 2.32 times.",
-   "means": "A high share cuts both ways. Six times the country’s concentration is what makes these counties worth a buyer’s flight, and it is what ties local payroll to one industry’s cycle. The published reading fell this year and the fall is the bureau’s rather than the region’s: Lorain (465 jobs at 11.16 times the national share) left the published set and Geauga (100 jobs at 6.49 times) entered it, and a county that goes withheld takes its jobs out of the top of the ratio while its whole workforce stays in the bottom. Both balanced readings rose. On the six counties published in both years the composite went 5.76× to 5.82×, and on the five published in every year it reached 7.68×, the highest of the eleven. Nothing here moved a step toward looking like the country.",
+   "means": "A high share cuts both ways. Six times the country’s concentration is what makes these counties worth a buyer’s flight, and it is what ties local payroll to one industry’s cycle. The published reading fell this year and the fall is the bureau’s rather than the region’s: Lorain (465 jobs at 11.16 times the national share) left the published set and Geauga (100 jobs at 6.48 times) entered it, and a county that goes withheld takes its jobs out of the top of the ratio while its whole workforce stays in the bottom. Both balanced readings rose. On the six counties published in both years the composite went 5.76× to 5.82×, and on the five published in every year it reached 7.68×, the highest of the eleven. Nothing here moved a step toward looking like the country.",
    "standing": {
-    "value": 7.682483,
+    "value": 7.677381,
     "year": 2025,
     "n_years": 11,
     "span": [
@@ -617,7 +617,7 @@
     },
     "high": {
      "year": 2025,
-     "value": 7.682483
+     "value": 7.677381
     },
     "position": 1.0,
     "rank_from_low": 11,
@@ -666,7 +666,7 @@
      },
      {
       "year": 2025,
-      "value": 7.682483
+      "value": 7.677381
      }
     ],
     "basis": "the same composite for paint and coatings on the five counties published in every year, 2015 to 2025",
@@ -681,7 +681,7 @@
    },
    "direction": {
     "value": 0.11,
-    "pct": 1.5,
+    "pct": 1.4,
     "words": "up from 7.57× to 7.68× the national share, a rise of 0.11, on the five counties published in every year",
     "short_move": "up 0.11, to 7.68×",
     "of": "on the counties published in every year",
@@ -690,13 +690,13 @@
    },
    "band": {
     "latest_year": 2025,
-    "latest": 0.114145,
-    "abs_latest": 0.114145,
+    "latest": 0.109044,
+    "abs_latest": 0.109044,
     "median_prior": 0.080254,
     "max_prior": 0.316649,
     "n_prior": 9,
     "beats": 5,
-    "typicals": 1.4223,
+    "typicals": 1.3587,
     "max_typicals": 3.9456,
     "verdict": "above",
     "steps": [
@@ -747,8 +747,8 @@
      },
      {
       "year": 2025,
-      "change": 0.114145,
-      "typicals": 1.4223
+      "change": 0.109044,
+      "typicals": 1.3587
      }
     ]
    },
@@ -765,7 +765,7 @@
     {
      "label": "Paint and coatings",
      "value": "5.96×",
-     "note": "seven of twelve counties published, 4,259 jobs"
+     "note": "seven of twelve counties published, 4,257 jobs"
     },
     {
      "label": "Plastics and rubber products",
@@ -775,7 +775,7 @@
     {
      "label": "Resin and synthetic rubber",
      "value": "2.00×",
-     "note": "five of twelve counties published, 2,001 jobs"
+     "note": "five of twelve counties published, 2,005 jobs"
     }
    ]
   },
@@ -796,7 +796,7 @@
      "k": "median ratio to national industry average wage"
     }
    ],
-   "reading": "Across 24 published county-industry pairings, the unweighted median average-wage ratio is 1.24 times the county all-industry average and 0.90 times the national average for the same industry. 15 of those 24 pairings, holding 12,896 of the 24,030 jobs, have average wages above the county baseline and below the national industry baseline. These are group averages, not any individual worker’s pay.",
+   "reading": "Across 24 published county-industry pairings, the unweighted median average-wage ratio is 1.24 times the county all-industry average and 0.90 times the national average for the same industry. 15 of those 24 pairings, holding 12,900 of the 24,032 jobs, have average wages above the county baseline and below the national industry baseline. These are group averages, not any individual worker’s pay.",
    "standing": {
     "value": 0.895238,
     "year": 2025,
@@ -959,7 +959,7 @@
     {
      "label": "Weekly wage per covered job",
      "value": "$1,429",
-     "note": "against $1,505 for the same industry mix nationally"
+     "note": "against $1,506 for the same industry mix nationally"
     }
    ],
    "blind": "An average weekly wage moves with hours and with the mix of occupations as much as with pay rates: a plant on overtime reads as a raise. Nothing here is any one person’s pay.",

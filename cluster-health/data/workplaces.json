@@ -1,10 +1,10 @@
 {
  "meta": {
-  "source": "BLS QCEW annual-average files; held by-area and by-industry extracts",
+  "source": "BLS QCEW annual-average files; held by-area and by-industry extracts; the 2025 rows for Ohio, the United States and the twelve counties re-read from the bureau on 2026-09-11 after the first publication of that year was found revised",
   "row": "One private-ownership (own=5), NAICS 326 area-year; manufacturing benchmark NAICS 31–33 separately.",
   "method": "Annual-average jobs and establishments. Establishments are rounded averages of quarterly counts, not unique businesses or a panel of the same sites.",
   "limitations": "Repeated aggregate observations cannot identify changes within surviving plants, productivity, automation, or labor shortages. State comparators are larger geographies; Ohio and the US include PIC-12.",
-  "fetched": "2026-08-14",
+  "fetched": "2026-09-11",
   "footprint": {
    "key": "pic12",
    "n": 12,
@@ -101,7 +101,7 @@
     {
      "year": 2025,
      "jobs": 17770.0,
-     "establishments": 364.0
+     "establishments": 365.0
     }
    ],
    "windows": [
@@ -109,22 +109,22 @@
      "start": 2022,
      "end": 2025,
      "jobs_pct": -10.302357,
-     "establishments_pct": 0.831025,
-     "jobs_per_establishment_pct": -11.041624
+     "establishments_pct": 1.108033,
+     "jobs_per_establishment_pct": -11.285345
     },
     {
      "start": 2015,
      "end": 2025,
      "jobs_pct": -8.250723,
-     "establishments_pct": -5.454545,
-     "jobs_per_establishment_pct": -2.957495
+     "establishments_pct": -5.194805,
+     "jobs_per_establishment_pct": -3.223365
     },
     {
      "start": 2019,
      "end": 2025,
      "jobs_pct": -9.562828,
-     "establishments_pct": 0.0,
-     "jobs_per_establishment_pct": -9.562828
+     "establishments_pct": 0.274725,
+     "jobs_per_establishment_pct": -9.810601
     },
     {
      "start": 2022,
@@ -137,15 +137,15 @@
      "start": 2023,
      "end": 2025,
      "jobs_pct": -9.011777,
-     "establishments_pct": -0.817439,
-     "jobs_per_establishment_pct": -8.261874
+     "establishments_pct": -0.544959,
+     "jobs_per_establishment_pct": -8.513211
     },
     {
      "start": 2024,
      "end": 2025,
      "jobs_pct": -4.431537,
-     "establishments_pct": -2.933333,
-     "jobs_per_establishment_pct": -1.543479
+     "establishments_pct": -2.666667,
+     "jobs_per_establishment_pct": -1.813223
     }
    ]
   },
@@ -205,31 +205,31 @@
     },
     {
      "year": 2025,
-     "jobs": 53420.0,
-     "establishments": 925.0
+     "jobs": 53412.0,
+     "establishments": 926.0
     }
    ],
    "windows": [
     {
      "start": 2022,
      "end": 2025,
-     "jobs_pct": -7.077876,
-     "establishments_pct": 7.934656,
-     "jobs_per_establishment_pct": -13.908908
+     "jobs_pct": -7.091791,
+     "establishments_pct": 8.051342,
+     "jobs_per_establishment_pct": -14.014757
     },
     {
      "start": 2015,
      "end": 2025,
-     "jobs_pct": -4.530426,
-     "establishments_pct": 5.83524,
-     "jobs_per_establishment_pct": -9.794154
+     "jobs_pct": -4.544723,
+     "establishments_pct": 5.949657,
+     "jobs_per_establishment_pct": -9.905063
     },
     {
      "start": 2019,
      "end": 2025,
-     "jobs_pct": -8.307587,
-     "establishments_pct": 8.313817,
-     "jobs_per_establishment_pct": -15.345599
+     "jobs_pct": -8.321318,
+     "establishments_pct": 8.430913,
+     "jobs_per_establishment_pct": -15.449682
     },
     {
      "start": 2022,
@@ -241,16 +241,16 @@
     {
      "start": 2023,
      "end": 2025,
-     "jobs_pct": -4.922935,
-     "establishments_pct": 3.932584,
-     "jobs_per_establishment_pct": -8.520445
+     "jobs_pct": -4.937173,
+     "establishments_pct": 4.044944,
+     "jobs_per_establishment_pct": -8.63292
     },
     {
      "start": 2024,
      "end": 2025,
-     "jobs_pct": -2.600007,
-     "establishments_pct": 0.87241,
-     "jobs_per_establishment_pct": -3.442386
+     "jobs_pct": -2.614594,
+     "establishments_pct": 0.981461,
+     "jobs_per_establishment_pct": -3.561104
     }
    ]
   },
@@ -310,31 +310,31 @@
     },
     {
      "year": 2025,
-     "jobs": 700170.0,
-     "establishments": 14538.0
+     "jobs": 700297.0,
+     "establishments": 14512.0
     }
    ],
    "windows": [
     {
      "start": 2022,
      "end": 2025,
-     "jobs_pct": -6.21798,
-     "establishments_pct": 4.484692,
-     "jobs_per_establishment_pct": -10.243291
+     "jobs_pct": -6.200969,
+     "establishments_pct": 4.29783,
+     "jobs_per_establishment_pct": -10.066172
     },
     {
      "start": 2015,
      "end": 2025,
-     "jobs_pct": 1.988734,
-     "establishments_pct": 10.748838,
-     "jobs_per_establishment_pct": -7.909883
+     "jobs_pct": 2.007234,
+     "establishments_pct": 10.550773,
+     "jobs_per_establishment_pct": -7.728159
     },
     {
      "start": 2019,
      "end": 2025,
-     "jobs_pct": -4.160479,
-     "establishments_pct": 9.638009,
-     "jobs_per_establishment_pct": -12.585496
+     "jobs_pct": -4.143095,
+     "establishments_pct": 9.441931,
+     "jobs_per_establishment_pct": -12.412999
     },
     {
      "start": 2022,
@@ -346,16 +346,16 @@
     {
      "start": 2023,
      "end": 2025,
-     "jobs_pct": -4.597294,
-     "establishments_pct": 2.380282,
-     "jobs_per_establishment_pct": -6.815351
+     "jobs_pct": -4.579989,
+     "establishments_pct": 2.197183,
+     "jobs_per_establishment_pct": -6.631467
     },
     {
      "start": 2024,
      "end": 2025,
-     "jobs_pct": -2.716469,
-     "establishments_pct": 1.133913,
-     "jobs_per_establishment_pct": -3.807212
+     "jobs_pct": -2.698824,
+     "establishments_pct": 0.953043,
+     "jobs_per_establishment_pct": -3.617392
     }
    ]
   },
@@ -940,31 +940,31 @@
     },
     {
      "year": 2025,
-     "jobs": 216335.0,
-     "establishments": 6084.0
+     "jobs": 216404.0,
+     "establishments": 6088.0
     }
    ],
    "windows": [
     {
      "start": 2022,
      "end": 2025,
-     "jobs_pct": -1.559414,
-     "establishments_pct": 0.329815,
-     "jobs_per_establishment_pct": -1.883019
+     "jobs_pct": -1.528017,
+     "establishments_pct": 0.395778,
+     "jobs_per_establishment_pct": -1.916211
     },
     {
      "start": 2015,
      "end": 2025,
-     "jobs_pct": -7.346416,
-     "establishments_pct": -2.044759,
-     "jobs_per_establishment_pct": -5.412326
+     "jobs_pct": -7.316864,
+     "establishments_pct": -1.980357,
+     "jobs_per_establishment_pct": -5.444324
     },
     {
      "start": 2019,
      "end": 2025,
-     "jobs_pct": -5.12247,
-     "establishments_pct": 0.878793,
-     "jobs_per_establishment_pct": -5.948984
+     "jobs_pct": -5.092209,
+     "establishments_pct": 0.945117,
+     "jobs_per_establishment_pct": -5.9808
     },
     {
      "start": 2022,
@@ -976,16 +976,16 @@
     {
      "start": 2023,
      "end": 2025,
-     "jobs_pct": -2.108645,
-     "establishments_pct": -0.016434,
-     "jobs_per_establishment_pct": -2.092555
+     "jobs_pct": -2.077423,
+     "establishments_pct": 0.049302,
+     "jobs_per_establishment_pct": -2.125676
     },
     {
      "start": 2024,
      "end": 2025,
-     "jobs_pct": -1.497111,
-     "establishments_pct": -0.474399,
-     "jobs_per_establishment_pct": -1.027587
+     "jobs_pct": -1.465693,
+     "establishments_pct": -0.408965,
+     "jobs_per_establishment_pct": -1.061068
     }
    ]
   }
@@ -1038,8 +1038,8 @@
    "jobs_2025": 1031.0,
    "jobs_change": -276.0,
    "establishments_2022": 31.0,
-   "establishments_2025": 27.0,
-   "establishments_change": -4.0
+   "establishments_2025": 28.0,
+   "establishments_change": -3.0
   },
   {
    "area": "39099",
@@ -1735,7 +1735,7 @@
    "area": "39151",
    "year": 2025,
    "jobs": 1031.0,
-   "establishments": 27.0
+   "establishments": 28.0
   },
   {
    "area": "39055",
@@ -1909,7 +1909,7 @@
  "receipts": [
   {
    "file": "qcew.json",
-   "sha256": "2c6b7acf2d156ddaf52645fe7e5528cca8ada3c31750f0c7b5dea843a1fb6faf"
+   "sha256": "864390dcf850678ae55232eded39e4bb6fa6edd7d8da7ab8a286eddf4fa3a95d"
   },
   {
    "file": "peers.json",
@@ -1919,7 +1919,20 @@
  "vintage_check": {
   "compared_cells": 154,
   "differences": [],
-  "note": "Agreement between two held extracts is not a fresh upstream revision audit. By-area cache has no fetch timestamp; by-industry timestamp is from its metadata."
+  "note": "The 2025 annual averages were re-read from the bureau's own area files on 2026-09-11, after the first publication of that year was found already revised: 80 of 154 cells had moved. Ohio, the United States and the twelve counties carry the re-read vintage. The five peer states are not in this cache and were not re-read; their 2025 rows are the first-publication vintage and may revise the same way.",
+  "refreshed_2025": {
+   "date": "2026-09-11",
+   "cells_checked": 154,
+   "cells_changed": 80,
+   "scope": "Ohio, United States and the PIC-12 counties",
+   "not_refreshed": [
+    "Indiana",
+    "Kentucky",
+    "Michigan",
+    "Pennsylvania",
+    "West Virginia"
+   ]
+  }
  },
  "annual_evidence": {
   "url": "https://www.bls.gov/cew/downloadable-data-files.htm",

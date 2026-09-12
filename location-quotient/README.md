@@ -69,8 +69,8 @@ any of it was. Both were omissions, so these are clarifications and not correcti
    (more coatings work per job here than the country has) and what it does not (that the
    industry is big), the first hero card repeats it, and the closer gives the verdict as a
    verdict ("we read 5.96x as..."), attributed rather than smuggled in as a fact.
-2. **A magnitude to stand the ratios on.** New claim `lq-cluster-size`: 24,030 cluster jobs
-   out of 1,701,857 in PIC-12, paint 4,259 of them. It replaced the "11 of 11" hero card,
+2. **A magnitude to stand the ratios on.** New claim `lq-cluster-size`: 24,032 cluster jobs
+   out of 1,701,837 in PIC-12, paint 4,257 of them. It replaced the "11 of 11" hero card,
    which repeated a sentence already printed three times above the fold.
 3. **"The register" is gone from reader prose.** It was a defined term defined nowhere.
    Core / detail / context each arrive with the one example that shows why they exist.

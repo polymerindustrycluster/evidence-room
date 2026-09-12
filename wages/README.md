@@ -3,11 +3,16 @@
 **Chemical, plastics and rubber industry averages exceed all-jobs pay, but are level
 with manufacturing.**
 
+Revision, 2026-09-12: the 2025 annual averages were re-read from the bureau on 11 September
+2026 after the first publication was found to have been revised. The job totals on this page
+moved by one to three jobs each, and no printed ratio moved. The entry in CORRECTIONS.md
+records the change.
+
 Correction, 2026-09-08: the employment-weighted median is **1.26× across group-average
 wage ratios**, not median individual job/worker pay. QCEW aggregate means and headcounts
 cannot identify the wage distribution within those groups. The broad NAICS325 +326
 cover includes chemistry outside PIC's narrower 3252 +3255 +326 register. The broad
-cover contains 33,528 jobs; the narrow cover contains 24,030 and its employment-weighted
+cover contains 33,529 jobs; the narrow cover contains 24,032 and its employment-weighted
 median group-average ratio is **1.17×** the county all-jobs wage, beside broad **1.26×**.
 Both statistics weight industry group means, not individual wage observations. The median
 of 51 county-industry wage ratios is **0.99× county private manufacturing**, versus
@@ -53,7 +58,7 @@ Raw pulls live beside that script so a derivation can be re-run without re-fetch
   appear at both levels and the 51 cells are not 51 separate places. Counted once at each
   county's finest disclosed level, the tally is 27 of 35 above — **77%, against 78% for the
   headline 40 of 51**, both divided out on the page rather than described. Those 27 cover
-  20,463 of the 26,402 jobs in the deduplicated set. The reconciliation is published twice:
+  20,464 of the 26,403 jobs in the deduplicated set. The reconciliation is published twice:
   in hero card 1's detail line, beside the headline it corrects, and in full in the
   methodology box.
 - The national comparison (`vs_us`) is the counterweight, not a footnote: 44 of 51 cells pay
@@ -99,8 +104,8 @@ the reporting requirement is the aspiration, not the gate.
   double-counted: he checked Summit plastics 2,486 + rubber 1,338 against plastics & rubber
   3,824 and got it exactly, then learned 400 lines later, in the methodology, that "one
   county can be counted twice". 326 IS 3261 + 3262 to the rounding; 325 holds 3252 and 3255
-  plus chemistry the disclosure threshold never splits out, so the column sums to 54,372
-  where the six industries hold **33,528** jobs counted once, an overstatement of 1.62 (he
+  plus chemistry the disclosure threshold never splits out, so the column sums to 54,375
+  where the six industries hold **33,529** jobs counted once, an overstatement of 1.62 (he
   guessed "roughly double", which is right for the products side and too high overall). The
   disclosure moved to the point of contact: the table caption, which is also the collapsed
   summary; the column header, which now reads "Jobs (groups overlap, do not add)"; every
@@ -117,8 +122,8 @@ the reporting requirement is the aspiration, not the gate.
   which is the only reason the pairing figure can stay the headline honestly. It is printed
   on the same card, in the closer and in the methodology, guarded by `job-weighted-median`.
   Two job totals now appear on the page and both are labelled: the finest-level set's
-  26,402 is explicitly not the headcount (it drops the 7,126 chemical jobs 325 holds beyond
-  its published parts), and the narrower 3252 + 3255 + 326 list gives 24,030 for the same
+  26,403 is explicitly not the headcount (it drops the 7,126 chemical jobs 325 holds beyond
+  its published parts), and the narrower 3252 + 3255 + 326 list gives 24,032 for the same
   counties, printed so that two correct totals cannot read as one wrong one. Also: the cold
   open's key said "chemistry side" roughly 1,300px above the sentence defining it, and now
   names the industries ("chemicals, resin, paint"); and the chart-1 source line states the
@@ -131,7 +136,7 @@ the reporting requirement is the aspiration, not the gate.
   77% against 78%, guarded by `dedup-reconciles-headline`. (2) The 78% employment-weighted
   hero card was unverifiable (no job count appeared anywhere on the page) and sat one
   rounding away from 40/51 = 78.4%, so it read as the headline said twice. It came out of
-  the hero row; the employment totals it rests on (20,463 of 26,402) are printed in the
+  the hero row; the employment totals it rests on (20,464 of 26,403) are printed in the
   methodology, and its slot went to the page's own counterweight, 44 of 51, whose card
   states the 33 overlap so that 40 + 44 − 33 = 51 closes (`hero-counts-reconcile`). (3) The
   de-duplicated 27 of 35 moved up into hero card 1's detail line, beside the number it

@@ -200,11 +200,11 @@
   },
   {
    "id": "acc-context-establishments",
-   "text": "Band D, the one line of context beside the membership goal: BLS counted 364 plastics and rubber establishments across the twelve PIC counties in 2025, with no county withheld.",
+   "text": "Band D, the one line of context beside the membership goal: BLS counted 365 plastics and rubber establishments across the twelve PIC counties in 2025, with no county withheld.",
    "source": "location-quotient/data/lq.json composite, year 2025, NAICS 326",
-   "assert": "one(c for c in D['lq']['composite'] if c['year'] == 2025 and c['naics'] == '326')['estabs'] == 364 and one(c for c in D['lq']['composite'] if c['year'] == 2025 and c['naics'] == '326')['counties_counted'] == 12 and one(c for c in D['lq']['composite'] if c['year'] == 2025 and c['naics'] == '326')['counties_suppressed'] == 0",
+   "assert": "one(c for c in D['lq']['composite'] if c['year'] == 2025 and c['naics'] == '326')['estabs'] == 365 and one(c for c in D['lq']['composite'] if c['year'] == 2025 and c['naics'] == '326')['counties_counted'] == 12 and one(c for c in D['lq']['composite'] if c['year'] == 2025 and c['naics'] == '326')['counties_suppressed'] == 0",
    "actual": "one(c for c in D['lq']['composite'] if c['year'] == 2025 and c['naics'] == '326')",
-   "falsified_if": "BLS withholds any county cell for NAICS 326 in 2025, in which case the count becomes a floor and the phrase 'no county withheld' fails. The sentence also says an establishment is a site rather than a company; that distinction is what stops 150 members and 364 establishments from being read as the same denominator."
+   "falsified_if": "BLS withholds any county cell for NAICS 326 in 2025, in which case the count becomes a floor and the phrase 'no county withheld' fails. The sentence also says an establishment is a site rather than a company; that distinction is what stops 150 members and 365 establishments from being read as the same denominator."
   },
   {
    "id": "acc-additionality",

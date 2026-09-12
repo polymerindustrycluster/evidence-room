@@ -1568,7 +1568,7 @@
    "wages"
   ],
   "n_build_scripts": 58,
-  "catalog_generated": "2026-09-11 11:52"
+  "catalog_generated": "2026-09-12 19:16"
  },
  "footprint": {
   "key": "pic12",
@@ -1759,7 +1759,7 @@
    "parent": null,
    "level": "family",
    "in_register": false,
-   "emp": 15758,
+   "emp": 15759,
    "pairings": 11
   },
   {
@@ -1769,7 +1769,7 @@
    "parent": "325",
    "level": "part",
    "in_register": true,
-   "emp": 2001,
+   "emp": 2005,
    "pairings": 5
   },
   {
@@ -1779,7 +1779,7 @@
    "parent": "325",
    "level": "part",
    "in_register": true,
-   "emp": 4259,
+   "emp": 4257,
    "pairings": 7
   },
   {
@@ -1816,12 +1816,12 @@
  "doublecount": {
   "rows": 51,
   "family_rows": 23,
-  "column_sum": 54372,
-  "once_counted": 33528,
-  "doubled": 20844,
+  "column_sum": 54375,
+  "once_counted": 33529,
+  "doubled": 20846,
   "factor": 1.62,
-  "register_sum": 24030,
-  "unsplit_chemistry": 9498,
+  "register_sum": 24032,
+  "unsplit_chemistry": 9497,
   "year": 2025
  },
  "suppression": {
@@ -2051,18 +2051,18 @@
    "area": "39153",
    "county": "Summit",
    "naics": "326",
-   "read_on": "2026-08-29",
+   "read_on": "2026-09-11",
    "rows": "local: own_code 5 industry 326 agglvl 75; own_code 0 industry 10 agglvl 70; own_code 5 industry 10 agglvl 71. national (US000): own_code 5 industry 326 agglvl 15; own_code 0 industry 10 agglvl 10; own_code 5 industry 10 agglvl 11.",
    "local_industry_private": 3824,
-   "local_all_industry_all_ownerships": 259944,
-   "local_all_industry_private": 232800,
-   "national_industry_private": 700170,
-   "national_all_industry_all_ownerships": 155685781,
-   "national_all_industry_private": 133117983,
-   "bls_basis": 3.271,
+   "local_all_industry_all_ownerships": 259891,
+   "local_all_industry_private": 232747,
+   "national_industry_private": 700297,
+   "national_all_industry_all_ownerships": 155732363,
+   "national_all_industry_private": 133160274,
+   "bls_basis": 3.2721,
    "bls_basis_2dp": 3.27,
    "bls_published": 3.27,
-   "same_basis": 3.123,
+   "same_basis": 3.1241,
    "same_basis_2dp": 3.12,
    "gap_pct": -4.5,
    "self_check": {
@@ -2080,12 +2080,12 @@
    "separating_cells": 2,
    "published_is": "bls_column",
    "our_value": 3.27,
-   "our_value_full": 3.271,
-   "residual": 0.00102,
+   "our_value_full": 3.2721,
+   "residual": 0.00208,
    "verification": {
     "cells_checked": 667,
-    "mean_abs_residual": 0.002542,
-    "max_abs_residual": 0.004997
+    "mean_abs_residual": 0.002529,
+    "max_abs_residual": 0.004982
    }
   }
  },
@@ -2094,7 +2094,7 @@
    "lq": 0.09,
    "county": "Mahoning",
    "naics": "325",
-   "emp": 49
+   "emp": 48
   },
   {
    "lq": 0.24,
@@ -2127,7 +2127,7 @@
    "emp": 1776
   },
   {
-   "lq": 1.02,
+   "lq": 1.03,
    "county": "Cuyahoga",
    "naics": "3252",
    "emp": 418
@@ -2148,7 +2148,7 @@
    "lq": 1.46,
    "county": "Cuyahoga",
    "naics": "325",
-   "emp": 5780
+   "emp": 5778
   },
   {
    "lq": 1.46,
@@ -2175,10 +2175,10 @@
    "emp": 146
   },
   {
-   "lq": 1.88,
+   "lq": 1.89,
    "county": "Summit",
    "naics": "325",
-   "emp": 2806
+   "emp": 2810
   },
   {
    "lq": 2.0,
@@ -2289,10 +2289,10 @@
    "emp": 1160
   },
   {
-   "lq": 4.59,
+   "lq": 4.61,
    "county": "Summit",
    "naics": "3252",
-   "emp": 702
+   "emp": 706
   },
   {
    "lq": 4.81,
@@ -2307,7 +2307,7 @@
    "emp": 190
   },
   {
-   "lq": 5.66,
+   "lq": 5.67,
    "county": "Ashtabula",
    "naics": "325",
    "emp": 945
@@ -2331,7 +2331,7 @@
    "emp": 1338
   },
   {
-   "lq": 6.49,
+   "lq": 6.48,
    "county": "Geauga",
    "naics": "3255",
    "emp": 100
@@ -2367,10 +2367,10 @@
    "emp": 2829
   },
   {
-   "lq": 11.21,
+   "lq": 11.2,
    "county": "Cuyahoga",
    "naics": "3255",
-   "emp": 3258
+   "emp": 3256
   },
   {
    "lq": 11.29,
@@ -2488,26 +2488,26 @@
    "325",
    "326"
   ],
-  "cover_outside_register": 15758,
+  "cover_outside_register": 15759,
   "register_naics": [
    "3252",
    "3255",
    "326"
   ],
-  "register_jobs": 24030,
+  "register_jobs": 24032,
   "n_published": 51,
   "n_industries": 6,
   "n_counties": 12,
   "n_possible": 72,
-  "median_pairing": 1.2078,
-  "median_group_weighted": 1.2597,
+  "median_pairing": 1.2094,
+  "median_group_weighted": 1.261,
   "median_unit": "county-industry group-average wage ratios; not individual pay",
   "n_above_local": 40,
   "n_below_us": 44,
   "median_vs_us": 0.8813,
   "cover_rows": 23,
-  "cover_jobs": 33528,
-  "cover_jobs_above": 29080,
+  "cover_jobs": 33529,
+  "cover_jobs_above": 29081,
   "dedup_rows": 35,
   "dedup_above": 27,
   "drag": {
@@ -2955,12 +2955,12 @@
  ],
  "checks": {
   "n_pages": 22,
-  "n_claims": 526,
+  "n_claims": 529,
   "n_manual": 22,
   "this_page": 34,
-  "n_auto": 504,
+  "n_auto": 507,
   "n_hub_claims": 29,
-  "n_site_claims": 555
+  "n_site_claims": 558
  },
  "vintage": {
   "n_revised": 259,

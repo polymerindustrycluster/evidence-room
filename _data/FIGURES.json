@@ -296,9 +296,33 @@
         "cluster-health"
       ],
       "observability": "public",
-      "resolved": "2026-09-08: 24,030 counts all 24 disclosed county-industry cells in the three-code register; 23,457 counts the 21 cells disclosed in every year from 2015 through 2025. Neither is the new 17,770-job NAICS 326 headline. These are different industry/disclosure bases, not conflicting totals.",
+      "resolved": "2026-09-12: 24,032 counts all 24 disclosed county-industry cells in the three-code register; 23,459 counts the 21 cells disclosed in every year from 2015 through 2025. Both stand on the 2025 rows re-read from the bureau on 2026-09-11 after the first publication of that year was found revised. Neither is the 17,770-job NAICS 326 headline, which did not move. These are different industry/disclosure bases, not conflicting totals.",
       "action": "Name the industry set and disclosure basis with each total. The NAICS 326 headline and trend cover all twelve counties.",
       "history": [
+        {
+          "superseded_on": "2026-09-12",
+          "reason": "The Bureau of Labor Statistics revised its 2025 annual averages after first publication; the 2025 rows were re-read on 2026-09-11 and both totals moved by two jobs. Bases and cell counts are unchanged. See CORRECTIONS.md, 2026-09-12.",
+          "prior": {
+            "resolved": "2026-09-08: 24,030 counts all 24 disclosed county-industry cells in the three-code register; 23,457 counts the 21 cells disclosed in every year from 2015 through 2025. Neither is the new 17,770-job NAICS 326 headline. These are different industry/disclosure bases, not conflicting totals.",
+            "values_by_basis": {
+              "published_cells": {
+                "value": 24030,
+                "cells": 24,
+                "possible_cells": 36
+              },
+              "balanced_2015_2025": {
+                "value": 23457,
+                "cells": 21,
+                "possible_cells": 36
+              },
+              "plastics_and_rubber": {
+                "value": 17770,
+                "naics": "326",
+                "counties": 12
+              }
+            }
+          }
+        },
         {
           "superseded_on": "2026-09-08",
           "reason": "The previously disputed totals describe different disclosure bases; the fixed panel contains county-industry cells, not 21 counties.",
@@ -320,12 +344,12 @@
       ],
       "values_by_basis": {
         "published_cells": {
-          "value": 24030,
+          "value": 24032,
           "cells": 24,
           "possible_cells": 36
         },
         "balanced_2015_2025": {
-          "value": 23457,
+          "value": 23459,
           "cells": 21,
           "possible_cells": 36
         },

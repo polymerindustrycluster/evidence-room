@@ -1,6 +1,6 @@
 {
  "meta": {
-  "source": "BLS QCEW US000 annual files, own_code 5, NAICS 326+3252+3255, fetched 2026-08-30 by _data/build/fetch_mfg_baseline.py",
+  "source": "BLS QCEW US000 annual files, own_code 5, NAICS 326+3252+3255, fetched 2026-08-30 by _data/build/fetch_mfg_baseline.py; the 2025 row re-read from the bureau on 2026-09-11 after its first publication was found revised.",
   "why": "The H1 reports three falling years; this file is the tide, on the same three-code basis the regional count uses."
  },
  "trend": [
@@ -21,8 +21,8 @@
   },
   {
    "year": 2025,
-   "us_326_emp": 700170,
-   "us_register_emp": 857188
+   "us_326_emp": 700297,
+   "us_register_emp": 857341
   }
  ]
 }

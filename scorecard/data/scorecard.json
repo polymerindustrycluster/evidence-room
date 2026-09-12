@@ -11,7 +11,7 @@
   "small_numbers": "The talent rows are administrative counts in the low tens. The polymer series ran 54, 62, 63 across 2021, 2022 and 2023, so a single year is a reading and not a direction.",
   "excludes": "The federal mirror this series was built from ran a year behind from 2020 to 2022 and never served the 2022 collection year at all. Those three years are now taken from the NCES completions files directly, so the 2021-2023 window this page reads is three consecutive years rather than two years and a gap."
  },
- "generated_on": "2026-09-01",
+ "generated_on": "2026-09-12",
  "version": "1.0",
  "counts": {
   "rows": 18,

@@ -15,7 +15,7 @@
   "small_numbers": "The promise register holds eighteen rows and one of them carries a number that can be missed. A keeping rate computed over a handful of resolved commitments would be noise with a percent sign, so this page prints the count and no rate until 6 commitments have resolved.",
   "note": "Match is never summed into the staged bar. It is promised at award time by organisations other than PIC, so it is drawn detached, with its own label. The $10,417,066 beside the state grant is promised by local partners, not by the state."
  },
- "generated_on": "2026-08-31",
+ "generated_on": "2026-09-12",
  "as_of": "2026-08-13",
  "draft": {
   "status": "unreviewed draft",
@@ -68,8 +68,6 @@
     "source_id": "ohio"
    }
   ],
-  "mechanism": "EDA obligates directly to each project lead. The Greater Akron Chamber is one recipient among seven, for innovation governance. No part of the other six awards passes through it.",
-  "other_leads": 6,
   "gac_grantee": {
    "apex": {
     "award_id": "ED25OIE0G0108",
@@ -82,7 +80,9 @@
     "outlay": 399672.0,
     "what": "A completed Phase 1 Tech Hub award to the Greater Akron Chamber, fully outlaid. It sits outside this register's $85,335,784 and is never summed with it; the accountability page names it because the Chamber is its grantee."
    }
-  }
+  },
+  "mechanism": "EDA obligates directly to each project lead. The Greater Akron Chamber is one recipient among seven, for innovation governance. No part of the other six awards passes through it.",
+  "other_leads": 6
  },
  "staging": {
   "awarded": 85335784,
@@ -982,7 +982,7 @@
    "counted_in_rows_reason": "A row with no source document does not meet this register’s entry test (a date, an owner and a source document), so it is shown beside the register and excluded from every count on this page. Open Question 1 decides whether it becomes a row."
   },
   "goal_context": {
-   "establishments": 364,
+   "establishments": 365,
    "year": 2025,
    "counties": 12,
    "suppressed": 0,
@@ -1018,7 +1018,7 @@
     "on": "2026-08-13",
     "display": "2026-08-13",
     "document": "Award register, executed sub-grant agreements",
-    "counted": "Executed sub-grant agreements, the only one of the four R&D competition figures that says what it counted."
+    "counted": "Executed sub-grant agreements, which is the only one of these four that says what it counted."
    },
    {
     "published": "500 enrollments and 320 placements, against 500 enrollments, 400 completions and 320 placements",
@@ -1175,7 +1175,7 @@
     "because": "This repository is public and its history is permanent, so it carries no member, applicant or personal data. Every metric that would need PIC’s membership register, general ledger, pipeline or drawdown records is published here as a defined empty slot. Filling those rows requires a copy of this page kept outside a public repository.",
     "because_from": "scorecard.json meta.publicOnly",
     "would_need": "A membership-agreement and marketing-communications decision on what may be published, and at what grain.",
-    "defined_on": "2026-08-31",
+    "defined_on": "2026-09-12",
     "fill_by": null,
     "permanent_reason": "This repository is public and its history is permanent, so no grain of a member record is publishable in it. A populated copy belongs outside it."
    },
@@ -1184,10 +1184,10 @@
      "b-disbursed"
     ],
     "not_here": "Award dollars disbursed against the whole award total",
-    "because": "An award register records what has been committed and executed, and records no payment, so no figure taken from it measures money spent. The payment stage above is not taken from that register: it is the federal ledger’s own outlay figure, and it covers the federal award lines that publish one, not the whole $85,335,784. That whole-total figure is the one this row is empty for.",
-    "because_from": "funding.json meta.outlays",
-    "would_need": "A drawdown figure for Ohio Innovation Hub grant SBIG20251005, and a USAspending record for EDA award ED25HDQ0G0009. Those two are all that stands between the outlay total above and a figure for the whole award total.",
-    "defined_on": "2026-08-31",
+    "because": "An award register records what has been committed and executed. It records no payment, so no figure on this page is a measure of money spent. Obligated is not disbursed, and the disbursement row is empty for that reason rather than for lack of effort.",
+    "because_from": "scorecard.json meta.caution",
+    "would_need": "A drawdown figure for the $31,250,000 Ohio Innovation Hub grant, a state award that publishes no drawdown, and a payment figure for EDA award ED25HDQ0G0009, which has no USAspending record of any kind. The payment stage above already prints the outlays that seven of the eight federal lines do publish; what no record covers is the whole $85,335,784.",
+    "defined_on": "2026-09-12",
     "fill_by": "on a decision to publish drawdown totals",
     "permanent_reason": null
    },
@@ -1200,7 +1200,7 @@
     "because": "Held in PIC and APEX programme records, which this repository does not carry.",
     "because_from": "scorecard.json, the two empty group C rows",
     "would_need": "A quarterly reporting arrangement with ConxusNEO, the Ohio Manufacturers’ Association and the Polymer Sector Partnership.",
-    "defined_on": "2026-08-31",
+    "defined_on": "2026-09-12",
     "fill_by": "on a quarterly reporting arrangement",
     "permanent_reason": null
    },
@@ -1210,7 +1210,7 @@
     "because": "No page in this room ships a method for it that survives its own gates.",
     "because_from": "this page",
     "would_need": "A defensible method, published before the number.",
-    "defined_on": "2026-08-31",
+    "defined_on": "2026-09-12",
     "fill_by": null,
     "permanent_reason": "Until a method exists and is published first, the figure would be an assertion with a decimal point on it."
    },
@@ -1220,7 +1220,7 @@
     "because": "This page shows only events recorded as public. Internal operational milestones, and the record of which dates slipped, are deliberately not here.",
     "because_from": "timeline.json meta.publicOnly",
     "would_need": "A decision to emit the slip column, which cannot be un-made.",
-    "defined_on": "2026-08-31",
+    "defined_on": "2026-09-12",
     "fill_by": "on the slip-record decision (Open Question 3)",
     "permanent_reason": null
    },
@@ -1230,7 +1230,7 @@
     "because": "NEO-SMART is a separate CWRU-led NSF Engine award in which PIC is a core partner. It is not PIC money and is not on this diagram.",
     "because_from": "funding.json meta.disclosures",
     "would_need": "Nothing. It is correctly excluded, and it is named here so nobody thinks it was overlooked.",
-    "defined_on": "2026-08-31",
+    "defined_on": "2026-09-12",
     "fill_by": null,
     "permanent_reason": "It is not PIC money, so it will never appear on this page."
    }

@@ -12,8 +12,14 @@ pages. The jobs/workplaces story derives held QCEW by-area and by-industry annua
 
 ## Jobs and workplaces, updated 8 September 2026
 
+**Re-read 12 September 2026.** The Bureau of Labor Statistics revised its 2025 annual
+averages after first publication. The 2025 rows for Ohio, the United States and the twelve
+counties were re-read from the bureau on 11 September 2026. 80 of 154 cells moved. The five
+bordering states were not re-read. The figures in this README and on the page follow the
+re-read. `CORRECTIONS.md` carries the full entry.
+
 Private NAICS 326, PIC-12, annual averages: 19,811 jobs and 361 establishments in 2022;
-17,770 jobs and 364 establishments in 2025. Jobs fell 10.3%, establishments rose 0.8%.
+17,770 jobs and 365 establishments in 2025. Jobs fell 10.3%, establishments rose 1.1%.
 The complete 2015–2025 series contains 132 disclosed county-year observations.
 Over the full decade, both jobs and establishments fell (19,368 / 385 in 2015).
 Both also fell in 2024–2025. “Roughly stable workplaces” describes the recent three-year
@@ -21,10 +27,10 @@ window, not a continuous rise or the full decade.
 
 2022 is the job peak across all eleven observations; the establishment minimum is 357
 in 2021. The recent window starts three consecutive annual job declines. From the
-pre-pandemic 2019 baseline to 2025, jobs fell 9.6% and establishments were unchanged at
-364. The page exposes both windows and the full decade, rather than treating 2022 as a
-neutral long-run baseline. PIC-12 establishment growth of 0.8% in 2022–2025 trails Ohio
-(7.9%) and the United States (4.5%).
+pre-pandemic 2019 baseline to 2025, jobs fell 9.6% and establishments moved from 364 to
+365. The page exposes both windows and the full decade, rather than treating 2022 as a
+neutral long-run baseline. PIC-12 establishment growth of 1.1% in 2022–2025 trails Ohio
+(8.1%) and the United States (4.3%).
 
 The same industry lost jobs in Ohio (7.1%) and nationally (6.2%) over 2022–2025, while
 establishments increased. All five states bordering Ohio are shown as geographic context,
@@ -111,10 +117,14 @@ The revision calibration in the tinted band comes from `revisions/data/revisions
 ## Rebuild
 
 ```
+python3 ../_data/build/qcew_2025_vintage_patch.py   # stamps the 2025 QCEW re-read into workplaces.json and lq.json; idempotent
 python3 derive_health.py          # from anywhere; writes data/health.json
 python3 ../_data/build/mirror_fix_patch.py   # REQUIRED: re-applies the IPEDS mirror correction
 node ../tools/bundle.mjs cluster-health
 ```
+
+The vintage patch runs first because the dashboard takes its data-as-of date from its
+inputs; without it the dashboard dates the re-read 2025 rows to the August fetch.
 
 **`derive_health.py` alone does not reproduce the shipped file.** The Talent tile carries
 the IPEDS mirror correction, which `_data/build/mirror_fix_patch.py` applies on top and
@@ -140,8 +150,8 @@ fails the gate rather than shipping.
   the page is either the measure's own past or the national share. If PIC ever sets a
   target, that is a new field and a new sentence, not a re-reading of these.
 - **Two of the five tiles read their LEVEL and their MOVEMENT on different bases, and say
-  so.** Scale reports every county figure the bureau published (24,030) and measures the
-  move on the counties published in every year (23,457). Distinctiveness does the same
+  so.** Scale reports every county figure the bureau published (24,032) and measures the
+  move on the counties published in every year (23,459). Distinctiveness does the same
   from 2026-09-01: the level is the published composite (5.96x) and the move and the range
   are the five counties published in all eleven years (7.68x). The two are readings on
   different geographies, neither is a correction of the other, and neither may be quoted
@@ -177,8 +187,8 @@ fails the gate rather than shipping.
   grey. Claim `standing-merit-is-declared-not-inferred` fails if a fifth appears or if any
   measure's better end becomes the low one, because the axis states the rule once for the
   whole chart.
-- **Two totals for one year, both correct, each labelled.** `24,030` is every county
-  figure BLS published for 2025; `23,457` is the 21 figures published in every year since
+- **Two totals for one year, both correct, each labelled.** `24,032` is every county
+  figure BLS published for 2025; `23,459` is the 21 figures published in every year since
   2015, and it is the only basis that supports the three-year fall. A level and a trend
   need different bases. Neither is a correction of the other and neither may travel
   without its basis named; claim `two-bases-for-the-same-year` holds both.
@@ -187,7 +197,7 @@ fails the gate rather than shipping.
   panel (the 21 industry-county cells present in all eleven years), never from the raw
   annual totals. The level printed is the disclosed total and is a floor.
 - **The resin driver on the Scale tile is partly a disclosure event.** A county returned
-  to disclosure between the two years, from four to five, so part of the +461 is the
+  to disclosure between the two years, from four to five, so part of the +465 is the
   bureau publishing more rather than employers hiring more. The claim
   `scale-drivers` guards the disclosed-county counts precisely so that sentence cannot
   survive the counts changing.
