@@ -110,6 +110,39 @@ accounting for about 71% of the $26.5M regional decline. Excluding all-other rub
 reduces the finished-year mean to $29.8M (1.7 award-years); excluding tires too gives
 $18.1M (2.8 years). These are sensitivity checks, not alternate definitions of the headline.
 
+## Added 12 September 2026: the FY2025 rise is one customer
+
+The same concentration runs the other way at the end of the series, and the article now
+says so. The flow rises from $25.0M in FY2024 to $41.2M in FY2025 in 2025 dollars, a gain
+of $16.2M, while tire manufacturing alone rises $18.3M across those two years. The gain in
+one industry code therefore exceeds the gain in the whole series, and excluding tires the
+flow falls from $12.2M to $10.2M. On the separately dated whole-life award register, 99% of
+tire-code dollars belong to Goodyear, all of its contract dollars were placed by the
+Department of Defense, and its largest award names a Foreign Military Sales case for Israel.
+The paragraph stops there: the yearly series cannot split one year among firms, so the page
+says tire-coded contracts carried more than the whole rise and everything else fell, and
+does not say the rise was one buyer's. A lane-level check in the private workshop found the
+FY2024 and FY2025 tire dollars to be one recipient's Army delivery orders under those
+Foreign Military Sales cases; that finding is not published here because no public data file
+on this page carries the fiscal-year lane, and a claim without a guard is not printed.
+Guards: `fed-2025-tire-swing`, `fed-2025-ex-tire-falls`, `fed-tire-code-one-company`.
+
+No published number changed and no correction is owed. The paragraph adds context the
+series always contained and the article had not stated. Two limits are carried in the
+prose itself. The fiscal-year series and the whole-life register are different time bases
+and are never summed, so the paragraph names which basis each figure comes from. And a
+Foreign Military Sales order is recorded here because its place of performance is reported
+in these counties; that is a reported field, not an observation of where the work happened,
+which the band's own note already states.
+
+The finding came from a bounded probe of buyer and product-service-code lanes in the
+private workshop repository, which tested whether repeat federal purchasing offers a
+plausible entry point for a small manufacturer. It concluded that the three most recurrent
+lanes are each one incumbent's business and that the accessible-demand framing does not
+survive its own kill conditions. That probe's narrower finding is what this section
+records; its lane-level tables are not published here, and every figure above is recomputed
+from the two data files this page already ships.
+
 ## Comparator and current limits
 
 The contracting denominator is $9.2B in 2025 dollars; polymer-coded work is about one

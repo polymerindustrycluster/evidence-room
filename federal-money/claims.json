@@ -268,6 +268,30 @@
       "assert": "(lambda r: r['2532460']['estimated_total']==14999983 and r['2532460']['obligated']==7499984 and r['2330145']['estimated_total']==25996432 and r['2330145']['obligated']==13698899 and r['2330145']['end_date']=='08/31/2026')({r['id']:r for r in D['f']['research_awards']})",
       "actual": "D['f']['research_awards']",
       "falsified_if": "Either public NSF record changes the named dollar basis or TARDISS end date. The extracted values retain each record's source URL."
+    },
+    {
+      "id": "fed-2025-tire-swing",
+      "text": "The flow rose from $25.0M in FY2024 to $41.2M in FY2025 in 2025 dollars, a gain of $16.2M; tire manufacturing alone rose $18.3M over the same two years, more than the whole gain.",
+      "source": "Complete USAspending transaction-category pull, PIC-12, prime contracts A-D, FY2019-FY2026; BLS CUUR0000SA0 monthly observations",
+      "assert": "round(sum(r['real'] for r in D['f']['naics'] if r['fy']==2024)/1e6,1)==25.0 and round(sum(r['real'] for r in D['f']['naics'] if r['fy']==2025)/1e6,1)==41.2 and round((sum(r['real'] for r in D['f']['naics'] if r['fy']==2025)-sum(r['real'] for r in D['f']['naics'] if r['fy']==2024))/1e6,1)==16.2 and round((sum(r['real'] for r in D['f']['naics'] if r['fy']==2025 and r['code']=='326211')-sum(r['real'] for r in D['f']['naics'] if r['fy']==2024 and r['code']=='326211'))/1e6,1)==18.3 and (sum(r['real'] for r in D['f']['naics'] if r['fy']==2025 and r['code']=='326211')-sum(r['real'] for r in D['f']['naics'] if r['fy']==2024 and r['code']=='326211')) > (sum(r['real'] for r in D['f']['naics'] if r['fy']==2025)-sum(r['real'] for r in D['f']['naics'] if r['fy']==2024))",
+      "actual": "(sum(r['real'] for r in D['f']['naics'] if r['fy']==2024), sum(r['real'] for r in D['f']['naics'] if r['fy']==2025), sum(r['real'] for r in D['f']['naics'] if r['fy']==2024 and r['code']=='326211'), sum(r['real'] for r in D['f']['naics'] if r['fy']==2025 and r['code']=='326211'))",
+      "falsified_if": "The named quantity changes its stated rounded value, source scope changes, or the asserted source coverage fails. Recompute the prose and chart together before publishing a new vintage. The paragraph's argument is that one industry code gained more than the whole flow did; if that ordering reverses, the sentence is wrong even when both figures round as printed."
+    },
+    {
+      "id": "fed-2025-ex-tire-falls",
+      "text": "Excluding tire manufacturing, the flow fell from $12.2M in FY2024 to $10.2M in FY2025 in 2025 dollars, about a sixth.",
+      "source": "Complete USAspending transaction-category pull, PIC-12, prime contracts A-D, FY2019-FY2026; BLS CUUR0000SA0 monthly observations",
+      "assert": "round(sum(r['real'] for r in D['f']['naics'] if r['fy']==2024 and r['code']!='326211')/1e6,1)==12.2 and round(sum(r['real'] for r in D['f']['naics'] if r['fy']==2025 and r['code']!='326211')/1e6,1)==10.2 and 0.14 <= (1-sum(r['real'] for r in D['f']['naics'] if r['fy']==2025 and r['code']!='326211')/sum(r['real'] for r in D['f']['naics'] if r['fy']==2024 and r['code']!='326211')) <= 0.19",
+      "actual": "(sum(r['real'] for r in D['f']['naics'] if r['fy']==2024 and r['code']!='326211'), sum(r['real'] for r in D['f']['naics'] if r['fy']==2025 and r['code']!='326211'), 1-sum(r['real'] for r in D['f']['naics'] if r['fy']==2025 and r['code']!='326211')/sum(r['real'] for r in D['f']['naics'] if r['fy']==2024 and r['code']!='326211'))",
+      "falsified_if": "The named quantity changes its stated rounded value, source scope changes, or the asserted source coverage fails. Recompute the prose and chart together before publishing a new vintage. The direction is load-bearing: if the ex-tire flow stops falling, the paragraph must not say the rest of the flow fell."
+    },
+    {
+      "id": "fed-tire-code-one-company",
+      "text": "On the whole-life award register, 99% of dollars under the tire code belong to Goodyear, all of its contract dollars were placed by the Department of Defense, and its largest award names a Foreign Military Sales case for Israel. The register is a different time basis from the fiscal-year series and cannot split a single year among firms.",
+      "source": "USAspending prime-award register, PIC-12, FY2019-FY2026 window, snapshot 31 August 2026; whole-life award amounts",
+      "assert": "(lambda t,g: t['top']['share']>=0.98 and 'GOODYEAR' in t['top']['name'].upper() and g['agency']=='Department of Defense' and g['agency_share']==1.0 and 'ISRAEL' in g['largest']['what'].upper())(one(c for c in D['a']['codes'] if c['naics']=='326211'), one(r for r in D['a']['recipients'] if 'GOODYEAR' in r['name'].upper()))",
+      "actual": "(lambda t,g: (t['top'], g['agency'], g['agency_share'], g['largest']['what']))(one(c for c in D['a']['codes'] if c['naics']=='326211'), one(r for r in D['a']['recipients'] if 'GOODYEAR' in r['name'].upper()))",
+      "falsified_if": "A later register snapshot moves the tire code's top share below 98%, changes the leading recipient, or no longer carries the Foreign Military Sales description. This guard reads the whole-life register, never the fiscal-year series; the two bases are never summed and the paragraph names which one it is quoting."
     }
   ]
 }
