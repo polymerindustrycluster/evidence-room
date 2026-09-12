@@ -1,22 +1,23 @@
 {
  "meta": {
   "what_this_is": "GENERATED inventory of _data/build/. Do not edit. Regenerate with python _data/build/build_catalog.py --static-only. Decisions live in PIPELINES.md.",
-  "generated": "2026-09-11 11:52",
+  "generated": "2026-09-12 19:16",
   "mode": "static-only",
-  "seconds": 0.3,
+  "seconds": 5.2,
   "scripts": 58,
-  "outputs_on_disk": 0,
-  "outputs_claimed": 38,
-  "orphan_outputs": 0,
+  "outputs_on_disk": 89,
+  "outputs_claimed": 43,
+  "orphan_outputs": 52,
   "registry_error": null,
   "flag_counts": {
    "not_in_PIPELINES.md": 58,
    "observation_not_run": 58,
    "no_house_docstring": 47,
    "no_traps_section": 47,
-   "output_missing_on_disk": 37,
    "not_in_SOURCES.json": 24,
+   "meta_fetched_vs_mtime_gap": 24,
    "no_output_detected": 20,
+   "output_missing_on_disk": 8,
    "writes_outside_build": 1
   }
  },
@@ -129,8 +130,8 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "atlas_rows.json": false,
-    "ipeds_coords.json": false
+    "atlas_rows.json": true,
+    "ipeds_coords.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -155,13 +156,27 @@
     "atlas"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "atlas_rows.json",
+     "meta_fetched": null,
+     "file_mtime": "2026-08-21",
+     "bytes": 80221,
+     "row": null
+    },
+    {
+     "output": "ipeds_coords.json",
+     "meta_fetched": null,
+     "file_mtime": "2026-08-21",
+     "bytes": 17346,
+     "row": null
+    }
+   ],
    "flags": [
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -227,7 +242,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "collab.json": false
+    "collab.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -246,14 +261,22 @@
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "collab.json",
+     "meta_fetched": "2026-08-17",
+     "file_mtime": "2026-08-31",
+     "bytes": 5716,
+     "row": "coauthorship: one WORK listing both institutions. awards: one NSF award, or one NSF Collaborative Research project split across two awards."
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
     "not_in_SOURCES.json",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -484,7 +507,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "qcew.json": false
+    "qcew.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -503,14 +526,21 @@
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "qcew.json",
+     "meta_fetched": null,
+     "file_mtime": "2026-09-11",
+     "bytes": 342410,
+     "row": null
+    }
+   ],
    "flags": [
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
     "not_in_SOURCES.json",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -573,8 +603,8 @@
    "page_outputs_exist": {},
    "outputs_exist": {
     "_patents_raw.jsonl": false,
-    "patents.json": false,
-    "pic12_geo.json": false
+    "patents.json": true,
+    "pic12_geo.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -597,14 +627,28 @@
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "patents.json",
+     "meta_fetched": null,
+     "file_mtime": "2026-08-31",
+     "bytes": 12851,
+     "row": "one patent APPLICATION with >=1 inventor RESIDING in a PIC-12 city"
+    },
+    {
+     "output": "pic12_geo.json",
+     "meta_fetched": null,
+     "file_mtime": "2026-08-31",
+     "bytes": 27374,
+     "row": null
+    }
+   ],
    "flags": [
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
     "not_in_SOURCES.json",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -712,8 +756,8 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "reach.json": false,
-    "world.json": false
+    "reach.json": true,
+    "world.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -734,14 +778,29 @@
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "reach.json",
+     "meta_fetched": "2026-08-26",
+     "file_mtime": "2026-08-31",
+     "bytes": 109614,
+     "row": "one partner institution: works on which it appears alongside the region, split by whether a corresponding author sat here or there."
+    },
+    {
+     "output": "world.json",
+     "meta_fetched": null,
+     "file_mtime": "2026-08-31",
+     "bytes": 172644,
+     "row": null
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
     "not_in_SOURCES.json",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -881,7 +940,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "bea.json": false
+    "bea.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -900,14 +959,22 @@
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "bea.json",
+     "meta_fetched": "2026-08-14",
+     "file_mtime": "2026-08-31",
+     "bytes": 156231,
+     "row": "one (county, year, industry line) value-added figure, thousands of current dollars"
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
     "not_in_SOURCES.json",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -930,7 +997,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "cbp.json": false
+    "cbp.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -949,13 +1016,21 @@
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "cbp.json",
+     "meta_fetched": "2026-08-17",
+     "file_mtime": "2026-08-31",
+     "bytes": 38226,
+     "row": "one (county, NAICS, size class) cell. Class 001 is the TOTAL, not a bin — summing it with the classes double-counts every establishment."
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_traps_section",
     "not_in_PIPELINES.md",
     "not_in_SOURCES.json",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -978,7 +1053,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "fred.json": false
+    "fred.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1003,13 +1078,21 @@
     "revisions"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "fred.json",
+     "meta_fetched": "2026-08-15",
+     "file_mtime": "2026-08-31",
+     "bytes": 219403,
+     "row": "one (series, month) index or price level"
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -1033,7 +1116,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "collab.json": false
+    "collab.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1059,13 +1142,21 @@
     "reach"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "collab.json",
+     "meta_fetched": "2026-08-17",
+     "file_mtime": "2026-08-31",
+     "bytes": 5716,
+     "row": "coauthorship: one WORK listing both institutions. awards: one NSF award, or one NSF Collaborative Research project split across two awards."
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -1138,7 +1229,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "usaspending_contracts.json": false
+    "usaspending_contracts.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1165,12 +1256,19 @@
     "scorecard"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "usaspending_contracts.json",
+     "meta_fetched": "2026-09-08",
+     "file_mtime": "2026-09-11",
+     "bytes": 854121,
+     "row": "one (fiscal year, category, code) PRIME CONTRACT obligation total"
+    }
+   ],
    "flags": [
     "no_house_docstring",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -1335,8 +1433,8 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "qcew.json": false,
-    "qwi.json": false
+    "qcew.json": true,
+    "qwi.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1370,13 +1468,27 @@
     "wages"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "qcew.json",
+     "meta_fetched": null,
+     "file_mtime": "2026-09-11",
+     "bytes": 342410,
+     "row": null
+    },
+    {
+     "output": "qwi.json",
+     "meta_fetched": null,
+     "file_mtime": "2026-08-31",
+     "bytes": 80502,
+     "row": null
+    }
+   ],
    "flags": [
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -1399,7 +1511,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "intl.json": false
+    "intl.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1425,13 +1537,21 @@
     "scorecard"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "intl.json",
+     "meta_fetched": "2026-08-16",
+     "file_mtime": "2026-08-31",
+     "bytes": 3751,
+     "row": "one (institution, year): degrees conferred, and how many went to students on visas."
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -1454,7 +1574,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "ipeds.json": false
+    "ipeds.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1480,13 +1600,21 @@
     "scorecard"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "ipeds.json",
+     "meta_fetched": "2026-08-14",
+     "file_mtime": "2026-08-31",
+     "bytes": 500070,
+     "row": "one (institution, year, CIP-6, award level) count of DEGREES CONFERRED. majornum=1 only, so a double-major is counted once. race=99/sex=99 total rows only, so demographic detail is not double counted."
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -1511,8 +1639,8 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "ipeds.json": false,
-    "ipeds_cip.json": false
+    "ipeds.json": true,
+    "ipeds_cip.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1540,11 +1668,26 @@
     "scorecard"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "ipeds.json",
+     "meta_fetched": "2026-08-14",
+     "file_mtime": "2026-08-31",
+     "bytes": 500070,
+     "row": "one (institution, year, CIP-6, award level) count of DEGREES CONFERRED. majornum=1 only, so a double-major is counted once. race=99/sex=99 total rows only, so demographic detail is not double counted."
+    },
+    {
+     "output": "ipeds_cip.json",
+     "meta_fetched": "2026-08-18",
+     "file_mtime": "2026-08-31",
+     "bytes": 266640,
+     "row": "one (year, institution or geography, CIP-6, award level) count of DEGREES CONFERRED, race=99 and sex=99 (totals). First major only from 2000; majornum is null before 2000 so no filter is possible there."
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -1617,7 +1760,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "ipeds_national.json": false
+    "ipeds_national.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1643,13 +1786,21 @@
     "scorecard"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "ipeds_national.json",
+     "meta_fetched": "2026-08-16",
+     "file_mtime": "2026-08-31",
+     "bytes": 9711,
+     "row": "one (year, CIP group) national count of DEGREES CONFERRED. majornum=1 only."
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -1764,7 +1915,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "lodes.json": false
+    "lodes.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1787,13 +1938,21 @@
     "laborshed"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "lodes.json",
+     "meta_fetched": "2026-08-15",
+     "file_mtime": "2026-08-31",
+     "bytes": 439151,
+     "row": "one (home county, work county) count of JOBS, not people, not commuters. A two-job worker appears twice."
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -1817,8 +1976,8 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "lodes_flows_cache.json": false,
-    "lodes_peers.json": false
+    "lodes_flows_cache.json": true,
+    "lodes_peers.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1843,13 +2002,28 @@
     "laborshed"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "lodes_flows_cache.json",
+     "meta_fetched": null,
+     "file_mtime": "2026-08-31",
+     "bytes": 1233269,
+     "row": null
+    },
+    {
+     "output": "lodes_peers.json",
+     "meta_fetched": "2026-08-16",
+     "file_mtime": "2026-08-31",
+     "bytes": 108039,
+     "row": "one region: the share of jobs held by its residents that sit in their own county, and the share that sit anywhere inside the region."
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -1872,7 +2046,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "lodes_resident.json": false
+    "lodes_resident.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1895,13 +2069,21 @@
     "laborshed"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "lodes_resident.json",
+     "meta_fetched": "2026-08-16",
+     "file_mtime": "2026-08-31",
+     "bytes": 5763,
+     "row": "one PIC-12 home county: jobs held by its residents, and where those jobs sit. JOBS, not people — a two-job worker is counted twice."
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -1965,7 +2147,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "occmix.json": false
+    "occmix.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -1988,13 +2170,21 @@
     "occupations"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "occmix.json",
+     "meta_fetched": "2026-08-17",
+     "file_mtime": "2026-08-31",
+     "bytes": 581395,
+     "row": "one occupation employed in one industry, NATIONALLY"
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -2018,7 +2208,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "odjfs_projections.json": false
+    "odjfs_projections.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -2042,11 +2232,19 @@
     "occupations"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "odjfs_projections.json",
+     "meta_fetched": "2026-08-18",
+     "file_mtime": "2026-08-31",
+     "bytes": 305111,
+     "row": "one industry (NAICS or sector title) or one occupation (SOC) x geography; 2022 base, 2032 projected, change, percent (a FRACTION), openings, wage"
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -2069,7 +2267,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "oews.json": false
+    "oews.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -2092,13 +2290,21 @@
     "occupations"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "oews.json",
+     "meta_fetched": "2026-08-18",
+     "file_mtime": "2026-08-31",
+     "bytes": 38840,
+     "row": "one (metro, SOC occupation) employment and wage estimate with percentiles and relative standard errors"
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -2122,8 +2328,8 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "oews.json": false,
-    "oews_national.json": false
+    "oews.json": true,
+    "oews_national.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -2148,13 +2354,28 @@
     "occupations"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "oews.json",
+     "meta_fetched": "2026-08-18",
+     "file_mtime": "2026-08-31",
+     "bytes": 38840,
+     "row": "one (metro, SOC occupation) employment and wage estimate with percentiles and relative standard errors"
+    },
+    {
+     "output": "oews_national.json",
+     "meta_fetched": "2026-08-18",
+     "file_mtime": "2026-08-31",
+     "bytes": 10180,
+     "row": "one (national, SOC occupation) all-industry employment and wage estimate with percentiles and relative standard errors"
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -2173,13 +2394,15 @@
    ],
    "outputs": [
     "oews.json",
+    "onet.json",
     "onet_education.json"
    ],
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "oews.json": false,
-    "onet_education.json": false
+    "oews.json": true,
+    "onet_education.json": true,
+    "onet.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -2191,7 +2414,8 @@
    },
    "output_learned_by": {
     "oews.json": "static",
-    "onet_education.json": "static"
+    "onet_education.json": "static",
+    "onet.json": "meta.source"
    },
    "observed_stop": "not_run_static_only",
    "observed_network": [],
@@ -2204,13 +2428,28 @@
     "occupations"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "oews.json",
+     "meta_fetched": "2026-08-18",
+     "file_mtime": "2026-08-31",
+     "bytes": 38840,
+     "row": "one (metro, SOC occupation) employment and wage estimate with percentiles and relative standard errors"
+    },
+    {
+     "output": "onet_education.json",
+     "meta_fetched": "2026-08-18",
+     "file_mtime": "2026-08-31",
+     "bytes": 35409,
+     "row": "one SOC occupation: O*NET title and description, Job Zone (1-5), and the share of surveyed workers and experts reporting each required level of education, binned to four levels"
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -2276,16 +2515,22 @@
    "hosts": [
     "api.uspto.gov"
    ],
-   "outputs": [],
+   "outputs": [
+    "patents_bench.json"
+   ],
    "page_outputs": [],
    "page_outputs_exist": {},
-   "outputs_exist": {},
+   "outputs_exist": {
+    "patents_bench.json": true
+   },
    "writes_outside_build": [],
    "witnesses": {
     "static": [],
     "observed": []
    },
-   "output_learned_by": {},
+   "output_learned_by": {
+    "patents_bench.json": "meta.source"
+   },
    "observed_stop": "not_run_static_only",
    "observed_network": [],
    "observed_reads": [],
@@ -2326,7 +2571,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "peers.json": false
+    "peers.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -2357,13 +2602,21 @@
     "wages"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "peers.json",
+     "meta_fetched": "2026-08-14",
+     "file_mtime": "2026-08-31",
+     "bytes": 5530376,
+     "row": "one (year, area, NAICS) annual-average cell, private ownership. `emp` counts JOBS covered by unemployment insurance."
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -2388,7 +2641,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "provenance.json": false
+    "provenance.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -2419,11 +2672,19 @@
     "wages"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "provenance.json",
+     "meta_fetched": "2026-08-18",
+     "file_mtime": "2026-08-31",
+     "bytes": 12191,
+     "row": null
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -2548,7 +2809,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "qwi_demand.json": false
+    "qwi_demand.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -2571,13 +2832,21 @@
     "churn"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "qwi_demand.json",
+     "meta_fetched": "2026-08-16",
+     "file_mtime": "2026-08-31",
+     "bytes": 7170,
+     "row": "one quarter: employment-weighted mean monthly earnings across the twelve counties, for one industry cut."
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -2600,7 +2869,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "reach.json": false
+    "reach.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -2624,13 +2893,21 @@
     "reach"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "reach.json",
+     "meta_fetched": "2026-08-26",
+     "file_mtime": "2026-08-31",
+     "bytes": 109614,
+     "row": "one partner institution: works on which it appears alongside the region, split by whether a corresponding author sat here or there."
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -2649,12 +2926,14 @@
     "api.reporter.nih.gov"
    ],
    "outputs": [
-    "research_awards.json"
+    "research_awards.json",
+    "trade.json"
    ],
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "research_awards.json": false
+    "research_awards.json": true,
+    "trade.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -2664,7 +2943,8 @@
     "observed": []
    },
    "output_learned_by": {
-    "research_awards.json": "static"
+    "research_awards.json": "static",
+    "trade.json": "meta.source"
    },
    "observed_stop": "not_run_static_only",
    "observed_network": [],
@@ -2678,13 +2958,21 @@
     "federal-money"
    ],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "research_awards.json",
+     "meta_fetched": "2026-08-15",
+     "file_mtime": "2026-08-31",
+     "bytes": 157469,
+     "row": "one AWARD with its obligated/awarded amount, institution and year. Not an outlay: a ten-year award appears once at full value, not spread across years."
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -2805,7 +3093,7 @@
    "page_outputs": [],
    "page_outputs_exist": {},
    "outputs_exist": {
-    "scorecard.json": false
+    "scorecard.json": true
    },
    "writes_outside_build": [],
    "witnesses": {
@@ -2824,14 +3112,22 @@
    "registry_sources": [],
    "consuming_pages": [],
    "in_pipelines_md": false,
-   "freshness": [],
+   "freshness": [
+    {
+     "output": "scorecard.json",
+     "meta_fetched": "2026-08-16",
+     "file_mtime": "2026-08-31",
+     "bytes": 19028,
+     "row": "institution rows = one (institution) median earnings for FEDERALLY AIDED students N years after ENTRY, not after graduation and not all students. program rows = one (institution, CIP-4, credential level)."
+    }
+   ],
    "flags": [
+    "meta_fetched_vs_mtime_gap",
     "no_house_docstring",
     "no_traps_section",
     "not_in_PIPELINES.md",
     "not_in_SOURCES.json",
-    "observation_not_run",
-    "output_missing_on_disk"
+    "observation_not_run"
    ]
   },
   {
@@ -2848,16 +3144,25 @@
    "hosts": [
     "dam.assets.ohio.gov"
    ],
-   "outputs": [],
+   "outputs": [
+    "herd.json",
+    "warn.json"
+   ],
    "page_outputs": [],
    "page_outputs_exist": {},
-   "outputs_exist": {},
+   "outputs_exist": {
+    "herd.json": true,
+    "warn.json": true
+   },
    "writes_outside_build": [],
    "witnesses": {
     "static": [],
     "observed": []
    },
-   "output_learned_by": {},
+   "output_learned_by": {
+    "herd.json": "meta.source",
+    "warn.json": "meta.source"
+   },
    "observed_stop": "not_run_static_only",
    "observed_network": [],
    "observed_reads": [],
@@ -2876,6 +3181,1508 @@
    ]
   }
  ],
- "orphan_outputs": [],
- "outputs": {}
+ "orphan_outputs": [
+  {
+   "file": "acs.json",
+   "bytes": 19996,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one (county, variable) estimate of PEOPLE with a margin of error, from the 2019-2023 pooled 5-year sample",
+    "source": "Census ACS 2023 5-year (B15003 attainment, B15012 field of degree)",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "bds.json",
+   "bytes": 54555,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one (scope, geography, NAICS, year) set of establishment and job flow measures. ESTABLISHMENTS, not firms — a multi-site firm opening a plant is an establishment entry, not a new business.",
+    "source": "U.S. Census Business Dynamics Statistics (BDS), timeseries API",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "berd.json",
+   "bytes": 5072,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "what_one_row_is": "one (survey year, industry) cell for Ohio: millions of CURRENT dollars of self-funded, in-house R&D apportioned to Ohio by NCSES's hybrid state estimator; US total alongside",
+    "source": "NCSES Business Enterprise Research and Development Survey (BERD), state x industry table 'Companies with domestic R&D paid for and performed by the company, by industry, company size, and state'",
+    "counts": "{\"years\": [2020, 2021, 2022, 2023], \"cells\": 20}"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "bfs.json",
+   "bytes": 9835,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one county-year count of business APPLICATIONS (IRS Form SS-4 filings for an EIN)",
+    "source": "Census Business Formation Statistics, county annual business applications, http<path>/bfs_county_apps_annual.xlsx",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "bfs_fixed.json",
+   "bytes": 1532439,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one (geo, sector, series, sa, month) value. OH and US at TOTAL; US also at NAICSMNF. Ohio has NO sector detail — BFS does not tabulate NAICS below national.",
+    "source": "Census Business Formation Statistics, monthly state and national file, http<path>/bfs_monthly.csv",
+    "counts": "{\"rows\": 16608}"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "cdr.json",
+   "bytes": 486395,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one (chemical, site) report of manufacture or import volume for a reporting year",
+    "source": "EPA TSCA Chemical Data Reporting 2024 public file, 2024 CDR Manufacture-Import Information.csv (http<path>/2024-cdr-public-csv-data.zip)",
+    "counts": "{\"national_rows_scanned\": 50433, \"pic12_rows\": 1276, \"distinct_sites\": 108, \"distinct_parents\": 82, \"distinct_foreign_parents\": 15, \"parents_not_already_in_tri\"",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit\", \"Trumbull\", \"Way"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "census-delineation-receipt.json",
+   "bytes": 2466,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  {
+   "file": "cfs.json",
+   "bytes": 1294912,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one (CFS area, commodity) total of shipments ORIGINATING in that area — value in $ millions, weight in thousands of tons",
+    "source": "Census Commodity Flow Survey, CFS Area (or part), Ohio",
+    "counts": "{\"rows\": 4097, \"cleveland_plastics_rows\": 4}"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "cpi-bls-response.json",
+   "bytes": 8215,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  {
+   "file": "cpi.json",
+   "bytes": 7737,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-19",
+    "row": "one calendar year: the annual-average index (1982-84=100); 'months' < 12 marks a partial current year",
+    "source": "BLS CPI-U, U.S. city average, all items, not seasonally adjusted (CUUR0000SA0)"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "cpi_pre1913_e135.json",
+   "bytes": 2355,
+   "mtime": "2026-08-31",
+   "meta": {
+    "source": "U.S. Bureau of the Census, Historical Statistics of the United States, Colonial Times to 1970 (1975), Part 1, Chapter E (Prices), series E 135 'Consumer price indexes (BLS) — all items, 1800 to 1970', base 1967 = 100"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "echo.json",
+   "bytes": 396917,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-16",
+    "row": "one FACILITY whose declared NAICS set intersects 325* or 326*",
+    "source": "EPA ECHO get_facility_info + get_qid, Ohio, NAICS 325*/326*, cut to PIC-12",
+    "counts": "{\"pic12_facilities\": 714}",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"counties\": [\"ASHTABULA\", \"CUYAHOGA\", \"GEAUGA\", \"LAKE\", \"LORAIN\", \"MAHONING\", \"MEDINA\", \"PORTAGE\", \"STARK\", \"SUMMIT\", \"TRUMBULL\", \"WAY"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "ecnbasic.json",
+   "bytes": 20081,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one (year, county, NAICS) cell",
+    "source": "Census Economic Census (ecnbasic), NAICS 3-digit at county, PIC-12"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "edgar.json",
+   "bytes": 35831,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one (company, us-gaap concept, fiscal year) reported value, as filed",
+    "source": "SEC EDGAR XBRL companyfacts, annual (10-K) frames"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "eia.json",
+   "bytes": 50277,
+   "mtime": "2026-08-31",
+   "meta": null,
+   "unreadable": null
+  },
+  {
+   "file": "epa.json",
+   "bytes": 7800591,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one FACILITY. FRS = any regulated site; TRI = the smaller set meeting Toxics Release Inventory reporting thresholds, carrying parent-company names.",
+    "source": "EPA Envirofacts REST (data.epa.gov/efservice): FRS_FACILITY_SITE and tri_facility, Ohio, PIC-12 counties",
+    "counts": "{\"frs\": 28491, \"frs_named\": 28397, \"tri\": 1438, \"tri_with_parent\": 896, \"tri_with_foreign_parent\": 46}",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "federal_cpi.json",
+   "bytes": 2441,
+   "mtime": "2026-09-11",
+   "meta": {
+    "fetched": "2026-09-08T16:22:39.169241+00:00",
+    "source": "BLS CPI-U CUUR0000SA0 monthly observations"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "formd.json",
+   "bytes": 497587,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one Form D FILING by one issuer — a notice of an offering, not a completed raise",
+    "source": "SEC Form D structured data sets, quarterly",
+    "counts": "{\"filings\": 2087, \"operating_company_filings\": 1099, \"pooled_fund_filings\": 988, \"original_non_amendment\": 969}"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "fred_vintages.json",
+   "bytes": 160032,
+   "mtime": "2026-08-31",
+   "meta": null,
+   "unreadable": null
+  },
+  {
+   "file": "ghgrp.json",
+   "bytes": 179029,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-19",
+    "row": "one facility-year of reported direct emissions in metric tons CO2e",
+    "source": "EPA Greenhouse Gas Reporting Program, Direct Point Emitters, http<path>/2023_data_summary_spreadsheets.zip",
+    "counts": "{\"facility_years\": 772, \"in_register\": 22, \"distinct_register_parents\": 0}",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit\", \"Trumbull\", \"Way"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "gleif.json",
+   "bytes": 1405116,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one legal entity with its LEI, registered legal address, headquarters address, and self-declared direct and ultimate parent LEIs where reported",
+    "source": "GLEIF LEI records API, fulltext city search across PIC-12 principal cities",
+    "counts": "{\"entities\": 4184, \"ohio_registered\": 1342, \"with_any_parent\": 150, \"hq_country_differs_from_legal\": 8, \"parent_declared\": 150, \"parent_declined\": 3853}"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "hiringlab.json",
+   "bytes": 1565216,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one (scope, series, date) reading of an INDEX where 100 = that series' own level on 2020-02-01. Not a count of postings; Indeed publishes no levels.",
+    "source": "Indeed Hiring Lab Job Postings Index, http<path>/job_postings_tracker (CC-BY 4.0, cite Indeed Hiring Lab)"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "imports.json",
+   "bytes": 34080,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one (state, NAICS, partner country, month) customs value in current US dollars",
+    "source": "US Census Bureau, monthly imports by state of destination and NAICS, http<path>/statenaics for the context series)"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "irs990.json",
+   "bytes": 86490,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "what_one_row_is": "one organisation-FISCAL-year as filed; tax_prd_yr is the year the org's own tax period ENDS, and these orgs do not share a calendar",
+    "source": "ProPublica Nonprofit Explorer API v2 (IRS EO BMF + e-file XML)",
+    "counts": "{\"orgs_resolved\": 13, \"orgs_unresolved\": 0, \"organisation_years\": 143, \"earliest\": 2010, \"latest\": 2023, \"private_foundations\": 3}"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "itac.json",
+   "bytes": 468810,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one free energy assessment of one manufacturing plant by a university-based DOE centre",
+    "source": "DOE Industrial Assessment Centers database (http<path>/ITAC_Database.zip), ASSESS table",
+    "counts": "{\"national_assessments\": 22882, \"ohio\": 1317, \"ohio_in_register\": 126, \"ohio_naics_null\": 682}"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "jobsohio_awards.json",
+   "bytes": 3087521,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one EXECUTED agreement — company x month x program. Not a project, not a company: JobsOhio footnote 1 reports each program of a project as its own row as it executes.",
+    "source": "JobsOhio 'Monthly Executed Grants and Loans Report' tables inside JobsOhio_Metrics-Report_2015..2025.pdf and JobsOhio_Monthly-Metrics_2026-01..07.pdf (newsroom/reports-publications), read from disk",
+    "counts": "{\"rows\": 2994, \"months\": 139, \"files\": 18, \"pages_parsed\": 154, \"pages_defeated\": 0, \"pic12_rows\": 810, \"pic_universe_rows\": 15, \"pic_cornerstone_rows\": 2}",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "lodes_2019.json",
+   "bytes": 439056,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one (home county, work county) count of JOBS — not people, not commuters. A two-job worker appears twice.",
+    "source": "LEHD LODES8 origin-destination, Ohio, 2019, segment JT00 (all jobs), main + aux",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "negative_space.json",
+   "bytes": 56710,
+   "mtime": "2026-08-31",
+   "meta": {
+    "counts": "{\"echo_pic12_325_326\": 714, \"unmatched_any\": 472, \"unmatched_326\": 185, \"pic_curated\": 785}"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "nes.json",
+   "bytes": 9282,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one (county, NAICS) count of establishments with NO paid employees and receipts of $1,000 or more, plus combined receipts in $1,000s",
+    "source": "Census Nonemployer Statistics 2022, county x NAICS",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "nsf-2330145.json",
+   "bytes": 543,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  {
+   "file": "nsf-2532460.json",
+   "bytes": 445,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  {
+   "file": "parent_hq.json",
+   "bytes": 140286,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-16",
+    "row": "one PARENT COMPANY with its facility count in PIC-12 and its headquarters",
+    "source": "EPA TRI parent_co_name (epa.json) resolved against SEC cik-lookup-data.txt + data.sec.gov submissions addresses, with GLEIF addresses as fallback",
+    "counts": "{\"facilities_with_parent\": 896, \"distinct_parents\": 618, \"resolved_sec\": 301, \"resolved_gleif\": 11}"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "peers-2024-boundaries.json",
+   "bytes": 5530732,
+   "mtime": "2026-09-11",
+   "meta": {
+    "fetched": "2026-08-14",
+    "row": "one (year, area, NAICS) annual-average cell, private ownership. `emp` counts JOBS covered by unemployment insurance.",
+    "source": "BLS QCEW open data, by-industry files, annual averages"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "pic12-intersecting-cbsas-2023-receipt.json",
+   "bytes": 1334,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  {
+   "file": "pic_universe.json",
+   "bytes": 1765,
+   "mtime": "2026-08-31",
+   "meta": null,
+   "unreadable": null
+  },
+  {
+   "file": "pseo.json",
+   "bytes": 8153,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one (institution, degree level, 4-digit CIP) cell of median earnings at 1, 5 and 10 years after graduation, cohorts pooled",
+    "source": "Census Post-Secondary Employment Outcomes, latest release, Ohio (http<path>/)"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "pseo_national.json",
+   "bytes": 7570,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one (state or institution, bachelor's, CIP) median-earnings cell with its own within-unit denominators, cohorts pooled",
+    "source": "Census Post-Secondary Employment Outcomes, latest release, ALL states (http<path>/)",
+    "footprint": "NONE — deliberately national. This tests whether a national pattern explains a local number, so neither PIC-12 nor NEO-14 applies."
+   },
+   "unreadable": null
+  },
+  {
+   "file": "qcew-2024-adoption.web.json",
+   "bytes": 10429,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  {
+   "file": "qcew-2024-boundary-receipt.json",
+   "bytes": 754,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  {
+   "file": "qcew-2024-verified-boundary-receipt.json",
+   "bytes": 894,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  {
+   "file": "qcew_summit_history.json",
+   "bytes": 19775,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-19",
+    "row": "one (year, NAICS) cell: average annual pay per covered job; plus average employment, establishments and average weekly wage where the open-data file carries them (2014-)",
+    "source": "BLS QCEW annual averages, Summit County OH (39153), private ownership (own_code 5)"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "qwi_peers.json",
+   "bytes": 19684,
+   "mtime": "2026-08-31",
+   "meta": null,
+   "unreadable": null
+  },
+  {
+   "file": "rcra.json",
+   "bytes": 798703,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one (facility, waste stream, management method) record for one biennial cycle. A facility appears many times.",
+    "source": "EPA Envirofacts RCRA Biennial Report (br_reporting), Ohio, PIC-12, measurement-register NAICS",
+    "counts": "{\"rows\": 2361, \"facilities\": 68, \"rows_with_a_receiver\": 2294, \"distinct_receivers\": 45, \"receivers_out_of_state\": 31}",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit\", \"Trumbull\", \"Way"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "relatedness.json",
+   "bytes": 7990659,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-16",
+    "row": "one (county, 3-digit NAICS) cell with annual-average employment",
+    "source": "BLS QCEW annual by-industry files, 2024, private ownership, county x 3-digit NAICS (agglvl_code 78)",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"counties\": [\"39007\", \"39035\", \"39055\", \"39085\", \"39093\", \"39099\", \"39103\", \"39133\", \"39151\", \"39153\", \"39155\", \"39169\"]}"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "rpp.json",
+   "bytes": 1279026,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one (metro, year, item group) price index, US average = 100",
+    "source": "BEA Regional Price Parities, table MARPP"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "sba.json",
+   "bytes": 127445,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one APPROVED loan — not a company, and not money disbursed",
+    "source": "SBA 7(a) and 504 FOIA loan approvals, as of 2026-06-30, http<path>/7a-504-foia",
+    "counts": "{\"loans\": 235, \"gross_approval\": 132187900.0, \"gross_approval_excluding_never_funded\": 113934900.0, \"gross_approval_never_funded\": 18253000.0, \"jobs_claimed_sum",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "sbir.json",
+   "bytes": 780294,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one AWARD action (Phase I or II), not a company and not a project",
+    "source": "SBIR.gov bulk award file (award_data_no_abstract.csv)"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "techcred.json",
+   "bytes": 1868992,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one EMPLOYER x ROUND award — a repeat applicant appears once per round; award_amount is the approved reimbursement ceiling, not money paid",
+    "source": "DataOhio 'TechCred Awardees' export (Ohio Dept of Development / Governor's Office of Workforce Transformation), via data.ohio.gov API gateway",
+    "counts": "{\"awards_all\": 14670, \"pic12_awards\": 4636, \"pic12_distinct_names\": 1575, \"pic12_award_amount\": 65320041.29, \"pic12_credentials_approved\": 55228, \"pic12_credent",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "third_frontier.json",
+   "bytes": 598755,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one PO DISTRIBUTION LINE — not an award, not a recipient, not money paid; amount is encumbered, liquidated is paid",
+    "source": "DataOhio 'Department of Development Grants & Loans' (OAKS purchase-order ledger, weekly), lines under budget program THIRD FRONTIER PROGRAM, via data.ohio.gov API gateway",
+    "counts": "{\"rows_scanned\": 33427, \"tf_lines\": 1980, \"tf_amount\": 1430020977.88, \"tf_liquidated\": 993167632.66, \"tf_distinct_recipients\": 852, \"pic12_lines\": 705, \"pic12_a",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "third_frontier_awards.json",
+   "bytes": 1063199,
+   "mtime": "2026-08-31",
+   "meta": {
+    "as_of": "Dated December 2024 (cumulative since program inception, 2002)",
+    "row": "one AWARD LINE of one program table (project end date, organization, title, state funds awarded/expended, cost share, jobs, salary); not a company, not a payment",
+    "source": "ODOD Annual Report FY2025 Appendix, Appendix 7 'Third Frontier Commission' (Ohio Third Frontier program summary + per-program award tables), PDF pp. 1240-1279; extracted with Poppler pdftotext -tsv and rebuilt geometrically",
+    "counts": "{\"pages\": 40, \"programs_in_summary\": 34, \"programs_with_detail_tables\": 30, \"summary_only_programs\": 4, \"rows_seen\": 958, \"rows_parsed\": 958, \"parse_rate\": 1.0,",
+    "footprint": "{\"key\": \"is_pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Sum"
+   },
+   "unreadable": null
+  },
+  {
+   "file": "usaspending.json",
+   "bytes": 12738,
+   "mtime": "2026-08-31",
+   "meta": null,
+   "unreadable": null
+  },
+  {
+   "file": "vc_portfolios.json",
+   "bytes": 394125,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one (organisation, company) LISTING on the fetch date — not a deal, not a deal date, not a dollar; a company backed by three funds is three rows",
+    "source": "public portfolio / companies pages of NEO angel, VC and venture-development organisations, fetched 2026-08-18",
+    "sources": "{\"JumpStart Ventures\": {\"via\": \"wp-json avada_portfolio\", \"http_status\": 200, \"url\": \"http<path>/portfolio\", \"reachable\": true, \"companies\": 107, \"re",
+    "counts": "{\"listings\": 463, \"by_org\": {\"JumpStart Ventures\": 107, \"North Coast Ventures\": 56, \"Ohio Innovation Fund\": 23, \"Rev1 Ventures\": 91, \"Comeback Capital\": 63, \"Va"
+   },
+   "unreadable": null
+  }
+ ],
+ "outputs": {
+  "_pic12_cities.json": {
+   "file": "_pic12_cities.json",
+   "bytes": 18260,
+   "mtime": "2026-08-31",
+   "meta": null,
+   "unreadable": null
+  },
+  "acs.json": {
+   "file": "acs.json",
+   "bytes": 19996,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one (county, variable) estimate of PEOPLE with a margin of error, from the 2019-2023 pooled 5-year sample",
+    "source": "Census ACS 2023 5-year (B15003 attainment, B15012 field of degree)",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "atlas_rows.json": {
+   "file": "atlas_rows.json",
+   "bytes": 80221,
+   "mtime": "2026-08-21",
+   "meta": null,
+   "unreadable": null
+  },
+  "bds.json": {
+   "file": "bds.json",
+   "bytes": 54555,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one (scope, geography, NAICS, year) set of establishment and job flow measures. ESTABLISHMENTS, not firms — a multi-site firm opening a plant is an establishment entry, not a new business.",
+    "source": "U.S. Census Business Dynamics Statistics (BDS), timeseries API",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "bea.json": {
+   "file": "bea.json",
+   "bytes": 156231,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-14",
+    "row": "one (county, year, industry line) value-added figure, thousands of current dollars",
+    "source": "BEA Regional, table CAGDP2 — GDP by county",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "berd.json": {
+   "file": "berd.json",
+   "bytes": 5072,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "what_one_row_is": "one (survey year, industry) cell for Ohio: millions of CURRENT dollars of self-funded, in-house R&D apportioned to Ohio by NCSES's hybrid state estimator; US total alongside",
+    "source": "NCSES Business Enterprise Research and Development Survey (BERD), state x industry table 'Companies with domestic R&D paid for and performed by the company, by industry, company size, and state'",
+    "counts": "{\"years\": [2020, 2021, 2022, 2023], \"cells\": 20}"
+   },
+   "unreadable": null
+  },
+  "bfs.json": {
+   "file": "bfs.json",
+   "bytes": 9835,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one county-year count of business APPLICATIONS (IRS Form SS-4 filings for an EIN)",
+    "source": "Census Business Formation Statistics, county annual business applications, http<path>/bfs_county_apps_annual.xlsx",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "bfs_fixed.json": {
+   "file": "bfs_fixed.json",
+   "bytes": 1532439,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one (geo, sector, series, sa, month) value. OH and US at TOTAL; US also at NAICSMNF. Ohio has NO sector detail — BFS does not tabulate NAICS below national.",
+    "source": "Census Business Formation Statistics, monthly state and national file, http<path>/bfs_monthly.csv",
+    "counts": "{\"rows\": 16608}"
+   },
+   "unreadable": null
+  },
+  "cbp.json": {
+   "file": "cbp.json",
+   "bytes": 38226,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one (county, NAICS, size class) cell. Class 001 is the TOTAL, not a bin — summing it with the classes double-counts every establishment.",
+    "source": "Census County Business Patterns 2023, county x NAICS x employment-size class",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "cdr.json": {
+   "file": "cdr.json",
+   "bytes": 486395,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one (chemical, site) report of manufacture or import volume for a reporting year",
+    "source": "EPA TSCA Chemical Data Reporting 2024 public file, 2024 CDR Manufacture-Import Information.csv (http<path>/2024-cdr-public-csv-data.zip)",
+    "counts": "{\"national_rows_scanned\": 50433, \"pic12_rows\": 1276, \"distinct_sites\": 108, \"distinct_parents\": 82, \"distinct_foreign_parents\": 15, \"parents_not_already_in_tri\"",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit\", \"Trumbull\", \"Way"
+   },
+   "unreadable": null
+  },
+  "census-delineation-receipt.json": {
+   "file": "census-delineation-receipt.json",
+   "bytes": 2466,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  "cfs.json": {
+   "file": "cfs.json",
+   "bytes": 1294912,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one (CFS area, commodity) total of shipments ORIGINATING in that area — value in $ millions, weight in thousands of tons",
+    "source": "Census Commodity Flow Survey, CFS Area (or part), Ohio",
+    "counts": "{\"rows\": 4097, \"cleveland_plastics_rows\": 4}"
+   },
+   "unreadable": null
+  },
+  "collab.json": {
+   "file": "collab.json",
+   "bytes": 5716,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "coauthorship: one WORK listing both institutions. awards: one NSF award, or one NSF Collaborative Research project split across two awards.",
+    "sources": "OpenAlex works listing both institutions; NSF awards API, awards to either institution since 2012."
+   },
+   "unreadable": null
+  },
+  "cpi-bls-response.json": {
+   "file": "cpi-bls-response.json",
+   "bytes": 8215,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  "cpi.json": {
+   "file": "cpi.json",
+   "bytes": 7737,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-19",
+    "row": "one calendar year: the annual-average index (1982-84=100); 'months' < 12 marks a partial current year",
+    "source": "BLS CPI-U, U.S. city average, all items, not seasonally adjusted (CUUR0000SA0)"
+   },
+   "unreadable": null
+  },
+  "cpi_pre1913_e135.json": {
+   "file": "cpi_pre1913_e135.json",
+   "bytes": 2355,
+   "mtime": "2026-08-31",
+   "meta": {
+    "source": "U.S. Bureau of the Census, Historical Statistics of the United States, Colonial Times to 1970 (1975), Part 1, Chapter E (Prices), series E 135 'Consumer price indexes (BLS) — all items, 1800 to 1970', base 1967 = 100"
+   },
+   "unreadable": null
+  },
+  "echo.json": {
+   "file": "echo.json",
+   "bytes": 396917,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-16",
+    "row": "one FACILITY whose declared NAICS set intersects 325* or 326*",
+    "source": "EPA ECHO get_facility_info + get_qid, Ohio, NAICS 325*/326*, cut to PIC-12",
+    "counts": "{\"pic12_facilities\": 714}",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"counties\": [\"ASHTABULA\", \"CUYAHOGA\", \"GEAUGA\", \"LAKE\", \"LORAIN\", \"MAHONING\", \"MEDINA\", \"PORTAGE\", \"STARK\", \"SUMMIT\", \"TRUMBULL\", \"WAY"
+   },
+   "unreadable": null
+  },
+  "ecnbasic.json": {
+   "file": "ecnbasic.json",
+   "bytes": 20081,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one (year, county, NAICS) cell",
+    "source": "Census Economic Census (ecnbasic), NAICS 3-digit at county, PIC-12"
+   },
+   "unreadable": null
+  },
+  "edgar.json": {
+   "file": "edgar.json",
+   "bytes": 35831,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one (company, us-gaap concept, fiscal year) reported value, as filed",
+    "source": "SEC EDGAR XBRL companyfacts, annual (10-K) frames"
+   },
+   "unreadable": null
+  },
+  "eia.json": {
+   "file": "eia.json",
+   "bytes": 50277,
+   "mtime": "2026-08-31",
+   "meta": null,
+   "unreadable": null
+  },
+  "epa.json": {
+   "file": "epa.json",
+   "bytes": 7800591,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one FACILITY. FRS = any regulated site; TRI = the smaller set meeting Toxics Release Inventory reporting thresholds, carrying parent-company names.",
+    "source": "EPA Envirofacts REST (data.epa.gov/efservice): FRS_FACILITY_SITE and tri_facility, Ohio, PIC-12 counties",
+    "counts": "{\"frs\": 28491, \"frs_named\": 28397, \"tri\": 1438, \"tri_with_parent\": 896, \"tri_with_foreign_parent\": 46}",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "federal_cpi.json": {
+   "file": "federal_cpi.json",
+   "bytes": 2441,
+   "mtime": "2026-09-11",
+   "meta": {
+    "fetched": "2026-09-08T16:22:39.169241+00:00",
+    "source": "BLS CPI-U CUUR0000SA0 monthly observations"
+   },
+   "unreadable": null
+  },
+  "formd.json": {
+   "file": "formd.json",
+   "bytes": 497587,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one Form D FILING by one issuer — a notice of an offering, not a completed raise",
+    "source": "SEC Form D structured data sets, quarterly",
+    "counts": "{\"filings\": 2087, \"operating_company_filings\": 1099, \"pooled_fund_filings\": 988, \"original_non_amendment\": 969}"
+   },
+   "unreadable": null
+  },
+  "fred.json": {
+   "file": "fred.json",
+   "bytes": 219403,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one (series, month) index or price level",
+    "source": "FRED / ALFRED, Federal Reserve Bank of St. Louis"
+   },
+   "unreadable": null
+  },
+  "fred_vintages.json": {
+   "file": "fred_vintages.json",
+   "bytes": 160032,
+   "mtime": "2026-08-31",
+   "meta": null,
+   "unreadable": null
+  },
+  "ghgrp.json": {
+   "file": "ghgrp.json",
+   "bytes": 179029,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-19",
+    "row": "one facility-year of reported direct emissions in metric tons CO2e",
+    "source": "EPA Greenhouse Gas Reporting Program, Direct Point Emitters, http<path>/2023_data_summary_spreadsheets.zip",
+    "counts": "{\"facility_years\": 772, \"in_register\": 22, \"distinct_register_parents\": 0}",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit\", \"Trumbull\", \"Way"
+   },
+   "unreadable": null
+  },
+  "gleif.json": {
+   "file": "gleif.json",
+   "bytes": 1405116,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one legal entity with its LEI, registered legal address, headquarters address, and self-declared direct and ultimate parent LEIs where reported",
+    "source": "GLEIF LEI records API, fulltext city search across PIC-12 principal cities",
+    "counts": "{\"entities\": 4184, \"ohio_registered\": 1342, \"with_any_parent\": 150, \"hq_country_differs_from_legal\": 8, \"parent_declared\": 150, \"parent_declined\": 3853}"
+   },
+   "unreadable": null
+  },
+  "herd.json": {
+   "file": "herd.json",
+   "bytes": 9148,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one institution's R&D EXPENDITURE, in $1,000s, as self-reported to NCSES",
+    "source": "NSF NCSES Higher Education R&D Survey FY2023, tables 21 and 71 (http<path>/nsf25314-data-tables-tables-excels.zip)"
+   },
+   "unreadable": null
+  },
+  "hiringlab.json": {
+   "file": "hiringlab.json",
+   "bytes": 1565216,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one (scope, series, date) reading of an INDEX where 100 = that series' own level on 2020-02-01. Not a count of postings; Indeed publishes no levels.",
+    "source": "Indeed Hiring Lab Job Postings Index, http<path>/job_postings_tracker (CC-BY 4.0, cite Indeed Hiring Lab)"
+   },
+   "unreadable": null
+  },
+  "imports.json": {
+   "file": "imports.json",
+   "bytes": 34080,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one (state, NAICS, partner country, month) customs value in current US dollars",
+    "source": "US Census Bureau, monthly imports by state of destination and NAICS, http<path>/statenaics for the context series)"
+   },
+   "unreadable": null
+  },
+  "intl.json": {
+   "file": "intl.json",
+   "bytes": 3751,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-16",
+    "row": "one (institution, year): degrees conferred, and how many went to students on visas.",
+    "source": "IPEDS completions via the Urban Institute API, CIP 143201, national, 2012-2023, majornum=1, sex=99 with the race dimension broken out. race=99 is the total row; race=8 is nonresident alien."
+   },
+   "unreadable": null
+  },
+  "ipeds.json": {
+   "file": "ipeds.json",
+   "bytes": 500070,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-14",
+    "row": "one (institution, year, CIP-6, award level) count of DEGREES CONFERRED. majornum=1 only, so a double-major is counted once. race=99/sex=99 total rows only, so demographic detail is not double counted.",
+    "source": "IPEDS completions, via the Urban Institute Education Data API"
+   },
+   "unreadable": null
+  },
+  "ipeds_cip.json": {
+   "file": "ipeds_cip.json",
+   "bytes": 266640,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one (year, institution or geography, CIP-6, award level) count of DEGREES CONFERRED, race=99 and sex=99 (totals). First major only from 2000; majornum is null before 2000 so no filter is possible there.",
+    "source": "IPEDS completions by 6-digit CIP, via the Urban Institute Education Data API",
+    "counts": "{\"institution_rows\": 344, \"ohio_rows\": 455, \"us_rows\": 781}"
+   },
+   "unreadable": null
+  },
+  "ipeds_coords.json": {
+   "file": "ipeds_coords.json",
+   "bytes": 17346,
+   "mtime": "2026-08-21",
+   "meta": null,
+   "unreadable": null
+  },
+  "ipeds_national.json": {
+   "file": "ipeds_national.json",
+   "bytes": 9711,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-16",
+    "row": "one (year, CIP group) national count of DEGREES CONFERRED. majornum=1 only.",
+    "source": "IPEDS completions, via the Urban Institute Education Data API, completions-cip-6 summary endpoint (stat=sum, by=year)."
+   },
+   "unreadable": null
+  },
+  "irs990.json": {
+   "file": "irs990.json",
+   "bytes": 86490,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "what_one_row_is": "one organisation-FISCAL-year as filed; tax_prd_yr is the year the org's own tax period ENDS, and these orgs do not share a calendar",
+    "source": "ProPublica Nonprofit Explorer API v2 (IRS EO BMF + e-file XML)",
+    "counts": "{\"orgs_resolved\": 13, \"orgs_unresolved\": 0, \"organisation_years\": 143, \"earliest\": 2010, \"latest\": 2023, \"private_foundations\": 3}"
+   },
+   "unreadable": null
+  },
+  "itac.json": {
+   "file": "itac.json",
+   "bytes": 468810,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one free energy assessment of one manufacturing plant by a university-based DOE centre",
+    "source": "DOE Industrial Assessment Centers database (http<path>/ITAC_Database.zip), ASSESS table",
+    "counts": "{\"national_assessments\": 22882, \"ohio\": 1317, \"ohio_in_register\": 126, \"ohio_naics_null\": 682}"
+   },
+   "unreadable": null
+  },
+  "jobsohio_awards.json": {
+   "file": "jobsohio_awards.json",
+   "bytes": 3087521,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one EXECUTED agreement — company x month x program. Not a project, not a company: JobsOhio footnote 1 reports each program of a project as its own row as it executes.",
+    "source": "JobsOhio 'Monthly Executed Grants and Loans Report' tables inside JobsOhio_Metrics-Report_2015..2025.pdf and JobsOhio_Monthly-Metrics_2026-01..07.pdf (newsroom/reports-publications), read from disk",
+    "counts": "{\"rows\": 2994, \"months\": 139, \"files\": 18, \"pages_parsed\": 154, \"pages_defeated\": 0, \"pic12_rows\": 810, \"pic_universe_rows\": 15, \"pic_cornerstone_rows\": 2}",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "lodes.json": {
+   "file": "lodes.json",
+   "bytes": 439151,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one (home county, work county) count of JOBS, not people, not commuters. A two-job worker appears twice.",
+    "source": "LEHD LODES8 origin-destination, Ohio, 2022, segment JT00 (all jobs), main + aux",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "lodes_2019.json": {
+   "file": "lodes_2019.json",
+   "bytes": 439056,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one (home county, work county) count of JOBS — not people, not commuters. A two-job worker appears twice.",
+    "source": "LEHD LODES8 origin-destination, Ohio, 2019, segment JT00 (all jobs), main + aux",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "lodes_flows_cache.json": {
+   "file": "lodes_flows_cache.json",
+   "bytes": 1233269,
+   "mtime": "2026-08-31",
+   "meta": null,
+   "unreadable": null
+  },
+  "lodes_peers.json": {
+   "file": "lodes_peers.json",
+   "bytes": 108039,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-16",
+    "row": "one region: the share of jobs held by its residents that sit in their own county, and the share that sit anywhere inside the region.",
+    "source": "LEHD LODES8 origin-destination, 2022, segment JT00 (all jobs), `main` files for OH, PA, MI, IN, IL, WI, NY, NC, SC, TN, MO, MN, with LODES' own county-to-CBSA crosswalk."
+   },
+   "unreadable": null
+  },
+  "lodes_resident.json": {
+   "file": "lodes_resident.json",
+   "bytes": 5763,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-16",
+    "row": "one PIC-12 home county: jobs held by its residents, and where those jobs sit. JOBS, not people — a two-job worker is counted twice.",
+    "source": "LEHD LODES8 origin-destination, 2022, segment JT00 (all jobs). Ohio main plus the aux files of PA, MI, WV, IN, KY, NY, which is where an Ohio resident working out of state appears.",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "negative_space.json": {
+   "file": "negative_space.json",
+   "bytes": 56710,
+   "mtime": "2026-08-31",
+   "meta": {
+    "counts": "{\"echo_pic12_325_326\": 714, \"unmatched_any\": 472, \"unmatched_326\": 185, \"pic_curated\": 785}"
+   },
+   "unreadable": null
+  },
+  "nes.json": {
+   "file": "nes.json",
+   "bytes": 9282,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one (county, NAICS) count of establishments with NO paid employees and receipts of $1,000 or more, plus combined receipts in $1,000s",
+    "source": "Census Nonemployer Statistics 2022, county x NAICS",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "nsf-2330145.json": {
+   "file": "nsf-2330145.json",
+   "bytes": 543,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  "nsf-2532460.json": {
+   "file": "nsf-2532460.json",
+   "bytes": 445,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  "occmix.json": {
+   "file": "occmix.json",
+   "bytes": 581395,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one occupation employed in one industry, NATIONALLY",
+    "source": "BLS Employment Projections, National Employment Matrix, industry->occupation"
+   },
+   "unreadable": null
+  },
+  "odjfs_projections.json": {
+   "file": "odjfs_projections.json",
+   "bytes": 305111,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one industry (NAICS or sector title) or one occupation (SOC) x geography; 2022 base, 2032 projected, change, percent (a FRACTION), openings, wage",
+    "source": "Ohio Dept of Job and Family Services, Bureau of Labor Market Information — Long-Term Employment Projections 2022-2032 (ohiolmi.com/_docs/PROJ/)",
+    "sources": "{\"ohio\": {\"industry_file\": \"http<path>/IndOH32.xlsx\", \"occupation_file\": \"http<path>/OccOH32.xlsx\", \"industry_",
+    "counts": "{\"industry_rows\": 882, \"occupation_rows\": 223}"
+   },
+   "unreadable": null
+  },
+  "oews.json": {
+   "file": "oews.json",
+   "bytes": 38840,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one (metro, SOC occupation) employment and wage estimate with percentiles and relative standard errors",
+    "source": "BLS OEWS metropolitan file — oesm24ma.zip, sheet MSA_M2024_dl",
+    "counts": "{\"rows\": 93, \"suppressed\": 0, \"metros_found\": [\"10420\", \"15940\", \"17410\", \"49660\"]}"
+   },
+   "unreadable": null
+  },
+  "oews_national.json": {
+   "file": "oews_national.json",
+   "bytes": 10180,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one (national, SOC occupation) all-industry employment and wage estimate with percentiles and relative standard errors",
+    "source": "BLS OEWS national file — oesm24nat.zip, sheet national_M2024_dl",
+    "counts": "{\"rows\": 26, \"missing\": []}"
+   },
+   "unreadable": null
+  },
+  "onet.json": {
+   "file": "onet.json",
+   "bytes": 283406,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one directed pair of occupations with a relatedness tier and index",
+    "source": "O*NET 30.3 Related Occupations (http<path>/Related%20Occupations.txt)",
+    "counts": "{\"pairs\": 18460, \"titles\": 867, \"naics326_detailed_occupations\": 123}"
+   },
+   "unreadable": null
+  },
+  "onet_education.json": {
+   "file": "onet_education.json",
+   "bytes": 35409,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one SOC occupation: O*NET title and description, Job Zone (1-5), and the share of surveyed workers and experts reporting each required level of education, binned to four levels",
+    "source": "O*NET 30.3 database — Occupation Data, Job Zones, Job Zone Reference, Education (element 2.D.1 Required Level of Education, scale RL) and Education Categories",
+    "counts": "{\"occupations\": 26, \"with_distribution\": 26}"
+   },
+   "unreadable": null
+  },
+  "parent_hq.json": {
+   "file": "parent_hq.json",
+   "bytes": 140286,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-16",
+    "row": "one PARENT COMPANY with its facility count in PIC-12 and its headquarters",
+    "source": "EPA TRI parent_co_name (epa.json) resolved against SEC cik-lookup-data.txt + data.sec.gov submissions addresses, with GLEIF addresses as fallback",
+    "counts": "{\"facilities_with_parent\": 896, \"distinct_parents\": 618, \"resolved_sec\": 301, \"resolved_gleif\": 11}"
+   },
+   "unreadable": null
+  },
+  "patents.json": {
+   "file": "patents.json",
+   "bytes": 12851,
+   "mtime": "2026-08-31",
+   "meta": {
+    "row": "one patent APPLICATION with >=1 inventor RESIDING in a PIC-12 city",
+    "source": "USPTO Open Data Portal, patent applications, CPC C08*/B29*, inventor residence in Ohio, cut to PIC-12 cities",
+    "counts": "{\"invented_in_pic12\": 2872, \"with_applicant\": 2685, \"credited_away\": 1255, \"credited_away_pct\": 46.7}"
+   },
+   "unreadable": null
+  },
+  "patents_bench.json": {
+   "file": "patents_bench.json",
+   "bytes": 1467,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one application with >=1 inventor RESIDING in the state",
+    "source": "USPTO Open Data Portal, CPC C08*/B29*, inventor residence by state"
+   },
+   "unreadable": null
+  },
+  "peers-2024-boundaries.json": {
+   "file": "peers-2024-boundaries.json",
+   "bytes": 5530732,
+   "mtime": "2026-09-11",
+   "meta": {
+    "fetched": "2026-08-14",
+    "row": "one (year, area, NAICS) annual-average cell, private ownership. `emp` counts JOBS covered by unemployment insurance.",
+    "source": "BLS QCEW open data, by-industry files, annual averages"
+   },
+   "unreadable": null
+  },
+  "peers.json": {
+   "file": "peers.json",
+   "bytes": 5530376,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-14",
+    "row": "one (year, area, NAICS) annual-average cell, private ownership. `emp` counts JOBS covered by unemployment insurance.",
+    "source": "BLS QCEW open data, by-industry files, annual averages"
+   },
+   "unreadable": null
+  },
+  "pic12-intersecting-cbsas-2023-receipt.json": {
+   "file": "pic12-intersecting-cbsas-2023-receipt.json",
+   "bytes": 1334,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  "pic12_geo.json": {
+   "file": "pic12_geo.json",
+   "bytes": 27374,
+   "mtime": "2026-08-31",
+   "meta": {
+    "source": "Census 2020 ZCTA-to-county relationship file; city names cross-checked against epa.json facility ZIPs"
+   },
+   "unreadable": null
+  },
+  "pic_universe.json": {
+   "file": "pic_universe.json",
+   "bytes": 1765,
+   "mtime": "2026-08-31",
+   "meta": null,
+   "unreadable": null
+  },
+  "provenance.json": {
+   "file": "provenance.json",
+   "bytes": 12191,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "source": "The sentence: Greater Akron Chamber, Polymer Industry Cluster Strategic Framework (2022) section 3.1, footnote 23. The footnote resolves to: ODSA Office of Research, Ohio's Polymers Industry: Plastic Resins, Synthetic Rubber and Related Products, June 2019 (B403, Larrick), recovered from the Internet Archive and held in data/primary-sources/.",
+    "sources": "[\"cbp2016_odsa_scope\", \"bea_sagdp2\", \"qcew\", \"cbp2017_state_row\", \"odsa_b403_pdf\"]",
+    "footprint": "{\"label\": \"Ohio\", \"note\": \"statewide; Greater Akron = Summit+Medina+Portage per the 2022 report\"}"
+   },
+   "unreadable": null
+  },
+  "pseo.json": {
+   "file": "pseo.json",
+   "bytes": 8153,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one (institution, degree level, 4-digit CIP) cell of median earnings at 1, 5 and 10 years after graduation, cohorts pooled",
+    "source": "Census Post-Secondary Employment Outcomes, latest release, Ohio (http<path>/)"
+   },
+   "unreadable": null
+  },
+  "pseo_national.json": {
+   "file": "pseo_national.json",
+   "bytes": 7570,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one (state or institution, bachelor's, CIP) median-earnings cell with its own within-unit denominators, cohorts pooled",
+    "source": "Census Post-Secondary Employment Outcomes, latest release, ALL states (http<path>/)",
+    "footprint": "NONE — deliberately national. This tests whether a national pattern explains a local number, so neither PIC-12 nor NEO-14 applies."
+   },
+   "unreadable": null
+  },
+  "qcew-2024-adoption.web.json": {
+   "file": "qcew-2024-adoption.web.json",
+   "bytes": 10429,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  "qcew-2024-boundary-receipt.json": {
+   "file": "qcew-2024-boundary-receipt.json",
+   "bytes": 754,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  "qcew-2024-verified-boundary-receipt.json": {
+   "file": "qcew-2024-verified-boundary-receipt.json",
+   "bytes": 894,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  "qcew.json": {
+   "file": "qcew.json",
+   "bytes": 342410,
+   "mtime": "2026-09-11",
+   "meta": null,
+   "unreadable": null
+  },
+  "qcew_summit_history.json": {
+   "file": "qcew_summit_history.json",
+   "bytes": 19775,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-19",
+    "row": "one (year, NAICS) cell: average annual pay per covered job; plus average employment, establishments and average weekly wage where the open-data file carries them (2014-)",
+    "source": "BLS QCEW annual averages, Summit County OH (39153), private ownership (own_code 5)"
+   },
+   "unreadable": null
+  },
+  "qwi.json": {
+   "file": "qwi.json",
+   "bytes": 80502,
+   "mtime": "2026-08-31",
+   "meta": null,
+   "unreadable": null
+  },
+  "qwi_demand.json": {
+   "file": "qwi_demand.json",
+   "bytes": 7170,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-16",
+    "row": "one quarter: employment-weighted mean monthly earnings across the twelve counties, for one industry cut.",
+    "source": "Census QWI (seasonally adjusted), EarnBeg, PIC-12 counties, 2012Q1-2025Q4.",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "qwi_peers.json": {
+   "file": "qwi_peers.json",
+   "bytes": 19684,
+   "mtime": "2026-08-31",
+   "meta": null,
+   "unreadable": null
+  },
+  "rcra.json": {
+   "file": "rcra.json",
+   "bytes": 798703,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one (facility, waste stream, management method) record for one biennial cycle. A facility appears many times.",
+    "source": "EPA Envirofacts RCRA Biennial Report (br_reporting), Ohio, PIC-12, measurement-register NAICS",
+    "counts": "{\"rows\": 2361, \"facilities\": 68, \"rows_with_a_receiver\": 2294, \"distinct_receivers\": 45, \"receivers_out_of_state\": 31}",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit\", \"Trumbull\", \"Way"
+   },
+   "unreadable": null
+  },
+  "reach.json": {
+   "file": "reach.json",
+   "bytes": 109614,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-26",
+    "row": "one partner institution: works on which it appears alongside the region, split by whether a corresponding author sat here or there.",
+    "source": "OpenAlex works, 2015-2024, in subfield 2507 ('Polymers and Plastics'), with an authorship at the University of Akron or Case Western Reserve University."
+   },
+   "unreadable": null
+  },
+  "relatedness.json": {
+   "file": "relatedness.json",
+   "bytes": 7990659,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-16",
+    "row": "one (county, 3-digit NAICS) cell with annual-average employment",
+    "source": "BLS QCEW annual by-industry files, 2024, private ownership, county x 3-digit NAICS (agglvl_code 78)",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"counties\": [\"39007\", \"39035\", \"39055\", \"39085\", \"39093\", \"39099\", \"39103\", \"39133\", \"39151\", \"39153\", \"39155\", \"39169\"]}"
+   },
+   "unreadable": null
+  },
+  "research_awards.json": {
+   "file": "research_awards.json",
+   "bytes": 157469,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one AWARD with its obligated/awarded amount, institution and year. Not an outlay: a ten-year award appears once at full value, not spread across years.",
+    "source": "NSF Award Search API and NIH RePORTER v2, Ohio awardees, keyword-matched"
+   },
+   "unreadable": null
+  },
+  "rpp.json": {
+   "file": "rpp.json",
+   "bytes": 1279026,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one (metro, year, item group) price index, US average = 100",
+    "source": "BEA Regional Price Parities, table MARPP"
+   },
+   "unreadable": null
+  },
+  "sba.json": {
+   "file": "sba.json",
+   "bytes": 127445,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one APPROVED loan — not a company, and not money disbursed",
+    "source": "SBA 7(a) and 504 FOIA loan approvals, as of 2026-06-30, http<path>/7a-504-foia",
+    "counts": "{\"loans\": 235, \"gross_approval\": 132187900.0, \"gross_approval_excluding_never_funded\": 113934900.0, \"gross_approval_never_funded\": 18253000.0, \"jobs_claimed_sum",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "sbir.json": {
+   "file": "sbir.json",
+   "bytes": 780294,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one AWARD action (Phase I or II), not a company and not a project",
+    "source": "SBIR.gov bulk award file (award_data_no_abstract.csv)"
+   },
+   "unreadable": null
+  },
+  "scorecard.json": {
+   "file": "scorecard.json",
+   "bytes": 19028,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-16",
+    "row": "institution rows = one (institution) median earnings for FEDERALLY AIDED students N years after ENTRY, not after graduation and not all students. program rows = one (institution, CIP-4, credential level).",
+    "source": "U.S. Dept of Education College Scorecard via api.data.gov",
+    "counts": "{\"institutions\": 5, \"programs\": 52, \"programs_suppressed\": 41, \"national_institutions\": 20, \"national_awards\": 290, \"ohio_awards\": 39}"
+   },
+   "unreadable": null
+  },
+  "techcred.json": {
+   "file": "techcred.json",
+   "bytes": 1868992,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one EMPLOYER x ROUND award — a repeat applicant appears once per round; award_amount is the approved reimbursement ceiling, not money paid",
+    "source": "DataOhio 'TechCred Awardees' export (Ohio Dept of Development / Governor's Office of Workforce Transformation), via data.ohio.gov API gateway",
+    "counts": "{\"awards_all\": 14670, \"pic12_awards\": 4636, \"pic12_distinct_names\": 1575, \"pic12_award_amount\": 65320041.29, \"pic12_credentials_approved\": 55228, \"pic12_credent",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "third_frontier.json": {
+   "file": "third_frontier.json",
+   "bytes": 598755,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one PO DISTRIBUTION LINE — not an award, not a recipient, not money paid; amount is encumbered, liquidated is paid",
+    "source": "DataOhio 'Department of Development Grants & Loans' (OAKS purchase-order ledger, weekly), lines under budget program THIRD FRONTIER PROGRAM, via data.ohio.gov API gateway",
+    "counts": "{\"rows_scanned\": 33427, \"tf_lines\": 1980, \"tf_amount\": 1430020977.88, \"tf_liquidated\": 993167632.66, \"tf_distinct_recipients\": 852, \"pic12_lines\": 705, \"pic12_a",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "third_frontier_awards.json": {
+   "file": "third_frontier_awards.json",
+   "bytes": 1063199,
+   "mtime": "2026-08-31",
+   "meta": {
+    "as_of": "Dated December 2024 (cumulative since program inception, 2002)",
+    "row": "one AWARD LINE of one program table (project end date, organization, title, state funds awarded/expended, cost share, jobs, salary); not a company, not a payment",
+    "source": "ODOD Annual Report FY2025 Appendix, Appendix 7 'Third Frontier Commission' (Ohio Third Frontier program summary + per-program award tables), PDF pp. 1240-1279; extracted with Poppler pdftotext -tsv and rebuilt geometrically",
+    "counts": "{\"pages\": 40, \"programs_in_summary\": 34, \"programs_with_detail_tables\": 30, \"summary_only_programs\": 4, \"rows_seen\": 958, \"rows_parsed\": 958, \"parse_rate\": 1.0,",
+    "footprint": "{\"key\": \"is_pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Sum"
+   },
+   "unreadable": null
+  },
+  "trade.json": {
+   "file": "trade.json",
+   "bytes": 12215,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-15",
+    "row": "one (scope, HS chapter, flow, year, partner) trade value in current US dollars",
+    "source": "UN Comtrade public preview endpoint (no key), US as reporter, HS chapters 39 and 40, annual"
+   },
+   "unreadable": null
+  },
+  "usaspending.json": {
+   "file": "usaspending.json",
+   "bytes": 12738,
+   "mtime": "2026-08-31",
+   "meta": null,
+   "unreadable": null
+  },
+  "usaspending_contracts.json": {
+   "file": "usaspending_contracts.json",
+   "bytes": 854121,
+   "mtime": "2026-09-11",
+   "meta": {
+    "fetched": "2026-09-08",
+    "row": "one (fiscal year, category, code) PRIME CONTRACT obligation total",
+    "source": "USAspending.gov spending_by_category, place of performance, award_type_codes A-D",
+    "footprint": "{\"key\": \"pic12\", \"n\": 12, \"label\": \"PIC-12\", \"counties\": [\"Ashtabula\", \"Cuyahoga\", \"Geauga\", \"Lake\", \"Lorain\", \"Mahoning\", \"Medina\", \"Portage\", \"Stark\", \"Summit"
+   },
+   "unreadable": null
+  },
+  "vc_portfolios.json": {
+   "file": "vc_portfolios.json",
+   "bytes": 394125,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-18",
+    "row": "one (organisation, company) LISTING on the fetch date — not a deal, not a deal date, not a dollar; a company backed by three funds is three rows",
+    "source": "public portfolio / companies pages of NEO angel, VC and venture-development organisations, fetched 2026-08-18",
+    "sources": "{\"JumpStart Ventures\": {\"via\": \"wp-json avada_portfolio\", \"http_status\": 200, \"url\": \"http<path>/portfolio\", \"reachable\": true, \"companies\": 107, \"re",
+    "counts": "{\"listings\": 463, \"by_org\": {\"JumpStart Ventures\": 107, \"North Coast Ventures\": 56, \"Ohio Innovation Fund\": 23, \"Rev1 Ventures\": 91, \"Comeback Capital\": 63, \"Va"
+   },
+   "unreadable": null
+  },
+  "warn.json": {
+   "file": "warn.json",
+   "bytes": 17116,
+   "mtime": "2026-08-31",
+   "meta": {
+    "fetched": "2026-08-17",
+    "row": "one NOTICE, not one company and not one event — UPDATE notices restate a prior one",
+    "source": "Ohio Dept of Job and Family Services WARN notices, via dam.assets.ohio.gov",
+    "sources": "{\"2026\": {\"url\": \"http<path>/2026-warn-notice.csv\", \"header_line\": 3, \"rows\": 61}, \"2025",
+    "counts": "{\"notices_all\": 150, \"pic12_notices\": 35, \"pic12_original\": 34, \"pic12_updates\": 1, \"workers_affected_original_only\": 5556}"
+   },
+   "unreadable": null
+  },
+  "world.json": {
+   "file": "world.json",
+   "bytes": 172644,
+   "mtime": "2026-08-31",
+   "meta": {
+    "source": "Natural Earth 1:110m admin-0 countries, coastlines only"
+   },
+   "unreadable": null
+  }
+ }
 }
