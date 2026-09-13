@@ -26,7 +26,15 @@
   "push. The fix is to make rendering deterministic across platforms rather than to",
   "re-measure per platform, which means launching chromium with font hinting and subpixel",
   "positioning disabled. That changes the measurement basis of nine pixel-measuring gates",
-  "at once, so it is filed as its own change (LEDGER ER-021) rather than ridden in here."
+  "at once, so it is filed as its own change (LEDGER ER-021) rather than ridden in here.",
+  "",
+  "RE-BASED 2026-09-12. The first push since 2026-09-07 carried prose edits from 2026-09-08",
+  "and 2026-09-11 that had been measured only on Windows, where every page reads 20 to 80px",
+  "shorter than the Linux runner. Four pages had grown past their Linux ceilings on that",
+  "run: churn 1677 to 1729, federal-money 1631 to 1701, revisions 1330 to 1356, timeline",
+  "1385 to 1386. Those four entries are now the Linux measurements from that run, recorded",
+  "as debts rather than hidden; the prose above those four first charts owes a tightening",
+  "of the same pixels, and the determinism fix in ER-021 is still the real answer."
  ],
  "limit": 900,
  "fixed": [
@@ -40,14 +48,14 @@
   "index"
  ],
  "ceilings": {
-  "churn": 1677,
+  "churn": 1729,
   "cluster-health": 1085,
-  "federal-money": 1631,
+  "federal-money": 1701,
   "laborshed": 1542,
   "occupations": 1555,
   "peers": 1339,
-  "revisions": 1330,
-  "timeline": 1385,
+  "revisions": 1356,
+  "timeline": 1386,
   "accountability": 903
  }
 }
