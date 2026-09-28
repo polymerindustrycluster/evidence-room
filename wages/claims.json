@@ -41,7 +41,15 @@
       "source": "employment sums over the 2025 cells, by NAICS level",
       "assert": "(lambda R: (lambda G: len(G) == 23 and len(R) == 51 and sum(r['emp'] for r in R) == 54375 and sum(r['emp'] for r in G) == 33529 and sum(r['emp'] for r in R) - sum(r['emp'] for r in G) == 20846 and sum(r['emp'] for r in R if r['naics'] in ('3252', '3255', '326')) == 24032 and all(any(x['name'] == r['name'] and x['naics'] == ('325' if r['naics'] in ('3252', '3255') else '326') for x in R) for r in R if r['naics'] in ('3252', '3255', '3261', '3262')) and all(abs(p['emp'] - sum(k['emp'] for k in R if k['name'] == p['name'] and k['naics'] in ('3261', '3262'))) <= 1 for p in R if p['naics'] == '326' and any(k['name'] == p['name'] and k['naics'] in ('3261', '3262') for k in R)) and all(p['emp'] > sum(k['emp'] for k in R if k['name'] == p['name'] and k['naics'] in ('3252', '3255')) for p in R if p['naics'] == '325' and any(k['name'] == p['name'] and k['naics'] in ('3252', '3255') for k in R)))([r for r in R if r['naics'] in ('325', '326')]))([r for r in D['w']['latest_rows'] if r.get('vs_local_all')])",
       "actual": "(lambda R: (lambda G: (len(R), len(G), sum(r['emp'] for r in R), sum(r['emp'] for r in G), sum(r['emp'] for r in R) - sum(r['emp'] for r in G), sum(r['emp'] for r in R if r['naics'] in ('3252', '3255', '326'))))([r for r in R if r['naics'] in ('325', '326')]))([r for r in D['w']['latest_rows'] if r.get('vs_local_all')])",
-      "falsified_if": "Any printed job total moves; the group/part mix leaves 23 of 51; a part row appears in a county whose group is withheld, which would make the tooltip line 'counted again in this county's group row' false for that row and would also break the group-level cover's claim to be complete; 326 stops equalling 3261 + 3262 within one job, which is the arithmetic the reader checked and the reason the caption can say the column double-counts; or 325 stops exceeding its published parts, which would mean the finest-level and group-level covers had converged and the page's two job totals were saying the same thing in two ways."
+      "falsified_if": "Any printed job total moves; the group/part mix leaves 23 of 51; a part row appears in a county whose group is withheld, which would make the tooltip line 'counted again in this county's group row' false for that row and would also break the group-level cover's claim to be complete; 326 stops equalling 3261 + 3262 within one job, which is the arithmetic the reader checked and the reason the caption can say the column double-counts; or 325 stops exceeding its published parts, which would mean the finest-level and group-level covers had converged and the page's two job totals were saying the same thing in two ways.",
+      "counts": [
+        {
+          "figure": "33,529",
+          "noun": [
+            "job"
+          ]
+        }
+      ]
     },
     {
       "id": "below-all-products",

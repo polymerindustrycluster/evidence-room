@@ -74,7 +74,15 @@
       "source": "BLS QCEW 2024, lq_annual_avg_emplvl. 'Nearly five times' is the plain reading of 4.69x, which the hero card and the scatter's lede both print alongside it.",
       "assert": "round(D['metros']['326']['subject_lq'],2) == 4.69 and round(D['metros']['326']['subject_emp']) == 6910 and 4.5 <= D['metros']['326']['subject_lq'] < 5.0",
       "actual": "(D['metros']['326']['subject_lq'], D['metros']['326']['subject_emp'])",
-      "falsified_if": "QCEW revises Akron MSA 2024. The 4.5-to-5.0 band is guarding the WORDS, not the number: below 4.5 or at 5.0 and above, 'nearly five times' stops being an honest reading of the ratio and the hero card, the glossary and the scatter lede all have to be rewritten together."
+      "falsified_if": "QCEW revises Akron MSA 2024. The 4.5-to-5.0 band is guarding the WORDS, not the number: below 4.5 or at 5.0 and above, 'nearly five times' stops being an honest reading of the ratio and the hero card, the glossary and the scatter lede all have to be rewritten together.",
+      "counts": [
+        {
+          "figure": "6,910",
+          "noun": [
+            "job"
+          ]
+        }
+      ]
     },
     {
       "id": "cle-rank-4",

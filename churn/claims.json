@@ -58,7 +58,15 @@
       "source": "Census QWI Emp, first and last published quarters",
       "assert": "D['ch']['quarters'][0]['emp'] == 18444 and D['ch']['quarters'][-1]['emp'] == 17725 and D['ch']['quarters'][-1]['emp'] - D['ch']['quarters'][0]['emp'] == -719 and abs((D['ch']['quarters'][-1]['emp'] - D['ch']['quarters'][0]['emp']) - (sum(q['hires'] for q in D['ch']['quarters']) - sum(q['seps'] for q in D['ch']['quarters']))) > 500 and 3.5 <= (D['ch']['quarters'][0]['emp'] - D['ch']['quarters'][-1]['emp']) / D['ch']['quarters'][0]['emp'] * 100 <= 4.5",
       "actual": "(D['ch']['quarters'][0]['emp'], D['ch']['quarters'][-1]['emp'], D['ch']['quarters'][-1]['emp'] - D['ch']['quarters'][0]['emp'], (D['ch']['quarters'][0]['emp'] - D['ch']['quarters'][-1]['emp']) / D['ch']['quarters'][0]['emp'] * 100, sum(q['hires'] for q in D['ch']['quarters']) - sum(q['seps'] for q in D['ch']['quarters']))",
-      "falsified_if": "A QWI revision that reconciles the headcount with the flows, that moves the 719-job fall, or that moves the fall out of 3.5%-4.5% so the closer's 'about 4%' stops rounding. If the two ever agree within 500 jobs, the sentence about them being estimated separately has to be rewritten, not just re-rounded. A READER FINISHED THIS PAGE UNSURE WHETHER JOBS GREW: they met +168 in the headline and 719 fewer in grey type and could not tell which answered the question. Both are right and they measure different things, so the page now says WHICH QUESTION EACH ANSWERS wherever the two meet: the standfirst ('Are there more jobs? No'), the +168 hero card, the flow table's column heads, the reconciliation note under that table, the flow chart's source line, the methodology and the closer. The headcount is the growth answer; the ledger is not. If any surface stops saying so, the reader's confusion is back."
+      "falsified_if": "A QWI revision that reconciles the headcount with the flows, that moves the 719-job fall, or that moves the fall out of 3.5%-4.5% so the closer's 'about 4%' stops rounding. If the two ever agree within 500 jobs, the sentence about them being estimated separately has to be rewritten, not just re-rounded. A READER FINISHED THIS PAGE UNSURE WHETHER JOBS GREW: they met +168 in the headline and 719 fewer in grey type and could not tell which answered the question. Both are right and they measure different things, so the page now says WHICH QUESTION EACH ANSWERS wherever the two meet: the standfirst ('Are there more jobs? No'), the +168 hero card, the flow table's column heads, the reconciliation note under that table, the flow chart's source line, the methodology and the closer. The headcount is the growth answer; the ledger is not. If any surface stops saying so, the reader's confusion is back.",
+      "counts": [
+        {
+          "figure": "17,725",
+          "noun": [
+            "headcount"
+          ]
+        }
+      ]
     },
     {
       "id": "churn-flow-vs-stock-quarterly",

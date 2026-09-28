@@ -159,6 +159,15 @@ const CASES = [
       which the harness caught and reported as stale rather than as a passing gate. */
    inject: s => s.replace("<body>", '<body><p>The award is signed, none of it spent.</p>')},
 
+  {gate: "nouns", page: "churn", file: "churn/index.html",
+   command: "python3", args: ["_data/build/verify_nouns.py", "churn"],
+   defect: "the right number, the wrong noun beside it — the atlas shape " +
+           "(41 institutions printed as '41 recorded polymer awards', 2026-09-28)",
+   /* Dropping "headcount" from beside churn's 17,725 reproduces the atlas shape: a true
+      number, now missing the word it counts. */
+   inject: s => s.replace("the headcount fell by 719, to 17,725.",
+                          "the total fell by 719, to 17,725.")},
+
   {gate: "consistency", page: "sources", file: "index/data/counts.json",
    command: "python3", args: ["_data/build/verify_consistency.py"],
    expect: /\[published-register\] checks\.n_claims/,
