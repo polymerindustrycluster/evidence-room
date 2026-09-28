@@ -199,7 +199,15 @@
       "source": "BLS National Employment Matrix (production share); BLS OEWS May 2024 median-wage ratios by education group, Akron; IPEDS polymer completions by year",
       "assert": "D['mix_totals']['production_share_pct'] > 50 and round(D['pay_totals']['ratio_by_metro']['10420']['hs_median_ratio'], 2) == 0.97 and round((1 - D['pay_totals']['ratio_by_metro']['10420']['hs_median_ratio']) * 100) == 3 and round(D['pay_totals']['ratio_by_metro']['10420']['degree_median_ratio'], 2) == 0.93 and round((1 - D['pay_totals']['ratio_by_metro']['10420']['degree_median_ratio']) * 100) == 7 and all(v['degree_median_ratio'] < 1 for v in D['pay_totals']['ratio_by_metro'].values()) and D['program_totals']['polymer_awards_latest'] == 63 and (lambda E: min(E) == 118 and max(E) == 179)(series(D['programs'], 'polymer', 2014, 2020)) and (lambda E, R: (sum(R) / len(R)) / (sum(E) / len(E)) <= 0.5 and len(R) == 3)(series(D['programs'], 'polymer', 2014, 2020), series(D['programs'], 'polymer', 2021, 2023)) and math.floor((sum(series(D['programs'], 'polymer', 2014, 2020)) / len(series(D['programs'], 'polymer', 2014, 2020))) + 0.5) == 142",
       "actual": "(D['mix_totals']['production_share_pct'], D['pay_totals']['ratio_by_metro']['10420'], D['program_totals']['polymer_awards_latest'], [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in range(2014, 2021)], [sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer') for y in (2021, 2022, 2023)])",
-      "falsified_if": "The national production share falls to half or less; Akron’s group median wage ratios stop rounding to 0.97/0.93 and gaps to 3%/7%; any metro degree-group ratio reaches1; or the selected program counts move from63 and142, or their recent three-year mean rises above half the earlier mean. These conditions check the quantities, not recruiting geography, migration or a worker shortage."
+      "falsified_if": "The national production share falls to half or less; Akron’s group median wage ratios stop rounding to 0.97/0.93 and gaps to 3%/7%; any metro degree-group ratio reaches1; or the selected program counts move from63 and142, or their recent three-year mean rises above half the earlier mean. These conditions check the quantities, not recruiting geography, migration or a worker shortage.",
+      "counts": [
+        {
+          "figure": "3%",
+          "noun": [
+            "nominal"
+          ]
+        }
+      ]
     },
     {
       "id": "occ-trend-half-rule",
