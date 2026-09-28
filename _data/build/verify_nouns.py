@@ -23,7 +23,12 @@ WHAT THIS CHECKS
   (&nbsp; &rsquo; &times; ...), and collapses whitespace. It then finds every occurrence of
   `figure` as a WHOLE TOKEN — a bare "41" search will not match the "41" inside "1,410" or
   "41.5" — and requires one of the declared noun stems within 8 words on either side,
-  case-insensitively, matched as a prefix so "institution" matches "institutions".
+  case-insensitively, matched as a prefix so "institution" matches "institutions". The
+  window stops at the figure's own clause (a word ending in ; . : ? or !), so a noun in
+  the sentence before cannot vouch for the figure: the atlas relapse "147 institution
+  records since 1991; 41 recorded polymer awards" fails, though "institution" is four
+  words back. One crossing is allowed, for a back-reference: "41 of them" (or those,
+  these) reaches into the clause before for its noun.
 
   A figure that does not appear on the page at all is a FAILURE, never a silent pass:
   "cannot inspect: figure not on page". A check that stays quiet when it cannot see
@@ -41,7 +46,8 @@ WHAT THIS CANNOT CATCH
   near "41" (as in "41 recorded...") would pass a claim whose declared noun was "record",
   whether or not that is the noun the sentence actually needs. And it only covers what a
   claim opts into — a claims.json with no `counts` field anywhere is invisible to this
-  gate, which is why coverage is printed rather than assumed.
+  gate, which is why coverage is printed rather than assumed. An abbreviation ending in a
+  full stop ("U.S.") ends a clause early; that errs toward a failure, never a pass.
 
 USAGE
   python3 verify_nouns.py            all pages that carry claims.json
@@ -66,6 +72,8 @@ TOKEN = re.compile(r"\S+")
 STRIP_EDGES = re.compile(r"^\W+|\W+$", re.UNICODE)
 NUMERIC_FIGURE = re.compile(r"^[\d,.]+$")
 NUMCHARS = set("0123456789,.")
+CLAUSE_END = re.compile(r"[;.:?!][\"'\u2019\u201d)\]]*$")
+BACK_REFERENCE = {"them", "those", "these"}
 
 
 def all_pages():
@@ -157,15 +165,31 @@ def noun_nearby(tokens, start, end, stems, window=8):
     A stem is matched word by word, never as a raw substring, so "art job" cannot match
     inside "counterpart jobs". Every word of a stem must equal a window word except the
     last, which is a case-insensitive PREFIX, so "institution" matches "institutions" and
-    "institution's" alike. A phrase must sit wholly on one side of the figure.
+    "institution's" alike. A phrase must sit wholly on one side of the figure. The window
+    is also cut at the figure's own clause; "41 of them" may reach one clause back.
     """
     hits = [i for i, (ts, te, _) in enumerate(tokens) if te > start and ts < end]
     if not hits:
         return False, "<figure matched no token — should not happen>"
     first_idx, last_idx = hits[0], hits[-1]
 
+    def ends_clause(i):
+        return bool(CLAUSE_END.search(tokens[i][2]))
+
+    after = [STRIP_EDGES.sub("", w).lower() for _, _, w in tokens[last_idx + 1:last_idx + 3]]
+    crossings = 1 if len(after) == 2 and after[0] == "of" and after[1] in BACK_REFERENCE else 0
     lo = max(0, first_idx - window)
+    for i in range(first_idx - 1, lo - 1, -1):
+        if ends_clause(i):
+            if not crossings:
+                lo = i + 1
+                break
+            crossings -= 1
     hi = min(len(tokens), last_idx + 1 + window)
+    for i in range(last_idx, hi):
+        if ends_clause(i):
+            hi = i + 1
+            break
     sides = [[STRIP_EDGES.sub("", w).lower() for _, _, w in part]
              for part in (tokens[lo:first_idx], tokens[last_idx + 1:hi])]
 

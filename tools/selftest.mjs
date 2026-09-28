@@ -168,6 +168,14 @@ const CASES = [
    inject: s => s.replace("the headcount fell by 719, to 17,725.",
                           "the total fell by 719, to 17,725.")},
 
+  {gate: "nouns", page: "atlas", file: "atlas/index.html",
+   command: "python3", args: ["_data/build/verify_nouns.py", "atlas"],
+   defect: "the atlas relapse itself: the right noun one clause back, the wrong one beside " +
+           "the figure ('147 institution records since 1991; 41 recorded polymer awards')",
+   /* Grok's refute, 2026-09-28: with "institution records" four words before the 41, the
+      8-word window passed this exact relapse. The window now stops at the clause. */
+   inject: s => s.replace(/41 of them recorded\s+a polymer award/, "41 recorded polymer awards")},
+
   {gate: "consistency", page: "sources", file: "index/data/counts.json",
    command: "python3", args: ["_data/build/verify_consistency.py"],
    expect: /\[published-register\] checks\.n_claims/,

@@ -98,6 +98,26 @@ class NounNearbyTest(unittest.TestCase):
         found, _ = vn.noun_nearby(tokens, 0, 2, ["institution"], window=8)
         self.assertFalse(found, "a stem 9 words away is outside an 8-word window")
 
+    def test_noun_in_the_previous_clause_does_not_count(self):
+        # The atlas relapse: "institution" is four words back, but in another clause.
+        text = "147 institution records since 1991; 41 recorded polymer awards in 2023."
+        tokens = vn.tokenize(text)
+        s = text.index("41 ")
+        found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
+        self.assertFalse(found)
+
+    def test_back_reference_reaches_the_previous_clause(self):
+        text = "147 institution records since 1991; 41 of them recorded a polymer award in 2023."
+        tokens = vn.tokenize(text)
+        s = text.index("41 ")
+        found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
+        self.assertTrue(found)
+
+    def test_noun_in_the_next_sentence_does_not_count(self):
+        tokens = vn.tokenize("The count fell to 41. Institutions elsewhere grew.")
+        found, _ = vn.noun_nearby(tokens, 18, 20, ["institution"])
+        self.assertFalse(found)
+
 
 class CheckPageTest(unittest.TestCase):
     """End-to-end: a real claims.json plus a real index.html for one throwaway page."""
