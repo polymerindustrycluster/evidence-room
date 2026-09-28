@@ -4,7 +4,7 @@
   "sources": "OpenAlex works listing both institutions; NSF awards API, awards to either institution since 2012.",
   "row": "one year: works listing both institutions, works matching \u2018polymer\u2019, and each institution\u2019s own total output.",
   "two_measures": "Publications and federal awards are independent instruments aimed at the same proposition, which is what makes this triangulation rather than juxtaposition. They can disagree.",
-  "polymer_bound": "Polymer relevance is OpenAlex subfield 2507, \u2018Polymers and Plastics\u2019, a classification rather than a keyword. Biomaterials is a separate subfield (2502) and is counted beside it, never merged into it. The unbounded coauthorship count is published alongside both.",
+  "polymer_bound": "Polymer relevance is OpenAlex subfield 2507, \u2018Polymers and Plastics\u2019, a classification rather than a keyword. Biomaterials is a separate subfield (2502) and is counted beside it, never merged into it. The unbounded joint count is published alongside both.",
   "what_a_null_would_mean": "This instrument can demonstrate collaboration and CANNOT demonstrate its absence. OpenAlex affiliation coverage is incomplete, NSF\u2019s co-PI field lists signatories rather than the coalition, and neither sees industry contracts, consortium membership, joint teaching or a conversation. A low count means not detectable at this resolution.",
   "subfield": "2507",
   "subfield_alt": "2502",

@@ -1282,16 +1282,17 @@ meth.querySelector(".pv-method-grid").insertAdjacentHTML("beforeend", `
         lost end of a cross-boundary move rather than bound it.</li>
       <li>Census Job-to-Job Flows, a separate product, which is what separates a worker
         leaving plastics and rubber altogether from one moving to the plant next door. Its
-        absence is why the retirement figure in the age section sizes neither a floor nor a
-        total of replacement demand.</li>
+        absence is why the retirement figure in the age section cannot be a total of
+        replacement demand. It is not a floor for a reason this series does record:
+        separations exceed hires.</li>
     </ul>
     <p><b>The age estimate, stated as arithmetic.</b> ${N(RET.avg_jobs_5564)} of the
       region&rsquo;s ${N(RET.avg_jobs)} jobs are held by someone 55 to 64. Spread evenly
       over ten single-year cohorts, ${N(RET.annual)} of them reach 65 a year, which is
-      ${(RET.annual_share * 100).toFixed(1)}% of all jobs here and about
-      ${N(RET.annual)} of the ${N(RET.hires_year)} hires the region makes in a year. The
-      even spread is an assumption and the Census cannot check it: QWI records separations,
-      not retirements. The 65-and-older band recorded ${N(RET.observed_65plus_seps)}
+      ${(RET.annual_share * 100).toFixed(1)}% of all jobs here. Only if each of them retired
+      and the job were refilled would they account for about ${N(RET.annual)} of the
+      ${N(RET.hires_year)} hires the region makes in a year. The even spread is an
+      assumption and the Census cannot check it: QWI records separations, not retirements. The 65-and-older band recorded ${N(RET.observed_65plus_seps)}
       separations across the same four quarters, which is the size a flow of about
       ${N(RET.annual)} a year into that band would have to support. Read that as coherence
       and not as confirmation: the 65-and-older share of these jobs has roughly tripled

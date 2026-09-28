@@ -1,8 +1,8 @@
 /* Do the region’s two research universities work together?
  *
  * WHAT ONE ROW IS
- *   Coauthorship: one WORK in a public index whose author affiliations include both
- *   universities. Not one collaboration and not one person — a single long-running lab
+ *   Joint paper: one WORK in a public index whose author affiliations include both
+ *   universities, which one author holding both affiliations satisfies alone. Not one collaboration and not one person — a single long-running lab
  *   partnership can produce many rows, and a co-signed paper is not evidence of a
  *   sustained relationship.
  *   Awards: one federal award, or one Collaborative Research project split across two.
@@ -68,8 +68,8 @@ const word = n => WORDS[n] || String(n);
     PV.txt(svg, String(S[S.length - 1].year), {x: lo + (S.length - .5) * bw, y: H - 8,
       "text-anchor": "middle", "font-size": 12.5, fill: "#C6E2E6"});
     PV.txt(svg, AFTER.length
-      ? `coauthored works per year · ${word(FALLS)} falls, then ${AFTER.at(-1).joint}`
-      : `coauthored works per year · the last ${word(FALLS)} fall`, {x: lo, y: 16,
+      ? `works naming both per year · ${word(FALLS)} falls, then ${AFTER.at(-1).joint}`
+      : `works naming both per year · the last ${word(FALLS)} fall`, {x: lo, y: 16,
       "font-size": 12.5, fill: "#C6E2E6"});
   }
 }
@@ -85,7 +85,7 @@ const SUBJ_YEARS = S.filter(r => r.polymer + r.bio).map(r => r.year);
 const SUBJ_GAP = SUBJ_YEARS.length > 1 ? SUBJ_YEARS.at(-1) - SUBJ_YEARS.at(-2) - 1 : 0;
 
 PV.figures([
-  ["key", N(T.coauthored), "coauthored papers", `since ${S[0].year}, both universities named`],
+  ["key", N(T.coauthored), "papers naming both", `since ${S[0].year}; one author may hold both`],
   /* The bound here is OpenAlex subfield 2507, a classification — see meta.polymer_bound. An
      earlier version of this card said "a keyword in the text, not a subject code", which was
      the exact inverse of the method, and sat directly under a standfirst saying so. */
@@ -133,15 +133,15 @@ PV.figures([
         class: "pv-lab", fill: CAT[0]});
     hoverable(el("rect", {x: xs(i) - w / S.length / 2, y: m.t, width: w / S.length,
       height: h, fill: "transparent"}, svg),
-      `<b>${r.year}</b><br><span class="v">${r.joint}</span> coauthored works<br>
+      `<b>${r.year}</b><br><span class="v">${r.joint}</span> works naming both<br>
        <span class="v">${r.polymer}</span> classified in polymers and plastics,
        <span class="v">${r.bio}</span> in biomaterials<br>
        Akron published <span class="v">${N(r.akron)}</span> that year, Case Western
        <span class="v">${N(r.cwru)}</span>`,
-      `${r.year}: ${r.joint} coauthored, ${r.polymer} polymer, ${r.bio} biomaterials`);
+      `${r.year}: ${r.joint} naming both, ${r.polymer} polymer, ${r.bio} biomaterials`);
   });
   document.getElementById("jointtable").innerHTML = tableView("j",
-    "Coauthored works per year",
+    "Works naming both universities, per year",
     ["Year", "Both universities", "Polymers & plastics", "Biomaterials", "Akron total",
      "Case Western total"],
     S.map(r => [r.year, r.joint, r.polymer, r.bio, N(r.akron), N(r.cwru)]));
@@ -153,8 +153,8 @@ PV.figures([
      ${T.subject_total} of ${T.coauthored} works, about
      ${Math.round(T.subject_total / T.coauthored * 100)} percent. <b>The ${word(SUBJ_GAP)} years
      from ${SUBJ_YEARS.at(-2) + 1} to ${T.last_subject_year - 1} carry no joint paper in
-     either subject, and ${T.last_subject_year} carries one.</b> A coauthored paper is evidence that two
-     people worked together, not that two institutions have a relationship;
+     either subject, and ${T.last_subject_year} carries one.</b> A paper naming both universities proves neither a two-person
+     collaboration nor an institutional relationship;
      ${T.coauthored} works over ${S.length} years is roughly
      ${(T.coauthored / S.length).toFixed(0)} a year between universities that publish
      ${N(S.at(-1).akron + S.at(-1).cwru)} a year between them.`;
@@ -279,16 +279,16 @@ PV.figures([
 document.getElementById("closersub").innerHTML =
   `<b>The claim this page replaces was that nothing suggested the two had ever been in a
    room together.</b> That was false, and it was checkable in an afternoon: ${T.coauthored}
-   coauthored papers, ${T.joint_awards} joint NSF projects, ${usd(T.joint_award_dollars)}.
+   papers naming both, ${T.joint_awards} joint NSF projects, ${usd(T.joint_award_dollars)}.
    Publishing it would have told two anchor institutions that PIC had not looked.
    <b>What the measurement found instead is harder to dismiss and more useful.</b> The
    collaboration is real and substantial, and it is almost never about polymers.
    <b>Of ${T.coauthored} joint papers, ${T.polymer_total} are classified in polymers and
    plastics and ${T.bio_total} in biomaterials, ${T.subject_total} in all, and
    ${word(SUBJ_GAP)} of the last ${word(SUBJ_GAP + 1)} years carry neither.</b> Two
-   universities anchoring a polymer cluster have published
-   together ${T.coauthored} times in ${word(S.length)} years and ${Math.round((1 - T.subject_total / T.coauthored) * 100)}
-   percent of it was something else. <b>The joint work thinned too, and it thinned
+   universities anchoring a polymer cluster have both been
+   named on ${T.coauthored} papers in ${word(S.length)} years and ${Math.round((1 - T.subject_total / T.coauthored) * 100)}
+   percent of them were about something else. <b>The joint work thinned too, and it thinned
    recently.</b> The controlled rate fell in ${word(FALLS)} straight years, from
    ${S[FALL_FROM].per_1k_akron} joint works per thousand of Akron’s output in
    ${S[FALL_FROM].year} to ${TROUGH.per_1k_akron} in ${TROUGH.year}, and came back to

@@ -63,7 +63,14 @@ collaborative project as one award per institution), on the page and the front p
 fetch queries the NSF Awards API only; no other agency was ever checked. The front
 page's collaboration card called the 208 papers "coauthored"; the fetch requires only that
 a paper name both universities, which one author holding both affiliations satisfies, so
-the card now says "208 papers naming both universities".
+the card now says "208 papers naming both universities". The collaboration page made the
+same inference in its own headline. **Was:** "Akron and Case Western have written 208
+papers together since 2012", with "coauthored" in the standfirst, chart labels and closing,
+and a note that such a paper is evidence "two people worked together". **Is:** "208 papers
+since 2012 name both Akron and Case Western", and the note says one author listing both
+affiliations is enough to count a paper. The inference was not hypothetical: a live OpenAlex
+query on 28 September 2026 found 15 of 211 such works where both universities belong to a
+single author.
 
 **A comparison set that ended at Akron, *peers*.** **Was:** "Among the six disclosed metros
 with the most plastics and rubber jobs, Akron is also the most concentrated." **Is:** among
@@ -205,12 +212,15 @@ with the flows. The rates explain the +168, not the 719.
 Flows series does, as the page's next sentences say. The card joined two separately
 estimated figures with "which is how".
 
-**Also corrected the same day:** the page called the roughly 400 retirements a year a
+**Also corrected the same day:** the page called the roughly 400 a year who reach 65 a
 "floor" on training demand, and said age "accounts for" about 400 of the 6,626 hires. Over
-the same four quarters the region separated 7,157 workers and hired 6,626, so some
-departures were not refilled, and the flows cannot say whether any retirement was. The page
-now says age would account for about 400 hires only if every retirement were refilled, and
-that the 400 is not a floor. The README had kept an older sentence saying most of a plant's
+the same four quarters the region recorded 7,157 job separations and 6,626 hires, so some
+departures were not refilled, and the flows cannot say whether any retirement was. About
+400 is the number reaching 65, not the number retiring. The page now says age would account
+for about 400 hires only if everyone reaching 65 retired and every one of those jobs were
+refilled, in the prose and in the arithmetic panel, and that the 400 is not a floor. A
+methods note had blamed the missing Job-to-Job Flows for both; it now says that gap is why
+the 400 cannot be a total, and that separations exceeding hires is why it is not a floor. The README had kept an older sentence saying most of a plant's
 hiring "is refilled from inside the industry"; it now says the series cannot tell.
 
 ## 2026-09-28 — The front page sent the state question to a county page

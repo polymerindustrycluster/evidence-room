@@ -70,15 +70,15 @@ COMMENT = re.compile(r"<!--.*?-->", re.S)
 TAG = re.compile(r"<[^>]+>")
 WS = re.compile(r"[\s\xa0]+")
 # A token ends after clause punctuation even when no space follows it, so "1991;41" is two
-# tokens and the ";" still closes the clause. A full stop does the same when a capital or a
+# tokens and the ";" still closes the clause. A full stop does the same when any letter or
 # digit follows it, past any closing or opening quote or bracket: "records.41",
-# "1991.Only" and "records.“41" all split. Three shapes stay whole: a decimal ("41.5",
-# ".5"), a single-letter abbreviation ("U.S.", "e.g."), and a lower-case continuation
-# ("us.edu"). A URL's "https:" or "?id=", or an abbreviation like "No.41", closing a clause
-# early can only make a binding fail, never pass one.
+# "1991.Only", "1991.only", "U.S.Only" and "records.“41" all split. Two shapes stay whole:
+# a decimal ("41.5", ".5") and the inner stops of a single-letter abbreviation ("U.S.",
+# "e.g."). A domain ("us.edu"), a URL's "https:" or "?id=", or an abbreviation like
+# "No.41" closing a clause early can only make a binding fail, never pass one.
 OPEN, CLOSE = "\"'\u2018\u201c(\\[", "\"'\u2019\u201d)\\]"
 CLAUSE_CUT = re.compile(rf"[;:?!]+[{CLOSE}]*(?=\S)")
-STOP_CUT = re.compile(rf"\.+[{CLOSE}]*(?=[{OPEN}]*[A-Z0-9])")
+STOP_CUT = re.compile(rf"\.+[{CLOSE}]*(?=[{OPEN}]*[^\W_])")
 STRIP_EDGES = re.compile(r"^\W+|\W+$", re.UNICODE)
 NUMERIC_FIGURE = re.compile(r"^[\d,.]+$")
 NUMCHARS = set("0123456789,.")
@@ -115,8 +115,10 @@ def _cuts(chunk):
             continue                                  # ".5"
         if chunk[s - 1].isdigit() and chunk[s + 1].isdigit():
             continue                                  # "41.5"
-        if chunk[s - 1].isalpha() and (s == 1 or not chunk[s - 2].isalpha()):
-            continue                                  # "U.S.", "e.g."
+        e = m.end()
+        if (chunk[s - 1].isalpha() and (s == 1 or not chunk[s - 2].isalpha())
+                and chunk[e:e + 1].isalpha() and chunk[e + 1:e + 2] == "."):
+            continue                                  # "U.S.", but not "U.S.Only"
         cuts.add(m.end())
     return sorted(cuts)
 

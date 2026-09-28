@@ -137,8 +137,12 @@ class NounNearbyTest(unittest.TestCase):
 
     def test_full_stop_before_a_capital_or_opening_quote_ends_the_clause(self):
         # Round 5: "1991.Only" stayed one token, so "institution" certified the award count.
+        # Round 6: so did "U.S.Only", read as the inner stop of an abbreviation, and
+        # "1991.only", because only a capital after the stop counted.
         for text in ("147 institution records since 1991.Only 41 recorded polymer awards.",
-                     "147 institution records.\u201c41 recorded polymer awards.\u201d"):
+                     "147 institution records since 1991.only 41 recorded polymer awards.",
+                     "147 institution records.\u201c41 recorded polymer awards.\u201d",
+                     "147 institution records in the U.S.Only 41 recorded polymer awards."):
             tokens = vn.tokenize(text)
             s = text.index("41 ")
             found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
@@ -148,9 +152,10 @@ class NounNearbyTest(unittest.TestCase):
         tokens = vn.tokenize("Institutions rose 41.5 percent.")
         self.assertIn("41.5", [w for _, _, w in tokens])
 
-    def test_abbreviation_and_domain_stay_whole(self):
+    def test_abbreviation_stays_whole_and_a_domain_splits(self):
+        # A split domain can only close a clause early, which fails a binding, never passes it.
         words = [w for _, _, w in vn.tokenize("U.S. schools, e.g. Akron, at us.edu")]
-        self.assertEqual(words, ["U.S.", "schools,", "e.g.", "Akron,", "at", "us.edu"])
+        self.assertEqual(words, ["U.S.", "schools,", "e.g.", "Akron,", "at", "us.", "edu"])
 
     def test_noun_in_the_next_sentence_does_not_count(self):
         tokens = vn.tokenize("The count fell to 41. Institutions elsewhere grew.")
