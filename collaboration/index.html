@@ -26,14 +26,18 @@
     <h1>Akron and Case Western have written 208 papers together since 2012.
       <em>Eight were about polymers.</em></h1>
     <p class="stand">The University of Akron and Case Western Reserve University are counted
-      here two independent ways, by the papers they publish together and by the federal grants
+      here two independent ways, by the papers they publish together and by the NSF grants
       they hold together, across the fourteen years from 2012 to 2025. <b>In those years they
       coauthored 208 papers, of which eight are classified in polymers, and they hold four
-      joint federal awards worth $3.7 million, the newest of the awards starting in
+      joint NSF projects worth $3.7 million, the newest of the projects starting in
       2017.</b> Joint output peaked at 29 papers in 2018, dropped to 11, and came back to 22
       in 2020. It then fell in each of the four years to 2024, down to two papers, and rose
       to six in 2025.</p>
     <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data OpenAlex works and institutions, NSF Awards API &middot; August&nbsp;2026</p>
+    <p class="byline"><b>Correction, September 28, 2026:</b> this page previously called the
+      award data &ldquo;federal awards&rdquo;, but the fetch queries the NSF Awards API only. The four
+      awards are four joint NSF projects (eight award IDs, since NSF splits a &ldquo;Collaborative
+      Research&rdquo; project into one award per institution); no other federal agency is checked.</p>
     <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
       id="open-t">Fourteen years of joint output drawn as one column per year: a rise to a peak of 29 in 2018, a drop and a rebound to 22 in 2020, four falling years to a low of two, and a last column back up to six.</title></svg></div>
     <div class="hero-row" id="figs"></div>
@@ -115,18 +119,21 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The money</p>
-    <h2>Four joint federal awards, none starting after 2017 in this window</h2>
-    <p class="lede">Federal awards are the second, independent instrument. They are counted
+    <!-- Corrected 2026-09-28: this only queries api.nsf.gov, so "federal" overstated the
+         scope. The four are four joint NSF projects, not four awards; NSF splits a
+         "Collaborative Research" project into one award per institution, eight award IDs. -->
+    <h2>Four joint NSF projects, none starting after 2017 in this window</h2>
+    <p class="lede">NSF projects are the second, independent instrument. They are counted
       two ways, because the National Science Foundation encodes a partnership two ways: as one
       award whose principal investigator (PI) sits at one university and whose co-principal
       investigator (co-PI) sits at the other, and as a &ldquo;Collaborative Research&rdquo;
       project split into a separate award for each. Missing the second method undercounts
-      badly. One of the four awards it finds is Northern Ohio AGEP-T, an alliance for graduate
+      badly. One of the four projects it finds is Northern Ohio AGEP-T, an alliance for graduate
       education in biology, chemistry and engineering. <b>The series ends in 2025.</b> The
       NEO-SMART award described above was made in 2026, later than anything this chart can
       see, and its absence here says nothing about it.</p>
     <div class="chart"><svg id="awards" role="img" aria-labelledby="awards-t">
-      <title id="awards-t">Joint federal awards to both universities by start year and
+      <title id="awards-t">Joint NSF projects to both universities by start year and
         amount.</title></svg></div>
     <div id="awardstable"></div>
     <p class="src" id="awardssrc"></p>

@@ -178,10 +178,10 @@
     },
     {
       "id": "cs-comparator-unwound",
-      "text": "The resin-maker's same-method spread (resin manufacturing minus industrial chemicals) spiked to +19.2 points in September 2021 and has unwound to just below zero (spread lede, gray on-chart line and callout, resin verdict). The gray line is named 'resin vs chemicals' at both widths; it used to read 'resin - chem' on mobile, which decodes only against a desktop caption a phone reader never sees. Its two inputs are now checkable: see cs-comparator-checkable.",
-      "source": "PCU325211325211 minus the industrial chemicals PPI, both rebased to 2019-01",
-      "assert": "(lambda cp: (lambda mx: mx[0] == '2021-09-01' and 19.15 <= mx[1] <= 19.249)(max(cp, key=lambda x: x[1])) and -4.5 <= cp[-1][1] < 0)((lambda R, C: [(d, R[d]-C[d]) for d in sorted(R) if d in C])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if 'industrial chemicals' in s['label'])['points']}))",
-      "actual": "(lambda cp: (max(cp, key=lambda x: x[1]), cp[-1]))((lambda R, C: [(d, round(R[d]-C[d],2)) for d in sorted(R) if d in C])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if 'industrial chemicals' in s['label'])['points']}))",
+      "text": "The resin-maker's same-method spread (resin manufacturing minus chemicals and allied products) spiked to +19.2 points in September 2021 and has unwound to just below zero (spread lede, gray on-chart line and callout, resin verdict). The gray line is named 'resin vs chemicals' at both widths; it used to read 'resin - chem' on mobile, which decodes only against a desktop caption a phone reader never sees. Its two inputs are now checkable: see cs-comparator-checkable.",
+      "source": "PCU325211325211 minus the chemicals and allied products PPI (WPU06), both rebased to 2019-01",
+      "assert": "(lambda cp: (lambda mx: mx[0] == '2021-09-01' and 19.15 <= mx[1] <= 19.249)(max(cp, key=lambda x: x[1])) and -4.5 <= cp[-1][1] < 0)((lambda R, C: [(d, R[d]-C[d]) for d in sorted(R) if d in C])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: chemicals and allied products')['points']}))",
+      "actual": "(lambda cp: (max(cp, key=lambda x: x[1]), cp[-1]))((lambda R, C: [(d, round(R[d]-C[d],2)) for d in sorted(R) if d in C])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: chemicals and allied products')['points']}))",
       "falsified_if": "The comparator's latest value leaves -4.5 to 0 ('just below zero' stops being honest), or its maximum leaves 19.15-19.249 in September 2021 so the typed '+19.2' stops rounding."
     },
     {
@@ -268,10 +268,10 @@
     },
     {
       "id": "cs-comparator-checkable",
-      "text": "A LINE A READER COULD NOT CHECK. The gray comparator on the gap chart is resin minus industrial chemicals, and the chemicals index itself was drawn into that subtraction, named in a table column, and given a level nowhere on the page. It now states its own values in three places: the spread key (peaked at 130.5 in May 2026, stands at 128.0), the level table under the line chart (January of every year), and a Chemicals column in the spread table beside the resin level it is subtracted from.",
-      "source": "BLS PPI industrial chemicals, WPU06, rebased to January 2019 like every other series here",
-      "assert": "(lambda c: c['peak']['date']=='2026-05-01' and 130.45 <= c['peak']['index'] <= 130.549 and c['now']['date']=='2026-07-01' and 127.95 <= c['now']['index'] <= 128.049 and len([p for p in c['points'] if p['date'].endswith('-01-01')]) >= 11)(one(s for s in D['series'] if 'industrial chemicals' in s['label']))",
-      "actual": "[(s['label'], s['peak'], s['now']) for s in D['series'] if 'industrial chemicals' in s['label']]",
+      "text": "A LINE A READER COULD NOT CHECK. The gray comparator on the gap chart is resin minus chemicals and allied products, and the chemicals index itself was drawn into that subtraction, named in a table column, and given a level nowhere on the page. It now states its own values in three places: the spread key (peaked at 130.5 in May 2026, stands at 128.0), the level table under the line chart (January of every year), and a Chemicals column in the spread table beside the resin level it is subtracted from.",
+      "source": "BLS PPI chemicals and allied products, WPU06, rebased to January 2019 like every other series here. Corrected 2026-09-28: this page previously called WPU06 'industrial chemicals', which is WPU061, a narrower series this page does not use.",
+      "assert": "(lambda c: c['peak']['date']=='2026-05-01' and 130.45 <= c['peak']['index'] <= 130.549 and c['now']['date']=='2026-07-01' and 127.95 <= c['now']['index'] <= 128.049 and len([p for p in c['points'] if p['date'].endswith('-01-01')]) >= 11)(one(s for s in D['series'] if s['label']=='PPI: chemicals and allied products'))",
+      "actual": "[(s['label'], s['peak'], s['now']) for s in D['series'] if s['label']=='PPI: chemicals and allied products']",
       "falsified_if": "The chemicals peak or current level stops rounding to the 130.5 and 128.0 the spread key prints, its peak month moves off May 2026, or the series stops carrying a January value for every year the level table prints. If the comparator ever leaves the shipped data, the gray line comes off the chart rather than staying as an uncheckable stroke."
     }
   ]

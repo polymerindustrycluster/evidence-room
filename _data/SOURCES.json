@@ -126,7 +126,7 @@
    "url": "https://api.stlouisfed.org/fred/series/observations?series_id={id}",
    "docs": "https://fred.stlouisfed.org/docs/api/fred/",
    "filters": {
-    "series": "WPU072 (PPI rubber and plastic products), WPU066 (PPI plastics resins and materials), WPU06 (PPI industrial chemicals), PCU326326 (PPI plastics and rubber products manufacturing), PCU325211325211 (PPI plastics material and resin manufacturing), WTISPLC (WTI crude oil spot)",
+    "series": "WPU072 (PPI rubber and plastic products), WPU066 (PPI plastics resins and materials), WPU06 (PPI chemicals and allied products), PCU326326 (PPI plastics and rubber products manufacturing), PCU325211325211 (PPI plastics material and resin manufacturing), WTISPLC (WTI crude oil spot)",
     "note": "Producer price indexes, not consumer prices. Index levels, not dollars.",
     "run order": "fetch_rest.py FIRST, then fetch_chain_prices.py. The second appends the feedstock and resin links to fred.json; running fetch_rest.py after it overwrites the file and silently drops them."
    },
