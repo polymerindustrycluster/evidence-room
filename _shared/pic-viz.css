@@ -114,6 +114,10 @@ dfn b{font-weight:900}
 .mast{background:var(--deeper);color:#EAF4F5;padding:11px 0}
 .mast .wrap{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
 .mast strong{font-weight:900;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+/* The wordmark links to the hub; it must read as the same masthead text, not as a link. */
+.mast .mast-home{color:inherit;text-decoration:none}
+.mast .mast-home:hover{text-decoration:underline}
+.mast .mast-home:focus-visible{outline:2px solid var(--action);outline-offset:2px}
 /* Official PIC mark, sized to the cap-height of the wordmark beside it and given real
    clear space. It leads the masthead; the PROTOTYPE flag opposite it must stay legible,
    because a registered mark on a draft is the thing most likely to be misread. */

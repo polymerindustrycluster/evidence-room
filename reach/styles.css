@@ -1,0 +1,11 @@
+/* Footer: .foot-id/.foot-links are promoted (_shared/pic-viz.css) and already fit the
+   dark ground; .foot itself, .foot-k, and the reason text under each link were never
+   promoted, so they stay local here. */
+.foot{background:var(--deep);color:#A8CDD4;padding:44px 0 52px;font-size:14px}
+.foot .wrap > *{max-width:var(--measure);margin-left:auto;margin-right:auto}
+.foot-k{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:900;color:#7FB3BC}
+.foot-links span{display:block;margin-top:4px;color:#8FBAC2;font-size:13px}
+@media (max-width: 760px){
+  .foot-links{grid-template-columns:1fr}
+}
