@@ -41,6 +41,7 @@ const GATES = [
   ["source-inputs", "python3", ["-m", "unittest", "discover", "-s", "_data/build", "-p", "test_*.py"], "source completeness, geography and inventory regressions"],
   ["workplaces",  "python3", ["-m", "unittest", "discover", "-s", "cluster-health", "-p", "test_*.py"], "complete annual inputs, valid denominators and scoped rebuilds"],
   ["claims",      "python3", ["_data/build/verify_claims.py"],      "recorded assertions against their page data"],
+  ["nouns",       "python3", ["_data/build/verify_nouns.py"],       "opted-in figures bound to the noun printed beside them"],
   ["series",      "python3", ["_data/build/verify_series.py"],      "series contracts, ranges and dated source controls"],
   ["consistency", "python3", ["_data/build/verify_consistency.py"], "builders, catalog, prose invariants"],
   ["provenance",  "node",   ["tools/provenance.mjs"],        "the registry matches the page, not only the reverse"],

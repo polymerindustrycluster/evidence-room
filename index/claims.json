@@ -87,7 +87,15 @@
       "source": "BLS QCEW by-industry 2024, NAICS 326, private ownership, via peers/data/peers.json",
       "assert": "D['peers']['states']['326']['rank_emp'] == 1 and round(D['peers']['states']['326']['subject_emp']) == 54846 and D['peers']['states']['326']['top'][1]['name'].startswith('Texas') and round(D['peers']['states']['326']['top'][1]['emp']) == 44598 and round(D['peers']['states']['326']['subject_emp'] - D['peers']['states']['326']['top'][1]['emp']) == 10248",
       "actual": "(D['peers']['states']['326']['rank_emp'], D['peers']['states']['326']['subject_emp'], D['peers']['states']['326']['top'][1]['name'], D['peers']['states']['326']['subject_emp'] - D['peers']['states']['326']['top'][1]['emp'])",
-      "falsified_if": "A 2024 revision moves another state above Ohio, changes either state's employment by one job, or another state takes second place. Tolerance is zero because all three numbers are printed side by side and 54,846 minus 44,598 has to come out at the 10,248 the page states: this is the guard that keeps that subtraction closing."
+      "falsified_if": "A 2024 revision moves another state above Ohio, changes either state's employment by one job, or another state takes second place. Tolerance is zero because all three numbers are printed side by side and 54,846 minus 44,598 has to come out at the 10,248 the page states: this is the guard that keeps that subtraction closing.",
+      "counts": [
+        {
+          "figure": "54,846",
+          "noun": [
+            "job"
+          ]
+        }
+      ]
     },
     {
       "id": "hero-states-disclosed",

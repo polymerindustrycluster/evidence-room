@@ -7,7 +7,15 @@
       "source": "polymer-programs-db census, aggregated to institutions, source='ipeds' only, with 2020 quarantined",
       "assert": "D['totals']['ever'] == 147 and D['totals']['active'] == 41 and D['totals']['states'] == 35 and len([x for x in D['states_list'] if x['state'] not in ('DC', 'PR')]) == 33 and len(D['states_list']) == 35 and len(D['dots']) == 146 and len(D['off_projection']) == 1 and D['off_projection'][0]['unitid'] == 242617 and D['totals']['active'] == sum(1 for d in D['dots'] + D['off_projection'] if d['active_programs'] > 0) and sum(d['total_awards'] for d in D['dots'] + D['off_projection']) == 20052 and not [d for d in D['dots'] + D['off_projection'] if d['last_year'] == 2020] and D['quarantined'] == {'2020': 'the Urban Institute IPEDS mirror serves 2019 data under year=2020'}",
       "actual": "(D['totals'], len(D['dots']), [o['name'] for o in D['off_projection']])",
-      "falsified_if": "2024 data lands or IPEDS revises (the census probes every build); or the mixed-denominator trap re-enters — any sentence stating 41-of-147 as a survival rate fails the census's own documented kill of that headline. Or Urban reloads completions-cip-6 and 2020 stops being a copy of 2019, at which point the year is real, the quarantine lifts, and this page is rebuilt rather than patched."
+      "falsified_if": "2024 data lands or IPEDS revises (the census probes every build); or the mixed-denominator trap re-enters — any sentence stating 41-of-147 as a survival rate fails the census's own documented kill of that headline. Or Urban reloads completions-cip-6 and 2020 stops being a copy of 2019, at which point the year is real, the quarantine lifts, and this page is rebuilt rather than patched.",
+      "counts": [
+        {
+          "figure": "41",
+          "noun": [
+            "institution"
+          ]
+        }
+      ]
     },
     {
       "id": "atlas-mapped-complete",

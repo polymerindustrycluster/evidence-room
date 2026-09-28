@@ -183,6 +183,15 @@ which is precisely when you need it to fail. Where a number appears in body copy
 from the data rather than typing it — several pages now do, and each of those places is one
 where this cannot happen again.
 
+**A narrower, machine-checkable slice of the same gap now has a gate.** A claim may carry an
+opt-in `"counts": [{"figure": "41", "noun": "institution"}]` field (`noun` may be a list of
+acceptable stems). `_data/build/verify_nouns.py` reads the page's own static prose and
+requires each declared figure to sit within 8 words of one of its nouns. The atlas page
+carried this shape until 2026-09-28: a correct 41 (institutions with an active program)
+printed as "41 recorded polymer awards," and the claims harness had no way to see it. The
+gate only covers claims that opt in, and it does not know whether the noun it finds is the
+*right* one for the number, only that some declared word sits nearby.
+
 The wider guard is not a script. It is a second pair of eyes on the derivation before the
 numbers reach a page, and the discipline of writing down what would falsify the finding
 *before* running the query.
