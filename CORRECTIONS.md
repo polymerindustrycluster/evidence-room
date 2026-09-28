@@ -42,10 +42,17 @@ now checks the new wording's quantity.
 **"Leads four papers in five", *reach*.** **Was:** "The region leads four papers in five
 of those that name a corresponding author"; the headline said "four of its papers in five
 are led from here", the figure card "81% led from here" and the opening chart "led from
-here"; the front page said the same. **Is:** 985 of 1,222 papers naming a corresponding
-author had one here, in the headline, the figure card, the opening chart and the front
-page. The count includes papers with no outside coauthor at all, so "leads"
-described a collaboration the count does not require.
+here"; the closing paragraph said "the region leads most of that work rather than joining
+it"; the front page said the same. **Is:** the headline and the front page say 985 of 1,222
+papers naming a corresponding author had one here, and the figure card says 81% of those
+1,222. The opening chart
+splits all 1,448 papers by where the corresponding author sits: 985 here, 237 elsewhere,
+226 naming none. The closing paragraph says most papers naming a corresponding author name
+one here, including papers with no outside partner. The count includes those papers, so
+"leads" described a collaboration the count does not require. The partner charts and
+tables said each partner's other papers were "led from there"; they now say "led from
+elsewhere", because a paper counts toward every outside partner on it, whichever one
+holds the corresponding author.
 
 **"Federal" awards from an NSF-only fetch, *collaboration*.** **Was:** "four joint federal
 awards". **Is:** four joint NSF projects (eight award IDs, because NSF files a
@@ -62,8 +69,9 @@ rank on jobs.
 its own residents than the twelve counties do". **Is:** the twelve counties keep 89.5
 percent and Pittsburgh 89.6 percent, on twelve counties against eight. A gap that small,
 across different boundaries, is not a ranking. The two chart labels ("ahead of PIC-12")
-and the closing paragraph ("only Pittsburgh beats") carried the same ranking and now say
-"just above", with both shares and boundary sizes.
+and the closing paragraph ("only Pittsburgh beats") carried the same ranking. The labels
+now say "just above PIC-12, on four fewer counties"; the closing paragraph gives the
+margin, less than a tenth of a point, beside both shares and both boundary sizes.
 
 **A rank without its margin, *realwage*.** **Was:** the 8th place after price adjustment,
 alone. **Is:** the same rank, with "less than $6 a week from either neighboring rank". The

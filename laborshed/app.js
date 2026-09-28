@@ -1429,8 +1429,8 @@ document.getElementById("closersub").innerHTML =
    below ${CEIL_PCT} percent. What survives is the twelve together:
    <b>${pct(B.totals.work_region_share)}</b> of their ${N(JOBS_OHIO)} jobs are held by
    people living inside them, counting Ohio residents on both sides as every region on
-   that chart is counted. Among comparable regions only Pittsburgh’s is higher, at
-   ${pct(PGH.region_share_work)} on ${WORDS[PGH.counties]} counties rather than twelve,
+   that chart is counted. Among comparable regions only Pittsburgh’s is higher, by less
+   than a tenth of a point, at ${pct(PGH.region_share_work)} on ${WORDS[PGH.counties]} counties rather than twelve,
    and only on that side of the measure. A wider line
    would hold more: the fourteen-county Northeast Ohio footprint adds
    ${WIDER_ADDS.slice(0, -1).join(", ")} and ${WIDER_ADDS.at(-1)}, and all but

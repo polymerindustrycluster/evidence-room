@@ -68,7 +68,7 @@
       largest partners.</p>
     <div class="legend">
       <span><i style="background:#008BA8"></i> Mostly led from here</span>
-      <span><i style="background:#C85F0C"></i> Mostly led from there</span>
+      <span><i style="background:#C85F0C"></i> Mostly led from elsewhere</span>
     </div>
     <div class="chart"><svg id="map" role="img" aria-labelledby="map-t">
       <title id="map-t">World map of institutions co-authoring polymer research with the
@@ -91,14 +91,15 @@
       region that mostly leads has standing at home but may not travel. Papers with no
       outside co-author at all count toward &ldquo;here&rdquo; too, since the corresponding author is
       still local. So every major partner carries two counts, papers led from here and
-      papers led from there, and neither count is subtracted from the other.</p>
+      papers led from elsewhere, by that partner or another, and neither count is subtracted
+      from the other.</p>
     <div class="legend">
       <span><i style="background:#008BA8"></i> Led from here</span>
-      <span><i style="background:#C85F0C"></i> Led from there</span>
+      <span><i style="background:#C85F0C"></i> Led from elsewhere</span>
     </div>
     <div class="chart"><svg id="dir" role="img" aria-labelledby="dir-t">
       <title id="dir-t">For the largest partner institutions, papers led from here against
-        papers led from there.</title></svg></div>
+        papers led from elsewhere.</title></svg></div>
     <div id="dirtable"></div>
     <p class="src" id="dirsrc"></p>
   </div>
@@ -127,8 +128,12 @@
 
 <section class="closer">
   <div class="wrap">
+    <!-- Corrected 2026-09-28: this said "The region leads most of that work rather than
+         joining it". The 985 of 1,222 behind it includes papers with no outside coauthor, so
+         it cannot say who leads the collaborations. -->
     <p>A cluster whose papers reach 50 countries is more than a regional asset that happens
-      to sit here. The region leads most of that work rather than joining it.</p>
+      to sit here. Most of its papers that name a corresponding author name one here, though
+      that count includes papers written with no outside partner at all.</p>
     <p class="sub" id="closersub"></p>
   </div>
 </section>

@@ -113,6 +113,13 @@ class NounNearbyTest(unittest.TestCase):
         found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
         self.assertTrue(found)
 
+    def test_determiner_with_its_own_noun_does_not_reach_back(self):
+        text = "147 institution records since 1991; 41 of these awards were recorded in 2023."
+        tokens = vn.tokenize(text)
+        s = text.index("41 ")
+        found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
+        self.assertFalse(found)
+
     def test_noun_in_the_next_sentence_does_not_count(self):
         tokens = vn.tokenize("The count fell to 41. Institutions elsewhere grew.")
         found, _ = vn.noun_nearby(tokens, 18, 20, ["institution"])

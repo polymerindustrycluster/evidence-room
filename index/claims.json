@@ -310,11 +310,11 @@
     },
     {
       "id": "card-collaboration",
-      "text": "Collaboration card: four joint National Science Foundation projects, none starting after 2017 in this window.",
+      "text": "Collaboration card: 208 coauthored papers since 2012, eight classified in polymers, four joint National Science Foundation projects, none starting after 2017 in this window.",
       "source": "collaboration/data/collaboration.json joint_awards",
-      "assert": "D['collab']['totals']['joint_awards'] == 4 and len(D['collab']['joint_awards']) == 4 and max(int(a['start'].split('/')[-1]) for a in D['collab']['joint_awards']) == 2017",
+      "assert": "D['collab']['totals']['coauthored'] == 208 and sum(s['joint'] for s in D['collab']['series']) == 208 and min(s['year'] for s in D['collab']['series']) == 2012 and D['collab']['totals']['coauthored_polymer'] == 8 and sum(s['polymer'] for s in D['collab']['series']) == 8 and D['collab']['totals']['joint_awards'] == 4 and len(D['collab']['joint_awards']) == 4 and max(int(a['start'].split('/')[-1]) for a in D['collab']['joint_awards']) == 2017",
       "actual": "[(a['id'], a['start']) for a in D['collab']['joint_awards']]",
-      "falsified_if": "The joint-award count moves off four, or any joint award's start date moves past 2017, which the collaboration page's own col-no-new-joint-award claim also pins; this card restates the same finding on the hub and must move with it."
+      "falsified_if": "The joint-award count moves off four, or any joint award's start date moves past 2017, which the collaboration page's own col-no-new-joint-award claim also pins; this card restates the same finding on the hub and must move with it. Also the paper counts: the coauthored total or the yearly rows summing off 208, the polymer count off eight, or the series starting after 2012."
     }
   ]
 }

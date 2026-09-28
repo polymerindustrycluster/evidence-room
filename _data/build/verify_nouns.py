@@ -27,8 +27,9 @@ WHAT THIS CHECKS
   window stops at the figure's own clause (a word ending in ; . : ? or !), so a noun in
   the sentence before cannot vouch for the figure: the atlas relapse "147 institution
   records since 1991; 41 recorded polymer awards" fails, though "institution" is four
-  words back. One crossing is allowed, for a back-reference: "41 of them" (or those,
-  these) reaches into the clause before for its noun.
+  words back. One crossing is allowed, for a back-reference: "41 of them" reaches into
+  the clause before for its noun. Only "them": "those" and "these" can open a noun
+  phrase of their own, and "41 of these awards" must not borrow "institution".
 
   A figure that does not appear on the page at all is a FAILURE, never a silent pass:
   "cannot inspect: figure not on page". A check that stays quiet when it cannot see
@@ -73,7 +74,7 @@ STRIP_EDGES = re.compile(r"^\W+|\W+$", re.UNICODE)
 NUMERIC_FIGURE = re.compile(r"^[\d,.]+$")
 NUMCHARS = set("0123456789,.")
 CLAUSE_END = re.compile(r"[;.:?!][\"'\u2019\u201d)\]]*$")
-BACK_REFERENCE = {"them", "those", "these"}
+BACK_REFERENCE = {"them"}
 
 
 def all_pages():

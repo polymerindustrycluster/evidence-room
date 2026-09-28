@@ -142,7 +142,7 @@ PV.figures([
   pts.forEach(p => hoverable(el("circle", {cx: px(p.lon), cy: py(p.lat),
     r: Math.max(r(p.t), 7), fill: "transparent"}, svg),
     `<b>${p.n}</b>${p.c ? " · " + p.c : ""}<br><span class="v">${p.t}</span> shared papers<br>
-     led from here <span class="v">${p.l}</span> · led from there <span class="v">${p.j}</span>`,
+     led from here <span class="v">${p.l}</span> · led from elsewhere <span class="v">${p.j}</span>`,
     `${p.n}: ${p.t} papers`));
 
   txt(svg, `${N(D.map.length)} institutions with two or more shared papers`,
@@ -150,7 +150,7 @@ PV.figures([
 
   document.getElementById("maptable").innerHTML = tableView("mp",
     "The forty largest partner institutions",
-    ["Institution", "Country", "City", "Led from here", "Led from there", "Total"],
+    ["Institution", "Country", "City", "Led from here", "Led from elsewhere", "Total"],
     D.top.map(p => [p.name, p.country || "—", p.city || "—", p.led, p.joined,
       p.total]));
   /* ALL of them, and the count is computed. This read `D.quarantined[0]` beside the
@@ -204,12 +204,12 @@ PV.figures([
     hoverable(el("rect", {x: m.l, y, width: w, height: 20, fill: "transparent"}, svg),
       `<b>${p.name}</b>${p.country ? " · " + p.country : ""}<br>
        led from here <span class="v">${p.led}</span><br>
-       led from there <span class="v">${p.joined}</span>`,
-      `${p.name}: ${p.led} led here, ${p.joined} led there`);
+       led from elsewhere <span class="v">${p.joined}</span>`,
+      `${p.name}: ${p.led} led here, ${p.joined} led elsewhere`);
   });
   document.getElementById("dirtable").innerHTML = tableView("dr",
     "Direction of collaboration, largest partners",
-    ["Institution", "Led from here", "Led from there", "Share led here"],
+    ["Institution", "Led from here", "Led from elsewhere", "Share led here"],
     R.map(p => [p.name, p.led, p.joined,
       pctf(p.led / (p.led + p.joined))]));
   /* NAMED FROM THE CHART, NOT TYPED. An earlier version of this paragraph said the region
