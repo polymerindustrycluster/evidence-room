@@ -57,8 +57,10 @@
       from the Bureau of Labor Statistics payroll census. All 50 states and Puerto Rico are disclosed; DC is absent.
       The chart shows the ten largest states. A count is only a count, though. Three of the
       nine states behind Ohio pack the industry more densely into a smaller workforce:
-      Indiana, South Carolina and Wisconsin. That is the question the concentration page
-      answers.</p>
+      Indiana, South Carolina and Wisconsin. <a href="../peers/">The rankings page</a> sets
+      each large state&rsquo;s concentration beside its count, and
+      <a href="../location-quotient/">the concentration page</a> for the
+      twelve counties.</p>
   </div>
 </section>
 
@@ -70,12 +72,30 @@
       period and limits. The county selector marks geographic coverage; it keeps every
       story available.</p>
 
-    <details class="howto card-key"><summary>What the geography labels and claim counts mean</summary>
+    <!-- THE HEADCOUNT KEY. Five stories print five job totals for the same twelve counties
+         (17,770, 18,594, 17,725, 24,032, 33,529) and none of them said why they differ: a
+         reader moving between cards met what looked like five answers to one question.
+         Each is a different industry, year or survey, and this key says which. Guarded by
+         index-headcount-key, which reads every figure from its own page's file. -->
+    <details class="howto card-key"><summary>What the geography labels, job counts and claim counts mean</summary>
       <p class="note">The teal label names the geography used in that story.
       <b>PIC-12</b> means Ashtabula, Cuyahoga, Geauga, Lake, Lorain, Mahoning, Medina,
       Portage, Stark, Summit, Trumbull and Wayne counties. Other stories use metro,
       state or national records. Claim counts describe checks against the underlying
       files; manual claims depend on a cited document.</p>
+      <p class="note"><b>Why the job counts differ.</b> Stories count different industries,
+      years and surveys, so their totals for the twelve counties are not meant to match.
+      <b>17,770</b> is plastics and rubber products (NAICS 326) in 2025, from the payroll
+      census (<a href="../cluster-health/">cluster health</a>). <b>18,594</b> is the same
+      industry a year earlier (<a href="../peers/">rankings</a>). <b>17,725</b> is the
+      same industry counted by a different Census survey at the start of 2025&rsquo;s third
+      quarter (<a href="../churn/">churn</a>). <b>24,032</b> adds resin and paint (3252 and
+      3255), 2025, a floor because some counties are withheld
+      (<a href="../location-quotient/">concentration</a>). <b>33,529</b> is all chemical
+      manufacturing plus plastics and rubber (325 and 326), 2025, counted once
+      (<a href="../wages/">wages</a>). Concentration differs the same way: plastics and
+      rubber fill 2.32 times the national share of jobs across the twelve counties and
+      4.69 times in the Akron metro alone.</p>
     </details>
 
     <div class="picker">
@@ -108,7 +128,8 @@
       <a class="card" href="../wages/" data-slug="wages" data-geo="pic12">
         <h4>How does chemical, plastics and rubber pay compare with other factory work?</h4>
         <p class="f">Across 51 county-industry pairings, median group-average pay is
-          0.99 times county manufacturing pay and 1.21 times county all-jobs pay.
+          0.99 times county manufacturing pay, from 1.16 times for chemicals and 0.87
+          times for plastics and rubber, and 1.21 times county all-jobs pay.
           These are group averages, not individual workers&rsquo; wages. The comparisons
           describe pay; they do not establish a causal industry premium.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
@@ -166,8 +187,8 @@
       <a class="card" href="../churn/" data-slug="churn" data-geo="pic12">
         <h4>How much hiring and separating sits behind a headcount that fell?</h4>
         <p class="f">111,529 hires and 111,361 separations across 55 quarters produced a net flow of 168 jobs. In the average quarter hires run 10.8 percent of the workforce and
-          separations 10.7 percent, which is how a churn engine that size produces a net
-          flow of +168 while the headcount falls 719.</p>
+          separations 10.7 percent. The headcount, a separate Census estimate that need
+          not agree with the flows, fell 719 over the same span.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
       <a class="card" href="../occupations/" data-slug="occupations" data-geo="metros4">

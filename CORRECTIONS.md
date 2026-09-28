@@ -11,6 +11,106 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-28 — Wages said pay was level with manufacturing, and it is two families that are not
+
+**Was:** The wages headline read "Against manufacturing, pay is level." The factory band
+was titled "Against the factory next door, polymer pay is level", called the pooled
+0.99 times "dead level with the factory next door", and closed that polymer pay against
+the factories "is ordinary". The Lake County figure of about $129,000 a year was
+printed without saying which industry it covers. The front-page wages card gave the
+0.99 times with no split.
+
+**Is:** The 0.99 times is the median of 51 county pairings from two families on either
+side of it. The 23 chemical pairings sit at a median 1.16 times the county's
+manufacturing wage, 19 of them above it. The 28 plastics and rubber pairings sit at
+0.87 times, 4 of them above. The headline, band title, lede, closing sentence and front-page
+card now say so. The $129,000 is all chemical manufacturing in Lake County: 248 of its
+1,676 jobs are published as paint, and the rest is not broken out, so it reaches beyond
+the resin and paint codes. The page says this beside the figure.
+
+**Cause:** The headline described the pooled median, and no pairing family is at it.
+The Lake figure is the county's NAICS 325 row, and the prose named no
+industry code. wage-vs-mfg-split and human-lake-chem-scope now
+guard both.
+
+## 2026-09-28 — The timeline printed seventeen times as a measured pace, from a before count that is a floor
+
+**Was:** The pace band's headline read "After the designation the public record filled
+seventeen times as fast", and its lede called "the seventeenfold gap" a change of pace.
+The figure's source line said "the 68 counted here starts from that split".
+
+**Is:** The headline states the two counts, 67 events against 4. The lede says
+seventeenfold is the upper end: the before count is a floor, so the true jump can only
+be smaller. The source line reads 67, the count from the 23 October 2023 designation;
+68 is the operations calendar's count from 1 January 2023, one row earlier. The page's
+own computed sentences were already right. The claim record for them said 20 times and
+13.6, built on 68, where the page divides 67 and prints 19.8 and 13.4. It now matches
+the page.
+
+**Cause:** The ratio moved from the source line into the headline and lost its
+qualifier on the way. The 68 was a typed literal from the other window; the source line
+now reads the computed count.
+
+## 2026-09-28 — The funding map credited the state with promises that came from partners
+
+**Was:** The standfirst and the second stat card said "partners and the state" promised
+$21.0 million beside the federal award.
+
+**Is:** Partners promised it; the state promised none. The Ohio grant's $10.4 million
+match comes from local partners, as the state's own announcement says. The standfirst,
+the stat card and a dated correction line in the page's header now say so.
+
+**Cause:** The phrase passed from sentence to sentence, into the page's 29 August 2026
+correction note too, and no guard checked who made each promise. tile-figures now pins
+the Ohio match to its local-partner label. That note stays as written, because entries
+are not rewritten; this one supersedes it.
+
+## 2026-09-28 — Cost scissors claimed a gain its price data cannot show, and an order it held only lately
+
+**Was:** The standfirst's bold line said the 2022 spike means "somebody in this chain ate
+the spike and somebody banked it". The ladder band's headline said "Each step away from
+the wellhead kept more of the 2022 rise, except the power bill", with no date.
+
+**Is:** The bold line reads "the 2022 spike has not unwound evenly, and the prices nearest
+the customer have held". The headline is dated July 2026. The lede adds that the order
+held in 29 of the 43 months from January 2023 and broke in four of the last eight, most
+recently in April 2026.
+
+**Cause:** These are selling-price indexes, and the page's own note says they are not a
+margin. A price that holds does not show who banked anything. The ladder order was
+checked only on the latest month. cs-ladder-order-dated now counts every month since
+January 2023.
+
+## 2026-09-28 — Churn said most hires come from other plastics employers, which the series cannot show
+
+**Was:** The churn page said most of one plant's 58 hires "are filled by people already
+working in plastics and rubber who moved from another employer". It said what a training
+pipeline must supply is "a different and much smaller quantity". The front-page churn
+card said near-equal hire and separation rates are "how a churn engine that size
+produces a net flow of +168 while the headcount falls 719."
+
+**Is:** The page says some hires come from another plastics or rubber employer and
+that this series cannot say how many. It calls the pipeline quantity "different and
+smaller", and the standfirst says the two Census measures are estimated separately. The
+front-page card says the headcount is a separate Census estimate that need not agree
+with the flows. The rates explain the +168, not the 719.
+
+**Cause:** The flows series does not record where a hire last worked; only the Job-to-Job
+Flows series does, as the page's next sentences say. The card joined two separately
+estimated figures with "which is how".
+
+## 2026-09-28 — The front page sent the state question to a county page
+
+**Was:** Below the state chart, the front page said which large states hold most of the
+industry and handed the reader on with "That is the question the concentration page
+answers."
+
+**Is:** It links the rankings page, which sets each large state's concentration beside
+its count, and the concentration page for the twelve counties. No figure changed.
+
+**Cause:** The concentration page covers counties, not states. The rankings page already
+answered the question, and the sentence named the wrong one.
+
 ## 2026-09-12 — The bureau revised 2025 after first publication, and six pages had not followed
 
 **Was:** Every 2025 employment figure on cluster-health, location-quotient, wages,

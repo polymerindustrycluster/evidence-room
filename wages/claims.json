@@ -172,6 +172,14 @@
       "falsified_if": "The Lake 325 weekly wage revises off $2,474, or the annualized figures leave $129,000 / $62,000 by more than $1,500."
     },
     {
+      "id": "human-lake-chem-scope",
+      "text": "The $129,000 Lake County figure is all chemical manufacturing (NAICS 325): 248 of its 1,676 jobs are published as paint (3255), resin (3252) is not published for Lake, and the rest is not broken out (human-scale band).",
+      "source": "wages/data/wages.json latest_rows, Lake County",
+      "assert": "(lambda L: L['325']['emp'] == 1676 and L['3255']['emp'] == 248 and '3252' not in L)({r['naics']: r for r in D['w']['latest_rows'] if r['name'] == 'Lake'})",
+      "actual": "{r['naics']: r['emp'] for r in D['w']['latest_rows'] if r['name'] == 'Lake'}",
+      "falsified_if": "Lake County's 325 or 3255 employment changes, or BLS begins publishing Lake 3252, in which case the sentence can say how much of the figure is resin. Added 2026-09-28: the page's top example was read as a polymer job when most of it sits outside the register's codes."
+    },
+    {
       "id": "human-lake-rubber",
       "text": "Lake County rubber-products work averages $1,028 a week, about $53,000, below what the average job in that county pays (human-scale band).",
       "source": "Lake 3262 cell",
@@ -267,6 +275,14 @@
       "assert": "(lambda R, M: (lambda v: 0.984 <= sorted(v)[len(v)//2] <= 0.992 and len(v) == 51 and len([x for x in v if x > 1]) == 23)([r['weekly_wage'] / M['counties'][r['name']]['mfg_weekly_wage'] for r in R if r.get('vs_local_all')]))([r for r in D['w']['latest_rows'] if r.get('vs_local_all')], D['m'])",
       "actual": "sorted(round(r['weekly_wage'] / D['m']['counties'][r['name']]['mfg_weekly_wage'], 3) for r in D['w']['latest_rows'] if r.get('vs_local_all'))[20:31]",
       "falsified_if": "The median moves out of the 0.98-0.99 band or the above-count shifts, which either dataset's annual revision can do. Added 2026-08-30 after four independent reviewers found this page comparing polymer to an all-jobs average that includes retail and food service, so a reader could not tell a polymer premium from a factory premium. They are different premiums and this page now prints both."
+    },
+    {
+      "id": "wage-vs-mfg-split",
+      "text": "Against county manufacturing pay, chemical pairings sit at a median 1.16x with 19 of 23 above, and plastics and rubber pairings at 0.87x with 4 of 28 above; the pooled 0.99x is the two cancelling (H1, hero correction line, factory-baseline band, hub wages card).",
+      "source": "wages/data/wages.json latest_rows joined to wages/data/mfg.json counties",
+      "assert": "(lambda R, M, fam: (lambda v: len(v) == 23 and abs((sorted(v)[(len(v)-1)//2] + sorted(v)[len(v)//2])/2 - 1.164) <= 0.004 and len([x for x in v if x > 1]) == 19)([r['weekly_wage'] / M['counties'][r['name']]['mfg_weekly_wage'] for r in R if r.get('vs_local_all') and r['naics'] in fam]))(D['w']['latest_rows'], D['m'], ('325','3252','3255')) and (lambda R, M, fam: (lambda v: len(v) == 28 and abs((sorted(v)[(len(v)-1)//2] + sorted(v)[len(v)//2])/2 - 0.868) <= 0.004 and len([x for x in v if x > 1]) == 4)([r['weekly_wage'] / M['counties'][r['name']]['mfg_weekly_wage'] for r in R if r.get('vs_local_all') and r['naics'] in fam]))(D['w']['latest_rows'], D['m'], ('326','3261','3262'))",
+      "actual": "{fam: (lambda v: (len(v), sorted(v)[len(v)//2], len([x for x in v if x > 1])))([round(r['weekly_wage'] / D['m']['counties'][r['name']]['mfg_weekly_wage'], 4) for r in D['w']['latest_rows'] if r.get('vs_local_all') and r['naics'] in c]) for fam, c in (('chem', ('325','3252','3255')), ('prod', ('326','3261','3262')))}",
+      "falsified_if": "Either family's median against county manufacturing pay moves more than 0.004 from 1.164 or 0.868, or its count above 1.0 changes. Added 2026-09-28: the headline called pay 'level' with manufacturing on the pooled 0.99x, and neither family is level."
     },
     {
       "id": "wage-mfg-premium-context",

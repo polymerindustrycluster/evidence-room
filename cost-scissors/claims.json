@@ -10,6 +10,13 @@
       "falsified_if": "Any stage overtakes the one above it. The ORDERING is the claim and it is robust to the base month; the exact percentages are not, because January 2019 is a winter month and flatters the gas fall."
     },
     {
+      "id": "cs-ladder-order-dated",
+      "text": "The feedstock-resin-product give-back order is the latest month's: gas >= crude >= resin >= product (makers' pair) held in 29 of the 43 months from January 2023 to July 2026 and broke in four of the last eight, most recently April 2026 (finding-band H2, dated 'In July 2026', and lede).",
+      "source": "cost-scissors/data/scissors.json series points; give-back at month d = (running peak - index at d) / (running peak - 100)",
+      "assert": "(lambda G: (lambda R: len(R) == 43 and len([o for d, o in R if o]) == 29 and [o for d, o in R][-8:].count(False) == 4 and max(d for d, o in R if not o) == '2026-04-01' and R[-1] == ('2026-07-01', True))([(d, G(\"Henry Hub natural gas spot\", d) >= G(\"Crude oil, WTI spot\", d) >= G(\"PPI: plastics material and resin manufacturing\", d) >= G(\"PPI: plastics and rubber products manufacturing\", d)) for d in sorted(p['date'] for p in one(s for s in D['series'] if s['label'] == \"Henry Hub natural gas spot\")['points'] if p['date'] >= '2023-01-01')]))(lambda lab, d: (lambda P: (max(p['index'] for p in P) - P[-1]['index']) / (max(p['index'] for p in P) - 100))([p for p in one(s for s in D['series'] if s['label'] == lab)['points'] if p['date'] <= d]))",
+      "falsified_if": "A new month lands (the count of 43 moves), the order fails in the latest month, or a revision changes which months hold it. Added 2026-09-28: the H2 stated the order as a standing fact when it is a snapshot, and five months earlier gas had given back the least of the four."
+    },
+    {
       "id": "cs-product-at-peak",
       "text": "Finished polymer product prices have retraced nothing in cash terms - their peak is the most recent month (H1, hero card 'nothing given back in cash', ladder, verdicts). The 'in cash' qualifier is required: the real-terms retracement is about a quarter, per cs-nominal-not-real.",
       "source": "PPI plastics and rubber products manufacturing, PCU326326",

@@ -1039,7 +1039,7 @@ function loadData(file) {
       ['key', `<span id="hero-count" data-value="${t.awards}">${fmtHero(t.awards)}</span>`,
         'Awarded by government', 'the three signed awards this page follows'],
       ['', fmtHero(t.match), 'Promised beside it',
-        'match and cost share from partners and the state: promised, not awarded'],
+        'match and cost share from partners, not the state: promised, not awarded'],
       ['', fmtHero(t.total), 'The two added together',
         'the total the region reports as secured'],
       ['', fmtHero(named), 'Already names a recipient',
