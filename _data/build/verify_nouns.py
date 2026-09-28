@@ -69,7 +69,10 @@ SCRIPT_STYLE = re.compile(r"<(script|style)\b[^>]*>.*?</\1>", re.I | re.S)
 COMMENT = re.compile(r"<!--.*?-->", re.S)
 TAG = re.compile(r"<[^>]+>")
 WS = re.compile(r"[\s\xa0]+")
-TOKEN = re.compile(r"\S+")
+# A token ends after clause punctuation even when no space follows it, so "1991;41" is two
+# tokens and the ";" still closes the clause. A URL's "https:" or "?id=" closing a clause
+# early can only make a binding fail, never pass one.
+TOKEN = re.compile(r"[^\s;:?!]+[;:?!]*|[;:?!]+")
 STRIP_EDGES = re.compile(r"^\W+|\W+$", re.UNICODE)
 NUMERIC_FIGURE = re.compile(r"^[\d,.]+$")
 NUMCHARS = set("0123456789,.")

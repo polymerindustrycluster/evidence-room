@@ -1160,9 +1160,10 @@ const PGH = R.find(r => /^Pittsburgh/.test(r.name));
    is stated in the reading line under the chart. Guarded by ls-only-pittsburgh-matches,
    which now asserts BOTH sides rather than only the one drawn. */
 const PIC = R.find(r => r.kind === "footprint");
-/* Two decimals ONLY here. The two resident-side figures are 0.02 points apart and both
-   round to the same one-decimal value, so pct() would print the reversal as a pair of
-   identical numbers and read as a typo. */
+/* Two decimals ONLY here and in the closer. The two resident-side figures are 0.02 points
+   apart and both round to the same one-decimal value, so pct() would print the reversal as
+   a pair of identical numbers and read as a typo. On the workplace side pct() prints 89.6
+   against 89.5, a full tenth apart, when the gap is 0.07, so the closer's margin uses it too. */
 const pct2 = v => (v * 100).toFixed(2) + "%";
 document.getElementById("regionsfigtitle").textContent =
   `Of the work that sits inside them, the twelve counties keep ` +
@@ -1429,8 +1430,9 @@ document.getElementById("closersub").innerHTML =
    below ${CEIL_PCT} percent. What survives is the twelve together:
    <b>${pct(B.totals.work_region_share)}</b> of their ${N(JOBS_OHIO)} jobs are held by
    people living inside them, counting Ohio residents on both sides as every region on
-   that chart is counted. Among comparable regions only Pittsburgh’s is higher, by less
-   than a tenth of a point, at ${pct(PGH.region_share_work)} on ${WORDS[PGH.counties]} counties rather than twelve,
+   that chart is counted. Among comparable regions only Pittsburgh’s is higher, at
+   ${pct2(PGH.region_share_work)} against ${pct2(B.totals.work_region_share)}, a gap of
+   ${((PGH.region_share_work - B.totals.work_region_share) * 100).toFixed(2)} points, on ${WORDS[PGH.counties]} counties rather than twelve,
    and only on that side of the measure. A wider line
    would hold more: the fourteen-county Northeast Ohio footprint adds
    ${WIDER_ADDS.slice(0, -1).join(", ")} and ${WIDER_ADDS.at(-1)}, and all but

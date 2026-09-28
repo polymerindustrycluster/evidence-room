@@ -302,19 +302,19 @@
     },
     {
       "id": "card-reach",
-      "text": "Reach card: 985 of 1,222 papers naming a corresponding author had one here.",
+      "text": "Reach card: 633 partner institutions in 50 countries across 1,448 coauthored works; 985 of 1,222 papers naming a corresponding author had one here; China is the second-largest partner country, behind only the United States.",
       "source": "reach/data/reach.json totals",
-      "assert": "D['reach']['totals']['led'] == 985 and D['reach']['totals']['attributable'] == 1222",
+      "assert": "D['reach']['totals']['led'] == 985 and D['reach']['totals']['attributable'] == 1222 and D['reach']['totals']['partners'] == 633 and D['reach']['totals']['countries'] == 50 and D['reach']['totals']['works'] == 1448 and (lambda K: K == sorted(K, key=lambda k: -k['n']) and [k['code'] for k in K[:2]] == ['US', 'CN'] and K[0]['n'] > K[1]['n'] > K[2]['n'])(D['reach']['countries'])",
       "actual": "(D['reach']['totals']['led'], D['reach']['totals']['attributable'])",
-      "falsified_if": "Either count moves in reach's own shipped data, which the reach page's own rch-region-leads claim also pins; this card restates the same two numbers on the hub and must move with them."
+      "falsified_if": "Either count moves in reach's own shipped data, which the reach page's own rch-region-leads claim also pins; this card restates the same two numbers on the hub and must move with them. Extended 2026-09-28: the card also prints 633 partners, 50 countries and 1,448 works, and ranks China second behind the United States; any of those moving, or a tie at either place, fails it."
     },
     {
       "id": "card-collaboration",
       "text": "Collaboration card: 208 coauthored papers since 2012, eight classified in polymers, four joint National Science Foundation projects, none starting after 2017 in this window.",
       "source": "collaboration/data/collaboration.json joint_awards",
-      "assert": "D['collab']['totals']['coauthored'] == 208 and sum(s['joint'] for s in D['collab']['series']) == 208 and min(s['year'] for s in D['collab']['series']) == 2012 and D['collab']['totals']['coauthored_polymer'] == 8 and sum(s['polymer'] for s in D['collab']['series']) == 8 and D['collab']['totals']['joint_awards'] == 4 and len(D['collab']['joint_awards']) == 4 and max(int(a['start'].split('/')[-1]) for a in D['collab']['joint_awards']) == 2017",
+      "assert": "D['collab']['totals']['coauthored'] == 208 and sum(s['joint'] for s in D['collab']['series']) == 208 and min(s['year'] for s in D['collab']['series']) == 2012 and D['collab']['totals']['coauthored_polymer'] == 8 and sum(s['polymer'] for s in D['collab']['series']) == 8 and D['collab']['totals']['joint_awards'] == 4 and len(D['collab']['joint_awards']) == 4 and max(int(a['start'].split('/')[-1]) for a in D['collab']['joint_awards']) == 2017 and 'NSF awards API' in D['collab']['meta']['sources'] and all('NSF' in a['awardee'] and all(len(x) == 7 and x.isdigit() for x in a['id'].split(' + ')) for a in D['collab']['joint_awards'])",
       "actual": "[(a['id'], a['start']) for a in D['collab']['joint_awards']]",
-      "falsified_if": "The joint-award count moves off four, or any joint award's start date moves past 2017, which the collaboration page's own col-no-new-joint-award claim also pins; this card restates the same finding on the hub and must move with it. Also the paper counts: the coauthored total or the yearly rows summing off 208, the polymer count off eight, or the series starting after 2012."
+      "falsified_if": "The joint-award count moves off four, or any joint award's start date moves past 2017, which the collaboration page's own col-no-new-joint-award claim also pins; this card restates the same finding on the hub and must move with it. Also the paper counts: the coauthored total or the yearly rows summing off 208, the polymer count off eight, or the series starting after 2012. Extended 2026-09-28: the card names the agency, so any joint award whose record stops naming NSF, or whose id is not an NSF award number, fails it, as does the collaboration data ceasing to name the NSF awards API as its award source."
     }
   ]
 }

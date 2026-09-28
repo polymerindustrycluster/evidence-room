@@ -120,6 +120,13 @@ class NounNearbyTest(unittest.TestCase):
         found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
         self.assertFalse(found)
 
+    def test_clause_punctuation_without_a_space_still_ends_the_clause(self):
+        text = "147 institution records since 1991;41 recorded polymer awards."
+        tokens = vn.tokenize(text)
+        s = text.index(";41") + 1
+        found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
+        self.assertFalse(found)
+
     def test_noun_in_the_next_sentence_does_not_count(self):
         tokens = vn.tokenize("The count fell to 41. Institutions elsewhere grew.")
         found, _ = vn.noun_nearby(tokens, 18, 20, ["institution"])

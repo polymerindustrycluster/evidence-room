@@ -52,7 +52,8 @@ one here, including papers with no outside partner. The count includes those pap
 "leads" described a collaboration the count does not require. The partner charts and
 tables said each partner's other papers were "led from there"; they now say "led from
 elsewhere", because a paper counts toward every outside partner on it, whichever one
-holds the corresponding author.
+holds the corresponding author. The map's source line said the same thing ("here or
+there") and now says "here or elsewhere".
 
 **"Federal" awards from an NSF-only fetch, *collaboration*.** **Was:** "four joint federal
 awards". **Is:** four joint NSF projects (eight award IDs, because NSF files a
@@ -70,8 +71,9 @@ its own residents than the twelve counties do". **Is:** the twelve counties keep
 percent and Pittsburgh 89.6 percent, on twelve counties against eight. A gap that small,
 across different boundaries, is not a ranking. The two chart labels ("ahead of PIC-12")
 and the closing paragraph ("only Pittsburgh beats") carried the same ranking. The labels
-now say "just above PIC-12, on four fewer counties"; the closing paragraph gives the
-margin, less than a tenth of a point, beside both shares and both boundary sizes.
+now say "just above PIC-12, on four fewer counties"; the closing paragraph gives both
+shares to two decimals, 89.60 against 89.53 percent, the 0.07-point gap between them,
+and both boundary sizes.
 
 **A rank without its margin, *realwage*.** **Was:** the 8th place after price adjustment,
 alone. **Is:** the same rank, with "less than $6 a week from either neighboring rank". The
@@ -185,8 +187,9 @@ pipeline must supply is "a different and much smaller quantity". The front-page 
 card said near-equal hire and separation rates are "how a churn engine that size
 produces a net flow of +168 while the headcount falls 719."
 
-**Is:** The page says some hires come from another plastics or rubber employer and
-that this series cannot say how many. It calls the pipeline quantity "different" and
+**Is:** The page no longer says where any hire came from; the flows cannot show whether
+none, some or most moved from another plastics or rubber employer. It calls the
+pipeline quantity "different" and
 says this series cannot size it against the hiring, and the standfirst says the two
 Census measures are estimated separately. The
 front-page card says the headcount is a separate Census estimate that need not agree

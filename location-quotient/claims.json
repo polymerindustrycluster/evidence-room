@@ -3,9 +3,9 @@
   "claims": [
     {
       "id": "lq-paint-latest",
-      "text": "Paint, coating and adhesive runs 5.96x the national share of local jobs in the latest year — an employment location quotient, not a count of sites, suppliers or skilled workers. The H1 states this in plain words ('six times as big a share of the jobs here as it is of the country's'); the standfirst, hero key card, trend figure title and closer carry the 5.96x figure itself.",
+      "text": "Paint, coating and adhesive runs 5.96x the national share of local jobs in the latest year — an employment location quotient, not a count of sites, suppliers or skilled workers. The H1 states this in plain words ('six times as big a share of the jobs here as it is of the country's'); the standfirst, hero key card, trend figure title and closer carry the 5.96x figure itself. The latest year is pinned to 2025 because the peers page's Read next restates this figure with that year (added 2026-09-28).",
       "source": "QCEW composite summed from the disclosed PIC-12 counties, latest year",
-      "assert": "abs(one(c for c in D['composite'] if c['naics']=='3255' and c['year']==max(x['year'] for x in D['composite']))['lq'] - 5.9594) <= 0.005",
+      "assert": "max(x['year'] for x in D['composite']) == 2025 and abs(one(c for c in D['composite'] if c['naics']=='3255' and c['year']==max(x['year'] for x in D['composite']))['lq'] - 5.9594) <= 0.005",
       "actual": "[(c['year'], round(c['lq'],4)) for c in D['composite'] if c['naics']=='3255'][-3:]",
       "falsified_if": "A disclosure flip changes which counties enter the paint composite, or a QCEW revision moves the value outside 5.9544-5.9644, at which point the hand-typed '5.96' in the standfirst no longer rounds from the data. The band also has to round to 'six times' at one significant figure for the headline to hold, which it does across 5.5-6.49; a value below 5.5 breaks the headline before it breaks the standfirst. Corrected 2026-09-28: the stand paragraph used to read this employment quotient as 'more paint sites, more suppliers and more people who know the work'; an employment LQ does not establish establishment counts or supplier density on its own, so it now reads as job share alone. This assert cannot read that HTML sentence directly, only the 5.96 figure behind it."
     },
@@ -43,9 +43,9 @@
     },
     {
       "id": "lq-326-latest",
-      "text": "PIC-12 plastics and rubber sits at 2.32x the national share in the latest year, on all twelve counties disclosed. It is the second of the three cluster codes, which is the figure the trend title prints against paint ('more than double the 2.32x of plastics and rubber products, the next of the three') and the second bar of the cold open's ranking block.",
+      "text": "PIC-12 plastics and rubber sits at 2.32x the national share in the latest year, on all twelve counties disclosed. It is the second of the three cluster codes, which is the figure the trend title prints against paint ('more than double the 2.32x of plastics and rubber products, the next of the three') and the second bar of the cold open's ranking block. The latest year is pinned to 2025 because the peers page's Read next restates this figure with that year, beside peers' own 2024 metro figures (added 2026-09-28).",
       "source": "QCEW composite summed from 12 counties",
-      "assert": "(lambda c: round(c['lq'],2) == 2.32 and c['counties_suppressed'] == 0 and c['counties_counted'] == 12)(one(c for c in D['composite'] if c['naics']=='326' and c['year']==max(x['year'] for x in D['composite'])))",
+      "assert": "max(x['year'] for x in D['composite']) == 2025 and (lambda c: round(c['lq'],2) == 2.32 and c['counties_suppressed'] == 0 and c['counties_counted'] == 12)(one(c for c in D['composite'] if c['naics']=='326' and c['year']==max(x['year'] for x in D['composite'])))",
       "actual": "[(c['year'],c['lq'],c['counties_counted'],c['counties_suppressed']) for c in D['composite'] if c['naics']=='326'][-3:]",
       "falsified_if": "Any county disclosure flips for 326, which would also break the claim that this is the one column disclosed everywhere. Changed from 2.43 to 2.32 when the footprint moved from NEO-14 to PIC-12."
     },

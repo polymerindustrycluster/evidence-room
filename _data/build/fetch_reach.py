@@ -199,7 +199,7 @@ out = {"meta": {
               "with an authorship at the University of Akron or Case Western Reserve "
               "University.",
     "row": "one partner institution: works on which it appears alongside the region, split "
-           "by whether a corresponding author sat here or there.",
+           "by whether a corresponding author sat here or elsewhere.",
     "led_joined": "LED = at least one corresponding author at Akron or Case Western. "
                   "JOINED = the region is on the paper but no corresponding author here. "
                   "Works with no corresponding author flagged at all are counted and "
