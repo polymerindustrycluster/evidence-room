@@ -523,6 +523,15 @@ def _sha256_file(path: str) -> str:
     return h.hexdigest()
 
 
+def _walk_files(root_dir: str) -> list[str]:
+    """Every file under root_dir, recursively, skipping dotfiles and dot-directories."""
+    out = []
+    for root, dirs, files in os.walk(root_dir):
+        dirs[:] = [x for x in dirs if not x.startswith(".")]
+        out += [os.path.join(root, f) for f in files if not f.startswith(".")]
+    return out
+
+
 def _bundle_inputs(web: str, name: str) -> dict[str, str]:
     """The exact set of files tools/bundle.mjs hashes into dist/.inputs.json for one
     page — index.html, app.js, styles.css, claims.json, everything under data/, img/ and
@@ -539,14 +548,10 @@ def _bundle_inputs(web: str, name: str) -> dict[str, str]:
     for sub in ("data", "img", "assets"):
         sd = os.path.join(d, sub)
         if os.path.isdir(sd):
-            for root, dirs, files in os.walk(sd):
-                dirs[:] = [x for x in dirs if not x.startswith(".")]
-                paths += [os.path.join(root, f) for f in files if not f.startswith(".")]
+            paths += _walk_files(sd)
     shared = os.path.join(web, "_shared")
     if os.path.isdir(shared):
-        for root, dirs, files in os.walk(shared):
-            dirs[:] = [x for x in dirs if not x.startswith(".")]
-            paths += [os.path.join(root, f) for f in files if not f.startswith(".")]
+        paths += _walk_files(shared)
     reg = os.path.join(web, "_data", "SOURCES.json")
     if os.path.isfile(reg):
         paths.append(reg)
