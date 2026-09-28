@@ -1,6 +1,6 @@
 /* THE WHOLE GATE SUITE, ONE COMMAND, ONE EXIT CODE.
  *
- *   node tools/all.mjs [--fast] [--quiet]
+ *   node tools/all.mjs [--fast] [--quiet] [--log-dir=PATH]
  *
  * Written on 2026-08-29 after a session in which the suite was hand-chained with && on
  * every run. Two things went wrong repeatedly and both are addressed here.
@@ -21,13 +21,29 @@
  * defect this project spent a week removing.
  */
 import {spawnSync} from "child_process";
+import {mkdirSync, writeFileSync} from "node:fs";
+import {resolve, join} from "node:path";
 
 const args = process.argv.slice(2);
+const logArgs = args.filter(a => a.startsWith("--log-dir="));
+if (args.some(a => !["--fast", "--quiet"].includes(a) && !/^--log-dir=\S/.test(a)) || logArgs.length > 1) {
+  console.error("Usage: node tools/all.mjs [--fast] [--quiet] [--log-dir=PATH]; PATH must be nonempty.");
+  process.exit(2);
+}
 const fast = args.includes("--fast");
 const quiet = args.includes("--quiet");
+const logArg = logArgs[0];
+const logDir = logArg ? resolve(logArg.slice("--log-dir=".length)) : null;
+if (logDir) mkdirSync(logDir, {recursive: true});
 
 const GATES = [
   ["bundle",      "node",   ["tools/bundle.mjs"],            "regenerates dist/ so every gate reads the same build"],
+  ["source-inputs", "python3", ["-m", "unittest", "discover", "-s", "_data/build", "-p", "test_*.py"], "source completeness, geography and inventory regressions"],
+  ["workplaces",  "python3", ["-m", "unittest", "discover", "-s", "cluster-health", "-p", "test_*.py"], "complete annual inputs, valid denominators and scoped rebuilds"],
+  ["claims",      "python3", ["_data/build/verify_claims.py"],      "recorded assertions against their page data"],
+  ["series",      "python3", ["_data/build/verify_series.py"],      "series contracts, ranges and dated source controls"],
+  ["consistency", "python3", ["_data/build/verify_consistency.py"], "builders, catalog, prose invariants"],
+  ["provenance",  "node",   ["tools/provenance.mjs"],        "the registry matches the page, not only the reverse"],
   ["verify",      "node",   ["tools/verify.mjs"],            "structure, titles, page-level overflow"],
   ["columns",     "node",   ["tools/columns.mjs"],           "one text rail"],
   ["centres",     "node",   ["tools/centres.mjs", "."],      "block centring across widths"],
@@ -35,7 +51,6 @@ const GATES = [
   ["style",       "node",   ["tools/style.mjs"],             "house style law in rendered prose"],
   ["coldopen",    "node",   ["tools/coldopen.mjs"],          "evidence in the first screen, ratcheted"],
   ["figures",     "node",   ["tools/figures.mjs"],           "cross-page figure registry"],
-  ["provenance",  "node",   ["tools/provenance.mjs"],        "the registry matches the page, not only the reverse"],
   ["alttext",     "node",   ["tools/alttext.mjs"],           "every chart carries a description"],
   ["furniture",   "node",   ["tools/furniture.mjs"],        "every number on a chart is said somewhere else on its page"],
   ["caveat",      "node",   ["tools/caveat.mjs"],           "apparatus ink under a chart, ratcheted"],
@@ -43,12 +58,9 @@ const GATES = [
   ["classes",     "node",   ["tools/classes.mjs"],           "every class a page uses resolves to a rule"],
   ["legends",     "node",   ["tools/legends.mjs"],           "the reader gets the key before the data"],
   ["measure",     "node",   ["tools/measure.mjs"],           "running prose holds the measure"],
-  ["claims",      "python3", ["_data/build/verify_claims.py"],      "every numeric sentence against its own data"],
-  ["series",      "python3", ["_data/build/verify_series.py"],      "the DATA against the world, not against its own prose"],
-  ["consistency", "python3", ["_data/build/verify_consistency.py"], "builders, catalog, prose invariants"],
   ["collide",     "node",   ["tools/collide.mjs", "--sweep"],  "overlap and out-of-frame, 14 widths", true],
   ["textsize",    "node",   ["tools/textsize.mjs", "--sweep"], "12px rendered floor, 14 widths", true],
-  ["selftest",    "node",   ["tools/selftest.mjs"],            "each gate still fails its own known defect", true],
+  ["selftest",    "node",   ["tools/selftest.mjs"],            "18 known-defect fixtures across 11 gates", true],
 ];
 
 const rows = [];
@@ -57,6 +69,8 @@ for (const [name, cmd, argv, what, slow] of GATES) {
   if (fast && slow) { rows.push({name, what, skipped: true}); continue; }
   const t = Date.now();
   const r = spawnSync(cmd, argv, {encoding: "utf8"});
+  if (logDir) writeFileSync(join(logDir, `${name}.log`),
+    `${r.stdout || ""}${r.stderr || ""}\nEXIT_CODE=${r.status ?? 1}\n`, "utf8");
   const out = ((r.stdout || "") + (r.stderr || "")).trim().split("\n");
   const last = out.filter(Boolean).pop() || "(no output)";
   rows.push({name, what, code: r.status ?? 1, last: last.replace(/\[\d+m/g, ""),
@@ -72,9 +86,10 @@ for (const [name, cmd, argv, what, slow] of GATES) {
 const ran = rows.filter(r => !r.skipped);
 const bad = ran.filter(r => r.code !== 0);
 const skipped = rows.filter(r => r.skipped);
+if (logDir) writeFileSync(join(logDir, "results.json"), JSON.stringify(rows, null, 2) + "\n");
 console.log("");
 if (skipped.length)
-  console.log(`NOT RUN (--fast): ${skipped.map(s => s.name).join(", ")} — the two width sweeps.\n` +
+  console.log(`NOT RUN (--fast): ${skipped.map(s => s.name).join(", ")} — width sweeps and gate self-tests.\n` +
               `These are the checks that found sub-12px text on 14 of 16 pages and ~50 collisions.\n` +
               `A --fast pass is not a clean bill.`);
 console.log(bad.length

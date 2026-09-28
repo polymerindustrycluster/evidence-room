@@ -7,16 +7,10 @@
 <title>The Polymer Programs Atlas</title>
 <link rel="stylesheet" href="../_shared/pic-viz.css">
 <link rel="stylesheet" href="../_shared/story.css">
-<style>
-/* FOUR STATS, TWO UP. story.css already grids a four-stat hero two by two and its rule
-   outranks anything written here, so the grid is left alone. The one thing it does not set
-   is the display size: the house clamp was measured against a wider column, and four
-   numbers at 52px inside a 349px cell push the map off the first screen. Same fix as
-   laborshed, same reason. */
-.hero-row .figv .n{font-size:clamp(30px,3.4vw,42px)}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
 
 <header class="mast">
   <div class="wrap">
@@ -25,22 +19,23 @@
   </div>
 </header>
 
+<main id="main-content" tabindex="-1">
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">Every institution in the federal education record, 1991&ndash;2023</p>
-    <h1><em>147 places</em> have taught polymer science since 1991; 41 still
-        conferred in 2023.</h1>
+    <p class="eyebrow">US polymer education records, 1991&ndash;2023</p>
+    <h1><em>147 teaching records</em> since 1991; 41 recorded
+        polymer awards in 2023.</h1>
     <p class="stand">Three of the 147 account for more than a third of all the degrees
         and certificates in that record:
         the University of Massachusetts Lowell, Ferris State University in Big Rapids,
-        Michigan, and the University of Akron. The 147 is a floor rather than a full
-        count, because the record sees only the programs colleges chose to report under a
-        polymer code. The 41 is one year of filings, not a roll-call of open schools: an
+        Michigan, and the University of Akron. Each record follows a federal institution
+        identifier; one school can have more than one. Teaching reported outside polymer
+        codes is missing. The 41 is one year of filings, not a roll-call of open schools: an
         institution absent from it may still be teaching the subject, under another code
         or none.</p>
-    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data IPEDS completions by 6-digit CIP, IPEDS institutional directory &middot; August&nbsp;2026</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic), updated with Codex (OpenAI) &middot; Data IPEDS completions by 6-digit CIP, IPEDS institutional directory &middot; Updated September&nbsp;2026</p>
     <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
-      id="open-t">Every institution in the record drawn as one tick, placed by the size
+      id="open-t">Every institution record drawn as one tick, placed by the size
       of its lifetime polymer record. Most are small and recorded no polymer-coded award in
       2023; three records, at Lowell, Big Rapids and Akron, are far larger than everything
       else.</title></svg></div>
@@ -52,14 +47,21 @@
   <div class="wrap">
     <p class="takeaway">The map</p>
     <h2>The record is thick around the Great Lakes and thin nearly everywhere else</h2>
-    <p class="lede">One dot is one institution, sized by every degree and certificate it
-      ever conferred under one of the three polymer codes in the federal catalogue of
-      fields of study. Hover any mark for its full record. The hollow
-      diamonds mark what this map cannot count: four institutions confirmed to teach
-      polymer science under a chemistry code, which the catalogue files elsewhere.</p>
+    <p class="lede">One dot is one federal institution record, sized by the degrees and certificates
+      reported under one of the three polymer codes in the federal catalogue of
+      fields of study. Hover or focus a mark, or choose an institution below, for its record. The hollow
+      diamonds mark four documented examples of polymer or materials teaching absent
+      from this selected census. They do not identify one shared filing code.</p>
     <div class="legend" id="maplegend"></div>
+    <p class="map-orientation">Full US extent, with north toward the top of the mainland.
+      Alaska and Hawaii are inset at the lower left. Puerto Rico is outside this projection;
+      its record remains in the selector and full directory.</p>
+    <label class="map-picker" for="map-institution">Explore an institution</label>
+    <select id="map-institution"><option value="">Choose an institution…</option></select>
+    <p id="map-selection" aria-live="polite">Choose a name to read its location, recorded
+      completions and 2023 reporting status.</p>
     <div class="chart"><svg id="map" role="img" aria-labelledby="map-t"><title id="map-t">Map
-      of every US institution that ever filed a polymer program in the federal record, sized
+      of each institution record with a polymer program in the selected federal data, sized
       by lifetime completions, colored by whether any program still conferred in
       2023.</title></svg></div>
     <p class="src" id="mapsrc"></p>
@@ -71,12 +73,12 @@
   <div class="wrap">
     <p class="takeaway">The largest records</p>
     <h2>Three institutions hold more than a third of the whole record</h2>
-    <p class="lede">The twelve institutions that have conferred the most. Each bar is
-      every degree and certificate one institution conferred under a polymer code between
-      1991 and 2023. This chart counts institutions; the programs page counts the separate
+    <p class="lede">The twelve largest institution records. Each bar sums
+      degrees and certificates filed under one institution identifier and a polymer code between
+      1991 and 2023. This chart groups by institution identifier; the programs page counts the separate
       programs inside them, so the two rankings differ and neither replaces the other.</p>
     <div class="chart"><svg id="top" role="img" aria-labelledby="top-t"><title id="top-t">The
-      twelve institutions with the most lifetime polymer completions.</title></svg></div>
+      twelve institution records with the most lifetime polymer completions.</title></svg></div>
     <div id="toptable"></div>
     <p class="src" id="topsrc"></p>
   </div>
@@ -93,13 +95,14 @@
   <div class="wrap">
     <p class="chapter-kicker">Appendix</p>
     <p class="takeaway">The register</p>
-    <h2>Every institution in the record, in one table</h2>
+    <h2>Every institution record, in one table</h2>
     <p class="lede" id="dirlede"></p>
     <div id="maptable"></div>
     <p class="src" id="dirsrc"></p>
   </div>
 </section>
 
+</main>
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>
 </body>

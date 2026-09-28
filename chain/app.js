@@ -5,6 +5,9 @@ const {meta, tiers, enablers, counties, companies, geo} = DATA;
 const N = n => n.toLocaleString("en-US");
 const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+/* Keep the initial HTML headline and the unfiltered interactive headline aligned. */
+const DEK = "In this register, the middle of the polymer chain is crowded and <em>the molecule end is nearly empty</em>.";
+
 /* ------------------------------------------------------------ vocabulary */
 const ALIAS = {
   plastics:"plastic", resins:"resin", polymers:"polymer", thermoplastics:"thermoplastic",
@@ -275,31 +278,22 @@ function drawMap(hits) {
 
   const byCounty = {};
   counties.forEach(c => byCounty[c.county] = c);
+  const unshaded = rings.map(r => r.name).filter(n => !byCounty[n]);
+  if (unshaded.length) throw new Error(
+    "chain: map counties missing from the register table: " + unshaded.join(", "));
   const liveCount = {};
   hits.forEach(c => liveCount[c.c] = (liveCount[c.c]||0) + 1);
   const filtered = state.q.trim() !== "" || state.tier !== null;
 
-  const ramp = ["#E4EFF0","#CFE8EC","#9FD2DA","#6BB8C4","#3D9CAC","#1A8A9E","#0C6473"];
-  const shade = r => r <= 0 ? "url(#nodata)"
-    : ramp[Math.min(ramp.length-1, Math.floor(r / .32))];
+  const ramp = ["#E4EFF0", "#9FD2DA", "#3D9CAC", "#1A8A9E", "#0C6473"];
+  const shade = count => count === 0 ? "#F2EFEA"
+    : ramp[[25, 50, 100, 200].filter(boundary => count >= boundary).length];
 
   [...mapSvg.childNodes].forEach(n => {
     if (!(n.nodeType === 1 && n.tagName.toLowerCase() === "title")) mapSvg.removeChild(n); });
-  const defs = el("defs");
-  const nd = el("pattern", {id:"nodata", width:"8", height:"8",
-    patternUnits:"userSpaceOnUse", patternTransform:"rotate(45)"});
-  nd.appendChild(el("rect", {width:"8", height:"8", fill:"#F2EFEA"}));
-  nd.appendChild(el("line", {x1:"0", y1:"0", x2:"0", y2:"8",
-    stroke:"#B9B3A9", "stroke-width":"3"}));
-  defs.appendChild(nd);
-  mapSvg.appendChild(defs);
-
   rings.forEach(r => {
-    const rec = byCounty[r.name] || {classified:0, cbp_estab:0};
+    const rec = byCounty[r.name];
     const val = filtered ? (liveCount[r.name]||0) : rec.classified;
-    const ratio = filtered
-      ? (rec.cbp_estab ? val / rec.cbp_estab : 0)
-      : (rec.cbp_estab ? rec.classified / rec.cbp_estab : 0);
     let cx=0, cy=0, n=0;
     const d = r.polys.map(p => p.map(ring =>
       ring.map(([lo,la], i) => {
@@ -308,8 +302,8 @@ function drawMap(hits) {
       }).join("") + "Z").join("")).join("");
     const on = state.county === r.name;
     const path = el("path", {class:"county" + (on ? " on" : ""), d,
-      fill: val > 0 ? shade(ratio) : "url(#nodata)", tabindex:"0", role:"button",
-      "aria-label":`${r.name} County: ${val} classified companies, ` +
+      fill: shade(val), tabindex:"0", role:"button",
+      "aria-label":`${r.name} County: ${val} ${filtered ? "matching" : "classified"} company records, ` +
                    `${rec.cbp_estab} Census establishments.`});
     const toggle = () => { state.county = on ? null : r.name; render(); };
     path.addEventListener("click", toggle);
@@ -318,28 +312,24 @@ function drawMap(hits) {
     });
     mapSvg.appendChild(path);
     const t = el("text", {class:"clab", x:(cx/n).toFixed(0), y:(cy/n).toFixed(0),
-      /* Drawn ON the county shape, so the colour follows the shape: a ratio threshold
-         guessed where the ramp turns dark and was wrong at both ends. */
-      "text-anchor":"middle", fill: PV.onFill(shade(ratio))});
+      "text-anchor":"middle", fill: PV.onFill(shade(val))});
     t.textContent = r.name;
     mapSvg.appendChild(t);
     const v = el("text", {class:"clab", x:(cx/n).toFixed(0),
       y:(cy/n + 14).toFixed(0), "text-anchor":"middle",
-      fill: PV.onFill(shade(ratio))});
-    v.textContent = val > 0 ? val : "none";
+      fill: PV.onFill(shade(val))});
+    v.textContent = val;
     mapSvg.appendChild(v);
   });
 }
 
 /* ------------------------------------------------------------ side panels */
 function drawCoverage() {
-  const rows = [...counties].sort((a,b) => b.cbp_estab - a.cbp_estab);
-  document.getElementById("covbody").innerHTML = rows.map(r => {
-    const rat = r.cbp_estab ? r.classified / r.cbp_estab : 0;
-    return `<tr class="${r.classified === 0 ? "zero" : ""}" data-county="${r.name || r.county}">
-      <td>${r.county}</td><td>${r.classified || "&mdash;"}</td><td>${r.cbp_estab}</td>
-      <td><span class="ratio">${r.classified ? Math.round(rat*100)+"%" : "0%"}</span></td></tr>`;
-  }).join("");
+  const rows = [...counties].sort((a,b) => b.classified - a.classified || a.county.localeCompare(b.county));
+  document.getElementById("covbody").innerHTML = rows.map(r =>
+    `<tr data-county="${r.county}">
+      <td>${r.county}</td><td>${r.classified}</td><td>${r.cbp_estab}</td></tr>`
+  ).join("");
   document.querySelectorAll("#covbody tr").forEach(tr => {
     tr.addEventListener("click", () => {
       const c = tr.firstElementChild.textContent;
@@ -347,47 +337,50 @@ function drawCoverage() {
       document.getElementById("takeaway").scrollIntoView({behavior: REDUCED ? "auto" : "smooth"});
     });
   });
-
-  const blanks = counties.filter(c => c.classified === 0)
-                         .sort((a,b) => b.cbp_estab - a.cbp_estab);
-  const plants = blanks.reduce((a,b) => a + b.cbp_estab, 0);
-  document.getElementById("blanks").innerHTML =
-    `<h3>${blanks.map(b => b.county).join(", ")}</h3>
-     <p>Census counts <b>${plants} polymer and chemical manufacturing establishments</b> across these
-     three counties. PIC has classified none of them. That is a to-do list for this register, not a
-     statement about the region.</p>`;
-
   document.getElementById("mapsrc").innerHTML =
-    `Coverage is PIC-classified companies divided by County Business Patterns 2023 establishments in
-     NAICS 325 and 326, the federal industry codes for chemical and plastics manufacturing, in
-     the same county. The two counts define a company differently: PIC classifies
-     companies including distributors, machinery builders, and laboratories that Census files under
-     other codes, so a county can exceed 100&nbsp;percent without being fully covered. Treat this as an
-     indicator of where PIC’s knowledge is thin, not as a market share. Census totals for the fourteen
-     counties: ${N(meta.cbp_estab)} establishments, ${N(meta.cbp_emp)} employees.`;
+    `Map: classified company records, or matching records when a search or stage filter is active.
+      The table retains the full classified count. Census columns are separate context:
+      County Business Patterns 2023, NAICS 325 (chemicals) and 326 (plastics and rubber products).
+      These sources have different units and industry scopes; their quotient cannot measure
+      register coverage. Census totals: ${N(meta.cbp_estab)} establishments and
+      ${N(meta.cbp_emp)} reported employees across the fourteen counties.`;
 }
 
 function drawMethods() {
+  const HO = meta.holdout;
   const cards = [
-    ["What a row is", `One company PIC has classified from vault notes, not one plant. A company with
-      four Ohio sites counts once. Census counts establishments, so the two never reconcile exactly.`],
+    ["What a row is", `One company record from vault notes, not one plant. The register does not
+      enumerate all of a company’s sites. Census counts establishments; a coverage rate would
+      need matched sites and industry scope. A company with a recorded address outside the
+      region can still run a plant inside it. The address filter cannot establish that a
+      regional plant is absent.`],
+    ["What is held out, and why", `<b>${N(meta.holdout_total)}</b> previously included records fail the register’s address rule, which needs a qualifying county <b>and</b> an Ohio or
+      blank state. <b>${HO.homonym_county_join.n}</b> are Wayne County, <i>Michigan</i> companies
+      joined to Wayne County, Ohio on the name alone; they move to the comparison set, where the
+      same rows were missing. <b>${HO.regional_site_nonregional_company.n}</b> has a recorded address
+      outside the region: ${HO.regional_site_nonregional_company.names.join(", ")}.
+      <b>${HO.address_missing.n}</b> carry no address at all: ${HO.address_missing.names.map(n => n === "STERIS" ? "company STERIS" : n).join(", ")}.
+      Assigning them a county would invent the missing address,
+      so their regional membership remains unresolved. Their names remain in the data for review. None of
+      this says a company is incapable or absent from the region.`],
     ["The chain", `Six stages built from the vault’s <b>${tiers.length + enablers.length}</b>
       value-chain roles. A company can sit at more than one stage, so the stages sum to more than the
-      <b>${N(meta.neo_total)}</b> companies. The fifth stage, finished-product OEM, is the original
+      <b>${N(meta.neo_total)}</b> records. The fifth stage, finished-product OEM, is the original
       equipment manufacturer whose name goes on the object.`],
-    ["The expected shape", `The dashed guide is the same vault’s <b>${N(meta.outside_total)}</b>
-      companies outside the fourteen counties (Michigan, Pittsburgh, Columbus, Indiana),
-      rescaled to the fourteen-county total. It compares <b>mix</b>, not size, and both sides share one collection
+    ["The expected shape", `The dashed guide is <b>the rest of this register</b>: the
+      <b>${N(meta.outside_total)}</b> records without a qualifying address in these fourteen counties,
+      rescaled to the regional total. The residual is not filtered to any named market and must not be read
+      as a set of selected peers. It compares <b>mix</b>, not size, and both sides share one collection
       method. What draws it is the <b>${N(tiers.reduce((a, t) => a + t.outside, 0))}</b> stage
-      assignments those companies carry, counted the same way as the stage numbers above. A company
-      with no stage recorded never reaches the guide. This page does not publish how many of the
-      ${N(meta.outside_total)} carry one.`],
-    ["Unclassified is not incapable", `<b>${N(meta.unclassified)}</b> of ${N(meta.neo_total)} companies
-      carry no value-chain role yet. They are absent from the ribbon and hatched on the map. Absence
+      assignments those records carry, counted the same way as the stage numbers above. A record
+      with no stage recorded never reaches the guide.`],
+    ["Unclassified is not incapable", `<b>${N(meta.unclassified)}</b> of ${N(meta.neo_total)} records
+      carry no value-chain role yet. They are absent from the ribbon and the classified-count map. Absence
       here is missing evidence, never a finding.`],
-    ["Vocabulary", `The notes hold <b>${N(meta.raw_processes)}</b> distinct process strings and
-      <b>${N(meta.raw_materials)}</b> material strings. A first normalization pass collapses these to
-      ${N(meta.norm_processes)} and ${N(meta.norm_materials)}. The raw string stays on every record.`],
+    ["Vocabulary", `The ${N(meta.neo_total)} regional records hold <b>${N(meta.raw_processes)}</b>
+      distinct process strings and <b>${N(meta.raw_materials)}</b> material strings. A first
+      normalization pass collapses these to ${N(meta.norm_processes)} and ${N(meta.norm_materials)}.
+      The held source retains the raw vocabulary; cards retain the earlier display limits.`],
     ["What this is not", `A prototype over a mined convenience sample, as of ${meta.as_of}. Not a
       census, not a certification, and not a statement that any firm can or cannot do a job. PIC does
       not certify capability.`]
@@ -448,17 +441,18 @@ function headline(hits) {
   if (state.county) parts.push(`${state.county} County`);
 
   if (!parts.length) {
-    t.innerHTML = `The region owns the middle of the polymer chain and <em>thins out at the molecule end</em>.`;
-    /* THIS MUST SAY WHAT THE STATIC DEK SAYS. On 2026-09-01 the rendered version was
-       rewritten to disclose the Michigan join and the static one was not, so a reader
-       without JavaScript met the old universal ("Every company ... classified in the
-       fourteen counties") while a reader with it met a bug report. Two deks, two findings,
-       one page. The detail belongs in the county band, not above the fold. */
-    sf.innerHTML = `The Polymer Industry Cluster&rsquo;s register of the companies that
-      turn a molecule into a product and back, across fourteen counties of Northeast Ohio.
-      It carries ${N(meta.neo_total)} county-tagged rows, of which 64 are Michigan
-      companies joined on a county name, so the regional count is <b>721</b> until the
-      register is re-keyed. Type what you need to make into the box below.`;
+    t.innerHTML = DEK;
+    /* THIS MUST SAY WHAT THE STATIC DEK SAYS, which is now structural: both read DEK.
+       On 2026-09-01 the rendered version was rewritten to disclose the Michigan join and
+       the static one was not, so a reader without JavaScript met the old universal
+       ("Every company ... classified in the fourteen counties") while a reader with it met
+       a bug report. Two deks, two findings, one page. */
+    sf.innerHTML = `The Polymer Industry Cluster&rsquo;s register carries <b>${N(meta.neo_total)}</b>
+      company records with qualifying addresses in fourteen Northeast Ohio counties.
+      It is a record inventory, not a census of regional companies or plants.
+      ${N(meta.holdout_total)} previously included records are held out and named below.
+      The molecule end means raw materials and feedstock. Type what you need to make
+      into the box below.`;
     return;
   }
   const cties = new Set(hits.map(h => h.c).filter(Boolean));
@@ -492,8 +486,9 @@ function render() {
     ? `${N(hits.length)} of ${N(meta.neo_total)} classified companies${
         bits.length ? " &middot; " + bits.join(" &middot; ") : ""}. Showing the first
         ${Math.min(48, hits.length)}.`
-    : `All ${N(meta.neo_total)} companies PIC has classified in the fourteen counties.
-       Showing the first 48. Every card links to the company’s own site, never to a PIC judgment.`;
+    : `All ${N(meta.neo_total)} records with a qualifying address in the fourteen counties,
+       ${N(meta.unclassified)} of them not yet classified. Showing the first 48. Every card links to
+       the company’s own site, never to a PIC judgment.`;
   document.getElementById("ressrc").innerHTML =
     `Source: GAC-PIC vault company notes, extracted ${meta.as_of}. Capability is inferred from those
      notes. PIC does not certify these firms and this page is not a supplier qualification.`;
@@ -587,13 +582,19 @@ await PV.methodology({page: "chain", meta: {...DATA.meta,
   not: "A capability map, not a supplier list. Presence here means the vault records a " +
     "company as doing this work. It is not a qualification, an endorsement, or evidence " +
     "of current capacity.",
-  excludes: `${DATA.meta.unclassified} of ${DATA.meta.neo_total} vault companies carry no ` +
+  excludes: `${DATA.meta.unclassified} of ${DATA.meta.neo_total} regional records carry no ` +
     "usable classification and appear in no chain view. Absence from a stage means the " +
-    "vault does not record that capability, not that nobody in the region has it.",
+    "vault does not record that capability, not that nobody in the region has it. A further " +
+    `${DATA.meta.holdout_total} records are held out of every regional total and named in ` +
+    "the data: 64 joined to an Ohio county from Michigan on the county name, one " +
+    "carrying an address outside the region, and ten with no " +
+    "address recorded at all.",
   caution: "Company descriptions are reproduced as the companies wrote them. They are " +
     "self-descriptions, not audited capability statements.",
-  geography: "Vault records use NEO-14, the fourteen-county set inherited from the vault. " +
-    "PIC’s federal-data pages use PIC-12. The two share ten counties, so figures here " +
-    "will not reconcile with the cluster-health dashboard.",
+  geography: "Vault records use NEO-14, the fourteen-county set inherited from the vault, " +
+    "defined as county in the fourteen AND state Ohio or blank. PIC’s federal-data pages " +
+    "use PIC-12. This fourteen-county set contains all twelve plus Columbiana and Tuscarawas; figures here will not reconcile with the " +
+    "cluster-health dashboard. The 2026 applications on this page carry no geographic " +
+    "filter at all: all 59 are counted wherever the applicant sits, 38 of them in Ohio.",
 }});
 })();

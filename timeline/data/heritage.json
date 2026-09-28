@@ -4,11 +4,11 @@
   "asOf": "2026-08-14",
   "publisher": "Polymer Industry Cluster",
   "source": "NEO Polymer Wins register (internal), heritage and discoveries collections; only PROVEN rows and their public sources travel",
-  "note": "Only rows the register labels PROVEN are shown. CLAIMED rows — where a date or a figure is recorded two ways — are held back rather than shown with a caveat.",
+  "note": "Only rows the source register labels PROVEN are selected. That editorial label is not a claim of universal priority. CLAIMED rows are withheld; the displayed source wording and collection boundaries were reviewed on 2026-09-11.",
   "counts": {
    "shown": 31,
-   "heritage": 19,
-   "discoveries": 12,
+   "heritage": 20,
+   "discoveries": 11,
    "dropped": {
     "label:CLAIMED": 5,
     "collection:shipped": 21,
@@ -63,6 +63,14 @@
     "year": 1965,
     "why": "The row opened with H-008’s sentence about the 1965 institute and then added a separate 1994 paper. The founding stays in H-008; this row keeps only the 1994 discovery, which nothing else carries."
    }
+  ],
+  "reclassified": [
+   {
+    "id": "D-002",
+    "from": "discoveries",
+    "to": "heritage",
+    "why": "The dated event is the introduction of Ameripol, not a paper or patent. Public display classification corrected 2026-09-11; original register ID retained."
+   }
   ]
  },
  "eras": [
@@ -100,8 +108,8 @@
   },
   {
    "key": "discoveries",
-   "name": "First understood here",
-   "gloss": "a paper or a patent, not a product"
+   "name": "Research contributions",
+   "gloss": "papers and patents with regional connections; priority is not assumed"
   }
  ],
  "events": [
@@ -115,7 +123,7 @@
    "year": 1898,
    "era": 0,
    "title": "Frank and Charles Seiberling start Goodyear in Akron",
-   "oneLiner": "In 1898 Frank and Charles Seiberling began making rubber goods in two Market Street factories in Akron and named the company after Charles Goodyear. (corporate.goodyear.com)",
+   "oneLiner": "In 1898 Frank and Charles Seiberling began making rubber goods in two Market Street factories in Akron, according to Goodyear’s corporate history.",
    "sources": [
     {
      "url": "https://corporate.goodyear.com/us/en/company/history.html",
@@ -202,11 +210,11 @@
    "year": 1915,
    "era": 0,
    "title": "O’Neil and Fouse found General Tire in Akron",
-   "oneLiner": "General Tire’s site dates the company to 29 September 1915 in Akron, founded by William F. O’Neil and Winfred E. Fouse.",
+   "oneLiner": "General Tire’s site dates the company to 29 September 1915 and names William F. O’Neil and Winfred E. Fouse as founders; University of Akron Archives places the founding in Akron.",
    "sources": [
     {
      "url": "https://generaltire.com/our-world/latest-news/a-relationship-built-on-similar-values",
-     "note": "29 Sept 1915; O’Neil and Fouse; Akron"
+     "note": "29 September 1915; founders O’Neil and Fouse were from Akron. The founding location is documented by UA Archives."
     },
     {
      "url": "https://libguides.uakron.edu/az/archives-and-special-collections/general-tire-and-rubber-company-records",
@@ -282,7 +290,7 @@
   {
    "id": "D-002",
    "atom": "WIN-DIS-002",
-   "collection": "discoveries",
+   "collection": "heritage",
    "date": "1940-07-01",
    "datePrecision": "year",
    "dateDisplay": "1940",
@@ -354,8 +362,8 @@
    "dateDisplay": "1956",
    "year": 1956,
    "era": 2,
-   "title": "UA Institute of Rubber Research and first polymer-chemistry Ph.D.",
-   "oneLiner": "The University of Akron’s official history dates the Institute of Rubber Research to 1956 and the first polymer-chemistry Ph.D. program to that era.",
+   "title": "UA Institute of Rubber Research and its polymer-chemistry Ph.D. program",
+   "oneLiner": "The University of Akron’s official history dates the Institute of Rubber Research to 1956 and says Maurice Morton started the first Ph.D. program in polymer chemistry that year.",
    "sources": [
     {
      "url": "https://www.uakron.edu/polymer/about-us/history",
@@ -383,7 +391,7 @@
    "dateDisplay": "Jan 1963",
    "year": 1963,
    "era": 2,
-   "title": "Eric Baer founds the first standalone U.S. polymer department at Case",
+   "title": "Eric Baer organizes Case’s polymer department",
    "oneLiner": "Case Western Reserve’s macromolecular department states it was founded in January 1963 under Eric Baer as the first standalone U.S. polymer department.",
    "sources": [
     {
@@ -449,7 +457,7 @@
    "year": 1984,
    "era": 3,
    "title": "Edison Polymer Innovation Corporation (EPIC)",
-   "oneLiner": "Ohio stood up the Edison Polymer Innovation Corporation (EPIC) in 1984 as a joint UA–CWRU–industry shop. It is a dated predecessor cluster, not a legal ancestor of PIC, and it did not become a durable dues-funded organization.",
+   "oneLiner": "A 2019 historical timeline, citing Mark D. Bowles’s history of the University of Akron, dates the announcement of the joint UA–CWRU Edison Polymer Innovation Corporation (EPIC) to 1984. It is historical cluster context, not a legal predecessor of PIC.",
    "sources": [
     {
      "url": "https://www.latimes.com/archives/la-xpm-1991-08-11-fi-810-story.html",
@@ -460,8 +468,8 @@
      "note": ""
     },
     {
-     "url": "https://ead.ohiolink.edu/xtf-ead/view?docId=ead/OhAkUAS0017.xml;query=;brand=default",
-     "note": ""
+     "url": "https://www.record-courier.com/story/news/2019/05/25/polymers-in-history/5072979007/",
+     "note": "2019 timeline cites Mark D. Bowles, Chains of Opportunity; dates the EPIC announcement to 1984. Secondary historical source."
     }
    ],
    "doNotSay": "Do not call EPIC a PIC ancestor in the legal-entity sense. Do not say it “succeeded.” Do not substitute PolymerOhio or Akron Tomorrow here; those lack a 1945–2000 founding date.",
@@ -507,7 +515,7 @@
    "collection": "discoveries",
    "date": "1986-07-01",
    "datePrecision": "range",
-   "dateDisplay": "1987",
+   "dateDisplay": "1986–87",
    "year": 1986,
    "era": 3,
    "title": "Kent phase-separation PDLC: LC microdroplets formed by curing a resin solution",
@@ -539,8 +547,8 @@
    "dateDisplay": "1986",
    "year": 1986,
    "era": 3,
-   "title": "Goodyear defeats Goldsmith and stays Akron-headquartered",
-   "oneLiner": "On 20 November 1986 Goodyear bought out Sir James Goldsmith’s stake and kept world headquarters in Akron. (NYT, 21 November 1986)",
+   "title": "Goodyear buys out Goldsmith’s stake",
+   "oneLiner": "On 20 November 1986 Goodyear bought out Sir James Goldsmith’s stake, as reported by The New York Times the following day.",
    "sources": [
     {
      "url": "https://www.nytimes.com/1986/11/21/business/goodyear-buys-out-goldsmith.html",
@@ -910,19 +918,19 @@
    "year": 2005,
    "era": 4,
    "title": "Puskas arborescent / hyperbranched polyisobutylene block copolymers",
-   "oneLiner": "In 2005 Puskas and coworkers at the University of Akron published dendritic (arborescent) polyisobutylene–polystyrene block copolymers (J. Polym. Sci. A, doi:10.1002/pola.20638), a different architecture from the 1990 SIBS patent.",
+   "oneLiner": "In 2005 Judit Puskas and collaborators published dendritic (arborescent) polyisobutylene–polystyrene block copolymers (J. Polym. Sci. A, doi:10.1002/pola.20638), a different architecture from the 1990 SIBS patent.",
    "sources": [
     {
      "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/pola.20638",
      "note": "Puskas et al., J. Polym. Sci. A 2005"
     },
     {
-     "url": "https://ideaexchange.uakron.edu/chemengin_ideas/551/",
-     "note": "UA repository record"
+     "url": "https://patents.justia.com/patent/6747098",
+     "note": "Related arborescent TPE patent US 6,747,098, assigned to the University of Western Ontario; not proof of an exclusively Akron origin."
     },
     {
-     "url": "https://patents.justia.com/patent/6747098",
-     "note": "US 6,747,098; arborescent TPE lineage"
+     "url": "https://api.crossref.org/works/10.1002/pola.20638",
+     "note": "Publisher-deposited bibliographic metadata: Puskas, Kwon, Antony and Bhowmick; 2005. This record does not list affiliations."
     }
    ],
    "doNotSay": "That this is TAXUS or US 4,946,899. That Puskas is still a UA faculty member. Any implant count. PIC causation.",
@@ -964,7 +972,7 @@
    "year": 2010,
    "era": 4,
    "title": "National Polymer Innovation Center building completed",
-   "oneLiner": "The University of Akron’s official history dates the National Polymer Innovation Center building to 2010. Ohio’s 2010 TTOC report says the 42,750-square-foot facility opened that fall.",
+   "oneLiner": "The University of Akron’s official history dates completion of the National Polymer Innovation Center building to 2010.",
    "sources": [
     {
      "url": "https://www.uakron.edu/polymer/about-us/history",
@@ -973,10 +981,6 @@
     {
      "url": "https://www.uakron.edu/polymer/about-us/buildings",
      "note": "roll-to-roll description"
-    },
-    {
-     "url": null,
-     "note": "Ohio TTOC FY 2010 Annual Report (42,750 sq ft; opened fall 2010)"
     }
    ],
    "doNotSay": "That Third Frontier paid for NPIC unless a primary says so. That this building is the PIC pilot facility. Any construction cost not in a named source.",

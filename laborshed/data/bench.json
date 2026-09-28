@@ -26,7 +26,7 @@
    "note": "PIC's official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
    "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the wider NEO-14 footprint includes."
   },
-  "not_the_cluster": "LODES carries no industry dimension. This is the whole economy.",
+  "not_the_cluster": "These are all-job totals for the whole economy. The three broad LODES industry groups cannot isolate polymer industries.",
   "fetched": "2026-08-16"
  },
  "pairs": [

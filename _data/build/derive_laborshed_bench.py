@@ -86,7 +86,7 @@ out = {"meta": {
     "peer_rule": peer["meta"]["fair_comparison"],
     "size_control": peer["meta"]["size_control"],
     "footprint": META["pic12"],
-    "not_the_cluster": "LODES carries no industry dimension. This is the whole economy.",
+    "not_the_cluster": "These are all-job totals for the whole economy. The three broad LODES industry groups cannot isolate polymer industries.",
     "fetched": res["meta"]["fetched"]},
     "pairs": pairs,
     "benchmark": {

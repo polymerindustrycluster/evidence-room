@@ -69,8 +69,8 @@ any of it was. Both were omissions, so these are clarifications and not correcti
    (more coatings work per job here than the country has) and what it does not (that the
    industry is big), the first hero card repeats it, and the closer gives the verdict as a
    verdict ("we read 5.96x as..."), attributed rather than smuggled in as a fact.
-2. **A magnitude to stand the ratios on.** New claim `lq-cluster-size`: 24,030 cluster jobs
-   out of 1,701,857 in PIC-12, paint 4,259 of them. It replaced the "11 of 11" hero card,
+2. **A magnitude to stand the ratios on.** New claim `lq-cluster-size`: 24,032 cluster jobs
+   out of 1,701,837 in PIC-12, paint 4,257 of them. It replaced the "11 of 11" hero card,
    which repeated a sentence already printed three times above the fold.
 3. **"The register" is gone from reader prose.** It was a defined term defined nowhere.
    Core / detail / context each arrive with the one example that shows why they exist.
@@ -101,7 +101,12 @@ any of it was. Both were omissions, so these are clarifications and not correcti
 
 ## Open items for the next pass
 
-- Claim `lq-coatings-anchor` is MANUAL. Attach the SEC annual-report cover-page links for Sherwin-Williams (Cleveland) and RPM International (Medina) before re-publishing.
+- Claim `lq-coatings-anchor` is MANUAL. The SEC annual-report cover-page links are attached
+  (2026-09-11) and the gate is satisfied: Sherwin-Williams FY2025 10-K filed 2026-02-19,
+  `1 Sherwin Way, Cleveland, Ohio 44113-2206`; RPM International FY2026 10-K filed
+  2026-07-22, `2628 Pearl Road, Medina, Ohio 44256`. Both are in the claim's `source`.
+  A headquarters address is context for a coatings concentration, never evidence of an
+  employment share — QCEW names no employer, and the note beside the heatmap says so.
 - The reciprocal link is missing: this page links out to `../peers/`, and `peers/` does not link back.
 - The hub card in `index/app.js` still carries the old title and question. It should read as the paint finding.
 

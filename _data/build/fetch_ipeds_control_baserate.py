@@ -9,8 +9,9 @@ both tiny and brief - stood alone with no denominator but itself, and a reader h
 to know whether "half of new starts fail" is a fact about polymer or a fact about American
 technician programs. It is a fact about polymer: the same six trades, pulled with the same
 rule and the same un-thresholded population, run 23% tiny, 34% brief and 19% both. Polymer
-technician programs start-and-fail at about 2.5 times the rate of the trades taught in the
-same buildings.
+technician records have a small-record share about 2.4 times the pooled peer-trade share.
+Ratios divide unrounded count-based shares; displayed integer percentages are labels,
+not calculation inputs. Small and brief records do not establish failed programs.
 
   python3 _data/build/fetch_ipeds_control_baserate.py            fetch, verify, write
   python3 _data/build/fetch_ipeds_control_baserate.py --check    verify only, write nothing
@@ -29,7 +30,7 @@ comparison counts only substantive programs (more than ten lifetime completions)
 asking whether a program that conferred four people ever "survived" is not a question. The
 base rate counts EVERY start with no threshold, because the thing being measured is how
 often a start turns into nothing - and thresholding on size would throw away exactly the
-population the number is about. Two controls, two populations, one source pull. Do not
+population the number is about. Two controls, two populations, separate source pulls. Do not
 quote the 6,685 here against the 6,648 in `layers.control`: see TRAPS.
 
 TRAPS.
@@ -39,19 +40,17 @@ TRAPS.
     against 3,185 (0.6% and 0.2%). The rule is identical; the pull is not the same pull.
     The shipped figure came from the sibling census's `fetch_control_cips.py` on 2026-08-21
     and this one from the live API in 2026-09-01, and the Urban mirror restates back years.
-    The reproduction is what licenses the base-rate numbers here; it is NOT a second
-    opinion on 6,648, and the page keeps the census figure for survival so that one number
-    has one producer. If this ever drifts past a point of survival rate, the two sides have
-    stopped being the same measurement and the comparison must come down.
-  - **The C2023_A hole runs one way, and it makes 57% and 45% UPPER bounds.** The mirror
-    served three collection years late and then skipped `C2023_A` entirely
-    (`ipeds_mirror_fix.py`); the programs page is named there as still carrying it. A
-    missing year of completions can only make a lifetime total SMALLER, so it can only push
-    programs INTO the "ten or fewer" bucket, never out of it. Every share of tiny programs
-    on this page - polymer's 57% and 45%, this control's 23% and 19% - is therefore an
-    upper bound on the true share. The hole is in the same mirror on BOTH sides, so the
-    RATIO between them is far more robust than either level, which is the reason the page
-    now leads with the ratio.
+    Matching the rounded rate checks one statistic; it does not establish identical
+    source coverage or validate the base-rate ratio. The page keeps the census figure
+    for the 2023 active-share comparison. Drift beyond the tolerance stops this build
+    for investigation; remaining within it does not establish source completeness.
+  - **Missing years affect membership and denominators.** The mirror skipped `C2023_A`
+    (`ipeds_mirror_fix.py`). A recovered year can increase an existing record's lifetime
+    total or reporting span, moving it out of a small or brief group. It can also reveal
+    previously unseen records, changing both numerator and denominator. These snapshot
+    shares are therefore not guaranteed upper bounds on a complete census. Shared mirror
+    gaps do not guarantee cancellation in the ratio, and different pull dates can carry
+    different revisions. No one-sided bound or greater robustness of the ratio is claimed.
   - **2020 is dropped before anything is counted**, on both sides (`ipeds_quarantine`).
     Leaving it in counts 2019 twice inside every lifetime total and pushes programs back
     across the ten-award line - it moved the polymer both-at-once rate 43% to 45%.
@@ -176,23 +175,26 @@ repro = {"substantive_ever": len(sub),
 
 control["per_cip"] = {CIPS[c]: summarise([r for r in rows if r["cip"] == c])
                       for c in CIPS}
-control["ratio_le10"] = round(POLY["le10_awards_pct"] / control["le10_awards_pct"], 2)
-control["ratio_both"] = round(POLY["both_pct"] / control["both_pct"], 2)
+control["ratio_le10"] = round((POLY["le10_awards"] / POLY["ever"]) /
+                             (control["le10_awards"] / control["ever"]), 2)
+control["ratio_both"] = round((POLY["both"] / POLY["ever"]) /
+                             (control["both"] / control["ever"]), 2)
 control["rule"] = (f"all associate and certificate programs under the six peer trade CIPs, "
                    f"no size threshold; tiny = {TINY_MAX} or fewer lifetime completions, "
-                   f"brief = a run of {BRIEF_MAX} years or less, both = the conjunction; "
+                   f"brief = an inclusive first-to-last span of {BRIEF_MAX} calendar years or less, both = the conjunction; "
                    f"certificate levels canonicalised across the 2020 renumbering and "
                    f"{sorted(QZ.QUARANTINED)[0]} dropped, exactly as on the polymer side")
-control["bound"] = ("upper bound on both sides: the mirror never served the C2023_A "
-                    "collection year, and a missing year of completions can only push a "
-                    "program into the tiny bucket, never out of it")
+control["bound"] = ("Snapshot shares, not guaranteed upper bounds: missing years can change "
+                    "lifetime totals, reporting spans and which records enter the denominator. "
+                    "Polymer and peer-trade snapshots use different pull dates; shared mirror "
+                    "gaps do not guarantee cancellation in their ratios.")
 control["reproduces"] = {
     "published_survive_pct": PUB["survive_pct"], "refetched_survive_pct": repro["survive_pct"],
     "published_ever": PUB["ever"], "refetched_ever": repro["substantive_ever"],
     "published_still": PUB["still"], "refetched_still": repro["substantive_still"],
     "note": "same rule, different pull dates (census 2026-08-21, this file live); the rate "
             "reproduces to the point, the counts to within 0.6%. The page keeps the census "
-            "figure for survival so one number has one producer."}
+            "figure for the 2023 active-share comparison so one number has one producer."}
 
 # ------------------------------------- verify the verifier, before anything is written
 print(f"\nreproduction of the page's published survival control")
@@ -212,10 +214,10 @@ for k, lab in (("le10_awards", "ten or fewer completions"), ("le5_years", "five 
                ("both", "both at once")):
     print(f"  {lab:26s} {control[k]:>6,}  {control[k + '_pct']:>3}%   "
           f"polymer {POLY[k + '_pct']}%")
-print(f"  ratio, tiny        polymer {POLY['le10_awards_pct']}% / control "
-      f"{control['le10_awards_pct']}% = {control['ratio_le10']}x")
-print(f"  ratio, both        polymer {POLY['both_pct']}% / control "
-      f"{control['both_pct']}% = {control['ratio_both']}x")
+print(f"  ratio, tiny        polymer {POLY['le10_awards']}/{POLY['ever']} / control "
+      f"{control['le10_awards']}/{control['ever']} = {control['ratio_le10']}x")
+print(f"  ratio, both        polymer {POLY['both']}/{POLY['ever']} / control "
+      f"{control['both']}/{control['ever']} = {control['ratio_both']}x")
 print("  per CIP: " + ", ".join(
     f"{n} {v['le10_awards_pct']}%/{v['both_pct']}%" for n, v in control["per_cip"].items()))
 

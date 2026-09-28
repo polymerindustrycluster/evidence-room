@@ -354,11 +354,12 @@ function deliveryDesktop() {
      labelled at both ends, so the leader was buying nothing. */
   /* The standfirst is anchored to the FIGURE's left edge, not to the plot. It was written
      `m.l - 196`, which is x=0 only for as long as m.l happens to be 196 — and the margin
-     is now measured, so it does not. */
+     is now measured, so it does not. The two-unit inset keeps Lato's negative left
+     bearing on the opening T inside the scrollable chart viewport. */
   txt(svg, `The whole ${short(DEL.unassigned)} without a named recipient is Ohio money.`,
-    {x: 0, y: 34, class: "pv-lab"});
+    {x: 2, y: 34, class: "pv-lab"});
   txt(svg, DEL.gaps.map(g => `${g.name} holds ${short(g.gap)}`).join("; ") + ".",
-    {x: 0, y: 55, class: "pv-labq"});
+    {x: 2, y: 55, class: "pv-labq"});
 
   DEL.sources.forEach((s, i) => {
     hoverable(el("rect", {x: 0, y: m.t + i * rowH, width: 1100, height: rowH,

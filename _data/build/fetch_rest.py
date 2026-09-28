@@ -12,10 +12,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 from contact import UA  # noqa: E402  (one address, see contact.py)
 
 KEYS = {}
-for line in open(os.path.expanduser("~/.env"), encoding="utf-8", errors="ignore"):
-    if "=" in line and not line.startswith("#"):
-        k, v = line.split("=", 1)
-        KEYS[k.strip()] = v.strip().strip('"').strip("'")
+key_file = os.path.expanduser("~/.env")
+if os.path.isfile(key_file):
+    for line in open(key_file, encoding="utf-8", errors="ignore"):
+        if "=" in line and not line.startswith("#"):
+            k, v = line.split("=", 1)
+            KEYS[k.strip()] = v.strip().strip('"').strip("'")
 
 
 def get(url, timeout=90):
@@ -186,36 +188,30 @@ def usaspending():
     dashboard. Now imports the single definition rather than restating a list.
     """
     from footprints import PIC12
-    NEO = {c[2:]: n for c, n in PIC12.items()}
-    rows = []
+    from federal_categories import fetch_categories
+    output = os.environ.get("FEDERAL_RAW_DIR")
+    if not output:
+        raise ValueError("Set FEDERAL_RAW_DIR to a fresh private output directory")
+    os.makedirs(output, exist_ok=True)
+    destination = os.path.join(output, "usaspending.json")
+    if os.path.exists(destination):
+        raise ValueError("Refusing to overwrite an existing raw pull")
+    rows, pagination = [], []
     for fy in range(2019, 2027):
         for cat in ("naics", "county"):
-            payload = {
-                "filters": {
-                    "time_period": [{"start_date": f"{fy-1}-10-01", "end_date": f"{fy}-09-30"}],
-                    "place_of_performance_locations": [
-                        {"country": "USA", "state": "OH", "county": c} for c in NEO],
-                },
-                "limit": 100,
-            }
-            try:
-                req = urllib.request.Request(
-                    f"https://api.usaspending.gov/api/v2/search/spending_by_category/{cat}/",
-                    data=json.dumps(payload).encode(),
-                    headers={**UA, "Content-Type": "application/json"})
-                with urllib.request.urlopen(req, timeout=120) as r:
-                    d = json.loads(r.read().decode())
-                for o in d.get("results", []):
-                    code = str(o.get("code") or "")
-                    if cat == "naics" and not (code.startswith("325") or code.startswith("326")):
-                        continue
-                    rows.append({"fy": fy, "kind": cat, "code": code,
-                                 "name": o.get("name"), "amount": o.get("amount")})
-            except Exception as e:
-                print(f"  USAspending FY{fy} {cat} failed: {e}", flush=True)
-            time.sleep(0.8)
-        print(f"  USAspending FY{fy}: {sum(1 for r in rows if r['fy']==fy)} rows", flush=True)
-    save("usaspending", {"rows": rows}, f"{len({r['fy'] for r in rows})} fiscal years")
+            records, receipts = fetch_categories(cat, fy, receipt_dir=os.path.join(output, "all-type-receipts"))
+            pagination.append({"fy": fy, "category": cat, "pages": len(receipts),
+                               "rows": len(records), "terminal": receipts[-1]["page_metadata"],
+                               "receipts": receipts})
+            for record in records:
+                code = str(record["code"] or "")
+                if cat == "naics" and not code.startswith(("325", "326")):
+                    continue
+                rows.append({"fy": fy, "kind": cat, "code": code,
+                             "name": record["name"], "amount": record["amount"]})
+        print(f"  USAspending FY{fy}: complete", flush=True)
+    with open(destination, "w", encoding="utf-8") as target:
+        json.dump({"rows": rows, "pagination": pagination}, target)
 
 
 JOBS = {"fred": fred, "eia": eia, "bea": bea, "qwi": qwi, "usaspending": usaspending}
@@ -226,4 +222,6 @@ for name in want:
         JOBS[name]()
     except Exception as e:
         print(f"  {name} ABORTED: {type(e).__name__}: {e}", flush=True)
+        if name == "usaspending":
+            raise
 print("done")

@@ -245,16 +245,16 @@ function statesChart(D) {
 const COUNTIES = ["Ashtabula", "Cuyahoga", "Geauga", "Lake", "Lorain", "Mahoning",
   "Medina", "Portage", "Stark", "Summit", "Trumbull", "Wayne"];
 /* Which of the four metropolitan areas in the occupations wage file contains each county.
-   OMB delineations, the same ones BLS uses for the metro wage files; carried as a manual
-   claim because no shipped dataset states the county-to-metro mapping. Ashtabula and
-   Wayne are in none of the four, which is the finding the picker exists to surface. */
-const METRO = {Summit: "Akron", Portage: "Akron", Cuyahoga: "Cleveland", Geauga: "Cleveland",
+   OMB delineations, the same ones BLS uses for the metro wage files. The shipped
+   realwage.coverage.pic12_cbsa_dispositions records the source-backed county membership.
+   The 2024 Cleveland definition adds Ashtabula; Wayne remains outside these four metros. */
+const METRO = {Summit: "Akron", Portage: "Akron", Ashtabula: "Cleveland", Cuyahoga: "Cleveland", Geauga: "Cleveland",
   Lake: "Cleveland", Lorain: "Cleveland", Medina: "Cleveland", Stark: "Canton-Massillon",
   Mahoning: "Youngstown-Warren", Trumbull: "Youngstown-Warren"};
 
 const covers = (geo, county) => geo === "pic12" ||
   (geo === "metros4" && METRO[county] !== undefined) ||
-  (geo === "akron" && METRO[county] === "Akron");
+  (geo === "price-metros3" && ["Akron", "Cleveland", "Youngstown-Warren"].includes(METRO[county]));
 
 function picker(total) {
   const sel = document.getElementById("county");
@@ -279,13 +279,12 @@ function picker(total) {
     const n = live.filter(el => covers(el.dataset.geo, c)).length;
     const m = METRO[c];
     const metroLine = !m
-      ? `It is outside all four metro areas in the occupations file and outside the Akron
-         metro the cost-of-living page prices, so neither of those says anything about it.`
-      : m === "Akron"
-        ? `It is in metro Akron, which the occupations page prices, and Akron is the one
-           regional metro the cost-of-living page prices.`
-        : `It is in metro ${m}, which the occupations page prices. The cost-of-living page
-           prices Akron only, so it says nothing about ${c}.`;
+      ? `${c} is in the Wooster micropolitan area, outside the four occupations metros and the metropolitan cost-of-living comparison.`
+      : m === "Youngstown-Warren"
+        ? `It is in metro ${m}, included in the occupations page and among the 155 disclosed matched metros in the 2024 cost-of-living comparison. After price adjustment it ranks 45th, ahead of Akron at 48th. Its 960 plastics and rubber jobs are below the 2,000-job headline threshold, the sole reason it is outside that 29-metro ranking.`
+        : m === "Canton-Massillon"
+          ? `It is in metro ${m}, included in the occupations page. Its 2024 plastics and rubber wage data are source-suppressed, so the cost-of-living comparison has no wage reading for this metro.`
+          : `It is in metro ${m}, included in both the occupations page and the 2024 cost-of-living comparison, including its 29-metro headline ranking.`;
     verdict.innerHTML = `<b>${c} County</b> is inside the twelve-county footprint that
       ${word(nPic12)} of these pages are built on. ${metroLine}
       <b>${Word(n)} of the ${word(total)}</b> are built on a geography that contains it.`;
@@ -331,25 +330,24 @@ try {
     meta: {source: "Every dataset behind these pages is registered in _data/SOURCES.json " +
                    "with its endpoint, its exact filter values, and the script that fetched " +
                    "it. The methods and the known limits are in _data/METHODS-SOP.md.",
-           scope: "The hero figures and the finding on every card restate a number the " +
-                  "linked page publishes; each restatement is re-run here against that " +
-                  "page’s own data file, so a correction there fails this page’s gate. " +
+           scope: "The chart and numeric card summaries restate findings the " +
+                  "linked page publishes. Automated hub claims re-run against those " +
+                  "pages’ own data files to check consistency, not source accuracy. " +
                   "Nothing on this page is computed independently of the pages it links to."},
     sourcesNote: "Named on each page this one links to; the register is _data/SOURCES.json.",
     /* Every term here used to arrive as itself: PIC, PIC-12, NEO-14, three bare NAICS
        numbers and "a withheld cell is never a zero", none of them in plain words. Each now
        leads with the reading and keeps the house term after it. */
     definitions: `<b>PIC</b> is the Polymer Industry Cluster, the industry group that
-      publishes this site. <b>PIC-12</b> is the twelve-county footprint every federal-data
-      page here is built on, and matches the cluster-health dashboard. <b>NEO-14</b> is the
-      wider fourteen-county area company records are tagged to in the vault. They share ten
-      counties, they never reconcile, and no figure from one belongs in a sentence with a
-      figure from the other. PIC measures itself on three NAICS codes: 3252 for resins,
+      publishes this site. <b>PIC-12</b> is the twelve-county footprint used by the regional county analyses,
+      including the cluster-health dashboard. Other federal sources use metro, state or national geography. <b>NEO-14</b> is the
+      fourteen-county CODEBOOK area used by the chain register: all twelve PIC counties
+      plus Columbiana and Tuscarawas. It differs from the legacy NEO-14 constant in pic-geo;
+      comparisons must use each source’s explicit county list. PIC measures itself on three NAICS codes: 3252 for resins,
       3255 for paints and coatings, and 326 for plastics and rubber products. NAICS 325, the
-      wider chemicals family, is context rather than cluster. A withheld cell is never a zero: where a count
-      is too small to publish without identifying an employer, the figure is unknown, not
-      none. The footprints are defined canonically in the pic-geo package and all three
-      rules are in <span class="mono">_data/METHODS-SOP.md</span>.`});
+      wider chemicals family, is context rather than cluster. A withheld cell is never a zero: where the source withholds a cell for confidentiality, its value is unknown.
+      A missing record can also reflect geography or source coverage; absence alone does not establish suppression. PIC-12 follows the pic-geo package; the chain’s source boundary follows its CODEBOOK. These
+      rules are recorded in <span class="mono">_data/METHODS-SOP.md</span>.`});
 } catch (e) {
   console.error("hub: methodology block unavailable —", e.message);
 }

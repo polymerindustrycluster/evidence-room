@@ -1,0 +1,13 @@
+/* FOUR STATS, TWO UP. story.css already grids a four-stat hero two by two and its rule
+   outranks anything written here, so the grid is left alone. The one thing it does not set
+   is the display size: the house clamp was measured against a wider column, and four
+   numbers at 52px inside a 349px cell push the map off the first screen. Same fix as
+   laborshed, same reason. */
+.hero-row .figv .n{font-size:clamp(30px,3.4vw,42px)}
+.chart svg{min-width:0!important;width:100%!important}
+.chart::after{content:none}
+.chart-heading{font-size:16px;font-weight:650;line-height:1.4;margin:0 0 8px}
+.chart-unit,.map-orientation{font-size:13px;line-height:1.5;margin:0 0 14px;color:var(--muted)}
+.map-picker{display:block;margin:18px 0 8px;font-weight:700}
+#map-institution{display:block;width:100%;max-width:100%;padding:10px;font:inherit;background:var(--paper);color:var(--text);border:1px solid var(--pv-axis)}
+#map-selection{min-height:4.5em;font-size:15px;line-height:1.5;margin:12px 0 22px}

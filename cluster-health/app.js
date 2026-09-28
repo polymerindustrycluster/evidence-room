@@ -27,6 +27,7 @@
 "use strict";
 const {el, txt, ticks, hoverable, tableView, GRAY} = PV;
 const D = await PV.data("health.json");
+const E = await PV.data("workplaces.json");
 const FP = PV.footprint(D.meta);
 const T = D.tiles;
 const byId = id => T.find(t => t.id === id);
@@ -86,61 +87,95 @@ const WORD = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "All five"};
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight",
   "nine", "ten", "eleven", "twelve"];
 
-/* Three jobs, in order. (1) The three-year run the headline claims, on the basis that
-   supports it, NAMED as that basis. (2) The other total for the same year, also named,
-   because a reader met 24,030 in the hero and 23,457 here and could not reconcile two
-   figures for one year. They are two bases and both are correct: a level counts every
-   figure the bureau published, a trend counts only the figures published in every year,
-   and neither can be fixed into the other. (3) The standing reading, which is the
-   question the eyebrow asks. It used to be the MOVEMENT reading, which answers a
-   different question and left a reader who wanted to know how the cluster was doing
-   holding a volatility meter. */
-const bal = D.register.disclosed.slice(-3);
-const BASES = scale.bases;
-const standLine = t => `${t.dimension === "Job quality" ? "pay against the national rate"
+/* The opening comparison is NAICS 326 alone. The broader three-industry register
+   retains its own labelled basis in the five-measure view below. */
+const standLine = t => `${t.dimension === "Job quality" ? "the median county-industry wage ratio against its national industry"
   : t.dimension === "Scale" ? "jobs" : t.dimension === "Talent supply" ? "polymer degrees"
   : t.dimension === "Capital" ? "federal contracting" : t.dimension.toLowerCase()}
   at the ${t.standing.rank_words}`;
 document.getElementById("stand").innerHTML =
-  `On ${BASES.trend.label}, plastics and rubber, paint and coatings and resin held
-   ${N(bal[0].balanced)} jobs in ${bal[0].year}, ${N(bal[1].balanced)} in ${bal[1].year}
-   and ${N(bal[2].balanced)} in ${bal[2].year}. ${cap1(BASES.level.label)} gives a higher
-   total, ${BASES.level.display}, on a basis that cannot carry a trend. Against their own
-   histories: ${[scale, talent, pay, cap].map(standLine).join("; ")}. Paint concentration, the
-   fifth measure, has no better end.`;
+  `Private plastics and rubber products manufacturing lost ${N(E.groups[0].series.find(r => r.year === 2022).jobs - E.groups[0].series.at(-1).jobs)} jobs
+   across the Polymer Industry Cluster&rsquo;s (PIC) twelve counties between 2022 and 2025.
+   Its annual-average workplace count barely changed. The national industry lost jobs too.`;
 
-/* Each hero number's sub-line is that number's plain reading, because for three of the
-   four this is where the reader meets the measure first. Whether a big number is good
-   news is said here, not left to the tiles two screens down. */
+/* Each hero figure carries its industry, time window and annual-average unit. */
 const withheld = D.register.possible_cells - D.register.disclosed.at(-1).cells;
-const ORD = ["", "first", "second", "third", "fourth", "fifth", "sixth"];
+const employment = E.groups[0], endpoint = employment.series.at(-1);
+const signedPct = v => (v < 0 ? "−" : "+") + Math.abs(v).toFixed(1) + "%";
 PV.figures([
-  ["key", BASES.level.display, "jobs, all published counties",
-   `${withheld} of the ${BASES.level.of_cells} county figures are withheld to protect
-    single employers, so this is a floor. On the fixed set of ${BASES.trend.cells} it is
-    ${BASES.trend.display}, down ${N(Math.abs(scale.direction.value))} and falling for the
-    ${ORD[scale.direction.streak]} year.`],
-  ["", conc.value, "the U.S. share of paint work",
-   `these counties do ${WORDS[Math.round(parseFloat(conc.value))]} times as much paint and
-    coatings work, per job, as the country. High concentration is the region&rsquo;s
-    distinction and its exposure, so it is the one measure here with no better end.`],
-  ["", pay.value.split(" / ")[1], "of the national rate",
-   `the same work pays about a tenth less here than the U.S. average for it and about a
-    quarter more than the average job in its own county. It has been under the U.S. rate
-    in all ${WORDS[pay.standing.n_years]} published years.`],
-  /* NOT "none of it spent". Corrected 2026-09-01: the reason used to be that the public
-     record never shows drawdown, which was wrong. USAspending publishes an outlay figure
-     on the federal award lines and the accountability page carries it. What no record
-     covers is the WHOLE signed total, because the state grant publishes nothing, so a
-     figure for the whole would be part measured and part supplied. Stating a zero is as
-     much a claim as stating a number, and this page can support neither.
-     _data/FIGURES.json registers the quantity as not publicly observable and
-     tools/figures.mjs fails the build on any page that gives it a value. */
-  ["", cap.value, "signed, " + WORDS[D.federal_awards.leads.length] + " named recipients",
-   `signed for and assigned, worth about ${cap.drivers[2].value} of the contracting
-    already arriving. What has been paid out is published for the federal lines, not
-    here, so no amount is stated here, not even a zero.`],
+  ["key", N(endpoint.jobs), "plastics-and-rubber jobs", "Private ownership, PIC-12; annual average, 2025."],
+  ["", N(endpoint.establishments), "establishments", "Annual average, 2025; roughly as many as in 2022."],
+  ["", signedPct(employment.windows[0].jobs_pct), "jobs since 2022", "Establishments: " + signedPct(employment.windows[0].establishments_pct) + " over the same period."],
 ]);
+
+document.getElementById("workplaceslede").textContent =
+  `The twelve counties counted ${N(employment.series.find(r => r.year === 2022).jobs)} jobs and ${N(employment.series.find(r => r.year === 2022).establishments)} establishments in 2022.
+   By 2025, the counts were ${N(endpoint.jobs)} and ${N(endpoint.establishments)}.
+   All twelve county employment figures are disclosed in every year shown.`;
+const decade = employment.windows.find(r => r.start === 2015);
+const prePandemic = employment.windows.find(r => r.start === 2019);
+const latestWindow = employment.windows.find(r => r.start === 2024);
+document.getElementById("workplaceswindows").textContent =
+  `The 2022 starting point is the highest job count in all eleven annual observations; the establishment minimum was in 2021, not 2022. It marks the start of three consecutive job declines.
+   From the pre-pandemic year 2019 to 2025, jobs fell ${Math.abs(prePandemic.jobs_pct).toFixed(1)}% and establishments were unchanged at ${N(endpoint.establishments)}.
+   From 2015 to 2025, jobs fell ${Math.abs(decade.jobs_pct).toFixed(1)}% and establishments fell ${Math.abs(decade.establishments_pct).toFixed(1)}%.
+   In the final year alone, jobs fell ${Math.abs(latestWindow.jobs_pct).toFixed(1)}% and establishments fell ${Math.abs(latestWindow.establishments_pct).toFixed(1)}%.
+   Roughly stable workplaces describes 2022–2025, not a continuous rise or the full decade.`;
+document.getElementById("workplacescompare").textContent =
+  `From 2022 to 2025, plastics-and-rubber jobs fell ${Math.abs(E.groups[1].windows[0].jobs_pct).toFixed(1)}% across Ohio and ${Math.abs(E.groups[2].windows[0].jobs_pct).toFixed(1)}% nationally.
+   PIC-12 establishment growth of ${employment.windows[0].establishments_pct.toFixed(1)}% trailed Ohio’s ${E.groups[1].windows[0].establishments_pct.toFixed(1)}% and the national industry’s ${E.groups[2].windows[0].establishments_pct.toFixed(1)}%.
+   PIC-12’s decline was also steeper than the declines in Indiana, Kentucky, Michigan and Pennsylvania; West Virginia added jobs. Across all PIC-12 manufacturing, jobs fell ${Math.abs(E.groups.at(-1).windows[0].jobs_pct).toFixed(1)}%.`;
+const summit = E.counties.find(r => r.name === "Summit");
+document.getElementById("workplacescounty").textContent =
+  `Summit County went from ${N(summit.jobs_2022)} to ${N(summit.jobs_2025)} jobs, a decline of ${N(-summit.jobs_change)}, while establishments rose from ${N(summit.establishments_2022)} to ${N(summit.establishments_2025)}.
+   ${cap1(WORDS[E.counties.filter(r => r.jobs_change < 0).length])} of the twelve counties lost jobs; four gained.
+   Counties with growing establishment counts added ${N(E.counties.reduce((s, r) => s + Math.max(0, r.establishments_change), 0))} in total; counties with shrinking counts lost ${N(-E.counties.reduce((s, r) => s + Math.min(0, r.establishments_change), 0))}, leaving a net increase of ${N(E.counties.reduce((s, r) => s + r.establishments_change, 0))}.
+   These sum changes in county totals, not firm openings and closures; offsetting changes within a county remain invisible.`;
+document.getElementById("workplacestable").innerHTML = tableView(
+  "workplaces-history", "All eleven annual observations",
+  ["Year", "Annual-average jobs", "Annual-average establishments"],
+  employment.series.map(r => [r.year, N(r.jobs), N(r.establishments)]));
+document.getElementById("workplacesbenchmarks").innerHTML = tableView(
+  "workplaces-comparisons", "Ohio, US, bordering states and manufacturing",
+  ["Geography / industry", "Jobs change, 2022–2025", "Establishments change, 2022–2025"],
+  E.groups.map(g => [g.name + " / " + g.naics, signedPct(g.windows[0].jobs_pct), signedPct(g.windows[0].establishments_pct)]));
+document.getElementById("workplacescounties").innerHTML = tableView(
+  "workplaces-county-rows", "All twelve county contributions",
+  ["County", "Jobs, 2022", "Jobs, 2025", "Job change", "Establishments, 2022", "Establishments, 2025"],
+  E.counties.map(r => [r.name, N(r.jobs_2022), N(r.jobs_2025), String(r.jobs_change).replace("-", "−"), N(r.establishments_2022), N(r.establishments_2025)]));
+
+function drawWorkplaces() {
+  const W = Math.max(300, Math.round(document.getElementById("workplaces-chart").parentElement.clientWidth));
+  const small = W < 600;
+  const {svg, m, w, h} = PV.chart("workplaces-chart", {W, H: small ? 340 : 380, m: {t: 30, r: 20, b: 72, l: 42}});
+  const base = employment.series.find(r => r.year === E.base_year);
+  const values = employment.series.flatMap(r => [r.jobs / base.jobs * 100, r.establishments / base.establishments * 100]);
+  const lo = Math.floor(Math.min(...values) / 5) * 5, hi = Math.ceil(Math.max(...values) / 5) * 5;
+  const x = year => m.l + (year - E.years[0]) / (E.years.at(-1) - E.years[0]) * w;
+  const y = value => m.t + h - (value - lo) / (hi - lo) * h;
+  for (const v of ticks(lo, hi, 5)) {
+    el("line", {x1: m.l, x2: m.l + w, y1: y(v), y2: y(v), stroke: v === 100 ? "#9A948A" : "#DDD7CE"}, svg);
+    txt(svg, String(v), {x: m.l - 9, y: y(v) + 4, "text-anchor": "end", class: "pv-axis"});
+  }
+  for (const year of [2015, 2019, 2022, 2025])
+    txt(svg, String(year), {x: x(year), y: m.t + h + 23, "text-anchor": year === 2015 ? "start" : year === 2025 ? "end" : "middle", class: "pv-axis"});
+  txt(svg, "2022 = 100", {x: m.l, y: 18, class: "pv-axis"});
+  for (const [key, label, color] of [["jobs", "Jobs", DOWN], ["establishments", "Establishments", UP]]) {
+    el("path", {d: employment.series.map((r, i) => `${i ? "L" : "M"}${x(r.year)},${y(r[key] / base[key] * 100)}`).join(" "), fill: "none", stroke: color, "stroke-width": 3}, svg);
+    for (const r of employment.series) {
+      const dot = el("circle", {cx: x(r.year), cy: y(r[key] / base[key] * 100), r: 4, fill: color}, svg);
+      hoverable(dot, `${r.year}: ${N(r[key])} annual-average ${label.toLowerCase()}`, `${r.year}: ${N(r[key])} ${label.toLowerCase()}`);
+    }
+    const endY = y(endpoint[key] / base[key] * 100);
+    const labelY = key === "jobs" ? endY + 23 : m.t + 14;
+    if (key === "establishments")
+      el("line", {x1: m.l + w, x2: m.l + w, y1: labelY + 5, y2: endY - 7,
+        stroke: color, "stroke-width": 1, "stroke-dasharray": "2 3"}, svg);
+    txt(svg, label + " " + signedPct(employment.windows[0][key === "jobs" ? "jobs_pct" : "establishments_pct"]),
+      {x: m.l + w, y: labelY, "text-anchor": "end", fill: color, class: "pv-lab"});
+  }
+  txt(svg, "Annual averages · private NAICS 326", {x: m.l, y: m.t + h + 52, class: "pv-axis"});
+}
 
 /* ------------------------------------------------------------------- the standing chart
 
@@ -272,11 +307,10 @@ document.getElementById("standsrc").innerHTML =
   `For ${WORDS[SS.with_merit.length]} of the five the right-hand end is the better one for
    the region; the fifth, ${SS.without_merit.join(" and ").toLowerCase()}, has no better
    end and is drawn grey. Each rail is one measure on one basis, recomputed from the shipped data of the page it
-   links to: ${STAND.map(t => `${t.dimension.toLowerCase()}, ${t.standing.basis}`)
+   links to: ${STAND.map(t => `${t.dimension.toLowerCase()}, ${t.standing.basis.replace(/\.\s*$/, "")}`)
      .join("; ")}. The dot is placed by VALUE and the rank counts YEARS, so a measure can
    sit near the middle of its rail and still be fourth from the bottom when the years
-   above it are bunched together. Both are printed rather than one being picked as the
-   tidier of the two.`;
+   above it are bunched together.`;
 
 document.getElementById("standnote").innerHTML =
   `<b>A range is not a grade.</b> ${SS.not_a_grade} ${SS.not_a_score} Nobody had to choose
@@ -374,7 +408,7 @@ function drawMoveDesktop() {
   const ax = x(Math.max(cap.band.typicals, cap.band.max_typicals)) + 22;
   txt(svg, `Federal contracting rose ${cap.direction.pct.toFixed(0)} percent`,
     {x: ax, y: cy - 2, "text-anchor": "start", class: "pv-lab"});
-  txt(svg, "and still moved less than it does in a normal year.",
+  txt(svg, `${cap.band.typicals.toFixed(2)} times its typical annual move.`,
     {x: ax, y: cy + 18, "text-anchor": "start", class: "pv-labq"});
 }
 
@@ -434,8 +468,7 @@ function drawMoveMobile() {
 }
 
 document.getElementById("movetitle").textContent =
-  `${WORD[moved]} of the five moved further than they usually do, and federal money was ` +
-  `not among them`;
+  `${WORD[moved]} of the five moved further than they usually do`;
 
 document.getElementById("movetable").innerHTML = tableView("move",
   "This year\u2019s change against each measure\u2019s own record of year-to-year change",
@@ -537,7 +570,7 @@ document.getElementById("scalesub").innerHTML =
    until 2026-09-01, which was a claim about the record; USAspending follows six of these
    seven awards to the ground. What is true is that this page does not. */
 document.getElementById("closerline").textContent =
-  `Three years smaller, paid above its towns and below its industry, holding ` +
+  `Three years smaller, with median county-industry wage ratios above county averages and below national industry averages, holding ` +
   `${cap.value.replace("M", " million")} in signed awards this page does not follow ` +
   `to the ground.`;
 document.getElementById("closersub").innerHTML =
@@ -554,7 +587,7 @@ document.getElementById("lagsub").textContent =
   `${WORDS[D.asof.qcew_year - D.asof.ipeds_year]} years`;
 
 /* -------------------------------------------------------------------------- assemble */
-const redraw = () => { drawStand(); drawMove(); };
+const redraw = () => { drawWorkplaces(); drawStand(); drawMove(); };
 redraw();
 MOBILE.addEventListener ? MOBILE.addEventListener("change", redraw)
                         : MOBILE.addListener(redraw);
@@ -566,7 +599,15 @@ const meth = await PV.methodology({page: "cluster-health", meta: D.meta,
     money, the funding map and revisions. It writes
     <span class="mono">data/health.json</span>. It fetches nothing. Each claim behind this
     page re-runs against those source files rather than against the derived one, so a
-    figure that has gone stale here fails the check instead of rendering.`});
+    figure that has gone stale here fails the check instead of rendering.
+    The jobs-and-workplaces comparison uses the held BLS QCEW annual by-area and
+    by-industry extracts, through <span class="mono">derive_health.py --workplaces-only</span>.
+    Annual averages cover full calendar years; establishments average quarterly counts
+    with rounding. All 132 PIC county-year employment cells are disclosed. The two held
+    extracts agree on 154 overlapping NAICS 326 area-year cells, but this is not a fresh
+    upstream revision audit. The by-industry extract is dated ${E.meta.fetched}; the
+    by-area cache has no recorded fetch timestamp. Source hashes and all comparison
+    windows are in <a href="data/workplaces.json">the downloadable data</a>.`});
 
 {
   const h = [...meth.querySelectorAll("h3")]

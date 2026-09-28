@@ -137,9 +137,9 @@ a{color:var(--action)}
 .county.on{stroke:var(--hover);stroke-width:3}
 /* map scale is 0.99 on desktop, so 12 renders at 11.9 — just under the P3 floor */
 .clab{font-size:15.7px;font-weight:700;pointer-events:none}
-.blank-list{border-left:3px solid var(--lime);padding:2px 0 2px 20px;margin:0 0 26px}
-.blank-list h3{font-size:20px;margin:0 0 8px}
-.blank-list p{margin:0 0 14px;color:#394346;font-size:15.5px}
+.thin-list{border-left:3px solid var(--lime);padding:2px 0 2px 20px;margin:0 0 26px}
+.thin-list h3{font-size:20px;margin:0 0 8px}
+.thin-list p{margin:0 0 14px;color:#394346;font-size:15.5px}
 table.cov{width:100%;border-collapse:collapse;font-size:14px}
 table.cov th,table.cov td{text-align:right;padding:7px 8px;border-bottom:1px solid var(--line)}
 table.cov th:first-child,table.cov td:first-child{text-align:left}
@@ -147,9 +147,7 @@ table.cov thead th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;
   color:var(--caption);font-weight:700;border-bottom:2px solid var(--text)}
 table.cov tbody tr{cursor:pointer}
 table.cov tbody tr:hover{background:#F0EDE8}
-table.cov tr.zero td{color:var(--caption)}
-table.cov tr.zero td:first-child{color:var(--text);font-weight:700}
-.ratio{display:inline-block;min-width:44px}
+.ratio{display:inline-block;min-width:56px;color:var(--caption);font-variant-numeric:tabular-nums}
 
 /* ----------------------------------------------------------------- results */
 .band.dark{background:var(--deep);color:#fff}

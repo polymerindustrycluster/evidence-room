@@ -7,6 +7,20 @@ the two are held apart on purpose.
 **This page is not linked from `index/`.** It stands alone: it is an internal working
 view, and the hub is a public reading list.
 
+## Federal-context correction — 8 September 2026
+
+Was: group D printed $34.9M a year across all eight fiscal years, including unfinished
+FY2026. Is: $41.4M in 2025 dollars across seven completed years, FY2019–FY2025.
+Cause: the upstream category query stopped at its first page, its CPI base was wrong,
+and the comparison included a partial fiscal year. The row remains outside PIC's
+accountable measures, and its historical mean is not a forecast.
+
+`python scorecard/derive_scorecard.py --federal-only` replaces only row `d-federal`
+from the corrected upstream file. It preserves every other published field, including
+historical talent corrections. Then run `python -B _data/build/verify_claims.py scorecard`.
+The article retains its original attribution and credits the federal-context update
+to Codex (OpenAI).
+
 ## The distinction this page exists to hold
 
 Cluster health measures the regional polymer economy, which PIC influences through award
@@ -57,7 +71,7 @@ figure recomputed from public data; 7 are empty slots.
 | C | Completions of a PIC-funded training program | empty slot | PIC and APEX program records |
 | C | Member companies taking a program participant | empty slot | PIC program records |
 | D | Plastics and rubber jobs, PIC-12 | 18,594 | occupations (QCEW) |
-| D | Routine federal obligations to regional polymer firms | $34.9M a year | federal-money |
+| D | Federal prime-contract obligations under chemical and plastics/rubber manufacturing codes | $41.4M a year, FY2019–FY2025 | federal-money |
 | D | Ohio's national rank in plastics and rubber jobs | 1st | peers |
 
 ### Group B is an assignment test, not a payment test

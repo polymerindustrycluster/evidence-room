@@ -13,6 +13,13 @@ Output : chain-data.json (inlined into the prototype HTML)
     Repair needs both paths repointed at this repo before the CBP fix below can be
     exercised. Left as-is rather than half-repaired, because guessing at the intended
     layout is how the wrong thing gets rebuilt confidently.
+
+!! SUPERSEDED FOR THE GEOGRAPHY REPAIR (2026-09-11) !!
+    `repair_chain.py` is what actually maintains chain-data.json now. It is offline, takes
+    the held extract and a cached CBP response as explicit inputs, and is subtractive: it
+    keeps the published rows the register's own rule admits and recomputes the rollups.
+    The wrong NEO_FIPS set below has been corrected so that nobody re-runs the defect, but
+    correcting a constant in a script that cannot run is housekeeping, not a fix.
 """
 import json, re, os, collections, urllib.request, urllib.parse, sys
 
@@ -116,10 +123,18 @@ def tokens(s):
 
 
 # --------------------------------------------------------------- CBP benchmark
-NEO_FIPS = {"153": "Summit", "035": "Cuyahoga", "133": "Portage", "151": "Stark",
-            "055": "Geauga", "085": "Lake", "093": "Lorain", "103": "Medina",
-            "077": "Huron", "099": "Mahoning", "169": "Wayne", "157": "Tuscarawas",
-            "139": "Richland", "033": "Crawford"}
+# CORRECTED 2026-09-11. The set below is CODEBOOK.md's NEO-14 and agrees with the map
+# polygons and with the extract's own in_neo14 flag. What it replaced carried Huron 077,
+# Richland 139 and Crawford 033 -- none of them NEO-14 -- and omitted Ashtabula 007,
+# Trumbull 155 and Columbiana 029, all three of which are. That wrong set, and only that
+# set, reproduces the 653 establishments / 41,447 employees this file shipped; the right
+# one gives 684 / 43,242. The constant is fixed here so nobody re-runs the old one, but
+# THIS SCRIPT STILL DOES NOT RUN (see the module docstring). The live repair is
+# repair_chain.py, which works offline from the held extract and a cached CBP response.
+NEO_FIPS = {"007": "Ashtabula", "029": "Columbiana", "035": "Cuyahoga", "055": "Geauga",
+            "085": "Lake", "093": "Lorain", "099": "Mahoning", "103": "Medina",
+            "133": "Portage", "151": "Stark", "153": "Summit", "155": "Trumbull",
+            "157": "Tuscarawas", "169": "Wayne"}
 KEY = ""
 for line in open(r"C:\Users\JohnSwanson\.env", encoding="utf-8", errors="ignore"):
     if line.startswith("CENSUS_API_KEY="):

@@ -131,11 +131,11 @@
     },
     {
       "id": "sc-context-federal",
-      "text": "Row d-federal: routine federal obligations to regional polymer industry codes averaged $34.9 million a year across the eight fiscal years on file, in 2025 dollars.",
-      "source": "USAspending obligations at place of performance, FY2019 to FY2026, via federal-money/data/federal.json",
-      "assert": "abs(sum(r['real'] for r in D['fed']['naics']) / len(set(r['fy'] for r in D['fed']['naics'])) - 34908376) < 50000 and len(set(r['fy'] for r in D['fed']['naics'])) == 8 and min(set(r['fy'] for r in D['fed']['naics'])) == 2019 and max(set(r['fy'] for r in D['fed']['naics'])) == 2026",
-      "actual": "(sum(r['real'] for r in D['fed']['naics']) / len(set(r['fy'] for r in D['fed']['naics'])), sorted(set(r['fy'] for r in D['fed']['naics'])))",
-      "falsified_if": "USAspending backfills an obligation enough to move the eight-year average by $50,000, or the series gains a ninth fiscal year. FY2026 was still running at the pull, so the average includes a partial year and is therefore a floor; the row states the span rather than calling it an annual rate."
+      "text": "Row d-federal: federal prime-contract obligations under chemical and plastics/rubber manufacturing codes averaged $41.4 million a year across the seven completed fiscal years FY2019-FY2025, in 2025 dollars. Unfinished FY2026 is excluded.",
+      "source": "USAspending prime-contract obligations at place of performance, FY2019-FY2025, via federal-money/data/federal.json",
+      "assert": "round(sum(r['real'] for r in D['fed']['naics'] if 2019 <= r['fy'] <= 2025) / 7 / 1e6, 1) == 41.4 and sorted(set(r['fy'] for r in D['fed']['naics'] if 2019 <= r['fy'] <= 2025)) == list(range(2019, 2026)) and one(r for r in D['sc']['rows'] if r['id'] == 'd-federal')['current'] == '$41.4M a year' and one(r for r in D['sc']['rows'] if r['id'] == 'd-federal')['sub'] == 'FY2019-FY2025 average, seven completed years'",
+      "actual": "(sum(r['real'] for r in D['fed']['naics'] if 2019 <= r['fy'] <= 2025) / 7, one(r for r in D['sc']['rows'] if r['id'] == 'd-federal'))",
+      "falsified_if": "A revision changes the rounded $41.4M average, a completed year is missing, or the rendered row retains a stale value or period. FY2026 must stay outside this completed-year comparison; the historical average does not establish recurring demand."
     },
     {
       "id": "sc-context-rank",

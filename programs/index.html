@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
-<title>The Hollowing of Polymer Education</title>
-<meta name="description" content="Northeast Ohio wants to rebuild its polymer technician pipeline. Of the three layers of polymer education, it is the only one that did not hold.">
+<title>Polymer Education’s 2016–2023 Decline</title>
+<meta name="description" content="In the selected federal program codes, polymer technician programs were less likely than degree programs or six peer trades to report completions in 2023.">
 <link rel="stylesheet" href="../_shared/pic-viz.css">
 <link rel="stylesheet" href="../_shared/story.css">
 <style>
@@ -14,9 +14,14 @@
    display size: the house clamp was measured against a wider column, and four numbers at
    52px inside a half-column cell push the first chart off the screen. */
 .hero-row .figv .n{font-size:clamp(30px,3.4vw,42px)}
+.chart svg{min-width:0!important;width:100%!important}
+.chart::after{content:none}
+.chart-heading{font-size:16px;font-weight:650;line-height:1.4;margin:0 0 8px}
+.chart-unit{font-size:13px;line-height:1.5;margin:0 0 14px;color:var(--muted)}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
 
 <header class="mast">
   <div class="wrap">
@@ -25,21 +30,22 @@
   </div>
 </header>
 
+<main id="main-content" tabindex="-1">
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">Every polymer degree and certificate in the federal record,
+    <p class="eyebrow">Three polymer program codes in the federal record,
       1991&ndash;2023</p>
-    <h1>Northeast Ohio wants to rebuild its polymer technician pipeline. Of the three
-      layers of polymer education, it is <em>the only one that did not hold</em>.</h1>
-    <p class="stand">Polymer education has three layers: degrees, technician programs and
-      certificates, and the adjacent trades. Of the 73 polymer technician programs that
-      ever took hold, just 20 were still awarding a credential in 2023, a little over one
-      in four. Welding and machining, taught in the same
-      buildings by the same colleges, came through at nearly twice that rate, and so did
-      polymer degrees.</p>
-    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data IPEDS completions by 6-digit CIP, The same IPEDS pull for six peer technician CI and 1 more &middot; August&nbsp;2026</p>
+    <h1>Polymer technician programs were <em>less likely to report completions in 2023</em>
+      than degrees or the peer trades.</h1>
+    <p class="stand">Of 73 polymer technician programs with more than ten recorded lifetime
+      completions, 20 reported a completion in 2023: 27%. Polymer degree programs and six
+      peer technician trades each reached 48% under the same rule. These are historical
+      federal filing records, not a count of training available today. The completions
+      decline measured below runs from the 2016 peak to 2023; the 2023 total remained
+      above the record’s 1991 starting point.</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic), updated with Codex (OpenAI) &middot; Data IPEDS completions, peer-trade snapshots and College Scorecard &middot; Updated September&nbsp;2026</p>
     <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
-      id="open-t">Three layers of polymer education drawn as three survival bars: technician programs survive at 27 percent, degree programs and the adjacent trades both at 48.</title></svg></div>
+      id="open-t">Among programs with more than ten recorded lifetime completions, 27 percent of polymer technician programs reported a completion in 2023, compared with 48 percent of polymer degree programs and 48 percent of the six peer trades.</title></svg></div>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -47,23 +53,20 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The finding</p>
-    <h2>Two of these three layers held. The technician layer lost nearly three programs
-      in four</h2>
+    <h2>Technician programs reported completions at a lower rate than both comparison groups</h2>
     <p class="lede">The three layers are the polymer technician programs, the polymer degrees
       above them, and the peer trades taught next door. One rule measures all three over the
-      same years. A program is in this chart if it took hold, meaning it ever conferred more
-      than ten completions, and it counts as surviving if it conferred one in 2023. Six peer
-      trades are here for one reason. Welding, machining, industrial maintenance,
+      same years. A program is substantive in this chart if it recorded more
+      than ten lifetime completions, and active means it reported at least one in 2023. Six peer
+      trades provide a comparison: welding, machining, industrial maintenance,
       manufacturing engineering technology, electrical engineering technology and mechanical
-      engineering technology are taught in the same buildings by the same kind of college, so
-      if they had fallen as far, this would be a story about community colleges rather than
-      about polymers. They did not. The trades and the polymer degrees finish within a point
-      of each other; the technician layer finishes twenty points below both. One limit
+      engineering technology. The trades and the polymer degrees finish within a point
+      of each other; the technician layer finishes about twenty points below both. One limit
       belongs with that finding. The polymer codes are the federal catalogue numbers a
       college puts on a program when it reports completions, and this record sees only what
-      colleges chose to file under them. No one has rebuilt this layer <i>in the
-      paperwork</i>. Whether anyone has done it on the ground is a question the paperwork
-      cannot answer.</p>
+      colleges chose to file under them. A program without a 2023 completion may still
+      teach, pause awards, or report under another code. The comparison does not establish
+      stability in either of the other groups.</p>
     <div class="chart"><svg id="spine" role="img" aria-labelledby="spine-t">
       <title id="spine-t">Share of programs still conferring in 2023: polymer technician,
         the peer-trades control, and polymer degrees.</title></svg></div>
@@ -94,12 +97,13 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The base rate</p>
-    <h2 id="basetitle">More than half of the technician programs that ever existed never took hold</h2>
-    <p class="lede">The chart above counts only the programs that took hold. This one drops
+    <h2 id="basetitle">More than half recorded ten or fewer lifetime completions</h2>
+    <p class="lede">The chart above counts only substantive programs. This one drops
       that filter and looks at every technician program in the record, all 168 of them,
-      because the ones that never took hold are the decision-relevant fact. Programs kept being started, and more than half, 95 of the 168, never took hold.
-      Anyone proposing to rebuild this layer is proposing to beat that base rate, and should
-      know it before, not after.</p>
+      to show the small records too. Small means ten or fewer recorded lifetime completions:
+      95 of 168, or 57%. Brief means a first-to-last reporting span of five years or less, inclusive:
+      91 of 168, or 54%. Both small and brief describes 75 of 168, or 45%.
+      These overlapping measures describe the record; none establishes that a program failed.</p>
     <p class="fig-sub" id="basecontrol"></p>
     <div class="chart"><svg id="base" role="img" aria-labelledby="base-t">
       <title id="base-t">Of 168 US polymer technician programs since 1991: how many stayed
@@ -120,7 +124,8 @@
       eight of the sixteen that ever passed one hundred. Dark bars are still conferring;
       light bars filed no polymer completion in 2023. Ferris
       State, a public university in Michigan, is the outlier to study: more completions than
-      the next two programs combined, across 33 unbroken years. Why it held while the layer
+      the next two programs combined, across 32 counted years from 1991 to 2023, excluding
+      quarantined 2020. Why it persisted while the layer
       around it thinned is a question this dataset cannot answer. It is the first question to
       put to the people who run the program.</p>
     <div class="legend" id="worklegend"></div>
@@ -139,15 +144,20 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The anchor</p>
-    <h2 id="uatitle">In 2023 the University of Akron, the world&rsquo;s flagship polymer
-      school, graduated two polymer undergraduates</h2>
-    <p class="lede">The University of Akron&rsquo;s polymer completions, every year the record
-      covers. The collapse is recent and steep, and most of the loss sits at the top, in the
-      master&rsquo;s and doctoral degrees. It ran through the same years in which federal and
-      state grant money for polymer work arrived in the region. Akron is this
-      system&rsquo;s anchor, the institution the rest of it is built around, and a technician
-      pipeline built on top of an anchor that is contracting is a different proposition from
-      one built on an anchor that is holding.</p>
+    <h2 id="uatitle">Akron reported 44 completions in the selected polymer codes in 2023;
+      42 were graduate degrees</h2>
+    <p class="lede">The University of Akron&rsquo;s reported completions fell from 114 in
+      2016 to 44 in 2023: 16 master&rsquo;s degrees, 26 doctorates and two bachelor&rsquo;s
+      degrees. The three selected codes cover Polymer/Plastics Engineering, Polymer
+      Chemistry, and Plastics and Polymer Engineering Technology. They exclude polymer
+      teaching reported under other fields. Most of the decline was in graduate degrees,
+      which still supplied nearly all of Akron&rsquo;s completions in this record.</p>
+    <p class="fig-sub" id="grantchronology">This completions series ends in 2023.
+      EDA announced planned Tech Hub implementation funding on
+      <a href="https://content.govdelivery.com/accounts/USEDA/bulletins/3a61a13">July 2, 2024</a>;
+      Ohio&rsquo;s <a href="https://dam.assets.ohio.gov/image/upload/development.ohio.gov/annualreports/Development-Annual-Report-2025.pdf#page=10">2025 annual report (printed page 18)</a>
+      dates the state Innovation Hub announcement to September 2024.
+      Both announcements follow this series, which cannot measure their outcomes.</p>
     <div class="chart"><svg id="ua" role="img" aria-labelledby="ua-t">
       <title id="ua-t">University of Akron polymer completions per year, 1991 to 2023.</title></svg></div>
     <div id="uatable"></div>
@@ -183,15 +193,15 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The turn</p>
-    <h2 id="findtitle">No one has rebuilt one</h2>
+    <h2 id="findtitle">This record does not establish a verified rebuild</h2>
     <p class="lede">This dataset contains no verified example of a substantial polymer
       technician program dying and being rebuilt. One case looked like a rebuild. It turned out
       to be a federal reporting change: the program never stopped teaching, and a
-      renumbering split its record into an ending and a fresh start. A region
-      proposing to rebuild this layer is proposing to do something this record offers no
-      example of anyone doing.</p>
+      renumbering split its record into an ending and a fresh start. That is a reason to
+      verify apparent exits and restarts against program catalogues, not evidence that a
+      future program would be a historical first.</p>
     <p class="lede" id="findsub">What &ldquo;rebuild&rdquo; means depends on which fact you
-      take as the problem: the survival rate, the coin-flip base rate of new starts, or the
+      take as the problem: reporting continuity, small and brief records, or the
       contracting anchor. Each points at a different program design, and the record is
       compatible with all three readings, which is exactly why the design choice has to be
       made on purpose.</p>
@@ -200,9 +210,9 @@
 
 <section class="closer">
   <div class="wrap">
-    <p>There is no verified rebuild case in this record. Whoever builds the next polymer
-      technician program is writing the first one: against a coin-flip base rate, on top of
-      a contracting anchor, in the layer that survived worst.</p>
+    <p>Polymer technician programs have the lowest 2023 reporting rate in this comparison.
+      Designing new training requires the next check: which apparent exits reflect closure,
+      a changed code, or a different training format? This record cannot answer that alone.</p>
     <p class="sub" id="closersub"></p>
   </div>
 </section>
@@ -212,7 +222,7 @@
     <p class="chapter-kicker">Appendix</p>
     <p class="takeaway">The register</p>
     <h2>Where the record has lived, state by state</h2>
-    <p class="lede">Substantive programs, meaning the ones that took hold and got past ten
+    <p class="lede">Substantive programs, meaning those with more than ten lifetime
       completions, state by state. All thirty states that have ever filed one are here. A
       chart of this table was cut on editorial review. A state showing zero in the 2023
       column filed such programs before and filed none in 2023, which is a fact about
@@ -223,6 +233,7 @@
   </div>
 </section>
 
+</main>
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>
 </body>

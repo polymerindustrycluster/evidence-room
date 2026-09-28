@@ -32,10 +32,13 @@ at render time from the two shipped files, or guarded in claims.json.
 
 ## Read before quoting anything from this page
 
-- **Whole economy, not the cluster.** LODES origin-destination has no industry
-  dimension; a polymer-specific version of this page cannot be built from this source.
+- **Whole economy, not the cluster.** The page uses all-job totals. LODES
+  origin-destination includes three broad industry groups, not polymer industries.
+  See the [Census LODES8 specification, page 5](https://lehd.ces.census.gov/data/lodes/LODES8/LODESTechDoc8.0.pdf).
 - **Not a commute.** Nothing here counts a trip. Distant residence (Columbus, Toledo,
-  Cincinnati, Dayton) is roughly half the imported workforce and was already in 2019.
+  Cincinnati, Dayton) accounts for roughly half of the adjacent-plus-distant groups,
+  or 29% of all jobs held by residents outside PIC-12. It existed in 2019; this does
+  not establish trips, telework, or the pandemic's effect.
 - **Denominators move the numbers.** The matrix and dumbbell use the fullest
   denominator; the 397-county benchmark is in-state-only on both sides so peers are
   measured identically (Summit 48.9% there vs 48.4% fully counted; Ashtabula 72.7% vs

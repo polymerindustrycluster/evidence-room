@@ -9,15 +9,17 @@ working shown.
 ## What makes this different
 
 Regional economic claims usually arrive as slideware: a number, a logo, no trail. Every
-page here carries, machine-enforced:
+page here exposes the evidence and checks behind its claims:
 
 - **A source registry.** `_data/SOURCES.json` names each dataset's endpoint, its **exact
   filter values** (NAICS codes, CIP codes, CPC classes, subfield IDs — the values, not a
   description of them), and the script that fetched it. The "Reproduce this" block on each
-  page renders straight from this registry, so it cannot drift from the code.
-- **A claims harness.** Every published sentence is backed by an assertion in that page's
-  `claims.json`, re-run against the data that produced it, with a stated `falsified_if`
-  condition. `python _data/build/verify_claims.py` runs them all.
+  page renders from this registry. Its filters still need to be checked against the fetcher
+  and the records it actually returns.
+- **A claims harness.** Recorded claims in each page's `claims.json` carry assertions
+  against the data that produced them and a stated `falsified_if` condition.
+  `python _data/build/verify_claims.py` runs them all. This is not coverage of every sentence
+  or independent proof that the source was acquired or interpreted correctly.
 - **A limitations contract.** Every prose metadata key is classified — limitation, method
   note, or structural — and an unclassified key **fails the build** rather than being
   silently dropped or silently published. Every page states what its instrument cannot see.
@@ -44,16 +46,18 @@ built from it, every gate passes. The guard for that is you — see
 # fetch scripts live in _data/build/ — each names its endpoint and filters
 python _data/build/fetch_qcew.py      # example; some sources need a free API key (named in SOURCES.json)
 
-# the gates
-node tools/verify.mjs                  # pages render, provenance present
-node tools/collide.mjs                 # no overlapping or clipped marks
-python _data/build/verify_claims.py    # every sentence still holds
-python _data/build/verify_consistency.py
+# install the pinned browser dependency, then run the complete suite
+npm ci
+node tools/all.mjs
+# --fast is the CI subset; it explicitly reports the checks it skips
 ```
 
-Raw fetched data is not committed — it is re-fetchable by construction, and that is the
-point. What is committed: the derive scripts, each page's derived `data/*.json`, and the
-registry that lets you check our work.
+Each page's derived `data/*.json` is committed, so a version identifies the data its charts
+render. Raw source caches are not public here. A live refetch can differ because agencies
+revise records, definitions change, or an endpoint becomes unavailable. Reproducing a pinned
+input and refreshing an upstream source are different operations; neither guarantees
+identical bytes from a later live request. See [REBUILDING.md](_data/REBUILDING.md) for the
+tested producer paths, source-custody limits, and historical rebuild failures.
 
 ## Found an error?
 
@@ -70,26 +74,21 @@ closes it.
 
 ## Not in this repository
 
-Twenty-two analyses are here after the 2026-08-31 promotion of four workshop pages
-(atlas, programs, reach, collaboration — each through a cross-model stage-7 audit and its
-named fixes before arriving). Six more exist internally and are not published, each for a
-stated reason:
+The [live index](https://polymerindustrycluster.github.io/evidence-room/) is the reader's
+directory. Unreleased work remains outside this public repository when its sources or
+editorial review do not support publication. Reasons include:
 
-- **Member-company records.** Two pages rest on a catalogue of company records including
-  membership status. Publishing those is a consent question that has not been answered.
-- **Applicant data.** Two pages describe a funding round application by application,
-  including applications that were not funded. Naming an unsuccessful applicant is not
-  something a funder gets to do.
-- **Partner reporting under embargo.** One page quotes project reporting that requires
-  partner sign-offs it does not yet have (the permission gate is printed on the page
-  itself).
-- **Rebuilt, awaiting fresh review.** Two pages were rebuilt after their audit verdicts
-  (a corrected comparator on one, a corrected decomposition on the other) and are held
-  until the rebuilt text gets a fresh independent pass rather than being waved through
-  because a gate went green.
-- One further page is held pending conversations it names.
+- **Restricted company records.** An internal classification or membership field does
+  not become public merely because it is useful to a chart.
+- **Applicant data.** An unsuccessful application is not material a funder may publish
+  simply because it appeared in an internal analysis.
+- **Partner reporting.** Material under embargo or awaiting an agreed sign-off stays
+  outside the public tree.
+- **Unfinished review.** A rebuilt comparison needs fresh independent scrutiny before
+  an earlier verdict can apply to it.
 
-Their absence is stated here rather than left to be discovered.
+An unlinked file in this repository is still public. The publication boundary is the
+repository, not whether the index links to a page.
 
 ## License
 

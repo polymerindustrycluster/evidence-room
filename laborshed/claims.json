@@ -54,15 +54,15 @@
     },
     {
       "id": "ls-distant-not-pandemic",
-      "text": "The distant-metro share is not a pandemic effect: Franklin County was already the largest external source in 2019.",
-      "source": "LODES 2019 baseline, pulled specifically to test this",
-      "assert": "D['ls']['external']['2019']['distant'] > 50000 and D['ls']['external']['2022']['adjacent'] / D['ls']['external']['2019']['adjacent'] < 1.05",
+      "text": "Jobs held by distant-metro residents were already present before the pandemic: more than 50,000 in 2019. This does not identify a pandemic effect or travel behavior.",
+      "source": "LODES 2019 baseline, all-job residence and workplace links",
+      "assert": "D['ls']['external']['2019']['distant'] > 50000",
       "actual": "(D['ls']['external']['2019'], D['ls']['external']['2022'])",
-      "falsified_if": "A revised 2019 vintage shows distant metros small. THIS CLAIM KILLED A STORY: the candidate 'remote work broke the labor shed' required Franklin to be small in 2019. It was 23,506 — already the largest. The hypothesis is dead and does not appear on this page; what survives is that adjacent and distant were always different things."
+      "falsified_if": "A revised 2019 vintage has no more than 50,000 jobs in the named distant group. A pre-pandemic baseline establishes prior presence, not the absence of a later pandemic effect."
     },
     {
       "id": "ls-distant-grew-13",
-      "text": "Distant residence grew 13 percent from 2019 to 2022 while adjacent commuting grew 1 percent (external figure title, lede).",
+      "text": "Jobs held by distant residents grew 13 percent from 2019 to 2022 while jobs held by adjacent residents grew 1 percent (external figure title).",
       "source": "LODES 2019 and 2022, adjacent vs distant totals",
       "assert": "abs(D['ls']['external']['2022']['distant'] / D['ls']['external']['2019']['distant'] - 1.134) <= 0.005 and abs(D['ls']['external']['2022']['adjacent'] / D['ls']['external']['2019']['adjacent'] - 1.014) <= 0.005",
       "actual": "(D['ls']['external']['2022']['distant'] / D['ls']['external']['2019']['distant'], D['ls']['external']['2022']['adjacent'] / D['ls']['external']['2019']['adjacent'])",
@@ -79,11 +79,11 @@
     {
       "id": "ls-not-the-cluster",
       "text": "This is the whole economy, not the polymer cluster.",
-      "source": "LODES origin-destination carries no industry dimension at any grain",
+      "source": "Census LODES8 technical specification, page 5: https://lehd.ces.census.gov/data/lodes/LODES8/LODESTechDoc8.0.pdf . S000 counts all jobs; SI01-SI03 are three broad industry groups, not polymer industries.",
       "verify": "manual",
       "assert": null,
-      "falsified_if": "Anyone describes these figures as the cluster's workforce. Industry detail exists only in the WAC workplace files, at 2-digit sectors, and cannot be crossed with residence. A polymer-specific version of this page cannot be built from this source.",
-      "checked_by": "Source-capability rule, not a data check"
+      "falsified_if": "The page stops using all-job totals, or the source gains industry detail sufficient to isolate the polymer cluster. WAC and RAC have finer industry sectors, but neither supplies polymer-specific origin-destination links.",
+      "checked_by": "2026-09-10: Census OD field definitions checked against the page's S000 all-job extraction. This is a documented source limit, not an automated assertion."
     },
     {
       "id": "ls-nine-of-twelve-jobs-more-local",

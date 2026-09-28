@@ -1,65 +1,62 @@
-"""BEA Regional Price Parities — what a dollar actually buys, by metro.
+"""Acquire BEA metro prices with their boundary definition and byte-level receipt.
 
-Every wage comparison PIC has ever made is nominal. A $1,200 weekly wage in Akron and a
-$1,200 weekly wage in San Jose are not the same wage, and RPP is the federal government's
-own answer to how much they differ. It is published as an index where the national average
-is 100, so Akron at 92.9 means the same basket costs 7.1% less here.
-
-WHAT A ROW IS
-  One (metro, year, item group) price index, national average = 100. Not a cost-of-living
-  ranking, not a quality-of-life measure, and not a statement about any individual's
-  spending. It is a price level for a fixed national basket.
-
-WHAT IT CANNOT DO
-  RPP deflates the price of things, not the cost of a career. It says nothing about whether
-  the jobs, the schools or the airport are there. A low RPP is only an advantage if the
-  wage holds up, which is exactly the comparison this enables and nobody has run.
+Usage: python fetch_rpp.py --output-dir <fresh-private-cache>
+Optional --archive <held-MARPP.zip> extracts the already acquired official archive.
+The output directory must be new. Only CSV, footnotes and a receipt are persisted;
+no API key is needed and the old rpp.json cache is never overwritten.
 """
-import json, os, time, urllib.request
+import argparse
+import csv
+from datetime import datetime, timezone
+import hashlib
+import io
+import json
+from pathlib import Path
+import urllib.request
+import zipfile
+from geography_checks import bea_boundary
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-from contact import UA  # noqa: E402  (one address, see contact.py)
-K = {}
-for l in open(os.path.expanduser("~/.env"), encoding="utf-8", errors="ignore"):
-    if "=" in l and not l.startswith("#"):
-        k, v = l.split("=", 1); K[k.strip()] = v.strip().strip('"').strip("'")
+URL = 'https://apps.bea.gov/regional/zip/MARPP.zip'
 
-LINES = {"1": "All items", "2": "Goods", "3": "Rents", "4": "Utilities", "5": "Other services"}
-YEARS = "2019,2020,2021,2022,2023"
-rows = []
-for line, label in LINES.items():
-    url = (f"https://apps.bea.gov/api/data/?UserID={K['BEA_API_KEY']}&method=GetData"
-           f"&datasetname=Regional&TableName=MARPP&LineCode={line}"
-           f"&GeoFIPS=MSA&Year={YEARS}&ResultFormat=JSON")
-    try:
-        with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=180) as r:
-            d = json.loads(r.read().decode())
-        res = d["BEAAPI"]["Results"]
-        data = res["Data"] if isinstance(res, dict) else res[0]["Data"]
-    except Exception as e:
-        print(f"  line {line}: {type(e).__name__} {str(e)[:70]}", flush=True); continue
-    n = 0
-    for o in data:
-        v = (o.get("DataValue") or "").replace(",", "")
-        try: val = float(v)
-        except ValueError: val = None
-        rows.append({"line": line, "item": label, "area": o.get("GeoFips"),
-                     "name": o.get("GeoName"), "year": int(o["TimePeriod"]), "rpp": val})
-        n += 1
-    print(f"  line {line} {label}: {n} rows", flush=True)
-    time.sleep(0.8)
 
-out = {"meta": {
-    "source": "BEA Regional Price Parities, table MARPP",
-    "row": "one (metro, year, item group) price index, US average = 100",
-    "not": "Not a cost-of-living ranking and not a quality-of-life measure. RPP prices a "
-           "fixed national basket in each metro. A low index means goods and rents are "
-           "cheaper here, nothing more.",
-    "caution": "RPP is a METRO measure. It cannot be summed to a 12-county footprint, so "
-               "anything using it is a metro-level page and says so.",
-    "fetched": "2026-08-15"}, "rows": rows}
-p = os.path.join(HERE, "rpp.json")
-json.dump(out, open(p, "w", encoding="utf-8"), separators=(",", ":"))
-yrs = sorted({r["year"] for r in rows})
-print(f"wrote {p} {round(os.path.getsize(p)/1024)} KB, {len(rows)} rows, "
-      f"{len({r['area'] for r in rows})} metros, {yrs[0]}-{yrs[-1]}")
+def extract(archive):
+    with zipfile.ZipFile(io.BytesIO(archive)) as z:
+        names = [n for n in z.namelist() if n.startswith('MARPP_MSA_') and n.endswith('.csv')]
+        if len(names) != 1:
+            raise ValueError('Expected exactly one MARPP metro CSV')
+        table = z.read(names[0])
+        foot = z.read('MARPP__Footnotes.html')
+    bea_boundary(foot)
+    reader = csv.DictReader(io.StringIO(table.decode('utf-8-sig')), skipinitialspace=True)
+    if '2024' not in (reader.fieldnames or []):
+        raise ValueError('MARPP table lacks the required 2024 comparison year')
+    metros = [r for r in reader if r.get('LineCode') == '1' and
+              'Metropolitan Statistical Area' in (r.get('GeoName') or '')]
+    if not metros or len({r['GeoFIPS'] for r in metros}) != len(metros):
+        raise ValueError('Empty or duplicate metro price rows')
+    return {Path(names[0]).name: table, 'MARPP__Footnotes.html': foot}
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output-dir', required=True, type=Path)
+    parser.add_argument('--archive', type=Path)
+    args = parser.parse_args()
+    if args.output_dir.exists():
+        raise SystemExit('Output directory already exists; choose a fresh private cache')
+    if args.archive:
+        body = args.archive.read_bytes()
+    else:
+        with urllib.request.urlopen(URL, timeout=90) as response:
+            body = response.read()
+    files = extract(body)
+    receipt = {'source_url': URL, 'recorded_at': datetime.now(timezone.utc).isoformat(),
+               'method': 'extract held official ZIP' if args.archive else 'download official ZIP',
+               'archive_sha256': hashlib.sha256(body).hexdigest(), 'archive_bytes': len(body),
+               'boundary_vintage': bea_boundary(files['MARPP__Footnotes.html'])['vintage'], 'comparison_year': 2024,
+               'files': {n: {'sha256': hashlib.sha256(b).hexdigest(), 'bytes': len(b)} for n,b in files.items()}}
+    args.output_dir.mkdir(parents=True, exist_ok=False)
+    for name, content in files.items():
+        (args.output_dir/name).write_bytes(content)
+    (args.output_dir/'rpp-receipt.json').write_text(json.dumps(receipt, indent=2)+'\n', encoding='utf-8')
+    print(json.dumps(receipt, indent=2))

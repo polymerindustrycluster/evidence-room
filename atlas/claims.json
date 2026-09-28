@@ -3,7 +3,7 @@
   "claims": [
     {
       "id": "atlas-counts",
-      "text": "147 US institutions ever filed a polymer program in the federal record, 1991–2023, across 33 states, the District of Columbia and Puerto Rico, which is the 35 jurisdictions the hero card counts. This claim's prose read '35 states plus Puerto Rico' until 2026-08-31, which adds to 36 and drops the District of Columbia; the page itself has always printed the split correctly, and the assertion now pins the 33 as well as the 35. 41 institutions had a program still conferring in 2023. 'Ever' is a 33-year union and 'still conferring' a one-year snapshot — different constructs, never stated as a ratio. Added 2026-09-01: the record holds 20,052 lifetime completions and no institution's last conferring year is 2020. Both are pinned here because until that date it held 20,859 and four institutions read 2020 — the federal mirror's duplicated year, quarantined on 2026-08-26 for every other page built on that mirror and left inside this one, which was then promoted to the public tree with it. The three counts above are the ones that survived the duplicate untouched, and their surviving is exactly why nothing here caught the ones that did not.",
+      "text": "147 US federal institution records contain polymer-program filings, 1991–2023, across 33 states, the District of Columbia and Puerto Rico, which is the 35 jurisdictions the hero card counts. This claim's prose read '35 states plus Puerto Rico' until 2026-08-31, which adds to 36 and drops the District of Columbia; the page itself has always printed the split correctly, and the assertion now pins the 33 as well as the 35. 41 institutions had a program still conferring in 2023. 'Ever' is a 33-year union and 'still conferring' a one-year snapshot — different constructs, never stated as a ratio. Added 2026-09-01: the record holds 20,052 lifetime completions and no institution's last conferring year is 2020. Both are pinned here because until that date it held 20,859 and four institutions read 2020 — the federal mirror's duplicated year, quarantined on 2026-08-26 for every other page built on that mirror and left inside this one, which was then promoted to the public tree with it. The three counts above are the ones that survived the duplicate untouched, and their surviving is exactly why nothing here caught the ones that did not.",
       "source": "polymer-programs-db census, aggregated to institutions, source='ipeds' only, with 2020 quarantined",
       "assert": "D['totals']['ever'] == 147 and D['totals']['active'] == 41 and D['totals']['states'] == 35 and len([x for x in D['states_list'] if x['state'] not in ('DC', 'PR')]) == 33 and len(D['states_list']) == 35 and len(D['dots']) == 146 and len(D['off_projection']) == 1 and D['off_projection'][0]['unitid'] == 242617 and D['totals']['active'] == sum(1 for d in D['dots'] + D['off_projection'] if d['active_programs'] > 0) and sum(d['total_awards'] for d in D['dots'] + D['off_projection']) == 20052 and not [d for d in D['dots'] + D['off_projection'] if d['last_year'] == 2020] and D['quarantined'] == {'2020': 'the Urban Institute IPEDS mirror serves 2019 data under year=2020'}",
       "actual": "(D['totals'], len(D['dots']), [o['name'] for o in D['off_projection']])",
@@ -11,7 +11,7 @@
     },
     {
       "id": "atlas-mapped-complete",
-      "text": "Every one of the 147 institutions is placed: 146 on the map, one (Inter American University of Puerto Rico–San Germán) named beside it because AlbersUSA carries no Puerto Rico inset. Seven institutions that left the directory before 2009 sit at their city's centroid, and each says so in its hover. They are placed by hand because no directory vintage carries a coordinate for them, which is a fact about the directory and not about the institutions: two of the seven are still operating today. `totals.mapped` is 147 and counts GEOCODING, not drawing: every institution got a coordinate from the IPEDS directory, which is why `totals.unmapped` is 0, and the map draws 146 of them because one falls outside the frame, which is why `totals.dropped_outside_projection` is 1. The opening strip draws all 147, because it places an institution by the size of its record and a size axis has no projection to fall off.",
+      "text": "All 147 institution records are geocoded: 146 on the map, one (Inter American University of Puerto Rico–San Germán) named beside it because AlbersUSA carries no Puerto Rico inset. Seven records that left the directory before 2009 sit at their city's centroid, and each says so in its hover. They are placed by hand because no directory vintage carries a coordinate for them, which is a fact about the directory and not about the institutions: two of the seven are still operating today. `totals.mapped` is 147 and counts GEOCODING, not drawing: each record got a directory coordinate or a documented hand centroid, which is why `totals.unmapped` is 0, and the map draws 146 of them because one falls outside the frame, which is why `totals.dropped_outside_projection` is 1. The opening strip draws all 147, because it places an institution by the size of its record and a size axis has no projection to fall off.",
       "source": "IPEDS directory coordinates via the Urban Institute API, with per-dot provenance",
       "assert": "D['totals']['unmapped'] == 0 and len(D['dots']) + len(D['off_projection']) == D['totals']['ever'] == D['totals']['mapped'] == 147 and D['totals']['dropped_outside_projection'] == len(D['off_projection']) == 1 and len(D['dots']) == D['totals']['mapped'] - D['totals']['dropped_outside_projection'] and sum(1 for d in D['dots'] + D['off_projection'] if d['coord_source'].startswith('hand')) == 7 and all('coord_source' in d for d in D['dots']) and all(k in D['off_projection'][0] for k in ('total_awards', 'active_programs'))",
       "actual": "(D['totals'], sorted(set(d['coord_source'] for d in D['dots'] if d['coord_source'].startswith('hand'))))",
@@ -35,7 +35,7 @@
     },
     {
       "id": "atlas-mi-oh-construct",
-      "text": "At institution level Michigan leads with 15 institutions ever to Ohio's 14 — while the programs page shows Ohio first on substantive programs. Institutions and programs are different units; both rankings are true and the page says so rather than picking the flattering one.",
+      "text": "By institution identifier Michigan leads with 15 records ever to Ohio's 14 — while the programs page shows Ohio first on substantive programs. Institutions and programs are different units; both rankings are true and the page says so rather than picking the flattering one.",
       "source": "polymer-programs-db census, both aggregations",
       "assert": "D['states_list'][0]['state'] == 'MI' and D['states_list'][0]['ever'] == 15 and D['states_list'][1]['state'] == 'OH' and D['states_list'][1]['ever'] == 14",
       "actual": "D['states_list'][:3]",
@@ -43,18 +43,18 @@
     },
     {
       "id": "atlas-invisible-four",
-      "text": "Four institutions confirmed to teach polymer science under chemistry or chemical-engineering codes — UChicago (Pritzker), Dartmouth, Rutgers and Brown — are drawn as hollow diamonds: the census's blind spot made visible on the map itself. There are certainly more; these are the verified ones.",
-      "source": "polymer-programs-db README, 'confirmed cases' — each verified against the institution's own program pages during the census build",
+      "text": "Four documented examples of polymer or materials teaching absent from the selected census are drawn as hollow diamonds: UChicago (Pritzker), Dartmouth, Rutgers and Brown. They do not share one verified federal filing-code explanation, and the list is not exhaustive.",
+      "source": "polymer-programs-db known_gaps.md, hand_additions.tsv, incoming/abet_programs.tsv and programs.sqlite. Held UChicago evidence identifies chemical/biomolecular engineering and engineering physics codes; Dartmouth identifies general Engineering Sciences. Rutgers and Brown are documented materials programs absent from the database; their filing codes are not established by those held records.",
       "verify": "manual",
-      "checked_by": "Claude (2026-08-21 build), against the census's confirmed-cases list; the four were verified during the census build, not re-verified today",
-      "falsified_if": "Any of the four starts filing under a polymer CIP (it then becomes a dot and leaves this list), or a fifth institution is confirmed (add it — the list understates by design and growing it strengthens the point)."
+      "checked_by": "Documentary audit 2026-09-10 and controller correction 2026-09-11; source records contradict the former shared chemistry-code explanation.",
+      "falsified_if": "An example lacks the documented teaching, or a census rebuild includes it as a counted row. Additional examples expand a non-exhaustive list rather than proving the existing four false."
     },
     {
       "id": "atlas-no-research-layer",
-      "text": "The research layer — institution-level polymer output from OpenAlex subfield 2507 — is deliberately absent from this version: its candidate list is zero-verified and the API is metered. It is the named next step, not a silent omission.",
-      "source": "polymer-programs-db known_gaps.md (openalex_candidates.tsv, 'zero individually verified'); the API-REGISTRY OpenAlex row (metered, daily budget)",
+      "text": "The research layer, institution-level polymer output from OpenAlex subfield 2507, is absent from this version. The candidate institutions have not been individually verified; this edition maps teaching records.",
+      "source": "polymer-programs-db known_gaps.md and incoming/openalex_candidates.tsv. Automated database matches on candidate rows are not individual verification of the institutions’ teaching. No claim about a current API price or spending limit is needed to explain the missing layer.",
       "verify": "manual",
-      "checked_by": "Claude (2026-08-21 build)",
+      "checked_by": "Documentary review 2026-09-10 checked the candidate file and absence of a research layer in the page. Controller narrowed wording 2026-09-11.",
       "falsified_if": "The candidates get verified and fetched under budget — at which point this claim is retired and the layer ships with its own claims."
     },
     {

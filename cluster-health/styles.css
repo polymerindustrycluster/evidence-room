@@ -14,6 +14,9 @@
    cut to buy it: the explanation of how the band is built moved to its own section rather
    than sitting between the headline and the graphic. */
 .hero{padding:32px 0 26px}
+#workplaces .chart svg{min-width:0!important;width:100%}
+#workplaces .chart::before,#workplaces .chart::after{display:none!important;content:none!important}
+#workplaces h2:not(:first-of-type){margin-top:42px}
 .band:first-of-type{padding-top:34px}
 .band:first-of-type .lede{margin-top:10px}
 

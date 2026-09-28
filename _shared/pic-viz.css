@@ -501,3 +501,8 @@ th.pv-sortable[aria-sort="descending"]::after{content:" ↓";opacity:1;color:var
  * checks the rail too. */
 .tnote{margin:14px auto 4px;max-width:var(--measure);font-size:13px;line-height:1.6;
   color:var(--caption)}
+
+/* Keyboard entry to the article, shared by page shells and the hub. */
+.skip-link{position:absolute;left:16px;top:-100px;z-index:20;background:#fff;
+  padding:12px 16px;color:var(--ink)}
+.skip-link:focus{top:8px;outline:3px solid var(--ink)}

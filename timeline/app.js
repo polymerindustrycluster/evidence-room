@@ -200,10 +200,10 @@ function loadData(file) {
     lanes.forEach((ln, i) => {
       svg.appendChild(el('rect', { class: 'lane-band' + (i % 2 ? ' alt' : ''),
         x: 0, y: ln.y, width: W, height: ln.h, rx: 8 }));
-      svg.appendChild(el('text', { class: 'lane-name', x: 0, y: ln.y + 24,
+      svg.appendChild(el('text', { class: 'lane-name', x: 4, y: ln.y + 24,
         fill: LANE_COLOR[ln.key] }, ln.name));
       const shown = ln.evs.length;
-      svg.appendChild(el('text', { class: 'lane-count', x: 0, y: ln.y + 45 },
+      svg.appendChild(el('text', { class: 'lane-count', x: 4, y: ln.y + 45 },
         shown === ln.all ? `${shown} events` : `${shown} of ${ln.all} events`));
     });
 
@@ -372,7 +372,7 @@ function loadData(file) {
     svg.appendChild(el('line', { class: 'now-rule', x1: nx, x2: nx, y1: TOP - 20, y2: laneBot }));
 
     lanes.forEach((ln) => {
-      svg.appendChild(el('text', { class: 'pnl-name', x: 0, y: ln.y + 12,
+      svg.appendChild(el('text', { class: 'pnl-name', x: 4, y: ln.y + 12,
         fill: LANE_COLOR[ln.key] }, ln.name));
       svg.appendChild(el('text', { class: 'pnl-count', x: plotR, y: ln.y + 12,
         'text-anchor': 'end' },
@@ -393,9 +393,9 @@ function loadData(file) {
       svg.appendChild(g);
     });
 
-    svg.appendChild(el('text', { class: 'now-lab', x: 0, y: laneBot + 22 }, `Today · ${NOW_LBL}`));
+    svg.appendChild(el('text', { class: 'now-lab', x: 4, y: laneBot + 22 }, `Today · ${NOW_LBL}`));
     promiseLines().forEach((s, i) => {
-      svg.appendChild(el('text', { class: 'ann', x: 0, y: laneBot + 42 + i * 16 }, s));
+      svg.appendChild(el('text', { class: 'ann', x: 4, y: laneBot + 42 + i * 16 }, s));
     });
 
     viz.appendChild(svg);
@@ -564,7 +564,7 @@ function loadData(file) {
     { id: 'H-002', text: '1898 · Goodyear founded', anchor: 'start' },
     { id: 'H-009e', text: '1991 · NSF ALCOM science center', anchor: 'middle' },
     { id: 'D-001', text: '1926 · Semon plasticizes PVC', anchor: 'middle' },
-    { id: 'H-007', text: '1963 · first polymer department', anchor: 'middle' },
+    { id: 'H-007', text: '1963 · Case polymer department', anchor: 'middle' },
     { id: 'D-009', text: '2012 · the last dated row', anchor: 'end' },
   ];
 
@@ -585,7 +585,7 @@ function loadData(file) {
      Until 2026-08-29 it was typed "2013-2023" while the last era declared itself 2000 to
      2019, so the two OVERLAPPED: any row from 2013 to 2019 was assigned to the era, and
      the column could not fill from data whatever the register said. It then carried the
-     words "eleven years, nothing proven", which was a property of that bucketing and not
+     words "eleven years, nothing documented", which was a property of that bucketing and not
      a reading of the record. The era now ends exactly where this column begins, and the
      column reports what the register actually covers inside it \u2014 which is not nothing.
      Two rows that begin in an earlier era are recorded as running on into it, the later
@@ -611,14 +611,14 @@ function loadData(file) {
     /* One sentence, two readers (the wide diagram's aria and the stacked one's), written
        once so the two cannot say different things about the same file. */
     const n = withheldIn.length;
-    const whose = `That is a silence in the proven rows, not in the register: ` +
+    const whose = `That is a silence in the documented rows, not in the register: ` +
       `${n} row${n === 1 ? '' : 's'} it labels claimed ${n === 1 ? 'falls' : 'fall'} inside ` +
       `that window and ${n === 1 ? 'is' : 'are'} withheld here, and ${otherColl} rows in its ` +
       `other collections are outside this view altogether.`;
     return { from, to, covered, runsIn, withheldIn, otherColl, whose,
       label: `${from}\u2013${to}`,
-      note: 'no new proven row starts',
-      foot: `then no proven row to ${to}` };
+      note: 'no new documented row starts',
+      foot: `then no documented row to ${to}` };
   }
 
   function renderHDiagram(W) {
@@ -640,24 +640,24 @@ function loadData(file) {
     const V = voidSpec();
     const hc = hCount();
     const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
-      'aria-label': `Two rows of ${hc.shown} proven heritage events dated ${hc.firstYear} ` +
+      'aria-label': `Two rows of ${hc.shown} documented heritage events dated ${hc.firstYear} ` +
         `to ${hc.lastYear}, running earlier to later across five era columns that are ` +
         'each the same width however many years the era ran, so distance across is not years: ' +
         HER.eras.map((x) => x.label).join(', ') + `, followed by a sixth column, ${V.label}, ` +
-        `in which no new proven row is dated. Two earlier rows are recorded as running on into that ` +
+        `in which no new documented row is dated. Two earlier rows are recorded as running on into that ` +
         `column, the later of them to ${V.covered}, and each is drawn there as a bar. ` +
         'Top row: what changed the region’s capacity. ' +
-        'Bottom row: what was first understood here. Named labels mark Goodyear 1898, PVC 1926, the first ' +
+        'Bottom row: research contributions with regional connections. Named labels mark Goodyear 1898, PVC 1926, the Case ' +
         `polymer department 1963, the ALCOM center 1991 and the last dated row in ${hc.lastYear}. After ` +
-        `${V.covered} no proven row is dated or still running until the ${DESIG_YEAR} designation. ` +
+        `${V.covered} no documented row is dated or still running until the ${DESIG_YEAR} designation. ` +
         `${V.whose} ` +
         'The same rows are in the table below.' });
 
     /* The axis title, in the gutter beside the era labels. A banded time axis looks linear
        and is not, so it says what horizontal distance means before a reader measures with
        their eye. The arithmetic of the banding stays in the methods. */
-    svg.appendChild(el('text', { class: 'era-lab', x: 0, y: L.top - 34 }, 'one column per era'));
-    svg.appendChild(el('text', { class: 'era-lab', x: 0, y: L.top - 18 }, 'width is not years'));
+    svg.appendChild(el('text', { class: 'era-lab', x: 4, y: L.top - 34 }, 'one column per era'));
+    svg.appendChild(el('text', { class: 'era-lab', x: 4, y: L.top - 18 }, 'width is not years'));
 
     // era columns
     HER.eras.forEach((era, i) => {
@@ -714,9 +714,9 @@ function loadData(file) {
     rows.forEach((r) => {
       const words = r.name.split(' ');
       const l1 = words.slice(0, 2).join(' '), l2 = words.slice(2).join(' ');
-      svg.appendChild(el('text', { class: 'lane-name', x: 0, y: r.y + 24, fill: HCOL[r.key] }, l1));
-      if (l2) svg.appendChild(el('text', { class: 'lane-name', x: 0, y: r.y + 44, fill: HCOL[r.key] }, l2));
-      svg.appendChild(el('text', { class: 'lane-count', x: 0, y: r.y + (l2 ? 65 : 45) }, `${r.evs.length} events`));
+      svg.appendChild(el('text', { class: 'lane-name', x: 4, y: r.y + 24, fill: HCOL[r.key] }, l1));
+      if (l2) svg.appendChild(el('text', { class: 'lane-name', x: 4, y: r.y + 44, fill: HCOL[r.key] }, l2));
+      svg.appendChild(el('text', { class: 'lane-count', x: 4, y: r.y + (l2 ? 65 : 45) }, `${r.evs.length} events`));
     });
     // marks
     const pos = {};
@@ -735,7 +735,7 @@ function loadData(file) {
     });
     /* Named labels in the band under each row block, leader up to the dot. The labels are
        de-collided into two tiers: adding the void column narrowed every era column, which
-       pushed "1963 · first polymer department" under the plate of "2012 · the last proven
+       pushed "1963 · Case polymer department" under the plate of "2012 · the last documented
        row" and clipped it mid-word. collide.mjs cannot see this — both are plated on
        purpose — so the spacing is computed here instead. */
     const ann = el('g', {});
@@ -816,18 +816,18 @@ function loadData(file) {
     const H = y;
 
     const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
-      'aria-label': `${hc.shown} proven heritage events in six stacked era blocks, ` +
-        HER.eras.map((x) => x.label).join(', ') + ` and a ${V.label} block in which no new proven ` +
+      'aria-label': `${hc.shown} documented heritage events in six stacked era blocks, ` +
+        HER.eras.map((x) => x.label).join(', ') + ` and a ${V.label} block in which no new documented ` +
         `row is dated. Each block is one era and runs earlier to later across the screen, so distance ` +
         'is not years. Inside each block the top row is what changed the region’s capacity and the ' +
-        `bottom row is what was first understood here. The last dated row is ${hc.lastYear}; ` +
+        `bottom row is research contributions with regional connections. The last dated row is ${hc.lastYear}; ` +
         `${V.runsIn.length} earlier rows are recorded as running on into the last block, the later ` +
-        `of them to ${V.covered}, and no proven row is dated or still running after that until ` +
+        `of them to ${V.covered}, and no documented row is dated or still running after that until ` +
         `the ${DESIG_YEAR} federal designation. ${V.whose} ` +
         'The same rows are in the table below.' });
 
     blocks.forEach((b) => {
-      svg.appendChild(el('text', { class: 'era-lab', x: 0, y: b.y + 11 }, b.era.label));
+      svg.appendChild(el('text', { class: 'era-lab', x: 4, y: b.y + 11 }, b.era.label));
       const bot = (b.era.isVoid ? b.voidY + 40 : (b.bands.length
         ? b.bands[b.bands.length - 1].y + b.bands[b.bands.length - 1].n * ROW : b.y + LABH));
       if (b.era.isVoid) {
@@ -1239,7 +1239,7 @@ function loadData(file) {
        wrapped to its own row at 1280 and the workstream count already leads the
        calendar H2. */
     PV.figures([
-      ['', hc.shown, 'Proven heritage events',
+      ['', hc.shown, 'Documented heritage events',
        `First dated ${hc.firstYear}, last ${hc.lastYear}`],
       ['', before, 'Events, 34 months before', 'Up to the October 2023 designation'],
       ['key', since, 'Delivered, 34 months since', 'The same span, to within a day'],
@@ -1291,7 +1291,7 @@ function loadData(file) {
       sources:
         `The heritage rows come from PIC’s NEO Polymer Wins register, an internal file, as of ` +
         `14 August 2026. Of its ${hc.shown + nMerged + dropped} heritage and discovery rows, ` +
-        `${hc.shown + nMerged} are labeled proven; ${nMerged} of those records the same event as ` +
+        `${hc.shown + nMerged} are labeled documented; ${nMerged} of those records the same event as ` +
         `another row, in the same words, and is merged into it, so ${hc.shown} appear here. ` +
         `${dropped} labeled claimed are withheld. ` +
         `${hc.sourcesStripped} internal source references were stripped in the build, and every row ` +
@@ -1342,7 +1342,7 @@ function loadData(file) {
       scope: `The heritage dates ${hc.firstYear} to ${hc.lastYear} are the dates of the rows, not ` +
         `the years the register covers. ${hc.spans} rows are recorded as spans, and the two longest ` +
         `run past the last row’s date, the later of them to ${hc.lastCoveredYear}. So the record ` +
-        `holds no NEW proven row after ${hc.lastYear}, and no proven row at all after ` +
+        `holds no NEW documented row after ${hc.lastYear}, and no documented row at all after ` +
         `${hc.lastCoveredYear}: those are two different silences and the shorter one is the real ` +
         `gap before the designation. Both are silences in the PROVEN heritage and discovery ` +
         `rows, which is all this page draws, and not in the register behind them. ${V.whose}`,
@@ -1355,10 +1355,10 @@ function loadData(file) {
       /* HER.meta.note says this in the register's own voice, with em-dashes the house
          prose ban does not allow, so the sentence is rewritten here rather than piped
          through. Same rule, same five withheld rows. */
-      note: 'Heritage rows appear only when PIC’s register labels them proven. Rows it labels ' +
+      note: 'Heritage rows appear only when PIC’s register labels them documented. Rows it labels ' +
         'claimed, where a date or a figure is recorded two ways, are withheld rather than shown ' +
         'with a caveat; the wartime synthetic-rubber program, its tonnage recorded four ways, is ' +
-        'one of them. The register is internal; only the proven rows and their public sources ' +
+        'one of them. The register is internal; only the documented rows and their public sources ' +
         'travel to this page.',
       small_numbers: `The year-by-year record was compiled after the designation, so its early years ` +
         `are under-counted: ${before} is the fewest the before count can be, and ` +

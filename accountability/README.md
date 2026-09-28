@@ -13,6 +13,23 @@ partner-owned), **27** executed award lines across **21** recipients and **8** a
 owners, **7** rows no public record can fill, and **n = 0** resolved commitments, so no
 keeping rate renders.
 
+## Federal-context correction — 8 September 2026
+
+Was: the closing comparison printed $34.9M a year across FY2019–FY2026, including
+unfinished FY2026, and retained an outdated federal source limitation.
+Is: $41.4M a year in 2025 dollars across the seven completed fiscal years
+FY2019–FY2025; the three federal limitations are copied from the current source files.
+Cause: the upstream category query stopped at its first page, its CPI base was wrong,
+and the prior comparison included a partial fiscal year. The mean establishes scale;
+it does not establish recurring demand or additionality.
+
+`python accountability/derive_accountability.py --federal-only` updates only the federal
+context fields and their three source limitations. It preserves every other published
+field, including historical talent corrections. Run after the scorecard's federal-only
+refresh, then `python -B _data/build/verify_claims.py accountability`.
+The article retains its original attribution and credits the federal-context update
+to Codex (OpenAI).
+
 ## Files
 
 ```
@@ -62,8 +79,9 @@ a page rendering yesterday's arithmetic fails loudly.
   of routine federal obligations (bands A, B, C, and the additionality sentence in F).
 - `public_record` — the compiled public event register behind the promise register and the
   three R&D counts (bands D and E).
-- `qcew` — the 364 plastics and rubber establishments across the twelve PIC counties, the
-  one line of context beside the membership goal (band D).
+- `qcew` — the 365 plastics and rubber establishments across the twelve PIC counties, the
+  one line of context beside the membership goal (band D). The count follows the bureau's
+  11 September 2026 re-read of the 2025 annual averages, recorded in CORRECTIONS.md.
 - `ipeds` — the two board talent-row defects quoted verbatim in the band F source line.
 
 Every other gate passes: 24 of 24 claims, no collisions, all elements on-column at seven

@@ -1,7 +1,9 @@
 {
  "meta": {
   "source": "USAspending.gov spending_by_category, place of performance",
-  "row": "One row is one obligation total for a single fiscal year, category and industry code.",
+  "row": "one (fiscal year, category, code) signed transaction obligation total",
+  "fetched": "2026-09-08",
+  "note": "NAICS rows are prime contracts only (award types A-D), exhaustively paginated. Signed obligations retain de-obligations. Calendar-year CPI approximates fiscal-year prices; FY2026 is carried at the 2025 index. The 2025 index averages eleven published months because October was unavailable.",
   "footprint": {
    "key": "pic12",
    "n": 12,
@@ -21,236 +23,2941 @@
     "Wayne"
    ],
    "note": "PIC’s official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
-   "differs": "A wider fourteen-county reading of the region also counts Crawford, Huron, Richland and Tuscarawas."
+   "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the vault’s NEO-14 includes."
   },
-  "scope": "Obligations at place of performance in the 12 PIC-12 counties. NAICS rows are filtered to 325* and 326*, chemical and plastics/rubber. County rows are all industries and are an order of magnitude larger; the two are shown separately and never summed.",
-  "caution": "Place of performance is a reported field on the award, not an observation of where the work happened. A centrally administered contract, or a prime performing through a subaward, can put the code somewhere other than the activity. An obligation is not an outlay.",
-  "excludes": "University and research awards are invisible to the NAICS view by construction: it filters to 325*/326* manufacturing codes, and a university files under 61xxxx or 5417xx. The NSF NEO-SMART Engine ($14,999,983 estimated, $7,499,984 obligated) and TARDISS do not appear in the NAICS rows. The all-industry county rows do capture them.",
+  "scope": "Obligations at place of performance in the 12 PIC-12 counties. NAICS rows are filtered to 325* and 326*, chemical and plastics/rubber. County rows are ALL industries and are an order of magnitude larger; the two are shown separately and never summed.",
+  "caution": "Place of performance is a REPORTED FIELD on the award, not an observation of where work happened: a centrally administered contract or a prime performing through a subaward can put the code somewhere other than the activity. An obligation is not an outlay.",
+  "excludes": "Research grants are excluded by this view’s prime-contract award-type filter (A-D). Contract NAICS classifies the supplies or services acquired; a university’s identity does not determine that code. The view also filters to 325*/326* manufacturing codes and reported PIC-12 place of performance. An awardee address does not establish manufacturing activity in PIC-12. The NSF NEO-SMART Engine ($14,999,983 estimated, $7,499,984 obligated) and TARDISS do not appear in the NAICS rows. The all-type county view can include research grants when their reported performance location is within the footprint.",
   "comparator": "The county rows carry no award-type filter and are therefore every federal instrument: contracts, grants, loans, direct payments and other financial assistance. They are not a contracting figure and must never be the denominator under a contracting numerator. The contracts block does that job."
  },
  "inflation": "Dollars from different years are not the same dollars. Every row carries BOTH the nominal obligation and the same figure restated in 2025 dollars using BLS CPI-U annual averages. Any total spanning more than one year must use the real column; the nominal one is kept so a reader can reconcile against USAspending itself.",
  "cpi_base": 2025,
  "cpi": {
-  "2018": 251.107,
   "2019": 255.657,
   "2020": 258.811,
   "2021": 270.97,
   "2022": 292.655,
   "2023": 304.702,
   "2024": 313.689,
-  "2025": 322.132,
-  "2026": 322.132
+  "2025": 321.943,
+  "2026": 321.943
+ },
+ "research_awards": [
+  {
+   "id": "2532460",
+   "estimated_total": 14999983,
+   "obligated": 7499984,
+   "end_date": "07/31/2036",
+   "source_url": "https://api.nsf.gov/services/v1/awards/2532460.json"
+  },
+  {
+   "id": "2330145",
+   "estimated_total": 25996432,
+   "obligated": 13698899,
+   "end_date": "08/31/2026",
+   "source_url": "https://api.nsf.gov/services/v1/awards/2330145.json"
+  }
+ ],
+ "cpi_observations": {
+  "meta": {
+   "source": "BLS CPI-U CUUR0000SA0 monthly observations",
+   "url": "https://api.bls.gov/publicAPI/v2/timeseries/data/CUUR0000SA0?startyear=2019&endyear=2025&annualaverage=true",
+   "fetched": "2026-09-08T16:22:39.169241+00:00",
+   "sha256": "7af1b1049be83f1ce532989a913c789225f16d316bf8f16e579d337f9798e4d1"
+  },
+  "rows": [
+   {
+    "year": 2019,
+    "cpi": 255.657,
+    "months": 12,
+    "periods": [
+     "M01",
+     "M02",
+     "M03",
+     "M04",
+     "M05",
+     "M06",
+     "M07",
+     "M08",
+     "M09",
+     "M10",
+     "M11",
+     "M12"
+    ]
+   },
+   {
+    "year": 2020,
+    "cpi": 258.811,
+    "months": 12,
+    "periods": [
+     "M01",
+     "M02",
+     "M03",
+     "M04",
+     "M05",
+     "M06",
+     "M07",
+     "M08",
+     "M09",
+     "M10",
+     "M11",
+     "M12"
+    ]
+   },
+   {
+    "year": 2021,
+    "cpi": 270.97,
+    "months": 12,
+    "periods": [
+     "M01",
+     "M02",
+     "M03",
+     "M04",
+     "M05",
+     "M06",
+     "M07",
+     "M08",
+     "M09",
+     "M10",
+     "M11",
+     "M12"
+    ]
+   },
+   {
+    "year": 2022,
+    "cpi": 292.655,
+    "months": 12,
+    "periods": [
+     "M01",
+     "M02",
+     "M03",
+     "M04",
+     "M05",
+     "M06",
+     "M07",
+     "M08",
+     "M09",
+     "M10",
+     "M11",
+     "M12"
+    ]
+   },
+   {
+    "year": 2023,
+    "cpi": 304.702,
+    "months": 12,
+    "periods": [
+     "M01",
+     "M02",
+     "M03",
+     "M04",
+     "M05",
+     "M06",
+     "M07",
+     "M08",
+     "M09",
+     "M10",
+     "M11",
+     "M12"
+    ]
+   },
+   {
+    "year": 2024,
+    "cpi": 313.689,
+    "months": 12,
+    "periods": [
+     "M01",
+     "M02",
+     "M03",
+     "M04",
+     "M05",
+     "M06",
+     "M07",
+     "M08",
+     "M09",
+     "M10",
+     "M11",
+     "M12"
+    ]
+   },
+   {
+    "year": 2025,
+    "cpi": 321.943,
+    "months": 11,
+    "periods": [
+     "M01",
+     "M02",
+     "M03",
+     "M04",
+     "M05",
+     "M06",
+     "M07",
+     "M08",
+     "M09",
+     "M11",
+     "M12"
+    ]
+   }
+  ]
+ },
+ "pagination": {
+  "all": [
+   {
+    "fy": 2019,
+    "category": "naics",
+    "pages": 5,
+    "rows": 489,
+    "terminal": {
+     "page": 5,
+     "next": null,
+     "previous": 4,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2019,
+    "category": "county",
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2020,
+    "category": "naics",
+    "pages": 5,
+    "rows": 488,
+    "terminal": {
+     "page": 5,
+     "next": null,
+     "previous": 4,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2020,
+    "category": "county",
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2021,
+    "category": "naics",
+    "pages": 5,
+    "rows": 455,
+    "terminal": {
+     "page": 5,
+     "next": null,
+     "previous": 4,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2021,
+    "category": "county",
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2022,
+    "category": "naics",
+    "pages": 5,
+    "rows": 442,
+    "terminal": {
+     "page": 5,
+     "next": null,
+     "previous": 4,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2022,
+    "category": "county",
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2023,
+    "category": "naics",
+    "pages": 5,
+    "rows": 446,
+    "terminal": {
+     "page": 5,
+     "next": null,
+     "previous": 4,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2023,
+    "category": "county",
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2024,
+    "category": "naics",
+    "pages": 5,
+    "rows": 446,
+    "terminal": {
+     "page": 5,
+     "next": null,
+     "previous": 4,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2024,
+    "category": "county",
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2025,
+    "category": "naics",
+    "pages": 5,
+    "rows": 421,
+    "terminal": {
+     "page": 5,
+     "next": null,
+     "previous": 4,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2025,
+    "category": "county",
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2026,
+    "category": "naics",
+    "pages": 4,
+    "rows": 359,
+    "terminal": {
+     "page": 4,
+     "next": null,
+     "previous": 3,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2026,
+    "category": "county",
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   }
+  ],
+  "contracts": [
+   {
+    "fy": 2019,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2019,
+    "category": "naics",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 5,
+    "rows": 489,
+    "terminal": {
+     "page": 5,
+     "next": null,
+     "previous": 4,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2020,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2020,
+    "category": "naics",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 5,
+    "rows": 488,
+    "terminal": {
+     "page": 5,
+     "next": null,
+     "previous": 4,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2021,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2021,
+    "category": "naics",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 5,
+    "rows": 455,
+    "terminal": {
+     "page": 5,
+     "next": null,
+     "previous": 4,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2022,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2022,
+    "category": "naics",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 5,
+    "rows": 442,
+    "terminal": {
+     "page": 5,
+     "next": null,
+     "previous": 4,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2023,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2023,
+    "category": "naics",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 5,
+    "rows": 446,
+    "terminal": {
+     "page": 5,
+     "next": null,
+     "previous": 4,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2024,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2024,
+    "category": "naics",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 5,
+    "rows": 446,
+    "terminal": {
+     "page": 5,
+     "next": null,
+     "previous": 4,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2025,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2025,
+    "category": "naics",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 5,
+    "rows": 421,
+    "terminal": {
+     "page": 5,
+     "next": null,
+     "previous": 4,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2026,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2026,
+    "category": "naics",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 4,
+    "rows": 359,
+    "terminal": {
+     "page": 4,
+     "next": null,
+     "previous": 3,
+     "hasNext": false,
+     "hasPrevious": true
+    }
+   },
+   {
+    "fy": 2019,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2020,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2021,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2022,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2023,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2024,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2025,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2026,
+    "category": "county",
+    "award_type_codes": [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2019,
+    "category": "county",
+    "award_type_codes": [
+     "IDV_A",
+     "IDV_B",
+     "IDV_B_A",
+     "IDV_B_B",
+     "IDV_B_C",
+     "IDV_C",
+     "IDV_D",
+     "IDV_E"
+    ],
+    "pages": 1,
+    "rows": 0,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2020,
+    "category": "county",
+    "award_type_codes": [
+     "IDV_A",
+     "IDV_B",
+     "IDV_B_A",
+     "IDV_B_B",
+     "IDV_B_C",
+     "IDV_C",
+     "IDV_D",
+     "IDV_E"
+    ],
+    "pages": 1,
+    "rows": 0,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2021,
+    "category": "county",
+    "award_type_codes": [
+     "IDV_A",
+     "IDV_B",
+     "IDV_B_A",
+     "IDV_B_B",
+     "IDV_B_C",
+     "IDV_C",
+     "IDV_D",
+     "IDV_E"
+    ],
+    "pages": 1,
+    "rows": 0,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2022,
+    "category": "county",
+    "award_type_codes": [
+     "IDV_A",
+     "IDV_B",
+     "IDV_B_A",
+     "IDV_B_B",
+     "IDV_B_C",
+     "IDV_C",
+     "IDV_D",
+     "IDV_E"
+    ],
+    "pages": 1,
+    "rows": 0,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2023,
+    "category": "county",
+    "award_type_codes": [
+     "IDV_A",
+     "IDV_B",
+     "IDV_B_A",
+     "IDV_B_B",
+     "IDV_B_C",
+     "IDV_C",
+     "IDV_D",
+     "IDV_E"
+    ],
+    "pages": 1,
+    "rows": 0,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2024,
+    "category": "county",
+    "award_type_codes": [
+     "IDV_A",
+     "IDV_B",
+     "IDV_B_A",
+     "IDV_B_B",
+     "IDV_B_C",
+     "IDV_C",
+     "IDV_D",
+     "IDV_E"
+    ],
+    "pages": 1,
+    "rows": 0,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2025,
+    "category": "county",
+    "award_type_codes": [
+     "IDV_A",
+     "IDV_B",
+     "IDV_B_A",
+     "IDV_B_B",
+     "IDV_B_C",
+     "IDV_C",
+     "IDV_D",
+     "IDV_E"
+    ],
+    "pages": 1,
+    "rows": 0,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2026,
+    "category": "county",
+    "award_type_codes": [
+     "IDV_A",
+     "IDV_B",
+     "IDV_B_A",
+     "IDV_B_B",
+     "IDV_B_C",
+     "IDV_C",
+     "IDV_D",
+     "IDV_E"
+    ],
+    "pages": 1,
+    "rows": 0,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2019,
+    "category": "county",
+    "award_type_codes": [
+     "02",
+     "03",
+     "04",
+     "05"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2020,
+    "category": "county",
+    "award_type_codes": [
+     "02",
+     "03",
+     "04",
+     "05"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2021,
+    "category": "county",
+    "award_type_codes": [
+     "02",
+     "03",
+     "04",
+     "05"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2022,
+    "category": "county",
+    "award_type_codes": [
+     "02",
+     "03",
+     "04",
+     "05"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2023,
+    "category": "county",
+    "award_type_codes": [
+     "02",
+     "03",
+     "04",
+     "05"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2024,
+    "category": "county",
+    "award_type_codes": [
+     "02",
+     "03",
+     "04",
+     "05"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2025,
+    "category": "county",
+    "award_type_codes": [
+     "02",
+     "03",
+     "04",
+     "05"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2026,
+    "category": "county",
+    "award_type_codes": [
+     "02",
+     "03",
+     "04",
+     "05"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2019,
+    "category": "county",
+    "award_type_codes": [
+     "07",
+     "08"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2020,
+    "category": "county",
+    "award_type_codes": [
+     "07",
+     "08"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2021,
+    "category": "county",
+    "award_type_codes": [
+     "07",
+     "08"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2022,
+    "category": "county",
+    "award_type_codes": [
+     "07",
+     "08"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2023,
+    "category": "county",
+    "award_type_codes": [
+     "07",
+     "08"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2024,
+    "category": "county",
+    "award_type_codes": [
+     "07",
+     "08"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2025,
+    "category": "county",
+    "award_type_codes": [
+     "07",
+     "08"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2026,
+    "category": "county",
+    "award_type_codes": [
+     "07",
+     "08"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2019,
+    "category": "county",
+    "award_type_codes": [
+     "06",
+     "10"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2020,
+    "category": "county",
+    "award_type_codes": [
+     "06",
+     "10"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2021,
+    "category": "county",
+    "award_type_codes": [
+     "06",
+     "10"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2022,
+    "category": "county",
+    "award_type_codes": [
+     "06",
+     "10"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2023,
+    "category": "county",
+    "award_type_codes": [
+     "06",
+     "10"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2024,
+    "category": "county",
+    "award_type_codes": [
+     "06",
+     "10"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2025,
+    "category": "county",
+    "award_type_codes": [
+     "06",
+     "10"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2026,
+    "category": "county",
+    "award_type_codes": [
+     "06",
+     "10"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2019,
+    "category": "county",
+    "award_type_codes": [
+     "09",
+     "11"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2020,
+    "category": "county",
+    "award_type_codes": [
+     "09",
+     "11"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2021,
+    "category": "county",
+    "award_type_codes": [
+     "09",
+     "11"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2022,
+    "category": "county",
+    "award_type_codes": [
+     "09",
+     "11"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2023,
+    "category": "county",
+    "award_type_codes": [
+     "09",
+     "11"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2024,
+    "category": "county",
+    "award_type_codes": [
+     "09",
+     "11"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2025,
+    "category": "county",
+    "award_type_codes": [
+     "09",
+     "11"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2026,
+    "category": "county",
+    "award_type_codes": [
+     "09",
+     "11"
+    ],
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2019,
+    "category": "county",
+    "award_type_codes": null,
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2020,
+    "category": "county",
+    "award_type_codes": null,
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2021,
+    "category": "county",
+    "award_type_codes": null,
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2022,
+    "category": "county",
+    "award_type_codes": null,
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2023,
+    "category": "county",
+    "award_type_codes": null,
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2024,
+    "category": "county",
+    "award_type_codes": null,
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2025,
+    "category": "county",
+    "award_type_codes": null,
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   },
+   {
+    "fy": 2026,
+    "category": "county",
+    "award_type_codes": null,
+    "pages": 1,
+    "rows": 12,
+    "terminal": {
+     "page": 1,
+     "next": null,
+     "previous": null,
+     "hasNext": false,
+     "hasPrevious": false
+    }
+   }
+  ]
  },
  "naics": [
+  {
+   "fy": 2019,
+   "code": "325110",
+   "name": "Petrochemical Manufacturing",
+   "amount": 93581,
+   "real": 117845
+  },
+  {
+   "fy": 2019,
+   "code": "325120",
+   "name": "Industrial Gas Manufacturing",
+   "amount": 960425,
+   "real": 1209441
+  },
+  {
+   "fy": 2019,
+   "code": "325199",
+   "name": "All Other Basic Organic Chemical Manufacturing",
+   "amount": 58478,
+   "real": 73641
+  },
+  {
+   "fy": 2019,
+   "code": "325211",
+   "name": "Plastics Material and Resin Manufacturing",
+   "amount": 25202,
+   "real": 31737
+  },
+  {
+   "fy": 2019,
+   "code": "325320",
+   "name": "Pesticide and Other Agricultural Chemical Manufacturing",
+   "amount": 15829,
+   "real": 19933
+  },
+  {
+   "fy": 2019,
+   "code": "325411",
+   "name": "Medicinal and Botanical Manufacturing",
+   "amount": 367283,
+   "real": 462511
+  },
+  {
+   "fy": 2019,
+   "code": "325412",
+   "name": "Pharmaceutical Preparation Manufacturing",
+   "amount": 908280,
+   "real": 1143776
+  },
+  {
+   "fy": 2019,
+   "code": "325413",
+   "name": "In-Vitro Diagnostic Substance Manufacturing",
+   "amount": 234325,
+   "real": 295080
+  },
   {
    "fy": 2019,
    "code": "325510",
    "name": "Paint and Coating Manufacturing",
    "amount": 5993271,
-   "real": 7551619
+   "real": 7547188
+  },
+  {
+   "fy": 2019,
+   "code": "325520",
+   "name": "Adhesive Manufacturing",
+   "amount": 1103955,
+   "real": 1390185
+  },
+  {
+   "fy": 2019,
+   "code": "325611",
+   "name": "Soap and Other Detergent Manufacturing",
+   "amount": 126712,
+   "real": 159566
+  },
+  {
+   "fy": 2019,
+   "code": "325612",
+   "name": "Polish and Other Sanitation Good Manufacturing",
+   "amount": 118157,
+   "real": 148793
+  },
+  {
+   "fy": 2019,
+   "code": "325910",
+   "name": "Printing Ink Manufacturing",
+   "amount": 8509,
+   "real": 10715
+  },
+  {
+   "fy": 2019,
+   "code": "325920",
+   "name": "Explosives Manufacturing",
+   "amount": 5078,
+   "real": 6394
+  },
+  {
+   "fy": 2019,
+   "code": "325991",
+   "name": "Custom Compounding of Purchased Resins",
+   "amount": 4752,
+   "real": 5984
+  },
+  {
+   "fy": 2019,
+   "code": "325992",
+   "name": "Photographic Film, Paper, Plate, Chemical, and Copy Toner Manufacturing",
+   "amount": 381695,
+   "real": 480659
   },
   {
    "fy": 2019,
    "code": "325998",
    "name": "All Other Miscellaneous Chemical Product and Preparation Manufacturing",
    "amount": 10714908,
-   "real": 13500959
+   "real": 13493038
+  },
+  {
+   "fy": 2019,
+   "code": "326111",
+   "name": "Plastics Bag and Pouch Manufacturing",
+   "amount": 461629,
+   "real": 581318
+  },
+  {
+   "fy": 2019,
+   "code": "326112",
+   "name": "Plastics Packaging Film and Sheet (including Laminated) Manufacturing",
+   "amount": 11800,
+   "real": 14859
+  },
+  {
+   "fy": 2019,
+   "code": "326113",
+   "name": "Unlaminated Plastics Film and Sheet (except Packaging) Manufacturing",
+   "amount": 16392,
+   "real": 20641
+  },
+  {
+   "fy": 2019,
+   "code": "326121",
+   "name": "Unlaminated Plastics Profile Shape Manufacturing",
+   "amount": 25893,
+   "real": 32606
   },
   {
    "fy": 2019,
    "code": "326122",
    "name": "Plastics Pipe and Pipe Fitting Manufacturing",
    "amount": 17226407,
-   "real": 21705554
+   "real": 21692819
+  },
+  {
+   "fy": 2019,
+   "code": "326140",
+   "name": "Polystyrene Foam Product Manufacturing",
+   "amount": 93152,
+   "real": 117304
+  },
+  {
+   "fy": 2019,
+   "code": "326160",
+   "name": "Plastics Bottle Manufacturing",
+   "amount": 76,
+   "real": 96
+  },
+  {
+   "fy": 2019,
+   "code": "326191",
+   "name": "Plastics Plumbing Fixture Manufacturing",
+   "amount": 1857,
+   "real": 2338
+  },
+  {
+   "fy": 2019,
+   "code": "326199",
+   "name": "All Other Plastics Product Manufacturing",
+   "amount": 768509,
+   "real": 967766
   },
   {
    "fy": 2019,
    "code": "326211",
    "name": "Tire Manufacturing (except Retreading)",
    "amount": 3901504,
-   "real": 4915959
+   "real": 4913074
+  },
+  {
+   "fy": 2019,
+   "code": "326220",
+   "name": "Rubber and Plastics Hoses and Belting Manufacturing",
+   "amount": 719619,
+   "real": 906200
+  },
+  {
+   "fy": 2019,
+   "code": "326291",
+   "name": "Rubber Product Manufacturing for Mechanical Use",
+   "amount": 59757,
+   "real": 75250
   },
   {
    "fy": 2019,
    "code": "326299",
    "name": "All Other Rubber Product Manufacturing",
    "amount": 3153933,
-   "real": 3974007
+   "real": 3971675
+  },
+  {
+   "fy": 2020,
+   "code": "325110",
+   "name": "Petrochemical Manufacturing",
+   "amount": 153938,
+   "real": 191489
   },
   {
    "fy": 2020,
    "code": "325120",
    "name": "Industrial Gas Manufacturing",
    "amount": 1364585,
-   "real": 1698446
+   "real": 1697449
+  },
+  {
+   "fy": 2020,
+   "code": "325130",
+   "name": "Synthetic Dye and Pigment Manufacturing",
+   "amount": 12481,
+   "real": 15525
+  },
+  {
+   "fy": 2020,
+   "code": "325180",
+   "name": "Other Basic Inorganic Chemical Manufacturing",
+   "amount": 197817,
+   "real": 246071
+  },
+  {
+   "fy": 2020,
+   "code": "325194",
+   "name": "Cyclic Crude, Intermediate, and Gum and Wood Chemical Manufacturing",
+   "amount": 2209,
+   "real": 2748
+  },
+  {
+   "fy": 2020,
+   "code": "325199",
+   "name": "All Other Basic Organic Chemical Manufacturing",
+   "amount": 61183,
+   "real": 76107
+  },
+  {
+   "fy": 2020,
+   "code": "325211",
+   "name": "Plastics Material and Resin Manufacturing",
+   "amount": 180073,
+   "real": 223999
+  },
+  {
+   "fy": 2020,
+   "code": "325320",
+   "name": "Pesticide and Other Agricultural Chemical Manufacturing",
+   "amount": 31359,
+   "real": 39008
+  },
+  {
+   "fy": 2020,
+   "code": "325411",
+   "name": "Medicinal and Botanical Manufacturing",
+   "amount": 368528,
+   "real": 458423
+  },
+  {
+   "fy": 2020,
+   "code": "325412",
+   "name": "Pharmaceutical Preparation Manufacturing",
+   "amount": -55741,
+   "real": -69338
+  },
+  {
+   "fy": 2020,
+   "code": "325413",
+   "name": "In-Vitro Diagnostic Substance Manufacturing",
+   "amount": 1091964,
+   "real": 1358327
   },
   {
    "fy": 2020,
    "code": "325510",
    "name": "Paint and Coating Manufacturing",
    "amount": 4723867,
-   "real": 5879614
+   "real": 5876164
+  },
+  {
+   "fy": 2020,
+   "code": "325520",
+   "name": "Adhesive Manufacturing",
+   "amount": 159336,
+   "real": 198203
+  },
+  {
+   "fy": 2020,
+   "code": "325611",
+   "name": "Soap and Other Detergent Manufacturing",
+   "amount": 371497,
+   "real": 462116
+  },
+  {
+   "fy": 2020,
+   "code": "325612",
+   "name": "Polish and Other Sanitation Good Manufacturing",
+   "amount": 150404,
+   "real": 187093
+  },
+  {
+   "fy": 2020,
+   "code": "325920",
+   "name": "Explosives Manufacturing",
+   "amount": 6316,
+   "real": 7857
+  },
+  {
+   "fy": 2020,
+   "code": "325992",
+   "name": "Photographic Film, Paper, Plate, Chemical, and Copy Toner Manufacturing",
+   "amount": 38364,
+   "real": 47723
   },
   {
    "fy": 2020,
    "code": "325998",
    "name": "All Other Miscellaneous Chemical Product and Preparation Manufacturing",
    "amount": 8009167,
-   "real": 9968699
+   "real": 9962850
+  },
+  {
+   "fy": 2020,
+   "code": "326111",
+   "name": "Plastics Bag and Pouch Manufacturing",
+   "amount": 743423,
+   "real": 924766
+  },
+  {
+   "fy": 2020,
+   "code": "326112",
+   "name": "Plastics Packaging Film and Sheet (including Laminated) Manufacturing",
+   "amount": 14329,
+   "real": 17824
+  },
+  {
+   "fy": 2020,
+   "code": "326113",
+   "name": "Unlaminated Plastics Film and Sheet (except Packaging) Manufacturing",
+   "amount": 21598,
+   "real": 26867
+  },
+  {
+   "fy": 2020,
+   "code": "326121",
+   "name": "Unlaminated Plastics Profile Shape Manufacturing",
+   "amount": 0,
+   "real": 0
+  },
+  {
+   "fy": 2020,
+   "code": "326122",
+   "name": "Plastics Pipe and Pipe Fitting Manufacturing",
+   "amount": 645163,
+   "real": 802538
+  },
+  {
+   "fy": 2020,
+   "code": "326130",
+   "name": "Laminated Plastics Plate, Sheet (except Packaging), and Shape Manufacturing",
+   "amount": 29045,
+   "real": 36131
+  },
+  {
+   "fy": 2020,
+   "code": "326140",
+   "name": "Polystyrene Foam Product Manufacturing",
+   "amount": 129600,
+   "real": 161213
+  },
+  {
+   "fy": 2020,
+   "code": "326191",
+   "name": "Plastics Plumbing Fixture Manufacturing",
+   "amount": 83,
+   "real": 103
+  },
+  {
+   "fy": 2020,
+   "code": "326199",
+   "name": "All Other Plastics Product Manufacturing",
+   "amount": 187449,
+   "real": 233173
+  },
+  {
+   "fy": 2020,
+   "code": "326211",
+   "name": "Tire Manufacturing (except Retreading)",
+   "amount": 1060695,
+   "real": 1319431
+  },
+  {
+   "fy": 2020,
+   "code": "326220",
+   "name": "Rubber and Plastics Hoses and Belting Manufacturing",
+   "amount": 664796,
+   "real": 826960
+  },
+  {
+   "fy": 2020,
+   "code": "326291",
+   "name": "Rubber Product Manufacturing for Mechanical Use",
+   "amount": 508803,
+   "real": 632916
   },
   {
    "fy": 2020,
    "code": "326299",
    "name": "All Other Rubber Product Manufacturing",
    "amount": 11451563,
-   "real": 14253315
+   "real": 14244953
+  },
+  {
+   "fy": 2021,
+   "code": "325110",
+   "name": "Petrochemical Manufacturing",
+   "amount": 367195,
+   "real": 436269
   },
   {
    "fy": 2021,
    "code": "325120",
    "name": "Industrial Gas Manufacturing",
    "amount": 1570903,
-   "real": 1867506
+   "real": 1866410
+  },
+  {
+   "fy": 2021,
+   "code": "325199",
+   "name": "All Other Basic Organic Chemical Manufacturing",
+   "amount": 65979,
+   "real": 78391
+  },
+  {
+   "fy": 2021,
+   "code": "325211",
+   "name": "Plastics Material and Resin Manufacturing",
+   "amount": 229198,
+   "real": 272313
+  },
+  {
+   "fy": 2021,
+   "code": "325220",
+   "name": "Artificial and Synthetic Fibers and Filaments Manufacturing",
+   "amount": 155641,
+   "real": 184919
+  },
+  {
+   "fy": 2021,
+   "code": "325411",
+   "name": "Medicinal and Botanical Manufacturing",
+   "amount": 213991,
+   "real": 254246
+  },
+  {
+   "fy": 2021,
+   "code": "325412",
+   "name": "Pharmaceutical Preparation Manufacturing",
+   "amount": 47017,
+   "real": 55862
   },
   {
    "fy": 2021,
    "code": "325413",
    "name": "In-Vitro Diagnostic Substance Manufacturing",
    "amount": 1682386,
-   "real": 2000039
+   "real": 1998865
+  },
+  {
+   "fy": 2021,
+   "code": "325414",
+   "name": "Biological Product (except Diagnostic) Manufacturing",
+   "amount": 23997,
+   "real": 28511
   },
   {
    "fy": 2021,
    "code": "325510",
    "name": "Paint and Coating Manufacturing",
    "amount": 3018029,
-   "real": 3587865
+   "real": 3585759
+  },
+  {
+   "fy": 2021,
+   "code": "325520",
+   "name": "Adhesive Manufacturing",
+   "amount": 39546,
+   "real": 46985
+  },
+  {
+   "fy": 2021,
+   "code": "325611",
+   "name": "Soap and Other Detergent Manufacturing",
+   "amount": 279803,
+   "real": 332438
+  },
+  {
+   "fy": 2021,
+   "code": "325612",
+   "name": "Polish and Other Sanitation Good Manufacturing",
+   "amount": 84809,
+   "real": 100763
+  },
+  {
+   "fy": 2021,
+   "code": "325920",
+   "name": "Explosives Manufacturing",
+   "amount": -1154,
+   "real": -1371
+  },
+  {
+   "fy": 2021,
+   "code": "325992",
+   "name": "Photographic Film, Paper, Plate, Chemical, and Copy Toner Manufacturing",
+   "amount": 202283,
+   "real": 240335
+  },
+  {
+   "fy": 2021,
+   "code": "325998",
+   "name": "All Other Miscellaneous Chemical Product and Preparation Manufacturing",
+   "amount": 397742,
+   "real": 472563
+  },
+  {
+   "fy": 2021,
+   "code": "326111",
+   "name": "Plastics Bag and Pouch Manufacturing",
+   "amount": 176162,
+   "real": 209300
+  },
+  {
+   "fy": 2021,
+   "code": "326113",
+   "name": "Unlaminated Plastics Film and Sheet (except Packaging) Manufacturing",
+   "amount": 0,
+   "real": 0
   },
   {
    "fy": 2021,
    "code": "326122",
    "name": "Plastics Pipe and Pipe Fitting Manufacturing",
    "amount": 1520450,
-   "real": 1807527
+   "real": 1806466
+  },
+  {
+   "fy": 2021,
+   "code": "326130",
+   "name": "Laminated Plastics Plate, Sheet (except Packaging), and Shape Manufacturing",
+   "amount": 36853,
+   "real": 43785
+  },
+  {
+   "fy": 2021,
+   "code": "326140",
+   "name": "Polystyrene Foam Product Manufacturing",
+   "amount": 40776,
+   "real": 48446
+  },
+  {
+   "fy": 2021,
+   "code": "326191",
+   "name": "Plastics Plumbing Fixture Manufacturing",
+   "amount": 16,
+   "real": 19
+  },
+  {
+   "fy": 2021,
+   "code": "326199",
+   "name": "All Other Plastics Product Manufacturing",
+   "amount": 735961,
+   "real": 874405
   },
   {
    "fy": 2021,
    "code": "326211",
    "name": "Tire Manufacturing (except Retreading)",
    "amount": 8875638,
-   "real": 10551452
+   "real": 10545261
+  },
+  {
+   "fy": 2021,
+   "code": "326220",
+   "name": "Rubber and Plastics Hoses and Belting Manufacturing",
+   "amount": 840192,
+   "real": 998243
+  },
+  {
+   "fy": 2021,
+   "code": "326291",
+   "name": "Rubber Product Manufacturing for Mechanical Use",
+   "amount": 265093,
+   "real": 314960
   },
   {
    "fy": 2021,
    "code": "326299",
    "name": "All Other Rubber Product Manufacturing",
    "amount": 26027374,
-   "real": 30941617
+   "real": 30923463
+  },
+  {
+   "fy": 2022,
+   "code": "325110",
+   "name": "Petrochemical Manufacturing",
+   "amount": 134809,
+   "real": 148300
   },
   {
    "fy": 2022,
    "code": "325120",
    "name": "Industrial Gas Manufacturing",
    "amount": 1578671,
-   "real": 1737679
+   "real": 1736660
+  },
+  {
+   "fy": 2022,
+   "code": "325130",
+   "name": "Synthetic Dye and Pigment Manufacturing",
+   "amount": 4195,
+   "real": 4615
+  },
+  {
+   "fy": 2022,
+   "code": "325180",
+   "name": "Other Basic Inorganic Chemical Manufacturing",
+   "amount": 95505,
+   "real": 105062
+  },
+  {
+   "fy": 2022,
+   "code": "325199",
+   "name": "All Other Basic Organic Chemical Manufacturing",
+   "amount": 40419,
+   "real": 44464
+  },
+  {
+   "fy": 2022,
+   "code": "325211",
+   "name": "Plastics Material and Resin Manufacturing",
+   "amount": 312509,
+   "real": 343784
+  },
+  {
+   "fy": 2022,
+   "code": "325320",
+   "name": "Pesticide and Other Agricultural Chemical Manufacturing",
+   "amount": 11777,
+   "real": 12955
+  },
+  {
+   "fy": 2022,
+   "code": "325411",
+   "name": "Medicinal and Botanical Manufacturing",
+   "amount": 270376,
+   "real": 297435
+  },
+  {
+   "fy": 2022,
+   "code": "325412",
+   "name": "Pharmaceutical Preparation Manufacturing",
+   "amount": 19517,
+   "real": 21471
   },
   {
    "fy": 2022,
    "code": "325413",
    "name": "In-Vitro Diagnostic Substance Manufacturing",
    "amount": 1275442,
-   "real": 1403908
+   "real": 1403084
+  },
+  {
+   "fy": 2022,
+   "code": "325414",
+   "name": "Biological Product (except Diagnostic) Manufacturing",
+   "amount": 125932,
+   "real": 138535
   },
   {
    "fy": 2022,
    "code": "325510",
    "name": "Paint and Coating Manufacturing",
    "amount": 3119729,
-   "real": 3433956
+   "real": 3431941
+  },
+  {
+   "fy": 2022,
+   "code": "325520",
+   "name": "Adhesive Manufacturing",
+   "amount": 7680,
+   "real": 8448
+  },
+  {
+   "fy": 2022,
+   "code": "325611",
+   "name": "Soap and Other Detergent Manufacturing",
+   "amount": 130203,
+   "real": 143234
+  },
+  {
+   "fy": 2022,
+   "code": "325612",
+   "name": "Polish and Other Sanitation Good Manufacturing",
+   "amount": 57371,
+   "real": 63112
+  },
+  {
+   "fy": 2022,
+   "code": "325910",
+   "name": "Printing Ink Manufacturing",
+   "amount": 19629,
+   "real": 21593
+  },
+  {
+   "fy": 2022,
+   "code": "325920",
+   "name": "Explosives Manufacturing",
+   "amount": 2100,
+   "real": 2310
+  },
+  {
+   "fy": 2022,
+   "code": "325992",
+   "name": "Photographic Film, Paper, Plate, Chemical, and Copy Toner Manufacturing",
+   "amount": -65508,
+   "real": -72064
+  },
+  {
+   "fy": 2022,
+   "code": "325998",
+   "name": "All Other Miscellaneous Chemical Product and Preparation Manufacturing",
+   "amount": 216344,
+   "real": 237996
+  },
+  {
+   "fy": 2022,
+   "code": "326111",
+   "name": "Plastics Bag and Pouch Manufacturing",
+   "amount": 39955,
+   "real": 43954
+  },
+  {
+   "fy": 2022,
+   "code": "326121",
+   "name": "Unlaminated Plastics Profile Shape Manufacturing",
+   "amount": 2864,
+   "real": 3151
+  },
+  {
+   "fy": 2022,
+   "code": "326122",
+   "name": "Plastics Pipe and Pipe Fitting Manufacturing",
+   "amount": 418660,
+   "real": 460558
+  },
+  {
+   "fy": 2022,
+   "code": "326130",
+   "name": "Laminated Plastics Plate, Sheet (except Packaging), and Shape Manufacturing",
+   "amount": 8044,
+   "real": 8849
+  },
+  {
+   "fy": 2022,
+   "code": "326140",
+   "name": "Polystyrene Foam Product Manufacturing",
+   "amount": 245375,
+   "real": 269931
+  },
+  {
+   "fy": 2022,
+   "code": "326191",
+   "name": "Plastics Plumbing Fixture Manufacturing",
+   "amount": 110645,
+   "real": 121718
+  },
+  {
+   "fy": 2022,
+   "code": "326199",
+   "name": "All Other Plastics Product Manufacturing",
+   "amount": 34675,
+   "real": 38145
   },
   {
    "fy": 2022,
    "code": "326211",
    "name": "Tire Manufacturing (except Retreading)",
    "amount": 18324225,
-   "real": 20169891
+   "real": 20158057
   },
   {
    "fy": 2022,
    "code": "326220",
    "name": "Rubber and Plastics Hoses and Belting Manufacturing",
    "amount": 1874100,
-   "real": 2062864
+   "real": 2061654
+  },
+  {
+   "fy": 2022,
+   "code": "326291",
+   "name": "Rubber Product Manufacturing for Mechanical Use",
+   "amount": 863056,
+   "real": 949428
   },
   {
    "fy": 2022,
    "code": "326299",
    "name": "All Other Rubber Product Manufacturing",
    "amount": 13408782,
-   "real": 14759351
+   "real": 14750691
+  },
+  {
+   "fy": 2023,
+   "code": "325110",
+   "name": "Petrochemical Manufacturing",
+   "amount": 120054,
+   "real": 126847
   },
   {
    "fy": 2023,
    "code": "325120",
    "name": "Industrial Gas Manufacturing",
    "amount": 1539453,
-   "real": 1627515
+   "real": 1626560
+  },
+  {
+   "fy": 2023,
+   "code": "325130",
+   "name": "Synthetic Dye and Pigment Manufacturing",
+   "amount": 16343,
+   "real": 17267
+  },
+  {
+   "fy": 2023,
+   "code": "325180",
+   "name": "Other Basic Inorganic Chemical Manufacturing",
+   "amount": 16116,
+   "real": 17028
+  },
+  {
+   "fy": 2023,
+   "code": "325199",
+   "name": "All Other Basic Organic Chemical Manufacturing",
+   "amount": 71111,
+   "real": 75134
+  },
+  {
+   "fy": 2023,
+   "code": "325211",
+   "name": "Plastics Material and Resin Manufacturing",
+   "amount": 2968,
+   "real": 3136
+  },
+  {
+   "fy": 2023,
+   "code": "325320",
+   "name": "Pesticide and Other Agricultural Chemical Manufacturing",
+   "amount": 94338,
+   "real": 99675
+  },
+  {
+   "fy": 2023,
+   "code": "325411",
+   "name": "Medicinal and Botanical Manufacturing",
+   "amount": 63823,
+   "real": 67434
+  },
+  {
+   "fy": 2023,
+   "code": "325412",
+   "name": "Pharmaceutical Preparation Manufacturing",
+   "amount": 1680,
+   "real": 1775
+  },
+  {
+   "fy": 2023,
+   "code": "325413",
+   "name": "In-Vitro Diagnostic Substance Manufacturing",
+   "amount": 322656,
+   "real": 340913
+  },
+  {
+   "fy": 2023,
+   "code": "325414",
+   "name": "Biological Product (except Diagnostic) Manufacturing",
+   "amount": 274312,
+   "real": 289834
   },
   {
    "fy": 2023,
    "code": "325510",
    "name": "Paint and Coating Manufacturing",
    "amount": 1219284,
-   "real": 1289031
+   "real": 1288275
+  },
+  {
+   "fy": 2023,
+   "code": "325520",
+   "name": "Adhesive Manufacturing",
+   "amount": 555,
+   "real": 587
+  },
+  {
+   "fy": 2023,
+   "code": "325611",
+   "name": "Soap and Other Detergent Manufacturing",
+   "amount": 50740,
+   "real": 53611
+  },
+  {
+   "fy": 2023,
+   "code": "325612",
+   "name": "Polish and Other Sanitation Good Manufacturing",
+   "amount": 75365,
+   "real": 79630
+  },
+  {
+   "fy": 2023,
+   "code": "325910",
+   "name": "Printing Ink Manufacturing",
+   "amount": 8371,
+   "real": 8845
+  },
+  {
+   "fy": 2023,
+   "code": "325920",
+   "name": "Explosives Manufacturing",
+   "amount": 13488,
+   "real": 14251
+  },
+  {
+   "fy": 2023,
+   "code": "325991",
+   "name": "Custom Compounding of Purchased Resins",
+   "amount": 62438,
+   "real": 65971
+  },
+  {
+   "fy": 2023,
+   "code": "325992",
+   "name": "Photographic Film, Paper, Plate, Chemical, and Copy Toner Manufacturing",
+   "amount": 22082,
+   "real": 23331
+  },
+  {
+   "fy": 2023,
+   "code": "325998",
+   "name": "All Other Miscellaneous Chemical Product and Preparation Manufacturing",
+   "amount": 156537,
+   "real": 165394
+  },
+  {
+   "fy": 2023,
+   "code": "326121",
+   "name": "Unlaminated Plastics Profile Shape Manufacturing",
+   "amount": 2939,
+   "real": 3105
+  },
+  {
+   "fy": 2023,
+   "code": "326122",
+   "name": "Plastics Pipe and Pipe Fitting Manufacturing",
+   "amount": 16602,
+   "real": 17542
+  },
+  {
+   "fy": 2023,
+   "code": "326130",
+   "name": "Laminated Plastics Plate, Sheet (except Packaging), and Shape Manufacturing",
+   "amount": 27401,
+   "real": 28952
+  },
+  {
+   "fy": 2023,
+   "code": "326191",
+   "name": "Plastics Plumbing Fixture Manufacturing",
+   "amount": 86995,
+   "real": 91917
+  },
+  {
+   "fy": 2023,
+   "code": "326199",
+   "name": "All Other Plastics Product Manufacturing",
+   "amount": 247577,
+   "real": 261586
+  },
+  {
+   "fy": 2023,
+   "code": "326211",
+   "name": "Tire Manufacturing (except Retreading)",
+   "amount": 1175829,
+   "real": 1242361
   },
   {
    "fy": 2023,
    "code": "326220",
    "name": "Rubber and Plastics Hoses and Belting Manufacturing",
    "amount": 2036164,
-   "real": 2152639
+   "real": 2151376
+  },
+  {
+   "fy": 2023,
+   "code": "326291",
+   "name": "Rubber Product Manufacturing for Mechanical Use",
+   "amount": 408201,
+   "real": 431298
   },
   {
    "fy": 2023,
    "code": "326299",
    "name": "All Other Rubber Product Manufacturing",
    "amount": 11245630,
-   "real": 11888918
+   "real": 11881943
+  },
+  {
+   "fy": 2024,
+   "code": "325110",
+   "name": "Petrochemical Manufacturing",
+   "amount": 27648,
+   "real": 28375
   },
   {
    "fy": 2024,
    "code": "325120",
    "name": "Industrial Gas Manufacturing",
    "amount": 1644745,
-   "real": 1689013
+   "real": 1688022
+  },
+  {
+   "fy": 2024,
+   "code": "325180",
+   "name": "Other Basic Inorganic Chemical Manufacturing",
+   "amount": 132,
+   "real": 135
+  },
+  {
+   "fy": 2024,
+   "code": "325199",
+   "name": "All Other Basic Organic Chemical Manufacturing",
+   "amount": 110665,
+   "real": 113576
+  },
+  {
+   "fy": 2024,
+   "code": "325211",
+   "name": "Plastics Material and Resin Manufacturing",
+   "amount": 24097,
+   "real": 24731
+  },
+  {
+   "fy": 2024,
+   "code": "325212",
+   "name": "Synthetic Rubber Manufacturing",
+   "amount": 79162,
+   "real": 81245
+  },
+  {
+   "fy": 2024,
+   "code": "325320",
+   "name": "Pesticide and Other Agricultural Chemical Manufacturing",
+   "amount": 12497,
+   "real": 12826
+  },
+  {
+   "fy": 2024,
+   "code": "325411",
+   "name": "Medicinal and Botanical Manufacturing",
+   "amount": 66755,
+   "real": 68511
+  },
+  {
+   "fy": 2024,
+   "code": "325413",
+   "name": "In-Vitro Diagnostic Substance Manufacturing",
+   "amount": 316057,
+   "real": 324373
+  },
+  {
+   "fy": 2024,
+   "code": "325414",
+   "name": "Biological Product (except Diagnostic) Manufacturing",
+   "amount": 19300,
+   "real": 19808
   },
   {
    "fy": 2024,
    "code": "325510",
    "name": "Paint and Coating Manufacturing",
    "amount": 2663193,
-   "real": 2734874
+   "real": 2733269
+  },
+  {
+   "fy": 2024,
+   "code": "325520",
+   "name": "Adhesive Manufacturing",
+   "amount": 1221,
+   "real": 1253
+  },
+  {
+   "fy": 2024,
+   "code": "325611",
+   "name": "Soap and Other Detergent Manufacturing",
+   "amount": -61437,
+   "real": -63054
+  },
+  {
+   "fy": 2024,
+   "code": "325612",
+   "name": "Polish and Other Sanitation Good Manufacturing",
+   "amount": 121102,
+   "real": 124288
+  },
+  {
+   "fy": 2024,
+   "code": "325910",
+   "name": "Printing Ink Manufacturing",
+   "amount": 17947,
+   "real": 18420
+  },
+  {
+   "fy": 2024,
+   "code": "325920",
+   "name": "Explosives Manufacturing",
+   "amount": 823811,
+   "real": 845488
+  },
+  {
+   "fy": 2024,
+   "code": "325991",
+   "name": "Custom Compounding of Purchased Resins",
+   "amount": 87506,
+   "real": 89808
+  },
+  {
+   "fy": 2024,
+   "code": "325992",
+   "name": "Photographic Film, Paper, Plate, Chemical, and Copy Toner Manufacturing",
+   "amount": -1042,
+   "real": -1069
+  },
+  {
+   "fy": 2024,
+   "code": "325998",
+   "name": "All Other Miscellaneous Chemical Product and Preparation Manufacturing",
+   "amount": 185615,
+   "real": 190499
+  },
+  {
+   "fy": 2024,
+   "code": "326111",
+   "name": "Plastics Bag and Pouch Manufacturing",
+   "amount": 45894,
+   "real": 47101
+  },
+  {
+   "fy": 2024,
+   "code": "326122",
+   "name": "Plastics Pipe and Pipe Fitting Manufacturing",
+   "amount": 106119,
+   "real": 108911
+  },
+  {
+   "fy": 2024,
+   "code": "326140",
+   "name": "Polystyrene Foam Product Manufacturing",
+   "amount": 121800,
+   "real": 125005
+  },
+  {
+   "fy": 2024,
+   "code": "326191",
+   "name": "Plastics Plumbing Fixture Manufacturing",
+   "amount": 89227,
+   "real": 91575
+  },
+  {
+   "fy": 2024,
+   "code": "326199",
+   "name": "All Other Plastics Product Manufacturing",
+   "amount": 116799,
+   "real": 119872
   },
   {
    "fy": 2024,
    "code": "326211",
    "name": "Tire Manufacturing (except Retreading)",
    "amount": 12468847,
-   "real": 12804448
+   "real": 12796935
   },
   {
    "fy": 2024,
    "code": "326220",
    "name": "Rubber and Plastics Hoses and Belting Manufacturing",
    "amount": 2366157,
-   "real": 2429843
+   "real": 2428417
+  },
+  {
+   "fy": 2024,
+   "code": "326291",
+   "name": "Rubber Product Manufacturing for Mechanical Use",
+   "amount": 107776,
+   "real": 110612
   },
   {
    "fy": 2024,
    "code": "326299",
    "name": "All Other Rubber Product Manufacturing",
    "amount": 2802648,
-   "real": 2878082
+   "real": 2876394
+  },
+  {
+   "fy": 2025,
+   "code": "325110",
+   "name": "Petrochemical Manufacturing",
+   "amount": 126720,
+   "real": 126720
   },
   {
    "fy": 2025,
@@ -261,10 +2968,136 @@
   },
   {
    "fy": 2025,
+   "code": "325199",
+   "name": "All Other Basic Organic Chemical Manufacturing",
+   "amount": -2003,
+   "real": -2003
+  },
+  {
+   "fy": 2025,
+   "code": "325211",
+   "name": "Plastics Material and Resin Manufacturing",
+   "amount": 87066,
+   "real": 87066
+  },
+  {
+   "fy": 2025,
+   "code": "325411",
+   "name": "Medicinal and Botanical Manufacturing",
+   "amount": 77341,
+   "real": 77341
+  },
+  {
+   "fy": 2025,
+   "code": "325412",
+   "name": "Pharmaceutical Preparation Manufacturing",
+   "amount": 224211,
+   "real": 224211
+  },
+  {
+   "fy": 2025,
+   "code": "325413",
+   "name": "In-Vitro Diagnostic Substance Manufacturing",
+   "amount": 563010,
+   "real": 563010
+  },
+  {
+   "fy": 2025,
+   "code": "325414",
+   "name": "Biological Product (except Diagnostic) Manufacturing",
+   "amount": 196479,
+   "real": 196479
+  },
+  {
+   "fy": 2025,
    "code": "325510",
    "name": "Paint and Coating Manufacturing",
    "amount": 1476955,
    "real": 1476955
+  },
+  {
+   "fy": 2025,
+   "code": "325520",
+   "name": "Adhesive Manufacturing",
+   "amount": 28393,
+   "real": 28393
+  },
+  {
+   "fy": 2025,
+   "code": "325611",
+   "name": "Soap and Other Detergent Manufacturing",
+   "amount": 43416,
+   "real": 43416
+  },
+  {
+   "fy": 2025,
+   "code": "325612",
+   "name": "Polish and Other Sanitation Good Manufacturing",
+   "amount": 90826,
+   "real": 90826
+  },
+  {
+   "fy": 2025,
+   "code": "325920",
+   "name": "Explosives Manufacturing",
+   "amount": -135760,
+   "real": -135760
+  },
+  {
+   "fy": 2025,
+   "code": "325991",
+   "name": "Custom Compounding of Purchased Resins",
+   "amount": 168533,
+   "real": 168533
+  },
+  {
+   "fy": 2025,
+   "code": "325992",
+   "name": "Photographic Film, Paper, Plate, Chemical, and Copy Toner Manufacturing",
+   "amount": 5463,
+   "real": 5463
+  },
+  {
+   "fy": 2025,
+   "code": "325998",
+   "name": "All Other Miscellaneous Chemical Product and Preparation Manufacturing",
+   "amount": 157293,
+   "real": 157293
+  },
+  {
+   "fy": 2025,
+   "code": "326111",
+   "name": "Plastics Bag and Pouch Manufacturing",
+   "amount": 4268,
+   "real": 4268
+  },
+  {
+   "fy": 2025,
+   "code": "326121",
+   "name": "Unlaminated Plastics Profile Shape Manufacturing",
+   "amount": 20933,
+   "real": 20933
+  },
+  {
+   "fy": 2025,
+   "code": "326122",
+   "name": "Plastics Pipe and Pipe Fitting Manufacturing",
+   "amount": 26396,
+   "real": 26396
+  },
+  {
+   "fy": 2025,
+   "code": "326191",
+   "name": "Plastics Plumbing Fixture Manufacturing",
+   "amount": 5759,
+   "real": 5759
+  },
+  {
+   "fy": 2025,
+   "code": "326199",
+   "name": "All Other Plastics Product Manufacturing",
+   "amount": 169070,
+   "real": 169070
   },
   {
    "fy": 2025,
@@ -282,6 +3115,13 @@
   },
   {
    "fy": 2025,
+   "code": "326291",
+   "name": "Rubber Product Manufacturing for Mechanical Use",
+   "amount": 382923,
+   "real": 382923
+  },
+  {
+   "fy": 2025,
    "code": "326299",
    "name": "All Other Rubber Product Manufacturing",
    "amount": 2332310,
@@ -289,10 +3129,143 @@
   },
   {
    "fy": 2026,
+   "code": "325120",
+   "name": "Industrial Gas Manufacturing",
+   "amount": 22361,
+   "real": 22361
+  },
+  {
+   "fy": 2026,
+   "code": "325130",
+   "name": "Synthetic Dye and Pigment Manufacturing",
+   "amount": 86856,
+   "real": 86856
+  },
+  {
+   "fy": 2026,
+   "code": "325199",
+   "name": "All Other Basic Organic Chemical Manufacturing",
+   "amount": 5208,
+   "real": 5208
+  },
+  {
+   "fy": 2026,
+   "code": "325211",
+   "name": "Plastics Material and Resin Manufacturing",
+   "amount": 7562,
+   "real": 7562
+  },
+  {
+   "fy": 2026,
+   "code": "325411",
+   "name": "Medicinal and Botanical Manufacturing",
+   "amount": 93134,
+   "real": 93134
+  },
+  {
+   "fy": 2026,
+   "code": "325412",
+   "name": "Pharmaceutical Preparation Manufacturing",
+   "amount": 89282,
+   "real": 89282
+  },
+  {
+   "fy": 2026,
+   "code": "325413",
+   "name": "In-Vitro Diagnostic Substance Manufacturing",
+   "amount": 129500,
+   "real": 129500
+  },
+  {
+   "fy": 2026,
+   "code": "325414",
+   "name": "Biological Product (except Diagnostic) Manufacturing",
+   "amount": -44868,
+   "real": -44868
+  },
+  {
+   "fy": 2026,
    "code": "325510",
    "name": "Paint and Coating Manufacturing",
-   "amount": 1276517,
-   "real": 1276517
+   "amount": 1429552,
+   "real": 1429552
+  },
+  {
+   "fy": 2026,
+   "code": "325520",
+   "name": "Adhesive Manufacturing",
+   "amount": 3003,
+   "real": 3003
+  },
+  {
+   "fy": 2026,
+   "code": "325611",
+   "name": "Soap and Other Detergent Manufacturing",
+   "amount": 43416,
+   "real": 43416
+  },
+  {
+   "fy": 2026,
+   "code": "325612",
+   "name": "Polish and Other Sanitation Good Manufacturing",
+   "amount": 53593,
+   "real": 53593
+  },
+  {
+   "fy": 2026,
+   "code": "325920",
+   "name": "Explosives Manufacturing",
+   "amount": 46146,
+   "real": 46146
+  },
+  {
+   "fy": 2026,
+   "code": "325991",
+   "name": "Custom Compounding of Purchased Resins",
+   "amount": 0,
+   "real": 0
+  },
+  {
+   "fy": 2026,
+   "code": "325992",
+   "name": "Photographic Film, Paper, Plate, Chemical, and Copy Toner Manufacturing",
+   "amount": 2590,
+   "real": 2590
+  },
+  {
+   "fy": 2026,
+   "code": "325998",
+   "name": "All Other Miscellaneous Chemical Product and Preparation Manufacturing",
+   "amount": 31310,
+   "real": 31310
+  },
+  {
+   "fy": 2026,
+   "code": "326122",
+   "name": "Plastics Pipe and Pipe Fitting Manufacturing",
+   "amount": 30705,
+   "real": 30705
+  },
+  {
+   "fy": 2026,
+   "code": "326130",
+   "name": "Laminated Plastics Plate, Sheet (except Packaging), and Shape Manufacturing",
+   "amount": 2784,
+   "real": 2784
+  },
+  {
+   "fy": 2026,
+   "code": "326191",
+   "name": "Plastics Plumbing Fixture Manufacturing",
+   "amount": 2500,
+   "real": 2500
+  },
+  {
+   "fy": 2026,
+   "code": "326199",
+   "name": "All Other Plastics Product Manufacturing",
+   "amount": 306460,
+   "real": 306460
   },
   {
    "fy": 2026,
@@ -305,8 +3278,15 @@
    "fy": 2026,
    "code": "326220",
    "name": "Rubber and Plastics Hoses and Belting Manufacturing",
-   "amount": 1320204,
-   "real": 1320204
+   "amount": 1358259,
+   "real": 1358259
+  },
+  {
+   "fy": 2026,
+   "code": "326291",
+   "name": "Rubber Product Manufacturing for Mechanical Use",
+   "amount": 40041,
+   "real": 40041
   },
   {
    "fy": 2026,
@@ -321,463 +3301,463 @@
    "fy": 2019,
    "county": "ASHTABULA COUNTY",
    "amount": 558188210,
-   "real": 703326272
+   "real": 702913619
   },
   {
    "fy": 2019,
    "county": "CUYAHOGA COUNTY",
-   "amount": 7190459273,
-   "real": 9060096248
+   "amount": 7189852767,
+   "real": 9054016785
   },
   {
    "fy": 2019,
    "county": "GEAUGA COUNTY",
    "amount": 422469171,
-   "real": 532318063
+   "real": 532005744
   },
   {
    "fy": 2019,
    "county": "LAKE COUNTY",
    "amount": 1206801734,
-   "real": 1520589916
+   "real": 1519697762
   },
   {
    "fy": 2019,
    "county": "LORAIN COUNTY",
    "amount": 1496236761,
-   "real": 1885282782
+   "real": 1884176656
   },
   {
    "fy": 2019,
    "county": "MAHONING COUNTY",
    "amount": 1236281896,
-   "real": 1557735402
+   "real": 1556821454
   },
   {
    "fy": 2019,
    "county": "MEDINA COUNTY",
    "amount": 786995067,
-   "real": 991626652
+   "real": 991044848
   },
   {
    "fy": 2019,
    "county": "PORTAGE COUNTY",
    "amount": 767331525,
-   "real": 966850267
+   "real": 966283001
   },
   {
    "fy": 2019,
    "county": "STARK COUNTY",
    "amount": 2077865479,
-   "real": 2618144476
+   "real": 2616608369
   },
   {
    "fy": 2019,
    "county": "SUMMIT COUNTY",
    "amount": 4370358110,
-   "real": 5506722674
+   "real": 5503491791
   },
   {
    "fy": 2019,
    "county": "TRUMBULL COUNTY",
    "amount": 1120962864,
-   "real": 1412431537
+   "real": 1411602841
   },
   {
    "fy": 2019,
    "county": "WAYNE COUNTY",
    "amount": 507268087,
-   "real": 639166084
+   "real": 638791075
   },
   {
    "fy": 2020,
    "county": "ASHTABULA COUNTY",
    "amount": 672876117,
-   "real": 837502770
+   "real": 837011393
   },
   {
    "fy": 2020,
    "county": "CUYAHOGA COUNTY",
-   "amount": 10914979571,
-   "real": 13585451156
+   "amount": 10914278694,
+   "real": 13576608511
   },
   {
    "fy": 2020,
    "county": "GEAUGA COUNTY",
    "amount": 640850341,
-   "real": 797641530
+   "real": 797173541
   },
   {
    "fy": 2020,
    "county": "LAKE COUNTY",
    "amount": 1687679364,
-   "real": 2100588958
+   "real": 2099356509
   },
   {
    "fy": 2020,
    "county": "LORAIN COUNTY",
    "amount": 1878758319,
-   "real": 2338417513
+   "real": 2337045526
   },
   {
    "fy": 2020,
    "county": "MAHONING COUNTY",
    "amount": 1750242208,
-   "real": 2178458501
+   "real": 2177180364
   },
   {
    "fy": 2020,
    "county": "MEDINA COUNTY",
    "amount": 1188565727,
-   "real": 1479361599
+   "real": 1478493634
   },
   {
    "fy": 2020,
    "county": "PORTAGE COUNTY",
    "amount": 1024634093,
-   "real": 1275322261
+   "real": 1274574009
   },
   {
    "fy": 2020,
    "county": "STARK COUNTY",
    "amount": 2763220765,
-   "real": 3439273569
+   "real": 3437255692
   },
   {
    "fy": 2020,
    "county": "SUMMIT COUNTY",
    "amount": 6219574556,
-   "real": 7741262894
+   "real": 7736720971
   },
   {
    "fy": 2020,
    "county": "TRUMBULL COUNTY",
    "amount": 1457349337,
-   "real": 1813906119
+   "real": 1812841872
   },
   {
    "fy": 2020,
    "county": "WAYNE COUNTY",
    "amount": 697849483,
-   "real": 868586148
+   "real": 868076535
   },
   {
    "fy": 2021,
    "county": "ASHTABULA COUNTY",
-   "amount": 721933470,
-   "real": 858242139
+   "amount": 721920940,
+   "real": 857723708
   },
   {
    "fy": 2021,
    "county": "CUYAHOGA COUNTY",
-   "amount": 10652244364,
-   "real": 12663500688
+   "amount": 10651521021,
+   "real": 12655211397
   },
   {
    "fy": 2021,
    "county": "GEAUGA COUNTY",
    "amount": 559354054,
-   "real": 664966012
+   "real": 664575865
   },
   {
    "fy": 2021,
    "county": "LAKE COUNTY",
-   "amount": 1591172182,
-   "real": 1891602307
+   "amount": 1591184712,
+   "real": 1890507361
   },
   {
    "fy": 2021,
    "county": "LORAIN COUNTY",
    "amount": 1960115774,
-   "real": 2330206350
+   "real": 2328839180
   },
   {
    "fy": 2021,
    "county": "MAHONING COUNTY",
    "amount": 1676188521,
-   "real": 1992670630
+   "real": 1991501499
   },
   {
    "fy": 2021,
    "county": "MEDINA COUNTY",
    "amount": 1089957012,
-   "real": 1295752416
+   "real": 1294992177
   },
   {
    "fy": 2021,
    "county": "PORTAGE COUNTY",
    "amount": 1072807195,
-   "real": 1275364533
+   "real": 1274616256
   },
   {
    "fy": 2021,
    "county": "STARK COUNTY",
    "amount": 2658936623,
-   "real": 3160971961
+   "real": 3159117368
   },
   {
    "fy": 2021,
    "county": "SUMMIT COUNTY",
-   "amount": 6520624349,
-   "real": 7751787145
+   "amount": 6520645413,
+   "real": 7747264074
   },
   {
    "fy": 2021,
    "county": "TRUMBULL COUNTY",
    "amount": 1452983180,
-   "real": 1727321761
+   "real": 1726308314
   },
   {
    "fy": 2021,
    "county": "WAYNE COUNTY",
    "amount": 641526379,
-   "real": 762653340
+   "real": 762205879
   },
   {
    "fy": 2022,
    "county": "ASHTABULA COUNTY",
    "amount": 676686398,
-   "real": 744844075
+   "real": 744407063
   },
   {
    "fy": 2022,
    "county": "CUYAHOGA COUNTY",
-   "amount": 7972986365,
-   "real": 8776047031
+   "amount": 7972298890,
+   "real": 8770141708
   },
   {
    "fy": 2022,
    "county": "GEAUGA COUNTY",
-   "amount": 507431621,
-   "real": 558541501
+   "amount": 507431314,
+   "real": 558213458
   },
   {
    "fy": 2022,
    "county": "LAKE COUNTY",
    "amount": 1383993770,
-   "real": 1523393351
+   "real": 1522499552
   },
   {
    "fy": 2022,
    "county": "LORAIN COUNTY",
    "amount": 1725855814,
-   "real": 1899688661
+   "real": 1898574083
   },
   {
    "fy": 2022,
    "county": "MAHONING COUNTY",
    "amount": 1374258544,
-   "real": 1512677566
+   "real": 1511790054
   },
   {
    "fy": 2022,
    "county": "MEDINA COUNTY",
    "amount": 949813376,
-   "real": 1045481138
+   "real": 1044867737
   },
   {
    "fy": 2022,
    "county": "PORTAGE COUNTY",
    "amount": 881926499,
-   "real": 970756512
+   "real": 970186954
   },
   {
    "fy": 2022,
    "county": "STARK COUNTY",
    "amount": 2272099509,
-   "real": 2500951493
+   "real": 2499484145
   },
   {
    "fy": 2022,
    "county": "SUMMIT COUNTY",
    "amount": 6562501952,
-   "real": 7223494828
+   "real": 7219256688
   },
   {
    "fy": 2022,
    "county": "TRUMBULL COUNTY",
    "amount": 1235049074,
-   "real": 1359446544
+   "real": 1358648935
   },
   {
    "fy": 2022,
    "county": "WAYNE COUNTY",
    "amount": 553158184,
-   "real": 608873767
+   "real": 608516531
   },
   {
    "fy": 2023,
    "county": "ASHTABULA COUNTY",
    "amount": 743958569,
-   "real": 786515553
+   "real": 786054091
   },
   {
    "fy": 2023,
    "county": "CUYAHOGA COUNTY",
-   "amount": 8153615288,
-   "real": 8620030062
+   "amount": 8152947311,
+   "real": 8614266779
   },
   {
    "fy": 2023,
    "county": "GEAUGA COUNTY",
    "amount": 546027158,
-   "real": 577261786
+   "real": 576923097
   },
   {
    "fy": 2023,
    "county": "LAKE COUNTY",
    "amount": 1457577143,
-   "real": 1540955558
+   "real": 1540051454
   },
   {
    "fy": 2023,
    "county": "LORAIN COUNTY",
    "amount": 1818823278,
-   "real": 1922866210
+   "real": 1921738034
   },
   {
    "fy": 2023,
    "county": "MAHONING COUNTY",
    "amount": 1448913929,
-   "real": 1531796778
+   "real": 1530898048
   },
   {
    "fy": 2023,
    "county": "MEDINA COUNTY",
    "amount": 1371946313,
-   "real": 1450426350
+   "real": 1449575362
   },
   {
    "fy": 2023,
    "county": "PORTAGE COUNTY",
    "amount": 927341396,
-   "real": 980388506
+   "real": 979813296
   },
   {
    "fy": 2023,
    "county": "STARK COUNTY",
    "amount": 2406394097,
-   "real": 2544048097
+   "real": 2542555463
   },
   {
    "fy": 2023,
    "county": "SUMMIT COUNTY",
    "amount": 5366989566,
-   "real": 5673999786
+   "real": 5670670760
   },
   {
    "fy": 2023,
    "county": "TRUMBULL COUNTY",
    "amount": 1318420643,
-   "real": 1393838828
+   "real": 1393021040
   },
   {
    "fy": 2023,
    "county": "WAYNE COUNTY",
    "amount": 627206632,
-   "real": 663085004
+   "real": 662695961
   },
   {
    "fy": 2024,
    "county": "ASHTABULA COUNTY",
    "amount": 639017653,
-   "real": 656216937
+   "real": 655831924
   },
   {
    "fy": 2024,
    "county": "CUYAHOGA COUNTY",
-   "amount": 8713644415,
-   "real": 8948173836
+   "amount": 8712982624,
+   "real": 8942244595
   },
   {
    "fy": 2024,
    "county": "GEAUGA COUNTY",
    "amount": 603180180,
-   "real": 619414891
+   "real": 619051470
   },
   {
    "fy": 2024,
    "county": "LAKE COUNTY",
    "amount": 1603740698,
-   "real": 1646905689
+   "real": 1645939423
   },
   {
    "fy": 2024,
    "county": "LORAIN COUNTY",
    "amount": 1969415410,
-   "real": 2022422606
+   "real": 2021236019
   },
   {
    "fy": 2024,
    "county": "MAHONING COUNTY",
    "amount": 1508448037,
-   "real": 1549048207
+   "real": 1548139356
   },
   {
    "fy": 2024,
    "county": "MEDINA COUNTY",
-   "amount": 1052481037,
-   "real": 1080808767
+   "amount": 1053160949,
+   "real": 1080872442
   },
   {
    "fy": 2024,
    "county": "PORTAGE COUNTY",
    "amount": 967844400,
-   "real": 993894119
+   "real": 993310985
   },
   {
    "fy": 2024,
    "county": "STARK COUNTY",
    "amount": 2546184547,
-   "real": 2614715595
+   "real": 2613181500
   },
   {
    "fy": 2024,
    "county": "SUMMIT COUNTY",
    "amount": 4233936701,
-   "real": 4347893925
+   "real": 4345342946
   },
   {
    "fy": 2024,
    "county": "TRUMBULL COUNTY",
    "amount": 1379283032,
-   "real": 1416406702
+   "real": 1415575673
   },
   {
    "fy": 2024,
    "county": "WAYNE COUNTY",
-   "amount": 625380134,
-   "real": 642212361
+   "amount": 625392828,
+   "real": 641848593
   },
   {
    "fy": 2025,
    "county": "ASHTABULA COUNTY",
-   "amount": 699407473,
-   "real": 699407473
+   "amount": 699413517,
+   "real": 699413517
   },
   {
    "fy": 2025,
    "county": "CUYAHOGA COUNTY",
-   "amount": 9877717457,
-   "real": 9877717457
+   "amount": 9886822618,
+   "real": 9886822618
   },
   {
    "fy": 2025,
    "county": "GEAUGA COUNTY",
-   "amount": 683429335,
-   "real": 683429335
+   "amount": 683497833,
+   "real": 683497833
   },
   {
    "fy": 2025,
    "county": "LAKE COUNTY",
-   "amount": 1748449154,
-   "real": 1748449154
+   "amount": 1748459154,
+   "real": 1748459154
   },
   {
    "fy": 2025,
    "county": "LORAIN COUNTY",
-   "amount": 2271107524,
-   "real": 2271107524
+   "amount": 2271127969,
+   "real": 2271127969
   },
   {
    "fy": 2025,
@@ -794,14 +3774,14 @@
   {
    "fy": 2025,
    "county": "PORTAGE COUNTY",
-   "amount": 1093031889,
-   "real": 1093031889
+   "amount": 1093134994,
+   "real": 1093134994
   },
   {
    "fy": 2025,
    "county": "STARK COUNTY",
-   "amount": 2786065160,
-   "real": 2786065160
+   "amount": 2786078501,
+   "real": 2786078501
   },
   {
    "fy": 2025,
@@ -818,80 +3798,80 @@
   {
    "fy": 2025,
    "county": "WAYNE COUNTY",
-   "amount": 677258891,
-   "real": 677258891
+   "amount": 677393813,
+   "real": 677393813
   },
   {
    "fy": 2026,
    "county": "ASHTABULA COUNTY",
-   "amount": 539202428,
-   "real": 539202428
+   "amount": 602627964,
+   "real": 602627964
   },
   {
    "fy": 2026,
    "county": "CUYAHOGA COUNTY",
-   "amount": 7518574541,
-   "real": 7518574541
+   "amount": 8561751851,
+   "real": 8561751851
   },
   {
    "fy": 2026,
    "county": "GEAUGA COUNTY",
-   "amount": 518240710,
-   "real": 518240710
+   "amount": 579924506,
+   "real": 579924506
   },
   {
    "fy": 2026,
    "county": "LAKE COUNTY",
-   "amount": 1347399337,
-   "real": 1347399337
+   "amount": 1491552160,
+   "real": 1491552160
   },
   {
    "fy": 2026,
    "county": "LORAIN COUNTY",
-   "amount": 1703577268,
-   "real": 1703577268
+   "amount": 1908906453,
+   "real": 1908906453
   },
   {
    "fy": 2026,
    "county": "MAHONING COUNTY",
-   "amount": 1262181089,
-   "real": 1262181089
+   "amount": 1441115390,
+   "real": 1441115390
   },
   {
    "fy": 2026,
    "county": "MEDINA COUNTY",
-   "amount": 951620510,
-   "real": 951620510
+   "amount": 1067889719,
+   "real": 1067889719
   },
   {
    "fy": 2026,
    "county": "PORTAGE COUNTY",
-   "amount": 854323175,
-   "real": 854323175
+   "amount": 975524523,
+   "real": 975524523
   },
   {
    "fy": 2026,
    "county": "STARK COUNTY",
-   "amount": 2140856609,
-   "real": 2140856609
+   "amount": 2451962154,
+   "real": 2451962154
   },
   {
    "fy": 2026,
    "county": "SUMMIT COUNTY",
-   "amount": 3160316192,
-   "real": 3160316192
+   "amount": 3607279764,
+   "real": 3607279764
   },
   {
    "fy": 2026,
    "county": "TRUMBULL COUNTY",
-   "amount": 1136304927,
-   "real": 1136304927
+   "amount": 1274471777,
+   "real": 1274471777
   },
   {
    "fy": 2026,
    "county": "WAYNE COUNTY",
-   "amount": 531212675,
-   "real": 531212675
+   "amount": 596140933,
+   "real": 596140933
   }
  ],
  "contracts": {
@@ -919,7 +3899,7 @@
     "note": "PIC’s official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
     "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the vault’s NEO-14 includes."
    },
-   "why": "prime contracting only, award_type_codes A-D, so the polymer numerator and the all-industry denominator are the same kind of money. Same CPI-U restatement as every other total on this page.",
+   "why": "PRIME CONTRACTING ONLY, award_type_codes A-D, so the polymer numerator and the all-industry denominator are the same kind of money. Same CPI-U restatement as every other total on this page.",
    "filters": {
     "time_period": "2018-10-01 to 2026-09-30",
     "award_type_codes": [
@@ -930,48 +3910,50 @@
     ],
     "place_of_performance": "the 12 PIC-12 counties"
    },
-   "fetched": "2026-09-01",
-   "vintage": "Pulled on its own date and not interchangeable row for row with the all-type series above, which is an older read of a live ledger. The ratio is computed inside this block."
+   "fetched": "2026-09-08",
+   "vintage": "The NAICS chart and this comparison use the same complete prime-contract pull. All-type county context was acquired separately on the same date.",
+   "note": "The separately queried award-type groups fall $8,547,907.48 short of the unfiltered nominal total. This unresolved difference is not assigned to an award type."
   },
+  "unallocated_nominal": 8547907.48,
   "award_type_totals": {
-   "contracts": 8228304542,
-   "idv": 0,
-   "grants": 13571375256,
-   "loans": 9333041098,
-   "direct": 179508622215,
-   "other": 3810049137,
-   "all": 214458825136
+   "contracts": 8252635210.95,
+   "idv": 0.0,
+   "grants": 13669030076.39,
+   "loans": 9333041098.23,
+   "direct": 179559821411.43,
+   "other": 3811417871.13,
+   "all": 214634493575.61
   },
   "counties": [
    {
     "fy": 2019,
     "amount": 948982214,
-    "real": 1195733105
+    "real": 1195031549
    },
    {
     "fy": 2020,
-    "amount": 1216775283,
-    "real": 1514472937
+    "amount": 1216743494,
+    "real": 1513544828
    },
    {
     "fy": 2021,
-    "amount": 1042643633,
-    "real": 1239505771
+    "amount": 1042584114,
+    "real": 1238707818
    },
    {
     "fy": 2022,
     "amount": 1065310069,
-    "real": 1172610969
+    "real": 1171922979
    },
    {
     "fy": 2023,
     "amount": 1384189418,
-    "real": 1463369803
+    "real": 1462511221
    },
    {
     "fy": 2024,
     "amount": 856703490,
-    "real": 879761830
+    "real": 879245660
    },
    {
     "fy": 2025,
@@ -980,50 +3962,50 @@
    },
    {
     "fy": 2026,
-    "amount": 717037693,
-    "real": 717037693
+    "amount": 741459670,
+    "real": 741459670
    }
   ],
   "naics": [
    {
     "fy": 2019,
-    "amount": 40990021,
-    "real": 51648097
+    "amount": 47560965,
+    "real": 59892433
    },
    {
     "fy": 2020,
-    "amount": 25549182,
-    "real": 31800074
+    "amount": 32323894,
+    "real": 40208690
    },
    {
     "fy": 2021,
-    "amount": 42694780,
-    "real": 50756005
+    "amount": 46895881,
+    "real": 55717609
    },
    {
     "fy": 2022,
-    "amount": 39580949,
-    "real": 43567649
+    "amount": 42687080,
+    "real": 46959070
    },
    {
     "fy": 2023,
-    "amount": 16040530,
-    "real": 16958104
+    "amount": 19379051,
+    "real": 20475579
    },
    {
     "fy": 2024,
-    "amount": 21945590,
-    "real": 22536260
+    "amount": 24364239,
+    "real": 25005328
    },
    {
     "fy": 2025,
-    "amount": 38976269,
-    "real": 38976269
+    "amount": 41216607,
+    "real": 41216607
    },
    {
     "fy": 2026,
-    "amount": 23105056,
-    "real": 23105056
+    "amount": 24167219,
+    "real": 24167219
    }
   ]
  }

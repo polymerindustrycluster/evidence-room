@@ -29,19 +29,23 @@ TRAPS, learned by probe (2026-09-01):
     group is therefore pulled on its own and summed here, where the arithmetic is visible.
   - This endpoint takes no naics_codes filter at these lengths; ask for the NAICS category
     and filter client-side, the same shape fetch_rest.py uses.
-  - THE GROUPS MUST RECONCILE. Six disjoint groups pulled separately have to add back to
-    the unfiltered total; if they do not, either a code is missing from the taxonomy or a
-    filter is not doing what it says. That check runs on every fetch and is fatal.
+  - Separately queried award groups can differ slightly from the unfiltered live ledger.
+    Preserve that remainder explicitly without assigning it to a guessed category.
+    A discrepancy over 0.01 percent stops acquisition for review. This is an operational
+    tripwire, not a statistical tolerance or evidence that smaller gaps reconcile.
 """
-import json, os, sys, time, urllib.request
+import argparse, json, os, sys, time
 from datetime import date
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from contact import UA  # noqa: E402  (one address, see contact.py)
 from footprints import PIC12, META  # noqa: E402
+from federal_categories import fetch_categories  # noqa: E402
 
 OUT = os.path.join(HERE, "usaspending_contracts.json")
+RECEIPTS = None
+PAGINATION = []
 URL = "https://api.usaspending.gov/api/v2/search/spending_by_category/%s/"
 FY_FIRST, FY_LAST = 2019, 2026
 
@@ -60,24 +64,11 @@ NEO = {c[2:]: n for c, n in PIC12.items()}
 
 
 def ask(cat, fy, codes):
-    payload = {"filters": {
-        "time_period": [{"start_date": f"{fy - 1}-10-01", "end_date": f"{fy}-09-30"}],
-        "place_of_performance_locations": [
-            {"country": "USA", "state": "OH", "county": c} for c in NEO]},
-        "limit": 100}
-    if codes:
-        payload["filters"]["award_type_codes"] = codes
-    req = urllib.request.Request(URL % cat, data=json.dumps(payload).encode(),
-                                 headers={**UA, "Content-Type": "application/json"})
-    for attempt in range(4):
-        try:
-            with urllib.request.urlopen(req, timeout=180) as r:
-                return json.loads(r.read().decode()).get("results", [])
-        except Exception as e:
-            print(f"  retry {cat} FY{fy}: {type(e).__name__}: {e}", flush=True)
-            time.sleep(4)
-    raise SystemExit(f"FATAL: {cat} FY{fy} did not answer in four attempts. A pull that "
-                     f"gives up quietly publishes a smaller world as if it were the world.")
+    rows, receipts = fetch_categories(cat, fy, codes, RECEIPTS)
+    PAGINATION.append({"fy": fy, "category": cat, "award_type_codes": codes,
+                       "pages": len(receipts), "rows": len(rows),
+                       "terminal": receipts[-1]["page_metadata"], "receipts": receipts})
+    return rows
 
 
 def main():
@@ -96,21 +87,24 @@ def main():
         time.sleep(0.5)
         print(f"  FY{fy}: {sum(1 for r in rows if r['fy'] == fy)} rows", flush=True)
 
-    # THE DECOMPOSITION, and the check that it is one. Six disjoint groups plus the
-    # unfiltered total: the groups have to add back to it.
+    # Compare independently queried groups with the unfiltered total. Preserve any
+    # unresolved remainder explicitly; it is not assigned to a guessed award type.
     for g, codes in list(GROUPS.items()) + [("all", None)]:
         t = 0.0
-        for fy in range(FY_FIRST, FY_LAST + 1):
-            t += sum(o.get("amount") or 0 for o in ask("county", fy, codes))
-            time.sleep(0.4)
+        if g == "contracts":
+            t = sum(r["amount"] for r in rows if r["kind"] == "county")
+        else:
+            for fy in range(FY_FIRST, FY_LAST + 1):
+                t += sum(o["amount"] for o in ask("county", fy, codes))
+                time.sleep(0.4)
         totals[g] = t
         print(f"  {g:10s} {t:>18,.0f}", flush=True)
     parts = sum(v for g, v in totals.items() if g != "all")
-    if totals["all"] <= 0 or abs(parts - totals["all"]) / totals["all"] > 0.005:
+    if totals["all"] <= 0 or abs(parts - totals["all"]) / totals["all"] > 0.0001:
         raise SystemExit(f"FATAL: the six award-type groups sum to {parts:,.0f} against an "
-                         f"unfiltered total of {totals['all']:,.0f}. Either a type code is "
-                         f"missing from the taxonomy above or a filter is not filtering; "
-                         f"a decomposition that does not reconcile must not be published.")
+                         f"unfiltered total of {totals['all']:,.0f}. The unresolved difference "
+                         f"exceeds the operational 0.01 percent review threshold. Its cause "
+                         f"must be reviewed before this acquisition is used.")
     if not rows or not any(r["kind"] == "naics" for r in rows):
         raise SystemExit("FATAL: no NAICS 325*/326* contract rows came back. The "
                          "client-side filter or the category shape has changed.")
@@ -118,18 +112,30 @@ def main():
     json.dump({"meta": {
         "source": "USAspending.gov spending_by_category, place of performance, "
                   "award_type_codes A-D",
-        "row": "one (fiscal year, category, code) PRIME CONTRACT obligation total",
+        "row": "one (fiscal year, category, code) signed PRIME CONTRACT transaction obligation total",
         "footprint": META["pic12"],
         "why": "the contracting denominator for a contracting numerator",
         "filters": {"time_period": f"{FY_FIRST - 1}-10-01 to {FY_LAST}-09-30",
                     "award_type_codes": GROUPS["contracts"],
+                    "spending_level": "transactions",
                     "place_of_performance": "the 12 PIC-12 counties"},
         "fetched": date.today().isoformat()},
-        "award_type_totals": {g: round(v) for g, v in totals.items()},
+        "pagination": PAGINATION,
+        "reconciliation": {"unallocated_nominal": round(totals["all"] - parts, 2),
+            "note": "Difference between separately queried award groups and the unfiltered total; not allocated to an award type."},
+        "award_type_totals": {g: round(v, 2) for g, v in totals.items()},
         "rows": rows}, open(OUT, "w", encoding="utf-8"), separators=(",", ":"))
     print(f"  saved usaspending_contracts.json  {round(os.path.getsize(OUT)/1024)} KB  "
           f"{len(rows)} rows", flush=True)
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output-dir", required=True, help="Fresh private raw-output directory")
+    args = parser.parse_args()
+    os.makedirs(args.output_dir, exist_ok=True)
+    OUT = os.path.join(args.output_dir, "usaspending_contracts.json")
+    if os.path.exists(OUT):
+        raise SystemExit("Refusing to overwrite an existing raw pull; choose a fresh output directory")
+    RECEIPTS = os.path.join(args.output_dir, "contract-receipts")
     main()

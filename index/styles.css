@@ -8,6 +8,30 @@
    belongs to the whole site and the shared token is not this page's to move. */
 :root{--action:#116575}
 
+/* Keep the first choice beside the purpose, before the evidence and methods. */
+.hub-hero{padding:30px 0 28px}
+.hub-hero h1{font-size:clamp(32px,4.6vw,52px);line-height:1.08}
+.hub-hero .stand{font-size:18px;margin-top:16px}
+.hub-hero .byline{margin-top:18px}
+.first-reads{display:grid;grid-template-columns:1fr 1fr;gap:1px;
+  max-width:var(--measure);margin:22px auto 0;background:#7FAFB7}
+.first-reads a{display:flex;align-items:center;min-height:48px;padding:10px 14px;
+  background:#075563;color:#fff;font-size:16px;font-weight:700;text-decoration:underline;
+  text-underline-offset:3px}
+.first-reads a:hover{background:#034652}
+.hub-links{max-width:var(--measure);margin:16px auto 0;font-size:14px;line-height:1.8}
+.hero .hub-links a{color:#fff}
+.hero .wrap > .first-reads,.hero .wrap > .hub-links{max-width:var(--measure)}
+.first-reads a:focus-visible,.hero .hub-links a:focus-visible{
+  outline:3px solid #fff;outline-offset:-3px}
+.howto summary:focus-visible{outline:3px solid var(--action);outline-offset:3px}
+@media(max-width:480px){
+  .hub-hero{padding:22px 0}
+  .hub-hero .stand{font-size:16px;line-height:1.5}
+  .first-reads{margin-top:18px}
+  .first-reads a{font-size:15px;padding:10px;min-height:58px}
+}
+
 /* SHIPPED BUG, fixed here 2026-08-28. pic-viz.css sets
    `.closer .wrap > p{font-size:clamp(20px,2.6vw,30px);font-weight:900}` at (0,2,1), which
    display-scales ANY bare <p> in the closer. This page ended on a nine-line source
@@ -184,6 +208,7 @@ body.picked .card.hit .pill.hit-flag{display:inline}
    band weight, on a page read by executives. The band now states the check in one line
    and keeps the commands here. */
 .howto{margin:22px 0 0;max-width:var(--measure)}
+.card-key > .note{max-width:100%}
 .howto summary{cursor:pointer;color:var(--action);font-weight:700;font-size:14.5px;
   padding:6px 0}
 .howto summary:hover{color:var(--hover)}

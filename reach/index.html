@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="../_shared/story.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
 
 <header class="mast">
   <div class="wrap">
@@ -18,6 +19,7 @@
   </div>
 </header>
 
+<main id="main-content" tabindex="-1">
 <section class="hero">
   <div class="wrap">
     <p class="eyebrow">Polymer research from Akron and Case Western, 2015&ndash;2024</p>
@@ -39,7 +41,7 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The network</p>
-    <h2>Every institution on a polymer paper with Akron or Case Western</h2>
+    <h2>Mapped partners on two or more polymer papers with Akron or Case Western</h2>
     <p class="lede">Two rules decide what is counted. The first rule decides which side led
       a paper: the credit goes to the <b>corresponding author</b>, not the first author,
       because in this field the first author is normally the graduate student who ran the
@@ -54,8 +56,12 @@
       location, sized by how many papers it shares with the region. Color says which way the
       work flowed: teal where a corresponding author sat here, orange where the region joined
       a project someone else was leading. Institutions that appear on a single shared paper
-      are left off the map, because at this scale a one-paper dot is too small to read;
-      the table under it ranks the forty largest partners.</p>
+      are left off the map, because at this scale a one-paper dot is too small to read.
+      That is not a trim at the edges: 633 institutions share at least one paper with the
+      region. The map draws 266 partners with at least two shared papers and a usable
+      location after flagged affiliation matches are excluded, so most partner
+      institutions are counted here and not drawn. The table under it ranks the forty
+      largest partners.</p>
     <div class="legend">
       <span><i style="background:#008BA8"></i> Mostly led from here</span>
       <span><i style="background:#C85F0C"></i> Mostly led from there</span>
@@ -93,7 +99,7 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">Whether it lands</p>
-    <h2>About a quarter of these papers sit in the top tenth of their field</h2>
+    <h2>22.7 percent of papers with a citation-percentile score sit in their field’s top tenth</h2>
     <p class="lede">Collaboration is not impact. Whether the work lands is a separate
       question, and this section answers it on its own rather than plotting it against the
       partner counts above. Raw citation counts are not used: a 2015 paper has had a decade to
@@ -119,6 +125,7 @@
   </div>
 </section>
 
+</main>
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>
 </body>

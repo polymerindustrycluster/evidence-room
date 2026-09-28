@@ -496,14 +496,14 @@ const PV = (() => {
       "two_footprints_never_compared", "uncertain", "scope", "not_the_cluster",
       "no_industry", "not_a_commute", "split_is_judgment", "impact_is_separate",
       "no_raw_trends", "quarantine", "nominal", "no_deflator", "small_numbers",
-      "publicOnly", "note", "peer_rule", "size_control", "basis", "comparator",
+      "publicOnly", "note", "peer_rule", "size_control", "basis", "comparator", "limitations",
       /* patents: the three caveats a reader needs, published as limits */
       "unit", "lag", "address_is_not_a_lab",
       /* churn: the retirement figure is modelled from an age band, not counted */
       "estimate",
     ]);
     const METHOD = new Set([
-      "definition", "bases", "stages", "baseline", "why", "why_corresponding",
+      "definition", "bases", "stages", "baseline", "why", "why_corresponding", "method",
       "rebasing", "composite_note", "derived_note", "membership_note",
       /* churn: which QWI parameter actually controls seasonal adjustment */
       "seasonadj",
@@ -651,7 +651,7 @@ const PV = (() => {
     </div>`;
     const closer = document.querySelector(".closer");
     if (closer) closer.parentNode.insertBefore(sec, closer);
-    else document.body.appendChild(sec);
+    else (document.querySelector("main") || document.body).appendChild(sec);
     return sec;
   }
 
@@ -800,8 +800,8 @@ const PV = (() => {
     sec.innerHTML = `<div class="wrap">
       <p class="takeaway">The record of this page</p>
       <h2>What we got wrong</h2>
-      <p class="lede">Every number here is rebuilt from public data, so errors are expected
-        to be found, including by us. These are this page’s own corrections, dated, oldest
+      <p class="lede">Readers and authors can both find errors in published claims.
+        These are this page’s own corrections, dated, oldest
         error first. The repository-wide log is in CORRECTIONS.md.</p>
       ${entries.map(e => `<div class="entry">
         <p class="when">${e.when}</p>
@@ -812,7 +812,7 @@ const PV = (() => {
     </div>`;
     const closer = document.querySelector(".closer");
     if (closer) closer.parentNode.insertBefore(sec, closer);
-    else document.body.appendChild(sec);
+    else (document.querySelector("main") || document.body).appendChild(sec);
     return sec;
   }
 

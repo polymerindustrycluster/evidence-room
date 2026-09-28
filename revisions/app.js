@@ -640,7 +640,7 @@ document.getElementById("closersub").innerHTML =
    the ${N(P.length)} had stopped moving within four months of the first print, and the
    longest any month kept moving was ${LAGMAX} months. The Quarterly Workforce
    Indicators, the federal count of hires and
-   separations behind the churn page, restate whole histories each time they are rebuilt,
+   separations behind the churn page, can revise their full time series when the underlying state data are revised,
    and how far they move has not been measured: <b>that is the series this method should
    be pointed at next.</b>`;
 

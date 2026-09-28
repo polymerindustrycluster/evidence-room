@@ -101,8 +101,7 @@ an annotation always prints the same string as the band or row it points at.
 These are internal per the build spec's sub-award disclosure ruling, and are
 **not** in `funding.json`. Do not add them:
 
-- **disbursement figures** — only `$1,191,433` of `$3,349,892` in sub-grants has
-  actually moved and three of seven are still pre-award at `$0`. The mandatory
+- **internal subgrant disbursement figures**. The mandatory
   substitute label, which is on the page and in every detail panel, is
   *"awarded or committed amounts; disbursement follows milestones."* Beside the
   figure it is preceded by a plain reading of it, *"Money is paid out as the work
@@ -110,12 +109,10 @@ These are internal per the build spec's sub-award disclosure ruling, and are
   the sentence that decides whether a reader takes these bars for money spent. The
   mandated string still renders verbatim from `meta.disclosures[0]`; do not replace
   it with the plain sentence, and do not delete the plain sentence either.
-- **partner-by-partner match commitments**, the Continental default, and the
-  `$742K` match gap
-- the **`$1,000,000` Innovation-Hub-as-APEX-match overlap**, which would net the
-  total to roughly `$105.3M`
-- the **Synthe6 professional-services value** — published two ways (`$15K` vs
-  `$20K`) and unresolved. Only the `$25,000` cash award appears.
+- **partner-by-partner match commitments, defaults and internal match gaps**
+- **internal overlap adjustments between funding programs**
+- **unresolved professional-services valuations**. Only the publicly stated
+  cash award appears.
 
 Three disclosures are mandatory and are rendered from `meta.disclosures`:
 the committed-not-disbursed line, the EDA-verified-against-signed-NoA line,

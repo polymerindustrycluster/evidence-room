@@ -1,10 +1,20 @@
 """Build the shared quantitative dataset for the rebuilt PIC prototypes.
 
 Gate step 0: define what a row is, for each source.
-  companies.json  -> one COMPANY classified in the PIC vault (785 in NEO-14)
-  intake CSV      -> one 2026 APPLICATION (59)
-  Census CBP      -> one ESTABLISHMENT, i.e. a plant (653 in NEO-14)
+  companies.json  -> one COMPANY in the PIC vault (710 carry a qualifying NEO-14 address)
+  intake CSV      -> one 2026 APPLICATION (59, UNFILTERED: no geographic test is applied
+                     here or anywhere else; 38 are in Ohio)
+  Census CBP      -> one ESTABLISHMENT, i.e. a plant (684 across the fourteen counties)
 These are three different units and never share an axis.
+
+!! SUPERSEDED FOR THE GEOGRAPHY REPAIR (2026-09-11) !!
+    This script cannot run: DATA points at a Desktop tree that no longer exists and SP at
+    another session's scratchpad. The counts above were 785 / 653 until 2026-09-11, when
+    the county set behind them was found to carry three counties that are not NEO-14 and
+    to omit three that are, and 75 shipped rows were found not to meet the register's own
+    rule. `repair_chain.py` maintains both chain-data.json and viz-data.json now, offline
+    and from explicit inputs. The `in_neo14` filter this file already uses is the correct
+    one; what shipped was built before the extract carried a state-aware flag.
 """
 import json, csv, io, os, re, collections, statistics as st
 

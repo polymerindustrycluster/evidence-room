@@ -6,43 +6,51 @@
  "claims": [
   {
    "id": "chain-neo-total",
-   "text": "785 rows carry a Northeast Ohio county tag. Sixty-four are companies in Wayne County, Michigan, joined to Wayne County, Ohio on the county name alone; the corrected regional count is 721 and the page says so.",
-   "source": "GAC-PIC vault company notes, extracted 2026-08-14; footprint NEO-14 (vault-tagged)",
-   "assert": "D['chain']['meta']['neo_total'] == 785",
+   "text": "710 register records carry a qualifying Northeast Ohio address. That is what the register holds, not a count of the region's polymer companies.",
+   "source": "GAC-PIC vault company notes, extracted 2026-08-14; NEO-14 per CODEBOOK.md, county in the fourteen AND state Ohio or blank",
+   "assert": "D['chain']['meta']['neo_total'] == 710",
    "actual": "D['chain']['meta']['neo_total']",
-   "falsified_if": "The vault extract is re-run and companies are added, reclassified, or the in_neo14 flag changes. NOTE: this page uses NEO-14, not PIC-12 \u2014 the two share only 10 counties and will not reconcile with cluster-health. [2026-09-01: the assertion still pins 785 because that is what the DATA says, and pinning it is what will fail loudly when the builder is re-keyed on state. The sentence, not the assertion, is what had to move first.]"
+   "falsified_if": "The vault extract is re-run and companies are added, reclassified, or an address is filled in. NOTE: this page uses NEO-14, not PIC-12 — the fourteen-county set contains all twelve plus Columbiana and Tuscarawas and will not reconcile with cluster-health. [2026-09-11: was pinned at 785, which counted 64 Wayne County MICHIGAN rows joined on the county name, one Missouri headquarters and ten records with no address at all. The 75 are held out by name in meta.holdout, not deleted; see chain-holdout. The earlier note said the pin would 'fail loudly when the builder is re-keyed on state' — it did.]"
   },
   {
    "id": "chain-unclassified",
-   "text": "174 of those companies carry no value-chain role and appear at no stage.",
+   "text": "144 of those records carry no value-chain role and appear at no stage.",
    "source": "GAC-PIC vault, polymer_value_chain field empty",
-   "assert": "D['chain']['meta']['unclassified'] == 174",
+   "assert": "D['chain']['meta']['unclassified'] == 144",
    "actual": "D['chain']['meta']['unclassified']",
-   "falsified_if": "Classification work fills gaps. This number falling is progress, and every 'thin stage' claim on the page gets weaker as it does."
+   "falsified_if": "Classification work fills gaps. This number falling is progress, and every 'thin stage' claim on the page gets weaker as it does. An empty role is missing evidence about the record, never evidence that a firm cannot do the work."
   },
   {
    "id": "chain-cbp-benchmark",
-   "text": "Census counts 653 polymer and chemical establishments across the same counties.",
-   "source": "Census CBP 2023, NAICS 325 + 326, 14 counties",
-   "assert": "D['chain']['meta']['cbp_estab'] == 653",
-   "actual": "D['chain']['meta']['cbp_estab']",
-   "falsified_if": "A CBP vintage change. NOTE: CBP counts ESTABLISHMENTS (plants) and the vault counts COMPANIES \u2014 these never reconcile and are never divided except as a labeled coverage indicator."
+   "text": "Census counts 684 chemical and plastics-and-rubber manufacturing establishments across the same fourteen counties.",
+   "source": "Census CBP 2023, NAICS 325 + 326, the fourteen NEO-14 FIPS",
+   "assert": "D['chain']['meta']['cbp_estab'] == 684 and D['chain']['meta']['cbp_emp'] == 43242",
+   "actual": "(D['chain']['meta']['cbp_estab'], D['chain']['meta']['cbp_emp'])",
+   "falsified_if": "A CBP vintage change. NOTE: CBP counts ESTABLISHMENTS (plants) and the register counts COMPANIES — their different units and industry scopes do not support a coverage rate. [2026-09-11: was 653 establishments and 41,447 employees, which is what the same query returns for a county set carrying Huron, Richland and Crawford — none of them NEO-14 — in place of Ashtabula, Trumbull and Columbiana. Not a vintage change: a wrong county set, reproduced to the digit from the raw API responses.]"
   },
   {
-   "id": "chain-blank-counties",
-   "text": "Three counties have no classified companies at all.",
-   "source": "GAC-PIC vault against Census CBP, by county",
-   "assert": "len([c for c in D['chain']['counties'] if c['classified'] == 0]) == 3",
-   "actual": "[c['county'] for c in D['chain']['counties'] if c['classified'] == 0]",
-   "falsified_if": "Any company is classified in Huron, Richland or Crawford. This is a prospecting list, not a claim about the region."
+   "id": "chain-holdout",
+   "text": "Seventy-five records were held out of the regional count and are named rather than dropped: 64 Wayne County, Michigan companies joined on the county name, one company with an address outside the region, and ten records carrying no address at all.",
+   "source": "GAC-PIC vault company notes against CODEBOOK.md's NEO-14 rule; chain-data.json meta.holdout",
+   "assert": "D['chain']['meta']['holdout']['homonym_county_join']['n'] == 64 and D['chain']['meta']['holdout']['regional_site_nonregional_company']['n'] == 1 and D['chain']['meta']['holdout']['address_missing']['n'] == 10 and all(len(b['names']) == b['n'] for b in D['chain']['meta']['holdout'].values())",
+   "actual": "{k: v['n'] for k, v in D['chain']['meta']['holdout'].items()}",
+   "falsified_if": "A held-out record receives a qualifying address. Regional sites require separate evidence because this register counts company records, not establishments. Held-out names and counts must remain disclosed until the source records are reconciled."
   },
   {
    "id": "chain-supply-demand",
-   "text": "The region is thinnest where the applications are thickest \u2014 12 companies against 26 applications at feedstock, 246 against 20 at conversion.",
+   "text": "The register has 12 feedstock companies and 235 converters; the 2026 funding round has 26 applications naming feedstock and 20 naming conversion. These sources cover different populations.",
    "source": "GAC-PIC vault value_chain against the 2026 intake export value-chain position",
-   "assert": "one(s for s in D['viz']['spine'] if s['key']=='feedstock')['supply'] == 12 and one(s for s in D['viz']['spine'] if s['key']=='feedstock')['demand'] == 26 and one(s for s in D['viz']['spine'] if s['key']=='converters')['supply'] == 246",
+   "assert": "one(s for s in D['viz']['spine'] if s['key']=='feedstock')['supply'] == 12 and one(s for s in D['viz']['spine'] if s['key']=='feedstock')['demand'] == 26 and one(s for s in D['viz']['spine'] if s['key']=='converters')['supply'] == 235 and one(s for s in D['viz']['spine'] if s['key']=='converters')['demand'] == 20",
    "actual": "[(s['key'], s['supply'], s['demand']) for s in D['viz']['spine']]",
-   "falsified_if": "Either side is re-extracted. The two sides are DIFFERENT UNITS \u2014 companies and applications \u2014 on separate scales meeting at a center line, never one axis and never a ratio bar."
+   "falsified_if": "Either side is re-extracted. The two sides are DIFFERENT UNITS — companies and applications — on separate scales meeting at a center line, never one axis and never a ratio bar. [2026-09-11: converters was 246 under the old county set. Separately, the application side carries NO geographic filter and never did: all 59 applications to the 2026 round are counted wherever the applicant sits, 38 of them in Ohio. The page said PIC-12; the extract said nothing of the kind.]"
+  },
+  {
+   "id": "chain-demand-footprint",
+   "text": "All 59 applications to the 2026 round are counted, wherever the applicant sits; 38 are in Ohio.",
+   "source": "PIC 2026 intake export (pic-innovation-intake-export-2026-07-07.csv), Org state",
+   "assert": "D['viz']['demand_footprint'] == {'n': 59, 'ohio': 38, 'filtered': False}",
+   "actual": "D['viz']['demand_footprint']",
+   "falsified_if": "A geographic filter is applied to the applications, in which case the page must publish the filtered denominator instead of this one. Applications are requests for one funding round against a fixed pool; they are not a measure of market demand, and a stage with few of them may be a stage with no eligible applicants or no awareness of the round."
   }
  ]
 }

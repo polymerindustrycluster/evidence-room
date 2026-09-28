@@ -27,12 +27,17 @@ FAILS LOUDLY, NEVER QUIETLY
   title: each raises here. A derive script that fills a gap with a plausible default is
   the failure this whole page exists to argue against.
 """
+import argparse
 import json
 import os
 import re
 import statistics
 import sys
 from datetime import date
+
+parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
+parser.add_argument("--federal-only", action="store_true", help="Preserve the existing nonfederal snapshot")
+args = parser.parse_args()
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.abspath(os.path.join(HERE, ".."))
@@ -366,8 +371,11 @@ def lq_cell(year, naics):
     return hits[0]
 
 EST = lq_cell(2025, "326")
-fy = sorted({r["fy"] for r in FED["naics"]})
-BACKGROUND = sum(r["real"] for r in FED["naics"]) / len(fy)
+fy = list(range(2019, 2026))
+federal_closed = [r for r in FED["naics"] if r["fy"] in fy]
+if sorted({r["fy"] for r in federal_closed}) != fy:
+    die("federal context requires every completed fiscal year FY2019-FY2025")
+BACKGROUND = sum(r["real"] for r in federal_closed) / len(fy)
 
 # The five instrument defects, copied from the shipped metas of the files that carry
 # them so a page-local paraphrase cannot drift from the original. They ride in the
@@ -545,6 +553,20 @@ DATA = {
         "defects": DEFECTS,
     },
 }
+
+if args.federal_only:
+    # Keep the existing nonfederal snapshot, including dated talent corrections.
+    previous = load(OUT)
+    old_defects = previous["context"]["defects"]
+    replacements = {d["from"]: d for d in DEFECTS}
+    if (len(old_defects) != len(DEFECTS) or len(replacements) != len(DEFECTS)
+            or {d["from"] for d in old_defects} != set(replacements)):
+        die("scoped federal refresh requires matching, unique source-disclosure identities")
+    for key in ("techhub_award", "background_rate", "background_years", "background_counties"):
+        previous["context"][key] = DATA["context"][key]
+    previous["context"]["defects"] = [replacements[d["from"]]
+        if d["from"].startswith("federal-money/") else d for d in old_defects]
+    DATA = previous
 
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 with open(OUT, "w", encoding="utf-8") as fh:

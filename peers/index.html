@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
 
 <header class="mast">
   <div class="wrap">
@@ -17,18 +18,18 @@
   </div>
 </header>
 
+<main id="main-content" tabindex="-1">
 <section class="hero">
   <div class="wrap">
     <p class="eyebrow">Where Northeast Ohio actually sits</p>
-    <h1>Ohio is <em>first in the country</em> in plastics and rubber employment.</h1>
-    <p class="stand">Ohio&rsquo;s first place rests on 54,846 plastics and rubber jobs at
-      private employers in 2024. All 51 state figures are published, the 50 states and the
-      District of Columbia, so the state ranking is complete. Metro claims need more care:
-      the Bureau of Labor Statistics (BLS) withholds the job figure for <b>227 of the
-      country&rsquo;s 382 metro&nbsp;areas</b>.</p>
-    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data: the federal
+    <h1>Ohio led the country in <em>plastics and rubber jobs</em> in 2024.</h1>
+    <p class="stand">Ohio had 54,846 private plastics and rubber jobs in 2024.
+      The record discloses every state plus Puerto Rico; DC is absent. Metro rankings
+      are incomplete: the Bureau of Labor Statistics (BLS) withholds employment in
+      <b>227 of 382 metro areas</b>.</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic), updated with Codex (OpenAI) &middot; Data: the federal
       Quarterly Census of Employment and Wages (QCEW), annual averages,
-      2015&ndash;2024 &middot; August&nbsp;2026</p>
+      2015&ndash;2024 &middot; September&nbsp;2026</p>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -70,6 +71,11 @@
       <dfn><b>Private ownership</b> counts private employers only, leaving out federal, state
       and local government jobs. <b>Annual averages</b> are the twelve monthly counts
       averaged.</dfn></p>
+    <p class="src"><b>Correction, September 8, 2026:</b> the 51 source records are
+      the 50 states plus Puerto Rico, not DC. Ohio’s first place is unchanged.
+      Cleveland’s older metro disclosed every 2015–2023 employment value; its 2024
+      point uses a changed boundary that adds Ashtabula. Missing that connection
+      was not evidence of suppression. <a href="https://www.bls.gov/cew/notices/2024/new-metropolitan-statistical-area-delineations-for-2024.htm">BLS boundary notice</a>.</p>
   </div>
 </section>
 
@@ -114,19 +120,25 @@
 <section class="band tint">
   <div class="wrap">
     <p class="takeaway">Who else is up there</p>
-    <h2>The company Akron keeps is six factory towns</h2>
-    <p class="lede">Six other metros are large and concentrated at once, and none of them is a
-      big city. Elkhart, Indiana builds most of the country&rsquo;s recreational vehicles. Hickory,
-      North Carolina makes furniture and fiber-optic cable. Erie, Pennsylvania runs injection
-      molding and mold-making shops. Greenville, South Carolina holds Michelin&rsquo;s North
-      American headquarters. (BMW&rsquo;s only US assembly plant is next door in Spartanburg County, which the bureau counts as a separate metro area and which is not in this row.)
+    <h2>Akron sits alongside six industrial peers</h2>
+    <p class="lede">Six other metros are large and concentrated at once. Elkhart, Indiana has
+      recreational-vehicle manufacturing. Hickory, North Carolina makes furniture and
+      <a href="https://www.corning.com/optical-communications/worldwide/en/home/news-and-events/news-releases/2023/03/corning-opens-optical-cable-manufacturing-campus-in-north-carolina-to-accelerate-broadband-buildouts-and-connect-the-unconnected.html">fiber-optic cable</a>.
+      Erie, Pennsylvania has mold-making shops. Greenville, South Carolina holds Michelin&rsquo;s North
+      American headquarters. (<a href="https://www.bmwgroup-werke.com/spartanburg/en.html">BMW&rsquo;s assembly plant</a>
+      is next door in Spartanburg County, a separate metro area outside this row.)
       Scranton and Greensboro fill
-      out the seven. What those towns make is not in the BLS file: it comes from the companies&rsquo;
-      and trade groups&rsquo; own public statements, and it is the one passage here we cannot
-      re-check against the data. Akron earns its place in that group the way the other six do,
+      out the seven. Those industry descriptions are context from separate county data and
+      company sources. Akron earns its place in that group the way the other six do,
       on its job count and its concentration. Its 6,910 jobs
       sit across 117 establishments, an average of about 59 people a site. That average is
       taken across sites of every size, so it describes the group and not any one plant.</p>
+    <p class="src">Industry context: BLS 2024 annual county files for
+      <a href="https://data.bls.gov/cew/data/api/2024/a/area/18039.csv">Elkhart</a>,
+      <a href="https://data.bls.gov/cew/data/api/2024/a/area/37035.csv">Catawba (Hickory)</a> and
+      <a href="https://data.bls.gov/cew/data/api/2024/a/area/42049.csv">Erie</a>;
+      Corning&rsquo;s March 2023 campus announcement; <a href="https://michelinmedia.com/pages/blog/detail/article/c0/a1370/">Michelin North America</a>;
+      BMW&rsquo;s plant page. Plant locations do not establish metro-wide production shares.</p>
   </div>
 </section>
 
@@ -170,6 +182,7 @@
   </div>
 </section>
 
+</main>
 <footer class="foot">
   <div class="wrap">
     <p class="foot-lede">Check it from your own seat: the metro search box puts any of the

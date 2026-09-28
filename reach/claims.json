@@ -3,9 +3,9 @@
   "claims": [
     {
       "id": "rch-network-breadth",
-      "text": "The region's polymer papers carry co-authors at more than 600 institutions across 50 countries.",
+      "text": "The dataset records 633 partner institutions across 50 countries. The map shows 266 partners with at least two shared papers, usable locations and no flagged affiliation match. It does not display every institution in the dataset.",
       "source": "OpenAlex works 2015-2024 classified in subfield 2507 'Polymers and Plastics' with an Akron or Case Western authorship. A CLASSIFICATION, not the full-text keyword an earlier version used.",
-      "assert": "D['totals']['partners_shown'] == 629 and D['totals']['partners'] == 633 and D['totals']['countries'] == 50",
+      "assert": "D['totals']['partners_shown'] == 629 and D['totals']['partners'] == 633 and D['totals']['countries'] == 50 and len(D['map']) == 266 and min(m['t'] for m in D['map']) == 2",
       "actual": "(D['totals']['partners_shown'], D['totals']['countries'], D['totals']['works'])",
       "falsified_if": "Either count moves. The bounds are pinned with == rather than > 500 and >= 40: the sentence says 600 institutions across 50 COUNTRIES and the old assert was satisfied by 40, so a page could have printed fifty while its data said forty and the board would have stayed green. An assert must be at least as strong as the sentence it certifies. This one caught a real error on 2026-08-31, in a slide deck that read the top-N country array's length as though it were the country total."
     },
@@ -19,11 +19,11 @@
     },
     {
       "id": "rch-impact-top-decile",
-      "text": "About a quarter of the region's polymer papers rank in the top tenth of their field and year.",
+      "text": "309 of the 1,364 papers with an OpenAlex citation-percentile score are in their field and year’s top tenth: 22.7 percent. The denominator is the scored subset of 1,448 collected works.",
       "source": "OpenAlex citation_normalized_percentile, field- and age-normalized",
-      "assert": "0.225 <= D['totals']['top10_share'] < 0.29 and D['totals']['top10'] > D['totals']['pct_n'] / 10",
+      "assert": "D['totals']['top10'] == 309 and D['totals']['pct_n'] == 1364 and round(100 * D['totals']['top10'] / D['totals']['pct_n'], 1) == 22.7",
       "actual": "(D['totals']['top10'], D['totals']['pct_n'], D['totals']['top10_share'], D['totals']['top1_share'])",
-      "falsified_if": "The top-decile share leaves the band in which 'about a quarter' is the nearest simple fraction: below 0.225 a fifth is nearer and the sentence has to say so, at 0.29 and above a third is. The old assertion was `> 0.20`, which a share of 21 percent, or of 99, would have passed while the printed fraction was wrong. The margin is thin on purpose and worth knowing: 309 of 1,364 is 22.65 percent, fifteen hundredths of a point above the floor, so the next OpenAlex refresh may well move this sentence to a fifth. The second clause keeps the finding itself, which is that the share exceeds the 10 percent the measure would give by definition."
+      "falsified_if": "Either the top-decile count or the number of scored papers changes; recompute the percentage from those counts rather than an already rounded share."
     },
     {
       "id": "rch-median-not-mean",
