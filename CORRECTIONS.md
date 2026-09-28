@@ -53,7 +53,9 @@ one here, including papers with no outside partner. The count includes those pap
 tables said each partner's other papers were "led from there"; they now say "led from
 elsewhere", because a paper counts toward every outside partner on it, whichever one
 holds the corresponding author. The map's source line said the same thing ("here or
-there") and now says "here or elsewhere".
+there") and now says "here or elsewhere". The front page's reach card and the opening
+chart's text description called the 1,448 "coauthored works"; the count does not require
+a second author, so both now say "works".
 
 **"Federal" awards from an NSF-only fetch, *collaboration*.** **Was:** "four joint federal
 awards". **Is:** four joint NSF projects (eight award IDs, because NSF files a

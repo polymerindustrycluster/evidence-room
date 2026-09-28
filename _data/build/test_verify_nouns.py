@@ -127,6 +127,18 @@ class NounNearbyTest(unittest.TestCase):
         found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
         self.assertFalse(found)
 
+    def test_full_stop_without_a_space_still_ends_the_clause(self):
+        for text in ("147 institution records.41 recorded polymer awards.",
+                     "147 institution records.)41 recorded polymer awards."):
+            tokens = vn.tokenize(text)
+            s = text.index("41")
+            found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
+            self.assertFalse(found, text)
+
+    def test_decimal_point_does_not_end_a_clause(self):
+        tokens = vn.tokenize("Institutions rose 41.5 percent.")
+        self.assertIn("41.5", [w for _, _, w in tokens])
+
     def test_noun_in_the_next_sentence_does_not_count(self):
         tokens = vn.tokenize("The count fell to 41. Institutions elsewhere grew.")
         found, _ = vn.noun_nearby(tokens, 18, 20, ["institution"])

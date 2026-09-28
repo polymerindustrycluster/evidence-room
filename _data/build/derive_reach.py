@@ -103,8 +103,14 @@ if "matching" in source:
                     source)
     assert "matching" not in source, source
 
+# The same cache predates fetch_reach.py:202 and still says a corresponding author sat
+# "here or there", as though the partner were the only other place. Same patch, same fate.
+row = R["meta"]["row"].replace("here or there", "here or elsewhere")
+assert "here or elsewhere" in row, row
+
 out = {"meta": dict(R["meta"],
                     source=source,
+                    row=row,
                     quarantine="Institutions the affiliation parser resolved implausibly "
                                "are excluded from the map and the rankings, listed with "
                                "the reason, and the works they account for are reported "

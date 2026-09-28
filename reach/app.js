@@ -27,7 +27,7 @@ const {el, txt, ticks, frame, hoverable, tableView, chart, CAT, SEQ, GRAY, INK, 
 const D = await PV.data("reach.json");
 
 /* THE COLD OPEN (guarded by tools/coldopen.mjs). One bar, split three ways: where the
-   corresponding author of the region's 1,448 coauthored works sits. Poorer than everything below — no map, no countries,
+   corresponding author of the region's 1,448 works sits. Poorer than everything below — no map, no countries,
    no partners. Its one job is the four-in-five. */
 {
   const svg = document.getElementById("open");
