@@ -92,7 +92,7 @@ PV.figures([
   ["", N(T.coauthored_polymer), "classified in polymers", "subfield 2507, not a keyword match"],
   ["", String(T.joint_awards), "joint NSF projects", usd(T.joint_award_dollars) + " combined"],
   /* Bounded to the window on purpose: the award data ends with the window and cannot speak
-     to what started after it. CWRU leads the NEO-SMART NSF Engine, awarded 2026-07-14, and Akron
+     to what started after it. CWRU leads the NEO-SMART NSF Engine, awarded 2026-07-13, and Akron
        is among its core partners — outside this
      series, and BOTH facts are named in the prose. The page used to raise the award twice and
        answer only who led it, which left the one question a reader actually has — are these

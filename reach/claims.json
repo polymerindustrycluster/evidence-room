@@ -27,9 +27,9 @@
     },
     {
       "id": "rch-median-not-mean",
-      "text": "The median paper sits just above the world average; the mean is more than double it and is not the number to quote.",
+      "text": "The median paper sits just above the world average; the mean is 1.8 times it and is not the number to quote.",
       "source": "as above",
-      "assert": "D['totals']['fwci_mean'] > 1.8 * D['totals']['fwci_median']",
+      "assert": "round(D['totals']['fwci_mean'] / D['totals']['fwci_median'], 1) == 1.8",
       "actual": "(D['totals']['fwci_median'], D['totals']['fwci_mean'], D['fwci_deciles'])",
       "falsified_if": "The mean and median converge. Until they do, any summary using the mean describes a small tail and implies it describes the whole."
     },

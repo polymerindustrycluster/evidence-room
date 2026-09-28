@@ -805,7 +805,7 @@ document.getElementById("bound").innerHTML =
    ${M.could_displace.slice(0, 4).map(x => shortName(x.name)).join(", ")}, and BLS will not
    say how many jobs any of them has. Establishment counts cannot stand in: a withheld metro
    with forty large plants beats Akron on jobs while running fewer sites. The defensible
-   worst case is ${ord(M.rank_emp)} of ${M.of_disclosed + M.suppressed}, which says nothing,
+   worst case is ${ord(M.rank_emp + M.suppressed)} of ${M.of_disclosed + M.suppressed}, which says nothing,
    so the claim stays narrow at ${ord(M.rank_emp)} among those that disclose.`;
 
 document.getElementById("vislede").innerHTML =

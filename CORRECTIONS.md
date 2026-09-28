@@ -11,6 +11,48 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-28 — Seven more statements on the corrected pages failed their own data
+
+Codex re-read the pages corrected below against their own data. Seven published statements
+beside the corrected ones failed it.
+
+**A yearly average read as every quarter, *churn*.** **Was:** "Since 2023Q1 more jobs have
+ended than started every quarter." Hires outnumbered separations in 2023Q1, by 303, and in
+2025Q1, by 71. **Is:** "Averaged over a year, more jobs have ended than started in every
+quarter since 2023Q1", as the page's section on the two flows already said.
+
+**The best case printed as the worst, *peers*.** **Was:** "The defensible worst case is 6th
+of 382". Sixth holds only if none of the 227 withheld metros has more jobs, so it is the best
+case. **Is:** "233rd of 382", sixth plus all 227.
+
+**A scale the figure does not draw, *front page*.** **Was:** the funding-map card said the
+money was "drawn to scale across twenty-one named recipients". The figure draws the three
+awards and their matches to one scale; the threads into recipients are not to scale, and
+the page says so. **Is:** "drawn to scale and traced to twenty-one named recipients".
+
+**Paint as the most withheld industry, *location-quotient*.** **Was:** "Paint is also the
+industry the bureau hides most of: five of twelve counties are withheld". Resin, a column of
+the same chart, has seven withheld. **Is:** "The bureau also hides much of paint".
+
+**A mean called more than double the median, *reach*.** **Was:** a long right tail "pulls
+it to more than double the typical paper". The mean is 2.018 and the median 1.10, a ratio
+of 1.8. **Is:** "1.8 times the typical paper", computed from the two figures.
+
+**Reach's years in collaboration's filters, *collaboration*.** **Was:** the "Reproduce this"
+block, which calls its filters "the exact values applied", gave the OpenAlex years as 2015
+to 2024. That is reach's window. Collaboration's pull runs 2012 to 2025, and its 208 papers
+fall to 158 on the shorter one. **Is:** the source registry gives each page its own years,
+and the sources page carries the same line.
+
+**An award date a day late, *collaboration*.** **Was:** NSF "awarded it on 14 July 2026".
+NSF's award record 2532460 dates the award 13 July; 14 July is the date of public record the
+timeline uses, and the timeline says which is which. **Is:** 13 July 2026.
+
+**Cause:** The earlier reviews read the sentences each correction touched. These sat on the
+same pages, untouched. Reach's claim accepted any ratio above 1.8 under text that said
+double, and now checks the ratio itself; churn's claim checked the averaged wording the page
+uses lower down, not the hero's; the other five had no claim.
+
 ## 2026-09-28 — Two pages gave a broad chemicals price index the name of a narrower one
 
 **Was:** *cost-scissors* called BLS series WPU06 "industrial chemicals" in its prose, chart
@@ -81,7 +123,7 @@ in 15 of them. The page added its polymer and biomaterials counts, eight and ele
 "19 in all", "about 9 percent" and "91 percent" in neither subject; a paper can carry both,
 and the same query found two that do, so it now says at most 19, or 9 percent, and at least
 90 percent in neither. Its closing said "No new joint NSF award has started since 2017"
-beside a standfirst naming NEO-SMART, awarded on 14 July 2026; it now says none started
+beside a standfirst naming NEO-SMART, awarded on 13 July 2026; it now says none started
 after 2017 within the years counted, 2012 to 2025. The closing also rested its "That was
 false" on the 208 papers beside the NSF projects; it now rests on the projects alone. The
 heading "Joint work fell as a share of Akron's output" and five sentences that called the

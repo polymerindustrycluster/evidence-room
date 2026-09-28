@@ -283,7 +283,7 @@ PV.figures([
      field</b>, against the ten percent you would expect by definition;
      ${(T.top1_share * 100).toFixed(1)} percent reach the top hundredth.
      <b>The mean is ${T.fwci_mean}× and is not the number to quote</b>: a long
-     right tail pulls it to more than double the typical paper. A tenth of the papers have
+     right tail pulls it to ${(T.fwci_mean / T.fwci_median).toFixed(1)} times the typical paper. A tenth of the papers have
      never been cited at all, which is the ${dec[0].toFixed(1)}× bar.`;
 }
 

@@ -40,7 +40,7 @@ python derive_peers.py
   **&ldquo;6th to 16th&rdquo;** as the defensible statement, bounding Akron's rank by counting the
   suppressed metros with more establishments than Akron's 117. **That bound is invalid.**
   Establishment count does not bound employment: a suppressed metro with fewer but larger
-  plants beats Akron on jobs. The true worst case is 6th of 382, which is not a useful
+  plants beats Akron on jobs. The true worst case is 233rd of 382, which is not a useful
   sentence. The page now states the disclosed-only rank and shows the withheld field on
   the scatter instead of pretending it can be bounded. Corrections here are dated and
   append-only; the previous wording is quoted above rather than deleted.
