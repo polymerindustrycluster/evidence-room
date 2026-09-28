@@ -103,6 +103,14 @@ class BundleFreshnessTest(unittest.TestCase):
         self.assertEqual(len(found), 1, found)
         self.assertEqual(found[0][3], "no input manifest — rebuild")
 
+    def test_manifest_that_is_not_an_object_errors_the_same_way_as_missing(self):
+        with open(os.path.join(self.dist, ".inputs.json"), "w", encoding="utf-8") as fh:
+            fh.write("null")
+        vc.check_bundles([PAGE], web=self.web, dist=self.dist)
+        found = self._bundle_findings()
+        self.assertEqual(len(found), 1, found)
+        self.assertEqual(found[0][3], "no input manifest — rebuild")
+
     def test_input_added_after_bundling_errors(self):
         self._write(os.path.join(self.web, PAGE, "data"), "new.json", '{"n": 2}')
         vc.check_bundles([PAGE], web=self.web, dist=self.dist)

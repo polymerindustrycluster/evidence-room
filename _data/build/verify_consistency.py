@@ -583,6 +583,7 @@ def check_bundles(arts: list[str], web: str = WEB, dist: str = DIST) -> None:
     if not manifest_bad:
         try:
             manifest = load_json(manifest_path)
+            manifest_bad = not isinstance(manifest, dict)
         except Exception:
             manifest_bad = True
     if manifest_bad:
