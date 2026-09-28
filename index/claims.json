@@ -44,7 +44,9 @@
     "prog": "../../programs/data/viz-data.json",
     "atlas": "../../atlas/data/viz-data.json",
     "workplaces": "../../cluster-health/data/workplaces.json",
-    "mfg": "../../wages/data/mfg.json"
+    "mfg": "../../wages/data/mfg.json",
+    "reach": "../../reach/data/reach.json",
+    "collab": "../../collaboration/data/collaboration.json"
   },
   "claims": [
     {
@@ -142,7 +144,7 @@
       "id": "index-headcount-key",
       "text": "Card key, 'Why the job counts differ': for the twelve counties, 17,770 is NAICS 326 in 2025 (cluster health), 18,594 the same industry in 2024 (rankings), 17,725 the QWI headcount at the start of 2025Q3 (churn), 24,032 resin + paint + plastics and rubber in 2025 (concentration), 33,529 NAICS 325 + 326 in 2025 counted once (wages); concentration is 2.32x across the twelve counties and 4.69x in the Akron metro.",
       "source": "cluster-health/data/workplaces.json, location-quotient/data/lq.json composite, peers/data/peers.json footprint_counties and metro_scatter, churn/data/churn.json quarters, wages/data/wages.json latest_rows",
-      "assert": "(lambda C: sum(r['jobs_2025'] for r in D['workplaces']['counties']) == 17770 and C[(2025, '326')]['emp'] == 17770 and C[(2024, '326')]['emp'] == 18594 and sum(r['emp'] for r in D['peers']['footprint_counties']) == 18594 and D['ch']['quarters'][-1]['emp'] == 17725 and D['ch']['quarters'][-1]['year'] == 2025 and sum(C[(2025, k)]['emp'] for k in ('3252', '3255', '326')) == 24032 and (C[(2025, '3252')]['counties_suppressed'] + C[(2025, '3255')]['counties_suppressed']) > 0 and sum(r['emp'] for r in D['wg']['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('325', '326')) == 33529 and round(C[(2025, '326')]['lq'], 2) == 2.32 and one(r for r in D['peers']['metro_scatter'] if r['name'].startswith('Akron'))['lq'] == 4.69)({(r['year'], r['naics']): r for r in D['lq']['composite']})",
+      "assert": "(lambda C: sum(r['jobs_2025'] for r in D['workplaces']['counties']) == 17770 and C[(2025, '326')]['emp'] == 17770 and C[(2024, '326')]['emp'] == 18594 and sum(r['emp'] for r in D['peers']['footprint_counties']) == 18594 and D['ch']['quarters'][-1]['emp'] == 17725 and D['ch']['quarters'][-1]['year'] == 2025 and D['ch']['quarters'][-1]['q'] == 3 and sum(C[(2025, k)]['emp'] for k in ('3252', '3255', '326')) == 24032 and (C[(2025, '3252')]['counties_suppressed'] + C[(2025, '3255')]['counties_suppressed']) > 0 and sum(r['emp'] for r in D['wg']['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('325', '326')) == 33529 and round(C[(2025, '326')]['lq'], 2) == 2.32 and D['peers']['meta']['cross_year'] == 2024 and one(r for r in D['peers']['metro_scatter'] if r['name'].startswith('Akron'))['lq'] == 4.69)({(r['year'], r['naics']): r for r in D['lq']['composite']})",
       "actual": "(lambda C: {'ch2025': sum(r['jobs_2025'] for r in D['workplaces']['counties']), 'lq326': (C[(2025, '326')]['emp'], C[(2024, '326')]['emp']), 'peers': sum(r['emp'] for r in D['peers']['footprint_counties']), 'qwi': D['ch']['quarters'][-1]['emp'], 'register': sum(C[(2025, k)]['emp'] for k in ('3252', '3255', '326')), 'wages': sum(r['emp'] for r in D['wg']['latest_rows'] if r.get('vs_local_all') and r['naics'] in ('325', '326')), 'lq': C[(2025, '326')]['lq']})({(r['year'], r['naics']): r for r in D['lq']['composite']})",
       "falsified_if": "Any of the five totals or two concentrations moves in its own page's file, or a total stops coming from the industry, year or survey the key names for it. Added 2026-09-28: the hub printed five job totals for the same twelve counties across its cards with no word on why they differ."
     },
@@ -297,6 +299,22 @@
       "assert": "D['atlas']['totals']['ever'] == 147 and D['atlas']['totals']['active'] == 41 and sum(d['active_programs'] > 0 for d in D['atlas']['dots'] + D['atlas']['off_projection']) == 41",
       "actual": "D['atlas']['totals']",
       "falsified_if": "The institution-identifier total or final-year reporting count changes; this does not assert41 institutions still teach today."
+    },
+    {
+      "id": "card-reach",
+      "text": "Reach card: 985 of 1,222 papers naming a corresponding author had one here.",
+      "source": "reach/data/reach.json totals",
+      "assert": "D['reach']['totals']['led'] == 985 and D['reach']['totals']['attributable'] == 1222",
+      "actual": "(D['reach']['totals']['led'], D['reach']['totals']['attributable'])",
+      "falsified_if": "Either count moves in reach's own shipped data, which the reach page's own rch-region-leads claim also pins; this card restates the same two numbers on the hub and must move with them."
+    },
+    {
+      "id": "card-collaboration",
+      "text": "Collaboration card: four joint National Science Foundation projects, none starting after 2017 in this window.",
+      "source": "collaboration/data/collaboration.json joint_awards",
+      "assert": "D['collab']['totals']['joint_awards'] == 4 and len(D['collab']['joint_awards']) == 4 and max(int(a['start'].split('/')[-1]) for a in D['collab']['joint_awards']) == 2017",
+      "actual": "[(a['id'], a['start']) for a in D['collab']['joint_awards']]",
+      "falsified_if": "The joint-award count moves off four, or any joint award's start date moves past 2017, which the collaboration page's own col-no-new-joint-award claim also pins; this card restates the same finding on the hub and must move with it."
     }
   ]
 }
