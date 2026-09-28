@@ -209,6 +209,63 @@ def check_published_register(reg: dict, arts: list[str]) -> None:
             f"register says {totals.get('n_pages')} pages; _data/SOURCES.json has "
             f"{len(art_slugs)}")
 
+    # The sources page also publishes a copy of the claims census from
+    # index/data/counts.json. Source and page coverage can both be current while this
+    # separate block is stale: that is exactly how the page said "443 claims across
+    # seventeen pages" after counts.json had moved on. Compare the two artifacts here,
+    # where cross-artifact agreement belongs, rather than trusting either copy alone.
+    counts_path = os.path.join(WEB, "index", "data", "counts.json")
+    if not os.path.isfile(counts_path):
+        err("published-register", "index/data/counts.json",
+            "missing — cannot verify the claims census copied onto the sources page")
+        return
+    try:
+        counts = load_json(counts_path)
+    except (OSError, json.JSONDecodeError) as exc:
+        err("published-register", "index/data/counts.json",
+            f"cannot read the canonical claims census: {exc}")
+        return
+    if not isinstance(counts, dict):
+        err("published-register", "index/data/counts.json",
+            "root must be an object — cannot derive the claims census")
+        return
+    pages = counts.get("pages")
+    if not isinstance(pages, dict) or not pages:
+        err("published-register", "index/data/counts.json",
+            "pages must be a non-empty object — cannot derive the claims census")
+        return
+    malformed = [slug for slug, row in pages.items()
+                 if not isinstance(row, dict)
+                 or type(row.get("claims")) is not int
+                 or type(row.get("manual")) is not int]
+    if malformed:
+        err("published-register", "index/data/counts.json",
+            "claim/manual counts must be integers for every page; malformed: "
+            + ", ".join(sorted(malformed)))
+        return
+
+    # Recompute from the per-page rows, which is exactly what derive_sources.py does.
+    # Trusting counts.json's top-level totals here would let two stale summaries agree.
+    n_claims = sum(row["claims"] for row in pages.values())
+    n_manual = sum(row["manual"] for row in pages.values())
+    checks = published.get("checks")
+    if not isinstance(checks, dict):
+        err("published-register", "sources/data/registry.json",
+            "checks must be an object — cannot verify the claims census")
+        return
+    expected = {
+        "n_pages": len(pages),
+        "n_claims": n_claims,
+        "n_manual": n_manual,
+        "this_page": pages.get("sources", {}).get("claims", 0),
+        "n_auto": n_claims - n_manual,
+    }
+    for key, value in expected.items():
+        if checks.get(key) != value:
+            err("published-register", f"checks.{key}",
+                f"sources page says {checks.get(key)!r}; index/data/counts.json requires "
+                f"{value!r}. Run derive_index.py and then derive_sources.py.")
+
 # ------------------------------------------------------------------ 3. required files
 def check_required_files(arts: list[str]) -> None:
     for a in arts:
