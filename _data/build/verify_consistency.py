@@ -515,47 +515,100 @@ def check_footprint_prose(arts: list[str]) -> None:
 
 
 # ------------------------------------------------------------------ 6. bundle freshness
-def check_bundles(arts: list[str]) -> None:
-    """A bundle older than its source ships superseded content, silently."""
-    if not os.path.isdir(DIST):
+def _sha256_file(path: str) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 16), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _bundle_inputs(web: str, name: str) -> dict[str, str]:
+    """The exact set of files tools/bundle.mjs hashes into dist/.inputs.json for one
+    page — index.html, app.js, styles.css, claims.json, everything under data/, img/ and
+    assets/, everything under _shared/ (recursively: its fonts/ are base64-inlined, not
+    merely linked), and _data/SOURCES.json — mapped to a sha256 of each file's current
+    bytes. Must stay in lockstep with tools/bundle.mjs's inputManifest(); a mismatch
+    between what the bundler hashes and what this checks makes the manifest meaningless."""
+    d = os.path.join(web, name)
+    paths = []
+    for f in ("index.html", "app.js", "styles.css", "claims.json"):
+        p = os.path.join(d, f)
+        if os.path.isfile(p):
+            paths.append(p)
+    for sub in ("data", "img", "assets"):
+        sd = os.path.join(d, sub)
+        if os.path.isdir(sd):
+            for root, dirs, files in os.walk(sd):
+                dirs[:] = [x for x in dirs if not x.startswith(".")]
+                paths += [os.path.join(root, f) for f in files if not f.startswith(".")]
+    shared = os.path.join(web, "_shared")
+    if os.path.isdir(shared):
+        for root, dirs, files in os.walk(shared):
+            dirs[:] = [x for x in dirs if not x.startswith(".")]
+            paths += [os.path.join(root, f) for f in files if not f.startswith(".")]
+    reg = os.path.join(web, "_data", "SOURCES.json")
+    if os.path.isfile(reg):
+        paths.append(reg)
+    return {os.path.relpath(p, web).replace(os.sep, "/"): _sha256_file(p) for p in paths}
+
+
+def check_bundles(arts: list[str], web: str = WEB, dist: str = DIST) -> None:
+    """A bundle whose source has changed since it was built ships superseded content,
+    silently. Until 2026-09-28 "changed since" meant "any input's mtime is newer than the
+    bundle's" — and mtime says WHEN a file was last written, never WHETHER its bytes
+    differ. A clean `git checkout`/`pull` sets every input's mtime to the checkout time
+    without touching a single byte, so a leftover gitignored dist/ read as 25 stale
+    bundles on a tree where rebuilding produced byte-identical output. tools/bundle.mjs
+    now writes dist/.inputs.json, a sha256 of every input it hashed at build time, keyed
+    by page; this compares that recorded manifest against the CURRENT hash of the same
+    files, so a mtime bump with identical content passes and a single changed byte is
+    named. This still cannot see a bundle built from the right bytes but the wrong
+    reasoning (a bug in bundle.mjs itself, or a manifest hand-edited to match), and it
+    trusts dist/.inputs.json completely — there is no independent second source for what
+    the bundler actually inlined.
+    """
+    if not os.path.isdir(dist):
         # ERROR, not WARN: losing every bundle must not be easier to pass than losing one.
         err("bundle", "dist", "no dist/ folder — nothing is shipped")
         return
+    manifest_path = os.path.join(dist, ".inputs.json")
+    manifest = None
+    manifest_bad = not os.path.isfile(manifest_path)
+    if not manifest_bad:
+        try:
+            manifest = load_json(manifest_path)
+        except Exception:
+            manifest_bad = True
+    if manifest_bad:
+        # Never fall back to "pass" and never fall back to mtimes — an unreadable or
+        # absent manifest means freshness is simply unknown, which is an ERROR.
+        err("bundle", "dist/.inputs.json", "no input manifest — rebuild")
     for a in arts:
-        b = os.path.join(DIST, f"{a}.html")
+        b = os.path.join(dist, f"{a}.html")
         if not os.path.isfile(b):
             err("bundle", a, "no bundle in dist/ — never shipped")
             continue
-        bt = os.path.getmtime(b)
-        # Every INPUT the bundler inlines, not just the two obvious ones. Comparing only
-        # index.html and app.js meant a renderer change in _shared/ — which rewrites every
-        # page — or a data refresh, which changes every figure, both read as "fresh". Both
-        # council families flagged this, and it bit during this session: picviz.js was
-        # edited and the bundles were only rebuilt because someone remembered to.
-        inputs = [os.path.join(WEB, a, f) for f in ("index.html", "app.js", "styles.css")]
-        ddir = os.path.join(WEB, a, "data")
-        if os.path.isdir(ddir):
-            inputs += [os.path.join(ddir, f) for f in os.listdir(ddir)]
-        shared = os.path.join(WEB, "_shared")
-        if os.path.isdir(shared):
-            inputs += [os.path.join(shared, f) for f in os.listdir(shared)]
-        for p in inputs:
-            if os.path.isfile(p) and os.path.getmtime(p) > bt:
-                gap = (os.path.getmtime(p) - bt) / 60
-                err("bundle", a,
-                    f"bundle is {gap:.0f} min behind {os.path.relpath(p, WEB)} — rebuild")
-                break
-    reg = os.path.join(WEB, "_data", "SOURCES.json")
-    if os.path.isfile(reg):
-        rt = os.path.getmtime(reg)
-        stale = [a for a in arts
-                 if os.path.isfile(os.path.join(DIST, f"{a}.html"))
-                 and os.path.getmtime(os.path.join(DIST, f"{a}.html")) < rt]
-        if stale:
-            err("bundle", "SOURCES.json",
-                f"registry is newer than {len(stale)} bundle(s), which inline it: "
-                f"{', '.join(stale[:6])}{'…' if len(stale) > 6 else ''}")
-    for f in sorted(os.listdir(DIST)):
+        if manifest_bad:
+            continue  # already reported once, globally — no point repeating per page
+        recorded = manifest.get(a)
+        if recorded is None:
+            err("bundle", a, "no input manifest entry for this page — rebuild")
+            continue
+        current = _bundle_inputs(web, a)
+        added = sorted(set(current) - set(recorded))
+        if added:
+            err("bundle", a, f"bundle for {a} was built before {added[0]} existed — rebuild")
+            continue
+        missing = sorted(set(recorded) - set(current))
+        if missing:
+            err("bundle", a,
+                f"bundle for {a} was built from {missing[0]}, which no longer exists — rebuild")
+            continue
+        changed = sorted(p for p in current if current[p] != recorded[p])
+        if changed:
+            err("bundle", a, f"bundle for {a} was built from an older {changed[0]} — rebuild")
+    for f in sorted(os.listdir(dist)):
         if f.endswith(".html") and os.path.splitext(f)[0] not in arts:
             warn("bundle", f, "bundle with no source artifact")
 
