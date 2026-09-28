@@ -121,8 +121,8 @@ counting quarters would name marks the reader cannot see.
   four quarters recorded 7,157 separations and 6,626 hires, so some departures were not
   refilled. Industry exits need Census Job-to-Job
   Flows, a different product this page does not carry.
-- **The age-65 figure is an estimate, never a measurement.** It counts people reaching 65,
-  assuming the 55-to-64 band is spread evenly over ten single-year cohorts, and it is a
+- **The age-65 figure is an estimate, never a measurement.** It estimates the jobs whose
+  holders reach 65, assuming the 55-to-64 band is spread evenly over ten single-year cohorts, and it is a
   count of retirements only if each of them retires. QWI records separations and cannot
   see retirement.
 

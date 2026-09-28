@@ -149,10 +149,9 @@ PV.figures([
     `${D.meta.sources} ${D.meta.row} <b>${D.meta.polymer_bound}</b>
      <b>This is the number that changed most when the bound did.</b> Matching the word
      “polymer” in the text returned 24 of these papers; the subject classification returns
-     <b>${T.polymer_total}</b>, with ${T.bio_total} more in biomaterials,
-     ${T.subject_total} of ${T.coauthored} works, about
-     ${Math.round(T.subject_total / T.coauthored * 100)} percent. <b>The ${word(SUBJ_GAP)} years
-     from ${SUBJ_YEARS.at(-2) + 1} to ${T.last_subject_year - 1} carry no joint paper in
+     <b>${T.polymer_total}</b>, and ${T.bio_total} in biomaterials, at most
+     ${T.subject_total} between them. <b>The ${word(SUBJ_GAP)} years
+     from ${SUBJ_YEARS.at(-2) + 1} to ${T.last_subject_year - 1} carry no paper naming both in
      either subject, and ${T.last_subject_year} carries one.</b> A paper naming both universities proves neither a two-person
      collaboration nor an institutional relationship;
      ${T.coauthored} works over ${S.length} years is roughly
@@ -221,10 +220,10 @@ PV.figures([
   document.getElementById("controlsrc").innerHTML =
     `${D.meta.control} Case Western’s indexed output is
      ${N(pk.cwru)} in ${T.peak_year} and ${N(last.cwru)} in ${last.year}.
-     That comparison cannot exclude different indexing delays for joint papers.
+     That comparison cannot exclude different indexing delays for papers naming both.
      <b>The decline also appears as a share of Akron’s output:</b>
      Akron’s own output fell from ${N(pk.akron)} to ${N(last.akron)}, about
-     ${Math.round((1 - last.akron / pk.akron) * 100)} percent, while joint work per thousand
+     ${Math.round((1 - last.akron / pk.akron) * 100)} percent, while papers naming both per thousand
      of that output fell from ${pk.per_1k_akron} to ${last.per_1k_akron}, about
      ${Math.round((1 - last.per_1k_akron / pk.per_1k_akron) * 100)} percent. The two
      quantities are drawn in separate panels rather than on two y-scales, because where
@@ -278,17 +277,17 @@ PV.figures([
 
 document.getElementById("closersub").innerHTML =
   `<b>The claim this page replaces was that nothing suggested the two had ever been in a
-   room together.</b> That was false, and it was checkable in an afternoon: ${T.coauthored}
-   papers naming both, ${T.joint_awards} joint NSF projects, ${usd(T.joint_award_dollars)}.
+   room together.</b> That was false, and it was checkable in an afternoon: ${T.joint_awards} joint NSF
+   projects, ${usd(T.joint_award_dollars)}.
    Publishing it would have told two anchor institutions that PIC had not looked.
    <b>What the measurement found instead is harder to dismiss and more useful.</b> The
    joint NSF projects are collaboration by NSF&rsquo;s own label, and the papers naming both
    are almost never classified in polymers.
    <b>Of ${T.coauthored} papers naming both, ${T.polymer_total} are classified in polymers and
-   plastics and ${T.bio_total} in biomaterials, ${T.subject_total} in all, and
+   plastics and ${T.bio_total} in biomaterials, and
    ${word(SUBJ_GAP)} of the last ${word(SUBJ_GAP + 1)} years carry neither.</b> Two
    universities anchoring a polymer cluster have both been
-   named on ${T.coauthored} papers in ${word(S.length)} years and ${Math.round((1 - T.subject_total / T.coauthored) * 100)}
+   named on ${T.coauthored} papers in ${word(S.length)} years and at least ${Math.floor((1 - T.subject_total / T.coauthored) * 100)}
    percent of them are classified in neither subject. <b>Those papers thinned too, and they
    thinned recently.</b> The controlled rate fell in ${word(FALLS)} straight years, from
    ${S[FALL_FROM].per_1k_akron} works naming both per thousand of Akron’s output in
@@ -297,9 +296,10 @@ document.getElementById("closersub").innerHTML =
    ${TROUGH.joint} is the shape a run of counts this small makes on its own, so the rise is
    recorded here and is not read as a recovery: the rate is still
    ${Math.round((1 - last.per_1k_akron / pk.per_1k_akron) * 100)} percent below the
-   ${T.peak_year} peak. No new joint NSF award has started since
-   ${T.newest_joint_award_year}. <b>That is a live question PIC is positioned to
-   ask</b>, and it is a different conversation from the one an unbounded negative would have
+   ${T.peak_year} peak. Within the years counted here, ${D.meta.years[0]} to
+   ${D.meta.years[1]}, no new joint NSF award started after ${T.newest_joint_award_year};
+   NEO-SMART, awarded in July 2026, came after them. <b>Whether it reverses the thinning
+   is a live question PIC is positioned to ask</b>, and it is a different conversation from the one an unbounded negative would have
    started. <b>The limit stays in force:</b> ${D.meta.what_a_null_would_mean}`;
 
 /* Standard methodology + AI disclosure. Generated, not written — see picviz.js. */

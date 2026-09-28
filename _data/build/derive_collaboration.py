@@ -75,6 +75,8 @@ out = {"meta": dict(C["meta"],
                       newest_joint_award_year=gap_since,
                       polymer_total=sum(r["polymer"] for r in series),
                       bio_total=sum(r["bio"] for r in series),
+                      # A sum, not a union: one work can carry both subfields, so this
+                      # bounds the distinct papers from above.
                       subject_total=sum(r["polymer"] + r["bio"] for r in series),
                       last_subject_year=last_subject_year),
        "series": series, "joint_awards": awards, "sample": C["sample"]}
