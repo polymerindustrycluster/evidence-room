@@ -159,8 +159,8 @@ $21.0 million beside the federal award.
 match comes from local partners, as the state's own announcement says. The standfirst,
 the stat card and a dated correction line in the page's header now say so. The page's
 29 August 2026 correction note repeated the phrase; it stays as written, because notes
-are not rewritten, and now opens with a dated bracket saying partners alone promised it,
-so a reader meets the fact before the phrase.
+are not rewritten, and now opens with a dated bracket whose first words say partners
+alone promised it; only then does the bracket quote the phrase it corrects.
 
 **Cause:** The phrase passed from sentence to sentence, and no guard checked who made each
 promise. tile-figures already pinned the machine card's Ohio match to its local-partner
