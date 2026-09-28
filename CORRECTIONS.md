@@ -13,21 +13,25 @@ page, the figure, and what you think it should be.
 
 ## 2026-09-28 — Two pages gave a broad chemicals price index the name of a narrower one
 
-**Was:** *revisions* and *cost-scissors* called BLS series WPU06 "industrial chemicals" in
-their prose, chart labels, tables and data files. The revisions page called it "the series
-a buyer quotes when negotiating a resin contract", and the cost-scissors gray line was
-"resin against industrial chemicals".
+**Was:** *cost-scissors* called BLS series WPU06 "industrial chemicals" in its prose, chart
+labels, tables and data file; its gray line was "resin against industrial chemicals".
+*revisions* used the same name in its lede, which also called WPU06 "the series a buyer
+quotes when negotiating a resin contract", and in its data file. Its chart labels were
+already right.
 
 **Is:** WPU06 is "Chemicals and allied products", a group that includes resins. "Industrial
-chemicals" is WPU061, a narrower series neither page uses. Every label, both data files,
-the fetch script and the source registry now carry the right name, and the revisions page
+chemicals" is WPU061, a narrower series neither page uses. Every cost-scissors label, the
+revisions lede, both data files, the fetch script, the source registry and the series
+label in cluster-health's revision count now carry the right name, and the revisions page
 calls the series the upstream input and no longer says what buyers quote. Both pages carry
 a dated correction line. No number changed: the series was always WPU06; only its name was
 wrong.
 
 **Cause:** The name was typed wrong once, in the series table of `fetch_rest.py`, which
-wrote it into both data files, and every page label was read from there. Nothing checks a
-series name against its ID.
+wrote it into both data files. Cost-scissors read its labels from there. The revisions
+renderer had already caught the error: it overrides the data-file name with "Chemicals and
+allied products" and says why in a comment. That fix never reached the page's lede or the
+data file beneath it. Nothing checks a series name against its ID.
 
 ## 2026-09-28 — Ten sentences read firmer than their own data
 
@@ -36,9 +40,11 @@ held their numbers but claimed more than the numbers carry. Each changed sentenc
 now checks the new wording's quantity.
 
 **"Leads four papers in five", *reach*.** **Was:** "The region leads four papers in five
-of those that name a corresponding author", and the front page said four papers in five
-"are led from here". **Is:** 985 of 1,222 papers naming a corresponding author had one
-here, on both. The count includes papers with no outside coauthor at all, so "leads"
+of those that name a corresponding author"; the headline said "four of its papers in five
+are led from here", the figure card "81% led from here" and the opening chart "led from
+here"; the front page said the same. **Is:** 985 of 1,222 papers naming a corresponding
+author had one here, in the headline, the figure card, the opening chart and the front
+page. The count includes papers with no outside coauthor at all, so "leads"
 described a collaboration the count does not require.
 
 **"Federal" awards from an NSF-only fetch, *collaboration*.** **Was:** "four joint federal
@@ -55,7 +61,9 @@ rank on jobs.
 **A ranking on a 0.07-point gap, *laborshed*.** **Was:** "only Pittsburgh keeps more for
 its own residents than the twelve counties do". **Is:** the twelve counties keep 89.5
 percent and Pittsburgh 89.6 percent, on twelve counties against eight. A gap that small,
-across different boundaries, is not a ranking.
+across different boundaries, is not a ranking. The two chart labels ("ahead of PIC-12")
+and the closing paragraph ("only Pittsburgh beats") carried the same ranking and now say
+"just above", with both shares and boundary sizes.
 
 **A rank without its margin, *realwage*.** **Was:** the 8th place after price adjustment,
 alone. **Is:** the same rank, with "less than $6 a week from either neighboring rank". The
@@ -134,12 +142,14 @@ $21.0 million beside the federal award.
 
 **Is:** Partners promised it; the state promised none. The Ohio grant's $10.4 million
 match comes from local partners, as the state's own announcement says. The standfirst,
-the stat card and a dated correction line in the page's header now say so.
+the stat card and a dated correction line in the page's header now say so. The page's
+29 August 2026 correction note repeated the phrase; it stays as written, because notes
+are not rewritten, and now ends with a dated bracket saying partners alone promised it.
 
-**Cause:** The phrase passed from sentence to sentence, into the page's 29 August 2026
-correction note too, and no guard checked who made each promise. tile-figures now pins
-the Ohio match to its local-partner label. That note stays as written, because entries
-are not rewritten; this one supersedes it.
+**Cause:** The phrase passed from sentence to sentence, and no guard checked who made each
+promise. tile-figures already pinned the machine card's Ohio match to its local-partner
+label, which was right. Its falsified_if now names this failure too, but no claim reads the
+standfirst or the stat card, so a relapse in either would still pass.
 
 ## 2026-09-28 — Cost scissors claimed a gain its price data cannot show, and an order it held only lately
 
@@ -148,7 +158,9 @@ the spike and somebody banked it". The ladder band's headline said "Each step aw
 the wellhead kept more of the 2022 rise, except the power bill", with no date.
 
 **Is:** The bold line reads "the 2022 spike has not unwound evenly, and the prices nearest
-the customer have held". The headline is dated July 2026. The lede adds that the order
+the customer have held". The spread lede, the gas figure card and the feedstock seat no
+longer call a price move a "windfall", and the lede no longer says chemicals "feed" resin,
+since the chemicals index includes resin. The headline is dated July 2026. The lede adds that the order
 held in 29 of the 43 months from January 2023 and broke in four of the last eight, most
 recently in April 2026.
 
@@ -166,8 +178,9 @@ card said near-equal hire and separation rates are "how a churn engine that size
 produces a net flow of +168 while the headcount falls 719."
 
 **Is:** The page says some hires come from another plastics or rubber employer and
-that this series cannot say how many. It calls the pipeline quantity "different and
-smaller", and the standfirst says the two Census measures are estimated separately. The
+that this series cannot say how many. It calls the pipeline quantity "different" and
+says this series cannot size it against the hiring, and the standfirst says the two
+Census measures are estimated separately. The
 front-page card says the headcount is a separate Census estimate that need not agree
 with the flows. The rates explain the +168, not the 719.
 

@@ -169,8 +169,8 @@ const INFL = (CPI[CPIL] / CPIB - 1) * 100;
    section that explains it. */
 PV.figures([
   ["key", vsB(gas.now.index), "gas, against January 2019",
-   `cheaper than before the 2022 spike: the buyer’s win, the seller’s lost windfall. The
-    whole rise given back, and then some (${pct(gas.retraced)})`],
+   `cheaper than before the 2022 spike, which is the buyer’s good news. The whole rise
+    given back, and then some (${pct(gas.retraced)})`],
   ["", vsB(resinMfg.now.index), "resin, against January 2019",
    `the middle seat: about a third of the rise given back, the rest still on the
     invoice`],
@@ -238,7 +238,7 @@ function verdict() {
   if (!SEL) v.innerHTML = `<b>The whole chain:</b> gas sellers have given back the whole
     rise, resin makers about a third, and product makers none of it. Tap a seat to
     re-read the charts from it.`;
-  else if (SEL === "feedstock") v.innerHTML = `<b>Feedstock:</b> the windfall reversed.
+  else if (SEL === "feedstock") v.innerHTML = `<b>Feedstock:</b> the spike reversed.
     Gas peaked at nearly three times its January 2019 level in ${mon3(gas.peak.date)} and
     now sits ${(100 - gas.now.index).toFixed(0)}% below it: the whole rise given back,
     and then some (${pct(gas.retraced)}). Ohio industrial power is the exception: still up
@@ -246,10 +246,10 @@ function verdict() {
   else if (SEL === "resin") v.innerHTML = `<b>Resin:</b> the middle seat. Your output
     crested at about ${vsB(Math.max(resinsMat.peak.index, resinMfg.peak.index))} across
     2021 and 2022, gave back about a third, and still runs
-    ${vsB(resinMfg.now.index)}. Your own version of the gap, resin against industrial
-    chemicals, opened to ${sp(cPeak.v)} points of extra price growth in
-    ${mon3(cPeak.date)} and has unwound to just below zero: the shortage windfall did not
-    keep.`;
+    ${vsB(resinMfg.now.index)}. Your own version of the gap, resin against the broad
+    chemicals and allied products index that includes it, opened to ${sp(cPeak.v)} points
+    of extra price growth in ${mon3(cPeak.date)} and has unwound to just below zero: the
+    shortage gap did not keep.`;
   else v.innerHTML = `<b>Finished products:</b> the winning seat, on these two indexes.
     Your main input gave back about a third of its rise; your output gave back none in cash
     and sits at its peak. Your prices have risen ${sp(last.v)} percentage points more than
