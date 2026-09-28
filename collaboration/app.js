@@ -90,7 +90,7 @@ PV.figures([
      earlier version of this card said "a keyword in the text, not a subject code", which was
      the exact inverse of the method, and sat directly under a standfirst saying so. */
   ["", N(T.coauthored_polymer), "classified in polymers", "subfield 2507, not a keyword match"],
-  ["", String(T.joint_awards), "joint federal awards", usd(T.joint_award_dollars) + " combined"],
+  ["", String(T.joint_awards), "joint NSF projects", usd(T.joint_award_dollars) + " combined"],
   /* Bounded to the window on purpose: the award data ends with the window and cannot speak
      to what started after it. CWRU leads the NEO-SMART NSF Engine, awarded 2026-07-14, and Akron
        is among its core partners — outside this
@@ -261,7 +261,7 @@ PV.figures([
       `${(r.start || "").slice(-4)}: ${usd(r.amount)}, ${t}`);
   });
   document.getElementById("awardstable").innerHTML = tableView("a",
-    "Joint federal awards",
+    "Joint NSF projects",
     ["Start", "Award ID", "Title", "Amount", "How it was found"],
     A.map(r => [r.start, r.id, r.title, usd(r.amount), r.via]));
   document.getElementById("awardssrc").innerHTML =
@@ -271,15 +271,15 @@ PV.figures([
      literally titled “Graduate Research Fellowship Program”, an institutional block grant
      every university receives separately, and matching on title alone booked it as a
      $1.1 million joint project across five award IDs. Only awards NSF itself labels
-     “Collaborative Research” are counted. <b>This measure sees federal research grants and
-     nothing else:</b> no industry contract, no state award, no subaward, and no unfunded
-     collaboration.`;
+     “Collaborative Research” are counted. <b>This measure queries the NSF Awards API and
+     nothing else:</b> no other federal agency, no industry contract, no state award, no
+     subaward, and no unfunded collaboration.`;
 }
 
 document.getElementById("closersub").innerHTML =
   `<b>The claim this page replaces was that nothing suggested the two had ever been in a
    room together.</b> That was false, and it was checkable in an afternoon: ${T.coauthored}
-   coauthored papers, ${T.joint_awards} joint federal awards, ${usd(T.joint_award_dollars)}.
+   coauthored papers, ${T.joint_awards} joint NSF projects, ${usd(T.joint_award_dollars)}.
    Publishing it would have told two anchor institutions that PIC had not looked.
    <b>What the measurement found instead is harder to dismiss and more useful.</b> The
    collaboration is real and substantial, and it is almost never about polymers.
@@ -296,7 +296,7 @@ document.getElementById("closersub").innerHTML =
    ${TROUGH.joint} is the shape a run of counts this small makes on its own, so the rise is
    recorded here and is not read as a recovery: the rate is still
    ${Math.round((1 - last.per_1k_akron / pk.per_1k_akron) * 100)} percent below the
-   ${T.peak_year} peak. No new joint federal award has started since
+   ${T.peak_year} peak. No new joint NSF award has started since
    ${T.newest_joint_award_year}. <b>That is a live question PIC is positioned to
    ask</b>, and it is a different conversation from the one an unbounded negative would have
    started. <b>The limit stays in force:</b> ${D.meta.what_a_null_would_mean}`;

@@ -1165,8 +1165,8 @@ const PIC = R.find(r => r.kind === "footprint");
 const pct2 = v => (v * 100).toFixed(2) + "%";
 document.getElementById("regionsfigtitle").textContent =
   `Of the work that sits inside them, the twelve counties keep ` +
-  `${pct(B.totals.work_region_share)} for their own residents; only Pittsburgh keeps ` +
-  `more, ${pct(PGH.region_share_work)} on ${WORDS[PGH.counties]} counties`;
+  `${pct(B.totals.work_region_share)} for their own residents; Pittsburgh keeps ` +
+  `${pct(PGH.region_share_work)}, on ${WORDS[PGH.counties]} counties rather than twelve`;
 
 /* -------------------------------------------------------- tables + prose slots */
 
@@ -1346,11 +1346,12 @@ document.getElementById("regionsreading").innerHTML =
    ${importedPctOhio} percent. The band earlier on this page counts a worker resident in
    any state and reads ${N(JOBS_ALL)} and ${importedPct} percent. Same twelve counties,
    same ${N(D.totals.home_inside_pic12)} jobs held from inside, two denominators. Among
-   comparable regions only Pittsburgh keeps more, at
-   ${pct(PGH.region_share_work)} on ${WORDS[PGH.counties]} counties rather than twelve. Read
-   against this chart’s own size rule, that makes Pittsburgh the stronger figure and the
-   twelve counties the closest thing to it.
-   <b>That ranking is the workplace side, the work that sits inside a region.</b> On the
+   comparable regions, Pittsburgh’s workplace share is
+   ${pct(PGH.region_share_work)} against the twelve counties’ ${pct(B.totals.work_region_share)},
+   on ${WORDS[PGH.counties]} counties rather than twelve. Read
+   against this chart’s own size rule, the two are close enough that the boundary
+   difference outweighs which one is ahead.
+   <b>That comparison is the workplace side, the work that sits inside a region.</b> On the
    resident side, where each region’s own people work, it reverses:
    ${pct2(PIC.region_share)} of PIC-12 residents’ jobs are inside PIC-12 against
    Pittsburgh’s ${pct2(PGH.region_share)}. Two hundredths of a point is a tie in

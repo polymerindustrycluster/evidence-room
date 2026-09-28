@@ -3,9 +3,9 @@
  "claims": [
   {
    "id": "col-they-do-collaborate",
-   "text": "The University of Akron and Case Western Reserve have coauthored more than 200 works since 2012 and hold four joint federal awards.",
-   "source": "OpenAlex works listing both institutions; NSF awards API",
-   "assert": "200 < D['totals']['coauthored'] < 300 and D['totals']['joint_awards'] == 4",
+   "text": "The University of Akron and Case Western Reserve have coauthored more than 200 works since 2012 and hold four joint NSF projects (eight award IDs, since NSF splits a Collaborative Research project into one award per institution).",
+   "source": "OpenAlex works listing both institutions; NSF awards API only",
+   "assert": "200 < D['totals']['coauthored'] < 300 and D['totals']['joint_awards'] == 4 and sum(len(a['id'].split(' + ')) for a in D['joint_awards']) == 8",
    "actual": "(D['totals']['coauthored'], D['totals']['joint_awards'], D['totals']['joint_award_dollars'])",
    "falsified_if": "Either measure stops matching the words beside it: the coauthored count falling to 200 or below makes 'more than 200' false, reaching 300 makes it the wrong floor to print, and the award count leaving four contradicts a heading that spells the number out. The old assertion was `> 150` against a text reading 'more than 200' and `>= 3` against a text and a heading both reading 'four', so a count of 151 and three awards would have passed while the page said otherwise. This is the claim that refutes the deleted 'nothing suggests they have met' line; if it fails, that line was closer to right than this page is and the page must be withdrawn, not softened. It is about collaboration EXISTING, and is deliberately independent of whether the collaboration is about polymers — see col-rarely-about-polymers, which says it mostly is not."
   },
@@ -27,7 +27,7 @@
   },
   {
    "id": "col-no-new-joint-award",
-   "text": "Within the window measured here, 2012 to 2025, no new joint federal award started after 2017.",
+   "text": "Within the window measured here, 2012 to 2025, no new joint NSF award started after 2017.",
    "source": "NSF awards API, awards to either institution since 2012, Collaborative Research mechanism only",
    "assert": "max(int((a['start'] or '0000')[-4:]) for a in D['joint_awards']) <= 2017 and D['meta']['years'][1] == 2025",
    "actual": "[(a['start'], a['amount'], a['title'][:60]) for a in D['joint_awards']] + [('window', D['meta']['years'])]",
