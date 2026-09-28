@@ -1,6 +1,6 @@
 # The Spike Ended, Prices Didn't
 
-**Squeeze or windfall? It depends on which link of the chain you sell from.**
+**How much of the 2022 price spike has each link of the chain given back? Gas all of it; finished products none, and they sit at a record high before inflation.**
 
 Source: U.S. EIA (Henry Hub, Ohio industrial electricity) and FRED/BLS producer price indexes, monthly, 2015–2026.
 

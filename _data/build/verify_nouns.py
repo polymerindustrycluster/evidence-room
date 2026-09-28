@@ -70,12 +70,15 @@ COMMENT = re.compile(r"<!--.*?-->", re.S)
 TAG = re.compile(r"<[^>]+>")
 WS = re.compile(r"[\s\xa0]+")
 # A token ends after clause punctuation even when no space follows it, so "1991;41" is two
-# tokens and the ";" still closes the clause. A full stop does the same when a digit follows
-# it, past any closing quote or bracket, unless a digit or space precedes it: "records.41"
-# splits, "41.5" and ".5" do not. A URL's "https:" or "?id=", or an abbreviation like
-# "No.41", closing a clause early can only make a binding fail, never pass one.
-TOKEN = re.compile(r"(?:[^\s;:?!.]|\.(?![\"'\u2019\u201d)\]]*\d)|(?<![^\d\s])\.)+"
-                   r"[;:?!.]*[\"'\u2019\u201d)\]]*|[;:?!]+")
+# tokens and the ";" still closes the clause. A full stop does the same when a capital or a
+# digit follows it, past any closing or opening quote or bracket: "records.41",
+# "1991.Only" and "records.“41" all split. Three shapes stay whole: a decimal ("41.5",
+# ".5"), a single-letter abbreviation ("U.S.", "e.g."), and a lower-case continuation
+# ("us.edu"). A URL's "https:" or "?id=", or an abbreviation like "No.41", closing a clause
+# early can only make a binding fail, never pass one.
+OPEN, CLOSE = "\"'\u2018\u201c(\\[", "\"'\u2019\u201d)\\]"
+CLAUSE_CUT = re.compile(rf"[;:?!]+[{CLOSE}]*(?=\S)")
+STOP_CUT = re.compile(rf"\.+[{CLOSE}]*(?=[{OPEN}]*[A-Z0-9])")
 STRIP_EDGES = re.compile(r"^\W+|\W+$", re.UNICODE)
 NUMERIC_FIGURE = re.compile(r"^[\d,.]+$")
 NUMCHARS = set("0123456789,.")
@@ -103,8 +106,27 @@ def page_text(page):
     return WS.sub(" ", raw).strip()
 
 
+def _cuts(chunk):
+    """Offsets inside one run of non-space characters where a clause ends unspaced."""
+    cuts = {m.end() for m in CLAUSE_CUT.finditer(chunk)}
+    for m in STOP_CUT.finditer(chunk):
+        s = m.start()
+        if s == 0:
+            continue                                  # ".5"
+        if chunk[s - 1].isdigit() and chunk[s + 1].isdigit():
+            continue                                  # "41.5"
+        if chunk[s - 1].isalpha() and (s == 1 or not chunk[s - 2].isalpha()):
+            continue                                  # "U.S.", "e.g."
+        cuts.add(m.end())
+    return sorted(cuts)
+
+
 def tokenize(text):
-    return [(m.start(), m.end(), m.group()) for m in TOKEN.finditer(text)]
+    tokens = []
+    for m in re.finditer(r"\S+", text):
+        chunk, edges = m.group(), [0, *_cuts(m.group()), len(m.group())]
+        tokens += [(m.start() + a, m.start() + b, chunk[a:b]) for a, b in zip(edges, edges[1:])]
+    return tokens
 
 
 def _numeric_span_ok(text, start, end, figure):

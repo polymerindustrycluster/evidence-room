@@ -1282,8 +1282,8 @@ meth.querySelector(".pv-method-grid").insertAdjacentHTML("beforeend", `
         lost end of a cross-boundary move rather than bound it.</li>
       <li>Census Job-to-Job Flows, a separate product, which is what separates a worker
         leaving plastics and rubber altogether from one moving to the plant next door. Its
-        absence is why the retirement figure in the age section is a floor on replacement
-        demand and not a total.</li>
+        absence is why the retirement figure in the age section sizes neither a floor nor a
+        total of replacement demand.</li>
     </ul>
     <p><b>The age estimate, stated as arithmetic.</b> ${N(RET.avg_jobs_5564)} of the
       region&rsquo;s ${N(RET.avg_jobs)} jobs are held by someone 55 to 64. Spread evenly

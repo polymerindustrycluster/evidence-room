@@ -135,9 +135,22 @@ class NounNearbyTest(unittest.TestCase):
             found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
             self.assertFalse(found, text)
 
+    def test_full_stop_before_a_capital_or_opening_quote_ends_the_clause(self):
+        # Round 5: "1991.Only" stayed one token, so "institution" certified the award count.
+        for text in ("147 institution records since 1991.Only 41 recorded polymer awards.",
+                     "147 institution records.\u201c41 recorded polymer awards.\u201d"):
+            tokens = vn.tokenize(text)
+            s = text.index("41 ")
+            found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
+            self.assertFalse(found, text)
+
     def test_decimal_point_does_not_end_a_clause(self):
         tokens = vn.tokenize("Institutions rose 41.5 percent.")
         self.assertIn("41.5", [w for _, _, w in tokens])
+
+    def test_abbreviation_and_domain_stay_whole(self):
+        words = [w for _, _, w in vn.tokenize("U.S. schools, e.g. Akron, at us.edu")]
+        self.assertEqual(words, ["U.S.", "schools,", "e.g.", "Akron,", "at", "us.edu"])
 
     def test_noun_in_the_next_sentence_does_not_count(self):
         tokens = vn.tokenize("The count fell to 41. Institutions elsewhere grew.")

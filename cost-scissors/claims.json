@@ -3,11 +3,11 @@
   "claims": [
     {
       "id": "cs-ladder-monotonic",
-      "text": "Retracement falls monotonically down the chain: gas, then crude, then resin, then finished product (standfirst, ladder H2, default verdict, closer).",
+      "text": "Retracement falls monotonically down the chain: gas, then crude, then resin, then finished product (standfirst, ladder H2, default verdict, closer). Each series' stored peak and give-back are recomputed from its own points (peak = highest index since January 2019; give-back to 4 decimals), so a bar cannot print a share its series does not support.",
       "source": "FRED/BLS and EIA monthly series, each indexed to January 2019; retracement = (peak - now) / (peak - 100)",
-      "assert": "(lambda g: g['feedstock'] > g['resin'] > g['product'])({s['stage']: max(x['retraced'] for x in D['series'] if x['stage']==s['stage'] and x['retraced'] is not None) for s in D['series'] if s['stage'] in ('feedstock','resin','product')})",
+      "assert": "(lambda g: g['feedstock'] > g['resin'] > g['product'])({s['stage']: max(x['retraced'] for x in D['series'] if x['stage']==s['stage'] and x['retraced'] is not None) for s in D['series'] if s['stage'] in ('feedstock','resin','product')}) and all(s['peak'] == max([p for p in s['points'] if p['date'] >= s['base']], key=lambda q: q['index']) and s['retraced'] == round((s['peak']['index'] - s['now']['index']) / (s['peak']['index'] - 100), 4) for s in D['series'])",
       "actual": "[(s['stage'], s['label'], s['retraced']) for s in D['series'] if s['retraced'] is not None]",
-      "falsified_if": "Any stage overtakes the one above it. The ORDERING is the claim and it is robust to the base month; the exact percentages are not, because January 2019 is a winter month and flatters the gas fall."
+      "falsified_if": "Any stage overtakes the one above it. The ORDERING is the claim and it is robust to the base month; the exact percentages are not, because January 2019 is a winter month and flatters the gas fall. Also false if any series' stored peak is not its highest index since the base month, or its stored give-back differs from (peak - now) / (peak - 100) rounded to 4 decimals."
     },
     {
       "id": "cs-ladder-order-dated",

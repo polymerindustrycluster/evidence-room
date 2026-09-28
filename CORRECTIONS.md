@@ -60,7 +60,10 @@ a second author, so both now say "works".
 **"Federal" awards from an NSF-only fetch, *collaboration*.** **Was:** "four joint federal
 awards". **Is:** four joint NSF projects (eight award IDs, because NSF files a
 collaborative project as one award per institution), on the page and the front page. The
-fetch queries the NSF Awards API only; no other agency was ever checked.
+fetch queries the NSF Awards API only; no other agency was ever checked. The front
+page's collaboration card called the 208 papers "coauthored"; the fetch requires only that
+a paper name both universities, which one author holding both affiliations satisfies, so
+the card now says "208 papers naming both universities".
 
 **A comparison set that ended at Akron, *peers*.** **Was:** "Among the six disclosed metros
 with the most plastics and rubber jobs, Akron is also the most concentrated." **Is:** among
@@ -201,6 +204,14 @@ with the flows. The rates explain the +168, not the 719.
 **Cause:** The flows series does not record where a hire last worked; only the Job-to-Job
 Flows series does, as the page's next sentences say. The card joined two separately
 estimated figures with "which is how".
+
+**Also corrected the same day:** the page called the roughly 400 retirements a year a
+"floor" on training demand, and said age "accounts for" about 400 of the 6,626 hires. Over
+the same four quarters the region separated 7,157 workers and hired 6,626, so some
+departures were not refilled, and the flows cannot say whether any retirement was. The page
+now says age would account for about 400 hires only if every retirement were refilled, and
+that the 400 is not a floor. The README had kept an older sentence saying most of a plant's
+hiring "is refilled from inside the industry"; it now says the series cannot tell.
 
 ## 2026-09-28 — The front page sent the state question to a county page
 
