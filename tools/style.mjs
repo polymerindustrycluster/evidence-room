@@ -29,7 +29,7 @@ try { ACRO = JSON.parse(rfs(new URL("../_data/acronyms.json", import.meta.url), 
    (2026-09-28). Only a grep outside the repo caught that. The list is read unguarded: a
    missing or malformed file must fail the gate, not empty the list and pass. */
 const WITHDRAWN = JSON.parse(rfs(new URL("../_data/withdrawn.json", import.meta.url), "utf-8")).withdrawn;
-for (const w of WITHDRAWN) new RegExp(w.pattern, "i");
+for (const w of WITHDRAWN) new RegExp(w.pattern.replaceAll(" ", "\\s+"), "gi");  /* the form the page compiles */
 
 const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const list = names.length ? names
@@ -54,7 +54,19 @@ for (const n of list) {
     const BANNED = /\b(crucial|delve|matters)\b/i;
     const out = [];
     const pageText = [];
-    const blockText = new Map();
+    const WRE = withdrawn.map(src => new RegExp(src.replaceAll(" ", "\\s+"), "gi"));
+    const BLOCKS = "p,li,td,th,h1,h2,h3,h4,h5,h6,figcaption,caption,dd,dt,summary,blockquote";
+    const blockText = new Map(), owners = new Map();
+    /* the block an element's text belongs to: the nearest text block, else the nearest
+       ancestor that is not display:inline (a card div), never a <b> or <span> */
+    const own = e => {
+      if (!owners.has(e)) {
+        let b = e.closest(BLOCKS);
+        if (!b) for (b = e; b !== document.body && getComputedStyle(b).display === "inline"; b = b.parentElement);
+        owners.set(e, b);
+      }
+      return owners.get(e);
+    };
     const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     let t;
     while ((t = w.nextNode())) {
@@ -85,27 +97,32 @@ for (const n of list) {
       if (!verbatim && /"/.test(s)) out.push(["straight-double", ctx.slice(0, 70)]);
       const m = s.match(BANNED);
       if (m) out.push([`banned:${m[1].toLowerCase()}`, ctx.slice(0, 70)]);
-      /* Matched against the nearest text block, not this node, so a phrase split by
-         inline markup (<b>81%</b> led from here) or wrapped across source lines is
+      /* Matched against the text of the block this node belongs to, so a phrase split
+         by inline markup (<b>81%</b> led from here), a <br>, or wrapped source lines is
          still one phrase; each match is reported once, from the node it starts in. A
          dated correction note may quote what it corrects, and a phrase inside curly
-         double quotes is a mention, not a use; both are exempt, and both read the same
-         block, never a wrapper div, so a note cannot exempt the page. */
-      if (withdrawn.length) {
-        const block = el.closest("p,li,td,th,h1,h2,h3,h4,h5,h6,figcaption,caption,dd,dt,summary,blockquote") || el;
+         double quotes is a mention, not a use; both are exempt. A block's text is only
+         the text it owns: a nested block owns its own, and text loose in a div belongs
+         to that div alone, so a note in one paragraph cannot exempt the next. */
+      if (WRE.length) {
+        const block = own(el);
         if (!blockText.has(block)) {
-          const offs = new Map(), bw = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
-          let at = 0, u;
-          while ((u = bw.nextNode())) { offs.set(u, at); at += u.textContent.length; }
-          blockText.set(block, [block.textContent, offs]);
+          const offs = new Map(), bw = document.createTreeWalker(block, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+          let bt = "", u;
+          while ((u = bw.nextNode())) {
+            if (u.nodeType === 1) { if (u.tagName === "BR" && own(u.parentElement) === block) bt += "\n"; continue; }
+            if (u.parentElement.closest("script,style,noscript") || own(u.parentElement) !== block) continue;
+            offs.set(u, bt.length); bt += u.textContent;
+          }
+          blockText.set(block, [bt, offs]);
         }
         const [bt, offs] = blockText.get(block), at = offs.get(t);
-        for (const src of withdrawn) {
-          for (const wm of bt.matchAll(new RegExp(src.replaceAll(" ", "\\s+"), "gi"))) {
+        for (const re of WRE) {
+          for (const wm of bt.matchAll(re)) {
             if (wm.index < at || wm.index >= at + s.length) continue;
             const before = bt.slice(0, wm.index);
             const inNote = /\bCorrect(?:ion|ed)\b[\s,·.:]*(?:\d{1,2}\s+[A-Z][a-z]+|[A-Z][a-z]+\s+\d{1,2}),?\s+\d{4}/.test(before);
-            const quoted = (before.split("“").length - before.split("”").length) > 0;
+            const quoted = before.split("“").length > before.split("”").length;
             const near = bt.slice(Math.max(0, wm.index - 30), wm.index + 40).replace(/\s+/g, " ").trim();
             out.push([`${inNote || quoted ? "exempt:" : ""}withdrawn:${wm[0].replace(/\s+/g, " ").toLowerCase()}`, near]);
           }
