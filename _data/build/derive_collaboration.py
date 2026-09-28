@@ -57,7 +57,13 @@ last = series[-1]
 awards = C["joint_awards"]
 gap_since = max((a["start"] or "")[-4:] for a in awards) if awards else None
 
+# A cache that predates fetch_collab.py:261 still calls the unbounded count a
+# "coauthorship count"; one author holding both affiliations is enough to count a work.
+polymer_bound = C["meta"]["polymer_bound"].replace("coauthorship count", "joint count")
+assert "coauthor" not in polymer_bound, polymer_bound
+
 out = {"meta": dict(C["meta"],
+                    polymer_bound=polymer_bound,
                     control="Each university’s own annual output is carried beside the "
                             "joint count, because a joint series alone cannot tell a "
                             "thinning relationship from an indexing lag or from one "

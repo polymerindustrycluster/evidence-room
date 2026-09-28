@@ -185,7 +185,7 @@ retirement = {
               "from_age": round(PLANT * annual / jobs, 1)},
     # Key kept for readers of the file; the 2026-09-28 correction reversed its content.
     "floor": "NOT a floor on replacement demand: separations exceeded hires over the same "
-             "four quarters, so not every retirement need be refilled. Nor a total: people "
+             "four quarters, so not every departure need be refilled. Nor a total: people "
              "who leave plastics and rubber for another industry are invisible to QWI and "
              "need Census Job-to-Job Flows, a different product.",
 }

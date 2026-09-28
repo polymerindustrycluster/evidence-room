@@ -55,7 +55,9 @@ elsewhere", because a paper counts toward every outside partner on it, whichever
 holds the corresponding author. The map's source line said the same thing ("here or
 there") and now says "here or elsewhere". The front page's reach card and the opening
 chart's text description called the 1,448 "coauthored works"; the count does not require
-a second author, so both now say "works".
+a second author, so both now say "works". The map's own text description said
+"institutions co-authoring polymer research" and now says "institutions named on the same
+polymer papers".
 
 **"Federal" awards from an NSF-only fetch, *collaboration*.** **Was:** "four joint federal
 awards". **Is:** four joint NSF projects (eight award IDs, because NSF files a
@@ -67,10 +69,15 @@ the card now says "208 papers naming both universities". The collaboration page 
 same inference in its own headline. **Was:** "Akron and Case Western have written 208
 papers together since 2012", with "coauthored" in the standfirst, chart labels and closing,
 and a note that such a paper is evidence "two people worked together". **Is:** "208 papers
-since 2012 name both Akron and Case Western", and the note says one author listing both
-affiliations is enough to count a paper. The inference was not hypothetical: a live OpenAlex
-query on 28 September 2026 found 15 of 211 such works where both universities belong to a
-single author.
+since 2012 name both Akron and Case Western", the figure card adds "one author may hold
+both", and the note says "A paper naming both universities proves neither a two-person
+collaboration nor an institutional relationship". The headline's second line, "Eight were
+about polymers", now says "Eight are classified in polymers", as the standfirst does. The
+closing said "The collaboration is real and substantial"; it now calls only the four NSF
+projects collaboration, on NSF's own label, and counts the papers as papers naming both.
+The inference was not hypothetical: a live OpenAlex query on 28 September 2026 returned 211
+such works (the page's cached pull has 208) and found both universities on a single author
+in 15 of them.
 
 **A comparison set that ended at Akron, *peers*.** **Was:** "Among the six disclosed metros
 with the most plastics and rubber jobs, Akron is also the most concentrated." **Is:** among
@@ -220,7 +227,8 @@ departures were not refilled, and the flows cannot say whether any retirement wa
 for about 400 hires only if everyone reaching 65 retired and every one of those jobs were
 refilled, in the prose and in the arithmetic panel, and that the 400 is not a floor. A
 methods note had blamed the missing Job-to-Job Flows for both; it now says that gap is why
-the 400 cannot be a total, and that separations exceeding hires is why it is not a floor. The README had kept an older sentence saying most of a plant's
+the 400 cannot be a total, and that separations exceeding hires is why it is not a floor;
+the same note and the README now call the 400 the age-65 figure, not the retirement figure. The README had kept an older sentence saying most of a plant's
 hiring "is refilled from inside the industry"; it now says the series cannot tell.
 
 ## 2026-09-28 — The front page sent the state question to a county page

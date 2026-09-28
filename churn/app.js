@@ -1282,7 +1282,7 @@ meth.querySelector(".pv-method-grid").insertAdjacentHTML("beforeend", `
         lost end of a cross-boundary move rather than bound it.</li>
       <li>Census Job-to-Job Flows, a separate product, which is what separates a worker
         leaving plastics and rubber altogether from one moving to the plant next door. Its
-        absence is why the retirement figure in the age section cannot be a total of
+        absence is why the age-65 figure in the age section cannot be a total of
         replacement demand. It is not a floor for a reason this series does record:
         separations exceed hires.</li>
     </ul>

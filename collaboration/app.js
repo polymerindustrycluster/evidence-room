@@ -282,15 +282,16 @@ document.getElementById("closersub").innerHTML =
    papers naming both, ${T.joint_awards} joint NSF projects, ${usd(T.joint_award_dollars)}.
    Publishing it would have told two anchor institutions that PIC had not looked.
    <b>What the measurement found instead is harder to dismiss and more useful.</b> The
-   collaboration is real and substantial, and it is almost never about polymers.
-   <b>Of ${T.coauthored} joint papers, ${T.polymer_total} are classified in polymers and
+   joint NSF projects are collaboration by NSF&rsquo;s own label, and the papers naming both
+   are almost never classified in polymers.
+   <b>Of ${T.coauthored} papers naming both, ${T.polymer_total} are classified in polymers and
    plastics and ${T.bio_total} in biomaterials, ${T.subject_total} in all, and
    ${word(SUBJ_GAP)} of the last ${word(SUBJ_GAP + 1)} years carry neither.</b> Two
    universities anchoring a polymer cluster have both been
    named on ${T.coauthored} papers in ${word(S.length)} years and ${Math.round((1 - T.subject_total / T.coauthored) * 100)}
-   percent of them were about something else. <b>The joint work thinned too, and it thinned
-   recently.</b> The controlled rate fell in ${word(FALLS)} straight years, from
-   ${S[FALL_FROM].per_1k_akron} joint works per thousand of Akron’s output in
+   percent of them are classified in neither subject. <b>Those papers thinned too, and they
+   thinned recently.</b> The controlled rate fell in ${word(FALLS)} straight years, from
+   ${S[FALL_FROM].per_1k_akron} works naming both per thousand of Akron’s output in
    ${S[FALL_FROM].year} to ${TROUGH.per_1k_akron} in ${TROUGH.year}, and came back to
    ${last.per_1k_akron} in ${last.year} on ${last.joint} papers. One year up from a floor of
    ${TROUGH.joint} is the shape a run of counts this small makes on its own, so the rise is

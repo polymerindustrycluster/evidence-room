@@ -121,8 +121,9 @@ counting quarters would name marks the reader cannot see.
   four quarters recorded 7,157 separations and 6,626 hires, so some departures were not
   refilled. Industry exits need Census Job-to-Job
   Flows, a different product this page does not carry.
-- **The retirement figure is an estimate, never a measurement.** It assumes the 55-to-64
-  band is spread evenly over ten single-year cohorts. QWI records separations and cannot
+- **The age-65 figure is an estimate, never a measurement.** It counts people reaching 65,
+  assuming the 55-to-64 band is spread evenly over ten single-year cohorts, and it is a
+  count of retirements only if each of them retires. QWI records separations and cannot
   see retirement.
 
 ## What this page still owes
@@ -138,9 +139,10 @@ counting quarters would name marks the reader cannot see.
   this region". That needs the identical series with `industry=00` and `industry=31-33` on
   the same twelve county FIPS, requesting `Emp,HirA,Sep`; `fetch_qwi_demand.py` already
   pulls `industry=00` but only `Emp,EarnBeg`.
-- **Job-to-Job Flows, for the pipeline number.** Retirement is the only source of
-  replacement demand this page can see, and only conditionally. Separations exceed hires, so
-  not every retirement need be refilled and the 400-a-year figure is not a floor; industry
+- **Job-to-Job Flows, for the pipeline number.** The age-65 count is the only
+  replacement demand this page can estimate, and only on two assumptions it cannot check:
+  that everyone reaching 65 retires and that each of those jobs is refilled. Separations
+  exceed hires, so not every departure need be refilled and the 400-a-year figure is not a floor; industry
   exits need a different Census product, so it is not a total either. The page says both
   where the figure is used.
 - **The reason the ledger and the headcount part company.** Verified 2026-09-01 against the
