@@ -11,6 +11,82 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-28 — Two pages gave a broad chemicals price index the name of a narrower one
+
+**Was:** *revisions* and *cost-scissors* called BLS series WPU06 "industrial chemicals" in
+their prose, chart labels, tables and data files. The revisions page called it "the series
+a buyer quotes when negotiating a resin contract", and the cost-scissors gray line was
+"resin against industrial chemicals".
+
+**Is:** WPU06 is "Chemicals and allied products", a group that includes resins. "Industrial
+chemicals" is WPU061, a narrower series neither page uses. Every label, both data files,
+the fetch script and the source registry now carry the right name, and the revisions page
+calls the series the upstream input and no longer says what buyers quote. Both pages carry
+a dated correction line. No number changed: the series was always WPU06; only its name was
+wrong.
+
+**Cause:** The name was typed wrong once, in the series table of `fetch_rest.py`, which
+wrote it into both data files, and every page label was read from there. Nothing checks a
+series name against its ID.
+
+## 2026-09-28 — Ten sentences read firmer than their own data
+
+Codex re-derived the hub's and pages' headline claims from each page's own data. These ten
+held their numbers but claimed more than the numbers carry. Each changed sentence's claim
+now checks the new wording's quantity.
+
+**"Leads four papers in five", *reach*.** **Was:** "The region leads four papers in five
+of those that name a corresponding author", and the front page said four papers in five
+"are led from here". **Is:** 985 of 1,222 papers naming a corresponding author had one
+here, on both. The count includes papers with no outside coauthor at all, so "leads"
+described a collaboration the count does not require.
+
+**"Federal" awards from an NSF-only fetch, *collaboration*.** **Was:** "four joint federal
+awards". **Is:** four joint NSF projects (eight award IDs, because NSF files a
+collaborative project as one award per institution), on the page and the front page. The
+fetch queries the NSF Awards API only; no other agency was ever checked.
+
+**A comparison set that ended at Akron, *peers*.** **Was:** "Among the six disclosed metros
+with the most plastics and rubber jobs, Akron is also the most concentrated." **Is:** among
+the 155 disclosed metros, Akron ranks sixth on jobs and eighth on concentration. The old
+sentence was true, and holds to the ninth-largest, but its cut-off of six was Akron's own
+rank on jobs.
+
+**A ranking on a 0.07-point gap, *laborshed*.** **Was:** "only Pittsburgh keeps more for
+its own residents than the twelve counties do". **Is:** the twelve counties keep 89.5
+percent and Pittsburgh 89.6 percent, on twelve counties against eight. A gap that small,
+across different boundaries, is not a ranking.
+
+**A rank without its margin, *realwage*.** **Was:** the 8th place after price adjustment,
+alone. **Is:** the same rank, with "less than $6 a week from either neighboring rank". The
+gaps are $3.60 and $5.40, small enough for a revision to move the rank.
+
+**An unlabeled nominal ratio, *occupations*.** **Was:** "Akron's median wage ratio".
+**Is:** "median nominal wage ratio". The ratios are not price-adjusted; divided by Akron's
+price level, the degree-job shortfall of 0.93 times becomes 0.99 times.
+
+**Inputs and outputs of invention, *patents*.** **Was:** "The inputs to invention have
+more than halved: degrees are down 56 percent. The recorded outputs of invention have
+fallen by about a quarter." **Is:** the two declines stand as separate facts: Akron and
+Case Western's polymer degrees fell 56 percent from their 2014–2020 average, and Ohio's
+polymer filings fell 25 percent from 2015. Two institutions' degrees and a state's filings
+are not the input and output of one process.
+
+**"Strong" earnings, *programs*.** **Was:** "Where the record shows earnings at all, they
+are strong: $87k–$101k four years out." **Is:** "Four-year earnings range from $87,636 to
+$100,428; four of five institutions fall below the national median." Four of the five sit
+below the $92,919 national median for their program code.
+
+**"Supply against demand", *chain*.** **Was:** that section label. **Is:** "Register
+records against funding applications". The section's own text says the counts do not
+measure capacity, competition or market demand.
+
+**What an employment quotient shows, *location-quotient*.** **Was:** paint's quotient
+meant "more paint sites, more suppliers and more people who know the work than a region
+this size would usually hold". **Is:** "paint accounts for an unusually large share of
+local jobs". An employment quotient measures job share; it says nothing about sites,
+suppliers or skills.
+
 ## 2026-09-28 — Wages said pay was level with manufacturing, and it is two families that are not
 
 **Was:** The wages headline read "Against manufacturing, pay is level." The factory band

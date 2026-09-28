@@ -1,6 +1,6 @@
 {
  "n_pieces": 22,
- "total_claims": 529,
+ "total_claims": 532,
  "total_manual": 22,
  "pages": {
   "accountability": {
@@ -28,7 +28,7 @@
    "manual": 1
   },
   "cost-scissors": {
-   "claims": 33,
+   "claims": 34,
    "manual": 2
   },
   "federal-money": {
@@ -88,7 +88,7 @@
    "manual": 4
   },
   "wages": {
-   "claims": 35,
+   "claims": 37,
    "manual": 1
   }
  },
