@@ -133,6 +133,11 @@ const CASES = [
       both ways when the change was made. */
    inject: s => s.replace("<body>", '<body><p>A reader said "this is prose" here.</p>')},
 
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /withdrawn:joint work/,
+   defect: "a phrasing a published correction withdrew, printed again outside a correction note",
+   /* The relapse that motivated the check: the h2 the 2026-09-28 correction rewrote. */
+   inject: s => s.replace("Papers naming both fell as a share", "Joint work fell as a share")},
+
   {gate: "provenance", page: "cost-scissors", args: ["cost-scissors"],
    defect: "a page crediting a federal source it has never read",
    /* Injected into SOURCES.json rather than the artifact, so this case names its own file.

@@ -23,20 +23,38 @@ import {readFileSync as rfs} from "fs";
 let ACRO = {assumed_known: [], debt: {}};
 try { ACRO = JSON.parse(rfs(new URL("../_data/acronyms.json", import.meta.url), "utf-8")); } catch {}
 
+/* WITHDRAWN PHRASINGS. A correction retires a phrasing, and the phrasing comes back:
+   collaboration's "joint work" survived four rounds of rewrites of the sentences around
+   it, and a Read-next line added on the correction branch itself reintroduced it
+   (2026-09-28). Only a grep outside the repo caught that. The list is read unguarded: a
+   missing or malformed file must fail the gate, not empty the list and pass. */
+const WITHDRAWN = JSON.parse(rfs(new URL("../_data/withdrawn.json", import.meta.url), "utf-8")).withdrawn;
+for (const w of WITHDRAWN) new RegExp(w.pattern, "i");
+
 const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
 
+/* A full run must be able to inspect every page the list names; an entry for a renamed
+   or missing page would otherwise pass forever. */
+const unknown = names.length ? [] : [...new Set(WITHDRAWN.flatMap(w => w.pages))].filter(pg => !list.includes(pg));
+if (unknown.length) {
+  console.log(`withdrawn.json names page(s) with no bundle in dist/: ${unknown.join(", ")}`);
+  process.exit(1);
+}
+
 const b = await chromium.launch();
 let bad = 0, total = 0;
+const exempt = [];
 for (const n of list) {
   const p = await b.newPage({viewport: {width: 1440, height: 1000}});
   await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
   await p.waitForTimeout(1600)  /* 900 raced chain's 785 JS-rendered cards: the acronym inventory flapped between runs. 2026-09-01 */;
-  const hits = await p.evaluate(({assumed, debtPages}) => {
+  const all = await p.evaluate(({withdrawn, assumed, debtPages}) => {
     const BANNED = /\b(crucial|delve|matters)\b/i;
     const out = [];
     const pageText = [];
+    const blockText = new Map();
     const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     let t;
     while ((t = w.nextNode())) {
@@ -67,6 +85,32 @@ for (const n of list) {
       if (!verbatim && /"/.test(s)) out.push(["straight-double", ctx.slice(0, 70)]);
       const m = s.match(BANNED);
       if (m) out.push([`banned:${m[1].toLowerCase()}`, ctx.slice(0, 70)]);
+      /* Matched against the nearest text block, not this node, so a phrase split by
+         inline markup (<b>81%</b> led from here) or wrapped across source lines is
+         still one phrase; each match is reported once, from the node it starts in. A
+         dated correction note may quote what it corrects, and a phrase inside curly
+         double quotes is a mention, not a use; both are exempt, and both read the same
+         block, never a wrapper div, so a note cannot exempt the page. */
+      if (withdrawn.length) {
+        const block = el.closest("p,li,td,th,h1,h2,h3,h4,h5,h6,figcaption,caption,dd,dt,summary,blockquote") || el;
+        if (!blockText.has(block)) {
+          const offs = new Map(), bw = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+          let at = 0, u;
+          while ((u = bw.nextNode())) { offs.set(u, at); at += u.textContent.length; }
+          blockText.set(block, [block.textContent, offs]);
+        }
+        const [bt, offs] = blockText.get(block), at = offs.get(t);
+        for (const src of withdrawn) {
+          for (const wm of bt.matchAll(new RegExp(src.replaceAll(" ", "\\s+"), "gi"))) {
+            if (wm.index < at || wm.index >= at + s.length) continue;
+            const before = bt.slice(0, wm.index);
+            const inNote = /\bCorrect(?:ion|ed)\b[\s,·.:]*(?:\d{1,2}\s+[A-Z][a-z]+|[A-Z][a-z]+\s+\d{1,2}),?\s+\d{4}/.test(before);
+            const quoted = (before.split("“").length - before.split("”").length) > 0;
+            const near = bt.slice(Math.max(0, wm.index - 30), wm.index + 40).replace(/\s+/g, " ").trim();
+            out.push([`${inNote || quoted ? "exempt:" : ""}withdrawn:${wm[0].replace(/\s+/g, " ").toLowerCase()}`, near]);
+          }
+        }
+      }
       /* NEGATIVES TAKE THE TRUE MINUS (U+2212), never the ASCII hyphen — the hyphen is
          a third the width of the digits beside it. Found 2026-08-31: four axis ticks
          and eleven table cells leaked JS's default stringification while every
@@ -112,7 +156,11 @@ for (const n of list) {
       if (!glossed) out.push(["bare-first-reference:" + t, sent.replace(/\s+/g," ").trim().slice(0, 70)]);
     }
     return out;
-  }, {assumed: ACRO.assumed_known || [], debtPages: Object.entries(ACRO.debt || {}).filter(([,v]) => v.includes("*") || v.includes(n)).map(([k]) => k)});
+  }, {withdrawn: WITHDRAWN.filter(w => w.pages.includes(n)).map(w => w.pattern),
+      assumed: ACRO.assumed_known || [], debtPages: Object.entries(ACRO.debt || {}).filter(([,v]) => v.includes("*") || v.includes(n)).map(([k]) => k)});
+  /* An exemption is a pass the gate chose not to count, so it is printed, not hidden. */
+  for (const [kind, ctx] of all.filter(([k]) => k.startsWith("exempt:"))) exempt.push(`${n}: ${kind.slice(7)}: ${ctx}`);
+  const hits = all.filter(([k]) => !k.startsWith("exempt:"));
   total += hits.length;
   if (hits.length) {
     bad++;
@@ -125,7 +173,11 @@ for (const n of list) {
   await p.close();
 }
 await b.close();
+if (exempt.length) {
+  console.log(`\n${exempt.length} withdrawn phrasing(s) passed as a dated correction note or a quotation:`);
+  for (const e of exempt) console.log(`    ${e}`);
+}
 console.log(bad ? `\n${total} style-law violation(s) on ${bad} page(s)`
                 : `\nall ${list.length} pages clean: no em-dashes, no straight quotes, ` +
-                  `no banned words`);
+                  `no banned words, no withdrawn phrasings`);
 process.exit(bad ? 1 : 0);
