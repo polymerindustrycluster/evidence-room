@@ -46,8 +46,7 @@
     "workplaces": "../../cluster-health/data/workplaces.json",
     "mfg": "../../wages/data/mfg.json",
     "reach": "../../reach/data/reach.json",
-    "collab": "../../collaboration/data/collaboration.json",
-    "sc": "../../scorecard/data/scorecard.json"
+    "collab": "../../collaboration/data/collaboration.json"
   },
   "claims": [
     {
@@ -72,9 +71,9 @@
       "id": "index-inventory",
       "text": "The gallery lists the reviewed public articles; source inventory entries are either listed or deliberately unlisted.",
       "source": "index/data/counts.json; rendered card-link parity is checked by the hub browser check",
-      "assert": "sorted(set(D['counts']['pages']) - {'accountability'}) == ['atlas','chain','churn','cluster-health','collaboration','cost-scissors','federal-money','funding-map','laborshed','location-quotient','occupations','patents','peers','programs','reach','realwage','revisions','scorecard','sources','timeline','wages']",
+      "assert": "sorted(set(D['counts']['pages']) - {'scorecard','accountability'}) == ['atlas','chain','churn','cluster-health','collaboration','cost-scissors','federal-money','funding-map','laborshed','location-quotient','occupations','patents','peers','programs','reach','realwage','revisions','sources','timeline','wages']",
       "actual": "sorted(D['counts']['pages'])",
-      "falsified_if": "The available article set changes without reconciling the hub gallery; numeric claim totals are no longer published as a static snapshot. [2026-09-29: scorecard left the unlisted set when it was corrected and carded; accountability is the one page still withheld.]"
+      "falsified_if": "The available article set changes without reconciling the hub gallery; numeric claim totals are no longer published as a static snapshot."
     },
     {
       "id": "index-pic-name",
@@ -244,26 +243,6 @@
       "assert": "D['tlh']['meta']['counts']['shown'] == len(D['tlh']['events']) == 31 and min(e['year'] for e in D['tlh']['events']) == 1898 and max(e['year'] for e in D['tlh']['events']) == 2012 and (lambda des: des.startswith('2023-10') and len([e for e in D['tlt']['events'] if des <= e['date'] and e['delivered'] and e.get('show')]) == 67 and len([e for e in D['tlt']['events'] if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))]) == 4)(one(e['date'] for e in D['tlt']['events'] if e['date'].startswith('2023') and 'esignat' in e['title']))",
       "actual": "(len(D['tlh']['events']), D['tlh']['meta']['counts']['shown'], min(e['year'] for e in D['tlh']['events']), max(e['year'] for e in D['tlh']['events']))",
       "falsified_if": "A heritage row is promoted from claimed to proven, either end of the heritage span moves, the designation date moves out of October 2023, or a delivered public event is added to or removed from either 34-month window. The card used to call both registers 'events', which invited a reader to add 4 and 68 and expect 32; the two counts come from different files and the sentence now says so, with the heritage span printed so the two are visibly different periods. [2026-09-01: recomputed after one row was removed from the register. It recorded a named company's unsuccessful application, on a site whose README withholds two pages because naming an unsuccessful applicant is not something a funder gets to do. Two independent model families were asked to refute the decision to anonymise it instead of deleting it, and both refused: the row stayed identifiable because the same page names the company joining the cohort four months later, and keeping it to protect a count is letting the headline decide which sensitive records remain evidence. The count moved and the sentence moved with it.]"
-    },
-    {
-      "id": "card-scorecard",
-      "text": "Scorecard card: eighteen metrics; federal and state records and PIC's published award register fill eight of the fifteen rows PIC answers for; the seven that need PIC's own records include all four on membership and revenue; no row has a named owner yet. Corrected 2026-09-29 from “public federal and state records fill eight”: three of the eight read the award register.",
-      "source": "scorecard/data/scorecard.json counts and rows",
-      "assert": "(lambda K, R: K['rows'] == len(R) == 18 and K['accountable'] == 15 and K['public'] == 8 and K['vault'] == 7 and K['public'] + K['vault'] == K['accountable'] and K['vault_in_a'] == 4 == len([r for r in R if r['group'] == 'A']) and K['owners_assigned'] == 0 and not any(r['owner'] not in ('not assigned', 'outside PIC') for r in R) and sorted(r['id'] for r in R if r['status'] == 'public' and r['source'] == 'PIC award register') == ['b-assigned', 'b-recipients', 'b-secured'])(D['sc']['counts'], D['sc']['rows'])",
-      "actual": "D['sc']['counts']",
-      "falsified_if": "A row is added or removed, a PIC register starts filling a row, a group A row is filled or regrouped, or an owner is named on any row. The card restates the scorecard's own counts, so a change on that page fails this card rather than leaving the hub behind. The provenance is bound too: 'eight of the fifteen rows' must stand beside 'award register', which fails if the card goes back to crediting federal and state records alone.",
-      "counts": [
-        {
-          "figure": "fifteen",
-          "noun": [
-            "row"
-          ]
-        },
-        {
-          "figure": "eight of the fifteen rows",
-          "noun": "award register"
-        }
-      ]
     },
     {
       "id": "picker-footprint",

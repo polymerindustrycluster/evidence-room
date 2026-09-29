@@ -138,7 +138,7 @@ filled rows "compute from federal and state records". **Is:** $73,199,371 on twe
 the twenty-seven lines is executed; the twenty-seventh, ED25HDQ0G0009, $5,970,805 to
 Huntsman, is a signed Notice of Award with no USAspending record, so its execution and
 obligation are not verified, and each of those surfaces says so. The EDA row reads 6 of 7
-against a target of 7 signed awards. The closing note, and the hub's scorecard card, credit
+against a target of 7 signed awards. The closing note credits
 PIC's published award register, which three of the eight filled rows read.
 
 **Cause:** Each page was corrected on 1 and 8 September at the surface a reviewer named, and
@@ -156,10 +156,10 @@ that had ended. Claims sc-executed, sc-provenance and acc-member-provenance are 
 acc-aggregates, acc-promises, acc-register-dates and acc-negative-list2 now pin these
 counts and wordings. A third review found that the Huntsman exception had reached the
 headline figures and not the labels, source lines, the EDA row or the accountability page's
-paragraphs, and that the hub card and the scorecard's closing note still credited federal
+paragraphs, and that the scorecard's closing note still credited federal
 and state records alone. The chart labels and source lines are now written into the data
-files, where sc-executed, sc-eda-seven and acc-attribution read them; acc-coalition,
-sc-provenance and card-scorecard bind the corrected sentences; and acc-promises now pins
+files, where sc-executed, sc-eda-seven and acc-attribution read them; acc-coalition
+and sc-provenance bind the corrected sentences; and acc-promises now pins
 which commitments share the year 2026, F17 to F21 reading that their year has begun and F22
 giving the membership exclusion, where its text had said F17 to F22 alike. A fourth review
 found the Huntsman exception still missing from three places: band A said EDA's Notices

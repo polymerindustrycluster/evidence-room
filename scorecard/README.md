@@ -4,10 +4,10 @@ An EOS-style board view of what **PIC is accountable for**. Every other artifact
 repository measures the regional polymer economy. This one measures the organisation, and
 the two are held apart on purpose.
 
-**Published on the hub from 2026-09-29.** It was held back as an internal working view
-until then (see the 2026-09-29 entry in `CORRECTIONS.md` for what was fixed before it went
-on the hub). The accountability page it links to for the outlay figures is still an
-unlisted draft.
+**This page is not linked from `index/`.** It was corrected on 2026-09-29 (see that entry
+in `CORRECTIONS.md`) and stays unlisted, reachable by direct URL, pending the owner's
+decision on publication. The accountability page it links to for the outlay figures is
+also an unlisted draft.
 
 ## Federal-context correction — 8 September 2026
 
@@ -158,7 +158,8 @@ source page fails this page's gate instead of leaving a stale board number behin
 
 ## Update log
 
-- **1.2 (2026-09-29)** — corrected before the page went on the hub. The note under the
+- **1.2 (2026-09-29)** — corrected; the page stays unlisted pending the owner's
+  decision on publication. The note under the
   scorecard no longer says no figure on the page measures money spent (group B prints the
   federal outlays), and the empty disbursement row says no figure spans the register. The
   member-flag sentence reads 38 of 710, not 785. Group A is "membership and revenue", the
