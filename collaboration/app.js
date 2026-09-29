@@ -270,7 +270,8 @@ PV.figures([
      literally titled “Graduate Research Fellowship Program”, an institutional block grant
      every university receives separately, and matching on title alone booked it as a
      $1.1 million joint project across five award IDs. Only awards NSF itself labels
-     “Collaborative Research” are counted. <b>This measure queries the NSF Awards API and
+     “Collaborative Research” are counted, and not a pair whose two awards name the same
+     principal investigator: that is one researcher moving between the universities. <b>This measure queries the NSF Awards API and
      nothing else:</b> no other federal agency, no industry contract, no state award, no
      subaward, and no unfunded collaboration.`;
 }

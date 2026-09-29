@@ -18,8 +18,8 @@
  "totals": {
   "coauthored": 208,
   "coauthored_polymer": 8,
-  "joint_awards": 4,
-  "joint_award_dollars": 3670535,
+  "joint_awards": 3,
+  "joint_award_dollars": 3412585,
   "nsf_akron": 245,
   "nsf_cwru": 367,
   "peak_year": 2018,
@@ -166,14 +166,6 @@
    "title": "Collaborative Research: Northern Ohio AGEP-T: A Racially and Ethnically Inclusive Graduate Education Model in Biology, Chemistry and Engineering",
    "start": "10/01/2015",
    "amount": 2637585,
-   "awardee": "both (NSF Collaborative Research)",
-   "via": "separate awards, one project"
-  },
-  {
-   "id": "1852597 + 1620198",
-   "title": "Collaborative Research: Algorithm and Theory for Interface Computations",
-   "start": "07/01/2016",
-   "amount": 257950,
    "awardee": "both (NSF Collaborative Research)",
    "via": "separate awards, one project"
   },

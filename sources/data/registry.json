@@ -397,7 +397,7 @@
     ],
     [
      "note",
-     "Only awards NSF itself labels \u2018Collaborative Research\u2019 are counted as joint. Matching on shared title alone booked \u2018Graduate Research Fellowship Program\u2019: an institutional block grant every university receives separately, as a $1.1M joint project."
+     "Only awards NSF itself labels \u2018Collaborative Research\u2019 are counted as joint. Matching on shared title alone booked \u2018Graduate Research Fellowship Program\u2019: an institutional block grant every university receives separately, as a $1.1M joint project. A pair whose two awards name the same principal investigator is one researcher moving between the universities, not a joint project, and is not counted (corrected 2026-09-29)."
     ],
     [
      "federal_money",

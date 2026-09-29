@@ -13,8 +13,9 @@ page, the figure, and what you think it should be.
 
 ## 2026-09-29 — Labels and cards that said more than their data
 
-A review of the 2026-09-28 corrections found these beside them. No figure in these
-statements changed. The sources page's claim register rises from 532 article claims to 534,
+A review of the 2026-09-28 corrections found these beside them. One figure changed: the
+collaboration page's joint NSF projects, four to three (a researcher's move, below). No other figure in
+these statements changed. The sources page's claim register rises from 532 article claims to 534,
 and from 564 across the site to 567: three claims added with them, two on article pages and
 one on the front page.
 
@@ -39,8 +40,31 @@ output"; the control chart's axis, legend, hover and text description said "join
 and its table had columns "Joint" and "Joint per 1,000 of Akron"; the lede and two source notes said "joint count" and "joint series".
 **Is:** "papers naming both" or "works naming both", the source note's "unbounded count",
 and table columns "Naming both" and "Naming both per 1,000 of Akron". The 2026-09-28 entry below changed the
-headline and five sentences for the same reason and left these labels. "Four joint NSF
-projects" keeps the word: those are Collaborative Research awards, joint by their terms.
+headline and five sentences for the same reason and left these labels. "Joint NSF projects"
+keeps the word only for Collaborative Research awards with a different principal investigator
+at each university; see the next item.
+
+**A researcher's move counted as a joint project, *collaboration* and *front page*.**
+**Was:** "four joint NSF projects worth $3.7 million" (standfirst), "Four joint NSF
+projects" (awards heading), a hero figure of 4 joint NSF projects, $3,670,535 combined, eight
+award IDs, and "four joint National Science Foundation projects" on the front-page card.
+**Is:** three joint NSF projects worth $3.4 million ($3,412,585), six award IDs. The pair
+dropped, "Collaborative Research: Algorithm and Theory for Interface Computations"
+($257,950), is two awards whose NSF records name the same sole principal investigator,
+Lingxing Yao (NSF PI ID 269970204): 1620198 at Case Western, 07/01/2016 to 09/30/2018,
+$162,703, and 1852597 at Akron, 08/01/2018 to 09/30/2022, $95,247. That is one researcher
+moving from Case Western to Akron with the project; its Collaborative Research partner is
+Yoichiro Mori's award 1620316 at the University of Minnesota. The newest joint project
+still starts in 2017, and the earliest is still Northern Ohio AGEP-T in 2015. **Cause:**
+fetch_collab.py paired an Akron and a Case Western award on a shared Collaborative Research
+title and never compared their PIs; it now drops a pair whose awards share one. The
+committed data was edited to what that rule produces rather than refetched, because a
+refetch would also move the OpenAlex counts; run over the eight NSF records, the rule drops
+this pair and no other. An earlier line of this entry, written the same day, said the four
+"keep the word: those are Collaborative Research awards, joint by their terms". This pair was
+Collaborative Research by its terms and joint between neither university. The collaboration
+page carries a dated correction under its awards chart, and its claim now pins the three
+surviving pairs by award ID.
 
 **"Counted once per county", *wages* and *sources*.** **Was:** wages said its 35
 de-duplicated pairings were "counted once per county" (methodology box) and "counting each
