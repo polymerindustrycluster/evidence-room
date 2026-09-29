@@ -157,7 +157,9 @@ function drawOpen() {
                + `a public record`,
     {x: m.l, y: M ? 20 : 19, "font-size": M ? 15 : 16, "font-weight": M ? 700 : 900,
      fill: "#fff"});
-  txt(svg, `The ${C.vault_in_a} rows on membership and revenue are all blank.`,
+  /* Shorter on the phone: the long form ran 42 units past a 360px column. */
+  txt(svg, M ? `Membership and revenue: all ${C.vault_in_a} rows blank.`
+             : `The ${C.vault_in_a} rows on membership and revenue are all blank.`,
     {x: m.l, y: 40, "font-size": 15, "font-weight": 700, fill: O_LIME});
 
   /* On the phone the title takes its own line above the squares and the tally drops to

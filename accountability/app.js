@@ -290,7 +290,7 @@ document.getElementById("attribsrc").innerHTML =
   `PIC award register as of ${D.as_of}, verified against signed federal Notices of Award `
   + `and state grant SBIG20251005. <b>${esc(X.defects[0].text)}</b> The Chamber&rsquo;s own `
   + `EDA line, ED24HDQ0G0413, is one of the two FY2024 awards, so restating it with the `
-  + `total leaves the share at 4.9 percent.`;
+  + `total leaves the share at ${(A.restated_share_of_awarded * 100).toFixed(1)} percent.`;
 
 /* ================================================================ B. awarded to disbursed
    Three stages of one total. The third carries no value, and the two named gaps and the
@@ -747,7 +747,7 @@ document.getElementById("reconcilesrc").innerHTML =
   + `off the page. The award register supplies the executed sub-grant total. `
   + `<b>The two descriptions of award ED25OIE0G0108 differ: the award register says `
   + `&ldquo;${esc(R.apex.funding)}&rdquo; and the public event register adds 400 `
-  + `completions. One of the two is incomplete, and this page does not decide which.</b>`;
+  + `completions. ${esc(R.apex.verdict)}</b>`;
 
 /* ===================================================================== F. the negative space
    Two generated lists and no chart. List 1 is the board's own target field; list 2 names

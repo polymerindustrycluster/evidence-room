@@ -170,6 +170,20 @@ OUTLAYS = {"source": _OL["source"], "as_of": _OL["asOf"], "lines": _OL["lines"],
 ATTRIBUTED = STAGES[3]["amount"]
 SHARE = ATTRIBUTED / TOT["awards"]
 
+# THE SHARE IN 2025 DOLLARS. techhub.json restates the two FY2024 EDA awards into 2025
+# dollars, which raises the award total. The Chamber's own EDA line is one of those two, so
+# band A's source line restates it with the total rather than the total alone; the printed
+# share is computed here, not typed on the page (corrected 2026-09-29).
+FY24 = {l["awardId"] for l in HUB["leads"] if l["awardId"].startswith("ED24")}
+if sum(l["amount"] for l in HUB["leads"] if l["awardId"] in FY24) != HUB["fy2024_share"]:
+    die("the FY2024 leads in techhub.json no longer sum to its fy2024_share")
+if not any(l["award_id"] in FY24 for l in GAC):
+    die("the Chamber's EDA line is no longer an FY2024 award; band A's source line says it is")
+_RESTATE = (HUB["award_2025_dollars"] - HUB["award"]) / HUB["fy2024_share"]
+RESTATED_SHARE = (sum(l["amount"] * (1 + _RESTATE if l["award_id"] in FY24 else 1)
+                      for l in GAC)
+                  / (TOT["awards"] + HUB["award_2025_dollars"] - HUB["award"]))
+
 # ------------------------------------------------------------------- band B, staging
 DEL = SC["delivery"]
 if DEL["assigned"] != ASSIGNED or DEL["awarded"] != TOT["awards"]:
@@ -250,6 +264,13 @@ NEAR = [r for r in rows if r["current_date"] <= "2026-12-31"]
 RESOLVED = [r for r in rows if r["status"] in ("delivered", "missed")]
 KEPT = [r for r in RESOLVED if r["current_date"] == r["first_published_date"]]
 FLOOR = PR["calibration"]["floor_n"]
+# The Limitations say no registered commitment carries a numeric target PIC set, and name
+# PIC's own goal beside it. Both halves are read here, so either changing fails the build.
+if any(r["type"] == "numeric_outcome" and r["set_by"] == "PIC" for r in rows):
+    die("a registered commitment now carries a numeric target set by PIC; meta.not says none does")
+GOAL = PR["unsourced_goal"]
+if GOAL["set_by"] != "PIC" or GOAL["counted_in_rows"]:
+    die("the stated goal is no longer PIC's own and outside the register; meta.not says it is")
 # The rate is None until n reaches the floor. A tracker showing 100 percent on n=2 is the
 # silent pass METHODS-SOP §8 names, and a sceptical reader spots it faster than the page
 # spots itself.
@@ -284,6 +305,10 @@ C2026 = count_event("2026-07-07", "59 applications",
 APEX_FUNDING = [l for l in LINES if l["award_id"] == "ED25OIE0G0108"][0]["funds"]
 APEX_TIMELINE = FWD["F35"]["title"]
 APEX_DIFFER = ("400" not in APEX_FUNDING) and ("400" in APEX_TIMELINE)
+# What band E's source line says about the disagreement. It used to say one of the two
+# descriptions is incomplete, which presumes an answer only the Notice of Award holds.
+APEX_VERDICT = ("The Notice of Award decides which is right, and this page does not "
+                "presume which description is at fault.")
 if not APEX_DIFFER:
     die("the two APEX target strings now agree. That is either a correction or a silent "
         "harmonisation; a person decides which, and UPDATES.md records it.")
@@ -475,10 +500,13 @@ DATA = {
                    "own outlay figure, which covers the federal award lines and not the "
                    "state grant, and that is why the stage is part filled rather than "
                    "either empty or whole.",
-        "not": "No numeric target on this page was set by PIC. The three targets on the "
-               "board are ceilings fixed by signed award documents, and no board row "
-               "names an owner. Where PIC has set no target, the absence is the finding and no "
-               "placeholder stands in for it.",
+        "not": ("None of the registered commitments carries a numeric target "
+               "set by PIC, and PIC set none of the three targets on the board: they are "
+               "ceilings fixed by signed award documents, and no board row names an owner. "
+               f"PIC\u2019s own stated goal, {GOAL['commitment']}, is shown beside the "
+               "register and not counted in it, because no dated public document sets it. "
+               "Where PIC has set no target, the absence is the finding and no placeholder "
+               "stands in for it."),
         "publicOnly": "This repository is public and its history is permanent, so it "
                       "carries no member, applicant or personal record at any grain. "
                       "Seven board rows and the membership goal are published as defined "
@@ -516,6 +544,7 @@ DATA = {
                   "label": "partner and local match",
                   "sub": "committed by organisations other than PIC, at award time"},
         "share_of_awarded": SHARE,
+        "restated_share_of_awarded": RESTATED_SHARE,
         "gac_lines": [{"amount": l["amount"], "award_id": l["award_id"],
                        "funds": l["funds"], "source_id": l["source_id"]} for l in GAC],
         "gac_grantee": GRANTEE,
@@ -579,7 +608,8 @@ DATA = {
     "reconcile": {
         "rows": RECONCILE,
         "events": [C2025, C2025B, C2026],
-        "apex": {"funding": APEX_FUNDING, "timeline": APEX_TIMELINE, "differ": APEX_DIFFER},
+        "apex": {"funding": APEX_FUNDING, "timeline": APEX_TIMELINE, "differ": APEX_DIFFER,
+                 "verdict": APEX_VERDICT},
         "standing_rule": "Every new public count of this programme is added to this "
                          "table, or the build fails.",
     },

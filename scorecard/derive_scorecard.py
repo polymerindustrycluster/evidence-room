@@ -56,7 +56,9 @@ def short(n):
 # ---------------------------------------------------------------- B. award delivery
 #
 # One award dollar "has reached a named recipient" when the register carries an executed
-# line item naming the organisation that holds it. That is an ASSIGNMENT test, not a
+# line item naming who holds it: an organisation, or one of the two programme aggregates
+# (the Polymer Pilot Facility and regional workforce programs), whose lines count as
+# assigned too (corrected 2026-09-29). That is an ASSIGNMENT test, not a
 # payment test, and the distinction is the whole point of group B: the register records
 # what has been committed and executed, never what has been drawn down.
 AWARDED = FM["meta"]["totals"]["awards"]
@@ -256,9 +258,10 @@ row(id="a-earned", group="A", status="vault",
 # --- B. award delivery -- computable from the public register, except the one that matters
 row(id="b-assigned", group="B", status="public",
     metric="Award dollars with a named recipient",
-    definition="Award dollars carried on an executed line item naming the organisation "
-               "that holds them, divided by all dollars awarded. An assignment test, "
-               "not a payment test.",
+    definition="Award dollars carried on an executed line item with a named recipient, "
+               "divided by all dollars awarded. The recipient is an organisation or, for "
+               "the Polymer Pilot Facility and regional workforce programs, a programme "
+               "aggregate. An assignment test, not a payment test.",
     cadence="On amendment of the award register",
     target="%s awarded" % money(AWARDED),
     current="%.1f%%" % (ASSIGNED / AWARDED * 100),
@@ -290,8 +293,9 @@ row(id="b-eda", group="B", status="public",
 row(id="b-ohio", group="B", status="public",
     metric="Ohio Innovation Hub dollars with a named recipient",
     definition="The state grant’s five workstreams, tested the same way as the "
-               "award total: dollars on an executed line naming the organisation that "
-               "holds them.",
+               "award total: dollars on an executed line with a named recipient, an "
+               "organisation or, for the Polymer Pilot Facility and the state share of "
+               "regional workforce programs, a programme aggregate.",
     cadence="On amendment of the award register",
     target="%s awarded" % money(OHIO["award"]),
     current="%.1f%%" % OHIO["pct"],

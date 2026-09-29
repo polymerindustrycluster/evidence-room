@@ -78,8 +78,9 @@ figure recomputed from public data; 7 are empty slots.
 
 ### Group B is an assignment test, not a payment test
 
-"Reached a named recipient" means the register carries an executed line item naming the
-organisation that holds the money. $79,170,176 of $85,335,784 passes that test. The
+"Reached a named recipient" means the register carries an executed line item naming who
+holds the money: an organisation or, for the Polymer Pilot Facility and regional workforce
+programs, a programme aggregate. $79,170,176 of $85,335,784 passes that test. The
 $6,165,608 that does not is entirely inside the Ohio Innovation Hub grant, in two
 workstreams (startup support, $3,523,500; PIC Translational R&D, $2,642,108).
 

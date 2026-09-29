@@ -34,8 +34,8 @@ quoted them, so each gets an entry.
 page is a measure of money spent", and the empty disbursement row read "no figure exists in
 this repository". Group B has printed federal outlays on seven of the eight federal lines
 since 1 September. **Is:** "An award register records commitment, not payment, so no figure
-taken from it measures money spent", and the row reads that no public figure covers the
-state grant or the whole $85,335,784.
+taken from it measures money spent"; the note adds that no public figure covers the state
+grant or the whole $85,335,784, and the row reads "no figure spans the register".
 
 **The member flag's denominator, *scorecard*.** **Was:** the flag "marks, counts and exports
 38 of the 785 companies" on the chain page. **Is:** 38 of 710, the chain page's count since
@@ -49,7 +49,8 @@ assigned dollar "names the organisation that receives it"; the completions row c
 four group A rows are membership, so "membership and revenue"; the federal row counts prime
 contracts under the chemical and plastics and rubber industry codes; two of the twenty-one
 named recipients are programmes, so every assigned dollar is on an executed line with a
-named recipient; the completions row counts the codes the occupations page classes as
+named recipient, and the definitions of the two assignment rows say that recipient is an
+organisation or a programme; the completions row counts the codes the occupations page classes as
 polymer; the trend reads "up in both years since 2021".
 
 **Where the money goes, *accountability*.** **Was:** the awards commit the funders to pay
@@ -64,18 +65,32 @@ or grantee; no file in the repository names the grantee of the state grant.
 
 **Dates at the wrong precision, *accountability*.** **Was:** the register of published dates
 "opens on the day this page ships"; the 9 September conference read "the date has not
-arrived" after it had; eight dates known only to a year or a quarter printed as single days,
-among them "15 November 2027" for a promise dated to the last quarter of 2027, and "On 1 July
-2025 PIC recorded" a first funding cycle dated to the year. **Is:** the register opened on
+arrived" after it had; eight register dates known only to a year or a quarter printed as single
+days, among them "15 November 2027" for a promise dated to the last quarter of 2027; and the
+narrative read "On 1 July 2025 PIC recorded" a first funding cycle dated to the year. **Is:** the register opened on
 28 August 2026; a passed date reads as not yet read against the register; each date prints
 at its known precision.
 
 **The negative space, *accountability*.** **Was:** the empty disbursement line repeated the
 scorecard's old note, on a page that prints $11,642,402 paid out; each empty line read
 "defined today", the scorecard's build date; the closer said PIC "has set no target for any
-of the eighteen dates". **Is:** the line quotes the scorecard's corrected note; each line
-carries 28 August 2026, when it was written; PIC has set no numeric target, though it set
-four of the dates.
+of the eighteen dates"; the band's heading said PIC "has set itself no targets". **Is:** the
+line quotes the scorecard's corrected note; each line carries 28 August 2026, when it was
+written; none of the eighteen dates carries a numeric target PIC set, though PIC set four of
+the dates; the heading and the Limitations are scoped to the board and the register, and
+the Limitations name PIC's own goal, 150 members and $1 million in annual revenue by 2028,
+which the page shows beside the register.
+
+**Two descriptions of one award, *accountability*.** **Was:** band E's source line said of the
+award register's and the event register's descriptions of APEX that "one of the two is
+incomplete". **Is:** the Notice of Award decides which is right, and the page does not
+presume which description is at fault.
+
+**The Bounce balance, *scorecard*.** **Was:** both Ohio workstreams holding unassigned money
+had sub-grants that "have not been signed yet". **Is:** the PIC Translational R&D balance has
+not been sub-granted; the startup-support balance is delivered through Bounce Innovation
+Hub under a sub-grant agreement dated 15 May 2025, and the register names recipients in
+that workstream only for the nine $25,000 cohort awards.
 
 **Cause:** Each page was corrected on 1 and 8 September at the surface a reviewer named, and
 the same statement survived on the other surfaces: the scorecard's note, the accountability
