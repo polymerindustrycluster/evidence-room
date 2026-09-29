@@ -15,7 +15,7 @@
  *   - an en-dash between numbers (2015-2026): a range, correct
  *   - anything inside <script>: inlined source comments, which no reader sees
  */
-import {readdirSync} from "fs";
+import {readdirSync, existsSync} from "fs";
 import {pathToFileURL} from "url";
 import {chromium} from "./_browser.mjs";
 
@@ -27,7 +27,9 @@ try { ACRO = JSON.parse(rfs(new URL("../_data/acronyms.json", import.meta.url), 
    collaboration's "joint work" survived four rounds of rewrites of the sentences around
    it, and a Read-next line added on the correction branch itself reintroduced it
    (2026-09-28). Only a grep outside the repo caught that. The list is read unguarded: a
-   missing or malformed file must fail the gate, not empty the list and pass. */
+   missing or malformed file must fail the gate, not empty the list and pass. It catches a
+   phrasing coming back, not one hidden on purpose: CSS generated content and shadow
+   DOM are out of reach, and every exemption is printed. */
 const WITHDRAWN = JSON.parse(rfs(new URL("../_data/withdrawn.json", import.meta.url), "utf-8")).withdrawn;
 for (const w of WITHDRAWN) new RegExp(w.pattern.replaceAll(" ", "\\s+"), "gi");  /* the form the page compiles */
 
@@ -35,11 +37,13 @@ const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
 
-/* A full run must be able to inspect every page the list names; an entry for a renamed
-   or missing page would otherwise pass forever. */
-const unknown = names.length ? [] : [...new Set(WITHDRAWN.flatMap(w => w.pages))].filter(pg => !list.includes(pg));
+/* Every run checks the whole list: an entry for a renamed or missing page would otherwise
+   pass forever. A page is an artifact with an index.html; a full run must also have its
+   bundle to inspect. */
+const unknown = [...new Set(WITHDRAWN.flatMap(w => w.pages))]
+  .filter(pg => !existsSync(`${pg}/index.html`) || (!names.length && !list.includes(pg)));
 if (unknown.length) {
-  console.log(`withdrawn.json names page(s) with no bundle in dist/: ${unknown.join(", ")}`);
+  console.log(`withdrawn.json names page(s) with no artifact or no bundle in dist/: ${unknown.join(", ")}`);
   process.exit(1);
 }
 
@@ -55,14 +59,17 @@ for (const n of list) {
     const out = [];
     const pageText = [];
     const WRE = withdrawn.map(src => new RegExp(src.replaceAll(" ", "\\s+"), "gi"));
+    const MONTH = "(?:January|February|March|April|May|June|July|August|September|October|November|December)";
+    const NOTE = new RegExp(`\\bCorrect(?:ion|ed)\\b[\\s,·.:]*(?:\\d{1,2}\\s+${MONTH}|${MONTH}\\s+\\d{1,2}),?\\s+\\d{4}`);
     const BLOCKS = "p,li,td,th,h1,h2,h3,h4,h5,h6,figcaption,caption,dd,dt,summary,blockquote";
     const blockText = new Map(), owners = new Map();
     /* the block an element's text belongs to: the nearest text block, else the nearest
-       ancestor that is not display:inline (a card div), never a <b> or <span> */
+       ancestor that is not inline or inline-block (a card div), never a <b> or <span>:
+       an inline-block sits in its line, so "Joint <span class=pill>work</span>" is one phrase */
     const own = e => {
       if (!owners.has(e)) {
         let b = e.closest(BLOCKS);
-        if (!b) for (b = e; b !== document.body && getComputedStyle(b).display === "inline"; b = b.parentElement);
+        if (!b) for (b = e; b !== document.body && /^inline(-block)?$/.test(getComputedStyle(b).display); b = b.parentElement);
         owners.set(e, b);
       }
       return owners.get(e);
@@ -107,26 +114,52 @@ for (const n of list) {
       if (WRE.length) {
         const block = own(el);
         if (!blockText.has(block)) {
-          const offs = new Map(), bw = document.createTreeWalker(block, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
-          let bt = "", u;
+          /* Two readings of a block: all its text, which sees a collapsed <details> twin,
+             and the text a reader sees, which drops anything hidden inside the block, so
+             "Joint<span hidden>x</span> work" is still one phrase and a hidden correction
+             label exempts nothing. */
+          const shown = e => {
+            for (; e && e !== block; e = e.parentElement) {
+              const c = getComputedStyle(e);
+              if (e.hidden || c.display === "none" || c.visibility === "hidden") return false;
+            }
+            return true;
+          };
+          const all = {bt: "", offs: new Map()}, seen = {bt: "", offs: new Map()};
+          const bw = document.createTreeWalker(block, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+          let u;
           while ((u = bw.nextNode())) {
-            if (u.nodeType === 1) { if (u.tagName === "BR" && own(u.parentElement) === block) bt += "\n"; continue; }
+            if (u.nodeType === 1) {
+              if (u.tagName === "BR" && own(u.parentElement) === block) { all.bt += "\n"; if (shown(u)) seen.bt += "\n"; }
+              continue;
+            }
             if (u.parentElement.closest("script,style,noscript") || own(u.parentElement) !== block) continue;
-            offs.set(u, bt.length); bt += u.textContent;
+            all.offs.set(u, all.bt.length); all.bt += u.textContent;
+            if (shown(u.parentElement)) { seen.offs.set(u, seen.bt.length); seen.bt += u.textContent; }
           }
-          blockText.set(block, [bt, offs]);
+          blockText.set(block, seen.bt === all.bt ? [all] : [all, seen]);
         }
-        const [bt, offs] = blockText.get(block), at = offs.get(t);
-        for (const re of WRE) {
-          for (const wm of bt.matchAll(re)) {
-            if (wm.index < at || wm.index >= at + s.length) continue;
-            const before = bt.slice(0, wm.index);
-            const inNote = /\bCorrect(?:ion|ed)\b[\s,·.:]*(?:\d{1,2}\s+[A-Z][a-z]+|[A-Z][a-z]+\s+\d{1,2}),?\s+\d{4}/.test(before);
-            const quoted = before.split("“").length > before.split("”").length;
-            const near = bt.slice(Math.max(0, wm.index - 30), wm.index + 40).replace(/\s+/g, " ").trim();
-            out.push([`${inNote || quoted ? "exempt:" : ""}withdrawn:${wm[0].replace(/\s+/g, " ").toLowerCase()}`, near]);
-          }
+        /* one verdict per phrase: it is exempt only if every reading that finds it exempts it */
+        const found = new Map();
+        for (const {bt, offs} of blockText.get(block)) {
+          const at = offs.get(t);
+          if (at === undefined) continue;
+          WRE.forEach((re, ri) => {
+            for (const wm of bt.matchAll(re)) {
+              if (wm.index < at || wm.index >= at + s.length) continue;
+              const before = bt.slice(0, wm.index);
+              /* A note's label counts only where the block itself carries it, not where
+                 prose quotes it ("the log's “Correction, 28 September 2026” entry"), and a
+                 quotation exempts only a phrase it closes around. */
+              const inNote = NOTE.test(before.replace(/“[^”]*”/g, ""));
+              const quoted = before.split("“").length > before.split("”").length && bt.includes("”", wm.index + wm[0].length);
+              const key = `${ri}:${wm.index - at}`, prev = found.get(key);
+              found.set(key, {ex: (prev ? prev.ex : true) && (inNote || quoted), phrase: wm[0].replace(/\s+/g, " ").toLowerCase(),
+                near: prev ? prev.near : bt.slice(Math.max(0, wm.index - 30), wm.index + 40).replace(/\s+/g, " ").trim()});
+            }
+          });
         }
+        for (const {ex, phrase, near} of found.values()) out.push([`${ex ? "exempt:" : ""}withdrawn:${phrase}`, near]);
       }
       /* NEGATIVES TAKE THE TRUE MINUS (U+2212), never the ASCII hyphen — the hyphen is
          a third the width of the digits beside it. Found 2026-08-31: four axis ticks
