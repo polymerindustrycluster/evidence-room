@@ -34,7 +34,13 @@
   "run: churn 1677 to 1729, federal-money 1631 to 1701, revisions 1330 to 1356, timeline",
   "1385 to 1386. Those four entries are now the Linux measurements from that run, recorded",
   "as debts rather than hidden; the prose above those four first charts owes a tightening",
-  "of the same pixels, and the determinism fix in ER-021 is still the real answer."
+  "of the same pixels, and the determinism fix in ER-021 is still the real answer.",
+  "",
+  "RAISED 2026-09-29. The churn corrections of 2026-09-28 lengthened two sentences above",
+  "the first chart: the standfirst now says the two Census measures are estimated",
+  "separately, and the every-quarter claim now says it holds for the year average. On the",
+  "Linux runner that is one line, churn 1729 to 1756. Accuracy costs the line; the prose",
+  "above the chart owes it back."
  ],
  "limit": 900,
  "fixed": [
@@ -48,7 +54,7 @@
   "index"
  ],
  "ceilings": {
-  "churn": 1729,
+  "churn": 1756,
   "cluster-health": 1085,
   "federal-money": 1701,
   "laborshed": 1542,
