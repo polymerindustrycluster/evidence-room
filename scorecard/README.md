@@ -114,7 +114,7 @@ Two fields are also missing on **every** row and are not this page's to invent:
   assignment. An EOS row without a named owner is not yet a scorecard row. Seven of the
   fifteen accountable rows are blocked on data; all fifteen are blocked on an owner.
 - **Target.** Three targets are set and all three are ceilings fixed by a signed award
-  document (`$85,335,784 awarded`, `7 signed awards`, `$31,250,000 awarded`). Twelve read
+  document (`$85,335,784 awarded`, `all 7 awards confirmed`, `$31,250,000 awarded`). Twelve read
   "not set". None was set by PIC, and that absence is itself the finding.
 
 ## Rebuilding

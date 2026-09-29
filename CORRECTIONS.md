@@ -30,6 +30,17 @@ straight to that lead"; USAspending confirms the obligation on six of the seven,
 Huntsman's, whose signed award has no record there. **Cause:** the correction reworded the
 sentence's conclusion and kept its premise, which the page's own source note qualifies.
 
+**Later, 30 September.** **Was:** the Tech Hub plate on the map read "Obligated to each
+project lead", the Tech Hub panel said EDA "obligates directly to each project lead", and
+the direct-awards panel said the seven awards are "obligated straight to their project
+leads". **Is:** "Signed to each project lead"; the panels say EDA signs directly to each
+lead and that USAspending records the obligation on six of the seven, all but Huntsman's,
+whose ED25HDQ0G0009, $5,970,805, is signed with no USAspending record. A dated note under
+the map says so. **Cause:** the 29 September corrections reached the machine card and not
+the plate or the panels, which carry the same premise. The claim now reads the card's own
+sentence on the page, so the withdrawn "no federal dollar passes through PIC" fails the noun
+gate, and it forbids an obligation claim on the plate.
+
 ## 2026-09-29 — The scorecard and the accountability page before their first publication
 
 A pre-publication audit read both pages against their own data. The statements below failed
@@ -178,6 +189,27 @@ the methodology said the twenty-six executed lines name twenty-one recipients, w
 name twenty; and the scorecard's award chart dropped the EDA bar's "execution unverified"
 label on narrow screens. acc-licenses-mechanism now binds "obligat" to $42,380,608 and
 acc-attribution pins the twenty.
+
+**Later, 30 September.** A fifth review found six more. **Was:** the scorecard's standfirst
+glossed an executed line as "a signed agreement naming the recipient", which Huntsman's
+unconfirmed line also is; the scorecard's EDA row read 6 of 7 confirmed against a target of
+"7 signed awards"; the accountability chart's top sentence said "EDA obligates directly to
+each project lead"; band B's heading said "the federal lines have paid out 24.2 percent",
+which reads as all eight; the coalition line put "a building and a programme rather than an
+organisation" between "Two recipients" and its verb; and band A's source line said
+restating the Chamber's line "leaves the share at 4.9 percent", the unrestated figure too.
+**Is:** $73,199,371 on twenty-six lines is executed, each with a public record of its
+execution, and the other $5,970,805 of the $79,170,176 assigned is Huntsman's signed EDA
+award with no USAspending record; the EDA row's target reads "all 7 awards confirmed";
+EDA "signs directly to each project lead", and USAspending records the obligation on six of
+the seven, all but Huntsman's; the 24.2 percent is of
+the seven lines USAspending records, $11,642,402 of $48,114,979; two recipients hold three
+rows, one a building and one a programme; and the share moves from 4.86 to 4.93 percent.
+**Cause:** the gloss, the target and the chart's copy of the funding map's note were each
+written before the Huntsman exception and missed by the 29 September rounds; the heading
+dropped its paragraph's base; one decimal place hid the restatement. sc-executed now asserts
+the EDA bar's whole label, acc-attribution recomputes every stage amount the chart draws,
+and sc-eda-seven pins the target's unit.
 ## 2026-09-29 — Labels and cards that said more than their data
 
 A review of the 2026-09-28 corrections found these beside them. One figure changed: the

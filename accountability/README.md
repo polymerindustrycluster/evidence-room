@@ -17,7 +17,9 @@ keeping rate renders.
 
 Seven statements failed the data in the 2026-09-29 audit; each carries a dated in-page
 correction and a CORRECTIONS.md entry. Band A said all $75,020,661 on other recipients'
-lines never passes through PIC (only the $48,351,413 of EDA money does not), and "signed
+lines never passes through PIC (only the $48,351,413 of EDA money does not: USAspending
+confirms $42,380,608 of it obligated directly to five of the six other leads, and Huntsman's
+$5,970,805 is on a signed Notice of Award with no USAspending record), and "signed
 for $7.6 million" had no source for its scope. Band D said the record of published dates
 opens on the day the page ships, left F04 reading "the date has not arrived" after 9
 September, and printed eight year- or quarter-precision dates as stand-in days. Band E put a

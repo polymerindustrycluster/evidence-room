@@ -195,13 +195,22 @@ function drawOpen() {
      out by a third on the longest of the three. */
   const KEY = [["public", "computed from a public record"],
                ["vault", "not published here"], ["context", "cluster context"]];
-  let kx = m.l;
+  /* On the desktop row an item that would run past the plot wraps to a second key row and
+     the figure grows to hold it. Just above the phone breakpoint the rail is at its
+     narrowest, and one row of three ran "cluster context" 28px past the figure at 768. */
+  let kx = m.l, ky = M ? 292 : 220;
   KEY.forEach(([status, label], i) => {
-    const ky = M ? 292 + i * 22 : 220, x = M ? m.l : kx;
-    openCell(svg, status, x, ky - 11, 13);
-    kx = x + 19 + txt(svg, label,
-      {x: x + 19, y: ky, "font-size": 14, fill: O_MUTE}).getComputedTextLength() + 26;
+    if (M) { kx = m.l; ky = 292 + i * 22; }
+    const t = txt(svg, label, {x: kx + 19, y: ky, "font-size": 14, fill: O_MUTE});
+    const tw = t.getComputedTextLength();
+    if (!M && kx > m.l && kx + 19 + tw > m.l + w) {
+      kx = m.l; ky += 22;
+      t.setAttribute("x", kx + 19); t.setAttribute("y", ky);
+    }
+    openCell(svg, status, kx, ky - 11, 13);
+    kx += 19 + tw + 26;
   });
+  if (!M && ky > 220) svg.setAttribute("viewBox", `0 0 ${W} ${H + ky - 220}`);
 }
 drawOpen();
 /* The strip re-lays itself out at the breakpoint. The two charts below it are drawn once,

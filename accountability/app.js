@@ -185,7 +185,10 @@ function attribDesktop() {
      that work: a reader who screenshots this figure gets the sentence with it. */
   const mech = A.mechanism.split(". ");
   txt(svg, mech[0] + ".", {x: m.l, y: 22, class: "pv-lab"});
-  txt(svg, mech.slice(1).join(". "), {x: m.l, y: 42, class: "pv-labq"});
+  txt(svg, mech.slice(1, 3).join(". ").replace(/\.?$/, "."), {x: m.l, y: 42, class: "pv-labq"});
+  /* The fourth sentence says which six obligations USAspending records (added
+     2026-09-30, when the first sentence changed from "obligates" to "signs"). */
+  if (mech[3]) txt(svg, mech.slice(3).join(". "), {x: m.l, y: 62, class: "pv-labq"});
 
   STG.forEach((_, i) => {
     const {s, prev, y, barY} = attribRow(svg, i, geo, {barTop: 38, bh: 26});
@@ -249,7 +252,7 @@ function attribMobile() {
   const geo = {xs, rowH, m};
   const mechM = A.mechanism.split(". ");
   txt(svg, mechM[0] + ".", {x: m.l, y: 20, class: "pv-lab"});
-  txt(svg, mechM[2], {x: m.l, y: 20 + MOBLEAD, class: "pv-labq"});
+  txt(svg, mechM[2].replace(/\.?$/, "."), {x: m.l, y: 20 + MOBLEAD, class: "pv-labq"});
   STG.forEach((_, i) => {
     const {s, prev, y, barY} = attribRow(svg, i, geo, {barTop: BARTOP, bh: 16});
     txt(svg, s.label, {x: m.l, y: y + LAB, class: "pv-lab"});
@@ -289,7 +292,8 @@ document.getElementById("attribtable").innerHTML = tableView("attrib",
 document.getElementById("attribsrc").innerHTML =
   `PIC award register as of ${D.as_of}, ${esc(A.source_note)} <b>${esc(X.defects[0].text)}</b> The Chamber&rsquo;s own `
   + `EDA line, ED24HDQ0G0413, is one of the two FY2024 awards, so restating it with the `
-  + `total leaves the share at ${(A.restated_share_of_awarded * 100).toFixed(1)} percent.`;
+  + `total moves the share only from ${(A.share_of_awarded * 100).toFixed(2)} to `
+  + `${(A.restated_share_of_awarded * 100).toFixed(2)} percent.`;
 
 /* ================================================================ B. awarded to disbursed
    Three stages of one total. The third carries no value, and the two named gaps and the
@@ -360,7 +364,7 @@ function stageDesktop() {
   el("rect", {x: m.l, y: y + 38, width: Math.max(3, xs(OL.paid) - m.l), height: 28,
     fill: INK, rx: 3}, svg);
   txt(svg, usd(OL.paid), {x: m.l + w + 12, y: y + 57, class: "pv-lab"});
-  txt(svg, `${pct1(OL.share)} of the federal lines`, {x: m.l + w + 12, y: y + 75,
+  txt(svg, `${pct1(OL.share)} of ${OL.lines} federal lines`, {x: m.l + w + 12, y: y + 75,
     class: "pv-labq"});
   txt(svg, `Solid: what the federal record says has been paid against ${usd(OL.base)} on `
     + `${OL.lines} federal award lines.`, {x: m.l, y: y + 88, class: "pv-labq"});
@@ -421,7 +425,7 @@ function stageMobile() {
   b = note + MOBLEAD * (1 + S.gaps.length) + BLOCK;
   const OL = S.outlays;
   txt(svg, "Paid out to recipients", {x: m.l, y: b, class: "pv-lab"});
-  txt(svg, `${usd(OL.paid)}, ${pct1(OL.share)} of the federal lines`,
+  txt(svg, `${usd(OL.paid)}, ${pct1(OL.share)} of ${OL.lines} federal lines`,
     {x: m.l, y: b + MOBLEAD, class: "pv-labq"});
   const outY = b + BAR;
   el("rect", {x: m.l, y: outY, width: w, height: 22, fill: "none", stroke: "#9A9284",
@@ -535,9 +539,10 @@ document.getElementById("coalsrc").innerHTML =
   `PIC award register as of ${D.as_of}: signed federal Notices of Award, executed state `
   + `grant agreement SBIG20251005, and executed sub-grant agreements. Sorted by amount, `
   + `largest first, which is the order the $1,000,000 rule is drawn in; sorting by any `
-  + `other column hides the rule and changes no figure. <b>${NUMW[AGG.recipients]} recipients, a building and `
-  + `a programme rather than an organisation, hold ${NUMW[AGG.lines].toLowerCase()} of these rows, and together they `
-  + `hold ${usd(AGG.total)}, ${pct1(AGG.share_of_assigned)} of everything assigned.</b>`;
+  + `other column hides the rule and changes no figure. <b>${NUMW[AGG.recipients]} recipients hold `
+  + `${NUMW[AGG.lines].toLowerCase()} of these rows, and neither is an organisation: one is a building and `
+  + `one a programme. Together they hold ${usd(AGG.total)}, ${pct1(AGG.share_of_assigned)} of `
+  + `everything assigned.</b>`;
 
 /* ================================================================= D. the promise register
    The calibration statistic first, because a tracker that shows a keeping rate before it

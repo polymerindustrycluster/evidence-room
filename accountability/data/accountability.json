@@ -82,7 +82,7 @@
     "what": "A completed Phase 1 Tech Hub award to the Greater Akron Chamber, fully outlaid. It sits outside this register's $85,335,784 and is never summed with it; the accountability page names it because the Chamber is its grantee."
    }
   },
-  "mechanism": "EDA obligates directly to each project lead. The Greater Akron Chamber is one recipient among seven, for innovation governance. No part of the other six awards passes through it.",
+  "mechanism": "EDA signs directly to each project lead. The Greater Akron Chamber is one recipient among seven, for innovation governance. No part of the other six awards passes through it. USAspending records the obligation on six of the seven, all but Huntsman’s.",
   "other_leads": 6,
   "source_note": "verified against signed federal Notices of Award and state grant SBIG20251005; Huntsman’s ED25HDQ0G0009 is signed, but its execution is not verified."
  },
@@ -1141,7 +1141,7 @@
    },
    {
     "metric": "EDA implementation awards with a confirmed obligation",
-    "target": "7 signed awards",
+    "target": "all 7 awards confirmed",
     "group": "B"
    },
    {

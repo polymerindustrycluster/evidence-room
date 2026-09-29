@@ -318,7 +318,9 @@ row(id="b-eda", group="B", status="public",
     cadence="On amendment of the award register",
     # Seven signed awards, six of them confirmed obligated. The row read "7 of 7" in the
     # round-2 draft while its own sub said one line was not verified (corrected 2026-09-29).
-    target="%d signed awards" % N_LEADS,
+    # The target counts the same thing as the current cell, confirmed awards; it read
+    # "7 signed awards" against "6 of 7" confirmed, two units in one row (2026-09-30).
+    target="all %d awards confirmed" % N_LEADS,
     current="%d of %d" % (N_LEADS - (1 if UNVERIFIED and UNVERIFIED["source"] == "eda"
                                      else 0), N_LEADS),
     sub="%s signed%s" % (money(EDA["award"]),

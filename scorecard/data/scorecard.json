@@ -149,7 +149,7 @@
    "metric": "EDA implementation awards with a confirmed obligation",
    "definition": "Tech Hub implementation awards for which USAspending confirms that EDA has obligated funds directly to the named project lead, against the number of awards in the signed Notices of Award. One, ED25HDQ0G0009, $5,970,805 to Huntsman, has no record there, so its obligation is not verified.",
    "cadence": "On amendment of the award register",
-   "target": "7 signed awards",
+   "target": "all 7 awards confirmed",
    "current": "6 of 7",
    "sub": "$51,001,413 signed; $5,970,805 to Huntsman not verified",
    "trend": "first reading",
