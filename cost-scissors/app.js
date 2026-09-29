@@ -1,4 +1,6 @@
-/* The polymer price chain, re-read as one question: squeeze or windfall, by seat.
+/* The polymer price chain, re-read as one question: how much of the 2022 spike has each
+   link's selling price given back, by seat. These are selling-price indexes, not margins:
+   the page reads what prices did and does not measure anyone's profit (corrected 2026-09-28).
    Forms follow the jobs: retracement is a SHARE of a known whole, so it gets a bar
    against a full-width track (with the one overshoot marked honestly, not clamped);
    the level histories are change-over-time on a common rebased scale, so they get
