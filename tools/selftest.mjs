@@ -267,6 +267,10 @@ const CASES = [
    defect: "a withdrawn phrasing passed as corrected by a note under display:contents and content-visibility:hidden",
    inject: s => s.replace("<body>", '<body><div><p style="display:contents;content-visibility:hidden">Correction, 28 September 2026: Joint work rose.</p></div>')},
 
+  {gate: "style", page: "programs", args: ["programs"], expect: /withdrawn:graduated two polymer undergraduates/,
+   defect: "a phrasing withdrawn before the list existed (2026-09-01), printed again",
+   inject: s => s.replace("<body>", "<body><p>Akron graduated two polymer undergraduates.</p>")},
+
   /* The one fixture that must PASS: a bare dated note exempts. The drawn rule compares
      computed values with defaults as strings (zoom "1", clip "auto" ...), so a Chromium that
      serialises one differently would refuse every note on the site; this fails first, and
