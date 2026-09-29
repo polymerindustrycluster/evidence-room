@@ -31,8 +31,17 @@ const D = await PV.data("reach.json");
    every chart and figure behind one stalled font file, so the chart is drawn at once and
    drawn again as each face that was loading arrives, and after any later load. */
 const onFonts = redraw => {
-  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(() => redraw(), () => {}); });
-  document.fonts.addEventListener("loadingdone", () => redraw());
+  /* A redraw replaces the chart's nodes; a reader tabbing through its marks keeps their place. */
+  const keep = () => {
+    const a = document.activeElement, k = a && a.getAttribute && a.getAttribute("aria-label");
+    redraw();
+    if (k && !a.isConnected) {
+      const n = [...document.querySelectorAll("[aria-label]")].find(e => e.getAttribute("aria-label") === k);
+      if (n) n.focus({preventScroll: true});
+    }
+  };
+  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(keep, () => {}); });
+  document.fonts.addEventListener("loadingdone", keep);
 };
 
 /* THE LEFT MARGIN IS MEASURED, NOT TYPED (the peers/app.js helper, same reasons).
