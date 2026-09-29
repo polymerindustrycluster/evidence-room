@@ -25,6 +25,33 @@ const COL = 728;
 "use strict";
 const {el, txt, ticks, frame, hoverable, tableView, chart, CAT, SEQ, GRAY, INK, N} = PV;
 const D = await PV.data("reach.json");
+/* MEASURE THE FACE THAT WILL PAINT. Lato ships with font-display:swap, so until it has
+   loaded a label measures in the fallback, and gutter() below would size the direction
+   chart's margin from a face that is not the one on screen. Waiting for the fonts held
+   every chart and figure behind one stalled font file, so the chart is drawn at once and
+   drawn again as each face that was loading arrives, and after any later load. */
+const onFonts = redraw => {
+  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(() => redraw(), () => {}); });
+  document.fonts.addEventListener("loadingdone", () => redraw());
+};
+
+/* THE LEFT MARGIN IS MEASURED, NOT TYPED (the peers/app.js helper, same reasons).
+   getComputedTextLength reports USER units, so the probe runs inside the viewBox the
+   margin will be written in — set here, and set again by chart() a moment later. */
+const GUT = 12;                       // the gap this page keeps between label and plot
+function gutter(id, W, labels, gap = GUT) {
+  const svg = document.getElementById(id);
+  svg.setAttribute("viewBox", `0 0 ${W} 100`);
+  let max = 0;
+  for (const [s, cls] of labels) {
+    const t = txt(svg, s, {x: 0, y: 0, class: cls});
+    let len = 0;
+    try { len = t.getComputedTextLength(); } catch { len = 0; }
+    svg.removeChild(t);
+    max = Math.max(max, len);
+  }
+  return Math.ceil(max + gap);
+}
 
 /* THE COLD OPEN (guarded by tools/coldopen.mjs). One bar, split three ways: where the
    corresponding author of the region's 1,448 works sits. Poorer than everything below — no map, no countries,
@@ -184,29 +211,38 @@ PV.figures([
 /* ------------------------------------------------------------ 2. which direction */
 {
   const R = D.top.slice(0, 14);
-  const {svg, m, w} = chart("dir", {W: COL, rows: R.length, rowH: 26,
-    m: {t: 40, r: 8, b: 54, l: 282}});
-  /* l was 244; 'South China University of Technology' ran 26px past the left edge at
-     phone text sizes. Same fast-CI ship-route as the rest. 2026-09-01. */
-  const max = Math.max(...R.map(p => p.total)) * 1.06;
-  const xs = v => m.l + (v / max) * w;
-  frame(svg, {x: m.l, y: m.t, w, h: R.length * 26, xs, ys: () => 0,
-    xt: ticks(0, max, 5), xlab: "Shared papers", ylab: "Institution"});
-  R.forEach((p, i) => {
-    const y = m.t + i * 26 + 4;
-    txt(svg, p.name.length > 34 ? p.name.slice(0, 33) + "…" : p.name,
-      {x: m.l - 12, y: y + 15, "text-anchor": "end", class: "pv-lab"});
-    el("rect", {x: m.l, y, width: Math.max(1, xs(p.led) - m.l), height: 20,
-      fill: CAT[0]}, svg);
-    el("rect", {x: xs(p.led), y, width: Math.max(1, xs(p.total) - xs(p.led)), height: 20,
-      fill: CAT[1]}, svg);
-    txt(svg, p.total, {x: xs(p.total) + 8, y: y + 15, class: "pv-lab"});
-    hoverable(el("rect", {x: m.l, y, width: w, height: 20, fill: "transparent"}, svg),
-      `<b>${p.name}</b>${p.country ? " · " + p.country : ""}<br>
-       led from here <span class="v">${p.led}</span><br>
-       led from elsewhere <span class="v">${p.joined}</span>`,
-      `${p.name}: ${p.led} led here, ${p.joined} led elsewhere`);
-  });
+  const label = p => p.name.length > 34 ? p.name.slice(0, 33) + "…" : p.name;
+  /* l was 244, then a typed 282 after 'South China University of Technology' ran 26px
+     past the left edge at phone text sizes. 282 fitted macOS, where Lato paints the
+     widest name here at 266 units; Linux sets each glyph advance to a whole pixel and
+     paints the same string at 275, so the weekly CI run clipped "Akron Polymer Systems"
+     6px at 360. Measured from what this browser paints, it fits on either. The labels
+     grow from 14.2 to 16 units at 760px, so a resize across that line measures again. */
+  const drawDir = () => {
+    const {svg, m, w} = chart("dir", {W: COL, rows: R.length, rowH: 26,
+      m: {t: 40, r: 8, b: 54, l: gutter("dir", COL, R.map(p => [label(p), "pv-lab"]))}});
+    const max = Math.max(...R.map(p => p.total)) * 1.06;
+    const xs = v => m.l + (v / max) * w;
+    frame(svg, {x: m.l, y: m.t, w, h: R.length * 26, xs, ys: () => 0,
+      xt: ticks(0, max, 5), xlab: "Shared papers", ylab: "Institution"});
+    R.forEach((p, i) => {
+      const y = m.t + i * 26 + 4;
+      txt(svg, label(p), {x: m.l - GUT, y: y + 15, "text-anchor": "end", class: "pv-lab"});
+      el("rect", {x: m.l, y, width: Math.max(1, xs(p.led) - m.l), height: 20,
+        fill: CAT[0]}, svg);
+      el("rect", {x: xs(p.led), y, width: Math.max(1, xs(p.total) - xs(p.led)), height: 20,
+        fill: CAT[1]}, svg);
+      txt(svg, p.total, {x: xs(p.total) + 8, y: y + 15, class: "pv-lab"});
+      hoverable(el("rect", {x: m.l, y, width: w, height: 20, fill: "transparent"}, svg),
+        `<b>${p.name}</b>${p.country ? " · " + p.country : ""}<br>
+         led from here <span class="v">${p.led}</span><br>
+         led from elsewhere <span class="v">${p.joined}</span>`,
+        `${p.name}: ${p.led} led here, ${p.joined} led elsewhere`);
+    });
+  };
+  drawDir();
+  matchMedia("(max-width: 760px)").addEventListener("change", drawDir);
+  onFonts(drawDir);
   document.getElementById("dirtable").innerHTML = tableView("dr",
     "Direction of collaboration, largest partners",
     ["Institution", "Led from here", "Led from elsewhere", "Share led here"],

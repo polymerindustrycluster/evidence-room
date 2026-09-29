@@ -2,9 +2,9 @@
  "meta": {
   "question": "Do the University of Akron and Case Western Reserve collaborate, and on polymer work specifically?",
   "sources": "OpenAlex works listing both institutions; NSF awards API, awards to either institution since 2012.",
-  "row": "one year: works listing both institutions, works matching \u2018polymer\u2019, and each institution\u2019s own total output.",
+  "row": "one year: works listing both institutions, their polymer and biomaterials counts, and each institution\u2019s own output.",
   "two_measures": "Publications and federal awards are independent instruments aimed at the same proposition, which is what makes this triangulation rather than juxtaposition. They can disagree.",
-  "polymer_bound": "Polymer relevance is OpenAlex subfield 2507, \u2018Polymers and Plastics\u2019, a classification rather than a keyword. Biomaterials is a separate subfield (2502) and is counted beside it, never merged into it. The unbounded joint count is published alongside both.",
+  "polymer_bound": "Polymer relevance is OpenAlex subfield 2507, \u2018Polymers and Plastics\u2019, a classification rather than a keyword. Biomaterials is a separate subfield (2502) and is counted beside it, never merged into it. The unbounded count is published alongside both.",
   "what_a_null_would_mean": "This instrument can demonstrate collaboration and CANNOT demonstrate its absence. OpenAlex affiliation coverage is incomplete, NSF\u2019s co-PI field lists signatories rather than the coalition, and neither sees industry contracts, consortium membership, joint teaching or a conversation. A low count means not detectable at this resolution.",
   "subfield": "2507",
   "subfield_alt": "2502",
@@ -13,13 +13,13 @@
    2025
   ],
   "fetched": "2026-08-31",
-  "control": "Each university\u2019s own annual output is carried beside the joint count, because a joint series alone cannot tell a thinning relationship from an indexing lag or from one partner shrinking."
+  "control": "Each university\u2019s own annual output is carried beside the count of works naming both, because that count alone cannot tell a thinning relationship from an indexing lag or from one partner shrinking."
  },
  "totals": {
   "coauthored": 208,
   "coauthored_polymer": 8,
-  "joint_awards": 4,
-  "joint_award_dollars": 3670535,
+  "joint_awards": 3,
+  "joint_award_dollars": 3412585,
   "nsf_akron": 245,
   "nsf_cwru": 367,
   "peak_year": 2018,
@@ -166,14 +166,6 @@
    "title": "Collaborative Research: Northern Ohio AGEP-T: A Racially and Ethnically Inclusive Graduate Education Model in Biology, Chemistry and Engineering",
    "start": "10/01/2015",
    "amount": 2637585,
-   "awardee": "both (NSF Collaborative Research)",
-   "via": "separate awards, one project"
-  },
-  {
-   "id": "1852597 + 1620198",
-   "title": "Collaborative Research: Algorithm and Theory for Interface Computations",
-   "start": "07/01/2016",
-   "amount": 257950,
    "awardee": "both (NSF Collaborative Research)",
    "via": "separate awards, one project"
   },

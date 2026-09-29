@@ -163,6 +163,11 @@
 .card .pill.apx{color:var(--caption);letter-spacing:.02em}
 .card .pill.apx + .pill.apx{border-left:1px solid var(--line);padding-left:10px}
 .card .pill.apx.man{color:var(--hover)}
+/* A prototype says so on its card, in its page's own words (2026-09-29): the gallery set
+   three prototypes beside the published articles with nothing to tell them apart.
+   Outlined rather than filled, so it cannot be mistaken for the footprint chip. */
+.card .pill.proto{border:1px solid var(--ink);color:var(--ink);padding:1px 7px;
+  font-weight:700;letter-spacing:.04em}
 .cards.lead .card{border-left:3px solid var(--ink)}
 
 /* ------------------------------------------------------------------ county picker

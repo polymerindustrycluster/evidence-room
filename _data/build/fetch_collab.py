@@ -87,7 +87,7 @@ def nsf_awards(name):
     """Every award to this awardee since 2012. Paged; NSF caps rpp at 25."""
     out, offset = [], 1
     fields = ("id,title,startDate,estimatedTotalAmt,awardeeName,piEmail,coPDPI,"
-              "piFirstName,piLastName,fundProgramName")
+              "piFirstName,piLastName,piId,pdPIName,fundProgramName")
     while True:
         u = (f"{NSF}?awardeeName=%22{urllib.parse.quote(name)}%22&printFields={fields}"
              f"&dateStart=01/01/2012&rpp=25&offset={offset}")
@@ -163,6 +163,26 @@ def is_collaborative(a):
 
 by_title = {n: v for n, v in by_title.items()
             if all(any(is_collaborative(x) for x in lst) for lst in v.values())}
+
+
+# A shared title and a shared PI is one researcher MOVING, not two universities working
+# together. "Collaborative Research: Algorithm and Theory for Interface Computations" was
+# booked as a $257,950 joint project from awards 1620198 (Case Western, 2016) and 1852597
+# (Akron, 2018); NSF names Lingxing Yao, piId 269970204, as sole PI on both. The second
+# award is the first one following its PI to Akron; the project's partner was the University
+# of Minnesota (award 1620316). Corrected 2026-09-29. Keyed on piId, falling back to the
+# name, because the email moves with the person and so cannot tell the two awards apart.
+def pi_key(a):
+    return a.get("piId") or (a.get("pdPIName") or
+                             f"{a.get('piFirstName', '')} {a.get('piLastName', '')}").strip().lower()
+
+
+transfers = {n for n, v in by_title.items() if len(v) == 2 and
+             {pi_key(x) for x in v["akron"]} & {pi_key(x) for x in v["cwru"]}}
+for n in sorted(transfers):
+    print(f"    dropped as a PI transfer, not a joint project: "
+          f"{' + '.join(x['id'] for x in by_title[n]['akron'] + by_title[n]['cwru'])}")
+by_title = {n: v for n, v in by_title.items() if n not in transfers}
 title_pairs = [{"title": a["akron"][0]["title"], "norm": n,
                 "akron": [{"id": x["id"], "amt": amt(x.get("estimatedTotalAmt")),
                            "start": x.get("startDate")} for x in a["akron"]],

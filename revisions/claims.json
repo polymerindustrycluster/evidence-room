@@ -99,7 +99,7 @@
     },
     {
       "id": "rev-series-medians",
-      "text": "Chemicals and allied products moves a median 0.35 percent after publication, more than twice as far as either downstream series (0.14 and 0.10) (chart-1 title, panel subtitles, where each median is stated as the half of that series' months that moved less).",
+      "text": "Chemicals and allied products moves a median 0.35 percent after publication, more than twice as far as either of the other two series (0.14 and 0.10) (chart-1 title, panel subtitles, where each median is stated as the half of that series' months that moved less).",
       "source": "median absolute percentage change per series",
       "assert": "(lambda M: 0.345 <= M('WPU06') < 0.355 and 0.135 <= M('WPU072') < 0.145 and 0.095 <= M('PCU326326') < 0.105 and M('WPU06') > 2 * M('WPU072') and M('WPU06') > 2 * M('PCU326326'))(lambda s: (lambda a: (lambda t, n: t[n//2] if n % 2 else (t[n//2-1] + t[n//2]) / 2)(sorted(a), len(a)))([abs(p['pct']) for p in D['periods'] if p['series'] == s]))",
       "actual": "sorted([(s, (lambda a: (lambda t, n: t[n//2] if n % 2 else (t[n//2-1] + t[n//2]) / 2)(sorted(a), len(a)))([abs(p['pct']) for p in D['periods'] if p['series'] == s])) for s in set(p['series'] for p in D['periods'])])",

@@ -159,8 +159,9 @@ const CASES = [
       which the harness caught and reported as stale rather than as a passing gate. */
    inject: s => s.replace("<body>", '<body><p>The award is signed, none of it spent.</p>')},
 
-  {gate: "nouns", page: "churn", file: "churn/index.html",
+  {gate: "nouns", page: "churn", prepare: ["tools/pagetext.mjs", "churn"],
    command: "python3", args: ["_data/build/verify_nouns.py", "churn"],
+   expect: /\(0 could not be inspected, [1-9]\d* of \d+ occurrence\(s\) missing/,
    defect: "the right number, the wrong noun beside it — the atlas shape " +
            "(41 institutions printed as '41 recorded polymer awards', 2026-09-28)",
    /* Dropping "headcount" from beside churn's 17,725 reproduces the atlas shape: a true
@@ -168,8 +169,9 @@ const CASES = [
    inject: s => s.replace("the headcount fell by 719, to 17,725.",
                           "the total fell by 719, to 17,725.")},
 
-  {gate: "nouns", page: "atlas", file: "atlas/index.html",
+  {gate: "nouns", page: "atlas", prepare: ["tools/pagetext.mjs", "atlas"],
    command: "python3", args: ["_data/build/verify_nouns.py", "atlas"],
+   expect: /\(0 could not be inspected, [1-9]\d* of \d+ occurrence\(s\) missing/,
    defect: "the atlas relapse itself: the right noun one clause back, the wrong one beside " +
            "the figure ('147 institution records since 1991; 41 recorded polymer awards')",
    /* Grok's refute, 2026-09-28: with "institution records" four words before the 41, the
@@ -191,6 +193,16 @@ const CASES = [
 ];
 
 const only = process.argv.slice(2).filter(a => !a.startsWith("--"));
+/* A gate that reads a derived file (nouns reads the text tools/pagetext.mjs dumps from the
+   bundle) needs it re-derived from whatever the bundle holds before each run, and once more
+   after the restore so the clean bundle is not left with the injected page's text. */
+/* A failed dump must not pass as a caught defect: a stale or missing dump fails the gate
+   too, but as "could not be inspected", which is not the defect the fixture exists for. */
+const prepare = c => {
+  if (!c.prepare) return;
+  const r = spawnSync("node", c.prepare, {encoding: "utf8"});
+  if (r.status !== 0) throw new Error(`${c.prepare.join(" ")} failed: ${(r.stderr || r.stdout || "").trim()}`);
+};
 const run = c => {
   const r = spawnSync(c.command || "node",
     c.command ? c.args : [`tools/${c.gate}.mjs`, ...c.args], {encoding: "utf8"});
@@ -208,18 +220,21 @@ for (const c of CASES) {
   copyFileSync(f, bak);
   let before, after;
   try {
+    prepare(c);
     before = run(c);                                    // must be clean to start
     const src = readFileSync(bak, "utf8");
     const hurt = c.inject(src);
     if (hurt === src) throw new Error("injection changed nothing — the fixture is stale");
     writeFileSync(f, hurt);
     utimesSync(f, originalTimes.atime, originalTimes.mtime);
+    prepare(c);
     after = run(c);                                     // must now fail
   } finally {
     copyFileSync(bak, f);
     unlinkSync(bak);
     utimesSync(f, originalTimes.atime, originalTimes.mtime);
     if (backupDir) rmdirSync(backupDir);
+    prepare(c);
   }
   const named = !c.expect || c.expect.test(after.output);
   const ok = before.status === 0 && after.status !== 0 && named;

@@ -382,7 +382,7 @@
    "filters": {
     "scope": "Collaboration analyses: every award to the two selected universities since 2012-01-01. The federal-money exclusion note instead retrieves two named awards by exact identifier, as described separately below.",
     "joint detection": "two ways: one award naming investigators at both institutions by email domain, and NSF’s ‘Collaborative Research’ mechanism, which issues a separate award per institution under an identical title",
-    "note": "Only awards NSF itself labels ‘Collaborative Research’ are counted as joint. Matching on shared title alone booked ‘Graduate Research Fellowship Program’: an institutional block grant every university receives separately, as a $1.1M joint project.",
+    "note": "Only awards NSF itself labels ‘Collaborative Research’ are counted as joint. Matching on shared title alone booked ‘Graduate Research Fellowship Program’: an institutional block grant every university receives separately, as a $1.1M joint project. A pair whose two awards name the same principal investigator is one researcher moving between the universities, not a joint project, and is not counted (corrected 2026-09-29).",
     "federal_money": "Exact award IDs 2532460 and 2330145, fetched from https://api.nsf.gov/services/v1/awards/{id}.json by fetch_federal_research.py. Preserve estimated award amount and obligated amount as different fields; these research awards illustrate exclusions from the prime-contract North American Industry Classification System (NAICS) scope, not additions to its totals."
    },
    "script": "_data/build/fetch_collab.py, fetch_research_awards.py, fetch_federal_research.py",
