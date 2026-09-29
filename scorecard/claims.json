@@ -28,11 +28,29 @@
     },
     {
       "id": "sc-assigned",
-      "text": "Hero card 2, row b-assigned and the closer: $79.2 million of the $85.3 million awarded, 92.8 percent, sits on an executed line naming its recipient. The row's definition says a named recipient is an organisation or one of the two programme aggregates, whose $23,094,356 is in the numerator (corrected 2026-09-29 from \"naming the organisation that holds them\").",
+      "text": "Hero card 2, row b-assigned and the closer: $79.2 million of the $85.3 million awarded, 92.8 percent, has a named recipient in the register. The row's definition says a named recipient is an organisation or one of the two programme aggregates, whose $23,094,356 is in the numerator (corrected 2026-09-29 from \"naming the organisation that holds them\"). How much of it is on an executed line is sc-executed.",
       "source": "PIC award register as of 13 August 2026, via funding-map/data/funding.json; recomputed here rather than read from a total",
       "assert": "sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']) == 79170176 and D['fm']['meta']['totals']['awards'] == 85335784 and D['sc']['delivery']['assigned'] == sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']) and D['sc']['delivery']['awarded'] == D['fm']['meta']['totals']['awards'] and round(D['sc']['delivery']['assigned'] / D['sc']['delivery']['awarded'] * 100, 1) == 92.8 and sum(a['amount'] for r in D['fm']['recipients'] if r['id'] in ('polymer-pilot-facility', 'regional-workforce') for a in r['awards']) == 23094356 and (lambda df: 'naming the organisation' not in df and 'programme aggregate' in df and all(n in df for n in ('Polymer Pilot Facility', 'regional workforce programs'))) (one(r for r in D['sc']['rows'] if r['id'] == 'b-assigned')['definition'])",
       "actual": "(sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']), D['fm']['meta']['totals']['awards'])",
       "falsified_if": "A recipient line is added, removed or restated in the register, or the award total moves. The share is printed to a tenth of a percent, so 92.74 or 92.85 breaks it. The claim is about ASSIGNMENT, not payment: it would survive unchanged if not one dollar had been disbursed, which is exactly why the disbursement row beneath it is empty."
+    },
+    {
+      "id": "sc-executed",
+      "text": "Hero standfirst, band B lede, the EDA bar's label, rows b-assigned and b-eda: $73.2 million of the $79.2 million with a named recipient is on an executed line. The other $5,970,805 is EDA award ED25HDQ0G0009 to Huntsman, which has no USAspending record and whose execution the funding map says is not verified, so the page names its recipient and never calls it executed (corrected 2026-09-29 from \"every dollar on an executed line\").",
+      "source": "funding-map/data/funding.json meta.outlays.no_record and meta.provenance[0], against scorecard.json delivery and group B rows",
+      "assert": "(lambda nr, dl, rows: nr['awardId'] == 'ED25HDQ0G0009' and nr['amount'] == 5970805 and 'not verified' in D['fm']['meta']['provenance'][0] and dl['unverified'] == {'awardId': nr['awardId'], 'name': nr['name'], 'amount': nr['amount'], 'source': 'eda'} and one(a for r in D['fm']['recipients'] for a in r['awards'] if a.get('awardId') == nr['awardId'])['programId'] == 'eda-direct' and dl['executed'] == dl['assigned'] - nr['amount'] == 73199371 and round(dl['executed'] / 1e6, 1) == 73.2 and all(n in rows['b-assigned']['definition'] for n in (nr['name'], 'no public record of its execution')) and 'not verified' in rows['b-eda']['sub'] and all('executed line' not in rows[k]['definition'] and 'executed' not in rows[k]['metric'] for k in ('b-assigned', 'b-recipients', 'b-ohio')))(D['fm']['meta']['outlays']['no_record'], D['sc']['delivery'], {r['id']: r for r in D['sc']['rows']})",
+      "actual": "(D['sc']['delivery'].get('executed'), D['sc']['delivery'].get('unverified'), D['fm']['meta']['outlays'].get('no_record', {}).get('amount'))",
+      "falsified_if": "USAspending publishes ED25HDQ0G0009 (then the exception goes and every assigned dollar is executed, and this claim fails on purpose), another line loses its record, or a group B row goes back to calling the whole assigned total executed. The EDA bar read \"every dollar on an executed line\" in the round-2 draft of 2026-09-29 while the funding map said Huntsman's execution is not verified.",
+      "counts": [
+        {
+          "figure": "$73.2 million",
+          "noun": "executed"
+        },
+        {
+          "figure": "$5,970,805",
+          "noun": "huntsman"
+        }
+      ]
     },
     {
       "id": "sc-unassigned-ohio",
@@ -68,11 +86,11 @@
     },
     {
       "id": "sc-recipients",
-      "text": "Row b-recipients: 21 named recipients hold executed award lines across seven programmes.",
+      "text": "Row b-recipients: 21 named recipients hold award lines across seven programmes.",
       "source": "PIC award register, funding-map/data/funding.json",
-      "assert": "len(D['fm']['recipients']) == 21 and len(D['fm']['programs']) == 7 and len([r for r in D['fm']['recipients'] if not r['awards']]) == 0 and all(n in one(r for r in D['sc']['rows'] if r['id'] == 'b-recipients')['definition'] for n in ('Two of them', one(r for r in D['fm']['recipients'] if r['id'] == 'polymer-pilot-facility')['name'], one(r for r in D['fm']['recipients'] if r['id'] == 'regional-workforce')['name'].lower()))",
+      "assert": "len(D['fm']['recipients']) == 21 and len(D['fm']['programs']) == 7 and len([r for r in D['fm']['recipients'] if not r['awards']]) == 0 and all(n in one(r for r in D['sc']['rows'] if r['id'] == 'b-recipients')['definition'] for n in ('Two of them', one(r for r in D['fm']['recipients'] if r['id'] == 'polymer-pilot-facility')['name'], one(r for r in D['fm']['recipients'] if r['id'] == 'regional-workforce')['name'].lower())) and 'executed' not in one(r for r in D['sc']['rows'] if r['id'] == 'b-recipients')['metric'] + one(r for r in D['sc']['rows'] if r['id'] == 'b-recipients')['definition']",
       "actual": "(len(D['fm']['recipients']), len(D['fm']['programs']))",
-      "falsified_if": "A recipient is added or removed. Two of the twenty-one, the Polymer Pilot Facility and regional workforce programs, are programme aggregates rather than single organisations, which the row's definition names; if the register ever splits one into named organisations the count rises and the definition needs rewriting, not just the number. The definition read 'One row of the register is a programme aggregate' until 2026-09-29."
+      "falsified_if": "A recipient is added or removed. Two of the twenty-one, the Polymer Pilot Facility and regional workforce programs, are programme aggregates rather than single organisations, which the row's definition names; if the register ever splits one into named organisations the count rises and the definition needs rewriting, not just the number. The definition read 'One row of the register is a programme aggregate' until 2026-09-29. The metric read 'Named recipients under an executed agreement' until 2026-09-29; one of the 21, Huntsman, holds a line whose execution no public record confirms."
     },
     {
       "id": "sc-polymer-latest",
@@ -181,6 +199,20 @@
         {
           "figure": "38 of the 710",
           "noun": "compan"
+        }
+      ]
+    },
+    {
+      "id": "sc-provenance",
+      "text": "The provenance line and the Limitations: every figure on the page but one is built from public federal and state records and PIC's published award register; the exception is the member count, from PIC's published membership and company register. The repository carries no membership register, and its one per-company membership fact is the chain page's published-member flag. Corrected 2026-09-29: the page said it was built only from public federal and state data and carried no member data.",
+      "source": "scorecard.json meta.publicOnly and meta.source; chain/data/chain-data.json member flags; scorecard.json rows[].source",
+      "assert": "sum(1 for c in D['chain']['companies'] if c.get('member')) > 0 and 'no membership register' in D['sc']['meta']['publicOnly'] and 'chain page’s flag' in D['sc']['meta']['publicOnly'] and 'no member,' not in D['sc']['meta']['publicOnly'] and 'published-member flag' in D['sc']['meta']['source'] and 'PIC award register' in set(r['source'] for r in D['sc']['rows'] if r['status'] == 'public')",
+      "actual": "(sum(1 for c in D['chain']['companies'] if c.get('member')), D['sc']['meta']['publicOnly'][:120], sorted(set(r['source'] for r in D['sc']['rows'] if r['status'] == 'public')))",
+      "falsified_if": "The Limitations deny member data while the chain flag is set, or the page claims public federal and state data alone while a filled row reads PIC's award register. The provenance sentence is bound by the counts entry: 'but one' must stand beside 'figure', which fails if the line reverts to an unqualified 'every figure'.",
+      "counts": [
+        {
+          "figure": "but one",
+          "noun": "figure"
         }
       ]
     }

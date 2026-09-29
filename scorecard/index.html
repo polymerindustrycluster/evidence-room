@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>The PIC Scorecard</title>
-<meta name="description" content="PIC's own scorecard: eighteen metrics with definitions, owners, cadences and targets. Award delivery and degree completions are computed from public federal and state records; the rows that need PIC's own registers are published as defined empty slots.">
+<meta name="description" content="PIC's own scorecard: eighteen metrics with definitions, owners, cadences and targets. Award delivery is computed from PIC's published award register and degree completions from federal records; the rows that need PIC's own registers are published as defined empty slots.">
 <link rel="stylesheet" href="../_shared/pic-viz.css">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -27,9 +27,9 @@
       <em>none of the four on membership and revenue</em>.</h1>
     <p class="stand">The Polymer Industry Cluster (PIC), an initiative of the Greater
       Akron Chamber, has won $85.3 million in public grant money, and almost all of it
-      already has a named recipient. The award register shows $79.2 million of it on an
-      executed line, which is a signed agreement naming the recipient of the
-      money. The register records commitment rather than payment: the federal
+      already has a named recipient. The award register names one for $79.2 million
+      of it, and puts $73.2 million of that on an executed line, a signed agreement naming
+      the recipient of the money. The register records commitment rather than payment: the federal
       ledger fills part of that stage, and no public figure covers the whole of it. The four rows
       that would tell a board whether PIC can pay for itself are measured in
       PIC&rsquo;s membership register and general ledger, and this public repository
@@ -47,8 +47,7 @@
          by tools/coldopen.mjs. -->
     <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
       id="open-t">One square per metric on PIC&rsquo;s scorecard, in the four groups a
-      board reads. Filled squares are rows a public federal or state record computes,
-      outlines are rows whose measurement stays in PIC&rsquo;s own registers, and the
+      board reads. Filled squares are rows a public record computes, outlines are rows whose measurement stays in PIC&rsquo;s own registers, and the
       last run is cluster context PIC does not control. Eight of the fifteen accountable
       rows are filled, and group A, the four rows on membership and revenue, has none.</title></svg>
       <p class="hero-cap">One square is one metric. Filled squares are the rows a public
@@ -62,8 +61,10 @@
 <section class="gate">
   <div class="wrap">
     <p class="gate-k">Why seven rows are empty</p>
-    <p class="gate-t">Every figure on this page is built from public federal and state
-      data. None of it is an account of PIC&rsquo;s finances or membership.</p>
+    <p class="gate-t">Every figure on this page but one is built from public federal and
+      state records and PIC&rsquo;s published award register. The exception is the member
+      count below, which comes from PIC&rsquo;s published membership and its own company
+      register. None of it is an account of PIC&rsquo;s finances.</p>
     <p class="gate-b">This repository is public and its history is permanent. The one
       per-company membership fact it carries is the chain page&rsquo;s published-member
       flag, which marks, counts and exports 38 of the 710 companies listed there as
@@ -123,12 +124,14 @@
     <p class="takeaway">Group B &middot; award delivery</p>
     <h2>Every award dollar without a named recipient sits inside one state grant</h2>
     <p class="lede">The register carries three public awards. Two of them are fully
-      assigned, meaning every dollar is on an executed line with a named recipient. The award
+      assigned, meaning every dollar has a named recipient. The award
       from the federal Economic Development Administration (EDA) is split into seven
       implementation awards, each running straight to the project lead that will spend
       it, and the APEX award, the region&rsquo;s Good Jobs Challenge workforce grant, is
       assigned in a single line to regional workforce programs, a programme rather
-      than an organisation. Everything still unassigned is Ohio money, in two workstreams.
+      than an organisation. One of the seven EDA awards, $5,970,805 to Huntsman, has no
+      USAspending record, so its execution is not verified. Everything still unassigned is
+      Ohio money, in two workstreams.
       The PIC Translational R&amp;D balance has not been sub-granted yet. The
       startup-support balance is delivered through Bounce Innovation Hub under a sub-grant
       agreement dated 15 May 2025, but the register names recipients in that workstream
@@ -230,18 +233,30 @@
       register&rdquo;, because the federal ledger publishes outlays on seven of the eight
       federal lines, as group B says. Was: the member flag marked 38 of the 785 companies
       on the chain page. Is: 38 of 710, the chain page&rsquo;s count since 11 September.
-      Was: group A was the four rows on revenue, the federal context row was routine
-      obligations to regional polymer firms, and every assigned dollar named an
-      organisation. Is: two of the four group A rows are membership, the federal row
-      counts prime contracts under chemical and plastics/rubber codes, and two of the
-      twenty-one named recipients are programmes. Was: both Ohio workstreams holding
-      unassigned money had sub-grants not yet signed. Is: only the R&amp;D balance is not
-      yet sub-granted; the startup-support balance runs through Bounce Innovation
+      Was: the page was &ldquo;built only from public federal and state data&rdquo;, and
+      its Limitations said the repository &ldquo;carries no member, applicant or personal
+      data&rdquo;, and its square key and the table legend said a public federal or state record computes
+      every filled row. Is: the member count comes from PIC&rsquo;s published membership and
+      company register, and that flag is the one member fact here; the award rows come
+      from PIC&rsquo;s published award register. Was: group A was the four rows on revenue; the federal context row read
+      &ldquo;Routine federal obligations to regional polymer firms&rdquo;; every assigned
+      dollar named an organisation and sat on an executed line; the completions row covered
+      every polymer field of study; the polymer trend read &ldquo;up three years&rdquo;.
+      Is: two of the four group A rows are membership; the federal row is the average
+      yearly obligation dollars on federal prime contracts under the chemical and
+      plastics/rubber manufacturing codes; two of the twenty-one named recipients are
+      programmes, and Huntsman&rsquo;s $5,970,805 EDA line is not verified as executed;
+      the completions row counts the codes the occupations page classes as polymer; the
+      trend reads &ldquo;up in both years since 2021&rdquo;. Was: both Ohio workstreams
+      holding unassigned money had sub-grants not yet signed. Is: only the R&amp;D balance
+      is not yet sub-granted; the startup-support balance runs through Bounce Innovation
       Hub&rsquo;s sub-grant of 15 May 2025. Cause: the outlays reached group B on
       1 September and the note did not; the chain count was corrected in the same change
       that added the member flag here, which kept the old figure; the labels were written
-      broader than their rows, and the startup workstream was read as one gap with the
-      R&amp;D balance.</p>
+      broader than their rows, a named recipient was read as an executed line, the
+      provenance line and the Limitations predate the member flag and were not revised
+      when it arrived, and the startup workstream was read as one gap with the R&amp;D
+      balance.</p>
   </div>
 </section>
 

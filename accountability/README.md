@@ -29,6 +29,16 @@ the date precision, and fixes list 2's `defined_on` at 2026-08-28. Guards:
 on `acc-reconcile`, `acc-reconcile-apex` and `acc-negative-list2`. The masthead now links to
 the hub; the page stays unlisted and carries no hub card.
 
+A second review found five more, each with a dated note and a CORRECTIONS.md paragraph. The
+coalition source line called two programme recipients "two rows"; they hold three
+(`acc-aggregates`). The Limitations and list 2's membership line denied any member record,
+though the chain page publishes a member flag (`acc-member-provenance`). List 2 promised a
+fill date and delivered conditions; the field is now `fill_when` and holds exactly one of a
+condition or a permanent reason (`acc-negative-list2`). Rows dated to a year, quarter or
+month that has begun now say so rather than "the date has not arrived", using the derive
+script's `period_start` beside `period_end` (`acc-register-dates`). The closer counted
+eighteen dates; the eighteen commitments fall on twelve dates (`acc-promises`).
+
 ## Federal-context correction — 8 September 2026
 
 Was: the closing comparison printed $34.9M a year across FY2019–FY2026, including
@@ -162,8 +172,8 @@ carrying two visible ones.
    This decision cannot be un-made: a slip ledger published once and quietly dropped later
    is itself a story.
    *Changes:* today band F list 2 carries the line "Which published dates slipped before
-   this register opened" with `fill_by: on the slip-record decision`. A yes adds a slip
-   column to the register and removes that line; a no converts `fill_by` to a permanent
+   this register opened" with `fill_when: on the slip-record decision`. A yes adds a slip
+   column to the register and removes that line; a no converts `fill_when` to a permanent
    reason.
 
 4. **What is the floor for n before the keeping rate renders?** Recommendation: six resolved

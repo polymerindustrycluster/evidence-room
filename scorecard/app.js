@@ -13,8 +13,8 @@
  *      the left edge and the current cell itself) so a board member can see at a glance
  *      which rows are real. A table, not a chart, because the argument is which cells are
  *      empty and only a table shows an empty cell as empty.
- *   2. Award delivery: three bars on one dollar scale, each split into money on an
- *      executed line naming its holder and money awarded with no recipient named yet.
+ *   2. Award delivery: three bars on one dollar scale, each split into money on a
+ *      register line naming its holder and money awarded with no recipient named yet.
  *      Part-to-whole within a magnitude comparison, hatched for the missing half.
  *   3. Talent: ten years of polymer credentials as columns. Change over time, one series.
  *
@@ -72,6 +72,10 @@ function assertEmpty(rows) {
 const ROWS = assertEmpty(D.rows);
 const C = D.counts;
 const DEL = D.delivery;
+/* The one register line whose execution no public record confirms. Its award prints that,
+   never "executed" (corrected 2026-09-29). */
+const UNV = DEL.unverified;
+const unv = s => UNV && UNV.source === s.id ? UNV : null;
 const TAL = D.talent;
 
 /* ============================================================ 0. THE COLD OPEN
@@ -242,7 +246,7 @@ const STATUS = {
 };
 
 document.getElementById("boardlegend").innerHTML = [
-  `<span><i class="sw-public"></i>Computed from a public federal or state record</span>`,
+  `<span><i class="sw-public"></i>Computed from a public record</span>`,
   `<span><i class="sw-vault"></i>Not published here: the measurement is in PIC&rsquo;s own registers</span>`,
   `<span><i class="sw-context"></i>Cluster context PIC does not control</span>`,
 ].join("");
@@ -345,7 +349,8 @@ function deliveryDesktop() {
     txt(svg, s.unassigned ? `${short(s.assigned)} named` : "fully assigned",
       {x: xs(s.award) + 14, y: y + 12, class: "pv-lab"});
     txt(svg, s.unassigned ? `${short(s.unassigned)} not yet named`
-                          : "every dollar on an executed line",
+             : unv(s) ? `${short(unv(s).amount)} execution unverified`
+             : "every dollar on an executed line",
       {x: xs(s.award) + 14, y: y + 29, class: "pv-labq",
        fill: s.unassigned ? "#7A7263" : "var(--pv-muted)"});
   });
@@ -367,7 +372,8 @@ function deliveryDesktop() {
     hoverable(el("rect", {x: 0, y: m.t + i * rowH, width: 1100, height: rowH,
       fill: "transparent"}, svg),
       `<b>${s.name}</b><br><span class="v">${usd(s.award)}</span> awarded<br>
-       ${usd(s.assigned)} on an executed line with a named recipient<br>
+       ${usd(s.assigned)} with a named recipient${unv(s) ? `, ${usd(unv(s).amount)} of it
+         on a line to ${unv(s).name} whose execution no public record confirms` : ""}<br>
        ${s.unassigned ? usd(s.unassigned) + " with no recipient named yet"
                       : "every dollar is assigned"}`,
       `${s.name}: ${usd(s.award)} awarded, ${usd(s.assigned)} with a named recipient`);
@@ -464,7 +470,7 @@ function deliveryMobile() {
 (MOBILE.matches ? deliveryMobile : deliveryDesktop)();
 
 document.getElementById("deliverytable").innerHTML = tableView("del",
-  "Every public award, the dollars on an executed line naming their holder, and the "
+  "Every public award, the dollars on a register line naming their holder, and the "
   + "balance with no recipient named yet.",
   ["Award", "Awarded", "Named recipient", "Not yet named", "Share named"],
   DEL.sources.map(s => [s.name, usd(s.award), usd(s.assigned),

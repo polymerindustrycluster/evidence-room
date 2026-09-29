@@ -9,7 +9,7 @@
   "derived_note": "Nothing here is fetched. derive_accountability.py recomputes every figure from the shipped JSON of the pages named above and from two registers seeded by hand, the dated promises and the recipient typing, which the README names. claims.json re-runs the same arithmetic against those upstream files rather than against this page’s own output, so a correction on the funding map fails this page instead of leaving a flattering number standing.",
   "caution": "An award register records commitment and execution. It records no payment, so no figure taken from it measures money spent. The payment stage on this page is not taken from it: it is the federal ledger’s own outlay figure, which covers the federal award lines and not the state grant, and that is why the stage is part filled rather than either empty or whole.",
   "not": "None of the registered commitments carries a numeric target set by PIC, and PIC set none of the three targets on the board: they are ceilings fixed by signed award documents, and no board row names an owner. PIC’s own stated goal, 150 members and $1 million in annual revenue by 2028, is shown beside the register and not counted in it, because no dated public document sets it. Where PIC has set no target, the absence is the finding and no placeholder stands in for it.",
-  "publicOnly": "This repository is public and its history is permanent, so it carries no member, applicant or personal record at any grain. Seven board rows and the membership goal are published as defined empty slots with the register that holds the real number named beside them.",
+  "publicOnly": "This repository is public and its history is permanent, so it carries no membership register and no applicant or personal record. Its one per-company membership fact is the chain page’s flag marking the companies PIC has published as members, and this page does not use it. Seven board rows and the membership goal are published as defined empty slots with the register that holds the real number named beside them.",
   "excludes": "The public event register records only events recorded as public. The record of which published dates slipped is deliberately withheld there, so the promise register on this page begins on the day it opened and reports nothing about dates published before it existed.",
   "scope": "PIC’s own award register and public record. This page is not a health report on the regional polymer economy, which is cluster-health, and not PIC’s board scorecard, which carries deliberately empty rows.",
   "small_numbers": "The promise register holds eighteen rows and one of them carries a number that can be missed. A keeping rate computed over a handful of resolved commitments would be noise with a percent sign, so this page prints the count and no rate until 6 commitments have resolved.",
@@ -681,7 +681,7 @@
     "current_date": "2026-10-22",
     "status": "scheduled",
     "reading": null,
-    "no_reading_because": "the date has not arrived",
+    "no_reading_because": "the year it falls in has begun and has not ended",
     "history": [],
     "timeline_title": "Polymer Composite: commission extruder, begin compounding, deliver sample lots",
     "date_precision": "year",
@@ -702,7 +702,7 @@
     "current_date": "2026-10-22",
     "status": "scheduled",
     "reading": null,
-    "no_reading_because": "the date has not arrived",
+    "no_reading_because": "the year it falls in has begun and has not ended",
     "history": [],
     "timeline_title": "Bio-Based Butadiene: build fermentation lab, optimize strains, establish pilot facilities at NPIC",
     "date_precision": "year",
@@ -723,7 +723,7 @@
     "current_date": "2026-10-22",
     "status": "scheduled",
     "reading": null,
-    "no_reading_because": "the date has not arrived",
+    "no_reading_because": "the year it falls in has begun and has not ended",
     "history": [],
     "timeline_title": "Carbon Black & Nanotubes: install/start up process equipment; expand testing throughput",
     "date_precision": "year",
@@ -744,7 +744,7 @@
     "current_date": "2026-10-22",
     "status": "scheduled",
     "reading": null,
-    "no_reading_because": "the date has not arrived",
+    "no_reading_because": "the year it falls in has begun and has not ended",
     "history": [],
     "timeline_title": "Safer Anti-Degradant: tire-performance & toxicology testing; scale-up process chemistry",
     "date_precision": "year",
@@ -765,7 +765,7 @@
     "current_date": "2026-10-22",
     "status": "scheduled",
     "reading": null,
-    "no_reading_because": "the date has not arrived",
+    "no_reading_because": "the year it falls in has begun and has not ended",
     "history": [],
     "timeline_title": "WISE: grow student participation and internships; launch new courses, certificates, webinars",
     "date_precision": "year",
@@ -1210,12 +1210,12 @@
      "a-earned"
     ],
     "not_here": "Members in good standing, dues revenue, renewal rate, earned-revenue share",
-    "because": "This repository is public and its history is permanent, so it carries no member, applicant or personal data. Every metric that would need PIC’s membership register, general ledger, pipeline or drawdown records is published here as a defined empty slot. Filling those rows requires a copy of this page kept outside a public repository.",
+    "because": "This repository is public and its history is permanent, so it carries no membership register and no applicant or personal data. Its one per-company membership fact is the chain page’s flag marking the companies PIC has published as members. Every metric that would need PIC’s membership register, general ledger, pipeline or drawdown records is published here as a defined empty slot. Filling those rows requires a copy of this page kept outside a public repository.",
     "because_from": "scorecard.json meta.publicOnly",
     "would_need": "A membership-agreement and marketing-communications decision on what may be published, and at what grain.",
     "defined_on": "2026-08-28",
-    "fill_by": null,
-    "permanent_reason": "This repository is public and its history is permanent, so no grain of a member record is publishable in it. A populated copy belongs outside it."
+    "fill_when": null,
+    "permanent_reason": "This repository is public and its history is permanent, so no member’s dues, standing or renewal is publishable in it. A populated copy belongs outside it."
    },
    {
     "covers": [
@@ -1226,7 +1226,7 @@
     "because_from": "scorecard.json meta.caution",
     "would_need": "A drawdown figure for the $31,250,000 Ohio Innovation Hub grant, a state award that publishes no drawdown, and a payment figure for EDA award ED25HDQ0G0009, which has no USAspending record of any kind. The payment stage above already prints the outlays that seven of the eight federal lines do publish; what no record covers is the whole $85,335,784.",
     "defined_on": "2026-08-28",
-    "fill_by": "on a decision to publish drawdown totals",
+    "fill_when": "on a decision to publish drawdown totals",
     "permanent_reason": null
    },
    {
@@ -1239,7 +1239,7 @@
     "because_from": "scorecard.json, the two empty group C rows",
     "would_need": "A quarterly reporting arrangement with ConxusNEO, the Ohio Manufacturers’ Association and the Polymer Sector Partnership.",
     "defined_on": "2026-08-28",
-    "fill_by": "on a quarterly reporting arrangement",
+    "fill_when": "on a quarterly reporting arrangement",
     "permanent_reason": null
    },
    {
@@ -1249,7 +1249,7 @@
     "because_from": "this page",
     "would_need": "A defensible method, published before the number.",
     "defined_on": "2026-08-28",
-    "fill_by": null,
+    "fill_when": null,
     "permanent_reason": "Until a method exists and is published first, the figure would be an assertion with a decimal point on it."
    },
    {
@@ -1259,7 +1259,7 @@
     "because_from": "timeline.json meta.publicOnly",
     "would_need": "A decision to emit the slip column, which cannot be un-made.",
     "defined_on": "2026-08-28",
-    "fill_by": "on the slip-record decision (Open Question 3)",
+    "fill_when": "on the slip-record decision (Open Question 3)",
     "permanent_reason": null
    },
    {
@@ -1269,7 +1269,7 @@
     "because_from": "funding.json meta.disclosures",
     "would_need": "Nothing. It is correctly excluded, and it is named here so nobody thinks it was overlooked.",
     "defined_on": "2026-08-28",
-    "fill_by": null,
+    "fill_when": null,
     "permanent_reason": "It is not PIC money, so it will never appear on this page."
    }
   ]

@@ -240,6 +240,17 @@ def period_end(iso, precision):
     return (date(y + last // 12, last % 12 + 1, 1) - timedelta(days=1)).isoformat()
 
 
+def period_start(iso, precision):
+    """The first day a date known only to this precision could fall on."""
+    y, m, _ = (int(v) for v in iso.split("-"))
+    if precision == "day":
+        return iso
+    first = {"year": 1, "month": m, "quarter": (m - 1) // 3 * 3 + 1}.get(precision)
+    if first is None:
+        die(f"no period start for date precision {precision!r}")
+    return f"{y}-{first:02d}-01"
+
+
 for r in rows:
     ev = FWD[r["id"]]
     r["timeline_title"] = ev["title"]
@@ -248,14 +259,23 @@ for r in rows:
     r["date_precision"] = ev["datePrecision"]
     r["date_display"] = ev["dateDisplay"]
 rows.sort(key=lambda r: (r["current_date"], r["id"]))
-# "The date has not arrived" is true only until the date arrives. It is re-derived against
-# the build date so a row cannot keep saying it after the date has passed; until the owner
-# records a reading, a passed row says it has not been read (corrected 2026-09-29).
+# "The date has not arrived" is true only until the date's period begins. It is re-derived
+# against the build date for a date known to a day, month, quarter or year alike: once the
+# period has begun and until its last day the row says so, and after the last day, until the
+# owner records a reading, it says it has not been read (corrected 2026-09-29; a year-precision
+# 2026 row used to read "the date has not arrived" through a 2026 build).
 BUILT = date.today().isoformat()
+NOT_ARRIVED = "the date has not arrived"
 for r in rows:
-    if (r["no_reading_because"] == "the date has not arrived"
-            and period_end(r["current_date"], r["date_precision"]) < BUILT):
+    if r["no_reading_because"] != NOT_ARRIVED:
+        continue
+    start = period_start(r["current_date"], r["date_precision"])
+    end = period_end(r["current_date"], r["date_precision"])
+    if end < BUILT:
         r["no_reading_because"] = "the resolution date has not been read against the register yet"
+    elif start <= BUILT:
+        r["no_reading_because"] = (f"the {r['date_precision']} it falls in has begun and "
+                                   "has not ended")
 
 BY_TYPE = {t: len([r for r in rows if r["type"] == t])
            for t in ("numeric_outcome", "milestone", "period_end")}
@@ -355,7 +375,9 @@ TARGETS = [{"metric": r["metric"], "target": r["target"], "group": r["group"]}
 # `because` text is lifted verbatim from the shipped meta of the file that owns the
 # limitation, so a hand-maintained honesty list cannot go stale here. The `would_need`
 # column is the only editorial text: it is a decision, not a datum, and no shipped file
-# holds it. Every line carries defined_on and either fill_by or permanent_reason.
+# holds it. Every line carries defined_on and exactly one of fill_when, the condition
+# that would fill it, or permanent_reason. None carries a date it will be filled: no
+# document sets one, and a promised date nobody set would be this page's own invention.
 # The date the six lines were first written (d56d96f). It used to be read from the
 # scorecard's build date, which reset every line to "defined today" on each rebuild.
 DEFINED_ON = "2026-08-28"
@@ -367,10 +389,10 @@ LIST2 = [
      "because_from": "scorecard.json meta.publicOnly",
      "would_need": "A membership-agreement and marketing-communications decision on what "
                    "may be published, and at what grain.",
-     "defined_on": DEFINED_ON, "fill_by": None,
+     "defined_on": DEFINED_ON, "fill_when": None,
      "permanent_reason": "This repository is public and its history is permanent, so no "
-                         "grain of a member record is publishable in it. A populated copy "
-                         "belongs outside it."},
+                         "member\u2019s dues, standing or renewal is publishable in it. A "
+                         "populated copy belongs outside it."},
     {"covers": ["b-disbursed"],
      "not_here": "Award dollars disbursed against the whole award total",
      "because": SC["meta"]["caution"],
@@ -381,7 +403,7 @@ LIST2 = [
                    "kind. The payment stage above already prints the outlays that seven "
                    "of the eight federal lines do publish; what no record covers is the "
                    "whole $85,335,784.",
-     "defined_on": DEFINED_ON, "fill_by": "on a decision to publish drawdown totals",
+     "defined_on": DEFINED_ON, "fill_when": "on a decision to publish drawdown totals",
      "permanent_reason": None},
     {"covers": ["c-completions", "c-placements"],
      "not_here": "Completions of a PIC-funded training programme, and member companies "
@@ -392,13 +414,13 @@ LIST2 = [
      "would_need": "A quarterly reporting arrangement with ConxusNEO, the Ohio "
                    "Manufacturers’ Association and the Polymer Sector Partnership.",
      "defined_on": DEFINED_ON,
-     "fill_by": "on a quarterly reporting arrangement", "permanent_reason": None},
+     "fill_when": "on a quarterly reporting arrangement", "permanent_reason": None},
     {"covers": [],
      "not_here": "Jobs created, or an economic-impact multiplier",
      "because": "No page in this room ships a method for it that survives its own gates.",
      "because_from": "this page",
      "would_need": "A defensible method, published before the number.",
-     "defined_on": DEFINED_ON, "fill_by": None,
+     "defined_on": DEFINED_ON, "fill_when": None,
      "permanent_reason": "Until a method exists and is published first, the figure would "
                          "be an assertion with a decimal point on it."},
     {"covers": [],
@@ -407,7 +429,7 @@ LIST2 = [
      "because_from": "timeline.json meta.publicOnly",
      "would_need": "A decision to emit the slip column, which cannot be un-made.",
      "defined_on": DEFINED_ON,
-     "fill_by": "on the slip-record decision (Open Question 3)",
+     "fill_when": "on the slip-record decision (Open Question 3)",
      "permanent_reason": None},
     {"covers": [],
      "not_here": "The NEO-SMART NSF Engine award",
@@ -415,7 +437,7 @@ LIST2 = [
      "because_from": "funding.json meta.disclosures",
      "would_need": "Nothing. It is correctly excluded, and it is named here so nobody "
                    "thinks it was overlooked.",
-     "defined_on": DEFINED_ON, "fill_by": None,
+     "defined_on": DEFINED_ON, "fill_when": None,
      "permanent_reason": "It is not PIC money, so it will never appear on this page."},
 ]
 covered = sorted({v for line in LIST2 for v in line["covers"]})
@@ -423,8 +445,12 @@ if covered != sorted(r["id"] for r in VAULT):
     die(f"list 2 covers {covered} but the board's empty rows are "
         f"{sorted(r['id'] for r in VAULT)}")
 for line in LIST2:
-    if not line["defined_on"] or not (line["fill_by"] or line["permanent_reason"]):
-        die(f"list 2 line {line['not_here']!r} has no fill date and no permanent reason")
+    if not line["defined_on"] or bool(line["fill_when"]) == bool(line["permanent_reason"]):
+        die(f"list 2 line {line['not_here']!r} needs exactly one of a fill condition "
+            "and a permanent reason")
+    if line["fill_when"] and not line["fill_when"].startswith("on "):
+        die(f"list 2 line {line['not_here']!r} fills {line['fill_when']!r}; the page "
+            "promises a condition, so it must read 'on <event>'")
 
 # ------------------------------------------------- context, additionality, and defects
 def lq_cell(year, naics):
@@ -508,7 +534,10 @@ DATA = {
                "Where PIC has set no target, the absence is the finding and no placeholder "
                "stands in for it."),
         "publicOnly": "This repository is public and its history is permanent, so it "
-                      "carries no member, applicant or personal record at any grain. "
+                      "carries no membership register and no applicant or personal "
+                      "record. Its one per-company membership fact is the chain "
+                      "page\u2019s flag marking the companies PIC has published as "
+                      "members, and this page does not use it. "
                       "Seven board rows and the membership goal are published as defined "
                       "empty slots with the register that holds the real number named "
                       "beside them.",

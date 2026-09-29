@@ -1,10 +1,10 @@
 {
  "n_pieces": 22,
- "total_claims": 537,
+ "total_claims": 540,
  "total_manual": 22,
  "pages": {
   "accountability": {
-   "claims": 29,
+   "claims": 30,
    "manual": 0
   },
   "atlas": {
@@ -76,7 +76,7 @@
    "manual": 3
   },
   "scorecard": {
-   "claims": 21,
+   "claims": 23,
    "manual": 0
   },
   "sources": {

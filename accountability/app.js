@@ -296,6 +296,7 @@ document.getElementById("attribsrc").innerHTML =
    Three stages of one total. The third carries no value, and the two named gaps and the
    programme-aggregate share are annotations on the chart rather than tooltips. */
 const AGG = S.aggregates;
+const NUMW = ["No", "One", "Two", "Three", "Four", "Five", "Six"];
 
 function hatch(svg, id) {
   const defs = el("defs", {}, svg);
@@ -535,9 +536,9 @@ document.getElementById("coalsrc").innerHTML =
   `PIC award register as of ${D.as_of}: signed federal Notices of Award, executed state `
   + `grant agreement SBIG20251005, and executed sub-grant agreements. Sorted by amount, `
   + `largest first, which is the order the $1,000,000 rule is drawn in; sorting by any `
-  + `other column hides the rule and changes no figure. <b>Two rows name a programme or a `
-  + `building rather than an organisation, and together they hold ${usd(AGG.total)}, `
-  + `${pct1(AGG.share_of_assigned)} of everything assigned.</b>`;
+  + `other column hides the rule and changes no figure. <b>${NUMW[AGG.recipients]} recipients, a building and `
+  + `a programme rather than an organisation, hold ${NUMW[AGG.lines].toLowerCase()} of these rows, and together they `
+  + `hold ${usd(AGG.total)}, ${pct1(AGG.share_of_assigned)} of everything assigned.</b>`;
 
 /* ================================================================= D. the promise register
    The calibration statistic first, because a tracker that shows a keeping rate before it
@@ -781,7 +782,7 @@ document.getElementById("cannot").innerHTML = `
       <th scope="row" data-l="Not here">${esc(l.not_here)}
         <span class="age">Defined ${esc(l.defined_on)} &middot; ${ageWords(l.defined_on)}
           &middot; ${l.permanent_reason
-            ? `<span class="perm">permanent</span>` : `will fill ${esc(l.fill_by)}`}</span>
+            ? `<span class="perm">permanent</span>` : `will fill ${esc(l.fill_when)}`}</span>
       </th>
       <td data-l="Because">${esc(l.because)}
         <span class="from">From ${esc(l.because_from)}.</span></td>

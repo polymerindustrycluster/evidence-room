@@ -55,8 +55,8 @@ def short(n):
 
 # ---------------------------------------------------------------- B. award delivery
 #
-# One award dollar "has reached a named recipient" when the register carries an executed
-# line item naming who holds it: an organisation, or one of the two programme aggregates
+# One award dollar "has reached a named recipient" when the register carries a line
+# item naming who holds it: an organisation, or one of the two programme aggregates
 # (the Polymer Pilot Facility and regional workforce programs), whose lines count as
 # assigned too (corrected 2026-09-29). That is an ASSIGNMENT test, not a
 # payment test, and the distinction is the whole point of group B: the register records
@@ -90,6 +90,22 @@ SRC_ROWS = [by_source[s["id"]] for s in FM["sources"]]
 
 EDA = by_source["eda"]
 OHIO = by_source["ohio"]
+
+# A named recipient is not the same as an executed line. One EDA line, the award with no
+# USAspending record, is corroborated only by arithmetic, and the funding map says its
+# execution is not verified. It stays in the assigned total and is kept out of every
+# figure called executed (corrected 2026-09-29).
+_NR = OUTLAYS.get("no_record")
+UNVERIFIED = None
+if _NR:
+    _hits = [a for r in FM["recipients"] for a in r["awards"]
+             if a.get("awardId") == _NR["awardId"]]
+    if len(_hits) != 1 or _hits[0]["amount"] != _NR["amount"]:
+        raise SystemExit("the unverified award %s is not exactly one register line"
+                         % _NR["awardId"])
+    UNVERIFIED = {"awardId": _NR["awardId"], "name": _NR["name"], "amount": _NR["amount"],
+                  "source": PROG_SOURCE[_hits[0]["programId"]]}
+EXECUTED = ASSIGNED - (UNVERIFIED["amount"] if UNVERIFIED else 0)
 N_LEADS = len(TH["leads"])
 
 # Where the unassigned balance sits. The register's own reconciliation says it is two
@@ -258,10 +274,14 @@ row(id="a-earned", group="A", status="vault",
 # --- B. award delivery -- computable from the public register, except the one that matters
 row(id="b-assigned", group="B", status="public",
     metric="Award dollars with a named recipient",
-    definition="Award dollars carried on an executed line item with a named recipient, "
-               "divided by all dollars awarded. The recipient is an organisation or, for "
-               "the Polymer Pilot Facility and regional workforce programs, a programme "
-               "aggregate. An assignment test, not a payment test.",
+    definition="Award dollars on a register line with a named recipient, divided by all "
+               "dollars awarded. The recipient is an organisation or, for the Polymer "
+               "Pilot Facility and regional workforce programs, a programme aggregate. "
+               "An assignment test, not a payment test. %s"
+               % ("Every line but one is executed; the %s EDA award to %s has no public "
+                  "record of its execution." % (money(UNVERIFIED["amount"]),
+                                                UNVERIFIED["name"])
+                  if UNVERIFIED else "Every line is executed."),
     cadence="On amendment of the award register",
     target="%s awarded" % money(AWARDED),
     current="%.1f%%" % (ASSIGNED / AWARDED * 100),
@@ -269,8 +289,8 @@ row(id="b-assigned", group="B", status="public",
     trend="first reading",
     source="PIC award register")
 row(id="b-recipients", group="B", status="public",
-    metric="Named recipients under an executed agreement",
-    definition="Distinct named recipients holding at least one executed award line. "
+    metric="Named recipients holding an award line",
+    definition="Distinct named recipients holding at least one line in the award register. "
                "Two of them, the Polymer Pilot Facility and regional workforce "
                "programs, are programme aggregates rather than single organisations, "
                "and each is counted as one.",
@@ -283,17 +303,22 @@ row(id="b-eda", group="B", status="public",
     metric="EDA implementation awards obligated to a project lead",
     definition="Tech Hub implementation awards for which EDA has obligated funds "
                "directly to the named project lead, against the number of awards in the "
-               "signed Notices of Award.",
+               "signed Notices of Award.%s"
+               % (" USAspending confirms all but one; %s, %s to %s, has no record there, so "
+                  "its obligation is not verified." % (UNVERIFIED["awardId"],
+                  money(UNVERIFIED["amount"]), UNVERIFIED["name"])
+                  if UNVERIFIED and UNVERIFIED["source"] == "eda" else ""),
     cadence="On amendment of the award register",
     target="%d of %d awards" % (N_LEADS, N_LEADS),
     current="%d of %d" % (N_LEADS, N_LEADS),
-    sub=money(EDA["award"]),
+    sub=money(EDA["award"]) + ("; one line not verified"
+                               if UNVERIFIED and UNVERIFIED["source"] == "eda" else ""),
     trend="first reading",
     source="Signed federal Notices of Award")
 row(id="b-ohio", group="B", status="public",
     metric="Ohio Innovation Hub dollars with a named recipient",
     definition="The state grant’s five workstreams, tested the same way as the "
-               "award total: dollars on an executed line with a named recipient, an "
+               "award total: dollars on a register line with a named recipient, an "
                "organisation or, for the Polymer Pilot Facility and the state share of "
                "regional workforce programs, a programme aggregate.",
     cadence="On amendment of the award register",
@@ -439,9 +464,10 @@ doc = {
     "meta": {
         # No em-dash: the house style bans them in published prose, and this string is
         # printed under the table and again in the generated methodology box.
-        "source": "PIC award register (funding map), signed federal Notices of Award, "
-                  "executed state grant agreement SBIG20251005, IPEDS completions, and "
-                  "BLS QCEW. Each is already published on another page of this site.",
+        "source": "PIC award register, signed federal Notices of Award, executed state "
+                  "grant agreement SBIG20251005, IPEDS completions, BLS QCEW and the "
+                  "chain page’s published-member flag. Each is published elsewhere on "
+                  "this site.",
         "row": "one scorecard metric: its definition, who owns it, how often it is read, "
                "the target, and the latest reading where a public record can supply one.",
         "fetched": FM["meta"]["asOf"],
@@ -454,7 +480,9 @@ doc = {
                         "fails this page’s claims rather than leaving a stale board "
                         "number in place.",
         "publicOnly": "This repository is public and its history is permanent, so it "
-                      "carries no member, applicant or personal data. Every metric that "
+                      "carries no membership register and no applicant or personal data. "
+                      "Its one per-company membership fact is the chain page’s flag "
+                      "marking the companies PIC has published as members. Every metric that "
                       "would need PIC’s membership register, general ledger, "
                       "pipeline or drawdown records is published here as a defined empty "
                       "slot. Filling those rows requires a copy of this page kept "
@@ -488,6 +516,7 @@ doc = {
     "groups": GROUPS,
     "rows": R,
     "delivery": {"awarded": AWARDED, "assigned": ASSIGNED, "unassigned": UNASSIGNED,
+                 "executed": EXECUTED, "unverified": UNVERIFIED,
                  "match": MATCH, "secured": SECURED, "sources": SRC_ROWS, "gaps": GAPS},
     "talent": {"year": IPEDS_YEAR, "window": WINDOW, "institutions": N_INSTITUTIONS,
                "polymer": POLY, "polymer_window": POLY_WINDOW,

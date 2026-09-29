@@ -42,15 +42,18 @@ grant or the whole $85,335,784, and the row reads "no figure spans the register"
 its 11 September correction.
 
 **Labels broader than their rows, *scorecard*.** **Was:** group A was "the four rows on
-revenue"; the federal context row was routine contracting with regional polymer firms; every
-assigned dollar "names the organisation that receives it"; the completions row covered
+revenue"; the federal context row read "Routine federal obligations to regional polymer
+firms"; every assigned dollar "names the organisation that receives it" and sat "on an
+executed line"; the completions row covered
 "every polymer field of study" the federal classification recognises; the talent trend read
 "up three years" over three values, which hold two rises. **Is:** two of the
-four group A rows are membership, so "membership and revenue"; the federal row counts prime
-contracts under the chemical and plastics and rubber industry codes; two of the twenty-one
-named recipients are programmes, so every assigned dollar is on an executed line with a
-named recipient, and the definitions of the two assignment rows say that recipient is an
-organisation or a programme; the completions row counts the codes the occupations page classes as
+four group A rows are membership, so "membership and revenue"; the federal row is the
+average yearly obligation dollars on federal prime contracts under the chemical and
+plastics/rubber manufacturing codes; two of the twenty-one named recipients are programmes,
+so every assigned dollar is on a register line with a named recipient, and the definitions
+of the two assignment rows say that recipient is an organisation or a programme; $73,199,371
+of it is on an executed line, because the $5,970,805 EDA award to Huntsman, ED25HDQ0G0009,
+has no USAspending record, so its execution is not verified; the completions row counts the codes the occupations page classes as
 polymer; the trend reads "up in both years since 2021".
 
 **Where the money goes, *accountability*.** **Was:** the awards commit the funders to pay
@@ -76,8 +79,8 @@ scorecard's old note, on a page that prints $11,642,402 paid out; each empty lin
 "defined today", the scorecard's build date; the closer said PIC "has set no target for any
 of the eighteen dates"; the band's heading said PIC "has set itself no targets". **Is:** the
 line quotes the scorecard's corrected note; each line carries 28 August 2026, when it was
-written; none of the eighteen dates carries a numeric target PIC set, though PIC set four of
-the dates; the heading and the Limitations are scoped to the board and the register, and
+written; none of the eighteen dated commitments carries a numeric target PIC set, though PIC
+set four of them; the heading and the Limitations are scoped to the board and the register, and
 the Limitations name PIC's own goal, 150 members and $1 million in annual revenue by 2028,
 which the page shows beside the register.
 
@@ -92,13 +95,48 @@ not been sub-granted; the startup-support balance is delivered through Bounce In
 Hub under a sub-grant agreement dated 15 May 2025, and the register names recipients in
 that workstream only for the nine $25,000 cohort awards.
 
+**Where the figures come from, both pages.** **Was:** the scorecard was "built only from
+public federal and state data", its square key and table legend said a public federal or
+state record computes every filled row, and both pages' Limitations said the repository
+"carries no member, applicant or personal data" or record "at any grain"; the accountability
+page's membership line said "no grain of a member record is publishable". **Is:** every
+scorecard figure but the member count is built from public federal and state records and
+PIC's published award register, and the member count comes from PIC's published membership
+and company register; the repository carries no membership register, and its one
+per-company membership fact is the chain page's published-member flag; the membership line
+says no member's dues, standing or renewal is publishable here.
+
+**Programme rows, *accountability*.** **Was:** "Two rows name a programme or a building
+rather than an organisation". **Is:** two recipients do, and they hold three rows, because
+the regional workforce programs carry two award lines.
+
+**What fills an empty line, *accountability*.** **Was:** each line of the second list carried
+"either a date it will be filled or a permanent reason". Three lines carry a condition, "on a
+decision to publish drawdown totals", "on a quarterly reporting arrangement" and "on the
+slip-record decision". **Is:** each line carries the condition on which it will be filled or
+a permanent reason, and no document sets a date for any of them.
+
+**A year that has begun, *accountability*.** **Was:** five commitments dated only to 2026,
+F17 to F21, read "the date has not arrived" on a 29 September 2026 build, and the closer and
+a note counted "eighteen dates". **Is:** a row whose day, month, quarter or year has begun
+reads that it has begun and has not ended, and reads as not yet read against the register
+only after that period's last day; the page counts eighteen dated commitments, which fall
+on twelve distinct dates.
+
 **Cause:** Each page was corrected on 1 and 8 September at the surface a reviewer named, and
 the same statement survived on the other surfaces: the scorecard's note, the accountability
 page's copy of it, and the chain count the member flag quotes. The timeline's stand-in days
 were printed as dates because the page never read the precision field beside them. The
 sentence on where the money goes was true of the EDA award and was written for all three.
 New claims now read the mechanism of every award line, the precision of every register date,
-and the scorecard note the accountability page quotes.
+and the scorecard note the accountability page quotes. A second review of these corrections
+found five more: a named recipient was read as an executed line; the provenance line and
+both Limitations predate the member flag and were not revised when it arrived; the
+programme sentence counted recipients and called them rows; the list of empty lines was
+described before its lines were written; and the first date fix re-derived only periods
+that had ended. Claims sc-executed, sc-provenance and acc-member-provenance are new, and
+acc-aggregates, acc-promises, acc-register-dates and acc-negative-list2 now pin these
+counts and wordings.
 
 ## 2026-09-28 — Seven more statements on the corrected pages failed their own data
 

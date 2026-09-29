@@ -62,7 +62,7 @@ figure recomputed from public data; 7 are empty slots.
 | A | Renewal rate | empty slot | PIC membership register |
 | A | Earned-revenue share | empty slot | PIC general ledger |
 | B | Award dollars with a named recipient | **92.8%** | funding-map |
-| B | Named recipients under an executed agreement (two are programme aggregates) | **21** | funding-map |
+| B | Named recipients holding an award line (two are programme aggregates) | **21** | funding-map |
 | B | EDA implementation awards obligated to a project lead | **7 of 7** | federal-money/techhub |
 | B | Ohio Innovation Hub dollars with a named recipient | **80.3%** | funding-map |
 | B | Total public money secured | **$106.3M** | funding-map |
@@ -78,9 +78,11 @@ figure recomputed from public data; 7 are empty slots.
 
 ### Group B is an assignment test, not a payment test
 
-"Reached a named recipient" means the register carries an executed line item naming who
-holds the money: an organisation or, for the Polymer Pilot Facility and regional workforce
-programs, a programme aggregate. $79,170,176 of $85,335,784 passes that test. The
+"Reached a named recipient" means the register carries a line item naming who holds the
+money: an organisation or, for the Polymer Pilot Facility and regional workforce programs,
+a programme aggregate. $79,170,176 of $85,335,784 passes that test. $73,199,371 of it is on
+an executed line; the other $5,970,805 is EDA award ED25HDQ0G0009 to Huntsman, which has no
+USAspending record, so the page names its recipient and never calls it executed. The
 $6,165,608 that does not is entirely inside the Ohio Innovation Hub grant, in two
 workstreams (startup support, $3,523,500; PIC Translational R&D, $2,642,108).
 
@@ -163,7 +165,10 @@ source page fails this page's gate instead of leaving a stale board number behin
   d-federal label names the codes it counts, the b-recipients definition names both
   programme aggregates, the talent trend reads "up in both years since 2021", and the
   small-numbers note says "tens". The internal-view flag is gone and the masthead links to
-  the hub. 21 claims, 0 manual.
+  the hub. Huntsman's unverified EDA line is named but not called executed (`sc-executed`),
+  and the provenance line, the square key, the table legend and the Limitations name the
+  PIC registers behind the member count and the award rows (`sc-provenance`).
+  23 claims, 0 manual.
 
 - **1.1 (2026-08-31)** — the talent rows re-derived on the corrected IPEDS years: the
   window reads 54, 62, 63 rather than 124, 54, 63, its average 60 rather than 80, and the
