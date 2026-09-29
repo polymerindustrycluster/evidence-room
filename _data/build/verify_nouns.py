@@ -118,10 +118,10 @@ def _cuts(chunk):
     cuts = {m.end() for m in CLAUSE_CUT.finditer(chunk)}
     for m in STOP_CUT.finditer(chunk):
         s = m.start()
-        if s == 0 and chunk[m.end():m.end() + 1].isdigit():
-            continue                                  # ".5", but not ".\u2014\u201c" left by a tag
-        if chunk[s - 1].isdigit() and chunk[s + 1].isdigit():
-            continue                                  # "41.5"
+        if s == 0 and chunk[1:2].isdecimal():
+            continue                                  # ".5", but not ".\u2014\u201c" or ".\"41" left by a tag
+        if s > 0 and chunk[s - 1].isdecimal() and chunk[s + 1:s + 2].isdecimal():
+            continue                                  # "41.5", but not "1991.\u00b9"
         e = m.end()
         if (chunk[s - 1].isalpha() and (s == 1 or not chunk[s - 2].isalpha())
                 and chunk[e:e + 1].isalpha() and chunk[e + 1:e + 2] == "."):

@@ -177,7 +177,11 @@ class NounNearbyTest(unittest.TestCase):
                      "<h1><em>147 institution records</em> since 1991.--<em>Only</em> 41 polymer awards were recorded.</h1>",
                      "<h1><em>147 institution records</em> since 1991.*<em>Only</em> 41 polymer awards were recorded.</h1>",
                      "<h1><em>147 institution records</em> since 1991.\u2014\u201d<em>Only</em> 41 polymer awards were recorded.</h1>",
-                     "<h1>147 institution records since 1991.--Only 41 polymer awards were recorded.</h1>"):
+                     "<h1>147 institution records since 1991.--Only 41 polymer awards were recorded.</h1>",
+                     # Codex, #25 round 3: a quote after the stop is not a decimal, and a
+                     # superscript footnote mark is not a decimal digit.
+                     "<h1><em>147 institution records since 1991</em>.\"41 polymer awards were recorded.\"</h1>",
+                     "<h1><em>147 institution records</em> since 1991.&sup1; <em>Only</em> 41 polymer awards were recorded.</h1>"):
             with self.subTest(body=body):
                 with TemporaryDirectory() as tmp:
                     web, vn.WEB = vn.WEB, tmp
