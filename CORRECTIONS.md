@@ -23,7 +23,8 @@ quarter since 2023Q1", as the page's section on the two flows already said.
 
 **The best case printed as the worst, *peers*.** **Was:** "The defensible worst case is 6th
 of 382". Sixth holds only if none of the 227 withheld metros has more jobs, so it is the best
-case. **Is:** "233rd of 382", sixth plus all 227.
+case. **Is:** no worst case: "So the claim stays narrow: 6th among the 155 that disclose."
+The README, which also called sixth the worst case, drops the sentence.
 
 **A scale the figure does not draw, *front page*.** **Was:** the funding-map card said the
 money was "drawn to scale across twenty-one named recipients". The figure draws the three
