@@ -55,7 +55,7 @@ Raw pulls live beside that script so a derivation can be re-run without re-fetch
   industries × 12 counties); across 2015–2025 a year carries 48–58 rows.
 - **Parent/child overlap:** the data ship industry families (325 chemical mfg, 326 plastics &
   rubber) alongside their disclosed sub-industries (3252, 3255, 3261, 3262), so a county can
-  appear at both levels and the 51 cells are not 51 separate places. Counted once at each
+  appear at both levels and the 51 cells are not 51 separate places. Counted at each
   county's finest disclosed level, the tally is 27 of 35 above — **77%, against 78% for the
   headline 40 of 51**, both divided out on the page rather than described. Those 27 cover
   20,464 of the 26,403 jobs in the deduplicated set. The reconciliation is published twice:

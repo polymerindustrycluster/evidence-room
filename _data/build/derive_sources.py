@@ -976,7 +976,8 @@ def build():
     drag = max((r for r in pay_rows if r["vs_local_all"] < med_pair),
                key=lambda r: r["emp"])
 
-    # Counted once per county at the finest detail published, which is the third unit and
+    # The finest detail each county publishes, with the family above it dropped (not one
+    # row per county; corrected 2026-09-29), which is the third unit and
     # the reason the page prints all three rather than picking one.
     def is_family(r):
         return ((r["naics"] == "325" and any(x["name"] == r["name"] and
