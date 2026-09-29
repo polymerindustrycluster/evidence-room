@@ -144,6 +144,12 @@ const CASES = [
       the hidden span broke the match, and the quoted label passed for a dated note. */
    inject: s => s.replace("<body>", '<body><p>The log’s “Correction, 28 September 2026” entry. Joint<span hidden>x</span> work rose.</p>')},
 
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /withdrawn:joint work/,
+   defect: "a withdrawn phrasing split by an inline-flex pill, in the card beside a correction note",
+   /* The confirmation round got past the second version this way (2026-09-29): the
+      pill broke the phrase, and a note in one inline-block card exempted the next. */
+   inject: s => s.replace("<body>", '<body><div><div style="display:inline-block">Correction, 28 September 2026: a count.</div><div style="display:inline-block">Joint <span style="display:inline-flex">work</span> rose.</div></div>')},
+
   {gate: "provenance", page: "cost-scissors", args: ["cost-scissors"],
    defect: "a page crediting a federal source it has never read",
    /* Injected into SOURCES.json rather than the artifact, so this case names its own file.

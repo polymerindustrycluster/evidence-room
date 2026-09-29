@@ -28,8 +28,9 @@ try { ACRO = JSON.parse(rfs(new URL("../_data/acronyms.json", import.meta.url), 
    it, and a Read-next line added on the correction branch itself reintroduced it
    (2026-09-28). Only a grep outside the repo caught that. The list is read unguarded: a
    missing or malformed file must fail the gate, not empty the list and pass. It catches a
-   phrasing coming back, not one hidden on purpose: CSS generated content and shadow
-   DOM are out of reach, and every exemption is printed. */
+   phrasing coming back, not one hidden on purpose: CSS generated content, shadow DOM,
+   zero-width characters and text painted invisible (transparent, clipped or off-screen)
+   are out of reach, and every exemption is printed. */
 const WITHDRAWN = JSON.parse(rfs(new URL("../_data/withdrawn.json", import.meta.url), "utf-8")).withdrawn;
 for (const w of WITHDRAWN) new RegExp(w.pattern.replaceAll(" ", "\\s+"), "gi");  /* the form the page compiles */
 
@@ -62,14 +63,21 @@ for (const n of list) {
     const MONTH = "(?:January|February|March|April|May|June|July|August|September|October|November|December)";
     const NOTE = new RegExp(`\\bCorrect(?:ion|ed)\\b[\\s,·.:]*(?:\\d{1,2}\\s+${MONTH}|${MONTH}\\s+\\d{1,2}),?\\s+\\d{4}`);
     const BLOCKS = "p,li,td,th,h1,h2,h3,h4,h5,h6,figcaption,caption,dd,dt,summary,blockquote";
+    const PHRASING = "a,abbr,b,bdi,bdo,cite,code,data,dfn,em,i,kbd,label,mark,q,s,samp,small,span,strong,sub,sup,time,u,var";
     const blockText = new Map(), owners = new Map();
     /* the block an element's text belongs to: the nearest text block, else the nearest
-       ancestor that is not inline or inline-block (a card div), never a <b> or <span>:
-       an inline-block sits in its line, so "Joint <span class=pill>work</span>" is one phrase */
+       ancestor that is not inline (a card div), never a <b> or <span>. An inline-block
+       or inline-flex span sits in its line, so "Joint <span class=pill>work</span>" is one
+       phrase; an inline-block div or section is its own box, so two cards side by side
+       stay two blocks. display:contents draws no box of its own. */
+    const inline = b => {
+      const d = getComputedStyle(b).display;
+      return d === "inline" || d === "contents" || (/^(inline-|ruby)/.test(d) && b.matches(PHRASING));
+    };
     const own = e => {
       if (!owners.has(e)) {
         let b = e.closest(BLOCKS);
-        if (!b) for (b = e; b !== document.body && /^inline(-block)?$/.test(getComputedStyle(b).display); b = b.parentElement);
+        if (!b) for (b = e; b !== document.body && inline(b); b = b.parentElement);
         owners.set(e, b);
       }
       return owners.get(e);
@@ -117,11 +125,14 @@ for (const n of list) {
           /* Two readings of a block: all its text, which sees a collapsed <details> twin,
              and the text a reader sees, which drops anything hidden inside the block, so
              "Joint<span hidden>x</span> work" is still one phrase and a hidden correction
-             label exempts nothing. */
+             label exempts nothing. Visibility and font size are inherited and can be
+             overridden below, so they are read on the text's own element. */
           const shown = e => {
+            const c = getComputedStyle(e);
+            if (c.visibility !== "visible" || parseFloat(c.fontSize) === 0) return false;
             for (; e && e !== block; e = e.parentElement) {
-              const c = getComputedStyle(e);
-              if (e.hidden || c.display === "none" || c.visibility === "hidden") return false;
+              const a = getComputedStyle(e);
+              if (e.hidden || a.display === "none" || a.opacity === "0") return false;
             }
             return true;
           };
@@ -150,8 +161,9 @@ for (const n of list) {
               const before = bt.slice(0, wm.index);
               /* A note's label counts only where the block itself carries it, not where
                  prose quotes it ("the log's “Correction, 28 September 2026” entry"), and a
-                 quotation exempts only a phrase it closes around. */
-              const inNote = NOTE.test(before.replace(/“[^”]*”/g, ""));
+                 quotation exempts only a phrase it closes around. A quotation is emptied,
+                 not deleted, so it cannot join a label to a date on either side of it. */
+              const inNote = NOTE.test(before.replace(/“[^”]*”/g, "“”"));
               const quoted = before.split("“").length > before.split("”").length && bt.includes("”", wm.index + wm[0].length);
               const key = `${ri}:${wm.index - at}`, prev = found.get(key);
               found.set(key, {ex: (prev ? prev.ex : true) && (inNote || quoted), phrase: wm[0].replace(/\s+/g, " ").toLowerCase(),
