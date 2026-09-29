@@ -15,7 +15,7 @@
  *   - an en-dash between numbers (2015-2026): a range, correct
  *   - anything inside <script>: inlined source comments, which no reader sees
  */
-import {readdirSync} from "fs";
+import {readdirSync, existsSync} from "fs";
 import {pathToFileURL} from "url";
 import {chromium} from "./_browser.mjs";
 
@@ -23,20 +23,215 @@ import {readFileSync as rfs} from "fs";
 let ACRO = {assumed_known: [], debt: {}};
 try { ACRO = JSON.parse(rfs(new URL("../_data/acronyms.json", import.meta.url), "utf-8")); } catch {}
 
+/* WITHDRAWN PHRASINGS. A correction retires a phrasing, and the phrasing comes back:
+   collaboration's "joint work" survived four rounds of rewrites of the sentences around
+   it, and a Read-next line added on the correction branch itself reintroduced it
+   (2026-09-28). Only a grep outside the repo caught that. The list is read unguarded: a
+   missing or malformed file must fail the gate, not empty the list and pass. It catches a
+   phrasing coming back, not one hidden on purpose: CSS generated content, form control
+   values, shadow DOM, zero-width characters and text painted invisible by colour, clipping,
+   masking, compounded opacity or position are out of reach, and every exemption is printed. */
+const WITHDRAWN = JSON.parse(rfs(new URL("../_data/withdrawn.json", import.meta.url), "utf-8")).withdrawn;
+for (const w of WITHDRAWN) new RegExp(w.pattern.replaceAll(" ", "\\s+"), "gi");  /* the form the page compiles */
+
 const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
 
+/* Every run checks the whole list: an entry for a renamed or missing page would otherwise
+   pass forever. A page is an artifact with an index.html; a full run must also have its
+   bundle to inspect. */
+const unknown = [...new Set(WITHDRAWN.flatMap(w => w.pages))]
+  .filter(pg => !existsSync(`${pg}/index.html`) || (!names.length && !list.includes(pg)));
+if (unknown.length) {
+  console.log(`withdrawn.json names page(s) with no artifact or no bundle in dist/: ${unknown.join(", ")}`);
+  process.exit(1);
+}
+
 const b = await chromium.launch();
 let bad = 0, total = 0;
+const exempt = [];
 for (const n of list) {
   const p = await b.newPage({viewport: {width: 1440, height: 1000}});
   await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
   await p.waitForTimeout(1600)  /* 900 raced chain's 785 JS-rendered cards: the acronym inventory flapped between runs. 2026-09-01 */;
-  const hits = await p.evaluate(({assumed, debtPages}) => {
+  const all = await p.evaluate(({withdrawn, assumed, debtPages}) => {
     const BANNED = /\b(crucial|delve|matters)\b/i;
     const out = [];
     const pageText = [];
+    const WRE = withdrawn.map(src => new RegExp(src.replaceAll(" ", "\\s+"), "gi"));
+    const MONTH = "(?:January|February|March|April|May|June|July|August|September|October|November|December)";
+    const NOTE = new RegExp(`\\bCorrect(?:ion|ed)\\b[\\s,·.:]*(?:\\d{1,2}\\s+${MONTH}|${MONTH}\\s+\\d{1,2}),?\\s+\\d{4}`);
+    /* Where a phrase is looked for and where a note may exempt it are two questions with
+       opposite safe answers, so they get two different boxes. A phrase is looked for in
+       the widest run of text a reader could take as one passage: up to the nearest box
+       that is not inline-level, walking through pills, controls, ruby, display:contents
+       wrappers, table parts and flex or grid items, so no box can split "Joint <span
+       class=pill>work</span>".
+       A note exempts only a phrase that starts in the note's own box, the nearest ancestor
+       that is not plain inline, so two cards in one row stay two. Merging too much can
+       only fail a page; splitting too much could pass one. Round 13 of review found
+       thirteen ways a list of elements left one or the other open. */
+    const done = new Set(), owners = new Map(), ids = new Map();
+    const disp = e => getComputedStyle(e).display;
+    const host = e => { do e = e.parentElement; while (e && disp(e) === "contents"); return e; };
+    /* flex, grid and the old -webkit-box all lay each child out as an item */
+    const ITEMS = /(flex|grid|box)$/;
+    const item = e => ITEMS.test(host(e) ? disp(host(e)) : "");
+    const wide = e => /^(inline|contents|ruby|table-|-webkit-inline)/.test(disp(e)) || !!e.closest("select") || item(e);
+    /* a block inside an inline-level box ("Jo<span style=display:inline-block><b
+       style=display:block>int</b></span>") still sits in the line around that box */
+    const atom = e => { for (let a = e.parentElement; a && a !== document.body; a = a.parentElement)
+      if (/^(inline-|-webkit-inline)/.test(disp(a))) return a; return null; };
+    const own = e => {
+      if (!owners.has(e)) {
+        let b = e;
+        for (let x; ; b = x.parentElement) { while (b !== document.body && wide(b)) b = b.parentElement; if (b === document.body || !(x = atom(b))) break; }
+        owners.set(e, b);
+      }
+      return owners.get(e);
+    };
+    const box = e => { while (e !== document.body && disp(e) === "inline" && !item(e)) e = e.parentElement; return e; };
+    /* Whether text is drawn in a way this gate would have to emulate to know what a reader
+       sees: moved, turned or scaled (transform, rotate, scale, translate, perspective, 3D,
+       motion path), composited (opacity, filter, backdrop-filter, blend, will-change),
+       cut (clip, clip-path, masks), contained, or zoomed. Eighteen rounds of review found
+       a new way each time an emulation of these missed what the browser draws, so they are
+       not emulated: an exemption that depends on text under any of them is refused (see
+       exempt), and the seen reading drops such text, which can only find more phrases. */
+    const DRAWN = [["transform", "none"], ["rotate", "none"], ["scale", "none"], ["translate", "none"],
+      ["perspective", "none"], ["transform-style", "flat"], ["offset-path", "none"], ["will-change", "auto"],
+      ["filter", "none"], ["backdrop-filter", "none"], ["mix-blend-mode", "normal"], ["clip", "auto"],
+      ["clip-path", "none"], ["mask-image", "none"], ["-webkit-mask-image", "none"], ["mask-border-source", "none"],
+      ["-webkit-mask-box-image", "none"], ["contain", "none"], ["zoom", "1"]];
+    const drawn = a => parseFloat(a.opacity) < 1 || DRAWN.some(([k, v]) => { const x = a.getPropertyValue(k); return x !== "" && x !== v; });
+    const under = new Map();
+    const emulated = e => {
+      if (!e) return false;
+      if (!under.has(e)) under.set(e, drawn(getComputedStyle(e)) || emulated(e.parentElement));
+      return under.get(e);
+    };
+    /* Text a reader cannot see below the given ancestor, short of anything drawn (above):
+       hidden, not displayed, contents skipped, not visible, or under a pixel high. A plain
+       inline box skips no contents. Visibility and font size are inherited and can be
+       overridden, so they are read on the text's own element. What this misses keeps a
+       phrase in the seen reading, where the all-text reading has it anyway; what it wrongly
+       drops can only fail an exemption (see exempt). */
+    const gone = (e, top) => {
+      const c = getComputedStyle(e);
+      if (c.visibility !== "visible" || parseFloat(c.fontSize) < 1) return true;
+      for (; e && e !== top; e = e.parentElement) {
+        const a = getComputedStyle(e);
+        if (e.hidden || a.display === "none" || drawn(a)
+          || (a.contentVisibility === "hidden" && !/^(inline|contents)$/.test(a.display))) return true;
+      }
+      return false;
+    };
+    /* Whether a reader sees a break between two text nodes: one of them sits in a box that
+       is not inline-level below the nearest element holding both, or that element lays its
+       children out as flex, grid or box items, which a run of bare text joins as an
+       anonymous item. An inline-level box ("Jo<span style=display:inline-block>int</span>")
+       sits in its parent's line, and a display:contents element has no box. Whether that
+       line wraps before or after the box depends on widths, so `loose` reads a break at its
+       edges too: "Current<span style=display:inline-block;width:100%>Joint work</span>"
+       sits on two lines (round 18). */
+    const breaks = (a, b, loose) => {
+      let l = a.parentElement;
+      while (!l.contains(b)) l = l.parentElement;
+      /* the box nearest l decides: whatever sits inside an inline-level box (inline-block,
+         inline-flex, -webkit-inline-box ...) breaks only within it, since the box itself
+         may sit in l's line */
+      const boxed = n => { let br = false;
+        for (let e = n.parentElement; e !== l; e = e.parentElement)
+          if (/^(inline-|-webkit-inline)/.test(disp(e))) br = loose;
+          else if (!/^(inline|ruby|contents)/.test(disp(e)) || item(e)) br = true;
+        return br; };
+      return ITEMS.test(disp(l)) || boxed(a) || boxed(b);
+    };
+    /* the text `top` owns under `mine`, the text nodes `keep` admits, and where each
+       starts; with `gap`, text `top` does not own leaves a GAP where it was; with `apart`,
+       a space goes wherever a reader sees a break (see breaks; "loose" also at the edges of
+       an inline-level box) or where text `top` does not own was left out */
+    const GAP = "\u0000";
+    const read = (top, mine, keep, gap, apart) => {
+      const r = {bt: "", at: [], nodes: []};
+      let last = null, cut = false;
+      const tw = document.createTreeWalker(top, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+      for (let u; (u = tw.nextNode());) {
+        if (u.nodeType === 1 && u.tagName !== "BR") continue;
+        const pe = u.nodeType === 1 ? u : u.parentElement;
+        if (pe.closest("script,style,noscript") || !keep(pe)) continue;
+        if (mine(u.parentElement) !== top) { if (gap && !r.bt.endsWith(GAP)) r.bt += GAP; cut = true; continue; }
+        if (u.nodeType === 1) r.bt += "\n";
+        else {
+          if (apart) { if (cut || (last && breaks(last, u, apart === "loose"))) r.bt += " "; last = u; }
+          r.at.push(r.bt.length); r.nodes.push(u); r.bt += u.textContent;
+        }
+        cut = false;
+      }
+      return r;
+    };
+    /* A dated correction note may quote what it corrects, and a phrase inside curly double
+       quotes is a mention, not a use; both are exempt, judged on the visible text of the
+       phrase's own line: the box it starts in, with any pill or control inside that box,
+       up to any block inside it. Text left out cannot open a quotation or join a label to
+       a date. A note's label counts only where that line carries it, not where prose quotes
+       it ("the log's “Correction, 28 September 2026” entry"): a quotation is emptied, not
+       deleted, so it cannot join a label to a date on either side of it. A quotation
+       exempts only a phrase it closes around within the line. */
+    /* The line is judged twice, on all its text and on the text a reader sees, and must
+       exempt in both: hiding can then neither supply a note or quotation mark nor take one
+       away, whichever way gone() errs. A line whose text, or any ancestor of it, is drawn
+       in a way this gate does not emulate (see drawn) cannot show that its note or
+       quotation is seen, so it exempts nothing and says why ("drawn"). */
+    const exempt = ({ri, node, k}) => {
+      const f = box(node.parentElement);
+      let why = false;
+      return [() => true, e => !gone(e, f)].every((keep, pass) => {
+        const r = read(f, e => { while (e !== f && /^(inline|ruby)/.test(disp(e)) && !item(e)) e = e.parentElement; return e; },
+          keep, true);
+        const i = r.nodes.indexOf(node);
+        if (i < 0) return false;
+        const at = r.at[i] + k, from = r.bt.lastIndexOf(GAP, at) + 1, to = r.bt.indexOf(GAP, at);
+        const line = r.bt.slice(from, to < 0 ? r.bt.length : to), p = at - from, before = line.slice(0, p);
+        const re = new RegExp(WRE[ri].source, "iy");
+        re.lastIndex = p;
+        const m = re.exec(line);
+        const ok = NOTE.test(before.replace(/“[^”]*”/g, "“”"))
+          || (!!m && before.split("“").length > before.split("”").length && line.includes("”", p + m[0].length));
+        if (ok && pass === 0 && r.nodes.some((u, j) => r.at[j] >= from && r.at[j] <= from + line.length && emulated(u.parentElement)))
+          return (why = "drawn", false);
+        return ok;
+      }) || why;
+    };
+    /* Two readings of a passage: all its text, which sees a collapsed <details> twin, and
+       the text a reader sees, which drops anything hidden, so "Joint<span hidden>x</span>
+       work" is still one phrase. Each is read three times: joined, so "Jo<b>int</b> work" is
+       one phrase, and spaced where a reader sees a break, with and without the edges of an
+       inline-level box, so "Current" and "Joint work" in two flex items do not read
+       "CurrentJoint work", which no phrase bounded by \b matches (round 14). A phrase any
+       reading finds is reported once, from the node it starts in. */
+    const withdrawnIn = block => {
+      const found = new Map(), all = () => true, seen = e => !gone(e, block);
+      for (const r of [all, seen].flatMap(keep => [read(block, own, keep), read(block, own, keep, false, "tight"), read(block, own, keep, false, "loose")]))
+        WRE.forEach((re, ri) => {
+          for (const wm of r.bt.matchAll(re)) {
+            let i = r.at.length - 1;
+            while (i > 0 && r.at[i] > wm.index) i--;
+            const node = r.nodes[i], k = wm.index - r.at[i];
+            if (!node || k >= node.length) continue;
+            if (!ids.has(node)) ids.set(node, ids.size);
+            const key = `${ri}:${ids.get(node)}:${k}`;
+            if (!found.has(key)) found.set(key, {ri, node, k, phrase: wm[0].replace(/\s+/g, " ").toLowerCase(),
+              near: r.bt.slice(Math.max(0, wm.index - 30), wm.index + 40).replace(/\s+/g, " ").trim()});
+          }
+        });
+      for (const h of found.values()) {
+        const x = exempt(h);
+        out.push([`${x === true ? "exempt:" : ""}withdrawn:${h.phrase}`,
+          x === "drawn" ? `cannot confirm the note is seen, drawn by styles the gate does not emulate: ${h.near}` : h.near]);
+      }
+    };
     const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     let t;
     while ((t = w.nextNode())) {
@@ -67,6 +262,13 @@ for (const n of list) {
       if (!verbatim && /"/.test(s)) out.push(["straight-double", ctx.slice(0, 70)]);
       const m = s.match(BANNED);
       if (m) out.push([`banned:${m[1].toLowerCase()}`, ctx.slice(0, 70)]);
+      /* Matched against the passage this node belongs to, so a phrase split by inline
+         markup (<b>81%</b> led from here), a <br>, or wrapped source lines is still one
+         phrase. A passage's text is only the text it owns: a nested block owns its own. */
+      if (WRE.length) {
+        const block = own(el);
+        if (!done.has(block)) { done.add(block); withdrawnIn(block); }
+      }
       /* NEGATIVES TAKE THE TRUE MINUS (U+2212), never the ASCII hyphen — the hyphen is
          a third the width of the digits beside it. Found 2026-08-31: four axis ticks
          and eleven table cells leaked JS's default stringification while every
@@ -112,7 +314,11 @@ for (const n of list) {
       if (!glossed) out.push(["bare-first-reference:" + t, sent.replace(/\s+/g," ").trim().slice(0, 70)]);
     }
     return out;
-  }, {assumed: ACRO.assumed_known || [], debtPages: Object.entries(ACRO.debt || {}).filter(([,v]) => v.includes("*") || v.includes(n)).map(([k]) => k)});
+  }, {withdrawn: WITHDRAWN.filter(w => w.pages.includes(n)).map(w => w.pattern),
+      assumed: ACRO.assumed_known || [], debtPages: Object.entries(ACRO.debt || {}).filter(([,v]) => v.includes("*") || v.includes(n)).map(([k]) => k)});
+  /* An exemption is a pass the gate chose not to count, so it is printed, not hidden. */
+  for (const [kind, ctx] of all.filter(([k]) => k.startsWith("exempt:"))) exempt.push(`${n}: ${kind.slice(7)}: ${ctx}`);
+  const hits = all.filter(([k]) => !k.startsWith("exempt:"));
   total += hits.length;
   if (hits.length) {
     bad++;
@@ -125,7 +331,11 @@ for (const n of list) {
   await p.close();
 }
 await b.close();
+if (exempt.length) {
+  console.log(`\n${exempt.length} withdrawn phrasing(s) passed as a dated correction note or a quotation:`);
+  for (const e of exempt) console.log(`    ${e}`);
+}
 console.log(bad ? `\n${total} style-law violation(s) on ${bad} page(s)`
                 : `\nall ${list.length} pages clean: no em-dashes, no straight quotes, ` +
-                  `no banned words`);
+                  `no banned words, no withdrawn phrasings`);
 process.exit(bad ? 1 : 0);
