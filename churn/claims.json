@@ -294,6 +294,14 @@
       "falsified_if": "Any quarter from 2023Q1 on flips sign, or 2022Q4 stops being the last quarter on the hiring-ahead side. The run length is printed in the section's fig-title and in the closer, so a broken run breaks both. A single flipped quarter also means the phrase 'in every quarter since' has to go."
     },
     {
+      "id": "churn-hero-leaving-side",
+      "text": "What they do show is that the rise since 2012 is almost all on the leaving side: the separation rate, the share of jobs that end in a quarter, rose 1.9 points; the hire rate rose 0.2. Averaged over a year, more jobs have ended than started in every quarter since 2023Q1.",
+      "source": "derived: separations and hires by quarter; rates are four-quarter means of separations/jobs and hires/jobs at each end, the run is trailing four-quarter sums of the counts",
+      "assert": "D['ch']['quarters'][0]['year'] == 2012 and D['ch']['quarters'][0]['q'] == 1 and (lambda Q, s, h: round(s, 1) == 1.9 and round(h, 1) == 0.2 and s / (s + h) > 0.85 and Q[44]['year'] == 2023 and Q[44]['q'] == 1 and all(sum(q['seps'] for q in Q[i-3:i+1]) > sum(q['hires'] for q in Q[i-3:i+1]) for i in range(44, len(Q))) and sum(q['seps'] for q in Q[40:44]) < sum(q['hires'] for q in Q[40:44]))(D['ch']['quarters'], (sum(q['seps']/q['emp'] for q in D['ch']['quarters'][-4:]) - sum(q['seps']/q['emp'] for q in D['ch']['quarters'][:4])) / 4 * 100, (sum(q['hires']/q['emp'] for q in D['ch']['quarters'][-4:]) - sum(q['hires']/q['emp'] for q in D['ch']['quarters'][:4])) / 4 * 100)",
+      "actual": "(lambda Q: (round((sum(q['seps']/q['emp'] for q in Q[-4:]) - sum(q['seps']/q['emp'] for q in Q[:4])) / 4 * 100, 3), round((sum(q['hires']/q['emp'] for q in Q[-4:]) - sum(q['hires']/q['emp'] for q in Q[:4])) / 4 * 100, 3), [(Q[i]['year'], Q[i]['q'], sum(q['seps'] for q in Q[i-3:i+1]) - sum(q['hires'] for q in Q[i-3:i+1])) for i in range(43, len(Q))]))(D['ch']['quarters'])",
+      "falsified_if": "Either rate rise moves off its printed tenth, the leaving side falls below 85 percent of the combined rise (at 88 percent today; below that 'almost all' is too strong), any trailing year from 2023Q1 on has at least as many hires as separations, or the year to 2022Q4 stops being on the hiring side, which would move the start of the run. This is the hero's own sentence: until 2026-09-29 no claim carried its text, and churn-separations-ahead checked the run on rates where this sentence counts jobs. The two agree today; this claim reads the counts the sentence names."
+    },
+    {
       "id": "churn-county-spread",
       "text": "County rates run from 6.2% in Mahoning to 13.5% in Trumbull, and nine of the twelve recorded more separations than hires.",
       "source": "Census QWI by county, last four published quarters",

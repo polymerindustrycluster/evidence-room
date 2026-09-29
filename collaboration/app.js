@@ -198,13 +198,13 @@ PV.figures([
     "text-anchor": "end", class: "pv-labq"});
 
   frame(svg, {x: m.l, y: top2, w, h: P2, xs, ys: yr, yt: ticks(0, maxRate, 3),
-    xt: XT, xlab: "Year", ylab: "Joint works per 1,000 of Akron’s own output"});
+    xt: XT, xlab: "Year", ylab: "Works naming both per 1,000 of Akron’s own output"});
   S.forEach(r => {
     el("rect", {x: xs(r.year) - 9, y: yr(r.per_1k_akron), width: 18,
       height: Math.max(1, top2 + P2 - yr(r.per_1k_akron)), fill: CAT[0]}, svg);
     hoverable(el("rect", {x: xs(r.year) - 13, y: m.t, width: 26,
       height: top2 + P2 - m.t, fill: "transparent"}, svg),
-      `<b>${r.year}</b><br><span class="v">${r.joint}</span> joint works<br>
+      `<b>${r.year}</b><br><span class="v">${r.joint}</span> works naming both<br>
        <span class="v">${r.per_1k_akron}</span> per 1,000 of Akron’s ${N(r.akron)}<br>
        Case Western published <span class="v">${N(r.cwru)}</span>`,
       `${r.year}: ${r.per_1k_akron} per 1,000`);
@@ -215,7 +215,7 @@ PV.figures([
 
   document.getElementById("controltable").innerHTML = tableView("c",
     "Own output and the controlled rate",
-    ["Year", "Akron works", "Case Western works", "Joint", "Joint per 1,000 of Akron"],
+    ["Year", "Akron works", "Case Western works", "Naming both", "Naming both per 1,000 of Akron"],
     S.map(r => [r.year, N(r.akron), N(r.cwru), r.joint, r.per_1k_akron]));
   document.getElementById("controlsrc").innerHTML =
     `${D.meta.control} Case Western’s indexed output is
@@ -270,7 +270,8 @@ PV.figures([
      literally titled “Graduate Research Fellowship Program”, an institutional block grant
      every university receives separately, and matching on title alone booked it as a
      $1.1 million joint project across five award IDs. Only awards NSF itself labels
-     “Collaborative Research” are counted. <b>This measure queries the NSF Awards API and
+     “Collaborative Research” are counted, and not a pair whose two awards name the same
+     principal investigator: that is one researcher moving between the universities. <b>This measure queries the NSF Awards API and
      nothing else:</b> no other federal agency, no industry contract, no state award, no
      subaward, and no unfunded collaboration.`;
 }

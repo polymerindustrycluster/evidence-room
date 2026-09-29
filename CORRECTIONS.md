@@ -11,6 +11,105 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-29 — Labels and cards that said more than their data
+
+A review of the 2026-09-28 corrections found these beside them. One figure changed: the
+collaboration page's joint NSF projects, four to three (a researcher's move, below). No other figure in
+these statements changed. The sources page's claim register rises from 532 article claims to 534,
+and from 564 across the site to 567: three claims added with them, two on article pages and
+one on the front page.
+
+**The 2026-09-28 entry below, corrected here rather than rewritten.** It says the closing
+sat "beside a standfirst naming NEO-SMART, awarded on 13 July 2026". The name was in a lede
+paragraph, and before that day's fix the page dated the award 14 July; 13 July is the date
+the fix gave it. It also says the page "now says at most 19, or 9 percent"; the page prints
+at most 19 with no percentage beside it, and at least 90 percent in neither subject. Before
+that day's fix it printed "19 of 208 works, about 9 percent"; the fix removed that percentage.
+
+**A keyword search the page does not run, *collaboration*.** **Was:** the source line under
+the chart of papers naming both per year (the first below the opening chart) described each year as "works listing both institutions, works matching
+'polymer'", in the same line as a note calling the subject count "a classification rather
+than a keyword"; that chart's text description said "the polymer-matching subset". **Is:**
+"their polymer and biomaterials counts", beside the note that defines both as OpenAlex
+subfields, and "the subsets classified in polymers and plastics and in biomaterials". The
+fetch queries those two subfields and never searches for a word.
+
+**"Joint" for papers naming both, *collaboration*.** **Was:** the standfirst said "Joint
+output peaked at 29 papers in 2018"; the opening chart's text description said "joint
+output"; the control chart's axis, legend, hover and text description said "joint works",
+and its table had columns "Joint" and "Joint per 1,000 of Akron"; the lede and two source notes said "joint count" and "joint series".
+**Is:** "papers naming both" or "works naming both", the source note's "unbounded count",
+and table columns "Naming both" and "Naming both per 1,000 of Akron". The 2026-09-28 entry below changed the
+headline and five sentences for the same reason and left these labels. "Joint NSF projects"
+keeps the word only for Collaborative Research awards with a different principal investigator
+at each university; see the next item.
+
+**A researcher's move counted as a joint project, *collaboration* and *front page*.**
+**Was:** "four joint NSF projects worth $3.7 million" (standfirst), "Four joint NSF
+projects" (awards heading), a hero figure of 4 joint NSF projects, $3,670,535 combined, eight
+award IDs, and "four joint National Science Foundation projects" on the front-page card.
+**Is:** three joint NSF projects worth $3.4 million ($3,412,585), six award IDs. The pair
+dropped, "Collaborative Research: Algorithm and Theory for Interface Computations"
+($257,950), is two awards whose NSF records name the same sole principal investigator,
+Lingxing Yao (NSF PI ID 269970204): 1620198 at Case Western, 07/01/2016 to 09/30/2018,
+$162,703, and 1852597 at Akron, 08/01/2018 to 09/30/2022, $95,247. That is one researcher
+moving from Case Western to Akron with the project; its Collaborative Research partner is
+Yoichiro Mori's award 1620316 at the University of Minnesota. The newest joint project
+still starts in 2017, and the earliest is still Northern Ohio AGEP-T in 2015. **Cause:**
+fetch_collab.py paired an Akron and a Case Western award on a shared Collaborative Research
+title and never compared their PIs; it now drops a pair whose awards share one. The
+committed data was edited to what that rule produces rather than refetched, because a
+refetch would also move the OpenAlex counts; run over the eight NSF records, the rule drops
+this pair and no other. An earlier line of this entry, written the same day, said the four
+"keep the word: those are Collaborative Research awards, joint by their terms". This pair was
+Collaborative Research by its terms and joint between neither university. The collaboration
+page carries a dated correction under its awards chart, and its claim now pins the three
+surviving pairs by award ID.
+
+**"Counted once per county", *wages* and *sources*.** **Was:** wages said its 35
+de-duplicated pairings were "counted once per county" (methodology box) and "counting each
+county once" (hero card 1), and its source line said "counting each county once at group
+level"; the sources guide said "Count each county once and the unit is a county-industry".
+**Is:** "counted at the finest industry detail published in each county" (methodology
+box), "counting only the finest industry detail in each county" (hero card 1), "counting
+each family once per county" (source line) and, on the sources guide, "Remove the overlap
+and the unit is a county-industry". The 35
+rows sit in twelve counties, eleven of which keep more than one: a family row is dropped
+only where its own parts are published. Both pages carry a dated correction line.
+
+**A comparison without its caveat, *front page*.** **Was:** the federal-money card said the
+$51.0 million award "is about 1.2 years" of the yearly contract average, without the
+federal-money page's own warning that a competitive grant and routine purchase orders are
+different kinds of money, and without the finding that titles the page's contract chart.
+**Is:** the card adds "a
+rough size and not like for like", then names the page's other ledger before its finding:
+the prime contracts under those codes with obligations in fiscal 2019–2026 "carry $329.5
+million counted over each award's whole life, and two Department of Defense suppliers, the
+survival-equipment maker RFD Beaufort and Goodyear, hold 56 percent of it."
+
+**A scale, again, *front page*.** **Was:** the funding-map card, as corrected on
+2026-09-28, said "drawn to scale and traced to twenty-one named recipients", which still
+reads as though the recipients are drawn to scale. **Is:** "The awards and their match are
+drawn to scale; the threads into the twenty-one named recipients are not."
+
+**Prototypes shown as articles, *front page*.** **Was:** the cards for chain, reach and
+collaboration sat in the gallery with nothing to mark them as prototypes, though each page
+says so in its masthead. **Is:** each card carries its page's own flag, "Prototype · not
+published data" for chain and "Prototype · internal draft" for the other two.
+
+**An input it is not, *revisions*.** **Was:** "The three series sit on one supply chain.
+Chemicals and allied products, which includes resins, is the upstream input; the other two
+price the finished goods made from it", and a chart title comparing it with "either series
+downstream of it". The wording came in with the 2026-09-28 fix to the series' name. **Is:**
+"Chemicals and allied products is a broad index, of which resins are one part; the other
+two price plastic and rubber goods", and "either of the other two". The page carries a
+dated correction line.
+
+**Cause:** Claims check the numbers in a sentence, and these words carried none. The
+wages, collaboration, front-page and revisions claims now state the corrected wording, and
+wages' claim checks that its 35 rows sit in twelve counties, eleven with more than one. The prototype flags are not
+checked by anything: the claims harness reads data files, and the flag lives in HTML.
+
 ## 2026-09-28 — Seven more statements on the corrected pages failed their own data
 
 Codex re-read the pages corrected below against their own data. Seven published statements

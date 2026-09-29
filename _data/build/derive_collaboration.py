@@ -59,17 +59,22 @@ gap_since = max((a["start"] or "")[-4:] for a in awards) if awards else None
 
 # A cache that predates fetch_collab.py:261 still calls the unbounded count a
 # "coauthorship count"; one author holding both affiliations is enough to count a work.
-polymer_bound = C["meta"]["polymer_bound"].replace("coauthorship count", "joint count")
-assert "coauthor" not in polymer_bound, polymer_bound
+# The published text calls it neither that nor a "joint count" (2026-09-29): a work that
+# names both universities is not evidence of joint work, so the page says what is counted.
+polymer_bound = (C["meta"]["polymer_bound"].replace("coauthorship count", "joint count")
+                 .replace("unbounded joint count", "unbounded count"))
+assert "coauthor" not in polymer_bound and "joint" not in polymer_bound, polymer_bound
 
 out = {"meta": dict(C["meta"],
                     polymer_bound=polymer_bound,
                     control="Each university’s own annual output is carried beside the "
-                            "joint count, because a joint series alone cannot tell a "
-                            "thinning relationship from an indexing lag or from one "
-                            "partner shrinking.",
-                    row="one year: works listing both institutions, works matching "
-                        "‘polymer’, and each institution’s own total output."),
+                            "count of works naming both, because that count alone cannot "
+                            "tell a thinning relationship from an indexing lag or from "
+                            "one partner shrinking.",
+                    # Not "works matching ‘polymer’" (corrected 2026-09-29): the fetch
+                    # queries two OpenAlex subfields, a classification rather than a keyword.
+                    row="one year: works listing both institutions, their polymer and "
+                        "biomaterials counts, and each institution’s own output."),
        "totals": dict(C["totals"], peak_year=pk["year"], peak_joint=pk["joint"],
                       last_year=last["year"], last_joint=last["joint"],
                       newest_joint_award_year=gap_since,
