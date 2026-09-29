@@ -11,6 +11,19 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-29 — Federal money does reach PIC, *funding-map*
+
+**Was:** the Tech Hub machine card said EDA obligates each implementation award straight
+to its project lead, "so no federal dollar passes through PIC's hands". **Is:** "so none of
+the Tech Hub money passes through PIC on its way to another lead. One of the seven leads is
+the Greater Akron Chamber, of which PIC is an initiative, on $2.65M for innovation
+governance." A dated note under the machines adds that the Chamber is also the grantee on
+all $3,084,371 of APEX, the second EDA award. **Cause:** the sentence stretched what the
+EDA route rules out, pass-through to other leads, into a claim about all federal money, and
+the page's own register holds two federal lines at the Chamber. The claim beside it checked
+that the three routes differ, never the sentence's conclusion; it now pins both of the
+Chamber's federal lines, and the card's $2.65M is bound to its noun.
+
 ## 2026-09-29 — The scorecard and the accountability page before their first publication
 
 A pre-publication audit read both pages against their own data. The statements below failed
