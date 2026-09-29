@@ -3,9 +3,9 @@
 WHAT THIS SCRIPT IS FOR
   The accountability page publishes a subtraction: of the $106.3 million PIC reports
   securing, how much sits on award lines naming PIC's own organisation. A subtraction is
-  only worth publishing if it cannot go stale, so nothing here is fetched and nothing is
-  typed. Every figure is recomputed from a JSON file another page in this repository
-  already ships, and accountability/claims.json re-runs the same arithmetic against those
+  only worth publishing if it cannot go stale, so nothing here is fetched. Every figure
+  is recomputed from a JSON file another page in this repository already ships, or from
+  the two registers seeded by hand under data/ and listed below, and accountability/claims.json re-runs the same arithmetic against those
   UPSTREAM files rather than against this script's output. A correction on funding-map/
   therefore fails this page instead of leaving a flattering number in place.
 
@@ -33,7 +33,7 @@ import os
 import re
 import statistics
 import sys
-from datetime import date
+from datetime import date, timedelta
 
 parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
 parser.add_argument("--federal-only", action="store_true", help="Preserve the existing nonfederal snapshot")
@@ -51,6 +51,15 @@ def load(*parts):
 
 def die(msg):
     raise SystemExit(f"derive_accountability: {msg}")
+
+
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
+          "September", "October", "November", "December"]
+
+
+def long_date(iso):
+    y, m, d = (int(v) for v in iso.split("-"))
+    return f"{d} {MONTHS[m - 1]} {y}"
 
 
 FM = load(WEB, "funding-map", "data", "funding.json")
@@ -204,9 +213,35 @@ for r in rows:
     if r.get("award_id") and r["award_id"] not in AWARD_IDS:
         die(f"promise {r['id']} cites award {r['award_id']}, which is in no award line")
 
+def period_end(iso, precision):
+    """The last day a date known only to this precision could fall on."""
+    y, m, _ = (int(v) for v in iso.split("-"))
+    if precision == "day":
+        return iso
+    if precision == "year":
+        return f"{y}-12-31"
+    last = {"month": m, "quarter": (m - 1) // 3 * 3 + 3}.get(precision)
+    if last is None:
+        die(f"no period end for date precision {precision!r}")
+    return (date(y + last // 12, last % 12 + 1, 1) - timedelta(days=1)).isoformat()
+
+
 for r in rows:
-    r["timeline_title"] = FWD[r["id"]]["title"]
+    ev = FWD[r["id"]]
+    r["timeline_title"] = ev["title"]
+    # The timeline records how precisely each date is known; a year or a quarter is stored
+    # as a stand-in day, and printing that day would claim a precision the record lacks.
+    r["date_precision"] = ev["datePrecision"]
+    r["date_display"] = ev["dateDisplay"]
 rows.sort(key=lambda r: (r["current_date"], r["id"]))
+# "The date has not arrived" is true only until the date arrives. It is re-derived against
+# the build date so a row cannot keep saying it after the date has passed; until the owner
+# records a reading, a passed row says it has not been read (corrected 2026-09-29).
+BUILT = date.today().isoformat()
+for r in rows:
+    if (r["no_reading_because"] == "the date has not arrived"
+            and period_end(r["current_date"], r["date_precision"]) < BUILT):
+        r["no_reading_because"] = "the resolution date has not been read against the register yet"
 
 BY_TYPE = {t: len([r for r in rows if r["type"] == t])
            for t in ("numeric_outcome", "milestone", "period_end")}
@@ -279,7 +314,8 @@ RECONCILE = [
      "on": AS_OF, "display": AS_OF,
      "document": "Award register and public event register, both describing "
                  "ED25OIE0G0108",
-     "counted": "Two descriptions of one Notice of Award. One of them is incomplete."},
+     "counted": "Two descriptions of one Notice of Award. They differ, and the Notice "
+                "of Award decides which is right."},
 ]
 
 # -------------------------------------------------------- band F, the negative space
@@ -295,7 +331,9 @@ TARGETS = [{"metric": r["metric"], "target": r["target"], "group": r["group"]}
 # limitation, so a hand-maintained honesty list cannot go stale here. The `would_need`
 # column is the only editorial text: it is a decision, not a datum, and no shipped file
 # holds it. Every line carries defined_on and either fill_by or permanent_reason.
-DEFINED_ON = SC.get("generated_on", AS_OF)
+# The date the six lines were first written (d56d96f). It used to be read from the
+# scorecard's build date, which reset every line to "defined today" on each rebuild.
+DEFINED_ON = "2026-08-28"
 LIST2 = [
     {"covers": ["a-members", "a-dues", "a-renewal", "a-earned"],
      "not_here": "Members in good standing, dues revenue, renewal rate, "
@@ -400,10 +438,18 @@ DATA = {
     "meta": {
         "title": "What PIC promised, what has landed, and who is in the coalition",
         "source": "Every figure is recomputed from a file another page of this site "
-                  "already publishes: the PIC award register (funding map), the internal "
+                  "already publishes: the PIC award register (funding map), the PIC "
                   "scorecard, the public event register (timeline), the EDA Tech Hub "
                   "award file, USAspending obligations, and BLS QCEW establishment "
-                  "counts. Nothing on this page is fetched.",
+                  "counts. Nothing on this page is fetched. "
+                  + (f"The award register and the event register are as of "
+                     f"{long_date(AS_OF)}" if TL["meta"]["asOf"] == AS_OF else
+                     f"The award register is as of {long_date(AS_OF)} and the event "
+                     f"register as of {long_date(TL['meta']['asOf'])}")
+                  + f"; the payment figures were read on "
+                  f"{long_date(OUTLAYS['as_of'])}, the federal prime-contract figures on "
+                  f"{long_date(FED['meta']['fetched'])} and the establishment counts on "
+                  f"{long_date(LQ['meta']['fetched'])}.",
         "row": "one executed award line in the coalition register, and one dated public "
                "commitment in the promise register. The two are never counted together.",
         "fetched": AS_OF,
@@ -415,9 +461,10 @@ DATA = {
         "baseline": "The published $106,290,451 secured figure is the baseline the "
                     "subtraction runs against. It is the number a reader arrives to test, "
                     "so it is kept in full and decomposed rather than replaced.",
-        "derived_note": "Nothing here is fetched and nothing is typed. "
-                        "derive_accountability.py recomputes every figure from the "
-                        "shipped JSON of the pages named above, and claims.json re-runs "
+        "derived_note": "Nothing here is fetched. derive_accountability.py recomputes "
+                        "every figure from the shipped JSON of the pages named above and "
+                        "from two registers seeded by hand, the dated promises and the "
+                        "recipient typing, which the README names. claims.json re-runs "
                         "the same arithmetic against those upstream files rather than "
                         "against this page\u2019s own output, so a correction on the funding "
                         "map fails this page instead of leaving a flattering number "
@@ -428,9 +475,9 @@ DATA = {
                    "own outlay figure, which covers the federal award lines and not the "
                    "state grant, and that is why the stage is part filled rather than "
                    "either empty or whole.",
-        "not": "No target on this page was set by PIC. The three targets on the board are "
-               "ceilings fixed by signed award documents, and no board row names an "
-               "owner. Where PIC has set no target, the absence is the finding and no "
+        "not": "No numeric target on this page was set by PIC. The three targets on the "
+               "board are ceilings fixed by signed award documents, and no board row "
+               "names an owner. Where PIC has set no target, the absence is the finding and no "
                "placeholder stands in for it.",
         "publicOnly": "This repository is public and its history is permanent, so it "
                       "carries no member, applicant or personal record at any grain. "
@@ -443,8 +490,7 @@ DATA = {
                     "opened and reports nothing about dates published before it existed.",
         "scope": "PIC\u2019s own award register and public record. This page is not a health "
                  "report on the regional polymer economy, which is cluster-health, and "
-                 "not the internal board scorecard, which is unlinked and carries "
-                 "deliberately empty rows.",
+                 "not PIC\u2019s board scorecard, which carries deliberately empty rows.",
         "small_numbers": "The promise register holds eighteen rows and one of them "
                          "carries a number that can be missed. A keeping rate computed "
                          "over a handful of resolved commitments would be noise with a "

@@ -24,12 +24,13 @@
    index-inventory claim so a drift fails the gate rather than shipping.
 
    WHAT IT COUNTS: the pages this hub links, which is the cards in index.html. WHAT IT
-   EXCLUDES: artifacts that exist in the tree and are deliberately unlisted. Two ship a
-   `.unlisted` file at their directory root saying why — scorecard/ is an internal board
-   view of PIC's own performance, accountability/ is an unreviewed draft. That file is the
+   EXCLUDES: artifacts that exist in the tree and are deliberately unlisted. One ships a
+   `.unlisted` file at its directory root saying why: accountability/ is a
+   draft held off the hub. (scorecard/ was the second until 2026-09-29, when it was corrected and carded;
+   see CORRECTIONS.md.) That file is the
    convention, but a bundled page makes no external requests and so cannot read it at
    render time; the enforcement is index-inventory in claims.json, which asserts that every
-   page in counts.json is either carded here or one of the two unlisted artifacts. A new
+   page in counts.json is either carded here or the one unlisted artifact. A new
    artifact therefore cannot appear in the tree without either getting a card or being
    declared unlisted: the gate fails until someone decides which.
 

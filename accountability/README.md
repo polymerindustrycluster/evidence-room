@@ -13,6 +13,22 @@ partner-owned), **27** executed award lines across **21** recipients and **8** a
 owners, **7** rows no public record can fill, and **n = 0** resolved commitments, so no
 keeping rate renders.
 
+## Pre-publication audit corrections — 29 September 2026
+
+Seven statements failed the data in the 2026-09-29 audit; each carries a dated in-page
+correction and a CORRECTIONS.md entry. Band A said all $75,020,661 on other recipients'
+lines never passes through PIC (only the $48,351,413 of EDA money does not), and "signed
+for $7.6 million" had no source for its scope. Band D said the record of published dates
+opens on the day the page ships, left F04 reading "the date has not arrived" after 9
+September, and printed eight year- or quarter-precision dates as stand-in days. Band E put a
+day on a year-precision event. Band F quoted the scorecard's old caution, dated every line to
+the scorecard's build, and the closer said PIC set no target for any date (it set four
+dates; none is a numeric target). The derive script now computes the passed-date reason and
+the date precision, and fixes list 2's `defined_on` at 2026-08-28. Guards:
+`acc-licenses-mechanism`, `acc-register-dates`, `acc-restatement-share`, and new conjuncts
+on `acc-reconcile`, `acc-reconcile-apex` and `acc-negative-list2`. The masthead now links to
+the hub; the page stays unlisted and carries no hub card.
+
 ## Federal-context correction — 8 September 2026
 
 Was: the closing comparison printed $34.9M a year across FY2019–FY2026, including

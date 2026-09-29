@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>The PIC Scorecard</title>
-<meta name="description" content="PIC internal scorecard: eighteen metrics with definitions, owners, cadences and targets. Award delivery and degree completions are computed from public federal and state records; the rows that need PIC's own registers are published as defined empty slots.">
+<meta name="description" content="PIC's own scorecard: eighteen metrics with definitions, owners, cadences and targets. Award delivery and degree completions are computed from public federal and state records; the rows that need PIC's own registers are published as defined empty slots.">
 <link rel="stylesheet" href="../_shared/pic-viz.css">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -14,9 +14,8 @@
 
 <header class="mast">
   <div class="wrap">
-    <strong>Polymer Industry Cluster</strong>
-    <span>Internal scorecard &middot; organisational performance</span>
-    <span class="proto">Internal working view</span>
+    <a class="mast-home" href="../index/"><strong>Polymer Industry Cluster</strong></a>
+    <span>PIC&rsquo;s own scorecard &middot; organisational performance</span>
   </div>
 </header>
 
@@ -25,12 +24,12 @@
   <div class="wrap">
     <p class="eyebrow">PIC&rsquo;s own scorecard &middot; measurement coverage, August 2026</p>
     <h1>Public records fill eight of the fifteen rows PIC answers for, and
-      <em>none of the four on revenue</em>.</h1>
+      <em>none of the four on membership and revenue</em>.</h1>
     <p class="stand">The Polymer Industry Cluster (PIC), an initiative of the Greater
       Akron Chamber, has won $85.3 million in public grant money, and almost all of it
       already has a named recipient. The award register shows $79.2 million of it on an
-      executed line, which is a signed agreement naming the organisation that will
-      receive the money. The register records commitment rather than payment: the federal
+      executed line, which is a signed agreement naming the recipient of the
+      money. The register records commitment rather than payment: the federal
       ledger fills part of that stage, and no public figure covers the whole of it. The four rows
       that would tell a board whether PIC can pay for itself are measured in
       PIC&rsquo;s membership register and general ledger, and this public repository
@@ -44,14 +43,14 @@
          isotype, which was already the lead visual but was built from HTML squares, so
          nothing on the page or in the gates could read it as evidence. It is drawn now,
          and it says the half of the headline the squares never did: the four rows on
-         revenue are all blank. The detailed view is the scorecard table below. Guarded
+         membership and revenue are all blank. The detailed view is the scorecard table below. Guarded
          by tools/coldopen.mjs. -->
     <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
       id="open-t">One square per metric on PIC&rsquo;s scorecard, in the four groups a
       board reads. Filled squares are rows a public federal or state record computes,
       outlines are rows whose measurement stays in PIC&rsquo;s own registers, and the
       last run is cluster context PIC does not control. Eight of the fifteen accountable
-      rows are filled, and group A, the four rows on revenue, has none.</title></svg>
+      rows are filled, and group A, the four rows on membership and revenue, has none.</title></svg>
       <p class="hero-cap">One square is one metric. Filled squares are the rows a public
         record can fill, outlines are the rows whose numbers live only in PIC&rsquo;s own
         registers, and the grey run at the end is cluster context PIC does not
@@ -62,18 +61,17 @@
 
 <section class="gate">
   <div class="wrap">
-    <p class="gate-k">Read this first</p>
-    <p class="gate-t">This is an internal working view, built only from public federal
-      and state data. It is not a published account of PIC&rsquo;s finances or
-      membership.</p>
+    <p class="gate-k">Why seven rows are empty</p>
+    <p class="gate-t">Every figure on this page is built from public federal and state
+      data. None of it is an account of PIC&rsquo;s finances or membership.</p>
     <p class="gate-b">This repository is public and its history is permanent. The one
       per-company membership fact it carries is the chain page&rsquo;s published-member
-      flag, which marks, counts and exports 38 of the 785 companies listed there as
+      flag, which marks, counts and exports 38 of the 710 companies listed there as
       members PIC has published; it is not a member list, and an unflagged company is one
       this repository records nothing about either way. Beyond that flag the tree carries
       no membership register, and no applicant or personal data. Seven rows below are therefore
       unpopulated on purpose: their measurement lives in PIC&rsquo;s membership register,
-      general ledger and drawdown records. Each one is published here with its
+      general ledger and drawdown records, and in the PIC and APEX program records. Each one is published here with its
       definition, cadence and target field ready, and with a visible empty state instead
       of a figure. Filling them needs a copy of this page kept outside a public
       repository, and nothing on this page should be read as an estimate of what those
@@ -125,18 +123,19 @@
     <p class="takeaway">Group B &middot; award delivery</p>
     <h2>Every award dollar without a named recipient sits inside one state grant</h2>
     <p class="lede">The register carries three public awards. Two of them are fully
-      assigned, meaning every dollar names the organisation that receives it. The award
+      assigned, meaning every dollar is on an executed line with a named recipient. The award
       from the federal Economic Development Administration (EDA) is split into seven
       implementation awards, each running straight to the project lead that will spend
       it, and the APEX award, the region&rsquo;s Good Jobs Challenge workforce grant, is
-      assigned in a single line. Everything still unassigned is Ohio money, held in two
+      assigned in a single line to regional workforce programs, a programme rather
+      than an organisation. Everything still unassigned is Ohio money, held in two
       workstreams whose sub-grants have not been signed yet.</p>
 
     <p class="fig-title">$6.2M of the $85.3M awarded has no named recipient yet, and all
       of it is Ohio money</p>
     <p class="fig-sub">One bar per public award, drawn to the same dollar scale. The
-      solid part is money already assigned, with the organisation that receives it named
-      on a signed line. The hatched part is money awarded to PIC with no recipient named
+      solid part is money already assigned, with its recipient named on a signed
+      line. The hatched part is money awarded to PIC with no recipient named
       yet. Each figure is rounded to the nearest tenth of a million dollars, so the two
       parts do not add exactly to the total.</p>
     <div class="chart"><svg id="delivery" role="img" aria-labelledby="delivery-t">
@@ -183,8 +182,8 @@
     <p class="fig-title">Polymer credentials ran between 118 and 179 a year through 2020,
       then dropped to 54</p>
     <p class="fig-sub">Credentials at every level, at those same three universities, in
-      every polymer field of study the federal Classification of Instructional Programs
-      (CIP) recognises, by federal reporting year. Higher is more graduates. The 2020 to
+      the federal Classification of Instructional Programs (CIP) codes the occupations
+      page classes as polymer, by federal reporting year. Higher is more graduates. The 2020 to
       2022 counts are read from the NCES completions files: the data mirror this series is
       otherwise built from filed those years a year late and served one of them under no
       year at all. Three readings come off this series: 54 is the 2021 low, 63 is the
@@ -221,6 +220,21 @@
       seven completed years FY2019–FY2025. Cause: the upstream category query stopped at
       its first page, its consumer price index (CPI) base was incorrect, and this comparison
       included unfinished FY2026. This remains regional context, not a measure of PIC performance.</p>
+    <p class="note">Correction, 29 September 2026. Was: the note under the scorecard said
+      no figure on this page is a measure of money spent, and the empty disbursement row
+      read &ldquo;no figure exists in this repository&rdquo;. Is: no figure taken from the
+      award register measures money spent, and the row reads &ldquo;no figure spans the
+      register&rdquo;, because the federal ledger publishes outlays on seven of the eight
+      federal lines, as group B says. Was: the member flag marked 38 of the 785 companies
+      on the chain page. Is: 38 of 710, the chain page&rsquo;s count since 11 September.
+      Was: group A was the four rows on revenue, the federal context row was routine
+      obligations to regional polymer firms, and every assigned dollar named an
+      organisation. Is: two of the four group A rows are membership, the federal row
+      counts prime contracts under chemical and plastics/rubber codes, and two of the
+      twenty-one named recipients are programmes. Cause: the outlays reached group B on
+      1 September and the note did not; the chain count was corrected in the same change
+      that added the member flag here, which kept the old figure; the labels were written
+      broader than their rows.</p>
   </div>
 </section>
 
@@ -231,7 +245,7 @@
     <p class="sub">Eight of the fifteen accountable rows compute from federal and state
       records: <b>$79.2 million</b> of $85.3 million awarded carries a named recipient,
       and <b>63</b> polymer credentials were awarded at the institutions in this file in 2023 against a
-      three-year average of 60. Seven rows, including all four on revenue and the one on
+      three-year average of 60. Seven rows, including all four on membership and revenue and the one on
       disbursement, are defined and empty. The disbursement row is empty because no public
       figure spans the register, not because nothing has been paid: the federal ledger
       publishes an outlay on seven of the eight federal lines, and the state grant
@@ -252,7 +266,7 @@
         <span>The polymer degree completions behind group C, and the jobs they lead
         to.</span></li>
       <li><a href="../federal-money/">The other federal money</a>
-        <span>The routine contracting in group D.</span></li>
+        <span>The federal contracting in group D.</span></li>
     </ul>
     <p class="foot-cta">Think a number here is wrong, or a definition would not survive
       contact with the ledger? Name the row and what it fails against:

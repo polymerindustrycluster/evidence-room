@@ -64,6 +64,10 @@ const longDate = iso => {
   return `${d} ${MONTH[m - 1]} ${y}`;
 };
 
+/* A date known only to a year or a quarter prints at that precision, never as the stand-in
+   day the timeline stores to place it on an axis. */
+const shownDate = r => r.date_precision === "day" ? longDate(r.current_date) : r.date_display;
+
 const A = D.attribution, S = D.staging, C = D.coalition, P = D.promises,
       R = D.reconcile, N = D.negative, X = D.context;
 
@@ -284,7 +288,9 @@ document.getElementById("attribtable").innerHTML = tableView("attrib",
    the spec puts it and where a screenshot carries it. */
 document.getElementById("attribsrc").innerHTML =
   `PIC award register as of ${D.as_of}, verified against signed federal Notices of Award `
-  + `and state grant SBIG20251005. <b>${esc(X.defects[0].text)}</b>`;
+  + `and state grant SBIG20251005. <b>${esc(X.defects[0].text)}</b> The Chamber&rsquo;s own `
+  + `EDA line, ED24HDQ0G0413, is one of the two FY2024 awards, so restating it with the `
+  + `total leaves the share at 4.9 percent.`;
 
 /* ================================================================ B. awarded to disbursed
    Three stages of one total. The third carries no value, and the two named gaps and the
@@ -441,7 +447,7 @@ document.getElementById("stagetable").innerHTML = tableView("stage",
               "not published", pct1(S.outlays.share)]]));
 
 document.getElementById("stagesrc").innerHTML =
-  `PIC award register and internal scorecard delivery rows as of ${D.as_of}. `
+  `PIC award register and scorecard delivery rows as of ${D.as_of}. `
   + `Payments from ${esc(S.outlays.source)}, read ${longDate(S.outlays.as_of)}; `
   + `${esc(S.outlays.no_record.name)}&rsquo;s ${usd(S.outlays.no_record.amount)} award `
   + `has no record there and the ${usd(S.outlays.not_federal.amount)} state grant is not `
@@ -541,7 +547,7 @@ document.getElementById("calib").innerHTML = `
   <p class="c-k">Date-keeping, the accuracy statistic this register reports on itself</p>
   <p class="c-n">n = ${CAL.n}</p>
   <p class="c-t">${CAL.n === 0
-    ? `The record of published dates opens on the day this page ships. No commitment has
+    ? `The record of published dates opened on ${longDate(P.opened_on)}. No commitment has
        resolved against it yet, so n is zero and this page reports no keeping rate.`
     : `${CAL.kept} of ${CAL.n} resolved commitments landed on the date first published.`}</p>
   <p class="c-d">The statistic is ${esc(CAL.statistic)}.
@@ -640,9 +646,9 @@ function swimlane(W, mob) {
     const cy = axisY + (up ? -1 : 1) * (16 + n * 17);
     mark(svg, xs(r.current_date), cy, r.status, 6.5);
     hoverable(el("circle", {cx: xs(r.current_date), cy, r: 12, fill: "transparent"}, svg),
-      `<b>${esc(longDate(r.current_date))}</b><br>${esc(r.commitment)}<br>
+      `<b>${esc(shownDate(r))}</b><br>${esc(r.commitment)}<br>
        ${esc(r.owner)} &middot; ${(STATUS[r.status] || STATUS.scheduled).word}`,
-      `${longDate(r.current_date)}: ${r.commitment}, ${r.owner}`);
+      `${shownDate(r)}: ${r.commitment}, ${r.owner}`);
   });
 
   /* Shortened by hand for the narrow canvas rather than machine-truncated: the desktop
@@ -674,7 +680,7 @@ document.getElementById("register").innerHTML = GROUPS.map(([cls, title, blurb])
       const st = STATUS[r.status] || STATUS.scheduled;
       return `<div class="rg">
         <div class="rg-d"><i class="${r.status === "delivered" ? "on" : ""}"></i>
-          ${esc(r.current_date)}</div>
+          ${esc(r.date_precision === "day" ? r.current_date : r.date_display)}</div>
         <div class="rg-c">${esc(r.commitment)}
           <span class="rg-m">Set by <b>${esc(r.set_by)}</b>, owned by
             ${esc(r.owner)}. Source: ${esc(r.source_document)}.
@@ -705,6 +711,7 @@ document.getElementById("promisesrc").innerHTML =
   `Public event register as of ${D.as_of}, forward events only, seeded once into `
   + `<span class="mono">accountability/data/promises.json</span> on `
   + `${esc(P.opened_on)} and append-only from that date. ${esc(P.rule)} `
+  + `Rows are read against the build date, ${longDate(D.generated_on)}. `
   + `<b>${esc(D.meta.excludes)}</b>`;
 
 /* ==================================================== E. three published counts, reconciled
@@ -785,10 +792,10 @@ document.getElementById("cannot").innerHTML = `
   </table>`;
 
 document.getElementById("negsrc").innerHTML =
-  `Internal scorecard as of ${D.as_of}: ${N.counts.rows} rows, ${N.counts.accountable} of `
+  `Scorecard as of ${D.as_of}: ${N.counts.rows} rows, ${N.counts.accountable} of `
   + `them accountable, ${N.counts.vault} published as defined empty slots. Both lists are `
-  + `generated from the published data files that carry each limitation, so neither can go stale `
-  + `here. <b>${esc(X.defects[3].text)}</b>`;
+  + `generated from the published data files that carry each limitation, so neither can drift `
+  + `from the file it quotes. Ages are counted to the build date, ${longDate(D.generated_on)}.`;
 
 /* Generated methodology box, then the closer. No footprint banner: the page is not
    county-scoped as a whole, and the one figure that is names the twelve counties in its

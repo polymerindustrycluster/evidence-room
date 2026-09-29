@@ -4,8 +4,10 @@ An EOS-style board view of what **PIC is accountable for**. Every other artifact
 repository measures the regional polymer economy. This one measures the organisation, and
 the two are held apart on purpose.
 
-**This page is not linked from `index/`.** It stands alone: it is an internal working
-view, and the hub is a public reading list.
+**Published on the hub from 2026-09-29.** It was held back as an internal working view
+until then (see the 2026-09-29 entry in `CORRECTIONS.md` for what was fixed before it went
+on the hub). The accountability page it links to for the outlay figures is still an
+unlisted draft.
 
 ## Federal-context correction — 8 September 2026
 
@@ -60,7 +62,7 @@ figure recomputed from public data; 7 are empty slots.
 | A | Renewal rate | empty slot | PIC membership register |
 | A | Earned-revenue share | empty slot | PIC general ledger |
 | B | Award dollars with a named recipient | **92.8%** | funding-map |
-| B | Named recipients under an executed agreement | **21** | funding-map |
+| B | Named recipients under an executed agreement (two are programme aggregates) | **21** | funding-map |
 | B | EDA implementation awards obligated to a project lead | **7 of 7** | federal-money/techhub |
 | B | Ohio Innovation Hub dollars with a named recipient | **80.3%** | funding-map |
 | B | Total public money secured | **$106.3M** | funding-map |
@@ -132,13 +134,9 @@ source page fails this page's gate instead of leaving a stale board number behin
 
 ## Known state
 
-- **`node tools/verify.mjs scorecard` fails on one check: `scorecard is not in
-  SOURCES.json`.** The provenance gate requires a `by_artifact` entry, which lives in
-  `_data/SOURCES.json`. This page was built under an instruction not to touch `_data/`,
-  so the entry has not been added. The one-line patch, using registry keys that already
-  exist: `"scorecard": ["usaspending", "ipeds", "qcew"]`. Everything else in
-  `verify.mjs` passes at both widths (no console errors, no overflow, no empty slots, no
-  uninterpolated templates, no stranded prose).
+- `_data/SOURCES.json` carries the page's `by_artifact` entry
+  (`"scorecard": ["usaspending", "ipeds", "qcew"]`), so the provenance check in
+  `node tools/verify.mjs scorecard` no longer fails on it.
 - The lead visual is the hero's coverage squares rather than a chart, and the page's
   centrepiece is a table. That is deliberate: the argument is which cells are empty, and
   only a table shows an empty cell as empty.
@@ -156,6 +154,15 @@ source page fails this page's gate instead of leaving a stale board number behin
   publishes never changed; one of the three years in it was the wrong year.
 
 ## Update log
+
+- **1.2 (2026-09-29)** — corrected before the page went on the hub. The note under the
+  scorecard no longer says no figure on the page measures money spent (group B prints the
+  federal outlays), and the empty disbursement row says no figure spans the register. The
+  member-flag sentence reads 38 of 710, not 785. Group A is "membership and revenue", the
+  d-federal label names the codes it counts, the b-recipients definition names both
+  programme aggregates, the talent trend reads "up in both years since 2021", and the
+  small-numbers note says "tens". The internal-view flag is gone and the masthead links to
+  the hub. 21 claims, 0 manual.
 
 - **1.1 (2026-08-31)** — the talent rows re-derived on the corrected IPEDS years: the
   window reads 54, 62, 63 rather than 124, 54, 63, its average 60 rather than 80, and the

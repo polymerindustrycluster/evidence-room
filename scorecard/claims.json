@@ -6,16 +6,17 @@
     "th": "../../federal-money/data/techhub.json",
     "fed": "../../federal-money/data/federal.json",
     "occ": "../../occupations/data/viz-data.json",
-    "peers": "../../peers/data/peers.json"
+    "peers": "../../peers/data/peers.json",
+    "chain": "../../chain/data/chain-data.json"
   },
   "claims": [
     {
       "id": "sc-coverage",
-      "text": "Headline and hero card 1: public records fill eight of the fifteen rows PIC answers for, none of the four on revenue, and the other seven are defined and left empty.",
+      "text": "Headline and hero card 1: public records fill eight of the fifteen rows PIC answers for, none of the four on membership and revenue, and the other seven are defined and left empty.",
       "source": "scorecard/data/scorecard.json, written by scorecard/derive_scorecard.py from the four source datasets listed in this file",
       "assert": "D['sc']['counts']['public'] == 8 and D['sc']['counts']['accountable'] == 15 and D['sc']['counts']['vault'] == 7 and D['sc']['counts']['public'] + D['sc']['counts']['vault'] == D['sc']['counts']['accountable'] and len([r for r in D['sc']['rows'] if r['group'] == 'A']) == 4 and all(r['status'] == 'vault' for r in D['sc']['rows'] if r['group'] == 'A')",
       "actual": "(D['sc']['counts'], [r['status'] for r in D['sc']['rows'] if r['group'] == 'A'])",
-      "falsified_if": "A row is added to or removed from any group, or a group-A row acquires a public source. The headline prints both halves of the fraction, so either number moving breaks it. The four-on-revenue clause is the group-A membership test: if a dues or renewal figure ever becomes publishable from a public record, the sentence is wrong even though the arithmetic still holds."
+      "falsified_if": "A row is added to or removed from any group, or a group-A row acquires a public source. The headline prints both halves of the fraction, so either number moving breaks it. The four-on-membership-and-revenue clause is the group-A test: if a dues or renewal figure ever becomes publishable from a public record, the sentence is wrong even though the arithmetic still holds."
     },
     {
       "id": "sc-empty-slots",
@@ -27,7 +28,7 @@
     },
     {
       "id": "sc-assigned",
-      "text": "Hero card 2, row b-assigned and the closer: $79.2 million of the $85.3 million awarded, 92.8 percent, sits on an executed line naming the organisation that holds it.",
+      "text": "Hero card 2, row b-assigned and the closer: $79.2 million of the $85.3 million awarded, 92.8 percent, sits on an executed line naming its recipient.",
       "source": "PIC award register as of 13 August 2026, via funding-map/data/funding.json; recomputed here rather than read from a total",
       "assert": "sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']) == 79170176 and D['fm']['meta']['totals']['awards'] == 85335784 and D['sc']['delivery']['assigned'] == sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']) and D['sc']['delivery']['awarded'] == D['fm']['meta']['totals']['awards'] and round(D['sc']['delivery']['assigned'] / D['sc']['delivery']['awarded'] * 100, 1) == 92.8",
       "actual": "(sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']), D['fm']['meta']['totals']['awards'])",
@@ -69,15 +70,15 @@
       "id": "sc-recipients",
       "text": "Row b-recipients: 21 named recipients hold executed award lines across seven programmes.",
       "source": "PIC award register, funding-map/data/funding.json",
-      "assert": "len(D['fm']['recipients']) == 21 and len(D['fm']['programs']) == 7 and len([r for r in D['fm']['recipients'] if not r['awards']]) == 0",
+      "assert": "len(D['fm']['recipients']) == 21 and len(D['fm']['programs']) == 7 and len([r for r in D['fm']['recipients'] if not r['awards']]) == 0 and all(n in one(r for r in D['sc']['rows'] if r['id'] == 'b-recipients')['definition'] for n in ('Two of them', one(r for r in D['fm']['recipients'] if r['id'] == 'polymer-pilot-facility')['name'], one(r for r in D['fm']['recipients'] if r['id'] == 'regional-workforce')['name'].lower()))",
       "actual": "(len(D['fm']['recipients']), len(D['fm']['programs']))",
-      "falsified_if": "A recipient is added or removed. One of the twenty-one is a programme aggregate rather than a single organisation, which the row's definition states; if the register ever splits that aggregate into named organisations the count rises and the definition needs rewriting, not just the number."
+      "falsified_if": "A recipient is added or removed. Two of the twenty-one, the Polymer Pilot Facility and regional workforce programs, are programme aggregates rather than single organisations, which the row's definition names; if the register ever splits one into named organisations the count rises and the definition needs rewriting, not just the number. The definition read 'One row of the register is a programme aggregate' until 2026-09-29."
     },
     {
       "id": "sc-polymer-latest",
-      "text": "Hero card 4, row c-polymer and the closer: 63 polymer credentials were awarded in the region in 2023, against a three-year average of 60.",
+      "text": "Hero card 4, row c-polymer and the closer: 63 polymer credentials were awarded in the region in 2023, against a three-year average of 60, up in both years since 2021.",
       "source": "IPEDS completions through 2023 at three regional institutions, via occupations/data/viz-data.json",
-      "assert": "sum(p['latest'] for p in D['occ']['programs'] if p['group'] == 'polymer') == 63 and D['occ']['program_totals']['polymer_awards_latest'] == 63 and D['occ']['program_totals']['latest_year'] == 2023 and D['sc']['talent']['polymer'][-1]['n'] == 63 and D['sc']['talent']['polymer_window'] == [54, 62, 63] and round(sum(D['sc']['talent']['polymer_window']) / 3) == 60 and len(D['occ']['program_totals']['institutions']) == 3",
+      "assert": "sum(p['latest'] for p in D['occ']['programs'] if p['group'] == 'polymer') == 63 and D['occ']['program_totals']['polymer_awards_latest'] == 63 and D['occ']['program_totals']['latest_year'] == 2023 and D['sc']['talent']['polymer'][-1]['n'] == 63 and D['sc']['talent']['polymer_window'] == [54, 62, 63] and round(sum(D['sc']['talent']['polymer_window']) / 3) == 60 and len(D['occ']['program_totals']['institutions']) == 3 and D['sc']['talent']['polymer_trend'] == 'up in both years since 2021' and D['sc']['talent']['polymer_window'][0] < D['sc']['talent']['polymer_window'][1] < D['sc']['talent']['polymer_window'][2]",
       "actual": "(sum(p['latest'] for p in D['occ']['programs'] if p['group'] == 'polymer'), D['sc']['talent']['polymer_window'])",
       "falsified_if": "An IPEDS revision moves any of the three window years, a newer completions year is fetched, or the occupations page re-classifies a CIP code between its polymer and materials groups. This page inherits that classification rather than making its own, so a change there changes this number without any edit here. The window average read 80 until 2026-08-31: the window's first year turned out to be the wrong year and one year of the three was missing entirely. See _data/build/ipeds_mirror_fix.py."
     },
@@ -133,9 +134,9 @@
       "id": "sc-context-federal",
       "text": "Row d-federal: federal prime-contract obligations under chemical and plastics/rubber manufacturing codes averaged $41.4 million a year across the seven completed fiscal years FY2019-FY2025, in 2025 dollars. Unfinished FY2026 is excluded.",
       "source": "USAspending prime-contract obligations at place of performance, FY2019-FY2025, via federal-money/data/federal.json",
-      "assert": "round(sum(r['real'] for r in D['fed']['naics'] if 2019 <= r['fy'] <= 2025) / 7 / 1e6, 1) == 41.4 and sorted(set(r['fy'] for r in D['fed']['naics'] if 2019 <= r['fy'] <= 2025)) == list(range(2019, 2026)) and one(r for r in D['sc']['rows'] if r['id'] == 'd-federal')['current'] == '$41.4M a year' and one(r for r in D['sc']['rows'] if r['id'] == 'd-federal')['sub'] == 'FY2019-FY2025 average, seven completed years'",
+      "assert": "round(sum(r['real'] for r in D['fed']['naics'] if 2019 <= r['fy'] <= 2025) / 7 / 1e6, 1) == 41.4 and sorted(set(r['fy'] for r in D['fed']['naics'] if 2019 <= r['fy'] <= 2025)) == list(range(2019, 2026)) and one(r for r in D['sc']['rows'] if r['id'] == 'd-federal')['current'] == '$41.4M a year' and one(r for r in D['sc']['rows'] if r['id'] == 'd-federal')['sub'] == 'FY2019-FY2025 average, seven completed years' and one(r for r in D['sc']['rows'] if r['id'] == 'd-federal')['metric'] == 'Federal prime-contract obligations, chemical and plastics/rubber manufacturing codes, PIC-12'",
       "actual": "(sum(r['real'] for r in D['fed']['naics'] if 2019 <= r['fy'] <= 2025) / 7, one(r for r in D['sc']['rows'] if r['id'] == 'd-federal'))",
-      "falsified_if": "A revision changes the rounded $41.4M average, a completed year is missing, or the rendered row retains a stale value or period. FY2026 must stay outside this completed-year comparison; the historical average does not establish recurring demand."
+      "falsified_if": "A revision changes the rounded $41.4M average, a completed year is missing, or the rendered row retains a stale value or period. FY2026 must stay outside this completed-year comparison; the historical average does not establish recurring demand. The row's label read 'Routine federal obligations to regional polymer firms' until 2026-09-29; the codes are chemical as well as plastics/rubber, the recipients are any contractor performing in the counties, and a historical average does not make the spending routine."
     },
     {
       "id": "sc-context-rank",
@@ -160,6 +161,28 @@
       "assert": "len([r for r in D['sc']['rows'] if r['group'] == 'D']) == 3 and all(r['status'] == 'context' and r['owner'] == 'outside PIC' for r in D['sc']['rows'] if r['group'] == 'D') and all(r['status'] != 'context' for r in D['sc']['rows'] if r['group'] != 'D') and D['sc']['counts']['accountable'] == len([r for r in D['sc']['rows'] if r['group'] != 'D']) and D['sc']['counts']['rows'] == D['sc']['counts']['accountable'] + D['sc']['counts']['context']",
       "actual": "[(r['group'], r['status'], r['owner']) for r in D['sc']['rows']]",
       "falsified_if": "A context row is moved into groups A, B or C, or an accountable row is marked context. Either would let a regional number be read as PIC delivery, which is the failure this page is organised to prevent. It also fails if the two totals stop reconciling, because a row counted in both would be exactly the averaging the page refuses."
+    },
+    {
+      "id": "sc-caution-outlays",
+      "text": "The note under the scorecard and the Limitations: an award register records commitment, not payment, so no figure taken from it measures money spent; the federal ledger publishes outlays on seven of the eight federal lines, and no public figure covers the state grant or the whole $85,335,784, so the disbursement row is empty and reads 'no figure spans the register'.",
+      "source": "funding-map/data/funding.json meta.outlays (USAspending Total Outlays, read 2026-09-01) and the award lines' awardId and outlay fields; scorecard/data/scorecard.json meta.caution and row b-disbursed",
+      "assert": "(lambda o, c, fl: o['lines'] == 7 and len(fl) == 8 and len([a for a in fl if 'outlay' in a]) == o['lines'] and [a['awardId'] for a in fl if 'outlay' not in a] == [o['no_record']['awardId']] and o['not_federal']['awardId'] == 'SBIG20251005' and one(s for s in D['fm']['sources'] if s['id'] == 'ohio')['award'] == o['not_federal']['amount'] and round(o['outlaid']) == 11642402 and o['obligated'] == 48114979 and D['fm']['meta']['totals']['awards'] == 85335784 and 'outlays on seven of the eight federal lines' in c and 'the state grant or the whole $85,335,784' in c and 'no figure taken from it measures money spent' in c and 'no figure on this page' not in c and one(r for r in D['sc']['rows'] if r['id'] == 'b-disbursed').get('empty') == 'no figure spans the register')(D['fm']['meta']['outlays'], D['sc']['meta']['caution'], [a for r in D['fm']['recipients'] for a in r['awards'] if a.get('awardId', '').startswith('ED')])",
+      "actual": "(D['fm']['meta']['outlays']['lines'], D['sc']['meta']['caution'], one(r for r in D['sc']['rows'] if r['id'] == 'b-disbursed').get('empty'))",
+      "falsified_if": "The note says again that no figure on the page measures money spent, while group B prints $11,642,402 of federal outlays; the number of federal lines with an outlay moves off seven of eight; the state grant acquires a public drawdown figure; or the empty disbursement row stops saying why it is empty. Until 2026-09-29 the note read 'It records no payment, so no figure on this page is a measure of money spent', and the accountability page quoted it beside the same outlays. The sentence is built from the funding map's outlay block by derive_scorecard.py, so a new outlay record changes it rather than leaving it stale."
+    },
+    {
+      "id": "sc-member-flag",
+      "text": "The note below the hero: the chain page's published-member flag marks 38 of the 710 companies listed there.",
+      "source": "chain/data/chain-data.json, meta.neo_total and the member field of each company; the 785-to-710 correction is CORRECTIONS.md 2026-09-11, 'Chain geography and the invalid coverage comparison'",
+      "assert": "D['chain']['meta']['neo_total'] == 710 and len(D['chain']['companies']) == D['chain']['meta']['neo_total'] and sum(1 for c in D['chain']['companies'] if c.get('member')) == 38",
+      "actual": "(D['chain']['meta']['neo_total'], len(D['chain']['companies']), sum(1 for c in D['chain']['companies'] if c.get('member')))",
+      "falsified_if": "The chain page's regional count or its member flags change. The sentence read '38 of the 785 companies' until 2026-09-29: it was written in the same change that corrected the chain page from 785 records to 710, and kept the old denominator. The typed sentence is bound to the page by the counts entry below, which fails in tools/all.mjs's noun gate if '38 of the 710' leaves the page; this assertion only reads the data.",
+      "counts": [
+        {
+          "figure": "38 of the 710",
+          "noun": "compan"
+        }
+      ]
     }
   ]
 }

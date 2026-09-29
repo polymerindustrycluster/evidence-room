@@ -11,6 +11,67 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-29 — The scorecard and the accountability page before their first publication
+
+A pre-publication audit read both pages against their own data. The statements below failed
+it. Both pages were unlisted when they were written, but a reader with the link could have
+quoted them, so each gets an entry.
+
+**Money spent, *scorecard*.** **Was:** the note under the scorecard said "No figure on this
+page is a measure of money spent", and the empty disbursement row read "no figure exists in
+this repository". Group B has printed federal outlays on seven of the eight federal lines
+since 1 September. **Is:** "An award register records commitment, not payment, so no figure
+taken from it measures money spent", and the row reads that no public figure covers the
+state grant or the whole $85,335,784.
+
+**The member flag's denominator, *scorecard*.** **Was:** the flag "marks, counts and exports
+38 of the 785 companies" on the chain page. **Is:** 38 of 710, the chain page's count since
+its 11 September correction.
+
+**Labels broader than their rows, *scorecard*.** **Was:** group A was "the four rows on
+revenue"; the federal context row was routine contracting with regional polymer firms; every
+assigned dollar "names the organisation that receives it"; the completions row covered
+"every polymer field of study" the federal classification recognises; the talent trend read
+"up three years" over three values, which hold two rises. **Is:** two of the
+four group A rows are membership, so "membership and revenue"; the federal row counts prime
+contracts under the chemical and plastics and rubber industry codes; two of the twenty-one
+named recipients are programmes, so every assigned dollar is on an executed line with a
+named recipient; the completions row counts the codes the occupations page classes as
+polymer; the trend reads "up in both years since 2021".
+
+**Where the money goes, *accountability*.** **Was:** the awards commit the funders to pay
+the other recipients directly, by design, so PIC cannot mis-spend money that never passes
+through it. **Is:** EDA obligates $48,351,413 directly to the six other project leads; the
+other $26,669,248 runs through the hub or the Chamber, $23,584,877 on state-grant lines the
+hub allocates and the $3,084,371 APEX award, on which the Chamber is the grantee.
+
+**The Chamber's wider figure, *accountability*.** **Was:** the Chamber "signed for" $7.6
+million. **Is:** $7.6 million is every award the page names the Chamber on, as destination
+or grantee; no file in the repository names the grantee of the state grant.
+
+**Dates at the wrong precision, *accountability*.** **Was:** the register of published dates
+"opens on the day this page ships"; the 9 September conference read "the date has not
+arrived" after it had; eight dates known only to a year or a quarter printed as single days,
+among them "15 November 2027" for a promise dated to the last quarter of 2027, and "On 1 July
+2025 PIC recorded" a first funding cycle dated to the year. **Is:** the register opened on
+28 August 2026; a passed date reads as not yet read against the register; each date prints
+at its known precision.
+
+**The negative space, *accountability*.** **Was:** the empty disbursement line repeated the
+scorecard's old note, on a page that prints $11,642,402 paid out; each empty line read
+"defined today", the scorecard's build date; the closer said PIC "has set no target for any
+of the eighteen dates". **Is:** the line quotes the scorecard's corrected note; each line
+carries 28 August 2026, when it was written; PIC has set no numeric target, though it set
+four of the dates.
+
+**Cause:** Each page was corrected on 1 and 8 September at the surface a reviewer named, and
+the same statement survived on the other surfaces: the scorecard's note, the accountability
+page's copy of it, and the chain count the member flag quotes. The timeline's stand-in days
+were printed as dates because the page never read the precision field beside them. The
+sentence on where the money goes was true of the EDA award and was written for all three.
+New claims now read the mechanism of every award line, the precision of every register date,
+and the scorecard note the accountability page quotes.
+
 ## 2026-09-28 — Seven more statements on the corrected pages failed their own data
 
 Codex re-read the pages corrected below against their own data. Seven published statements

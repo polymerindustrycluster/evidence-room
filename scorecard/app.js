@@ -157,7 +157,7 @@ function drawOpen() {
                + `a public record`,
     {x: m.l, y: M ? 20 : 19, "font-size": M ? 15 : 16, "font-weight": M ? 700 : 900,
      fill: "#fff"});
-  txt(svg, `The ${C.vault_in_a} rows on revenue are all blank.`,
+  txt(svg, `The ${C.vault_in_a} rows on membership and revenue are all blank.`,
     {x: m.l, y: 40, "font-size": 15, "font-weight": 700, fill: O_LIME});
 
   /* On the phone the title takes its own line above the squares and the tally drops to
@@ -257,7 +257,7 @@ function cell(r, key) {
     if (r.status === "vault")
       return `<td class="cur empty" colspan="2" data-l="Current">
         <span class="chip">Not published here</span>
-        <span class="s">no figure exists in this repository</span></td>`;
+        <span class="s">${esc(r.empty || "no figure exists in this repository")}</span></td>`;
     return `<td class="cur" data-l="Current"><b>${esc(r.current)}</b>` +
            (r.sub ? `<span class="s">${esc(r.sub)}</span>` : "") + `</td>`;
   }
@@ -343,7 +343,7 @@ function deliveryDesktop() {
     txt(svg, s.unassigned ? `${short(s.assigned)} named` : "fully assigned",
       {x: xs(s.award) + 14, y: y + 12, class: "pv-lab"});
     txt(svg, s.unassigned ? `${short(s.unassigned)} not yet named`
-                          : "every dollar has a recipient",
+                          : "every dollar on an executed line",
       {x: xs(s.award) + 14, y: y + 29, class: "pv-labq",
        fill: s.unassigned ? "#7A7263" : "var(--pv-muted)"});
   });

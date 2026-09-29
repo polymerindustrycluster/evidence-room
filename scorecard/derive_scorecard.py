@@ -62,6 +62,11 @@ def short(n):
 AWARDED = FM["meta"]["totals"]["awards"]
 MATCH = FM["meta"]["totals"]["match"]
 SECURED = FM["meta"]["totals"]["total"]
+OUTLAYS = FM["meta"]["outlays"]
+# Federal lines: those with a USAspending outlay record, plus the one with no record at all.
+FED_LINES = OUTLAYS["lines"] + (1 if OUTLAYS.get("no_record") else 0)
+WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+         "ten", "eleven", "twelve"]
 ASSIGNED = sum(a["amount"] for r in FM["recipients"] for a in r["awards"])
 UNASSIGNED = AWARDED - ASSIGNED
 N_RECIPIENTS = len(FM["recipients"])
@@ -152,12 +157,14 @@ if DUP_1920:
 # The direction word was typed into three rows -- "down three years", "up three years" --
 # and two of the three stopped being true the moment the window carried its right years.
 # A word that describes the numbers beside it is computed from them.
+# Three values hold two changes, not three: "up three years" counted the years rather
+# than the rises between them (corrected 2026-09-29).
 def trend_words(w):
     """Three window values, and what may honestly be said about their order."""
     if w[0] < w[1] < w[2]:
-        return "up three years", "up"
+        return "up in both years since %d" % WINDOW[0], "up"
     if w[0] > w[1] > w[2]:
-        return "down three years", "down"
+        return "down in both years since %d" % WINDOW[0], "down"
     return "volatile", "volatile"
 
 
@@ -260,9 +267,10 @@ row(id="b-assigned", group="B", status="public",
     source="PIC award register")
 row(id="b-recipients", group="B", status="public",
     metric="Named recipients under an executed agreement",
-    definition="Distinct organisations holding at least one executed award line. One "
-               "row of the register is a programme aggregate rather than a single firm, "
-               "and is counted as one.",
+    definition="Distinct named recipients holding at least one executed award line. "
+               "Two of them, the Polymer Pilot Facility and regional workforce "
+               "programs, are programme aggregates rather than single organisations, "
+               "and each is counted as one.",
     cadence="On amendment of the award register",
     current=str(N_RECIPIENTS),
     sub="across %d programmes" % len(FM["programs"]),
@@ -306,7 +314,11 @@ row(id="b-disbursed", group="B", status="vault",
                "divided by dollars awarded. The register above records commitment and "
                "execution; nothing in it records a payment.",
     cadence="Quarterly, at quarter close",
-    source="PIC drawdown records and agency payment systems")
+    source="PIC drawdown records and agency payment systems",
+    # Unlike the other empty rows, part of this one is public: the federal ledger
+    # publishes outlays on most federal lines. What no source has is one figure across
+    # the whole register, and the empty state says that rather than "no figure exists".
+    empty="no figure spans the register")
 
 # --- C. talent
 row(id="c-polymer", group="C", status="public",
@@ -373,7 +385,8 @@ row(id="d-emp", group="D", status="context",
     source="Occupations page",
     href="../occupations/")
 row(id="d-federal", group="D", status="context",
-    metric="Routine federal obligations to regional polymer firms",
+    metric="Federal prime-contract obligations, chemical and plastics/rubber "
+           "manufacturing codes, PIC-12",
     definition="Federal prime-contract obligations under chemical and plastics/rubber "
                "manufacturing codes at place of performance in the twelve counties, "
                "averaged over the seven completed fiscal years FY2019-FY2025, in 2025 "
@@ -442,15 +455,19 @@ doc = {
                       "pipeline or drawdown records is published here as a defined empty "
                       "slot. Filling those rows requires a copy of this page kept "
                       "outside a public repository.",
-        "caution": "An award register records what has been committed and executed. It "
-                   "records no payment, so no figure on this page is a measure of money "
-                   "spent. Obligated is not disbursed, and the disbursement row is empty "
-                   "for that reason rather than for lack of effort.",
+        # The first version said "no figure on this page is a measure of money spent" on
+        # a page that prints the federal outlays. The counts are read from the funding
+        # map's outlay block so the sentence moves with it (corrected 2026-09-29).
+        "caution": "An award register records commitment, not payment, so no figure taken "
+                   "from it measures money spent. The federal ledger publishes outlays on "
+                   "%s of the %s federal lines; no public figure covers the state grant or "
+                   "the whole %s, so the disbursement row is empty."
+                   % (WORDS[OUTLAYS["lines"]], WORDS[FED_LINES], money(AWARDED)),
         "not": "No target on this page was set by PIC. A target cell showing a figure is "
                "a ceiling fixed by a signed award document, and every other target cell "
                "reads “not set”. No owner cell names a person, because this "
                "repository holds no owner assignment for any row.",
-        "small_numbers": "The talent rows are administrative counts in the low tens. "
+        "small_numbers": "The talent rows are administrative counts in the tens. "
                          "The polymer series ran %s across %d, %d and %d, so a single "
                          "year is a reading and not a direction."
                          % (", ".join(str(n) for n in POLY_WINDOW), *WINDOW),
@@ -462,7 +479,7 @@ doc = {
                     % (WINDOW[0], WINDOW[-1]),
     },
     "generated_on": datetime.date.today().isoformat(),
-    "version": "1.0",
+    "version": "1.2",
     "counts": COUNTS,
     "groups": GROUPS,
     "rows": R,

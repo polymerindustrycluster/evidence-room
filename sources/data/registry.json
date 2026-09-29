@@ -2955,12 +2955,12 @@
  ],
  "checks": {
   "n_pages": 22,
-  "n_claims": 532,
+  "n_claims": 537,
   "n_manual": 22,
   "this_page": 34,
-  "n_auto": 510,
-  "n_hub_claims": 32,
-  "n_site_claims": 564
+  "n_auto": 515,
+  "n_hub_claims": 33,
+  "n_site_claims": 570
  },
  "vintage": {
   "n_revised": 259,
