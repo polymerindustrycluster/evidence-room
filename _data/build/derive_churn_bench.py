@@ -183,8 +183,9 @@ retirement = {
     "plant": {"headcount": PLANT,
               "replacement_hires": round(PLANT * sum(q["churn_rate"] for q in CH["quarters"][-4:]) / QS * 4),
               "from_age": round(PLANT * annual / jobs, 1)},
-    # Key kept for readers of the file; the 2026-09-28 correction reversed its content.
-    "floor": "NOT a floor on replacement demand: separations exceeded hires over the same "
+    # Named "floor" until 2026-09-29: the 2026-09-28 correction reversed its content,
+    # and a key that says the opposite of its value misleads anyone reading the file.
+    "limits": "NOT a floor on replacement demand: separations exceeded hires over the same "
              "four quarters, so not every departure need be refilled. Nor a total: people "
              "who leave plastics and rubber for another industry are invisible to QWI and "
              "need Census Job-to-Job Flows, a different product.",

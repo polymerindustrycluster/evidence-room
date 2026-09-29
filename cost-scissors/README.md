@@ -80,10 +80,12 @@ The sync changes only `deflator` and `meta.nominal`; it preserves the nominal se
   rounding. The deflator ships in `data/scissors.json` (see the note above) and its
   coarseness is stated in the direction that cannot flatter the page.
 - **2026-08-29 (third pass)** — **A line a reader could not check.** The gray comparator on
-  the gap chart is resin minus industrial chemicals, and the chemicals index was drawn into
-  that subtraction and named as a table column while stating its own level nowhere: not in
-  a key, not in the ladder table, not in the level table, not in a source line. It now has
-  a key (the gap chart gained one, naming both lines and the three levels behind them), a
+  the gap chart is resin minus the chemicals index (WPU06, BLS chemicals and allied
+  products; this entry first called it "industrial chemicals", which is WPU061, a name
+  withdrawn on 2026-09-28). That index was drawn into the subtraction and named as a table
+  column while stating its own level nowhere: not in a key, not in the ladder table, not
+  in the level table, not in a source line. It now has a key (the gap chart gained one,
+  naming both lines and the three levels behind them), a
   row in the level table under the line chart, and a `Chemicals` column in the spread table
   beside the resin level it is subtracted from, so the second subtraction can be re-run
   exactly the way the first one can. Guarded by `cs-comparator-checkable`, whose

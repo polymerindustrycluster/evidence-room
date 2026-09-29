@@ -15,6 +15,7 @@ USAGE
   python verify_claims.py --list     every claim and its falsification condition
 """
 import json, os, sys, math
+from decimal import Decimal, ROUND_HALF_UP
 
 import ipeds_quarantine as QZ
 
@@ -39,6 +40,27 @@ def pct(a, b):
 
 def close(a, b, tol=1e-9):
     return abs(a - b) <= tol
+
+
+def tofixed(x, digits=1):
+    """The text JavaScript's Number.prototype.toFixed prints, so a claim can be checked
+    against what a page actually shows.
+
+    Python's round() rounds the exact binary value half to EVEN and returns a float, so
+    round(1.25, 1) is 1.2. toFixed rounds the same exact binary value half UP (away from
+    zero) and returns text, so (1.25).toFixed(1) is "1.3". They agree on every value that
+    is not an exact binary half, which is nearly all of them, and disagree on exactly the
+    ones a rounding-boundary guard exists to catch: a page printing "1.3" beside a claim
+    passing at 1.2. Use this where a page prints the figure with toFixed and compare the
+    result to a string ('1.8'), because that is the thing the reader sees.
+
+    Decimal(x) is the exact binary value of a float, not its shortest repr, which is what
+    toFixed also rounds. Finite values below 1e21 only; beyond that JS switches to
+    exponent notation.
+    """
+    if x == 0:
+        x = 0  # toFixed prints -0 as "0"; Decimal would keep the sign
+    return str(Decimal(x).quantize(Decimal(1).scaleb(-digits), rounding=ROUND_HALF_UP))
 
 
 def series(programs, group, y0, y1, key="by_year"):
@@ -77,7 +99,8 @@ def series(programs, group, y0, y1, key="by_year"):
 ENV = {"one": one, "pct": pct, "close": close, "sum": sum, "len": len, "min": min,
        "max": max, "abs": abs, "round": round, "sorted": sorted, "set": set,
        "any": any, "all": all, "int": int, "float": float, "str": str,
-       "math": math, "list": list, "range": range, "series": series}
+       "math": math, "list": list, "range": range, "series": series,
+       "tofixed": tofixed}
 
 
 def load(artifact, spec):

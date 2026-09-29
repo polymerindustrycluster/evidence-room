@@ -16,11 +16,18 @@ WHAT THIS CHECKS
   A claim may carry an opt-in field: `"counts": [{"figure": "41", "noun": "institution"}]`
   (`noun` may also be a list of acceptable stems, or a short phrase). `figure` is the
   string exactly as printed on the page. For every claim that carries `counts`, this reads
-  the claim's own page's STATIC index.html — the source file, not dist/, because
-  claim-carrying text on this site is static HTML by convention (see the comment beside
-  the hero in churn/index.html: "one copy of every sentence, checked by claims.json
-  against the data"). It strips tags, scripts, styles and HTML comments, decodes entities
-  (&nbsp; &rsquo; &times; ...), and collapses whitespace. It then finds every occurrence of
+  the claim's own page's STATIC prose, because claim-carrying text on this site is static
+  HTML by convention (see the comment beside the hero in churn/index.html: "one copy of
+  every sentence, checked by claims.json against the data"). It does not parse HTML
+  itself. tools/pagetext.mjs loads the page's bundle, dist/<page>.html, in Chromium with
+  scripting off and dumps the text of every <body> text node, joined with spaces, to
+  dist/.pagetext.json; this reads that dump. A regex reader lasted seven review rounds on
+  PR #25 and each round found another tokenizer state it misread (an SVG <script>, a
+  <textarea> or <title> body, an unclosed "<!--", a ">" inside a quoted attribute), so
+  the browser's own parser now decides what is text. Scripting is off so the gate keeps
+  its scope: sentences a page's JavaScript writes, and chart and table labels, are not
+  bound. The dump records the sha256 of the bundle it read; a page whose dump is missing,
+  or was read from a different bundle, FAILS as uninspectable. It then finds every occurrence of
   `figure` as a WHOLE TOKEN — a bare "41" search will not match the "41" inside "1,410" or
   "41.5" — and requires one of the declared noun stems within 8 words on either side,
   case-insensitively, matched as a prefix so "institution" matches "institutions". The
@@ -51,10 +58,11 @@ WHAT THIS CANNOT CATCH
   full stop ("U.S.") ends a clause early; that errs toward a failure, never a pass.
 
 USAGE
+  node tools/bundle.mjs && node tools/pagetext.mjs    first; tools/all.mjs does both
   python3 verify_nouns.py            all pages that carry claims.json
   python3 verify_nouns.py atlas      one
 """
-import html
+import hashlib
 import json
 import os
 import re
@@ -65,9 +73,6 @@ WEB = os.path.abspath(os.path.join(HERE, "..", ".."))
 
 GREEN, RED, DIM, OFF = "\033[32m", "\033[31m", "\033[2m", "\033[0m"
 
-SCRIPT_STYLE = re.compile(r"<(script|style)\b[^>]*>.*?</\1>", re.I | re.S)
-COMMENT = re.compile(r"<!--.*?-->", re.S)
-TAG = re.compile(r"<[^>]+>")
 WS = re.compile(r"[\s\xa0]+")
 # A token ends after clause punctuation even when no space follows it, so "1991;41" is two
 # tokens and the ";" still closes the clause. A full stop does the same when any letter or
@@ -76,9 +81,16 @@ WS = re.compile(r"[\s\xa0]+")
 # a decimal ("41.5", ".5") and the inner stops of a single-letter abbreviation ("U.S.",
 # "e.g."). A domain ("us.edu"), a URL's "https:" or "?id=", or an abbreviation like
 # "No.41" closing a clause early can only make a binding fail, never pass one.
+# Punctuation between the stop and what follows does not hide the boundary: "1991.—Only",
+# "1991.--Only" and "1991.—“Only" split after the stop, and so does any trailing run of it
+# other than a comma or closing quotes alone ("1991.—“", "1991.*", "1991.—”"), so the token
+# still ends in the stop. The trailing shapes are what markup leaves behind:
+# "1991.—“<em>Only</em>" reads as "1991.—“ Only", and "1991</em>.—“" as "1991 .—“", a
+# token that starts with its stop. A comma keeps "e.g.," and "Inc.," whole. A dash with no stop before it ("41—the most—") stays whole.
 OPEN, CLOSE = "\"'\u2018\u201c(\\[", "\"'\u2019\u201d)\\]"
+DASH = "\u2013\u2014\u2015"
 CLAUSE_CUT = re.compile(rf"[;:?!]+[{CLOSE}]*(?=\S)")
-STOP_CUT = re.compile(rf"\.+[{CLOSE}]*(?=[{OPEN}]*[^\W_])")
+STOP_CUT = re.compile(rf"\.+[{CLOSE}]*(?=[^\w\s,]*[^\W_]|(?![{CLOSE}]*$)[^\w\s,]+$)")
 STRIP_EDGES = re.compile(r"^\W+|\W+$", re.UNICODE)
 NUMERIC_FIGURE = re.compile(r"^[\d,.]+$")
 NUMCHARS = set("0123456789,.")
@@ -92,18 +104,26 @@ def all_pages():
 
 
 def page_text(page):
-    """The page's rendered prose, as a reader would meet it: no tags, no script or style
-    bodies, no HTML comments, entities decoded, whitespace collapsed to single spaces.
-    Read from the page's own SOURCE index.html, never dist/ — see the module docstring."""
-    path = os.path.join(WEB, page, "index.html")
-    raw = open(path, encoding="utf-8").read()
-    raw = SCRIPT_STYLE.sub(" ", raw)
-    raw = COMMENT.sub(" ", raw)
-    raw = TAG.sub(" ", raw)
-    # Entities are decoded AFTER tags are stripped, so a numeric entity for '<' or '>' in
-    # running prose can never be mistaken for a real tag by the regex above.
-    raw = html.unescape(raw)
-    return WS.sub(" ", raw).strip()
+    """The page's prose as Chromium parsed it, whitespace collapsed to single spaces: the
+    entry tools/pagetext.mjs wrote for dist/<page>.html. Raises ValueError, which fails
+    every binding on the page, when the bundle or its entry is missing or the entry was
+    read from a different bundle. Never falls back to reading HTML here."""
+    bundle = os.path.join(WEB, "dist", f"{page}.html")
+    dump = os.path.join(WEB, "dist", ".pagetext.json")
+    if not os.path.exists(bundle):
+        raise ValueError(f"cannot inspect: no dist/{page}.html (run node tools/bundle.mjs)")
+    entry = None
+    if os.path.exists(dump):
+        with open(dump, encoding="utf-8") as f:
+            entry = json.load(f).get(page)
+    if not entry:
+        raise ValueError(f"cannot inspect: no rendered text for {page} "
+                         "(run node tools/pagetext.mjs)")
+    with open(bundle, "rb") as f:
+        if entry.get("sha256") != hashlib.sha256(f.read()).hexdigest():
+            raise ValueError(f"cannot inspect: rendered text is stale against dist/{page}.html "
+                             "(run node tools/pagetext.mjs)")
+    return WS.sub(" ", entry["text"]).strip()
 
 
 def _cuts(chunk):
@@ -111,12 +131,12 @@ def _cuts(chunk):
     cuts = {m.end() for m in CLAUSE_CUT.finditer(chunk)}
     for m in STOP_CUT.finditer(chunk):
         s = m.start()
-        if s == 0:
-            continue                                  # ".5"
-        if chunk[s - 1].isdigit() and chunk[s + 1].isdigit():
-            continue                                  # "41.5"
+        if s == 0 and chunk[1:2].isdecimal():
+            continue                                  # ".5", but not ".\u2014\u201c" or ".\"41" left by a tag
+        if s > 0 and chunk[s - 1].isdecimal() and chunk[s + 1:s + 2].isdecimal():
+            continue                                  # "41.5", but not "1991.\u00b9"
         e = m.end()
-        if (chunk[s - 1].isalpha() and (s == 1 or not chunk[s - 2].isalpha())
+        if (s > 0 and chunk[s - 1].isalpha() and (s == 1 or not chunk[s - 2].isalpha())
                 and chunk[e:e + 1].isalpha() and chunk[e + 1:e + 2] == "."):
             continue                                  # "U.S.", but not "U.S.Only"
         cuts.add(m.end())
@@ -261,7 +281,13 @@ def check_page(page):
     claims_with_counts = [c for c in spec.get("claims", []) if c.get("counts")]
     if not claims_with_counts:
         return []
-    text = page_text(page)
+    try:
+        text = page_text(page)
+    except ValueError as err:
+        return [{"claim": c["id"], "figure": str(entry.get("figure")),
+                 "stems": [str(entry.get("noun"))], "ok": False,
+                 "occurrences": [], "note": str(err)}
+                for c in claims_with_counts for entry in c["counts"]]
     tokens = tokenize(text)
     out = []
     for c in claims_with_counts:
