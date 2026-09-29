@@ -34,9 +34,8 @@ fetch queries those two subfields and never searches for a word.
 
 **"Joint" for papers naming both, *collaboration*.** **Was:** the standfirst said "Joint
 output peaked at 29 papers in 2018"; the opening chart's text description said "joint
-output"; the control chart's axis, legend and text description said "joint works", and
-its table had columns "Joint" and "Joint per 1,000 of Akron"; the second chart's hover said
-"joint works"; the lede and two source notes said "joint count" and "joint series".
+output"; the control chart's axis, legend, hover and text description said "joint works",
+and its table had columns "Joint" and "Joint per 1,000 of Akron"; the lede and two source notes said "joint count" and "joint series".
 **Is:** "papers naming both" or "works naming both", the source note's "unbounded count",
 and table columns "Naming both" and "Naming both per 1,000 of Akron". The 2026-09-28 entry below changed the
 headline and five sentences for the same reason and left these labels.
@@ -55,9 +54,10 @@ $51.0 million award "is about 1.2 years" of the yearly contract average, without
 federal-money page's own warning that a competitive grant and routine purchase orders are
 different kinds of money, and without the finding that titles the page's contract chart.
 **Is:** the card adds "a
-rough size and not like for like" and "two Department of Defense suppliers, the
-survival-equipment maker RFD Beaufort and Goodyear, hold 56 percent of the contract
-dollars", counted over each award's whole life as the page counts it.
+rough size and not like for like", then names the page's other ledger before its finding:
+the prime contracts under those codes with obligations in fiscal 2019–2026 "carry $329.5
+million counted over each award's whole life, and two Department of Defense suppliers, the
+survival-equipment maker RFD Beaufort and Goodyear, hold 56 percent of it."
 
 **A scale, again, *front page*.** **Was:** the funding-map card, as corrected on
 2026-09-28, said "drawn to scale and traced to twenty-one named recipients", which still
