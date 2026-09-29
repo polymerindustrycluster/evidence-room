@@ -13,8 +13,15 @@ page, the figure, and what you think it should be.
 
 ## 2026-09-29 — Labels and cards that said more than their data
 
-A review of the 2026-09-28 corrections found these beside them. No number changed in any of
-them.
+A review of the 2026-09-28 corrections found these beside them. No figure in these
+statements changed. The sources page's claim register rises from 532 article claims to 534,
+and from 564 across the site to 567, for the three claims added with them.
+
+**The 2026-09-28 entry below, corrected here rather than rewritten.** It says the closing
+sat "beside a standfirst naming NEO-SMART, awarded on 13 July 2026". The name was in a lede
+paragraph, and before that day's fix the page dated the award 14 July; 13 July is the date
+the fix gave it. It also says the page "now says at most 19, or 9 percent"; the page prints
+at most 19 and has never printed 9 percent.
 
 **A keyword search the page does not run, *collaboration*.** **Was:** the source line under
 the second chart described each year as "works listing both institutions, works matching
@@ -185,10 +192,10 @@ The inference was not hypothetical: a live OpenAlex query on 28 September 2026 r
 such works (the page's cached pull has 208) and found both universities on a single author
 in 15 of them. The page added its polymer and biomaterials counts, eight and eleven, into
 "19 in all", "about 9 percent" and "91 percent" in neither subject; a paper can carry both,
-and the same query found two that do, so it now says at most 19, and at least 90 percent
-in neither. Its closing said "No new joint NSF award has started since 2017"
-beside a paragraph naming NEO-SMART, which the page then dated 14 July 2026; it now says
-none started after 2017 within the years counted, 2012 to 2025. The closing also rested its "That was
+and the same query found two that do, so it now says at most 19, or 9 percent, and at least
+90 percent in neither. Its closing said "No new joint NSF award has started since 2017"
+beside a standfirst naming NEO-SMART, awarded on 13 July 2026; it now says none started
+after 2017 within the years counted, 2012 to 2025. The closing also rested its "That was
 false" on the 208 papers beside the NSF projects; it now rests on the projects alone. The
 heading "Joint work fell as a share of Akron's output" and five sentences that called the
 counted papers "joint work" or "joint papers" now say "papers naming both".
