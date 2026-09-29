@@ -67,14 +67,23 @@ GREEN, RED, DIM, OFF = "\033[32m", "\033[31m", "\033[2m", "\033[0m"
 
 # Markup is read in one pass, left to right, as HTML's tokenizer reads it: whichever of a
 # comment, a script or style body, or a tag opens first wins, so "<!-- <script> -->" is only a
-# comment, and a script ends at "</script" followed by a space, "/" or ">". A tag opens only as
-# the tokenizer opens one: "<" then a letter, "/" and a letter, "!" or "?". A "<" before
-# anything else is text ("<5% missing)."), and its full stop stays.
-MARKUP = re.compile(r"<!--.*?-->|<(script|style)\b[^>]*>.*?</\1(?=[\s/>])[^>]*>"
-                    r"|<(?:/?[A-Za-z]|[!?])[^>]*>", re.I | re.S)
-# CDATA is text inside SVG or MathML and a hidden bogus comment elsewhere; the gate cannot
-# tell which without parsing, so a page carrying one is not inspected and fails.
-CDATA = re.compile(r"<!\[CDATA\[", re.I)
+# comment. A script or style name ends where HTML ends a tag name (a space, "/" or ">", so not
+# "<style-note>"), and its body closes at "</script" followed by one of those. A tag opens only
+# as the tokenizer opens one: "<" then an ASCII letter, "/" and a letter, "!" or "?". A "<"
+# before anything else is text ("<5% missing)."), and its full stop stays.
+HTML_WS = "\t\n\f\r "
+MARKUP = re.compile(rf"<!--.*?-->|<((?ai:script|style))(?=[{HTML_WS}/>])[^>]*>.*?</(?ai:\1)(?=[{HTML_WS}/>])[^>]*>"
+                    r"|<(?:/?[A-Za-z]|[!?])[^>]*>", re.S)
+# Forms the one pass cannot read as a browser would, so a page carrying one is not inspected
+# and fails: CDATA (text inside SVG or MathML, a hidden bogus comment elsewhere); a comment
+# ended by "--!>" or opened as "<!-->" or "<!--->"; a self-closing script or style (empty in
+# SVG, open in HTML); and a script or style start with no end tag after it.
+UNREADABLE = [
+    (re.compile(r"<!\[CDATA\[", re.I), "a CDATA section"),
+    (re.compile(r"--!>|<!---?>"), "a comment a browser ends early"),
+    (re.compile(rf"<(?ai:script|style)(?=[{HTML_WS}/>])[^>]*/>"), "a self-closing script or style"),
+]
+OPEN_BODY = re.compile(rf"<(?ai:script|style)(?=[{HTML_WS}/>])[^>]*>")
 WS = re.compile(r"[\s\xa0]+")
 # A token ends after clause punctuation even when no space follows it, so "1991;41" is two
 # tokens and the ";" still closes the clause. A full stop does the same when any letter or
@@ -111,9 +120,14 @@ def page_text(page):
     Read from the page's own SOURCE index.html, never dist/ — see the module docstring."""
     path = os.path.join(WEB, page, "index.html")
     raw = open(path, encoding="utf-8").read()
-    if CDATA.search(raw):
-        raise ValueError("cannot inspect: a CDATA section, which may or may not render")
-    raw = MARKUP.sub(" ", raw)
+    for form, what in UNREADABLE:
+        if form.search(raw):
+            raise ValueError(f"cannot inspect: {what}")
+    def strip(m):
+        if OPEN_BODY.fullmatch(m.group()):          # a start tag the body alternative could not close
+            raise ValueError("cannot inspect: a script or style with no end tag")
+        return " "
+    raw = MARKUP.sub(strip, raw)
     # Entities are decoded AFTER tags are stripped, so a numeric entity for '<' or '>' in
     # running prose can never be mistaken for a real tag by the regex above.
     raw = html.unescape(raw)

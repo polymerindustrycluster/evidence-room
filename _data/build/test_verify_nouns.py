@@ -188,7 +188,9 @@ class NounNearbyTest(unittest.TestCase):
                      # Codex, #25 round 5: a comment that spells a script tag is only a comment,
                      # and a script ends at "</script >" too; neither may swallow the stop.
                      "<h1><em>147 institution records</em> since 1991<!-- <script> -->.<!-- </script> --> <em>Only</em> 41 polymer awards were recorded.</h1>",
-                     "<h1><em>147 institution records</em> since 1991<script></script >.<script></script> <em>Only</em> 41 polymer awards were recorded.</h1>"):
+                     "<h1><em>147 institution records</em> since 1991<script></script >.<script></script> <em>Only</em> 41 polymer awards were recorded.</h1>",
+                     # Codex, #25 round 6: a custom element named "style-..." is not a style body.
+                     "<h1><em>147 institution records</em> since <style-note>1991.</style-note><style></style> <em>Only</em> 41 polymer awards were recorded.</h1>"):
             with self.subTest(body=body):
                 with TemporaryDirectory() as tmp:
                     web, vn.WEB = vn.WEB, tmp
@@ -283,19 +285,28 @@ class CheckPageTest(unittest.TestCase):
         self.assertFalse(results[0]["ok"], results[0])
         self.assertIsNone(results[0]["note"])
 
-    def test_cdata_section_fails_as_uninspectable(self):
-        # Codex, #25 round 5: CDATA renders as text inside SVG and hides elsewhere; the gate
-        # cannot tell which, so it refuses the page instead of guessing either way.
-        self._make_page(
-            "cdatapage",
-            "<svg><text>147 institution records<tspan><![CDATA[ since 1991 (<5% missing).]]>"
-            "</tspan> Only 41 polymer awards were recorded.</text></svg>",
-            [{"id": "c1", "counts": [{"figure": "41", "noun": ["institution"]}]}],
-        )
-        results = vn.check_page("cdatapage")
-        self.assertEqual(len(results), 1)
-        self.assertFalse(results[0]["ok"])
-        self.assertIn("CDATA", results[0]["note"])
+    def test_markup_the_reader_cannot_follow_fails_as_uninspectable(self):
+        # Codex and Grok, #25 rounds 5-6: each form below reads one way in a browser and
+        # another to a regex (CDATA renders in SVG and hides elsewhere; "--!>" and "<!-->" end
+        # a comment early; "<script/>" is empty in SVG and open in HTML; a script with no end
+        # tag hides the rest of the page), so the gate refuses the page instead of guessing.
+        for i, (body, what) in enumerate((
+                ("<svg><text>147 institution records<tspan><![CDATA[ since 1991 (<5% missing).]]>"
+                 "</tspan> Only 41 polymer awards were recorded.</text></svg>", "CDATA"),
+                ("<h1><em>147 institution records</em> since 1991<!-- note --!>.<!-- note --> "
+                 "<em>Only</em> 41 polymer awards were recorded.</h1>", "comment"),
+                ("<h1>147 institution records since 1991<!-->. Only 41 polymer awards.</h1>", "comment"),
+                ("<h1><svg><text>147 institution records since 1991<script/>.<script></script> "
+                 "Only 41 polymer awards were recorded.</text></svg></h1>", "self-closing"),
+                ("<h1>147 institution records since 1991. Only 41 polymer awards.</h1><script>var x",
+                 "no end tag"))):
+            with self.subTest(what=what, body=body):
+                self._make_page(f"unreadable{i}", body,
+                                [{"id": "c1", "counts": [{"figure": "41", "noun": ["institution"]}]}])
+                results = vn.check_page(f"unreadable{i}")
+                self.assertEqual(len(results), 1)
+                self.assertFalse(results[0]["ok"])
+                self.assertIn(what, results[0]["note"])
 
     def test_figure_absent_from_page_fails_not_silently(self):
         self._make_page(
