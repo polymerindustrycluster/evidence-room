@@ -150,6 +150,13 @@ const CASES = [
       pill broke the phrase, and a note in one inline-block card exempted the next. */
    inject: s => s.replace("<body>", '<body><div><div style="display:inline-block">Correction, 28 September 2026: a count.</div><div style="display:inline-block">Joint <span style="display:inline-flex">work</span> rose.</div></div>')},
 
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /withdrawn:joint work/,
+   defect: "a withdrawn phrasing split by a button, in a display:contents flex item beside a correction note",
+   /* The third round got past the third version this way (2026-09-29): a control the
+      list of inline tags missed broke the phrase, and display:contents let a note in one
+      flex item exempt the next. */
+   inject: s => s.replace("<body>", '<body><div style="display:flex"><div style="display:contents">Correction, 28 September 2026: a count.</div><div style="display:contents">Joint <button>work</button> rose.</div></div>')},
+
   {gate: "provenance", page: "cost-scissors", args: ["cost-scissors"],
    defect: "a page crediting a federal source it has never read",
    /* Injected into SOURCES.json rather than the artifact, so this case names its own file.

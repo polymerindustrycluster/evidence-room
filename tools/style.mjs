@@ -62,25 +62,95 @@ for (const n of list) {
     const WRE = withdrawn.map(src => new RegExp(src.replaceAll(" ", "\\s+"), "gi"));
     const MONTH = "(?:January|February|March|April|May|June|July|August|September|October|November|December)";
     const NOTE = new RegExp(`\\bCorrect(?:ion|ed)\\b[\\s,·.:]*(?:\\d{1,2}\\s+${MONTH}|${MONTH}\\s+\\d{1,2}),?\\s+\\d{4}`);
-    const BLOCKS = "p,li,td,th,h1,h2,h3,h4,h5,h6,figcaption,caption,dd,dt,summary,blockquote";
-    const PHRASING = "a,abbr,b,bdi,bdo,cite,code,data,dfn,em,i,kbd,label,mark,q,s,samp,small,span,strong,sub,sup,time,u,var";
-    const blockText = new Map(), owners = new Map();
-    /* the block an element's text belongs to: the nearest text block, else the nearest
-       ancestor that is not inline (a card div), never a <b> or <span>. An inline-block
-       or inline-flex span sits in its line, so "Joint <span class=pill>work</span>" is one
-       phrase; an inline-block div or section is its own box, so two cards side by side
-       stay two blocks. display:contents draws no box of its own. */
-    const inline = b => {
-      const d = getComputedStyle(b).display;
-      return d === "inline" || d === "contents" || (/^(inline-|ruby)/.test(d) && b.matches(PHRASING));
-    };
+    /* Where a phrase is looked for and where a note may exempt it are two questions with
+       opposite safe answers, so they get two different boxes. A phrase is looked for in
+       the widest run of text a reader could take as one passage: up to the nearest box
+       that is not inline-level, walking through pills, controls, ruby, display:contents
+       wrappers and flex or grid items, so no box can split "Joint <span class=pill>work</span>".
+       A note exempts only a phrase that starts in the note's own box, the nearest ancestor
+       that is not plain inline, so two cards in one row stay two. Merging too much can
+       only fail a page; splitting too much could pass one. Round 13 of review found
+       thirteen ways a list of elements left one or the other open. */
+    const done = new Set(), owners = new Map(), ids = new Map();
+    const disp = e => getComputedStyle(e).display;
+    const host = e => { do e = e.parentElement; while (e && disp(e) === "contents"); return e; };
+    const wide = e => /^(inline|contents|ruby)/.test(disp(e)) || /(flex|grid)$/.test(disp(host(e))) || !!e.closest("select");
     const own = e => {
-      if (!owners.has(e)) {
-        let b = e.closest(BLOCKS);
-        if (!b) for (b = e; b !== document.body && inline(b); b = b.parentElement);
-        owners.set(e, b);
-      }
+      if (!owners.has(e)) { let b = e; while (b !== document.body && wide(b)) b = b.parentElement; owners.set(e, b); }
       return owners.get(e);
+    };
+    const box = e => { while (e !== document.body && disp(e) === "inline") e = e.parentElement; return e; };
+    /* Text a reader cannot see below the given ancestor: hidden, not displayed, zero
+       opacity (which a display:contents element, having no box, cannot apply), or not
+       visible or zero-sized. Visibility and font size are inherited and can be overridden,
+       so they are read on the text's own element. */
+    const gone = (e, top) => {
+      const c = getComputedStyle(e);
+      if (c.visibility !== "visible" || parseFloat(c.fontSize) === 0) return true;
+      for (; e && e !== top; e = e.parentElement) {
+        const a = getComputedStyle(e);
+        if (e.hidden || a.display === "none" || (a.opacity === "0" && a.display !== "contents")) return true;
+      }
+      return false;
+    };
+    /* the text `top` owns under `mine`, the text nodes `keep` admits, and where each
+       starts; with `gap`, text `top` does not own leaves a GAP where it was */
+    const GAP = "\u0000";
+    const read = (top, mine, keep, gap) => {
+      const r = {bt: "", at: [], nodes: []};
+      const tw = document.createTreeWalker(top, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+      for (let u; (u = tw.nextNode());) {
+        if (u.nodeType === 1 && u.tagName !== "BR") continue;
+        const pe = u.nodeType === 1 ? u : u.parentElement;
+        if (pe.closest("script,style,noscript") || !keep(pe)) continue;
+        if (mine(u.parentElement) !== top) { if (gap && !r.bt.endsWith(GAP)) r.bt += GAP; continue; }
+        if (u.nodeType === 1) r.bt += "\n";
+        else { r.at.push(r.bt.length); r.nodes.push(u); r.bt += u.textContent; }
+      }
+      return r;
+    };
+    /* A dated correction note may quote what it corrects, and a phrase inside curly double
+       quotes is a mention, not a use; both are exempt, judged on the visible text of the
+       phrase's own line: the box it starts in, with any pill or control inside that box,
+       up to any block inside it. Text left out cannot open a quotation or join a label to
+       a date. A note's label counts only where that line carries it, not where prose quotes
+       it ("the log's “Correction, 28 September 2026” entry"): a quotation is emptied, not
+       deleted, so it cannot join a label to a date on either side of it. A quotation
+       exempts only a phrase it closes around within the line. */
+    const exempt = ({ri, node, k}) => {
+      const f = box(node.parentElement);
+      const r = read(f, e => { while (e !== f && /^(inline|ruby)/.test(disp(e))) e = e.parentElement; return e; },
+        e => !gone(e, f), true);
+      const i = r.nodes.indexOf(node);
+      if (i < 0) return false;
+      const at = r.at[i] + k, from = r.bt.lastIndexOf(GAP, at) + 1, to = r.bt.indexOf(GAP, at);
+      const line = r.bt.slice(from, to < 0 ? r.bt.length : to), p = at - from, before = line.slice(0, p);
+      if (NOTE.test(before.replace(/“[^”]*”/g, "“”"))) return true;
+      const re = new RegExp(WRE[ri].source, "iy");
+      re.lastIndex = p;
+      const m = re.exec(line);
+      return !!m && before.split("“").length > before.split("”").length && line.includes("”", p + m[0].length);
+    };
+    /* Two readings of a passage: all its text, which sees a collapsed <details> twin, and
+       the text a reader sees, which drops anything hidden, so "Joint<span hidden>x</span>
+       work" is still one phrase. A phrase either reading finds is reported once, from the
+       node it starts in. */
+    const withdrawnIn = block => {
+      const found = new Map();
+      for (const r of [read(block, own, () => true), read(block, own, e => !gone(e, block))])
+        WRE.forEach((re, ri) => {
+          for (const wm of r.bt.matchAll(re)) {
+            let i = r.at.length - 1;
+            while (i > 0 && r.at[i] > wm.index) i--;
+            const node = r.nodes[i], k = wm.index - r.at[i];
+            if (!node || k >= node.length) continue;
+            if (!ids.has(node)) ids.set(node, ids.size);
+            const key = `${ri}:${ids.get(node)}:${k}`;
+            if (!found.has(key)) found.set(key, {ri, node, k, phrase: wm[0].replace(/\s+/g, " ").toLowerCase(),
+              near: r.bt.slice(Math.max(0, wm.index - 30), wm.index + 40).replace(/\s+/g, " ").trim()});
+          }
+        });
+      for (const h of found.values()) out.push([`${exempt(h) ? "exempt:" : ""}withdrawn:${h.phrase}`, h.near]);
     };
     const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     let t;
@@ -112,66 +182,12 @@ for (const n of list) {
       if (!verbatim && /"/.test(s)) out.push(["straight-double", ctx.slice(0, 70)]);
       const m = s.match(BANNED);
       if (m) out.push([`banned:${m[1].toLowerCase()}`, ctx.slice(0, 70)]);
-      /* Matched against the text of the block this node belongs to, so a phrase split
-         by inline markup (<b>81%</b> led from here), a <br>, or wrapped source lines is
-         still one phrase; each match is reported once, from the node it starts in. A
-         dated correction note may quote what it corrects, and a phrase inside curly
-         double quotes is a mention, not a use; both are exempt. A block's text is only
-         the text it owns: a nested block owns its own, and text loose in a div belongs
-         to that div alone, so a note in one paragraph cannot exempt the next. */
+      /* Matched against the passage this node belongs to, so a phrase split by inline
+         markup (<b>81%</b> led from here), a <br>, or wrapped source lines is still one
+         phrase. A passage's text is only the text it owns: a nested block owns its own. */
       if (WRE.length) {
         const block = own(el);
-        if (!blockText.has(block)) {
-          /* Two readings of a block: all its text, which sees a collapsed <details> twin,
-             and the text a reader sees, which drops anything hidden inside the block, so
-             "Joint<span hidden>x</span> work" is still one phrase and a hidden correction
-             label exempts nothing. Visibility and font size are inherited and can be
-             overridden below, so they are read on the text's own element. */
-          const shown = e => {
-            const c = getComputedStyle(e);
-            if (c.visibility !== "visible" || parseFloat(c.fontSize) === 0) return false;
-            for (; e && e !== block; e = e.parentElement) {
-              const a = getComputedStyle(e);
-              if (e.hidden || a.display === "none" || a.opacity === "0") return false;
-            }
-            return true;
-          };
-          const all = {bt: "", offs: new Map()}, seen = {bt: "", offs: new Map()};
-          const bw = document.createTreeWalker(block, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
-          let u;
-          while ((u = bw.nextNode())) {
-            if (u.nodeType === 1) {
-              if (u.tagName === "BR" && own(u.parentElement) === block) { all.bt += "\n"; if (shown(u)) seen.bt += "\n"; }
-              continue;
-            }
-            if (u.parentElement.closest("script,style,noscript") || own(u.parentElement) !== block) continue;
-            all.offs.set(u, all.bt.length); all.bt += u.textContent;
-            if (shown(u.parentElement)) { seen.offs.set(u, seen.bt.length); seen.bt += u.textContent; }
-          }
-          blockText.set(block, seen.bt === all.bt ? [all] : [all, seen]);
-        }
-        /* one verdict per phrase: it is exempt only if every reading that finds it exempts it */
-        const found = new Map();
-        for (const {bt, offs} of blockText.get(block)) {
-          const at = offs.get(t);
-          if (at === undefined) continue;
-          WRE.forEach((re, ri) => {
-            for (const wm of bt.matchAll(re)) {
-              if (wm.index < at || wm.index >= at + s.length) continue;
-              const before = bt.slice(0, wm.index);
-              /* A note's label counts only where the block itself carries it, not where
-                 prose quotes it ("the log's “Correction, 28 September 2026” entry"), and a
-                 quotation exempts only a phrase it closes around. A quotation is emptied,
-                 not deleted, so it cannot join a label to a date on either side of it. */
-              const inNote = NOTE.test(before.replace(/“[^”]*”/g, "“”"));
-              const quoted = before.split("“").length > before.split("”").length && bt.includes("”", wm.index + wm[0].length);
-              const key = `${ri}:${wm.index - at}`, prev = found.get(key);
-              found.set(key, {ex: (prev ? prev.ex : true) && (inNote || quoted), phrase: wm[0].replace(/\s+/g, " ").toLowerCase(),
-                near: prev ? prev.near : bt.slice(Math.max(0, wm.index - 30), wm.index + 40).replace(/\s+/g, " ").trim()});
-            }
-          });
-        }
-        for (const {ex, phrase, near} of found.values()) out.push([`${ex ? "exempt:" : ""}withdrawn:${phrase}`, near]);
+        if (!done.has(block)) { done.add(block); withdrawnIn(block); }
       }
       /* NEGATIVES TAKE THE TRUE MINUS (U+2212), never the ASCII hyphen — the hyphen is
          a third the width of the digits beside it. Found 2026-08-31: four axis ticks
