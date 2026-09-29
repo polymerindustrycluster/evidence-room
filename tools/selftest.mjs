@@ -170,6 +170,20 @@ const CASES = [
       was not walked through, and text a filter made transparent still wrote a dated note. */
    inject: s => s.replace("<body>", '<body><p><span style="filter:opacity(0)">Correction, 28 September 2026: </span>Joint <span style="display:table-cell">work</span> rose.</p>')},
 
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /withdrawn:joint work/,
+   defect: "a withdrawn phrasing inside one of two flex items, with an inline box inside a word",
+   /* Round 15 of review (2026-09-29): the spaced reading broke the line at every box, so
+      "Jo<span style=display:-webkit-inline-box>int</span>" read "Jo int", while the
+      joined reading ran the flex items together as "CurrentJoint". */
+   inject: s => s.replace("<body>", '<body><div style="display:flex;gap:2rem"><p>Current</p><p>Jo<span style="display:-webkit-inline-box">int</span> work rose.</p></div>')},
+
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /withdrawn:joint work/,
+   defect: "a withdrawn phrasing passed as quoted because a visible closing quote was judged hidden",
+   /* Round 15 of review (2026-09-29): a transform on a plain inline span does nothing, but
+      the gate dropped the span's closing quote as scaled to zero, so the phrase after it
+      read as inside “Old ... “New”. */
+   inject: s => s.replace("<body>", '<body><p>“Old<span style="transform:scale(0)">”</span> Joint work rose. “New”</p>')},
+
   {gate: "provenance", page: "cost-scissors", args: ["cost-scissors"],
    defect: "a page crediting a federal source it has never read",
    /* Injected into SOURCES.json rather than the artifact, so this case names its own file.

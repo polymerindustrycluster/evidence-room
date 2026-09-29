@@ -29,8 +29,8 @@ try { ACRO = JSON.parse(rfs(new URL("../_data/acronyms.json", import.meta.url), 
    (2026-09-28). Only a grep outside the repo caught that. The list is read unguarded: a
    missing or malformed file must fail the gate, not empty the list and pass. It catches a
    phrasing coming back, not one hidden on purpose: CSS generated content, form control
-   values, shadow DOM, zero-width characters and text painted invisible by colour, clipping
-   or position are out of reach, and every exemption is printed. */
+   values, shadow DOM, zero-width characters and text painted invisible by colour, clipping,
+   masking, compounded opacity or position are out of reach, and every exemption is printed. */
 const WITHDRAWN = JSON.parse(rfs(new URL("../_data/withdrawn.json", import.meta.url), "utf-8")).withdrawn;
 for (const w of WITHDRAWN) new RegExp(w.pattern.replaceAll(" ", "\\s+"), "gi");  /* the form the page compiles */
 
@@ -77,60 +77,65 @@ for (const n of list) {
     const host = e => { do e = e.parentElement; while (e && disp(e) === "contents"); return e; };
     /* flex, grid and the old -webkit-box all lay each child out as an item */
     const ITEMS = /(flex|grid|box)$/;
-    const wide = e => /^(inline|contents|ruby|table-|-webkit-inline)/.test(disp(e)) || !!e.closest("select") ||
-      ITEMS.test(host(e) ? disp(host(e)) : "");
+    const item = e => ITEMS.test(host(e) ? disp(host(e)) : "");
+    const wide = e => /^(inline|contents|ruby|table-|-webkit-inline)/.test(disp(e)) || !!e.closest("select") || item(e);
     const own = e => {
       if (!owners.has(e)) { let b = e; while (b !== document.body && wide(b)) b = b.parentElement; owners.set(e, b); }
       return owners.get(e);
     };
-    const box = e => { while (e !== document.body && disp(e) === "inline") e = e.parentElement; return e; };
+    const box = e => { while (e !== document.body && disp(e) === "inline" && !item(e)) e = e.parentElement; return e; };
     /* Text a reader cannot see below the given ancestor: hidden, not displayed, contents
        skipped, fully transparent by opacity or filter (neither of which a display:contents
        element, having no box, can apply), not visible, or under a pixel high once its font
-       size is shrunk by every transform and scale above it. Visibility and font size are
-       inherited and can be overridden, so they are read on the text's own element. */
-    const shrink = a => {
-      let f = 1;
-      const m = a.transform.match(/^matrix(3d)?\((.*)\)$/);
-      if (m) {  /* the smaller singular value of the transform's 2D part */
-        const v = m[2].split(",").map(Number), [p, q, r, s] = m[1] ? [v[0], v[1], v[4], v[5]] : v;
-        const t = p * p + q * q + r * r + s * s, d = p * s - q * r;
-        f *= Math.sqrt(Math.max(0, (t - Math.sqrt(Math.max(0, t * t - 4 * d * d))) / 2));
+       size is shrunk by every zoom and by the transforms above it, composed, since two can
+       cancel. A plain inline box takes no transform and skips no contents. Visibility and
+       font size are inherited and can be overridden, so they are read on the text's own
+       element. What this misses keeps a phrase in the seen reading, where the all-text
+       reading has it anyway; what it wrongly drops can only fail an exemption (see exempt). */
+    const turn = a => {
+      const m = new DOMMatrix();
+      if (a.rotate !== "none") {
+        const v = a.rotate.split(" "), deg = parseFloat(v.at(-1)) * ({rad: 180 / Math.PI, turn: 360, grad: 0.9}[v.at(-1).replace(/[-\d.e+]/g, "")] ?? 1);
+        const ax = v.length === 4 ? v.slice(0, 3).map(Number) : ({x: [1, 0, 0], y: [0, 1, 0]}[v[0]] ?? [0, 0, 1]);
+        m.rotateAxisAngleSelf(...ax, deg);
       }
-      if (a.scale !== "none") { const [x, y = x] = a.scale.split(" ").map(Number); f *= Math.min(Math.abs(x), Math.abs(y)); }
-      return f;
+      if (a.scale !== "none") { const [x, y = x] = a.scale.split(" ").map(Number); m.scaleSelf(x, y); }
+      if (a.transform !== "none") m.multiplySelf(new DOMMatrix(a.transform));
+      return m;
     };
     const gone = (e, top) => {
       const c = getComputedStyle(e);
       if (c.visibility !== "visible") return true;
-      let px = parseFloat(c.fontSize);
+      let px = parseFloat(c.fontSize), m = new DOMMatrix();
       for (; e && e !== top; e = e.parentElement) {
-        const a = getComputedStyle(e);
-        if (e.hidden || a.display === "none" || a.contentVisibility === "hidden") return true;
+        const a = getComputedStyle(e), inl = /^(inline|contents)$/.test(a.display);
+        if (e.hidden || a.display === "none" || (a.contentVisibility === "hidden" && !inl)) return true;
         if (a.display === "contents") continue;
         if (a.opacity === "0" || /opacity\(0\)/.test(a.filter)) return true;
-        px *= shrink(a);
+        const z = parseFloat(a.zoom);
+        if (!isNaN(z)) px *= z;
+        if (!inl) m = turn(a).multiply(m);
       }
-      return px < 1;
+      /* the smaller singular value of the composed transform's 2D part */
+      const t = m.a ** 2 + m.b ** 2 + m.c ** 2 + m.d ** 2, d = m.a * m.d - m.b * m.c;
+      return px * Math.sqrt(Math.max(0, (t - Math.sqrt(Math.max(0, t * t - 4 * d * d))) / 2)) < 1;
     };
-    /* The box a text node's line runs in: its nearest ancestor that is not inline-level,
-       except that a flex or grid container lays each child out apart, so there the child
-       is the box, or the text itself where the container wraps a run of it in an anonymous
-       item. A display:contents element has no box and is passed through. */
-    const flow = t => {
-      let item = t;
-      for (let n = t, p; (p = n.parentElement) && p !== document.body; n = p) {
-        if (n.nodeType === 3 || disp(n) !== "contents") item = n;
-        const d = disp(p);
-        if (ITEMS.test(d)) return item;
-        if (!/^(inline|ruby|contents)/.test(d)) return p;
-      }
-      return document.body;
+    /* Whether a reader sees a break between two text nodes: one of them sits in a box that
+       is not inline-level below the nearest element holding both, or that element lays its
+       children out as flex, grid or box items, which a run of bare text joins as an
+       anonymous item. An inline-level box ("Jo<span style=display:inline-block>int</span>")
+       sits in its parent's line, and a display:contents element has no box. */
+    const breaks = (a, b) => {
+      let l = a.parentElement;
+      while (!l.contains(b)) l = l.parentElement;
+      const boxed = n => { for (let e = n.parentElement; e !== l; e = e.parentElement)
+        if (!/^(inline|ruby|contents|-webkit-inline)/.test(disp(e)) || item(e)) return true; return false; };
+      return ITEMS.test(disp(l)) || boxed(a) || boxed(b);
     };
     /* the text `top` owns under `mine`, the text nodes `keep` admits, and where each
        starts; with `gap`, text `top` does not own leaves a GAP where it was; with `apart`,
-       a space goes wherever a reader sees a break: between two boxes (see flow) or where
-       text `top` does not own was left out */
+       a space goes wherever a reader sees a break (see breaks) or where text `top` does not
+       own was left out */
     const GAP = "\u0000";
     const read = (top, mine, keep, gap, apart) => {
       const r = {bt: "", at: [], nodes: []};
@@ -143,7 +148,7 @@ for (const n of list) {
         if (mine(u.parentElement) !== top) { if (gap && !r.bt.endsWith(GAP)) r.bt += GAP; cut = true; continue; }
         if (u.nodeType === 1) r.bt += "\n";
         else {
-          if (apart) { const f = flow(u); if (cut || (last && f !== last)) r.bt += " "; last = f; }
+          if (apart) { if (cut || (last && breaks(last, u))) r.bt += " "; last = u; }
           r.at.push(r.bt.length); r.nodes.push(u); r.bt += u.textContent;
         }
         cut = false;
@@ -158,19 +163,24 @@ for (const n of list) {
        it ("the log's “Correction, 28 September 2026” entry"): a quotation is emptied, not
        deleted, so it cannot join a label to a date on either side of it. A quotation
        exempts only a phrase it closes around within the line. */
+    /* The line is judged twice, on all its text and on the text a reader sees, and must
+       exempt in both: hiding can then neither supply a note or quotation mark nor take one
+       away, whichever way gone() errs. */
     const exempt = ({ri, node, k}) => {
       const f = box(node.parentElement);
-      const r = read(f, e => { while (e !== f && /^(inline|ruby)/.test(disp(e))) e = e.parentElement; return e; },
-        e => !gone(e, f), true);
-      const i = r.nodes.indexOf(node);
-      if (i < 0) return false;
-      const at = r.at[i] + k, from = r.bt.lastIndexOf(GAP, at) + 1, to = r.bt.indexOf(GAP, at);
-      const line = r.bt.slice(from, to < 0 ? r.bt.length : to), p = at - from, before = line.slice(0, p);
-      if (NOTE.test(before.replace(/“[^”]*”/g, "“”"))) return true;
-      const re = new RegExp(WRE[ri].source, "iy");
-      re.lastIndex = p;
-      const m = re.exec(line);
-      return !!m && before.split("“").length > before.split("”").length && line.includes("”", p + m[0].length);
+      return [() => true, e => !gone(e, f)].every(keep => {
+        const r = read(f, e => { while (e !== f && /^(inline|ruby)/.test(disp(e)) && !item(e)) e = e.parentElement; return e; },
+          keep, true);
+        const i = r.nodes.indexOf(node);
+        if (i < 0) return false;
+        const at = r.at[i] + k, from = r.bt.lastIndexOf(GAP, at) + 1, to = r.bt.indexOf(GAP, at);
+        const line = r.bt.slice(from, to < 0 ? r.bt.length : to), p = at - from, before = line.slice(0, p);
+        if (NOTE.test(before.replace(/“[^”]*”/g, "“”"))) return true;
+        const re = new RegExp(WRE[ri].source, "iy");
+        re.lastIndex = p;
+        const m = re.exec(line);
+        return !!m && before.split("“").length > before.split("”").length && line.includes("”", p + m[0].length);
+      });
     };
     /* Two readings of a passage: all its text, which sees a collapsed <details> twin, and
        the text a reader sees, which drops anything hidden, so "Joint<span hidden>x</span>
