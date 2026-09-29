@@ -25,7 +25,7 @@ at most 19 with no percentage beside it, and at least 90 percent in neither subj
 that day's fix it printed "19 of 208 works, about 9 percent"; the fix removed that percentage.
 
 **A keyword search the page does not run, *collaboration*.** **Was:** the source line under
-the second chart described each year as "works listing both institutions, works matching
+the chart of papers naming both per year (the first below the opening chart) described each year as "works listing both institutions, works matching
 'polymer'", in the same line as a note calling the subject count "a classification rather
 than a keyword"; that chart's text description said "the polymer-matching subset". **Is:**
 "their polymer and biomaterials counts", beside the note that defines both as OpenAlex
@@ -44,8 +44,10 @@ headline and five sentences for the same reason and left these labels.
 de-duplicated pairings were "counted once per county" (methodology box) and "counting each
 county once" (hero card 1), and its source line said "counting each county once at group
 level"; the sources guide said "Count each county once and the unit is a county-industry".
-**Is:** "counted at the finest industry detail published in each county", "counting each
-family once per county" and "Remove the overlap and the unit is a county-industry". The 35
+**Is:** "counted at the finest industry detail published in each county" (methodology
+box), "counting only the finest industry detail in each county" (hero card 1), "counting
+each family once per county" (source line) and, on the sources guide, "Remove the overlap
+and the unit is a county-industry". The 35
 rows sit in twelve counties, eleven of which keep more than one: a family row is dropped
 only where its own parts are published. Both pages carry a dated correction line.
 
