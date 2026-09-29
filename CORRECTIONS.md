@@ -11,6 +11,31 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-30 — Three more sentences that said more than their data
+
+No figure changed. The revisions page's claim count is unchanged.
+
+**A link it does not have, *revisions* and the front page.** **Was:** the revisions
+standfirst and the front-page card described the three series as "the prices plants charge
+for chemicals and for the plastic and rubber goods made from them". **Is:** "for chemicals
+and allied products and for plastic and rubber goods". WPU06 is a broad index of which
+resins are one part, so the other two series are not simply made from it. This is the
+2026-09-29 correction to the same claim, reaching the two sentences it missed. The revisions
+page carries a dated correction line.
+
+**A gain the price data cannot show, *cost-scissors*.** **Was:** the closing line asked
+whether "the last four years squeezed you or paid you". **Is:** "How the last four years of
+prices looked depends on the link you sold from." These are selling-price indexes, and the
+2026-09-28 entry withdrew the same framing elsewhere on the page. The page carries a dated
+correction line.
+
+**A number that had moved, *sources*.** **Was:** recipe 2's 8 September note quoted "the
+middle of 33,528 jobs" with nothing to say the count had since become 33,529. **Is:** a new
+dated note beside it says so; the 8 September note stands as written.
+
+**Cause:** Each was a copy of an already-corrected sentence that the earlier fix did not
+search for. No claim reads these sentences.
+
 ## 2026-09-29 — Labels and cards that said more than their data
 
 A review of the 2026-09-28 corrections found these beside them. One figure changed: the

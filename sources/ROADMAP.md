@@ -48,7 +48,7 @@ A deferred item is not done until its recipe passes this test.
 
 - **Recipe 2, the wage premium.** The same file and the same filters, one column across,
   and the trap is not in the data: it is what your median is a median *of*. Three defensible
-  units sit in one table (51 published cells, 35 at each county's finest published detail, 33,529 jobs) and
+  units sit in one table (51 published cells, 35 at the finest published detail, a county appearing once per industry family (325 and 326), 33,529 jobs) and
   they give different answers. The recipe names the cell that pulls them apart, which is the
   same cell recipe 1 worked. Includes this site's own wrong sentence over a right number.
 - **Award identifiers, with the NSF case as the worked example.** The only section that
