@@ -148,6 +148,34 @@ class NounNearbyTest(unittest.TestCase):
             found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
             self.assertFalse(found, text)
 
+    def test_full_stop_before_a_dash_ends_the_clause(self):
+        # "1991.\u2014Only" stayed one token because the stop was followed by a dash, not a
+        # letter, so "institution" in the last sentence certified the award count in the next.
+        # The dash may be an en dash, doubled, followed by an opening quote, or trailing.
+        for text in ("147 institution records since 1991.\u2014Only 41 recorded polymer awards.",
+                     "147 institution records since 1991.\u2013Only 41 recorded polymer awards.",
+                     "147 institution records since 1991.\u2014\u2014Only 41 recorded polymer awards.",
+                     "147 institution records since 1991.\u2014\u201cOnly 41 recorded polymer awards.",
+                     "147 institution records since 1991.\u2014 Only 41 recorded polymer awards.",
+                     "147 institution records.\u201441 recorded polymer awards.",
+                     "147 institution records in the U.S.\u2014Only 41 recorded polymer awards."):
+            with self.subTest(text=text):
+                tokens = vn.tokenize(text)
+                s = text.index("41")
+                found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
+                self.assertFalse(found, text)
+
+    def test_a_dash_inside_a_sentence_does_not_end_the_clause(self):
+        # Positive control: only a stop before the dash is a boundary. Without it the gate
+        # would cry wolf on every correct sentence with an aside.
+        for text in ("41 institutions\u2014the most since 1991\u2014recorded a polymer award.",
+                     "The count of institutions\u2014now 41\u2014held steady."):
+            with self.subTest(text=text):
+                tokens = vn.tokenize(text)
+                s = text.index("41")
+                found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
+                self.assertTrue(found, text)
+
     def test_decimal_point_does_not_end_a_clause(self):
         tokens = vn.tokenize("Institutions rose 41.5 percent.")
         self.assertIn("41.5", [w for _, _, w in tokens])
