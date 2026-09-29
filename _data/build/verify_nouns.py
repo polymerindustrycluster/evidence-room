@@ -16,11 +16,18 @@ WHAT THIS CHECKS
   A claim may carry an opt-in field: `"counts": [{"figure": "41", "noun": "institution"}]`
   (`noun` may also be a list of acceptable stems, or a short phrase). `figure` is the
   string exactly as printed on the page. For every claim that carries `counts`, this reads
-  the claim's own page's STATIC index.html — the source file, not dist/, because
-  claim-carrying text on this site is static HTML by convention (see the comment beside
-  the hero in churn/index.html: "one copy of every sentence, checked by claims.json
-  against the data"). It strips tags, scripts, styles and HTML comments, decodes entities
-  (&nbsp; &rsquo; &times; ...), and collapses whitespace. It then finds every occurrence of
+  the claim's own page's STATIC prose, because claim-carrying text on this site is static
+  HTML by convention (see the comment beside the hero in churn/index.html: "one copy of
+  every sentence, checked by claims.json against the data"). It does not parse HTML
+  itself. tools/pagetext.mjs loads the page's bundle, dist/<page>.html, in Chromium with
+  scripting off and dumps the text of every <body> text node, joined with spaces, to
+  dist/.pagetext.json; this reads that dump. A regex reader lasted seven review rounds on
+  PR #25 and each round found another tokenizer state it misread (an SVG <script>, a
+  <textarea> or <title> body, an unclosed "<!--", a ">" inside a quoted attribute), so
+  the browser's own parser now decides what is text. Scripting is off so the gate keeps
+  its scope: sentences a page's JavaScript writes, and chart and table labels, are not
+  bound. The dump records the sha256 of the bundle it read; a page whose dump is missing,
+  or was read from a different bundle, FAILS as uninspectable. It then finds every occurrence of
   `figure` as a WHOLE TOKEN — a bare "41" search will not match the "41" inside "1,410" or
   "41.5" — and requires one of the declared noun stems within 8 words on either side,
   case-insensitively, matched as a prefix so "institution" matches "institutions". The
@@ -51,10 +58,11 @@ WHAT THIS CANNOT CATCH
   full stop ("U.S.") ends a clause early; that errs toward a failure, never a pass.
 
 USAGE
+  node tools/bundle.mjs && node tools/pagetext.mjs    first; tools/all.mjs does both
   python3 verify_nouns.py            all pages that carry claims.json
   python3 verify_nouns.py atlas      one
 """
-import html
+import hashlib
 import json
 import os
 import re
@@ -65,25 +73,6 @@ WEB = os.path.abspath(os.path.join(HERE, "..", ".."))
 
 GREEN, RED, DIM, OFF = "\033[32m", "\033[31m", "\033[2m", "\033[0m"
 
-# Markup is read in one pass, left to right, as HTML's tokenizer reads it: whichever of a
-# comment, a script or style body, or a tag opens first wins, so "<!-- <script> -->" is only a
-# comment. A script or style name ends where HTML ends a tag name (a space, "/" or ">", so not
-# "<style-note>"), and its body closes at "</script" followed by one of those. A tag opens only
-# as the tokenizer opens one: "<" then an ASCII letter, "/" and a letter, "!" or "?". A "<"
-# before anything else is text ("<5% missing)."), and its full stop stays.
-HTML_WS = "\t\n\f\r "
-MARKUP = re.compile(rf"<!--.*?-->|<((?ai:script|style))(?=[{HTML_WS}/>])[^>]*>.*?</(?ai:\1)(?=[{HTML_WS}/>])[^>]*>"
-                    r"|<(?:/?[A-Za-z]|[!?])[^>]*>", re.S)
-# Forms the one pass cannot read as a browser would, so a page carrying one is not inspected
-# and fails: CDATA (text inside SVG or MathML, a hidden bogus comment elsewhere); a comment
-# ended by "--!>" or opened as "<!-->" or "<!--->"; a self-closing script or style (empty in
-# SVG, open in HTML); and a script or style start with no end tag after it.
-UNREADABLE = [
-    (re.compile(r"<!\[CDATA\[", re.I), "a CDATA section"),
-    (re.compile(r"--!>|<!---?>"), "a comment a browser ends early"),
-    (re.compile(rf"<(?ai:script|style)(?=[{HTML_WS}/>])[^>]*/>"), "a self-closing script or style"),
-]
-OPEN_BODY = re.compile(rf"<(?ai:script|style)(?=[{HTML_WS}/>])[^>]*>")
 WS = re.compile(r"[\s\xa0]+")
 # A token ends after clause punctuation even when no space follows it, so "1991;41" is two
 # tokens and the ";" still closes the clause. A full stop does the same when any letter or
@@ -96,7 +85,7 @@ WS = re.compile(r"[\s\xa0]+")
 # "1991.--Only" and "1991.—“Only" split after the stop, and so does any trailing run of it
 # other than a comma or closing quotes alone ("1991.—“", "1991.*", "1991.—”"), so the token
 # still ends in the stop. The trailing shapes are what markup leaves behind:
-# "1991.—“<em>Only</em>" strips to "1991.—“ Only", and "1991</em>.—“" to "1991 .—“", a
+# "1991.—“<em>Only</em>" reads as "1991.—“ Only", and "1991</em>.—“" as "1991 .—“", a
 # token that starts with its stop. A comma keeps "e.g.," and "Inc.," whole. A dash with no stop before it ("41—the most—") stays whole.
 OPEN, CLOSE = "\"'\u2018\u201c(\\[", "\"'\u2019\u201d)\\]"
 DASH = "\u2013\u2014\u2015"
@@ -115,23 +104,26 @@ def all_pages():
 
 
 def page_text(page):
-    """The page's rendered prose, as a reader would meet it: no tags, no script or style
-    bodies, no HTML comments, entities decoded, whitespace collapsed to single spaces.
-    Read from the page's own SOURCE index.html, never dist/ — see the module docstring."""
-    path = os.path.join(WEB, page, "index.html")
-    raw = open(path, encoding="utf-8").read()
-    for form, what in UNREADABLE:
-        if form.search(raw):
-            raise ValueError(f"cannot inspect: {what}")
-    def strip(m):
-        if OPEN_BODY.fullmatch(m.group()):          # a start tag the body alternative could not close
-            raise ValueError("cannot inspect: a script or style with no end tag")
-        return " "
-    raw = MARKUP.sub(strip, raw)
-    # Entities are decoded AFTER tags are stripped, so a numeric entity for '<' or '>' in
-    # running prose can never be mistaken for a real tag by the regex above.
-    raw = html.unescape(raw)
-    return WS.sub(" ", raw).strip()
+    """The page's prose as Chromium parsed it, whitespace collapsed to single spaces: the
+    entry tools/pagetext.mjs wrote for dist/<page>.html. Raises ValueError, which fails
+    every binding on the page, when the bundle or its entry is missing or the entry was
+    read from a different bundle. Never falls back to reading HTML here."""
+    bundle = os.path.join(WEB, "dist", f"{page}.html")
+    dump = os.path.join(WEB, "dist", ".pagetext.json")
+    if not os.path.exists(bundle):
+        raise ValueError(f"cannot inspect: no dist/{page}.html (run node tools/bundle.mjs)")
+    entry = None
+    if os.path.exists(dump):
+        with open(dump, encoding="utf-8") as f:
+            entry = json.load(f).get(page)
+    if not entry:
+        raise ValueError(f"cannot inspect: no rendered text for {page} "
+                         "(run node tools/pagetext.mjs)")
+    with open(bundle, "rb") as f:
+        if entry.get("sha256") != hashlib.sha256(f.read()).hexdigest():
+            raise ValueError(f"cannot inspect: rendered text is stale against dist/{page}.html "
+                             "(run node tools/pagetext.mjs)")
+    return WS.sub(" ", entry["text"]).strip()
 
 
 def _cuts(chunk):
