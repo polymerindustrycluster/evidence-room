@@ -46,7 +46,8 @@
     "workplaces": "../../cluster-health/data/workplaces.json",
     "mfg": "../../wages/data/mfg.json",
     "reach": "../../reach/data/reach.json",
-    "collab": "../../collaboration/data/collaboration.json"
+    "collab": "../../collaboration/data/collaboration.json",
+    "fa": "../../federal-money/data/awards.json"
   },
   "claims": [
     {
@@ -69,11 +70,11 @@
     },
     {
       "id": "index-inventory",
-      "text": "The gallery lists the reviewed public articles; source inventory entries are either listed or deliberately unlisted.",
+      "text": "The gallery lists the public articles, and the cards for the three prototypes (chain, reach and collaboration) carry each page's own prototype flag; source inventory entries are either listed or deliberately unlisted.",
       "source": "index/data/counts.json; rendered card-link parity is checked by the hub browser check",
       "assert": "sorted(set(D['counts']['pages']) - {'scorecard','accountability'}) == ['atlas','chain','churn','cluster-health','collaboration','cost-scissors','federal-money','funding-map','laborshed','location-quotient','occupations','patents','peers','programs','reach','realwage','revisions','sources','timeline','wages']",
       "actual": "sorted(D['counts']['pages'])",
-      "falsified_if": "The available article set changes without reconciling the hub gallery; numeric claim totals are no longer published as a static snapshot."
+      "falsified_if": "The available article set changes without reconciling the hub gallery; numeric claim totals are no longer published as a static snapshot. The prototype flags on the three cards are copied from each page's masthead and cannot be read by this check, which sees only data files; a page that stops being a prototype has to lose its card pill by hand."
     },
     {
       "id": "index-pic-name",
@@ -125,7 +126,7 @@
     },
     {
       "id": "hero-federal-annual",
-      "text": "Federal-money card: FY2019–2025 contract obligations average $41.4M in 2025 dollars, ranging from $20.5M to $59.9M; the $51.0M award equals about 1.2 years. Incomplete FY2026 is excluded.",
+      "text": "Federal-money card: FY2019–2025 contract obligations average $41.4M in 2025 dollars, ranging from $20.5M to $59.9M; the $51.0M award equals about 1.2 years, a rough size and not like for like, since a competitive grant and routine purchase orders are different kinds of money. Incomplete FY2026 is excluded.",
       "source": "USAspending obligations at place of performance, FY2019-2025 finished years, 2025 dollars, via federal-money/data/",
       "assert": "(lambda Y: set(Y) == set(range(2019,2027)) and (lambda F: round(sum(F)/7/1e6,1) == 41.4 and round(min(F)/1e6,1) == 20.5 and round(max(F)/1e6,1) == 59.9 and round(D['hub']['award']/(sum(F)/7),1) == 1.2 and D['hub']['award'] == 51_001_413)([v for fy,v in Y.items() if 2019 <= fy <= 2025]))({fy:sum(r['real'] for r in D['fed']['naics'] if r['fy']==fy) for fy in set(r['fy'] for r in D['fed']['naics'])})",
       "actual": "(sorted([(fy, round(sum(r['real'] for r in D['fed']['naics'] if r['fy'] == fy))) for fy in set(r['fy'] for r in D['fed']['naics'])]), round(sum(r['real'] for r in D['fed']['naics'] if r['fy'] != 2026) / 7))",
@@ -221,12 +222,20 @@
       "falsified_if": "The set of completed fiscal years above the award changes."
     },
     {
+      "id": "card-federal-concentration",
+      "text": "Federal-money card: counted contract by contract over each award's whole life, two Department of Defense suppliers, the survival-equipment maker RFD Beaufort and Goodyear, hold 56 percent of the contract dollars.",
+      "source": "USAspending prime contracts, award basis (whole award lives, dollars of the day), via federal-money/data/awards.json",
+      "assert": "(lambda A: (lambda R: round((R[0]['total'] + R[1]['total']) / A['meta']['total'] * 100) == 56 and 'RFD BEAUFORT' in R[0]['name'] and 'GOODYEAR' in R[1]['name'] and all(r['agency'] == 'Department of Defense' and r['agency_share'] == 1.0 for r in R[:2]) and R[0]['total'] >= R[1]['total'] >= max(r['total'] for r in R[2:]))(A['recipients']) and A['meta']['basis'].startswith('An award’s amount counts its whole life'))(D['fa'])",
+      "actual": "(round((D['fa']['recipients'][0]['total'] + D['fa']['recipients'][1]['total']) / D['fa']['meta']['total'] * 100, 1), [(r['name'], r['agency'], r['agency_share']) for r in D['fa']['recipients'][:2]])",
+      "falsified_if": "The pair's share moves off a rounded 56, the ranking reorders, or either company stops having every dollar placed by the Department of Defense. The card says 'counted contract by contract over each award's whole life' because this is the award basis, a different measure from the yearly $41.4M above it; the basis clause fails if awards.json stops counting whole lives."
+    },
+    {
       "id": "card-funding-map",
-      "text": "Funding-map card: $106.3 million in all — $85.3 million across three public awards plus $21.0 million of matching money — across twenty-one named recipients, and the $51.0 million Tech Hub award is the largest of the three and sits inside that total.",
+      "text": "Funding-map card: $106.3 million in all — $85.3 million across three public awards plus $21.0 million of matching money; the awards and their match are drawn to scale, and the threads into the twenty-one named recipients are not, and the $51.0 million Tech Hub award is the largest of the three and sits inside that total.",
       "source": "PIC award register as of 13 August 2026, via funding-map/data/funding.json",
-      "assert": "(lambda T, S: T['awards'] == 85_335_784 and T['match'] == 20_954_667 and T['total'] == 106_290_451 and T['awards'] + T['match'] == T['total'] and T['awards'] == sum(s['award'] for s in S) and T['match'] == sum(s['matchAmount'] for s in S) and len(S) == 3 and max(s['award'] for s in S) == D['hub']['award'] and round(T['awards'] / 1e6, 1) + round(T['match'] / 1e6, 1) == round(T['total'] / 1e6, 1) == 106.3)(D['fm']['meta']['totals'], D['fm']['sources']) and len(D['fm']['recipients']) == 21",
+      "assert": "(lambda T, S: T['awards'] == 85_335_784 and T['match'] == 20_954_667 and T['total'] == 106_290_451 and T['awards'] + T['match'] == T['total'] and T['awards'] == sum(s['award'] for s in S) and T['match'] == sum(s['matchAmount'] for s in S) and len(S) == 3 and max(s['award'] for s in S) == D['hub']['award'] and round(T['awards'] / 1e6, 1) + round(T['match'] / 1e6, 1) == round(T['total'] / 1e6, 1) == 106.3)(D['fm']['meta']['totals'], D['fm']['sources']) and len(D['fm']['recipients']) == 21 and any(s.startswith('Drawn to scale: the three source bars, their three match bars') for s in D['fm']['meta']['scaleNote']) and any(s.startswith('Not to scale') and 'individual recipients' in s for s in D['fm']['meta']['scaleNote'])",
       "actual": "(D['fm']['meta']['totals'], [s['award'] for s in D['fm']['sources']], D['hub']['award'], len(D['fm']['recipients']))",
-      "falsified_if": "A fourth award is added, a recipient is added or removed, the Tech Hub award stops being the largest of the three, or any of the three printed millions moves. The last clause is the arithmetic guard: the card prints $85.3M and $21.0M next to a $106.3M total, so the two rounded parts have to keep adding to the rounded whole. They do not have to in general — three figures rounded to a tenth can miss their own total by a tenth — which is exactly why this is asserted rather than assumed."
+      "falsified_if": "A fourth award is added, a recipient is added or removed, the Tech Hub award stops being the largest of the three, or any of the three printed millions moves. The last clause is the arithmetic guard: the card prints $85.3M and $21.0M next to a $106.3M total, so the two rounded parts have to keep adding to the rounded whole. They do not have to in general — three figures rounded to a tenth can miss their own total by a tenth — which is exactly why this is asserted rather than assumed. The scale clauses (added 2026-09-29, when the card stopped saying the money was \"drawn to scale and traced to twenty-one named recipients\") fail if the figure's own scale note stops saying the awards and match bars are drawn to scale and the connectors into individual recipients are not."
     },
     {
       "id": "card-revisions",
