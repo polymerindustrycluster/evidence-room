@@ -65,11 +65,16 @@ WEB = os.path.abspath(os.path.join(HERE, "..", ".."))
 
 GREEN, RED, DIM, OFF = "\033[32m", "\033[31m", "\033[2m", "\033[0m"
 
-SCRIPT_STYLE = re.compile(r"<(script|style)\b[^>]*>.*?</\1>", re.I | re.S)
-COMMENT = re.compile(r"<!--.*?-->", re.S)
-# A tag opens only as HTML's tokenizer opens one: "<" then a letter, "/" and a letter, "!" or
-# "?". A "<" before anything else is text ("<5% missing)."), and its full stop stays.
-TAG = re.compile(r"<(?:/?[A-Za-z]|[!?])[^>]*>")
+# Markup is read in one pass, left to right, as HTML's tokenizer reads it: whichever of a
+# comment, a script or style body, or a tag opens first wins, so "<!-- <script> -->" is only a
+# comment, and a script ends at "</script" followed by a space, "/" or ">". A tag opens only as
+# the tokenizer opens one: "<" then a letter, "/" and a letter, "!" or "?". A "<" before
+# anything else is text ("<5% missing)."), and its full stop stays.
+MARKUP = re.compile(r"<!--.*?-->|<(script|style)\b[^>]*>.*?</\1(?=[\s/>])[^>]*>"
+                    r"|<(?:/?[A-Za-z]|[!?])[^>]*>", re.I | re.S)
+# CDATA is text inside SVG or MathML and a hidden bogus comment elsewhere; the gate cannot
+# tell which without parsing, so a page carrying one is not inspected and fails.
+CDATA = re.compile(r"<!\[CDATA\[", re.I)
 WS = re.compile(r"[\s\xa0]+")
 # A token ends after clause punctuation even when no space follows it, so "1991;41" is two
 # tokens and the ";" still closes the clause. A full stop does the same when any letter or
@@ -106,9 +111,9 @@ def page_text(page):
     Read from the page's own SOURCE index.html, never dist/ — see the module docstring."""
     path = os.path.join(WEB, page, "index.html")
     raw = open(path, encoding="utf-8").read()
-    raw = SCRIPT_STYLE.sub(" ", raw)
-    raw = COMMENT.sub(" ", raw)
-    raw = TAG.sub(" ", raw)
+    if CDATA.search(raw):
+        raise ValueError("cannot inspect: a CDATA section, which may or may not render")
+    raw = MARKUP.sub(" ", raw)
     # Entities are decoded AFTER tags are stripped, so a numeric entity for '<' or '>' in
     # running prose can never be mistaken for a real tag by the regex above.
     raw = html.unescape(raw)
@@ -270,7 +275,13 @@ def check_page(page):
     claims_with_counts = [c for c in spec.get("claims", []) if c.get("counts")]
     if not claims_with_counts:
         return []
-    text = page_text(page)
+    try:
+        text = page_text(page)
+    except ValueError as err:
+        return [{"claim": c["id"], "figure": str(entry.get("figure")),
+                 "stems": [str(entry.get("noun"))], "ok": False,
+                 "occurrences": [], "note": str(err)}
+                for c in claims_with_counts for entry in c["counts"]]
     tokens = tokenize(text)
     out = []
     for c in claims_with_counts:

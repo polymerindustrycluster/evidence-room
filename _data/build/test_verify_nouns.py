@@ -184,7 +184,11 @@ class NounNearbyTest(unittest.TestCase):
                      "<h1><em>147 institution records</em> since 1991.&sup1; <em>Only</em> 41 polymer awards were recorded.</h1>",
                      # Codex, #25 round 4: a literal "<" is text, not the start of a tag that
                      # runs to the next ">" and swallows the full stop on its way.
-                     "<h1><em>147 institution records</em> since 1991 (<5% missing). <em>Only</em> 41 polymer awards were recorded.</h1>"):
+                     "<h1><em>147 institution records</em> since 1991 (<5% missing). <em>Only</em> 41 polymer awards were recorded.</h1>",
+                     # Codex, #25 round 5: a comment that spells a script tag is only a comment,
+                     # and a script ends at "</script >" too; neither may swallow the stop.
+                     "<h1><em>147 institution records</em> since 1991<!-- <script> -->.<!-- </script> --> <em>Only</em> 41 polymer awards were recorded.</h1>",
+                     "<h1><em>147 institution records</em> since 1991<script></script >.<script></script> <em>Only</em> 41 polymer awards were recorded.</h1>"):
             with self.subTest(body=body):
                 with TemporaryDirectory() as tmp:
                     web, vn.WEB = vn.WEB, tmp
@@ -265,6 +269,33 @@ class CheckPageTest(unittest.TestCase):
         self.assertFalse(results[0]["ok"], results[0])
         self.assertIsNone(results[0]["note"])
         self.assertTrue(any(not o["ok"] for o in results[0]["occurrences"]))
+
+    def test_script_and_comment_bodies_stay_out_of_the_prose(self):
+        # Positive control for the one-pass reader: a script closed by "</script >" and a
+        # comment still hide their text, so neither can supply the noun.
+        self._make_page(
+            "hiddenpage",
+            "<script>var institution = 1;</script ><!-- institution -->"
+            "<h1>41 recorded polymer awards in 2023.</h1>",
+            [{"id": "c1", "counts": [{"figure": "41", "noun": ["institution"]}]}],
+        )
+        results = vn.check_page("hiddenpage")
+        self.assertFalse(results[0]["ok"], results[0])
+        self.assertIsNone(results[0]["note"])
+
+    def test_cdata_section_fails_as_uninspectable(self):
+        # Codex, #25 round 5: CDATA renders as text inside SVG and hides elsewhere; the gate
+        # cannot tell which, so it refuses the page instead of guessing either way.
+        self._make_page(
+            "cdatapage",
+            "<svg><text>147 institution records<tspan><![CDATA[ since 1991 (<5% missing).]]>"
+            "</tspan> Only 41 polymer awards were recorded.</text></svg>",
+            [{"id": "c1", "counts": [{"figure": "41", "noun": ["institution"]}]}],
+        )
+        results = vn.check_page("cdatapage")
+        self.assertEqual(len(results), 1)
+        self.assertFalse(results[0]["ok"])
+        self.assertIn("CDATA", results[0]["note"])
 
     def test_figure_absent_from_page_fails_not_silently(self):
         self._make_page(
