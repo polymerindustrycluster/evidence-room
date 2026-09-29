@@ -13,6 +13,19 @@
 "use strict";
 const {el, txt, ticks, frame, hoverable, tableView, face, lead, SEQ, CAT, GRAY, INK} = PV;
 const D = await PV.data("peers.json");
+/* MEASURE THE FACE THAT WILL PAINT. Lato ships with font-display:swap, so until it has
+   loaded every label is laid out, and measured, in the fallback. gutter() below ran in
+   that window: on Linux it sized the states margin from Liberation Sans, which paints
+   "North Carolina" at 87.7 units where Lato paints it at 92.0, and the label lost 2px
+   off its left edge at 768 on every weekly CI run from 2026-09-07. macOS hid it because
+   its fallback is wider than Lato, so the error fell on the generous side. Waiting for
+   the fonts first held every chart and figure behind one stalled font file, so the page
+   draws at once and draws again as each face that was loading arrives, and after any
+   later load. */
+const onFonts = redraw => {
+  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(() => redraw(), () => {}); });
+  document.fonts.addEventListener("loadingdone", () => redraw());
+};
 const FP = PV.footprint(D.meta);
 const N = n => Math.round(n).toLocaleString("en-US");
 const short = v => v >= 1000 ? (v / 1000).toFixed(v >= 10000 ? 0 : 1) + "k" : String(Math.round(v));
@@ -48,7 +61,9 @@ const MOBILE = matchMedia("(max-width: 760px)");
    as "Vorth Carolina" at 900px.
 
    getComputedTextLength reports USER units, so the probe has to run inside the viewBox
-   the margin will be written in — set here, and set again by PV.chart a moment later. */
+   the margin will be written in — set here, and set again by PV.chart a moment later.
+   It also has to run again once Lato has loaded, which is why the charts are drawn
+   again when a face arrives (onFonts, above). */
 const GUT = 12;                       // the gap this page keeps between label and plot
 function gutter(id, W, labels, gap = GUT) {
   const svg = document.getElementById(id);
@@ -872,6 +887,7 @@ drawAll();
 trendTable();
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);
+onFonts(drawAll);
 
 /* Footprint banner, cut to one line. The first thing a reader met on this page used to be
    130px of apparatus naming a rival county definition by its internal label; the footprint
