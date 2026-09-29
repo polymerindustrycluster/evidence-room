@@ -88,7 +88,7 @@
       "id": "cle-rank-4",
       "text": "Cleveland is 4th of the 155 disclosed metros, on 8,794 jobs at 1.84x the national share.",
       "source": "BLS QCEW 2024, NAICS 326, private. Rank among DISCLOSED metros only, computed from the same scatter file the chart draws.",
-      "assert": "[p['area'] for p in sorted(D['metro_scatter'], key=lambda p: -p['emp'])].index('C1741') + 1 == 4 and round(one(p for p in D['metro_scatter'] if p['area'] == 'C1741')['emp']) == 8794 and round(one(p for p in D['metro_scatter'] if p['area'] == 'C1741')['lq'], 2) == 1.84",
+      "assert": "[p['area'] for p in sorted(D['metro_scatter'], key=lambda p: -p['emp'])].index('C1741') + 1 == 4 and round(one(p for p in D['metro_scatter'] if p['area'] == 'C1741')['emp']) == 8794 and tofixed(one(p for p in D['metro_scatter'] if p['area'] == 'C1741')['lq'], 2) == '1.84'",
       "actual": "one(p for p in D['metro_scatter'] if p['area'] == 'C1741')",
       "falsified_if": "A revision moves Cleveland off 4th among disclosed metros, changes its 8,794 jobs, or moves its concentration off 1.84x at two decimals. Zero tolerance on the rank: the hero prints it.",
       "official_check": "BLS publishes no metro rank. Cleveland MSA is C1741 in the QCEW area file; the rank is a sort of the disclosed rows."
@@ -173,7 +173,7 @@
       "id": "la-decline",
       "text": "Los Angeles shed 3,699 plastics and rubber jobs between 2015 and 2024, a 17.5% fall.",
       "source": "BLS QCEW annual averages, NAICS 326, private, Los Angeles-Long Beach-Anaheim MSA",
-      "assert": "round(D['trend']['326|C3108']['series'][0]['emp'] - D['trend']['326|C3108']['series'][-1]['emp']) == 3699 and round((D['trend']['326|C3108']['series'][0]['emp'] - D['trend']['326|C3108']['series'][-1]['emp']) / D['trend']['326|C3108']['series'][0]['emp'] * 100, 1) == 17.5 and D['trend']['326|C3108']['series'][0]['year'] == 2015 and D['trend']['326|C3108']['series'][-1]['year'] == 2024",
+      "assert": "round(D['trend']['326|C3108']['series'][0]['emp'] - D['trend']['326|C3108']['series'][-1]['emp']) == 3699 and tofixed((D['trend']['326|C3108']['series'][0]['emp'] - D['trend']['326|C3108']['series'][-1]['emp']) / D['trend']['326|C3108']['series'][0]['emp'] * 100, 1) == '17.5' and D['trend']['326|C3108']['series'][0]['year'] == 2015 and D['trend']['326|C3108']['series'][-1]['year'] == 2024",
       "actual": "(D['trend']['326|C3108']['series'][0], D['trend']['326|C3108']['series'][-1])",
       "falsified_if": "A revision to either endpoint moves the drop off 3,699 jobs or the fall off 17.5% at one decimal, or the series stops starting in 2015 and ending in 2024. This is a descriptive change over a window, not a trend estimate: no rate is fitted and none is claimed.",
       "official_check": "Both endpoints are published annual averages; the change is arithmetic on the same series."

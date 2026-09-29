@@ -39,7 +39,21 @@
    "source": "NSF awards API, Collaborative Research projects with one award at each institution; OpenAlex works listing both institutions",
    "assert": "D['totals']['coauthored'] == 208 and D['totals']['polymer_total'] == 8 and D['totals']['joint_awards'] == len(D['joint_awards']) == 3 and D['totals']['joint_award_dollars'] == sum(a['amount'] for a in D['joint_awards']) and round(D['totals']['joint_award_dollars'] / 1e5) == 34 and max(int(a['start'][-4:]) for a in D['joint_awards']) == 2017 and D['totals']['newest_joint_award_year'] == '2017'",
    "actual": "(D['totals']['coauthored'], D['totals']['polymer_total'], len(D['joint_awards']), sum(a['amount'] for a in D['joint_awards']), sorted(int(a['start'][-4:]) for a in D['joint_awards']))",
-   "falsified_if": "The paper or polymer count moves, the project count moves off three, the three amounts stop summing to the stored total or that total stops rounding to $3.4 million, or the newest start year is anything but 2017. The standfirst's bold sentence was typed by hand while the hero figures below it read the same dollars and year from the data (added 2026-09-29), so a refetch could have moved the figures and left the standfirst. 'Newest starting in 2017' is checked as the latest start year equal to 2017, not merely no later than it, which is all col-no-new-joint-award asks."
+   "falsified_if": "The paper or polymer count moves, the project count moves off three, the three amounts stop summing to the stored total or that total stops rounding to $3.4 million, or the newest start year is anything but 2017. The standfirst's bold sentence was typed by hand while the hero figures below it read the same dollars and year from the data (added 2026-09-29), so a refetch could have moved the figures and left the standfirst. 'Newest starting in 2017' is checked as the latest start year equal to 2017, not merely no later than it, which is all col-no-new-joint-award asks. [2026-09-30: the assertion reads the data, so a standfirst retyped with a wrong dollar figure or year would still have passed it. `counts` now binds the printed sentence, read by verify_nouns.py from the page as rendered: \"projects worth $3.4 million\" must follow \"three joint NSF\", and \"projects starting in 2017\" must follow \"the newest of the\". Any other dollar figure or year in either place fails as a figure not on the page.]",
+   "counts": [
+    {
+     "figure": "projects worth $3.4 million",
+     "noun": [
+      "three joint NSF"
+     ]
+    },
+    {
+     "figure": "projects starting in 2017",
+     "noun": [
+      "newest of the"
+     ]
+    }
+   ]
   },
   {
    "id": "col-cannot-prove-absence",
