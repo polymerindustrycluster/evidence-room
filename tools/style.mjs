@@ -79,8 +79,16 @@ for (const n of list) {
     const ITEMS = /(flex|grid|box)$/;
     const item = e => ITEMS.test(host(e) ? disp(host(e)) : "");
     const wide = e => /^(inline|contents|ruby|table-|-webkit-inline)/.test(disp(e)) || !!e.closest("select") || item(e);
+    /* a block inside an inline-level box ("Jo<span style=display:inline-block><b
+       style=display:block>int</b></span>") still sits in the line around that box */
+    const atom = e => { for (let a = e.parentElement; a && a !== document.body; a = a.parentElement)
+      if (/^(inline-|-webkit-inline)/.test(disp(a))) return a; return null; };
     const own = e => {
-      if (!owners.has(e)) { let b = e; while (b !== document.body && wide(b)) b = b.parentElement; owners.set(e, b); }
+      if (!owners.has(e)) {
+        let b = e;
+        for (let x; ; b = x.parentElement) { while (b !== document.body && wide(b)) b = b.parentElement; if (b === document.body || !(x = atom(b))) break; }
+        owners.set(e, b);
+      }
       return owners.get(e);
     };
     const box = e => { while (e !== document.body && disp(e) === "inline" && !item(e)) e = e.parentElement; return e; };
@@ -103,6 +111,13 @@ for (const n of list) {
       if (a.transform !== "none") m.multiplySelf(new DOMMatrix(a.transform));
       return m;
     };
+    /* a box draws its children flattened into its own plane unless it keeps them in 3D,
+       which any grouping property (opacity, filter, clip, mask, overflow, isolation, blend
+       or paint containment) overrides */
+    const flat = a => a.transformStyle !== "preserve-3d" || parseFloat(a.opacity) < 1 || a.filter !== "none"
+      || a.clipPath !== "none" || a.maskImage !== "none" || !/^(visible|clip)$/.test(a.overflowX)
+      || !/^(visible|clip)$/.test(a.overflowY) || a.isolation === "isolate" || a.mixBlendMode !== "normal"
+      || /paint|strict|content/.test(a.contain);
     const gone = (e, top) => {
       const c = getComputedStyle(e);
       if (c.visibility !== "visible") return true;
@@ -114,9 +129,10 @@ for (const n of list) {
         if (!isNaN(z)) px *= z;
         if (a.display === "contents") continue;
         if (a.opacity === "0" || /opacity\(0\)/.test(a.filter)) return true;
-        /* flattened to its plane, as transform-style: flat draws it: rotateX(90deg) inside
-           rotateX(-90deg) stays edge-on, where the 3D product would cancel */
-        if (!inl) { const r = turn(a); m = new DOMMatrix([r.a, r.b, r.c, r.d, r.e, r.f]).multiply(m); }
+        /* composed in 3D only through a box that keeps its children in 3D: rotateX(90deg)
+           inside rotateX(-90deg) stays edge-on under transform-style: flat, and cancels
+           under preserve-3d */
+        if (!inl) { if (flat(a)) m = new DOMMatrix([m.a, m.b, m.c, m.d, m.e, m.f]); m = turn(a).multiply(m); }
       }
       /* the smaller singular value of the composed transform's 2D part */
       const t = m.a ** 2 + m.b ** 2 + m.c ** 2 + m.d ** 2, d = m.a * m.d - m.b * m.c;
@@ -130,9 +146,14 @@ for (const n of list) {
     const breaks = (a, b) => {
       let l = a.parentElement;
       while (!l.contains(b)) l = l.parentElement;
-      /* an item of a box inside l breaks only within that box; its outside is the box's */
-      const boxed = n => { for (let e = n.parentElement; e !== l; e = e.parentElement)
-        if (!/^(inline|ruby|contents|-webkit-inline)/.test(disp(e)) || (item(e) && !(host(e) !== l && l.contains(host(e))))) return true; return false; };
+      /* the box nearest l decides: whatever sits inside an inline-level box (inline-block,
+         inline-flex, -webkit-inline-box ...) breaks only within it, since the box itself
+         sits in l's line */
+      const boxed = n => { let br = false;
+        for (let e = n.parentElement; e !== l; e = e.parentElement)
+          if (/^(inline-|-webkit-inline)/.test(disp(e))) br = false;
+          else if (!/^(inline|ruby|contents)/.test(disp(e)) || item(e)) br = true;
+        return br; };
       return ITEMS.test(disp(l)) || boxed(a) || boxed(b);
     };
     /* the text `top` owns under `mine`, the text nodes `keep` admits, and where each

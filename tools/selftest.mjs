@@ -197,6 +197,19 @@ const CASES = [
       spaced reading broke there, though the box sits in the word's line: "Jo int". */
    inject: s => s.replace("<body>", '<body><div style="display:flex;gap:2rem"><p>Current</p><p>Jo<span style="display:-webkit-inline-box"><b>int</b></span> work rose.</p></div>')},
 
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /withdrawn:joint work/,
+   defect: "a withdrawn phrasing read as quoted because a closing quote kept in 3D was dropped",
+   /* Round 17 of review (2026-09-29): under transform-style: preserve-3d the two rotations
+      cancel and the closing quote shows, but the gate flattened every box, dropped the
+      quote, and read the phrase as inside “Old ... “New”. */
+   inject: s => s.replace("<body>", '<body><p><span style="visibility:hidden">Correction, 28 September 2026: </span>“Old<span style="display:inline-block;transform:rotateX(90deg);transform-style:preserve-3d"><span style="display:inline-block;transform:rotateX(-90deg)">”</span></span> Joint work rose. “New”</p>')},
+
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /withdrawn:joint work/,
+   defect: "a withdrawn phrasing split by a block nested in an inline box inside a word",
+   /* Round 17 of review (2026-09-29): the round-16 fix exempted only an inline item, and
+      a display:block item still broke "Jo int", though the box sits in the word's line. */
+   inject: s => s.replace("<body>", '<body><div style="display:flex;gap:2rem"><p>Current</p><p>Jo<span style="display:-webkit-inline-box"><b style="display:block">int</b></span> work rose.</p></div>')},
+
   {gate: "provenance", page: "cost-scissors", args: ["cost-scissors"],
    defect: "a page crediting a federal source it has never read",
    /* Injected into SOURCES.json rather than the artifact, so this case names its own file.
