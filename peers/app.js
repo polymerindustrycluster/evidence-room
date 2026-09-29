@@ -802,7 +802,7 @@ document.getElementById("bound").innerHTML =
   `<b>Why this page says &ldquo;${ord(M.rank_emp)} of ${M.of_disclosed} disclosed&rdquo; and not
    &ldquo;${ord(M.rank_emp)} nationally&rdquo;.</b>
    ${M.suppressed} metros withhold their employment, including
-   ${M.could_displace.slice(0, 4).map(x => shortName(x.name)).join(", ")}, and BLS will not
+   ${M.could_displace.slice(0, 4).map(x => shortName(x.name)).join(", ")}; BLS will not
    say how many jobs any of them has. Establishment counts cannot stand in: a withheld metro
    with forty large plants beats Akron on jobs while running fewer sites. So the claim stays
    narrow: ${ord(M.rank_emp)} among the ${M.of_disclosed} that disclose.`;
