@@ -450,8 +450,9 @@ function deliveryMobile() {
         "stroke-dasharray": "4 3", rx: 3}, svg);
     txt(svg, s.short, {x: m.l, y: y + nameY, class: "pv-lab"});
     txt(svg, amt, {x: stack ? m.l : m.l + nw + GAP, y: y + amtY, class: "pv-labq"});
+    /* The unverified award carries its caveat here too, as the desktop label does. */
     txt(svg, s.unassigned ? `${short(s.assigned)} named, ${short(s.unassigned)} not yet`
-                          : "fully assigned to named recipients",
+           : unv(s) ? `fully assigned, ${s.label}` : "fully assigned to named recipients",
       {x: m.l, y: y + statY, class: "pv-labq"});
     hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, svg),
       `<b>${s.name}</b><br><span class="v">${usd(s.award)}</span> awarded<br>

@@ -32,9 +32,9 @@
   },
   {
    "id": "acc-attribution",
-   "text": "Band A, the four stages: $106,290,451 reported secured, $85,335,784 awarded, $79,170,176 on a line naming a recipient, $73,199,371 of it on the twenty-six executed lines, $4,149,515 on lines naming the Greater Akron Chamber as destination. Match is never summed into that bar. The twenty-seventh line, EDA award ED25HDQ0G0009, $5,970,805 to Huntsman, is a signed Notice of Award with no USAspending record, so its execution is not verified: the chart labels, the band B lede, the methodology and the band A source line say so, and the source line keeps “verified against signed federal Notices of Award” only with that exception named. Corrected 2026-09-29 from “$79,170,176 on an executed line”.",
+   "text": "Band A, the four stages: $106,290,451 reported secured, $85,335,784 awarded, $79,170,176 on a line naming a recipient, $73,199,371 of it on the twenty-six executed lines, $4,149,515 on lines naming the Greater Akron Chamber as destination. Match is never summed into that bar. The twenty-seventh line, EDA award ED25HDQ0G0009, $5,970,805 to Huntsman, is a signed Notice of Award with no USAspending record, so its execution is not verified: the chart labels, the band B lede, the methodology and the band A source line say so, and the source line keeps “verified against signed federal Notices of Award” only with that exception named. The twenty-seven lines name twenty-one recipients; the twenty-six executed lines name twenty, because Huntsman holds only the unverified line. Corrected 2026-09-29 from “$79,170,176 on an executed line”, and the same day from “twenty-six of them executed and holding $73,199,371, naming twenty-one recipients”.",
    "source": "funding-map/data/funding.json meta.totals and recipients[]",
-   "assert": "(D['fm']['meta']['totals']['total'] == 106290451 and D['fm']['meta']['totals']['awards'] == 85335784 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']) == 79170176 and D['fm']['meta']['totals']['match'] == 20954667 and D['fm']['meta']['totals']['awards'] + D['fm']['meta']['totals']['match'] == D['fm']['meta']['totals']['total']) and (lambda nr, st, a: D['sc']['delivery']['executed'] == st['executed'] == 79170176 - nr['amount'] == 73199371 and st['unverified']['awardId'] == nr['awardId'] == 'ED25HDQ0G0009' and 'not verified' in D['fm']['meta']['provenance'][0] and 'executed' not in st['assigned_label'] and 'executed' not in a['stages'][2]['label'] and a['stages'][2]['sub'].endswith(', %d executed' % (len([x for r in D['fm']['recipients'] for x in r['awards']]) - 1)) and 'executed' not in D['acc']['meta']['row'] and 'on all lines but one, execution' in D['acc']['meta']['caution'] and all(n in a['source_note'] for n in ('Notices of Award', nr['awardId'], nr['name'], 'not verified')))(D['fm']['meta']['outlays']['no_record'], D['acc']['staging'], D['acc']['attribution'])",
+   "assert": "((D['fm']['meta']['totals']['total'] == 106290451 and D['fm']['meta']['totals']['awards'] == 85335784 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']) == 79170176 and D['fm']['meta']['totals']['match'] == 20954667 and D['fm']['meta']['totals']['awards'] + D['fm']['meta']['totals']['match'] == D['fm']['meta']['totals']['total']) and (lambda nr, st, a: D['sc']['delivery']['executed'] == st['executed'] == 79170176 - nr['amount'] == 73199371 and st['unverified']['awardId'] == nr['awardId'] == 'ED25HDQ0G0009' and 'not verified' in D['fm']['meta']['provenance'][0] and 'executed' not in st['assigned_label'] and 'executed' not in a['stages'][2]['label'] and a['stages'][2]['sub'].endswith(', %d executed' % (len([x for r in D['fm']['recipients'] for x in r['awards']]) - 1)) and 'executed' not in D['acc']['meta']['row'] and 'on all lines but one, execution' in D['acc']['meta']['caution'] and all(n in a['source_note'] for n in ('Notices of Award', nr['awardId'], nr['name'], 'not verified')))(D['fm']['meta']['outlays']['no_record'], D['acc']['staging'], D['acc']['attribution'])) and len(D['fm']['recipients']) == 21 and len([r for r in D['fm']['recipients'] if any(a.get('awardId') != D['fm']['meta']['outlays']['no_record']['awardId'] for a in r['awards'])]) == 20 == D['acc']['coalition']['recipients'] - 1",
    "actual": "(D['fm']['meta']['totals'], sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']), D['acc']['staging'].get('executed'), D['acc']['staging'].get('assigned_label'), D['acc']['attribution']['stages'][2]['sub'], D['acc']['attribution'].get('source_note'))",
    "falsified_if": "The award register changes any of the four stage figures. The last conjunct is the one that guards the drawing: it holds only while match and awards are separate addends of the secured total, so a register that folded match into awards would fail here rather than producing a staged bar that silently double-counts a promise made by somebody else. Also: any chart label, the methodology row or caution, or the band A source line goes back to calling the whole assigned total executed, or USAspending publishes ED25HDQ0G0009 (then the exception goes and this claim fails on purpose).",
    "counts": [
@@ -57,6 +57,14 @@
     {
      "figure": "$79,170,176 on a line naming a recipient",
      "noun": "executed"
+    },
+    {
+     "figure": "twenty-one recipients",
+     "noun": "twenty-seven"
+    },
+    {
+     "figure": "twenty of those recipients",
+     "noun": "executed"
     }
    ]
   },
@@ -70,18 +78,19 @@
   },
   {
    "id": "acc-licenses-mechanism",
-   "text": "Band A, What this chart licenses: of the $75,020,661 on lines naming other recipients, EDA's signed Notices of Award obligate $48,351,413 directly to the six other project leads, though USAspending has no record of the $5,970,805 to Huntsman; the other $26,669,248 runs through the hub or the Chamber, $23,584,877 on state-grant lines the hub allocates and the $3,084,371 APEX award, on which the Chamber is grantee. Corrected 2026-09-29 from a sentence saying all of it is paid directly by design and never passes through PIC.",
+   "text": "Band A, What this chart licenses: of the $75,020,661 on lines naming other recipients, $48,351,413 is EDA money on the awards of the six other project leads, of which USAspending confirms $42,380,608 obligated directly to five of them, and the sixth, $5,970,805 to Huntsman, is on a signed Notice of Award with no USAspending record, so its obligation is not verified; the other $26,669,248 runs through the hub or the Chamber, $23,584,877 on state-grant lines the hub allocates and the $3,084,371 APEX award, on which the Chamber is grantee. Corrected 2026-09-29 from a sentence saying all of it is paid directly by design and never passes through PIC, and the same day from “EDA's signed Notices of Award obligate $48,351,413”, a sum that includes the Huntsman award whose obligation is not verified.",
    "source": "funding-map/data/funding.json sources[].mechanism, programs[].sourceId and recipients[].awards",
-   "assert": "(lambda src, prog, other: src['eda']['mechanism'] == 'direct-to-leads' and src['ohio']['mechanism'] == 'hub-allocated' and src['apex']['mechanism'] == 'single-grantee' and sum(a['amount'] for a in other) == 75020661 and sum(a['amount'] for a in other if prog[a['programId']] == 'eda') == 48351413 and len([a for a in other if prog[a['programId']] == 'eda']) == 6 and sum(a['amount'] for a in other if prog[a['programId']] == 'ohio') == 23584877 and sum(a['amount'] for a in other if prog[a['programId']] == 'apex') == 3084371 == D['acc']['attribution']['gac_grantee']['apex']['amount'] and 23584877 + 3084371 == 26669248 and D['fm']['meta']['outlays']['no_record']['awardId'] in [a.get('awardId') for a in other if prog[a['programId']] == 'eda'])({s['id']: s for s in D['fm']['sources']}, {p['id']: p['sourceId'] for p in D['fm']['programs']}, [a for r in D['fm']['recipients'] if r['id'] != 'greater-akron-chamber' for a in r['awards']])",
+   "assert": "(lambda src, prog, other: src['eda']['mechanism'] == 'direct-to-leads' and src['ohio']['mechanism'] == 'hub-allocated' and src['apex']['mechanism'] == 'single-grantee' and sum(a['amount'] for a in other) == 75020661 and sum(a['amount'] for a in other if prog[a['programId']] == 'eda') == 48351413 and len([a for a in other if prog[a['programId']] == 'eda']) == 6 and sum(a['amount'] for a in other if prog[a['programId']] == 'ohio') == 23584877 and sum(a['amount'] for a in other if prog[a['programId']] == 'apex') == 3084371 == D['acc']['attribution']['gac_grantee']['apex']['amount'] and 23584877 + 3084371 == 26669248 and D['fm']['meta']['outlays']['no_record']['awardId'] in [a.get('awardId') for a in other if prog[a['programId']] == 'eda'] and (lambda nr: nr['name'] == 'Huntsman' and nr['amount'] == 5970805 and sum(a['amount'] for a in other if prog[a['programId']] == 'eda' and a.get('awardId') != nr['awardId']) == 42380608 and len([a for a in other if prog[a['programId']] == 'eda' and a.get('awardId') != nr['awardId']]) == 5 and 42380608 + nr['amount'] == 48351413)(D['fm']['meta']['outlays']['no_record']))({s['id']: s for s in D['fm']['sources']}, {p['id']: p['sourceId'] for p in D['fm']['programs']}, [a for r in D['fm']['recipients'] if r['id'] != 'greater-akron-chamber' for a in r['awards']])",
    "actual": "{s['id']: s['mechanism'] for s in D['fm']['sources']}",
-   "falsified_if": "The funding map re-classifies a mechanism, a line moves between awards, or the state grant turns out to be obligated directly to its sub-grantees. A sentence saying the money never passes through PIC is false while the state award is hub-allocated and the Chamber is APEX's grantee.",
+   "falsified_if": "The funding map re-classifies a mechanism, a line moves between awards, or the state grant turns out to be obligated directly to its sub-grantees. A sentence saying the money never passes through PIC is false while the state award is hub-allocated and the Chamber is APEX's grantee. The $48,351,413 is EDA money on six leads' awards, not an obligated sum: $42,380,608 on the five with a USAspending record is, and the page binds \"obligat\" to that figure, which a reversion to \"obligate $48,351,413\" drops from the page.",
    "counts": [
     {
      "figure": "$48,351,413",
-     "noun": [
-      "EDA",
-      "obligat"
-     ]
+     "noun": "EDA"
+    },
+    {
+     "figure": "$42,380,608",
+     "noun": "obligat"
     },
     {
      "figure": "$26,669,248",

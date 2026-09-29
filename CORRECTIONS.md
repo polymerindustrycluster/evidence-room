@@ -58,8 +58,9 @@ polymer; the trend reads "up in both years since 2021".
 
 **Where the money goes, *accountability*.** **Was:** the awards commit the funders to pay
 the other recipients directly, by design, so PIC cannot mis-spend money that never passes
-through it. **Is:** EDA's signed Notices of Award obligate $48,351,413 directly to the six
-other project leads, though USAspending has no record of the $5,970,805 to Huntsman; the
+through it. **Is:** $48,351,413 is EDA money on the awards of the six other project leads;
+USAspending confirms $42,380,608 of it obligated directly to five of them, and the sixth,
+$5,970,805 to Huntsman, is on a signed Notice of Award whose obligation is not verified; the
 other $26,669,248 runs through the hub or the Chamber, $23,584,877 on state-grant lines the
 hub allocates and the $3,084,371 APEX award, on which the Chamber is the grantee.
 
@@ -160,7 +161,13 @@ and state records alone. The chart labels and source lines are now written into 
 files, where sc-executed, sc-eda-seven and acc-attribution read them; acc-coalition,
 sc-provenance and card-scorecard bind the corrected sentences; and acc-promises now pins
 which commitments share the year 2026, F17 to F21 reading that their year has begun and F22
-giving the membership exclusion, where its text had said F17 to F22 alike.
+giving the membership exclusion, where its text had said F17 to F22 alike. A fourth review
+found the Huntsman exception still missing from three places: band A said EDA's Notices
+"obligate $48,351,413", a sum that includes the unverified award; the band A paragraph and
+the methodology said the twenty-six executed lines name twenty-one recipients, where they
+name twenty; and the scorecard's award chart dropped the EDA bar's "execution unverified"
+label on narrow screens. acc-licenses-mechanism now binds "obligat" to $42,380,608 and
+acc-attribution pins the twenty.
 
 ## 2026-09-28 — Seven more statements on the corrected pages failed their own data
 

@@ -804,8 +804,9 @@ await PV.methodology({
   page: "accountability",
   meta: D.meta,
   definitions: `Of the ${usd(S.awarded)} awarded across three public awards, `
-    + `${usd(S.assigned)} sits on ${C.lines_phrase} (${usd(S.executed)} on the executed `
-    + `ones) naming ${C.recipients} recipients, and ${usd(A.stages[3].amount)} of that is on the two lines naming the `
+    + `${usd(S.assigned)} sits on ${C.lines} award lines naming ${C.recipients} recipients, `
+    + `${usd(S.executed)} of it on the ${C.executed_lines} executed ones, and `
+    + `${usd(A.stages[3].amount)} of that is on the two lines naming the `
     + `Greater Akron Chamber as destination, ${pct1(A.share_of_awarded * 100)} of the awards. The `
     + `promise register holds ${P.rows.length} dated commitments: `
     + `${P.by_type.numeric_outcome} numeric outcome target, ${P.by_type.milestone} `

@@ -8,8 +8,8 @@ writing, and what can no public record say.
 
 Today it computes: **$4,149,515** attributed (4.9% of $85,335,784 awarded), **18** dated
 commitments (1 numeric outcome, 12 milestones, 5 award-period ends; 8 PIC-owned, 10
-partner-owned), **27** executed award lines across **21** recipients and **8** award IDs,
-**11** lines carrying **95.5%** of assigned money, **3** targets on the board and **0**
+partner-owned), **27** award lines, **26** of them executed (the 27 span **21** recipients
+and **8** award IDs), **11** lines carrying **95.5%** of assigned money, **3** targets on the board and **0**
 owners, **7** rows no public record can fill, and **n = 0** resolved commitments, so no
 keeping rate renders.
 
