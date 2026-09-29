@@ -243,6 +243,39 @@ const CASES = [
    defect: "a withdrawn phrasing passed as corrected by a note hidden by clip:rect(0 0 0 0)",
    inject: s => s.replace("<body>", '<body><p><span style="position:absolute;clip:rect(0 0 0 0)">Correction, 28 September 2026: </span>Joint work rose.</p>')},
 
+  /* Follow-ups of 2026-09-30. */
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /withdrawn:joint work/,
+   defect: "a withdrawn phrasing spanning two flex items, exempted by a note in the first item alone",
+   /* The note's box holds "Joint" and not "work", so the phrase is not in the note's line. */
+   inject: s => s.replace("<body>", '<body><div style="display:flex"><span>Correction, 28 September 2026: Joint</span><span>work rose.</span></div>')},
+
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /withdrawn:joint work/,
+   defect: "a withdrawn phrasing after a line break the tight reading lost inside an inline box",
+   /* "Current" sits on the inline box's last line, beside "rose.", not beside "Jo"; the
+      tight reading let the inline box undo the block's break and read "CurrentJoint". */
+   inject: s => s.replace("<body>", '<body><div>Current<span style="display:inline-block"><b style="display:block">Jo<span style="display:inline-block">int</span> work</b><b style="display:block">rose.</b></span></div>')},
+
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /cannot confirm the note is seen/,
+   defect: "a withdrawn phrasing passed as corrected by a note cut off by overflow:hidden",
+   inject: s => s.replace("<body>", '<body><div style="overflow:hidden;height:2px">Correction, 28 September 2026: Joint work rose.</div>')},
+
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /cannot confirm the note is seen/,
+   defect: "a withdrawn phrasing passed as corrected by a note in an inline span under content-visibility:hidden",
+   inject: s => s.replace("<body>", '<body><p><span style="content-visibility:hidden">Correction, 28 September 2026: </span>Joint work rose.</p>')},
+
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /cannot confirm the note is seen/,
+   defect: "a withdrawn phrasing passed as corrected by a note under display:contents and content-visibility:hidden",
+   inject: s => s.replace("<body>", '<body><div><p style="display:contents;content-visibility:hidden">Correction, 28 September 2026: Joint work rose.</p></div>')},
+
+  /* The one fixture that must PASS: a bare dated note exempts. The drawn rule compares
+     computed values with defaults as strings (zoom "1", clip "auto" ...), so a Chromium that
+     serialises one differently would refuse every note on the site; this fails first, and
+     names the cause, instead of five live exemptions flipping at once. */
+  {gate: "style", page: "collaboration", args: ["collaboration"], exempt: true,
+   expect: /passed as a dated correction note[\s\S]*collaboration: withdrawn:joint work: \S*rrection, 28 September 2026: Joint work rose/,
+   defect: "a bare dated correction note, which must exempt the phrase it corrects",
+   inject: s => s.replace("<body>", '<body><p>Correction, 28 September 2026: Joint work rose.</p>')},
+
   {gate: "provenance", page: "cost-scissors", args: ["cost-scissors"],
    defect: "a page crediting a federal source it has never read",
    /* Injected into SOURCES.json rather than the artifact, so this case names its own file.
@@ -347,11 +380,12 @@ for (const c of CASES) {
     prepare(c);
   }
   const named = !c.expect || c.expect.test(after.output);
-  const ok = before.status === 0 && after.status !== 0 && named;
+  /* an `exempt` case injects something the gate must let through, and say so (expect) */
+  const ok = before.status === 0 && (c.exempt ? after.status === 0 : after.status !== 0) && named;
   if (ok) trusted++; else broken.push(c);
   console.log(`${ok ? "  ok  " : "BROKEN"} ${c.gate.padEnd(11)} ${c.page.padEnd(15)} ` +
     `clean=${before.status === 0 ? "pass" : "FAIL"} ` +
-    `injected=${after.status !== 0 ? "FAIL" : "pass"}` +
+    `injected=${after.status !== 0 ? "FAIL" : "pass"}${c.exempt ? " (must pass)" : ""}` +
     `${named ? "" : " wrong-failure"}  ${c.defect}`);
 }
 
