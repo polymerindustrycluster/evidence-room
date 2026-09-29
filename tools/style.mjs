@@ -92,74 +92,66 @@ for (const n of list) {
       return owners.get(e);
     };
     const box = e => { while (e !== document.body && disp(e) === "inline" && !item(e)) e = e.parentElement; return e; };
-    /* Text a reader cannot see below the given ancestor: hidden, not displayed, contents
-       skipped, fully transparent by opacity or filter (neither of which a display:contents
-       element, having no box, can apply), not visible, or under a pixel high once its font
-       size is shrunk by every zoom and by the transforms above it, composed, since two can
-       cancel. A plain inline box takes no transform and skips no contents. Visibility and
-       font size are inherited and can be overridden, so they are read on the text's own
-       element. What this misses keeps a phrase in the seen reading, where the all-text
-       reading has it anyway; what it wrongly drops can only fail an exemption (see exempt). */
-    const turn = a => {
-      const m = new DOMMatrix();
-      if (a.rotate !== "none") {
-        const v = a.rotate.split(" "), deg = parseFloat(v.at(-1)) * ({rad: 180 / Math.PI, turn: 360, grad: 0.9}[v.at(-1).replace(/[-\d.e+]/g, "")] ?? 1);
-        const ax = v.length === 4 ? v.slice(0, 3).map(Number) : ({x: [1, 0, 0], y: [0, 1, 0]}[v[0]] ?? [0, 0, 1]);
-        m.rotateAxisAngleSelf(...ax, deg);
-      }
-      if (a.scale !== "none") { const [x, y = x] = a.scale.split(" ").map(Number); m.scaleSelf(x, y); }
-      if (a.transform !== "none") m.multiplySelf(new DOMMatrix(a.transform));
-      return m;
+    /* Whether text is drawn in a way this gate would have to emulate to know what a reader
+       sees: moved, turned or scaled (transform, rotate, scale, translate, perspective, 3D,
+       motion path), composited (opacity, filter, backdrop-filter, blend, will-change),
+       cut (clip, clip-path, masks), contained, or zoomed. Eighteen rounds of review found
+       a new way each time an emulation of these missed what the browser draws, so they are
+       not emulated: an exemption that depends on text under any of them is refused (see
+       exempt), and the seen reading drops such text, which can only find more phrases. */
+    const DRAWN = [["transform", "none"], ["rotate", "none"], ["scale", "none"], ["translate", "none"],
+      ["perspective", "none"], ["transform-style", "flat"], ["offset-path", "none"], ["will-change", "auto"],
+      ["filter", "none"], ["backdrop-filter", "none"], ["mix-blend-mode", "normal"], ["clip", "auto"],
+      ["clip-path", "none"], ["mask-image", "none"], ["-webkit-mask-image", "none"], ["mask-border-source", "none"],
+      ["-webkit-mask-box-image", "none"], ["contain", "none"], ["zoom", "1"]];
+    const drawn = a => parseFloat(a.opacity) < 1 || DRAWN.some(([k, v]) => { const x = a.getPropertyValue(k); return x !== "" && x !== v; });
+    const under = new Map();
+    const emulated = e => {
+      if (!e) return false;
+      if (!under.has(e)) under.set(e, drawn(getComputedStyle(e)) || emulated(e.parentElement));
+      return under.get(e);
     };
-    /* a box draws its children flattened into its own plane unless it keeps them in 3D,
-       which any grouping property (opacity, filter, clip, mask, overflow, isolation, blend
-       or paint containment) overrides */
-    const flat = a => a.transformStyle !== "preserve-3d" || parseFloat(a.opacity) < 1 || a.filter !== "none"
-      || a.clipPath !== "none" || a.maskImage !== "none" || !/^(visible|clip)$/.test(a.overflowX)
-      || !/^(visible|clip)$/.test(a.overflowY) || a.isolation === "isolate" || a.mixBlendMode !== "normal"
-      || /paint|strict|content/.test(a.contain);
+    /* Text a reader cannot see below the given ancestor, short of anything drawn (above):
+       hidden, not displayed, contents skipped, not visible, or under a pixel high. A plain
+       inline box skips no contents. Visibility and font size are inherited and can be
+       overridden, so they are read on the text's own element. What this misses keeps a
+       phrase in the seen reading, where the all-text reading has it anyway; what it wrongly
+       drops can only fail an exemption (see exempt). */
     const gone = (e, top) => {
       const c = getComputedStyle(e);
-      if (c.visibility !== "visible") return true;
-      let px = parseFloat(c.fontSize), m = new DOMMatrix();
+      if (c.visibility !== "visible" || parseFloat(c.fontSize) < 1) return true;
       for (; e && e !== top; e = e.parentElement) {
-        const a = getComputedStyle(e), inl = /^(inline|contents)$/.test(a.display);
-        if (e.hidden || a.display === "none" || (a.contentVisibility === "hidden" && !inl)) return true;
-        const z = parseFloat(a.zoom);
-        if (!isNaN(z)) px *= z;
-        if (a.display === "contents") continue;
-        if (a.opacity === "0" || /opacity\(0\)/.test(a.filter)) return true;
-        /* composed in 3D only through a box that keeps its children in 3D: rotateX(90deg)
-           inside rotateX(-90deg) stays edge-on under transform-style: flat, and cancels
-           under preserve-3d */
-        if (!inl) { if (flat(a)) m = new DOMMatrix([m.a, m.b, m.c, m.d, m.e, m.f]); m = turn(a).multiply(m); }
+        const a = getComputedStyle(e);
+        if (e.hidden || a.display === "none" || drawn(a)
+          || (a.contentVisibility === "hidden" && !/^(inline|contents)$/.test(a.display))) return true;
       }
-      /* the smaller singular value of the composed transform's 2D part */
-      const t = m.a ** 2 + m.b ** 2 + m.c ** 2 + m.d ** 2, d = m.a * m.d - m.b * m.c;
-      return px * Math.sqrt(Math.max(0, (t - Math.sqrt(Math.max(0, t * t - 4 * d * d))) / 2)) < 1;
+      return false;
     };
     /* Whether a reader sees a break between two text nodes: one of them sits in a box that
        is not inline-level below the nearest element holding both, or that element lays its
        children out as flex, grid or box items, which a run of bare text joins as an
        anonymous item. An inline-level box ("Jo<span style=display:inline-block>int</span>")
-       sits in its parent's line, and a display:contents element has no box. */
-    const breaks = (a, b) => {
+       sits in its parent's line, and a display:contents element has no box. Whether that
+       line wraps before or after the box depends on widths, so `loose` reads a break at its
+       edges too: "Current<span style=display:inline-block;width:100%>Joint work</span>"
+       sits on two lines (round 18). */
+    const breaks = (a, b, loose) => {
       let l = a.parentElement;
       while (!l.contains(b)) l = l.parentElement;
       /* the box nearest l decides: whatever sits inside an inline-level box (inline-block,
          inline-flex, -webkit-inline-box ...) breaks only within it, since the box itself
-         sits in l's line */
+         may sit in l's line */
       const boxed = n => { let br = false;
         for (let e = n.parentElement; e !== l; e = e.parentElement)
-          if (/^(inline-|-webkit-inline)/.test(disp(e))) br = false;
+          if (/^(inline-|-webkit-inline)/.test(disp(e))) br = loose;
           else if (!/^(inline|ruby|contents)/.test(disp(e)) || item(e)) br = true;
         return br; };
       return ITEMS.test(disp(l)) || boxed(a) || boxed(b);
     };
     /* the text `top` owns under `mine`, the text nodes `keep` admits, and where each
        starts; with `gap`, text `top` does not own leaves a GAP where it was; with `apart`,
-       a space goes wherever a reader sees a break (see breaks) or where text `top` does not
-       own was left out */
+       a space goes wherever a reader sees a break (see breaks; "loose" also at the edges of
+       an inline-level box) or where text `top` does not own was left out */
     const GAP = "\u0000";
     const read = (top, mine, keep, gap, apart) => {
       const r = {bt: "", at: [], nodes: []};
@@ -172,7 +164,7 @@ for (const n of list) {
         if (mine(u.parentElement) !== top) { if (gap && !r.bt.endsWith(GAP)) r.bt += GAP; cut = true; continue; }
         if (u.nodeType === 1) r.bt += "\n";
         else {
-          if (apart) { if (cut || (last && breaks(last, u))) r.bt += " "; last = u; }
+          if (apart) { if (cut || (last && breaks(last, u, apart === "loose"))) r.bt += " "; last = u; }
           r.at.push(r.bt.length); r.nodes.push(u); r.bt += u.textContent;
         }
         cut = false;
@@ -189,32 +181,39 @@ for (const n of list) {
        exempts only a phrase it closes around within the line. */
     /* The line is judged twice, on all its text and on the text a reader sees, and must
        exempt in both: hiding can then neither supply a note or quotation mark nor take one
-       away, whichever way gone() errs. */
+       away, whichever way gone() errs. A line whose text, or any ancestor of it, is drawn
+       in a way this gate does not emulate (see drawn) cannot show that its note or
+       quotation is seen, so it exempts nothing and says why ("drawn"). */
     const exempt = ({ri, node, k}) => {
       const f = box(node.parentElement);
-      return [() => true, e => !gone(e, f)].every(keep => {
+      let why = false;
+      return [() => true, e => !gone(e, f)].every((keep, pass) => {
         const r = read(f, e => { while (e !== f && /^(inline|ruby)/.test(disp(e)) && !item(e)) e = e.parentElement; return e; },
           keep, true);
         const i = r.nodes.indexOf(node);
         if (i < 0) return false;
         const at = r.at[i] + k, from = r.bt.lastIndexOf(GAP, at) + 1, to = r.bt.indexOf(GAP, at);
         const line = r.bt.slice(from, to < 0 ? r.bt.length : to), p = at - from, before = line.slice(0, p);
-        if (NOTE.test(before.replace(/“[^”]*”/g, "“”"))) return true;
         const re = new RegExp(WRE[ri].source, "iy");
         re.lastIndex = p;
         const m = re.exec(line);
-        return !!m && before.split("“").length > before.split("”").length && line.includes("”", p + m[0].length);
-      });
+        const ok = NOTE.test(before.replace(/“[^”]*”/g, "“”"))
+          || (!!m && before.split("“").length > before.split("”").length && line.includes("”", p + m[0].length));
+        if (ok && pass === 0 && r.nodes.some((u, j) => r.at[j] >= from && r.at[j] <= from + line.length && emulated(u.parentElement)))
+          return (why = "drawn", false);
+        return ok;
+      }) || why;
     };
     /* Two readings of a passage: all its text, which sees a collapsed <details> twin, and
        the text a reader sees, which drops anything hidden, so "Joint<span hidden>x</span>
-       work" is still one phrase. Each is read twice: joined, so "Jo<b>int</b> work" is one
-       phrase, and spaced where a reader sees a break, so "Current" and "Joint work" in two
-       flex items do not read "CurrentJoint work", which no phrase bounded by \b matches
-       (round 14). A phrase any reading finds is reported once, from the node it starts in. */
+       work" is still one phrase. Each is read three times: joined, so "Jo<b>int</b> work" is
+       one phrase, and spaced where a reader sees a break, with and without the edges of an
+       inline-level box, so "Current" and "Joint work" in two flex items do not read
+       "CurrentJoint work", which no phrase bounded by \b matches (round 14). A phrase any
+       reading finds is reported once, from the node it starts in. */
     const withdrawnIn = block => {
       const found = new Map(), all = () => true, seen = e => !gone(e, block);
-      for (const r of [all, seen].flatMap(keep => [read(block, own, keep), read(block, own, keep, false, true)]))
+      for (const r of [all, seen].flatMap(keep => [read(block, own, keep), read(block, own, keep, false, "tight"), read(block, own, keep, false, "loose")]))
         WRE.forEach((re, ri) => {
           for (const wm of r.bt.matchAll(re)) {
             let i = r.at.length - 1;
@@ -227,7 +226,11 @@ for (const n of list) {
               near: r.bt.slice(Math.max(0, wm.index - 30), wm.index + 40).replace(/\s+/g, " ").trim()});
           }
         });
-      for (const h of found.values()) out.push([`${exempt(h) ? "exempt:" : ""}withdrawn:${h.phrase}`, h.near]);
+      for (const h of found.values()) {
+        const x = exempt(h);
+        out.push([`${x === true ? "exempt:" : ""}withdrawn:${h.phrase}`,
+          x === "drawn" ? `cannot confirm the note is seen, drawn by styles the gate does not emulate: ${h.near}` : h.near]);
+      }
     };
     const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     let t;

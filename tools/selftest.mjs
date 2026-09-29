@@ -33,6 +33,10 @@ import {spawnSync} from "child_process";
 import {tmpdir} from "os";
 import {join} from "path";
 
+/* a correction note turned edge-on and back, inside a box kept in 3D and styled `extra` */
+const turned = extra => '<p><span style="display:inline-block;transform:rotateX(90deg);transform-style:preserve-3d;' + extra +
+  '"><span style="display:inline-block;transform:rotateX(-90deg)">Correction, 28 September 2026: </span></span>Joint work rose.</p>';
+
 const CASES = [
   {gate: "textsize", page: "laborshed", args: ["--sweep", "laborshed"],
    defect: "a chart collapsed to zero width, so its text cannot be measured at all",
@@ -209,6 +213,35 @@ const CASES = [
    /* Round 17 of review (2026-09-29): the round-16 fix exempted only an inline item, and
       a display:block item still broke "Jo int", though the box sits in the word's line. */
    inject: s => s.replace("<body>", '<body><div style="display:flex;gap:2rem"><p>Current</p><p>Jo<span style="display:-webkit-inline-box"><b style="display:block">int</b></span> work rose.</p></div>')},
+
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /withdrawn:joint work/,
+   defect: "a withdrawn phrasing run into the word before it, across a full-width inline box",
+   /* Round 18 of review (2026-09-29): the round-17 fix read the edge of an inline box as
+      no break, so "Current" and a block inside a full-width inline-block, on two lines,
+      read "CurrentJoint work". */
+   inject: s => s.replace("<body>", '<body><div>Current<span style="display:inline-block;width:100%"><b style="display:block">Joint work rose.</b></span></div>')},
+
+  /* Round 18 of review (2026-09-29) found more ways the browser draws a note that the
+     gate's emulation of transforms and compositing drew differently. The gate stopped
+     emulating: any exemption resting on text drawn by such a style is refused, and says so. */
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /cannot confirm the note is seen/,
+   defect: "a withdrawn phrasing passed as corrected by a note turned edge-on across a plain inline span",
+   inject: s => s.replace("<body>", '<body><p><span style="display:inline-block;transform:rotateX(90deg);transform-style:preserve-3d"><span><span style="display:inline-block;transform:rotateX(-90deg)">Correction, 28 September 2026: </span></span></span>Joint work rose.</p>')},
+  ...["will-change:opacity", "backdrop-filter:blur(1px)", "perspective:100px", "contain:layout",
+      "overflow:clip"].map(style => (
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /cannot confirm the note is seen/,
+   defect: `a withdrawn phrasing passed as corrected by a note turned edge-on, flattened by ${style}`,
+   inject: s => s.replace("<body>", `<body>${turned(style)}`)})),
+  ...["display:inline-block;contain:size;overflow:clip", "-webkit-mask-image:linear-gradient(transparent,transparent)",
+      "filter:opacity(1%)"].map(style => (
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /cannot confirm the note is seen/,
+   defect: `a withdrawn phrasing passed as corrected by a note hidden by ${style}`,
+   inject: s => s.replace("<body>", `<body><p><span style="${style}">Correction, 28 September 2026: </span>Joint work rose.</p>`)})),
+  /* clip takes effect only on an absolutely positioned box, which is a block of its own, so
+     the clipped note is not in the phrase's line and fails before the drawn rule is asked */
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /withdrawn:joint work/,
+   defect: "a withdrawn phrasing passed as corrected by a note hidden by clip:rect(0 0 0 0)",
+   inject: s => s.replace("<body>", '<body><p><span style="position:absolute;clip:rect(0 0 0 0)">Correction, 28 September 2026: </span>Joint work rose.</p>')},
 
   {gate: "provenance", page: "cost-scissors", args: ["cost-scissors"],
    defect: "a page crediting a federal source it has never read",
