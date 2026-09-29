@@ -181,7 +181,10 @@ class NounNearbyTest(unittest.TestCase):
                      # Codex, #25 round 3: a quote after the stop is not a decimal, and a
                      # superscript footnote mark is not a decimal digit.
                      "<h1><em>147 institution records since 1991</em>.\"41 polymer awards were recorded.\"</h1>",
-                     "<h1><em>147 institution records</em> since 1991.&sup1; <em>Only</em> 41 polymer awards were recorded.</h1>"):
+                     "<h1><em>147 institution records</em> since 1991.&sup1; <em>Only</em> 41 polymer awards were recorded.</h1>",
+                     # Codex, #25 round 4: a literal "<" is text, not the start of a tag that
+                     # runs to the next ">" and swallows the full stop on its way.
+                     "<h1><em>147 institution records</em> since 1991 (<5% missing). <em>Only</em> 41 polymer awards were recorded.</h1>"):
             with self.subTest(body=body):
                 with TemporaryDirectory() as tmp:
                     web, vn.WEB = vn.WEB, tmp

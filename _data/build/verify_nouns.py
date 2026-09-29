@@ -67,7 +67,9 @@ GREEN, RED, DIM, OFF = "\033[32m", "\033[31m", "\033[2m", "\033[0m"
 
 SCRIPT_STYLE = re.compile(r"<(script|style)\b[^>]*>.*?</\1>", re.I | re.S)
 COMMENT = re.compile(r"<!--.*?-->", re.S)
-TAG = re.compile(r"<[^>]+>")
+# A tag opens only as HTML's tokenizer opens one: "<" then a letter, "/" and a letter, "!" or
+# "?". A "<" before anything else is text ("<5% missing)."), and its full stop stays.
+TAG = re.compile(r"<(?:/?[A-Za-z]|[!?])[^>]*>")
 WS = re.compile(r"[\s\xa0]+")
 # A token ends after clause punctuation even when no space follows it, so "1991;41" is two
 # tokens and the ";" still closes the clause. A full stop does the same when any letter or
@@ -123,7 +125,7 @@ def _cuts(chunk):
         if s > 0 and chunk[s - 1].isdecimal() and chunk[s + 1:s + 2].isdecimal():
             continue                                  # "41.5", but not "1991.\u00b9"
         e = m.end()
-        if (chunk[s - 1].isalpha() and (s == 1 or not chunk[s - 2].isalpha())
+        if (s > 0 and chunk[s - 1].isalpha() and (s == 1 or not chunk[s - 2].isalpha())
                 and chunk[e:e + 1].isalpha() and chunk[e + 1:e + 2] == "."):
             continue                                  # "U.S.", but not "U.S.Only"
         cuts.add(m.end())
