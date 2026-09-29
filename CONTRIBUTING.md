@@ -22,7 +22,8 @@ in our methods policy, not a courtesy.
    permanent. If a contribution needs data that cannot be public, the contribution is a
    fetch script, not a dataset.
 6. **Corrections are dated, never silent.** If your PR changes a published number, it must
-   also add the correction note.
+   also add the correction note. If the correction retires a phrasing, add it to
+   `_data/withdrawn.json`; the style gate then fails any page that prints it again.
 
 ## Style
 
