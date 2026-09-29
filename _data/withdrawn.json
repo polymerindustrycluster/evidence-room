@@ -15,7 +15,7 @@
      "correction": "2026-09-28 Federal awards from an NSF-only fetch, collaboration"},
     {"pages": ["collaboration", "index", "reach"], "pattern": "co-?authored|written [\\d,]+ papers together|two people worked together|real and substantial|were about polymers",
      "correction": "2026-09-28 Federal awards from an NSF-only fetch, collaboration (one author holding both affiliations is enough to count a paper)"},
-    {"pages": ["collaboration", "index", "reach"], "pattern": "\\bjoint work\\b|\\bjoint papers?\\b",
+    {"pages": ["collaboration", "index", "reach"], "pattern": "\\bjoint works?\\b|\\bjoint papers?\\b",
      "correction": "2026-09-28 Federal awards from an NSF-only fetch, collaboration (the counted papers name both universities; the page does not infer joint work)"},
     {"pages": ["collaboration"], "pattern": "\\b19 in all\\b",
      "correction": "2026-09-28 collaboration: a paper can carry both subjects, so the two counts bound the union and do not sum to it"},
