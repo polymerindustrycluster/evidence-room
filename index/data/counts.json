@@ -1,6 +1,6 @@
 {
  "n_pieces": 22,
- "total_claims": 532,
+ "total_claims": 534,
  "total_manual": 22,
  "pages": {
   "accountability": {
@@ -16,7 +16,7 @@
    "manual": 0
   },
   "churn": {
-   "claims": 39,
+   "claims": 40,
    "manual": 0
   },
   "cluster-health": {
@@ -24,7 +24,7 @@
    "manual": 0
   },
   "collaboration": {
-   "claims": 6,
+   "claims": 7,
    "manual": 1
   },
   "cost-scissors": {

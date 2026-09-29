@@ -52,7 +52,9 @@ const qNeither = rows.filter(r => r.vs_local_all <= 1 && r.vs_us <= 1).length;
 const maxEmp = Math.max(...rows.map(r => r.emp));
 /* Overlap accounting: the data ship industry GROUPS (325, 326) alongside their disclosed
    sub-industries, so a county can appear at both levels. For the reconciliation sentence
-   each county is counted once, at its finest disclosed level. */
+   each county keeps only its finest disclosed rows: a family row is dropped wherever one
+   of its parts is published there. That is not one row per county, which is what the
+   page said ("counted once per county") until 2026-09-29. */
 const byC = {};
 rows.forEach(r => { (byC[r.name] = byC[r.name] || {})[r.naics] = r; });
 const KIDS = {"325": ["3252", "3255"], "326": ["3261", "3262"]};
@@ -86,7 +88,7 @@ const empTot = dedup.reduce((s, r) => s + r.emp, 0);
    and on every row's own industry label.
 
    THE COMPLETE COVER IS THE GROUP LEVEL, not the finest one. dedup above keeps the
-   finest disclosed row per county, which is right for counting PAIRINGS and wrong for
+   finest disclosed rows in each county, which is right for counting PAIRINGS and wrong for
    counting JOBS: where a county publishes only some of a group's parts, the rest of the
    group falls out of that set, and 7,126 chemical jobs (Cuyahoga's 2,104, Summit's
    1,788, Lake's 1,428 and more) disappear from its 26,402. 325 and 326 taken once per
@@ -159,8 +161,8 @@ const dip = pts.reduce((a, b) => b.med < a.med ? b : a);
    Card 1 now carries the de-duplicated tally beside the headline it corrects. */
 PV.figures([
   ["", `${above} of ${rows.length}`, "published pairings out-pay their county",
-   `one polymer industry in one county, ${D.meta.latest}. Counting each county once
-    instead: ${dAbove} of ${dedup.length}.`],
+   `one polymer industry in one county, ${D.meta.latest}. Counting only the finest
+    industry detail in each county instead: ${dAbove} of ${dedup.length}.`],
   ["key", medPrem.toFixed(2) + "×", "median premium, over pairings",
    `the middle of the ${rows.length} pairings pays a fifth more than its county’s average
     job. The employment-weighted median of group-average ratios is
@@ -639,7 +641,7 @@ document.getElementById("premsrc").innerHTML =
    average weekly wage &divide; the county&rsquo;s all-industry average. Two of the six
    industries, 325 chemical manufacturing and 326 plastics and rubber products, are
    groups holding the other four, so a county can appear twice: once for a group and
-   once for a part of it. Counting each county once at group level, these
+   once for a part of it. Counting each family once per county, these
    ${rows.length} rows cover ${N(jobsOnce)} jobs; the Jobs column itself sums to
    ${N(jobsCol)}, because ${N(jobsTwice)} jobs sit in both a group row and a part row.
    Pairings too small to publish are absent, not zero: the
@@ -807,14 +809,15 @@ const meth = await PV.methodology({page: "wages", meta: D.meta,
     census counts. Codes 325 and 326 are broad families holding the four others, and where
     both a family and its parts clear the disclosure threshold in a county the data publish
     the county at both levels, so one county can be counted twice and the ${rows.length}
-    pairings are not ${rows.length} separate places. Counted once per county, at the finest
-    industry detail published for it, ${dAbove} of ${dedup.length} pairings pay above their
-    county average: ${pctDedup}%, against ${pctHead}% for the headline ${above} of
-    ${rows.length}. Those ${dAbove} cover ${N(empAbove)} of the ${N(empTot)} jobs in that
-    de-duplicated set. That ${N(empTot)} is not this cluster&rsquo;s headcount and is not
-    used as one: keeping the finest row per county drops whatever a group holds beyond
-    its published parts, which is ${N(jobsOnce - empTot)} chemical-manufacturing jobs in
-    the counties that publish only some of 325. For counting JOBS the complete
+    pairings are not ${rows.length} separate places. Counted at the finest industry detail
+    published in each county, so that no pairing sits inside another, ${dAbove} of
+    ${dedup.length} pairings pay above their county average: ${pctDedup}%, against
+    ${pctHead}% for the headline ${above} of ${rows.length}. Those ${dAbove} cover
+    ${N(empAbove)} of the ${N(empTot)} jobs in that de-duplicated set. That ${N(empTot)} is
+    not this cluster&rsquo;s headcount and is not used as one: keeping only the finest rows
+    in each county drops whatever a group holds beyond its published parts, which is
+    ${N(jobsOnce - empTot)} chemical-manufacturing jobs in the counties that publish only
+    some of 325. For counting JOBS the complete
     non-overlapping cover is the group level, 325 and 326 once per county, which is
     ${N(jobsOnce)} jobs; the Jobs column in the tables sums to ${N(jobsCol)} because
     ${N(jobsTwice)} of them appear in a group row and a part row both. A job total is
