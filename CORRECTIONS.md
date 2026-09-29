@@ -58,7 +58,8 @@ polymer; the trend reads "up in both years since 2021".
 
 **Where the money goes, *accountability*.** **Was:** the awards commit the funders to pay
 the other recipients directly, by design, so PIC cannot mis-spend money that never passes
-through it. **Is:** EDA obligates $48,351,413 directly to the six other project leads; the
+through it. **Is:** EDA's signed Notices of Award obligate $48,351,413 directly to the six
+other project leads, though USAspending has no record of the $5,970,805 to Huntsman; the
 other $26,669,248 runs through the hub or the Chamber, $23,584,877 on state-grant lines the
 hub allocates and the $3,084,371 APEX award, on which the Chamber is the grantee.
 
@@ -123,6 +124,22 @@ reads that it has begun and has not ended, and reads as not yet read against the
 only after that period's last day; the page counts eighteen dated commitments, which fall
 on twelve distinct dates.
 
+**Executed, verified and obligated, both pages.** **Was:** the accountability page said all
+$79,170,176 assigned sits on an executed award line, in its band A paragraph, its band B
+lede ("An award register records commitment and execution"), the payment chart's label and
+description, the coalition table's lede, subtitle and caption ("27 executed lines") and the
+methodology, and its band A source line said the register is "verified against signed
+federal Notices of Award" with no exception. The scorecard's EDA row read "7 of 7" awards
+obligated against a target of "7 of 7 awards"; its disbursement row said the register
+"records commitment and execution"; its award chart's source line said the register is
+"verified against the signed federal Notices of Award"; and its closing note said the eight
+filled rows "compute from federal and state records". **Is:** $73,199,371 on twenty-six of
+the twenty-seven lines is executed; the twenty-seventh, ED25HDQ0G0009, $5,970,805 to
+Huntsman, is a signed Notice of Award with no USAspending record, so its execution and
+obligation are not verified, and each of those surfaces says so. The EDA row reads 6 of 7
+against a target of 7 signed awards. The closing note, and the hub's scorecard card, credit
+PIC's published award register, which three of the eight filled rows read.
+
 **Cause:** Each page was corrected on 1 and 8 September at the surface a reviewer named, and
 the same statement survived on the other surfaces: the scorecard's note, the accountability
 page's copy of it, and the chain count the member flag quotes. The timeline's stand-in days
@@ -136,7 +153,14 @@ programme sentence counted recipients and called them rows; the list of empty li
 described before its lines were written; and the first date fix re-derived only periods
 that had ended. Claims sc-executed, sc-provenance and acc-member-provenance are new, and
 acc-aggregates, acc-promises, acc-register-dates and acc-negative-list2 now pin these
-counts and wordings.
+counts and wordings. A third review found that the Huntsman exception had reached the
+headline figures and not the labels, source lines, the EDA row or the accountability page's
+paragraphs, and that the hub card and the scorecard's closing note still credited federal
+and state records alone. The chart labels and source lines are now written into the data
+files, where sc-executed, sc-eda-seven and acc-attribution read them; acc-coalition,
+sc-provenance and card-scorecard bind the corrected sentences; and acc-promises now pins
+which commitments share the year 2026, F17 to F21 reading that their year has begun and F22
+giving the membership exclusion, where its text had said F17 to F22 alike.
 
 ## 2026-09-28 — Seven more statements on the corrected pages failed their own data
 

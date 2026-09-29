@@ -2,12 +2,12 @@
  "meta": {
   "title": "What PIC promised, what has landed, and who is in the coalition",
   "source": "Every figure is recomputed from a file another page of this site already publishes: the PIC award register (funding map), the PIC scorecard, the public event register (timeline), the EDA Tech Hub award file, USAspending obligations, and BLS QCEW establishment counts. Nothing on this page is fetched. The award register and the event register are as of 13 August 2026; the payment figures were read on 1 September 2026, the federal prime-contract figures on 8 September 2026 and the establishment counts on 11 September 2026.",
-  "row": "one executed award line in the coalition register, and one dated public commitment in the promise register. The two are never counted together.",
+  "row": "one award line in the coalition register, and one dated public commitment in the promise register. The two are never counted together.",
   "fetched": "2026-08-13",
   "definition": "Money is attributed to PIC when it sits on an executed award line naming the Greater Akron Chamber, the organisation that holds PIC. Money obligated directly to another project lead is convened, not held, and the page reports the two separately rather than summing them into one figure of merit.",
   "baseline": "The published $106,290,451 secured figure is the baseline the subtraction runs against. It is the number a reader arrives to test, so it is kept in full and decomposed rather than replaced.",
   "derived_note": "Nothing here is fetched. derive_accountability.py recomputes every figure from the shipped JSON of the pages named above and from two registers seeded by hand, the dated promises and the recipient typing, which the README names. claims.json re-runs the same arithmetic against those upstream files rather than against this page’s own output, so a correction on the funding map fails this page instead of leaving a flattering number standing.",
-  "caution": "An award register records commitment and execution. It records no payment, so no figure taken from it measures money spent. The payment stage on this page is not taken from it: it is the federal ledger’s own outlay figure, which covers the federal award lines and not the state grant, and that is why the stage is part filled rather than either empty or whole.",
+  "caution": "An award register records commitment and, on all lines but one, execution, but no payment, so no figure from it measures money spent. The payment stage is not taken from it: it is the federal ledger’s own outlay figure, which covers the federal award lines and not the state grant, and that is why the stage is part filled rather than either empty or whole.",
   "not": "None of the registered commitments carries a numeric target set by PIC, and PIC set none of the three targets on the board: they are ceilings fixed by signed award documents, and no board row names an owner. PIC’s own stated goal, 150 members and $1 million in annual revenue by 2028, is shown beside the register and not counted in it, because no dated public document sets it. Where PIC has set no target, the absence is the finding and no placeholder stands in for it.",
   "publicOnly": "This repository is public and its history is permanent, so it carries no membership register and no applicant or personal record. Its one per-company membership fact is the chain page’s flag marking the companies PIC has published as members, and this page does not use it. Seven board rows and the membership goal are published as defined empty slots with the register that holds the real number named beside them.",
   "excludes": "The public event register records only events recorded as public. The record of which published dates slipped is deliberately withheld there, so the promise register on this page begins on the day it opened and reports nothing about dates published before it existed.",
@@ -39,7 +39,7 @@
     "key": "assigned",
     "amount": 79170176,
     "label": "assigned to a named recipient",
-    "sub": "27 executed lines naming 21 recipients"
+    "sub": "27 lines naming 21 recipients, 26 executed"
    },
    {
     "key": "attributed",
@@ -83,7 +83,8 @@
    }
   },
   "mechanism": "EDA obligates directly to each project lead. The Greater Akron Chamber is one recipient among seven, for innovation governance. No part of the other six awards passes through it.",
-  "other_leads": 6
+  "other_leads": 6,
+  "source_note": "verified against signed federal Notices of Award and state grant SBIG20251005; Huntsman’s ED25HDQ0G0009 is signed, but its execution is not verified."
  },
  "staging": {
   "awarded": 85335784,
@@ -98,7 +99,8 @@
     "award": 51001413,
     "assigned": 51001413,
     "unassigned": 0,
-    "pct": 100.0
+    "pct": 100.0,
+    "label": "$6.0M execution unverified"
    },
    {
     "id": "ohio",
@@ -107,7 +109,8 @@
     "award": 31250000,
     "assigned": 25084392,
     "unassigned": 6165608,
-    "pct": 80.2700544
+    "pct": 80.2700544,
+    "label": "$6.2M not yet named"
    },
    {
     "id": "apex",
@@ -116,7 +119,8 @@
     "award": 3084371,
     "assigned": 3084371,
     "unassigned": 0,
-    "pct": 100.0
+    "pct": 100.0,
+    "label": "every dollar on an executed line"
    }
   ],
   "gaps": [
@@ -164,6 +168,14 @@
     }
    ]
   },
+  "executed": 73199371,
+  "unverified": {
+   "awardId": "ED25HDQ0G0009",
+   "name": "Huntsman",
+   "amount": 5970805,
+   "source": "eda"
+  },
+  "assigned_label": "On a line naming a recipient",
   "disbursed": null,
   "disbursed_label": "no figure covers the award total",
   "outlays": {
@@ -193,6 +205,8 @@
   "lines": 27,
   "award_ids": 8,
   "rule": 1000000,
+  "executed_lines": 26,
+  "lines_phrase": "27 award lines, 26 of them executed",
   "above": {
    "n": 11,
    "sum": 75595284,
@@ -1126,8 +1140,8 @@
     "group": "B"
    },
    {
-    "metric": "EDA implementation awards obligated to a project lead",
-    "target": "7 of 7 awards",
+    "metric": "EDA implementation awards with a confirmed obligation",
+    "target": "7 signed awards",
     "group": "B"
    },
    {
@@ -1177,7 +1191,7 @@
     "id": "b-disbursed",
     "metric": "Award dollars disbursed to recipients",
     "source": "PIC drawdown records and agency payment systems",
-    "definition": "Cash actually paid out against executed awards at quarter close, divided by dollars awarded. The register above records commitment and execution; nothing in it records a payment.",
+    "definition": "Cash actually paid out against executed awards at quarter close, divided by dollars awarded. The register above records commitment and, on every line but one, execution; nothing in it records a payment.",
     "cadence": "Quarterly, at quarter close",
     "current": null,
     "sub": null

@@ -113,6 +113,14 @@ LINES.sort(key=lambda x: -x["amount"])
 
 TOT = FM["meta"]["totals"]
 ASSIGNED = sum(l["amount"] for l in LINES)
+# One line names its recipient in a signed Notice of Award but has no USAspending record,
+# so its execution is not verified. Every figure called executed leaves it out, and every
+# sentence that says executed is written here where a claim can read it (corrected
+# 2026-09-29: the page called all of the assigned total executed).
+UNV = SC["delivery"]["unverified"]
+EXECUTED_LINES = len(LINES) - (1 if UNV else 0)
+LINES_PHRASE = (f"{len(LINES)} award lines, {EXECUTED_LINES} of them executed" if UNV
+                else f"{len(LINES)} executed award lines")
 
 # THE FOUR STAGES. Match is never in this accumulator. It is a promise made at award time
 # by organisations other than PIC, so it is drawn as a detached bar with its own label and
@@ -123,7 +131,8 @@ STAGES = [
     {"key": "awarded", "amount": TOT["awards"], "label": "awarded",
      "sub": "the three public awards themselves"},
     {"key": "assigned", "amount": ASSIGNED, "label": "assigned to a named recipient",
-     "sub": f"{len(LINES)} executed lines naming {len(FM['recipients'])} recipients"},
+     "sub": f"{len(LINES)} lines naming {len(FM['recipients'])} recipients, "
+            f"{EXECUTED_LINES} executed"},
     {"key": "attributed", "amount": sum(l["amount"] for l in LINES
                                         if l["recipient_id"] == "greater-akron-chamber"),
      "label": "on award lines naming PIC’s own organisation",
@@ -501,7 +510,7 @@ DATA = {
                   f"{long_date(OUTLAYS['as_of'])}, the federal prime-contract figures on "
                   f"{long_date(FED['meta']['fetched'])} and the establishment counts on "
                   f"{long_date(LQ['meta']['fetched'])}.",
-        "row": "one executed award line in the coalition register, and one dated public "
+        "row": "one award line in the coalition register, and one dated public "
                "commitment in the promise register. The two are never counted together.",
         "fetched": AS_OF,
         "definition": "Money is attributed to PIC when it sits on an executed award line "
@@ -520,9 +529,10 @@ DATA = {
                         "against this page\u2019s own output, so a correction on the funding "
                         "map fails this page instead of leaving a flattering number "
                         "standing.",
-        "caution": "An award register records commitment and execution. It records no "
-                   "payment, so no figure taken from it measures money spent. The payment "
-                   "stage on this page is not taken from it: it is the federal ledger’s "
+        "caution": "An award register records commitment and, on all lines but one, "
+                   "execution, but no "
+                   "payment, so no figure from it measures money spent. The payment "
+                   "stage is not taken from it: it is the federal ledger’s "
                    "own outlay figure, which covers the federal award lines and not the "
                    "state grant, and that is why the stage is part filled rather than "
                    "either empty or whole.",
@@ -579,6 +589,12 @@ DATA = {
         "gac_grantee": GRANTEE,
         "mechanism": next(s["note"] for s in FM["sources"] if s["id"] == "eda"),
         "other_leads": len([l for l in LINES if l["program_id"] == "eda-direct"]) - 1,
+        # The band A source line. It said the register is verified against the signed
+        # federal Notices of Award with no exception (corrected 2026-09-29).
+        "source_note": "verified against signed federal Notices of Award and state grant "
+                       "SBIG20251005" + (f"; {UNV['name']}’s {UNV['awardId']} is signed, "
+                                         "but its execution is not verified" if UNV else "")
+                       + ".",
     },
     "staging": {
         "awarded": DEL["awarded"], "assigned": DEL["assigned"],
@@ -592,6 +608,10 @@ DATA = {
                        "share_of_assigned": AGG_TOTAL / ASSIGNED * 100,
                        "rows": [{"recipient": l["recipient"], "amount": l["amount"],
                                  "program": l["program"]} for l in AGG_LINES]},
+        "executed": SC["delivery"]["executed"],
+        "unverified": UNV,
+        "assigned_label": "On a line naming a recipient" if UNV
+                          else "On an executed line naming a recipient",
         "disbursed": None,
         "disbursed_label": "no figure covers the award total",
         "outlays": OUTLAYS,
@@ -601,6 +621,8 @@ DATA = {
         "lines": len(LINES),
         "award_ids": len(AWARD_IDS),
         "rule": RULE,
+        "executed_lines": EXECUTED_LINES,
+        "lines_phrase": LINES_PHRASE,
         "above": {"n": len(ABOVE), "sum": sum(l["amount"] for l in ABOVE),
                   "share": sum(l["amount"] for l in ABOVE) / ASSIGNED * 100},
         "below": {"n": len(BELOW), "sum": sum(l["amount"] for l in BELOW),

@@ -107,6 +107,13 @@ if _NR:
                   "source": PROG_SOURCE[_hits[0]["programId"]]}
 EXECUTED = ASSIGNED - (UNVERIFIED["amount"] if UNVERIFIED else 0)
 N_LEADS = len(TH["leads"])
+# The status line the bar chart prints beside each award, written here so a claim can read
+# it. The award holding the unverified line never reads "executed" (corrected 2026-09-29).
+for v in SRC_ROWS:
+    v["label"] = ("%s not yet named" % short(v["unassigned"]) if v["unassigned"]
+                  else "%s execution unverified" % short(UNVERIFIED["amount"])
+                  if UNVERIFIED and UNVERIFIED["source"] == v["id"]
+                  else "every dollar on an executed line")
 
 # Where the unassigned balance sits. The register's own reconciliation says it is two
 # Ohio workstreams; this recomputes it rather than quoting the sentence.
@@ -300,19 +307,24 @@ row(id="b-recipients", group="B", status="public",
     trend="first reading",
     source="PIC award register")
 row(id="b-eda", group="B", status="public",
-    metric="EDA implementation awards obligated to a project lead",
-    definition="Tech Hub implementation awards for which EDA has obligated funds "
-               "directly to the named project lead, against the number of awards in the "
-               "signed Notices of Award.%s"
-               % (" USAspending confirms all but one; %s, %s to %s, has no record there, so "
+    metric="EDA implementation awards with a confirmed obligation",
+    definition="Tech Hub implementation awards for which USAspending confirms that EDA has "
+               "obligated funds directly to the named project lead, against the number of "
+               "awards in the signed Notices of Award.%s"
+               % (" One, %s, %s to %s, has no record there, so "
                   "its obligation is not verified." % (UNVERIFIED["awardId"],
                   money(UNVERIFIED["amount"]), UNVERIFIED["name"])
                   if UNVERIFIED and UNVERIFIED["source"] == "eda" else ""),
     cadence="On amendment of the award register",
-    target="%d of %d awards" % (N_LEADS, N_LEADS),
-    current="%d of %d" % (N_LEADS, N_LEADS),
-    sub=money(EDA["award"]) + ("; one line not verified"
-                               if UNVERIFIED and UNVERIFIED["source"] == "eda" else ""),
+    # Seven signed awards, six of them confirmed obligated. The row read "7 of 7" in the
+    # round-2 draft while its own sub said one line was not verified (corrected 2026-09-29).
+    target="%d signed awards" % N_LEADS,
+    current="%d of %d" % (N_LEADS - (1 if UNVERIFIED and UNVERIFIED["source"] == "eda"
+                                     else 0), N_LEADS),
+    sub="%s signed%s" % (money(EDA["award"]),
+                         "; %s to %s not verified" % (money(UNVERIFIED["amount"]),
+                                                      UNVERIFIED["name"])
+                         if UNVERIFIED and UNVERIFIED["source"] == "eda" else ""),
     trend="first reading",
     source="Signed federal Notices of Award")
 row(id="b-ohio", group="B", status="public",
@@ -340,8 +352,8 @@ row(id="b-secured", group="B", status="public",
 row(id="b-disbursed", group="B", status="vault",
     metric="Award dollars disbursed to recipients",
     definition="Cash actually paid out against executed awards at quarter close, "
-               "divided by dollars awarded. The register above records commitment and "
-               "execution; nothing in it records a payment.",
+               "divided by dollars awarded. The register above records commitment and, on "
+               "every line but one, execution; nothing in it records a payment.",
     cadence="Quarterly, at quarter close",
     source="PIC drawdown records and agency payment systems",
     # Unlike the other empty rows, part of this one is public: the federal ledger
@@ -517,6 +529,13 @@ doc = {
     "rows": R,
     "delivery": {"awarded": AWARDED, "assigned": ASSIGNED, "unassigned": UNASSIGNED,
                  "executed": EXECUTED, "unverified": UNVERIFIED,
+                 # The chart's source line. It said "verified against the signed federal
+                 # Notices of Award" with no exception (corrected 2026-09-29).
+                 "source_note": "verified against the signed federal Notices of Award and "
+                                "the executed state grant agreement%s." % (
+                                    "; %s to %s is signed, but its execution is not "
+                                    "verified" % (UNVERIFIED["awardId"], UNVERIFIED["name"])
+                                    if UNVERIFIED else ""),
                  "match": MATCH, "secured": SECURED, "sources": SRC_ROWS, "gaps": GAPS},
     "talent": {"year": IPEDS_YEAR, "window": WINDOW, "institutions": N_INSTITUTIONS,
                "polymer": POLY, "polymer_window": POLY_WINDOW,

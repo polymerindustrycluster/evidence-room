@@ -287,8 +287,7 @@ document.getElementById("attribtable").innerHTML = tableView("attrib",
    sentence. The mechanism sentence used to live here and now rides on the chart, where
    the spec puts it and where a screenshot carries it. */
 document.getElementById("attribsrc").innerHTML =
-  `PIC award register as of ${D.as_of}, verified against signed federal Notices of Award `
-  + `and state grant SBIG20251005. <b>${esc(X.defects[0].text)}</b> The Chamber&rsquo;s own `
+  `PIC award register as of ${D.as_of}, ${esc(A.source_note)} <b>${esc(X.defects[0].text)}</b> The Chamber&rsquo;s own `
   + `EDA line, ED24HDQ0G0413, is one of the two FY2024 awards, so restating it with the `
   + `total leaves the share at ${(A.restated_share_of_awarded * 100).toFixed(1)} percent.`;
 
@@ -325,7 +324,7 @@ function stageDesktop() {
 
   // 2. assigned, with the programme-aggregate portion hatched inside it
   y = m.t + rowH;
-  txt(svg, "On an executed line naming a recipient", {x: m.l, y: y + 13, class: "pv-lab"});
+  txt(svg, S.assigned_label, {x: m.l, y: y + 13, class: "pv-lab"});
   txt(svg, `${pct1(S.share_assigned)} of the awards`, {x: m.l, y: y + 31,
     class: "pv-labq"});
   el("rect", {x: m.l, y: y + 38, width: xs(S.assigned) - m.l, height: 28, fill: INK,
@@ -512,7 +511,7 @@ function drawCoalition() {
       <caption><b>This table lists recipients of award money.</b> PIC&rsquo;s membership
         register is separate, is not published, and does not decide who appears here: PIC
         has members who receive nothing in this table, and recipients here who are not
-        members. ${C.lines} executed lines, ${C.recipients} recipients,
+        members. ${C.lines_phrase}, ${C.recipients} recipients,
         ${C.award_ids} award IDs, register as of ${D.as_of}.</caption>
       <thead><tr>${COLS.map(c =>
         `<th scope="col" class="${c.num ? "num" : ""}"${
@@ -805,8 +804,8 @@ await PV.methodology({
   page: "accountability",
   meta: D.meta,
   definitions: `Of the ${usd(S.awarded)} awarded across three public awards, `
-    + `${usd(S.assigned)} sits on ${C.lines} executed lines naming ${C.recipients} `
-    + `recipients, and ${usd(A.stages[3].amount)} of that is on the two lines naming the `
+    + `${usd(S.assigned)} sits on ${C.lines_phrase} (${usd(S.executed)} on the executed `
+    + `ones) naming ${C.recipients} recipients, and ${usd(A.stages[3].amount)} of that is on the two lines naming the `
     + `Greater Akron Chamber as destination, ${pct1(A.share_of_awarded * 100)} of the awards. The `
     + `promise register holds ${P.rows.length} dated commitments: `
     + `${P.by_type.numeric_outcome} numeric outcome target, ${P.by_type.milestone} `

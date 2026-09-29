@@ -146,12 +146,12 @@
    "id": "b-eda",
    "group": "B",
    "status": "public",
-   "metric": "EDA implementation awards obligated to a project lead",
-   "definition": "Tech Hub implementation awards for which EDA has obligated funds directly to the named project lead, against the number of awards in the signed Notices of Award. USAspending confirms all but one; ED25HDQ0G0009, $5,970,805 to Huntsman, has no record there, so its obligation is not verified.",
+   "metric": "EDA implementation awards with a confirmed obligation",
+   "definition": "Tech Hub implementation awards for which USAspending confirms that EDA has obligated funds directly to the named project lead, against the number of awards in the signed Notices of Award. One, ED25HDQ0G0009, $5,970,805 to Huntsman, has no record there, so its obligation is not verified.",
    "cadence": "On amendment of the award register",
-   "target": "7 of 7 awards",
-   "current": "7 of 7",
-   "sub": "$51,001,413; one line not verified",
+   "target": "7 signed awards",
+   "current": "6 of 7",
+   "sub": "$51,001,413 signed; $5,970,805 to Huntsman not verified",
    "trend": "first reading",
    "source": "Signed federal Notices of Award",
    "owner": "not assigned",
@@ -195,7 +195,7 @@
    "group": "B",
    "status": "vault",
    "metric": "Award dollars disbursed to recipients",
-   "definition": "Cash actually paid out against executed awards at quarter close, divided by dollars awarded. The register above records commitment and execution; nothing in it records a payment.",
+   "definition": "Cash actually paid out against executed awards at quarter close, divided by dollars awarded. The register above records commitment and, on every line but one, execution; nothing in it records a payment.",
    "cadence": "Quarterly, at quarter close",
    "source": "PIC drawdown records and agency payment systems",
    "empty": "no figure spans the register",
@@ -347,6 +347,7 @@
    "amount": 5970805,
    "source": "eda"
   },
+  "source_note": "verified against the signed federal Notices of Award and the executed state grant agreement; ED25HDQ0G0009 to Huntsman is signed, but its execution is not verified.",
   "match": 20954667,
   "secured": 106290451,
   "sources": [
@@ -357,7 +358,8 @@
     "award": 51001413,
     "assigned": 51001413,
     "unassigned": 0,
-    "pct": 100.0
+    "pct": 100.0,
+    "label": "$6.0M execution unverified"
    },
    {
     "id": "ohio",
@@ -366,7 +368,8 @@
     "award": 31250000,
     "assigned": 25084392,
     "unassigned": 6165608,
-    "pct": 80.2700544
+    "pct": 80.2700544,
+    "label": "$6.2M not yet named"
    },
    {
     "id": "apex",
@@ -375,7 +378,8 @@
     "award": 3084371,
     "assigned": 3084371,
     "unassigned": 0,
-    "pct": 100.0
+    "pct": 100.0,
+    "label": "every dollar on an executed line"
    }
   ],
   "gaps": [

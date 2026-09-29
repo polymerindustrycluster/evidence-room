@@ -63,7 +63,7 @@ figure recomputed from public data; 7 are empty slots.
 | A | Earned-revenue share | empty slot | PIC general ledger |
 | B | Award dollars with a named recipient | **92.8%** | funding-map |
 | B | Named recipients holding an award line (two are programme aggregates) | **21** | funding-map |
-| B | EDA implementation awards obligated to a project lead | **7 of 7** | federal-money/techhub |
+| B | EDA implementation awards with a confirmed obligation (Huntsman's is not verified) | **6 of 7** | federal-money/techhub |
 | B | Ohio Innovation Hub dollars with a named recipient | **80.3%** | funding-map |
 | B | Total public money secured | **$106.3M** | funding-map |
 | B | Award dollars disbursed to recipients | empty slot | PIC drawdown records |
@@ -114,7 +114,7 @@ Two fields are also missing on **every** row and are not this page's to invent:
   assignment. An EOS row without a named owner is not yet a scorecard row. Seven of the
   fifteen accountable rows are blocked on data; all fifteen are blocked on an owner.
 - **Target.** Three targets are set and all three are ceilings fixed by a signed award
-  document (`$85,335,784 awarded`, `7 of 7 awards`, `$31,250,000 awarded`). Twelve read
+  document (`$85,335,784 awarded`, `7 signed awards`, `$31,250,000 awarded`). Twelve read
   "not set". None was set by PIC, and that absence is itself the finding.
 
 ## Rebuilding

@@ -247,17 +247,21 @@
     },
     {
       "id": "card-scorecard",
-      "text": "Scorecard card: eighteen metrics; public federal and state records fill eight of the fifteen rows PIC answers for; the seven that need PIC's own records include all four on membership and revenue; no row has a named owner yet.",
+      "text": "Scorecard card: eighteen metrics; federal and state records and PIC's published award register fill eight of the fifteen rows PIC answers for; the seven that need PIC's own records include all four on membership and revenue; no row has a named owner yet. Corrected 2026-09-29 from “public federal and state records fill eight”: three of the eight read the award register.",
       "source": "scorecard/data/scorecard.json counts and rows",
-      "assert": "(lambda K, R: K['rows'] == len(R) == 18 and K['accountable'] == 15 and K['public'] == 8 and K['vault'] == 7 and K['public'] + K['vault'] == K['accountable'] and K['vault_in_a'] == 4 == len([r for r in R if r['group'] == 'A']) and K['owners_assigned'] == 0 and not any(r['owner'] not in ('not assigned', 'outside PIC') for r in R))(D['sc']['counts'], D['sc']['rows'])",
+      "assert": "(lambda K, R: K['rows'] == len(R) == 18 and K['accountable'] == 15 and K['public'] == 8 and K['vault'] == 7 and K['public'] + K['vault'] == K['accountable'] and K['vault_in_a'] == 4 == len([r for r in R if r['group'] == 'A']) and K['owners_assigned'] == 0 and not any(r['owner'] not in ('not assigned', 'outside PIC') for r in R) and sorted(r['id'] for r in R if r['status'] == 'public' and r['source'] == 'PIC award register') == ['b-assigned', 'b-recipients', 'b-secured'])(D['sc']['counts'], D['sc']['rows'])",
       "actual": "D['sc']['counts']",
-      "falsified_if": "A row is added or removed, a PIC register starts filling a row, a group A row is filled or regrouped, or an owner is named on any row. The card restates the scorecard's own counts, so a change on that page fails this card rather than leaving the hub behind.",
+      "falsified_if": "A row is added or removed, a PIC register starts filling a row, a group A row is filled or regrouped, or an owner is named on any row. The card restates the scorecard's own counts, so a change on that page fails this card rather than leaving the hub behind. The provenance is bound too: 'eight of the fifteen rows' must stand beside 'award register', which fails if the card goes back to crediting federal and state records alone.",
       "counts": [
         {
           "figure": "fifteen",
           "noun": [
             "row"
           ]
+        },
+        {
+          "figure": "eight of the fifteen rows",
+          "noun": "award register"
         }
       ]
     },

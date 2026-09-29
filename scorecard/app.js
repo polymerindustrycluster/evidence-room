@@ -348,9 +348,8 @@ function deliveryDesktop() {
       "text-anchor": "end", class: "pv-labq"});
     txt(svg, s.unassigned ? `${short(s.assigned)} named` : "fully assigned",
       {x: xs(s.award) + 14, y: y + 12, class: "pv-lab"});
-    txt(svg, s.unassigned ? `${short(s.unassigned)} not yet named`
-             : unv(s) ? `${short(unv(s).amount)} execution unverified`
-             : "every dollar on an executed line",
+    /* The status line is written by derive_scorecard.py so sc-executed can read it. */
+    txt(svg, s.label,
       {x: xs(s.award) + 14, y: y + 29, class: "pv-labq",
        fill: s.unassigned ? "#7A7263" : "var(--pv-muted)"});
   });
@@ -477,8 +476,7 @@ document.getElementById("deliverytable").innerHTML = tableView("del",
     s.unassigned ? usd(s.unassigned) : "none", s.pct.toFixed(1) + "%"]));
 
 document.getElementById("deliverysrc").innerHTML =
-  `PIC award register as of ${D.meta.fetched}, verified against the signed federal `
-  + `Notices of Award and the executed state grant agreement. Match and cost share are `
+  `PIC award register as of ${D.meta.fetched}, ${DEL.source_note} Match and cost share are `
   + `excluded from these bars: they are committed by partners, not awarded to PIC. `
   + `<b>These are commitments, not payments.</b>`;
 
