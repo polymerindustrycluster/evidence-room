@@ -11,6 +11,69 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-29 — Labels and cards that said more than their data
+
+A review of the 2026-09-28 corrections found these beside them. No number changed in any of
+them.
+
+**A keyword search the page does not run, *collaboration*.** **Was:** the source line under
+the second chart described each year as "works listing both institutions, works matching
+'polymer'", in the same line as a note calling the subject count "a classification rather
+than a keyword"; that chart's text description said "the polymer-matching subset". **Is:**
+"their polymer and biomaterials counts", beside the note that defines both as OpenAlex
+subfields, and "the subsets classified in polymers and plastics and in biomaterials". The
+fetch queries those two subfields and never searches for a word.
+
+**"Joint" for papers naming both, *collaboration*.** **Was:** the standfirst said "Joint
+output peaked at 29 papers in 2018"; the opening chart's text description said "joint
+output"; the control chart's axis, legend and text description said "joint works", and
+its table had columns "Joint" and "Joint per 1,000 of Akron"; the second chart's hover said
+"joint works"; the lede and two source notes said "joint count" and "joint series".
+**Is:** "papers naming both" or "works naming both", the source note's "unbounded count",
+and table columns "Naming both" and "Naming both per 1,000 of Akron". The 2026-09-28 entry below changed the
+headline and five sentences for the same reason and left these labels.
+
+**"Counted once per county", *wages* and *sources*.** **Was:** wages said its 35
+de-duplicated pairings were "counted once per county" (methodology box) and "counting each
+county once" (hero card 1), and its source line said "counting each county once at group
+level"; the sources guide said "Count each county once and the unit is a county-industry".
+**Is:** "counted at the finest industry detail published in each county", "counting each
+family once per county" and "Remove the overlap and the unit is a county-industry". The 35
+rows sit in twelve counties, eleven of which keep more than one: a family row is dropped
+only where its own parts are published. Both pages carry a dated correction line.
+
+**A comparison without its caveat, *front page*.** **Was:** the federal-money card said the
+$51.0 million award "is about 1.2 years" of the yearly contract average, without the
+federal-money page's own warning that a competitive grant and routine purchase orders are
+different kinds of money, and without the finding that titles the page's contract chart.
+**Is:** the card adds "a
+rough size and not like for like" and "two Department of Defense suppliers, the
+survival-equipment maker RFD Beaufort and Goodyear, hold 56 percent of the contract
+dollars", counted over each award's whole life as the page counts it.
+
+**A scale, again, *front page*.** **Was:** the funding-map card, as corrected on
+2026-09-28, said "drawn to scale and traced to twenty-one named recipients", which still
+reads as though the recipients are drawn to scale. **Is:** "The awards and their match are
+drawn to scale; the threads into the twenty-one named recipients are not."
+
+**Prototypes shown as articles, *front page*.** **Was:** the cards for chain, reach and
+collaboration sat in the gallery with nothing to mark them as prototypes, though each page
+says so in its masthead. **Is:** each card carries its page's own flag, "Prototype · not
+published data" for chain and "Prototype · internal draft" for the other two.
+
+**An input it is not, *revisions*.** **Was:** "The three series sit on one supply chain.
+Chemicals and allied products, which includes resins, is the upstream input; the other two
+price the finished goods made from it", and a chart title comparing it with "either series
+downstream of it". The wording came in with the 2026-09-28 fix to the series' name. **Is:**
+"Chemicals and allied products is a broad index, of which resins are one part; the other
+two price plastic and rubber goods", and "either of the other two". The page carries a
+dated correction line.
+
+**Cause:** Claims check the numbers in a sentence, and these words carried none. The
+wages, collaboration, front-page and revisions claims now state the corrected wording, and
+wages' claim checks that its 35 rows sit in twelve counties, eleven with more than one. The prototype flags are not
+checked by anything: the claims harness reads data files, and the flag lives in HTML.
+
 ## 2026-09-28 — Seven more statements on the corrected pages failed their own data
 
 Codex re-read the pages corrected below against their own data. Seven published statements
