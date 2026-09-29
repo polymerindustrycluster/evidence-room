@@ -122,10 +122,10 @@ The inference was not hypothetical: a live OpenAlex query on 28 September 2026 r
 such works (the page's cached pull has 208) and found both universities on a single author
 in 15 of them. The page added its polymer and biomaterials counts, eight and eleven, into
 "19 in all", "about 9 percent" and "91 percent" in neither subject; a paper can carry both,
-and the same query found two that do, so it now says at most 19, or 9 percent, and at least
-90 percent in neither. Its closing said "No new joint NSF award has started since 2017"
-beside a standfirst naming NEO-SMART, awarded on 13 July 2026; it now says none started
-after 2017 within the years counted, 2012 to 2025. The closing also rested its "That was
+and the same query found two that do, so it now says at most 19, and at least 90 percent
+in neither. Its closing said "No new joint NSF award has started since 2017"
+beside a paragraph naming NEO-SMART, which the page then dated 14 July 2026; it now says
+none started after 2017 within the years counted, 2012 to 2025. The closing also rested its "That was
 false" on the 208 papers beside the NSF projects; it now rests on the projects alone. The
 heading "Joint work fell as a share of Akron's output" and five sentences that called the
 counted papers "joint work" or "joint papers" now say "papers naming both".
