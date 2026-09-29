@@ -184,6 +184,19 @@ const CASES = [
       read as inside “Old ... “New”. */
    inject: s => s.replace("<body>", '<body><p>“Old<span style="transform:scale(0)">”</span> Joint work rose. “New”</p>')},
 
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /withdrawn:joint work/,
+   defect: "a withdrawn phrasing passed as corrected by a note turned edge-on",
+   /* Round 16 of review (2026-09-29): rotateX(90deg) inside rotateX(-90deg) is drawn flat,
+      so each span is edge-on and the note unseen, but the 3D product of the two
+      rotations cancelled and the gate read the note as visible. */
+   inject: s => s.replace("<body>", '<body><p><span style="display:inline-block;transform:rotateX(90deg)"><span style="display:inline-block;transform:rotateX(-90deg)">Correction, 28 September 2026: </span></span>Joint work rose.</p>')},
+
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /withdrawn:joint work/,
+   defect: "a withdrawn phrasing split by an item nested in an inline box inside a word",
+   /* Round 16 of review (2026-09-29): the <b> is an item of the inline box, and the
+      spaced reading broke there, though the box sits in the word's line: "Jo int". */
+   inject: s => s.replace("<body>", '<body><div style="display:flex;gap:2rem"><p>Current</p><p>Jo<span style="display:-webkit-inline-box"><b>int</b></span> work rose.</p></div>')},
+
   {gate: "provenance", page: "cost-scissors", args: ["cost-scissors"],
    defect: "a page crediting a federal source it has never read",
    /* Injected into SOURCES.json rather than the artifact, so this case names its own file.

@@ -110,11 +110,13 @@ for (const n of list) {
       for (; e && e !== top; e = e.parentElement) {
         const a = getComputedStyle(e), inl = /^(inline|contents)$/.test(a.display);
         if (e.hidden || a.display === "none" || (a.contentVisibility === "hidden" && !inl)) return true;
-        if (a.display === "contents") continue;
-        if (a.opacity === "0" || /opacity\(0\)/.test(a.filter)) return true;
         const z = parseFloat(a.zoom);
         if (!isNaN(z)) px *= z;
-        if (!inl) m = turn(a).multiply(m);
+        if (a.display === "contents") continue;
+        if (a.opacity === "0" || /opacity\(0\)/.test(a.filter)) return true;
+        /* flattened to its plane, as transform-style: flat draws it: rotateX(90deg) inside
+           rotateX(-90deg) stays edge-on, where the 3D product would cancel */
+        if (!inl) { const r = turn(a); m = new DOMMatrix([r.a, r.b, r.c, r.d, r.e, r.f]).multiply(m); }
       }
       /* the smaller singular value of the composed transform's 2D part */
       const t = m.a ** 2 + m.b ** 2 + m.c ** 2 + m.d ** 2, d = m.a * m.d - m.b * m.c;
@@ -128,8 +130,9 @@ for (const n of list) {
     const breaks = (a, b) => {
       let l = a.parentElement;
       while (!l.contains(b)) l = l.parentElement;
+      /* an item of a box inside l breaks only within that box; its outside is the box's */
       const boxed = n => { for (let e = n.parentElement; e !== l; e = e.parentElement)
-        if (!/^(inline|ruby|contents|-webkit-inline)/.test(disp(e)) || item(e)) return true; return false; };
+        if (!/^(inline|ruby|contents|-webkit-inline)/.test(disp(e)) || (item(e) && !(host(e) !== l && l.contains(host(e))))) return true; return false; };
       return ITEMS.test(disp(l)) || boxed(a) || boxed(b);
     };
     /* the text `top` owns under `mine`, the text nodes `keep` admits, and where each
