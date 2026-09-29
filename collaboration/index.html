@@ -30,17 +30,19 @@
       here two independent ways, by the papers that name both and by the NSF grants
       they hold together, across the fourteen years from 2012 to 2025. <b>In those years 208
       papers named both universities, of which eight are classified in polymers, and the two
-      hold four joint NSF projects worth $3.7 million, the newest of the projects starting
-      in 2017.</b> Joint output peaked at 29 papers in 2018, dropped to 11, and came back to 22
+      hold three joint NSF projects worth $3.4 million, the newest of the projects starting
+      in 2017.</b> Papers naming both peaked at 29 in 2018, dropped to 11, and came back to 22
       in 2020. It then fell in each of the four years to 2024, down to two papers, and rose
       to six in 2025.</p>
     <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data OpenAlex works and institutions, NSF Awards API &middot; August&nbsp;2026</p>
     <p class="byline"><b>Correction, September 28, 2026:</b> this page previously called the
       award data &ldquo;federal awards&rdquo;, but the fetch queries the NSF Awards API only. The four
       awards are four joint NSF projects (eight award IDs, since NSF splits a &ldquo;Collaborative
-      Research&rdquo; project into one award per institution); no other federal agency is checked.</p>
+      Research&rdquo; project into one award per institution); no other federal agency is checked.
+      On September 29 four became three, and eight award IDs six; see the correction under the
+      awards chart.</p>
     <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
-      id="open-t">Fourteen years of joint output drawn as one column per year: a rise to a peak of 29 in 2018, a drop and a rebound to 22 in 2020, four falling years to a low of two, and a last column back up to six.</title></svg></div>
+      id="open-t">Fourteen years of papers naming both universities, drawn as one column per year: a rise to a peak of 29 in 2018, a drop and a rebound to 22 in 2020, four falling years to a low of two, and a last column back up to six.</title></svg></div>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -62,9 +64,21 @@
     </div>
     <div class="chart"><svg id="joint" role="img" aria-labelledby="joint-t">
       <title id="joint-t">Works per year listing both the University of Akron and Case
-        Western Reserve University, with the polymer-matching subset.</title></svg></div>
+        Western Reserve University, with the subsets classified in polymers and plastics and
+        in biomaterials.</title></svg></div>
     <div id="jointtable"></div>
     <p class="src" id="jointsrc"></p>
+    <!-- Corrected 2026-09-29: the source line said "works matching 'polymer'" beside a
+         bound calling the subject counts a classification, and the standfirst, charts,
+         tables and source lines called the papers naming both "joint" output or works.
+         Below the chart, not in the hero, so the correction costs the cold open nothing;
+         revisions sets the precedent. -->
+    <p class="src"><b>Correction, September 29, 2026:</b> this page described its subject
+      counts as works &ldquo;matching &lsquo;polymer&rsquo;&rdquo;, a keyword search it does
+      not run. They are OpenAlex&rsquo;s Polymers and Plastics and Biomaterials
+      classifications. It also called the papers naming both universities
+      &ldquo;joint&rdquo; output, works or counts, a word for a collaboration the count
+      does not show. No number changed.</p>
   </div>
 </section>
 
@@ -101,17 +115,17 @@
       or one partner is simply publishing less of everything. Each university&rsquo;s
       total provides context, but cannot rule out delays in indexing papers naming both.
       The lower panel addresses the second
-      one by dividing the joint count by Akron’s own output for that year. Read the result
+      one by dividing the count of papers naming both by Akron’s own output for that year. Read the result
       as how many papers name both universities for every thousand papers Akron
       publishes: a higher rate means papers naming both are a larger share of Akron&rsquo;s
       indexed output, and a lower rate means a smaller share.</p>
     <div class="legend">
       <span><i class="ln" style="background:#B9B3A9"></i> Each university’s own output</span>
-      <span><i style="background:#008BA8"></i> Joint works per 1,000 of Akron’s output</span>
+      <span><i style="background:#008BA8"></i> Works naming both per 1,000 of Akron’s output</span>
     </div>
     <div class="chart"><svg id="control" role="img" aria-labelledby="control-t">
-      <title id="control-t">Each university’s own annual output, and joint works expressed
-        per thousand of the University of Akron’s output.</title></svg></div>
+      <title id="control-t">Each university’s own annual output, and works naming both
+        expressed per thousand of the University of Akron’s output.</title></svg></div>
     <div id="controltable"></div>
     <p class="src" id="controlsrc"></p>
   </div>
@@ -122,14 +136,16 @@
     <p class="takeaway">The money</p>
     <!-- Corrected 2026-09-28: this only queries api.nsf.gov, so "federal" overstated the
          scope. The four are four joint NSF projects, not four awards; NSF splits a
-         "Collaborative Research" project into one award per institution, eight award IDs. -->
-    <h2>Four joint NSF projects, none starting after 2017 in this window</h2>
+         "Collaborative Research" project into one award per institution, eight award IDs.
+         Corrected 2026-09-29: four became three (six award IDs). One pair was one PI's two
+         awards; the dated note sits under this section's chart, beside the table it changed. -->
+    <h2>Three joint NSF projects, none starting after 2017 in this window</h2>
     <p class="lede">NSF projects are the second, independent instrument. They are counted
       two ways, because the National Science Foundation encodes a partnership two ways: as one
       award whose principal investigator (PI) sits at one university and whose co-principal
       investigator (co-PI) sits at the other, and as a &ldquo;Collaborative Research&rdquo;
       project split into a separate award for each. Missing the second method undercounts
-      badly. One of the four projects it finds is Northern Ohio AGEP-T, an alliance for graduate
+      badly. One of the three projects it finds is Northern Ohio AGEP-T, an alliance for graduate
       education in biology, chemistry and engineering. <b>The series ends in 2025.</b> The
       NEO-SMART award described above was made in 2026, later than anything this chart can
       see, and its absence here says nothing about it.</p>
@@ -138,6 +154,15 @@
         amount.</title></svg></div>
     <div id="awardstable"></div>
     <p class="src" id="awardssrc"></p>
+    <p class="src"><b>Correction, September 29, 2026:</b> this page counted four joint NSF
+      projects worth $3.7 million, eight award IDs. It is three, worth $3.4 million, six
+      award IDs. The fourth, &ldquo;Collaborative Research: Algorithm and Theory for Interface
+      Computations&rdquo; ($257,950), was two awards with the same sole principal
+      investigator, Lingxing Yao: 1620198 at Case Western (July 2016 to September 2018) and
+      1852597 at Akron (August 2018 to September 2022). That is one researcher moving between
+      the universities, not the two working together; the project&rsquo;s partner award is
+      at the University of Minnesota. A pair of awards sharing a PI is no longer counted.
+      The newest joint project still starts in 2017.</p>
   </div>
 </section>
 

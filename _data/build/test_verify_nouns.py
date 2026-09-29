@@ -10,17 +10,40 @@ Each test is written against a way the gate could go quietly wrong and still loo
   - "41" must never match inside "1,410" or "41.5", nor "41%" inside "141%" — a naive
     substring search would count a bystander digit run as the figure itself;
   - an empty figure or noun, and a phrase found only inside a longer word, must FAIL,
-    because each would otherwise match almost anything.
+    because each would otherwise match almost anything;
+  - markup is read as Chromium reads it (tools/pagetext.mjs, scripting off), and a page
+    whose rendered text is missing or stale against its bundle must FAIL, never fall back.
+
+Page tests render their fixtures with node and Playwright's Chromium, as the gate does.
 
 Run: python3 -m unittest discover -s _data/build -p 'test_*.py'   (auto-discovered)
      python3 _data/build/test_verify_nouns.py
 """
 import json
+import subprocess
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import verify_nouns as vn
+
+PAGETEXT = Path(__file__).resolve().parents[2] / "tools" / "pagetext.mjs"
+
+
+def write_page(web, page, body):
+    """The page's source and its bundle, both holding `body`: the gate reads the bundle's
+    rendered text, and an older reader of the source can be run against the same fixture."""
+    html = f"<html><body>{body}</body></html>"
+    (Path(web) / page).mkdir(parents=True, exist_ok=True)
+    (Path(web) / page / "index.html").write_text(html, encoding="utf-8")
+    (Path(web) / "dist").mkdir(exist_ok=True)
+    (Path(web) / "dist" / f"{page}.html").write_text(html, encoding="utf-8")
+
+
+def render(web):
+    """Dump the rendered text of every bundle under `web`/dist, one Chromium launch."""
+    subprocess.run(["node", str(PAGETEXT), f"--dist={Path(web) / 'dist'}"],
+                   check=True, capture_output=True, text=True)
 
 
 class FindFigureBoundaryTest(unittest.TestCase):
@@ -148,6 +171,83 @@ class NounNearbyTest(unittest.TestCase):
             found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
             self.assertFalse(found, text)
 
+    def test_full_stop_before_a_dash_ends_the_clause(self):
+        # "1991.\u2014Only" stayed one token because the stop was followed by a dash, not a
+        # letter, so "institution" in the last sentence certified the award count in the next.
+        # The dash may be an en dash, doubled, followed by an opening quote, or trailing.
+        for text in ("147 institution records since 1991.\u2014Only 41 recorded polymer awards.",
+                     "147 institution records since 1991.\u2013Only 41 recorded polymer awards.",
+                     "147 institution records since 1991.\u2014\u2014Only 41 recorded polymer awards.",
+                     "147 institution records since 1991.\u2014\u201cOnly 41 recorded polymer awards.",
+                     "147 institution records since 1991.\u2014 Only 41 recorded polymer awards.",
+                     "147 institution records.\u201441 recorded polymer awards.",
+                     "147 institution records in the U.S.\u2014Only 41 recorded polymer awards."):
+            with self.subTest(text=text):
+                tokens = vn.tokenize(text)
+                s = text.index("41")
+                found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
+                self.assertFalse(found, text)
+
+    def test_full_stop_before_markup_ends_the_clause(self):
+        # Codex, #25: emphasis after "1991.\u2014\u201c" leaves the stop, dash and quote as one
+        # token once tags are stripped, so the previous sentence's noun certified the count.
+        bodies = ("<h1><em>147 institution records</em> since 1991.\u2014\u201c<em>Only</em> 41 polymer awards were recorded.\u201d</h1>",
+                     "<h1>147 institution records since 1991.\u2014<em>Only</em> 41 polymer awards were recorded.</h1>",
+                     "<h1>147 institution records since 1991.\u201c<em>Only</em> 41 polymer awards were recorded.\u201d</h1>",
+                     # Codex and Grok, #25 round 2: a stop outside the emphasis, and trailers
+                     # outside any list of dashes and quotes.
+                     "<h1><em>147 institution records since 1991</em>.\u2014\u201c<em>Only</em> 41 polymer awards were recorded.\u201d</h1>",
+                     "<h1><em>147 institution records</em> since 1991.--<em>Only</em> 41 polymer awards were recorded.</h1>",
+                     "<h1><em>147 institution records</em> since 1991.*<em>Only</em> 41 polymer awards were recorded.</h1>",
+                     "<h1><em>147 institution records</em> since 1991.\u2014\u201d<em>Only</em> 41 polymer awards were recorded.</h1>",
+                     "<h1>147 institution records since 1991.--Only 41 polymer awards were recorded.</h1>",
+                     # Codex, #25 round 3: a quote after the stop is not a decimal, and a
+                     # superscript footnote mark is not a decimal digit.
+                     "<h1><em>147 institution records since 1991</em>.\"41 polymer awards were recorded.\"</h1>",
+                     "<h1><em>147 institution records</em> since 1991.&sup1; <em>Only</em> 41 polymer awards were recorded.</h1>",
+                     # Codex, #25 round 4: a literal "<" is text, not the start of a tag that
+                     # runs to the next ">" and swallows the full stop on its way.
+                     "<h1><em>147 institution records</em> since 1991 (<5% missing). <em>Only</em> 41 polymer awards were recorded.</h1>",
+                     # Codex, #25 round 5: a comment that spells a script tag is only a comment,
+                     # and a script ends at "</script >" too; neither may swallow the stop.
+                     "<h1><em>147 institution records</em> since 1991<!-- <script> -->.<!-- </script> --> <em>Only</em> 41 polymer awards were recorded.</h1>",
+                     "<h1><em>147 institution records</em> since 1991<script></script >.<script></script> <em>Only</em> 41 polymer awards were recorded.</h1>",
+                     # Codex, #25 round 6: a custom element named "style-..." is not a style body.
+                     "<h1><em>147 institution records</em> since <style-note>1991.</style-note><style></style> <em>Only</em> 41 polymer awards were recorded.</h1>",
+                  # Round 7: states a regex takes for a comment or a script body, where a
+                  # browser shows the stop. SVG content breaks out at <span>; RCDATA and
+                  # RAWTEXT bodies hold "<!--" as text; <plaintext> holds everything after it.
+                  "<h1><em>147 institution records</em> since 1991<svg><script><span>.</span></script></svg> <em>Only</em> 41 polymer awards were recorded.</h1>",
+                  *(f"<h1><em>147 institution records</em> since 1991<{tag}><!--</{tag}>.<!-- --> <em>Only</em> 41 polymer awards were recorded.</h1>"
+                    for tag in ("textarea", "title", "xmp", "iframe", "noembed", "noframes")),
+                  "<h1><em>147 institution records</em> since 1991<plaintext><!--. --> Only 41 polymer awards were recorded.")
+        with TemporaryDirectory() as tmp:
+            web, vn.WEB = vn.WEB, tmp
+            try:
+                for i, body in enumerate(bodies):
+                    write_page(tmp, f"markup{i}", body)
+                render(tmp)
+                texts = [vn.page_text(f"markup{i}") for i in range(len(bodies))]
+            finally:
+                vn.WEB = web
+        for body, text in zip(bodies, texts):
+            with self.subTest(body=body):
+                tokens = vn.tokenize(text)
+                s = text.index("41")
+                found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
+                self.assertFalse(found, text)
+
+    def test_a_dash_inside_a_sentence_does_not_end_the_clause(self):
+        # Positive control: only a stop before the dash is a boundary. Without it the gate
+        # would cry wolf on every correct sentence with an aside.
+        for text in ("41 institutions\u2014the most since 1991\u2014recorded a polymer award.",
+                     "The count of institutions\u2014now 41\u2014held steady."):
+            with self.subTest(text=text):
+                tokens = vn.tokenize(text)
+                s = text.index("41")
+                found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
+                self.assertTrue(found, text)
+
     def test_decimal_point_does_not_end_a_clause(self):
         tokens = vn.tokenize("Institutions rose 41.5 percent.")
         self.assertIn("41.5", [w for _, _, w in tokens])
@@ -166,13 +266,12 @@ class NounNearbyTest(unittest.TestCase):
 class CheckPageTest(unittest.TestCase):
     """End-to-end: a real claims.json plus a real index.html for one throwaway page."""
 
-    def _make_page(self, page, html_body, claims):
-        page_dir = Path(vn.WEB) / page
-        page_dir.mkdir(parents=True)
-        (page_dir / "index.html").write_text(
-            f"<html><body>{html_body}</body></html>", encoding="utf-8")
-        (page_dir / "claims.json").write_text(
+    def _make_page(self, page, html_body, claims, rendered=True):
+        write_page(vn.WEB, page, html_body)
+        (Path(vn.WEB) / page / "claims.json").write_text(
             json.dumps({"data": "viz-data.json", "claims": claims}), encoding="utf-8")
+        if rendered:
+            render(vn.WEB)
 
     def setUp(self):
         tmp = TemporaryDirectory()
@@ -203,6 +302,98 @@ class CheckPageTest(unittest.TestCase):
         self.assertIsNone(results[0]["note"])
         self.assertTrue(any(not o["ok"] for o in results[0]["occurrences"]))
 
+    def test_script_and_comment_bodies_stay_out_of_the_prose(self):
+        # Positive control for the one-pass reader: a script closed by "</script >" and a
+        # comment still hide their text, so neither can supply the noun.
+        self._make_page(
+            "hiddenpage",
+            "<script>var institution = 1;</script ><!-- institution -->"
+            "<h1>41 recorded polymer awards in 2023.</h1>",
+            [{"id": "c1", "counts": [{"figure": "41", "noun": ["institution"]}]}],
+        )
+        results = vn.check_page("hiddenpage")
+        self.assertFalse(results[0]["ok"], results[0])
+        self.assertIsNone(results[0]["note"])
+
+    def test_markup_a_regex_could_not_follow_reads_as_a_browser_reads_it(self):
+        # Codex and Grok, #25 rounds 5-6: the regex reader refused these pages, because each
+        # form reads one way in a browser and another to a regex. Chromium now reads them, and
+        # each shows the stop: CDATA renders inside SVG, "--!>" and "<!-->" end a comment,
+        # "<script/>" is empty inside SVG, and text before an unclosed script is still text.
+        bodies = (
+            "<svg><text>147 institution records<tspan><![CDATA[ since 1991 (<5% missing).]]>"
+            "</tspan> Only 41 polymer awards were recorded.</text></svg>",
+            "<h1><em>147 institution records</em> since 1991<!-- note --!>.<!-- note --> "
+            "<em>Only</em> 41 polymer awards were recorded.</h1>",
+            "<h1>147 institution records since 1991<!-->. Only 41 polymer awards.</h1>",
+            "<h1><svg><text>147 institution records since 1991<script/>.<script></script> "
+            "Only 41 polymer awards were recorded.</text></svg></h1>",
+            "<h1>147 institution records since 1991. Only 41 polymer awards.</h1><script>var x")
+        for i, body in enumerate(bodies):
+            self._make_page(f"browser{i}", body,
+                            [{"id": "c1", "counts": [{"figure": "41", "noun": ["institution"]}]}],
+                            rendered=False)
+        render(vn.WEB)
+        for i, body in enumerate(bodies):
+            with self.subTest(body=body):
+                results = vn.check_page(f"browser{i}")
+                self.assertEqual(len(results), 1)
+                self.assertFalse(results[0]["ok"], results[0])
+                self.assertIsNone(results[0]["note"], results[0])
+
+    def test_markup_that_hides_the_noun_from_a_browser_hides_it_from_the_gate(self):
+        # Round 7, the other direction: a regex showed a noun the browser hides. An unclosed
+        # "<!--" runs to the end of the document, and a script start tag ends at the ">"
+        # outside its quoted attribute, so its body is the "institution" after it.
+        bodies = ("<h1>41 polymer awards were recorded<!-- > for each institution</h1>",
+                  "<h1>41 polymer awards were recorded<script data-x=\"></script>\" />"
+                  "for each institution</script></h1>")
+        for i, body in enumerate(bodies):
+            self._make_page(f"hidden{i}", body,
+                            [{"id": "c1", "counts": [{"figure": "41", "noun": ["institution"]}]}],
+                            rendered=False)
+        render(vn.WEB)
+        for i, body in enumerate(bodies):
+            with self.subTest(body=body):
+                results = vn.check_page(f"hidden{i}")
+                self.assertFalse(results[0]["ok"], results[0])
+                self.assertIsNone(results[0]["note"], results[0])
+
+    def test_noscript_reads_as_a_browser_without_scripting_reads_it(self):
+        # The gate renders with scripting off, so a <noscript> body is markup, as the reader
+        # it exists for meets it: its comment hides the stop and its text is prose.
+        self._make_page(
+            "noscriptpage",
+            "<h1><em>147 institution records</em> since 1991<noscript><!--</noscript>.<!-- -->"
+            " <em>Only</em> 41 polymer awards were recorded.</h1>",
+            [{"id": "c1", "counts": [{"figure": "41", "noun": ["institution"]}]}])
+        results = vn.check_page("noscriptpage")
+        self.assertTrue(results[0]["ok"], results[0])
+
+    def test_missing_or_stale_rendered_text_fails_as_uninspectable(self):
+        # The gate never falls back to reading HTML itself. With no dump, with a bundle
+        # changed since its dump, or with no bundle at all, every binding on the page FAILS.
+        claims = [{"id": "c1", "counts": [{"figure": "41", "noun": ["institution"]}]}]
+        self._make_page("undumped", "<h1>41 institutions had a program.</h1>", claims,
+                        rendered=False)
+        results = vn.check_page("undumped")
+        self.assertFalse(results[0]["ok"])
+        self.assertIn("no rendered text", results[0]["note"])
+
+        self._make_page("stalepage", "<h1>41 institutions had a program.</h1>", claims)
+        self.assertTrue(vn.check_page("stalepage")[0]["ok"])
+        bundle = Path(vn.WEB) / "dist" / "stalepage.html"
+        bundle.write_text(bundle.read_text(encoding="utf-8").replace(
+            "41 institutions", "41 awards"), encoding="utf-8")
+        results = vn.check_page("stalepage")
+        self.assertFalse(results[0]["ok"])
+        self.assertIn("stale", results[0]["note"])
+
+        bundle.unlink()
+        results = vn.check_page("stalepage")
+        self.assertFalse(results[0]["ok"])
+        self.assertIn("no dist/stalepage.html", results[0]["note"])
+
     def test_figure_absent_from_page_fails_not_silently(self):
         self._make_page(
             "missingpage",
@@ -222,7 +413,7 @@ class CheckPageTest(unittest.TestCase):
                 "<h1>41 institutions had a program.</h1>",
                 [{"id": "c1", "counts": [{"figure": "41", "noun": noun}]}],
             )
-        for page in sorted(p.name for p in Path(vn.WEB).iterdir()):
+        for page in sorted(p.name for p in Path(vn.WEB).iterdir() if p.name != "dist"):
             results = vn.check_page(page)
             self.assertEqual(len(results), 1, page)
             self.assertFalse(results[0]["ok"], page)

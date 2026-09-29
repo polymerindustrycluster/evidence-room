@@ -38,6 +38,7 @@ if (logDir) mkdirSync(logDir, {recursive: true});
 
 const GATES = [
   ["bundle",      "node",   ["tools/bundle.mjs"],            "regenerates dist/ so every gate reads the same build"],
+  ["pagetext",    "node",   ["tools/pagetext.mjs"],          "Chromium's parse of each bundle's prose, for nouns"],
   ["source-inputs", "python3", ["-m", "unittest", "discover", "-s", "_data/build", "-p", "test_*.py"], "source completeness, geography and inventory regressions"],
   ["workplaces",  "python3", ["-m", "unittest", "discover", "-s", "cluster-health", "-p", "test_*.py"], "complete annual inputs, valid denominators and scoped rebuilds"],
   ["claims",      "python3", ["_data/build/verify_claims.py"],      "recorded assertions against their page data"],
