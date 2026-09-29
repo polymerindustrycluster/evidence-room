@@ -77,12 +77,15 @@ WS = re.compile(r"[\s\xa0]+")
 # "e.g."). A domain ("us.edu"), a URL's "https:" or "?id=", or an abbreviation like
 # "No.41" closing a clause early can only make a binding fail, never pass one.
 # A dash between the stop and what follows does not hide the boundary: "1991.—Only",
-# "1991.–Only", "1991.—“Only" and a trailing "1991.—" all split after the stop, so the
-# token still ends in it. A dash with no stop before it ("41—the most—") stays whole.
+# "1991.–Only", "1991.—“Only" and a trailing "1991.—", "1991.—“" or "1991.“" all split
+# after the stop, so the token still ends in it. The trailing shapes are what markup leaves
+# behind: "1991.—“<em>Only</em>" strips to "1991.—“ Only". A trailing straight quote is
+# left alone, since "records."" already ends in a closing quote. A dash with no stop before it ("41—the most—") stays whole.
 OPEN, CLOSE = "\"'\u2018\u201c(\\[", "\"'\u2019\u201d)\\]"
 DASH = "\u2013\u2014\u2015"
+CURLY_OPEN = "\u2018\u201c(\\["
 CLAUSE_CUT = re.compile(rf"[;:?!]+[{CLOSE}]*(?=\S)")
-STOP_CUT = re.compile(rf"\.+[{CLOSE}]*(?=[{DASH}]*[{OPEN}]*[^\W_]|[{DASH}]+$)")
+STOP_CUT = re.compile(rf"\.+[{CLOSE}]*(?=[{DASH}]*[{OPEN}]*[^\W_]|(?:[{DASH}]+[{OPEN}]*|[{CURLY_OPEN}]+)$)")
 STRIP_EDGES = re.compile(r"^\W+|\W+$", re.UNICODE)
 NUMERIC_FIGURE = re.compile(r"^[\d,.]+$")
 NUMCHARS = set("0123456789,.")

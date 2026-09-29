@@ -165,6 +165,25 @@ class NounNearbyTest(unittest.TestCase):
                 found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
                 self.assertFalse(found, text)
 
+    def test_full_stop_before_markup_ends_the_clause(self):
+        # Codex, #25: emphasis after "1991.\u2014\u201c" leaves the stop, dash and quote as one
+        # token once tags are stripped, so the previous sentence's noun certified the count.
+        for body in ("<h1><em>147 institution records</em> since 1991.\u2014\u201c<em>Only</em> 41 polymer awards were recorded.\u201d</h1>",
+                     "<h1>147 institution records since 1991.\u2014<em>Only</em> 41 polymer awards were recorded.</h1>",
+                     "<h1>147 institution records since 1991.\u201c<em>Only</em> 41 polymer awards were recorded.\u201d</h1>"):
+            with self.subTest(body=body):
+                with TemporaryDirectory() as tmp:
+                    self.addCleanup(setattr, vn, "WEB", vn.WEB)
+                    vn.WEB = tmp
+                    page_dir = Path(tmp) / "markup"
+                    page_dir.mkdir()
+                    (page_dir / "index.html").write_text(f"<html><body>{body}</body></html>", encoding="utf-8")
+                    text = vn.page_text("markup")
+                tokens = vn.tokenize(text)
+                s = text.index("41")
+                found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
+                self.assertFalse(found, text)
+
     def test_a_dash_inside_a_sentence_does_not_end_the_clause(self):
         # Positive control: only a stop before the dash is a boundary. Without it the gate
         # would cry wolf on every correct sentence with an aside.
