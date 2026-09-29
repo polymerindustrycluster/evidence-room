@@ -11,7 +11,7 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
-## 2026-09-30 — Three more sentences that said more than their data
+## 2026-09-30 — More sentences that said more than their data
 
 No figure changed. The revisions page's claim count is unchanged.
 
@@ -28,6 +28,12 @@ whether "the last four years squeezed you or paid you". **Is:** "How the last fo
 prices looked depends on the link you sold from." These are selling-price indexes, and the
 2026-09-28 entry withdrew the same framing elsewhere on the page. The page carries a dated
 correction line.
+The same review found the framing still in the page's labels: the gap heading read "The
+squeeze became a cushion", the 2021 trough was labelled "the squeeze" in five places and the
+2026 dip "the cushion", and the dollar-part example said the trough was "absorbed at the
+machine" and that the part "paid for the spike on the way up". **Is:** "the trough" and "the
+gap", and the part's "price trailed resin on the way up and held after resin fell back". The
+indexes show prices, not who bore the cost. The same dated line covers it.
 
 **A number that had moved, *sources*.** **Was:** recipe 2's 8 September note quoted "the
 middle of 33,528 jobs" with nothing to say the count had since become 33,529. **Is:** a new
