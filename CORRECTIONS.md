@@ -24,6 +24,12 @@ the page's own register holds two federal lines at the Chamber. The claim beside
 that the three routes differ, never the sentence's conclusion; it now pins both of the
 Chamber's federal lines, and the card's $2.65M is bound to its noun.
 
+**Later the same day.** **Was:** the corrected card still said "EDA obligates each of them,
+meaning it commits the money straight to that lead". **Is:** "EDA signs each of them
+straight to that lead"; USAspending confirms the obligation on six of the seven, all but
+Huntsman's, whose signed award has no record there. **Cause:** the correction reworded the
+sentence's conclusion and kept its premise, which the page's own source note qualifies.
+
 ## 2026-09-29 — The scorecard and the accountability page before their first publication
 
 A pre-publication audit read both pages against their own data. The statements below failed
@@ -139,7 +145,11 @@ the twenty-seven lines is executed; the twenty-seventh, ED25HDQ0G0009, $5,970,80
 Huntsman, is a signed Notice of Award with no USAspending record, so its execution and
 obligation are not verified, and each of those surfaces says so. The EDA row reads 6 of 7
 against a target of 7 signed awards. The closing note credits
-PIC's published award register, which three of the eight filled rows read.
+PIC's published award register, which three of the eight filled rows read. The
+accountability chart also labelled the $75,020,661 assigned beyond the Chamber's lines
+"obligated to other named recipients" and said the detached match bar was "never part of
+the total"; it now reads "assigned to other named recipients", and the match is counted in
+reported secured and in no stage after it.
 
 **Cause:** Each page was corrected on 1 and 8 September at the surface a reviewer named, and
 the same statement survived on the other surfaces: the scorecard's note, the accountability

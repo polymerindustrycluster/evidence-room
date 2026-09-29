@@ -165,8 +165,8 @@ source page fails this page's gate instead of leaving a stale board number behin
   member-flag sentence reads 38 of 710, not 785. Group A is "membership and revenue", the
   d-federal label names the codes it counts, the b-recipients definition names both
   programme aggregates, the talent trend reads "up in both years since 2021", and the
-  small-numbers note says "tens". The internal-view flag is gone and the masthead links to
-  the hub. Huntsman's unverified EDA line is named but not called executed (`sc-executed`),
+  small-numbers note says "tens". The masthead links to the hub; the internal-view flag stays
+  while the page is unlisted. Huntsman's unverified EDA line is named but not called executed (`sc-executed`),
   and the provenance line, the square key, the table legend and the Limitations name the
   PIC registers behind the member count and the award rows (`sc-provenance`).
   23 claims, 0 manual.

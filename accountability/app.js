@@ -113,7 +113,7 @@ const MAXA = STG[0].amount;
    authored; the amounts beside them are differences computed from the stages themselves,
    never typed. */
 const DROP = ["", "match and cost share, promised by others", "with no recipient named yet",
-              "obligated to other named recipients"];
+              "assigned to other named recipients"];
 
 function attribRow(g, i, geo, opts) {
   const {xs, rowH, m} = geo;
@@ -202,7 +202,7 @@ function attribDesktop() {
 
   /* The share is written on the chart, on the value line of the bar it describes, because
      the headline prints it and a reader should not have to carry it down from the hero.
-     On its own line below, it ran through the "−$75,020,661 obligated to other named
+     On its own line below, it ran through the "−$75,020,661 assigned to other named
      recipients" label; beside the value there is nothing to collide with. */
   const last = m.t + 3 * rowH;
   txt(svg, `${pct1(A.share_of_awarded * 100)} of the ${usd(S.awarded)} awarded`,
@@ -266,7 +266,7 @@ function attribMobile() {
   el("line", {x1: m.l, y1: my - 14, x2: m.l + w, y2: my - 14,
     stroke: "var(--pv-axis)", "stroke-width": 1, "stroke-dasharray": "3 4"}, svg);
   txt(svg, A.match.label, {x: m.l, y: my + 12, class: "pv-lab"});
-  txt(svg, usd(A.match.amount) + ", not part of the total above",
+  txt(svg, usd(A.match.amount) + ", counted in reported secured only",
     {x: m.l, y: my + 12 + MOBLEAD, class: "pv-labq"});
   el("rect", {x: m.l, y: my + 12 + MOBLEAD + 8, width: xs(A.match.amount) - m.l, height: 16,
     fill: "none", stroke: GRAY, "stroke-width": 1.5, "stroke-dasharray": "5 4", rx: 3},
@@ -281,7 +281,7 @@ document.getElementById("attribtable").innerHTML = tableView("attrib",
   ["Stage", "Amount", "Falls away before the next stage"],
   STG.map((s, i) => [s.label, usd(s.amount),
     i + 1 < STG.length ? usd(s.amount - STG[i + 1].amount) : "nothing below this stage"])
-    .concat([[A.match.label, usd(A.match.amount), "never enters the stages above"]]));
+    .concat([[A.match.label, usd(A.match.amount), "counted in reported secured, in no stage after it"]]));
 
 /* Source line, held to the caveat-ink budget: one source clause and one limitation
    sentence. The mechanism sentence used to live here and now rides on the chart, where
