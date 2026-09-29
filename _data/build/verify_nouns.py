@@ -76,16 +76,16 @@ WS = re.compile(r"[\s\xa0]+")
 # a decimal ("41.5", ".5") and the inner stops of a single-letter abbreviation ("U.S.",
 # "e.g."). A domain ("us.edu"), a URL's "https:" or "?id=", or an abbreviation like
 # "No.41" closing a clause early can only make a binding fail, never pass one.
-# A dash between the stop and what follows does not hide the boundary: "1991.—Only",
-# "1991.–Only", "1991.—“Only" and a trailing "1991.—", "1991.—“" or "1991.“" all split
-# after the stop, so the token still ends in it. The trailing shapes are what markup leaves
-# behind: "1991.—“<em>Only</em>" strips to "1991.—“ Only". A trailing straight quote is
-# left alone, since "records."" already ends in a closing quote. A dash with no stop before it ("41—the most—") stays whole.
+# Punctuation between the stop and what follows does not hide the boundary: "1991.—Only",
+# "1991.--Only" and "1991.—“Only" split after the stop, and so does any trailing run of it
+# other than a comma or closing quotes alone ("1991.—“", "1991.*", "1991.—”"), so the token
+# still ends in the stop. The trailing shapes are what markup leaves behind:
+# "1991.—“<em>Only</em>" strips to "1991.—“ Only", and "1991</em>.—“" to "1991 .—“", a
+# token that starts with its stop. A comma keeps "e.g.," and "Inc.," whole. A dash with no stop before it ("41—the most—") stays whole.
 OPEN, CLOSE = "\"'\u2018\u201c(\\[", "\"'\u2019\u201d)\\]"
 DASH = "\u2013\u2014\u2015"
-CURLY_OPEN = "\u2018\u201c(\\["
 CLAUSE_CUT = re.compile(rf"[;:?!]+[{CLOSE}]*(?=\S)")
-STOP_CUT = re.compile(rf"\.+[{CLOSE}]*(?=[{DASH}]*[{OPEN}]*[^\W_]|(?:[{DASH}]+[{OPEN}]*|[{CURLY_OPEN}]+)$)")
+STOP_CUT = re.compile(rf"\.+[{CLOSE}]*(?=[^\w\s,]*[^\W_]|(?![{CLOSE}]*$)[^\w\s,]+$)")
 STRIP_EDGES = re.compile(r"^\W+|\W+$", re.UNICODE)
 NUMERIC_FIGURE = re.compile(r"^[\d,.]+$")
 NUMCHARS = set("0123456789,.")
@@ -118,8 +118,8 @@ def _cuts(chunk):
     cuts = {m.end() for m in CLAUSE_CUT.finditer(chunk)}
     for m in STOP_CUT.finditer(chunk):
         s = m.start()
-        if s == 0:
-            continue                                  # ".5"
+        if s == 0 and chunk[m.end():m.end() + 1].isdigit():
+            continue                                  # ".5", but not ".\u2014\u201c" left by a tag
         if chunk[s - 1].isdigit() and chunk[s + 1].isdigit():
             continue                                  # "41.5"
         e = m.end()

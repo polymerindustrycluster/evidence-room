@@ -170,15 +170,24 @@ class NounNearbyTest(unittest.TestCase):
         # token once tags are stripped, so the previous sentence's noun certified the count.
         for body in ("<h1><em>147 institution records</em> since 1991.\u2014\u201c<em>Only</em> 41 polymer awards were recorded.\u201d</h1>",
                      "<h1>147 institution records since 1991.\u2014<em>Only</em> 41 polymer awards were recorded.</h1>",
-                     "<h1>147 institution records since 1991.\u201c<em>Only</em> 41 polymer awards were recorded.\u201d</h1>"):
+                     "<h1>147 institution records since 1991.\u201c<em>Only</em> 41 polymer awards were recorded.\u201d</h1>",
+                     # Codex and Grok, #25 round 2: a stop outside the emphasis, and trailers
+                     # outside any list of dashes and quotes.
+                     "<h1><em>147 institution records since 1991</em>.\u2014\u201c<em>Only</em> 41 polymer awards were recorded.\u201d</h1>",
+                     "<h1><em>147 institution records</em> since 1991.--<em>Only</em> 41 polymer awards were recorded.</h1>",
+                     "<h1><em>147 institution records</em> since 1991.*<em>Only</em> 41 polymer awards were recorded.</h1>",
+                     "<h1><em>147 institution records</em> since 1991.\u2014\u201d<em>Only</em> 41 polymer awards were recorded.</h1>",
+                     "<h1>147 institution records since 1991.--Only 41 polymer awards were recorded.</h1>"):
             with self.subTest(body=body):
                 with TemporaryDirectory() as tmp:
-                    self.addCleanup(setattr, vn, "WEB", vn.WEB)
-                    vn.WEB = tmp
+                    web, vn.WEB = vn.WEB, tmp
                     page_dir = Path(tmp) / "markup"
                     page_dir.mkdir()
                     (page_dir / "index.html").write_text(f"<html><body>{body}</body></html>", encoding="utf-8")
-                    text = vn.page_text("markup")
+                    try:
+                        text = vn.page_text("markup")
+                    finally:
+                        vn.WEB = web
                 tokens = vn.tokenize(text)
                 s = text.index("41")
                 found, _ = vn.noun_nearby(tokens, s, s + 2, ["institution"])
