@@ -15,7 +15,8 @@ page, the figure, and what you think it should be.
 
 A review of the 2026-09-28 corrections found these beside them. No figure in these
 statements changed. The sources page's claim register rises from 532 article claims to 534,
-and from 564 across the site to 567, for the three claims added with them.
+and from 564 across the site to 567: three claims added with them, two on article pages and
+one on the front page.
 
 **The 2026-09-28 entry below, corrected here rather than rewritten.** It says the closing
 sat "beside a standfirst naming NEO-SMART, awarded on 13 July 2026". The name was in a lede
@@ -38,7 +39,8 @@ output"; the control chart's axis, legend, hover and text description said "join
 and its table had columns "Joint" and "Joint per 1,000 of Akron"; the lede and two source notes said "joint count" and "joint series".
 **Is:** "papers naming both" or "works naming both", the source note's "unbounded count",
 and table columns "Naming both" and "Naming both per 1,000 of Akron". The 2026-09-28 entry below changed the
-headline and five sentences for the same reason and left these labels.
+headline and five sentences for the same reason and left these labels. "Four joint NSF
+projects" keeps the word: those are Collaborative Research awards, joint by their terms.
 
 **"Counted once per county", *wages* and *sources*.** **Was:** wages said its 35
 de-duplicated pairings were "counted once per county" (methodology box) and "counting each
