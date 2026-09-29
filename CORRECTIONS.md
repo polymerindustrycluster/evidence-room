@@ -21,8 +21,8 @@ and from 564 across the site to 567, for the three claims added with them.
 sat "beside a standfirst naming NEO-SMART, awarded on 13 July 2026". The name was in a lede
 paragraph, and before that day's fix the page dated the award 14 July; 13 July is the date
 the fix gave it. It also says the page "now says at most 19, or 9 percent"; the page prints
-at most 19 and no percentage. Before that day's fix it printed "19 of 208 works, about 9
-percent"; the fix removed the percentage.
+at most 19 with no percentage beside it, and at least 90 percent in neither subject. Before
+that day's fix it printed "19 of 208 works, about 9 percent"; the fix removed that percentage.
 
 **A keyword search the page does not run, *collaboration*.** **Was:** the source line under
 the second chart described each year as "works listing both institutions, works matching
