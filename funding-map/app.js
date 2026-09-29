@@ -1678,7 +1678,13 @@ function loadData(file) {
     countUp();
     await renderMethods();
 
-    if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) { /* measure anyway */ } }
+    /* Bounded: a font file that stalls must not hold the map blank, so after one second the
+       map draws in whatever face is painting. */
+    if (document.fonts && document.fonts.ready) {
+      try {
+        await Promise.race([document.fonts.ready, new Promise((done) => setTimeout(done, 1000))]);
+      } catch (e) { /* measure anyway */ }
+    }
     render();
     wire();
 

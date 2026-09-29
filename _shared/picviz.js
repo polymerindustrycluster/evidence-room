@@ -101,7 +101,11 @@ const PV = (() => {
      the baseline at x=0 rather than parked off-canvas: getBBox reports in viewBox
      coordinates, so a probe at y=-999 returns an ascent of 1014 and a leading computed
      from it is nonsense. Memoised per class per svg, since a redraw asks repeatedly. */
-  const faceCache = new WeakMap();
+  let faceCache = new WeakMap();
+  /* A face measured while the fallback was painting is wrong once Lato arrives, so the memo
+     is dropped on every font load. This listener registers before any page's own, so the
+     redraw a page schedules on the same event reads fresh metrics. */
+  if (document.fonts) document.fonts.addEventListener("loadingdone", () => { faceCache = new WeakMap(); });
   function face(svg, cls = "pv-lab") {
     let byCls = faceCache.get(svg);
     if (!byCls) faceCache.set(svg, byCls = {});

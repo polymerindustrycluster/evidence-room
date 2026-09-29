@@ -780,6 +780,14 @@ function drawOpen() {
 
 function drawAll() { drawOpen(); drawPremium(); drawScatter(); drawTrend(); }
 drawAll();
+/* MEASURE THE FACE THAT WILL PAINT (the peers/app.js helper, same reasons). Lato ships with
+   font-display:swap, so the first draw measures in the fallback. The page draws at once,
+   never waits on a font file, and draws again as each face that was loading arrives. */
+const onFonts = redraw => {
+  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(() => redraw(), () => {}); });
+  document.fonts.addEventListener("loadingdone", () => redraw());
+};
+onFonts(drawAll);
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);
 /* A viewBox measured from the rail is stale the moment the rail changes, and the

@@ -49,6 +49,13 @@
 "use strict";
 const {el, txt, ticks, frame, hoverable, tableView, chart, figures, N, SEQ, INK} = PV;
 const D = await PV.data("viz-data.json");
+/* MEASURE THE FACE THAT WILL PAINT (the peers/app.js helper, same reasons). Lato ships with
+   font-display:swap, so the first draw measures in the fallback. The page draws at once,
+   never waits on a font file, and draws again as each face that was loading arrives. */
+const onFonts = redraw => {
+  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(() => redraw(), () => {}); });
+  document.fonts.addEventListener("loadingdone", () => redraw());
+};
 function chartTitle(svg, claim, unit) {
   const heading = document.createElement("p");
   heading.className = "chart-heading";
@@ -69,9 +76,10 @@ function chartTitle(svg, claim, unit) {
    three deep records named. It is deliberately a POORER view than the map below: no
    geography, no hover, no diamonds. Its job is to
    show the shape of the record, many small and three enormous, and hand the reader on. */
-{
+const drawOpen = () => {
   const svg = document.getElementById("open");
   if (svg) {
+    svg.replaceChildren(...svg.querySelectorAll("title"));   // a redraw starts from the <title> alone
     const W = Math.round(svg.getBoundingClientRect().width) || 720;
     const H = 132;
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
@@ -122,7 +130,9 @@ function chartTitle(svg, claim, unit) {
     txt(svg, `${rows.length} institution records, placed by lifetime record size`,
       {x: lo, y: H - 8, "font-size": 12.5, fill: "#C6E2E6"});
   }
-}
+};
+drawOpen();
+onFonts(drawOpen);
 const T = D.totals;
 const Cap = s => s === s.toUpperCase()
   ? s.toLowerCase().replace(/\b[a-z]/g, c => c.toUpperCase()).replace(/\bIncorporated\b/, "").trim()

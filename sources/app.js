@@ -680,6 +680,14 @@ drawGaps();
 
 function drawAll() { drawStrip(); drawTree(); drawHide(); drawDeps(); }
 drawAll();
+/* MEASURE THE FACE THAT WILL PAINT (the peers/app.js helper, same reasons). Lato ships with
+   font-display:swap, so the first draw measures in the fallback. The page draws at once,
+   never waits on a font file, and draws again as each face that was loading arrives. */
+const onFonts = redraw => {
+  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(() => redraw(), () => {}); });
+  document.fonts.addEventListener("loadingdone", () => redraw());
+};
+onFonts(drawAll);
 
 /* One redraw per frame. A resize event fires dozens of times a second and each of these
    re-measures four containers. */
