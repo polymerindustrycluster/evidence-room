@@ -157,6 +157,19 @@ const CASES = [
       flex item exempt the next. */
    inject: s => s.replace("<body>", '<body><div style="display:flex"><div style="display:contents">Correction, 28 September 2026: a count.</div><div style="display:contents">Joint <button>work</button> rose.</div></div>')},
 
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /withdrawn:joint work/,
+   defect: "a withdrawn phrasing whose word boundary is lost where two flex items join",
+   /* The fourth round got past the fourth version this way (2026-09-29): reading flex
+      items as one passage ran "Current" into "Joint work" as "CurrentJoint work", which
+      the \b in the listed pattern does not match. */
+   inject: s => s.replace("<body>", '<body><div style="display:flex;gap:2rem"><p>Current</p><p>Joint work rose.</p></div>')},
+
+  {gate: "style", page: "collaboration", args: ["collaboration"], expect: /withdrawn:joint work/,
+   defect: "a withdrawn phrasing split by a table cell, behind a correction label a filter hides",
+   /* The fourth round got past the fourth version this way too (2026-09-29): a table part
+      was not walked through, and text a filter made transparent still wrote a dated note. */
+   inject: s => s.replace("<body>", '<body><p><span style="filter:opacity(0)">Correction, 28 September 2026: </span>Joint <span style="display:table-cell">work</span> rose.</p>')},
+
   {gate: "provenance", page: "cost-scissors", args: ["cost-scissors"],
    defect: "a page crediting a federal source it has never read",
    /* Injected into SOURCES.json rather than the artifact, so this case names its own file.

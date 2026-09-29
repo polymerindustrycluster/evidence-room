@@ -28,9 +28,9 @@ try { ACRO = JSON.parse(rfs(new URL("../_data/acronyms.json", import.meta.url), 
    it, and a Read-next line added on the correction branch itself reintroduced it
    (2026-09-28). Only a grep outside the repo caught that. The list is read unguarded: a
    missing or malformed file must fail the gate, not empty the list and pass. It catches a
-   phrasing coming back, not one hidden on purpose: CSS generated content, shadow DOM,
-   zero-width characters and text painted invisible (transparent, clipped or off-screen)
-   are out of reach, and every exemption is printed. */
+   phrasing coming back, not one hidden on purpose: CSS generated content, form control
+   values, shadow DOM, zero-width characters and text painted invisible by colour, clipping
+   or position are out of reach, and every exemption is printed. */
 const WITHDRAWN = JSON.parse(rfs(new URL("../_data/withdrawn.json", import.meta.url), "utf-8")).withdrawn;
 for (const w of WITHDRAWN) new RegExp(w.pattern.replaceAll(" ", "\\s+"), "gi");  /* the form the page compiles */
 
@@ -66,7 +66,8 @@ for (const n of list) {
        opposite safe answers, so they get two different boxes. A phrase is looked for in
        the widest run of text a reader could take as one passage: up to the nearest box
        that is not inline-level, walking through pills, controls, ruby, display:contents
-       wrappers and flex or grid items, so no box can split "Joint <span class=pill>work</span>".
+       wrappers, table parts and flex or grid items, so no box can split "Joint <span
+       class=pill>work</span>".
        A note exempts only a phrase that starts in the note's own box, the nearest ancestor
        that is not plain inline, so two cards in one row stay two. Merging too much can
        only fail a page; splitting too much could pass one. Round 13 of review found
@@ -74,38 +75,78 @@ for (const n of list) {
     const done = new Set(), owners = new Map(), ids = new Map();
     const disp = e => getComputedStyle(e).display;
     const host = e => { do e = e.parentElement; while (e && disp(e) === "contents"); return e; };
-    const wide = e => /^(inline|contents|ruby)/.test(disp(e)) || /(flex|grid)$/.test(disp(host(e))) || !!e.closest("select");
+    /* flex, grid and the old -webkit-box all lay each child out as an item */
+    const ITEMS = /(flex|grid|box)$/;
+    const wide = e => /^(inline|contents|ruby|table-|-webkit-inline)/.test(disp(e)) || !!e.closest("select") ||
+      ITEMS.test(host(e) ? disp(host(e)) : "");
     const own = e => {
       if (!owners.has(e)) { let b = e; while (b !== document.body && wide(b)) b = b.parentElement; owners.set(e, b); }
       return owners.get(e);
     };
     const box = e => { while (e !== document.body && disp(e) === "inline") e = e.parentElement; return e; };
-    /* Text a reader cannot see below the given ancestor: hidden, not displayed, zero
-       opacity (which a display:contents element, having no box, cannot apply), or not
-       visible or zero-sized. Visibility and font size are inherited and can be overridden,
-       so they are read on the text's own element. */
+    /* Text a reader cannot see below the given ancestor: hidden, not displayed, contents
+       skipped, fully transparent by opacity or filter (neither of which a display:contents
+       element, having no box, can apply), not visible, or under a pixel high once its font
+       size is shrunk by every transform and scale above it. Visibility and font size are
+       inherited and can be overridden, so they are read on the text's own element. */
+    const shrink = a => {
+      let f = 1;
+      const m = a.transform.match(/^matrix(3d)?\((.*)\)$/);
+      if (m) {  /* the smaller singular value of the transform's 2D part */
+        const v = m[2].split(",").map(Number), [p, q, r, s] = m[1] ? [v[0], v[1], v[4], v[5]] : v;
+        const t = p * p + q * q + r * r + s * s, d = p * s - q * r;
+        f *= Math.sqrt(Math.max(0, (t - Math.sqrt(Math.max(0, t * t - 4 * d * d))) / 2));
+      }
+      if (a.scale !== "none") { const [x, y = x] = a.scale.split(" ").map(Number); f *= Math.min(Math.abs(x), Math.abs(y)); }
+      return f;
+    };
     const gone = (e, top) => {
       const c = getComputedStyle(e);
-      if (c.visibility !== "visible" || parseFloat(c.fontSize) === 0) return true;
+      if (c.visibility !== "visible") return true;
+      let px = parseFloat(c.fontSize);
       for (; e && e !== top; e = e.parentElement) {
         const a = getComputedStyle(e);
-        if (e.hidden || a.display === "none" || (a.opacity === "0" && a.display !== "contents")) return true;
+        if (e.hidden || a.display === "none" || a.contentVisibility === "hidden") return true;
+        if (a.display === "contents") continue;
+        if (a.opacity === "0" || /opacity\(0\)/.test(a.filter)) return true;
+        px *= shrink(a);
       }
-      return false;
+      return px < 1;
+    };
+    /* The box a text node's line runs in: its nearest ancestor that is not inline-level,
+       except that a flex or grid container lays each child out apart, so there the child
+       is the box, or the text itself where the container wraps a run of it in an anonymous
+       item. A display:contents element has no box and is passed through. */
+    const flow = t => {
+      let item = t;
+      for (let n = t, p; (p = n.parentElement) && p !== document.body; n = p) {
+        if (n.nodeType === 3 || disp(n) !== "contents") item = n;
+        const d = disp(p);
+        if (ITEMS.test(d)) return item;
+        if (!/^(inline|ruby|contents)/.test(d)) return p;
+      }
+      return document.body;
     };
     /* the text `top` owns under `mine`, the text nodes `keep` admits, and where each
-       starts; with `gap`, text `top` does not own leaves a GAP where it was */
+       starts; with `gap`, text `top` does not own leaves a GAP where it was; with `apart`,
+       a space goes wherever a reader sees a break: between two boxes (see flow) or where
+       text `top` does not own was left out */
     const GAP = "\u0000";
-    const read = (top, mine, keep, gap) => {
+    const read = (top, mine, keep, gap, apart) => {
       const r = {bt: "", at: [], nodes: []};
+      let last = null, cut = false;
       const tw = document.createTreeWalker(top, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
       for (let u; (u = tw.nextNode());) {
         if (u.nodeType === 1 && u.tagName !== "BR") continue;
         const pe = u.nodeType === 1 ? u : u.parentElement;
         if (pe.closest("script,style,noscript") || !keep(pe)) continue;
-        if (mine(u.parentElement) !== top) { if (gap && !r.bt.endsWith(GAP)) r.bt += GAP; continue; }
+        if (mine(u.parentElement) !== top) { if (gap && !r.bt.endsWith(GAP)) r.bt += GAP; cut = true; continue; }
         if (u.nodeType === 1) r.bt += "\n";
-        else { r.at.push(r.bt.length); r.nodes.push(u); r.bt += u.textContent; }
+        else {
+          if (apart) { const f = flow(u); if (cut || (last && f !== last)) r.bt += " "; last = f; }
+          r.at.push(r.bt.length); r.nodes.push(u); r.bt += u.textContent;
+        }
+        cut = false;
       }
       return r;
     };
@@ -133,11 +174,13 @@ for (const n of list) {
     };
     /* Two readings of a passage: all its text, which sees a collapsed <details> twin, and
        the text a reader sees, which drops anything hidden, so "Joint<span hidden>x</span>
-       work" is still one phrase. A phrase either reading finds is reported once, from the
-       node it starts in. */
+       work" is still one phrase. Each is read twice: joined, so "Jo<b>int</b> work" is one
+       phrase, and spaced where a reader sees a break, so "Current" and "Joint work" in two
+       flex items do not read "CurrentJoint work", which no phrase bounded by \b matches
+       (round 14). A phrase any reading finds is reported once, from the node it starts in. */
     const withdrawnIn = block => {
-      const found = new Map();
-      for (const r of [read(block, own, () => true), read(block, own, e => !gone(e, block))])
+      const found = new Map(), all = () => true, seen = e => !gone(e, block);
+      for (const r of [all, seen].flatMap(keep => [read(block, own, keep), read(block, own, keep, false, true)]))
         WRE.forEach((re, ri) => {
           for (const wm of r.bt.matchAll(re)) {
             let i = r.at.length - 1;
