@@ -7,13 +7,14 @@
 <title>The Collaboration That Thinned</title>
 <link rel="stylesheet" href="../_shared/pic-viz.css">
 <link rel="stylesheet" href="../_shared/story.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
 
 <header class="mast">
   <div class="wrap">
-    <strong>Polymer Industry Cluster</strong>
+    <a class="mast-home" href="../index/"><strong>Polymer Industry Cluster</strong></a>
     <span>Cluster vitals &middot; collaboration</span>
     <span class="proto">Prototype &middot; internal draft</span>
   </div>
@@ -23,17 +24,21 @@
 <section class="hero">
   <div class="wrap">
     <p class="eyebrow">Akron and Case Western, 2012&ndash;2025</p>
-    <h1>Akron and Case Western have written 208 papers together since 2012.
-      <em>Eight were about polymers.</em></h1>
+    <h1>208 papers since 2012 name both Akron and Case Western.
+      <em>Eight are classified in polymers.</em></h1>
     <p class="stand">The University of Akron and Case Western Reserve University are counted
-      here two independent ways, by the papers they publish together and by the federal grants
-      they hold together, across the fourteen years from 2012 to 2025. <b>In those years they
-      coauthored 208 papers, of which eight are classified in polymers, and they hold four
-      joint federal awards worth $3.7 million, the newest of the awards starting in
-      2017.</b> Joint output peaked at 29 papers in 2018, dropped to 11, and came back to 22
+      here two independent ways, by the papers that name both and by the NSF grants
+      they hold together, across the fourteen years from 2012 to 2025. <b>In those years 208
+      papers named both universities, of which eight are classified in polymers, and the two
+      hold four joint NSF projects worth $3.7 million, the newest of the projects starting
+      in 2017.</b> Joint output peaked at 29 papers in 2018, dropped to 11, and came back to 22
       in 2020. It then fell in each of the four years to 2024, down to two papers, and rose
       to six in 2025.</p>
     <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data OpenAlex works and institutions, NSF Awards API &middot; August&nbsp;2026</p>
+    <p class="byline"><b>Correction, September 28, 2026:</b> this page previously called the
+      award data &ldquo;federal awards&rdquo;, but the fetch queries the NSF Awards API only. The four
+      awards are four joint NSF projects (eight award IDs, since NSF splits a &ldquo;Collaborative
+      Research&rdquo; project into one award per institution); no other federal agency is checked.</p>
     <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
       id="open-t">Fourteen years of joint output drawn as one column per year: a rise to a peak of 29 in 2018, a drop and a rebound to 22 in 2020, four falling years to a low of two, and a last column back up to six.</title></svg></div>
     <div class="hero-row" id="figs"></div>
@@ -51,7 +56,7 @@
       merged into it. Both are subject classifications the index assigns to a paper, not a
       match on the word polymer in its text.</p>
     <div class="legend">
-      <span><i style="background:#008BA8"></i> All coauthored works</span>
+      <span><i style="background:#008BA8"></i> All works naming both</span>
       <span><i style="background:#C85F0C"></i> Classified in polymers and plastics</span>
       <span><i style="background:#9FD2DA"></i> Classified in biomaterials</span>
     </div>
@@ -75,7 +80,7 @@
       actually has to work with is measured below.</p>
     <p class="lede"><b>The years counted here stop at 2025, and a large joint award started
       after they do.</b> Case Western leads NEO-SMART, a regional innovation engine funded by
-      the National Science Foundation, which awarded it on 14 July 2026. The University of
+      the National Science Foundation, which awarded it on 13 July 2026. The University of
       Akron is among its core partners, and one of its three research clusters is polymers.
       That award falls outside this series and is not evidence against it. A reader who
       already knows about it should not have to wonder whether this page knows about it
@@ -90,15 +95,15 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The control</p>
-    <h2>Joint work fell as a share of Akron&rsquo;s output, too</h2>
+    <h2>Papers naming both fell as a share of Akron&rsquo;s output, too</h2>
     <p class="lede">A falling count at the end of a series has two innocent explanations
       before it has an interesting one: the database has not finished indexing recent years,
       or one partner is simply publishing less of everything. Each university&rsquo;s
-      total provides context, but cannot rule out delays in indexing joint papers.
+      total provides context, but cannot rule out delays in indexing papers naming both.
       The lower panel addresses the second
       one by dividing the joint count by Akron’s own output for that year. Read the result
-      as how often the two universities write together for every thousand papers Akron
-      publishes: a higher rate means joint work is a larger share of Akron&rsquo;s
+      as how many papers name both universities for every thousand papers Akron
+      publishes: a higher rate means papers naming both are a larger share of Akron&rsquo;s
       indexed output, and a lower rate means a smaller share.</p>
     <div class="legend">
       <span><i class="ln" style="background:#B9B3A9"></i> Each university’s own output</span>
@@ -115,18 +120,21 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">The money</p>
-    <h2>Four joint federal awards, none starting after 2017 in this window</h2>
-    <p class="lede">Federal awards are the second, independent instrument. They are counted
+    <!-- Corrected 2026-09-28: this only queries api.nsf.gov, so "federal" overstated the
+         scope. The four are four joint NSF projects, not four awards; NSF splits a
+         "Collaborative Research" project into one award per institution, eight award IDs. -->
+    <h2>Four joint NSF projects, none starting after 2017 in this window</h2>
+    <p class="lede">NSF projects are the second, independent instrument. They are counted
       two ways, because the National Science Foundation encodes a partnership two ways: as one
       award whose principal investigator (PI) sits at one university and whose co-principal
       investigator (co-PI) sits at the other, and as a &ldquo;Collaborative Research&rdquo;
       project split into a separate award for each. Missing the second method undercounts
-      badly. One of the four awards it finds is Northern Ohio AGEP-T, an alliance for graduate
+      badly. One of the four projects it finds is Northern Ohio AGEP-T, an alliance for graduate
       education in biology, chemistry and engineering. <b>The series ends in 2025.</b> The
       NEO-SMART award described above was made in 2026, later than anything this chart can
       see, and its absence here says nothing about it.</p>
     <div class="chart"><svg id="awards" role="img" aria-labelledby="awards-t">
-      <title id="awards-t">Joint federal awards to both universities by start year and
+      <title id="awards-t">Joint NSF projects to both universities by start year and
         amount.</title></svg></div>
     <div id="awardstable"></div>
     <p class="src" id="awardssrc"></p>
@@ -141,6 +149,21 @@
 </section>
 
 </main>
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-k">Read next</p>
+    <ul class="foot-links">
+      <li><a href="../reach/">How far the research reaches</a>
+        <span>The region’s research partners worldwide.</span></li>
+      <li><a href="../patents/">Does the region still invent?</a>
+        <span>Polymer patents filed from Ohio.</span></li>
+      <li><a href="../index/">The Evidence Room</a>
+        <span>Every page, each with its own sources and its own checks that its numbers
+        have to pass.</span></li>
+    </ul>
+    <p class="foot-id">Polymer Industry Cluster &middot; Greater Akron Chamber</p>
+  </div>
+</footer>
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>
 </body>

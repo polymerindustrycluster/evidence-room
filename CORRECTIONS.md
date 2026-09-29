@@ -11,6 +11,289 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-28 — Seven more statements on the corrected pages failed their own data
+
+Codex re-read the pages corrected below against their own data. Seven published statements
+beside the corrected ones failed it.
+
+**A yearly average read as every quarter, *churn*.** **Was:** "Since 2023Q1 more jobs have
+ended than started every quarter." Hires outnumbered separations in 2023Q1, by 303, and in
+2025Q1, by 71. **Is:** "Averaged over a year, more jobs have ended than started in every
+quarter since 2023Q1", as the page's section on the two flows already said.
+
+**The best case printed as the worst, *peers*.** **Was:** "The defensible worst case is 6th
+of 382". Sixth holds only if none of the 227 withheld metros has more jobs, so it is the best
+case. **Is:** no worst case: "So the claim stays narrow: 6th among the 155 that disclose."
+The README drops its sentence putting the worst case at 233rd of 382.
+
+**A scale the figure does not draw, *front page*.** **Was:** the funding-map card said the
+money was "drawn to scale across twenty-one named recipients". The figure draws the three
+awards and their matches to one scale; the threads into recipients are not to scale, and
+the page says so. **Is:** "drawn to scale and traced to twenty-one named recipients".
+
+**Paint as the most withheld industry, *location-quotient*.** **Was:** "Paint is also the
+industry the bureau hides most of: five of twelve counties are withheld". Resin, a column of
+the same chart, has seven withheld. **Is:** "The bureau also hides much of paint".
+
+**A mean called more than double the median, *reach*.** **Was:** a long right tail "pulls
+it to more than double the typical paper". The mean is 2.018 and the median 1.10, a ratio
+of 1.8. **Is:** "1.8 times the typical paper", computed from the two figures.
+
+**Reach's years in collaboration's filters, *collaboration*.** **Was:** the "Reproduce this"
+block, which calls its filters "the exact values applied", gave the OpenAlex years as 2015
+to 2024. That is reach's window. Collaboration's pull runs 2012 to 2025, and its 208 papers
+fall to 158 on the shorter one. **Is:** the source registry gives each page its own years,
+and the sources page carries the same line.
+
+**An award date a day late, *collaboration*.** **Was:** NSF "awarded it on 14 July 2026".
+NSF's award record 2532460 dates the award 13 July; 14 July is the date of public record the
+timeline uses, and the timeline says which is which. **Is:** 13 July 2026.
+
+**Cause:** The earlier reviews read the sentences each correction touched. These sat on the
+same pages, untouched. Reach's claim accepted any ratio above 1.8 under text that said
+double, and now checks the ratio itself; churn's claim checked the averaged wording the page
+uses lower down, not the hero's; the other five had no claim.
+
+## 2026-09-28 — Two pages gave a broad chemicals price index the name of a narrower one
+
+**Was:** *cost-scissors* called BLS series WPU06 "industrial chemicals" in its prose, chart
+labels, tables and data file; its gray line was "resin against industrial chemicals".
+*revisions* used the same name in its lede, which also called WPU06 "the series a buyer
+quotes when negotiating a resin contract", and in its data file. Its chart labels were
+already right.
+
+**Is:** WPU06 is "Chemicals and allied products", a group that includes resins. "Industrial
+chemicals" is WPU061, a narrower series neither page uses. Every cost-scissors label, the
+revisions lede, both data files, the fetch script, the source registry and the series
+label in cluster-health's revision count now carry the right name, and the revisions page
+calls the series the upstream input and no longer says what buyers quote. Both pages carry
+a dated correction line. No number changed: the series was always WPU06; only its name was
+wrong.
+
+**Cause:** The name was typed wrong once, in the series table of `fetch_rest.py`, which
+wrote it into both data files. Cost-scissors read its labels from there. The revisions
+renderer had already caught the error: it overrides the data-file name with "Chemicals and
+allied products" and says why in a comment. That fix never reached the page's lede or the
+data file beneath it. Nothing checks a series name against its ID.
+
+## 2026-09-28 — Ten sentences read firmer than their own data
+
+Codex re-derived the hub's and pages' headline claims from each page's own data. These ten
+held their numbers but claimed more than the numbers carry. Each changed sentence's claim
+now checks the new wording's quantity.
+
+**"Leads four papers in five", *reach*.** **Was:** "The region leads four papers in five
+of those that name a corresponding author"; the headline said "four of its papers in five
+are led from here", the figure card "81% led from here" and the opening chart "led from
+here"; the closing paragraph said "the region leads most of that work rather than joining
+it"; the front page said the same. **Is:** the headline and the front page say 985 of 1,222
+papers naming a corresponding author had one here, and the figure card says 81% of those
+1,222. The opening chart
+splits all 1,448 papers by where the corresponding author sits: 985 here, 237 elsewhere,
+226 naming none. The closing paragraph says most papers naming a corresponding author name
+one here, including papers with no outside partner. The count includes those papers, so
+"leads" described a collaboration the count does not require. The partner charts and
+tables said each partner's other papers were "led from there"; they now say "led from
+elsewhere", because a paper counts toward every outside partner on it, whichever one
+holds the corresponding author. The map's source line said the same thing ("here or
+there") and now says "here or elsewhere". The front page's reach card and the opening
+chart's text description called the 1,448 "coauthored works"; the count does not require
+a second author, so both now say "works". The map's own text description said
+"institutions co-authoring polymer research" and now says "institutions named on the same
+polymer papers".
+
+**"Federal" awards from an NSF-only fetch, *collaboration*.** **Was:** "four joint federal
+awards". **Is:** four joint NSF projects (eight award IDs, because NSF files a
+collaborative project as one award per institution), on the page and the front page. The
+fetch queries the NSF Awards API only; no other agency was ever checked. The front
+page's collaboration card called the 208 papers "coauthored"; the fetch requires only that
+a paper name both universities, which one author holding both affiliations satisfies, so
+the card now says "208 papers naming both universities". The collaboration page made the
+same inference in its own headline. **Was:** "Akron and Case Western have written 208
+papers together since 2012", with "coauthored" in the standfirst, chart labels and closing,
+and a note that such a paper is evidence "two people worked together". **Is:** "208 papers
+since 2012 name both Akron and Case Western", the figure card adds "one author may hold
+both", and the note says "A paper naming both universities proves neither a two-person
+collaboration nor an institutional relationship". The headline's second line, "Eight were
+about polymers", now says "Eight are classified in polymers", as the standfirst does. The
+closing said "The collaboration is real and substantial"; it now calls only the four NSF
+projects collaboration, on NSF's own label, and counts the papers as papers naming both.
+The inference was not hypothetical: a live OpenAlex query on 28 September 2026 returned 211
+such works (the page's cached pull has 208) and found both universities on a single author
+in 15 of them. The page added its polymer and biomaterials counts, eight and eleven, into
+"19 in all", "about 9 percent" and "91 percent" in neither subject; a paper can carry both,
+and the same query found two that do, so it now says at most 19, or 9 percent, and at least
+90 percent in neither. Its closing said "No new joint NSF award has started since 2017"
+beside a standfirst naming NEO-SMART, awarded on 13 July 2026; it now says none started
+after 2017 within the years counted, 2012 to 2025. The closing also rested its "That was
+false" on the 208 papers beside the NSF projects; it now rests on the projects alone. The
+heading "Joint work fell as a share of Akron's output" and five sentences that called the
+counted papers "joint work" or "joint papers" now say "papers naming both".
+
+**A comparison set that ended at Akron, *peers*.** **Was:** "Among the six disclosed metros
+with the most plastics and rubber jobs, Akron is also the most concentrated." **Is:** among
+the 155 disclosed metros, Akron ranks sixth on jobs and eighth on concentration. The old
+sentence was true, and holds to the ninth-largest, but its cut-off of six was Akron's own
+rank on jobs.
+
+**A ranking on a 0.07-point gap, *laborshed*.** **Was:** "only Pittsburgh keeps more for
+its own residents than the twelve counties do". **Is:** the twelve counties keep 89.5
+percent and Pittsburgh 89.6 percent, on twelve counties against eight. A gap that small,
+across different boundaries, is not a ranking. The two chart labels ("ahead of PIC-12")
+and the closing paragraph ("only Pittsburgh beats") carried the same ranking. The labels
+now say "just above PIC-12, on four fewer counties"; the closing paragraph gives both
+shares to two decimals, 89.60 against 89.53 percent, the 0.07-point gap between them,
+and both boundary sizes.
+
+**A rank without its margin, *realwage*.** **Was:** the 8th place after price adjustment,
+alone. **Is:** the same rank, with "less than $6 a week from either neighboring rank". The
+gaps are $3.60 and $5.40, small enough for a revision to move the rank.
+
+**An unlabeled nominal ratio, *occupations*.** **Was:** "Akron's median wage ratio".
+**Is:** "median nominal wage ratio". The ratios are not price-adjusted; divided by Akron's
+price level, the degree-job shortfall of 0.93 times becomes 0.99 times.
+
+**Inputs and outputs of invention, *patents*.** **Was:** "The inputs to invention have
+more than halved: degrees are down 56 percent. The recorded outputs of invention have
+fallen by about a quarter." **Is:** the two declines stand as separate facts: Akron and
+Case Western's polymer degrees fell 56 percent from their 2014–2020 average, and Ohio's
+polymer filings fell 25 percent from 2015. Two institutions' degrees and a state's filings
+are not the input and output of one process.
+
+**"Strong" earnings, *programs*.** **Was:** "Where the record shows earnings at all, they
+are strong: $87k–$101k four years out." **Is:** "Four-year earnings range from $87,636 to
+$100,428; four of five institutions fall below the national median." Four of the five sit
+below the $92,919 national median for their program code.
+
+**"Supply against demand", *chain*.** **Was:** that section label. **Is:** "Register
+records against funding applications". The section's own text says the counts do not
+measure capacity, competition or market demand.
+
+**What an employment quotient shows, *location-quotient*.** **Was:** paint's quotient
+meant "more paint sites, more suppliers and more people who know the work than a region
+this size would usually hold". **Is:** "paint accounts for an unusually large share of
+local jobs". An employment quotient measures job share; it says nothing about sites,
+suppliers or skills.
+
+## 2026-09-28 — Wages said pay was level with manufacturing, and it is two families that are not
+
+**Was:** The wages headline read "Against manufacturing, pay is level." The factory band
+was titled "Against the factory next door, polymer pay is level", called the pooled
+0.99 times "dead level with the factory next door", and closed that polymer pay against
+the factories "is ordinary". The Lake County figure of about $129,000 a year was
+printed without saying which industry it covers. The front-page wages card gave the
+0.99 times with no split.
+
+**Is:** The 0.99 times is the median of 51 county pairings from two families on either
+side of it. The 23 chemical pairings sit at a median 1.16 times the county's
+manufacturing wage, 19 of them above it. The 28 plastics and rubber pairings sit at
+0.87 times, 4 of them above. The headline, band title, lede, closing sentence and front-page
+card now say so. The $129,000 is all chemical manufacturing in Lake County: 248 of its
+1,676 jobs are published as paint, and the rest is not broken out, so it reaches beyond
+the resin and paint codes. The page says this beside the figure.
+
+**Cause:** The headline described the pooled median, and no pairing family is at it.
+The Lake figure is the county's NAICS 325 row, and the prose named no
+industry code. wage-vs-mfg-split and human-lake-chem-scope now
+guard both.
+
+## 2026-09-28 — The timeline printed seventeen times as a measured pace, from a before count that is a floor
+
+**Was:** The pace band's headline read "After the designation the public record filled
+seventeen times as fast", and its lede called "the seventeenfold gap" a change of pace.
+The figure's source line said "the 68 counted here starts from that split".
+
+**Is:** The headline states the two counts, 67 events against 4. The lede says
+seventeenfold is the upper end: the before count is a floor, so the true jump can only
+be smaller. The source line reads 67, the count from the 23 October 2023 designation;
+68 is the operations calendar's count from 1 January 2023, one row earlier. The page's
+own computed sentences were already right. The claim record for them said 20 times and
+13.6, built on 68, where the page divides 67 and prints 19.8 and 13.4. It now matches
+the page.
+
+**Cause:** The ratio moved from the source line into the headline and lost its
+qualifier on the way. The 68 was a typed literal from the other window; the source line
+now reads the computed count.
+
+## 2026-09-28 — The funding map credited the state with promises that came from partners
+
+**Was:** The standfirst and the second stat card said "partners and the state" promised
+$21.0 million beside the federal award.
+
+**Is:** Partners promised it; the state promised none. The Ohio grant's $10.4 million
+match comes from local partners, as the state's own announcement says. The standfirst,
+the stat card and a dated correction line in the page's header now say so. The page's
+29 August 2026 correction note repeated the phrase; it stays as written, because notes
+are not rewritten, and now opens with a dated bracket whose first words say partners
+alone promised it; only then does the bracket quote the phrase it corrects.
+
+**Cause:** The phrase passed from sentence to sentence, and no guard checked who made each
+promise. tile-figures already pinned the machine card's Ohio match to its local-partner
+label, which was right. Its falsified_if now names this failure too, but no claim reads the
+standfirst or the stat card, so a relapse in either would still pass.
+
+## 2026-09-28 — Cost scissors claimed a gain its price data cannot show, and an order it held only lately
+
+**Was:** The standfirst's bold line said the 2022 spike means "somebody in this chain ate
+the spike and somebody banked it". The ladder band's headline said "Each step away from
+the wellhead kept more of the 2022 rise, except the power bill", with no date.
+
+**Is:** The bold line reads "the 2022 spike has not unwound evenly, and the prices nearest
+the customer have held". The spread lede, the gas figure card and the feedstock seat no
+longer call a price move a "windfall", and the lede no longer says chemicals "feed" resin,
+since the chemicals index includes resin. The headline is dated July 2026. The lede adds that the order
+held in 29 of the 43 months from January 2023 and broke in four of the last eight, most
+recently in April 2026.
+
+**Cause:** These are selling-price indexes, and the page's own note says they are not a
+margin. A price that holds does not show who banked anything. The ladder order was
+checked only on the latest month. cs-ladder-order-dated now counts every month since
+January 2023.
+
+## 2026-09-28 — Churn said most hires come from other plastics employers, which the series cannot show
+
+**Was:** The churn page said most of one plant's 58 hires "are filled by people already
+working in plastics and rubber who moved from another employer". It said what a training
+pipeline must supply is "a different and much smaller quantity". The front-page churn
+card said near-equal hire and separation rates are "how a churn engine that size
+produces a net flow of +168 while the headcount falls 719."
+
+**Is:** The page no longer says where any hire came from; the flows cannot show whether
+none, some or most moved from another plastics or rubber employer. It calls the
+pipeline quantity "different" and
+says this series cannot size it against the hiring, and the standfirst says the two
+Census measures are estimated separately. The
+front-page card says the headcount is a separate Census estimate that need not agree
+with the flows. The rates explain the +168, not the 719.
+
+**Cause:** The flows series does not record where a hire last worked; only the Job-to-Job
+Flows series does, as the page's next sentences say. The card joined two separately
+estimated figures with "which is how".
+
+**Also corrected the same day:** the page called the roughly 400 a year who reach 65 a
+"floor" on training demand, and said age "accounts for" about 400 of the 6,626 hires. Over
+the same four quarters the region recorded 7,157 job separations and 6,626 hires, so some
+departures were not refilled, and the flows cannot say whether any retirement was. About
+400 is the number reaching 65, not the number retiring. The page now says age would account
+for about 400 hires only if everyone reaching 65 retired and every one of those jobs were
+refilled, in the prose and in the arithmetic panel, and that the 400 is not a floor. A
+methods note had blamed the missing Job-to-Job Flows for both; it now says that gap is why
+the 400 cannot be a total, and that separations exceeding hires is why it is not a floor;
+the same note and the README now call the 400 the age-65 figure, not the retirement figure. The README had kept an older sentence saying most of a plant's
+hiring "is refilled from inside the industry"; it now says the series cannot tell.
+
+## 2026-09-28 — The front page sent the state question to a county page
+
+**Was:** Below the state chart, the front page said which large states hold most of the
+industry and handed the reader on with "That is the question the concentration page
+answers."
+
+**Is:** It links the rankings page, which sets each large state's concentration beside
+its count, and the concentration page for the twelve counties. No figure changed.
+
+**Cause:** The concentration page covers counties, not states. The rankings page already
+answered the question, and the sentence named the wrong one.
+
 ## 2026-09-12 — The bureau revised 2025 after first publication, and six pages had not followed
 
 **Was:** Every 2025 employment figure on cluster-health, location-quotient, wages,

@@ -259,7 +259,7 @@ out = {"meta": {
         f"Polymer relevance is OpenAlex subfield {SUBFIELD}, ‘Polymers and Plastics’, a "
         f"classification rather than a keyword. Biomaterials is a separate subfield "
         f"({SUBFIELD_ALT}) and is counted beside it, never merged into it. The unbounded "
-        f"coauthorship count is published alongside both."),
+        f"joint count is published alongside both."),
     "what_a_null_would_mean": "This instrument can demonstrate collaboration and CANNOT "
                               "demonstrate its absence. OpenAlex affiliation coverage is "
                               "incomplete, NSF’s co-PI field lists signatories rather than "

@@ -1054,7 +1054,7 @@ function heatCopy(rows) {
      one with real employment behind it: ${N(cuyPaint.emp)} jobs across
      ${N(cuyPaint.estabs)} separate sites, ${Math.round(cuyShare * 100)}% of every paint job
      the bureau publishes in the region. The other ${word(topOthers.length)} run between
-     ${N(lo)} and ${N(hi)} jobs. Paint is also the industry the bureau hides most of:
+     ${N(lo)} and ${N(hi)} jobs. The bureau also hides much of paint:
      ${word(paint.counties_suppressed)} of ${FP.words} counties are withheld, so this column
      shows ${word(paintCounties.length)} readings and not twelve.`;
   /* WHICH HALF OF THE SENTENCE IS THE GOOD HALF. A reader at the Akron end of a

@@ -1,7 +1,7 @@
 {
  "meta": {
   "source": "OpenAlex works, 2015-2024, in subfield 2507 (‘Polymers and Plastics’), with an authorship at the University of Akron or Case Western Reserve University.",
-  "row": "one partner institution: works on which it appears alongside the region, split by whether a corresponding author sat here or there.",
+  "row": "one partner institution: works on which it appears alongside the region, split by whether a corresponding author sat here or elsewhere.",
   "led_joined": "LED = at least one corresponding author at Akron or Case Western. JOINED = the region is on the paper but no corresponding author here. Works with no corresponding author flagged at all are counted and assigned to neither.",
   "why_corresponding": "In polymer chemistry the first author is usually the student who did the work and the corresponding author is the principal investigator. First-author institution answers a different question and would miscredit the lead.",
   "polymer_bound": "Works are bounded by OpenAlex subfield 2507, ‘Polymers and Plastics’, a classification, not a keyword. An earlier version matched the full-text word ‘polymer’, which swept in biomedical polymer research and put four hospitals in the five largest partners. Biomaterials is a SEPARATE subfield (2502) and is reported beside this one rather than merged into it.",

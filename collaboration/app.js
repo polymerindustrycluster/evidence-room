@@ -1,8 +1,8 @@
 /* Do the region’s two research universities work together?
  *
  * WHAT ONE ROW IS
- *   Coauthorship: one WORK in a public index whose author affiliations include both
- *   universities. Not one collaboration and not one person — a single long-running lab
+ *   Joint paper: one WORK in a public index whose author affiliations include both
+ *   universities, which one author holding both affiliations satisfies alone. Not one collaboration and not one person — a single long-running lab
  *   partnership can produce many rows, and a co-signed paper is not evidence of a
  *   sustained relationship.
  *   Awards: one federal award, or one Collaborative Research project split across two.
@@ -68,8 +68,8 @@ const word = n => WORDS[n] || String(n);
     PV.txt(svg, String(S[S.length - 1].year), {x: lo + (S.length - .5) * bw, y: H - 8,
       "text-anchor": "middle", "font-size": 12.5, fill: "#C6E2E6"});
     PV.txt(svg, AFTER.length
-      ? `coauthored works per year · ${word(FALLS)} falls, then ${AFTER.at(-1).joint}`
-      : `coauthored works per year · the last ${word(FALLS)} fall`, {x: lo, y: 16,
+      ? `works naming both per year · ${word(FALLS)} falls, then ${AFTER.at(-1).joint}`
+      : `works naming both per year · the last ${word(FALLS)} fall`, {x: lo, y: 16,
       "font-size": 12.5, fill: "#C6E2E6"});
   }
 }
@@ -85,14 +85,14 @@ const SUBJ_YEARS = S.filter(r => r.polymer + r.bio).map(r => r.year);
 const SUBJ_GAP = SUBJ_YEARS.length > 1 ? SUBJ_YEARS.at(-1) - SUBJ_YEARS.at(-2) - 1 : 0;
 
 PV.figures([
-  ["key", N(T.coauthored), "coauthored papers", `since ${S[0].year}, both universities named`],
+  ["key", N(T.coauthored), "papers naming both", `since ${S[0].year}; one author may hold both`],
   /* The bound here is OpenAlex subfield 2507, a classification — see meta.polymer_bound. An
      earlier version of this card said "a keyword in the text, not a subject code", which was
      the exact inverse of the method, and sat directly under a standfirst saying so. */
   ["", N(T.coauthored_polymer), "classified in polymers", "subfield 2507, not a keyword match"],
-  ["", String(T.joint_awards), "joint federal awards", usd(T.joint_award_dollars) + " combined"],
+  ["", String(T.joint_awards), "joint NSF projects", usd(T.joint_award_dollars) + " combined"],
   /* Bounded to the window on purpose: the award data ends with the window and cannot speak
-     to what started after it. CWRU leads the NEO-SMART NSF Engine, awarded 2026-07-14, and Akron
+     to what started after it. CWRU leads the NEO-SMART NSF Engine, awarded 2026-07-13, and Akron
        is among its core partners — outside this
      series, and BOTH facts are named in the prose. The page used to raise the award twice and
        answer only who led it, which left the one question a reader actually has — are these
@@ -133,15 +133,15 @@ PV.figures([
         class: "pv-lab", fill: CAT[0]});
     hoverable(el("rect", {x: xs(i) - w / S.length / 2, y: m.t, width: w / S.length,
       height: h, fill: "transparent"}, svg),
-      `<b>${r.year}</b><br><span class="v">${r.joint}</span> coauthored works<br>
+      `<b>${r.year}</b><br><span class="v">${r.joint}</span> works naming both<br>
        <span class="v">${r.polymer}</span> classified in polymers and plastics,
        <span class="v">${r.bio}</span> in biomaterials<br>
        Akron published <span class="v">${N(r.akron)}</span> that year, Case Western
        <span class="v">${N(r.cwru)}</span>`,
-      `${r.year}: ${r.joint} coauthored, ${r.polymer} polymer, ${r.bio} biomaterials`);
+      `${r.year}: ${r.joint} naming both, ${r.polymer} polymer, ${r.bio} biomaterials`);
   });
   document.getElementById("jointtable").innerHTML = tableView("j",
-    "Coauthored works per year",
+    "Works naming both universities, per year",
     ["Year", "Both universities", "Polymers & plastics", "Biomaterials", "Akron total",
      "Case Western total"],
     S.map(r => [r.year, r.joint, r.polymer, r.bio, N(r.akron), N(r.cwru)]));
@@ -149,12 +149,11 @@ PV.figures([
     `${D.meta.sources} ${D.meta.row} <b>${D.meta.polymer_bound}</b>
      <b>This is the number that changed most when the bound did.</b> Matching the word
      “polymer” in the text returned 24 of these papers; the subject classification returns
-     <b>${T.polymer_total}</b>, with ${T.bio_total} more in biomaterials,
-     ${T.subject_total} of ${T.coauthored} works, about
-     ${Math.round(T.subject_total / T.coauthored * 100)} percent. <b>The ${word(SUBJ_GAP)} years
-     from ${SUBJ_YEARS.at(-2) + 1} to ${T.last_subject_year - 1} carry no joint paper in
-     either subject, and ${T.last_subject_year} carries one.</b> A coauthored paper is evidence that two
-     people worked together, not that two institutions have a relationship;
+     <b>${T.polymer_total}</b>, and ${T.bio_total} in biomaterials, at most
+     ${T.subject_total} between them. <b>The ${word(SUBJ_GAP)} years
+     from ${SUBJ_YEARS.at(-2) + 1} to ${T.last_subject_year - 1} carry no paper naming both in
+     either subject, and ${T.last_subject_year} carries one.</b> A paper naming both universities proves neither a two-person
+     collaboration nor an institutional relationship;
      ${T.coauthored} works over ${S.length} years is roughly
      ${(T.coauthored / S.length).toFixed(0)} a year between universities that publish
      ${N(S.at(-1).akron + S.at(-1).cwru)} a year between them.`;
@@ -221,10 +220,10 @@ PV.figures([
   document.getElementById("controlsrc").innerHTML =
     `${D.meta.control} Case Western’s indexed output is
      ${N(pk.cwru)} in ${T.peak_year} and ${N(last.cwru)} in ${last.year}.
-     That comparison cannot exclude different indexing delays for joint papers.
+     That comparison cannot exclude different indexing delays for papers naming both.
      <b>The decline also appears as a share of Akron’s output:</b>
      Akron’s own output fell from ${N(pk.akron)} to ${N(last.akron)}, about
-     ${Math.round((1 - last.akron / pk.akron) * 100)} percent, while joint work per thousand
+     ${Math.round((1 - last.akron / pk.akron) * 100)} percent, while papers naming both per thousand
      of that output fell from ${pk.per_1k_akron} to ${last.per_1k_akron}, about
      ${Math.round((1 - last.per_1k_akron / pk.per_1k_akron) * 100)} percent. The two
      quantities are drawn in separate panels rather than on two y-scales, because where
@@ -261,7 +260,7 @@ PV.figures([
       `${(r.start || "").slice(-4)}: ${usd(r.amount)}, ${t}`);
   });
   document.getElementById("awardstable").innerHTML = tableView("a",
-    "Joint federal awards",
+    "Joint NSF projects",
     ["Start", "Award ID", "Title", "Amount", "How it was found"],
     A.map(r => [r.start, r.id, r.title, usd(r.amount), r.via]));
   document.getElementById("awardssrc").innerHTML =
@@ -271,34 +270,36 @@ PV.figures([
      literally titled “Graduate Research Fellowship Program”, an institutional block grant
      every university receives separately, and matching on title alone booked it as a
      $1.1 million joint project across five award IDs. Only awards NSF itself labels
-     “Collaborative Research” are counted. <b>This measure sees federal research grants and
-     nothing else:</b> no industry contract, no state award, no subaward, and no unfunded
-     collaboration.`;
+     “Collaborative Research” are counted. <b>This measure queries the NSF Awards API and
+     nothing else:</b> no other federal agency, no industry contract, no state award, no
+     subaward, and no unfunded collaboration.`;
 }
 
 document.getElementById("closersub").innerHTML =
   `<b>The claim this page replaces was that nothing suggested the two had ever been in a
-   room together.</b> That was false, and it was checkable in an afternoon: ${T.coauthored}
-   coauthored papers, ${T.joint_awards} joint federal awards, ${usd(T.joint_award_dollars)}.
+   room together.</b> That was false, and it was checkable in an afternoon: ${T.joint_awards} joint NSF
+   projects, ${usd(T.joint_award_dollars)}.
    Publishing it would have told two anchor institutions that PIC had not looked.
    <b>What the measurement found instead is harder to dismiss and more useful.</b> The
-   collaboration is real and substantial, and it is almost never about polymers.
-   <b>Of ${T.coauthored} joint papers, ${T.polymer_total} are classified in polymers and
-   plastics and ${T.bio_total} in biomaterials, ${T.subject_total} in all, and
+   joint NSF projects are collaboration by NSF&rsquo;s own label, and the papers naming both
+   are almost never classified in polymers.
+   <b>Of ${T.coauthored} papers naming both, ${T.polymer_total} are classified in polymers and
+   plastics and ${T.bio_total} in biomaterials, and
    ${word(SUBJ_GAP)} of the last ${word(SUBJ_GAP + 1)} years carry neither.</b> Two
-   universities anchoring a polymer cluster have published
-   together ${T.coauthored} times in ${word(S.length)} years and ${Math.round((1 - T.subject_total / T.coauthored) * 100)}
-   percent of it was something else. <b>The joint work thinned too, and it thinned
-   recently.</b> The controlled rate fell in ${word(FALLS)} straight years, from
-   ${S[FALL_FROM].per_1k_akron} joint works per thousand of Akron’s output in
+   universities anchoring a polymer cluster have both been
+   named on ${T.coauthored} papers in ${word(S.length)} years and at least ${Math.floor((1 - T.subject_total / T.coauthored) * 100)}
+   percent of them are classified in neither subject. <b>Those papers thinned too, and they
+   thinned recently.</b> The controlled rate fell in ${word(FALLS)} straight years, from
+   ${S[FALL_FROM].per_1k_akron} works naming both per thousand of Akron’s output in
    ${S[FALL_FROM].year} to ${TROUGH.per_1k_akron} in ${TROUGH.year}, and came back to
    ${last.per_1k_akron} in ${last.year} on ${last.joint} papers. One year up from a floor of
    ${TROUGH.joint} is the shape a run of counts this small makes on its own, so the rise is
    recorded here and is not read as a recovery: the rate is still
    ${Math.round((1 - last.per_1k_akron / pk.per_1k_akron) * 100)} percent below the
-   ${T.peak_year} peak. No new joint federal award has started since
-   ${T.newest_joint_award_year}. <b>That is a live question PIC is positioned to
-   ask</b>, and it is a different conversation from the one an unbounded negative would have
+   ${T.peak_year} peak. Within the years counted here, ${D.meta.years[0]} to
+   ${D.meta.years[1]}, no new joint NSF award started after ${T.newest_joint_award_year};
+   NEO-SMART, awarded in July 2026, came after them. <b>Whether it reverses the thinning
+   is a live question PIC is positioned to ask</b>, and it is a different conversation from the one an unbounded negative would have
    started. <b>The limit stays in force:</b> ${D.meta.what_a_null_would_mean}`;
 
 /* Standard methodology + AI disclosure. Generated, not written — see picviz.js. */

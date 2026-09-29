@@ -96,6 +96,12 @@
 .page-foot p:last-child{margin-bottom:0}
 .page-foot b{color:#fff;letter-spacing:.06em}
 .page-foot a{color:#9FCBD2}
+.foot-k{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:900;color:#7FB3BC}
+.foot-links span{display:block;margin-top:4px;color:#8FBAC2;font-size:13px}
+@media (max-width: 760px){
+  .foot-links{grid-template-columns:1fr}
+}
 
 /* Mobile: every chart on this page is re-laid out per form (annual bars, compact lines,
    a re-scaled scatter), so the shared sideways-scroll fallback is switched off. The

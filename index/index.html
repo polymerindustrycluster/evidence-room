@@ -49,7 +49,7 @@
     <div class="chart reflow jsdrawn">
       <svg id="states" role="img" aria-labelledby="statestitle"><title id="statestitle">Ranked
         bars, the ten states with the most plastics and rubber jobs in 2024. Ohio leads on
-        54,846, then Texas on 44,598, Illinois on 43,168 and California on 41,042, down to
+        54,846 jobs, then Texas on 44,598, Illinois on 43,168 and California on 41,042, down to
         South Carolina on 26,733.</title></svg>
     </div>
     <div id="statestable"></div>
@@ -57,8 +57,10 @@
       from the Bureau of Labor Statistics payroll census. All 50 states and Puerto Rico are disclosed; DC is absent.
       The chart shows the ten largest states. A count is only a count, though. Three of the
       nine states behind Ohio pack the industry more densely into a smaller workforce:
-      Indiana, South Carolina and Wisconsin. That is the question the concentration page
-      answers.</p>
+      Indiana, South Carolina and Wisconsin. <a href="../peers/">The rankings page</a> sets
+      each large state&rsquo;s concentration beside its count, and
+      <a href="../location-quotient/">the concentration page</a> for the
+      twelve counties.</p>
   </div>
 </section>
 
@@ -70,12 +72,30 @@
       period and limits. The county selector marks geographic coverage; it keeps every
       story available.</p>
 
-    <details class="howto card-key"><summary>What the geography labels and claim counts mean</summary>
+    <!-- THE HEADCOUNT KEY. Five stories print five job totals for the same twelve counties
+         (17,770, 18,594, 17,725, 24,032, 33,529) and none of them said why they differ: a
+         reader moving between cards met what looked like five answers to one question.
+         Each is a different industry, year or survey, and this key says which. Guarded by
+         index-headcount-key, which reads every figure from its own page's file. -->
+    <details class="howto card-key"><summary>What the geography labels, job counts and claim counts mean</summary>
       <p class="note">The teal label names the geography used in that story.
       <b>PIC-12</b> means Ashtabula, Cuyahoga, Geauga, Lake, Lorain, Mahoning, Medina,
       Portage, Stark, Summit, Trumbull and Wayne counties. Other stories use metro,
       state or national records. Claim counts describe checks against the underlying
       files; manual claims depend on a cited document.</p>
+      <p class="note"><b>Why the job counts differ.</b> Stories count different industries,
+      years and surveys, so their totals for the twelve counties are not meant to match.
+      <b>17,770</b> is plastics and rubber products (NAICS 326) in 2025, from the payroll
+      census (<a href="../cluster-health/">cluster health</a>). <b>18,594</b> is the same
+      industry a year earlier (<a href="../peers/">rankings</a>). <b>17,725</b> is the
+      same industry counted by a different Census survey at the start of 2025&rsquo;s third
+      quarter (<a href="../churn/">churn</a>). <b>24,032</b> adds resin and paint (3252 and
+      3255), 2025, a floor because some counties are withheld
+      (<a href="../location-quotient/">concentration</a>). <b>33,529</b> is all chemical
+      manufacturing plus plastics and rubber (325 and 326), 2025, counted once
+      (<a href="../wages/">wages</a>). Concentration differs the same way: plastics and
+      rubber fill 2.32 times the national share of jobs across the twelve counties in 2025
+      and 4.69 times in the Akron metro alone in 2024.</p>
     </details>
 
     <div class="picker">
@@ -108,7 +128,8 @@
       <a class="card" href="../wages/" data-slug="wages" data-geo="pic12">
         <h4>How does chemical, plastics and rubber pay compare with other factory work?</h4>
         <p class="f">Across 51 county-industry pairings, median group-average pay is
-          0.99 times county manufacturing pay and 1.21 times county all-jobs pay.
+          0.99 times county manufacturing pay, from 1.16 times for chemicals and 0.87
+          times for plastics and rubber, and 1.21 times county all-jobs pay.
           These are group averages, not individual workers&rsquo; wages. The comparisons
           describe pay; they do not establish a causal industry premium.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
@@ -166,8 +187,8 @@
       <a class="card" href="../churn/" data-slug="churn" data-geo="pic12">
         <h4>How much hiring and separating sits behind a headcount that fell?</h4>
         <p class="f">111,529 hires and 111,361 separations across 55 quarters produced a net flow of 168 jobs. In the average quarter hires run 10.8 percent of the workforce and
-          separations 10.7 percent, which is how a churn engine that size produces a net
-          flow of +168 while the headcount falls 719.</p>
+          separations 10.7 percent. The headcount, a separate Census estimate that need
+          not agree with the flows, fell 719 over the same span.</p>
         <p class="meta"><span class="pill geo">PIC-12</span><span class="pill hit-flag">covers this county</span></p>
       </a>
       <a class="card" href="../occupations/" data-slug="occupations" data-geo="metros4">
@@ -184,8 +205,8 @@
       <a class="card" href="../funding-map/" data-slug="funding-map" data-geo="register">
         <h4>Where did the public money go?</h4>
         <p class="f">$106.3 million in all: $85.3 million across three public awards, plus
-          $21.0 million of matching money that came with them, drawn to scale across
-          twenty-one named recipients. The $51.0 million Tech Hub award is the largest of
+          $21.0 million of matching money that came with them, drawn to scale and traced
+          to twenty-one named recipients. The $51.0 million Tech Hub award is the largest of
           the three and sits inside this total, not on top of it. Routine federal contracting is a separate measure, compared in the federal-money story.</p>
         <p class="meta"><span class="pill geo">awards</span></p>
       </a>
@@ -219,17 +240,20 @@
           not establish whether teaching closed, changed labels or moved format.</p>
         <p class="meta"><span class="pill geo">national</span></p>
       </a>
+      <!-- Corrected 2026-09-28: see reach/index.html for the "four papers in five" fix. -->
       <a class="card" href="../reach/" data-slug="reach" data-geo="national">
         <h4>How far does the region&rsquo;s polymer research reach?</h4>
-        <p class="f">633 partner institutions in 50 countries across 1,448 coauthored works,
-          and four papers in five are led from here. China is the second-largest partner
-          country, behind only the United States.</p>
+        <p class="f">633 partner institutions in 50 countries across 1,448 works;
+          985 of 1,222 papers naming a corresponding author had one here. China is the
+          second-largest partner country, behind only the United States.</p>
         <p class="meta"><span class="pill geo">national</span></p>
       </a>
+      <!-- Corrected 2026-09-28: see collaboration/index.html for the "four joint federal
+           awards" fix (NSF-only fetch; four projects, eight award IDs). -->
       <a class="card" href="../collaboration/" data-slug="collaboration" data-geo="Akron metro">
         <h4>Do Akron and Case Western still work together?</h4>
-        <p class="f">208 coauthored papers since 2012, eight classified in polymers, four
-          joint federal awards and none starting after 2017 in this window. The window closes
+        <p class="f">208 papers naming both universities since 2012, eight classified in polymers, four
+          joint National Science Foundation projects and none starting after 2017 in this window. The window closes
           before NEO-SMART, which both universities are in, begins.</p>
         <p class="meta"><span class="pill geo">Akron metro</span></p>
       </a>

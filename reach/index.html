@@ -7,13 +7,14 @@
 <title>How Far The Research Reaches</title>
 <link rel="stylesheet" href="../_shared/pic-viz.css">
 <link rel="stylesheet" href="../_shared/story.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
 
 <header class="mast">
   <div class="wrap">
-    <strong>Polymer Industry Cluster</strong>
+    <a class="mast-home" href="../index/"><strong>Polymer Industry Cluster</strong></a>
     <span>Cluster vitals &middot; research network</span>
     <span class="proto">Prototype &middot; internal draft</span>
   </div>
@@ -23,9 +24,12 @@
 <section class="hero">
   <div class="wrap">
     <p class="eyebrow">Polymer research from Akron and Case Western, 2015&ndash;2024</p>
+    <!-- Corrected 2026-09-28: the H1 kept "four of its papers in five are led from here"
+         after the H2 below was corrected. The four in five is right; "led" is not, because
+         the count includes papers with no outside coauthor. -->
     <h1>The region’s polymer research reaches more than 600 institutions in 50
-      countries, and <em>four of its papers in five are led from here</em>, of the 1,222 that
-      name a corresponding author.</h1>
+      countries, and <em>four in five of its papers that name a corresponding author name
+      one here</em>, 985 of 1,222.</h1>
     <p class="stand">That research is published by the region’s two universities, the
       University of Akron and Case Western Reserve. Between 2015 and 2024 their polymer papers
       carried co-authors at national laboratories, at a polymer company in Akron, and at
@@ -33,7 +37,7 @@
       questions: <b>who does the region bring in, and who brings the region in?</b></p>
     <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data OpenAlex works and institutions &middot; August&nbsp;2026</p>
     <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
-      id="open-t">All 1,448 coauthored works drawn as one bar split three ways: 985 led from here, 237 led from there, 226 naming no corresponding author.</title></svg></div>
+      id="open-t">All 1,448 works drawn as one bar split three ways: 985 with a corresponding author here, 237 with one elsewhere, 226 naming no corresponding author.</title></svg></div>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
@@ -64,10 +68,10 @@
       largest partners.</p>
     <div class="legend">
       <span><i style="background:#008BA8"></i> Mostly led from here</span>
-      <span><i style="background:#C85F0C"></i> Mostly led from there</span>
+      <span><i style="background:#C85F0C"></i> Mostly led from elsewhere</span>
     </div>
     <div class="chart"><svg id="map" role="img" aria-labelledby="map-t">
-      <title id="map-t">World map of institutions co-authoring polymer research with the
+      <title id="map-t">World map of institutions named on the same polymer papers as the
         University of Akron or Case Western Reserve University, 2015 to 2024.</title>
     </svg></div>
     <div id="maptable"></div>
@@ -78,19 +82,24 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">Which direction</p>
-    <h2>The region leads four papers in five of those that name a corresponding author</h2>
+    <!-- Corrected 2026-09-28: "four papers in five" counted any paper with a local
+         corresponding author, including ones with no outside institution at all, so it
+         wasn't measuring leadership within collaborations. Stated as the real count instead. -->
+    <h2>985 of 1,222 papers naming a corresponding author had one here</h2>
     <p class="lede">Reach and standing are different things, and this page counts both. A
       region that mostly joins other people’s projects travels widely but leads little. A
-      region that mostly leads has standing at home but may not travel. So every major partner
-      carries two counts, papers led from here and papers led from there, and neither count is
-      subtracted from the other.</p>
+      region that mostly leads has standing at home but may not travel. Papers with no
+      outside co-author at all count toward &ldquo;here&rdquo; too, since the corresponding author is
+      still local. So every major partner carries two counts, papers led from here and
+      papers led from elsewhere, by that partner or another, and neither count is subtracted
+      from the other.</p>
     <div class="legend">
       <span><i style="background:#008BA8"></i> Led from here</span>
-      <span><i style="background:#C85F0C"></i> Led from there</span>
+      <span><i style="background:#C85F0C"></i> Led from elsewhere</span>
     </div>
     <div class="chart"><svg id="dir" role="img" aria-labelledby="dir-t">
       <title id="dir-t">For the largest partner institutions, papers led from here against
-        papers led from there.</title></svg></div>
+        papers led from elsewhere.</title></svg></div>
     <div id="dirtable"></div>
     <p class="src" id="dirsrc"></p>
   </div>
@@ -119,13 +128,32 @@
 
 <section class="closer">
   <div class="wrap">
+    <!-- Corrected 2026-09-28: this said "The region leads most of that work rather than
+         joining it". The 985 of 1,222 behind it includes papers with no outside coauthor, so
+         it cannot say who leads the collaborations. -->
     <p>A cluster whose papers reach 50 countries is more than a regional asset that happens
-      to sit here. The region leads most of that work rather than joining it.</p>
+      to sit here. Most of its papers that name a corresponding author name one here, though
+      that count includes papers written with no outside partner at all.</p>
     <p class="sub" id="closersub"></p>
   </div>
 </section>
 
 </main>
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-k">Read next</p>
+    <ul class="foot-links">
+      <li><a href="../collaboration/">Akron and Case Western</a>
+        <span>Papers naming both universities, year by year.</span></li>
+      <li><a href="../patents/">Does the region still invent?</a>
+        <span>Polymer patents filed from Ohio.</span></li>
+      <li><a href="../index/">The Evidence Room</a>
+        <span>Every page, each with its own sources and its own checks that its numbers
+        have to pass.</span></li>
+    </ul>
+    <p class="foot-id">Polymer Industry Cluster &middot; Greater Akron Chamber</p>
+  </div>
+</footer>
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>
 </body>

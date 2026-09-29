@@ -42,7 +42,7 @@ const resinMfg = S.find(s => s.label === "PPI: plastics material and resin manuf
 const resinsMat = S.find(s => s.label === "PPI: plastics resins and materials");
 const prodMfg = S.find(s => s.label === "PPI: plastics and rubber products manufacturing");
 const prodRP = S.find(s => s.label === "PPI: rubber and plastic products");
-const chem = S.find(s => /industrial chemicals/i.test(s.label));
+const chem = S.find(s => /chemicals and allied products/i.test(s.label));
 
 /* Label strings are editorial text: hand-shortened, never machine-truncated.
    NAMED BY WHAT THEY MEASURE, NOT BY THE ORDER OF THE FEDERAL WORDS. The old short
@@ -63,8 +63,10 @@ const SHORT = {
   "PPI: rubber and plastic products": "Products, as a commodity",
   "PPI: plastics and rubber products manufacturing": "Products, from their makers",
   /* The comparator. It is never drawn as a level, only subtracted from resin, but it now
-     has to name itself in the level table, the spread key and the spread table. */
-  "PPI: industrial chemicals": "Industrial chemicals"};
+     has to name itself in the level table, the spread key and the spread table.
+     Corrected 2026-09-28: this series is WPU06, BLS "Chemicals and allied products".
+     "Industrial chemicals" is WPU061, a narrower series this page does not use. */
+  "PPI: chemicals and allied products": "Chemicals and allied products"};
 const TINY = {
   "Henry Hub natural gas spot": "Henry Hub gas",
   "Crude oil, WTI spot": "Crude oil (WTI)",
@@ -73,7 +75,7 @@ const TINY = {
   "PPI: plastics material and resin manufacturing": "Resin, from its makers",
   "PPI: rubber and plastic products": "Products, as a commodity",
   "PPI: plastics and rubber products manufacturing": "Products, from their makers",
-  "PPI: industrial chemicals": "Industrial chemicals"};
+  "PPI: chemicals and allied products": "Chemicals and allied products"};
 /* The two series every subtraction on this page is built from. */
 const INGAP = new Set(["PPI: plastics material and resin manufacturing",
                        "PPI: plastics and rubber products manufacturing"]);
@@ -167,8 +169,8 @@ const INFL = (CPI[CPIL] / CPIB - 1) * 100;
    section that explains it. */
 PV.figures([
   ["key", vsB(gas.now.index), "gas, against January 2019",
-   `cheaper than before the 2022 spike: the buyer’s win, the seller’s lost windfall. The
-    whole rise given back, and then some (${pct(gas.retraced)})`],
+   `cheaper than before the 2022 spike, which is the buyer’s good news. The whole rise
+    given back, and then some (${pct(gas.retraced)})`],
   ["", vsB(resinMfg.now.index), "resin, against January 2019",
    `the middle seat: about a third of the rise given back, the rest still on the
     invoice`],
@@ -236,7 +238,7 @@ function verdict() {
   if (!SEL) v.innerHTML = `<b>The whole chain:</b> gas sellers have given back the whole
     rise, resin makers about a third, and product makers none of it. Tap a seat to
     re-read the charts from it.`;
-  else if (SEL === "feedstock") v.innerHTML = `<b>Feedstock:</b> the windfall reversed.
+  else if (SEL === "feedstock") v.innerHTML = `<b>Feedstock:</b> the spike reversed.
     Gas peaked at nearly three times its January 2019 level in ${mon3(gas.peak.date)} and
     now sits ${(100 - gas.now.index).toFixed(0)}% below it: the whole rise given back,
     and then some (${pct(gas.retraced)}). Ohio industrial power is the exception: still up
@@ -244,10 +246,10 @@ function verdict() {
   else if (SEL === "resin") v.innerHTML = `<b>Resin:</b> the middle seat. Your output
     crested at about ${vsB(Math.max(resinsMat.peak.index, resinMfg.peak.index))} across
     2021 and 2022, gave back about a third, and still runs
-    ${vsB(resinMfg.now.index)}. Your own version of the gap, resin against industrial
-    chemicals, opened to ${sp(cPeak.v)} points of extra price growth in
-    ${mon3(cPeak.date)} and has unwound to just below zero: the shortage windfall did not
-    keep.`;
+    ${vsB(resinMfg.now.index)}. Your own version of the gap, resin against the broad
+    chemicals and allied products index that includes it, opened to ${sp(cPeak.v)} points
+    of extra price growth in ${mon3(cPeak.date)} and has unwound to just below zero: the
+    shortage gap did not keep.`;
   else v.innerHTML = `<b>Finished products:</b> the winning seat, on these two indexes.
     Your main input gave back about a third of its rise; your output gave back none in cash
     and sits at its peak. Your prices have risen ${sp(last.v)} percentage points more than
@@ -1086,8 +1088,8 @@ document.getElementById("laddersrc").innerHTML =
    (peak &minus; 100).`;
 
 /* THE LEVEL TABLE CARRIES EVERY SERIES THE PAGE DRAWS, INCLUDING THE ONE IT DRAWS ONLY
-   AS A SUBTRACTION. Industrial chemicals is the comparator behind the gray line on the
-   spread chart and behind a column in the spread table, and its own level appeared
+   AS A SUBTRACTION. Chemicals and allied products (BLS WPU06) is the comparator behind
+   the gray line on the spread chart and behind a column in the spread table, and its own level appeared
    nowhere: not here, not in the ladder table, not in a key, not in a source line. A
    reader could see "resin over chemicals" and check no part of it. It is not on the line
    chart, so its row is tagged as the context series it is rather than smuggled in as a
@@ -1098,7 +1100,7 @@ document.getElementById("laddersrc").innerHTML =
   const jans = dates.filter(d => d.endsWith("-01-01"));
   document.getElementById("linestable").innerHTML = tableView("ln",
     "Index level by series, January of each year (January 2019 = 100), including " +
-    "industrial chemicals, the comparator subtracted on the next chart",
+    "chemicals and allied products, the comparator subtracted on the next chart",
     ["Series", "Stage", ...jans.map(d => d.slice(0, 4))],
     tabled.map(s => [both(s), STAGE[s.stage].n,
       ...jans.map(d => {
@@ -1139,7 +1141,8 @@ document.getElementById("linessrc").innerHTML =
    The gap chart carried two lines and no key: the main line was named by the H2 and the
    how-to-read line, and the gray one by an end label reading "chemicals", which names
    half of a subtraction. Both lines are named here with the levels they are built from,
-   which is the only place on the page industrial chemicals states its own value. */
+   which is the only place on the page chemicals and allied products states its own
+   value. */
 {
   const e0 = v => v.toFixed(0);
   /* One text node per entry, no inline bold: `.legend span` is an inline-flex box, so a
@@ -1150,7 +1153,7 @@ document.getElementById("linessrc").innerHTML =
       products from their makers at ${e0(PM[last.date])} minus resin from its makers at
       ${e0(RM[last.date])}, ${sp(last.v)} in ${monF(last.date)}`],
     [GRAY, 1.5, `Resin over chemicals &middot; the same question one link up: resin at
-      ${e0(RM[last.date])} minus industrial chemicals at ${e0(CH[last.date])},
+      ${e0(RM[last.date])} minus chemicals and allied products at ${e0(CH[last.date])},
       ${sp(comp.at(-1).v)}. The chemicals index (BLS PPI, WPU06) peaked at
       ${chem.peak.index.toFixed(1)} in ${monF(chem.peak.date)} and stands at
       ${chem.now.index.toFixed(1)}; its level year by year is in the table under the

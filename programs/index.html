@@ -19,13 +19,14 @@
 .chart-heading{font-size:16px;font-weight:650;line-height:1.4;margin:0 0 8px}
 .chart-unit{font-size:13px;line-height:1.5;margin:0 0 14px;color:var(--muted)}
 </style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
 
 <header class="mast">
   <div class="wrap">
-    <strong>Polymer Industry Cluster</strong>
+    <a class="mast-home" href="../index/"><strong>Polymer Industry Cluster</strong></a>
     <span>Evidence room &middot; polymer education</span>
   </div>
 </header>
@@ -169,8 +170,12 @@
 <section class="band">
   <div class="wrap">
     <p class="takeaway">What it pays</p>
-    <h2 id="paytitle">Where the record shows earnings at all, they are strong:
-      $87k&ndash;$101k four years out</h2>
+    <!-- Corrected 2026-09-28: "strong" was an evaluation the five earnings rows do not
+         support on their own: four of the five sit below the $92,919 national median for
+         this federal program code, and only UMass Lowell clears it. The h2 now states the
+         range and that split instead of a verdict. -->
+    <h2 id="paytitle">Four-year earnings range from $87,636 to $100,428;
+      four of five institutions fall below the national median</h2>
     <p class="lede">The College Scorecard, the federal database of what graduates of a given
       program go on to earn, publishes earnings for bachelor&rsquo;s degrees under a single
       federal program code, Polymer/Plastics Engineering, at exactly five institutions. None
@@ -234,6 +239,21 @@
 </section>
 
 </main>
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-k">Read next</p>
+    <ul class="foot-links">
+      <li><a href="../atlas/">Where polymer science is taught</a>
+        <span>The institutions across the country that teach it.</span></li>
+      <li><a href="../occupations/">Who does the work</a>
+        <span>The jobs these programmes feed, and what they pay here.</span></li>
+      <li><a href="../index/">The Evidence Room</a>
+        <span>Every page, each with its own sources and its own checks that its numbers
+        have to pass.</span></li>
+    </ul>
+    <p class="foot-id">Polymer Industry Cluster &middot; Greater Akron Chamber</p>
+  </div>
+</footer>
 <script src="../_shared/picviz.js"></script>
 <script src="app.js"></script>
 </body>

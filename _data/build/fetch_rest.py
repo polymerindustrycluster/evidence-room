@@ -38,7 +38,7 @@ def fred():
     key = KEYS["FRED_API_KEY"]
     series = {
         "WPU072": "PPI: rubber and plastic products",
-        "WPU06": "PPI: industrial chemicals",
+        "WPU06": "PPI: chemicals and allied products",
         "PCU326326": "PPI: plastics and rubber products manufacturing",
     }
     rows, vintages = [], []

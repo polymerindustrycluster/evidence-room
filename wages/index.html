@@ -13,7 +13,7 @@
 
 <header class="mast">
   <div class="wrap">
-    <strong>Polymer Industry Cluster</strong>
+    <a class="mast-home" href="../index/"><strong>Polymer Industry Cluster</strong></a>
     <span>Cluster vitals &middot; wages</span>
   </div>
 </header>
@@ -29,7 +29,11 @@
          claim the page never made. The pairing is now named in the H1 and defined in the
          first clause of the standfirst, and the job-weighted figure is computed and printed
          on the median card beside it rather than left for the reader to assume. -->
-    <h1>These industries out-pay the town average.<br><em>Against manufacturing, pay is level.</em></h1>
+    <!-- NOT "LEVEL". This said "Against manufacturing, pay is level" on the pooled median
+         of 0.99x, and no pairing family is level: chemistry-side pairings sit at 1.16x (19
+         of 23 above their county's factory wage), plastics and rubber at 0.87x (4 of 28).
+         The 0.99x is the two halves cancelling. Guarded by wage-vs-mfg-split. -->
+    <h1>These industries out-pay the town average.<br><em>Against manufacturing, chemicals pay more; plastics and rubber pay less.</em></h1>
     <p class="stand">The middle county-industry average is 0.99 times its county’s manufacturing
       average, compared with 1.21 times the all-jobs average. This is a descriptive
       comparison, not evidence that an industry causes higher pay. A pairing is one
@@ -42,6 +46,9 @@
     <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic), updated with Codex (OpenAI) &middot; Data: the Bureau of Labor
       Statistics Quarterly Census of Employment and Wages (QCEW), annual averages
       2015&ndash;2025 &middot; September&nbsp;2026</p>
+    <p class="byline"><b>Correction, September 28, 2026:</b> the headline said pay was
+      level with manufacturing. It was two families cancelling: chemicals above, plastics
+      and rubber below.</p>
     <p class="byline"><b>Correction, September 8, 2026:</b> the 1.26× statistic previously
       described as the middle job is an employment-weighted median of group-average
       wage ratios. These aggregate data cannot identify the median worker’s pay.
@@ -155,17 +162,18 @@
 <section class="band tint">
   <div class="wrap">
     <p class="takeaway">The other counterweight</p>
-    <h2>Against the factory next door, polymer pay is level</h2>
+    <h2>Against the factory next door, chemicals pay more and plastics and rubber less</h2>
     <p class="lede">The 1.21&times; premium is real, and it is not particular to polymer.
       Manufacturing as a whole out-pays the all-jobs average in every one of the twelve
       counties, by a median 1.25&times;. Measure the same 51 pairings against their
       county&rsquo;s manufacturing wage instead of its all-jobs average and the middle
-      pairing lands at <b>0.99&times;</b>: dead level with the factory next door, 23 of
-      the 51 above it.</p>
+      pairing lands at <b>0.99&times;</b>, 23 of the 51 above it. That middle is not a
+      level: chemical pairings sit at a median 1.16&times;, 19 of 23 above the factory
+      next door, and plastics and rubber pairings at 0.87&times;, 4 of 28 above.</p>
     <p class="body">Both comparisons answer a real question, and they answer different
       ones. Against the town, polymer work pays like factory work, and factory work pays
-      well; that is the sentence a recruiter can use. Against the factories, polymer pay
-      is ordinary. A pitch that rests on polymer paying specially is resting on the
+      well; that is the sentence a recruiter can use. Against the factories, chemistry
+      pays more and plastics and rubber pay less. A pitch that rests on polymer paying specially is resting on the
       first comparison while sounding like the second, and the gap between them is the
       whole 1.25&times; that manufacturing at large carries.</p>
     <p class="src">BLS QCEW annual averages, 2025: private manufacturing (NAICS 31-33)
@@ -207,7 +215,9 @@
     <p class="takeaway">What it means in a paycheck</p>
     <h2>The top of the chart is a $129,000 job</h2>
     <p class="lede">A Lake County chemical-manufacturing job averages $2,474 a week,
-      about $129,000 a year, in a county where the average job pays about $62,000. Same
+      about $129,000 a year, in a county where the average job pays about $62,000. That
+      is all chemical manufacturing: 248 of its 1,676 jobs are published as paint, and BLS
+      does not break out the rest, which reaches beyond the resin and paint codes. Same
       county, the other family: rubber-products work averages $1,028 a week, about
       $53,000, below what the average job there pays. And the lowest pairing on the page,
       Stark County rubber products at $853 a week, about $44,000, covers 30 jobs, a
@@ -230,6 +240,13 @@
     <p class="foot-lede">Read it from your own seat: the twelve buttons above the first
       chart re-draw every figure for one county, and the table under each chart carries
       every row behind it.</p>
+    <p class="foot-k">Read next</p>
+    <ul class="foot-links">
+      <li><a href="../realwage/">What the pay buys</a>
+        <span>Akron&rsquo;s plastics and rubber pay against other metros, after local prices.</span></li>
+      <li><a href="../occupations/">Who does the work</a>
+        <span>The occupations inside those averages, and what each one pays.</span></li>
+    </ul>
     <p class="foot-id"><a href="../index/">The PIC Evidence Room</a> &middot; Polymer
       Industry Cluster, Greater Akron Chamber</p>
   </div>

@@ -1101,12 +1101,13 @@ function drawRegionsDesktop() {
       class: "pv-lab", fill: mine ? CAT[0] : pgh ? INK : "var(--pv-ink)"});
     txt(svg, `${r.counties} counties`, {x: m.l + 8, y: y + 16, class: "pv-labq",
       fill: mine || pgh ? "#fff" : "var(--pv-ink)"});
-    /* PITTSBURGH IS AHEAD, NOT LEVEL. 89.6 against 89.5 is a tenth of a point, and the
-       label used to call it a match while the bar drawn beside it was visibly longer.
-       Worse, it reaches that on eight counties against twelve, which by this chart's own
-       size rule makes it the stronger figure. Said plainly. */
+    /* ABOVE, NOT LEVEL, AND NOT A WINNER. 89.6 against 89.5 is under a tenth of a point.
+       The label once called it a match while the bar beside it was visibly longer, then
+       "ahead", which read as a ranking the correction of 2026-09-28 withdrew: across
+       eight counties against twelve, a gap that small is not one. The label now says
+       what the bars show and the boundary beside it. */
     if (pgh)
-      txt(svg, "ahead of PIC-12, on four fewer counties",
+      txt(svg, "just above PIC-12, on four fewer counties",
         {x: xs(r.region_share_work) - 10, y: y + 16, "text-anchor": "end",
          class: "pv-lab", fill: "#fff"});
     hoverable(el("rect", {x: m.l, y, width: w, height: 22, fill: "transparent"}, svg),
@@ -1139,7 +1140,7 @@ function drawRegionsMobile() {
        residents of the region`, `${short}: ${pct(r.region_share_work)}`);
     y += rowH;
     if (pgh) {
-      txt(svg, "ahead of PIC-12, on four fewer counties", {x: m.l, y: y + 6,
+      txt(svg, "just above PIC-12, on four fewer counties", {x: m.l, y: y + 6,
         class: "pv-labq", fill: INK});
       y += 22;
     }
@@ -1159,14 +1160,15 @@ const PGH = R.find(r => /^Pittsburgh/.test(r.name));
    is stated in the reading line under the chart. Guarded by ls-only-pittsburgh-matches,
    which now asserts BOTH sides rather than only the one drawn. */
 const PIC = R.find(r => r.kind === "footprint");
-/* Two decimals ONLY here. The two resident-side figures are 0.02 points apart and both
-   round to the same one-decimal value, so pct() would print the reversal as a pair of
-   identical numbers and read as a typo. */
+/* Two decimals ONLY here and in the closer. The two resident-side figures are 0.02 points
+   apart and both round to the same one-decimal value, so pct() would print the reversal as
+   a pair of identical numbers and read as a typo. On the workplace side pct() prints 89.6
+   against 89.5, a full tenth apart, when the gap is 0.07, so the closer's margin uses it too. */
 const pct2 = v => (v * 100).toFixed(2) + "%";
 document.getElementById("regionsfigtitle").textContent =
   `Of the work that sits inside them, the twelve counties keep ` +
-  `${pct(B.totals.work_region_share)} for their own residents; only Pittsburgh keeps ` +
-  `more, ${pct(PGH.region_share_work)} on ${WORDS[PGH.counties]} counties`;
+  `${pct(B.totals.work_region_share)} for their own residents; Pittsburgh keeps ` +
+  `${pct(PGH.region_share_work)}, on ${WORDS[PGH.counties]} counties rather than twelve`;
 
 /* -------------------------------------------------------- tables + prose slots */
 
@@ -1346,11 +1348,12 @@ document.getElementById("regionsreading").innerHTML =
    ${importedPctOhio} percent. The band earlier on this page counts a worker resident in
    any state and reads ${N(JOBS_ALL)} and ${importedPct} percent. Same twelve counties,
    same ${N(D.totals.home_inside_pic12)} jobs held from inside, two denominators. Among
-   comparable regions only Pittsburgh keeps more, at
-   ${pct(PGH.region_share_work)} on ${WORDS[PGH.counties]} counties rather than twelve. Read
-   against this chart’s own size rule, that makes Pittsburgh the stronger figure and the
-   twelve counties the closest thing to it.
-   <b>That ranking is the workplace side, the work that sits inside a region.</b> On the
+   comparable regions, Pittsburgh’s workplace share is
+   ${pct(PGH.region_share_work)} against the twelve counties’ ${pct(B.totals.work_region_share)},
+   on ${WORDS[PGH.counties]} counties rather than twelve. Read
+   against this chart’s own size rule, the two are close enough that the boundary
+   difference outweighs which one is ahead.
+   <b>That comparison is the workplace side, the work that sits inside a region.</b> On the
    resident side, where each region’s own people work, it reverses:
    ${pct2(PIC.region_share)} of PIC-12 residents’ jobs are inside PIC-12 against
    Pittsburgh’s ${pct2(PGH.region_share)}. Two hundredths of a point is a tie in
@@ -1427,8 +1430,10 @@ document.getElementById("closersub").innerHTML =
    below ${CEIL_PCT} percent. What survives is the twelve together:
    <b>${pct(B.totals.work_region_share)}</b> of their ${N(JOBS_OHIO)} jobs are held by
    people living inside them, counting Ohio residents on both sides as every region on
-   that chart is counted, a figure only Pittsburgh beats among comparable regions, and
-   only on that side of the measure. A wider line
+   that chart is counted. Among comparable regions only Pittsburgh’s is higher, at
+   ${pct2(PGH.region_share_work)} against ${pct2(B.totals.work_region_share)}, a gap of
+   ${((PGH.region_share_work - B.totals.work_region_share) * 100).toFixed(2)} points, on ${WORDS[PGH.counties]} counties rather than twelve,
+   and only on that side of the measure. A wider line
    would hold more: the fourteen-county Northeast Ohio footprint adds
    ${WIDER_ADDS.slice(0, -1).join(", ")} and ${WIDER_ADDS.at(-1)}, and all but
    ${ADDS_OUT.join(" and ")} already rank among the ten largest outside sources of these

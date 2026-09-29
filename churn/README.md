@@ -114,12 +114,16 @@ counting quarters would name marks the reader cannot see.
 - **9.6% is not the rate on any particular kind of job.** Age bands inside it run from 33.6%
   a quarter to 4.8%, and QWI carries no occupation dimension at all, so this page cannot
   say which occupations churn. Do not quote 9.6% as an operator's turnover rate.
-- **58 replacement hires a year is a PLANT'S burden, not regional training demand.** Most of
-  it is refilled from inside the industry. Age accounts for about three of the 58 and about
-  400 of the region's 6,626 annual hires, and that 400 is a FLOOR: industry exits need
-  Census Job-to-Job Flows, a different product this page does not carry.
-- **The retirement figure is an estimate, never a measurement.** It assumes the 55-to-64
-  band is spread evenly over ten single-year cohorts. QWI records separations and cannot
+- **58 replacement hires a year is a PLANT'S burden, not regional training demand.** This
+  series cannot say how much of it is refilled from inside the industry. If everyone reaching
+  65 retired and every one of those jobs were refilled, age would account for about three of
+  the 58 and about 400 of the region's 6,626 annual hires. That 400 is NOT a floor: the same
+  four quarters recorded 7,157 separations and 6,626 hires, so some departures were not
+  refilled. Industry exits need Census Job-to-Job
+  Flows, a different product this page does not carry.
+- **The age-65 figure is an estimate, never a measurement.** It estimates the jobs whose
+  holders reach 65, assuming the 55-to-64 band is spread evenly over ten single-year cohorts, and it is a
+  count of retirements only if each of them retires. QWI records separations and cannot
   see retirement.
 
 ## What this page still owes
@@ -135,9 +139,12 @@ counting quarters would name marks the reader cannot see.
   this region". That needs the identical series with `industry=00` and `industry=31-33` on
   the same twelve county FIPS, requesting `Emp,HirA,Sep`; `fetch_qwi_demand.py` already
   pulls `industry=00` but only `Emp,EarnBeg`.
-- **Job-to-Job Flows, for the pipeline number.** Retirement is the only source of
-  replacement demand this page can see. Industry exits need a different Census product, so
-  the 400-a-year figure is a floor and the page says so where it is used.
+- **Job-to-Job Flows, for the pipeline number.** The age-65 count is the only
+  replacement demand this page can estimate, and only on two assumptions it cannot check:
+  that everyone reaching 65 retires and that each of those jobs is refilled. Separations
+  exceed hires, so not every departure need be refilled and the 400-a-year figure is not a floor; industry
+  exits need a different Census product, so it is not a total either. The page says both
+  where the figure is used.
 - **The reason the ledger and the headcount part company.** Verified 2026-09-01 against the
   API and NOT publishable from this pull: inside every one of the 55 quarters the identity
   closes exactly, `Emp + HirA − Sep = EmpEnd`, with a largest residual of 5 jobs. The gap

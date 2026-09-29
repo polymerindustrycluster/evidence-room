@@ -26,8 +26,8 @@ const COL = 728;
 const {el, txt, ticks, frame, hoverable, tableView, chart, CAT, SEQ, GRAY, INK, N} = PV;
 const D = await PV.data("reach.json");
 
-/* THE COLD OPEN (guarded by tools/coldopen.mjs). One bar, split three ways: who led the
-   region's 1,448 coauthored works. Poorer than everything below — no map, no countries,
+/* THE COLD OPEN (guarded by tools/coldopen.mjs). One bar, split three ways: where the
+   corresponding author of the region's 1,448 works sits. Poorer than everything below — no map, no countries,
    no partners. Its one job is the four-in-five. */
 {
   const svg = document.getElementById("open");
@@ -35,8 +35,8 @@ const D = await PV.data("reach.json");
     const W = Math.round(svg.getBoundingClientRect().width) || 720, H = 118;
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
     const T = D.totals, lo = 10, hi = W - 10, y = 58;
-    const parts = [["led from here", T.led, "#B8D637"],
-                   ["led from there", T.joined, "rgba(255,255,255,.42)"],
+    const parts = [["corresponding author here", T.led, "#B8D637"],
+                   ["corresponding author elsewhere", T.joined, "rgba(255,255,255,.42)"],
                    ["no corresponding author", T.no_corresponding, "rgba(255,255,255,.18)"]];
     let x = lo;
     const total = parts.reduce((s, p) => s + p[1], 0);
@@ -46,9 +46,9 @@ const D = await PV.data("reach.json");
         fill: col}, svg);
       x += w;
     }
-    PV.txt(svg, "led from here: " + N(T.led) + " of " + N(total) + " works",
+    PV.txt(svg, "corresponding author here: " + N(T.led) + " of " + N(total) + " works",
       {x: lo, y: 26, "font-size": 13.5, fill: "#B8D637", "font-weight": 700});
-    PV.txt(svg, "led from there " + N(T.joined) + " · no corresponding author " + N(T.no_corresponding),
+    PV.txt(svg, "elsewhere " + N(T.joined) + " · no corresponding author " + N(T.no_corresponding),
       {x: lo, y: H - 8, "font-size": 12.5, fill: "#C6E2E6"});
   }
 }
@@ -58,7 +58,7 @@ const pctf = v => (v * 100).toFixed(0) + "%";
 PV.figures([
   ["key", N(T.works), "polymer papers", `${D.meta.home.length} universities, 2015–2024`],
   ["", N(T.partners_shown), "partner institutions", `across ${T.countries} countries`],
-  ["", pctf(T.led_share), "led from here", `a corresponding author at Akron or Case Western, on the ${N(T.attributable)} papers naming one`],
+  ["", pctf(T.led_share), "corresponding author here", `at Akron or Case Western, on the ${N(T.attributable)} papers naming one; papers with no outside coauthor count too`],
   ["", pctf(T.top10_share), "in their field’s top tenth", `field- and age-weighted citations, on the ${N(T.pct_n)} of ${N(T.works)} papers OpenAlex scores`]
 ]);
 
@@ -142,7 +142,7 @@ PV.figures([
   pts.forEach(p => hoverable(el("circle", {cx: px(p.lon), cy: py(p.lat),
     r: Math.max(r(p.t), 7), fill: "transparent"}, svg),
     `<b>${p.n}</b>${p.c ? " · " + p.c : ""}<br><span class="v">${p.t}</span> shared papers<br>
-     led from here <span class="v">${p.l}</span> · led from there <span class="v">${p.j}</span>`,
+     led from here <span class="v">${p.l}</span> · led from elsewhere <span class="v">${p.j}</span>`,
     `${p.n}: ${p.t} papers`));
 
   txt(svg, `${N(D.map.length)} institutions with two or more shared papers`,
@@ -150,7 +150,7 @@ PV.figures([
 
   document.getElementById("maptable").innerHTML = tableView("mp",
     "The forty largest partner institutions",
-    ["Institution", "Country", "City", "Led from here", "Led from there", "Total"],
+    ["Institution", "Country", "City", "Led from here", "Led from elsewhere", "Total"],
     D.top.map(p => [p.name, p.country || "—", p.city || "—", p.led, p.joined,
       p.total]));
   /* ALL of them, and the count is computed. This read `D.quarantined[0]` beside the
@@ -204,12 +204,12 @@ PV.figures([
     hoverable(el("rect", {x: m.l, y, width: w, height: 20, fill: "transparent"}, svg),
       `<b>${p.name}</b>${p.country ? " · " + p.country : ""}<br>
        led from here <span class="v">${p.led}</span><br>
-       led from there <span class="v">${p.joined}</span>`,
-      `${p.name}: ${p.led} led here, ${p.joined} led there`);
+       led from elsewhere <span class="v">${p.joined}</span>`,
+      `${p.name}: ${p.led} led here, ${p.joined} led elsewhere`);
   });
   document.getElementById("dirtable").innerHTML = tableView("dr",
     "Direction of collaboration, largest partners",
-    ["Institution", "Led from here", "Led from there", "Share led here"],
+    ["Institution", "Led from here", "Led from elsewhere", "Share led here"],
     R.map(p => [p.name, p.led, p.joined,
       pctf(p.led / (p.led + p.joined))]));
   /* NAMED FROM THE CHART, NOT TYPED. An earlier version of this paragraph said the region
@@ -283,7 +283,7 @@ PV.figures([
      field</b>, against the ten percent you would expect by definition;
      ${(T.top1_share * 100).toFixed(1)} percent reach the top hundredth.
      <b>The mean is ${T.fwci_mean}× and is not the number to quote</b>: a long
-     right tail pulls it to more than double the typical paper. A tenth of the papers have
+     right tail pulls it to ${(T.fwci_mean / T.fwci_median).toFixed(1)} times the typical paper. A tenth of the papers have
      never been cited at all, which is the ${dec[0].toFixed(1)}× bar.`;
 }
 

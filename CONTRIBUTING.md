@@ -9,6 +9,9 @@ in our methods policy, not a courtesy.
 
 1. **Every sentence needs a guard.** A new or changed figure needs a claim in that page's
    `claims.json` with a real `falsified_if`. A band so wide it cannot fail is not a guard.
+   Where practical, also give the claim a `counts` entry (`{"figure": "41", "noun":
+   "institution"}`) so `verify_nouns.py` can confirm the noun printed beside the figure is
+   the one the assertion actually counts.
 2. **Every metadata key must be classified** (limitation / method / structural) in
    `_shared/picviz.js` — an unclassified key fails the build, on purpose.
 3. **Sources go in the registry**, `_data/SOURCES.json`, with exact filter values and the

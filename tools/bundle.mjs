@@ -10,6 +10,7 @@
  */
 import {readFile, writeFile, readdir, stat, mkdir} from "node:fs/promises";
 import {existsSync} from "node:fs";
+import {createHash} from "node:crypto";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 
@@ -18,6 +19,46 @@ const DIST = path.join(WEB, "dist");
 
 const read = p => readFile(p, "utf8");
 const esc = s => s.replace(/<\/script>/gi, "<\\/script>");   // never break out of the tag
+
+/* Every input this bundle depends on, hashed by CONTENT rather than mtime, so
+   verify_consistency.py's freshness check can tell "the input changed" from "the input
+   was merely touched" — a `git pull`/`checkout` bumps every mtime on a clean checkout
+   without changing a byte, and mtime-based freshness read that as 25 stale bundles on
+   2026-09-28 when the rebuilt output was byte-identical. Recurses into _shared/ (its
+   fonts/ subfolder is base64-inlined, not just linked, so a font swap is an input change
+   too) and into the page's own img/ and assets/ (timeline's stills). */
+async function listFilesRecursive(dirAbs) {
+  const out = [];
+  for (const entry of await readdir(dirAbs, {withFileTypes: true})) {
+    const p = path.join(dirAbs, entry.name);
+    if (entry.name.startsWith(".")) continue;   // .DS_Store and kin: never inlined
+    if (entry.isDirectory()) out.push(...await listFilesRecursive(p));
+    else if (entry.isFile()) out.push(p);
+  }
+  return out;
+}
+async function sha256(absPath) {
+  return createHash("sha256").update(await readFile(absPath)).digest("hex");
+}
+async function inputManifest(dir) {
+  const abss = [];
+  for (const f of ["index.html", "app.js", "styles.css", "claims.json"]) {
+    const p = path.join(dir, f);
+    if (existsSync(p)) abss.push(p);
+  }
+  for (const sub of ["data", "img", "assets"]) {
+    const d = path.join(dir, sub);
+    if (existsSync(d)) abss.push(...await listFilesRecursive(d));
+  }
+  const shared = path.join(WEB, "_shared");
+  if (existsSync(shared)) abss.push(...await listFilesRecursive(shared));
+  const reg = path.join(WEB, "_data", "SOURCES.json");
+  if (existsSync(reg)) abss.push(reg);
+
+  const out = {};
+  for (const p of abss) out[path.relative(WEB, p).split(path.sep).join("/")] = await sha256(p);
+  return out;
+}
 
 /* EVERY replacement below passes a FUNCTION, never a string, and that is load-bearing.
    In String.prototype.replace a replacement STRING treats `$'` as "the text after the
@@ -148,7 +189,7 @@ async function bundle(name) {
   await writeFile(out, html, "utf8");
   const kb = Math.round((await stat(out)).size / 1024);
   const titleIn8k = html.slice(0, 8192).includes("<title>");
-  return {name, kb, titleIn8k};
+  return {name, kb, titleIn8k, manifest: await inputManifest(dir)};
 }
 
 const args = process.argv.slice(2);
@@ -159,12 +200,27 @@ const names = args.length
                    !["dist", "tools", "node_modules"].includes(d.name))
       .map(d => d.name);
 
+// The manifest is keyed by page and lives in dist/ alongside the bundles it describes.
+// Merge rather than overwrite: `node tools/bundle.mjs churn` only touches churn's entry,
+// so it must not erase every other page's recorded inputs out from under verify_consistency.py.
+const manifestPath = path.join(DIST, ".inputs.json");
+let inputsManifest = {};
+if (existsSync(manifestPath)) {
+  try { inputsManifest = JSON.parse(await read(manifestPath)); }
+  catch { inputsManifest = {}; }
+}
+
 let n = 0;
 for (const name of names) {
   const r = await bundle(name);
   if (!r) { if (args.length) console.log(`${name.padEnd(20)} no index.html — skipped`); continue; }
   if (r.skipped) { console.log(`${r.name.padEnd(20)} predates _shared — not bundled`); continue; }
   n++;
+  inputsManifest[r.name] = r.manifest;
   console.log(`${r.name.padEnd(20)} ${String(r.kb).padStart(5)} KB  title-in-8KB=${r.titleIn8k}`);
+}
+if (n) {
+  await mkdir(DIST, {recursive: true});
+  await writeFile(manifestPath, JSON.stringify(inputsManifest, null, 2) + "\n", "utf8");
 }
 console.log(`\n${n} artifact${n === 1 ? "" : "s"} bundled into dist/`);

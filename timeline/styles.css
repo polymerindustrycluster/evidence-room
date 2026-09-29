@@ -209,6 +209,12 @@
 .foot-lede{margin:0;font-size:15px;line-height:1.55;color:#3A4448}
 .foot-id{margin:12px 0 0;font-size:13px;color:var(--caption)}
 .foot-id a{color:var(--action);font-weight:900}
+.foot-k{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:900;color:var(--caption)}
+.foot-links{grid-template-columns:1fr}
+.foot-links a{color:var(--action)}
+.foot-links a:hover{color:var(--hover)}
+.foot-links span{display:block;margin-top:4px;color:#5B6569;font-size:13px}
 
 /* ------------------------------------------------------------ mobile re-layout */
 /* Both SVG charts re-lay out per form below 900px, so the shared sideways-scroll

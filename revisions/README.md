@@ -12,7 +12,7 @@ Three series, all named in the headline and all drawn:
 
 | code | panel name | index |
 | --- | --- | --- |
-| WPU06 | Industrial chemicals | PPI commodity |
+| WPU06 | Chemicals and allied products | PPI commodity |
 | WPU072 | Rubber and plastic products | PPI commodity |
 | PCU326326 | Plastics and rubber plants | PPI industry |
 
@@ -43,7 +43,7 @@ Raw pulls live beside that script so a derivation can be re-run without re-fetch
   revision says nothing about whether a turning point survives.
 - The month-over-month step is the part that does not survive: of 201 months that moved
   at least 0.1% from the month before, 14 later reversed direction between the first
-  estimate and today, 12 of them in industrial chemicals. That comparison is derived on the page from the archived vintages (each
+  estimate and today, 12 of them in chemicals and allied products. That comparison is derived on the page from the archived vintages (each
   month's first print against whatever the previous month carried in the same vintage,
   versus the same step today), with a 0.1% floor on both readings so a flip between +0.02%
   and −0.01% is not counted. Claim `rev-mom-flips` guards all three counts.
