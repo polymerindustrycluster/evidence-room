@@ -88,7 +88,7 @@
 .sc .r > *{padding:11px 10px 12px 0;border-bottom:1px solid var(--line);
   vertical-align:top;font-size:13px;line-height:1.45;color:#3A4448;text-align:left}
 .sc .r th{padding-left:14px;font-weight:900;font-size:14px;color:var(--text)}
-.sc .r th .m{display:block}
+.sc .r th .m{display:block;hyphens:auto;-webkit-hyphens:auto} /* a metric word wider than the column at 761-800px breaks instead of running into the definition */
 .sc .r th a{color:var(--action)}
 .sc .r .def{color:#5A625E}
 .sc .r .cur b{display:block;font-size:16px;font-weight:900;color:var(--ink);

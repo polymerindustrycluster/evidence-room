@@ -98,7 +98,7 @@ function loadData(file) {
     data.recipients.forEach((r) => {
       r.total = r.awards.reduce((a, w) => a + w.amount, 0);
       // An award may override its program's chip. Needed because `eda-direct` is genuinely ONE
-      // instrument (seven awards obligated straight to their project leads) carrying three kinds
+      // instrument (seven awards signed straight to their project leads) carrying three kinds
       // of work: five industry-led R&D projects, one workforce, one governance. Splitting the
       // program to label them would invent a structure the award does not have.
       // See specs/NAMING-RULING-RD-2026-08-13.md.
@@ -329,8 +329,9 @@ function loadData(file) {
       `${s.name}, ${fmtSpoken(s.award)} plus ${fmtSpoken(s.matchAmount)} in ${s.matchLabel}`).join('; ');
     const wsTxt = G.srcPrograms.get('ohio').map((p) => `${p.name} ${fmtSpoken(p.amount)}`).join(', ');
     return `Money-flow diagram in three columns. Left, three public awards drawn to scale, each paired with a ` +
-      `hatched match bar on the same scale: ${srcTxt}. Middle, the mechanism: the EDA award is obligated directly ` +
-      `to each of seven project leads with no pass-through; the Ohio award enters the Greater Akron Polymer ` +
+      `hatched match bar on the same scale: ${srcTxt}. Middle, the mechanism: the EDA award is signed directly ` +
+      `to each of seven project leads with no pass-through, and USAspending records the obligation on six of ` +
+      `them, all but Huntsman’s; the Ohio award enters the Greater Akron Polymer ` +
       `Innovation Hub and splits into five workstreams drawn to scale against each other (${wsTxt}); the Good Jobs ` +
       `Challenge APEX award runs to regional workforce programs with the Greater Akron Chamber as grantee. Right, ` +
       `one row per organization, each labeled with its amount and the program chips that fund it. ` +

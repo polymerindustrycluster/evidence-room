@@ -13,7 +13,7 @@
   "excludes": "The public event register records only events recorded as public. The record of which published dates slipped is deliberately withheld there, so the promise register on this page begins on the day it opened and reports nothing about dates published before it existed.",
   "scope": "PIC’s own award register and public record. This page is not a health report on the regional polymer economy, which is cluster-health, and not PIC’s board scorecard, which carries deliberately empty rows.",
   "small_numbers": "The promise register holds eighteen rows and one of them carries a number that can be missed. A keeping rate computed over a handful of resolved commitments would be noise with a percent sign, so this page prints the count and no rate until 6 commitments have resolved.",
-  "note": "Match is never summed into the staged bar. It is promised at award time by organisations other than PIC, so it is drawn detached, with its own label. The $10,417,066 beside the state grant is promised by local partners, not by the state."
+  "note": "Match is counted in the reported-secured stage and in no stage after it. It is promised at award time by organisations other than PIC, so it is drawn detached, with its own label. The $10,417,066 beside the state grant is promised by local partners, not by the state."
  },
  "generated_on": "2026-09-29",
  "as_of": "2026-08-13",

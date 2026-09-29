@@ -428,8 +428,8 @@ row(id="d-emp", group="D", status="context",
     source="Occupations page",
     href="../occupations/")
 row(id="d-federal", group="D", status="context",
-    metric="Federal prime-contract obligations, chemical and plastics/rubber "
-           "manufacturing codes, PIC-12",
+    metric="Federal prime-contract obligations, chemical, plastics and rubber "
+           "codes, PIC-12",
     definition="Federal prime-contract obligations under chemical and plastics/rubber "
                "manufacturing codes at place of performance in the twelve counties, "
                "averaged over the seven completed fiscal years FY2019-FY2025, in 2025 "

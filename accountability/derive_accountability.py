@@ -563,7 +563,8 @@ DATA = {
                          "over a handful of resolved commitments would be noise with a "
                          "percent sign, so this page prints the count and no rate until "
                          f"{FLOOR} commitments have resolved.",
-        "note": "Match is never summed into the staged bar. It is promised at award time "
+        "note": "Match is counted in the reported-secured stage and in no stage after it. "
+                "It is promised at award time "
                 "by organisations other than PIC, so it is drawn detached, with its own "
                 "label. The $10,417,066 beside the state grant is promised by local "
                 "partners, not by the state.",

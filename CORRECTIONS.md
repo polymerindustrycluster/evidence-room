@@ -210,6 +210,19 @@ written before the Huntsman exception and missed by the 29 September rounds; the
 dropped its paragraph's base; one decimal place hid the restatement. sc-executed now asserts
 the EDA bar's whole label, acc-attribution recomputes every stage amount the chart draws,
 and sc-eda-seven pins the target's unit.
+
+**Later, 30 September.** A sixth review found three more. **Was:** the funding map's spoken
+chart title said the twelve smallest recipients "get under a million between them"; the
+diagram's spoken description said the EDA award "is obligated directly to each of seven
+project leads"; and the accountability page's limitations said "Match is never summed into
+the staged bar". **Is:** each of the twelve gets under a million, $2.9 million between them
+($2,871,278); the award is signed to each lead and USAspending records the obligation on six
+of the seven, all but Huntsman's; match is counted in the reported-secured stage and in no
+stage after it, as the chart has said since 29 September. **Cause:** text a screen reader
+speaks and a limitations box are not where a reader of the page looks, and the earlier
+rounds searched only what renders. The scorecard's federal-contract label also now says
+"chemical, plastics and rubber codes" so it fits its column at 761px.
+
 ## 2026-09-29 — Labels and cards that said more than their data
 
 A review of the 2026-09-28 corrections found these beside them. One figure changed: the
