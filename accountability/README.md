@@ -214,6 +214,13 @@ carrying two visible ones.
    (`.unlisted` stays), and it is not being redesigned. The shipped HTML and JavaScript are
    unchanged by this answer.
 
+**A grantee confirmed after parking (30 September 2026).** PIC confirmed that the grantee of
+record on the state grant, SBIG20251005 ($31,250,000), is the Greater Akron Chamber. Counting
+it would move the page's "destination or grantee" figure from $7.6 million ($7,633,558) to
+about $37.4 million ($37,384,043: the whole grant replaces the $1,499,515 hub-administration
+line already counted). The page, band A and the claim `acc-attribution-lines` are left
+unchanged while the page is parked; a revival must make this change first.
+
 ## Defaults taken because a question is unanswered
 
 These are defaults, not decisions. Each is stated on the page where it appears.
