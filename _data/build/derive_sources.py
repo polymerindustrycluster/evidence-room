@@ -9,8 +9,9 @@ WHAT IT ADDS
   suppression lesson, how far these series revise after they are published, and the
   dependency structure of which source feeds which page.
 
-  IT IS GENERATED BECAUSE A TYPED COPY DRIFTS. Fourteen sources, sixty filter lines and
-  sixteen pages of dependency are exactly the kind of table a person retypes once and
+  IT IS GENERATED BECAUSE A TYPED COPY DRIFTS. Every source, every filter line and which
+  page depends on which (27 sources and 23 pages as of 30 September 2026; the counts on
+  the page are generated from these rows) are exactly the kind of table a person retypes once and
   never updates; every hand-typed inventory on this site has gone stale inside a week,
   which is why derive_index.py exists at all. The registry is already maintained by
   verify_consistency.py, so a page generated from it stays true by construction.
