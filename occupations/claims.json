@@ -7,7 +7,10 @@
       "source": "BLS National Employment Matrix, industry 326000, 2024 base",
       "assert": "(lambda s: 8.5 <= 100 / s['pct_of_industry'] <= 9.6 and 47.5 <= s['pct_of_occupation'] <= 54.9)(one(m for m in D['mix'] if m['soc'] == '51-4072'))",
       "actual": "(lambda s: (s['pct_of_industry'], s['pct_of_occupation']))(one(m for m in D['mix'] if m['soc'] == '51-4072'))",
-      "falsified_if": "The industry's share of the occupation leaves 47.5-54.9%, at which point 'half' becomes 'about half' or a different fraction; or the setters' share of the industry leaves the 10.4-11.8% band that rounds to one job in nine, which the stat card computes rather than states. Both move with each matrix release."
+      "falsified_if": "The industry's share of the occupation leaves 47.5-54.9%, at which point 'half' becomes 'about half' or a different fraction; or the setters' share of the industry leaves the 10.4-11.8% band that rounds to one job in nine, which the stat card computes rather than states. Both move with each matrix release.",
+      "counts": [
+        {"figure": "Half the nation’s molding-machine setters", "noun": "plastics and rubber manufacturing"}
+      ]
     },
     {
       "id": "occ-standfirst",
@@ -15,7 +18,10 @@
       "source": "BLS National Employment Matrix production share; BLS OEWS May 2024 median-wage ratios by education group, four metros",
       "assert": "D['mix_totals']['production_share_pct'] > 50 and len(D['pay_totals']['ratio_by_metro']) == 4 and all(v['degree_median_ratio'] < 1 for v in D['pay_totals']['ratio_by_metro'].values())",
       "actual": "(D['mix_totals']['production_share_pct'], {a: v['degree_median_ratio'] for a, v in D['pay_totals']['ratio_by_metro'].items()})",
-      "falsified_if": "Production occupations fall to half or less of the industry ('runs mostly on floor work' fails), any of the four metros' degree-group median wage ratio reaches 1.0 ('under the national rate' fails), or the wage file stops publishing one of the four metros, at which point 'all four' is a claim about a set the page no longer shows."
+      "falsified_if": "Production occupations fall to half or less of the industry ('runs mostly on floor work' fails), any of the four metros' degree-group median wage ratio reaches 1.0 ('under the national rate' fails), or the wage file stops publishing one of the four metros, at which point 'all four' is a claim about a set the page no longer shows.",
+      "counts": [
+        {"figure": "four Northeast Ohio metros", "noun": "degree occupations"}
+      ]
     },
     {
       "id": "occ-hero-figures",
@@ -159,7 +165,10 @@
       "source": "IPEDS completions by CIP (14.3201, 40.0507 polymer; 14.1801, 40.1001 materials), first major, via the Urban Institute API",
       "assert": "len(D['program_totals']['institutions']) == 3 and D['program_totals']['latest_year'] == 2023 and D['program_totals']['polymer_awards_latest'] == 63 and D['program_totals']['polymer_awards_window_avg'] == 59.7 and D['program_totals']['window'] == [2021, 2022, 2023] and len(D['programs']) == 13 and len(set(p['institution'] for p in D['programs'] if p['group'] == 'polymer')) == 2 and len(set(p['institution'] for p in D['programs'] if p['group'] == 'materials')) == 2 and 'Kent State University' not in set(p['institution'] for p in D['programs'] if p['group'] == 'polymer')",
       "actual": "(D['program_totals']['institutions'], sorted(set(p['institution'] for p in D['programs'] if p['group'] == 'polymer')), sorted(set(p['institution'] for p in D['programs'] if p['group'] == 'materials')))",
-      "falsified_if": "A third institution starts conferring in a polymer CIP code, or Kent State appears among the polymer programs, at which point the heading's 'two universities' is wrong again. The old heading said three, counting every institution on the programs chart, but only two of them have a dark bar: a reader counting rows contradicted the heading directly above them. The window average is pinned because it moved on 2026-08-31 for two reasons at once: the window's first year was the wrong year (see occ-pipeline-halved), and 80.4 was the sum of thirteen rounded per-programme averages where the three years themselves averaged 80.3. It is now computed from the counts. Also fails if the 2025 completions load and the latest year re-bases every figure here."
+      "falsified_if": "A third institution starts conferring in a polymer CIP code, or Kent State appears among the polymer programs, at which point the heading's 'two universities' is wrong again. The old heading said three, counting every institution on the programs chart, but only two of them have a dark bar: a reader counting rows contradicted the heading directly above them. The window average is pinned because it moved on 2026-08-31 for two reasons at once: the window's first year was the wrong year (see occ-pipeline-halved), and 80.4 was the sum of thirteen rounded per-programme averages where the three years themselves averaged 80.3. It is now computed from the counts. Also fails if the 2025 completions load and the latest year re-bases every figure here.",
+      "counts": [
+        {"figure": "Reserve conferred 63 degrees in 2023", "noun": "Akron and Case Western"}
+      ]
     },
     {
       "id": "occ-pipeline-halved",
@@ -167,7 +176,10 @@
       "source": "IPEDS completions by CIP via the Urban Institute API, summed across polymer programs (14.3201, 40.0507) by year",
       "assert": "(lambda P: P['2021'] == 54 and P['2022'] == 62 and P['2023'] == 63 and P['2021'] < P['2022'] < P['2023'])({y: sum(p['by_year'].get(y, 0) for p in D['programs'] if p['group'] == 'polymer') for y in ('2021', '2022', '2023')}) and (lambda E: min(E) == 118 and max(E) == 179 and len(E) == 7)(series(D['programs'], 'polymer', 2014, 2020)) and (lambda E, R: max(R) < (sum(E) / len(E)) / 2)(series(D['programs'], 'polymer', 2014, 2020), series(D['programs'], 'polymer', 2021, 2023)) and (lambda E, R: min(E) <= min(R) and max(R) <= max(E))(series(D['programs'], 'materials', 2014, 2020), series(D['programs'], 'materials', 2021, 2023)) and math.floor((sum(series(D['programs'], 'polymer', 2014, 2020)) / len(series(D['programs'], 'polymer', 2014, 2020))) + 0.5) == 142 and (D['program_totals']['polymer_awards_latest'] / series(D['programs'], 'polymer', 2020, 2020)[0]) > 0.5",
       "actual": "{y: (sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] == 'polymer'), sum(p['by_year'].get(str(y), 0) for p in D['programs'] if p['group'] != 'polymer')) for y in range(2014, 2024)}",
-      "falsified_if": "A revised or extended IPEDS pull moves any yearly polymer sum, the highest of the three later years reaches half the 2014-2020 average ('fallen below half its old pace' fails), the last two years stop rising off the 2021 low, the printed 142 stops being the rounded 2014-2020 average, or a materials-program year leaves the 2014-2020 range. The last clause is deliberate and records why the heading was weakened: 63 against the 124 of 2020 is a 49% fall, so the old heading 'fallen by more than half' did not follow from the annotation printed beside it. It is more than half below the 2014-2020 AVERAGE, which is the basis the heading, the figure title and the rule now share. The years moved on 2026-08-31: the federal mirror filed 2020 to 2022 a year late and never served one collection year at all, so what shipped as 54 in 2022 and 63 in 2023 was 54 in 2021 and 63 in 2023 with 62 missing between them. See _data/build/ipeds_mirror_fix.py. A CIP recoding that moved a program between codes would falsify the interpretation without falsifying the arithmetic; the lede says so."
+      "falsified_if": "A revised or extended IPEDS pull moves any yearly polymer sum, the highest of the three later years reaches half the 2014-2020 average ('fallen below half its old pace' fails), the last two years stop rising off the 2021 low, the printed 142 stops being the rounded 2014-2020 average, or a materials-program year leaves the 2014-2020 range. The last clause is deliberate and records why the heading was weakened: 63 against the 124 of 2020 is a 49% fall, so the old heading 'fallen by more than half' did not follow from the annotation printed beside it. It is more than half below the 2014-2020 AVERAGE, which is the basis the heading, the figure title and the rule now share. The years moved on 2026-08-31: the federal mirror filed 2020 to 2022 a year late and never served one collection year at all, so what shipped as 54 in 2022 and 63 in 2023 was 54 in 2021 and 63 in 2023 with 62 missing between them. See _data/build/ipeds_mirror_fix.py. A CIP recoding that moved a program between codes would falsify the interpretation without falsifying the arithmetic; the lede says so.",
+      "counts": [
+        {"figure": "an annual average of 142 in 2014–2020", "noun": "63 degrees in 2023"}
+      ]
     },
     {
       "id": "occ-akron-poly-share",

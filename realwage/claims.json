@@ -6,7 +6,14 @@
       "text": "Akron ranks 13th nominal and 8th price-adjusted among 29 matched metros with at least 2,000 jobs; across all 155 matched metros it ranks 60th and 48th. At 8th, Akron's adjusted wage sits less than $6 a week from either neighboring rank.",
       "source": "BLS QCEW 2024 private NAICS326 by-industry file; BEA MARPP 2024, https://apps.bea.gov/regional/zip/MARPP.zip; archive footnotes and source-level checks in test_geography_checks.py",
       "assert": "(lambda a, big: (a['big_rank_nominal'], a['big_rank_real'], a['big_climb'], a['rank_nominal'], a['rank_real']) == (13,8,5,60,48) and 0 < big[a['big_rank_real']-2]['real'] - a['real'] < 6 and 0 < a['real'] - big[a['big_rank_real']]['real'] < 6)(one(r for r in D['big'] if r['area']=='10420'), sorted(D['big'], key=lambda r: -r['real'])) and len(D['big'])==29 and len(D['metros'])==155 and D['meta']['big_floor']==2000",
-      "falsified_if": "The rebuilt source values, geography, sample membership or named quantities differ, OR Akron's adjusted-wage gap to the metro ranked 7th or the one ranked 9th moves to zero, goes negative (the rank itself would have flipped) or reaches $6, at which point 'less than $6 a week' is no longer honest. Rewrite the associated sentence and correction before publication."
+      "falsified_if": "The rebuilt source values, geography, sample membership or named quantities differ, OR Akron's adjusted-wage gap to the metro ranked 7th or the one ranked 9th moves to zero, goes negative (the rank itself would have flipped) or reaches $6, at which point 'less than $6 a week' is no longer honest. Rewrite the associated sentence and correction before publication.",
+      "counts": [
+        {"figure": "from 13th to 8th among 29 disclosed polymer metros", "noun": "Local prices move Akron"},
+        {"figure": "at least 2,000 private jobs", "noun": "covers metros with"},
+        {"figure": "less than $6 a week", "noun": "Akron’s adjusted wage sits"},
+        {"figure": "155 matched, disclosed metros", "noun": "Across all"},
+        {"figure": "from 60th to 48th", "noun": "Akron moves"}
+      ]
     },
     {
       "id": "rw-above-both-medians",
@@ -20,7 +27,11 @@
       "text": "Akron averages $1,291 weekly, adjusted to $1,383 at national-average prices; its index is 93.4, about 7 percent below 100.",
       "source": "BLS QCEW 2024 private NAICS326 by-industry file; BEA MARPP 2024, https://apps.bea.gov/regional/zip/MARPP.zip; archive footnotes and source-level checks in test_geography_checks.py",
       "assert": "(lambda a: a['nominal']==1291 and round(a['real'])==1383 and round(a['rpp'],1)==93.4 and round(100-a['rpp'])==7)(one(r for r in D['metros'] if r['area']=='10420'))",
-      "falsified_if": "The rebuilt source values, geography, sample membership or named quantities differ. Rewrite the associated sentence and correction before publication."
+      "falsified_if": "The rebuilt source values, geography, sample membership or named quantities differ. Rewrite the associated sentence and correction before publication.",
+      "counts": [
+        {"figure": "$1,291 a week", "noun": "average plastics-and-rubber paycheck"},
+        {"figure": "$1,383 at national-average prices", "noun": "it buys like"}
+      ]
     },
     {
       "id": "rw-common-boundaries",

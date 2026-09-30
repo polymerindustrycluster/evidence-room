@@ -40,7 +40,10 @@
       "source": "BLS QCEW 2024 annual average, NAICS 326, private",
       "assert": "round(D['states']['326']['subject_emp']) == 54846",
       "actual": "D['states']['326']['subject_emp']",
-      "falsified_if": "Any QCEW revision to Ohio 2024."
+      "falsified_if": "Any QCEW revision to Ohio 2024.",
+      "counts": [
+        {"figure": "54,846 private plastics and rubber jobs", "noun": "Ohio had"}
+      ]
     },
     {
       "id": "oh-lead-texas",
@@ -151,7 +154,10 @@
       "source": "BLS QCEW disclosure_code, 2024",
       "assert": "D['visibility']['metro']['disclosed'] == 155 and D['visibility']['metro']['suppressed'] == 227 and round(D['visibility']['metro']['disclosed'] / (D['visibility']['metro']['disclosed'] + D['visibility']['metro']['suppressed']) * 100) == 41",
       "actual": "D['visibility']['metro']",
-      "falsified_if": "BLS changes disclosure rules, or the establishment mix shifts enough to unlock cells. The share is on the bar itself now, so a move of one metro either way that rounds the percentage off 41 falsifies the label, not only the counts."
+      "falsified_if": "BLS changes disclosure rules, or the establishment mix shifts enough to unlock cells. The share is on the bar itself now, so a move of one metro either way that rounds the percentage off 41 falsifies the label, not only the counts.",
+      "counts": [
+        {"figure": "227 of 382 metro areas", "noun": "withholds employment in"}
+      ]
     },
     {
       "id": "county-withheld",

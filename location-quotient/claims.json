@@ -7,7 +7,12 @@
       "source": "QCEW composite summed from the disclosed PIC-12 counties, latest year",
       "assert": "max(x['year'] for x in D['composite']) == 2025 and abs(one(c for c in D['composite'] if c['naics']=='3255' and c['year']==max(x['year'] for x in D['composite']))['lq'] - 5.9594) <= 0.005 and round(one(c for c in D['composite'] if c['naics']=='3255' and c['year']==max(x['year'] for x in D['composite']))['lq'], 2) == 5.96",
       "actual": "[(c['year'], round(c['lq'],4)) for c in D['composite'] if c['naics']=='3255'][-3:]",
-      "falsified_if": "A disclosure flip changes which counties enter the paint composite, or a QCEW revision moves the value outside 5.9544-5.9644, at which point the hand-typed '5.96' in the standfirst no longer rounds from the data. The band also has to round to 'six times' at one significant figure for the headline to hold, which it does across 5.5-6.49; a value below 5.5 breaks the headline before it breaks the standfirst. Corrected 2026-09-28: the stand paragraph used to read this employment quotient as 'more paint sites, more suppliers and more people who know the work'; an employment LQ does not establish establishment counts or supplier density on its own, so it now reads as job share alone. This assert cannot read that HTML sentence directly, only the 5.96 figure behind it. Extended 2026-09-28 (round 4): the figure must also round to the 5.96 the pages print; the 0.005 tolerance alone accepted 5.9545."
+      "falsified_if": "A disclosure flip changes which counties enter the paint composite, or a QCEW revision moves the value outside 5.9544-5.9644, at which point the hand-typed '5.96' in the standfirst no longer rounds from the data. The band also has to round to 'six times' at one significant figure for the headline to hold, which it does across 5.5-6.49; a value below 5.5 breaks the headline before it breaks the standfirst. Corrected 2026-09-28: the stand paragraph used to read this employment quotient as 'more paint sites, more suppliers and more people who know the work'; an employment LQ does not establish establishment counts or supplier density on its own, so it now reads as job share alone. This assert cannot read that HTML sentence directly, only the 5.96 figure behind it. Extended 2026-09-28 (round 4): the figure must also round to the 5.96 the pages print; the 0.005 tolerance alone accepted 5.9545.",
+      "counts": [
+        {"figure": "six times as big a share", "noun": "Paint is"},
+        {"figure": "5.96× its share", "noun": "of the country’s"},
+        {"figure": "That 5.96× is summed", "noun": "across the seven counties"}
+      ]
     },
     {
       "id": "lq-paint-leads-every-year",
@@ -31,7 +36,10 @@
       "source": "QCEW composite, NAICS 3262, latest year",
       "assert": "abs(one(c for c in D['composite'] if c['naics']=='3262' and c['year']==max(x['year'] for x in D['composite']))['lq'] - 2.4424) <= 0.005",
       "actual": "[(c['year'], round(c['lq'],4)) for c in D['composite'] if c['naics']=='3262'][-3:]",
-      "falsified_if": "The value moves outside 2.4374-2.4474 and '2.44x' stops rounding from the data. 4 of 12 counties are withheld for rubber products, so a disclosure change moves this directly."
+      "falsified_if": "The value moves outside 2.4374-2.4474 and '2.44x' stops rounding from the data. 4 of 12 counties are withheld for rubber products, so a disclosure change moves this directly.",
+      "counts": [
+        {"figure": "2.44× of rubber products", "noun": "more than double the"}
+      ]
     },
     {
       "id": "lq-paint-beats-rubber",
@@ -218,7 +226,11 @@
       "source": "QCEW, latest year. Regional employment is the location quotient's own denominator, total-all-ownership employment, summed once per county; the cluster is the summed employment of the three core NAICS composites.",
       "assert": "(lambda y, cn, core: (lambda region, cluster, pnt: region == 1701837 and cluster == 24032 and round(region/1e6, 2) == 1.7 and round(region/cluster/10)*10 == 70 and round(region/pnt/10)*10 == 400 and round(100*pnt/cluster) == 18)(sum(one(set(c['local_total'] for c in D['cells'] if c['year']==y and c['area']==a)) for a in cn), sum(one(c['emp'] for c in D['composite'] if c['naics']==n and c['year']==y) for n in core), one(c['emp'] for c in D['composite'] if c['naics']=='3255' and c['year']==y)))(max(x['year'] for x in D['cells']), [a['code'] for a in D['areas'] if a['code'] not in ('39000','US000')], sorted(n['code'] for n in D['naics'] if n['register']=='core'))",
       "actual": "(sum(one(set(c['local_total'] for c in D['cells'] if c['year']==max(x['year'] for x in D['cells']) and c['area']==a['code'])) for a in D['areas'] if a['code'] not in ('39000','US000')), [(c['naics'], c['emp']) for c in D['composite'] if c['year']==max(x['year'] for x in D['cells'])])",
-      "falsified_if": "Regional employment leaves 1,695,000-1,708,000, at which point '1.70 million' stops rounding from the data and 'one job in four hundred' and 'one in seventy' stop being the nearest ten. Or a disclosure flip moves the cluster total off 24,032, which moves both ratios at once because paint sits inside the cluster. Or local_total stops being single-valued within a county-year, which the assertion tests directly through one(set(...)): if it ever holds two values the regional denominator is being summed from rows that disagree, and the whole size anchor is wrong. The withheld counties are excluded from the cluster numerator and not from the regional denominator, so 24,032 is a floor and the page says so at every printing."
+      "falsified_if": "Regional employment leaves 1,695,000-1,708,000, at which point '1.70 million' stops rounding from the data and 'one job in four hundred' and 'one in seventy' stop being the nearest ten. Or a disclosure flip moves the cluster total off 24,032, which moves both ratios at once because paint sits inside the cluster. Or local_total stops being single-valued within a county-year, which the assertion tests directly through one(set(...)): if it ever holds two values the regional denominator is being summed from rows that disagree, and the whole size anchor is wrong. The withheld counties are excluded from the cluster numerator and not from the regional denominator, so 24,032 is a floor and the page says so at every printing.",
+      "counts": [
+        {"figure": "a region of 1.70 million", "noun": "4,257 jobs"},
+        {"figure": "about one in four hundred", "noun": "1.70 million"}
+      ]
     },
     {
       "id": "lq-paint-outside-cuyahoga",
@@ -226,7 +238,10 @@
       "source": "QCEW county cells, NAICS 3255, latest year, disclosed only, against the paint composite",
       "assert": "(lambda y: (lambda rows: len(rows) == 7 and sum(c['emp'] for c in rows if c['name'] != 'Cuyahoga') == 1001 and one(c['emp'] for c in rows if c['name']=='Cuyahoga') == 3256 and one(c['emp'] for c in D['composite'] if c['naics']=='3255' and c['year']==y) == 4257)([c for c in D['cells'] if c['year']==y and c['naics']=='3255' and c['lq'] and c['area'] not in ('39000','US000')]))(max(x['year'] for x in D['cells']))",
       "actual": "sorted([(c['name'], c['emp']) for c in D['cells'] if c['year']==max(x['year'] for x in D['cells']) and c['naics']=='3255' and c['lq'] and c['area'] not in ('39000','US000')], key=lambda t: -t[1])",
-      "falsified_if": "A disclosure flip changes how many counties report paint, or any of the three printed numbers moves so that 4,257 minus 3,256 no longer equals the 1,001 the sentence prints. This claim exists to keep the subtraction visible: a reader who checks it and finds it does not close has caught the page, and that has to stay impossible."
+      "falsified_if": "A disclosure flip changes how many counties report paint, or any of the three printed numbers moves so that 4,257 minus 3,256 no longer equals the 1,001 the sentence prints. This claim exists to keep the subtraction visible: a reader who checks it and finds it does not close has caught the page, and that has to stay impossible.",
+      "counts": [
+        {"figure": "Paint is 4,257 jobs", "noun": "in a region of"}
+      ]
     },
     {
       "id": "lq-below-one",

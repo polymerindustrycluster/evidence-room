@@ -7,7 +7,13 @@
    "source": "polymer-programs-db census (IPEDS 1991-2023, 2020 quarantined) plus control_cips.json: same rule, same years, same certificate canonicalisation on both sides",
    "assert": "D['layers']['technician']['survive_pct'] == 27 and D['layers']['degree']['survive_pct'] == 48 and D['layers']['control']['survive_pct'] == 48 and D['layers']['technician']['survive_pct'] < D['layers']['control']['survive_pct'] and (D['layers']['technician']['still'], D['layers']['technician']['ever']) == (20, 73) and (D['layers']['degree']['still'], D['layers']['degree']['ever']) == (37, 77) and (D['layers']['control']['still'], D['layers']['control']['ever']) == (3185, 6648)",
    "actual": "{k: (v['still'], v['ever'], v['survive_pct']) for k, v in D['layers'].items() if isinstance(v, dict)}",
-   "falsified_if": "Any named numerator or denominator changes, or the technician share ceases to be lower than either comparator. All three must retain the greater-than-ten threshold, positive final-year completion test, certificate canonicalisation and 2020 exclusion. These administrative-record shares do not establish a causal difference or stability."
+   "falsified_if": "Any named numerator or denominator changes, or the technician share ceases to be lower than either comparator. All three must retain the greater-than-ten threshold, positive final-year completion test, certificate canonicalisation and 2020 exclusion. These administrative-record shares do not establish a causal difference or stability.",
+   "counts": [
+    {"figure": "Of 73 polymer technician programs", "noun": "more than ten recorded lifetime completions"},
+    {"figure": "20 reported a completion", "noun": "lifetime completions"},
+    {"figure": "in 2023: 27%", "noun": "20 reported a completion"},
+    {"figure": "each reached 48%", "noun": "six peer technician trades"}
+   ]
   },
   {
    "id": "prog-series-shape",
