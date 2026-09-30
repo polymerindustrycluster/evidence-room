@@ -15,7 +15,14 @@
    "source": "as above; works naming both per 1,000 of Akron's own annual output",
    "assert": "[r['year'] for r in D['series']] == list(range(2012, 2026)) and D['totals']['peak_year'] == 2018 and D['totals']['peak_joint'] == 29 and max(r['joint'] for r in D['series']) == 29 and D['series'][-1]['year'] == 2025 and (lambda s: s[2019] < s[2018] and s[2019] == 11 and s[2020] > s[2019] and s[2020] == 22 and s[2021] < s[2020] and s[2022] < s[2021] and s[2023] < s[2022] and s[2024] < s[2023] and s[2024] == 2 and min(sorted(s), key=s.get) == 2024 and s[2025] == 6)({r['year']: r['joint'] for r in D['series']}) and (lambda q: q[2021] < q[2020] and q[2022] < q[2021] and q[2023] < q[2022] and q[2024] < q[2023] and q[2025] > q[2024])({r['year']: r['per_1k_akron'] for r in D['series']}) and (lambda pk: pk['joint'] == 29 and sum(r['per_1k_akron'] == pk['per_1k_akron'] for r in D['series']) == 1 and pk['per_1k_akron'] == max(r['per_1k_akron'] for r in D['series']) and round((1 - D['series'][-1]['per_1k_akron'] / pk['per_1k_akron']) * 100) == 63)(one(r for r in D['series'] if r['year'] == D['totals']['peak_year']))",
    "actual": "[(r['year'], r['joint'], r['akron'], r['per_1k_akron']) for r in D['series']]",
-   "falsified_if": "The peak moves off 2018 or off 29 works, 2019 stops being the drop or 2020 the rebound, the run of four falls into 2024 breaks or lengthens, 2024 stops being the lowest year at two papers (or the earliest of tied lowest years, which is the one app.js walks back from), 2025 stops printing six, the controlled rate stops falling across the same four years or stops rebounding after them, or the end-of-series gap to the peak stops rounding to 63 percent. Any of those and the standfirst, the cold-open label and the closer are describing a shape the chart beneath them does not draw. The 2020 boundary is asserted in both directions because it is what makes the run FOUR rather than three or five, and a hand-set three is the error this claim was rewritten to catch. The falls are asserted on the COUNTS and again on the CONTROLLED RATE, because the closer walks the reader down the rate and the two series could diverge. NOTE the final year is the least-indexed and must not carry this claim alone: the 2018-2024 movement holds without it."
+   "falsified_if": "The peak moves off 2018 or off 29 works, 2019 stops being the drop or 2020 the rebound, the run of four falls into 2024 breaks or lengthens, 2024 stops being the lowest year at two papers (or the earliest of tied lowest years, which is the one app.js walks back from), 2025 stops printing six, the controlled rate stops falling across the same four years or stops rebounding after them, or the end-of-series gap to the peak stops rounding to 63 percent. Any of those and the standfirst, the cold-open label and the closer are describing a shape the chart beneath them does not draw. The 2020 boundary is asserted in both directions because it is what makes the run FOUR rather than three or five, and a hand-set three is the error this claim was rewritten to catch. The falls are asserted on the COUNTS and again on the CONTROLLED RATE, because the closer walks the reader down the rate and the two series could diverge. NOTE the final year is the least-indexed and must not carry this claim alone: the 2018-2024 movement holds without it.",
+   "counts": [
+    {"figure": "peaked at 29 in 2018", "noun": "Papers naming both"},
+    {"figure": "dropped to 11", "noun": "Papers naming both"},
+    {"figure": "back to 22 in 2020", "noun": "dropped to 11"},
+    {"figure": "down to two papers", "noun": "four years to 2024"},
+    {"figure": "rose to six in 2025", "noun": "two papers"}
+   ]
   },
   {
    "id": "col-not-indexing-lag",
@@ -52,7 +59,10 @@
      "noun": [
       "newest of the"
      ]
-    }
+    },
+    {"figure": "208 papers since 2012", "noun": "name both Akron and Case Western"},
+    {"figure": "208 papers named both universities", "noun": "In those years"},
+    {"figure": "of which eight", "noun": "classified in polymers"}
    ]
   },
   {
@@ -70,7 +80,10 @@
    "source": "OpenAlex subfields 2507 and 2502, confirmed against the s3://openalex snapshot; a classification, not a keyword",
    "assert": "D['totals']['subject_total'] == D['totals']['polymer_total'] + D['totals']['bio_total'] == sum(r['polymer'] + r['bio'] for r in D['series']) and int(100 * (1 - D['totals']['subject_total'] / D['totals']['coauthored'])) == 90 and D['totals']['polymer_total'] == 8 and D['totals']['bio_total'] == 11 and D['totals']['last_subject_year'] == 2025 and all(r['polymer'] + r['bio'] == 0 for r in D['series'] if 2021 <= r['year'] <= 2024) and one(r['polymer'] for r in D['series'] if r['year'] == 2025) == 1 and one(r['bio'] for r in D['series'] if r['year'] == 2025) == 0 and sorted(r['year'] for r in D['series'] if r['polymer'] + r['bio'])[-2] == 2020",
    "actual": "[(r['year'], r['polymer'], r['bio']) for r in D['series']] + [(D['totals']['coauthored'], D['totals']['subject_total'], D['totals']['last_subject_year'])]",
-   "falsified_if": "The subject share rises above 15 percent, either subject count moves off eight and eleven, or the four-year silence from 2021 to 2024 gains a paper. THE SENTENCE THIS GUARDS WAS INVERTED BY A REFRESH: it read 'the last of either was 2020', which was a four-year silence written as a date, and the 2026-08-31 pull put one polymer paper in 2025 and made it read as recency. It now measures the silence, which is what it was always about. THIS NUMBER ALSO MOVED WHEN THE BOUND DID: the full-text keyword 'polymer' returned 24 of these papers and the subject classification returns eight, because the keyword counted any paper that mentioned the word. The larger number was the one published first. [Round 8, 2026-09-28: subject_total is the sum of the two subject counts, not their union. A live OpenAlex query found two works naming both universities in both subfields (W2553059811, 2016; W2597373224, 2017), and the cache stores no intersection, so the page prints nineteen as a ceiling and the share in neither subject as a floor (Codex). A refetch should pull the union of work IDs.]"
+   "falsified_if": "The subject share rises above 15 percent, either subject count moves off eight and eleven, or the four-year silence from 2021 to 2024 gains a paper. THE SENTENCE THIS GUARDS WAS INVERTED BY A REFRESH: it read 'the last of either was 2020', which was a four-year silence written as a date, and the 2026-08-31 pull put one polymer paper in 2025 and made it read as recency. It now measures the silence, which is what it was always about. THIS NUMBER ALSO MOVED WHEN THE BOUND DID: the full-text keyword 'polymer' returned 24 of these papers and the subject classification returns eight, because the keyword counted any paper that mentioned the word. The larger number was the one published first. [Round 8, 2026-09-28: subject_total is the sum of the two subject counts, not their union. A live OpenAlex query found two works naming both universities in both subfields (W2553059811, 2016; W2597373224, 2017), and the cache stores no intersection, so the page prints nineteen as a ceiling and the share in neither subject as a floor (Codex). A refetch should pull the union of work IDs.]",
+   "counts": [
+    {"figure": "Eight are classified", "noun": "in polymers"}
+   ]
   }
  ]
 }

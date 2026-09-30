@@ -18,7 +18,10 @@
       "source": "LODES 2022, Summit work end, all home ends",
       "assert": "abs([r for r in D['ls']['matrix'] if r['work_name']=='Summit'][0]['in_county'] - 0.484) < 0.003",
       "actual": "[(r['work_name'], r['in_county'], r['jobs_total']) for r in D['ls']['matrix'] if r['work_name']=='Summit']",
-      "falsified_if": "LODES revises, or the footprint changes. Cross-checked: these shares reproduce the figures in the LODES codebook independently derived by another session, which is the only cross-session validation in the stack."
+      "falsified_if": "LODES revises, or the footprint changes. Cross-checked: these shares reproduce the figures in the LODES codebook independently derived by another session, which is the only cross-session validation in the stack.",
+      "counts": [
+        {"figure": "48.4 percent of its 265,460 jobs", "noun": "Summit County’s own residents"}
+      ]
     },
     {
       "id": "ls-summit-jobs-total",
@@ -26,7 +29,10 @@
       "source": "LODES 2022, Summit work end, all home ends",
       "assert": "[r for r in D['ls']['matrix'] if r['work_name']=='Summit'][0]['jobs_total'] == 265460",
       "actual": "[r['jobs_total'] for r in D['ls']['matrix'] if r['work_name']=='Summit']",
-      "falsified_if": "A LODES revision moves Summit's job count; the hand-typed 265,460 in the standfirst would then be stale."
+      "falsified_if": "A LODES revision moves Summit's job count; the hand-typed 265,460 in the standfirst would then be stale.",
+      "counts": [
+        {"figure": "265,460 jobs", "noun": "48.4 percent of its"}
+      ]
     },
     {
       "id": "ls-extremes",

@@ -10,7 +10,10 @@
    "source": "GAC-PIC vault company notes, extracted 2026-08-14; NEO-14 per CODEBOOK.md, county in the fourteen AND state Ohio or blank",
    "assert": "D['chain']['meta']['neo_total'] == 710",
    "actual": "D['chain']['meta']['neo_total']",
-   "falsified_if": "The vault extract is re-run and companies are added, reclassified, or an address is filled in. NOTE: this page uses NEO-14, not PIC-12 — the fourteen-county set contains all twelve plus Columbiana and Tuscarawas and will not reconcile with cluster-health. [2026-09-11: was pinned at 785, which counted 64 Wayne County MICHIGAN rows joined on the county name, one Missouri headquarters and ten records with no address at all. The 75 are held out by name in meta.holdout, not deleted; see chain-holdout. The earlier note said the pin would 'fail loudly when the builder is re-keyed on state' — it did.]"
+   "falsified_if": "The vault extract is re-run and companies are added, reclassified, or an address is filled in. NOTE: this page uses NEO-14, not PIC-12 — the fourteen-county set contains all twelve plus Columbiana and Tuscarawas and will not reconcile with cluster-health. [2026-09-11: was pinned at 785, which counted 64 Wayne County MICHIGAN rows joined on the county name, one Missouri headquarters and ten records with no address at all. The 75 are held out by name in meta.holdout, not deleted; see chain-holdout. The earlier note said the pin would 'fail loudly when the builder is re-keyed on state' — it did.]",
+   "counts": [
+    {"figure": "710 company records", "noun": "with qualifying addresses"}
+   ]
   },
   {
    "id": "chain-unclassified",
@@ -34,7 +37,10 @@
    "source": "GAC-PIC vault company notes against CODEBOOK.md's NEO-14 rule; chain-data.json meta.holdout",
    "assert": "D['chain']['meta']['holdout']['homonym_county_join']['n'] == 64 and D['chain']['meta']['holdout']['regional_site_nonregional_company']['n'] == 1 and D['chain']['meta']['holdout']['address_missing']['n'] == 10 and all(len(b['names']) == b['n'] for b in D['chain']['meta']['holdout'].values())",
    "actual": "{k: v['n'] for k, v in D['chain']['meta']['holdout'].items()}",
-   "falsified_if": "A held-out record receives a qualifying address. Regional sites require separate evidence because this register counts company records, not establishments. Held-out names and counts must remain disclosed until the source records are reconciled."
+   "falsified_if": "A held-out record receives a qualifying address. Regional sites require separate evidence because this register counts company records, not establishments. Held-out names and counts must remain disclosed until the source records are reconciled.",
+   "counts": [
+    {"figure": "Seventy-five previously included records", "noun": "held out"}
+   ]
   },
   {
    "id": "chain-supply-demand",

@@ -43,7 +43,12 @@
       "source": "Complete USAspending transaction-category pull, PIC-12, prime contracts A-D, FY2019–FY2026; BLS CUUR0000SA0 monthly observations",
       "assert": "round((sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7)/1e6,1)==41.4 and round(D['h']['award']/(sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7),1)==1.2",
       "actual": "(sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7)",
-      "falsified_if": "The named quantity changes its stated rounded value, source scope changes, or the asserted source coverage fails. Recompute the prose and chart together before publishing a new vintage."
+      "falsified_if": "The named quantity changes its stated rounded value, source scope changes, or the asserted source coverage fails. Recompute the prose and chart together before publishing a new vintage.",
+      "counts": [
+        {"figure": "about $41 million a year", "noun": "Routine federal contracts"},
+        {"figure": "averaged $41.4 million a year", "noun": "seven finished fiscal years"},
+        {"figure": "about 1.2 average years", "noun": "the award is"}
+      ]
     },
     {
       "id": "fed-closed-range",
@@ -51,7 +56,10 @@
       "source": "Complete USAspending transaction-category pull, PIC-12, prime contracts A-D, FY2019–FY2026; BLS CUUR0000SA0 monthly observations",
       "assert": "round(min(sum(r['real'] for r in D['f']['naics'] if r['fy']==y) for y in range(2019,2026))/1e6,1)==20.5 and round(max(sum(r['real'] for r in D['f']['naics'] if r['fy']==y) for y in range(2019,2026))/1e6,1)==59.9",
       "actual": "(sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2023),sum(r['real'] for r in D['f']['naics'] if r['fy'] == 2019))",
-      "falsified_if": "The named quantity changes its stated rounded value, source scope changes, or the asserted source coverage fails. Recompute the prose and chart together before publishing a new vintage."
+      "falsified_if": "The named quantity changes its stated rounded value, source scope changes, or the asserted source coverage fails. Recompute the prose and chart together before publishing a new vintage.",
+      "counts": [
+        {"figure": "ranged from $20.5 million to $59.9 million", "noun": "Those years"}
+      ]
     },
     {
       "id": "fed-trough-tire",
@@ -172,7 +180,11 @@
       "assert": "sum(math.floor(l['amount'] / 1e5 + 0.5) for l in D['h']['leads']) == 511 and D['h']['agency'] == 'U.S. Economic Development Administration' and D['h']['award'] == 51_001_413 and len(D['h']['leads']) == 7 and sum(l['amount'] for l in D['h']['leads']) == D['h']['award'] and sorted(D['h']['leads'], key=lambda l: -l['amount'])[0]['name'] == 'BioVerde' and round(sorted(D['h']['leads'], key=lambda l: -l['amount'])[0]['amount'] / 1e6, 1) == 11.1 and sorted(D['h']['leads'], key=lambda l: -l['amount'])[-1]['name'] == 'Greater Akron Chamber' and sorted(D['h']['leads'], key=lambda l: -l['amount'])[-1]['amount'] == 2_650_000",
       "actual": "(D['h']['award'], len(D['h']['leads']), sum(l['amount'] for l in D['h']['leads']), [(l['name'], l['amount']) for l in sorted(D['h']['leads'], key=lambda l: -l['amount'])])",
       "falsified_if": "The funding map restates the award, an eighth lead is added, or the copy step drifts from its source. The sum-equals-total half is the real guard: it fails the moment the seven amounts on this page stop being what the award line is drawn from. The rounded-sum half is the arithmetic guard: the seven figures the ladder prints add to $51.1M while the unrounded seven add to exactly the $51.0M award line, and the source line under the ladder now says both, so this fails the moment the printed column stops totalling 51.1. The agency half guards the deck, which expands EDA in full at first contact. The name-and-amount halves guard the two leads the Band 3 lede names in prose, $11.1M to BioVerde at the top and $2.7M to the Greater Akron Chamber at the bottom, so neither can be restated or reordered without this failing. The bottom lead is pinned to its exact 2,650,000 rather than a rounded value: the page's formatter published it as $2.6M until this run, because 2.65 sits a hair below the binary midpoint and toFixed rounded it down.",
-      "official_check": "The $7.2M partner match is deliberately excluded from the award line. It is not federal money and adding it would inflate the ratio the page is built on."
+      "official_check": "The $7.2M partner match is deliberately excluded from the award line. It is not federal money and adding it would inflate the ratio the page is built on.",
+      "counts": [
+        {"figure": "The $51.0 million Tech Hub award", "noun": "competitive grant"},
+        {"figure": "seven named polymer projects", "noun": "Economic Development Administration"}
+      ]
     },
     {
       "id": "fed-partial-year",

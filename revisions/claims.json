@@ -15,7 +15,10 @@
       "source": "count of periods with a later value, against every (series, month) in the vintage record",
       "assert": "len(D['periods']) == 259 and len(set((r['series'], r['date']) for r in D['all'])) == 273",
       "actual": "(len(D['periods']), len(set((r['series'], r['date']) for r in D['all'])), len(set((r['series'], r['date']) for r in D['all'])) - len(D['periods']))",
-      "falsified_if": "Any refetch: a new reference month, or a first revision landing on one of the 14 unrevised months, moves either count. Both numbers are printed as exact counts in the standfirst, so either change makes the sentence wrong."
+      "falsified_if": "Any refetch: a new reference month, or a first revision landing on one of the 14 unrevised months, moves either count. Both numbers are printed as exact counts in the standfirst, so either change makes the sentence wrong.",
+      "counts": [
+        {"figure": "259 of their 273 monthly figures", "noun": "were later changed"}
+      ]
     },
     {
       "id": "rev-small",

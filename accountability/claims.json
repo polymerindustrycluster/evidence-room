@@ -19,7 +19,11 @@
    "assert": "sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) == 4149515 and round(sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) / D['fm']['meta']['totals']['awards'], 3) == 0.049 and len([e for e in D['tl']['events'] if not e['delivered']]) == 18 and D['sc']['counts']['vault'] == 7 and D['sc']['counts']['accountable'] == 15",
    "actual": "(sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']), round(sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) / D['fm']['meta']['totals']['awards'], 3), len([e for e in D['tl']['events'] if not e['delivered']]), D['sc']['counts']['vault'], D['sc']['counts']['accountable'])",
    "falsified_if": "Any award line naming the Chamber is added, removed or amended. A forward event resolves or is added on the timeline without this page's hero recomputing. A vault row on the internal scorecard becomes publishable. The share is pinned to three digits because the headline prints it, so a $50,000 amendment that moves 4.86 percent to 4.95 percent fails this claim rather than quietly rounding to the same figure.",
-   "official_check": "USAspending.gov award ED24HDQ0G0413, and the executed state grant agreement SBIG20251005 governance line."
+   "official_check": "USAspending.gov award ED24HDQ0G0413, and the executed state grant agreement SBIG20251005 governance line.",
+   "counts": [
+    {"figure": "$4,149,515 is destined", "noun": "its own organisation"},
+    {"figure": "4.9 percent is assigned", "noun": "to the Chamber as destination"}
+   ]
   },
   {
    "id": "acc-hero-split",
@@ -28,7 +32,11 @@
    "assert": "sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'administrator' for a in r['awards']) == 4149515 and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] in set(['firm', 'university']) for a in r['awards']) == 51926305 and round(sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] in set(['firm', 'university']) for a in r['awards']) / 1000000, 1) == 51.9 and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) + (D['fm']['meta']['totals']['awards'] - sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'])) == 29259964 and round((sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) + (D['fm']['meta']['totals']['awards'] - sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']))) / 1000000, 1) == 29.3 and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'administrator' for a in r['awards']) + sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] in set(['firm', 'university']) for a in r['awards']) + sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) + (D['fm']['meta']['totals']['awards'] - sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'])) == D['fm']['meta']['totals']['awards'] and sorted(k for k in D['rt']['kind'] if D['rt']['kind'][k] == 'administrator') == ['greater-akron-chamber']",
    "actual": "(sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'administrator' for a in r['awards']), sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] in set(['firm', 'university']) for a in r['awards']), sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']), (D['fm']['meta']['totals']['awards'] - sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'])), D['fm']['meta']['totals']['awards'])",
    "falsified_if": "A recipient is reclassified, added or removed, or an award line is amended, so that the three shares stop summing to the awarded total. The rounded forms are pinned too, so a change large enough to move $51.9 million or $29.3 million by a tenth fails here rather than leaving the standfirst reading a stale split. If the Chamber ever stops being the only administrator-classified recipient, the first share stops meaning PIC's own organisation and this claim fails.",
-   "official_check": "The executed award lines behind funding-map's recipient list: the seven EDA Tech Hub awards, APEX award ED25OIE0G0108 and the Ohio Innovation Hub grant agreement."
+   "official_check": "The executed award lines behind funding-map's recipient list: the seven EDA Tech Hub awards, APEX award ED25OIE0G0108 and the Ohio Innovation Hub grant agreement.",
+   "counts": [
+    {"figure": "$51.9 million", "noun": "names firms or universities"},
+    {"figure": "$29.3 million", "noun": "names programmes"}
+   ]
   },
   {
    "id": "acc-attribution",
@@ -65,7 +73,9 @@
     {
      "figure": "twenty of those recipients",
      "noun": "executed"
-    }
+    },
+    {"figure": "reports securing $106.3 million", "noun": "PIC"},
+    {"figure": "Of $85,335,784", "noun": "awarded"}
    ]
   },
   {

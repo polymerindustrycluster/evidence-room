@@ -17,7 +17,10 @@
       "source": "BLS QCEW weekly wage, county NAICS against county all-industry",
       "assert": "len([r for r in D['w']['latest_rows'] if r.get('vs_local_all') and r['vs_local_all']>1]) == 40 and len([r for r in D['w']['latest_rows'] if r.get('vs_local_all')]) == 51",
       "actual": "(len([r for r in D['w']['latest_rows'] if r.get('vs_local_all') and r['vs_local_all']>1]), len([r for r in D['w']['latest_rows'] if r.get('vs_local_all')]))",
-      "falsified_if": "A QCEW revision or disclosure change flips any cell across 1.0x or changes the 51-pairing denominator."
+      "falsified_if": "A QCEW revision or disclosure change flips any cell across 1.0x or changes the 51-pairing denominator.",
+      "counts": [
+        {"figure": "Forty of 51 published pairings", "noun": "beat their county’s all-jobs average"}
+      ]
     },
     {
       "id": "headline-median-premium",
@@ -25,7 +28,10 @@
       "source": "median of vs_local_all across disclosed 2025 cells",
       "assert": "abs((lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_local_all'] for r in D['w']['latest_rows'] if r.get('vs_local_all')]) - 1.208) <= 0.007",
       "actual": "(lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_local_all'] for r in D['w']['latest_rows'] if r.get('vs_local_all')])",
-      "falsified_if": "The median moves outside 1.201-1.215, so the hand-typed '1.2 times' and '1.21x' no longer round from the data."
+      "falsified_if": "The median moves outside 1.201-1.215, so the hand-typed '1.2 times' and '1.21x' no longer round from the data.",
+      "counts": [
+        {"figure": "1.21 times the all-jobs average", "noun": "compared with"}
+      ]
     },
     {
       "id": "job-weighted-median",
@@ -282,7 +288,10 @@
       "source": "wages/data/wages.json latest_rows joined to wages/data/mfg.json counties, same census, same year, same ownership basis",
       "assert": "(lambda R, M: (lambda v: 0.984 <= sorted(v)[len(v)//2] <= 0.992 and len(v) == 51 and len([x for x in v if x > 1]) == 23)([r['weekly_wage'] / M['counties'][r['name']]['mfg_weekly_wage'] for r in R if r.get('vs_local_all')]))([r for r in D['w']['latest_rows'] if r.get('vs_local_all')], D['m'])",
       "actual": "sorted(round(r['weekly_wage'] / D['m']['counties'][r['name']]['mfg_weekly_wage'], 3) for r in D['w']['latest_rows'] if r.get('vs_local_all'))[20:31]",
-      "falsified_if": "The median moves out of the 0.98-0.99 band or the above-count shifts, which either dataset's annual revision can do. Added 2026-08-30 after four independent reviewers found this page comparing polymer to an all-jobs average that includes retail and food service, so a reader could not tell a polymer premium from a factory premium. They are different premiums and this page now prints both."
+      "falsified_if": "The median moves out of the 0.98-0.99 band or the above-count shifts, which either dataset's annual revision can do. Added 2026-08-30 after four independent reviewers found this page comparing polymer to an all-jobs average that includes retail and food service, so a reader could not tell a polymer premium from a factory premium. They are different premiums and this page now prints both.",
+      "counts": [
+        {"figure": "0.99 times its county’s manufacturing average", "noun": "The middle county-industry average is"}
+      ]
     },
     {
       "id": "wage-vs-mfg-split",
