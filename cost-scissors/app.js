@@ -177,8 +177,7 @@ PV.figures([
    `the middle seat: about a third of the rise given back, the rest still on the
     invoice`],
   ["", vsB(prodMfg.now.index), "products, against January 2019",
-   `nothing given back in cash, and this month is the dearest on record here: the
-    seller’s win`],
+   `nothing given back in cash, and this month is the dearest on record here`],
   ["", sp(last.v), "points, products over resin",
    `since 2019 product prices have grown ${Math.abs(last.v).toFixed(1)} percentage points
     more than resin prices; at the 2021 trough they trailed by
@@ -252,7 +251,7 @@ function verdict() {
     chemicals and allied products index that includes it, opened to ${sp(cPeak.v)} points
     of extra price growth in ${mon3(cPeak.date)} and has unwound to just below zero: the
     shortage gap did not keep.`;
-  else v.innerHTML = `<b>Finished products:</b> the winning seat, on these two indexes.
+  else v.innerHTML = `<b>Finished products:</b> the seat still at its peak, on these two indexes.
     Your main input gave back about a third of its rise; your output gave back none in cash
     and sits at its peak. Your prices have risen ${sp(last.v)} percentage points more than
     resin since 2019, against ${sp(sTrough.v)} at the 2021 trough, though

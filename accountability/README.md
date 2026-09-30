@@ -136,7 +136,7 @@ by editing `promises.json` to match.
 | What | When | Trigger | How it fails loudly | Owner |
 |---|---|---|---|---|
 | `derive_accountability.py` re-run | On amendment of the award register, and on any commit touching an upstream `data/*.json` | Upstream change | `acc-generated-fresh` fails on a stale generated file; `acc-attribution`, `acc-staging` and `acc-coalition` fail on the upstream file directly | PIC comms desk |
-| Promise register read | **Quarterly, at quarter close, by a named person** | Calendar | The derive script raises when a `timeline.json` date differs from a row's `current_date` with no dated `history[]` entry | **Not yet assigned — Open Question 6.** Band D ships only with an answer |
+| Promise register read | **Quarterly, at quarter close, by a named person** | Calendar | The derive script raises when a `timeline.json` date differs from a row's `current_date` with no dated `history[]` entry | **John Swanson** (Open Question 6, answered 30 September 2026). Band D still does not ship: the page is parked (Open Question 7) |
 | Calibration statistic | Quarterly, from resolved rows only | Calendar | `acc-promises-calibration` asserts `n` is counted from row status, never typed, and that no rate renders below the floor | Same |
 | Staleness stamp | Continuous | `meta.fetched` | `PV.methodology()` stamps "Data as of {fetched}" into the masthead from the data. **A build failure when `fetched` is more than 180 days old is specified and not yet built** (it belongs in `tools/`, outside this page's scope) | Build |
 | `UPDATES.md` | Every deploy that changes a reading | Deploy | An entry per deploy; an empty log is a signal, not a tidy state | Whoever deploys |
@@ -200,12 +200,19 @@ carrying two visible ones.
    is the one cell in this README that should never say that. Until it is answered, the
    spec's own instruction is to ship bands A, B, C and F and hold band D, because an
    unmaintained promise register is worse evidence than no page.
+   *Answered 30 September 2026:* John Swanson reads the promise register each quarter. The
+   owner cell above now names him. Band D still does not ship, because the page is parked
+   (question 7); the answer is recorded so it stands if the page is ever revived.
 
 7. **Does MarCom accept a hero that leads with $4.1 million rather than $106.3 million?**
    The page's whole credibility rests on that subtraction. If the answer is no, this is a
    different page and should not be built.
    *Changes:* everything. The draft is built subtraction-led so the question can be judged
    against something real. A no does not move the hero; it kills the page as specified.
+   *Answered 30 September 2026:* no. MarCom did not accept a hero led by $4.1 million. As
+   the line above says, that kills the page as specified: it stays parked and unlisted
+   (`.unlisted` stays), and it is not being redesigned. The shipped HTML and JavaScript are
+   unchanged by this answer.
 
 ## Defaults taken because a question is unanswered
 
