@@ -1668,7 +1668,7 @@ function loadData(file) {
       viz.appendChild(h('p', { class: 'noscript' }, [
         document.createTextNode('The funding data could not be loaded (' + err.message + '). '),
         h('a', { href: 'data/funding.json', text: 'Open the data file directly.' }),
-        document.createTextNode(' If you opened this page from your file system, serve it over HTTP instead — see the README.')
+        document.createTextNode(' If you opened this page from your file system, serve it over HTTP instead; see the README.')
       ]));
       viz.removeAttribute('aria-busy');
       return;
