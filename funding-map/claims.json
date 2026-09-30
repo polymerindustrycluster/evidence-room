@@ -7,7 +7,10 @@
       "source": "meta.totals in funding.json: awards + match",
       "assert": "D['meta']['totals']['total'] == 106290451 and D['meta']['totals']['awards'] + D['meta']['totals']['match'] == D['meta']['totals']['total'] and abs(D['meta']['totals']['total'] / 1e6 - 106.3) <= 0.05",
       "actual": "D['meta']['totals']",
-      "falsified_if": "Any award or match figure revises, so the hand-typed $106.3M and the $106 million headline no longer round from the data."
+      "falsified_if": "Any award or match figure revises, so the hand-typed $106.3M and the $106 million headline no longer round from the data.",
+      "counts": [
+        {"figure": "$106.3 million the region reports", "noun": "as secured"}
+      ]
     },
     {
       "id": "hero-awards-match",
@@ -15,7 +18,11 @@
       "source": "meta.totals.awards and meta.totals.match",
       "assert": "D['meta']['totals']['awards'] == 85335784 and D['meta']['totals']['match'] == 20954667 and abs(D['meta']['totals']['awards'] / 1e6 - 85.3) <= 0.05 and abs(D['meta']['totals']['match'] / 1e6 - 21.0) <= 0.05",
       "actual": "(D['meta']['totals']['awards'], D['meta']['totals']['match'])",
-      "falsified_if": "Either total revises so the hand-typed $85.3M or $21.0M no longer rounds from the data."
+      "falsified_if": "Either total revises so the hand-typed $85.3M or $21.0M no longer rounds from the data.",
+      "counts": [
+        {"figure": "Three public awards, $85.3 million", "noun": "no two move the money"},
+        {"figure": "promised $21.0 million more", "noun": "Partners"}
+      ]
     },
     {
       "id": "tile-figures",
@@ -111,7 +118,10 @@
       "source": "sum over recipients[].awards[] against meta.totals.awards",
       "assert": "(lambda s: s == 79170176 and D['meta']['totals']['awards'] - s == 6165608 and abs(s / 1e6 - 79.2) <= 0.05 and abs((D['meta']['totals']['awards'] - s) / 1e6 - 6.17) <= 0.005)(sum(w['amount'] for r in D['recipients'] for w in r['awards']))",
       "actual": "(sum(w['amount'] for r in D['recipients'] for w in r['awards']), D['meta']['totals']['awards'] - sum(w['amount'] for r in D['recipients'] for w in r['awards']))",
-      "falsified_if": "A new sub-grant executes or an award revises, so the named-recipient sum leaves $79,170,176 and $79.2M / $6.17M stop rounding from the data."
+      "falsified_if": "A new sub-grant executes or an award revises, so the named-recipient sum leaves $79,170,176 and $79.2M / $6.17M stop rounding from the data.",
+      "counts": [
+        {"figure": "$79.2 million names a recipient", "noun": "the money actually awarded"}
+      ]
     },
     {
       "id": "unrouted-split",

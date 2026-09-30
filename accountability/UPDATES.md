@@ -10,6 +10,17 @@ Newest first. Every entry names the date, what changed in the reading, and what 
 
 ---
 
+## 2026-09-30 — open questions 6 and 7 answered; the page stays parked
+
+- **Open Question 6 answered:** John Swanson reads the promise register each quarter. The
+  owner cell in the README's update contract now names him.
+- **Open Question 7 answered:** MarCom did not accept a hero led by $4.1 million. By the
+  README's own terms that kills the page as specified, so it stays parked and unlisted and
+  is not being redesigned. Band D is not shipped, `.unlisted` stays, and no page HTML or
+  JavaScript changed with these answers.
+- No reading on the page changed. The quarter-close register read listed below as due on
+  2026-09-30 is not recorded here.
+
 ## 2026-08-28 — register opened, page drafted
 
 - `data/promises.json` seeded once, by hand, from the eighteen forward events in

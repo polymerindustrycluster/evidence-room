@@ -177,8 +177,7 @@ PV.figures([
    `the middle seat: about a third of the rise given back, the rest still on the
     invoice`],
   ["", vsB(prodMfg.now.index), "products, against January 2019",
-   `nothing given back in cash, and this month is the dearest on record here: the
-    seller’s win`],
+   `nothing given back in cash, and this month is the dearest on record here`],
   ["", sp(last.v), "points, products over resin",
    `since 2019 product prices have grown ${Math.abs(last.v).toFixed(1)} percentage points
     more than resin prices; at the 2021 trough they trailed by
@@ -252,7 +251,7 @@ function verdict() {
     chemicals and allied products index that includes it, opened to ${sp(cPeak.v)} points
     of extra price growth in ${mon3(cPeak.date)} and has unwound to just below zero: the
     shortage gap did not keep.`;
-  else v.innerHTML = `<b>Finished products:</b> the winning seat, on these two indexes.
+  else v.innerHTML = `<b>Finished products:</b> the seat still at its peak, on these two indexes.
     Your main input gave back about a third of its rise; your output gave back none in cash
     and sits at its peak. Your prices have risen ${sp(last.v)} percentage points more than
     resin since 2019, against ${sp(sTrough.v)} at the 2021 trough, though
@@ -1196,17 +1195,34 @@ drawAll();
    font-display:swap, so the first draw measures in the fallback. The page draws at once,
    never waits on a font file, and draws again as each face that was loading arrives. */
 const onFonts = redraw => {
-  /* A redraw replaces the chart's nodes; a reader tabbing through its marks keeps their place. */
-  const keep = () => {
-    const a = document.activeElement, k = a && a.getAttribute && a.getAttribute("aria-label");
-    redraw();
-    if (k && !a.isConnected) {
-      const n = [...document.querySelectorAll("[aria-label]")].find(e => e.getAttribute("aria-label") === k);
-      if (n) n.focus({preventScroll: true});
-    }
+  /* A redraw replaces the chart's nodes. Geometry follows every face as it lands (faces
+     landing in one frame share a redraw), never waiting on one still loading. A reader
+     tabbing through the marks gets focus back ONCE, when no face is loading, since a
+     screen reader announces every focus(); and not at all if they have moved on. */
+  const count = () => [...document.fonts].filter(f => f.status === "loaded").length;
+  let lost = null, queued = false, seen = count();
+  const settle = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      if (count() !== seen) {           // a face landed; the last face and loadingdone share one
+        seen = count();
+        const a = document.activeElement, k = a && a.getAttribute && a.getAttribute("aria-label");
+        redraw();
+        if (k && !a.isConnected) lost = k;
+      }
+      if (!lost || [...document.fonts].some(f => f.status === "loading")) return;
+      const now = document.activeElement;
+      if (!now || now === document.body) {
+        const n = [...document.querySelectorAll("[aria-label]")].find(e => e.getAttribute("aria-label") === lost);
+        if (n) n.focus({preventScroll: true});
+      }
+      lost = null;
+    });
   };
-  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(keep, () => {}); });
-  document.fonts.addEventListener("loadingdone", keep);
+  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(settle, () => {}); });
+  document.fonts.addEventListener("loadingdone", settle);
 };
 onFonts(drawAll);
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)

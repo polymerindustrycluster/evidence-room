@@ -11,6 +11,46 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-30 — A seat called the winner, a title that stopped short, and a grantee named
+
+No figure changed.
+
+**A win the price data cannot show, *cost-scissors*.** **Was:** the finished-products stat
+card said this month is the dearest on record here, "the seller's win", and the seat
+selector's finished-products reading began "the winning seat, on these two indexes". **Is:**
+the card says only that this month is the dearest on record here, and the reading begins
+"the seat still at its peak, on these two indexes". These are selling-price indexes, and the
+2026-09-28 and earlier 2026-09-30 entries withdrew win, lose and squeeze framing on this page
+for that reason. The page carries a dated correction line.
+
+**A title that stopped short, *churn*.** **Was:** the flow chart's wide title said about two
+thousand jobs start and about two thousand end every quarter, "and the net line stays on
+the axis". **Is:** it adds "averaged over a year, it has sat just below it since 2023Q1".
+Separations have run above hires on a four-quarter average in each of the eleven quarters
+since 2023Q1, which the page reports two sections below; the title described the whole 55
+quarters and left that run out. The claim churn-separations-ahead now names the title and
+bounds "just below" at a tenth of the flows. The chart carries a dated correction line.
+
+**A grantee named, *scorecard* and *timeline*.** **Was:** the scorecard's award chart called
+its hatched part "money awarded to PIC", and its source line said match is "not awarded to
+PIC", which read PIC as the holder of the $31.25 million Ohio Innovation Hub grant,
+SBIG20251005; the timeline's 1 January 2025 event for that grant listed its organisations as
+"GAC / PIC / ODOD". **Is:** the grant's grantee of record is the Greater Akron Chamber, of
+which PIC is an initiative. The scorecard's hatched part is state-grant money and names the
+Chamber as grantee; match is committed by partners, "not by the governments that made the
+awards"; the timeline event reads "GAC / ODOD", as the grant's 2028 completion date already
+did. The funding map's provenance line for the grant records the basis: confirmed by PIC,
+30 September 2026. No document in this repository yet names the grantee. Both pages carry a
+dated correction line. The scorecard is unlisted.
+
+**Cause:** the cost-scissors words were missed by the earlier searches because each named a
+different word; the churn title predates the since-2023Q1 claim; no file named the state
+grant's grantee, and two sentences filled the gap with PIC. These wordings, and most of
+those withdrawn in the 29 and 30 September entries, are now in `_data/withdrawn.json`, so
+the style gate fails a page that prints one again outside a dated note or a quotation. Left
+out are the few the corrected text still uses in a sense that is true, such as "the date has
+not arrived" for a date that has not.
+
 ## 2026-09-30 — Mastheads that showed no data date, or the wrong one
 
 **Was:** seven pages printed no "Data as of" date at all: churn, laborshed, realwage,

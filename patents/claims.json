@@ -11,7 +11,11 @@
    "source": "patents/data/patents.json rows, complete years",
    "assert": "(lambda C: C[0]['year'] == 2015 and C[-1]['year'] == 2023 and C[0]['ohio'] == 455 and C[-1]['ohio'] == 342 and 0.24 <= 1 - C[-1]['ohio'] / C[0]['ohio'] <= 0.26)([r for r in D['p']['rows'] if r['complete']])",
    "actual": "[(r['year'], r['ohio']) for r in D['p']['rows'] if r['complete']]",
-   "falsified_if": "A refetch moves either endpoint, which late-publishing applications genuinely can do for recent years: the USPTO record itself back-fills. The fetch stamps its read date for exactly this reason."
+   "falsified_if": "A refetch moves either endpoint, which late-publishing applications genuinely can do for recent years: the USPTO record itself back-fills. The fetch stamps its read date for exactly this reason.",
+   "counts": [
+    {"figure": "filed 342 polymer patent applications in 2023", "noun": "home of Akron"},
+    {"figure": "down a quarter from 2015", "noun": "342 polymer patent applications"}
+   ]
   },
   {
    "id": "pat-two-by-two",
@@ -19,7 +23,13 @@
    "source": "patents/data/patents.json rows, complete years, indexed in the page from the same file",
    "assert": "(lambda B, L: abs(L['us_inv']/B['us_inv']*100 - 78.2) < 0.15 and abs(L['us_inv_all']/B['us_inv_all']*100 - 98.4) < 0.15 and abs(L['ohio']/B['ohio']*100 - 75.2) < 0.15 and abs(L['ohio_all']/B['ohio_all']*100 - 87.5) < 0.15 and L['ohio']/B['ohio'] < L['us_inv']/B['us_inv'] and 0.19 <= 1 - L['us_inv']/B['us_inv'] <= 0.24)([r for r in D['p']['rows'] if r['complete']][0], [r for r in D['p']['rows'] if r['complete']][-1])",
    "actual": "[(k, round([r for r in D['p']['rows'] if r['complete']][-1][k] / [r for r in D['p']['rows'] if r['complete']][0][k] * 100, 1)) for k in ('ohio', 'ohio_all', 'us_inv', 'us_inv_all')]",
-   "falsified_if": "Any endpoint moves past a tenth of a point, or Ohio's polymer line stops sitting at or below the American one, or the American fall leaves the band that makes 'by a fifth' honest. This claim replaced pat-three-baselines the day the page shipped: the first version's national line carried no address filter, was worldwide filings at the USPTO, and read flat at 99 only because foreign-origin filings filled the hole. A replication reviewer reproduced the 99 and could not reproduce the label on it. The unfiltered number is now printed as a trap with its own claim below."
+   "falsified_if": "Any endpoint moves past a tenth of a point, or Ohio's polymer line stops sitting at or below the American one, or the American fall leaves the band that makes 'by a fifth' honest. This claim replaced pat-three-baselines the day the page shipped: the first version's national line carried no address filter, was worldwide filings at the USPTO, and read flat at 99 only because foreign-origin filings filled the hole. A replication reviewer reproduced the 99 and could not reproduce the label on it. The unfiltered number is now printed as a trap with its own claim below.",
+   "counts": [
+    {"figure": "fell by a fifth", "noun": "American polymer patenting"},
+    {"figure": "down 22 percent nationwide", "noun": "applications with an American inventor"},
+    {"figure": "fell 12.5 percent", "noun": "its patenting across all technologies"},
+    {"figure": "the nation’s fell 1.6", "noun": "fell 12.5 percent"}
+   ]
   },
   {
    "id": "pat-ohio-polymer-worst-and-best",
@@ -27,7 +37,12 @@
    "source": "patents/data/patents.json rows, complete years; non-polymer is each row's all-class count less its polymer count, the same subtraction on both geographies",
    "assert": "(lambda B, L: (lambda op, onp, up, unp: abs(op + 24.8) < 0.1 and abs(onp + 12.1) < 0.1 and abs((op - up) + 3.0) < 0.15 and abs((onp - unp) + 10.8) < 0.15 and op < onp and (op - up) > (onp - unp) and (L['ohio'] / L['us_inv']) > (L['ohio_all'] - L['ohio']) / (L['us_inv_all'] - L['us_inv']))(pct(L['ohio'], B['ohio']) - 100, pct(L['ohio_all'] - L['ohio'], B['ohio_all'] - B['ohio']) - 100, pct(L['us_inv'], B['us_inv']) - 100, pct(L['us_inv_all'] - L['us_inv'], B['us_inv_all'] - B['us_inv']) - 100))([r for r in D['p']['rows'] if r['complete']][0], [r for r in D['p']['rows'] if r['complete']][-1])",
    "actual": "(lambda B, L: {'ohio_polymer_pct': pct(L['ohio'], B['ohio']) - 100, 'ohio_nonpolymer_pct': pct(L['ohio_all'] - L['ohio'], B['ohio_all'] - B['ohio']) - 100, 'us_polymer_pct': pct(L['us_inv'], B['us_inv']) - 100, 'us_nonpolymer_pct': pct(L['us_inv_all'] - L['us_inv'], B['us_inv_all'] - B['us_inv']) - 100, 'ohio_share_of_us_polymer': (B['ohio'] / B['us_inv'], L['ohio'] / L['us_inv'])})([r for r in D['p']['rows'] if r['complete']][0], [r for r in D['p']['rows'] if r['complete']][-1])",
-   "falsified_if": "Either Ohio fall moves off its printed figure, either gap against the nation moves by more than 0.15 of a point, Ohio's polymer fall stops being the steeper of the two inside Ohio, or polymer stops being the segment Ohio held best against the country. This claim exists because the sentence it guards said the opposite until 2026-08-31: 'that milder slide runs through polymer and everything else alike', on a page whose own file has Ohio's non-polymer filings down 12.1 percent and its polymer filings down 24.8. The two halves are guarded together on purpose, because either one alone is the misleading half: the fall is worse in polymer, and the fall is less Ohio's fault in polymer than anywhere else in Ohio."
+   "falsified_if": "Either Ohio fall moves off its printed figure, either gap against the nation moves by more than 0.15 of a point, Ohio's polymer fall stops being the steeper of the two inside Ohio, or polymer stops being the segment Ohio held best against the country. This claim exists because the sentence it guards said the opposite until 2026-08-31: 'that milder slide runs through polymer and everything else alike', on a page whose own file has Ohio's non-polymer filings down 12.1 percent and its polymer filings down 24.8. The two halves are guarded together on purpose, because either one alone is the misleading half: the fall is worse in polymer, and the fall is less Ohio's fault in polymer than anywhere else in Ohio.",
+   "counts": [
+    {"figure": "falling 24.8 percent against 12.1", "noun": "polymer is the worse half"},
+    {"figure": "fell 3 percentage points faster", "noun": "Ohio’s polymer filings"},
+    {"figure": "fell 11 points faster", "noun": "the rest of its patenting"}
+   ]
   },
   {
    "id": "pat-share-held",
@@ -35,7 +50,10 @@
    "source": "patents/data/patents.json rows",
    "assert": "(lambda B, L: abs(B['ohio']/B['us_inv']*100 - 10.1) < 0.1 and abs(L['ohio']/L['us_inv']*100 - 9.7) < 0.1 and abs(B['ohio']/B['world']*100 - 4.1) < 0.1 and abs(L['ohio']/L['world']*100 - 3.1) < 0.1 and abs(L['world']/B['world']*100 - 99.0) < 0.15)([r for r in D['p']['rows'] if r['complete']][0], [r for r in D['p']['rows'] if r['complete']][-1])",
    "actual": "[(r['year'], round(r['ohio']/r['us_inv']*100, 1), round(r['ohio']/r['world']*100, 1)) for r in D['p']['rows'] if r['complete']]",
-   "falsified_if": "Either share moves past a tenth of a point. The two shares are printed together deliberately: the same numerator over two denominators tells opposite stories, which is the basis lesson of this whole site on one card."
+   "falsified_if": "Either share moves past a tenth of a point. The two shares are printed together deliberately: the same numerator over two denominators tells opposite stories, which is the basis lesson of this whole site on one card.",
+   "counts": [
+    {"figure": "about a tenth", "noun": "Ohio kept"}
+   ]
   },
   {
    "id": "pat-lag-flagged",

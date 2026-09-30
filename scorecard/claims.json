@@ -16,7 +16,11 @@
       "source": "scorecard/data/scorecard.json, written by scorecard/derive_scorecard.py from the four source datasets listed in this file",
       "assert": "D['sc']['counts']['public'] == 8 and D['sc']['counts']['accountable'] == 15 and D['sc']['counts']['vault'] == 7 and D['sc']['counts']['public'] + D['sc']['counts']['vault'] == D['sc']['counts']['accountable'] and len([r for r in D['sc']['rows'] if r['group'] == 'A']) == 4 and all(r['status'] == 'vault' for r in D['sc']['rows'] if r['group'] == 'A')",
       "actual": "(D['sc']['counts'], [r['status'] for r in D['sc']['rows'] if r['group'] == 'A'])",
-      "falsified_if": "A row is added to or removed from any group, or a group-A row acquires a public source. The headline prints both halves of the fraction, so either number moving breaks it. The four-on-membership-and-revenue clause is the group-A test: if a dues or renewal figure ever becomes publishable from a public record, the sentence is wrong even though the arithmetic still holds."
+      "falsified_if": "A row is added to or removed from any group, or a group-A row acquires a public source. The headline prints both halves of the fraction, so either number moving breaks it. The four-on-membership-and-revenue clause is the group-A test: if a dues or renewal figure ever becomes publishable from a public record, the sentence is wrong even though the arithmetic still holds.",
+      "counts": [
+        {"figure": "eight of the fifteen rows", "noun": "Public records fill"},
+        {"figure": "none of the four", "noun": "membership and revenue"}
+      ]
     },
     {
       "id": "sc-empty-slots",
@@ -32,7 +36,11 @@
       "source": "PIC award register as of 13 August 2026, via funding-map/data/funding.json; recomputed here rather than read from a total",
       "assert": "sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']) == 79170176 and D['fm']['meta']['totals']['awards'] == 85335784 and D['sc']['delivery']['assigned'] == sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']) and D['sc']['delivery']['awarded'] == D['fm']['meta']['totals']['awards'] and round(D['sc']['delivery']['assigned'] / D['sc']['delivery']['awarded'] * 100, 1) == 92.8 and sum(a['amount'] for r in D['fm']['recipients'] if r['id'] in ('polymer-pilot-facility', 'regional-workforce') for a in r['awards']) == 23094356 and (lambda df: 'naming the organisation' not in df and 'programme aggregate' in df and all(n in df for n in ('Polymer Pilot Facility', 'regional workforce programs'))) (one(r for r in D['sc']['rows'] if r['id'] == 'b-assigned')['definition'])",
       "actual": "(sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']), D['fm']['meta']['totals']['awards'])",
-      "falsified_if": "A recipient line is added, removed or restated in the register, or the award total moves. The share is printed to a tenth of a percent, so 92.74 or 92.85 breaks it. The claim is about ASSIGNMENT, not payment: it would survive unchanged if not one dollar had been disbursed, which is exactly why the disbursement row beneath it is empty."
+      "falsified_if": "A recipient line is added, removed or restated in the register, or the award total moves. The share is printed to a tenth of a percent, so 92.74 or 92.85 breaks it. The claim is about ASSIGNMENT, not payment: it would survive unchanged if not one dollar had been disbursed, which is exactly why the disbursement row beneath it is empty.",
+      "counts": [
+        {"figure": "$85.3 million in public grant money", "noun": "has won"},
+        {"figure": "for $79.2 million of it", "noun": "award register names one"}
+      ]
     },
     {
       "id": "sc-executed",
@@ -53,7 +61,8 @@
         {
           "figure": "signed line",
           "noun": "huntsman"
-        }
+        },
+        {"figure": "The other $6.0 million", "noun": "Huntsman’s EDA award"}
       ]
     },
     {

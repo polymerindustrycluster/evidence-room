@@ -22,7 +22,10 @@
       "source": "PPI plastics and rubber products manufacturing, PCU326326",
       "assert": "all(s['retraced'] == 0 and s['peak']['date'] == s['now']['date'] for s in D['series'] if s['stage']=='product')",
       "actual": "[(s['label'], s['peak']['date'], s['peak']['index'], s['now']['index']) for s in D['series'] if s['stage']=='product']",
-      "falsified_if": "Any month prints below the prior peak - at which point this page's headline is out of date and must be restated. This is the most perishable claim on the site; it expires with the next PPI release."
+      "falsified_if": "Any month prints below the prior peak - at which point this page's headline is out of date and must be restated. This is the most perishable claim on the site; it expires with the next PPI release.",
+      "counts": [
+        {"figure": "finished polymer products none of it", "noun": "resin about a third"}
+      ]
     },
     {
       "id": "cs-product-alltime",
@@ -38,7 +41,10 @@
       "source": "EIA Henry Hub spot, monthly",
       "assert": "(lambda g: g['now']['index'] < 100 and g['retraced'] > 1)([s for s in D['series'] if 'natural gas' in s['label'].lower()][0])",
       "actual": "[(s['label'], s['peak']['index'], s['now']['index'], s['retraced']) for s in D['series'] if 'natural gas' in s['label'].lower()]",
-      "falsified_if": "Gas rises back above its January 2019 level. Note the base is a WINTER month, so this comparison is flattering by construction - the honest version is that gas has fully round-tripped, not that it is cheap."
+      "falsified_if": "Gas rises back above its January 2019 level. Note the base is a WINTER month, so this comparison is flattering by construction - the honest version is that gas has fully round-tripped, not that it is cheap.",
+      "counts": [
+        {"figure": "gave the whole spike back", "noun": "Natural gas"}
+      ]
     },
     {
       "id": "cs-gas-below-seven",
@@ -70,7 +76,10 @@
       "source": "WTI spot, indexed to January 2019",
       "assert": "(lambda c: 0.45 <= c['retraced'] <= 0.60 and c['peak']['date'] == '2022-06-01')(one(s for s in D['series'] if 'crude' in s['label'].lower()))",
       "actual": "(lambda c: (c['retraced'], c['peak']['date']))(one(s for s in D['series'] if 'crude' in s['label'].lower()))",
-      "falsified_if": "Crude's retracement leaves 45-60% (no longer 'about half'), or a revision moves its peak month off June 2022."
+      "falsified_if": "Crude's retracement leaves 45-60% (no longer 'about half'), or a revision moves its peak month off June 2022.",
+      "counts": [
+        {"figure": "crude oil about half", "noun": "given back its whole 2022 spike"}
+      ]
     },
     {
       "id": "cs-resin-about-third",
@@ -78,7 +87,10 @@
       "source": "PPI plastics material and resin manufacturing; PPI plastics resins and materials",
       "assert": "(lambda rs: all(0.28 <= r['retraced'] <= 0.42 for r in rs) and all(r['peak']['date'][:4] in ('2021','2022') for r in rs) and 24.5 <= one(r for r in rs if 'manufacturing' in r['label'])['now']['index'] - 100 <= 25.5)([s for s in D['series'] if s['stage']=='resin'])",
       "actual": "[(s['label'], s['retraced'], s['peak']['date'], s['now']['index']) for s in D['series'] if s['stage']=='resin']",
-      "falsified_if": "Either resin retracement leaves 28-42% (no longer 'about a third'), the resin-manufacturing index leaves 124.5-125.5 (the '+25%' card and 'resin up 25%' stop rounding), or a revision moves a resin peak out of 2021-2022."
+      "falsified_if": "Either resin retracement leaves 28-42% (no longer 'about a third'), the resin-manufacturing index leaves 124.5-125.5 (the '+25%' card and 'resin up 25%' stop rounding), or a revision moves a resin peak out of 2021-2022.",
+      "counts": [
+        {"figure": "crude oil about half, resin about a third", "noun": "given back its whole 2022 spike"}
+      ]
     },
     {
       "id": "cs-elec-exception",

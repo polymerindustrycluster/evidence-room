@@ -10,7 +10,10 @@
    "source": "web/timeline/data/heritage.json, built by tools/build-heritage-web.py from the NEO Polymer Wins register (INDEX.md heritage + discoveries collections)",
    "assert": "(lambda E, c: len(E) == 31 and c['shown'] == len(E) and c['heritage'] == len([e for e in E if e['collection'] == 'heritage']) == 20 and c['discoveries'] == len([e for e in E if e['collection'] == 'discoveries']) == 11 and c['firstYear'] == min(e['year'] for e in E) == 1898 and c['lastYear'] == max(e['year'] for e in E) == 2012)(D['h']['events'], D['h']['meta']['counts'])",
    "actual": "(len(D['h']['events']), D['h']['meta']['counts']['shown'], D['h']['meta']['counts']['heritage'], D['h']['meta']['counts']['discoveries'], D['h']['meta']['counts']['firstYear'], D['h']['meta']['counts']['lastYear'])",
-   "falsified_if": "The register gains or loses a PROVEN heritage or discovery row, a row's label changes, or the header counts drift from the rows they claim to count. The lede, the prologue heading, the topline tile and the methods paragraph are all written from the rows at load time, so the static numbers here must move with them — this claim is what forces that."
+   "falsified_if": "The register gains or loses a PROVEN heritage or discovery row, a row's label changes, or the header counts drift from the rows they claim to count. The lede, the prologue heading, the topline tile and the methods paragraph are all written from the rows at load time, so the static numbers here must move with them — this claim is what forces that.",
+   "counts": [
+    {"figure": "31 documented events", "noun": "each with a named public source"}
+   ]
   },
   {
    "id": "tl-heritage-no-double-count",
@@ -82,7 +85,11 @@
    "source": "timeline.json events, shown universe (PRE non-CTX rows plus in-window rows with show, as app.js builds it), split at the designation date; span arithmetic from the event dates and meta.asOf",
    "assert": "(lambda E, des, asof, jdn: (lambda before, since: len(before) == 4 and len(since) == 67 and round(len(since) / len(before)) == 17 and abs((jdn(asof) - jdn(des)) - (jdn(des) - jdn('2021-01-01'))) <= 2 and round((jdn(des) - jdn('2021-01-01')) / 30.44) == 34 and round((jdn(asof) - jdn(des)) / 30.44) == 34)([e for e in E if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))], [e for e in E if des <= e['date'] and e['delivered'] and e.get('show')]))(D['t']['events'], one(e['date'] for e in D['t']['events'] if e['date'].startswith('2023') and 'esignat' in e['title']), D['t']['meta']['asOf'], lambda s: (lambda y, m, d: (lambda a: d + (153 * (m + 12 * a - 3) + 2) // 5 + 365 * (y + 4800 - a) + (y + 4800 - a) // 4 - (y + 4800 - a) // 100 + (y + 4800 - a) // 400 - 32045)((14 - m) // 12))(int(s[:4]), int(s[5:7]), int(s[8:10])))",
    "actual": "(lambda E, des: (len([e for e in E if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))]), len([e for e in E if des <= e['date'] and e['delivered'] and e.get('show')])))(D['t']['events'], '2023-10-23')",
-   "falsified_if": "A pre-designation public event is added to or dropped from the inventory (the 4 moves), a delivered event lands or is reclassified (the 68 moves and 17x stops being exact), or meta.asOf advances so the since-span no longer matches the before-span within a day — the '34 months either side' framing dies first. [2026-09-01: recomputed after one row was removed from the register. It recorded a named company's unsuccessful application, on a site whose README withholds two pages because naming an unsuccessful applicant is not something a funder gets to do. Two independent model families were asked to refute the decision to anonymise it instead of deleting it, and both refused: the row stayed identifiable because the same page names the company joining the cohort four months later, and keeping it to protect a count is letting the headline decide which sensitive records remain evidence. The count moved and the sentence moved with it.]"
+   "falsified_if": "A pre-designation public event is added to or dropped from the inventory (the 4 moves), a delivered event lands or is reclassified (the 68 moves and 17x stops being exact), or meta.asOf advances so the since-span no longer matches the before-span within a day — the '34 months either side' framing dies first. [2026-09-01: recomputed after one row was removed from the register. It recorded a named company's unsuccessful application, on a site whose README withholds two pages because naming an unsuccessful applicant is not something a funder gets to do. Two independent model families were asked to refute the decision to anonymise it instead of deleting it, and both refused: the row stayed identifiable because the same page names the company joining the cohort four months later, and keeping it to protect a count is letting the headline decide which sensitive records remain evidence. The count moved and the sentence moved with it.]",
+   "counts": [
+    {"figure": "4 events in the 34 months before that", "noun": "The public record holds"},
+    {"figure": "67 delivered in the 34 months since", "noun": "34 months before that"}
+   ]
   },
   {
    "id": "tl-cadence-per-year",
@@ -114,7 +121,10 @@
    "source": "timeline.json forward events by date and title",
    "assert": "(lambda sch: len(sch) == 18 and len([e for e in sch if e['date'] < '2027-01-01']) == 10 and (lambda far: len(far) == 8 and all('2027-01-01' <= e['date'] <= '2029-12-31' for e in far) and len([e for e in far if 'ready' in e['title'].lower()]) == 1 and len([e for e in far if 'end' in e['title'].lower() or 'completion' in e['title'].lower()]) == 7)([e for e in sch if e['date'] >= '2027-01-01']))([e for e in D['t']['events'] if not e['delivered'] and e['date'] >= '2023-01-01'])",
    "actual": "[(e['date'], e['title']) for e in D['t']['events'] if not e['delivered'] and e['date'] >= '2027-01-01']",
-   "falsified_if": "A scheduled date is delivered or slips across the 2026/2027 boundary, a new forward milestone is published, or a 2027+ scheduled event appears that is neither the pilot-facility readiness target nor an end/completion date — the 'the other eight are completion dates' sentence would then be wrong."
+   "falsified_if": "A scheduled date is delivered or slips across the 2026/2027 boundary, a new forward milestone is published, or a 2027+ scheduled event appears that is neither the pilot-facility readiness target nor an end/completion date — the 'the other eight are completion dates' sentence would then be wrong.",
+   "counts": [
+    {"figure": "The 18 dates ahead are scheduled", "noun": "not delivered"}
+   ]
   },
   {
    "id": "tl-rd-clocks",

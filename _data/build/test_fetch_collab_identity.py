@@ -60,6 +60,31 @@ class PiTransfer(unittest.TestCase):
     def test_different_people_are_not_a_transfer(self):
         self.assertFalse(is_transfer([{"pdPIName": "Lingxing Yao"}], [{"pdPIName": "Ann Smith"}]))
 
+    def test_conflicting_middle_initials_are_two_people(self):
+        self.assertFalse(is_transfer([{"pdPIName": "John A. Smith"}], [{"pdPIName": "John B. Smith"}]))
+        self.assertFalse(is_transfer([{"pdPIName": "Ann Marie Smith"}],
+                                     [{"pdPIName": "Smith, Ann Louise"}]))
+
+    def test_a_middle_name_missing_or_abbreviated_on_one_side_still_matches(self):
+        self.assertTrue(is_transfer([{"pdPIName": "Ann Marie Smith"}], [{"pdPIName": "Smith, Ann"}]))
+        self.assertTrue(is_transfer([{"pdPIName": "John A. Smith"}], [{"pdPIName": "Smith, John Albert"}]))
+        self.assertTrue(is_transfer([{"pdPIName": "John A. B. Smith"}], [{"pdPIName": "John B. Smith"}]))
+
+    def test_a_suffix_is_not_a_surname(self):
+        for other in ("Yao, Lingxing Jr.", "Yao, Lingxing, Jr.", "Lingxing Yao, Jr.", "Lingxing Yao"):
+            self.assertTrue(is_transfer([{"pdPIName": "Lingxing Yao Jr."}], [{"pdPIName": other}]),
+                            other)
+        self.assertTrue(is_transfer([{"piFirstName": "Lingxing", "piLastName": "Yao Jr."}],
+                                    [{"pdPIName": "Yao, Lingxing"}]))
+
+    def test_conflicting_suffixes_are_two_people(self):
+        self.assertFalse(is_transfer([{"pdPIName": "John Smith Jr."}], [{"pdPIName": "Smith, John, Sr."}]))
+        self.assertFalse(is_transfer([{"pdPIName": "John Smith II"}], [{"pdPIName": "John Smith III"}]))
+
+    def test_a_one_word_pdpiname_falls_back_to_the_split_fields(self):
+        self.assertTrue(is_transfer([{"pdPIName": "Yao", "piFirstName": "Lingxing", "piLastName": "Yao"}],
+                                    [{"pdPIName": "Yao, Lingxing"}]))
+
 
 if __name__ == "__main__":
     unittest.main()
