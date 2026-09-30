@@ -1,8 +1,9 @@
 /* How far the region’s polymer research reaches, and which way the work flows.
  *
  * WHAT ONE ROW IS
- *   One partner institution: the number of 2015-2024 works matching "polymer" that carry
- *   both it and the University of Akron or Case Western Reserve. Works, not projects and
+ *   One partner institution: the number of 2015-2024 works classified in OpenAlex subfield
+ *   2507, Polymers and Plastics, that carry both it and the University of Akron or Case
+ *   Western Reserve. Works, not projects and
  *   not dollars — one long collaboration produces many rows and a single co-signed paper
  *   produces one.
  *
