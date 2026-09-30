@@ -11,6 +11,19 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-30 — Mastheads that showed no data date, or the wrong one
+
+**Was:** seven pages printed no "Data as of" date at all: churn, laborshed, realwage,
+revisions, wages, the front page and chain. The scorecard printed 13 August 2026, the date of
+its award register, though it also reads federal obligations pulled on 8 September. **Is:**
+every masthead shows the newest input date among the data files its page reads: churn
+1 September, laborshed 16 August, realwage 14 August, revisions 13 August, wages 11 September,
+chain 14 August and the scorecard 8 September 2026. The front page shows the newest date among
+the pages it links to, 11 September 2026, and a claim checks it. The scorecard's two "Register
+as of" captions still say 13 August, which is the register's own date. **Cause:** the shared
+masthead code printed a page's fetch date and, when a page had none, printed nothing and said
+nothing. It now falls back to the page's as-of date and fails the build when a page has neither.
+
 ## 2026-09-30 — More sentences that said more than their data
 
 No figure changed. The revisions page's claim count is unchanged.
