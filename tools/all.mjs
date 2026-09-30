@@ -60,9 +60,10 @@ const GATES = [
   ["classes",     "node",   ["tools/classes.mjs"],           "every class a page uses resolves to a rule"],
   ["legends",     "node",   ["tools/legends.mjs"],           "the reader gets the key before the data"],
   ["measure",     "node",   ["tools/measure.mjs"],           "running prose holds the measure"],
+  ["fontfocus",   "node",   ["tools/fontfocus.mjs"],         "chart focus survives a late web font, announced once"],
   ["collide",     "node",   ["tools/collide.mjs", "--sweep"],  "overlap and out-of-frame, 14 widths", true],
   ["textsize",    "node",   ["tools/textsize.mjs", "--sweep"], "12px rendered floor, 14 widths", true],
-  ["selftest",    "node",   ["tools/selftest.mjs"],            "51 known-defect fixtures across 13 gates", true],
+  ["selftest",    "node",   ["tools/selftest.mjs"],            "53 known-defect fixtures across 14 gates", true],
 ];
 
 const rows = [];

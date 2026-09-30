@@ -337,6 +337,24 @@ const CASES = [
      d.pages.wages.claims += 1;
      return JSON.stringify(d, null, 1) + "\n";
    }},
+
+  /* Both from the PR #33 review (Codex, 2026-09-30), which delayed the web font by hand.
+     #dir, not #map: the map never redraws on a font load, so it cannot lose focus. */
+  {gate: "fontfocus", page: "reach", file: "reach/app.js", args: ["reach:dir"],
+   expect: /focus lost/,
+   defect: "a font-load redraw that replaces the focused chart mark and drops the reader on " +
+           "<body> (the onFonts helper before PR #33)",
+   inject: s => s.replace(/const onFonts = redraw => \{[\s\S]*?\n\};/, "const onFonts = redraw => {\n" +
+     '  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(() => redraw(), () => {}); });\n' +
+     '  document.fonts.addEventListener("loadingdone", () => redraw());\n};')},
+
+  {gate: "fontfocus", page: "reach", file: "reach/app.js", args: ["reach:dir"],
+   expect: /focus moved \d+ times/,
+   defect: "focus restored once per arriving face and again on loadingdone, so a screen " +
+           "reader announces the same mark four times (PR #33 as merged)",
+   inject: s => s.replace(/  \/\* Once per settled batch[\s\S]*?\n\};/,
+     '  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(keep, () => {}); });\n' +
+     '  document.fonts.addEventListener("loadingdone", keep);\n};')},
 ];
 
 const only = process.argv.slice(2).filter(a => !a.startsWith("--"));
