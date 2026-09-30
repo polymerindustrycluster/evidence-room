@@ -51,7 +51,7 @@ const {el, txt, ticks, frame, hoverable, tableView, chart, figures, N, SEQ, INK}
 const D = await PV.data("viz-data.json");
 /* MEASURE THE FACE THAT WILL PAINT (the peers/app.js helper, same reasons). Lato ships with
    font-display:swap, so the first draw measures in the fallback. The page draws at once,
-   never waits on a font file, and draws again as each face that was loading arrives. */
+   never waits on a font file, and draws again once the faces that were loading arrive. */
 const onFonts = redraw => {
   /* A redraw replaces the chart's nodes; a reader tabbing through its marks keeps their place. */
   const keep = () => {
@@ -62,8 +62,15 @@ const onFonts = redraw => {
       if (n) n.focus({preventScroll: true});
     }
   };
-  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(keep, () => {}); });
-  document.fonts.addEventListener("loadingdone", keep);
+  /* Once per settled batch, not once per face: a screen reader announces every focus(). */
+  let queued = false;
+  const settle = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => { queued = false; if (document.fonts.status !== "loading") keep(); });
+  };
+  if (document.fonts.status === "loading") document.fonts.ready.then(settle, () => {});
+  document.fonts.addEventListener("loadingdone", settle);
 };
 function chartTitle(svg, claim, unit) {
   const heading = document.createElement("p");

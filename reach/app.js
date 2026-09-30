@@ -30,7 +30,7 @@ const D = await PV.data("reach.json");
    loaded a label measures in the fallback, and gutter() below would size the direction
    chart's margin from a face that is not the one on screen. Waiting for the fonts held
    every chart and figure behind one stalled font file, so the chart is drawn at once and
-   drawn again as each face that was loading arrives, and after any later load. */
+   drawn again once the faces that were loading arrive, and after any later load. */
 const onFonts = redraw => {
   /* A redraw replaces the chart's nodes; a reader tabbing through its marks keeps their place. */
   const keep = () => {
@@ -41,8 +41,15 @@ const onFonts = redraw => {
       if (n) n.focus({preventScroll: true});
     }
   };
-  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(keep, () => {}); });
-  document.fonts.addEventListener("loadingdone", keep);
+  /* Once per settled batch, not once per face: a screen reader announces every focus(). */
+  let queued = false;
+  const settle = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => { queued = false; if (document.fonts.status !== "loading") keep(); });
+  };
+  if (document.fonts.status === "loading") document.fonts.ready.then(settle, () => {});
+  document.fonts.addEventListener("loadingdone", settle);
 };
 
 /* THE LEFT MARGIN IS MEASURED, NOT TYPED (the peers/app.js helper, same reasons).
