@@ -13,8 +13,8 @@
  *      the left edge and the current cell itself) so a board member can see at a glance
  *      which rows are real. A table, not a chart, because the argument is which cells are
  *      empty and only a table shows an empty cell as empty.
- *   2. Award delivery: three bars on one dollar scale, each split into money on an
- *      executed line naming its holder and money awarded with no recipient named yet.
+ *   2. Award delivery: three bars on one dollar scale, each split into money on a
+ *      register line naming its holder and money awarded with no recipient named yet.
  *      Part-to-whole within a magnitude comparison, hatched for the missing half.
  *   3. Talent: ten years of polymer credentials as columns. Change over time, one series.
  *
@@ -72,6 +72,10 @@ function assertEmpty(rows) {
 const ROWS = assertEmpty(D.rows);
 const C = D.counts;
 const DEL = D.delivery;
+/* The one register line whose execution no public record confirms. Its award prints that,
+   never "executed" (corrected 2026-09-29). */
+const UNV = DEL.unverified;
+const unv = s => UNV && UNV.source === s.id ? UNV : null;
 const TAL = D.talent;
 
 /* ============================================================ 0. THE COLD OPEN
@@ -157,7 +161,9 @@ function drawOpen() {
                + `a public record`,
     {x: m.l, y: M ? 20 : 19, "font-size": M ? 15 : 16, "font-weight": M ? 700 : 900,
      fill: "#fff"});
-  txt(svg, `The ${C.vault_in_a} rows on revenue are all blank.`,
+  /* Shorter on the phone: the long form ran 42 units past a 360px column. */
+  txt(svg, M ? `Membership and revenue: all ${C.vault_in_a} rows blank.`
+             : `The ${C.vault_in_a} rows on membership and revenue are all blank.`,
     {x: m.l, y: 40, "font-size": 15, "font-weight": 700, fill: O_LIME});
 
   /* On the phone the title takes its own line above the squares and the tally drops to
@@ -189,13 +195,22 @@ function drawOpen() {
      out by a third on the longest of the three. */
   const KEY = [["public", "computed from a public record"],
                ["vault", "not published here"], ["context", "cluster context"]];
-  let kx = m.l;
+  /* On the desktop row an item that would run past the plot wraps to a second key row and
+     the figure grows to hold it. Just above the phone breakpoint the rail is at its
+     narrowest, and one row of three ran "cluster context" 28px past the figure at 768. */
+  let kx = m.l, ky = M ? 292 : 220;
   KEY.forEach(([status, label], i) => {
-    const ky = M ? 292 + i * 22 : 220, x = M ? m.l : kx;
-    openCell(svg, status, x, ky - 11, 13);
-    kx = x + 19 + txt(svg, label,
-      {x: x + 19, y: ky, "font-size": 14, fill: O_MUTE}).getComputedTextLength() + 26;
+    if (M) { kx = m.l; ky = 292 + i * 22; }
+    const t = txt(svg, label, {x: kx + 19, y: ky, "font-size": 14, fill: O_MUTE});
+    const tw = t.getComputedTextLength();
+    if (!M && kx > m.l && kx + 19 + tw > m.l + w) {
+      kx = m.l; ky += 22;
+      t.setAttribute("x", kx + 19); t.setAttribute("y", ky);
+    }
+    openCell(svg, status, kx, ky - 11, 13);
+    kx += 19 + tw + 26;
   });
+  if (!M && ky > 220) svg.setAttribute("viewBox", `0 0 ${W} ${H + ky - 220}`);
 }
 drawOpen();
 /* The strip re-lays itself out at the breakpoint. The two charts below it are drawn once,
@@ -240,7 +255,7 @@ const STATUS = {
 };
 
 document.getElementById("boardlegend").innerHTML = [
-  `<span><i class="sw-public"></i>Computed from a public federal or state record</span>`,
+  `<span><i class="sw-public"></i>Computed from a public record</span>`,
   `<span><i class="sw-vault"></i>Not published here: the measurement is in PIC&rsquo;s own registers</span>`,
   `<span><i class="sw-context"></i>Cluster context PIC does not control</span>`,
 ].join("");
@@ -257,7 +272,7 @@ function cell(r, key) {
     if (r.status === "vault")
       return `<td class="cur empty" colspan="2" data-l="Current">
         <span class="chip">Not published here</span>
-        <span class="s">no figure exists in this repository</span></td>`;
+        <span class="s">${esc(r.empty || "no figure exists in this repository")}</span></td>`;
     return `<td class="cur" data-l="Current"><b>${esc(r.current)}</b>` +
            (r.sub ? `<span class="s">${esc(r.sub)}</span>` : "") + `</td>`;
   }
@@ -342,8 +357,8 @@ function deliveryDesktop() {
       "text-anchor": "end", class: "pv-labq"});
     txt(svg, s.unassigned ? `${short(s.assigned)} named` : "fully assigned",
       {x: xs(s.award) + 14, y: y + 12, class: "pv-lab"});
-    txt(svg, s.unassigned ? `${short(s.unassigned)} not yet named`
-                          : "every dollar has a recipient",
+    /* The status line is written by derive_scorecard.py so sc-executed can read it. */
+    txt(svg, s.label,
       {x: xs(s.award) + 14, y: y + 29, class: "pv-labq",
        fill: s.unassigned ? "#7A7263" : "var(--pv-muted)"});
   });
@@ -365,7 +380,8 @@ function deliveryDesktop() {
     hoverable(el("rect", {x: 0, y: m.t + i * rowH, width: 1100, height: rowH,
       fill: "transparent"}, svg),
       `<b>${s.name}</b><br><span class="v">${usd(s.award)}</span> awarded<br>
-       ${usd(s.assigned)} on an executed line with a named recipient<br>
+       ${usd(s.assigned)} with a named recipient${unv(s) ? `, ${usd(unv(s).amount)} of it
+         on a line to ${unv(s).name} whose execution no public record confirms` : ""}<br>
        ${s.unassigned ? usd(s.unassigned) + " with no recipient named yet"
                       : "every dollar is assigned"}`,
       `${s.name}: ${usd(s.award)} awarded, ${usd(s.assigned)} with a named recipient`);
@@ -443,8 +459,9 @@ function deliveryMobile() {
         "stroke-dasharray": "4 3", rx: 3}, svg);
     txt(svg, s.short, {x: m.l, y: y + nameY, class: "pv-lab"});
     txt(svg, amt, {x: stack ? m.l : m.l + nw + GAP, y: y + amtY, class: "pv-labq"});
+    /* The unverified award carries its caveat here too, as the desktop label does. */
     txt(svg, s.unassigned ? `${short(s.assigned)} named, ${short(s.unassigned)} not yet`
-                          : "fully assigned to named recipients",
+           : unv(s) ? `fully assigned, ${s.label}` : "fully assigned to named recipients",
       {x: m.l, y: y + statY, class: "pv-labq"});
     hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, svg),
       `<b>${s.name}</b><br><span class="v">${usd(s.award)}</span> awarded<br>
@@ -462,15 +479,14 @@ function deliveryMobile() {
 (MOBILE.matches ? deliveryMobile : deliveryDesktop)();
 
 document.getElementById("deliverytable").innerHTML = tableView("del",
-  "Every public award, the dollars on an executed line naming their holder, and the "
+  "Every public award, the dollars on a register line naming their holder, and the "
   + "balance with no recipient named yet.",
   ["Award", "Awarded", "Named recipient", "Not yet named", "Share named"],
   DEL.sources.map(s => [s.name, usd(s.award), usd(s.assigned),
     s.unassigned ? usd(s.unassigned) : "none", s.pct.toFixed(1) + "%"]));
 
 document.getElementById("deliverysrc").innerHTML =
-  `PIC award register as of ${D.meta.fetched}, verified against the signed federal `
-  + `Notices of Award and the executed state grant agreement. Match and cost share are `
+  `PIC award register as of ${D.meta.fetched}, ${DEL.source_note} Match and cost share are `
   + `excluded from these bars: they are committed by partners, not awarded to PIC. `
   + `<b>These are commitments, not payments.</b>`;
 

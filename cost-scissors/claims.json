@@ -138,7 +138,7 @@
     },
     {
       "id": "cs-spread-trough",
-      "text": "The gap bottomed at -22.5 points in August 2021, the squeeze (hero card sub-line, spread H2, spread lede, reconciliation block, on-chart trough callout, vignette lede, closer). Published to the tenth: at whole numbers this printed -23 while the vignette printed the two indexes it comes from as 114 and 136, which subtract to -22.",
+      "text": "The gap bottomed at -22.5 points in August 2021, the trough (hero card sub-line, spread H2, spread lede, reconciliation block, on-chart trough callout, vignette lede, closer). Published to the tenth: at whole numbers this printed -23 while the vignette printed the two indexes it comes from as 114 and 136, which subtract to -22.",
       "source": "minimum of the derived converter spread",
       "assert": "(lambda sp: (lambda t: t[0] == '2021-08-01' and -22.549 <= t[1] <= -22.45)(min(sp, key=lambda x: x[1])))((lambda P, R: [(d, P[d]-R[d]) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}))",
       "actual": "(lambda sp: min(sp, key=lambda x: x[1]))((lambda P, R: [(d, round(P[d]-R[d],2)) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}))",
@@ -162,7 +162,7 @@
     },
     {
       "id": "cs-spread-near-close",
-      "text": "The cushion nearly closed in May 2026: the spread fell to +0.7, its lowest month since September 2022 and the lowest of the last two years (spread lede '+0.7, its thinnest month since September 2022', on-chart dip callout on both renderings, product verdict, closer, spread table, chart alt text).",
+      "text": "The gap nearly closed in May 2026: the spread fell to +0.7, its lowest month since September 2022 and the lowest of the last two years (spread lede '+0.7, its thinnest month since September 2022', on-chart dip callout on both renderings, product verdict, closer, spread table, chart alt text).",
       "source": "minimum of the derived converter spread over the last 24 shipped months, against every earlier month",
       "assert": "(lambda sp: (lambda dip: dip[0] == '2026-05-01' and 0.65 <= dip[1] <= 0.749 and max(d for d, v in sp if d < dip[0] and v < dip[1]) == '2022-09-01')(min(sp[-24:], key=lambda x: x[1])))((lambda P, R: [(d, P[d]-R[d]) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}))",
       "actual": "(lambda sp: (min(sp[-24:], key=lambda x: x[1])[0], round(min(sp[-24:], key=lambda x: x[1])[1], 2), [(d, round(v,2)) for d, v in sp if d >= '2026-01-01']))((lambda P, R: [(d, P[d]-R[d]) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}))",

@@ -8,10 +8,38 @@ writing, and what can no public record say.
 
 Today it computes: **$4,149,515** attributed (4.9% of $85,335,784 awarded), **18** dated
 commitments (1 numeric outcome, 12 milestones, 5 award-period ends; 8 PIC-owned, 10
-partner-owned), **27** executed award lines across **21** recipients and **8** award IDs,
-**11** lines carrying **95.5%** of assigned money, **3** targets on the board and **0**
+partner-owned), **27** award lines, **26** of them executed (the 27 span **21** recipients
+and **8** award IDs), **11** lines carrying **95.5%** of assigned money, **3** targets on the board and **0**
 owners, **7** rows no public record can fill, and **n = 0** resolved commitments, so no
 keeping rate renders.
+
+## Pre-publication audit corrections — 29 September 2026
+
+Seven statements failed the data in the 2026-09-29 audit; each carries a dated in-page
+correction and a CORRECTIONS.md entry. Band A said all $75,020,661 on other recipients'
+lines never passes through PIC (only the $48,351,413 of EDA money does not: USAspending
+confirms $42,380,608 of it obligated directly to five of the six other leads, and Huntsman's
+$5,970,805 is on a signed Notice of Award with no USAspending record), and "signed
+for $7.6 million" had no source for its scope. Band D said the record of published dates
+opens on the day the page ships, left F04 reading "the date has not arrived" after 9
+September, and printed eight year- or quarter-precision dates as stand-in days. Band E put a
+day on a year-precision event. Band F quoted the scorecard's old caution, dated every line to
+the scorecard's build, and the closer said PIC set no target for any date (it set four
+dates; none is a numeric target). The derive script now computes the passed-date reason and
+the date precision, and fixes list 2's `defined_on` at 2026-08-28. Guards:
+`acc-licenses-mechanism`, `acc-register-dates`, `acc-restatement-share`, and new conjuncts
+on `acc-reconcile`, `acc-reconcile-apex` and `acc-negative-list2`. The masthead now links to
+the hub; the page stays unlisted and carries no hub card.
+
+A second review found five more, each with a dated note and a CORRECTIONS.md paragraph. The
+coalition source line called two programme recipients "two rows"; they hold three
+(`acc-aggregates`). The Limitations and list 2's membership line denied any member record,
+though the chain page publishes a member flag (`acc-member-provenance`). List 2 promised a
+fill date and delivered conditions; the field is now `fill_when` and holds exactly one of a
+condition or a permanent reason (`acc-negative-list2`). Rows dated to a year, quarter or
+month that has begun now say so rather than "the date has not arrived", using the derive
+script's `period_start` beside `period_end` (`acc-register-dates`). The closer counted
+eighteen dates; the eighteen commitments fall on twelve dates (`acc-promises`).
 
 ## Federal-context correction — 8 September 2026
 
@@ -146,8 +174,8 @@ carrying two visible ones.
    This decision cannot be un-made: a slip ledger published once and quietly dropped later
    is itself a story.
    *Changes:* today band F list 2 carries the line "Which published dates slipped before
-   this register opened" with `fill_by: on the slip-record decision`. A yes adds a slip
-   column to the register and removes that line; a no converts `fill_by` to a permanent
+   this register opened" with `fill_when: on the slip-record decision`. A yes adds a slip
+   column to the register and removes that line; a no converts `fill_when` to a permanent
    reason.
 
 4. **What is the floor for n before the keeping rate renders?** Recommendation: six resolved
