@@ -5,7 +5,7 @@ claim was added anywhere else — the page said 61 while the harness said 62, an
 "sixteen pieces" next to a figure reading 17. Numbers a human retypes are numbers that
 go stale, so these are generated.
 """
-import json, os, glob
+import json, os, glob, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.abspath(os.path.join(HERE, "..", ".."))
@@ -32,7 +32,39 @@ arts = sorted(d for d in os.listdir(WEB)
 for a in arts:
     pages.setdefault(a, {"claims": 0, "manual": 0, "legacy": a in LEGACY})
 
+# THE HUB'S DATE IS THE NEWEST MASTHEAD DATE AMONG THE PAGES IT LINKS TO, computed here so
+# it moves when any of them does. Each page shows its own data date (picviz.js reads it from
+# the page's meta); MASTHEAD_FILE names the file each page's masthead reads it from, and
+# index-as-of asserts this list against those files. Unlisted pages are not linked, so they
+# do not count. A page missing here fails the build rather than being skipped.
+MASTHEAD_FILE = {
+    "atlas": "viz-data.json", "chain": "chain-data.json", "churn": "churn.json",
+    "cluster-health": "health.json", "collaboration": "collaboration.json",
+    "cost-scissors": "scissors.json", "federal-money": "federal.json",
+    "funding-map": "funding.json", "laborshed": "laborshed.json",
+    "location-quotient": "lq.json", "occupations": "viz-data.json", "patents": "patents.json",
+    "peers": "peers.json", "programs": "viz-data.json", "reach": "reach.json",
+    "realwage": "realwage.json", "revisions": "revisions.json", "sources": "registry.json",
+    "timeline": "timeline.json", "wages": "wages.json"}
+
+
+def masthead_date(slug):
+    m = json.load(open(os.path.join(WEB, slug, "data", MASTHEAD_FILE[slug]),
+                       encoding="utf-8"))["meta"]
+    raw = m.get("fetched") or m.get("as_of") or m["asOf"]
+    try:
+        return datetime.date.fromisoformat(raw)
+    except ValueError:                    # chain dates its register in prose: "14 August 2026"
+        return datetime.datetime.strptime(raw, "%d %B %Y").date()
+
+
+linked = [a for a in arts if not os.path.exists(os.path.join(WEB, a, ".unlisted"))]
+assert sorted(linked) == sorted(MASTHEAD_FILE), (
+    "derive_index: MASTHEAD_FILE and the linked pages disagree: "
+    f"{sorted(set(linked) ^ set(MASTHEAD_FILE))}. Name the file each page's masthead reads.")
+
 out = {"n_pieces": len(arts),
+       "as_of": max(masthead_date(a) for a in linked).isoformat(),
        "total_claims": sum(v["claims"] for v in pages.values()),
        "total_manual": sum(v["manual"] for v in pages.values()),
        "pages": pages,

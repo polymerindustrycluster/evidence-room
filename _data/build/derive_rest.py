@@ -91,6 +91,10 @@ out("churn", "churn.json", {
     # exists to have been fetched. The winter/summer swing is still in these numbers,
     # which is what the trailing four-quarter averages on the page are for.
     "meta": {"source": "U.S. Census Quarterly Workforce Indicators (QWI), not seasonally adjusted",
+             # Masthead date: the newest input this page reads. Today that is bench.json,
+             # the page's other file; run derive_churn_bench.py first.
+             "fetched": json.load(open(os.path.join(WEB, "churn", "data", "bench.json"),
+                                       encoding="utf-8"))["meta"]["fetched"],
              "naics": "326, plastics and rubber products manufacturing",
              "row": "one (county, year, quarter) cell; Emp is a STOCK at quarter start, "
                     "hires and separations are FLOWS during the quarter: never plot them "
@@ -195,6 +199,10 @@ for y in YEARS:
             trend.append(rec)
 out("wages", "wages.json", {
     "meta": {"source": "BLS QCEW annual averages",
+             # Masthead date: the newest input this page reads. Not in the raw pull's own
+             # meta; wages/README.md records that the 2025 averages were re-read from the
+             # bureau on 11 September 2026 (mfg.json, the page's other file, is 2026-08-30).
+             "fetched": "2026-09-11",
              "footprint": META[FOOTPRINT],
              "row": "one (year, county, NAICS) cell; weekly_wage is average weekly wage "
                     "per covered job, not a salary and not per person",
@@ -231,6 +239,9 @@ for (sid, label, date), rows in sorted(per.items()):
                     "path": [{"v": r["value"], "from": r["vintage_start"]} for r in rows]})
 out("revisions", "revisions.json", {
     "meta": {"source": "ALFRED, the archival vintages behind FRED",
+             # Masthead date: the newest vintage in the archive (as_of, not fetched: the
+             # vintage date is when ALFRED published it, not when we pulled it).
+             "as_of": max(r["vintage_start"] for r in v),
              "row": "one (series, reference month) with every value ever published for it",
              "why": "A published number is an estimate that keeps moving. Charts normally show "
                     "only the latest vintage, which hides that entirely.",

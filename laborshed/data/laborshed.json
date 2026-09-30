@@ -1,5 +1,6 @@
 {
  "meta": {
+  "fetched": "2026-08-16",
   "source": "LEHD LODES8 origin-destination, Ohio, 2022, segment JT00 (all jobs), main + aux",
   "row": "one (home county, work county) count of JOBS, not people and not commuters. A two-job worker appears twice.",
   "footprint": {

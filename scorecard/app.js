@@ -316,7 +316,7 @@ const groupHead = g => {
 
 document.getElementById("board").innerHTML = `
   <table class="sc">
-    <caption>PIC scorecard, version ${D.version}. Register as of ${D.meta.fetched};
+    <caption>PIC scorecard, version ${D.version}. Register as of ${D.meta.register_as_of};
       education data ${TAL.year}.</caption>
     <thead><tr>${COLS.map(([t]) =>
       `<th scope="col" class="h-${t.toLowerCase()}">${t}</th>`).join("")}</tr></thead>
@@ -504,7 +504,7 @@ document.getElementById("deliverytable").innerHTML = tableView("del",
     s.unassigned ? usd(s.unassigned) : "none", s.pct.toFixed(1) + "%"]));
 
 document.getElementById("deliverysrc").innerHTML =
-  `PIC award register as of ${D.meta.fetched}, ${DEL.source_note} Match and cost share are `
+  `PIC award register as of ${D.meta.register_as_of}, ${DEL.source_note} Match and cost share are `
   + `excluded from these bars: they are committed by partners, not awarded to PIC. `
   + `<b>These are commitments, not payments.</b>`;
 

@@ -532,14 +532,12 @@ const PV = (() => {
        the masthead from the data, so it can neither be forgotten nor go stale. Byline is
        the organisation, deliberately: this is desk work, and the reviewer of record is
        named in "How we checked it" below. */
-    /* THE DATE IS THE PAGE'S OWN, NEVER A SHARED ONE. It comes from this page's meta:
-       `fetched`, or `as_of` where a page dates its register that way (chain). A page that
-       supplies neither used to get no dateline and no message, so a missing date read as a
-       deliberate choice. It now logs an error, which tools/verify.mjs turns into a failed
-       gate. UNDATED is the ratchet: pages whose data files carry no date, held there until
-       John rules which date each one shows. Do not add a page to it; give the page a date.
-       The hub passes no `page`, so it is keyed as "index". */
-    const UNDATED = new Set(["churn", "index", "laborshed", "realwage", "revisions", "wages"]);
+    /* THE DATE IS THE PAGE'S OWN, NEVER A SHARED ONE: the newest input date among the
+       data files the page reads, written into that page's meta as `fetched`, or `as_of`
+       where the date is a vintage or a register date rather than a pull (chain, revisions,
+       the hub). A page that supplies neither gets no dateline, so it logs an error, and
+       tools/verify.mjs fails the gate on any console error. Before 2026-09-30 it skipped
+       the dateline silently and seven pages went without one. */
     const mast = document.querySelector("header.mast .wrap");
     const asOf = m.fetched || m.as_of;
     if (mast && !mast.querySelector(".dateline")) {
@@ -548,8 +546,8 @@ const PV = (() => {
         d.className = "dateline";
         d.textContent = `Data as of ${asOf}`;
         mast.appendChild(d);
-      } else if (!UNDATED.has(o.page || "index")) {
-        console.error(`PV.methodology: page "${o.page}" supplied no meta.fetched or meta.as_of, so its masthead has no data date.`);
+      } else {
+        console.error(`PV.methodology: page "${o.page || "index"}" supplied no meta.fetched or meta.as_of, so its masthead has no data date.`);
       }
     }
 

@@ -133,6 +133,7 @@ def derive(peers, archive=None, price_csv=None, footnotes=None, qcew_receipt=Non
         'not': 'These are industry-average wages, not matched occupations, individual offers, a cost-of-living budget or a quality-of-life ranking.',
         'suppression': f"{len(rows)} matched metros; {counts.get('source_suppressed',0)} QCEW rows explicitly suppressed; {sum(v for k,v in counts.items() if k != 'source_suppressed')} other exclusions. Absence of a matched row is never treated as suppression. Ranks apply only to this disclosed matched sample.",
         'caution': 'Historical 2024 comparison. Detailed-industry QCEW metro publication ended beginning Q3 2025; the source is not a current recruiting-offer feed.',
+        'fetched': receipt.get('snapshot_fetched'),
         'year': YEAR, 'n_metros': len(rows), 'n_big': len(big), 'big_floor': 2000},
         'metros': rows, 'big': big, 'home': [r for r in rows if r['home']],
         'coverage': {'qcew_rows': len(wages), 'matched': len(rows), 'excluded_by_reason': counts,

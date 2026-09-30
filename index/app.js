@@ -327,7 +327,8 @@ try {
     /* Points at _data/SOURCES.json, not at _data/PIPELINES.md. PIPELINES.md is an internal
        working document and is not published, so naming it here sent every public reader to
        a path that does not exist — on the one page that exists to tell them where to look. */
-    meta: {source: "Every dataset behind these pages is registered in _data/SOURCES.json " +
+    meta: {as_of: (await PV.data("counts.json")).as_of,   // newest masthead date of the linked pages, from derive_index.py
+           source: "Every dataset behind these pages is registered in _data/SOURCES.json " +
                    "with its endpoint, its exact filter values, and the script that fetched " +
                    "it. The methods and the known limits are in _data/METHODS-SOP.md.",
            scope: "The chart and numeric card summaries restate findings the " +
