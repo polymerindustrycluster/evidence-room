@@ -11,6 +11,22 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-30 — Two cluster-health sentences the data did not support
+
+**A direction typed instead of read, *cluster-health*.** **Was:** the jobs-and-workplaces
+paragraph said that from 2019 to 2025 "establishments were unchanged at 365". **Is:**
+"establishments rose from 364 to 365". The sentence now takes its direction word from the
+two endpoints, and claim `workplaces-eleven-year-window-audit` pins the direction as well as
+the endpoints.
+
+**A figure rounded twice, *cluster-health*.** **Was:** the price-index stat card printed the
+largest revision as 1.42 percent. **Is:** 1.41 percent, which the source gives (1.4146) and
+the prose beside the card already said. `derive_health.py` rounded the revision to three
+places (1.415) before the card rounded it to two. It now computes each month's revision
+from its first and latest levels and stores six places; claim
+`noise-floor-measured-only-for-prices` checks the printed strings. The page carries a dated
+correction line.
+
 ## 2026-09-30 — A seat called the winner, a title that stopped short, and a grantee named
 
 No figure changed.
