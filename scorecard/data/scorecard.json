@@ -2,7 +2,8 @@
  "meta": {
   "source": "PIC award register, signed federal Notices of Award, executed state grant agreement SBIG20251005, IPEDS completions, BLS QCEW and the chain page’s published-member flag. Each is published elsewhere on this site.",
   "row": "one scorecard metric: its definition, who owns it, how often it is read, the target, and the latest reading where a public record can supply one.",
-  "fetched": "2026-08-13",
+  "fetched": "2026-09-08",
+  "register_as_of": "2026-08-13",
   "definition": "A row is accountable when PIC controls the thing being measured (groups A, B and C) and context when it does not (group D). The two are never averaged, summed, or scored together.",
   "derived_note": "Nothing here is fetched. Every populated figure is recomputed by derive_scorecard.py from a JSON file another page in this repository already publishes, so a correction on that page fails this page’s claims rather than leaving a stale board number in place.",
   "publicOnly": "This repository is public and its history is permanent, so it carries no membership register and no applicant or personal data. Its one per-company membership fact is the chain page’s flag marking the companies PIC has published as members. Every metric that would need PIC’s membership register, general ledger, pipeline or drawdown records is published here as a defined empty slot. Filling those rows requires a copy of this page kept outside a public repository.",
@@ -11,7 +12,7 @@
   "small_numbers": "The talent rows are administrative counts in the tens. The polymer series ran 54, 62, 63 across 2021, 2022 and 2023, so a single year is a reading and not a direction.",
   "excludes": "The federal mirror this series was built from ran a year behind from 2020 to 2022 and never served the 2022 collection year at all. Those three years are now taken from the NCES completions files directly, so the 2021-2023 window this page reads is three consecutive years rather than two years and a gap."
  },
- "generated_on": "2026-09-29",
+ "generated_on": "2026-09-30",
  "version": "1.2",
  "counts": {
   "rows": 18,

@@ -93,6 +93,10 @@ top_ext = sorted(({"fips": k, "name": ADJACENT.get(k) or DISTANT.get(k) or k,
 out = {"meta": dict(
     source=meta22["source"],
     row=meta22["row"],
+    # Masthead date: the newest input this page reads. Today that is bench.json, the
+    # page's other file; run derive_laborshed_bench.py first.
+    fetched=json.load(open(os.path.join(WEB, "laborshed", "data", "bench.json"),
+                           encoding="utf-8"))["meta"]["fetched"],
     footprint=META["pic12"],
     no_industry="This page uses all-job totals for the whole economy. LODES "
                 "origin-destination includes three broad industry groups (SI01-SI03), "

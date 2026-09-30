@@ -484,7 +484,12 @@ doc = {
                   "this site.",
         "row": "one scorecard metric: its definition, who owns it, how often it is read, "
                "the target, and the latest reading where a public record can supply one.",
-        "fetched": FM["meta"]["asOf"],
+        # The masthead date is the newest input this page reads, by the site rule that a
+        # page shows its own data date (federal.json is the newest today). The award
+        # register's own date stays separate: the captions say "Register as of".
+        "fetched": max(FM["meta"]["asOf"], FED["meta"]["fetched"],
+                       OCC["meta"]["fetched"], PEERS["meta"]["fetched"]),
+        "register_as_of": FM["meta"]["asOf"],
         "definition": "A row is accountable when PIC controls the thing being measured "
                       "(groups A, B and C) and context when it does not (group D). The "
                       "two are never averaged, summed, or scored together.",

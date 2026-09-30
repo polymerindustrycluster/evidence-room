@@ -156,8 +156,9 @@ counting quarters would name marks the reader cannot see.
 - **A revision magnitude.** Nothing here measures how far past QWI revisions moved these
   quarters; that needs archived vintages. Until then the 1.1-point rise is reported as an
   estimate and the caveat sits beside the chart it affects.
-- **A dateline.** `data/churn.json` has no `meta.fetched`, so `PV.methodology()` stamps no
-  "Data as of" date on the masthead. Re-running the fetch fills it.
+- **A dateline of the churn file's own.** `data/churn.json` carries `meta.fetched`, set to
+  the newest input the page reads (`data/bench.json`, 2026-09-01); the raw QWI pull behind
+  `churn.json` records no date of its own.
 - **One reported voice.** The human-scale beat ships at rung 3 (a translated vignette). The
   interview ask, if reporting happens: call a PIC member plant's HR lead in Portage or
   Summit; ask (1) how many hires they made last year against headcount, (2) how many of

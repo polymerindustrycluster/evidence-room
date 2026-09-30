@@ -6,6 +6,7 @@ claim was added anywhere else — the page said 61 while the harness said 62, an
 go stale, so these are generated.
 """
 import json, os, glob
+import masthead
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.abspath(os.path.join(HERE, "..", ".."))
@@ -32,7 +33,15 @@ arts = sorted(d for d in os.listdir(WEB)
 for a in arts:
     pages.setdefault(a, {"claims": 0, "manual": 0, "legacy": a in LEGACY})
 
+# THE HUB'S DATE IS THE NEWEST MASTHEAD DATE AMONG THE PAGES IT LINKS TO, computed here so
+# it moves when any of them does. masthead.py says which file each page's masthead reads;
+# unlisted pages are not linked, so they do not count.
+linked = [a for a in arts if not os.path.exists(os.path.join(WEB, a, ".unlisted"))]
+missing = sorted(set(linked) - set(masthead.MASTHEAD_FILE))
+assert not missing, f"derive_index: masthead.MASTHEAD_FILE lacks {missing}; name the file each page's masthead reads."
+
 out = {"n_pieces": len(arts),
+       "as_of": max(masthead.masthead_date(WEB, a) for a in linked).isoformat(),
        "total_claims": sum(v["claims"] for v in pages.values()),
        "total_manual": sum(v["manual"] for v in pages.values()),
        "pages": pages,
