@@ -63,7 +63,7 @@ const GATES = [
   ["fontfocus",   "node",   ["tools/fontfocus.mjs"],         "chart focus survives a late web font, announced once"],
   ["collide",     "node",   ["tools/collide.mjs", "--sweep"],  "overlap and out-of-frame, 14 widths", true],
   ["textsize",    "node",   ["tools/textsize.mjs", "--sweep"], "12px rendered floor, 14 widths", true],
-  ["selftest",    "node",   ["tools/selftest.mjs"],            "54 known-defect fixtures across 14 gates", true],
+  ["selftest",    "node",   ["tools/selftest.mjs"],            "55 known-defect fixtures across 14 gates", true],
 ];
 
 const rows = [];
