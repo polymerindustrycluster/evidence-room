@@ -3,11 +3,12 @@
   "source": "This page\u2019s own dataset is _data/SOURCES.json (the source registry) and _data/catalog.json (the generated inventory of build scripts), joined to five shipped page files: wages for the concentration reading and the industry-code arithmetic, occupations for the education-boundary example, peers for the disclosure rates, revisions for how far these series move after publication, and laborshed for the measured gap.",
   "row": "One row of the register is one source: its endpoint, the exact filter values applied to it, whether it needs a key, and every page here that rests on it.",
   "fetched": "2026-09-08",
+  "as_of": "2026-09-11",
   "definition": "How you get it is DERIVED from the endpoint\u2019s shape, not declared in the registry, and the four tests run IN THIS ORDER: no endpoint at all is an internal record; then a URL ending in a file extension is a bulk download; then a URL with an api path segment is an API request; then a URL ending in a directory is a bulk download; and anything left is a portal query. The order is printed because it decides the answer rather than describing it: two of these endpoints end in a directory AND carry an api segment, and reading the tests in a different order relabels them. The rule is on the page so a reader can disagree with a label rather than inherit it.",
   "why": "The register lists only the sources behind the analyses published in this repository. The internal series has more pages and more sources, and their absence is stated rather than left to be discovered.",
   "scope": "This page hands over method, not data. It does not republish any source, and following it will not give you these numbers: it will give you the same numbers for your own region, which is the point.",
   "not": "A licence and a set of terms are different things and the register keeps them apart. Two sources state a LICENCE that conditions use: O*NET is CC BY 4.0 and IPEDS reaches this site through the Urban Institute\u2019s portal under ODC-By 1.0. Both require attribution, and both credits are printed in this page\u2019s footer with a link to the licence, because describing a licence is not complying with one. The federal statistical series state TERMS instead, which is public domain with a citation request, and those are quoted on each entry with the agency page they come from, rather than left as an implication that no term exists.",
-  "caution": "Two of the fourteen sources have no endpoint and no script. They are internal records, the published file is the artifact, and nothing on this site can make them fetchable."
+  "caution": "Three of the 27 sources have no endpoint, and two of those also have no script. They are internal records, the published file is the artifact, and nothing on this site can make them fetchable."
  },
  "sources": [
   {
@@ -2959,8 +2960,8 @@
   "n_manual": 22,
   "this_page": 34,
   "n_auto": 520,
-  "n_hub_claims": 33,
-  "n_site_claims": 575
+  "n_hub_claims": 34,
+  "n_site_claims": 576
  },
  "vintage": {
   "n_revised": 259,

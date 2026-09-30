@@ -14,15 +14,27 @@ page, the figure, and what you think it should be.
 ## 2026-09-30 — Mastheads that showed no data date, or the wrong one
 
 **Was:** seven pages printed no "Data as of" date at all: churn, laborshed, realwage,
-revisions, wages, the front page and chain. The scorecard printed 13 August 2026, the date of
-its award register, though it also reads federal obligations pulled on 8 September. **Is:**
-every masthead shows the newest input date among the data files its page reads: churn
-1 September, laborshed 16 August, realwage 14 August, revisions 13 August, wages 11 September,
-chain 14 August and the scorecard 8 September 2026. The front page shows the newest date among
-the pages it links to, 11 September 2026, and a claim checks it. The scorecard's two "Register
-as of" captions still say 13 August, which is the register's own date. **Cause:** the shared
-masthead code printed a page's fetch date and, when a page had none, printed nothing and said
-nothing. It now falls back to the page's as-of date and fails the build when a page has neither.
+revisions, wages, the front page and chain. Five more printed the date of one file when the
+page reads a newer one: the scorecard 13 August 2026 (award register; it also reads federal
+obligations pulled 8 September), accountability 13 August (it reads the establishment counts
+pulled 11 September), sources 8 September (it reads wages pulled 11 September), patents
+30 August (it restates the occupations data of 31 August) and the timeline 13 August (its
+heritage register is dated 14 August). **Is:** every masthead shows the newest date among the
+data files its page reads: churn 1 September, laborshed 16 August, realwage 8 September,
+revisions 13 August, wages 11 September, chain 14 August, the scorecard 8 September,
+accountability 11 September, sources 11 September, patents 31 August and the timeline
+14 August 2026. The front page shows the newest date among the pages it links to,
+11 September 2026. The scorecard's two "Register as of" captions still say 13 August, which is
+the register's own date. Two checks hold this: the hub's date is a claim, and a consistency
+check fails any page whose masthead date is older than the newest file it reads. The sources
+page also said "two of the fourteen sources have no endpoint and no script" and printed a
+hub claim count of 33 and 575 site-wide. The register holds 27 sources, three with no
+endpoint and two of those with no script, and the hub carries 34 claims for 576 across the
+site; both now come from the registry and a check reads the printed numbers against it.
+**Cause:** the shared masthead code printed a page's fetch date and, when a page had none,
+printed nothing and said nothing. It now reads the page's as-of date, or its fetch date, and
+fails the build when a page has neither. Nothing compared a masthead date with the other
+files its page reads, and the sources page's census sentence was typed and unchecked.
 
 ## 2026-09-30 — More sentences that said more than their data
 

@@ -38,6 +38,10 @@ function loadData(file) {
   const NOW = new Date('2026-08-13');
   const NOW_ISO = '2026-08-13';
   const NOW_LBL = '13 Aug 2026';
+
+  // ISO date to "14 August 2026", the form this page prints its dates in.
+  const longDate = (iso) => `${+iso.slice(8)} ${['January', 'February', 'March', 'April', 'May', 'June', 'July',
+    'August', 'September', 'October', 'November', 'December'][+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}`;
   const DESIG_ISO = '2023-10-23';
   const DESIG_YEAR = +DESIG_ISO.slice(0, 4);
   const DESIG_LBL = '23 October 2023';
@@ -1279,7 +1283,10 @@ function loadData(file) {
        inline literal rather than a data file's meta block because two registers feed this
        page, and the reconciliation between them is computed here from both. */
     PV.methodology({page: 'timeline', meta: {
-      fetched: '13 August 2026',
+      /* The masthead date is the newest input the page reads (John's rule, 2026-09-30):
+         the heritage register, 14 August, is newer than the operating record, 13 August.
+         Both dates are stated in this box; the 13 August NOW below is the record's cut-off. */
+      fetched: longDate([d.meta.asOf, HER.meta.asOf].sort().pop()),
       source: d.meta.source +
         ` Of those ${d.events.length}, ${nCal} fall inside the 2023 to 2029 calendar window and are ` +
         `drawn there: ${sinceOpen} delivered and ` +
