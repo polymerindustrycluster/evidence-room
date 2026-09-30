@@ -32,17 +32,34 @@ const D = await PV.data("reach.json");
    every chart and figure behind one stalled font file, so the chart is drawn at once and
    drawn again as each face that was loading arrives, and after any later load. */
 const onFonts = redraw => {
-  /* A redraw replaces the chart's nodes; a reader tabbing through its marks keeps their place. */
-  const keep = () => {
-    const a = document.activeElement, k = a && a.getAttribute && a.getAttribute("aria-label");
-    redraw();
-    if (k && !a.isConnected) {
-      const n = [...document.querySelectorAll("[aria-label]")].find(e => e.getAttribute("aria-label") === k);
-      if (n) n.focus({preventScroll: true});
-    }
+  /* A redraw replaces the chart's nodes. Geometry follows every face as it lands (faces
+     landing in one frame share a redraw), never waiting on one still loading. A reader
+     tabbing through the marks gets focus back ONCE, when no face is loading, since a
+     screen reader announces every focus(); and not at all if they have moved on. */
+  const count = () => [...document.fonts].filter(f => f.status === "loaded").length;
+  let lost = null, queued = false, seen = count();
+  const settle = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      if (count() !== seen) {           // a face landed; the last face and loadingdone share one
+        seen = count();
+        const a = document.activeElement, k = a && a.getAttribute && a.getAttribute("aria-label");
+        redraw();
+        if (k && !a.isConnected) lost = k;
+      }
+      if (!lost || [...document.fonts].some(f => f.status === "loading")) return;
+      const now = document.activeElement;
+      if (!now || now === document.body) {
+        const n = [...document.querySelectorAll("[aria-label]")].find(e => e.getAttribute("aria-label") === lost);
+        if (n) n.focus({preventScroll: true});
+      }
+      lost = null;
+    });
   };
-  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(keep, () => {}); });
-  document.fonts.addEventListener("loadingdone", keep);
+  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(settle, () => {}); });
+  document.fonts.addEventListener("loadingdone", settle);
 };
 
 /* THE LEFT MARGIN IS MEASURED, NOT TYPED (the peers/app.js helper, same reasons).

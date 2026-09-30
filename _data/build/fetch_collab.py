@@ -178,25 +178,56 @@ by_title = {n: v for n, v in by_title.items()
 # NSF wrote "Last, First" in pdPIName or split them into piFirstName and piLastName. An
 # award with no usable identity is unknown and matches nothing: two blank keys are not one
 # person, and dropping a pair on them would delete a real joint project (2026-09-30).
+# First and last names must agree. A middle name or initial missing on one side may still
+# match, but conflicting ones ("John A. Smith", "John B. Smith") are two people, and so are
+# conflicting suffixes (Jr., Sr., II); a suffix is never read as a surname (2026-09-30).
 def pi_name(a):
-    """'first last', lower-case ASCII letters, middle names dropped; '' when unknown."""
-    raw = (a.get("pdPIName") or "").strip()
-    if "," in raw:
-        last, _, first = raw.partition(",")
-        raw = f"{first} {last}"
-    if not raw:
-        raw = f"{a.get('piFirstName') or ''} {a.get('piLastName') or ''}"
-    words = re.findall(r"[a-z]+", unicodedata.normalize("NFKD", raw).encode("ascii", "ignore")
-                       .decode().lower())
-    return f"{words[0]} {words[-1]}" if len(words) >= 2 else ""
+    """(first, middles, last, suffixes) in lower-case ASCII letters; None when unknown."""
+    suffixes = {"jr", "sr", "ii", "iii", "iv"}
+
+    def words(text):
+        return re.findall(r"[a-z]+", unicodedata.normalize("NFKD", text)
+                          .encode("ascii", "ignore").decode().lower())
+
+    def parse(raw):
+        # Comma parts: "Last, First Middle", optionally with the suffix in its own part
+        # ("Yao, Lingxing, Jr.") or trailing a part ("Yao, Lingxing Jr.", "Lingxing Yao Jr.").
+        found, parts = set(), []
+        for part in raw.split(","):
+            w = words(part)
+            while len(w) > 1 and w[-1] in suffixes:
+                found.add(w.pop())
+            if len(w) == 1 and w[0] in suffixes and parts:
+                found.add(w.pop())
+            if w:
+                parts.append(w)
+        if not parts:
+            return None
+        order = [x for p in parts[1:] for x in p] + parts[0]
+        if len(order) < 2:
+            return None
+        return order[0], tuple(order[1:-1]), order[-1], frozenset(found)
+
+    return (parse((a.get("pdPIName") or "").strip())
+            or parse(f"{a.get('piFirstName') or ''} {a.get('piLastName') or ''}"))
 
 
 def same_pi(a, b):
     ia, ib = str(a.get("piId") or "").strip(), str(b.get("piId") or "").strip()
     if ia and ib:
         return ia == ib
-    na = pi_name(a)
-    return bool(na) and na == pi_name(b)
+    na, nb = pi_name(a), pi_name(b)
+    if not na or not nb or na[0] != nb[0] or na[2] != nb[2]:
+        return False
+    if na[3] and nb[3] and na[3] != nb[3]:
+        return False
+
+    def fits(x, y):                      # "a" fits "albert"; "anne" does not fit "alice"
+        return x == y or (len(x) == 1 and y.startswith(x)) or (len(y) == 1 and x.startswith(y))
+
+    short, long_ = sorted((na[1], nb[1]), key=len)
+    rest = iter(long_)                   # every middle on the shorter side, in order
+    return all(any(fits(m, n) for n in rest) for m in short)
 
 
 def is_transfer(akron, cwru):
