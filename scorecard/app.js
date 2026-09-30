@@ -505,7 +505,7 @@ document.getElementById("deliverytable").innerHTML = tableView("del",
 
 document.getElementById("deliverysrc").innerHTML =
   `PIC award register as of ${D.meta.fetched}, ${DEL.source_note} Match and cost share are `
-  + `excluded from these bars: they are committed by partners, not awarded to PIC. `
+  + `excluded from these bars: they are committed by partners, not by the governments that made the awards. `
   + `<b>These are commitments, not payments.</b>`;
 
 /* ================================================================== 3. talent
