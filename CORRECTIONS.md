@@ -42,6 +42,218 @@ dated note beside it says so; the 8 September note stands as written.
 **Cause:** Each was a copy of an already-corrected sentence that the earlier fix did not
 search for. No claim reads these sentences.
 
+## 2026-09-29 — Federal money does reach PIC, *funding-map*
+
+**Was:** the Tech Hub machine card said EDA obligates each implementation award straight
+to its project lead, "so no federal dollar passes through PIC's hands". **Is:** "so none of
+the Tech Hub money passes through PIC on its way to another lead. One of the seven leads is
+the Greater Akron Chamber, of which PIC is an initiative, on $2.65M for innovation
+governance." A dated note under the machines adds that the Chamber is also the grantee on
+all $3,084,371 of APEX, the second EDA award. **Cause:** the sentence stretched what the
+EDA route rules out, pass-through to other leads, into a claim about all federal money, and
+the page's own register holds two federal lines at the Chamber. The claim beside it checked
+that the three routes differ, never the sentence's conclusion; it now pins both of the
+Chamber's federal lines, and the card's $2.65M is bound to its noun.
+
+**Later the same day.** **Was:** the corrected card still said "EDA obligates each of them,
+meaning it commits the money straight to that lead". **Is:** "EDA signs each of them
+straight to that lead"; USAspending confirms the obligation on six of the seven, all but
+Huntsman's, whose signed award has no record there. **Cause:** the correction reworded the
+sentence's conclusion and kept its premise, which the page's own source note qualifies.
+
+**Later, 30 September.** **Was:** the Tech Hub plate on the map read "Obligated to each
+project lead", the Tech Hub panel said EDA "obligates directly to each project lead", and
+the direct-awards panel said the seven awards are "obligated straight to their project
+leads". **Is:** "Signed to each project lead"; the panels say EDA signs directly to each
+lead and that USAspending records the obligation on six of the seven, all but Huntsman's,
+whose ED25HDQ0G0009, $5,970,805, is signed with no USAspending record. A dated note under
+the map says so. **Cause:** the 29 September corrections reached the machine card and not
+the plate or the panels, which carry the same premise. The claim now reads the card's own
+sentence on the page, so the withdrawn "no federal dollar passes through PIC" fails the noun
+gate, and it forbids an obligation claim on the plate.
+
+## 2026-09-29 — The scorecard and the accountability page before their first publication
+
+A pre-publication audit read both pages against their own data. The statements below failed
+it. Both pages were unlisted when they were written, but a reader with the link could have
+quoted them, so each gets an entry.
+
+**Money spent, *scorecard*.** **Was:** the note under the scorecard said "No figure on this
+page is a measure of money spent", and the empty disbursement row read "no figure exists in
+this repository". Group B has printed federal outlays on seven of the eight federal lines
+since 1 September. **Is:** "An award register records commitment, not payment, so no figure
+taken from it measures money spent"; the note adds that no public figure covers the state
+grant or the whole $85,335,784, and the row reads "no figure spans the register".
+
+**The member flag's denominator, *scorecard*.** **Was:** the flag "marks, counts and exports
+38 of the 785 companies" on the chain page. **Is:** 38 of 710, the chain page's count since
+its 11 September correction.
+
+**Labels broader than their rows, *scorecard*.** **Was:** group A was "the four rows on
+revenue"; the federal context row read "Routine federal obligations to regional polymer
+firms"; every assigned dollar "names the organisation that receives it" and sat "on an
+executed line"; the completions row covered
+"every polymer field of study" the federal classification recognises; the talent trend read
+"up three years" over three values, which hold two rises. **Is:** two of the
+four group A rows are membership, so "membership and revenue"; the federal row is the
+average yearly obligation dollars on federal prime contracts under the chemical and
+plastics/rubber manufacturing codes; two of the twenty-one named recipients are programmes,
+so every assigned dollar is on a register line with a named recipient, and the definitions
+of the two assignment rows say that recipient is an organisation or a programme; $73,199,371
+of it is on an executed line, because the $5,970,805 EDA award to Huntsman, ED25HDQ0G0009,
+has no USAspending record, so its execution is not verified; the completions row counts the codes the occupations page classes as
+polymer; the trend reads "up in both years since 2021".
+
+**Where the money goes, *accountability*.** **Was:** the awards commit the funders to pay
+the other recipients directly, by design, so PIC cannot mis-spend money that never passes
+through it. **Is:** $48,351,413 is EDA money on the awards of the six other project leads;
+USAspending confirms $42,380,608 of it obligated directly to five of them, and the sixth,
+$5,970,805 to Huntsman, is on a signed Notice of Award whose obligation is not verified; the
+other $26,669,248 runs through the hub or the Chamber, $23,584,877 on state-grant lines the
+hub allocates and the $3,084,371 APEX award, on which the Chamber is the grantee.
+
+**The Chamber's wider figure, *accountability*.** **Was:** the Chamber "signed for" $7.6
+million. **Is:** $7.6 million is every award the page names the Chamber on, as destination
+or grantee; no file in the repository names the grantee of the state grant.
+
+**Dates at the wrong precision, *accountability*.** **Was:** the register of published dates
+"opens on the day this page ships"; the 9 September conference read "the date has not
+arrived" after it had; eight register dates known only to a year or a quarter printed as single
+days, among them "15 November 2027" for a promise dated to the last quarter of 2027; and the
+narrative read "On 1 July 2025 PIC recorded" a first funding cycle dated to the year. **Is:** the register opened on
+28 August 2026; a passed date reads as not yet read against the register; each date prints
+at its known precision.
+
+**The negative space, *accountability*.** **Was:** the empty disbursement line repeated the
+scorecard's old note, on a page that prints $11,642,402 paid out; each empty line read
+"defined today", the scorecard's build date; the closer said PIC "has set no target for any
+of the eighteen dates"; the band's heading said PIC "has set itself no targets". **Is:** the
+line quotes the scorecard's corrected note; each line carries 28 August 2026, when it was
+written; none of the eighteen dated commitments carries a numeric target PIC set, though PIC
+set four of them; the heading and the Limitations are scoped to the board and the register, and
+the Limitations name PIC's own goal, 150 members and $1 million in annual revenue by 2028,
+which the page shows beside the register.
+
+**Two descriptions of one award, *accountability*.** **Was:** band E's source line said of the
+award register's and the event register's descriptions of APEX that "one of the two is
+incomplete". **Is:** the Notice of Award decides which is right, and the page does not
+presume which description is at fault.
+
+**The Bounce balance, *scorecard*.** **Was:** both Ohio workstreams holding unassigned money
+had sub-grants that "have not been signed yet". **Is:** the PIC Translational R&D balance has
+not been sub-granted; the startup-support balance is delivered through Bounce Innovation
+Hub under a sub-grant agreement dated 15 May 2025, and the register names recipients in
+that workstream only for the nine $25,000 cohort awards.
+
+**Where the figures come from, both pages.** **Was:** the scorecard was "built only from
+public federal and state data", its square key and table legend said a public federal or
+state record computes every filled row, and both pages' Limitations said the repository
+"carries no member, applicant or personal data" or record "at any grain"; the accountability
+page's membership line said "no grain of a member record is publishable". **Is:** every
+scorecard figure but the member count is built from public federal and state records and
+PIC's published award register, and the member count comes from PIC's published membership
+and company register; the repository carries no membership register, and its one
+per-company membership fact is the chain page's published-member flag; the membership line
+says no member's dues, standing or renewal is publishable here.
+
+**Programme rows, *accountability*.** **Was:** "Two rows name a programme or a building
+rather than an organisation". **Is:** two recipients do, and they hold three rows, because
+the regional workforce programs carry two award lines.
+
+**What fills an empty line, *accountability*.** **Was:** each line of the second list carried
+"either a date it will be filled or a permanent reason". Three lines carry a condition, "on a
+decision to publish drawdown totals", "on a quarterly reporting arrangement" and "on the
+slip-record decision". **Is:** each line carries the condition on which it will be filled or
+a permanent reason, and no document sets a date for any of them.
+
+**A year that has begun, *accountability*.** **Was:** five commitments dated only to 2026,
+F17 to F21, read "the date has not arrived" on a 29 September 2026 build, and the closer and
+a note counted "eighteen dates". **Is:** a row whose day, month, quarter or year has begun
+reads that it has begun and has not ended, and reads as not yet read against the register
+only after that period's last day; the page counts eighteen dated commitments, which fall
+on twelve distinct dates.
+
+**Executed, verified and obligated, both pages.** **Was:** the accountability page said all
+$79,170,176 assigned sits on an executed award line, in its band A paragraph, its band B
+lede ("An award register records commitment and execution"), the payment chart's label and
+description, the coalition table's lede, subtitle and caption ("27 executed lines") and the
+methodology, and its band A source line said the register is "verified against signed
+federal Notices of Award" with no exception. The scorecard's EDA row read "7 of 7" awards
+obligated against a target of "7 of 7 awards"; its disbursement row said the register
+"records commitment and execution"; its award chart's source line said the register is
+"verified against the signed federal Notices of Award"; and its closing note said the eight
+filled rows "compute from federal and state records". **Is:** $73,199,371 on twenty-six of
+the twenty-seven lines is executed; the twenty-seventh, ED25HDQ0G0009, $5,970,805 to
+Huntsman, is a signed Notice of Award with no USAspending record, so its execution and
+obligation are not verified, and each of those surfaces says so. The EDA row reads 6 of 7
+against a target of 7 signed awards. The closing note credits
+PIC's published award register, which three of the eight filled rows read. The
+accountability chart also labelled the $75,020,661 assigned beyond the Chamber's lines
+"obligated to other named recipients" and said the detached match bar was "never part of
+the total"; it now reads "assigned to other named recipients", and the match is counted in
+reported secured and in no stage after it.
+
+**Cause:** Each page was corrected on 1 and 8 September at the surface a reviewer named, and
+the same statement survived on the other surfaces: the scorecard's note, the accountability
+page's copy of it, and the chain count the member flag quotes. The timeline's stand-in days
+were printed as dates because the page never read the precision field beside them. The
+sentence on where the money goes was true of the EDA award and was written for all three.
+New claims now read the mechanism of every award line, the precision of every register date,
+and the scorecard note the accountability page quotes. A second review of these corrections
+found five more: a named recipient was read as an executed line; the provenance line and
+both Limitations predate the member flag and were not revised when it arrived; the
+programme sentence counted recipients and called them rows; the list of empty lines was
+described before its lines were written; and the first date fix re-derived only periods
+that had ended. Claims sc-executed, sc-provenance and acc-member-provenance are new, and
+acc-aggregates, acc-promises, acc-register-dates and acc-negative-list2 now pin these
+counts and wordings. A third review found that the Huntsman exception had reached the
+headline figures and not the labels, source lines, the EDA row or the accountability page's
+paragraphs, and that the scorecard's closing note still credited federal
+and state records alone. The chart labels and source lines are now written into the data
+files, where sc-executed, sc-eda-seven and acc-attribution read them; acc-coalition
+and sc-provenance bind the corrected sentences; and acc-promises now pins
+which commitments share the year 2026, F17 to F21 reading that their year has begun and F22
+giving the membership exclusion, where its text had said F17 to F22 alike. A fourth review
+found the Huntsman exception still missing from three places: band A said EDA's Notices
+"obligate $48,351,413", a sum that includes the unverified award; the band A paragraph and
+the methodology said the twenty-six executed lines name twenty-one recipients, where they
+name twenty; and the scorecard's award chart dropped the EDA bar's "execution unverified"
+label on narrow screens. acc-licenses-mechanism now binds "obligat" to $42,380,608 and
+acc-attribution pins the twenty.
+
+**Later, 30 September.** A fifth review found six more. **Was:** the scorecard's standfirst
+glossed an executed line as "a signed agreement naming the recipient", which Huntsman's
+unconfirmed line also is; the scorecard's EDA row read 6 of 7 confirmed against a target of
+"7 signed awards"; the accountability chart's top sentence said "EDA obligates directly to
+each project lead"; band B's heading said "the federal lines have paid out 24.2 percent",
+which reads as all eight; the coalition line put "a building and a programme rather than an
+organisation" between "Two recipients" and its verb; and band A's source line said
+restating the Chamber's line "leaves the share at 4.9 percent", the unrestated figure too.
+**Is:** $73,199,371 on twenty-six lines is executed, each with a public record of its
+execution, and the other $5,970,805 of the $79,170,176 assigned is Huntsman's signed EDA
+award with no USAspending record; the EDA row's target reads "all 7 awards confirmed";
+EDA "signs directly to each project lead", and USAspending records the obligation on six of
+the seven, all but Huntsman's; the 24.2 percent is of
+the seven lines USAspending records, $11,642,402 of $48,114,979; two recipients hold three
+rows, one a building and one a programme; and the share moves from 4.86 to 4.93 percent.
+**Cause:** the gloss, the target and the chart's copy of the funding map's note were each
+written before the Huntsman exception and missed by the 29 September rounds; the heading
+dropped its paragraph's base; one decimal place hid the restatement. sc-executed now asserts
+the EDA bar's whole label, acc-attribution recomputes every stage amount the chart draws,
+and sc-eda-seven pins the target's unit.
+
+**Later, 30 September.** A sixth review found three more. **Was:** the funding map's spoken
+chart title said the twelve smallest recipients "get under a million between them"; the
+diagram's spoken description said the EDA award "is obligated directly to each of seven
+project leads"; and the accountability page's limitations said "Match is never summed into
+the staged bar". **Is:** each of the twelve gets under a million, $2.9 million between them
+($2,871,278); the award is signed to each lead and USAspending records the obligation on six
+of the seven, all but Huntsman's; match is counted in the reported-secured stage and in no
+stage after it, as the chart has said since 29 September. **Cause:** text a screen reader
+speaks and a limitations box are not where a reader of the page looks, and the earlier
+rounds searched only what renders. The scorecard's federal-contract label also now says
+"chemical, plastics and rubber codes" so it fits its column at 761px.
+
 ## 2026-09-29 — Labels and cards that said more than their data
 
 A review of the 2026-09-28 corrections found these beside them. One figure changed: the

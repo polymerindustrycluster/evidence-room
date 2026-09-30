@@ -3,9 +3,9 @@
 WHAT THIS SCRIPT IS FOR
   The accountability page publishes a subtraction: of the $106.3 million PIC reports
   securing, how much sits on award lines naming PIC's own organisation. A subtraction is
-  only worth publishing if it cannot go stale, so nothing here is fetched and nothing is
-  typed. Every figure is recomputed from a JSON file another page in this repository
-  already ships, and accountability/claims.json re-runs the same arithmetic against those
+  only worth publishing if it cannot go stale, so nothing here is fetched. Every figure
+  is recomputed from a JSON file another page in this repository already ships, or from
+  the two registers seeded by hand under data/ and listed below, and accountability/claims.json re-runs the same arithmetic against those
   UPSTREAM files rather than against this script's output. A correction on funding-map/
   therefore fails this page instead of leaving a flattering number in place.
 
@@ -33,7 +33,7 @@ import os
 import re
 import statistics
 import sys
-from datetime import date
+from datetime import date, timedelta
 
 parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
 parser.add_argument("--federal-only", action="store_true", help="Preserve the existing nonfederal snapshot")
@@ -51,6 +51,15 @@ def load(*parts):
 
 def die(msg):
     raise SystemExit(f"derive_accountability: {msg}")
+
+
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
+          "September", "October", "November", "December"]
+
+
+def long_date(iso):
+    y, m, d = (int(v) for v in iso.split("-"))
+    return f"{d} {MONTHS[m - 1]} {y}"
 
 
 FM = load(WEB, "funding-map", "data", "funding.json")
@@ -104,6 +113,14 @@ LINES.sort(key=lambda x: -x["amount"])
 
 TOT = FM["meta"]["totals"]
 ASSIGNED = sum(l["amount"] for l in LINES)
+# One line names its recipient in a signed Notice of Award but has no USAspending record,
+# so its execution is not verified. Every figure called executed leaves it out, and every
+# sentence that says executed is written here where a claim can read it (corrected
+# 2026-09-29: the page called all of the assigned total executed).
+UNV = SC["delivery"]["unverified"]
+EXECUTED_LINES = len(LINES) - (1 if UNV else 0)
+LINES_PHRASE = (f"{len(LINES)} award lines, {EXECUTED_LINES} of them executed" if UNV
+                else f"{len(LINES)} executed award lines")
 
 # THE FOUR STAGES. Match is never in this accumulator. It is a promise made at award time
 # by organisations other than PIC, so it is drawn as a detached bar with its own label and
@@ -114,7 +131,8 @@ STAGES = [
     {"key": "awarded", "amount": TOT["awards"], "label": "awarded",
      "sub": "the three public awards themselves"},
     {"key": "assigned", "amount": ASSIGNED, "label": "assigned to a named recipient",
-     "sub": f"{len(LINES)} executed lines naming {len(FM['recipients'])} recipients"},
+     "sub": f"{len(LINES)} lines naming {len(FM['recipients'])} recipients, "
+            f"{EXECUTED_LINES} executed"},
     {"key": "attributed", "amount": sum(l["amount"] for l in LINES
                                         if l["recipient_id"] == "greater-akron-chamber"),
      "label": "on award lines naming PIC’s own organisation",
@@ -161,6 +179,20 @@ OUTLAYS = {"source": _OL["source"], "as_of": _OL["asOf"], "lines": _OL["lines"],
 ATTRIBUTED = STAGES[3]["amount"]
 SHARE = ATTRIBUTED / TOT["awards"]
 
+# THE SHARE IN 2025 DOLLARS. techhub.json restates the two FY2024 EDA awards into 2025
+# dollars, which raises the award total. The Chamber's own EDA line is one of those two, so
+# band A's source line restates it with the total rather than the total alone; the printed
+# share is computed here, not typed on the page (corrected 2026-09-29).
+FY24 = {l["awardId"] for l in HUB["leads"] if l["awardId"].startswith("ED24")}
+if sum(l["amount"] for l in HUB["leads"] if l["awardId"] in FY24) != HUB["fy2024_share"]:
+    die("the FY2024 leads in techhub.json no longer sum to its fy2024_share")
+if not any(l["award_id"] in FY24 for l in GAC):
+    die("the Chamber's EDA line is no longer an FY2024 award; band A's source line says it is")
+_RESTATE = (HUB["award_2025_dollars"] - HUB["award"]) / HUB["fy2024_share"]
+RESTATED_SHARE = (sum(l["amount"] * (1 + _RESTATE if l["award_id"] in FY24 else 1)
+                      for l in GAC)
+                  / (TOT["awards"] + HUB["award_2025_dollars"] - HUB["award"]))
+
 # ------------------------------------------------------------------- band B, staging
 DEL = SC["delivery"]
 if DEL["assigned"] != ASSIGNED or DEL["awarded"] != TOT["awards"]:
@@ -204,9 +236,55 @@ for r in rows:
     if r.get("award_id") and r["award_id"] not in AWARD_IDS:
         die(f"promise {r['id']} cites award {r['award_id']}, which is in no award line")
 
+def period_end(iso, precision):
+    """The last day a date known only to this precision could fall on."""
+    y, m, _ = (int(v) for v in iso.split("-"))
+    if precision == "day":
+        return iso
+    if precision == "year":
+        return f"{y}-12-31"
+    last = {"month": m, "quarter": (m - 1) // 3 * 3 + 3}.get(precision)
+    if last is None:
+        die(f"no period end for date precision {precision!r}")
+    return (date(y + last // 12, last % 12 + 1, 1) - timedelta(days=1)).isoformat()
+
+
+def period_start(iso, precision):
+    """The first day a date known only to this precision could fall on."""
+    y, m, _ = (int(v) for v in iso.split("-"))
+    if precision == "day":
+        return iso
+    first = {"year": 1, "month": m, "quarter": (m - 1) // 3 * 3 + 1}.get(precision)
+    if first is None:
+        die(f"no period start for date precision {precision!r}")
+    return f"{y}-{first:02d}-01"
+
+
 for r in rows:
-    r["timeline_title"] = FWD[r["id"]]["title"]
+    ev = FWD[r["id"]]
+    r["timeline_title"] = ev["title"]
+    # The timeline records how precisely each date is known; a year or a quarter is stored
+    # as a stand-in day, and printing that day would claim a precision the record lacks.
+    r["date_precision"] = ev["datePrecision"]
+    r["date_display"] = ev["dateDisplay"]
 rows.sort(key=lambda r: (r["current_date"], r["id"]))
+# "The date has not arrived" is true only until the date's period begins. It is re-derived
+# against the build date for a date known to a day, month, quarter or year alike: once the
+# period has begun and until its last day the row says so, and after the last day, until the
+# owner records a reading, it says it has not been read (corrected 2026-09-29; a year-precision
+# 2026 row used to read "the date has not arrived" through a 2026 build).
+BUILT = date.today().isoformat()
+NOT_ARRIVED = "the date has not arrived"
+for r in rows:
+    if r["no_reading_because"] != NOT_ARRIVED:
+        continue
+    start = period_start(r["current_date"], r["date_precision"])
+    end = period_end(r["current_date"], r["date_precision"])
+    if end < BUILT:
+        r["no_reading_because"] = "the resolution date has not been read against the register yet"
+    elif start <= BUILT:
+        r["no_reading_because"] = (f"the {r['date_precision']} it falls in has begun and "
+                                   "has not ended")
 
 BY_TYPE = {t: len([r for r in rows if r["type"] == t])
            for t in ("numeric_outcome", "milestone", "period_end")}
@@ -215,6 +293,13 @@ NEAR = [r for r in rows if r["current_date"] <= "2026-12-31"]
 RESOLVED = [r for r in rows if r["status"] in ("delivered", "missed")]
 KEPT = [r for r in RESOLVED if r["current_date"] == r["first_published_date"]]
 FLOOR = PR["calibration"]["floor_n"]
+# The Limitations say no registered commitment carries a numeric target PIC set, and name
+# PIC's own goal beside it. Both halves are read here, so either changing fails the build.
+if any(r["type"] == "numeric_outcome" and r["set_by"] == "PIC" for r in rows):
+    die("a registered commitment now carries a numeric target set by PIC; meta.not says none does")
+GOAL = PR["unsourced_goal"]
+if GOAL["set_by"] != "PIC" or GOAL["counted_in_rows"]:
+    die("the stated goal is no longer PIC's own and outside the register; meta.not says it is")
 # The rate is None until n reaches the floor. A tracker showing 100 percent on n=2 is the
 # silent pass METHODS-SOP §8 names, and a sceptical reader spots it faster than the page
 # spots itself.
@@ -249,6 +334,10 @@ C2026 = count_event("2026-07-07", "59 applications",
 APEX_FUNDING = [l for l in LINES if l["award_id"] == "ED25OIE0G0108"][0]["funds"]
 APEX_TIMELINE = FWD["F35"]["title"]
 APEX_DIFFER = ("400" not in APEX_FUNDING) and ("400" in APEX_TIMELINE)
+# What band E's source line says about the disagreement. It used to say one of the two
+# descriptions is incomplete, which presumes an answer only the Notice of Award holds.
+APEX_VERDICT = ("The Notice of Award decides which is right, and this page does not "
+                "presume which description is at fault.")
 if not APEX_DIFFER:
     die("the two APEX target strings now agree. That is either a correction or a silent "
         "harmonisation; a person decides which, and UPDATES.md records it.")
@@ -279,7 +368,8 @@ RECONCILE = [
      "on": AS_OF, "display": AS_OF,
      "document": "Award register and public event register, both describing "
                  "ED25OIE0G0108",
-     "counted": "Two descriptions of one Notice of Award. One of them is incomplete."},
+     "counted": "Two descriptions of one Notice of Award. They differ, and the Notice "
+                "of Award decides which is right."},
 ]
 
 # -------------------------------------------------------- band F, the negative space
@@ -294,8 +384,12 @@ TARGETS = [{"metric": r["metric"], "target": r["target"], "group": r["group"]}
 # `because` text is lifted verbatim from the shipped meta of the file that owns the
 # limitation, so a hand-maintained honesty list cannot go stale here. The `would_need`
 # column is the only editorial text: it is a decision, not a datum, and no shipped file
-# holds it. Every line carries defined_on and either fill_by or permanent_reason.
-DEFINED_ON = SC.get("generated_on", AS_OF)
+# holds it. Every line carries defined_on and exactly one of fill_when, the condition
+# that would fill it, or permanent_reason. None carries a date it will be filled: no
+# document sets one, and a promised date nobody set would be this page's own invention.
+# The date the six lines were first written (d56d96f). It used to be read from the
+# scorecard's build date, which reset every line to "defined today" on each rebuild.
+DEFINED_ON = "2026-08-28"
 LIST2 = [
     {"covers": ["a-members", "a-dues", "a-renewal", "a-earned"],
      "not_here": "Members in good standing, dues revenue, renewal rate, "
@@ -304,10 +398,10 @@ LIST2 = [
      "because_from": "scorecard.json meta.publicOnly",
      "would_need": "A membership-agreement and marketing-communications decision on what "
                    "may be published, and at what grain.",
-     "defined_on": DEFINED_ON, "fill_by": None,
+     "defined_on": DEFINED_ON, "fill_when": None,
      "permanent_reason": "This repository is public and its history is permanent, so no "
-                         "grain of a member record is publishable in it. A populated copy "
-                         "belongs outside it."},
+                         "member\u2019s dues, standing or renewal is publishable in it. A "
+                         "populated copy belongs outside it."},
     {"covers": ["b-disbursed"],
      "not_here": "Award dollars disbursed against the whole award total",
      "because": SC["meta"]["caution"],
@@ -318,7 +412,7 @@ LIST2 = [
                    "kind. The payment stage above already prints the outlays that seven "
                    "of the eight federal lines do publish; what no record covers is the "
                    "whole $85,335,784.",
-     "defined_on": DEFINED_ON, "fill_by": "on a decision to publish drawdown totals",
+     "defined_on": DEFINED_ON, "fill_when": "on a decision to publish drawdown totals",
      "permanent_reason": None},
     {"covers": ["c-completions", "c-placements"],
      "not_here": "Completions of a PIC-funded training programme, and member companies "
@@ -329,13 +423,13 @@ LIST2 = [
      "would_need": "A quarterly reporting arrangement with ConxusNEO, the Ohio "
                    "Manufacturers’ Association and the Polymer Sector Partnership.",
      "defined_on": DEFINED_ON,
-     "fill_by": "on a quarterly reporting arrangement", "permanent_reason": None},
+     "fill_when": "on a quarterly reporting arrangement", "permanent_reason": None},
     {"covers": [],
      "not_here": "Jobs created, or an economic-impact multiplier",
      "because": "No page in this room ships a method for it that survives its own gates.",
      "because_from": "this page",
      "would_need": "A defensible method, published before the number.",
-     "defined_on": DEFINED_ON, "fill_by": None,
+     "defined_on": DEFINED_ON, "fill_when": None,
      "permanent_reason": "Until a method exists and is published first, the figure would "
                          "be an assertion with a decimal point on it."},
     {"covers": [],
@@ -344,7 +438,7 @@ LIST2 = [
      "because_from": "timeline.json meta.publicOnly",
      "would_need": "A decision to emit the slip column, which cannot be un-made.",
      "defined_on": DEFINED_ON,
-     "fill_by": "on the slip-record decision (Open Question 3)",
+     "fill_when": "on the slip-record decision (Open Question 3)",
      "permanent_reason": None},
     {"covers": [],
      "not_here": "The NEO-SMART NSF Engine award",
@@ -352,7 +446,7 @@ LIST2 = [
      "because_from": "funding.json meta.disclosures",
      "would_need": "Nothing. It is correctly excluded, and it is named here so nobody "
                    "thinks it was overlooked.",
-     "defined_on": DEFINED_ON, "fill_by": None,
+     "defined_on": DEFINED_ON, "fill_when": None,
      "permanent_reason": "It is not PIC money, so it will never appear on this page."},
 ]
 covered = sorted({v for line in LIST2 for v in line["covers"]})
@@ -360,8 +454,12 @@ if covered != sorted(r["id"] for r in VAULT):
     die(f"list 2 covers {covered} but the board's empty rows are "
         f"{sorted(r['id'] for r in VAULT)}")
 for line in LIST2:
-    if not line["defined_on"] or not (line["fill_by"] or line["permanent_reason"]):
-        die(f"list 2 line {line['not_here']!r} has no fill date and no permanent reason")
+    if not line["defined_on"] or bool(line["fill_when"]) == bool(line["permanent_reason"]):
+        die(f"list 2 line {line['not_here']!r} needs exactly one of a fill condition "
+            "and a permanent reason")
+    if line["fill_when"] and not line["fill_when"].startswith("on "):
+        die(f"list 2 line {line['not_here']!r} fills {line['fill_when']!r}; the page "
+            "promises a condition, so it must read 'on <event>'")
 
 # ------------------------------------------------- context, additionality, and defects
 def lq_cell(year, naics):
@@ -400,11 +498,19 @@ DATA = {
     "meta": {
         "title": "What PIC promised, what has landed, and who is in the coalition",
         "source": "Every figure is recomputed from a file another page of this site "
-                  "already publishes: the PIC award register (funding map), the internal "
+                  "already publishes: the PIC award register (funding map), the PIC "
                   "scorecard, the public event register (timeline), the EDA Tech Hub "
                   "award file, USAspending obligations, and BLS QCEW establishment "
-                  "counts. Nothing on this page is fetched.",
-        "row": "one executed award line in the coalition register, and one dated public "
+                  "counts. Nothing on this page is fetched. "
+                  + (f"The award register and the event register are as of "
+                     f"{long_date(AS_OF)}" if TL["meta"]["asOf"] == AS_OF else
+                     f"The award register is as of {long_date(AS_OF)} and the event "
+                     f"register as of {long_date(TL['meta']['asOf'])}")
+                  + f"; the payment figures were read on "
+                  f"{long_date(OUTLAYS['as_of'])}, the federal prime-contract figures on "
+                  f"{long_date(FED['meta']['fetched'])} and the establishment counts on "
+                  f"{long_date(LQ['meta']['fetched'])}.",
+        "row": "one award line in the coalition register, and one dated public "
                "commitment in the promise register. The two are never counted together.",
         "fetched": AS_OF,
         "definition": "Money is attributed to PIC when it sits on an executed award line "
@@ -415,25 +521,33 @@ DATA = {
         "baseline": "The published $106,290,451 secured figure is the baseline the "
                     "subtraction runs against. It is the number a reader arrives to test, "
                     "so it is kept in full and decomposed rather than replaced.",
-        "derived_note": "Nothing here is fetched and nothing is typed. "
-                        "derive_accountability.py recomputes every figure from the "
-                        "shipped JSON of the pages named above, and claims.json re-runs "
+        "derived_note": "Nothing here is fetched. derive_accountability.py recomputes "
+                        "every figure from the shipped JSON of the pages named above and "
+                        "from two registers seeded by hand, the dated promises and the "
+                        "recipient typing, which the README names. claims.json re-runs "
                         "the same arithmetic against those upstream files rather than "
                         "against this page\u2019s own output, so a correction on the funding "
                         "map fails this page instead of leaving a flattering number "
                         "standing.",
-        "caution": "An award register records commitment and execution. It records no "
-                   "payment, so no figure taken from it measures money spent. The payment "
-                   "stage on this page is not taken from it: it is the federal ledger’s "
+        "caution": "An award register records commitment and, on all lines but one, "
+                   "execution, but no "
+                   "payment, so no figure from it measures money spent. The payment "
+                   "stage is not taken from it: it is the federal ledger’s "
                    "own outlay figure, which covers the federal award lines and not the "
                    "state grant, and that is why the stage is part filled rather than "
                    "either empty or whole.",
-        "not": "No target on this page was set by PIC. The three targets on the board are "
-               "ceilings fixed by signed award documents, and no board row names an "
-               "owner. Where PIC has set no target, the absence is the finding and no "
-               "placeholder stands in for it.",
+        "not": ("None of the registered commitments carries a numeric target "
+               "set by PIC, and PIC set none of the three targets on the board: they are "
+               "ceilings fixed by signed award documents, and no board row names an owner. "
+               f"PIC\u2019s own stated goal, {GOAL['commitment']}, is shown beside the "
+               "register and not counted in it, because no dated public document sets it. "
+               "Where PIC has set no target, the absence is the finding and no placeholder "
+               "stands in for it."),
         "publicOnly": "This repository is public and its history is permanent, so it "
-                      "carries no member, applicant or personal record at any grain. "
+                      "carries no membership register and no applicant or personal "
+                      "record. Its one per-company membership fact is the chain "
+                      "page\u2019s flag marking the companies PIC has published as "
+                      "members, and this page does not use it. "
                       "Seven board rows and the membership goal are published as defined "
                       "empty slots with the register that holds the real number named "
                       "beside them.",
@@ -443,14 +557,14 @@ DATA = {
                     "opened and reports nothing about dates published before it existed.",
         "scope": "PIC\u2019s own award register and public record. This page is not a health "
                  "report on the regional polymer economy, which is cluster-health, and "
-                 "not the internal board scorecard, which is unlinked and carries "
-                 "deliberately empty rows.",
+                 "not PIC\u2019s board scorecard, which carries deliberately empty rows.",
         "small_numbers": "The promise register holds eighteen rows and one of them "
                          "carries a number that can be missed. A keeping rate computed "
                          "over a handful of resolved commitments would be noise with a "
                          "percent sign, so this page prints the count and no rate until "
                          f"{FLOOR} commitments have resolved.",
-        "note": "Match is never summed into the staged bar. It is promised at award time "
+        "note": "Match is counted in the reported-secured stage and in no stage after it. "
+                "It is promised at award time "
                 "by organisations other than PIC, so it is drawn detached, with its own "
                 "label. The $10,417,066 beside the state grant is promised by local "
                 "partners, not by the state.",
@@ -470,11 +584,18 @@ DATA = {
                   "label": "partner and local match",
                   "sub": "committed by organisations other than PIC, at award time"},
         "share_of_awarded": SHARE,
+        "restated_share_of_awarded": RESTATED_SHARE,
         "gac_lines": [{"amount": l["amount"], "award_id": l["award_id"],
                        "funds": l["funds"], "source_id": l["source_id"]} for l in GAC],
         "gac_grantee": GRANTEE,
         "mechanism": next(s["note"] for s in FM["sources"] if s["id"] == "eda"),
         "other_leads": len([l for l in LINES if l["program_id"] == "eda-direct"]) - 1,
+        # The band A source line. It said the register is verified against the signed
+        # federal Notices of Award with no exception (corrected 2026-09-29).
+        "source_note": "verified against signed federal Notices of Award and state grant "
+                       "SBIG20251005" + (f"; {UNV['name']}’s {UNV['awardId']} is signed, "
+                                         "but its execution is not verified" if UNV else "")
+                       + ".",
     },
     "staging": {
         "awarded": DEL["awarded"], "assigned": DEL["assigned"],
@@ -488,6 +609,10 @@ DATA = {
                        "share_of_assigned": AGG_TOTAL / ASSIGNED * 100,
                        "rows": [{"recipient": l["recipient"], "amount": l["amount"],
                                  "program": l["program"]} for l in AGG_LINES]},
+        "executed": SC["delivery"]["executed"],
+        "unverified": UNV,
+        "assigned_label": "On a line naming a recipient" if UNV
+                          else "On an executed line naming a recipient",
         "disbursed": None,
         "disbursed_label": "no figure covers the award total",
         "outlays": OUTLAYS,
@@ -497,6 +622,8 @@ DATA = {
         "lines": len(LINES),
         "award_ids": len(AWARD_IDS),
         "rule": RULE,
+        "executed_lines": EXECUTED_LINES,
+        "lines_phrase": LINES_PHRASE,
         "above": {"n": len(ABOVE), "sum": sum(l["amount"] for l in ABOVE),
                   "share": sum(l["amount"] for l in ABOVE) / ASSIGNED * 100},
         "below": {"n": len(BELOW), "sum": sum(l["amount"] for l in BELOW),
@@ -533,7 +660,8 @@ DATA = {
     "reconcile": {
         "rows": RECONCILE,
         "events": [C2025, C2025B, C2026],
-        "apex": {"funding": APEX_FUNDING, "timeline": APEX_TIMELINE, "differ": APEX_DIFFER},
+        "apex": {"funding": APEX_FUNDING, "timeline": APEX_TIMELINE, "differ": APEX_DIFFER,
+                 "verdict": APEX_VERDICT},
         "standing_rule": "Every new public count of this programme is added to this "
                          "table, or the build fails.",
     },

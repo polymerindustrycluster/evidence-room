@@ -78,10 +78,10 @@
    "mechanism": "direct-to-leads",
    "mechanismTitle": "Direct federal awards",
    "mechanismLines": [
-    "Obligated to each project lead.",
+    "Signed to each project lead.",
     "PIC is not a pass-through."
    ],
-   "note": "EDA obligates directly to each project lead. The Greater Akron Chamber is one recipient among seven, for innovation governance. No part of the other six awards passes through it."
+   "note": "EDA signs directly to each project lead. The Greater Akron Chamber is one recipient among seven, for innovation governance. No part of the other six awards passes through it. USAspending records the obligation on six of the seven, all but Huntsman’s."
   },
   {
    "id": "ohio",
@@ -127,7 +127,7 @@
    "amount": 51001413,
    "tint": "eda",
    "chip": "EDA",
-   "note": "Seven implementation awards obligated straight to their project leads."
+   "note": "Seven implementation awards signed straight to their project leads; USAspending records the obligation on six, all but Huntsman’s."
   },
   {
    "id": "oh-facility",
