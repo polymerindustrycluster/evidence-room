@@ -93,7 +93,7 @@ const last = spr.at(-1);
 const sPeak = spr.reduce((a, b) => b.v > a.v ? b : a);
 const sTrough = spr.reduce((a, b) => b.v < a.v ? b : a);
 const cPeak = comp.reduce((a, b) => b.v > a.v ? b : a);
-/* The near-closure. The cushion this page is about fell to +0.7 in May 2026 and the
+/* The near-closure. The gap this page is about fell to +0.7 in May 2026 and the
    chart drew that while the prose called it "easing"; the month is now derived here so
    the callout, the verdict and the closer all read it off the series rather than off
    each other. `sDip` is the lowest month of the last two years, which is the window the
@@ -181,7 +181,7 @@ PV.figures([
     seller’s win`],
   ["", sp(last.v), "points, products over resin",
    `since 2019 product prices have grown ${Math.abs(last.v).toFixed(1)} percentage points
-    more than resin prices; in the 2021 squeeze they trailed by
+    more than resin prices; at the 2021 trough they trailed by
     ${Math.abs(sTrough.v).toFixed(1)}. A gap between two indexes, not a profit margin.`]
 ]);
 
@@ -193,7 +193,7 @@ document.getElementById("v1").textContent = "$" + (PM["2021-08-01"] / 100).toFix
    one of the two numbers cannot see the gap the rest of the page is about. */
 document.getElementById("v1d").textContent =
   `resin up ${(RM["2021-08-01"] - 100).toFixed(0)}%, the part up ` +
-  `${(PM["2021-08-01"] - 100).toFixed(0)}%: the squeeze`;
+  `${(PM["2021-08-01"] - 100).toFixed(0)}%: the trough`;
 document.getElementById("v2").textContent = "$" + (prodMfg.now.index / 100).toFixed(2);
 document.getElementById("v2k").textContent = monF(prodMfg.now.date);
 document.getElementById("v2d").textContent =
@@ -255,7 +255,7 @@ function verdict() {
   else v.innerHTML = `<b>Finished products:</b> the winning seat, on these two indexes.
     Your main input gave back about a third of its rise; your output gave back none in cash
     and sits at its peak. Your prices have risen ${sp(last.v)} percentage points more than
-    resin since 2019, against ${sp(sTrough.v)} at the bottom of the 2021 squeeze, though
+    resin since 2019, against ${sp(sTrough.v)} at the 2021 trough, though
     the gap came within a point of closing in ${monF(sDip.date)}, and it is not a margin:
     these series do not measure your full costs.`;
 }
@@ -930,7 +930,7 @@ function drawSpreadDesktop() {
     opacity: st.main.op}, svg);
   el("circle", {cx: xs(sTrough.date), cy: ys(sTrough.v), r: 5, fill: "#008BA8",
     stroke: "var(--paper)", "stroke-width": 2}, svg);
-  plated(svg, `${sp(sTrough.v)} · ${mon3(sTrough.date)}: the squeeze`,
+  plated(svg, `${sp(sTrough.v)} · ${mon3(sTrough.date)}: the trough`,
     {x: xs(sTrough.date) + 10, y: ys(sTrough.v) + 5, class: "pv-lab",
      fill: "#008BA8"}, 8);
   el("circle", {cx: xs(sPeak.date), cy: ys(sPeak.v), r: 5, fill: "#008BA8",
@@ -949,7 +949,7 @@ function drawSpreadDesktop() {
   plated(svg, `${mon3(sDip.date)}: +${sDip.v.toFixed(1)}`,
     {x: xs(sDip.date) + 6, y: ys(sDip.v) + 46, "text-anchor": "end",
      class: "pv-lab", fill: "#008BA8"}, 8);
-  plated(svg, "resin spiked; the cushion nearly closed",
+  plated(svg, "resin spiked; the gap nearly closed",
     {x: xs(sDip.date) + 6, y: ys(sDip.v) + 60, "text-anchor": "end",
      class: "pv-labq"}, 7.4);
   txt(svg, `${sp(last.v)} now`, {x: m.l + w + 8, y: ys(last.v) + 4,
@@ -1001,7 +1001,7 @@ function drawSpreadMobile() {
   plated(svg, "0 = both up the same", {x: m.l + 2, y: ys(0) - 7, class: "pv-labq"}, 6.6);
   el("circle", {cx: xs(sTrough.date), cy: ys(sTrough.v), r: 4, fill: "#008BA8",
     stroke: "var(--paper)", "stroke-width": 1.5}, svg);
-  plated(svg, `${sp(sTrough.v)} · the squeeze`, {x: xs(sTrough.date) + 8,
+  plated(svg, `${sp(sTrough.v)} · the trough`, {x: xs(sTrough.date) + 8,
     y: ys(sTrough.v) + 4, class: "pv-lab", fill: "#008BA8"}, 8);
   el("circle", {cx: xs(sPeak.date), cy: ys(sPeak.v), r: 4, fill: "#008BA8",
     stroke: "var(--paper)", "stroke-width": 1.5}, svg);
@@ -1177,12 +1177,12 @@ document.getElementById("spreadsrc").innerHTML =
    answer.`;
 
 /* The closer resolves the hero's question and hands the reader the next thing to watch:
-   the cushion the whole page is about came within a point of closing three months ago,
+   the gap the whole page is about came within a point of closing three months ago,
    which is the live question the shipped data can pose but not settle. */
 document.getElementById("closersub").innerHTML =
   `<b>The wellhead gave back its whole spike and then some (${pct(gas.retraced)}); resin
    makers about a third; finished products none.</b> The converter&rsquo;s gap ran ${sp(sTrough.v)}
-   points at the bottom of the 2021 squeeze and stands ${sp(last.v)} now, and a gap
+   points at the 2021 trough and stands ${sp(last.v)} now, and a gap
    between two indexes is not a margin: these series do not measure a producer&rsquo;s
    full costs.
    It has not been steady either. Resin rose ${sDipResin.toFixed(1)} points in two
@@ -1192,6 +1192,23 @@ document.getElementById("closersub").innerHTML =
 /* --------------------------------------------------------------------- assemble */
 function drawAll() { drawOpen(); drawLadder(); drawLines(); drawSpread(); }
 drawAll();
+/* MEASURE THE FACE THAT WILL PAINT (the peers/app.js helper, same reasons). Lato ships with
+   font-display:swap, so the first draw measures in the fallback. The page draws at once,
+   never waits on a font file, and draws again as each face that was loading arrives. */
+const onFonts = redraw => {
+  /* A redraw replaces the chart's nodes; a reader tabbing through its marks keeps their place. */
+  const keep = () => {
+    const a = document.activeElement, k = a && a.getAttribute && a.getAttribute("aria-label");
+    redraw();
+    if (k && !a.isConnected) {
+      const n = [...document.querySelectorAll("[aria-label]")].find(e => e.getAttribute("aria-label") === k);
+      if (n) n.focus({preventScroll: true});
+    }
+  };
+  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(keep, () => {}); });
+  document.fonts.addEventListener("loadingdone", keep);
+};
+onFonts(drawAll);
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);
 

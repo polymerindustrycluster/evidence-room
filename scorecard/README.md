@@ -4,8 +4,10 @@ An EOS-style board view of what **PIC is accountable for**. Every other artifact
 repository measures the regional polymer economy. This one measures the organisation, and
 the two are held apart on purpose.
 
-**This page is not linked from `index/`.** It stands alone: it is an internal working
-view, and the hub is a public reading list.
+**This page is not linked from `index/`.** It was corrected on 2026-09-29 (see that entry
+in `CORRECTIONS.md`) and stays unlisted, reachable by direct URL, pending the owner's
+decision on publication. The accountability page it links to for the outlay figures is
+also an unlisted draft.
 
 ## Federal-context correction — 8 September 2026
 
@@ -60,8 +62,8 @@ figure recomputed from public data; 7 are empty slots.
 | A | Renewal rate | empty slot | PIC membership register |
 | A | Earned-revenue share | empty slot | PIC general ledger |
 | B | Award dollars with a named recipient | **92.8%** | funding-map |
-| B | Named recipients under an executed agreement | **21** | funding-map |
-| B | EDA implementation awards obligated to a project lead | **7 of 7** | federal-money/techhub |
+| B | Named recipients holding an award line (two are programme aggregates) | **21** | funding-map |
+| B | EDA implementation awards with a confirmed obligation (Huntsman's is not verified) | **6 of 7** | federal-money/techhub |
 | B | Ohio Innovation Hub dollars with a named recipient | **80.3%** | funding-map |
 | B | Total public money secured | **$106.3M** | funding-map |
 | B | Award dollars disbursed to recipients | empty slot | PIC drawdown records |
@@ -76,8 +78,11 @@ figure recomputed from public data; 7 are empty slots.
 
 ### Group B is an assignment test, not a payment test
 
-"Reached a named recipient" means the register carries an executed line item naming the
-organisation that holds the money. $79,170,176 of $85,335,784 passes that test. The
+"Reached a named recipient" means the register carries a line item naming who holds the
+money: an organisation or, for the Polymer Pilot Facility and regional workforce programs,
+a programme aggregate. $79,170,176 of $85,335,784 passes that test. $73,199,371 of it is on
+an executed line; the other $5,970,805 is EDA award ED25HDQ0G0009 to Huntsman, which has no
+USAspending record, so the page names its recipient and never calls it executed. The
 $6,165,608 that does not is entirely inside the Ohio Innovation Hub grant, in two
 workstreams (startup support, $3,523,500; PIC Translational R&D, $2,642,108).
 
@@ -109,7 +114,7 @@ Two fields are also missing on **every** row and are not this page's to invent:
   assignment. An EOS row without a named owner is not yet a scorecard row. Seven of the
   fifteen accountable rows are blocked on data; all fifteen are blocked on an owner.
 - **Target.** Three targets are set and all three are ceilings fixed by a signed award
-  document (`$85,335,784 awarded`, `7 of 7 awards`, `$31,250,000 awarded`). Twelve read
+  document (`$85,335,784 awarded`, `all 7 awards confirmed`, `$31,250,000 awarded`). Twelve read
   "not set". None was set by PIC, and that absence is itself the finding.
 
 ## Rebuilding
@@ -132,13 +137,9 @@ source page fails this page's gate instead of leaving a stale board number behin
 
 ## Known state
 
-- **`node tools/verify.mjs scorecard` fails on one check: `scorecard is not in
-  SOURCES.json`.** The provenance gate requires a `by_artifact` entry, which lives in
-  `_data/SOURCES.json`. This page was built under an instruction not to touch `_data/`,
-  so the entry has not been added. The one-line patch, using registry keys that already
-  exist: `"scorecard": ["usaspending", "ipeds", "qcew"]`. Everything else in
-  `verify.mjs` passes at both widths (no console errors, no overflow, no empty slots, no
-  uninterpolated templates, no stranded prose).
+- `_data/SOURCES.json` carries the page's `by_artifact` entry
+  (`"scorecard": ["usaspending", "ipeds", "qcew"]`), so the provenance check in
+  `node tools/verify.mjs scorecard` no longer fails on it.
 - The lead visual is the hero's coverage squares rather than a chart, and the page's
   centrepiece is a table. That is deliberate: the argument is which cells are empty, and
   only a table shows an empty cell as empty.
@@ -156,6 +157,19 @@ source page fails this page's gate instead of leaving a stale board number behin
   publishes never changed; one of the three years in it was the wrong year.
 
 ## Update log
+
+- **1.2 (2026-09-29)** — corrected; the page stays unlisted pending the owner's
+  decision on publication. The note under the
+  scorecard no longer says no figure on the page measures money spent (group B prints the
+  federal outlays), and the empty disbursement row says no figure spans the register. The
+  member-flag sentence reads 38 of 710, not 785. Group A is "membership and revenue", the
+  d-federal label names the codes it counts, the b-recipients definition names both
+  programme aggregates, the talent trend reads "up in both years since 2021", and the
+  small-numbers note says "tens". The masthead links to the hub; the internal-view flag stays
+  while the page is unlisted. Huntsman's unverified EDA line is named but not called executed (`sc-executed`),
+  and the provenance line, the square key, the table legend and the Limitations name the
+  PIC registers behind the member count and the award rows (`sc-provenance`).
+  23 claims, 0 manual.
 
 - **1.1 (2026-08-31)** — the talent rows re-derived on the corrected IPEDS years: the
   window reads 54, 62, 63 rather than 124, 54, 63, its average 60 rather than 80, and the

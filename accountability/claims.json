@@ -32,19 +32,83 @@
   },
   {
    "id": "acc-attribution",
-   "text": "Band A, the four stages: $106,290,451 reported secured, $85,335,784 awarded, $79,170,176 on an executed line naming a recipient, $4,149,515 on lines naming the Greater Akron Chamber as destination. Match is never summed into that bar.",
+   "text": "Band A, the four stages: $106,290,451 reported secured, $85,335,784 awarded, $79,170,176 on a line naming a recipient, $73,199,371 of it on the twenty-six executed lines, $4,149,515 on lines naming the Greater Akron Chamber as destination. Match is never summed into that bar. The twenty-seventh line, EDA award ED25HDQ0G0009, $5,970,805 to Huntsman, is a signed Notice of Award with no USAspending record, so its execution is not verified: the chart labels, the band B lede, the methodology and the band A source line say so, and the source line keeps “verified against signed federal Notices of Award” only with that exception named. The twenty-seven lines name twenty-one recipients; the twenty-six executed lines name twenty, because Huntsman holds only the unverified line. Every stage amount the chart draws, and the match, is recomputed from the funding map (2026-09-30). Corrected 2026-09-29 from “$79,170,176 on an executed line”, and the same day from “twenty-six of them executed and holding $73,199,371, naming twenty-one recipients”.",
    "source": "funding-map/data/funding.json meta.totals and recipients[]",
-   "assert": "D['fm']['meta']['totals']['total'] == 106290451 and D['fm']['meta']['totals']['awards'] == 85335784 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']) == 79170176 and D['fm']['meta']['totals']['match'] == 20954667 and D['fm']['meta']['totals']['awards'] + D['fm']['meta']['totals']['match'] == D['fm']['meta']['totals']['total']",
-   "actual": "(D['fm']['meta']['totals'], sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']))",
-   "falsified_if": "The award register changes any of the four stage figures. The last conjunct is the one that guards the drawing: it holds only while match and awards are separate addends of the secured total, so a register that folded match into awards would fail here rather than producing a staged bar that silently double-counts a promise made by somebody else."
+   "assert": "((D['fm']['meta']['totals']['total'] == 106290451 and D['fm']['meta']['totals']['awards'] == 85335784 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']) == 79170176 and D['fm']['meta']['totals']['match'] == 20954667 and D['fm']['meta']['totals']['awards'] + D['fm']['meta']['totals']['match'] == D['fm']['meta']['totals']['total']) and (lambda nr, st, a: D['sc']['delivery']['executed'] == st['executed'] == 79170176 - nr['amount'] == 73199371 and st['unverified']['awardId'] == nr['awardId'] == 'ED25HDQ0G0009' and 'not verified' in D['fm']['meta']['provenance'][0] and 'executed' not in st['assigned_label'] and 'executed' not in a['stages'][2]['label'] and a['stages'][2]['sub'].endswith(', %d executed' % (len([x for r in D['fm']['recipients'] for x in r['awards']]) - 1)) and 'executed' not in D['acc']['meta']['row'] and 'on all lines but one, execution' in D['acc']['meta']['caution'] and all(n in a['source_note'] for n in ('Notices of Award', nr['awardId'], nr['name'], 'not verified')))(D['fm']['meta']['outlays']['no_record'], D['acc']['staging'], D['acc']['attribution'])) and [s['amount'] for s in D['acc']['attribution']['stages']] == [D['fm']['meta']['totals']['total'], D['fm']['meta']['totals']['awards'], sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']), sum(a['amount'] for a in one(r for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber')['awards'])] == [106290451, 85335784, 79170176, 4149515] and D['acc']['attribution']['match']['amount'] == D['fm']['meta']['totals']['match'] and len(D['fm']['recipients']) == 21 and len([r for r in D['fm']['recipients'] if any(a.get('awardId') != D['fm']['meta']['outlays']['no_record']['awardId'] for a in r['awards'])]) == 20 == D['acc']['coalition']['recipients'] - 1",
+   "actual": "(D['fm']['meta']['totals'], sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']), D['acc']['staging'].get('executed'), D['acc']['staging'].get('assigned_label'), D['acc']['attribution']['stages'][2]['sub'], D['acc']['attribution'].get('source_note'))",
+   "falsified_if": "The award register changes any of the four stage figures. The last conjunct is the one that guards the drawing: it holds only while match and awards are separate addends of the secured total, so a register that folded match into awards would fail here rather than producing a staged bar that silently double-counts a promise made by somebody else. Also: any chart label, the methodology row or caution, or the band A source line goes back to calling the whole assigned total executed, or USAspending publishes ED25HDQ0G0009 (then the exception goes and this claim fails on purpose).",
+   "counts": [
+    {
+     "figure": "$73,199,371",
+     "noun": "executed"
+    },
+    {
+     "figure": "$5,970,805",
+     "noun": "huntsman"
+    },
+    {
+     "figure": "An award register records commitment",
+     "noun": "but one"
+    },
+    {
+     "figure": "twenty-seven such lines",
+     "noun": "executed"
+    },
+    {
+     "figure": "$79,170,176 on a line naming a recipient",
+     "noun": "executed"
+    },
+    {
+     "figure": "twenty-one recipients",
+     "noun": "twenty-seven"
+    },
+    {
+     "figure": "twenty of those recipients",
+     "noun": "executed"
+    }
+   ]
   },
   {
    "id": "acc-attribution-lines",
-   "text": "Band A: $2,650,000 from EDA under award ED24HDQ0G0413 for innovation governance, and $1,499,515 from the state grant for hub administration, are the only two lines in this register naming the Chamber as destination. The other six EDA awards do not pass through it. The Chamber is separately the GRANTEE of record on APEX, $3,084,371, which the register attributes to the regional training programs the money funds, and was the grantee on a completed $399,672 Phase 1 award outside this total: signed for is $7,633,558, and the page prints both figures.",
+   "text": "Band A: $2,650,000 from EDA under award ED24HDQ0G0413 for innovation governance, and $1,499,515 from the state grant for hub administration, are the only two lines in this register naming the Chamber as destination. The other six EDA awards do not pass through it. The Chamber is separately the GRANTEE of record on APEX, $3,084,371, which the register attributes to the regional training programs the money funds, and was the grantee on a completed $399,672 Phase 1 award outside this total: the page names the Chamber as destination or grantee on $7,633,558 (corrected 2026-09-29 from \"signed for\", a scope no file here sources: the grantee of the state grant is not named), and the page prints both figures.",
    "source": "funding-map/data/funding.json recipients[greater-akron-chamber].awards and programs[eda-direct]",
    "assert": "len(one(r for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber')['awards']) == 2 and one(a for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards'] if a['programId'] == 'eda-direct')['amount'] == 2650000 and one(a for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards'] if a['programId'] == 'eda-direct')['awardId'] == 'ED24HDQ0G0413' and one(a for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards'] if a['programId'] == 'oh-gov')['amount'] == 1499515 and len([a for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'eda-direct']) - 1 == 6 and D['acc']['attribution']['gac_grantee']['apex']['amount'] == 3084371 and D['acc']['attribution']['gac_grantee']['apex']['attributed_to'] != 'Greater Akron Chamber' and D['acc']['attribution']['gac_grantee']['prior']['amount'] == 399672 and sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) + D['acc']['attribution']['gac_grantee']['apex']['amount'] + D['acc']['attribution']['gac_grantee']['prior']['amount'] == 7633558",
    "actual": "[a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']]",
    "falsified_if": "The Chamber acquires a third line, either line is amended, or an eighth EDA implementation award appears. The standfirst says six more EDA project leads and the last conjunct is what keeps that word honest."
+  },
+  {
+   "id": "acc-licenses-mechanism",
+   "text": "Band A, What this chart licenses: of the $75,020,661 on lines naming other recipients, $48,351,413 is EDA money on the awards of the six other project leads, of which USAspending confirms $42,380,608 obligated directly to five of them, and the sixth, $5,970,805 to Huntsman, is on a signed Notice of Award with no USAspending record, so its obligation is not verified; the other $26,669,248 runs through the hub or the Chamber, $23,584,877 on state-grant lines the hub allocates and the $3,084,371 APEX award, on which the Chamber is grantee. Corrected 2026-09-29 from a sentence saying all of it is paid directly by design and never passes through PIC, and the same day from “EDA's signed Notices of Award obligate $48,351,413”, a sum that includes the Huntsman award whose obligation is not verified.",
+   "source": "funding-map/data/funding.json sources[].mechanism, programs[].sourceId and recipients[].awards",
+   "assert": "(lambda src, prog, other: src['eda']['mechanism'] == 'direct-to-leads' and src['ohio']['mechanism'] == 'hub-allocated' and src['apex']['mechanism'] == 'single-grantee' and sum(a['amount'] for a in other) == 75020661 and sum(a['amount'] for a in other if prog[a['programId']] == 'eda') == 48351413 and len([a for a in other if prog[a['programId']] == 'eda']) == 6 and sum(a['amount'] for a in other if prog[a['programId']] == 'ohio') == 23584877 and sum(a['amount'] for a in other if prog[a['programId']] == 'apex') == 3084371 == D['acc']['attribution']['gac_grantee']['apex']['amount'] and 23584877 + 3084371 == 26669248 and D['fm']['meta']['outlays']['no_record']['awardId'] in [a.get('awardId') for a in other if prog[a['programId']] == 'eda'] and (lambda nr: nr['name'] == 'Huntsman' and nr['amount'] == 5970805 and sum(a['amount'] for a in other if prog[a['programId']] == 'eda' and a.get('awardId') != nr['awardId']) == 42380608 and len([a for a in other if prog[a['programId']] == 'eda' and a.get('awardId') != nr['awardId']]) == 5 and 42380608 + nr['amount'] == 48351413)(D['fm']['meta']['outlays']['no_record']))({s['id']: s for s in D['fm']['sources']}, {p['id']: p['sourceId'] for p in D['fm']['programs']}, [a for r in D['fm']['recipients'] if r['id'] != 'greater-akron-chamber' for a in r['awards']])",
+   "actual": "{s['id']: s['mechanism'] for s in D['fm']['sources']}",
+   "falsified_if": "The funding map re-classifies a mechanism, a line moves between awards, or the state grant turns out to be obligated directly to its sub-grantees. A sentence saying the money never passes through PIC is false while the state award is hub-allocated and the Chamber is APEX's grantee. The $48,351,413 is EDA money on six leads' awards, not an obligated sum: $42,380,608 on the five with a USAspending record is, and the page binds \"obligat\" to that figure, which a reversion to \"obligate $48,351,413\" drops from the page.",
+   "counts": [
+    {
+     "figure": "$48,351,413",
+     "noun": "EDA"
+    },
+    {
+     "figure": "$42,380,608",
+     "noun": "obligat"
+    },
+    {
+     "figure": "$26,669,248",
+     "noun": "hub"
+    },
+    {
+     "figure": "$23,584,877",
+     "noun": "line"
+    }
+   ]
+  },
+  {
+   "id": "acc-restatement-share",
+   "text": "Band A source line: the Chamber's own EDA line, ED24HDQ0G0413, is one of the two FY2024 awards, so restating it together with the total moves the share only from 4.86 percent as awarded to 4.93 restated, both of which round to 4.9; restating the total alone would give 4.8. The printed 4.86 and 4.93 are rendered from attribution.share_of_awarded and attribution.restated_share_of_awarded, which this claim recomputes (corrected 2026-09-29 from a hardcoded figure; on 2026-09-30 the line printed both to two places, because at one place the restated share read 4.9, the same as the share it restates).",
+   "source": "federal-money/data/techhub.json leads, fy2024_share, award_2025_dollars",
+   "assert": "(lambda f, dA, A, gac: sorted(l['awardId'] for l in D['hub']['leads'] if l['awardId'].startswith('ED24')) == ['ED24HDQ0G0413', 'ED24HDQ0G0452'] and sum(l['amount'] for l in D['hub']['leads'] if l['awardId'].startswith('ED24')) == D['hub']['fy2024_share'] and gac['eda-direct']['awardId'] == 'ED24HDQ0G0413' and round((gac['eda-direct']['amount'] * (1 + f) + gac['oh-gov']['amount']) / (A + dA) * 100, 2) == 4.93 and round((gac['eda-direct']['amount'] * (1 + f) + gac['oh-gov']['amount']) / (A + dA) * 100, 1) == 4.9 and round(sum(a['amount'] for a in gac.values()) / A * 100, 2) == 4.86 and round(sum(a['amount'] for a in gac.values()) / A * 100, 1) == 4.9 and round(sum(a['amount'] for a in gac.values()) / (A + dA) * 100, 1) == 4.8 and close(D['acc']['attribution']['share_of_awarded'], sum(a['amount'] for a in gac.values()) / A) and close(D['acc']['attribution']['restated_share_of_awarded'], (gac['eda-direct']['amount'] * (1 + f) + gac['oh-gov']['amount']) / (A + dA)))((D['hub']['award_2025_dollars'] - D['hub']['award']) / D['hub']['fy2024_share'], D['hub']['award_2025_dollars'] - D['hub']['award'], D['fm']['meta']['totals']['awards'], {a['programId']: a for a in one(r for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber')['awards']})",
+   "actual": "(D['hub']['fy2024_share'], D['hub']['award_2025_dollars'], D['acc']['attribution']['restated_share_of_awarded'])",
+   "falsified_if": "The FY2024 awards change, the deflator moves the restated share off 4.93 or the total-only restatement off 4.8, the Chamber's line is re-dated, or the generated share the page prints drifts from this recomputation."
   },
   {
    "id": "acc-attribution-note",
@@ -89,19 +153,29 @@
   },
   {
    "id": "acc-aggregates",
-   "text": "Band B: exactly two named recipients are programme aggregates rather than organisations, the Polymer Pilot Facility and regional workforce programs, and together they hold $23,094,356, which is 29.2 percent of everything assigned.",
+   "text": "Band B: exactly two named recipients are programme aggregates rather than organisations, the Polymer Pilot Facility and regional workforce programs; they hold three rows of the award table between them, and together they hold $23,094,356, which is 29.2 percent of everything assigned. Corrected 2026-09-29: the source line said two rows.",
    "source": "accountability/data/recipient_types.json kind, applied to funding-map/data/funding.json recipients[]",
-   "assert": "sorted(D['rt']['kind']) == sorted(r['id'] for r in D['fm']['recipients']) and sorted(k for k in D['rt']['kind'] if D['rt']['kind'][k] == 'program_aggregate') == ['polymer-pilot-facility', 'regional-workforce'] and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) == 23094356 and round(pct(23094356, sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'])), 1) == 29.2",
+   "assert": "sorted(D['rt']['kind']) == sorted(r['id'] for r in D['fm']['recipients']) and sorted(k for k in D['rt']['kind'] if D['rt']['kind'][k] == 'program_aggregate') == ['polymer-pilot-facility', 'regional-workforce'] and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) == 23094356 and round(pct(23094356, sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'])), 1) == 29.2 and D['acc']['staging']['aggregates']['recipients'] == 2 and D['acc']['staging']['aggregates']['lines'] == 3 == len([r for r in D['acc']['coalition']['rows'] if r['kind'] == 'program_aggregate']) == len([a for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']])",
    "actual": "(len(D['rt']['kind']), sorted(k for k in D['rt']['kind'] if D['rt']['kind'][k] == 'program_aggregate'), sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']))",
-   "falsified_if": "A recipient appears in the award register with no typing here, a third row becomes a programme aggregate, or a new firm silently moves the 29.2 percent. The first conjunct is the important one: it fails on a new recipient before anything else on the page can quietly mis-report it as a company."
+   "falsified_if": "A recipient appears in the award register with no typing here, a third row becomes a programme aggregate, or a new firm silently moves the 29.2 percent. The first conjunct is the important one: it fails on a new recipient before anything else on the page can quietly mis-report it as a company. Until 2026-09-29 the source line said two rows held the money; there are two recipients and three rows, and the last conjuncts pin both counts the line now prints from data."
   },
   {
    "id": "acc-coalition",
-   "text": "Band C: 21 recipients, 27 executed lines, 8 award IDs. Eleven lines of $1,000,000 or more hold $75,595,284, which is 95.5 percent of everything assigned; the sixteen below hold $3,574,892, which is 4.5 percent.",
+   "text": "Band C: 21 recipients, 27 award lines, 26 of them executed (every line but Huntsman’s EDA award, whose execution is not verified), 8 award IDs. Eleven lines of $1,000,000 or more hold $75,595,284, which is 95.5 percent of everything assigned; the sixteen below hold $3,574,892, which is 4.5 percent. Corrected 2026-09-29 from “27 executed lines”.",
    "source": "funding-map/data/funding.json recipients[]",
-   "assert": "len(D['fm']['recipients']) == 21 and len([a for r in D['fm']['recipients'] for a in r['awards']]) == 27 and len(set(a['awardId'] for r in D['fm']['recipients'] for a in r['awards'] if a.get('awardId'))) == 8 and len([a for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] >= 1000000]) == 11 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] >= 1000000) == 75595284 and round(pct(75595284, 79170176), 1) == 95.5 and len([a for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] < 1000000]) == 16 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] < 1000000) == 3574892",
+   "assert": "len(D['fm']['recipients']) == 21 and len([a for r in D['fm']['recipients'] for a in r['awards']]) == 27 and len(set(a['awardId'] for r in D['fm']['recipients'] for a in r['awards'] if a.get('awardId'))) == 8 and len([a for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] >= 1000000]) == 11 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] >= 1000000) == 75595284 and round(pct(75595284, 79170176), 1) == 95.5 and len([a for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] < 1000000]) == 16 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] < 1000000) == 3574892 and D['acc']['coalition']['executed_lines'] == 26 and D['acc']['coalition']['lines_phrase'] == '27 award lines, 26 of them executed'",
    "actual": "(len(D['fm']['recipients']), len([a for r in D['fm']['recipients'] for a in r['awards']]), len([a for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] >= 1000000]), sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] >= 1000000))",
-   "falsified_if": "A sub-grant executes and any count or share moves. The $1,000,000 rule is drawn on the chart at the eleventh row, so a twelfth line crossing it moves a line the reader can see and this claim fails first."
+   "falsified_if": "A sub-grant executes and any count or share moves. The $1,000,000 rule is drawn on the chart at the eleventh row, so a twelfth line crossing it moves a line the reader can see and this claim fails first.",
+   "counts": [
+    {
+     "figure": "Every line is executed",
+     "noun": "huntsman"
+    },
+    {
+     "figure": "One row per award line",
+     "noun": "largest"
+    }
+   ]
   },
   {
    "id": "acc-coalition-rd",
@@ -120,11 +194,20 @@
   },
   {
    "id": "acc-promises",
-   "text": "Band D: eighteen dated commitments, one per forward event on the public record. Ten resolve on or before 31 December 2026 and eight after it. Five are award-period end dates. Every row carries who set it and the document that set it.",
+   "text": "Band D: eighteen dated commitments, one per forward event on the public record. Ten resolve on or before 31 December 2026 and eight after it. Five are award-period end dates. Every row carries who set it and the document that set it. The eighteen commitments fall on twelve distinct dates, because six, F17 to F22, are dated only to the year 2026 (F17 to F21 read that their year has begun, and F22 gives the membership exclusion instead), and F42 and F43 share 30 September 2029, so the page counts commitments, never dates. Corrected 2026-09-29; the id sets corrected the same day from “F17 to F22 share the year 2026”, which put F22 among the rows that read their year has begun.",
    "source": "accountability/data/promises.json rows, seeded from timeline/data/timeline.json forward events",
-   "assert": "len(D['pr']['rows']) == len([e for e in D['tl']['events'] if not e['delivered']]) and len(D['pr']['rows']) == 18 and sorted(r['id'] for r in D['pr']['rows']) == sorted(e['id'] for e in D['tl']['events'] if not e['delivered']) and len([r for r in D['pr']['rows'] if r['current_date'] <= '2026-12-31']) == 10 and len([r for r in D['pr']['rows'] if r['current_date'] > '2026-12-31']) == 8 and len([r for r in D['pr']['rows'] if r['type'] == 'period_end']) == 5 and all(r['set_by'] and r['source_document'] for r in D['pr']['rows']) and all(r['current_date'] == r['first_published_date'] or len(r['history']) > 0 for r in D['pr']['rows'])",
+   "assert": "len(D['pr']['rows']) == len([e for e in D['tl']['events'] if not e['delivered']]) and len(D['pr']['rows']) == 18 and sorted(r['id'] for r in D['pr']['rows']) == sorted(e['id'] for e in D['tl']['events'] if not e['delivered']) and len([r for r in D['pr']['rows'] if r['current_date'] <= '2026-12-31']) == 10 and len([r for r in D['pr']['rows'] if r['current_date'] > '2026-12-31']) == 8 and len([r for r in D['pr']['rows'] if r['type'] == 'period_end']) == 5 and all(r['set_by'] and r['source_document'] for r in D['pr']['rows']) and all(r['current_date'] == r['first_published_date'] or len(r['history']) > 0 for r in D['pr']['rows']) and len(set(r['current_date'] for r in D['acc']['promises']['rows'])) == 12 and len(set(r['date_display'] for r in D['acc']['promises']['rows'])) == 12 and len(D['acc']['promises']['rows']) == 18 and (lambda rows: sorted(r['id'] for r in rows if r['date_display'] == '2026' and r['date_precision'] == 'year') == ['F17', 'F18', 'F19', 'F20', 'F21', 'F22'] and sorted(r['id'] for r in rows if r['no_reading_because'] == 'the year it falls in has begun and has not ended') == ['F17', 'F18', 'F19', 'F20', 'F21'] and one(r for r in rows if r['id'] == 'F22')['no_reading_because'].startswith('membership') and sorted(r['id'] for r in rows if r['current_date'] == '2029-09-30') == ['F42', 'F43'])(D['acc']['promises']['rows'])",
    "actual": "(len(D['pr']['rows']), len([e for e in D['tl']['events'] if not e['delivered']]), len([r for r in D['pr']['rows'] if r['current_date'] <= '2026-12-31']), len([r for r in D['pr']['rows'] if r['type'] == 'period_end']))",
-   "falsified_if": "A forward commitment is deleted from the timeline without a history entry here, which is the way a register gets quietly narrowed. The id-set equality is the guard that matters: a swap that keeps the count at eighteen but changes which commitment is tracked fails here and nowhere else."
+   "falsified_if": "A forward commitment is deleted from the timeline without a history entry here, which is the way a register gets quietly narrowed. The id-set equality is the guard that matters: a swap that keeps the count at eighteen but changes which commitment is tracked fails here and nowhere else. The page said 'eighteen dates' until 2026-09-29; the distinct-date conjuncts fail if a sentence's count of dates and of commitments could be the same number.",
+   "counts": [
+    {
+     "figure": "eighteen",
+     "noun": [
+      "commitment",
+      "row"
+     ]
+    }
+   ]
   },
   {
    "id": "acc-promises-apex",
@@ -133,6 +216,28 @@
    "assert": "len([r for r in D['pr']['rows'] if r['type'] == 'numeric_outcome']) == 1 and one(r for r in D['pr']['rows'] if r['type'] == 'numeric_outcome')['award_id'] == 'ED25OIE0G0108' and one(r for r in D['pr']['rows'] if r['type'] == 'numeric_outcome')['targets']['enrollments'] == 500 and one(r for r in D['pr']['rows'] if r['type'] == 'numeric_outcome')['targets']['completions'] == 400 and one(r for r in D['pr']['rows'] if r['type'] == 'numeric_outcome')['targets']['placements'] == 320 and one(r for r in D['pr']['rows'] if r['type'] == 'numeric_outcome')['set_by'] == 'EDA' and one(r for r in D['pr']['rows'] if r['type'] == 'numeric_outcome')['current_date'] == '2028-01-15' and 'ED25OIE0G0108' in set(a['awardId'] for r in D['fm']['recipients'] for a in r['awards'] if a.get('awardId'))",
    "actual": "[r['id'] for r in D['pr']['rows'] if r['type'] == 'numeric_outcome']",
    "falsified_if": "A second row acquires a numeric target without a source document, or the APEX figures change in the Notice of Award. The H2 says 'one of them carries a number that can be missed', which is a count claim and fails on the second row rather than on a wrong value."
+  },
+  {
+   "id": "acc-register-dates",
+   "text": "Band D and band F dates: the record of published dates opened on 28 August 2026 and each band F line carries that date, the day it was written; each row seeded \"the date has not arrived\" says so only until its day, month, quarter or year begins, then says that period has begun and not ended, and after the period's last day says it has not been read against the register; each date prints at the precision the event register knows it to, so the pilot facility's readiness is the last quarter of 2027, Oct–Dec 2027 in the event register; PIC set four of the eighteen dated commitments, and none of the eighteen carries a numeric target PIC set. PIC's own numeric goal, 150 members and $1 million in annual revenue by 2028, is shown beside the register and not counted in it, and the Limitations say so. Corrected 2026-09-29.",
+   "source": "accountability/data/promises.json opened_on and rows; timeline/data/timeline.json datePrecision; accountability.json negative.list2 and promises.rows",
+   "assert": "D['pr']['opened_on'] == '2026-08-28' == D['acc']['promises']['opened_on'] and all(l['defined_on'] == '2026-08-28' for l in D['acc']['negative']['list2']) and all(r['date_precision'] in ('day', 'month', 'quarter', 'year') for r in D['acc']['promises']['rows']) and (lambda gen, passed, begun: len(D['acc']['promises']['rows']) == len(D['pr']['rows']) and all(a['no_reading_because'] == ('the resolution date has not been read against the register yet' if passed(a, gen) else 'the %s it falls in has begun and has not ended' % a['date_precision'] if begun(a, gen) else 'the date has not arrived') if p['no_reading_because'] == 'the date has not arrived' else a['no_reading_because'] == p['no_reading_because'] for a in D['acc']['promises']['rows'] for p in D['pr']['rows'] if p['id'] == a['id']))(D['acc']['generated_on'], lambda r, gen: r['current_date'] < gen if r['date_precision'] == 'day' else (lambda y, m: '%d-01-01' % (y + 1) if m == 12 else '%d-%02d-01' % (y, m + 1))(int(r['current_date'][:4]), 12 if r['date_precision'] == 'year' else (int(r['current_date'][5:7]) - 1) // 3 * 3 + 3 if r['date_precision'] == 'quarter' else int(r['current_date'][5:7])) <= gen, lambda r, gen: (r['current_date'] if r['date_precision'] == 'day' else '%s-%02d-01' % (r['current_date'][:4], 1 if r['date_precision'] == 'year' else (int(r['current_date'][5:7]) - 1) // 3 * 3 + 1 if r['date_precision'] == 'quarter' else int(r['current_date'][5:7]))) <= gen) and all(r['date_precision'] == e['datePrecision'] and r['date_display'] == e['dateDisplay'] for r in D['acc']['promises']['rows'] for e in D['tl']['events'] if e['id'] == r['id']) and (lambda e: e['datePrecision'] == 'quarter' and e['date'][:4] == '2027' and 10 <= int(e['date'][5:7]) <= 12 and e['dateDisplay'] == 'Oct–Dec 2027' == one(r for r in D['acc']['promises']['rows'] if r['id'] == 'F29')['date_display'])(one(e for e in D['tl']['events'] if e['id'] == 'F29')) and sorted(r['id'] for r in D['pr']['rows'] if r['set_by'] == 'PIC') == ['F02', 'F04', 'F11', 'F29'] and [r['set_by'] for r in D['pr']['rows'] if r['type'] == 'numeric_outcome'] == ['EDA'] and D['pr']['unsourced_goal']['set_by'] == 'PIC' and D['pr']['unsourced_goal']['type'] == 'numeric_outcome' and D['pr']['unsourced_goal']['counted_in_rows'] is False and D['pr']['unsourced_goal']['commitment'] == '150 members and $1 million in annual revenue by 2028' and D['acc']['meta']['not'].startswith('None of the registered commitments carries a numeric target set by PIC') and D['pr']['unsourced_goal']['commitment'] in D['acc']['meta']['not']",
+   "actual": "[(r['id'], r['current_date'], r['date_precision'], r['no_reading_because']) for r in D['acc']['promises']['rows'][:3]]",
+   "falsified_if": "A build lets a begun or passed date keep saying it has not arrived, the list 2 dates are re-read from a build date, a stand-in day is printed as a date, F29 moves out of the last quarter of 2027, PIC sets a numeric target on a registered commitment, or the Limitations stop naming PIC's own goal beside their denial. Until 2026-09-29 this claim checked only F29's year and precision, and built every quarter end as day 31. Until the second 2026-09-29 pass it checked only passed dates, so five commitments dated to the year 2026 read \"the date has not arrived\" on a 2026 build; it now recomputes every seeded row's reason from its period and the build date.",
+   "counts": [
+    {
+     "figure": "28 August 2026",
+     "noun": [
+      "register",
+      "record",
+      "line"
+     ]
+    },
+    {
+     "figure": "last quarter of 2027",
+     "noun": "promise"
+    }
+   ]
   },
   {
    "id": "acc-promises-calibration",
@@ -160,17 +265,23 @@
   },
   {
    "id": "acc-reconcile",
-   "text": "Band E: three published counts of one programme, on 1 July 2025 (39 proposals, 14 funded), 12 December 2025 (5 of 38) and 7 July 2026 (59 applications, up 51 percent), against seven executed sub-grants totalling $3,349,892. Three of the five published figures say nothing about what population they counted, and the figure title counts them rather than stating a number.",
+   "text": "Band E: three published counts of one programme, in 2025, a date the event register records to the year only (39 proposals, 14 funded), 12 December 2025 (5 of 38) and 7 July 2026 (59 applications, up 51 percent), against seven executed sub-grants totalling $3,349,892. Three of the five published figures say nothing about what population they counted, and the figure title counts them rather than stating a number.",
    "source": "timeline/data/timeline.json events E128, E122 and E202; funding-map/data/funding.json programs[oh-rd]",
-   "assert": "one(e for e in D['tl']['events'] if e['date'] == '2025-07-01' and '39 proposals' in e['title'])['title'].count('14 funded') == 1 and one(e for e in D['tl']['events'] if e['date'] == '2025-12-12' and '5 of 38' in e['title'])['id'] == 'E122' and one(e for e in D['tl']['events'] if e['date'] == '2026-07-07' and '59 applications' in e['title'])['id'] == 'E202' and len(D['acc']['reconcile']['events']) == 3 and D['acc']['reconcile']['events'][0]['parsed']['proposals'] == 39 and D['acc']['reconcile']['events'][0]['parsed']['funded'] == 14 and D['acc']['reconcile']['events'][1]['parsed']['population'] == 38 and D['acc']['reconcile']['events'][2]['parsed']['applications'] == 59 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'oh-rd') == 3349892 and len([x for x in D['acc']['reconcile']['rows'] if x['counted'] is None]) == 3 and len(D['acc']['reconcile']['rows']) == 5",
+   "assert": "one(e for e in D['tl']['events'] if e['date'] == '2025-07-01' and '39 proposals' in e['title'])['title'].count('14 funded') == 1 and one(e for e in D['tl']['events'] if e['date'] == '2025-12-12' and '5 of 38' in e['title'])['id'] == 'E122' and one(e for e in D['tl']['events'] if e['date'] == '2026-07-07' and '59 applications' in e['title'])['id'] == 'E202' and len(D['acc']['reconcile']['events']) == 3 and D['acc']['reconcile']['events'][0]['parsed']['proposals'] == 39 and D['acc']['reconcile']['events'][0]['parsed']['funded'] == 14 and D['acc']['reconcile']['events'][1]['parsed']['population'] == 38 and D['acc']['reconcile']['events'][2]['parsed']['applications'] == 59 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'oh-rd') == 3349892 and len([x for x in D['acc']['reconcile']['rows'] if x['counted'] is None]) == 3 and len(D['acc']['reconcile']['rows']) == 5 and one(e for e in D['tl']['events'] if e['id'] == 'E128')['date'] == '2025-07-01' and one(e for e in D['tl']['events'] if e['id'] == 'E128')['datePrecision'] == 'year' and one(e for e in D['tl']['events'] if e['id'] == 'E128')['dateDisplay'] == '2025'",
    "actual": "[e['parsed'] for e in D['acc']['reconcile']['events']]",
-   "falsified_if": "A fourth public count appears in the timeline and is not in the table, or any of the three figures changes. The parsed fields are typed at build time rather than scraped at render time, so a reworded title fails the derive script before it can print an empty cell."
+   "falsified_if": "A fourth public count appears in the timeline and is not in the table, or any of the three figures changes. The parsed fields are typed at build time rather than scraped at render time, so a reworded title fails the derive script before it can print an empty cell.",
+   "counts": [
+    {
+     "figure": "In 2025 PIC recorded",
+     "noun": "cycle"
+    }
+   ]
   },
   {
    "id": "acc-reconcile-apex",
-   "text": "Band E, fifth row: the award register describes ED25OIE0G0108 as targeting 500 enrollments and 320 placements, while the public event register states 500 enrollments, 400 completions and 320 placements. One of the two is incomplete.",
+   "text": "Band E, fifth row: the award register describes ED25OIE0G0108 as targeting 500 enrollments and 320 placements, while the public event register states 500 enrollments, 400 completions and 320 placements. They differ, and the Notice of Award decides which is right; the page does not presume which description is at fault (corrected 2026-09-29). The table's fifth row and the band's source line both say so, the source line rendering the verdict field this claim pins rather than typed wording; it said \"One of the two is incomplete\" until 2026-09-29.",
    "source": "funding-map/data/funding.json recipients[regional-workforce].awards[0].funds; timeline/data/timeline.json event F35 title",
-   "assert": "'400' not in one(a for r in D['fm']['recipients'] for a in r['awards'] if a.get('awardId') == 'ED25OIE0G0108')['funds'] and '400 completions' in one(e for e in D['tl']['events'] if e['id'] == 'F35')['title'] and '500' in one(a for r in D['fm']['recipients'] for a in r['awards'] if a.get('awardId') == 'ED25OIE0G0108')['funds'] and '320' in one(a for r in D['fm']['recipients'] for a in r['awards'] if a.get('awardId') == 'ED25OIE0G0108')['funds']",
+   "assert": "'400' not in one(a for r in D['fm']['recipients'] for a in r['awards'] if a.get('awardId') == 'ED25OIE0G0108')['funds'] and '400 completions' in one(e for e in D['tl']['events'] if e['id'] == 'F35')['title'] and '500' in one(a for r in D['fm']['recipients'] for a in r['awards'] if a.get('awardId') == 'ED25OIE0G0108')['funds'] and '320' in one(a for r in D['fm']['recipients'] for a in r['awards'] if a.get('awardId') == 'ED25OIE0G0108')['funds'] and D['acc']['reconcile']['rows'][4]['counted'] == 'Two descriptions of one Notice of Award. They differ, and the Notice of Award decides which is right.' and D['acc']['reconcile']['apex']['verdict'] == 'The Notice of Award decides which is right, and this page does not presume which description is at fault.' and 'incomplete' not in D['acc']['reconcile']['apex']['verdict']",
    "actual": "(one(a for r in D['fm']['recipients'] for a in r['awards'] if a.get('awardId') == 'ED25OIE0G0108')['funds'], one(e for e in D['tl']['events'] if e['id'] == 'F35')['title'])",
    "falsified_if": "The two strings become identical without a dated entry in UPDATES.md. This claim asserts a DISAGREEMENT on purpose: the day somebody silently harmonises one file, the claim fails and a person decides which description of the Notice of Award is right, instead of the page quietly adopting whichever was edited last."
   },
@@ -184,15 +295,29 @@
   },
   {
    "id": "acc-negative-list2",
-   "text": "Band F, list 2: six things this page cannot publish, generated rather than typed, each carrying the date it was defined and either a date it will be filled or a permanent reason, and between them covering every one of the board's seven empty rows.",
+   "text": "Band F, list 2: six things this page cannot publish, generated rather than typed, each carrying the date it was defined and either the condition on which it will be filled or a permanent reason, since no document sets a fill date for any of them (corrected 2026-09-29: the list promised a date), and between them covering every one of the board's seven empty rows. The disbursement line quotes the scorecard's corrected caution, which no longer says no figure on the page measures money spent (2026-09-29). The in-page correction quotes the old sentence exactly: “either a date it will be filled or a permanent reason”.",
    "source": "accountability/data/accountability.json negative.list2, generated by derive_accountability.py from scorecard.json, timeline.json and funding.json metas",
-   "assert": "len(D['acc']['negative']['list2']) == 6 and all(l['defined_on'] and (l['fill_by'] or l['permanent_reason']) for l in D['acc']['negative']['list2']) and sorted(v for l in D['acc']['negative']['list2'] for v in l['covers']) == sorted(r['id'] for r in D['sc']['rows'] if r['status'] == 'vault') and all(l['because'] for l in D['acc']['negative']['list2'])",
+   "assert": "len(D['acc']['negative']['list2']) == 6 and all(l['defined_on'] and 'fill_by' not in l and (not l['fill_when']) != (not l['permanent_reason']) and (not l['fill_when'] or l['fill_when'].startswith('on ')) for l in D['acc']['negative']['list2']) and len([l for l in D['acc']['negative']['list2'] if l['fill_when']]) == 3 and sorted(v for l in D['acc']['negative']['list2'] for v in l['covers']) == sorted(r['id'] for r in D['sc']['rows'] if r['status'] == 'vault') and all(l['because'] for l in D['acc']['negative']['list2']) and one(l for l in D['acc']['negative']['list2'] if l['covers'] == ['b-disbursed'])['because'] == D['sc']['meta']['caution'] and 'no figure on this page' not in one(l for l in D['acc']['negative']['list2'] if l['covers'] == ['b-disbursed'])['because']",
    "actual": "sorted(v for l in D['acc']['negative']['list2'] for v in l['covers'])",
-   "falsified_if": "A line has neither a fill date nor a permanent reason, which is the failure mode this list has: a candid inventory that substitutes for closing anything and gets longer every year. Or a new empty board row appears and no line covers it, which is how a gap list stops being a list of the gaps."
+   "falsified_if": "A line has neither a fill date nor a permanent reason, which is the failure mode this list has: a candid inventory that substitutes for closing anything and gets longer every year. Or a new empty board row appears and no line covers it, which is how a gap list stops being a list of the gaps. Until 2026-09-29 the list promised a fill date and delivered three conditions; a line that gains a date, or both a condition and a permanent reason, now fails here.",
+   "counts": [
+    {
+     "figure": "either a date it will be filled or a permanent reason",
+     "noun": "second list"
+    }
+   ]
+  },
+  {
+   "id": "acc-member-provenance",
+   "text": "Band F and the Limitations: the repository carries no membership register and no applicant or personal record; its one per-company membership fact is the chain page's flag marking the companies PIC has published as members, which this page does not use. The membership line of list 2 quotes the scorecard's statement of this, and its permanent reason is that no member's dues, standing or renewal is publishable here. Corrected 2026-09-29: both said the repository carries no member record at any grain.",
+   "source": "accountability.json meta.publicOnly and negative.list2[covers a-members]; scorecard.json meta.publicOnly",
+   "assert": "'no membership register' in D['acc']['meta']['publicOnly'] and 'chain page’s flag' in D['acc']['meta']['publicOnly'] and 'this page does not use it' in D['acc']['meta']['publicOnly'] and 'at any grain' not in D['acc']['meta']['publicOnly'] and 'no member,' not in D['acc']['meta']['publicOnly'] and 'no membership register' in D['sc']['meta']['publicOnly'] and 'chain page’s flag' in D['sc']['meta']['publicOnly'] and 'no member,' not in D['sc']['meta']['publicOnly'] and one(l for l in D['acc']['negative']['list2'] if 'a-members' in l['covers'])['because'] == D['sc']['meta']['publicOnly'] and 'grain of a member record' not in one(l for l in D['acc']['negative']['list2'] if 'a-members' in l['covers'])['permanent_reason'] and 'dues, standing or renewal' in one(l for l in D['acc']['negative']['list2'] if 'a-members' in l['covers'])['permanent_reason']",
+   "actual": "(D['acc']['meta']['publicOnly'][:160], one(l for l in D['acc']['negative']['list2'] if 'a-members' in l['covers'])['permanent_reason'])",
+   "falsified_if": "Either Limitations goes back to denying any member record while the chain page publishes a per-company member flag, or list 2's membership line claims no grain of member data is publishable here. Until 2026-09-29 both did: the statements predate the flag and were not revised when it arrived."
   },
   {
    "id": "acc-defects",
-   "text": "Per-figure source lines: the five instrument defects are quoted verbatim from the shipped files that own them, not paraphrased here.",
+   "text": "Band A's source line quotes the Tech Hub restatement note verbatim, and the page data carries all five instrument defects verbatim from the shipped files that own them, not paraphrased here. The scorecard's IPEDS note is carried but no longer printed under band F, which has no IPEDS series (2026-09-29).",
    "source": "federal-money/data/techhub.json meta.note and meta.caution; federal-money/data/federal.json meta.caution; scorecard/data/scorecard.json meta.excludes and meta.small_numbers",
    "assert": "len(D['acc']['context']['defects']) == 5 and D['acc']['context']['defects'][0]['text'] == D['hub']['meta']['note'] and D['acc']['context']['defects'][1]['text'] == D['hub']['meta']['caution'] and D['acc']['context']['defects'][2]['text'] == D['fed']['meta']['caution'] and D['acc']['context']['defects'][3]['text'] == D['sc']['meta']['excludes'] and D['acc']['context']['defects'][4]['text'] == D['sc']['meta']['small_numbers']",
    "actual": "[d['from'] for d in D['acc']['context']['defects']]",

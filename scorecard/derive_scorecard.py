@@ -55,13 +55,20 @@ def short(n):
 
 # ---------------------------------------------------------------- B. award delivery
 #
-# One award dollar "has reached a named recipient" when the register carries an executed
-# line item naming the organisation that holds it. That is an ASSIGNMENT test, not a
+# One award dollar "has reached a named recipient" when the register carries a line
+# item naming who holds it: an organisation, or one of the two programme aggregates
+# (the Polymer Pilot Facility and regional workforce programs), whose lines count as
+# assigned too (corrected 2026-09-29). That is an ASSIGNMENT test, not a
 # payment test, and the distinction is the whole point of group B: the register records
 # what has been committed and executed, never what has been drawn down.
 AWARDED = FM["meta"]["totals"]["awards"]
 MATCH = FM["meta"]["totals"]["match"]
 SECURED = FM["meta"]["totals"]["total"]
+OUTLAYS = FM["meta"]["outlays"]
+# Federal lines: those with a USAspending outlay record, plus the one with no record at all.
+FED_LINES = OUTLAYS["lines"] + (1 if OUTLAYS.get("no_record") else 0)
+WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+         "ten", "eleven", "twelve"]
 ASSIGNED = sum(a["amount"] for r in FM["recipients"] for a in r["awards"])
 UNASSIGNED = AWARDED - ASSIGNED
 N_RECIPIENTS = len(FM["recipients"])
@@ -83,7 +90,30 @@ SRC_ROWS = [by_source[s["id"]] for s in FM["sources"]]
 
 EDA = by_source["eda"]
 OHIO = by_source["ohio"]
+
+# A named recipient is not the same as an executed line. One EDA line, the award with no
+# USAspending record, is corroborated only by arithmetic, and the funding map says its
+# execution is not verified. It stays in the assigned total and is kept out of every
+# figure called executed (corrected 2026-09-29).
+_NR = OUTLAYS.get("no_record")
+UNVERIFIED = None
+if _NR:
+    _hits = [a for r in FM["recipients"] for a in r["awards"]
+             if a.get("awardId") == _NR["awardId"]]
+    if len(_hits) != 1 or _hits[0]["amount"] != _NR["amount"]:
+        raise SystemExit("the unverified award %s is not exactly one register line"
+                         % _NR["awardId"])
+    UNVERIFIED = {"awardId": _NR["awardId"], "name": _NR["name"], "amount": _NR["amount"],
+                  "source": PROG_SOURCE[_hits[0]["programId"]]}
+EXECUTED = ASSIGNED - (UNVERIFIED["amount"] if UNVERIFIED else 0)
 N_LEADS = len(TH["leads"])
+# The status line the bar chart prints beside each award, written here so a claim can read
+# it. The award holding the unverified line never reads "executed" (corrected 2026-09-29).
+for v in SRC_ROWS:
+    v["label"] = ("%s not yet named" % short(v["unassigned"]) if v["unassigned"]
+                  else "%s execution unverified" % short(UNVERIFIED["amount"])
+                  if UNVERIFIED and UNVERIFIED["source"] == v["id"]
+                  else "every dollar on an executed line")
 
 # Where the unassigned balance sits. The register's own reconciliation says it is two
 # Ohio workstreams; this recomputes it rather than quoting the sentence.
@@ -152,12 +182,14 @@ if DUP_1920:
 # The direction word was typed into three rows -- "down three years", "up three years" --
 # and two of the three stopped being true the moment the window carried its right years.
 # A word that describes the numbers beside it is computed from them.
+# Three values hold two changes, not three: "up three years" counted the years rather
+# than the rises between them (corrected 2026-09-29).
 def trend_words(w):
     """Three window values, and what may honestly be said about their order."""
     if w[0] < w[1] < w[2]:
-        return "up three years", "up"
+        return "up in both years since %d" % WINDOW[0], "up"
     if w[0] > w[1] > w[2]:
-        return "down three years", "down"
+        return "down in both years since %d" % WINDOW[0], "down"
     return "volatile", "volatile"
 
 
@@ -249,9 +281,14 @@ row(id="a-earned", group="A", status="vault",
 # --- B. award delivery -- computable from the public register, except the one that matters
 row(id="b-assigned", group="B", status="public",
     metric="Award dollars with a named recipient",
-    definition="Award dollars carried on an executed line item naming the organisation "
-               "that holds them, divided by all dollars awarded. An assignment test, "
-               "not a payment test.",
+    definition="Award dollars on a register line with a named recipient, divided by all "
+               "dollars awarded. The recipient is an organisation or, for the Polymer "
+               "Pilot Facility and regional workforce programs, a programme aggregate. "
+               "An assignment test, not a payment test. %s"
+               % ("Every line but one is executed; the %s EDA award to %s has no public "
+                  "record of its execution." % (money(UNVERIFIED["amount"]),
+                                                UNVERIFIED["name"])
+                  if UNVERIFIED else "Every line is executed."),
     cadence="On amendment of the award register",
     target="%s awarded" % money(AWARDED),
     current="%.1f%%" % (ASSIGNED / AWARDED * 100),
@@ -259,31 +296,45 @@ row(id="b-assigned", group="B", status="public",
     trend="first reading",
     source="PIC award register")
 row(id="b-recipients", group="B", status="public",
-    metric="Named recipients under an executed agreement",
-    definition="Distinct organisations holding at least one executed award line. One "
-               "row of the register is a programme aggregate rather than a single firm, "
-               "and is counted as one.",
+    metric="Named recipients holding an award line",
+    definition="Distinct named recipients holding at least one line in the award register. "
+               "Two of them, the Polymer Pilot Facility and regional workforce "
+               "programs, are programme aggregates rather than single organisations, "
+               "and each is counted as one.",
     cadence="On amendment of the award register",
     current=str(N_RECIPIENTS),
     sub="across %d programmes" % len(FM["programs"]),
     trend="first reading",
     source="PIC award register")
 row(id="b-eda", group="B", status="public",
-    metric="EDA implementation awards obligated to a project lead",
-    definition="Tech Hub implementation awards for which EDA has obligated funds "
-               "directly to the named project lead, against the number of awards in the "
-               "signed Notices of Award.",
+    metric="EDA implementation awards with a confirmed obligation",
+    definition="Tech Hub implementation awards for which USAspending confirms that EDA has "
+               "obligated funds directly to the named project lead, against the number of "
+               "awards in the signed Notices of Award.%s"
+               % (" One, %s, %s to %s, has no record there, so "
+                  "its obligation is not verified." % (UNVERIFIED["awardId"],
+                  money(UNVERIFIED["amount"]), UNVERIFIED["name"])
+                  if UNVERIFIED and UNVERIFIED["source"] == "eda" else ""),
     cadence="On amendment of the award register",
-    target="%d of %d awards" % (N_LEADS, N_LEADS),
-    current="%d of %d" % (N_LEADS, N_LEADS),
-    sub=money(EDA["award"]),
+    # Seven signed awards, six of them confirmed obligated. The row read "7 of 7" in the
+    # round-2 draft while its own sub said one line was not verified (corrected 2026-09-29).
+    # The target counts the same thing as the current cell, confirmed awards; it read
+    # "7 signed awards" against "6 of 7" confirmed, two units in one row (2026-09-30).
+    target="all %d awards confirmed" % N_LEADS,
+    current="%d of %d" % (N_LEADS - (1 if UNVERIFIED and UNVERIFIED["source"] == "eda"
+                                     else 0), N_LEADS),
+    sub="%s signed%s" % (money(EDA["award"]),
+                         "; %s to %s not verified" % (money(UNVERIFIED["amount"]),
+                                                      UNVERIFIED["name"])
+                         if UNVERIFIED and UNVERIFIED["source"] == "eda" else ""),
     trend="first reading",
     source="Signed federal Notices of Award")
 row(id="b-ohio", group="B", status="public",
     metric="Ohio Innovation Hub dollars with a named recipient",
     definition="The state grant’s five workstreams, tested the same way as the "
-               "award total: dollars on an executed line naming the organisation that "
-               "holds them.",
+               "award total: dollars on a register line with a named recipient, an "
+               "organisation or, for the Polymer Pilot Facility and the state share of "
+               "regional workforce programs, a programme aggregate.",
     cadence="On amendment of the award register",
     target="%s awarded" % money(OHIO["award"]),
     current="%.1f%%" % OHIO["pct"],
@@ -303,10 +354,14 @@ row(id="b-secured", group="B", status="public",
 row(id="b-disbursed", group="B", status="vault",
     metric="Award dollars disbursed to recipients",
     definition="Cash actually paid out against executed awards at quarter close, "
-               "divided by dollars awarded. The register above records commitment and "
-               "execution; nothing in it records a payment.",
+               "divided by dollars awarded. The register above records commitment and, on "
+               "every line but one, execution; nothing in it records a payment.",
     cadence="Quarterly, at quarter close",
-    source="PIC drawdown records and agency payment systems")
+    source="PIC drawdown records and agency payment systems",
+    # Unlike the other empty rows, part of this one is public: the federal ledger
+    # publishes outlays on most federal lines. What no source has is one figure across
+    # the whole register, and the empty state says that rather than "no figure exists".
+    empty="no figure spans the register")
 
 # --- C. talent
 row(id="c-polymer", group="C", status="public",
@@ -373,7 +428,8 @@ row(id="d-emp", group="D", status="context",
     source="Occupations page",
     href="../occupations/")
 row(id="d-federal", group="D", status="context",
-    metric="Routine federal obligations to regional polymer firms",
+    metric="Federal prime-contract obligations, chemical, plastics and rubber "
+           "codes, PIC-12",
     definition="Federal prime-contract obligations under chemical and plastics/rubber "
                "manufacturing codes at place of performance in the twelve counties, "
                "averaged over the seven completed fiscal years FY2019-FY2025, in 2025 "
@@ -422,9 +478,10 @@ doc = {
     "meta": {
         # No em-dash: the house style bans them in published prose, and this string is
         # printed under the table and again in the generated methodology box.
-        "source": "PIC award register (funding map), signed federal Notices of Award, "
-                  "executed state grant agreement SBIG20251005, IPEDS completions, and "
-                  "BLS QCEW. Each is already published on another page of this site.",
+        "source": "PIC award register, signed federal Notices of Award, executed state "
+                  "grant agreement SBIG20251005, IPEDS completions, BLS QCEW and the "
+                  "chain page’s published-member flag. Each is published elsewhere on "
+                  "this site.",
         "row": "one scorecard metric: its definition, who owns it, how often it is read, "
                "the target, and the latest reading where a public record can supply one.",
         "fetched": FM["meta"]["asOf"],
@@ -437,20 +494,26 @@ doc = {
                         "fails this page’s claims rather than leaving a stale board "
                         "number in place.",
         "publicOnly": "This repository is public and its history is permanent, so it "
-                      "carries no member, applicant or personal data. Every metric that "
+                      "carries no membership register and no applicant or personal data. "
+                      "Its one per-company membership fact is the chain page’s flag "
+                      "marking the companies PIC has published as members. Every metric that "
                       "would need PIC’s membership register, general ledger, "
                       "pipeline or drawdown records is published here as a defined empty "
                       "slot. Filling those rows requires a copy of this page kept "
                       "outside a public repository.",
-        "caution": "An award register records what has been committed and executed. It "
-                   "records no payment, so no figure on this page is a measure of money "
-                   "spent. Obligated is not disbursed, and the disbursement row is empty "
-                   "for that reason rather than for lack of effort.",
+        # The first version said "no figure on this page is a measure of money spent" on
+        # a page that prints the federal outlays. The counts are read from the funding
+        # map's outlay block so the sentence moves with it (corrected 2026-09-29).
+        "caution": "An award register records commitment, not payment, so no figure taken "
+                   "from it measures money spent. The federal ledger publishes outlays on "
+                   "%s of the %s federal lines; no public figure covers the state grant or "
+                   "the whole %s, so the disbursement row is empty."
+                   % (WORDS[OUTLAYS["lines"]], WORDS[FED_LINES], money(AWARDED)),
         "not": "No target on this page was set by PIC. A target cell showing a figure is "
                "a ceiling fixed by a signed award document, and every other target cell "
                "reads “not set”. No owner cell names a person, because this "
                "repository holds no owner assignment for any row.",
-        "small_numbers": "The talent rows are administrative counts in the low tens. "
+        "small_numbers": "The talent rows are administrative counts in the tens. "
                          "The polymer series ran %s across %d, %d and %d, so a single "
                          "year is a reading and not a direction."
                          % (", ".join(str(n) for n in POLY_WINDOW), *WINDOW),
@@ -462,11 +525,19 @@ doc = {
                     % (WINDOW[0], WINDOW[-1]),
     },
     "generated_on": datetime.date.today().isoformat(),
-    "version": "1.0",
+    "version": "1.2",
     "counts": COUNTS,
     "groups": GROUPS,
     "rows": R,
     "delivery": {"awarded": AWARDED, "assigned": ASSIGNED, "unassigned": UNASSIGNED,
+                 "executed": EXECUTED, "unverified": UNVERIFIED,
+                 # The chart's source line. It said "verified against the signed federal
+                 # Notices of Award" with no exception (corrected 2026-09-29).
+                 "source_note": "verified against the signed federal Notices of Award and "
+                                "the executed state grant agreement%s." % (
+                                    "; %s to %s is signed, but its execution is not "
+                                    "verified" % (UNVERIFIED["awardId"], UNVERIFIED["name"])
+                                    if UNVERIFIED else ""),
                  "match": MATCH, "secured": SECURED, "sources": SRC_ROWS, "gaps": GAPS},
     "talent": {"year": IPEDS_YEAR, "window": WINDOW, "institutions": N_INSTITUTIONS,
                "polymer": POLY, "polymer_window": POLY_WINDOW,

@@ -363,6 +363,19 @@ come from the signed Notices of Award.
 - **No published figure or sentence changed**, so there is no correction to date.
 
 
+## Revision, 29 September 2026 — "no federal dollar passes through PIC" (append-only)
+
+The EDA machine card said the Tech Hub route means "no federal dollar passes through
+PIC's hands", and the 31 August revision above repeats it. The register contradicts it:
+the Greater Akron Chamber, of which PIC is an initiative, holds $2,650,000 of the Tech Hub
+award (ED24HDQ0G0413, innovation governance) and is the grantee on all $3,084,371 of APEX,
+also federal. What the EDA route does rule out is Tech Hub money passing through PIC to
+another lead: EDA signs each of the seven implementation awards to its own lead, and
+USAspending confirms the obligation on six of them, all but Huntsman's. The
+card now says that and names the Chamber's $2.65M; a dated note sits under the machines,
+and `mechanism-distinct` asserts the Chamber's two federal lines alongside the three
+routes. The 31 August text above is left as written.
+
 ## Open questions for a human
 
 - ~~**Font licensing.**~~ Closed 28 August 2026: the page no longer names Aptos.

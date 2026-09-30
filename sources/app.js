@@ -680,6 +680,25 @@ drawGaps();
 
 function drawAll() { drawStrip(); drawTree(); drawHide(); drawDeps(); }
 drawAll();
+/* MEASURE THE FACE THAT WILL PAINT (the peers/app.js helper, same reasons). Lato ships with
+   font-display:swap, so the first draw measures in the fallback. The page draws at once,
+   never waits on a font file, and draws again as each face that was loading arrives. */
+const onFonts = redraw => {
+  /* A redraw replaces the chart's nodes; a reader tabbing through its marks keeps their place. */
+  const keep = () => {
+    const a = document.activeElement, k = a && a.getAttribute && a.getAttribute("aria-label");
+    redraw();
+    if (k && !a.isConnected) {
+      const n = [...document.querySelectorAll("[aria-label]")].find(e => e.getAttribute("aria-label") === k);
+      if (n) n.focus({preventScroll: true});
+    }
+  };
+  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(keep, () => {}); });
+  document.fonts.addEventListener("loadingdone", keep);
+};
+/* Not drawTree: it rebuilds the table and its controls, and a font arriving must not clear a
+   reader's filter or sort. */
+onFonts(() => { drawStrip(); drawHide(); drawDeps(); });
 
 /* One redraw per frame. A resize event fires dozens of times a second and each of these
    re-measures four containers. */

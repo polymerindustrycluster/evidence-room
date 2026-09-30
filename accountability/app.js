@@ -32,6 +32,22 @@ const {el, txt, ticks, frame, hoverable, tableView, chart, figures, INK, GRAY, C
 
 const D = await PV.data("accountability.json");
 const MOBILE = matchMedia("(max-width: 760px)");
+/* MEASURE THE FACE THAT WILL PAINT (the peers/app.js helper, same reasons). Lato ships with
+   font-display:swap, so the first draw measures in the fallback. The page draws at once,
+   never waits on a font file, and draws again as each face that was loading arrives. */
+const onFonts = redraw => {
+  /* A redraw replaces the chart's nodes; a reader tabbing through its marks keeps their place. */
+  const keep = () => {
+    const a = document.activeElement, k = a && a.getAttribute && a.getAttribute("aria-label");
+    redraw();
+    if (k && !a.isConnected) {
+      const n = [...document.querySelectorAll("[aria-label]")].find(e => e.getAttribute("aria-label") === k);
+      if (n) n.focus({preventScroll: true});
+    }
+  };
+  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(keep, () => {}); });
+  document.fonts.addEventListener("loadingdone", keep);
+};
 
 /* LEADING IS THE PHONE CANVASES' ENTIRE COLLISION BUDGET, and all three of them had it
    set too small. Every text-over-text pair the width sweep found on this page was a label
@@ -63,6 +79,10 @@ const longDate = iso => {
   const [y, m, d] = iso.split("-").map(Number);
   return `${d} ${MONTH[m - 1]} ${y}`;
 };
+
+/* A date known only to a year or a quarter prints at that precision, never as the stand-in
+   day the timeline stores to place it on an axis. */
+const shownDate = r => r.date_precision === "day" ? longDate(r.current_date) : r.date_display;
 
 const A = D.attribution, S = D.staging, C = D.coalition, P = D.promises,
       R = D.reconcile, N = D.negative, X = D.context;
@@ -109,7 +129,7 @@ const MAXA = STG[0].amount;
    authored; the amounts beside them are differences computed from the stages themselves,
    never typed. */
 const DROP = ["", "match and cost share, promised by others", "with no recipient named yet",
-              "obligated to other named recipients"];
+              "assigned to other named recipients"];
 
 function attribRow(g, i, geo, opts) {
   const {xs, rowH, m} = geo;
@@ -181,7 +201,10 @@ function attribDesktop() {
      that work: a reader who screenshots this figure gets the sentence with it. */
   const mech = A.mechanism.split(". ");
   txt(svg, mech[0] + ".", {x: m.l, y: 22, class: "pv-lab"});
-  txt(svg, mech.slice(1).join(". "), {x: m.l, y: 42, class: "pv-labq"});
+  txt(svg, mech.slice(1, 3).join(". ").replace(/\.?$/, "."), {x: m.l, y: 42, class: "pv-labq"});
+  /* The fourth sentence says which six obligations USAspending records (added
+     2026-09-30, when the first sentence changed from "obligates" to "signs"). */
+  if (mech[3]) txt(svg, mech.slice(3).join(". "), {x: m.l, y: 62, class: "pv-labq"});
 
   STG.forEach((_, i) => {
     const {s, prev, y, barY} = attribRow(svg, i, geo, {barTop: 38, bh: 26});
@@ -198,7 +221,7 @@ function attribDesktop() {
 
   /* The share is written on the chart, on the value line of the bar it describes, because
      the headline prints it and a reader should not have to carry it down from the hero.
-     On its own line below, it ran through the "−$75,020,661 obligated to other named
+     On its own line below, it ran through the "−$75,020,661 assigned to other named
      recipients" label; beside the value there is nothing to collide with. */
   const last = m.t + 3 * rowH;
   txt(svg, `${pct1(A.share_of_awarded * 100)} of the ${usd(S.awarded)} awarded`,
@@ -245,7 +268,7 @@ function attribMobile() {
   const geo = {xs, rowH, m};
   const mechM = A.mechanism.split(". ");
   txt(svg, mechM[0] + ".", {x: m.l, y: 20, class: "pv-lab"});
-  txt(svg, mechM[2], {x: m.l, y: 20 + MOBLEAD, class: "pv-labq"});
+  txt(svg, mechM[2].replace(/\.?$/, "."), {x: m.l, y: 20 + MOBLEAD, class: "pv-labq"});
   STG.forEach((_, i) => {
     const {s, prev, y, barY} = attribRow(svg, i, geo, {barTop: BARTOP, bh: 16});
     txt(svg, s.label, {x: m.l, y: y + LAB, class: "pv-lab"});
@@ -262,7 +285,7 @@ function attribMobile() {
   el("line", {x1: m.l, y1: my - 14, x2: m.l + w, y2: my - 14,
     stroke: "var(--pv-axis)", "stroke-width": 1, "stroke-dasharray": "3 4"}, svg);
   txt(svg, A.match.label, {x: m.l, y: my + 12, class: "pv-lab"});
-  txt(svg, usd(A.match.amount) + ", not part of the total above",
+  txt(svg, usd(A.match.amount) + ", counted in reported secured only",
     {x: m.l, y: my + 12 + MOBLEAD, class: "pv-labq"});
   el("rect", {x: m.l, y: my + 12 + MOBLEAD + 8, width: xs(A.match.amount) - m.l, height: 16,
     fill: "none", stroke: GRAY, "stroke-width": 1.5, "stroke-dasharray": "5 4", rx: 3},
@@ -270,6 +293,7 @@ function attribMobile() {
 }
 
 (MOBILE.matches ? attribMobile : attribDesktop)();
+onFonts(() => (MOBILE.matches ? attribMobile : attribDesktop)());
 
 document.getElementById("attribtable").innerHTML = tableView("attrib",
   "Each stage of the award total, what falls away between one stage and the next, and the "
@@ -277,19 +301,22 @@ document.getElementById("attribtable").innerHTML = tableView("attrib",
   ["Stage", "Amount", "Falls away before the next stage"],
   STG.map((s, i) => [s.label, usd(s.amount),
     i + 1 < STG.length ? usd(s.amount - STG[i + 1].amount) : "nothing below this stage"])
-    .concat([[A.match.label, usd(A.match.amount), "never enters the stages above"]]));
+    .concat([[A.match.label, usd(A.match.amount), "counted in reported secured, in no stage after it"]]));
 
 /* Source line, held to the caveat-ink budget: one source clause and one limitation
    sentence. The mechanism sentence used to live here and now rides on the chart, where
    the spec puts it and where a screenshot carries it. */
 document.getElementById("attribsrc").innerHTML =
-  `PIC award register as of ${D.as_of}, verified against signed federal Notices of Award `
-  + `and state grant SBIG20251005. <b>${esc(X.defects[0].text)}</b>`;
+  `PIC award register as of ${D.as_of}, ${esc(A.source_note)} <b>${esc(X.defects[0].text)}</b> The Chamber&rsquo;s own `
+  + `EDA line, ED24HDQ0G0413, is one of the two FY2024 awards, so restating it with the `
+  + `total moves the share only from ${(A.share_of_awarded * 100).toFixed(2)} to `
+  + `${(A.restated_share_of_awarded * 100).toFixed(2)} percent.`;
 
 /* ================================================================ B. awarded to disbursed
    Three stages of one total. The third carries no value, and the two named gaps and the
    programme-aggregate share are annotations on the chart rather than tooltips. */
 const AGG = S.aggregates;
+const NUMW = ["No", "One", "Two", "Three", "Four", "Five", "Six"];
 
 function hatch(svg, id) {
   const defs = el("defs", {}, svg);
@@ -318,7 +345,7 @@ function stageDesktop() {
 
   // 2. assigned, with the programme-aggregate portion hatched inside it
   y = m.t + rowH;
-  txt(svg, "On an executed line naming a recipient", {x: m.l, y: y + 13, class: "pv-lab"});
+  txt(svg, S.assigned_label, {x: m.l, y: y + 13, class: "pv-lab"});
   txt(svg, `${pct1(S.share_assigned)} of the awards`, {x: m.l, y: y + 31,
     class: "pv-labq"});
   el("rect", {x: m.l, y: y + 38, width: xs(S.assigned) - m.l, height: 28, fill: INK,
@@ -354,7 +381,7 @@ function stageDesktop() {
   el("rect", {x: m.l, y: y + 38, width: Math.max(3, xs(OL.paid) - m.l), height: 28,
     fill: INK, rx: 3}, svg);
   txt(svg, usd(OL.paid), {x: m.l + w + 12, y: y + 57, class: "pv-lab"});
-  txt(svg, `${pct1(OL.share)} of the federal lines`, {x: m.l + w + 12, y: y + 75,
+  txt(svg, `${pct1(OL.share)} of ${OL.lines} federal lines`, {x: m.l + w + 12, y: y + 75,
     class: "pv-labq"});
   txt(svg, `Solid: what the federal record says has been paid against ${usd(OL.base)} on `
     + `${OL.lines} federal award lines.`, {x: m.l, y: y + 88, class: "pv-labq"});
@@ -415,7 +442,7 @@ function stageMobile() {
   b = note + MOBLEAD * (1 + S.gaps.length) + BLOCK;
   const OL = S.outlays;
   txt(svg, "Paid out to recipients", {x: m.l, y: b, class: "pv-lab"});
-  txt(svg, `${usd(OL.paid)}, ${pct1(OL.share)} of the federal lines`,
+  txt(svg, `${usd(OL.paid)}, ${pct1(OL.share)} of ${OL.lines} federal lines`,
     {x: m.l, y: b + MOBLEAD, class: "pv-labq"});
   const outY = b + BAR;
   el("rect", {x: m.l, y: outY, width: w, height: 22, fill: "none", stroke: "#9A9284",
@@ -428,6 +455,7 @@ function stageMobile() {
 }
 
 (MOBILE.matches ? stageMobile : stageDesktop)();
+onFonts(() => (MOBILE.matches ? stageMobile : stageDesktop)());
 
 document.getElementById("stagetable").innerHTML = tableView("stage",
   "Each public award, the dollars assigned to a named recipient, and the balance with no "
@@ -441,7 +469,7 @@ document.getElementById("stagetable").innerHTML = tableView("stage",
               "not published", pct1(S.outlays.share)]]));
 
 document.getElementById("stagesrc").innerHTML =
-  `PIC award register and internal scorecard delivery rows as of ${D.as_of}. `
+  `PIC award register and scorecard delivery rows as of ${D.as_of}. `
   + `Payments from ${esc(S.outlays.source)}, read ${longDate(S.outlays.as_of)}; `
   + `${esc(S.outlays.no_record.name)}&rsquo;s ${usd(S.outlays.no_record.amount)} award `
   + `has no record there and the ${usd(S.outlays.not_federal.amount)} state grant is not `
@@ -505,7 +533,7 @@ function drawCoalition() {
       <caption><b>This table lists recipients of award money.</b> PIC&rsquo;s membership
         register is separate, is not published, and does not decide who appears here: PIC
         has members who receive nothing in this table, and recipients here who are not
-        members. ${C.lines} executed lines, ${C.recipients} recipients,
+        members. ${C.lines_phrase}, ${C.recipients} recipients,
         ${C.award_ids} award IDs, register as of ${D.as_of}.</caption>
       <thead><tr>${COLS.map(c =>
         `<th scope="col" class="${c.num ? "num" : ""}"${
@@ -529,9 +557,10 @@ document.getElementById("coalsrc").innerHTML =
   `PIC award register as of ${D.as_of}: signed federal Notices of Award, executed state `
   + `grant agreement SBIG20251005, and executed sub-grant agreements. Sorted by amount, `
   + `largest first, which is the order the $1,000,000 rule is drawn in; sorting by any `
-  + `other column hides the rule and changes no figure. <b>Two rows name a programme or a `
-  + `building rather than an organisation, and together they hold ${usd(AGG.total)}, `
-  + `${pct1(AGG.share_of_assigned)} of everything assigned.</b>`;
+  + `other column hides the rule and changes no figure. <b>${NUMW[AGG.recipients]} recipients hold `
+  + `${NUMW[AGG.lines].toLowerCase()} of these rows, and neither is an organisation: one is a building and `
+  + `one a programme. Together they hold ${usd(AGG.total)}, ${pct1(AGG.share_of_assigned)} of `
+  + `everything assigned.</b>`;
 
 /* ================================================================= D. the promise register
    The calibration statistic first, because a tracker that shows a keeping rate before it
@@ -541,7 +570,7 @@ document.getElementById("calib").innerHTML = `
   <p class="c-k">Date-keeping, the accuracy statistic this register reports on itself</p>
   <p class="c-n">n = ${CAL.n}</p>
   <p class="c-t">${CAL.n === 0
-    ? `The record of published dates opens on the day this page ships. No commitment has
+    ? `The record of published dates opened on ${longDate(P.opened_on)}. No commitment has
        resolved against it yet, so n is zero and this page reports no keeping rate.`
     : `${CAL.kept} of ${CAL.n} resolved commitments landed on the date first published.`}</p>
   <p class="c-d">The statistic is ${esc(CAL.statistic)}.
@@ -640,9 +669,9 @@ function swimlane(W, mob) {
     const cy = axisY + (up ? -1 : 1) * (16 + n * 17);
     mark(svg, xs(r.current_date), cy, r.status, 6.5);
     hoverable(el("circle", {cx: xs(r.current_date), cy, r: 12, fill: "transparent"}, svg),
-      `<b>${esc(longDate(r.current_date))}</b><br>${esc(r.commitment)}<br>
+      `<b>${esc(shownDate(r))}</b><br>${esc(r.commitment)}<br>
        ${esc(r.owner)} &middot; ${(STATUS[r.status] || STATUS.scheduled).word}`,
-      `${longDate(r.current_date)}: ${r.commitment}, ${r.owner}`);
+      `${shownDate(r)}: ${r.commitment}, ${r.owner}`);
   });
 
   /* Shortened by hand for the narrow canvas rather than machine-truncated: the desktop
@@ -654,6 +683,7 @@ function swimlane(W, mob) {
 }
 
 swimlane(MOBILE.matches ? 375 : 1100, MOBILE.matches);
+onFonts(() => swimlane(MOBILE.matches ? 375 : 1100, MOBILE.matches));
 
 /* The register itself, grouped by owner. A PIC-owned date that moves is PIC's; a partner
    date that moves is the partner's, and the two are never averaged into one record. */
@@ -674,7 +704,7 @@ document.getElementById("register").innerHTML = GROUPS.map(([cls, title, blurb])
       const st = STATUS[r.status] || STATUS.scheduled;
       return `<div class="rg">
         <div class="rg-d"><i class="${r.status === "delivered" ? "on" : ""}"></i>
-          ${esc(r.current_date)}</div>
+          ${esc(r.date_precision === "day" ? r.current_date : r.date_display)}</div>
         <div class="rg-c">${esc(r.commitment)}
           <span class="rg-m">Set by <b>${esc(r.set_by)}</b>, owned by
             ${esc(r.owner)}. Source: ${esc(r.source_document)}.
@@ -705,6 +735,7 @@ document.getElementById("promisesrc").innerHTML =
   `Public event register as of ${D.as_of}, forward events only, seeded once into `
   + `<span class="mono">accountability/data/promises.json</span> on `
   + `${esc(P.opened_on)} and append-only from that date. ${esc(P.rule)} `
+  + `Rows are read against the build date, ${longDate(D.generated_on)}. `
   + `<b>${esc(D.meta.excludes)}</b>`;
 
 /* ==================================================== E. three published counts, reconciled
@@ -740,7 +771,7 @@ document.getElementById("reconcilesrc").innerHTML =
   + `off the page. The award register supplies the executed sub-grant total. `
   + `<b>The two descriptions of award ED25OIE0G0108 differ: the award register says `
   + `&ldquo;${esc(R.apex.funding)}&rdquo; and the public event register adds 400 `
-  + `completions. One of the two is incomplete, and this page does not decide which.</b>`;
+  + `completions. ${esc(R.apex.verdict)}</b>`;
 
 /* ===================================================================== F. the negative space
    Two generated lists and no chart. List 1 is the board's own target field; list 2 names
@@ -774,7 +805,7 @@ document.getElementById("cannot").innerHTML = `
       <th scope="row" data-l="Not here">${esc(l.not_here)}
         <span class="age">Defined ${esc(l.defined_on)} &middot; ${ageWords(l.defined_on)}
           &middot; ${l.permanent_reason
-            ? `<span class="perm">permanent</span>` : `will fill ${esc(l.fill_by)}`}</span>
+            ? `<span class="perm">permanent</span>` : `will fill ${esc(l.fill_when)}`}</span>
       </th>
       <td data-l="Because">${esc(l.because)}
         <span class="from">From ${esc(l.because_from)}.</span></td>
@@ -785,10 +816,10 @@ document.getElementById("cannot").innerHTML = `
   </table>`;
 
 document.getElementById("negsrc").innerHTML =
-  `Internal scorecard as of ${D.as_of}: ${N.counts.rows} rows, ${N.counts.accountable} of `
+  `Scorecard as of ${D.as_of}: ${N.counts.rows} rows, ${N.counts.accountable} of `
   + `them accountable, ${N.counts.vault} published as defined empty slots. Both lists are `
-  + `generated from the published data files that carry each limitation, so neither can go stale `
-  + `here. <b>${esc(X.defects[3].text)}</b>`;
+  + `generated from the published data files that carry each limitation, so neither can drift `
+  + `from the file it quotes. Ages are counted to the build date, ${longDate(D.generated_on)}.`;
 
 /* Generated methodology box, then the closer. No footprint banner: the page is not
    county-scoped as a whole, and the one figure that is names the twelve counties in its
@@ -797,8 +828,9 @@ await PV.methodology({
   page: "accountability",
   meta: D.meta,
   definitions: `Of the ${usd(S.awarded)} awarded across three public awards, `
-    + `${usd(S.assigned)} sits on ${C.lines} executed lines naming ${C.recipients} `
-    + `recipients, and ${usd(A.stages[3].amount)} of that is on the two lines naming the `
+    + `${usd(S.assigned)} sits on ${C.lines} award lines naming ${C.recipients} recipients, `
+    + `${usd(S.executed)} of it on the ${C.executed_lines} executed ones, and `
+    + `${usd(A.stages[3].amount)} of that is on the two lines naming the `
     + `Greater Akron Chamber as destination, ${pct1(A.share_of_awarded * 100)} of the awards. The `
     + `promise register holds ${P.rows.length} dated commitments: `
     + `${P.by_type.numeric_outcome} numeric outcome target, ${P.by_type.milestone} `
