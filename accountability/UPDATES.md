@@ -10,6 +10,14 @@ Newest first. Every entry names the date, what changed in the reading, and what 
 
 ---
 
+## 2026-09-30 — the state grant's grantee confirmed; a figure corrected
+
+- PIC confirmed that the Greater Akron Chamber is the grantee of record on the state grant,
+  SBIG20251005. The page's destination-or-grantee figure moved from $7.6 million to $37.4
+  million in band A and the closing line, with a dated note on the page. Because the old
+  figure was wrong, the change is recorded in `CORRECTIONS.md`; this entry only notes it.
+  The page stays parked and unlisted.
+
 ## 2026-09-30 — open questions 6 and 7 answered; the page stays parked
 
 - **Open Question 6 answered:** John Swanson reads the promise register each quarter. The
