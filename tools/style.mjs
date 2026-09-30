@@ -29,8 +29,10 @@ try { ACRO = JSON.parse(rfs(new URL("../_data/acronyms.json", import.meta.url), 
    (2026-09-28). Only a grep outside the repo caught that. The list is read unguarded: a
    missing or malformed file must fail the gate, not empty the list and pass. It catches a
    phrasing coming back, not one hidden on purpose: CSS generated content, form control
-   values, shadow DOM, zero-width characters and text painted invisible by colour, clipping,
-   masking, compounded opacity or position are out of reach, and every exemption is printed. */
+   values, shadow DOM, zero-width characters and text painted invisible by colour or moved
+   away by position are out of reach. Text under a transform, opacity, a filter, clipping,
+   masking, an overflow that cuts it, containment or zoom is not emulated: an exemption that
+   rests on it is refused (see DRAWN). Every exemption is printed. */
 const WITHDRAWN = JSON.parse(rfs(new URL("../_data/withdrawn.json", import.meta.url), "utf-8")).withdrawn;
 for (const w of WITHDRAWN) new RegExp(w.pattern.replaceAll(" ", "\\s+"), "gi");  /* the form the page compiles */
 
@@ -95,7 +97,8 @@ for (const n of list) {
     /* Whether text is drawn in a way this gate would have to emulate to know what a reader
        sees: moved, turned or scaled (transform, rotate, scale, translate, perspective, 3D,
        motion path), composited (opacity, filter, backdrop-filter, blend, will-change),
-       cut (clip, clip-path, masks), contained, or zoomed. Eighteen rounds of review found
+       cut (clip, clip-path, masks, an overflow its content exceeds), contained or skipped
+       (contain, content-visibility, whatever the display), or zoomed. Eighteen rounds of review found
        a new way each time an emulation of these missed what the browser draws, so they are
        not emulated: an exemption that depends on text under any of them is refused (see
        exempt), and the seen reading drops such text, which can only find more phrases. */
@@ -103,17 +106,22 @@ for (const n of list) {
       ["perspective", "none"], ["transform-style", "flat"], ["offset-path", "none"], ["will-change", "auto"],
       ["filter", "none"], ["backdrop-filter", "none"], ["mix-blend-mode", "normal"], ["clip", "auto"],
       ["clip-path", "none"], ["mask-image", "none"], ["-webkit-mask-image", "none"], ["mask-border-source", "none"],
-      ["-webkit-mask-box-image", "none"], ["contain", "none"], ["zoom", "1"]];
-    const drawn = a => parseFloat(a.opacity) < 1 || DRAWN.some(([k, v]) => { const x = a.getPropertyValue(k); return x !== "" && x !== v; });
+      ["-webkit-mask-box-image", "none"], ["contain", "none"], ["zoom", "1"], ["content-visibility", "visible"]];
+    /* overflow hidden or clip cuts text only where the box's content overflows it, which
+       layout reports (a scroll size past the client size); a box whose content fits cuts
+       nothing, and the hero sections that carry two live notes are such boxes */
+    const drawn = e => { const a = getComputedStyle(e);
+      return parseFloat(a.opacity) < 1 || DRAWN.some(([k, v]) => { const x = a.getPropertyValue(k); return x !== "" && x !== v; })
+        || (/hidden|clip/.test(a.overflowX + a.overflowY) && (e.scrollWidth > e.clientWidth || e.scrollHeight > e.clientHeight)); };
     const under = new Map();
     const emulated = e => {
       if (!e) return false;
-      if (!under.has(e)) under.set(e, drawn(getComputedStyle(e)) || emulated(e.parentElement));
+      if (!under.has(e)) under.set(e, drawn(e) || emulated(e.parentElement));
       return under.get(e);
     };
-    /* Text a reader cannot see below the given ancestor, short of anything drawn (above):
-       hidden, not displayed, contents skipped, not visible, or under a pixel high. A plain
-       inline box skips no contents. Visibility and font size are inherited and can be
+    /* Text a reader may not see below the given ancestor: hidden, not displayed, under
+       anything drawn (above, which takes content-visibility too), not visible, or set in a
+       font size under a pixel. Visibility and font size are inherited and can be
        overridden, so they are read on the text's own element. What this misses keeps a
        phrase in the seen reading, where the all-text reading has it anyway; what it wrongly
        drops can only fail an exemption (see exempt). */
@@ -121,9 +129,7 @@ for (const n of list) {
       const c = getComputedStyle(e);
       if (c.visibility !== "visible" || parseFloat(c.fontSize) < 1) return true;
       for (; e && e !== top; e = e.parentElement) {
-        const a = getComputedStyle(e);
-        if (e.hidden || a.display === "none" || drawn(a)
-          || (a.contentVisibility === "hidden" && !/^(inline|contents)$/.test(a.display))) return true;
+        if (e.hidden || getComputedStyle(e).display === "none" || drawn(e)) return true;
       }
       return false;
     };
@@ -134,8 +140,12 @@ for (const n of list) {
        sits in its parent's line, and a display:contents element has no box. Whether that
        line wraps before or after the box depends on widths, so `loose` reads a break at its
        edges too: "Current<span style=display:inline-block;width:100%>Joint work</span>"
-       sits on two lines (round 18). */
-    const breaks = (a, b, loose) => {
+       sits on two lines (round 18). Whether a block inside an inline-level box sits in
+       the line outside it depends on which of the box's lines that is, so `sticky` keeps
+       the block's break where the default lets the box undo it: "Current<span
+       style=display:inline-block><b style=display:block>Joint work</b><b
+       style=display:block>rose.</b></span>" puts "Current" beside "rose." (2026-09-30). */
+    const breaks = (a, b, mode) => {
       let l = a.parentElement;
       while (!l.contains(b)) l = l.parentElement;
       /* the box nearest l decides: whatever sits inside an inline-level box (inline-block,
@@ -143,15 +153,16 @@ for (const n of list) {
          may sit in l's line */
       const boxed = n => { let br = false;
         for (let e = n.parentElement; e !== l; e = e.parentElement)
-          if (/^(inline-|-webkit-inline)/.test(disp(e))) br = loose;
+          if (/^(inline-|-webkit-inline)/.test(disp(e))) br = mode === "loose" || (mode === "sticky" && br);
           else if (!/^(inline|ruby|contents)/.test(disp(e)) || item(e)) br = true;
         return br; };
       return ITEMS.test(disp(l)) || boxed(a) || boxed(b);
     };
     /* the text `top` owns under `mine`, the text nodes `keep` admits, and where each
        starts; with `gap`, text `top` does not own leaves a GAP where it was; with `apart`,
-       a space goes wherever a reader sees a break (see breaks; "loose" also at the edges of
-       an inline-level box) or where text `top` does not own was left out */
+       a space goes wherever a reader sees a break (see breaks, whose mode it is: "sticky"
+       also where a block inside an inline-level box broke, "loose" also at the edges of any
+       inline-level box) or where text `top` does not own was left out */
     const GAP = "\u0000";
     const read = (top, mine, keep, gap, apart) => {
       const r = {bt: "", at: [], nodes: []};
@@ -164,7 +175,7 @@ for (const n of list) {
         if (mine(u.parentElement) !== top) { if (gap && !r.bt.endsWith(GAP)) r.bt += GAP; cut = true; continue; }
         if (u.nodeType === 1) r.bt += "\n";
         else {
-          if (apart) { if (cut || (last && breaks(last, u, apart === "loose"))) r.bt += " "; last = u; }
+          if (apart) { if (cut || (last && breaks(last, u, apart))) r.bt += " "; last = u; }
           r.at.push(r.bt.length); r.nodes.push(u); r.bt += u.textContent;
         }
         cut = false;
@@ -197,8 +208,10 @@ for (const n of list) {
         const re = new RegExp(WRE[ri].source, "iy");
         re.lastIndex = p;
         const m = re.exec(line);
-        const ok = NOTE.test(before.replace(/“[^”]*”/g, "“”"))
-          || (!!m && before.split("“").length > before.split("”").length && line.includes("”", p + m[0].length));
+        /* either way the phrase must match again within the line, so a phrase running on
+           into the next flex item, grid item or table cell is not the note's to exempt */
+        const ok = !!m && (NOTE.test(before.replace(/“[^”]*”/g, "“”"))
+          || (before.split("“").length > before.split("”").length && line.includes("”", p + m[0].length)));
         if (ok && pass === 0 && r.nodes.some((u, j) => r.at[j] >= from && r.at[j] <= from + line.length && emulated(u.parentElement)))
           return (why = "drawn", false);
         return ok;
@@ -206,14 +219,15 @@ for (const n of list) {
     };
     /* Two readings of a passage: all its text, which sees a collapsed <details> twin, and
        the text a reader sees, which drops anything hidden, so "Joint<span hidden>x</span>
-       work" is still one phrase. Each is read three times: joined, so "Jo<b>int</b> work" is
-       one phrase, and spaced where a reader sees a break, with and without the edges of an
-       inline-level box, so "Current" and "Joint work" in two flex items do not read
+       work" is still one phrase. Each is read four times: joined, so "Jo<b>int</b> work" is
+       one phrase, and spaced where a reader sees a break, in each of the three modes of
+       breaks, so "Current" and "Joint work" in two flex items do not read
        "CurrentJoint work", which no phrase bounded by \b matches (round 14). A phrase any
        reading finds is reported once, from the node it starts in. */
     const withdrawnIn = block => {
       const found = new Map(), all = () => true, seen = e => !gone(e, block);
-      for (const r of [all, seen].flatMap(keep => [read(block, own, keep), read(block, own, keep, false, "tight"), read(block, own, keep, false, "loose")]))
+      for (const r of [all, seen].flatMap(keep => [read(block, own, keep),
+        ...["tight", "sticky", "loose"].map(mode => read(block, own, keep, false, mode))]))
         WRE.forEach((re, ri) => {
           for (const wm of r.bt.matchAll(re)) {
             let i = r.at.length - 1;

@@ -30,7 +30,7 @@ published as a finding about the institutions.
 
   python fetch_collab.py
 """
-import json, os, re, time, urllib.parse, urllib.request, collections
+import json, os, re, time, unicodedata, urllib.parse, urllib.request, collections
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 from contact import UA  # noqa: E402  (one address, see contact.py)
@@ -174,13 +174,36 @@ by_title = {n: v for n, v in by_title.items()
 # handover; the project's partner was the University
 # of Minnesota (award 1620316). Corrected 2026-09-29. Keyed on piId, falling back to the
 # name, because the email moves with the person and so cannot tell the two awards apart.
-def pi_key(a):
-    return a.get("piId") or (a.get("pdPIName") or
-                             f"{a.get('piFirstName', '')} {a.get('piLastName', '')}").strip().lower()
+# piId decides only when both awards carry one; otherwise the names are compared, whether
+# NSF wrote "Last, First" in pdPIName or split them into piFirstName and piLastName. An
+# award with no usable identity is unknown and matches nothing: two blank keys are not one
+# person, and dropping a pair on them would delete a real joint project (2026-09-30).
+def pi_name(a):
+    """'first last', lower-case ASCII letters, middle names dropped; '' when unknown."""
+    raw = (a.get("pdPIName") or "").strip()
+    if "," in raw:
+        last, _, first = raw.partition(",")
+        raw = f"{first} {last}"
+    if not raw:
+        raw = f"{a.get('piFirstName') or ''} {a.get('piLastName') or ''}"
+    words = re.findall(r"[a-z]+", unicodedata.normalize("NFKD", raw).encode("ascii", "ignore")
+                       .decode().lower())
+    return f"{words[0]} {words[-1]}" if len(words) >= 2 else ""
 
 
-transfers = {n for n, v in by_title.items() if len(v) == 2 and
-             {pi_key(x) for x in v["akron"]} & {pi_key(x) for x in v["cwru"]}}
+def same_pi(a, b):
+    ia, ib = str(a.get("piId") or "").strip(), str(b.get("piId") or "").strip()
+    if ia and ib:
+        return ia == ib
+    na = pi_name(a)
+    return bool(na) and na == pi_name(b)
+
+
+def is_transfer(akron, cwru):
+    return any(same_pi(x, y) for x in akron for y in cwru)
+
+
+transfers = {n for n, v in by_title.items() if len(v) == 2 and is_transfer(v["akron"], v["cwru"])}
 for n in sorted(transfers):
     print(f"    dropped as a PI transfer, not a joint project: "
           f"{' + '.join(x['id'] for x in by_title[n]['akron'] + by_title[n]['cwru'])}")

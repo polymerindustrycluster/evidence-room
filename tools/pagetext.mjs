@@ -55,10 +55,10 @@ for (const page of Object.keys(dump))
   if (!existsSync(join(DIST, `${page}.html`))) delete dump[page];
 
 const b = await chromium.launch();
-let failed = 0;
+const missing = [];
 for (const n of list) {
   const file = join(DIST, `${n}.html`);
-  if (!existsSync(file)) { console.log(`${n.padEnd(18)} FAIL  no ${file}`); failed++; delete dump[n]; continue; }
+  if (!existsSync(file)) { console.log(`${n.padEnd(18)} FAIL  no ${file}`); missing.push(n); delete dump[n]; continue; }
   const sha256 = createHash("sha256").update(readFileSync(file)).digest("hex");
   const p = await b.newPage({viewport: {width: 1440, height: 1000}, javaScriptEnabled: false});
   await p.goto(pathToFileURL(file).href);
@@ -80,6 +80,9 @@ for (const n of list) {
 }
 await b.close();
 writeFileSync(OUT, JSON.stringify(dump, null, 1) + "\n", "utf8");
-console.log(failed ? `\n${failed} page(s) had no bundle; their text is not in ${OUT}`
-                   : `\nrendered text for ${list.length} page(s) in ${OUT}`);
-process.exit(failed ? 1 : 0);
+/* the last line is the one tools/all.mjs prints, so it names the pages and the fix */
+console.log(missing.length
+  ? `\nno bundle for ${missing.join(", ")} in ${DIST}, so no text for it in ${OUT}: ` +
+    `run node tools/bundle.mjs first (tools/all.mjs does)`
+  : `\nrendered text for ${list.length} page(s) in ${OUT}`);
+process.exit(missing.length ? 1 : 0);
