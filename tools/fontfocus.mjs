@@ -8,9 +8,16 @@
  * (Codex, 2026-09-30) then found the fix called focus() once per arriving face and once
  * more on `loadingdone`, so a screen reader could announce the same mark several times.
  *
+ * Codex's review of PR #36 (2026-09-30) found the next defect in line: batching the
+ * redraw until EVERY face had landed left peers drawn from fallback measurements while its
+ * labels painted in Lato, clipping "North Carolina" at 768px on Linux while Lato 900 was
+ * still loading.
+ *
  * This serves the SOURCE pages over http (the dist bundles inline their fonts, so a
- * bundle cannot load late), holds each font file back on a staggered delay, focuses a
- * mark in the named chart, lets the fonts land, and requires:
+ * bundle cannot load late), holds every font file, focuses a mark in the named chart,
+ * then releases all faces but one and requires:
+ *   - a redraw happened while that face was still loading (geometry follows each face),
+ * then releases the last face and requires:
  *   - the redraw replaced the focused mark (otherwise nothing was tested: FAIL, not pass),
  *   - focus sits on a mark with the same aria-label,
  *   - focus moved exactly once.
@@ -51,15 +58,17 @@ try {
     const page = await browser.newPage({viewport: {width: 1440, height: 1000}});
     const errors = [];
     page.on("pageerror", e => errors.push(e.message));
-    let n = 0;                          // faces arrive apart, the case that multiplied focus()
+    const held = [];                    // every face waits until this gate lets it go
+    let holding = true;
     await page.route(/\.(woff2?|ttf|otf)(\?|$)/, async route => {
-      await new Promise(r => setTimeout(r, 1200 + 400 * n++));
-      await route.continue();
+      if (holding) await new Promise(release => held.push({url: route.request().url(), release}));
+      try { await route.continue(); } catch { /* page closed */ }
     });
     let r;
     try {
       await page.goto(`${base}/${name}/`, {waitUntil: "domcontentloaded"});
       await page.waitForSelector(`#${chart} [tabindex="0"][aria-label]`, {timeout: 15000});
+      await page.waitForTimeout(300);   // let every face the first draw needs be requested
       const label = await page.evaluate(chart => {
         const node = document.querySelector(`#${chart} [tabindex="0"][aria-label]`);
         if (document.fonts.status !== "loading") return null;
@@ -68,9 +77,22 @@ try {
         document.addEventListener("focusin", () => { window.__ff.moves++; }, true);
         return node.getAttribute("aria-label");
       }, chart);
-      if (label === null) {
-        r = {ok: false, why: "the fonts had already loaded, so the late redraw could not be inspected"};
+      if (label === null || held.length < 2) {
+        r = {ok: false, why: label === null
+          ? "the fonts had already loaded, so the late redraw could not be inspected"
+          : `only ${held.length} face(s) requested, so no face could be held back while others land`};
       } else {
+        /* hold back the last face by name (Lato 900 where the page uses it), free the rest */
+        held.sort((x, y) => x.url.localeCompare(y.url));
+        const last = held.pop();
+        holding = false;
+        held.forEach(f => f.release());
+        await page.waitForFunction(n => [...document.fonts].filter(f => f.status === "loaded").length >= n,
+          held.length, {timeout: 15000});
+        await page.waitForTimeout(200);
+        const mid = await page.evaluate(() => ({replaced: !window.__ff.node.isConnected,
+          pending: [...document.fonts].some(f => f.status === "loading")}));
+        last.release();
         await page.evaluate(() => document.fonts.ready);
         await page.waitForTimeout(600);
         const s = await page.evaluate(() => {
@@ -78,11 +100,13 @@ try {
           return {replaced: !window.__ff.node.isConnected, moves: window.__ff.moves,
             got: a && a.getAttribute("aria-label"), tag: a && a.tagName};
         });
-        const why = !s.replaced ? "the font-load redraw did not replace the focused mark; nothing was tested"
+        const why = !mid.pending ? "no face was still loading at the midpoint; nothing was tested"
+          : !mid.replaced ? "no redraw while a face was still loading: the chart kept fallback measurements under Lato"
+          : !s.replaced ? "the font-load redraw did not replace the focused mark; nothing was tested"
           : s.got !== label ? `focus lost to ${s.got ? `"${s.got}"` : `<${s.tag}>`}`
           : s.moves !== 1 ? `focus moved ${s.moves} times; a screen reader announces each one`
           : "";
-        r = {ok: !why, why: why || `focus kept on "${label}", moved once`};
+        r = {ok: !why, why: why || `redrawn with a face pending; focus kept on "${label}", moved once`};
       }
     } catch (e) {
       r = {ok: false, why: `could not inspect: ${e.message.split("\n")[0]}`};
@@ -90,6 +114,8 @@ try {
     if (errors.length) r = {ok: false, why: `${r.why}; page error: ${errors[0]}`};
     if (!r.ok) bad++;
     console.log(`${r.ok ? "  ok  " : "FAIL  "}${name.padEnd(12)} #${chart.padEnd(8)} ${r.why}`);
+    holding = false;
+    held.forEach(f => f.release());
     await page.close();
   }
 } finally {

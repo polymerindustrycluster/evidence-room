@@ -37,6 +37,14 @@ import {join} from "path";
 const turned = extra => '<p><span style="display:inline-block;transform:rotateX(90deg);transform-style:preserve-3d;' + extra +
   '"><span style="display:inline-block;transform:rotateX(-90deg)">Correction, 28 September 2026: </span></span>Joint work rose.</p>';
 
+/* the onFonts helper every chart page carries, and the redraw-then-refocus step PR #33 used */
+const ON_FONTS = /const onFonts = redraw => \{[\s\S]*?\n\};/;
+const KEEP = "const onFonts = redraw => {\n  const keep = () => {\n" +
+  '    const a = document.activeElement, k = a && a.getAttribute && a.getAttribute("aria-label");\n' +
+  "    redraw();\n    if (k && !a.isConnected) {\n" +
+  '      const n = [...document.querySelectorAll("[aria-label]")].find(e => e.getAttribute("aria-label") === k);\n' +
+  "      if (n) n.focus({preventScroll: true});\n    }\n  };\n";
+
 const CASES = [
   {gate: "textsize", page: "laborshed", args: ["--sweep", "laborshed"],
    defect: "a chart collapsed to zero width, so its text cannot be measured at all",
@@ -338,23 +346,35 @@ const CASES = [
      return JSON.stringify(d, null, 1) + "\n";
    }},
 
-  /* Both from the PR #33 review (Codex, 2026-09-30), which delayed the web font by hand.
-     #dir, not #map: the map never redraws on a font load, so it cannot lose focus. */
+  /* From the PR #33 and #36 reviews (Codex, 2026-09-30), which delayed the web font by
+     hand. #dir, not #map: the map never redraws on a font load, so it cannot lose focus.
+     Each injection swaps in a whole earlier onFonts helper. */
   {gate: "fontfocus", page: "reach", file: "reach/app.js", args: ["reach:dir"],
    expect: /focus lost/,
    defect: "a font-load redraw that replaces the focused chart mark and drops the reader on " +
            "<body> (the onFonts helper before PR #33)",
-   inject: s => s.replace(/const onFonts = redraw => \{[\s\S]*?\n\};/, "const onFonts = redraw => {\n" +
+   inject: s => s.replace(ON_FONTS, "const onFonts = redraw => {\n" +
      '  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(() => redraw(), () => {}); });\n' +
      '  document.fonts.addEventListener("loadingdone", () => redraw());\n};')},
 
   {gate: "fontfocus", page: "reach", file: "reach/app.js", args: ["reach:dir"],
    expect: /focus moved \d+ times/,
    defect: "focus restored once per arriving face and again on loadingdone, so a screen " +
-           "reader announces the same mark four times (PR #33 as merged)",
-   inject: s => s.replace(/  \/\* Once per settled batch[\s\S]*?\n\};/,
+           "reader announces the same mark several times (PR #33 as merged)",
+   inject: s => s.replace(ON_FONTS, KEEP +
      '  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(keep, () => {}); });\n' +
      '  document.fonts.addEventListener("loadingdone", keep);\n};')},
+
+  {gate: "fontfocus", page: "reach", file: "reach/app.js", args: ["reach:dir"],
+   expect: /no redraw while a face was still loading/,
+   defect: "one redraw only after every face has landed, so the chart keeps fallback " +
+           "measurements under Lato while one face loads (clipped 'North Carolina' on peers " +
+           "at 768px on Linux; PR #36 as first written)",
+   inject: s => s.replace(ON_FONTS, KEEP +
+     "  let queued = false;\n  const settle = () => {\n    if (queued) return;\n    queued = true;\n" +
+     '    requestAnimationFrame(() => { queued = false; if (document.fonts.status !== "loading") keep(); });\n  };\n' +
+     '  if (document.fonts.status === "loading") document.fonts.ready.then(settle, () => {});\n' +
+     '  document.fonts.addEventListener("loadingdone", settle);\n};')},
 ];
 
 const only = process.argv.slice(2).filter(a => !a.startsWith("--"));

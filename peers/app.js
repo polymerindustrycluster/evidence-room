@@ -20,26 +20,36 @@ const D = await PV.data("peers.json");
    off its left edge at 768 on every weekly CI run from 2026-09-07. macOS hid it because
    its fallback is wider than Lato, so the error fell on the generous side. Waiting for
    the fonts first held every chart and figure behind one stalled font file, so the page
-   draws at once and draws again once the faces that were loading arrive, and after any
+   draws at once and draws again as each face that was loading arrives, and after any
    later load. */
 const onFonts = redraw => {
-  /* A redraw replaces the chart's nodes; a reader tabbing through its marks keeps their place. */
-  const keep = () => {
-    const a = document.activeElement, k = a && a.getAttribute && a.getAttribute("aria-label");
-    redraw();
-    if (k && !a.isConnected) {
-      const n = [...document.querySelectorAll("[aria-label]")].find(e => e.getAttribute("aria-label") === k);
-      if (n) n.focus({preventScroll: true});
-    }
-  };
-  /* Once per settled batch, not once per face: a screen reader announces every focus(). */
-  let queued = false;
+  /* A redraw replaces the chart's nodes. Geometry follows every face as it lands (faces
+     landing in one frame share a redraw), never waiting on one still loading. A reader
+     tabbing through the marks gets focus back ONCE, when no face is loading, since a
+     screen reader announces every focus(); and not at all if they have moved on. */
+  const count = () => [...document.fonts].filter(f => f.status === "loaded").length;
+  let lost = null, queued = false, seen = count();
   const settle = () => {
     if (queued) return;
     queued = true;
-    requestAnimationFrame(() => { queued = false; if (document.fonts.status !== "loading") keep(); });
+    requestAnimationFrame(() => {
+      queued = false;
+      if (count() !== seen) {           // a face landed; the last face and loadingdone share one
+        seen = count();
+        const a = document.activeElement, k = a && a.getAttribute && a.getAttribute("aria-label");
+        redraw();
+        if (k && !a.isConnected) lost = k;
+      }
+      if (!lost || [...document.fonts].some(f => f.status === "loading")) return;
+      const now = document.activeElement;
+      if (!now || now === document.body) {
+        const n = [...document.querySelectorAll("[aria-label]")].find(e => e.getAttribute("aria-label") === lost);
+        if (n) n.focus({preventScroll: true});
+      }
+      lost = null;
+    });
   };
-  if (document.fonts.status === "loading") document.fonts.ready.then(settle, () => {});
+  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(settle, () => {}); });
   document.fonts.addEventListener("loadingdone", settle);
 };
 const FP = PV.footprint(D.meta);
