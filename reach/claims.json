@@ -21,8 +21,8 @@
       "id": "rch-impact-top-decile",
       "text": "309 of the 1,364 papers with an OpenAlex citation-percentile score are in their field and year’s top tenth: 22.7 percent. The denominator is the scored subset of 1,448 collected works. The page prints it as 23% and the top hundredth as 2.4 percent, from stored shares that must equal those counts over 1,364.",
       "source": "OpenAlex citation_normalized_percentile, field- and age-normalized",
-      "assert": "D['totals']['top10'] == 309 and D['totals']['pct_n'] == 1364 and round(100 * D['totals']['top10'] / D['totals']['pct_n'], 1) == 22.7 and D['totals']['top10_share'] == round(D['totals']['top10'] / D['totals']['pct_n'], 4) and D['totals']['top1_share'] == round(D['totals']['top1'] / D['totals']['pct_n'], 4) and tofixed(D['totals']['top10_share'] * 100, 0) == '23' and tofixed(D['totals']['top1_share'] * 100, 1) == '2.4'",
-      "actual": "(D['totals']['top10'], D['totals']['pct_n'], D['totals']['top10_share'], D['totals']['top1_share'])",
+      "assert": "D['totals']['top10'] == 309 and D['totals']['pct_n'] == 1364 and tofixed(100 * D['totals']['top10'] / D['totals']['pct_n'], 1) == '22.7' and D['totals']['top10_share'] == round(D['totals']['top10'] / D['totals']['pct_n'], 4) and D['totals']['top1_share'] == round(D['totals']['top1'] / D['totals']['pct_n'], 4) and tofixed(D['totals']['top10_share'] * 100, 0) == '23' and tofixed(D['totals']['top1_share'] * 100, 1) == '2.4'",
+      "actual": "(D['totals']['top10'], D['totals']['pct_n'], tofixed(100 * D['totals']['top10'] / D['totals']['pct_n'], 1), tofixed(D['totals']['top10_share'] * 100, 0), tofixed(D['totals']['top1_share'] * 100, 1))",
       "falsified_if": "Either the top-decile count or the number of scored papers changes; recompute the percentage from those counts rather than an already rounded share. Extended 2026-09-28 (round 4): the page prints the stored top10_share and top1_share, so either disagreeing with its count over pct_n fails it."
     },
     {
