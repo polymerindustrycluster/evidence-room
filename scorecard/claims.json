@@ -78,7 +78,7 @@
       "source": "Executed state grant agreement SBIG20251005 and its workstream budget, via funding-map/data/funding.json",
       "assert": "(lambda o: tofixed(o['pct'], 1) == '80.3' and o['assigned'] == 25084392 and o['award'] == 31250000 and o['assigned'] + o['unassigned'] == o['award'])(one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'ohio')) and (lambda oh: sum(a['amount'] for r in D['fm']['recipients'] if r['id'] in ('polymer-pilot-facility', 'regional-workforce') for a in r['awards'] if a['programId'] in oh) == 20009985)([p['id'] for p in D['fm']['programs'] if p['sourceId'] == 'ohio']) and (lambda df: 'naming the organisation' not in df and 'programme aggregate' in df and all(n in df for n in ('Polymer Pilot Facility', 'regional workforce programs'))) (one(r for r in D['sc']['rows'] if r['id'] == 'b-ohio')['definition'])",
       "actual": "one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'ohio')",
-      "falsified_if": "Any Ohio workstream sub-grant executes, which moves the share up, or the state restates a workstream budget. Printed to a tenth, so 80.24 or 80.35 breaks it."
+      "falsified_if": "Any Ohio workstream sub-grant executes, which moves the share up, or the state restates a workstream budget. Printed to a tenth with toFixed, so 80.24 or 80.36 breaks it; 80.35 does not, because its binary value sits just below the half and still prints 80.3."
     },
     {
       "id": "sc-secured",
