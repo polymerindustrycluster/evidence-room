@@ -260,13 +260,86 @@ def check_published_register(reg: dict, arts: list[str]) -> None:
         "this_page": pages.get("sources", {}).get("claims", 0),
         "n_auto": n_claims - n_manual,
     }
+    # The hub's own claims are not in counts.json's pages, so they come from its claims file.
+    # This block left them out until 2026-09-30, when a hub claim was added, the register
+    # said 33 and 575 for the hub and the site, and this check still passed.
+    try:
+        n_hub = len(load_json(os.path.join(WEB, "index", "claims.json"))["claims"])
+        expected["n_hub_claims"] = n_hub
+        expected["n_site_claims"] = n_claims + n_hub
+    except (OSError, KeyError, json.JSONDecodeError) as exc:
+        err("published-register", "index/claims.json", f"cannot count the hub's claims: {exc}")
     for key, value in expected.items():
         if checks.get(key) != value:
             err("published-register", f"checks.{key}",
                 f"sources page says {checks.get(key)!r}; index/data/counts.json requires "
                 f"{value!r}. Run derive_index.py and then derive_sources.py.")
 
+    # And the paragraph that PRINTS the census is typed in sources/index.html, so the
+    # registry can be right while the page is not. Read the numbers off the sentence.
+    html = read(WEB, "sources", "index.html")
+    para = re.search(r'id="checkidea">(.*?)</p>', html, re.S)
+    nums = re.search(
+        r"<b>(\d+)</b>\s+claims\.\s+The hub adds (\d+), making (\d+) across all (\d+) site pages\.\s+"
+        r"Of the (\d+) article claims, (\d+) are re-run.*?The other (\d+) rest on.*?"
+        r"This page alone carries (\d+)\.", para.group(1), re.S) if para else None
+    if not nums:
+        err("published-register", "sources/index.html",
+            "cannot read the claims census sentence in #checkidea; this check reads its numbers")
+    else:
+        printed = dict(zip(("n_claims", "n_hub_claims", "n_site_claims", "n_pages_all",
+                            "n_claims_again", "n_auto", "n_manual", "this_page"),
+                           map(int, nums.groups())))
+        want = dict(expected, n_pages_all=len(pages) + 1, n_claims_again=n_claims)
+        for key, value in printed.items():
+            if want.get(key) != value:
+                err("published-register", f"sources/index.html #checkidea {key}",
+                    f"the page prints {value}; the claims census says {want.get(key)}")
+
 # ------------------------------------------------------------------ 3. required files
+def check_masthead_dates(arts: list[str]) -> None:
+    """A page's masthead date is the newest date among the data files it reads.
+
+    The rule is John's (2026-09-30) and masthead.py holds the page-to-file mapping. Two
+    failures it stops: a page that reads a newer file than the one dated on its masthead
+    (sources read wages 11 September and said 8 September; accountability read the
+    location-quotient file, also 11 September, and said 13 August), and a page whose
+    masthead file carries no date at all, which prints no dateline. The hub is the newest
+    masthead date among the pages it links to.
+    """
+    import masthead
+    for a in arts:
+        if a == "index":
+            continue
+        if a not in masthead.MASTHEAD_FILE:
+            err("masthead", a, "not in masthead.MASTHEAD_FILE: name the data file whose meta "
+                "carries this page's masthead date")
+            continue
+        try:
+            shown = masthead.masthead_date(WEB, a)
+            newest = masthead.newest_input(WEB, a)
+        except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+            err("masthead", a, f"cannot read the masthead date or its inputs: {exc}")
+            continue
+        if shown is None:
+            err("masthead", a, f"{masthead.masthead_files(a)} meta has no as_of, fetched or asOf, so the "
+                "masthead prints no date")
+        elif newest and shown != newest[0]:
+            err("masthead", a, f"masthead date is {shown} but the newest input is {newest[0]} "
+                f"({newest[1]}). A page shows the newest date among the files it reads; set "
+                "meta.as_of in the derive step.")
+    try:
+        counts = load_json(os.path.join(WEB, "index", "data", "counts.json"))
+        linked = [a for a in arts if a != "index"
+                  and not os.path.exists(os.path.join(WEB, a, ".unlisted"))]
+        want = max(masthead.masthead_date(WEB, a) for a in linked).isoformat()
+        if counts.get("as_of") != want:
+            err("masthead", "index", f"hub masthead date is {counts.get('as_of')!r}; the newest "
+                f"masthead date among the pages it links to is {want}. Run derive_index.py.")
+    except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+        err("masthead", "index", f"cannot check the hub's masthead date: {exc}")
+
+
 def check_required_files(arts: list[str]) -> None:
     for a in arts:
         for f in ("index.html", "app.js"):
@@ -787,6 +860,7 @@ def main() -> int:
     check_registry_scripts(reg)
     check_registry_coverage(reg, arts)
     check_published_register(reg, arts)
+    check_masthead_dates(arts)
     check_required_files(arts)
     check_methodology(arts)
     check_footprint_prose(arts)

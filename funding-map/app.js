@@ -41,6 +41,10 @@ function loadData(file) {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   let DATA = null;
+
+  // ISO date to "14 August 2026", the form this page prints its dates in.
+  const longDate = (iso) => `${+iso.slice(8)} ${['January', 'February', 'March', 'April', 'May', 'June', 'July',
+    'August', 'September', 'October', 'November', 'December'][+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}`;
   let G = null;                  // indexed graph
   let revealDone = false;
   let selected = null;           // {kind, id}
@@ -1058,7 +1062,7 @@ function loadData(file) {
       page: 'funding-map',
       meta: {
         source: 'Signed federal Notices of Award, the executed Ohio grant agreement (SBIG20251005), and executed sub-grant agreements.',
-        fetched: '13 August 2026',
+        fetched: longDate(DATA.meta.asOf),
         row: 'One row is one award line: a named recipient, the program that funds it, and the amount that program has committed to that recipient.',
         caution: ns[0], excludes: ns[1], not_the_cluster: ns[2], note: ns[3],
         award_level_note: ns[4],

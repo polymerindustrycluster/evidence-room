@@ -192,11 +192,11 @@
   },
   {
    "id": "tl-operating-as-of",
-   "text": "Operating record as of 13 August 2026; heritage register as of 14 August 2026. The operating date is the mast dateline, stamped from the fetched date passed to PV.methodology(); the register date is stated in the methodology box Data sources. [2026-08-28: page migrated onto the house anatomy (mast / hero / bands / generated methodology box / closer); the sentence moved with its section and the assertion is unchanged.]",
+   "text": "Operating record as of 13 August 2026; heritage register as of 14 August 2026. The mast dateline is the newer of the two, 14 August 2026, because the masthead shows the newest input the page reads; it is computed from both meta.asOf dates and passed to PV.methodology(), and the operating date is stated in the methodology box Data sources. [2026-09-30: the dateline read 13 August, the operating date only.] [2026-08-28: page migrated onto the house anatomy (mast / hero / bands / generated methodology box / closer); the sentence moved with its section and the assertion is unchanged.]",
    "source": "timeline.json meta.asOf; heritage.json meta.asOf",
-   "assert": "D['t']['meta']['asOf'] == '2026-08-13' and D['h']['meta']['asOf'] == '2026-08-14'",
+   "assert": "D['t']['meta']['asOf'] == '2026-08-13' and D['h']['meta']['asOf'] == '2026-08-14' and max(D['t']['meta']['asOf'], D['h']['meta']['asOf']) == '2026-08-14'",
    "actual": "(D['t']['meta']['asOf'], D['h']['meta']['asOf'])",
-   "falsified_if": "Either builder is re-run against a newer inventory or register: the fetched date passed to PV.methodology(), the NOW constants in app.js and the Today labels are static and must be edited with the data."
+   "falsified_if": "Either builder is re-run against a newer inventory or register: the NOW constants in app.js and the Today labels are static and must be edited with the data; the masthead date is computed from both dates and moves by itself."
   },
   {
    "id": "tl-discoveries-not-products",

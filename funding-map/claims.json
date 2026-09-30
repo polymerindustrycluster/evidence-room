@@ -189,7 +189,7 @@
     },
     {
       "id": "as-of-date",
-      "text": "The hand-typed '13 August 2026' in the byline and the figure source line, and the same date passed to PV.methodology as the data vintage, which stamps the mast dateline and the generated methods box.",
+      "text": "The hand-typed '13 August 2026' in the byline and the figure source line, and the date passed to PV.methodology, which is read from meta.asOf and stamps the mast dateline and the generated methods box.",
       "source": "meta.asOf",
       "assert": "D['meta']['asOf'] == '2026-08-13' and 'Notices of Award' in D['meta']['provenance'][0] and 'grant agreement' in D['meta']['provenance'][1]",
       "actual": "(D['meta']['asOf'], D['meta']['provenance'][0][:60], D['meta']['provenance'][1][:60])",

@@ -532,12 +532,25 @@ const PV = (() => {
        the masthead from the data, so it can neither be forgotten nor go stale. Byline is
        the organisation, deliberately: this is desk work, and the reviewer of record is
        named in "How we checked it" below. */
+    /* THE DATE IS THE PAGE'S OWN, NEVER A SHARED ONE: the newest input date among the
+       data files the page reads, written into that page's meta as `as_of` where it is not the
+       page's own pull date (a vintage, a register, or the newest of the pages a derive step
+       joins: chain, revisions, the hub, accountability, patents, sources), else `fetched`.
+       tools/../_data/build/masthead.py names the files and verify_consistency.py holds the
+       rule. A page that supplies neither gets no dateline, so it logs an error, and
+       tools/verify.mjs fails the gate on any console error. Before 2026-09-30 it skipped
+       the dateline silently and seven pages went without one. */
     const mast = document.querySelector("header.mast .wrap");
-    if (mast && m.fetched && !mast.querySelector(".dateline")) {
-      const d = document.createElement("span");
-      d.className = "dateline";
-      d.textContent = `Data as of ${m.fetched}`;
-      mast.appendChild(d);
+    const asOf = m.as_of || m.fetched;
+    if (mast && !mast.querySelector(".dateline")) {
+      if (asOf) {
+        const d = document.createElement("span");
+        d.className = "dateline";
+        d.textContent = `Data as of ${asOf}`;
+        mast.appendChild(d);
+      } else {
+        console.error(`PV.methodology: page "${o.page || "index"}" supplied no meta.fetched or meta.as_of, so its masthead has no data date.`);
+      }
     }
 
     const sec = document.createElement("section");

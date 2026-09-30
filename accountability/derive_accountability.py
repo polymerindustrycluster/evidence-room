@@ -513,6 +513,10 @@ DATA = {
         "row": "one award line in the coalition register, and one dated public "
                "commitment in the promise register. The two are never counted together.",
         "fetched": AS_OF,
+        # Masthead date: the newest input read (the location-quotient file, 2026-09-11, at
+        # the time of writing), not the award register's own date, which is AS_OF above.
+        "as_of": max(AS_OF, TL["meta"]["asOf"], FED["meta"]["fetched"], LQ["meta"]["fetched"],
+                     SC["meta"]["fetched"], FM["meta"]["asOf"]),
         "definition": "Money is attributed to PIC when it sits on an executed award line "
                       "naming the Greater Akron Chamber, the organisation that holds "
                       "PIC. Money obligated directly to another project lead is convened, "

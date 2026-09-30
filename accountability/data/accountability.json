@@ -4,6 +4,7 @@
   "source": "Every figure is recomputed from a file another page of this site already publishes: the PIC award register (funding map), the PIC scorecard, the public event register (timeline), the EDA Tech Hub award file, USAspending obligations, and BLS QCEW establishment counts. Nothing on this page is fetched. The award register and the event register are as of 13 August 2026; the payment figures were read on 1 September 2026, the federal prime-contract figures on 8 September 2026 and the establishment counts on 11 September 2026.",
   "row": "one award line in the coalition register, and one dated public commitment in the promise register. The two are never counted together.",
   "fetched": "2026-08-13",
+  "as_of": "2026-09-11",
   "definition": "Money is attributed to PIC when it sits on an executed award line naming the Greater Akron Chamber, the organisation that holds PIC. Money obligated directly to another project lead is convened, not held, and the page reports the two separately rather than summing them into one figure of merit.",
   "baseline": "The published $106,290,451 secured figure is the baseline the subtraction runs against. It is the number a reader arrives to test, so it is kept in full and decomposed rather than replaced.",
   "derived_note": "Nothing here is fetched. derive_accountability.py recomputes every figure from the shipped JSON of the pages named above and from two registers seeded by hand, the dated promises and the recipient typing, which the README names. claims.json re-runs the same arithmetic against those upstream files rather than against this page’s own output, so a correction on the funding map fails this page instead of leaving a flattering number standing.",
@@ -15,7 +16,7 @@
   "small_numbers": "The promise register holds eighteen rows and one of them carries a number that can be missed. A keeping rate computed over a handful of resolved commitments would be noise with a percent sign, so this page prints the count and no rate until 6 commitments have resolved.",
   "note": "Match is counted in the reported-secured stage and in no stage after it. It is promised at award time by organisations other than PIC, so it is drawn detached, with its own label. The $10,417,066 beside the state grant is promised by local partners, not by the state."
  },
- "generated_on": "2026-09-29",
+ "generated_on": "2026-09-30",
  "as_of": "2026-08-13",
  "draft": {
   "status": "unreviewed draft",

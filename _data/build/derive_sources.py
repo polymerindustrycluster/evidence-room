@@ -49,6 +49,7 @@ import os
 import re
 
 from footprints import PIC12, NEO14
+import masthead
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.abspath(os.path.join(HERE, "..", ".."))
@@ -483,6 +484,8 @@ def build():
     for r in sources:
         routes[r["route"]] = routes.get(r["route"], 0) + 1
 
+    SMALL = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
+    n_no_script = sum(1 for r in sources if r["route"] == "internal" and r["script"] is None)
     totals = {
         "n_sources": len(sources),
         "n_pages": len(pages),
@@ -840,6 +843,9 @@ def build():
                "values applied to it, whether it needs a key, and every page here that "
                "rests on it.",
         "fetched": FETCHED,
+        # Masthead date: the newest page data this build joins (masthead.EXTRA_READS), not
+        # the day the registry was last regenerated.
+        "as_of": masthead.newest_input(WEB, "sources", own=False)[0].isoformat(),
         "definition": "How you get it is DERIVED from the endpoint’s shape, not declared "
                       "in the registry, and the four tests run IN THIS ORDER: no "
                       "endpoint at all is an internal record; then a URL ending in a "
@@ -867,9 +873,12 @@ def build():
                "request, and "
                "those are quoted on each entry with the agency page they come from, "
                "rather than left as an implication that no term exists.",
-        "caution": "Two of the fourteen sources have no endpoint and no script. They are "
-                   "internal records, the published file is the artifact, and nothing on "
-                   "this site can make them fetchable.",
+        # Counted from the rows: this said "two of the fourteen" after the registry grew to 27
+        # and after a third internal record (no endpoint) joined the two with no script.
+        "caution": f"{SMALL[totals['n_no_endpoint']].capitalize()} of the {totals['n_sources']} "
+                   f"sources have no endpoint, and {SMALL[n_no_script]} of those "
+                   "also have no script. They are internal records, the published file is "
+                   "the artifact, and nothing on this site can make them fetchable.",
     }
 
     # ------------------------------------------------------ the sets, actually listed
