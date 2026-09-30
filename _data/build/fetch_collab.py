@@ -169,7 +169,9 @@ by_title = {n: v for n, v in by_title.items()
 # together. "Collaborative Research: Algorithm and Theory for Interface Computations" was
 # booked as a $257,950 joint project from awards 1620198 (Case Western, 2016) and 1852597
 # (Akron, 2018); NSF names Lingxing Yao, piId 269970204, as sole PI on both. The second
-# award is the first one following its PI to Akron; the project's partner was the University
+# award is the first one following its PI to Akron, with a two-month overlap (Case Western
+# ends 2018-09-30, Akron starts 2018-08-01), so "moved" means changed employer, not a clean
+# handover; the project's partner was the University
 # of Minnesota (award 1620316). Corrected 2026-09-29. Keyed on piId, falling back to the
 # name, because the email moves with the person and so cannot tell the two awards apart.
 def pi_key(a):
