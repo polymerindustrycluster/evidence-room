@@ -10,7 +10,10 @@
       "source": "derived: laborshed.json matrix diagonals (every job in the county) and bench.json pic12_counties own_share_work (in-state jobs only)",
       "assert": "max(r['in_county'] for r in D['ls']['matrix']) < 0.70 and len([r for r in D['b']['benchmark']['pic12_counties'] if r['own_share_work'] > 0.70]) == 1 and [r for r in D['b']['benchmark']['pic12_counties'] if r['own_share_work'] > 0.70][0]['name'] == 'Ashtabula'",
       "actual": "(round(max(r['in_county'] for r in D['ls']['matrix']), 4), sorted(((r['name'], round(r['own_share_work'], 4)) for r in D['b']['benchmark']['pic12_counties']), key=lambda t: -t[1])[:2])",
-      "falsified_if": "Any county reaches 70 percent on the every-job basis, at which point the H2 is false on BOTH bases and the finding is gone. Or the in-state basis stops putting exactly Ashtabula above the line, at which point the H2's scope clause and the benchmark reading line both describe an exception that no longer exists. THE TWO HALVES MUST FAIL SEPARATELY AND LOUDLY: guarding only the first half is what let an unscoped headline ship beside a chart that contradicted it."
+      "falsified_if": "Any county reaches 70 percent on the every-job basis, at which point the H2 is false on BOTH bases and the finding is gone. Or the in-state basis stops putting exactly Ashtabula above the line, at which point the H2's scope clause and the benchmark reading line both describe an exception that no longer exists. THE TWO HALVES MUST FAIL SEPARATELY AND LOUDLY: guarding only the first half is what let an unscoped headline ship beside a chart that contradicted it.",
+      "counts": [
+       {"figure": "70 percent", "noun": "No county"}
+      ]
     },
     {
       "id": "ls-summit-under-half",
@@ -72,7 +75,10 @@
       "source": "LODES 2019 and 2022, adjacent vs distant totals",
       "assert": "abs(D['ls']['external']['2022']['distant'] / D['ls']['external']['2019']['distant'] - 1.134) <= 0.005 and abs(D['ls']['external']['2022']['adjacent'] / D['ls']['external']['2019']['adjacent'] - 1.014) <= 0.005",
       "actual": "(D['ls']['external']['2022']['distant'] / D['ls']['external']['2019']['distant'], D['ls']['external']['2022']['adjacent'] / D['ls']['external']['2019']['adjacent'])",
-      "falsified_if": "Either growth rate leaves the band that rounds to the printed 13% and 1%. The figure title recomputes at render time, but the lede's 'roughly half' and the hero card lean on the same split."
+      "falsified_if": "Either growth rate leaves the band that rounds to the printed 13% and 1%. The figure title recomputes at render time, but the lede's 'roughly half' and the hero card lean on the same split.",
+      "counts": [
+       {"figure": "13 percent", "noun": "distant metros"}
+      ]
     },
     {
       "id": "ls-franklin-largest-external",
@@ -80,7 +86,11 @@
       "source": "LODES 2019 and 2022, top external home counties",
       "assert": "(lambda t: t[0]['name'].startswith('Franklin') and t[0]['jobs_2022'] == 26960 and t[0]['jobs_2019'] == 23506 and t[0]['jobs_2022'] == max(r['jobs_2022'] for r in t))(D['ls']['external']['top'])",
       "actual": "D['ls']['external']['top'][0]",
-      "falsified_if": "A revision reorders the top external sources or moves Franklin's counts; the hand-typed 26,960 and 23,506 in the vignette would then be stale, as would its 'About 27,000' headline."
+      "falsified_if": "A revision reorders the top external sources or moves Franklin's counts; the hand-typed 26,960 and 23,506 in the vignette would then be stale, as would its 'About 27,000' headline.",
+      "counts": [
+       {"figure": "26,960", "noun": "Franklin County"},
+       {"figure": "23,506", "noun": "up from"}
+      ]
     },
     {
       "id": "ls-not-the-cluster",
@@ -111,9 +121,12 @@
       "id": "ls-county-pattern-is-national",
       "text": "95.2 percent of the 397 counties in peer metropolitan areas are also below 70 percent, so the county-level pattern is not specific to Northeast Ohio (H2 'Ninety-five percent', the benchmark pull-quote band, closer, and the benchmark chart's 'about 5% of peers clear it', which is 100 minus this share).",
       "source": "LEHD LODES8 2022, 397 counties in 73 single-state peer metros, in-state basis both sides",
-      "assert": "(lambda v: 0.945 <= len([x for x in v if x < 0.70]) / len(v) < 0.955 and round((1 - len([x for x in v if x < 0.70]) / len(v)) * 100) == 5)(D['b']['benchmark']['peer_values'])",
-      "actual": "(len([x for x in D['b']['benchmark']['peer_values'] if x < 0.70]), D['b']['benchmark']['n_peer_counties'])",
-      "falsified_if": "The share leaves the band that rounds to 95 percent, or its complement stops rounding to the 5 percent the chart annotation prints. RE-BASED 2026-08-28: the ceiling moved from 69 to 70, so this now COUNTS the 397 shipped peer values rather than reading the pre-computed share_below_69 field, which would have printed 94.7 under a line labelled 70. TIGHTENED 2026-08-27: the old bound (> 0.90) allowed 0.92 to pass while the H2 said 'Ninety-five percent'. If this drops, the county-level framing becomes a regional finding again and the hero must change back."
+      "assert": "(lambda v: 0.945 <= len([x for x in v if x < 0.70]) / len(v) < 0.955 and 100 - int(tofixed(len([x for x in v if x < 0.70]) / len(v) * 100, 0)) == 5)(D['b']['benchmark']['peer_values'])",
+      "actual": "(lambda v: (len([x for x in v if x < 0.70]), len(v), D['b']['benchmark']['n_peer_counties'], tofixed(len([x for x in v if x < 0.70]) / len(v) * 100, 1), 100 - int(tofixed(len([x for x in v if x < 0.70]) / len(v) * 100, 0))))(D['b']['benchmark']['peer_values'])",
+      "falsified_if": "The share leaves the band that rounds to 95 percent, or its complement stops rounding to the 5 percent the chart annotation prints. RE-BASED 2026-08-28: the ceiling moved from 69 to 70, so this now COUNTS the 397 shipped peer values rather than reading the pre-computed share_below_69 field, which would have printed 94.7 under a line labelled 70. TIGHTENED 2026-08-27: the old bound (> 0.90) allowed 0.92 to pass while the H2 said 'Ninety-five percent'. If this drops, the county-level framing becomes a regional finding again and the hero must change back.",
+      "counts": [
+       {"figure": "95.2 percent", "noun": "counties"}
+      ]
     },
     {
       "id": "ls-pic12-above-peer-median",
@@ -143,9 +156,13 @@
       "id": "ls-only-pittsburgh-matches",
       "text": "The regions chart is the WORKPLACE side, the work that sits inside a region: PIC-12 keeps 89.5 percent of it for its own residents on twelve counties, and Pittsburgh, the only peer region of six or more counties that keeps a higher share, keeps 89.6 percent on eight (regions figure title, on-chart label, section lede, reading line, closer, chart description). CORRECTED 2026-09-28: this used to read as a ranking ('only Pittsburgh keeps more'); at a 0.07-point gap between regions with different county counts, both shares are now stated side by side rather than declaring a winner. EXTENDED 2026-09-01 to the RESIDENT side, where the result reverses: 90.93 percent of PIC-12 residents' jobs are inside PIC-12 against Pittsburgh's 90.91, a lead of two hundredths of a point. The page argues in its own two-direction section that publishing one direction invites the reader to assume the other, and its most quotable sentence about Pittsburgh had been published in one direction with no label. Both directions are now printed and both are asserted here, including that no third region reaches PIC-12 on either. EXTENDED 2026-09-28: the county counts the chart labels print ('four fewer counties', eight against twelve) and both margins are pinned: 0.07 of a point on the workplace side, which the closer prints with both shares to two decimals (89.60 against 89.53, read from the totals row the closer itself prints, which must equal the footprint row), and two hundredths on the resident side.",
       "source": "derived: bench.json regions, region_share_work (workplace side) and region_share (resident side)",
-      "assert": "(lambda pg, pic, others: len(pg) == 1 and pg[0]['region_share_work'] > pic['region_share_work'] and pg[0]['region_share_work'] - pic['region_share_work'] < 0.001 and pic['region_share'] > pg[0]['region_share'] and round((pic['region_share'] - pg[0]['region_share']) * 100, 2) == 0.02 and pg[0]['counties'] == 8 and pic['counties'] == 12 and max(r['region_share_work'] for r in others) < pic['region_share_work'] and max(r['region_share'] for r in others) < pic['region_share'] and tofixed(pic['region_share'] * 100, 2) == '90.93' and tofixed(pg[0]['region_share'] * 100, 2) == '90.91' and round(pic['region_share_work'] * 100, 1) == 89.5 and round(pg[0]['region_share_work'] * 100, 1) == 89.6 and round(D['b']['totals']['work_region_share'], 4) == round(pic['region_share_work'], 4) and tofixed(D['b']['totals']['work_region_share'] * 100, 2) == '89.53' and tofixed(pg[0]['region_share_work'] * 100, 2) == '89.60' and tofixed((pg[0]['region_share_work'] - D['b']['totals']['work_region_share']) * 100, 2) == '0.07')([r for r in D['b']['regions'] if r['name'].startswith('Pittsburgh')], [r for r in D['b']['regions'] if r['kind'] == 'footprint'][0], [r for r in D['b']['regions'] if r['kind'] != 'footprint' and not r['name'].startswith('Pittsburgh')])",
-      "actual": "[(r['name'], r['counties'], round(r['region_share_work'], 4), round(r['region_share'], 4)) for r in D['b']['regions'] if r['kind'] == 'footprint' or r['name'].startswith('Pittsburgh')]",
-      "falsified_if": "Either direction changes its winner, a third region reaches PIC-12 on either measure, Pittsburgh's workplace-side lead opens past half a point, PIC-12's resident-side lead opens past a tenth of a point, or Pittsburgh stops having fewer counties. IF THE RESIDENT-SIDE LEAD EVER OPENS, the 'two hundredths of a point is a tie' reading in the chart's reading line stops being honest and has to be rewritten as a real difference. CORRECTED 2026-08-28: the page said 'only Pittsburgh matches it' beside a visibly longer bar. CORRECTED AGAIN 2026-09-01: the page said 'only Pittsburgh keeps more of its work inside itself' with no direction attached, and that sentence is false on the resident side. Region share rises with region size, so this stays a bounded claim about comparable regions and NOT a national ranking. Extended 2026-09-28 (round 4): the resident shares are pinned at 90.93 and 90.91 percent, not only their 0.02-point difference."
+      "assert": "(lambda pg, pic, others: len(pg) == 1 and pg[0]['region_share_work'] > pic['region_share_work'] and pg[0]['region_share_work'] - pic['region_share_work'] < 0.001 and pic['region_share'] > pg[0]['region_share'] and tofixed((pic['region_share'] - pg[0]['region_share']) * 100, 2) == '0.02' and pg[0]['counties'] == 8 and pic['counties'] == 12 and max(r['region_share_work'] for r in others) < pic['region_share_work'] and max(r['region_share'] for r in others) < pic['region_share'] and tofixed(pic['region_share'] * 100, 2) == '90.93' and tofixed(pg[0]['region_share'] * 100, 2) == '90.91' and tofixed(pic['region_share_work'] * 100, 1) == '89.5' and tofixed(pg[0]['region_share_work'] * 100, 1) == '89.6' and round(D['b']['totals']['work_region_share'], 4) == round(pic['region_share_work'], 4) and tofixed(D['b']['totals']['work_region_share'] * 100, 2) == '89.53' and tofixed(pg[0]['region_share_work'] * 100, 2) == '89.60' and tofixed((pg[0]['region_share_work'] - D['b']['totals']['work_region_share']) * 100, 2) == '0.07')([r for r in D['b']['regions'] if r['name'].startswith('Pittsburgh')], [r for r in D['b']['regions'] if r['kind'] == 'footprint'][0], [r for r in D['b']['regions'] if r['kind'] != 'footprint' and not r['name'].startswith('Pittsburgh')])",
+      "actual": "[(r['name'], r['counties'], tofixed(r['region_share_work'] * 100, 1), tofixed(r['region_share_work'] * 100, 2), tofixed(r['region_share'] * 100, 2)) for r in D['b']['regions'] if r['kind'] == 'footprint' or r['name'].startswith('Pittsburgh')]",
+      "falsified_if": "Either direction changes its winner, a third region reaches PIC-12 on either measure, Pittsburgh's workplace-side lead opens past half a point, PIC-12's resident-side lead opens past a tenth of a point, or Pittsburgh stops having fewer counties. IF THE RESIDENT-SIDE LEAD EVER OPENS, the 'two hundredths of a point is a tie' reading in the chart's reading line stops being honest and has to be rewritten as a real difference. CORRECTED 2026-08-28: the page said 'only Pittsburgh matches it' beside a visibly longer bar. CORRECTED AGAIN 2026-09-01: the page said 'only Pittsburgh keeps more of its work inside itself' with no direction attached, and that sentence is false on the resident side. Region share rises with region size, so this stays a bounded claim about comparable regions and NOT a national ranking. Extended 2026-09-28 (round 4): the resident shares are pinned at 90.93 and 90.91 percent, not only their 0.02-point difference.",
+      "counts": [
+       {"figure": "89.5 percent", "noun": "PIC-12 keeps"},
+       {"figure": "89.6 percent", "noun": "Pittsburgh keeps"}
+      ]
     },
     {
       "id": "ls-out-of-state-is-small",
@@ -257,7 +274,10 @@
       "source": "laborshed/data/laborshed.json external.2022 and totals",
       "assert": "(lambda e, t: 0.515 <= e['distant'] / (e['adjacent'] + e['distant']) <= 0.525 and 0.288 <= e['distant'] / t <= 0.298 and e['other'] > e['distant'] > e['adjacent'] and e['adjacent'] + e['distant'] + e['other'] < t)(D['ls']['external']['2022'], D['ls']['totals']['home_outside_pic12'])",
       "actual": "(D['ls']['external']['2022'], D['ls']['totals']['home_outside_pic12'])",
-      "falsified_if": "The two readings converge, or the ungrouped bucket stops being the largest. Added 2026-08-30 after two model families independently divided and found the page saying 'roughly half of it' where 'it' was the whole imported share and the answer was 29 percent. The figure was never wrong; the basis was never named. This is the same defect the sources page's second recipe exists to teach, found on a page of ours."
+      "falsified_if": "The two readings converge, or the ungrouped bucket stops being the largest. Added 2026-08-30 after two model families independently divided and found the page saying 'roughly half of it' where 'it' was the whole imported share and the answer was 29 percent. The figure was never wrong; the basis was never named. This is the same defect the sources page's second recipe exists to teach, found on a page of ours.",
+      "counts": [
+       {"figure": "29 percent", "noun": "imported workforce"}
+      ]
     }
   ]
 }
