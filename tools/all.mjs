@@ -62,7 +62,7 @@ const GATES = [
   ["measure",     "node",   ["tools/measure.mjs"],           "running prose holds the measure"],
   ["collide",     "node",   ["tools/collide.mjs", "--sweep"],  "overlap and out-of-frame, 14 widths", true],
   ["textsize",    "node",   ["tools/textsize.mjs", "--sweep"], "12px rendered floor, 14 widths", true],
-  ["selftest",    "node",   ["tools/selftest.mjs"],            "18 known-defect fixtures across 11 gates", true],
+  ["selftest",    "node",   ["tools/selftest.mjs"],            "44 known-defect fixtures across 13 gates", true],
 ];
 
 const rows = [];

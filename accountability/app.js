@@ -32,6 +32,22 @@ const {el, txt, ticks, frame, hoverable, tableView, chart, figures, INK, GRAY, C
 
 const D = await PV.data("accountability.json");
 const MOBILE = matchMedia("(max-width: 760px)");
+/* MEASURE THE FACE THAT WILL PAINT (the peers/app.js helper, same reasons). Lato ships with
+   font-display:swap, so the first draw measures in the fallback. The page draws at once,
+   never waits on a font file, and draws again as each face that was loading arrives. */
+const onFonts = redraw => {
+  /* A redraw replaces the chart's nodes; a reader tabbing through its marks keeps their place. */
+  const keep = () => {
+    const a = document.activeElement, k = a && a.getAttribute && a.getAttribute("aria-label");
+    redraw();
+    if (k && !a.isConnected) {
+      const n = [...document.querySelectorAll("[aria-label]")].find(e => e.getAttribute("aria-label") === k);
+      if (n) n.focus({preventScroll: true});
+    }
+  };
+  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(keep, () => {}); });
+  document.fonts.addEventListener("loadingdone", keep);
+};
 
 /* LEADING IS THE PHONE CANVASES' ENTIRE COLLISION BUDGET, and all three of them had it
    set too small. Every text-over-text pair the width sweep found on this page was a label
@@ -277,6 +293,7 @@ function attribMobile() {
 }
 
 (MOBILE.matches ? attribMobile : attribDesktop)();
+onFonts(() => (MOBILE.matches ? attribMobile : attribDesktop)());
 
 document.getElementById("attribtable").innerHTML = tableView("attrib",
   "Each stage of the award total, what falls away between one stage and the next, and the "
@@ -438,6 +455,7 @@ function stageMobile() {
 }
 
 (MOBILE.matches ? stageMobile : stageDesktop)();
+onFonts(() => (MOBILE.matches ? stageMobile : stageDesktop)());
 
 document.getElementById("stagetable").innerHTML = tableView("stage",
   "Each public award, the dollars assigned to a named recipient, and the balance with no "
@@ -665,6 +683,7 @@ function swimlane(W, mob) {
 }
 
 swimlane(MOBILE.matches ? 375 : 1100, MOBILE.matches);
+onFonts(() => swimlane(MOBILE.matches ? 375 : 1100, MOBILE.matches));
 
 /* The register itself, grouped by owner. A PIC-owned date that moves is PIC's; a partner
    date that moves is the partner's, and the two are never averaged into one record. */

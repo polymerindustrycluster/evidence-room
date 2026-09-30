@@ -28,6 +28,22 @@ const {el, txt, ticks, frame, hoverable, tableView, chart, figures, INK, SEQ} = 
 
 const D = await PV.data("scorecard.json");
 const MOBILE = matchMedia("(max-width: 760px)");
+/* MEASURE THE FACE THAT WILL PAINT (the peers/app.js helper, same reasons). Lato ships with
+   font-display:swap, so the first draw measures in the fallback. The page draws at once,
+   never waits on a font file, and draws again as each face that was loading arrives. */
+const onFonts = redraw => {
+  /* A redraw replaces the chart's nodes; a reader tabbing through its marks keeps their place. */
+  const keep = () => {
+    const a = document.activeElement, k = a && a.getAttribute && a.getAttribute("aria-label");
+    redraw();
+    if (k && !a.isConnected) {
+      const n = [...document.querySelectorAll("[aria-label]")].find(e => e.getAttribute("aria-label") === k);
+      if (n) n.focus({preventScroll: true});
+    }
+  };
+  document.fonts.forEach(f => { if (f.status === "loading") f.loaded.then(keep, () => {}); });
+  document.fonts.addEventListener("loadingdone", keep);
+};
 
 const usd = v => "$" + Math.round(v).toLocaleString("en-US");
 /* Round at the unit, not after dividing: (2650000 / 1e6).toFixed(1) prints "$2.6M"
@@ -213,6 +229,7 @@ function drawOpen() {
   if (!M && ky > 220) svg.setAttribute("viewBox", `0 0 ${W} ${H + ky - 220}`);
 }
 drawOpen();
+onFonts(drawOpen);
 /* The strip re-lays itself out at the breakpoint. The two charts below it are drawn once,
    as they always were; changing that is a separate job and not this one. */
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawOpen)
@@ -477,6 +494,7 @@ function deliveryMobile() {
 }
 
 (MOBILE.matches ? deliveryMobile : deliveryDesktop)();
+onFonts(() => (MOBILE.matches ? deliveryMobile : deliveryDesktop)());
 
 document.getElementById("deliverytable").innerHTML = tableView("del",
   "Every public award, the dollars on a register line naming their holder, and the "
@@ -566,6 +584,7 @@ function talentMobile() {
 }
 
 (MOBILE.matches ? talentMobile : talentDesktop)();
+onFonts(() => (MOBILE.matches ? talentMobile : talentDesktop)());
 
 document.getElementById("talenttable").innerHTML = tableView("tal",
   "Credentials awarded by the three regional institutions in polymer CIP codes, by "
