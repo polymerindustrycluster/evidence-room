@@ -30,7 +30,14 @@
       "source": "sources[] award and matchAmount",
       "assert": "(lambda s: s['award'] == 51001413 and s['matchAmount'] == 7164030)(one(x for x in D['sources'] if x['id'] == 'eda')) and (lambda s: s['award'] == 31250000 and s['matchAmount'] == 10417066 and s['matchLabel'] == 'local partner match')(one(x for x in D['sources'] if x['id'] == 'ohio')) and (lambda s: s['award'] == 3084371 and s['matchAmount'] == 3373571)(one(x for x in D['sources'] if x['id'] == 'apex')) and not any('state cost share' in s['matchLabel'] for s in D['sources'])",
       "actual": "[(s['id'], s['award'], s['matchAmount']) for s in D['sources']]",
-      "falsified_if": "Any of the six figures revises, so a hand-typed tile or machine kicker no longer matches its award, or the Ohio match is credited to the state again. The label half was added on 1 September 2026: the machine card read 'The state promised $10.42M in cost share', and every public record of the award, including the Governor's office announcement of 5 September 2024, describes about $10.4 million matched by LOCAL PARTNERS. The figure was right and the promiser was wrong, which is the kind of error a figure-only guard cannot see. [2026-09-28: the standfirst and the second stat card still said 'partners and the state promised' the $21.0 million after the machine card was fixed. Both now credit partners only; the Ohio match stays pinned to its 'local partner match' label here.]"
+      "falsified_if": "Any of the six figures revises, so a hand-typed tile or machine kicker no longer matches its award, or the Ohio match is credited to the state again. The label half was added on 1 September 2026: the machine card read 'The state promised $10.42M in cost share', and every public record of the award, including the Governor's office announcement of 5 September 2024, describes about $10.4 million matched by LOCAL PARTNERS. The figure was right and the promiser was wrong, which is the kind of error a figure-only guard cannot see. [2026-09-28: the standfirst and the second stat card still said 'partners and the state promised' the $21.0 million after the machine card was fixed. Both now credit partners only; the Ohio match stays pinned to its 'local partner match' label here.]",
+      "counts": [
+        {"figure": "$31.25M grant", "noun": "state"},
+        {"figure": "$7.16M", "noun": "Partners promised"},
+        {"figure": "$10.42M", "noun": "Local partners"},
+        {"figure": "$3.08M federal", "noun": "Good Jobs Challenge"},
+        {"figure": "$3.37M", "noun": "local match commitment"}
+      ]
     },
     {
       "id": "eda-verification-honest",
@@ -45,7 +52,7 @@
       "id": "federal-outlays-published",
       "text": "The register now carries what the federal government reports having PAID: $11,642,401.68 against $48,114,979 across the seven federal award lines that have a USAspending record, 24.2 percent. The state grant and one federal award carry no outlay figure and no page invents one.",
       "source": "USAspending Total Outlays by award id, read 2026-09-01, carried on the award objects",
-      "assert": "abs(D['meta']['outlays']['outlaid'] - 11_642_401.68) < 0.01 and D['meta']['outlays']['obligated'] == 48_114_979 and D['meta']['outlays']['lines'] == 7 and round(D['meta']['outlays']['share'] * 100, 1) == 24.2 and abs(sum(w['outlay'] for r in D['recipients'] for w in r['awards'] if 'outlay' in w) - D['meta']['outlays']['outlaid']) < 0.01 and len([w for r in D['recipients'] for w in r['awards'] if 'outlay' in w]) == 7 and not any('outlay' in w for r in D['recipients'] for w in r['awards'] if w.get('awardId') == 'ED25HDQ0G0009')",
+      "assert": "abs(D['meta']['outlays']['outlaid'] - 11_642_401.68) < 0.01 and D['meta']['outlays']['obligated'] == 48_114_979 and D['meta']['outlays']['lines'] == 7 and tofixed(D['meta']['outlays']['share'] * 100, 1) == '24.2' and abs(sum(w['outlay'] for r in D['recipients'] for w in r['awards'] if 'outlay' in w) - D['meta']['outlays']['outlaid']) < 0.01 and len([w for r in D['recipients'] for w in r['awards'] if 'outlay' in w]) == 7 and not any('outlay' in w for r in D['recipients'] for w in r['awards'] if w.get('awardId') == 'ED25HDQ0G0009')",
       "actual": "(D['meta']['outlays'], [(w.get('awardId'), w.get('outlay')) for r in D['recipients'] for w in r['awards'] if w.get('awardId')])",
       "falsified_if": "The per-award outlays stop adding to the stated total, an eighth line acquires one without the base moving, or the Huntsman award is given an outlay of any value including zero. The last test is the one that matters: an absent award row and a zero drawdown are different findings, and only one of them is true here.",
       "official_check": "Outlays move with every drawdown, so this figure is dated on the page rather than presented as standing. What is not dated is the correction it forces: accountability published 'no public record says what has been paid' while seven award pages published exactly that."
@@ -86,7 +93,10 @@
       "source": "eda-direct awards ranked by amount; recipients[].awards[] totals",
       "assert": "(lambda rows: sorted(rows, key=lambda x: -x[1])[0] == ('BioVerde', 11122386))([(r['name'], w['amount']) for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct']) and 'butadiene' in one(w for r in D['recipients'] if r['name'] == 'BioVerde' for w in r['awards'] if w['programId'] == 'eda-direct')['funds'].lower() and (lambda multi: len(multi) == 6 and (lambda ex: ex['name'] == 'BioVerde' and sum(w['amount'] for w in ex['awards']) == 11147386 and len(ex['awards']) == 2 and sorted(w['amount'] for w in ex['awards']) == [25000, 11122386])(sorted(multi, key=lambda r: -sum(w['amount'] for w in r['awards']))[0]))([r for r in D['recipients'] if len(r['awards']) > 1])",
       "actual": "[(r['name'], [w['amount'] for w in r['awards']]) for r in D['recipients'] if len(r['awards']) > 1]",
-      "falsified_if": "Another EDA award tops $11,122,386, or the BioVerde figure or project description revises, or an organization is added to or removed from the multi-award set so 'six organizations' goes stale, or BioVerde stops being the largest of them so the generated example names someone else while the surrounding sentence still says otherwise."
+      "falsified_if": "Another EDA award tops $11,122,386, or the BioVerde figure or project description revises, or an organization is added to or removed from the multi-award set so 'six organizations' goes stale, or BioVerde stops being the largest of them so the generated example names someone else while the surrounding sentence still says otherwise.",
+      "counts": [
+        {"figure": "$11.12M", "noun": "BioVerde"}
+      ]
     },
     {
       "id": "facility-largest-line",
@@ -94,7 +104,11 @@
       "source": "maximum single award across all recipients; oh-facility program amount",
       "assert": "max(w['amount'] for r in D['recipients'] for w in r['awards']) == 18521985 and one(p for p in D['programs'] if p['id'] == 'oh-facility')['amount'] == 18521985 and max(p['amount'] for p in D['programs'] if p['sourceId'] == 'ohio') == 18521985",
       "actual": "sorted([w['amount'] for r in D['recipients'] for w in r['awards']])[-3:]",
-      "falsified_if": "Any award exceeds $18,521,985, or the facility line revises, so 'the single largest line is a building' stops being true."
+      "falsified_if": "Any award exceeds $18,521,985, or the facility line revises, so 'the single largest line is a building' stops being true.",
+      "counts": [
+        {"figure": "$18.5 million", "noun": "pilot facility"},
+        {"figure": "The biggest slice, $18.52M", "noun": "building"}
+      ]
     },
     {
       "id": "synthe6-cohort",
@@ -110,7 +124,10 @@
       "source": "sum of eda-direct awards",
       "assert": "(lambda ws: len(ws) == 7 and sum(ws) == 51001413)([w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct'])",
       "actual": "(len([w for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct']), sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct'))",
-      "falsified_if": "An EDA award is added, removed or revised, so the seven no longer sum to $51,001,413."
+      "falsified_if": "An EDA award is added, removed or revised, so the seven no longer sum to $51,001,413.",
+      "counts": [
+        {"figure": "$51.00M federal", "noun": "Tech Hub"}
+      ]
     },
     {
       "id": "named-vs-awarded",
@@ -120,16 +137,23 @@
       "actual": "(sum(w['amount'] for r in D['recipients'] for w in r['awards']), D['meta']['totals']['awards'] - sum(w['amount'] for r in D['recipients'] for w in r['awards']))",
       "falsified_if": "A new sub-grant executes or an award revises, so the named-recipient sum leaves $79,170,176 and $79.2M / $6.17M stop rounding from the data.",
       "counts": [
-        {"figure": "$79.2 million names a recipient", "noun": "the money actually awarded"}
+        {"figure": "$79.2 million names a recipient", "noun": "the money actually awarded"},
+        {"figure": "$6.17M sits", "noun": "workstreams"},
+        {"figure": "$79.2M has reached", "noun": "named recipient"},
+        {"figure": "$79.2M already has", "noun": "named recipient"}
       ]
     },
     {
       "id": "unrouted-split",
       "text": "The unrouted money splits into $2.64M of Translational R&D not yet passed on to a named recipient and $3.52M running Synthe6 through Bounce, and those are the only two workstreams holding any (A3 annotation, which says 'not yet passed on'; the fourth hero stat card's 'held in two Ohio spending lines'; the reconciliation sentence under the register, which keeps the contract wording 'not yet written into a sub-grant' and identifies Bounce Innovation Hub at its first appearance in prose; the closer). The two parts round to $2.64M and $3.52M and add to $6.16M while the balance itself rounds to $6.17M, so the closer states that gap under the figures rather than restating either figure to hide it. Both roundings are asserted, so a revision that closes the gap takes the sentence with it.",
       "source": "program amounts minus their executed sub-awards",
-      "assert": "(lambda bal: bal == {'oh-rd': 2642108, 'oh-startup': 3523500} and round(round(bal['oh-rd'] / 1e6, 2) + round(bal['oh-startup'] / 1e6, 2), 2) == 6.16 and round(sum(bal.values()) / 1e6, 2) == 6.17)({p['id']: p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) for p in D['programs'] if p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) != 0})",
+      "assert": "(lambda bal: bal == {'oh-rd': 2642108, 'oh-startup': 3523500} and tofixed(float(tofixed(bal['oh-rd'] / 1e6, 2)) + float(tofixed(bal['oh-startup'] / 1e6, 2)), 2) == '6.16' and tofixed(sum(bal.values()) / 1e6, 2) == '6.17')({p['id']: p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) for p in D['programs'] if p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) != 0})",
       "actual": "{p['id']: p['amount'] - sum(w['amount'] for r in D['recipients'] for w in r['awards'] if w['programId'] == p['id']) for p in D['programs']}",
-      "falsified_if": "A new Translational sub-grant executes, a workstream budget revises, or a third program stops routing all of its money to named recipients, so either balance moves or 'two Ohio workstreams' stops being the count. The display rounding is asserted beside the dollars for the same reason: if a revision makes the two parts add exactly to the balance, the closer's reconciliation sentence is describing arithmetic that no longer happens and has to come off the page."
+      "falsified_if": "A new Translational sub-grant executes, a workstream budget revises, or a third program stops routing all of its money to named recipients, so either balance moves or 'two Ohio workstreams' stops being the count. The display rounding is asserted beside the dollars for the same reason: if a revision makes the two parts add exactly to the balance, the closer's reconciliation sentence is describing arithmetic that no longer happens and has to come off the page.",
+      "counts": [
+        {"figure": "$2.64M", "noun": "Translational R&D"},
+        {"figure": "$3.52M", "noun": "Synthe6"}
+      ]
     },
     {
       "id": "concentration-half",
@@ -161,7 +185,10 @@
       "source": "distinct recipients holding an oh-rd or oh-startup award",
       "assert": "len(set(r['id'] for r in D['recipients'] for w in r['awards'] if w['programId'] in ('oh-rd', 'oh-startup'))) == 14",
       "actual": "sorted(set(r['id'] for r in D['recipients'] for w in r['awards'] if w['programId'] in ('oh-rd', 'oh-startup')))",
-      "falsified_if": "A sub-grant or cohort change moves the distinct-organization count off fourteen."
+      "falsified_if": "A sub-grant or cohort change moves the distinct-organization count off fourteen.",
+      "counts": [
+        {"figure": "fourteen", "noun": "organizations"}
+      ]
     },
     {
       "id": "apex-shape",
@@ -169,7 +196,11 @@
       "source": "apex-workforce award funds string; apex source award vs matchAmount",
       "assert": "'500 enrollments and 320 placements' in one(w for r in D['recipients'] for w in r['awards'] if w['programId'] == 'apex-workforce')['funds'] and (lambda s: s['matchAmount'] > s['award'])(one(x for x in D['sources'] if x['id'] == 'apex'))",
       "actual": "(one(w for r in D['recipients'] for w in r['awards'] if w['programId'] == 'apex-workforce')['funds'], one(x for x in D['sources'] if x['id'] == 'apex')['matchAmount'], one(x for x in D['sources'] if x['id'] == 'apex')['award'])",
-      "falsified_if": "The enrollment targets change in the award record, or a match revision drops the commitment to or below the award."
+      "falsified_if": "The enrollment targets change in the award record, or a match revision drops the commitment to or below the award.",
+      "counts": [
+        {"figure": "500", "noun": "enrollments"},
+        {"figure": "320", "noun": "placements"}
+      ]
     },
     {
       "id": "flexsys-award",
@@ -177,7 +208,10 @@
       "source": "flexsys award in funding.json",
       "assert": "(lambda w: w['amount'] == 10093286 and '6PPD' in w['funds'])(one(w for r in D['recipients'] if r['id'] == 'flexsys' for w in r['awards']))",
       "actual": "one(w for r in D['recipients'] if r['id'] == 'flexsys' for w in r['awards'])",
-      "falsified_if": "The Flexsys figure revises off $10,093,286 or the award stops being described as a 6PPD alternative."
+      "falsified_if": "The Flexsys figure revises off $10,093,286 or the award stops being described as a 6PPD alternative.",
+      "counts": [
+        {"figure": "$10.09M", "noun": "Flexsys"}
+      ]
     },
     {
       "id": "fullcircle-award",
@@ -185,7 +219,10 @@
       "source": "eda-direct awards' funds strings",
       "assert": "(lambda ws: len([w for w in ws if 'ecycling' in w['funds']]) == 1 and one(w for w in ws if 'ecycling' in w['funds'])['amount'] == 4702500)([w for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct' and w.get('funds')])",
       "actual": "[(w['funds'], w['amount']) for r in D['recipients'] for w in r['awards'] if w['programId'] == 'eda-direct']",
-      "falsified_if": "A second EDA award is described as recycling, or the Full Circle figure revises off $4,702,500."
+      "falsified_if": "A second EDA award is described as recycling, or the Full Circle figure revises off $4,702,500.",
+      "counts": [
+        {"figure": "$4.70M", "noun": "Full Circle Technologies"}
+      ]
     },
     {
       "id": "as-of-date",
