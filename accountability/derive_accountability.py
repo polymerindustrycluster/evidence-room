@@ -157,6 +157,17 @@ GRANTEE = {"apex": {"award_id": APEX_LINE["award_id"], "amount": APEX_LINE["amou
                     "attributed_to": APEX_LINE["recipient"]},
            "prior": {"award_id": PRIOR["awardId"], "amount": PRIOR["amount"],
                      "outlay": PRIOR["outlay"], "what": PRIOR["what"]}}
+# THE STATE GRANT'S GRANTEE. No file here named it until PIC confirmed, on 30 September
+# 2026, that the grantee of record on SBIG20251005 is the Greater Akron Chamber, of which PIC
+# is an initiative. The whole grant is the sum of its program lines in the register; it
+# replaces the Chamber's own hub-administration line in the destination-or-grantee total,
+# which would otherwise count that line twice.
+STATE_GRANT = sum(p["amount"] for p in FM["programs"] if p["sourceId"] == "ohio")
+GRANTEE["state"] = {"award_id": "SBIG20251005", "amount": STATE_GRANT,
+                    "grantee": "Greater Akron Chamber",
+                    "basis": "confirmed by PIC, 30 September 2026"}
+NAMED_TOTAL = (sum(l["amount"] for l in GAC if l["source_id"] != "ohio") + STATE_GRANT
+               + GRANTEE["apex"]["amount"] + GRANTEE["prior"]["amount"])
 
 # WHAT HAS BEEN PAID. Recomputed from the register's own award rows, never copied: the
 # meta block and the per-award outlays have to agree or this page does not build.
@@ -592,6 +603,9 @@ DATA = {
         "gac_lines": [{"amount": l["amount"], "award_id": l["award_id"],
                        "funds": l["funds"], "source_id": l["source_id"]} for l in GAC],
         "gac_grantee": GRANTEE,
+        # every award naming the Chamber as destination or grantee (corrected 2026-09-30
+        # from $7,633,558, which left out the state grant's grantee)
+        "named_total": NAMED_TOTAL,
         "mechanism": next(s["note"] for s in FM["sources"] if s["id"] == "eda"),
         "other_leads": len([l for l in LINES if l["program_id"] == "eda-direct"]) - 1,
         # The band A source line. It said the register is verified against the signed

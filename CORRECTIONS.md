@@ -11,6 +11,18 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-30 — The Chamber's wider figure, with the state grant's grantee, *accountability*
+
+**Was:** band A and the closing line said the Greater Akron Chamber is named as destination
+or grantee on $7.6 million ($7,633,558), and band A said no file here names the grantee of
+the state grant. **Is:** $37.4 million ($37,384,043). PIC confirmed on 30 September 2026 that
+the Chamber, of which PIC is an initiative, is the grantee of record on the $31,250,000 Ohio
+Innovation Hub grant, SBIG20251005; the whole grant now replaces the $1,499,515
+hub-administration line in that total. The $4,149,515 headline, which counts the lines
+naming the Chamber as destination, is unchanged. The page, which is parked and unlisted,
+carries a dated correction line; `acc-attribution-lines` asserts the new total and binds
+both printed sites.
+
 ## 2026-09-30 — Two replication recipes that described a different computation
 
 No published figure changed. Both errors were in instructions a reader would follow to

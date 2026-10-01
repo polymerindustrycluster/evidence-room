@@ -214,6 +214,14 @@ carrying two visible ones.
    (`.unlisted` stays), and it is not being redesigned. The shipped HTML and JavaScript are
    unchanged by this answer.
 
+**A grantee confirmed after parking (30 September 2026).** PIC confirmed that the grantee of
+record on the state grant, SBIG20251005 ($31,250,000), is the Greater Akron Chamber. The
+page's "destination or grantee" figure is corrected from $7.6 million ($7,633,558) to $37.4
+million ($37,384,043: the whole grant replaces the $1,499,515 hub-administration line already
+counted). `derive_accountability.py` computes it as `attribution.named_total`, and
+`acc-attribution-lines` asserts it and binds both printed sites. The page stays parked and
+unlisted; only the figure was corrected (CORRECTIONS.md, 2026-09-30).
+
 ## Defaults taken because a question is unanswered
 
 These are defaults, not decisions. Each is stated on the page where it appears.

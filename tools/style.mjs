@@ -18,6 +18,7 @@
 import {readdirSync, existsSync} from "fs";
 import {pathToFileURL} from "url";
 import {chromium} from "./_browser.mjs";
+import {pageScripts, asText, HOLE} from "./_jsstrings.mjs";
 
 import {readFileSync as rfs} from "fs";
 let ACRO = {assumed_known: [], debt: {}};
@@ -49,6 +50,58 @@ if (unknown.length) {
   console.log(`withdrawn.json names page(s) with no artifact or no bundle in dist/: ${unknown.join(", ")}`);
   process.exit(1);
 }
+
+/* TEXT A SCRIPT WRITES ONLY AFTER A CLICK. The walk below reads each page in its default
+   state, so a reading the seat selector writes on a tap never reached it: cost-scissors
+   printed "the winning seat" there after its correction, and reinserting it passed
+   (2026-09-30). Every string and template literal in every script the page loads is
+   checked too (tools/_jsstrings.mjs), whether or not any state shows it: withdrawn
+   phrasings with the same exemptions, and the typographic rules on literals that read as
+   prose outside console and Error messages. What a script fills in at run time (each ${...}) is counted and printed as not
+   inspected, and a script that cannot be read fails the page. The acronym rule is a
+   first-occurrence rule over the page and is not applied to scripts. */
+const MONTH = "(?:January|February|March|April|May|June|July|August|September|October|November|December)";
+const NOTE = new RegExp(`\\bCorrect(?:ion|ed)\\b[\\s,·.:]*(?:\\d{1,2}\\s+${MONTH}|${MONTH}\\s+\\d{1,2}),?\\s+\\d{4}`);
+let holes = 0, read = 0, devs = 0;
+const scripted = (page, patterns) => {
+  const out = [];
+  let scripts;
+  try { scripts = pageScripts(page); }
+  catch (e) { return [["script-unreadable", e.message]]; }
+  const WRE = patterns.map(src => new RegExp(src.replaceAll(" ", "\\s+"), "gi"));
+  const seen = new Set();
+  for (const {file, lits} of scripts) for (const lit of lits) {
+    read++; holes += lit.holes;
+    const at = `${file}:${lit.line}`;
+    for (const t of [asText(lit.text, false), asText(lit.text, true)]) WRE.forEach(re => {
+      for (const m of t.matchAll(re)) {
+        const phrase = m[0].replace(/\s+/g, " ").toLowerCase(), key = `${at}:${phrase}:${m.index}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        const before = t.slice(t.lastIndexOf(HOLE, m.index) + 1, m.index), rest = t.slice(m.index + m[0].length);
+        const ok = NOTE.test(before.replace(/“[^”]*”/g, "“”"))
+          || (before.split("“").length > before.split("”").length && rest.split(HOLE)[0].includes("”"));
+        const near = t.slice(Math.max(0, m.index - 30), m.index + 40).replace(/\s+/g, " ").replaceAll(HOLE, "…").trim();
+        out.push([`${ok ? "exempt:" : ""}withdrawn:${phrase}`, `${at} (script): ${near}`]);
+      }
+    });
+    /* the typographic rules, on literals that read as prose: two words in a row and no
+       code punctuation, so selectors, attribute values and format strings are not prose */
+    const t = asText(lit.text, true), ctx = `${at} (script): ${t.replace(/\s+/g, " ").replaceAll(HOLE, "…").trim().slice(0, 70)}`;
+    if (!/[A-Za-z]{2,}[ \u00a0\n]+[A-Za-z]{2,}/.test(t) || /[{};=<>]|=>/.test(t)) continue;
+    /* a console or Error message is for the developer; withdrawn phrasings are still checked
+       in it above, since funding-map prints a load error on the page */
+    if (lit.dev) { devs++; continue; }
+    if (t.includes("—")) out.push(["em-dash", ctx]);
+    if (/(?<=\w)'(?=\w)|(?<=\s)'|'(?=\s)/.test(t)) out.push(["straight-quote", ctx]);
+    if (/"/.test(t)) out.push(["straight-double", ctx]);
+    const bw = t.match(/\b(crucial|delve|matters)\b/i);
+    if (bw) out.push([`banned:${bw[1].toLowerCase()}`, ctx]);
+    if (/(^|[\s(])-\d/.test(t)) out.push(["hyphen-negative", ctx]);
+    if (/\d ?x(?=[\s.,)%])/.test(t)) out.push(["x-for-times", ctx]);
+  }
+  return out;
+};
 
 const b = await chromium.launch();
 let bad = 0, total = 0;
@@ -330,6 +383,7 @@ for (const n of list) {
     return out;
   }, {withdrawn: WITHDRAWN.filter(w => w.pages.includes(n)).map(w => w.pattern),
       assumed: ACRO.assumed_known || [], debtPages: Object.entries(ACRO.debt || {}).filter(([,v]) => v.includes("*") || v.includes(n)).map(([k]) => k)});
+  all.push(...scripted(n, WITHDRAWN.filter(w => w.pages.includes(n)).map(w => w.pattern)));
   /* An exemption is a pass the gate chose not to count, so it is printed, not hidden. */
   for (const [kind, ctx] of all.filter(([k]) => k.startsWith("exempt:"))) exempt.push(`${n}: ${kind.slice(7)}: ${ctx}`);
   const hits = all.filter(([k]) => !k.startsWith("exempt:"));
@@ -349,6 +403,9 @@ if (exempt.length) {
   console.log(`\n${exempt.length} withdrawn phrasing(s) passed as a dated correction note or a quotation:`);
   for (const e of exempt) console.log(`    ${e}`);
 }
+console.log(`\nscripts: ${read} string and template literals read from source; ${holes} value(s) ` +
+            `a script fills in at run time (\${...}) were not inspected there, only as rendered; ` +
+            `${devs} console or Error message(s) held to withdrawn phrasings only`);
 console.log(bad ? `\n${total} style-law violation(s) on ${bad} page(s)`
                 : `\nall ${list.length} pages clean: no em-dashes, no straight quotes, ` +
                   `no banned words, no withdrawn phrasings`);

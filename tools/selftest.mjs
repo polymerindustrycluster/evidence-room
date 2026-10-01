@@ -279,6 +279,15 @@ const CASES = [
    defect: "a phrasing withdrawn before the list existed (2026-09-01), printed again",
    inject: s => s.replace("<body>", "<body><p>Akron graduated two polymer undergraduates.</p>")},
 
+  /* Text a script writes only after a click: the rendered walk reads the default state, and
+     cost-scissors printed its withdrawn "winning seat" in the seat selector's reading after
+     a tap, which passed (2026-09-30). The script scan must find it in the source. */
+  {gate: "style", page: "cost-scissors", file: "cost-scissors/app.js", args: ["cost-scissors"],
+   expect: /withdrawn:winning seat: cost-scissors\/app\.js:\d+ \(script\)/,
+   defect: "a withdrawn phrasing written into the page only after a control is used",
+   inject: s => s.replace("<b>Finished products:</b> the seat still at its peak",
+                          "<b>Finished products:</b> the winning seat")},
+
   /* The one fixture that must PASS: a bare dated note exempts. The drawn rule compares
      computed values with defaults as strings (zoom "1", clip "auto" ...), so a Chromium that
      serialises one differently would refuse every note on the site; this fails first, and

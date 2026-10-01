@@ -3,8 +3,9 @@
  * NOTHING IN THE REGISTER IS TYPED HERE. Every source entry, every filter line, every
  * dependency and every count on this page is read from data/registry.json, which
  * _data/build/derive_sources.py generates from _data/SOURCES.json and _data/catalog.json.
- * That is not a preference. Fourteen sources, sixty filter lines and sixteen pages of
- * dependency is exactly the table a person retypes once and never updates, and every
+ * That is not a preference. Every source, every filter line and which page depends on
+ * which (27 sources and 23 pages as of 30 September 2026; the page prints the live count)
+ * is exactly the table a person retypes once and never updates, and every
  * hand-typed inventory on this site has gone stale inside a week. The registry is already
  * policed by verify_consistency.py, so a page generated from it stays true by
  * construction and a typed one would not.
