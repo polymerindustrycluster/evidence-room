@@ -253,20 +253,25 @@
           the all-industry totals over the same counties, divide one by the other, and
           divide that by the national share you already have from the
           <b class="code">US000</b> file.</p>
-        <p><b>Withheld counties are the hard part, and they behave differently for the two
-          kinds of number.</b> A withheld county drops out of the numerator and the
-          denominator together, so it does not drag the ratio toward zero, but it does not
-          leave it untouched either. Job and site counts built this way are floors: the
-          missing counties&rsquo; jobs are simply absent. The ratio is neither a floor nor
-          a census. <b>You cannot sign the direction of that error</b>, and it is
-          tempting to try. Withheld counties are disproportionately the small ones, so it
-          reads like a ceiling: drop the small places and the ratio should rise. But small
-          does not mean unconcentrated. The most concentrated cell this site publishes is
-          also one of its smallest, at 22.7 times the national share on 491 jobs, and the
-          smallest cells it publishes run from 0.09 to 22.7. Losing one of those pulls the
-          regional ratio down, not up. Report the ratio with the count of counties inside
-          it, every time, and say the direction is unknown rather than guessing it, because
-          that set moves between years.</p>
+        <p><b>Withheld counties are the hard part.</b> The bureau withholds a
+          county&rsquo;s industry cell, never its all-industry total, so a withheld county
+          leaves the numerator and stays in the denominator. That is how this site builds
+          its regional ratio: the industry jobs of the counties that report, divided by the
+          all-industry jobs of all twelve. Both kinds of number are then floors. Job and
+          site counts are floors because the missing counties&rsquo; jobs are simply
+          absent. <b>The ratio is a floor too, and one that sags</b>: a county leaving the
+          disclosed set takes its industry jobs out of the top and leaves its workforce in
+          the bottom, so the ratio falls with no employer changing what it does. Do not
+          shrink the denominator to the reporting counties to match the numerator. That
+          divides by a different geography and gives a different number, not a better
+          one: for paint in 2025 it gives 7.47 times the national share where this site
+          publishes 5.96, because the seven reporting counties hold 4,257 paint jobs among
+          1,357,804 jobs of all kinds, against 1,701,837 in all twelve. How far below the
+          truth the floor sits depends on which cells are withheld, and small does not
+          mean unconcentrated: the most concentrated cell this site publishes, Geauga
+          County resin at 22.7 times the national share, rests on 491 jobs. Report the
+          ratio with the count of counties inside it, every time, because that set moves
+          between years, and compare years only on a fixed set of counties.</p>
         <p class="body" id="footprint">
           <b>The county aggregate used for the wage analysis is PIC-12</b>, and
           these are the twelve counties, named because a reader replicating this needs the
@@ -463,12 +468,19 @@
       <li>
         <h3>Know what one row is before you sum it</h3>
         <p class="body" id="shedrow">
-          one (home county, work county) count of JOBS, not people and not commuters. A
-          two-job worker appears twice.</p>
+          One row is a pair of Census blocks, a home block and a work block, each a
+          fifteen-digit code in <b class="code">h_geocode</b> and
+          <b class="code">w_geocode</b>, and its <b class="code">S000</b> is a count of
+          JOBS, not people and not commuters. A two-job worker is counted twice. There
+          is no county column. The first five digits of each code are the county&rsquo;s
+          FIPS code, two for the state and three for the county, so this site keeps
+          those five digits at both ends and sums <b class="code">S000</b> over every
+          block pair that lands on the same home county and work county, in both the
+          main and aux files, keeping the pairs whose work county is one of the twelve.</p>
         <p><b>A job is not a person and a home is not a journey.</b> Somebody holding two
-          jobs is two rows. The home end is an address on file, not evidence that anyone
-          travelled: a fully remote worker who lives three states away and a worker who
-          drives in every morning are the same row. Nothing in this file counts a trip, so
+          jobs is counted twice. The home end is an address on file, not evidence that
+          anyone travelled: a fully remote worker who lives three states away and a worker
+          who drives in every morning are counted the same way. Nothing in this file counts a trip, so
           do not call the output commuting.</p>
       </li>
       <li>
@@ -839,7 +851,7 @@
       after the person who built the analysis has moved on.</p>
     <p class="body" id="checkidea">
       Across the twenty-two article pages, excluding the hub, this tally carries
-      <b>542</b> claims. The hub adds 34, making 576 across all 23 site pages.
+      <b>542</b> claims. The hub adds 35, making 577 across all 23 site pages.
       Of the 542 article claims, 520 are re-run
       against the shipped data in the verification suite, so a registered figure that
       stops matching its assertion fails that check. The other 22 rest on
@@ -1167,6 +1179,13 @@
     <p class="sub"><b>Correction, 30 September 2026:</b> the limits section said two of the
       fourteen sources have no endpoint and no script. Of the 27, three have no endpoint and two
       of those also have no script. The hub carries 34 claims, not 33, so the site total is 576.</p>
+    <p class="sub"><b>Correction, 30 September 2026:</b> the location quotient recipe said a
+      withheld county leaves the numerator and the denominator together, so the direction of
+      the error could not be signed. This site keeps all twelve counties in the denominator and
+      only the numerator loses a withheld county, so the ratio is a floor; following the old
+      rule gave paint 7.47 times the national share where the site publishes 5.96. The labour
+      shed recipe said one row is a home county and work county count. One row is a pair of
+      Census blocks, which the site rolls up to counties by their first five digits.</p>
   </div>
 </section>
 
