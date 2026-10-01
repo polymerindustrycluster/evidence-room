@@ -115,9 +115,14 @@ document.getElementById("workplaceslede").textContent =
 const decade = employment.windows.find(r => r.start === 2015);
 const prePandemic = employment.windows.find(r => r.start === 2019);
 const latestWindow = employment.windows.find(r => r.start === 2024);
+/* Direction read from the two endpoints, never typed: "unchanged" shipped over 364 to 365. */
+const estab2019 = employment.series.find(r => r.year === 2019).establishments;
+const estabSince2019 = estab2019 === endpoint.establishments
+  ? `were unchanged at ${N(endpoint.establishments)}`
+  : `${endpoint.establishments > estab2019 ? "rose" : "fell"} from ${N(estab2019)} to ${N(endpoint.establishments)}`;
 document.getElementById("workplaceswindows").textContent =
   `The 2022 starting point is the highest job count in all eleven annual observations; the establishment minimum was in 2021, not 2022. It marks the start of three consecutive job declines.
-   From the pre-pandemic year 2019 to 2025, jobs fell ${Math.abs(prePandemic.jobs_pct).toFixed(1)}% and establishments were unchanged at ${N(endpoint.establishments)}.
+   From the pre-pandemic year 2019 to 2025, jobs fell ${Math.abs(prePandemic.jobs_pct).toFixed(1)}% and establishments ${estabSince2019}.
    From 2015 to 2025, jobs fell ${Math.abs(decade.jobs_pct).toFixed(1)}% and establishments fell ${Math.abs(decade.establishments_pct).toFixed(1)}%.
    In the final year alone, jobs fell ${Math.abs(latestWindow.jobs_pct).toFixed(1)}% and establishments fell ${Math.abs(latestWindow.establishments_pct).toFixed(1)}%.
    Roughly stable workplaces describes 2022–2025, not a continuous rise or the full decade.`;
