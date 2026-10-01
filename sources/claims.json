@@ -3,13 +3,14 @@
  "claims": [
   {
    "id": "src-register-size",
-   "text": "The register covers 27 sources across all 23 site pages: 24 public sources and three internal records, with 156 filter lines. Its article tally covers 22 pages excluding the hub: 542 claims, 520 automatic and 22 manual, including 34 on this guide. The hub adds 34 claims for 576 across all 23 pages.",
+   "text": "The register covers 27 sources across all 23 site pages: 24 public sources and three internal records, with 156 filter lines. Its article tally covers 22 pages excluding the hub: 542 claims, 520 automatic and 22 manual, including 34 on this guide. The hub adds 35 claims for 577 across all 23 pages.",
    "source": "_data/SOURCES.json, rendered by _data/build/derive_sources.py",
-   "assert": "D['totals']['n_sources'] == len(D['sources']) == 27 and D['totals']['n_pages'] == 23 and D['totals']['n_public'] == 24 and D['totals']['n_public'] + D['totals']['n_no_endpoint'] == D['totals']['n_sources'] and D['totals']['n_filter_lines'] == 156 and D['totals']['n_filter_lines'] == sum(len(s['filters']) for s in D['sources']) and (lambda C: C['n_pages'] == 22 and C['n_claims'] == 542 and C['n_auto'] == 520 and C['n_manual'] == 22 and C['this_page'] == 34 and C['n_hub_claims'] == 34 and C['n_site_claims'] == 576 and C['n_auto'] + C['n_manual'] == C['n_claims'])(D['checks'])",
+   "assert": "D['totals']['n_sources'] == len(D['sources']) == 27 and D['totals']['n_pages'] == 23 and D['totals']['n_public'] == 24 and D['totals']['n_public'] + D['totals']['n_no_endpoint'] == D['totals']['n_sources'] and D['totals']['n_filter_lines'] == 156 and D['totals']['n_filter_lines'] == sum(len(s['filters']) for s in D['sources']) and (lambda C: C['n_pages'] == 22 and C['n_claims'] == 542 and C['n_auto'] == 520 and C['n_manual'] == 22 and C['this_page'] == 34 and C['n_hub_claims'] == 35 and C['n_site_claims'] == 577 and C['n_auto'] + C['n_manual'] == C['n_claims'])(D['checks'])",
    "actual": "(D['totals']['n_sources'], D['totals']['n_public'], D['totals']['n_filter_lines'])",
    "falsified_if": "A source is added to or removed from the registry, or a filter line is added to one, without the two hero cards and the closer moving with it. The second half of the assertion is the one that matters: it re-derives the filter count from the entries themselves rather than trusting the total the same script wrote, so a totals block that stopped agreeing with its own rows fails here rather than shipping. Moved 2026-08-30 from fourteen to fifteen when the USPTO patent-applications source entered the register with six filter lines, the day the patents page shipped. READ THIS BEFORE TRUSTING THE PASS on the checks half. registry.json's checks block is a build artifact and it is currently BEHIND index/data/counts.json, the tally it is derived from: counts.json says 22 pages and 501 claims where this block says 17 and 443. The paragraph is publishing a count the site outgrew, and this assertion agrees with it only because both read the same stale file. It is pinned to the literals anyway, deliberately. Those numbers became text in index.html on 2026-09-01 and a pinned literal at least fails loudly on the next regeneration instead of a sentence quietly re-rendering behind a reader. The next derive_sources.py run WILL fail this claim on every figure in it, and the paragraph is what has to move. [2026-09-01, RESOLVED: the checks block was re-synced to counts.json and the paragraph moved with it, from 17/443/428/15/32 to 22/519/498/21/33. The pin did exactly what it was left for - it failed loudly on the regeneration instead of letting the sentence drift. What the sync also exposed: this claim's own first clause said fifteen datasets 'build every page on this site'. They build eighteen of twenty-three. The register is behind the site by nine sources and five pages, and no gate could see it, because every gate checks the page against the register and the register is what went stale.] [2026-09-01: the register was rebuilt from fifteen sources and eighteen pages to all twenty-four and twenty-three, after the nine missing 'what it cannot tell you' glosses were written. Every figure in this claim moved with it. The set-equality check added to verify_consistency.py the same day is what makes a future drift fail loudly instead of silently.] [2026-09-11: four documented chain filter lines and two registered claims were added. The page and pinned totals move with the regenerated counts: 156 filters, 526 article claims, 504 automatic, 22 manual, plus 29 hub claims.]",
    "counts": [
-    {"figure": "all twenty-seven", "noun": "of the site’s sources"}
+    {"figure": "all twenty-seven", "noun": "of the site’s sources"},
+    {"figure": "156 filter lines on this page", "noun": "record the scripts"}
    ]
   },
   {
@@ -18,7 +19,11 @@
    "source": "SOURCES.json key_required, url and script fields",
    "assert": "D['totals']['n_key_required'] == 5 and D['totals']['key_sources'] == ['cbp', 'fred', 'qwi', 'scorecard_fos_polymer', 'uspto'] and D['totals']['n_no_endpoint'] == 3 and D['totals']['no_endpoint_sources'] == ['heritage_register', 'public_record', 'vault'] and all(s['url'] is None for s in D['sources'] if s['route'] == 'internal') and sum(1 for s in D['sources'] if s['route'] == 'internal' and s['script'] is None) == 2 and all(s['url'] is not None for s in D['sources'] if s['route'] != 'internal') and D['meta']['caution'].startswith('Three of the 27 sources have no endpoint, and two of those also have no script.') and 'fourteen' not in D['meta']['caution']",
    "actual": "(D['totals']['key_sources'], D['totals']['no_endpoint_sources'])",
-   "falsified_if": "An agency starts or stops requiring a key, or one of the two internal registers gains a public endpoint or a fetch script, at which point the page would be telling a replicator that something is unfetchable when it is not. The last clause is the guard in the other direction: a source that loses its URL would silently become a fourth dead end, and the page states the number two in three places. [2026-09-30: the limitations text said 'Two of the fourteen sources have no endpoint and no script' after the registry held 27 and three of them had no endpoint; it is now generated from the rows.] [2026-09-01: the register was rebuilt from fifteen sources and eighteen pages to all twenty-four and twenty-three, after the nine missing 'what it cannot tell you' glosses were written. Every figure in this claim moved with it. The set-equality check added to verify_consistency.py the same day is what makes a future drift fail loudly instead of silently.]"
+   "falsified_if": "An agency starts or stops requiring a key, or one of the two internal registers gains a public endpoint or a fetch script, at which point the page would be telling a replicator that something is unfetchable when it is not. The last clause is the guard in the other direction: a source that loses its URL would silently become a fourth dead end, and the page states the number two in three places. [2026-09-30: the limitations text said 'Two of the fourteen sources have no endpoint and no script' after the registry held 27 and three of them had no endpoint; it is now generated from the rows.] [2026-09-01: the register was rebuilt from fifteen sources and eighteen pages to all twenty-four and twenty-three, after the nine missing 'what it cannot tell you' glosses were written. Every figure in this claim moved with it. The set-equality check added to verify_consistency.py the same day is what makes a future drift fail loudly instead of silently.]",
+   "counts": [
+    {"figure": "three have no endpoint", "noun": "Of the 27"},
+    {"figure": "two of those", "noun": "no script"}
+   ]
   },
   {
    "id": "src-codes-are-the-registry-codes",
@@ -34,7 +39,12 @@
    "source": "wages/data/wages.json latest_rows, 2025 annual averages, twelve counties",
    "assert": "(lambda C, F, P: D['doublecount']['column_sum'] == 54375 and D['doublecount']['once_counted'] == 33529 and D['doublecount']['doubled'] == 20846 and D['doublecount']['column_sum'] - D['doublecount']['once_counted'] == D['doublecount']['doubled'] and sum(c['emp'] for c in P) == D['doublecount']['doubled'] and sum(c['emp'] for c in F) == D['doublecount']['once_counted'] and D['doublecount']['unsplit_chemistry'] == 9497 and all(c['parent'] in [f['code'] for f in F] for c in P) and len(F) == 2 and len(P) == 4)(D['codes'], [c for c in D['codes'] if c['level'] == 'family'], [c for c in D['codes'] if c['level'] == 'part'])",
    "actual": "(D['doublecount']['column_sum'], D['doublecount']['once_counted'], D['doublecount']['doubled'])",
-   "falsified_if": "The pay page refetches and any of the three totals moves, or a part code stops nesting inside a family code in this site's own code list. The identity in the middle is the load-bearing clause: the overhang drawn on the chart is column minus once-counted, and it is separately asserted to equal the sum of the four part rows, so the chart cannot draw an overhang that is not the duplication it claims to be."
+   "falsified_if": "The pay page refetches and any of the three totals moves, or a part code stops nesting inside a family code in this site's own code list. The identity in the middle is the load-bearing clause: the overhang drawn on the chart is column minus once-counted, and it is separately asserted to equal the sum of the four part rows, so the chart cannot draw an overhang that is not the duplication it claims to be.",
+   "counts": [
+    {"figure": "54,375", "noun": "every industry code"},
+    {"figure": "20,846", "noun": "appear twice"},
+    {"figure": "alone hold 33,529", "noun": "two family codes"}
+   ]
   },
   {
    "id": "src-lq-worked",
@@ -42,7 +52,10 @@
    "source": "wages/data/wages.json latest_rows, the lq and area fields",
    "assert": "(lambda w, R: w['county'] == 'Summit' and w['area'] == '39153' and w['naics'] == '326' and w['lq'] == 3.27 and w['emp'] == 3824 and w['year'] == 2025 and all(r['emp'] <= w['emp'] for r in R if r['naics'] == '326'))(D['lq']['worked'], D['readings'])",
    "actual": "D['lq']['worked']",
-   "falsified_if": "That county's employment or concentration is revised, or another county overtakes Summit as the largest 326 base, at which point the recipe would be walking a reader to a number the site no longer prints. The last clause is what pins WHICH row the recipe teaches from: without it a refetch could silently move the worked example to a different county while every printed figure still agreed with itself."
+   "falsified_if": "That county's employment or concentration is revised, or another county overtakes Summit as the largest 326 base, at which point the recipe would be walking a reader to a number the site no longer prints. The last clause is what pins WHICH row the recipe teaches from: without it a refetch could silently move the worked example to a different county while every printed figure still agreed with itself.",
+   "counts": [
+    {"figure": "reads 3.27", "noun": "area 39153"}
+   ]
   },
   {
    "id": "src-lq-basis",
@@ -50,7 +63,22 @@
    "source": "_data/SOURCES.json worked_example, six components read off the 2025 area files for 39153 and US000, recomputed by derive_sources.py and checked against wages/data/wages.json",
    "assert": "(lambda B, W: abs(B['local_industry_private'] / B['local_all_industry_all_ownerships'] / (B['national_industry_private'] / B['national_all_industry_all_ownerships']) - B['bls_basis']) < 5e-5 and abs(B['local_industry_private'] / B['local_all_industry_private'] / (B['national_industry_private'] / B['national_all_industry_private']) - B['same_basis']) < 5e-5 and B['bls_basis_2dp'] == B['bls_published'] == W['lq'] and B['local_industry_private'] == W['emp'] and B['same_basis_2dp'] != B['bls_basis_2dp'] and B['gap_pct'] < 0 and B['local_all_industry_private'] < B['local_all_industry_all_ownerships'] and B['self_check']['own_5_private_lq'] != 1.0)(D['lq']['basis'], D['lq']['worked']) and (lambda B: B['county'] == 'Summit' and B['naics'] == '326' and B['year'] == 2025 and B['read_on'] == '2026-09-11' and B['rows'] == 'local: own_code 5 industry 326 agglvl 75; own_code 0 industry 10 agglvl 70; own_code 5 industry 10 agglvl 71. national (US000): own_code 5 industry 326 agglvl 15; own_code 0 industry 10 agglvl 10; own_code 5 industry 10 agglvl 11.' and B['local_industry_private'] == 3824 and B['local_all_industry_all_ownerships'] == 259891 and B['local_all_industry_private'] == 232747 and B['national_industry_private'] == 700297 and B['national_all_industry_all_ownerships'] == 155732363 and B['national_all_industry_private'] == 133160274 and B['bls_basis'] == 3.2721 and B['same_basis'] == 3.1241 and B['same_basis_2dp'] == 3.12 and B['gap_pct'] == -4.5 and B['self_check']['own_5_private_lq'] == 1.05 and B['self_check']['own_3_local_government_lq'] == 0.88 and B['self_check']['own_2_state_government_lq'] == 0.44 and B['self_check']['own_1_federal_lq'] == 0.39)(D['lq']['basis'])",
    "actual": "(D['lq']['basis']['bls_basis'], D['lq']['basis']['same_basis'], D['lq']['worked']['lq'])",
-   "falsified_if": "Either arithmetic stops reproducing from the six components it is printed with, or BLS's basis stops landing on the figure the pay page publishes for the same cell. THIS IS THE PAGE'S ACCEPTANCE TEST, and the page failed it: an outside reviewer with no access to this repository followed the rule this page stated, which held ownership constant across all four numbers, and landed on 3.123 against a published 3.27. Both are correct arithmetic on the same files; only one is a location quotient as the bureau computes it. The last clause is the reader's own check rather than ours — a same-ownership total divided by itself is 1.00 by construction, and BLS printing 1.05 for it is the file saying what its denominator is. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read."
+   "falsified_if": "Either arithmetic stops reproducing from the six components it is printed with, or BLS's basis stops landing on the figure the pay page publishes for the same cell. THIS IS THE PAGE'S ACCEPTANCE TEST, and the page failed it: an outside reviewer with no access to this repository followed the rule this page stated, which held ownership constant across all four numbers, and landed on 3.123 against a published 3.27. Both are correct arithmetic on the same files; only one is a location quotient as the bureau computes it. The last clause is the reader's own check rather than ours — a same-ownership total divided by itself is 1.00 by construction, and BLS printing 1.05 for it is the file saying what its denominator is. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read.",
+   "counts": [
+    {"figure": "rounds to the 3.27", "noun": "file prints"},
+    {"figure": "3,824", "noun": ["jobs", "basis is", "private throughout"]},
+    {"figure": "259,891", "noun": "basis is"},
+    {"figure": "700,297", "noun": ["basis is", "instead gives"]},
+    {"figure": "155,732,363", "noun": "basis is"},
+    {"figure": "232,747", "noun": "private throughout"},
+    {"figure": "133,160,274", "noun": "instead gives"},
+    {"figure": "3.272", "noun": ["rounds to", "independent recomputation"]},
+    {"figure": "4.5", "noun": "lower"},
+    {"figure": "1.05", "noun": "for private"},
+    {"figure": "0.44", "noun": "for state"},
+    {"figure": "0.39", "noun": "for federal"},
+    {"figure": "1.00", "noun": "same-ownership basis"}
+   ]
   },
   {
    "id": "src-lq-provenance",
@@ -58,7 +86,12 @@
    "source": "wages/data/wages.json trend against location-quotient/data/lq.json cells, which ship both the computed lq and BLS's lq_published",
    "assert": "(lambda P: P['published_is'] == 'bls_column' and P['match_bls_column'] == P['cells_compared'] and P['cells_compared'] > 500 and P['separating_cells'] > 0 and P['match_our_recomputation'] == P['cells_compared'] - P['separating_cells'] and abs(P['residual']) <= P['verification']['max_abs_residual'] and P['verification']['max_abs_residual'] < 0.005 and P['verification']['cells_checked'] > 600)(D['lq']['provenance']) and (lambda P: P['cells_compared'] == 601 and P['separating_cells'] == 2 and P['match_our_recomputation'] == 599 and P['our_value_full'] == 3.2721 and P['residual'] == 0.00208 and P['verification']['cells_checked'] == 667 and P['verification']['max_abs_residual'] == 0.004982)(D['lq']['provenance'])",
    "actual": "D['lq']['provenance']",
-   "falsified_if": "The published figure stops matching BLS's column on any cell, or the two series stop disagreeing anywhere, at which point this page could no longer tell a reader which of the two it prints and the provenance sentence would be a guess. The separating clause is the load-bearing one: if the computed and published series agreed everywhere, the claim 'we print the bureau's' would be untestable from shipped data, and a replication guide is not entitled to assert a provenance it cannot demonstrate. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read."
+   "falsified_if": "The published figure stops matching BLS's column on any cell, or the two series stop disagreeing anywhere, at which point this page could no longer tell a reader which of the two it prints and the provenance sentence would be a guess. The separating clause is the load-bearing one: if the computed and published series agreed everywhere, the claim 'we print the bureau's' would be untestable from shipped data, and a replication guide is not entitled to assert a provenance it cannot demonstrate. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read.",
+   "counts": [
+    {"figure": "The 3.27 above", "noun": "lq_annual_avg_emplvl"},
+    {"figure": "601", "noun": ["cells", "bureau’s"]},
+    {"figure": "667", "noun": "checked cells"}
+   ]
   },
   {
    "id": "src-footprint-named",
@@ -74,7 +107,11 @@
    "source": "wages/data/wages.json latest_rows",
    "assert": "(lambda f, R: f['lq'] == 22.7 and f['emp'] == 491 and f['emp'] < 500 and f['county'] == 'Geauga' and f['naics'] == '3252' and f['lq'] == max(r['lq'] for r in R) and len([r for r in R if r['lq'] == f['lq']]) == 1)(D['lq']['fragile'], D['readings'])",
    "actual": "(D['lq']['fragile'], max(r['lq'] for r in D['readings']))",
-   "falsified_if": "Another reading overtakes it, or its base moves above five hundred, at which point the strip's own caption stops being the small-base warning it is drawn to be. The uniqueness clause is deliberate: a tie would make 'the largest' ambiguous and the callout would name one of two."
+   "falsified_if": "Another reading overtakes it, or its base moves above five hundred, at which point the strip's own caption stops being the small-base warning it is drawn to be. The uniqueness clause is deliberate: a tie would make 'the largest' ambiguous and the callout would name one of two.",
+   "counts": [
+    {"figure": "22.7", "noun": ["Geauga County resin", "fifth highest", "national share", "smallest cells"]},
+    {"figure": "491", "noun": "jobs"}
+   ]
   },
   {
    "id": "src-lq-distribution",
@@ -82,7 +119,13 @@
    "source": "wages/data/wages.json, every 2025 row carrying a location quotient",
    "assert": "D['lq']['n_readings'] == 51 and D['lq']['n_above_one'] == 45 and len(D['readings']) == 51 and len([r for r in D['readings'] if r['lq'] > 1]) == 45 and (lambda th, fo: len(th) == 23 and len(fo) == 28 and len(th) + len(fo) == 51 and len([r for r in th if r['lq'] > 1]) == 20 and len([r for r in fo if r['lq'] > 1]) == 25 and set(r['naics'] for r in th) == {'325', '326'} and all(r['naics'][:3] in {'325', '326'} for r in fo))([r for r in D['readings'] if len(str(r['naics'])) == 3], [r for r in D['readings'] if len(str(r['naics'])) == 4])",
    "actual": "(len(D['readings']), len([r for r in D['readings'] if r['lq'] > 1]))",
-   "falsified_if": "A county figure is disclosed or withheld in a later vintage, changing the count of readings, or a reading crosses 1.0. The strip states both numbers in its opening line, so a drift in either would leave the first sentence a reader meets disagreeing with the marks under it. It is also falsified if the two levels stop nesting: every four-digit code here must be a part of one of the two three-digit groups, because the moment a code outside them appears the sentence 'the parts inside those same groups' is wrong and the hierarchy clause has to be rewritten before the count can ship again."
+   "falsified_if": "A county figure is disclosed or withheld in a later vintage, changing the count of readings, or a reading crosses 1.0. The strip states both numbers in its opening line, so a drift in either would leave the first sentence a reader meets disagreeing with the marks under it. It is also falsified if the two levels stop nesting: every four-digit code here must be a part of one of the two three-digit groups, because the moment a code outside them appears the sentence 'the parts inside those same groups' is wrong and the hierarchy clause has to be rewritten before the count can ship again.",
+   "counts": [
+    {"figure": "Forty-five", "noun": "published cells"},
+    {"figure": "fifty-one", "noun": "published cells"},
+    {"figure": "twenty-three of those cells", "noun": "three-digit groups"},
+    {"figure": "twenty-eight", "noun": "four-digit parts"}
+   ]
   },
   {
    "id": "src-lq-reference-distribution",
@@ -91,7 +134,11 @@
    "assert": "(lambda R, F: R['n_cells'] == 1732 and R['rank'] == 5 and R['year'] == 2025 and R['counties'] == 12 and len(R['above']) == R['rank'] - 1 and all(a['lq'] > R['subject']['lq'] for a in R['above']) and sorted(a['lq'] for a in R['above']) == sorted(set(a['lq'] for a in R['above'])) and R['subject']['lq'] == F['lq'] == 22.7 and R['subject']['emp'] == F['emp'] == 491 and R['subject']['county'] == F['county'] == 'Geauga' and R['subject']['naics'] == F['naics'] == '3252' and sorted(set(a['county'] for a in R['above'])) == ['Ashtabula', 'Mahoning', 'Trumbull'] and len([a for a in R['above'] if a['naics'].startswith('331')]) == 3 and len([a for a in R['above'] if a['naics'] == '3251']) == 1)(D['lq']['reference'], D['lq']['fragile'])",
    "actual": "D['lq']['reference']",
    "official_check": "Refetch the twelve annual area files from https://data.bls.gov/cew/data/api/2025/a/area/{fips}.csv for the FIPS codes in lq.footprint, keep own_code 5 and agglvl_code 76, drop disclosure_code N, sort on lq_annual_avg_emplvl, and confirm 1,732 cells with Geauga 3252 fifth at 22.70 on 491 jobs.",
-   "falsified_if": "BLS discloses or withholds a different set of cells in a revision, which moves the denominator and can move the rank; or a new vintage lands, at which point the year in the sentence has to move with the number. SAY WHAT THIS CHECK IS AND IS NOT: registry.json has no producer in this repository, so the assertion above checks the reference block against ITSELF and against the fragile cell the page already publishes, which is the join that makes it more than a self-consistency check. It cannot tell you the bureau still says 1,732. Only the official_check can, and it is one command."
+   "falsified_if": "BLS discloses or withholds a different set of cells in a revision, which moves the denominator and can move the rank; or a new vintage lands, at which point the year in the sentence has to move with the number. SAY WHAT THIS CHECK IS AND IS NOT: registry.json has no producer in this repository, so the assertion above checks the reference block against ITSELF and against the fragile cell the page already publishes, which is the join that makes it more than a self-consistency check. It cannot tell you the bureau still says 1,732. Only the official_check can, and it is one command.",
+   "counts": [
+    {"figure": "1,732", "noun": "county-by-four-digit"},
+    {"figure": "fifth highest", "noun": ["of the 1,732", "the 22.7 is"]}
+   ]
   },
   {
    "id": "src-suppression-rates",
@@ -99,7 +146,14 @@
    "source": "peers/data/peers.json visibility, from the by-industry national pull",
    "assert": "(lambda S: S['state']['disclosed'] == 51 and S['state']['suppressed'] == 0 and S['metro']['disclosed'] == 155 and S['metro']['total'] == 382 and S['county']['disclosed'] == 703 and S['county']['total'] == 1838 and all(v['disclosed'] + v['suppressed'] == v['total'] for v in S.values()) and all(abs(v['share'] - v['disclosed'] / v['total'] * 100) < 0.05 for v in S.values()) and S['metro']['share'] < 50 and S['county']['share'] < 50)(D['suppression']) and (lambda V, S: V['published_year'] == 2024 and V['comparison_year'] == 2025 and V['comparison_year'] > V['published_year'] and V['comparison_county_disclosed'] == 724 and V['comparison_county_total'] == 1839 and V['comparison_metro_rows'] == 0 and V['comparison_read_on'] == '2026-08-29' and V['naics'] == '326' and V['own_code'] == '5' and V['comparison_county_total'] >= S['county']['total'])(D['suppression_vintage'], D['suppression'])",
    "actual": "D['suppression']",
-   "falsified_if": "A later vintage discloses or withholds differently, or the shares stop matching the counts they are drawn from. The two under-fifty clauses guard the section's claim in words rather than in digits: the heading says most metros and most counties do not disclose, and that sentence has to fail if the shares cross a half. The last clause is the cross-check that the two years are one universe counted twice rather than two unrelated pulls: a comparison year with fewer county rows in total than the published one would mean the files are not comparable and the dating paragraph's whole point would be wrong. Extended 2026-09-01, when the sentence stopped being rendered from the registry at runtime and became text in index.html: while app.js printed it, it could not disagree with the data, and now it can."
+   "falsified_if": "A later vintage discloses or withholds differently, or the shares stop matching the counts they are drawn from. The two under-fifty clauses guard the section's claim in words rather than in digits: the heading says most metros and most counties do not disclose, and that sentence has to fail if the shares cross a half. The last clause is the cross-check that the two years are one universe counted twice rather than two unrelated pulls: a comparison year with fewer county rows in total than the published one would mean the files are not comparable and the dating paragraph's whole point would be wrong. Extended 2026-09-01, when the sentence stopped being rendered from the registry at runtime and became text in index.html: while app.js printed it, it could not disagree with the data, and now it can.",
+   "counts": [
+    {"figure": "155 of 382", "noun": "metropolitan areas"},
+    {"figure": "703 of 1,838", "noun": "counties"},
+    {"figure": "724", "noun": "disclosed counties"},
+    {"figure": "1,839", "noun": "disclosed counties"},
+    {"figure": "51 state geographies", "noun": "disclos"}
+   ]
   },
   {
    "id": "src-three-classifications",
@@ -115,7 +169,12 @@
    "source": "occupations/data/viz-data.json programs, summed over by_year",
    "assert": "(lambda C: C['degrees_core'] == 1175 and C['degrees_adjacent'] == 257 and C['degrees_both'] == 1432 and C['degrees_core'] + C['degrees_adjacent'] == C['degrees_both'] and C['programmes_core'] == 8 and C['programmes_adjacent'] == 5 and C['first_year'] == 2014 and C['last_year'] == 2023 and abs(C['lift_pct'] - 21.9) < 0.05 and abs(C['lift_pct'] - C['degrees_adjacent'] / C['degrees_core'] * 100) < 0.05)(D['classification']['cip'])",
    "actual": "D['classification']['cip']['degrees_core'], D['classification']['cip']['degrees_both'], D['classification']['cip']['lift_pct']",
-   "falsified_if": "The degree file is refetched and either total moves, or the two stop summing to the third. This is the page's only worked consequence of a boundary call, and it is stated as a subtraction a reader can do in their head: 1,490 minus 1,231 is 259, and 259 over 1,231 is the 21 percent the sentence claims. The last clause recomputes that percentage rather than trusting the stored one. [2026-09-01: these figures moved when the register was rebuilt after nineteen months of being frozen: 1,231 to 1,175 core degrees, 1,490 to 1,432 with the adjacent codes, and the lift from 21.0 to 21.9 percent. The page had been publishing the older pull. Nothing was wrong with the arithmetic; the register it read had simply stopped being rebuilt, which is what the new published-register check now makes impossible to repeat quietly.]"
+   "falsified_if": "The degree file is refetched and either total moves, or the two stop summing to the third. This is the page's only worked consequence of a boundary call, and it is stated as a subtraction a reader can do in their head: 1,490 minus 1,231 is 259, and 259 over 1,231 is the 21 percent the sentence claims. The last clause recomputes that percentage rather than trusting the stored one. [2026-09-01: these figures moved when the register was rebuilt after nineteen months of being frozen: 1,231 to 1,175 core degrees, 1,490 to 1,432 with the adjacent codes, and the lift from 21.0 to 21.9 percent. The page had been publishing the older pull. Nothing was wrong with the arithmetic; the register it read had simply stopped being rebuilt, which is what the new published-register check now makes impossible to repeat quietly.]",
+   "counts": [
+    {"figure": "1,175", "noun": "degrees"},
+    {"figure": "1,432", "noun": "across thirteen"},
+    {"figure": "22%", "noun": "larger"}
+   ]
   },
   {
    "id": "src-vintage",
@@ -123,7 +182,12 @@
    "source": "revisions/data/revisions.json, first against latest vintage of each month",
    "assert": "(lambda V: V['n_revised'] == 259 and V['n_published'] == 273 and V['n_series'] == 3 and abs(V['median_pct'] - 0.15) < 0.005 and abs(V['max_pct'] - 1.41) < 0.005 and V['n_revised'] < V['n_published'])(D['vintage'])",
    "actual": "D['vintage']",
-   "falsified_if": "A new vintage revises another month, moves the median out of the band that rounds to 0.15 percent, or sets a new record above 1.41. The largest figure is recomputed here from the two index values rather than read off the stored percentage, because the page it comes from printed 1.42 until 2026-08-28 by rounding a rounded number, and a guide that tells a replicator to check our arithmetic has to do the division the way they would."
+   "falsified_if": "A new vintage revises another month, moves the median out of the band that rounds to 0.15 percent, or sets a new record above 1.41. The largest figure is recomputed here from the two index values rather than read off the stored percentage, because the page it comes from printed 1.42 until 2026-08-28 by rounding a rounded number, and a guide that tells a replicator to check our arithmetic has to do the division the way they would.",
+   "counts": [
+    {"figure": "259 of the 273", "noun": "published months"},
+    {"figure": "0.15", "noun": "typical"},
+    {"figure": "1.41", "noun": "largest single revision"}
+   ]
   },
   {
    "id": "src-dependency-structure",
@@ -131,7 +195,11 @@
    "source": "SOURCES.json by_artifact, inverted",
    "assert": "(lambda S, T: S[0]['key'] == 'qcew' and S[0]['n_pages'] == 9 and T['most_used_pages'] == 9 and max(s['n_pages'] for s in S[1:]) == 5 and T['n_single_source_pages'] == 8 and T['n_single_source_pages'] == len([p for p in D['pages'] if p['n_sources'] == 1]) and T['n_pages'] == len(D['pages']) and T['n_pages'] == 23)(D['sources'], D['totals'])",
    "actual": "(D['sources'][0]['key'], D['sources'][0]['n_pages'], D['totals']['n_single_source_pages'], D['totals']['n_pages'])",
-   "falsified_if": "A page gains or loses a source without this chart moving. Corrected 2026-08-30 from eleven pages and six single-source pages: an editorial reviewer reading the RENDERED revisions page, with no access to this repository, noticed that its methodology box credited the employment census on a page built from three producer-price series. The registry did list qcew against revisions, so the box was printing the registry faithfully and the registry was wrong. That single false entry made QCEW look more central than it is AND made this site look better diversified than it is, and no gate here could see it: every check confirmed the page matched the registry, and none asked whether the registry matched the page. Corrected AGAIN 2026-08-30, from ten pages to nine: a second phantom entry, qcew against cost-scissors, whose own data and claims contain no agglvl, no own_code, no NAICS and no employment figure of any kind. Found by two independent reviewers reading the rendered page. Two false entries in one table, both inflating the same source, is a pattern rather than a slip, so the whole table was then audited programmatically: three more suspects surfaced and two were the audit's own false positives, which is worth recording next to the two real ones. Moved again 2026-08-30 when the patents page entered the register as the ninth single-source artifact. [2026-09-01: the register was rebuilt from fifteen sources and eighteen pages to all twenty-four and twenty-three, after the nine missing 'what it cannot tell you' glosses were written. Every figure in this claim moved with it. The set-equality check added to verify_consistency.py the same day is what makes a future drift fail loudly instead of silently.]"
+   "falsified_if": "A page gains or loses a source without this chart moving. Corrected 2026-08-30 from eleven pages and six single-source pages: an editorial reviewer reading the RENDERED revisions page, with no access to this repository, noticed that its methodology box credited the employment census on a page built from three producer-price series. The registry did list qcew against revisions, so the box was printing the registry faithfully and the registry was wrong. That single false entry made QCEW look more central than it is AND made this site look better diversified than it is, and no gate here could see it: every check confirmed the page matched the registry, and none asked whether the registry matched the page. Corrected AGAIN 2026-08-30, from ten pages to nine: a second phantom entry, qcew against cost-scissors, whose own data and claims contain no agglvl, no own_code, no NAICS and no employment figure of any kind. Found by two independent reviewers reading the rendered page. Two false entries in one table, both inflating the same source, is a pattern rather than a slip, so the whole table was then audited programmatically: three more suspects surfaced and two were the audit's own false positives, which is worth recording next to the two real ones. Moved again 2026-08-30 when the patents page entered the register as the ninth single-source artifact. [2026-09-01: the register was rebuilt from fifteen sources and eighteen pages to all twenty-four and twenty-three, after the nine missing 'what it cannot tell you' glosses were written. Every figure in this claim moved with it. The set-equality check added to verify_consistency.py the same day is what makes a future drift fail loudly instead of silently.]",
+   "counts": [
+    {"figure": "nine of twenty-three", "noun": "Quarterly Census of Employment and Wages"},
+    {"figure": "five of the twenty-three", "noun": "No other source feeds"}
+   ]
   },
   {
    "id": "src-licences-and-attribution",
@@ -161,33 +229,56 @@
    "id": "src-pay-two-medians",
    "text": "Recipe 2 prints a median of 51 cell-average wage ratios of 1.21x and an employment-weighted median of group-average wage ratios of 1.26x. The latter weights county-level NAICS 325 and 326 groups covering 33,529 jobs; neither quantity identifies the pay of the median individual worker.",
    "source": "wages/data/wages.json latest_rows, re-derived by derive_sources.py",
-   "assert": "round(D['wage']['median_pairing'], 2) == 1.21 and round(D['wage']['median_group_weighted'], 2) == 1.26 and D['wage']['cover_jobs'] == 33529 and D['wage']['median_unit'] == 'county-industry group-average wage ratios; not individual pay'",
-   "actual": "(D['wage']['median_pairing'], D['wage']['median_group_weighted'], D['wage']['median_unit'])",
-   "falsified_if": "Either displayed group-average ratio or the employment coverage changes. Even if the arithmetic passes, any wording identifying 1.26x as an individual worker median is false: employment weights do not supply within-group wage distributions. Corrected 2026-09-08."
+   "assert": "tofixed(D['wage']['median_pairing'], 2) == '1.21' and tofixed(D['wage']['median_group_weighted'], 2) == '1.26' and D['wage']['cover_jobs'] == 33529 and D['wage']['median_unit'] == 'county-industry group-average wage ratios; not individual pay'",
+   "actual": "(tofixed(D['wage']['median_pairing'], 2), tofixed(D['wage']['median_group_weighted'], 2), D['wage']['median_unit'])",
+   "falsified_if": "Either displayed group-average ratio or the employment coverage changes. Even if the arithmetic passes, any wording identifying 1.26x as an individual worker median is false: employment weights do not supply within-group wage distributions. Corrected 2026-09-08.",
+   "counts": [
+    {"figure": "1.21", "noun": ["cell-average ratios", "average job in its county"]},
+    {"figure": "1.26", "noun": ["group-average ratios", "This recipe called"]}
+   ]
   },
   {
    "id": "src-pay-denominators",
    "text": "Recipe 2's second step prints both denominators against each other: 44 of the 51 published cells pay less than the same industry pays nationally, a middle cell of 0.88x, while 40 of the 51 pay more than the average job in their own county. Same cells, same year, opposite verdicts.",
    "source": "wages/data/wages.json latest_rows",
-   "assert": "D['wage']['n_below_us'] == 44 and D['wage']['n_above_local'] == 40 and D['wage']['n_published'] == 51 and abs(D['wage']['median_vs_us'] - 0.881) <= 0.004 and round(D['wage']['median_vs_us'], 2) == 0.88",
-   "actual": "(D['wage']['n_below_us'], D['wage']['n_above_local'], D['wage']['median_vs_us'])",
-   "falsified_if": "Either count moves without the paragraph moving with it. The two counts are printed side by side precisely because they point opposite ways; if they ever stopped doing so the step would be teaching a choice that no longer has consequences. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read."
+   "assert": "D['wage']['n_below_us'] == 44 and D['wage']['n_above_local'] == 40 and D['wage']['n_published'] == 51 and abs(D['wage']['median_vs_us'] - 0.881) <= 0.004 and tofixed(D['wage']['median_vs_us'], 2) == '0.88'",
+   "actual": "(D['wage']['n_below_us'], D['wage']['n_above_local'], tofixed(D['wage']['median_vs_us'], 2))",
+   "falsified_if": "Either count moves without the paragraph moving with it. The two counts are printed side by side precisely because they point opposite ways; if they ever stopped doing so the step would be teaching a choice that no longer has consequences. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read.",
+   "counts": [
+    {"figure": "44 of the 51", "noun": "pay less"},
+    {"figure": "40 of the 51", "noun": "pay more"},
+    {"figure": "0.88", "noun": ["local government", "middle cell", "median cell-average ratio"]}
+   ]
   },
   {
    "id": "src-pay-units",
    "text": "Recipe 2 names all three units and counts each: 51 published cells out of 72 possible, six industry codes across twelve counties; 35 cells at the finest detail each county publishes, with the family above them dropped, of which 27 beat their county; and 33,529 jobs in the group cover, 29,081 of them in a group that out-pays its county. The job weighting is printed with its boundary attached: the only complete non-overlapping set the published data offer is NAICS 325 and 326 taken once per county, wider than this site's own register of 3252, 3255 and 326, which covers 24,032 jobs; 15,759 of the 33,529 weighted jobs, about 47 percent, are chemistry the register calls context rather than cluster.",
    "source": "wages/data/wages.json latest_rows",
-   "assert": "(lambda W: W['n_published'] == 51 and W['n_possible'] == 72 and W['n_industries'] * W['n_counties'] == W['n_possible'] and W['dedup_rows'] == 35 and W['dedup_above'] == 27 and W['cover_rows'] == 23 and W['cover_jobs'] == 33529 and W['cover_jobs_above'] == 29081)(D['wage']) and D['wage']['n_industries'] == 6 and D['wage']['n_counties'] == 12 and D['wage']['register_naics'] == ['3252', '3255', '326'] and (lambda W: W['cover_naics'] == ['325', '326'] and W['register_naics'] == ['3252', '3255', '326'] and W['register_jobs'] == 24032 and W['cover_outside_register'] == 15759 and W['cover_outside_register'] < W['cover_jobs'] and round(W['cover_outside_register'] / W['cover_jobs'] * 100) == 47 and all(any(r.startswith(cv) for cv in W['cover_naics']) for r in W['register_naics']))(D['wage'])",
-   "actual": "(D['wage']['n_published'], D['wage']['dedup_rows'], D['wage']['cover_jobs'])",
-   "falsified_if": "Any of the three counts moves. They are printed together because the recipe's claim is that one table holds three defensible units, and a reader who cannot see all three will pick the first one and describe it as one of the others. The 72 is asserted as a product rather than a constant, so a footprint or code-set change fails here. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read. The nesting clause is what keeps the sentence honest about WHICH set is wider: every register code has to sit inside a cover code, because the paragraph's claim is that the weightable set contains the measured one and not the other way round. What is deliberately NOT asserted is a sum: the register's 24,032 and the outside 15,759 do not add to the 33,529, because they are counted on different rungs of the hierarchy, and an identity here would invent a partition the data does not have. Extended 2026-09-01, when the sentence stopped being rendered from the registry at runtime and became text in index.html: while app.js printed it, it could not disagree with the data, and now it can."
+   "assert": "(lambda W: W['n_published'] == 51 and W['n_possible'] == 72 and W['n_industries'] * W['n_counties'] == W['n_possible'] and W['dedup_rows'] == 35 and W['dedup_above'] == 27 and W['cover_rows'] == 23 and W['cover_jobs'] == 33529 and W['cover_jobs_above'] == 29081)(D['wage']) and D['wage']['n_industries'] == 6 and D['wage']['n_counties'] == 12 and D['wage']['register_naics'] == ['3252', '3255', '326'] and (lambda W: W['cover_naics'] == ['325', '326'] and W['register_naics'] == ['3252', '3255', '326'] and W['register_jobs'] == 24032 and W['cover_outside_register'] == 15759 and W['cover_outside_register'] < W['cover_jobs'] and tofixed(W['cover_outside_register'] / W['cover_jobs'] * 100, 0) == '47' and all(any(r.startswith(cv) for cv in W['cover_naics']) for r in W['register_naics']))(D['wage'])",
+   "actual": "(D['wage']['n_published'], D['wage']['dedup_rows'], D['wage']['cover_jobs'], tofixed(D['wage']['cover_outside_register'] / D['wage']['cover_jobs'] * 100, 0))",
+   "falsified_if": "Any of the three counts moves. They are printed together because the recipe's claim is that one table holds three defensible units, and a reader who cannot see all three will pick the first one and describe it as one of the others. The 72 is asserted as a product rather than a constant, so a footprint or code-set change fails here. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read. The nesting clause is what keeps the sentence honest about WHICH set is wider: every register code has to sit inside a cover code, because the paragraph's claim is that the weightable set contains the measured one and not the other way round. What is deliberately NOT asserted is a sum: the register's 24,032 and the outside 15,759 do not add to the 33,529, because they are counted on different rungs of the hierarchy, and an identity here would invent a partition the data does not have. Extended 2026-09-01, when the sentence stopped being rendered from the registry at runtime and became text in index.html: while app.js printed it, it could not disagree with the data, and now it can.",
+   "counts": [
+    {"figure": "51 published cells out of 72 possible", "noun": "The table holds"},
+    {"figure": "six industry codes", "noun": "across twelve counties"},
+    {"figure": "35 rows", "noun": "That leaves"},
+    {"figure": "27 pay above", "noun": "their county"},
+    {"figure": "29,081", "noun": "in a group that out-pays"},
+    {"figure": "24,032", "noun": "measurement register"},
+    {"figure": "15,759", "noun": "weighted jobs"},
+    {"figure": "47 percent", "noun": "chemistry the register calls context"}
+   ]
   },
   {
    "id": "src-pay-drag",
    "text": "Recipe 2 names the cell that pulls the two medians apart: the heaviest cell sitting below the cell median is Summit County plastics and rubber products at 1.01x on 3,824 jobs, which is one cell in 51 by the list count and 11 percent of the jobs by the other, and it is the same cell the first recipe worked.",
    "source": "wages/data/wages.json latest_rows, heaviest row below the row median",
-   "assert": "(lambda g, W: g['ratio'] < W['median_pairing'] and g['emp'] == 3824 and g['county'] == 'Summit' and round(g['emp'] / W['cover_jobs'] * 100) == 11)(D['wage']['drag'], D['wage']) and round(D['wage']['drag']['ratio'], 2) == 1.01 and D['wage']['drag']['label'] == 'Plastics & rubber products'",
-   "actual": "D['wage']['drag']",
-   "falsified_if": "The heaviest below-median cell changes, which would make the named example wrong, or its share of the cover stops rounding to 11 percent. This claim is the evidence for the assertion beside it: 'the heavy cells sit low' is a statement about the distribution, and one named row with both its counts is what makes it checkable rather than plausible. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read."
+   "assert": "(lambda g, W: g['ratio'] < W['median_pairing'] and g['emp'] == 3824 and g['county'] == 'Summit' and tofixed(g['emp'] / W['cover_jobs'] * 100, 0) == '11')(D['wage']['drag'], D['wage']) and tofixed(D['wage']['drag']['ratio'], 2) == '1.01' and D['wage']['drag']['label'] == 'Plastics & rubber products'",
+   "actual": "(D['wage']['drag'], tofixed(D['wage']['drag']['ratio'], 2), tofixed(D['wage']['drag']['emp'] / D['wage']['cover_jobs'] * 100, 0))",
+   "falsified_if": "The heaviest below-median cell changes, which would make the named example wrong, or its share of the cover stops rounding to 11 percent. This claim is the evidence for the assertion beside it: 'the heavy cells sit low' is a statement about the distribution, and one named row with both its counts is what makes it checkable rather than plausible. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read.",
+   "counts": [
+    {"figure": "1.01", "noun": "Summit County plastics and rubber products"},
+    {"figure": "11 percent of the jobs", "noun": "list count"}
+   ]
   },
   {
    "id": "src-award-eda",
@@ -195,7 +286,10 @@
    "source": "federal-money/data/techhub.json leads",
    "assert": "(lambda E: E['n'] == 7 and len(E['leads']) == 7 and sum(l['amount'] for l in E['leads']) == E['total'] == 51001413 and all(l['id'] for l in E['leads']) and len(set(l['id'] for l in E['leads'])) == 7 and len([l for l in E['leads'] if l['id'][:4] == 'ED24']) == 2)(D['awards']['eda']) and D['awards']['eda']['name'] == 'EDA Sustainable Polymers Tech Hub' and D['awards']['eda']['agency'] == 'U.S. Economic Development Administration'",
    "actual": "(D['awards']['eda']['n'], D['awards']['eda']['total'], [l['id'] for l in D['awards']['eda']['leads']])",
-   "falsified_if": "An award is added, removed or re-numbered, or the seven stop summing to the total. The sum is the point: the recipe asks a reader to add the parts and land on the published figure, and a page that asks that has to be sure it holds. The ED24 count is asserted because the step warns that filtering on the digits in an identifier splits a programme in half, and a warning with no live instance behind it is decoration. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read."
+   "falsified_if": "An award is added, removed or re-numbered, or the seven stop summing to the total. The sum is the point: the recipe asks a reader to add the parts and land on the published figure, and a page that asks that has to be sure it holds. The ED24 count is asserted because the step warns that filtering on the digits in an identifier splits a programme in half, and a warning with no live instance behind it is decoration. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read.",
+   "counts": [
+    {"figure": "$51,001,413", "noun": "Economic Development Administration"}
+   ]
   },
   {
    "id": "src-award-nsf",
@@ -203,31 +297,56 @@
    "source": "timeline/data/timeline.json, the event carrying awardId 2532460",
    "assert": "(lambda A: A['id'] == '2532460' and A['estimated_total'] == 14999983 and A['obligated'] == 7499984 and abs(A['share_obligated'] - 0.5) < 0.001 and A['period_start'][:4] == '2026' and A['period_end'][:4] == '2036')(D['awards']['nsf']) and D['awards']['nsf']['award_date'] == '2026-07-13' and D['awards']['nsf']['obligated_basis'] == 'obligated FY2026'",
    "actual": "(D['awards']['nsf']['estimated_total'], D['awards']['nsf']['obligated'])",
-   "falsified_if": "The award record is restated, or the timeline event loses its identifier. Both figures come from the event the timeline publishes, so this claim also fails if the two pages stop agreeing, which is the failure that put the error below on this site in the first place. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read."
+   "falsified_if": "The award record is restated, or the timeline event loses its identifier. Both figures come from the event the timeline publishes, so this claim also fails if the two pages stop agreeing, which is the failure that put the error below on this site in the first place. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read.",
+   "counts": [
+    {"figure": "$14,999,983", "noun": ["NEO-SMART Engine", "estimated"]},
+    {"figure": "$7,499,984", "noun": "obligated"},
+    {"figure": "50 percent", "noun": "obligated FY2026"}
+   ]
   },
   {
    "id": "src-award-error",
    "text": "The award recipe publishes this site's own worst error rather than only its clean cases: we printed $160M for NSF award 2532460 against a record of $14,999,983, overstating a federal award by a factor of 10.7, and it stood until 29 August 2026.",
    "source": "_data/FIGURES.json neosmart_headline; timeline README and event note",
-   "assert": "(lambda E: E['printed'] == 160000000 and E['actual'] == 14999983 and abs(E['factor'] - round(E['printed'] / E['actual'], 1)) < 0.05 and E['factor'] > 10)(D['awards']['error']) and D['awards']['error']['factor'] == 10.7 and D['awards']['error']['corrected_on'] == '2026-08-29' and round(D['awards']['error']['printed'] / 1e6) == 160",
-   "actual": "D['awards']['error']",
-   "falsified_if": "The factor stops being computed from the two figures it sits between, or the corrected value moves without the multiple moving with it. This is the one claim on the page whose subject is the page's own publisher, and it is asserted like any other because an error printed as teaching material has to be as checkable as the findings around it. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read."
+   "assert": "(lambda E: E['printed'] == 160000000 and E['actual'] == 14999983 and tofixed(E['printed'] / E['actual'], 1) == '10.7' and E['factor'] > 10)(D['awards']['error']) and D['awards']['error']['factor'] == 10.7 and D['awards']['error']['corrected_on'] == '2026-08-29' and tofixed(D['awards']['error']['printed'] / 1e6, 0) == '160'",
+   "actual": "(D['awards']['error'], tofixed(D['awards']['error']['printed'] / D['awards']['error']['actual'], 1), tofixed(D['awards']['error']['printed'] / 1e6, 0))",
+   "falsified_if": "The factor stops being computed from the two figures it sits between, or the corrected value moves without the multiple moving with it. This is the one claim on the page whose subject is the page's own publisher, and it is asserted like any other because an error printed as teaching material has to be as checkable as the findings around it. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read.",
+   "counts": [
+    {"figure": "$160M", "noun": ["printed", "not invented"]},
+    {"figure": "10.7", "noun": "times larger"},
+    {"figure": "21 times", "noun": "actually committed"}
+   ]
   },
   {
    "id": "src-deflator-table",
    "text": "The basis section uses CPI-U annual averages on a 2019 base, moving 255.657 to 321.943, so general prices rose 25.9 percent and a 2025 dollar buys what 79 cents bought in 2019. The 2025 average contains eleven available months; October is absent. Factors for 2019, 2022 and 2025 are 1, 1.1447 and 1.2593.",
    "source": "federal-money/data/federal.json cpi_observations; BLS CUUR0000SA0",
-   "assert": "(lambda F: F['base_year'] == '2019' and F['latest_year'] == '2025' and F['inflation_pct'] == 25.9 and F['cpi_base'] == 255.657 and F['cpi_latest'] == 321.943 and round(100 / (1 + F['inflation_pct'] / 100)) == 79 and [y['factor'] for y in F['years'] if y['year'] in ('2019', '2022', '2025')] == [1.0, 1.1447, 1.2593] and one(r for r in F['observations']['rows'] if r['year'] == 2025)['months'] == 11 and 'M10' not in one(r for r in F['observations']['rows'] if r['year'] == 2025)['periods'])(D['deflator'])",
-   "actual": "(D['deflator']['inflation_pct'], D['deflator']['cpi_base'], D['deflator']['cpi_latest'])",
-   "falsified_if": "The price page reships its deflator on a different base or a later year and this section keeps teaching the old one. The recipe tells a reader to divide by these exact numbers, so a stale table here is a wrong instruction rather than a stale fact. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read."
+   "assert": "(lambda F: F['base_year'] == '2019' and F['latest_year'] == '2025' and F['inflation_pct'] == 25.9 and F['cpi_base'] == 255.657 and F['cpi_latest'] == 321.943 and tofixed(100 / (1 + F['inflation_pct'] / 100), 0) == '79' and [y['factor'] for y in F['years'] if y['year'] in ('2019', '2022', '2025')] == [1.0, 1.1447, 1.2593] and one(r for r in F['observations']['rows'] if r['year'] == 2025)['months'] == 11 and 'M10' not in one(r for r in F['observations']['rows'] if r['year'] == 2025)['periods'])(D['deflator'])",
+   "actual": "(D['deflator']['inflation_pct'], D['deflator']['cpi_base'], D['deflator']['cpi_latest'], tofixed(100 / (1 + D['deflator']['inflation_pct'] / 100), 0))",
+   "falsified_if": "The price page reships its deflator on a different base or a later year and this section keeps teaching the old one. The recipe tells a reader to divide by these exact numbers, so a stale table here is a wrong instruction rather than a stale fact. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read.",
+   "counts": [
+    {"figure": "255.657", "noun": "index moved"},
+    {"figure": "321.943", "noun": ["index moved", "published annual average", "prose had changed"]},
+    {"figure": "25.9", "noun": ["general prices rose", "corresponding rise"]},
+    {"figure": "79 cents", "noun": "2025 dollar buys"},
+    {"figure": "1.1447", "noun": "2022 is"},
+    {"figure": "1.2593", "noun": "2025 is"}
+   ]
   },
   {
    "id": "src-deflator-flip",
    "text": "Finished plastics and rubber prices reach 139.8 in cash and 111.0 deflated, peaking in July 2026 in cash but August 2022 in real terms. Resin at 125.4 in cash comes back to 99.6 deflated. The example carries 2025 CPI into 2026 as an approximation.",
    "source": "cost-scissors/data/scissors.json series, deflated by verified federal-money/data/federal.json CPI observations",
-   "assert": "(lambda F: F['product']['nominal'] == 139.8 and F['product']['real'] == 111.0 and F['product']['cash_peak'] == '2026-07-01' and F['product']['real_peak'] == '2022-08-01' and F['resin']['nominal'] == 125.4 and F['resin']['real'] == 99.6 and round(F['product']['real'] - 100) == 11)(D['deflator'])",
+   "assert": "(lambda F: F['product']['nominal'] == 139.8 and F['product']['real'] == 111.0 and F['product']['cash_peak'] == '2026-07-01' and F['product']['real_peak'] == '2022-08-01' and F['resin']['nominal'] == 125.4 and F['resin']['real'] == 99.6 and tofixed(F['product']['real'] - 100, 0) == '11')(D['deflator'])",
    "actual": "(D['deflator']['product'], D['deflator']['resin'])",
-   "falsified_if": "The peak stops moving under deflation, or resin stops crossing 100. Both are the lesson rather than decoration: the build fails in derive_sources.py before this claim runs if the peaks converge, because the section would then be teaching a difference that no longer exists. Resin crossing 100 is what makes 'gave the whole rise back' true in real terms and false in cash, which is the sharpest single case on the page. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read."
+   "falsified_if": "The peak stops moving under deflation, or resin stops crossing 100. Both are the lesson rather than decoration: the build fails in derive_sources.py before this claim runs if the peaks converge, because the section would then be teaching a difference that no longer exists. Resin crossing 100 is what makes 'gave the whole rise back' true in real terms and false in cash, which is the sharpest single case on the page. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read.",
+   "counts": [
+    {"figure": "139.8", "noun": "in cash"},
+    {"figure": "111.0", "noun": ["real index", "Deflated"]},
+    {"figure": "125.4", "noun": "in cash"},
+    {"figure": "99.6", "noun": "deflated"},
+    {"figure": "about 11 percent", "noun": "real rise"}
+   ]
   },
   {
    "id": "src-shed-two-bases",
@@ -235,7 +354,13 @@
    "source": "laborshed/data/laborshed.json totals; laborshed/data/bench.json regions",
    "assert": "(lambda S: S['all_residents'] == 1735169 and S['in_state_only'] == 1702542 and S['gap'] == 32627 and S['inside'] == 1524279 and S['inside'] + S['outside_in_state'] == S['in_state_only'] and S['inside'] + S['outside_any_state'] == S['all_residents'] and S['all_residents'] - S['in_state_only'] == S['gap'])(D['shed']) and D['shed']['outside_in_state'] == 178263 and D['shed']['state'] == 'Ohio' and D['shed']['year'] == 2022 and D['shed']['row_is'] == 'one (home county, work county) count of JOBS, not people and not commuters. A two-job worker appears twice.'",
    "actual": "D['shed']",
-   "falsified_if": "Either total moves without the other, or the identity stops closing. The identity is the lesson rather than the totals: a replicator who pulls LODES will produce one of these two without noticing there was a choice, and the arithmetic is what shows the difference is a definition rather than an error. derive_sources.py fails the build before this claim runs if the two bases stop reconciling. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read. The row_is clause pins the page's copy of a sentence the registry authors, so the two cannot drift apart now that both exist. Extended 2026-09-01, when the sentence stopped being rendered from the registry at runtime and became text in index.html: while app.js printed it, it could not disagree with the data, and now it can."
+   "falsified_if": "Either total moves without the other, or the identity stops closing. The identity is the lesson rather than the totals: a replicator who pulls LODES will produce one of these two without noticing there was a choice, and the arithmetic is what shows the difference is a definition rather than an error. derive_sources.py fails the build before this claim runs if the two bases stop reconciling. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read. The row_is clause pins the page's copy of a sentence the registry authors, so the two cannot drift apart now that both exist. Extended 2026-09-01, when the sentence stopped being rendered from the registry at runtime and became text in index.html: while app.js printed it, it could not disagree with the data, and now it can.",
+   "counts": [
+    {"figure": "1,735,169", "noun": ["resident in any state", "from anywhere"]},
+    {"figure": "1,702,542", "noun": ["Ohio residents only", "elsewhere in Ohio"]},
+    {"figure": "32,627", "noun": "apart"},
+    {"figure": "1,524,279", "noun": "held from inside"}
+   ]
   },
   {
    "id": "src-shed-outside",
@@ -243,23 +368,44 @@
    "source": "laborshed/data/laborshed.json external",
    "assert": "(lambda E, S: E['adjacent'] + E['distant'] + E['other'] == S['external_classified'] and S['external_classified'] + S['external_unclassified'] == S['outside_any_state'] and S['external_unclassified'] > 0 and E['other'] > E['adjacent'] and E['other'] > E['distant'] and abs(S['share_imported'] - 0.1215) < 0.001)(D['shed']['external_split'], D['shed']) and (lambda S, E: S['outside_any_state'] == 210890 and S['external_classified'] == 208338 and S['external_unclassified'] == 2552 and S['share_imported'] == 0.1215 and E['adjacent'] == 57302 and E['distant'] == 61708 and E['other'] == 89328)(D['shed'], D['shed']['external_split'])",
    "actual": "(D['shed']['external_split'], D['shed']['external_classified'], D['shed']['external_unclassified'])",
-   "falsified_if": "The three groups stop summing to the classified figure, or the classified figure plus the unclassified remainder stops making the outside total. This claim exists because its own first version was WRONG: it asserted the three groups summed to 210,890 and they sum to 208,338. The gap is small, 1.2 percent, and a recipe teaching a reader to respect bases cannot quietly absorb a base it has not explained. If the remainder ever reaches zero the wording should change back, not the assertion. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read."
+   "falsified_if": "The three groups stop summing to the classified figure, or the classified figure plus the unclassified remainder stops making the outside total. This claim exists because its own first version was WRONG: it asserted the three groups summed to 210,890 and they sum to 208,338. The gap is small, 1.2 percent, and a recipe teaching a reader to respect bases cannot quietly absorb a base it has not explained. If the remainder ever reaches zero the wording should change back, not the assertion. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read.",
+   "counts": [
+    {"figure": "210,890", "noun": ["from anywhere", "held from outside"]},
+    {"figure": "208,338", "noun": "three groups"},
+    {"figure": "57,302", "noun": "counties next door"},
+    {"figure": "61,708", "noun": "metropolitan areas hours away"},
+    {"figure": "89,328", "noun": "scattered too thinly"},
+    {"figure": "2,552", "noun": ["not in the grouping", "miss by"]}
+   ]
   },
   {
    "id": "src-contracting-partial-year",
    "text": "Recipe 4 separates the finished years from the running one: FY2019 to FY2026 is eight years of which seven are closed. In 2025 dollars, closed years total $289.5M and all years $313.6M, including $24.2M in partial FY2026. Nominal reconciliation totals are $254.4M closed and $278.6M all years.",
    "source": "federal-money/data/federal.json naics rows",
-   "assert": "(lambda C: C['n_years'] == 8 and C['closed_years'] == 7 and C['first_fy'] == 2019 and C['last_fy'] == 2026 and C['total_closed'] + C['partial_fy_amount'] == C['total_all'] and C['total_closed_real'] + C['partial_fy_real'] == C['total_all_real'] and [round(C[k] / 1e6, 1) for k in ['total_closed_real', 'total_all_real', 'partial_fy_real', 'total_closed', 'total_all']] == [289.5, 313.6, 24.2, 254.4, 278.6])(D['contracting'])",
-   "actual": "(D['contracting']['total_closed'], D['contracting']['partial_fy_amount'])",
-   "falsified_if": "A fiscal year closes and the split does not move with it, or the two parts stop making the whole. The step teaches that a running year is not a year, and it would be a poor place to print a total that quietly included one. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read."
+   "assert": "(lambda C: C['n_years'] == 8 and C['closed_years'] == 7 and C['first_fy'] == 2019 and C['last_fy'] == 2026 and C['total_closed'] + C['partial_fy_amount'] == C['total_all'] and C['total_closed_real'] + C['partial_fy_real'] == C['total_all_real'] and [tofixed(C[k] / 1e6, 1) for k in ['total_closed_real', 'total_all_real', 'partial_fy_real', 'total_closed', 'total_all']] == ['289.5', '313.6', '24.2', '254.4', '278.6'])(D['contracting'])",
+   "actual": "[tofixed(D['contracting'][k] / 1e6, 1) for k in ['total_closed_real', 'total_all_real', 'partial_fy_real', 'total_closed', 'total_all']]",
+   "falsified_if": "A fiscal year closes and the split does not move with it, or the two parts stop making the whole. The step teaches that a running year is not a year, and it would be a poor place to print a total that quietly included one. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read.",
+   "counts": [
+    {"figure": "$289.5M", "noun": "2025 dollars"},
+    {"figure": "$313.6M", "noun": "part-year"},
+    {"figure": "$24.2M", "noun": "FY2026"},
+    {"figure": "$254.4M", "noun": "closed"},
+    {"figure": "$278.6M", "noun": "including the partial year"}
+   ]
   },
   {
    "id": "src-contracting-blind",
    "text": "Recipe 4 exhausts pagination for the prime-contract NAICS 325*/326* view: 37 codes, led by all other rubber products at $87.6M, tires except retreading at $80.1M and paint/coatings at $23.6M in nominal dollars including partial FY2026. Research grants are excluded by the A-D prime-contract award-type filter. Contract NAICS identifies the acquired supplies or services, not institutional identity. The all-type county view can include grants with reported performance inside the footprint; a reported location is not an observation of the work.",
    "source": "federal-money/data/federal.json meta.excludes",
-   "assert": "(lambda C, A: C['n_codes'] == 37 and '61xxxx' not in C['invisible'] and 'prime-contract award-type filter (A-D)' in C['invisible'] and 'Contract NAICS classifies the supplies or services acquired' in C['invisible'] and str(A['nsf']['estimated_total']) in C['invisible'].replace(',', ''))(D['contracting'], D['awards']) and (lambda T: [t['name'] for t in T] == ['All Other Rubber Product Manufacturing', 'Tire Manufacturing (except Retreading)', 'Paint and Coating Manufacturing'] and [round(t['amount'] / 1e6, 1) for t in T] == [87.6, 80.1, 23.6] and all(T[i]['amount'] >= T[i + 1]['amount'] for i in range(len(T) - 1)))(D['contracting']['top']) and 'not an observation' in D['contracting']['place_caution'] and 'An obligation is not an outlay.' in D['contracting']['place_caution']",
-   "actual": "(D['contracting']['n_codes'], D['contracting']['invisible'][:120])",
-   "falsified_if": "The exclusion note stops naming the codes it excludes or stops naming the award it misses. The whole step is that a code filter's blindness is invisible in its own output, so a vague version of this sentence would be worse than none: it has to name a specific award the reader can look up and fail to find. The ordering clause matters as much as the amounts: the sentence says 'led by', and a list that stopped being sorted would still print three true figures inside a false sentence. Extended 2026-09-01, when the sentence stopped being rendered from the registry at runtime and became text in index.html: while app.js printed it, it could not disagree with the data, and now it can."
+   "assert": "(lambda C, A: C['n_codes'] == 37 and '61xxxx' not in C['invisible'] and 'prime-contract award-type filter (A-D)' in C['invisible'] and 'Contract NAICS classifies the supplies or services acquired' in C['invisible'] and str(A['nsf']['estimated_total']) in C['invisible'].replace(',', ''))(D['contracting'], D['awards']) and (lambda T: [t['name'] for t in T] == ['All Other Rubber Product Manufacturing', 'Tire Manufacturing (except Retreading)', 'Paint and Coating Manufacturing'] and [tofixed(t['amount'] / 1e6, 1) for t in T] == ['87.6', '80.1', '23.6'] and all(T[i]['amount'] >= T[i + 1]['amount'] for i in range(len(T) - 1)))(D['contracting']['top']) and 'not an observation' in D['contracting']['place_caution'] and 'An obligation is not an outlay.' in D['contracting']['place_caution']",
+   "actual": "(D['contracting']['n_codes'], [tofixed(t['amount'] / 1e6, 1) for t in D['contracting']['top']], D['contracting']['invisible'][:120])",
+   "falsified_if": "The exclusion note stops naming the codes it excludes or stops naming the award it misses. The whole step is that a code filter's blindness is invisible in its own output, so a vague version of this sentence would be worse than none: it has to name a specific award the reader can look up and fail to find. The ordering clause matters as much as the amounts: the sentence says 'led by', and a list that stopped being sorted would still print three true figures inside a false sentence. Extended 2026-09-01, when the sentence stopped being rendered from the registry at runtime and became text in index.html: while app.js printed it, it could not disagree with the data, and now it can.",
+   "counts": [
+    {"figure": "37", "noun": "codes"},
+    {"figure": "$87.6M", "noun": "all other rubber product"},
+    {"figure": "$80.1M", "noun": "tire manufacturing"},
+    {"figure": "$23.6M", "noun": "paint and coating"}
+   ]
   },
   {
    "id": "src-geography-boundary",
@@ -267,7 +413,10 @@
    "source": "peers/data/peers.json cleveland_history and state_ids, derived from QCEW source rows",
    "assert": "(lambda H: sorted(r['year'] for r in H if r['area'] == 'C1746' and not r['suppressed']) == list(range(2015, 2024)) and one(r for r in H if r['area'] == 'C1741')['year'] == 2024 and not any(r['suppressed'] for r in H))(D['cleveland_history']) and len(D['state_ids']) == 51 and '72000' in D['state_ids'] and '11000' not in D['state_ids']",
    "actual": "(D['state_ids'], D['cleveland_history'])",
-   "falsified_if": "An earlier source observation is suppressed, the earlier code does not cover every stated year, or the state ID universe includes DC or excludes Puerto Rico. The boundary change itself must be checked against the official geography definitions, not inferred from code absence."
+   "falsified_if": "An earlier source observation is suppressed, the earlier code does not cover every stated year, or the state ID universe includes DC or excludes Puerto Rico. The boundary change itself must be checked against the official geography definitions, not inferred from code absence.",
+   "counts": [
+    {"figure": "nine years", "noun": "C1746"}
+   ]
   },
   {
    "id": "src-swaps-complete",

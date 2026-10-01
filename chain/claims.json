@@ -48,7 +48,13 @@
    "source": "GAC-PIC vault value_chain against the 2026 intake export value-chain position; register counts cross-checked against each company's own role tags in chain-data.json",
    "assert": "one(s for s in D['viz']['spine'] if s['key']=='feedstock')['supply'] == 12 and one(s for s in D['viz']['spine'] if s['key']=='feedstock')['demand'] == 26 and one(s for s in D['viz']['spine'] if s['key']=='converters')['supply'] == 235 and one(s for s in D['viz']['spine'] if s['key']=='converters')['demand'] == 20 and sum('monomer' in c['t'] for c in D['chain']['companies']) == 12 and sum('fabricate' in c['t'] for c in D['chain']['companies']) == 235",
    "actual": "[(s['key'], s['supply'], s['demand']) for s in D['viz']['spine']] + [('monomer_tagged', sum('monomer' in c['t'] for c in D['chain']['companies'])), ('fabricate_tagged', sum('fabricate' in c['t'] for c in D['chain']['companies']))]",
-   "falsified_if": "Either side is re-extracted, or the spine's aggregated supply counts stop matching an independent tag-count over the company register (the cross-check added 2026-09-28). The two sides are DIFFERENT UNITS — companies and applications — on separate scales meeting at a center line, never one axis and never a ratio bar. [2026-09-11: converters was 246 under the old county set. Separately, the application side carries NO geographic filter and never did: all 59 applications to the 2026 round are counted wherever the applicant sits, 38 of them in Ohio. The page said PIC-12; the extract said nothing of the kind.] Corrected 2026-09-28: the section label read 'Supply against demand', which its own next sentence contradicted ('these counts do not measure capacity, competition or market demand'); it now reads 'Register records against funding applications'. This assert cannot read the HTML label directly, only the counts behind it; the label wording is not mechanically checked."
+   "falsified_if": "Either side is re-extracted, or the spine's aggregated supply counts stop matching an independent tag-count over the company register (the cross-check added 2026-09-28). The two sides are DIFFERENT UNITS — companies and applications — on separate scales meeting at a center line, never one axis and never a ratio bar. [2026-09-11: converters was 246 under the old county set. Separately, the application side carries NO geographic filter and never did: all 59 applications to the 2026 round are counted wherever the applicant sits, 38 of them in Ohio. The page said PIC-12; the extract said nothing of the kind.] Corrected 2026-09-28: the section label read 'Supply against demand', which its own next sentence contradicted ('these counts do not measure capacity, competition or market demand'); it now reads 'Register records against funding applications'. This assert cannot read the HTML label directly, only the counts behind it; the label wording is not mechanically checked.",
+   "counts": [
+    {"figure": "235", "noun": "converters and fabricators"},
+    {"figure": "12", "noun": "raw-material and feedstock companies"},
+    {"figure": "20", "noun": "applications naming conversion"},
+    {"figure": "26", "noun": "naming raw materials and feedstock"}
+   ]
   },
   {
    "id": "chain-demand-footprint",
@@ -56,7 +62,11 @@
    "source": "PIC 2026 intake export (pic-innovation-intake-export-2026-07-07.csv), Org state",
    "assert": "D['viz']['demand_footprint'] == {'n': 59, 'ohio': 38, 'filtered': False}",
    "actual": "D['viz']['demand_footprint']",
-   "falsified_if": "A geographic filter is applied to the applications, in which case the page must publish the filtered denominator instead of this one. Applications are requests for one funding round against a fixed pool; they are not a measure of market demand, and a stage with few of them may be a stage with no eligible applicants or no awareness of the round."
+   "falsified_if": "A geographic filter is applied to the applications, in which case the page must publish the filtered denominator instead of this one. Applications are requests for one funding round against a fixed pool; they are not a measure of market demand, and a stage with few of them may be a stage with no eligible applicants or no awareness of the round.",
+   "counts": [
+    {"figure": "59", "noun": ["applications", "rows"]},
+    {"figure": "38", "noun": "in Ohio"}
+   ]
   }
  ]
 }

@@ -14,7 +14,8 @@
    "falsified_if": "A refetch moves either endpoint, which late-publishing applications genuinely can do for recent years: the USPTO record itself back-fills. The fetch stamps its read date for exactly this reason.",
    "counts": [
     {"figure": "filed 342 polymer patent applications in 2023", "noun": "home of Akron"},
-    {"figure": "down a quarter from 2015", "noun": "342 polymer patent applications"}
+    {"figure": "down a quarter from 2015", "noun": "342 polymer patent applications"},
+    {"figure": "455", "noun": ["Ohio polymer patent applications", "Ohio’s polymer filings"]}
    ]
   },
   {
@@ -28,7 +29,12 @@
     {"figure": "fell by a fifth", "noun": "American polymer patenting"},
     {"figure": "down 22 percent nationwide", "noun": "applications with an American inventor"},
     {"figure": "fell 12.5 percent", "noun": "its patenting across all technologies"},
-    {"figure": "the nation’s fell 1.6", "noun": "fell 12.5 percent"}
+    {"figure": "the nation’s fell 1.6", "noun": "fell 12.5 percent"},
+    {"figure": "78.2", "noun": "American polymer filings"},
+    {"figure": "98.4", "noun": ["all technologies", "nation’s", "all-technology"]},
+    {"figure": "75.2", "noun": "Ohio’s"},
+    {"figure": "87.5", "noun": "Ohio’s"},
+    {"figure": "fell 22 percent", "noun": "American polymer filings"}
    ]
   },
   {
@@ -52,7 +58,8 @@
    "actual": "[(r['year'], round(r['ohio']/r['us_inv']*100, 1), round(r['ohio']/r['world']*100, 1)) for r in D['p']['rows'] if r['complete']]",
    "falsified_if": "Either share moves past a tenth of a point. The two shares are printed together deliberately: the same numerator over two denominators tells opposite stories, which is the basis lesson of this whole site on one card.",
    "counts": [
-    {"figure": "about a tenth", "noun": "Ohio kept"}
+    {"figure": "about a tenth", "noun": "Ohio kept"},
+    {"figure": "ends at 99", "noun": "series"}
    ]
   },
   {
@@ -61,7 +68,11 @@
    "source": "patents/data/patents.json rows and meta.lag",
    "assert": "(lambda R: all((r['year'] <= 2023) == r['complete'] for r in R) and [r for r in R if r['year'] == 2025][0]['ohio'] == 266 and [r for r in R if r['year'] == 2026][0]['ohio'] == 20)(D['p']['rows'])",
    "actual": "[(r['year'], r['ohio'], r['complete']) for r in D['p']['rows'] if not r['complete']]",
-   "falsified_if": "The lag catches up and an incomplete year's count converges on a complete level, at which point LAST_COMPLETE in the fetch should advance and this page's hollow bars shrink by one, or a refetch moves the two named counts, which it will: these two numbers are snapshots of a moving record and say so in the prose."
+   "falsified_if": "The lag catches up and an incomplete year's count converges on a complete level, at which point LAST_COMPLETE in the fetch should advance and this page's hollow bars shrink by one, or a refetch moves the two named counts, which it will: these two numbers are snapshots of a moving record and say so in the prose.",
+   "counts": [
+    {"figure": "stood at 266", "noun": "count for 2025"},
+    {"figure": "2026 at 20", "noun": "count for"}
+   ]
   },
   {
    "id": "pat-cities-no-claim",
@@ -69,7 +80,10 @@
    "source": "patents/data/patents.json rows, complete years, city fields",
    "assert": "(lambda C: min(r['akron'] for r in C) == 46 and max(r['akron'] for r in C) == 87 and min(r['youngstown'] for r in C) == 0)([r for r in D['p']['rows'] if r['complete']])",
    "actual": "[(r['year'], r['akron'], r['youngstown']) for r in D['p']['rows'] if r['complete']]",
-   "falsified_if": "A refetch moves the stated range. The deeper commitment this claim pins: if a future edit adds a city-level trend claim, the smallness documented here is the evidence a reviewer should raise against it."
+   "falsified_if": "A refetch moves the stated range. The deeper commitment this claim pins: if a future edit adds a city-level trend claim, the smallness documented here is the evidence a reviewer should raise against it.",
+   "counts": [
+    {"figure": "46 to 87", "noun": "Akron’s count"}
+   ]
   },
   {
    "id": "pat-two-bases",
@@ -77,7 +91,11 @@
    "source": "patents/data/patents.json bases",
    "assert": "D['p']['bases']['by_inventor'] == 8854 and D['p']['bases']['by_applicant'] == 3948",
    "actual": "D['p']['bases']",
-   "falsified_if": "Either total moves on a refetch; both are cumulative and only grow, so a DECREASE would indicate a query change rather than new data and should stop the build for inspection, not be re-blessed."
+   "falsified_if": "Either total moves on a refetch; both are cumulative and only grow, so a DECREASE would indicate a query change rather than new data and should stop the build for inspection, not be re-blessed.",
+   "counts": [
+    {"figure": "8,854", "noun": "polymer count"},
+    {"figure": "3,948", "noun": "polymer count"}
+   ]
   },
   {
    "id": "pat-degree-echo",
@@ -85,7 +103,13 @@
    "source": "occupations/data/viz-data.json programs, group polymer, re-run here so the two pages cannot drift apart, against patents/data/patents.json rows for the filing side of the same sentence",
    "assert": "(lambda tot, E, C, inst: (lambda avg: tot('2023') == 63 and 140 <= avg <= 144 and 0.54 <= 1 - tot('2023') / avg <= 0.58 and C[0]['year'] == 2015 and C[-1]['year'] == 2023 and 0.24 <= 1 - C[-1]['ohio'] / C[0]['ohio'] <= 0.26)(sum(E) / len(E)))(lambda y: sum(p['by_year'].get(y, 0) for p in D['occ']['programs'] if p['group'] == 'polymer'), series(D['occ']['programs'], 'polymer', 2014, 2020), [r for r in D['p']['rows'] if r['complete']], set(p['institution'] for p in D['occ']['programs'] if p['group'] == 'polymer')) and set(p['institution'] for p in D['occ']['programs'] if p['group'] == 'polymer') == {'Case Western Reserve University', 'University of Akron'}",
    "actual": "({y: sum(p['by_year'].get(str(y), 0) for p in D['occ']['programs'] if p['group'] == 'polymer') for y in range(2014, 2024)}, [(r['year'], r['ohio']) for r in D['p']['rows'] if r['complete']], sorted(set(p['institution'] for p in D['occ']['programs'] if p['group'] == 'polymer')))",
-   "falsified_if": "The talent page's data is refetched and the degree counts move, in which case this page's note is stale and fails here rather than waiting for a reader to put the two pages side by side, which is how this site's worst error was found. It also fails if a third institution's polymer program appears in the source data, since the note now names exactly Akron and Case Western. The baseline span moved from 2014-2021 to 2014-2020 on 2026-08-31: the federal mirror behind the completions series filed three years late and skipped one, so the last year of the old pace was 2020 and not 2021. The average, 142, did not move. See _data/build/ipeds_mirror_fix.py. Corrected 2026-09-28: the prior guard required the two declines to differ by at least 25 points, a check meant to keep them from being collapsed into one verb ('roughly halved'); it is dropped now that the page states both declines as separate, uncorrelated facts rather than an input/output claim, and a verified difference in magnitude is no longer load-bearing for the sentence's accuracy."
+   "falsified_if": "The talent page's data is refetched and the degree counts move, in which case this page's note is stale and fails here rather than waiting for a reader to put the two pages side by side, which is how this site's worst error was found. It also fails if a third institution's polymer program appears in the source data, since the note now names exactly Akron and Case Western. The baseline span moved from 2014-2021 to 2014-2020 on 2026-08-31: the federal mirror behind the completions series filed three years late and skipped one, so the last year of the old pace was 2020 and not 2021. The average, 142, did not move. See _data/build/ipeds_mirror_fix.py. Corrected 2026-09-28: the prior guard required the two declines to differ by at least 25 points, a check meant to keep them from being collapsed into one verb ('roughly halved'); it is dropped now that the page states both declines as separate, uncorrelated facts rather than an input/output claim, and a verified difference in magnitude is no longer load-bearing for the sentence's accuracy.",
+   "counts": [
+    {"figure": "63", "noun": "degrees"},
+    {"figure": "142", "noun": "average"},
+    {"figure": "56 percent", "noun": "degrees"},
+    {"figure": "25 percent", "noun": "Ohio’s polymer filings"}
+   ]
   }
  ]
 }

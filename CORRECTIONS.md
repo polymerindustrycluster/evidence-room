@@ -11,6 +11,30 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-09-30 — Two replication recipes that described a different computation
+
+No published figure changed. Both errors were in instructions a reader would follow to
+rebuild a figure, and following them gave a different answer from the site's.
+
+**Which counties a location quotient divides by, *sources*.** **Was:** the replication
+guide said a withheld county "drops out of the numerator and the denominator together",
+that the ratio "is neither a floor nor a census", and that the direction of the error
+cannot be signed. **Is:** the bureau withholds a county's industry cell, never its
+all-industry total, so a withheld county leaves the numerator only and all twelve counties
+stay in the denominator; the regional ratio is a floor that sags as disclosure thins. This
+is what `derive_lq.py` has always computed. Following the old rule gave paint 7.47 times the
+national share in 2025 (4,257 jobs over 1,357,804 in the seven reporting counties) where the
+site publishes 5.96 (over 1,701,837 in all twelve). The location-quotient claim
+`lq-paint-suppression` now asserts the all-twelve denominator for every composite with a
+withheld county. The page carries a dated correction line.
+
+**What one LODES row is, *sources*.** **Was:** the labour shed recipe said one row is a
+"(home county, work county) count of JOBS". **Is:** one row is a pair of Census blocks,
+fifteen-digit `h_geocode` and `w_geocode`, with `S000` jobs; the site keeps the first five
+digits (the county FIPS code) at both ends and sums `S000` by home and work county over the
+main and aux files, keeping pairs whose work county is in PIC-12, as `fetch_lodes.py` does.
+The page carries a dated correction line.
+
 ## 2026-09-30 — Two cluster-health sentences the data did not support
 
 **A direction typed instead of read, *cluster-health*.** **Was:** the jobs-and-workplaces
