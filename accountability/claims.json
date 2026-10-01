@@ -16,8 +16,8 @@
    "id": "acc-hero",
    "text": "Headline, standfirst and the stat row under the lead figure: of the $106.3 million PIC reports securing, $4,149,515 sits on award lines naming PIC's own organisation as destination, 4.9 percent of the $85,335,784 awarded; the page carries 18 dated commitments; 7 of the 15 rows PIC answers for are published as empty slots awaiting private records.",
    "source": "funding-map/data/funding.json recipients[greater-akron-chamber] and meta.totals; timeline/data/timeline.json events where delivered is false; scorecard/data/scorecard.json counts",
-   "assert": "sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) == 4149515 and round(sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) / D['fm']['meta']['totals']['awards'], 3) == 0.049 and len([e for e in D['tl']['events'] if not e['delivered']]) == 18 and D['sc']['counts']['vault'] == 7 and D['sc']['counts']['accountable'] == 15",
-   "actual": "(sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']), round(sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) / D['fm']['meta']['totals']['awards'], 3), len([e for e in D['tl']['events'] if not e['delivered']]), D['sc']['counts']['vault'], D['sc']['counts']['accountable'])",
+   "assert": "sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) == 4149515 and tofixed(sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) / D['fm']['meta']['totals']['awards'], 3) == '0.049' and len([e for e in D['tl']['events'] if not e['delivered']]) == 18 and D['sc']['counts']['vault'] == 7 and D['sc']['counts']['accountable'] == 15",
+   "actual": "(sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']), tofixed(sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) / D['fm']['meta']['totals']['awards'], 3), len([e for e in D['tl']['events'] if not e['delivered']]), D['sc']['counts']['vault'], D['sc']['counts']['accountable'])",
    "falsified_if": "Any award line naming the Chamber is added, removed or amended. A forward event resolves or is added on the timeline without this page's hero recomputing. A vault row on the internal scorecard becomes publishable. The share is pinned to three digits because the headline prints it, so a $50,000 amendment that moves 4.86 percent to 4.95 percent fails this claim rather than quietly rounding to the same figure.",
    "official_check": "USAspending.gov award ED24HDQ0G0413, and the executed state grant agreement SBIG20251005 governance line.",
    "counts": [
@@ -29,7 +29,7 @@
    "id": "acc-hero-split",
    "text": "Standfirst, the three-way split of the $85,335,784 awarded: $4,149,515 sits on the two lines naming PIC's own organisation as destination, $51,926,305 on lines naming a firm or university doing the work, and the remaining $29,259,964 on lines naming a programme or a building, or on no line at all. The standfirst prints the last two rounded, at $51.9 million and $29.3 million.",
    "source": "funding-map/data/funding.json recipients and meta.totals, each recipient classified by accountability/data/recipient_types.json kind",
-   "assert": "sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'administrator' for a in r['awards']) == 4149515 and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] in set(['firm', 'university']) for a in r['awards']) == 51926305 and round(sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] in set(['firm', 'university']) for a in r['awards']) / 1000000, 1) == 51.9 and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) + (D['fm']['meta']['totals']['awards'] - sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'])) == 29259964 and round((sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) + (D['fm']['meta']['totals']['awards'] - sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']))) / 1000000, 1) == 29.3 and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'administrator' for a in r['awards']) + sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] in set(['firm', 'university']) for a in r['awards']) + sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) + (D['fm']['meta']['totals']['awards'] - sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'])) == D['fm']['meta']['totals']['awards'] and sorted(k for k in D['rt']['kind'] if D['rt']['kind'][k] == 'administrator') == ['greater-akron-chamber']",
+   "assert": "sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'administrator' for a in r['awards']) == 4149515 and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] in set(['firm', 'university']) for a in r['awards']) == 51926305 and tofixed(sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] in set(['firm', 'university']) for a in r['awards']) / 1000000, 1) == '51.9' and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) + (D['fm']['meta']['totals']['awards'] - sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'])) == 29259964 and tofixed((sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) + (D['fm']['meta']['totals']['awards'] - sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']))) / 1000000, 1) == '29.3' and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'administrator' for a in r['awards']) + sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] in set(['firm', 'university']) for a in r['awards']) + sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) + (D['fm']['meta']['totals']['awards'] - sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'])) == D['fm']['meta']['totals']['awards'] and sorted(k for k in D['rt']['kind'] if D['rt']['kind'][k] == 'administrator') == ['greater-akron-chamber']",
    "actual": "(sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'administrator' for a in r['awards']), sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] in set(['firm', 'university']) for a in r['awards']), sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']), (D['fm']['meta']['totals']['awards'] - sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'])), D['fm']['meta']['totals']['awards'])",
    "falsified_if": "A recipient is reclassified, added or removed, or an award line is amended, so that the three shares stop summing to the awarded total. The rounded forms are pinned too, so a change large enough to move $51.9 million or $29.3 million by a tenth fails here rather than leaving the standfirst reading a stale split. If the Chamber ever stops being the only administrator-classified recipient, the first share stops meaning PIC's own organisation and this claim fails.",
    "official_check": "The executed award lines behind funding-map's recipient list: the seven EDA Tech Hub awards, APEX award ED25OIE0G0108 and the Ohio Innovation Hub grant agreement.",
@@ -75,7 +75,11 @@
      "noun": "executed"
     },
     {"figure": "reports securing $106.3 million", "noun": "PIC"},
-    {"figure": "Of $85,335,784", "noun": "awarded"}
+    {"figure": "Of $85,335,784", "noun": "awarded"},
+    {"figure": "$106,290,451", "noun": "secured"},
+    {"figure": "$20,954,667 of partner", "noun": "match"},
+    {"figure": "contains $85,335,784", "noun": "awarded"},
+    {"figure": "$79,170,176 assigned to", "noun": "destination"}
    ]
   },
   {
@@ -89,7 +93,13 @@
    "source": "funding-map/data/funding.json recipients[greater-akron-chamber].awards and programs[eda-direct]",
    "assert": "len(one(r for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber')['awards']) == 2 and one(a for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards'] if a['programId'] == 'eda-direct')['amount'] == 2650000 and one(a for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards'] if a['programId'] == 'eda-direct')['awardId'] == 'ED24HDQ0G0413' and one(a for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards'] if a['programId'] == 'oh-gov')['amount'] == 1499515 and len([a for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'eda-direct']) - 1 == 6 and D['acc']['attribution']['gac_grantee']['apex']['amount'] == 3084371 and D['acc']['attribution']['gac_grantee']['apex']['attributed_to'] != 'Greater Akron Chamber' and D['acc']['attribution']['gac_grantee']['prior']['amount'] == 399672 and sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) + D['acc']['attribution']['gac_grantee']['apex']['amount'] + D['acc']['attribution']['gac_grantee']['prior']['amount'] == 7633558 and D['acc']['attribution']['gac_grantee']['state']['award_id'] == 'SBIG20251005' and D['acc']['attribution']['gac_grantee']['state']['grantee'] == 'Greater Akron Chamber' and D['acc']['attribution']['gac_grantee']['state']['amount'] == sum(p['amount'] for p in D['fm']['programs'] if p['sourceId'] == 'ohio') == 31250000 and D['acc']['attribution']['named_total'] == 2650000 + D['acc']['attribution']['gac_grantee']['state']['amount'] + D['acc']['attribution']['gac_grantee']['apex']['amount'] + D['acc']['attribution']['gac_grantee']['prior']['amount'] == 37384043 and round(D['acc']['attribution']['named_total'] / 1e6, 1) == 37.4",
    "actual": "[a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']]",
-   "falsified_if": "The Chamber acquires a third line, either line is amended, or an eighth EDA implementation award appears. The standfirst says six more EDA project leads and the last conjunct is what keeps that word honest."
+   "falsified_if": "The Chamber acquires a third line, either line is amended, or an eighth EDA implementation award appears. The standfirst says six more EDA project leads and the last conjunct is what keeps that word honest.",
+   "counts": [
+    {"figure": "$2,650,000", "noun": "award"},
+    {"figure": "$1,499,515", "noun": "state grant"},
+    {"figure": "on APEX, $3,084,371", "noun": "grantee"},
+    {"figure": "$399,672", "noun": "award"}
+   ]
   },
   {
    "id": "acc-licenses-mechanism",
@@ -114,16 +124,20 @@
     {
      "figure": "$23,584,877",
      "noun": "line"
-    }
+    },
+    {"figure": "the $3,084,371 APEX", "noun": "award"}
    ]
   },
   {
    "id": "acc-restatement-share",
    "text": "Band A source line: the Chamber's own EDA line, ED24HDQ0G0413, is one of the two FY2024 awards, so restating it together with the total moves the share only from 4.86 percent as awarded to 4.93 restated, both of which round to 4.9; restating the total alone would give 4.8. The printed 4.86 and 4.93 are rendered from attribution.share_of_awarded and attribution.restated_share_of_awarded, which this claim recomputes (corrected 2026-09-29 from a hardcoded figure; on 2026-09-30 the line printed both to two places, because at one place the restated share read 4.9, the same as the share it restates).",
    "source": "federal-money/data/techhub.json leads, fy2024_share, award_2025_dollars",
-   "assert": "(lambda f, dA, A, gac: sorted(l['awardId'] for l in D['hub']['leads'] if l['awardId'].startswith('ED24')) == ['ED24HDQ0G0413', 'ED24HDQ0G0452'] and sum(l['amount'] for l in D['hub']['leads'] if l['awardId'].startswith('ED24')) == D['hub']['fy2024_share'] and gac['eda-direct']['awardId'] == 'ED24HDQ0G0413' and round((gac['eda-direct']['amount'] * (1 + f) + gac['oh-gov']['amount']) / (A + dA) * 100, 2) == 4.93 and round((gac['eda-direct']['amount'] * (1 + f) + gac['oh-gov']['amount']) / (A + dA) * 100, 1) == 4.9 and round(sum(a['amount'] for a in gac.values()) / A * 100, 2) == 4.86 and round(sum(a['amount'] for a in gac.values()) / A * 100, 1) == 4.9 and round(sum(a['amount'] for a in gac.values()) / (A + dA) * 100, 1) == 4.8 and close(D['acc']['attribution']['share_of_awarded'], sum(a['amount'] for a in gac.values()) / A) and close(D['acc']['attribution']['restated_share_of_awarded'], (gac['eda-direct']['amount'] * (1 + f) + gac['oh-gov']['amount']) / (A + dA)))((D['hub']['award_2025_dollars'] - D['hub']['award']) / D['hub']['fy2024_share'], D['hub']['award_2025_dollars'] - D['hub']['award'], D['fm']['meta']['totals']['awards'], {a['programId']: a for a in one(r for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber')['awards']})",
+   "assert": "(lambda f, dA, A, gac: sorted(l['awardId'] for l in D['hub']['leads'] if l['awardId'].startswith('ED24')) == ['ED24HDQ0G0413', 'ED24HDQ0G0452'] and sum(l['amount'] for l in D['hub']['leads'] if l['awardId'].startswith('ED24')) == D['hub']['fy2024_share'] and gac['eda-direct']['awardId'] == 'ED24HDQ0G0413' and tofixed((gac['eda-direct']['amount'] * (1 + f) + gac['oh-gov']['amount']) / (A + dA) * 100, 2) == '4.93' and tofixed((gac['eda-direct']['amount'] * (1 + f) + gac['oh-gov']['amount']) / (A + dA) * 100, 1) == '4.9' and tofixed(sum(a['amount'] for a in gac.values()) / A * 100, 2) == '4.86' and tofixed(sum(a['amount'] for a in gac.values()) / A * 100, 1) == '4.9' and tofixed(sum(a['amount'] for a in gac.values()) / (A + dA) * 100, 1) == '4.8' and close(D['acc']['attribution']['share_of_awarded'], sum(a['amount'] for a in gac.values()) / A) and close(D['acc']['attribution']['restated_share_of_awarded'], (gac['eda-direct']['amount'] * (1 + f) + gac['oh-gov']['amount']) / (A + dA)))((D['hub']['award_2025_dollars'] - D['hub']['award']) / D['hub']['fy2024_share'], D['hub']['award_2025_dollars'] - D['hub']['award'], D['fm']['meta']['totals']['awards'], {a['programId']: a for a in one(r for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber')['awards']})",
    "actual": "(D['hub']['fy2024_share'], D['hub']['award_2025_dollars'], D['acc']['attribution']['restated_share_of_awarded'])",
-   "falsified_if": "The FY2024 awards change, the deflator moves the restated share off 4.93 or the total-only restatement off 4.8, the Chamber's line is re-dated, or the generated share the page prints drifts from this recomputation."
+   "falsified_if": "The FY2024 awards change, the deflator moves the restated share off 4.93 or the total-only restatement off 4.8, the Chamber's line is re-dated, or the generated share the page prints drifts from this recomputation.",
+   "counts": [
+    {"figure": "is assigned 4.9 percent", "noun": "organisation"}
+   ]
   },
   {
    "id": "acc-attribution-note",
@@ -131,15 +145,22 @@
    "source": "funding-map/data/funding.json recipients[], all lines less the two naming the Greater Akron Chamber",
    "assert": "sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']) - sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards']) == 75020661",
    "actual": "sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards']) - sum(a['amount'] for r in D['fm']['recipients'] if r['id'] == 'greater-akron-chamber' for a in r['awards'])",
-   "falsified_if": "Any line other than the Chamber's two changes. This figure exists as its own claim because the page could have used $81,186,269 here, which is the same subtraction taken from the AWARDED total rather than the ASSIGNED one. Two nearly identical numbers on one page, differing only in denominator, is the trap the constructed-units rule names, so the callout and the chart label are pinned to one denominator and this claim is what keeps them there."
+   "falsified_if": "Any line other than the Chamber's two changes. This figure exists as its own claim because the page could have used $81,186,269 here, which is the same subtraction taken from the AWARDED total rather than the ASSIGNED one. Two nearly identical numbers on one page, differing only in denominator, is the trap the constructed-units rule names, so the callout and the chart label are pinned to one denominator and this claim is what keeps them there.",
+   "counts": [
+    {"figure": "$75,020,661 on award lines", "noun": "recipients"}
+   ]
   },
   {
    "id": "acc-staging",
    "text": "Band B: 92.8 percent of the awards are assigned to a named destination. EDA is 100 percent assigned, APEX is 100 percent assigned, and the entire $6,165,608 unassigned balance sits in the Ohio Innovation Hub at 80.3 percent.",
    "source": "scorecard/data/scorecard.json delivery, recomputed there from the same award register",
-   "assert": "D['sc']['delivery']['awarded'] == 85335784 and D['sc']['delivery']['assigned'] == 79170176 and D['sc']['delivery']['unassigned'] == 6165608 and round(pct(D['sc']['delivery']['assigned'], D['sc']['delivery']['awarded']), 1) == 92.8 and one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'eda')['pct'] == 100.0 and one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'apex')['pct'] == 100.0 and round(one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'ohio')['pct'], 1) == 80.3 and one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'ohio')['unassigned'] == D['sc']['delivery']['unassigned']",
+   "assert": "D['sc']['delivery']['awarded'] == 85335784 and D['sc']['delivery']['assigned'] == 79170176 and D['sc']['delivery']['unassigned'] == 6165608 and tofixed(pct(D['sc']['delivery']['assigned'], D['sc']['delivery']['awarded']), 1) == '92.8' and one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'eda')['pct'] == 100.0 and one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'apex')['pct'] == 100.0 and tofixed(one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'ohio')['pct'], 1) == '80.3' and one(s for s in D['sc']['delivery']['sources'] if s['id'] == 'ohio')['unassigned'] == D['sc']['delivery']['unassigned']",
    "actual": "(D['sc']['delivery']['awarded'], D['sc']['delivery']['assigned'], D['sc']['delivery']['unassigned'], [s['pct'] for s in D['sc']['delivery']['sources']])",
-   "falsified_if": "Any figure moves. The last conjunct is the sentence 'the entire unassigned balance is Ohio money': the moment EDA or APEX carries a dollar without a named recipient, that word fails here."
+   "falsified_if": "Any figure moves. The last conjunct is the sentence 'the entire unassigned balance is Ohio money': the moment EDA or APEX carries a dollar without a named recipient, that word fails here.",
+   "counts": [
+    {"figure": "92.8", "noun": "awards"},
+    {"figure": "$6,165,608, sits", "noun": "balance"}
+   ]
   },
   {
    "id": "acc-staging-gaps",
@@ -147,7 +168,10 @@
    "source": "scorecard/data/scorecard.json delivery.gaps; funding-map/data/funding.json meta.reconciliation",
    "assert": "len(D['sc']['delivery']['gaps']) == 2 and one(g for g in D['sc']['delivery']['gaps'] if g['id'] == 'oh-startup')['gap'] == 3523500 and one(g for g in D['sc']['delivery']['gaps'] if g['id'] == 'oh-rd')['gap'] == 2642108 and sum(g['gap'] for g in D['sc']['delivery']['gaps']) == D['sc']['delivery']['unassigned'] and any('Bounce sub-grant' in s for s in D['fm']['meta']['reconciliation'])",
    "actual": "[(g['id'], g['gap']) for g in D['sc']['delivery']['gaps']]",
-   "falsified_if": "A third gap workstream appears, either figure moves, or the register drops the reconciliation sentence explaining that the startup balance is delivered through the Bounce sub-grant. Publishing $3,523,500 unassigned without that sentence manufactures a problem PIC does not have, so the sentence's presence is asserted rather than assumed."
+   "falsified_if": "A third gap workstream appears, either figure moves, or the register drops the reconciliation sentence explaining that the startup balance is delivered through the Bounce sub-grant. Publishing $3,523,500 unassigned without that sentence manufactures a problem PIC does not have, so the sentence's presence is asserted rather than assumed.",
+   "counts": [
+    {"figure": "$3,523,500 and $2,642,108", "noun": "gap"}
+   ]
   },
   {
    "id": "acc-staging-empty",
@@ -161,24 +185,32 @@
    "id": "acc-federal-outlays",
    "text": "Band B: the federal record says $11,642,402 has been paid against the $48,114,979 on the seven federal award lines that carry a USAspending record, which is 24.2 percent, and those lines are 56.4 percent of everything awarded. One federal award and the whole state grant publish nothing, and neither is counted as a zero.",
    "source": "funding-map/data/funding.json meta.outlays and the per-award outlay fields, from USAspending Total Outlays by award id",
-   "assert": "abs(D['acc']['staging']['outlays']['paid'] - 11_642_401.68) < 0.01 and D['acc']['staging']['outlays']['base'] == 48_114_979 and D['acc']['staging']['outlays']['lines'] == 7 and round(D['acc']['staging']['outlays']['share'], 1) == 24.2 and round(D['acc']['staging']['outlays']['share_of_awarded'], 1) == 56.4 and abs(sum(a['outlay'] for r in D['fm']['recipients'] for a in r['awards'] if 'outlay' in a) - D['acc']['staging']['outlays']['paid']) < 0.01 and D['acc']['staging']['outlays']['no_record']['awardId'] == 'ED25HDQ0G0009' and D['acc']['staging']['outlays']['base'] + D['acc']['staging']['outlays']['no_record']['amount'] + D['acc']['staging']['outlays']['not_federal']['amount'] == D['acc']['staging']['awarded']",
+   "assert": "abs(D['acc']['staging']['outlays']['paid'] - 11_642_401.68) < 0.01 and D['acc']['staging']['outlays']['base'] == 48_114_979 and D['acc']['staging']['outlays']['lines'] == 7 and tofixed(D['acc']['staging']['outlays']['share'], 1) == '24.2' and tofixed(D['acc']['staging']['outlays']['share_of_awarded'], 1) == '56.4' and abs(sum(a['outlay'] for r in D['fm']['recipients'] for a in r['awards'] if 'outlay' in a) - D['acc']['staging']['outlays']['paid']) < 0.01 and D['acc']['staging']['outlays']['no_record']['awardId'] == 'ED25HDQ0G0009' and D['acc']['staging']['outlays']['base'] + D['acc']['staging']['outlays']['no_record']['amount'] + D['acc']['staging']['outlays']['not_federal']['amount'] == D['acc']['staging']['awarded']",
    "actual": "D['acc']['staging']['outlays']",
    "falsified_if": "The paid figure stops reconciling to the register's own per-award outlays, the base stops being the seven lines that have a record, or the three parts stop adding to the $85,335,784 awarded. The last conjunct is the important one: it is the arithmetic that says exactly what the payment figure does and does not cover, so a fourth category cannot appear silently and no part of the total can go uncounted.",
-   "official_check": "Outlays move with every drawdown, so the page dates this figure. The Huntsman award carries no outlay field at all rather than a zero, and that asymmetry is asserted above: an award USAspending has no row for and an award that has drawn nothing are different findings."
+   "official_check": "Outlays move with every drawdown, so the page dates this figure. The Huntsman award carries no outlay field at all rather than a zero, and that asymmetry is asserted above: an award USAspending has no row for and an award that has drawn nothing are different findings.",
+   "counts": [
+    {"figure": "against their $48,114,979", "noun": "lines"},
+    {"figure": "paid out 24.2 percent", "noun": "lines"},
+    {"figure": "56.4", "noun": "lines"}
+   ]
   },
   {
    "id": "acc-aggregates",
    "text": "Band B: exactly two named recipients are programme aggregates rather than organisations, the Polymer Pilot Facility and regional workforce programs; they hold three rows of the award table between them, and together they hold $23,094,356, which is 29.2 percent of everything assigned. Corrected 2026-09-29: the source line said two rows.",
    "source": "accountability/data/recipient_types.json kind, applied to funding-map/data/funding.json recipients[]",
-   "assert": "sorted(D['rt']['kind']) == sorted(r['id'] for r in D['fm']['recipients']) and sorted(k for k in D['rt']['kind'] if D['rt']['kind'][k] == 'program_aggregate') == ['polymer-pilot-facility', 'regional-workforce'] and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) == 23094356 and round(pct(23094356, sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'])), 1) == 29.2 and D['acc']['staging']['aggregates']['recipients'] == 2 and D['acc']['staging']['aggregates']['lines'] == 3 == len([r for r in D['acc']['coalition']['rows'] if r['kind'] == 'program_aggregate']) == len([a for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']])",
+   "assert": "sorted(D['rt']['kind']) == sorted(r['id'] for r in D['fm']['recipients']) and sorted(k for k in D['rt']['kind'] if D['rt']['kind'][k] == 'program_aggregate') == ['polymer-pilot-facility', 'regional-workforce'] and sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']) == 23094356 and tofixed(pct(23094356, sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'])), 1) == '29.2' and D['acc']['staging']['aggregates']['recipients'] == 2 and D['acc']['staging']['aggregates']['lines'] == 3 == len([r for r in D['acc']['coalition']['rows'] if r['kind'] == 'program_aggregate']) == len([a for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']])",
    "actual": "(len(D['rt']['kind']), sorted(k for k in D['rt']['kind'] if D['rt']['kind'][k] == 'program_aggregate'), sum(a['amount'] for r in D['fm']['recipients'] if D['rt']['kind'][r['id']] == 'program_aggregate' for a in r['awards']))",
-   "falsified_if": "A recipient appears in the award register with no typing here, a third row becomes a programme aggregate, or a new firm silently moves the 29.2 percent. The first conjunct is the important one: it fails on a new recipient before anything else on the page can quietly mis-report it as a company. Until 2026-09-29 the source line said two rows held the money; there are two recipients and three rows, and the last conjuncts pin both counts the line now prints from data."
+   "falsified_if": "A recipient appears in the award register with no typing here, a third row becomes a programme aggregate, or a new firm silently moves the 29.2 percent. The first conjunct is the important one: it fails on a new recipient before anything else on the page can quietly mis-report it as a company. Until 2026-09-29 the source line said two rows held the money; there are two recipients and three rows, and the last conjuncts pin both counts the line now prints from data.",
+   "counts": [
+    {"figure": "29.2", "noun": "assigned money"}
+   ]
   },
   {
    "id": "acc-coalition",
    "text": "Band C: 21 recipients, 27 award lines, 26 of them executed (every line but Huntsman’s EDA award, whose execution is not verified), 8 award IDs. Eleven lines of $1,000,000 or more hold $75,595,284, which is 95.5 percent of everything assigned; the sixteen below hold $3,574,892, which is 4.5 percent. Corrected 2026-09-29 from “27 executed lines”.",
    "source": "funding-map/data/funding.json recipients[]",
-   "assert": "len(D['fm']['recipients']) == 21 and len([a for r in D['fm']['recipients'] for a in r['awards']]) == 27 and len(set(a['awardId'] for r in D['fm']['recipients'] for a in r['awards'] if a.get('awardId'))) == 8 and len([a for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] >= 1000000]) == 11 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] >= 1000000) == 75595284 and round(pct(75595284, 79170176), 1) == 95.5 and len([a for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] < 1000000]) == 16 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] < 1000000) == 3574892 and D['acc']['coalition']['executed_lines'] == 26 and D['acc']['coalition']['lines_phrase'] == '27 award lines, 26 of them executed'",
+   "assert": "len(D['fm']['recipients']) == 21 and len([a for r in D['fm']['recipients'] for a in r['awards']]) == 27 and len(set(a['awardId'] for r in D['fm']['recipients'] for a in r['awards'] if a.get('awardId'))) == 8 and len([a for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] >= 1000000]) == 11 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] >= 1000000) == 75595284 and tofixed(pct(75595284, 79170176), 1) == '95.5' and len([a for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] < 1000000]) == 16 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] < 1000000) == 3574892 and D['acc']['coalition']['executed_lines'] == 26 and D['acc']['coalition']['lines_phrase'] == '27 award lines, 26 of them executed'",
    "actual": "(len(D['fm']['recipients']), len([a for r in D['fm']['recipients'] for a in r['awards']]), len([a for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] >= 1000000]), sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['amount'] >= 1000000))",
    "falsified_if": "A sub-grant executes and any count or share moves. The $1,000,000 rule is drawn on the chart at the eleventh row, so a twelfth line crossing it moves a line the reader can see and this claim fails first.",
    "counts": [
@@ -189,7 +221,9 @@
     {
      "figure": "One row per award line",
      "noun": "largest"
-    }
+    },
+    {"figure": "95.5", "noun": "award lines"},
+    {"figure": "$75,595,284", "noun": "lines"}
    ]
   },
   {
@@ -198,14 +232,23 @@
    "source": "funding-map/data/funding.json recipients[].awards where programId is oh-rd",
    "assert": "len([a for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'oh-rd']) == 7 and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'oh-rd') == 3349892 and sorted(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'oh-rd')[3] == 495000 and max(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'oh-rd') == 678614 and min(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'oh-rd') == 292500 and one(r for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'oh-rd' and a['amount'] == 678614)['name'] == 'University of Akron' and one(r for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'oh-rd' and a['amount'] == 292500)['name'] == 'Aeris Biosciences'",
    "actual": "sorted(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'oh-rd')",
-   "falsified_if": "An eighth sub-grant executes. The median is written as the middle of seven, so an eighth line makes the sentence structurally wrong rather than numerically stale, and this claim fails on the count before it fails on the value."
+   "falsified_if": "An eighth sub-grant executes. The median is written as the middle of seven, so an eighth line makes the sentence structurally wrong rather than numerically stale, and this claim fails on the count before it fails on the value.",
+   "counts": [
+    {"figure": "total $3,349,892", "noun": "sub-grants"},
+    {"figure": "$495,000", "noun": "median"},
+    {"figure": "$678,614", "noun": "largest"},
+    {"figure": "$292,500", "noun": "smallest"}
+   ]
   },
   {
    "id": "acc-coalition-cohort",
    "text": "Band C: nine Synthe6 cohort awards of $25,000 each, $225,000 in total, and they are identical.",
    "source": "funding-map/data/funding.json recipients[].awards where programId is oh-startup",
    "assert": "len([a for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'oh-startup']) == 9 and set(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'oh-startup') == set([25000]) and sum(a['amount'] for r in D['fm']['recipients'] for a in r['awards'] if a['programId'] == 'oh-startup') == 225000",
-   "falsified_if": "A tenth cohort company is added, or one award differs from the others. The page writes 'nine at $25,000 each' as a single fact, which stops being true the moment the amounts diverge, so the set equality is the guard rather than the sum."
+   "falsified_if": "A tenth cohort company is added, or one award differs from the others. The page writes 'nine at $25,000 each' as a single fact, which stops being true the moment the amounts diverge, so the set equality is the guard rather than the sum.",
+   "counts": [
+    {"figure": "$225,000", "noun": "cash awards"}
+   ]
   },
   {
    "id": "acc-promises",
@@ -289,7 +332,11 @@
     {
      "figure": "In 2025 PIC recorded",
      "noun": "cycle"
-    }
+    },
+    {"figure": "39", "noun": "proposals"},
+    {"figure": "14", "noun": "proposals"},
+    {"figure": "59", "noun": "applications"},
+    {"figure": "totalling $3,349,892", "noun": "sub-grants"}
    ]
   },
   {
@@ -350,9 +397,12 @@
    "id": "acc-additionality",
    "text": "Band F, closing prose: the Tech Hub award is $51,001,413 against $41.4 million a year in federal prime-contract obligations under chemical and plastics/rubber manufacturing codes across the same twelve counties, averaged over the seven completed fiscal years FY2019-FY2025 in constant 2025 dollars. Unfinished FY2026 is excluded. No ratio is computed.",
    "source": "federal-money/data/techhub.json award; federal-money/data/federal.json naics rows, real column, PIC-12 footprint",
-   "assert": "D['hub']['award'] == D['acc']['context']['techhub_award'] == 51001413 and sorted(set(r['fy'] for r in D['fed']['naics'] if 2019 <= r['fy'] <= 2025)) == list(range(2019, 2026)) and abs(D['acc']['context']['background_rate'] - sum(r['real'] for r in D['fed']['naics'] if 2019 <= r['fy'] <= 2025) / 7) < 0.01 and round(D['acc']['context']['background_rate'] / 1e6, 1) == 41.4 and D['acc']['context']['background_years'] == [2019, 2025] and D['fed']['meta']['footprint']['n'] == D['acc']['context']['background_counties'] == 12",
+   "assert": "D['hub']['award'] == D['acc']['context']['techhub_award'] == 51001413 and sorted(set(r['fy'] for r in D['fed']['naics'] if 2019 <= r['fy'] <= 2025)) == list(range(2019, 2026)) and abs(D['acc']['context']['background_rate'] - sum(r['real'] for r in D['fed']['naics'] if 2019 <= r['fy'] <= 2025) / 7) < 0.01 and tofixed(D['acc']['context']['background_rate'] / 1e6, 1) == '41.4' and D['acc']['context']['background_years'] == [2019, 2025] and D['fed']['meta']['footprint']['n'] == D['acc']['context']['background_counties'] == 12",
    "actual": "(D['hub']['award'], D['acc']['context']['background_rate'], D['acc']['context']['background_years'], D['fed']['meta']['footprint']['n'])",
-   "falsified_if": "A revision moves the completed-year average off $41.4 million, any of the seven years is missing, FY2026 enters the average, or the local derived rate differs from the upstream computation. The instrument caveat must remain beside this comparison: it establishes scale, not additionality."
+   "falsified_if": "A revision moves the completed-year average off $41.4 million, any of the seven years is missing, FY2026 enters the average, or the local derived rate differs from the upstream computation. The instrument caveat must remain beside this comparison: it establishes scale, not additionality.",
+   "counts": [
+    {"figure": "$51,001,413", "noun": "award"}
+   ]
   },
   {
    "id": "acc-generated-fresh",

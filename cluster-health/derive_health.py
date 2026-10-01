@@ -453,7 +453,10 @@ federal_org_named = sum(a for p in federal_programs
                         for nme, a in named.get(p["id"], []) if nme not in LINE_ITEMS)
 
 # ------------------------------------------------------- the one measured revision band
-rev_pct = sorted(abs(p["pct"]) for p in rev["periods"])
+# From each month's own first and latest index levels, not the stored `pct`: that field is
+# already rounded to three places, and 1.4146 stored as 1.415 prints 1.42 under toFixed(2)
+# where the page's prose, and the source, give 1.41.
+rev_pct = sorted(abs((p["latest"] - p["first"]) / p["first"] * 100) for p in rev["periods"])
 rev_series = sorted({p["label"] for p in rev["periods"]})
 
 # --------------------------------------------------------------------------- assemble
@@ -1030,8 +1033,8 @@ health = {
     "measured_revisions": {
         "series": rev_series,
         "n_periods": len(rev_pct),
-        "median_pct": round(median(rev_pct), 3),
-        "max_pct": round(max(rev_pct), 3),
+        "median_pct": round(median(rev_pct), 6),
+        "max_pct": round(max(rev_pct), 6),
         "span": rev["meta"]["span"],
     },
     "register": {
