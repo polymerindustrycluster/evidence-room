@@ -76,6 +76,12 @@ const fys = [...new Set(D.naics.map(r => r.fy))].sort((a, b) => a - b);
    a low bar, because a low bar is also what a quiet year looks like. Guarded by the
    fed-partial-year claim, which fails if the file ever stops ending in this year. */
 const PARTIAL = 2026;
+/* The day the file was retrieved, in words. The open year is described as it stood then,
+   never in the present tense: fiscal 2026 ended on 30 September 2026, and a page that said
+   it "is still running" went false that day while every number on it stayed right. */
+const RETRIEVED = (iso => `${+iso.slice(8, 10)} ${["January", "February", "March", "April",
+  "May", "June", "July", "August", "September", "October", "November", "December"][+iso.slice(5, 7) - 1]} ` +
+  iso.slice(0, 4))(D.meta.fetched);
 const sumBy = (key, pred) => D.naics.filter(pred).reduce((s, r) => s + r[key], 0);
 const real = {}, nom = {};
 fys.forEach(fy => { real[fy] = sumBy("real", r => r.fy === fy);
@@ -319,8 +325,9 @@ function yearsDesktop() {
     {x: xs(fys.indexOf(trough)) + 10, y: ys(avgClosed) - 9, class: "pv-labq", fill: INK});
 
   /* "partial year" is the register word for a bar that is a running total. The reader
-     needs to know the year is not over, which is what the hatching means. */
-  txt(svg, "still running", {x: xs(fys.indexOf(PARTIAL)) + bw / 2,
+     needs to know the year was not over when the file was pulled, which is what the
+     hatching means. "still running" was the label until fiscal 2026 ended. */
+  txt(svg, "partial year", {x: xs(fys.indexOf(PARTIAL)) + bw / 2,
     y: ys(real[PARTIAL]) - 26, "text-anchor": "middle", class: "pv-labq"});
 
   /* Hover targets last: transparent, so they cover the annotations without hiding them. */
@@ -366,7 +373,7 @@ function yearsMobile() {
      rules stay continuous everywhere else. */
   fys.forEach((fy, i) => {
     const y = m.t + i * rowH, v = real[fy];
-    const tag = fy === PARTIAL ? " · still running"
+    const tag = fy === PARTIAL ? " · partial year"
       : fy === trough ? " · lowest full year" : "";
     const t = txt(svg, `FY${fy} · ${short(v)}${tag}`, {x: m.l, y: y + 12,
       class: "pv-labq"});
@@ -593,8 +600,8 @@ document.getElementById("fytable").innerHTML = withNotes(tableView("y",
    ${A.meta.source} ${A.meta.note} ${D.meta.scope}`);
 document.getElementById("fysrc").innerHTML =
   `${D.meta.source}, in the twelve PIC-12 counties, marked up to 2025 dollars with the
-   federal consumer price index (BLS CPI-U; 2025 averages eleven months). FY${PARTIAL} is not over: its
-   bar is the year so far, drawn hatched, and not comparable to the seven finished years.
+   federal consumer price index (BLS CPI-U; 2025 averages eleven months). FY${PARTIAL} was partial when
+   retrieved on ${RETRIEVED}: drawn hatched, not comparable to the seven finished years.
    Tire manufacturing in FY${trough} accounts for ${short(troughTires)} in 2025 dollars.`;
 
 document.getElementById("natable").innerHTML = withNotes(tableView("n",

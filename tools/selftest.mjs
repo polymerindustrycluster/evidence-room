@@ -297,6 +297,29 @@ const CASES = [
    defect: "a bare dated correction note, which must exempt the phrase it corrects",
    inject: s => s.replace("<body>", '<body><p>Correction, 28 September 2026: Joint work rose.</p>')},
 
+  /* From the 2026-10-04 review fixes (PR A). Each puts back the exact text that shipped. */
+  {gate: "style", page: "federal-money", args: ["federal-money"], expect: /footprint-relationship/,
+   defect: "the footprint line naming the four counties NEO-14 adds and not the two it leaves " +
+           "out, so twelve plus four reads as fourteen (six pages until 2026-10-04)",
+   inject: s => s.replaceAll("; NEO-14 in turn leaves out Ashtabula and Trumbull. The two share ten counties.", ".")},
+
+  {gate: "style", page: "sources", args: ["sources"], expect: /href-template: https:\/\/educationdata/,
+   defect: "a dataset name linked to an API pattern with a literal {year}, a server error " +
+           "for every reader who followed it (IPEDS directory, until 2026-10-04)",
+   inject: s => s.replace("const home = s => s.docs || (s.url && !/[{}]/.test(s.url) ? s.url : null);",
+                          "const home = s => s.url;")},
+
+  {gate: "style", page: "index", args: ["index"], expect: /href-raw-markdown: \.\.\/CORRECTIONS\.md/,
+   defect: "the front page's correction-log link opening raw Markdown source (until 2026-10-04)",
+   inject: s => s.replace('href="https://github.com/polymerindustrycluster/evidence-room/blob/main/CORRECTIONS.md">correction log',
+                          'href="../CORRECTIONS.md">correction log')},
+
+  {gate: "style", page: "federal-money", args: ["federal-money"], expect: /withdrawn:still running/,
+   defect: "a fiscal year called \"still running\" on a snapshot taken before it ended, false " +
+           "from 30 September 2026 with every number on the page unchanged",
+   inject: s => s.replace(/Fiscal 2026 had not closed when the data were retrieved, so its total is\s+partial\./,
+                          "Fiscal 2026 is still running.")},
+
   {gate: "provenance", page: "cost-scissors", args: ["cost-scissors"],
    defect: "a page crediting a federal source it has never read",
    /* Injected into SOURCES.json rather than the artifact, so this case names its own file.

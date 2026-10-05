@@ -340,8 +340,13 @@ function drawTree() {
      ${N(keyed.length)} need a free key; ${N(internal.length)} are PIC&rsquo;s own records and
      cannot be fetched by anybody. Sort any column; filter by name, agency or page.`;
   const route = s => s.route === "internal" ? "internal record, no endpoint" : (s.route_label || s.route);
+  /* The name links to the agency's documentation, or to the endpoint itself when that is
+     a plain address. An endpoint with a {year} or {fips} slot is a pattern, not a page, and
+     linking it sent readers to a server error; with no documentation it stays unlinked and
+     the pattern is printed as text in the register below. */
+  const home = s => s.docs || (s.url && !/[{}]/.test(s.url) ? s.url : null);
   const rows = [...S].sort((x, y) => y.n_pages - x.n_pages || x.short.localeCompare(y.short)).map(s => [
-    s.url ? `<a href="${s.docs || s.url}">${s.short}</a>` : s.short,
+    home(s) ? `<a href="${home(s)}">${s.short}</a>` : s.short,
     s.agency,
     route(s),
     s.key_required ? "yes" : "no",

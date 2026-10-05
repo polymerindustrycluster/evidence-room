@@ -36,6 +36,10 @@
   "as debts rather than hidden; the prose above those four first charts owes a tightening",
   "of the same pixels, and the determinism fix in ER-021 is still the real answer.",
   "",
+  "RAISED 2026-10-05. timeline 1386 to 1394 (Linux CI). The footprint banner above its first",
+  "chart now states the PIC-12/NEO-14 difference in both directions (pic-geo v1.0.1); the",
+  "one-sided sentence it replaced was wrong. That correction costs one line on the runner.",
+  "",
   "RAISED 2026-09-29. The churn corrections of 2026-09-28 lengthened two sentences above",
   "the first chart: the standfirst now says the two Census measures are estimated",
   "separately, and the every-quarter claim now says it holds for the year average. On the",
@@ -67,7 +71,7 @@
   "occupations": 1555,
   "peers": 1339,
   "revisions": 1356,
-  "timeline": 1386,
+  "timeline": 1394,
   "accountability": 903
  }
 }
