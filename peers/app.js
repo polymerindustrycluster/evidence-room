@@ -976,19 +976,29 @@ await PV.methodology({
       "companies.",
     derived_note: D.meta.derived_note},
   definitions:
-    `Concentration is the QCEW location quotient: the industry&rsquo;s share of an area&rsquo;s
-     private jobs divided by its share of private jobs nationwide. The metro scatter plots
+    `Concentration is the location quotient BLS publishes in QCEW: the industry&rsquo;s
+     private jobs as a share of every job in the area, public and private, divided by the
+     same share nationally. The top of each share counts private employers only and the
+     bottom counts every employer; that is the bureau&rsquo;s own basis, and the
+     <a href="../sources/">sources page</a> works one through. The metro scatter plots
      jobs on a square-root scale, so the crowd of small metros can separate. The two lines
      that cut its corner, ${N(JOBCUT)} jobs and ${LQCUT.toFixed(1)}&times;, are round numbers
      chosen to name a group, not the output of a test.
      The ${FP.label} footprint is ${FP.counties.join(", ")}, and all ${FP.words} are
      disclosed for ${D.cross_year}, so the ${N(picEmp)}-job regional total has nothing
-     missing from it. Other regional work uses a wider fourteen-county definition that adds
-     Crawford, Huron, Richland and Tuscarawas; figures built on the two never reconcile, and
-     every county on this page is ${FP.label}.
+     missing from it. Other regional work uses a different fourteen-county definition, which
+     shares ten of these counties: it adds Crawford, Huron, Richland and Tuscarawas and leaves
+     out Ashtabula and Trumbull. Figures built on the two never reconcile, and every county on
+     this page is ${FP.label}.
      An earlier version of this page bounded Akron&rsquo;s metro rank at ${ord(M.rank_emp)}
      to ${ord(M.rank_emp + M.could_displace_n)} by counting the ${M.could_displace_n} withheld
      metros that run more establishments than Akron&rsquo;s ${N(M.subject_estabs)}. That bound
      was wrong: establishment counts do not bound employment, so the page states the rank
-     among the ${M.of_disclosed} metros that disclose and nothing wider.`});
+     among the ${M.of_disclosed} metros that disclose and nothing wider.
+     <br><b>Correction, October 4, 2026:</b> this note defined concentration as a share of
+     private jobs over a share of private jobs nationwide. The published figures divide
+     private industry jobs by all jobs, public and private, as the definition above now
+     says; no figure changed. It also said the wider fourteen-county definition adds
+     Crawford, Huron, Richland and Tuscarawas and stopped there; that definition also leaves
+     out Ashtabula and Trumbull.`});
 })();

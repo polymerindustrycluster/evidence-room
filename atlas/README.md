@@ -18,7 +18,7 @@ materials teaching absent from the census. One school can hold multiple identifi
 ```
 index.html          page shell
 app.js              the map, the largest-records chart, and their table twins
-claims.json         9 assertions — 7 machine-checked, 2 manual
+claims.json         10 assertions — 8 machine-checked, 2 manual
 data/viz-data.json  THE DATA (~150 KB, mostly basemap paths). Its builder does not
                     exist; corrections go through _data/build/atlas_reprojection_patch.py.
 INTEGRATION-NOTE.md what the controller had to wire; all of it was done on 2026-08-31
@@ -46,6 +46,12 @@ by anyone who read it. So `data/viz-data.json` is a shipped file with no produce
 `_data/REBUILDING.md` means, and it is corrected the way the other two such files are: by a
 committed, idempotent, re-runnable patch — `_data/build/atlas_reprojection_patch.py`, which
 carries a `--check` that re-derives its table from the endpoint and fails on drift.
+
+**The page says so too** (since 4 October 2026, review F§12): the eyebrow reads "a dated
+snapshot, not refreshed", and a line under the map gives the build date (21 August 2026),
+the one patch (1 September 2026) and the missing producer. `atlas-dated-snapshot` binds
+both dates to the page. Writing the producer would retire the stamp; it is not trivial,
+because its input database is not in this tree either.
 
 The projection constants in the shipped file are the us-atlas ones (975×610, scale 1300,
 translate [487.5, 305]) — NOT d3's defaults. Whoever writes the projector will need them.

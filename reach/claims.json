@@ -16,6 +16,19 @@
       ]
     },
     {
+      "id": "rch-partner-bases",
+      "text": "633 institutions share at least one paper with the region, and 629 remain once the four flagged affiliation matches are set aside; the 629 are the partner count the hero figure and the closer print, they sit in 50 countries, and the map draws 266 of them (network-band lede, hero figure, closer).",
+      "source": "reach.json totals.partners (every co-authoring institution in the pull), totals.partners_shown and totals.quarantined (derive_reach.py splits the first into the second and the quarantine list)",
+      "assert": "D['totals']['partners'] == 633 and D['totals']['partners_shown'] == 629 and D['totals']['quarantined'] == len(D['quarantined']) == 4 and D['totals']['partners'] - D['totals']['quarantined'] == D['totals']['partners_shown'] and D['totals']['countries'] == 50 and all(q['country'] in {c['code'] for c in D['countries']} for q in D['quarantined']) and len(D['map']) == 266 <= D['totals']['partners_shown'] and not ({m['n'] for m in D['map']} & {q['name'] for q in D['quarantined']})",
+      "actual": "(D['totals']['partners'], D['totals']['partners_shown'], D['totals']['quarantined'], D['totals']['countries'], len(D['map']))",
+      "falsified_if": "Any of the counts moves, the quarantine stops being the whole difference between the two partner counts, a quarantined institution reaches the map, or a quarantined institution sits in a country the retained partners do not, which would make the 50 countries true of one count and not the other. [2026-10-04, NEW: the hub card and this page's network paragraph printed 633 partners, the hero figure and the closer printed 629, and no surface said they were the same partners counted before and after the four quarantined affiliation matches. Each is now labeled where it is printed and the network paragraph reconciles them. The 50 countries hold on both counts because every quarantined institution is in the United States or China, which the retained partners already cover.]",
+      "counts": [
+        {"figure": "629", "noun": ["remain", "partner count"]},
+        {"figure": "four flagged affiliation matches", "noun": "set aside"},
+        {"figure": "266 of them", "noun": "partners"}
+      ]
+    },
+    {
       "id": "rch-region-leads",
       "text": "985 of 1,222 papers naming a corresponding author had one here. That count includes papers with no outside co-author at all, not just papers won within a partnership. The page prints that share as 81%, from the stored led_share, which must equal 985 / 1,222 to four places.",
       "source": "as above; is_corresponding, populated on about 84 percent of the corpus",

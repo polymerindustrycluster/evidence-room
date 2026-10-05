@@ -30,7 +30,7 @@
     "Wayne"
    ],
    "note": "PIC's official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
-   "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the vault's NEO-14 includes."
+   "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the vault’s NEO-14 includes; NEO-14 in turn leaves out Ashtabula and Trumbull. The two share ten counties."
   }
  },
  "asof": {
@@ -1153,7 +1153,7 @@
    "question": "How much federal money is committed?",
    "value": "$51.0M",
    "unit": "written into signed federal awards",
-   "reading": "$51.0 million of the $54.1 million in federal awards on the funding map is written into signed awards naming seven organizations. That is what the record shows: money signed for and assigned to a named recipient. How much of it has been paid out is a different quantity, and this page does not carry a total for it.",
+   "reading": "$51.0 million of the $54.1 million in federal awards on the funding map is written into signed awards naming seven organizations. That is what the record shows: money signed for and assigned to a named recipient. How much of it has been paid out is a different quantity, and this page does not carry a total for it. One of the seven awards, Huntsman’s $5,970,805, has a signed notice but no USAspending record, so its execution is not verified; it is counted in the $51.0 million.",
    "means": "Read $51.0M as signed awards naming seven organizations. The change printed beside it, up $16.21M, belongs to a different series: the year-on-year move in routine contracting, signed obligations recorded for work in these counties, rather than payments.",
    "standing": {
     "value": 41216606,

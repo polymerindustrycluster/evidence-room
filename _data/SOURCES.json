@@ -185,6 +185,64 @@
    "script": "_data/build/fetch_fed_awards.py",
    "key_required": false
   },
+  "eda_notices_of_award": {
+   "name": "Signed EDA Notices of Award, Tech Hub and Good Jobs Challenge",
+   "agency": "U.S. Economic Development Administration",
+   "url": null,
+   "docs": null,
+   "filters": {
+    "documents": "Eight signed Notices of Award. The seven Sustainable Polymers Tech Hub implementation awards, $51,001,413 together: ED25HDQ0G0038 (BioVerde), ED25HDQ0G0013 (Flexsys), ED25HDQ0G0036 (Goodyear), ED24HDQ0G0452 (University of Akron), ED25HDQ0G0009 (Huntsman), ED25HDQ0G0030 (Full Circle Technologies) and ED24HDQ0G0413 (Greater Akron Chamber). And the Good Jobs Challenge (APEX) award ED25OIE0G0108 to the Greater Akron Chamber, $3,084,371.",
+    "date": "Register as of 13 August 2026. The award IDs carry a fiscal year (ED24, ED25), which does not establish the date of every signature; signing dates are not transcribed into this repository.",
+    "extraction": "One register line per notice: the amount as signed, the award ID and the project it funds, transcribed by hand into funding-map/data/funding.json and summed to each award total.",
+    "status": "Held by PIC; not published in this repository. Six of the seven Tech Hub awards and the APEX award carry a public USAspending record whose obligation matches the signed amount (the corroboration source below). ED25HDQ0G0009, Huntsman, $5,970,805, has no USAspending record of any kind, so its execution is not verified.",
+    "reproduction_limit": "Transcribed from documents, not fetched, so there is no script, and a reader outside PIC cannot re-read the notices from this site. What a reader can check in public is the USAspending record below."
+   },
+   "script": null,
+   "key_required": false
+  },
+  "ohio_hub_grant_agreement": {
+   "name": "Executed Ohio Innovation Hub grant agreement, SBIG20251005",
+   "agency": "Ohio Department of Development",
+   "url": null,
+   "docs": null,
+   "filters": {
+    "document": "The executed state grant agreement, Grant Control No. SBIG20251005 (appropriation 1956F8, Am. Sub. H.B. 33, 135th G.A.), $31,250,000, and its contract-grade workstream budget, identical to the cent across the December 2024 contract-amendment exhibit and the September 2025 budget form.",
+    "extraction": "The five workstream amounts are read from that budget: pilot facility $18,521,985, PIC Translational R&D $5,992,000, startup support $3,748,500, governance $1,499,515 and workforce development $1,488,000.",
+    "status": "Held by PIC; not published in this repository. A state award has no USAspending record and no public drawdown figure. The state’s announcement of 5 September 2024 corroborates the $31.25 million in public. The grantee of record is the Greater Akron Chamber, confirmed by PIC on 30 September 2026 and not yet shown by a document here.",
+    "reproduction_limit": "Transcribed from the document, not fetched, so there is no script, and the agreement cannot be re-read from this site."
+   },
+   "script": null,
+   "key_required": false
+  },
+  "pic_subgrant_agreements": {
+   "name": "Executed sub-grant agreements under SBIG20251005",
+   "agency": "Polymer Industry Cluster",
+   "url": null,
+   "docs": null,
+   "filters": {
+    "documents": "Seven executed PIC Translational R&D sub-grant agreements, $3,349,892 together; and the Bounce Innovation Hub subgrant agreement dated 15 May 2025, its first amendment and the startup grant administration agreement, which set each Synthe6 cohort award at $25,000.",
+    "extraction": "One register line per executed sub-grant, at the amount written into the signed agreement (the University of Akron’s is $678,614), and one line per Synthe6 cohort company at $25,000. Money in a workstream that no executed line names is not a recipient line: $2,642,108 of Translational R&D is not yet sub-granted, and $3,523,500 of startup support sits in the Bounce sub-grant beyond the nine cohort awards.",
+    "status": "Held by PIC; not published in this repository. Sub-grants of state money have no federal record. Signing dates other than the Bounce agreement’s are not transcribed here.",
+    "reproduction_limit": "Transcribed from documents, not fetched, so there is no script, and the agreements cannot be re-read from this site."
+   },
+   "script": null,
+   "key_required": false
+  },
+  "usaspending_award_lookup": {
+   "name": "USAspending award records, read by award ID",
+   "agency": "US Treasury",
+   "role": "Corroboration only. No figure on this page is computed from this source: it checks the signed federal notices above, and it cannot reproduce the state grant or its sub-grants, which are not federal.",
+   "url": "https://api.usaspending.gov/api/v2/search/spending_by_award/",
+   "docs": "https://api.usaspending.gov/",
+   "filters": {
+    "method": "POST with a JSON body; keyless. One request per award ID, filtering award_ids to that ID and award_type_codes to 02, 03, 04 and 05 (assistance; one award-type group per request, because a mixed list returns 422). Fields read: Award Amount and Total Outlays.",
+    "award_ids": "The eight federal award lines in the register: ED25HDQ0G0038, ED25HDQ0G0013, ED25HDQ0G0036, ED24HDQ0G0452, ED25HDQ0G0009, ED25HDQ0G0030, ED24HDQ0G0413 and ED25OIE0G0108. The script also reads ED24OIE0G0019, the completed Phase 1 award, which is outside the register.",
+    "result": "Read 1 September 2026: seven of the eight carry a record whose obligation matches the signed amount, $48,114,979 together. ED25HDQ0G0009, Huntsman, has no record of any kind, checked against every award-type group and by keyword search."
+   },
+   "terms": "Public domain federal spending data. USAspending states no additional licence.",
+   "script": "_data/build/fetch_fed_outlays.py",
+   "key_required": false
+  },
   "public_record": {
    "name": "PIC public record, dated milestones",
    "agency": "Polymer Industry Cluster",
@@ -321,6 +379,7 @@
    "name": "IPEDS institutional directory (coordinates and identity)",
    "agency": "National Center for Education Statistics, via the Urban Institute Education Data API",
    "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/directory/{year}/",
+   "docs": "https://educationdata.urban.org/documentation/colleges.html",
    "filters": {
     "lookup": "per-unitid, year 2023 with fallback to the institution’s last active year",
     "trap": "A directory year can omit an institution that stopped reporting under that identifier; absence is not proof of closure. Coordinate fields begin in 2009. Seven records without usable coordinates were placed at documented city centroids, with per-record provenance.",
@@ -544,7 +603,10 @@
    "nsf_awards"
   ],
   "funding-map": [
-   "usaspending"
+   "eda_notices_of_award",
+   "ohio_hub_grant_agreement",
+   "pic_subgrant_agreements",
+   "usaspending_award_lookup"
   ],
   "timeline": [
    "public_record",

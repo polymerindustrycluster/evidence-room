@@ -1348,7 +1348,11 @@ document.getElementById("footcorr").innerHTML =
    ${(paint.lq / Math.max(...D.composite.filter(c => c.year === LATEST && c.lq &&
       c.naics !== "3255").map(c => c.lq))).toFixed(2)} times the longest bar of any kind on
    the strip, which the picture&rsquo;s text alternative now calls about two and a half
-   times. Neither is four.`;
+   times. Neither is four.
+   <br>Correction, 4 October 2026: the footprint line near the top of this page said only
+   that a wider fourteen-county definition includes Crawford, Huron, Richland and
+   Tuscarawas. That definition also leaves out Ashtabula and Trumbull, so the two share ten
+   counties, and the line now says so.`;
 
 /* --------------------------------------------------------------------- assemble */
 function drawAll() {

@@ -83,6 +83,18 @@
       "assert": "(lambda A: len(A) == 147 and all(one(x for x in A if x['unitid'] == u)['active_programs'] == 0         for u in (495767, 214777, 194541, 193900, 238139, 238148)) and len(A) - 3 == 144 and sum(1 for d in A if d['active_programs'] == 0) - 3 == 103)(D['dots'] + D['off_projection'])",
       "actual": "[(x['unitid'], x['name'], x['active_programs']) for x in D['dots'] + D['off_projection'] if x['unitid'] in (495767, 214777, 194541, 193900, 238139, 238148)]",
       "falsified_if": "The build collapses the pairs (then 147 and 106 must fall to 144 and 103 everywhere on the page and in every claim here, and this claim is retired), or a fourth duplicate pair is found (raise the arithmetic and keep the disclosure), or one of the six rows starts conferring again, which would change the pale count without changing the distinct count."
+    },
+    {
+      "id": "atlas-dated-snapshot",
+      "text": "The page is stamped as a dated snapshot, in the eyebrow ('a dated snapshot, not refreshed') and under the map: the data file was built on 21 August 2026 and corrected once, on 1 September 2026, by a committed patch, and the script that built it is not in this repository. Added 4 October 2026 (review F\u00a712): the README said the file has no producer and the page said nothing, so a reader met a rebuilt-looking page with no date on its data.",
+      "source": "meta.fetched and source_correction.applied in viz-data.json; README 'Rebuild the data'",
+      "assert": "D['meta']['fetched'] == '2026-08-21' and D['source_correction']['applied'] == '2026-09-01' and D['source_correction']['by'] == '_data/build/atlas_reprojection_patch.py'",
+      "actual": "(D['meta']['fetched'], D['source_correction']['applied'], D['source_correction']['by'])",
+      "falsified_if": "The data file is rebuilt or patched again without the two dates moving, or a producer script is written and the page keeps calling itself a snapshot that cannot be rebuilt. The counts binding fails if the stamp leaves the page.",
+      "counts": [
+        {"figure": "21 August 2026", "noun": "built"},
+        {"figure": "1 September 2026", "noun": "corrected"}
+      ]
     }
   ]
 }

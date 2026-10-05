@@ -127,7 +127,12 @@
    "amount": 51001413,
    "tint": "eda",
    "chip": "EDA",
-   "note": "Seven implementation awards signed straight to their project leads; USAspending records the obligation on six, all but Huntsman’s."
+   "note": "Seven implementation awards signed straight to their project leads; USAspending records the obligation on six, all but Huntsman’s.",
+   "evidence": {
+    "document": "Signed federal Notice of Award, held by PIC",
+    "publicRecord": "USAspending award record, obligation matching the signed amount",
+    "execution": "Obligation recorded in USAspending"
+   }
   },
   {
    "id": "oh-facility",
@@ -137,7 +142,12 @@
    "share": "59.27%",
    "tint": "hub",
    "chip": "OHIO HUB",
-   "note": "The largest single block of state funds: buildings and structures, capital equipment, siting and architectural work, and four years of operations."
+   "note": "The largest single block of state funds: buildings and structures, capital equipment, siting and architectural work, and four years of operations.",
+   "evidence": {
+    "document": "Executed Ohio grant agreement SBIG20251005, workstream budget, held by PIC",
+    "publicRecord": "None; state money is not in USAspending",
+    "execution": "Executed agreement held; no public record to check it against"
+   }
   },
   {
    "id": "oh-rd",
@@ -148,7 +158,12 @@
    "tint": "rd",
    "chip": "TRANSLATIONAL",
    "note": "PIC Translational R&D Funding: competitive awards up to $500K. $3.35M is executed across seven sub-grants; the balance is not yet sub-granted.",
-   "rider": "$3.35M executed so far"
+   "rider": "$3.35M executed so far",
+   "evidence": {
+    "document": "Executed sub-grant agreement, held by PIC",
+    "publicRecord": "None; state money is not in USAspending",
+    "execution": "Executed agreement held; no public record to check it against"
+   }
   },
   {
    "id": "oh-startup",
@@ -158,7 +173,12 @@
    "share": "12.00%",
    "tint": "s6",
    "chip": "SYNTHE6",
-   "note": "Delivered through the Bounce sub-grant, which is the entire startup-support workstream. Each Synthe6 cohort company receives $25,000 in one-time non-dilutive cash."
+   "note": "Delivered through the Bounce sub-grant, which is the entire startup-support workstream. Each Synthe6 cohort company receives $25,000 in one-time non-dilutive cash.",
+   "evidence": {
+    "document": "Ohio grant agreement and the Bounce sub-grant of 15 May 2025, held by PIC",
+    "publicRecord": "None; state money is not in USAspending",
+    "execution": "Executed agreement held; no public record to check it against"
+   }
   },
   {
    "id": "oh-gov",
@@ -168,7 +188,12 @@
    "share": "4.80%",
    "tint": "hub",
    "chip": "OHIO HUB",
-   "note": "Hub administration and program management."
+   "note": "Hub administration and program management.",
+   "evidence": {
+    "document": "Executed Ohio grant agreement SBIG20251005, workstream budget, held by PIC",
+    "publicRecord": "None; state money is not in USAspending",
+    "execution": "Executed agreement held; no public record to check it against"
+   }
   },
   {
    "id": "oh-workforce",
@@ -179,7 +204,12 @@
    "share": "4.76%",
    "tint": "hub",
    "chip": "OHIO HUB",
-   "note": "Regional polymer workforce programming funded from state hub money."
+   "note": "Regional polymer workforce programming funded from state hub money.",
+   "evidence": {
+    "document": "Executed Ohio grant agreement SBIG20251005, workstream budget, held by PIC",
+    "publicRecord": "None; state money is not in USAspending",
+    "execution": "Executed agreement held; no public record to check it against"
+   }
   },
   {
    "id": "apex-workforce",
@@ -188,7 +218,12 @@
    "amount": 3084371,
    "tint": "apex",
    "chip": "APEX",
-   "note": "Advanced Polymer and Manufacturing Excellence, run with the Polymer Sector Partnership."
+   "note": "Advanced Polymer and Manufacturing Excellence, run with the Polymer Sector Partnership.",
+   "evidence": {
+    "document": "Signed federal Notice of Award, held by PIC",
+    "publicRecord": "USAspending award record, obligation matching the signed amount",
+    "execution": "Obligation recorded in USAspending"
+   }
   }
  ],
  "recipients": [
@@ -266,7 +301,11 @@
      "amount": 5970805,
      "awardId": "ED25HDQ0G0009",
      "funds": "Carbon black and nanotubes from methane",
-     "chip": "EDA R&D"
+     "chip": "EDA R&D",
+     "evidence": {
+      "publicRecord": "None found in USAspending, checked 1 September 2026",
+      "execution": "Not verified"
+     }
     }
    ]
   },

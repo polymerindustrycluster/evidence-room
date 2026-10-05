@@ -1244,10 +1244,13 @@ meth.querySelector(".pv-method-grid").insertAdjacentHTML("beforeend", `
       changes the shape of the chart and none of its values, and carries its own title.</p>
     <p><b>${FP.label}</b> is the ${FP.words}-county footprint PIC uses for its own
       reporting, and it is what every figure on this page is summed over. PIC&rsquo;s
-      internal files also carry a wider fourteen-county definition called NEO-14, which
-      adds Crawford, Huron, Richland and Tuscarawas. The two share ten counties and never
-      reconcile, so a total from this page and a total from a NEO-14 page are not
-      comparable and should not be differenced.</p>
+      internal files also carry a different fourteen-county definition called NEO-14, which
+      adds Crawford, Huron, Richland and Tuscarawas and leaves out Ashtabula and Trumbull. The
+      two share ten counties and never reconcile, so a total from this page and a total from a NEO-14 page are not
+      comparable and should not be differenced. Correction, 4 October 2026. Was: this
+      paragraph said NEO-14 adds those four counties and stopped there. Is: it also names
+      the two NEO-14 leaves out. Cause: the shared footprint description named one side of
+      the difference.</p>
     <p>On the gap chart, one point of separation rate on a ${N(last.emp)}-job base is about
       ${N(last.emp / 100)} jobs a quarter.</p>
     <p>On the county chart the horizontal scale starts at zero, so a county with twice the
