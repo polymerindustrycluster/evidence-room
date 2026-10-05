@@ -118,10 +118,11 @@
 
       <div class="controls">
         <label class="sr-only" for="finder">Find a recipient</label>
-        <select id="finder" class="finder">
+        <select id="finder" class="finder" aria-describedby="finder-status">
           <option value="">Find a recipient&hellip;</option>
         </select>
         <button type="button" id="reset-view" class="btn btn--ghost" hidden>Reset view</button>
+        <p class="sr-only" id="finder-status" role="status" aria-live="polite"></p>
       </div>
 
       <p class="fig-title">Three machines, twenty-one recipients: the money lands unevenly</p>

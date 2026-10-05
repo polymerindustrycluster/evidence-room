@@ -20,7 +20,9 @@
  * then releases the last face and requires:
  *   - the redraw replaced the focused mark (otherwise nothing was tested: FAIL, not pass),
  *   - focus sits on a mark with the same aria-label,
- *   - focus moved exactly once.
+ *   - focus moved exactly once,
+ *   - the chart still offers exactly one Tab stop, and it is the refocused mark (the roving
+ *     tabindex picviz.js keeps since 4 October 2026: one stop per chart, arrows inside).
  * On reach use #dir: #map never redraws on a font load.
  */
 import {createServer} from "node:http";
@@ -67,10 +69,13 @@ try {
     let r;
     try {
       await page.goto(`${base}/${name}/`, {waitUntil: "domcontentloaded"});
-      await page.waitForSelector(`#${chart} [tabindex="0"][aria-label]`, {timeout: 15000});
+      await page.waitForSelector(`#${chart} [tabindex][aria-label]`, {timeout: 15000});
       await page.waitForTimeout(300);   // let every face the first draw needs be requested
       const label = await page.evaluate(chart => {
-        const node = document.querySelector(`#${chart} [tabindex="0"][aria-label]`);
+        /* the SECOND mark: not the chart's starting Tab stop, so the check also sees the
+           stop follow focus across the redraw */
+        const marks = document.querySelectorAll(`#${chart} [tabindex][aria-label]`);
+        const node = marks[1] || marks[0];
         if (document.fonts.status !== "loading") return null;
         node.focus({preventScroll: true});
         window.__ff = {node, moves: 0};
@@ -95,16 +100,20 @@ try {
         last.release();
         await page.evaluate(() => document.fonts.ready);
         await page.waitForTimeout(600);
-        const s = await page.evaluate(() => {
+        const s = await page.evaluate(chart => {
           const a = document.activeElement;
+          const stops = [...document.querySelectorAll(`#${chart} [tabindex="0"]`)];
           return {replaced: !window.__ff.node.isConnected, moves: window.__ff.moves,
-            got: a && a.getAttribute("aria-label"), tag: a && a.tagName};
-        });
+            got: a && a.getAttribute("aria-label"), tag: a && a.tagName,
+            stops: stops.length, onFocus: stops.includes(a)};
+        }, chart);
         const why = !mid.pending ? "no face was still loading at the midpoint; nothing was tested"
           : !mid.replaced ? "no redraw while a face was still loading: the chart kept fallback measurements under Lato"
           : !s.replaced ? "the font-load redraw did not replace the focused mark; nothing was tested"
           : s.got !== label ? `focus lost to ${s.got ? `"${s.got}"` : `<${s.tag}>`}`
           : s.moves !== 1 ? `focus moved ${s.moves} times; a screen reader announces each one`
+          : s.stops !== 1 || !s.onFocus ? `the chart offers ${s.stops} Tab stop(s) after the redraw` +
+            `${s.onFocus ? "" : ", none of them the refocused mark"}; it should offer one, there`
           : "";
         r = {ok: !why, why: why || `redrawn with a face pending; focus kept on "${label}", moved once`};
       }

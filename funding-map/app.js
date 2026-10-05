@@ -622,6 +622,7 @@ function loadData(file) {
     viz.textContent = '';
     viz.appendChild(svg);
     viz.appendChild(hits);
+    PV.rove(viz, 'button.hit');   // one Tab stop for the diagram, arrows between its parts
     viz.removeAttribute('aria-busy');
 
     fitLabels(svg, L);
@@ -965,6 +966,7 @@ function loadData(file) {
 
     viz.textContent = '';
     viz.appendChild(root);
+    PV.rove(viz, 'button.rcard, button.rname');   // the phone form: one Tab stop for the cards too
     viz.removeAttribute('aria-busy');
     return root;
   }
@@ -1345,6 +1347,8 @@ function loadData(file) {
   function openDetail(kind, id, { push = true, focus = true } = {}) {
     if (!G[kind === 'recipient' ? 'recipients' : kind === 'program' ? 'programs' : 'sources'].has(id)) return;
     selected = { kind, id };
+    const status = document.getElementById('finder-status');
+    if (status) status.textContent = '';    // the finder rewrites it when it opened this one
     panelFor(kind, id);
     setHighlight(kind, id);
     markSelected();
@@ -1376,6 +1380,10 @@ function loadData(file) {
     resetBtn.hidden = true;
     const finder = document.getElementById('finder');
     if (finder) finder.value = '';
+    /* every closing path (Escape, the close button, the scrim, the finder) clears what the
+       finder's status said, or its description goes on calling a closed panel open */
+    const status = document.getElementById('finder-status');
+    if (status) status.textContent = '';
     if (push && location.hash) history.pushState(null, '', location.pathname + location.search);
     if (restore && lastFocusEl && document.contains(lastFocusEl)) lastFocusEl.focus({ preventScroll: true });
     lastFocusEl = null;
@@ -1610,9 +1618,12 @@ function loadData(file) {
           text: `${r.name} · ${fmt(r.total)}` +
             (r.awards.length > 1 ? ` across ${numword(r.awards.length)} awards` : '') })));
       finder.addEventListener('change', () => {
-        if (!finder.value) { closeDetail(); return; }
+        const status = document.getElementById('finder-status');
+        if (!finder.value) { closeDetail(); if (status) status.textContent = 'Details closed.'; return; }
         const id = finder.value;
         openDetail('recipient', id, { focus: false });
+        /* The panel opens without taking focus, so say where it is (review ER-10). */
+        if (status) status.textContent = `Details for ${G.recipients.get(id).name} are open in the panel.`;
         const b = viz.querySelector(`[data-kind="recipient"][data-id="${CSS.escape(id)}"]`);
         if (b) b.scrollIntoView({ block: 'center', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
       });

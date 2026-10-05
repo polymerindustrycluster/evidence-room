@@ -99,11 +99,11 @@
     <p class="fig-sub" id="metrofigsub"></p>
     <div class="msearch">
       <label for="mfind">Find a metro</label>
-      <input id="mfind" type="search" list="metrolist" autocomplete="off"
+      <input id="mfind" type="search" list="metrolist" autocomplete="off" aria-describedby="mverdict"
         placeholder="Youngstown, Erie" spellcheck="false">
       <datalist id="metrolist"></datalist>
     </div>
-    <p class="mverdict" id="mverdict"></p>
+    <p class="mverdict" id="mverdict" role="status" aria-live="polite"></p>
     <div class="legend">
       <span><i style="background:#C85F0C"></i> Akron</span>
       <span><i style="background:#A32A78"></i> Cleveland</span>
@@ -117,6 +117,9 @@
     </svg></div>
     <div id="scattertable"></div>
     <p class="src" id="scatsrc"></p>
+    <p class="src"><b>Correction, October 4, 2026:</b> the table under this chart held the 25
+      largest of the 155 metros it plots, though this page promises every number a chart is
+      drawn from. It now holds all 155, with a CSV download.</p>
     <div class="note" id="bound"></div>
   </div>
 </section>

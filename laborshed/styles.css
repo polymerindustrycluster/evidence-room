@@ -10,7 +10,7 @@
    outboard of the rail — the bug churn and federal-money both shipped. Neither
    centres.mjs nor columns.mjs samples .byline, so this one is held by eye. */
 .hero .wrap > .byline{margin:16px auto 0;max-width:var(--measure);font-size:13px;
-  line-height:1.5;color:#9CC4CA;letter-spacing:.02em}
+  line-height:1.5;color:#C0DBE1;letter-spacing:.02em}
 
 /* Footer: the furniture that says the story ended and the page belongs to something.
    Distinct ground from the closer above it, so the boundary is visible. <footer> is not

@@ -883,6 +883,7 @@ function loadData(file) {
         if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openHPanel(e); }
       });
     });
+    PV.rove(proBox, '.hev');   // one Tab stop for the chart, arrows between its events
   }
   function showHTip(node, e) {
     hideHTip();
@@ -1024,6 +1025,7 @@ function loadData(file) {
         if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openPanel(e); }
       });
     });
+    PV.rove(viz, '.ev');
   }
 
   function showTip(node, e) {

@@ -11,6 +11,16 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-10-04 — The metro table now holds every metro its chart plots, *peers*
+
+**Was:** the table under the metro scatter held the 25 largest of the 155 disclosed metros
+the chart plots, while the page footer said every chart has a table beneath it holding all
+the numbers it is drawn from; Youngstown, 52nd, could be found with the search box and
+nowhere in the table. **Is:** the table holds all 155, filterable and sortable, with a CSV
+download of the same rows. No figure changed. The page carries a dated correction line, and
+`tools/access.mjs` now fails any table view that declares a chart as its twin and does not
+hold exactly that chart's plotted metros.
+
 ## 2026-10-04 — Evidence states, bases and labels the October reviews found unsaid, *funding-map, cluster-health, federal-money, timeline and five more*
 
 Found by the three external reviews of 4 and 5 October 2026. One count changed (timeline);
