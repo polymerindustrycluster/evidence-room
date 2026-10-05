@@ -601,7 +601,7 @@ const PV = (() => {
   function correctionsSentence(list) {
     const pub = list.filter(e => !e.before_publication);
     const fig = pub.filter(e => e.kind === "figure").length;
-    const moved = pub.filter(e => e.headline_changed).map(e => e.date).sort();
+    const moved = [...new Set(pub.filter(e => e.headline_changed).map(e => e.date))].sort();
     return `${pub.length} correction${pub.length === 1 ? "" : "s"} since publication: ` +
       `${pub.length - fig} wording, ${fig} figure${fig === 1 ? "" : "s"}. ` +
       (moved.length ? `Headline corrected ${onDates(moved)}.` : "Headline unchanged.");

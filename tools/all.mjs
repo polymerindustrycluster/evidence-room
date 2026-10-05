@@ -64,7 +64,7 @@ const GATES = [
   ["access",      "node",   ["tools/access.mjs"],            "one Tab stop per chart, full twin tables, announced results, 404"],
   ["collide",     "node",   ["tools/collide.mjs", "--sweep"],  "overlap and out-of-frame, 14 widths", true],
   ["textsize",    "node",   ["tools/textsize.mjs", "--sweep"], "12px rendered floor, 14 widths", true],
-  ["selftest",    "node",   ["tools/selftest.mjs"],            "83 known-defect fixtures across 16 gates", true],
+  ["selftest",    "node",   ["tools/selftest.mjs"],            "84 known-defect fixtures across 16 gates", true],
 ];
 
 const rows = [];

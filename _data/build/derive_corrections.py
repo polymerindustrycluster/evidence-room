@@ -101,6 +101,21 @@ PAGES_BY_HEADING = {
 # log, shown under "every page", and named by no page's filter or count.
 SITE_WIDE = set()
 
+# Entries that also correct the front page in prose, without italics. (heading prefix) -> pages.
+PAGES_ADDED = {
+    "2026-09-30 — More sentences that said more": ["index"],   # "revisions and the front page"
+    "2026-09-28 — Ten sentences read firmer": ["index"],       # the front page's reach and collaboration cards
+    "2026-09-01, tenth entry": ["index"],                      # "the hub's chain card said 785"
+    "2026-09-01, second entry": ["index"],                     # "The hub inventory re-summed"
+}
+HUB_PROSE = re.compile(r"\bfront[- ]page\b|\bthe hub\b|\bhub(?:'s|’s)? ")
+# Entries that mention the front page or the hub without changing its text, and why.
+HUB_MENTION_ONLY = {
+    "2026-10-04 — The corrections log is a page": "its correction-log link changed address; the words did not",
+    "2026-09-29 — The scorecard and the accountability page": "\"the hub\" is the Ohio Innovation Hub",
+    "2026-08-29 — a hierarchy ranked and a total flattened": "says the hub still carries $106.3M; unchanged",
+}
+
 # Corrections that changed a page's headline, its H1 (the hero claim's statement), read
 # from the entries. (heading prefix, page). Everything else leaves the headline unchanged.
 HEADLINE = [
@@ -156,7 +171,30 @@ KIND_OVERRIDE = {
     ("2026-08-31 — three corrections", "cluster-health"): "figure",  # "four of five" to all five
     ("2026-08-30 — four corrections", "federal-money"): "figure",   # "Two of the eight years" to one
     ("2026-08-29 — a hierarchy ranked", "funding-map"): "figure",   # the H1's $106 million to $85.3 million
-    ("2026-08-17 — the pre-publication review", "index"): "figure",  # $34.9 million to $36.6 million a year
+    ("2026-08-17 — the pre-publication review", "index"): "figure",
+    ("2026-09-30 — More sentences that said more", "index"): "wording",  # the card's words only
+    ("2026-09-28 — Ten sentences read firmer", "index"): "wording",      # the cards' words only
+    ("2026-09-01, tenth entry", "index"): "figure",                      # chain card 785 to 721
+    ("2026-09-01, second entry", "index"): "figure",                     # inventory re-summed: 451 claims
+    # "One count changed (timeline)": that count is also printed on the hub's timeline card,
+    # 67 to 66 (index/index.html, commit baf0d41), so it is a figure there too.
+    ("2026-10-04 — Evidence states, bases and labels", "index"): "figure",
+    # Contested pairs (classify): the entry says no figure changed, the page's own Was/Is
+    # swaps a number. Read 2026-10-05.
+    ("2026-10-04 — The corrections log is a page", "sources"): "figure",   # 23 site pages to 24
+    ("2026-10-04 — Evidence states, bases and labels", "federal-money"): "figure",  # dashed line $39.2M to $41.4M
+    ("2026-10-04 — Evidence states, bases and labels", "funding-map"): "wording",  # the 27-to-31 is the sources page's
+    ("2026-10-04 — Evidence states, bases and labels", "churn"): "wording",   # bases stated, numbers kept
+    ("2026-10-04 — Evidence states, bases and labels", "chain"): "wording",
+    ("2026-10-04 — Evidence states, bases and labels", "reach"): "wording",
+    ("2026-10-04 — Footprint, concentration", "federal-money"): "wording",    # tense, dates only
+    ("2026-10-04 — Footprint, concentration", "timeline"): "wording",
+    ("2026-09-30 — A seat called the winner", "scorecard"): "wording",       # grantee named
+    ("2026-09-30 — A seat called the winner", "timeline"): "wording",
+    ("2026-08-29 — two right numbers", "churn"): "wording",                  # "no number moved"
+    ("2026-09-08 — Jobs, workplaces", "cluster-health"): "wording",          # 361 to 364 describes data
+    ("2026-09-01, twelfth entry", "index"): "wording",                       # award and designation told apart
+    ("2026-09-01, seventh entry", "index"): "wording",                       # "Every sentence ... tied" withdrawn  # $34.9 million to $36.6 million a year
 }
 
 # Pages an entry corrected before the page was first published. They stay in the log and in
@@ -279,14 +317,52 @@ def page_slugs():
                   and os.path.isfile(os.path.join(WEB, d, "index.html")))
 
 
+# Names an entry uses in italics for a page that are not its folder name.
+ALIASES = {"front page": "index", "the front page": "index", "front-page": "index",
+           "hub": "index", "the hub": "index"}
+# Italic items in headings and sub-entry leads that are not pages, and why. Anything else in
+# those places must resolve to a page, or the build fails (a name the filter cannot see is a
+# page that silently loses an entry from its count).
+NOT_PAGES_NAMED = {
+    "five more": "a count of further pages, each named in its own sub-entry",
+    "every page": "a change to every page's status banner; no one page's statement",
+    "talent": "a withheld page, never published (2026-08-17 review)",
+    "credit": "a withheld page, never published (2026-08-17 review)",
+}
+
+
+def italic_items(html_text):
+    """Each item of each italic list: '*index, chain and front page*' gives three."""
+    for m in re.finditer(r"<em>(.*?)</em>", html_text):
+        for item in re.split(r",\s*|\s+and\s+", re.sub(r"<[^>]+>", "", m.group(1)).strip()):
+            if item.strip():
+                yield item.strip()
+
+
+def resolve(item, pages):
+    """The page an italic item names, or None. Whole item first (a slug or an alias), then
+    its words, so '*location-quotient* and *funding-map*' and prose italics both read."""
+    if item in pages:
+        return [item]
+    if item.lower() in ALIASES:
+        return [ALIASES[item.lower()]]
+    return [w for w in re.split(r"\s+", item) if w in pages]
+
+
 def named_pages(html_text, pages):
     """Page slugs named in italics, in order of first appearance."""
     found = []
-    for m in re.finditer(r"<em>(.*?)</em>", html_text):
-        for tok in re.split(r",\s*|\s+and\s+|\s+", re.sub(r"<[^>]+>", "", m.group(1)).strip()):
-            if tok in pages and tok not in found:
-                found.append(tok)
+    for item in italic_items(html_text):
+        for p in resolve(item, pages):
+            if p not in found:
+                found.append(p)
     return found
+
+
+def unresolved_names(html_text, pages):
+    """Italic items in a heading or sub-entry lead that name no page and are not known."""
+    return [i for i in italic_items(html_text)
+            if not resolve(i, pages) and i.lower() not in NOT_PAGES_NAMED]
 
 
 NUM = re.compile(r"(?<![\w.])\$?(\d{1,3}(?:,\d{3})+|\d+)(?:\.(\d+))?")
@@ -323,21 +399,33 @@ NONE_MOVED = re.compile(
     r"|changes the note, not")
 
 
-CHANGED = re.compile(r"(?<![\w-])\d[\d,.]*\*{0,2} to \*{0,2}\$?\d[\d,.]*(?: [a-z]+)?\*\*|, not \$?\d|"
+CHANGED = re.compile(r"\b(?:rise|rises|rose|grow|grows|grew|move|moves|moved|change|changes|changed|"
+                     r"go|goes|went|fall|falls|fell)\s+from\s+\$?\d[\d,.]*[^.;]{0,40}?\bto\s+\$?\d|"
+                     r"(?<![\w-])\d[\d,.]*\*{0,2} to \*{0,2}\$?\d[\d,.]*(?: [a-z]+)?\*\*|, not \$?\d|"
                      r"\bpreviously \$?\d|\bchanges? from \$?\d[\d,.]* to \$?\d|\bbecomes? \$?\d")
 
 
 def classify(raw, none_said=False):
-    """`figure` if a number the page printed changed, else `wording`. none_said: the entry
-    says, outside any sub-entry, that no figure changed."""
+    """(kind, contested). `figure` if a number the page printed changed, else `wording`.
+
+    Signals, strongest first: a stated change ("rises from 532 to 534", "20,859 to 20,052",
+    ", not 104") is a figure; a stated "No figure changed" in the page's own text, or in the
+    entry's shared text (none_said), is wording; otherwise a number in Was that is not in Is
+    is a figure. CONTESTED: the entry's shared text says no figure changed while this page's
+    own Was and Is swap one number for another. The text cannot settle that, so the build
+    fails until KIND_OVERRIDE records a reading (the sources page count, 23 to 24, was read
+    as wording this way on 2026-10-05)."""
     was, is_ = was_is(raw)
     if CHANGED.search(raw):
-        return "figure"
-    if none_said or NONE_MOVED.search(raw):
-        return "wording"
+        return "figure", False
+    if NONE_MOVED.search(raw):
+        return "wording", False
+    swapped = bool(numbers(was) - numbers(is_)) and bool(numbers(is_) - numbers(was))
+    if none_said:
+        return "wording", swapped
     if not is_:
-        return "wording"
-    return "figure" if numbers(was) - numbers(is_) else "wording"
+        return "wording", False
+    return ("figure" if numbers(was) - numbers(is_) else "wording"), False
 
 
 def stretches(body_blocks, pages):
@@ -384,6 +472,25 @@ def parse(text=None):
         if heading in PAGES_BY_HEADING:
             named = PAGES_BY_HEADING[heading]
             used_pbh.add(heading)
+        for pre, extra in PAGES_ADDED.items():
+            if heading.startswith(pre):
+                named = named + [x for x in extra if x not in named]
+                used_pbh.add(pre)
+        # Every italic name in the heading, a ### head or a sub-entry's bold lead is a page.
+        leads = [title_html] + [h for kind, raw, h in main if kind == "h"] + \
+                [inline(lm.group(1)) for kind, raw, _ in main if kind == "p"
+                 for lm in [re.match(r"\*\*(.+?)\*\*(?=\s|$)", raw)] if lm]
+        lost = [n for h in leads for n in unresolved_names(h, pages)]
+        if lost:
+            raise SystemExit(f"derive_corrections: {heading!r} names {lost} in italics, which resolve to "
+                             "no page; add an alias (ALIASES) or say why it is not one (NOT_PAGES_NAMED)")
+        # Prose that says the front page changed must name the index page.
+        text = re.sub(r"<[^>]+>", "", "".join(h for _, _, h in main))
+        if HUB_PROSE.search(text) and "index" not in named and \
+                not any(heading.startswith(pre) for pre in HUB_MENTION_ONLY):
+            raise SystemExit(f"derive_corrections: {heading!r} mentions the front page or the hub "
+                             f"({HUB_PROSE.search(text).group(0)!r}) and does not name index; add it "
+                             "(PAGES_ADDED) or say why the hub's text did not change (HUB_MENTION_ONLY)")
         if heading in SITE_WIDE:
             named = []
             used_pbh.add(heading)
@@ -400,10 +507,14 @@ def parse(text=None):
         for p in named:
             # its own sub-entry; else the paragraphs naming it; else the whole entry
             own = per.get(p) or "\n\n".join(raw for _, raw, h in main if p in named_pages(h, pages))
-            kind = classify(own or whole, none_said)
-            for (pre, pg), forced in KIND_OVERRIDE.items():
-                if pg == p and heading.startswith(pre):
-                    kind = forced
+            kind, contested = classify(own or whole, none_said)
+            forced = [k for (pre, pg), k in KIND_OVERRIDE.items() if pg == p and heading.startswith(pre)]
+            if forced:
+                kind = forced[0]
+            elif contested:
+                raise SystemExit(f"derive_corrections: {heading[:70]!r} on {p}: the entry says no figure "
+                                 "changed, and this page's own Was and Is swap a number. Read the entry "
+                                 "and record the kind in KIND_OVERRIDE.")
             hl = any(pg == p and heading.startswith(pre) for pre, pg in HEADLINE)
             used_head.update((pre, pg) for pre, pg in HEADLINE if pg == p and heading.startswith(pre))
             kinds[p] = {"kind": kind, "headline_changed": hl}
@@ -418,7 +529,7 @@ def parse(text=None):
             "kinds": kinds,
             "after_html": "".join(h for kind, _, h in notes if kind != "hr"),
         })
-    for heading in sorted((set(PAGES_BY_HEADING) | SITE_WIDE) - used_pbh):
+    for heading in sorted((set(PAGES_BY_HEADING) | SITE_WIDE | set(PAGES_ADDED)) - used_pbh):
         raise SystemExit(f"derive_corrections: PAGES_BY_HEADING names {heading!r}, which is not a heading")
     for pre, pg in HEADLINE:
         if (pre, pg) not in used_head:

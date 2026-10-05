@@ -364,6 +364,13 @@ const CASES = [
            "\"2020.\" at the start of a wrapped line as a list number and dropped it)",
    inject: s => s.replace("rather than 2020", "rather than")},
 
+  {gate: "consistency", page: "corrections", file: "CORRECTIONS.md",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /resolve to no page/,
+   defect: "a page named in a heading's italics that no page answers to, so its count " +
+           "silently loses the entry (\"front page\" dropped from index, PR #49 review)",
+   inject: s => s.replace("timeline, sources, front page*", "timeline, sources, frontpage*")},
+
   {gate: "consistency", page: "corrections", file: "_data/corrections_by_page.json",
    command: "python3", args: ["_data/build/verify_consistency.py"],
    expect: /\[corrections\] wages/,
