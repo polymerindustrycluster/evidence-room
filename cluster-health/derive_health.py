@@ -914,7 +914,7 @@ tiles = [
                     "Averaged over the "
                     f"{WORDS[len(closed)]} closed fiscal years, FY{closed[0]} to "
                     f"FY{closed[-1]}; "
-                    f"FY{OPEN_FY} is still open and is left out of the average."),
+                    f"FY{OPEN_FY} was partial when retrieved and is left out of the average."),
         },
         "direction": {
             "value": round(fy_real[closed[-1]] - fy_real[closed[-2]]),

@@ -231,7 +231,7 @@
   "usaspending_award_lookup": {
    "name": "USAspending award records, read by award ID",
    "agency": "US Treasury",
-   "role": "Corroboration only. No figure on this page is computed from this source: it checks the signed federal notices above, and it cannot reproduce the state grant or its sub-grants, which are not federal.",
+   "role": "Corroboration only on the funding map, where no figure is computed from this source: it checks the signed federal notices above, and it cannot reproduce the state grant or its sub-grants, which are not federal. The accountability page and the scorecard print the federal outlays it records.",
    "url": "https://api.usaspending.gov/api/v2/search/spending_by_award/",
    "docs": "https://api.usaspending.gov/",
    "filters": {
@@ -599,6 +599,7 @@
   "federal-money": [
    "usaspending",
    "usaspending_awards",
+   "eda_notices_of_award",
    "bls_cpi",
    "nsf_awards"
   ],
@@ -628,16 +629,26 @@
    "ipeds",
    "odjfs",
    "usaspending",
+   "eda_notices_of_award",
+   "usaspending_award_lookup",
    "fred",
    "bls_cpi"
   ],
   "scorecard": [
    "usaspending",
+   "eda_notices_of_award",
+   "ohio_hub_grant_agreement",
+   "pic_subgrant_agreements",
+   "usaspending_award_lookup",
    "ipeds",
    "qcew"
   ],
   "accountability": [
    "usaspending",
+   "eda_notices_of_award",
+   "ohio_hub_grant_agreement",
+   "pic_subgrant_agreements",
+   "usaspending_award_lookup",
    "public_record",
    "qcew",
    "ipeds"

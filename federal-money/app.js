@@ -114,10 +114,12 @@ D.naics.forEach(r => {
 const codes = Object.values(byCode).sort((a, b) => b.real - a.real);
 const top = codes[0], second = codes[1];
 const topTwoShare = (top.real + second.real) / totalReal;
-/* THE BAR LABELS DO NOT ADD UP TO THE CARD ABOVE THEM, and they cannot: eight figures
-   rounded to the tenth of a million add to $279.2M under a $279.3M total, and two codes
-   print the same $23.5M while drawing different lengths. Both are the same rounding, and
-   both are stated under the chart rather than left for a reader to find and distrust. */
+/* THE BAR LABELS NEED NOT ADD UP TO THE CARD ABOVE THEM. Code figures rounded to the
+   tenth of a million can sum to a tenth or more either side of the eight-year total, and
+   two codes can print the same figure while drawing different lengths. Both are the same
+   rounding. Neither is typed here: codeDimes and tie are computed from the data on every
+   load (on the 2026-09-08 pull the codes sum to the $313.6M total exactly, and several
+   pairs tie), and the note under the code table states whatever they find. */
 const dimes = v => Math.round(v / 1e5);          // integer tenths-of-a-million, no FP drift
 const codeDimes = codes.reduce((s, c) => s + dimes(c.real), 0);
 const tie = codes.find((c, i) => i && dimes(c.real) === dimes(codes[i - 1].real));
@@ -205,8 +207,8 @@ const esc = s => (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;");
 /* ------------------------------------------------------------------- hero stat row */
 /* THE PAIR HAS TO TRANSLATE ITSELF INSIDE THE ROW. The detail lines used to read "2025
    dollars" and "as awarded", a real-versus-nominal pair the page never translated, so a
-   reader met two numbers for the eight-year total, $279.3M and $248.8M, with nothing
-   saying which was the bigger or why. "In the dollars of the day" sits one card away from
+   reader met two numbers for the eight-year total, one in 2025 dollars and one as
+   awarded, with nothing saying which was the bigger or why. "In the dollars of the day" sits one card away from
    "in 2025 dollars" and does the work of the contrast on the first screen; Band 1's
    definition line carries the full reading. The detail line wraps past about thirty
    characters, so the translation goes on the longer-lived card, not the first one.

@@ -301,8 +301,8 @@ document.getElementById("standlede").innerHTML =
    lowest year at the left and its highest at the right.`;
 
 document.getElementById("standtable").innerHTML = tableView("stand",
-  "Each measure now, against the lowest and highest years of its own published run",
-  ["Measure", "Now", "Its lowest year", "Its highest year", "Where it sits",
+  "Each measure in its latest year, against the lowest and highest years of its own published run",
+  ["Measure", "Latest", "Its lowest year", "Its highest year", "Where it sits",
    "Better end"],
   STAND.map(t => [t.dimension, `${sfmt(t.standing, t.standing.value)} in
     ${syear(t.standing, t.standing.year)}`, sPoint(t.standing, "low"),

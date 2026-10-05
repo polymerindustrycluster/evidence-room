@@ -9,9 +9,8 @@
    .mast and .hero is measured against the background it actually sits on: WCAG 2 relative
    luminance, 4.5:1 below 24px (18.66px bold), else 3:1. A background it cannot resolve to
    one colour (an image or gradient under the text) is reported as unmeasured and fails.
-   The one exemption is .eyebrow, the brand lime (#B8D637) at 12px bold, 4.12:1 on --ink:
-   brand colour is John's call, not a gate's, and it is listed until he makes it. */
-const CONTRAST_EXEMPT = ".eyebrow";
+   Until 5 October 2026 .eyebrow was exempt, the brand lime at 4.12:1 on --ink, pending
+   John's call; he made it (lighten the lime on the hero only), so nothing is exempt now. */
 import {readdirSync, existsSync} from "fs";
 import {resolve, dirname} from "path";
 import {fileURLToPath} from "url";
@@ -35,7 +34,7 @@ for (const name of names) {
     page.on("pageerror", e => errs.push(String(e).slice(0, 90)));
     await page.goto(`file:///${file.replace(/\\/g, "/")}`);
     await page.waitForTimeout(900);
-    const r = await page.evaluate(EXEMPT => {
+    const r = await page.evaluate(() => {
       // Only count overflow a reader can actually see. Content inside a closed
       // <details> is laid out by Chromium but invisible, and counting it reports
       // horizontal scroll on pages that have none.
@@ -112,7 +111,6 @@ for (const name of names) {
           if (e.closest("svg") || !e.checkVisibility({visibilityProperty: true, opacityProperty: true})) return;
           if (![...e.childNodes].some(c => c.nodeType === 3 && c.textContent.trim())) return;
           const r = e.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return;
-          if (e.matches(EXEMPT)) return;
           const cs = getComputedStyle(e);
           const layers = []; let why = null, op = 1;
           for (let p = e; p; p = p.parentElement) {
@@ -138,7 +136,7 @@ for (const name of names) {
       }
       return {over, empty, raw, fill, prov, contrast, svgs: document.querySelectorAll("svg").length,
               tables: document.querySelectorAll("table").length};
-    }, CONTRAST_EXEMPT);
+    });
     if (errs.length) out.push(`${tag}:err(${errs.length}) ${errs[0]}`);
     if (r.over > 1) out.push(`${tag}:overflow ${r.over}px`);
     if (r.empty.length) out.push(`${tag}:empty ${r.empty.join(",")}`);

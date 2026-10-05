@@ -165,7 +165,7 @@ function drawChain(hits) {
     const on = state.tier === t.key;
 
     const g = el("g", {class:"tierhit" + (on ? " tier-on" : ""), tabindex:"0",
-      role:"button", "aria-pressed":String(on),
+      role:"button", "aria-pressed":String(on), "data-focuskey":"tier-svg:" + t.key,
       "aria-label":`${t.label}: ${v} companies. Filter the chain to this stage.`});
     g.appendChild(el("rect", {class:"hit", x:x-58, y:CH.top-92, width:116,
       height:CH.h-CH.top+62, fill:"transparent"}));
@@ -227,7 +227,7 @@ function drawChainBars(vals, base, expected, filtered) {
     const on = state.tier === t.key;
     const expPct = filtered ? null : Math.min(100, (exp / max) * 100);
     return `<div class="cbar${thin ? " thin" : ""}" role="button" tabindex="0"
-        aria-pressed="${on}" data-tier="${t.key}"
+        aria-pressed="${on}" data-tier="${t.key}" data-focuskey="tier-bar:${t.key}"
         aria-label="${t.label}: ${v} companies">
       <div class="cb-lab">${t.label}</div>
       <div class="cb-num">${N(v)}</div>
@@ -304,7 +304,8 @@ function drawMap(hits) {
       }).join("") + "Z").join("")).join("");
     const on = state.county === r.name;
     const path = el("path", {class:"county" + (on ? " on" : ""), d,
-      fill: shade(val), tabindex:"0", role:"button",
+      fill: shade(val), tabindex:"0", role:"button", "aria-pressed":String(on),
+      "data-focuskey":"county:" + r.name,
       "aria-label":`${r.name} County: ${val} ${filtered ? "matching" : "classified"} company records, ` +
                    `${rec.cbp_estab} Census establishments.`});
     const toggle = () => { state.county = on ? null : r.name; render(); };
@@ -473,7 +474,25 @@ function headline(hits) {
        region: ${N(meta.unclassified)} companies here still carry no capability tags at all.`;
 }
 
+/* A CONTROL THAT REDRAWS ITSELF KEEPS THE READER'S FOCUS. Pressing a stage or a county
+   re-renders the ribbon, the bars and the map, which replaces the very node that had
+   focus, and a keyboard reader was dropped onto <body> (review of 5 October 2026). The
+   onFonts refocus every page uses finds the successor by aria-label; here the label
+   carries the live count, which the press itself changes, so each control also carries a
+   stable data-focuskey and that is the key looked up. tools/access.mjs presses a stage
+   and a county from the keyboard and fails if focus does not land on the same control. */
 function render() {
+  const a = document.activeElement;
+  const key = a && a.getAttribute && a.getAttribute("data-focuskey");
+  renderAll();
+  if (key && !a.isConnected) {
+    const n = [...document.querySelectorAll("[data-focuskey]")]
+      .find(e => e.getAttribute("data-focuskey") === key);
+    if (n) n.focus({preventScroll: true});
+  }
+}
+
+function renderAll() {
   const hits = search();
   headline(hits);
   drawChain(hits);

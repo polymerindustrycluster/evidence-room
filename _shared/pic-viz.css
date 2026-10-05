@@ -161,6 +161,11 @@ footer .pv-status{margin:0 auto 18px}
 .hero .wrap > .hero-row{max-width:var(--measure)}
 .hero .wrap > h1{font-size:clamp(30px,3.8vw,46px);max-width:var(--measure);text-wrap:balance}
 .hero .wrap > .eyebrow{max-width:var(--measure)}
+/* The brand lime (#B8D637) measures 4.12:1 on the teal hero, under AA for 12px text. On the
+   hero only, the eyebrow takes the same hue lightened to #C6DE5D, 4.54:1 on --ink (John's
+   decision, 5 October 2026); --lime itself is unchanged everywhere else. tools/verify.mjs
+   measures it with no exemption. */
+.hero .eyebrow{color:#C6DE5D}
 /* Byline block. Fifteen per-page stylesheets each carried an identical copy of this and
    the hub carried none, so the one page without it rendered its byline at standfirst
    size, competing with the dek it sits under. Here, a new page inherits it by existing.

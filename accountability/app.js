@@ -809,7 +809,7 @@ document.getElementById("targets").innerHTML =
 const TODAY = new Date(D.generated_on + "T00:00:00Z");
 const ageWords = iso => {
   const d = Math.round((TODAY - new Date(iso + "T00:00:00Z")) / 86400000);
-  if (d <= 0) return "empty since today";
+  if (d <= 0) return "empty since the build date";
   if (d === 1) return "empty for 1 day";
   return `empty for ${d} days`;
 };

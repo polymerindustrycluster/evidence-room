@@ -175,9 +175,9 @@ PV.figures([
     given back, and then some (${pct(gas.retraced)})`],
   ["", vsB(resinMfg.now.index), "resin, against January 2019",
    `the middle seat: about a third of the rise given back, the rest still on the
-    invoice`],
+    invoice in ${monF(resinMfg.now.date)}`],
   ["", vsB(prodMfg.now.index), "products, against January 2019",
-   `nothing given back in cash, and this month is the dearest on record here`],
+   `nothing given back in cash, and ${monF(prodMfg.now.date)} is the dearest month on record here`],
   ["", sp(last.v), "points, products over resin",
    `since 2019 product prices have grown ${Math.abs(last.v).toFixed(1)} percentage points
     more than resin prices; at the 2021 trough they trailed by
@@ -219,9 +219,9 @@ document.getElementById("v2d").textContent =
   const rp = Math.round(PM[nD]), rr = Math.round(RM[nD]);
   document.getElementById("gapmath").innerHTML =
     `<b>Where the ${Math.abs(last.v).toFixed(1)} comes from.</b> In ${monF(nD)} the two
-     indexes stand at ${r2(PM[nD])} and ${r2(RM[nD])}: a gap of ${r2(last.v)} points. In
+     indexes stood at ${r2(PM[nD])} and ${r2(RM[nD])}: a gap of ${r2(last.v)} points. In
      ${monF(tD)} they stood at ${r2(PM[tD])} and ${r2(RM[tD])}, a gap of ${r2(sTrough.v)}.
-     Everywhere else this page rounds those same indexes (to ${rp} and ${rr} today), and
+     Everywhere else this page rounds those same indexes (to ${rp} and ${rr} for ${monF(nD)}), and
      rounded numbers do not subtract: ${rp} − ${rr} comes to ${rp - rr}, which is a point
      of rounding, not a second measurement. The gap is always taken from the full values.
      One more subtraction the headline invites and does not mean: going from
@@ -241,19 +241,19 @@ function verdict() {
     re-read the charts from it.`;
   else if (SEL === "feedstock") v.innerHTML = `<b>Feedstock:</b> the spike reversed.
     Gas peaked at nearly three times its January 2019 level in ${mon3(gas.peak.date)} and
-    now sits ${(100 - gas.now.index).toFixed(0)}% below it: the whole rise given back,
-    and then some (${pct(gas.retraced)}). Ohio industrial power is the exception: still up
-    ${(elec.now.index - 100).toFixed(0)}%, and its peak was this January.`;
+    in ${monF(gas.now.date)} sat ${(100 - gas.now.index).toFixed(0)}% below it: the whole rise given back,
+    and then some (${pct(gas.retraced)}). Ohio industrial power is the exception: up
+    ${(elec.now.index - 100).toFixed(0)}% in ${monF(elec.now.date)}, and its peak was ${monF(elec.peak.date)}.`;
   else if (SEL === "resin") v.innerHTML = `<b>Resin:</b> the middle seat. Your output
     crested at about ${vsB(Math.max(resinsMat.peak.index, resinMfg.peak.index))} across
-    2021 and 2022, gave back about a third, and still runs
+    2021 and 2022, gave back about a third, and in ${monF(resinMfg.now.date)} ran
     ${vsB(resinMfg.now.index)}. Your own version of the gap, resin against the broad
     chemicals and allied products index that includes it, opened to ${sp(cPeak.v)} points
     of extra price growth in ${mon3(cPeak.date)} and has unwound to just below zero: the
     shortage gap did not keep.`;
   else v.innerHTML = `<b>Finished products:</b> the seat still at its peak, on these two indexes.
     Your main input gave back about a third of its rise; your output gave back none in cash
-    and sits at its peak. Your prices have risen ${sp(last.v)} percentage points more than
+    and was at its peak in ${monF(prodMfg.now.date)}. Your prices have risen ${sp(last.v)} percentage points more than
     resin since 2019, against ${sp(sTrough.v)} at the 2021 trough, though
     the gap came within a point of closing in ${monF(sDip.date)}, and it is not a margin:
     these series do not measure your full costs.`;
@@ -375,7 +375,7 @@ const atPeak = s => s.peak.date === s.now.date;
    shape rather than three sentences. On the product row it prints the same number twice,
    which is the finding said in the plainest way the strip can say it; the interpretation
    goes on the chart, next to the mark, rather than into this line. */
-const openRead = s => `${f0(s.peak.index)} at its peak, ${f0(s.now.index)} now`;
+const openRead = s => `${f0(s.peak.index)} at its peak, ${f0(s.now.index)} latest`;
 
 function drawOpen() {
   const host = document.getElementById("open");
@@ -430,13 +430,13 @@ function drawOpen() {
     return out;
   };
 
-  const READING = `Gas now costs ${vsB(gas.now.index)} against January 2019. Finished ` +
+  const READING = `In ${monF(gas.now.date)} gas cost ${vsB(gas.now.index)} against January 2019. Finished ` +
                   `products, ${vsB(prodMfg.now.index)}.`;
   /* The strip has to be readable cold, so it says what its two marks are and what its
      one axis means in its own labels: a reader meets this before the standfirst has
      explained a single thing, and an index is the most common place a page becomes
      unreadable while every number in it is correct. */
-  const SUBTEXT = "The ring is each price at its peak, the dot is today. A long line is " +
+  const SUBTEXT = "The ring is each price at its peak, the dot its latest month. A long line is " +
                   "a price that came a long way back.";
   const DIRTEXT = "Further left is a lower price: at 100 it is back to what it cost in " +
                   "January 2019.";
@@ -562,7 +562,7 @@ function drawLadderDesktop() {
       {x: m.l - 14, y: y + bh + 9, "text-anchor": "end", class: "pv-labq", fill: c});
     txt(g, `${pct(s.retraced)} of its rise given back`,
       {x: m.l + w + 12, y: y + bh - 12, class: "pv-lab"});
-    txt(g, `price now ${vsB(s.now.index)} vs 2019`,
+    txt(g, `latest price ${vsB(s.now.index)} vs 2019`,
       {x: m.l + w + 12, y: y + bh + 5, class: "pv-labq"});
     /* The row that breaks the ladder, annotated ON the chart. The section headline
        promises a ladder by chain position and the bars are sorted by value, so this
@@ -574,7 +574,7 @@ function drawLadderDesktop() {
     hoverable(el("rect", {x: 0, y: y - 8, width: W, height: bh + 18,
       fill: "transparent"}, g), `<b>${s.label}</b><br>${STAGE[s.stage].n} stage<br>
       peaked at <span class="v">${s.peak.index.toFixed(1)}</span> in ${mon(s.peak.date)}<br>
-      now <span class="v">${s.now.index.toFixed(1)}</span> ·
+      latest <span class="v">${s.now.index.toFixed(1)}</span> ·
       <span class="v">${pct(s.retraced)}</span> of the rise given back`,
       `${s.label}: ${pct(s.retraced)} of its rise given back`);
   });
@@ -631,7 +631,7 @@ function drawLadderMobile() {
     txt(g, TINY[s.label] + (INGAP.has(s.label) ? " · the makers’ pair"
                             : s === elec ? " · the exception" : ""),
       {x: m.l, y: y + nameY, class: "pv-lab"});
-    txt(g, `${pct(s.retraced)} of its rise given back · now ` +
+    txt(g, `${pct(s.retraced)} of its rise given back · latest ` +
       `${vsB(s.now.index)} vs 2019`, {x: m.l, y: y + subY, class: "pv-labq"});
     el("rect", {x: m.l, y: y + barY, width: xs(1) - m.l, height: bh, fill: "#EDE9E2",
       rx: 3}, g);
@@ -649,7 +649,7 @@ function drawLadderMobile() {
          class: "pv-labq"});
     hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, g),
       `<b>${s.label}</b><br><span class="v">${pct(s.retraced)}</span> of the rise given
-       back · now <span class="v">${s.now.index.toFixed(1)}</span>`,
+       back · latest <span class="v">${s.now.index.toFixed(1)}</span>`,
       `${s.label}: ${pct(s.retraced)} of its rise given back`);
   });
   const ax = H - m.b;
@@ -951,7 +951,7 @@ function drawSpreadDesktop() {
   plated(svg, "resin spiked; the gap nearly closed",
     {x: xs(sDip.date) + 6, y: ys(sDip.v) + 60, "text-anchor": "end",
      class: "pv-labq"}, 7.4);
-  txt(svg, `${sp(last.v)} now`, {x: m.l + w + 8, y: ys(last.v) + 4,
+  txt(svg, `${sp(last.v)} latest`, {x: m.l + w + 8, y: ys(last.v) + 4,
     class: "pv-lab", fill: "#008BA8"});
   spr.forEach(p => hoverable(el("rect", {x: xs(p.date) - w / spr.length / 2, y: m.t,
     width: Math.max(2, w / spr.length), height: h, fill: "transparent"}, svg),
@@ -1018,7 +1018,7 @@ function drawSpreadMobile() {
     stroke: "#008BA8", "stroke-width": 1, "stroke-dasharray": "2 2"}, svg);
   plated(svg, `+${sDip.v.toFixed(1)} ${mon3(sDip.date)}`, {x: xs(sDip.date) - 5,
     y: ys(0) - 28, "text-anchor": "end", class: "pv-lab", fill: "#008BA8"}, 8);
-  txt(svg, `${sp(last.v)} now`, {x: m.l + w + 6, y: ys(last.v) + 4,
+  txt(svg, `${sp(last.v)} latest`, {x: m.l + w + 6, y: ys(last.v) + 4,
     class: "pv-lab", fill: "#008BA8"});
   /* ONE LABEL ON TWO LINES, LED OFF ITS OWN FACE. These two ran on 13 units against a
      box that measures 18.75, so the comparator's name printed on itself at every width
@@ -1075,7 +1075,7 @@ function drawSpreadMobile() {
 const both = s => `${SHORT[s.label]} (${s.label})`;
 document.getElementById("laddertable").innerHTML = tableView("ld",
   "Peak, current level and share of the rise given back, by stage (January 2019 = 100)",
-  ["Series", "Stage", "Peak", "Peak month", "Now", "Latest month", "Rise given back"],
+  ["Series", "Stage", "Peak", "Peak month", "Latest", "Latest month", "Rise given back"],
   rows.map(s => [both(s), STAGE[s.stage].n, s.peak.index.toFixed(1), mon(s.peak.date),
     s.now.index.toFixed(1), mon(s.now.date), pct(s.retraced)]));
 /* The formula comes back to the figure it governs. It was moved to the methodology box
@@ -1085,7 +1085,7 @@ document.getElementById("laddertable").innerHTML = tableView("ld",
 document.getElementById("laddersrc").innerHTML =
   `${D.meta.sources}, monthly, 2015 through mid-2026, measured against January 2019
    (midwinter, so gas enters at a seasonal high): the ordering survives that, the exact
-   percentages do not. Share of the rise given back = (peak &minus; now) &divide;
+   percentages do not. Share of the rise given back = (peak &minus; latest) &divide;
    (peak &minus; 100).`;
 
 /* THE LEVEL TABLE CARRIES EVERY SERIES THE PAGE DRAWS, INCLUDING THE ONE IT DRAWS ONLY
@@ -1126,7 +1126,7 @@ document.getElementById("linessrc").innerHTML =
   const keyed = new Set([sPeak.date, sDip.date, last.date, sTrough.date]);
   document.getElementById("spreadtable").innerHTML = tableView("sd",
     "Both gaps and the three index levels behind them, every January plus the trough, " +
-    "the peak, the May 2026 near-closure and now (January 2019 = 100)",
+    "the peak, the May 2026 near-closure and the latest month (January 2019 = 100)",
     ["Month", "Product", "Resin", "Chemicals", "Product over resin",
      "Resin over chemicals"],
     spr.filter(p => p.date.endsWith("-01-01") || keyed.has(p.date)).map(p =>
@@ -1181,11 +1181,11 @@ document.getElementById("spreadsrc").innerHTML =
 document.getElementById("closersub").innerHTML =
   `<b>The wellhead gave back its whole spike and then some (${pct(gas.retraced)}); resin
    makers about a third; finished products none.</b> The converter&rsquo;s gap ran ${sp(sTrough.v)}
-   points at the 2021 trough and stands ${sp(last.v)} now, and a gap
+   points at the 2021 trough and stood ${sp(last.v)} in ${monF(last.date)}, and a gap
    between two indexes is not a margin: these series do not measure a producer&rsquo;s
    full costs.
-   It has not been steady either. Resin rose ${sDipResin.toFixed(1)} points in two
-   months this spring and the gap closed to +${sDip.v.toFixed(1)}; the next resin move
+   It has not been steady either. Resin rose ${sDipResin.toFixed(1)} points in the two
+   months to ${monF(sDip.date)} and the gap closed to +${sDip.v.toFixed(1)}; the next resin move
    decides whether it holds.`;
 
 /* --------------------------------------------------------------------- assemble */
