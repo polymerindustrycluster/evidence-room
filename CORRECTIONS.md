@@ -11,6 +11,41 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-10-04 — Footprint, concentration, link and tense fixes, *peers, churn, cluster-health, laborshed, federal-money, location-quotient, timeline, sources, front page*
+
+No published figure changed.
+
+**The footprint sentence, six pages.** **Was:** the footprint line and four hand-written
+passages said the fourteen-county NEO-14 definition *adds* Crawford, Huron, Richland and
+Tuscarawas, and laborshed called it “a wider line”. **Is:** each says NEO-14 adds those four
+and leaves out Ashtabula and Trumbull, so the two share ten counties. **Cause:** one string
+in the shared footprint definition named one side of the difference. It was changed in
+`pic-geo` first, as version 1.0.1, and re-copied here, which settles the part of the
+2026-08-30 entry headed “The one this repository cannot correct”. Dated notes on peers,
+churn, cluster-health, laborshed, federal-money and location-quotient. The style gate now
+fails any rendered sentence that names one side of the PIC-12 / NEO-14 difference without
+the other.
+
+**What concentration divides by, *peers*.** **Was:** the methods defined it as an industry's
+share of an area's private jobs over its share of private jobs nationwide. **Is:** private
+industry jobs over every job in the area, public and private, and the same nationally, which
+is how the bureau computes the column the page prints. `test_peers_lq.py` rebuilds Akron's
+4.69 on that basis.
+
+**Links.** The sources page linked the IPEDS directory to an API pattern with a literal
+`{year}`, which returns a server error; it now links the documentation. The front page's
+correction-log link and the sources page's roadmap link opened raw Markdown; both now open
+the rendered file. The style gate fails any link carrying a template or pointing at a
+Markdown file in this repository.
+
+**Tense, *federal-money* and *timeline*.** **Was:** “Fiscal 2026 is still running” and a
+“still running” bar label, written of a year that ended on 30 September 2026; a “Today” line,
+“The next three dates to check” and “dates ahead”, written of a record that stops on 13 August
+2026.
+**Is:** fiscal 2026 is described as partial when the data were retrieved on 8 September
+2026, and the timeline's line and list are dated to the record's cut-off, with the outcome
+of later dates stated as not checked. Both phrasings are withdrawn in the style gate.
+
 ## 2026-09-30 — The Chamber's wider figure, with the state grant's grantee, *accountability*
 
 **Was:** band A and the closing line said the Greater Akron Chamber is named as destination

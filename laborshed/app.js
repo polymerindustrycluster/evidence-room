@@ -1433,10 +1433,10 @@ document.getElementById("closersub").innerHTML =
    that chart is counted. Among comparable regions only Pittsburgh’s is higher, at
    ${pct2(PGH.region_share_work)} against ${pct2(B.totals.work_region_share)}, a gap of
    ${((PGH.region_share_work - B.totals.work_region_share) * 100).toFixed(2)} points, on ${WORDS[PGH.counties]} counties rather than twelve,
-   and only on that side of the measure. A wider line
-   would hold more: the fourteen-county Northeast Ohio footprint adds
-   ${WIDER_ADDS.slice(0, -1).join(", ")} and ${WIDER_ADDS.at(-1)}, and all but
-   ${ADDS_OUT.join(" and ")} already rank among the ten largest outside sources of these
+   and only on that side of the measure. The fourteen-county Northeast Ohio footprint
+   draws the line differently: it adds ${WIDER_ADDS.slice(0, -1).join(", ")} and
+   ${WIDER_ADDS.at(-1)} and leaves out Ashtabula and Trumbull, and of the four it adds, all
+   but ${ADDS_OUT.join(" and ")} already rank among the ten largest outside sources of these
    jobs.`;
 
 /* --------------------------------------------------------------------- assemble */

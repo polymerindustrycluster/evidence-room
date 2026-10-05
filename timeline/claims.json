@@ -142,9 +142,9 @@
    "actual": "[(e['date'], e['title']) for e in D['t']['events'] if not e['delivered'] and e['date'] >= '2027-01-01']",
    "falsified_if": "A scheduled date is delivered or slips across the 2026/2027 boundary, a new forward milestone is published, or a 2027+ scheduled event appears that is neither the pilot-facility readiness target nor an end/completion date — the 'the other eight are completion dates' sentence would then be wrong.",
    "counts": [
-    {"figure": "The 18 dates ahead are scheduled", "noun": "not delivered"},
+    {"figure": "18 dates after its 13 August 2026 cut-off were scheduled", "noun": "not delivered"},
     {"figure": "18 events", "noun": "only scheduled"},
-    {"figure": "18 hollow dots", "noun": "wait beyond it"}
+    {"figure": "18 hollow dots", "noun": "scheduled beyond it"}
    ]
   },
   {
@@ -172,7 +172,7 @@
   },
   {
    "id": "tl-watch-next",
-   "text": "The next three scheduled dates after 13 August 2026: 2026 Round 1 technical reviews conclude (15 Aug 2026), the PC3 annual conference (9 Sep 2026), and the pilot-facility groundbreaking target (9 Oct 2026) (watch list; the list itself renders from data).",
+   "text": "The first three dates scheduled after the record's 13 August 2026 cut-off (the watch list is headed by the cut-off, not by today, and says whether each was met is not checked): 2026 Round 1 technical reviews conclude (15 Aug 2026), the PC3 annual conference (9 Sep 2026), and the pilot-facility groundbreaking target (9 Oct 2026) (watch list; the list itself renders from data).",
    "source": "timeline.json forward events sorted by date after meta.asOf",
    "assert": "(lambda nxt: [e['date'] for e in nxt] == ['2026-08-15', '2026-09-09', '2026-10-09'] and 'reviews conclude' in nxt[0]['title'] and 'PC3' in nxt[1]['title'] and 'groundbreaking' in nxt[2]['title'].lower())(sorted([e for e in D['t']['events'] if not e['delivered'] and e['date'] > D['t']['meta']['asOf']], key=lambda e: e['date'])[:3])",
    "actual": "[(e['date'], e['title']) for e in sorted([e for e in D['t']['events'] if not e['delivered'] and e['date'] > D['t']['meta']['asOf']], key=lambda e: e['date'])[:5]]",
@@ -228,7 +228,7 @@
    "source": "timeline.json meta.asOf; heritage.json meta.asOf",
    "assert": "D['t']['meta']['asOf'] == '2026-08-13' and D['h']['meta']['asOf'] == '2026-08-14' and max(D['t']['meta']['asOf'], D['h']['meta']['asOf']) == '2026-08-14'",
    "actual": "(D['t']['meta']['asOf'], D['h']['meta']['asOf'])",
-   "falsified_if": "Either builder is re-run against a newer inventory or register: the NOW constants in app.js and the Today labels are static and must be edited with the data; the masthead date is computed from both dates and moves by itself."
+   "falsified_if": "Either builder is re-run against a newer inventory or register: the NOW constants in app.js and the cut-off labels are static and must be edited with the data; the masthead date is computed from both dates and moves by itself."
   },
   {
    "id": "tl-discoveries-not-products",

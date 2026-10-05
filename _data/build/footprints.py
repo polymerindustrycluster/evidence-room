@@ -31,11 +31,13 @@ META = {
               "note": "PIC’s official 12-county footprint, matching the cluster-health "
                       "dashboard. Chosen for federal-data pages so figures reconcile.",
               "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the "
-                         "vault’s NEO-14 includes."},
+                         "vault’s NEO-14 includes; NEO-14 in turn leaves out Ashtabula and "
+                         "Trumbull. The two share ten counties."},
     "neo14": {"key": "neo14", "n": len(NEO14), "label": "NEO-14",
               "counties": sorted(NEO14.values()),
               "note": "The 14-county set the GAC-PIC vault tags companies against. Kept "
                       "for vault-sourced pages because company records carry this flag.",
-              "differs": "Excludes Ashtabula and Trumbull, which PIC-12 includes."},
+              "differs": "Excludes Ashtabula and Trumbull, which PIC-12 includes, and adds "
+                         "Crawford, Huron, Richland and Tuscarawas. The two share ten counties."},
     "shared": sorted(PIC12[c] for c in SHARED),
 }
