@@ -860,17 +860,28 @@ const PV = (() => {
     const list = ((spec && spec.claims) || []).filter(c => c.breaks_if && c.guards);
     const hero = list.find(c => c.id === spec.hero);
     if (!list.length) return null;
-    const svg = [...document.querySelectorAll("svg")].find(s => {
-      const b = s.getBoundingClientRect();
-      return b.width > 200 && b.height > 80 && !s.closest(".mast");
-    });
-    if (hero && svg && !document.querySelector(".pv-breaks")) {
-      let at = svg.closest(".wrap > *") || svg;
-      while (at.nextElementSibling && CHART_TAIL(at.nextElementSibling)) at = at.nextElementSibling;
+    /* WHICH CHART IS FIRST DEPENDS ON THE WIDTH. Chain shows its county map first on a
+       narrow screen and its chain diagram first on a wide one, so a line placed once at
+       load sat under the wrong chart after a resize (Codex, PR #47). It is re-anchored
+       after every resize, once the page's own redraw has run. */
+    if (hero && !document.querySelector(".pv-breaks")) {
       const p = document.createElement("p");
       p.className = "pv-breaks";
       p.innerHTML = `<b>This finding breaks if:</b> ${hero.breaks_if}`;
-      at.after(p);
+      const place = () => {
+        const svg = [...document.querySelectorAll("svg")].find(s => {
+          const b = s.getBoundingClientRect();
+          return b.width > 200 && b.height > 80 && !s.closest(".mast");
+        });
+        if (!svg) return;
+        let at = svg.closest(".wrap > *") || svg;
+        const next = e => { let n = e.nextElementSibling; return n === p ? n.nextElementSibling : n; };
+        while (next(at) && CHART_TAIL(next(at))) at = next(at);
+        if (at.nextElementSibling !== p) at.after(p);
+      };
+      place();
+      let t;
+      addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => requestAnimationFrame(place), 150); });
     }
     const sec = document.createElement("section");
     sec.className = "band pv-breaks-all";

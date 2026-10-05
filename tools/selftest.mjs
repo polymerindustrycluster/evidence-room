@@ -123,6 +123,13 @@ const CASES = [
    inject: s => s.replace("</body>", '<script>setTimeout(() => document.querySelector(".hero .wrap")' +
      '.appendChild(document.querySelector(".pv-breaks")), 300)</script></body>')},
 
+  {gate: "breaksif", page: "chain", args: ["chain"],
+   expect: /after 768 to 1024px: the breaks-if line is not directly under the first chart/,
+   defect: "the breaks-if line anchored once at load, left under chain's county map after a " +
+           "narrow-to-wide resize made the chain diagram the first chart (Codex, PR #47)",
+   inject: s => s.replace('addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => ' +
+     'requestAnimationFrame(place), 150); });', "")},
+
   {gate: "disclosure", page: "sources", args: ["sources"],
    expect: /link to INTERNAL page \S+ carries no Internal tag/,
    defect: "the source guide linking an unlisted internal page with nothing to say it is " +

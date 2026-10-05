@@ -45,8 +45,55 @@ if (!listed) {
 }
 const list = names.length ? names : listed;
 
+/* Where the line must be, evaluated in the page: directly under the first chart (coldopen's
+   definition), past only that chart's table twin, legend and source lines. Returns
+   null or the problem. Installed as window.__placed so every check uses one copy. */
+const PROBE = () => {
+  window.__placed = () => {
+    const svg = [...document.querySelectorAll("svg")].find(s => {
+      const b = s.getBoundingClientRect();
+      return b.width > 200 && b.height > 80 && !s.closest(".mast");
+    });
+    const line = document.querySelector(".pv-breaks");
+    if (!svg) return "cannot inspect: no chart on the page";
+    if (!line) return null;
+    const tail = e => e.matches("p.src, details, [id$='table'], [class*='legend']") ||
+      !!e.querySelector(":scope > .pv-table");
+    let at = svg.closest(".wrap > *") || svg;
+    while (at.nextElementSibling && at.nextElementSibling !== line && tail(at.nextElementSibling))
+      at = at.nextElementSibling;
+    return at.nextElementSibling === line ? null
+      : `the breaks-if line is not directly under the first chart (${svg.id || "unnamed svg"})`;
+  };
+};
+/* WHICH CHART IS FIRST CAN CHANGE WITH THE WIDTH (chain: county map when narrow, chain
+   diagram when wide), and a line anchored once at load stayed under the wrong one after a
+   resize (Codex, PR #47). So every page is also loaded narrow and widened, and loaded wide
+   and narrowed, and the line must follow. Pages whose first chart differs between the two
+   widths are named in the output, so a reader can see the transition was exercised. */
+const SWAP = [[768, 1024], [1024, 768]];
+async function transitions(b, n) {
+  const probs = [], firsts = new Set();
+  for (const [from, to] of SWAP) {
+    const p = await b.newPage({viewport: {width: from, height: 1000}});
+    await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
+    await p.waitForTimeout(700);
+    await p.evaluate(PROBE);
+    firsts.add(await p.evaluate(() => [...document.querySelectorAll("svg")].find(s => {
+      const b = s.getBoundingClientRect(); return b.width > 200 && b.height > 80 && !s.closest(".mast");
+    })?.id || "?"));
+    await p.setViewportSize({width: to, height: 1000});
+    await p.waitForTimeout(700);
+    const bad = await p.evaluate(() => window.__placed());
+    if (bad) probs.push(`after ${from} to ${to}px: ${bad}`);
+    await p.close();
+  }
+  return {probs, swaps: firsts.size > 1};
+}
+
 const b = await chromium.launch();
 let bad = 0, checked = 0;
+const swapped = [];
 for (const n of list) {
   const probs = [];
   if (!listed.includes(n)) { console.log(`${n.padEnd(18)} SKIP  not listed on the hub, not required`); continue; }
@@ -71,7 +118,9 @@ for (const n of list) {
     const p = await b.newPage({viewport: {width: 1440, height: 1000}});
     await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
     await p.waitForTimeout(700);
+    await p.evaluate(PROBE);
     const r = await p.evaluate(() => {
+      const PLACED = window.__placed;
       const norm = s => String(s || "").replace(/\s+/g, " ").trim();
       const all = document.querySelectorAll(".pv-breaks-all");
       const sec = all[0], d = sec?.querySelector("details"), method = document.querySelector(".pv-method");
@@ -79,21 +128,7 @@ for (const n of list) {
       body.querySelectorAll(".pv-breaks-all, .pv-breaks, script").forEach(e => e.remove());
       return {
         lines: [...document.querySelectorAll(".pv-breaks")].map(e => norm(e.textContent)),
-        placed: (() => {
-          const svg = [...document.querySelectorAll("svg")].find(s => {
-            const b = s.getBoundingClientRect();
-            return b.width > 200 && b.height > 80 && !s.closest(".mast");
-          });
-          const line = document.querySelector(".pv-breaks");
-          if (!svg) return "cannot inspect: no chart on the page";
-          if (!line) return null;
-          const tail = e => e.matches("p.src, details, [id$='table'], [class*='legend']") ||
-            !!e.querySelector(":scope > .pv-table");
-          let at = svg.closest(".wrap > *") || svg;
-          while (at.nextElementSibling && at.nextElementSibling !== line && tail(at.nextElementSibling))
-            at = at.nextElementSibling;
-          return at.nextElementSibling === line ? null : "the breaks-if line is not directly under the first chart";
-        })(),
+        placed: PLACED(),
         sections: all.length,
         summary: norm(d?.querySelector("summary")?.textContent),
         open: d ? d.open : null,
@@ -103,6 +138,9 @@ for (const n of list) {
       };
     });
     await p.close();
+    const t = await transitions(b, n);
+    probs.push(...t.probs);
+    if (t.swaps) swapped.push(n);
     if (hero && hero.breaks_if) {
       const line = `${LEAD} ${norm(hero.breaks_if)}`;
       if (r.lines.length !== 1) probs.push(`${r.lines.length} breaks-if lines on the page, not one`);
@@ -128,6 +166,7 @@ for (const n of list) {
                                               : `PASS  line under the first chart and ${want.length} in the disclosure`}`);
 }
 await b.close();
+console.log(`\nfirst chart changes between 768 and 1024px on: ${swapped.join(", ") || "none"} (line re-checked after resizing both ways on every page)`);
 console.log(bad ? `\n${bad} listed page(s) do not state what would prove them wrong`
                 : `\nall ${checked} listed pages state what would prove their headline wrong, under the first chart and in full`);
 process.exit(bad ? 1 : 0);
