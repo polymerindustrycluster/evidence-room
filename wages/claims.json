@@ -287,7 +287,7 @@
     },
     {
       "id": "byline-date",
-      "text": "The byline is dated September 2026, the month of the geography and wage-interpretation correction.",
+      "text": "The geography and wage-interpretation correction is dated September 2026; the byline now carries the page's revision date, which is later.",
       "verify": "manual",
       "source": "wages/README.md correction dated 2026-09-08",
       "checked_by": "the person directing the build",

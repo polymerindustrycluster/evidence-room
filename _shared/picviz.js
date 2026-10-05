@@ -524,6 +524,7 @@ const PV = (() => {
   const WHERE = {
     "SOURCES.json": "../_data/SOURCES.json",   // one registry for the whole site
     "claims.json": "claims.json",              // sits beside index.html, not in data/
+    "cite.json": "../_data/cite.json",         // every page's title, URL and revision date
   };
   async function data(file) {
     const tag = document.querySelector(`script[data-pv-file="${file}"]`);
@@ -575,6 +576,71 @@ const PV = (() => {
     };
     document.querySelector("header.mast .wrap")?.appendChild(banner("head"));
     document.querySelector("footer .wrap")?.prepend(banner("foot"));
+  }
+
+  /* ------------------------------------------------------------ made-and-checked box
+
+     HOW THIS WAS MADE AND CHECKED, AND HOW TO CITE IT (DECISIONS.md, 5 October 2026). A
+     reader quoting a page in a board packet needs a title, a version and a URL, and needs
+     to know in one breath who wrote it and what the checks can establish. So a toggle at
+     the end of the byline opens about sixty words under it: the authorship, one sentence
+     on the checks with the link to sources/#sec-checks, and a "Cite as" line. Collapsed,
+     it costs the byline one phrase rather than the cold open a line. It is not the
+     methodology box and must not grow into it: the 2026-09-01 rule above still holds.
+
+     Every date in it is the page's REVISION date, stamped from git into _data/cite.json by
+     _data/build/stamp_cite.py, and the byline's "Page revised" is the same date.
+     tools/disclosure.mjs fails a page whose box is missing, whose dates differ from the
+     recorded one or from git's, or whose cite URL is not its canonical URL. A page with
+     manual claims says how many rest on a person reading a document, because "every
+     numbered sentence is re-run" would not be true of it. */
+  const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
+                  "September", "October", "November", "December"];
+  /* "2026-09-11" or "11 September 2026" -> "11 September 2026" */
+  function longDate(v) {
+    const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v));
+    return iso ? `${+iso[3]} ${MONTHS[+iso[2] - 1]} ${iso[1]}` : String(v);
+  }
+  async function madeAndChecked(page, nManual) {
+    const by = document.querySelector(".byline");
+    if (!by || document.querySelector(".pv-made")) return;
+    let rec = null;
+    try { rec = (await data("cite.json")).pages[page]; } catch (e) { rec = null; }
+    if (!rec) {
+      console.error(`PV.methodology: page "${page}" has no record in _data/cite.json; run _data/build/stamp_cite.py.`);
+      return;
+    }
+    const when = longDate(rec.revised), year = rec.revised.slice(0, 4);
+    const checks = page === "sources" ? "#sec-checks" : "../sources/#sec-checks";
+    const reran = nManual === 0 ? "" : nManual === 1
+      ? ", except one that rests on a document read by a person"
+      : `, except ${nManual} that rest on a document read by a person`;
+    const id = "pv-made-" + page;
+    by.insertAdjacentHTML("beforeend", ` &middot; <span class="pv-revised">Page revised
+      <time datetime="${rec.revised}">${when}</time></span> &middot; <button type="button"
+      class="pv-made-toggle" aria-expanded="false" aria-controls="${id}">How this was made
+      and checked &middot; Cite this page</button>`);
+    const box = document.createElement("div");
+    box.className = "pv-made";
+    box.id = id;
+    box.hidden = true;
+    box.innerHTML = `<p><b>How this was made and checked.</b> Written and edited by John
+      Swanson, who is responsible for it. Analysis and graphics by Claude (Anthropic) and
+      Codex (OpenAI). Every numbered sentence is re-run against the data it ships
+      with${reran}; that catches a sentence drifting from its data, not data that is wrong
+      about the world (<a href="${checks}">what the checks catch and miss</a>).</p>
+      <p class="pv-cite"><b>Cite as:</b> Swanson, J. (${year}). <cite>${rec.title}</cite>.
+      ${page === "index" ? "Polymer Industry Cluster (PIC). Version"
+        : "Polymer Industry Cluster (PIC) Evidence Room, version"}
+      <time datetime="${rec.revised}">${when}</time>. <a class="pv-cite-url"
+      href="${rec.url}">${rec.url}</a>. Creative Commons Attribution 4.0 (CC BY 4.0).</p>`;
+    by.after(box);
+    const t = by.querySelector(".pv-made-toggle");
+    t.addEventListener("click", () => {
+      const open = t.getAttribute("aria-expanded") !== "true";
+      t.setAttribute("aria-expanded", String(open));
+      box.hidden = !open;
+    });
   }
 
   /* ------------------------------------------------------------ methodology box
@@ -707,13 +773,14 @@ const PV = (() => {
       if (asOf) {
         const d = document.createElement("span");
         d.className = "dateline";
-        d.textContent = `Data as of ${asOf}`;
+        d.textContent = `Newest data retrieved ${longDate(asOf)}`;
         mast.appendChild(d);
       } else {
         console.error(`PV.methodology: page "${o.page || "index"}" supplied no meta.fetched or meta.as_of, so its masthead has no data date.`);
       }
     }
     statusBanner(m.status, o.page);
+    await madeAndChecked(o.page || "index", manual.length);
 
     const sec = document.createElement("section");
     sec.className = "band pv-method";

@@ -80,6 +80,30 @@ const CARDS = (() => {
   return out;
 })();
 
+/* HOW THIS WAS MADE AND CHECKED, AND CITE AS (DECISIONS.md, 5 October 2026). Every page
+ * carries, under its byline, a toggle that opens a short box ending in a "Cite as" line,
+ * and the byline says "Page revised <date>". Asserted rendered: the box exists beside the
+ * byline; the byline date, the cite version and the cite year all equal the page's
+ * recorded revision date in _data/cite.json; that record equals what git says now
+ * (_data/build/stamp_cite.py --print), so a page edited without re-stamping fails; and the
+ * cite URL is the page's canonical URL, built here from CITATION.cff rather than from the
+ * record the renderer read. A page with no record, or a tree whose git history cannot
+ * answer (a shallow clone), FAILS as uninspectable rather than passing quietly. */
+const CITE = (() => {
+  try { return JSON.parse(readFileSync("_data/cite.json", "utf8")).pages; }
+  catch (e) { console.log(`cannot read _data/cite.json: ${e.message}`); return {}; }
+})();
+const GIT = (() => {
+  const py = spawnSync("python3", ["_data/build/stamp_cite.py", "--print"], {encoding: "utf8"});
+  if (py.status !== 0) return {error: (py.stderr || py.stdout).trim()};
+  return JSON.parse(py.stdout).pages;
+})();
+const SITE = (readFileSync("CITATION.cff", "utf8").match(/^url:\s*"([^"]+)"/m) || [])[1];
+const canonical = n => SITE && (SITE.replace(/\/$/, "") + "/" + (n === "index" ? "" : n + "/"));
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
+                "September", "October", "November", "December"];
+const longDate = iso => `${+iso.slice(8, 10)} ${MONTHS[+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}`;
+
 const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
@@ -105,6 +129,22 @@ for (const n of list) {
             foot: [...document.querySelectorAll("footer .pv-status")]
               .map(e => [e.dataset.status, norm(e.textContent)]),
             flag: document.querySelector(".mast .proto")?.textContent.trim() || null,
+            made: (() => {
+              const by = document.querySelector(".byline"), box = document.querySelector(".pv-made");
+              if (!box) return null;
+              const t = by?.querySelector(".pv-made-toggle"), rev = by?.querySelector(".pv-revised time");
+              const cite = box.querySelector(".pv-cite"), u = cite?.querySelector("a.pv-cite-url");
+              return {beside: by?.nextElementSibling === box,
+                      toggle: !!t && t.getAttribute("aria-controls") === box.id,
+                      revised: rev ? [rev.getAttribute("datetime"), norm(rev.textContent)] : null,
+                      checks: !!box.querySelector("a[href$='#sec-checks']"),
+                      cite: cite ? norm(cite.textContent) : null,
+                      version: (() => { const v = cite?.querySelector("time");
+                        return v ? [v.getAttribute("datetime"), norm(v.textContent)] : null; })(),
+                      title: norm(cite?.querySelector("cite")?.textContent || ""),
+                      url: u ? [u.getAttribute("href"), norm(u.textContent)] : null,
+                      doc: document.title};
+            })(),
             pageLinks: [...document.querySelectorAll("a[href^='../']")].map(a => [
               (a.getAttribute("href").match(/^\.\.\/([a-z-]+)\/?$/) || [])[1] || null,
               a.nextElementSibling?.classList.contains("status-tag")
@@ -146,6 +186,31 @@ for (const n of list) {
       probs.push(`${key}: licence requires the trademark symbol, and it is not rendered`);
     if (src.licence_url && !r.links.some(h => h.startsWith(src.licence_url.slice(0, 40))))
       probs.push(`${key}: uses ${src.licence} data with no link to the licence`);
+  }
+  /* made-and-checked box and cite line: see the note above CITE */
+  {
+    const rec = CITE[n], mk = r.made, want = canonical(n);
+    if (!rec) probs.push("cannot inspect the cite line: no record in _data/cite.json");
+    else if (GIT.error) probs.push(`cannot inspect the revision date: ${GIT.error}`);
+    else if (!GIT[n]) probs.push("cannot inspect the revision date: stamp_cite.py does not list the page");
+    else if (GIT[n].revised !== rec.revised)
+      probs.push(`recorded revision date ${rec.revised} is stale: git dates ${n}/ ${GIT[n].revised} ` +
+                 "(run python3 _data/build/stamp_cite.py)");
+    if (!mk) probs.push("no How this was made and checked box");
+    else if (rec) {
+      if (!mk.beside || !mk.toggle) probs.push("the made-and-checked box is not the byline's own toggle and panel");
+      if (!mk.checks) probs.push("the made-and-checked box does not link to what the checks catch and miss");
+      const date = [rec.revised, longDate(rec.revised)];
+      for (const [what, got] of [["byline Page revised", mk.revised], ["cite version", mk.version]])
+        if (!got || got[0] !== date[0] || got[1] !== date[1])
+          probs.push(`${what} reads ${got ? got.join(" / ") : "nothing"}, the recorded revision date is ${date.join(" / ")}`);
+      if (!mk.cite || !mk.cite.startsWith(`Cite as: Swanson, J. (${rec.revised.slice(0, 4)}). ${rec.title}.`))
+        probs.push(`cite line does not open "Swanson, J. (${rec.revised.slice(0, 4)}). ${rec.title}."`);
+      if (!mk.doc.startsWith(rec.title)) probs.push(`cite title "${rec.title}" is not the page's own title "${mk.doc}"`);
+      if (!want) probs.push("cannot inspect the cite URL: CITATION.cff carries no url");
+      else if (!mk.url || mk.url[0] !== want || mk.url[1] !== want)
+        probs.push(`cite URL is ${mk.url ? mk.url[0] : "missing"}, the canonical URL is ${want}`);
+    }
   }
   /* status: see the note above BANNER */
   const want = DECLARED[n];

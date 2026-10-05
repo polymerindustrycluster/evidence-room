@@ -6,6 +6,26 @@ product and domain decisions that a reader or rebuilder needs.
 
 ---
 
+## 2026-10-05 — A page's version date is git's, and every date carries a label (John Swanson approved the wording; mechanism proposed by Claude)
+
+- **"Page revised" and the "Cite as" version are one date**: the author date of the newest
+  non-merge commit touching the page's folder (a folder with uncommitted edits is dated today).
+  `_data/build/stamp_cite.py` writes it, with the page's title and canonical URL, to
+  `_data/cite.json`, which the pages read; GitHub Pages serves the folders as they are, so nothing
+  asks git at serve time. `tools/disclosure.mjs` re-runs the stamp and fails a page whose recorded
+  date git no longer agrees with, so **any commit that edits a page folder must re-run
+  `stamp_cite.py`**. CI checks out full history for this; a shallow clone fails as uninspectable.
+  Shared code in `_shared/` does not revise a page: the date says when the page's own files changed.
+- **The canonical URL is CITATION.cff's url plus the page folder**; the hub cites the room at the
+  root.
+- **Every date says what it dates.** The masthead's "Data as of" became "Newest data retrieved", in
+  words. A byline month that dated the page was removed in favour of "Page revised"; a byline month
+  that dated the data stayed, labelled "retrieved" (location quotient, occupations) or "newest
+  vintage" (revisions); funding map's "Figures as of" was already labelled.
+- **The box says how many sentences a person checked by hand.** "Every numbered sentence is re-run
+  against the data it ships with" is not true of a page with manual claims, so on those pages it
+  adds "except N that rest on a document read by a person".
+
 ## 2026-10-04 — Responses to the three external reviews (John Swanson)
 
 Three independent reviews of the published site (4–5 October 2026) were triaged into errors,

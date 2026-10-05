@@ -116,6 +116,19 @@ const CASES = [
            "not for citation",
    inject: s => s.replace('` <span class="status-tag" data-status="INTERNAL">Internal</span>`', '""')},
 
+  /* How this was made and checked, and Cite as (DECISIONS.md, 5 October 2026). */
+  {gate: "disclosure", page: "peers", args: ["peers"],
+   expect: /no How this was made and checked box/,
+   defect: "a page shipped without the box that says who made it, what its checks can " +
+           "establish and how to cite it",
+   inject: s => s.replace('await madeAndChecked(o.page || "index", manual.length);', "")},
+
+  {gate: "disclosure", page: "churn", file: "_data/cite.json", args: ["churn"],
+   expect: /recorded revision date 2020-01-01 is stale/,
+   defect: "a page edited without re-stamping, so its Page revised and cite version " +
+           "name a date git no longer agrees with",
+   inject: s => s.replace(/("churn": \{[^}]*"revised": ")[^"]+/, (m, k) => k + "2020-01-01")},
+
   {gate: "consistency", page: "index", file: "index/app.js",
    command: "python3", args: ["_data/build/verify_consistency.py"],
    expect: /\[neo14-name\] index/,
@@ -508,7 +521,7 @@ const CASES = [
    defect: "a 404 page whose story-list link points at nothing",
    inject: s => s.replace("/evidence-room/index/#alltitle", "/evidence-room/index/#stories")},
 
-  {gate: "verify", page: "index", args: ["index"], expect: /contrast 2 under AA/,
+  {gate: "verify", page: "index", args: ["index"], expect: /contrast 5 under AA/,
    defect: "the hero byline at #9CC4CA, 3.62:1 on the teal hero (ER-11)",
    inject: s => s.replace("line-height:1.5;color:#C0DBE1;letter-spacing:.02em}",
                           "line-height:1.5;color:#9CC4CA;letter-spacing:.02em}")},

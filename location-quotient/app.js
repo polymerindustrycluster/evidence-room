@@ -194,7 +194,7 @@ document.getElementById("byline").innerHTML =
   /* One person holds both roles, so the roles collapse rather than printing the name
      twice (page-design.md, byline anatomy). */
   `By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data
-   ${AGENCY}, ${FIRST}&ndash;${LATEST} &middot; ${MONTHS[+fm - 1]}&nbsp;${fy}`;
+   ${AGENCY}, ${FIRST}&ndash;${LATEST}, retrieved ${MONTHS[+fm - 1]}&nbsp;${fy}`;
 
 /* ------------------------------------------------------- the cold open, in the hero
    The headline claim, drawn, before a word of explanation: one year, one axis. It is the

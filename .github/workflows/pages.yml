@@ -33,7 +33,11 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
+      # Full history: tools/disclosure.mjs dates each page from git (_data/build/stamp_cite.py),
+      # and a shallow clone would date every page to the one commit it can see.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -89,7 +93,11 @@ jobs:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
+      # Full history: tools/disclosure.mjs dates each page from git (_data/build/stamp_cite.py),
+      # and a shallow clone would date every page to the one commit it can see.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
