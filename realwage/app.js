@@ -193,6 +193,7 @@ function verdict() {
   RIVALS.forEach(n => { const r = byShort.get(n); if (r) mk(n, r.area); });
   const sel = document.createElement("select");
   sel.setAttribute("aria-label", `All ${B.length} matched metros with 2,000 or more polymer jobs`);
+  sel.setAttribute("aria-describedby", "verdict");
   const opt0 = document.createElement("option");
   opt0.value = ""; opt0.textContent = `More of the ${B.length}…`;
   sel.appendChild(opt0);

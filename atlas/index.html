@@ -57,8 +57,8 @@
       Alaska and Hawaii are inset at the lower left. Puerto Rico is outside this projection;
       its record remains in the selector and full directory.</p>
     <label class="map-picker" for="map-institution">Explore an institution</label>
-    <select id="map-institution"><option value="">Choose an institution…</option></select>
-    <p id="map-selection" aria-live="polite">Choose a name to read its location, recorded
+    <select id="map-institution" aria-describedby="map-selection"><option value="">Choose an institution…</option></select>
+    <p id="map-selection" role="status" aria-live="polite">Choose a name to read its location, recorded
       completions and 2023 reporting status.</p>
     <div class="chart"><svg id="map" role="img" aria-labelledby="map-t"><title id="map-t">Map
       of each institution record with a polymer program in the selected federal data, sized

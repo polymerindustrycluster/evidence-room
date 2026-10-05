@@ -16,7 +16,7 @@
 
 <header class="mast">
   <div class="wrap">
-    <strong>Polymer Industry Cluster</strong>
+    <a class="mast-home" href="./"><strong>Polymer Industry Cluster</strong></a>
     <span>Interactive evidence</span>
   </div>
 </header>
@@ -100,10 +100,10 @@
 
     <div class="picker">
       <label for="county">Check county coverage</label>
-      <select id="county">
+      <select id="county" aria-describedby="verdict">
         <option value="">All twelve counties</option>
       </select>
-      <p class="verdict" id="verdict" aria-live="polite"></p>
+      <p class="verdict" id="verdict" role="status" aria-live="polite"></p>
     </div>
 
     <h3 class="gname">Start here</h3>

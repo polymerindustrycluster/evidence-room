@@ -1,7 +1,17 @@
 /* Render each bundled artifact at desktop and phone width and report what is actually
    wrong on the page: console errors, horizontal overflow, and empty slots where a script
    was supposed to write copy. The claims harness checks the numbers; this checks that the
-   page carrying them renders. Usage: node tools/verify.mjs [name ...]  */
+   page carrying them renders. Usage: node tools/verify.mjs [name ...]
+
+   TEXT CONTRAST IN THE MASTHEAD AND HERO, added 4 October 2026. The byline under every
+   hero measured 3.62:1 (#9CC4CA on --ink at 13px) and the hero stat labels 3.87:1, on all
+   23 pages, and no gate measured colour (review ER-11). At 1440 every text element in
+   .mast and .hero is measured against the background it actually sits on: WCAG 2 relative
+   luminance, 4.5:1 below 24px (18.66px bold), else 3:1. A background it cannot resolve to
+   one colour (an image or gradient under the text) is reported as unmeasured and fails.
+   The one exemption is .eyebrow, the brand lime (#B8D637) at 12px bold, 4.12:1 on --ink:
+   brand colour is John's call, not a gate's, and it is listed until he makes it. */
+const CONTRAST_EXEMPT = ".eyebrow";
 import {readdirSync, existsSync} from "fs";
 import {resolve, dirname} from "path";
 import {fileURLToPath} from "url";
@@ -25,7 +35,7 @@ for (const name of names) {
     page.on("pageerror", e => errs.push(String(e).slice(0, 90)));
     await page.goto(`file:///${file.replace(/\\/g, "/")}`);
     await page.waitForTimeout(900);
-    const r = await page.evaluate(() => {
+    const r = await page.evaluate(EXEMPT => {
       // Only count overflow a reader can actually see. Content inside a closed
       // <details> is laid out by Chromium but invisible, and counting it reports
       // horizontal scroll on pages that have none.
@@ -86,16 +96,58 @@ for (const name of names) {
       else if (!(slug in (reg.by_artifact || {}))) prov = `${slug} is not in SOURCES.json`;
       else if ((reg.by_artifact[slug] || []).length &&
                !document.querySelector(".pv-repro")) prov = "no reproduce block rendered";
-      return {over, empty, raw, fill, prov, svgs: document.querySelectorAll("svg").length,
+      const contrast = {bad: [], unmeasured: [], n: 0};
+      if (innerWidth >= 1000) {
+        const rgba = s => { const m = s.match(/rgba?\(([^)]+)\)/); if (!m) return null;
+          const p = m[1].split(/[,\s/]+/).filter(Boolean).map(Number);
+          return {r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1}; };
+        const lum = ({r, g, b}) => { const f = v => { v /= 255;
+          return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); };
+          return .2126 * f(r) + .7152 * f(g) + .0722 * f(b); };
+        const over = (t, u) => ({r: t.r * t.a + u.r * (1 - t.a), g: t.g * t.a + u.g * (1 - t.a),
+          b: t.b * t.a + u.b * (1 - t.a), a: 1});
+        const seen = new Set();
+        document.querySelectorAll(".mast, .hero").forEach(root => [root, ...root.querySelectorAll("*")].forEach(e => {
+          if (seen.has(e)) return; seen.add(e);
+          if (e.closest("svg") || !e.checkVisibility({visibilityProperty: true, opacityProperty: true})) return;
+          if (![...e.childNodes].some(c => c.nodeType === 3 && c.textContent.trim())) return;
+          const r = e.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return;
+          if (e.matches(EXEMPT)) return;
+          const cs = getComputedStyle(e);
+          const layers = []; let why = null, op = 1;
+          for (let p = e; p; p = p.parentElement) {
+            const ps = getComputedStyle(p);
+            op *= +ps.opacity;
+            if (ps.backgroundImage !== "none") { why = "an image or gradient behind it"; break; }
+            const c = rgba(ps.backgroundColor);
+            if (c && c.a > 0) { layers.push(c); if (c.a >= 1) break; }
+          }
+          const fg0 = rgba(cs.color);
+          const tag = `${e.tagName.toLowerCase()}${e.className ? "." + String(e.className).split(" ")[0] : ""}`;
+          if (why || !fg0) { contrast.unmeasured.push(`${tag} (${why || cs.color})`); return; }
+          let bg = {r: 255, g: 255, b: 255, a: 1};
+          for (const l of layers.reverse()) bg = over(l, bg);
+          const fg = over({...fg0, a: fg0.a * op}, bg);
+          const [x, y] = [lum(fg), lum(bg)].sort((p, q) => q - p);
+          const ratio = (x + .05) / (y + .05);
+          const px = parseFloat(cs.fontSize), large = px >= 24 || (+cs.fontWeight >= 700 && px >= 18.66);
+          contrast.n++;
+          if (ratio < (large ? 3 : 4.5) - 0.005)
+            contrast.bad.push(`${tag} "${e.textContent.trim().slice(0, 24)}" ${ratio.toFixed(2)}:1`);
+        }));
+      }
+      return {over, empty, raw, fill, prov, contrast, svgs: document.querySelectorAll("svg").length,
               tables: document.querySelectorAll("table").length};
-    });
+    }, CONTRAST_EXEMPT);
     if (errs.length) out.push(`${tag}:err(${errs.length}) ${errs[0]}`);
     if (r.over > 1) out.push(`${tag}:overflow ${r.over}px`);
     if (r.empty.length) out.push(`${tag}:empty ${r.empty.join(",")}`);
     if (r.raw) out.push(`${tag}:uninterpolated x${r.raw}`);
     if (r.fill && r.fill.length) out.push(`${tag}:stranded ${r.fill.join(",")}`);
     if (r.prov) out.push(`${tag}:provenance ${r.prov}`);
-    if (tag === "1440") out.push(`svg=${r.svgs} tables=${r.tables}`);
+    if (r.contrast.bad.length) out.push(`${tag}:contrast ${r.contrast.bad.length} under AA: ${r.contrast.bad.slice(0, 3).join(", ")}`);
+    if (r.contrast.unmeasured.length) out.push(`${tag}:contrast UNMEASURED ${r.contrast.unmeasured.slice(0, 3).join(", ")}`);
+    if (tag === "1440") out.push(`svg=${r.svgs} tables=${r.tables} hero-text=${r.contrast.n}`);
     await page.close();
   }
   const clean = out.every(s => /^svg=/.test(s));

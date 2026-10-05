@@ -118,6 +118,9 @@ dfn b{font-weight:900}
 .mast .mast-home{color:inherit;text-decoration:none}
 .mast .mast-home:hover{text-decoration:underline}
 .mast .mast-home:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+/* "All stories", written by picviz.js beside the wordmark on every story page. */
+.mast .mast-all{color:#EAF4F5;font-size:12px;letter-spacing:.02em}
+.mast .mast-all:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
 /* Official PIC mark, sized to the cap-height of the wordmark beside it and given real
    clear space. It leads the masthead; the PROTOTYPE flag opposite it must stay legible,
    because a registered mark on a draft is the thing most likely to be misread. */
@@ -154,9 +157,10 @@ dfn b{font-weight:900}
    size, competing with the dek it sits under. Here, a new page inherits it by existing.
    The class selector outranks the `> *` rule above, and the `auto` side margins are
    load-bearing: a `margin:14px 0 0` shorthand drops the block onto the wrap's left edge,
-   151px outboard of the text rail. */
+   151px outboard of the text rail. Its colour was #9CC4CA, 3.62:1 on --ink at 13px (review
+   ER-11, 4 October 2026); #C0DBE1 is 4.69:1, and tools/verify.mjs now measures hero text. */
 .hero .wrap > .byline{margin:14px auto 0;max-width:var(--measure);font-size:13px;
-  line-height:1.5;color:#9CC4CA;letter-spacing:.02em}
+  line-height:1.5;color:#C0DBE1;letter-spacing:.02em}
 .pv-footprint .wrap{max-width:calc(var(--measure) + 64px)}
 .hero h1 em{font-style:normal;color:var(--lime)}
 .hero .stand{margin:16px 0 0;max-width:var(--measure);color:#C6E2E6;font-size:19px;line-height:1.55}
@@ -168,7 +172,7 @@ dfn b{font-weight:900}
 .figv .n{font-size:clamp(34px,4vw,52px);font-weight:900;line-height:1;letter-spacing:-.03em;
   font-variant-numeric:proportional-nums}
 .figv .k{margin:8px 0 0;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
-  font-weight:700;color:#9FCBD2}
+  font-weight:700;color:#C0DBE1}
 /* px, not ch, for the same reason as the measure: `ch` here resolved against this
    element's 13.5px font and nothing else on the page used that number. It sits beside
    .figv's own min-width:130px, so the pair is now in one unit. */
@@ -505,6 +509,14 @@ th.pv-sortable[aria-sort="descending"]::after{content:" ↓";opacity:1;color:var
  * checks the rail too. */
 .tnote{margin:14px auto 4px;max-width:var(--measure);font-size:13px;line-height:1.6;
   color:var(--caption)}
+
+/* The chart bypass picviz.js puts first in each chart box: out of sight until it takes
+   focus, then shown in place above the chart (review ER-02, 4 October 2026). */
+.pv-skipchart{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);
+  white-space:nowrap;border:0;padding:0;margin:0}
+.pv-skipchart:focus{position:static;width:auto;height:auto;overflow:visible;clip-path:none;
+  display:inline-block;margin:0 0 8px;padding:8px 14px;background:#fff;color:var(--ink);
+  font:inherit;font-size:14px;font-weight:700;border:2px solid var(--ink);cursor:pointer}
 
 /* Keyboard entry to the article, shared by page shells and the hub. */
 .skip-link{position:absolute;left:16px;top:-100px;z-index:20;background:#fff;

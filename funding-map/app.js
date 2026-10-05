@@ -622,6 +622,7 @@ function loadData(file) {
     viz.textContent = '';
     viz.appendChild(svg);
     viz.appendChild(hits);
+    PV.rove(viz, 'button.hit');   // one Tab stop for the diagram, arrows between its parts
     viz.removeAttribute('aria-busy');
 
     fitLabels(svg, L);
@@ -1583,9 +1584,12 @@ function loadData(file) {
           text: `${r.name} · ${fmt(r.total)}` +
             (r.awards.length > 1 ? ` across ${numword(r.awards.length)} awards` : '') })));
       finder.addEventListener('change', () => {
-        if (!finder.value) { closeDetail(); return; }
+        const status = document.getElementById('finder-status');
+        if (!finder.value) { closeDetail(); if (status) status.textContent = 'Details closed.'; return; }
         const id = finder.value;
         openDetail('recipient', id, { focus: false });
+        /* The panel opens without taking focus, so say where it is (review ER-10). */
+        if (status) status.textContent = `Details for ${G.recipients.get(id).name} are open in the panel.`;
         const b = viz.querySelector(`[data-kind="recipient"][data-id="${CSS.escape(id)}"]`);
         if (b) b.scrollIntoView({ block: 'center', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
       });

@@ -384,6 +384,48 @@ const CASES = [
      '    requestAnimationFrame(() => { queued = false; if (document.fonts.status !== "loading") keep(); });\n  };\n' +
      '  if (document.fonts.status === "loading") document.fonts.ready.then(settle, () => {});\n' +
      '  document.fonts.addEventListener("loadingdone", settle);\n};')},
+
+  /* The roving tab stop of 4 October 2026 has to follow focus, or the reader the font-load
+     redraw hands back to their mark is handed a chart whose one Tab stop is elsewhere. */
+  {gate: "fontfocus", page: "peers", file: "_shared/picviz.js", args: ["peers:states"],
+   expect: /Tab stop/,
+   defect: "a roving tab stop that stays on the first mark when focus is restored to another " +
+           "one after the font-load redraw",
+   inject: s => s.replace('document.addEventListener("focusin", e => {',
+                          'document.addEventListener("focusin-off", e => {')},
+
+  /* tools/access.mjs, added 4 October 2026 from the multi-persona audit and the usability
+     review. Each injection puts back a defect the site shipped until that day. */
+  {gate: "access", page: "peers", args: ["peers"], expect: /takes \d+ Tab stops/,
+   defect: "every chart mark its own Tab stop (198 on peers before 4 October 2026, ER-02)",
+   inject: s => s.replace("    enlist(node);\n", '    node.setAttribute("tabindex", "0");\n')},
+
+  {gate: "access", page: "wages", args: ["wages"], expect: /no "Skip the chart" control/,
+   defect: "a chart with no bypass before it in the Tab order (ER-02)",
+   inject: s => s.replace("skipFor(g).hidden = !vis.length;", "void vis;")},
+
+  {gate: "access", page: "peers", args: ["peers"], expect: /twin table holds 25 rows for 155/,
+   defect: "the metro table holding the top 25 of the 155 metros plotted above it (ER-07)",
+   inject: s => s.replace("const rows = ranked.map(", "const rows = ranked.slice(0, 25).map(")
+                 .replace("ids: ranked.map(r => r.area)", "ids: ranked.slice(0, 25).map(r => r.area)")},
+
+  {gate: "access", page: "wages", args: ["wages"], expect: /no live region it names/,
+   defect: "a county button that rewrites the verdict with no live region (ER-10)",
+   inject: s => s.replace('<p class="verdict" id="verdict" role="status" aria-live="polite"></p>',
+                          '<p class="verdict" id="verdict"></p>')},
+
+  {gate: "access", page: "peers", args: ["peers"], expect: /no accessible name/,
+   defect: "a rendered link whose only content is an unlabelled graphic",
+   inject: s => s.replace("<body>", '<body><p><a href="../wages/"><svg width="12" height="12"></svg></a></p>')},
+
+  {gate: "access", page: "404", file: "404.html", args: ["404"], expect: /no element with id "stories"/,
+   defect: "a 404 page whose story-list link points at nothing",
+   inject: s => s.replace("/evidence-room/index/#alltitle", "/evidence-room/index/#stories")},
+
+  {gate: "verify", page: "index", args: ["index"], expect: /contrast 2 under AA/,
+   defect: "the hero byline at #9CC4CA, 3.62:1 on the teal hero (ER-11)",
+   inject: s => s.replace("line-height:1.5;color:#C0DBE1;letter-spacing:.02em}",
+                          "line-height:1.5;color:#9CC4CA;letter-spacing:.02em}")},
 ];
 
 const only = process.argv.slice(2).filter(a => !a.startsWith("--"));
