@@ -18,14 +18,15 @@ repository root. verify_consistency.py re-runs parse() and fails if either outpu
 from what this would write now, so a stale or hand-edited output cannot ship.
 
 WHICH PAGES AN ENTRY NAMES. Most entries name their pages in italics (*wages*, *index, chain*),
-in the heading or on a sub-heading, and those are read from the text. Older entries name
-pages in prose ("the hub", "the price page"), so PAGES_BY_HEADING lists them by hand; an
-entry that ends up naming no page FAILS the build rather than vanishing from every filter.
+in the heading or on a sub-heading; an entry also belongs to every page its text names by
+folder name, title or (for the hub) "front page", less MENTION_EXCLUDED, each with a reason.
+Entries naming pages only in other prose ("the price page") are in PAGES_BY_HEADING; an entry
+that ends up naming no page FAILS the build rather than vanishing from every filter.
 
-NO KIND. Each page's summary counts the entries naming it and says whether one changed its
-headline. An automatic wording/figure split was tried and was wrong in both directions (John,
-2026-10-05). HEADLINE lists the pairs where the correction changed the page's H1, read by
-hand from the entries and checked against them on 2026-10-05.
+NO KIND. Each page's summary counts the entries naming it and says whether its headline
+changed. An automatic wording/figure split was tried and was wrong in both directions (John,
+2026-10-05). Headline changes are read from git: the dates the page's <h1> text changed after
+the commit that first published it (headline_dates()).
 
   python3 _data/build/derive_corrections.py           write both files
   python3 _data/build/derive_corrections.py --check   exit 1 if either is stale
@@ -100,35 +101,131 @@ PAGES_BY_HEADING = {
 # log, shown under "every page", and named by no page's filter or count.
 SITE_WIDE = set()
 
-# Entries that also correct the front page in prose, without italics. (heading prefix) -> pages.
-PAGES_ADDED = {
-    "2026-09-30 — More sentences that said more": ["index"],   # "revisions and the front page"
-    "2026-09-28 — Ten sentences read firmer": ["index"],       # the front page's reach and collaboration cards
-    "2026-09-01, tenth entry": ["index"],                      # "the hub's chain card said 785"
-    "2026-09-01, second entry": ["index"],                     # "The hub inventory re-summed"
-}
-HUB_PROSE = re.compile(r"\bfront[- ]page\b|\bthe hub\b|\bhub(?:'s|’s)? ")
-# Entries that mention the front page or the hub without changing its text, and why.
-HUB_MENTION_ONLY = {
-    "2026-10-04 — The corrections log is a page": "its correction-log link changed address; the words did not",
-    "2026-09-29 — The scorecard and the accountability page": "\"the hub\" is the Ohio Innovation Hub",
-    "2026-08-29 — a hierarchy ranked and a total flattened": "says the hub still carries $106.3M; unchanged",
+# AN ENTRY BELONGS TO EVERY PAGE IT NAMES: in its italics, or in its text by the page's
+# folder name, that name with spaces, its <title>, or (for the hub) "front page" / "the hub".
+# A body mention that does not mean the page's own text changed is excluded here, by hand,
+# with the reason; every entry was read against this rule on 2026-10-05 (PR #49 review,
+# which found cluster-health's WPU06 label correction counted only on two other pages).
+# An exclusion that no longer matches a mention fails the build.
+MENTION_EXCLUDED = {
+    ("2026-10-04 — The corrections log is a page", "chain"): "its corrections-log link changed address, not its words",
+    ("2026-10-04 — The corrections log is a page", "index"): "its corrections-log link changed address, not its words",
+    ("2026-10-04 — The corrections log is a page", "collaboration"): "a dated note moved below the headline, unaltered",
+    ("2026-10-04 — The corrections log is a page", "cost-scissors"): "dated notes moved below the headline, unaltered",
+    ("2026-10-04 — The corrections log is a page", "funding-map"): "a dated note moved below the headline, unaltered",
+    ("2026-10-04 — The corrections log is a page", "wages"): "dated notes moved below the headline, unaltered",
+    ("2026-10-04 — One name per county set", "programs"): "\"PIC's main site and programs\": PIC's programs, not the page",
+    ("2026-09-30 — Two replication recipes", "laborshed"): "the sources page's labour shed recipe; laborshed unchanged",
+    ("2026-09-30 — Two replication recipes", "location-quotient"): "the concept, in the sources page's recipe",
+    ("2026-09-30 — A seat called the winner", "funding-map"): "cited as already stating the basis",
+    ("2026-09-30 — Mastheads that showed no data date", "occupations"): "patents restates occupations' data; occupations unchanged",
+    ("2026-09-29 — Federal money does reach PIC", "federal-money"): "the words \"federal money\" in the title",
+    ("2026-09-29 — Federal money does reach PIC", "reach"): "the verb",
+    ("2026-09-29 — The scorecard and the accountability page", "chain"): "the scorecard quoted chain's count; chain unchanged",
+    ("2026-09-29 — The scorecard and the accountability page", "funding-map"): "the scorecard's copy of the funding map's note",
+    ("2026-09-29 — The scorecard and the accountability page", "index"): "\"the hub\" is the Ohio Innovation Hub",
+    ("2026-09-29 — The scorecard and the accountability page", "occupations"): "the scorecard uses occupations' code list",
+    ("2026-09-29 — The scorecard and the accountability page", "programs"): "\"workforce programs\", not the page",
+    ("2026-09-29 — The scorecard and the accountability page", "timeline"): "the accountability page's own timeline band",
+    ("2026-09-29 — Labels and cards that said more", "chain"): "chain's card on the front page (index carries it)",
+    ("2026-09-29 — Labels and cards that said more", "reach"): "reach's card on the front page (index carries it)",
+    ("2026-09-29 — Labels and cards that said more", "federal-money"): "the federal-money card on the front page",
+    ("2026-09-29 — Labels and cards that said more", "funding-map"): "the funding-map card on the front page",
+    ("2026-09-28 — Seven more statements", "funding-map"): "the funding-map card on the front page",
+    ("2026-09-28 — Seven more statements", "timeline"): "cited for its date of record, already right",
+    ("2026-09-28 — Cost scissors claimed a gain", "chain"): "\"in this chain\", not the page",
+    ("2026-09-28 — Churn said most hires", "reach"): "the verb",
+    ("2026-09-12 — The bureau revised 2025", "federal-money"): "the sources page's claim tally counts its guards",
+    ("2026-09-11 — Education scope", "reach"): "\"recruiting reach\", not the page",
+    ("2026-09-11 — Historical contributions", "sources"): "\"sources that did not establish\", not the page",
+    ("2026-09-11 — Narrative claims", "atlas"): "an Atlas threshold on a front-page card (index carries it)",
+    ("2026-09-11 — Documentary descriptions", "sources"): "\"direct sources\", not the page",
+    ("2026-09-10 — Residence records", "revisions"): "\"size of revisions\", not the page",
+    ("2026-09-08 — Price-page inflation dependency", "federal-money"): "the source of a copied index; federal-money unchanged",
+    ("2026-09-08 — Comparator and chronology", "wages"): "\"individual wages\", not the page",
+    ("2026-09-08 — Wage geography", "sources"): "\"price sources\", not the page",
+    ("2026-09-08 — Directory summaries", "reach"): "the verb",
+    ("2026-09-08 — Directory summaries", "revisions"): "\"upstream revisions\", not the page",
+    ("2026-09-01, tenth entry", "chain"): "\"the hub's chain card\" (index carries it)",
+    ("2026-09-01, tenth entry", "reach"): "the verb",
+    ("2026-09-01, tenth entry", "timeline"): "the right-of-reply block names it; the block is every page's",
+    ("2026-09-01, ninth entry", "accountability"): "named in the front page's corrected universals",
+    ("2026-09-01, fourth entry", "location-quotient"): "the sources page's worked arithmetic",
+    ("2026-09-01, fourth entry", "programs"): "cited for the quarantine it already had",
+    ("2026-09-01, fourth entry", "sources"): "\"with no reader-facing change\"",
+    ("2026-09-01, second entry", "wages"): "\"real wages\", the realwage page's figure",
+    ("2026-09-01 — nine corrections", "laborshed"): "the sources page's not-yet note named it",
+    ("2026-08-31 — three corrections", "revisions"): "cited as where the measured noise floor lives",
+    ("2026-08-30 — four corrections", "wages"): "\"Employment and Wages\", the census's name",
+    ("2026-08-29 — a hierarchy ranked", "accountability"): "said still to carry $106.3M; unchanged",
+    ("2026-08-29 — a hierarchy ranked", "index"): "said still to carry $106.3M; unchanged",
+    ("2026-08-29 — a hierarchy ranked", "scorecard"): "said still to carry $106.3M; unchanged",
+    ("2026-08-17 — the pre-publication review", "cluster-health"): "cited as already on the finished-years basis",
+    ("2026-08-17 — the pre-publication review", "federal-money"): "its card on the front page (index carries it)",
+    ("2026-08-17 — the pre-publication review", "funding-map"): "its card on the front page (index carries it)",
 }
 
-# Corrections that changed a page's headline, its H1 (the hero claim's statement), read
-# from the entries. (heading prefix, page). Everything else leaves the headline unchanged.
-HEADLINE = [
-    ("2026-10-04 — Evidence states, bases and labels", "federal-money"),   # "polymer" scope in the headline
-    ("2026-09-28 — Ten sentences read firmer", "reach"),                   # "four of its papers in five"
-    ("2026-09-28 — Ten sentences read firmer", "collaboration"),           # "have written 208 papers together"
-    ("2026-09-28 — Wages said pay was level", "wages"),                    # "Against manufacturing, pay is level"
-    ("2026-09-11 — Institution records are not distinct schools", "atlas"),  # 147 "places"
-    ("2026-09-01 — nine corrections from the full-site first-read pass", "federal-money"),  # $35M to $37M
-    ("2026-08-30 — four corrections", "revisions"),                        # "Every month moved"
-    ("2026-08-29 — a hierarchy ranked and a total flattened", "funding-map"),  # $106 million to $85.3 million
-    ("2026-08-29 — two right numbers and no way to tell them apart", "churn"),  # "168 more job starts"
-    ("2026-08-29 — a hierarchy published as a flat list", "wages"),        # "The typical polymer job"
-]
+
+def page_title(page):
+    m = re.search(r"<title>(.*?)</title>", open(os.path.join(WEB, page, "index.html"), encoding="utf-8").read(), re.S)
+    return html.unescape(m.group(1).strip()) if m else ""
+
+
+def mention_patterns(pages):
+    pats = {}
+    for p in pages:
+        alts = [re.escape(p), re.escape(p.replace("-", " ")), re.escape(page_title(p))]
+        if p == "index":
+            alts = [r"front[- ]page", r"the hub\b", r"hub(?:'s|’s)? ", re.escape(page_title(p))]
+        if p == "laborshed":
+            alts.append(r"labou?r[- ]shed")
+        if p == "realwage":
+            alts.append(r"real[- ]wage")
+        pats[p] = re.compile(r"(?<![\w/-])(?:" + "|".join(a for a in alts if a) + r")(?![\w-])", re.I)
+    return pats
+
+
+# HEADLINE CHANGES ARE READ FROM GIT, NOT LISTED (PR #49 review, 2026-10-05: a hand list
+# missed realwage, programs and cluster-health). For each page, the author dates of the non-merge
+# commits after the one that first published it in which the text of its <h1> in
+# index.html changed (tags stripped, entities decoded, whitespace collapsed, so markup alone
+# is no change). chain's script-rendered H1 is held to the static one by its own claim.
+def h1_text(src):
+    """The H1's words: tags, whitespace and quote style aside, so markup, a line break or a
+    typographic quote is not a change and a word or a number is."""
+    m = re.search(r"<h1\b[^>]*>(.*?)</h1>", src or "", re.S | re.I)
+    if not m:
+        return None
+    t = html.unescape(re.sub(r"<[^>]+>", "", m.group(1)))
+    return re.sub(r"\s+", "", t.translate(str.maketrans("‘’“”", "''\"\"")))
+
+
+def _git(repo, *args):
+    import subprocess
+    r = subprocess.run(["git", "-C", repo, *args], capture_output=True, text=True)
+    return r.stdout if r.returncode == 0 else None
+
+
+def headline_dates(page, repo=WEB):
+    """Sorted unique dates on which the page's H1 text changed after first publication."""
+    path = f"{page}/index.html"
+    log = _git(repo, "log", "--no-merges", "--reverse", "--format=%H %as", "--", path) or ""
+    dates = []
+    for line in log.split("\n"):
+        if not line.strip():
+            continue
+        sha, day = line.split()
+        before = _git(repo, "show", f"{sha}^:{path}")
+        if before is None:
+            continue          # the commit that published the page
+        if h1_text(before) != h1_text(_git(repo, "show", f"{sha}:{path}")):
+            dates.append(day)
+    return sorted(set(dates))
+
+
+def history_is_complete(repo=WEB):
+    return (_git(repo, "rev-parse", "--is-shallow-repository") or "").strip() == "false"
+
 
 # Pages an entry corrected before the page was first published. They stay in the log and in
 # its filter, and are left out of "N corrections since publication". (heading prefix, page).
@@ -298,14 +395,16 @@ def unresolved_names(html_text, pages):
             if not resolve(i, pages) and i.lower() not in NOT_PAGES_NAMED]
 
 
-def parse(text=None):
+def parse(text=None, history=True):
+    """history=False skips reading headline dates from git (a shallow clone cannot)."""
     text = text if text is not None else open(SRC, encoding="utf-8").read()
     pages = page_slugs()
     head, *chunks = re.split(r"(?m)^## ", text)
     if not head.startswith("# Corrections"):
         raise SystemExit("derive_corrections: CORRECTIONS.md does not open with '# Corrections'")
     preamble = blocks(head.split("\n", 1)[1])
-    items, used_pbh, used_head = [], set(), set()
+    items, used_pbh, used_excl = [], set(), set()
+    mentions = mention_patterns(pages)
     for chunk in chunks:
         heading, body = chunk.split("\n", 1)
         heading = heading.strip()
@@ -322,10 +421,6 @@ def parse(text=None):
         if heading in PAGES_BY_HEADING:
             named = PAGES_BY_HEADING[heading]
             used_pbh.add(heading)
-        for pre, extra in PAGES_ADDED.items():
-            if heading.startswith(pre):
-                named = named + [x for x in extra if x not in named]
-                used_pbh.add(pre)
         # Every italic name in the heading, a ### head or a sub-entry's bold lead is a page.
         leads = [title_html] + [h for kind, raw, h in main if kind == "h"] + \
                 [inline(lm.group(1)) for kind, raw, _ in main if kind == "p"
@@ -334,13 +429,15 @@ def parse(text=None):
         if lost:
             raise SystemExit(f"derive_corrections: {heading!r} names {lost} in italics, which resolve to "
                              "no page; add an alias (ALIASES) or say why it is not one (NOT_PAGES_NAMED)")
-        # Prose that says the front page changed must name the index page.
-        text = re.sub(r"<[^>]+>", "", "".join(h for _, _, h in main))
-        if HUB_PROSE.search(text) and "index" not in named and \
-                not any(heading.startswith(pre) for pre in HUB_MENTION_ONLY):
-            raise SystemExit(f"derive_corrections: {heading!r} mentions the front page or the hub "
-                             f"({HUB_PROSE.search(text).group(0)!r}) and does not name index; add it "
-                             "(PAGES_ADDED) or say why the hub's text did not change (HUB_MENTION_ONLY)")
+        # Every page the entry's text names, unless excluded with a reason.
+        text = html.unescape(re.sub(r"<[^>]+>", " ", title_html + " " + "".join(h for _, _, h in main)))
+        for p, pat in mentions.items():
+            if p in named or not pat.search(text):
+                continue
+            if any(heading.startswith(pre) and pg == p for pre, pg in MENTION_EXCLUDED):
+                used_excl.update((pre, pg) for pre, pg in MENTION_EXCLUDED if heading.startswith(pre) and pg == p)
+                continue
+            named = named + [p]
         if heading in SITE_WIDE:
             named = []
             used_pbh.add(heading)
@@ -353,9 +450,7 @@ def parse(text=None):
         slug = None   # set below, once the date's entries are counted
         flags = {}
         for p in named:
-            hl = any(pg == p and heading.startswith(pre) for pre, pg in HEADLINE)
-            used_head.update((pre, pg) for pre, pg in HEADLINE if pg == p and heading.startswith(pre))
-            flags[p] = {"headline_changed": hl}
+            flags[p] = {}
             if any(pg == p and heading.startswith(pre) for pre, pg in BEFORE_PUBLICATION):
                 flags[p]["before_publication"] = True
         items.append({
@@ -367,11 +462,10 @@ def parse(text=None):
             "flags": flags,
             "after_html": "".join(h for kind, _, h in notes if kind != "hr"),
         })
-    for heading in sorted((set(PAGES_BY_HEADING) | SITE_WIDE | set(PAGES_ADDED)) - used_pbh):
+    for heading in sorted((set(PAGES_BY_HEADING) | SITE_WIDE) - used_pbh):
         raise SystemExit(f"derive_corrections: PAGES_BY_HEADING names {heading!r}, which is not a heading")
-    for pre, pg in HEADLINE:
-        if (pre, pg) not in used_head:
-            raise SystemExit(f"derive_corrections: HEADLINE pair ({pre!r}, {pg!r}) matches no entry naming that page")
+    for key in sorted(set(MENTION_EXCLUDED) - used_excl):
+        raise SystemExit(f"derive_corrections: MENTION_EXCLUDED {key} matches no mention; remove it")
     for (pre, pg) in BEFORE_PUBLICATION:
         if not any(it["heading"].startswith(pre) and pg in it["pages"] for it in items):
             raise SystemExit(f"derive_corrections: BEFORE_PUBLICATION ({pre!r}, {pg!r}) matches no entry naming that page")
@@ -410,9 +504,10 @@ def parse(text=None):
     summary = {
         "_about": "Generated by _data/build/derive_corrections.py from CORRECTIONS.md; never "
                   "hand-edit. Per page, the corrections log entries that name it, newest first, "
-                  "each with whether it changed the headline. "
-                  "PV.correctionsSummary() prints the line at the top of each page from this.",
+                  "and, per page, the dates its headline (H1) changed after first publication, "
+                  "read from git. PV.correctionsSummary() prints the byline link from this.",
         "pages": {p: by_page[p] for p in sorted(by_page)},
+        "headlines": {p: headline_dates(p) for p in pages} if history else None,
     }
     return log, summary
 

@@ -73,7 +73,7 @@ const show = page => {
   const list = BY && BY.pages && BY.pages[page];
   count.textContent = page
     ? `${n} of the ${entries.length} entries name ${page}.` +
-      (list ? ` On that page: ${PV.correctionsSentence(list)}` : "")
+      (list ? ` On that page: ${PV.correctionsSentence(list, (BY.headlines || {})[page])}` : "")
     : `All ${entries.length} entries.`;
 };
 const asked = new URLSearchParams(location.search).get("page");

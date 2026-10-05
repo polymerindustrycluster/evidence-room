@@ -583,7 +583,7 @@ const PV = (() => {
      A LINK IN THE BYLINE SAYING WHETHER THIS PAGE HAS BEEN CORRECTED (DECISIONS.md,
      2026-10-04, D3; placed in the byline by John, 2026-10-05). Dated correction notes used to open four pages, above the headline
      they qualified; they now sit below it, beside what they correct, and this line says at
-     the top how many corrections the page has had, of what kind, and whether the headline
+     the top how many corrections the page has had and whether the headline
      moved. It is generated from _data/corrections_by_page.json, which
      _data/build/derive_corrections.py writes from CORRECTIONS.md, so it cannot disagree
      with the log it links to. It counts entries and says whether the headline changed; an
@@ -599,9 +599,11 @@ const PV = (() => {
     return said.length < 3 ? said.join(" and ") : `${said.slice(0, -1).join(", ")} and ${said.at(-1)}`;
   }
   /* The fuller sentence, also printed by the log's own page view. */
-  function correctionsSentence(list) {
+  /* headlines: the dates the page's H1 text changed after first publication, read from git
+     by the derive script, not from the entries (a hand list missed three pages). */
+  function correctionsSentence(list, headlines) {
     const pub = list.filter(e => !e.before_publication);
-    const moved = [...new Set(pub.filter(e => e.headline_changed).map(e => e.date))].sort();
+    const moved = [...new Set(headlines || [])].sort();
     return `${pub.length} correction${pub.length === 1 ? "" : "s"} since publication. ` +
       (moved.length ? `Headline changed on ${onDates(moved)}.` : "Headline unchanged.");
   }
@@ -623,7 +625,7 @@ const PV = (() => {
        and leads the page's view of the log. */
     const span = document.createElement("span");
     span.className = "pv-corr-sum";
-    const full = correctionsSentence(list);
+    const full = correctionsSentence(list, (all.headlines || {})[page]);
     span.innerHTML = ` &middot; <a href="../corrections/?page=${page}" aria-label="${full}" ` +
       `title="${full}">${n} correction${n === 1 ? "" : "s"}</a>`;
     by.appendChild(span);

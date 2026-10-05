@@ -938,8 +938,15 @@ def check_corrections(web: str = WEB) -> None:
     log_path = os.path.join(web, "corrections", "data", "corrections.json")
     sum_path = os.path.join(web, "_data", "corrections_by_page.json")
     src = read(web, "CORRECTIONS.md")
+    # Headline dates are read from git history; a shallow clone holds none, so the check says
+    # it could not inspect them rather than passing (CI checks out full history for this).
+    full = dc.history_is_complete(web)
+    if not full:
+        err("corrections", "_data/corrections_by_page.json",
+            "cannot inspect headline dates: the git history is shallow; fetch it in full "
+            "(actions/checkout fetch-depth: 0)")
     try:
-        fresh_log, fresh_sum = dc.parse(src)
+        fresh_log, fresh_sum = dc.parse(src, history=full)
     except SystemExit as exc:
         err("corrections", "CORRECTIONS.md", f"derive_corrections.py cannot read it: {exc}")
         return
@@ -978,6 +985,8 @@ def check_corrections(web: str = WEB) -> None:
             err("corrections", "corrections/data/corrections.json",
                 f"entry {e.get('id')} does not render the Markdown word for word: source "
                 f"...{want[max(0, i - 30): i + 20]}... rendered ...{got[max(0, i - 30): i + 20]}...")
+    if not full:
+        summ = dict(summ, headlines=None)
     if summ != fresh_sum:
         err("corrections", "_data/corrections_by_page.json",
             "differs from what derive_corrections.py writes now. Run derive_corrections.py.")
@@ -992,10 +1001,7 @@ def check_corrections(web: str = WEB) -> None:
         if [x.get("id") for x in got] != naming.get(p, []):
             err("corrections", p, f"summary lists {len(got)} entries; the log has {len(naming.get(p, []))} "
                 "naming this page")
-        for x in got:
-            if not isinstance(x.get("headline_changed"), bool):
-                err("corrections", p, f"entry {x.get('id')} carries headline_changed "
-                    f"{x.get('headline_changed')!r}; need true or false")
+
 
 
 # ------------------------------------------------------------------------------- main
