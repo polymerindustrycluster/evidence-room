@@ -535,7 +535,7 @@ const CASES = [
    defect: "a 404 page whose story-list link points at nothing",
    inject: s => s.replace("/evidence-room/index/#alltitle", "/evidence-room/index/#stories")},
 
-  {gate: "verify", page: "index", args: ["index"], expect: /contrast 2 under AA/,
+  {gate: "verify", page: "index", args: ["index"], expect: /contrast 4 under AA/,  /* byline, its name, the corrections link and its anchor */
    defect: "the hero byline at #9CC4CA, 3.62:1 on the teal hero (ER-11)",
    inject: s => s.replace("line-height:1.5;color:#C0DBE1;letter-spacing:.02em}",
                           "line-height:1.5;color:#9CC4CA;letter-spacing:.02em}")},

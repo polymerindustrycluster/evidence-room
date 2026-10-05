@@ -20,12 +20,17 @@ byline and the headline figure: one on collaboration, three on cost-scissors, on
 funding-map and two on wages. No page said at its top whether it had been corrected.
 **Is:** the links open a corrections page on this site that renders this file as written,
 newest first, and narrows it to the entries naming one page. The seven notes sit below the
-headline, beside what each corrects, in their original words. A line under each byline says
-how many corrections the page has had since publication, how many changed a figure and how
-many only wording, and whether one changed the headline, and links to that page’s entries
-here. `verify_consistency.py` fails a build whose rendered log has lost an entry or whose
+headline, beside what each corrects, in their original words. Each byline ends with a link
+counting the page’s corrections since publication; its full wording says how many changed a
+figure and how many only wording, and whether one changed the headline, and it opens that
+page’s entries here. `verify_consistency.py` fails a build whose rendered log has lost an entry or whose
 page counts disagree with it, and the style gate fails a dated correction note placed above
 a page’s first section heading. No figure changed.
+
+**The site’s page count, *sources*.** **Was:** the checks section said the 589 claims ran
+across all 23 site pages. **Is:** all 24; the corrections page is the twenty-fourth and carries
+no claims. The number is now counted from the pages that exist, `src-site-pages` binds it, and
+the page carries a dated note.
 
 ## 2026-10-04 — One name per county set, one status vocabulary, and who PIC is, *index, chain, sources, peers*
 

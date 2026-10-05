@@ -1348,6 +1348,12 @@ def build():
     checks["n_auto"] = checks["n_claims"] - checks["n_manual"]
     checks["n_hub_claims"] = len(load(WEB, "index", "claims.json")["claims"])
     checks["n_site_claims"] = checks["n_claims"] + checks["n_hub_claims"]
+    # Every page on the site, the hub and the corrections log included: a folder holding an
+    # index.html, by the same rule tools/bundle.mjs uses. The log carries no claims.
+    checks["n_site_pages"] = sum(
+        1 for d in os.listdir(WEB)
+        if not d.startswith(("_", ".")) and d not in ("dist", "tools", "node_modules", "shots")
+        and os.path.isfile(os.path.join(WEB, d, "index.html")))
 
     # EACH PAGE'S STATUS, READ FROM ITS OWN MASTHEAD FILE (DECISIONS.md 2026-10-04), so a
     # link from this page to an INTERNAL page carries the tag the page itself declares.

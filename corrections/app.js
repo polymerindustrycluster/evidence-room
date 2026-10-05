@@ -16,6 +16,8 @@
  */
 (async () => {
 const D = await PV.data("corrections.json");
+/* each page's own count, the same file its byline link reads */
+const BY = await PV.data("corrections_by_page.json").catch(() => null);
 const entries = D.entries;
 const record = document.getElementById("corr-record");
 const list = document.getElementById("corr-entries");
@@ -68,8 +70,10 @@ const show = page => {
   }
   for (const between of record.querySelectorAll(".corr-between")) between.hidden = !!page;
   record.querySelector(".corr-preamble").hidden = !!page;
+  const list = BY && BY.pages && BY.pages[page];
   count.textContent = page
-    ? `${n} of the ${entries.length} entries name ${page}.`
+    ? `${n} of the ${entries.length} entries name ${page}.` +
+      (list ? ` On that page: ${PV.correctionsSentence(list)}` : "")
     : `All ${entries.length} entries.`;
 };
 const asked = new URLSearchParams(location.search).get("page");

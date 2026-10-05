@@ -295,7 +295,9 @@ def check_published_register(reg: dict, arts: list[str]) -> None:
         printed = dict(zip(("n_claims", "n_hub_claims", "n_site_claims", "n_pages_all",
                             "n_claims_again", "n_auto", "n_manual", "this_page"),
                            map(int, nums.groups())))
-        want = dict(expected, n_pages_all=len(pages) + 1, n_claims_again=n_claims)
+        # every page on the site: the articles, the hub and any uncarded apparatus (the
+        # corrections log), the same folders the bundler builds
+        want = dict(expected, n_pages_all=len(arts), n_claims_again=n_claims)
         for key, value in printed.items():
             if want.get(key) != value:
                 err("published-register", f"sources/index.html #checkidea {key}",

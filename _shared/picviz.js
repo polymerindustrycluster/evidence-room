@@ -580,8 +580,8 @@ const PV = (() => {
 
   /* ------------------------------------------------------- corrections summary
 
-     ONE LINE AT THE TOP SAYING WHETHER THIS PAGE HAS BEEN CORRECTED (DECISIONS.md,
-     2026-10-04, D3). Dated correction notes used to open four pages, above the headline
+     A LINK IN THE BYLINE SAYING WHETHER THIS PAGE HAS BEEN CORRECTED (DECISIONS.md,
+     2026-10-04, D3; placed in the byline by John, 2026-10-05). Dated correction notes used to open four pages, above the headline
      they qualified; they now sit below it, beside what they correct, and this line says at
      the top how many corrections the page has had, of what kind, and whether the headline
      moved. It is generated from _data/corrections_by_page.json, which
@@ -597,6 +597,15 @@ const PV = (() => {
     const said = parts.map((p, i) => one(p, !sameYear || i === parts.length - 1));
     return said.length < 3 ? said.join(" and ") : `${said.slice(0, -1).join(", ")} and ${said.at(-1)}`;
   }
+  /* The fuller sentence, also printed by the log's own page view. */
+  function correctionsSentence(list) {
+    const pub = list.filter(e => !e.before_publication);
+    const fig = pub.filter(e => e.kind === "figure").length;
+    const moved = pub.filter(e => e.headline_changed).map(e => e.date).sort();
+    return `${pub.length} correction${pub.length === 1 ? "" : "s"} since publication: ` +
+      `${pub.length - fig} wording, ${fig} figure${fig === 1 ? "" : "s"}. ` +
+      (moved.length ? `Headline corrected ${onDates(moved)}.` : "Headline unchanged.");
+  }
   async function correctionsSummary(page) {
     if (document.querySelector(".pv-corr-sum")) return null;
     const file = "corrections_by_page.json";
@@ -606,22 +615,20 @@ const PV = (() => {
     try { all = await data(file); }
     catch (e) { console.error(`PV.correctionsSummary: ${e.message}`); return null; }
     const list = ((all && all.pages) || {})[page] || [];
-    const pub = list.filter(e => !e.before_publication);
-    if (!pub.length) return null;
-    const fig = pub.filter(e => e.kind === "figure").length;
-    const moved = pub.filter(e => e.headline_changed).map(e => e.date).sort();
-    const times = ["", "once", "twice"][moved.length] || `${moved.length} times`;
-    const p = document.createElement("p");
-    p.className = "pv-corr-sum";
-    p.innerHTML = `<a href="../corrections/?page=${page}">${pub.length} correction${pub.length === 1
-      ? "" : "s"} since publication: ${pub.length - fig} to wording, ${fig} to figures.</a> ` +
-      (moved.length ? `The headline finding was corrected ${times}, on ${onDates(moved)}.`
-                    : "The headline finding is unchanged.");
+    const n = list.filter(e => !e.before_publication).length;
     const bylines = document.querySelectorAll(".hero .wrap > .byline");
-    const at = bylines[bylines.length - 1] || document.querySelector(".hero .wrap > .stand");
-    if (at) at.after(p);
-    else (document.querySelector(".hero .wrap") || document.querySelector("main") || document.body).prepend(p);
-    return p;
+    const by = bylines[bylines.length - 1];
+    if (!n || !by) return null;
+    /* A short link at the end of the byline, a sibling of the how-checked toggle, so it
+       costs the cold open nothing; the full sentence is its accessible name and title,
+       and leads the page's view of the log. */
+    const span = document.createElement("span");
+    span.className = "pv-corr-sum";
+    const full = correctionsSentence(list);
+    span.innerHTML = ` &middot; <a href="../corrections/?page=${page}" aria-label="${full}" ` +
+      `title="${full}">${n} correction${n === 1 ? "" : "s"}</a>`;
+    by.appendChild(span);
+    return span;
   }
 
   /* ------------------------------------------------------------ methodology box
@@ -1068,7 +1075,7 @@ const PV = (() => {
     if (unit) txt(svg, unit, {x: 0, y: 31, class: "pv-tick", fill: "var(--caption)"});
   }
 
-  return {tableTools, onFill, whatWeGotWrong, correctionsSummary, el, txt, axlab, face, lead, ticks, frame, hoverable, rove, showTip, hideTip, tableView, data, footprint,
+  return {tableTools, onFill, whatWeGotWrong, correctionsSummary, correctionsSentence, el, txt, axlab, face, lead, ticks, frame, hoverable, rove, showTip, hideTip, tableView, data, footprint,
           methodology, figures, chart, chartTitle, footprintBanner, padGrid, mark, allStories, favicon, N,
           CAT, SEQ, GRAY, INK, usd, usdShort, reduced};
 })();

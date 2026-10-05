@@ -18,8 +18,9 @@ product and domain decisions that a reader or rebuilder needs.
 - **Kind is per page**: figure when a number that page printed changed, else wording, read from
   the entry's Was and Is; pairs the classifier reads wrongly are overridden in the derive script
   with the reason. **Headline changed** means the page's H1 changed, listed by hand.
-- **The summary line sits under the byline**, as the design note puts it, and costs one or two
-  lines above the first chart: nine cold-open debts rose by exactly that (see `_data/coldopen.json`).
+- **The summary is a short link at the end of the byline** ("6 corrections"), John's call on
+  2026-10-05: a line above the first chart cost every page a line of its cold open. The full
+  sentence is the link's accessible name and title, and heads the page's view of the log.
 
 ---
 

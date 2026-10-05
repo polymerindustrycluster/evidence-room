@@ -15,9 +15,16 @@
    "heading": "2026-10-04 — The corrections log is a page on this site, and dated notes sit below each headline",
    "label": "",
    "title_html": "The corrections log is a page on this site, and dated notes sit below each headline",
-   "pages": [],
-   "html": "<p><b>Was:</b> every link to the corrections log, in each page’s methods block, on the front page and in chain’s register methods, opened this file as Markdown on GitHub, and the “What we got wrong” blocks named it as a file. Four pages opened on dated correction notes set between the byline and the headline figure: one on collaboration, three on cost-scissors, one on funding-map and two on wages. No page said at its top whether it had been corrected. <b>Is:</b> the links open a corrections page on this site that renders this file as written, newest first, and narrows it to the entries naming one page. The seven notes sit below the headline, beside what each corrects, in their original words. A line under each byline says how many corrections the page has had since publication, how many changed a figure and how many only wording, and whether one changed the headline, and links to that page’s entries here. <code>verify_consistency.py</code> fails a build whose rendered log has lost an entry or whose page counts disagree with it, and the style gate fails a dated correction note placed above a page’s first section heading. No figure changed.</p>",
-   "kinds": {},
+   "pages": [
+    "sources"
+   ],
+   "html": "<p><b>Was:</b> every link to the corrections log, in each page’s methods block, on the front page and in chain’s register methods, opened this file as Markdown on GitHub, and the “What we got wrong” blocks named it as a file. Four pages opened on dated correction notes set between the byline and the headline figure: one on collaboration, three on cost-scissors, one on funding-map and two on wages. No page said at its top whether it had been corrected. <b>Is:</b> the links open a corrections page on this site that renders this file as written, newest first, and narrows it to the entries naming one page. The seven notes sit below the headline, beside what each corrects, in their original words. Each byline ends with a link counting the page’s corrections since publication; its full wording says how many changed a figure and how many only wording, and whether one changed the headline, and it opens that page’s entries here. <code>verify_consistency.py</code> fails a build whose rendered log has lost an entry or whose page counts disagree with it, and the style gate fails a dated correction note placed above a page’s first section heading. No figure changed.</p><p><b>The site’s page count, <em>sources</em>.</b> <b>Was:</b> the checks section said the 589 claims ran across all 23 site pages. <b>Is:</b> all 24; the corrections page is the twenty-fourth and carries no claims. The number is now counted from the pages that exist, <code>src-site-pages</code> binds it, and the page carries a dated note.</p>",
+   "kinds": {
+    "sources": {
+     "kind": "wording",
+     "headline_changed": false
+    }
+   },
    "after_html": ""
   },
   {

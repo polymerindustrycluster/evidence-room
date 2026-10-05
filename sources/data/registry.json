@@ -1738,8 +1738,8 @@
    "revisions",
    "wages"
   ],
-  "n_build_scripts": 58,
-  "catalog_generated": "2026-09-12 19:16"
+  "n_build_scripts": 59,
+  "catalog_generated": "2026-10-05 11:07"
  },
  "statuses": {
   "accountability": "INTERNAL",
@@ -3156,7 +3156,8 @@
   "this_page": 35,
   "n_auto": 531,
   "n_hub_claims": 36,
-  "n_site_claims": 589
+  "n_site_claims": 589,
+  "n_site_pages": 24
  },
  "vintage": {
   "n_revised": 259,

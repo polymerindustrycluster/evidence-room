@@ -99,9 +99,7 @@ PAGES_BY_HEADING = {
 
 # Entries about the site as a whole that correct no one page's statement. They are in the
 # log, shown under "every page", and named by no page's filter or count.
-SITE_WIDE = {
-    "2026-10-04 — The corrections log is a page on this site, and dated notes sit below each headline",
-}
+SITE_WIDE = set()
 
 # Corrections that changed a page's headline, its H1 (the hero claim's statement), read
 # from the entries. (heading prefix, page). Everything else leaves the headline unchanged.
