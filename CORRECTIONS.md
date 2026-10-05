@@ -11,6 +11,69 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-10-04 — Evidence states, bases and labels the October reviews found unsaid, *funding-map, cluster-health, federal-money, timeline and five more*
+
+Found by the three external reviews of 4 and 5 October 2026. One count changed (timeline);
+every other figure is unchanged, and each page carries a dated note.
+
+**What the funding map is built from, *funding-map, sources*.** **Was:** its "Reproduce
+this" panel described the USAspending prime-contract pull, by fiscal year and NAICS 325*/326*,
+with research grants excluded; no figure on the map comes from it. **Is:** the source
+registry lists the signed EDA Notices of Award, the executed Ohio grant agreement
+SBIG20251005 and the executed sub-grant agreements, each with what it contains, how the
+figures were read from it and that it is held by PIC and not published, and the USAspending
+award lookup is marked corroboration only. The source guide's register grows from 27 to 31
+sources and from 156 to 172 filter lines. Its dependency chart's caption said the sources
+drawn in orange have no endpoint and no script; orange marks no endpoint, and one of the six,
+the company catalogue, has a script. The caption is now counted from the register. `tools/provenance.mjs` now fails that pairing: its
+USAspending fingerprint had matched any page that says "award".
+
+**Huntsman's $5,970,805, *funding-map, cluster-health*.** **Was:** the recipient panel, the
+register row, the CSV export and the cluster-health Capital tile showed the amount and award
+ID ED25HDQ0G0009 with no word on its evidence; only a disclosure in a collapsed section said
+its execution is not verified. **Is:** each surface says the notice is signed and held, that
+USAspending has no record of it, and that its execution is not verified; the CSV gains
+Document, Public record and Execution columns. The amount stays in every total.
+`huntsman-evidence-travels` and `capital-unverified-travels` assert it.
+
+**The Ohio balance, *funding-map*.** **Was:** "The $6,165,608 difference is Ohio money
+committed but not yet written into a sub-grant", naming the Bounce sub-grant in the same
+sentence. **Is:** two parts at two stages: $2,642,108 of Translational R&D not yet
+sub-granted, and $3,523,500 of startup support already in the 15 May 2025 sub-grant to
+Bounce Innovation Hub, beyond the nine named cohort awards.
+
+**"Polymer" on a broader total, *federal-money, index*.** **Was:** the headline, both chart
+descriptions and both table captions called totals over all of NAICS 325 plus 326 polymer
+obligations, or the region's polymer industry. **Is:** chemical, plastics and rubber
+manufacturing. **The dashed line, *federal-money*.** **Was:** the eight-year $39.2 million
+average, the unfinished FY2026 included, while the headline used the seven finished years.
+**Is:** the line marks the seven-year $41.4 million; $39.2 million is named as a secondary
+basis and not drawn. The note under the fiscal-year table said one row is one obligation total
+for a single code; one row is a fiscal year summed across every code that recorded obligations,
+24 to 31 a year.
+
+**One count, *timeline, index*.** **Was:** a Wall Street Journal feature of 25 May 2026 was
+counted as a delivered development and drawn in both charts, under a rule that holds press
+coverage out of both. **Is:** it is held out: 67 developments since the designation become
+66, the calendar's 68 becomes 67, press rows go from twelve to thirteen, and the pace ratio's
+upper end is 16.5 times, not seventeen. The hub card reads 66.
+
+**Figures without their basis, *churn, chain, reach, index*.** **Was:** churn's "2.2% of the
+region's 17,943 plastics and rubber jobs" sat beside a 17,725 headcount; the hub's 566
+records with a classified role never appeared on the chain page, whose chart counts 490;
+reach and the hub printed 633 and 629 partners without saying which was which. **Is:**
+17,943 is the four-quarter average to 2025Q3 and 17,725 the start of 2025Q3; 566 carry any
+classified role and 490 one of the stage roles drawn, the other 76 only distribution,
+logistics, construction, engineering or energy; 633 partners before four flagged
+affiliation matches are set aside and 629 after.
+
+**Smaller fixes.** *peers*: the Michelin headquarters citation pointed at a September 2024
+anniversary blog post; it now points at Michelin North America's company profile. *atlas*:
+the page now says it is a dated snapshot, built 21 August 2026 and patched 1 September 2026,
+whose builder is not in this repository. *laborshed*: the byline spells out LEHD and LODES;
+two debt entries in `_data/acronyms.json` had let the style gate pass them silently, and the
+gate now prints every debt it honours and fails one a page no longer needs.
+
 ## 2026-10-04 — Footprint, concentration, link and tense fixes, *peers, churn, cluster-health, laborshed, federal-money, location-quotient, timeline, sources, front page*
 
 No published figure changed.

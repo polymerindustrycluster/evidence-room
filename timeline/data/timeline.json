@@ -1070,10 +1070,11 @@
    "lane": "Designations & funding",
    "laneKey": "desig",
    "horizon": "quick",
-   "tier": "HERO",
+   "tier": "MEDIA",
    "org": "The Wall Street Journal",
    "delivered": true,
-   "show": true
+   "show": false,
+   "tierNote": "Reclassified 2026-10-04 from HERO, shown, to MEDIA, held out. A newspaper feature about the region is coverage of the cluster, not something the cluster did, and the page holds every other press feature (Midstory, WKYC, Crain\u2019s, the Cleveland Business Journal) out of both charts on that rule. The inventory had rated it by prominence; the tier field also carries the coverage flag, so the prominence rating had let it through."
   },
   {
    "id": "E186",

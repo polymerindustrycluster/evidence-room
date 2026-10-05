@@ -570,7 +570,11 @@ const PV = (() => {
           if (!keys.length) return "";
           return `<details class="pv-repro">
             <summary><h3>Reproduce this</h3></summary>
-            <p class="pv-method-note">Every figure on this page comes from the sources below.
+            <p class="pv-method-note">${keys.some(k => R.sources[k] && R.sources[k].role)
+              /* A source a page only checks against is not one it is built from: the
+                 funding map listed a USAspending contract pull it never used (2026-10-04). */
+              ? "Every figure on this page comes from the sources below, apart from any marked corroboration only: those check the figures rather than produce them."
+              : "Every figure on this page comes from the sources below."}
               The filters are the exact values applied, not a description of them.</p>
             ${keys.map(k => {
               const src = R.sources[k]; if (!src) return "";
@@ -578,6 +582,7 @@ const PV = (() => {
                 .map(([kk, vv]) => `<dt>${kk}</dt><dd>${vv}</dd>`).join("");
               return `<div class="pv-src">
                 <h4>${src.name}</h4>
+                ${src.role ? `<p class="pv-method-note"><b>${src.role}</b></p>` : ""}
                 <p class="pv-method-note">${src.agency}${src.key_required
                   ? " &middot; free API key required" : ""}</p>
                 ${src.url ? `<p class="mono pv-endpoint">${src.url}</p>` : ""}

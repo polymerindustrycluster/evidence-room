@@ -89,13 +89,13 @@ fys.forEach(fy => { real[fy] = sumBy("real", r => r.fy === fy);
 const totalReal = fys.reduce((s, fy) => s + real[fy], 0);
 const totalNom = fys.reduce((s, fy) => s + nom[fy], 0);
 const avgReal = totalReal / fys.length;
-const avgNom = totalNom / fys.length;
 const closed = fys.filter(fy => fy !== PARTIAL);
 const avgClosed = closed.reduce((s, fy) => s + real[fy], 0) / closed.length;
+const avgNomClosed = closed.reduce((s, fy) => s + nom[fy], 0) / closed.length;
 
 const award = A.award;
-const years = award / avgReal;                 // the arithmetic the page is built on
-const yearsClosed = award / avgClosed;         // the same sum, partial year removed
+const years = award / avgReal;                 // the secondary basis, partial year in
+const yearsClosed = award / avgClosed;         // the basis the page is built on
 const clears = fys.filter(fy => real[fy] >= award);
 const gap = Math.min(...fys.filter(fy => real[fy] < award).map(fy => award - real[fy]));
 const nearFy = fys.find(fy => real[fy] < award && award - real[fy] === gap);
@@ -273,10 +273,15 @@ function yearsDesktop() {
      this page shipped with ---- */
   el("line", {x1: m.l, y1: ys(award), x2: m.l + w, y2: ys(award), stroke: AWARD,
     "stroke-width": 3}, svg);
-  el("line", {x1: m.l, y1: ys(avgReal), x2: m.l + w, y2: ys(avgReal), stroke: INK,
+  /* THE DRAWN REFERENCE IS THE BASIS THE PAGE ARGUES FROM. This rule used to sit at the
+     eight-year mean, unfinished FY2026 included, while the H1, the hero card and the
+     closer all used the finished-year mean: the one line a reader measures bars against
+     was the basis the closer rejects. The eight-year figure survives as the named
+     secondary basis in the figure note and the table, not as ink. */
+  el("line", {x1: m.l, y1: ys(avgClosed), x2: m.l + w, y2: ys(avgClosed), stroke: INK,
     "stroke-width": 1.5, "stroke-dasharray": "5 4"}, svg);
 
-  const REFS = [ys(avgReal), ys(award)];
+  const REFS = [ys(avgClosed), ys(award)];
   fys.forEach((fy, i) => {
     /* LIFT, DON'T PLATE. A plate the width of "$31.8M" left the dashes butting against
        both sides of the digits at the text's own mid-height, so the label read as struck
@@ -316,8 +321,8 @@ function yearsDesktop() {
     {x: m.l + w, y: ys(award) - 9, "text-anchor": "end", class: "pv-lab", fill: AWARD});
   /* Anchored over the two shortest bars, clear of every bar top. Anchoring it at the
      right edge put it inside the FY2025 bar, which is the occlusion this rebuild fixes. */
-  txt(svg, `eight-year average ${short(avgReal)} a year`,
-    {x: xs(fys.indexOf(trough)) + 10, y: ys(avgReal) - 9, class: "pv-labq", fill: INK});
+  txt(svg, `finished-year average ${short(avgClosed)} a year`,
+    {x: xs(fys.indexOf(trough)) + 10, y: ys(avgClosed) - 9, class: "pv-labq", fill: INK});
 
   /* "partial year" is the register word for a bar that is a running total. The reader
      needs to know the year was not over when the file was pulled, which is what the
@@ -358,7 +363,7 @@ function yearsMobile() {
   /* Reference lines after the bars, so the bars cannot paint over them. */
   el("line", {x1: xs(award), y1: m.t - 4, x2: xs(award), y2: H - m.b, stroke: AWARD,
     "stroke-width": 3}, svg);
-  el("line", {x1: xs(avgReal), y1: m.t - 4, x2: xs(avgReal), y2: H - m.b,
+  el("line", {x1: xs(avgClosed), y1: m.t - 4, x2: xs(avgClosed), y2: H - m.b,
     stroke: INK, "stroke-width": 1.5, "stroke-dasharray": "5 4"}, svg);
 
   /* ROW LABELS LAST, and knocked out of the rules they cross. Drawn before the reference
@@ -373,7 +378,7 @@ function yearsMobile() {
     const t = txt(svg, `FY${fy} · ${short(v)}${tag}`, {x: m.l, y: y + 12,
       class: "pv-labq"});
     const right = m.l + t.getComputedTextLength();
-    if (right > xs(avgReal) - 3) plateBehind(svg, t);
+    if (right > xs(avgClosed) - 3) plateBehind(svg, t);
     hoverable(el("rect", {x: 0, y, width: W, height: rowH, fill: "transparent"}, svg),
       `<b>FY${fy}</b><br><span class="v">${usd(v)}</span> in 2025 dollars<br>
        ${usd(nom[fy])} as awarded`,
@@ -388,8 +393,8 @@ function yearsMobile() {
     {x: m.l, y: 36, class: "pv-labq"});
   txt(svg, `award ${short(award)}`, {x: xs(award), y: 58, "text-anchor": "end",
     class: "pv-labq", fill: AWARD});
-  txt(svg, `average ${short(avgReal)}`, {x: xs(avgReal), y: 78, "text-anchor": "end",
-    class: "pv-labq", fill: INK});
+  txt(svg, `finished-year average ${short(avgClosed)}`, {x: xs(avgClosed), y: 78,
+    "text-anchor": "end", class: "pv-labq", fill: INK});
 }
 
 /* ============================================================ 2. by industry code */
@@ -571,20 +576,27 @@ function recipsMobile() {
    line plus one limitation sentence, the budget page-design sets; everything else moves
    into the table twin this figure already opens, which is depth rather than disclosure
    because nothing that changes how a number should be read was moved into it. */
+/* What a table row sums, counted rather than typed: the note said one row was one code,
+   and FY2019 alone sums 30 (PR #43 review, 2026-10-04). */
+const codesPerYear = (c => [Math.min(...c), Math.max(...c)])(
+  fys.map(fy => new Set(D.naics.filter(r => r.fy === fy).map(r => r.code)).size));
 const withNotes = (html, notes) =>
   html.replace("</details>", `<p class="tnote">${notes}</p></details>`);
 
 document.getElementById("fytable").innerHTML = withNotes(tableView("y",
-  "Federal polymer obligations by fiscal year",
+  "Federal chemical, plastics and rubber manufacturing obligations by fiscal year",
   ["Fiscal year", "2025 dollars", "As awarded"],
   fys.map(fy => [fy === PARTIAL ? `FY${fy} (partial)` : "FY" + fy,
     usd(real[fy]), usd(nom[fy])])),
-  `One row is one obligation total for a single fiscal year, category and industry code.
-   Without the inflation adjustment, the same eight years come to
-   <b>${short(totalNom)}</b> and the average year to ${short(avgNom)}; both columns are in
-   the table. Counting only the ${closed.length} years that have finished, the average is
-   ${short(avgClosed)} and the award is about ${yearsClosed.toFixed(1)} years of it, so
-   the ratio the page prints is the less flattering of the two. Award line:
+  `One row is one fiscal year: obligations summed across every six-digit code under NAICS
+   325 and 326 that recorded any that year, ${codesPerYear[0]} to ${codesPerYear[1]} codes
+   a year.
+   The dashed line and the ratio the page prints use the ${closed.length} finished years:
+   they average ${short(avgClosed)} a year, and the award is about
+   ${yearsClosed.toFixed(1)} years of it. The secondary basis counts the unfinished
+   FY${PARTIAL} too: ${short(avgReal)} a year, and ${years.toFixed(1)} years. Without the
+   inflation adjustment, the same eight years come to <b>${short(totalNom)}</b> and the
+   finished years average ${short(avgNomClosed)}; both columns are in the table. Award line:
    ${A.meta.source} ${A.meta.note} ${D.meta.scope}`);
 document.getElementById("fysrc").innerHTML =
   `${D.meta.source}, in the twelve PIC-12 counties, marked up to 2025 dollars with the
@@ -593,7 +605,7 @@ document.getElementById("fysrc").innerHTML =
    Tire manufacturing in FY${trough} accounts for ${short(troughTires)} in 2025 dollars.`;
 
 document.getElementById("natable").innerHTML = withNotes(tableView("n",
-  "Federal polymer obligations by industry code",
+  "Federal chemical, plastics and rubber manufacturing obligations by industry code",
   ["NAICS", "Industry", "2025 dollars", "As awarded", "Years with a row"],
   codes.map(r => [r.code, r.name, usd(r.real), usd(r.amount), r.years.size])),
   `${top.name} (${top.code}) leads the eight-year total while
@@ -630,7 +642,7 @@ document.getElementById("rctable").innerHTML = withNotes(tableView("rc",
 PV.tableTools("#rctable", {placeholder: "company, agency, industry code…"});
 document.getElementById("rcsrc").innerHTML =
   `USAspending.gov spending_by_award, prime contracts at place of performance in the
-   twelve PIC-12 counties, chemical and plastics/rubber industry codes, awards with
+   twelve PIC-12 counties, chemical, plastics and rubber manufacturing codes, awards with
    obligation activity FY2019&ndash;FY${fys.at(-1)}, retrieved ${R.meta.fetched}.
    Grants are not in this view: the National Science Foundation (NSF) and EDA money the page names elsewhere moves
    through award types these filters exclude.`;
