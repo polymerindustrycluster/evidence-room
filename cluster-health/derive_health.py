@@ -960,6 +960,7 @@ tiles = [
 
 health = {
     "meta": {
+        "status": "PUBLISHED",
         "source": ("Recomputed from the published data files of six pages in the Evidence "
                    "Room, PIC’s public data archive: wages, concentration, occupations, "
                    "federal money, the funding map and revisions."),

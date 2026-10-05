@@ -90,7 +90,8 @@ out("churn", "churn.json", {
     # seasonadj=S returns HTTP 204 for NAICS 326 at this geography, so no adjusted series
     # exists to have been fetched. The winter/summer swing is still in these numbers,
     # which is what the trailing four-quarter averages on the page are for.
-    "meta": {"source": "U.S. Census Quarterly Workforce Indicators (QWI), not seasonally adjusted",
+    "meta": {"status": "PUBLISHED",
+             "source": "U.S. Census Quarterly Workforce Indicators (QWI), not seasonally adjusted",
              # Masthead date: the newest input this page reads. Today that is bench.json,
              # the page's other file; run derive_churn_bench.py first.
              "fetched": json.load(open(os.path.join(WEB, "churn", "data", "bench.json"),
@@ -141,7 +142,8 @@ for (label, unit, src, stage), pts in series.items():
                      "peak": peak, "now": now, "retraced": retraced,
                      "points": idx})
 out("cost-scissors", "scissors.json", {
-    "meta": {"sources": "U.S. EIA (energy prices) and FRED/BLS (producer price indexes)",
+    "meta": {"status": "PUBLISHED",
+             "sources": "U.S. EIA (energy prices) and FRED/BLS (producer price indexes)",
              "row": "one (series, month) observation",
              "rebasing": f"Every series is indexed to 100 at {BASE}. Levels are in different "
                          "units ($/mcf, ¢/kWh, index points) and are NEVER drawn on a shared "
@@ -198,7 +200,8 @@ for y in YEARS:
                 wage_rows.append(rec)
             trend.append(rec)
 out("wages", "wages.json", {
-    "meta": {"source": "BLS QCEW annual averages",
+    "meta": {"status": "PUBLISHED",
+             "source": "BLS QCEW annual averages",
              # Masthead date: the newest input this page reads. Not in the raw pull's own
              # meta; wages/README.md records that the 2025 averages were re-read from the
              # bureau on 11 September 2026 (mfg.json, the page's other file, is 2026-08-30).
@@ -238,7 +241,8 @@ for (sid, label, date), rows in sorted(per.items()):
                     "pct": round((vals[-1] - vals[0]) / vals[0] * 100, 3) if vals[0] else None,
                     "path": [{"v": r["value"], "from": r["vintage_start"]} for r in rows]})
 out("revisions", "revisions.json", {
-    "meta": {"source": "ALFRED, the archival vintages behind FRED",
+    "meta": {"status": "PUBLISHED",
+             "source": "ALFRED, the archival vintages behind FRED",
              # Masthead date: the newest vintage in the archive (as_of, not fetched: the
              # vintage date is when ALFRED published it, not when we pulled it).
              "as_of": max(r["vintage_start"] for r in v),

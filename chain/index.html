@@ -16,7 +16,7 @@
   <div class="wrap">
     <a class="mast-home" href="../index/"><strong>Polymer Industry Cluster</strong></a>
     <span>Northeast Ohio &middot; 14 counties</span>
-    <span class="proto">Prototype &middot; not published data</span>
+    <span class="proto">Prototype</span>
   </div>
 </header>
 
@@ -146,6 +146,39 @@
     </div>
     <div class="cards" id="cards"></div>
     <p class="src" id="ressrc"></p>
+  </div>
+</section>
+
+<!-- Added 2026-10-04 (DECISIONS.md, D6): the register's records stay private, so the rules
+     that admit them are published. Sources, inclusion and refresh are taken from this
+     page's README and the register's CODEBOOK rule; nothing here is new data. -->
+<section class="band paper" id="register">
+  <div class="wrap">
+    <h2>How the register is built</h2>
+    <p class="lede">The company records stay private. The rules that admit them are
+      published here, so a reader can check what the register can and cannot contain.</p>
+    <h3>Sources</h3>
+    <p>Company notes in the GAC-PIC vault, PIC&rsquo;s internal company register, extracted
+      on 14 August 2026. Each company&rsquo;s description is reproduced as the company wrote
+      it. Census County Business Patterns 2023 supplies separate establishment context, and
+      PIC&rsquo;s 2026 intake export supplies the application counts.</p>
+    <h3>Which records count</h3>
+    <p>A record counts when its county is one of the fourteen PIC-12+2 counties, the twelve
+      PIC-12 counties plus Columbiana and Tuscarawas, and its state is Ohio, OH or blank. A
+      county name alone is not enough: records that matched a county name in another state,
+      sat outside the region or had no address are held out and named in the data. A
+      record&rsquo;s stage comes from the role tags in its note, mapped to six chain stages
+      and four supporting services. A record with no role tag stays in the count and out
+      of the chain.</p>
+    <h3>How often it changes</h3>
+    <p>There is no fixed schedule. The register changes when PIC re-extracts the vault. The
+      14 August 2026 extract was re-checked against the county rule on 11 September 2026
+      without being re-extracted. Each change to a published figure is dated in the
+      <a href="../CORRECTIONS.md">corrections log</a>.</p>
+    <h3>What stays private</h3>
+    <p>The vault notes are not published. This page shows each company&rsquo;s name,
+      website where one is recorded, roles and own description; the held-out names are
+      disclosed so the exclusions can be checked.</p>
   </div>
 </section>
 

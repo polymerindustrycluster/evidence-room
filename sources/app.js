@@ -42,6 +42,12 @@
 const {el, txt, tableView, chart, figures, N, GRAY, INK} = PV;
 
 const D = await PV.data("registry.json");
+/* A LINK TO AN INTERNAL PAGE SAYS SO (DECISIONS.md, 2026-10-04). Scorecard and accountability
+   are unlisted on the hub and not for citation, and this page is where a reader reaches them.
+   The status is each page's own meta.status, copied into registry.json by derive_sources.py;
+   tools/disclosure.mjs fails this page if a link to an INTERNAL page goes untagged. */
+const pageLink = p => `<a href="../${p}/">${p}</a>` + ((D.statuses || {})[p] === "INTERNAL"
+  ? ` <span class="status-tag" data-status="INTERNAL">Internal</span>` : "");
 const T = D.totals, DC = D.doublecount, C = D.classification;
 
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight",
@@ -345,7 +351,7 @@ function drawTree() {
     s.agency,
     route(s),
     s.key_required ? "yes" : "no",
-    `${s.n_pages}: ${s.pages.map(p => `<a href="../${p}/">${p}</a>`).join(", ")}`,
+    `${s.n_pages}: ${s.pages.map(pageLink).join(", ")}`,
   ]);
   document.getElementById("estate").innerHTML =
     `<div class="pv-tablewrap"><table>
@@ -500,7 +506,7 @@ function drawRegistry() {
         (${s.filters.length})</summary><dl>${filters}</dl></details>` : ""}
       <p class="dep">${s.docs ? `<a href="${s.docs}">Agency documentation</a> &middot; ` : ""}
         ${s.script ? `Fetched by <span class="mono">${s.script}</span> &middot; ` : ""}
-        Used by ${s.pages.length ? s.pages.map(p => `<a href="../${p}/">${p}</a>`).join(", ")
+        Used by ${s.pages.length ? s.pages.map(pageLink).join(", ")
                                  : "no published page"}</p>
     </div>`;
   }).join("");

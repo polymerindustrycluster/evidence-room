@@ -65,7 +65,7 @@ polymer_bound = (C["meta"]["polymer_bound"].replace("coauthorship count", "joint
                  .replace("unbounded joint count", "unbounded count"))
 assert "coauthor" not in polymer_bound and "joint" not in polymer_bound, polymer_bound
 
-out = {"meta": dict(C["meta"],
+out = {"meta": dict({"status": "PROTOTYPE", **C["meta"]},
                     polymer_bound=polymer_bound,
                     control="Each university’s own annual output is carried beside the "
                             "count of works naming both, because that count alone cannot "

@@ -1,5 +1,6 @@
 {
  "meta": {
+  "status": "PUBLISHED",
   "title": "Polymer education’s 2016–2023 decline",
   "question": "Which layer of polymer education contracted, by how much, and against what baseline?",
   "source": "IPEDS completions by six-digit CIP, 1991–2023, via the Urban Institute Education Data API; the polymer-programs-db census build of 2026-08-21",

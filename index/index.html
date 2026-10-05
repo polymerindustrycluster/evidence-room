@@ -29,15 +29,20 @@
     <p class="stand">Public-data stories from the Polymer Industry Cluster (PIC) about jobs,
       pay, training and investment in Northeast Ohio. Read a finding, inspect its limits,
       and follow its sources.</p>
+    <p class="stand who">The Polymer Industry Cluster is an initiative of the Greater Akron
+      Chamber. This room is written for people who run, fund or site polymer operations in
+      Northeast Ohio; the methods are published for anyone who wants to check.</p>
     <nav class="first-reads" aria-label="Start with a question">
-      <a href="../peers/">Where do we rank?</a>
+      <a href="../peers/">Where does Ohio rank?</a>
       <a href="../wages/">What does the work pay?</a>
       <a href="../programs/">What happened to training?</a>
       <a href="../federal-money/">Where does federal money go?</a>
     </nav>
     <p class="hub-links"><a href="#alltitle">Browse every story</a> &middot;
       <a href="#methods">Methods and corrections</a> &middot;
-      <a href="https://polymerindustrycluster.github.io/">PIC public tools directory</a></p>
+      <a href="https://polymerindustrycluster.org/">PIC main site</a> &middot;
+      <a href="https://picinnovation.org/">PIC programs</a> &middot;
+      <a href="https://polymerindustrycluster.github.io/">Other PIC sites</a></p>
     <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic), updated with Codex (OpenAI) &middot; Updated September&nbsp;2026</p>
   </div>
 </section>
@@ -72,6 +77,16 @@
       period and limits. The county selector marks geographic coverage; it keeps every
       story available.</p>
 
+    <!-- ONE STATUS VOCABULARY (DECISIONS.md, 2026-10-04). Each page declares its status in
+         its own data (meta.status); the card label, the page's banner and this key use the
+         same three words, and tools/disclosure.mjs fails a page where they disagree. -->
+    <ul class="status-key" aria-label="What a story's status means">
+      <li><b>Published</b>: reviewed, listed here and quotable. These cards carry no status label.</li>
+      <li><b>Prototype</b>: a public draft. Figures may change; check with PIC before citing.</li>
+      <li><b>Internal</b>: a working view, deliberately unlisted and not for citation. Internal
+        pages are linked from the <a href="../sources/">source guide</a>, not from this list.</li>
+    </ul>
+
     <!-- THE HEADCOUNT KEY. Five stories print five job totals for the same twelve counties
          (17,770, 18,594, 17,725, 24,032, 33,529) and none of them said why they differ: a
          reader moving between cards met what looked like five answers to one question.
@@ -80,7 +95,8 @@
     <details class="howto card-key"><summary>What the geography labels, job counts and claim counts mean</summary>
       <p class="note">The teal label names the geography used in that story.
       <b>PIC-12</b> means Ashtabula, Cuyahoga, Geauga, Lake, Lorain, Mahoning, Medina,
-      Portage, Stark, Summit, Trumbull and Wayne counties. Other stories use metro,
+      Portage, Stark, Summit, Trumbull and Wayne counties. <b>PIC-12+2</b> adds Columbiana
+      and Tuscarawas to those twelve; only the supply-chain register uses it. Other stories use metro,
       state or national records. Claim counts describe checks against the underlying
       files; manual claims depend on a cited document.</p>
       <p class="note"><b>Why the job counts differ.</b> Stories count different industries,
@@ -99,8 +115,10 @@
     </details>
 
     <div class="picker">
-      <label for="county">Check county coverage</label>
-      <select id="county">
+      <label for="county">Check coverage for</label>
+      <p class="picker-rule" id="county-rule">Prototype stories count toward a county&rsquo;s
+        coverage and are marked as prototypes.</p>
+      <select id="county" aria-describedby="county-rule">
         <option value="">All twelve counties</option>
       </select>
       <p class="verdict" id="verdict" aria-live="polite"></p>
@@ -239,13 +257,17 @@
       </a>
       <!-- Corrected 2026-09-29: the three prototype cards (chain, reach, collaboration) now
            carry their page's own prototype flag, word for word; the gallery showed them
-           beside the published articles with nothing to tell them apart. -->
-      <a class="card" href="../chain/" data-slug="chain" data-geo="NEO-14">
+           beside the published articles with nothing to tell them apart.
+           Corrected 2026-10-04: the flag is now the status word itself, Prototype, read from
+           each page's meta.status; chain's footprint label NEO-14 became PIC-12+2, because
+           NEO-14 names the vault's different fourteen-county set; and chain now counts
+           toward county coverage, marked as a prototype. -->
+      <a class="card" href="../chain/" data-slug="chain" data-geo="pic12plus2">
         <h4>Which links of the polymer supply chain appear in this register?</h4>
         <p class="f">710 company records carry a qualifying address in the fourteen counties;
           566 have a classified role. The register contains more fabricators than monomer
           producers, but it does not measure regional capacity or market share.</p>
-        <p class="meta"><span class="pill geo">NEO-14</span><span class="pill proto">Prototype &middot; not published data</span></p>
+        <p class="meta"><span class="pill geo">PIC-12+2</span><span class="pill proto">Prototype</span><span class="pill hit-flag">covers this county, prototype</span></p>
       </a>
       <a class="card" href="../programs/" data-slug="programs" data-geo="national">
         <h4>What happened to the polymer technician pipeline?</h4>
@@ -261,7 +283,7 @@
         <p class="f">633 partner institutions in 50 countries across 1,448 works;
           985 of 1,222 papers naming a corresponding author had one here. China is the
           second-largest partner country, behind only the United States.</p>
-        <p class="meta"><span class="pill geo">national</span><span class="pill proto">Prototype &middot; internal draft</span></p>
+        <p class="meta"><span class="pill geo">national</span><span class="pill proto">Prototype</span></p>
       </a>
       <!-- Corrected 2026-09-28: see collaboration/index.html for the "four joint federal
            awards" fix (NSF-only fetch; four projects, eight award IDs).
@@ -273,7 +295,7 @@
         <p class="f">208 papers naming both universities since 2012, eight classified in polymers, three
           joint National Science Foundation projects and none starting after 2017 in this window. The window closes
           before NEO-SMART, which both universities are in, begins.</p>
-        <p class="meta"><span class="pill geo">Akron metro</span><span class="pill proto">Prototype &middot; internal draft</span></p>
+        <p class="meta"><span class="pill geo">Akron metro</span><span class="pill proto">Prototype</span></p>
       </a>
       <a class="card" href="../atlas/" data-slug="atlas" data-geo="national">
         <h4>Where can you learn polymer science in America?</h4>
@@ -358,10 +380,20 @@
       155-metro sample and the 29-metro headline ranking: Youngstown–Warren&rsquo;s 960 jobs
       fall below the 2,000-job threshold. Canton–Massillon is source-suppressed; Wayne is
       in the Wooster micropolitan area and is outside this metropolitan comparison.</p>
+    <p class="note"><b>Correction · 4 October 2026.</b> The first question asked &ldquo;Where
+      do we rank?&rdquo;, but the story it opens leads with Ohio&rsquo;s rank among the states;
+      it now asks &ldquo;Where does Ohio rank?&rdquo;. The supply-chain card labelled its
+      footprint NEO-14, the name of a different fourteen-county set used inside PIC&rsquo;s
+      company vault; the register&rsquo;s own counties, the twelve PIC-12 counties plus
+      Columbiana and Tuscarawas, are now called PIC-12+2, and that story now counts toward
+      every county&rsquo;s coverage, marked as a prototype. Story labels now use three
+      statuses, Published, Prototype and Internal, explained above the cards.</p>
     <p class="src">Text, figures and derived data are available under CC BY 4.0; scripts
       are MIT licensed. Underlying sources retain their own terms, listed in the
-      <a href="../sources/">source guide</a>. For tools to find help, learn or reuse this
-      work, visit the <a href="https://polymerindustrycluster.github.io/">PIC public directory</a>.</p>
+      <a href="../sources/">source guide</a>. More from PIC: the
+      <a href="https://polymerindustrycluster.org/">main site</a>, its
+      <a href="https://picinnovation.org/">programs</a>, and
+      <a href="https://polymerindustrycluster.github.io/">other PIC sites</a>.</p>
 
     <details class="howto">
       <summary>The commands, for anyone who wants to run them</summary>

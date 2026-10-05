@@ -1,5 +1,6 @@
 {
  "meta": {
+  "status": "PUBLISHED",
   "source": "USAspending.gov spending_by_category, place of performance",
   "row": "one (fiscal year, category, code) signed transaction obligation total",
   "fetched": "2026-09-08",

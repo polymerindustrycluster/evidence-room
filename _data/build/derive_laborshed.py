@@ -91,6 +91,7 @@ top_ext = sorted(({"fips": k, "name": ADJACENT.get(k) or DISTANT.get(k) or k,
                   for k, v in ext22.items() if v >= 2000), key=lambda r: -r["jobs_2022"])
 
 out = {"meta": dict(
+    status="PUBLISHED",
     source=meta22["source"],
     row=meta22["row"],
     # Masthead date: the newest input this page reads. Today that is bench.json, the

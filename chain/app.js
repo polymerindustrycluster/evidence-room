@@ -575,6 +575,17 @@ drawMethods();
 render();
 addEventListener("resize", () => { drawChain(search()); }, {passive:true});
 
+/* The page's own dated correction, in the house block (2026-10-04, DECISIONS.md D1). */
+PV.whatWeGotWrong([{
+  when: "4 October 2026",
+  was: "The methods called this register&rsquo;s fourteen counties NEO-14.",
+  is: "They are PIC-12+2: the twelve PIC-12 counties plus Columbiana and Tuscarawas. " +
+    "NEO-14 now names only the different fourteen-county set that PIC&rsquo;s company vault " +
+    "tags records against.",
+  why: "Two county sets carried one name, so a reader could not tell which counties a " +
+    "NEO-14 figure covered.",
+}]);
+
 /* Standard methodology + AI disclosure. Generated, not written — see picviz.js. */
 /* chain-data.json carries counts but no limitation prose, so the disclosure is written
    here. Spread rather than replaced, so the file’s own meta still reaches the block. */
@@ -591,9 +602,9 @@ await PV.methodology({page: "chain", meta: {...DATA.meta,
     "address recorded at all.",
   caution: "Company descriptions are reproduced as the companies wrote them. They are " +
     "self-descriptions, not audited capability statements.",
-  geography: "Vault records use NEO-14, the fourteen-county set inherited from the vault, " +
-    "defined as county in the fourteen AND state Ohio or blank. PIC’s federal-data pages " +
-    "use PIC-12. This fourteen-county set contains all twelve plus Columbiana and Tuscarawas; figures here will not reconcile with the " +
+  geography: "Register records use PIC-12+2, the register’s fourteen-county CODEBOOK set: " +
+    "county in the fourteen AND state Ohio or blank. PIC’s federal-data pages " +
+    "use PIC-12. PIC-12+2 contains all twelve plus Columbiana and Tuscarawas; figures here will not reconcile with the " +
     "cluster-health dashboard. The 2026 applications on this page carry no geographic " +
     "filter at all: all 59 are counted wherever the applicant sits, 38 of them in Ohio.",
 }});

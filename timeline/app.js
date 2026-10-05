@@ -1283,6 +1283,7 @@ function loadData(file) {
        inline literal rather than a data file's meta block because two registers feed this
        page, and the reconciliation between them is computed here from both. */
     PV.methodology({page: 'timeline', meta: {
+      status: d.meta.status,
       /* The masthead date is the newest input the page reads (John's rule, 2026-09-30):
          the heritage register, 14 August, is newer than the operating record, 13 August.
          Both dates are stated in this box; the 13 August NOW below is the record's cut-off. */

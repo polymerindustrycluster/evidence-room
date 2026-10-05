@@ -1,5 +1,6 @@
 {
  "meta": {
+  "status": "PUBLISHED",
   "source": "USPTO Open Data Portal, patent applications search, api.uspto.gov",
   "row": "one filing year: how many patent applications in CPC C08 carry an inventor correspondence address in Ohio, and in each of the four metro anchor cities.",
   "unit": "APPLICATIONS filed, not patents granted.",

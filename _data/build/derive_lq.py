@@ -109,6 +109,7 @@ for y in YEARS:
 
 data = {
     "meta": {
+        "status": "PUBLISHED",
         "source": "BLS QCEW open data, annual averages",
         "url": "https://data.bls.gov/cew/data/api/{year}/a/area/{fips}.csv",
         "row": "one (year, area, NAICS) annual-average cell; emp counts JOBS, not people or companies",

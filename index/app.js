@@ -252,7 +252,9 @@ const METRO = {Summit: "Akron", Portage: "Akron", Ashtabula: "Cleveland", Cuyaho
   Lake: "Cleveland", Lorain: "Cleveland", Medina: "Cleveland", Stark: "Canton-Massillon",
   Mahoning: "Youngstown-Warren", Trumbull: "Youngstown-Warren"};
 
-const covers = (geo, county) => geo === "pic12" ||
+/* PIC-12+2, the chain register's footprint, is the twelve plus Columbiana and Tuscarawas,
+   so it contains every county in the list above. */
+const covers = (geo, county) => geo === "pic12" || geo === "pic12plus2" ||
   (geo === "metros4" && METRO[county] !== undefined) ||
   (geo === "price-metros3" && ["Akron", "Cleveland", "Youngstown-Warren"].includes(METRO[county]));
 
@@ -276,7 +278,14 @@ function picker(total) {
         pages is built on a geography that contains it.`;
       return;
     }
-    const n = live.filter(el => covers(el.dataset.geo, c)).length;
+    /* PROTOTYPES COUNT, AND SAY SO (DECISIONS.md 2026-10-04, D7). The rule is printed at the
+       control; the count of prototypes among the hits is printed in the verdict, and each
+       prototype card's flag says "prototype". */
+    const hits = live.filter(el => covers(el.dataset.geo, c));
+    const n = hits.length;
+    const nProto = hits.filter(el => el.querySelector(".pill.proto")).length;
+    const protoLine = !nProto ? "" : nProto === 1 ? ", one of them a prototype"
+      : `, ${word(nProto)} of them prototypes`;
     const m = METRO[c];
     const metroLine = !m
       ? `${c} is in the Wooster micropolitan area, outside the four occupations metros and the metropolitan cost-of-living comparison.`
@@ -287,7 +296,7 @@ function picker(total) {
           : `It is in metro ${m}, included in both the occupations page and the 2024 cost-of-living comparison, including its 29-metro headline ranking.`;
     verdict.innerHTML = `<b>${c} County</b> is inside the twelve-county footprint that
       ${word(nPic12)} of these pages are built on. ${metroLine}
-      <b>${Word(n)} of the ${word(total)}</b> are built on a geography that contains it.`;
+      <b>${Word(n)} of the ${word(total)}</b> are built on a geography that contains it${protoLine}.`;
   };
   sel.addEventListener("change", paint);
   paint();
@@ -328,6 +337,7 @@ try {
        working document and is not published, so naming it here sent every public reader to
        a path that does not exist — on the one page that exists to tell them where to look. */
     meta: {as_of: (await PV.data("counts.json")).as_of,   // newest masthead date of the linked pages, from derive_index.py
+           status: (await PV.data("counts.json")).status,
            source: "Every dataset behind these pages is registered in _data/SOURCES.json " +
                    "with its endpoint, its exact filter values, and the script that fetched " +
                    "it. The methods and the known limits are in _data/METHODS-SOP.md.",
@@ -341,9 +351,10 @@ try {
        leads with the reading and keeps the house term after it. */
     definitions: `<b>PIC</b> is the Polymer Industry Cluster, the industry group that
       publishes this site. <b>PIC-12</b> is the twelve-county footprint used by the regional county analyses,
-      including the cluster-health dashboard. Other federal sources use metro, state or national geography. <b>NEO-14</b> is the
+      including the cluster-health dashboard. Other federal sources use metro, state or national geography. <b>PIC-12+2</b> is the
       fourteen-county CODEBOOK area used by the chain register: all twelve PIC counties
-      plus Columbiana and Tuscarawas. It differs from the legacy NEO-14 constant in pic-geo;
+      plus Columbiana and Tuscarawas. <b>NEO-14</b> is a different fourteen-county set, the one
+      PIC’s company vault tags records against, kept in pic-geo;
       comparisons must use each source’s explicit county list. PIC measures itself on three NAICS codes: 3252 for resins,
       3255 for paints and coatings, and 326 for plastics and rubber products. NAICS 325, the
       wider chemicals family, is context rather than cluster. A withheld cell is never a zero: where the source withholds a cell for confidentiality, its value is unknown.

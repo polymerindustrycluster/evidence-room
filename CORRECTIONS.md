@@ -11,6 +11,36 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-10-04 — One name per county set, one status vocabulary, and who PIC is, *index, chain, sources, peers*
+
+**Chain's footprint, *chain, index, sources*.** **Was:** the chain register's fourteen
+counties, the twelve PIC-12 counties plus Columbiana and Tuscarawas, were called NEO-14 in
+chain's methods, on its hub card and in the hub's definitions, while NEO-14 is also the
+name of the vault's different fourteen-county set (ten PIC-12 counties plus Crawford, Huron,
+Richland and Tuscarawas). **Is:** the chain set is PIC-12+2, and NEO-14 names only the vault
+set. Chain carries a dated entry; `chain-footprint-name` asserts the county set and its
+rule, and `verify_consistency.py`'s neo14-name check fails any page text that puts NEO-14
+on the chain set.
+
+**The first question, *index*.** **Was:** "Where do we rank?", leading to a story whose first
+sentence is about Ohio. **Is:** "Where does Ohio rank?". The peers page now lists the
+twelve counties its regional figures add up.
+
+**Story status, *every page*.** **Was:** the hub labelled the three prototypes "Prototype ·
+not published data" and "Prototype · internal draft", and the two unlisted pages called
+themselves "Internal working view" and "Unreviewed draft". **Is:** three statuses,
+Published, Prototype and Internal, declared in each page's own data; prototype and internal
+pages carry a banner at the top and in the footer, the hub explains the three words, the
+sources page tags its links to internal pages, and chain counts toward county coverage on
+the hub, marked as a prototype. `tools/disclosure.mjs` fails a page whose banner, flag or
+card disagree with its declared status.
+
+**Who PIC is, *index*.** Added under the deck: the Polymer Industry Cluster is an initiative
+of the Greater Akron Chamber, and the room is written for people who run, fund or site
+polymer operations in Northeast Ohio. `index-pic-line` binds the sentence. The link that
+read "PIC public tools directory", and a line offering "tools to find help", now read
+"Other PIC sites", beside direct links to PIC's main site and programs.
+
 ## 2026-09-30 — The Chamber's wider figure, with the state grant's grantee, *accountability*
 
 **Was:** band A and the closing line said the Greater Akron Chamber is named as destination

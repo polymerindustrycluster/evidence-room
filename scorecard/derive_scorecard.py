@@ -476,6 +476,7 @@ COUNTS = {
 
 doc = {
     "meta": {
+        "status": "INTERNAL",   # DECISIONS.md 2026-10-04: unlisted, banner on the page
         # No em-dash: the house style bans them in published prose, and this string is
         # printed under the table and again in the generated methodology box.
         "source": "PIC award register, signed federal Notices of Award, executed state "

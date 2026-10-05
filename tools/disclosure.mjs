@@ -15,7 +15,8 @@
  * It also asserts the OTHER thing a reader is owed about authorship, added 2026-09-01:
  * what the site's own checks can and cannot establish. See the note above SCOPE below.
  */
-import {readdirSync, readFileSync} from "fs";
+import {readdirSync, readFileSync, existsSync} from "fs";
+import {spawnSync} from "child_process";
 import {pathToFileURL} from "url";
 import {chromium} from "./_browser.mjs";
 
@@ -41,6 +42,44 @@ const OWNER = "John Swanson";
 /* Names that must never be the sole credit for analysis or graphics. */
 const MISCREDIT = /\b(?:analysis and graphics|analysis)\b[^·.]{0,40}\b(?:J\.? ?Swanson|John Swanson|the Evidence Room)\b/i;
 
+/* STATUS, ONE WORD IN FOUR PLACES (DECISIONS.md, 2026-10-04). Each page declares PUBLISHED,
+ * PROTOTYPE or INTERNAL as meta.status in its own masthead data. Asserted here, rendered:
+ * the page's banner state equals that declaration; a PROTOTYPE or INTERNAL page carries the
+ * banner in its masthead AND in its footer, in these exact words; its masthead flag, if it
+ * has one, is the same word; its hub card carries the same word (no label means
+ * PUBLISHED), and a page with no card must be INTERNAL; and on the sources page every link
+ * to an INTERNAL page carries the Internal tag. The declarations are read from the data
+ * files masthead.py names, not from the rendered page, so a renderer that invents a status
+ * cannot pass itself. A page whose declaration or card cannot be read FAILS as
+ * uninspectable rather than passing quietly. */
+const BANNER = {
+  PROTOTYPE: "Prototype: a public draft. Figures may change; check with PIC before citing.",
+  INTERNAL: "Internal working view: deliberately unlisted and not for citation.",
+};
+const DECLARED = (() => {
+  const py = spawnSync("python3", ["-c", `
+import json, os, sys
+sys.path.insert(0, "_data/build")
+import masthead
+out = {"index": json.load(open("index/data/counts.json", encoding="utf-8")).get("status")}
+for a in masthead.MASTHEAD_FILE:
+    st = {json.load(open(f, encoding="utf-8"))["meta"].get("status") for f in masthead.masthead_files(a)}
+    out[a] = st.pop() if len(st) == 1 else None
+print(json.dumps(out))`], {encoding: "utf8"});
+  if (py.status !== 0) { console.log("cannot read declared statuses:\n" + py.stderr); return {}; }
+  return JSON.parse(py.stdout);
+})();
+/* The hub's cards are static markup, so they are read from the shipped bundle as text. */
+const CARDS = (() => {
+  if (!existsSync("dist/index.html")) return null;
+  const html = readFileSync("dist/index.html", "utf8"), out = {};
+  for (const m of html.matchAll(/<a class="card"[^>]*data-slug="([^"]+)"[\s\S]*?<\/a>/g)) {
+    const pill = m[0].match(/<span class="pill proto">([^<]*)<\/span>/);
+    out[m[1]] = pill ? pill[1].trim().toUpperCase() : "PUBLISHED";
+  }
+  return out;
+})();
+
 const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
@@ -59,7 +98,17 @@ for (const n of list) {
     return {byline: el ? norm(el.textContent) : null,
             text: norm(document.body.innerText),
             links: [...document.querySelectorAll("a")].map(a => a.href),
-            method: norm(document.querySelector(".pv-method")?.textContent || "")};
+            method: norm(document.querySelector(".pv-method")?.textContent || ""),
+            status: document.body.dataset.status || null,
+            head: [...document.querySelectorAll("header.mast .pv-status")]
+              .map(e => [e.dataset.status, norm(e.textContent)]),
+            foot: [...document.querySelectorAll("footer .pv-status")]
+              .map(e => [e.dataset.status, norm(e.textContent)]),
+            flag: document.querySelector(".mast .proto")?.textContent.trim() || null,
+            pageLinks: [...document.querySelectorAll("a[href^='../']")].map(a => [
+              (a.getAttribute("href").match(/^\.\.\/([a-z-]+)\/?$/) || [])[1] || null,
+              a.nextElementSibling?.classList.contains("status-tag")
+                ? a.nextElementSibling.textContent.trim() : null])};
   });
   const probs = [];
   if (r.byline === null) probs.push("no .byline element");
@@ -98,6 +147,34 @@ for (const n of list) {
     if (src.licence_url && !r.links.some(h => h.startsWith(src.licence_url.slice(0, 40))))
       probs.push(`${key}: uses ${src.licence} data with no link to the licence`);
   }
+  /* status: see the note above BANNER */
+  const want = DECLARED[n];
+  if (!want) probs.push("cannot inspect status: no single meta.status declared in its masthead data");
+  else {
+    if (r.status !== want) probs.push(`page renders status ${r.status}, its data declares ${want}`);
+    if (want === "PUBLISHED") {
+      if (r.head.length || r.foot.length) probs.push("a PUBLISHED page carries a status banner");
+      if (r.flag) probs.push(`a PUBLISHED page carries the masthead flag "${r.flag}"`);
+    } else {
+      for (const [where, got] of [["masthead", r.head], ["footer", r.foot]]) {
+        if (got.length !== 1) probs.push(`${want} page has ${got.length} ${where} status banners, not one`);
+        else if (got[0][0] !== want || got[0][1] !== BANNER[want])
+          probs.push(`${where} banner reads "${got[0][1]}" (${got[0][0]}), not the ${want} wording`);
+      }
+      if (r.flag && r.flag.toUpperCase() !== want) probs.push(`masthead flag "${r.flag}" is not ${want}`);
+    }
+    if (n !== "index") {
+      if (!CARDS) probs.push("cannot inspect the hub card: dist/index.html missing");
+      else if (CARDS[n] === undefined) {
+        if (want !== "INTERNAL") probs.push(`no hub card, so the page must be INTERNAL; it declares ${want}`);
+      } else if (CARDS[n] !== want) probs.push(`hub card says ${CARDS[n]}, the page declares ${want}`);
+    }
+    if (n === "sources") for (const [slug, tag] of r.pageLinks) {
+      if (slug && DECLARED[slug] === "INTERNAL" && tag !== "Internal")
+        probs.push(`link to INTERNAL page ${slug} carries no Internal tag`);
+    }
+  }
+
   if (probs.length) bad++;
   console.log(`${n.padEnd(18)} ${probs.length ? "FAIL  " + probs.join("; ")
                                               : "PASS  disclosure present"}`);

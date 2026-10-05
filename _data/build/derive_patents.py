@@ -96,6 +96,7 @@ for r in have:
 away = sum(v for k, v in split.items() if k not in ("pic12", "unclassifiable"))
 out = {
     "meta": {
+        "status": "PUBLISHED",
         "source": "USPTO Open Data Portal, patent applications, CPC C08*/B29*, inventor "
                   "residence in Ohio, cut to PIC-12 cities",
         "row": "one patent APPLICATION with >=1 inventor RESIDING in a PIC-12 city",

@@ -211,6 +211,7 @@ polymer_window = round(sum(sum(p["by_year"].get(str(y), 0) for p in programs
 today = time.strftime("%Y-%m-%d")
 out = {
     "meta": {
+        "status": "PUBLISHED",
         "title": "The occupations inside plastics and rubber manufacturing",
         "source": "BLS Employment Projections National Employment Matrix (2024-34); BLS "
                   "Occupational Employment and Wage Statistics, May 2024, metropolitan and "

@@ -416,6 +416,38 @@ const PV = (() => {
             counties: f.counties || []};
   }
 
+  /* ------------------------------------------------------------ status banner
+
+     ONE STATUS VOCABULARY, DECLARED IN DATA (DECISIONS.md, 2026-10-04). Every page's
+     masthead meta carries `status`: PUBLISHED, PROTOTYPE or INTERNAL. The hub card, the
+     masthead flag and this banner say the same word, and tools/disclosure.mjs fails a page
+     where they disagree or where a banner is missing. A PUBLISHED page shows nothing. The
+     other two say what the status means at the top and again in the footer, because a
+     reader who arrives from a search lands mid-page and leaves from the bottom. A missing
+     or unknown status is a console error, which tools/verify.mjs fails. */
+  const STATUS = {
+    PROTOTYPE: ["Prototype:", "a public draft. Figures may change; check with PIC before citing."],
+    INTERNAL: ["Internal working view:", "deliberately unlisted and not for citation."],
+  };
+  function statusBanner(status, page) {
+    if (status !== "PUBLISHED" && !STATUS[status]) {
+      console.error(`PV.methodology: page "${page || "index"}" declares no known meta.status ` +
+        `(${status}); use PUBLISHED, PROTOTYPE or INTERNAL.`);
+      return;
+    }
+    document.body.dataset.status = status;
+    if (status === "PUBLISHED" || document.querySelector(".pv-status")) return;
+    const banner = where => {
+      const p = document.createElement("p");
+      p.className = `pv-status pv-status-${where}`;
+      p.dataset.status = status;
+      p.innerHTML = `<b>${STATUS[status][0]}</b> ${STATUS[status][1]}`;
+      return p;
+    };
+    document.querySelector("header.mast .wrap")?.appendChild(banner("head"));
+    document.querySelector("footer .wrap")?.prepend(banner("foot"));
+  }
+
   /* ------------------------------------------------------------ methodology box
 
      Data journalism's standard "How we did this" disclosure, generated rather than
@@ -514,7 +546,7 @@ const PV = (() => {
     ]);
     const STRUCTURAL = new Set([
       "source", "sources", "url", "docs", "row", "fetched", "as_of", "years", "year",
-      "span", "footprint", "title", "question", "home", "bounds", "basemap", "subfield",
+      "span", "footprint", "title", "question", "home", "bounds", "basemap", "subfield", "status",
       "subfield_alt", "cip", "cip_groups", "groups", "neo", "measure", "industries",
       "benchmark", "demographics", "control", "polymer_bound", "baseline_year",
       "two_measures", "led_joined", "naics",
@@ -552,6 +584,7 @@ const PV = (() => {
         console.error(`PV.methodology: page "${o.page || "index"}" supplied no meta.fetched or meta.as_of, so its masthead has no data date.`);
       }
     }
+    statusBanner(m.status, o.page);
 
     const sec = document.createElement("section");
     sec.className = "band pv-method";

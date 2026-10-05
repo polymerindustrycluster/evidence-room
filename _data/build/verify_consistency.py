@@ -340,6 +340,105 @@ def check_masthead_dates(arts: list[str]) -> None:
         err("masthead", "index", f"cannot check the hub's masthead date: {exc}")
 
 
+STATUSES = ("PUBLISHED", "PROTOTYPE", "INTERNAL")
+
+
+def check_status(arts: list[str]) -> None:
+    """Every page declares one status in its own masthead data (DECISIONS.md, 2026-10-04).
+
+    PUBLISHED, PROTOTYPE or INTERNAL, as meta.status in the file(s) masthead.py names. The
+    banner, the masthead flag and the hub card are checked against it in the rendered pages
+    by tools/disclosure.mjs; this holds the declaration itself, and the two derived copies
+    (index/data/counts.json, sources/data/registry.json) against it. An unlisted page has
+    to be INTERNAL, and an INTERNAL page has to be unlisted: the status is the reason.
+    """
+    import masthead
+    counts = load_json(os.path.join(WEB, "index", "data", "counts.json"))
+    registry = load_json(os.path.join(WEB, "sources", "data", "registry.json"))
+    if counts.get("status") not in STATUSES:
+        err("status", "index", f"counts.json status is {counts.get('status')!r}; run derive_index.py")
+    for a in arts:
+        if a == "index":
+            continue
+        if a not in masthead.MASTHEAD_FILE:
+            err("status", a, "not in masthead.MASTHEAD_FILE, so its status cannot be read")
+            continue
+        found = set()
+        for f in masthead.masthead_files(a):
+            try:
+                found.add((load_json(os.path.join(WEB, f)).get("meta") or {}).get("status"))
+            except (OSError, json.JSONDecodeError) as exc:
+                err("status", a, f"cannot read {f}: {exc}")
+        if len(found) != 1 or not found <= set(STATUSES):
+            err("status", a, f"meta.status in {masthead.masthead_files(a)} is {sorted(map(str, found))}; "
+                f"declare exactly one of {', '.join(STATUSES)}")
+            continue
+        st = found.pop()
+        unlisted = os.path.exists(os.path.join(WEB, a, ".unlisted"))
+        if unlisted != (st == "INTERNAL"):
+            err("status", a, f"status is {st} but the page is {'unlisted' if unlisted else 'listed'}; "
+                "an unlisted page is INTERNAL and an INTERNAL page is unlisted")
+        if (counts.get("pages", {}).get(a) or {}).get("status") != st:
+            err("status", a, f"index/data/counts.json says {(counts.get('pages', {}).get(a) or {}).get('status')!r}, "
+                f"the page declares {st}; run derive_index.py")
+        if (registry.get("statuses") or {}).get(a) != st:
+            err("status", a, f"sources/data/registry.json says {(registry.get('statuses') or {}).get(a)!r}, "
+                f"the page declares {st}; run derive_sources.py")
+
+
+# Reader-facing surfaces the NEO-14 rule reads: each page's markup, script, claims, README
+# and data, plus the shared method notes and source register. Not CORRECTIONS.md or
+# DECISIONS.md, which record the old name on purpose.
+NEO14_SHARED = ("_data/METHODS-SOP.md", "_data/SOURCES.json")
+NEO14 = re.compile(r"NEO-?14")
+
+
+def check_neo14_name(arts: list[str]) -> None:
+    """NEO-14 names one county set: the vault's (DECISIONS.md, 2026-10-04).
+
+    Until 2026-10-04 the chain register's footprint, PIC-12 plus Columbiana and Tuscarawas,
+    was also called NEO-14, while the vault's NEO-14 (pic-geo) adds Crawford, Huron,
+    Richland and Tuscarawas to ten PIC-12 counties. The chain set is now PIC-12+2.
+    Two rules. Anywhere: Columbiana is the tell, in PIC-12+2 and not in the vault set, so a
+    sentence naming both NEO-14 and Columbiana describes the chain set by the wrong name,
+    unless it names PIC-12+2 as well (a sentence contrasting the two). On chain's own
+    surfaces, which describe only the chain set: NEO-14 may appear only within 300
+    characters of PIC-12+2, that is, only where the two are being told apart.
+    """
+    files = list(NEO14_SHARED)
+    for a in arts:
+        root = os.path.join(WEB, a)
+        for name in ("index.html", "app.js", "claims.json", "README.md"):
+            if os.path.isfile(os.path.join(root, name)):
+                files.append(os.path.join(a, name))
+        d = os.path.join(root, "data")
+        if os.path.isdir(d):
+            files += [os.path.join(a, "data", x) for x in sorted(os.listdir(d)) if x.endswith(".json")]
+    for rel in files:
+        path = os.path.join(WEB, rel)
+        if not os.path.isfile(path):
+            err("neo14-name", rel, "a surface this rule reads is missing, so it was not inspected")
+            continue
+        text = read(path)
+        flat = " ".join(text.split())
+        for sent in re.split(r"(?<=[.;!?])[\s\"”]+", flat):
+            if NEO14.search(sent) and "Columbiana" in sent and "PIC-12+2" not in sent:
+                err("neo14-name", rel, f"NEO-14 labels the chain register's PIC-12+2 set: "
+                    f"\"{sent[:200]}\". NEO-14 is the vault's set only.")
+                break
+        if rel.startswith("chain" + os.sep):
+            for m in NEO14.finditer(text):
+                if "PIC-12+2" not in text[max(0, m.start() - 300): m.end() + 300]:
+                    err("neo14-name", rel, "chain names NEO-14 without PIC-12+2 beside it: "
+                        f"\"...{' '.join(text[max(0, m.start() - 80): m.end() + 80].split())}...\". "
+                        "Chain's footprint is PIC-12+2; NEO-14 is the vault's set.")
+                    break
+    chain = load_json(os.path.join(WEB, "chain", "data", "chain-data.json"))
+    rule = ((chain.get("meta") or {}).get("region") or {}).get("rule", "")
+    if not rule.startswith("county in PIC-12+2 "):
+        err("neo14-name", "chain", f"chain-data.json meta.region.rule is {rule!r}; it names PIC-12+2")
+
+
 def check_required_files(arts: list[str]) -> None:
     for a in arts:
         for f in ("index.html", "app.js"):
@@ -861,6 +960,8 @@ def main() -> int:
     check_registry_coverage(reg, arts)
     check_published_register(reg, arts)
     check_masthead_dates(arts)
+    check_status(arts)
+    check_neo14_name(arts)
     check_required_files(arts)
     check_methodology(arts)
     check_footprint_prose(arts)

@@ -127,6 +127,7 @@ def derive(peers, archive=None, price_csv=None, footnotes=None, qcew_receipt=Non
             status = excluded.get(area, 'source_row_absent')
         local_coverage.append({**membership, 'status': status})
     return {'meta': {
+        'status': 'PUBLISHED',
         'source': 'BLS QCEW 2024 NAICS 326 private metro average weekly wage; BEA Regional Price Parities 2024 (MARPP, all items)',
         'row': 'One row is one disclosed metro average weekly wage divided by its all-items regional price parity / 100.',
         'geography': 'Metro, not county: both sources use OMB bulletin 23-01, July 21, 2023. QCEW adopted it in 2024; the BEA archive declares it in its footnotes. No PIC-12 county aggregation is used.',

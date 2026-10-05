@@ -1,5 +1,6 @@
 {
  "meta": {
+  "status": "PUBLISHED",
   "source": "Recomputed from the published data files of six pages in the Evidence Room, PIC’s public data archive: wages, concentration, occupations, federal money, the funding map and revisions.",
   "sources": "Behind those pages: annual average employment and wages from the Quarterly Census of Employment and Wages, the count the Bureau of Labor Statistics builds from state unemployment-insurance filings; BLS Employment Projections and completed degrees from IPEDS, the federal survey every college reports to; award and contract records from USAspending, filed against the place of performance the award names; the signed award documents themselves; and archived earlier releases of the price series from ALFRED, the Federal Reserve’s archive of what each statistic said on the day it was published.",
   "row": "One row is one measure in one year: its level, the baseline it is read against, and every year-over-year change the same measure has made in its published history.",

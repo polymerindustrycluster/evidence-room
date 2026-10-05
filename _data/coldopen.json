@@ -40,7 +40,11 @@
   "the first chart: the standfirst now says the two Census measures are estimated",
   "separately, and the every-quarter claim now says it holds for the year average. On the",
   "Linux runner that is one line, churn 1729 to 1756. Accuracy costs the line; the prose",
-  "above the chart owes it back."
+  "above the chart owes it back.",
+  "",
+  "RAISED 2026-10-04. Internal and prototype pages now carry a status banner in the",
+  "masthead (DECISIONS.md), 40px at 1440 wide. Accountability is the only one that held a",
+  "debt, and it moves 903 to 943; the other four still clear 900. The banner is the point."
  ],
  "limit": 900,
  "fixed": [
@@ -62,6 +66,6 @@
   "peers": 1339,
   "revisions": 1356,
   "timeline": 1386,
-  "accountability": 903
+  "accountability": 943
  }
 }

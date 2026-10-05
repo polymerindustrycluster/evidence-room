@@ -33,9 +33,11 @@ here is what a machine cannot adjudicate.
 # 1. Definitions that must be decided, not inferred
 
 **The footprint.** PIC-12 is PIC's official twelve-county set and the one the cluster-health
-dashboard uses. The chain register's CODEBOOK NEO-14 includes all twelve plus Columbiana
-and Tuscarawas. It is a different set from the legacy NEO14 constant in pic-geo and the
-vendored footprints.py; that legacy set shares only ten PIC counties. **Use the explicit
+dashboard uses. The chain register's CODEBOOK set, **PIC-12+2**, includes all twelve plus
+Columbiana and Tuscarawas. **NEO-14** names only the vault's fourteen-county set, the NEO14
+constant in pic-geo and the vendored footprints.py; it shares only ten PIC counties, adding
+Crawford, Huron, Richland and Tuscarawas and leaving out Ashtabula and Trumbull. Until
+2026-10-04 the chain set was also called NEO-14; it was renamed so one name means one set. **Use the explicit
 county list attached to each source, not the label alone.** Regional federal county
 aggregates use PIC-12; chain company records use their CODEBOOK rule. National,
 state, metro and county comparisons name their own geography. A metro is not a county

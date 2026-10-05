@@ -41,7 +41,7 @@ const html = `<title>${title}</title>
   <div class="wrap">
     <strong>Polymer Industry Cluster</strong>
     <span>Cluster vitals &middot; ${slug}</span>
-    <span class="proto">Prototype &middot; internal draft</span>
+    <span class="proto">Prototype</span>
   </div>
 </header>
 

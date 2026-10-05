@@ -394,7 +394,7 @@
    "url": null,
    "docs": null,
    "filters": {
-    "footprint": "The company-register 14-county boundary: 39007 Ashtabula, 39029 Columbiana, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39157 Tuscarawas, 39169 Wayne. This contains PIC-12 plus Columbiana and Tuscarawas; it differs from the legacy NEO14 constant in footprints.py.",
+    "footprint": "The company-register 14-county boundary: 39007 Ashtabula, 39029 Columbiana, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39157 Tuscarawas, 39169 Wayne. This is PIC-12+2: PIC-12 plus Columbiana and Tuscarawas. NEO-14, the vault’s fourteen-county set in footprints.py, is a different list.",
     "note": "NOT public and NOT reproducible by a reader. Company self-descriptions are quoted as written and are never rewritten: a company that writes ‘injection moulding’ said that. Any public release of these records is gated on member consent (Linear POL-1011).",
     "rebuild": "The scoped offline repair reads the held SQLite extract and the previously published company fields. It is not a full catalogue rebuild or verification of current company capabilities."
    },
@@ -410,7 +410,7 @@
     "NAICS": "325 and 326",
     "unit": "ESTABLISHMENTS: one physical site, not one company. A firm with three plants is three establishments.",
     "note": "The page compares chemical manufacturing (325) and plastics/rubber products (326). These broad groups are not the narrower PIC industry register. Census establishments and PIC company records are different units; their quotient is not a coverage rate.",
-    "geography": "The company-register 14-county boundary: 39007 Ashtabula, 39029 Columbiana, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39157 Tuscarawas, 39169 Wayne. This contains PIC-12 plus Columbiana and Tuscarawas; it differs from the legacy NEO14 constant in footprints.py.",
+    "geography": "The company-register 14-county boundary: 39007 Ashtabula, 39029 Columbiana, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39157 Tuscarawas, 39169 Wayne. This is PIC-12+2: PIC-12 plus Columbiana and Tuscarawas. NEO-14, the vault’s fourteen-county set in footprints.py, is a different list.",
     "query": "County Business Patterns (CBP), 2023; get NAME,ESTAB,EMP (area name, establishments, employees); for county:*; in state:39; NAICS2017=325 and NAICS2017=326 in separate requests, then select the fourteen county FIPS. Both responses were acquired on 2026-09-11 and retained with SHA256 receipts.",
     "rebuild": "repair_chain.py reads the two cached raw responses without a network call. fetch_cbp.py is a separate size-class investigation using PIC-12 and narrower industry codes; it does not produce this page’s Census comparison."
    },

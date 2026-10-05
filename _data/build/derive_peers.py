@@ -81,7 +81,7 @@ GAPS = {"kind": "suppression",
                   "withheld cell is dropped, never drawn as zero, so a trend line is "
                   "broken wherever the bureau did not publish"}
 out = {"gaps": GAPS,
-       "meta": dict(SRC["meta"], footprint=META[FOOTPRINT], derived_note=(
+       "meta": dict({"status": "PUBLISHED", **SRC["meta"]}, footprint=META[FOOTPRINT], derived_note=(
         "Every rank here is among DISCLOSED areas. `could_displace_n` counts suppressed "
         "areas with more establishments than the subject — the number that would have to "
         "be zero for a plain 'national rank' to be honest.")),
