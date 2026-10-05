@@ -627,8 +627,8 @@ const PV = (() => {
     const id = "pv-made-" + page;
     by.insertAdjacentHTML("beforeend", ` &middot; <span class="pv-revised">Page revised
       <time datetime="${rec.revised}">${when}</time></span> &middot; <button type="button"
-      class="pv-made-toggle" aria-expanded="false" aria-controls="${id}">How this was made
-      and checked &middot; Cite this page</button>`);
+      class="pv-made-toggle" aria-expanded="false" aria-controls="${id}">How we checked
+      &middot; Cite</button>`);
     const box = document.createElement("div");
     box.className = "pv-made";
     box.id = id;
