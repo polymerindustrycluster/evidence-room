@@ -3,7 +3,7 @@
     python3 _data/build/stamp_cite.py           # write _data/cite.json
     python3 _data/build/stamp_cite.py --print   # print what it would write; write nothing
 
-THE REVISION DATE IS GIT'S, NOT TYPED (DECISIONS.md, 5 October 2026). A page's "Page revised"
+THE REVISION DATE IS GIT'S, NOT TYPED (DECISIONS.md, 5 October 2026). A page's "Revised"
 byline date and the version in its "Cite as" line are the author date of the newest
 non-merge commit that touched the page's folder. A folder with uncommitted changes is dated
 today, the date the commit carrying them will have. Merge commits are skipped so a merge does not

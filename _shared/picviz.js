@@ -590,7 +590,7 @@ const PV = (() => {
 
      Every date in it is the page's REVISION date, which _data/build/stamp_cite.py writes
      from git into _data/cite.json at build time (tools/bundle.mjs, and CI before the Pages
-     upload), and the byline's "Page revised" is the same date. tools/disclosure.mjs fails
+     upload), and the byline's "Revised" is the same date. tools/disclosure.mjs fails
      a page whose box is missing, whose dates or cite URL differ from that file, or whose
      model credits or their roles differ from its byline's. A page with
      manual claims says how many rest on a person reading a document, because "every
@@ -602,6 +602,9 @@ const PV = (() => {
     const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v));
     return iso ? `${+iso[3]} ${MONTHS[+iso[2] - 1]} ${iso[1]}` : String(v);
   }
+  /* "2026-10-05" -> "5 Oct 2026": the byline's short form, which keeps the byline row from
+     wrapping a line on Linux (CI, PR #46); the cite line keeps the long form */
+  const shortDate = iso => `${+iso.slice(8, 10)} ${MONTHS[+iso.slice(5, 7) - 1].slice(0, 3)} ${iso.slice(0, 4)}`;
   async function madeAndChecked(page, nManual) {
     const by = document.querySelector(".byline");
     if (!by || document.querySelector(".pv-made")) return;
@@ -625,8 +628,8 @@ const PV = (() => {
       ? ", except one that rests on a document read by a person"
       : `, except ${nManual} that rest on a document read by a person`;
     const id = "pv-made-" + page;
-    by.insertAdjacentHTML("beforeend", ` &middot; <span class="pv-revised">Page revised
-      <time datetime="${rec.revised}">${when}</time></span> &middot; <button type="button"
+    by.insertAdjacentHTML("beforeend", ` &middot; <span class="pv-revised">Revised
+      <time datetime="${rec.revised}">${shortDate(rec.revised)}</time></span> &middot; <button type="button"
       class="pv-made-toggle" aria-expanded="false" aria-controls="${id}">How we checked
       &middot; Cite</button>`);
     const box = document.createElement("div");

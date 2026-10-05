@@ -8,7 +8,8 @@ product and domain decisions that a reader or rebuilder needs.
 
 ## 2026-10-05 — A page's version date is git's, and every date carries a label (John Swanson approved the wording; mechanism proposed by Claude)
 
-- **"Page revised" and the "Cite as" version are one date**: the author date of the newest
+- **The byline's "Revised" and the "Cite as" version are one date** (the byline prints it short,
+  "Revised 5 Oct 2026", so the byline row does not wrap; the cite keeps the full date): the author date of the newest
   non-merge commit touching the page's folder (a folder with uncommitted edits is dated today), so
   a merge re-dates nothing. `_data/build/stamp_cite.py` writes it, with the page's title and
   canonical URL, to `_data/cite.json`. That file is **generated, never committed**: `tools/bundle.mjs`
@@ -28,7 +29,7 @@ product and domain decisions that a reader or rebuilder needs.
 - **The canonical URL is CITATION.cff's url plus the page folder**; the hub cites the room at the
   root.
 - **Every date says what it dates.** The masthead's "Data as of" became "Newest data retrieved", in
-  words. A byline month that dated the page was removed in favour of "Page revised"; a byline month
+  words. A byline month that dated the page was removed in favour of "Revised"; a byline month
   that dated the data stayed, labelled "retrieved" (location quotient, occupations) or "newest
   vintage" (revisions); funding map's "Figures as of" was already labelled.
 - **The box says how many sentences a person checked by hand.** "Every numbered sentence is re-run

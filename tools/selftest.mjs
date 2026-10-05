@@ -124,9 +124,9 @@ const CASES = [
    inject: s => s.replace('await madeAndChecked(o.page || "index", manual.length);', "")},
 
   {gate: "disclosure", page: "churn", args: ["churn"],
-   expect: /byline Page revised reads 2020-01-01/,
+   expect: /byline Revised reads 2020-01-01/,
    defect: "a page rendering a revision date its citation record does not hold, so its " +
-           "Page revised and cite version name a date nobody can trace",
+           "Revised date and cite version name a date nobody can trace",
    /* the bundle's inlined copy of _data/cite.json, which the page renders from */
    inject: s => s.replace(/("churn": \{[^}]*"revised": ")[^"]+/, (m, k) => k + "2020-01-01")},
 

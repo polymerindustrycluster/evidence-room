@@ -82,7 +82,7 @@ const CARDS = (() => {
 
 /* HOW THIS WAS MADE AND CHECKED, AND CITE AS (DECISIONS.md, 5 October 2026). Every page
  * carries, under its byline, a toggle that opens a short box ending in a "Cite as" line,
- * and the byline says "Page revised <date>". Asserted rendered: the box exists beside the
+ * and the byline says "Revised <D Mon YYYY>". Asserted rendered: the box exists beside the
  * byline; the byline date, the cite version and the cite year all equal the page's
  * revision date in _data/cite.json, which tools/bundle.mjs regenerated from git in this
  * same run (_data/build/stamp_cite.py), so nothing here depends on a contributor having
@@ -209,8 +209,9 @@ for (const n of list) {
     else if (rec) {
       if (!mk.beside || !mk.toggle) probs.push("the made-and-checked box is not the byline's own toggle and panel");
       if (!mk.checks) probs.push("the made-and-checked box does not link to what the checks catch and miss");
-      const date = [rec.revised, longDate(rec.revised)];
-      for (const [what, got] of [["byline Page revised", mk.revised], ["cite version", mk.version]])
+      const short = longDate(rec.revised).replace(/ ([A-Z][a-z]{2})[a-z]* /, " $1 ");
+      for (const [what, got, date] of [["byline Revised", mk.revised, [rec.revised, short]],
+                                       ["cite version", mk.version, [rec.revised, longDate(rec.revised)]]])
         if (!got || got[0] !== date[0] || got[1] !== date[1])
           probs.push(`${what} reads ${got ? got.join(" / ") : "nothing"}, the recorded revision date is ${date.join(" / ")}`);
       const head = `Swanson, J., Polymer Industry Cluster (${rec.revised.slice(0, 4)}). ${rec.title}.`;
