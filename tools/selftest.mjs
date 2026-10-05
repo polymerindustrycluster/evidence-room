@@ -130,11 +130,19 @@ const CASES = [
    /* the bundle's inlined copy of _data/cite.json, which the page renders from */
    inject: s => s.replace(/("churn": \{[^}]*"revised": ")[^"]+/, (m, k) => k + "2020-01-01")},
 
-  {gate: "disclosure", page: "churn", args: ["churn"],
-   expect: /the box credits Claude \(Anthropic\), Codex \(OpenAI\); the byline credits Claude \(Anthropic\)(?! and)/,
-   defect: "the box crediting a model the page's own byline does not (Codex on every page, " +
-           "review of PR W3 step 2)",
-   inject: s => s.replace("const credit = MODELS.filter(n => byText.includes(n));", "const credit = MODELS;")},
+  {gate: "disclosure", page: "accountability", args: ["accountability"],
+   expect: /the box credits .*analysis and graphics by Codex \(OpenAI\).*; the byline credits/,
+   defect: "the box crediting Codex with the analysis on a page whose byline credits Codex " +
+           "only for updating the federal context (PR #46 review)",
+   inject: s => s.replace('<span class="pv-made-credit">${credit}</span>',
+     '<span class="pv-made-credit">Analysis and graphics by Claude (Anthropic) and Codex (OpenAI)</span>')},
+
+  {gate: "consistency", page: "funding-map", file: "funding-map/data/funding.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[masthead\] funding-map/,
+   defect: "a masthead calling the register's 13 August 2026 the newest retrieval while the " +
+           "same file carries a USAspending check read on 1 September 2026 (PR #46 review)",
+   inject: s => s.replace('  "as_of": "2026-09-01",\n', "")},
 
   {gate: "consistency", page: "index", file: "index/app.js",
    command: "python3", args: ["_data/build/verify_consistency.py"],

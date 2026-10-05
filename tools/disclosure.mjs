@@ -93,9 +93,20 @@ const CITE = (() => {
   try { return JSON.parse(readFileSync("_data/cite.json", "utf8")).pages; }
   catch (e) { console.log(`cannot read _data/cite.json: ${e.message}`); return {}; }
 })();
-/* a model credit is a capitalised name followed by its maker in parentheses */
+/* A model credit is a capitalised name followed by its maker in parentheses, and its ROLE
+ * is the words before it in the same byline clause (clauses are split on the middot), back
+ * to the previous credit. Compared as role-and-model pairs, so a byline crediting Codex
+ * only for "Federal context updated by" fails a box that credits Codex with the analysis. */
 const MODEL = /\b[A-Z][A-Za-z]+ \((?:Anthropic|OpenAI|Google|xAI|MiniMax|Meta|Mistral)\)/g;
-const models = t => [...new Set((t || "").match(MODEL) || [])].sort().join(", ");
+const models = t => (t || "").split(/[\u00b7;]/).flatMap(clause => {
+  const out = []; let from = 0, prev = "";
+  for (const m of clause.matchAll(MODEL)) {
+    let role = clause.slice(from, m.index).replace(/^[\s,.]+|[\s,]+$/g, "").toLowerCase();
+    if (role === "" || role === "and") role = prev;      // "by X and Y": Y shares X's role
+    out.push(`${role} ${m[0]}`); from = m.index + m[0].length; prev = role;
+  }
+  return out;
+}).sort().join(" | ");
 const SITE = (readFileSync("CITATION.cff", "utf8").match(/^url:\s*"([^"]+)"/m) || [])[1];
 const canonical = n => SITE && (SITE.replace(/\/$/, "") + "/" + (n === "index" ? "" : n + "/"));
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
@@ -132,10 +143,11 @@ for (const n of list) {
               if (!box) return null;
               const t = by?.querySelector(".pv-made-toggle"), rev = by?.querySelector(".pv-revised time");
               const cite = box.querySelector(".pv-cite"), u = cite?.querySelector("a.pv-cite-url");
-              const credit = box.querySelector("p")?.textContent || "";
+              const rest = by ? [...by.childNodes].filter(c => !(c.classList &&
+                (c.classList.contains("pv-revised") || c.classList.contains("pv-made-toggle")))) : [];
               return {beside: by?.nextElementSibling === box,
-                      byLine: norm(by?.textContent || ""),
-                      boxCredit: norm(credit.slice(0, credit.indexOf("Every numbered") + 1 || undefined)),
+                      byLine: norm(rest.map(c => c.textContent).join("")),
+                      boxCredit: norm(box.querySelector(".pv-made-credit")?.textContent || ""),
                       toggle: !!t && t.getAttribute("aria-controls") === box.id,
                       revised: rev ? [rev.getAttribute("datetime"), norm(rev.textContent)] : null,
                       checks: !!box.querySelector("a[href$='#sec-checks']"),

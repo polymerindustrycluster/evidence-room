@@ -226,9 +226,9 @@
     },
     {
       "id": "as-of-date",
-      "text": "The hand-typed '13 August 2026' in the byline and the figure source line, and the date passed to PV.methodology, which is read from meta.asOf and stamps the mast dateline and the generated methods box.",
+      "text": "The hand-typed '13 August 2026' in the byline and the figure source line, and the register date the generated methods box reads from meta.asOf. The mast dateline's 'Newest data retrieved 1 September 2026' is meta.as_of, the USAspending outlay check, which is newer than the register.",
       "source": "meta.asOf",
-      "assert": "D['meta']['asOf'] == '2026-08-13' and 'Notices of Award' in D['meta']['provenance'][0] and 'grant agreement' in D['meta']['provenance'][1]",
+      "assert": "D['meta']['asOf'] == '2026-08-13' and D['meta']['as_of'] == D['meta']['outlays']['asOf'] == '2026-09-01' and 'Notices of Award' in D['meta']['provenance'][0] and 'grant agreement' in D['meta']['provenance'][1]",
       "actual": "(D['meta']['asOf'], D['meta']['provenance'][0][:60], D['meta']['provenance'][1][:60])",
       "falsified_if": "The data refresh to a newer vintage while the hand-typed dates still say 13 August 2026, or the two record types the byline names stop being the records the page is built from."
     },

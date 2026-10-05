@@ -16,8 +16,13 @@ product and domain decisions that a reader or rebuilder needs.
   checkout), so no contributor has a step to forget and a parallel PR cannot go stale.
   `tools/disclosure.mjs` checks each rendered page against the file of the same run. Shared code in
   `_shared/` does not revise a page: the date says when the page's own files changed.
-- **The box credits the models its byline credits**, read from the byline, so the two cannot
-  disagree. **The citation names both authors**: "Swanson, J., Polymer Industry Cluster (year)",
+- **The box copies its byline's model-credit clauses verbatim**, so each model keeps the role the
+  byline gives it (Codex "updated the federal context" on accountability and scorecard, not the
+  analysis); the gate compares role-and-model pairs.
+- **"Newest data retrieved" means the newest retrieval anywhere in the page's data**, nested ones
+  included (`masthead.newest_date`): funding map's USAspending check and cost-scissors' CPI pull
+  were newer than the dates their mastheads showed. A register's own cutoff stays labelled
+  separately where the page shows it. **The citation names both authors**: "Swanson, J., Polymer Industry Cluster (year)",
   and CITATION.cff lists John Swanson (person) and the Polymer Industry Cluster (entity) (John
   Swanson, 5 October 2026).
 - **The canonical URL is CITATION.cff's url plus the page folder**; the hub cites the room at the

@@ -11,6 +11,20 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-10-05 — Two mastheads named an older date as the newest retrieval, *funding-map, cost-scissors*
+
+**Funding map.** **Was:** the masthead read "Newest data retrieved 13 August 2026", the date of
+the signed-award register, while the page also shows a USAspending outlay check read on
+1 September 2026. **Is:** "Newest data retrieved 1 September 2026"; the register's 13 August
+date stays in the byline as "Figures as of". **Cost scissors.** **Was:** 15 August 2026, when
+the price series were fetched. **Is:** 8 September 2026, when the consumer price index behind
+the inflation note was read. No figure changed on either page; each carries a dated note.
+**Cause:** the masthead rule read only each data file's top-level date, so a newer retrieval
+nested inside the file was invisible to it (found by the PR #46 review, the day the label
+became "Newest data retrieved"). `_data/build/masthead.py` now takes the newest `as_of`,
+`fetched` or `asOf` anywhere in a file, and `verify_consistency.py` fails a masthead older
+than that.
+
 ## 2026-10-04 — One name per county set, one status vocabulary, and who PIC is, *index, chain, sources, peers*
 
 **Chain's footprint, *chain, index, sources*.** **Was:** the chain register's fourteen

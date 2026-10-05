@@ -592,7 +592,7 @@ const PV = (() => {
      from git into _data/cite.json at build time (tools/bundle.mjs, and CI before the Pages
      upload), and the byline's "Page revised" is the same date. tools/disclosure.mjs fails
      a page whose box is missing, whose dates or cite URL differ from that file, or whose
-     model credits differ from its byline's. A page with
+     model credits or their roles differ from its byline's. A page with
      manual claims says how many rest on a person reading a document, because "every
      numbered sentence is re-run" would not be true of it. */
   const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
@@ -612,11 +612,14 @@ const PV = (() => {
       return;
     }
     const when = longDate(rec.revised), year = rec.revised.slice(0, 4);
-    /* The model credits are the byline's own, read before anything is appended to it, so
-       the box can never credit a model the byline does not (tools/disclosure.mjs). */
-    const MODELS = ["Claude (Anthropic)", "Codex (OpenAI)"];
-    const byText = by.textContent.replace(/\s+/g, " ");
-    const credit = MODELS.filter(n => byText.includes(n));
+    /* The model credits are the byline's own clauses, copied verbatim and read before
+       anything is appended to it, so each model keeps the role the byline gives it: a
+       byline that credits Codex only for updating the federal context must not become a
+       box that credits Codex with the analysis (PR #46 review). tools/disclosure.mjs
+       compares the role-and-model pairs. */
+    const MODEL = /\b[A-Z][A-Za-z]+ \((?:Anthropic|OpenAI|Google|xAI|MiniMax|Meta|Mistral)\)/;
+    const credit = by.textContent.replace(/\s+/g, " ").split("\u00b7").map(c => c.trim())
+      .filter(c => MODEL.test(c)).join("; ");
     const checks = page === "sources" ? "#sec-checks" : "../sources/#sec-checks";
     const reran = nManual === 0 ? "" : nManual === 1
       ? ", except one that rests on a document read by a person"
@@ -631,7 +634,7 @@ const PV = (() => {
     box.id = id;
     box.hidden = true;
     box.innerHTML = `<p><b>How this was made and checked.</b> Written and edited by John
-      Swanson, who is responsible for it. Analysis and graphics by ${credit.join(" and ")}.
+      Swanson, who is responsible for it. <span class="pv-made-credit">${credit}</span>.
       Every numbered sentence is re-run against the data it ships
       with${reran}; that catches a sentence drifting from its data, not data that is wrong
       about the world (<a href="${checks}">what the checks catch and miss</a>).</p>
