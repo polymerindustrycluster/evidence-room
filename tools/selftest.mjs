@@ -426,6 +426,22 @@ const CASES = [
    defect: "the hero byline at #9CC4CA, 3.62:1 on the teal hero (ER-11)",
    inject: s => s.replace("line-height:1.5;color:#C0DBE1;letter-spacing:.02em}",
                           "line-height:1.5;color:#9CC4CA;letter-spacing:.02em}")},
+
+  /* From the Codex review of PR #44 (4 October 2026). */
+  {gate: "access", page: "funding-map", args: ["funding-map"], expect: /390: chart #viz takes \d+ Tab stops/,
+   defect: "the phone form of a chart left with every recipient card a Tab stop, which a " +
+           "1440-only walk passed",
+   inject: s => s.replace("PV.rove(viz, 'button.rcard, button.rname');", "")},
+
+  {gate: "access", page: "peers", args: ["peers"], expect: /drops focus to <body>/,
+   defect: "a search that redraws the scatter after the reader has Tabbed onto a dot, dropping " +
+           "them on <body>",
+   inject: s => s.replace('"#scatter [aria-label]"', '"#scatter [aria-label=none]"')},
+
+  {gate: "access", page: "funding-map", args: ["funding-map"], expect: /after Escape closed what it opened/,
+   defect: "the finder's status still calling a panel open after Escape closed it",
+   inject: s => s.replace("    if (status) status.textContent = '';\n    if (push && location.hash)",
+                          "    if (push && location.hash)")},
 ];
 
 const only = process.argv.slice(2).filter(a => !a.startsWith("--"));

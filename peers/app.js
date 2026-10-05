@@ -526,7 +526,9 @@ function verdict() {
   };
   /* The verdict is a polite live region tied to this box by aria-describedby (review
      ER-10). Settling for a beat before writing it means a screen reader hears the metro
-     the reader stopped on, not one sentence per keystroke. */
+     the reader stopped on, not one sentence per keystroke. That beat lets a quick reader
+     Tab past the box onto a dot before the redraw replaces every dot, so the redraw hands
+     focus back to the same metro by its label, the pattern onFonts uses (PR #44 review). */
   let wait;
   input.addEventListener("input", () => { clearTimeout(wait); wait = setTimeout(find, 250); });
   const find = () => {
@@ -538,7 +540,13 @@ function verdict() {
     FOUND = hit;
     MISS = hit || q.length < 2 ? null : q;
     verdict();
+    const a = document.activeElement, k = a && a.getAttribute && a.getAttribute("aria-label");
     drawScatter();
+    if (k && !a.isConnected) {
+      const n = [...document.querySelectorAll("#scatter [aria-label]")]
+        .find(e => e.getAttribute("aria-label") === k);
+      if (n) n.focus({preventScroll: true});
+    }
   };
 }
 verdict();

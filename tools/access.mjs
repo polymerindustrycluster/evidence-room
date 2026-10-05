@@ -73,9 +73,20 @@ async function tabWalk(p) {
       const t = e.target;
       const g = t.closest("[data-pv-group]") || t.closest(".chart") || outer(t);
       if (g && !g.dataset.accessKey) g.dataset.accessKey = g.id ||
-        (g.querySelector("svg[id]") || {}).id || `chart${window.__stops.length}`;
-      window.__stops.push({skip: t.classList.contains("pv-skipchart"),
-        chart: g && !t.classList.contains("pv-skipchart") ? g.dataset.accessKey : null});
+        (g.querySelector("svg[id]") || g.querySelector("[id]") || {}).id ||
+        `chart${window.__stops.length}`;
+      /* A toggle in a labelled button group (funding-map's "Arrange" buttons sit inside its
+         chart box) is a control, one stop each by design, not a chart mark. Roved marks
+         never count as controls, whatever group they sit in. */
+      const set = t.closest("[role=group],[role=toolbar],[role=radiogroup]");
+      const control = !!set && !set.hasAttribute("data-pv-group") && !t.hasAttribute("data-pv-mark") &&
+        t.matches("button[aria-pressed], [role=button][aria-pressed]");
+      const skip = t.classList.contains("pv-skipchart");
+      /* Below 760px a .chart is a sideways scroller, and Chromium gives a scroller with
+         nothing focusable inside a Tab stop of its own so the keyboard can scroll it (reach's
+         #impact at 390). That stop is the chart box itself, one stop, and needs no bypass. */
+      window.__stops.push({skip, control, self: t === g,
+        chart: g && !skip && !control ? g.dataset.accessKey : null});
     }, true);
   });
   for (let i = 0; i < 3000; i++) {
@@ -89,21 +100,29 @@ async function tabWalk(p) {
 for (const name of pages) {
   const probs = [], notes = [];
   if (!existsSync(`dist/${name}.html`)) { console.log(`${name.padEnd(18)} FAIL  no dist/${name}.html; run bundle`); bad++; continue; }
-  const {p, errors} = await open(name, 1440);
-
-  const walk = await tabWalk(p);
-  const per = {};
-  walk.stops.forEach((s, i) => {
-    if (!s.chart) return;
-    (per[s.chart] ||= {n: 0, first: i}).n++;
-  });
-  if (!walk.complete) probs.push(`could not inspect: Tab never came back round in 3,000 presses`);
-  for (const [chart, {n, first}] of Object.entries(per)) {
-    if (n > 1) probs.push(`chart #${chart} takes ${n} Tab stops; one, then arrow keys`);
-    if (!(walk.stops[first - 1] || {}).skip) probs.push(`chart #${chart} has no "Skip the chart" control before it`);
+  /* At a desktop and a phone width: several pages draw a different chart below 760px
+     (funding-map swaps its diagram for recipient cards), and the first version of this
+     gate walked 1440 only and passed 27 card stops with no bypass (PR #44 review). */
+  for (const width of [390, 1440]) {
+    const {p: w} = await open(name, width);
+    const walk = await tabWalk(w);
+    await w.close();
+    const per = {};
+    walk.stops.forEach((s, i) => {
+      if (!s.chart) return;
+      (per[s.chart] ||= {n: 0, first: i, self: s.self}).n++;
+    });
+    if (!walk.complete) probs.push(`${width}: could not inspect: Tab never came back round in 3,000 presses`);
+    for (const [chart, {n, first, self}] of Object.entries(per)) {
+      if (n > 1) probs.push(`${width}: chart #${chart} takes ${n} Tab stops; one, then arrow keys`);
+      if (n === 1 && self) continue;
+      let j = first - 1;
+      while (walk.stops[j] && walk.stops[j].control) j--;     // its own toggles may come first
+      if (!(walk.stops[j] || {}).skip) probs.push(`${width}: chart #${chart} has no "Skip the chart" control before it`);
+    }
+    notes.push(`${width}: ${walk.stops.length} Tab stops, ${Object.keys(per).length} chart(s) at one each`);
   }
-  const charts = Object.keys(per).length;
-  notes.push(`${walk.stops.length} Tab stops, ${charts} chart(s) at one each`);
+  const {p, errors} = await open(name, 1440);
 
   /* 2. twin tables against their plotted marks */
   const twins = await p.evaluate(() => [...document.querySelectorAll("details.pv-table[data-pv-twin]")].map(d => {
@@ -205,14 +224,54 @@ for (const name of pages) {
           });
           return {changed: changed.map(e => "#" + (e.id || e.className || e.tagName)).slice(0, 3), ok};
         }, [sel, LIVE]);
+        /* WHAT IT SAID MUST NOT OUTLIVE WHAT IT OPENED. funding-map's finder kept describing a
+           closed panel as open after Escape (PR #44 review). Where Escape closes a dialog the
+           control opened, the regions it names must not still hold the same words. */
+        const dialogs = () => q.evaluate(() => [...document.querySelectorAll("[role=dialog]")]
+          .filter(d => d.checkVisibility()).length);
+        const said = () => q.evaluate(sel => {
+          const c = document.querySelector(sel);
+          return [c, ...c.querySelectorAll("button, [role=button], input")]
+            .flatMap(n => (n.getAttribute("aria-describedby") || "").split(/\s+/)).filter(Boolean)
+            .map(id => (document.getElementById(id) || {}).textContent || "").join(" ").trim();
+        }, sel);
+        const d0 = await dialogs(), s0 = await said();
+        if (d0) {
+          await q.keyboard.press("Escape");
+          await q.waitForTimeout(400);
+          if (await dialogs() < d0 && s0 && await said() === s0) r.stale = s0.slice(0, 60);
+        }
       } catch (e) {
         r = {error: e.message.split("\n")[0]};
       }
       await q.close();
+      /* A READER WHO TYPES AND TABS ON KEEPS THEIR PLACE. Peers settles its search for a beat
+         before redrawing the scatter; a quick reader had already Tabbed onto a dot, and the
+         redraw dropped them on <body> (PR #44 review). Type, Tab twice at once, wait. */
+      if (r && !r.error && c.tag === "INPUT" && c.type !== "number") {
+        const {p: f} = await open(name, width);
+        const fsel = await f.evaluate(i => {
+          document.querySelectorAll("details").forEach(d => { d.open = true; });
+          const c = [...document.querySelectorAll(
+            "input:not([type=hidden]), select, [role=group], [role=radiogroup], [role=toolbar]")][i];
+          c.setAttribute("data-access", "1");
+          return "[data-access]";
+        }, c.i);
+        await f.waitForTimeout(150);
+        await f.focus(fsel);
+        await f.keyboard.type("yo", {delay: 40});
+        await f.keyboard.press("Tab");
+        await f.keyboard.press("Tab");
+        await f.waitForTimeout(700);
+        r.dropped = await f.evaluate(() => document.activeElement === document.body);
+        await f.close();
+      }
       break;
     }
     if (!r) probs.push(`could not inspect control ${c.label}: rendered at neither 1440 nor 390px`);
     else if (r.error) probs.push(`could not inspect control ${c.label}: ${r.error}`);
+    else if (r.stale) probs.push(`control ${c.label} still says "${r.stale}" after Escape closed what it opened`);
+    else if (r.dropped) probs.push(`typing in ${c.label} and Tabbing on drops focus to <body> when the result redraws`);
     else if (!r.changed.length) quiet++;
     else if (!r.ok) probs.push(`control ${c.label} rewrites ${r.changed.join(", ")} and no live region it names says so`);
     else announced++;
