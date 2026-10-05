@@ -231,6 +231,35 @@ PLAIN = {
             "spending mixes those categories and was published here once, making the "
             "comparator twenty-six times too large. Place of performance is a filing field, "
             "not a statement about where work happened."},
+ "eda_notices_of_award": {
+  "is": "The eight signed federal Notices of Award behind the funding map: seven Tech Hub "
+        "implementation awards and the Good Jobs Challenge (APEX) award, held by PIC.",
+  "good": "Reading what each federal award line is for and how much was signed, award ID by "
+          "award ID.",
+  "cannot": "The notices are held, not published, so a reader cannot re-read them here. A "
+            "signed notice is not proof of obligation: one of the eight, Huntsman’s, has no "
+            "public record, so its execution is not verified."},
+ "ohio_hub_grant_agreement": {
+  "is": "The executed state grant agreement for the $31.25 million Ohio Innovation Hub, "
+        "SBIG20251005, and its workstream budget, held by PIC.",
+  "good": "Splitting the state money into its five workstreams to the dollar.",
+  "cannot": "It is held, not published, and a state award has no federal record, so no public "
+            "source repeats the split or shows what has been drawn down."},
+ "pic_subgrant_agreements": {
+  "is": "The executed sub-grant agreements that pass state hub money to named recipients: "
+        "seven Translational R&D awards and the Bounce agreements behind Synthe6, held by PIC.",
+  "good": "Naming who has received hub money so far, at the amount written into each "
+          "agreement.",
+  "cannot": "They are held, not published. Money in a workstream that no executed agreement "
+            "names yet is not a recipient line, and an agreement says what was signed, not "
+            "what has been paid."},
+ "usaspending_award_lookup": {
+  "is": "The Treasury’s public record of each federal award, looked up by award ID.",
+  "good": "Checking a signed federal notice against a public obligation, and reading what "
+          "has been paid out on it.",
+  "cannot": "It is corroboration, not the source of the funding map: it holds no state "
+            "awards or sub-grants, and an award with no record here, like Huntsman’s, is "
+            "unverified rather than absent."},
  "vault": {
   "is": "PIC’s own catalogue of companies it has classified. It is not public and a reader "
         "cannot obtain it.",
@@ -399,6 +428,10 @@ SHORT = {
     "openalex": "OpenAlex publications",
     "nsf_awards": "NSF award record",
     "usaspending_awards": "USAspending prime contracts",
+    "eda_notices_of_award": "EDA Notices of Award",
+    "ohio_hub_grant_agreement": "Ohio hub grant agreement",
+    "pic_subgrant_agreements": "Hub sub-grant agreements",
+    "usaspending_award_lookup": "USAspending award lookup",
     "vault": "PIC company catalogue",
     "qcew": "QCEW employment and wages",
     "uspto": "USPTO patent applications",
@@ -468,6 +501,8 @@ def build():
             "licence_url": s.get("licence_url"),
             "attribution": s.get("attribution"),
             "terms": s.get("terms"),
+            # Only a source that is not an input carries a role, e.g. corroboration only.
+            **({"role": s["role"]} if s.get("role") else {}),
             "is": PLAIN[key]["is"],
             "good": PLAIN[key]["good"],
             "cannot": PLAIN[key]["cannot"],

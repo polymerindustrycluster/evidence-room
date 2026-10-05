@@ -108,6 +108,8 @@ a{color:var(--action)}
 .axisnote{font-size:15.7px;fill:#C6E2E6}
 .legend{display:flex;gap:22px;flex-wrap:wrap;align-items:center;margin:6px 0 0;
   padding:14px 0 34px;border-top:1px solid rgba(255,255,255,.14);font-size:13px;color:#A8CDD4}
+/* On the ink ground #A8CDD4 measured 4.00:1 at 13px; #C0DBE1 is 4.69:1 (4 October 2026). */
+.hero .legend{color:#C0DBE1}
 .legend b{color:#fff;font-weight:700}
 .key{display:inline-flex;align-items:center;gap:8px}
 .key i{width:26px;height:11px;display:block;border-radius:1px}

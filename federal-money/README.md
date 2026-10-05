@@ -1,7 +1,7 @@
 # The Other Federal Money
 
 **How large is the Tech Hub award beside existing federal procurement?** Prime contracts
-under chemical and plastics/rubber manufacturing codes average **$41.4 million a year in
+under chemical, plastics and rubber manufacturing codes average **$41.4 million a year in
 2025 dollars** across FY2019–FY2025 in PIC-12. The $51.0 million EDA implementation award
 is about **1.2 average years**. Finished years range from $20.5 million to $59.9 million;
 the average does not establish recurring demand or forecast the next year.
@@ -143,10 +143,21 @@ survive its own kill conditions. That probe's narrower finding is what this sect
 records; its lane-level tables are not published here, and every figure above is recomputed
 from the two data files this page already ships.
 
+## Correction: 4 October 2026
+
+The page labelled its 325*/326* totals "polymer" (the H1, both chart descriptions and both
+table captions). That scope is all chemical manufacturing plus plastics and rubber, wider
+than the cluster register (3252 + 3255 + 326), so every surface now reads "chemical,
+plastics and rubber manufacturing". The fiscal-year chart's dashed reference line moved
+from the eight-year mean that includes partial FY2026 ($39.2M) to the seven finished-year
+mean the headline uses ($41.4M); the eight-year figure stays as a named secondary basis in
+the figure note and the table. No figure, filter or code changed. Guarded by
+`fed-scope-label` and `fed-reference-line-basis` in `claims.json`.
+
 ## Comparator and current limits
 
-The contracting denominator is $9.2B in 2025 dollars; polymer-coded work is about one
-dollar in every 29. Both sides use the same award types and fiscal-year window.
+The contracting denominator is $9.2B in 2025 dollars; chemical, plastics and rubber
+manufacturing work is about one dollar in every 29. Both sides use the same award types and fiscal-year window.
 
 The separately acquired all-type county context is $238.3B in 2025 dollars. It includes
 grants, loans, direct payments and other assistance as well as contracts. Its six separately

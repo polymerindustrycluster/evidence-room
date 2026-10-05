@@ -355,7 +355,7 @@ function scatterDesktop() {
   SC.forEach(p => {
     const big = p.area === AKRON || p.area === CLE;
     hoverable(el("circle", {cx: xs(p.emp), cy: ys(p.lq), r: big ? 9 : 5, fill: dotFill(p),
-      stroke: "var(--paper)", "stroke-width": big ? 3 : 1.5}, svg),
+      stroke: "var(--paper)", "stroke-width": big ? 3 : 1.5, "data-pv-id": p.area}, svg),
       dotTip(p), `${p.name}: ${N(p.emp)} jobs at ${p.lq.toFixed(2)} times the national share`);
   });
   // label the two subjects, the seven in the corner, and anything genuinely large
@@ -429,7 +429,7 @@ function scatterMobile() {
   SC.forEach(p => {
     const big = p.area === AKRON || p.area === CLE;
     hoverable(el("circle", {cx: xs(p.emp), cy: ys(p.lq), r: big ? 7 : 3.2, fill: dotFill(p),
-      stroke: "var(--paper)", "stroke-width": big ? 2.5 : 1}, svg),
+      stroke: "var(--paper)", "stroke-width": big ? 2.5 : 1, "data-pv-id": p.area}, svg),
       dotTip(p), `${p.name}: ${N(p.emp)} jobs at ${p.lq.toFixed(2)} times the national share`);
   });
   /* Subject and reference line in the first paint: Akron labelled, Cleveland labelled,
@@ -524,7 +524,14 @@ function verdict() {
            SC.find(p => p.name.toLowerCase().startsWith(s)) ||
            SC.find(p => p.name.toLowerCase().includes(s)) || null;
   };
-  input.addEventListener("input", () => {
+  /* The verdict is a polite live region tied to this box by aria-describedby (review
+     ER-10). Settling for a beat before writing it means a screen reader hears the metro
+     the reader stopped on, not one sentence per keystroke. That beat lets a quick reader
+     Tab past the box onto a dot before the redraw replaces every dot, so the redraw hands
+     focus back to the same metro by its label, the pattern onFonts uses (PR #44 review). */
+  let wait;
+  input.addEventListener("input", () => { clearTimeout(wait); wait = setTimeout(find, 250); });
+  const find = () => {
     const q = input.value.trim();
     const hit = match(q);
     const key = hit ? hit.area : (q.length >= 2 ? "miss:" + q.toLowerCase() : "");
@@ -533,8 +540,14 @@ function verdict() {
     FOUND = hit;
     MISS = hit || q.length < 2 ? null : q;
     verdict();
+    const a = document.activeElement, k = a && a.getAttribute && a.getAttribute("aria-label");
     drawScatter();
-  });
+    if (k && !a.isConnected) {
+      const n = [...document.querySelectorAll("#scatter [aria-label]")]
+        .find(e => e.getAttribute("aria-label") === k);
+      if (n) n.focus({preventScroll: true});
+    }
+  };
 }
 verdict();
 
@@ -827,14 +840,33 @@ document.getElementById("metrofigsub").textContent =
   `${M.of_disclosed} disclosed metros are past the first, ${conN} past the second, and ` +
   `${quad.length} past both. Move either line and the count changes, which is why the ` +
   `table below carries both columns.`;
-document.getElementById("scattertable").innerHTML = withNote(tableView("m",
-  `Metro plastics and rubber, ${D.cross_year}: top ${M.top.length} disclosed by employment`,
-  ["Rank", "Metro", "Jobs", "Establishments", "Concentration (1.0× = US average)"],
-  M.top.map((r, i) => [i + 1, r.name, N(r.emp), N(r.estabs),
-    r.lq ? r.lq.toFixed(2) + "×" : "—"])),
-  `The two thresholds that cut the corner, ${N(JOBCUT)} jobs and twice the national share of
-   jobs, are round numbers picked to name it rather than the output of a test. The columns
-   here let you re-cut them at any pair of values you prefer.`);
+/* EVERY PLOTTED METRO, NOT THE TOP 25. The table under the scatter held M.top, the 25
+   largest, while the chart plots all 155 and the footer promises every
+   number a chart is drawn from; Youngstown, 52nd, was findable by search and nowhere in
+   the table (review ER-07, 4 October 2026). It is now built from SC, the same array the
+   dots are drawn from, and each row carries its dot's area code so tools/access.mjs can
+   hold the two sets equal. The CSV is the same rows, written from the same array. */
+{
+  const head = ["Rank", "Metro", "Jobs", "Establishments", "Concentration (1.0× = US average)"];
+  /* BLS writes "Coeur d'Alene" with a straight quote; the page prints the typographic one
+     (house style), the CSV keeps the bureau's string. */
+  const rows = ranked.map((r, i) => [i + 1, r.name.replace(/'/g, "\u2019"), N(r.emp), N(r.estabs),
+    r.lq ? r.lq.toFixed(2) + "×" : "—"]);
+  const cell = v => /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v);
+  const csv = [["rank", "area_code", "metro", "jobs", "establishments", "location_quotient"],
+    ...ranked.map((r, i) => [i + 1, r.area, r.name, r.emp, r.estabs, r.lq])]
+    .map(r => r.map(cell).join(",")).join("\r\n") + "\r\n";
+  const href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+  document.getElementById("scattertable").innerHTML = withNote(withNote(tableView("m",
+    `Metro plastics and rubber, ${D.cross_year}: all ${ranked.length} disclosed metros, by employment`,
+    head, rows, {twin: "scatter", ids: ranked.map(r => r.area)}),
+    `The two thresholds that cut the corner, ${N(JOBCUT)} jobs and twice the national share of
+     jobs, are round numbers picked to name it rather than the output of a test. The columns
+     here let you re-cut them at any pair of values you prefer.`),
+    `<a href="${href}" download="peers-metros-${D.cross_year}.csv">Download these
+     ${ranked.length} rows as a CSV file</a>, with each metro&rsquo;s federal area code.`);
+  PV.tableTools("#scattertable", {placeholder: "a metro name, such as Youngstown"});
+}
 document.getElementById("scatsrc").innerHTML =
   `${D.meta.source}, ${D.cross_year}, private ownership. ${M.of_disclosed} of
    ${M.of_disclosed + M.suppressed} metro areas are disclosed; the other ${M.suppressed}
@@ -948,19 +980,29 @@ await PV.methodology({
       "companies.",
     derived_note: D.meta.derived_note},
   definitions:
-    `Concentration is the QCEW location quotient: the industry&rsquo;s share of an area&rsquo;s
-     private jobs divided by its share of private jobs nationwide. The metro scatter plots
+    `Concentration is the location quotient BLS publishes in QCEW: the industry&rsquo;s
+     private jobs as a share of every job in the area, public and private, divided by the
+     same share nationally. The top of each share counts private employers only and the
+     bottom counts every employer; that is the bureau&rsquo;s own basis, and the
+     <a href="../sources/">sources page</a> works one through. The metro scatter plots
      jobs on a square-root scale, so the crowd of small metros can separate. The two lines
      that cut its corner, ${N(JOBCUT)} jobs and ${LQCUT.toFixed(1)}&times;, are round numbers
      chosen to name a group, not the output of a test.
      The ${FP.label} footprint is ${FP.counties.join(", ")}, and all ${FP.words} are
      disclosed for ${D.cross_year}, so the ${N(picEmp)}-job regional total has nothing
-     missing from it. Other regional work uses a wider fourteen-county definition that adds
-     Crawford, Huron, Richland and Tuscarawas; figures built on the two never reconcile, and
-     every county on this page is ${FP.label}.
+     missing from it. Other regional work uses a different fourteen-county definition, which
+     shares ten of these counties: it adds Crawford, Huron, Richland and Tuscarawas and leaves
+     out Ashtabula and Trumbull. Figures built on the two never reconcile, and every county on
+     this page is ${FP.label}.
      An earlier version of this page bounded Akron&rsquo;s metro rank at ${ord(M.rank_emp)}
      to ${ord(M.rank_emp + M.could_displace_n)} by counting the ${M.could_displace_n} withheld
      metros that run more establishments than Akron&rsquo;s ${N(M.subject_estabs)}. That bound
      was wrong: establishment counts do not bound employment, so the page states the rank
-     among the ${M.of_disclosed} metros that disclose and nothing wider.`});
+     among the ${M.of_disclosed} metros that disclose and nothing wider.
+     <br><b>Correction, October 4, 2026:</b> this note defined concentration as a share of
+     private jobs over a share of private jobs nationwide. The published figures divide
+     private industry jobs by all jobs, public and private, as the definition above now
+     says; no figure changed. It also said the wider fourteen-county definition adds
+     Crawford, Huron, Richland and Tuscarawas and stopped there; that definition also leaves
+     out Ashtabula and Trumbull.`});
 })();

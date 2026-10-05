@@ -36,6 +36,15 @@
   "as debts rather than hidden; the prose above those four first charts owes a tightening",
   "of the same pixels, and the determinism fix in ER-021 is still the real answer.",
   "",
+  "RAISED 2026-10-05. federal-money 1701 to 1771 (Linux CI). Its headline now names the scope",
+  "the totals actually count, chemical, plastics and rubber manufacturing, rather than the",
+  "region's \"polymer industry\", which was narrower than NAICS 325 + 326 (review ER-22). The",
+  "accurate headline is a line longer at display size; the prose above the chart owes it back.",
+  "",
+  "RAISED 2026-10-05. timeline 1386 to 1394 (Linux CI). The footprint banner above its first",
+  "chart now states the PIC-12/NEO-14 difference in both directions (pic-geo v1.0.1); the",
+  "one-sided sentence it replaced was wrong. That correction costs one line on the runner.",
+  "",
   "RAISED 2026-09-29. The churn corrections of 2026-09-28 lengthened two sentences above",
   "the first chart: the standfirst now says the two Census measures are estimated",
   "separately, and the every-quarter claim now says it holds for the year average. On the",
@@ -55,17 +64,23 @@
   "realwage",
   "cost-scissors",
   "sources",
-  "index"
+  "index",
+  "",
+  "RAISED ON PURPOSE, 2026-10-04: laborshed 1542 -> 1561, one byline line. The review",
+  "(F§15) found LEHD and LODES unexpanded in the byline, their first reference; spelling",
+  "them out wraps the byline to a third line at 1440px (measured on macOS, where this page",
+  "read exactly its recorded 1542 before the change). A definition owed to the reader",
+  "outranks 19px; lower it again when the hero is next edited."
  ],
  "ceilings": {
   "churn": 1756,
   "cluster-health": 1085,
-  "federal-money": 1701,
-  "laborshed": 1542,
+  "federal-money": 1771,
+  "laborshed": 1561,
   "occupations": 1555,
   "peers": 1339,
   "revisions": 1356,
-  "timeline": 1386,
+  "timeline": 1394,
   "accountability": 943
  }
 }

@@ -171,7 +171,7 @@
       "actual": "(lambda F: (tofixed(sum(F)/7/1e6,1), tofixed(min(F)/1e6,1), tofixed(max(F)/1e6,1), tofixed(D['hub']['award']/(sum(F)/7),1), tofixed(D['hub']['award']/1e6,1)))([sum(r['real'] for r in D['fed']['naics'] if r['fy']==fy) for fy in range(2019, 2026)])",
       "falsified_if": "A revised obligation, inflation factor or time window changes a printed rounded quantity; incomplete fiscal2026 must remain excluded.",
       "counts": [
-        {"figure": "averaged $41.4 million a year in 2025 dollars", "noun": "under chemical and plastics/rubber industry codes"},
+        {"figure": "averaged $41.4 million a year in 2025 dollars", "noun": "under chemical plastics and rubber manufacturing codes"},
         {"figure": "ranged from $20.5 million to $59.9 million", "noun": "Annual totals"},
         {"figure": "The one-time $51.0 million Tech Hub award", "noun": "about 1.2 years"},
         {"figure": "about 1.2 years of that average", "noun": "Tech Hub award is"},
@@ -404,14 +404,14 @@
     },
     {
       "id": "card-timeline",
-      "text": "Timeline card: 31 documented milestones, the first dated 1898 and the last 2012, in the heritage register, and, in the separate operating register, 67 public developments in the 34 months after the October 2023 designation against 4 in the 34 months before. [2026-08-29: was 32. Two heritage rows carried one event in identical words and one is merged away; see timeline/claims.json tl-heritage-no-double-count and CORRECTIONS.md. The count is now read off the rows rather than the register header, because the header is what had been wrong.]",
+      "text": "Timeline card: 31 documented milestones, the first dated 1898 and the last 2012, in the heritage register, and, in the separate operating register, 66 public developments in the 34 months after the October 2023 designation against 4 in the 34 months before. [2026-08-29: was 32. Two heritage rows carried one event in identical words and one is merged away; see timeline/claims.json tl-heritage-no-double-count and CORRECTIONS.md. The count is now read off the rows rather than the register header, because the header is what had been wrong.]",
       "source": "PIC heritage register and operating record as of 13 August 2026, via timeline/data/",
-      "assert": "D['tlh']['meta']['counts']['shown'] == len(D['tlh']['events']) == 31 and min(e['year'] for e in D['tlh']['events']) == 1898 and max(e['year'] for e in D['tlh']['events']) == 2012 and (lambda des: des.startswith('2023-10') and len([e for e in D['tlt']['events'] if des <= e['date'] and e['delivered'] and e.get('show')]) == 67 and len([e for e in D['tlt']['events'] if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))]) == 4)(one(e['date'] for e in D['tlt']['events'] if e['date'].startswith('2023') and 'esignat' in e['title']))",
+      "assert": "D['tlh']['meta']['counts']['shown'] == len(D['tlh']['events']) == 31 and min(e['year'] for e in D['tlh']['events']) == 1898 and max(e['year'] for e in D['tlh']['events']) == 2012 and (lambda des: des.startswith('2023-10') and len([e for e in D['tlt']['events'] if des <= e['date'] and e['delivered'] and e.get('show')]) == 66 and len([e for e in D['tlt']['events'] if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))]) == 4)(one(e['date'] for e in D['tlt']['events'] if e['date'].startswith('2023') and 'esignat' in e['title']))",
       "actual": "(len(D['tlh']['events']), D['tlh']['meta']['counts']['shown'], min(e['year'] for e in D['tlh']['events']), max(e['year'] for e in D['tlh']['events']))",
       "falsified_if": "A heritage row is promoted from claimed to proven, either end of the heritage span moves, the designation date moves out of October 2023, or a delivered public event is added to or removed from either 34-month window. The card used to call both registers 'events', which invited a reader to add 4 and 68 and expect 32; the two counts come from different files and the sentence now says so, with the heritage span printed so the two are visibly different periods. [2026-09-01: recomputed after one row was removed from the register. It recorded a named company's unsuccessful application, on a site whose README withholds two pages because naming an unsuccessful applicant is not something a funder gets to do. Two independent model families were asked to refute the decision to anonymise it instead of deleting it, and both refused: the row stayed identifiable because the same page names the company joining the cohort four months later, and keeping it to protect a count is letting the headline decide which sensitive records remain evidence. The count moved and the sentence moved with it.]",
       "counts": [
         {"figure": "31 documented milestones", "noun": "the first dated 1898 and the last 2012"},
-        {"figure": "67 public developments in the 34 months", "noun": "after October 2023"},
+        {"figure": "66 public developments in the 34 months", "noun": "after October 2023"},
         {"figure": "against 4 in the 34 months before", "noun": "34 months after October 2023"}
       ]
     },
@@ -492,13 +492,13 @@
     },
     {
       "id": "card-reach",
-      "text": "Reach card: 633 partner institutions in 50 countries across 1,448 works; 985 of 1,222 papers naming a corresponding author had one here; China is the second-largest partner country, behind only the United States.",
+      "text": "Reach card: 633 partner institutions in 50 countries across 1,448 works, 629 once four flagged affiliation matches are set aside; 985 of 1,222 papers naming a corresponding author had one here; China is the second-largest partner country, behind only the United States.",
       "source": "reach/data/reach.json totals",
-      "assert": "D['reach']['totals']['led'] == 985 and D['reach']['totals']['attributable'] == 1222 and D['reach']['totals']['partners'] == 633 and D['reach']['totals']['countries'] == 50 and D['reach']['totals']['works'] == 1448 and (lambda K: K == sorted(K, key=lambda k: -k['n']) and [k['code'] for k in K[:2]] == ['US', 'CN'] and K[0]['n'] > K[1]['n'] > K[2]['n'])(D['reach']['countries'])",
+      "assert": "D['reach']['totals']['led'] == 985 and D['reach']['totals']['attributable'] == 1222 and D['reach']['totals']['partners'] == 633 and D['reach']['totals']['partners_shown'] == 629 and D['reach']['totals']['partners'] - D['reach']['totals']['partners_shown'] == D['reach']['totals']['quarantined'] == 4 and D['reach']['totals']['countries'] == 50 and D['reach']['totals']['works'] == 1448 and (lambda K: K == sorted(K, key=lambda k: -k['n']) and [k['code'] for k in K[:2]] == ['US', 'CN'] and K[0]['n'] > K[1]['n'] > K[2]['n'])(D['reach']['countries'])",
       "actual": "(D['reach']['totals']['led'], D['reach']['totals']['attributable'])",
       "falsified_if": "Either count moves in reach's own shipped data, which the reach page's own rch-region-leads claim also pins; this card restates the same two numbers on the hub and must move with them. Extended 2026-09-28: the card also prints 633 partners, 50 countries and 1,448 works, and ranks China second behind the United States; any of those moving, or a tie at either place, fails it. Round 4: the card said 'coauthored works', but the count does not require a second author, so it now says 'works'.",
       "counts": [
-        {"figure": "633 partner institutions in 50 countries", "noun": "across 1,448 works"},
+        {"figure": "633 partner institutions in 50 countries", "noun": "across 1,448 works"}, {"figure": "629 once four", "noun": "flagged affiliation matches"},
         {"figure": "985 of 1,222 papers", "noun": "naming a corresponding author"}
       ]
     },

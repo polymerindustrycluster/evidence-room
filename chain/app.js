@@ -213,6 +213,7 @@ function drawChain(hits) {
     ? `<b>Scale re-fits to this query</b>: widest stage is ${N(scaleMax)}`
     : `<b>Scale</b>: widest stage is ${N(scaleMax)} companies`;
   drawChainBars(vals, base, expected, filtered);
+  PV.rove(chainSvg, ".tierhit");    // one Tab stop for the six stages, arrows between them
 }
 
 /* Phone form: the same six numbers as stacked bars, because a 1240-wide ribbon
@@ -248,6 +249,7 @@ function drawChainBars(vals, base, expected, filtered) {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
     });
   });
+  PV.rove(box, ".cbar");
 }
 
 /* ------------------------------------------------------------- map render */
@@ -321,6 +323,7 @@ function drawMap(hits) {
     v.textContent = val;
     mapSvg.appendChild(v);
   });
+  PV.rove(mapSvg, "path.county");
 }
 
 /* ------------------------------------------------------------ side panels */

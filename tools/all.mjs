@@ -46,7 +46,7 @@ const GATES = [
   ["series",      "python3", ["_data/build/verify_series.py"],      "series contracts, ranges and dated source controls"],
   ["consistency", "python3", ["_data/build/verify_consistency.py"], "builders, catalog, prose invariants"],
   ["provenance",  "node",   ["tools/provenance.mjs"],        "the registry matches the page, not only the reverse"],
-  ["verify",      "node",   ["tools/verify.mjs"],            "structure, titles, page-level overflow"],
+  ["verify",      "node",   ["tools/verify.mjs"],            "structure, titles, page-level overflow, hero text contrast"],
   ["columns",     "node",   ["tools/columns.mjs"],           "one text rail"],
   ["centres",     "node",   ["tools/centres.mjs", "."],      "block centring across widths"],
   ["disclosure",  "node",   ["tools/disclosure.mjs"],        "every page says an AI wrote it, in one wording"],
@@ -61,9 +61,10 @@ const GATES = [
   ["legends",     "node",   ["tools/legends.mjs"],           "the reader gets the key before the data"],
   ["measure",     "node",   ["tools/measure.mjs"],           "running prose holds the measure"],
   ["fontfocus",   "node",   ["tools/fontfocus.mjs"],         "chart focus survives a late web font, announced once"],
+  ["access",      "node",   ["tools/access.mjs"],            "one Tab stop per chart, full twin tables, announced results, 404"],
   ["collide",     "node",   ["tools/collide.mjs", "--sweep"],  "overlap and out-of-frame, 14 widths", true],
   ["textsize",    "node",   ["tools/textsize.mjs", "--sweep"], "12px rendered floor, 14 widths", true],
-  ["selftest",    "node",   ["tools/selftest.mjs"],            "59 known-defect fixtures across 14 gates", true],
+  ["selftest",    "node",   ["tools/selftest.mjs"],            "79 known-defect fixtures across 16 gates", true],
 ];
 
 const rows = [];

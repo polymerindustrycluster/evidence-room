@@ -69,6 +69,21 @@ awarded money already names a recipient.
 The three on-diagram annotations are NOT hand-typed: their numerals are
 computed from `funding.json` at render time and formatted by `fmt()`.
 
+**Evidence travels with the amount** (ER-01, 4 October 2026). Each program carries
+`evidence: {document, publicRecord, execution}`, and an award may override any field
+(only Huntsman's ED25HDQ0G0009 does: signed notice held, no USAspending record, execution
+`Not verified`). The recipient panel, the register row and the CSV's Document, Public record
+and Execution columns all read one resolved object, and cluster-health's Capital tile reads
+the same fields; `huntsman-evidence-travels` here and `capital-unverified-travels` there
+assert them. Do not delete the amount because a public record is missing.
+
+**What the page is built from** is registered in `_data/SOURCES.json` under
+`by_artifact["funding-map"]`: the signed EDA Notices of Award, the executed Ohio grant
+agreement and the executed sub-grant agreements (held, no endpoint, no script), plus the
+USAspending award lookup marked `role` corroboration only. Until 4 October 2026 the page
+listed the USAspending prime-contract category pull, which no figure here comes from
+(ER-04); `tools/provenance.mjs` now fails that pairing.
+
 The structure is `sources` → `programs` → `recipients`:
 
 - a **source** is an award as it was made (`award`, `matchAmount`, `hue`)

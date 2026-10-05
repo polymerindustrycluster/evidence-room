@@ -118,10 +118,11 @@
 
       <div class="controls">
         <label class="sr-only" for="finder">Find a recipient</label>
-        <select id="finder" class="finder">
+        <select id="finder" class="finder" aria-describedby="finder-status">
           <option value="">Find a recipient&hellip;</option>
         </select>
         <button type="button" id="reset-view" class="btn btn--ghost" hidden>Reset view</button>
+        <p class="sr-only" id="finder-status" role="status" aria-live="polite"></p>
       </div>
 
       <p class="fig-title">Three machines, twenty-one recipients: the money lands unevenly</p>
@@ -242,6 +243,16 @@
       </div>
       <p class="table-more"><button type="button" id="table-toggle" class="btn btn--ghost"></button></p>
       <p class="src" id="table-note"></p>
+      <p class="src">Correction, October 4, 2026: the sentence above called the whole
+        $6,165,608 Ohio money not yet written into a sub-grant. Only the $2,642,108 of
+        Translational R&amp;D is; the $3,523,500 of startup support is already in the Bounce
+        sub-grant.</p>
+      <p class="src">Correction, October 4, 2026: Huntsman&rsquo;s $5,970,805 now carries its
+        evidence in its panel, its row and the CSV. The notice is signed; with no USAspending
+        record, its execution is not verified.</p>
+      <p class="src">Correction, October 4, 2026: the &ldquo;Reproduce this&rdquo; panel below
+        described a USAspending contract pull no figure here comes from. It now lists the award
+        documents this map is built from and what a reader outside PIC can check.</p>
       <details class="disclose">
         <summary>The full reconciliation, line by line</summary>
         <div class="disclose-body" id="recon-more"></div>

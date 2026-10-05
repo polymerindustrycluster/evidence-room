@@ -9,7 +9,7 @@
   "why": "The register lists only the sources behind the analyses published in this repository. The internal series has more pages and more sources, and their absence is stated rather than left to be discovered.",
   "scope": "This page hands over method, not data. It does not republish any source, and following it will not give you these numbers: it will give you the same numbers for your own region, which is the point.",
   "not": "A licence and a set of terms are different things and the register keeps them apart. Two sources state a LICENCE that conditions use: O*NET is CC BY 4.0 and IPEDS reaches this site through the Urban Institute\u2019s portal under ODC-By 1.0. Both require attribution, and both credits are printed in this page\u2019s footer with a link to the licence, because describing a licence is not complying with one. The federal statistical series state TERMS instead, which is public domain with a citation request, and those are quoted on each entry with the agency page they come from, rather than left as an implication that no term exists.",
-  "caution": "Three of the 27 sources have no endpoint, and two of those also have no script. They are internal records, the published file is the artifact, and nothing on this site can make them fetchable."
+  "caution": "Six of the 31 sources have no endpoint, and five of those also have no script. They are internal records, the published file is the artifact, and nothing on this site can make them fetchable."
  },
  "sources": [
   {
@@ -98,6 +98,66 @@
    "n_pages": 9
   },
   {
+   "key": "ipeds",
+   "name": "IPEDS Completions, via the Urban Institute Education Data API, with three years read from NCES directly",
+   "short": "IPEDS degree completions",
+   "agency": "National Center for Education Statistics, served by the Urban Institute",
+   "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/completions-cip-6/{year}/",
+   "docs": "https://educationdata.urban.org/documentation/colleges.html",
+   "script": "_data/build/fetch_ipeds.py, fetch_ipeds_national.py, fetch_intl.py, _data/build/fetch_ipeds_cip.py, _data/build/fetch_ipeds_nces.py",
+   "key_required": false,
+   "route": "api",
+   "route_label": "API request",
+   "licence": "ODC (Open Data Commons)-By 1.0",
+   "licence_url": "https://opendatacommons.org/licenses/by/1-0/",
+   "attribution": "Integrated Postsecondary Education Data System (IPEDS) Completions, via Education Data Portal v. 0.26.1, Urban Institute, accessed 18 August 2026, https://educationdata.urban.org/documentation/, made available under the ODC (Open Data Commons) Attribution License.",
+   "terms": "The underlying IPEDS collection is a public-domain federal series, but the route this site uses is not the federal one. Everything served through the Urban Institute\u2019s Education Data Portal is licensed to the user under the Open Data Commons Attribution License (ODC-By) v1.0, which REQUIRES attribution and a citation naming the portal version and the access date: https://educationdata.urban.org/documentation/. Portal version 0.26.1 was released 2026-08-05 and was current at this site\u2019s access date of 2026-08-18.",
+   "is": "The federal record of every degree and certificate conferred by every institution that takes federal student aid, filed by six-digit programme code.",
+   "good": "Counting the graduates of named programmes at named institutions, year by year, against the same programmes nationally.",
+   "cannot": "It counts people finishing a programme, never people hired and never people who stayed in the region. A programme code returning zero at every institution in every year is far more likely to be a bad code than a real absence of graduates.",
+   "filters": [
+    [
+     "CIP-6 core",
+     "143201 (polymer/plastics engineering), 400507 (polymer chemistry), 150607 (plastics and polymer engineering technology)"
+    ],
+    [
+     "CIP-6 adjacent",
+     "141801 (materials engineering), 400510 (materials chemistry), 401001 (materials science), 141901 (mechanical engineering), 140701 (chemical engineering), 400501 (chemistry general), 151701 (energy systems technology)"
+    ],
+    [
+     "majornum",
+     "1 only, so a double major is counted once"
+    ],
+    [
+     "race/sex",
+     "race=99 and sex=99 are the total rows; race=8 is nonresident alien. The two partitions are aggregated separately and never crossed; this endpoint does not offer the cross-tab at CIP-6."
+    ],
+    [
+     "national benchmark",
+     "the same codes with no state filter, restricted to codes the footprint itself confers as a programme (which excludes 150607), since PIC-12\u2019s entire history in it is two awards from one community college in one year"
+    ],
+    [
+     "note",
+     "Two earlier code entries did not exist and silently returned zero: 140320 (a transposition of 143201) and 143101 (materials science is in the 40 series, not 14). A core code returning zero across every year and institution is evidence of a bad code, not of no graduates."
+    ],
+    [
+     "ipeds_cip",
+     "fetch_ipeds_cip.py adds institution \u00d7 CIP \u00d7 year (used by talent and occupations)"
+    ],
+    [
+     "year labels",
+     "The mirror\u2019s year is the FALL of the academic year, so its 2023 is the NCES C2024_A file. That convention held through 2019 and again at 2023; in between, its 2020, 2021 and 2022 each served the collection year before the one they name, and C2023_A was served under no label at all. Those three years are therefore taken from the NCES completions files (https://nces.ed.gov/ipeds/datacenter/data/C{year}_A.zip, no key), by fetch_ipeds_nces.py; the correction table and its re-check are in _data/build/ipeds_mirror_fix.py. Degrees only: the recovered year also carries two postbaccalaureate certificates, which no other year of the series counts."
+    ]
+   ],
+   "pages": [
+    "accountability",
+    "cluster-health",
+    "occupations",
+    "scorecard"
+   ],
+   "n_pages": 4
+  },
+  {
    "key": "usaspending",
    "name": "USAspending federal contract and grant obligations",
    "short": "USAspending awards",
@@ -157,67 +217,6 @@
     "accountability",
     "cluster-health",
     "federal-money",
-    "funding-map",
-    "scorecard"
-   ],
-   "n_pages": 5
-  },
-  {
-   "key": "ipeds",
-   "name": "IPEDS Completions, via the Urban Institute Education Data API, with three years read from NCES directly",
-   "short": "IPEDS degree completions",
-   "agency": "National Center for Education Statistics, served by the Urban Institute",
-   "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/completions-cip-6/{year}/",
-   "docs": "https://educationdata.urban.org/documentation/colleges.html",
-   "script": "_data/build/fetch_ipeds.py, fetch_ipeds_national.py, fetch_intl.py, _data/build/fetch_ipeds_cip.py, _data/build/fetch_ipeds_nces.py",
-   "key_required": false,
-   "route": "api",
-   "route_label": "API request",
-   "licence": "ODC (Open Data Commons)-By 1.0",
-   "licence_url": "https://opendatacommons.org/licenses/by/1-0/",
-   "attribution": "Integrated Postsecondary Education Data System (IPEDS) Completions, via Education Data Portal v. 0.26.1, Urban Institute, accessed 18 August 2026, https://educationdata.urban.org/documentation/, made available under the ODC (Open Data Commons) Attribution License.",
-   "terms": "The underlying IPEDS collection is a public-domain federal series, but the route this site uses is not the federal one. Everything served through the Urban Institute\u2019s Education Data Portal is licensed to the user under the Open Data Commons Attribution License (ODC-By) v1.0, which REQUIRES attribution and a citation naming the portal version and the access date: https://educationdata.urban.org/documentation/. Portal version 0.26.1 was released 2026-08-05 and was current at this site\u2019s access date of 2026-08-18.",
-   "is": "The federal record of every degree and certificate conferred by every institution that takes federal student aid, filed by six-digit programme code.",
-   "good": "Counting the graduates of named programmes at named institutions, year by year, against the same programmes nationally.",
-   "cannot": "It counts people finishing a programme, never people hired and never people who stayed in the region. A programme code returning zero at every institution in every year is far more likely to be a bad code than a real absence of graduates.",
-   "filters": [
-    [
-     "CIP-6 core",
-     "143201 (polymer/plastics engineering), 400507 (polymer chemistry), 150607 (plastics and polymer engineering technology)"
-    ],
-    [
-     "CIP-6 adjacent",
-     "141801 (materials engineering), 400510 (materials chemistry), 401001 (materials science), 141901 (mechanical engineering), 140701 (chemical engineering), 400501 (chemistry general), 151701 (energy systems technology)"
-    ],
-    [
-     "majornum",
-     "1 only, so a double major is counted once"
-    ],
-    [
-     "race/sex",
-     "race=99 and sex=99 are the total rows; race=8 is nonresident alien. The two partitions are aggregated separately and never crossed; this endpoint does not offer the cross-tab at CIP-6."
-    ],
-    [
-     "national benchmark",
-     "the same codes with no state filter, restricted to codes the footprint itself confers as a programme (which excludes 150607), since PIC-12\u2019s entire history in it is two awards from one community college in one year"
-    ],
-    [
-     "note",
-     "Two earlier code entries did not exist and silently returned zero: 140320 (a transposition of 143201) and 143101 (materials science is in the 40 series, not 14). A core code returning zero across every year and institution is evidence of a bad code, not of no graduates."
-    ],
-    [
-     "ipeds_cip",
-     "fetch_ipeds_cip.py adds institution \u00d7 CIP \u00d7 year (used by talent and occupations)"
-    ],
-    [
-     "year labels",
-     "The mirror\u2019s year is the FALL of the academic year, so its 2023 is the NCES C2024_A file. That convention held through 2019 and again at 2023; in between, its 2020, 2021 and 2022 each served the collection year before the one they name, and C2023_A was served under no label at all. Those three years are therefore taken from the NCES completions files (https://nces.ed.gov/ipeds/datacenter/data/C{year}_A.zip, no key), by fetch_ipeds_nces.py; the correction table and its re-check are in _data/build/ipeds_mirror_fix.py. Degrees only: the recovered year also carries two postbaccalaureate certificates, which no other year of the series counts."
-    ]
-   ],
-   "pages": [
-    "accountability",
-    "cluster-health",
-    "occupations",
     "scorecard"
    ],
    "n_pages": 4
@@ -661,6 +660,51 @@
    "n_pages": 1
   },
   {
+   "key": "eda_notices_of_award",
+   "name": "Signed EDA Notices of Award, Tech Hub and Good Jobs Challenge",
+   "short": "EDA Notices of Award",
+   "agency": "U.S. Economic Development Administration",
+   "url": null,
+   "docs": null,
+   "script": null,
+   "key_required": false,
+   "route": "internal",
+   "route_label": "internal record, no endpoint",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
+   "is": "The eight signed federal Notices of Award behind the funding map: seven Tech Hub implementation awards and the Good Jobs Challenge (APEX) award, held by PIC.",
+   "good": "Reading what each federal award line is for and how much was signed, award ID by award ID.",
+   "cannot": "The notices are held, not published, so a reader cannot re-read them here. A signed notice is not proof of obligation: one of the eight, Huntsman\u2019s, has no public record, so its execution is not verified.",
+   "filters": [
+    [
+     "documents",
+     "Eight signed Notices of Award. The seven Sustainable Polymers Tech Hub implementation awards, $51,001,413 together: ED25HDQ0G0038 (BioVerde), ED25HDQ0G0013 (Flexsys), ED25HDQ0G0036 (Goodyear), ED24HDQ0G0452 (University of Akron), ED25HDQ0G0009 (Huntsman), ED25HDQ0G0030 (Full Circle Technologies) and ED24HDQ0G0413 (Greater Akron Chamber). And the Good Jobs Challenge (APEX) award ED25OIE0G0108 to the Greater Akron Chamber, $3,084,371."
+    ],
+    [
+     "date",
+     "Register as of 13 August 2026. The award IDs carry a fiscal year (ED24, ED25), which does not establish the date of every signature; signing dates are not transcribed into this repository."
+    ],
+    [
+     "extraction",
+     "One register line per notice: the amount as signed, the award ID and the project it funds, transcribed by hand into funding-map/data/funding.json and summed to each award total."
+    ],
+    [
+     "status",
+     "Held by PIC; not published in this repository. Six of the seven Tech Hub awards and the APEX award carry a public USAspending record whose obligation matches the signed amount (the corroboration source below). ED25HDQ0G0009, Huntsman, $5,970,805, has no USAspending record of any kind, so its execution is not verified."
+    ],
+    [
+     "reproduction_limit",
+     "Transcribed from documents, not fetched, so there is no script, and a reader outside PIC cannot re-read the notices from this site. What a reader can check in public is the USAspending record below."
+    ]
+   ],
+   "pages": [
+    "funding-map"
+   ],
+   "n_pages": 1
+  },
+  {
    "key": "heritage_register",
    "name": "NEO Polymer Wins register, heritage and discoveries collections",
    "short": "NEO Polymer Wins register",
@@ -760,7 +804,7 @@
    "short": "IPEDS institution directory",
    "agency": "National Center for Education Statistics, via the Urban Institute Education Data API",
    "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/directory/{year}/",
-   "docs": null,
+   "docs": "https://educationdata.urban.org/documentation/colleges.html",
    "script": "derive_atlas.py",
    "key_required": false,
    "route": "api",
@@ -968,6 +1012,47 @@
    "n_pages": 1
   },
   {
+   "key": "ohio_hub_grant_agreement",
+   "name": "Executed Ohio Innovation Hub grant agreement, SBIG20251005",
+   "short": "Ohio hub grant agreement",
+   "agency": "Ohio Department of Development",
+   "url": null,
+   "docs": null,
+   "script": null,
+   "key_required": false,
+   "route": "internal",
+   "route_label": "internal record, no endpoint",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
+   "is": "The executed state grant agreement for the $31.25 million Ohio Innovation Hub, SBIG20251005, and its workstream budget, held by PIC.",
+   "good": "Splitting the state money into its five workstreams to the dollar.",
+   "cannot": "It is held, not published, and a state award has no federal record, so no public source repeats the split or shows what has been drawn down.",
+   "filters": [
+    [
+     "document",
+     "The executed state grant agreement, Grant Control No. SBIG20251005 (appropriation 1956F8, Am. Sub. H.B. 33, 135th G.A.), $31,250,000, and its contract-grade workstream budget, identical to the cent across the December 2024 contract-amendment exhibit and the September 2025 budget form."
+    ],
+    [
+     "extraction",
+     "The five workstream amounts are read from that budget: pilot facility $18,521,985, PIC Translational R&D $5,992,000, startup support $3,748,500, governance $1,499,515 and workforce development $1,488,000."
+    ],
+    [
+     "status",
+     "Held by PIC; not published in this repository. A state award has no USAspending record and no public drawdown figure. The state\u2019s announcement of 5 September 2024 corroborates the $31.25 million in public. The grantee of record is the Greater Akron Chamber, confirmed by PIC on 30 September 2026 and not yet shown by a document here."
+    ],
+    [
+     "reproduction_limit",
+     "Transcribed from the document, not fetched, so there is no script, and the agreement cannot be re-read from this site."
+    ]
+   ],
+   "pages": [
+    "funding-map"
+   ],
+   "n_pages": 1
+  },
+  {
    "key": "onet_education",
    "name": "O*NET 30.3 database: Occupation Data, Job Zones, Job Zone Reference, Education, Education Categories",
    "short": "O*NET education levels",
@@ -1013,6 +1098,47 @@
    ],
    "pages": [
     "occupations"
+   ],
+   "n_pages": 1
+  },
+  {
+   "key": "pic_subgrant_agreements",
+   "name": "Executed sub-grant agreements under SBIG20251005",
+   "short": "Hub sub-grant agreements",
+   "agency": "Polymer Industry Cluster",
+   "url": null,
+   "docs": null,
+   "script": null,
+   "key_required": false,
+   "route": "internal",
+   "route_label": "internal record, no endpoint",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": null,
+   "is": "The executed sub-grant agreements that pass state hub money to named recipients: seven Translational R&D awards and the Bounce agreements behind Synthe6, held by PIC.",
+   "good": "Naming who has received hub money so far, at the amount written into each agreement.",
+   "cannot": "They are held, not published. Money in a workstream that no executed agreement names yet is not a recipient line, and an agreement says what was signed, not what has been paid.",
+   "filters": [
+    [
+     "documents",
+     "Seven executed PIC Translational R&D sub-grant agreements, $3,349,892 together; and the Bounce Innovation Hub subgrant agreement dated 15 May 2025, its first amendment and the startup grant administration agreement, which set each Synthe6 cohort award at $25,000."
+    ],
+    [
+     "extraction",
+     "One register line per executed sub-grant, at the amount written into the signed agreement (the University of Akron\u2019s is $678,614), and one line per Synthe6 cohort company at $25,000. Money in a workstream that no executed line names is not a recipient line: $2,642,108 of Translational R&D is not yet sub-granted, and $3,523,500 of startup support sits in the Bounce sub-grant beyond the nine cohort awards."
+    ],
+    [
+     "status",
+     "Held by PIC; not published in this repository. Sub-grants of state money have no federal record. Signing dates other than the Bounce agreement\u2019s are not transcribed here."
+    ],
+    [
+     "reproduction_limit",
+     "Transcribed from documents, not fetched, so there is no script, and the agreements cannot be re-read from this site."
+    ]
+   ],
+   "pages": [
+    "funding-map"
    ],
    "n_pages": 1
   },
@@ -1193,6 +1319,44 @@
    ],
    "pages": [
     "programs"
+   ],
+   "n_pages": 1
+  },
+  {
+   "key": "usaspending_award_lookup",
+   "name": "USAspending award records, read by award ID",
+   "short": "USAspending award lookup",
+   "agency": "US Treasury",
+   "url": "https://api.usaspending.gov/api/v2/search/spending_by_award/",
+   "docs": "https://api.usaspending.gov/",
+   "script": "_data/build/fetch_fed_outlays.py",
+   "key_required": false,
+   "route": "api",
+   "route_label": "API request",
+   "licence": null,
+   "licence_url": null,
+   "attribution": null,
+   "terms": "Public domain federal spending data. USAspending states no additional licence.",
+   "role": "Corroboration only. No figure on this page is computed from this source: it checks the signed federal notices above, and it cannot reproduce the state grant or its sub-grants, which are not federal.",
+   "is": "The Treasury\u2019s public record of each federal award, looked up by award ID.",
+   "good": "Checking a signed federal notice against a public obligation, and reading what has been paid out on it.",
+   "cannot": "It is corroboration, not the source of the funding map: it holds no state awards or sub-grants, and an award with no record here, like Huntsman\u2019s, is unverified rather than absent.",
+   "filters": [
+    [
+     "method",
+     "POST with a JSON body; keyless. One request per award ID, filtering award_ids to that ID and award_type_codes to 02, 03, 04 and 05 (assistance; one award-type group per request, because a mixed list returns 422). Fields read: Award Amount and Total Outlays."
+    ],
+    [
+     "award_ids",
+     "The eight federal award lines in the register: ED25HDQ0G0038, ED25HDQ0G0013, ED25HDQ0G0036, ED24HDQ0G0452, ED25HDQ0G0009, ED25HDQ0G0030, ED24HDQ0G0413 and ED25OIE0G0108. The script also reads ED24OIE0G0019, the completed Phase 1 award, which is outside the register."
+    ],
+    [
+     "result",
+     "Read 1 September 2026: seven of the eight carry a record whose obligation matches the signed amount, $48,114,979 together. ED25HDQ0G0009, Huntsman, has no record of any kind, checked against every award-type group and by keyword search."
+    ]
+   ],
+   "pages": [
+    "funding-map"
    ],
    "n_pages": 1
   },
@@ -1394,6 +1558,16 @@
    "n_sources": 4
   },
   {
+   "slug": "funding-map",
+   "sources": [
+    "eda_notices_of_award",
+    "ohio_hub_grant_agreement",
+    "pic_subgrant_agreements",
+    "usaspending_award_lookup"
+   ],
+   "n_sources": 4
+  },
+  {
    "slug": "scorecard",
    "sources": [
     "ipeds",
@@ -1459,13 +1633,6 @@
    "n_sources": 2
   },
   {
-   "slug": "funding-map",
-   "sources": [
-    "usaspending"
-   ],
-   "n_sources": 1
-  },
-  {
    "slug": "laborshed",
    "sources": [
     "lodes"
@@ -1526,7 +1693,7 @@
   }
  ],
  "totals": {
-  "n_sources": 27,
+  "n_sources": 31,
   "n_pages": 23,
   "n_key_required": 5,
   "key_sources": [
@@ -1536,17 +1703,20 @@
    "scorecard_fos_polymer",
    "uspto"
   ],
-  "n_no_endpoint": 3,
+  "n_no_endpoint": 6,
   "no_endpoint_sources": [
+   "eda_notices_of_award",
    "heritage_register",
+   "ohio_hub_grant_agreement",
+   "pic_subgrant_agreements",
    "public_record",
    "vault"
   ],
-  "n_filter_lines": 156,
+  "n_filter_lines": 172,
   "routes": {
    "bulk": 7,
-   "api": 14,
-   "internal": 3,
+   "api": 15,
+   "internal": 6,
    "portal": 3
   },
   "n_licensed": 2,
@@ -1554,13 +1724,12 @@
    "ipeds",
    "onet_education"
   ],
-  "n_terms": 13,
-  "n_public": 24,
+  "n_terms": 14,
+  "n_public": 25,
   "most_used": "qcew",
   "most_used_pages": 9,
-  "n_single_source_pages": 8,
+  "n_single_source_pages": 7,
   "single_source_pages": [
-   "funding-map",
    "laborshed",
    "location-quotient",
    "patents",
@@ -2981,12 +3150,12 @@
  ],
  "checks": {
   "n_pages": 22,
-  "n_claims": 543,
+  "n_claims": 553,
   "n_manual": 22,
-  "this_page": 34,
-  "n_auto": 521,
+  "this_page": 35,
+  "n_auto": 531,
   "n_hub_claims": 36,
-  "n_site_claims": 579
+  "n_site_claims": 589
  },
  "vintage": {
   "n_revised": 259,

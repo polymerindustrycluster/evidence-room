@@ -281,7 +281,7 @@ function loadData(file) {
     /* The on-chart takeaway, in the bottom margin right of Today. Counts are computed
        from the visible events so the sentence stays true under filters. */
     svg.appendChild(el('text', { class: 'now-lab', x: nx + 10, y: laneBot + 22 },
-      `Today · ${NOW_LBL}`));
+      `Cut-off · ${NOW_LBL}`));
     promiseLines().forEach((s, i) => {
       svg.appendChild(el('text', { class: 'ann', x: nx + 10, y: laneBot + 42 + i * 17 }, s));
     });
@@ -299,7 +299,7 @@ function loadData(file) {
     const far = sched.filter((e) => e.date >= '2027-01-01');
     const ends = far.filter((e) => /end|completion/.test(e.title.toLowerCase())).length;
     const pilot = far.some((e) => e.id === 'F29');
-    return ['Everything right of Today is a promise:',
+    return ['Right of the cut-off, the record held',
       `${sched.length} scheduled dates, ${near} due by end-2026;`,
       `the other ${far.length}, 2027 to 2029, are ${pilot ? 'the pilot' : 'award and'}`,
       pilot ? `plant and ${ends} award clocks running out.` : 'project clocks running out.'];
@@ -397,7 +397,7 @@ function loadData(file) {
       svg.appendChild(g);
     });
 
-    svg.appendChild(el('text', { class: 'now-lab', x: 4, y: laneBot + 22 }, `Today · ${NOW_LBL}`));
+    svg.appendChild(el('text', { class: 'now-lab', x: 4, y: laneBot + 22 }, `Cut-off · ${NOW_LBL}`));
     promiseLines().forEach((s, i) => {
       svg.appendChild(el('text', { class: 'ann', x: 4, y: laneBot + 42 + i * 16 }, s));
     });
@@ -883,6 +883,7 @@ function loadData(file) {
         if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openHPanel(e); }
       });
     });
+    PV.rove(proBox, '.hev');   // one Tab stop for the chart, arrows between its events
   }
   function showHTip(node, e) {
     hideHTip();
@@ -984,7 +985,7 @@ function loadData(file) {
       tb.appendChild(row(e));
     });
     if (tableExpanded && sch.length) {
-      tb.appendChild(yrHead(`Scheduled ahead · ${sch.length} dates`));
+      tb.appendChild(yrHead(`Scheduled at the ${longDate(NOW_ISO)} cut-off · ${sch.length} dates`));
       sch.forEach((e) => tb.appendChild(row(e)));
     }
     const btn = document.getElementById('showall');
@@ -1024,6 +1025,7 @@ function loadData(file) {
         if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openPanel(e); }
       });
     });
+    PV.rove(viz, '.ev');
   }
 
   function showTip(node, e) {
@@ -1180,6 +1182,7 @@ function loadData(file) {
     put('h-covered', hc.lastCoveredYear); put('h-runsin', V.runsIn.length);
     put('h-merged', (HER.meta.merged || []).length);
     put('cad-before', before); put('cad-since', since);
+    put('cad-ratio', Math.round((since / before) * 10) / 10);
     put('op-open', sinceOpen);
     put('n-fwd', IN.filter((e) => !e.delivered).length);
 
@@ -1222,7 +1225,7 @@ function loadData(file) {
         `leaves out ${media.length} dated rows it files as media coverage, press and social ` +
         `mentions rather than events, and ${ctx} rows of pre-1920 context. All ` +
         `${mediaSince} of the media rows fall after the designation, so counting them would ` +
-        `put the ratio at ${withMedia} times rather than ${Math.round(since / before)}. The ` +
+        `put the ratio at ${withMedia} times rather than ${Math.round((since / before) * 10) / 10}. The ` +
         `ratio is fragile in the other direction: one more row before the designation takes ` +
         `it to ${oneMore}.`;
     }
@@ -1247,8 +1250,8 @@ function loadData(file) {
        `First dated ${hc.firstYear}, last ${hc.lastYear}`],
       ['', before, 'Events, 34 months before', 'Up to the October 2023 designation'],
       ['key', since, 'Delivered, 34 months since', 'The same span, to within a day'],
-      ['', IN.filter((e) => !e.delivered).length, 'Scheduled ahead',
-       'Dates on the record, not yet delivered'],
+      ['', IN.filter((e) => !e.delivered).length, 'Scheduled at the cut-off',
+       'On the record, not delivered'],
     ]);
 
     // The next three scheduled dates, straight from the record.
@@ -1370,7 +1373,7 @@ function loadData(file) {
         'travel to this page.',
       small_numbers: `The year-by-year record was compiled after the designation, so its early years ` +
         `are under-counted: ${before} is the fewest the before count can be, and ` +
-        `${Math.round(since / before)} times the most the jump can be.`,
+        `${Math.round((since / before) * 10) / 10} times the most the jump can be.`,
     }});
 
     buildFilters(); buildTable(); render(); renderCadence();

@@ -622,6 +622,7 @@ function loadData(file) {
     viz.textContent = '';
     viz.appendChild(svg);
     viz.appendChild(hits);
+    PV.rove(viz, 'button.hit');   // one Tab stop for the diagram, arrows between its parts
     viz.removeAttribute('aria-busy');
 
     fitLabels(svg, L);
@@ -965,6 +966,7 @@ function loadData(file) {
 
     viz.textContent = '';
     viz.appendChild(root);
+    PV.rove(viz, 'button.rcard, button.rname');   // the phone form: one Tab stop for the cards too
     viz.removeAttribute('aria-busy');
     return root;
   }
@@ -1075,13 +1077,26 @@ function loadData(file) {
   }
 
   // One row per award, for the CSV and for the group-by-program reading.
+  /* WHAT STANDS BEHIND EACH LINE, carried with the amount (ER-01, 4 October 2026). The
+     Huntsman notice is signed and has no USAspending record, so its execution is not
+     verified; the panel, the register row and the CSV said so nowhere, only a disclosure
+     four clicks away. A program states the evidence for its lines and an award may
+     override a field, so the three surfaces read one object and cannot disagree. */
+  function evidenceOf(award) {
+    return Object.assign({}, G.programs.get(award.programId).evidence || {}, award.evidence || {});
+  }
+  const unverified = (award) => evidenceOf(award).execution === 'Not verified';
+
   function tableRows() {
     const out = [];
     DATA.programs.forEach((p) => {
       const so = G.sources.get(p.sourceId);
       G.progOut.get(p.id).forEach(({ recipient, award }) => {
+        const ev = evidenceOf(award);
         out.push({ source: so.name, program: p.name, recipient: recipient.name,
-          amount: award.amount, awardId: award.awardId || '', funds: award.funds || '' });
+          amount: award.amount, awardId: award.awardId || '', funds: award.funds || '',
+          document: ev.document || '', publicRecord: ev.publicRecord || '',
+          execution: ev.execution || '' });
       });
     });
     return out;
@@ -1111,7 +1126,8 @@ function loadData(file) {
       } else {
         outs.forEach(({ recipient, award }) => rows.push({ source: so.short, program: p.name,
           recipient: recipient.name, amount: award.amount,
-          awardId: award.awardId || '', funds: award.funds || '' }));
+          awardId: award.awardId || '', funds: (award.funds || '') + (unverified(award)
+            ? ' (signed notice held; execution not verified: no USAspending record)' : '') }));
       }
     });
     return rows.sort((a, b) => b.amount - a.amount);
@@ -1169,10 +1185,15 @@ function loadData(file) {
     const s6 = G.programs.get('oh-startup').amount -
       G.progOut.get('oh-startup').reduce((a, o) => a + o.award.amount, 0);
     document.getElementById('table-note').textContent =
-      `The ${fmtFull(DATA.meta.totals.awards - rowSum)} difference is Ohio money committed but not ` +
-      `yet written into a sub-grant: ${fmtFull(rd)} of PIC Translational R&D, and ${fmtFull(s6)} of ` +
-      `the startup-support workstream, delivered through a sub-grant to Bounce Innovation Hub, ` +
-      `the Akron organization that runs Synthe6.`;
+      /* Two parts at two stages (ER-21, 4 October 2026). This said the whole balance was
+         "not yet written into a sub-grant" while naming the Bounce sub-grant in the same
+         breath: the startup part is already in an executed sub-grant, to an intermediary
+         rather than a named final recipient. */
+      `The ${fmtFull(DATA.meta.totals.awards - rowSum)} difference sits at two stages: ` +
+      `${fmtFull(rd)} of PIC Translational R&D is not yet written into a sub-grant; ` +
+      `${fmtFull(s6)} of startup support is already in Bounce Innovation Hub’s 15 May 2025 ` +
+      `sub-grant to run Synthe6, beyond the ${numword(G.progOut.get('oh-startup').length)} ` +
+      `cohort awards named here.`;
 
     /* WHAT ONE ROW COUNTS, WORKED THROUGH ON THE PAGE'S OWN LARGEST CASE. Generated, so
        the example moves if the file does: the organization named is whichever multi-award
@@ -1200,9 +1221,11 @@ function loadData(file) {
 
   function buildCsv() {
     const q = (v) => `"${String(v).replace(/"/g, '""')}"`;
-    const lines = [['Source', 'Program', 'Recipient', 'Amount (USD)', 'Amount (display)', 'Award ID', 'What it funds'].join(',')];
+    const lines = [['Source', 'Program', 'Recipient', 'Amount (USD)', 'Amount (display)', 'Award ID',
+      'What it funds', 'Document', 'Public record', 'Execution'].join(',')];
     tableRows().forEach((r) => lines.push([q(r.source), q(r.program), q(r.recipient), r.amount,
-      q(fmt(r.amount)), q(r.awardId), q(r.funds)].join(',')));
+      q(fmt(r.amount)), q(r.awardId), q(r.funds), q(r.document), q(r.publicRecord),
+      q(r.execution)].join(',')));
     const blob = new Blob([lines.join('\r\n') + '\r\n'], { type: 'text/csv;charset=utf-8' });
     const a = document.getElementById('csv-link');
     a.href = URL.createObjectURL(blob);
@@ -1264,6 +1287,12 @@ function loadData(file) {
         if (w.awardId) blk.appendChild(h('p', { class: 'award-id' }, [
           h('b', { text: 'Award ID ' }), document.createTextNode(w.awardId)
         ]));
+        const ev = evidenceOf(w);
+        blk.appendChild(h('p', { class: 'award-ev' }, [h('b', { text: 'Evidence: ' }),
+          /* Printed as written: lowercasing the first letter turned "USAspending" into
+             "uSAspending" (PR #43 review, 2026-10-04). tools/style.mjs reads this panel. */
+          document.createTextNode(`${ev.document}. Public record: ${ev.publicRecord}. ` +
+            `Execution: ${ev.execution}.`)]));
         body.appendChild(blk);
       });
     } else if (kind === 'program') {
@@ -1319,6 +1348,8 @@ function loadData(file) {
   function openDetail(kind, id, { push = true, focus = true } = {}) {
     if (!G[kind === 'recipient' ? 'recipients' : kind === 'program' ? 'programs' : 'sources'].has(id)) return;
     selected = { kind, id };
+    const status = document.getElementById('finder-status');
+    if (status) status.textContent = '';    // the finder rewrites it when it opened this one
     panelFor(kind, id);
     setHighlight(kind, id);
     markSelected();
@@ -1350,6 +1381,10 @@ function loadData(file) {
     resetBtn.hidden = true;
     const finder = document.getElementById('finder');
     if (finder) finder.value = '';
+    /* every closing path (Escape, the close button, the scrim, the finder) clears what the
+       finder's status said, or its description goes on calling a closed panel open */
+    const status = document.getElementById('finder-status');
+    if (status) status.textContent = '';
     if (push && location.hash) history.pushState(null, '', location.pathname + location.search);
     if (restore && lastFocusEl && document.contains(lastFocusEl)) lastFocusEl.focus({ preventScroll: true });
     lastFocusEl = null;
@@ -1584,9 +1619,12 @@ function loadData(file) {
           text: `${r.name} · ${fmt(r.total)}` +
             (r.awards.length > 1 ? ` across ${numword(r.awards.length)} awards` : '') })));
       finder.addEventListener('change', () => {
-        if (!finder.value) { closeDetail(); return; }
+        const status = document.getElementById('finder-status');
+        if (!finder.value) { closeDetail(); if (status) status.textContent = 'Details closed.'; return; }
         const id = finder.value;
         openDetail('recipient', id, { focus: false });
+        /* The panel opens without taking focus, so say where it is (review ER-10). */
+        if (status) status.textContent = `Details for ${G.recipients.get(id).name} are open in the panel.`;
         const b = viz.querySelector(`[data-kind="recipient"][data-id="${CSS.escape(id)}"]`);
         if (b) b.scrollIntoView({ block: 'center', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
       });

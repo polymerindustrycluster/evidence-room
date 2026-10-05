@@ -41,7 +41,7 @@
     "Wayne"
    ],
    "note": "PIC’s official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
-   "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the wider 14-county Northeast Ohio definition includes."
+   "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the vault’s NEO-14 includes; NEO-14 in turn leaves out Ashtabula and Trumbull. The two share ten counties."
   }
  },
  "naics": [

@@ -24,6 +24,19 @@
    "falsified_if": "Classification work fills gaps. This number falling is progress, and every 'thin stage' claim on the page gets weaker as it does. An empty role is missing evidence about the record, never evidence that a firm cannot do the work."
   },
   {
+   "id": "chain-stage-roles",
+   "text": "Of the 710 regional records, 566 carry a classified role and 490 carry one of the stage roles drawn in the supply-and-demand chart; the other 76 carry only distribution, logistics, construction, engineering or energy roles, which no stage on that chart covers (chart source line).",
+   "source": "chain-data.json companies (each record's value-chain tiers) and viz-data.json supply_meta.spine_classified, both written by repair_chain.py from the same regional rows",
+   "assert": "(lambda C, S: len(C) == D['chain']['meta']['neo_total'] == 710 and sum(1 for c in C if c['t']) == 566 == D['chain']['meta']['neo_total'] - D['chain']['meta']['unclassified'] and sum(1 for c in C if set(c['t']) & S) == 490 == D['viz']['supply_meta']['spine_classified'] and D['viz']['supply_meta']['neo_total'] == 710 and len([c for c in C if c['t'] and not set(c['t']) & S]) == 76 and all(set(c['t']) <= {'distrib', 'eng'} for c in C if c['t'] and not set(c['t']) & S))(D['chain']['companies'], {'monomer', 'polymer', 'compound', 'fabricate', 'oem', 'recycle', 'machinery', 'lab'})",
+   "actual": "(len(D['chain']['companies']), sum(1 for c in D['chain']['companies'] if c['t']), D['viz']['supply_meta']['spine_classified'])",
+   "falsified_if": "The register is re-extracted or reclassified so that any of the three counts moves, the chart's own count of records carrying a stage role stops matching a recount from the company rows, or a record outside the drawn stages carries anything but a distribution, logistics, construction, engineering or energy role. The set of drawn-stage tiers is repair_chain.py's SPINE mapped to its TIERS keys: monomers, polymer producers, additives and compounding, fabrication, OEMs, recycling, machinery and labs. [2026-10-04, NEW: the hub card printed 566 with a classified role and this page printed 490 of 710 in the chart source line, and 566 never appeared here. Both were right and measured different things; the source line now gives both and names the 76 between them.]",
+   "counts": [
+    {"figure": "566", "noun": "classified role"},
+    {"figure": "490", "noun": ["stage roles", "regional records"]},
+    {"figure": "76", "noun": "carry only distribution"}
+   ]
+  },
+  {
    "id": "chain-cbp-benchmark",
    "text": "Census counts 684 chemical and plastics-and-rubber manufacturing establishments across the same fourteen counties.",
    "source": "Census CBP 2023, NAICS 325 + 326, the fourteen PIC-12+2 FIPS",

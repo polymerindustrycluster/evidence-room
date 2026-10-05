@@ -29,7 +29,7 @@
    `.hero .wrap > *{margin-left:auto}` and open that same second rail by another route. */
 .hero .wrap > .hero-viz{max-width:var(--measure);margin:24px auto 0}
 .hero-viz svg{width:100%;height:auto;display:block;overflow:visible}
-.hero-cap{margin:9px 0 0;font-size:13px;line-height:1.5;color:#9FCBD2}
+.hero-cap{margin:9px 0 0;font-size:13px;line-height:1.5;color:#C0DBE1}
 
 /* ------------------------------------------------------------------ the governance gate
    Below the hero and above the table it governs, on its own ground so it cannot be read

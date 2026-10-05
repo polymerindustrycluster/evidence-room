@@ -76,9 +76,9 @@ const PV = (() => {
   /* Attach hover + keyboard focus to a mark. Tooltips enhance, never gate:
      every value is also in the table view. */
   function hoverable(node, html, label) {
-    node.setAttribute("tabindex", "0");
     node.setAttribute("role", "img");
     if (label) node.setAttribute("aria-label", label);
+    enlist(node);
     node.addEventListener("pointerenter", e => showTip(html, e));
     node.addEventListener("pointermove", e => showTip(html, e));
     node.addEventListener("pointerleave", hideTip);
@@ -88,6 +88,114 @@ const PV = (() => {
     });
     node.addEventListener("blur", hideTip);
     return node;
+  }
+
+  /* ONE TAB STOP PER CHART, THEN ARROW KEYS (roving tabindex).
+     Every mark used to be its own Tab stop: 198 on peers, 113 on wages, 266 on reach, so a
+     keyboard reader had to walk every dot to reach the table that holds the same numbers
+     (review ER-02, 4 October 2026). Now each chart takes one stop, on the mark last
+     visited, and the arrow keys walk its marks in drawing order; Home and End jump to the
+     ends; Escape hides the tooltip and leaves focus where it was (ER-20). A "Skip the
+     chart" control sits before each chart in the Tab order and lands on what follows it,
+     usually the chart's own table.
+
+     A mark is any element enlisted here: hoverable() enlists its own, and a page whose
+     marks are buttons it drew itself calls rove(group, selector) after each draw. The
+     group is the nearest [data-pv-group], else the .chart box, else the outermost svg,
+     which is also what tools/access.mjs counts. The active mark is remembered by its
+     aria-label on the group, which survives a redraw (the group outlives its marks), and a
+     mark that takes focus any other way (a click, or the font-load refocus every page's
+     onFonts helper performs by aria-label) becomes the group's stop. tools/fontfocus.mjs
+     holds that path. */
+  const pendingMarks = new Set();
+  let roveQueued = false;
+  function outerSvg(n) {
+    let s = n.ownerSVGElement || (n.tagName === "svg" ? n : null);
+    while (s && s.ownerSVGElement) s = s.ownerSVGElement;
+    return s;
+  }
+  const groupOf = n => n.closest("[data-pv-group]") || n.closest(".chart") || outerSvg(n);
+  const marksOf = g => [...g.querySelectorAll("[data-pv-mark]")].filter(m => groupOf(m) === g);
+  const shown = m => m.getClientRects().length > 0 && getComputedStyle(m).visibility !== "hidden";
+  function flush() {
+    roveQueued = false;
+    const groups = new Set();
+    pendingMarks.forEach(m => { const g = m.isConnected && groupOf(m); if (g) groups.add(g); });
+    pendingMarks.clear();
+    groups.forEach(settle);
+  }
+  function schedule(nodes) {
+    nodes.forEach(n => pendingMarks.add(n));
+    if (!roveQueued) { roveQueued = true; queueMicrotask(flush); }
+  }
+  function enlist(node) {
+    node.setAttribute("data-pv-mark", "");
+    node.setAttribute("tabindex", "-1");
+    schedule([node]);
+  }
+  function rove(group, selector) {
+    const g = typeof group === "string" ? document.querySelector(group) : group;
+    if (!g) return;
+    g.setAttribute("data-pv-group", "");
+    g.querySelectorAll(selector).forEach(enlist);
+  }
+  /* Exactly one mark per group is reachable by Tab: the remembered one if it is still
+     drawn and showing, else the first showing mark. Re-run on resize, because a layout
+     switch at 760px can hide the mark that held the stop. */
+  function settle(g) {
+    const marks = marksOf(g);
+    if (!marks.length) return;
+    const vis = marks.filter(shown);
+    const want = g.getAttribute("data-pv-active");
+    const stop = vis.find(m => m.getAttribute("aria-label") === want) || vis[0] || marks[0];
+    marks.forEach(m => m.setAttribute("tabindex", m === stop ? "0" : "-1"));
+    skipFor(g).hidden = !vis.length;     // a chart hidden at this width offers no bypass
+  }
+  addEventListener("resize", () => schedule(document.querySelectorAll("[data-pv-mark]")),
+    {passive: true});
+  document.addEventListener("focusin", e => {
+    const m = e.target.closest && e.target.closest("[data-pv-mark]");
+    const g = m && groupOf(m);
+    if (!g) return;
+    marksOf(g).forEach(x => x.setAttribute("tabindex", x === m ? "0" : "-1"));
+    if (m.getAttribute("aria-label")) g.setAttribute("data-pv-active", m.getAttribute("aria-label"));
+  });
+  document.addEventListener("keydown", e => {
+    const m = e.target.closest && e.target.closest("[data-pv-mark]");
+    const g = m && groupOf(m);
+    if (!g || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.key === "Escape") { hideTip(); return; }
+    const step = {ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1}[e.key];
+    if (!step && e.key !== "Home" && e.key !== "End") return;
+    const vis = marksOf(g).filter(shown);
+    const i = vis.indexOf(m);
+    const to = e.key === "Home" ? vis[0] : e.key === "End" ? vis[vis.length - 1]
+      : vis[Math.min(vis.length - 1, Math.max(0, i + step))];
+    e.preventDefault();
+    if (to && to !== m) to.focus();
+  });
+  /* The bypass. It is a button rather than a fragment link because its target is found
+     when it is used: tables are often drawn after their charts, and a redraw can replace
+     what came next. That is usually the chart's "Table view" drawer, whose name is read
+     out on arrival. Visually hidden until focused, inside the chart box, so it moves no
+     layout and breaks no `.fig-sub + .chart` sibling rule. */
+  function skipFor(g) {
+    const host = g.closest(".chart") || g;
+    const prev = host.matches(".chart") ? host.firstElementChild : host.previousElementSibling;
+    if (prev && prev.classList.contains("pv-skipchart")) return prev;
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "pv-skipchart";
+    b.textContent = "Skip the chart";
+    b.addEventListener("click", () => {
+      const all = document.querySelectorAll("a[href], button, input, select, textarea, summary, [tabindex]");
+      const t = [...all].find(n => !host.contains(n) && n !== b && n.tabIndex >= 0 && !n.disabled &&
+        (host.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_FOLLOWING) &&
+        n.getClientRects().length);
+      if (t) t.focus();
+    });
+    if (host.matches(".chart")) host.prepend(b); else host.before(b);
+    return b;
   }
 
   /* MEASURED TYPE METRICS, because a leading constant is a guess about a face that a
@@ -220,13 +328,16 @@ const PV = (() => {
     return g;
   }
 
-  /* build the table-view twin from rows [{cells:[], head:bool}] */
-  function tableView(id, caption, head, rows) {
-    return `<details class="pv-table"><summary>Table view: ${caption}</summary>
+  /* build the table-view twin from rows [{cells:[], head:bool}]
+     opts.twin names the svg this table stands in for and opts.ids gives each row the id its
+     mark carries as data-pv-id; tools/access.mjs then holds the table to every plotted mark.
+     The peers metro table held the top 25 of the 155 dots it sat under (review ER-07). */
+  function tableView(id, caption, head, rows, opts = {}) {
+    return `<details class="pv-table"${opts.twin ? ` data-pv-twin="${opts.twin}"` : ""}><summary>Table view: ${caption}</summary>
       <div class="pv-tablewrap"><table>
         <caption>${caption}</caption>
         <thead><tr>${head.map(h => `<th scope="col">${h}</th>`).join("")}</tr></thead>
-        <tbody>${rows.map(r => `<tr>${r.map((c, i) =>
+        <tbody>${rows.map((r, j) => `<tr${opts.ids ? ` data-pv-id="${opts.ids[j]}"` : ""}>${r.map((c, i) =>
           i === 0 ? `<th scope="row">${c}</th>` : `<td>${c}</td>`).join("")}</tr>`).join("")}
         </tbody></table></div></details>`;
   }
@@ -380,6 +491,24 @@ const PV = (() => {
     span.innerHTML = MARK;
     host.insertBefore(span, host.firstChild);
     return span;
+  }
+
+  /* THE WAY BACK TO THE LIST. Inside a story the wordmark went home but nothing said where
+     the other stories were, so a reader who wanted the next one used the browser (review,
+     4 October 2026). Every story's masthead carries the wordmark link to the hub, so the
+     list link is built from it: it resolves wherever the page is served from, the 404 page
+     included. The hub, which holds the list itself, gets none. */
+  function allStories() {
+    const home = document.querySelector(".mast .mast-home");
+    if (!home || document.getElementById("alltitle") ||
+        home.parentNode.querySelector(".mast-all")) return null;
+    const a = document.createElement("a");
+    a.className = "mast-all";
+    a.href = new URL("#alltitle", home.href).href;
+    a.textContent = "All stories";
+    const sub = home.nextElementSibling;
+    (sub && sub.tagName === "SPAN" ? sub : home).after(a);
+    return a;
   }
 
   /* Load a data file. Served from the folder it fetches; bundled into dist/ it reads
@@ -603,7 +732,11 @@ const PV = (() => {
           if (!keys.length) return "";
           return `<details class="pv-repro">
             <summary><h3>Reproduce this</h3></summary>
-            <p class="pv-method-note">Every figure on this page comes from the sources below.
+            <p class="pv-method-note">${keys.some(k => R.sources[k] && R.sources[k].role)
+              /* A source a page only checks against is not one it is built from: the
+                 funding map listed a USAspending contract pull it never used (2026-10-04). */
+              ? "Every figure on this page comes from the sources below, apart from any marked corroboration only: those check the figures rather than produce them."
+              : "Every figure on this page comes from the sources below."}
               The filters are the exact values applied, not a description of them.</p>
             ${keys.map(k => {
               const src = R.sources[k]; if (!src) return "";
@@ -611,6 +744,7 @@ const PV = (() => {
                 .map(([kk, vv]) => `<dt>${kk}</dt><dd>${vv}</dd>`).join("");
               return `<div class="pv-src">
                 <h4>${src.name}</h4>
+                ${src.role ? `<p class="pv-method-note"><b>${src.role}</b></p>` : ""}
                 <p class="pv-method-note">${src.agency}${src.key_required
                   ? " &middot; free API key required" : ""}</p>
                 ${src.url ? `<p class="mono pv-endpoint">${src.url}</p>` : ""}
@@ -741,8 +875,9 @@ const PV = (() => {
     const id = "pvf" + Math.random().toString(36).slice(2, 8);
     tools.innerHTML = `<label for="${id}">Filter</label>
       <input id="${id}" type="search" autocomplete="off" spellcheck="false"
+             aria-describedby="${id}-n"
              placeholder="${opts.placeholder || "type to narrow these rows"}">
-      <span class="pv-count" role="status" aria-live="polite"></span>
+      <span class="pv-count" id="${id}-n" role="status" aria-live="polite"></span>
       <span class="pv-hint">click a column to sort</span>`;
     /* The scroll wrap is a DESCENDANT of the host (host > details > wrap > table), not a
        child of it, so the reference node has to be resolved against its own parent —
@@ -751,11 +886,13 @@ const PV = (() => {
     const wrap = root.querySelector(".pv-tablewrap") || table;
     wrap.parentNode.insertBefore(tools, wrap);
     const input = tools.querySelector("input"), count = tools.querySelector(".pv-count");
+    /* a typed straight apostrophe finds a name printed with the typographic one */
+    const norm = s => s.toLowerCase().replace(/[\u2018\u2019]/g, "'");
     const applyFilter = () => {
-      const q = input.value.trim().toLowerCase();
+      const q = norm(input.value.trim());
       let shown = 0;
       rows.forEach(r => {
-        const hit = !q || r.textContent.toLowerCase().includes(q);
+        const hit = !q || norm(r.textContent).includes(q);
         r.hidden = !hit;
         if (hit) shown++;
       });
@@ -882,9 +1019,10 @@ const PV = (() => {
     if (unit) txt(svg, unit, {x: 0, y: 31, class: "pv-tick", fill: "var(--caption)"});
   }
 
-  return {tableTools, onFill, whatWeGotWrong, el, txt, axlab, face, lead, ticks, frame, hoverable, showTip, hideTip, tableView, data, footprint,
-          methodology, figures, chart, chartTitle, footprintBanner, padGrid, mark, favicon, N,
+  return {tableTools, onFill, whatWeGotWrong, el, txt, axlab, face, lead, ticks, frame, hoverable, rove, showTip, hideTip, tableView, data, footprint,
+          methodology, figures, chart, chartTitle, footprintBanner, padGrid, mark, allStories, favicon, N,
           CAT, SEQ, GRAY, INK, usd, usdShort, reduced};
 })();
 PV.mark();
+PV.allStories();
 PV.favicon();

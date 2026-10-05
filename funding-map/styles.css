@@ -34,7 +34,7 @@ html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
    core's `.hero .wrap > *` weight and keep auto side margins, or this later stylesheet
    drops the block outboard of the text rail. */
 .hero .wrap > .byline{margin:14px auto 0;max-width:var(--measure);font-size:13px;
-  line-height:1.5;color:#9CC4CA;letter-spacing:.02em}
+  line-height:1.5;color:#C0DBE1;letter-spacing:.02em}
 .hero .wrap > .byline time{color:#C6E2E6}
 
 /* THE COLD-OPEN STRIP. Pinned to the TEXT rail, not the figure rail: drawn at this site's
@@ -411,3 +411,6 @@ html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
   .panel,.scrim,.controls,.sortbar{display:none !important}
   body{font-size:12px}
 }
+/* the evidence behind one award line, said beside its amount (ER-01, 4 October 2026) */
+.award-ev{margin:8px 0 0;font-size:14px;line-height:1.5;color:var(--pv-ink)}
+.award-ev b{font-weight:700}

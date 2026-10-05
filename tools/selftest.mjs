@@ -326,6 +326,29 @@ const CASES = [
    defect: "a bare dated correction note, which must exempt the phrase it corrects",
    inject: s => s.replace("<body>", '<body><p>Correction, 28 September 2026: Joint work rose.</p>')},
 
+  /* From the 2026-10-04 review fixes (PR A). Each puts back the exact text that shipped. */
+  {gate: "style", page: "federal-money", args: ["federal-money"], expect: /footprint-relationship/,
+   defect: "the footprint line naming the four counties NEO-14 adds and not the two it leaves " +
+           "out, so twelve plus four reads as fourteen (six pages until 2026-10-04)",
+   inject: s => s.replaceAll("; NEO-14 in turn leaves out Ashtabula and Trumbull. The two share ten counties.", ".")},
+
+  {gate: "style", page: "sources", args: ["sources"], expect: /href-template: https:\/\/educationdata/,
+   defect: "a dataset name linked to an API pattern with a literal {year}, a server error " +
+           "for every reader who followed it (IPEDS directory, until 2026-10-04)",
+   inject: s => s.replace("const home = s => s.docs || (s.url && !/[{}]/.test(s.url) ? s.url : null);",
+                          "const home = s => s.url;")},
+
+  {gate: "style", page: "index", args: ["index"], expect: /href-raw-markdown: \.\.\/CORRECTIONS\.md/,
+   defect: "the front page's correction-log link opening raw Markdown source (until 2026-10-04)",
+   inject: s => s.replace('href="https://github.com/polymerindustrycluster/evidence-room/blob/main/CORRECTIONS.md">correction log',
+                          'href="../CORRECTIONS.md">correction log')},
+
+  {gate: "style", page: "federal-money", args: ["federal-money"], expect: /withdrawn:still running/,
+   defect: "a fiscal year called \"still running\" on a snapshot taken before it ended, false " +
+           "from 30 September 2026 with every number on the page unchanged",
+   inject: s => s.replace(/Fiscal 2026 had not closed when the data were retrieved, so its total is\s+partial\./,
+                          "Fiscal 2026 is still running.")},
+
   {gate: "provenance", page: "cost-scissors", args: ["cost-scissors"],
    defect: "a page crediting a federal source it has never read",
    /* Injected into SOURCES.json rather than the artifact, so this case names its own file.
@@ -337,6 +360,40 @@ const CASES = [
       registry.by_artifact["cost-scissors"].push("qcew");
       return JSON.stringify(registry, null, 1) + "\n";
     }},
+
+  {gate: "provenance", page: "funding-map", args: ["funding-map"],
+   defect: "a page whose reproduce panel describes a source pull it never used: the funding " +
+           "map, built from signed award documents, listed the USAspending contract recipe " +
+           "(ER-04, 2026-10-04)",
+   file: "_data/SOURCES.json",
+    inject: s => {
+      const registry = JSON.parse(s);
+      registry.by_artifact["funding-map"].push("usaspending");
+      return JSON.stringify(registry, null, 1) + "\n";
+    }},
+
+  {gate: "style", page: "laborshed", args: ["laborshed"], expect: /bare-first-reference:LEHD/,
+   defect: "an acronym left unexpanded in a byline, passed for weeks by a silent debt entry " +
+           "(laborshed's LEHD LODES, F§15, 2026-10-04)",
+   inject: s => s.replace(/Census LEHD LODES \(Longitudinal Employer-Household Dynamics Origin-Destination Employment Statistics\)/,
+                          "Census LEHD LODES")},
+
+  {gate: "style", page: "patents", args: ["patents"], expect: /stale-debt:HTTP/,
+   defect: "an acronym debt entry the page no longer needs, which would excuse the next bare " +
+           "reference without anyone seeing it",
+   inject: s => s.replace("<body>", "<body><p>HTTP (the protocol a browser speaks) carries every request here.</p>")},
+
+  {gate: "style", page: "peers", args: ["peers"], expect: /withdrawn-link:/,
+   defect: "a withdrawn citation coming back as a link address, which the text walk never " +
+           "reads (Michelin's 2024 anniversary post, U P1, 2026-10-04)",
+   inject: s => s.replace('href="https://michelinmedia.com/about/"',
+                          'href="https://michelinmedia.com/pages/blog/detail/article/c0/a1370/"')},
+
+  {gate: "style", page: "funding-map", args: ["funding-map"], expect: /case-mangled:uSA/,
+   defect: "a data string lowercased at its first letter to sit mid-sentence, printing " +
+           "\"uSAspending\" in a recipient panel only a deep link opens (PR #43, 2026-10-04)",
+   inject: s => s.replace("Public record: ${ev.publicRecord}. ",
+     "Public record: ${ev.publicRecord.charAt(0).toLowerCase() + ev.publicRecord.slice(1)}. ")},
 
   {gate: "alttext", page: "wages", args: ["wages"],
    defect: "a chart shipped with no accessible description at all",
@@ -413,6 +470,64 @@ const CASES = [
      '    requestAnimationFrame(() => { queued = false; if (document.fonts.status !== "loading") keep(); });\n  };\n' +
      '  if (document.fonts.status === "loading") document.fonts.ready.then(settle, () => {});\n' +
      '  document.fonts.addEventListener("loadingdone", settle);\n};')},
+
+  /* The roving tab stop of 4 October 2026 has to follow focus, or the reader the font-load
+     redraw hands back to their mark is handed a chart whose one Tab stop is elsewhere. */
+  {gate: "fontfocus", page: "peers", file: "_shared/picviz.js", args: ["peers:states"],
+   expect: /Tab stop/,
+   defect: "a roving tab stop that stays on the first mark when focus is restored to another " +
+           "one after the font-load redraw",
+   inject: s => s.replace('document.addEventListener("focusin", e => {',
+                          'document.addEventListener("focusin-off", e => {')},
+
+  /* tools/access.mjs, added 4 October 2026 from the multi-persona audit and the usability
+     review. Each injection puts back a defect the site shipped until that day. */
+  {gate: "access", page: "peers", args: ["peers"], expect: /takes \d+ Tab stops/,
+   defect: "every chart mark its own Tab stop (198 on peers before 4 October 2026, ER-02)",
+   inject: s => s.replace("    enlist(node);\n", '    node.setAttribute("tabindex", "0");\n')},
+
+  {gate: "access", page: "wages", args: ["wages"], expect: /no "Skip the chart" control/,
+   defect: "a chart with no bypass before it in the Tab order (ER-02)",
+   inject: s => s.replace("skipFor(g).hidden = !vis.length;", "void vis;")},
+
+  {gate: "access", page: "peers", args: ["peers"], expect: /twin table holds 25 rows for 155/,
+   defect: "the metro table holding the top 25 of the 155 metros plotted above it (ER-07)",
+   inject: s => s.replace("const rows = ranked.map(", "const rows = ranked.slice(0, 25).map(")
+                 .replace("ids: ranked.map(r => r.area)", "ids: ranked.slice(0, 25).map(r => r.area)")},
+
+  {gate: "access", page: "wages", args: ["wages"], expect: /no live region it names/,
+   defect: "a county button that rewrites the verdict with no live region (ER-10)",
+   inject: s => s.replace('<p class="verdict" id="verdict" role="status" aria-live="polite"></p>',
+                          '<p class="verdict" id="verdict"></p>')},
+
+  {gate: "access", page: "peers", args: ["peers"], expect: /no accessible name/,
+   defect: "a rendered link whose only content is an unlabelled graphic",
+   inject: s => s.replace("<body>", '<body><p><a href="../wages/"><svg width="12" height="12"></svg></a></p>')},
+
+  {gate: "access", page: "404", file: "404.html", args: ["404"], expect: /no element with id "stories"/,
+   defect: "a 404 page whose story-list link points at nothing",
+   inject: s => s.replace("/evidence-room/index/#alltitle", "/evidence-room/index/#stories")},
+
+  {gate: "verify", page: "index", args: ["index"], expect: /contrast 2 under AA/,
+   defect: "the hero byline at #9CC4CA, 3.62:1 on the teal hero (ER-11)",
+   inject: s => s.replace("line-height:1.5;color:#C0DBE1;letter-spacing:.02em}",
+                          "line-height:1.5;color:#9CC4CA;letter-spacing:.02em}")},
+
+  /* From the Codex review of PR #44 (4 October 2026). */
+  {gate: "access", page: "funding-map", args: ["funding-map"], expect: /390: chart #viz takes \d+ Tab stops/,
+   defect: "the phone form of a chart left with every recipient card a Tab stop, which a " +
+           "1440-only walk passed",
+   inject: s => s.replace("PV.rove(viz, 'button.rcard, button.rname');", "")},
+
+  {gate: "access", page: "peers", args: ["peers"], expect: /drops focus to <body>/,
+   defect: "a search that redraws the scatter after the reader has Tabbed onto a dot, dropping " +
+           "them on <body>",
+   inject: s => s.replace('"#scatter [aria-label]"', '"#scatter [aria-label=none]"')},
+
+  {gate: "access", page: "funding-map", args: ["funding-map"], expect: /after Escape closed what it opened/,
+   defect: "the finder's status still calling a panel open after Escape closed it",
+   inject: s => s.replace("    if (status) status.textContent = '';\n    if (push && location.hash)",
+                          "    if (push && location.hash)")},
 ];
 
 const only = process.argv.slice(2).filter(a => !a.startsWith("--"));

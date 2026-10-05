@@ -16,7 +16,7 @@
 
 <header class="mast">
   <div class="wrap">
-    <strong>Polymer Industry Cluster</strong>
+    <a class="mast-home" href="./"><strong>Polymer Industry Cluster</strong></a>
     <span>Interactive evidence</span>
   </div>
 </header>
@@ -118,10 +118,10 @@
       <label for="county">Check coverage for</label>
       <p class="picker-rule" id="county-rule">Prototype stories count toward a county&rsquo;s
         coverage and are marked as prototypes.</p>
-      <select id="county" aria-describedby="county-rule">
+      <select id="county" aria-describedby="county-rule verdict">
         <option value="">All twelve counties</option>
       </select>
-      <p class="verdict" id="verdict" aria-live="polite"></p>
+      <p class="verdict" id="verdict" role="status" aria-live="polite"></p>
     </div>
 
     <h3 class="gname">Start here</h3>
@@ -160,7 +160,7 @@
           year?</h4>
 
         <p class="f">Federal contract obligations for work performed in the twelve counties, under
-          chemical and plastics/rubber industry codes, averaged $41.4 million a year in
+          chemical, plastics and rubber manufacturing codes, averaged $41.4 million a year in
           2025 dollars across fiscal 2019–2025. Annual totals ranged from $20.5 million to
           $59.9 million. The one-time $51.0 million Tech Hub award is about 1.2 years of
           that average, a rough size and not like for like: a competitive grant and routine
@@ -280,7 +280,8 @@
       <!-- Corrected 2026-09-28: see reach/index.html for the "four papers in five" fix. -->
       <a class="card" href="../reach/" data-slug="reach" data-geo="national">
         <h4>How far does the region&rsquo;s polymer research reach?</h4>
-        <p class="f">633 partner institutions in 50 countries across 1,448 works;
+        <p class="f">633 partner institutions in 50 countries across 1,448 works, 629 once four
+          flagged affiliation matches are set aside;
           985 of 1,222 papers naming a corresponding author had one here. China is the
           second-largest partner country, behind only the United States.</p>
         <p class="meta"><span class="pill geo">national</span><span class="pill proto">Prototype</span></p>
@@ -342,7 +343,7 @@
         <h4>Why is the cluster here, and what has it done since?</h4>
         <p class="f">31 documented milestones, the first dated 1898 and the last 2012, provide
           historical context for the cluster. A separate operating register counts what has
-          happened since: 67 public developments in the 34 months after October 2023, against
+          happened since: 66 public developments in the 34 months after October 2023, against
           4 in the 34 months before.</p>
         <p class="meta"><span class="pill geo">public record</span></p>
       </a>
@@ -372,7 +373,7 @@
       boundaries: Akron ranks 13th and 8th among 29 metros, replacing 33rd and 19th
       among 56 in the mismatched 2023 comparison. The county selector now includes
       Ashtabula in Cleveland&rsquo;s 2024 metro coverage; it previously treated the county
-      as outside that metro. See the <a href="../CORRECTIONS.md">correction log</a>
+      as outside that metro. See the <a href="https://github.com/polymerindustrycluster/evidence-room/blob/main/CORRECTIONS.md">correction log</a>
       and each article&rsquo;s dated notes.</p>
     <p class="note"><b>Further correction · 8 September 2026.</b> The county selector and
       cost-of-living card omitted Youngstown–Warren even though its wage data are disclosed.
@@ -388,6 +389,12 @@
       Columbiana and Tuscarawas, are now called PIC-12+2, and that story now counts toward
       every county&rsquo;s coverage, marked as a prototype. Story labels now use three
       statuses, Published, Prototype and Internal, explained above the cards.</p>
+    <p class="note"><b>Correction · 4 October 2026.</b> The timeline card now reads 66
+      developments rather than 67: a newspaper feature had been counted as a development, and
+      press coverage is held out of that count. The research card now says which partner count
+      it gives, 633 before four flagged affiliation matches are set aside and 629 after. The
+      federal card names the industry codes it counts as chemical, plastics and rubber
+      manufacturing; no figure on it changed.</p>
     <p class="src">Text, figures and derived data are available under CC BY 4.0; scripts
       are MIT licensed. Underlying sources retain their own terms, listed in the
       <a href="../sources/">source guide</a>. More from PIC: the

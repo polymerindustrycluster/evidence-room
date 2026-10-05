@@ -621,12 +621,15 @@ const meth = await PV.methodology({page: "cluster-health", meta: D.meta,
     const p = document.createElement("p");
     p.className = "pv-method-note";
     p.textContent = `Coverage: the ${FP.words} counties PIC treats as its region ` +
-      `(${FP.counties.join(", ")}), all in Northeast Ohio. A wider fourteen-county ` +
-      `definition of the region, used by some other sources, adds Crawford, Huron, ` +
-      `Richland and Tuscarawas; the two never reconcile, and this page does not mix ` +
-      `them. The degree completions are three named universities, and the openings ` +
+      `(${FP.counties.join(", ")}), all in Northeast Ohio. A different fourteen-county ` +
+      `definition of the region, used by some other sources, shares ten of these: it adds ` +
+      `Crawford, Huron, Richland and Tuscarawas and leaves out Ashtabula and Trumbull. ` +
+      `The two never reconcile, and this page does not mix them. The degree ` +
+      `completions are three named universities, and the openings ` +
       `estimate printed beside them is a state projection for an eighteen-county region; ` +
-      `they are shown side by side and never divided into one another.`;
+      `they are shown side by side and never divided into one another. ` +
+      `Corrected 4 October 2026: this note said the wider definition adds those four ` +
+      `counties and stopped there. It now names the two it leaves out.`;
     h.parentNode.appendChild(p);
   }
 }

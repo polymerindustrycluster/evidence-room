@@ -2,7 +2,7 @@
  "status": "PUBLISHED",
  "n_pieces": 22,
  "as_of": "2026-09-11",
- "total_claims": 543,
+ "total_claims": 553,
  "total_manual": 22,
  "pages": {
   "accountability": {
@@ -11,22 +11,22 @@
    "status": "INTERNAL"
   },
   "atlas": {
-   "claims": 9,
+   "claims": 10,
    "manual": 2,
    "status": "PUBLISHED"
   },
   "chain": {
-   "claims": 7,
+   "claims": 8,
    "manual": 0,
    "status": "PROTOTYPE"
   },
   "churn": {
-   "claims": 40,
+   "claims": 41,
    "manual": 0,
    "status": "PUBLISHED"
   },
   "cluster-health": {
-   "claims": 42,
+   "claims": 43,
    "manual": 0,
    "status": "PUBLISHED"
   },
@@ -41,12 +41,12 @@
    "status": "PUBLISHED"
   },
   "federal-money": {
-   "claims": 35,
+   "claims": 37,
    "manual": 0,
    "status": "PUBLISHED"
   },
   "funding-map": {
-   "claims": 25,
+   "claims": 26,
    "manual": 3,
    "status": "PUBLISHED"
   },
@@ -81,7 +81,7 @@
    "status": "PUBLISHED"
   },
   "reach": {
-   "claims": 7,
+   "claims": 8,
    "manual": 1,
    "status": "PROTOTYPE"
   },
@@ -101,12 +101,12 @@
    "status": "INTERNAL"
   },
   "sources": {
-   "claims": 34,
+   "claims": 35,
    "manual": 0,
    "status": "PUBLISHED"
   },
   "timeline": {
-   "claims": 33,
+   "claims": 34,
    "manual": 4,
    "status": "PUBLISHED"
   },

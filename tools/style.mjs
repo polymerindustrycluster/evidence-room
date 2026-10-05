@@ -37,6 +37,27 @@ try { ACRO = JSON.parse(rfs(new URL("../_data/acronyms.json", import.meta.url), 
 const WITHDRAWN = JSON.parse(rfs(new URL("../_data/withdrawn.json", import.meta.url), "utf-8")).withdrawn;
 for (const w of WITHDRAWN) new RegExp(w.pattern.replaceAll(" ", "\\s+"), "gi");  /* the form the page compiles */
 
+/* THE TWO FOOTPRINTS, READ FROM THE ONE DEFINITION. PIC-12 and NEO-14 share ten counties;
+   each also has counties the other lacks. Six pages said NEO-14 "adds" its four and
+   stopped, so a reader adding four to twelve got sixteen under a label that says fourteen
+   (corrected 2026-10-04). A sentence that names every county one set has and the other
+   lacks must, in that sentence or the next, also name every county the other has and it
+   lacks. A mention inside a run of shared counties ("Ashtabula, Cuyahoga, ...") is a list
+   of the twelve, not the relationship, and does not count. Read unguarded: a definition
+   this cannot parse fails the gate rather than emptying the sets and passing. */
+const FPPY = rfs(new URL("../_data/build/footprints.py", import.meta.url), "utf-8");
+const fpSet = name => {
+  const m = FPPY.match(new RegExp(`^${name} = \\{([\\s\\S]*?)\\}`, "m"));
+  return new Set(m ? [...m[1].matchAll(/"\d{5}":\s*"([^"]+)"/g)].map(x => x[1]) : []);
+};
+const P12 = fpSet("PIC12"), N14 = fpSet("NEO14");
+const FOOT = {adds: [...N14].filter(c => !P12.has(c)), drops: [...P12].filter(c => !N14.has(c)),
+              shared: [...P12].filter(c => N14.has(c))};
+if (P12.size !== 12 || N14.size !== 14 || !FOOT.adds.length || !FOOT.drops.length) {
+  console.log(`footprints.py could not be read: PIC12 ${P12.size} counties, NEO14 ${N14.size}`);
+  process.exit(1);
+}
+
 const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
@@ -73,6 +94,14 @@ const scripted = (page, patterns) => {
   for (const {file, lits} of scripts) for (const lit of lits) {
     read++; holes += lit.holes;
     const at = `${file}:${lit.line}`;
+    /* links a script writes, including ones only a click shows: a literal brace in the
+       href is a template; a relative or file href to a .md file is raw repository source.
+       A value filled in at run time (\u0000 here) is inspected only as rendered. */
+    for (const m of lit.text.matchAll(/href\s*=\s*["']([^"']*)["']/g)) {
+      const h = m[1];
+      if (/[{}]/.test(h)) out.push(["href-template", `${at} (script): ${h.slice(0, 90)}`]);
+      if (/\.md(?:[?#]|$)/i.test(h) && !/^[a-z]+:/i.test(h)) out.push(["href-raw-markdown", `${at} (script): ${h.slice(0, 90)}`]);
+    }
     for (const t of [asText(lit.text, false), asText(lit.text, true)]) WRE.forEach(re => {
       for (const m of t.matchAll(re)) {
         const phrase = m[0].replace(/\s+/g, " ").toLowerCase(), key = `${at}:${phrase}:${m.index}`;
@@ -103,14 +132,16 @@ const scripted = (page, patterns) => {
   return out;
 };
 
+/* Deep-link states read as well as the default page (see the loop). One recipient on the
+   standard evidence and the one whose execution is not verified. */
+const STATES = {"funding-map": ["#recipient/bioverde", "#recipient/huntsman"]};
+
 const b = await chromium.launch();
-let bad = 0, total = 0;
-const exempt = [];
+let bad = 0, total = 0, links = 0;
+const exempt = [], debts = [];
 for (const n of list) {
   const p = await b.newPage({viewport: {width: 1440, height: 1000}});
-  await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
-  await p.waitForTimeout(1600)  /* 900 raced chain's 785 JS-rendered cards: the acronym inventory flapped between runs. 2026-09-01 */;
-  const all = await p.evaluate(({withdrawn, assumed, debtPages}) => {
+  const READ = ({withdrawn, assumed, debtOwn, debtWild, foot}) => {
     const BANNED = /\b(crucial|delve|matters)\b/i;
     const out = [];
     const pageText = [];
@@ -329,6 +360,12 @@ for (const n of list) {
       if (!verbatim && /"/.test(s)) out.push(["straight-double", ctx.slice(0, 70)]);
       const m = s.match(BANNED);
       if (m) out.push([`banned:${m[1].toLowerCase()}`, ctx.slice(0, 70)]);
+      /* A CASE CHANGE THAT BROKE A NAME. funding-map lowercased the first letter of a data
+         string to fit it mid-sentence and printed "uSAspending" (PR #43 review,
+         2026-10-04). One lowercase letter, then capitals, then lowercase again, is no
+         English word or acronym; "mRNA" and "iPhone" do not match. */
+      const cm = s.match(/\b[a-z][A-Z]{2,}[a-z]/);
+      if (cm) out.push([`case-mangled:${cm[0]}`, ctx.slice(0, 70)]);
       /* Matched against the passage this node belongs to, so a phrase split by inline
          markup (<b>81%</b> led from here), a <br>, or wrapped source lines is still one
          phrase. A passage's text is only the text it owns: a nested block owns its own. */
@@ -356,37 +393,131 @@ for (const n of list) {
        occurrence must sit in a sentence that glosses it: a parenthetical, or an
        expansion. Everything else about jargon needs a human reader; this bit does not.
        2026-09-01, after a cold reader met EDA, APEX and an unexpanded PIC with nothing. */
+    /* DEBT IS PRINTED, AND IT EXPIRES. A debt entry exempted a first reference silently and
+       outlived the bareness it excused: laborshed's byline printed "LEHD LODES" unexpanded
+       under two debt entries, and the review that found it (F§15, 4 October 2026) had to
+       read the page to learn the gate had looked away. So every first reference a debt entry
+       lets through is now printed, and an entry this page no longer needs, because the
+       first reference is glossed or not an acronym at all, fails as stale: the ratchet only
+       turns if a paid debt comes off the list. An entry for an acronym the page does not
+       print is reported, not failed, since script-rendered text can arrive late. */
     const seen = new Set();
     const text = pageText.join(" ");
     for (const m of text.matchAll(/\b([A-Z][A-Z&\d]{1,5})\b/g)) {
       const t = m[1];
       if (seen.has(t)) continue;
       seen.add(t);
-      if (assumed.includes(t) || debtPages.includes(t)) continue;
-      if (/\d/.test(t)) continue;                       // FY2019, US000: codes, not acronyms
-      if (/^[-–]\d/.test(text.slice(m.index + t.length, m.index + t.length + 3))) continue;  // PDM-5004, YYYY-01: an ID or format string, not an acronym
-      if (/^[\u00AE\u2122]/.test(text.slice(m.index + t.length, m.index + t.length + 1))) continue;  // XR followed by the registered mark: a trademarked product name is its own gloss
-      const after = text.slice(m.index + t.length, m.index + t.length + 2);
-      const before = text.slice(Math.max(0, m.index - 1), m.index);
-      if (/^-[A-Z]/.test(after) || /-$/.test(before)) continue;  // CLIENT-SIDE, NEO-SMART: a hyphenated all-caps compound is emphasis or a proper name, and its parts are not acronyms to expand
-      if (new RegExp("\\b" + t.toLowerCase() + "\\b").test(text)) continue;  // CAPS-for-emphasis: the page itself uses the word in lowercase
+      if (assumed.includes(t)) {
+        if (debtOwn.includes(t)) out.push(["stale-debt:" + t, "listed as assumed knowledge too, so the debt excuses nothing"]);
+        continue;
+      }
       const sent = text.slice(Math.max(0, text.lastIndexOf(".", m.index) + 1),
                               text.indexOf(".", m.index) + 1 || text.length);
+      const debt = debtOwn.includes(t) || debtWild.includes(t);
+      const bare = (() => {
+      if (/\d/.test(t)) return false;                       // FY2019, US000: codes, not acronyms
+      if (/^[-–]\d/.test(text.slice(m.index + t.length, m.index + t.length + 3))) return false;  // PDM-5004, YYYY-01: an ID or format string, not an acronym
+      if (/^[\u00AE\u2122]/.test(text.slice(m.index + t.length, m.index + t.length + 1))) return false;  // XR followed by the registered mark: a trademarked product name is its own gloss
+      const after = text.slice(m.index + t.length, m.index + t.length + 2);
+      const before = text.slice(Math.max(0, m.index - 1), m.index);
+      if (/^-[A-Z]/.test(after) || /-$/.test(before)) return false;  // CLIENT-SIDE, NEO-SMART: a hyphenated all-caps compound is emphasis or a proper name, and its parts are not acronyms to expand
+      if (new RegExp("\\b" + t.toLowerCase() + "\\b").test(text)) return false;  // CAPS-for-emphasis: the page itself uses the word in lowercase
       const glossed = /\(/.test(sent) ||
         /short for|stands for|meaning the|that is,/.test(sent) ||
         new RegExp("(?:scale|code|file|series|level|survey|form|supplier|distributor|maker|contractor|firm|company),?\\s+" + t + "\\b").test(sent) ||
         new RegExp(t + "\\s+is\\s+the\\s+(?:federal\\s+|U\\.S\\.\\s+)?" + t[0] + "[a-z]+").test(sent) ||
         new RegExp("[A-Za-z][\\w'’-]*(?:\\s+[\\w'’&-]+){0,6}\\s*\\(" + t).test(text) ||  /* capital-led expansions count: "Archival FRED (ALFRED)" */
         /, (?:the|a|an) [a-z]/.test(sent.slice(sent.indexOf(t)));
-      if (!glossed) out.push(["bare-first-reference:" + t, sent.replace(/\s+/g," ").trim().slice(0, 70)]);
+      return !glossed;
+      })();
+      const at = sent.replace(/\s+/g," ").trim().slice(0, 70);
+      if (debt && bare) out.push(["debt:" + t, at]);
+      else if (debtOwn.includes(t)) out.push(["stale-debt:" + t, `first reference no longer bare: ${at}`]);
+      else if (bare) out.push(["bare-first-reference:" + t, at]);
     }
+    for (const t of debtOwn) if (!seen.has(t)) out.push(["debt-unseen:" + t, "this page prints no such token"]);
+    /* A WITHDRAWN CITATION IS AN ADDRESS, NOT TEXT. peers cited a 2024 anniversary blog post
+       for Michelin's headquarters, replaced by the company's own page (U P1, 4 October 2026);
+       the walk above reads text nodes and never an href, so a withdrawn pattern is also
+       matched against every link's address. */
+    for (const a of document.querySelectorAll("a[href]")) {
+      const href = a.getAttribute("href");
+      WRE.forEach(re => { re.lastIndex = 0;
+        if (re.test(href)) out.push(["withdrawn-link:" + re.source, href.slice(0, 90)]); });
+    }
+    /* THE FOOTPRINT RELATIONSHIP (see FOOT above). The passage is the smallest element
+       holding the whole list, widened to its nearest box that is not inline, read with
+       textContent so a folded methodology is read too. */
+    const has = (s, c) => new RegExp(`\\b${c}\\b`).test(s);
+    const alone = (s, c) => [...s.matchAll(new RegExp(`\\b${c}\\b`, "g"))].some(m =>
+      !foot.shared.some(x => has(s.slice(Math.max(0, m.index - 40), m.index + c.length + 40), x)));
+    const passages = new Set();
+    for (const set of [foot.adds, foot.drops]) {
+      const holders = [...document.body.querySelectorAll("*")].filter(e =>
+        !e.closest("script,style,noscript") && set.every(c => has(e.textContent, c)));
+      for (const e of holders.filter(e => !holders.some(x => x !== e && e.contains(x)))) {
+        let b = e;
+        while (b !== document.body && /^inline/.test(getComputedStyle(b).display)) b = b.parentElement;
+        passages.add(b);
+      }
+    }
+    for (const b of passages) {
+      const sents = b.textContent.replace(/\s+/g, " ").split(/(?<=[.!?])\s+(?=[A-Z“])/);
+      sents.forEach((s, i) => {
+        const win = s + " " + (sents[i + 1] || "");
+        const named = set => set.every(c => alone(s, c));
+        /* the four NEO-14 adds are never a list of the twelve; Ashtabula and Trumbull are
+           read as the relationship only beside the other footprint's name */
+        const trig = named(foot.adds) ? foot.drops
+          : named(foot.drops) && /NEO-14|fourteen/i.test(s) ? foot.adds : null;
+        if (trig && !trig.every(c => alone(win, c)))
+          out.push(["footprint-relationship", `names one side of the PIC-12 / NEO-14 difference ` +
+            `without ${trig.join(" and ")}: ${s.trim().slice(0, 90)}`]);
+      });
+    }
+    /* LINKS A READER CANNOT FOLLOW. An href still carrying a template ("{year}") is an
+       API pattern, not a page, and returns an error; an href to a Markdown file in this
+       repository serves the raw source. Every link in the rendered page is read. */
+    const hrefs = [...document.body.querySelectorAll("a[href], area[href]")];
+    for (const a of hrefs) {
+      const h = a.getAttribute("href");
+      let u = null;
+      try { u = new URL(h, location.href); } catch { out.push(["href-unparseable", h.slice(0, 90)]); continue; }
+      if (/[{}]|%7B|%7D/i.test(h)) out.push(["href-template", h.slice(0, 90)]);
+      if (/\.md$/i.test(u.pathname) && (u.protocol === "file:" || /github\.io$/.test(u.hostname)))
+        out.push(["href-raw-markdown", h.slice(0, 90)]);
+    }
+    out.push(["count:hrefs", String(hrefs.length)]);
     return out;
-  }, {withdrawn: WITHDRAWN.filter(w => w.pages.includes(n)).map(w => w.pattern),
-      assumed: ACRO.assumed_known || [], debtPages: Object.entries(ACRO.debt || {}).filter(([,v]) => v.includes("*") || v.includes(n)).map(([k]) => k)});
+  };
+  const ARGS = {withdrawn: WITHDRAWN.filter(w => w.pages.includes(n)).map(w => w.pattern), foot: FOOT,
+      assumed: ACRO.assumed_known || [],
+      debtOwn: Object.entries(ACRO.debt || {}).filter(([,v]) => v.includes(n)).map(([k]) => k),
+      debtWild: Object.entries(ACRO.debt || {}).filter(([,v]) => v.includes("*")).map(([k]) => k)};
+  const url = pathToFileURL(process.cwd() + "/dist/" + n + ".html").href;
+  await p.goto(url);
+  await p.waitForTimeout(1600)  /* 900 raced chain's 785 JS-rendered cards: the acronym inventory flapped between runs. 2026-09-01 */;
+  const all = await p.evaluate(READ, ARGS);
+  /* STATES THE DEFAULT READ NEVER SHOWS. A panel a deep link opens is prose a reader
+     quotes, and its sentences are assembled from data at run time, so the script scan
+     below sees only holes there. Each listed state is loaded and read like the page;
+     a finding already made in the default state is not counted twice. */
+  const seenKinds = new Set(all.map(([k, c]) => k + "\u0000" + c));
+  for (const h of STATES[n] || []) {
+    const q = await b.newPage({viewport: {width: 1440, height: 1000}});
+    await q.goto(url + h);
+    await q.waitForTimeout(1600);
+    for (const [k, c] of await q.evaluate(READ, ARGS))
+      if (!seenKinds.has(k + "\u0000" + c) && !/^(debt|debt-unseen|stale-debt|count):/.test(k)) {
+        seenKinds.add(k + "\u0000" + c); all.push([k, `${h}: ${c}`]); }
+    await q.close();
+  }
   all.push(...scripted(n, WITHDRAWN.filter(w => w.pages.includes(n)).map(w => w.pattern)));
   /* An exemption is a pass the gate chose not to count, so it is printed, not hidden. */
   for (const [kind, ctx] of all.filter(([k]) => k.startsWith("exempt:"))) exempt.push(`${n}: ${kind.slice(7)}: ${ctx}`);
-  const hits = all.filter(([k]) => !k.startsWith("exempt:"));
+  for (const [kind, ctx] of all.filter(([k]) => /^debt(-unseen)?:/.test(k))) debts.push(`${n}: ${kind}: ${ctx}`);
+  for (const [, c] of all.filter(([k]) => k === "count:hrefs")) links += +c;
+  const hits = all.filter(([k]) => !k.startsWith("exempt:") && !k.startsWith("count:") && !/^debt(-unseen)?:/.test(k));
   total += hits.length;
   if (hits.length) {
     bad++;
@@ -403,9 +534,16 @@ if (exempt.length) {
   console.log(`\n${exempt.length} withdrawn phrasing(s) passed as a dated correction note or a quotation:`);
   for (const e of exempt) console.log(`    ${e}`);
 }
+if (debts.length) {
+  console.log(`\n${debts.length} first reference(s) passed as acronym debt (_data/acronyms.json), not as glossed:`);
+  for (const d of debts) console.log(`    ${d}`);
+}
 console.log(`\nscripts: ${read} string and template literals read from source; ${holes} value(s) ` +
             `a script fills in at run time (\${...}) were not inspected there, only as rendered; ` +
             `${devs} console or Error message(s) held to withdrawn phrasings only`);
+console.log(`links: ${links} rendered href(s) read for templates and raw Markdown, plus every ` +
+            `href written in a script literal; an href a script fills in at run time and shows ` +
+            `only after a click is not inspected`);
 console.log(bad ? `\n${total} style-law violation(s) on ${bad} page(s)`
                 : `\nall ${list.length} pages clean: no em-dashes, no straight quotes, ` +
                   `no banned words, no withdrawn phrasings`);

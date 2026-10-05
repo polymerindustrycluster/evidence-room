@@ -36,13 +36,22 @@ const PRINTS = {
   fred:            ["fred", "alfred", "wpu", "pcu", "series", "vintage", "index"],
   oews:            ["oews", "soc", "occ", "wage", "metro"],
   oews_national:   ["oews", "soc", "occ", "national"],
-  usaspending:     ["usaspend", "obligat", "award", "fain", "fy", "naics"],
+  /* The category pull, by fiscal year and industry code. Its old set ("award", "fy",
+     "obligat", ...) matched any page about awards, "fy" inside "verify" included, so the
+     funding map passed while citing this contract recipe for a register of grant documents
+     it never read (ER-04, 2026-10-04). A page that uses the pull carries its codes or years. */
+  usaspending:     ["naics", "fy20", "prime-contract", "prime contract", "spending_by_category"],
   usaspending_awards: ["spending_by_award", "recipient", "award_count", "sub_agency"],
   onet_education:  ["onet", "job_zone", "jobzone", "education", "schooling"],
   nem:             ["projection", "matrix", "326000", "occupation"],
   odjfs:           ["projection", "opening", "2032", "ohio", "odjfs"],
   uspto:           ["cpc", "inventor", "applicant", "filing", "patent", "uspto"],
   public_record:   ["event", "milestone", "date", "lane"],
+  /* The funding map's documentary inputs, and the award lookup that only corroborates them. */
+  eda_notices_of_award:     ["notice of award", "notices of award"],
+  ohio_hub_grant_agreement: ["sbig20251005"],
+  pic_subgrant_agreements:  ["sub-grant agreement", "subgrant agreement"],
+  usaspending_award_lookup: ["no_record", "outlay"],
   heritage_register: ["heritage", "proven", "claimed", "discover", "era"],
 };
 
