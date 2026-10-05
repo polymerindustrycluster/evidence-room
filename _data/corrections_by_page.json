@@ -30,25 +30,25 @@
    {
     "id": "2026-09-11-3",
     "date": "2026-09-11",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-08-6",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-01-12",
     "date": "2026-09-01",
-    "kind": "figure",
+    "kind": "wording",
     "headline_changed": false
    },
    {
     "id": "2026-09-01-6",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -80,7 +80,7 @@
    {
     "id": "2026-09-11-2",
     "date": "2026-09-11",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": true
    },
    {
@@ -92,19 +92,19 @@
    {
     "id": "2026-09-08-1",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-01-8",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-01-6",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -118,7 +118,7 @@
    {
     "id": "2026-10-04-4",
     "date": "2026-10-04",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -130,7 +130,7 @@
    {
     "id": "2026-09-30-2",
     "date": "2026-09-30",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -154,7 +154,7 @@
    {
     "id": "2026-09-01-9",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -192,25 +192,25 @@
    {
     "id": "2026-09-30-2",
     "date": "2026-09-30",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-28-9",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-28-2",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-11-3",
     "date": "2026-09-11",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -228,7 +228,7 @@
    {
     "id": "2026-08-29-4",
     "date": "2026-08-29",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": true
    }
   ],
@@ -260,7 +260,7 @@
    {
     "id": "2026-09-08-6",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -272,19 +272,19 @@
    {
     "id": "2026-09-08-2",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-01-12",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-01-9",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -328,13 +328,13 @@
    {
     "id": "2026-09-28-7",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": true
    },
    {
     "id": "2026-09-10-2",
     "date": "2026-09-10",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -346,7 +346,7 @@
    {
     "id": "2026-08-31-1",
     "date": "2026-08-31",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -379,7 +379,7 @@
    {
     "id": "2026-09-28-3",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -391,7 +391,7 @@
    {
     "id": "2026-09-08-12",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -429,13 +429,13 @@
    {
     "id": "2026-09-09-1",
     "date": "2026-09-09",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-08-6",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -471,7 +471,7 @@
    {
     "id": "2026-08-30-1",
     "date": "2026-08-30",
-    "kind": "figure",
+    "kind": "wording",
     "headline_changed": false
    },
    {
@@ -491,13 +491,13 @@
    {
     "id": "2026-09-29-3",
     "date": "2026-09-29",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-28-4",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -509,7 +509,7 @@
    {
     "id": "2026-09-01-5",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -529,7 +529,7 @@
    {
     "id": "2026-10-04-4",
     "date": "2026-10-04",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -547,7 +547,7 @@
    {
     "id": "2026-09-30-2",
     "date": "2026-09-30",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -565,25 +565,25 @@
    {
     "id": "2026-09-28-9",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-28-7",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-28-6",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-28-2",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -613,13 +613,13 @@
    {
     "id": "2026-09-08-9",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-08-6",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -631,13 +631,13 @@
    {
     "id": "2026-09-08-1",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-01-12",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -649,13 +649,13 @@
    {
     "id": "2026-09-01-9",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-01-7",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -693,13 +693,13 @@
    {
     "id": "2026-09-30-2",
     "date": "2026-09-30",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-28-7",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -737,7 +737,7 @@
    {
     "id": "2026-09-28-9",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -755,7 +755,7 @@
    {
     "id": "2026-09-11-3",
     "date": "2026-09-11",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -787,7 +787,7 @@
    {
     "id": "2026-09-28-7",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -799,13 +799,13 @@
    {
     "id": "2026-09-01-12",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-01-6",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -825,13 +825,13 @@
    {
     "id": "2026-09-28-7",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-01-6",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -851,7 +851,7 @@
    {
     "id": "2026-10-04-4",
     "date": "2026-10-04",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -881,7 +881,7 @@
    {
     "id": "2026-09-28-7",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -893,7 +893,7 @@
    {
     "id": "2026-09-08-4",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -913,13 +913,13 @@
    {
     "id": "2026-09-28-7",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-11-3",
     "date": "2026-09-11",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -931,13 +931,13 @@
    {
     "id": "2026-09-08-7",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-08-6",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -949,25 +949,25 @@
    {
     "id": "2026-09-08-1",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-01-12",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-01-8",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-01-6",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -993,13 +993,13 @@
    {
     "id": "2026-09-28-7",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": true
    },
    {
     "id": "2026-09-11-3",
     "date": "2026-09-11",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -1011,7 +1011,7 @@
    {
     "id": "2026-08-17-1",
     "date": "2026-08-17",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false,
     "before_publication": true
    }
@@ -1020,13 +1020,13 @@
    {
     "id": "2026-09-30-2",
     "date": "2026-09-30",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-28-7",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -1044,7 +1044,7 @@
    {
     "id": "2026-09-08-6",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -1070,7 +1070,7 @@
    {
     "id": "2026-09-30-2",
     "date": "2026-09-30",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -1082,7 +1082,7 @@
    {
     "id": "2026-09-29-1",
     "date": "2026-09-29",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -1100,7 +1100,7 @@
    {
     "id": "2026-09-01-12",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -1145,13 +1145,13 @@
    {
     "id": "2026-09-11-3",
     "date": "2026-09-11",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-08-6",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -1169,7 +1169,7 @@
    {
     "id": "2026-09-01-1",
     "date": "2026-09-01",
-    "kind": "figure",
+    "kind": "wording",
     "headline_changed": false
    }
   ],
@@ -1183,7 +1183,7 @@
    {
     "id": "2026-10-04-4",
     "date": "2026-10-04",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -1219,7 +1219,7 @@
    {
     "id": "2026-09-29-1",
     "date": "2026-09-29",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -1237,13 +1237,13 @@
    {
     "id": "2026-09-08-12",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-08-8",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -1255,7 +1255,7 @@
    {
     "id": "2026-09-01-12",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -1323,25 +1323,25 @@
    {
     "id": "2026-09-28-5",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-11-4",
     "date": "2026-09-11",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-11-1",
     "date": "2026-09-11",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-10-2",
     "date": "2026-09-10",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -1359,7 +1359,7 @@
    {
     "id": "2026-09-01-9",
     "date": "2026-09-01",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
@@ -1373,19 +1373,19 @@
    {
     "id": "2026-09-30-2",
     "date": "2026-09-30",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-29-1",
     "date": "2026-09-29",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {
     "id": "2026-09-28-6",
     "date": "2026-09-28",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": true
    },
    {
@@ -1397,7 +1397,7 @@
    {
     "id": "2026-09-08-4",
     "date": "2026-09-08",
-    "kind": "wording",
+    "kind": "figure",
     "headline_changed": false
    },
    {

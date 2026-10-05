@@ -3,7 +3,7 @@
   "status": "PUBLISHED",
   "as_of": "2026-10-04",
   "source": "CORRECTIONS.md, rendered as written by _data/build/derive_corrections.py",
-  "method": "Each entry in CORRECTIONS.md is rendered from its Markdown without changing a word. The pages an entry names are read from its italics, or listed by hand where an older entry names them in prose. Each page’s summary line counts the entries naming it and calls one a change to figures when a number the page printed changed, and a change to wording otherwise.",
+  "method": "Each entry in CORRECTIONS.md is rendered from its Markdown without changing a word. The pages an entry names are read from its italics, or listed by hand where an older entry names them in prose. Each page’s summary line counts the entries naming it and calls one a change to figures when any number in its Was differs from its Is, and a change to wording otherwise.",
   "scope": "A log of corrections shows the errors someone found, not the ones still on the site. A page with more entries has been checked harder, not necessarily been wrong more often, and corrections made before a page was first published are listed but left out of its count.",
   "n_entries": 66
  },
@@ -42,19 +42,19 @@
    "html": "<p><b>Chain's footprint, <em>chain, index, sources</em>.</b> <b>Was:</b> the chain register's fourteen counties, the twelve PIC-12 counties plus Columbiana and Tuscarawas, were called NEO-14 in chain's methods, on its hub card and in the hub's definitions, while NEO-14 is also the name of the vault's different fourteen-county set (ten PIC-12 counties plus Crawford, Huron, Richland and Tuscarawas). <b>Is:</b> the chain set is PIC-12+2, and NEO-14 names only the vault set. Chain carries a dated entry; <code>chain-footprint-name</code> asserts the county set and its rule, and <code>verify_consistency.py</code>'s neo14-name check fails any page text that puts NEO-14 on the chain set.</p><p><b>The first question, <em>index</em>.</b> <b>Was:</b> \"Where do we rank?\", leading to a story whose first sentence is about Ohio. <b>Is:</b> \"Where does Ohio rank?\". The peers page now lists the twelve counties its regional figures add up.</p><p><b>Story status, <em>every page</em>.</b> <b>Was:</b> the hub labelled the three prototypes \"Prototype · not published data\" and \"Prototype · internal draft\", and the two unlisted pages called themselves \"Internal working view\" and \"Unreviewed draft\". <b>Is:</b> three statuses, Published, Prototype and Internal, declared in each page's own data; prototype and internal pages carry a banner at the top and in the footer, the hub explains the three words, the sources page tags its links to internal pages, and chain counts toward county coverage on the hub, marked as a prototype. <code>tools/disclosure.mjs</code> fails a page whose banner, flag or card disagree with its declared status.</p><p><b>Who PIC is, <em>index</em>.</b> Added under the deck: the Polymer Industry Cluster is an initiative of the Greater Akron Chamber, and the room is written for people who run, fund or site polymer operations in Northeast Ohio. <code>index-pic-line</code> binds the sentence. The link that read \"PIC public tools directory\", and a line offering \"tools to find help\", now read \"Other PIC sites\", beside direct links to PIC's main site and programs.</p>",
    "kinds": {
     "index": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "chain": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "sources": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "peers": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -319,31 +319,31 @@
    "html": "<p><b>Was:</b> seven pages printed no \"Data as of\" date at all: churn, laborshed, realwage, revisions, wages, the front page and chain. Five more printed the date of one file when the page reads a newer one: the scorecard 13 August 2026 (award register; it also reads federal obligations pulled 8 September), accountability 13 August (it reads the establishment counts pulled 11 September), sources 8 September (it reads wages pulled 11 September), patents 30 August (it restates the occupations data of 31 August) and the timeline 13 August (its heritage register is dated 14 August). <b>Is:</b> every masthead shows the newest date among the data files its page reads: churn 1 September, laborshed 16 August, realwage 8 September, revisions 13 August, wages 11 September, chain 14 August, the scorecard 8 September, accountability 11 September, sources 11 September, patents 31 August and the timeline 14 August 2026. The front page shows the newest date among the pages it links to, 11 September 2026. The scorecard's two \"Register as of\" captions still say 13 August, which is the register's own date. Two checks hold this: the hub's date is a claim, and a consistency check fails any page whose masthead date is older than the newest file it reads. The sources page also said \"two of the fourteen sources have no endpoint and no script\" and printed a hub claim count of 33 and 575 site-wide. The register holds 27 sources, three with no endpoint and two of those with no script, and the hub carries 34 claims for 576 across the site; both now come from the registry and a check reads the printed numbers against it. <b>Cause:</b> the shared masthead code printed a page's fetch date and, when a page had none, printed nothing and said nothing. It now reads the page's as-of date, or its fetch date, and fails the build when a page has neither. Nothing compared a masthead date with the other files its page reads, and the sources page's census sentence was typed and unchecked.</p>",
    "kinds": {
     "churn": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "laborshed": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "realwage": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "revisions": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "wages": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "index": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "chain": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "scorecard": {
@@ -414,7 +414,7 @@
    "html": "<p><b>Was:</b> the Tech Hub machine card said EDA obligates each implementation award straight to its project lead, \"so no federal dollar passes through PIC's hands\". <b>Is:</b> \"so none of the Tech Hub money passes through PIC on its way to another lead. One of the seven leads is the Greater Akron Chamber, of which PIC is an initiative, on $2.65M for innovation governance.\" A dated note under the machines adds that the Chamber is also the grantee on all $3,084,371 of APEX, the second EDA award. <b>Cause:</b> the sentence stretched what the EDA route rules out, pass-through to other leads, into a claim about all federal money, and the page's own register holds two federal lines at the Chamber. The claim beside it checked that the three routes differ, never the sentence's conclusion; it now pins both of the Chamber's federal lines, and the card's $2.65M is bound to its noun.</p><p><b>Later the same day.</b> <b>Was:</b> the corrected card still said \"EDA obligates each of them, meaning it commits the money straight to that lead\". <b>Is:</b> \"EDA signs each of them straight to that lead\"; USAspending confirms the obligation on six of the seven, all but Huntsman's, whose signed award has no record there. <b>Cause:</b> the correction reworded the sentence's conclusion and kept its premise, which the page's own source note qualifies.</p><p><b>Later, 30 September.</b> <b>Was:</b> the Tech Hub plate on the map read \"Obligated to each project lead\", the Tech Hub panel said EDA \"obligates directly to each project lead\", and the direct-awards panel said the seven awards are \"obligated straight to their project leads\". <b>Is:</b> \"Signed to each project lead\"; the panels say EDA signs directly to each lead and that USAspending records the obligation on six of the seven, all but Huntsman's, whose ED25HDQ0G0009, $5,970,805, is signed with no USAspending record. A dated note under the map says so. <b>Cause:</b> the 29 September corrections reached the machine card and not the plate or the panels, which carry the same premise. The claim now reads the card's own sentence on the page, so the withdrawn \"no federal dollar passes through PIC\" fails the noun gate, and it forbids an obligation claim on the plate.</p>",
    "kinds": {
     "funding-map": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -469,15 +469,15 @@
      "headline_changed": false
     },
     "wages": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "sources": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "revisions": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -500,7 +500,7 @@
    "html": "<p>Codex re-read the pages corrected below against their own data. Seven published statements beside the corrected ones failed it.</p><p><b>A yearly average read as every quarter, <em>churn</em>.</b> <b>Was:</b> \"Since 2023Q1 more jobs have ended than started every quarter.\" Hires outnumbered separations in 2023Q1, by 303, and in 2025Q1, by 71. <b>Is:</b> \"Averaged over a year, more jobs have ended than started in every quarter since 2023Q1\", as the page's section on the two flows already said.</p><p><b>The best case printed as the worst, <em>peers</em>.</b> <b>Was:</b> \"The defensible worst case is 6th of 382\". Sixth holds only if none of the 227 withheld metros has more jobs, so it is the best case. <b>Is:</b> no worst case: \"So the claim stays narrow: 6th among the 155 that disclose.\" The README drops its sentence putting the worst case at 233rd of 382.</p><p><b>A scale the figure does not draw, <em>front page</em>.</b> <b>Was:</b> the funding-map card said the money was \"drawn to scale across twenty-one named recipients\". The figure draws the three awards and their matches to one scale; the threads into recipients are not to scale, and the page says so. <b>Is:</b> \"drawn to scale and traced to twenty-one named recipients\".</p><p><b>Paint as the most withheld industry, <em>location-quotient</em>.</b> <b>Was:</b> \"Paint is also the industry the bureau hides most of: five of twelve counties are withheld\". Resin, a column of the same chart, has seven withheld. <b>Is:</b> \"The bureau also hides much of paint\".</p><p><b>A mean called more than double the median, <em>reach</em>.</b> <b>Was:</b> a long right tail \"pulls it to more than double the typical paper\". The mean is 2.018 and the median 1.10, a ratio of 1.8. <b>Is:</b> \"1.8 times the typical paper\", computed from the two figures.</p><p><b>Reach's years in collaboration's filters, <em>collaboration</em>.</b> <b>Was:</b> the \"Reproduce this\" block, which calls its filters \"the exact values applied\", gave the OpenAlex years as 2015 to 2024. That is reach's window. Collaboration's pull runs 2012 to 2025, and its 208 papers fall to 158 on the shorter one. <b>Is:</b> the source registry gives each page its own years, and the sources page carries the same line.</p><p><b>An award date a day late, <em>collaboration</em>.</b> <b>Was:</b> NSF \"awarded it on 14 July 2026\". NSF's award record 2532460 dates the award 13 July; 14 July is the date of public record the timeline uses, and the timeline says which is which. <b>Is:</b> 13 July 2026.</p><p><b>Cause:</b> The earlier reviews read the sentences each correction touched. These sat on the same pages, untouched. Reach's claim accepted any ratio above 1.8 under text that said double, and now checks the ratio itself; churn's claim checked the averaged wording the page uses lower down, not the hero's; the other five had no claim.</p>",
    "kinds": {
     "churn": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "peers": {
@@ -508,11 +508,11 @@
      "headline_changed": false
     },
     "index": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "location-quotient": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "reach": {
@@ -571,35 +571,35 @@
    "html": "<p>Codex re-derived the hub's and pages' headline claims from each page's own data. These ten held their numbers but claimed more than the numbers carry. Each changed sentence's claim now checks the new wording's quantity.</p><p><b>\"Leads four papers in five\", <em>reach</em>.</b> <b>Was:</b> \"The region leads four papers in five of those that name a corresponding author\"; the headline said \"four of its papers in five are led from here\", the figure card \"81% led from here\" and the opening chart \"led from here\"; the closing paragraph said \"the region leads most of that work rather than joining it\"; the front page said the same. <b>Is:</b> the headline and the front page say 985 of 1,222 papers naming a corresponding author had one here, and the figure card says 81% of those 1,222. The opening chart splits all 1,448 papers by where the corresponding author sits: 985 here, 237 elsewhere, 226 naming none. The closing paragraph says most papers naming a corresponding author name one here, including papers with no outside partner. The count includes those papers, so \"leads\" described a collaboration the count does not require. The partner charts and tables said each partner's other papers were \"led from there\"; they now say \"led from elsewhere\", because a paper counts toward every outside partner on it, whichever one holds the corresponding author. The map's source line said the same thing (\"here or there\") and now says \"here or elsewhere\". The front page's reach card and the opening chart's text description called the 1,448 \"coauthored works\"; the count does not require a second author, so both now say \"works\". The map's own text description said \"institutions co-authoring polymer research\" and now says \"institutions named on the same polymer papers\".</p><p><b>\"Federal\" awards from an NSF-only fetch, <em>collaboration</em>.</b> <b>Was:</b> \"four joint federal awards\". <b>Is:</b> four joint NSF projects (eight award IDs, because NSF files a collaborative project as one award per institution), on the page and the front page. The fetch queries the NSF Awards API only; no other agency was ever checked. The front page's collaboration card called the 208 papers \"coauthored\"; the fetch requires only that a paper name both universities, which one author holding both affiliations satisfies, so the card now says \"208 papers naming both universities\". The collaboration page made the same inference in its own headline. <b>Was:</b> \"Akron and Case Western have written 208 papers together since 2012\", with \"coauthored\" in the standfirst, chart labels and closing, and a note that such a paper is evidence \"two people worked together\". <b>Is:</b> \"208 papers since 2012 name both Akron and Case Western\", the figure card adds \"one author may hold both\", and the note says \"A paper naming both universities proves neither a two-person collaboration nor an institutional relationship\". The headline's second line, \"Eight were about polymers\", now says \"Eight are classified in polymers\", as the standfirst does. The closing said \"The collaboration is real and substantial\"; it now calls only the four NSF projects collaboration, on NSF's own label, and counts the papers as papers naming both. The inference was not hypothetical: a live OpenAlex query on 28 September 2026 returned 211 such works (the page's cached pull has 208) and found both universities on a single author in 15 of them. The page added its polymer and biomaterials counts, eight and eleven, into \"19 in all\", \"about 9 percent\" and \"91 percent\" in neither subject; a paper can carry both, and the same query found two that do, so it now says at most 19, or 9 percent, and at least 90 percent in neither. Its closing said \"No new joint NSF award has started since 2017\" beside a standfirst naming NEO-SMART, awarded on 13 July 2026; it now says none started after 2017 within the years counted, 2012 to 2025. The closing also rested its \"That was false\" on the 208 papers beside the NSF projects; it now rests on the projects alone. The heading \"Joint work fell as a share of Akron's output\" and five sentences that called the counted papers \"joint work\" or \"joint papers\" now say \"papers naming both\".</p><p><b>A comparison set that ended at Akron, <em>peers</em>.</b> <b>Was:</b> \"Among the six disclosed metros with the most plastics and rubber jobs, Akron is also the most concentrated.\" <b>Is:</b> among the 155 disclosed metros, Akron ranks sixth on jobs and eighth on concentration. The old sentence was true, and holds to the ninth-largest, but its cut-off of six was Akron's own rank on jobs.</p><p><b>A ranking on a 0.07-point gap, <em>laborshed</em>.</b> <b>Was:</b> \"only Pittsburgh keeps more for its own residents than the twelve counties do\". <b>Is:</b> the twelve counties keep 89.5 percent and Pittsburgh 89.6 percent, on twelve counties against eight. A gap that small, across different boundaries, is not a ranking. The two chart labels (\"ahead of PIC-12\") and the closing paragraph (\"only Pittsburgh beats\") carried the same ranking. The labels now say \"just above PIC-12, on four fewer counties\"; the closing paragraph gives both shares to two decimals, 89.60 against 89.53 percent, the 0.07-point gap between them, and both boundary sizes.</p><p><b>A rank without its margin, <em>realwage</em>.</b> <b>Was:</b> the 8th place after price adjustment, alone. <b>Is:</b> the same rank, with \"less than $6 a week from either neighboring rank\". The gaps are $3.60 and $5.40, small enough for a revision to move the rank.</p><p><b>An unlabeled nominal ratio, <em>occupations</em>.</b> <b>Was:</b> \"Akron's median wage ratio\". <b>Is:</b> \"median nominal wage ratio\". The ratios are not price-adjusted; divided by Akron's price level, the degree-job shortfall of 0.93 times becomes 0.99 times.</p><p><b>Inputs and outputs of invention, <em>patents</em>.</b> <b>Was:</b> \"The inputs to invention have more than halved: degrees are down 56 percent. The recorded outputs of invention have fallen by about a quarter.\" <b>Is:</b> the two declines stand as separate facts: Akron and Case Western's polymer degrees fell 56 percent from their 2014–2020 average, and Ohio's polymer filings fell 25 percent from 2015. Two institutions' degrees and a state's filings are not the input and output of one process.</p><p><b>\"Strong\" earnings, <em>programs</em>.</b> <b>Was:</b> \"Where the record shows earnings at all, they are strong: $87k–$101k four years out.\" <b>Is:</b> \"Four-year earnings range from $87,636 to $100,428; four of five institutions fall below the national median.\" Four of the five sit below the $92,919 national median for their program code.</p><p><b>\"Supply against demand\", <em>chain</em>.</b> <b>Was:</b> that section label. <b>Is:</b> \"Register records against funding applications\". The section's own text says the counts do not measure capacity, competition or market demand.</p><p><b>What an employment quotient shows, <em>location-quotient</em>.</b> <b>Was:</b> paint's quotient meant \"more paint sites, more suppliers and more people who know the work than a region this size would usually hold\". <b>Is:</b> \"paint accounts for an unusually large share of local jobs\". An employment quotient measures job share; it says nothing about sites, suppliers or skills.</p>",
    "kinds": {
     "reach": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": true
     },
     "collaboration": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": true
     },
     "peers": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "laborshed": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "realwage": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "occupations": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "patents": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "programs": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "chain": {
@@ -611,7 +611,7 @@
      "headline_changed": false
     },
     "index": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -630,11 +630,11 @@
    "html": "<p><b>Was:</b> The wages headline read \"Against manufacturing, pay is level.\" The factory band was titled \"Against the factory next door, polymer pay is level\", called the pooled 0.99 times \"dead level with the factory next door\", and closed that polymer pay against the factories \"is ordinary\". The Lake County figure of about $129,000 a year was printed without saying which industry it covers. The front-page wages card gave the 0.99 times with no split.</p><p><b>Is:</b> The 0.99 times is the median of 51 county pairings from two families on either side of it. The 23 chemical pairings sit at a median 1.16 times the county's manufacturing wage, 19 of them above it. The 28 plastics and rubber pairings sit at 0.87 times, 4 of them above. The headline, band title, lede, closing sentence and front-page card now say so. The $129,000 is all chemical manufacturing in Lake County: 248 of its 1,676 jobs are published as paint, and the rest is not broken out, so it reaches beyond the resin and paint codes. The page says this beside the figure.</p><p><b>Cause:</b> The headline described the pooled median, and no pairing family is at it. The Lake figure is the county's NAICS 325 row, and the prose named no industry code. wage-vs-mfg-split and human-lake-chem-scope now guard both.</p>",
    "kinds": {
     "wages": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": true
     },
     "index": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -652,7 +652,7 @@
    "html": "<p><b>Was:</b> The pace band's headline read \"After the designation the public record filled seventeen times as fast\", and its lede called \"the seventeenfold gap\" a change of pace. The figure's source line said \"the 68 counted here starts from that split\".</p><p><b>Is:</b> The headline states the two counts, 67 events against 4. The lede says seventeenfold is the upper end: the before count is a floor, so the true jump can only be smaller. The source line reads 67, the count from the 23 October 2023 designation; 68 is the operations calendar's count from 1 January 2023, one row earlier. The page's own computed sentences were already right. The claim record for them said 20 times and 13.6, built on 68, where the page divides 67 and prints 19.8 and 13.4. It now matches the page.</p><p><b>Cause:</b> The ratio moved from the source line into the headline and lost its qualifier on the way. The 68 was a typed literal from the other window; the source line now reads the computed count.</p>",
    "kinds": {
     "timeline": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -670,7 +670,7 @@
    "html": "<p><b>Was:</b> The standfirst and the second stat card said \"partners and the state\" promised $21.0 million beside the federal award.</p><p><b>Is:</b> Partners promised it; the state promised none. The Ohio grant's $10.4 million match comes from local partners, as the state's own announcement says. The standfirst, the stat card and a dated correction line in the page's header now say so. The page's 29 August 2026 correction note repeated the phrase; it stays as written, because notes are not rewritten, and now opens with a dated bracket whose first words say partners alone promised it; only then does the bracket quote the phrase it corrects.</p><p><b>Cause:</b> The phrase passed from sentence to sentence, and no guard checked who made each promise. tile-figures already pinned the machine card's Ohio match to its local-partner label, which was right. Its falsified_if now names this failure too, but no claim reads the standfirst or the stat card, so a relapse in either would still pass.</p>",
    "kinds": {
     "funding-map": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -688,7 +688,7 @@
    "html": "<p><b>Was:</b> The standfirst's bold line said the 2022 spike means \"somebody in this chain ate the spike and somebody banked it\". The ladder band's headline said \"Each step away from the wellhead kept more of the 2022 rise, except the power bill\", with no date.</p><p><b>Is:</b> The bold line reads \"the 2022 spike has not unwound evenly, and the prices nearest the customer have held\". The spread lede, the gas figure card and the feedstock seat no longer call a price move a \"windfall\", and the lede no longer says chemicals \"feed\" resin, since the chemicals index includes resin. The headline is dated July 2026. The lede adds that the order held in 29 of the 43 months from January 2023 and broke in four of the last eight, most recently in April 2026.</p><p><b>Cause:</b> These are selling-price indexes, and the page's own note says they are not a margin. A price that holds does not show who banked anything. The ladder order was checked only on the latest month. cs-ladder-order-dated now counts every month since January 2023.</p>",
    "kinds": {
     "cost-scissors": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -707,11 +707,11 @@
    "html": "<p><b>Was:</b> The churn page said most of one plant's 58 hires \"are filled by people already working in plastics and rubber who moved from another employer\". It said what a training pipeline must supply is \"a different and much smaller quantity\". The front-page churn card said near-equal hire and separation rates are \"how a churn engine that size produces a net flow of +168 while the headcount falls 719.\"</p><p><b>Is:</b> The page no longer says where any hire came from; the flows cannot show whether none, some or most moved from another plastics or rubber employer. It calls the pipeline quantity \"different\" and says this series cannot size it against the hiring, and the standfirst says the two Census measures are estimated separately. The front-page card says the headcount is a separate Census estimate that need not agree with the flows. The rates explain the +168, not the 719.</p><p><b>Cause:</b> The flows series does not record where a hire last worked; only the Job-to-Job Flows series does, as the page's next sentences say. The card joined two separately estimated figures with \"which is how\".</p><p><b>Also corrected the same day:</b> the page called the roughly 400 a year who reach 65 a \"floor\" on training demand, and said age \"accounts for\" about 400 of the 6,626 hires. Over the same four quarters the region recorded 7,157 job separations and 6,626 hires, so some departures were not refilled, and the flows cannot say whether any retirement was. About 400 is the number reaching 65, not the number retiring. The page now says age would account for about 400 hires only if everyone reaching 65 retired and every one of those jobs were refilled, in the prose and in the arithmetic panel, and that the 400 is not a floor. A methods note had blamed the missing Job-to-Job Flows for both; it now says that gap is why the 400 cannot be a total, and that separations exceeding hires is why it is not a floor; the same note and the README now call the 400 the age-65 figure, not the retirement figure. The README had kept an older sentence saying most of a plant's hiring \"is refilled from inside the industry\"; it now says the series cannot tell.</p>",
    "kinds": {
     "churn": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "index": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -831,7 +831,7 @@
    "html": "<p><b>Was:</b> All twelve research rows were labeled scientific firsts, including the 1940 Ameripol product introduction. Chart labels omitted attribution from university priority claims. The 2005 Puskas paper attributed the coauthor group to Akron and linked a different 2009 paper as its repository record. Other sentences attributed EPIC’s 1984 date and a dues-model conclusion, Goodyear’s retained headquarters, and an exact innovation-center size to sources that did not establish those clauses.</p><p><b>Is:</b> The same 31 events are displayed as 20 heritage events and 11 research contributions. Ameripol moves to heritage. Institutional priority claims remain attributed; chart labels do not assert an independent national first. The Puskas sentence names a collaborative paper without assigning all authors to Akron; the unrelated repository record is removed. EPIC’s date is attributed to a historical timeline citing Mark D. Bowles, and the unsupported dues-model conclusion is removed. The Goodyear row states the documented buyout. The innovation-center row states the documented 2010 completion without unsupported size or season. The Kent paper/patent display date now reads 1986–87.</p><p><b>Cause:</b> The source review checked event wording and attribution separately from the register’s editorial PROVEN label. A source supporting an event does not automatically support every clause attached to it. Public projection corrections preserve original event IDs and do not alter the internal register.</p>",
    "kinds": {
     "timeline": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -860,23 +860,23 @@
      "headline_changed": false
     },
     "scorecard": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "accountability": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "churn": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "programs": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "reach": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "revisions": {
@@ -884,7 +884,7 @@
      "headline_changed": false
     },
     "location-quotient": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -902,7 +902,7 @@
    "html": "<p><b>Was:</b> Atlas disclosed duplicate federal institution identifiers in its methodology, but its headline still called the 147 records “places,” and several chart labels counted them as distinct institutions. It also described that total as a floor for school counts.</p><p><b>Is:</b> The headline, count labels and directory identify institution records. Each record follows a federal identifier; one school can hold more than one. Missing subject codes and duplicate identifiers are different limitations, so the total is not presented as a lower bound on distinct schools.</p><p><b>Cause:</b> The earlier correction reached the methodology without reaching the labels readers see first. No rows, completion counts or coordinates changed; this correction does not claim a newly deduplicated school total.</p>",
    "kinds": {
     "atlas": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": true
     }
    },
@@ -931,7 +931,7 @@
      "headline_changed": false
     },
     "timeline": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "funding-map": {
@@ -954,11 +954,11 @@
    "html": "<p><b>Was:</b> The collaboration page said indexing delay was excluded because one university's overall indexed output rose. Timeline described earlier discoveries as the reason the cluster exists and stated the register's discovery definition universally.</p><p><b>Is:</b> The joint-paper rate falls even relative to Akron's indexed output. University totals provide context, but cannot rule out different indexing delays for joint papers. Timeline's earlier events provide historical context, without claiming to explain the cluster's formation or crediting them as PIC outcomes. Its discovery definition is explicitly the definition used by this register.</p><p><b>Cause:</b> Descriptive comparisons and editorial classifications were written as stronger explanatory claims. The underlying counts and event records are unchanged.</p>",
    "kinds": {
     "collaboration": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "timeline": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -1004,7 +1004,7 @@
    "html": "<p><b>Was:</b> The two-company claim's documentary check note still described the separate two-category share as 65% of eight-year contract dollars.</p><p><b>Is:</b> The category share is 58%, as the chart and its automated assertion already state. The two-company share remains 56% on the separate award-value basis.</p><p><b>Cause:</b> A supporting check note retained the earlier category total after the federal data correction. This correction changes the note, not either chart or its denominator.</p>",
    "kinds": {
     "federal-money": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -1023,11 +1023,11 @@
    "html": "<p><b>Was:</b> The source registry listed only FRED for the price-spike page and counted nine pages as relying on a single registered dataset.</p><p><b>Is:</b> The page also uses BLS CPI for its real-price explanation. Both sources are registered, and eight of the 23 registered pages rely on a single dataset each.</p><p><b>Cause:</b> The registry missed the copied inflation dependency. The regenerated source guide and its count assertion now include it. A revision affects pages using that dataset; it does not imply every page with one source shares the same agency.</p>",
    "kinds": {
     "sources": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "cost-scissors": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -1091,7 +1091,7 @@
    "html": "<p><b>Was:</b> the hub county selector and cost-of-living card marked only Akron and Cleveland as covered. Mahoning and Trumbull were therefore labelled as having no local price comparison, although Youngstown–Warren has disclosed wage and price data in the matched 2024 sample.</p><p><b>Is:</b> All three disclosed regional metros are covered. Youngstown–Warren is among the 155 disclosed matched metros, with 960 plastics and rubber jobs. It falls below the 2,000-job threshold for the 29-metro headline ranking, which is now stated explicitly. Canton–Massillon's wage data are source-suppressed; Wayne is in the Wooster micropolitan area and is outside this metropolitan comparison. Ashtabula remains included through Cleveland's current boundary.</p><p><b>Cause:</b> The hub retained a two-metro coverage rule after the matched source restored Youngstown–Warren to the article's regional comparison. Geographic coverage and the headline employment threshold are different filters. The hub claim now checks the three disclosed regional identifiers, Youngstown's job count and threshold exclusion, and Canton's explicit source-suppression record. No source data or metro ranks changed.</p>",
    "kinds": {
     "index": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -1110,7 +1110,7 @@
    "html": "<p><b>Was:</b> The source guide described three metropolitan areas overlapping PIC-12 and said each extended outside the footprint. The real-wage data's local classification omitted Youngstown-Warren.</p><p><b>Is:</b> Census county delineations identify four intersecting metropolitan areas. Akron, Cleveland and Youngstown-Warren are wholly inside PIC-12; Canton-Massillon also includes Carroll County outside it. Wayne County is in the Wooster micropolitan area. Youngstown's 960 jobs were already included among the 155 disclosed matched metros; it is now classified as local and remains below the 2,000-job display threshold. Canton is source-suppressed in this wage vintage. All five local areas now have an explicit disposition. Wage values and ranks are unchanged.</p><p><b>Cause:</b> A literal list substituted for county membership and conflated the displayed sample with the region's metropolitan coverage. The classification now derives from the Census county table, keeping overlap, disclosure and the display threshold separate.</p>",
    "kinds": {
     "sources": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "realwage": {
@@ -1132,7 +1132,7 @@
    "html": "<p><b>Was:</b> The technician-program comparison divided rounded percentages, giving ratios of 2.48 and 2.37 and describing the small-program comparison as about 2.5 times.</p><p><b>Is:</b> The comparison now divides the underlying count shares: 95 of 168 against 2,051 of 8,736 gives 2.41, or about 2.4 times. For programs classified as both small and brief, 75 of 168 against 1,693 of 8,736 gives 2.30, or about 2.3 times. The counts and classifications are unchanged; these remain administrative comparisons, not failure probabilities.</p><p><b>Cause:</b> Rounding each percentage before dividing inflated both ratios. The producer now calculates from counts and rounds only the resulting ratio.</p>",
    "kinds": {
     "programs": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -1156,31 +1156,31 @@
    "html": "<p><b>Was:</b> The federal correction below gave the two rubber codes' 58% share without identifying its price basis. Accountability and Scorecard retained the superseded annual federal comparison. Health pay wording could be read as individual wages or counts of counties; the Programs title described a decline without dates.</p><p><b>Is:</b> The 58% share is in constant 2025 dollars (60.2% in nominal dollars). Accountability and Scorecard use $41.4M across seven completed fiscal years. Contract NAICS identifies the purchased product or service; it does not establish the awardee's research activity, and the selected rubber codes include natural rubber. Health pay statistics describe county-industry group averages and pairings. Programs describes the 2016–2023 decline and shows that 2023 remains above 1991; both funding announcements postdate the measured series.</p><p>The real-wage page now also shows Akron's ranks across all 155 disclosed matched metros (60th before, 48th after price adjustment), alongside the inherited 2,000-job cutoff comparison. The narrow industry group's employment-weighted median wage ratio is 1.17; the broader group's is 1.26. These are group statistics, not individual pay or estimated effects of locating in the region. The hub shows both all-job and manufacturing pay comparisons.</p><p><b>Cause:</b> Final source and reader checks exposed omitted comparator labels, dependent prose that had not followed the corrected inputs, and a title that outlasted its measurement window. Threshold sensitivity and alternative time windows make those choices visible. Earlier entries remain unchanged.</p>",
    "kinds": {
     "federal-money": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "accountability": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "scorecard": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "cluster-health": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "programs": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "realwage": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "index": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -1237,11 +1237,11 @@
      "headline_changed": false
     },
     "peers": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "wages": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -1277,7 +1277,7 @@
    "html": "<p><b>Was:</b> Cluster health opened with broader polymer job losses without a workplace comparison. A national-to-regional ratio of growth rates was described as the share of regional decline accounted for by national conditions.</p><p><b>Is:</b> The opening now shows private plastics-and-rubber jobs falling from 19,811 to 17,770 during 2022–2025, while annual-average establishments moved from 361 to 364. Both fell over the full decade and in the final year, so roughly stable workplaces is limited to the recent window. State, national and county comparisons accompany it. The broader three-industry register remains separately labelled, with a descriptive national comparison and no causal share assigned.</p><p><b>Cause:</b> Adding establishments and alternative windows exposes a distinction the jobs-only opening did not measure. Dividing growth rates cannot identify causes, and aggregate establishments cannot show what happened inside the same plants.</p>",
    "kinds": {
     "cluster-health": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -1297,15 +1297,15 @@
    "html": "<p><b>Was:</b> The hub said national patenting had barely moved while its article reported a 22% decline. It repeated outdated program, wage and federal summaries. Repository documentation implied every sentence had a check and upstream refreshes reproduced identical bytes.</p><p><b>Is:</b> Directory summaries match the linked articles, including the 22% patent decline. Readers reach articles through four direct choices before the detailed gallery and methods. Documentation distinguishes recorded assertions, independently checked source inputs, pinned rebuilds and live refreshes. Program charts and the Atlas retain their records in mobile layouts; keyboard access and article landmarks are added.</p><p><b>Cause:</b> Parallel summaries and broad verification promises had drifted from the underlying evidence. A passing assertion suite does not establish complete source acquisition, validate every sentence or prevent upstream revisions.</p>",
    "kinds": {
     "index": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "programs": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "atlas": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -1332,11 +1332,11 @@
    "html": "<p>Every outstanding finding about the world was re-derived from primary sources before anything changed. Thirty corrections follow. Twelve proposed changes did not survive re-derivation and are not made; twenty-three findings could not be settled either way and are recorded as unverifiable rather than guessed at.</p><p><b>A page named the wrong federal series in four places, <em>revisions</em>.</b> <b>Was:</b> the chart title, the screen-reader description, the methodology block and the headline vignette all named a BLS series the page does not use, and the names collide with a real, different series. <b>Is:</b> the series the page actually draws, named the same way in all four places. The headline case straddles a BLS policy change that is now disclosed, and the corrections-per-revised-month figure is restated against the base it is computed on. <b>Cause:</b> hand-typed titles, never checked against the series identifier in the data.</p><p><b>\"The school the field is named for,\" <em>programs</em>.</b> <b>Was:</b> that phrase, of the University of Akron. <b>Is:</b> removed. Polymer science is not named for the university: the word is Berzelius, 1833; the institution was chartered as Buchtel College in 1870. <b>Cause:</b> a flourish written for rhythm, guarded by no claim.</p><p><b>The anchor pointed at the wrong number, <em>programs</em>.</b> <b>Was:</b> \"graduated two polymer undergraduates\" offered as the figure to hold. <b>Is:</b> the master's line, 66 to 16. The undergraduate line runs between zero and three in every year the record reports, so the two in 2023 carries one seventieth of the fall; graduate degrees are 42 of the 44 completions left. <b>Cause:</b> the smallest series was chosen for the sentence because it made the starkest number, not because it carried the fall.</p><p><b>Two dates, <em>programs</em>.</b> <b>Was:</b> the board vote in December 2024; Terra State's fiscal watch in April 2026. <b>Is:</b> the board vote on 15 April 2025, adopting the president's recommendations, with four faculty leaving voluntarily; the fiscal watch in March 2026, the Auditor of State writing on 17 March and Directive 2026-009 following on 23 March. <b>Cause:</b> the December date also sat inside the page's own correction box, so the correction was carrying the error.</p><p><b>Degree names, <em>programs</em>.</b> <b>Was:</b> five institutions \"awarding polymer engineering bachelor's degrees\". <b>Is:</b> two of the five award engineering technology degrees, and Western Washington's has been renamed. <b>Cause:</b> the programme names were typed from a list, not read from each institution's own catalogue.</p><p><b>A federal award understated by $634, <em>timeline</em>.</b> <b>Was:</b> a figure $634 below the record. <b>Is:</b> the record's figure, to the dollar, as every other award on the page is given. <b>Cause:</b> a transcription.</p><p><b>Two wrong instructions in the replication guide, <em>sources</em>.</b> <b>Was:</b> that a federal origin-destination file has no industry dimension; a 2025 CPI-U annual figure. <b>Is:</b> the file has one, and the recipe uses it; BLS does not publish that 2025 figure as an annual average, and the guide now says which figure it hands out and why. <b>Cause:</b> a recipe written from memory of the file rather than from its documentation.</p><p><b>The award and the designation, <em>the front page</em>.</b> <b>Was:</b> the $51.0M award equated with the October 2023 federal designation. <b>Is:</b> two events, ten months apart, named as two. <b>Was:</b> the scripts described as CC BY 4.0. <b>Is:</b> the repository dual-licenses; the scripts are under the MIT licence. <b>Cause:</b> two appositives nobody re-read.</p><p><b>A regional census the files cannot supply, <em>occupations</em> and <em>cluster-health</em>.</b> <b>Was:</b> \"the region's three universities\", and 63 polymer degrees attributed to three. <b>Is:</b> the chart draws the three institutions in its file and says so; the region has four conferring in these codes, Youngstown State inside PIC-12 among them; and only two, Case Western and Akron, file under a polymer code, so 63 is theirs. <b>Cause:</b> a hard-coded list of three unitids described as if it were a census.</p><p><b>Also corrected:</b> <em>accountability</em>'s accessible chart description misstated how many commitment dates had passed; <em>peers</em>' claim register still described the BMW sentence repaired earlier in the day; <em>scorecard</em> carried a universal negative about this repository that the repository's own shipped data falsifies.</p>",
    "kinds": {
     "revisions": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "programs": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "timeline": {
@@ -1344,23 +1344,23 @@
      "headline_changed": false
     },
     "sources": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "index": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "occupations": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "cluster-health": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "accountability": {
-     "kind": "figure",
+     "kind": "wording",
      "headline_changed": false
     },
     "peers": {
@@ -1431,15 +1431,15 @@
    "html": "<p><b>A named company published as an unsuccessful applicant, <em>timeline</em>.</b> <b>Was:</b> \"Materium Technologies NOT accepted into Synthe6 cohort 1 (no Ohio place of business)\", on a site whose README withholds two entire pages because \"naming an unsuccessful applicant is not something a funder gets to do\". <b>Is:</b> see the eleventh entry: the row was first anonymised, then removed. The company's later rows stay; it established Ohio operations and joined the cohort, and both are public. <b>Cause:</b> an internal register row shipped without the README's own rule being applied to it.</p><p><b>Seventy-four companies carried a hidden verdict, <em>chain</em>.</b> <b>Was:</b> every row in the served register carried a <code>rel</code> field, and for 74 named private firms its value was <code>not_relevant</code>, on a register whose own source note says any public release is gated on member consent. No page read the field. <b>Is:</b> gone from the data and from the builder. <b>Cause:</b> a field nothing rendered, so nothing reviewed it.</p><p><b>Two universals on the front page, <em>the front page</em>.</b> <b>Was:</b> \"Every page is built from federal data that costs nothing to obtain\" and \"Nothing reads a private table.\" <b>Is:</b> twenty of twenty-three pages are built entirely from free federal data; chain reads PIC's own company register, and timeline and accountability read PIC project records, and all three are named as not reproducible by a reader. <b>Cause:</b> sentences that were true when written and never re-read as pages were added.</p><p><b>The sources register had frozen, and three figures had drifted with it, <em>sources</em>.</b> <b>Was:</b> the register held fifteen of twenty-four sources and eighteen of twenty-three pages; the page said the region's universities awarded 1,231 degrees on the core codes, 1,490 with the adjacent codes, 21 percent more. <b>Is:</b> all twenty-four and twenty-three; <b>1,175, 1,432, and 22 percent.</b> <b>Cause:</b> the build refuses to publish a source without a written statement of what it cannot tell you; nine had none, so the build failed and was not re-run. The page kept publishing the older pull. A check now fails the build when the register and its source file disagree, and a second, <code>tools/furniture.mjs</code>, fails it when a number printed on a chart is said nowhere else on its page; on its first run it found one, a 0.034 move in a <em>cluster-health</em> caption, now guarded by that figure's claim.</p>",
    "kinds": {
     "timeline": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "chain": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "index": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "sources": {
@@ -1447,7 +1447,7 @@
      "headline_changed": false
     },
     "cluster-health": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -1466,11 +1466,11 @@
    "html": "<p><b>An internal note naming a third party was published.</b> <b>Was:</b> <code>programs/INTEGRATION-NOTE.md</code> and <code>atlas/INTEGRATION-NOTE.md</code> were tracked, deployed and served, carrying the project's own process notes, the names of private sibling repositories, and an individual outside the project named as an unresolved publication gate on a page about her sector. <b>Is:</b> both removed. <b>Cause:</b> the deploy uploads every tracked file, and nothing a reader came for was in them, which is why nobody looked.</p><p><b>A way to report an error that did not exist.</b> <b>Was:</b> the README and this log said \"Open an issue — the Data error template asks for the page, the figure, and what you think it should be.\" There was no template. <b>Is:</b> the template exists and asks for those three things; the address in every page's corrections block is a link, with the issue route beside it. <b>Cause:</b> a promise written before the thing it promised, and guarded by no check.</p><p><b>No right of reply, and the site did not say so.</b> <b>Was:</b> companies, colleges and institutions characterised from public records with no disclosure that none had been contacted. <b>Is:</b> every page's corrections block says so. <b>Cause:</b> a filing describes what an organisation reported, never what it knows about itself, and the site had not admitted the difference.</p>",
    "kinds": {
     "atlas": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "programs": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -1499,7 +1499,7 @@
      "headline_changed": false
     },
     "index": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "peers": {
@@ -1533,7 +1533,7 @@
    "html": "<p>Two independent figure audits swept every chart on the site and found the same thing: the defects were not in the numbers. Every one of them lived in a HAND-TYPED string — an SVG <code>&lt;title&gt;</code> a screen reader announces, an HTML <code>fig-title</code>, a swatch key, an in-plot annotation tail. Strings COMPUTED in <code>app.js</code> were clean throughout. The claims apparatus binds sentences to data and nothing binds chart furniture to the sentences, so a passing suite and a false figure caption coexisted on fourteen pages.</p><p><b>A filing gap was published as a closure, <em>programs</em>.</b> The in-plot bar tail read \", ended 2015\" against Terra State, on the page whose own README says \"'Ended' is not 'closed'\" and whose own source line records that Terra State narrowed to a single certificate that is still offered. The record's flag means only that no completion was filed for two years or more. <b>Was:</b> \", ended 2015\"; the lede key \"light bars ended\"; the note \"the largest ended program ... ended 2015\". <b>Is:</b> \", last filed 2015\"; \"light bars filed no polymer completion in 2023\"; \"the largest record that stopped ... last filed 2015\". The same lede also claimed sixteen bars where the chart draws the largest eight; the chart's own subtitle had said eight all along. The DATA still ships <code>status:\"ended\"</code> for six of sixteen rows and still needs renaming to its predicate (<code>last_filing_year</code> / <code>zero_completions_2023</code>); that is a builder change and is referred, not done here.</p><p><b>An alt text carried a verdict the page withheld, <em>laborshed</em>.</b> The matrix description told a screen-reader user the share each county fills from home is \"weak everywhere\" while the chart's own callout said \"whether that is low is what the benchmark below settles\" — and the benchmark settles it the other way, 378 of 397 peer counties doing the same. <b>Was:</b> \"weak everywhere\". <b>Is:</b> the predicate only, plus the callout's own deferral. Separately, the peer-region description called its bars \"Ranked\" when the code sorts by county count, which the visible subtitle states correctly.</p><p><b>A figure title contradicted its own subtitle, <em>occupations</em>.</b> <b>Was:</b> \"below half their 2014–2021 pace\". <b>Is:</b> 2014–2020 — the period the subtitle, the annotated rule at 71 and <code>claims.json</code> all use. 2021 is itself a below-half year, so the title had put a fallen year inside its own baseline. The claim guarding this sentence QUOTES the figure title and states the correct period; it passed anyway, because the assertion reads the data and never the string.</p><p><b>A corrected number survived in the alt text, <em>sources</em>.</b> The dependency description still led QCEW \"at eleven\" after the 2026-08-30 correction to nine. <b>Is:</b> nine of eighteen. The same figure's title read \"One source carries most of this site\" over nine of eighteen, which is half. <b>Is:</b> \"No other source feeds more than five of the eighteen pages\" — the true sentence and the better one. The claim now asserts the runner-up at five rather than merely under nine.</p><p><b>A key named one footprint for two, <em>chain</em>.</b> The swatches read \"Classified companies in the 14 counties\" and \"2026 applications naming that stage\"; the second is PIC-12, twelve counties, which the lede says and the key did not. The first also called all 785 vault companies \"classified\" when 611 carry a value-chain role. <b>Is:</b> both footprints named in the key and in the alt text, and the source line reads \"the 611 of 785 NEO-14 companies that carry a value-chain role\".</p><p><b>\"None has resolved\" outran the register, <em>accountability</em>.</b> The earliest commitment is dated 15 August 2026, seventeen days past, and the chart draws no today rule. <b>Was:</b> \"none has resolved\". <b>Is:</b> \"the register records no commitment as delivered\", which is what the file supports. In the same band, a five-row table captioned \"Five published figures describing one R&amp;D competition\" contained one row describing a workforce award instead, and a cell said \"the only one of these four\" in a table of five; both now scope themselves.</p><p><b>A denominator lived only in the alt text, <em>federal-money</em>.</b> \"Two companies hold 56% of the contract dollars\" rests on a $329.5M award-basis total that appeared nowhere on the figure and is a different measure from the $279.3M chart above it. The subtitle now names the base.</p><p><b>Two chart titles carried no claim, <em>patents</em>.</b> <b>Was:</b> \"Four lines, two stories\" and \"Ohio polymer applications by filing year\", with the finding left to the H2. <b>Is:</b> \"Only the polymer lines fell far below their 2015 level\" and \"Ohio's three newest bars are still filling, not falling\". The index chart's dashed rule at 100 was unlabelled on a vertical scale that starts at 73; the rule now reads \"100 = the 2015 level\" and both the subtitle and the alt text declare the crop. The page's meta description still said the national polymer field \"barely moved\" after commit 9a71687 corrected the standfirst; it fell 22 percent.</p><p><b>A map stated an encoding it does not use, <em>atlas</em>.</b> <b>Was:</b> \"Area is every completion it ever conferred\". The code is <code>r = 2 + sqrt(v) * 0.32</code>: with that floor, area spans about 67 times over a 1-to-2,830 range and the median dot draws roughly twice its proportional area. <b>Is:</b> a square-root radius with a stated minimum size, and the source line says the dots rank the record rather than compare areas. The encoding is unchanged; only the description of it was wrong.</p><p><b>Four more of the same family.</b> <em>churn</em>: a table captioned \"Hire rate, separation rate and the gap\" carried column headers reading \"Hiring rate\" and \"Leaving rate\" — three vocabularies for two concepts, announced by a screen reader on every cell. <em>reach</em>: an H2 read \"A quarter\" where the share is 22.65 percent and the page prints 23 percent three times, and the map lede promised one-paper institutions were \"listed in the table under it\" when that table holds the forty largest. <em>index</em>: the hub card for <em>revisions</em> named a \"resin\" producer-price series that does not exist in the file; the three are industrial chemicals, rubber and plastic products, and plastics and rubber plants.</p><p><b>What none of this changes:</b> no chart's data, no chart's encoding, no analysis. Every correction above is an editorial string that had drifted from the figure it sat on, which is precisely the surface no gate reads.</p>",
    "kinds": {
     "programs": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "laborshed": {
@@ -1541,7 +1541,7 @@
      "headline_changed": false
     },
     "occupations": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "sources": {
@@ -1553,7 +1553,7 @@
      "headline_changed": false
     },
     "accountability": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "federal-money": {
@@ -1561,11 +1561,11 @@
      "headline_changed": false
     },
     "patents": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "atlas": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     },
     "churn": {
@@ -1609,7 +1609,7 @@
      "headline_changed": false
     },
     "funding-map": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -1764,7 +1764,7 @@
      "headline_changed": false
     },
     "scorecard": {
-     "kind": "figure",
+     "kind": "wording",
      "headline_changed": false
     },
     "programs": {
@@ -1804,7 +1804,7 @@
      "headline_changed": false
     },
     "collaboration": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false
     }
    },
@@ -1825,7 +1825,7 @@
    "html": "<p>Fifty-six independent reviews, four model families over every page, each reading only the rendered page with no access to this repository. Four published statements changed.</p><p><b>A chart described itself wrongly to the people who cannot see it, <em>federal-money</em>.</b> The fiscal-year chart's text alternative said <em>\"Two of the eight years are worth more than the whole award on their own.\"</em> On the page's own real-dollar basis, 2019 exceeds the award by $647,000 and 2021 falls $245,000 short. One year. The chart's two annotations, drawn beside the award line, said exactly that and were correct. So a sighted reader and a screen-reader user were handed different findings from one figure, and nothing on this site compared the two. Now pinned by <code>fed-years-over-award</code>, and <code>tools/alttext.mjs</code> checks that every chart carries a description at all.</p><p><b>A source that was never used, <em>cost-scissors</em>.</b> The methodology box credited the BLS Quarterly Census of Employment and Wages. That page is built from FRED price series and its data and thirty-two claims contain no <code>agglvl</code>, no <code>own_code</code>, no NAICS and no employment figure of any kind. The registry said so and the box printed the registry faithfully. This is the second such case in one day, after <em>revisions</em> the same morning. Between them the two entries made one federal source look like it fed eleven pages when it fed nine. <code>tools/provenance.mjs</code> now asks the question no gate here had asked: does the registry match the page, rather than only the page matching the registry.</p><p><b>\"Every\" where the number was 95 percent, <em>revisions</em>.</b> The headline read <em>\"Every month moved\"</em> directly above the page's own tile reading <em>259 of 273</em>. On a page whose entire subject is counting precisely, its own headline rounded 95 percent up to all of them.</p><p><b>A share stated on a basis the sentence did not name, <em>laborshed</em>.</b> The page said <em>\"Roughly half of it comes from metros two hours away\"</em> where <em>it</em> was the whole imported workforce. Half is right for the two named groups, adjacent and distant, and 29 percent is right against the imported share as a whole. Neither figure was wrong. The basis was never stated, and the largest single piece of that workforce lives in counties too scattered to group at all, which is what the two readings differ by.</p><h4>The one this repository cannot correct</h4><p>Six pages print a sentence describing the wider county footprint: <em>\"Excludes Crawford, Huron, Richland and Tuscarawas, which the vault's NEO-14 includes.\"</em> Every word is true and the sentence is incomplete: NEO-14 also <b>drops Ashtabula and Trumbull</b>. A reader who adds four counties to a twelve-county footprint gets sixteen, under a label that says fourteen. Ten renderings across six pages, from one string.</p><p>The string lives in <code>_data/build/footprints.py</code>, which is a vendored copy of the <code>pic-geo</code> package and carries an explicit rule that changes go to <code>pic-geo</code> first, where a test suite asserts the two are identical. Editing it here would break that guarantee to fix a sentence. It is recorded rather than fixed, and it is the correct order of operations even though it leaves the defect on the site today.</p>",
    "kinds": {
     "federal-money": {
-     "kind": "figure",
+     "kind": "wording",
      "headline_changed": false
     },
     "cost-scissors": {
@@ -1901,7 +1901,7 @@
    "html": "<h4>A flow ledger read as a jobs gain — <em>churn</em>, published</h4><p><b>Was:</b> the headline read <em>The region recorded 111,529 hires to end up with <b>168 more job starts than job ends</b></em>, the standfirst opened on the difference between a stock and a flow without saying which the page was reporting, and the fact that the Census headcount fell by 719 over the same span arrived in grey type on a hero card and in a source line under the chart. The flow table set a signed <b>Net</b> column beside an unlabelled <b>Jobs</b> column. The band-one lede said the difference of the two flows <em>\"is what a conventional employment chart shows on its own.\"</em></p><p><b>Is:</b> the standfirst answers the question outright before anything else: <em>Are there more jobs? No: the headcount fell by 719, to 17,725.</em> The hero card reads <code>+168 / NET FLOW, 55 QUARTERS / starts minus ends. Not a jobs gain: the headcount fell 719</code>. The table's columns are <b>Net flow</b> and <b>Jobs at quarter start</b>, and a note directly beneath it names the two instruments, says which question each answers, and says which one to quote when the question is growth. The lede no longer equates the two. The closer says the headcount is the growth answer and that it fell about 4%.</p><p><b>Cause.</b> No number was wrong and no number moved. QWI counts hires and separations as events during a quarter and counts <code>Emp</code> as a headcount on one day at the start of it; the two are estimated separately, seasonally adjusted separately, and are not built to reconcile. Across the series the ledger reads +168 and the headcount reads 719 fewer jobs, and quarter by quarter the two point opposite ways in 8 of 54 comparisons, the widest at 2022Q4 (ledger 153 short, headcount up 299). A reader who met both finished unsure whether employment had grown, which is the failure: the page published two answers to what looked like one question and never said they were answers to two. Three checks now guard it: <code>churn-flow-vs-stock-quarterly</code>, <code>churn-flow-aligned-to-stock</code> (the flows still net +376 when aligned to the 54 quarters the headcount readings bracket, so the gap is not an end effect) and the existing <code>churn-stock-and-flow</code>.</p><h4>An axis that ran 4,000 / 2,000 / 0 / 2,000 / 4,000 — <em>churn</em>, published</h4><p><b>Was:</b> the flow chart drew hires up and separations down around a shared zero, with the net change as a line <b>on that same axis</b>, and no tick below zero carried a sign. A point 155 units under the line meant \"155 separations\" if you were reading a bar and \"minus 155\" if you were reading the line.</p><p><b>Is:</b> ends are plotted as negative jobs, the ticks below zero carry a minus, the axis title reads <em>Jobs per quarter: starts positive, ends negative, net is the two added</em>, and the net line is now literally the two bar heights summed. The narrow rendering, which draws years and no net line, is signed to the same convention. Guarded by <code>churn-net-crosses-zero</code>, which fails if the net series stops crossing zero and the signed axis stops being load-bearing.</p><p><b>Cause.</b> A diverging chart of two positive magnitudes can be drawn unsigned. One that also carries a signed series on the same scale cannot: the axis was being asked to mean two things at once, and a reader could not tell a loss from an outflow.</p><h4>\"14 years\" for a 55-quarter series — <em>churn</em>, published</h4><p><b>Was:</b> the hero card read <code>NET FLOW, 14 YEARS</code>, and two ledes read \"across all fourteen years\". Two strings in <code>app.js</code> said \"the fourteen-year ledger\" and \"the fourteen-year average\".</p><p><b>Is:</b> all of them count quarters. 2012Q1 to 2025Q3 is 55 quarters, which is 13.75 years, and <code>churn-quarters</code> now asserts that division so the prose cannot drift back. The <code>average churn, 2012 to 2025</code> card keeps its label, because 2012 to 2025 is fourteen calendar years <em>touched</em>, which is a different claim and a true one.</p><p><b>Cause.</b> A quarter count rounded up into a year count in the one place the page states its own span. Nothing downstream used the wrong figure, but the card sat next to another card reading \"across 55 quarters\" and a reader checked the arithmetic.</p>",
    "kinds": {
     "churn": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": true
     }
    },
@@ -1990,7 +1990,7 @@
      "before_publication": true
     },
     "reach": {
-     "kind": "wording",
+     "kind": "figure",
      "headline_changed": false,
      "before_publication": true
     },

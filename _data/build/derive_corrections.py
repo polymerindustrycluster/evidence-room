@@ -22,11 +22,14 @@ in the heading or on a sub-heading, and those are read from the text. Older entr
 pages in prose ("the hub", "the price page"), so PAGES_BY_HEADING lists them by hand; an
 entry that ends up naming no page FAILS the build rather than vanishing from every filter.
 
-KIND. Per page, read from the entry's Was and Is (the sub-entry naming that page if there is
-one, else the whole entry): `figure` if a number the page printed changed, else `wording`.
-classify() decides from the text; KIND_OVERRIDE records, with a reason, each pair it gets
-wrong. HEADLINE lists the pairs where the correction changed the page's headline (its H1),
-read by hand from the entries; it is short on purpose.
+KIND. Per page, the strict rule (John, 2026-10-05): `figure` if the numbers in any Was differ,
+as a multiset, from those in the Is that answers it (numerals, dates, and numbers spelled out
+from zero to ninety-nine with hundred and thousand; "half" and "a third" are left out), using
+the sub-entry naming that page if there is one, else the whole entry; else `wording`. What an
+entry says about itself ("No figure changed") never overrides the rule; where it disagrees,
+the build stops until KIND_OVERRIDE records a reading with its reason, as it does for a page
+named only in prose. HEADLINE lists the pairs where the correction changed the page's
+headline (its H1), read by hand from the entries.
 
   python3 _data/build/derive_corrections.py           write both files
   python3 _data/build/derive_corrections.py --check   exit 1 if either is stale
@@ -134,67 +137,62 @@ HEADLINE = [
 # Pairs classify() reads wrongly, each with the reason, checked by reading the entry on
 # 2026-10-05. (heading prefix, page) -> kind.
 KIND_OVERRIDE = {
-    # Dates: a page that printed no data date gained one (wording); one that printed the
-    # wrong date, or the sources page's wrong counts, printed a number that changed (figure).
-    ("2026-09-30 — Mastheads", "churn"): "wording",
-    ("2026-09-30 — Mastheads", "laborshed"): "wording",
-    ("2026-09-30 — Mastheads", "realwage"): "wording",
-    ("2026-09-30 — Mastheads", "revisions"): "wording",
-    ("2026-09-30 — Mastheads", "wages"): "wording",
-    ("2026-09-30 — Mastheads", "index"): "wording",
-    ("2026-09-30 — Mastheads", "chain"): "wording",
-    ("2026-09-29 — Labels and cards", "revisions"): "wording",       # "an input it is not": words only
-    ("2026-09-28 — Seven more statements", "churn"): "wording",     # "every quarter" to "averaged over a year"
-    ("2026-09-28 — Ten sentences", "realwage"): "wording",          # same rank, margin added
-    ("2026-09-28 — Ten sentences", "programs"): "wording",
-    ("2026-09-28 — Ten sentences", "occupations"): "wording",       # "nominal" added; 0.99 is a what-if          # "strong" dropped; $87k-$101k unrounded
-    ("2026-09-28 — The funding map credited", "funding-map"): "wording",  # who promised the $21.0 million
-    ("2026-09-28 — Churn said most hires", "churn"): "wording",     # where hires came from
-    ("2026-09-28 — Churn said most hires", "index"): "wording",
-    ("2026-09-11 — Narrative claims", "scorecard"): "wording",      # only the hub's 721 and revisions' 1.41 moved
-    ("2026-09-11 — Narrative claims", "accountability"): "wording",
-    ("2026-09-11 — Narrative claims", "churn"): "wording",
-    ("2026-09-11 — Narrative claims", "programs"): "wording",
-    ("2026-09-11 — Narrative claims", "reach"): "wording",
-    ("2026-09-11 — Narrative claims", "location-quotient"): "wording",
-    ("2026-09-11 — Institution records", "atlas"): "wording",       # "No rows, completion counts ... changed"
-    ("2026-09-08 — Wage geography", "peers"): "wording",            # 51 rows described, Ohio still first
-    ("2026-09-08 — Wage geography", "wages"): "wording",            # 1.26 described, not changed
-    ("2026-09-01, twelfth entry", "accountability"): "figure",      # how many commitment dates had passed
-    ("2026-09-01, ninth entry", "timeline"): "wording",             # a named row anonymised (the count is the eleventh entry)
-    ("2026-09-01, ninth entry", "chain"): "wording",                # an unrendered field removed
-    ("2026-09-01, ninth entry", "cluster-health"): "wording",       # named only in passing
-    ("2026-09-01, seventh entry", "chain"): "figure",               # 785 companies to 721
-    ("2026-09-01, sixth entry", "atlas"): "wording",                # "The encoding is unchanged"
-    ("2026-09-01, fifth entry", "accountability"): "figure",        # "no public record" to $11,642,402 paid
-    ("2026-09-01 — nine corrections", "scorecard"): "figure",       # "near 120 a year" to 118 to 179
-    ("2026-08-31 — three corrections", "cluster-health"): "figure",  # "four of five" to all five
-    ("2026-08-30 — four corrections", "federal-money"): "figure",   # "Two of the eight years" to one
-    ("2026-08-29 — a hierarchy ranked", "funding-map"): "figure",   # the H1's $106 million to $85.3 million
-    ("2026-08-17 — the pre-publication review", "index"): "figure",
-    ("2026-09-30 — More sentences that said more", "index"): "wording",  # the card's words only
-    ("2026-09-28 — Ten sentences read firmer", "index"): "wording",      # the cards' words only
-    ("2026-09-01, tenth entry", "index"): "figure",                      # chain card 785 to 721
-    ("2026-09-01, second entry", "index"): "figure",                     # inventory re-summed: 451 claims
-    # "One count changed (timeline)": that count is also printed on the hub's timeline card,
-    # 67 to 66 (index/index.html, commit baf0d41), so it is a figure there too.
-    ("2026-10-04 — Evidence states, bases and labels", "index"): "figure",
-    # Contested pairs (classify): the entry says no figure changed, the page's own Was/Is
-    # swaps a number. Read 2026-10-05.
-    ("2026-10-04 — The corrections log is a page", "sources"): "figure",   # 23 site pages to 24
+    # CONTESTED PAIRS, read by hand on 2026-10-05 against the entry text (see classify()).
+    # The entry says no figure changed and the strict rule finds Was and Is numbers that
+    # differ. "figure" where a number the page prints did change; "wording" where the
+    # difference is numbers the Is adds to explain, or dates and counts used as words.
+    ("2026-10-04 — The corrections log is a page", "sources"): "figure",      # 23 site pages to 24
+    ("2026-10-04 — The metro table now holds", "peers"): "wording",           # table holds all 155 rows; no number reprinted
+    ("2026-10-04 — Evidence states, bases and labels", "funding-map"): "wording",  # sources described; $6,165,608 split, total kept
     ("2026-10-04 — Evidence states, bases and labels", "federal-money"): "figure",  # dashed line $39.2M to $41.4M
-    ("2026-10-04 — Evidence states, bases and labels", "funding-map"): "wording",  # the 27-to-31 is the sources page's
-    ("2026-10-04 — Evidence states, bases and labels", "churn"): "wording",   # bases stated, numbers kept
-    ("2026-10-04 — Evidence states, bases and labels", "chain"): "wording",
-    ("2026-10-04 — Evidence states, bases and labels", "reach"): "wording",
-    ("2026-10-04 — Footprint, concentration", "federal-money"): "wording",    # tense, dates only
+    ("2026-10-04 — Evidence states, bases and labels", "timeline"): "figure",  # 67 to 66, 68 to 67, 16.5 not seventeen
+    ("2026-10-04 — Evidence states, bases and labels", "sources"): "figure",   # 27 to 31 sources, 156 to 172 lines
+    ("2026-10-04 — Evidence states, bases and labels", "index"): "figure",     # hub card 67 to 66 (baf0d41)
+    ("2026-10-04 — Evidence states, bases and labels", "churn"): "wording",    # bases stated; 17,943 and 17,725 kept
+    ("2026-10-04 — Evidence states, bases and labels", "chain"): "wording",    # 566 and 490 kept; 76 explains
+    ("2026-10-04 — Evidence states, bases and labels", "reach"): "wording",    # 633 and 629 kept, named
+    ("2026-10-04 — Footprint, concentration", "peers"): "wording",             # definition; 4.69 rebuilt, unchanged
+    ("2026-10-04 — Footprint, concentration", "churn"): "wording",             # footprint sentence; dates as tense
+    ("2026-10-04 — Footprint, concentration", "cluster-health"): "wording",
+    ("2026-10-04 — Footprint, concentration", "laborshed"): "wording",
+    ("2026-10-04 — Footprint, concentration", "federal-money"): "wording",
+    ("2026-10-04 — Footprint, concentration", "location-quotient"): "wording",
     ("2026-10-04 — Footprint, concentration", "timeline"): "wording",
-    ("2026-09-30 — A seat called the winner", "scorecard"): "wording",       # grantee named
+    ("2026-10-04 — Footprint, concentration", "sources"): "wording",
+    ("2026-10-04 — Footprint, concentration", "index"): "wording",
+    ("2026-09-30 — Two replication recipes", "sources"): "wording",           # the rule restated; 5.96 kept
+    ("2026-09-30 — A seat called the winner", "cost-scissors"): "wording",    # framing words
+    ("2026-09-30 — A seat called the winner", "churn"): "wording",            # "about two thousand" kept, clause added
+    ("2026-09-30 — A seat called the winner", "scorecard"): "wording",        # grantee named
     ("2026-09-30 — A seat called the winner", "timeline"): "wording",
-    ("2026-08-29 — two right numbers", "churn"): "wording",                  # "no number moved"
-    ("2026-09-08 — Jobs, workplaces", "cluster-health"): "wording",          # 361 to 364 describes data
-    ("2026-09-01, twelfth entry", "index"): "wording",                       # award and designation told apart
-    ("2026-09-01, seventh entry", "index"): "wording",                       # "Every sentence ... tied" withdrawn  # $34.9 million to $36.6 million a year
+    ("2026-09-30 — More sentences that said more", "revisions"): "wording",
+    ("2026-09-30 — More sentences that said more", "cost-scissors"): "wording",
+    ("2026-09-30 — More sentences that said more", "sources"): "figure",      # 33,528 now given as 33,529
+    ("2026-09-30 — More sentences that said more", "index"): "wording",       # the front-page card's words
+    ("2026-09-28 — The front page sent", "index"): "wording",                 # a link
+    ("2026-09-11 — Documentary descriptions", "atlas"): "wording",
+    ("2026-09-11 — Documentary descriptions", "peers"): "wording",
+    ("2026-09-11 — Documentary descriptions", "timeline"): "figure",          # fallback 68/69 to 67, 68 and 18
+    ("2026-09-11 — Documentary descriptions", "funding-map"): "wording",
+    ("2026-09-10 — Residence records", "laborshed"): "wording",               # basis of "half" named; observations kept
+    ("2026-09-10 — Residence records", "sources"): "wording",
+    ("2026-09-10 — Residence records", "cost-scissors"): "wording",
+    ("2026-09-09 — Federal category-share", "federal-money"): "figure",       # check note 65% to 58%
+    ("2026-09-08 — Comparison units", "index"): "wording",                    # positions added; ranks unchanged
+    ("2026-09-08 — Comparison units", "programs"): "wording",                 # raw counts printed beside the ratio
+    ("2026-09-08 — Comparison units", "realwage"): "wording",
+    ("2026-09-08 — Local metro membership", "sources"): "figure",             # three metros to four
+    ("2026-09-08 — Local metro membership", "realwage"): "wording",           # classification; values and ranks kept
+    ("2026-09-08 — Program comparisons before rounding", "programs"): "figure",  # 2.48, 2.37 to 2.41, 2.30
+    ("2026-08-29 — a hierarchy ranked", "funding-map"): "figure",             # H1 $106 million to $85.3 million
+    ("2026-08-29 — two right numbers", "churn"): "figure",                    # "14 YEARS" to 55 quarters
+    ("2026-08-17 — the pre-publication review", "collaboration"): "wording",
+    ("2026-08-17 — the pre-publication review", "reach"): "figure",           # artifacts out: seven papers led removed
+    ("2026-08-17 — the pre-publication review", "index"): "figure",           # $34.9M to $36.6M a year
+    # PAGES NAMED ONLY IN PROSE (PAGES_ADDED) have no Was/Is of their own; read by hand.
+    ("2026-09-28 — Ten sentences read firmer", "index"): "figure",            # "four papers in five" to 985 of 1,222
+    ("2026-09-01, tenth entry", "index"): "figure",                           # chain card 785 to 721
+    ("2026-09-01, second entry", "index"): "figure",                          # inventory: 451 claims
 }
 
 # Pages an entry corrected before the page was first published. They stay in the log and in
@@ -380,6 +378,46 @@ def numbers(text):
     return got
 
 
+WORDS = {w: i for i, w in enumerate(
+    "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen "
+    "fifteen sixteen seventeen eighteen nineteen twenty".split())}
+WORDS.update({w: 10 * i for i, w in enumerate("twenty thirty forty fifty sixty seventy eighty ninety".split(), 2)})
+WORD_RE = re.compile(r"\b(" + "|".join(sorted(WORDS, key=len, reverse=True)) +
+                     r")(?:-(one|two|three|four|five|six|seven|eight|nine))?(\s+(?:hundred|thousand))?\b", re.I)
+
+
+def number_bag(text):
+    """Every number a passage prints, as a multiset: numerals (years and dates included, an
+    ISO date as one token) and numbers spelled out from zero to ninety-nine, with hundred
+    and thousand. "Half", "a third" and the like are left out: they are proportions in
+    words, and a changed numeral beside them is what makes a figure."""
+    from collections import Counter
+    bag = Counter()
+    t = re.sub(r"<[^>]+>", " ", text)
+    for m in re.finditer(r"\d{4}-\d\d-\d\d", t):
+        bag[m.group(0)] += 1
+    t = re.sub(r"\d{4}-\d\d-\d\d", " ", t)
+    for m in NUM.finditer(t):
+        whole = m.group(1).replace(",", "")
+        v = whole + ("." + m.group(2) if m.group(2) else "")
+        bag[v.rstrip("0").rstrip(".") if "." in v else v] += 1
+    for m in WORD_RE.finditer(t):
+        n = WORDS[m.group(1).lower()] + (WORDS[m.group(2).lower()] if m.group(2) else 0)
+        if m.group(3):
+            n *= 100 if "hundred" in m.group(3).lower() else 1000
+        bag[str(n)] += 1
+    return bag
+
+
+def was_is_pairs(raw):
+    """Each Was with the Is that answers it."""
+    out = []
+    for m in re.finditer(r"\*\*Was:\*\*(.*?)\*\*Is:\*\*(.*?)(?=\*\*Cause:\*\*|\*\*Was:\*\*|"
+                         r"\*\*[A-Z][^*]{2,}\*\*|$)", raw, re.S):
+        out.append((m.group(1), m.group(2)))
+    return out
+
+
 def was_is(raw):
     """The Was and Is passages of one stretch of an entry, each joined."""
     was, is_ = [], []
@@ -406,26 +444,19 @@ CHANGED = re.compile(r"\b(?:rise|rises|rose|grow|grows|grew|move|moves|moved|cha
 
 
 def classify(raw, none_said=False):
-    """(kind, contested). `figure` if a number the page printed changed, else `wording`.
-
-    Signals, strongest first: a stated change ("rises from 532 to 534", "20,859 to 20,052",
-    ", not 104") is a figure; a stated "No figure changed" in the page's own text, or in the
-    entry's shared text (none_said), is wording; otherwise a number in Was that is not in Is
-    is a figure. CONTESTED: the entry's shared text says no figure changed while this page's
-    own Was and Is swap one number for another. The text cannot settle that, so the build
-    fails until KIND_OVERRIDE records a reading (the sources page count, 23 to 24, was read
-    as wording this way on 2026-10-05)."""
-    was, is_ = was_is(raw)
-    if CHANGED.search(raw):
-        return "figure", False
-    if NONE_MOVED.search(raw):
-        return "wording", False
-    swapped = bool(numbers(was) - numbers(is_)) and bool(numbers(is_) - numbers(was))
-    if none_said:
-        return "wording", swapped
-    if not is_:
-        return "wording", False
-    return ("figure" if numbers(was) - numbers(is_) else "wording"), False
+    """(kind, contested). THE STRICT RULE (John, 2026-10-05): a page's kind is `figure` if
+    the numbers in any Was differ, as a multiset, from the numbers in the Is that answers it,
+    and `wording` otherwise. Nothing the entry says about itself overrides that. CONTESTED:
+    the entry says no figure changed (NONE_MOVED, in this page's text or the entry's shared
+    text) while the rule finds one; the build stops until KIND_OVERRIDE records a reading.
+    A passage with no Was/Is pair is `figure` only when it states a number moving (CHANGED)."""
+    pairs = was_is_pairs(raw)
+    if pairs:
+        fig = any(number_bag(w) != number_bag(i) for w, i in pairs)
+    else:
+        fig = bool(CHANGED.search(raw))
+    said_none = none_said or bool(NONE_MOVED.search(raw))
+    return ("figure" if fig else "wording"), (fig and said_none)
 
 
 def stretches(body_blocks, pages):
@@ -508,9 +539,15 @@ def parse(text=None):
             # its own sub-entry; else the paragraphs naming it; else the whole entry
             own = per.get(p) or "\n\n".join(raw for _, raw, h in main if p in named_pages(h, pages))
             kind, contested = classify(own or whole, none_said)
+            prose_only = not per.get(p) and any(heading.startswith(pre) and p in extra
+                                                for pre, extra in PAGES_ADDED.items())
             forced = [k for (pre, pg), k in KIND_OVERRIDE.items() if pg == p and heading.startswith(pre)]
             if forced:
                 kind = forced[0]
+            elif prose_only:
+                raise SystemExit(f"derive_corrections: {heading[:70]!r} on {p}: named only in prose, "
+                                 "with no Was/Is of its own. Read the entry and record the kind in "
+                                 "KIND_OVERRIDE.")
             elif contested:
                 raise SystemExit(f"derive_corrections: {heading[:70]!r} on {p}: the entry says no figure "
                                  "changed, and this page's own Was and Is swap a number. Read the entry "
@@ -555,8 +592,8 @@ def parse(text=None):
             "method": "Each entry in CORRECTIONS.md is rendered from its Markdown without changing a "
                       "word. The pages an entry names are read from its italics, or listed by hand "
                       "where an older entry names them in prose. Each page’s summary line counts "
-                      "the entries naming it and calls one a change to figures when a number the "
-                      "page printed changed, and a change to wording otherwise.",
+                      "the entries naming it and calls one a change to figures when any number in "
+                      "its Was differs from its Is, and a change to wording otherwise.",
             "scope": "A log of corrections shows the errors someone found, not the ones still on "
                      "the site. A page with more entries has been checked harder, not necessarily "
                      "been wrong more often, and corrections made before a page was first "
