@@ -1,4 +1,5 @@
 {
+  "hero": "ls-no-county-is-a-market",
   "data": {
     "ls": "laborshed.json",
     "b": "bench.json"
@@ -11,6 +12,8 @@
       "assert": "max(r['in_county'] for r in D['ls']['matrix']) < 0.70 and len([r for r in D['b']['benchmark']['pic12_counties'] if r['own_share_work'] > 0.70]) == 1 and [r for r in D['b']['benchmark']['pic12_counties'] if r['own_share_work'] > 0.70][0]['name'] == 'Ashtabula'",
       "actual": "(round(max(r['in_county'] for r in D['ls']['matrix']), 4), sorted(((r['name'], round(r['own_share_work'], 4)) for r in D['b']['benchmark']['pic12_counties']), key=lambda t: -t[1])[:2])",
       "falsified_if": "Any county reaches 70 percent on the every-job basis, at which point the H2 is false on BOTH bases and the finding is gone. Or the in-state basis stops putting exactly Ashtabula above the line, at which point the H2's scope clause and the benchmark reading line both describe an exception that no longer exists. THE TWO HALVES MUST FAIL SEPARATELY AND LOUDLY: guarding only the first half is what let an unscoped headline ship beside a chart that contradicted it.",
+      "breaks_if": "Any of the twelve counties fills 70 percent or more of all its jobs with its own residents.",
+      "guards": "No county holds this labor market alone.",
       "counts": [
        {"figure": "70 percent", "noun": "No county"}
       ]
@@ -22,6 +25,8 @@
       "assert": "abs([r for r in D['ls']['matrix'] if r['work_name']=='Summit'][0]['in_county'] - 0.484) < 0.003",
       "actual": "[(r['work_name'], r['in_county'], r['jobs_total']) for r in D['ls']['matrix'] if r['work_name']=='Summit']",
       "falsified_if": "LODES revises, or the footprint changes. Cross-checked: these shares reproduce the figures in the LODES codebook independently derived by another session, which is the only cross-session validation in the stack.",
+      "breaks_if": "The Census revises the home-county records behind Summit County’s jobs.",
+      "guards": "they put Summit County’s own residents at 48.4 percent of its 265,460 jobs.",
       "counts": [
         {"figure": "48.4 percent of its 265,460 jobs", "noun": "Summit County’s own residents"}
       ]

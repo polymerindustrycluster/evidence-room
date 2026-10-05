@@ -1,4 +1,5 @@
 {
+  "hero": "oh-rank-1",
   "data": "peers.json",
   "claims": [
     {
@@ -8,6 +9,8 @@
       "assert": "D['meta']['cross_year'] == 2024 and D['states']['326']['rank_emp'] == 1",
       "actual": "D['states']['326']['rank_emp']",
       "falsified_if": "A 2024 revision moves another state above Ohio, or BLS restates NAICS 326.",
+      "breaks_if": "A 2024 revision moves another state above Ohio, or BLS redefines plastics and rubber.",
+      "guards": "Ohio led the country in plastics and rubber jobs in 2024.",
       "official_check": "Rank computed directly from BLS annual_avg_emplvl; no derived quantity."
     },
     {
@@ -167,6 +170,8 @@
       "assert": "D['visibility']['metro']['disclosed'] == 155 and D['visibility']['metro']['suppressed'] == 227 and tofixed(D['visibility']['metro']['disclosed'] / (D['visibility']['metro']['disclosed'] + D['visibility']['metro']['suppressed']) * 100, 0) == '41'",
       "actual": "D['visibility']['metro']",
       "falsified_if": "BLS changes disclosure rules, or the establishment mix shifts enough to unlock cells. The share is on the bar itself now, so a move of one metro either way that rounds the percentage off 41 falsifies the label, not only the counts.",
+      "breaks_if": "BLS changes its disclosure rules, or employers shift enough that withheld metro figures can be published.",
+      "guards": "Metro rankings are incomplete: the Bureau of Labor Statistics (BLS) withholds employment in 227 of 382 metro areas.",
       "counts": [
         {"figure": "227 of 382 metro areas", "noun": "withholds employment in"},
         {"figure": "the same 155", "noun": "metro"},

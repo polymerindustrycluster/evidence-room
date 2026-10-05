@@ -1,4 +1,5 @@
 {
+  "hero": "occ-standfirst",
   "data": "viz-data.json",
   "claims": [
     {
@@ -8,6 +9,8 @@
       "assert": "(lambda s: 8.5 <= 100 / s['pct_of_industry'] <= 9.6 and 47.5 <= s['pct_of_occupation'] <= 54.9)(one(m for m in D['mix'] if m['soc'] == '51-4072'))",
       "actual": "(lambda s: (s['pct_of_industry'], s['pct_of_occupation']))(one(m for m in D['mix'] if m['soc'] == '51-4072'))",
       "falsified_if": "The industry's share of the occupation leaves 47.5-54.9%, at which point 'half' becomes 'about half' or a different fraction; or the setters' share of the industry leaves the 10.4-11.8% band that rounds to one job in nine, which the stat card computes rather than states. Both move with each matrix release.",
+      "breaks_if": "A new national staffing release puts the industry’s share of molding-machine setters well away from half.",
+      "guards": "Half the nation’s molding-machine setters work in plastics and rubber manufacturing.",
       "counts": [
         {"figure": "Half the nation’s molding-machine setters", "noun": "plastics and rubber manufacturing"}
       ]
@@ -19,6 +22,8 @@
       "assert": "D['mix_totals']['production_share_pct'] > 50 and len(D['pay_totals']['ratio_by_metro']) == 4 and all(v['degree_median_ratio'] < 1 for v in D['pay_totals']['ratio_by_metro'].values())",
       "actual": "(D['mix_totals']['production_share_pct'], {a: v['degree_median_ratio'] for a, v in D['pay_totals']['ratio_by_metro'].items()})",
       "falsified_if": "Production occupations fall to half or less of the industry ('runs mostly on floor work' fails), any of the four metros' degree-group median wage ratio reaches 1.0 ('under the national rate' fails), or the wage file stops publishing one of the four metros, at which point 'all four' is a claim about a set the page no longer shows.",
+      "breaks_if": "A new national staffing release puts production work at half or less of the industry’s jobs.",
+      "guards": "Polymer manufacturing runs on production jobs.",
       "counts": [
         {"figure": "four Northeast Ohio metros", "noun": "degree occupations"}
       ]

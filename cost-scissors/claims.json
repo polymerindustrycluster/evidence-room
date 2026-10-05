@@ -1,4 +1,5 @@
 {
+  "hero": "cs-product-at-peak",
   "data": "scissors.json",
   "claims": [
     {
@@ -26,6 +27,8 @@
       "assert": "all(s['retraced'] == 0 and s['peak']['date'] == s['now']['date'] for s in D['series'] if s['stage']=='product')",
       "actual": "[(s['label'], s['peak']['date'], s['peak']['index'], s['now']['index']) for s in D['series'] if s['stage']=='product']",
       "falsified_if": "Any month prints below the prior peak - at which point this page's headline is out of date and must be restated. This is the most perishable claim on the site; it expires with the next PPI release.",
+      "breaks_if": "A new month puts product prices below their peak, or gas back above January 2019.",
+      "guards": "Natural gas gave the whole spike back. Finished polymer products are at a record high, before inflation.",
       "counts": [
         {"figure": "finished polymer products none of it", "noun": "resin about a third"}
       ]

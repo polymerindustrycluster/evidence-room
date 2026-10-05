@@ -11,6 +11,17 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-10-04 — Each story now says on the page what would prove it wrong, *every story the hub lists*
+
+**Was:** the hub said each story "states what would contradict its claims", but those
+conditions lived only in each page's claims file, written for the checker and read by no
+one else. **Is:** the twenty stories the hub lists, the three prototypes included, carry one
+line under the headline beginning "This finding breaks if:", and a closed "What would prove
+this page wrong" list before the methodology box that pairs each guarded sentence with the
+change in the data that would make it wrong. No figure changed; this is a presentation
+change. `tools/breaksif.mjs` fails a listed story that lacks the line or the list, or whose
+list quotes a sentence the page no longer prints.
+
 ## 2026-10-04 — One name per county set, one status vocabulary, and who PIC is, *index, chain, sources, peers*
 
 **Chain's footprint, *chain, index, sources*.** **Was:** the chain register's fourteen

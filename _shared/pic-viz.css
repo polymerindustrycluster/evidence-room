@@ -531,3 +531,21 @@ th.pv-sortable[aria-sort="descending"]::after{content:" ↓";opacity:1;color:var
 .skip-link{position:absolute;left:16px;top:-100px;z-index:20;background:#fff;
   padding:12px 16px;color:var(--ink)}
 .skip-link:focus{top:8px;outline:3px solid var(--ink)}
+
+/* WHAT WOULD PROVE THIS PAGE WRONG (breaksIf() in picviz.js, DECISIONS.md 2026-10-04). One
+   line under the hero, on the measure like the standfirst above it; it sits above the first
+   chart, so its sentence is kept short enough for one line at desktop width. The full list
+   is closed by default, just before the methodology box. Its children take the details'
+   width rather than re-resolving --measure against it (the 488px compounding trap noted in
+   tools/measure.mjs), and carry no inset, so every paragraph holds the measure. */
+.hero .wrap > .pv-breaks{margin:16px auto 0;max-width:var(--measure);font-size:14px;line-height:1.45;color:#C6E2E6}
+.hero .wrap > .pv-breaks b{color:#fff}
+.pv-breaks-all{padding-block:26px}
+.pv-breaks-all details{max-width:var(--measure)}
+.pv-breaks-all details > *{--measure:100%}
+.pv-breaks-all summary{cursor:pointer;font-weight:700;font-size:19px;color:var(--action)}
+.pv-breaks-all .intro{margin:12px 0 0;font-size:16px;line-height:1.55;color:#394346}
+.pv-breaks-all ul{list-style:none;padding:0;margin:6px 0 0}
+.pv-breaks-all li{border-top:1px solid var(--line);padding:12px 0 0;margin:14px 0 0}
+.pv-breaks-all li p{margin:0 0 .3em;font-size:15.5px;line-height:1.55}
+.pv-breaks-all .said{font-style:italic}

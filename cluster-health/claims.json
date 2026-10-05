@@ -1,4 +1,5 @@
 {
+ "hero": "workplaces-recent-contrast",
  "_note": "This page restates a number from every page it links to, so every claim here re-runs against THAT PAGE'S OWN shipped data file and then checks the derived file this page renders from against the same recomputation. A correction upstream fails this page's gate instead of leaving a stale tile behind, and a derive script that was not re-run fails it too. The pattern is index/claims.json's; the paths climb out of cluster-health/data/ on purpose.",
  "data": {
   "h": "health.json",
@@ -35,6 +36,8 @@
    "assert": "(lambda e: e['ownership'] == '5' and e['naics'] == '326' and len(e['source_cells']) == 132 and len(set((r['area'],r['year']) for r in e['source_cells'])) == 132 and all(len([r for r in e['source_cells'] if r['year']==y]) == 12 for y in range(2015,2026)) and [(r['jobs'],r['establishments']) for r in e['groups'][0]['series'] if r['year'] in (2022,2025)] == [(19811,361),(17770,365)] and all(r[k] == sum(c[k] for c in e['source_cells'] if c['year']==r['year']) for r in e['groups'][0]['series'] for k in ('jobs','establishments')) and tofixed(e['groups'][0]['windows'][0]['jobs_pct'], 1) == '-10.3' and tofixed(e['groups'][0]['windows'][0]['establishments_pct'], 1) == '1.1')(D['workplaces'])",
    "actual": "D['workplaces']['groups'][0]['windows'][0]",
    "falsified_if": "One source cell is missing, duplicated, or revised, or the headline endpoints change. The source-specific completeness tests reject withheld zeros and absent annual endpoints.",
+   "breaks_if": "Revised records show no job loss from 2022 to 2025, or a real change in workplaces.",
+   "guards": "The region has fewer plastics-and-rubber jobs at roughly as many workplaces.",
    "counts": [
     {"figure": "fell 10.3 percent", "noun": "jobs"},
     {"figure": "rose 1.1 percent", "noun": "establishments"}
