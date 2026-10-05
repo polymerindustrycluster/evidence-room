@@ -11,6 +11,22 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-10-04 — The corrections log is a page on this site, and dated notes sit below each headline
+
+**Was:** every link to the corrections log, in each page’s methods block, on the front page
+and in chain’s register methods, opened this file as Markdown on GitHub, and the “What we got
+wrong” blocks named it as a file. Four pages opened on dated correction notes set between the
+byline and the headline figure: one on collaboration, three on cost-scissors, one on
+funding-map and two on wages. No page said at its top whether it had been corrected.
+**Is:** the links open a corrections page on this site that renders this file as written,
+newest first, and narrows it to the entries naming one page. The seven notes sit below the
+headline, beside what each corrects, in their original words. A line under each byline says
+how many corrections the page has had since publication, how many changed a figure and how
+many only wording, and whether one changed the headline, and links to that page’s entries
+here. `verify_consistency.py` fails a build whose rendered log has lost an entry or whose
+page counts disagree with it, and the style gate fails a dated correction note placed above
+a page’s first section heading. No figure changed.
+
 ## 2026-10-04 — One name per county set, one status vocabulary, and who PIC is, *index, chain, sources, peers*
 
 **Chain's footprint, *chain, index, sources*.** **Was:** the chain register's fourteen

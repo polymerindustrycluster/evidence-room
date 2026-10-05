@@ -6,6 +6,23 @@ product and domain decisions that a reader or rebuilder needs.
 
 ---
 
+## 2026-10-05 — How the corrections log and summary lines implement D3 (Claude, for John's review)
+
+- **The log is a page, `corrections/`, rendered at derive time** by
+  `_data/build/derive_corrections.py` from `CORRECTIONS.md`, word for word, and held to it by
+  `verify_consistency.py`. It is PUBLISHED with no hub card: apparatus, not a story, so it is not
+  counted among the pieces or in the source register (`masthead.UNCARDED` names it and why).
+- **"Corrections since publication" leaves out corrections made before a page was first
+  published** (the scorecard and accountability before release, and the 17 August
+  pre-publication review on collaboration and reach). They stay in the log.
+- **Kind is per page**: figure when a number that page printed changed, else wording, read from
+  the entry's Was and Is; pairs the classifier reads wrongly are overridden in the derive script
+  with the reason. **Headline changed** means the page's H1 changed, listed by hand.
+- **The summary line sits under the byline**, as the design note puts it, and costs one or two
+  lines above the first chart: nine cold-open debts rose by exactly that (see `_data/coldopen.json`).
+
+---
+
 ## 2026-10-04 — Responses to the three external reviews (John Swanson)
 
 Three independent reviews of the published site (4–5 October 2026) were triaged into errors,

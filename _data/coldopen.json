@@ -1,5 +1,17 @@
 {
  "_readme": [
+  "RAISED 2026-10-04, NINE DEBTS, BY EXACTLY WHAT ONE LINE COSTS ON macOS. Every page now",
+  "carries a generated line under its byline counting its corrections since publication,",
+  "how many changed a figure and whether one changed the headline, linked to its view of",
+  "the rendered corrections log (DECISIONS.md D3; the design note John approved puts it at",
+  "the top of the page). One line is 25 to 26px at 1440, two lines 45px. Each debt rises",
+  "by its own macOS delta (accountability, cluster-health, laborshed, occupations, peers,",
+  "timeline by one line; churn, federal-money, revisions by two), so the Linux margin each",
+  "number already carried is kept; if CI wraps a line macOS does not, CI re-bases it.",
+  "The four pages whose dated notes moved below the headline in the same change gained:",
+  "cost-scissors 816 to 585, wages 871 to 790, collaboration 767 to 701, funding-map 583",
+  "to 556, all under the 900 limit, so no ceiling of theirs could be lowered.",
+  "",
   "Where each page's first chart begins, in CSS pixels from the top of the document at",
   "1440x900. The house rule is that a reader meets evidence in the first screen; a page",
   "that opens on 1,800px of prose has broken it, and until 2026-08-28 fifteen of sixteen",
@@ -60,6 +72,9 @@
   "debt, and it moves 903 to 943; the other four still clear 900. The banner is the point."
  ],
  "limit": 900,
+ "no_chart": {
+  "corrections": "the rendered corrections log (DECISIONS.md D3): a text record of CORRECTIONS.md, filterable by page, with no figure to draw"
+ },
  "fixed": [
   "wages",
   "scorecard",
@@ -77,14 +92,14 @@
   "outranks 19px; lower it again when the hero is next edited."
  ],
  "ceilings": {
-  "churn": 1756,
-  "cluster-health": 1085,
-  "federal-money": 1771,
-  "laborshed": 1561,
-  "occupations": 1555,
-  "peers": 1348,
-  "revisions": 1356,
-  "timeline": 1394,
-  "accountability": 943
+  "churn": 1801,
+  "cluster-health": 1110,
+  "federal-money": 1816,
+  "laborshed": 1587,
+  "occupations": 1580,
+  "peers": 1374,
+  "revisions": 1401,
+  "timeline": 1420,
+  "accountability": 968
  }
 }

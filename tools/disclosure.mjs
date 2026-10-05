@@ -65,6 +65,7 @@ out = {"index": json.load(open("index/data/counts.json", encoding="utf-8")).get(
 for a in masthead.MASTHEAD_FILE:
     st = {json.load(open(f, encoding="utf-8"))["meta"].get("status") for f in masthead.masthead_files(a)}
     out[a] = st.pop() if len(st) == 1 else None
+out["_uncarded"] = masthead.UNCARDED
 print(json.dumps(out))`], {encoding: "utf8"});
   if (py.status !== 0) { console.log("cannot read declared statuses:\n" + py.stderr); return {}; }
   return JSON.parse(py.stdout);
@@ -166,7 +167,11 @@ for (const n of list) {
     if (n !== "index") {
       if (!CARDS) probs.push("cannot inspect the hub card: dist/index.html missing");
       else if (CARDS[n] === undefined) {
-        if (want !== "INTERNAL") probs.push(`no hub card, so the page must be INTERNAL; it declares ${want}`);
+        /* masthead.UNCARDED: published apparatus (the corrections log) that the hub links
+           in prose and does not card. Named there with its reason, so it is not silent. */
+        if (DECLARED._uncarded?.[n]) {
+          if (want !== "PUBLISHED") probs.push(`uncarded apparatus must be PUBLISHED; it declares ${want}`);
+        } else if (want !== "INTERNAL") probs.push(`no hub card, so the page must be INTERNAL; it declares ${want}`);
       } else if (CARDS[n] !== want) probs.push(`hub card says ${CARDS[n]}, the page declares ${want}`);
     }
     if (n === "sources") for (const [slug, tag] of r.pageLinks) {

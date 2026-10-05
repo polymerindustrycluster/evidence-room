@@ -54,6 +54,8 @@ async function inputManifest(dir) {
   if (existsSync(shared)) abss.push(...await listFilesRecursive(shared));
   const reg = path.join(WEB, "_data", "SOURCES.json");
   if (existsSync(reg)) abss.push(reg);
+  const corr = path.join(WEB, "_data", "corrections_by_page.json");
+  if (existsSync(corr)) abss.push(corr);
 
   const out = {};
   for (const p of abss) out[path.relative(WEB, p).split(path.sep).join("/")] = await sha256(p);
@@ -161,6 +163,17 @@ async function bundle(name) {
     html = html.replace("</style>", () =>
       `</style>
 <script type="application/json" data-pv-file="SOURCES.json">${esc(rj)}</script>`);
+  }
+
+  /* EACH PAGE'S CORRECTION COUNT travels with it too: PV.correctionsSummary() prints the
+     line at the top of the page from it (DECISIONS.md D3). Small, and shared like the
+     registry, so one derive updates every page. */
+  const corrPath = path.join(WEB, "_data", "corrections_by_page.json");
+  if (existsSync(corrPath)) {
+    const cj = await read(corrPath);
+    html = html.replace("</style>", () =>
+      `</style>
+<script type="application/json" data-pv-file="corrections_by_page.json">${esc(cj)}</script>`);
   }
 
   const claimsPath = path.join(dir, "claims.json");

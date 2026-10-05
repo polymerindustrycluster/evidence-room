@@ -47,7 +47,9 @@ for (const n of list) {
     let t, out = [];
     while ((t = w.nextNode())) {
       const e = t.parentElement;
-      if (!e || e.closest("script,style,noscript,.pv-method")) continue;
+      /* [data-verbatim]: the corrections page quoting CORRECTIONS.md as written, which
+         names withdrawn figures because it records their withdrawal (DECISIONS.md D3). */
+      if (!e || e.closest("script,style,noscript,.pv-method,[data-verbatim]")) continue;
       const s = t.textContent.replace(/\s+/g, " ").trim();
       if (s) out.push(s);
     }

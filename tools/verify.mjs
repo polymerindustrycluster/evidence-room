@@ -13,11 +13,20 @@
    brand colour is John's call, not a gate's, and it is listed until he makes it. */
 const CONTRAST_EXEMPT = ".eyebrow";
 import {readdirSync, existsSync} from "fs";
+import {spawnSync} from "child_process";
 import {resolve, dirname} from "path";
 import {fileURLToPath} from "url";
 import {chromium} from "./_browser.mjs";
 
 const WEB = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+/* Published apparatus with no data source of its own (the corrections log), named with its
+   reason in _data/build/masthead.py UNCARDED. Such a page owes no registry row; any other
+   page absent from SOURCES.json still fails. Unreadable means nothing is exempt. */
+const UNCARDED = (() => {
+  const py = spawnSync("python3", ["-c", "import json,sys; sys.path.insert(0,'_data/build'); " +
+    "import masthead; print(json.dumps(masthead.UNCARDED))"], {cwd: WEB, encoding: "utf8"});
+  try { return py.status === 0 ? JSON.parse(py.stdout) : {}; } catch { return {}; }
+})();
 const names = process.argv.slice(2).length
   ? process.argv.slice(2)
   : readdirSync(`${WEB}/dist`).filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
@@ -144,7 +153,8 @@ for (const name of names) {
     if (r.empty.length) out.push(`${tag}:empty ${r.empty.join(",")}`);
     if (r.raw) out.push(`${tag}:uninterpolated x${r.raw}`);
     if (r.fill && r.fill.length) out.push(`${tag}:stranded ${r.fill.join(",")}`);
-    if (r.prov) out.push(`${tag}:provenance ${r.prov}`);
+    if (r.prov && !(UNCARDED[name] && r.prov.endsWith("is not in SOURCES.json")))
+      out.push(`${tag}:provenance ${r.prov}`);
     if (r.contrast.bad.length) out.push(`${tag}:contrast ${r.contrast.bad.length} under AA: ${r.contrast.bad.slice(0, 3).join(", ")}`);
     if (r.contrast.unmeasured.length) out.push(`${tag}:contrast UNMEASURED ${r.contrast.unmeasured.slice(0, 3).join(", ")}`);
     if (tag === "1440") out.push(`svg=${r.svgs} tables=${r.tables} hero-text=${r.contrast.n}`);

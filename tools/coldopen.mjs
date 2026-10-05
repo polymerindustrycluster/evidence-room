@@ -14,13 +14,17 @@
  * "First chart" means the first SVG wider than 200px and taller than 80px outside the
  * masthead — the masthead mark and a 0x0 placeholder are not evidence.
  */
-import {readFileSync, readdirSync} from "fs";
+import {readFileSync, readdirSync, existsSync} from "fs";
 import {pathToFileURL} from "url";
 import {chromium} from "./_browser.mjs";
 
 const CFG = JSON.parse(readFileSync("_data/coldopen.json", "utf8"));
 const LIMIT = CFG.limit;
 const FIXED = new Set(CFG.fixed);
+/* PAGES WITH NO CHART BY DESIGN, named in coldopen.json with the reason. Only the
+   no-chart failure is waived, and the waiver is printed; a chart that appears is held to
+   the limit like any other. A name with no page fails, so the list cannot outlive it. */
+const NOCHART = CFG.no_chart || {};
 const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
@@ -63,7 +67,9 @@ for (const n of list) {
   const ceiling = FIXED.has(n) ? LIMIT : (CFG.ceilings[n] ?? LIMIT);
   const kind = FIXED.has(n) || !(n in CFG.ceilings) ? "limit" : "debt";
 
-  if (top === null) {
+  if (top === null && NOCHART[n]) {
+    console.log(`${n.padEnd(18)} EXEMPT  no chart, by design: ${NOCHART[n]}`);
+  } else if (top === null) {
     /* a page with no chart at all cannot satisfy a cold-open rule, and pretending it
        passes is the silent-pass failure this harness keeps meeting */
     bad++;
@@ -83,6 +89,9 @@ for (const n of list) {
   }
 }
 await b.close();
+for (const n of Object.keys(NOCHART)) {
+  if (!existsSync(`${n}/index.html`)) { bad++; console.log(`${n.padEnd(18)} FAIL  no_chart names a page that does not exist`); }
+}
 const debts = Object.keys(CFG.ceilings).filter(k => list.includes(k)).length;
 console.log(bad ? `\n${bad} page(s) open later than they are allowed to`
                 : `\nall ${list.length} pages within their cold-open budget` +

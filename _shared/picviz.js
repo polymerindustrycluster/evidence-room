@@ -524,6 +524,7 @@ const PV = (() => {
   const WHERE = {
     "SOURCES.json": "../_data/SOURCES.json",   // one registry for the whole site
     "claims.json": "claims.json",              // sits beside index.html, not in data/
+    "corrections_by_page.json": "../_data/corrections_by_page.json",  // PV.correctionsSummary()
   };
   async function data(file) {
     const tag = document.querySelector(`script[data-pv-file="${file}"]`);
@@ -575,6 +576,52 @@ const PV = (() => {
     };
     document.querySelector("header.mast .wrap")?.appendChild(banner("head"));
     document.querySelector("footer .wrap")?.prepend(banner("foot"));
+  }
+
+  /* ------------------------------------------------------- corrections summary
+
+     ONE LINE AT THE TOP SAYING WHETHER THIS PAGE HAS BEEN CORRECTED (DECISIONS.md,
+     2026-10-04, D3). Dated correction notes used to open four pages, above the headline
+     they qualified; they now sit below it, beside what they correct, and this line says at
+     the top how many corrections the page has had, of what kind, and whether the headline
+     moved. It is generated from _data/corrections_by_page.json, which
+     _data/build/derive_corrections.py writes from CORRECTIONS.md, so it cannot disagree
+     with the log it links to. Corrections made before a page was first published are in
+     the log but not in this count. A page with none prints nothing. */
+  const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
+                  "September", "October", "November", "December"];
+  function onDates(iso) {
+    const parts = iso.map(d => d.split("-").map(Number));
+    const sameYear = parts.every(p => p[0] === parts[0][0]);
+    const one = (p, year) => `${p[2]} ${MONTHS[p[1] - 1]}${year ? ` ${p[0]}` : ""}`;
+    const said = parts.map((p, i) => one(p, !sameYear || i === parts.length - 1));
+    return said.length < 3 ? said.join(" and ") : `${said.slice(0, -1).join(", ")} and ${said.at(-1)}`;
+  }
+  async function correctionsSummary(page) {
+    if (document.querySelector(".pv-corr-sum")) return null;
+    const file = "corrections_by_page.json";
+    if (!document.querySelector(`script[data-pv-file="${file}"]`) &&
+        !location.protocol.startsWith("http")) return null;
+    let all;
+    try { all = await data(file); }
+    catch (e) { console.error(`PV.correctionsSummary: ${e.message}`); return null; }
+    const list = ((all && all.pages) || {})[page] || [];
+    const pub = list.filter(e => !e.before_publication);
+    if (!pub.length) return null;
+    const fig = pub.filter(e => e.kind === "figure").length;
+    const moved = pub.filter(e => e.headline_changed).map(e => e.date).sort();
+    const times = ["", "once", "twice"][moved.length] || `${moved.length} times`;
+    const p = document.createElement("p");
+    p.className = "pv-corr-sum";
+    p.innerHTML = `<a href="../corrections/?page=${page}">${pub.length} correction${pub.length === 1
+      ? "" : "s"} since publication: ${pub.length - fig} to wording, ${fig} to figures.</a> ` +
+      (moved.length ? `The headline finding was corrected ${times}, on ${onDates(moved)}.`
+                    : "The headline finding is unchanged.");
+    const bylines = document.querySelectorAll(".hero .wrap > .byline");
+    const at = bylines[bylines.length - 1] || document.querySelector(".hero .wrap > .stand");
+    if (at) at.after(p);
+    else (document.querySelector(".hero .wrap") || document.querySelector("main") || document.body).prepend(p);
+    return p;
   }
 
   /* ------------------------------------------------------------ methodology box
@@ -714,6 +761,7 @@ const PV = (() => {
       }
     }
     statusBanner(m.status, o.page);
+    await correctionsSummary(o.page || "index");
 
     const sec = document.createElement("section");
     sec.className = "band pv-method";
@@ -808,7 +856,7 @@ const PV = (() => {
                        correctly instead, so attack those first.`}`
             : (o.noClaimsNote || "This page makes no numeric claim of its own: every " +
                "figure on it is carried by the page it links to, and is checked there.")}
-            What the checks have missed is dated in <a href="https://github.com/polymerindustrycluster/evidence-room/blob/main/CORRECTIONS.md">the
+            What the checks have missed is dated in <a href="../corrections/">the
             corrections log</a>.</p>
           <p>Analysis and graphics by <b>Claude (Anthropic)</b>; <b>John Swanson</b> is
             responsible for what this page says. The method page sets out
@@ -989,7 +1037,8 @@ const PV = (() => {
       <h2>What we got wrong</h2>
       <p class="lede">Readers and authors can both find errors in published claims.
         These are this page’s own corrections, dated, oldest
-        error first. The repository-wide log is in CORRECTIONS.md.</p>
+        error first. Every correction on the site is in <a href="../corrections/">the
+        corrections log</a>.</p>
       ${entries.map(e => `<div class="entry">
         <p class="when">${e.when}</p>
         <p><b>Was:</b> ${e.was}</p>
@@ -1019,7 +1068,7 @@ const PV = (() => {
     if (unit) txt(svg, unit, {x: 0, y: 31, class: "pv-tick", fill: "var(--caption)"});
   }
 
-  return {tableTools, onFill, whatWeGotWrong, el, txt, axlab, face, lead, ticks, frame, hoverable, rove, showTip, hideTip, tableView, data, footprint,
+  return {tableTools, onFill, whatWeGotWrong, correctionsSummary, el, txt, axlab, face, lead, ticks, frame, hoverable, rove, showTip, hideTip, tableView, data, footprint,
           methodology, figures, chart, chartTitle, footprintBanner, padGrid, mark, allStories, favicon, N,
           CAT, SEQ, GRAY, INK, usd, usdShort, reduced};
 })();

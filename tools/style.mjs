@@ -138,7 +138,7 @@ const STATES = {"funding-map": ["#recipient/bioverde", "#recipient/huntsman"]};
 
 const b = await chromium.launch();
 let bad = 0, total = 0, links = 0;
-const exempt = [], debts = [];
+const exempt = [], debts = [], records = [];
 for (const n of list) {
   const p = await b.newPage({viewport: {width: 1440, height: 1000}});
   const READ = ({withdrawn, assumed, debtOwn, debtWild, foot}) => {
@@ -158,6 +158,7 @@ for (const n of list) {
        that is not plain inline, so two cards in one row stay two. Merging too much can
        only fail a page; splitting too much could pass one. Round 13 of review found
        thirteen ways a list of elements left one or the other open. */
+    let verbatimNodes = 0;
     const done = new Set(), owners = new Map(), ids = new Map();
     const disp = e => getComputedStyle(e).display;
     const host = e => { do e = e.parentElement; while (e && disp(e) === "contents"); return e; };
@@ -342,6 +343,13 @@ for (const n of list) {
       const s = t.textContent;
       const ctx = s.replace(/\s+/g, " ").trim();
       if (!ctx) continue;
+      /* A QUOTED RECORD IS NOT PAGE PROSE. The corrections page reproduces CORRECTIONS.md as
+         written (DECISIONS.md D3), and its older entries predate rules this gate holds, or
+         quote the withdrawn phrasing they corrected. Changing a character would alter a record
+         whose value is that it is never altered, so text under [data-verbatim] is counted and
+         reported, never read as prose. Only derive_corrections.py output carries the
+         attribute; verify_consistency.py holds that output to the file. */
+      if (el.closest("[data-verbatim]")) { verbatimNodes++; continue; }
       /* VERBATIM SPANS ARE NOT PROSE. A reader is meant to COPY the contents of a
          <pre> or a .code: an endpoint, a field name, a JSON request body. The
          typographic rules below are about writing, and applying them here does not
@@ -454,7 +462,8 @@ for (const n of list) {
     const passages = new Set();
     for (const set of [foot.adds, foot.drops]) {
       const holders = [...document.body.querySelectorAll("*")].filter(e =>
-        !e.closest("script,style,noscript") && set.every(c => has(e.textContent, c)));
+        !e.closest("script,style,noscript,[data-verbatim]") && !e.querySelector("[data-verbatim]") &&
+        set.every(c => has(e.textContent, c)));
       for (const e of holders.filter(e => !holders.some(x => x !== e && e.contains(x)))) {
         let b = e;
         while (b !== document.body && /^inline/.test(getComputedStyle(b).display)) b = b.parentElement;
@@ -488,6 +497,24 @@ for (const n of list) {
         out.push(["href-raw-markdown", h.slice(0, 90)]);
     }
     out.push(["count:hrefs", String(hrefs.length)]);
+    if (verbatimNodes) out.push(["record:CORRECTIONS.md", `${verbatimNodes} text nodes quoted as written, not read as page prose`]);
+    /* DATED NOTES SIT BELOW THE HEADLINE (DECISIONS.md, 2026-10-04, D3). Four pages opened on
+       "Correction, <date>" paragraphs set between the byline and the headline figure, so a
+       reader met the history of a finding before the finding. A dated note belongs beside
+       what it corrects, and the page's first section heading is the line it may not cross.
+       A note is a block whose text opens with the dated form NOTE matches. A page with no
+       h2 has no line to check against, and fails rather than passing unread. */
+    const firstH2 = [...document.querySelectorAll("h2")].find(h => !h.closest("[data-verbatim],header.mast,footer"));
+    const OPENS = new RegExp(NOTE.source, "i");
+    if (!firstH2) out.push(["correction-placement-uninspectable", "no h2, so no headline boundary for dated notes"]);
+    else for (const el of document.body.querySelectorAll("p,li,dd,figcaption,blockquote,aside,div")) {
+      if (el.closest("[data-verbatim],script,style,noscript")) continue;
+      if (el.querySelector("p,li,dd,figcaption,blockquote,aside,div")) continue;
+      const t = el.textContent.replace(/\s+/g, " ").trim(), m = t.match(OPENS);
+      if (!m || m.index > 24) continue;
+      if (el.compareDocumentPosition(firstH2) & Node.DOCUMENT_POSITION_FOLLOWING)
+        out.push(["correction-above-headline", `before the first h2 ("${firstH2.textContent.trim().slice(0, 40)}"): ${t.slice(0, 70)}`]);
+    }
     return out;
   };
   const ARGS = {withdrawn: WITHDRAWN.filter(w => w.pages.includes(n)).map(w => w.pattern), foot: FOOT,
@@ -517,7 +544,8 @@ for (const n of list) {
   for (const [kind, ctx] of all.filter(([k]) => k.startsWith("exempt:"))) exempt.push(`${n}: ${kind.slice(7)}: ${ctx}`);
   for (const [kind, ctx] of all.filter(([k]) => /^debt(-unseen)?:/.test(k))) debts.push(`${n}: ${kind}: ${ctx}`);
   for (const [, c] of all.filter(([k]) => k === "count:hrefs")) links += +c;
-  const hits = all.filter(([k]) => !k.startsWith("exempt:") && !k.startsWith("count:") && !/^debt(-unseen)?:/.test(k));
+  for (const [kind, ctx] of all.filter(([k]) => k.startsWith("record:"))) records.push(`${n}: ${kind.slice(7)}: ${ctx}`);
+  const hits = all.filter(([k]) => !k.startsWith("exempt:") && !k.startsWith("count:") && !k.startsWith("record:") && !/^debt(-unseen)?:/.test(k));
   total += hits.length;
   if (hits.length) {
     bad++;
@@ -530,6 +558,10 @@ for (const n of list) {
   await p.close();
 }
 await b.close();
+if (records.length) {
+  console.log(`\n${records.length} page(s) quote a record verbatim; its text is not read as page prose:`);
+  for (const r of records) console.log(`    ${r}`);
+}
 if (exempt.length) {
   console.log(`\n${exempt.length} withdrawn phrasing(s) passed as a dated correction note or a quotation:`);
   for (const e of exempt) console.log(`    ${e}`);
