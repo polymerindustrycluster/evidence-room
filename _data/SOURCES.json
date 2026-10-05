@@ -321,6 +321,7 @@
    "name": "IPEDS institutional directory (coordinates and identity)",
    "agency": "National Center for Education Statistics, via the Urban Institute Education Data API",
    "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/directory/{year}/",
+   "docs": "https://educationdata.urban.org/documentation/colleges.html",
    "filters": {
     "lookup": "per-unitid, year 2023 with fallback to the institution’s last active year",
     "trap": "A directory year can omit an institution that stopped reporting under that identifier; absence is not proof of closure. Coordinate fields begin in 2009. Seven records without usable coordinates were placed at documented city centroids, with per-record provenance.",

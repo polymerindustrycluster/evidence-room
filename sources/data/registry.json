@@ -759,7 +759,7 @@
    "short": "IPEDS institution directory",
    "agency": "National Center for Education Statistics, via the Urban Institute Education Data API",
    "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/directory/{year}/",
-   "docs": null,
+   "docs": "https://educationdata.urban.org/documentation/colleges.html",
    "script": "derive_atlas.py",
    "key_required": false,
    "route": "api",

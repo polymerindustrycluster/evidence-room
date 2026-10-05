@@ -37,6 +37,27 @@ try { ACRO = JSON.parse(rfs(new URL("../_data/acronyms.json", import.meta.url), 
 const WITHDRAWN = JSON.parse(rfs(new URL("../_data/withdrawn.json", import.meta.url), "utf-8")).withdrawn;
 for (const w of WITHDRAWN) new RegExp(w.pattern.replaceAll(" ", "\\s+"), "gi");  /* the form the page compiles */
 
+/* THE TWO FOOTPRINTS, READ FROM THE ONE DEFINITION. PIC-12 and NEO-14 share ten counties;
+   each also has counties the other lacks. Six pages said NEO-14 "adds" its four and
+   stopped, so a reader adding four to twelve got sixteen under a label that says fourteen
+   (corrected 2026-10-04). A sentence that names every county one set has and the other
+   lacks must, in that sentence or the next, also name every county the other has and it
+   lacks. A mention inside a run of shared counties ("Ashtabula, Cuyahoga, ...") is a list
+   of the twelve, not the relationship, and does not count. Read unguarded: a definition
+   this cannot parse fails the gate rather than emptying the sets and passing. */
+const FPPY = rfs(new URL("../_data/build/footprints.py", import.meta.url), "utf-8");
+const fpSet = name => {
+  const m = FPPY.match(new RegExp(`^${name} = \\{([\\s\\S]*?)\\}`, "m"));
+  return new Set(m ? [...m[1].matchAll(/"\d{5}":\s*"([^"]+)"/g)].map(x => x[1]) : []);
+};
+const P12 = fpSet("PIC12"), N14 = fpSet("NEO14");
+const FOOT = {adds: [...N14].filter(c => !P12.has(c)), drops: [...P12].filter(c => !N14.has(c)),
+              shared: [...P12].filter(c => N14.has(c))};
+if (P12.size !== 12 || N14.size !== 14 || !FOOT.adds.length || !FOOT.drops.length) {
+  console.log(`footprints.py could not be read: PIC12 ${P12.size} counties, NEO14 ${N14.size}`);
+  process.exit(1);
+}
+
 const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
@@ -73,6 +94,14 @@ const scripted = (page, patterns) => {
   for (const {file, lits} of scripts) for (const lit of lits) {
     read++; holes += lit.holes;
     const at = `${file}:${lit.line}`;
+    /* links a script writes, including ones only a click shows: a literal brace in the
+       href is a template; a relative or file href to a .md file is raw repository source.
+       A value filled in at run time (\u0000 here) is inspected only as rendered. */
+    for (const m of lit.text.matchAll(/href\s*=\s*["']([^"']*)["']/g)) {
+      const h = m[1];
+      if (/[{}]/.test(h)) out.push(["href-template", `${at} (script): ${h.slice(0, 90)}`]);
+      if (/\.md(?:[?#]|$)/i.test(h) && !/^[a-z]+:/i.test(h)) out.push(["href-raw-markdown", `${at} (script): ${h.slice(0, 90)}`]);
+    }
     for (const t of [asText(lit.text, false), asText(lit.text, true)]) WRE.forEach(re => {
       for (const m of t.matchAll(re)) {
         const phrase = m[0].replace(/\s+/g, " ").toLowerCase(), key = `${at}:${phrase}:${m.index}`;
@@ -104,13 +133,13 @@ const scripted = (page, patterns) => {
 };
 
 const b = await chromium.launch();
-let bad = 0, total = 0;
+let bad = 0, total = 0, links = 0;
 const exempt = [];
 for (const n of list) {
   const p = await b.newPage({viewport: {width: 1440, height: 1000}});
   await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
   await p.waitForTimeout(1600)  /* 900 raced chain's 785 JS-rendered cards: the acronym inventory flapped between runs. 2026-09-01 */;
-  const all = await p.evaluate(({withdrawn, assumed, debtPages}) => {
+  const all = await p.evaluate(({withdrawn, assumed, debtPages, foot}) => {
     const BANNED = /\b(crucial|delve|matters)\b/i;
     const out = [];
     const pageText = [];
@@ -380,13 +409,57 @@ for (const n of list) {
         /, (?:the|a|an) [a-z]/.test(sent.slice(sent.indexOf(t)));
       if (!glossed) out.push(["bare-first-reference:" + t, sent.replace(/\s+/g," ").trim().slice(0, 70)]);
     }
+    /* THE FOOTPRINT RELATIONSHIP (see FOOT above). The passage is the smallest element
+       holding the whole list, widened to its nearest box that is not inline, read with
+       textContent so a folded methodology is read too. */
+    const has = (s, c) => new RegExp(`\\b${c}\\b`).test(s);
+    const alone = (s, c) => [...s.matchAll(new RegExp(`\\b${c}\\b`, "g"))].some(m =>
+      !foot.shared.some(x => has(s.slice(Math.max(0, m.index - 40), m.index + c.length + 40), x)));
+    const passages = new Set();
+    for (const set of [foot.adds, foot.drops]) {
+      const holders = [...document.body.querySelectorAll("*")].filter(e =>
+        !e.closest("script,style,noscript") && set.every(c => has(e.textContent, c)));
+      for (const e of holders.filter(e => !holders.some(x => x !== e && e.contains(x)))) {
+        let b = e;
+        while (b !== document.body && /^inline/.test(getComputedStyle(b).display)) b = b.parentElement;
+        passages.add(b);
+      }
+    }
+    for (const b of passages) {
+      const sents = b.textContent.replace(/\s+/g, " ").split(/(?<=[.!?])\s+(?=[A-Z“])/);
+      sents.forEach((s, i) => {
+        const win = s + " " + (sents[i + 1] || "");
+        const named = set => set.every(c => alone(s, c));
+        /* the four NEO-14 adds are never a list of the twelve; Ashtabula and Trumbull are
+           read as the relationship only beside the other footprint's name */
+        const trig = named(foot.adds) ? foot.drops
+          : named(foot.drops) && /NEO-14|fourteen/i.test(s) ? foot.adds : null;
+        if (trig && !trig.every(c => alone(win, c)))
+          out.push(["footprint-relationship", `names one side of the PIC-12 / NEO-14 difference ` +
+            `without ${trig.join(" and ")}: ${s.trim().slice(0, 90)}`]);
+      });
+    }
+    /* LINKS A READER CANNOT FOLLOW. An href still carrying a template ("{year}") is an
+       API pattern, not a page, and returns an error; an href to a Markdown file in this
+       repository serves the raw source. Every link in the rendered page is read. */
+    const hrefs = [...document.body.querySelectorAll("a[href], area[href]")];
+    for (const a of hrefs) {
+      const h = a.getAttribute("href");
+      let u = null;
+      try { u = new URL(h, location.href); } catch { out.push(["href-unparseable", h.slice(0, 90)]); continue; }
+      if (/[{}]|%7B|%7D/i.test(h)) out.push(["href-template", h.slice(0, 90)]);
+      if (/\.md$/i.test(u.pathname) && (u.protocol === "file:" || /github\.io$/.test(u.hostname)))
+        out.push(["href-raw-markdown", h.slice(0, 90)]);
+    }
+    out.push(["count:hrefs", String(hrefs.length)]);
     return out;
-  }, {withdrawn: WITHDRAWN.filter(w => w.pages.includes(n)).map(w => w.pattern),
+  }, {withdrawn: WITHDRAWN.filter(w => w.pages.includes(n)).map(w => w.pattern), foot: FOOT,
       assumed: ACRO.assumed_known || [], debtPages: Object.entries(ACRO.debt || {}).filter(([,v]) => v.includes("*") || v.includes(n)).map(([k]) => k)});
   all.push(...scripted(n, WITHDRAWN.filter(w => w.pages.includes(n)).map(w => w.pattern)));
   /* An exemption is a pass the gate chose not to count, so it is printed, not hidden. */
   for (const [kind, ctx] of all.filter(([k]) => k.startsWith("exempt:"))) exempt.push(`${n}: ${kind.slice(7)}: ${ctx}`);
-  const hits = all.filter(([k]) => !k.startsWith("exempt:"));
+  for (const [, c] of all.filter(([k]) => k === "count:hrefs")) links += +c;
+  const hits = all.filter(([k]) => !k.startsWith("exempt:") && !k.startsWith("count:"));
   total += hits.length;
   if (hits.length) {
     bad++;
@@ -406,6 +479,9 @@ if (exempt.length) {
 console.log(`\nscripts: ${read} string and template literals read from source; ${holes} value(s) ` +
             `a script fills in at run time (\${...}) were not inspected there, only as rendered; ` +
             `${devs} console or Error message(s) held to withdrawn phrasings only`);
+console.log(`links: ${links} rendered href(s) read for templates and raw Markdown, plus every ` +
+            `href written in a script literal; an href a script fills in at run time and shows ` +
+            `only after a click is not inspected`);
 console.log(bad ? `\n${total} style-law violation(s) on ${bad} page(s)`
                 : `\nall ${list.length} pages clean: no em-dashes, no straight quotes, ` +
                   `no banned words, no withdrawn phrasings`);

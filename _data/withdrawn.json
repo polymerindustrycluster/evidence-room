@@ -1,6 +1,12 @@
 {
   "_about": "Phrasings a published correction withdrew. tools/style.mjs fails a page that prints one again, outside a dated correction note (a block whose text carries 'Correction, <date>' or 'Corrected <date>' before the match) or a mention in curly double quotes. Patterns are JavaScript regular expressions, matched case-insensitively against the rendered text. When you publish a correction, add its withdrawn wording here; 'correction' names the CORRECTIONS.md entry.",
   "withdrawn": [
+    {"pages": ["federal-money", "timeline"],
+     "pattern": "\\btoday\\b|still running(?! (?:until|after))",
+     "correction": "2026-10-04 Footprint, concentration, link and tense fixes: present-tense date words on a dated snapshot"},
+    {"pages": ["accountability", "atlas", "chain", "churn", "cluster-health", "collaboration", "cost-scissors", "federal-money", "funding-map", "index", "laborshed", "location-quotient", "occupations", "patents", "peers", "programs", "reach", "realwage", "revisions", "scorecard", "sources", "timeline", "wages"],
+     "pattern": "\\b(?:FY ?\\d{4}|fiscal \\d{4}|(?:fiscal |calendar )?year) is (?:still running|not over|still open)|next (?:\\w+ )?dates to check",
+     "correction": "2026-10-04 Footprint, concentration, link and tense fixes: present-tense date words on a dated snapshot"},
     {"pages": ["cost-scissors"], "pattern": "seller[’']s win|winning seat",
      "correction": "2026-09-30 cost-scissors: selling-price indexes cannot show who won; finished products are the seat still at its peak"},
     {"pages": ["revisions", "index"], "pattern": "(?:plastic and rubber )?goods made from (?:them|it)",
