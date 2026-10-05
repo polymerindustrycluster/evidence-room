@@ -10,6 +10,8 @@
     {"pages": ["accountability", "atlas", "chain", "churn", "cluster-health", "collaboration", "cost-scissors", "federal-money", "funding-map", "index", "laborshed", "location-quotient", "occupations", "patents", "peers", "programs", "reach", "realwage", "revisions", "scorecard", "sources", "timeline", "wages"],
      "pattern": "\\b(?:FY\\s?\\d{4}|fiscal \\d{4}|(?:fiscal |calendar )?year) is (?:still running|not over|still open)|next (?:\\w+ )?dates to check",
      "correction": "2026-10-04 Footprint, concentration, link and tense fixes: present-tense date words on a dated snapshot"},
+    {"pages": ["sources"], "pattern": "money that has actually moved",
+     "correction": "2026-10-05 Dated wording, keyboard focus, hero contrast and the grant documents as sources: an obligation is a commitment, an outlay a payment"},
     {"pages": ["sources"], "pattern": "marked in orange have no endpoint and no script",
      "correction": "2026-10-04 sources: orange is a source with no endpoint; one of the six, the company catalogue, has a script"},
     {"pages": ["federal-money"], "pattern": "one obligation total for a single fiscal year, category and industry code",

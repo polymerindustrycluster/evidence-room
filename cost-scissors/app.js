@@ -1178,6 +1178,16 @@ document.getElementById("spreadsrc").innerHTML =
 /* The closer resolves the hero's question and hands the reader the next thing to watch:
    the gap the whole page is about came within a point of closing three months ago,
    which is the live question the shipped data can pose but not settle. */
+/* WHAT THE NEAR-CLOSURE DID NEXT, read off the months after it. The closer said "the next
+   resin move decides whether it holds" while the shipped June and July prints already
+   showed it had not (PR #48 review, 5 October 2026). Only when the dip is the latest month
+   is the outcome still open; claim cs-spread-near-close pins the reopening. */
+const dipAfterN = spr.length - 1 - spr.indexOf(sDip);
+const dipResinMove = RM[last.date] - RM[sDip.date];
+const dipAfter = !dipAfterN ? "the next resin move decides whether it holds."
+  : `it did not hold. In the ${dipAfterN === 1 ? "month" : (dipAfterN === 2 ? "two" : dipAfterN) + " months"}
+     after, resin ${dipResinMove < 0 ? "fell" : "rose"} ${Math.abs(dipResinMove).toFixed(1)} points
+     and the gap ${last.v > sDip.v ? "reopened to" : "stayed at"} ${sp(last.v)} by ${monF(last.date)}.`;
 document.getElementById("closersub").innerHTML =
   `<b>The wellhead gave back its whole spike and then some (${pct(gas.retraced)}); resin
    makers about a third; finished products none.</b> The converter&rsquo;s gap ran ${sp(sTrough.v)}
@@ -1185,8 +1195,7 @@ document.getElementById("closersub").innerHTML =
    between two indexes is not a margin: these series do not measure a producer&rsquo;s
    full costs.
    It has not been steady either. Resin rose ${sDipResin.toFixed(1)} points in the two
-   months to ${monF(sDip.date)} and the gap closed to +${sDip.v.toFixed(1)}; the next resin move
-   decides whether it holds.`;
+   months to ${monF(sDip.date)} and the gap closed to +${sDip.v.toFixed(1)}; ${dipAfter}`;
 
 /* --------------------------------------------------------------------- assemble */
 function drawAll() { drawOpen(); drawLadder(); drawLines(); drawSpread(); }

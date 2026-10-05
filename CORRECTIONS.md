@@ -37,10 +37,23 @@ focus returns to the control or mark the reader was on. Chain's counties now rep
 pressed state, as its stages do. `tools/access.mjs` presses every toggle and closes every
 detail panel from the keyboard and fails if focus is lost.
 
-**The hero eyebrow, *every hero*.** **Was:** the brand lime eyebrow measured 4.12:1 on the
-teal hero, under the 4.5:1 that 12px text needs, and the contrast check exempted it. **Is:**
-on the hero only it is #C6DE5D, 4.54:1; the brand lime is unchanged elsewhere, and the
-check exempts nothing.
+**The hero eyebrow, *every hero, chain*.** **Was:** the brand lime eyebrow measured 4.12:1
+on the teal hero, under the 4.5:1 that 12px text needs, and the contrast check exempted it;
+the hero's radial glow took it lower still, to 3.78:1 on accountability at phone width, and
+the check could not see a glow drawn by a pseudo-element. **Is:** on the hero only it is
+#C6DE5D, 4.54:1, and the glow is masked out of the eyebrow's band; the brand lime is
+unchanged elsewhere. The check exempts nothing and now also measures the rendered pixels
+behind every hero line at 1440, 768 and 390px, which also caught chain's phone-width stage
+labels at 3.87:1 and 2.94:1; they are now #C0DBE1, 4.69:1.
+
+**Two sentences that said more than their data, *cost-scissors, sources*.** **Was:**
+cost-scissors' closing line said the next resin move would decide whether May 2026's
+near-closure of the gap held, though the June and July prints already showed resin
+falling 10.9 points and the gap reopening to +14.3. The sources guide said one of an
+award's three figures is money that "has actually moved"; an obligation is a commitment
+to pay, and a payment is an outlay. **Is:** the closer reads what happened after the dip
+off the data, and `cs-spread-near-close` pins it; the guide says none of the three is
+money already paid, and the old phrase is on the withdrawn list.
 
 **The grant documents as sources, *accountability, scorecard, cluster-health,
 federal-money*.** **Was:** these pages print figures from the signed EDA Notices of Award
