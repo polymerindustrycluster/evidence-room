@@ -21,9 +21,8 @@ funding-map and two on wages. No page said at its top whether it had been correc
 **Is:** the links open a corrections page on this site that renders this file as written,
 newest first, and narrows it to the entries naming one page. The seven notes sit below the
 headline, beside what each corrects, in their original words. Each byline ends with a link
-counting the page’s corrections since publication; its full wording says how many changed a
-figure and how many only wording, and whether one changed the headline, and it opens that
-page’s entries here. `verify_consistency.py` fails a build whose rendered log has lost an entry or whose
+counting the page’s corrections since publication; its full wording also says whether one
+changed the headline, and it opens that page’s entries here. `verify_consistency.py` fails a build whose rendered log has lost an entry or whose
 page counts disagree with it, and the style gate fails a dated correction note placed above
 a page’s first section heading. No figure changed.
 

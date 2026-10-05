@@ -1,4 +1,4 @@
-"""Regressions for derive_corrections.py's page and kind readings (PR #49 review, 2026-10-05).
+"""Regressions for derive_corrections.py's page readings (PR #49 review, 2026-10-05).
 
 Each test edits the real CORRECTIONS.md text in memory and parses it, so the fixtures are the
 entries that went wrong.
@@ -14,7 +14,7 @@ SRC = open(dc.SRC, encoding="utf-8").read()
 
 
 def kinds(log, entry_id):
-    return next(e for e in log["entries"] if e["id"] == entry_id)["kinds"]
+    return next(e for e in log["entries"] if e["id"] == entry_id)["flags"]
 
 
 class PagesNamed(unittest.TestCase):
@@ -42,69 +42,14 @@ class PagesNamed(unittest.TestCase):
             dc.PAGES_ADDED["2026-09-30 — More sentences that said more"] = old
 
 
-class Kinds(unittest.TestCase):
-    def test_page_count_is_a_figure(self):
-        """The sources page count, 23 to 24, under an entry that says no figure changed."""
+class Headlines(unittest.TestCase):
+    def test_headline_pairs_hold(self):
+        """The ten hand-listed headline changes each land on an entry naming that page."""
         log, _ = dc.parse(SRC)
-        self.assertEqual(kinds(log, "2026-10-04-5")["sources"]["kind"], "figure")
-
-    def test_contested_pair_fails_until_read(self):
-        """'No figure changed' in shared text against a page's own swapped number fails."""
-        key = ("2026-10-04 — The corrections log is a page", "sources")
-        old = dc.KIND_OVERRIDE.pop(key)
-        try:
-            with self.assertRaises(SystemExit) as cm:
-                dc.parse(SRC)
-            self.assertIn("KIND_OVERRIDE", str(cm.exception))
-        finally:
-            dc.KIND_OVERRIDE[key] = old
-
-    def test_one_count_changed_reaches_only_the_pages_printing_it(self):
-        """'One count changed (timeline)': timeline and the hub card that prints it are figures,
-        every other page in the entry is wording."""
-        log, _ = dc.parse(SRC)
-        k = kinds(log, "2026-10-04-2")
-        figs = sorted(p for p, v in k.items() if v["kind"] == "figure")
-        self.assertEqual(figs, ["federal-money", "index", "sources", "timeline"])
-
-
-class StrictRule(unittest.TestCase):
-    """Grok's four misreadings on PR #49 (2026-10-05). Each must read as a figure."""
-
-    def test_spelled_numbers_count(self):
-        """'counted nine pages' to 'eight of the 23 registered pages': nine and eight are numbers."""
-        log, _ = dc.parse(SRC)
-        self.assertEqual(kinds(log, "2026-09-08-12")["sources"]["kind"], "figure")
-        self.assertNotEqual(dc.number_bag("nine pages"), dc.number_bag("eight of the pages"))
-
-    def test_a_number_still_mentioned_elsewhere_does_not_mask_a_change(self):
-        """'the 68 counted here' to 67, while the Is still mentions 68 elsewhere."""
-        log, _ = dc.parse(SRC)
-        self.assertEqual(kinds(log, "2026-09-28-5")["timeline"]["kind"], "figure")
-        self.assertNotEqual(dc.number_bag("the 68 counted"), dc.number_bag("reads 67; 68 is the calendar's"))
-
-    def _rule_says_figure(self, pre, page):
-        """With the hand reading removed, the rule contests the entry's 'nothing changed'."""
-        key = next(k for k in dc.KIND_OVERRIDE if k[1] == page and pre.startswith(k[0]))
-        old = dc.KIND_OVERRIDE.pop(key)
-        try:
-            with self.assertRaises(SystemExit) as cm:
-                dc.parse(SRC)
-            self.assertIn(page, str(cm.exception))
-        finally:
-            dc.KIND_OVERRIDE[key] = old
-
-    def test_unchanged_sentence_does_not_override_the_numbers(self):
-        """Programs 2.48 and 2.37 to 2.41 and 2.30, beside 'counts ... are unchanged'."""
-        self._rule_says_figure("2026-09-08 — Program comparisons before rounding", "programs")
-        log, _ = dc.parse(SRC)
-        self.assertEqual(kinds(log, "2026-09-08-7")["programs"]["kind"], "figure")
-
-    def test_removed_number_is_a_figure(self):
-        """Timeline's fallback 68/69 to 67, 68 and 18, beside 'event rows are unchanged'."""
-        self._rule_says_figure("2026-09-11 — Documentary descriptions and event-count fallbacks", "timeline")
-        log, _ = dc.parse(SRC)
-        self.assertEqual(kinds(log, "2026-09-11-1")["timeline"]["kind"], "figure")
+        flagged = sorted((e["id"], p) for e in log["entries"]
+                         for p, f in e["flags"].items() if f["headline_changed"])
+        self.assertEqual(len(flagged), len(dc.HEADLINE))
+        self.assertTrue(all("kind" not in f for e in log["entries"] for f in e["flags"].values()))
 
 
 if __name__ == "__main__":

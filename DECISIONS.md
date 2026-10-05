@@ -15,10 +15,9 @@ product and domain decisions that a reader or rebuilder needs.
 - **"Corrections since publication" leaves out corrections made before a page was first
   published** (the scorecard and accountability before release, and the 17 August
   pre-publication review on collaboration and reach). They stay in the log.
-- **Kind is per page, by a strict rule** (John, 2026-10-05): figure when any number in that
-  page's Was differs from its Is (compared as a multiset, spelled-out numbers included), else
-  wording. An entry's own "No figure changed" never overrides it; where the two disagree, the
-  build stops until a hand reading with its reason is recorded. **Headline changed** means the page's H1 changed, listed by hand.
+- **No wording/figure split** (John, 2026-10-05): automatic wording/figure classification was
+  wrong in both directions; the summary counts corrections and says whether the headline changed.
+  **Headline changed** means the page's H1 changed, listed by hand and checked against the entries.
 - **The summary is a short link at the end of the byline** ("6 corrections"), John's call on
   2026-10-05: a line above the first chart cost every page a line of its cold open. The full
   sentence is the link's accessible name and title, and heads the page's view of the log.

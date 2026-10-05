@@ -586,7 +586,8 @@ const PV = (() => {
      the top how many corrections the page has had, of what kind, and whether the headline
      moved. It is generated from _data/corrections_by_page.json, which
      _data/build/derive_corrections.py writes from CORRECTIONS.md, so it cannot disagree
-     with the log it links to. Corrections made before a page was first published are in
+     with the log it links to. It counts entries and says whether the headline changed; an
+     automatic wording/figure split was dropped as wrong both ways (John, 2026-10-05). Corrections made before a page was first published are in
      the log but not in this count. A page with none prints nothing. */
   const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
                   "September", "October", "November", "December"];
@@ -600,11 +601,9 @@ const PV = (() => {
   /* The fuller sentence, also printed by the log's own page view. */
   function correctionsSentence(list) {
     const pub = list.filter(e => !e.before_publication);
-    const fig = pub.filter(e => e.kind === "figure").length;
     const moved = [...new Set(pub.filter(e => e.headline_changed).map(e => e.date))].sort();
-    return `${pub.length} correction${pub.length === 1 ? "" : "s"} since publication: ` +
-      `${pub.length - fig} wording, ${fig} figure${fig === 1 ? "" : "s"}. ` +
-      (moved.length ? `Headline corrected ${onDates(moved)}.` : "Headline unchanged.");
+    return `${pub.length} correction${pub.length === 1 ? "" : "s"} since publication. ` +
+      (moved.length ? `Headline changed on ${onDates(moved)}.` : "Headline unchanged.");
   }
   async function correctionsSummary(page) {
     if (document.querySelector(".pv-corr-sum")) return null;

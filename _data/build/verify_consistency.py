@@ -993,9 +993,9 @@ def check_corrections(web: str = WEB) -> None:
             err("corrections", p, f"summary lists {len(got)} entries; the log has {len(naming.get(p, []))} "
                 "naming this page")
         for x in got:
-            if x.get("kind") not in ("wording", "figure") or not isinstance(x.get("headline_changed"), bool):
-                err("corrections", p, f"entry {x.get('id')} carries kind {x.get('kind')!r} and "
-                    f"headline_changed {x.get('headline_changed')!r}; need wording or figure, and true or false")
+            if not isinstance(x.get("headline_changed"), bool):
+                err("corrections", p, f"entry {x.get('id')} carries headline_changed "
+                    f"{x.get('headline_changed')!r}; need true or false")
 
 
 # ------------------------------------------------------------------------------- main
