@@ -51,13 +51,19 @@
   "realwage",
   "cost-scissors",
   "sources",
-  "index"
+  "index",
+  "",
+  "RAISED ON PURPOSE, 2026-10-04: laborshed 1542 -> 1561, one byline line. The review",
+  "(F§15) found LEHD and LODES unexpanded in the byline, their first reference; spelling",
+  "them out wraps the byline to a third line at 1440px (measured on macOS, where this page",
+  "read exactly its recorded 1542 before the change). A definition owed to the reader",
+  "outranks 19px; lower it again when the hero is next edited."
  ],
  "ceilings": {
   "churn": 1756,
   "cluster-health": 1085,
   "federal-money": 1701,
-  "laborshed": 1542,
+  "laborshed": 1561,
   "occupations": 1555,
   "peers": 1339,
   "revisions": 1356,

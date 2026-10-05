@@ -190,6 +190,14 @@
    "falsified_if": "A restated award, an eighth lead, or a recipient row that names a line item rather than an organisation being counted as one. The difference between the two dollar figures is the workforce award with no published recipient breakdown, and collapsing them would be the claim this tile exists to avoid."
   },
   {
+   "id": "capital-unverified-travels",
+   "text": "Capital tile reading: one of the seven awards, Huntsman’s $5,970,805, has a signed notice but no USAspending record, so its execution is not verified; it is counted in the $51.0 million. The award, the amount and the qualifier are read from the funding map's evidence fields, the same ones its panel, register row and CSV read.",
+   "source": "funding-map/data/funding.json evidence fields, via derive_health.py",
+   "assert": "(lambda unv, rd: len(unv) == 1 and all(f'{n}’s ${a:,}' in rd for n, a in unv) and 'execution is not verified' in rd and 'counted in the $51.0 million' in rd)([(r['name'], w['amount']) for r in D['fm']['recipients'] for w in r['awards'] if w['programId'] in ('eda-direct', 'apex-workforce') and (lambda w: {**one(p for p in D['fm']['programs'] if p['id'] == w['programId']).get('evidence', {}), **w.get('evidence', {})})(w)['execution'] == 'Not verified'], D['h']['tiles'][4]['reading'])",
+   "actual": "D['h']['tiles'][4]['reading']",
+   "falsified_if": "The funding map marks a different award, or none, as not verified and the tile is not re-derived; or the qualifier is dropped from the reading while the amount stays in the $51.0 million. Added 4 October 2026 (ER-01): the tile said 'written into signed awards naming seven organizations' with no word that one of the seven has no public record of execution."
+  },
+  {
    "id": "capital-move",
    "text": "Capital tile: routine prime-contract obligations rose to $41.22M in FY2025 from $25.01M, 65 percent higher. The move exceeds the median earlier annual move, beating three of five earlier moves.",
    "source": "USAspending obligations at place of performance, NAICS 325 and 326, 2025 dollars, via federal-money/data/federal.json",

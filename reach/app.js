@@ -111,7 +111,7 @@ const pctf = v => (v * 100).toFixed(0) + "%";
 
 PV.figures([
   ["key", N(T.works), "polymer papers", `${D.meta.home.length} universities, 2015–2024`],
-  ["", N(T.partners_shown), "partner institutions", `across ${T.countries} countries`],
+  ["", N(T.partners_shown), "partner institutions", `across ${T.countries} countries; ${N(T.partners)} before ${N(T.quarantined)} flagged affiliation matches are set aside`],
   ["", pctf(T.led_share), "corresponding author here", `at Akron or Case Western, on the ${N(T.attributable)} papers naming one; papers with no outside coauthor count too`],
   ["", pctf(T.top10_share), "in their field’s top tenth", `field- and age-weighted citations, on the ${N(T.pct_n)} of ${N(T.works)} papers OpenAlex scores`]
 ]);
@@ -351,7 +351,7 @@ PV.figures([
 }
 
 document.getElementById("closersub").innerHTML =
-  `<b>${N(T.works)} papers, ${N(T.partners_shown)} institutions, ${T.countries} countries,
+  `<b>${N(T.works)} papers, ${N(T.partners_shown)} partner institutions once the flagged affiliation matches are set aside, ${T.countries} countries,
    and ${pctf(T.top10_share)} of the work in the top tenth of its field.</b> The reason to
    measure this is not the size of the number. It is that the case made by the Polymer
    Industry Cluster (PIC), an initiative of the Greater Akron Chamber, rests on assets that

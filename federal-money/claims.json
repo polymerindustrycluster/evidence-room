@@ -58,7 +58,7 @@
       "actual": "(sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7)",
       "falsified_if": "The named quantity changes its stated rounded value, source scope changes, or the asserted source coverage fails. Recompute the prose and chart together before publishing a new vintage.",
       "counts": [
-        {"figure": "about $41 million a year", "noun": "Routine federal contracts"},
+        {"figure": "about $41 million a year", "noun": "region"},
         {"figure": "averaged $41.4 million a year", "noun": "seven finished fiscal years"},
         {"figure": "about 1.2 average years", "noun": "the award is"},
         {"figure": "runs about $41.4 million a year", "noun": "routine flow"},
@@ -77,6 +77,33 @@
       ]
     },
     {
+      "id": "fed-scope-label",
+      "text": "Every total on this page sums all 325* and 326* codes: all chemical manufacturing, drugs (3254) and farm chemicals (3253) included, plus plastics and rubber. That is wider than the cluster register (3252, 3255, 326), so the page labels these totals chemical, plastics and rubber manufacturing, never polymer, in the H1, both chart descriptions, the industry-chart subtitle and the prose that names the flow.",
+      "source": "Complete USAspending transaction-category pull, PIC-12, prime contracts A-D, FY2019–FY2026; _data/SOURCES.json qcew register 3252 + 3255 + 326",
+      "assert": "all(r['code'][:3] in ('325','326') for r in D['f']['naics']) and {'3253','3254'} <= set(r['code'][:4] for r in D['f']['naics']) and sum(r['real'] for r in D['f']['naics'] if r['code'][:4] not in ('3252','3255') and r['code'][:3] != '326') > 0",
+      "actual": "(sorted(set(r['code'][:4] for r in D['f']['naics'])), sum(r['real'] for r in D['f']['naics'] if r['code'][:4] not in ('3252','3255') and r['code'][:3] != '326'))",
+      "falsified_if": "The rows stop including codes outside the register (the label could then narrow), or any printed site of a 325*/326* total loses the chemical, plastics and rubber manufacturing label. The 4 October 2026 correction retired 'polymer industry', 'Federal polymer obligations', 'polymer-coded work' and 'polymer flow' on these totals; reintroducing any of them at a bound site fails here because the label noun leaves the figure's window.",
+      "counts": [
+        {"figure": "about $41 million a year", "noun": "chemical plastics and rubber manufacturing"},
+        {"figure": "obligations by fiscal year", "noun": "chemical plastics and rubber manufacturing"},
+        {"figure": "obligations by six-digit industry code", "noun": "chemical plastics and rubber manufacturing"},
+        {"figure": "one dollar in every 29", "noun": "chemical plastics and rubber manufacturing"},
+        {"figure": "from $12.2 million to $10.2 million", "noun": "chemical plastics and rubber manufacturing"}
+      ]
+    },
+    {
+      "id": "fed-reference-line-basis",
+      "text": "The fiscal-year chart's dashed reference line is the seven finished-year average, $41.4M (FY2019–FY2025), the basis of the headline and the 1.2-year ratio. The eight-year average with partial FY2026, $39.2M, is a named secondary basis and is not drawn. The figure note and the chart's text alternative both say which line is drawn.",
+      "source": "Complete USAspending transaction-category pull, PIC-12, prime contracts A-D, FY2019–FY2026; BLS CUUR0000SA0 monthly observations",
+      "assert": "max(r['fy'] for r in D['f']['naics']) == 2026 and tofixed(sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / len(set(r['fy'] for r in D['f']['naics'] if r['fy'] != 2026)) / 1e6, 1) == '41.4' and len(set(r['fy'] for r in D['f']['naics'] if r['fy'] != 2026)) == 7 and tofixed(sum(r['real'] for r in D['f']['naics']) / 8 / 1e6, 1) == '39.2'",
+      "actual": "(sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7, sum(r['real'] for r in D['f']['naics']) / 8)",
+      "falsified_if": "Either average moves off its printed rounded value, or the figure note or the chart's text alternative stops naming the seven finished years as the drawn line. Until 4 October 2026 the dashed line was the eight-year mean while the headline used the seven-year one; the old note ('The dashed line averages all eight bars') fails the first binding. The line itself is drawn in app.js, which no claim reads: the drawn label is guarded by the withdrawn phrasing 'eight-year average' in _data/withdrawn.json when present.",
+      "counts": [
+        {"figure": "dashed line is the $41.4 million", "noun": "seven finished years"},
+        {"figure": "dashed line at the $41.4 million", "noun": "seven finished years"}
+      ]
+    },
+    {
       "id": "fed-trough-tire",
       "text": "FY2023 remains the lowest finished year and includes $1.2M of tire obligations in 2025 dollars ($1,175,829 rounded nominal).",
       "source": "Complete USAspending transaction-category pull, PIC-12, prime contracts A-D, FY2019–FY2026; BLS CUUR0000SA0 monthly observations",
@@ -89,7 +116,7 @@
     },
     {
       "id": "fed-total",
-      "text": "Complete FY2019–FY2026 polymer contracting totals $278.6M nominal and $313.6M in 2025 dollars.",
+      "text": "Complete FY2019–FY2026 chemical, plastics and rubber manufacturing contracting totals $278.6M nominal and $313.6M in 2025 dollars.",
       "source": "Complete USAspending transaction-category pull, PIC-12, prime contracts A-D, FY2019–FY2026; BLS CUUR0000SA0 monthly observations",
       "assert": "tofixed(sum(r['amount'] for r in D['f']['naics'])/1e6, 1) == '278.6' and tofixed(sum(r['real'] for r in D['f']['naics'])/1e6, 1) == '313.6'",
       "actual": "(sum(r['amount'] for r in D['f']['naics']),sum(r['real'] for r in D['f']['naics']))",
@@ -135,13 +162,13 @@
     },
     {
       "id": "fed-contract-scope",
-      "text": "Same-basis prime contracting is $9.2B; polymer work is one dollar in every 29.",
+      "text": "Same-basis prime contracting is $9.2B; chemical, plastics and rubber manufacturing work is one dollar in every 29.",
       "source": "Complete USAspending transaction-category pull, PIC-12, prime contracts A-D, FY2019–FY2026; BLS CUUR0000SA0 monthly observations",
       "assert": "tofixed(sum(r['real'] for r in D['f']['contracts']['counties'])/1e9, 1) == '9.2' and tofixed(sum(r['real'] for r in D['f']['contracts']['counties'])/sum(r['real'] for r in D['f']['contracts']['naics']), 0) == '29' and D['f']['contracts']['meta']['filters']['award_type_codes']==['A','B','C','D'] and abs(sum(r['real'] for r in D['f']['contracts']['naics'])-sum(r['real'] for r in D['f']['naics']))<20",
       "actual": "(sum(r['real'] for r in D['f']['contracts']['counties']),sum(r['real'] for r in D['f']['contracts']['naics']),sum(r['real'] for r in D['f']['contracts']['counties'])/sum(r['real'] for r in D['f']['contracts']['naics']))",
       "falsified_if": "The named quantity changes its stated rounded value, source scope changes, or the asserted source coverage fails. Recompute the prose and chart together before publishing a new vintage.",
       "counts": [
-        {"figure": "one dollar in every 29", "noun": "polymer-coded work"}
+        {"figure": "one dollar in every 29", "noun": "manufacturing work"}
       ]
     },
     {
@@ -384,7 +411,7 @@
       "actual": "(sum(r['real'] for r in D['f']['naics'] if r['fy']==2024 and r['code']!='326211'), sum(r['real'] for r in D['f']['naics'] if r['fy']==2025 and r['code']!='326211'), 1-sum(r['real'] for r in D['f']['naics'] if r['fy']==2025 and r['code']!='326211')/sum(r['real'] for r in D['f']['naics'] if r['fy']==2024 and r['code']!='326211'))",
       "falsified_if": "The named quantity changes its stated rounded value, source scope changes, or the asserted source coverage fails. Recompute the prose and chart together before publishing a new vintage. The direction is load-bearing: if the ex-tire flow stops falling, the paragraph must not say the rest of the flow fell.",
       "counts": [
-        {"figure": "from $12.2 million to $10.2 million", "noun": "polymer flow"}
+        {"figure": "from $12.2 million to $10.2 million", "noun": "manufacturing"}
       ]
     },
     {

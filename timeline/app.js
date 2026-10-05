@@ -1180,6 +1180,7 @@ function loadData(file) {
     put('h-covered', hc.lastCoveredYear); put('h-runsin', V.runsIn.length);
     put('h-merged', (HER.meta.merged || []).length);
     put('cad-before', before); put('cad-since', since);
+    put('cad-ratio', Math.round((since / before) * 10) / 10);
     put('op-open', sinceOpen);
     put('n-fwd', IN.filter((e) => !e.delivered).length);
 
@@ -1222,7 +1223,7 @@ function loadData(file) {
         `leaves out ${media.length} dated rows it files as media coverage, press and social ` +
         `mentions rather than events, and ${ctx} rows of pre-1920 context. All ` +
         `${mediaSince} of the media rows fall after the designation, so counting them would ` +
-        `put the ratio at ${withMedia} times rather than ${Math.round(since / before)}. The ` +
+        `put the ratio at ${withMedia} times rather than ${Math.round((since / before) * 10) / 10}. The ` +
         `ratio is fragile in the other direction: one more row before the designation takes ` +
         `it to ${oneMore}.`;
     }
@@ -1369,7 +1370,7 @@ function loadData(file) {
         'travel to this page.',
       small_numbers: `The year-by-year record was compiled after the designation, so its early years ` +
         `are under-counted: ${before} is the fewest the before count can be, and ` +
-        `${Math.round(since / before)} times the most the jump can be.`,
+        `${Math.round((since / before) * 10) / 10} times the most the jump can be.`,
     }});
 
     buildFilters(); buildTable(); render(); renderCadence();

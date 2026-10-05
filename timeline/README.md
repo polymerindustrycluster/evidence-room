@@ -5,10 +5,12 @@ history supplies context; it does not establish why a federal designation was aw
 or which historical outcomes PIC caused.
 
 As checked on 2026-09-11, the historical view contains 31 events first dated 1898–2012:
-20 capacity or industry-history events and 11 research contributions. The operating
-calendar contains 68 delivered events and 18 scheduled dates. The matched 34-month
-comparison counts 4 public events before the October 2023 designation and 67 afterward;
-the calendar starts earlier, in January 2023. These are counts of recorded events, not
+20 capacity or industry-history events and 11 research contributions. As recounted on
+2026-10-04, the operating calendar contains 67 delivered events and 18 scheduled dates,
+and the matched 34-month comparison counts 4 public events before the October 2023
+designation and 66 afterward; the calendar starts earlier, in January 2023. Both were one
+higher until the 25 May 2026 Wall Street Journal feature (E183) was filed with the other
+press coverage, which the page holds out of both charts. These are counts of recorded events, not
 measures of economic impact. Runnable assertions live in `claims.json`.
 
 Vanilla JavaScript and SVG draw the figures; shared structure and methodology

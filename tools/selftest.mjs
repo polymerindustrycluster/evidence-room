@@ -309,6 +309,34 @@ const CASES = [
       return JSON.stringify(registry, null, 1) + "\n";
     }},
 
+  {gate: "provenance", page: "funding-map", args: ["funding-map"],
+   defect: "a page whose reproduce panel describes a source pull it never used: the funding " +
+           "map, built from signed award documents, listed the USAspending contract recipe " +
+           "(ER-04, 2026-10-04)",
+   file: "_data/SOURCES.json",
+    inject: s => {
+      const registry = JSON.parse(s);
+      registry.by_artifact["funding-map"].push("usaspending");
+      return JSON.stringify(registry, null, 1) + "\n";
+    }},
+
+  {gate: "style", page: "laborshed", args: ["laborshed"], expect: /bare-first-reference:LEHD/,
+   defect: "an acronym left unexpanded in a byline, passed for weeks by a silent debt entry " +
+           "(laborshed's LEHD LODES, F§15, 2026-10-04)",
+   inject: s => s.replace(/Census LEHD LODES \(Longitudinal Employer-Household Dynamics Origin-Destination Employment Statistics\)/,
+                          "Census LEHD LODES")},
+
+  {gate: "style", page: "patents", args: ["patents"], expect: /stale-debt:HTTP/,
+   defect: "an acronym debt entry the page no longer needs, which would excuse the next bare " +
+           "reference without anyone seeing it",
+   inject: s => s.replace("<body>", "<body><p>HTTP (the protocol a browser speaks) carries every request here.</p>")},
+
+  {gate: "style", page: "peers", args: ["peers"], expect: /withdrawn-link:/,
+   defect: "a withdrawn citation coming back as a link address, which the text walk never " +
+           "reads (Michelin's 2024 anniversary post, U P1, 2026-10-04)",
+   inject: s => s.replace('href="https://michelinmedia.com/about/"',
+                          'href="https://michelinmedia.com/pages/blog/detail/article/c0/a1370/"')},
+
   {gate: "alttext", page: "wages", args: ["wages"],
    defect: "a chart shipped with no accessible description at all",
    /* The structural half of the description defect. The SEMANTIC half, a description that

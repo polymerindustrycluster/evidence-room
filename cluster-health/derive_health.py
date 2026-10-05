@@ -451,6 +451,15 @@ eda_leads = named.get("eda-direct", [])
 LINE_ITEMS = {"Polymer Pilot Facility", "Regional workforce programs"}
 federal_org_named = sum(a for p in federal_programs
                         for nme, a in named.get(p["id"], []) if nme not in LINE_ITEMS)
+# A signed award whose execution is not verified travels with that qualifier wherever its
+# dollars are summed (ER-01, 4 October 2026): Huntsman's notice is signed and held, and
+# USAspending has no record of it, so "signed awards" alone said more than is known. Read
+# from the funding map's own evidence fields, so the tile and the map cannot disagree.
+_ev_prog = {p["id"]: p.get("evidence", {}) for p in fm["programs"]}
+unverified_awards = [(rec["name"], a["amount"]) for rec in fm["recipients"] for a in rec["awards"]
+                     if a["programId"] in {p["id"] for p in federal_programs}
+                     and {**_ev_prog.get(a["programId"], {}), **a.get("evidence", {})}
+                     .get("execution") == "Not verified"]
 
 # ------------------------------------------------------- the one measured revision band
 # From each month's own first and latest index levels, not the stored `pct`: that field is
@@ -462,6 +471,15 @@ rev_series = sorted({p["label"] for p in rev["periods"]})
 # --------------------------------------------------------------------------- assemble
 WORDS = {0: "no", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six",
          7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven", 12: "twelve"}
+_one = len(unverified_awards) == 1
+unverified_note = (
+    f" {'One' if _one else WORDS[len(unverified_awards)].capitalize()} of the "
+    f"{WORDS[len(eda_leads)]} awards, "
+    + " and ".join(f"{n}’s ${a:,}" for n, a in unverified_awards)
+    + f", {'has a signed notice' if _one else 'have signed notices'} but no USAspending record, "
+    f"so {'its' if _one else 'their'} execution is not verified; "
+    f"{'it is' if _one else 'they are'} counted in the ${federal_org_named / 1e6:.1f} million."
+) if unverified_awards else ""
 ORDINAL = {1: "first", 2: "second", 3: "third", 4: "fourth", 5: "fifth", 6: "sixth",
            7: "seventh", 8: "eighth", 9: "ninth", 10: "tenth"}
 
@@ -869,7 +887,7 @@ tiles = [
                     f"{WORDS[len(eda_leads)]} organizations. That is what the record "
                     f"shows: money signed for and assigned to a named recipient. How much "
                     f"of it has been paid out is a different quantity, and this page "
-                    f"does not carry a total for it."),
+                    f"does not carry a total for it." + unverified_note),
         "means": (f"Read ${federal_org_named / 1e6:.1f}M as signed awards naming "
                   f"{WORDS[len(eda_leads)]} organizations. The change "
                   f"printed beside it, up "

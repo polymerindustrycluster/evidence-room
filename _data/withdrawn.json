@@ -1,6 +1,12 @@
 {
-  "_about": "Phrasings a published correction withdrew. tools/style.mjs fails a page that prints one again, outside a dated correction note (a block whose text carries 'Correction, <date>' or 'Corrected <date>' before the match) or a mention in curly double quotes. Patterns are JavaScript regular expressions, matched case-insensitively against the rendered text. When you publish a correction, add its withdrawn wording here; 'correction' names the CORRECTIONS.md entry.",
+  "_about": "Phrasings a published correction withdrew. tools/style.mjs fails a page that prints one again, outside a dated correction note (a block whose text carries 'Correction, <date>' or 'Corrected <date>' before the match) or a mention in curly double quotes. Patterns are JavaScript regular expressions, matched case-insensitively against the rendered text and, since 2026-10-04, against every link's href, so a withdrawn citation cannot return as an address. When you publish a correction, add its withdrawn wording here; 'correction' names the CORRECTIONS.md entry.",
   "withdrawn": [
+    {"pages": ["funding-map"], "pattern": "Ohio money committed but not yet written into a sub-grant",
+     "correction": "2026-10-04 funding-map: the $6,165,608 balance is two parts at two stages; $3,523,500 is already in the Bounce sub-grant"},
+    {"pages": ["peers"], "pattern": "michelinmedia\\.com/pages/blog",
+     "correction": "2026-10-04 peers: Michelin's headquarters is cited to Michelin North America's company profile, not a 2024 anniversary blog post"},
+    {"pages": ["federal-money"], "pattern": "federal polymer obligations|polymer industry(?! cluster)|polymer-coded|polymer flow|polymer contracting|eight-year average|averages all eight bars",
+     "correction": "2026-10-04 federal-money: the 325*/326* totals are chemical, plastics and rubber manufacturing, not polymer; the dashed line is the finished-year average"},
     {"pages": ["cost-scissors"], "pattern": "seller[’']s win|winning seat",
      "correction": "2026-09-30 cost-scissors: selling-price indexes cannot show who won; finished products are the seat still at its peak"},
     {"pages": ["revisions", "index"], "pattern": "(?:plastic and rubber )?goods made from (?:them|it)",

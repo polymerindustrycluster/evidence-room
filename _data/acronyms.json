@@ -9,7 +9,8 @@
   "POST/GET/JSON/README assumed: they appear only in the replication guide, whose reader is executing HTTP requests and knows the verbs.",
   "chain's PAN/RFID/UV/M&A/PE/OEM/NFM/LSR/HCR/RTV entries are inside verbatim vault self-descriptions that policy forbids rewriting; they stay as permanent adjudicated debt, glossed in the methodology instead.",
   "State postal codes assumed: household knowledge, AP-accepted in lists.",
-  "ALFRED: glossed on the page, but the gloss renders from a derived data file AFTER the first prose occurrence; reordering is a data-file edit. Debt with reason, like the vault quotes."
+  "ALFRED: glossed on the page, but the gloss renders from a derived data file AFTER the first prose occurrence; reordering is a data-file edit. Debt with reason, like the vault quotes.",
+  "2026-10-04: tools/style.mjs now prints every first reference a debt entry lets through and fails an entry the page no longer needs (glossed, or also assumed knowledge). Twelve paid entries came off with it, LEHD and LODES among them once laborshed expanded its byline (F§15)."
  ],
  "assumed_known": [
   "3D",
@@ -98,11 +99,7 @@
   "ALFRED": [
    "cluster-health"
   ],
-  "BEA": [
-   "index"
-  ],
   "BLS": [
-   "index",
    "revisions"
   ],
   "CC": [
@@ -132,26 +129,17 @@
   "IM": [
    "federal-money"
   ],
-  "LEHD": [
-   "laborshed"
-  ],
   "LMI": [
    "sources"
   ],
   "LOC": [
    "timeline"
   ],
-  "LODES": [
-   "laborshed"
-  ],
   "LSR": [
    "chain"
   ],
   "M&A": [
    "chain"
-  ],
-  "MI": [
-   "laborshed"
   ],
   "MQM": [
    "federal-money"
@@ -167,9 +155,6 @@
   ],
   "NFM": [
    "chain"
-  ],
-  "NH": [
-   "timeline"
   ],
   "NHHC": [
    "timeline"
@@ -187,17 +172,11 @@
   "OHIO": [
    "funding-map"
   ],
-  "PA": [
-   "laborshed"
-  ],
   "PAN": [
    "chain"
   ],
   "PE": [
    "chain"
-  ],
-  "QCEW": [
-   "sources"
   ],
   "QWI": [
    "occupations"
@@ -208,22 +187,13 @@
   "RFID": [
    "chain"
   ],
-  "RL": [
-   "occupations"
-  ],
   "RPM": [
    "location-quotient"
-  ],
-  "RPP": [
-   "realwage"
   ],
   "RTV": [
    "chain"
   ],
   "SEC": [
-   "sources"
-  ],
-  "SOC": [
    "sources"
   ],
   "TKM": [
@@ -239,9 +209,6 @@
    "accountability"
   ],
   "WORKS": [
-   "laborshed"
-  ],
-  "WV": [
    "laborshed"
   ]
  }
