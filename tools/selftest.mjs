@@ -116,6 +116,13 @@ const CASES = [
            "each story states what would contradict it is false on that page again",
    inject: s => s.replace(/\n *"breaks_if": "A 2024 revision moves another state above Ohio[^\n]*/, "")},
 
+  {gate: "breaksif", page: "peers", args: ["peers"],
+   expect: /not directly under the first chart/,
+   defect: "the breaks-if line back under the hero, where it shipped first and pushed four " +
+           "first charts past their cold-open ceilings",
+   inject: s => s.replace("</body>", '<script>setTimeout(() => document.querySelector(".hero .wrap")' +
+     '.appendChild(document.querySelector(".pv-breaks")), 300)</script></body>')},
+
   {gate: "disclosure", page: "sources", args: ["sources"],
    expect: /link to INTERNAL page \S+ carries no Internal tag/,
    defect: "the source guide linking an unlisted internal page with nothing to say it is " +

@@ -13,8 +13,11 @@
  *     `guards` (the sentence as the page prints it). Read from the SOURCE claims file,
  *     so a renderer cannot vouch for itself;
  *   - every claim with `breaks_if` also has `guards`, and the reverse;
- *   - the rendered hero ends in exactly one line reading "This finding breaks if: "
- *     followed by the hero claim's sentence;
+ *   - the page carries exactly one line reading "This finding breaks if: " followed by
+ *     the hero claim's sentence, DIRECTLY UNDER THE FIRST CHART: nothing between the
+ *     chart's block and the line but its table twin, legend and source lines. First chart
+ *     is tools/coldopen.mjs's definition. Under the hero, where it first shipped, it
+ *     pushed four first charts past their cold-open ceilings (John, 2026-10-05);
  *   - the page carries one closed "What would prove this page wrong" disclosure, placed
  *     before the methodology box, listing every claim's `breaks_if` with its `guards`;
  *   - every `guards` sentence is printed on the page outside that disclosure, so the list
@@ -75,7 +78,22 @@ for (const n of list) {
       const body = document.body.cloneNode(true);
       body.querySelectorAll(".pv-breaks-all, .pv-breaks, script").forEach(e => e.remove());
       return {
-        lines: [...document.querySelectorAll(".pv-breaks")].map(e => [!!e.closest(".hero"), norm(e.textContent)]),
+        lines: [...document.querySelectorAll(".pv-breaks")].map(e => norm(e.textContent)),
+        placed: (() => {
+          const svg = [...document.querySelectorAll("svg")].find(s => {
+            const b = s.getBoundingClientRect();
+            return b.width > 200 && b.height > 80 && !s.closest(".mast");
+          });
+          const line = document.querySelector(".pv-breaks");
+          if (!svg) return "cannot inspect: no chart on the page";
+          if (!line) return null;
+          const tail = e => e.matches("p.src, details, [id$='table'], [class*='legend']") ||
+            !!e.querySelector(":scope > .pv-table");
+          let at = svg.closest(".wrap > *") || svg;
+          while (at.nextElementSibling && at.nextElementSibling !== line && tail(at.nextElementSibling))
+            at = at.nextElementSibling;
+          return at.nextElementSibling === line ? null : "the breaks-if line is not directly under the first chart";
+        })(),
         sections: all.length,
         summary: norm(d?.querySelector("summary")?.textContent),
         open: d ? d.open : null,
@@ -87,9 +105,9 @@ for (const n of list) {
     await p.close();
     if (hero && hero.breaks_if) {
       const line = `${LEAD} ${norm(hero.breaks_if)}`;
-      if (r.lines.length !== 1) probs.push(`${r.lines.length} breaks-if lines on the page, not one under the hero`);
-      else if (!r.lines[0][0]) probs.push("the breaks-if line is not inside the hero");
-      else if (r.lines[0][1] !== line) probs.push(`the line under the hero reads "${r.lines[0][1]}", not the hero claim's`);
+      if (r.lines.length !== 1) probs.push(`${r.lines.length} breaks-if lines on the page, not one`);
+      else if (r.lines[0] !== line) probs.push(`the breaks-if line reads "${r.lines[0]}", not the hero claim's`);
+      if (r.placed) probs.push(r.placed);
     }
     if (r.sections !== 1) probs.push(`${r.sections} "${TITLE}" disclosures, not one`);
     else {
@@ -107,9 +125,9 @@ for (const n of list) {
   }
   if (probs.length) bad++;
   console.log(`${n.padEnd(18)} ${probs.length ? "FAIL  " + probs.join("; ")
-                                              : `PASS  hero line and ${want.length} in the disclosure`}`);
+                                              : `PASS  line under the first chart and ${want.length} in the disclosure`}`);
 }
 await b.close();
 console.log(bad ? `\n${bad} listed page(s) do not state what would prove them wrong`
-                : `\nall ${checked} listed pages state what would prove their headline wrong, under the hero and in full`);
+                : `\nall ${checked} listed pages state what would prove their headline wrong, under the first chart and in full`);
 process.exit(bad ? 1 : 0);

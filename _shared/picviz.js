@@ -847,19 +847,30 @@ const PV = (() => {
      code names, tolerances and the claim's own history, so it stays in claims.json. What a
      reader gets is `breaks_if`: one plain sentence naming a change in the data that would
      make the finding wrong, beside `guards`, the sentence as the page prints it. The
-     claims file names its `hero`; that claim's sentence sits under the hero, and every
-     claim that has one is listed, closed by default, just before the methodology box.
-     tools/breaksif.mjs fails a listed story that lacks either. */
+     claims file names its `hero`; that claim's sentence sits directly under the page's
+     FIRST chart, after the chart's table twin, legend and source lines, so the first
+     screen and every cold-open measurement are unchanged (John, 2026-10-05: under the
+     hero it pushed four first charts past their ceilings). "First chart" is the
+     coldopen gate's definition. Every claim that has a breaks_if is listed, closed by
+     default, just before the methodology box. tools/breaksif.mjs fails a listed story
+     that lacks either, or whose line is anywhere but there. */
+  const CHART_TAIL = e => e.matches("p.src, details, [id$='table'], [class*='legend']") ||
+    !!e.querySelector(":scope > .pv-table");
   function breaksIf(spec, method) {
     const list = ((spec && spec.claims) || []).filter(c => c.breaks_if && c.guards);
     const hero = list.find(c => c.id === spec.hero);
     if (!list.length) return null;
-    const top = document.querySelector(".hero .wrap");
-    if (hero && top && !top.querySelector(".pv-breaks")) {
+    const svg = [...document.querySelectorAll("svg")].find(s => {
+      const b = s.getBoundingClientRect();
+      return b.width > 200 && b.height > 80 && !s.closest(".mast");
+    });
+    if (hero && svg && !document.querySelector(".pv-breaks")) {
+      let at = svg.closest(".wrap > *") || svg;
+      while (at.nextElementSibling && CHART_TAIL(at.nextElementSibling)) at = at.nextElementSibling;
       const p = document.createElement("p");
       p.className = "pv-breaks";
       p.innerHTML = `<b>This finding breaks if:</b> ${hero.breaks_if}`;
-      top.appendChild(p);
+      at.after(p);
     }
     const sec = document.createElement("section");
     sec.className = "band pv-breaks-all";
