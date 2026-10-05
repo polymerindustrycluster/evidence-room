@@ -142,9 +142,9 @@
    "actual": "[(e['date'], e['title']) for e in D['t']['events'] if not e['delivered'] and e['date'] >= '2027-01-01']",
    "falsified_if": "A scheduled date is delivered or slips across the 2026/2027 boundary, a new forward milestone is published, or a 2027+ scheduled event appears that is neither the pilot-facility readiness target nor an end/completion date — the 'the other eight are completion dates' sentence would then be wrong.",
    "counts": [
-    {"figure": "18 dates after its 13 August 2026 cut-off were scheduled", "noun": "not delivered"},
+    {"figure": "18 dates past the cut-off are scheduled", "noun": "not delivered"},
     {"figure": "18 events", "noun": "only scheduled"},
-    {"figure": "18 hollow dots", "noun": "scheduled beyond it"}
+    {"figure": "18 hollow dots", "noun": "wait beyond it"}
    ]
   },
   {
