@@ -1,6 +1,10 @@
 {
   "_about": "Phrasings a published correction withdrew. tools/style.mjs fails a page that prints one again, outside a dated correction note (a block whose text carries 'Correction, <date>' or 'Corrected <date>' before the match) or a mention in curly double quotes. Patterns are JavaScript regular expressions, matched case-insensitively against the rendered text and, since 2026-10-04, against every link's href, so a withdrawn citation cannot return as an address. When you publish a correction, add its withdrawn wording here; 'correction' names the CORRECTIONS.md entry.",
   "withdrawn": [
+    {"pages": ["sources"], "pattern": "marked in orange have no endpoint and no script",
+     "correction": "2026-10-04 sources: orange is a source with no endpoint; one of the six, the company catalogue, has a script"},
+    {"pages": ["federal-money"], "pattern": "one obligation total for a single fiscal year, category and industry code",
+     "correction": "2026-10-04 federal-money: a table row is one fiscal year summed across every code that recorded obligations"},
     {"pages": ["funding-map"], "pattern": "Ohio money committed but not yet written into a sub-grant",
      "correction": "2026-10-04 funding-map: the $6,165,608 balance is two parts at two stages; $3,523,500 is already in the Bounce sub-grant"},
     {"pages": ["peers"], "pattern": "michelinmedia\\.com/pages/blog",

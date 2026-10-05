@@ -103,14 +103,16 @@ const scripted = (page, patterns) => {
   return out;
 };
 
+/* Deep-link states read as well as the default page (see the loop). One recipient on the
+   standard evidence and the one whose execution is not verified. */
+const STATES = {"funding-map": ["#recipient/bioverde", "#recipient/huntsman"]};
+
 const b = await chromium.launch();
 let bad = 0, total = 0;
 const exempt = [], debts = [];
 for (const n of list) {
   const p = await b.newPage({viewport: {width: 1440, height: 1000}});
-  await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
-  await p.waitForTimeout(1600)  /* 900 raced chain's 785 JS-rendered cards: the acronym inventory flapped between runs. 2026-09-01 */;
-  const all = await p.evaluate(({withdrawn, assumed, debtOwn, debtWild}) => {
+  const READ = ({withdrawn, assumed, debtOwn, debtWild}) => {
     const BANNED = /\b(crucial|delve|matters)\b/i;
     const out = [];
     const pageText = [];
@@ -329,6 +331,12 @@ for (const n of list) {
       if (!verbatim && /"/.test(s)) out.push(["straight-double", ctx.slice(0, 70)]);
       const m = s.match(BANNED);
       if (m) out.push([`banned:${m[1].toLowerCase()}`, ctx.slice(0, 70)]);
+      /* A CASE CHANGE THAT BROKE A NAME. funding-map lowercased the first letter of a data
+         string to fit it mid-sentence and printed "uSAspending" (PR #43 review,
+         2026-10-04). One lowercase letter, then capitals, then lowercase again, is no
+         English word or acronym; "mRNA" and "iPhone" do not match. */
+      const cm = s.match(/\b[a-z][A-Z]{2,}[a-z]/);
+      if (cm) out.push([`case-mangled:${cm[0]}`, ctx.slice(0, 70)]);
       /* Matched against the passage this node belongs to, so a phrase split by inline
          markup (<b>81%</b> led from here), a <br>, or wrapped source lines is still one
          phrase. A passage's text is only the text it owns: a nested block owns its own. */
@@ -409,10 +417,29 @@ for (const n of list) {
         if (re.test(href)) out.push(["withdrawn-link:" + re.source, href.slice(0, 90)]); });
     }
     return out;
-  }, {withdrawn: WITHDRAWN.filter(w => w.pages.includes(n)).map(w => w.pattern),
+  };
+  const ARGS = {withdrawn: WITHDRAWN.filter(w => w.pages.includes(n)).map(w => w.pattern),
       assumed: ACRO.assumed_known || [],
       debtOwn: Object.entries(ACRO.debt || {}).filter(([,v]) => v.includes(n)).map(([k]) => k),
-      debtWild: Object.entries(ACRO.debt || {}).filter(([,v]) => v.includes("*")).map(([k]) => k)});
+      debtWild: Object.entries(ACRO.debt || {}).filter(([,v]) => v.includes("*")).map(([k]) => k)};
+  const url = pathToFileURL(process.cwd() + "/dist/" + n + ".html").href;
+  await p.goto(url);
+  await p.waitForTimeout(1600)  /* 900 raced chain's 785 JS-rendered cards: the acronym inventory flapped between runs. 2026-09-01 */;
+  const all = await p.evaluate(READ, ARGS);
+  /* STATES THE DEFAULT READ NEVER SHOWS. A panel a deep link opens is prose a reader
+     quotes, and its sentences are assembled from data at run time, so the script scan
+     below sees only holes there. Each listed state is loaded and read like the page;
+     a finding already made in the default state is not counted twice. */
+  const seenKinds = new Set(all.map(([k, c]) => k + "\u0000" + c));
+  for (const h of STATES[n] || []) {
+    const q = await b.newPage({viewport: {width: 1440, height: 1000}});
+    await q.goto(url + h);
+    await q.waitForTimeout(1600);
+    for (const [k, c] of await q.evaluate(READ, ARGS))
+      if (!seenKinds.has(k + "\u0000" + c) && !/^(debt|debt-unseen|stale-debt):/.test(k)) {
+        seenKinds.add(k + "\u0000" + c); all.push([k, `${h}: ${c}`]); }
+    await q.close();
+  }
   all.push(...scripted(n, WITHDRAWN.filter(w => w.pages.includes(n)).map(w => w.pattern)));
   /* An exemption is a pass the gate chose not to count, so it is printed, not hidden. */
   for (const [kind, ctx] of all.filter(([k]) => k.startsWith("exempt:"))) exempt.push(`${n}: ${kind.slice(7)}: ${ctx}`);

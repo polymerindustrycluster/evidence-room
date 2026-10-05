@@ -337,6 +337,12 @@ const CASES = [
    inject: s => s.replace('href="https://michelinmedia.com/about/"',
                           'href="https://michelinmedia.com/pages/blog/detail/article/c0/a1370/"')},
 
+  {gate: "style", page: "funding-map", args: ["funding-map"], expect: /case-mangled:uSA/,
+   defect: "a data string lowercased at its first letter to sit mid-sentence, printing " +
+           "\"uSAspending\" in a recipient panel only a deep link opens (PR #43, 2026-10-04)",
+   inject: s => s.replace("Public record: ${ev.publicRecord}. ",
+     "Public record: ${ev.publicRecord.charAt(0).toLowerCase() + ev.publicRecord.slice(1)}. ")},
+
   {gate: "alttext", page: "wages", args: ["wages"],
    defect: "a chart shipped with no accessible description at all",
    /* The structural half of the description defect. The SEMANTIC half, a description that

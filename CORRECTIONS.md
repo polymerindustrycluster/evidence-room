@@ -23,7 +23,9 @@ registry lists the signed EDA Notices of Award, the executed Ohio grant agreemen
 SBIG20251005 and the executed sub-grant agreements, each with what it contains, how the
 figures were read from it and that it is held by PIC and not published, and the USAspending
 award lookup is marked corroboration only. The source guide's register grows from 27 to 31
-sources and from 156 to 172 filter lines. `tools/provenance.mjs` now fails that pairing: its
+sources and from 156 to 172 filter lines. Its dependency chart's caption said the sources
+drawn in orange have no endpoint and no script; orange marks no endpoint, and one of the six,
+the company catalogue, has a script. The caption is now counted from the register. `tools/provenance.mjs` now fails that pairing: its
 USAspending fingerprint had matched any page that says "award".
 
 **Huntsman's $5,970,805, *funding-map, cluster-health*.** **Was:** the recipient panel, the
@@ -46,7 +48,9 @@ obligations, or the region's polymer industry. **Is:** chemical, plastics and ru
 manufacturing. **The dashed line, *federal-money*.** **Was:** the eight-year $39.2 million
 average, the unfinished FY2026 included, while the headline used the seven finished years.
 **Is:** the line marks the seven-year $41.4 million; $39.2 million is named as a secondary
-basis and not drawn.
+basis and not drawn. The note under the fiscal-year table said one row is one obligation total
+for a single code; one row is a fiscal year summed across every code that recorded obligations,
+24 to 31 a year.
 
 **One count, *timeline, index*.** **Was:** a Wall Street Journal feature of 25 May 2026 was
 counted as a delivered development and drawn in both charts, under a rule that holds press

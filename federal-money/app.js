@@ -569,6 +569,10 @@ function recipsMobile() {
    line plus one limitation sentence, the budget page-design sets; everything else moves
    into the table twin this figure already opens, which is depth rather than disclosure
    because nothing that changes how a number should be read was moved into it. */
+/* What a table row sums, counted rather than typed: the note said one row was one code,
+   and FY2019 alone sums 30 (PR #43 review, 2026-10-04). */
+const codesPerYear = (c => [Math.min(...c), Math.max(...c)])(
+  fys.map(fy => new Set(D.naics.filter(r => r.fy === fy).map(r => r.code)).size));
 const withNotes = (html, notes) =>
   html.replace("</details>", `<p class="tnote">${notes}</p></details>`);
 
@@ -577,7 +581,9 @@ document.getElementById("fytable").innerHTML = withNotes(tableView("y",
   ["Fiscal year", "2025 dollars", "As awarded"],
   fys.map(fy => [fy === PARTIAL ? `FY${fy} (partial)` : "FY" + fy,
     usd(real[fy]), usd(nom[fy])])),
-  `One row is one obligation total for a single fiscal year, category and industry code.
+  `One row is one fiscal year: obligations summed across every six-digit code under NAICS
+   325 and 326 that recorded any that year, ${codesPerYear[0]} to ${codesPerYear[1]} codes
+   a year.
    The dashed line and the ratio the page prints use the ${closed.length} finished years:
    they average ${short(avgClosed)} a year, and the award is about
    ${yearsClosed.toFixed(1)} years of it. The secondary basis counts the unfinished

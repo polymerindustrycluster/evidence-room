@@ -415,6 +415,18 @@ function drawDeps() {
           `page${s.n_pages === 1 ? "" : "s"}: ${s.pages.join(", ")}`,
   }));
   rows.forEach(r => { r.segments = [{v: r.v, fill: r.fill, hint: r.hint}]; });
+  /* WHAT ORANGE MEANS, COUNTED FROM THE SAME RULE THAT PAINTS IT. The caption was typed
+     ("the five marked in orange have no endpoint and no script") and drew six orange bars
+     the day the funding map's award documents entered the register: orange is no
+     endpoint, and one of the six, the company catalogue, has a script (2026-10-04). */
+  const orange = D.sources.filter(s => s.route === "internal");
+  const scripted = orange.filter(s => s.script);
+  document.getElementById("depsorange").textContent =
+    `The ${word(orange.length)} in orange have no endpoint, so no one can fetch them, ` +
+    `including us. ${Word(orange.length - scripted.length)} of those also have no script` +
+    (scripted.length ? `; ${scripted.map(s => `the ${s.short}`).join(" and ")} ` +
+      `${scripted.length === 1 ? "has one" : "have one each"}, run against a held ` +
+      `extract rather than a public endpoint.` : ".");
   ranked("deps", rows, {max: T.most_used_pages, nameW: 330, rowH: 32, stackRowH: 56,
     top: 8, bottom: 24});
 

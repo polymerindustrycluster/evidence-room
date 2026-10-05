@@ -1083,7 +1083,6 @@ function loadData(file) {
     return Object.assign({}, G.programs.get(award.programId).evidence || {}, award.evidence || {});
   }
   const unverified = (award) => evidenceOf(award).execution === 'Not verified';
-  const lc = (t) => t.charAt(0).toLowerCase() + t.slice(1);
 
   function tableRows() {
     const out = [];
@@ -1287,8 +1286,10 @@ function loadData(file) {
         ]));
         const ev = evidenceOf(w);
         blk.appendChild(h('p', { class: 'award-ev' }, [h('b', { text: 'Evidence: ' }),
-          document.createTextNode(`${ev.document}. Public record: ${lc(ev.publicRecord)}. ` +
-            `Execution: ${lc(ev.execution)}.`)]));
+          /* Printed as written: lowercasing the first letter turned "USAspending" into
+             "uSAspending" (PR #43 review, 2026-10-04). tools/style.mjs reads this panel. */
+          document.createTextNode(`${ev.document}. Public record: ${ev.publicRecord}. ` +
+            `Execution: ${ev.execution}.`)]));
         body.appendChild(blk);
       });
     } else if (kind === 'program') {
