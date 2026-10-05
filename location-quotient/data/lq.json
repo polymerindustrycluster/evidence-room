@@ -1,5 +1,6 @@
 {
  "meta": {
+  "status": "PUBLISHED",
   "source": "BLS QCEW open data, annual averages; the 2025 rows for Ohio, the United States and the twelve counties re-read from the bureau on 2026-09-11 after the first publication of that year was found revised",
   "url": "https://data.bls.gov/cew/data/api/{year}/a/area/{fips}.csv",
   "row": "one (year, area, NAICS) annual-average cell; emp counts JOBS, not people or companies",

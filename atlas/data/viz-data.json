@@ -1,5 +1,6 @@
 {
  "meta": {
+  "status": "PUBLISHED",
   "title": "The Polymer Programs Atlas",
   "question": "Where has polymer science been taught in the United States: every institution in the federal record, 1991–2023, on one map?",
   "source": "IPEDS completions by six-digit CIP (the polymer-programs-db census build of 2026-08-21) joined to IPEDS directory coordinates, both via the Urban Institute Education Data API. 2020 is not drawn: the federal mirror republished 2019 under that year, so the census under this page counts 1991–2023 without it.",

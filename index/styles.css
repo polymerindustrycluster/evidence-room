@@ -12,6 +12,8 @@
 .hub-hero{padding:30px 0 28px}
 .hub-hero h1{font-size:clamp(32px,4.6vw,52px);line-height:1.08}
 .hub-hero .stand{font-size:18px;margin-top:16px}
+/* Who PIC is and who the room is for (2026-10-04): under the deck, quieter than it. */
+.hub-hero .stand.who{font-size:16px;color:#C0DBE1;margin-top:10px}
 .hub-hero .byline{margin-top:18px}
 .first-reads{display:grid;grid-template-columns:1fr 1fr;gap:1px;
   max-width:var(--measure);margin:22px auto 0;background:#7FAFB7}
@@ -169,6 +171,11 @@
 .card .pill.proto{border:1px solid var(--ink);color:var(--ink);padding:1px 7px;
   font-weight:700;letter-spacing:.04em}
 .cards.lead .card{border-left:3px solid var(--ink)}
+/* The three statuses, once, above the cards (2026-10-04). */
+.status-key{list-style:none;padding:0;margin-top:14px;font-size:14px;line-height:1.55;
+  color:#3A4448}
+.status-key li{margin:2px 0}
+.status-key b{color:var(--text)}
 
 /* ------------------------------------------------------------------ county picker
    The default state is the whole gallery with nothing marked, so the page reads the same
@@ -187,6 +194,7 @@
 .picker select{font-family:inherit;font-size:16px;padding:9px 12px;min-height:44px;
   background:#fff;border:1px solid var(--line);color:var(--text);max-width:100%}
 .picker select:focus-visible{outline:2px solid var(--action);outline-offset:1px}
+.picker .picker-rule{margin:0 0 10px;font-size:14px;line-height:1.5;color:#3A4448}
 .picker .verdict{margin:12px 0 0;font-size:15px;line-height:1.55;color:#3A4448}
 .picker .verdict b{color:var(--text)}
 /* Marked, never dimmed. Fading the cards a county is not in would tell a reader that a

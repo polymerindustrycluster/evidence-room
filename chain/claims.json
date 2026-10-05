@@ -7,10 +7,10 @@
   {
    "id": "chain-neo-total",
    "text": "710 register records carry a qualifying Northeast Ohio address. That is what the register holds, not a count of the region's polymer companies.",
-   "source": "GAC-PIC vault company notes, extracted 2026-08-14; NEO-14 per CODEBOOK.md, county in the fourteen AND state Ohio or blank",
+   "source": "GAC-PIC vault company notes, extracted 2026-08-14; PIC-12+2 (the CODEBOOK.md county list: PIC-12 plus Columbiana and Tuscarawas), county in the fourteen AND state Ohio or blank",
    "assert": "D['chain']['meta']['neo_total'] == 710",
    "actual": "D['chain']['meta']['neo_total']",
-   "falsified_if": "The vault extract is re-run and companies are added, reclassified, or an address is filled in. NOTE: this page uses NEO-14, not PIC-12 — the fourteen-county set contains all twelve plus Columbiana and Tuscarawas and will not reconcile with cluster-health. [2026-09-11: was pinned at 785, which counted 64 Wayne County MICHIGAN rows joined on the county name, one Missouri headquarters and ten records with no address at all. The 75 are held out by name in meta.holdout, not deleted; see chain-holdout. The earlier note said the pin would 'fail loudly when the builder is re-keyed on state' — it did.]",
+   "falsified_if": "The vault extract is re-run and companies are added, reclassified, or an address is filled in. NOTE: this page uses PIC-12+2, not PIC-12. That fourteen-county set contains all twelve plus Columbiana and Tuscarawas and will not reconcile with cluster-health. [2026-10-04: this set was called NEO-14 here, the name of the vault's different fourteen-county set; renamed PIC-12+2.] [2026-09-11: was pinned at 785, which counted 64 Wayne County MICHIGAN rows joined on the county name, one Missouri headquarters and ten records with no address at all. The 75 are held out by name in meta.holdout, not deleted; see chain-holdout. The earlier note said the pin would 'fail loudly when the builder is re-keyed on state' — it did.]",
    "counts": [
     {"figure": "710 company records", "noun": "with qualifying addresses"}
    ]
@@ -39,15 +39,15 @@
   {
    "id": "chain-cbp-benchmark",
    "text": "Census counts 684 chemical and plastics-and-rubber manufacturing establishments across the same fourteen counties.",
-   "source": "Census CBP 2023, NAICS 325 + 326, the fourteen NEO-14 FIPS",
+   "source": "Census CBP 2023, NAICS 325 + 326, the fourteen PIC-12+2 FIPS",
    "assert": "D['chain']['meta']['cbp_estab'] == 684 and D['chain']['meta']['cbp_emp'] == 43242",
    "actual": "(D['chain']['meta']['cbp_estab'], D['chain']['meta']['cbp_emp'])",
-   "falsified_if": "A CBP vintage change. NOTE: CBP counts ESTABLISHMENTS (plants) and the register counts COMPANIES — their different units and industry scopes do not support a coverage rate. [2026-09-11: was 653 establishments and 41,447 employees, which is what the same query returns for a county set carrying Huron, Richland and Crawford — none of them NEO-14 — in place of Ashtabula, Trumbull and Columbiana. Not a vintage change: a wrong county set, reproduced to the digit from the raw API responses.]"
+   "falsified_if": "A CBP vintage change. NOTE: CBP counts ESTABLISHMENTS (plants) and the register counts COMPANIES — their different units and industry scopes do not support a coverage rate. [2026-09-11: was 653 establishments and 41,447 employees, which is what the same query returns for a county set carrying Huron, Richland and Crawford, none of them in PIC-12+2, in place of Ashtabula, Trumbull and Columbiana. Not a vintage change: a wrong county set, reproduced to the digit from the raw API responses.]"
   },
   {
    "id": "chain-holdout",
    "text": "Seventy-five records were held out of the regional count and are named rather than dropped: 64 Wayne County, Michigan companies joined on the county name, one company with an address outside the region, and ten records carrying no address at all.",
-   "source": "GAC-PIC vault company notes against CODEBOOK.md's NEO-14 rule; chain-data.json meta.holdout",
+   "source": "GAC-PIC vault company notes against CODEBOOK.md's PIC-12+2 county rule; chain-data.json meta.holdout",
    "assert": "D['chain']['meta']['holdout']['homonym_county_join']['n'] == 64 and D['chain']['meta']['holdout']['regional_site_nonregional_company']['n'] == 1 and D['chain']['meta']['holdout']['address_missing']['n'] == 10 and all(len(b['names']) == b['n'] for b in D['chain']['meta']['holdout'].values())",
    "actual": "{k: v['n'] for k, v in D['chain']['meta']['holdout'].items()}",
    "falsified_if": "A held-out record receives a qualifying address. Regional sites require separate evidence because this register counts company records, not establishments. Held-out names and counts must remain disclosed until the source records are reconciled.",
@@ -64,7 +64,7 @@
    "falsified_if": "Either side is re-extracted, or the spine's aggregated supply counts stop matching an independent tag-count over the company register (the cross-check added 2026-09-28). The two sides are DIFFERENT UNITS — companies and applications — on separate scales meeting at a center line, never one axis and never a ratio bar. [2026-09-11: converters was 246 under the old county set. Separately, the application side carries NO geographic filter and never did: all 59 applications to the 2026 round are counted wherever the applicant sits, 38 of them in Ohio. The page said PIC-12; the extract said nothing of the kind.] Corrected 2026-09-28: the section label read 'Supply against demand', which its own next sentence contradicted ('these counts do not measure capacity, competition or market demand'); it now reads 'Register records against funding applications'. This assert cannot read the HTML label directly, only the counts behind it; the label wording is not mechanically checked.",
    "counts": [
     {"figure": "235", "noun": "converters and fabricators"},
-    {"figure": "12", "noun": "raw-material and feedstock companies"},
+    {"figure": "12 raw-material", "noun": "feedstock companies"},
     {"figure": "20", "noun": "applications naming conversion"},
     {"figure": "26", "noun": "naming raw materials and feedstock"}
    ]
@@ -79,6 +79,17 @@
    "counts": [
     {"figure": "59", "noun": ["applications", "rows"]},
     {"figure": "38", "noun": "in Ohio"}
+   ]
+  },
+  {
+   "id": "chain-footprint-name",
+   "text": "The register's fourteen counties are PIC-12+2: the twelve PIC-12 counties plus Columbiana and Tuscarawas, and the page's county rule names that set.",
+   "source": "chain-data.json counties and meta.region.rule; the CODEBOOK.md county rule of 2026-08-14",
+   "assert": "sorted(c['county'] for c in D['chain']['counties']) == ['Ashtabula', 'Columbiana', 'Cuyahoga', 'Geauga', 'Lake', 'Lorain', 'Mahoning', 'Medina', 'Portage', 'Stark', 'Summit', 'Trumbull', 'Tuscarawas', 'Wayne'] and D['chain']['meta']['region']['rule'].startswith('county in PIC-12+2 ')",
+   "actual": "(sorted(c['county'] for c in D['chain']['counties']), D['chain']['meta']['region']['rule'])",
+   "falsified_if": "The register's county set changes, or its rule is relabelled. Added 2026-10-04: this set was called NEO-14 until then, the name of the vault's different fourteen-county set (DECISIONS.md), which against PIC-12+2 adds Crawford, Huron and Richland and leaves out Ashtabula, Trumbull and Columbiana. verify_consistency.py's neo14-name check holds the name on every page.",
+   "counts": [
+    {"figure": "the twelve PIC-12 counties plus Columbiana and Tuscarawas", "noun": "PIC-12+2"}
    ]
   }
  ]

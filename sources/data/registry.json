@@ -1,5 +1,6 @@
 {
  "meta": {
+  "status": "PUBLISHED",
   "source": "This page\u2019s own dataset is _data/SOURCES.json (the source registry) and _data/catalog.json (the generated inventory of build scripts), joined to five shipped page files: wages for the concentration reading and the industry-code arithmetic, occupations for the education-boundary example, peers for the disclosure rates, revisions for how far these series move after publication, and laborshed for the measured gap.",
   "row": "One row of the register is one source: its endpoint, the exact filter values applied to it, whether it needs a key, and every page here that rests on it.",
   "fetched": "2026-09-08",
@@ -642,7 +643,7 @@
     ],
     [
      "geography",
-     "The company-register 14-county boundary: 39007 Ashtabula, 39029 Columbiana, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39157 Tuscarawas, 39169 Wayne. This contains PIC-12 plus Columbiana and Tuscarawas; it differs from the legacy NEO14 constant in footprints.py."
+     "The company-register 14-county boundary: 39007 Ashtabula, 39029 Columbiana, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39157 Tuscarawas, 39169 Wayne. This is PIC-12+2: PIC-12 plus Columbiana and Tuscarawas. NEO-14, the vault\u2019s fourteen-county set in footprints.py, is a different list."
     ],
     [
      "query",
@@ -1482,7 +1483,7 @@
    "filters": [
     [
      "footprint",
-     "The company-register 14-county boundary: 39007 Ashtabula, 39029 Columbiana, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39157 Tuscarawas, 39169 Wayne. This contains PIC-12 plus Columbiana and Tuscarawas; it differs from the legacy NEO14 constant in footprints.py."
+     "The company-register 14-county boundary: 39007 Ashtabula, 39029 Columbiana, 39035 Cuyahoga, 39055 Geauga, 39085 Lake, 39093 Lorain, 39099 Mahoning, 39103 Medina, 39133 Portage, 39151 Stark, 39153 Summit, 39155 Trumbull, 39157 Tuscarawas, 39169 Wayne. This is PIC-12+2: PIC-12 plus Columbiana and Tuscarawas. NEO-14, the vault\u2019s fourteen-county set in footprints.py, is a different list."
     ],
     [
      "note",
@@ -1740,6 +1741,30 @@
   "n_build_scripts": 58,
   "catalog_generated": "2026-09-12 19:16"
  },
+ "statuses": {
+  "accountability": "INTERNAL",
+  "atlas": "PUBLISHED",
+  "chain": "PROTOTYPE",
+  "churn": "PUBLISHED",
+  "cluster-health": "PUBLISHED",
+  "collaboration": "PROTOTYPE",
+  "cost-scissors": "PUBLISHED",
+  "federal-money": "PUBLISHED",
+  "funding-map": "PUBLISHED",
+  "laborshed": "PUBLISHED",
+  "location-quotient": "PUBLISHED",
+  "occupations": "PUBLISHED",
+  "patents": "PUBLISHED",
+  "peers": "PUBLISHED",
+  "programs": "PUBLISHED",
+  "reach": "PROTOTYPE",
+  "realwage": "PUBLISHED",
+  "revisions": "PUBLISHED",
+  "scorecard": "INTERNAL",
+  "sources": "PUBLISHED",
+  "timeline": "PUBLISHED",
+  "wages": "PUBLISHED"
+ },
  "footprint": {
   "key": "pic12",
   "n": 12,
@@ -1795,7 +1820,7 @@
    }
   ],
   "note": "PIC's official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
-  "differs": "The chain register uses its CODEBOOK county set, adding Columbiana and Tuscarawas. It differs from the legacy NEO14 constant in pic-geo."
+  "differs": "The chain register uses PIC-12+2, its CODEBOOK county set, adding Columbiana and Tuscarawas. NEO-14, the vault\u2019s fourteen-county set in pic-geo, is a different list."
  },
  "socs": [
   {
@@ -3125,12 +3150,12 @@
  ],
  "checks": {
   "n_pages": 22,
-  "n_claims": 552,
+  "n_claims": 553,
   "n_manual": 22,
   "this_page": 35,
-  "n_auto": 530,
-  "n_hub_claims": 35,
-  "n_site_claims": 587
+  "n_auto": 531,
+  "n_hub_claims": 36,
+  "n_site_claims": 589
  },
  "vintage": {
   "n_revised": 259,

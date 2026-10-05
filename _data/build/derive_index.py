@@ -40,7 +40,18 @@ linked = [a for a in arts if not os.path.exists(os.path.join(WEB, a, ".unlisted"
 missing = sorted(set(linked) - set(masthead.MASTHEAD_FILE))
 assert not missing, f"derive_index: masthead.MASTHEAD_FILE lacks {missing}; name the file each page's masthead reads."
 
-out = {"n_pieces": len(arts),
+# EACH PAGE'S STATUS, copied from the meta.status its own masthead file declares
+# (PUBLISHED, PROTOTYPE or INTERNAL; DECISIONS.md 2026-10-04). The hub's cards print the
+# same word, index-inventory holds them together, and tools/disclosure.mjs checks the
+# rendered card against the rendered banner.
+for a in arts:
+    found = {json.load(open(os.path.join(WEB, f), encoding="utf-8"))["meta"].get("status")
+             for f in masthead.masthead_files(a)}
+    assert len(found) == 1 and None not in found, f"derive_index: {a} declares no single meta.status ({found})."
+    pages[a]["status"] = found.pop()
+
+out = {"status": "PUBLISHED",
+       "n_pieces": len(arts),
        "as_of": max(masthead.masthead_date(WEB, a) for a in linked).isoformat(),
        "total_claims": sum(v["claims"] for v in pages.values()),
        "total_manual": sum(v["manual"] for v in pages.values()),

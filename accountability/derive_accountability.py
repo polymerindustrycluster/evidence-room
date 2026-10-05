@@ -507,6 +507,7 @@ DEFECTS = [
 # ---------------------------------------------------------------------------- write
 DATA = {
     "meta": {
+        "status": "INTERNAL",   # DECISIONS.md 2026-10-04: unlisted, banner on the page
         "title": "What PIC promised, what has landed, and who is in the coalition",
         "source": "Every figure is recomputed from a file another page of this site "
                   "already publishes: the PIC award register (funding map), the PIC "

@@ -120,6 +120,9 @@ a{color:var(--action)}
 .band h2{font-size:clamp(26px,3vw,38px);max-width:var(--measure)}
 .band .lede{margin:14px auto 0;max-width:var(--measure);font-size:18px;color:#394346}
 .src{margin:18px 0 0;font-size:13px;color:var(--caption);max-width:var(--measure);line-height:1.5}
+/* How the register is built (2026-10-04): running prose at the measure. */
+#register h3{max-width:var(--measure);margin-top:24px;font-size:18px}
+#register p:not(.lede){max-width:var(--measure);margin-top:8px;font-size:16px;line-height:1.6;color:#394346}
 
 /* --------------------------------------------------------------------- map */
 .mapgrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:44px;

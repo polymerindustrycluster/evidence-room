@@ -1063,6 +1063,7 @@ function loadData(file) {
     return PV.methodology({
       page: 'funding-map',
       meta: {
+        status: DATA.meta.status,
         source: 'Signed federal Notices of Award, the executed Ohio grant agreement (SBIG20251005), and executed sub-grant agreements.',
         fetched: longDate(DATA.meta.asOf),
         row: 'One row is one award line: a named recipient, the program that funds it, and the amount that program has committed to that recipient.',

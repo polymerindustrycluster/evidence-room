@@ -141,7 +141,8 @@ def derive(raw_dir):
                          f"A comparator that has moved by an order of magnitude needs a human "
                          f"reading it, not a rebuild that publishes it.")
     return {
-        "meta": {"source": "USAspending.gov spending_by_category, place of performance",
+        "meta": {"status": "PUBLISHED",
+                 "source": "USAspending.gov spending_by_category, place of performance",
                  "row": "one (fiscal year, category, code) signed transaction obligation total",
                  "fetched": fc["meta"]["fetched"],
                  "note": "NAICS rows are prime contracts only (award types A-D), exhaustively paginated. Signed obligations retain de-obligations. Calendar-year CPI approximates fiscal-year prices; FY2026 is carried at the 2025 index. The 2025 index averages eleven published months because October was unavailable.",

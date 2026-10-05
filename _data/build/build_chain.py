@@ -224,6 +224,7 @@ for name in sorted(NEO_COUNTIES):
 
 out = {
     "meta": {
+        "status": "PROTOTYPE",
         "neo_total": len(companies),
         "unclassified": unclassified,
         "outside_total": len(recs) - len(companies),

@@ -95,6 +95,35 @@ const CASES = [
    inject: s => s.replace("creativecommons.org/licenses/by/4.0/", "example.invalid/none")
                  .replace(/O\*NET(\u00ae|®) is a trademark/, "O*NET is a trademark")},
 
+  /* One status vocabulary (DECISIONS.md, 2026-10-04). Each injection removes one of the
+     four places a page's status must agree. */
+  {gate: "disclosure", page: "chain", args: ["chain"],
+   expect: /PROTOTYPE page has 0 footer status banners/,
+   defect: "a prototype page whose footer banner is gone, so a reader leaving from the " +
+           "bottom never learns it is a draft",
+   inject: s => s.replace('document.querySelector("footer .wrap")?.prepend(banner("foot"));', "")},
+
+  {gate: "disclosure", page: "chain", file: "dist/index.html", args: ["chain"],
+   expect: /hub card says PUBLISHED, the page declares PROTOTYPE/,
+   defect: "a prototype's hub card shown without its status, beside the published articles " +
+           "(the gallery before 2026-09-29)",
+   inject: s => s.replace('<span class="pill geo">PIC-12+2</span><span class="pill proto">Prototype</span>',
+                          '<span class="pill geo">PIC-12+2</span>')},
+
+  {gate: "disclosure", page: "sources", args: ["sources"],
+   expect: /link to INTERNAL page \S+ carries no Internal tag/,
+   defect: "the source guide linking an unlisted internal page with nothing to say it is " +
+           "not for citation",
+   inject: s => s.replace('` <span class="status-tag" data-status="INTERNAL">Internal</span>`', '""')},
+
+  {gate: "consistency", page: "index", file: "index/app.js",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[neo14-name\] index/,
+   defect: "NEO-14 naming the chain register's PIC-12+2 counties, the vault's set's name on " +
+           "a different set (the hub's definitions before 2026-10-04)",
+   inject: s => s.replace("<b>PIC-12+2</b> is the\n      fourteen-county CODEBOOK area",
+                          "<b>NEO-14</b> is the\n      fourteen-county CODEBOOK area")},
+
   {gate: "style", page: "peers", args: ["peers"],
    defect: "a bare acronym on first reference: AP's define-on-first-reference law, the " +
            "machine-checkable slice (a cold reader met EDA, APEX and an unexpanded PIC " +

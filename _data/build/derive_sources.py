@@ -869,6 +869,7 @@ def build():
     ]
 
     meta = {
+        "status": "PUBLISHED",
         "source": "This page’s own dataset is _data/SOURCES.json (the source registry) and "
                   "_data/catalog.json (the generated inventory of build scripts), joined "
                   "to five shipped page files: wages for the concentration reading and the "
@@ -928,8 +929,8 @@ def build():
     if footprint["key"] == "pic12":
         chain_counties = {c["county"] for c in load(WEB, "chain", "data", "chain-data.json")["counties"]}
         added = sorted(chain_counties - set(footprint["counties"]))
-        footprint["differs"] = ("The chain register uses its CODEBOOK county set, adding " +
-                                " and ".join(added) + ". It differs from the legacy NEO14 constant in pic-geo.")
+        footprint["differs"] = ("The chain register uses PIC-12+2, its CODEBOOK county set, adding " +
+                                " and ".join(added) + ". NEO-14, the vault’s fourteen-county set in pic-geo, is a different list.")
     if len(footprint["counties"]) != footprint["n"]:
         raise SystemExit("derive_sources: the footprint's own count and its own list "
                          "disagree, which is the defect this listing exists to prevent.")
@@ -1348,7 +1349,17 @@ def build():
     checks["n_hub_claims"] = len(load(WEB, "index", "claims.json")["claims"])
     checks["n_site_claims"] = checks["n_claims"] + checks["n_hub_claims"]
 
+    # EACH PAGE'S STATUS, READ FROM ITS OWN MASTHEAD FILE (DECISIONS.md 2026-10-04), so a
+    # link from this page to an INTERNAL page carries the tag the page itself declares.
+    statuses = {}
+    for slug in sorted(masthead.MASTHEAD_FILE):
+        found = {load(WEB, *f.split("/"))["meta"].get("status") for f in masthead.masthead_files(slug)}
+        if len(found) != 1 or None in found:
+            raise SystemExit(f"derive_sources: {slug} declares no single meta.status ({found}).")
+        statuses[slug] = found.pop()
+
     out = {"meta": meta, "sources": sources, "pages": pages, "totals": totals,
+           "statuses": statuses,
            "footprint": footprint, "socs": socs, "attributions": attributions,
            "codes": codes, "doublecount": doublecount, "suppression": supp,
            "suppression_vintage": supp_vintage,

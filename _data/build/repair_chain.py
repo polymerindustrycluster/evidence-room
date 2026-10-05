@@ -362,7 +362,7 @@ def main():
             if m:
                 mat_freq[m] += 1
 
-    meta = dict(chain["meta"])
+    meta = {"status": "PROTOTYPE", **chain["meta"]}
     meta.update({
         "neo_total": len(keep),
         "unclassified": sum(1 for c in keep if not c["t"]),
@@ -373,7 +373,7 @@ def main():
         "raw_materials": len(raw_m), "norm_materials": len(mat_freq),
         # Structured source limitations accompany the counts.
         "region": {
-            "rule": "county in NEO14 AND state in {Ohio, OH, blank} (CODEBOOK.md 2026-08-14)",
+            "rule": "county in PIC-12+2 AND state in {Ohio, OH, blank} (CODEBOOK.md 2026-08-14)",
             "is": "register records carrying a qualifying Northeast Ohio address",
             "is_not": "a census of the region's polymer companies, or a count of plants",
         },

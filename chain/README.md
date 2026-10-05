@@ -4,8 +4,9 @@ The page describes a company register, not a regional census or a certification 
 current capability. It contains 710 records with a qualifying Northeast Ohio address;
 566 carry a mapped role. A company can carry several roles and count at several stages.
 
-The geography is the held extract’s fourteen-county CODEBOOK boundary: all twelve PIC
-counties plus Columbiana and Tuscarawas. County names must be paired with an Ohio, OH
+The geography is the held extract’s fourteen-county CODEBOOK boundary, PIC-12+2: all
+twelve PIC counties plus Columbiana and Tuscarawas. Until 4 October 2026 this set was also
+called NEO-14, which is the name of the vault’s different fourteen-county set. County names must be paired with an Ohio, OH
 or blank state. Seventy-five previously counted records fail this rule: 64 Wayne County,
 Michigan records, one record with a nonregional company address, and ten missing all
 address fields. Their names remain disclosed. An address filter cannot rule out a

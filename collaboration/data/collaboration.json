@@ -1,5 +1,6 @@
 {
  "meta": {
+  "status": "PROTOTYPE",
   "question": "Do the University of Akron and Case Western Reserve collaborate, and on polymer work specifically?",
   "sources": "OpenAlex works listing both institutions; NSF awards API, awards to either institution since 2012.",
   "row": "one year: works listing both institutions, their polymer and biomaterials counts, and each institution\u2019s own output.",

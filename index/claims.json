@@ -81,30 +81,13 @@
     },
     {
       "id": "index-inventory",
-      "text": "The gallery lists the public articles, and the cards for the three prototypes (chain, reach and collaboration) carry each page's own prototype flag; source inventory entries are either listed or deliberately unlisted.",
-      "source": "index/data/counts.json; rendered card-link parity is checked by the hub browser check",
-      "assert": "sorted(set(D['counts']['pages']) - {'scorecard','accountability'}) == ['atlas','chain','churn','cluster-health','collaboration','cost-scissors','federal-money','funding-map','laborshed','location-quotient','occupations','patents','peers','programs','reach','realwage','revisions','sources','timeline','wages']",
-      "actual": "sorted(D['counts']['pages'])",
-      "falsified_if": "The available article set changes without reconciling the hub gallery; numeric claim totals are no longer published as a static snapshot. The prototype flags on the three cards are copied from each page's masthead (chain: \"Prototype · not published data\"; reach and collaboration: \"Prototype · internal draft\", as of 2026-09-30). The assertion sees only data files, so the pills are pinned in `counts`, read by verify_nouns.py from the page as rendered: each card's geography pill followed by \"Prototype\" (\"NEO-14\", \"national\", \"Akron metro\", each once on the page) must be followed by that card's own flag words. A dropped pill, a flag swapped between cards or a reworded flag fails. Not caught: a fourth card gaining a pill, and a masthead changing without its card; a page that stops being a prototype has to lose its card pill by hand, and this binding with it.",
+      "text": "The gallery lists the public articles; the cards for the three prototypes (chain, reach and collaboration) carry the status word Prototype that each page declares in its own data, and the two internal pages (scorecard and accountability) are deliberately unlisted.",
+      "source": "index/data/counts.json, whose per-page status is copied by derive_index.py from each page's own meta.status; rendered card-to-banner parity is checked by tools/disclosure.mjs",
+      "assert": "sorted(set(D['counts']['pages']) - {'scorecard','accountability'}) == ['atlas','chain','churn','cluster-health','collaboration','cost-scissors','federal-money','funding-map','laborshed','location-quotient','occupations','patents','peers','programs','reach','realwage','revisions','sources','timeline','wages'] and D['counts']['status'] == 'PUBLISHED' and {s: p['status'] for s, p in D['counts']['pages'].items() if p['status'] != 'PUBLISHED'} == {'chain': 'PROTOTYPE', 'reach': 'PROTOTYPE', 'collaboration': 'PROTOTYPE', 'scorecard': 'INTERNAL', 'accountability': 'INTERNAL'} and all(p['status'] == 'PUBLISHED' for s, p in D['counts']['pages'].items() if s not in ('chain', 'reach', 'collaboration', 'scorecard', 'accountability'))",
+      "actual": "{s: p['status'] for s, p in D['counts']['pages'].items()}",
+      "falsified_if": "The available article set changes without reconciling the hub gallery, or a page's declared status changes without its card. Since 2026-10-04 there is one status vocabulary (DECISIONS.md): PUBLISHED, PROTOTYPE, INTERNAL, declared in each page's own masthead data as meta.status. This assertion pins the declared statuses; tools/disclosure.mjs checks, in the rendered pages, that each card's label equals its page's banner and that every unlisted page is INTERNAL. The binding below pins the chain card's renamed footprint label, PIC-12+2, followed by its Prototype label and its prototype coverage flag. History: until 2026-10-04 the cards copied each masthead's own flag words (\"Prototype · not published data\", \"Prototype · internal draft\") and the chain card's footprint read NEO-14, a name that belongs to the vault's different fourteen-county set.",
       "counts": [
-        {
-          "figure": "NEO-14 Prototype",
-          "noun": [
-            "not published data"
-          ]
-        },
-        {
-          "figure": "national Prototype",
-          "noun": [
-            "internal draft"
-          ]
-        },
-        {
-          "figure": "Akron metro Prototype",
-          "noun": [
-            "internal draft"
-          ]
-        }
+        {"figure": "PIC-12+2 Prototype", "noun": ["covers this county"]}
       ]
     },
     {
@@ -114,6 +97,19 @@
       "assert": "D['fm']['meta']['publisher'] == 'Polymer Industry Cluster'",
       "actual": "D['fm']['meta']['publisher']",
       "falsified_if": "PIC renames itself, or the funding map's publisher string stops agreeing with the masthead. The acronym ran a dozen times across this page, inside a data label and inside a claim about what PIC usually says, and was never once expanded; a naive reader finished the page not knowing who was asking them to trust the numbers. It is expanded at first contact now, and the expansion is read against a shipped file rather than typed from memory."
+    },
+    {
+      "id": "index-pic-line",
+      "text": "The line under the deck: the Polymer Industry Cluster is an initiative of the Greater Akron Chamber; the room is written for people who run, fund or site polymer operations in Northeast Ohio, and the methods are published for anyone who wants to check.",
+      "source": "The publisher string PIC writes into its own funding-map dataset, funding-map/data/funding.json; the sentence itself is bound by verify_nouns.py",
+      "assert": "D['fm']['meta']['publisher'] == 'Polymer Industry Cluster'",
+      "actual": "D['fm']['meta']['publisher']",
+      "falsified_if": "The sentence is reworded, split or dropped, or PIC stops being an initiative of the Greater Akron Chamber. Added 2026-10-04 after three reviews found the front page never said who PIC is or who the room is for (DECISIONS.md). The assertion can only check the publisher's name; the three phrases of the sentence are pinned in `counts`, read from the page as rendered, so a rewording fails verify_nouns.py.",
+      "counts": [
+        {"figure": "an initiative of the Greater Akron Chamber", "noun": ["Polymer Industry Cluster"]},
+        {"figure": "people who run, fund or site polymer operations in Northeast Ohio", "noun": ["room is written for"]},
+        {"figure": "published for anyone who wants to check", "noun": ["methods"]}
+      ]
     },
     {
       "id": "hero-ohio-first",

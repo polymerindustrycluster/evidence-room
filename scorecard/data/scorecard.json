@@ -1,5 +1,6 @@
 {
  "meta": {
+  "status": "INTERNAL",
   "source": "PIC award register, signed federal Notices of Award, executed state grant agreement SBIG20251005, IPEDS completions, BLS QCEW and the chain page’s published-member flag. Each is published elsewhere on this site.",
   "row": "one scorecard metric: its definition, who owns it, how often it is read, the target, and the latest reading where a public record can supply one.",
   "fetched": "2026-09-08",

@@ -952,9 +952,13 @@ onFonts(drawAll);
    still has to be stated at the top, but its detail belongs in the methods. It also has to
    say what the label MEANS, because a reader who cannot decode "PIC-12" in the first line
    of the page reads it as a filing code and stops. */
+/* The counties themselves are named here since 2026-10-04: the hub's first question now asks
+   where Ohio ranks, and a reader arriving from it should see at once which twelve counties
+   the regional figures below add up. */
 PV.footprintBanner(
-  {...FP, note: "The Northeast Ohio counties this page adds up as one region.", differs: ""},
-  "County list and how it compares with wider regional definitions: see the methodology.");
+  {...FP, note: `The Northeast Ohio counties this page adds up as one region: ${FP.counties.slice(0, -1).join(", ")} and ${FP.counties.at(-1)}.`,
+   differs: ""},
+  "How it compares with wider regional definitions: see the methodology.");
 
 /* Standard methodology + AI disclosure. Generated, not written — see picviz.js.
    The meta strings are re-set in reader words on the way in: the committed file writes

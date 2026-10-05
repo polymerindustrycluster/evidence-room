@@ -1,5 +1,6 @@
 {
  "meta": {
+  "status": "INTERNAL",
   "title": "What PIC promised, what has landed, and who is in the coalition",
   "source": "Every figure is recomputed from a file another page of this site already publishes: the PIC award register (funding map), the PIC scorecard, the public event register (timeline), the EDA Tech Hub award file, USAspending obligations, and BLS QCEW establishment counts. Nothing on this page is fetched. The award register and the event register are as of 13 August 2026; the payment figures were read on 1 September 2026, the federal prime-contract figures on 8 September 2026 and the establishment counts on 11 September 2026.",
   "row": "one award line in the coalition register, and one dated public commitment in the promise register. The two are never counted together.",

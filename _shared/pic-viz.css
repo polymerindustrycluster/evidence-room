@@ -133,6 +133,15 @@ dfn b{font-weight:900}
 .mast span{color:#7FB3BC;font-size:12px}
 .mast .proto{margin-left:auto;color:var(--lime);font-size:12px;letter-spacing:.14em;
   text-transform:uppercase;font-weight:700}
+/* Status banner (DECISIONS.md 2026-10-04), drawn by PV.methodology from meta.status on
+   PROTOTYPE and INTERNAL pages, in the masthead and again at the top of the footer. It
+   carries its own ground so it reads the same on the dark masthead and on light or dark
+   footers, and it takes a full row of the flex masthead rather than squeezing beside it. */
+.pv-status{flex-basis:100%;margin:8px 0 0;padding:7px 12px;background:#FFF4D6;color:#26333A;
+  border-left:4px solid #C85F0C;font-size:14px;line-height:1.45;max-width:var(--measure)}
+.mast .pv-status{margin:-6px 0 0;padding:5px 12px}  /* the row gap above is 16px */
+.pv-status b{font-weight:900;color:#26333A}
+footer .pv-status{margin:0 auto 18px}
 
 /* Tightened 2026-08-18: at 52/42 the hero plus stat row ran ~1,100px on the longest pages
    and the first chart arrived at 1,300px — a laptop saw a dark screen with a headline and

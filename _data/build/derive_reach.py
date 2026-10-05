@@ -108,7 +108,7 @@ if "matching" in source:
 row = R["meta"]["row"].replace("here or there", "here or elsewhere")
 assert "here or elsewhere" in row, row
 
-out = {"meta": dict(R["meta"],
+out = {"meta": dict({"status": "PROTOTYPE", **R["meta"]},
                     source=source,
                     row=row,
                     quarantine="Institutions the affiliation parser resolved implausibly "
