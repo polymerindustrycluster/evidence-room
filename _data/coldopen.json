@@ -51,6 +51,10 @@
   "Linux runner that is one line, churn 1729 to 1756. Accuracy costs the line; the prose",
   "above the chart owes it back.",
   "",
+  "RAISED 2026-10-05. peers 1339 to 1348 (Linux CI). The footprint banner above its first",
+  "chart now lists the twelve counties, so a reader sees which place the ranking is about",
+  "(review U P1; DECISIONS.md).",
+  "",
   "RAISED 2026-10-04. Internal and prototype pages now carry a status banner in the",
   "masthead (DECISIONS.md), 40px at 1440 wide. Accountability is the only one that held a",
   "debt, and it moves 903 to 943; the other four still clear 900. The banner is the point."
@@ -78,7 +82,7 @@
   "federal-money": 1771,
   "laborshed": 1561,
   "occupations": 1555,
-  "peers": 1339,
+  "peers": 1348,
   "revisions": 1356,
   "timeline": 1394,
   "accountability": 943
