@@ -6,16 +6,15 @@
 THE REVISION DATE IS GIT'S, NOT TYPED (DECISIONS.md, 5 October 2026). A page's "Page revised"
 byline date and the version in its "Cite as" line are the author date of the newest
 non-merge commit that touched the page's folder. A folder with uncommitted changes is dated
-today, because that is the date the commit carrying them will have; so run this after the
-last edit and commit the result with it. Merge commits are skipped so a merge does not
+today, the date the commit carrying them will have. Merge commits are skipped so a merge does not
 re-date every page it brings in; author dates survive rebase and cherry-pick.
 
-The site is served as raw folders on GitHub Pages, with no build step at serve time, so the
-dates are stamped into a file the pages read (_shared/picviz.js, madeAndChecked) rather than
-asked of git by a visitor. tools/disclosure.mjs re-runs this with --print and fails a page
-whose recorded date differs from git's, so a page edited without re-stamping cannot ship a
-stale "Page revised". A shallow clone cannot answer the question, so this exits non-zero
-rather than dating every page to the one commit it can see.
+The file is GENERATED, never committed (.gitignore): tools/bundle.mjs runs this before
+every build, and CI runs it again right before the Pages upload, so the dates are always
+this checkout's and no contributor has a step to forget. The site is served as raw folders
+with no build step at serve time, so the pages read the file rather than ask git.
+tools/disclosure.mjs checks each rendered page against it. A shallow clone cannot answer the
+question, so this exits non-zero rather than dating every page to the one commit it sees.
 
 The canonical URL is CITATION.cff's url plus the page folder; the hub cites the room at the
 root. The title is the page's own <title>, less any " — Polymer Industry Cluster" suffix.

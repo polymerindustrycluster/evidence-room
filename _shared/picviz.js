@@ -588,10 +588,11 @@ const PV = (() => {
      it costs the byline one phrase rather than the cold open a line. It is not the
      methodology box and must not grow into it: the 2026-09-01 rule above still holds.
 
-     Every date in it is the page's REVISION date, stamped from git into _data/cite.json by
-     _data/build/stamp_cite.py, and the byline's "Page revised" is the same date.
-     tools/disclosure.mjs fails a page whose box is missing, whose dates differ from the
-     recorded one or from git's, or whose cite URL is not its canonical URL. A page with
+     Every date in it is the page's REVISION date, which _data/build/stamp_cite.py writes
+     from git into _data/cite.json at build time (tools/bundle.mjs, and CI before the Pages
+     upload), and the byline's "Page revised" is the same date. tools/disclosure.mjs fails
+     a page whose box is missing, whose dates or cite URL differ from that file, or whose
+     model credits differ from its byline's. A page with
      manual claims says how many rest on a person reading a document, because "every
      numbered sentence is re-run" would not be true of it. */
   const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
@@ -611,6 +612,11 @@ const PV = (() => {
       return;
     }
     const when = longDate(rec.revised), year = rec.revised.slice(0, 4);
+    /* The model credits are the byline's own, read before anything is appended to it, so
+       the box can never credit a model the byline does not (tools/disclosure.mjs). */
+    const MODELS = ["Claude (Anthropic)", "Codex (OpenAI)"];
+    const byText = by.textContent.replace(/\s+/g, " ");
+    const credit = MODELS.filter(n => byText.includes(n));
     const checks = page === "sources" ? "#sec-checks" : "../sources/#sec-checks";
     const reran = nManual === 0 ? "" : nManual === 1
       ? ", except one that rests on a document read by a person"
@@ -625,11 +631,11 @@ const PV = (() => {
     box.id = id;
     box.hidden = true;
     box.innerHTML = `<p><b>How this was made and checked.</b> Written and edited by John
-      Swanson, who is responsible for it. Analysis and graphics by Claude (Anthropic) and
-      Codex (OpenAI). Every numbered sentence is re-run against the data it ships
+      Swanson, who is responsible for it. Analysis and graphics by ${credit.join(" and ")}.
+      Every numbered sentence is re-run against the data it ships
       with${reran}; that catches a sentence drifting from its data, not data that is wrong
       about the world (<a href="${checks}">what the checks catch and miss</a>).</p>
-      <p class="pv-cite"><b>Cite as:</b> Swanson, J. (${year}). <cite>${rec.title}</cite>.
+      <p class="pv-cite"><b>Cite as:</b> Swanson, J., Polymer Industry Cluster (${year}). <cite>${rec.title}</cite>.
       ${page === "index" ? "Polymer Industry Cluster (PIC). Version"
         : "Polymer Industry Cluster (PIC) Evidence Room, version"}
       <time datetime="${rec.revised}">${when}</time>. <a class="pv-cite-url"

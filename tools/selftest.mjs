@@ -123,11 +123,18 @@ const CASES = [
            "establish and how to cite it",
    inject: s => s.replace('await madeAndChecked(o.page || "index", manual.length);', "")},
 
-  {gate: "disclosure", page: "churn", file: "_data/cite.json", args: ["churn"],
-   expect: /recorded revision date 2020-01-01 is stale/,
-   defect: "a page edited without re-stamping, so its Page revised and cite version " +
-           "name a date git no longer agrees with",
+  {gate: "disclosure", page: "churn", args: ["churn"],
+   expect: /byline Page revised reads 2020-01-01/,
+   defect: "a page rendering a revision date its citation record does not hold, so its " +
+           "Page revised and cite version name a date nobody can trace",
+   /* the bundle's inlined copy of _data/cite.json, which the page renders from */
    inject: s => s.replace(/("churn": \{[^}]*"revised": ")[^"]+/, (m, k) => k + "2020-01-01")},
+
+  {gate: "disclosure", page: "churn", args: ["churn"],
+   expect: /the box credits Claude \(Anthropic\), Codex \(OpenAI\); the byline credits Claude \(Anthropic\)(?! and)/,
+   defect: "the box crediting a model the page's own byline does not (Codex on every page, " +
+           "review of PR W3 step 2)",
+   inject: s => s.replace("const credit = MODELS.filter(n => byText.includes(n));", "const credit = MODELS;")},
 
   {gate: "consistency", page: "index", file: "index/app.js",
    command: "python3", args: ["_data/build/verify_consistency.py"],

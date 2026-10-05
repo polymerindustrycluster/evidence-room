@@ -77,6 +77,10 @@ talent/
 # answered on collaboration), and John approved promotion. credit/ and talent/ stay until
 # their rebuilds get a fresh stage-7 pass; the other six are restricted on content.
 
+# Generated at build time from git by _data/build/stamp_cite.py (tools/bundle.mjs, and CI
+# before the Pages upload), so it is never stale and never a manual step.
+_data/cite.json
+
 .env
 node_modules/
 __pycache__/

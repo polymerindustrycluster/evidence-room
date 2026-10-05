@@ -9,13 +9,17 @@ product and domain decisions that a reader or rebuilder needs.
 ## 2026-10-05 — A page's version date is git's, and every date carries a label (John Swanson approved the wording; mechanism proposed by Claude)
 
 - **"Page revised" and the "Cite as" version are one date**: the author date of the newest
-  non-merge commit touching the page's folder (a folder with uncommitted edits is dated today).
-  `_data/build/stamp_cite.py` writes it, with the page's title and canonical URL, to
-  `_data/cite.json`, which the pages read; GitHub Pages serves the folders as they are, so nothing
-  asks git at serve time. `tools/disclosure.mjs` re-runs the stamp and fails a page whose recorded
-  date git no longer agrees with, so **any commit that edits a page folder must re-run
-  `stamp_cite.py`**. CI checks out full history for this; a shallow clone fails as uninspectable.
-  Shared code in `_shared/` does not revise a page: the date says when the page's own files changed.
+  non-merge commit touching the page's folder (a folder with uncommitted edits is dated today), so
+  a merge re-dates nothing. `_data/build/stamp_cite.py` writes it, with the page's title and
+  canonical URL, to `_data/cite.json`. That file is **generated, never committed**: `tools/bundle.mjs`
+  regenerates it before every build and CI again right before the Pages upload (full-history
+  checkout), so no contributor has a step to forget and a parallel PR cannot go stale.
+  `tools/disclosure.mjs` checks each rendered page against the file of the same run. Shared code in
+  `_shared/` does not revise a page: the date says when the page's own files changed.
+- **The box credits the models its byline credits**, read from the byline, so the two cannot
+  disagree. **The citation names both authors**: "Swanson, J., Polymer Industry Cluster (year)",
+  and CITATION.cff lists John Swanson (person) and the Polymer Industry Cluster (entity) (John
+  Swanson, 5 October 2026).
 - **The canonical URL is CITATION.cff's url plus the page folder**; the hub cites the room at the
   root.
 - **Every date says what it dates.** The masthead's "Data as of" became "Newest data retrieved", in
