@@ -64,6 +64,18 @@ const CASES = [
    inject: s => s.replace("</head>", "<style>@media(min-width:761px) and (max-width:1099px)" +
      "{.chart svg{margin-left:-30px !important}}</style></head>")},
 
+  /* THE SHARED RENDER MUST FILE EACH DEFECT UNDER THE RIGHT GATE. tools/sweeps.mjs runs
+     both sweeps off one render per page x width; a defect only textsize can see must fail
+     textsize and leave collide clean, and the reverse, or the combined run is blaming the
+     wrong check (or, with its probes swapped, passing both). */
+  {gate: "sweeps", page: "laborshed", args: ["laborshed"], expect: /^collide\s+ok[\s\S]*^textsize\s+FAIL/m,
+   defect: "9px chart labels, through the combined sweep: textsize fails, collide does not",
+   inject: s => s.replace("</head>", "<style>.chart svg text{font-size:9px !important}</style></head>")},
+
+  {gate: "sweeps", page: "peers", args: ["peers"], expect: /^collide\s+FAIL[\s\S]*^textsize\s+ok/m,
+   defect: "bars through their axis, through the combined sweep: collide fails, textsize does not",
+   inject: s => s.replace("</head>", "<style>.chart svg rect{transform:translateY(30px)}</style></head>")},
+
   {gate: "caveat", page: "realwage", args: ["realwage"],
    defect: "apparatus growing back under a chart on a page that had paid its budget off",
    inject: s => s.replace("</body>",

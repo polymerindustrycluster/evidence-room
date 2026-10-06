@@ -8,8 +8,7 @@
  * element's own getBoundingClientRect against its computed font-size.
  */
 import {readdirSync} from "fs";
-import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {render, isMain} from "./_sweep.mjs";
 
 /* TWO WIDTHS ARE NOT A TEST. This gate checked 1440 and 390 only, and a chart with a
    fixed viewBox passed both while painting 10.0px labels everywhere between 761px and
@@ -17,7 +16,7 @@ import {chromium} from "./_browser.mjs";
    font units x (column px / viewBox units), and the column does not vary linearly with
    the viewport once max-widths and breakpoints are involved, so the interior has to be
    sampled. --sweep does that; the two named widths remain for a quick check. */
-const SWEEP = [360, 390, 430, 480, 560, 640, 700, 768, 820, 900, 1024, 1180, 1280, 1440];
+export const SWEEP = [360, 390, 430, 480, 560, 640, 700, 768, 820, 900, 1024, 1180, 1280, 1440];
 /* THE DEFAULT IS SIX WIDTHS, NOT ONE. Checking a single width is what let 8.7px chart
    text ship on fourteen pages. These six are not arbitrary: 360 and 390 are the two phone
    sizes where a mobile re-layout's own viewBox can be too wide for the column, 768 and 900
@@ -27,24 +26,9 @@ const SWEEP = [360, 390, 430, 480, 560, 640, 700, 768, 820, 900, 1024, 1180, 128
    a quick look. */
 const DEFAULT = [360, 390, 768, 900, 1024, 1440];
 
-const args = process.argv.slice(2);
-const mobile = args.includes("--mobile");
-const sweep = args.includes("--sweep");
-const one = args.includes("--one");
-const names = args.filter(a => !a.startsWith("--"));
-const list = names.length ? names
-  : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
-const WIDTHS = sweep ? SWEEP : one ? [mobile ? 390 : 1440] : (mobile ? [360, 390] : DEFAULT);
-
-const b = await chromium.launch();
-let bad = 0;
-for (const n of list) {
- const hits = [];
- for (const W of WIDTHS) {
-  const p = await b.newPage({viewport: {width: W, height: 1000}});
-  await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
-  await p.waitForTimeout(900);
-  const r = await p.evaluate(() => {
+/* What the gate measures, run inside the rendered page; tools/_sweep.mjs shares one
+   render per page x width between this and collide's probe (tools/sweeps.mjs). */
+export function probe() {
     const out = {dom: [], svg: []};
     // DOM text: computed font-size is already in CSS pixels
     document.querySelectorAll("body *:not(svg):not(svg *)").forEach(e => {
@@ -85,27 +69,51 @@ for (const n of list) {
     return {domMin: min(out.dom), svgMin: min(out.svg), unmeasured,
             domUnder: under(out.dom), svgUnder: under(out.svg),
             scale: out.svg[0] ? out.svg[0].scale : null};
-  });
+}
+
+/* One page's verdict from its per-width results, as lines, so the combined sweep can
+   file them under this gate's name. */
+export function report(n, results) {
+ const lines = [], hits = [];
+ const WIDTHS = results.map(x => x.W);
+ for (const {W, r} of results) {
   const fail = (r.domUnder.length || r.svgUnder.length || r.unmeasured.length);
   if (fail) hits.push(
     `@${W}: ` +
     `${r.svgUnder.length ? "svg<12 " + r.svgUnder.join(" ") : ""}` +
     `${r.domUnder.length ? " dom<12 " + r.domUnder.join(" ") : ""}` +
     `${r.unmeasured.length ? " UNMEASURED " + r.unmeasured.join(" ") : ""}`.trim());
-  if (WIDTHS.length === 1) console.log(`${n.padEnd(18)} ${fail ? "FAIL" : "PASS"}  ` +
+  if (WIDTHS.length === 1) lines.push(`${n.padEnd(18)} ${fail ? "FAIL" : "PASS"}  ` +
     `dom-min ${r.domMin ? r.domMin.fs : "—"}  svg-min ${r.svgMin ? r.svgMin.fs : "—"}` +
     `${r.scale ? `  (svg scale ${r.scale})` : ""}` +
     `${r.svgUnder.length ? "  svg<12: " + r.svgUnder.join(" ") : ""}` +
     `${r.domUnder.length ? "  dom<12: " + r.domUnder.join(" ") : ""}` +
     `${r.unmeasured.length ? "  UNMEASURED: " + r.unmeasured.join(" ") : ""}`);
-  await p.close();
  }
- if (hits.length) bad++;
- if (WIDTHS.length > 1) console.log(`${n.padEnd(18)} ${hits.length ? "FAIL" : "PASS"}` +
+ if (WIDTHS.length > 1) lines.push(`${n.padEnd(18)} ${hits.length ? "FAIL" : "PASS"}` +
    (hits.length ? `  ${hits.length}/${WIDTHS.length} widths\n    ` + hits.slice(0, 4).join("\n    ")
                 : `  clean at all ${WIDTHS.length} widths`));
+ return {bad: hits.length > 0, lines};
 }
-await b.close();
-console.log(bad ? `\n${bad} artifact(s) below the 12px floor or unmeasurable`
-                : "\nall text at or above 12px");
-process.exit(bad ? 1 : 0);
+
+export const verdict = bad => bad ? `\n${bad} artifact(s) below the 12px floor or unmeasurable`
+                                  : "\nall text at or above 12px";
+
+if (isMain(import.meta.url)) {
+  const args = process.argv.slice(2);
+  const mobile = args.includes("--mobile");
+  const sweep = args.includes("--sweep");
+  const one = args.includes("--one");
+  const names = args.filter(a => !a.startsWith("--"));
+  const list = names.length ? names
+    : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
+  const WIDTHS = sweep ? SWEEP : one ? [mobile ? 390 : 1440] : (mobile ? [360, 390] : DEFAULT);
+  let bad = 0;
+  await render(list, WIDTHS, {textsize: probe}, (n, per) => {
+    const v = report(n, per.textsize);
+    if (v.bad) bad++;
+    v.lines.forEach(l => console.log(l));
+  });
+  console.log(verdict(bad));
+  process.exit(bad ? 1 : 0);
+}

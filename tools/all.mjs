@@ -32,8 +32,9 @@
  * verdict is the slice's only; the workflow's aggregate job is the suite's.
  */
 import {spawnSync} from "child_process";
-import {mkdirSync, writeFileSync, readdirSync, existsSync} from "node:fs";
+import {mkdirSync, writeFileSync, readdirSync, existsSync, readFileSync, mkdtempSync, rmSync} from "node:fs";
 import {resolve, join} from "node:path";
+import {tmpdir} from "node:os";
 
 const USAGE = "Usage: node tools/all.mjs [--fast] [--quiet] [--log-dir=PATH] [--changed[=]REF]\n" +
   "       [--part=site,pages,selftest] [--shard=K/N]";
@@ -92,7 +93,7 @@ const GATES = [
   ["access",      "node",   ["tools/access.mjs"],            "one Tab stop per chart, full twin tables, announced results, 404"],
   ["collide",     "node",   ["tools/collide.mjs", "--sweep"],  "overlap and out-of-frame, 14 widths", true],
   ["textsize",    "node",   ["tools/textsize.mjs", "--sweep"], "12px rendered floor, 14 widths", true],
-  ["selftest",    "node",   ["tools/selftest.mjs"],            "99 known-defect fixtures across 17 gates", true],
+  ["selftest",    "node",   ["tools/selftest.mjs"],            "101 known-defect fixtures across 18 gates", true],
 ];
 
 /* PAGE GATES take page names and check only those; every other gate reads the whole site
@@ -183,6 +184,32 @@ if (opt.changed || opt.shard) console.log("");
 /* a page gate runs on everything only when nothing narrowed the list */
 const narrowed = scope.scoped || !!opt.shard;
 
+/* ONE RENDER FOR BOTH SWEEPS. collide and textsize sweep the same 14 widths of the same
+   pages, so tools/sweeps.mjs renders each page x width once and runs both probes on it.
+   The first of the pair to come up runs it; each keeps its own row, log and exit code,
+   and the second says its time was spent in the first. `node tools/collide.mjs --sweep`
+   and `node tools/textsize.mjs --sweep` still run on their own, through the same code. */
+const SHARED_SWEEP = new Set(["collide", "textsize"]);
+let sweepRun = null;
+function sweep(name, pages) {
+  let note = "(rendered in the collide row) ";
+  if (!sweepRun) {
+    note = "";
+    const dir = mkdtempSync(join(tmpdir(), "evidence-room-sweeps-"));
+    const r = spawnSync("node", ["tools/sweeps.mjs", `--json=${join(dir, "sweeps.json")}`, ...pages], {encoding: "utf8"});
+    let res = null;
+    try { res = JSON.parse(readFileSync(join(dir, "sweeps.json"), "utf8")); } catch { /* reported below */ }
+    rmSync(dir, {recursive: true, force: true});
+    sweepRun = {r, res};
+  }
+  const {r, res} = sweepRun;
+  /* no result file means the sweep itself broke: both gates fail with its output */
+  if (!res || !res[name]) return {status: 1, stdout: r.stdout, stderr: `${r.stderr || ""}\nsweeps.mjs wrote no ${name} result`};
+  const lines = [...res[name].lines];
+  lines.push(note + lines.pop());                      // the verdict line all.mjs prints
+  return {status: res[name].code, stdout: lines.join("\n") + "\n", stderr: ""};
+}
+
 const rows = [];
 const t0 = Date.now();
 for (const [name, cmd, gateArgv, what, slow] of GATES) {
@@ -204,7 +231,8 @@ for (const [name, cmd, gateArgv, what, slow] of GATES) {
     argvRun = [...gateArgv, ...(spec.extra || []), ...mine];
   }
   const t = Date.now();
-  const r = spawnSync(cmd, argvRun, {encoding: "utf8"});
+  const r = SHARED_SWEEP.has(name) ? sweep(name, argvRun.slice(gateArgv.length))
+                                   : spawnSync(cmd, argvRun, {encoding: "utf8"});
   if (logDir) writeFileSync(join(logDir, `${name}.log`),
     `${tag ? `SCOPE ${tag}${argvRun.slice(gateArgv.length).join(" ")}\n` : ""}` +
     `${r.stdout || ""}${r.stderr || ""}\nEXIT_CODE=${r.status ?? 1}\n`, "utf8");

@@ -15,8 +15,7 @@
  * immediately before it is treated as deliberate — that is the backing-plate idiom.
  */
 import {readdirSync} from "fs";
-import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {render, isMain} from "./_sweep.mjs";
 
 /* ONE WIDTH IS NOT A TEST, AND THE INTERIOR IS NOT INTERPOLATION. This gate checked
    1440 only, so every collision found by hand during the 2026-08-28 rebuild was invisible
@@ -26,23 +25,12 @@ import {chromium} from "./_browser.mjs";
    viewport narrows. Whether two labels overlap is a question about rendered string lengths
    against a column width that does not vary monotonically with the viewport, so the range
    has to be sampled. --sweep does that; the bare call keeps the fast 1440 check. */
-const SWEEP = [360, 390, 430, 480, 560, 640, 700, 768, 820, 900, 1024, 1180, 1280, 1440];
+export const SWEEP = [360, 390, 430, 480, 560, 640, 700, 768, 820, 900, 1024, 1180, 1280, 1440];
 
-const args = process.argv.slice(2);
-const sweep = args.includes("--sweep");
-const names = args.filter(a => !a.startsWith("--"));
-const list = names.length ? names
-  : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
-const WIDTHS = sweep ? SWEEP : [1440];
-const b = await chromium.launch();
-let bad = 0;
-for (const n of list) {
- const found = [];
- for (const W of WIDTHS) {
-  const p = await b.newPage({viewport: {width: W, height: 1000}});
-  await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
-  await p.waitForTimeout(900);
-  const r = await p.evaluate(() => {
+/* What the gate measures, run inside the rendered page. tools/_sweep.mjs renders each
+   page x width once and hands the same page to this and to textsize's probe, so the
+   14-width sweep is paid for once rather than twice (tools/sweeps.mjs). */
+export function probe() {
     const MIN = 3;                                  // px of overlap worth reporting
     const out = {textOverText: [], pastAxis: [], outside: []};
     document.querySelectorAll(".chart svg").forEach((svg, si) => {
@@ -183,7 +171,15 @@ for (const n of list) {
     const uniq = a => [...new Set(a)];
     return {textOverText: uniq(out.textOverText), pastAxis: uniq(out.pastAxis),
             outside: uniq(out.outside)};
-  });
+}
+
+/* One page's verdict from its per-width results, in the lines this gate has always
+   printed. Returns them rather than printing so the combined sweep can file them under
+   this gate's name. */
+export function report(n, results, sweep) {
+ const lines = [], found = [];
+ const WIDTHS = results.map(x => x.W);
+ for (const {W, r} of results) {
   const issues = [];
   if (r.pastAxis.length) issues.push(`${r.pastAxis.length} past-axis`);
   if (r.textOverText.length) issues.push(`${r.textOverText.length} text-collisions`);
@@ -193,14 +189,12 @@ for (const n of list) {
     found.push({W, issues, detail: all.slice(0, 12), elided: Math.max(0, all.length - 12)});
   }
   if (!sweep) {
-    console.log(`${n.padEnd(18)} ${issues.length ? "FAIL  " + issues.join(", ") : "OK"}`);
-    [...r.pastAxis, ...r.textOverText, ...r.outside].forEach(m => console.log("      " + m));
+    lines.push(`${n.padEnd(18)} ${issues.length ? "FAIL  " + issues.join(", ") : "OK"}`);
+    [...r.pastAxis, ...r.textOverText, ...r.outside].forEach(m => lines.push("      " + m));
   }
-  await p.close();
  }
- if (found.length) bad++;
  if (sweep) {
-   console.log(`${n.padEnd(18)} ${found.length
+   lines.push(`${n.padEnd(18)} ${found.length
      ? `FAIL  ${found.length}/${WIDTHS.length} widths: ` +
        found.map(f => f.W).join(", ")
      : `OK    clean at all ${WIDTHS.length} widths`}`);
@@ -210,13 +204,29 @@ for (const n of list) {
       list that gets half-fixed. Remaining widths are summarised by count. */
    const worst = found[0];
    if (worst) {
-     worst.detail.forEach(m => console.log(`      @${worst.W} ${m}`));
-     if (worst.elided) console.log(`      @${worst.W} ...and ${worst.elided} more`);
-     found.slice(1).forEach(f => console.log(`      @${f.W} ${f.issues.join(", ")}`));
+     worst.detail.forEach(m => lines.push(`      @${worst.W} ${m}`));
+     if (worst.elided) lines.push(`      @${worst.W} ...and ${worst.elided} more`);
+     found.slice(1).forEach(f => lines.push(`      @${f.W} ${f.issues.join(", ")}`));
    }
  }
+ return {bad: found.length > 0, lines};
 }
-await b.close();
-console.log(bad ? `\n${bad} artifact(s) with overlapping or out-of-frame marks`
-                : "\nno collisions");
-process.exit(bad ? 1 : 0);
+
+export const verdict = bad => bad ? `\n${bad} artifact(s) with overlapping or out-of-frame marks`
+                                  : "\nno collisions";
+
+if (isMain(import.meta.url)) {
+  const args = process.argv.slice(2);
+  const sweep = args.includes("--sweep");
+  const names = args.filter(a => !a.startsWith("--"));
+  const list = names.length ? names
+    : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
+  let bad = 0;
+  await render(list, sweep ? SWEEP : [1440], {collide: probe}, (n, per) => {
+    const v = report(n, per.collide, sweep);
+    if (v.bad) bad++;
+    v.lines.forEach(l => console.log(l));
+  });
+  console.log(verdict(bad));
+  process.exit(bad ? 1 : 0);
+}
