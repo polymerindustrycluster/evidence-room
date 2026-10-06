@@ -257,7 +257,7 @@
     },
     {
       "id": "occ-byline",
-      "text": "By John Swanson, analysis and graphics. Data BLS, O*NET and IPEDS, August 2026 (hero byline).",
+      "text": "By John Swanson, analysis and graphics. Data BLS, O*NET and IPEDS, retrieved August 2026 (hero byline).",
       "source": "The page's own data vintage, meta.fetched",
       "assert": "D['meta']['fetched'][:7] == '2026-08' and len(D['meta']['fetched']) == 10",
       "actual": "D['meta']['fetched']",

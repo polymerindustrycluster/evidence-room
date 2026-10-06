@@ -10,6 +10,7 @@
  */
 import {readFile, writeFile, readdir, stat, mkdir} from "node:fs/promises";
 import {existsSync} from "node:fs";
+import {spawnSync} from "node:child_process";
 import {createHash} from "node:crypto";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
@@ -52,8 +53,10 @@ async function inputManifest(dir) {
   }
   const shared = path.join(WEB, "_shared");
   if (existsSync(shared)) abss.push(...await listFilesRecursive(shared));
-  const reg = path.join(WEB, "_data", "SOURCES.json");
-  if (existsSync(reg)) abss.push(reg);
+  for (const f of ["SOURCES.json", "cite.json"]) {
+    const p = path.join(WEB, "_data", f);
+    if (existsSync(p)) abss.push(p);
+  }
 
   const out = {};
   for (const p of abss) out[path.relative(WEB, p).split(path.sep).join("/")] = await sha256(p);
@@ -163,6 +166,16 @@ async function bundle(name) {
 <script type="application/json" data-pv-file="SOURCES.json">${esc(rj)}</script>`);
   }
 
+  /* The citation record (title, canonical URL, revision date) travels the same way, for
+     the made-and-checked box under every byline; see _data/build/stamp_cite.py. */
+  const citePath = path.join(WEB, "_data", "cite.json");
+  if (existsSync(citePath)) {
+    const cj = await read(citePath);
+    html = html.replace("</style>", () =>
+      `</style>
+<script type="application/json" data-pv-file="cite.json">${esc(cj)}</script>`);
+  }
+
   const claimsPath = path.join(dir, "claims.json");
   if (existsSync(claimsPath)) {
     const cj = await read(claimsPath);
@@ -190,6 +203,13 @@ async function bundle(name) {
   const kb = Math.round((await stat(out)).size / 1024);
   const titleIn8k = html.slice(0, 8192).includes("<title>");
   return {name, kb, titleIn8k, manifest: await inputManifest(dir)};
+}
+
+/* The citation record is generated, never committed: every bundle run re-stamps it from
+   git first, so no contributor has a manual step to forget (_data/build/stamp_cite.py). */
+{
+  const st = spawnSync("python3", [path.join(WEB, "_data", "build", "stamp_cite.py")], {encoding: "utf8"});
+  if (st.status !== 0) throw new Error(`stamp_cite.py failed: ${(st.stderr || st.stdout).trim()}`);
 }
 
 const args = process.argv.slice(2);

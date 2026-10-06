@@ -136,6 +136,34 @@ const CASES = [
            "not for citation",
    inject: s => s.replace('` <span class="status-tag" data-status="INTERNAL">Internal</span>`', '""')},
 
+  /* How this was made and checked, and Cite as (DECISIONS.md, 5 October 2026). */
+  {gate: "disclosure", page: "peers", args: ["peers"],
+   expect: /no How this was made and checked box/,
+   defect: "a page shipped without the box that says who made it, what its checks can " +
+           "establish and how to cite it",
+   inject: s => s.replace('await madeAndChecked(o.page || "index", manual.length);', "")},
+
+  {gate: "disclosure", page: "churn", args: ["churn"],
+   expect: /byline Revised reads 2020-01-01/,
+   defect: "a page rendering a revision date its citation record does not hold, so its " +
+           "Revised date and cite version name a date nobody can trace",
+   /* the bundle's inlined copy of _data/cite.json, which the page renders from */
+   inject: s => s.replace(/("churn": \{[^}]*"revised": ")[^"]+/, (m, k) => k + "2020-01-01")},
+
+  {gate: "disclosure", page: "accountability", args: ["accountability"],
+   expect: /the box credits .*analysis and graphics by Codex \(OpenAI\).*; the byline credits/,
+   defect: "the box crediting Codex with the analysis on a page whose byline credits Codex " +
+           "only for updating the federal context (PR #46 review)",
+   inject: s => s.replace('<span class="pv-made-credit">${credit}</span>',
+     '<span class="pv-made-credit">Analysis and graphics by Claude (Anthropic) and Codex (OpenAI)</span>')},
+
+  {gate: "consistency", page: "funding-map", file: "funding-map/data/funding.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[masthead\] funding-map/,
+   defect: "a masthead calling the register's 13 August 2026 the newest retrieval while the " +
+           "same file carries a USAspending check read on 1 September 2026 (PR #46 review)",
+   inject: s => s.replace('  "as_of": "2026-09-01",\n', "")},
+
   {gate: "consistency", page: "index", file: "index/app.js",
    command: "python3", args: ["_data/build/verify_consistency.py"],
    expect: /\[neo14-name\] index/,
@@ -531,7 +559,7 @@ const CASES = [
    defect: "a 404 page whose story-list link points at nothing",
    inject: s => s.replace("/evidence-room/index/#alltitle", "/evidence-room/index/#stories")},
 
-  {gate: "verify", page: "index", args: ["index"], expect: /contrast 2 under AA/,
+  {gate: "verify", page: "index", args: ["index"], expect: /contrast 5 under AA/,
    defect: "the hero byline at #9CC4CA, 3.62:1 on the teal hero (ER-11)",
    inject: s => s.replace("line-height:1.5;color:#C0DBE1;letter-spacing:.02em}",
                           "line-height:1.5;color:#9CC4CA;letter-spacing:.02em}")},

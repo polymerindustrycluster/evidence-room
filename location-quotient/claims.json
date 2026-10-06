@@ -128,7 +128,7 @@
     },
     {
       "id": "lq-byline",
-      "text": "The byline reads 'Data BLS QCEW, 2015-2025 - September 2026'; the agency, the span and the month are all read from the data file's own meta rather than typed. The month moved from August to September on 2026-09-12 when the 2025 rows' re-read date was stamped into the file's fetched field.",
+      "text": "The byline reads 'Data BLS QCEW, 2015-2025, retrieved September 2026'; the agency, the span and the month are all read from the data file's own meta rather than typed. The month moved from August to September on 2026-09-12 when the 2025 rows' re-read date was stamped into the file's fetched field.",
       "source": "meta.source, meta.years and meta.fetched in lq.json, which the fetch script writes",
       "assert": "D['meta']['source'].split(' ')[0] == 'BLS' and D['meta']['source'].split(' ')[1] == 'QCEW' and D['meta']['fetched'][:7] == '2026-09' and D['meta']['years'] == [2015, 2025]",
       "actual": "(D['meta']['source'], D['meta']['fetched'], D['meta']['years'])",
