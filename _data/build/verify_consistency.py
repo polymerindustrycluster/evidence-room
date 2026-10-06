@@ -720,7 +720,7 @@ def _bundle_inputs(web: str, name: str) -> dict[str, str]:
     """The exact set of files tools/bundle.mjs hashes into dist/.inputs.json for one
     page — index.html, app.js, styles.css, claims.json, everything under data/, img/ and
     assets/, everything under _shared/ (recursively: its fonts/ are base64-inlined, not
-    merely linked), _data/SOURCES.json and _data/corrections_by_page.json — mapped to a sha256 of each file's current
+    merely linked), and _data/SOURCES.json, _data/cite.json and _data/corrections_by_page.json — mapped to a sha256 of each file's current
     bytes. Must stay in lockstep with tools/bundle.mjs's inputManifest(); a mismatch
     between what the bundler hashes and what this checks makes the manifest meaningless."""
     d = os.path.join(web, name)
@@ -736,12 +736,10 @@ def _bundle_inputs(web: str, name: str) -> dict[str, str]:
     shared = os.path.join(web, "_shared")
     if os.path.isdir(shared):
         paths += _walk_files(shared)
-    reg = os.path.join(web, "_data", "SOURCES.json")
-    if os.path.isfile(reg):
-        paths.append(reg)
-    corr = os.path.join(web, "_data", "corrections_by_page.json")
-    if os.path.isfile(corr):
-        paths.append(corr)
+    for f in ("SOURCES.json", "cite.json", "corrections_by_page.json"):
+        reg = os.path.join(web, "_data", f)
+        if os.path.isfile(reg):
+            paths.append(reg)
     return {os.path.relpath(p, web).replace(os.sep, "/"): _sha256_file(p) for p in paths}
 
 

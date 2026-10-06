@@ -902,6 +902,7 @@ function loadData(file) {
   const hideHTip = () => { if (ptip) { ptip.remove(); ptip = null; } };
 
   function openHPanel(e) {
+    rememberOpener();
     panel.textContent = '';
     panel.appendChild(h('button', { class: 'p-close', type: 'button', 'aria-label': 'Close',
       onclick: closePanel, text: '×' }));
@@ -1045,6 +1046,7 @@ function loadData(file) {
   const hideTip = () => { if (tip) { tip.remove(); tip = null; } };
 
   function openPanel(e) {
+    rememberOpener();
     panel.textContent = '';
     panel.appendChild(h('button', { class: 'p-close', type: 'button', 'aria-label': 'Close',
       onclick: closePanel, text: '×' }));
@@ -1079,7 +1081,27 @@ function loadData(file) {
     panel.hidden = false; scrim.hidden = false;
     panel.querySelector('.p-close').focus();
   }
-  function closePanel() { panel.hidden = true; scrim.hidden = true; }
+  /* CLOSING RETURNS FOCUS TO THE MARK THAT OPENED THE PANEL. The close button took focus
+     on open and was then hidden, so a keyboard reader who closed it landed on <body> and
+     started the page again (review of 5 October 2026). The opener is remembered as a node
+     and by its aria-label, the same key every page's onFonts refocus uses: a resize or a
+     font redraw while the panel is open replaces the node, and the label finds its
+     successor. tools/access.mjs fails a close that leaves focus anywhere else. */
+  let opener = null;
+  function rememberOpener() {
+    const a = document.activeElement;
+    if (!a || a === document.body || panel.contains(a)) return;
+    opener = { node: a, label: a.getAttribute && a.getAttribute('aria-label') };
+  }
+  function closePanel() {
+    if (panel.hidden) return;
+    panel.hidden = true; scrim.hidden = true;
+    const o = opener; opener = null;
+    if (!o) return;
+    const n = o.node.isConnected ? o.node
+      : o.label && [...document.querySelectorAll('[aria-label]')].find((x) => x.getAttribute('aria-label') === o.label);
+    if (n) n.focus({ preventScroll: true });
+  }
   scrim.addEventListener('click', closePanel);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closePanel(); hideTip(); hideHTip(); } });
 

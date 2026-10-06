@@ -1,16 +1,68 @@
 {
  "meta": {
   "status": "PUBLISHED",
-  "as_of": "2026-10-04",
+  "as_of": "2026-10-05",
   "source": "CORRECTIONS.md, rendered as written by _data/build/derive_corrections.py",
   "method": "Each entry in CORRECTIONS.md is rendered from its Markdown without changing a word. The pages an entry names are read from its italics, or listed by hand where an older entry names them in prose. Each page’s byline link counts the entries naming it and says whether one changed the page’s headline.",
   "scope": "A log of corrections shows the errors someone found, not the ones still on the site. A page with more entries has been checked harder, not necessarily been wrong more often, and corrections made before a page was first published are listed but left out of its count.",
-  "n_entries": 66
+  "n_entries": 69
  },
  "preamble_html": "<p>Every published number that changes gets an entry here: what it said, what it says now, and what caused the change. Entries are <b>appended, never rewritten</b> — an entry edited later is no longer evidence of anything.</p><p>The bar for an entry is <em>a reader could have quoted the old version</em>, not <em>the change was embarrassing</em>. Several pages also carry a correction block in the body where the error is most likely to be re-made; those are the same events, described where they matter.</p><p>Newest first. Report an error by opening an issue — the <b>Data error</b> template asks for the page, the figure, and what you think it should be.</p>",
  "entries": [
   {
-   "id": "2026-10-04-5",
+   "id": "2026-10-05-2",
+   "date": "2026-10-05",
+   "heading": "2026-10-05 — Dated wording, keyboard focus, hero contrast and the grant documents as sources, *cost-scissors, revisions, sources, churn, cluster-health, accountability, scorecard, federal-money, chain, timeline, funding-map, every hero*",
+   "label": "",
+   "title_html": "Dated wording, keyboard focus, hero contrast and the grant documents as sources, <em>cost-scissors, revisions, sources, churn, cluster-health, accountability, scorecard, federal-money, chain, timeline, funding-map, every hero</em>",
+   "pages": [
+    "cost-scissors",
+    "revisions",
+    "sources",
+    "churn",
+    "cluster-health",
+    "accountability",
+    "scorecard",
+    "federal-money",
+    "chain",
+    "timeline",
+    "funding-map"
+   ],
+   "html": "<p>No figure changed. Each page whose wording changed carries a dated note.</p><p><b>Present-tense words on dated data, <em>cost-scissors, revisions, sources, churn, cluster-health, accountability</em>.</b> <b>Was:</b> readings taken from a snapshot were called \"today\" or \"now\": gas \"now costs\" less than in 2019 and a dollar part bills $1.40 \"today\" (cost-scissors, data to July 2026); each month's latest value was \"today's\" (revisions, archive read 13 August 2026); the 55-and-older share was about 28 in 100 \"today\" (churn, to the third quarter of 2025); each measure's latest year was \"today\" and \"now\", and FY2026 \"is still open\" (cluster-health; it ended on 30 September); the $160M ceiling was set against what is \"committed today\" (sources); a hollow ring meant \"still scheduled\" and the closer counted what PIC \"now\" carries (accountability). <b>Is:</b> each is dated to its snapshot, or the chart label says \"latest\". The style gate's withdrawn list now bans \"today\" on accountability, churn, cluster-health, cost-scissors and revisions; atlas, programs and sources keep a \"today\" that is true on any date (\"not a count of training available today\") and are not listed. The existing fiscal-year pattern could never match \"FY2026\": its optional space compiled to a required one. It now matches.</p><p><b>Keyboard focus, <em>chain, timeline, funding-map</em>.</b> <b>Was:</b> pressing a chain stage or county redrew the chart and dropped keyboard focus on the page body; closing a timeline event's panel did the same; funding-map's phone-width Arrange buttons did too. <b>Is:</b> focus returns to the control or mark the reader was on. Chain's counties now report their pressed state, as its stages do. <code>tools/access.mjs</code> presses every toggle and closes every detail panel from the keyboard and fails if focus is lost.</p><p><b>The hero eyebrow, <em>every hero, chain</em>.</b> <b>Was:</b> the brand lime eyebrow measured 4.12:1 on the teal hero, under the 4.5:1 that 12px text needs, and the contrast check exempted it; the hero's radial glow took it lower still, to 3.78:1 on accountability at phone width, and the check could not see a glow drawn by a pseudo-element. <b>Is:</b> on the hero only it is #C6DE5D, 4.54:1, and the glow is masked out of the eyebrow's band; the brand lime is unchanged elsewhere. The check exempts nothing and now also measures the rendered pixels behind every hero line at 1440, 768 and 390px, which also caught chain's phone-width stage labels at 3.87:1 and 2.94:1; they are now #C0DBE1, 4.69:1.</p><p><b>Two sentences that said more than their data, <em>cost-scissors, sources</em>.</b> <b>Was:</b> cost-scissors' closing line said the next resin move would decide whether May 2026's near-closure of the gap held, though the June and July prints already showed resin falling 10.9 points and the gap reopening to +14.3. The sources guide said one of an award's three figures is money that \"has actually moved\"; an obligation is a commitment to pay, and a payment is an outlay. <b>Is:</b> the closer reads what happened after the dip off the data, and <code>cs-spread-near-close</code> pins it; the guide says none of the three is money already paid, and the old phrase is on the withdrawn list.</p><p><b>The grant documents as sources, <em>accountability, scorecard, cluster-health, federal-money</em>.</b> <b>Was:</b> these pages print figures from the signed EDA Notices of Award (and, on accountability and the scorecard, the Ohio grant agreement SBIG20251005, the hub sub-grant agreements and the USAspending award lookup) while their source lists named only the USAspending contract pull, which they also use. <b>Is:</b> each list names the inputs its figures come from, and the award lookup's note says which pages print its outlays. <code>tools/provenance.mjs</code> now also fails a page whose data carries a documentary input's award IDs, grant number or totals without crediting it.</p>",
+   "flags": {
+    "cost-scissors": {},
+    "revisions": {},
+    "sources": {},
+    "churn": {},
+    "cluster-health": {},
+    "accountability": {},
+    "scorecard": {},
+    "federal-money": {},
+    "chain": {},
+    "timeline": {},
+    "funding-map": {}
+   },
+   "after_html": ""
+  },
+  {
+   "id": "2026-10-05-1",
+   "date": "2026-10-05",
+   "heading": "2026-10-05 — Two mastheads named an older date as the newest retrieval, *funding-map, cost-scissors*",
+   "label": "",
+   "title_html": "Two mastheads named an older date as the newest retrieval, <em>funding-map, cost-scissors</em>",
+   "pages": [
+    "funding-map",
+    "cost-scissors"
+   ],
+   "html": "<p><b>Funding map.</b> <b>Was:</b> the masthead read \"Newest data retrieved 13 August 2026\", the date of the signed-award register, while the page also shows a USAspending outlay check read on 1 September 2026. <b>Is:</b> \"Newest data retrieved 1 September 2026\"; the register's 13 August date stays in the byline as \"Figures as of\". <b>Cost scissors.</b> <b>Was:</b> 15 August 2026, when the price series were fetched. <b>Is:</b> 8 September 2026, when the consumer price index behind the inflation note was read. No figure changed on either page; each carries a dated note. <b>Cause:</b> the masthead rule read only each data file's top-level date, so a newer retrieval nested inside the file was invisible to it (found by the PR #46 review, the day the label became \"Newest data retrieved\"). <code>_data/build/masthead.py</code> now takes the newest <code>as_of</code>, <code>fetched</code> or <code>asOf</code> anywhere in a file, and <code>verify_consistency.py</code> fails a masthead older than that.</p>",
+   "flags": {
+    "funding-map": {},
+    "cost-scissors": {}
+   },
+   "after_html": ""
+  },
+  {
+   "id": "2026-10-04-6",
    "date": "2026-10-04",
    "heading": "2026-10-04 — The corrections log is a page on this site, and dated notes sit below each headline",
    "label": "",
@@ -22,6 +74,17 @@
    "flags": {
     "sources": {}
    },
+   "after_html": ""
+  },
+  {
+   "id": "2026-10-04-5",
+   "date": "2026-10-04",
+   "heading": "2026-10-04 — Each story now says on the page what would prove it wrong, *every story the hub lists*",
+   "label": "",
+   "title_html": "Each story now says on the page what would prove it wrong, <em>every story the hub lists</em>",
+   "pages": [],
+   "html": "<p><b>Was:</b> the hub said each story \"states what would contradict its claims\", but those conditions lived only in each page's claims file, written for the checker and read by no one else. <b>Is:</b> the twenty stories the hub lists, the three prototypes included, carry one line under the headline beginning \"This finding breaks if:\", and a closed \"What would prove this page wrong\" list before the methodology box that pairs each guarded sentence with the change in the data that would make it wrong. No figure changed; this is a presentation change. <code>tools/breaksif.mjs</code> fails a listed story that lacks the line or the list, or whose list quotes a sentence the page no longer prints.</p>",
+   "flags": {},
    "after_html": ""
   },
   {

@@ -6,6 +6,8 @@ message: >-
   without a date is not reproducible.
 type: software
 authors:
+  - family-names: Swanson
+    given-names: John
   - name: "Polymer Industry Cluster, Greater Akron Chamber"
     city: Akron
     region: Ohio

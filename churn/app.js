@@ -447,7 +447,7 @@ function rateVariant(W, H, mob) {
       "stroke-width": 1}, svg);
     txt(svg, `still ${gapPts.toFixed(1)} points above 2012`,
       {x: xE, y: m.t + h - 44, "text-anchor": "end", class: "pv-lab"});
-    txt(svg, `${pc1(recent4)} now, ${pc1(base12)} in 2012`,
+    txt(svg, `${pc1(recent4)} latest, ${pc1(base12)} in 2012`,
       {x: xE, y: m.t + h - 26, "text-anchor": "end", class: "pv-labq"});
   } else {
     const bx = m.l + w + 10;
@@ -456,7 +456,7 @@ function rateVariant(W, H, mob) {
     txt(svg, `still ${gapPts.toFixed(1)} points`, {x: bx + 8, y: (yA + yB) / 2 - 2,
       class: "pv-lab"});
     txt(svg, "above 2012", {x: bx + 8, y: (yA + yB) / 2 + 15, class: "pv-lab"});
-    txt(svg, `${pc1(recent4)} now`, {x: bx + 8, y: (yA + yB) / 2 + 33, class: "pv-labq"});
+    txt(svg, `${pc1(recent4)} latest`, {x: bx + 8, y: (yA + yB) / 2 + 33, class: "pv-labq"});
   }
 }
 

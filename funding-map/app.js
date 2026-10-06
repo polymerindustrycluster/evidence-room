@@ -856,7 +856,11 @@ function loadData(file) {
     const seg = h('div', { class: 'seg', role: 'group', 'aria-label': 'Arrange recipients' });
     [['program', 'By program'], ['amount', 'By amount'], ['name', 'A–Z']].forEach(([k, lab]) => {
       seg.appendChild(h('button', { type: 'button', text: lab, 'aria-pressed': String(cardMode === k),
-        onclick: () => { cardMode = k; render(); } }));
+        /* render() rebuilds the cards and this button with them; hand focus to its
+           successor, or a keyboard reader is dropped on <body> (tools/access.mjs) */
+        onclick: () => { cardMode = k; render();
+          const b = [...viz.querySelectorAll('.seg button')].find((x) => x.textContent === lab);
+          if (b) b.focus({ preventScroll: true }); } }));
     });
     root.appendChild(h('div', { class: 'sortbar' }, [
       h('span', { class: 'sortbar-label', text: 'Arrange' }), seg
@@ -1066,6 +1070,9 @@ function loadData(file) {
         status: DATA.meta.status,
         source: 'Signed federal Notices of Award, the executed Ohio grant agreement (SBIG20251005), and executed sub-grant agreements.',
         fetched: longDate(DATA.meta.asOf),
+        /* the masthead's "Newest data retrieved": the USAspending outlay check, newer than
+           the register's own date above (masthead.newest_date, 5 October 2026) */
+        as_of: DATA.meta.as_of,
         row: 'One row is one award line: a named recipient, the program that funds it, and the amount that program has committed to that recipient.',
         caution: ns[0], excludes: ns[1], not_the_cluster: ns[2], note: ns[3],
         award_level_note: ns[4],

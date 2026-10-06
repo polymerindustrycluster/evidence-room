@@ -40,6 +40,10 @@ def synchronized(scissors, federal):
     factor = values['2025'] / values['2019']
     product = next(s for s in scissors['series'] if s['label'] == 'PPI: plastics and rubber products manufacturing')
     resin = next(s for s in scissors['series'] if s['label'] == 'PPI: plastics material and resin manufacturing')
+    # The masthead shows the newest retrieval the file carries, and the CPI pull nested under
+    # deflator is newer than the price fetch (masthead.newest_date, 5 October 2026).
+    result['meta']['as_of'] = max(scissors['meta']['fetched'][:10],
+                                  observations['meta']['fetched'][:10])
     result['meta']['nominal'] = (
         'Every plotted price is nominal, indexed to January 2019 without adjustment for '
         'general inflation. The real-terms paragraph uses a separate annual-CPI approximation: '

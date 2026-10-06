@@ -277,6 +277,126 @@ for (const name of pages) {
     else announced++;
   }
   if (ctls.length) notes.push(`${announced} control(s) announce their result, ${quiet} change only their chart`);
+
+  /* 5. A PRESSED TOGGLE AND A CLOSED PANEL HAND FOCUS BACK. Added 5 October 2026: on
+     chain, pressing a stage or a county redrew the ribbon and the map, which replaced the
+     node that had focus and dropped a keyboard reader on <body>; on timeline, closing an
+     event's detail panel hid the close button that held focus and left the reader on
+     <body>. Every rendered toggle ([aria-pressed]), the first of each group at each width,
+     is pressed with Enter and must still hold focus afterwards (the same control where it
+     carries a data-focuskey). Every chart's Tab stop is pressed with Enter; where that
+     opens a visible [role=dialog], it is closed once with Escape and once with its own
+     close button, and focus must come back to a mark with the opener's aria-label. */
+  let toggles = 0, dialogs = 0;
+  for (const width of [1440, 390]) {
+    /* one fresh page per toggle: a press redraws other groups too (a stage press redraws
+       chain's map), so a node marked before the first press may be gone by the second */
+    const mark = () => {
+      const seen = new Set(); let i = 0;
+      document.querySelectorAll("[aria-pressed]").forEach(t => {
+        if (!t.checkVisibility() || t.closest("[aria-hidden=true]")) return;
+        const g = t.closest("[data-pv-group], svg, [role=group], [role=toolbar]") || t.parentElement;
+        if (seen.has(g)) return;
+        seen.add(g); t.setAttribute("data-access-t", String(i++));
+      });
+      return i;
+    };
+    const {p: k0} = await open(name, width);
+    const n = await k0.evaluate(mark);
+    await k0.close();
+    for (let i = 0; i < n; i++) {
+      const {p: k} = await open(name, width);
+      const sel = `[data-access-t="${i}"]`;
+      try {
+        const before = await k.evaluate(([mark, sel]) => {
+          eval(mark)();
+          const t = document.querySelector(sel);
+          if (!t) return null;
+          t.focus();
+          return {key: t.getAttribute("data-focuskey"),
+            label: t.getAttribute("aria-label") || t.textContent.trim().slice(0, 40)};
+        }, [mark.toString(), sel]);
+        if (!before) throw new Error("the toggle was not rendered on reload");
+        await k.keyboard.press("Enter");
+        await k.waitForTimeout(400);
+        const after = await k.evaluate(() => {
+          const a = document.activeElement;
+          return {body: !a || a === document.body, key: a && a.getAttribute && a.getAttribute("data-focuskey")};
+        });
+        toggles++;
+        if (after.body) probs.push(`${width}: pressing ${before.label} drops focus to <body>`);
+        else if (before.key && after.key !== before.key)
+          probs.push(`${width}: pressing ${before.label} moves focus to ${after.key || "another element"}`);
+      } catch (e) {
+        probs.push(`${width}: could not inspect toggle ${i + 1} of ${n}: ${e.message.split("\n")[0]}`);
+      }
+      await k.close();
+    }
+
+    /* Only a page that renders a [role=dialog] at all is walked, one fresh page per chart
+       stop and closing method, since pressing a stop that toggles a filter redraws it. */
+    const {p: d0} = await open(name, width);
+    const markStops = () => {
+      let i = 0;
+      document.querySelectorAll("[data-pv-group], .chart").forEach(g => {
+        const m = g.querySelector("[data-pv-mark][tabindex='0'], [tabindex='0'][aria-label]");
+        if (m && !m.hasAttribute("data-access-d") && m.checkVisibility() && !m.closest("[aria-hidden=true]"))
+          m.setAttribute("data-access-d", String(i++));
+      });
+      return i;
+    };
+    const stops = await d0.evaluate(() => document.querySelector("[role=dialog]")) === null ? 0
+      : await d0.evaluate(markStops);
+    await d0.close();
+    for (let i = 0; i < stops; i++) for (const how of ["Escape", "close button"]) {
+      const {p: d} = await open(name, width);
+      const sel = `[data-access-d="${i}"]`;
+      const open1 = () => d.evaluate(() => [...document.querySelectorAll("[role=dialog]")].some(x => x.checkVisibility()));
+      try {
+        /* mark, read and focus in one step: funding-map redraws its chart once more after
+           load, so a node marked in one call can be gone by the next */
+        const label = await d.evaluate(([mark, sel]) => {
+          eval(mark)();
+          const m = document.querySelector(sel);
+          if (!m) return null;
+          m.focus();
+          return m.getAttribute("aria-label");
+        }, [markStops.toString(), sel]);
+        if (label === null) throw new Error("the chart stop was not rendered on reload");
+        await d.keyboard.press("Enter");
+        await d.waitForTimeout(400);
+        if (await open1()) {
+          dialogs++;
+          let closed = true;
+          if (how === "Escape") await d.keyboard.press("Escape");
+          else {
+            closed = await d.evaluate(() => {
+              const dlg = [...document.querySelectorAll("[role=dialog]")].find(x => x.checkVisibility());
+              const c = dlg && dlg.querySelector("button[aria-label^=Close]");
+              if (c) c.focus();
+              return !!c;
+            });
+            if (!closed) probs.push(`${width}: the panel "${label}" opens has no close button to press`);
+            else await d.keyboard.press("Enter");
+          }
+          if (closed) {
+            await d.waitForTimeout(400);
+            const back = await d.evaluate(() => {
+              const a = document.activeElement;
+              return a && a !== document.body ? a.getAttribute("aria-label") : null;
+            });
+            if (await open1()) probs.push(`${width}: ${how} did not close the panel "${label}" opened`);
+            else if (back !== label)
+              probs.push(`${width}: closing the panel with ${how} leaves focus on ${back ? `"${back.slice(0, 40)}"` : "<body>"}, not the mark that opened it`);
+          }
+        }
+      } catch (e) {
+        probs.push(`${width}: could not inspect chart stop ${i + 1} of ${stops}: ${e.message.split("\n")[0]}`);
+      }
+      await d.close();
+    }
+  }
+  notes.push(`${toggles} toggle press(es) and ${dialogs} panel close(s) keep focus`);
   if (errors.length) probs.push(`page error: ${errors[0]}`);
 
   if (probs.length) bad++;

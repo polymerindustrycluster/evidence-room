@@ -50,6 +50,7 @@ const GATES = [
   ["columns",     "node",   ["tools/columns.mjs"],           "one text rail"],
   ["centres",     "node",   ["tools/centres.mjs", "."],      "block centring across widths"],
   ["disclosure",  "node",   ["tools/disclosure.mjs"],        "every page says an AI wrote it, in one wording"],
+  ["breaksif",    "node",   ["tools/breaksif.mjs"],          "every listed story says what would prove its headline wrong"],
   ["style",       "node",   ["tools/style.mjs"],             "house style law in rendered prose"],
   ["coldopen",    "node",   ["tools/coldopen.mjs"],          "evidence in the first screen, ratcheted"],
   ["figures",     "node",   ["tools/figures.mjs"],           "cross-page figure registry"],
@@ -64,7 +65,7 @@ const GATES = [
   ["access",      "node",   ["tools/access.mjs"],            "one Tab stop per chart, full twin tables, announced results, 404"],
   ["collide",     "node",   ["tools/collide.mjs", "--sweep"],  "overlap and out-of-frame, 14 widths", true],
   ["textsize",    "node",   ["tools/textsize.mjs", "--sweep"], "12px rendered floor, 14 widths", true],
-  ["selftest",    "node",   ["tools/selftest.mjs"],            "84 known-defect fixtures across 16 gates", true],
+  ["selftest",    "node",   ["tools/selftest.mjs"],            "98 known-defect fixtures across 17 gates", true],
 ];
 
 const rows = [];

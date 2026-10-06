@@ -1,4 +1,5 @@
 {
+ "hero": "src-lq-basis",
  "data": "registry.json",
  "claims": [
   {
@@ -64,6 +65,8 @@
    "assert": "(lambda B, W: abs(B['local_industry_private'] / B['local_all_industry_all_ownerships'] / (B['national_industry_private'] / B['national_all_industry_all_ownerships']) - B['bls_basis']) < 5e-5 and abs(B['local_industry_private'] / B['local_all_industry_private'] / (B['national_industry_private'] / B['national_all_industry_private']) - B['same_basis']) < 5e-5 and B['bls_basis_2dp'] == B['bls_published'] == W['lq'] and B['local_industry_private'] == W['emp'] and B['same_basis_2dp'] != B['bls_basis_2dp'] and B['gap_pct'] < 0 and B['local_all_industry_private'] < B['local_all_industry_all_ownerships'] and B['self_check']['own_5_private_lq'] != 1.0)(D['lq']['basis'], D['lq']['worked']) and (lambda B: B['county'] == 'Summit' and B['naics'] == '326' and B['year'] == 2025 and B['read_on'] == '2026-09-11' and B['rows'] == 'local: own_code 5 industry 326 agglvl 75; own_code 0 industry 10 agglvl 70; own_code 5 industry 10 agglvl 71. national (US000): own_code 5 industry 326 agglvl 15; own_code 0 industry 10 agglvl 10; own_code 5 industry 10 agglvl 11.' and B['local_industry_private'] == 3824 and B['local_all_industry_all_ownerships'] == 259891 and B['local_all_industry_private'] == 232747 and B['national_industry_private'] == 700297 and B['national_all_industry_all_ownerships'] == 155732363 and B['national_all_industry_private'] == 133160274 and B['bls_basis'] == 3.2721 and B['same_basis'] == 3.1241 and B['same_basis_2dp'] == 3.12 and B['gap_pct'] == -4.5 and B['self_check']['own_5_private_lq'] == 1.05 and B['self_check']['own_3_local_government_lq'] == 0.88 and B['self_check']['own_2_state_government_lq'] == 0.44 and B['self_check']['own_1_federal_lq'] == 0.39)(D['lq']['basis'])",
    "actual": "(D['lq']['basis']['bls_basis'], D['lq']['basis']['same_basis'], D['lq']['worked']['lq'])",
    "falsified_if": "Either arithmetic stops reproducing from the six components it is printed with, or BLS's basis stops landing on the figure the pay page publishes for the same cell. THIS IS THE PAGE'S ACCEPTANCE TEST, and the page failed it: an outside reviewer with no access to this repository followed the rule this page stated, which held ownership constant across all four numbers, and landed on 3.123 against a published 3.27. Both are correct arithmetic on the same files; only one is a location quotient as the bureau computes it. The last clause is the reader's own check rather than ours — a same-ownership total divided by itself is 1.00 by construction, and BLS printing 1.05 for it is the file saying what its denominator is. The literals in this assertion were added on 2026-09-01, when this sentence stopped being rendered from the registry at runtime and became text in index.html. While app.js printed it, the sentence could not disagree with the data; now it can, and this is the only thing standing between a refetch and a paragraph nobody re-read.",
+   "breaks_if": "Following this recipe no longer gives the 3.27 the bureau publishes for Summit County.",
+   "guards": "You can rebuild this for your own region.",
    "counts": [
     {"figure": "rounds to the 3.27", "noun": "file prints"},
     {"figure": "3,824", "noun": ["jobs", "basis is", "private throughout"]},
@@ -199,14 +202,14 @@
   },
   {
    "id": "src-dependency-structure",
-   "text": "QCEW feeds nine of the 23 registered pages, more than any other source; no other source feeds more than four. Seven of the 23 registered pages rest on a single dataset each.",
+   "text": "QCEW feeds nine of the 23 registered pages, more than any other source; no other source feeds more than five. Seven of the 23 registered pages rest on a single dataset each.",
    "source": "SOURCES.json by_artifact, inverted",
-   "assert": "(lambda S, T: S[0]['key'] == 'qcew' and S[0]['n_pages'] == 9 and T['most_used_pages'] == 9 and max(s['n_pages'] for s in S[1:]) == 4 and T['n_single_source_pages'] == 7 and T['n_single_source_pages'] == len([p for p in D['pages'] if p['n_sources'] == 1]) and T['n_pages'] == len(D['pages']) and T['n_pages'] == 23)(D['sources'], D['totals'])",
+   "assert": "(lambda S, T: S[0]['key'] == 'qcew' and S[0]['n_pages'] == 9 and T['most_used_pages'] == 9 and max(s['n_pages'] for s in S[1:]) == 5 and T['n_single_source_pages'] == 7 and T['n_single_source_pages'] == len([p for p in D['pages'] if p['n_sources'] == 1]) and T['n_pages'] == len(D['pages']) and T['n_pages'] == 23)(D['sources'], D['totals'])",
    "actual": "(D['sources'][0]['key'], D['sources'][0]['n_pages'], D['totals']['n_single_source_pages'], D['totals']['n_pages'])",
    "falsified_if": "A page gains or loses a source without this chart moving. Corrected 2026-08-30 from eleven pages and six single-source pages: an editorial reviewer reading the RENDERED revisions page, with no access to this repository, noticed that its methodology box credited the employment census on a page built from three producer-price series. The registry did list qcew against revisions, so the box was printing the registry faithfully and the registry was wrong. That single false entry made QCEW look more central than it is AND made this site look better diversified than it is, and no gate here could see it: every check confirmed the page matched the registry, and none asked whether the registry matched the page. Corrected AGAIN 2026-08-30, from ten pages to nine: a second phantom entry, qcew against cost-scissors, whose own data and claims contain no agglvl, no own_code, no NAICS and no employment figure of any kind. Found by two independent reviewers reading the rendered page. Two false entries in one table, both inflating the same source, is a pattern rather than a slip, so the whole table was then audited programmatically: three more suspects surfaced and two were the audit's own false positives, which is worth recording next to the two real ones. Moved again 2026-08-30 when the patents page entered the register as the ninth single-source artifact. [2026-09-01: the register was rebuilt from fifteen sources and eighteen pages to all twenty-four and twenty-three, after the nine missing 'what it cannot tell you' glosses were written. Every figure in this claim moved with it. The set-equality check added to verify_consistency.py the same day is what makes a future drift fail loudly instead of silently.]",
    "counts": [
     {"figure": "nine of twenty-three", "noun": "Quarterly Census of Employment and Wages"},
-    {"figure": "four of the twenty-three", "noun": "No other source feeds"}
+    {"figure": "five of the twenty-three", "noun": "No other source feeds"}
    ]
   },
   {
@@ -322,7 +325,7 @@
    "counts": [
     {"figure": "$160M", "noun": ["printed", "not invented"]},
     {"figure": "10.7", "noun": "times larger"},
-    {"figure": "21 times", "noun": "actually committed"}
+    {"figure": "21 times", "noun": "shows obligated"}
    ]
   },
   {

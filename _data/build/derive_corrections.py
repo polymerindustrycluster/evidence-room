@@ -99,7 +99,11 @@ PAGES_BY_HEADING = {
 
 # Entries about the site as a whole that correct no one page's statement. They are in the
 # log, shown under "every page", and named by no page's filter or count.
-SITE_WIDE = set()
+SITE_WIDE = {
+    # #47: a line and a list added to the twenty listed stories; a presentation change that
+    # corrects no one page's statement, so it is on no page's byline (John, 2026-10-05).
+    "2026-10-04 — Each story now says on the page what would prove it wrong, *every story the hub lists*",
+}
 
 # AN ENTRY BELONGS TO EVERY PAGE IT NAMES: in its italics, or in its text by the page's
 # folder name, that name with spaces, its <title>, or (for the hub) "front page" / "the hub".
@@ -108,6 +112,9 @@ SITE_WIDE = set()
 # which found cluster-health's WPU06 label correction counted only on two other pages).
 # An exclusion that no longer matches a mention fails the build.
 MENTION_EXCLUDED = {
+    ("2026-10-05 — Dated wording, keyboard focus", "atlas"): "keeps a \"today\" true on any date; not listed, unchanged",
+    ("2026-10-05 — Dated wording, keyboard focus", "programs"): "keeps a \"today\" true on any date; not listed, unchanged",
+    ("2026-10-05 — Dated wording, keyboard focus", "index"): "\"the hub sub-grant agreements\" is the Ohio Innovation Hub",
     ("2026-10-04 — The corrections log is a page", "chain"): "its corrections-log link changed address, not its words",
     ("2026-10-04 — The corrections log is a page", "index"): "its corrections-log link changed address, not its words",
     ("2026-10-04 — The corrections log is a page", "collaboration"): "a dated note moved below the headline, unaltered",
@@ -356,6 +363,8 @@ ALIASES = {"front page": "index", "the front page": "index", "front-page": "inde
 NOT_PAGES_NAMED = {
     "five more": "a count of further pages, each named in its own sub-entry",
     "every page": "a change to every page's status banner; no one page's statement",
+    "every hero": "the eyebrow colour on every page's teal hero; no one page's statement",
+    "every story the hub lists": "a presentation change to the twenty listed stories (SITE_WIDE)",
     "talent": "a withheld page, never published (2026-08-17 review)",
     "credit": "a withheld page, never published (2026-08-17 review)",
 }

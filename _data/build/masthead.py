@@ -4,7 +4,9 @@ THE RULE (John, 2026-09-30): a page's masthead date is the newest date among the
 the page reads. _shared/picviz.js prints meta.as_of, else meta.fetched, of whatever meta the
 page hands PV.methodology(); this module says which file that is (MASTHEAD_FILE) and which
 files count as read (inputs()). derive_index.py uses it to date the hub, and
-verify_consistency.py fails a page whose masthead date is not the newest input date.
+verify_consistency.py fails a page whose masthead date is not the newest input date, where
+an input's date is the newest as_of, fetched or asOf anywhere in it (newest_date), nested
+retrievals included.
 
 A page "reads" a file when its claims.json loads it, its app.js loads it with PV.data(), or
 it is listed in EXTRA_READS because a derive script reads it and the page restates it.
@@ -72,6 +74,46 @@ def meta_date(path):
     return None
 
 
+def _loose(v):
+    """A date from an ISO date, an ISO timestamp, or the prose form; None if it is none."""
+    if not isinstance(v, str):
+        return None
+    if re.match(r"\d{4}-\d{2}-\d{2}", v):
+        return datetime.date.fromisoformat(v[:10])
+    try:
+        return datetime.datetime.strptime(v, "%d %B %Y").date()
+    except ValueError:
+        return None
+
+
+def newest_date(path):
+    """The newest retrieval date ANYWHERE in a data file, not only in its top-level meta.
+
+    Added 5 October 2026 (PR #46 review): funding map's masthead said "Newest data
+    retrieved 13 August 2026", the register's date in meta.asOf, while the same file
+    carried a USAspending check read on 1 September 2026 in meta.outlays.asOf and the page
+    printed it; cost-scissors carried a CPI pull of 8 September 2026 under
+    deflator.observations.meta.fetched. A nested retrieval is still a retrieval, so every
+    as_of, fetched or asOf key at any depth counts."""
+    found = []
+
+    def walk(o):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                if k in DATE_KEYS and isinstance(v, str):
+                    d = _loose(v)
+                    if d:
+                        found.append(d)
+                else:
+                    walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+
+    walk(json.load(open(path, encoding="utf-8")))
+    return max(found) if found else None
+
+
 def masthead_files(page):
     f = MASTHEAD_FILE[page]
     return [os.path.join(page, "data", x) for x in ([f] if isinstance(f, str) else f)]
@@ -107,7 +149,7 @@ def newest_input(web, page, own=True):
             continue
         p = os.path.join(web, f)
         if os.path.exists(p):
-            d = meta_date(p)
+            d = newest_date(p)
             if d:
                 found.append((d, f))
     return max(found) if found else None

@@ -110,11 +110,59 @@ const CASES = [
    inject: s => s.replace('<span class="pill geo">PIC-12+2</span><span class="pill proto">Prototype</span>',
                           '<span class="pill geo">PIC-12+2</span>')},
 
+  {gate: "breaksif", page: "peers", file: "peers/claims.json", args: ["peers"],
+   expect: /hero claim oh-rank-1 has no breaks_if/,
+   defect: "a listed story whose hero claim lost its breaks_if, so the hub's promise that " +
+           "each story states what would contradict it is false on that page again",
+   inject: s => s.replace(/\n *"breaks_if": "A 2024 revision moves another state above Ohio[^\n]*/, "")},
+
+  {gate: "breaksif", page: "peers", args: ["peers"],
+   expect: /not directly under the first chart/,
+   defect: "the breaks-if line back under the hero, where it shipped first and pushed four " +
+           "first charts past their cold-open ceilings",
+   inject: s => s.replace("</body>", '<script>setTimeout(() => document.querySelector(".hero .wrap")' +
+     '.appendChild(document.querySelector(".pv-breaks")), 300)</script></body>')},
+
+  {gate: "breaksif", page: "chain", args: ["chain"],
+   expect: /after 768 to 1024px: the breaks-if line is not directly under the first chart/,
+   defect: "the breaks-if line anchored once at load, left under chain's county map after a " +
+           "narrow-to-wide resize made the chain diagram the first chart (Codex, PR #47)",
+   inject: s => s.replace('addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => ' +
+     'requestAnimationFrame(place), 150); });', "")},
+
   {gate: "disclosure", page: "sources", args: ["sources"],
    expect: /link to INTERNAL page \S+ carries no Internal tag/,
    defect: "the source guide linking an unlisted internal page with nothing to say it is " +
            "not for citation",
    inject: s => s.replace('` <span class="status-tag" data-status="INTERNAL">Internal</span>`', '""')},
+
+  /* How this was made and checked, and Cite as (DECISIONS.md, 5 October 2026). */
+  {gate: "disclosure", page: "peers", args: ["peers"],
+   expect: /no How this was made and checked box/,
+   defect: "a page shipped without the box that says who made it, what its checks can " +
+           "establish and how to cite it",
+   inject: s => s.replace('await madeAndChecked(o.page || "index", manual.length);', "")},
+
+  {gate: "disclosure", page: "churn", args: ["churn"],
+   expect: /byline Revised reads 2020-01-01/,
+   defect: "a page rendering a revision date its citation record does not hold, so its " +
+           "Revised date and cite version name a date nobody can trace",
+   /* the bundle's inlined copy of _data/cite.json, which the page renders from */
+   inject: s => s.replace(/("churn": \{[^}]*"revised": ")[^"]+/, (m, k) => k + "2020-01-01")},
+
+  {gate: "disclosure", page: "accountability", args: ["accountability"],
+   expect: /the box credits .*analysis and graphics by Codex \(OpenAI\).*; the byline credits/,
+   defect: "the box crediting Codex with the analysis on a page whose byline credits Codex " +
+           "only for updating the federal context (PR #46 review)",
+   inject: s => s.replace('<span class="pv-made-credit">${credit}</span>',
+     '<span class="pv-made-credit">Analysis and graphics by Claude (Anthropic) and Codex (OpenAI)</span>')},
+
+  {gate: "consistency", page: "funding-map", file: "funding-map/data/funding.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[masthead\] funding-map/,
+   defect: "a masthead calling the register's 13 August 2026 the newest retrieval while the " +
+           "same file carries a USAspending check read on 1 September 2026 (PR #46 review)",
+   inject: s => s.replace('  "as_of": "2026-09-01",\n', "")},
 
   {gate: "consistency", page: "index", file: "index/app.js",
    command: "python3", args: ["_data/build/verify_consistency.py"],
@@ -460,7 +508,10 @@ const CASES = [
            "the figure ('147 institution records since 1991; 41 recorded polymer awards')",
    /* Grok's refute, 2026-09-28: with "institution records" four words before the 41, the
       8-word window passed this exact relapse. The window now stops at the clause. */
-   inject: s => s.replace(/41 of them recorded\s+a polymer award/, "41 recorded polymer awards")},
+   /* Global since 2026-10-05: the page now quotes this sentence again in its "What would
+      prove this page wrong" list, and a first-match edit hit that copy, leaving the
+      headline intact and the fixture passing. */
+   inject: s => s.replace(/41 of them recorded\s+a polymer award/g, "41 recorded polymer awards")},
 
   {gate: "consistency", page: "sources", file: "index/data/counts.json",
    command: "python3", args: ["_data/build/verify_consistency.py"],
@@ -542,7 +593,7 @@ const CASES = [
    defect: "a 404 page whose story-list link points at nothing",
    inject: s => s.replace("/evidence-room/index/#alltitle", "/evidence-room/index/#stories")},
 
-  {gate: "verify", page: "index", args: ["index"], expect: /contrast 4 under AA/,  /* byline, its name, the corrections link and its anchor */
+  {gate: "verify", page: "index", args: ["index"], expect: /contrast 7 under AA/,  /* byline, its name, the made-and-checked toggle row (3), the corrections link and its anchor */
    defect: "the hero byline at #9CC4CA, 3.62:1 on the teal hero (ER-11)",
    inject: s => s.replace("line-height:1.5;color:#C0DBE1;letter-spacing:.02em}",
                           "line-height:1.5;color:#9CC4CA;letter-spacing:.02em}")},
@@ -562,6 +613,46 @@ const CASES = [
    defect: "the finder's status still calling a panel open after Escape closed it",
    inject: s => s.replace("    if (status) status.textContent = '';\n    if (push && location.hash)",
                           "    if (push && location.hash)")},
+
+  /* From the review round of 5 October 2026. */
+  {gate: "access", page: "chain", args: ["chain"], expect: /pressing Monomer[^;]* drops focus to <body>/,
+   defect: "a stage or county press that redraws the ribbon and the map and drops the keyboard " +
+           "reader on <body>",
+   inject: s => s.replace("  renderAll();\n  if (key && !a.isConnected) {", "  renderAll();\n  if (false) {")},
+
+  {gate: "access", page: "timeline", args: ["timeline"], expect: /closing the panel with Escape leaves focus on <body>/,
+   defect: "closing an event's detail panel leaving focus on <body>, not the mark that opened it",
+   inject: s => s.replace("const o = opener; opener = null;", "const o = null; opener = null;")},
+
+  {gate: "style", page: "cluster-health", args: ["cluster-health"], expect: /withdrawn:fy2026 is still open/,
+   defect: "\"FY2026 is still open\" on a dated snapshot, which the withdrawn pattern missed because " +
+           "its optional space compiled to a required one",
+   inject: s => s.replace("FY2026 was partial when retrieved and is left out", "FY2026 is still open and is left out")},
+
+  {gate: "style", page: "churn", args: ["churn"], expect: /withdrawn:today:.*28 today/,
+   defect: "\"today\" against a dated snapshot (churn's 55-and-older share, to 2025Q3)",
+   inject: s => s.replace("about 28 in the year to the third quarter of 2025.", "about 28 today.")},
+
+  {gate: "verify", page: "index", args: ["index"], expect: /eyebrow[^,]* 4\.12:1/,
+   defect: "the brand lime eyebrow on the teal hero at 4.12:1, exempt from the check until 5 October 2026",
+   inject: s => s.replace(".hero .eyebrow{color:#C6DE5D}", ".hero .eyebrow{color:#B8D637}")},
+
+  {gate: "verify", page: "funding-map", args: ["funding-map"], expect: /1440:contrast-rendered[^:]*: p\.eyebrow/,
+   defect: "the hero's radial glow under the eyebrow, 4.35:1 on funding-map at 1440, which the " +
+           "ancestor-colour walk passed because a pseudo-element is not an ancestor (PR #48)",
+   inject: s => s.replace(".hero::before{-webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 84px,#000 150px);\n  mask-image:linear-gradient(to bottom,transparent 0,transparent 84px,#000 150px)}", "")},
+
+  {gate: "provenance", page: "accountability", args: ["accountability"], expect: /UNCREDITED/,
+   defect: "a page printing signed-award figures while crediting only the USAspending contract " +
+           "pull (accountability, cluster-health and scorecard until 5 October 2026)",
+   file: "_data/SOURCES.json",
+    inject: s => {
+      const registry = JSON.parse(s);
+      registry.by_artifact["accountability"] = registry.by_artifact["accountability"]
+        .filter(k => !["eda_notices_of_award", "ohio_hub_grant_agreement", "pic_subgrant_agreements",
+                       "usaspending_award_lookup"].includes(k));
+      return JSON.stringify(registry, null, 1) + "\n";
+    }},
 ];
 
 const only = process.argv.slice(2).filter(a => !a.startsWith("--"));

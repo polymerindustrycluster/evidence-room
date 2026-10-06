@@ -55,6 +55,20 @@ const PRINTS = {
   heritage_register: ["heritage", "proven", "claimed", "discover", "era"],
 };
 
+/* THE REVERSE DIRECTION: AN INPUT THE PAGE USES AND DOES NOT CREDIT. Added 5 October 2026.
+   The fingerprints above can only fail a credit; they cannot see a missing one. After
+   ER-04 moved the funding map onto its documents, accountability, cluster-health and
+   scorecard printed the same signed-award figures and still credited only the USAspending
+   contract pull, which they also use, so every forward check passed. A documentary input
+   leaves marks no other source can: its award IDs, its grant number, its totals to the
+   dollar. A page whose own data or claims carry one must list that input. */
+const USES = {
+  eda_notices_of_award:     [/\bed2\d(?:hdq|oie)0g\d{4}\b/, /\b51,?001,?413\b/],
+  ohio_hub_grant_agreement: [/\bsbig20251005\b/],
+  pic_subgrant_agreements:  [/\bsub-?grant agreements?\b/, /\b3,?349,?892\b/],
+  usaspending_award_lookup: [/\bno_record\b/, /\b48,?114,?979\b/],
+};
+
 const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const pages = names.length ? names : Object.keys(REG.by_artifact || {});
 
@@ -78,16 +92,26 @@ for (const page of pages.sort()) {
     checked++;
     if (!prints.some(p => hay.includes(p))) missing.push(s);
   }
+  /* The sources page is the registry rendered: its data describes every input, so it
+     carries every mark and credits none. It is the one page the reverse check skips. */
+  const uncredited = page === "sources" ? [] : Object.entries(USES)
+    .filter(([s, res]) => !srcs.includes(s) && res.some(re => re.test(hay)))
+    .map(([s, res]) => `${s} (${hay.match(res.find(re => re.test(hay)))[0]})`);
+  if (uncredited.length) {
+    bad++;
+    console.log(`${page.padEnd(18)} UNCREDITED  its data or claims use ${uncredited.join(", ")} ` +
+      `and its source list does not name it`);
+  }
   if (missing.length) {
     bad++;
     console.log(`${page.padEnd(18)} SUSPECT  claims ${missing.join(", ")} and carries no ` +
       `trace of it in its own data or claims`);
-  } else {
+  } else if (!uncredited.length) {
     console.log(`${page.padEnd(18)} ok    ${srcs.length} source(s) leave fingerprints here`);
   }
 }
 console.log(`\n${checked} page-source pair(s) checked, ${skipped} page(s) had no shipped data`);
-console.log(bad ? `${bad} page(s) credit a source that left no trace. Either the page stopped\n` +
-                  `using it, or it never did, and a reader is being told otherwise.`
+console.log(bad ? `${bad} finding(s): a credited source that left no trace (the page stopped using\n` +
+                  `it, or never did), or a documentary input used and not credited.`
                 : `every credited source leaves a trace on the page that credits it`);
 process.exit(bad ? 1 : 0);

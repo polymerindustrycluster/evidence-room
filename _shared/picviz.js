@@ -524,6 +524,7 @@ const PV = (() => {
   const WHERE = {
     "SOURCES.json": "../_data/SOURCES.json",   // one registry for the whole site
     "claims.json": "claims.json",              // sits beside index.html, not in data/
+    "cite.json": "../_data/cite.json",         // every page's title, URL and revision date
     "corrections_by_page.json": "../_data/corrections_by_page.json",  // PV.correctionsSummary()
   };
   async function data(file) {
@@ -578,6 +579,83 @@ const PV = (() => {
     document.querySelector("footer .wrap")?.prepend(banner("foot"));
   }
 
+  /* ------------------------------------------------------------ made-and-checked box
+
+     HOW THIS WAS MADE AND CHECKED, AND HOW TO CITE IT (DECISIONS.md, 5 October 2026). A
+     reader quoting a page in a board packet needs a title, a version and a URL, and needs
+     to know in one breath who wrote it and what the checks can establish. So a toggle at
+     the end of the byline opens about sixty words under it: the authorship, one sentence
+     on the checks with the link to sources/#sec-checks, and a "Cite as" line. Collapsed,
+     it costs the byline one phrase rather than the cold open a line. It is not the
+     methodology box and must not grow into it: the 2026-09-01 rule above still holds.
+
+     Every date in it is the page's REVISION date, which _data/build/stamp_cite.py writes
+     from git into _data/cite.json at build time (tools/bundle.mjs, and CI before the Pages
+     upload), and the byline's "Revised" is the same date. tools/disclosure.mjs fails
+     a page whose box is missing, whose dates or cite URL differ from that file, or whose
+     model credits or their roles differ from its byline's. A page with
+     manual claims says how many rest on a person reading a document, because "every
+     numbered sentence is re-run" would not be true of it. */
+  const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
+                  "September", "October", "November", "December"];
+  /* "2026-09-11" or "11 September 2026" -> "11 September 2026" */
+  function longDate(v) {
+    const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v));
+    return iso ? `${+iso[3]} ${MONTHS[+iso[2] - 1]} ${iso[1]}` : String(v);
+  }
+  /* "2026-10-05" -> "5 Oct 2026": the byline's short form, which keeps the byline row from
+     wrapping a line on Linux (CI, PR #46); the cite line keeps the long form */
+  const shortDate = iso => `${+iso.slice(8, 10)} ${MONTHS[+iso.slice(5, 7) - 1].slice(0, 3)} ${iso.slice(0, 4)}`;
+  async function madeAndChecked(page, nManual) {
+    const by = document.querySelector(".byline");
+    if (!by || document.querySelector(".pv-made")) return;
+    let rec = null;
+    try { rec = (await data("cite.json")).pages[page]; } catch (e) { rec = null; }
+    if (!rec) {
+      console.error(`PV.methodology: page "${page}" has no record in _data/cite.json; run _data/build/stamp_cite.py.`);
+      return;
+    }
+    const when = longDate(rec.revised), year = rec.revised.slice(0, 4);
+    /* The model credits are the byline's own clauses, copied verbatim and read before
+       anything is appended to it, so each model keeps the role the byline gives it: a
+       byline that credits Codex only for updating the federal context must not become a
+       box that credits Codex with the analysis (PR #46 review). tools/disclosure.mjs
+       compares the role-and-model pairs. */
+    const MODEL = /\b[A-Z][A-Za-z]+ \((?:Anthropic|OpenAI|Google|xAI|MiniMax|Meta|Mistral)\)/;
+    const credit = by.textContent.replace(/\s+/g, " ").split("\u00b7").map(c => c.trim())
+      .filter(c => MODEL.test(c)).join("; ");
+    const checks = page === "sources" ? "#sec-checks" : "../sources/#sec-checks";
+    const reran = nManual === 0 ? "" : nManual === 1
+      ? ", except one that rests on a document read by a person"
+      : `, except ${nManual} that rest on a document read by a person`;
+    const id = "pv-made-" + page;
+    by.insertAdjacentHTML("beforeend", ` &middot; <span class="pv-revised">Revised
+      <time datetime="${rec.revised}">${shortDate(rec.revised)}</time></span> &middot; <button type="button"
+      class="pv-made-toggle" aria-expanded="false" aria-controls="${id}">How we checked
+      &middot; Cite</button>`);
+    const box = document.createElement("div");
+    box.className = "pv-made";
+    box.id = id;
+    box.hidden = true;
+    box.innerHTML = `<p><b>How this was made and checked.</b> Written and edited by John
+      Swanson, who is responsible for it. <span class="pv-made-credit">${credit}</span>.
+      Every numbered sentence is re-run against the data it ships
+      with${reran}; that catches a sentence drifting from its data, not data that is wrong
+      about the world (<a href="${checks}">what the checks catch and miss</a>).</p>
+      <p class="pv-cite"><b>Cite as:</b> Swanson, J., Polymer Industry Cluster (${year}). <cite>${rec.title}</cite>.
+      ${page === "index" ? "Polymer Industry Cluster (PIC). Version"
+        : "Polymer Industry Cluster (PIC) Evidence Room, version"}
+      <time datetime="${rec.revised}">${when}</time>. <a class="pv-cite-url"
+      href="${rec.url}">${rec.url}</a>. Creative Commons Attribution 4.0 (CC BY 4.0).</p>`;
+    by.after(box);
+    const t = by.querySelector(".pv-made-toggle");
+    t.addEventListener("click", () => {
+      const open = t.getAttribute("aria-expanded") !== "true";
+      t.setAttribute("aria-expanded", String(open));
+      box.hidden = !open;
+    });
+  }
+
   /* ------------------------------------------------------- corrections summary
 
      A LINK IN THE BYLINE SAYING WHETHER THIS PAGE HAS BEEN CORRECTED (DECISIONS.md,
@@ -589,8 +667,7 @@ const PV = (() => {
      with the log it links to. It counts entries and says whether the headline changed; an
      automatic wording/figure split was dropped as wrong both ways (John, 2026-10-05). Corrections made before a page was first published are in
      the log but not in this count. A page with none prints nothing. */
-  const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
-                  "September", "October", "November", "December"];
+  /* MONTHS is declared once, above, for madeAndChecked's longDate(). */
   function onDates(iso) {
     const parts = iso.map(d => d.split("-").map(Number));
     const sameYear = parts.every(p => p[0] === parts[0][0]);
@@ -762,13 +839,14 @@ const PV = (() => {
       if (asOf) {
         const d = document.createElement("span");
         d.className = "dateline";
-        d.textContent = `Data as of ${asOf}`;
+        d.textContent = `Newest data retrieved ${longDate(asOf)}`;
         mast.appendChild(d);
       } else {
         console.error(`PV.methodology: page "${o.page || "index"}" supplied no meta.fetched or meta.as_of, so its masthead has no data date.`);
       }
     }
     statusBanner(m.status, o.page);
+    await madeAndChecked(o.page || "index", manual.length);
     await correctionsSummary(o.page || "index");
 
     const sec = document.createElement("section");
@@ -892,6 +970,65 @@ const PV = (() => {
     const closer = document.querySelector(".closer");
     if (closer) closer.parentNode.insertBefore(sec, closer);
     else (document.querySelector("main") || document.body).appendChild(sec);
+    breaksIf(claims, sec);
+    return sec;
+  }
+
+  /* ------------------------------------------- what would prove this page wrong
+
+     The hub promises that each story "states what would contradict its claims"
+     (DECISIONS.md, 2026-10-04). `falsified_if` is the checker's precise condition, full of
+     code names, tolerances and the claim's own history, so it stays in claims.json. What a
+     reader gets is `breaks_if`: one plain sentence naming a change in the data that would
+     make the finding wrong, beside `guards`, the sentence as the page prints it. The
+     claims file names its `hero`; that claim's sentence sits directly under the page's
+     FIRST chart, after the chart's table twin, legend and source lines, so the first
+     screen and every cold-open measurement are unchanged (John, 2026-10-05: under the
+     hero it pushed four first charts past their ceilings). "First chart" is the
+     coldopen gate's definition. Every claim that has a breaks_if is listed, closed by
+     default, just before the methodology box. tools/breaksif.mjs fails a listed story
+     that lacks either, or whose line is anywhere but there. */
+  const CHART_TAIL = e => e.matches("p.src, details, [id$='table'], [class*='legend']") ||
+    !!e.querySelector(":scope > .pv-table");
+  function breaksIf(spec, method) {
+    const list = ((spec && spec.claims) || []).filter(c => c.breaks_if && c.guards);
+    const hero = list.find(c => c.id === spec.hero);
+    if (!list.length) return null;
+    /* WHICH CHART IS FIRST DEPENDS ON THE WIDTH. Chain shows its county map first on a
+       narrow screen and its chain diagram first on a wide one, so a line placed once at
+       load sat under the wrong chart after a resize (Codex, PR #47). It is re-anchored
+       after every resize, once the page's own redraw has run. */
+    if (hero && !document.querySelector(".pv-breaks")) {
+      const p = document.createElement("p");
+      p.className = "pv-breaks";
+      p.innerHTML = `<b>This finding breaks if:</b> ${hero.breaks_if}`;
+      const place = () => {
+        const svg = [...document.querySelectorAll("svg")].find(s => {
+          const b = s.getBoundingClientRect();
+          return b.width > 200 && b.height > 80 && !s.closest(".mast");
+        });
+        if (!svg) return;
+        let at = svg.closest(".wrap > *") || svg;
+        const next = e => { let n = e.nextElementSibling; return n === p ? n.nextElementSibling : n; };
+        while (next(at) && CHART_TAIL(next(at))) at = next(at);
+        if (at.nextElementSibling !== p) at.after(p);
+      };
+      place();
+      let t;
+      addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => requestAnimationFrame(place), 150); });
+    }
+    const sec = document.createElement("section");
+    sec.className = "band pv-breaks-all";
+    sec.innerHTML = `<div class="wrap"><details>
+      <summary>What would prove this page wrong</summary>
+      <p class="intro">Each finding below holds only while the data does. Under each is the
+        change in the data that would make it wrong. The checks re-run these sentences
+        against the files this page ships with, so a change in the world shows up here
+        only once the data is refreshed.</p>
+      <ul>${[hero, ...list.filter(c => c !== hero)].filter(Boolean).map(c =>
+        `<li><p class="said">${c.guards}</p><p><b>Breaks if:</b> ${c.breaks_if}</p></li>`).join("")}
+      </ul></details></div>`;
+    method.parentNode.insertBefore(sec, method);
     return sec;
   }
 
