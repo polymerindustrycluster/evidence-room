@@ -673,6 +673,13 @@ const CASES = [
 ];
 
 const only = process.argv.slice(2).filter(a => !a.startsWith("--"));
+/* --list prints the fixtures as JSON and runs nothing: tools/all.mjs reads it to pick the
+   fixtures a change can affect (a gate's code, a fixture's page or file). */
+if (process.argv.includes("--list")) {
+  console.log(JSON.stringify(CASES.map(c => ({gate: c.gate, page: c.page, file: c.file || null,
+    command: c.command || "node", args: c.args, prepare: c.prepare || null}))));
+  process.exit(0);
+}
 /* A gate that reads a derived file (nouns reads the text tools/pagetext.mjs dumps from the
    bundle) needs it re-derived from whatever the bundle holds before each run, and once more
    after the restore so the clean bundle is not left with the injected page's text. */
