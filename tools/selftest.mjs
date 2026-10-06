@@ -1,6 +1,6 @@
 /* DOES EACH GATE ACTUALLY CATCH THE DEFECT IT EXISTS FOR?
  *
- *   node tools/selftest.mjs [gate...]
+ *   node tools/selftest.mjs [--list] [gate | gate/page ...]
  *
  * A green board is worth exactly as much as the gates behind it, and during the
  * 2026-08 rebuild six of this project's own checks turned out to be unable to fail on
@@ -691,7 +691,8 @@ const run = c => {
 
 let trusted = 0, broken = [];
 for (const c of CASES) {
-  if (only.length && !only.includes(c.gate)) continue;
+  /* a name picks a gate's fixtures; gate/page picks that gate's fixtures on one page */
+  if (only.length && !only.includes(c.gate) && !only.includes(`${c.gate}/${c.page}`)) continue;
   const f = c.file || `dist/${c.page}.html`;
   if (!existsSync(f)) { console.log(`SKIP  ${c.gate} — ${f} missing, run bundle first`); continue; }
   const backupDir = c.file ? mkdtempSync(join(tmpdir(), "evidence-room-selftest-")) : null;

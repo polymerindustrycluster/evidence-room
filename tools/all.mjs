@@ -160,9 +160,10 @@ function scopePages(ref, pages) {
        the hub, the registry and every cross-link may have moved with it */
     site.push(f);
   }
-  if (site.length) return {pages, files, label,
+  if (site.length) return {pages, files: hit, changed: files, label,
     why: `site-wide change: ${site.slice(0, 3).join(", ")}${site.length > 3 ? ` (+${site.length - 3} more)` : ""}`};
-  return {pages: pages.filter(p => hit[p]), files: hit, label, why: null, scoped: true, total: files.length};
+  return {pages: pages.filter(p => hit[p]), files: hit, changed: files, label, why: null, scoped: true,
+          total: files.length};
 }
 
 const PAGES = allPages();
@@ -183,6 +184,75 @@ if (opt.shard) {
 if (opt.changed || opt.shard) console.log("");
 /* a page gate runs on everything only when nothing narrowed the list */
 const narrowed = scope.scoped || !!opt.shard;
+
+/* SELF-TESTS FOR WHAT A CHANGE CAN BREAK. With --changed, the self-test runs the fixtures
+   of every gate whose code changed (its script and everything it imports, Python too) or
+   whose code names a changed data file, plus every fixture whose page or injected file
+   changed. A change to the self-test harness, the bundler, a shared tools/_ helper,
+   _shared/, package files or the workflow runs every fixture, and so does any changed
+   file this cannot attribute: when unsure, all. The full self-test still runs nightly. */
+const ALL_FIXTURES = [/^tools\/(selftest|bundle)\.mjs$/, /^tools\/_/, /^_shared\//,
+                      /^package(-lock)?\.json$/, /^\.github\//];
+function selectFixtures(changed) {
+  const r = spawnSync("node", ["tools/selftest.mjs", "--list"], {encoding: "utf8"});
+  let cases = null;
+  try { cases = JSON.parse(r.stdout); } catch { /* below */ }
+  if (r.status !== 0 || !Array.isArray(cases)) return {all: true, why: "tools/selftest.mjs --list failed"};
+  const all = why => ({all: true, why, total: cases.length});
+  if (!changed) return all("the changed files could not be listed");
+  /* a gate's code: its entry scripts and what they import, followed transitively */
+  const read = f => { try { return readFileSync(f, "utf8"); } catch { return null; } };
+  const deps = entries => {
+    const seen = new Set(), todo = [...entries];
+    while (todo.length) {
+      const f = todo.pop();
+      if (seen.has(f)) continue;
+      const src = read(f);
+      if (src === null) continue;
+      seen.add(f);
+      if (f.endsWith(".mjs"))
+        for (const m of src.matchAll(/(?:from|import\()\s*["']\.\/([\w.-]+\.mjs)["']/g)) todo.push(`tools/${m[1]}`);
+      if (f.endsWith(".py"))
+        for (const m of src.matchAll(/^\s*(?:from|import)\s+(\w+)/gm)) todo.push(`_data/build/${m[1]}.py`);
+    }
+    return seen;
+  };
+  const gates = {};
+  for (const c of cases) {
+    const g = gates[c.gate] ||= {entries: new Set(), pages: new Set()};
+    g.entries.add(c.command === "node" ? `tools/${c.gate}.mjs` : c.args[0]);
+    if (c.prepare) g.entries.add(c.prepare[0]);
+  }
+  for (const g of Object.values(gates)) {
+    g.code = deps([...g.entries]);
+    g.text = [...g.code].map(read).join("\n");
+  }
+  /* the pages a fixture touches: its own, and the one whose file it injects */
+  const casePages = c => [c.page, ...(c.file ? [c.file.match(/^dist\/(.+)\.html$/)?.[1] || c.file.split("/")[0]] : [])];
+  const pickGates = new Set(), pickPages = new Set(), why = {};
+  for (const f of changed) {
+    if (ALL_FIXTURES.some(re => re.test(f))) return all(`${f} changed`);
+    const top = f.split("/")[0];
+    if (PAGES.includes(top)) { pickPages.add(top); continue; }
+    const base = f.split("/").pop(), stem = base.replace(/\.py$/, "");
+    const hit = Object.entries(gates).filter(([, g]) => g.code.has(f) || g.text.includes(base) ||
+      (base.endsWith(".py") && new RegExp(`\\b${stem}\\b`).test(g.text))).map(([name]) => name);
+    hit.forEach(n => { pickGates.add(n); (why[n] ||= f); });
+    if (hit.length) continue;
+    if (cases.some(c => c.file === f)) { pickPages.add(f); continue; }
+    if (f.split("/").length === 1 && NEUTRAL_ROOT.has(f)) continue;
+    /* tool code no fixture's gate runs, imports or names cannot change a fixture */
+    if (/^tools\/[\w.-]+\.mjs$/.test(f)) continue;
+    return all(`${f} changed and no single gate owns it`);
+  }
+  const chosen = cases.filter(c => pickGates.has(c.gate) || casePages(c).some(p => pickPages.has(p)) ||
+                                   (c.file && pickPages.has(c.file)));
+  const sel = [...new Set(chosen.map(c => pickGates.has(c.gate) ? c.gate : `${c.gate}/${c.page}`))];
+  const reasons = [...[...pickGates].map(g => `${g} (${why[g]})`),
+                   ...[...pickPages].map(p => `fixtures on ${p}`)];
+  return {all: false, sel, n: cases.filter(c => sel.includes(c.gate) || sel.includes(`${c.gate}/${c.page}`)).length,
+          total: cases.length, reasons};
+}
 
 /* ONE RENDER FOR BOTH SWEEPS. collide and textsize sweep the same 14 widths of the same
    pages, so tools/sweeps.mjs renders each page x width once and runs both probes on it.
@@ -215,8 +285,24 @@ const t0 = Date.now();
 for (const [name, cmd, gateArgv, what, slow] of GATES) {
   const part = partOf(name);
   if (opt.parts && !opt.parts.has(part) && !PREREQ.has(name)) continue;
-  if (fast && slow) { rows.push({name, what, skipped: true, reason: "fast"}); continue; }
+  const scopedSelftest = name === "selftest" && opt.changed;
+  if (fast && slow && !scopedSelftest) { rows.push({name, what, skipped: true, reason: "fast"}); continue; }
   let argvRun = gateArgv, tag = "";
+  if (scopedSelftest) {
+    const pick = selectFixtures(scope.changed);
+    if (pick.all) console.log(`SELF-TESTS: every fixture: ${pick.why}`);
+    else console.log(`SELF-TESTS: ${pick.n} of ${pick.total} fixtures` +
+                     `${pick.reasons.length ? `: ${pick.reasons.join(", ")}` : ", no gate code or fixture page changed"}`);
+    if (!pick.all) {
+      tag = `[${pick.n}/${pick.total} fixtures] `;
+      if (!pick.n) {
+        rows.push({name, what, skipped: true, reason: "scope", tag, last: "no fixture's gate, page or file changed"});
+        if (!quiet) console.log(` skip  ${name.padEnd(12)} ${"".padStart(7)}  ${tag}${rows.at(-1).last}`);
+        continue;
+      }
+      argvRun = [...gateArgv, ...pick.sel];
+    }
+  }
   if (part === "pages" && narrowed) {
     const spec = PAGE_GATES[name];
     const mine = pagesRun.filter(spec.keep || (() => true));
@@ -258,7 +344,8 @@ if (logDir) writeFileSync(join(logDir, "results.json"), JSON.stringify(
    shard: opt.shard, rows}, null, 2) + "\n");
 console.log("");
 if (fastSkipped.length)
-  console.log(`NOT RUN (--fast): ${fastSkipped.map(s => s.name).join(", ")} — width sweeps and gate self-tests.\n` +
+  console.log(`NOT RUN (--fast): ${fastSkipped.map(s => s.name).join(", ")} — width sweeps` +
+              `${fastSkipped.some(s => s.name === "selftest") ? " and gate self-tests" : ""}.\n` +
               `These are the checks that found sub-12px text on 14 of 16 pages and ~50 collisions.\n` +
               `A --fast pass is not a clean bill.`);
 if (narrowed)
