@@ -78,15 +78,18 @@ a{color:var(--action)}
   border-bottom:1px solid rgba(255,255,255,.13);cursor:pointer}
 .cbar:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
 .cbar .cb-lab{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
-  color:#9FCBD2;align-self:center}
+  color:#C0DBE1;align-self:center}
 .cbar .cb-num{font-size:27px;font-weight:900;color:#fff;letter-spacing:-.02em;line-height:1}
 .cbar.thin .cb-num{color:var(--lime)}
 .cbar .cb-track{grid-column:1/-1;height:11px;background:rgba(255,255,255,.12);position:relative;
   margin:5px 0 0}
 .cbar .cb-fill{position:absolute;inset:0 auto 0 0;background:var(--t5)}
 .cbar .cb-exp{position:absolute;top:-3px;bottom:-3px;width:2px;background:#EAF4F5;opacity:.8}
-.cbar .cb-sub{grid-column:1/-1;font-size:12px;color:#7FB3BC;margin:5px 0 0}
-.cbar[aria-pressed=true]{background:rgba(255,255,255,.07)}
+.cbar .cb-sub{grid-column:1/-1;font-size:12px;color:#C0DBE1;margin:5px 0 0}
+/* 12px text on the hero needs 4.5:1: #9FCBD2 and #7FB3BC measured 3.87 and 2.94 on --ink
+   (tools/verify.mjs, rendered pass at 390, 5 October 2026). #C0DBE1 is the hero legend's
+   colour, 4.69:1; a pressed bar darkens rather than lightens so it keeps that margin. */
+.cbar[aria-pressed=true]{background:rgba(0,0,0,.14)}
 .cbar[aria-pressed=true] .cb-num{color:var(--lime)}
 .tierlab{font-size:15.7px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
   fill:#9FCBD2}

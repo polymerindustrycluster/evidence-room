@@ -43,7 +43,7 @@
     },
     {
       "id": "cs-gas-round-tripped",
-      "text": "Natural gas is below where it started in January 2019 (H1 'gave the whole spike back', hero card, ladder lede, and the ladder how-to-read line's 'past the line, it costs less now than before the run-up started'). The H1 used to say 'round-tripped', a trade term used four words before anything explained it.",
+      "text": "Natural gas is below where it started in January 2019 (H1 'gave the whole spike back', hero card, ladder lede, and the ladder how-to-read line's 'past the line, its latest price is below where the run-up started'). The H1 used to say 'round-tripped', a trade term used four words before anything explained it.",
       "source": "EIA Henry Hub spot, monthly",
       "assert": "(lambda g: g['now']['index'] < 100 and g['retraced'] > 1)([s for s in D['series'] if 'natural gas' in s['label'].lower()][0])",
       "actual": "[(s['label'], s['peak']['index'], s['now']['index'], s['retraced']) for s in D['series'] if 'natural gas' in s['label'].lower()]",
@@ -54,7 +54,7 @@
     },
     {
       "id": "cs-gas-below-seven",
-      "text": "Gas now costs 7% less than in January 2019: the hero card leads with the plain reading (-7%), the ladder row label repeats it as 'now -7% vs 2019', and the vignette states it again.",
+      "text": "In July 2026 gas cost 7% less than in January 2019: the hero card leads with the plain reading (-7%), the ladder row label repeats it as 'latest -7% vs 2019', and the vignette states it again.",
       "source": "EIA Henry Hub spot, current month against the 2019-01 base",
       "assert": "(lambda g: 6.5 <= 100 - g['now']['index'] <= 7.5)(one(s for s in D['series'] if 'natural gas' in s['label'].lower()))",
       "actual": "(lambda g: (g['now']['date'], g['now']['index']))(one(s for s in D['series'] if 'natural gas' in s['label'].lower()))",
@@ -73,7 +73,7 @@
     },
     {
       "id": "cs-ladder-worked-example",
-      "text": "The ladder's how-to-read line works the retracement formula through gas using only figures a reader can read off the page: 'it peaked at 283 and now reads 93, a fall of 190 against the 183 points it had gained above 100: 104% given back'. Every one of those five numbers must follow from the rounded values the page prints elsewhere, or the worked example teaches the reader that the page's arithmetic does not close.",
+      "text": "The ladder's how-to-read line works the retracement formula through gas using only figures a reader can read off the page: 'it peaked at 283 and read 93 in July 2026, a fall of 190 against the 183 points it had gained above 100: 104% given back'. Every one of those five numbers must follow from the rounded values the page prints elsewhere, or the worked example teaches the reader that the page's arithmetic does not close.",
       "source": "EIA Henry Hub spot, peak and current month, rebased to 2019-01",
       "assert": "(lambda pk, nw: pk == 283 and nw == 93 and pk - nw == 190 and pk - 100 == 183 and tofixed((pk - nw) / (pk - 100) * 100, 0) == '104')(int(tofixed(one(s for s in D['series'] if 'natural gas' in s['label'].lower())['peak']['index'], 0)), int(tofixed(one(s for s in D['series'] if 'natural gas' in s['label'].lower())['now']['index'], 0)))",
       "actual": "(lambda g: {'peak_rounded': int(tofixed(g['peak']['index'], 0)), 'now_rounded': int(tofixed(g['now']['index'], 0)), 'fall': int(tofixed(g['peak']['index'], 0)) - int(tofixed(g['now']['index'], 0)), 'rise_above_base': int(tofixed(g['peak']['index'], 0)) - 100, 'share_back_from_rounded': tofixed((int(tofixed(g['peak']['index'], 0)) - int(tofixed(g['now']['index'], 0))) / (int(tofixed(g['peak']['index'], 0)) - 100) * 100, 0), 'share_back_shipped': round(g['retraced'] * 100)})(one(s for s in D['series'] if 'natural gas' in s['label'].lower()))",
@@ -114,7 +114,7 @@
       "source": "EIA Ohio industrial electricity price, monthly",
       "assert": "(lambda e: e['peak']['date'] == '2026-01-01' and 0.22 <= e['retraced'] <= 0.32 and e['now']['date'] == '2026-05-01')(one(s for s in D['series'] if 'electricity' in s['label'].lower())) and max(s['now']['date'] for s in D['series'] if 'electricity' not in s['label'].lower()) == '2026-07-01'",
       "actual": "[(s['label'], s['now']['date']) for s in D['series']] + [(lambda e: (e['peak']['date'], e['retraced'], e['now']['index']))(one(s for s in D['series'] if 'electricity' in s['label'].lower()))]",
-      "falsified_if": "A new month prints above the January 2026 level (the 'peaked this January' sentence dates immediately), or the retracement leaves 22-32%. EIA publishing June 2026 also fails this claim, and correctly so: the lede prints the May cut-off as a fact, so the sentence has to be re-read the moment the series catches up with the other seven."
+      "falsified_if": "A new month prints above the January 2026 level (the 'peaked in January 2026' sentence goes false), or the retracement leaves 22-32%. EIA publishing June 2026 also fails this claim, and correctly so: the lede prints the May cut-off as a fact, so the sentence has to be re-read the moment the series catches up with the other seven."
     },
     {
       "id": "cs-elec-out-of-order",
@@ -203,9 +203,9 @@
     },
     {
       "id": "cs-spread-near-close",
-      "text": "The gap nearly closed in May 2026: the spread fell to +0.7, its lowest month since September 2022 and the lowest of the last two years (spread lede '+0.7, its thinnest month since September 2022', on-chart dip callout on both renderings, product verdict, closer, spread table, chart alt text).",
+      "text": "The gap nearly closed in May 2026: the spread fell to +0.7, its lowest month since September 2022 and the lowest of the last two years (spread lede '+0.7, its thinnest month since September 2022', on-chart dip callout on both renderings, product verdict, closer, spread table, chart alt text). It did not hold: in the two months after it resin fell 10.9 points and the gap reopened to +14.3 by July 2026 (closer, computed from the data since 5 October 2026; until then the closer said the next resin move would decide whether it held).",
       "source": "minimum of the derived converter spread over the last 24 shipped months, against every earlier month",
-      "assert": "(lambda sp: (lambda dip: dip[0] == '2026-05-01' and 0.65 <= dip[1] <= 0.749 and max(d for d, v in sp if d < dip[0] and v < dip[1]) == '2022-09-01')(min(sp[-24:], key=lambda x: x[1])))((lambda P, R: [(d, P[d]-R[d]) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}))",
+      "assert": "(lambda R: (lambda sp: (lambda dip: dip[0] == '2026-05-01' and 0.65 <= dip[1] <= 0.749 and max(d for d, v in sp if d < dip[0] and v < dip[1]) == '2022-09-01' and sp[-1][0] == '2026-07-01' and len([d for d, v in sp if d > dip[0]]) == 2 and 14.25 <= sp[-1][1] < 14.35 and sp[-1][1] > dip[1] and 10.85 <= R[dip[0]] - R[sp[-1][0]] < 10.95)(min(sp[-24:], key=lambda x: x[1])))((lambda P, R: [(d, P[d]-R[d]) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, R)))({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']})",
       "actual": "(lambda sp: (min(sp[-24:], key=lambda x: x[1])[0], round(min(sp[-24:], key=lambda x: x[1])[1], 2), [(d, round(v,2)) for d, v in sp if d >= '2026-01-01']))((lambda P, R: [(d, P[d]-R[d]) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}))",
       "falsified_if": "The dip month moves off May 2026, its value leaves 0.65-0.749 so the on-chart '+0.7' stops rounding, or an intervening month turns out to have been thinner than it, in which case 'its thinnest month since September 2022' is wrong. A new PPI print that goes below zero falsifies the chart title too.",
       "counts": [

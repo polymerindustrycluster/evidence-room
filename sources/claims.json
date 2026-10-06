@@ -201,14 +201,14 @@
   },
   {
    "id": "src-dependency-structure",
-   "text": "QCEW feeds nine of the 23 registered pages, more than any other source; no other source feeds more than four. Seven of the 23 registered pages rest on a single dataset each.",
+   "text": "QCEW feeds nine of the 23 registered pages, more than any other source; no other source feeds more than five. Seven of the 23 registered pages rest on a single dataset each.",
    "source": "SOURCES.json by_artifact, inverted",
-   "assert": "(lambda S, T: S[0]['key'] == 'qcew' and S[0]['n_pages'] == 9 and T['most_used_pages'] == 9 and max(s['n_pages'] for s in S[1:]) == 4 and T['n_single_source_pages'] == 7 and T['n_single_source_pages'] == len([p for p in D['pages'] if p['n_sources'] == 1]) and T['n_pages'] == len(D['pages']) and T['n_pages'] == 23)(D['sources'], D['totals'])",
+   "assert": "(lambda S, T: S[0]['key'] == 'qcew' and S[0]['n_pages'] == 9 and T['most_used_pages'] == 9 and max(s['n_pages'] for s in S[1:]) == 5 and T['n_single_source_pages'] == 7 and T['n_single_source_pages'] == len([p for p in D['pages'] if p['n_sources'] == 1]) and T['n_pages'] == len(D['pages']) and T['n_pages'] == 23)(D['sources'], D['totals'])",
    "actual": "(D['sources'][0]['key'], D['sources'][0]['n_pages'], D['totals']['n_single_source_pages'], D['totals']['n_pages'])",
    "falsified_if": "A page gains or loses a source without this chart moving. Corrected 2026-08-30 from eleven pages and six single-source pages: an editorial reviewer reading the RENDERED revisions page, with no access to this repository, noticed that its methodology box credited the employment census on a page built from three producer-price series. The registry did list qcew against revisions, so the box was printing the registry faithfully and the registry was wrong. That single false entry made QCEW look more central than it is AND made this site look better diversified than it is, and no gate here could see it: every check confirmed the page matched the registry, and none asked whether the registry matched the page. Corrected AGAIN 2026-08-30, from ten pages to nine: a second phantom entry, qcew against cost-scissors, whose own data and claims contain no agglvl, no own_code, no NAICS and no employment figure of any kind. Found by two independent reviewers reading the rendered page. Two false entries in one table, both inflating the same source, is a pattern rather than a slip, so the whole table was then audited programmatically: three more suspects surfaced and two were the audit's own false positives, which is worth recording next to the two real ones. Moved again 2026-08-30 when the patents page entered the register as the ninth single-source artifact. [2026-09-01: the register was rebuilt from fifteen sources and eighteen pages to all twenty-four and twenty-three, after the nine missing 'what it cannot tell you' glosses were written. Every figure in this claim moved with it. The set-equality check added to verify_consistency.py the same day is what makes a future drift fail loudly instead of silently.]",
    "counts": [
     {"figure": "nine of twenty-three", "noun": "Quarterly Census of Employment and Wages"},
-    {"figure": "four of the twenty-three", "noun": "No other source feeds"}
+    {"figure": "five of the twenty-three", "noun": "No other source feeds"}
    ]
   },
   {
@@ -324,7 +324,7 @@
    "counts": [
     {"figure": "$160M", "noun": ["printed", "not invented"]},
     {"figure": "10.7", "noun": "times larger"},
-    {"figure": "21 times", "noun": "actually committed"}
+    {"figure": "21 times", "noun": "shows obligated"}
    ]
   },
   {

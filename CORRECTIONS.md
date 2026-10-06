@@ -11,6 +11,59 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-10-05 — Dated wording, keyboard focus, hero contrast and the grant documents as sources, *cost-scissors, revisions, sources, churn, cluster-health, accountability, scorecard, federal-money, chain, timeline, funding-map, every hero*
+
+No figure changed. Each page whose wording changed carries a dated note.
+
+**Present-tense words on dated data, *cost-scissors, revisions, sources, churn,
+cluster-health, accountability*.** **Was:** readings taken from a snapshot were called
+"today" or "now": gas "now costs" less than in 2019 and a dollar part bills $1.40 "today"
+(cost-scissors, data to July 2026); each month's latest value was "today's" (revisions,
+archive read 13 August 2026); the 55-and-older share was about 28 in 100 "today" (churn, to
+the third quarter of 2025); each measure's latest year was "today" and "now", and FY2026
+"is still open" (cluster-health; it ended on 30 September); the $160M ceiling was set against
+what is "committed today" (sources); a hollow ring meant "still scheduled" and the closer
+counted what PIC "now" carries (accountability). **Is:** each is dated to its snapshot, or
+the chart label says "latest". The style gate's withdrawn list now bans "today" on
+accountability, churn, cluster-health, cost-scissors and revisions; atlas, programs and
+sources keep a "today" that is true on any date ("not a count of training available
+today") and are not listed. The existing fiscal-year pattern could never match "FY2026":
+its optional space compiled to a required one. It now matches.
+
+**Keyboard focus, *chain, timeline, funding-map*.** **Was:** pressing a chain stage or
+county redrew the chart and dropped keyboard focus on the page body; closing a timeline
+event's panel did the same; funding-map's phone-width Arrange buttons did too. **Is:**
+focus returns to the control or mark the reader was on. Chain's counties now report their
+pressed state, as its stages do. `tools/access.mjs` presses every toggle and closes every
+detail panel from the keyboard and fails if focus is lost.
+
+**The hero eyebrow, *every hero, chain*.** **Was:** the brand lime eyebrow measured 4.12:1
+on the teal hero, under the 4.5:1 that 12px text needs, and the contrast check exempted it;
+the hero's radial glow took it lower still, to 3.78:1 on accountability at phone width, and
+the check could not see a glow drawn by a pseudo-element. **Is:** on the hero only it is
+#C6DE5D, 4.54:1, and the glow is masked out of the eyebrow's band; the brand lime is
+unchanged elsewhere. The check exempts nothing and now also measures the rendered pixels
+behind every hero line at 1440, 768 and 390px, which also caught chain's phone-width stage
+labels at 3.87:1 and 2.94:1; they are now #C0DBE1, 4.69:1.
+
+**Two sentences that said more than their data, *cost-scissors, sources*.** **Was:**
+cost-scissors' closing line said the next resin move would decide whether May 2026's
+near-closure of the gap held, though the June and July prints already showed resin
+falling 10.9 points and the gap reopening to +14.3. The sources guide said one of an
+award's three figures is money that "has actually moved"; an obligation is a commitment
+to pay, and a payment is an outlay. **Is:** the closer reads what happened after the dip
+off the data, and `cs-spread-near-close` pins it; the guide says none of the three is
+money already paid, and the old phrase is on the withdrawn list.
+
+**The grant documents as sources, *accountability, scorecard, cluster-health,
+federal-money*.** **Was:** these pages print figures from the signed EDA Notices of Award
+(and, on accountability and the scorecard, the Ohio grant agreement SBIG20251005, the hub
+sub-grant agreements and the USAspending award lookup) while their source lists named only
+the USAspending contract pull, which they also use. **Is:** each list names the inputs its
+figures come from, and the award lookup's note says which pages print its outlays.
+`tools/provenance.mjs` now also fails a page whose data carries a documentary input's award
+IDs, grant number or totals without crediting it.
+
 ## 2026-10-05 — Two mastheads named an older date as the newest retrieval, *funding-map, cost-scissors*
 
 **Funding map.** **Was:** the masthead read "Newest data retrieved 13 August 2026", the date of

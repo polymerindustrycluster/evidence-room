@@ -579,6 +579,46 @@ const CASES = [
    defect: "the finder's status still calling a panel open after Escape closed it",
    inject: s => s.replace("    if (status) status.textContent = '';\n    if (push && location.hash)",
                           "    if (push && location.hash)")},
+
+  /* From the review round of 5 October 2026. */
+  {gate: "access", page: "chain", args: ["chain"], expect: /pressing Monomer[^;]* drops focus to <body>/,
+   defect: "a stage or county press that redraws the ribbon and the map and drops the keyboard " +
+           "reader on <body>",
+   inject: s => s.replace("  renderAll();\n  if (key && !a.isConnected) {", "  renderAll();\n  if (false) {")},
+
+  {gate: "access", page: "timeline", args: ["timeline"], expect: /closing the panel with Escape leaves focus on <body>/,
+   defect: "closing an event's detail panel leaving focus on <body>, not the mark that opened it",
+   inject: s => s.replace("const o = opener; opener = null;", "const o = null; opener = null;")},
+
+  {gate: "style", page: "cluster-health", args: ["cluster-health"], expect: /withdrawn:fy2026 is still open/,
+   defect: "\"FY2026 is still open\" on a dated snapshot, which the withdrawn pattern missed because " +
+           "its optional space compiled to a required one",
+   inject: s => s.replace("FY2026 was partial when retrieved and is left out", "FY2026 is still open and is left out")},
+
+  {gate: "style", page: "churn", args: ["churn"], expect: /withdrawn:today:.*28 today/,
+   defect: "\"today\" against a dated snapshot (churn's 55-and-older share, to 2025Q3)",
+   inject: s => s.replace("about 28 in the year to the third quarter of 2025.", "about 28 today.")},
+
+  {gate: "verify", page: "index", args: ["index"], expect: /eyebrow[^,]* 4\.12:1/,
+   defect: "the brand lime eyebrow on the teal hero at 4.12:1, exempt from the check until 5 October 2026",
+   inject: s => s.replace(".hero .eyebrow{color:#C6DE5D}", ".hero .eyebrow{color:#B8D637}")},
+
+  {gate: "verify", page: "funding-map", args: ["funding-map"], expect: /1440:contrast-rendered[^:]*: p\.eyebrow/,
+   defect: "the hero's radial glow under the eyebrow, 4.35:1 on funding-map at 1440, which the " +
+           "ancestor-colour walk passed because a pseudo-element is not an ancestor (PR #48)",
+   inject: s => s.replace(".hero::before{-webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 84px,#000 150px);\n  mask-image:linear-gradient(to bottom,transparent 0,transparent 84px,#000 150px)}", "")},
+
+  {gate: "provenance", page: "accountability", args: ["accountability"], expect: /UNCREDITED/,
+   defect: "a page printing signed-award figures while crediting only the USAspending contract " +
+           "pull (accountability, cluster-health and scorecard until 5 October 2026)",
+   file: "_data/SOURCES.json",
+    inject: s => {
+      const registry = JSON.parse(s);
+      registry.by_artifact["accountability"] = registry.by_artifact["accountability"]
+        .filter(k => !["eda_notices_of_award", "ohio_hub_grant_agreement", "pic_subgrant_agreements",
+                       "usaspending_award_lookup"].includes(k));
+      return JSON.stringify(registry, null, 1) + "\n";
+    }},
 ];
 
 const only = process.argv.slice(2).filter(a => !a.startsWith("--"));

@@ -164,7 +164,7 @@ const FLIPBIG = FLIPS.filter(p => p.series === BIGS).length;
    the shipped archive.
 
    HOW BIG: the typical revision against the typical month. The same 270 consecutive-month
-   pairs, read on today’s values, move a median 0.34%. A revision is therefore a bit under
+   pairs, read on the latest values, move a median 0.34%. A revision is therefore a bit under
    half of what these prices do in an ordinary month — small against the LEVEL, and not
    small against the STEP, which is the mechanism behind the reversals further down. This
    is a same-pipeline comparison: both quantities come from one archive, one set of months
@@ -300,7 +300,7 @@ function panel(svg, s, box, o) {
     el("rect", {x: xs(r.i) - box.w / ALLM.length / 2, y: box.y,
       width: Math.max(3, box.w / ALLM.length), height: box.h, fill: "transparent"}, svg),
     `<b>${SHORT[s]} · ${mon(r.date)}</b><br>first published
-     <span class="v">${r.first}</span><br>today <span class="v">${r.latest}</span><br>
+     <span class="v">${r.first}</span><br>latest <span class="v">${r.latest}</span><br>
      ${r.revisions
        ? `<span class="v">${pc2(r)}</span> across
           <span class="v">${r.revisions}</span> revision${r.revisions === 1 ? "" : "s"}`
@@ -357,9 +357,9 @@ function drawSmallWide() {
      to −1.72 because at −1.61 it printed within a unit of the Sep 2021 callout, which is
      anchored at ys(−1.415)+4 and runs right across the same band; −1.72 still clears the
      year ticks 22 units below it. */
-  txt(svg, "revised up: higher today", {x: m.l + 6, y: ys(1.53), class: "pv-labq",
+  txt(svg, "revised up: ended higher", {x: m.l + 6, y: ys(1.53), class: "pv-labq",
     fill: UP});
-  txt(svg, "revised down: lower today", {x: m.l + 6, y: ys(-1.72), class: "pv-labq",
+  txt(svg, "revised down: ended lower", {x: m.l + 6, y: ys(-1.72), class: "pv-labq",
     fill: DOWN});
   /* "Reference month" is the analyst's name for the distinction this whole page turns
      on, and a general reader does not hold it. Written out, it also teaches the axis:
@@ -384,8 +384,8 @@ function drawSmallStacked() {
      supplies "revised", and the color supplies which is which. */
   txt(svg, "revision, % of the first published figure",
     {x: m.l, y: 15, class: "pv-labq"});
-  txt(svg, "up: higher today", {x: m.l, y: 34, class: "pv-labq", fill: UP});
-  txt(svg, "down: lower today", {x: m.l + 128, y: 34, class: "pv-labq", fill: DOWN});
+  txt(svg, "up: ended higher", {x: m.l, y: 34, class: "pv-labq", fill: UP});
+  txt(svg, "down: ended lower", {x: m.l + 128, y: 34, class: "pv-labq", fill: DOWN});
   /* Same gloss as the wide layout, cut to the 313 units between the gutter and the right
      edge: 33 characters at about 8.3 units each lands near 274. */
   txt(svg, "band: half of that panel’s months", {x: m.l, y: 53, class: "pv-labq"});
@@ -533,7 +533,7 @@ SERIES.forEach(s => S[s].moved.forEach(r => smRows.push({s, ...r})));
 smRows.sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct));
 document.getElementById("smtable").innerHTML = tableView("s",
   "Every revised month, largest move first",
-  ["Month", "Series", "First published", "Today", "Change", "Revisions"],
+  ["Month", "Series", "First published", "Latest", "Change", "Revisions"],
   smRows.map(r => [mon(r.date), SHORT[r.s], r.first, r.latest, sgn(r.pct, 3), r.revisions]));
 /* CAPTION INK IS CAPPED AT ONE SOURCE LINE PLUS ONE LIMITATION (page-design § caveat ink,
    45 words). This note ran 90, with the three series IDs bolded inside it and a definition
@@ -557,7 +557,7 @@ document.getElementById("disttable").innerHTML = tableView("d",
    ["Mean corrections per revised month", (REVTOT / P.length).toFixed(2)],
    ["Months from first print to final value, median", med(LAGS)],
    ["Longest a month kept moving, in months", LAGMAX],
-   ["Median month-over-month price change, today’s values",
+   ["Median month-over-month price change, latest values",
     STEPMED.toFixed(2) + "%"],
    ["Months whose step from the month before reversed",
     `${FLIPS.length} of ${MATERIAL.length}`]]);
@@ -586,7 +586,7 @@ document.getElementById("caveat").innerHTML =
    producer-price series, how high it reads, does not move much once published. An earlier
    version of this page went further and called a fresh figure safe to act on, which the
    next sentence disproves. Of ${MATERIAL.length} months whose price clearly moved from the
-   month before, meaning at least 0.1% both as first published and today,
+   month before, meaning at least 0.1% both as first published and as latest published,
    ${FLIPS.length} later turned out to have moved the other way.`;
 
 /* ------------------------------------------------------- 3. one month, up close */
@@ -612,7 +612,7 @@ document.getElementById("caveat").innerHTML =
     `${nice(BIG.firstVintage)}.`;
   document.getElementById("vg2").textContent = sgn(momNow, 1);
   document.getElementById("vg2d").textContent =
-    `They now read ${Math.abs(momNow).toFixed(1)}% ${way(momNow)}: index ${BIG.latest} ` +
+    `As of ${+ASOF.slice(8, 10)} ${MONFULL[+ASOF.slice(5, 7) - 1]} ${ASOF.slice(0, 4)} they read ${Math.abs(momNow).toFixed(1)}% ${way(momNow)}: index ${BIG.latest} ` +
     `against ${prev[prev.length - 1].value}, after ${BIG.revisions} corrections.`;
   /* The vignette is one month, so it needs the count that says it is not a lone oddity.
      The lede carries the story in body type; this line carries the guard against
@@ -701,14 +701,14 @@ await PV.methodology({page: "revisions",
     "the archived vintages on this page, not fetched separately: for each month priced " +
     "it takes the first " +
     "published value against whatever the previous month carried in that same vintage, " +
-    "then repeats the comparison on today’s values. A pair counts only where both " +
+    "then repeats the comparison on the latest values. A pair counts only where both " +
     "readings are at least 0.1 percent, so a flip between +0.02 and −0.01 percent is " +
     "not called a reversal; 201 of 270 pairs clear that floor. The annual comparison in " +
     "the September 2021 section follows the same rule against the same month a year " +
     "earlier. Two further figures come from the same archive. How long a month keeps " +
     "moving is the gap between the vintage that first published it and the vintage that " +
     "last changed it. The ordinary monthly price change quoted beside the typical " +
-    "revision is the median absolute step between consecutive months on today’s values, " +
+    "revision is the median absolute step between consecutive months on the latest values, " +
     "over those same 270 pairs, so both sides of that comparison come from one archive, " +
     "one set of months and one set of series. Two decimal places are always formatted " +
     "from the unrounded change rather than from the three-decimal figure the data file " +

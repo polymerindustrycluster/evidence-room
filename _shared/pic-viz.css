@@ -149,6 +149,13 @@ footer .pv-status{margin:0 auto 18px}
 .hero{background:var(--ink);color:#fff;padding:40px 0 34px;position:relative;overflow:hidden}
 .hero::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(900px 450px at 84% -12%,rgba(26,138,158,.5),transparent 64%)}
+/* The glow stays, but not behind the eyebrow: over it the 12px lime fell to 3.78:1
+   (accountability at 390), under the 4.5:1 its size needs. A mask clears the glow from
+   the eyebrow's band, the hero's top padding plus two lines, and brings it back in full
+   by the headline. tools/verify.mjs measures the rendered pixels behind the text, so the
+   glow cannot creep back over it unseen (John's decision, 5 October 2026). */
+.hero::before{-webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 84px,#000 150px);
+  mask-image:linear-gradient(to bottom,transparent 0,transparent 84px,#000 150px)}
 .hero .wrap{position:relative}
 .eyebrow{margin:0 0 11px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;
   font-weight:700;color:var(--lime)}
@@ -161,6 +168,11 @@ footer .pv-status{margin:0 auto 18px}
 .hero .wrap > .hero-row{max-width:var(--measure)}
 .hero .wrap > h1{font-size:clamp(30px,3.8vw,46px);max-width:var(--measure);text-wrap:balance}
 .hero .wrap > .eyebrow{max-width:var(--measure)}
+/* The brand lime (#B8D637) measures 4.12:1 on the teal hero, under AA for 12px text. On the
+   hero only, the eyebrow takes the same hue lightened to #C6DE5D, 4.54:1 on --ink (John's
+   decision, 5 October 2026); --lime itself is unchanged everywhere else. tools/verify.mjs
+   measures it with no exemption. */
+.hero .eyebrow{color:#C6DE5D}
 /* Byline block. Fifteen per-page stylesheets each carried an identical copy of this and
    the hub carried none, so the one page without it rendered its byline at standfirst
    size, competing with the dek it sits under. Here, a new page inherits it by existing.

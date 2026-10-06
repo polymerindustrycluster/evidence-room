@@ -150,8 +150,8 @@
     },
     {
       "id": "rev-mom-flips",
-      "text": "Of 270 month-over-month pairs, 201 clear the 0.1 percent floor on both readings and 14 of those reversed direction between the first estimate and today (caveat box, vignette, closer, distribution table).",
-      "source": "each month's step from the previous month as first published (previous month taken at the same vintage), against the same step on today's values",
+      "text": "Of 270 month-over-month pairs, 201 clear the 0.1 percent floor on both readings and 14 of those reversed direction between the first estimate and the latest (caveat box, vignette, closer, distribution table).",
+      "source": "each month's step from the previous month as first published (previous month taken at the same vintage), against the same step on the latest values",
       "assert": "(lambda A: (lambda PM, FV, LV, AS: (lambda pairs: (len(pairs), len([p for p in pairs if abs(p[0]) >= 0.1 and abs(p[1]) >= 0.1]), len([p for p in pairs if abs(p[0]) >= 0.1 and abs(p[1]) >= 0.1 and p[0] * p[1] < 0])) == (270, 201, 14))([((FV(s, dt)[1] / AS(s, PM(dt), FV(s, dt)[0]) - 1) * 100, (LV(s, dt) / LV(s, PM(dt)) - 1) * 100) for s in sorted(set(r['series'] for r in A)) for dt in sorted(set(r['date'] for r in A if r['series'] == s)) if PM(dt) in set(r['date'] for r in A if r['series'] == s) and AS(s, PM(dt), FV(s, dt)[0]) is not None]))(lambda dt: '%04d-%02d-01' % ((int(dt[:4]) - 1, 12) if dt[5:7] == '01' else (int(dt[:4]), int(dt[5:7]) - 1)), lambda s, dt: min([(r['vintage'], r['value']) for r in A if r['series'] == s and r['date'] == dt]), lambda s, dt: max([(r['vintage'], r['value']) for r in A if r['series'] == s and r['date'] == dt])[1], lambda s, dt, V: (lambda c: max(c)[1] if c else None)([(r['vintage'], r['value']) for r in A if r['series'] == s and r['date'] == dt and r['vintage'] <= V])))(D['all'])",
       "actual": "(lambda A: (lambda PM, FV, LV, AS: (lambda pairs: (len(pairs), len([p for p in pairs if abs(p[0]) >= 0.1 and abs(p[1]) >= 0.1]), len([p for p in pairs if abs(p[0]) >= 0.1 and abs(p[1]) >= 0.1 and p[0] * p[1] < 0])))([((FV(s, dt)[1] / AS(s, PM(dt), FV(s, dt)[0]) - 1) * 100, (LV(s, dt) / LV(s, PM(dt)) - 1) * 100) for s in sorted(set(r['series'] for r in A)) for dt in sorted(set(r['date'] for r in A if r['series'] == s)) if PM(dt) in set(r['date'] for r in A if r['series'] == s) and AS(s, PM(dt), FV(s, dt)[0]) is not None]))(lambda dt: '%04d-%02d-01' % ((int(dt[:4]) - 1, 12) if dt[5:7] == '01' else (int(dt[:4]), int(dt[5:7]) - 1)), lambda s, dt: min([(r['vintage'], r['value']) for r in A if r['series'] == s and r['date'] == dt]), lambda s, dt: max([(r['vintage'], r['value']) for r in A if r['series'] == s and r['date'] == dt])[1], lambda s, dt, V: (lambda c: max(c)[1] if c else None)([(r['vintage'], r['value']) for r in A if r['series'] == s and r['date'] == dt and r['vintage'] <= V])))(D['all'])",
       "falsified_if": "Any of the three counts moves. The floor is deliberate: without it 36 of 270 pairs flip, most of them between readings of two hundredths of a percent, and calling those reversals would overstate the finding. The claim fails if a refetch changes the panel, and it fails loudly if the floor is ever removed from the page code without being removed here."
@@ -166,14 +166,14 @@
     },
     {
       "id": "rev-vignette-direction",
-      "text": "September 2021 read 1.0 percent above August in the figures published that October, and reads 0.3 percent below August today (stat band).",
+      "text": "September 2021 read 1.0 percent above August in the figures published that October, and reads 0.3 percent below August as of 13 August 2026 (stat band).",
       "source": "WPU06 September 2021 against August 2021, at the 2021-10-14 vintage and at the latest",
       "assert": "(lambda A: (lambda G: (lambda then, now: 0.95 <= then < 1.05 and -0.35 < now <= -0.25)((G('2021-09-01', 'first') / G('2021-08-01', 'asof') - 1) * 100, (G('2021-09-01', 'latest') / G('2021-08-01', 'latest') - 1) * 100))(lambda dt, kind: (lambda v: v[0][1] if kind == 'first' else (v[-1][1] if kind == 'latest' else max([x for x in v if x[0] <= '2021-10-14'])[1]))(sorted([(r['vintage'], r['value']) for r in A if r['series'] == 'WPU06' and r['date'] == dt]))))(D['all'])",
       "actual": "(lambda A: (lambda G: ((G('2021-09-01', 'first') / G('2021-08-01', 'asof') - 1) * 100, (G('2021-09-01', 'latest') / G('2021-08-01', 'latest') - 1) * 100))(lambda dt, kind: (lambda v: v[0][1] if kind == 'first' else (v[-1][1] if kind == 'latest' else max([x for x in v if x[0] <= '2021-10-14'])[1]))(sorted([(r['vintage'], r['value']) for r in A if r['series'] == 'WPU06' and r['date'] == dt]))))(D['all'])",
       "falsified_if": "Either step leaves the band that rounds to its printed value, or the two stop having opposite signs, which is the whole point of the beat.",
       "counts": [
         {"figure": "1.0 percent above August", "noun": "September"},
-        {"figure": "0.3 percent below August", "noun": "today"}
+        {"figure": "0.3 percent below August", "noun": "13 August 2026"}
       ]
     },
     {
@@ -194,7 +194,7 @@
     },
     {
       "id": "rev-vignette-year",
-      "text": "Against September 2020 the first estimates showed chemicals and allied products up 24.8 percent, and today the same comparison reads 23.1 percent (vignette lede).",
+      "text": "Against September 2020 the first estimates showed chemicals and allied products up 24.8 percent, and in the figures as of 13 August 2026 the same comparison reads 23.1 percent (vignette lede).",
       "source": "WPU06 September 2021 against September 2020, at the 2021-10-14 vintage and at the latest",
       "assert": "(lambda A: (lambda G: 24.75 <= (G('2021-09-01', 'first') / G('2020-09-01', 'asof') - 1) * 100 < 24.85 and 23.05 <= (G('2021-09-01', 'latest') / G('2020-09-01', 'latest') - 1) * 100 < 23.15)(lambda dt, kind: (lambda v: v[0][1] if kind == 'first' else (v[-1][1] if kind == 'latest' else max([x for x in v if x[0] <= '2021-10-14'])[1]))(sorted([(r['vintage'], r['value']) for r in A if r['series'] == 'WPU06' and r['date'] == dt]))))(D['all'])",
       "actual": "(lambda A: (lambda G: ((G('2021-09-01', 'first') / G('2020-09-01', 'asof') - 1) * 100, (G('2021-09-01', 'latest') / G('2020-09-01', 'latest') - 1) * 100))(lambda dt, kind: (lambda v: v[0][1] if kind == 'first' else (v[-1][1] if kind == 'latest' else max([x for x in v if x[0] <= '2021-10-14'])[1]))(sorted([(r['vintage'], r['value']) for r in A if r['series'] == 'WPU06' and r['date'] == dt]))))(D['all'])",
