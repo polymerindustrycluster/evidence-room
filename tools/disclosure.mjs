@@ -119,6 +119,7 @@ const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
 
 const REG = JSON.parse(readFileSync("_data/SOURCES.json", "utf8"));
+const CORR = JSON.parse(readFileSync("_data/corrections_by_page.json", "utf8"));
 
 const b = await chromium.launch();
 let bad = 0;
@@ -157,7 +158,10 @@ for (const n of list) {
                         return v ? [v.getAttribute("datetime"), norm(v.textContent)] : null; })(),
                       title: norm(cite?.querySelector("cite")?.textContent || ""),
                       url: u ? [u.getAttribute("href"), norm(u.textContent)] : null,
-                      doc: document.title};
+                      doc: document.title,
+                      corr: (() => { const c = box.querySelector(".pv-corr-sum");
+                        return c ? [norm(c.textContent), c.querySelector("a")?.getAttribute("href") || null] : null; })(),
+                      corrInByline: !!by?.querySelector(".pv-corr-sum")};
             })(),
             pageLinks: [...document.querySelectorAll("a[href^='../']")].map(a => [
               (a.getAttribute("href").match(/^\.\.\/([a-z-]+)\/?$/) || [])[1] || null,
@@ -165,6 +169,21 @@ for (const n of list) {
                 ? a.nextElementSibling.textContent.trim() : null])};
   });
   const probs = [];
+  /* THE CORRECTIONS LINE (DECISIONS.md D3; John, 2026-10-06): in the how-we-checked box,
+     never in the byline row, counting the page's corrections since publication from
+     _data/corrections_by_page.json and linking to its view of the log. A page with none
+     prints none. */
+  if (r.made) {
+    const want = (CORR.pages?.[n] || []).filter(e => !e.before_publication).length;
+    if (r.made.corrInByline) probs.push("the corrections count sits in the byline row, not the how-we-checked box");
+    if (want && !r.made.corr) probs.push(`no corrections line in the how-we-checked box; the log has ${want}`);
+    else if (want) {
+      if (!r.made.corr[0].startsWith(`${want} correction${want === 1 ? "" : "s"} since publication. Headline `))
+        probs.push(`corrections line reads "${r.made.corr[0].slice(0, 60)}", the log has ${want}`);
+      if (r.made.corr[1] !== `../corrections/?page=${n}`)
+        probs.push(`corrections line links ${r.made.corr[1]}, not ../corrections/?page=${n}`);
+    } else if (r.made.corr) probs.push("a corrections line on a page the log names in no entry");
+  }
   if (r.byline === null) probs.push("no .byline element");
   else {
     if (!r.byline.includes(CANON)) probs.push("byline lacks the AI credit");

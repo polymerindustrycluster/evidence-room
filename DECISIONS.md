@@ -18,9 +18,9 @@ product and domain decisions that a reader or rebuilder needs.
 - **No wording/figure split** (John, 2026-10-05): automatic wording/figure classification was
   wrong in both directions; the summary counts corrections and says whether the headline changed.
   **Headline changed** means the page's H1 changed, listed by hand and checked against the entries.
-- **The summary is a short link at the end of the byline** ("6 corrections"), John's call on
-  2026-10-05: a line above the first chart cost every page a line of its cold open. The full
-  sentence is the link's accessible name and title, and heads the page's view of the log.
+- **The summary sits in the how-we-checked box** (John, 2026-10-06): "N corrections since
+  publication. Headline unchanged." (or the dates it changed), linking to the page's view of
+  the log. Above the first chart, and then in the byline row, it cost pages their cold open.
 
 ---
 

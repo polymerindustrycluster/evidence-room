@@ -419,6 +419,11 @@ const CASES = [
            "silently loses the entry (\"front page\" dropped from index, PR #49 review)",
    inject: s => s.replace("timeline, sources, front page*", "timeline, sources, frontpage*")},
 
+  {gate: "disclosure", page: "wages", args: ["wages"], expect: /corrections line reads/,
+   defect: "the how-we-checked box counting a page's corrections differently from the log " +
+           "every count is read from (D3)",
+   inject: s => s.replace(/(data-pv-file="corrections_by_page.json">[\s\S]*?"wages": \[\s*)\{[^}]*\},\s*/, "$1")},
+
   {gate: "consistency", page: "corrections", file: "_data/corrections_by_page.json",
    command: "python3", args: ["_data/build/verify_consistency.py"],
    expect: /\[corrections\] wages/,
@@ -593,7 +598,7 @@ const CASES = [
    defect: "a 404 page whose story-list link points at nothing",
    inject: s => s.replace("/evidence-room/index/#alltitle", "/evidence-room/index/#stories")},
 
-  {gate: "verify", page: "index", args: ["index"], expect: /contrast 7 under AA/,  /* byline, its name, the made-and-checked toggle row (3), the corrections link and its anchor */
+  {gate: "verify", page: "index", args: ["index"], expect: /contrast 5 under AA/,  /* byline, its name, the made-and-checked toggle row (3) */
    defect: "the hero byline at #9CC4CA, 3.62:1 on the teal hero (ER-11)",
    inject: s => s.replace("line-height:1.5;color:#C0DBE1;letter-spacing:.02em}",
                           "line-height:1.5;color:#9CC4CA;letter-spacing:.02em}")},

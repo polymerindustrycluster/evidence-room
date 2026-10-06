@@ -658,8 +658,8 @@ const PV = (() => {
 
   /* ------------------------------------------------------- corrections summary
 
-     A LINK IN THE BYLINE SAYING WHETHER THIS PAGE HAS BEEN CORRECTED (DECISIONS.md,
-     2026-10-04, D3; placed in the byline by John, 2026-10-05). Dated correction notes used to open four pages, above the headline
+     A LINE IN THE HOW-WE-CHECKED BOX SAYING WHETHER THIS PAGE HAS BEEN CORRECTED
+     (DECISIONS.md, 2026-10-04, D3; moved there from the byline by John, 2026-10-06). Dated correction notes used to open four pages, above the headline
      they qualified; they now sit below it, beside what they correct, and this line says at
      the top how many corrections the page has had and whether the headline
      moved. It is generated from _data/corrections_by_page.json, which
@@ -694,19 +694,16 @@ const PV = (() => {
     catch (e) { console.error(`PV.correctionsSummary: ${e.message}`); return null; }
     const list = ((all && all.pages) || {})[page] || [];
     const n = list.filter(e => !e.before_publication).length;
-    const bylines = document.querySelectorAll(".hero .wrap > .byline");
-    const by = bylines[bylines.length - 1];
-    if (!n || !by) return null;
-    /* A short link at the end of the byline, a sibling of the how-checked toggle, so it
-       costs the cold open nothing; the full sentence is its accessible name and title,
-       and leads the page's view of the log. */
-    const span = document.createElement("span");
-    span.className = "pv-corr-sum";
-    const full = correctionsSentence(list, (all.headlines || {})[page]);
-    span.innerHTML = ` &middot; <a href="../corrections/?page=${page}" aria-label="${full}" ` +
-      `title="${full}">${n} correction${n === 1 ? "" : "s"}</a>`;
-    by.appendChild(span);
-    return span;
+    const box = document.querySelector(".pv-made");
+    if (!n || !box) return null;
+    /* Inside the how-we-checked box, before the cite line (John, 2026-10-06): in the byline
+       row the link wrapped the row on Linux and cost two pages their cold open. */
+    const p = document.createElement("p");
+    p.className = "pv-corr-sum";
+    p.innerHTML = `${correctionsSentence(list, (all.headlines || {})[page])} See them in the ` +
+      `<a href="../corrections/?page=${page}">corrections log</a>.`;
+    box.insertBefore(p, box.querySelector(".pv-cite"));
+    return p;
   }
 
   /* ------------------------------------------------------------ methodology box
