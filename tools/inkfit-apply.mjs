@@ -14,7 +14,7 @@ import {readFile, writeFile} from "node:fs/promises";
 import {readdirSync} from "fs";
 import {pathToFileURL} from "url";
 import {execSync} from "node:child_process";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 /* Six passes, not one. Shrinking a margin widens the plot, which moves the very label
  * that was setting the edge — so the correction only converges geometrically. */
@@ -75,7 +75,7 @@ function adjust(src, id, dl, dr) {
   return src.replace(found[0], block);
 }
 
-const browser = await chromium.launch();
+const browser = await launch();
 for (let pass = 1; pass <= PASSES; pass++) {
   const meas = await measure(browser);
   const off = meas.filter(c => Math.abs(c.l) > TOL || Math.abs(c.r) > TOL);

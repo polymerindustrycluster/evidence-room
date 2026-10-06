@@ -5,7 +5,7 @@
 // block (0,2,0), so the closer was left-aligned on every page while columns.mjs said clean.
 //
 //   node tools/centres.mjs [webroot]      exit 1 if anything is off-axis by >2px
-import { chromium } from './_browser.mjs';
+import {launch} from "./_browser.mjs";
 import { readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -16,7 +16,7 @@ const SEL = ['.hero h1', '.hero .stand', '.band .lede', '.band h2', '.chart', '.
   '.closer .wrap > p', '.closer .wrap > .sub', '.pv-method p', '.src'];
 const WIDTHS = [1440, 1280, 1024];
 
-const browser = await chromium.launch();
+const browser = await launch();
 let off = 0, n = 0;
 for (const width of WIDTHS) {
   const page = await browser.newPage({ viewport: { width, height: 900 } });

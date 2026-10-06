@@ -39,7 +39,7 @@ import {readdirSync, readFileSync, writeFileSync, existsSync} from "fs";
 import {createHash} from "crypto";
 import {resolve, join, dirname} from "path";
 import {fileURLToPath, pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const WEB = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
@@ -54,7 +54,7 @@ const dump = existsSync(OUT) ? JSON.parse(readFileSync(OUT, "utf8")) : {};
 for (const page of Object.keys(dump))
   if (!existsSync(join(DIST, `${page}.html`))) delete dump[page];
 
-const b = await chromium.launch();
+const b = await launch();
 const missing = [];
 for (const n of list) {
   const file = join(DIST, `${n}.html`);

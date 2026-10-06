@@ -24,7 +24,7 @@
  */
 import {readdirSync, writeFileSync, mkdirSync, rmSync} from "fs";
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const args = process.argv.slice(2);
 const oi = args.indexOf("--out");
@@ -34,7 +34,7 @@ const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
 
 rmSync(OUT, {recursive: true, force: true});
-const b = await chromium.launch();
+const b = await launch();
 for (const n of list) {
   const dir = `${OUT}/${n}`;
   mkdirSync(dir, {recursive: true});

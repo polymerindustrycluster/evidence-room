@@ -38,7 +38,7 @@ import {readFile, stat} from "node:fs/promises";
 import {readdirSync, existsSync} from "node:fs";
 import {extname, join, resolve} from "node:path";
 import {pathToFileURL} from "node:url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const ROOT = process.cwd();
 const args = process.argv.slice(2).filter(a => !a.startsWith("--"));
@@ -52,7 +52,7 @@ const LIVE = "[role=status],[role=log],[role=alert],[aria-live=polite],[aria-liv
 const FURNITURE = "svg, .chart, table, summary, .pv-tip, .tip, [role=tooltip], " +
   ".fig-title, .fig-sub, .src, .legend, .tnote, button, select, input, [aria-hidden=true]";
 
-const b = await chromium.launch();
+const b = await launch();
 let bad = 0;
 
 async function open(name, width) {

@@ -9,10 +9,10 @@
  * at 400px wide a dark band reads as a dark band and a half-empty hero looks fine.
  */
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 const [name, selRaw = ".hero", wRaw] = process.argv.slice(2);
 const W = Number(wRaw || 1440);
-const b = await chromium.launch();
+const b = await launch();
 const p = await b.newPage({viewport: {width: W, height: 1000}});
 await p.goto(pathToFileURL(process.cwd() + "/dist/" + name + ".html").href);
 await p.waitForTimeout(1000);

@@ -39,7 +39,7 @@
  */
 import {readFileSync, readdirSync} from "fs";
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const CFG = JSON.parse(readFileSync("_data/caveat.json", "utf8"));
 const LIMIT = CFG.limit;
@@ -49,7 +49,7 @@ const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
 
 const SEL = ".src, .fig-src, .source, [id$='src'], [id$='source']";
-const b = await chromium.launch();
+const b = await launch();
 let bad = 0, loose = 0;
 const rows = [];
 

@@ -9,7 +9,7 @@
  */
 import {readdirSync} from "fs";
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 /* TWO WIDTHS ARE NOT A TEST. This gate checked 1440 and 390 only, and a chart with a
    fixed viewBox passed both while painting 10.0px labels everywhere between 761px and
@@ -36,7 +36,7 @@ const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
 const WIDTHS = sweep ? SWEEP : one ? [mobile ? 390 : 1440] : (mobile ? [360, 390] : DEFAULT);
 
-const b = await chromium.launch();
+const b = await launch();
 let bad = 0;
 for (const n of list) {
  const hits = [];

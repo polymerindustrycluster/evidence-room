@@ -57,7 +57,7 @@
  */
 import {readdirSync, readFileSync, existsSync} from "fs";
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const list = names.length ? names
@@ -82,7 +82,7 @@ const norm = s => (s || "")
    overwhelmingly ordinals and counts of bars, and they matched everything. */
 const TOKEN = /\b(?:\$?\d{1,3}(?:,\d{3})+|\$?\d+\.\d+|\d{4}-\d{4}|\d{4}|\d+(?:\.\d+)?%)\b/g;
 
-const b = await chromium.launch();
+const b = await launch();
 let bad = 0, checked = 0;
 const rows = [];
 

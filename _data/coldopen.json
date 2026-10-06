@@ -57,7 +57,20 @@
   "",
   "RAISED 2026-10-04. Internal and prototype pages now carry a status banner in the",
   "masthead (DECISIONS.md), 40px at 1440 wide. Accountability is the only one that held a",
-  "debt, and it moves 903 to 943; the other four still clear 900. The banner is the point."
+  "debt, and it moves 903 to 943; the other four still clear 900. The banner is the point.",
+  "",
+  "RE-BASED 2026-10-06 (ER-021). A change of measurement basis, not a ratchet raise: every",
+  "browser tool now launches chromium through tools/_browser.mjs with",
+  "--font-render-hinting=none, and tools/launchers.mjs fails any tool that does not. Linux",
+  "had been hinting Lato to the pixel grid, which widened text and pushed the first chart",
+  "down by up to 58px. With the flag, coldopen on all 24 pages printed identical output on",
+  "macOS and in mcr.microsoft.com/playwright:v1.60.0-noble (Playwright 1.60.0, the",
+  "package-lock version CI installs); macOS readings did not move. Every entry below is",
+  "that shared measurement, exact: churn 1756 to 1701, cluster-health 1085 to 1082,",
+  "federal-money 1771 to 1713, laborshed 1561 unchanged, occupations 1555 to 1552, peers",
+  "1348 to 1318, revisions 1356 to 1317, timeline 1394 to 1343, accountability 943 to 934.",
+  "The slack the old Linux numbers carried is gone, so a line of new prose above a first",
+  "chart now fails locally as well as on CI. The platform paragraph above is history."
  ],
  "limit": 900,
  "no_chart": {
@@ -80,14 +93,14 @@
   "outranks 19px; lower it again when the hero is next edited."
  ],
  "ceilings": {
-  "churn": 1756,
-  "cluster-health": 1085,
-  "federal-money": 1771,
+  "churn": 1701,
+  "cluster-health": 1082,
+  "federal-money": 1713,
   "laborshed": 1561,
-  "occupations": 1555,
-  "peers": 1348,
-  "revisions": 1356,
-  "timeline": 1394,
-  "accountability": 943
+  "occupations": 1552,
+  "peers": 1318,
+  "revisions": 1317,
+  "timeline": 1343,
+  "accountability": 934
  }
 }

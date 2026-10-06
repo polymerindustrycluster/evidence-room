@@ -28,7 +28,7 @@
 import {createServer} from "node:http";
 import {readFile, stat} from "node:fs/promises";
 import {extname, join, resolve} from "node:path";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const ROOT = process.cwd();
 const MIME = {".html": "text/html", ".css": "text/css", ".js": "text/javascript",
@@ -52,7 +52,7 @@ const server = createServer(async (req, res) => {
 });
 await new Promise(r => server.listen(0, "127.0.0.1", r));
 const base = `http://127.0.0.1:${server.address().port}`;
-const browser = await chromium.launch();
+const browser = await launch();
 
 let bad = 0;
 try {

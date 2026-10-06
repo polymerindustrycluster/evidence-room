@@ -17,7 +17,7 @@
  */
 import {readdirSync, existsSync} from "fs";
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 import {pageScripts, asText, HOLE} from "./_jsstrings.mjs";
 
 import {readFileSync as rfs} from "fs";
@@ -136,7 +136,7 @@ const scripted = (page, patterns) => {
    standard evidence and the one whose execution is not verified. */
 const STATES = {"funding-map": ["#recipient/bioverde", "#recipient/huntsman"]};
 
-const b = await chromium.launch();
+const b = await launch();
 let bad = 0, total = 0, links = 0;
 const exempt = [], debts = [], records = [];
 for (const n of list) {
