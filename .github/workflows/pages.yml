@@ -21,6 +21,13 @@
 #   push to main   --fast on every page, as before.
 #   schedule and   the full suite: both 14-width sweeps and every self-test, every page.
 #   dispatch
+#
+# A PUSH TO MAIN SKIPS THE GATES ONLY IF ITS TREE ALREADY PASSED. A passing pull-request
+# run records the tree it checked (the test merge, refs/pull/N/merge) as an artifact named
+# verified-tree-<tree sha>. When main's new commit has exactly that tree, the same files
+# were already gated, and plan says skip; verify then goes straight to the Pages upload.
+# It trusts only a completed, successful pull_request run of this workflow from a branch
+# of this repository. Anything else, including any API error, runs the gates.
 
 name: Verify and deploy
 
@@ -46,10 +53,16 @@ jobs:
   # Decides what this event runs, once, so every slice runs the same suite.
   plan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read      # to find a pull-request run that already verified this tree
     outputs:
       args: ${{ steps.mode.outputs.args }}
       selftest: ${{ steps.mode.outputs.selftest }}
+      tree: ${{ steps.mode.outputs.tree }}
+      skip: ${{ steps.dup.outputs.skip }}
     steps:
+      - uses: actions/checkout@v4
       - id: mode
         env:
           EVENT: ${{ github.event_name }}
@@ -60,12 +73,43 @@ jobs:
             push)         args="--fast";                            selftest=false ;;
             *)            args="";                                  selftest=true ;;
           esac
-          echo "args=$args" >> "$GITHUB_OUTPUT"
-          echo "selftest=$selftest" >> "$GITHUB_OUTPUT"
+          {
+            echo "tree=$(git rev-parse 'HEAD^{tree}')"
+            echo "args=$args"
+            echo "selftest=$selftest"
+          } >> "$GITHUB_OUTPUT"
           echo "suite arguments: ${args:-(full suite)}; self-tests: $selftest"
+      - id: dup
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TREE: ${{ steps.mode.outputs.tree }}
+        run: |
+          skip=false
+          if ids=$(gh api "repos/$REPO/actions/artifacts?name=verified-tree-$TREE&per_page=100" \
+                     --jq '.artifacts[] | select(.expired == false) | .workflow_run.id'); then
+            for id in $ids; do
+              run=$(gh api "repos/$REPO/actions/runs/$id" \
+                      --jq '[.event, .status, .conclusion, .path, .head_repository.full_name, .html_url] | @tsv') || continue
+              IFS=$'\t' read -r event status conclusion path head url <<< "$run"
+              if [ "$event" = pull_request ] && [ "$status" = completed ] && [ "$conclusion" = success ] &&
+                 [ "$path" = .github/workflows/pages.yml ] && [ "$head" = "$REPO" ]; then
+                skip=true
+                echo "tree $TREE already passed verify in $url"
+                break
+              fi
+              echo "run $id does not qualify: $run"
+            done
+          else
+            echo "could not list artifacts; running the gates"
+          fi
+          [ "$skip" = true ] || echo "no qualifying pull-request run verified tree $TREE; running the gates"
+          echo "skip=$skip" >> "$GITHUB_OUTPUT"
 
   gates:
     needs: plan
+    if: needs.plan.outputs.skip != 'true'
     name: gates (${{ matrix.part }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
     strategy:
       fail-fast: false
@@ -133,13 +177,30 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - name: Every slice passed
+      - name: Every slice passed, or this tree already did
         env:
           PLAN: ${{ needs.plan.result }}
           GATES: ${{ needs.gates.result }}
+          SKIP: ${{ needs.plan.outputs.skip }}
         run: |
-          echo "plan: $PLAN; gates: $GATES"
-          [ "$PLAN" = success ] && [ "$GATES" = success ] || { echo "::error::a gate slice did not pass"; exit 1; }
+          echo "plan: $PLAN; gates: $GATES; already verified: ${SKIP:-false}"
+          [ "$PLAN" = success ] || { echo "::error::plan did not finish"; exit 1; }
+          [ "$GATES" = success ] && exit 0
+          [ "$GATES" = skipped ] && [ "$SKIP" = true ] && exit 0
+          echo "::error::a gate slice did not pass"; exit 1
+      # The receipt a later push to main looks for (see the header). Written only here,
+      # after every slice passed.
+      - name: Record the verified tree
+        if: github.event_name == 'pull_request'
+        env:
+          TREE: ${{ needs.plan.outputs.tree }}
+        run: echo "$TREE" > "${{ runner.temp }}/verified-tree"
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'pull_request'
+        with:
+          name: verified-tree-${{ needs.plan.outputs.tree }}
+          path: ${{ runner.temp }}/verified-tree
+          retention-days: 30
       - uses: actions/checkout@v4
         if: github.event_name != 'pull_request'
         with:
