@@ -372,7 +372,8 @@ const CASES = [
   {gate: "style", page: "collaboration", args: ["collaboration"], exempt: true,
    expect: /passed as a dated correction note[\s\S]*collaboration: withdrawn:joint work: \S*rrection, 28 September 2026: Joint work rose/,
    defect: "a bare dated correction note, which must exempt the phrase it corrects",
-   inject: s => s.replace("<body>", '<body><p>Correction, 28 September 2026: Joint work rose.</p>')},
+   /* below the first h2: a dated note above it fails correction-above-headline (D3) */
+   inject: s => s.replace("</h2>", '</h2><p>Correction, 28 September 2026: Joint work rose.</p>')},
 
   /* From the 2026-10-04 review fixes (PR A). Each puts back the exact text that shipped. */
   {gate: "style", page: "federal-money", args: ["federal-money"], expect: /footprint-relationship/,
@@ -388,8 +389,46 @@ const CASES = [
 
   {gate: "style", page: "index", args: ["index"], expect: /href-raw-markdown: \.\.\/CORRECTIONS\.md/,
    defect: "the front page's correction-log link opening raw Markdown source (until 2026-10-04)",
-   inject: s => s.replace('href="https://github.com/polymerindustrycluster/evidence-room/blob/main/CORRECTIONS.md">correction log',
+   inject: s => s.replace('href="../corrections/">correction log',
                           'href="../CORRECTIONS.md">correction log')},
+
+  {gate: "style", page: "wages", args: ["wages"], expect: /correction-above-headline/,
+   defect: "a dated correction note between the byline and the headline figure, so a reader " +
+           "meets a finding's history before the finding (four pages until 2026-10-04, D3)",
+   inject: s => s.replace(/(<p class="byline">By <b>John Swanson<\/b>[\s\S]*?<\/p>)/,
+     '$1\n<p class="byline"><b>Correction, September 28, 2026:</b> the headline said pay was level.</p>')},
+
+  {gate: "consistency", page: "corrections", file: "corrections/data/corrections.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[corrections\] corrections\/data\/corrections\.json/,
+   defect: "the rendered corrections log missing an entry CORRECTIONS.md carries, so the log " +
+           "every page links to is short of the record (D3)",
+   inject: s => { const d = JSON.parse(s); d.entries.splice(3, 1); return JSON.stringify(d, null, 1) + "\n"; }},
+
+  {gate: "consistency", page: "corrections", file: "corrections/data/corrections.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /does not render the Markdown word for word/,
+   defect: "a rendered entry missing a word its Markdown carries (the renderer once read " +
+           "\"2020.\" at the start of a wrapped line as a list number and dropped it)",
+   inject: s => s.replace("rather than 2020", "rather than")},
+
+  {gate: "consistency", page: "corrections", file: "CORRECTIONS.md",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /resolve to no page/,
+   defect: "a page named in a heading's italics that no page answers to, so its count " +
+           "silently loses the entry (\"front page\" dropped from index, PR #49 review)",
+   inject: s => s.replace("timeline, sources, front page*", "timeline, sources, frontpage*")},
+
+  {gate: "disclosure", page: "wages", args: ["wages"], expect: /corrections line reads/,
+   defect: "the how-we-checked box counting a page's corrections differently from the log " +
+           "every count is read from (D3)",
+   inject: s => s.replace(/(data-pv-file="corrections_by_page.json">[\s\S]*?"wages": \[\s*)\{[^}]*\},\s*/, "$1")},
+
+  {gate: "consistency", page: "corrections", file: "_data/corrections_by_page.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[corrections\] wages/,
+   defect: "a page's correction summary counting an entry the log does not attribute to it",
+   inject: s => { const d = JSON.parse(s); d.pages.wages.push({...d.pages.index[0]}); return JSON.stringify(d, null, 1) + "\n"; }},
 
   {gate: "style", page: "federal-money", args: ["federal-money"], expect: /withdrawn:still running/,
    defect: "a fiscal year called \"still running\" on a snapshot taken before it ended, false " +
@@ -559,7 +598,7 @@ const CASES = [
    defect: "a 404 page whose story-list link points at nothing",
    inject: s => s.replace("/evidence-room/index/#alltitle", "/evidence-room/index/#stories")},
 
-  {gate: "verify", page: "index", args: ["index"], expect: /contrast 5 under AA/,
+  {gate: "verify", page: "index", args: ["index"], expect: /contrast 5 under AA/,  /* byline, its name, the made-and-checked toggle row (3) */
    defect: "the hero byline at #9CC4CA, 3.62:1 on the teal hero (ER-11)",
    inject: s => s.replace("line-height:1.5;color:#C0DBE1;letter-spacing:.02em}",
                           "line-height:1.5;color:#9CC4CA;letter-spacing:.02em}")},

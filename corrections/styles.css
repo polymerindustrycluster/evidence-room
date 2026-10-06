@@ -1,0 +1,38 @@
+/* corrections/ — page-local chrome for the rendered corrections log.
+ *
+ * The body of this page is a record, not a chart with prose around it: a filter, a count,
+ * and the entries of CORRECTIONS.md in order. Every block sits on the text rail with `auto`
+ * side margins, because this sheet loads after the core and a `margin:0 0 0` shorthand
+ * would drop the block off the rail. */
+
+.corr-filter{margin:22px auto 0;max-width:var(--measure);display:flex;flex-wrap:wrap;
+  align-items:baseline;gap:8px 12px;font-size:16px;color:#333B3E}
+.corr-filter select{font:inherit;font-size:16px;padding:6px 10px;border:1px solid var(--pv-axis);
+  border-radius:4px;background:#fff;color:var(--text)}
+.corr-filter select:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+.corr-count{margin:10px auto 0;max-width:var(--measure);font-size:14px;color:var(--caption)}
+
+.corr-record{margin:0 auto;max-width:var(--measure)}
+.corr-preamble p,.corr-between p{margin:16px 0 0;font-size:16px;line-height:1.6;color:#394346}
+.corr-between{margin:30px 0 0;padding:14px 0 0;border-top:1px dashed var(--line)}
+
+.corr-entry{margin:34px 0 0;padding:20px 0 0;border-top:1px solid var(--line)}
+.corr-head{margin:0;font-size:21px;line-height:1.35;font-weight:900;color:var(--text)}
+.corr-date{display:block;font-size:13px;font-weight:900;letter-spacing:.08em;
+  color:var(--ink);margin:0 0 4px}
+.corr-title{display:block}
+.corr-pages{margin:8px 0 0;font-size:14px;color:var(--caption)}
+.corr-pages a{color:var(--action)}
+.corr-body p,.corr-body li{font-size:16px;line-height:1.62;color:#333B3E}
+.corr-body p{margin:12px 0 0}
+.corr-body ol{margin:12px 0 0;padding-left:22px}
+.corr-body h4{margin:22px 0 0;font-size:17px;line-height:1.4;font-weight:900;color:var(--text)}
+.corr-body hr{margin:22px 0 0;border:0;border-top:1px solid var(--line)}
+.corr-body code{font-size:14px;overflow-wrap:anywhere}
+.corr-body a,.corr-preamble a{color:var(--action);overflow-wrap:anywhere}
+
+/* Footer: the dark band every story page carries, from sources/styles.css. */
+.page-foot{background:var(--deep);color:#BEDDE2;padding:30px 0 38px;font-size:14px}
+.page-foot p{margin:0 0 6px;max-width:var(--measure);margin-left:auto;margin-right:auto}
+.page-foot p:last-child{margin-bottom:0}
+.page-foot b{color:#fff;letter-spacing:.06em}

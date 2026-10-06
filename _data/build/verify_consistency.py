@@ -54,6 +54,8 @@ NO_CLAIMS_OK = {
     "index": "hub page — asserts nothing of its own, links pages that do",
     "funding-map": "renders an award register; every figure is a row in the source, not a derived claim",
     "timeline": "renders a date register; same reasoning as funding-map",
+    "corrections": "renders CORRECTIONS.md as written; each figure an entry gives is checked "
+                   "on the page it corrects, and check_corrections holds the rendering",
 }
 
 # Number words a footprint might be spelled out as, mapped to the count they mean.
@@ -130,7 +132,10 @@ def check_registry_scripts(reg: dict) -> None:
 def check_registry_coverage(reg: dict, arts: list[str]) -> None:
     by_art = reg.get("by_artifact", {})
     sources = reg.get("sources", {})
+    import masthead
     for a in arts:
+        if a not in by_art and a in masthead.UNCARDED:
+            continue   # apparatus with no data source of its own (masthead.UNCARDED)
         if a not in by_art:
             err("registry-coverage", a, "absent from by_artifact — publishes no provenance")
     for a in by_art:
@@ -290,7 +295,9 @@ def check_published_register(reg: dict, arts: list[str]) -> None:
         printed = dict(zip(("n_claims", "n_hub_claims", "n_site_claims", "n_pages_all",
                             "n_claims_again", "n_auto", "n_manual", "this_page"),
                            map(int, nums.groups())))
-        want = dict(expected, n_pages_all=len(pages) + 1, n_claims_again=n_claims)
+        # every page on the site: the articles, the hub and any uncarded apparatus (the
+        # corrections log), the same folders the bundler builds
+        want = dict(expected, n_pages_all=len(arts), n_claims_again=n_claims)
         for key, value in printed.items():
             if want.get(key) != value:
                 err("published-register", f"sources/index.html #checkidea {key}",
@@ -330,7 +337,7 @@ def check_masthead_dates(arts: list[str]) -> None:
                 "meta.as_of in the derive step.")
     try:
         counts = load_json(os.path.join(WEB, "index", "data", "counts.json"))
-        linked = [a for a in arts if a != "index"
+        linked = [a for a in arts if a != "index" and a not in masthead.UNCARDED
                   and not os.path.exists(os.path.join(WEB, a, ".unlisted"))]
         want = max(masthead.masthead_date(WEB, a) for a in linked).isoformat()
         if counts.get("as_of") != want:
@@ -378,7 +385,9 @@ def check_status(arts: list[str]) -> None:
         if unlisted != (st == "INTERNAL"):
             err("status", a, f"status is {st} but the page is {'unlisted' if unlisted else 'listed'}; "
                 "an unlisted page is INTERNAL and an INTERNAL page is unlisted")
-        if (counts.get("pages", {}).get(a) or {}).get("status") != st:
+        if a in masthead.UNCARDED:
+            pass   # no hub card and not in counts.json, on purpose (masthead.UNCARDED)
+        elif (counts.get("pages", {}).get(a) or {}).get("status") != st:
             err("status", a, f"index/data/counts.json says {(counts.get('pages', {}).get(a) or {}).get('status')!r}, "
                 f"the page declares {st}; run derive_index.py")
         if (registry.get("statuses") or {}).get(a) != st:
@@ -414,6 +423,9 @@ def check_neo14_name(arts: list[str]) -> None:
         d = os.path.join(root, "data")
         if os.path.isdir(d):
             files += [os.path.join(a, "data", x) for x in sorted(os.listdir(d)) if x.endswith(".json")]
+    # The rendered corrections log is CORRECTIONS.md, which records the old name on purpose;
+    # check_corrections holds it to that file word for word.
+    files = [f for f in files if f != os.path.join("corrections", "data", "corrections.json")]
     for rel in files:
         path = os.path.join(WEB, rel)
         if not os.path.isfile(path):
@@ -708,7 +720,7 @@ def _bundle_inputs(web: str, name: str) -> dict[str, str]:
     """The exact set of files tools/bundle.mjs hashes into dist/.inputs.json for one
     page — index.html, app.js, styles.css, claims.json, everything under data/, img/ and
     assets/, everything under _shared/ (recursively: its fonts/ are base64-inlined, not
-    merely linked), and _data/SOURCES.json and _data/cite.json — mapped to a sha256 of each file's current
+    merely linked), and _data/SOURCES.json, _data/cite.json and _data/corrections_by_page.json — mapped to a sha256 of each file's current
     bytes. Must stay in lockstep with tools/bundle.mjs's inputManifest(); a mismatch
     between what the bundler hashes and what this checks makes the manifest meaningless."""
     d = os.path.join(web, name)
@@ -724,7 +736,7 @@ def _bundle_inputs(web: str, name: str) -> dict[str, str]:
     shared = os.path.join(web, "_shared")
     if os.path.isdir(shared):
         paths += _walk_files(shared)
-    for f in ("SOURCES.json", "cite.json"):
+    for f in ("SOURCES.json", "cite.json", "corrections_by_page.json"):
         reg = os.path.join(web, "_data", f)
         if os.path.isfile(reg):
             paths.append(reg)
@@ -840,8 +852,9 @@ def check_hub(arts: list[str]) -> None:
             err("hub", "index/data/counts.json", f"unreadable: {e}")
             counted = None
         if counted is not None:
+            import masthead
             for a in arts:
-                if a == "index" or a in counted:
+                if a == "index" or a in counted or a in masthead.UNCARDED:
                     continue
                 if os.path.exists(os.path.join(WEB, a, ".unlisted")):
                     continue
@@ -907,6 +920,88 @@ def check_empty_data(arts: list[str]) -> None:
                             "real zero on the page")
 
 
+# ----------------------------------------------------------- 10. the rendered corrections log
+def check_corrections(web: str = WEB) -> None:
+    """The rendered log holds every CORRECTIONS.md entry, and each page's summary counts match.
+
+    DECISIONS.md, 2026-10-04, D3. The corrections/ page renders corrections/data/corrections.json
+    and every page's summary line reads _data/corrections_by_page.json; both are written by
+    derive_corrections.py. Three failures this stops: an entry appended to CORRECTIONS.md and
+    never re-derived, so the log a reader is sent to is missing it; an output edited by hand,
+    so the rendered log no longer says what the file says; and a page whose summary counts
+    entries the log does not attribute to it. The entry count is taken twice, once by the
+    derive script's parser and once by counting '## ' headings directly, so a parser that
+    silently skips an entry fails here instead of shrinking the log."""
+    import derive_corrections as dc
+    log_path = os.path.join(web, "corrections", "data", "corrections.json")
+    sum_path = os.path.join(web, "_data", "corrections_by_page.json")
+    src = read(web, "CORRECTIONS.md")
+    # Headline dates are read from git history; a shallow clone holds none, so the check says
+    # it could not inspect them rather than passing (CI checks out full history for this).
+    full = dc.history_is_complete(web)
+    if not full:
+        err("corrections", "_data/corrections_by_page.json",
+            "cannot inspect headline dates: the git history is shallow; fetch it in full "
+            "(actions/checkout fetch-depth: 0)")
+    try:
+        fresh_log, fresh_sum = dc.parse(src, history=full)
+    except SystemExit as exc:
+        err("corrections", "CORRECTIONS.md", f"derive_corrections.py cannot read it: {exc}")
+        return
+    try:
+        log, summ = load_json(log_path), load_json(sum_path)
+    except (OSError, json.JSONDecodeError) as exc:
+        err("corrections", "corrections/data/corrections.json", f"unreadable: {exc}; run derive_corrections.py")
+        return
+    headings = [h.strip() for h in re.findall(r"(?m)^## (.+)$", src)]
+    shipped = [e.get("heading") for e in log.get("entries", [])]
+    if len(shipped) != len(headings) or log.get("meta", {}).get("n_entries") != len(headings):
+        err("corrections", "corrections/data/corrections.json",
+            f"the rendered log holds {len(shipped)} entries (meta says {log.get('meta', {}).get('n_entries')}); "
+            f"CORRECTIONS.md has {len(headings)} '## ' headings. Run derive_corrections.py.")
+    missing = [h for h in headings if h not in shipped]
+    for h in missing[:5]:
+        err("corrections", "corrections/data/corrections.json", f"entry not in the rendered log: {h[:90]!r}")
+    if not missing and shipped != headings:
+        err("corrections", "corrections/data/corrections.json", "entries are not in CORRECTIONS.md's order")
+    if log != fresh_log:
+        err("corrections", "corrections/data/corrections.json",
+            "differs from what derive_corrections.py renders from CORRECTIONS.md now: an entry was "
+            "changed, or the file was edited by hand. Run derive_corrections.py.")
+    # Word for word, independently of the renderer: each entry's letters and digits, read
+    # from the Markdown with its markup removed, must be exactly those of the rendered entry
+    # (heading plus body). A renderer that drops a word, a number or a line passes every
+    # other test here when its own output is the reference; this one reads the source.
+    import html as _html
+    alnum = lambda t: re.sub(r"[^A-Za-z0-9]", "", t)
+    for e, chunk in zip(log.get("entries", []), re.split(r"(?m)^## ", src)[1:]):
+        want = alnum(re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", chunk))
+        got = alnum(e.get("heading", "") + _html.unescape(
+            re.sub(r"<[^>]+>", "", e.get("html", "") + e.get("after_html", ""))))
+        if want != got:
+            i = next((k for k, (x, y) in enumerate(zip(want, got)) if x != y), min(len(want), len(got)))
+            err("corrections", "corrections/data/corrections.json",
+                f"entry {e.get('id')} does not render the Markdown word for word: source "
+                f"...{want[max(0, i - 30): i + 20]}... rendered ...{got[max(0, i - 30): i + 20]}...")
+    if not full:
+        summ = dict(summ, headlines=None)
+    if summ != fresh_sum:
+        err("corrections", "_data/corrections_by_page.json",
+            "differs from what derive_corrections.py writes now. Run derive_corrections.py.")
+    # Each page's summary is exactly the log's entries naming that page, in order.
+    naming = {}
+    for e in log.get("entries", []):
+        for p in e.get("pages", []):
+            naming.setdefault(p, []).append(e["id"])
+    pages = summ.get("pages", {})
+    for p in sorted(set(naming) | set(pages)):
+        got = pages.get(p, [])
+        if [x.get("id") for x in got] != naming.get(p, []):
+            err("corrections", p, f"summary lists {len(got)} entries; the log has {len(naming.get(p, []))} "
+                "naming this page")
+
+
+
 # ------------------------------------------------------------------------------- main
 
 
@@ -970,6 +1065,7 @@ def main() -> int:
     check_hub(arts)
     check_duplicates(arts)
     check_empty_data(arts)
+    check_corrections()
     check_catalog()
 
     errors = [f for f in findings if f[0] == "ERROR"]

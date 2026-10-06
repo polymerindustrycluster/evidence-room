@@ -53,7 +53,7 @@ async function inputManifest(dir) {
   }
   const shared = path.join(WEB, "_shared");
   if (existsSync(shared)) abss.push(...await listFilesRecursive(shared));
-  for (const f of ["SOURCES.json", "cite.json"]) {
+  for (const f of ["SOURCES.json", "cite.json", "corrections_by_page.json"]) {
     const p = path.join(WEB, "_data", f);
     if (existsSync(p)) abss.push(p);
   }
@@ -174,6 +174,17 @@ async function bundle(name) {
     html = html.replace("</style>", () =>
       `</style>
 <script type="application/json" data-pv-file="cite.json">${esc(cj)}</script>`);
+  }
+
+  /* EACH PAGE'S CORRECTION COUNT travels with it too: PV.correctionsSummary() prints the
+     line at the top of the page from it (DECISIONS.md D3). Small, and shared like the
+     registry, so one derive updates every page. */
+  const corrPath = path.join(WEB, "_data", "corrections_by_page.json");
+  if (existsSync(corrPath)) {
+    const cj = await read(corrPath);
+    html = html.replace("</style>", () =>
+      `</style>
+<script type="application/json" data-pv-file="corrections_by_page.json">${esc(cj)}</script>`);
   }
 
   const claimsPath = path.join(dir, "claims.json");

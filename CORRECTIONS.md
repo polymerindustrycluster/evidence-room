@@ -78,6 +78,26 @@ became "Newest data retrieved"). `_data/build/masthead.py` now takes the newest 
 `fetched` or `asOf` anywhere in a file, and `verify_consistency.py` fails a masthead older
 than that.
 
+## 2026-10-04 — The corrections log is a page on this site, and dated notes sit below each headline
+
+**Was:** every link to the corrections log, in each page’s methods block, on the front page
+and in chain’s register methods, opened this file as Markdown on GitHub, and the “What we got
+wrong” blocks named it as a file. Four pages opened on dated correction notes set between the
+byline and the headline figure: one on collaboration, three on cost-scissors, one on
+funding-map and two on wages. No page said at its top whether it had been corrected.
+**Is:** the links open a corrections page on this site that renders this file as written,
+newest first, and narrows it to the entries naming one page. The seven notes sit below the
+headline, beside what each corrects, in their original words. Each byline ends with a link
+counting the page’s corrections since publication; its full wording also says whether one
+changed the headline, and it opens that page’s entries here. `verify_consistency.py` fails a build whose rendered log has lost an entry or whose
+page counts disagree with it, and the style gate fails a dated correction note placed above
+a page’s first section heading. No figure changed.
+
+**The site’s page count, *sources*.** **Was:** the checks section said the 589 claims ran
+across all 23 site pages. **Is:** all 24; the corrections page is the twenty-fourth and carries
+no claims. The number is now counted from the pages that exist, `src-site-pages` binds it, and
+the page carries a dated note.
+
 ## 2026-10-04 — Each story now says on the page what would prove it wrong, *every story the hub lists*
 
 **Was:** the hub said each story "states what would contradict its claims", but those

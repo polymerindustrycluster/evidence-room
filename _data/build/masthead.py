@@ -30,6 +30,15 @@ MASTHEAD_FILE = {
     "sources": "registry.json", "wages": "wages.json",
     # timeline has no one file: its app.js prints the newer of its two files' asOf dates.
     "timeline": ["timeline.json", "heritage.json"],
+    # the rendered corrections log: its date is the newest entry's
+    "corrections": "corrections.json",
+}
+# Published pages with no hub card, and why. Apparatus a reader reaches from links on every
+# page rather than a story the hub lists: not counted among the pieces, not given a card,
+# and not INTERNAL. derive_index.py, verify_consistency.py and tools/disclosure.mjs read this.
+UNCARDED = {
+    "corrections": "the rendered corrections log, linked from every page's corrections link "
+                   "and summary line (DECISIONS.md, 2026-10-04, D3); not a story",
 }
 
 # Files a derive script reads that neither the page's claims nor its app.js load.
@@ -118,7 +127,8 @@ def masthead_date(web, page):
 def inputs(web, page):
     """Repo-relative paths of every data file the page reads, its own masthead file included."""
     files = set(masthead_files(page))
-    spec = json.load(open(os.path.join(web, page, "claims.json"), encoding="utf-8")).get("data", {})
+    claims = os.path.join(web, page, "claims.json")
+    spec = json.load(open(claims, encoding="utf-8")).get("data", {}) if os.path.exists(claims) else {}
     for f in ([spec] if isinstance(spec, str) else spec.values()):
         if not f.endswith("claims.json"):
             files.add(os.path.normpath(os.path.join(page, "data", f)))

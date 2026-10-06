@@ -192,6 +192,9 @@ footer .pv-status{margin:0 auto 18px}
 .pv-made p{margin:0 0 .5em}
 .pv-made a{color:inherit;text-underline-offset:2px}
 .pv-made a:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+/* The corrections link at the end of the byline (PV.correctionsSummary, DECISIONS.md D3). */
+.pv-corr-sum a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.pv-corr-sum a:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
 .pv-footprint .wrap{max-width:calc(var(--measure) + 64px)}
 .hero h1 em{font-style:normal;color:var(--lime)}
 .hero .stand{margin:16px 0 0;max-width:var(--measure);color:#C6E2E6;font-size:19px;line-height:1.55}
@@ -227,6 +230,10 @@ footer .pv-status{margin:0 auto 18px}
    the ones that live in chart chrome, stops where the lede stops. Only things that ARE
    figures — the svg, the table's data — run wide. */
 .src{margin:22px 0 0;font-size:13px;color:var(--caption);max-width:var(--measure);
+  line-height:1.55}
+/* A dated correction note moved below the headline (DECISIONS.md D3): set like a source
+   line, but a correction is not chart apparatus, so tools/caveat.mjs does not count it. */
+.corr-note{margin:22px 0 0;font-size:13px;color:var(--caption);max-width:var(--measure);
   line-height:1.55}
 
 /* chart chrome */

@@ -60,6 +60,9 @@
   "debt, and it moves 903 to 943; the other four still clear 900. The banner is the point."
  ],
  "limit": 900,
+ "no_chart": {
+  "corrections": "the rendered corrections log (DECISIONS.md D3): a text record of CORRECTIONS.md, filterable by page, with no figure to draw"
+ },
  "fixed": [
   "wages",
   "scorecard",

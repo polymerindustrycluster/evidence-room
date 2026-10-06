@@ -37,7 +37,7 @@ jobs:
       # would date every page to the one commit it can see.
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0   # verify_consistency reads headline dates from git history
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -102,7 +102,7 @@ jobs:
       # would date every page to the one commit it can see.
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0   # verify_consistency reads headline dates from git history
       - uses: actions/setup-node@v4
         with:
           node-version: 22

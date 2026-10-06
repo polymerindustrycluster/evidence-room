@@ -280,6 +280,46 @@
    ]
   },
   {
+   "script": "derive_corrections.py",
+   "kind": "derive",
+   "what_it_adds": "Build the rendered corrections log from CORRECTIONS.md, and each page's correction summary.",
+   "what_one_row_is": "",
+   "traps": "",
+   "docstring": {
+    "has_house_docstring": false,
+    "has_traps": false,
+    "length": 2243
+   },
+   "hosts": [
+    "github.com"
+   ],
+   "outputs": [],
+   "page_outputs": [],
+   "page_outputs_exist": {},
+   "outputs_exist": {},
+   "writes_outside_build": [],
+   "witnesses": {
+    "static": [],
+    "observed": []
+   },
+   "output_learned_by": {},
+   "observed_stop": null,
+   "observed_network": [],
+   "observed_reads": [],
+   "import_error": null,
+   "registry_sources": [],
+   "consuming_pages": [],
+   "in_pipelines_md": false,
+   "freshness": [],
+   "flags": [
+    "no_house_docstring",
+    "no_output_detected",
+    "no_traps_section",
+    "not_in_PIPELINES.md",
+    "not_in_SOURCES.json"
+   ]
+  },
+  {
    "script": "derive_fed_awards.py",
    "kind": "derive",
    "what_it_adds": "Reads fed_awards.json (fetch_fed_awards.py, raw, not committed) and writes federal-money/data/awards.json (committed): four page-shaped views of one pull. recipients is one row per company, EVERY company, so the shipped register drops no dollars; register is one row per award of $500,000 or more, description included, largest first (a size cut for the page, not a truncated fetch: the rows below the floor are counted and summed in the meta, and their dollars are all in the recipients view); codes is per-NAICS totals with each code's top recipient, which is what lets the page say the leftovers c",

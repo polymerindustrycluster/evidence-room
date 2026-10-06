@@ -6,6 +6,24 @@ product and domain decisions that a reader or rebuilder needs.
 
 ---
 
+## 2026-10-05 — How the corrections log and summary lines implement D3 (Claude, for John's review)
+
+- **The log is a page, `corrections/`, rendered at derive time** by
+  `_data/build/derive_corrections.py` from `CORRECTIONS.md`, word for word, and held to it by
+  `verify_consistency.py`. It is PUBLISHED with no hub card: apparatus, not a story, so it is not
+  counted among the pieces or in the source register (`masthead.UNCARDED` names it and why).
+- **"Corrections since publication" leaves out corrections made before a page was first
+  published** (the scorecard and accountability before release, and the 17 August
+  pre-publication review on collaboration and reach). They stay in the log.
+- **No wording/figure split** (John, 2026-10-05): automatic wording/figure classification was
+  wrong in both directions; the summary counts corrections and says whether the headline changed.
+  **Headline changed** means the page's H1 changed, listed by hand and checked against the entries.
+- **The summary sits in the how-we-checked box** (John, 2026-10-06): "N corrections since
+  publication. Headline unchanged." (or the dates it changed), linking to the page's view of
+  the log. Above the first chart, and then in the byline row, it cost pages their cold open.
+
+---
+
 ## 2026-10-05 — A page's version date is git's, and every date carries a label (John Swanson approved the wording; mechanism proposed by Claude)
 
 - **The byline's "Revised" and the "Cite as" version are one date** (the byline prints it short,

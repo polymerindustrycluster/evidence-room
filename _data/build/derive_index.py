@@ -29,6 +29,7 @@ arts = sorted(d for d in os.listdir(WEB)
               if os.path.isdir(os.path.join(WEB, d))
               and not d.startswith(("_", "."))
               and d not in ("dist", "tools", "node_modules", "shots", "index")
+              and d not in masthead.UNCARDED     # apparatus, not a piece: no card, not counted
               and os.path.exists(os.path.join(WEB, d, "index.html")))
 for a in arts:
     pages.setdefault(a, {"claims": 0, "manual": 0, "legacy": a in LEGACY})

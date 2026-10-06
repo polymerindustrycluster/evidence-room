@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>The Corrections Log</title>
+<meta name="description" content="Every correction the PIC Evidence Room has published, as it was written: what each page said, what it says now and what caused the change, newest first and filterable by page.">
+<link rel="stylesheet" href="../_shared/pic-viz.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+
+<header class="mast">
+  <div class="wrap">
+    <a class="mast-home" href="../index/"><strong>Polymer Industry Cluster</strong></a>
+    <span>Method &middot; the corrections log</span>
+  </div>
+</header>
+
+<!-- THE CORRECTIONS LOG, RENDERED (DECISIONS.md, 2026-10-04, D3). Every "corrections log"
+     link on the site pointed at CORRECTIONS.md on GitHub, so a reader left the site to read
+     it and could not narrow it to the page they came from. This page renders that file as
+     written, from corrections/data/corrections.json, which
+     _data/build/derive_corrections.py generates; verify_consistency.py fails a build whose
+     rendered copy has lost or changed an entry. It is PUBLISHED and has no hub card: it is
+     apparatus, reached from every page's corrections link and summary line. No chart, so
+     tools/coldopen.mjs exempts it by name (_data/coldopen.json, "no_chart"). -->
+<main id="main-content" tabindex="-1">
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Everything this site has corrected</p>
+    <h1>What each page said, what it says now, and why. <em>Every correction, newest first.</em></h1>
+    <p class="stand">This is the site&rsquo;s record of its own errors, reproduced from the
+      repository&rsquo;s corrections file exactly as each entry stands there; this page
+      changes no word of it.
+      Pick a page to see only the entries that name it. The line under each page&rsquo;s
+      byline counts the same entries and links here.</p>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis
+      and graphics by Claude (Anthropic) &middot; Rendered from CORRECTIONS.md</p>
+  </div>
+</section>
+
+<section class="band" id="log">
+  <div class="wrap">
+    <p class="takeaway">The log</p>
+    <h2>Every entry, newest first</h2>
+    <div class="corr-filter">
+      <label for="corr-page">Show the entries that name</label>
+      <select id="corr-page" aria-describedby="corr-count"><option value="">every page</option></select>
+    </div>
+    <p class="corr-count" id="corr-count" role="status" aria-live="polite"></p>
+    <div class="corr-record" id="corr-record">
+      <div class="corr-preamble" id="corr-preamble" data-verbatim="CORRECTIONS.md"></div>
+      <div id="corr-entries"></div>
+    </div>
+    <noscript><p class="body">This log is drawn by a script. The same entries are in
+      <a href="https://github.com/polymerindustrycluster/evidence-room/blob/main/CORRECTIONS.md">CORRECTIONS.md</a>
+      in the repository.</p></noscript>
+  </div>
+</section>
+
+</main>
+<footer class="page-foot">
+  <div class="wrap">
+    <p class="foot-id"><b>Polymer Industry Cluster</b> &middot; Greater Akron Chamber
+      &middot; Evidence Room</p>
+    <p class="foot-links"><a href="../index/">All evidence-room pages</a> &middot; Corrections
+      and questions: jswanson@greaterakronchamber.org</p>
+  </div>
+</footer>
+
+<script src="../_shared/picviz.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
