@@ -1,4 +1,5 @@
 {
+  "hero": "wage-premium-count",
   "data": {
     "w": "wages.json",
     "m": "mfg.json"
@@ -18,6 +19,8 @@
       "assert": "len([r for r in D['w']['latest_rows'] if r.get('vs_local_all') and r['vs_local_all']>1]) == 40 and len([r for r in D['w']['latest_rows'] if r.get('vs_local_all')]) == 51",
       "actual": "(len([r for r in D['w']['latest_rows'] if r.get('vs_local_all') and r['vs_local_all']>1]), len([r for r in D['w']['latest_rows'] if r.get('vs_local_all')]))",
       "falsified_if": "A QCEW revision or disclosure change flips any cell across 1.0x or changes the 51-pairing denominator.",
+      "breaks_if": "Revised figures leave half or fewer pairings paying above their county’s average job.",
+      "guards": "These industries out-pay the town average.",
       "counts": [
         {"figure": "Forty of 51 published pairings", "noun": "beat their county’s all-jobs average"},
         {"figure": "same 51", "noun": "pairings"}
@@ -321,6 +324,8 @@
       "assert": "(lambda R, M, fam: (lambda v: len(v) == 23 and tofixed((sorted(v)[(len(v)-1)//2] + sorted(v)[len(v)//2])/2, 2) == '1.16' and len([x for x in v if x > 1]) == 19)([r['weekly_wage'] / M['counties'][r['name']]['mfg_weekly_wage'] for r in R if r.get('vs_local_all') and r['naics'] in fam]))(D['w']['latest_rows'], D['m'], ('325','3252','3255')) and (lambda R, M, fam: (lambda v: len(v) == 28 and tofixed((sorted(v)[(len(v)-1)//2] + sorted(v)[len(v)//2])/2, 2) == '0.87' and len([x for x in v if x > 1]) == 4)([r['weekly_wage'] / M['counties'][r['name']]['mfg_weekly_wage'] for r in R if r.get('vs_local_all') and r['naics'] in fam]))(D['w']['latest_rows'], D['m'], ('326','3261','3262'))",
       "actual": "{fam: (lambda v: (len(v), sorted(v)[len(v)//2], len([x for x in v if x > 1])))([round(r['weekly_wage'] / D['m']['counties'][r['name']]['mfg_weekly_wage'], 4) for r in D['w']['latest_rows'] if r.get('vs_local_all') and r['naics'] in c]) for fam, c in (('chem', ('325','3252','3255')), ('prod', ('326','3261','3262')))}",
       "falsified_if": "Either family's median against county manufacturing pay moves more than 0.004 from 1.164 or 0.868, or its count above 1.0 changes. Added 2026-09-28: the headline called pay 'level' with manufacturing on the pooled 0.99x, and neither family is level.",
+      "breaks_if": "Revised figures put the middle chemical pairing at or below its county’s manufacturing pay, or the middle plastics and rubber pairing above it.",
+      "guards": "Against manufacturing, chemicals pay more; plastics and rubber pay less.",
       "counts": [
         {"figure": "1.16", "noun": "pairings"},
         {"figure": "19 of 23", "noun": "pairings"},

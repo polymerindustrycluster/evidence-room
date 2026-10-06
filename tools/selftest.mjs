@@ -110,6 +110,26 @@ const CASES = [
    inject: s => s.replace('<span class="pill geo">PIC-12+2</span><span class="pill proto">Prototype</span>',
                           '<span class="pill geo">PIC-12+2</span>')},
 
+  {gate: "breaksif", page: "peers", file: "peers/claims.json", args: ["peers"],
+   expect: /hero claim oh-rank-1 has no breaks_if/,
+   defect: "a listed story whose hero claim lost its breaks_if, so the hub's promise that " +
+           "each story states what would contradict it is false on that page again",
+   inject: s => s.replace(/\n *"breaks_if": "A 2024 revision moves another state above Ohio[^\n]*/, "")},
+
+  {gate: "breaksif", page: "peers", args: ["peers"],
+   expect: /not directly under the first chart/,
+   defect: "the breaks-if line back under the hero, where it shipped first and pushed four " +
+           "first charts past their cold-open ceilings",
+   inject: s => s.replace("</body>", '<script>setTimeout(() => document.querySelector(".hero .wrap")' +
+     '.appendChild(document.querySelector(".pv-breaks")), 300)</script></body>')},
+
+  {gate: "breaksif", page: "chain", args: ["chain"],
+   expect: /after 768 to 1024px: the breaks-if line is not directly under the first chart/,
+   defect: "the breaks-if line anchored once at load, left under chain's county map after a " +
+           "narrow-to-wide resize made the chain diagram the first chart (Codex, PR #47)",
+   inject: s => s.replace('addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => ' +
+     'requestAnimationFrame(place), 150); });', "")},
+
   {gate: "disclosure", page: "sources", args: ["sources"],
    expect: /link to INTERNAL page \S+ carries no Internal tag/,
    defect: "the source guide linking an unlisted internal page with nothing to say it is " +
@@ -454,7 +474,10 @@ const CASES = [
            "the figure ('147 institution records since 1991; 41 recorded polymer awards')",
    /* Grok's refute, 2026-09-28: with "institution records" four words before the 41, the
       8-word window passed this exact relapse. The window now stops at the clause. */
-   inject: s => s.replace(/41 of them recorded\s+a polymer award/, "41 recorded polymer awards")},
+   /* Global since 2026-10-05: the page now quotes this sentence again in its "What would
+      prove this page wrong" list, and a first-match edit hit that copy, leaving the
+      headline intact and the fixture passing. */
+   inject: s => s.replace(/41 of them recorded\s+a polymer award/g, "41 recorded polymer awards")},
 
   {gate: "consistency", page: "sources", file: "index/data/counts.json",
    command: "python3", args: ["_data/build/verify_consistency.py"],

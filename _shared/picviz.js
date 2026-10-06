@@ -915,6 +915,65 @@ const PV = (() => {
     const closer = document.querySelector(".closer");
     if (closer) closer.parentNode.insertBefore(sec, closer);
     else (document.querySelector("main") || document.body).appendChild(sec);
+    breaksIf(claims, sec);
+    return sec;
+  }
+
+  /* ------------------------------------------- what would prove this page wrong
+
+     The hub promises that each story "states what would contradict its claims"
+     (DECISIONS.md, 2026-10-04). `falsified_if` is the checker's precise condition, full of
+     code names, tolerances and the claim's own history, so it stays in claims.json. What a
+     reader gets is `breaks_if`: one plain sentence naming a change in the data that would
+     make the finding wrong, beside `guards`, the sentence as the page prints it. The
+     claims file names its `hero`; that claim's sentence sits directly under the page's
+     FIRST chart, after the chart's table twin, legend and source lines, so the first
+     screen and every cold-open measurement are unchanged (John, 2026-10-05: under the
+     hero it pushed four first charts past their ceilings). "First chart" is the
+     coldopen gate's definition. Every claim that has a breaks_if is listed, closed by
+     default, just before the methodology box. tools/breaksif.mjs fails a listed story
+     that lacks either, or whose line is anywhere but there. */
+  const CHART_TAIL = e => e.matches("p.src, details, [id$='table'], [class*='legend']") ||
+    !!e.querySelector(":scope > .pv-table");
+  function breaksIf(spec, method) {
+    const list = ((spec && spec.claims) || []).filter(c => c.breaks_if && c.guards);
+    const hero = list.find(c => c.id === spec.hero);
+    if (!list.length) return null;
+    /* WHICH CHART IS FIRST DEPENDS ON THE WIDTH. Chain shows its county map first on a
+       narrow screen and its chain diagram first on a wide one, so a line placed once at
+       load sat under the wrong chart after a resize (Codex, PR #47). It is re-anchored
+       after every resize, once the page's own redraw has run. */
+    if (hero && !document.querySelector(".pv-breaks")) {
+      const p = document.createElement("p");
+      p.className = "pv-breaks";
+      p.innerHTML = `<b>This finding breaks if:</b> ${hero.breaks_if}`;
+      const place = () => {
+        const svg = [...document.querySelectorAll("svg")].find(s => {
+          const b = s.getBoundingClientRect();
+          return b.width > 200 && b.height > 80 && !s.closest(".mast");
+        });
+        if (!svg) return;
+        let at = svg.closest(".wrap > *") || svg;
+        const next = e => { let n = e.nextElementSibling; return n === p ? n.nextElementSibling : n; };
+        while (next(at) && CHART_TAIL(next(at))) at = next(at);
+        if (at.nextElementSibling !== p) at.after(p);
+      };
+      place();
+      let t;
+      addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => requestAnimationFrame(place), 150); });
+    }
+    const sec = document.createElement("section");
+    sec.className = "band pv-breaks-all";
+    sec.innerHTML = `<div class="wrap"><details>
+      <summary>What would prove this page wrong</summary>
+      <p class="intro">Each finding below holds only while the data does. Under each is the
+        change in the data that would make it wrong. The checks re-run these sentences
+        against the files this page ships with, so a change in the world shows up here
+        only once the data is refreshed.</p>
+      <ul>${[hero, ...list.filter(c => c !== hero)].filter(Boolean).map(c =>
+        `<li><p class="said">${c.guards}</p><p><b>Breaks if:</b> ${c.breaks_if}</p></li>`).join("")}
+      </ul></details></div>`;
+    method.parentNode.insertBefore(sec, method);
     return sec;
   }
 

@@ -1,4 +1,5 @@
 {
+ "hero": "col-rarely-about-polymers",
  "data": "collaboration.json",
  "claims": [
   {
@@ -87,6 +88,8 @@
    "assert": "D['totals']['subject_total'] == D['totals']['polymer_total'] + D['totals']['bio_total'] == sum(r['polymer'] + r['bio'] for r in D['series']) and int(100 * (1 - D['totals']['subject_total'] / D['totals']['coauthored'])) == 90 and D['totals']['polymer_total'] == 8 and D['totals']['bio_total'] == 11 and D['totals']['last_subject_year'] == 2025 and all(r['polymer'] + r['bio'] == 0 for r in D['series'] if 2021 <= r['year'] <= 2024) and one(r['polymer'] for r in D['series'] if r['year'] == 2025) == 1 and one(r['bio'] for r in D['series'] if r['year'] == 2025) == 0 and sorted(r['year'] for r in D['series'] if r['polymer'] + r['bio'])[-2] == 2020",
    "actual": "[(r['year'], r['polymer'], r['bio']) for r in D['series']] + [(D['totals']['coauthored'], D['totals']['subject_total'], D['totals']['last_subject_year'])]",
    "falsified_if": "The subject share rises above 15 percent, either subject count moves off eight and eleven, or the four-year silence from 2021 to 2024 gains a paper. THE SENTENCE THIS GUARDS WAS INVERTED BY A REFRESH: it read 'the last of either was 2020', which was a four-year silence written as a date, and the 2026-08-31 pull put one polymer paper in 2025 and made it read as recency. It now measures the silence, which is what it was always about. THIS NUMBER ALSO MOVED WHEN THE BOUND DID: the full-text keyword 'polymer' returned 24 of these papers and the subject classification returns eight, because the keyword counted any paper that mentioned the word. The larger number was the one published first. [Round 8, 2026-09-28: subject_total is the sum of the two subject counts, not their union. A live OpenAlex query found two works naming both universities in both subfields (W2553059811, 2016; W2597373224, 2017), and the cache stores no intersection, so the page prints nineteen as a ceiling and the share in neither subject as a floor (Codex). A refetch should pull the union of work IDs.]",
+   "breaks_if": "A fresh pull changes the 208 papers naming both, or the eight in polymers.",
+   "guards": "208 papers since 2012 name both Akron and Case Western. Eight are classified in polymers.",
    "counts": [
     {"figure": "Eight are classified", "noun": "in polymers"}
    ]

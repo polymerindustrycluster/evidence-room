@@ -1,4 +1,5 @@
 {
+  "hero": "hero-awards-match",
   "data": "funding.json",
   "claims": [
     {
@@ -19,6 +20,8 @@
       "assert": "D['meta']['totals']['awards'] == 85335784 and D['meta']['totals']['match'] == 20954667 and abs(D['meta']['totals']['awards'] / 1e6 - 85.3) <= 0.05 and abs(D['meta']['totals']['match'] / 1e6 - 21.0) <= 0.05",
       "actual": "(D['meta']['totals']['awards'], D['meta']['totals']['match'])",
       "falsified_if": "Either total revises so the hand-typed $85.3M or $21.0M no longer rounds from the data.",
+      "breaks_if": "The $85.3 million moves, or two routes (direct, hub, single grantee) prove the same.",
+      "guards": "Three public awards, $85.3 million, and no two move the money the same way.",
       "counts": [
         {"figure": "Three public awards, $85.3 million", "noun": "no two move the money"},
         {"figure": "promised $21.0 million more", "noun": "Partners"}
