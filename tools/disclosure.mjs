@@ -80,6 +80,39 @@ const CARDS = (() => {
   return out;
 })();
 
+/* HOW THIS WAS MADE AND CHECKED, AND CITE AS (DECISIONS.md, 5 October 2026). Every page
+ * carries, under its byline, a toggle that opens a short box ending in a "Cite as" line,
+ * and the byline says "Revised <D Mon YYYY>". Asserted rendered: the box exists beside the
+ * byline; the byline date, the cite version and the cite year all equal the page's
+ * revision date in _data/cite.json, which tools/bundle.mjs regenerated from git in this
+ * same run (_data/build/stamp_cite.py), so nothing here depends on a contributor having
+ * re-stamped by hand; the cite URL is the page's canonical URL, built here from
+ * CITATION.cff rather than from the record the renderer read; and the box credits exactly
+ * the models the byline credits. A page with no record FAILS as uninspectable. */
+const CITE = (() => {
+  try { return JSON.parse(readFileSync("_data/cite.json", "utf8")).pages; }
+  catch (e) { console.log(`cannot read _data/cite.json: ${e.message}`); return {}; }
+})();
+/* A model credit is a capitalised name followed by its maker in parentheses, and its ROLE
+ * is the words before it in the same byline clause (clauses are split on the middot), back
+ * to the previous credit. Compared as role-and-model pairs, so a byline crediting Codex
+ * only for "Federal context updated by" fails a box that credits Codex with the analysis. */
+const MODEL = /\b[A-Z][A-Za-z]+ \((?:Anthropic|OpenAI|Google|xAI|MiniMax|Meta|Mistral)\)/g;
+const models = t => (t || "").split(/[\u00b7;]/).flatMap(clause => {
+  const out = []; let from = 0, prev = "";
+  for (const m of clause.matchAll(MODEL)) {
+    let role = clause.slice(from, m.index).replace(/^[\s,.]+|[\s,]+$/g, "").toLowerCase();
+    if (role === "" || role === "and") role = prev;      // "by X and Y": Y shares X's role
+    out.push(`${role} ${m[0]}`); from = m.index + m[0].length; prev = role;
+  }
+  return out;
+}).sort().join(" | ");
+const SITE = (readFileSync("CITATION.cff", "utf8").match(/^url:\s*"([^"]+)"/m) || [])[1];
+const canonical = n => SITE && (SITE.replace(/\/$/, "") + "/" + (n === "index" ? "" : n + "/"));
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
+                "September", "October", "November", "December"];
+const longDate = iso => `${+iso.slice(8, 10)} ${MONTHS[+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}`;
+
 const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
@@ -105,6 +138,26 @@ for (const n of list) {
             foot: [...document.querySelectorAll("footer .pv-status")]
               .map(e => [e.dataset.status, norm(e.textContent)]),
             flag: document.querySelector(".mast .proto")?.textContent.trim() || null,
+            made: (() => {
+              const by = document.querySelector(".byline"), box = document.querySelector(".pv-made");
+              if (!box) return null;
+              const t = by?.querySelector(".pv-made-toggle"), rev = by?.querySelector(".pv-revised time");
+              const cite = box.querySelector(".pv-cite"), u = cite?.querySelector("a.pv-cite-url");
+              const rest = by ? [...by.childNodes].filter(c => !(c.classList &&
+                (c.classList.contains("pv-revised") || c.classList.contains("pv-made-toggle")))) : [];
+              return {beside: by?.nextElementSibling === box,
+                      byLine: norm(rest.map(c => c.textContent).join("")),
+                      boxCredit: norm(box.querySelector(".pv-made-credit")?.textContent || ""),
+                      toggle: !!t && t.getAttribute("aria-controls") === box.id,
+                      revised: rev ? [rev.getAttribute("datetime"), norm(rev.textContent)] : null,
+                      checks: !!box.querySelector("a[href$='#sec-checks']"),
+                      cite: cite ? norm(cite.textContent) : null,
+                      version: (() => { const v = cite?.querySelector("time");
+                        return v ? [v.getAttribute("datetime"), norm(v.textContent)] : null; })(),
+                      title: norm(cite?.querySelector("cite")?.textContent || ""),
+                      url: u ? [u.getAttribute("href"), norm(u.textContent)] : null,
+                      doc: document.title};
+            })(),
             pageLinks: [...document.querySelectorAll("a[href^='../']")].map(a => [
               (a.getAttribute("href").match(/^\.\.\/([a-z-]+)\/?$/) || [])[1] || null,
               a.nextElementSibling?.classList.contains("status-tag")
@@ -146,6 +199,31 @@ for (const n of list) {
       probs.push(`${key}: licence requires the trademark symbol, and it is not rendered`);
     if (src.licence_url && !r.links.some(h => h.startsWith(src.licence_url.slice(0, 40))))
       probs.push(`${key}: uses ${src.licence} data with no link to the licence`);
+  }
+  /* made-and-checked box and cite line: see the note above CITE */
+  {
+    const rec = CITE[n], mk = r.made, want = canonical(n);
+    if (mk) { mk.byModels = models(mk.byLine); mk.boxModels = models(mk.boxCredit); }
+    if (!rec) probs.push("cannot inspect the cite line: no record in _data/cite.json (run node tools/bundle.mjs)");
+    if (!mk) probs.push("no How this was made and checked box");
+    else if (rec) {
+      if (!mk.beside || !mk.toggle) probs.push("the made-and-checked box is not the byline's own toggle and panel");
+      if (!mk.checks) probs.push("the made-and-checked box does not link to what the checks catch and miss");
+      const short = longDate(rec.revised).replace(/ ([A-Z][a-z]{2})[a-z]* /, " $1 ");
+      for (const [what, got, date] of [["byline Revised", mk.revised, [rec.revised, short]],
+                                       ["cite version", mk.version, [rec.revised, longDate(rec.revised)]]])
+        if (!got || got[0] !== date[0] || got[1] !== date[1])
+          probs.push(`${what} reads ${got ? got.join(" / ") : "nothing"}, the recorded revision date is ${date.join(" / ")}`);
+      const head = `Swanson, J., Polymer Industry Cluster (${rec.revised.slice(0, 4)}). ${rec.title}.`;
+      if (!mk.cite || !mk.cite.startsWith(`Cite as: ${head}`)) probs.push(`cite line does not open "${head}"`);
+      if (!mk.boxModels) probs.push("the made-and-checked box credits no model");
+      else if (mk.boxModels !== mk.byModels)
+        probs.push(`the box credits ${mk.boxModels}; the byline credits ${mk.byModels || "none"}`);
+      if (!mk.doc.startsWith(rec.title)) probs.push(`cite title "${rec.title}" is not the page's own title "${mk.doc}"`);
+      if (!want) probs.push("cannot inspect the cite URL: CITATION.cff carries no url");
+      else if (!mk.url || mk.url[0] !== want || mk.url[1] !== want)
+        probs.push(`cite URL is ${mk.url ? mk.url[0] : "missing"}, the canonical URL is ${want}`);
+    }
   }
   /* status: see the note above BANNER */
   const want = DECLARED[n];
