@@ -1,4 +1,5 @@
 {
+  "hero": "churn-hero-per-quarter",
   "data": {
     "ch": "churn.json",
     "b": "bench.json"
@@ -24,6 +25,8 @@
       "assert": "tofixed(sum(q['hires']/q['emp'] for q in D['ch']['quarters']) / len(D['ch']['quarters']) * 100, 1) == '10.8' and tofixed(sum(q['seps']/q['emp'] for q in D['ch']['quarters']) / len(D['ch']['quarters']) * 100, 1) == '10.7' and 0.095 <= sum(q['hires']/q['emp'] for q in D['ch']['quarters']) / len(D['ch']['quarters']) <= 0.115 and 0.095 <= sum(q['seps']/q['emp'] for q in D['ch']['quarters']) / len(D['ch']['quarters']) <= 0.115",
       "actual": "(tofixed(sum(q['hires']/q['emp'] for q in D['ch']['quarters']) / len(D['ch']['quarters']) * 100, 1), tofixed(sum(q['seps']/q['emp'] for q in D['ch']['quarters']) / len(D['ch']['quarters']) * 100, 1))",
       "falsified_if": "Either mean rate leaves 9.5%-11.5%, at which point 'about a tenth' in the hero standfirst stops being a fair rounding and the sentence has to be restated. THIS CLAIM EXISTS BECAUSE THE HERO SHIPPED WRONG: it read 'starts and ends about a fifth of itself every year', which the page's own numbers contradict by 2 to 4 times — a fifth of the workforce turns over in job EVENTS every QUARTER (10.8% in plus 10.7% out), and each side alone runs about 43% across a year. It was hand-typed static HTML with no test against it, sitting 200px above a stat card reading 10.8% per quarter. UNITS: rates are job events over jobs at quarter start, per quarter, then averaged across quarters — not total events over total jobs.",
+      "breaks_if": "Revised Census figures put the share starting, or ending, each quarter far from one in ten.",
+      "guards": "A tenth of this workforce turns over every quarter.",
       "counts": [
         {"figure": "10.8% average churn", "noun": "2012 to 2025"}
       ]
@@ -59,6 +62,8 @@
       "assert": "sum(q['hires'] for q in D['ch']['quarters']) - sum(q['seps'] for q in D['ch']['quarters']) == 168",
       "actual": "sum(q['hires'] for q in D['ch']['quarters']) - sum(q['seps'] for q in D['ch']['quarters'])",
       "falsified_if": "Any QWI revision. This is a flow-derived net, NOT the change in the employment stock — the stock reads 18,444 at the start and 17,725 at the end, and the page says so on the hero stat card, in the flow chart's source line and in the closer. WORDING: the H1 read 'to end up with 168 more jobs' and the closer 'the cluster gained 168 net jobs', which a reader will quote to a board as a jobs gain and be wrong, because the published headcount fell over the same span. Both now say starts against ends. If this number is ever restated as a change in employment anywhere on the page, that sentence is false and churn-stock-and-flow is the claim that proves it.",
+      "breaks_if": "Revised Census figures show job starts running well ahead of job ends over the period.",
+      "guards": "Almost none of it is growth.",
       "counts": [
         {"figure": "111,361 separations, +168", "noun": "hires"},
         {"figure": "+168 net flow", "noun": "starts minus ends"}

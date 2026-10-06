@@ -1,4 +1,5 @@
 {
+ "hero": "tl-cadence-before-after",
  "data": {
   "h": "heritage.json",
   "t": "timeline.json"
@@ -98,6 +99,8 @@
    "assert": "(lambda E, des, asof, jdn: (lambda before, since: len(before) == 4 and len(since) == 66 and tofixed(len(since) / len(before), 1) == '16.5' and abs((jdn(asof) - jdn(des)) - (jdn(des) - jdn('2021-01-01'))) <= 2 and tofixed((jdn(des) - jdn('2021-01-01')) / 30.44, 0) == '34' and tofixed((jdn(asof) - jdn(des)) / 30.44, 0) == '34')([e for e in E if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))], [e for e in E if des <= e['date'] and e['delivered'] and e.get('show')]))(D['t']['events'], one(e['date'] for e in D['t']['events'] if e['date'].startswith('2023') and 'esignat' in e['title']), D['t']['meta']['asOf'], lambda s: (lambda y, m, d: (lambda a: d + (153 * (m + 12 * a - 3) + 2) // 5 + 365 * (y + 4800 - a) + (y + 4800 - a) // 4 - (y + 4800 - a) // 100 + (y + 4800 - a) // 400 - 32045)((14 - m) // 12))(int(s[:4]), int(s[5:7]), int(s[8:10])))",
    "actual": "(lambda bs: bs + (tofixed(bs[1] / bs[0], 1),))((lambda E, des: (len([e for e in E if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))]), len([e for e in E if des <= e['date'] and e['delivered'] and e.get('show')])))(D['t']['events'], '2023-10-23'))",
    "falsified_if": "A pre-designation public event is added to or dropped from the inventory (the 4 moves), a delivered event lands or is reclassified (the 68 moves and 17x stops being exact), or meta.asOf advances so the since-span no longer matches the before-span within a day — the '34 months either side' framing dies first. [2026-09-01: recomputed after one row was removed from the register. It recorded a named company's unsuccessful application, on a site whose README withholds two pages because naming an unsuccessful applicant is not something a funder gets to do. Two independent model families were asked to refute the decision to anonymise it instead of deleting it, and both refused: the row stayed identifiable because the same page names the company joining the cohort four months later, and keeping it to protect a count is letting the headline decide which sensitive records remain evidence. The count moved and the sentence moved with it.]",
+   "breaks_if": "Many missed events from before October 2023 turn up, and the jump in pace vanishes.",
+   "guards": "The public record holds 4 events in the 34 months before that and 66 delivered in the 34 months since.",
    "counts": [
     {"figure": "16.5", "noun": ["ratio", "times"]},
     {"figure": "4 events in the 34 months before that", "noun": "The public record holds"},

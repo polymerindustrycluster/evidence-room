@@ -64,6 +64,32 @@ figures come from, and the award lookup's note says which pages print its outlay
 `tools/provenance.mjs` now also fails a page whose data carries a documentary input's award
 IDs, grant number or totals without crediting it.
 
+## 2026-10-05 — Two mastheads named an older date as the newest retrieval, *funding-map, cost-scissors*
+
+**Funding map.** **Was:** the masthead read "Newest data retrieved 13 August 2026", the date of
+the signed-award register, while the page also shows a USAspending outlay check read on
+1 September 2026. **Is:** "Newest data retrieved 1 September 2026"; the register's 13 August
+date stays in the byline as "Figures as of". **Cost scissors.** **Was:** 15 August 2026, when
+the price series were fetched. **Is:** 8 September 2026, when the consumer price index behind
+the inflation note was read. No figure changed on either page; each carries a dated note.
+**Cause:** the masthead rule read only each data file's top-level date, so a newer retrieval
+nested inside the file was invisible to it (found by the PR #46 review, the day the label
+became "Newest data retrieved"). `_data/build/masthead.py` now takes the newest `as_of`,
+`fetched` or `asOf` anywhere in a file, and `verify_consistency.py` fails a masthead older
+than that.
+
+## 2026-10-04 — Each story now says on the page what would prove it wrong, *every story the hub lists*
+
+**Was:** the hub said each story "states what would contradict its claims", but those
+conditions lived only in each page's claims file, written for the checker and read by no
+one else. **Is:** the twenty stories the hub lists, the three prototypes included, carry one
+line under the headline beginning "This finding breaks if:", and a closed "What would prove
+this page wrong" list before the methodology box that pairs each guarded sentence with the
+change in the data that would make it wrong. No figure changed; this is a presentation
+change. `tools/breaksif.mjs` fails a listed story that lacks the line or the list, or whose
+list quotes a sentence the page no longer prints.
+
+
 ## 2026-10-04 — One name per county set, one status vocabulary, and who PIC is, *index, chain, sources, peers*
 
 **Chain's footprint, *chain, index, sources*.** **Was:** the chain register's fourteen

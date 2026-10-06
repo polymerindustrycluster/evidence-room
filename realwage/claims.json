@@ -1,4 +1,5 @@
 {
+  "hero": "rw-flip",
   "data": "realwage.json",
   "claims": [
     {
@@ -7,6 +8,8 @@
       "source": "BLS QCEW 2024 private NAICS326 by-industry file; BEA MARPP 2024, https://apps.bea.gov/regional/zip/MARPP.zip; archive footnotes and source-level checks in test_geography_checks.py",
       "assert": "(lambda a, big: (a['big_rank_nominal'], a['big_rank_real'], a['big_climb'], a['rank_nominal'], a['rank_real']) == (13,8,5,60,48) and 0 < big[a['big_rank_real']-2]['real'] - a['real'] < 6 and 0 < a['real'] - big[a['big_rank_real']]['real'] < 6)(one(r for r in D['big'] if r['area']=='10420'), sorted(D['big'], key=lambda r: -r['real'])) and len(D['big'])==29 and len(D['metros'])==155 and D['meta']['big_floor']==2000",
       "falsified_if": "The rebuilt source values, geography, sample membership or named quantities differ, OR Akron's adjusted-wage gap to the metro ranked 7th or the one ranked 9th moves to zero, goes negative (the rank itself would have flipped) or reaches $6, at which point 'less than $6 a week' is no longer honest. Rewrite the associated sentence and correction before publication.",
+      "breaks_if": "Revised 2024 wage or price figures move Akron’s ranks, or change which metros qualify.",
+      "guards": "Local prices move Akron from 13th to 8th among 29 disclosed polymer metros.",
       "counts": [
         {"figure": "from 13th to 8th among 29 disclosed polymer metros", "noun": "Local prices move Akron"},
         {"figure": "at least 2,000 private jobs", "noun": "covers metros with"},

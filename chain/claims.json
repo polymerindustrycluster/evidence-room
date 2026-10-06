@@ -1,4 +1,5 @@
 {
+ "hero": "chain-supply-demand",
  "data": {
   "chain": "chain-data.json",
   "viz": "viz-data.json"
@@ -62,6 +63,8 @@
    "assert": "one(s for s in D['viz']['spine'] if s['key']=='feedstock')['supply'] == 12 and one(s for s in D['viz']['spine'] if s['key']=='feedstock')['demand'] == 26 and one(s for s in D['viz']['spine'] if s['key']=='converters')['supply'] == 235 and one(s for s in D['viz']['spine'] if s['key']=='converters')['demand'] == 20 and sum('monomer' in c['t'] for c in D['chain']['companies']) == 12 and sum('fabricate' in c['t'] for c in D['chain']['companies']) == 235",
    "actual": "[(s['key'], s['supply'], s['demand']) for s in D['viz']['spine']] + [('monomer_tagged', sum('monomer' in c['t'] for c in D['chain']['companies'])), ('fabricate_tagged', sum('fabricate' in c['t'] for c in D['chain']['companies']))]",
    "falsified_if": "Either side is re-extracted, or the spine's aggregated supply counts stop matching an independent tag-count over the company register (the cross-check added 2026-09-28). The two sides are DIFFERENT UNITS — companies and applications — on separate scales meeting at a center line, never one axis and never a ratio bar. [2026-09-11: converters was 246 under the old county set. Separately, the application side carries NO geographic filter and never did: all 59 applications to the 2026 round are counted wherever the applicant sits, 38 of them in Ohio. The page said PIC-12; the extract said nothing of the kind.] Corrected 2026-09-28: the section label read 'Supply against demand', which its own next sentence contradicted ('these counts do not measure capacity, competition or market demand'); it now reads 'Register records against funding applications'. This assert cannot read the HTML label directly, only the counts behind it; the label wording is not mechanically checked.",
+   "breaks_if": "A fresh extract finds many more raw-material firms, or far fewer converters.",
+   "guards": "In this register, the middle of the polymer chain is crowded and the molecule end is nearly empty.",
    "counts": [
     {"figure": "235", "noun": "converters and fabricators"},
     {"figure": "12 raw-material", "noun": "feedstock companies"},

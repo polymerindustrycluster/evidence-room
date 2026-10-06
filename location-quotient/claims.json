@@ -1,4 +1,5 @@
 {
+  "hero": "lq-paint-latest",
   "data": "lq.json",
   "claims": [
     {
@@ -8,6 +9,8 @@
       "assert": "max(x['year'] for x in D['composite']) == 2025 and abs(one(c for c in D['composite'] if c['naics']=='3255' and c['year']==max(x['year'] for x in D['composite']))['lq'] - 5.9594) <= 0.005 and tofixed(one(c for c in D['composite'] if c['naics']=='3255' and c['year']==max(x['year'] for x in D['composite']))['lq'], 2) == '5.96'",
       "actual": "[(c['year'], round(c['lq'],4), tofixed(c['lq'], 2)) for c in D['composite'] if c['naics']=='3255'][-3:]",
       "falsified_if": "A disclosure flip changes which counties enter the paint composite, or a QCEW revision moves the value outside 5.9544-5.9644, at which point the hand-typed '5.96' in the standfirst no longer rounds from the data. The band also has to round to 'six times' at one significant figure for the headline to hold, which it does across 5.5-6.49; a value below 5.5 breaks the headline before it breaks the standfirst. Corrected 2026-09-28: the stand paragraph used to read this employment quotient as 'more paint sites, more suppliers and more people who know the work'; an employment LQ does not establish establishment counts or supplier density on its own, so it now reads as job share alone. This assert cannot read that HTML sentence directly, only the 5.96 figure behind it. Extended 2026-09-28 (round 4): the figure must also round to the 5.96 the pages print; the 0.005 tolerance alone accepted 5.9545.",
+      "breaks_if": "Revised or newly withheld county figures move paint’s share away from about six times.",
+      "guards": "Paint is six times as big a share of the jobs here as it is of the country’s.",
       "counts": [
         {"figure": "six times as big a share", "noun": "Paint is"},
         {"figure": "5.96× its share", "noun": "of the country’s"},
@@ -125,7 +128,7 @@
     },
     {
       "id": "lq-byline",
-      "text": "The byline reads 'Data BLS QCEW, 2015-2025 - September 2026'; the agency, the span and the month are all read from the data file's own meta rather than typed. The month moved from August to September on 2026-09-12 when the 2025 rows' re-read date was stamped into the file's fetched field.",
+      "text": "The byline reads 'Data BLS QCEW, 2015-2025, retrieved September 2026'; the agency, the span and the month are all read from the data file's own meta rather than typed. The month moved from August to September on 2026-09-12 when the 2025 rows' re-read date was stamped into the file's fetched field.",
       "source": "meta.source, meta.years and meta.fetched in lq.json, which the fetch script writes",
       "assert": "D['meta']['source'].split(' ')[0] == 'BLS' and D['meta']['source'].split(' ')[1] == 'QCEW' and D['meta']['fetched'][:7] == '2026-09' and D['meta']['years'] == [2015, 2025]",
       "actual": "(D['meta']['source'], D['meta']['fetched'], D['meta']['years'])",

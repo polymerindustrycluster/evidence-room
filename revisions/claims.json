@@ -1,4 +1,5 @@
 {
+  "hero": "rev-counts",
   "data": "revisions.json",
   "claims": [
     {
@@ -16,6 +17,8 @@
       "assert": "len(D['periods']) == 259 and len(set((r['series'], r['date']) for r in D['all'])) == 273",
       "actual": "(len(D['periods']), len(set((r['series'], r['date']) for r in D['all'])), len(set((r['series'], r['date']) for r in D['all'])) - len(D['periods']))",
       "falsified_if": "Any refetch: a new reference month, or a first revision landing on one of the 14 unrevised months, moves either count. Both numbers are printed as exact counts in the standfirst, so either change makes the sentence wrong.",
+      "breaks_if": "Many months prove unrevised, or typical revisions grow well past a fraction of a percent.",
+      "guards": "Almost every month of these three price series moved after publication, by almost nothing.",
       "counts": [
         {"figure": "259 of their 273 monthly figures", "noun": "were later changed"}
       ]

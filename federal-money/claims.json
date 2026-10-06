@@ -1,4 +1,5 @@
 {
+  "hero": "fed-closed-average",
   "data": {
     "f": "federal.json",
     "h": "techhub.json",
@@ -57,6 +58,8 @@
       "assert": "tofixed((sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7)/1e6, 1) == '41.4' and tofixed(D['h']['award']/(sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7), 1) == '1.2'",
       "actual": "(sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7)",
       "falsified_if": "The named quantity changes its stated rounded value, source scope changes, or the asserted source coverage fails. Recompute the prose and chart together before publishing a new vintage.",
+      "breaks_if": "Late or revised contract records move the 2019 to 2025 average off about $41 million.",
+      "guards": "Routine federal contracts in chemical, plastics and rubber manufacturing bring the region about $41 million a year.",
       "counts": [
         {"figure": "about $41 million a year", "noun": "region"},
         {"figure": "averaged $41.4 million a year", "noun": "seven finished fiscal years"},

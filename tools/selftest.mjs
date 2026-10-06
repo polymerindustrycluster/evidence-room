@@ -110,11 +110,59 @@ const CASES = [
    inject: s => s.replace('<span class="pill geo">PIC-12+2</span><span class="pill proto">Prototype</span>',
                           '<span class="pill geo">PIC-12+2</span>')},
 
+  {gate: "breaksif", page: "peers", file: "peers/claims.json", args: ["peers"],
+   expect: /hero claim oh-rank-1 has no breaks_if/,
+   defect: "a listed story whose hero claim lost its breaks_if, so the hub's promise that " +
+           "each story states what would contradict it is false on that page again",
+   inject: s => s.replace(/\n *"breaks_if": "A 2024 revision moves another state above Ohio[^\n]*/, "")},
+
+  {gate: "breaksif", page: "peers", args: ["peers"],
+   expect: /not directly under the first chart/,
+   defect: "the breaks-if line back under the hero, where it shipped first and pushed four " +
+           "first charts past their cold-open ceilings",
+   inject: s => s.replace("</body>", '<script>setTimeout(() => document.querySelector(".hero .wrap")' +
+     '.appendChild(document.querySelector(".pv-breaks")), 300)</script></body>')},
+
+  {gate: "breaksif", page: "chain", args: ["chain"],
+   expect: /after 768 to 1024px: the breaks-if line is not directly under the first chart/,
+   defect: "the breaks-if line anchored once at load, left under chain's county map after a " +
+           "narrow-to-wide resize made the chain diagram the first chart (Codex, PR #47)",
+   inject: s => s.replace('addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => ' +
+     'requestAnimationFrame(place), 150); });', "")},
+
   {gate: "disclosure", page: "sources", args: ["sources"],
    expect: /link to INTERNAL page \S+ carries no Internal tag/,
    defect: "the source guide linking an unlisted internal page with nothing to say it is " +
            "not for citation",
    inject: s => s.replace('` <span class="status-tag" data-status="INTERNAL">Internal</span>`', '""')},
+
+  /* How this was made and checked, and Cite as (DECISIONS.md, 5 October 2026). */
+  {gate: "disclosure", page: "peers", args: ["peers"],
+   expect: /no How this was made and checked box/,
+   defect: "a page shipped without the box that says who made it, what its checks can " +
+           "establish and how to cite it",
+   inject: s => s.replace('await madeAndChecked(o.page || "index", manual.length);', "")},
+
+  {gate: "disclosure", page: "churn", args: ["churn"],
+   expect: /byline Revised reads 2020-01-01/,
+   defect: "a page rendering a revision date its citation record does not hold, so its " +
+           "Revised date and cite version name a date nobody can trace",
+   /* the bundle's inlined copy of _data/cite.json, which the page renders from */
+   inject: s => s.replace(/("churn": \{[^}]*"revised": ")[^"]+/, (m, k) => k + "2020-01-01")},
+
+  {gate: "disclosure", page: "accountability", args: ["accountability"],
+   expect: /the box credits .*analysis and graphics by Codex \(OpenAI\).*; the byline credits/,
+   defect: "the box crediting Codex with the analysis on a page whose byline credits Codex " +
+           "only for updating the federal context (PR #46 review)",
+   inject: s => s.replace('<span class="pv-made-credit">${credit}</span>',
+     '<span class="pv-made-credit">Analysis and graphics by Claude (Anthropic) and Codex (OpenAI)</span>')},
+
+  {gate: "consistency", page: "funding-map", file: "funding-map/data/funding.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[masthead\] funding-map/,
+   defect: "a masthead calling the register's 13 August 2026 the newest retrieval while the " +
+           "same file carries a USAspending check read on 1 September 2026 (PR #46 review)",
+   inject: s => s.replace('  "as_of": "2026-09-01",\n', "")},
 
   {gate: "consistency", page: "index", file: "index/app.js",
    command: "python3", args: ["_data/build/verify_consistency.py"],
@@ -426,7 +474,10 @@ const CASES = [
            "the figure ('147 institution records since 1991; 41 recorded polymer awards')",
    /* Grok's refute, 2026-09-28: with "institution records" four words before the 41, the
       8-word window passed this exact relapse. The window now stops at the clause. */
-   inject: s => s.replace(/41 of them recorded\s+a polymer award/, "41 recorded polymer awards")},
+   /* Global since 2026-10-05: the page now quotes this sentence again in its "What would
+      prove this page wrong" list, and a first-match edit hit that copy, leaving the
+      headline intact and the fixture passing. */
+   inject: s => s.replace(/41 of them recorded\s+a polymer award/g, "41 recorded polymer awards")},
 
   {gate: "consistency", page: "sources", file: "index/data/counts.json",
    command: "python3", args: ["_data/build/verify_consistency.py"],
@@ -508,7 +559,7 @@ const CASES = [
    defect: "a 404 page whose story-list link points at nothing",
    inject: s => s.replace("/evidence-room/index/#alltitle", "/evidence-room/index/#stories")},
 
-  {gate: "verify", page: "index", args: ["index"], expect: /contrast 2 under AA/,
+  {gate: "verify", page: "index", args: ["index"], expect: /contrast 5 under AA/,
    defect: "the hero byline at #9CC4CA, 3.62:1 on the teal hero (ER-11)",
    inject: s => s.replace("line-height:1.5;color:#C0DBE1;letter-spacing:.02em}",
                           "line-height:1.5;color:#9CC4CA;letter-spacing:.02em}")},

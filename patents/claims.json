@@ -1,4 +1,5 @@
 {
+ "hero": "pat-two-by-two",
  "_note": "Every complete-year figure re-runs against data/patents.json, which is the same file the charts render from. The degree echo re-runs against the talent page's own shipped data, so the two pages cannot drift apart silently.",
  "data": {
   "p": "patents.json",
@@ -12,6 +13,8 @@
    "assert": "(lambda C: C[0]['year'] == 2015 and C[-1]['year'] == 2023 and C[0]['ohio'] == 455 and C[-1]['ohio'] == 342 and 0.24 <= 1 - C[-1]['ohio'] / C[0]['ohio'] <= 0.26)([r for r in D['p']['rows'] if r['complete']])",
    "actual": "[(r['year'], r['ohio']) for r in D['p']['rows'] if r['complete']]",
    "falsified_if": "A refetch moves either endpoint, which late-publishing applications genuinely can do for recent years: the USPTO record itself back-fills. The fetch stamps its read date for exactly this reason.",
+   "breaks_if": "Late-published applications raise Ohio’s 2023 count above 342, which the patent office record can do for recent years.",
+   "guards": "filed 342 polymer patent applications in 2023, down a quarter from 2015.",
    "counts": [
     {"figure": "filed 342 polymer patent applications in 2023", "noun": "home of Akron"},
     {"figure": "down a quarter from 2015", "noun": "342 polymer patent applications"},
@@ -25,6 +28,8 @@
    "assert": "(lambda B, L: abs(L['us_inv']/B['us_inv']*100 - 78.2) < 0.15 and abs(L['us_inv_all']/B['us_inv_all']*100 - 98.4) < 0.15 and abs(L['ohio']/B['ohio']*100 - 75.2) < 0.15 and abs(L['ohio_all']/B['ohio_all']*100 - 87.5) < 0.15 and L['ohio']/B['ohio'] < L['us_inv']/B['us_inv'] and 0.19 <= 1 - L['us_inv']/B['us_inv'] <= 0.24)([r for r in D['p']['rows'] if r['complete']][0], [r for r in D['p']['rows'] if r['complete']][-1])",
    "actual": "[(k, round([r for r in D['p']['rows'] if r['complete']][-1][k] / [r for r in D['p']['rows'] if r['complete']][0][k] * 100, 1)) for k in ('ohio', 'ohio_all', 'us_inv', 'us_inv_all')]",
    "falsified_if": "Any endpoint moves past a tenth of a point, or Ohio's polymer line stops sitting at or below the American one, or the American fall leaves the band that makes 'by a fifth' honest. This claim replaced pat-three-baselines the day the page shipped: the first version's national line carried no address filter, was worldwide filings at the USPTO, and read flat at 99 only because foreign-origin filings filled the hole. A replication reviewer reproduced the 99 and could not reproduce the label on it. The unfiltered number is now printed as a trap with its own claim below.",
+   "breaks_if": "Late filings lift 2023 until the fall is far short of a fifth, nationally or in Ohio.",
+   "guards": "American polymer patenting fell by a fifth. Ohio fell with it.",
    "counts": [
     {"figure": "fell by a fifth", "noun": "American polymer patenting"},
     {"figure": "down 22 percent nationwide", "noun": "applications with an American inventor"},
