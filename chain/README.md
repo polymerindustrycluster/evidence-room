@@ -51,3 +51,11 @@ obsolete paths and import-time source operations; do not use them as diagnostics
 
 Changes to published figures and interpretations are recorded in
 [`CORRECTIONS.md`](../CORRECTIONS.md).
+
+## W4 reader furniture, 2026-10-07
+
+The eyebrow is the hub’s question, “Which chain links are in the register?”. The register count
+carries no scope chip and there is no quote: `chain-neo-total` states no year in its sentence,
+which a scope needs. The “Words on this page” block declares PIC-12+2, PIC-12 and
+establishment. The page has no closer, so “If you run a plant here” (one sentence, on
+`chain-supply-demand`) sits at the end of the page.

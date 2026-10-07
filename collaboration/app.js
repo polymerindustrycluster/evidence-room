@@ -90,7 +90,7 @@ PV.figures([
      earlier version of this card said "a keyword in the text, not a subject code", which was
      the exact inverse of the method, and sat directly under a standfirst saying so. */
   ["", N(T.coauthored_polymer), "classified in polymers", "subfield 2507, not a keyword match"],
-  ["", String(T.joint_awards), "joint NSF projects", usd(T.joint_award_dollars) + " combined"],
+  ["", String(T.joint_awards), "joint NSF projects", usd(T.joint_award_dollars) + " combined", {scope: "col-they-do-collaborate"}],
   /* Bounded to the window on purpose: the award data ends with the window and cannot speak
      to what started after it. CWRU leads the NEO-SMART NSF Engine, awarded 2026-07-13, and Akron
        is among its core partners — outside this
@@ -98,7 +98,7 @@ PV.figures([
        answer only who led it, which left the one question a reader actually has — are these
        two in it together? — hanging over a page about whether these two work together.
        Disclosing a gap is not the same as closing it. */
-  ["", String(T.newest_joint_award_year), "newest joint award", `none since, through ${S.at(-1).year}`]
+  ["", String(T.newest_joint_award_year), "newest joint award", `none since, through ${S.at(-1).year}`, {scope: "col-no-new-joint-award"}]
 ]);
 
 /* ------------------------------------------------------------- 1. the record */

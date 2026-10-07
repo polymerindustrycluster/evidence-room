@@ -151,6 +151,15 @@ The vignette band is a rung-3 index translation; the page is ready to ship at th
 - **Three questions:** (1) What happened to your resin invoices across 2021–22, and how much of that reached your customers as price? (2) For a part you quoted in 2019 and still run, what does it bill today? (3) Which non-resin costs (labor, freight, energy, packaging) moved most since 2019?
 - **Where it slots:** replaces or sits beside the "What the scissors did to a dollar part" band; the illustrative arithmetic stays as the checkable frame around the quote.
 
+## W4 reader furniture, 2026-10-07
+
+The eyebrow is the hub’s question, “Did the 2022 price spike come back out?”. Each of the four
+hero cards carries a scope chip, from `cs-gas-below-seven`, `cs-resin-about-third`,
+`cs-product-forty` and `cs-spread-now`; their `source` fields gained the chip’s industry code
+and source short form. The how-we-checked box carries the `quote`. The “Words on this page”
+block declares NAICS 326, producer price index and nominal. “If you run a plant here” carries
+three sentences, on the gas, resin, gap and electricity claims.
+
 ## Run and publish
 
 ```

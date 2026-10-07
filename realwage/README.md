@@ -234,6 +234,14 @@ arithmetic). One reported voice would move it to rung 1. The ask, ready to send:
   band, replacing nothing; the quote illustrates the mechanism, the chart stays the
   evidence.
 
+## W4 reader furniture, 2026-10-07
+
+The eyebrow is the hub’s question, “What do these wages buy here?”. No hero figure carries a
+scope chip and there is no quote: `rw-flip`, `rw-wage` and `rw-prices` state no year in their
+sentences, which a scope needs. The “Words on this page” block declares QCEW, NAICS 326,
+withheld, price level and nominal. “If you run a plant here” carries two sentences, on
+`rw-wage` and `rw-la`.
+
 ## Run and publish
 
 ```

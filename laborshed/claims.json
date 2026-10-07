@@ -4,6 +4,9 @@
     "ls": "laborshed.json",
     "b": "bench.json"
   },
+  "kicker": true,
+  "glossary": {"terms": ["LODES", "PIC-12"]},
+  "plant": [{"text": "Plan on hiring across county lines: counting jobs in every industry, not one of the twelve counties has 70 percent of its jobs held by its own residents.", "claims": ["ls-no-county-is-a-market", "ls-not-the-cluster"]}, {"text": "Expect to recruit from the twelve counties together: just under 90 percent of the jobs in PIC-12 are held by people who live in PIC-12.", "claims": ["ls-region-is-a-market"]}],
   "claims": [
     {
       "id": "ls-no-county-is-a-market",

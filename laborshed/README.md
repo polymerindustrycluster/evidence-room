@@ -127,6 +127,15 @@ calls):
 The quote slots into the vignette band in place of the composite sentence; keep the
 LODES counts beside it.
 
+## W4 reader furniture, 2026-10-07
+
+The eyebrow is the hub’s question, “Where do a county’s workers live?” (it replaced “Who fills
+each county’s jobs, 2022”). No hero figure carries a scope chip and the how-we-checked box
+carries no quote: the claims behind the hero cards (`ls-summit-under-half`, `ls-extremes`,
+`ls-distant-share-basis`) state no year in their sentences, which a scope needs, and a quote
+needs a scoped claim. The “Words on this page” block declares LODES and PIC-12. “If you run a
+plant here” carries two sentences, on `ls-no-county-is-a-market` and `ls-region-is-a-market`.
+
 ## Run and publish
 
 ```

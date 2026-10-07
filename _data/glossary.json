@@ -150,6 +150,42 @@
   {
    "term": "endpoint",
    "short": "An endpoint is the web address a dataset is fetched from."
+  },
+  {
+   "term": "LODES",
+   "short": "LODES is the Census Bureau’s Origin-Destination Employment Statistics, payroll records that name the home county and the work county of each job."
+  },
+  {
+   "term": "match",
+   "short": "Match, or cost share, is money partners promise to put in beside an award: promised, not awarded."
+  },
+  {
+   "term": "price level",
+   "short": "A price level here is BEA’s Regional Price Parity for a metro area, where 100 is the US average."
+  },
+  {
+   "term": "nominal",
+   "short": "Nominal means as posted or paid, before any adjustment for prices."
+  },
+  {
+   "term": "PIC-12+2",
+   "short": "PIC-12+2 is the register’s fourteen-county set: all twelve PIC-12 counties, with Columbiana and Tuscarawas added."
+  },
+  {
+   "term": "OpenAlex",
+   "short": "OpenAlex is an open index of scholarly works, their authors and the institutions those authors list."
+  },
+  {
+   "term": "corresponding author",
+   "short": "The corresponding author is the author a paper names as its contact; this site credits a paper to the side that holds that author, not the first author."
+  },
+  {
+   "term": "Collaborative Research",
+   "short": "Collaborative Research is the NSF mechanism that funds one project as separate awards, one per institution."
+  },
+  {
+   "term": "producer price index",
+   "short": "A producer price index tracks what a whole industry charges at the factory gate, not any one firm’s realized price or its costs."
   }
  ]
 }

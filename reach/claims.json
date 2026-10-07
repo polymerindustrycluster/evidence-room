@@ -1,6 +1,9 @@
 {
   "hero": "rch-network-breadth",
   "data": "reach.json",
+  "kicker": true,
+  "glossary": {"terms": ["OpenAlex", "corresponding author"]},
+  "plant": [{"text": "Expect to find the lead contact for most of the region’s polymer papers locally: 985 of 1,222 that name a corresponding author name one at Akron or Case Western.", "claims": ["rch-region-leads"]}],
   "claims": [
     {
       "id": "rch-network-breadth",

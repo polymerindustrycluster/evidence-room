@@ -1,6 +1,9 @@
 {
   "hero": "hero-awards-match",
   "data": "funding.json",
+  "kicker": true,
+  "glossary": {"terms": ["match"]},
+  "plant": [{"text": "Watch the Ohio hub’s Translational R&D line, one of the two that reach companies directly: $2.64M of it has not yet been passed on to a named recipient.", "claims": ["unrouted-split", "company-facing-fourteen"]}],
   "claims": [
     {
       "id": "total-secured",
