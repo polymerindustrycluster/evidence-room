@@ -654,9 +654,11 @@ const CASES = [
    defect: "the brand lime eyebrow on the teal hero at 4.12:1, exempt from the check until 5 October 2026",
    inject: s => s.replace(".hero .eyebrow{color:#C6DE5D}", ".hero .eyebrow{color:#B8D637}")},
 
-  {gate: "verify", page: "funding-map", args: ["funding-map"], expect: /1440:contrast-rendered[^:]*: p\.eyebrow/,
-   defect: "the hero's radial glow under the eyebrow, 4.35:1 on funding-map at 1440, which the " +
-           "ancestor-colour walk passed because a pseudo-element is not an ancestor (PR #48)",
+  /* Moved from funding-map to cluster-health in the W4 content PR: funding-map's eyebrow became
+     a short kicker that ends before the glow, so the injection no longer reached it there. */
+  {gate: "verify", page: "cluster-health", args: ["cluster-health"], expect: /1440:contrast-rendered[^:]*: p\.eyebrow/,
+   defect: "the hero's radial glow under the eyebrow, 4.35:1 at 1440 (funding-map's, then cluster-health's), " +
+           "which the ancestor-colour walk passed because a pseudo-element is not an ancestor (PR #48)",
    inject: s => s.replace(".hero::before{-webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 84px,#000 150px);\n  mask-image:linear-gradient(to bottom,transparent 0,transparent 84px,#000 150px)}", "")},
 
   {gate: "provenance", page: "accountability", args: ["accountability"], expect: /UNCREDITED/,
