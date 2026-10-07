@@ -323,7 +323,7 @@ for (const [name, cmd, gateArgv, what, slow] of GATES) {
       argvRun = [...gateArgv, ...shardFlag, ...pick.sel];
     }
   }
-  if (shardTests && argvRun === gateArgv) {
+  if (shardTests && name === "selftest" && argvRun === gateArgv) {
     const mine = shardCount([]);
     tag = `[${mine}/${shardCount.total} fixtures, shard ${opt.shard.k}/${opt.shard.n}] `;
     argvRun = [...gateArgv, ...shardFlag];

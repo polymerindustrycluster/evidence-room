@@ -730,7 +730,8 @@ if (shard) console.log(`SHARD ${shard.k}/${shard.n}: ${selected.length} of ${CAS
 /* a name picks a gate's fixtures; gate/page picks that gate's fixtures on one page */
 for (const c of selected) {
   const f = c.file || `dist/${c.page}.html`;
-  if (!existsSync(f)) { console.log(`SKIP  ${c.gate} — ${f} missing, run bundle first`); continue; }
+  /* a fixture that cannot run is not a fixture that passed: a missing file fails the run */
+  if (!existsSync(f)) { console.log(`BROKEN ${c.gate} — ${f} missing, run bundle first`); broken.push(c); continue; }
   const backupDir = c.file ? mkdtempSync(join(tmpdir(), "evidence-room-selftest-")) : null;
   const bak = backupDir ? join(backupDir, "original") : `${f}.selftest-backup`;
   const originalTimes = statSync(f);
