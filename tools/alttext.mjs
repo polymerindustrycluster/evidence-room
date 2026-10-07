@@ -29,7 +29,7 @@
  */
 import {readdirSync} from "fs";
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const WORDS = {one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8,
   nine: 9, ten: 10, eleven: 11, twelve: 12};
@@ -38,7 +38,7 @@ const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
 
-const b = await chromium.launch();
+const b = await launch();
 let bad = 0, warned = 0, checked = 0;
 
 for (const n of list) {

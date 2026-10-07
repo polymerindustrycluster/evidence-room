@@ -12,11 +12,11 @@
  * column on the left is a ragged edge the reader will see.
  */
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const name = process.argv[2] || "laborshed";
 const W = Number(process.argv[3] || 1440);
-const b = await chromium.launch();
+const b = await launch();
 const p = await b.newPage({viewport: {width: W, height: 1000}});
 await p.goto(pathToFileURL(process.cwd() + "/dist/" + name + ".html").href);
 await p.waitForTimeout(1000);

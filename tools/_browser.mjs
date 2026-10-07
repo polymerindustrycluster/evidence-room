@@ -1,4 +1,4 @@
-/* One resolver for Playwright's chromium, shared by every tool.
+/* One resolver and ONE LAUNCHER for Playwright's chromium, shared by every tool.
  *
  * Nine tools each carried their own copy of
  *   createRequire(import.meta.url)(process.env.NODE_PATH.split(";")[0] + "/playwright")
@@ -31,4 +31,37 @@ function loadPlaywright() {
   }
 }
 
-export const {chromium} = loadPlaywright();
+const {chromium} = loadPlaywright();
+
+/* SAME PIXELS ON EVERY PLATFORM (ER-021, 2026-10-06).
+ *
+ * The geometry gates measured macOS 20 to 60px shorter than the Linux CI runner above the
+ * first chart (coldopen read churn 1701 on macOS and 1756 on Linux), so a local run could
+ * not predict CI. The cause is FreeType hinting: on Linux, Chromium hints Lato to the pixel
+ * grid and rounds each glyph's advance, which made a 17px test line 524px wide there against
+ * 516.89px on macOS (CoreText never hints). Over a 700px measure that is enough to move a
+ * word to the next line, and a line is ~30px of page.
+ *
+ * --font-render-hinting=none turns hinting off, which also gives Linux fractional glyph
+ * positions. Measured 2026-10-06 with Playwright 1.60.0 (macOS host against the
+ * mcr.microsoft.com/playwright:v1.60.0-noble image): the test line becomes 516.906px, and
+ * every page's first-chart top is identical on both platforms. macOS readings do not move
+ * at all, so the flag changes the Linux basis only.
+ *
+ * Tried and left out, because they changed no measurement on either platform:
+ * --disable-font-subpixel-positioning, --disable-lcd-text, --force-device-scale-factor=1
+ * (headless already renders at scale 1).
+ *
+ * WHAT THIS DOES NOT FIX: text the bundled Lato does not cover falls back to the host's
+ * fonts. That is every ui-monospace run (Courier or Menlo on macOS, a CJK mono on the
+ * Playwright image) and the odd glyph outside Lato's unicode-range. It moves page heights
+ * below the fold on sources and corrections by up to 250px; it moves no first-chart top.
+ *
+ * Every tool launches through launch(). tools/launchers.mjs fails the build on any tool
+ * that reaches Playwright another way, so a new gate cannot quietly measure on the old basis.
+ */
+export const DETERMINISTIC_ARGS = Object.freeze(["--font-render-hinting=none"]);
+
+export function launch(options = {}) {
+  return chromium.launch({...options, args: [...DETERMINISTIC_ARGS, ...(options.args || [])]});
+}

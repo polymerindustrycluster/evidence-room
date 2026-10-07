@@ -16,7 +16,7 @@
  */
 import {readdirSync} from "fs";
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 /* ONE WIDTH IS NOT A TEST, AND THE INTERIOR IS NOT INTERPOLATION. This gate checked
    1440 only, so every collision found by hand during the 2026-08-28 rebuild was invisible
@@ -34,7 +34,7 @@ const names = args.filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
 const WIDTHS = sweep ? SWEEP : [1440];
-const b = await chromium.launch();
+const b = await launch();
 let bad = 0;
 for (const n of list) {
  const found = [];

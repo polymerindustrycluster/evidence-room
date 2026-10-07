@@ -8,11 +8,11 @@
  * A stable design holds that ratio roughly constant; a broken one crosses over.
  */
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const name = process.argv[2] || "talent";
 const WIDTHS = [2560, 1920, 1600, 1440, 1280, 1100, 1000, 900, 820, 760, 640, 500, 390];
-const b = await chromium.launch();
+const b = await launch();
 console.log(`${name}\n`);
 console.log("  vw    wrap   lede   chart   h2    lede/chart   verdict");
 for (const W of WIDTHS) {

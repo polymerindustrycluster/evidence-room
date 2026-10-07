@@ -25,7 +25,7 @@
  */
 import {readdirSync} from "fs";
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const only = process.argv[2];
 const WIDTHS = only ? [1440] : [760, 900, 1100, 1280, 1440, 1800, 2560];
@@ -34,7 +34,7 @@ const pages = (only ? [only] : readdirSync(".", {withFileTypes: true})
                !["dist", "tools", "node_modules", "shots"].includes(d.name))
   .map(d => d.name));
 
-const browser = await chromium.launch();
+const browser = await launch();
 let bad = 0, checked = 0;
 for (const W of WIDTHS) {
   const offenders = [];

@@ -29,7 +29,7 @@
  */
 import {readFileSync, existsSync} from "fs";
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const LEAD = "This finding breaks if:";
 const TITLE = "What would prove this page wrong";
@@ -91,7 +91,7 @@ async function transitions(b, n) {
   return {probs, swaps: firsts.size > 1};
 }
 
-const b = await chromium.launch();
+const b = await launch();
 let bad = 0, checked = 0;
 const swapped = [];
 for (const n of list) {
