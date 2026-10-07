@@ -106,6 +106,10 @@ job-count table. The how-we-checked box carries the `quote` from claims.json. Th
 aside became the shared "Words on this page" block, mounted where it sat; its Akron sentences
 are `glossary.notes` in claims.json.
 
+Since the W4 content PR the eyebrow reads the hub card's short kicker, and an "If you run a
+plant here" box after the closer carries three sentences from `plant` in claims.json, each
+bound to the claim it names (akron-lq, metro-visibility, akron-per-site).
+
 ## Run and publish
 
 ```

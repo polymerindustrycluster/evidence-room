@@ -6,6 +6,14 @@
     "text": "Ohio had more private plastics and rubber manufacturing jobs (NAICS 326) than any other state in 2024: 54,846, which is 10,248 more than second-place Texas (BLS QCEW, 2024 annual average).",
     "claims": ["oh-rank-1", "oh-jobs", "oh-lead-texas"]
   },
+  "plant": [
+    {"text": "Plan for a downturn to reach further here: in Akron, plastics and rubber fills 4.69 times the national share of the local job base, so a slump in the industry touches more of the local economy than it would elsewhere.",
+     "claims": ["akron-lq"]},
+    {"text": "When you compare your region with others, start from state or county figures: only 155 of 382 metros publish a plastics and rubber jobs figure, so a metro ranking leaves most places unknown.",
+     "claims": ["metro-visibility"]},
+    {"text": "Do not benchmark your plant’s headcount against Akron’s average of about 59 people a site, which is taken across 117 establishments of every size and describes no single plant.",
+     "claims": ["akron-per-site"]}
+  ],
   "glossary": {
     "terms": ["QCEW", "NAICS 326", "withheld", "cell", "establishment", "metro area", "concentration", "private ownership", "annual average"],
     "notes": {

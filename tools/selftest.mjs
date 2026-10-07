@@ -740,6 +740,39 @@ const CASES = [
    defect: "the hub's job-count table rendering a total its data file does not hold",
    inject: s => s.replace(/(data-pv-file="jobcounts\.json">[\s\S]*?"total": ")17,770/, "$117,707")},
 
+  /* W4 content (7 October 2026): the short card kicker as the one source, and the
+     "If you run a plant here" box bound to the claims it names. */
+  {gate: "consistency", page: "index", file: "index/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[kicker\] index:peers\s+card kicker .* is 45 characters, over 40/,
+   defect: "a hub card kicker grown past the 40 characters a short question gets",
+   inject: s => s.replace('<p class="kick">Where does Ohio rank?</p>',
+                          '<p class="kick">Where does Ohio rank among states and metros?</p>')},
+
+  {gate: "consistency", page: "index", file: "index/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[kicker\] index:federal-money\s+Start with a question link reads 'Where does federal money go\?'/,
+   defect: "a Start with a question link drifting from its story's card kicker (federal money's link before W4)",
+   inject: s => s.replace('<a href="../federal-money/">How big is the Tech Hub award?</a>',
+                          '<a href="../federal-money/">Where does federal money go?</a>')},
+
+  {gate: "consistency", page: "peers", file: "peers/claims.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[plant\] peers#3\s+prints 95, which none of its automatically checked claims/,
+   defect: "an If you run a plant here sentence printing a figure its claim does not state",
+   inject: s => s.replace("average of about 59 people a site", "average of about 95 people a site")},
+
+  {gate: "consistency", page: "peers", file: "peers/claims.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[plant\] peers#2\s+must name at least one claim on the page, and only claims that exist; metro-visibilty/,
+   defect: "an If you run a plant here sentence bound to a claim id that does not exist",
+   inject: s => s.replace('"claims": ["metro-visibility"]', '"claims": ["metro-visibilty"]')},
+
+  {gate: "disclosure", page: "peers", args: ["peers"],
+   expect: /claims\.json declares If you run a plant here and 0 such boxes render/,
+   defect: "a declared If you run a plant here box missing from the page",
+   inject: s => s.replace("    plantBox(claims);\n", "")},
+
   {gate: "style", page: "peers", args: ["peers"], expect: /scope-chip-form/,
    defect: "a scope chip set as a comma list rather than the house industry · place · period · source form",
    inject: s => s.replace('[s.industry, s.place, s.period, s.source].join(" \u00b7 ")',
