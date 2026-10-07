@@ -1057,19 +1057,27 @@ def _flat(html_text: str) -> str:
     return " ".join(_html.unescape(re.sub(r"<[^>]+>", "", html_text)).split())
 
 
+KICKER_MAX = 40
+
+
 def hub_questions() -> dict[str, str]:
-    """The hub's question for each story, read from index/index.html: its "Start with a
-    question" link where it has one (the short form the hub leads with), otherwise its
-    card heading. One rule, so the kicker on a story and the question that sends a reader
-    to it are the same words."""
+    """The hub's short question (kicker) for each story, read from index/index.html: the
+    `<p class="kick">` each card leads with, above its full question in the <h4> (John,
+    7 October 2026). The card is the one source; a story's eyebrow and the hub's "Start
+    with a question" links must read the same words, checked in [kicker]."""
     src = read(WEB, "index", "index.html")
     out = {}
-    for m in re.finditer(r'<a class="card"[^>]*data-slug="([^"]+)"[^>]*>\s*<h4>(.*?)</h4>', src, re.S):
-        out[m.group(1)] = _flat(m.group(2))
-    nav = re.search(r'<nav class="first-reads"[^>]*>(.*?)</nav>', src, re.S)
-    for m in re.finditer(r'<a href="\.\./([a-z0-9-]+)/">(.*?)</a>', nav.group(1) if nav else "", re.S):
+    for m in re.finditer(r'<a class="card"[^>]*data-slug="([^"]+)"[^>]*>\s*<p class="kick">(.*?)</p>\s*<h4>', src, re.S):
         out[m.group(1)] = _flat(m.group(2))
     return out
+
+
+def hub_nav() -> dict[str, str]:
+    """The hub's "Start with a question" links: slug -> link text."""
+    src = read(WEB, "index", "index.html")
+    nav = re.search(r'<nav class="first-reads"[^>]*>(.*?)</nav>', src, re.S)
+    return {m.group(1): _flat(m.group(2)) for m in
+            re.finditer(r'<a href="\.\./([a-z0-9-]+)/">(.*?)</a>', nav.group(1) if nav else "", re.S)}
 
 
 def check_reader_furniture(arts: list[str]) -> None:
@@ -1086,7 +1094,12 @@ def check_reader_furniture(arts: list[str]) -> None:
                   names. A changed figure in the quote fails here; a changed figure in the
                   data fails the claim.
       [kicker]    `kicker: true` in claims.json: the page's eyebrow carries data-kicker
-                  and reads exactly the hub's question for it (hub_questions above).
+                  and reads exactly its hub card's kicker (hub_questions above); each card
+                  kicker is a question of at most 40 characters, and each "Start with a
+                  question" link reads its card's kicker.
+      [plant]     claims.json `plant`, "If you run a plant here": one to three items, each
+                  one sentence naming at least one existing claim on the page; every number
+                  in it is stated by an automatically checked claim it names.
       [glossary]  every declared term is defined in _data/glossary.json, once; every
                   definition names its term; notes belong to declared terms; and every
                   number in a page's notes is in one of that page's checked claims.
@@ -1109,7 +1122,7 @@ def check_reader_furniture(arts: list[str]) -> None:
                 "so the block cannot mark which word it defines")
         gdef[term] = t
     hub = hub_questions()
-    pending = {"kicker": [], "quote": [], "glossary": [], "scope": []}
+    pending = {"kicker": [], "quote": [], "glossary": [], "scope": [], "plant": []}
     for a in arts:
         cp = os.path.join(WEB, a, "claims.json")
         if not os.path.isfile(cp):
@@ -1177,13 +1190,36 @@ def check_reader_furniture(arts: list[str]) -> None:
             m = re.search(r'<p class="eyebrow"[^>]*\bdata-kicker\b[^>]*>(.*?)</p>', page, re.S)
             want = hub.get(a)
             if not want:
-                err("kicker", a, "cannot inspect: the hub has no card or question for this page")
+                err("kicker", a, "cannot inspect: the hub has no card kicker for this page")
             elif not m:
                 err("kicker", a, "claims.json opts into a kicker, and index.html has no eyebrow with data-kicker")
             elif _flat(m.group(1)) != want:
                 err("kicker", a, f"kicker reads {_flat(m.group(1))!r}; the hub asks {want!r}")
         elif a in hub:
             pending["kicker"].append(a)
+
+        # [plant]
+        pl = spec.get("plant")
+        if pl is None:
+            if a in hub:
+                pending["plant"].append(a)
+        elif not isinstance(pl, list) or not 1 <= len(pl) <= 3:
+            err("plant", a, "claims.json plant must list one to three sentences")
+        else:
+            for k, item in enumerate(pl, 1):
+                text, ids = item.get("text", ""), item.get("claims") or []
+                if not text.strip() or not text.rstrip().endswith(".") or re.search(r"[.!?]\s+[A-Z]", text):
+                    err("plant", f"{a}#{k}", "each If you run a plant here item is one sentence ending in a full stop")
+                if not ids or any(i not in claims for i in ids):
+                    err("plant", f"{a}#{k}", "must name at least one claim on the page, and only claims that exist; "
+                        f"{', '.join(i for i in ids if i not in claims) or 'it names none'}")
+                pool = " ".join(c.get("text", "") + " " + " ".join((c.get("scope") or {}).values())
+                                for i, c in checked.items() if i in ids)
+                have = set(NUM.findall(pool))
+                for n in NUM.findall(text):
+                    if n not in have:
+                        err("plant", f"{a}#{k}", f"prints {n}, which none of its automatically checked "
+                            f"claims ({', '.join(ids) or 'none named'}) states")
 
         # [glossary]
         g = spec.get("glossary")
@@ -1206,6 +1242,19 @@ def check_reader_furniture(arts: list[str]) -> None:
                 for n in NUM.findall(note):
                     if n not in have:
                         err("glossary", a, f"the note for {t!r} prints {n}, which no checked claim on the page states")
+
+    # [kicker] the hub's own side: each card kicker is short, and each "Start with a
+    # question" link reads its card's kicker
+    for slug, k in hub.items():
+        if len(k) > KICKER_MAX:
+            err("kicker", f"index:{slug}", f"card kicker {k!r} is {len(k)} characters, over {KICKER_MAX}")
+        if not k.endswith("?"):
+            err("kicker", f"index:{slug}", f"card kicker {k!r} is not a question")
+    for slug, text in hub_nav().items():
+        if slug not in hub:
+            err("kicker", f"index:{slug}", "a Start with a question link to a story whose card has no kicker")
+        elif text != hub[slug]:
+            err("kicker", f"index:{slug}", f"Start with a question link reads {text!r}; its card kicker is {hub[slug]!r}")
 
     for k, pages in pending.items():
         if pages:

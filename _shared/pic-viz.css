@@ -583,12 +583,16 @@ th.pv-sortable[aria-sort="descending"]::after{content:" ↓";opacity:1;color:var
 /* ------------------------------------------------ reader furniture (W4, 7 October 2026)
    picviz.js "reader furniture". The scope chip and the differs link sit inside a hero
    figure card, under its description, and are sized to fit the free line a shorter card
-   already has beside a taller one, so neither moves the first chart (tools/coldopen.mjs). */
-.figv .pv-scope{margin:5px 0 0;font-size:12px;line-height:16px;letter-spacing:.01em;
+   already has beside a taller one, so neither moves the first chart (tools/coldopen.mjs).
+   Where a story's job total is not a hero figure, the differs link sits at the foot of the
+   passage that prints it, in body colours. */
+.figv .pv-scope,[data-hero-figure] .pv-scope{margin:3px 0 0;font-size:12px;line-height:16px;letter-spacing:.01em;
   color:#D3D8D9}
-.figv .pv-differs{margin:5px 0 0;font-size:12px;line-height:16px}
-.figv .pv-differs a{color:#D3D8D9;text-underline-offset:2px}
-.figv .pv-differs a:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+.pv-differs{margin:3px 0 0;font-size:12px;line-height:16px}
+.pv-differs a{color:var(--action);text-underline-offset:2px}
+.hero .pv-differs a{color:#D3D8D9}
+.pv-differs a:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+.hero .pv-differs a:focus-visible{outline-color:var(--lime)}
 .pv-quote-text{font-style:normal}
 /* "Words on this page": the shared glossary, closed by default, at footnote scale beside
    the chart where its terms are first used. */
@@ -609,3 +613,11 @@ th.pv-sortable[aria-sort="descending"]::after{content:" ↓";opacity:1;color:var
 .pv-jobcounts a{color:var(--action)}
 /* Where a page puts the words block and the hub its table; replaced or filled by picviz.js. */
 .pv-words-mount,.pv-jobcounts-mount{display:block}
+/* "If you run a plant here" (PV.plantBox): a small box after the closer, at the measure. */
+.pv-plant-band{padding:34px 0}
+.pv-plant{max-width:var(--measure);margin:0 auto;border-left:3px solid var(--action);
+  padding:4px 0 4px 18px}
+.pv-plant h2{margin:0 0 8px;font-size:13.5px;font-weight:800;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--text)}
+.pv-plant ul{margin:0;padding:0 0 0 18px}
+.pv-plant li{margin:0 0 .45em;font-size:16px;line-height:1.55;color:var(--text)}

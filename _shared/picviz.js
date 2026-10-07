@@ -759,6 +759,18 @@ const PV = (() => {
       el.textContent = scopeLine(c.scope);
     });
   }
+  /* A chip where the headline number is not a PV.figures card (chain's ribbon): appended to
+     `host`, which the page marks data-hero-figure so the gates count it as a headline figure. */
+  function scopeChip(host, id) {
+    if (!host) return null;
+    const p = document.createElement("p");
+    p.className = "pv-scope";
+    p.dataset.claim = id;
+    host.appendChild(p);
+    claimsNow().then(spec => fillScopes(spec, host),
+      e => console.error(`PV.scopeChip: claims.json unavailable for the scope chip: ${e.message}`));
+    return p;
+  }
   const JOBCOUNTS = "job-counts";
   function differsLink() {
     return `<p class="pv-differs"><a href="../index/#${JOBCOUNTS}">Why this total differs from others on the site</a></p>`;
@@ -812,6 +824,26 @@ const PV = (() => {
       else (document.querySelector("main") || document.body).appendChild(sec);
     }
     return box;
+  }
+
+  /* "If you run a plant here" (W4, John, 7 October 2026): up to three plain sentences, each
+     a practical implication of a claim the page already checks, from claims.json `plant`
+     [{text, claims}]. A small box after the closer, never above the first chart.
+     verify_consistency.py [plant] binds each sentence to the claims it names and every
+     figure in it to one of them; tools/disclosure.mjs holds the rendered box to the file. */
+  function plantBox(spec) {
+    const items = spec && spec.plant;
+    if (!Array.isArray(items) || !items.length || document.querySelector(".pv-plant")) return null;
+    const sec = document.createElement("section");
+    sec.className = "band pv-plant-band";
+    sec.innerHTML = `<div class="wrap"><aside class="pv-plant" aria-labelledby="pv-plant-h">
+      <h2 id="pv-plant-h">If you run a plant here</h2>
+      <ul>${items.map(i => `<li data-claims="${(i.claims || []).join(" ")}">${i.text}</li>`).join("")}</ul>
+      </aside></div>`;
+    const closer = document.querySelector(".closer");
+    if (closer) closer.after(sec);
+    else (document.querySelector("main") || document.body).appendChild(sec);
+    return sec;
   }
 
   /* ------------------------------------------------------------ methodology box
@@ -1077,6 +1109,7 @@ const PV = (() => {
     else (document.querySelector("main") || document.body).appendChild(sec);
     breaksIf(claims, sec);
     await wordsOnPage(claims, document.querySelector(".pv-breaks-all") || sec);
+    plantBox(claims);
     return sec;
   }
 
@@ -1319,7 +1352,7 @@ const PV = (() => {
     if (unit) txt(svg, unit, {x: 0, y: 31, class: "pv-tick", fill: "var(--caption)"});
   }
 
-  return {jobCounts, differsLink, wordsOnPage, scopeLine, tableTools, onFill, whatWeGotWrong, correctionsSummary, correctionsSentence, el, txt, axlab, face, lead, ticks, frame, hoverable, rove, showTip, hideTip, tableView, data, footprint,
+  return {jobCounts, differsLink, wordsOnPage, plantBox, scopeChip, scopeLine, tableTools, onFill, whatWeGotWrong, correctionsSummary, correctionsSentence, el, txt, axlab, face, lead, ticks, frame, hoverable, rove, showTip, hideTip, tableView, data, footprint,
           methodology, figures, chart, chartTitle, footprintBanner, padGrid, mark, allStories, favicon, N,
           CAT, SEQ, GRAY, INK, usd, usdShort, reduced};
 })();

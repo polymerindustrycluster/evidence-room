@@ -130,8 +130,12 @@ const list = names.length ? names
  *                definition plus the page's note (_data/glossary.json); a declared term the
  *                page never prints outside the block fails as a word not on this page.
  *   differs link a story whose _data/jobcounts.json row is marked linked carries one link
- *                to ../index/#<anchor>, inside the figure that prints its total; a link on a
- *                page with no linked row fails. The hub's table must equal the file.
+ *                to ../index/#<anchor>, inside the figure that prints its total or directly
+ *                after the passage that prints it; a link on a page with no linked row
+ *                fails. The hub's table must equal the file.
+ *   plant box    claims.json `plant` renders one "If you run a plant here" box directly
+ *                after the closer, its items word for word and naming the same claims; a
+ *                box nobody declared fails.
  * Whether the data agree with each other (a quote's numbers, a kicker's words, a row's
  * claim) is verify_consistency.py's [scope]/[quote]/[kicker]/[glossary]/[jobcounts]. */
 const GLOSS = JSON.parse(readFileSync("_data/glossary.json", "utf8"));
@@ -194,7 +198,13 @@ for (const n of list) {
               rest.querySelectorAll("script,style,.pv-words").forEach(e => e.remove());
               return {
                 scopes: [...document.querySelectorAll(".pv-scope")].map(e =>
-                  [e.dataset.claim || null, t(e), !!e.closest(".figv")]),
+                  [e.dataset.claim || null, t(e), !!e.closest(".figv,[data-hero-figure]")]),
+                plant: [...document.querySelectorAll(".pv-plant")].map(b => ({
+                  head: t(b.querySelector("h2")),
+                  afterCloser: (() => { const band = b.closest(".pv-plant-band");
+                    const prev = band?.previousElementSibling;
+                    return !document.querySelector(".closer") || !!prev?.classList.contains("closer"); })(),
+                  items: [...b.querySelectorAll("li")].map(li => [li.dataset.claims || "", t(li)])})),
                 quote: q ? {text: t(q.querySelector(".pv-quote-text")),
                             inBox: !!q.closest(".pv-made"),
                             aboveCite: !!q.nextElementSibling?.classList.contains("pv-cite")} : null,
@@ -202,7 +212,8 @@ for (const n of list) {
                   items: [...d.querySelectorAll("li")].map(li => [li.dataset.term, t(li)])})),
                 rest: norm(rest.textContent).toLowerCase(),
                 differs: [...document.querySelectorAll(".pv-differs a")].map(a => [a.getAttribute("href"),
-                  t(a), t(a.closest(".figv")?.querySelector(".n"))]),
+                  t(a), a.closest(".figv") ? t(a.closest(".figv").querySelector(".n"))
+                    : t(a.closest(".pv-differs").previousElementSibling)]),
                 jobs: (() => { const m = document.querySelector("table.pv-jobcounts")?.parentElement;
                   return m ? {id: m.id, rows: [...m.querySelectorAll("tbody tr")].map(tr =>
                     [...tr.cells].map(c => t(c)).concat(tr.querySelector("a")?.getAttribute("href") || ""))} : null; })(),
@@ -335,9 +346,19 @@ for (const n of list) {
       else {
         if (h !== href || text !== "Why this total differs from others on the site")
           probs.push(`job-count link reads "${text}" to ${h}, not the shared link to ${href}`);
-        if (!rows.some(x => x.total === fig)) probs.push(`job-count link sits under ${fig || "no figure"}, not the total ${rows.map(x => x.total).join(", ")}`);
+        if (!rows.some(x => fig.includes(x.total))) probs.push(`job-count link sits under "${(fig || "no figure").slice(0, 60)}", not the total ${rows.map(x => x.total).join(", ")}`);
       }
     }
+    const pl = spec && spec.plant;
+    if (pl && w.plant.length !== 1) probs.push(`claims.json declares If you run a plant here and ${w.plant.length} such boxes render`);
+    else if (pl) {
+      const box = w.plant[0];
+      if (box.head !== "If you run a plant here") probs.push(`the plant box is headed "${box.head}"`);
+      if (!box.afterCloser) probs.push("the If you run a plant here box does not sit directly after the closer");
+      const want = pl.map(i => [(i.claims || []).join(" "), i.text.replace(/\s+/g, " ").trim()]);
+      if (JSON.stringify(box.items) !== JSON.stringify(want))
+        probs.push(`the plant box reads "${(box.items.map(i => i[1]).join(" | ")).slice(0, 80)}", not claims.json plant`);
+    } else if (w.plant.length) probs.push("an If you run a plant here box renders that claims.json does not declare");
     if (n === "index") {
       if (!w.jobs || w.jobs.id !== JOBS.anchor) probs.push(`no job-count table at #${JOBS.anchor}`);
       else {
