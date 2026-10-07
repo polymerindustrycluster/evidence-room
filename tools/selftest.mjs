@@ -1,6 +1,6 @@
 /* DOES EACH GATE ACTUALLY CATCH THE DEFECT IT EXISTS FOR?
  *
- *   node tools/selftest.mjs [gate...]
+ *   node tools/selftest.mjs [--list] [gate | gate/page ...]
  *
  * A green board is worth exactly as much as the gates behind it, and during the
  * 2026-08 rebuild six of this project's own checks turned out to be unable to fail on
@@ -63,6 +63,18 @@ const CASES = [
       BROKEN rather than letting a dead fixture vouch for a live gate. */
    inject: s => s.replace("</head>", "<style>@media(min-width:761px) and (max-width:1099px)" +
      "{.chart svg{margin-left:-30px !important}}</style></head>")},
+
+  /* THE SHARED RENDER MUST FILE EACH DEFECT UNDER THE RIGHT GATE. tools/sweeps.mjs runs
+     both sweeps off one render per page x width; a defect only textsize can see must fail
+     textsize and leave collide clean, and the reverse, or the combined run is blaming the
+     wrong check (or, with its probes swapped, passing both). */
+  {gate: "sweeps", page: "laborshed", args: ["laborshed"], expect: /^collide\s+ok[\s\S]*^textsize\s+FAIL/m,
+   defect: "9px chart labels, through the combined sweep: textsize fails, collide does not",
+   inject: s => s.replace("</head>", "<style>.chart svg text{font-size:9px !important}</style></head>")},
+
+  {gate: "sweeps", page: "peers", args: ["peers"], expect: /^collide\s+FAIL[\s\S]*^textsize\s+ok/m,
+   defect: "bars through their axis, through the combined sweep: collide fails, textsize does not",
+   inject: s => s.replace("</head>", "<style>.chart svg rect{transform:translateY(30px)}</style></head>")},
 
   {gate: "caveat", page: "realwage", args: ["realwage"],
    defect: "apparatus growing back under a chart on a page that had paid its budget off",
@@ -677,6 +689,13 @@ const CASES = [
 ];
 
 const only = process.argv.slice(2).filter(a => !a.startsWith("--"));
+/* --list prints the fixtures as JSON and runs nothing: tools/all.mjs reads it to pick the
+   fixtures a change can affect (a gate's code, a fixture's page or file). */
+if (process.argv.includes("--list")) {
+  console.log(JSON.stringify(CASES.map(c => ({gate: c.gate, page: c.page, file: c.file || null,
+    command: c.command || "node", args: c.args, prepare: c.prepare || null}))));
+  process.exit(0);
+}
 /* A gate that reads a derived file (nouns reads the text tools/pagetext.mjs dumps from the
    bundle) needs it re-derived from whatever the bundle holds before each run, and once more
    after the restore so the clean bundle is not left with the injected page's text. */
@@ -695,7 +714,8 @@ const run = c => {
 
 let trusted = 0, broken = [];
 for (const c of CASES) {
-  if (only.length && !only.includes(c.gate)) continue;
+  /* a name picks a gate's fixtures; gate/page picks that gate's fixtures on one page */
+  if (only.length && !only.includes(c.gate) && !only.includes(`${c.gate}/${c.page}`)) continue;
   const f = c.file || `dist/${c.page}.html`;
   if (!existsSync(f)) { console.log(`SKIP  ${c.gate} — ${f} missing, run bundle first`); continue; }
   const backupDir = c.file ? mkdtempSync(join(tmpdir(), "evidence-room-selftest-")) : null;

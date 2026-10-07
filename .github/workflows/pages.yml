@@ -1,4 +1,4 @@
-# Verify on every push and pull request; deploy to GitHub Pages only from main.
+# Verify and deploy. Verify runs on every push and pull request; deploy only from main.
 #
 # The repo IS the site: each artifact folder serves as a page (index.html + app.js +
 # data/), sharing _shared/ and _data/SOURCES.json exactly as they do in development.
@@ -8,6 +8,26 @@
 # pull requests too, so a contributor sees the failure before a maintainer does. dist/ is
 # not committed — a committed dist was a standing leak vector — so bundles are rebuilt
 # here for exactly what is in the repo, then gated, then uploaded.
+#
+# THE SUITE RUNS AS PARALLEL SLICES of one command (tools/all.mjs --part / --shard): the
+# site-wide gates, the page gates split into page shards, and the gate self-tests. Each
+# slice is one job; `verify` is the aggregate, the one check a branch rule should require,
+# and the only job deploy depends on. A slice's own "SUITE PASSED" covers that slice only.
+#
+# What each event runs:
+#   pull_request   --fast, page gates scoped to the pages the PR changed (--changed against
+#                  its base; anything shared puts every page back), self-tests for the gates
+#                  and fixtures the PR touched.
+#   push to main   --fast on every page, as before.
+#   schedule and   the full suite: both 14-width sweeps and every self-test, every page.
+#   dispatch
+#
+# A PUSH TO MAIN SKIPS THE GATES ONLY IF ITS TREE ALREADY PASSED. A passing pull-request
+# run records the tree it checked (the test merge, refs/pull/N/merge) as an artifact named
+# verified-tree-<tree sha>. When main's new commit has exactly that tree, the same files
+# were already gated, and plan says skip; verify then goes straight to the Pages upload.
+# It trusts only a completed, successful pull_request run of this workflow from a branch
+# of this repository. Anything else, including any API error, runs the gates.
 
 name: Verify and deploy
 
@@ -30,48 +50,178 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  verify:
+  # Decides what this event runs, once, so every slice runs the same suite.
+  plan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read      # to find a pull-request run that already verified this tree
+    outputs:
+      args: ${{ steps.mode.outputs.args }}
+      selftest: ${{ steps.mode.outputs.selftest }}
+      tree: ${{ steps.mode.outputs.tree }}
+      skip: ${{ steps.dup.outputs.skip }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: mode
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          case "$EVENT" in
+            pull_request) args="--fast --changed=origin/$BASE_REF"; selftest=true ;;
+            push)         args="--fast";                            selftest=false ;;
+            *)            args="";                                  selftest=true ;;
+          esac
+          {
+            echo "tree=$(git rev-parse 'HEAD^{tree}')"
+            echo "args=$args"
+            echo "selftest=$selftest"
+          } >> "$GITHUB_OUTPUT"
+          echo "suite arguments: ${args:-(full suite)}; self-tests: $selftest"
+      - id: dup
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TREE: ${{ steps.mode.outputs.tree }}
+        run: |
+          skip=false
+          if ids=$(gh api "repos/$REPO/actions/artifacts?name=verified-tree-$TREE&per_page=100" \
+                     --jq '.artifacts[] | select(.expired == false) | .workflow_run.id'); then
+            for id in $ids; do
+              run=$(gh api "repos/$REPO/actions/runs/$id" \
+                      --jq '[.event, .status, .conclusion, .path, .head_repository.full_name, .html_url] | @tsv') || continue
+              IFS=$'\t' read -r event status conclusion path head url <<< "$run"
+              if [ "$event" = pull_request ] && [ "$status" = completed ] && [ "$conclusion" = success ] &&
+                 [ "$path" = .github/workflows/pages.yml ] && [ "$head" = "$REPO" ]; then
+                skip=true
+                echo "tree $TREE already passed verify in $url"
+                break
+              fi
+              echo "run $id does not qualify: $run"
+            done
+          else
+            echo "could not list artifacts; running the gates"
+          fi
+          [ "$skip" = true ] || echo "no qualifying pull-request run verified tree $TREE; running the gates"
+          echo "skip=$skip" >> "$GITHUB_OUTPUT"
+
+  gates:
+    needs: plan
+    if: needs.plan.outputs.skip != 'true'
+    name: gates (${{ matrix.part }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - part: site
+          - {part: pages, shard: 1/3}
+          - {part: pages, shard: 2/3}
+          - {part: pages, shard: 3/3}
+          - part: selftest
     runs-on: ubuntu-latest
     steps:
       # Full history: _data/build/stamp_cite.py dates each page from git, and a shallow clone
-      # would date every page to the one commit it can see.
+      # would date every page to the one commit it can see. --changed also needs the base
+      # branch, which a full fetch brings.
       - uses: actions/checkout@v4
+        if: matrix.part != 'selftest' || needs.plan.outputs.selftest == 'true'
         with:
           fetch-depth: 0   # verify_consistency reads headline dates from git history
       - uses: actions/setup-node@v4
+        if: matrix.part != 'selftest' || needs.plan.outputs.selftest == 'true'
         with:
           node-version: 22
           cache: npm
       - uses: actions/setup-python@v5
+        if: matrix.part != 'selftest' || needs.plan.outputs.selftest == 'true'
         with:
           python-version: "3.12"
       # `npm ci` installs playwright as a devDependency; the postinstall fetches the
       # chromium binary. --with-deps adds the Linux libraries chromium needs to launch.
       - name: Install
+        if: matrix.part != 'selftest' || needs.plan.outputs.selftest == 'true'
         run: |
           npm ci
           npx playwright install --with-deps chromium
-      # The fast run skips the two width sweeps and gate self-tests. Source regression
-      # tests are included. The runner rebuilds dist/ first and retains each gate's full
-      # output outside the site tree; a summarized console line is not the whole receipt.
-      #
-      # --fast prints "A --fast pass is not a clean bill" in its own verdict, and it is
-      # right: the sweeps are the checks that found sub-12px text on 14 of 16 pages and
-      # ~50 collisions. They run in the `full` job below rather than not at all.
-      - name: Gates (fast subset)
-        run: node tools/all.mjs --fast "--log-dir=${{ runner.temp }}/evidence-room-gates"
+      # The runner rebuilds dist/ first and retains each gate's full output outside the site
+      # tree; a summarized console line is not the whole receipt. --fast prints "A --fast
+      # pass is not a clean bill" in its own verdict, and it is right: the sweeps are the
+      # checks that found sub-12px text on 14 of 16 pages and ~50 collisions. They run on
+      # the schedule below rather than not at all.
+      - name: Gates
+        if: matrix.part != 'selftest' || needs.plan.outputs.selftest == 'true'
+        env:
+          ARGS: ${{ needs.plan.outputs.args }}
+          PART: ${{ matrix.part }}
+          SHARD: ${{ matrix.shard }}
+        run: |
+          # shellcheck disable=SC2086  # ARGS is a list of flags, split on purpose
+          node tools/all.mjs $ARGS "--part=$PART" ${SHARD:+"--shard=$SHARD"} \
+            "--log-dir=${{ runner.temp }}/evidence-room-gates"
+      - name: Self-tests not run
+        if: matrix.part == 'selftest' && needs.plan.outputs.selftest != 'true'
+        run: echo "Self-tests do not run on a push to main (they ran on the pull request and run weekly)."
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && (matrix.part != 'selftest' || needs.plan.outputs.selftest == 'true')
         with:
-          name: verify-gate-results
+          name: gate-results-${{ matrix.part }}${{ matrix.shard && format('-{0}', strategy.job-index) || '' }}
           path: ${{ runner.temp }}/evidence-room-gates
-      # The site is uploaded from this same checkout so deploy cannot ship anything
-      # verify did not see. dist/ rides along; the pages themselves are the folders.
-      # The citation record is generated, not committed: re-stamp it from git (fetch-depth: 0
-      # above) right before the upload, so the deployed dates are this commit's.
-      - name: Stamp page revision dates
+
+  # THE AGGREGATE. Passes only if every slice passed; this is the check to require and
+  # the job deploy waits on. On main it also builds the Pages upload, from a fresh checkout
+  # of the same commit, so deploy cannot ship anything the slices did not see.
+  verify:
+    needs: [plan, gates]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every slice passed, or this tree already did
+        env:
+          PLAN: ${{ needs.plan.result }}
+          GATES: ${{ needs.gates.result }}
+          SKIP: ${{ needs.plan.outputs.skip }}
+        run: |
+          echo "plan: $PLAN; gates: $GATES; already verified: ${SKIP:-false}"
+          [ "$PLAN" = success ] || { echo "::error::plan did not finish"; exit 1; }
+          [ "$GATES" = success ] && exit 0
+          [ "$GATES" = skipped ] && [ "$SKIP" = true ] && exit 0
+          echo "::error::a gate slice did not pass"; exit 1
+      # The receipt a later push to main looks for (see the header). Written only here,
+      # after every slice passed.
+      - name: Record the verified tree
+        if: github.event_name == 'pull_request'
+        env:
+          TREE: ${{ needs.plan.outputs.tree }}
+        run: echo "$TREE" > "${{ runner.temp }}/verified-tree"
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'pull_request'
+        with:
+          name: verified-tree-${{ needs.plan.outputs.tree }}
+          path: ${{ runner.temp }}/verified-tree
+          retention-days: 30
+      - uses: actions/checkout@v4
         if: github.event_name != 'pull_request'
-        run: python3 _data/build/stamp_cite.py
+        with:
+          fetch-depth: 0   # stamp_cite.py dates each page from git history
+      - uses: actions/setup-node@v4
+        if: github.event_name != 'pull_request'
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        if: github.event_name != 'pull_request'
+        with:
+          python-version: "3.12"
+      # The site is uploaded from this checkout. dist/ rides along; the pages themselves are
+      # the folders. bundle.mjs needs no packages. The citation record is generated, not
+      # committed: re-stamp it from git right before the upload, so the deployed dates are
+      # this commit's.
+      - name: Bundle and stamp page revision dates
+        if: github.event_name != 'pull_request'
+        run: |
+          node tools/bundle.mjs
+          python3 _data/build/stamp_cite.py
       - uses: actions/upload-pages-artifact@v3
         if: github.event_name != 'pull_request'
         with:
@@ -90,34 +240,3 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
-
-  # THE SLOW HALF, ON A SCHEDULE. The two 14-width sweeps plus the selftest that proves
-  # each gate still fails its own known defect. Never gated a push before; running them
-  # weekly is the difference between a check that exists and a check that runs.
-  full:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    steps:
-      # Full history: _data/build/stamp_cite.py dates each page from git, and a shallow clone
-      # would date every page to the one commit it can see.
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0   # verify_consistency reads headline dates from git history
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install
-        run: |
-          npm ci
-          npx playwright install --with-deps chromium
-      - name: Full suite
-        run: node tools/all.mjs "--log-dir=${{ runner.temp }}/evidence-room-gates"
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: full-gate-results
-          path: ${{ runner.temp }}/evidence-room-gates
