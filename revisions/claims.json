@@ -1,6 +1,19 @@
 {
+  "quote": {
+    "text": "Of 273 published months across three PPI series for US chemicals, plastics and rubber from 2019 to 2026, 259 were later revised, by a typical 0.15 percent, with 137 revised up and 121 down (ALFRED).",
+    "claims": ["rev-lean", "rev-counts", "rev-median"]
+  },
   "hero": "rev-counts",
   "data": "revisions.json",
+  "kicker": true,
+  "glossary": {
+    "terms": ["vintage", "ALFRED", "median"]
+  },
+  "plant": [
+    {"text": "If a contract escalator rides on one of these producer price indexes, plan on the first published month being revised: 259 of 273 months were later changed.", "claims": ["rev-counts"]},
+    {"text": "Budget for revisions that are small: the typical one is 0.15 percent, and the largest total revision on record is 1.41 percent.", "claims": ["rev-median", "rev-max"]},
+    {"text": "Check an index month again before you settle on it: in this archive, 250 of the 259 revised months saw their last change within four months of first publication.", "claims": ["rev-settle"]}
+  ],
   "claims": [
     {
       "id": "rev-share",
@@ -76,10 +89,11 @@
     {
       "id": "rev-lean",
       "text": "137 months were later revised up against 121 revised down, a split close enough to even that no direction shows in the first estimates (hero card, chart-2 subtitle, chart-2 arrow annotation, distribution lede).",
-      "source": "sign of the total change, first print to latest, per revised month; and a two-sided binomial test of that split against an even one",
+      "source": "sign of the total change, first print to latest, per revised month; and a two-sided binomial test of that split against an even one; three PPI series, reference months 2019–2026; ALFRED",
       "assert": "(lambda dn, up: (dn, up) == (121, 137) and (lambda n, k: sum(math.comb(n, i) for i in range(n + 1) if abs(i - n / 2) >= abs(k - n / 2)) / 2 ** n)(dn + up, up) > 0.05)(len([p for p in D['periods'] if p['pct'] is not None and p['pct'] < 0]), len([p for p in D['periods'] if p['pct'] is not None and p['pct'] > 0]))",
       "actual": "(lambda dn, up: (dn, up, (lambda n, k: sum(math.comb(n, i) for i in range(n + 1) if abs(i - n / 2) >= abs(k - n / 2)) / 2 ** n)(dn + up, up)))(len([p for p in D['periods'] if p['pct'] is not None and p['pct'] < 0]), len([p for p in D['periods'] if p['pct'] is not None and p['pct'] > 0]))",
-      "falsified_if": "Either count changes, or the split becomes lopsided enough that a fair coin would produce it less than one time in twenty, at which point 'close to an even split' is the wrong reading and the card, the chart annotation and the section lede all have to say so instead. Until 2026-08-28 those three surfaces asserted the opposite, that first estimates run slightly low: 137 of 258 is 53.1 percent, eight months from even against a standard deviation of 8.0, and a two-sided binomial test puts it at p = 0.35."
+      "falsified_if": "Either count changes, or the split becomes lopsided enough that a fair coin would produce it less than one time in twenty, at which point 'close to an even split' is the wrong reading and the card, the chart annotation and the section lede all have to say so instead. Until 2026-08-28 those three surfaces asserted the opposite, that first estimates run slightly low: 137 of 258 is 53.1 percent, eight months from even against a standard deviation of 8.0, and a two-sided binomial test puts it at p = 0.35.",
+      "scope": {"industry": "three PPI series", "place": "US", "period": "2019–2026", "source": "ALFRED"}
     },
     {
       "id": "rev-net-zero",

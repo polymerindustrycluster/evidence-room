@@ -1,11 +1,26 @@
 {
+ "kicker": true,
+ "quote": {
+  "text": "Among US polymer technician programs (polymer CIP codes) with more than ten lifetime completions, 20 of 73 reported a completion in 2023, or 27%, against 48% for polymer degrees and for six peer trades (IPEDS).",
+  "claims": ["prog-spine-hollowing"]
+ },
+ "glossary": {
+  "terms": ["IPEDS", "CIP", "completion", "median"],
+  "notes": {
+   "completion": "A program on this page is substantive if it recorded more than ten lifetime completions, and active if it reported one in the latest year."
+  }
+ },
+ "plant": [
+  {"text": "Before you count on a local polymer program for hires, check that it still confers: Ohio has held 22 substantive polymer programs, and 11 were still conferring in 2023.", "claims": ["prog-states-ohio"]},
+  {"text": "Expect most new polymer graduates from Akron to hold graduate degrees: of its 44 completions in the selected codes in 2023, 42 were master’s degrees or doctorates.", "claims": ["prog-ua-collapse"]}
+ ],
  "hero": "prog-spine-hollowing",
  "data": "viz-data.json",
  "claims": [
   {
    "id": "prog-spine-hollowing",
    "text": "Among substantive programs (more than ten lifetime completions), 20 of 73 polymer technician records were active in 2023 (27%), versus 37 of 77 degree records and 3,185 of 6,648 peer-trade records (48% each). Active means a reported completion in 2023. These shares do not establish closure or stability.",
-   "source": "polymer-programs-db census (IPEDS 1991-2023, 2020 quarantined) plus control_cips.json: same rule, same years, same certificate canonicalisation on both sides",
+   "source": "polymer-programs-db census (IPEDS 1991-2023, 2020 quarantined) plus control_cips.json: same rule, same years, same certificate canonicalisation on both sides; polymer CIP codes",
    "assert": "D['layers']['technician']['survive_pct'] == 27 and D['layers']['degree']['survive_pct'] == 48 and D['layers']['control']['survive_pct'] == 48 and D['layers']['technician']['survive_pct'] < D['layers']['control']['survive_pct'] and (D['layers']['technician']['still'], D['layers']['technician']['ever']) == (20, 73) and (D['layers']['degree']['still'], D['layers']['degree']['ever']) == (37, 77) and (D['layers']['control']['still'], D['layers']['control']['ever']) == (3185, 6648)",
    "actual": "{k: (v['still'], v['ever'], v['survive_pct']) for k, v in D['layers'].items() if isinstance(v, dict)}",
    "falsified_if": "Any named numerator or denominator changes, or the technician share ceases to be lower than either comparator. All three must retain the greater-than-ten threshold, positive final-year completion test, certificate canonicalisation and 2020 exclusion. These administrative-record shares do not establish a causal difference or stability.",
@@ -16,7 +31,8 @@
     {"figure": "20 reported a completion", "noun": "lifetime completions"},
     {"figure": "in 2023: 27%", "noun": "20 reported a completion"},
     {"figure": "each reached 48%", "noun": "six peer technician trades"}
-   ]
+   ],
+   "scope": {"industry": "polymer CIP codes", "place": "US", "period": "2023", "source": "IPEDS"}
   },
   {
    "id": "prog-series-shape",
@@ -29,14 +45,15 @@
   {
    "id": "prog-base-rate",
    "text": "Of 168 polymer technician records since 1991, 95 (57%) are small: ten or fewer recorded lifetime completions. 91 (54%) are brief: first-to-last reporting span of five years or less, inclusive. 75 (45%) satisfy both. These overlapping measures do not establish failed programs.",
-   "source": "polymer-programs-db census, associate and certificate levels, no size threshold, 2020 quarantined",
+   "source": "polymer-programs-db census, associate and certificate levels, no size threshold, 2020 quarantined; polymer CIP codes; IPEDS 1991–2023",
    "assert": "D['base']['ever'] == 168 and D['base']['le10_awards'] == 95 and D['base']['le5_years'] == 91 and D['base']['both'] == 75 and D['base']['both_pct'] == 45",
    "actual": "D['base']",
    "falsified_if": "Any named numerator or denominator changes under a source revision, certificate recode or recovered year. The small threshold includes exactly ten; brief measures inclusive calendar span, not count of positive years. Missing source years can change threshold membership and add records to the denominator, so the shares are not failure probabilities or guaranteed bounds on a complete census.",
    "counts": [
     {"figure": "all 168", "noun": "technician program"},
     {"figure": "Of 168", "noun": "polymer technician program"}
-   ]
+   ],
+   "scope": {"industry": "polymer CIP codes", "place": "US", "period": "1991–2023", "source": "IPEDS"}
   },
   {
    "id": "prog-base-rate-control",
@@ -73,7 +90,7 @@
   {
    "id": "prog-ua-collapse",
    "text": "Akron completions in the three selected polymer codes fell from 114 in 2016 to 44 in 2023 (61%). Graduate degrees supplied 42 of the 44: master's 16, doctorates 26. The bachelor's count was two, within a zero-to-three range across the reported 2016–2023 years; 2020 is missing. Master's degrees account for 50 of the 70-completion decline and doctorates 19.",
-   "source": "polymer-programs-db census, unitid 200800, 2020 quarantined",
+   "source": "polymer-programs-db census, unitid 200800, 2020 quarantined; polymer CIP codes; IPEDS",
    "assert": "D['ua']['recent']['2016'] == 114 and D['ua']['latest'] == 44 and D['ua']['pct_off'] == 61 and (D['ua']['masters_2016'], D['ua']['masters_2023']) == (66, 16) and (D['ua']['doctorate_2016'], D['ua']['doctorate_2023']) == (45, 26) and D['ua']['bachelor_2016_2023'] == [3, 1, 0, 3, None, 0, 0, 2] and D['ua']['bachelor_2016_2023'][-1] == 2",
    "actual": "D['ua']",
    "falsified_if": "A revision moves any year, or 2024 arrives. The 2020 slot is None and must stay None, never 0: a zero there would assert that the flagship graduated nobody that year, which the record does not say and this project cannot know.",
@@ -82,7 +99,8 @@
     {"figure": "to 44 in 2023", "noun": "completion"},
     {"figure": "16", "noun": "master"},
     {"figure": "26", "noun": "doctorate"}
-   ]
+   ],
+   "scope": {"industry": "polymer CIP codes", "place": "Akron", "period": "2016–2023", "source": "IPEDS"}
   },
   {
    "id": "prog-states-ohio",

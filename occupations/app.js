@@ -171,7 +171,7 @@ const setters = MIX.find(m => m.soc === "51-4072");
    are, and this card now says what 4.2% is a share OF. */
 const US = `<span class="scope">United States</span>`;
 figures([
-  ["key", pct(setters.pct_of_industry), "of the industry’s jobs", `${US}are molding-machine setters, one job in ${WORDS[Math.round(100 / setters.pct_of_industry)]}, 2024. It is the industry’s largest occupation in the published national mix`],
+  ["key", pct(setters.pct_of_industry), "of the industry’s jobs", `${US}are molding-machine setters, one job in ${WORDS[Math.round(100 / setters.pct_of_industry)]}, 2024. It is the industry’s largest occupation in the published national mix`, {scope: "occ-hero-figures"}],
   ["", pct(setters.pct_of_occupation, 0), "of the nation’s molding-machine setters", `${US}work in plastics and rubber manufacturing, counted across the country. This share describes employment, not competition to hire`],
   ["", N(D.mix_totals.industry_emp_2024_k * 1000), "jobs in the industry", `${US}in 2024, and the base the ${pct(setters.pct_of_industry)} and ${pct(D.mix_totals.eng_sci_share_pct)} are cut from`],
   ["", pct(D.mix_totals.eng_sci_share_pct), "engineers, scientists, technicians", `${US}a small share of the national industry total`],

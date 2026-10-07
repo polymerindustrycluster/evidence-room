@@ -68,6 +68,13 @@ is a bounded search result, not a statement that no archive holds one.
 
 `tools/bundle.mjs` embeds the images for standalone viewing.
 
+## W4 reader furniture, 2026-10-07
+
+The eyebrow is now the hub's question, "Why is the cluster here?" (DECISIONS.md, W4). No hero
+card carries a scope chip, and so the page has no `quote` yet: the four cards are the same
+height, so any chip would push the first chart 19px past its cold-open ceiling. claims.json
+carries the "Words on this page" `glossary` and two "If you run a plant here" items.
+
 ## Run it locally
 
 `fetch()` cannot read the JSON over `file://`, so serve the folder:

@@ -22,13 +22,13 @@ figures([
   ["key", Math.round((1 - LAST.us_inv / BASE.us_inv) * 100) + "%",
    "fall in American polymer filings since 2015",
    "while American patenting overall fell " +
-     Math.round((1 - LAST.us_inv_all / BASE.us_inv_all) * 100) + "%"],
+     Math.round((1 - LAST.us_inv_all / BASE.us_inv_all) * 100) + "%", {scope: "pat-two-by-two"}],
   ["", N(LAST.ohio), "polymer applications filed from Ohio, 2023",
    Math.round((1 - LAST.ohio / BASE.ohio) * 100) +
-     "% below 2015, in step with American polymer filings"],
+     "% below 2015, in step with American polymer filings", {scope: "pat-hero-fall"}],
   ["", (BASE.ohio / BASE.us_inv * 100).toFixed(1) + "% → " +
        (LAST.ohio / LAST.us_inv * 100).toFixed(1) + "%",
-   "Ohio’s share of American polymer filings", "held near one in ten"],
+   "Ohio’s share of American polymer filings", "held near one in ten", {scope: "pat-share-held"}],
 ]);
 
 /* ------------------------------------------------- chart 1: the three lines */

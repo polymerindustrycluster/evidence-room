@@ -1,4 +1,12 @@
 {
+ "kicker": true,
+ "glossary": {
+  "terms": ["Tech Hub"]
+ },
+ "plant": [
+  {"text": "There is more public cluster activity to take part in than before the designation: the record holds 66 delivered events in the 34 months since October 2023, against 4 in the 34 months before.", "claims": ["tl-cadence-before-after"]},
+  {"text": "The pilot facility’s readiness target is one of 18 scheduled dates on the record, not a delivered event, so check its status before you plan work around it.", "claims": ["tl-sched-split"]}
+ ],
  "hero": "tl-cadence-before-after",
  "data": {
   "h": "heritage.json",

@@ -98,6 +98,58 @@
   {
    "term": "fiscal year",
    "short": "The federal fiscal year runs from October to September and is named for the calendar year in which it ends."
+  },
+  {
+   "term": "National Employment Matrix",
+   "short": "The National Employment Matrix is the BLS Employment Projections table of how many people each occupation employs in each industry, for the country as a whole."
+  },
+  {
+   "term": "O*NET",
+   "short": "O*NET is the Labor Department’s occupational database, which describes each occupation, including the education its workers report it requires."
+  },
+  {
+   "term": "IPEDS",
+   "short": "IPEDS, the Integrated Postsecondary Education Data System, is the federal record of the degrees and certificates each college reports conferring."
+  },
+  {
+   "term": "CIP",
+   "short": "CIP, the Classification of Instructional Programs, is the federal code a college files each program under; teaching filed under another code is missing from a count by code."
+  },
+  {
+   "term": "completion",
+   "short": "A completion is one degree or certificate a college reports conferring."
+  },
+  {
+   "term": "median",
+   "short": "The median is the middle value: half the figures sit above it and half below."
+  },
+  {
+   "term": "vintage",
+   "short": "A vintage is one published version of a figure, dated the day it was released; each revision adds a vintage."
+  },
+  {
+   "term": "ALFRED",
+   "short": "ALFRED is the archival vintage record behind FRED, the St. Louis Fed’s data service: it keeps every version of a series ever published."
+  },
+  {
+   "term": "Tech Hub",
+   "short": "A Tech Hub is a region designated by the US Economic Development Administration under its Regional Technology and Innovation Hubs program."
+  },
+  {
+   "term": "CPC",
+   "short": "CPC, the Cooperative Patent Classification, is the international system that files every patent by subject; this site counts class C08, organic macromolecular compounds, as polymer."
+  },
+  {
+   "term": "unitid",
+   "short": "A unitid is the federal identifier IPEDS gives each institution record; one school can hold more than one."
+  },
+  {
+   "term": "FIPS",
+   "short": "A FIPS code is the five-digit federal code for a county: two digits for the state and three for the county."
+  },
+  {
+   "term": "endpoint",
+   "short": "An endpoint is the web address a dataset is fetched from."
   }
  ]
 }

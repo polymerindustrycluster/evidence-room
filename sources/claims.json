@@ -1,4 +1,16 @@
 {
+ "quote": {
+  "text": "Adding every NAICS 325 and 326 code the PIC-12 pay table publishes for 2025 counts 20,846 jobs twice, because each part code sits inside a family code (BLS QCEW, 2025 annual average).",
+  "claims": ["src-double-count"]
+ },
+ "kicker": true,
+ "glossary": {
+  "terms": ["endpoint", "QCEW", "NAICS 326", "NAICS 325", "PIC-12", "FIPS", "private ownership", "annual average", "withheld", "cell", "establishment", "concentration"]
+ },
+ "plant": [
+  {"text": "If you total plastics, rubber and chemical jobs from a BLS county table yourself, add only the family codes: adding every code the pay page publishes counts 20,846 jobs twice.", "claims": ["src-double-count"]},
+  {"text": "Check the job base under any concentration figure for your county before you quote it: the site’s largest reading, Geauga County resin at 22.7 times the national share, rests on 491 jobs.", "claims": ["src-lq-fragile"]}
+ ],
  "hero": "src-lq-basis",
  "data": "registry.json",
  "claims": [
@@ -37,7 +49,7 @@
   {
    "id": "src-double-count",
    "text": "Adding every industry code the pay page publishes gives 54,375 jobs; the two family codes alone hold 33,529, so 20,846 jobs are in the table twice. Every part code sits inside a family code, and the two are not the same thing as a family being exhausted by its parts: 9,497 of chemical manufacturing is never split out at this level (the third hero card, the double-count chart and its overhang annotation, the chart source line, the recipe's step-one warning).",
-   "source": "wages/data/wages.json latest_rows, 2025 annual averages, twelve counties",
+   "source": "wages/data/wages.json latest_rows, 2025 annual averages, twelve counties; NAICS 325 and 326; BLS QCEW",
    "assert": "(lambda C, F, P: D['doublecount']['column_sum'] == 54375 and D['doublecount']['once_counted'] == 33529 and D['doublecount']['doubled'] == 20846 and D['doublecount']['column_sum'] - D['doublecount']['once_counted'] == D['doublecount']['doubled'] and sum(c['emp'] for c in P) == D['doublecount']['doubled'] and sum(c['emp'] for c in F) == D['doublecount']['once_counted'] and D['doublecount']['unsplit_chemistry'] == 9497 and all(c['parent'] in [f['code'] for f in F] for c in P) and len(F) == 2 and len(P) == 4)(D['codes'], [c for c in D['codes'] if c['level'] == 'family'], [c for c in D['codes'] if c['level'] == 'part'])",
    "actual": "(D['doublecount']['column_sum'], D['doublecount']['once_counted'], D['doublecount']['doubled'])",
    "falsified_if": "The pay page refetches and any of the three totals moves, or a part code stops nesting inside a family code in this site's own code list. The identity in the middle is the load-bearing clause: the overhang drawn on the chart is column minus once-counted, and it is separately asserted to equal the sum of the four part rows, so the chart cannot draw an overhang that is not the duplication it claims to be.",
@@ -45,7 +57,8 @@
     {"figure": "54,375", "noun": "every industry code"},
     {"figure": "20,846", "noun": "appear twice"},
     {"figure": "alone hold 33,529", "noun": "two family codes"}
-   ]
+   ],
+   "scope": {"industry": "NAICS 325 and 326", "place": "PIC-12", "period": "2025 annual avg", "source": "BLS QCEW"}
   },
   {
    "id": "src-lq-worked",

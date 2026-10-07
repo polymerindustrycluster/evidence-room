@@ -208,7 +208,7 @@ const realStates = D.states_list.filter(s => s.state !== "DC" && s.state !== "PR
 figures([
   ["key", N(T.ever), "institution records, ever",
    `one federal institution identifier per record. Some schools have more than one;
-    teaching reported under other subject headings is missing.`],
+    teaching reported under other subject headings is missing.`, {scope: "atlas-counts"}],
   /* THE GUARD-RAIL USED TO SAY SOMETHING FALSE. "It is not the survivors of the 147" was
      written to stop a reader computing 41/147, and it stopped them by denying set
      membership: all 41 of these institutions ARE among the 147, and a reader who checks
@@ -219,10 +219,10 @@ figures([
    `a single year’s count, taken from the same ${N(T.ever)}. Dividing the two is not a
     survival rate: the denominator is a 33-year union that counts colleges shut for
     decades, and survival on this record is measured program by program and above a size
-    threshold, which is a different page. This one never divides one by the other.`],
+    threshold, which is a different page. This one never divides one by the other.`, {scope: "atlas-counts"}],
   ["", N(T.states), "states and territories",
    `${realStates} states, plus the District of Columbia and Puerto Rico. ${solo} of the
-    ${N(T.states)} hold exactly one institution record.`],
+    ${N(T.states)} hold exactly one institution record.`, {scope: "atlas-counts"}],
   ["", String(D.invisible.length), "documented teaching outside this record",
    `polymer or materials teaching absent from this selected census. The hollow
     diamonds are four documented examples, not an exhaustive list.`],
