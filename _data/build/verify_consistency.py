@@ -1085,9 +1085,10 @@ def check_reader_furniture(arts: list[str]) -> None:
     7 October 2026). Each piece is opt-in per page; once a page opts in, a missing or
     inconsistent piece is an ERROR here (data) or in tools/disclosure.mjs (rendered).
 
-      [scope]     a claim's scope has industry, place, period and source; the period's
-                  year is in the claim's own sentence, and the industry and source are in
-                  its `source` field, so a chip cannot name a scope its claim does not.
+      [scope]     a claim's scope has industry, place, period and source; every year in the
+                  period is in the claim's own sentence or its `source` field, and the
+                  industry and source are in its `source` field, so a chip cannot name a
+                  scope its claim does not.
       [quote]     claims.json `quote` is one sentence; it names auto-checked claims; every
                   number in it is in one of those claims' sentences or scope; and it
                   carries the scope (place, industry, year, source) of a scoped claim it
@@ -1144,9 +1145,14 @@ def check_reader_furniture(arts: list[str]) -> None:
                 continue
             if c.get("verify") == "manual":
                 err("scope", f"{a}:{c['id']}", "a scope chip may only sit on an automatically checked claim")
-            y = YEAR.search(sc["period"])
-            if not y or y.group(0) not in c.get("text", ""):
-                err("scope", f"{a}:{c['id']}", f"scope period {sc['period']!r} names no year the claim's sentence states")
+            # every year the chip prints is one the claim's sentence states or its source
+            # field names (the vintage of the file it re-reads), so a chip cannot date a
+            # figure its claim does not
+            years = [m.group(0) for m in YEAR.finditer(sc["period"])]
+            said = c.get("text", "") + " " + c.get("source", "")
+            if not years or any(y not in said for y in years):
+                err("scope", f"{a}:{c['id']}", f"scope period {sc['period']!r} names a year neither the claim's "
+                    "sentence nor its source field states")
             for k in ("industry", "source"):
                 if sc[k].lower() not in c.get("source", "").lower():
                     err("scope", f"{a}:{c['id']}", f"scope {k} {sc[k]!r} is not in the claim's source field")

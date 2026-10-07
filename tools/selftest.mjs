@@ -768,6 +768,12 @@ const CASES = [
    defect: "an If you run a plant here sentence bound to a claim id that does not exist",
    inject: s => s.replace('"claims": ["metro-visibility"]', '"claims": ["metro-visibilty"]')},
 
+  {gate: "consistency", page: "peers", file: "peers/claims.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[scope\] peers:oh-rank-1\s+scope period '2023 annual avg' names a year neither/,
+   defect: "a scope chip dating its figure to a year its claim never states",
+   inject: s => s.replace('"period": "2024 annual avg"', '"period": "2023 annual avg"')},
+
   {gate: "disclosure", page: "peers", args: ["peers"],
    expect: /claims\.json declares If you run a plant here and 0 such boxes render/,
    defect: "a declared If you run a plant here box missing from the page",
