@@ -728,7 +728,10 @@ const CASES = [
   {gate: "disclosure", page: "peers", args: ["peers"],
    expect: /declares a glossary and 0 Words on this page blocks render/,
    defect: "a page that declares its words losing the block that defines them",
-   inject: s => s.replace('await wordsOnPage(claims, document.querySelector(".pv-breaks-all") || sec);', "")},
+   /* the static block and the script's fallback both, as a page that never ran render_static.py
+      and lost the call would ship */
+   inject: s => s.replace(/<details class="pv-words">[\s\S]*?<\/details>/, "")
+                 .replace('await wordsOnPage(claims, document.querySelector(".pv-breaks-all") || sec);', "")},
 
   {gate: "disclosure", page: "peers", args: ["peers"],
    expect: /its total 18,594 is in the job-count table and the page has no link to it/,
@@ -738,7 +741,27 @@ const CASES = [
   {gate: "disclosure", page: "index", args: ["index"],
    expect: /job-count table differs from _data\/jobcounts\.json: 17,707/,
    defect: "the hub's job-count table rendering a total its data file does not hold",
-   inject: s => s.replace(/(data-pv-file="jobcounts\.json">[\s\S]*?"total": ")17,770/, "$117,707")},
+   inject: s => s.replace('<th scope="row">17,770</th>', '<th scope="row">17,707</th>')},
+
+  /* PR #54 review: the furniture must survive without scripting, and an opened disclosure
+     must not widen a phone page. */
+  {gate: "consistency", page: "peers", file: "peers/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[static\] peers\s+the static words region is empty/,
+   defect: "a Words on this page block left to the script, so a reader without scripting gets " +
+           "an empty mount where the glossary was (PR #54 as first pushed)",
+   inject: s => s.replace(/(<!-- pv:static words -->)[\s\S]*?(<!-- \/pv:static -->)/, "$1\n    $2")},
+
+  {gate: "consistency", page: "index", file: "index/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[static\] index\s+the static jobcounts region is stale/,
+   defect: "the hub's static job-count table edited by hand away from _data/jobcounts.json",
+   inject: s => s.replace('<th scope="row">18,594</th>', '<th scope="row">18,549</th>')},
+
+  {gate: "verify", page: "index", args: ["index"], expect: /(390|360):overflow-open/,
+   defect: "the job-count table, opened on a phone, widening the whole page past the viewport " +
+           "while the closed-disclosure pass stayed clean (394px at 360 and 390, PR #54)",
+   inject: s => s.replace(".pv-jobcounts-scroll{overflow-x:auto;max-width:100%}", "")},
 
   {gate: "style", page: "peers", args: ["peers"], expect: /scope-chip-form/,
    defect: "a scope chip set as a comma list rather than the house industry · place · period · source form",

@@ -117,6 +117,34 @@ async function pixelContrast(page) {
   }, {pre, seen, bare});
 }
 
+/* OVERFLOW WITH EVERY DISCLOSURE OPEN (PR #54 review, 7 October 2026). The pass above skips
+   content inside a closed <details>, rightly: it is not on screen. But a reader opens them,
+   and the hub's job-count table, inside a closed key, widened the whole document to 394px at
+   360 and 390 the moment it was opened while this gate passed. So each page is measured a
+   second time with every <details> opened, at 1440, 390 and 360. Contained overflow (an
+   ancestor that scrolls or clips) is still not overflow. */
+async function openOverflow(page) {
+  await page.evaluate(() => document.querySelectorAll("details").forEach(d => { d.open = true; }));
+  await page.waitForTimeout(150);
+  return page.evaluate(() => {
+    const vw = document.documentElement.clientWidth;
+    let over = 0, who = "";
+    document.querySelectorAll("body *").forEach(e => {
+      if (!e.getClientRects().length) return;
+      const cs = getComputedStyle(e);
+      if (cs.visibility === "hidden" || cs.display === "none") return;
+      for (let p = e.parentElement; p && p !== document.body; p = p.parentElement) {
+        const x = getComputedStyle(p).overflowX;
+        if (x === "auto" || x === "hidden" || x === "scroll") return;
+      }
+      const o = Math.round(e.getBoundingClientRect().right) - vw;
+      if (o > over) { over = o; who = e.tagName.toLowerCase() + (e.className ? "." + String(e.className).split(" ")[0] : ""); }
+    });
+    const doc = document.documentElement.scrollWidth - vw;
+    return doc > over ? {over: doc, who: "text past its box"} : {over, who};
+  });
+}
+
 const browser = await launch();
 let bad = 0;
 for (const name of names) {
@@ -246,6 +274,16 @@ for (const name of names) {
     if (pc.bad.length) out.push(`${tag}:contrast-rendered ${pc.bad.length} under AA: ${pc.bad.slice(0, 3).join(", ")}`);
     if (pc.unmeasured.length) out.push(`${tag}:contrast-rendered UNMEASURED ${pc.unmeasured.slice(0, 3).join(", ")}`);
     if (tag === "1440") out.push(`svg=${r.svgs} tables=${r.tables} hero-text=${r.contrast.n} hero-text-rendered=${pc.n}`);
+    const oo = await openOverflow(page);
+    if (oo.over > 1) out.push(`${tag}:overflow-open ${oo.over}px (${oo.who}) with every disclosure open`);
+    await page.close();
+  }
+  {
+    const page = await browser.newPage({viewport: {width: 360, height: 800}});
+    await page.goto(`file:///${file.replace(/\\/g, "/")}`);
+    await page.waitForTimeout(900);
+    const oo = await openOverflow(page);
+    if (oo.over > 1) out.push(`360:overflow-open ${oo.over}px (${oo.who}) with every disclosure open`);
     await page.close();
   }
   {

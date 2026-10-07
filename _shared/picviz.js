@@ -765,20 +765,25 @@ const PV = (() => {
   }
   /* The hub's table, from _data/jobcounts.json. Rendered into `mount`, which carries the
      anchor id the story links point at. */
+  /* The page normally ships this table as static markup written by
+     _data/build/render_static.py (so it survives without scripting); then there is nothing
+     to do. The script draws it only into an empty mount, the same markup either way. */
   async function jobCounts(mount) {
     if (!mount) return null;
+    if (mount.querySelector("table.pv-jobcounts")) return mount;
     const J = await data("jobcounts.json");
     mount.id = JOBCOUNTS;
-    mount.innerHTML = `<table class="pv-jobcounts">
+    mount.innerHTML = `<div class="pv-jobcounts-scroll"><table class="pv-jobcounts">
       <caption>Why the job counts differ: five totals for the same twelve counties</caption>
       <thead><tr>${["Total", "Industry", "Year", "Source", "Story"].map(h =>
         `<th scope="col">${h}</th>`).join("")}</tr></thead>
       <tbody>${J.rows.map(r => `<tr><th scope="row">${r.total}</th><td>${r.industry}</td>
         <td>${r.year}</td><td>${r.source}</td><td><a href="../${r.story}/">${r.label}</a></td></tr>`).join("")}
-      </tbody></table>`;
+      </tbody></table></div>`;
     return mount;
   }
-  /* "Words on this page". Bolds the term where its own definition names it. */
+  /* "Words on this page". Bolds the term where its own definition names it. A page normally
+     ships the block as static markup (_data/build/render_static.py); then it returns at once. */
   async function wordsOnPage(spec, method) {
     const g = spec && spec.glossary;
     if (!g || !(g.terms || []).length || document.querySelector(".pv-words")) return null;
