@@ -10,7 +10,8 @@
 # here for exactly what is in the repo, then gated, then uploaded.
 #
 # THE SUITE RUNS AS PARALLEL SLICES of one command (tools/all.mjs --part / --shard): the
-# site-wide gates, the page gates split into page shards, and the gate self-tests. Each
+# site-wide gates, the page gates split into page shards, and the gate self-tests split into
+# four fixture shards (--shard cuts the selected fixtures, so --changed still applies). Each
 # slice is one job; `verify` is the aggregate, the one check a branch rule should require,
 # and the only job deploy depends on. A slice's own "SUITE PASSED" covers that slice only.
 #
@@ -119,7 +120,10 @@ jobs:
           - {part: pages, shard: 1/3}
           - {part: pages, shard: 2/3}
           - {part: pages, shard: 3/3}
-          - part: selftest
+          - {part: selftest, shard: 1/4}
+          - {part: selftest, shard: 2/4}
+          - {part: selftest, shard: 3/4}
+          - {part: selftest, shard: 4/4}
     runs-on: ubuntu-latest
     steps:
       # Full history: _data/build/stamp_cite.py dates each page from git, and a shallow clone

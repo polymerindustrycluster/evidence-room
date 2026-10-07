@@ -1,6 +1,6 @@
 /* DOES EACH GATE ACTUALLY CATCH THE DEFECT IT EXISTS FOR?
  *
- *   node tools/selftest.mjs [--list] [gate | gate/page ...]
+ *   node tools/selftest.mjs [--list] [--shard=K/N] [gate | gate/page ...]
  *
  * A green board is worth exactly as much as the gates behind it, and during the
  * 2026-08 rebuild six of this project's own checks turned out to be unable to fail on
@@ -822,10 +822,23 @@ const CASES = [
 ];
 
 const only = process.argv.slice(2).filter(a => !a.startsWith("--"));
+/* --shard=K/N runs the Kth of N slices of the fixtures the names above select (all of them
+   with no name). The split is deterministic: the selected fixtures in file order, dealt
+   round-robin, so the 40 style fixtures and the browser-heavy ones spread across shards
+   instead of landing in one. The union of the N shards is exactly the selection. */
+const shardArg = process.argv.slice(2).find(a => a.startsWith("--shard"));
+let shard = null;
+if (shardArg) {
+  const m = /^--shard=(\d+)\/(\d+)$/.exec(shardArg);
+  if (!m || +m[1] < 1 || +m[1] > +m[2]) { console.error("Usage: --shard=K/N with 1 <= K <= N"); process.exit(2); }
+  shard = {k: +m[1], n: +m[2]};
+}
+const selected = CASES.filter(c => !only.length || only.includes(c.gate) || only.includes(`${c.gate}/${c.page}`))
+  .filter((_, i) => !shard || i % shard.n === shard.k - 1);
 /* --list prints the fixtures as JSON and runs nothing: tools/all.mjs reads it to pick the
-   fixtures a change can affect (a gate's code, a fixture's page or file). */
+   fixtures a change can affect (a gate's code, a fixture's page or file), and to count a shard. */
 if (process.argv.includes("--list")) {
-  console.log(JSON.stringify(CASES.map(c => ({gate: c.gate, page: c.page, file: c.file || null,
+  console.log(JSON.stringify(selected.map(c => ({gate: c.gate, page: c.page, file: c.file || null,
     command: c.command || "node", args: c.args, prepare: c.prepare || null}))));
   process.exit(0);
 }
@@ -846,11 +859,12 @@ const run = c => {
 };
 
 let trusted = 0, broken = [];
-for (const c of CASES) {
-  /* a name picks a gate's fixtures; gate/page picks that gate's fixtures on one page */
-  if (only.length && !only.includes(c.gate) && !only.includes(`${c.gate}/${c.page}`)) continue;
+if (shard) console.log(`SHARD ${shard.k}/${shard.n}: ${selected.length} of ${CASES.length} fixtures`);
+/* a name picks a gate's fixtures; gate/page picks that gate's fixtures on one page */
+for (const c of selected) {
   const f = c.file || `dist/${c.page}.html`;
-  if (!existsSync(f)) { console.log(`SKIP  ${c.gate} — ${f} missing, run bundle first`); continue; }
+  /* a fixture that cannot run is not a fixture that passed: a missing file fails the run */
+  if (!existsSync(f)) { console.log(`BROKEN ${c.gate} — ${f} missing, run bundle first`); broken.push(c); continue; }
   const backupDir = c.file ? mkdtempSync(join(tmpdir(), "evidence-room-selftest-")) : null;
   const bak = backupDir ? join(backupDir, "original") : `${f}.selftest-backup`;
   const originalTimes = statSync(f);
