@@ -127,6 +127,8 @@ const git = (...a) => {
   return r.status === 0 ? r.stdout : null;
 };
 
+const CROSS_PAGES = new Set(["index", "sources", "corrections"]);
+
 function scopePages(ref, pages) {
   const all = {pages, why: null, files: {}};
   const base = git("merge-base", ref, "HEAD");
@@ -148,6 +150,10 @@ function scopePages(ref, pages) {
     const parts = f.split("/");
     if (parts.length === 1) { if (!NEUTRAL_ROOT.has(f)) site.push(f); continue; }
     const top = parts[0];
+    /* pages whose checks read other pages: the hub's cards are checked against each story's
+       own status and claims, and sources and the corrections log census every page. An edit to
+       one of them can break a check that runs on another page, so it counts as site-wide. */
+    if (CROSS_PAGES.has(top)) { site.push(f); continue; }
     if (pages.includes(top)) { credit(top, f); continue; }
     if (top === "_data" && parts[1] === "raw" && parts.length > 3 && pages.includes(parts[2])) {
       credit(parts[2], f); continue;
