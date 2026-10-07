@@ -3,9 +3,10 @@
   "data": "lq.json",
   "kicker": true,
   "quote": {
-    "text": "In 2025, paint, coating and adhesive manufacturing (NAICS 3255) held 5.96 times the national share of local jobs in the PIC-12 counties (BLS QCEW, annual average).",
+    "text": "In 2025, paint, coating and adhesive manufacturing (NAICS 3255) held at least 5.96 times the national share of local jobs across the twelve PIC-12 counties, a floor because only the 7 disclosed PIC-12 counties are counted and the bureau withholds paint in the other 5 (BLS QCEW, annual average).",
     "claims": [
-      "lq-paint-latest"
+      "lq-paint-latest",
+      "lq-paint-suppression"
     ]
   },
   "glossary": {
@@ -26,16 +27,18 @@
   },
   "plant": [
     {
-      "text": "If you make paint or coatings, you compete for staff in a concentrated local industry: paint, coating and adhesive runs 5.96× the national share of local jobs, and Cuyahoga holds 76 percent of the paint jobs the bureau publishes.",
+      "text": "If you make paint or coatings, you compete for staff in a concentrated local industry: paint, coating and adhesive runs at least 5.96× the national share of local jobs, a floor that counts only the 7 disclosed counties, and Cuyahoga holds 76 percent of the paint jobs the bureau publishes.",
       "claims": [
         "lq-paint-latest",
-        "lq-cuyahoga-paint"
+        "lq-cuyahoga-paint",
+        "lq-paint-suppression"
       ]
     },
     {
-      "text": "If you run a rubber plant, your industry is a bigger part of the local job base than it is nationally: rubber products, the industry Akron is named for, runs 2.44× the national share of local jobs.",
+      "text": "If you run a rubber plant, your industry is a bigger part of the local job base than it is nationally: rubber products, the industry Akron is named for, runs at least 2.44× the national share of local jobs, a floor because the bureau withholds some counties’ rubber jobs.",
       "claims": [
-        "lq-rubber-latest"
+        "lq-rubber-latest",
+        "lq-paint-suppression"
       ]
     },
     {
@@ -60,7 +63,7 @@
         {"figure": "5.96× its share", "noun": "of the country’s"},
         {"figure": "That 5.96× is summed", "noun": "across the seven counties"}
       ],
-      "scope": {"industry": "NAICS 3255", "place": "PIC-12", "period": "2025 annual avg", "source": "BLS QCEW"}
+      "scope": {"industry": "NAICS 3255", "place": "7 disclosed PIC-12 counties", "period": "2025", "source": "BLS QCEW"}
     },
     {
       "id": "lq-paint-leads-every-year",
@@ -88,7 +91,7 @@
       "counts": [
         {"figure": "2.44× of rubber products", "noun": "more than double the"}
       ],
-      "scope": {"industry": "NAICS 3262", "place": "PIC-12", "period": "2025 annual avg", "source": "BLS QCEW"}
+      "scope": {"industry": "NAICS 3262", "place": "disclosed PIC-12 counties", "period": "2025", "source": "BLS QCEW"}
     },
     {
       "id": "lq-paint-beats-rubber",
