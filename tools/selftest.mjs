@@ -705,9 +705,9 @@ const CASES = [
 
   {gate: "consistency", page: "peers", file: "peers/claims.json",
    command: "python3", args: ["_data/build/verify_consistency.py"],
-   expect: /\[glossary\] peers\s+the page uses 'location quotient', which _data\/glossary.json does not define/,
+   expect: /\[glossary\] peers\s+the page uses 'shift-share', which _data\/glossary.json does not define/,
    defect: "a page declaring a glossary term the shared definitions file does not hold",
-   inject: s => s.replace('"terms": ["QCEW", ', '"terms": ["QCEW", "location quotient", ')},
+   inject: s => s.replace('"terms": ["QCEW", ', '"terms": ["QCEW", "shift-share", ')},
 
   {gate: "consistency", page: "index", file: "_data/jobcounts.json",
    command: "python3", args: ["_data/build/verify_consistency.py"],

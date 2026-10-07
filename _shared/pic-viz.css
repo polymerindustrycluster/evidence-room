@@ -615,9 +615,9 @@ th.pv-sortable[aria-sort="descending"]::after{content:" ↓";opacity:1;color:var
 .pv-words-mount,.pv-jobcounts-mount{display:block}
 /* "If you run a plant here" (PV.plantBox): a small box after the closer, at the measure. */
 .pv-plant-band{padding:34px 0}
-.pv-plant{max-width:var(--measure);margin:0 auto;border-left:3px solid var(--action);
-  padding:4px 0 4px 18px}
+.pv-plant{max-width:var(--measure);margin:0 auto}
+.pv-plant > *{max-width:var(--measure)}
 .pv-plant h2{margin:0 0 8px;font-size:13.5px;font-weight:800;letter-spacing:.09em;
   text-transform:uppercase;color:var(--text)}
-.pv-plant ul{margin:0;padding:0 0 0 18px}
+.pv-plant ul{margin:0;padding:2px 0 2px 34px;border-left:3px solid var(--action)}
 .pv-plant li{margin:0 0 .45em;font-size:16px;line-height:1.55;color:var(--text)}

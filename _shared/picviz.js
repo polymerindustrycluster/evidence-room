@@ -835,7 +835,7 @@ const PV = (() => {
     const items = spec && spec.plant;
     if (!Array.isArray(items) || !items.length || document.querySelector(".pv-plant")) return null;
     const sec = document.createElement("section");
-    sec.className = "band pv-plant-band";
+    sec.className = "pv-plant-band";
     sec.innerHTML = `<div class="wrap"><aside class="pv-plant" aria-labelledby="pv-plant-h">
       <h2 id="pv-plant-h">If you run a plant here</h2>
       <ul>${items.map(i => `<li data-claims="${(i.claims || []).join(" ")}">${i.text}</li>`).join("")}</ul>

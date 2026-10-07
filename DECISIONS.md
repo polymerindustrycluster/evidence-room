@@ -6,6 +6,24 @@ product and domain decisions that a reader or rebuilder needs.
 
 ---
 
+## 2026-10-07 — W4 content: the short kicker, the plant box, and where a chip will not fit (Claude, for John's review)
+
+- **The hub card is the one source of each kicker.** Every card leads with a short question
+  (`<p class="kick">`, at most 40 characters) above its full question; the story's eyebrow and
+  any "Start with a question" link must read the same words (verify_consistency.py [kicker]).
+  Federal money's link now reads "How big is the Tech Hub award?".
+- **"If you run a plant here"** is claims.json `plant`, one to three sentences rendered after
+  the closer. Each names claims that exist on the page, and every figure in it must be stated
+  by an automatically checked claim it names ([plant]; disclosure holds the rendered box).
+- **A chip's year may come from its claim's source field**, and every year in the period counts:
+  a claim sentence often omits the vintage its file carries, and claim text was not to change.
+- **Where no chip fits, the scope says why.** Cluster health, federal money and timeline have no
+  cold-open headroom, and the quote rule needs a scoped claim, so a scope may carry `unchipped`
+  (the reason). It still binds the quote; disclosure prints the waiver on every run. No
+  ceiling was raised; several hero figures on full pages carry no chip (listed in the PR).
+- **The job-count link may sit after the passage that prints the total** where the total is not
+  a hero figure (churn, wages) or the hero row is full (cluster health).
+
 ## 2026-10-07 — W4 reader comprehension: what readers get, and the shared template behind it (John Swanson decided the features; mechanism by Claude)
 
 John's decisions, 7 October 2026:
