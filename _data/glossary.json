@@ -49,6 +49,14 @@
   {
    "term": "annual average",
    "short": "Annual averages are the twelve monthly counts averaged."
+  },
+  {
+   "term": "PIC-12",
+   "short": "PIC-12 is the Polymer Industry Cluster’s twelve Northeast Ohio counties: Ashtabula, Cuyahoga, Geauga, Lake, Lorain, Mahoning, Medina, Portage, Stark, Summit, Trumbull and Wayne."
+  },
+  {
+   "term": "NAICS 325",
+   "short": "NAICS 325 is the industry code for chemical manufacturing, which includes resin (3252) and paint and coatings (3255)."
   }
  ]
 }
