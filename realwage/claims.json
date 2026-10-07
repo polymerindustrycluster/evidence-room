@@ -2,13 +2,15 @@
   "hero": "rw-flip",
   "data": "realwage.json",
   "kicker": true,
+  "quote": {"text": "In 2024, Akron ranked 13th among 29 US metros with at least 2,000 NAICS 326 jobs on the average weekly wage and 8th once local prices are counted, where $1,291 a week buys like $1,383 (BLS QCEW and BEA RPP).", "claims": ["rw-flip", "rw-wage"]},
   "glossary": {"terms": ["QCEW", "NAICS 326", "withheld", "price level", "nominal"]},
   "plant": [{"text": "When you recruit from pricier metros, compare offers on what they buy: Akron’s average $1,291 a week buys like $1,383 at national-average prices.", "claims": ["rw-wage"]}, {"text": "Expect some metros to out-pay Akron even after local prices: Los Angeles pays $1,908 a week, which still buys like $1,680 against Akron’s $1,383.", "claims": ["rw-la"]}],
   "claims": [
     {
       "id": "rw-flip",
       "text": "Akron ranks 13th nominal and 8th price-adjusted among 29 matched metros with at least 2,000 jobs; across all 155 matched metros it ranks 60th and 48th. At 8th, Akron's adjusted wage sits less than $6 a week from either neighboring rank.",
-      "source": "BLS QCEW 2024 private NAICS326 by-industry file; BEA MARPP 2024, https://apps.bea.gov/regional/zip/MARPP.zip; archive footnotes and source-level checks in test_geography_checks.py",
+      "source": "BLS QCEW 2024 private NAICS326 by-industry file; BEA MARPP 2024, https://apps.bea.gov/regional/zip/MARPP.zip; archive footnotes and source-level checks in test_geography_checks.py; NAICS 326; BLS QCEW and BEA RPP",
+      "scope": {"industry": "NAICS 326", "place": "US metros", "period": "2024", "source": "BLS QCEW and BEA RPP"},
       "assert": "(lambda a, big: (a['big_rank_nominal'], a['big_rank_real'], a['big_climb'], a['rank_nominal'], a['rank_real']) == (13,8,5,60,48) and 0 < big[a['big_rank_real']-2]['real'] - a['real'] < 6 and 0 < a['real'] - big[a['big_rank_real']]['real'] < 6)(one(r for r in D['big'] if r['area']=='10420'), sorted(D['big'], key=lambda r: -r['real'])) and len(D['big'])==29 and len(D['metros'])==155 and D['meta']['big_floor']==2000",
       "falsified_if": "The rebuilt source values, geography, sample membership or named quantities differ, OR Akron's adjusted-wage gap to the metro ranked 7th or the one ranked 9th moves to zero, goes negative (the rank itself would have flipped) or reaches $6, at which point 'less than $6 a week' is no longer honest. Rewrite the associated sentence and correction before publication.",
       "breaks_if": "Revised 2024 wage or price figures move Akron’s ranks, or change which metros qualify.",
@@ -31,7 +33,8 @@
     {
       "id": "rw-wage",
       "text": "Akron averages $1,291 weekly, adjusted to $1,383 at national-average prices; its index is 93.4, about 7 percent below 100.",
-      "source": "BLS QCEW 2024 private NAICS326 by-industry file; BEA MARPP 2024, https://apps.bea.gov/regional/zip/MARPP.zip; archive footnotes and source-level checks in test_geography_checks.py",
+      "source": "BLS QCEW 2024 private NAICS326 by-industry file; BEA MARPP 2024, https://apps.bea.gov/regional/zip/MARPP.zip; archive footnotes and source-level checks in test_geography_checks.py; NAICS 326; BLS QCEW and BEA RPP",
+      "scope": {"industry": "NAICS 326", "place": "Akron metro", "period": "2024", "source": "BLS QCEW and BEA RPP"},
       "assert": "(lambda a: a['nominal']==1291 and tofixed(a['real'], 0) == '1383' and tofixed(a['rpp'], 1) == '93.4' and tofixed(100-a['rpp'], 0) == '7')(one(r for r in D['metros'] if r['area']=='10420'))",
       "falsified_if": "The rebuilt source values, geography, sample membership or named quantities differ. Rewrite the associated sentence and correction before publication.",
       "counts": [
@@ -67,7 +70,8 @@
     {
       "id": "rw-prices",
       "text": "61 of 155 matched metros have lower prices than Akron; median price index is 94.8.",
-      "source": "BLS QCEW 2024 private NAICS326 by-industry file; BEA MARPP 2024, https://apps.bea.gov/regional/zip/MARPP.zip; archive footnotes and source-level checks in test_geography_checks.py",
+      "source": "BLS QCEW 2024 private NAICS326 by-industry file; BEA MARPP 2024, https://apps.bea.gov/regional/zip/MARPP.zip; archive footnotes and source-level checks in test_geography_checks.py; NAICS 326; BLS QCEW and BEA RPP",
+      "scope": {"industry": "NAICS 326", "place": "US metros", "period": "2024", "source": "BLS QCEW and BEA RPP"},
       "assert": "(lambda M,a: len(M)==155 and sum(r['rpp']<a['rpp'] for r in M)==61 and tofixed(sorted(r['rpp'] for r in M)[len(M)//2], 1) == '94.8')(D['metros'],one(r for r in D['metros'] if r['area']=='10420'))",
       "falsified_if": "The rebuilt source values, geography, sample membership or named quantities differ. Rewrite the associated sentence and correction before publication.",
       "counts": [

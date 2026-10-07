@@ -180,9 +180,9 @@ figures([
   ["key", pct(summit.in_county), "Summit’s own residents",
    `of its ${N(summit.jobs_total)} jobs. Low, and normal for a metro county`],
   ["", pct(strong.in_county), "the highest",
-   `${strong.work_name}; no county reaches ${CEIL_PCT}%`],
+   `${strong.work_name}; no county reaches ${CEIL_PCT}%`, {scope: "ls-extremes"}],
   ["", pct(weak.in_county), "the lowest",
-   `${weak.work_name}; 7 in 10 live elsewhere`],
+   `${weak.work_name}; 7 in 10 live elsewhere`, {scope: "ls-extremes"}],
   ["", N(E["2022"].distant), "from distant metros",
    `already ${N(E["2019"].distant)} in 2019, before the pandemic`]
 ]);

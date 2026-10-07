@@ -403,7 +403,8 @@ routes. The 31 August text above is left as written.
 
 ## W4 reader furniture, 2026-10-07
 
-The eyebrow is the hub’s question, “Where did the awards go?”. No hero figure carries a scope
-chip and there is no quote: the claims behind the four stat cards state no year in their
-sentences, which a scope needs. The “Words on this page” block declares match. “If you run a
-plant here” carries one sentence, on `unrouted-split` and `company-facing-fourteen`.
+The eyebrow is the hub’s question, “Where did the awards go?”. The four stat cards carry scope
+chips from `hero-awards-match`, `total-secured` and `named-vs-awarded`, dated to the register’s
+13 August 2026 as-of date (meta.asOf), which their source fields now name. The how-we-checked
+box carries the `quote`. The “Words on this page” block declares match. “If you run a plant
+here” carries one sentence, on `unrouted-split` and `company-facing-fourteen`.

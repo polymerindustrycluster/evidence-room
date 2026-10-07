@@ -111,9 +111,9 @@ const pctf = v => (v * 100).toFixed(0) + "%";
 
 PV.figures([
   ["key", N(T.works), "polymer papers", `${D.meta.home.length} universities, 2015–2024`],
-  ["", N(T.partners_shown), "partner institutions", `across ${T.countries} countries; ${N(T.partners)} before ${N(T.quarantined)} flagged affiliation matches are set aside`],
-  ["", pctf(T.led_share), "corresponding author here", `at Akron or Case Western, on the ${N(T.attributable)} papers naming one; papers with no outside coauthor count too`],
-  ["", pctf(T.top10_share), "in their field’s top tenth", `field- and age-weighted citations, on the ${N(T.pct_n)} of ${N(T.works)} papers OpenAlex scores`]
+  ["", N(T.partners_shown), "partner institutions", `across ${T.countries} countries; ${N(T.partners)} before ${N(T.quarantined)} flagged affiliation matches are set aside`, {scope: "rch-partner-bases"}],
+  ["", pctf(T.led_share), "corresponding author here", `at Akron or Case Western, on the ${N(T.attributable)} papers naming one; papers with no outside coauthor count too`, {scope: "rch-region-leads"}],
+  ["", pctf(T.top10_share), "in their field’s top tenth", `field- and age-weighted citations, on the ${N(T.pct_n)} of ${N(T.works)} papers OpenAlex scores`, {scope: "rch-impact-top-decile"}]
 ]);
 
 /* --------------------------------------------------------------------- 1. the map */
