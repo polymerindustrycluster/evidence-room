@@ -52,6 +52,7 @@
    ]
   }
  ],
+ "quote": {"text": "Private plastics and rubber manufacturing jobs (NAICS 326) in the PIC-12 counties fell from 19,811 to 17,770 between 2022 and 2025, while establishments moved from 361 to 365 (BLS QCEW, annual averages).", "claims": ["workplaces-recent-contrast"]},
  "claims": [
   {
    "id": "pay-pairing-unit-and-register",
@@ -72,7 +73,8 @@
   {
    "id": "workplaces-recent-contrast",
    "text": "PIC-12 private NAICS 326 jobs fell from 19,811 to 17,770 between 2022 and 2025; annual-average establishments moved from 361 to 365. All 132 county-year cells are disclosed and complete.",
-   "source": "BLS QCEW annual by-area extract; workplaces.json source_cells and receipt hashes; derive_health.py --workplaces-only --source-dir PATH --check",
+   "source": "BLS QCEW annual by-area extract; workplaces.json source_cells and receipt hashes; derive_health.py --workplaces-only --source-dir PATH --check; NAICS 326",
+   "scope": {"industry": "NAICS 326", "place": "PIC-12", "period": "2022–2025 annual avg", "source": "BLS QCEW", "unchipped": "no cold-open headroom: the first chart sits at its ceiling, and a chip would add a line to the hero row above it"},
    "assert": "(lambda e: e['ownership'] == '5' and e['naics'] == '326' and len(e['source_cells']) == 132 and len(set((r['area'],r['year']) for r in e['source_cells'])) == 132 and all(len([r for r in e['source_cells'] if r['year']==y]) == 12 for y in range(2015,2026)) and [(r['jobs'],r['establishments']) for r in e['groups'][0]['series'] if r['year'] in (2022,2025)] == [(19811,361),(17770,365)] and all(r[k] == sum(c[k] for c in e['source_cells'] if c['year']==r['year']) for r in e['groups'][0]['series'] for k in ('jobs','establishments')) and tofixed(e['groups'][0]['windows'][0]['jobs_pct'], 1) == '-10.3' and tofixed(e['groups'][0]['windows'][0]['establishments_pct'], 1) == '1.1')(D['workplaces'])",
    "actual": "D['workplaces']['groups'][0]['windows'][0]",
    "falsified_if": "One source cell is missing, duplicated, or revised, or the headline endpoints change. The source-specific completeness tests reject withheld zeros and absent annual endpoints.",

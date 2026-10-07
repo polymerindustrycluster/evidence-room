@@ -774,6 +774,11 @@ const CASES = [
    defect: "a scope chip dating its figure to a year its claim never states",
    inject: s => s.replace('"period": "2024 annual avg"', '"period": "2023 annual avg"')},
 
+  {gate: "disclosure", page: "cluster-health", file: "cluster-health/claims.json", args: ["cluster-health"],
+   expect: /claim workplaces-recent-contrast carries a scope and no scope chip renders it/,
+   defect: "a scope with no chip and no stated reason, the unchipped waiver dropped",
+   inject: s => s.replace(/, "unchipped": "[^"]*"/, "")},
+
   {gate: "disclosure", page: "peers", args: ["peers"],
    expect: /claims\.json declares If you run a plant here and 0 such boxes render/,
    defect: "a declared If you run a plant here box missing from the page",

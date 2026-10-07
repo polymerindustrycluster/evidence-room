@@ -122,7 +122,8 @@ const list = names.length ? names
  * opt-in per page, declared in data; once declared, a missing or differing piece FAILS.
  *   scope chip   every claim carrying `scope` renders a chip inside a hero figure reading
  *                exactly "industry · place · period · source"; a chip naming a claim with
- *                no scope fails.
+ *                no scope fails. A scope with `unchipped` (why no chip fits) needs no chip;
+ *                the waiver prints as a note.
  *   quote this   claims.json `quote` renders, word for word, in the how-we-checked box
  *                directly above the cite line; a rendered quote nobody declared fails.
  *   words block  claims.json `glossary` renders one closed "Words on this page" block whose
@@ -224,7 +225,7 @@ for (const n of list) {
               a.nextElementSibling?.classList.contains("status-tag")
                 ? a.nextElementSibling.textContent.trim() : null])};
   });
-  const probs = [];
+  const probs = [], notes = [];
   /* THE CORRECTIONS LINE (DECISIONS.md D3; John, 2026-10-06): in the how-we-checked box,
      never in the byline row, counting the page's corrections since publication from
      _data/corrections_by_page.json and linking to its view of the log. A page with none
@@ -307,7 +308,11 @@ for (const n of list) {
     const scoped = Object.fromEntries(claims.filter(c => c.scope).map(c => [c.id, c.scope]));
     for (const [id, sc] of Object.entries(scoped)) {
       const got = w.scopes.filter(x => x[0] === id);
-      if (!got.length) probs.push(`claim ${id} carries a scope and no scope chip renders it`);
+      /* A scope may carry `unchipped`, the reason no chip fits (a page with no cold-open
+         headroom): it still scopes the page's quote, and the waiver prints on every run. */
+      if (!got.length && sc.unchipped) notes.push(`${id} scope unchipped: ${sc.unchipped}`);
+      else if (!got.length) probs.push(`claim ${id} carries a scope and no scope chip renders it`);
+      else if (sc.unchipped) probs.push(`claim ${id} declares its scope unchipped and a chip renders it`);
       for (const [, text, inFig] of got) {
         if (text !== scopeLine(sc)) probs.push(`scope chip reads "${text}", claim ${id} says "${scopeLine(sc)}"`);
         if (!inFig) probs.push(`scope chip for ${id} sits outside a headline figure`);
@@ -404,6 +409,7 @@ for (const n of list) {
   if (probs.length) bad++;
   console.log(`${n.padEnd(18)} ${probs.length ? "FAIL  " + probs.join("; ")
                                               : "PASS  disclosure present"}`);
+  for (const x of notes) console.log(`${" ".repeat(18)}       note: ${x}`);
   await p.close();
 }
 await b.close();

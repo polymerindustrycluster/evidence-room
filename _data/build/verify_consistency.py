@@ -1088,7 +1088,9 @@ def check_reader_furniture(arts: list[str]) -> None:
       [scope]     a claim's scope has industry, place, period and source; every year in the
                   period is in the claim's own sentence or its `source` field, and the
                   industry and source are in its `source` field, so a chip cannot name a
-                  scope its claim does not.
+                  scope its claim does not. An optional `unchipped` states why no chip fits
+                  (no cold-open headroom); the scope still binds the page's quote, and
+                  tools/disclosure.mjs prints the waiver on every run.
       [quote]     claims.json `quote` is one sentence; it names auto-checked claims; every
                   number in it is in one of those claims' sentences or scope; and it
                   carries the scope (place, industry, year, source) of a scoped claim it
@@ -1140,6 +1142,8 @@ def check_reader_furniture(arts: list[str]) -> None:
             sc = c["scope"]
             missing = [k for k in ("industry", "place", "period", "source")
                        if not isinstance(sc.get(k), str) or not sc[k].strip() or "\u00b7" in sc[k]]
+            if "unchipped" in sc and not (isinstance(sc["unchipped"], str) and sc["unchipped"].strip()):
+                missing.append("unchipped (the reason no chip fits, when present)")
             if missing:
                 err("scope", f"{a}:{c['id']}", f"scope lacks {', '.join(missing)} (each a plain string, no middot)")
                 continue
@@ -1173,7 +1177,7 @@ def check_reader_furniture(arts: list[str]) -> None:
                 err("quote", a, f"the quote must name automatically checked claims; "
                     f"{', '.join(bad) or 'it names none'}")
             bound = [checked[i] for i in ids if i in checked]
-            pool = " ".join(c.get("text", "") + " " + " ".join((c.get("scope") or {}).values())
+            pool = " ".join(c.get("text", "") + " " + " ".join(v for k, v in (c.get("scope") or {}).items() if k != "unchipped")
                             for c in bound)
             have = set(NUM.findall(pool))
             for n in NUM.findall(text):
@@ -1219,7 +1223,7 @@ def check_reader_furniture(arts: list[str]) -> None:
                 if not ids or any(i not in claims for i in ids):
                     err("plant", f"{a}#{k}", "must name at least one claim on the page, and only claims that exist; "
                         f"{', '.join(i for i in ids if i not in claims) or 'it names none'}")
-                pool = " ".join(c.get("text", "") + " " + " ".join((c.get("scope") or {}).values())
+                pool = " ".join(c.get("text", "") + " " + " ".join(v for k, v in (c.get("scope") or {}).items() if k != "unchipped")
                                 for i, c in checked.items() if i in ids)
                 have = set(NUM.findall(pool))
                 for n in NUM.findall(text):
