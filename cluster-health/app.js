@@ -140,6 +140,11 @@ document.getElementById("workplacestable").innerHTML = tableView(
   "workplaces-history", "All eleven annual observations",
   ["Year", "Annual-average jobs", "Annual-average establishments"],
   employment.series.map(r => [r.year, N(r.jobs), N(r.establishments)]));
+/* The job-count link (W4) sits under the first chart, inside the table block and after
+   the table that prints the 2025 total: on the hero card or after the lede above the chart
+   it would push the first chart past its cold-open ceiling, and directly after the block
+   the breaks-if line, which follows the chart's tail, would come between them. */
+document.getElementById("workplacestable").insertAdjacentHTML("beforeend", PV.differsLink());
 document.getElementById("workplacesbenchmarks").innerHTML = tableView(
   "workplaces-comparisons", "Ohio, US, bordering states and manufacturing",
   ["Geography / industry", "Jobs change, 2022–2025", "Establishments change, 2022–2025"],

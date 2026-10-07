@@ -57,6 +57,47 @@
   {
    "term": "NAICS 325",
    "short": "NAICS 325 is the industry code for chemical manufacturing, which includes resin (3252) and paint and coatings (3255)."
+  },
+  {
+   "term": "QWI",
+   "short": "QWI is the Census Bureau’s Quarterly Workforce Indicators, which count jobs, hires and separations each quarter."
+  },
+  {
+   "term": "hire",
+   "short": "A hire is a job starting."
+  },
+  {
+   "term": "separation",
+   "short": "A separation is a job ending, quits and layoffs alike."
+  },
+  {
+   "term": "churn rate",
+   "short": "Churn rate is hires and separations averaged, over jobs at quarter start."
+  },
+  {
+   "term": "location quotient",
+   "short": "A location quotient is an industry’s share of local jobs divided by its share of the country’s jobs; economists use it to measure concentration."
+  },
+  {
+   "term": "pairing",
+   "short": "A pairing is one tracked industry in one county."
+  },
+  {
+   "term": "average weekly wage",
+   "short": "An average weekly wage is the wages an industry pays in an area divided by its jobs, per week, so it describes a group, not any one person’s pay."
+  },
+  {
+   "term": "obligation",
+   "short": "An obligation is money the government has legally committed to pay.",
+   "long": "It is a promise on the books, not cash already spent: the cash that actually goes out, the outlay, can follow years later."
+  },
+  {
+   "term": "prime contract",
+   "short": "A prime contract is one signed directly with the government."
+  },
+  {
+   "term": "fiscal year",
+   "short": "The federal fiscal year runs from October to September and is named for the calendar year in which it ends."
   }
  ]
 }

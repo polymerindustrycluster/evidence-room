@@ -20,7 +20,7 @@
    "story": "cluster-health",
    "label": "Cluster health",
    "claim": "workplaces-recent-contrast",
-   "linked": false
+   "linked": true
   },
   {
    "total": "18,594",
@@ -40,7 +40,7 @@
    "story": "churn",
    "label": "Churn",
    "claim": "churn-stock-and-flow",
-   "linked": false
+   "linked": true
   },
   {
    "total": "24,032",
@@ -50,7 +50,7 @@
    "story": "location-quotient",
    "label": "Concentration",
    "claim": "lq-cluster-size",
-   "linked": false
+   "linked": true
   },
   {
    "total": "33,529",
@@ -60,7 +60,7 @@
    "story": "wages",
    "label": "Wages",
    "claim": "wage-mfg-overlap",
-   "linked": false
+   "linked": true
   }
  ]
 }

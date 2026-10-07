@@ -149,6 +149,10 @@ const pts = years.map(y => {
 });
 const dip = pts.reduce((a, b) => b.med < a.med ? b : a);
 
+/* The job-count link (W4) at the foot of the standfirst, whose last sentence prints the
+   33,529 total. */
+document.querySelector(".hero .stand").insertAdjacentHTML("afterend", PV.differsLink());
+
 /* ------------------------------------------------------------------- hero stats */
 /* Exactly one accented card, and it is the headline's number: the H1 says "1.2 times", so
    the median-premium card carries the lime rule and the row has one focal point. */
@@ -162,19 +166,19 @@ const dip = pts.reduce((a, b) => b.med < a.med ? b : a);
 PV.figures([
   ["", `${above} of ${rows.length}`, "published pairings out-pay their county",
    `one polymer industry in one county, ${D.meta.latest}. Counting only the finest
-    industry detail in each county instead: ${dAbove} of ${dedup.length}.`],
+    industry detail in each county instead: ${dAbove} of ${dedup.length}.`, {scope: "wage-premium-count"}],
   ["key", medPrem.toFixed(2) + "×", "median premium, over pairings",
    `the middle of the ${rows.length} pairings pays a fifth more than its county’s average
     job. The employment-weighted median of group-average ratios is
     ${jobMed.toFixed(2)}× for broad 325+326 (${N(jobsOnce)} jobs), versus
     ${narrowMed.toFixed(2)}× for narrow 3252+3255+326 (${N(jobsNarrow)} jobs).
-    Both weight group means; neither is median worker pay.`],
+    Both weight group means; neither is median worker pay.`, {scope: "headline-median-premium"}],
   ["", `${usBelow} of ${rows.length}`, "pay under their own industry nationally",
    `the typical one about 12 percent less (${usMed.toFixed(2)}×). ${qBeatTrail} pairings
-    are in both counts, which is how ${above} and ${usBelow} fit inside ${rows.length}.`],
+    are in both counts, which is how ${above} and ${usBelow} fit inside ${rows.length}.`, {scope: "vs-us-counterweight"}],
   ["", money(medWage), "the middle pairing’s weekly wage",
    `about $${Math.round(medWage * 52 / 1000)},000 a year, averaged over that whole pairing
-    rather than any one person’s pay`]
+    rather than any one person’s pay`, {scope: "median-weekly-wage"}]
 ]);
 
 document.getElementById("sv1").textContent = chemMed.toFixed(2) + "×";

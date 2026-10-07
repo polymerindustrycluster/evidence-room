@@ -185,6 +185,14 @@ principal purpose of the supplies or services acquired. A recipient's identity d
 not determine the contract code, and its address does not establish manufacturing
 activity in PIC-12. The producer and rebuilt metadata now state these limits.
 
+## W4 reader furniture, 2026-10-07
+
+The eyebrow is the hub's question, "How big is the Tech Hub award?". The hero cards carry no
+scope chip and the page has no quote yet: every card sits in a row with no spare height, so
+a chip would push the first chart past its cold-open ceiling, and the quote needs a claim
+that carries a chip (John to decide). The "Words on this page" block and "If you run a plant
+here" are declared in claims.json (`glossary`, `plant`).
+
 ## Preview and release checks
 
 ```powershell

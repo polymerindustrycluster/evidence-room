@@ -1092,6 +1092,12 @@ document.getElementById("flowsrc").textContent =
   `same ${pairs.length} quarters those two readings bracket still leaves them apart: ` +
   `${netAligned >= 0 ? "+" : "−"}${N(Math.abs(netAligned))} on the ledger against ` +
   `${N(stockFall)} fewer jobs on the count, so the mismatch is not an end effect.`;
+/* The job-count link (W4) follows the first line under a chart that prints 17,725; after
+   the standfirst it would push the first chart past its cold-open ceiling. */
+document.getElementById("flowsrc").insertAdjacentHTML("afterend", PV.differsLink());
+/* The net-flow card's scope chip (W4). The hero row is static markup; this is the one card
+   with room for the chip's line without moving the first chart. */
+PV.scopeChip(document.querySelector("#figs .figv:nth-child(3)"), "churn-net");
 
 /* The measure and its direction now sit on the axis, and the dashed line names itself, so
    the subtitle keeps only what the eye cannot get from the plot: which line is which, and

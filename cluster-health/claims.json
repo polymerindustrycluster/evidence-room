@@ -12,6 +12,46 @@
   "tide": "tide.json",
   "workplaces": "workplaces.json"
  },
+ "kicker": true,
+ "glossary": {
+  "terms": [
+   "QCEW",
+   "NAICS 326",
+   "NAICS 325",
+   "PIC-12",
+   "private ownership",
+   "annual average",
+   "establishment",
+   "withheld",
+   "concentration",
+   "pairing",
+   "obligation"
+  ],
+  "notes": {
+   "NAICS 326": "The opening jobs and workplaces figures count NAICS 326 alone; the tiles further down use the three-industry register, NAICS 3252, 3255 and 326.",
+   "withheld": "On this page, 12 of the 36 industry-county cells are withheld, so the 24,032 total is a floor rather than a count of every job."
+  }
+ },
+ "plant": [
+  {
+   "text": "Your plant shares the region with about as many plastics and rubber workplaces as in 2022, each employing fewer people on average: PIC-12 jobs fell from 19,811 to 17,770 by 2025, while establishments moved from 361 to 365.",
+   "claims": [
+    "workplaces-recent-contrast"
+   ]
+  },
+  {
+   "text": "Plan on a smaller pipeline of local polymer graduates than a decade ago: the three universities conferred 63 polymer degrees in 2023, against 179 in 2016.",
+   "claims": [
+    "talent-level"
+   ]
+  },
+  {
+   "text": "Your pay competes with two benchmarks that point different ways: the median county-industry average wage is 1.24 times the county all-industry average and 0.90 times the same industry’s national average.",
+   "claims": [
+    "pay-two-sided"
+   ]
+  }
+ ],
  "claims": [
   {
    "id": "pay-pairing-unit-and-register",

@@ -197,6 +197,16 @@ python fetch_qwi_bench.py --check   # verify only, write nothing
 python derive_churn_bench.py        # data/bench.json
 ```
 
+## W4 reader furniture, 2026-10-07
+
+The eyebrow is the hub's question, "How much churn is behind the headcount?". The +168 card
+carries the scope chip from `churn-net`'s `scope` (PV.scopeChip, since the hero row is static
+markup); it is the one card whose row has room for the line. The other three cards carry no
+chip: each would push the first chart past its cold-open ceiling (John to decide). The 17,725
+total links to the hub's job-count table from just after the flow chart's source line, which
+prints it. The how-we-checked box carries the `quote`; the "Words on this page" block and
+"If you run a plant here" are declared in claims.json.
+
 ## Run and publish
 
 ```

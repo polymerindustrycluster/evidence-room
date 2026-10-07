@@ -5,6 +5,38 @@
     "h": "techhub.json",
     "a": "awards.json"
   },
+  "kicker": true,
+  "glossary": {
+    "terms": [
+      "PIC-12",
+      "NAICS 325",
+      "NAICS 326",
+      "obligation",
+      "prime contract",
+      "fiscal year"
+    ]
+  },
+  "plant": [
+    {
+      "text": "Federal buying is a recurring market for this industry here, beside the grant: chemical, plastics and rubber prime contracting averaged $41.4M a year over the seven finished fiscal years, FY2019–FY2025, in 2025 dollars, against the $51.0M Tech Hub award.",
+      "claims": [
+        "fed-closed-average",
+        "fed-award-total"
+      ]
+    },
+    {
+      "text": "If you sell to the federal government, expect the Department of Defense to be the buyer: it placed 92 cents of every award dollar.",
+      "claims": [
+        "fed-dod-share"
+      ]
+    },
+    {
+      "text": "Plan for big swings from year to year: finished fiscal years range from $20.5M to $59.9M in 2025 dollars.",
+      "claims": [
+        "fed-closed-range"
+      ]
+    }
+  ],
   "claims": [
     {
       "id": "fed-annual-rate",

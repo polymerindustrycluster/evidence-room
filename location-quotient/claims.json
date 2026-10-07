@@ -1,11 +1,55 @@
 {
   "hero": "lq-paint-latest",
   "data": "lq.json",
+  "kicker": true,
+  "quote": {
+    "text": "In 2025, paint, coating and adhesive manufacturing (NAICS 3255) held 5.96 times the national share of local jobs in the PIC-12 counties (BLS QCEW, annual average).",
+    "claims": [
+      "lq-paint-latest"
+    ]
+  },
+  "glossary": {
+    "terms": [
+      "QCEW",
+      "NAICS 326",
+      "PIC-12",
+      "location quotient",
+      "concentration",
+      "withheld",
+      "cell",
+      "annual average"
+    ],
+    "notes": {
+      "location quotient": "Paint’s 5.96× means its share of local jobs here is nearly six times its share of the country’s.",
+      "withheld": "Paint is withheld in 5 of the 12 counties in the latest year, leaving 7 readings in that column of the heatmap."
+    }
+  },
+  "plant": [
+    {
+      "text": "If you make paint or coatings, you compete for staff in a concentrated local industry: paint, coating and adhesive runs 5.96× the national share of local jobs, and Cuyahoga holds 76 percent of the paint jobs the bureau publishes.",
+      "claims": [
+        "lq-paint-latest",
+        "lq-cuyahoga-paint"
+      ]
+    },
+    {
+      "text": "If you run a rubber plant, your industry is a bigger part of the local job base than it is nationally: rubber products, the industry Akron is named for, runs 2.44× the national share of local jobs.",
+      "claims": [
+        "lq-rubber-latest"
+      ]
+    },
+    {
+      "text": "Expect gaps if you benchmark paint jobs county by county: paint is withheld in 5 of the 12 counties in the latest year.",
+      "claims": [
+        "lq-paint-suppression"
+      ]
+    }
+  ],
   "claims": [
     {
       "id": "lq-paint-latest",
       "text": "Paint, coating and adhesive runs 5.96x the national share of local jobs in the latest year — an employment location quotient, not a count of sites, suppliers or skilled workers. The H1 states this in plain words ('six times as big a share of the jobs here as it is of the country's'); the standfirst, hero key card, trend figure title and closer carry the 5.96x figure itself. The latest year is pinned to 2025 because the peers page's Read next restates this figure with that year (added 2026-09-28).",
-      "source": "QCEW composite summed from the disclosed PIC-12 counties, latest year",
+      "source": "QCEW composite summed from the disclosed PIC-12 counties, latest year; NAICS 3255; BLS QCEW",
       "assert": "max(x['year'] for x in D['composite']) == 2025 and abs(one(c for c in D['composite'] if c['naics']=='3255' and c['year']==max(x['year'] for x in D['composite']))['lq'] - 5.9594) <= 0.005 and tofixed(one(c for c in D['composite'] if c['naics']=='3255' and c['year']==max(x['year'] for x in D['composite']))['lq'], 2) == '5.96'",
       "actual": "[(c['year'], round(c['lq'],4), tofixed(c['lq'], 2)) for c in D['composite'] if c['naics']=='3255'][-3:]",
       "falsified_if": "A disclosure flip changes which counties enter the paint composite, or a QCEW revision moves the value outside 5.9544-5.9644, at which point the hand-typed '5.96' in the standfirst no longer rounds from the data. The band also has to round to 'six times' at one significant figure for the headline to hold, which it does across 5.5-6.49; a value below 5.5 breaks the headline before it breaks the standfirst. Corrected 2026-09-28: the stand paragraph used to read this employment quotient as 'more paint sites, more suppliers and more people who know the work'; an employment LQ does not establish establishment counts or supplier density on its own, so it now reads as job share alone. This assert cannot read that HTML sentence directly, only the 5.96 figure behind it. Extended 2026-09-28 (round 4): the figure must also round to the 5.96 the pages print; the 0.005 tolerance alone accepted 5.9545.",
@@ -15,7 +59,8 @@
         {"figure": "six times as big a share", "noun": "Paint is"},
         {"figure": "5.96× its share", "noun": "of the country’s"},
         {"figure": "That 5.96× is summed", "noun": "across the seven counties"}
-      ]
+      ],
+      "scope": {"industry": "NAICS 3255", "place": "PIC-12", "period": "2025 annual avg", "source": "BLS QCEW"}
     },
     {
       "id": "lq-paint-leads-every-year",
@@ -36,13 +81,14 @@
     {
       "id": "lq-rubber-latest",
       "text": "Rubber products, the industry Akron is named for, runs 2.44x in the latest year (standfirst, hero card, closer).",
-      "source": "QCEW composite, NAICS 3262, latest year",
+      "source": "QCEW composite, NAICS 3262, latest year; 2025; BLS QCEW",
       "assert": "abs(one(c for c in D['composite'] if c['naics']=='3262' and c['year']==max(x['year'] for x in D['composite']))['lq'] - 2.4424) <= 0.005",
       "actual": "[(c['year'], round(c['lq'],4)) for c in D['composite'] if c['naics']=='3262'][-3:]",
       "falsified_if": "The value moves outside 2.4374-2.4474 and '2.44x' stops rounding from the data. 4 of 12 counties are withheld for rubber products, so a disclosure change moves this directly.",
       "counts": [
         {"figure": "2.44× of rubber products", "noun": "more than double the"}
-      ]
+      ],
+      "scope": {"industry": "NAICS 3262", "place": "PIC-12", "period": "2025 annual avg", "source": "BLS QCEW"}
     },
     {
       "id": "lq-paint-beats-rubber",
@@ -102,10 +148,11 @@
     {
       "id": "lq-cuyahoga-paint",
       "text": "Cuyahoga's paint cell is 11.2x on 3,256 jobs across 39 separate sites and is 76 percent of every paint job the bureau publishes in the region (hero card, heatmap lede and callout, closer). The hero card's sub-line reads '3,256 of the 4,257 paint jobs the bureau publishes' rather than '3,256 of 4,257 disclosed': 'disclosed' did its first work on the opening screen, four screens before the page explained that the bureau withholds small counts, and one reader took it to mean 'confirmed' and read 4,257 as the region's whole paint workforce. Reader-facing prose says 'separate sites' throughout; the note beside the grid says what a site is.",
-      "source": "QCEW county cell, NAICS 3255, latest year, against the paint composite",
+      "source": "QCEW county cell, NAICS 3255, latest year, against the paint composite; 2025; BLS QCEW",
       "assert": "(lambda y: (lambda c, tot: abs(c['lq'] - 11.1984) <= 0.01 and c['emp'] == 3256 and c['estabs'] == 39 and abs(c['emp']/tot - 0.765) <= 0.005)(one(c for c in D['cells'] if c['year']==y and c['name']=='Cuyahoga' and c['naics']=='3255'), one(c for c in D['composite'] if c['naics']=='3255' and c['year']==y)['emp']))(max(x['year'] for x in D['cells']))",
       "actual": "[(c['name'], c['lq'], c['emp'], c['estabs']) for c in D['cells'] if c['naics']=='3255' and c['year']==max(x['year'] for x in D['cells']) and c['lq']]",
-      "falsified_if": "The Cuyahoga cell is revised or withheld, or the disclosed paint total moves so the share leaves 76.0-77.0 percent and the '76%' card and 'three of every four' phrasing stop being true."
+      "falsified_if": "The Cuyahoga cell is revised or withheld, or the disclosed paint total moves so the share leaves 76.0-77.0 percent and the '76%' card and 'three of every four' phrasing stop being true.",
+      "scope": {"industry": "NAICS 3255", "place": "PIC-12", "period": "2025 annual avg", "source": "BLS QCEW"}
     },
     {
       "id": "lq-grid-darkest-shade",
@@ -245,7 +292,7 @@
     {
       "id": "lq-cluster-size",
       "text": "The polymer cluster is 24,032 jobs out of 1.70 million in PIC-12, about one job in seventy, and paint is 4,257 of those, 18 percent of the cluster and about one job in four hundred in the region (hero stat card, the standfirst's size clause, the second lede of the finding section, and the closer's verdict). The cluster is the three CORE codes only: adding plastics products and rubber products would count jobs already inside plastics and rubber products twice.",
-      "source": "QCEW, latest year. Regional employment is the location quotient's own denominator, total-all-ownership employment, summed once per county; the cluster is the summed employment of the three core NAICS composites.",
+      "source": "QCEW, latest year. Regional employment is the location quotient's own denominator, total-all-ownership employment, summed once per county; the cluster is the summed employment of the three core NAICS composites.; 2025; NAICS 3252, 3255, 326; BLS QCEW",
       "assert": "(lambda y, cn, core: (lambda region, cluster, pnt: region == 1701837 and cluster == 24032 and tofixed(region/1e6, 2) == '1.70' and tofixed(region/cluster/10, 0) == '7' and tofixed(region/pnt/10, 0) == '40' and tofixed(100*pnt/cluster, 0) == '18')(sum(one(set(c['local_total'] for c in D['cells'] if c['year']==y and c['area']==a)) for a in cn), sum(one(c['emp'] for c in D['composite'] if c['naics']==n and c['year']==y) for n in core), one(c['emp'] for c in D['composite'] if c['naics']=='3255' and c['year']==y)))(max(x['year'] for x in D['cells']), [a['code'] for a in D['areas'] if a['code'] not in ('39000','US000')], sorted(n['code'] for n in D['naics'] if n['register']=='core'))",
       "actual": "(lambda y, cn, core: (lambda region, cluster, pnt: (region, cluster, pnt, tofixed(region/1e6, 2), tofixed(region/cluster/10, 0), tofixed(region/pnt/10, 0), tofixed(100*pnt/cluster, 0)))(sum(one(set(c['local_total'] for c in D['cells'] if c['year']==y and c['area']==a)) for a in cn), sum(one(c['emp'] for c in D['composite'] if c['naics']==n and c['year']==y) for n in core), one(c['emp'] for c in D['composite'] if c['naics']=='3255' and c['year']==y)))(max(x['year'] for x in D['cells']), [a['code'] for a in D['areas'] if a['code'] not in ('39000','US000')], sorted(n['code'] for n in D['naics'] if n['register']=='core'))",
       "falsified_if": "Regional employment leaves 1,695,000-1,708,000, at which point '1.70 million' stops rounding from the data and 'one job in four hundred' and 'one in seventy' stop being the nearest ten. Or a disclosure flip moves the cluster total off 24,032, which moves both ratios at once because paint sits inside the cluster. Or local_total stops being single-valued within a county-year, which the assertion tests directly through one(set(...)): if it ever holds two values the regional denominator is being summed from rows that disagree, and the whole size anchor is wrong. The withheld counties are excluded from the cluster numerator and not from the regional denominator, so 24,032 is a floor and the page says so at every printing.",
@@ -257,7 +304,8 @@
         {"figure": "one in seventy", "noun": "million jobs"},
         {"figure": "4,257 of those", "noun": "Paint is"},
         {"figure": "18%", "noun": "4,257 of those"}
-      ]
+      ],
+      "scope": {"industry": "NAICS 3252, 3255, 326", "place": "PIC-12", "period": "2025 annual avg", "source": "BLS QCEW"}
     },
     {
       "id": "lq-paint-outside-cuyahoga",
