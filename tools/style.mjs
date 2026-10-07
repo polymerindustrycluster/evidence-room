@@ -497,6 +497,15 @@ for (const n of list) {
         out.push(["href-raw-markdown", h.slice(0, 90)]);
     }
     out.push(["count:hrefs", String(hrefs.length)]);
+    /* THE SCOPE CHIP'S HOUSE FORM (W4, 7 October 2026): four parts, industry · place ·
+       period · source, each non-empty, spaced middots, a year in it, and short enough to sit
+       on one line of a figure card. "NAICS 326 · Ohio · 2024 annual avg · BLS QCEW". A chip
+       whose claim lost its scope renders empty and fails here as well as in disclosure. */
+    for (const e of document.querySelectorAll(".pv-scope")) {
+      const t = e.textContent.replace(/\s+/g, " ").trim();
+      if (!/^[^\u00b7\s][^\u00b7]*?( \u00b7 [^\u00b7\s][^\u00b7]*?){3}$/.test(t) || !/\b(19|20)\d\d\b/.test(t) || t.length > 60)
+        out.push(["scope-chip-form", t.slice(0, 70) || "(an empty chip)"]);
+    }
     if (verbatimNodes) out.push(["record:CORRECTIONS.md", `${verbatimNodes} text nodes quoted as written, not read as page prose`]);
     /* DATED NOTES SIT BELOW THE HEADLINE (DECISIONS.md, 2026-10-04, D3). Four pages opened on
        "Correction, <date>" paragraphs set between the byline and the headline figure, so a

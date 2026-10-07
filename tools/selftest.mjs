@@ -153,7 +153,7 @@ const CASES = [
    expect: /no How this was made and checked box/,
    defect: "a page shipped without the box that says who made it, what its checks can " +
            "establish and how to cite it",
-   inject: s => s.replace('await madeAndChecked(o.page || "index", manual.length);', "")},
+   inject: s => s.replace('await madeAndChecked(o.page || "index", manual.length, claims);', "")},
 
   {gate: "disclosure", page: "churn", args: ["churn"],
    expect: /byline Revised reads 2020-01-01/,
@@ -686,6 +686,64 @@ const CASES = [
    expect: /no longer launches with --font-render-hinting=none/,
    defect: "the shared launcher losing the flag that makes Linux and macOS render alike",
    inject: s => s.replace('Object.freeze(["--font-render-hinting=none"])', "Object.freeze([])")},
+
+  /* THE W4 READER FURNITURE (DECISIONS.md, 7 October 2026). Each piece, once a page opts in,
+     must fail when it goes missing or stops agreeing with what it is rendered from. These
+     inject on peers, the worked example, and the hub's table. */
+  {gate: "consistency", page: "peers", file: "peers/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[kicker\] peers\s+kicker reads 'Where Northeast Ohio actually sits'/,
+   defect: "a story's kicker drifting from the question the hub asks for it (peers' eyebrow " +
+           "before W4)",
+   inject: s => s.replace("data-kicker>Where does Ohio rank?", "data-kicker>Where Northeast Ohio actually sits")},
+
+  {gate: "consistency", page: "peers", file: "peers/claims.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[quote\] peers\s+the quote prints 54,864/,
+   defect: "a Quote this sentence whose figure was retyped wrong, with every claim still passing",
+   inject: s => s.replace("2024: 54,846, which is", "2024: 54,864, which is")},
+
+  {gate: "consistency", page: "peers", file: "peers/claims.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[glossary\] peers\s+the page uses 'location quotient', which _data\/glossary.json does not define/,
+   defect: "a page declaring a glossary term the shared definitions file does not hold",
+   inject: s => s.replace('"terms": ["QCEW", ', '"terms": ["QCEW", "location quotient", ')},
+
+  {gate: "consistency", page: "index", file: "_data/jobcounts.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[jobcounts\] peers:18,549/,
+   defect: "a job-count table total that no longer matches the claim on the story it names",
+   inject: s => s.replace('"total": "18,594"', '"total": "18,549"')},
+
+  {gate: "disclosure", page: "peers", args: ["peers"],
+   expect: /claim oh-rank-1 carries a scope and no scope chip renders it/,
+   defect: "a headline figure shipped without the scope chip its claim declares",
+   inject: s => s.replace(', {scope: "oh-rank-1"}]', "]")},
+
+  {gate: "disclosure", page: "peers", args: ["peers"],
+   expect: /claims\.json declares a quote and the how-we-checked box shows none/,
+   defect: "a declared Quote this sentence missing from the how-we-checked box",
+   inject: s => s.replace("spec && spec.quote && spec.quote.text ?", "false ?")},
+
+  {gate: "disclosure", page: "peers", args: ["peers"],
+   expect: /declares a glossary and 0 Words on this page blocks render/,
+   defect: "a page that declares its words losing the block that defines them",
+   inject: s => s.replace('await wordsOnPage(claims, document.querySelector(".pv-breaks-all") || sec);', "")},
+
+  {gate: "disclosure", page: "peers", args: ["peers"],
+   expect: /its total 18,594 is in the job-count table and the page has no link to it/,
+   defect: "a story whose total is in the hub's job-count table with no link to it",
+   inject: s => s.replace("A county total, not a sum of metros.`, {differs: true}]", "A county total, not a sum of metros.`]")},
+
+  {gate: "disclosure", page: "index", args: ["index"],
+   expect: /job-count table differs from _data\/jobcounts\.json: 17,707/,
+   defect: "the hub's job-count table rendering a total its data file does not hold",
+   inject: s => s.replace(/(data-pv-file="jobcounts\.json">[\s\S]*?"total": ")17,770/, "$117,707")},
+
+  {gate: "style", page: "peers", args: ["peers"], expect: /scope-chip-form/,
+   defect: "a scope chip set as a comma list rather than the house industry · place · period · source form",
+   inject: s => s.replace('[s.industry, s.place, s.period, s.source].join(" \u00b7 ")',
+                          '[s.industry, s.place, s.period, s.source].join(", ")')},
 ];
 
 const only = process.argv.slice(2).filter(a => !a.startsWith("--"));

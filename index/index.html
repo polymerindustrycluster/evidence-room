@@ -91,7 +91,11 @@
          (17,770, 18,594, 17,725, 24,032, 33,529) and none of them said why they differ: a
          reader moving between cards met what looked like five answers to one question.
          Each is a different industry, year or survey, and this key says which. Guarded by
-         index-headcount-key, which reads every figure from its own page's file. -->
+         index-headcount-key, which reads every figure from its own page's file.
+         Since W4 (7 October 2026) the five are a table rendered from _data/jobcounts.json
+         by PV.jobCounts at #job-counts, which each story's "Why this total differs" link
+         opens; verify_consistency.py [jobcounts] binds every row to its story's claim and
+         to index-headcount-key. -->
     <details class="howto card-key"><summary>What the geography labels, job counts and claim counts mean</summary>
       <p class="note">The teal label names the geography used in that story.
       <b>PIC-12</b> means Ashtabula, Cuyahoga, Geauga, Lake, Lorain, Mahoning, Medina,
@@ -101,15 +105,9 @@
       files; manual claims depend on a cited document.</p>
       <p class="note"><b>Why the job counts differ.</b> Stories count different industries,
       years and surveys, so their totals for the twelve counties are not meant to match.
-      <b>17,770</b> is plastics and rubber products (NAICS 326) in 2025, from the payroll
-      census (<a href="../cluster-health/">cluster health</a>). <b>18,594</b> is the same
-      industry a year earlier (<a href="../peers/">rankings</a>). <b>17,725</b> is the
-      same industry counted by a different Census survey at the start of 2025&rsquo;s third
-      quarter (<a href="../churn/">churn</a>). <b>24,032</b> adds resin and paint (3252 and
-      3255), 2025, a floor because some counties are withheld
-      (<a href="../location-quotient/">concentration</a>). <b>33,529</b> is all chemical
-      manufacturing plus plastics and rubber (325 and 326), 2025, counted once
-      (<a href="../wages/">wages</a>). Concentration differs the same way: plastics and
+      The table names each one.</p>
+      <div class="pv-jobcounts-mount"></div>
+      <p class="note">Concentration differs the same way: plastics and
       rubber fill 2.32 times the national share of jobs across the twelve counties in 2025
       and 4.69 times in the Akron metro alone in 2024.</p>
     </details>

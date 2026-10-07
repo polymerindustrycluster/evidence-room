@@ -126,6 +126,32 @@ def page_text(page):
     return WS.sub(" ", entry["text"]).strip()
 
 
+def words_text(page):
+    """The text of the page's "Words on this page" block (W4, 7 October 2026), composed from
+    its claims.json `glossary` and _data/glossary.json exactly as PV.wordsOnPage renders it:
+    per declared term, the shared definition, its optional second sentence and the page's
+    note, joined by spaces. The block is written by script, so the scripting-off dump above
+    never holds it; the page's notes carry figures (peers: "eighth on concentration among
+    the 155") that a claim binds, and moving the static glossary into the block must not
+    unbind them. tools/disclosure.mjs holds the rendered block to this same composition, so
+    the text read here is the text a reader gets. "" when the page declares no glossary."""
+    spec = json.load(open(os.path.join(WEB, page, "claims.json"), encoding="utf-8"))
+    g = spec.get("glossary") or {}
+    if not g.get("terms"):
+        return ""
+    shared = json.load(open(os.path.join(WEB, "_data", "glossary.json"), encoding="utf-8"))
+    by = {t["term"]: t for t in shared.get("terms", [])}
+    out = []
+    for term in g["terms"]:
+        t = by.get(term)
+        if not t:
+            raise ValueError(f"cannot inspect: glossary term {term!r} is defined nowhere in "
+                             "_data/glossary.json")
+        out.append(" ".join(x for x in (t.get("short"), t.get("long"),
+                                        (g.get("notes") or {}).get(term)) if x))
+    return " ".join(out)
+
+
 def _cuts(chunk):
     """Offsets inside one run of non-space characters where a clause ends unspaced."""
     cuts = {m.end() for m in CLAUSE_CUT.finditer(chunk)}
@@ -283,6 +309,9 @@ def check_page(page):
         return []
     try:
         text = page_text(page)
+        words = words_text(page)
+        if words:
+            text = f"{text} {WS.sub(' ', words).strip()}"
     except ValueError as err:
         return [{"claim": c["id"], "figure": str(entry.get("figure")),
                  "stems": [str(entry.get("noun"))], "ok": False,

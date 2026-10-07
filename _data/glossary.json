@@ -1,0 +1,54 @@
+{
+ "_readme": [
+  "THE SHARED DEFINITIONS (DECISIONS.md, W4, 7 October 2026). One file; each page renders a",
+  "collapsed \"Words on this page\" block (PV.wordsOnPage in _shared/picviz.js) listing only the",
+  "terms its claims.json declares under glossary.terms, in that order, with any page-specific",
+  "sentence it adds under glossary.notes. Each entry: term (the word as a reader meets it),",
+  "short (one plain definition, written as a sentence that opens with or names the term, so it",
+  "reads the same in the block and quoted alone), long (optional, a second sentence).",
+  "A page that declares a term missing here fails verify_consistency.py [glossary]; a declared",
+  "term the page never prints, or a block that is missing or differs from this file, fails",
+  "tools/disclosure.mjs. A figure drawn from data belongs in a page's notes, where it is bound",
+  "to that page's claims, never in a shared definition."
+ ],
+ "terms": [
+  {
+   "term": "QCEW",
+   "short": "QCEW is the Quarterly Census of Employment and Wages, the federal count of jobs covered by unemployment insurance."
+  },
+  {
+   "term": "NAICS 326",
+   "short": "NAICS 326 is the industry code for plastics and rubber products manufacturing."
+  },
+  {
+   "term": "withheld",
+   "short": "Withheld (suppressed is the bureau’s own word for it): BLS holds a figure back when so few employers sit behind it that printing it would identify one of them.",
+   "long": "The jobs in a withheld cell are real; the number is not disclosed, which is not the same as zero."
+  },
+  {
+   "term": "cell",
+   "short": "A cell is one figure, for one area in one year in one industry."
+  },
+  {
+   "term": "establishment",
+   "short": "An establishment is one physical site, not one company."
+  },
+  {
+   "term": "metro area",
+   "short": "A metro area is the federal statistical region built out of whole counties around a city."
+  },
+  {
+   "term": "concentration",
+   "short": "Concentration asks how much of the local job base an industry fills next to how much it fills nationally.",
+   "long": "Above 1.0× is more than the country, below 1.0× is less."
+  },
+  {
+   "term": "private ownership",
+   "short": "Private ownership counts private employers only, leaving out federal, state and local government jobs."
+  },
+  {
+   "term": "annual average",
+   "short": "Annual averages are the twelve monthly counts averaged."
+  }
+ ]
+}

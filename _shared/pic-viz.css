@@ -579,3 +579,33 @@ th.pv-sortable[aria-sort="descending"]::after{content:" ↓";opacity:1;color:var
 .pv-breaks-all li{border-top:1px solid var(--line);padding:12px 0 0;margin:14px 0 0}
 .pv-breaks-all li p{margin:0 0 .3em;font-size:15.5px;line-height:1.55}
 .pv-breaks-all .said{font-style:italic}
+
+/* ------------------------------------------------ reader furniture (W4, 7 October 2026)
+   picviz.js "reader furniture". The scope chip and the differs link sit inside a hero
+   figure card, under its description, and are sized to fit the free line a shorter card
+   already has beside a taller one, so neither moves the first chart (tools/coldopen.mjs). */
+.figv .pv-scope{margin:5px 0 0;font-size:12px;line-height:16px;letter-spacing:.01em;
+  color:#D3D8D9}
+.figv .pv-differs{margin:5px 0 0;font-size:12px;line-height:16px}
+.figv .pv-differs a{color:#D3D8D9;text-underline-offset:2px}
+.figv .pv-differs a:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+.pv-quote-text{font-style:normal}
+/* "Words on this page": the shared glossary, closed by default, at footnote scale beside
+   the chart where its terms are first used. */
+.pv-words{margin:18px 0 0;max-width:var(--measure);font-size:14px;line-height:1.6;color:#4A5457}
+.pv-words summary{cursor:pointer;color:var(--action);font-weight:700;font-size:13.5px}
+.pv-words summary:hover{color:var(--hover)}
+.pv-words summary:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+.pv-words ul{margin:10px 0 0;padding:2px 0 2px 14px;list-style:none;border-left:3px solid var(--line)}
+.pv-words li{margin:0 0 .45em}
+.pv-words b{font-weight:700;color:var(--text)}
+/* The hub's job-count table (PV.jobCounts). */
+.pv-jobcounts{border-collapse:collapse;width:100%;margin:12px 0 4px;font-size:13.5px;line-height:1.45}
+.pv-jobcounts caption{text-align:left;font-weight:700;color:var(--text);padding:0 0 8px}
+.pv-jobcounts th,.pv-jobcounts td{padding:7px 10px 7px 0;border-bottom:1px solid var(--line);
+  text-align:left;vertical-align:top}
+.pv-jobcounts thead th{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--caption)}
+.pv-jobcounts th[scope=row]{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pv-jobcounts a{color:var(--action)}
+/* Where a page puts the words block and the hub its table; replaced or filled by picviz.js. */
+.pv-words-mount,.pv-jobcounts-mount{display:block}
