@@ -229,7 +229,10 @@ jobs:
 
   deploy:
     needs: verify
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    # always(): when a merge's tree was already verified on its PR, the gates job is skipped,
+    # and GitHub skips every job downstream of a skipped one unless told otherwise. Deploy on
+    # verify's own result instead; verify fails unless every slice passed or the tree did.
+    if: always() && needs.verify.result == 'success' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       pages: write
