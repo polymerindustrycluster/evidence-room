@@ -15,7 +15,7 @@ import {readdirSync, existsSync} from "fs";
 import {spawnSync} from "child_process";
 import {resolve, dirname} from "path";
 import {fileURLToPath} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const WEB = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 /* Published apparatus with no data source of its own (the corrections log), named with its
@@ -117,7 +117,7 @@ async function pixelContrast(page) {
   }, {pre, seen, bare});
 }
 
-const browser = await chromium.launch();
+const browser = await launch();
 let bad = 0;
 for (const name of names) {
   const file = `${WEB}/dist/${name}.html`;

@@ -16,7 +16,7 @@
  */
 import {readFileSync, readdirSync, existsSync} from "fs";
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const CFG = JSON.parse(readFileSync("_data/coldopen.json", "utf8"));
 const LIMIT = CFG.limit;
@@ -29,7 +29,7 @@ const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
 
-const b = await chromium.launch();
+const b = await launch();
 let bad = 0, loose = 0;
 for (const n of list) {
   const p = await b.newPage({viewport: {width: 1440, height: 900}});

@@ -28,7 +28,7 @@
 import {readFileSync, readdirSync} from "fs";
 import {resolve, dirname} from "path";
 import {fileURLToPath, pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const WEB = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 /* THE MEASURE IS THE PAGE'S OWN, not a constant. The first version hardcoded 678 and
@@ -47,7 +47,7 @@ const args = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const pages = (args.length ? args
   : readdirSync(`${WEB}/dist`).filter(f => f.endsWith(".html") && f !== "index.html").map(f => f.slice(0, -5)));
 
-const b = await chromium.launch();
+const b = await launch();
 let fail = 0, checked = 0, tolerated = 0;
 for (const name of pages) {
   const p = await b.newPage({viewport: {width: 1440, height: 1000}});

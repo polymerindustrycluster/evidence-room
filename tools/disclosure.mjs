@@ -18,7 +18,7 @@
 import {readdirSync, readFileSync, existsSync} from "fs";
 import {spawnSync} from "child_process";
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const CANON = "Analysis and graphics by Claude (Anthropic)";
 /* WHAT THE CHECKS ACTUALLY DO, asserted here for the reason the byline is.
@@ -121,7 +121,7 @@ const list = names.length ? names
 const REG = JSON.parse(readFileSync("_data/SOURCES.json", "utf8"));
 const CORR = JSON.parse(readFileSync("_data/corrections_by_page.json", "utf8"));
 
-const b = await chromium.launch();
+const b = await launch();
 let bad = 0;
 for (const n of list) {
   const p = await b.newPage({viewport: {width: 1440, height: 1000}});

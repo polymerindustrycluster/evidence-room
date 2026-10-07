@@ -23,7 +23,7 @@
  */
 import {readdirSync, readFileSync} from "fs";
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const REG = JSON.parse(readFileSync("_data/FIGURES.json", "utf8")).figures;
 const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
@@ -35,7 +35,7 @@ const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
    "$51,001,413" are one fact rather than two strings. */
 const forms = f => [f.display, ...(f.also_printed_as || [])].filter(Boolean);
 
-const b = await chromium.launch();
+const b = await launch();
 let bad = 0, notes = [];
 for (const n of list) {
   const p = await b.newPage({viewport: {width: 1440, height: 1200}});

@@ -86,6 +86,7 @@ const GATES = [
   ["furniture",   "node",   ["tools/furniture.mjs"],        "every number on a chart is said somewhere else on its page"],
   ["caveat",      "node",   ["tools/caveat.mjs"],           "apparatus ink under a chart, ratcheted"],
   ["fonts",       "node",   ["tools/fonts.mjs"],             "every font this site names, this site ships"],
+  ["launchers",   "node",   ["tools/launchers.mjs"],         "every browser tool launches through the one deterministic helper"],
   ["classes",     "node",   ["tools/classes.mjs"],           "every class a page uses resolves to a rule"],
   ["legends",     "node",   ["tools/legends.mjs"],           "the reader gets the key before the data"],
   ["measure",     "node",   ["tools/measure.mjs"],           "running prose holds the measure"],

@@ -17,7 +17,7 @@ import {readdirSync, existsSync, mkdirSync} from "fs";
 import {resolve, dirname} from "path";
 import {fileURLToPath, pathToFileURL} from "url";
 
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 const WEB = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SHOTS = resolve(WEB, "shots");
@@ -31,7 +31,7 @@ const list = names.length ? names
   : readdirSync(`${WEB}/dist`).filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
 
 const W = mobile ? 390 : 1440, H = mobile ? 844 : 900;
-const browser = await chromium.launch();
+const browser = await launch();
 for (const name of list) {
   const file = `${WEB}/dist/${name}.html`;
   if (!existsSync(file)) { console.log(`${name}: missing`); continue; }

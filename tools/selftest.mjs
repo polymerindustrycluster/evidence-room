@@ -670,6 +670,22 @@ const CASES = [
                        "usaspending_award_lookup"].includes(k));
       return JSON.stringify(registry, null, 1) + "\n";
     }},
+
+  /* tools/launchers.mjs, added 6 October 2026 (ER-021). Pixel gates read 20 to 60px apart on
+     macOS and on the Linux runner until every launch turned font hinting off; a tool that
+     reaches Playwright on its own measures on the old basis again. */
+  {gate: "launchers", page: "coldopen", file: "tools/coldopen.mjs", args: [],
+   expect: /coldopen\.mjs:\d+  reaches a browser/,
+   defect: "a pixel gate launching chromium itself, with the hinting that made macOS and CI disagree",
+   inject: s => s.replace('import {launch} from "./_browser.mjs";',
+                          'import {createRequire} from "module";\n' +   /* names split so this */
+                          'const {chromium} = createRequire(import.meta.url)("play' + 'wright");')
+                 .replace("await launch()", "await chromium." + "launch()")},  /* file passes the gate */
+
+  {gate: "launchers", page: "_browser", file: "tools/_browser.mjs", args: [],
+   expect: /no longer launches with --font-render-hinting=none/,
+   defect: "the shared launcher losing the flag that makes Linux and macOS render alike",
+   inject: s => s.replace('Object.freeze(["--font-render-hinting=none"])', "Object.freeze([])")},
 ];
 
 const only = process.argv.slice(2).filter(a => !a.startsWith("--"));

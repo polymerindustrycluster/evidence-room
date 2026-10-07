@@ -11,12 +11,12 @@
  */
 import {realpathSync} from "fs";
 import {pathToFileURL, fileURLToPath} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 
 /* probes: {name: function evaluated in the page}. onPage(name, {probeName: [{W, r}]})
    is called as each page finishes, so output streams page by page as it always has. */
 export async function render(list, widths, probes, onPage) {
-  const b = await chromium.launch();
+  const b = await launch();
   try {
     for (const n of list) {
       const per = Object.fromEntries(Object.keys(probes).map(k => [k, []]));

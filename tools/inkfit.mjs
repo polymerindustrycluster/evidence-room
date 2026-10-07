@@ -5,11 +5,11 @@
  */
 import {readdirSync} from "fs";
 import {pathToFileURL} from "url";
-import {chromium} from "./_browser.mjs";
+import {launch} from "./_browser.mjs";
 const names = process.argv.slice(2);
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0,-5));
-const b = await chromium.launch();
+const b = await launch();
 for (const n of list) {
   const p = await b.newPage({viewport:{width:1440,height:1000}});
   await p.goto(pathToFileURL(process.cwd()+"/dist/"+n+".html").href);
