@@ -215,7 +215,7 @@ for (const n of list) {
                 differs: [...document.querySelectorAll(".pv-differs a")].map(a => [a.getAttribute("href"),
                   t(a), a.closest(".figv") ? t(a.closest(".figv").querySelector(".n"))
                     : t(a.closest(".pv-differs").previousElementSibling)]),
-                jobs: (() => { const m = document.querySelector("table.pv-jobcounts")?.parentElement;
+                jobs: (() => { const m = document.querySelector("table.pv-jobcounts")?.closest(".pv-jobcounts-mount");
                   return m ? {id: m.id, rows: [...m.querySelectorAll("tbody tr")].map(tr =>
                     [...tr.cells].map(c => t(c)).concat(tr.querySelector("a")?.getAttribute("href") || ""))} : null; })(),
               };

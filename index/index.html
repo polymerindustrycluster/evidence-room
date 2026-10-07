@@ -92,8 +92,8 @@
          reader moving between cards met what looked like five answers to one question.
          Each is a different industry, year or survey, and this key says which. Guarded by
          index-headcount-key, which reads every figure from its own page's file.
-         Since W4 (7 October 2026) the five are a table rendered from _data/jobcounts.json
-         by PV.jobCounts at #job-counts, which each story's "Why this total differs" link
+         Since W4 (7 October 2026) the five are a table written from _data/jobcounts.json
+         by _data/build/render_static.py at #job-counts (static, so it survives without scripting), which each story's "Why this total differs" link
          opens; verify_consistency.py [jobcounts] binds every row to its story's claim and
          to index-headcount-key. -->
     <details class="howto card-key"><summary>What the geography labels, job counts and claim counts mean</summary>
@@ -106,7 +106,18 @@
       <p class="note"><b>Why the job counts differ.</b> Stories count different industries,
       years and surveys, so their totals for the twelve counties are not meant to match.
       The table names each one.</p>
-      <div class="pv-jobcounts-mount"></div>
+      <!-- pv:static jobcounts -->
+<div class="pv-jobcounts-mount" id="job-counts"><div class="pv-jobcounts-scroll"><table class="pv-jobcounts">
+<caption>Why the job counts differ: five totals for the same twelve counties</caption>
+<thead><tr><th scope="col">Total</th><th scope="col">Industry</th><th scope="col">Year</th><th scope="col">Source</th><th scope="col">Story</th></tr></thead>
+<tbody>
+<tr><th scope="row">17,770</th><td>Plastics and rubber products (NAICS 326)</td><td>2025</td><td>BLS payroll census (QCEW)</td><td><a href="../cluster-health/">Cluster health</a></td></tr>
+<tr><th scope="row">18,594</th><td>Plastics and rubber products (NAICS 326)</td><td>2024</td><td>BLS payroll census (QCEW)</td><td><a href="../peers/">Rankings</a></td></tr>
+<tr><th scope="row">17,725</th><td>Plastics and rubber products (NAICS 326)</td><td>2025, start of the third quarter</td><td>Census Quarterly Workforce Indicators (QWI)</td><td><a href="../churn/">Churn</a></td></tr>
+<tr><th scope="row">24,032</th><td>Resin, paint, and plastics and rubber (NAICS 3252, 3255 and 326); a floor, because some counties are withheld</td><td>2025</td><td>BLS payroll census (QCEW)</td><td><a href="../location-quotient/">Concentration</a></td></tr>
+<tr><th scope="row">33,529</th><td>All chemical manufacturing plus plastics and rubber (NAICS 325 and 326), counted once</td><td>2025</td><td>BLS payroll census (QCEW)</td><td><a href="../wages/">Wages</a></td></tr>
+</tbody></table></div></div>
+      <!-- /pv:static -->
       <p class="note">Concentration differs the same way: plastics and
       rubber fill 2.32 times the national share of jobs across the twelve counties in 2025
       and 4.69 times in the Akron metro alone in 2024.</p>

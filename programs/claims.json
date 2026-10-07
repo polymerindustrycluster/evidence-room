@@ -12,7 +12,7 @@
  },
  "plant": [
   {"text": "Before you count on a local polymer program for hires, check that it still confers: Ohio has held 22 substantive polymer programs, and 11 were still conferring in 2023.", "claims": ["prog-states-ohio"]},
-  {"text": "Expect most new polymer graduates from Akron to hold graduate degrees: of its 44 completions in the selected codes in 2023, 42 were master’s degrees or doctorates.", "claims": ["prog-ua-collapse"]}
+  {"text": "Expect most new polymer graduates from Akron to hold graduate degrees: of its 44 completions in the selected codes in 2023, 42 were graduate degrees, master’s or doctorates.", "claims": ["prog-ua-collapse"]}
  ],
  "hero": "prog-spine-hollowing",
  "data": "viz-data.json",

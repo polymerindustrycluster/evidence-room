@@ -4,7 +4,7 @@
  "kicker": true,
  "quote": {"text": "Between 2012 and 2025, 208 papers in all fields named both Akron and Case Western, eight of them classified in polymers, and the two hold three joint NSF projects, the newest starting in 2017 (OpenAlex and NSF).", "claims": ["col-they-do-collaborate", "col-standfirst-awards", "col-no-new-joint-award"]},
  "glossary": {"terms": ["OpenAlex", "Collaborative Research"]},
- "plant": [{"text": "Check Akron and Case Western separately for polymer work: of 208 papers naming both, eight are classified in polymers, and no new joint NSF award started after 2017, through 2025.", "claims": ["col-rarely-about-polymers", "col-no-new-joint-award"]}],
+ "plant": [{"text": "Check Akron and Case Western separately for polymer work: of 208 papers naming both, eight are classified in polymers, and the joint NSF record shows none starting after 2017, through 2025.", "claims": ["col-rarely-about-polymers", "col-no-new-joint-award"]}],
  "claims": [
   {
    "id": "col-they-do-collaborate",

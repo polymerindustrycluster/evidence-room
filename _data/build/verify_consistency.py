@@ -1307,6 +1307,21 @@ def check_reader_furniture(arts: list[str]) -> None:
             err("jobcounts", who, f"row says {r.get('year')!r} on {r.get('label')!r}; index-headcount-key says {clause!r}")
 
 
+def check_static_furniture() -> None:
+    """[static] The W4 blocks a reader needs without scripting are in the page's own HTML
+    (PR #54 review): the hub's job-count table and every declared "Words on this page"
+    block, written by _data/build/render_static.py between pv:static markers. A region
+    that is missing, empty or differs from what that script would write now is an ERROR."""
+    import render_static
+    try:
+        probs = render_static.problems(write=False)
+    except (OSError, ValueError, KeyError) as exc:
+        err("static", "render_static.py", f"cannot inspect: {exc}")
+        return
+    for page, msg in probs:
+        err("static", page, msg)
+
+
 def main() -> int:
     arts = artifacts()
     reg_path = os.path.join(WEB, "_data", "SOURCES.json")
@@ -1329,6 +1344,7 @@ def main() -> int:
     check_corrections()
     check_catalog()
     check_reader_furniture(arts)
+    check_static_furniture()
 
     errors = [f for f in findings if f[0] == "ERROR"]
     warns = [f for f in findings if f[0] == "WARN"]

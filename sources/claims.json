@@ -1,6 +1,6 @@
 {
  "quote": {
-  "text": "Adding every NAICS 325 and 326 code the PIC-12 pay table publishes for 2025 counts 20,846 jobs twice, because each part code sits inside a family code (BLS QCEW, 2025 annual average).",
+  "text": "Adding every NAICS 325 and 326 code the PIC-12 pay table publishes for 2025 means 20,846 jobs appear twice, because each part code sits inside a family code (BLS QCEW, 2025 annual average).",
   "claims": ["src-double-count"]
  },
  "kicker": true,
@@ -8,7 +8,7 @@
   "terms": ["endpoint", "QCEW", "NAICS 326", "NAICS 325", "PIC-12", "FIPS", "private ownership", "annual average", "withheld", "cell", "establishment", "concentration"]
  },
  "plant": [
-  {"text": "If you total plastics, rubber and chemical jobs from a BLS county table yourself, add only the family codes: adding every code the pay page publishes counts 20,846 jobs twice.", "claims": ["src-double-count"]},
+  {"text": "If you total plastics, rubber and chemical jobs from a BLS county table yourself, add only the family codes: adding every code the pay page publishes means 20,846 jobs appear twice.", "claims": ["src-double-count"]},
   {"text": "Check the job base under any concentration figure for your county before you quote it: the site’s largest reading, Geauga County resin at 22.7 times the national share, rests on 491 jobs.", "claims": ["src-lq-fragile"]}
  ],
  "hero": "src-lq-basis",

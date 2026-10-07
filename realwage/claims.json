@@ -2,9 +2,9 @@
   "hero": "rw-flip",
   "data": "realwage.json",
   "kicker": true,
-  "quote": {"text": "In 2024, Akron ranked 13th among 29 US metros with at least 2,000 NAICS 326 jobs on the average weekly wage and 8th once local prices are counted, where $1,291 a week buys like $1,383 (BLS QCEW and BEA RPP).", "claims": ["rw-flip", "rw-wage"]},
+  "quote": {"text": "In 2024, Akron ranked 13th among 29 US metros with at least 2,000 NAICS 326 jobs on the average weekly wage and 8th once local prices are counted, where the average plastics-and-rubber paycheck of $1,291 a week buys like $1,383 (BLS QCEW and BEA RPP).", "claims": ["rw-flip", "rw-wage"]},
   "glossary": {"terms": ["QCEW", "NAICS 326", "withheld", "price level", "nominal"]},
-  "plant": [{"text": "When you recruit from pricier metros, compare offers on what they buy: Akron’s average $1,291 a week buys like $1,383 at national-average prices.", "claims": ["rw-wage"]}, {"text": "Expect some metros to out-pay Akron even after local prices: Los Angeles pays $1,908 a week, which still buys like $1,680 against Akron’s $1,383.", "claims": ["rw-la"]}],
+  "plant": [{"text": "When you recruit from pricier metros, compare offers on what they buy: Akron’s average plastics-and-rubber paycheck is $1,291 a week, and it buys like $1,383 at national-average prices.", "claims": ["rw-wage"]}, {"text": "Expect some metros to out-pay Akron even after local prices: Los Angeles averages $1,908 a week, which still buys like $1,680 against Akron’s $1,383.", "claims": ["rw-la"]}],
   "claims": [
     {
       "id": "rw-flip",

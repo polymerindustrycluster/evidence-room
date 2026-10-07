@@ -4,7 +4,7 @@
   "kicker": true,
   "quote": {"text": "As of August 2026, governments had awarded $85.3M to the Greater Akron polymer cluster and partners had promised $21.0M in match beside it, $106.3M in awards and match together (EDA, Ohio).", "claims": ["hero-awards-match", "total-secured"]},
   "glossary": {"terms": ["match"]},
-  "plant": [{"text": "Watch the Ohio hub’s Translational R&D line, one of the two that reach companies directly: $2.64M of it has not yet been passed on to a named recipient.", "claims": ["unrouted-split", "company-facing-fourteen"]}],
+  "plant": [{"text": "Watch the Ohio hub’s Translational R&D line, one of the two that reach companies directly: $2.64M of Translational R&D has not yet been passed on to a named recipient.", "claims": ["unrouted-split", "company-facing-fourteen"]}],
   "claims": [
     {
       "id": "total-secured",

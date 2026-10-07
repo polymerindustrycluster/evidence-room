@@ -330,13 +330,13 @@ try {
   console.error("hub: state ranking chart unavailable —", e.message);
 }
 
-/* WHY THE JOB COUNTS DIFFER, AS A TABLE (W4, 7 October 2026), from _data/jobcounts.json.
-   It sits in the closed card key, so a story's link to #job-counts opens the key first;
+/* WHY THE JOB COUNTS DIFFER, AS A TABLE (W4, 7 October 2026), from _data/jobcounts.json,
+   written into index.html by _data/build/render_static.py. It sits in the closed card key, so a story's link to #job-counts opens the key first;
    a browser that does not open a closed <details> for a fragment would land on its
    summary with the table hidden. Contained like the rest: a failure costs the table, and
    the sentence above it still says why the totals differ. */
 try {
-  await PV.jobCounts(document.querySelector(".pv-jobcounts-mount"));
+  await PV.jobCounts(document.querySelector(".pv-jobcounts-mount"));   // static already; a no-op then
   const reveal = () => {
     const t = location.hash && document.getElementById(location.hash.slice(1));
     const d = t && t.closest("details");

@@ -5,9 +5,9 @@
   "viz": "viz-data.json"
  },
  "kicker": true,
- "quote": {"text": "In August 2026, 710 register records in the GAC-PIC vault carried a qualifying PIC-12+2 address, among them 12 feedstock companies and 235 converters, a record inventory rather than a census of the region’s companies.", "claims": ["chain-neo-total", "chain-supply-demand"]},
+ "quote": {"text": "In August 2026, 710 register records in the GAC-PIC vault carried a qualifying PIC-12+2 address, among them 12 feedstock companies and 235 converters and fabricators, a record inventory rather than a census of the region’s companies.", "claims": ["chain-neo-total", "chain-supply-demand"]},
  "glossary": {"terms": ["PIC-12+2", "PIC-12", "establishment"]},
- "plant": [{"text": "Plan on looking beyond this register for raw materials and feedstock: it lists 12 feedstock companies against 235 converters.", "claims": ["chain-supply-demand"]}],
+ "plant": [{"text": "Plan on looking beyond this register for raw materials and feedstock: it lists 12 feedstock companies against 235 converters and fabricators.", "claims": ["chain-supply-demand"]}],
  "claims": [
   {
    "id": "chain-neo-total",

@@ -103,8 +103,8 @@ Peers is the worked example for the shared template (DECISIONS.md, W4). The eyeb
 hub's question, "Where does Ohio rank?". The #1 figure carries the scope chip from
 `oh-rank-1`'s `scope`. The twelve-county figure, now third in the hero row, links to the hub's
 job-count table. The how-we-checked box carries the `quote` from claims.json. The `.terms`
-aside became the shared "Words on this page" block, mounted where it sat; its Akron sentences
-are `glossary.notes` in claims.json.
+aside became the shared "Words on this page" block, written as static HTML where it sat
+by `_data/build/render_static.py`; its Akron sentences are `glossary.notes` in claims.json.
 
 Since the W4 content PR the eyebrow reads the hub card's short kicker, and an "If you run a
 plant here" box after the closer carries three sentences from `plant` in claims.json, each

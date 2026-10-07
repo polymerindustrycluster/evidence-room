@@ -62,15 +62,21 @@ How the template implements them (Claude, for John's review):
   otherwise its card heading. The hub's static markup is the one source; a story's eyebrow
   carries `data-kicker` and `verify_consistency.py` holds it to those exact words. Most cards
   have only a long heading today, so the content PR either shortens them or accepts long kickers.
-- **The job-count table is rendered from `_data/jobcounts.json`**, each row naming the story
-  claim that prints its total; `index-headcount-key` still re-reads every total from its page's
-  data file. Because a table drawn by script is invisible to the static noun check, the four
-  noun bindings the paragraph carried were replaced by `[jobcounts]`, which ties each row's
-  total, year and story to its clause of that claim and to the story's own claim. A story's link
-  is required once its row is marked `linked`; peers is, and the other four follow in the content PR.
+- **Blocks a reader needs without scripting ship as static HTML** (PR #54 review): the hub's
+  job-count table and every "Words on this page" block are written into the page's own
+  index.html by `_data/build/render_static.py`, between `pv:static` marker comments, from the
+  same files the script reads; the script leaves them alone when present. `verify_consistency.py`
+  `[static]` fails a region that is missing, empty or stale. A new page declares its glossary,
+  adds the two marker lines and runs the script.
+- **The job-count table comes from `_data/jobcounts.json`**, each row naming the story claim
+  that prints its total; `index-headcount-key` still re-reads every total from its page's data
+  file and binds each to its industry cell, and `[jobcounts]` ties each row's total, year and
+  story to its clause of that claim and to the story's own claim. The table pans inside its own
+  box on a phone. A story's link is required once its row is marked `linked`; peers is, and the
+  other four follow in the content PR.
 - **Definitions live in `_data/glossary.json`; page-specific sentences, and every figure, live
-  in the page's `glossary.notes`**, where numbers must match that page's checked claims and
-  `verify_nouns.py` reads the block's text as part of the page.
+  in the page's `glossary.notes`**, where numbers must match that page's checked claims; the
+  static block is page text, so the noun check reads it.
 - **Peers' twelve-county figure moved from second to third in the hero row.** There its link to
   the table uses the free line beside the longer concentration note. In second place it pushed
   the first chart 21px past the page's cold-open ceiling. No ceiling was raised.

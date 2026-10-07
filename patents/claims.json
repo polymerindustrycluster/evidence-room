@@ -1,15 +1,15 @@
 {
  "kicker": true,
  "quote": {
-  "text": "Ohio filed 342 polymer patent applications (CPC C08) in 2023, the last complete filing year, down a quarter from 455 in 2015 and in step with the fall in American polymer filings (USPTO, by inventor address).",
+  "text": "Ohio filed 342 polymer patent applications (CPC C08) in 2023, the last complete filing year, down a quarter from Ohio’s polymer filings of 455 in 2015 and in step with the fall in American polymer filings (USPTO, by inventor address).",
   "claims": ["pat-hero-fall"]
  },
  "glossary": {
   "terms": ["CPC"]
  },
  "plant": [
-  {"text": "When you check whether a polymer patent is from Ohio, check both addresses: Ohio has 8,854 polymer applications all-time by inventor address and 3,948 by applicant address.", "claims": ["pat-two-bases"]},
-  {"text": "If you look to Ohio inventors for polymer technology, expect fewer new filings than in 2015: 342 applications in 2023, against 455.", "claims": ["pat-hero-fall"]}
+  {"text": "When you check whether a polymer patent is from Ohio, check both addresses: Ohio’s polymer count is 8,854 applications all-time by inventor address, and its polymer count by applicant address is 3,948.", "claims": ["pat-two-bases"]},
+  {"text": "If you look to Ohio inventors for polymer technology, expect fewer new filings than in 2015: Ohio’s polymer filings were 342 in 2023, against 455.", "claims": ["pat-hero-fall"]}
  ],
  "hero": "pat-two-by-two",
  "_note": "Every complete-year figure re-runs against data/patents.json, which is the same file the charts render from. The degree echo re-runs against the talent page's own shipped data, so the two pages cannot drift apart silently.",
@@ -20,7 +20,7 @@
  "claims": [
   {
    "id": "pat-hero-fall",
-   "text": "Ohio filed 342 polymer patent applications in 2023, the last complete filing year, down a quarter from 455 in 2015 and in step with the American field's fall (second hero card; bars chart; closer).",
+   "text": "Ohio filed 342 polymer patent applications in 2023, the last complete filing year, down a quarter from Ohio’s polymer filings of 455 in 2015 and in step with the American field's fall (second hero card; bars chart; closer).",
    "source": "patents/data/patents.json rows, complete years; CPC C08; USPTO",
    "assert": "(lambda C: C[0]['year'] == 2015 and C[-1]['year'] == 2023 and C[0]['ohio'] == 455 and C[-1]['ohio'] == 342 and 0.24 <= 1 - C[-1]['ohio'] / C[0]['ohio'] <= 0.26)([r for r in D['p']['rows'] if r['complete']])",
    "actual": "[(r['year'], r['ohio']) for r in D['p']['rows'] if r['complete']]",
