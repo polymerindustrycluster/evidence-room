@@ -8,6 +8,7 @@ import {spawnSync} from "node:child_process";
 import {launch} from "./_browser.mjs";
 import {gotoReady} from "./_ready.mjs";
 import {runChecks} from "./_page-runner.mjs";
+import {createGate as alttext} from "./alttext.mjs";
 
 let browser;
 before(async () => { browser = await launch(); });
@@ -91,6 +92,20 @@ test("shared probes keep independent findings and reject state contamination", a
     const missing = await runChecks({check: make("check")}, ["missing"]);
     assert.equal(missing.check.code, 1); assert.equal(missing.check.inspected, 0);
   } finally { process.chdir(previous); rmSync(root, {recursive: true, force: true}); }
+});
+
+test("the extracted alt-text probe still catches its own missing-description defect", async () => {
+  await withPage(async p => {
+    await gotoReady(p, html('<figure><svg role="img" width="300" height="200"><title>This chart describes the measured employment in eight industries.</title><text x="20" y="30">8</text></svg></figure>'));
+    const clean = alttext(["sample"], {log() {}});
+    await clean.check("sample", p);
+    assert.equal(clean.finish(), 0);
+    await p.locator("svg title").evaluate(e => e.remove());
+    const lines = [], hurt = alttext(["sample"], {log: line => lines.push(line)});
+    await hurt.check("sample", p);
+    assert.equal(hurt.finish(), 1);
+    assert.match(lines.join("\n"), /a chart with no accessible description/);
+  });
 });
 
 test("CI image follows the exact lockfile pin and rejects mismatches", () => {
