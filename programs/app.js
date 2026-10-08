@@ -146,15 +146,15 @@ figures([
   ["key", pct(L.technician.survive_pct), "of substantive technician programs active in 2023",
    `${N(L.technician.still)} of ${N(L.technician.ever)} programs above ten lifetime completions
     reported a completion in 2023. The peer trades reached ${pct(L.control.survive_pct)},
-    polymer degrees ${pct(L.degree.survive_pct)}.`],
+    polymer degrees ${pct(L.degree.survive_pct)}.`, {scope: "prog-spine-hollowing"}],
   ["", pct(D.base.both_pct), "of technician records both small and brief",
    `${D.base.both} of ${D.base.ever} records: ten or fewer lifetime completions and
-    a first-to-last reporting span of five years or less, inclusive. Neither measure establishes failure.`],
+    a first-to-last reporting span of five years or less, inclusive. Neither measure establishes failure.`, {scope: "prog-base-rate"}],
   ["", String(D.ua.latest), "Akron completions in the selected codes, 2023",
    `${D.ua.masters_2023} master’s degrees, ${D.ua.doctorate_2023} doctorates and
-    ${D.ua.bachelor_2016_2023.at(-1)} bachelor’s degrees.`],
+    ${D.ua.bachelor_2016_2023.at(-1)} bachelor’s degrees.`, {scope: "prog-ua-collapse"}],
   ["", pct(D.ua.pct_off), "below Akron’s 2016 completions peak",
-   `The selected-code record ends in 2023 and does not measure subsequent grant outcomes.`],
+   `The selected-code record ends in 2023 and does not measure subsequent grant outcomes.`, {scope: "prog-ua-collapse"}],
 ]);
 
 /* ------------------------------------------- THE HERO GRAPHIC: the spine chart.

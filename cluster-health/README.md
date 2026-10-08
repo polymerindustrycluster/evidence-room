@@ -114,6 +114,17 @@ FY2026 remains excluded from the closed-year average and standing.
 
 The revision calibration in the tinted band comes from `revisions/data/revisions.json`.
 
+## W4 reader furniture, 2026-10-07
+
+The eyebrow is the hub's question, "Are jobs and workplaces moving together?". The 17,770
+total links to the hub's job-count table from inside the table block under the first chart,
+because on its hero card, or after the lede above the chart, the link would push the first
+chart past its cold-open ceiling (no headroom at 1440). The hero cards carry no scope chip
+and the page has no quote yet: at this page's four-column card width a chip wraps to three
+lines and would move the first chart down, and the quote needs a claim that carries a chip
+(John to decide). The "Words on this page" block and "If you run a plant here" are declared
+in claims.json (`glossary`, `plant`).
+
 ## Rebuild
 
 ```

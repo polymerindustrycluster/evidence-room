@@ -218,7 +218,7 @@ PV.figures([
    `half of revised months moved less; these prices move ` +
    `${STEPMED.toFixed(2)}% in an ordinary month`],
   ["", up + " · " + down, "up · down",
-   "a near-even split, with no sign that first estimates run high or low"]
+   "a near-even split, with no sign that first estimates run high or low", {scope: "rev-lean"}]
 ]);
 
 /* =============================================== 1. the revision, three small multiples

@@ -176,12 +176,12 @@ PV.figures([
      can be ranked, and the count is counted. */
   ["key", fx(paint.lq), "paint & coatings",
    `strongest of the ${word(CORE.length)} industries counted here, ${LATEST}. More
-    coatings work per job here than the country has.`],
-  ["", fx(rubber.lq), "rubber products", "the industry Akron is named for"],
+    coatings work per job here than the country has.`, {scope: "lq-paint-latest"}],
+  ["", fx(rubber.lq), "rubber products", "the industry Akron is named for", {scope: "lq-rubber-latest"}],
   ["", N(clusterJobs), "polymer cluster jobs",
-   `of ${regionM} million in the region, about one job in ${oneIn(clusterJobs)}`],
+   `of ${regionM} million in the region, about one job in ${oneIn(clusterJobs)}`, {scope: "lq-cluster-size", differs: true}],
   ["", Math.round(cuyShare * 100) + "%", "paint jobs in Cuyahoga",
-   `${N(cuyPaint.emp)} of the ${N(paint.emp)} paint jobs the bureau publishes`]
+   `${N(cuyPaint.emp)} of the ${N(paint.emp)} paint jobs the bureau publishes`, {scope: "lq-cuyahoga-paint"}]
 ]);
 
 /* The byline. Every element of it is read from the data rather than typed, so the month

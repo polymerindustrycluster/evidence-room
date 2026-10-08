@@ -1,0 +1,66 @@
+{
+ "_readme": [
+  "WHY THE JOB COUNTS DIFFER (DECISIONS.md, W4, 7 October 2026). Five stories print five job",
+  "totals for the same twelve counties. The hub renders this file as a five-row table",
+  "(PV.jobCounts, index/#job-counts), and a story whose number is a row here prints a one-line",
+  "link to it at the foot of that number (PV.differsLink) once its row is marked linked.",
+  "Each row names the story's claim that prints the total. verify_consistency.py [jobcounts]",
+  "fails a row whose total or year is not in that claim's own words, or whose total is not in",
+  "the hub's index-headcount-key claim (which re-reads every total from its page's data file);",
+  "tools/disclosure.mjs fails a table that differs from this file, a linked story with no link,",
+  "and a link on a page with no linked row. Unlinked rows are printed as pending, not passed."
+ ],
+ "anchor": "job-counts",
+ "rows": [
+  {
+   "total": "17,770",
+   "industry": "Plastics and rubber products (NAICS 326)",
+   "year": "2025",
+   "source": "BLS payroll census (QCEW)",
+   "story": "cluster-health",
+   "label": "Cluster health",
+   "claim": "workplaces-recent-contrast",
+   "linked": true
+  },
+  {
+   "total": "18,594",
+   "industry": "Plastics and rubber products (NAICS 326)",
+   "year": "2024",
+   "source": "BLS payroll census (QCEW)",
+   "story": "peers",
+   "label": "Rankings",
+   "claim": "pic12-total",
+   "linked": true
+  },
+  {
+   "total": "17,725",
+   "industry": "Plastics and rubber products (NAICS 326)",
+   "year": "2025, start of the third quarter",
+   "source": "Census Quarterly Workforce Indicators (QWI)",
+   "story": "churn",
+   "label": "Churn",
+   "claim": "churn-stock-and-flow",
+   "linked": true
+  },
+  {
+   "total": "24,032",
+   "industry": "Resin, paint, and plastics and rubber (NAICS 3252, 3255 and 326); a floor, because some counties are withheld",
+   "year": "2025",
+   "source": "BLS payroll census (QCEW)",
+   "story": "location-quotient",
+   "label": "Concentration",
+   "claim": "lq-cluster-size",
+   "linked": true
+  },
+  {
+   "total": "33,529",
+   "industry": "All chemical manufacturing plus plastics and rubber (NAICS 325 and 326), counted once",
+   "year": "2025",
+   "source": "BLS payroll census (QCEW)",
+   "story": "wages",
+   "label": "Wages",
+   "claim": "wage-mfg-overlap",
+   "linked": true
+  }
+ ]
+}

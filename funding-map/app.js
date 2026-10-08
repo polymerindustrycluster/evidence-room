@@ -1048,13 +1048,13 @@ function loadData(file) {
     const named = DATA.recipients.reduce((a, r) => a + r.total, 0);
     PV.figures([
       ['key', `<span id="hero-count" data-value="${t.awards}">${fmtHero(t.awards)}</span>`,
-        'Awarded by government', 'the three signed awards this page follows'],
+        'Awarded by government', 'the three signed awards this page follows', {scope: "hero-awards-match"}],
       ['', fmtHero(t.match), 'Promised beside it',
-        'match and cost share from partners, not the state: promised, not awarded'],
+        'match and cost share from partners, not the state: promised, not awarded', {scope: "hero-awards-match"}],
       ['', fmtHero(t.total), 'The two added together',
-        'the total the region reports as secured'],
+        'the total the region reports as secured', {scope: "total-secured"}],
       ['', fmtHero(named), 'Already names a recipient',
-        `of the money awarded; the other ${fmt(t.awards - named)} sits in two Ohio lines`]
+        `of the money awarded; the other ${fmt(t.awards - named)} sits in two Ohio lines`, {scope: "named-vs-awarded"}]
     ]);
   }
 

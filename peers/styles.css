@@ -1,6 +1,6 @@
 /* peers — page-local additions only. House anatomy (.mast/.hero/.band/.closer) and the
    shared column system stay untouched so the layout gates keep applying. This file adds:
-   per-figure chrome, the byline/footer genre furniture, the demoted glossary, the metro
+   per-figure chrome, the byline/footer genre furniture, the metro
    finder, the comparison picker, band-tint pacing, and the per-form mobile re-layout
    override. */
 
@@ -16,12 +16,8 @@
 .byline{margin:15px 0 0;font-size:13px;line-height:1.55;color:#B7D9DE;letter-spacing:.01em}
 .hero .wrap > .byline{max-width:var(--measure)}
 
-/* The glossary, demoted out of the hero. Four terms at footnote scale beside the first
-   chart, where "suppresses" is first used, instead of six lines of 19px hero type in
-   front of the finding (page-design § hero). */
-.terms{margin:18px 0 0;max-width:var(--measure);font-size:14px;line-height:1.6;
-  color:#4A5457;border-left:3px solid var(--line);padding:2px 0 2px 14px}
-.terms b{font-weight:700;color:var(--text)}
+/* The glossary, demoted out of the hero and since W4 (7 October 2026) the shared
+   "Words on this page" block (_shared/pic-viz.css .pv-words), mounted where this aside sat. */
 
 /* Overflow from a source line lands INSIDE the figure's own table disclosure, where the
    reader who wants the arithmetic already is — instead of spending caption ink in front

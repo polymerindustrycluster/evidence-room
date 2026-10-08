@@ -1,11 +1,16 @@
 {
   "hero": "hero-awards-match",
   "data": "funding.json",
+  "kicker": true,
+  "quote": {"text": "As of August 2026, governments had awarded $85.3M to the Greater Akron polymer cluster and partners had promised $21.0M in match beside it, $106.3M in awards and match together (EDA, Ohio).", "claims": ["hero-awards-match", "total-secured"]},
+  "glossary": {"terms": ["match"]},
+  "plant": [{"text": "Watch the Ohio hub’s Translational R&D line, one of the two that reach companies directly: $2.64M of Translational R&D has not yet been passed on to a named recipient.", "claims": ["unrouted-split", "company-facing-fourteen"]}],
   "claims": [
     {
       "id": "total-secured",
       "text": "$106.3M of public money awarded plus what others promised to put in beside it: the standfirst's 'the two added together are the $106.3 million the region reports as secured', the third hero stat card under the key 'The two added together', the meta description and the closer's 'every dollar of the $106.3 million, awarded and promised, has a line on it'. IT IS NO LONGER THE HEADLINE NUMBER. Until 2026-08-29 the H1 printed $106 million one line above a standfirst saying governments awarded $85.3 million, so a reader met a contradiction and then four totals before any explanation. The H1 now prints the awarded money and the standfirst reaches the total in its next sentence.",
-      "source": "meta.totals in funding.json: awards + match",
+      "source": "meta.totals in funding.json: awards + match; awards and match; EDA, Ohio; register as of 13 August 2026",
+      "scope": {"industry": "awards and match", "place": "Greater Akron", "period": "to Aug 2026", "source": "EDA, Ohio"},
       "assert": "D['meta']['totals']['total'] == 106290451 and D['meta']['totals']['awards'] + D['meta']['totals']['match'] == D['meta']['totals']['total'] and abs(D['meta']['totals']['total'] / 1e6 - 106.3) <= 0.05",
       "actual": "D['meta']['totals']",
       "falsified_if": "Any award or match figure revises, so the hand-typed $106.3M and the $106 million headline no longer round from the data.",
@@ -16,7 +21,8 @@
     {
       "id": "hero-awards-match",
       "text": "$85.3M awarded by government, plus $21.0M partners promised to add beside it, the match and cost share. The $85.3M is the H1's key figure and the hero's first stat card; the $21.0M is the second card and the standfirst's 'promised $21.0 million more beside it'; the verdict and the closer carry $85.3M and the table foots against $85,335,784. The match is labelled 'promised, not awarded' on its own card because it is money others agreed to put in, not government money and not money spent, and reading it as awarded is what the old $106 million headline invited.",
-      "source": "meta.totals.awards and meta.totals.match",
+      "source": "meta.totals.awards and meta.totals.match; awards and match; EDA, Ohio; register as of 13 August 2026",
+      "scope": {"industry": "awards and match", "place": "Greater Akron", "period": "to Aug 2026", "source": "EDA, Ohio"},
       "assert": "D['meta']['totals']['awards'] == 85335784 and D['meta']['totals']['match'] == 20954667 and abs(D['meta']['totals']['awards'] / 1e6 - 85.3) <= 0.05 and abs(D['meta']['totals']['match'] / 1e6 - 21.0) <= 0.05",
       "actual": "(D['meta']['totals']['awards'], D['meta']['totals']['match'])",
       "falsified_if": "Either total revises so the hand-typed $85.3M or $21.0M no longer rounds from the data.",
@@ -135,7 +141,8 @@
     {
       "id": "named-vs-awarded",
       "text": "Of the $85.3M awarded, $79.2M has reached a named recipient; $6.17M has not (the standfirst's '$79.2 million already names who receives it', the verdict sentence, A3 annotation, the fourth hero stat card, which now prints the $79.2M with the $6.17M in its sub-line rather than the other way round, the table foot and the closer).",
-      "source": "sum over recipients[].awards[] against meta.totals.awards",
+      "source": "sum over recipients[].awards[] against meta.totals.awards; public awards; EDA, Ohio; register as of 13 August 2026",
+      "scope": {"industry": "public awards", "place": "Greater Akron", "period": "to Aug 2026", "source": "EDA, Ohio"},
       "assert": "(lambda s: s == 79170176 and D['meta']['totals']['awards'] - s == 6165608 and abs(s / 1e6 - 79.2) <= 0.05 and abs((D['meta']['totals']['awards'] - s) / 1e6 - 6.17) <= 0.005)(sum(w['amount'] for r in D['recipients'] for w in r['awards']))",
       "actual": "(sum(w['amount'] for r in D['recipients'] for w in r['awards']), D['meta']['totals']['awards'] - sum(w['amount'] for r in D['recipients'] for w in r['awards']))",
       "falsified_if": "A new sub-grant executes or an award revises, so the named-recipient sum leaves $79,170,176 and $79.2M / $6.17M stop rounding from the data.",

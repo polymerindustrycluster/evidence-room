@@ -1,6 +1,27 @@
 {
   "hero": "oh-rank-1",
   "data": "peers.json",
+  "kicker": true,
+  "quote": {
+    "text": "Ohio had more private plastics and rubber manufacturing jobs (NAICS 326) than any other state in 2024: 54,846, which is 10,248 more than second-place Texas (BLS QCEW, 2024 annual average).",
+    "claims": ["oh-rank-1", "oh-jobs", "oh-lead-texas"]
+  },
+  "plant": [
+    {"text": "Plan for a downturn to reach further here: in Akron, plastics and rubber fills 4.69 times the national share of the local job base, so a slump in the industry touches more of the local economy than it would elsewhere.",
+     "claims": ["akron-lq"]},
+    {"text": "When you compare your region with others, start from state or county figures: only 155 of 382 metros publish a plastics and rubber jobs figure, so a metro ranking leaves most places unknown.",
+     "claims": ["metro-visibility"]},
+    {"text": "Do not benchmark your plant’s headcount against Akron’s average of about 59 people a site, which is taken across 117 establishments of every size and describes no single plant.",
+     "claims": ["akron-per-site"]}
+  ],
+  "glossary": {
+    "terms": ["QCEW", "NAICS 326", "withheld", "cell", "establishment", "metro area", "concentration", "private ownership", "annual average"],
+    "notes": {
+      "NAICS 326": "It is what every number on this page counts.",
+      "metro area": "The Akron metro is two counties, Summit and Portage, and their job figures come to its metro total of 6,910. They reconcile because the metro is exactly those two counties and nothing else. Counties and metro areas are still separate published geographies, each with its own totals, so this page never adds a county figure to a metro one.",
+      "concentration": "Akron’s 4.69× is nearly five times the national slice. That is what the cluster is built on. It is also how much of the local job base rides on one industry: Akron ranks eighth on concentration among the 155 metros BLS discloses."
+    }
+  },
   "claims": [
     {
       "id": "oh-rank-1",
@@ -11,6 +32,7 @@
       "falsified_if": "A 2024 revision moves another state above Ohio, or BLS restates NAICS 326.",
       "breaks_if": "A 2024 revision moves another state above Ohio, or BLS redefines plastics and rubber.",
       "guards": "Ohio led the country in plastics and rubber jobs in 2024.",
+      "scope": {"industry": "NAICS 326", "place": "Ohio", "period": "2024 annual avg", "source": "BLS QCEW"},
       "official_check": "Rank computed directly from BLS annual_avg_emplvl; no derived quantity."
     },
     {

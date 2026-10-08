@@ -172,16 +172,16 @@ const INFL = (CPI[CPIL] / CPIB - 1) * 100;
 PV.figures([
   ["key", vsB(gas.now.index), "gas, against January 2019",
    `cheaper than before the 2022 spike, which is the buyer’s good news. The whole rise
-    given back, and then some (${pct(gas.retraced)})`],
+    given back, and then some (${pct(gas.retraced)})`, {scope: "cs-gas-below-seven"}],
   ["", vsB(resinMfg.now.index), "resin, against January 2019",
    `the middle seat: about a third of the rise given back, the rest still on the
-    invoice in ${monF(resinMfg.now.date)}`],
+    invoice in ${monF(resinMfg.now.date)}`, {scope: "cs-resin-about-third"}],
   ["", vsB(prodMfg.now.index), "products, against January 2019",
-   `nothing given back in cash, and ${monF(prodMfg.now.date)} is the dearest month on record here`],
+   `nothing given back in cash, and ${monF(prodMfg.now.date)} is the dearest month on record here`, {scope: "cs-product-forty"}],
   ["", sp(last.v), "points, products over resin",
    `since 2019 product prices have grown ${Math.abs(last.v).toFixed(1)} percentage points
     more than resin prices; at the 2021 trough they trailed by
-    ${Math.abs(sTrough.v).toFixed(1)}. A gap between two indexes, not a profit margin.`]
+    ${Math.abs(sTrough.v).toFixed(1)}. A gap between two indexes, not a profit margin.`, {scope: "cs-spread-now"}]
 ]);
 
 /* The vignette stat band: one part, priced at three moments, from the same indexes. */

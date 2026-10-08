@@ -104,6 +104,14 @@ technician records and degree composition were rechecked against the held siblin
 The missing 2020 remains missing in both line charts. All six evidence charts re-layout
 at phone width; table records remain available. See the dated in-page correction.
 
+## W4 reader furniture, 2026-10-07
+
+The eyebrow is now the hub's question, "What happened to training?" (DECISIONS.md, W4). Each
+of the four hero cards carries a scope chip (`prog-spine-hollowing`, `prog-base-rate`, and
+`prog-ua-collapse` on the two Akron cards); the cards sit below the first chart, so the cold
+open is unchanged. claims.json also carries the `quote`, the "Words on this page" `glossary`
+and two "If you run a plant here" items.
+
 ## Run and publish
 
 ```

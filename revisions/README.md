@@ -74,6 +74,15 @@ Raw pulls live beside that script so a derivation can be re-run without re-fetch
   label at -1.72, not -1.61, because at -1.61 it printed into the Sep 2021 callout anchored
   at ys(-1.415)+4. Re-check both if the data or `LIM` changes.
 
+## W4 reader furniture, 2026-10-07
+
+The eyebrow is now the hub's question, "How much do the figures change?" (DECISIONS.md, W4).
+The 137 · 121 card carries the scope chip from `rev-lean`, whose source field now names
+its reference months (2019–2026); it fits in the 22px that card had spare beside the taller
+0.15% card. The other three cards carry none: their rows have no spare height, so a chip
+would push the first chart down 19px past its cold-open ceiling. claims.json also carries the `quote`, the "Words on this
+page" `glossary` and three "If you run a plant here" items.
+
 ## Run and publish
 
 ```

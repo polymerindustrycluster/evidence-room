@@ -4,11 +4,16 @@
   "chain": "chain-data.json",
   "viz": "viz-data.json"
  },
+ "kicker": true,
+ "quote": {"text": "In August 2026, 710 register records in the GAC-PIC vault carried a qualifying PIC-12+2 address, among them 12 feedstock companies and 235 converters and fabricators, a record inventory rather than a census of the region’s companies.", "claims": ["chain-neo-total", "chain-supply-demand"]},
+ "glossary": {"terms": ["PIC-12+2", "PIC-12", "establishment"]},
+ "plant": [{"text": "Plan on looking beyond this register for raw materials and feedstock: it lists 12 feedstock companies against 235 converters and fabricators.", "claims": ["chain-supply-demand"]}],
  "claims": [
   {
    "id": "chain-neo-total",
    "text": "710 register records carry a qualifying Northeast Ohio address. That is what the register holds, not a count of the region's polymer companies.",
-   "source": "GAC-PIC vault company notes, extracted 2026-08-14; PIC-12+2 (the CODEBOOK.md county list: PIC-12 plus Columbiana and Tuscarawas), county in the fourteen AND state Ohio or blank",
+   "source": "GAC-PIC vault company notes, extracted 2026-08-14; PIC-12+2 (the CODEBOOK.md county list: PIC-12 plus Columbiana and Tuscarawas), county in the fourteen AND state Ohio or blank; register records",
+   "scope": {"industry": "register records", "place": "PIC-12+2", "period": "Aug 2026", "source": "GAC-PIC vault"},
    "assert": "D['chain']['meta']['neo_total'] == 710",
    "actual": "D['chain']['meta']['neo_total']",
    "falsified_if": "The vault extract is re-run and companies are added, reclassified, or an address is filled in. NOTE: this page uses PIC-12+2, not PIC-12. That fourteen-county set contains all twelve plus Columbiana and Tuscarawas and will not reconcile with cluster-health. [2026-10-04: this set was called NEO-14 here, the name of the vault's different fourteen-county set; renamed PIC-12+2.] [2026-09-11: was pinned at 785, which counted 64 Wayne County MICHIGAN rows joined on the county name, one Missouri headquarters and ten records with no address at all. The 75 are held out by name in meta.holdout, not deleted; see chain-holdout. The earlier note said the pin would 'fail loudly when the builder is re-keyed on state' — it did.]",

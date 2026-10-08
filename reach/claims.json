@@ -1,6 +1,10 @@
 {
   "hero": "rch-network-breadth",
   "data": "reach.json",
+  "kicker": true,
+  "quote": {"text": "Between 2015 and 2024, 985 of the 1,222 papers classified in polymers at Akron and Case Western that name a corresponding author named one at either university (OpenAlex).", "claims": ["rch-region-leads"]},
+  "glossary": {"terms": ["OpenAlex", "corresponding author"]},
+  "plant": [{"text": "Expect to find the lead contact for most of the region’s polymer papers locally: 985 of 1,222 that name a corresponding author name one at Akron or Case Western.", "claims": ["rch-region-leads"]}],
   "claims": [
     {
       "id": "rch-network-breadth",
@@ -21,7 +25,8 @@
     {
       "id": "rch-partner-bases",
       "text": "633 institutions share at least one paper with the region, and 629 remain once the four flagged affiliation matches are set aside; the 629 are the partner count the hero figure and the closer print, they sit in 50 countries, and the map draws 266 of them (network-band lede, hero figure, closer).",
-      "source": "reach.json totals.partners (every co-authoring institution in the pull), totals.partners_shown and totals.quarantined (derive_reach.py splits the first into the second and the quarantine list)",
+      "source": "reach.json totals.partners (every co-authoring institution in the pull), totals.partners_shown and totals.quarantined (derive_reach.py splits the first into the second and the quarantine list); OpenAlex works 2015–2024 in subfield 2507, Polymers and Plastics",
+      "scope": {"industry": "polymers", "place": "Akron and Case Western", "period": "2015–2024", "source": "OpenAlex"},
       "assert": "D['totals']['partners'] == 633 and D['totals']['partners_shown'] == 629 and D['totals']['quarantined'] == len(D['quarantined']) == 4 and D['totals']['partners'] - D['totals']['quarantined'] == D['totals']['partners_shown'] and D['totals']['countries'] == 50 and all(q['country'] in {c['code'] for c in D['countries']} for q in D['quarantined']) and len(D['map']) == 266 <= D['totals']['partners_shown'] and not ({m['n'] for m in D['map']} & {q['name'] for q in D['quarantined']})",
       "actual": "(D['totals']['partners'], D['totals']['partners_shown'], D['totals']['quarantined'], D['totals']['countries'], len(D['map']))",
       "falsified_if": "Any of the counts moves, the quarantine stops being the whole difference between the two partner counts, a quarantined institution reaches the map, or a quarantined institution sits in a country the retained partners do not, which would make the 50 countries true of one count and not the other. [2026-10-04, NEW: the hub card and this page's network paragraph printed 633 partners, the hero figure and the closer printed 629, and no surface said they were the same partners counted before and after the four quarantined affiliation matches. Each is now labeled where it is printed and the network paragraph reconciles them. The 50 countries hold on both counts because every quarantined institution is in the United States or China, which the retained partners already cover.]",
@@ -34,7 +39,8 @@
     {
       "id": "rch-region-leads",
       "text": "985 of 1,222 papers naming a corresponding author had one here. That count includes papers with no outside co-author at all, not just papers won within a partnership. The page prints that share as 81%, from the stored led_share, which must equal 985 / 1,222 to four places.",
-      "source": "as above; is_corresponding, populated on about 84 percent of the corpus",
+      "source": "as above; is_corresponding, populated on about 84 percent of the corpus; OpenAlex works 2015–2024 in subfield 2507, Polymers and Plastics",
+      "scope": {"industry": "polymers", "place": "Akron and Case Western", "period": "2015–2024", "source": "OpenAlex"},
       "assert": "D['totals']['led'] == 985 and D['totals']['joined'] == 237 and D['totals']['attributable'] == 1222 and D['totals']['no_corresponding'] == 226 and D['totals']['led_share'] == round(D['totals']['led'] / D['totals']['attributable'], 4) and D['totals']['joined_share'] == round(D['totals']['joined'] / D['totals']['attributable'], 4) and tofixed(D['totals']['led_share'] * 100, 0) == '81'",
       "actual": "(D['totals']['led'], D['totals']['joined'], D['totals']['no_corresponding'], D['totals']['led_share'], tofixed(D['totals']['led_share'] * 100, 0))",
       "falsified_if": "Any of the four counts moves. Pinned to exact values rather than a band, since 'led' is a raw tally of papers with a local corresponding author -- including papers with no outside institution -- and a rounded fraction like 'four in five' invited readers to assume it measured leadership within collaborations only. The 226 papers with no corresponding author flagged are excluded from the denominator and must stay excluded rather than assigned. Extended 2026-09-28 (round 4): the page prints led_share, not the counts, so a led_share that disagrees with led / attributable, or that rounds to anything but 81, fails it.",
@@ -50,7 +56,8 @@
     {
       "id": "rch-impact-top-decile",
       "text": "309 of the 1,364 papers with an OpenAlex citation-percentile score are in their field and year’s top tenth: 22.7 percent. The denominator is the scored subset of 1,448 collected works. The page prints it as 23% and the top hundredth as 2.4 percent, from stored shares that must equal those counts over 1,364.",
-      "source": "OpenAlex citation_normalized_percentile, field- and age-normalized",
+      "source": "OpenAlex citation_normalized_percentile, field- and age-normalized; OpenAlex works 2015–2024 in subfield 2507, Polymers and Plastics",
+      "scope": {"industry": "polymers", "place": "Akron and Case Western", "period": "2015–2024", "source": "OpenAlex"},
       "assert": "D['totals']['top10'] == 309 and D['totals']['pct_n'] == 1364 and tofixed(100 * D['totals']['top10'] / D['totals']['pct_n'], 1) == '22.7' and D['totals']['top10_share'] == round(D['totals']['top10'] / D['totals']['pct_n'], 4) and D['totals']['top1_share'] == round(D['totals']['top1'] / D['totals']['pct_n'], 4) and tofixed(D['totals']['top10_share'] * 100, 0) == '23' and tofixed(D['totals']['top1_share'] * 100, 1) == '2.4'",
       "actual": "(D['totals']['top10'], D['totals']['pct_n'], tofixed(100 * D['totals']['top10'] / D['totals']['pct_n'], 1), tofixed(D['totals']['top10_share'] * 100, 0), tofixed(D['totals']['top1_share'] * 100, 1))",
       "falsified_if": "Either the top-decile count or the number of scored papers changes; recompute the percentage from those counts rather than an already rounded share. Extended 2026-09-28 (round 4): the page prints the stored top10_share and top1_share, so either disagreeing with its count over pct_n fails it.",

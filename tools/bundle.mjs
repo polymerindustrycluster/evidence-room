@@ -53,7 +53,7 @@ async function inputManifest(dir) {
   }
   const shared = path.join(WEB, "_shared");
   if (existsSync(shared)) abss.push(...await listFilesRecursive(shared));
-  for (const f of ["SOURCES.json", "cite.json", "corrections_by_page.json"]) {
+  for (const f of ["SOURCES.json", "cite.json", "corrections_by_page.json", "glossary.json", "jobcounts.json"]) {
     const p = path.join(WEB, "_data", f);
     if (existsSync(p)) abss.push(p);
   }
@@ -187,6 +187,17 @@ async function bundle(name) {
 <script type="application/json" data-pv-file="corrections_by_page.json">${esc(cj)}</script>`);
   }
 
+  /* THE W4 READER FURNITURE'S TWO SHARED FILES (DECISIONS.md, 7 October 2026): the
+     definitions behind every "Words on this page" block, and the five job totals behind the
+     hub's table and each story's link to it. Small, and shared like the registry. */
+  for (const f of ["glossary.json", "jobcounts.json"]) {
+    const fp = path.join(WEB, "_data", f);
+    if (!existsSync(fp)) continue;
+    const fj = await read(fp);
+    html = html.replace("</style>", () =>
+      `</style>
+<script type="application/json" data-pv-file="${f}">${esc(fj)}</script>`);
+  }
   const claimsPath = path.join(dir, "claims.json");
   if (existsSync(claimsPath)) {
     const cj = await read(claimsPath);

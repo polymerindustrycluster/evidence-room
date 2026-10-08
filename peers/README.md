@@ -97,6 +97,19 @@ where it went, so nothing reads as deleted:
   because the committed `meta.row` and `meta.derived_note` carry backticks that rendered as
   literal characters. Fix the builder to remove them at source and this override can go.
 
+## W4 reader furniture, 2026-10-07
+
+Peers is the worked example for the shared template (DECISIONS.md, W4). The eyebrow is the
+hub's question, "Where does Ohio rank?". The #1 figure carries the scope chip from
+`oh-rank-1`'s `scope`. The twelve-county figure, now third in the hero row, links to the hub's
+job-count table. The how-we-checked box carries the `quote` from claims.json. The `.terms`
+aside became the shared "Words on this page" block, written as static HTML where it sat
+by `_data/build/render_static.py`; its Akron sentences are `glossary.notes` in claims.json.
+
+Since the W4 content PR the eyebrow reads the hub card's short kicker, and an "If you run a
+plant here" box after the closer carries three sentences from `plant` in claims.json, each
+bound to the claim it names (akron-lq, metro-visibility, akron-per-site).
+
 ## Run and publish
 
 ```

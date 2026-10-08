@@ -85,12 +85,12 @@ const SUBJ_YEARS = S.filter(r => r.polymer + r.bio).map(r => r.year);
 const SUBJ_GAP = SUBJ_YEARS.length > 1 ? SUBJ_YEARS.at(-1) - SUBJ_YEARS.at(-2) - 1 : 0;
 
 PV.figures([
-  ["key", N(T.coauthored), "papers naming both", `since ${S[0].year}; one author may hold both`],
+  ["key", N(T.coauthored), "papers naming both", `since ${S[0].year}; one author may hold both`, {scope: "col-standfirst-awards"}],
   /* The bound here is OpenAlex subfield 2507, a classification — see meta.polymer_bound. An
      earlier version of this card said "a keyword in the text, not a subject code", which was
      the exact inverse of the method, and sat directly under a standfirst saying so. */
-  ["", N(T.coauthored_polymer), "classified in polymers", "subfield 2507, not a keyword match"],
-  ["", String(T.joint_awards), "joint NSF projects", usd(T.joint_award_dollars) + " combined"],
+  ["", N(T.coauthored_polymer), "classified in polymers", "subfield 2507, not a keyword match", {scope: "col-rarely-about-polymers"}],
+  ["", String(T.joint_awards), "joint NSF projects", usd(T.joint_award_dollars) + " combined", {scope: "col-they-do-collaborate"}],
   /* Bounded to the window on purpose: the award data ends with the window and cannot speak
      to what started after it. CWRU leads the NEO-SMART NSF Engine, awarded 2026-07-13, and Akron
        is among its core partners — outside this
@@ -98,7 +98,7 @@ PV.figures([
        answer only who led it, which left the one question a reader actually has — are these
        two in it together? — hanging over a page about whether these two work together.
        Disclosing a gap is not the same as closing it. */
-  ["", String(T.newest_joint_award_year), "newest joint award", `none since, through ${S.at(-1).year}`]
+  ["", String(T.newest_joint_award_year), "newest joint award", `none since, through ${S.at(-1).year}`, {scope: "col-no-new-joint-award"}]
 ]);
 
 /* ------------------------------------------------------------- 1. the record */

@@ -118,6 +118,34 @@ const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
 const list = names.length ? names
   : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
 
+/* THE W4 READER FURNITURE (DECISIONS.md, 7 October 2026), asserted rendered. Each piece is
+ * opt-in per page, declared in data; once declared, a missing or differing piece FAILS.
+ *   scope chip   every claim carrying `scope` renders a chip inside a hero figure reading
+ *                exactly "industry · place · period · source"; a chip naming a claim with
+ *                no scope fails. A scope with `unchipped` (why no chip fits) needs no chip;
+ *                the waiver prints as a note.
+ *   quote this   claims.json `quote` renders, word for word, in the how-we-checked box
+ *                directly above the cite line; a rendered quote nobody declared fails.
+ *   words block  claims.json `glossary` renders one closed "Words on this page" block whose
+ *                items are exactly the declared terms, in order, each reading the shared
+ *                definition plus the page's note (_data/glossary.json); a declared term the
+ *                page never prints outside the block fails as a word not on this page.
+ *   differs link a story whose _data/jobcounts.json row is marked linked carries one link
+ *                to ../index/#<anchor>, inside the figure that prints its total or directly
+ *                after the passage that prints it; a link on a page with no linked row
+ *                fails. The hub's table must equal the file.
+ *   plant box    claims.json `plant` renders one "If you run a plant here" box directly
+ *                after the closer, its items word for word and naming the same claims; a
+ *                box nobody declared fails.
+ * Whether the data agree with each other (a quote's numbers, a kicker's words, a row's
+ * claim) is verify_consistency.py's [scope]/[quote]/[kicker]/[glossary]/[jobcounts]. */
+const GLOSS = JSON.parse(readFileSync("_data/glossary.json", "utf8"));
+const JOBS = JSON.parse(readFileSync("_data/jobcounts.json", "utf8"));
+const specOf = n => { try { return JSON.parse(readFileSync(`${n}/claims.json`, "utf8")); } catch { return null; } };
+const scopeLine = sc => [sc.industry, sc.place, sc.period, sc.source].join(" \u00b7 ");
+const wordsItem = (g, term) => { const t = GLOSS.terms.find(x => x.term === term);
+  return t ? [t.short, t.long, (g.notes || {})[term]].filter(Boolean).join(" ") : null; };
+
 const REG = JSON.parse(readFileSync("_data/SOURCES.json", "utf8"));
 const CORR = JSON.parse(readFileSync("_data/corrections_by_page.json", "utf8"));
 
@@ -163,12 +191,41 @@ for (const n of list) {
                         return c ? [norm(c.textContent), c.querySelector("a")?.getAttribute("href") || null] : null; })(),
                       corrInByline: !!by?.querySelector(".pv-corr-sum")};
             })(),
+            w4: (() => {
+              const t = e => norm(e?.textContent || "");
+              const q = document.querySelector(".pv-quote");
+              const words = [...document.querySelectorAll(".pv-words")];
+              const rest = document.body.cloneNode(true);
+              rest.querySelectorAll("script,style,.pv-words").forEach(e => e.remove());
+              return {
+                scopes: [...document.querySelectorAll(".pv-scope")].map(e =>
+                  [e.dataset.claim || null, t(e), !!e.closest(".figv,[data-hero-figure]")]),
+                plant: [...document.querySelectorAll(".pv-plant")].map(b => ({
+                  head: t(b.querySelector("h2")),
+                  afterCloser: (() => { const band = b.closest(".pv-plant-band");
+                    const prev = band?.previousElementSibling;
+                    return !document.querySelector(".closer") || !!prev?.classList.contains("closer"); })(),
+                  items: [...b.querySelectorAll("li")].map(li => [li.dataset.claims || "", t(li)])})),
+                quote: q ? {text: t(q.querySelector(".pv-quote-text")),
+                            inBox: !!q.closest(".pv-made"),
+                            aboveCite: !!q.nextElementSibling?.classList.contains("pv-cite")} : null,
+                words: words.map(d => ({open: d.open, summary: t(d.querySelector("summary")),
+                  items: [...d.querySelectorAll("li")].map(li => [li.dataset.term, t(li)])})),
+                rest: norm(rest.textContent).toLowerCase(),
+                differs: [...document.querySelectorAll(".pv-differs a")].map(a => [a.getAttribute("href"),
+                  t(a), a.closest(".figv") ? t(a.closest(".figv").querySelector(".n"))
+                    : t(a.closest(".pv-differs").previousElementSibling)]),
+                jobs: (() => { const m = document.querySelector("table.pv-jobcounts")?.closest(".pv-jobcounts-mount");
+                  return m ? {id: m.id, rows: [...m.querySelectorAll("tbody tr")].map(tr =>
+                    [...tr.cells].map(c => t(c)).concat(tr.querySelector("a")?.getAttribute("href") || ""))} : null; })(),
+              };
+            })(),
             pageLinks: [...document.querySelectorAll("a[href^='../']")].map(a => [
               (a.getAttribute("href").match(/^\.\.\/([a-z-]+)\/?$/) || [])[1] || null,
               a.nextElementSibling?.classList.contains("status-tag")
                 ? a.nextElementSibling.textContent.trim() : null])};
   });
-  const probs = [];
+  const probs = [], notes = [];
   /* THE CORRECTIONS LINE (DECISIONS.md D3; John, 2026-10-06): in the how-we-checked box,
      never in the byline row, counting the page's corrections since publication from
      _data/corrections_by_page.json and linking to its view of the log. A page with none
@@ -245,6 +302,78 @@ for (const n of list) {
         probs.push(`cite URL is ${mk.url ? mk.url[0] : "missing"}, the canonical URL is ${want}`);
     }
   }
+  /* W4 reader furniture: see the note above GLOSS */
+  {
+    const spec = specOf(n), w = r.w4, claims = (spec && spec.claims) || [];
+    const scoped = Object.fromEntries(claims.filter(c => c.scope).map(c => [c.id, c.scope]));
+    for (const [id, sc] of Object.entries(scoped)) {
+      const got = w.scopes.filter(x => x[0] === id);
+      /* A scope may carry `unchipped`, the reason no chip fits (a page with no cold-open
+         headroom): it still scopes the page's quote, and the waiver prints on every run. */
+      if (!got.length && sc.unchipped) notes.push(`${id} scope unchipped: ${sc.unchipped}`);
+      else if (!got.length) probs.push(`claim ${id} carries a scope and no scope chip renders it`);
+      else if (sc.unchipped) probs.push(`claim ${id} declares its scope unchipped and a chip renders it`);
+      for (const [, text, inFig] of got) {
+        if (text !== scopeLine(sc)) probs.push(`scope chip reads "${text}", claim ${id} says "${scopeLine(sc)}"`);
+        if (!inFig) probs.push(`scope chip for ${id} sits outside a headline figure`);
+      }
+    }
+    for (const [id] of w.scopes) if (!scoped[id]) probs.push(`a scope chip names ${id}, which carries no scope`);
+    const q = spec && spec.quote;
+    if (q && !w.quote) probs.push("claims.json declares a quote and the how-we-checked box shows none");
+    else if (q) {
+      if (w.quote.text !== q.text.replace(/\s+/g, " ").trim()) probs.push(`quote reads "${w.quote.text.slice(0, 60)}", claims.json says "${q.text.slice(0, 60)}"`);
+      if (!w.quote.inBox || !w.quote.aboveCite) probs.push("the quote is not in the how-we-checked box directly above the cite line");
+    } else if (w.quote) probs.push("a quote renders that claims.json does not declare");
+    const g = spec && spec.glossary;
+    if (g && w.words.length !== 1) probs.push(`claims.json declares a glossary and ${w.words.length} Words on this page blocks render`);
+    else if (g) {
+      const box = w.words[0];
+      if (box.open) probs.push("the Words on this page block opens expanded; it is closed by default");
+      if (box.summary !== "Words on this page") probs.push(`the words block is headed "${box.summary}"`);
+      const terms = g.terms || [];
+      if (box.items.map(i => i[0]).join("|") !== terms.join("|"))
+        probs.push(`the words block lists ${box.items.map(i => i[0]).join(", ")}; the page declares ${terms.join(", ")}`);
+      for (const [term, text] of box.items) {
+        const want = wordsItem(g, term);
+        if (want === null) probs.push(`the words block shows "${term}", which _data/glossary.json does not define`);
+        else if (text !== want.replace(/\s+/g, " ").trim()) probs.push(`"${term}" reads "${text.slice(0, 50)}", not its definition`);
+      }
+      for (const term of terms)
+        if (!new RegExp(`\\b${term.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`).test(w.rest))
+          probs.push(`the words block defines "${term}", a word not on this page outside the block`);
+    } else if (w.words.length) probs.push("a Words on this page block renders that claims.json does not declare");
+    const rows = JOBS.rows.filter(x => x.story === n && x.linked);
+    const href = `../index/#${JOBS.anchor}`;
+    if (rows.length && !w.differs.length) probs.push(`its total ${rows[0].total} is in the job-count table and the page has no link to it`);
+    for (const [h, text, fig] of w.differs) {
+      if (!rows.length) probs.push("a job-count link on a page with no linked row in _data/jobcounts.json");
+      else {
+        if (h !== href || text !== "Why this total differs from others on the site")
+          probs.push(`job-count link reads "${text}" to ${h}, not the shared link to ${href}`);
+        if (!rows.some(x => fig.includes(x.total))) probs.push(`job-count link sits under "${(fig || "no figure").slice(0, 60)}", not the total ${rows.map(x => x.total).join(", ")}`);
+      }
+    }
+    const pl = spec && spec.plant;
+    if (pl && w.plant.length !== 1) probs.push(`claims.json declares If you run a plant here and ${w.plant.length} such boxes render`);
+    else if (pl) {
+      const box = w.plant[0];
+      if (box.head !== "If you run a plant here") probs.push(`the plant box is headed "${box.head}"`);
+      if (!box.afterCloser) probs.push("the If you run a plant here box does not sit directly after the closer");
+      const want = pl.map(i => [(i.claims || []).join(" "), i.text.replace(/\s+/g, " ").trim()]);
+      if (JSON.stringify(box.items) !== JSON.stringify(want))
+        probs.push(`the plant box reads "${(box.items.map(i => i[1]).join(" | ")).slice(0, 80)}", not claims.json plant`);
+    } else if (w.plant.length) probs.push("an If you run a plant here box renders that claims.json does not declare");
+    if (n === "index") {
+      if (!w.jobs || w.jobs.id !== JOBS.anchor) probs.push(`no job-count table at #${JOBS.anchor}`);
+      else {
+        const want = JOBS.rows.map(x => [x.total, x.industry, x.year, x.source, x.label, `../${x.story}/`].join(" | "));
+        const got = w.jobs.rows.map(c => c.join(" | "));
+        if (got.join("\n") !== want.join("\n"))
+          probs.push(`job-count table differs from _data/jobcounts.json: ${got.find((g, i) => g !== want[i]) || "row count " + got.length}`);
+      }
+    }
+  }
   /* status: see the note above BANNER */
   const want = DECLARED[n];
   if (!want) probs.push("cannot inspect status: no single meta.status declared in its masthead data");
@@ -280,6 +409,7 @@ for (const n of list) {
   if (probs.length) bad++;
   console.log(`${n.padEnd(18)} ${probs.length ? "FAIL  " + probs.join("; ")
                                               : "PASS  disclosure present"}`);
+  for (const x of notes) console.log(`${" ".repeat(18)}       note: ${x}`);
   await p.close();
 }
 await b.close();

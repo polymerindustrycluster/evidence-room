@@ -5,6 +5,39 @@
     "h": "techhub.json",
     "a": "awards.json"
   },
+  "kicker": true,
+  "glossary": {
+    "terms": [
+      "PIC-12",
+      "NAICS 325",
+      "NAICS 326",
+      "obligation",
+      "prime contract",
+      "fiscal year"
+    ]
+  },
+  "plant": [
+    {
+      "text": "Federal buying is a recurring market for this industry here, beside the grant: chemical, plastics and rubber prime contracting averaged $41.4M a year over the seven finished fiscal years, FY2019–FY2025, in 2025 dollars, against the $51.0M Tech Hub award.",
+      "claims": [
+        "fed-closed-average",
+        "fed-award-total"
+      ]
+    },
+    {
+      "text": "If you sell to the federal government, expect the Department of Defense to be the buyer: it placed 92 cents of every award dollar.",
+      "claims": [
+        "fed-dod-share"
+      ]
+    },
+    {
+      "text": "Plan for big swings from year to year: finished fiscal years range from $20.5M to $59.9M in 2025 dollars.",
+      "claims": [
+        "fed-closed-range"
+      ]
+    }
+  ],
+  "quote": {"text": "Federal prime contracts in chemical, plastics and rubber manufacturing (NAICS 325 and 326) performed in the PIC-12 counties averaged $41.4M a year over FY2019–2025 in 2025 dollars, so the $51.0M Tech Hub award is about 1.2 years of that flow (USAspending).", "claims": ["fed-closed-average", "fed-award-total"]},
   "claims": [
     {
       "id": "fed-annual-rate",
@@ -54,7 +87,8 @@
     {
       "id": "fed-closed-average",
       "text": "The seven finished fiscal years, FY2019–FY2025, average $41.4M in 2025 dollars; the award is 1.2 average years.",
-      "source": "Complete USAspending transaction-category pull, PIC-12, prime contracts A-D, FY2019–FY2026; BLS CUUR0000SA0 monthly observations",
+      "source": "Complete USAspending transaction-category pull, PIC-12, prime contracts A-D, FY2019–FY2026; BLS CUUR0000SA0 monthly observations; NAICS 325 and 326",
+      "scope": {"industry": "NAICS 325 and 326", "place": "PIC-12", "period": "FY2019–2025", "source": "USAspending", "unchipped": "no cold-open headroom: the first chart sits at its ceiling, and a chip would add a line to the hero row above it"},
       "assert": "tofixed((sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7)/1e6, 1) == '41.4' and tofixed(D['h']['award']/(sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7), 1) == '1.2'",
       "actual": "(sum(r['real'] for r in D['f']['naics'] if r['fy'] != 2026) / 7)",
       "falsified_if": "The named quantity changes its stated rounded value, source scope changes, or the asserted source coverage fails. Recompute the prose and chart together before publishing a new vintage.",

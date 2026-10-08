@@ -720,7 +720,8 @@ def _bundle_inputs(web: str, name: str) -> dict[str, str]:
     """The exact set of files tools/bundle.mjs hashes into dist/.inputs.json for one
     page — index.html, app.js, styles.css, claims.json, everything under data/, img/ and
     assets/, everything under _shared/ (recursively: its fonts/ are base64-inlined, not
-    merely linked), and _data/SOURCES.json, _data/cite.json and _data/corrections_by_page.json — mapped to a sha256 of each file's current
+    merely linked), and _data/SOURCES.json, _data/cite.json, _data/corrections_by_page.json,
+    _data/glossary.json and _data/jobcounts.json — mapped to a sha256 of each file's current
     bytes. Must stay in lockstep with tools/bundle.mjs's inputManifest(); a mismatch
     between what the bundler hashes and what this checks makes the manifest meaningless."""
     d = os.path.join(web, name)
@@ -736,7 +737,7 @@ def _bundle_inputs(web: str, name: str) -> dict[str, str]:
     shared = os.path.join(web, "_shared")
     if os.path.isdir(shared):
         paths += _walk_files(shared)
-    for f in ("SOURCES.json", "cite.json", "corrections_by_page.json"):
+    for f in ("SOURCES.json", "cite.json", "corrections_by_page.json", "glossary.json", "jobcounts.json"):
         reg = os.path.join(web, "_data", f)
         if os.path.isfile(reg):
             paths.append(reg)
@@ -1046,6 +1047,281 @@ def check_catalog() -> None:
     if n_orph:
         warn("catalog", "_data/build", f"{n_orph} output file(s) no script claims — see CATALOG.md 'Orphan outputs'")
 
+# ------------------------------------------------------ 13. reader furniture (W4)
+NUM = re.compile(r"\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?")
+YEAR = re.compile(r"\b(19|20)\d{2}\b")
+
+
+def _flat(html_text: str) -> str:
+    import html as _html
+    return " ".join(_html.unescape(re.sub(r"<[^>]+>", "", html_text)).split())
+
+
+KICKER_MAX = 40
+
+
+def hub_questions() -> dict[str, str]:
+    """The hub's short question (kicker) for each story, read from index/index.html: the
+    `<p class="kick">` each card leads with, above its full question in the <h4> (John,
+    7 October 2026). The card is the one source; a story's eyebrow and the hub's "Start
+    with a question" links must read the same words, checked in [kicker]."""
+    src = read(WEB, "index", "index.html")
+    out = {}
+    for m in re.finditer(r'<a class="card"[^>]*data-slug="([^"]+)"[^>]*>\s*<p class="kick">(.*?)</p>\s*<h4>', src, re.S):
+        out[m.group(1)] = _flat(m.group(2))
+    return out
+
+
+def hub_nav() -> dict[str, str]:
+    """The hub's "Start with a question" links: slug -> link text."""
+    src = read(WEB, "index", "index.html")
+    nav = re.search(r'<nav class="first-reads"[^>]*>(.*?)</nav>', src, re.S)
+    return {m.group(1): _flat(m.group(2)) for m in
+            re.finditer(r'<a href="\.\./([a-z0-9-]+)/">(.*?)</a>', nav.group(1) if nav else "", re.S)}
+
+
+def check_reader_furniture(arts: list[str]) -> None:
+    """The W4 reader furniture agrees with what it is rendered from (DECISIONS.md, W4,
+    7 October 2026). Each piece is opt-in per page; once a page opts in, a missing or
+    inconsistent piece is an ERROR here (data) or in tools/disclosure.mjs (rendered).
+
+      [scope]     a claim's scope has industry, place, period and source; every year in the
+                  period is in the claim's own sentence or its `source` field, and the
+                  industry and source are in its `source` field, so a chip cannot name a
+                  scope its claim does not. An optional `unchipped` states why no chip fits
+                  (no cold-open headroom); the scope still binds the page's quote, and
+                  tools/disclosure.mjs prints the waiver on every run.
+      [quote]     claims.json `quote` is one sentence; it names auto-checked claims; every
+                  number in it is in one of those claims' sentences or scope; and it
+                  carries the scope (place, industry, year, source) of a scoped claim it
+                  names. A changed figure in the quote fails here; a changed figure in the
+                  data fails the claim.
+      [kicker]    `kicker: true` in claims.json: the page's eyebrow carries data-kicker
+                  and reads exactly its hub card's kicker (hub_questions above); each card
+                  kicker is a question of at most 40 characters, and each "Start with a
+                  question" link reads its card's kicker.
+      [plant]     claims.json `plant`, "If you run a plant here": one to three items, each
+                  one sentence naming at least one existing claim on the page; every number
+                  in it is stated by an automatically checked claim it names.
+      [glossary]  every declared term is defined in _data/glossary.json, once; every
+                  definition names its term; notes belong to declared terms; and every
+                  number in a page's notes is in one of that page's checked claims.
+      [jobcounts] each row of _data/jobcounts.json names a story and one of its checked
+                  claims whose sentence prints the total; the hub's index-headcount-key
+                  prints the total with the row's year and story in the same clause.
+    Pages that have not opted in are listed as WARN, so coverage is visible, not assumed.
+    """
+    glossary = load_json(os.path.join(WEB, "_data", "glossary.json"))
+    gdef: dict[str, dict] = {}
+    for t in glossary.get("terms", []):
+        term = t.get("term")
+        if not term or not t.get("short"):
+            err("glossary", "_data/glossary.json", f"entry {t!r} lacks a term or a short definition")
+            continue
+        if term in gdef:
+            err("glossary", "_data/glossary.json", f"{term!r} is defined twice")
+        if not re.search(rf"\b{re.escape(term)}", t["short"], re.I):
+            err("glossary", "_data/glossary.json", f"the definition of {term!r} never names it, "
+                "so the block cannot mark which word it defines")
+        gdef[term] = t
+    hub = hub_questions()
+    pending = {"kicker": [], "quote": [], "glossary": [], "scope": [], "plant": []}
+    for a in arts:
+        cp = os.path.join(WEB, a, "claims.json")
+        if not os.path.isfile(cp):
+            continue
+        spec = load_json(cp)
+        claims = {c.get("id"): c for c in spec.get("claims", [])}
+        checked = {i: c for i, c in claims.items() if c.get("verify") != "manual"}
+
+        # [scope]
+        scoped = [c for c in claims.values() if c.get("scope")]
+        if not scoped and a in hub:
+            pending["scope"].append(a)
+        for c in scoped:
+            sc = c["scope"]
+            missing = [k for k in ("industry", "place", "period", "source")
+                       if not isinstance(sc.get(k), str) or not sc[k].strip() or "\u00b7" in sc[k]]
+            if "unchipped" in sc and not (isinstance(sc["unchipped"], str) and sc["unchipped"].strip()):
+                missing.append("unchipped (the reason no chip fits, when present)")
+            if missing:
+                err("scope", f"{a}:{c['id']}", f"scope lacks {', '.join(missing)} (each a plain string, no middot)")
+                continue
+            if c.get("verify") == "manual":
+                err("scope", f"{a}:{c['id']}", "a scope chip may only sit on an automatically checked claim")
+            # every year the chip prints is one the claim's sentence states or its source
+            # field names (the vintage of the file it re-reads), so a chip cannot date a
+            # figure its claim does not
+            years = [m.group(0) for m in YEAR.finditer(sc["period"])]
+            said = c.get("text", "") + " " + c.get("source", "")
+            if not years or any(y not in said for y in years):
+                err("scope", f"{a}:{c['id']}", f"scope period {sc['period']!r} names a year neither the claim's "
+                    "sentence nor its source field states")
+            for k in ("industry", "source"):
+                if sc[k].lower() not in c.get("source", "").lower():
+                    err("scope", f"{a}:{c['id']}", f"scope {k} {sc[k]!r} is not in the claim's source field")
+
+        # [quote]
+        q = spec.get("quote")
+        if not q:
+            if a in hub:
+                pending["quote"].append(a)
+        else:
+            text, ids = q.get("text", ""), q.get("claims") or []
+            if not text.strip():
+                err("quote", a, "claims.json quote has no text")
+            elif not text.rstrip().endswith(".") or re.search(r"[.!?]\s+[A-Z]", text):
+                err("quote", a, "the quote is not one sentence ending in a full stop")
+            bad = [i for i in ids if i not in checked]
+            if not ids or bad:
+                err("quote", a, f"the quote must name automatically checked claims; "
+                    f"{', '.join(bad) or 'it names none'}")
+            bound = [checked[i] for i in ids if i in checked]
+            pool = " ".join(c.get("text", "") + " " + " ".join(v for k, v in (c.get("scope") or {}).items() if k != "unchipped")
+                            for c in bound)
+            have = set(NUM.findall(pool))
+            for n in NUM.findall(text):
+                if n not in have:
+                    err("quote", a, f"the quote prints {n}, which none of its claims "
+                        f"({', '.join(ids)}) states")
+            scopes = [c["scope"] for c in bound if c.get("scope")]
+            if not scopes:
+                err("quote", a, "the quote names no claim that carries a scope, so its scope cannot be checked")
+            for sc in scopes[:1]:
+                want = [sc["place"], sc["industry"], YEAR.search(sc["period"]).group(0) if YEAR.search(sc["period"]) else sc["period"],
+                        sc["source"].split()[-1]]
+                lost = [w for w in want if w not in text]
+                if lost:
+                    err("quote", a, f"the quote leaves out its scope: {', '.join(lost)}")
+
+        # [kicker]
+        if spec.get("kicker"):
+            page = read(WEB, a, "index.html")
+            m = re.search(r'<p class="eyebrow"[^>]*\bdata-kicker\b[^>]*>(.*?)</p>', page, re.S)
+            want = hub.get(a)
+            if not want:
+                err("kicker", a, "cannot inspect: the hub has no card kicker for this page")
+            elif not m:
+                err("kicker", a, "claims.json opts into a kicker, and index.html has no eyebrow with data-kicker")
+            elif _flat(m.group(1)) != want:
+                err("kicker", a, f"kicker reads {_flat(m.group(1))!r}; the hub asks {want!r}")
+        elif a in hub:
+            pending["kicker"].append(a)
+
+        # [plant]
+        pl = spec.get("plant")
+        if pl is None:
+            if a in hub:
+                pending["plant"].append(a)
+        elif not isinstance(pl, list) or not 1 <= len(pl) <= 3:
+            err("plant", a, "claims.json plant must list one to three sentences")
+        else:
+            for k, item in enumerate(pl, 1):
+                text, ids = item.get("text", ""), item.get("claims") or []
+                if not text.strip() or not text.rstrip().endswith(".") or re.search(r"[.!?]\s+[A-Z]", text):
+                    err("plant", f"{a}#{k}", "each If you run a plant here item is one sentence ending in a full stop")
+                if not ids or any(i not in claims for i in ids):
+                    err("plant", f"{a}#{k}", "must name at least one claim on the page, and only claims that exist; "
+                        f"{', '.join(i for i in ids if i not in claims) or 'it names none'}")
+                pool = " ".join(c.get("text", "") + " " + " ".join(v for k, v in (c.get("scope") or {}).items() if k != "unchipped")
+                                for i, c in checked.items() if i in ids)
+                have = set(NUM.findall(pool))
+                for n in NUM.findall(text):
+                    if n not in have:
+                        err("plant", f"{a}#{k}", f"prints {n}, which none of its automatically checked "
+                            f"claims ({', '.join(ids) or 'none named'}) states")
+
+        # [glossary]
+        g = spec.get("glossary")
+        if not g:
+            if a in hub:
+                pending["glossary"].append(a)
+        else:
+            terms = g.get("terms") or []
+            if not terms:
+                err("glossary", a, "claims.json glossary declares no terms")
+            for t in terms:
+                if t not in gdef:
+                    err("glossary", a, f"the page uses {t!r}, which _data/glossary.json does not define")
+            if len(set(terms)) != len(terms):
+                err("glossary", a, "a term is declared twice")
+            have = set(NUM.findall(" ".join(c.get("text", "") for c in checked.values())))
+            for t, note in (g.get("notes") or {}).items():
+                if t not in terms:
+                    err("glossary", a, f"a note for {t!r}, which the page does not declare")
+                for n in NUM.findall(note):
+                    if n not in have:
+                        err("glossary", a, f"the note for {t!r} prints {n}, which no checked claim on the page states")
+
+    # [kicker] the hub's own side: each card kicker is short, and each "Start with a
+    # question" link reads its card's kicker
+    for slug, k in hub.items():
+        if len(k) > KICKER_MAX:
+            err("kicker", f"index:{slug}", f"card kicker {k!r} is {len(k)} characters, over {KICKER_MAX}")
+        if not k.endswith("?"):
+            err("kicker", f"index:{slug}", f"card kicker {k!r} is not a question")
+    for slug, text in hub_nav().items():
+        if slug not in hub:
+            err("kicker", f"index:{slug}", "a Start with a question link to a story whose card has no kicker")
+        elif text != hub[slug]:
+            err("kicker", f"index:{slug}", f"Start with a question link reads {text!r}; its card kicker is {hub[slug]!r}")
+
+    for k, pages in pending.items():
+        if pages:
+            warn(k, "W4", f"{len(pages)} carded page(s) not yet opted in: {', '.join(sorted(pages))}")
+
+    # [jobcounts]
+    jc = load_json(os.path.join(WEB, "_data", "jobcounts.json"))
+    shared = read(WEB, "_shared", "picviz.js")
+    if f'const JOBCOUNTS = "{jc.get("anchor")}"' not in shared:
+        err("jobcounts", "_data/jobcounts.json", f"anchor {jc.get('anchor')!r} is not the one picviz.js links to")
+    hubkey = next((c for c in load_json(os.path.join(WEB, "index", "claims.json"))["claims"]
+                   if c["id"] == "index-headcount-key"), None)
+    rows = jc.get("rows") or []
+    if len(rows) != 5:
+        err("jobcounts", "_data/jobcounts.json", f"{len(rows)} rows; the table is the five totals (DECISIONS.md W4)")
+    unlinked = sorted(r.get("story", "?") for r in rows if not r.get("linked"))
+    if unlinked:
+        warn("jobcounts", "W4", f"{len(unlinked)} row(s) whose story does not link to the table yet: {', '.join(unlinked)}")
+    for r in rows:
+        who = f"{r.get('story')}:{r.get('total')}"
+        if r.get("story") not in arts:
+            err("jobcounts", who, "names a story that is not a page")
+            continue
+        spec = load_json(os.path.join(WEB, r["story"], "claims.json"))
+        c = next((x for x in spec["claims"] if x["id"] == r.get("claim")), None)
+        if not c or c.get("verify") == "manual":
+            err("jobcounts", who, f"claim {r.get('claim')!r} is not an automatically checked claim on {r['story']}")
+        elif r["total"] not in NUM.findall(c.get("text", "")):
+            err("jobcounts", who, f"the table prints {r['total']}; {r['story']}'s claim {c['id']} does not")
+        if not hubkey:
+            err("jobcounts", who, "cannot inspect: index/claims.json has no index-headcount-key")
+            continue
+        t = hubkey["text"]
+        i = t.find(r["total"])
+        clause = t[i: t.find(")", i) + 1] if i >= 0 else ""
+        y = YEAR.search(r.get("year", ""))
+        if not clause:
+            err("jobcounts", who, "the table prints a total index-headcount-key does not check")
+        elif not y or y.group(0) not in clause or r.get("label", "").lower() not in clause.lower():
+            err("jobcounts", who, f"row says {r.get('year')!r} on {r.get('label')!r}; index-headcount-key says {clause!r}")
+
+
+def check_static_furniture() -> None:
+    """[static] The W4 blocks a reader needs without scripting are in the page's own HTML
+    (PR #54 review): the hub's job-count table and every declared "Words on this page"
+    block, written by _data/build/render_static.py between pv:static markers. A region
+    that is missing, empty or differs from what that script would write now is an ERROR."""
+    import render_static
+    try:
+        probs = render_static.problems(write=False)
+    except (OSError, ValueError, KeyError) as exc:
+        err("static", "render_static.py", f"cannot inspect: {exc}")
+        return
+    for page, msg in probs:
+        err("static", page, msg)
+
+
 def main() -> int:
     arts = artifacts()
     reg_path = os.path.join(WEB, "_data", "SOURCES.json")
@@ -1067,6 +1343,8 @@ def main() -> int:
     check_empty_data(arts)
     check_corrections()
     check_catalog()
+    check_reader_furniture(arts)
+    check_static_furniture()
 
     errors = [f for f in findings if f[0] == "ERROR"]
     warns = [f for f in findings if f[0] == "WARN"]

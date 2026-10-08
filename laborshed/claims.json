@@ -4,6 +4,10 @@
     "ls": "laborshed.json",
     "b": "bench.json"
   },
+  "kicker": true,
+  "quote": {"text": "In 2022, across all industries, no county in PIC-12 had even 70 percent of its jobs held by its own residents, Ashtabula the highest at 68.5 percent, while just under 90 percent of the jobs in PIC-12 were held by PIC-12 residents (Census LODES).", "claims": ["ls-extremes", "ls-no-county-is-a-market", "ls-region-is-a-market"]},
+  "glossary": {"terms": ["LODES", "PIC-12"]},
+  "plant": [{"text": "Plan on hiring across county lines: counting jobs in every industry, no county among the twelve has 70 percent of its jobs held by its own residents.", "claims": ["ls-no-county-is-a-market", "ls-not-the-cluster"]}, {"text": "Expect to recruit from the twelve counties together: just under 90 percent of the jobs in PIC-12 are held by people who live in PIC-12.", "claims": ["ls-region-is-a-market"]}],
   "claims": [
     {
       "id": "ls-no-county-is-a-market",
@@ -45,7 +49,8 @@
     {
       "id": "ls-extremes",
       "text": "Ashtabula is the highest at 68.5 percent and Geauga the lowest at 30.8 percent, out of exactly twelve counties (hero cards, matrix callout, default verdict sentence).",
-      "source": "LODES 2022, per-county in_county share",
+      "source": "LODES 2022, per-county in_county share; all industries; Census LODES",
+      "scope": {"industry": "all industries", "place": "PIC-12", "period": "2022", "source": "Census LODES"},
       "assert": "(lambda rows: len(rows) == 12 and max(rows, key=lambda r: r['in_county'])['work_name'] == 'Ashtabula' and abs(max(r['in_county'] for r in rows) - 0.6848) < 0.003 and min(rows, key=lambda r: r['in_county'])['work_name'] == 'Geauga' and abs(min(r['in_county'] for r in rows) - 0.3083) < 0.003)(D['ls']['matrix'])",
       "actual": "(max(((r['work_name'], r['in_county']) for r in D['ls']['matrix']), key=lambda x: x[1]), min(((r['work_name'], r['in_county']) for r in D['ls']['matrix']), key=lambda x: x[1]))",
       "falsified_if": "A revision changes which county is the extreme, or moves either share off the value the cards and callouts print."

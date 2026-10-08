@@ -1,9 +1,18 @@
 {
+ "kicker": true,
+ "glossary": {
+  "terms": ["Tech Hub"]
+ },
+ "plant": [
+  {"text": "There is more public cluster activity to take part in than before the designation: the record holds 66 delivered events in the 34 months since October 2023, against 4 in the 34 months before.", "claims": ["tl-cadence-before-after"]},
+  {"text": "The pilot facility’s readiness target is one of 18 scheduled dates on the record, not a delivered event, so check its status before you plan work around it.", "claims": ["tl-sched-split"]}
+ ],
  "hero": "tl-cadence-before-after",
  "data": {
   "h": "heritage.json",
   "t": "timeline.json"
  },
+ "quote": {"text": "The PIC timeline register holds 66 delivered public events for the Northeast Ohio polymer cluster in the 34 months after the October 2023 federal designation, against 4 in the 34 months before.", "claims": ["tl-cadence-before-after"]},
  "claims": [
   {
    "id": "tl-heritage-count",
@@ -95,7 +104,8 @@
   {
    "id": "tl-cadence-before-after",
    "text": "The public record holds 4 events in the 34 months before the October 2023 federal designation and 66 delivered in the 34 months since; the spans match to within a day, so the record filled many times as fast, 16.5 times at most because the before count is a floor (hero standfirst, hero stat cards, pace-band H2 + lede + chart annotation + figure source line). [2026-08-28: the H2 said 'changed the cadence seventeenfold', which names the ratio without saying which way it moved and leads on a term of art; the plain reading now leads and 'seventeenfold' with its 68 divided by 4 arithmetic moved to the source line. The 17x assertion is unchanged.] [2026-08-28: page migrated onto the house anatomy (mast / hero / bands / generated methodology box / closer); the sentence moved with its section and the assertion is unchanged.] [2026-09-28: the H2 said 'filled seventeen times as fast', stating the ceiling as the measured pace while the source line calls the before count a floor; the H2 now states 67 against 4 and the lede calls seventeenfold the upper end. The figure subtitle's '68 counted here' now reads the 67 it counts. The assertion is unchanged.] [2026-10-04: the 25 May 2026 Wall Street Journal feature on Akron (E183) was a shown, delivered HERO row although it is press coverage, which this page holds out of both charts. It is reclassified to MEDIA and held out, so the counts it sat in are one lower and the held-out press rows are thirteen, not twelve. 66 divided by 4 is 16.5, which the page now prints to one decimal, filled from the data, rather than rounding it to seventeen.]",
-   "source": "timeline.json events, shown universe (PRE non-CTX rows plus in-window rows with show, as app.js builds it), split at the designation date; span arithmetic from the event dates and meta.asOf",
+   "source": "timeline.json events, shown universe (PRE non-CTX rows plus in-window rows with show, as app.js builds it), split at the designation date; span arithmetic from the event dates and meta.asOf; PIC timeline register; polymer cluster",
+   "scope": {"industry": "polymer cluster", "place": "Northeast Ohio", "period": "34 months either side of October 2023", "source": "PIC timeline register", "unchipped": "no cold-open headroom: the first chart sits at its ceiling, and a chip would add a line to the hero row above it"},
    "assert": "(lambda E, des, asof, jdn: (lambda before, since: len(before) == 4 and len(since) == 66 and tofixed(len(since) / len(before), 1) == '16.5' and abs((jdn(asof) - jdn(des)) - (jdn(des) - jdn('2021-01-01'))) <= 2 and tofixed((jdn(des) - jdn('2021-01-01')) / 30.44, 0) == '34' and tofixed((jdn(asof) - jdn(des)) / 30.44, 0) == '34')([e for e in E if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))], [e for e in E if des <= e['date'] and e['delivered'] and e.get('show')]))(D['t']['events'], one(e['date'] for e in D['t']['events'] if e['date'].startswith('2023') and 'esignat' in e['title']), D['t']['meta']['asOf'], lambda s: (lambda y, m, d: (lambda a: d + (153 * (m + 12 * a - 3) + 2) // 5 + 365 * (y + 4800 - a) + (y + 4800 - a) // 4 - (y + 4800 - a) // 100 + (y + 4800 - a) // 400 - 32045)((14 - m) // 12))(int(s[:4]), int(s[5:7]), int(s[8:10])))",
    "actual": "(lambda bs: bs + (tofixed(bs[1] / bs[0], 1),))((lambda E, des: (len([e for e in E if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))]), len([e for e in E if des <= e['date'] and e['delivered'] and e.get('show')])))(D['t']['events'], '2023-10-23'))",
    "falsified_if": "A pre-designation public event is added to or dropped from the inventory (the 4 moves), a delivered event lands or is reclassified (the 68 moves and 17x stops being exact), or meta.asOf advances so the since-span no longer matches the before-span within a day — the '34 months either side' framing dies first. [2026-09-01: recomputed after one row was removed from the register. It recorded a named company's unsuccessful application, on a site whose README withholds two pages because naming an unsuccessful applicant is not something a funder gets to do. Two independent model families were asked to refute the decision to anonymise it instead of deleting it, and both refused: the row stayed identifiable because the same page names the company joining the cohort four months later, and keeping it to protect a count is letting the headline decide which sensitive records remain evidence. The count moved and the sentence moved with it.]",

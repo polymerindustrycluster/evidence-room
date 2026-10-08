@@ -1,14 +1,31 @@
 {
  "meta": {
   "status": "PUBLISHED",
-  "as_of": "2026-10-05",
+  "as_of": "2026-10-07",
   "source": "CORRECTIONS.md, rendered as written by _data/build/derive_corrections.py",
   "method": "Each entry in CORRECTIONS.md is rendered from its Markdown without changing a word. The pages an entry names are read from its italics, or listed by hand where an older entry names them in prose. Each page’s byline link counts the entries naming it and says whether one changed the page’s headline.",
   "scope": "A log of corrections shows the errors someone found, not the ones still on the site. A page with more entries has been checked harder, not necessarily been wrong more often, and corrections made before a page was first published are listed but left out of its count.",
-  "n_entries": 69
+  "n_entries": 70
  },
  "preamble_html": "<p>Every published number that changes gets an entry here: what it said, what it says now, and what caused the change. Entries are <b>appended, never rewritten</b> — an entry edited later is no longer evidence of anything.</p><p>The bar for an entry is <em>a reader could have quoted the old version</em>, not <em>the change was embarrassing</em>. Several pages also carry a correction block in the body where the error is most likely to be re-made; those are the same events, described where they matter.</p><p>Newest first. Report an error by opening an issue — the <b>Data error</b> template asks for the page, the figure, and what you think it should be.</p>",
  "entries": [
+  {
+   "id": "2026-10-07-1",
+   "date": "2026-10-07",
+   "heading": "2026-10-07 — A source churn never read, *churn, sources*",
+   "label": "",
+   "title_html": "A source churn never read, <em>churn, sources</em>",
+   "pages": [
+    "churn",
+    "sources"
+   ],
+   "html": "<p><b>Was:</b> churn credited the BLS payroll census (QCEW) as one of its two sources, and the sources page counted it among the pages QCEW feeds: nine of 23, with seven pages resting on a single dataset. <b>Is:</b> churn credits the Census Quarterly Workforce Indicators alone; QCEW feeds eight of 23 pages, and eight rest on a single dataset. <b>Cause:</b> churn links to the payroll-census headcount on another page but reads none of its data. The provenance check treated any industry code as a trace of the census, so the credit passed; it now looks for the census itself, and reader-facing glossary and quote text no longer count as a trace. Churn carries a dated note. No figure on churn changed.</p>",
+   "flags": {
+    "churn": {},
+    "sources": {}
+   },
+   "after_html": ""
+  },
   {
    "id": "2026-10-05-2",
    "date": "2026-10-05",

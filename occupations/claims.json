@@ -1,6 +1,23 @@
 {
   "hero": "occ-standfirst",
   "data": "viz-data.json",
+  "kicker": true,
+  "quote": {
+    "text": "In 2024, 10.9% of the 725,100 US jobs in plastics and rubber products manufacturing (NAICS 326) were held by molding-machine setters, about one in nine (BLS National Employment Matrix).",
+    "claims": ["occ-hero-figures"]
+  },
+  "glossary": {
+    "terms": ["National Employment Matrix", "O*NET", "IPEDS", "median", "metro area", "QCEW"],
+    "notes": {
+      "National Employment Matrix": "It has no regional cut, so every staffing share on this page counts the whole country.",
+      "QCEW": "This page uses it once, for the twelve-county staffing estimate."
+    }
+  },
+  "plant": [
+    {"text": "Your molding-machine setters are paid close to the national rate: the metro Akron median is $41,260, thirty dollars over the national $41,230.", "claims": ["occ-vignette-setter"]},
+    {"text": "A chemical engineer’s national median pay, $121,860, is about $16,200 a year above metro Akron’s $105,660 before any adjustment for local prices, so expect that gap to come up when you recruit from outside the region.", "claims": ["occ-vignette-engineer"]},
+    {"text": "Plan on a small flow of new polymer graduates from the selected Akron and Case Western programs: they conferred 63 degrees in 2023, against an average of 142 a year in 2014–2020.", "claims": ["occ-pipeline-halved"]}
+  ],
   "claims": [
     {
       "id": "occ-hero-one-in-nine",
@@ -31,10 +48,11 @@
     {
       "id": "occ-hero-figures",
       "text": "10.9% of the industry's jobs are molding-machine setters, which the first card renders as one job in nine; 51% of the nation's MOLDING-MACHINE setters (the card label now carries the full occupation name, since the page shows six other setter occupations) work in plastics and rubber manufacturing; 725,100 jobs in the industry nationally in 2024, the base the 10.9% and 4.2% are cut from; engineers, scientists and technicians are 4.2% of jobs in the industry. All four cards carry a United States stamp: the fourth used to gloss 4.2% as 'the jobs the region claims distinction in', a regional referent hung on a national share.",
-      "source": "BLS National Employment Matrix, industry 326000, 2024 base",
+      "source": "BLS National Employment Matrix, industry 326000, 2024 base; NAICS 326; BLS Employment Matrix",
       "assert": "(lambda s: s['pct_of_industry'] == 10.9 and tofixed(s['pct_of_occupation'], 0) == '51' and tofixed(100 / s['pct_of_industry'], 0) == '9')(one(m for m in D['mix'] if m['soc'] == '51-4072')) and D['mix_totals']['industry_emp_2024_k'] == 725.1 and D['mix_totals']['eng_sci_share_pct'] == 4.2",
       "actual": "(one(m for m in D['mix'] if m['soc'] == '51-4072')['pct_of_industry'], one(m for m in D['mix'] if m['soc'] == '51-4072')['pct_of_occupation'], D['mix_totals']['industry_emp_2024_k'], D['mix_totals']['eng_sci_share_pct'])",
-      "falsified_if": "Any of the four hero figures changes in the next matrix release, or the setters' share stops rounding to one job in nine (the card computes the denominator from the share and prints the word for it, so a share of 11.9% would print 'one job in eight' without anyone editing the page). The engineer/scientist/technician share is the sum of detailed occupations with codes 17-2, 19-2, 19-4 and 17-3; a code added to or dropped from the matrix changes it."
+      "falsified_if": "Any of the four hero figures changes in the next matrix release, or the setters' share stops rounding to one job in nine (the card computes the denominator from the share and prints the word for it, so a share of 11.9% would print 'one job in eight' without anyone editing the page). The engineer/scientist/technician share is the sum of detailed occupations with codes 17-2, 19-2, 19-4 and 17-3; a code added to or dropped from the matrix changes it.",
+      "scope": {"industry": "NAICS 326", "place": "US", "period": "2024", "source": "BLS Employment Matrix"}
     },
     {
       "id": "occ-fourteen-share",

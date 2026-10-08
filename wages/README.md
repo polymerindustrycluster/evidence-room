@@ -172,6 +172,14 @@ the reporting requirement is the aspiration, not the gate.
   prose per the house syntax ban. **Byline date is hand-set and must be re-set at each
   revision** (claim `byline-date`).
 
+## W4 reader furniture, 2026-10-07
+
+The eyebrow is the hub's question, "What does the work pay?". The four hero cards sit below
+the first chart, so each carries its claim's scope chip (the 2025 vintage is named in each
+claim's `source`). The standfirst's closing 33,529 total links to the hub's job-count table
+directly below it. The how-we-checked box carries the `quote`; the "Words on this page" block
+and "If you run a plant here" are declared in claims.json.
+
 ## Run and publish
 
 ```

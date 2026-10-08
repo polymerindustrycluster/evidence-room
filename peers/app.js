@@ -171,16 +171,19 @@ const picShare = picEmp / S.subject_emp;
    The withheld-metro count lost its own card to the region total: 227 is already the
    bolded number in the standfirst, the subject of a whole band and of the closer, while
    the twelve-county figure was the one thing the page promised and never printed.
-   The rank card names which city holds which rank, in the order the numbers are set. */
+   The rank card names which city holds which rank, in the order the numbers are set.
+   The twelve-county card sits third since W4 (7 October 2026): its link to the hub's
+   job-count table takes the free line beside the concentration card's longer note, where
+   in second place it lengthened the first row and pushed the first chart 21px down. */
 PV.figures([
   ["key", "#" + S.rank_emp, "Ohio, nationally",
-   `${N(S.subject_emp)} jobs, and every state figure published`],
-  ["", N(picEmp), "the twelve counties",
-   `the PIC-12 footprint, ${pctf(picShare, 1)} of Ohio&rsquo;s ${N(S.subject_emp)}.
-    A county total, not a sum of metros.`],
+   `${N(S.subject_emp)} jobs, and every state figure published`, {scope: "oh-rank-1"}],
   ["", `#${cleRank} · #${M.rank_emp}`, "cleveland · akron",
    `Cleveland ${ord(cleRank)} on ${N(cle.emp)} jobs, Akron ${ord(M.rank_emp)} on
     ${N(akron.emp)}, of the ${M.of_disclosed} metros that disclose`],
+  ["", N(picEmp), "the twelve counties",
+   `the PIC-12 footprint, ${pctf(picShare, 1)} of Ohio&rsquo;s ${N(S.subject_emp)}.
+    A county total, not a sum of metros.`, {differs: true}],
   ["", akron.lq.toFixed(2) + "×", "Akron concentration",
    `plastics fills nearly five times as much of Akron&rsquo;s job base as of the
     country&rsquo;s: the region&rsquo;s selling point and its exposure at once`]

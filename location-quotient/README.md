@@ -110,6 +110,13 @@ any of it was. Both were omissions, so these are clarifications and not correcti
 - The reciprocal link is missing: this page links out to `../peers/`, and `peers/` does not link back.
 - The hub card in `index/app.js` still carries the old title and question. It should read as the paint finding.
 
+## W4 reader furniture, 2026-10-07
+
+The eyebrow is the hub's question, "Which industry is most concentrated?". All four hero
+cards sit below the first chart, so each carries its claim's scope chip; the 24,032 card
+also links to the hub's job-count table. The how-we-checked box carries the `quote`; the
+"Words on this page" block and "If you run a plant here" are declared in claims.json.
+
 ## Run and publish
 
 ```

@@ -384,7 +384,9 @@ details.pv-table:not([open]) .pv-tablewrap{display:none}
 .pv-endpoint{margin:5px 0;font-size:13px;overflow-wrap:anywhere;color:#3A4448}
 .pv-filters{margin:6px 0 0;font-size:13px;line-height:1.5}
 .pv-filters dt{font-weight:900;color:#2A3A3E;margin:5px 0 0}
-.pv-filters dd{margin:0;color:#3A4448}
+/* A filter value can be one unbroken token (a comma-joined code list); at 360px, opened, it
+   widened the page by 24px until the open-disclosure overflow pass found it (PR #54). */
+.pv-filters dd{margin:0;color:#3A4448;overflow-wrap:anywhere}
 .pv-method p,.pv-method li{font-size:16.5px;line-height:1.6;color:#3A4448}
 .pv-method p{margin:0 0 .7em}
 .pv-method ul{margin:0;padding-left:18px}
@@ -579,3 +581,52 @@ th.pv-sortable[aria-sort="descending"]::after{content:" ↓";opacity:1;color:var
 .pv-breaks-all li{border-top:1px solid var(--line);padding:12px 0 0;margin:14px 0 0}
 .pv-breaks-all li p{margin:0 0 .3em;font-size:15.5px;line-height:1.55}
 .pv-breaks-all .said{font-style:italic}
+
+/* ------------------------------------------------ reader furniture (W4, 7 October 2026)
+   picviz.js "reader furniture". The scope chip and the differs link sit inside a hero
+   figure card, under its description, and are sized to fit the free line a shorter card
+   already has beside a taller one, so neither moves the first chart (tools/coldopen.mjs).
+   Where a story's job total is not a hero figure, the differs link sits at the foot of the
+   passage that prints it, in body colours. */
+.figv .pv-scope,[data-hero-figure] .pv-scope{margin:3px 0 0;font-size:12px;line-height:16px;letter-spacing:.01em;
+  color:#D3D8D9}
+.pv-differs{margin:3px 0 0;font-size:12px;line-height:16px}
+.pv-differs a{color:var(--action);text-underline-offset:2px}
+.hero .pv-differs a{color:#D3D8D9}
+.pv-differs a:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+.hero .pv-differs a:focus-visible{outline-color:var(--lime)}
+.pv-quote-text{font-style:normal}
+/* "Words on this page": the shared glossary, closed by default, at footnote scale beside
+   the chart where its terms are first used. */
+.pv-words{margin:18px 0 0;max-width:var(--measure);font-size:14px;line-height:1.6;color:#4A5457}
+.pv-words summary{cursor:pointer;color:var(--action);font-weight:700;font-size:13.5px}
+.pv-words summary:hover{color:var(--hover)}
+.pv-words summary:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+.pv-words ul{margin:10px 0 0;padding:2px 0 2px 14px;list-style:none;border-left:3px solid var(--line)}
+.pv-words li{margin:0 0 .45em}
+.pv-words b{font-weight:700;color:var(--text)}
+/* The hub's job-count table (PV.jobCounts). */
+/* Contained, never wider than the page: at 360-390px the five columns need ~395px, and the
+   table pans inside its own box instead of widening the document (PR #54 review). */
+.pv-jobcounts-scroll{overflow-x:auto;max-width:100%}
+.pv-jobcounts{border-collapse:collapse;width:100%;min-width:520px;margin:12px 0 4px;font-size:13.5px;line-height:1.45}
+.pv-jobcounts caption{text-align:left;font-weight:700;color:var(--text);padding:0 0 8px}
+.pv-jobcounts th,.pv-jobcounts td{padding:7px 10px 7px 0;border-bottom:1px solid var(--line);
+  text-align:left;vertical-align:top}
+.pv-jobcounts thead th{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--caption)}
+.pv-jobcounts th[scope=row]{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pv-jobcounts a{color:var(--action)}
+/* The hub's table holder, written by _data/build/render_static.py (#job-counts). */
+.pv-jobcounts-mount{display:block}
+/* "If you run a plant here" (PV.plantBox): a small box after the closer, at the measure. */
+.pv-plant-band{padding:34px 0}
+.pv-plant{max-width:var(--measure);margin:0 auto}
+.pv-plant > *{max-width:var(--measure)}
+.pv-plant h2{margin:0 0 8px;font-size:13.5px;font-weight:800;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--text)}
+.pv-plant ul{margin:0;padding:2px 0 2px 34px;border-left:3px solid var(--action)}
+.pv-plant li{margin:0 0 .45em;font-size:16px;line-height:1.55;color:var(--text)}
+/* The quote's no-script copy (render_static.py), under the plant box. */
+.pv-plant-band .pv-quote{max-width:var(--measure);margin:18px auto 0;font-size:15px;line-height:1.55}
+/* The band a page's static "Words on this page" block sits in, just above the closer. */
+.pv-words-band .pv-words{margin-top:0}

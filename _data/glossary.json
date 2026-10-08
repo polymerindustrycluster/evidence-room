@@ -1,0 +1,191 @@
+{
+ "_readme": [
+  "THE SHARED DEFINITIONS (DECISIONS.md, W4, 7 October 2026). One file; each page renders a",
+  "collapsed \"Words on this page\" block (PV.wordsOnPage in _shared/picviz.js) listing only the",
+  "terms its claims.json declares under glossary.terms, in that order, with any page-specific",
+  "sentence it adds under glossary.notes. Each entry: term (the word as a reader meets it),",
+  "short (one plain definition, written as a sentence that opens with or names the term, so it",
+  "reads the same in the block and quoted alone), long (optional, a second sentence).",
+  "A page that declares a term missing here fails verify_consistency.py [glossary]; a declared",
+  "term the page never prints, or a block that is missing or differs from this file, fails",
+  "tools/disclosure.mjs. A figure drawn from data belongs in a page's notes, where it is bound",
+  "to that page's claims, never in a shared definition."
+ ],
+ "terms": [
+  {
+   "term": "QCEW",
+   "short": "QCEW is the Quarterly Census of Employment and Wages, the federal count of jobs covered by unemployment insurance."
+  },
+  {
+   "term": "NAICS 326",
+   "short": "NAICS 326 is the industry code for plastics and rubber products manufacturing."
+  },
+  {
+   "term": "withheld",
+   "short": "Withheld (suppressed is the bureau’s own word for it): BLS holds a figure back when so few employers sit behind it that printing it would identify one of them.",
+   "long": "The jobs in a withheld cell are real; the number is not disclosed, which is not the same as zero."
+  },
+  {
+   "term": "cell",
+   "short": "A cell is one figure, for one area in one year in one industry."
+  },
+  {
+   "term": "establishment",
+   "short": "An establishment is one physical site, not one company."
+  },
+  {
+   "term": "metro area",
+   "short": "A metro area is the federal statistical region built out of whole counties around a city."
+  },
+  {
+   "term": "concentration",
+   "short": "Concentration asks how much of the local job base an industry fills next to how much it fills nationally.",
+   "long": "Above 1.0× is more than the country, below 1.0× is less."
+  },
+  {
+   "term": "private ownership",
+   "short": "Private ownership counts private employers only, leaving out federal, state and local government jobs."
+  },
+  {
+   "term": "annual average",
+   "short": "Annual averages are a year’s counts averaged: the twelve monthly counts for jobs, the four quarterly counts for establishments."
+  },
+  {
+   "term": "PIC-12",
+   "short": "PIC-12 is the Polymer Industry Cluster’s twelve Northeast Ohio counties: Ashtabula, Cuyahoga, Geauga, Lake, Lorain, Mahoning, Medina, Portage, Stark, Summit, Trumbull and Wayne."
+  },
+  {
+   "term": "NAICS 325",
+   "short": "NAICS 325 is the industry code for chemical manufacturing, which includes resin (3252) and paint and coatings (3255)."
+  },
+  {
+   "term": "QWI",
+   "short": "QWI is the Census Bureau’s Quarterly Workforce Indicators, which count jobs, hires and separations each quarter."
+  },
+  {
+   "term": "hire",
+   "short": "A hire is a job starting."
+  },
+  {
+   "term": "separation",
+   "short": "A separation is a job ending, quits and layoffs alike."
+  },
+  {
+   "term": "churn rate",
+   "short": "Churn rate is hires and separations averaged, over jobs at quarter start."
+  },
+  {
+   "term": "location quotient",
+   "short": "A location quotient is an industry’s share of local jobs divided by its share of the country’s jobs; economists use it to measure concentration."
+  },
+  {
+   "term": "pairing",
+   "short": "A pairing is one tracked industry in one county."
+  },
+  {
+   "term": "average weekly wage",
+   "short": "An average weekly wage is the wages an industry pays in an area divided by its jobs, per week, so it describes a group, not any one person’s pay."
+  },
+  {
+   "term": "obligation",
+   "short": "An obligation is money the government has legally committed to pay.",
+   "long": "It is a promise on the books, not cash already spent: the cash that actually goes out, the outlay, can follow years later."
+  },
+  {
+   "term": "prime contract",
+   "short": "A prime contract is one signed directly with the government."
+  },
+  {
+   "term": "fiscal year",
+   "short": "The federal fiscal year runs from October to September and is named for the calendar year in which it ends."
+  },
+  {
+   "term": "National Employment Matrix",
+   "short": "The National Employment Matrix is the BLS Employment Projections table of how many people each occupation employs in each industry, for the country as a whole."
+  },
+  {
+   "term": "O*NET",
+   "short": "O*NET is the Labor Department’s occupational database, which describes each occupation, including the education its workers report it requires."
+  },
+  {
+   "term": "IPEDS",
+   "short": "IPEDS, the Integrated Postsecondary Education Data System, is the federal record of the degrees and certificates each college reports conferring."
+  },
+  {
+   "term": "CIP",
+   "short": "CIP, the Classification of Instructional Programs, is the federal code a college files each program under; teaching filed under another code is missing from a count by code."
+  },
+  {
+   "term": "completion",
+   "short": "A completion is one degree or certificate a college reports conferring."
+  },
+  {
+   "term": "median",
+   "short": "The median is the middle value: half the figures sit above it and half below."
+  },
+  {
+   "term": "vintage",
+   "short": "A vintage is one published version of a figure, dated the day it was released; each revision adds a vintage."
+  },
+  {
+   "term": "ALFRED",
+   "short": "ALFRED is the archival vintage record behind FRED, the St. Louis Fed’s data service: it keeps every version of a series ever published."
+  },
+  {
+   "term": "Tech Hub",
+   "short": "A Tech Hub is a region designated by the US Economic Development Administration under its Regional Technology and Innovation Hubs program."
+  },
+  {
+   "term": "CPC",
+   "short": "CPC, the Cooperative Patent Classification, is the international system that files every patent by subject; this site counts class C08, organic macromolecular compounds, as polymer."
+  },
+  {
+   "term": "unitid",
+   "short": "A unitid is the federal identifier IPEDS gives each institution record; one school can hold more than one."
+  },
+  {
+   "term": "FIPS",
+   "short": "A FIPS code is the five-digit federal code for a county: two digits for the state and three for the county."
+  },
+  {
+   "term": "endpoint",
+   "short": "An endpoint is the web address a dataset is fetched from."
+  },
+  {
+   "term": "LODES",
+   "short": "LODES is the Census Bureau’s Origin-Destination Employment Statistics, payroll records that name the home county and the work county of each job."
+  },
+  {
+   "term": "match",
+   "short": "Match, or cost share, is money partners promise to put in beside an award: promised, not awarded."
+  },
+  {
+   "term": "price level",
+   "short": "A price level here is BEA’s Regional Price Parity for a metro area, where 100 is the US average."
+  },
+  {
+   "term": "nominal",
+   "short": "Nominal means as posted or paid, before any adjustment for prices."
+  },
+  {
+   "term": "PIC-12+2",
+   "short": "PIC-12+2 is the register’s fourteen-county set: all twelve PIC-12 counties, with Columbiana and Tuscarawas added."
+  },
+  {
+   "term": "OpenAlex",
+   "short": "OpenAlex is an open index of scholarly works, their authors and the institutions those authors list."
+  },
+  {
+   "term": "corresponding author",
+   "short": "The corresponding author is the author a paper names as its contact; this site credits a paper to the side that holds that author, not the first author."
+  },
+  {
+   "term": "Collaborative Research",
+   "short": "Collaborative Research is the NSF mechanism that funds one project as separate awards, one per institution."
+  },
+  {
+   "term": "producer price index",
+   "short": "A producer price index tracks what a whole industry charges at the factory gate, not any one firm’s realized price or its costs."
+  }
+ ]
+}

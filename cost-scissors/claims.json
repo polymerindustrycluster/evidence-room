@@ -1,6 +1,10 @@
 {
   "hero": "cs-product-at-peak",
   "data": "scissors.json",
+  "kicker": true,
+  "quote": {"text": "In the US, producer prices for plastics and rubber products (NAICS 326) were about 40% above January 2019 in July 2026, before inflation, while resin manufacturing ran +25% and natural gas cost 7% less (BLS PPI and EIA).", "claims": ["cs-product-forty", "cs-resin-about-third", "cs-gas-below-seven"]},
+  "glossary": {"terms": ["NAICS 326", "producer price index", "nominal"]},
+  "plant": [{"text": "Check resin quotes against the resin index rather than gas: in July 2026 gas cost 7% less than in January 2019, while resin manufacturing prices ran 25% above it.", "claims": ["cs-gas-below-seven", "cs-resin-about-third"]}, {"text": "Read the gap between product and resin prices as a difference between two indexes, not as your margin: product prices have risen 14.3 percentage points more than resin prices since January 2019.", "claims": ["cs-spread-now", "cs-spread-not-margin"]}, {"text": "Budget for power separately: Ohio industrial electricity peaked in January 2026, not 2022, and has given back only about a quarter of its rise.", "claims": ["cs-elec-exception"]}],
   "claims": [
     {
       "id": "cs-ladder-monotonic",
@@ -56,6 +60,7 @@
       "id": "cs-gas-below-seven",
       "text": "In July 2026 gas cost 7% less than in January 2019: the hero card leads with the plain reading (-7%), the ladder row label repeats it as 'latest -7% vs 2019', and the vignette states it again.",
       "source": "EIA Henry Hub spot, current month against the 2019-01 base",
+      "scope": {"industry": "Henry Hub spot", "place": "US", "period": "Jan 2019–Jul 2026", "source": "EIA"},
       "assert": "(lambda g: 6.5 <= 100 - g['now']['index'] <= 7.5)(one(s for s in D['series'] if 'natural gas' in s['label'].lower()))",
       "actual": "(lambda g: (g['now']['date'], g['now']['index']))(one(s for s in D['series'] if 'natural gas' in s['label'].lower()))",
       "falsified_if": "The next EIA month moves the index outside 92.5-93.5, so the hand-typed '7% less' and the '-7%' card no longer round from the data.",
@@ -99,7 +104,8 @@
     {
       "id": "cs-resin-about-third",
       "text": "Both resin series have given back about a third of their rise; resin manufacturing now runs +25% against January 2019; the resin crests fall in 2021 and 2022 (standfirst, hero card, ledes, vignette, verdicts, closer).",
-      "source": "PPI plastics material and resin manufacturing; PPI plastics resins and materials",
+      "source": "PPI plastics material and resin manufacturing; PPI plastics resins and materials; NAICS 325211; BLS PPI; monthly, January 2019 to July 2026",
+      "scope": {"industry": "NAICS 325211", "place": "US", "period": "Jan 2019–Jul 2026", "source": "BLS PPI"},
       "assert": "(lambda rs: all(0.28 <= r['retraced'] <= 0.42 for r in rs) and all(r['peak']['date'][:4] in ('2021','2022') for r in rs) and 24.5 <= one(r for r in rs if 'manufacturing' in r['label'])['now']['index'] - 100 <= 25.5)([s for s in D['series'] if s['stage']=='resin'])",
       "actual": "[(s['label'], s['retraced'], s['peak']['date'], s['now']['index']) for s in D['series'] if s['stage']=='resin']",
       "falsified_if": "Either resin retracement leaves 28-42% (no longer 'about a third'), the resin-manufacturing index leaves 124.5-125.5 (the '+25%' card and 'resin up 25%' stop rounding), or a revision moves a resin peak out of 2021-2022.",
@@ -127,7 +133,8 @@
     {
       "id": "cs-product-forty",
       "text": "Finished-product prices are about 40% above their January 2019 base: the manufacturing index rounds to +40% (hero card, ladder row label, note arithmetic, vignette $1.40) and both product lines sit within 'about 40%' (lines lede, lines how-to-read line's worked example 'a line at 140 costs 40% more than it did then', on-chart plateau callout).",
-      "source": "both product PPIs against the 2019-01 base",
+      "source": "both product PPIs against the 2019-01 base; NAICS 326; BLS PPI; monthly, January 2019 to July 2026",
+      "scope": {"industry": "NAICS 326", "place": "US", "period": "Jan 2019–Jul 2026", "source": "BLS PPI"},
       "assert": "(lambda ps: all(37.5 <= p['now']['index'] - 100 <= 42.5 for p in ps) and 39.5 <= one(p for p in ps if 'manufacturing' in p['label'])['now']['index'] - 100 <= 40.49)([s for s in D['series'] if s['stage']=='product'])",
       "actual": "[(s['label'], s['now']['index']) for s in D['series'] if s['stage']=='product']",
       "falsified_if": "The manufacturing index leaves 139.5-140.49 (the '+40%' card and '$1.40' stop rounding), or either product series leaves the 37.5-42.5 band that makes 'about 40%' honest.",
@@ -155,7 +162,8 @@
     {
       "id": "cs-spread-now",
       "text": "The converter gap (product index minus resin index) stands at +14.3 points, that is, product prices have risen 14.3 percentage points more than resin prices since January 2019 (hero card and its plain-unit sub-line, spread H2, spread lede, reconciliation block, verdicts, closer).",
-      "source": "PCU326326 minus PCU325211325211, both rebased to 2019-01",
+      "source": "PCU326326 minus PCU325211325211, both rebased to 2019-01; NAICS 326 minus 325211; BLS PPI; monthly, January 2019 to July 2026",
+      "scope": {"industry": "NAICS 326 minus 325211", "place": "US", "period": "Jan 2019–Jul 2026", "source": "BLS PPI"},
       "assert": "(lambda sp: 14.25 <= sp[-1][1] <= 14.349)((lambda P, R: [(d, P[d]-R[d]) for d in sorted(P) if d in R])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']}))",
       "actual": "(lambda P, R: [(d, round(P[d]-R[d],2)) for d in sorted(P) if d in R][-1])({p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics and rubber products manufacturing')['points']}, {p['date']: p['index'] for p in one(s for s in D['series'] if s['label']=='PPI: plastics material and resin manufacturing')['points']})",
       "falsified_if": "The next PPI release moves the latest gap outside 14.25-14.349 points, so every typed '+14.3' stops rounding from the data. The band is tighter than the old one because the page now publishes the tenth, not the unit.",

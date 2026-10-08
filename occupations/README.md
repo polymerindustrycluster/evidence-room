@@ -132,6 +132,16 @@ Second pass, same branch, after reading the rendered screenshots:
   "Reproduce this" filter table. Both are shared-core surfaces; fixing them is a
   `_shared`/`_data` change, not a page change.
 
+## W4 reader furniture, 2026-10-07
+
+The eyebrow is now the hub's question, "Which jobs is the industry made of?" (DECISIONS.md,
+W4). It replaces the scope-split eyebrow described in the fifth pass above; the split still
+stands in the scope bar over the cards, the United States stamp on each card and the
+standfirst. The 10.9% card carries the scope chip from `occ-hero-figures`. The other three
+cards carry none: each row is already as tall as its tallest card, so a chip on any of them
+would push the first chart down 19px past its cold-open ceiling. claims.json also carries the
+`quote`, the "Words on this page" `glossary` and three "If you run a plant here" items.
+
 ## Run and publish
 
 ```

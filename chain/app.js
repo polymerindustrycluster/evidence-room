@@ -597,6 +597,10 @@ drawMethods();
 render();
 addEventListener("resize", () => { drawChain(search()); }, {passive:true});
 
+/* W4 scope chip for the register count, in its own host so the query-driven standfirst
+   rewrite never removes it. */
+PV.scopeChip(document.getElementById("chainfig"), "chain-neo-total");
+
 /* The page's own dated correction, in the house block (2026-10-04, DECISIONS.md D1). */
 PV.whatWeGotWrong([{
   when: "4 October 2026",

@@ -11,6 +11,17 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-10-07 — A source churn never read, *churn, sources*
+
+**Was:** churn credited the BLS payroll census (QCEW) as one of its two sources, and the
+sources page counted it among the pages QCEW feeds: nine of 23, with seven pages resting on a
+single dataset. **Is:** churn credits the Census Quarterly Workforce Indicators alone; QCEW
+feeds eight of 23 pages, and eight rest on a single dataset. **Cause:** churn links to the
+payroll-census headcount on another page but reads none of its data. The provenance check
+treated any industry code as a trace of the census, so the credit passed; it now looks for the
+census itself, and reader-facing glossary and quote text no longer count as a trace. Churn
+carries a dated note. No figure on churn changed.
+
 ## 2026-10-05 — Dated wording, keyboard focus, hero contrast and the grant documents as sources, *cost-scissors, revisions, sources, churn, cluster-health, accountability, scorecard, federal-money, chain, timeline, funding-map, every hero*
 
 No figure changed. Each page whose wording changed carries a dated note.

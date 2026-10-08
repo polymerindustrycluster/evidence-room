@@ -118,11 +118,11 @@ const gutter = (id, W, labels, gap) => {
    the claim, not more good news. */
 PV.figures([
   ["key", `#${AK.big_rank_real}`, `of ${B.length} polymer metros, on what the pay buys`,
-   `up ${AK.big_climb} places from #${AK.big_rank_nominal} on the paycheck itself; #1 is the best paid of the ${B.length} metros with 2,000+ polymer jobs`],
+   `up ${AK.big_climb} places from #${AK.big_rank_nominal} on the paycheck itself; #1 is the best paid of the ${B.length} metros with 2,000+ polymer jobs`, {scope: "rw-flip"}],
   ["", usd(AK.real), "a week: what Akron’s wage buys",
-   `${usd(AK.nominal)} on the paycheck, at a price level of ${AK.rpp.toFixed(1)}: prices here run about ${Math.round(100 - AK.rpp)} percent below the US average, so the same dollars go further`],
+   `${usd(AK.nominal)} on the paycheck, at a price level of ${AK.rpp.toFixed(1)}: prices here run about ${Math.round(100 - AK.rpp)} percent below the US average, so the same dollars go further`, {scope: "rw-wage"}],
   ["", `${cheaper}`, `of ${M.length} priced US metros are cheaper`,
-   "this comparison covers disclosed industry data, not all US metros"]
+   "this comparison covers disclosed industry data, not all US metros", {scope: "rw-prices"}]
 ]);
 
 /* ------------------------------------------------ comparator: picker + verdict */

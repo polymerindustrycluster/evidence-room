@@ -73,7 +73,7 @@ figures([
   ["", String(T.n_filter_lines), "filter lines published, not described",
    "The exact codes, ownership and geography applied to each source"],
   ["", N(DC.doubled), "jobs counted twice if you add a code family to its own parts",
-   "The first mistake a replicator makes, drawn below"],
+   "The first mistake a replicator makes, drawn below", {scope: "src-double-count"}],
 ]);
 
 /* ------------------------------------------------------- shared chart scaffolding

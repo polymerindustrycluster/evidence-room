@@ -1,4 +1,16 @@
 {
+ "kicker": true,
+ "quote": {
+  "text": "Ohio filed 342 polymer patent applications (CPC C08) in 2023, the last complete filing year, down a quarter from Ohio’s polymer filings of 455 in 2015 and in step with the fall in American polymer filings (USPTO, by inventor address).",
+  "claims": ["pat-hero-fall"]
+ },
+ "glossary": {
+  "terms": ["CPC"]
+ },
+ "plant": [
+  {"text": "When you check whether a polymer patent is from Ohio, check both addresses: Ohio’s polymer count is 8,854 applications all-time by inventor address, and its polymer count by applicant address is 3,948.", "claims": ["pat-two-bases"]},
+  {"text": "If you look to Ohio inventors for polymer technology, expect fewer new filings than in 2015: Ohio’s polymer filings were 342 in 2023, against 455.", "claims": ["pat-hero-fall"]}
+ ],
  "hero": "pat-two-by-two",
  "_note": "Every complete-year figure re-runs against data/patents.json, which is the same file the charts render from. The degree echo re-runs against the talent page's own shipped data, so the two pages cannot drift apart silently.",
  "data": {
@@ -8,8 +20,8 @@
  "claims": [
   {
    "id": "pat-hero-fall",
-   "text": "Ohio filed 342 polymer patent applications in 2023, the last complete filing year, down a quarter from 455 in 2015 and in step with the American field's fall (second hero card; bars chart; closer).",
-   "source": "patents/data/patents.json rows, complete years",
+   "text": "Ohio filed 342 polymer patent applications in 2023, the last complete filing year, down a quarter from Ohio’s polymer filings of 455 in 2015 and in step with the American field's fall (second hero card; bars chart; closer).",
+   "source": "patents/data/patents.json rows, complete years; CPC C08; USPTO",
    "assert": "(lambda C: C[0]['year'] == 2015 and C[-1]['year'] == 2023 and C[0]['ohio'] == 455 and C[-1]['ohio'] == 342 and 0.24 <= 1 - C[-1]['ohio'] / C[0]['ohio'] <= 0.26)([r for r in D['p']['rows'] if r['complete']])",
    "actual": "[(r['year'], r['ohio']) for r in D['p']['rows'] if r['complete']]",
    "falsified_if": "A refetch moves either endpoint, which late-publishing applications genuinely can do for recent years: the USPTO record itself back-fills. The fetch stamps its read date for exactly this reason.",
@@ -19,12 +31,13 @@
     {"figure": "filed 342 polymer patent applications in 2023", "noun": "home of Akron"},
     {"figure": "down a quarter from 2015", "noun": "342 polymer patent applications"},
     {"figure": "455", "noun": ["Ohio polymer patent applications", "Ohio’s polymer filings"]}
-   ]
+   ],
+   "scope": {"industry": "CPC C08", "place": "Ohio", "period": "2023 filing year", "source": "USPTO"}
   },
   {
    "id": "pat-two-by-two",
    "text": "The 2x2 that carries the page, indexed to 2015 = 100 at 2023, all on US inventor addresses: American polymer filings 78.2 against American all-class filings 98.4; Ohio polymer 75.2 against Ohio all-class 87.5. The polymer pair falls together far below the all-class pair (H1, standfirst, hero spark, the four-line chart and its end labels, the closer).",
-   "source": "patents/data/patents.json rows, complete years, indexed in the page from the same file",
+   "source": "patents/data/patents.json rows, complete years, indexed in the page from the same file; CPC C08; USPTO",
    "assert": "(lambda B, L: abs(L['us_inv']/B['us_inv']*100 - 78.2) < 0.15 and abs(L['us_inv_all']/B['us_inv_all']*100 - 98.4) < 0.15 and abs(L['ohio']/B['ohio']*100 - 75.2) < 0.15 and abs(L['ohio_all']/B['ohio_all']*100 - 87.5) < 0.15 and L['ohio']/B['ohio'] < L['us_inv']/B['us_inv'] and 0.19 <= 1 - L['us_inv']/B['us_inv'] <= 0.24)([r for r in D['p']['rows'] if r['complete']][0], [r for r in D['p']['rows'] if r['complete']][-1])",
    "actual": "[(k, round([r for r in D['p']['rows'] if r['complete']][-1][k] / [r for r in D['p']['rows'] if r['complete']][0][k] * 100, 1)) for k in ('ohio', 'ohio_all', 'us_inv', 'us_inv_all')]",
    "falsified_if": "Any endpoint moves past a tenth of a point, or Ohio's polymer line stops sitting at or below the American one, or the American fall leaves the band that makes 'by a fifth' honest. This claim replaced pat-three-baselines the day the page shipped: the first version's national line carried no address filter, was worldwide filings at the USPTO, and read flat at 99 only because foreign-origin filings filled the hole. A replication reviewer reproduced the 99 and could not reproduce the label on it. The unfiltered number is now printed as a trap with its own claim below.",
@@ -40,7 +53,8 @@
     {"figure": "75.2", "noun": "Ohio’s"},
     {"figure": "87.5", "noun": "Ohio’s"},
     {"figure": "fell 22 percent", "noun": "American polymer filings"}
-   ]
+   ],
+   "scope": {"industry": "CPC C08", "place": "US", "period": "2015–2023", "source": "USPTO"}
   },
   {
    "id": "pat-ohio-polymer-worst-and-best",
@@ -58,14 +72,15 @@
   {
    "id": "pat-share-held",
    "text": "Ohio's share of AMERICAN polymer filings held near one in ten across the window, 10.1 percent in 2015 to 9.7 in 2023 (third hero card). The share of the WORLDWIDE count fell from 4.1 to 3.1, and that fall is the foreign-filing trap, not an Ohio story (the trap note under the four-line chart).",
-   "source": "patents/data/patents.json rows",
+   "source": "patents/data/patents.json rows; CPC C08; USPTO",
    "assert": "(lambda B, L: abs(B['ohio']/B['us_inv']*100 - 10.1) < 0.1 and abs(L['ohio']/L['us_inv']*100 - 9.7) < 0.1 and abs(B['ohio']/B['world']*100 - 4.1) < 0.1 and abs(L['ohio']/L['world']*100 - 3.1) < 0.1 and abs(L['world']/B['world']*100 - 99.0) < 0.15)([r for r in D['p']['rows'] if r['complete']][0], [r for r in D['p']['rows'] if r['complete']][-1])",
    "actual": "[(r['year'], round(r['ohio']/r['us_inv']*100, 1), round(r['ohio']/r['world']*100, 1)) for r in D['p']['rows'] if r['complete']]",
    "falsified_if": "Either share moves past a tenth of a point. The two shares are printed together deliberately: the same numerator over two denominators tells opposite stories, which is the basis lesson of this whole site on one card.",
    "counts": [
     {"figure": "about a tenth", "noun": "Ohio kept"},
     {"figure": "ends at 99", "noun": "series"}
-   ]
+   ],
+   "scope": {"industry": "CPC C08", "place": "Ohio", "period": "2015–2023", "source": "USPTO"}
   },
   {
    "id": "pat-lag-flagged",

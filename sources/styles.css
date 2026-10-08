@@ -149,7 +149,7 @@
 .entry summary:hover{color:var(--hover)}
 .entry dl{margin:8px 0 0;font-size:13.5px;line-height:1.5}
 .entry dt{font-weight:900;color:#2A3A3E;margin:7px 0 0}
-.entry dd{margin:0;color:#3A4448}
+.entry dd{margin:0;color:#3A4448;overflow-wrap:anywhere}  /* long filter tokens wrapped at 360px, opened (PR #54) */
 
 /* Chips. Three facts a reader scans for before reading a word: how you get it, whether
    you need a key, and whether a licence binds what you do next. Colour is not the only

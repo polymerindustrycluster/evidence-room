@@ -1,6 +1,6 @@
 /* DOES EACH GATE ACTUALLY CATCH THE DEFECT IT EXISTS FOR?
  *
- *   node tools/selftest.mjs [--list] [gate | gate/page ...]
+ *   node tools/selftest.mjs [--list] [--shard=K/N] [gate | gate/page ...]
  *
  * A green board is worth exactly as much as the gates behind it, and during the
  * 2026-08 rebuild six of this project's own checks turned out to be unable to fail on
@@ -153,7 +153,7 @@ const CASES = [
    expect: /no How this was made and checked box/,
    defect: "a page shipped without the box that says who made it, what its checks can " +
            "establish and how to cite it",
-   inject: s => s.replace('await madeAndChecked(o.page || "index", manual.length);', "")},
+   inject: s => s.replace('await madeAndChecked(o.page || "index", manual.length, claims);', "")},
 
   {gate: "disclosure", page: "churn", args: ["churn"],
    expect: /byline Revised reads 2020-01-01/,
@@ -654,9 +654,11 @@ const CASES = [
    defect: "the brand lime eyebrow on the teal hero at 4.12:1, exempt from the check until 5 October 2026",
    inject: s => s.replace(".hero .eyebrow{color:#C6DE5D}", ".hero .eyebrow{color:#B8D637}")},
 
-  {gate: "verify", page: "funding-map", args: ["funding-map"], expect: /1440:contrast-rendered[^:]*: p\.eyebrow/,
-   defect: "the hero's radial glow under the eyebrow, 4.35:1 on funding-map at 1440, which the " +
-           "ancestor-colour walk passed because a pseudo-element is not an ancestor (PR #48)",
+  /* Moved from funding-map to cluster-health in the W4 content PR: funding-map's eyebrow became
+     a short kicker that ends before the glow, so the injection no longer reached it there. */
+  {gate: "verify", page: "cluster-health", args: ["cluster-health"], expect: /1440:contrast-rendered[^:]*: p\.eyebrow/,
+   defect: "the hero's radial glow under the eyebrow, 4.35:1 at 1440 (funding-map's, then cluster-health's), " +
+           "which the ancestor-colour walk passed because a pseudo-element is not an ancestor (PR #48)",
    inject: s => s.replace(".hero::before{-webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 84px,#000 150px);\n  mask-image:linear-gradient(to bottom,transparent 0,transparent 84px,#000 150px)}", "")},
 
   {gate: "provenance", page: "accountability", args: ["accountability"], expect: /UNCREDITED/,
@@ -686,13 +688,157 @@ const CASES = [
    expect: /no longer launches with --font-render-hinting=none/,
    defect: "the shared launcher losing the flag that makes Linux and macOS render alike",
    inject: s => s.replace('Object.freeze(["--font-render-hinting=none"])', "Object.freeze([])")},
+
+  /* THE W4 READER FURNITURE (DECISIONS.md, 7 October 2026). Each piece, once a page opts in,
+     must fail when it goes missing or stops agreeing with what it is rendered from. These
+     inject on peers, the worked example, and the hub's table. */
+  {gate: "consistency", page: "peers", file: "peers/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[kicker\] peers\s+kicker reads 'Where Northeast Ohio actually sits'/,
+   defect: "a story's kicker drifting from the question the hub asks for it (peers' eyebrow " +
+           "before W4)",
+   inject: s => s.replace("data-kicker>Where does Ohio rank?", "data-kicker>Where Northeast Ohio actually sits")},
+
+  {gate: "consistency", page: "peers", file: "peers/claims.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[quote\] peers\s+the quote prints 54,864/,
+   defect: "a Quote this sentence whose figure was retyped wrong, with every claim still passing",
+   inject: s => s.replace("2024: 54,846, which is", "2024: 54,864, which is")},
+
+  {gate: "consistency", page: "peers", file: "peers/claims.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[glossary\] peers\s+the page uses 'shift-share', which _data\/glossary.json does not define/,
+   defect: "a page declaring a glossary term the shared definitions file does not hold",
+   inject: s => s.replace('"terms": ["QCEW", ', '"terms": ["QCEW", "shift-share", ')},
+
+  {gate: "consistency", page: "index", file: "_data/jobcounts.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[jobcounts\] peers:18,549/,
+   defect: "a job-count table total that no longer matches the claim on the story it names",
+   inject: s => s.replace('"total": "18,594"', '"total": "18,549"')},
+
+  {gate: "disclosure", page: "peers", args: ["peers"],
+   expect: /claim oh-rank-1 carries a scope and no scope chip renders it/,
+   defect: "a headline figure shipped without the scope chip its claim declares",
+   inject: s => s.replace(', {scope: "oh-rank-1"}]', "]")},
+
+  {gate: "disclosure", page: "peers", args: ["peers"],
+   expect: /claims\.json declares a quote and the how-we-checked box shows none/,
+   defect: "a declared Quote this sentence missing from the how-we-checked box",
+   inject: s => s.replace("spec && spec.quote && spec.quote.text ?", "false ?")},
+
+  {gate: "disclosure", page: "peers", args: ["peers"],
+   expect: /declares a glossary and 0 Words on this page blocks render/,
+   defect: "a page that declares its words losing the block that defines them",
+   /* the static block and the script's fallback both, as a page that never ran render_static.py
+      and lost the call would ship */
+   inject: s => s.replace(/<details class="pv-words">[\s\S]*?<\/details>/, "")
+                 .replace('await wordsOnPage(claims, document.querySelector(".pv-breaks-all") || sec);', "")},
+
+  {gate: "disclosure", page: "peers", args: ["peers"],
+   expect: /its total 18,594 is in the job-count table and the page has no link to it/,
+   defect: "a story whose total is in the hub's job-count table with no link to it",
+   inject: s => s.replace("A county total, not a sum of metros.`, {differs: true}]", "A county total, not a sum of metros.`]")},
+
+  {gate: "disclosure", page: "index", args: ["index"],
+   expect: /job-count table differs from _data\/jobcounts\.json: 17,707/,
+   defect: "the hub's job-count table rendering a total its data file does not hold",
+   inject: s => s.replace('<th scope="row">17,770</th>', '<th scope="row">17,707</th>')},
+
+  /* PR #54 review: the furniture must survive without scripting, and an opened disclosure
+     must not widen a phone page. */
+  {gate: "consistency", page: "peers", file: "peers/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[static\] peers\s+the static words region is empty/,
+   defect: "a Words on this page block left to the script, so a reader without scripting gets " +
+           "an empty mount where the glossary was (PR #54 as first pushed)",
+   inject: s => s.replace(/(<!-- pv:static words -->)[\s\S]*?(<!-- \/pv:static -->)/, "$1\n    $2")},
+
+  {gate: "consistency", page: "index", file: "index/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[static\] index\s+the static jobcounts region is stale/,
+   defect: "the hub's static job-count table edited by hand away from _data/jobcounts.json",
+   inject: s => s.replace('<th scope="row">18,594</th>', '<th scope="row">18,549</th>')},
+
+  {gate: "verify", page: "index", args: ["index"], expect: /(390|360):overflow-open/,
+   defect: "the job-count table, opened on a phone, widening the whole page past the viewport " +
+           "while the closed-disclosure pass stayed clean (394px at 360 and 390, PR #54)",
+   inject: s => s.replace(".pv-jobcounts-scroll{overflow-x:auto;max-width:100%}", "")},
+
+  /* W4 content (7 October 2026): the short card kicker as the one source, and the
+     "If you run a plant here" box bound to the claims it names. */
+  {gate: "consistency", page: "index", file: "index/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[kicker\] index:peers\s+card kicker .* is 45 characters, over 40/,
+   defect: "a hub card kicker grown past the 40 characters a short question gets",
+   inject: s => s.replace('<p class="kick">Where does Ohio rank?</p>',
+                          '<p class="kick">Where does Ohio rank among states and metros?</p>')},
+
+  {gate: "consistency", page: "index", file: "index/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[kicker\] index:federal-money\s+Start with a question link reads 'Where does federal money go\?'/,
+   defect: "a Start with a question link drifting from its story's card kicker (federal money's link before W4)",
+   inject: s => s.replace('<a href="../federal-money/">How big is the Tech Hub award?</a>',
+                          '<a href="../federal-money/">Where does federal money go?</a>')},
+
+  {gate: "consistency", page: "peers", file: "peers/claims.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[plant\] peers#3\s+prints 95, which none of its automatically checked claims/,
+   defect: "an If you run a plant here sentence printing a figure its claim does not state",
+   inject: s => s.replace("average of about 59 people a site", "average of about 95 people a site")},
+
+  {gate: "consistency", page: "peers", file: "peers/claims.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[plant\] peers#2\s+must name at least one claim on the page, and only claims that exist; metro-visibilty/,
+   defect: "an If you run a plant here sentence bound to a claim id that does not exist",
+   inject: s => s.replace('"claims": ["metro-visibility"]', '"claims": ["metro-visibilty"]')},
+
+  {gate: "consistency", page: "peers", file: "peers/claims.json",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[scope\] peers:oh-rank-1\s+scope period '2023 annual avg' names a year neither/,
+   defect: "a scope chip dating its figure to a year its claim never states",
+   inject: s => s.replace('"period": "2024 annual avg"', '"period": "2023 annual avg"')},
+
+  {gate: "disclosure", page: "cluster-health", file: "cluster-health/claims.json", args: ["cluster-health"],
+   expect: /claim workplaces-recent-contrast carries a scope and no scope chip renders it/,
+   defect: "a scope with no chip and no stated reason, the unchipped waiver dropped",
+   inject: s => s.replace(/, "unchipped": "[^"]*"/, "")},
+
+  {gate: "consistency", page: "peers", file: "peers/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[static\] peers\s+the static plant region is stale/,
+   defect: "the no-script If you run a plant here box drifting from claims.json plant",
+   inject: s => s.replace("about 59 people a site, which", "about 60 people a site, which")},
+
+  {gate: "disclosure", page: "peers", args: ["peers"],
+   expect: /claims\.json declares If you run a plant here and 0 such boxes render/,
+   defect: "a declared If you run a plant here box missing from the page",
+   inject: s => s.replace("    plantBox(claims);\n", "").replace(/<section class="pv-plant-band">[\s\S]*?<\/section>/, "")},
+
+  {gate: "style", page: "peers", args: ["peers"], expect: /scope-chip-form/,
+   defect: "a scope chip set as a comma list rather than the house industry · place · period · source form",
+   inject: s => s.replace('[s.industry, s.place, s.period, s.source].join(" \u00b7 ")',
+                          '[s.industry, s.place, s.period, s.source].join(", ")')},
 ];
 
 const only = process.argv.slice(2).filter(a => !a.startsWith("--"));
+/* --shard=K/N runs the Kth of N slices of the fixtures the names above select (all of them
+   with no name). The split is deterministic: the selected fixtures in file order, dealt
+   round-robin, so the 40 style fixtures and the browser-heavy ones spread across shards
+   instead of landing in one. The union of the N shards is exactly the selection. */
+const shardArg = process.argv.slice(2).find(a => a.startsWith("--shard"));
+let shard = null;
+if (shardArg) {
+  const m = /^--shard=(\d+)\/(\d+)$/.exec(shardArg);
+  if (!m || +m[1] < 1 || +m[1] > +m[2]) { console.error("Usage: --shard=K/N with 1 <= K <= N"); process.exit(2); }
+  shard = {k: +m[1], n: +m[2]};
+}
+const selected = CASES.filter(c => !only.length || only.includes(c.gate) || only.includes(`${c.gate}/${c.page}`))
+  .filter((_, i) => !shard || i % shard.n === shard.k - 1);
 /* --list prints the fixtures as JSON and runs nothing: tools/all.mjs reads it to pick the
-   fixtures a change can affect (a gate's code, a fixture's page or file). */
+   fixtures a change can affect (a gate's code, a fixture's page or file), and to count a shard. */
 if (process.argv.includes("--list")) {
-  console.log(JSON.stringify(CASES.map(c => ({gate: c.gate, page: c.page, file: c.file || null,
+  console.log(JSON.stringify(selected.map(c => ({gate: c.gate, page: c.page, file: c.file || null,
     command: c.command || "node", args: c.args, prepare: c.prepare || null}))));
   process.exit(0);
 }
@@ -713,11 +859,12 @@ const run = c => {
 };
 
 let trusted = 0, broken = [];
-for (const c of CASES) {
-  /* a name picks a gate's fixtures; gate/page picks that gate's fixtures on one page */
-  if (only.length && !only.includes(c.gate) && !only.includes(`${c.gate}/${c.page}`)) continue;
+if (shard) console.log(`SHARD ${shard.k}/${shard.n}: ${selected.length} of ${CASES.length} fixtures`);
+/* a name picks a gate's fixtures; gate/page picks that gate's fixtures on one page */
+for (const c of selected) {
   const f = c.file || `dist/${c.page}.html`;
-  if (!existsSync(f)) { console.log(`SKIP  ${c.gate} — ${f} missing, run bundle first`); continue; }
+  /* a fixture that cannot run is not a fixture that passed: a missing file fails the run */
+  if (!existsSync(f)) { console.log(`BROKEN ${c.gate} — ${f} missing, run bundle first`); broken.push(c); continue; }
   const backupDir = c.file ? mkdtempSync(join(tmpdir(), "evidence-room-selftest-")) : null;
   const bak = backupDir ? join(backupDir, "original") : `${f}.selftest-backup`;
   const originalTimes = statSync(f);

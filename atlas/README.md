@@ -81,6 +81,15 @@ translate [487.5, 305]) — NOT d3's defaults. Whoever writes the projector will
 - **No research layer in this edition.** The OpenAlex candidate institutions have not
   been individually verified; the page identifies this limit of its teaching map.
 
+## W4 reader furniture, 2026-10-07
+
+The eyebrow is now the hub's question, "Where can you learn polymer science?" (DECISIONS.md,
+W4), so it no longer carries "a dated snapshot, not refreshed"; the dated line under the map
+still does. The first three hero cards carry the scope chip from `atlas-counts`; the fourth,
+the four documented examples, rests on a manual claim and carries none. claims.json also
+carries the `quote`, the "Words on this page" `glossary` and two "If you run a plant here"
+items.
+
 ## Run and publish
 
 ```

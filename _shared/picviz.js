@@ -355,12 +355,19 @@ const PV = (() => {
 
   /* The hero stat row. rows = [[cls, value, key, detail], ...]; the first is usually
      "key", which paints its rule in the accent. */
+  /* A row's optional fifth field is the W4 furniture under that figure (see "reader
+     furniture" below): {scope: "<claim id>"} prints the claim's scope chip, {differs: true}
+     the link to the hub's job-count table. */
   function figures(rows, id = "figs") {
     const host = document.getElementById(id);
     if (!host) return null;
-    host.innerHTML = rows.map(([c, n, k, d]) =>
+    host.innerHTML = rows.map(([c, n, k, d, o = {}]) =>
       `<div class="figv ${c || ""}"><div class="n">${n}</div><div class="k">${k}</div>
-       <div class="d">${d || ""}</div></div>`).join("");
+       <div class="d">${d || ""}</div>${o.scope ? `<p class="pv-scope" data-claim="${o.scope}"></p>` : ""}${
+       o.differs ? differsLink() : ""}</div>`).join("");
+    if (host.querySelector(".pv-scope"))
+      claimsNow().then(spec => fillScopes(spec, host),
+        e => console.error(`PV.figures: claims.json unavailable for the scope chip: ${e.message}`));
     return host;
   }
 
@@ -526,6 +533,8 @@ const PV = (() => {
     "claims.json": "claims.json",              // sits beside index.html, not in data/
     "cite.json": "../_data/cite.json",         // every page's title, URL and revision date
     "corrections_by_page.json": "../_data/corrections_by_page.json",  // PV.correctionsSummary()
+    "glossary.json": "../_data/glossary.json",     // PV.wordsOnPage(), shared definitions
+    "jobcounts.json": "../_data/jobcounts.json",   // PV.jobCounts(), the hub's five totals
   };
   async function data(file) {
     const tag = document.querySelector(`script[data-pv-file="${file}"]`);
@@ -606,7 +615,7 @@ const PV = (() => {
   /* "2026-10-05" -> "5 Oct 2026": the byline's short form, which keeps the byline row from
      wrapping a line on Linux (CI, PR #46); the cite line keeps the long form */
   const shortDate = iso => `${+iso.slice(8, 10)} ${MONTHS[+iso.slice(5, 7) - 1].slice(0, 3)} ${iso.slice(0, 4)}`;
-  async function madeAndChecked(page, nManual) {
+  async function madeAndChecked(page, nManual, spec) {
     const by = document.querySelector(".byline");
     if (!by || document.querySelector(".pv-made")) return;
     let rec = null;
@@ -641,7 +650,12 @@ const PV = (() => {
       Swanson, who is responsible for it. <span class="pv-made-credit">${credit}</span>.
       Every numbered sentence is re-run against the data it ships
       with${reran}; that catches a sentence drifting from its data, not data that is wrong
-      about the world (<a href="${checks}">what the checks catch and miss</a>).</p>
+      about the world (<a href="${checks}">what the checks catch and miss</a>).</p>${
+      /* QUOTE THIS (W4): one board-safe sentence, scope built in, bound to the claims it
+         names by verify_consistency.py [quote]; above the cite line, so the box reads
+         "what to say, then how to cite it". */
+      spec && spec.quote && spec.quote.text ? `
+      <p class="pv-quote"><b>Quote this:</b> \u201c<span class="pv-quote-text">${spec.quote.text}</span>\u201d</p>` : ""}
       <p class="pv-cite"><b>Cite as:</b> Swanson, J., Polymer Industry Cluster (${year}). <cite>${rec.title}</cite>.
       ${page === "index" ? "Polymer Industry Cluster (PIC). Version"
         : "Polymer Industry Cluster (PIC) Evidence Room, version"}
@@ -702,8 +716,139 @@ const PV = (() => {
     p.className = "pv-corr-sum";
     p.innerHTML = `${correctionsSentence(list, (all.headlines || {})[page])} See them in the ` +
       `<a href="../corrections/?page=${page}">corrections log</a>.`;
-    box.insertBefore(p, box.querySelector(".pv-cite"));
+    box.insertBefore(p, box.querySelector(".pv-quote") || box.querySelector(".pv-cite"));
     return p;
+  }
+
+  /* ------------------------------------------------- reader furniture (W4, 7 October 2026)
+
+     FOUR SHARED PIECES THAT LET A READER QUOTE A NUMBER WITHOUT LOSING ITS SCOPE (DECISIONS.md,
+     W4). Each is declared in data and rendered here, and each is opt-in per page; once a page
+     opts in, verify_consistency.py and tools/disclosure.mjs fail it when the piece is missing
+     or disagrees with what it was rendered from.
+
+       scope chip   a claim's `scope` {industry, place, period, source}, printed as one grey
+                    line under the headline figure that carries it (PV.figures, 5th field
+                    {scope: claim id}): "NAICS 326 · Ohio · 2024 annual avg · BLS QCEW".
+       quote this   claims.json `quote` {text, claims}: one board-safe sentence, scope built
+                    in, inside the how-we-checked box above the cite line. Every number in it
+                    must appear in one of the claims it names, so a changed figure fails.
+       differs link a story whose total is a row of _data/jobcounts.json prints a one-line link
+                    to the hub's table of the five totals (PV.figures {differs: true}).
+       words block  claims.json `glossary` {terms, notes}: a collapsed "Words on this page"
+                    listing only the declared terms, defined once in _data/glossary.json.
+
+     The fifth, the kicker, is static markup: a story's eyebrow carries the hub's question for
+     it, and verify_consistency.py [kicker] holds the two equal. */
+  const scopeLine = s => [s.industry, s.place, s.period, s.source].join(" · ");
+  /* The claims file without waiting where it is inlined, so a chip lands in the same frame
+     as its figure and never moves the page after first paint. */
+  function claimsNow() {
+    const tag = document.querySelector('script[data-pv-file="claims.json"]');
+    if (tag) return Promise.resolve(JSON.parse(tag.textContent));
+    return location.protocol.startsWith("http") ? data("claims.json") : Promise.resolve(null);
+  }
+  function fillScopes(spec, root = document) {
+    const byId = Object.fromEntries(((spec && spec.claims) || []).map(c => [c.id, c]));
+    root.querySelectorAll(".pv-scope[data-claim]").forEach(el => {
+      const c = byId[el.dataset.claim];
+      if (!c || !c.scope) {
+        console.error(`PV.figures: scope chip names claim "${el.dataset.claim}", which carries no scope in claims.json.`);
+        return;
+      }
+      el.textContent = scopeLine(c.scope);
+    });
+  }
+  /* A chip where the headline number is not a PV.figures card (chain's ribbon): appended to
+     `host`, which the page marks data-hero-figure so the gates count it as a headline figure. */
+  function scopeChip(host, id) {
+    if (!host) return null;
+    const p = document.createElement("p");
+    p.className = "pv-scope";
+    p.dataset.claim = id;
+    host.appendChild(p);
+    claimsNow().then(spec => fillScopes(spec, host),
+      e => console.error(`PV.scopeChip: claims.json unavailable for the scope chip: ${e.message}`));
+    return p;
+  }
+  const JOBCOUNTS = "job-counts";
+  function differsLink() {
+    return `<p class="pv-differs"><a href="../index/#${JOBCOUNTS}">Why this total differs from others on the site</a></p>`;
+  }
+  /* The hub's table, from _data/jobcounts.json. Rendered into `mount`, which carries the
+     anchor id the story links point at. */
+  /* The page normally ships this table as static markup written by
+     _data/build/render_static.py (so it survives without scripting); then there is nothing
+     to do. The script draws it only into an empty mount, the same markup either way. */
+  async function jobCounts(mount) {
+    if (!mount) return null;
+    if (mount.querySelector("table.pv-jobcounts")) return mount;
+    const J = await data("jobcounts.json");
+    mount.id = JOBCOUNTS;
+    mount.innerHTML = `<div class="pv-jobcounts-scroll"><table class="pv-jobcounts">
+      <caption>Why the job counts differ: five totals for the same twelve counties</caption>
+      <thead><tr>${["Total", "Industry", "Year", "Source", "Story"].map(h =>
+        `<th scope="col">${h}</th>`).join("")}</tr></thead>
+      <tbody>${J.rows.map(r => `<tr><th scope="row">${r.total}</th><td>${r.industry}</td>
+        <td>${r.year}</td><td>${r.source}</td><td><a href="../${r.story}/">${r.label}</a></td></tr>`).join("")}
+      </tbody></table></div>`;
+    return mount;
+  }
+  /* "Words on this page". Bolds the term where its own definition names it. A page normally
+     ships the block as static markup (_data/build/render_static.py); then it returns at once. */
+  async function wordsOnPage(spec, method) {
+    const g = spec && spec.glossary;
+    if (!g || !(g.terms || []).length || document.querySelector(".pv-words")) return null;
+    let G;
+    try { G = await data("glossary.json"); }
+    catch (e) { console.error(`PV.wordsOnPage: ${e.message}`); return null; }
+    const def = Object.fromEntries(G.terms.map(t => [t.term, t]));
+    const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const items = g.terms.map(term => {
+      const t = def[term];
+      if (!t) {
+        console.error(`PV.wordsOnPage: "${term}" is declared in claims.json and defined nowhere in _data/glossary.json.`);
+        return "";
+      }
+      const short = t.short.replace(new RegExp(`\\b(${esc(term)}\\w*)`, "i"), "<b>$1</b>");
+      const note = (g.notes || {})[term];
+      return `<li data-term="${term}">${[short, t.long, note].filter(Boolean).join(" ")}</li>`;
+    }).join("");
+    const box = document.createElement("details");
+    box.className = "pv-words";
+    box.innerHTML = `<summary>Words on this page</summary><ul>${items}</ul>`;
+    const mount = document.querySelector(".pv-words-mount");
+    if (mount) mount.replaceWith(box);
+    else {
+      /* No mount: its own band just before the methodology box. */
+      const sec = document.createElement("section");
+      sec.className = "band pv-words-band";
+      sec.innerHTML = `<div class="wrap"></div>`;
+      sec.firstChild.appendChild(box);
+      if (method) method.parentNode.insertBefore(sec, method);
+      else (document.querySelector("main") || document.body).appendChild(sec);
+    }
+    return box;
+  }
+
+  /* "If you run a plant here" (W4, John, 7 October 2026): up to three plain sentences, each
+     a practical implication of a claim the page already checks, from claims.json `plant`
+     [{text, claims}]. A small box after the closer, never above the first chart.
+     verify_consistency.py [plant] binds each sentence to the claims it names and every
+     figure in it to one of them; tools/disclosure.mjs holds the rendered box to the file. */
+  function plantBox(spec) {
+    const items = spec && spec.plant;
+    if (!Array.isArray(items) || !items.length || document.querySelector(".pv-plant")) return null;
+    const sec = document.createElement("section");
+    sec.className = "pv-plant-band";
+    sec.innerHTML = `<div class="wrap"><aside class="pv-plant" aria-labelledby="pv-plant-h">
+      <h2 id="pv-plant-h">If you run a plant here</h2>
+      <ul>${items.map(i => `<li data-claims="${(i.claims || []).join(" ")}">${i.text}</li>`).join("")}</ul>
+      </aside></div>`;
+    const closer = document.querySelector(".closer");
+    if (closer) closer.after(sec);
+    else (document.querySelector("main") || document.body).appendChild(sec);
+    return sec;
   }
 
   /* ------------------------------------------------------------ methodology box
@@ -843,7 +988,7 @@ const PV = (() => {
       }
     }
     statusBanner(m.status, o.page);
-    await madeAndChecked(o.page || "index", manual.length);
+    await madeAndChecked(o.page || "index", manual.length, claims);
     await correctionsSummary(o.page || "index");
 
     const sec = document.createElement("section");
@@ -968,6 +1113,8 @@ const PV = (() => {
     if (closer) closer.parentNode.insertBefore(sec, closer);
     else (document.querySelector("main") || document.body).appendChild(sec);
     breaksIf(claims, sec);
+    await wordsOnPage(claims, document.querySelector(".pv-breaks-all") || sec);
+    plantBox(claims);
     return sec;
   }
 
@@ -1210,7 +1357,7 @@ const PV = (() => {
     if (unit) txt(svg, unit, {x: 0, y: 31, class: "pv-tick", fill: "var(--caption)"});
   }
 
-  return {tableTools, onFill, whatWeGotWrong, correctionsSummary, correctionsSentence, el, txt, axlab, face, lead, ticks, frame, hoverable, rove, showTip, hideTip, tableView, data, footprint,
+  return {jobCounts, differsLink, wordsOnPage, plantBox, scopeChip, scopeLine, tableTools, onFill, whatWeGotWrong, correctionsSummary, correctionsSentence, el, txt, axlab, face, lead, ticks, frame, hoverable, rove, showTip, hideTip, tableView, data, footprint,
           methodology, figures, chart, chartTitle, footprintBanner, padGrid, mark, allStories, favicon, N,
           CAT, SEQ, GRAY, INK, usd, usdShort, reduced};
 })();

@@ -1,4 +1,16 @@
 {
+ "quote": {
+  "text": "Adding every NAICS 325 and 326 code the PIC-12 pay table publishes for 2025 means 20,846 jobs appear twice, because each part code sits inside a family code (BLS QCEW, 2025 annual average).",
+  "claims": ["src-double-count"]
+ },
+ "kicker": true,
+ "glossary": {
+  "terms": ["endpoint", "QCEW", "NAICS 326", "NAICS 325", "PIC-12", "FIPS", "private ownership", "annual average", "withheld", "cell", "establishment", "concentration"]
+ },
+ "plant": [
+  {"text": "If you total plastics, rubber and chemical jobs from a BLS county table yourself, add only the family codes: adding every code the pay page publishes means 20,846 jobs appear twice.", "claims": ["src-double-count"]},
+  {"text": "Check the job base under any concentration figure for your county before you quote it: the site’s largest reading, Geauga County resin at 22.7 times the national share, rests on 491 jobs.", "claims": ["src-lq-fragile"]}
+ ],
  "hero": "src-lq-basis",
  "data": "registry.json",
  "claims": [
@@ -37,7 +49,7 @@
   {
    "id": "src-double-count",
    "text": "Adding every industry code the pay page publishes gives 54,375 jobs; the two family codes alone hold 33,529, so 20,846 jobs are in the table twice. Every part code sits inside a family code, and the two are not the same thing as a family being exhausted by its parts: 9,497 of chemical manufacturing is never split out at this level (the third hero card, the double-count chart and its overhang annotation, the chart source line, the recipe's step-one warning).",
-   "source": "wages/data/wages.json latest_rows, 2025 annual averages, twelve counties",
+   "source": "wages/data/wages.json latest_rows, 2025 annual averages, twelve counties; NAICS 325 and 326; BLS QCEW",
    "assert": "(lambda C, F, P: D['doublecount']['column_sum'] == 54375 and D['doublecount']['once_counted'] == 33529 and D['doublecount']['doubled'] == 20846 and D['doublecount']['column_sum'] - D['doublecount']['once_counted'] == D['doublecount']['doubled'] and sum(c['emp'] for c in P) == D['doublecount']['doubled'] and sum(c['emp'] for c in F) == D['doublecount']['once_counted'] and D['doublecount']['unsplit_chemistry'] == 9497 and all(c['parent'] in [f['code'] for f in F] for c in P) and len(F) == 2 and len(P) == 4)(D['codes'], [c for c in D['codes'] if c['level'] == 'family'], [c for c in D['codes'] if c['level'] == 'part'])",
    "actual": "(D['doublecount']['column_sum'], D['doublecount']['once_counted'], D['doublecount']['doubled'])",
    "falsified_if": "The pay page refetches and any of the three totals moves, or a part code stops nesting inside a family code in this site's own code list. The identity in the middle is the load-bearing clause: the overhang drawn on the chart is column minus once-counted, and it is separately asserted to equal the sum of the four part rows, so the chart cannot draw an overhang that is not the duplication it claims to be.",
@@ -45,7 +57,8 @@
     {"figure": "54,375", "noun": "every industry code"},
     {"figure": "20,846", "noun": "appear twice"},
     {"figure": "alone hold 33,529", "noun": "two family codes"}
-   ]
+   ],
+   "scope": {"industry": "NAICS 325 and 326", "place": "PIC-12", "period": "2025 annual avg", "source": "BLS QCEW"}
   },
   {
    "id": "src-lq-worked",
@@ -202,9 +215,9 @@
   },
   {
    "id": "src-dependency-structure",
-   "text": "QCEW feeds nine of the 23 registered pages, more than any other source; no other source feeds more than five. Seven of the 23 registered pages rest on a single dataset each.",
+   "text": "QCEW feeds eight of the 23 registered pages, more than any other source; no other source feeds more than five. Eight of the 23 registered pages rest on a single dataset each.",
    "source": "SOURCES.json by_artifact, inverted",
-   "assert": "(lambda S, T: S[0]['key'] == 'qcew' and S[0]['n_pages'] == 9 and T['most_used_pages'] == 9 and max(s['n_pages'] for s in S[1:]) == 5 and T['n_single_source_pages'] == 7 and T['n_single_source_pages'] == len([p for p in D['pages'] if p['n_sources'] == 1]) and T['n_pages'] == len(D['pages']) and T['n_pages'] == 23)(D['sources'], D['totals'])",
+   "assert": "(lambda S, T: S[0]['key'] == 'qcew' and S[0]['n_pages'] == 8 and T['most_used_pages'] == 8 and max(s['n_pages'] for s in S[1:]) == 5 and T['n_single_source_pages'] == 8 and T['n_single_source_pages'] == len([p for p in D['pages'] if p['n_sources'] == 1]) and T['n_pages'] == len(D['pages']) and T['n_pages'] == 23)(D['sources'], D['totals'])",
    "actual": "(D['sources'][0]['key'], D['sources'][0]['n_pages'], D['totals']['n_single_source_pages'], D['totals']['n_pages'])",
    "falsified_if": "A page gains or loses a source without this chart moving. Corrected 2026-08-30 from eleven pages and six single-source pages: an editorial reviewer reading the RENDERED revisions page, with no access to this repository, noticed that its methodology box credited the employment census on a page built from three producer-price series. The registry did list qcew against revisions, so the box was printing the registry faithfully and the registry was wrong. That single false entry made QCEW look more central than it is AND made this site look better diversified than it is, and no gate here could see it: every check confirmed the page matched the registry, and none asked whether the registry matched the page. Corrected AGAIN 2026-08-30, from ten pages to nine: a second phantom entry, qcew against cost-scissors, whose own data and claims contain no agglvl, no own_code, no NAICS and no employment figure of any kind. Found by two independent reviewers reading the rendered page. Two false entries in one table, both inflating the same source, is a pattern rather than a slip, so the whole table was then audited programmatically: three more suspects surfaced and two were the audit's own false positives, which is worth recording next to the two real ones. Moved again 2026-08-30 when the patents page entered the register as the ninth single-source artifact. [2026-09-01: the register was rebuilt from fifteen sources and eighteen pages to all twenty-four and twenty-three, after the nine missing 'what it cannot tell you' glosses were written. Every figure in this claim moved with it. The set-equality check added to verify_consistency.py the same day is what makes a future drift fail loudly instead of silently.]",
    "counts": [

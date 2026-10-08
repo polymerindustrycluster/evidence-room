@@ -400,3 +400,11 @@ routes. The 31 August text above is left as written.
   Huntsman's "carbon black and nanotubes from methane" and the University of
   Akron's EDA award as "Workforce (WISE)". The dollar figures and award IDs are
   solid. Both labels come from the deck's own project list.
+
+## W4 reader furniture, 2026-10-07
+
+The eyebrow is the hub’s question, “Where did the awards go?”. The four stat cards carry scope
+chips from `hero-awards-match`, `total-secured` and `named-vs-awarded`, dated to the register’s
+13 August 2026 as-of date (meta.asOf), which their source fields now name. The how-we-checked
+box carries the `quote`. The “Words on this page” block declares match. “If you run a plant
+here” carries one sentence, on `unrouted-split` and `company-facing-fourteen`.
