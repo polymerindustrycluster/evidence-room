@@ -61,6 +61,7 @@ jobs:
       args: ${{ steps.mode.outputs.args }}
       selftest: ${{ steps.mode.outputs.selftest }}
       tree: ${{ steps.mode.outputs.tree }}
+      image: ${{ steps.mode.outputs.image }}
       skip: ${{ steps.dup.outputs.skip }}
     steps:
       - uses: actions/checkout@v4
@@ -74,7 +75,11 @@ jobs:
             push)         args="--fast";                            selftest=false ;;
             *)            args="";                                  selftest=true ;;
           esac
+          # The browser image and npm package must be the exact same version. Derive
+          # it once from the lockfile; no second version pin to forget on an upgrade.
+          image=$(node tools/ci-image.mjs)
           {
+            echo "image=$image"
             echo "tree=$(git rev-parse 'HEAD^{tree}')"
             echo "args=$args"
             echo "selftest=$selftest"
@@ -125,6 +130,9 @@ jobs:
           - {part: selftest, shard: 3/4}
           - {part: selftest, shard: 4/4}
     runs-on: ubuntu-latest
+    container:
+      image: ${{ needs.plan.outputs.image }}
+      options: --ipc=host
     steps:
       # Full history: _data/build/stamp_cite.py dates each page from git, and a shallow clone
       # would date every page to the one commit it can see. --changed also needs the base
@@ -142,13 +150,13 @@ jobs:
         if: matrix.part != 'selftest' || needs.plan.outputs.selftest == 'true'
         with:
           python-version: "3.12"
-      # `npm ci` installs playwright as a devDependency; the postinstall fetches the
-      # chromium binary. --with-deps adds the Linux libraries chromium needs to launch.
+      # The version-matched image already has Chromium and its Linux libraries/fonts.
+      # Avoid apt mirror latency on every shard and skip the redundant postinstall.
       - name: Install
         if: matrix.part != 'selftest' || needs.plan.outputs.selftest == 'true'
         run: |
-          npm ci
-          npx playwright install --with-deps chromium
+          npm ci --ignore-scripts
+          test "$(node tools/ci-image.mjs)" = '${{ needs.plan.outputs.image }}'
       # The runner rebuilds dist/ first and retains each gate's full output outside the site
       # tree; a summarized console line is not the whole receipt. --fast prints "A --fast
       # pass is not a clean bill" in its own verdict, and it is right: the sweeps are the

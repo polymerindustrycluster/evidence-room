@@ -15,10 +15,11 @@
  * It also asserts the OTHER thing a reader is owed about authorship, added 2026-09-01:
  * what the site's own checks can and cannot establish. See the note above SCOPE below.
  */
-import {readdirSync, readFileSync, existsSync} from "fs";
+import {readFileSync, existsSync} from "fs";
 import {spawnSync} from "child_process";
-import {pathToFileURL} from "url";
-import {launch} from "./_browser.mjs";
+import {standalone, isMain} from "./_page-runner.mjs";
+
+export function createGate(list, {log = console.log} = {}) {
 
 const CANON = "Analysis and graphics by Claude (Anthropic)";
 /* WHAT THE CHECKS ACTUALLY DO, asserted here for the reason the byline is.
@@ -67,7 +68,7 @@ for a in masthead.MASTHEAD_FILE:
     out[a] = st.pop() if len(st) == 1 else None
 out["_uncarded"] = masthead.UNCARDED
 print(json.dumps(out))`], {encoding: "utf8"});
-  if (py.status !== 0) { console.log("cannot read declared statuses:\n" + py.stderr); return {}; }
+  if (py.status !== 0) { log("cannot read declared statuses:\n" + py.stderr); return {}; }
   return JSON.parse(py.stdout);
 })();
 /* The hub's cards are static markup, so they are read from the shipped bundle as text. */
@@ -92,7 +93,7 @@ const CARDS = (() => {
  * the models the byline credits. A page with no record FAILS as uninspectable. */
 const CITE = (() => {
   try { return JSON.parse(readFileSync("_data/cite.json", "utf8")).pages; }
-  catch (e) { console.log(`cannot read _data/cite.json: ${e.message}`); return {}; }
+  catch (e) { log(`cannot read _data/cite.json: ${e.message}`); return {}; }
 })();
 /* A model credit is a capitalised name followed by its maker in parentheses, and its ROLE
  * is the words before it in the same byline clause (clauses are split on the middot), back
@@ -114,9 +115,6 @@ const MONTHS = ["January", "February", "March", "April", "May", "June", "July", 
                 "September", "October", "November", "December"];
 const longDate = iso => `${+iso.slice(8, 10)} ${MONTHS[+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}`;
 
-const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
-const list = names.length ? names
-  : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
 
 /* THE W4 READER FURNITURE (DECISIONS.md, 7 October 2026), asserted rendered. Each piece is
  * opt-in per page, declared in data; once declared, a missing or differing piece FAILS.
@@ -149,12 +147,8 @@ const wordsItem = (g, term) => { const t = GLOSS.terms.find(x => x.term === term
 const REG = JSON.parse(readFileSync("_data/SOURCES.json", "utf8"));
 const CORR = JSON.parse(readFileSync("_data/corrections_by_page.json", "utf8"));
 
-const b = await launch();
 let bad = 0;
-for (const n of list) {
-  const p = await b.newPage({viewport: {width: 1440, height: 1000}});
-  await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
-  await p.waitForTimeout(700);
+return {async check(n, p) {
   const r = await p.evaluate(() => {
     const el = document.querySelector(".byline");
     const norm = s => s.replace(/\s+/g, " ").trim();
@@ -407,12 +401,13 @@ for (const n of list) {
   }
 
   if (probs.length) bad++;
-  console.log(`${n.padEnd(18)} ${probs.length ? "FAIL  " + probs.join("; ")
+  log(`${n.padEnd(18)} ${probs.length ? "FAIL  " + probs.join("; ")
                                               : "PASS  disclosure present"}`);
-  for (const x of notes) console.log(`${" ".repeat(18)}       note: ${x}`);
-  await p.close();
-}
-await b.close();
-console.log(bad ? `\n${bad} page(s) do not disclose who wrote them, or overstate their own checks`
+  for (const x of notes) log(`${" ".repeat(18)}       note: ${x}`);
+}, finish() {
+log(bad ? `\n${bad} page(s) do not disclose who wrote them, or overstate their own checks`
                 : `\nall ${list.length} pages carry the same disclosure and the same scope on their checks`);
-process.exit(bad ? 1 : 0);
+return bad ? 1 : 0;
+}};
+}
+if (isMain(import.meta.url)) process.exit(await standalone("disclosure", createGate));

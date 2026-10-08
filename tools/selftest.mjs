@@ -1,6 +1,6 @@
 /* DOES EACH GATE ACTUALLY CATCH THE DEFECT IT EXISTS FOR?
  *
- *   node tools/selftest.mjs [--list] [--shard=K/N] [gate | gate/page ...]
+ *   node tools/selftest.mjs [--list] [--shard=K/N] [--no-baseline-cache] [gate | gate/page ...]
  *
  * A green board is worth exactly as much as the gates behind it, and during the
  * 2026-08 rebuild six of this project's own checks turned out to be unable to fail on
@@ -28,10 +28,12 @@
  * path is never the backup.
  */
 import {readFileSync, writeFileSync, copyFileSync, unlinkSync, existsSync,
-        statSync, utimesSync, mkdtempSync, rmdirSync} from "fs";
+        statSync, mkdtempSync, rmdirSync} from "fs";
 import {spawnSync} from "child_process";
 import {tmpdir} from "os";
 import {join} from "path";
+import {CleanBaselines, inputSnapshot, assertRestored, restoreTimes, verifyRestoration}
+  from "./_selftest-baseline.mjs";
 
 /* a correction note turned edge-on and back, inside a box kept in 3D and styled `extra` */
 const turned = extra => '<p><span style="display:inline-block;transform:rotateX(90deg);transform-style:preserve-3d;' + extra +
@@ -859,6 +861,8 @@ const run = c => {
 };
 
 let trusted = 0, broken = [];
+const baselines = new CleanBaselines({enabled: !process.argv.includes("--no-baseline-cache")});
+const snapshot = () => inputSnapshot(process.cwd());
 if (shard) console.log(`SHARD ${shard.k}/${shard.n}: ${selected.length} of ${CASES.length} fixtures`);
 /* a name picks a gate's fixtures; gate/page picks that gate's fixtures on one page */
 for (const c of selected) {
@@ -869,23 +873,27 @@ for (const c of selected) {
   const bak = backupDir ? join(backupDir, "original") : `${f}.selftest-backup`;
   const originalTimes = statSync(f);
   copyFileSync(f, bak);
+  const originalBytes = readFileSync(bak);
   let before, after;
   try {
     prepare(c);
-    before = run(c);                                    // must be clean to start
-    const src = readFileSync(bak, "utf8");
+    before = baselines.check(c, snapshot, () => run(c)); // fresh inputs, known clean command
+    const src = originalBytes.toString("utf8");
     const hurt = c.inject(src);
     if (hurt === src) throw new Error("injection changed nothing — the fixture is stale");
     writeFileSync(f, hurt);
-    utimesSync(f, originalTimes.atime, originalTimes.mtime);
+    restoreTimes(f, originalTimes);
     prepare(c);
     after = run(c);                                     // must now fail
   } finally {
     copyFileSync(bak, f);
-    unlinkSync(bak);
-    utimesSync(f, originalTimes.atime, originalTimes.mtime);
-    if (backupDir) rmdirSync(backupDir);
+    verifyRestoration(f, originalBytes, originalTimes);
     prepare(c);
+    if (before) assertRestored(before.snapshot, snapshot());
+    restoreTimes(f, originalTimes); // hashing the restored file can update its atime
+    // Keep the recovery copy if any restoration check fails.
+    unlinkSync(bak);
+    if (backupDir) rmdirSync(backupDir);
   }
   const named = !c.expect || c.expect.test(after.output);
   /* an `exempt` case injects something the gate must let through, and say so (expect) */
@@ -893,11 +901,15 @@ for (const c of selected) {
   if (ok) trusted++; else broken.push(c);
   console.log(`${ok ? "  ok  " : "BROKEN"} ${c.gate.padEnd(11)} ${c.page.padEnd(15)} ` +
     `clean=${before.status === 0 ? "pass" : "FAIL"} ` +
+    `${before.reused ? "(reused) " : ""}` +
     `injected=${after.status !== 0 ? "FAIL" : "pass"}${c.exempt ? " (must pass)" : ""}` +
     `${named ? "" : " wrong-failure"}  ${c.defect}`);
 }
 
 console.log("");
+console.log(`CLEAN BASELINES: ${baselines.actual} executed, ${baselines.reused} reused; ` +
+  `${selected.length} injections selected${baselines.enabled ? "" : " (cache disabled)"}`);
+if (baselines.disabled.size) console.log(`Baseline reuse disabled: ${[...baselines.disabled].join(", ")}`);
 if (broken.length) {
   console.log(`${broken.length} gate fixture(s) did not behave. A gate that cannot fail on its`);
   console.log(`own defect is not evidence, and every green board it signs is worth less:`);
