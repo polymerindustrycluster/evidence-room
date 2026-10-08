@@ -70,6 +70,7 @@ if (logDir) mkdirSync(logDir, {recursive: true});
 const GATES = [
   ["bundle",      "node",   ["tools/bundle.mjs"],            "regenerates dist/ so every gate reads the same build"],
   ["pagetext",    "node",   ["tools/pagetext.mjs"],          "Chromium's parse of each bundle's prose, for nouns"],
+  ["gate-runtime", "node", ["--test", "tools/ci-runtime.test.mjs", "tools/selftest-baseline.test.mjs"], "readiness, independent shared probes and baseline cache fail closed"],
   ["source-inputs", "python3", ["-m", "unittest", "discover", "-s", "_data/build", "-p", "test_*.py"], "source completeness, geography and inventory regressions"],
   ["workplaces",  "python3", ["-m", "unittest", "discover", "-s", "cluster-health", "-p", "test_*.py"], "complete annual inputs, valid denominators and scoped rebuilds"],
   ["claims",      "python3", ["_data/build/verify_claims.py"],      "recorded assertions against their page data"],
@@ -270,6 +271,22 @@ function selectFixtures(changed) {
    and the second says its time was spent in the first. `node tools/collide.mjs --sweep`
    and `node tools/textsize.mjs --sweep` still run on their own, through the same code. */
 const SHARED_SWEEP = new Set(["collide", "textsize"]);
+const SHARED_PAGE = new Set(["disclosure", "style", "alttext"]);
+let pageRun = null;
+function pageChecks(name, pages) {
+  if (!pageRun) {
+    const dir = mkdtempSync(join(tmpdir(), "evidence-room-pagechecks-"));
+    const r = spawnSync("node", ["tools/pagechecks.mjs", `--json=${join(dir, "checks.json")}`, ...pages], {encoding: "utf8"});
+    let results = null;
+    try { results = JSON.parse(readFileSync(join(dir, "checks.json"), "utf8")); } catch { /* fail closed below */ }
+    rmSync(dir, {recursive: true, force: true});
+    pageRun = {r, results};
+  }
+  const result = pageRun.results?.[name];
+  if (!result || !Array.isArray(result.lines) || !Number.isInteger(result.code))
+    return {status: 1, stdout: pageRun.r.stdout, stderr: `${pageRun.r.stderr || ""}\npagechecks.mjs wrote no valid ${name} result`};
+  return {status: result.code, stdout: result.lines.join("\n") + "\n", stderr: ""};
+}
 let sweepRun = null;
 function sweep(name, pages) {
   let note = "(rendered in the collide row) ";
@@ -342,7 +359,8 @@ for (const [name, cmd, gateArgv, what, slow] of GATES) {
     argvRun = [...gateArgv, ...(spec.extra || []), ...mine];
   }
   const t = Date.now();
-  const r = SHARED_SWEEP.has(name) ? sweep(name, argvRun.slice(gateArgv.length))
+  const r = SHARED_PAGE.has(name) ? pageChecks(name, argvRun.slice(gateArgv.length))
+          : SHARED_SWEEP.has(name) ? sweep(name, argvRun.slice(gateArgv.length))
                                    : spawnSync(cmd, argvRun, {encoding: "utf8"});
   if (logDir) writeFileSync(join(logDir, `${name}.log`),
     `${tag ? `SCOPE ${tag}${argvRun.slice(gateArgv.length).join(" ")}\n` : ""}` +

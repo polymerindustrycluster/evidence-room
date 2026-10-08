@@ -27,24 +27,14 @@
  * that logo carries aria-label. It failed all seventeen pages on both counts. A gate's
  * first run against a known-good site is the cheapest test it will ever get.
  */
-import {readdirSync} from "fs";
-import {pathToFileURL} from "url";
-import {launch} from "./_browser.mjs";
+import {standalone, isMain} from "./_page-runner.mjs";
 
 const WORDS = {one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8,
   nine: 9, ten: 10, eleven: 11, twelve: 12};
 
-const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
-const list = names.length ? names
-  : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
-
-const b = await launch();
+export function createGate(list, {log = console.log} = {}) {
 let bad = 0, warned = 0, checked = 0;
-
-for (const n of list) {
-  const p = await b.newPage({viewport: {width: 1440, height: 1000}});
-  await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
-  await p.waitForTimeout(900);
+return {async check(n, p) {
 
   const found = await p.evaluate((WORDS) => {
     const out = [];
@@ -100,13 +90,14 @@ for (const n of list) {
 
   if (probs.length) bad++;
   warned += warns.length;
-  console.log(`${n.padEnd(18)} ${probs.length ? "FAIL  " + probs.join("; ")
+  log(`${n.padEnd(18)} ${probs.length ? "FAIL  " + probs.join("; ")
     : `PASS  ${found.filter(f => f.kind === "ok").length} described`}`);
-  for (const w of warns.slice(0, 3)) console.log(`    warn ${w}`);
-  await p.close();
-}
-await b.close();
-console.log(`\n${checked} chart description(s) checked, ${warned} warning(s)`);
-console.log(bad ? `${bad} page(s) describe a chart in terms the chart contradicts`
+  for (const w of warns.slice(0, 3)) log(`    warn ${w}`);
+}, finish() {
+log(`\n${checked} chart description(s) checked, ${warned} warning(s)`);
+log(bad ? `${bad} page(s) describe a chart in terms the chart contradicts`
                 : `no chart description contradicts its own figure`);
-process.exit(bad ? 1 : 0);
+return bad ? 1 : 0;
+}};
+}
+if (isMain(import.meta.url)) process.exit(await standalone("alttext", createGate));
