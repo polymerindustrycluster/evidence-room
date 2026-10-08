@@ -59,8 +59,11 @@ for (let i = 0; i < argv.length; i++) {
   }
   else fail(`Unrecognised argument ${a}.`);
 }
-if (opt.shard && (!opt.parts || [...opt.parts].join() !== "pages"))
-  fail("--shard splits the page gates only; pass it with --part=pages.");
+if (opt.shard && !["pages", "selftest"].includes([...(opt.parts || [])].join()))
+  fail("--shard splits the page gates or the self-tests; pass it with --part=pages or --part=selftest.");
+const shardPages = opt.shard && opt.parts.has("pages");
+const shardTests = opt.shard && opt.parts.has("selftest");
+const shardFlag = shardTests ? [`--shard=${opt.shard.k}/${opt.shard.n}`] : [];
 const {fast, quiet, logDir} = opt;
 if (logDir) mkdirSync(logDir, {recursive: true});
 
@@ -184,13 +187,13 @@ if (opt.changed) {
                                             `${scope.files[p].length > 2 ? ` (+${scope.files[p].length - 2} more)` : ""}`));
 }
 let pagesRun = scope.pages;
-if (opt.shard) {
+if (shardPages) {
   pagesRun = pagesRun.filter((_, i) => i % opt.shard.n === opt.shard.k - 1);
   console.log(`SHARD ${opt.shard.k}/${opt.shard.n}: ${pagesRun.length ? pagesRun.join(", ") : "no pages"}`);
 }
-if (opt.changed || opt.shard) console.log("");
+if (opt.changed || shardPages) console.log("");
 /* a page gate runs on everything only when nothing narrowed the list */
-const narrowed = scope.scoped || !!opt.shard;
+const narrowed = scope.scoped || !!shardPages;
 
 /* SELF-TESTS FOR WHAT A CHANGE CAN BREAK. With --changed, the self-test runs the fixtures
    of every gate whose code changed (its script and everything it imports, Python too) or
@@ -287,6 +290,13 @@ function sweep(name, pages) {
   return {status: res[name].code, stdout: lines.join("\n") + "\n", stderr: ""};
 }
 
+/* how many fixtures this shard runs of a selection ([] is all of them), asked of the self-test */
+function shardCount(sel) {
+  const r = spawnSync("node", ["tools/selftest.mjs", "--list", ...shardFlag, ...sel], {encoding: "utf8"});
+  const total = spawnSync("node", ["tools/selftest.mjs", "--list"], {encoding: "utf8"});
+  try { shardCount.total = JSON.parse(total.stdout).length; return JSON.parse(r.stdout).length; }
+  catch { fail("tools/selftest.mjs --list failed; cannot size the shard."); }
+}
 const rows = [];
 const t0 = Date.now();
 for (const [name, cmd, gateArgv, what, slow] of GATES) {
@@ -301,14 +311,22 @@ for (const [name, cmd, gateArgv, what, slow] of GATES) {
     else console.log(`SELF-TESTS: ${pick.n} of ${pick.total} fixtures` +
                      `${pick.reasons.length ? `: ${pick.reasons.join(", ")}` : ", no gate code or fixture page changed"}`);
     if (!pick.all) {
-      tag = `[${pick.n}/${pick.total} fixtures] `;
-      if (!pick.n) {
-        rows.push({name, what, skipped: true, reason: "scope", tag, last: "no fixture's gate, page or file changed"});
-        if (!quiet) console.log(` skip  ${name.padEnd(12)} ${"".padStart(7)}  ${tag}${rows.at(-1).last}`);
+      /* within a shard, the selection is cut again: count what this shard will run */
+      const mine = shardTests ? shardCount(pick.sel) : pick.n;
+      tag = `[${mine}/${pick.total} fixtures${shardTests ? `, shard ${opt.shard.k}/${opt.shard.n}` : ""}] `;
+      if (!mine) {
+        const last = pick.n ? "none of the selected fixtures fall in this shard" : "no fixture's gate, page or file changed";
+        rows.push({name, what, skipped: true, reason: "scope", tag, last});
+        if (!quiet) console.log(` skip  ${name.padEnd(12)} ${"".padStart(7)}  ${tag}${last}`);
         continue;
       }
-      argvRun = [...gateArgv, ...pick.sel];
+      argvRun = [...gateArgv, ...shardFlag, ...pick.sel];
     }
+  }
+  if (shardTests && name === "selftest" && argvRun === gateArgv) {
+    const mine = shardCount([]);
+    tag = `[${mine}/${shardCount.total} fixtures, shard ${opt.shard.k}/${opt.shard.n}] `;
+    argvRun = [...gateArgv, ...shardFlag];
   }
   if (part === "pages" && narrowed) {
     const spec = PAGE_GATES[name];
@@ -317,7 +335,7 @@ for (const [name, cmd, gateArgv, what, slow] of GATES) {
     tag = `[${mine.length}/${of} pages] `;
     if (!mine.length) {
       rows.push({name, what, skipped: true, reason: "scope", tag,
-                 last: opt.shard && !scope.scoped ? "no pages in this shard" : "no changed page in scope"});
+                 last: shardPages && !scope.scoped ? "no pages in this shard" : "no changed page in scope"});
       if (!quiet) console.log(` skip  ${name.padEnd(12)} ${"".padStart(7)}  ${tag}${rows.at(-1).last}`);
       continue;
     }
@@ -359,7 +377,7 @@ if (narrowed)
   console.log(`SCOPED: page gates ran on ${pagesRun.length} of ${PAGES.length} pages` +
               `${pagesRun.length ? ` (${pagesRun.join(", ")})` : ""}` +
               `${scope.scoped ? `, the pages changed since ${opt.changed}` : ""}` +
-              `${opt.shard ? `, shard ${opt.shard.k}/${opt.shard.n}` : ""}.` +
+              `${shardPages ? `, shard ${opt.shard.k}/${opt.shard.n}` : ""}.` +
               `${scopeSkipped.length ? ` Not run for want of a page: ${scopeSkipped.map(s => s.name).join(", ")}.` : ""}` +
               `\nThe other pages were not checked by this run.`);
 if (opt.parts)
