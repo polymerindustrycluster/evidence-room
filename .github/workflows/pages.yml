@@ -133,6 +133,8 @@ jobs:
     container:
       image: ${{ needs.plan.outputs.image }}
       options: --ipc=host
+    env:
+      GATE_LOG_DIR: /tmp/evidence-room-gates
     steps:
       # Full history: _data/build/stamp_cite.py dates each page from git, and a shallow clone
       # would date every page to the one commit it can see. --changed also needs the base
@@ -141,6 +143,14 @@ jobs:
         if: matrix.part != 'selftest' || needs.plan.outputs.selftest == 'true'
         with:
           fetch-depth: 0   # verify_consistency reads headline dates from git history
+      - name: Check container Git history
+        if: matrix.part != 'selftest' || needs.plan.outputs.selftest == 'true'
+        run: |
+          # checkout's temporary HOME is not the shell step's HOME in a job container.
+          # Trust this exact mounted checkout, never all repositories.
+          git config --global --add safe.directory "$PWD"
+          git rev-parse HEAD
+          git merge-base origin/main HEAD
       - uses: actions/setup-node@v4
         if: matrix.part != 'selftest' || needs.plan.outputs.selftest == 'true'
         with:
@@ -171,7 +181,7 @@ jobs:
         run: |
           # shellcheck disable=SC2086  # ARGS is a list of flags, split on purpose
           node tools/all.mjs $ARGS "--part=$PART" ${SHARD:+"--shard=$SHARD"} \
-            "--log-dir=${{ runner.temp }}/evidence-room-gates"
+            "--log-dir=$GATE_LOG_DIR"
       - name: Self-tests not run
         if: matrix.part == 'selftest' && needs.plan.outputs.selftest != 'true'
         run: echo "Self-tests do not run on a push to main (they ran on the pull request and run weekly)."
@@ -179,7 +189,7 @@ jobs:
         if: always() && (matrix.part != 'selftest' || needs.plan.outputs.selftest == 'true')
         with:
           name: gate-results-${{ matrix.part }}${{ matrix.shard && format('-{0}', strategy.job-index) || '' }}
-          path: ${{ runner.temp }}/evidence-room-gates
+          path: ${{ env.GATE_LOG_DIR }}
 
   # THE AGGREGATE. Passes only if every slice passed; this is the check to require and
   # the job deploy waits on. On main it also builds the Pages upload, from a fresh checkout
