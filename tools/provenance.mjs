@@ -28,7 +28,7 @@ const REG = JSON.parse(readFileSync("_data/SOURCES.json", "utf8"));
 
 /* What each source leaves behind. Verified against a page known to use it. */
 const PRINTS = {
-  qcew:            ["agglvl", "own_code", "annual_avg", "emplvl", "lq_", "naics"],
+  qcew:            ["agglvl", "own_code", "annual_avg", "emplvl", "lq_", "qcew"],
   qwi:             ["qwi", "hira", "earnbeg", "sep", "quarter"],
   lodes:           ["lodes", "jt00", "home", "work", "commut", "resident"],
   ipeds:           ["ipeds", "cip", "completion", "unitid", "degree"],
@@ -81,7 +81,16 @@ for (const page of pages.sort()) {
   if (existsSync(dir))
     for (const f of readdirSync(dir).filter(f => f.endsWith(".json")))
       hay += readFileSync(`${dir}/${f}`, "utf8");
-  if (existsSync(`${page}/claims.json`)) hay += readFileSync(`${page}/claims.json`, "utf8");
+  /* Reader-facing furniture in claims.json (W4, October 2026: kicker, quote, glossary, plant
+     notes, scope chips) says what the page means, not which data it read. A glossary entry
+     for "NAICS 326" on a price page is not a trace of the employment census, so it must not
+     let a false credit pass. Only the claims' evidence fields are searched. */
+  if (existsSync(`${page}/claims.json`)) {
+    const spec = JSON.parse(readFileSync(`${page}/claims.json`, "utf8"));
+    for (const k of ["kicker", "quote", "glossary", "plant"]) delete spec[k];
+    for (const c of spec.claims || []) delete c.scope;
+    hay += JSON.stringify(spec);
+  }
   if (!hay) { skipped++; continue; }
   hay = hay.toLowerCase();
 

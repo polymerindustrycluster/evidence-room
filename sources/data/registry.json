@@ -86,7 +86,6 @@
    ],
    "pages": [
     "accountability",
-    "churn",
     "cluster-health",
     "location-quotient",
     "occupations",
@@ -95,7 +94,7 @@
     "scorecard",
     "wages"
    ],
-   "n_pages": 9
+   "n_pages": 8
   },
   {
    "key": "eda_notices_of_award",
@@ -1615,14 +1614,6 @@
    "n_sources": 2
   },
   {
-   "slug": "churn",
-   "sources": [
-    "qcew",
-    "qwi"
-   ],
-   "n_sources": 2
-  },
-  {
    "slug": "collaboration",
    "sources": [
     "nsf_awards",
@@ -1653,6 +1644,13 @@
     "public_record"
    ],
    "n_sources": 2
+  },
+  {
+   "slug": "churn",
+   "sources": [
+    "qwi"
+   ],
+   "n_sources": 1
   },
   {
    "slug": "laborshed",
@@ -1749,9 +1747,10 @@
   "n_terms": 14,
   "n_public": 25,
   "most_used": "qcew",
-  "most_used_pages": 9,
-  "n_single_source_pages": 7,
+  "most_used_pages": 8,
+  "n_single_source_pages": 8,
   "single_source_pages": [
+   "churn",
    "laborshed",
    "location-quotient",
    "patents",
