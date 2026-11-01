@@ -163,7 +163,7 @@
       "assert": "len(D['footprint_counties']) == 12 and D['meta']['footprint']['n'] == 12 and tofixed(sum(c['emp'] for c in D['footprint_counties']), 0) == '18594' and tofixed(sum(c['emp'] for c in D['footprint_counties']) / D['states']['326']['subject_emp'] * 100, 0) == '34'",
       "actual": "(len(D['footprint_counties']), sum(c['emp'] for c in D['footprint_counties']), sum(c['emp'] for c in D['footprint_counties']) / D['states']['326']['subject_emp'])",
       "falsified_if": "A revision moves the total off 18,594 or the share off 34% when rounded, or the footprint block stops carrying all twelve counties. The count of twelve is what makes this a complete regional total: the builder keeps only counties BLS discloses, so twelve rows for a twelve-county footprint means nothing is withheld. Eleven rows would mean a county was suppressed and the sum would be a floor, not a total, and the sentence would have to say so.",
-      "official_check": "Added 2026-08-28. The page is headed 'where Northeast Ohio actually sits' and defines a twelve-county footprint in its first line, and until this claim existed it published no regional figure at all: every number was a state or a metro."
+      "official_check": "Added 2026-08-28. The page was headed 'where Northeast Ohio actually sits' (until 2026-10-07, when the eyebrow became the hub's question) and defines a twelve-county footprint in its first line, and until this claim existed it published no regional figure at all: every number was a state or a metro."
     },
     {
       "id": "pic12-not-metros",
