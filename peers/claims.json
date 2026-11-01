@@ -176,7 +176,7 @@
     },
     {
       "id": "akron-lq-rank-8",
-      "text": "Akron ranks eighth on concentration among the 155 metros that disclose, so seven of them are more concentrated than its 4.69x (glossary).",
+      "text": "Akron ranks eighth on concentration among the 155 metros that disclose, so seven of them are more concentrated than its 4.69x (glossary, and since 2026-11-01 the Find a metro line, which had set the jobs rank '6th of the 155' straight after the 4.69x so that it read as a concentration rank).",
       "source": "BLS QCEW 2024, lq_annual_avg_emplvl, NAICS 326, private. Rank among disclosed metros by concentration.",
       "assert": "D['metros']['326']['rank_lq'] == 8 and D['metros']['326']['of_disclosed'] == 155 and len([p for p in D['metro_scatter'] if p['lq'] > D['metros']['326']['subject_lq']]) == 7",
       "actual": "(D['metros']['326']['rank_lq'], sorted((p['lq'], p['name']) for p in D['metro_scatter'] if p['lq'] > D['metros']['326']['subject_lq']))",

@@ -40,15 +40,16 @@
    ]
   },
   {
-   "text": "Plan on a smaller pipeline of local polymer graduates than a decade ago: the three universities conferred 63 polymer degrees in 2023, against 179 in 2016.",
+   "text": "Plan on a smaller pipeline of local polymer graduates than a decade ago: the University of Akron and Case Western conferred 63 polymer degrees in 2023, against 179 in 2016.",
    "claims": [
     "talent-level"
    ]
   },
   {
-   "text": "Your pay competes with two benchmarks that point different ways: the median county-industry average wage is 1.24 times the county all-industry average and 0.90 times the same industry’s national average.",
+   "text": "Your pay competes with two benchmarks that point different ways: across resin, paint and plastics and rubber (NAICS 3252, 3255 and 326), the median county-industry average wage is 1.24 times the county all-industry average and 0.90 times the same industry’s national average.",
    "claims": [
-    "pay-two-sided"
+    "pay-two-sided",
+    "pay-pairing-unit-and-register"
    ]
   }
  ],
@@ -136,9 +137,9 @@
   },
   {
    "id": "scale-drivers",
-   "text": "Scale driver strip: plastics and rubber products lost 824 jobs with all twelve counties disclosed in both years, while resin and synthetic rubber gained 465 with a county returning to disclosure, from four counties to five.",
+   "text": "Scale driver strip: plastics and rubber products lost 824 jobs with all twelve counties disclosed in both years, while resin and synthetic rubber gained 465 with a county returning to disclosure, from four counties to five. Paint lost 395 across seven published counties in each year, but not the same seven: Lorain was withheld and Geauga published, and on the six published in both years paint fell 30. Until 2026-11-01 the paint row said 'the same count as last year', which read as jobs unchanged.",
    "source": "BLS QCEW annual averages by NAICS, via wages/data/wages.json",
-   "assert": "(lambda rows, ly: (lambda g: g('326', ly) - g('326', ly - 1) == -824 and g('3252', ly) - g('3252', ly - 1) == 465)(lambda n, y: sum(r['emp'] for r in rows if r['naics'] == n and r['year'] == y)) and len([r for r in rows if r['naics'] == '326' and r['year'] == ly]) == 12 and len([r for r in rows if r['naics'] == '326' and r['year'] == ly - 1]) == 12 and len([r for r in rows if r['naics'] == '3252' and r['year'] == ly]) == 5 and len([r for r in rows if r['naics'] == '3252' and r['year'] == ly - 1]) == 4)([r for r in D['wg']['trend'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326')], max(r['year'] for r in D['wg']['trend']))",
+   "assert": "(lambda rows, ly: (lambda g: g('326', ly) - g('326', ly - 1) == -824 and g('3252', ly) - g('3252', ly - 1) == 465)(lambda n, y: sum(r['emp'] for r in rows if r['naics'] == n and r['year'] == y)) and len([r for r in rows if r['naics'] == '326' and r['year'] == ly]) == 12 and len([r for r in rows if r['naics'] == '326' and r['year'] == ly - 1]) == 12 and len([r for r in rows if r['naics'] == '3252' and r['year'] == ly]) == 5 and len([r for r in rows if r['naics'] == '3252' and r['year'] == ly - 1]) == 4 and (lambda pc: sorted(set(pc(ly - 1)) - set(pc(ly))) == ['Lorain'] and sorted(set(pc(ly)) - set(pc(ly - 1))) == ['Geauga'] and len(pc(ly)) == 7 and sum(pc(ly).values()) - sum(pc(ly - 1).values()) == -395 and sum(pc(ly)[c] - pc(ly - 1)[c] for c in set(pc(ly)) & set(pc(ly - 1))) == -30)(lambda y: {r['name']: r['emp'] for r in rows if r['naics'] == '3255' and r['year'] == y}) and one(d['note'] for d in D['h']['tiles'][0]['drivers'] if d['label'].startswith('Paint')) == '4,257 jobs across seven published counties; Lorain was withheld and Geauga published, and on the six in both years paint fell 30')([r for r in D['wg']['trend'] if r['area'] != 'US000' and r['naics'] in ('3252', '3255', '326')], max(r['year'] for r in D['wg']['trend']))",
    "actual": "[(t['label'], t['value'], t['note'][:40]) for t in D['h']['tiles'][0]['drivers']]",
    "falsified_if": "The resin driver's note says the rise is partly the bureau publishing more. That sentence dies the moment the disclosed-county count for 3252 is the same in both years, whatever the employment change does."
   },
@@ -195,7 +196,7 @@
   },
   {
    "id": "talent-level",
-   "text": "Talent tile and the closer: the three universities conferred 63 polymer degrees in 2023, against 179 in 2016, 65 percent lower.",
+   "text": "Talent tile and the closer: the two universities with polymer programs, the University of Akron and Case Western, conferred 63 polymer degrees in 2023, against 179 in 2016, 65 percent lower. Kent State, the third institution in the source file, confers materials degrees, not polymer ones; the tile and plant box said 'three universities' and 'the same three institutions' until 2026-11-01.",
    "source": "IPEDS completions for the polymer programs at three named institutions, via occupations/data/viz-data.json",
    "assert": "(lambda tot: tot(2023) == 63 and tot(2016) == 179 and tofixed((tot(2023) / tot(2016) - 1) * 100, 0) == '-65')(lambda y: sum(p['by_year'].get(str(y), 0) for p in D['occ']['programs'] if p['group'] == 'polymer')) and D['occ']['program_totals']['polymer_awards_latest'] == 63 and D['h']['tiles'][3]['value'] == '63'",
    "actual": "(sum(p['by_year'].get('2023', 0) for p in D['occ']['programs'] if p['group'] == 'polymer'), sum(p['by_year'].get('2016', 0) for p in D['occ']['programs'] if p['group'] == 'polymer'))",

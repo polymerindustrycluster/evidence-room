@@ -150,6 +150,11 @@ const fixed = YEARS.map(y => {
   return {year: y, lq: (emp / tot) / natShare(y, "3255"), emp, n: sel.length};
 });
 const fixedNow = fixed.at(-1), fixedThen = fixed[0];
+/* The disclosed counties on the fixed line's own basis: their paint jobs over THEIR OWN
+   workforce, not all twelve counties'. The grey line divides by all twelve, which is why it
+   sits lowest; this is the figure that separates the denominator from the county set. */
+const disclosedOwn = (paintCounties.reduce((s, c) => s + c.emp, 0) /
+  paintCounties.reduce((s, c) => s + c.local_total, 0)) / natShare(LATEST, "3255");
 const fixedPeak = fixed.reduce((a, b) => b.lq > a.lq ? b : a);
 /* The county that left the disclosed set between the last two years — the whole of the
    apparent 2025 decline in the moving-base line. */
@@ -728,10 +733,12 @@ function twistCopy() {
      ${Cap(word(alwaysOn.length))} of the ${FP.words} are disclosed for paint in every one
      of the ${YEARS.length} years, and across those ${word(alwaysOn.length)} paint reads
      ${fx(fixedNow.lq)} in ${LATEST}, up from ${fx(fixedThen.lq)} in ${FIRST} and higher
-     than in any year between. The teal line sits above the grey one because it counts
-     ${word(alwaysOn.length)} counties and the grey counts
-     ${word(paintCounties.length)}, not because it measures anything different.
-     Concentration here is not eroding, and on a county set that never moves it is
+     than in any year between. The two lines divide by different workforces. The grey line
+     divides the disclosed counties&rsquo; paint jobs by the jobs of all ${FP.words} counties, so
+     it is a floor; the teal line divides the ${word(alwaysOn.length)} counties&rsquo; paint
+     jobs by their own jobs. Divided that way, the ${word(paintCounties.length)} counties
+     disclosed in ${LATEST} read ${fx(disclosedOwn)}, so the denominator, not the county
+     count, is most of the gap. Concentration here is not eroding, and on a county set that never moves it is
      climbing.`;
   document.getElementById("twisttitle").textContent =
     `Holding the same five counties, paint climbs from ${fx(fixedThen.lq)} to ${fx(fixedNow.lq)}`;
@@ -1352,7 +1359,14 @@ document.getElementById("footcorr").innerHTML =
    <br>Correction, 4 October 2026: the footprint line near the top of this page said only
    that a wider fourteen-county definition includes Crawford, Huron, Richland and
    Tuscarawas. That definition also leaves out Ashtabula and Trumbull, so the two share ten
-   counties, and the line now says so.`;
+   counties, and the line now says so.
+   <br>Correction, 1 November 2026: the section on holding the counties still said the teal
+   line sits above the grey one only because it counts five counties and the grey seven,
+   &ldquo;not because it measures anything different&rdquo;. It does measure something
+   different. The grey line divides the disclosed counties&rsquo; paint jobs by the jobs of
+   all twelve counties; the teal line divides five counties&rsquo; paint jobs by those five
+   counties&rsquo; own jobs. The sentence now says so, with the
+   ${fx(disclosedOwn)} the seven disclosed counties read on the teal line&rsquo;s basis.`;
 
 /* --------------------------------------------------------------------- assemble */
 function drawAll() {
