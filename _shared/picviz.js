@@ -150,6 +150,15 @@ const PV = (() => {
     const stop = vis.find(m => m.getAttribute("aria-label") === want) || vis[0] || marks[0];
     marks.forEach(m => m.setAttribute("tabindex", m === stop ? "0" : "-1"));
     skipFor(g).hidden = !vis.length;     // a chart hidden at this width offers no bypass
+    /* ONE ANNOUNCEMENT PER POINT (fresh-access review, 1 November 2026). The chart's svg
+       exposes its children, so a reader arrowing through heard each point's drawn label and
+       then its mark's aria-label, with axis ticks between. Where every mark carries its own
+       description, the drawn text is visual only: the chart's <title> and its table view
+       carry the rest. A drawn label that is itself a mark stays. tools/access.mjs holds it. */
+    if (marks.every(m => m.getAttribute("aria-label")))
+      g.querySelectorAll("svg text").forEach(t => {
+        if (!t.closest("[data-pv-mark]")) t.setAttribute("aria-hidden", "true");
+      });
   }
   addEventListener("resize", () => schedule(document.querySelectorAll("[data-pv-mark]")),
     {passive: true});
@@ -187,9 +196,18 @@ const PV = (() => {
     b.type = "button";
     b.className = "pv-skipchart";
     b.textContent = "Skip the chart";
+    /* The chart's own table first, wherever it sits: atlas draws its map's directory below the
+       next chart, so "whatever follows" was that chart's own skip button (fresh-access review,
+       1 November 2026). Failing that, the next stop that is not another chart's bypass. */
     b.addEventListener("click", () => {
+      const ids = [...host.querySelectorAll("svg[id]")].map(v => CSS.escape(v.id));
+      const own = ids.length && [...document.querySelectorAll(ids.map(i =>
+        `details.pv-table[data-pv-twin="${i}"] > summary, details.pv-table[data-pv-for="${i}"] > summary`).join(","))]
+        .find(n => n.getClientRects().length);
+      if (own) { own.focus(); return; }
       const all = document.querySelectorAll("a[href], button, input, select, textarea, summary, [tabindex]");
       const t = [...all].find(n => !host.contains(n) && n !== b && n.tabIndex >= 0 && !n.disabled &&
+        !n.classList.contains("pv-skipchart") &&
         (host.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_FOLLOWING) &&
         n.getClientRects().length);
       if (t) t.focus();
@@ -333,7 +351,7 @@ const PV = (() => {
      mark carries as data-pv-id; tools/access.mjs then holds the table to every plotted mark.
      The peers metro table held the top 25 of the 155 dots it sat under (review ER-07). */
   function tableView(id, caption, head, rows, opts = {}) {
-    return `<details class="pv-table"${opts.twin ? ` data-pv-twin="${opts.twin}"` : ""}><summary>Table view: ${caption}</summary>
+    return `<details class="pv-table" data-pv-for="${id}"${opts.twin ? ` data-pv-twin="${opts.twin}"` : ""}><summary>Table view: ${caption}</summary>
       <div class="pv-tablewrap"><table>
         <caption>${caption}</caption>
         <thead><tr>${head.map(h => `<th scope="col">${h}</th>`).join("")}</tr></thead>
@@ -365,6 +383,20 @@ const PV = (() => {
       `<div class="figv ${c || ""}"><div class="n">${n}</div><div class="k">${k}</div>
        <div class="d">${d || ""}</div>${o.scope ? `<p class="pv-scope" data-claim="${o.scope}"></p>` : ""}${
        o.differs ? differsLink() : ""}</div>`).join("");
+    /* HEARD AS A SENTENCE, THEN THE SCOPE (fresh-access review, 1 November 2026). Read aloud,
+       a tile ran into its own badge and the grey scope line: "10.9% of the industry's jobs
+       United States are molding-machine setters … NAICS 326". A badge opening the detail
+       (occupations' "United States") is read once, in brackets after the label, and the
+       tile ends on a full stop the eye does not need, so the scope line is its own item. */
+    host.querySelectorAll(".figv").forEach(f => {
+      const k = f.querySelector(".k"), d = f.querySelector(".d"), badge = d && d.querySelector(":scope > .scope");
+      if (k && badge && !badge.hasAttribute("aria-hidden")) {
+        badge.setAttribute("aria-hidden", "true");
+        k.insertAdjacentHTML("beforeend", `<span class="pv-sr"> (${badge.textContent.trim()})</span>`);
+      }
+      const last = d && d.textContent.trim() ? d : k;
+      if (last && !/[.!?:]$/.test(last.textContent.trim())) last.insertAdjacentHTML("beforeend", '<span class="pv-sr">.</span>');
+    });
     if (host.querySelector(".pv-scope"))
       claimsNow().then(spec => fillScopes(spec, host),
         e => console.error(`PV.figures: claims.json unavailable for the scope chip: ${e.message}`));
@@ -469,7 +501,7 @@ const PV = (() => {
 
      NOTE: it sits next to a PROTOTYPE flag on purpose. A registered mark on a draft
      implies clearance, so the flag has to stay louder than the logo. */
-  const MARK = `<svg class="pv-mark" viewBox="-30 -30 289.182 294.048" role="img" aria-label="Polymer Industry Cluster" xmlns="http://www.w3.org/2000/svg"> <g id="pic-mark"> <path id="path2" d="m 1557.61,1759.91 -467.12,216.88 203.23,498.07 40.16,-16.38 -187.6,-459.77 429.59,-199.44 -18.26,-39.36" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path3" d="m 1313.8,2618.78 c -83.89,0 -152.13,-68.24 -152.13,-152.11 0,-83.89 68.24,-152.13 152.13,-152.13 83.87,0 152.12,68.24 152.12,152.13 0,83.87 -68.25,152.11 -152.12,152.11" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path4" d="m 256.441,1089.67 -35.511,24.91 389.636,555.58 495.664,335.55 24.31,-35.92 -489.044,-331.08 -385.055,-549.04" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path5" d="m 611.324,1638.49 -409.047,377.31 29.418,31.89 409.043,-377.31 -29.414,-31.89" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path6" d="m 626.031,1842.59 c -103.742,0 -188.148,-84.41 -188.148,-188.16 0,-103.74 84.406,-188.15 188.148,-188.15 103.75,0 188.157,84.41 188.157,188.15 0,103.75 -84.407,188.16 -188.157,188.16" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path7" d="m 1118.38,2139.88 c -83.88,0 -152.126,-68.24 -152.126,-152.13 0,-83.87 68.246,-152.11 152.126,-152.11 83.88,0 152.12,68.24 152.12,152.11 0,83.89 -68.24,152.13 -152.12,152.13" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path8" d="m 1566.74,1931.72 c -83.89,0 -152.13,-68.24 -152.13,-152.13 0,-83.87 68.24,-152.11 152.13,-152.11 83.88,0 152.12,68.24 152.12,152.11 0,83.89 -68.24,152.13 -152.12,152.13" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path9" d="m 216.984,2183.88 c -83.875,0 -152.1207,-68.25 -152.1207,-152.13 0,-83.89 68.2457,-152.13 152.1207,-152.13 83.887,0 152.129,68.24 152.129,152.13 0,83.88 -68.242,152.13 -152.129,152.13" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path10" d="M 238.684,1340.83 C 107.074,1340.83 0,1233.74 0,1102.13 0,970.512 107.074,863.441 238.684,863.441 c 131.613,0 238.695,107.071 238.695,238.689 0,131.61 -107.082,238.7 -238.695,238.7" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> </g> </svg>`;
+  const MARK = `<svg class="pv-mark" viewBox="-30 -30 289.182 294.048" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"> <g id="pic-mark"> <path id="path2" d="m 1557.61,1759.91 -467.12,216.88 203.23,498.07 40.16,-16.38 -187.6,-459.77 429.59,-199.44 -18.26,-39.36" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path3" d="m 1313.8,2618.78 c -83.89,0 -152.13,-68.24 -152.13,-152.11 0,-83.89 68.24,-152.13 152.13,-152.13 83.87,0 152.12,68.24 152.12,152.13 0,83.87 -68.25,152.11 -152.12,152.11" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path4" d="m 256.441,1089.67 -35.511,24.91 389.636,555.58 495.664,335.55 24.31,-35.92 -489.044,-331.08 -385.055,-549.04" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path5" d="m 611.324,1638.49 -409.047,377.31 29.418,31.89 409.043,-377.31 -29.414,-31.89" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path6" d="m 626.031,1842.59 c -103.742,0 -188.148,-84.41 -188.148,-188.16 0,-103.74 84.406,-188.15 188.148,-188.15 103.75,0 188.157,84.41 188.157,188.15 0,103.75 -84.407,188.16 -188.157,188.16" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path7" d="m 1118.38,2139.88 c -83.88,0 -152.126,-68.24 -152.126,-152.13 0,-83.87 68.246,-152.11 152.126,-152.11 83.88,0 152.12,68.24 152.12,152.11 0,83.89 -68.24,152.13 -152.12,152.13" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path8" d="m 1566.74,1931.72 c -83.89,0 -152.13,-68.24 -152.13,-152.13 0,-83.87 68.24,-152.11 152.13,-152.11 83.88,0 152.12,68.24 152.12,152.11 0,83.89 -68.24,152.13 -152.12,152.13" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path9" d="m 216.984,2183.88 c -83.875,0 -152.1207,-68.25 -152.1207,-152.13 0,-83.89 68.2457,-152.13 152.1207,-152.13 83.887,0 152.129,68.24 152.129,152.13 0,83.88 -68.242,152.13 -152.129,152.13" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> <path id="path10" d="M 238.684,1340.83 C 107.074,1340.83 0,1233.74 0,1102.13 0,970.512 107.074,863.441 238.684,863.441 c 131.613,0 238.695,107.071 238.695,238.689 0,131.61 -107.082,238.7 -238.695,238.7" style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none" transform="matrix(0.13333333,0,0,-0.13333333,0,349.17333)" /> </g> </svg>`;
 
   /* The tab mark. The masthead MARK is white-filled for a dark strip, so used bare as a
      favicon it disappears on a light tab. This wraps the same paths on the masthead's own
@@ -534,7 +566,7 @@ const PV = (() => {
     "cite.json": "../_data/cite.json",         // every page's title, URL and revision date
     "corrections_by_page.json": "../_data/corrections_by_page.json",  // PV.correctionsSummary()
     "glossary.json": "../_data/glossary.json",     // PV.wordsOnPage(), shared definitions
-    "jobcounts.json": "../_data/jobcounts.json",   // PV.jobCounts(), the hub's five totals
+    "jobcounts.json": "../_data/jobcounts.json",   // PV.jobCounts(), the hub's job-count totals
   };
   async function data(file) {
     const tag = document.querySelector(`script[data-pv-file="${file}"]`);
@@ -732,7 +764,7 @@ const PV = (() => {
                     in, inside the how-we-checked box above the cite line. Every number in it
                     must appear in one of the claims it names, so a changed figure fails.
        differs link a story whose total is a row of _data/jobcounts.json prints a one-line link
-                    to the hub's table of the five totals (PV.figures {differs: true}).
+                    to the hub's table of the job-count totals (PV.figures {differs: true}).
        words block  claims.json `glossary` {terms, notes}: a collapsed "Words on this page"
                     listing only the declared terms, defined once in _data/glossary.json.
 
@@ -784,7 +816,8 @@ const PV = (() => {
     const J = await data("jobcounts.json");
     mount.id = JOBCOUNTS;
     mount.innerHTML = `<div class="pv-jobcounts-scroll"><table class="pv-jobcounts">
-      <caption>Why the job counts differ: five totals for the same twelve counties</caption>
+      <caption>Why the job counts differ: ${["zero", "one", "two", "three", "four", "five", "six", "seven",
+        "eight", "nine", "ten"][J.rows.length] || J.rows.length} totals for the same twelve counties</caption>
       <thead><tr>${["Total", "Industry", "Year", "Source", "Story"].map(h =>
         `<th scope="col">${h}</th>`).join("")}</tr></thead>
       <tbody>${J.rows.map(r => `<tr><th scope="row">${r.total}</th><td>${r.industry}</td>

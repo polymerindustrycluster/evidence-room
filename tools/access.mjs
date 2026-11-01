@@ -28,6 +28,11 @@
  *     a missing address is requested, and the page that comes back must render in the
  *     site's own styles and link to the index and its story list, with both targets real.
  *
+ *   EACH POINT ONCE, EACH BYPASS PAST ITS CHART, THE LOGO ONCE (fresh-access review,
+ *     1 November 2026). Drawn chart text left in the accessibility tree beside marks that
+ *     carry their own aria-label, a "Skip the chart" that lands on another chart's bypass or
+ *     inside its own chart, and a masthead logo announced beside the link that names it.
+ *
  * WHAT IT CANNOT INSPECT IS A FAILURE, NOT A PASS: a Tab walk that never comes back round,
  * a twin table or chart with no ids, or a control that is rendered at neither 1440 nor
  * 390px. It does not run a screen reader. Whether VoiceOver or NVDA actually speaks a
@@ -141,6 +146,54 @@ for (const name of pages) {
         (t.extra.length ? `; not plotted ${t.extra.join(", ")}` : ""));
   }
   if (twins.length) notes.push(`${twins.length} twin table(s) match their marks`);
+
+  /* 6. ONE ANNOUNCEMENT PER POINT (fresh-access review, 1 November 2026). A chart's svg
+     exposes its children, so where every mark carries its own aria-label, any drawn <text>
+     still in the accessibility tree is the same point, or an axis tick, read a second time.
+     This reads the structure, not a screen reader: drawn text that is neither a mark, inside
+     one, nor aria-hidden fails. A chart whose marks are not all labelled is listed, since
+     there the drawn text may be the only name a point has. */
+  const twice = await p.evaluate(() => {
+    const outer = n => { let s = n.ownerSVGElement; while (s && s.ownerSVGElement) s = s.ownerSVGElement; return s; };
+    const groups = new Set([...document.querySelectorAll("[data-pv-mark]")]
+      .map(m => m.closest("[data-pv-group]") || m.closest(".chart") || outer(m)).filter(Boolean));
+    const out = {loud: [], unlabelled: []};
+    for (const g of groups) {
+      const id = g.id || (g.querySelector("svg[id]") || {}).id || "(unnamed)";
+      if (![...g.querySelectorAll("[data-pv-mark]")].every(m => m.getAttribute("aria-label"))) { out.unlabelled.push(id); continue; }
+      const loud = [...g.querySelectorAll("svg text")].filter(t => t.textContent.trim() &&
+        !t.closest("[aria-hidden=true], [data-pv-mark]"));
+      if (loud.length) out.loud.push(`chart #${id} announces ${loud.length} drawn label(s) beside its marks' own ` +
+        `descriptions ("${loud[0].textContent.trim().slice(0, 30)}")`);
+    }
+    return out;
+  });
+  probs.push(...twice.loud);
+  if (twice.unlabelled.length) notes.push(`drawn labels kept on ${twice.unlabelled.length} chart(s) with unlabelled marks (#${twice.unlabelled.join(", #")})`);
+
+  /* 7. "SKIP THE CHART" LANDS PAST THE CHART. On atlas the map's bypass landed on the next
+     chart's own bypass, so the reader heard "Skip the chart" twice (fresh-access review,
+     1 November 2026). Each shown bypass is pressed; it must land on a stop that is outside
+     its chart and is not another bypass. */
+  const skips = await p.evaluate(() => {
+    const out = [];
+    [...document.querySelectorAll(".pv-skipchart")].filter(b => !b.hidden).forEach(b => {
+      const host = b.parentElement.matches(".chart") ? b.parentElement : b.nextElementSibling;
+      const name = (host && (host.id || (host.querySelector("svg[id]") || {}).id)) || "(unnamed)";
+      b.focus(); b.click();
+      const a = document.activeElement;
+      if (a === b || a === document.body) out.push(`the "Skip the chart" before #${name} moves focus nowhere`);
+      else if (a.classList.contains("pv-skipchart")) out.push(`the "Skip the chart" before #${name} lands on another chart's "Skip the chart"`);
+      else if (host && host.contains(a)) out.push(`the "Skip the chart" before #${name} lands inside its own chart`);
+    });
+    return out;
+  });
+  probs.push(...skips);
+
+  /* 8. THE HOUSE MARK BESIDE ITS OWN NAME. The masthead logo carried aria-label "Polymer
+     Industry Cluster" next to a link reading the same, so every banner announced it twice. */
+  if (await p.evaluate(() => [...document.querySelectorAll(".mast .pv-mark")].some(m => m.getAttribute("aria-hidden") !== "true")))
+    probs.push("the masthead logo is announced beside the link that names it");
 
   /* 3. links with no accessible name */
   const links = await p.evaluate(() => {
