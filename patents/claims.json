@@ -20,9 +20,9 @@
  "claims": [
   {
    "id": "pat-hero-fall",
-   "text": "Ohio filed 342 polymer patent applications in 2023, the last complete filing year, down a quarter from Ohio’s polymer filings of 455 in 2015 and in step with the American field's fall (second hero card; bars chart; closer).",
+   "text": "Ohio filed 342 polymer patent applications in 2023, the last complete filing year, down a quarter from Ohio’s polymer filings of 455 in 2015 and in step with the American field's fall (second hero card; bars chart; closer). 'Complete' is the fetch script's hand-set LAST_COMPLETE = 2023, a margin past the eighteen-month lag, not a computed rule: 2024's lag ran out on 30 June 2026, two months before the read, and it is still flagged as filling. The page states the cutoff as a hand-set margin (fig-sub, bars subtitle, table label 'still filling (after cutoff)'); until 2026-11-01 it implied the lag alone defined completeness.",
    "source": "patents/data/patents.json rows, complete years; CPC C08; USPTO",
-   "assert": "(lambda C: C[0]['year'] == 2015 and C[-1]['year'] == 2023 and C[0]['ohio'] == 455 and C[-1]['ohio'] == 342 and 0.24 <= 1 - C[-1]['ohio'] / C[0]['ohio'] <= 0.26)([r for r in D['p']['rows'] if r['complete']])",
+   "assert": "(lambda C: C[0]['year'] == 2015 and C[-1]['year'] == 2023 and C[0]['ohio'] == 455 and C[-1]['ohio'] == 342 and 0.24 <= 1 - C[-1]['ohio'] / C[0]['ohio'] <= 0.26)([r for r in D['p']['rows'] if r['complete']]) and D['p']['meta']['last_complete_year'] == 2023 and [r['year'] for r in D['p']['rows'] if not r['complete']][0] == 2024",
    "actual": "[(r['year'], r['ohio']) for r in D['p']['rows'] if r['complete']]",
    "falsified_if": "A refetch moves either endpoint, which late-publishing applications genuinely can do for recent years: the USPTO record itself back-fills. The fetch stamps its read date for exactly this reason.",
    "breaks_if": "Late-published applications raise Ohio’s 2023 count above 342, which the patent office record can do for recent years.",
@@ -30,7 +30,8 @@
    "counts": [
     {"figure": "filed 342 polymer patent applications in 2023", "noun": "home of Akron"},
     {"figure": "down a quarter from 2015", "noun": "342 polymer patent applications"},
-    {"figure": "455", "noun": ["Ohio polymer patent applications", "Ohio’s polymer filings"]}
+    {"figure": "455", "noun": ["Ohio polymer patent applications", "Ohio’s polymer filings"]},
+    {"figure": "2015 through 2023", "noun": "cutoff set by hand"}
    ],
    "scope": {"industry": "CPC C08", "place": "Ohio", "period": "2023 filing year", "source": "USPTO"}
   },

@@ -604,7 +604,8 @@ function talentMobile() {
 onFonts(() => (MOBILE.matches ? talentMobile : talentDesktop)());
 
 document.getElementById("talenttable").innerHTML = tableView("tal",
-  "Credentials awarded by the three regional institutions in polymer CIP codes, by "
+  "Credentials awarded by the two regional universities that confer them, Case Western "
+  + "Reserve and the University of Akron, in polymer CIP codes, by "
   + "federal reporting year. The 2020 to 2022 counts come from the NCES completions files "
     + "rather than the mirror behind the rest of the series, which filed them a year late.",
   ["Year", "Polymer credentials"],

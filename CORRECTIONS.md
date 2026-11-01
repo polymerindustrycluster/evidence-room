@@ -11,44 +11,7 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
-## 2026-11-01 — Figures that disagreed across surfaces: the Chamber's total, the job-count table and the headline dates, *funding-map, index*
-
-**The Greater Akron Chamber's total, *funding-map*.** **Was:** the recipient finder listed
-*Greater Akron Chamber · $4.15M across two awards* and said nothing about what that counts,
-while the same page names the Chamber the grantee on all $3,084,371 of APEX and grantee of
-record on the $31,250,000 Ohio grant. **Is:** the finder reads *Greater Akron Chamber · $4.15M
-for its own work across two awards*, and the Chamber's panel gives the other count and its
-basis: the Chamber signs for APEX, which the map shows under Regional workforce programs, the
-work that money pays for, and is grantee of record on the whole Ohio grant, which includes its
-own $1,499,515 governance line, so the two counts are not added together. **Cause:** the finder
-adds up the lines that fund each organization's own work. For the one organization that is
-also a grantee, that is its smallest figure, and the finder did not say so. No figure changed.
-Pinned by `chamber-two-bases`; the page carries a dated note.
-
-**Two job totals missing from the job-count table, *index*.** **Was:** the front page's *Why
-the job counts differ* table listed five totals for the twelve counties, and two stories that
-link to it print a total no row named: 23,459, resin, paint, and plastics and rubber in 2025
-on the 21 county figures published in every year since 2015, printed beside cluster health's
-17,770 and 24,032; and 17,943, the QWI headcount averaged over the four quarters 2024Q4 to
-2025Q3, printed beside churn's 17,725. **Is:** the table has seven rows. `index-headcount-key`
-binds both new totals to their pages' data, and the consistency check holds the table to every
-row of its data file rather than to a count of five. No figure changed.
-
-**The headline dates in each page's how-we-checked box.** **Was:** under *N corrections since
-publication*, the line read *Headline changed on* and listed every date the page's headline
-wording changed in the repository. Beside a count of corrections and a link to this log, those
-read as correction dates, and on five of seven pages a reader checked, no entry here carried
-them. The dates were true: most were rewrites or punctuation edits, not corrections. One was a
-correction with no entry of its own: on 28 August 2026 churn's headline *168 more jobs* became
-*168 more job starts than job ends*, and the 29 August entry for that page starts from the
-fixed wording. **Is:** *Headline wording last changed* and one date, with a link to the page's
-repository history, or *Headline unchanged*. The entries in this log are unchanged.
-
-**Smaller fixes.** A citation whose title ends in a question mark no longer adds a full stop
-after it. On the front page, each story card's short question is hidden from screen readers,
-which now hear the question once, in the card's heading, instead of twice.
-
-## 2026-11-01 — Wrong and misleading sentences readers found, *location-quotient, patents, laborshed, timeline, churn, peers, programs, cluster-health, wages, cost-scissors, revisions, chain, atlas*
+## 2026-11-01 — Wrong and misleading sentences readers found, *location-quotient, patents, laborshed, timeline, churn, peers, programs, cluster-health, wages, cost-scissors, revisions, chain, atlas, scorecard*
 
 Fresh readers found sentences that contradicted their own page or invited the wrong reading.
 No published figure changed except where a sentence now prints a figure it left out. Each
@@ -63,10 +26,11 @@ read 7.47×, so the denominator is most of the gap to 7.68×.
 
 **A complete year that could still grow, *patents*.** **Was:** a complete filing year was one
 in which "everything filed in them has already published", while the page's own break
-conditions said late-published applications can still raise 2023 above 342. **Is:** a
-complete year is one the eighteen-month publication lag has run out for, and late
-publications can still add to it. The second break condition says late-published
-applications, not late filings.
+conditions said late-published applications can still raise 2023 above 342. **Is:** the
+complete filing years are 2015 through 2023, a cutoff set by hand a margin past the
+eighteen-month publication lag, and even they can still grow; 2024, whose lag ran out two
+months before the August 2026 read, is labelled still filling rather than incomplete. The
+second break condition says late-published applications, not late filings.
 
 **Two bases in one quotable sentence, *laborshed*.** **Was:** Quote this and the plant box set
 Ashtabula's 68.5 percent (every job in the county) beside "just under 90 percent" of the
@@ -82,7 +46,7 @@ separations cannot show. **Is:** timeline's lines say the 4 is a floor and that 
 include PIC's own presentations and reviews; churn's box keeps the arithmetic and says the
 series records separations, not retirements.
 
-**Ranks and counts set by the wrong measure, *peers, programs, cluster-health, wages, atlas*.**
+**Ranks and counts set by the wrong measure, *peers, programs, cluster-health, wages, atlas, scorecard*.**
 **Was:** the peers finder put Akron's jobs rank, 6th of 155, straight after its 4.69×
 concentration; it is 8th on concentration. Programs' plant box counted Ohio's "22
 substantive polymer programs" beside a table of 22 technician records, a different set.
@@ -94,8 +58,12 @@ paint fell 30); said three universities confer the polymer degrees, where two do
 double full stop; and gave its 1.24× and 0.90× pay benchmark without its industries, beside
 wages' 0.88× on a wider set, also unnamed. Atlas said its finding breaks if a revision
 changes "the 41 with a 2023 award", which reads as 41 awards; the 41 are institutions still
-conferring in 2023. **Is:** each rank sits by its measure, the box says which 22, each figure
-names its basis, both pay boxes name their industries, and atlas names its 41.
+conferring in 2023. The scorecard's polymer credentials chart said "those same three
+universities" and three of its row definitions named three institutions; two confer the
+polymer credentials (Case Western Reserve, Akron) and two the materials ones (Case Western
+Reserve, Kent State). **Is:** each rank sits by its measure, the box says which 22, each figure
+names its basis, both pay boxes name their industries, atlas names its 41, and the scorecard names its two
+universities.
 
 **Titles a reader cites, *cost-scissors, revisions, chain, patents*.** **Was:** the tab
 titles, which the Cite as line carries, read "Nothing Came Back Down" (the headline says gas
