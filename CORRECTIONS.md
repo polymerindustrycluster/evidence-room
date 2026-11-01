@@ -11,6 +11,43 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-11-01 — Figures that disagreed across surfaces: the Chamber's total, the job-count table and the headline dates, *funding-map, index*
+
+**The Greater Akron Chamber's total, *funding-map*.** **Was:** the recipient finder listed
+*Greater Akron Chamber · $4.15M across two awards* and said nothing about what that counts,
+while the same page names the Chamber the grantee on all $3,084,371 of APEX and grantee of
+record on the $31,250,000 Ohio grant. **Is:** the finder reads *Greater Akron Chamber · $4.15M
+for its own work across two awards*, and the Chamber's panel gives the other count and its
+basis: the Chamber signs for APEX, which the map shows under Regional workforce programs, the
+work that money pays for, and is grantee of record on the whole Ohio grant, which includes its
+own $1,499,515 governance line, so the two counts are not added together. **Cause:** the finder
+adds up the lines that fund each organization's own work. For the one organization that is
+also a grantee, that is its smallest figure, and the finder did not say so. No figure changed.
+Pinned by `chamber-two-bases`; the page carries a dated note.
+
+**Two job totals missing from the job-count table, *index*.** **Was:** the front page's *Why
+the job counts differ* table listed five totals for the twelve counties, and two stories that
+link to it print a total no row named: 23,459, resin, paint, and plastics and rubber in 2025
+on the 21 county figures published in every year since 2015, printed beside cluster health's
+17,770 and 24,032; and 17,943, the QWI headcount averaged over the four quarters 2024Q4 to
+2025Q3, printed beside churn's 17,725. **Is:** the table has seven rows. `index-headcount-key`
+binds both new totals to their pages' data, and the consistency check holds the table to every
+row of its data file rather than to a count of five. No figure changed.
+
+**The headline dates in each page's how-we-checked box.** **Was:** under *N corrections since
+publication*, the line read *Headline changed on* and listed every date the page's headline
+wording changed in the repository. Beside a count of corrections and a link to this log, those
+read as correction dates, and on five of seven pages a reader checked, no entry here carried
+them. The dates were true: most were rewrites or punctuation edits, not corrections. One was a
+correction with no entry of its own: on 28 August 2026 churn's headline *168 more jobs* became
+*168 more job starts than job ends*, and the 29 August entry for that page starts from the
+fixed wording. **Is:** *Headline wording last changed* and one date, with a link to the page's
+repository history, or *Headline unchanged*. The entries in this log are unchanged.
+
+**Smaller fixes.** A citation whose title ends in a question mark no longer adds a full stop
+after it. On the front page, each story card's short question is hidden from screen readers,
+which now hear the question once, in the card's heading, instead of twice.
+
 ## 2026-10-07 — A source churn never read, *churn, sources*
 
 **Was:** churn credited the BLS payroll census (QCEW) as one of its two sources, and the

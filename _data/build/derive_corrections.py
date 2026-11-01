@@ -112,6 +112,8 @@ SITE_WIDE = {
 # which found cluster-health's WPU06 label correction counted only on two other pages).
 # An exclusion that no longer matches a mention fails the build.
 MENTION_EXCLUDED = {
+    ("2026-11-01 — Figures that disagreed across surfaces", "cluster-health"): "its 23,459 is a new row on the hub's table; cluster-health unchanged",
+    ("2026-11-01 — Figures that disagreed across surfaces", "programs"): "\"Regional workforce programs\", a funding-map recipient, not the page",
     ("2026-10-05 — Dated wording, keyboard focus", "atlas"): "keeps a \"today\" true on any date; not listed, unchanged",
     ("2026-10-05 — Dated wording, keyboard focus", "programs"): "keeps a \"today\" true on any date; not listed, unchanged",
     ("2026-10-05 — Dated wording, keyboard focus", "index"): "\"the hub sub-grant agreements\" is the Ohio Innovation Hub",
