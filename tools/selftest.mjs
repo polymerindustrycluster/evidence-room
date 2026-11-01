@@ -647,7 +647,15 @@ const CASES = [
   {gate: "access", page: "occupations", args: ["occupations"],
    expect: /chart #\S+ announces \d+ drawn label\(s\) beside its marks' own descriptions/,
    defect: "every chart point announced twice: its drawn label, then its mark's aria-label",
-   inject: s => s.replace('if (!t.closest("[data-pv-mark]")) t.setAttribute("aria-hidden", "true");', "void t;")},
+   inject: s => s.replace('t.setAttribute("aria-hidden", "true");\n        else t.removeAttribute("aria-hidden");',
+                          'void 0;\n        else void 0;')},
+
+  {gate: "access", page: "occupations", args: ["occupations"],
+   expect: /chart #pay hides \d+ drawn annotation\(s\) that no mark, description or table carries/,
+   defect: "every drawn chart label hidden, taking occupations' \"Akron 6% under the nation (0.94×)\" out " +
+           "of the accessibility tree with nothing else saying it (Codex, 1 November 2026)",
+   inject: s => s.replace('if (t.classList.contains("pv-tick") || saidAlready(t.textContent, said)) t.setAttribute',
+                          'if (true) t.setAttribute')},
 
   {gate: "access", page: "atlas", args: ["atlas"],
    expect: /"Skip the chart" before #map lands on another chart's "Skip the chart"/,

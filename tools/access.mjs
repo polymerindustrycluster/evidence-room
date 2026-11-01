@@ -147,28 +147,54 @@ for (const name of pages) {
   }
   if (twins.length) notes.push(`${twins.length} twin table(s) match their marks`);
 
-  /* 6. ONE ANNOUNCEMENT PER POINT (fresh-access review, 1 November 2026). A chart's svg
-     exposes its children, so where every mark carries its own aria-label, any drawn <text>
-     still in the accessibility tree is the same point, or an axis tick, read a second time.
-     This reads the structure, not a screen reader: drawn text that is neither a mark, inside
-     one, nor aria-hidden fails. A chart whose marks are not all labelled is listed, since
-     there the drawn text may be the only name a point has. */
+  /* 6. EACH POINT ONCE, AND NO ANNOTATION LOST (fresh-access review and Codex, 1 November
+     2026). A chart's svg exposes its children, so where every mark carries its own
+     aria-label, drawn text that only repeats what is said already (an axis tick, or a label
+     every word and number of which is in a mark's aria-label, the chart's description or
+     its table view) is the same point read twice and must be aria-hidden. Drawn text that
+     says something nothing else does ("Akron 6% under the nation (0.94×)") must NOT be
+     hidden, or the annotation is gone for a screen-reader user. The rule is written out
+     here, not imported from picviz.js, so the gate does not take the renderer's word. This
+     reads structure, not a screen reader. A chart whose marks are not all labelled is
+     listed, since there the drawn text may be the only name a point has. */
   const twice = await p.evaluate(() => {
     const outer = n => { let s = n.ownerSVGElement; while (s && s.ownerSVGElement) s = s.ownerSVGElement; return s; };
+    const toks = s => String(s).toLowerCase().replace(/(\d),(?=\d)/g, "$1").match(/[a-z]+|\d+(?:\.\d+)?/g) || [];
     const groups = new Set([...document.querySelectorAll("[data-pv-mark]")]
       .map(m => m.closest("[data-pv-group]") || m.closest(".chart") || outer(m)).filter(Boolean));
-    const out = {loud: [], unlabelled: []};
+    const out = {loud: [], lost: [], unlabelled: [], kept: 0};
     for (const g of groups) {
       const id = g.id || (g.querySelector("svg[id]") || {}).id || "(unnamed)";
-      if (![...g.querySelectorAll("[data-pv-mark]")].every(m => m.getAttribute("aria-label"))) { out.unlabelled.push(id); continue; }
-      const loud = [...g.querySelectorAll("svg text")].filter(t => t.textContent.trim() &&
-        !t.closest("[aria-hidden=true], [data-pv-mark]"));
+      const marks = [...g.querySelectorAll("[data-pv-mark]")];
+      if (!marks.every(m => m.getAttribute("aria-label"))) { out.unlabelled.push(id); continue; }
+      const svgs = [...g.querySelectorAll("svg")].concat(g.matches("svg") ? [g] : []);
+      const parts = marks.map(m => m.getAttribute("aria-label"));
+      for (const v of svgs) {
+        parts.push(v.getAttribute("aria-label") || "", ...[...v.children].filter(e => /^(title|desc)$/i.test(e.tagName)).map(e => e.textContent));
+        if (v.id) document.querySelectorAll("details.pv-table").forEach(d => {
+          if (d.dataset.pvTwin === v.id || d.dataset.pvFor === v.id) parts.push(d.textContent); });
+      }
+      const said = new Set(toks(parts.join(" ")));
+      const known = k => said.has(k) || (/^[a-z]{3,}$/.test(k) && [...said].some(w => w.startsWith(k)));
+      const loud = [], lost = [];
+      for (const t of g.querySelectorAll("svg text")) {
+        const words = toks(t.textContent);
+        if (!words.length || t.closest("[data-pv-mark]")) continue;
+        const repeat = t.classList.contains("pv-tick") || words.every(known);
+        const hidden = !!t.closest("[aria-hidden=true]");
+        if (repeat && !hidden) loud.push(t.textContent.trim());
+        if (!repeat && hidden && t.getClientRects().length) lost.push(t.textContent.trim());
+        if (!repeat && !hidden) out.kept++;
+      }
       if (loud.length) out.loud.push(`chart #${id} announces ${loud.length} drawn label(s) beside its marks' own ` +
-        `descriptions ("${loud[0].textContent.trim().slice(0, 30)}")`);
+        `descriptions ("${loud[0].slice(0, 30)}")`);
+      if (lost.length) out.lost.push(`chart #${id} hides ${lost.length} drawn annotation(s) that no mark, description ` +
+        `or table carries ("${lost[0].slice(0, 40)}")`);
     }
     return out;
   });
-  probs.push(...twice.loud);
+  probs.push(...twice.loud, ...twice.lost);
+  notes.push(`${twice.kept} unique chart annotation(s) left audible`);
   if (twice.unlabelled.length) notes.push(`drawn labels kept on ${twice.unlabelled.length} chart(s) with unlabelled marks (#${twice.unlabelled.join(", #")})`);
 
   /* 7. "SKIP THE CHART" LANDS PAST THE CHART. On atlas the map's bypass landed on the next

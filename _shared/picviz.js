@@ -153,12 +153,41 @@ const PV = (() => {
     /* ONE ANNOUNCEMENT PER POINT (fresh-access review, 1 November 2026). The chart's svg
        exposes its children, so a reader arrowing through heard each point's drawn label and
        then its mark's aria-label, with axis ticks between. Where every mark carries its own
-       description, the drawn text is visual only: the chart's <title> and its table view
-       carry the rest. A drawn label that is itself a mark stays. tools/access.mjs holds it. */
-    if (marks.every(m => m.getAttribute("aria-label")))
+       description, drawn text that something else already says is visual only: an axis tick,
+       or a label every word and number of which is in a mark's aria-label, the chart's own
+       description or its table view. Anything else is a unique annotation (occupations'
+       "Akron 6% under the nation (0.94×)") and stays exposed: hiding every drawn label took
+       that out of the accessibility tree entirely (Codex, PR review). A drawn label that is
+       itself a mark stays. tools/access.mjs holds both halves with the same rule. */
+    if (marks.every(m => m.getAttribute("aria-label"))) {
+      const said = saidBy(g, marks);
       g.querySelectorAll("svg text").forEach(t => {
-        if (!t.closest("[data-pv-mark]")) t.setAttribute("aria-hidden", "true");
+        if (t.closest("[data-pv-mark]")) return;
+        if (t.classList.contains("pv-tick") || saidAlready(t.textContent, said)) t.setAttribute("aria-hidden", "true");
+        else t.removeAttribute("aria-hidden");
       });
+    }
+  }
+  /* Words and numbers, as said aloud: "1,410" and "1410" are one token, "10.9%" is "10.9". */
+  const sayTokens = s => (String(s).toLowerCase().replace(/(\d),(?=\d)/g, "$1").match(/[a-z]+|\d+(?:\.\d+)?/g) || []);
+  /* Everything a chart already says without its drawn text: its marks' aria-labels, its
+     own description (<title>, aria-label) and the table view that names it. */
+  function saidBy(g, marks) {
+    const svgs = [...g.querySelectorAll("svg")].concat(g.matches("svg") ? [g] : []);
+    const parts = marks.map(m => m.getAttribute("aria-label"));
+    svgs.forEach(v => {
+      parts.push(v.getAttribute("aria-label") || "", ...[...v.querySelectorAll(":scope > title, :scope > desc")].map(e => e.textContent));
+      if (v.id) document.querySelectorAll(`details.pv-table[data-pv-twin="${CSS.escape(v.id)}"], ` +
+        `details.pv-table[data-pv-for="${CSS.escape(v.id)}"]`).forEach(d => parts.push(d.textContent));
+    });
+    return new Set(sayTokens(parts.join(" ")));
+  }
+  /* Every token is said already; a word cut short with an ellipsis ("Technol…") counts when
+     a said word begins with it. */
+  function saidAlready(text, said) {
+    const toks = sayTokens(text);
+    return toks.length > 0 && toks.every(k => said.has(k) ||
+      (/^[a-z]{3,}$/.test(k) && [...said].some(w => w.startsWith(k))));
   }
   addEventListener("resize", () => schedule(document.querySelectorAll("[data-pv-mark]")),
     {passive: true});
