@@ -643,6 +643,41 @@ const CASES = [
    defect: "closing an event's detail panel leaving focus on <body>, not the mark that opened it",
    inject: s => s.replace("const o = opener; opener = null;", "const o = null; opener = null;")},
 
+  /* From the fresh-access review of 1 November 2026. */
+  {gate: "access", page: "occupations", args: ["occupations"],
+   expect: /chart #\S+ announces \d+ drawn label\(s\) beside its marks' own descriptions/,
+   defect: "every chart point announced twice: its drawn label, then its mark's aria-label",
+   inject: s => s.replace('if (!t.closest("[data-pv-mark]")) t.setAttribute("aria-hidden", "true");', "void t;")},
+
+  {gate: "access", page: "atlas", args: ["atlas"],
+   expect: /"Skip the chart" before #map lands on another chart's "Skip the chart"/,
+   defect: "atlas's map bypass landing on the next chart's bypass rather than the map's directory",
+   inject: s => s.replace("if (own) { own.focus(); return; }", "")
+                 .replace('!n.classList.contains("pv-skipchart") &&', "")},
+
+  {gate: "access", page: "occupations", args: ["occupations"],
+   expect: /masthead logo is announced beside the link that names it/,
+   defect: "the masthead logo carrying aria-label \"Polymer Industry Cluster\" beside the link of the same name",
+   inject: s => s.replace('class="pv-mark" viewBox="-30 -30 289.182 294.048" aria-hidden="true"',
+                          'class="pv-mark" viewBox="-30 -30 289.182 294.048" role="img" aria-label="Polymer Industry Cluster"')},
+
+  {gate: "verify", page: "atlas", args: ["atlas"], expect: /nojs:1 of 1 text-version block\(s\) shown with scripting off/,
+   defect: "a story that, with scripting off, loses its revision date, breaks-if line and citation",
+   inject: s => s.replace(/<noscript><div class="pv-nojs">[\s\S]*?<\/noscript>/, "")},
+
+  {gate: "consistency", page: "occupations", file: "occupations/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[static\] occupations\s+the static nojs-byline region is stale/,
+   defect: "the no-script text version still printing an old \"This finding breaks if\" after claims.json moved on",
+   inject: s => s.replace("<b>This finding breaks if:</b> A new national staffing release",
+                          "<b>This finding breaks if:</b> A national staffing release")},
+
+  {gate: "consistency", page: "reach", file: "reach/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[static\] reach\s+no <!-- pv:static nojs --> region/,
+   defect: "a prototype page with no no-script region, so its do-not-cite sentence vanishes without scripting",
+   inject: s => s.replace(/<!-- pv:static nojs -->[\s\S]*?<!-- \/pv:static -->\n/, "")},
+
   {gate: "style", page: "cluster-health", args: ["cluster-health"], expect: /withdrawn:fy2026 is still open/,
    defect: "\"FY2026 is still open\" on a dated snapshot, which the withdrawn pattern missed because " +
            "its optional space compiled to a required one",
