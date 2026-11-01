@@ -556,7 +556,7 @@ tiles = [
         "standing": dict(standing([(y, balanced[y]) for y in YEARS], "high"),
                          basis=(f"the {len(balanced_keys)} county figures published in "
                                 f"every year since {YEARS[0]}"),
-                         basis_short="jobs in three industries on the fixed county set",
+                         basis_short="three-industry jobs, fixed county set",
                          merit_short="more jobs is better",
                          merit=("More jobs is the better end of this range. Nobody has "
                                 "set a number the region is aiming at, so the range is "
