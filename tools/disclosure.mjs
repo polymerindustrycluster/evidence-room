@@ -290,7 +290,7 @@ return {async check(n, p) {
                                        ["cite version", mk.version, [rec.revised, longDate(rec.revised)]]])
         if (!got || got[0] !== date[0] || got[1] !== date[1])
           probs.push(`${what} reads ${got ? got.join(" / ") : "nothing"}, the recorded revision date is ${date.join(" / ")}`);
-      const head = `Swanson, J., Polymer Industry Cluster (${rec.revised.slice(0, 4)}). ${rec.title}.`;
+      const head = `Swanson, J., Polymer Industry Cluster (${rec.revised.slice(0, 4)}). ${rec.title}${/[?!.]$/.test(rec.title) ? "" : "."}`;   // no "?." (1 Nov 2026)
       if (!mk.cite || !mk.cite.startsWith(`Cite as: ${head}`)) probs.push(`cite line does not open "${head}"`);
       if (!mk.boxModels) probs.push("the made-and-checked box credits no model");
       else if (mk.boxModels !== mk.byModels)
