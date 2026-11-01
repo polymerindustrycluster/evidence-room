@@ -11,7 +11,7 @@
   }
  },
  "plant": [
-  {"text": "Before you count on a local polymer program for hires, check that it still confers: Ohio has held 22 substantive polymer programs, and 11 were still conferring in 2023.", "claims": ["prog-states-ohio"]},
+  {"text": "Before you count on a local polymer program for hires, check that it still confers: counting degree and technician programs together, Ohio has held 22 with more than ten lifetime completions, and 11 were still conferring in 2023, a different 22 from the technician records in the Ohio table.", "claims": ["prog-states-ohio"]},
   {"text": "Expect most new polymer graduates from Akron to hold graduate degrees: of its 44 completions in the selected codes in 2023, 42 were graduate degrees, master’s or doctorates.", "claims": ["prog-ua-collapse"]}
  ],
  "hero": "prog-spine-hollowing",
@@ -104,9 +104,10 @@
   },
   {
    "id": "prog-states-ohio",
-   "text": "Ohio has held more substantive polymer programs than any state — 22 ever, 11 still conferring in 2023.",
+   "text": "Ohio has held more substantive polymer programs than any state — 22 ever, 11 still conferring in 2023. Substantive means more than ten lifetime completions, at every award level, degree and technician together; this is a different 22 from the 22 technician records in the Ohio table, 13 of which have ten or fewer completions and so are outside this count (plant box; since 2026-11-01 the box says so, after it printed this 22 in words a reader would take for the table's).",
    "source": "polymer-programs-db census, substantive programs by state",
-   "assert": "D['states'][0]['state'] == 'OH' and D['states'][0]['ever'] == 22 and D['states'][0]['still'] == 11",
+   "assert": "D['states'][0]['state'] == 'OH' and D['states'][0]['ever'] == 22 and D['states'][0]['still'] == 11 and D['ohio']['tech_ever'] == 22 and D['ohio']['never_took_off'] == 13",
+   "counts": [{"figure": "has held 22", "noun": "degree and technician"}],
    "actual": "D['states'][:3]",
    "falsified_if": "Pennsylvania (20 ever) closes the gap in a revision, or the substantive threshold changes. This claim is about filings under polymer CIPs: a state ranking low teaches polymers under codes this census cannot see, so the ranking supports 'Ohio files the most polymer-coded programs', never 'other states lack polymer education'."
   },
