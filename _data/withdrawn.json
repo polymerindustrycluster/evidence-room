@@ -3,7 +3,7 @@
   "withdrawn": [
     {"pages": ["location-quotient"], "pattern": "not because it measures anything different",
      "correction": "2026-11-01 Wrong and misleading sentences readers found: the fixed-base and moving-base paint lines divide by different workforces"},
-    {"pages": ["patents"], "pattern": "everything filed in them has already published|late filings lift",
+    {"pages": ["patents"], "pattern": "everything filed in them has already published|late filings lift|lag has run out for everything filed|incomplete \\(lag\\)",
      "correction": "2026-11-01 Wrong and misleading sentences readers found: a complete filing year can still gain late-published applications"},
     {"pages": ["laborshed"], "pattern": "just under 90 percent",
      "correction": "2026-11-01 Wrong and misleading sentences readers found: the region share beside the county shares is on the every-job basis, 87.8 percent"},

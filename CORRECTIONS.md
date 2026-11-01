@@ -26,10 +26,11 @@ read 7.47×, so the denominator is most of the gap to 7.68×.
 
 **A complete year that could still grow, *patents*.** **Was:** a complete filing year was one
 in which "everything filed in them has already published", while the page's own break
-conditions said late-published applications can still raise 2023 above 342. **Is:** a
-complete year is one the eighteen-month publication lag has run out for, and late
-publications can still add to it. The second break condition says late-published
-applications, not late filings.
+conditions said late-published applications can still raise 2023 above 342. **Is:** the
+complete filing years are 2015 through 2023, a cutoff set by hand a margin past the
+eighteen-month publication lag, and even they can still grow; 2024, whose lag ran out two
+months before the August 2026 read, is labelled still filling rather than incomplete. The
+second break condition says late-published applications, not late filings.
 
 **Two bases in one quotable sentence, *laborshed*.** **Was:** Quote this and the plant box set
 Ashtabula's 68.5 percent (every job in the county) beside "just under 90 percent" of the
