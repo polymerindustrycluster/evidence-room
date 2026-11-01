@@ -15,12 +15,14 @@
  *   - an en-dash between numbers (2015-2026): a range, correct
  *   - anything inside <script>: inlined source comments, which no reader sees
  */
-import {readdirSync, existsSync} from "fs";
+import {existsSync} from "fs";
 import {pathToFileURL} from "url";
-import {launch} from "./_browser.mjs";
+import {standalone, isMain} from "./_page-runner.mjs";
+import {gotoReady} from "./_ready.mjs";
 import {pageScripts, asText, HOLE} from "./_jsstrings.mjs";
 
 import {readFileSync as rfs} from "fs";
+export function createGate(list, {log = console.log, full = false} = {}) {
 let ACRO = {assumed_known: [], debt: {}};
 try { ACRO = JSON.parse(rfs(new URL("../_data/acronyms.json", import.meta.url), "utf-8")); } catch {}
 
@@ -54,22 +56,17 @@ const P12 = fpSet("PIC12"), N14 = fpSet("NEO14");
 const FOOT = {adds: [...N14].filter(c => !P12.has(c)), drops: [...P12].filter(c => !N14.has(c)),
               shared: [...P12].filter(c => N14.has(c))};
 if (P12.size !== 12 || N14.size !== 14 || !FOOT.adds.length || !FOOT.drops.length) {
-  console.log(`footprints.py could not be read: PIC12 ${P12.size} counties, NEO14 ${N14.size}`);
-  process.exit(1);
+  throw new Error(`footprints.py could not be read: PIC12 ${P12.size} counties, NEO14 ${N14.size}`);
 }
 
-const names = process.argv.slice(2).filter(a => !a.startsWith("--"));
-const list = names.length ? names
-  : readdirSync("dist").filter(f => f.endsWith(".html")).map(f => f.slice(0, -5));
 
 /* Every run checks the whole list: an entry for a renamed or missing page would otherwise
    pass forever. A page is an artifact with an index.html; a full run must also have its
    bundle to inspect. */
 const unknown = [...new Set(WITHDRAWN.flatMap(w => w.pages))]
-  .filter(pg => !existsSync(`${pg}/index.html`) || (!names.length && !list.includes(pg)));
+  .filter(pg => !existsSync(`${pg}/index.html`) || (full && !list.includes(pg)));
 if (unknown.length) {
-  console.log(`withdrawn.json names page(s) with no artifact or no bundle in dist/: ${unknown.join(", ")}`);
-  process.exit(1);
+  throw new Error(`withdrawn.json names page(s) with no artifact or no bundle in dist/: ${unknown.join(", ")}`);
 }
 
 /* TEXT A SCRIPT WRITES ONLY AFTER A CLICK. The walk below reads each page in its default
@@ -136,11 +133,9 @@ const scripted = (page, patterns) => {
    standard evidence and the one whose execution is not verified. */
 const STATES = {"funding-map": ["#recipient/bioverde", "#recipient/huntsman"]};
 
-const b = await launch();
 let bad = 0, total = 0, links = 0;
 const exempt = [], debts = [], records = [];
-for (const n of list) {
-  const p = await b.newPage({viewport: {width: 1440, height: 1000}});
+return {async check(n, p, b) {
   const READ = ({withdrawn, assumed, debtOwn, debtWild, foot}) => {
     const BANNED = /\b(crucial|delve|matters)\b/i;
     const out = [];
@@ -531,8 +526,6 @@ for (const n of list) {
       debtOwn: Object.entries(ACRO.debt || {}).filter(([,v]) => v.includes(n)).map(([k]) => k),
       debtWild: Object.entries(ACRO.debt || {}).filter(([,v]) => v.includes("*")).map(([k]) => k)};
   const url = pathToFileURL(process.cwd() + "/dist/" + n + ".html").href;
-  await p.goto(url);
-  await p.waitForTimeout(1600)  /* 900 raced chain's 785 JS-rendered cards: the acronym inventory flapped between runs. 2026-09-01 */;
   const all = await p.evaluate(READ, ARGS);
   /* STATES THE DEFAULT READ NEVER SHOWS. A panel a deep link opens is prose a reader
      quotes, and its sentences are assembled from data at run time, so the script scan
@@ -541,12 +534,12 @@ for (const n of list) {
   const seenKinds = new Set(all.map(([k, c]) => k + "\u0000" + c));
   for (const h of STATES[n] || []) {
     const q = await b.newPage({viewport: {width: 1440, height: 1000}});
-    await q.goto(url + h);
-    await q.waitForTimeout(1600);
+    try {
+    await gotoReady(q, url + h);
     for (const [k, c] of await q.evaluate(READ, ARGS))
       if (!seenKinds.has(k + "\u0000" + c) && !/^(debt|debt-unseen|stale-debt|count):/.test(k)) {
         seenKinds.add(k + "\u0000" + c); all.push([k, `${h}: ${c}`]); }
-    await q.close();
+    } finally { await q.close(); }
   }
   all.push(...scripted(n, WITHDRAWN.filter(w => w.pages.includes(n)).map(w => w.pattern)));
   /* An exemption is a pass the gate chose not to count, so it is printed, not hidden. */
@@ -558,34 +551,35 @@ for (const n of list) {
   total += hits.length;
   if (hits.length) {
     bad++;
-    console.log(`${n.padEnd(18)} FAIL  ${hits.length} violation(s)`);
-    for (const [kind, ctx] of hits.slice(0, 6)) console.log(`    ${kind}: ${ctx}`);
-    if (hits.length > 6) console.log(`    ...and ${hits.length - 6} more`);
+    log(`${n.padEnd(18)} FAIL  ${hits.length} violation(s)`);
+    for (const [kind, ctx] of hits.slice(0, 6)) log(`    ${kind}: ${ctx}`);
+    if (hits.length > 6) log(`    ...and ${hits.length - 6} more`);
   } else {
-    console.log(`${n.padEnd(18)} PASS`);
+    log(`${n.padEnd(18)} PASS`);
   }
-  await p.close();
-}
-await b.close();
+}, finish() {
 if (records.length) {
-  console.log(`\n${records.length} page(s) quote a record verbatim; its text is not read as page prose:`);
-  for (const r of records) console.log(`    ${r}`);
+  log(`\n${records.length} page(s) quote a record verbatim; its text is not read as page prose:`);
+  for (const r of records) log(`    ${r}`);
 }
 if (exempt.length) {
-  console.log(`\n${exempt.length} withdrawn phrasing(s) passed as a dated correction note or a quotation:`);
-  for (const e of exempt) console.log(`    ${e}`);
+  log(`\n${exempt.length} withdrawn phrasing(s) passed as a dated correction note or a quotation:`);
+  for (const e of exempt) log(`    ${e}`);
 }
 if (debts.length) {
-  console.log(`\n${debts.length} first reference(s) passed as acronym debt (_data/acronyms.json), not as glossed:`);
-  for (const d of debts) console.log(`    ${d}`);
+  log(`\n${debts.length} first reference(s) passed as acronym debt (_data/acronyms.json), not as glossed:`);
+  for (const d of debts) log(`    ${d}`);
 }
-console.log(`\nscripts: ${read} string and template literals read from source; ${holes} value(s) ` +
+log(`\nscripts: ${read} string and template literals read from source; ${holes} value(s) ` +
             `a script fills in at run time (\${...}) were not inspected there, only as rendered; ` +
             `${devs} console or Error message(s) held to withdrawn phrasings only`);
-console.log(`links: ${links} rendered href(s) read for templates and raw Markdown, plus every ` +
+log(`links: ${links} rendered href(s) read for templates and raw Markdown, plus every ` +
             `href written in a script literal; an href a script fills in at run time and shows ` +
             `only after a click is not inspected`);
-console.log(bad ? `\n${total} style-law violation(s) on ${bad} page(s)`
+log(bad ? `\n${total} style-law violation(s) on ${bad} page(s)`
                 : `\nall ${list.length} pages clean: no em-dashes, no straight quotes, ` +
                   `no banned words, no withdrawn phrasings`);
-process.exit(bad ? 1 : 0);
+return bad ? 1 : 0;
+}};
+}
+if (isMain(import.meta.url)) process.exit(await standalone("style", createGate));

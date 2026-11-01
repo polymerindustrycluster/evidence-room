@@ -12,6 +12,7 @@
 import {realpathSync} from "fs";
 import {pathToFileURL, fileURLToPath} from "url";
 import {launch} from "./_browser.mjs";
+import {gotoReady} from "./_ready.mjs";
 
 /* probes: {name: function evaluated in the page}. onPage(name, {probeName: [{W, r}]})
    is called as each page finishes, so output streams page by page as it always has. */
@@ -22,8 +23,7 @@ export async function render(list, widths, probes, onPage) {
       const per = Object.fromEntries(Object.keys(probes).map(k => [k, []]));
       for (const W of widths) {
         const p = await b.newPage({viewport: {width: W, height: 1000}});
-        await p.goto(pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
-        await p.waitForTimeout(900);
+        await gotoReady(p, pathToFileURL(process.cwd() + "/dist/" + n + ".html").href);
         for (const [k, fn] of Object.entries(probes)) per[k].push({W, r: await p.evaluate(fn)});
         await p.close();
       }
