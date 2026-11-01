@@ -366,9 +366,10 @@ row(id="b-disbursed", group="B", status="vault",
 # --- C. talent
 row(id="c-polymer", group="C", status="public",
     metric="Polymer-program credentials awarded, region",
-    definition="Credentials at every level awarded by the three regional institutions "
-               "in CIP codes the occupations page classes as polymer, in the latest "
-               "federal reporting year.",
+    definition="Credentials at every level in CIP codes the occupations page classes "
+               "as polymer, in the latest federal reporting year, awarded by the two "
+               "regional universities that confer them, Case Western Reserve and the "
+               "University of Akron.",
     cadence="Annual, on the IPEDS completions release",
     current=str(POLY_LATEST),
     sub="%d-%d average %d" % (WINDOW[0], WINDOW[-1], round(POLY_AVG)),
@@ -377,8 +378,8 @@ row(id="c-polymer", group="C", status="public",
     source="IPEDS completions %d" % IPEDS_YEAR)
 row(id="c-bachelor", group="C", status="public",
     metric="Bachelor-level polymer credentials",
-    definition="The subset of the row above awarded at bachelor level, across all three "
-               "institutions. The entry point into the cluster’s technical "
+    definition="The subset of the row above awarded at bachelor level, across those two "
+               "universities. The entry point into the cluster’s technical "
                "workforce that does not require graduate school.",
     cadence="Annual, on the IPEDS completions release",
     current=str(BACH_LATEST),
@@ -390,8 +391,8 @@ row(id="c-bachelor", group="C", status="public",
 row(id="c-materials", group="C", status="public",
     metric="Materials-program credentials awarded, region",
     definition="Credentials at every level in CIP codes the occupations page classes as "
-               "materials rather than polymer, at the same three institutions and in "
-               "the same year.",
+               "materials rather than polymer, at Case Western Reserve and Kent State, "
+               "in the same year.",
     cadence="Annual, on the IPEDS completions release",
     current=str(MAT_LATEST),
     sub="%d-%d average %d" % (WINDOW[0], WINDOW[-1],

@@ -25,6 +25,8 @@
      "correction": "2026-11-01 Wrong and misleading sentences readers found: the page is a record inventory, not a capacity census"},
     {"pages": ["patents"], "pattern": "does the region still invent it",
      "correction": "2026-11-01 Wrong and misleading sentences readers found: the patent counts are Ohio statewide"},
+    {"pages": ["scorecard"], "pattern": "same three universities|three regional institutions|all three institutions|same three institutions",
+     "correction": "2026-11-01 Wrong and misleading sentences readers found: two universities confer the polymer credentials, two the materials ones"},
     {"pages": ["atlas"], "pattern": "41 with a 2023 award",
      "correction": "2026-11-01 Wrong and misleading sentences readers found: the 41 are institutions still conferring in 2023, not awards"},
     {"pages": ["wages"], "pattern": "usually higher: 44 of the 51",

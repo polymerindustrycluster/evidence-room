@@ -11,7 +11,7 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
-## 2026-11-01 — Wrong and misleading sentences readers found, *location-quotient, patents, laborshed, timeline, churn, peers, programs, cluster-health, wages, cost-scissors, revisions, chain, atlas*
+## 2026-11-01 — Wrong and misleading sentences readers found, *location-quotient, patents, laborshed, timeline, churn, peers, programs, cluster-health, wages, cost-scissors, revisions, chain, atlas, scorecard*
 
 Fresh readers found sentences that contradicted their own page or invited the wrong reading.
 No published figure changed except where a sentence now prints a figure it left out. Each
@@ -46,7 +46,7 @@ separations cannot show. **Is:** timeline's lines say the 4 is a floor and that 
 include PIC's own presentations and reviews; churn's box keeps the arithmetic and says the
 series records separations, not retirements.
 
-**Ranks and counts set by the wrong measure, *peers, programs, cluster-health, wages, atlas*.**
+**Ranks and counts set by the wrong measure, *peers, programs, cluster-health, wages, atlas, scorecard*.**
 **Was:** the peers finder put Akron's jobs rank, 6th of 155, straight after its 4.69×
 concentration; it is 8th on concentration. Programs' plant box counted Ohio's "22
 substantive polymer programs" beside a table of 22 technician records, a different set.
@@ -58,8 +58,12 @@ paint fell 30); said three universities confer the polymer degrees, where two do
 double full stop; and gave its 1.24× and 0.90× pay benchmark without its industries, beside
 wages' 0.88× on a wider set, also unnamed. Atlas said its finding breaks if a revision
 changes "the 41 with a 2023 award", which reads as 41 awards; the 41 are institutions still
-conferring in 2023. **Is:** each rank sits by its measure, the box says which 22, each figure
-names its basis, both pay boxes name their industries, and atlas names its 41.
+conferring in 2023. The scorecard's polymer credentials chart said "those same three
+universities" and three of its row definitions named three institutions; two confer the
+polymer credentials (Case Western Reserve, Akron) and two the materials ones (Case Western
+Reserve, Kent State). **Is:** each rank sits by its measure, the box says which 22, each figure
+names its basis, both pay boxes name their industries, atlas names its 41, and the scorecard names its two
+universities.
 
 **Titles a reader cites, *cost-scissors, revisions, chain, patents*.** **Was:** the tab
 titles, which the Cite as line carries, read "Nothing Came Back Down" (the headline says gas
