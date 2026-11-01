@@ -466,7 +466,7 @@
      }
     ],
     "basis": "the 21 county figures published in every year since 2015",
-    "basis_short": "jobs in three industries on the fixed county set",
+    "basis_short": "three-industry jobs, fixed county set",
     "merit_short": "more jobs is better",
     "merit": "More jobs is the better end of this range. Nobody has set a number the region is aiming at, so the range is its own decade and not a goal.",
     "fmt": "n"
