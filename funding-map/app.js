@@ -1280,6 +1280,11 @@ function loadData(file) {
       body.appendChild(totalBlock(r.total, r.awards.length > 1
         ? `awarded across ${r.awards.length} programs · ${fmtFull(r.total)}`
         : `awarded · ${fmtFull(r.total)}`));
+      /* WHICH COUNT THE TOTAL IS (1 November 2026). The Chamber's $4.15M is the lines that fund
+         its own work; it is also grantee on APEX and on the Ohio grant, a different base, so
+         its panel says both and the finder says which one its row counts (funding.json
+         basis and grantee, held by the claim chamber-two-bases). */
+      if (r.grantee) body.appendChild(h('p', { class: 'panel-note', text: r.grantee }));
       body.appendChild(h('p', { class: 'panel-h', text: r.awards.length > 1 ? 'Award breakdown' : 'The award' }));
       r.awards.forEach((w) => {
         const p = G.programs.get(w.programId), so = G.sources.get(p.sourceId), t = TINT[p.tint];
@@ -1623,7 +1628,7 @@ function loadData(file) {
       DATA.recipients.slice()
         .sort((a, b) => a.name.localeCompare(b.name))
         .forEach((r) => finder.appendChild(h('option', { value: r.id,
-          text: `${r.name} · ${fmt(r.total)}` +
+          text: `${r.name} · ${fmt(r.total)}` + (r.basis ? ` ${r.basis}` : '') +
             (r.awards.length > 1 ? ` across ${numword(r.awards.length)} awards` : '') })));
       finder.addEventListener('change', () => {
         const status = document.getElementById('finder-status');

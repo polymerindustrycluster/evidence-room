@@ -742,6 +742,13 @@ const CASES = [
    defect: "a story whose total is in the hub's job-count table with no link to it",
    inject: s => s.replace("A county total, not a sum of metros.`, {differs: true}]", "A county total, not a sum of metros.`]")},
 
+  /* 1 November 2026: the check holds the hub's table to every row of the file, not to a count. */
+  {gate: "consistency", page: "index", file: "index/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[jobcounts\] index\/index\.html\s+the hub's table prints 17,770, 18,594, 17,725, 24,032/,
+   defect: "a job-count row (churn's 17,943) missing from the hub's rendered table while its data file lists it",
+   inject: s => s.replace(/<tr><th scope="row">17,943<\/th>.*?<\/tr>\n/s, "")},
+
   {gate: "disclosure", page: "index", args: ["index"],
    expect: /job-count table differs from _data\/jobcounts\.json: 17,707/,
    defect: "the hub's job-count table rendering a total its data file does not hold",
@@ -773,8 +780,15 @@ const CASES = [
    command: "python3", args: ["_data/build/verify_consistency.py"],
    expect: /\[kicker\] index:peers\s+card kicker .* is 45 characters, over 40/,
    defect: "a hub card kicker grown past the 40 characters a short question gets",
-   inject: s => s.replace('<p class="kick">Where does Ohio rank?</p>',
-                          '<p class="kick">Where does Ohio rank among states and metros?</p>')},
+   inject: s => s.replace('<p class="kick"><span aria-hidden="true">Where does Ohio rank?</span></p>',
+                          '<p class="kick"><span aria-hidden="true">Where does Ohio rank among states and metros?</span></p>')},
+
+  /* 1 November 2026: the kicker repeats the card's <h4>, so it is hidden from screen readers. */
+  {gate: "disclosure", page: "index", args: ["index"],
+   expect: /card peers: its kicker "Where does Ohio rank\?" is read aloud/,
+   defect: "a hub card whose short question a screen reader hears before the same question in its heading",
+   inject: s => s.replace('<p class="kick"><span aria-hidden="true">Where does Ohio rank?</span></p>',
+                          '<p class="kick">Where does Ohio rank?</p>')},
 
   {gate: "consistency", page: "index", file: "index/index.html",
    command: "python3", args: ["_data/build/verify_consistency.py"],

@@ -656,7 +656,7 @@ const PV = (() => {
          "what to say, then how to cite it". */
       spec && spec.quote && spec.quote.text ? `
       <p class="pv-quote"><b>Quote this:</b> \u201c<span class="pv-quote-text">${spec.quote.text}</span>\u201d</p>` : ""}
-      <p class="pv-cite"><b>Cite as:</b> Swanson, J., Polymer Industry Cluster (${year}). <cite>${rec.title}</cite>.
+      <p class="pv-cite"><b>Cite as:</b> Swanson, J., Polymer Industry Cluster (${year}). <cite>${rec.title}</cite>${/[?!.]$/.test(rec.title) ? "" : "."}
       ${page === "index" ? "Polymer Industry Cluster (PIC). Version"
         : "Polymer Industry Cluster (PIC) Evidence Room, version"}
       <time datetime="${rec.revised}">${when}</time>. <a class="pv-cite-url"
@@ -681,22 +681,20 @@ const PV = (() => {
      with the log it links to. It counts entries and says whether the headline changed; an
      automatic wording/figure split was dropped as wrong both ways (John, 2026-10-05). Corrections made before a page was first published are in
      the log but not in this count. A page with none prints nothing. */
-  /* MONTHS is declared once, above, for madeAndChecked's longDate(). */
-  function onDates(iso) {
-    const parts = iso.map(d => d.split("-").map(Number));
-    const sameYear = parts.every(p => p[0] === parts[0][0]);
-    const one = (p, year) => `${p[2]} ${MONTHS[p[1] - 1]}${year ? ` ${p[0]}` : ""}`;
-    const said = parts.map((p, i) => one(p, !sameYear || i === parts.length - 1));
-    return said.length < 3 ? said.join(" and ") : `${said.slice(0, -1).join(", ")} and ${said.at(-1)}`;
-  }
   /* The fuller sentence, also printed by the log's own page view. */
   /* headlines: the dates the page's H1 text changed after first publication, read from git
-     by the derive script, not from the entries (a hand list missed three pages). */
-  function correctionsSentence(list, headlines) {
+     by the derive script, not from the entries (a hand list missed three pages). Most of
+     those changes are rewrites, not corrections, so the line says when the wording last
+     changed and cites the repository, not the log: "Headline changed on 28 August" beside
+     "N corrections" sent readers to log entries that do not exist (fresh-eyes read,
+     1 November 2026). Returns HTML. */
+  function correctionsSentence(list, headlines, page) {
     const pub = list.filter(e => !e.before_publication);
     const moved = [...new Set(headlines || [])].sort();
+    const hist = `https://github.com/polymerindustrycluster/evidence-room/commits/main/${page}/index.html`;
     return `${pub.length} correction${pub.length === 1 ? "" : "s"} since publication. ` +
-      (moved.length ? `Headline changed on ${onDates(moved)}.` : "Headline unchanged.");
+      (moved.length ? `Headline wording last changed ${longDate(moved.at(-1))} ` +
+        `(<a href="${hist}">repository history</a>).` : "Headline unchanged.");
   }
   async function correctionsSummary(page) {
     if (document.querySelector(".pv-corr-sum")) return null;
@@ -714,7 +712,7 @@ const PV = (() => {
        row the link wrapped the row on Linux and cost two pages their cold open. */
     const p = document.createElement("p");
     p.className = "pv-corr-sum";
-    p.innerHTML = `${correctionsSentence(list, (all.headlines || {})[page])} See them in the ` +
+    p.innerHTML = `${correctionsSentence(list, (all.headlines || {})[page], page)} See them in the ` +
       `<a href="../corrections/?page=${page}">corrections log</a>.`;
     box.insertBefore(p, box.querySelector(".pv-quote") || box.querySelector(".pv-cite"));
     return p;

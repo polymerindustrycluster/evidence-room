@@ -182,7 +182,7 @@ return {async check(n, p) {
                       url: u ? [u.getAttribute("href"), norm(u.textContent)] : null,
                       doc: document.title,
                       corr: (() => { const c = box.querySelector(".pv-corr-sum");
-                        return c ? [norm(c.textContent), c.querySelector("a")?.getAttribute("href") || null] : null; })(),
+                        return c ? [norm(c.textContent), c.querySelector('a[href^="../corrections/"]')?.getAttribute("href") || null] : null; })(),
                       corrInByline: !!by?.querySelector(".pv-corr-sum")};
             })(),
             w4: (() => {
@@ -209,6 +209,11 @@ return {async check(n, p) {
                 differs: [...document.querySelectorAll(".pv-differs a")].map(a => [a.getAttribute("href"),
                   t(a), a.closest(".figv") ? t(a.closest(".figv").querySelector(".n"))
                     : t(a.closest(".pv-differs").previousElementSibling)]),
+                /* a hub card's short question, and whether a screen reader hears it (fresh-eyes
+                   access read, 1 November 2026: each card's name read its question twice) */
+                kicks: [...document.querySelectorAll(".card[data-slug] .kick")].map(k => [k.closest(".card").dataset.slug,
+                  t(k), !!k.closest("[aria-hidden=true]") || [...k.childNodes].every(c =>
+                    c.nodeType === 1 ? c.getAttribute("aria-hidden") === "true" : !c.textContent.trim())]),
                 jobs: (() => { const m = document.querySelector("table.pv-jobcounts")?.closest(".pv-jobcounts-mount");
                   return m ? {id: m.id, rows: [...m.querySelectorAll("tbody tr")].map(tr =>
                     [...tr.cells].map(c => t(c)).concat(tr.querySelector("a")?.getAttribute("href") || ""))} : null; })(),
@@ -285,7 +290,7 @@ return {async check(n, p) {
                                        ["cite version", mk.version, [rec.revised, longDate(rec.revised)]]])
         if (!got || got[0] !== date[0] || got[1] !== date[1])
           probs.push(`${what} reads ${got ? got.join(" / ") : "nothing"}, the recorded revision date is ${date.join(" / ")}`);
-      const head = `Swanson, J., Polymer Industry Cluster (${rec.revised.slice(0, 4)}). ${rec.title}.`;
+      const head = `Swanson, J., Polymer Industry Cluster (${rec.revised.slice(0, 4)}). ${rec.title}${/[?!.]$/.test(rec.title) ? "" : "."}`;   // no "?." (1 Nov 2026)
       if (!mk.cite || !mk.cite.startsWith(`Cite as: ${head}`)) probs.push(`cite line does not open "${head}"`);
       if (!mk.boxModels) probs.push("the made-and-checked box credits no model");
       else if (mk.boxModels !== mk.byModels)
@@ -366,6 +371,9 @@ return {async check(n, p) {
         if (got.join("\n") !== want.join("\n"))
           probs.push(`job-count table differs from _data/jobcounts.json: ${got.find((g, i) => g !== want[i]) || "row count " + got.length}`);
       }
+      if (!w.kicks.length) probs.push("cannot inspect: no hub card carries a .kick");
+      for (const [slug, text, hidden] of w.kicks)
+        if (!hidden) probs.push(`card ${slug}: its kicker "${text}" is read aloud before the same question in its heading`);
     }
   }
   /* status: see the note above BANNER */

@@ -1278,8 +1278,17 @@ def check_reader_furniture(arts: list[str]) -> None:
     hubkey = next((c for c in load_json(os.path.join(WEB, "index", "claims.json"))["claims"]
                    if c["id"] == "index-headcount-key"), None)
     rows = jc.get("rows") or []
-    if len(rows) != 5:
-        err("jobcounts", "_data/jobcounts.json", f"{len(rows)} rows; the table is the five totals (DECISIONS.md W4)")
+    # The hub's table prints exactly this file's totals, in order: the file is the list, so a
+    # total added here needs no edit in this check (1 November 2026, rows 5 -> 7).
+    region = re.search(r"<!-- pv:static jobcounts -->(.*?)<!-- /pv:static -->", read(WEB, "index", "index.html"), re.S)
+    printed = re.findall(r'<th scope="row">([^<]*)</th>', region.group(1)) if region else None
+    if not rows:
+        err("jobcounts", "_data/jobcounts.json", "no rows; the hub's table would be empty")
+    elif printed is None:
+        err("jobcounts", "index/index.html", "cannot inspect: no pv:static jobcounts region")
+    elif printed != [r.get("total") for r in rows]:
+        err("jobcounts", "index/index.html", f"the hub's table prints {', '.join(printed) or 'no totals'}; "
+            f"_data/jobcounts.json lists {', '.join(r.get('total', '?') for r in rows)}")
     unlinked = sorted(r.get("story", "?") for r in rows if not r.get("linked"))
     if unlinked:
         warn("jobcounts", "W4", f"{len(unlinked)} row(s) whose story does not link to the table yet: {', '.join(unlinked)}")
