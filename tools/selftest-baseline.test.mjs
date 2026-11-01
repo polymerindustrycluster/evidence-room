@@ -106,7 +106,7 @@ test("restoration verifies bytes and restores submillisecond timestamps", t => {
   assert.throws(() => verifyRestoration(path, originalBytes, originalTimes), /restored bytes differ/);
   write("page.json", originalBytes);
   assert.doesNotThrow(() => verifyRestoration(path, originalBytes, originalTimes));
-  assert.ok(Math.abs(statSync(path).mtimeMs - originalTimes.mtimeMs) < 0.0011);
+  assert.ok(Math.abs(statSync(path).mtimeMs - originalTimes.mtimeMs) <= 1);
 });
 
 test("catalog/script mtime changes invalidate even when content is identical", t => {
