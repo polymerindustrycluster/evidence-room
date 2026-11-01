@@ -47,6 +47,7 @@ import html
 import json
 import os
 import re
+import subprocess
 import sys
 
 import masthead
@@ -130,7 +131,7 @@ def revised(page: str) -> str:
     """stamp_cite's date, as a ValueError (which [static] reports) rather than its sys.exit."""
     try:
         return stamp_cite.revised(page)
-    except (SystemExit, OSError) as exc:
+    except (SystemExit, OSError, subprocess.CalledProcessError) as exc:
         raise ValueError(f"{page}: no revision date from git ({exc})") from None
 
 
