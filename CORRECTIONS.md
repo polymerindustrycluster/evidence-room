@@ -23,7 +23,9 @@ tile's basis, credited 2020 to 2022 to the NCES completions files. **Is:** 2020 
 the mirror's own counts, filed a year late and moved back to their years; only 2022, which
 the mirror never served, comes from the NCES files. The same credit stood in the occupations
 page's trend source line and program table note and in the IPEDS entry of the sources
-register; each now gives the same split.
+register; each now gives the same split. The register's IPEDS title, which is also the
+Reproduce this heading on the scorecard, occupations, cluster-health and accountability pages,
+said "with three years read from NCES directly"; it now says one year.
 
 **At least 4, *timeline, index*.** **Was:** the pace heading said 66 events against at least 4, but
 the opening paragraph, the figure title, the chart label and the stat card still gave a bare

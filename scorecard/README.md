@@ -151,8 +151,8 @@ source page fails this page's gate instead of leaving a stale board number behin
   `occupations/data/viz-data.json`, drew both columns pale, and read the 2021–2023 window
   instead. On 2026-08-31 the repetition turned out to be the first of three years the
   Urban mirror filed a collection year late, and its catch-up skipped `C2023_A` outright.
-  Those three years now come from the NCES completions files
-  (`_data/build/ipeds_mirror_fix.py`), the series is ten consecutive years, and
+  2020 and 2021 are now its counts moved back a year, and 2022, which it never served,
+  comes from the NCES completions files (`_data/build/ipeds_mirror_fix.py`), the series is ten consecutive years, and
   `sc-dup-1920` guards the correction instead of the defect. The window this page
   publishes never changed; one of the three years in it was the wrong year.
 

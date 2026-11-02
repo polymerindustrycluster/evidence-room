@@ -80,7 +80,7 @@
    "key_required": false
   },
   "ipeds": {
-   "name": "IPEDS Completions, via the Urban Institute Education Data API, with three years read from NCES directly",
+   "name": "IPEDS Completions, via the Urban Institute Education Data API, with one year read from NCES directly",
    "agency": "National Center for Education Statistics, served by the Urban Institute",
    "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/completions-cip-6/{year}/",
    "docs": "https://educationdata.urban.org/documentation/colleges.html",

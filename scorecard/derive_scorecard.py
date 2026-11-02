@@ -163,8 +163,9 @@ N_INSTITUTIONS = len(OCC["program_totals"]["institutions"])
 # A DATA-INTEGRITY READING, inherited rather than made here. This page read a duplicated
 # 2019/2020 out of the shipped occupations file and excluded both years. The duplicate
 # turned out to be the first symptom of a longer fault: the federal mirror ran a year
-# behind from 2020 to 2022 and then skipped a collection year entirely. Those three years
-# now come from the NCES completions files (`_data/build/ipeds_mirror_fix.py`), the
+# behind from 2020 to 2022 and then skipped a collection year entirely. 2020 and 2021 are
+# now its counts moved back a year and 2022 comes from the NCES completions files
+# (`_data/build/ipeds_mirror_fix.py`), the
 # series is whole, and the exclusion no longer applies. Read from the corrected file so
 # this page cannot go stale against it, and asserted so a reverted correction is loud.
 CORRECTION = OCC.get("source_correction")

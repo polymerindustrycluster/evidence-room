@@ -531,8 +531,9 @@ document.getElementById("deliverysrc").innerHTML =
 /* Was [2019, 2020]: both halves of a duplicated pair were drawn pale and labelled
    "repeated in the source file", then the copy was quarantined out of the series entirely.
    On 2026-08-31 the duplicate turned out to be the first of three years the federal mirror
-   filed a year late, and the catch-up skipped a collection year outright. All three now
-   come from the NCES completions files, the skipped year is back, and 2020 carries an
+   filed a year late, and the catch-up skipped a collection year outright. 2020 and 2021
+   are now its counts moved back a year, the skipped year (2022) comes from the NCES
+   completions files, and 2020 carries an
    observation of its own again. See _data/build/ipeds_mirror_fix.py. */
 const EXCLUDED = [];
 const tal = TAL.polymer;
