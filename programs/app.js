@@ -209,8 +209,9 @@ figures([
     `The technician share falls below both comparison groups. This is a descriptive comparison of observed
      filing records. Counts are floors because the record only sees what institutions filed under polymer
      codes, and a program quiet in 2023 is &ldquo;not conferring&rdquo; rather than
-     &ldquo;closed&rdquo;. (IPEDS 1991&ndash;2023 via the Urban Institute API, 2020 excluded;
-     construct details in the methodology below.)`;
+     &ldquo;closed&rdquo;. (IPEDS 1991&ndash;2023 via the Urban Institute API. These per-program
+     counts do not yet include 2022, which the federal mirror never served; adding it can only
+     raise both counts. Construct details in the methodology below.)`;
   document.getElementById("spinetable").innerHTML = tableView("spine",
     "Active share by layer, programs past ten lifetime completions",
     ["Layer", "Programs ever", "Active in 2023", "Active share"],
@@ -235,11 +236,10 @@ figures([
        266px past the column). HTML wraps; that is what .fig-sub is for. */
     document.getElementById("seriessub").textContent =
       `US polymer completions per year, all award levels. Axis starts at 300, not zero. ` +
-      `The line breaks at 2020: ${D.quarantine_caption}.`;
-  /* A BREAK, NOT A BRIDGE. 2020 is quarantined (the federal mirror republished 2019 under
-     it), and drawing straight through the hole would assert a value nobody measured - the
-     one thing a line chart does that a table cannot. So the path restarts wherever the
-     year step is bigger than one, and the subtitle says why. */
+      `${D.source_correction.why}.`;
+  /* A BREAK, NOT A BRIDGE. Drawing straight through a missing year would assert a value
+     nobody measured. Since the 2 November 2026 mirror correction no year is missing, but
+     the path still restarts wherever the year step is bigger than one. */
   const path = rows.map((r, i) => {
     const jump = i && r.year - rows[i - 1].year > 1;
     return `${(i && !jump) ? "L" : "M"}${xs(r.year)},${ys(r.awards)}`;
@@ -488,9 +488,8 @@ figures([
      across those eight years of <b>${D.ua.bachelor_2016_2023.map(v => v == null ? "no data" : v).join(", ")}</b>. Of the 70-completion fall,
      50 are master&rsquo;s, 19 are doctorates and one is a bachelor&rsquo;s degree;
      graduate degrees are 42 of the 44 completions left in 2023. The
-     undergraduate line runs between zero and three in each reported year from 2016 to 2023
-     (2020 is quarantined, not zero), so the two in 2023 is a small number in a small
-     series, not the shape of the fall. (IPEDS completions, Akron Main Campus, the three polymer codes, all
+     undergraduate line runs between zero and three in each year from 2016 to 2023, so the
+     two in 2023 is a small number in a small series, not the shape of the fall. (IPEDS completions, Akron Main Campus, the three polymer codes, all
      levels.)`;
   document.getElementById("uanote").innerHTML =
     `<b>The series ends in 2023.</b> This record measures completions through 2023.
@@ -573,6 +572,17 @@ figures([
 
 /* The page’s own corrections, standing together — editorial standard rule 6. */
 PV.whatWeGotWrong([
+  {when: "2026-11-02 &middot; mirror years, found by a Codex review",
+   was: `The completions line and Akron&rsquo;s broke at 2020, and their 2021 and 2022 were
+     the federal mirror&rsquo;s labels: 763 and 673 nationally, 87 and 32 at Akron.
+     Completions fell in four of the five comparable years since the peak.`,
+   is: `2020 is 763 nationally and 87 at Akron, 2021 is 673 and 32, and 2022, from the NCES
+     completions files, is 690 and 37. Completions fell in five of the seven years since the
+     peak. The per-program figures still lack 2022; the dated note at the end of the page
+     says which way each can move.`,
+   why: `The 2026-08-26 entry below found the mirror&rsquo;s republished 2020 and dropped it. The
+     same fault had filed 2020 and 2021 a year late and skipped 2022, which other pages
+     corrected on 31 August 2026; this page kept the late labels.`},
   {when: "2026-09-08 &middot; ratio review",
    was: `The small-record comparison said about 2.5 times. Its stored ratio was 2.48,
      and the small-and-brief ratio was 2.37.`,

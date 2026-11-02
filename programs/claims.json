@@ -20,10 +20,10 @@
   {
    "id": "prog-spine-hollowing",
    "text": "Among substantive programs (more than ten lifetime completions), 20 of 73 polymer technician records were active in 2023 (27%), versus 37 of 77 degree records and 3,185 of 6,648 peer-trade records (48% each). Active means a reported completion in 2023. These shares do not establish closure or stability.",
-   "source": "polymer-programs-db census (IPEDS 1991-2023, 2020 quarantined) plus control_cips.json: same rule, same years, same certificate canonicalisation on both sides; polymer CIP codes",
+   "source": "polymer-programs-db census (IPEDS 1991-2023, 2020 dropped as the mirror's duplicate and 2022 (C2023_A) not yet added, see prog-not-recomputed) plus control_cips.json: same rule, same years, same certificate canonicalisation on both sides; polymer CIP codes",
    "assert": "D['layers']['technician']['survive_pct'] == 27 and D['layers']['degree']['survive_pct'] == 48 and D['layers']['control']['survive_pct'] == 48 and D['layers']['technician']['survive_pct'] < D['layers']['control']['survive_pct'] and (D['layers']['technician']['still'], D['layers']['technician']['ever']) == (20, 73) and (D['layers']['degree']['still'], D['layers']['degree']['ever']) == (37, 77) and (D['layers']['control']['still'], D['layers']['control']['ever']) == (3185, 6648)",
    "actual": "{k: (v['still'], v['ever'], v['survive_pct']) for k, v in D['layers'].items() if isinstance(v, dict)}",
-   "falsified_if": "Any named numerator or denominator changes, or the technician share ceases to be lower than either comparator. All three must retain the greater-than-ten threshold, positive final-year completion test, certificate canonicalisation and 2020 exclusion. These administrative-record shares do not establish a causal difference or stability.",
+   "falsified_if": "Any named numerator or denominator changes, or the technician share ceases to be lower than either comparator. All three must retain the greater-than-ten threshold, positive final-year completion test, certificate canonicalisation and the same years (the mirror's, without 2022: adding C2023_A per program can only raise every numerator and denominator here, so the shares can move either way). These administrative-record shares do not establish a causal difference or stability.",
    "breaks_if": "Revised filings put technician programs level with, or above, degrees or peer trades.",
    "guards": "Polymer technician programs were less likely to report completions in 2023 than degrees or the peer trades.",
    "counts": [
@@ -36,16 +36,17 @@
   },
   {
    "id": "prog-series-shape",
-   "text": "US polymer completions ran 476 in 1991, fell to a floor of 379 in 2007, more than doubled to a 970 peak in 2016, and were 617 in 2023, which is 36% below peak. They fell in four of the five years since the peak that can be compared. 2020 is not one of them: the federal mirror republished 2019 under that year, so it is dropped and the line is drawn with a break in it.",
-   "source": "IPEDS completions, three polymer CIP codes, all award levels, via the Urban Institute API, with 2020 quarantined",
-   "assert": "(D['marks']['first']['year'], D['marks']['first']['awards']) == (1991, 476) and (D['marks']['trough']['year'], D['marks']['trough']['awards']) == (2007, 379) and (D['marks']['peak']['year'], D['marks']['peak']['awards']) == (2016, 970) and (D['marks']['latest']['year'], D['marks']['latest']['awards']) == (2023, 617) and D['marks']['pct_off_peak'] == 36 and D['down_years_last7'] == 4 and D['down_years_of'] == 5 and '2020' in D['quarantined'] and 2020 not in [r['year'] for r in D['series']]",
+   "text": "US polymer completions ran 476 in 1991, fell to a floor of 379 in 2007, more than doubled to a 970 peak in 2016, and were 617 in 2023, which is 36% below peak. They fell in five of the seven years since the peak, each compared with the year before it.",
+   "source": "IPEDS completions, three polymer CIP codes, all award levels, via the Urban Institute API, with the mirror's 2021 and 2022 re-filed to 2020 and 2021 and 2022 taken from NCES C2023_A (_data/build/ipeds_mirror_fix.py, programs_mirror_patch.py)",
+   "assert": "(D['marks']['first']['year'], D['marks']['first']['awards']) == (1991, 476) and (D['marks']['trough']['year'], D['marks']['trough']['awards']) == (2007, 379) and (D['marks']['peak']['year'], D['marks']['peak']['awards']) == (2016, 970) and (D['marks']['latest']['year'], D['marks']['latest']['awards']) == (2023, 617) and D['marks']['pct_off_peak'] == 36 and D['down_years_last7'] == 5 and D['down_years_of'] == 7 and [r['year'] for r in D['series']] == list(range(1991, 2024))",
    "actual": "(D['marks'], D['down_years_last7'])",
-   "falsified_if": "IPEDS revises a back year, 2024 arrives and extends the series, or the trough flips back to 2006, which sits one completion higher at 380: the two years are a near-tie and an earlier telling named the wrong one. If the mirror repairs 2020 the quarantine lifts, and both the count and its denominator change: it becomes N of seven again. Restate the sentence then, do not quietly re-count it."
+   "falsified_if": "IPEDS revises a back year, 2024 arrives and extends the series, or the trough flips back to 2006, which sits one completion higher at 380: the two years are a near-tie and an earlier telling named the wrong one. Before 2 November 2026 this said four of five comparable years, because the mirror's late 2021 and 2022 labels stood in for 2020 and 2021 and 2022 was missing; if the mirror reloads, ipeds_mirror_fix.py --check moves these years again and that is a correction, not a quiet re-count.",
+   "counts": [{"figure": "five of the seven", "noun": "year"}]
   },
   {
    "id": "prog-base-rate",
    "text": "Of 168 polymer technician records since 1991, 95 (57%) are small: ten or fewer recorded lifetime completions. 91 (54%) are brief: first-to-last reporting span of five years or less, inclusive. 75 (45%) satisfy both. These overlapping measures do not establish failed programs.",
-   "source": "polymer-programs-db census, associate and certificate levels, no size threshold, 2020 quarantined; polymer CIP codes; IPEDS 1991–2023",
+   "source": "polymer-programs-db census, associate and certificate levels, no size threshold, 2020 dropped as the mirror's duplicate and 2022 (C2023_A) not yet added, see prog-not-recomputed; polymer CIP codes; IPEDS 1991–2023",
    "assert": "D['base']['ever'] == 168 and D['base']['le10_awards'] == 95 and D['base']['le5_years'] == 91 and D['base']['both'] == 75 and D['base']['both_pct'] == 45",
    "actual": "D['base']",
    "falsified_if": "Any named numerator or denominator changes under a source revision, certificate recode or recovered year. The small threshold includes exactly ten; brief measures inclusive calendar span, not count of positive years. Missing source years can change threshold membership and add records to the denominator, so the shares are not failure probabilities or guaranteed bounds on a complete census.",
@@ -73,11 +74,11 @@
   },
   {
    "id": "prog-ferris-outlier",
-   "text": "Ferris State's technician program conferred 1,253 completions across 32 counted years between 1991 and 2023 and is still active, more than the next two programs combined.",
-   "source": "polymer-programs-db census, 2020 quarantined",
+   "text": "Ferris State's technician program conferred 1,253 completions across 32 counted years between 1991 and 2023 and is still active, more than the next two programs combined. The record does not yet hold its 2022, so the total is a floor.",
+   "source": "polymer-programs-db census, on the mirror's labels and without C2023_A (see prog-not-recomputed)",
    "assert": "(lambda t: 'FERRIS' in t[0]['institution'].upper() and t[0]['total_awards'] == 1253 and (t[0]['first_year'], t[0]['last_year']) == (1991, 2023) and t[0]['status'] == 'active' and t[0]['total_awards'] > t[1]['total_awards'] + t[2]['total_awards'])(D['top_tech'])",
    "actual": "[(t['institution'], t['total_awards'], t['status']) for t in D['top_tech'][:3]]",
-   "falsified_if": "Ferris stops conferring, so status leaves 'active'; a revision breaks the 1991 to 2023 run; or the next two programs' combined total passes 1,253, and Everett and Hennepin are both active and gaining. The span is 32 counted years, not 33: 2020 is quarantined, so the lifetime total omits one real year of output and is a floor."
+   "falsified_if": "Ferris stops conferring, so status leaves 'active'; a revision breaks the 1991 to 2023 run; or the next two programs' combined total passes 1,253, and Everett and Hennepin are both active and gaining. The span is 32 counted years, not 33: 2022, which the federal mirror never served, is not yet in the per-program record (until 2 November 2026 the missing year was named as 2020), so the lifetime total is a floor."
   },
   {
    "id": "prog-terra-loss",
@@ -89,11 +90,11 @@
   },
   {
    "id": "prog-ua-collapse",
-   "text": "Akron completions in the three selected polymer codes fell from 114 in 2016 to 44 in 2023 (61%). Graduate degrees supplied 42 of the 44: master's 16, doctorates 26. The bachelor's count was two, within a zero-to-three range across the reported 2016–2023 years; 2020 is missing. Master's degrees account for 50 of the 70-completion decline and doctorates 19.",
-   "source": "polymer-programs-db census, unitid 200800, 2020 quarantined; polymer CIP codes; IPEDS",
-   "assert": "D['ua']['recent']['2016'] == 114 and D['ua']['latest'] == 44 and D['ua']['pct_off'] == 61 and (D['ua']['masters_2016'], D['ua']['masters_2023']) == (66, 16) and (D['ua']['doctorate_2016'], D['ua']['doctorate_2023']) == (45, 26) and D['ua']['bachelor_2016_2023'] == [3, 1, 0, 3, None, 0, 0, 2] and D['ua']['bachelor_2016_2023'][-1] == 2",
+   "text": "Akron completions in the three selected polymer codes fell from 114 in 2016 to 44 in 2023 (61%). Graduate degrees supplied 42 of the 44: master's 16, doctorates 26. The bachelor's count was two, within a zero-to-three range across every year 2016–2023. Master's degrees account for 50 of the 70-completion decline and doctorates 19.",
+   "source": "polymer-programs-db census, unitid 200800, with the mirror's years re-filed and 2022 from NCES C2023_A; polymer CIP codes; IPEDS",
+   "assert": "D['ua']['recent']['2016'] == 114 and D['ua']['latest'] == 44 and D['ua']['pct_off'] == 61 and (D['ua']['masters_2016'], D['ua']['masters_2023']) == (66, 16) and (D['ua']['doctorate_2016'], D['ua']['doctorate_2023']) == (45, 26) and D['ua']['bachelor_2016_2023'] == [3, 1, 0, 3, 0, 0, 0, 2] and D['ua']['bachelor_2016_2023'][-1] == 2",
    "actual": "D['ua']",
-   "falsified_if": "A revision moves any year, or 2024 arrives. The 2020 slot is None and must stay None, never 0: a zero there would assert that the flagship graduated nobody that year, which the record does not say and this project cannot know.",
+   "falsified_if": "A revision moves any year, or 2024 arrives. Until 2 November 2026 the 2020 slot was None (the mirror's duplicated year); it is now the mirror's own 2021 row, filed a year late, and 2022 comes from NCES C2023_A, where Akron's bachelor's count is a filed zero.",
    "counts": [
     {"figure": "114", "noun": "completion"},
     {"figure": "to 44 in 2023", "noun": "completion"},
@@ -149,6 +150,25 @@
     {"figure": "reported 44", "noun": "completion"},
     {"figure": "42 were", "noun": "graduate degree"}
    ]
+  },
+  {
+   "id": "prog-mirror-years",
+   "text": "Akron's completions in the three selected polymer codes, all award levels, were 87 in 2020, 32 in 2021 and 37 in 2022; nationally 763, 673 and 690. 2020 and 2021 are the federal mirror's counts, which it filed a year late; 2022, which it never served, comes from the NCES completions files.",
+   "source": "_data/build/programs_mirror_patch.py over the committed series, applying _data/build/ipeds_mirror_fix.py LAG {2020: drop, 2021: 2020, 2022: 2021} and NCES C2023_A for 2022, after checking NCES C2022_A reproduces the mirror's 2022 national total (673); derive_programs.py applies the same patch",
+   "assert": "[D['ua']['series'][str(y)] for y in range(2019, 2024)] == [77, 87, 32, 37, 44] and [r['awards'] for r in D['series'] if r['year'] >= 2019] == [807, 763, 673, 690, 617] and sorted(D['ua']['series']) == [str(y) for y in range(1991, 2024)] and D['source_correction']['years_refiled'] == {'2020': None, '2021': 2020, '2022': 2021} and D['source_correction']['year_backfilled'] == 2022 and 'quarantined' not in D",
+   "actual": "([D['ua']['series'].get(str(y)) for y in range(2019, 2024)], [(r['year'], r['awards']) for r in D['series'] if r['year'] >= 2019], D.get('source_correction', {}).get('years_refiled'))",
+   "falsified_if": "derive_programs.py or the patch stops re-filing (Akron's 87 returns to 2021, 32 to 2022, and 2020 goes missing), NCES revises C2023_A, or the mirror reloads and ipeds_mirror_fix.py --check reports drift. Akron's 37 counts every award level, including two postbaccalaureate certificates the degree-only pages leave out (ipeds_mirror_fix.EXCLUDED).",
+   "counts": [
+    {"figure": "690", "noun": "completion"}
+   ]
+  },
+  {
+   "id": "prog-not-recomputed",
+   "text": "The per-program figures (active shares, the 168 technician records and their small and brief counts, the Ohio and state counts, lifetime totals and runs) are on the federal mirror's years and do not yet include 2022. Adding it can only raise lifetime totals and the counts above ten completions; the small and brief counts and a stopped record's last year can move either way.",
+   "source": "programs/data/viz-data.json source_correction.not_recomputed_here; the census's build_db.py (polymer-programs-db) computes these columns",
+   "assert": "(lambda S: ('not_recomputed_here' in S and S['not_recomputed_here'] == ['layers', 'base', 'states', 'ohio', 'top_tech'] and [[D['layers'][k]['ever'], D['layers'][k]['still']] for k in ('degree', 'technician', 'control')] == [[77, 37], [73, 20], [6648, 3185]] and [D['base'][k] for k in ('ever', 'le10_awards', 'le5_years', 'both')] == [168, 95, 91, 75] and D['layers']['control']['base']['ever'] == 8736 and [len(D['states']), sum(s['ever'] for s in D['states']), sum(s['still'] for s in D['states'])] == [30, 156, 59] and [D['ohio']['tech_ever'], D['ohio']['never_took_off'], sum(p['total_awards'] for p in D['ohio']['programs']), sum(p['last_year'] for p in D['ohio']['programs'])] == [22, 13, 971, 44213] and [t['total_awards'] for t in D['top_tech']] == [1253, 411, 409, 350, 347, 250, 206, 205, 204, 168, 156, 153, 148, 111, 105, 102] and sum(t['last_year'] for t in D['top_tech']) == 32285) or ('not_recomputed_here' not in S and S.get('per_program_2022') == 'C2023_A'))(D['source_correction'])",
+   "actual": "(D.get('source_correction', {}).get('not_recomputed_here'), [[D['layers'][k]['ever'], D['layers'][k]['still']] for k in ('degree', 'technician')], D['base'], [t['total_awards'] for t in D['top_tech']][:3])",
+   "falsified_if": "Any pinned per-program value changes while the marker stands (the gap moved silently), or the marker is removed without derive_programs.py recording per_program_2022 = C2023_A, which it does only when the census holds a real 2020 and its 2022 equals NCES C2023_A (the gap closed silently). When build_db.py adds 2022 per program, every figure here moves: restate each one with a dated correction."
   }
  ]
 }

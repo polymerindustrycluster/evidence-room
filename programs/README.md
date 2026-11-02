@@ -2,8 +2,8 @@
 
 **Which selected-code program records still reported completions in 2023?** The technician
 active share is lower than either polymer degrees or six peer technician trades under
-the same substantive-program rule. The scope is three named polymer CIPs, 1991–2023;
-2020 is quarantined. This is not a count of all polymer teaching or current capacity.
+the same substantive-program rule. The scope is three named polymer CIPs, 1991–2023,
+with the federal mirror's years corrected (see below). This is not a count of all polymer teaching or current capacity.
 
 Sources: IPEDS completions by six-digit CIP via the Urban Institute Education Data API
 (the polymer-programs-db census build of 2026-08-21); the same pull re-run for six peer
@@ -68,8 +68,8 @@ It refuses to write unless it first reproduces the page's own published 2023 act
   is about. Never quote 8,736 against 6,648: they are two counts of the same six trades under
   two different rules, and the page states which is which.
 - **Missing years affect both threshold membership and coverage.** The Urban mirror
-  never served the `C2023_A` collection year (`_data/build/ipeds_mirror_fix.py` names this
-  page as still carrying that hole). A missing year can understate a record's lifetime
+  never served the `C2023_A` collection year. The year-keyed series carry it since
+  2026-11-02; the per-program columns do not (see the 2026-11-02 revision). A missing year can understate a record's lifetime
   completions or reporting span. Recovered years may also add records to the denominator.
   These snapshot shares are not failure probabilities; a shared mirror does not guarantee
   cancellation in the ratio between fields.
@@ -103,6 +103,25 @@ announcement chronology. The national and Akron annual series, threshold counts,
 technician records and degree composition were rechecked against the held sibling census.
 The missing 2020 remains missing in both line charts. All six evidence charts re-layout
 at phone width; table records remain available. See the dated in-page correction.
+
+## Revision of 2026-11-02: the mirror's years
+
+The Urban mirror served 2019 again under 2020, filed 2020 and 2021 under 2021 and 2022, and
+never served `C2023_A` (`_data/build/ipeds_mirror_fix.py`). This page had dropped only the
+duplicate. `_data/build/programs_mirror_patch.py` now re-files the national and Akron series
+and adds 2022 from NCES `C2023_A` (national 690, Akron 37, all award levels), after checking
+that NCES `C2022_A` reproduces the mirror's "2022" national total (673), so the populations
+match. `derive_programs.py` calls the same patch on the build machine. National: 2020 763,
+2021 673, 2022 690; Akron: 87, 32, 37. Since the 2016 peak completions fell in five of the
+seven years, not four of five.
+
+Not corrected here: the per-program columns (`total_awards`, `first_year`, `last_year`,
+`status`) come from the census's own `build_db.py`, still on the mirror's labels and without
+`C2023_A`. `source_correction.not_recomputed_here` names every field built on them, and the
+`prog-not-recomputed` claim pins their values until `build_db.py` adds 2022 per program.
+Adding it can only raise lifetime totals and the counts above ten completions (so the active
+shares' numerators and denominators are floors); the small and brief counts and a stopped
+record's last year can move either way.
 
 ## W4 reader furniture, 2026-10-07
 

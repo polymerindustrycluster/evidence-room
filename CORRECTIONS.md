@@ -11,6 +11,35 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-11-02 — The mirror's years on the programs page, *programs*
+
+Found by a Codex review of the day's earlier fixes. The programs page dropped the federal
+mirror's duplicated 2020 but kept its next two years under the mirror's late labels, and
+never had 2022, the year the mirror skipped (the fault `_data/build/ipeds_mirror_fix.py`
+corrected for the regional degree series on 31 August 2026). The page carries a dated note.
+
+**Was:** the national completions line and Akron's broke at 2020; the national series gave
+2021 as 763 and 2022 as 673, Akron's 87 and 32; the lede and the series claim said
+completions fell in four of the five comparable years since the 2016 peak; Akron's
+bachelor's line had no 2020; Ferris State's 32 counted years were said to exclude 2020.
+**Is:** nationally 2020 is 763, 2021 is 673 and 2022 is 690; at Akron 87, 32 and 37 (every
+award level, so including two postbaccalaureate certificates). Completions fell in five of
+the seven years since the peak. Akron's bachelor's count is zero in 2020, 2021 and 2022.
+Ferris's missing year is 2022. The headline figures do not move: the 970 peak, the 617 in
+2023, the 36% below peak, Akron's 114 to 44 and its 61%. **Cause:** the mirror filed 2020
+and 2021 a year late and never served 2022; the page's fix for the duplicate stopped at
+the duplicate. `_data/build/programs_mirror_patch.py` re-files the committed series and adds
+2022 from NCES `C2023_A`, after checking that NCES `C2022_A` reproduces the mirror's 2022
+national total (673); `derive_programs.py` now calls it.
+
+**Not yet corrected.** The per-program figures come from the census's own `build_db.py`
+and still lack 2022: the 20 of 73 and 37 of 77 active shares, the 168 technician records
+and their small and brief counts, the Ohio and state counts, each record's lifetime total
+and run. Adding 2022 can only raise lifetime totals and the counts above ten completions, so
+the active shares' numerators and denominators are floors and the shares can move either
+way; the small and brief counts, and the last year shown for a record that stopped in 2021
+or 2022, can move either way. The `prog-not-recomputed` claim pins them until it is done.
+
 ## 2026-11-02 — Which years came from NCES, and a bare 4, *scorecard, cluster-health, occupations, sources, timeline, index*
 
 The day's first fixes left two statements loose. No published figure changed. Each page
