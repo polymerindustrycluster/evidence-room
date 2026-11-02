@@ -78,7 +78,7 @@ revisions and release-year changes can legitimately move results.
 
 | Page data file | Producer | Result |
 |-|-|-|
-| `patents/data/patents.json` | `derive_patents.py` | **Exact.** Parsed output identical. |
+| `patents/data/patents.json` | `fetch_patents.py` | **Producer corrected 2026-11-02; result not re-verified.** This row credited `derive_patents.py`, which writes `_data/build/patents.json` in a different shape (no `rows` or `bases`). `fetch_patents.py` writes the page's file, and a copy at `_data/patents.json`. The "Exact" recorded here on 2026-08-31 does not say which script's output was compared, so it is not carried forward. |
 | `location-quotient/data/lq.json` | `derive_lq.py` | Data exact (`naics`, `areas`, `cells`, `composite` all identical). `meta` prose is older than the page. |
 | `churn/data/churn.json` | `derive_rest.py` | Data exact; `meta` prose older. |
 | `federal-money/data/federal.json` | `derive_rest.py` | Data exact; `meta` prose older. |
@@ -102,6 +102,10 @@ which is why this table exists rather than a green checkmark.
 |-|-|-|
 | `churn/data/bench.json` | `fetch_qwi_bench.py` → `derive_churn_bench.py` | **Exact by construction** — written by its producers on the first end-to-end run, 2026-09-01, and re-running overwrites the same shapes. The fetch is NOT keyless: `CENSUS_API_KEY` is required, and without it the API answers HTTP 200 with an HTML "Missing Key" page rather than an error, so a lenient caller writes an empty series that reads downstream exactly like a real zero. The fetcher refuses to write unless its all-ages control reproduces `churn/data/churn.json`'s own last four quarters to the job (71,771 / 6,626 / 7,157), which is a check against an answer already known rather than a check against itself. A refetch will differ wherever QWI has since re-benchmarked, which it does periodically and substantially. |
 | `programs/data/viz-data.json`, `layers.control.base` only | `fetch_ipeds_control_baserate.py` | **Exact by construction** — the block was written by its producer on the first end-to-end run, from the keyless Urban Institute completions endpoint, and re-running it overwrites the same key with the same shape. The producer will not write at all until it reproduces the page's already-published survival control (48%) from the live API, so a drifted pull fails loudly instead of quietly replacing one control with another. Everything else in this file still comes from the sibling census through `derive_programs.py` and is **untested here**; a refetch will differ wherever Urban has since restated a back year. |
+
+## Recorded 2026-11-02: a held input with no producer
+
+`_data/build/world.json`, the basemap `derive_reach.py` copies into `reach/data/reach.json`, is gitignored with every other `_data/build/*.json` and has never been committed, and no script in either tree writes it. Its source survives only as the file's own `meta.source` and `meta.note`, which `derive_reach.py` copies into `reach.json` `meta.basemap`: "Natural Earth 1:110m admin-0 countries, coastlines only", coordinates rounded to three decimals, specks under about 0.4 square degrees dropped, outer rings only. The download address, the Natural Earth version and the step that simplified it are not recorded.
 
 ## Historical 2026-09-01 inventory: missing producer paths
 

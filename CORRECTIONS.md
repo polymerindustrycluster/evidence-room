@@ -11,6 +11,37 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-11-02 — Caveats and sets stated where readers quote them, *timeline, wages, cluster-health, location-quotient*
+
+Readers of the 1 November fixes found lines that were right but read wrong: two caveats
+sharing one reason, a set named narrower than it is, a clause that stopped short. No
+published figure changed. Each page carries a dated note.
+
+**Two caveats, two reasons, *timeline*.** **Was:** the pace heading set "66 events against
+4", and the Quote this sentence and plant box joined the floor caveat and the PIC's-own-rows
+caveat with one "because". **Is:** the heading says "against at least 4"; the 4 is a floor
+because the register was compiled after the designation, and, separately, the recent rows
+include PIC's own presentations and reviews, so the jump measures how fast the register
+fills, not what got built.
+
+**The subcodes in the set, *wages*.** **Was:** the Quote this sentence and plant box called
+the 51 pairings "(NAICS 325 and 326)", though 28 of them are the four-digit subcodes 3252,
+3255, 3261 and 3262, and the plant box's first item left out the manufacturing comparison the
+headline makes. **Is:** both say the set includes the four-digit subcodes, and the first item
+adds that 19 of 23 chemistry-side pairings beat their county's manufacturing average and 4 of
+28 plastics and rubber pairings do.
+
+**Three wordings, *cluster-health*.** **Was:** the plant box called 2016 "a decade ago"; the
+Talent tile's basis ended that the federal mirror "ran a year behind and skipped one"; the
+Scale tile's paint row gave "down 395 jobs" without saying the change compares two different
+sets of published counties. **Is:** "seven years earlier"; the mirror ran a year behind for
+2020 to 2022 and never served 2022 at all; the paint row says the change compares each year's
+published counties, which differ (on the six published in both years paint fell 30).
+
+**Monthly, not quarterly, *location-quotient*.** **Was:** the bureau reports these jobs "as
+annual averages of the year's four quarters". **Is:** of the year's twelve monthly counts, as
+the glossary says; only establishments are averaged over quarters.
+
 ## 2026-11-01 — Wrong and misleading sentences readers found, *location-quotient, patents, laborshed, timeline, churn, peers, programs, cluster-health, wages, cost-scissors, revisions, chain, atlas, scorecard*
 
 Fresh readers found sentences that contradicted their own page or invited the wrong reading.

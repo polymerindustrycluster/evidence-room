@@ -1366,7 +1366,11 @@ document.getElementById("footcorr").innerHTML =
    different. The grey line divides the disclosed counties&rsquo; paint jobs by the jobs of
    all twelve counties; the teal line divides five counties&rsquo; paint jobs by those five
    counties&rsquo; own jobs. The sentence now says so, with the
-   ${fx(disclosedOwn)} the seven disclosed counties read on the teal line&rsquo;s basis.`;
+   ${fx(disclosedOwn)} the seven disclosed counties read on the teal line&rsquo;s basis.
+   <br>Correction, 2 November 2026: the opening section said the bureau reports these jobs
+   as annual averages of the year&rsquo;s four quarters. A job count&rsquo;s annual average
+   is of the year&rsquo;s twelve monthly counts, as the glossary says; only establishments
+   are averaged over four quarters, and this page counts jobs.`;
 
 /* --------------------------------------------------------------------- assemble */
 function drawAll() {

@@ -491,15 +491,18 @@ def fmt_n(v):
 # Paint's published counties: the same NUMBER both years is not the same counties (Lorain
 # withheld and Geauga published in 2025), so the note names the swap and the change on the
 # counties published in both years. "the same count as last year" read as jobs unchanged.
+# Since 2 November 2026 it also says the change compares each year's published counties, so
+# "down 395" (mostly Lorain withheld) is not read as a fall on one fixed set.
 _pc = {y: {r["name"]: r["emp"] for r in county_rows if r["year"] == y and r["naics"] == "3255"}
        for y in (LATEST - 1, LATEST)}
 _out, _in = sorted(set(_pc[LATEST - 1]) - set(_pc[LATEST])), sorted(set(_pc[LATEST]) - set(_pc[LATEST - 1]))
 _both = set(_pc[LATEST - 1]) & set(_pc[LATEST])
 _both_change = round(sum(_pc[LATEST][c] - _pc[LATEST - 1][c] for c in _both))
 paint_note = (f"{fmt_n(by_industry['3255']['latest'])} jobs across "
-              f"{WORDS[by_industry['3255']['cells_latest']]} published counties"
-              + (f", the same {WORDS[len(_both)]} as last year" if not (_out or _in) else
-                 f"; {' and '.join(_out)} {'was' if len(_out) == 1 else 'were'} withheld and "
+              f"{WORDS[by_industry['3255']['cells_latest']]} published counties; the change "
+              f"compares each year’s published counties"
+              + (f", the same {WORDS[len(_both)]} in both years" if not (_out or _in) else
+                 f", which differ: {' and '.join(_out)} {'was' if len(_out) == 1 else 'were'} withheld and "
                  f"{' and '.join(_in)} published, and on the {WORDS[len(_both)]} in both "
                  f"years paint {'fell' if _both_change < 0 else 'rose'} {abs(_both_change):,}"))
 
