@@ -460,7 +460,7 @@ function loadData(file) {
     const svg = el('svg', { viewBox: `0 0 ${W} ${Hpx}`, role: 'img',
       'aria-label': `Bar chart of delivered public events per year, 2021 to 2026: ` +
         rows.map((r) => `${r.yr}: ${r.before + r.since}`).join(', ') +
-        `. ${before} events fall before the 23 October 2023 designation and ${since} after; ` +
+        `. At least ${before} events fall before the 23 October 2023 designation and ${since} after; ` +
         '2026 is counted through 13 August.' });
 
     // y gridlines
@@ -501,7 +501,7 @@ function loadData(file) {
 
     // the two-phase annotation, stacked over the short early bars
     svg.appendChild(el('text', { class: 'ann cad-ann-pre', x: m.l + 4, y: m.t + 8 },
-      `before · ${before} events in 34 months`));
+      `before · at least ${before} events in 34 months`));
     svg.appendChild(el('text', { class: 'ann cad-ann-post', x: m.l + 4, y: m.t + 28 },
       `since · ${since} delivered in 34 months`));
 
@@ -1270,7 +1270,7 @@ function loadData(file) {
     PV.figures([
       ['', hc.shown, 'Documented heritage events',
        `First dated ${hc.firstYear}, last ${hc.lastYear}`],
-      ['', before, 'Events, 34 months before', 'Up to the October 2023 designation'],
+      ['', before, 'Events, 34 months before', 'A floor: up to October 2023'],
       ['key', since, 'Delivered, 34 months since', 'The same span, to within a day'],
       ['', IN.filter((e) => !e.delivered).length, 'Scheduled at the cut-off',
        'On the record, not delivered'],

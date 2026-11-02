@@ -10,8 +10,8 @@ degree count ran 118–179 a year from 2014 through 2020, then 54, 62 and 63.
 Sources: BLS Employment Projections National Employment Matrix (2024–34, industry 326000);
 BLS Occupational Employment and Wage Statistics, May 2024, metropolitan and national files;
 O*NET 30.3 (U.S. Department of Labor, CC BY 4.0); IPEDS completions by CIP via the Urban
-Institute Education Data API, with 2020–2022 read from the NCES completions files instead
-(see `_data/build/ipeds_mirror_fix.py`); BLS QCEW 2024 (one regional estimate); Ohio Department of Job
+Institute Education Data API, with 2020 and 2021 re-filed a year back and 2022, which the mirror
+never served, read from the NCES completions files (see `_data/build/ipeds_mirror_fix.py`); BLS QCEW 2024 (one regional estimate); Ohio Department of Job
 and Family Services 2022–2032 occupation projections (JobsOhio Northeast).
 
 **What a row is:** one detailed occupation (six-digit SOC code) — its share of national

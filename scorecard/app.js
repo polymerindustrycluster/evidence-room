@@ -531,8 +531,9 @@ document.getElementById("deliverysrc").innerHTML =
 /* Was [2019, 2020]: both halves of a duplicated pair were drawn pale and labelled
    "repeated in the source file", then the copy was quarantined out of the series entirely.
    On 2026-08-31 the duplicate turned out to be the first of three years the federal mirror
-   filed a year late, and the catch-up skipped a collection year outright. All three now
-   come from the NCES completions files, the skipped year is back, and 2020 carries an
+   filed a year late, and the catch-up skipped a collection year outright. 2020 and 2021
+   are now its counts moved back a year, the skipped year (2022) comes from the NCES
+   completions files, and 2020 carries an
    observation of its own again. See _data/build/ipeds_mirror_fix.py. */
 const EXCLUDED = [];
 const tal = TAL.polymer;
@@ -566,8 +567,9 @@ function talentDesktop() {
   txt(svg, `Credentials more than halved in ${tal[drop].year}, from `
     + `${tal[drop - 1].n} to ${tal[drop].n}, and ${tal.at(-1).year} recovered only to `
     + `${tal.at(-1).n}.`, {x: m.l + 4, y: 30, class: "pv-lab"});
-  txt(svg, `${TAL.window[0] - 1} to ${TAL.window[1]} are read from the NCES files: the `
-    + `mirror behind the rest filed them late and skipped one.`,
+  const fix = TAL.source_correction, refiled = Object.values(fix.years_refiled).filter(Boolean).sort();
+  txt(svg, `${refiled.join(" and ")} are the mirror’s counts, filed a year late; `
+    + `${fix.year_backfilled}, which it never served, is from the NCES files.`,
     {x: m.l + 4, y: 52, class: "pv-labq"});
 
   tal.forEach((p, i) => {
@@ -606,8 +608,8 @@ onFonts(() => (MOBILE.matches ? talentMobile : talentDesktop)());
 document.getElementById("talenttable").innerHTML = tableView("tal",
   "Credentials awarded by the two regional universities that confer them, Case Western "
   + "Reserve and the University of Akron, in polymer CIP codes, by "
-  + "federal reporting year. The 2020 to 2022 counts come from the NCES completions files "
-    + "rather than the mirror behind the rest of the series, which filed them a year late.",
+  + "federal reporting year. The 2020 and 2021 counts are the mirror’s, filed a year late; "
+    + "2022, which the mirror never served, comes from the NCES completions files.",
   ["Year", "Polymer credentials"],
   tal.map(p => [String(p.year) + (EXCLUDED.includes(p.year) ? " (repeated)" : ""),
     String(p.n)]));

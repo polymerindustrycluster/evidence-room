@@ -80,7 +80,7 @@
    "key_required": false
   },
   "ipeds": {
-   "name": "IPEDS Completions, via the Urban Institute Education Data API, with three years read from NCES directly",
+   "name": "IPEDS Completions, via the Urban Institute Education Data API, with one year read from NCES directly",
    "agency": "National Center for Education Statistics, served by the Urban Institute",
    "url": "https://educationdata.urban.org/api/v1/college-university/ipeds/completions-cip-6/{year}/",
    "docs": "https://educationdata.urban.org/documentation/colleges.html",
@@ -92,7 +92,7 @@
     "national benchmark": "the same codes with no state filter, restricted to codes the footprint itself confers as a programme (which excludes 150607), since PIC-12’s entire history in it is two awards from one community college in one year",
     "note": "Two earlier code entries did not exist and silently returned zero: 140320 (a transposition of 143201) and 143101 (materials science is in the 40 series, not 14). A core code returning zero across every year and institution is evidence of a bad code, not of no graduates.",
     "ipeds_cip": "fetch_ipeds_cip.py adds institution × CIP × year (used by talent and occupations)",
-    "year labels": "The mirror’s year is the FALL of the academic year, so its 2023 is the NCES C2024_A file. That convention held through 2019 and again at 2023; in between, its 2020, 2021 and 2022 each served the collection year before the one they name, and C2023_A was served under no label at all. Those three years are therefore taken from the NCES completions files (https://nces.ed.gov/ipeds/datacenter/data/C{year}_A.zip, no key), by fetch_ipeds_nces.py; the correction table and its re-check are in _data/build/ipeds_mirror_fix.py. Degrees only: the recovered year also carries two postbaccalaureate certificates, which no other year of the series counts."
+    "year labels": "The mirror’s year is the FALL of the academic year, so its 2023 is the NCES C2024_A file. That convention held through 2019 and again at 2023; in between, its 2020, 2021 and 2022 each served the collection year before the one they name, and C2023_A was served under no label at all. So 2020 and 2021 are the mirror’s rows moved back a year, checked against the NCES completions files, and 2022 is taken from NCES alone (https://nces.ed.gov/ipeds/datacenter/data/C{year}_A.zip, no key), by fetch_ipeds_nces.py; the correction table and its re-check are in _data/build/ipeds_mirror_fix.py. Degrees only: the recovered year also carries two postbaccalaureate certificates, which no other year of the series counts."
    },
    "licence": "ODC (Open Data Commons)-By 1.0",
    "licence_url": "https://opendatacommons.org/licenses/by/1-0/",

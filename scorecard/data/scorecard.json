@@ -11,7 +11,7 @@
   "caution": "An award register records commitment, not payment, so no figure taken from it measures money spent. The federal ledger publishes outlays on seven of the eight federal lines; no public figure covers the state grant or the whole $85,335,784, so the disbursement row is empty.",
   "not": "No target on this page was set by PIC. A target cell showing a figure is a ceiling fixed by a signed award document, and every other target cell reads “not set”. No owner cell names a person, because this repository holds no owner assignment for any row.",
   "small_numbers": "The talent rows are administrative counts in the tens. The polymer series ran 54, 62, 63 across 2021, 2022 and 2023, so a single year is a reading and not a direction.",
-  "excludes": "The federal mirror this series was built from ran a year behind from 2020 to 2022 and never served the 2022 collection year at all. Those three years are now taken from the NCES completions files directly, so the 2021-2023 window this page reads is three consecutive years rather than two years and a gap."
+  "excludes": "The federal mirror this series was built from filed 2020 and 2021 a year late, and they are moved back; it never served 2022, which is taken from the NCES completions files directly, so the 2021-2023 window this page reads is three consecutive years rather than two years and a gap."
  },
  "generated_on": "2026-09-30",
  "version": "1.2",
@@ -472,7 +472,7 @@
   "source_correction": {
    "applied": "2026-08-31",
    "by": "_data/build/mirror_fix_patch.py",
-   "why": "2020 to 2022 are taken from the NCES completions files: the federal mirror this series is otherwise built from ran a year behind and skipped one",
+   "why": "2020 and 2021 are the federal mirror’s counts, which it filed a year late; 2022, which it never served, comes from the NCES completions files",
    "source": "NCES IPEDS completions C2021_A-C2024_A, via fetch_ipeds_nces.py",
    "years_refiled": {
     "2020": null,

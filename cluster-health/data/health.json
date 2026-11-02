@@ -1043,7 +1043,7 @@
       "value": 63
      }
     ],
-    "basis": "the same two universities, 2014 to 2023. 2020 to 2022 come from the NCES completions files: the federal mirror the rest is built from ran a year behind there and never served 2022.",
+    "basis": "the same two universities, 2014 to 2023. 2020 and 2021 are the federal mirror’s counts, which it filed a year late; 2022, which it never served, comes from the NCES completions files.",
     "basis_short": "polymer degrees a year",
     "merit_short": "more degrees is better",
     "merit": "More degrees out of the three programs is the better end. Nobody has set a number the region needs, and this range cannot see the two-year and certificate routes into the same plants.",
@@ -1300,7 +1300,7 @@
  "source_correction": {
   "applied": "2026-08-31",
   "by": "_data/build/mirror_fix_patch.py",
-  "why": "2020 to 2022 are taken from the NCES completions files: the federal mirror this series is otherwise built from ran a year behind and skipped one",
+  "why": "2020 and 2021 are the federal mirror’s counts, which it filed a year late; 2022, which it never served, comes from the NCES completions files",
   "source": "NCES IPEDS completions C2021_A-C2024_A, via fetch_ipeds_nces.py",
   "repeated_years_after_fix": 0,
   "was_flat_pairs": [

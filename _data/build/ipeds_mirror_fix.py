@@ -93,8 +93,10 @@ TOTALS = {2014: (125, 20), 2015: (143, 26), 2016: (179, 22), 2017: (162, 34),
           2022: (62, 21), 2023: (63, 33)}
 
 # What a page says when it has to name the correction in one clause.
-CAPTION = ("2020 to 2022 are taken from the NCES completions files: the federal mirror "
-           "this series is otherwise built from ran a year behind and skipped one")
+# 2020 and 2021 are re-filed mirror rows (LAG); only 2022 is NCES (BACKFILL). Was "2020 to 2022 are
+# taken from the NCES completions files ... ran a year behind and skipped one" until 2 November 2026.
+CAPTION = ("2020 and 2021 are the federal mirror’s counts, which it filed a year late; 2022, "
+           "which it never served, comes from the NCES completions files")
 
 
 def note(prefix="Note"):
