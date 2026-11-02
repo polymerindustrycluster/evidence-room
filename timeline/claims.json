@@ -110,12 +110,12 @@
    "actual": "(lambda bs: bs + (tofixed(bs[1] / bs[0], 1),))((lambda E, des: (len([e for e in E if '2021-01-01' <= e['date'] < des and e.get('tier') != 'CTX' and e['delivered'] and (e['date'] < '2023-01-01' or e.get('show'))]), len([e for e in E if des <= e['date'] and e['delivered'] and e.get('show')])))(D['t']['events'], '2023-10-23'))",
    "falsified_if": "A pre-designation public event is added to or dropped from the inventory (the 4 moves), a delivered event lands or is reclassified (the 68 moves and 17x stops being exact), or meta.asOf advances so the since-span no longer matches the before-span within a day — the '34 months either side' framing dies first. [2026-09-01: recomputed after one row was removed from the register. It recorded a named company's unsuccessful application, on a site whose README withholds two pages because naming an unsuccessful applicant is not something a funder gets to do. Two independent model families were asked to refute the decision to anonymise it instead of deleting it, and both refused: the row stayed identifiable because the same page names the company joining the cohort four months later, and keeping it to protect a count is letting the headline decide which sensitive records remain evidence. The count moved and the sentence moved with it.]",
    "breaks_if": "Many missed events from before October 2023 turn up, and the jump in pace vanishes.",
-   "guards": "The public record holds 4 events in the 34 months before that and 66 delivered in the 34 months since.",
+   "guards": "The public record holds at least 4 events in the 34 months before that and 66 delivered in the 34 months since.",
    "counts": [
     {"figure": "16.5", "noun": ["ratio", "times"]},
-    {"figure": "4 events in the 34 months before that", "noun": "The public record holds"},
+    {"figure": "at least 4 events in the 34 months before that", "noun": "The public record holds"},
     {"figure": "66 delivered in the 34 months since", "noun": "34 months before that"},
-    {"figure": "4 delivered events", "noun": "34 months before"}, {"figure": "4 in the 34 months before", "noun": "a floor"},
+    {"figure": "At least 4 delivered events", "noun": "34 months before the designation"}, {"figure": "4 in the 34 months before", "noun": "a floor"},
     {"figure": "66 ÷ 4", "noun": "true jump"},
     {"figure": "at least 4", "noun": "events"}
    ]

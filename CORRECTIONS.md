@@ -11,6 +11,22 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-11-02 — Which years came from NCES, and a bare 4, *scorecard, cluster-health, timeline*
+
+The day's first fixes left two statements loose. No published figure changed. Each page
+carries a dated note.
+
+**Which years the NCES files supply, *scorecard, cluster-health*.** **Was:** the scorecard's
+credentials chart said the federal mirror "filed them late and skipped one", without saying
+one what, and its subtitle, table caption and source line, like the cluster-health Talent
+tile's basis, credited 2020 to 2022 to the NCES completions files. **Is:** 2020 and 2021 are
+the mirror's own counts, filed a year late and moved back to their years; only 2022, which
+the mirror never served, comes from the NCES files.
+
+**At least 4, *timeline*.** **Was:** the pace heading said 66 events against at least 4, but
+the opening paragraph, the figure title, the chart label and the stat card still gave a bare
+4. **Is:** each says at least 4 or calls it a floor.
+
 ## 2026-11-02 — Caveats and sets stated where readers quote them, *timeline, wages, cluster-health, location-quotient*
 
 Readers of the 1 November fixes found lines that were right but read wrong: two caveats

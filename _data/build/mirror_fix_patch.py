@@ -173,9 +173,10 @@ else:
     st["rank_words"] = (f"{WORDS.get(st['rank_from_low'], str(st['rank_from_low']) + 'th lowest')}"
                         f" of {N.get(st['n_years'], st['n_years'])}")
     # Not MF.CAPTION, whose "ran a year behind and skipped one" leaves "one" dangling (2 November 2026).
-    st["basis"] = (f"the same two universities, {years[0]} to {years[-1]}. 2020 to 2022 come from "
-                   "the NCES completions files: the federal mirror the rest is built from ran a year "
-                   "behind there and never served 2022.")
+    # 2020 and 2021 are re-filed mirror rows (MF.LAG); only 2022 is NCES (MF.BACKFILL_YEAR).
+    st["basis"] = (f"the same two universities, {years[0]} to {years[-1]}. 2020 and 2021 are the "
+                   "federal mirror’s counts, which it filed a year late; 2022, which it never "
+                   "served, comes from the NCES completions files.")
     tile["value"] = str(st["value"])
 
     steps = [(b, poly[b] - poly[a]) for a, b in zip(years, years[1:])]

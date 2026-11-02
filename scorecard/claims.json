@@ -182,7 +182,7 @@
     },
     {
       "id": "sc-dup-1920",
-      "text": "The chart's limitation note: the federal mirror behind this series filed 2020, 2021 and 2022 a year late and never served one collection year at all, so those three years are read from the NCES completions files instead. The window this page publishes is unchanged and is now three consecutive years rather than two years and a gap.",
+      "text": "The chart's limitation note: the federal mirror behind this series filed 2020, 2021 and 2022 a year late and never served one collection year at all, so 2020 and 2021 are its counts moved back a year and 2022 is read from the NCES completions files. [2026-11-02: it said all three years came from NCES and ended on a dangling “skipped one”.] The window this page publishes is unchanged and is now three consecutive years rather than two years and a gap.",
       "source": "occupations/data/viz-data.json programs.by_year, read as shipped",
       "assert": "D['sc']['talent']['source_correction']['year_backfilled'] == 2022 and D['sc']['talent']['window'] == [2021, 2022, 2023] and [p['year'] for p in D['sc']['talent']['polymer']] == list(range(2014, 2024)) and sum(p['by_year'].get('2020', 0) for p in D['occ']['programs'] if p['group'] == 'polymer') == 124 and not [p for p in D['occ']['programs'] if p['by_year'].get('2019') is not None and p['by_year'].get('2019') == p['by_year'].get('2020')] and 'NCES completions files' in D['sc']['meta']['excludes']",
       "actual": "(D['sc']['talent']['source_correction'], D['sc']['talent']['window'], [p['year'] for p in D['sc']['talent']['polymer']])",

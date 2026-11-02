@@ -524,10 +524,10 @@ doc = {
                          "The polymer series ran %s across %d, %d and %d, so a single "
                          "year is a reading and not a direction."
                          % (", ".join(str(n) for n in POLY_WINDOW), *WINDOW),
-        "excludes": "The federal mirror this series was built from ran a year behind "
-                    "from 2020 to 2022 and never served the 2022 collection year at "
-                    "all. Those three years are now taken from the NCES completions "
-                    "files directly, so the %d-%d window this page reads is three "
+        "excludes": "The federal mirror this series was built from filed 2020 and 2021 "
+                    "a year late, and they are moved back; it never served 2022, which is "
+                    "taken from the NCES completions files directly, so the %d-%d window "
+                    "this page reads is three "
                     "consecutive years rather than two years and a gap."
                     % (WINDOW[0], WINDOW[-1]),
     },
