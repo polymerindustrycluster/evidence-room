@@ -163,7 +163,7 @@
       "assert": "len(D['footprint_counties']) == 12 and D['meta']['footprint']['n'] == 12 and tofixed(sum(c['emp'] for c in D['footprint_counties']), 0) == '18594' and tofixed(sum(c['emp'] for c in D['footprint_counties']) / D['states']['326']['subject_emp'] * 100, 0) == '34'",
       "actual": "(len(D['footprint_counties']), sum(c['emp'] for c in D['footprint_counties']), sum(c['emp'] for c in D['footprint_counties']) / D['states']['326']['subject_emp'])",
       "falsified_if": "A revision moves the total off 18,594 or the share off 34% when rounded, or the footprint block stops carrying all twelve counties. The count of twelve is what makes this a complete regional total: the builder keeps only counties BLS discloses, so twelve rows for a twelve-county footprint means nothing is withheld. Eleven rows would mean a county was suppressed and the sum would be a floor, not a total, and the sentence would have to say so.",
-      "official_check": "Added 2026-08-28. The page is headed 'where Northeast Ohio actually sits' and defines a twelve-county footprint in its first line, and until this claim existed it published no regional figure at all: every number was a state or a metro."
+      "official_check": "Added 2026-08-28. The page was headed 'where Northeast Ohio actually sits' (until 2026-10-07, when the eyebrow became the hub's question) and defines a twelve-county footprint in its first line, and until this claim existed it published no regional figure at all: every number was a state or a metro."
     },
     {
       "id": "pic12-not-metros",
@@ -176,7 +176,7 @@
     },
     {
       "id": "akron-lq-rank-8",
-      "text": "Akron ranks eighth on concentration among the 155 metros that disclose, so seven of them are more concentrated than its 4.69x (glossary).",
+      "text": "Akron ranks eighth on concentration among the 155 metros that disclose, so seven of them are more concentrated than its 4.69x (glossary, and since 2026-11-01 the Find a metro line, which had set the jobs rank '6th of the 155' straight after the 4.69x so that it read as a concentration rank).",
       "source": "BLS QCEW 2024, lq_annual_avg_emplvl, NAICS 326, private. Rank among disclosed metros by concentration.",
       "assert": "D['metros']['326']['rank_lq'] == 8 and D['metros']['326']['of_disclosed'] == 155 and len([p for p in D['metro_scatter'] if p['lq'] > D['metros']['326']['subject_lq']]) == 7",
       "actual": "(D['metros']['326']['rank_lq'], sorted((p['lq'], p['name']) for p in D['metro_scatter'] if p['lq'] > D['metros']['326']['subject_lq']))",

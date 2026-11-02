@@ -5,9 +5,9 @@
     "b": "bench.json"
   },
   "kicker": true,
-  "quote": {"text": "In 2022, across all industries, no county in PIC-12 had even 70 percent of its jobs held by its own residents, Ashtabula the highest at 68.5 percent, while just under 90 percent of the jobs in PIC-12 were held by PIC-12 residents (Census LODES).", "claims": ["ls-extremes", "ls-no-county-is-a-market", "ls-region-is-a-market"]},
+  "quote": {"text": "In 2022, across all industries and counting workers from any state, no county in PIC-12 had even 70 percent of its jobs held by its own residents, Ashtabula the highest at 68.5 percent, while PIC-12 residents held 87.8 percent of every job in PIC-12 (Census LODES).", "claims": ["ls-extremes", "ls-no-county-is-a-market", "ls-region-is-a-market"]},
   "glossary": {"terms": ["LODES", "PIC-12"]},
-  "plant": [{"text": "Plan on hiring across county lines: counting jobs in every industry, no county among the twelve has 70 percent of its jobs held by its own residents.", "claims": ["ls-no-county-is-a-market", "ls-not-the-cluster"]}, {"text": "Expect to recruit from the twelve counties together: just under 90 percent of the jobs in PIC-12 are held by people who live in PIC-12.", "claims": ["ls-region-is-a-market"]}],
+  "plant": [{"text": "Plan on hiring across county lines: counting jobs in every industry, no county among the twelve has 70 percent of its jobs held by its own residents.", "claims": ["ls-no-county-is-a-market", "ls-not-the-cluster"]}, {"text": "Expect to recruit from the twelve counties together: PIC-12 residents hold 87.8 percent of every job in PIC-12, counting workers from any state.", "claims": ["ls-region-is-a-market"]}],
   "claims": [
     {
       "id": "ls-no-county-is-a-market",
@@ -19,7 +19,7 @@
       "breaks_if": "Any of the twelve counties fills 70 percent or more of all its jobs with its own residents.",
       "guards": "No county holds this labor market alone.",
       "counts": [
-       {"figure": "70 percent", "noun": "No county"}
+       {"figure": "70 percent", "noun": ["No county", "counties"]}
       ]
     },
     {
@@ -156,11 +156,14 @@
     },
     {
       "id": "ls-region-is-a-market",
-      "text": "Just under 90 percent of the jobs in PIC-12 are held by people who live in PIC-12, and just under 90 percent of PIC-12 residents' jobs sit inside it. This is what the H1 and the closer's display line rest on. Rewritten 2026-08-30: the old H1 sold Summit's 51.6 percent, which is 'most' by 1.6 points and counts jobs while saying people; the finding the page actually proves, held here since it shipped, is that the twelve together retain just under nine in ten.",
+      "text": "Just under 90 percent of the jobs in PIC-12 are held by people who live in PIC-12, and just under 90 percent of PIC-12 residents' jobs sit inside it. This is what the H1 and the closer's display line rest on. Rewritten 2026-08-30: the old H1 sold Summit's 51.6 percent, which is 'most' by 1.6 points and counts jobs while saying people; the finding the page actually proves, held here since it shipped, is that the twelve together retain just under nine in ten. Counting every job inside the twelve counties, whichever state its holder lives in, PIC-12 residents hold 87.8 percent of them: 1,524,279 of 1,735,169 (Quote this, If you run a plant here). This is the basis of the county shares, Ashtabula's 68.5 percent and the 70 percent line, so the quote and the plant box now pair like with like. Added 2026-11-01: both said 'just under 90 percent', which is the in-state basis of ls-region-is-a-market (89.5 percent) and on which Ashtabula reads 72.7 percent and clears 70.",
       "source": "LEHD LODES8 2022; workplace side Ohio main+aux, resident side Ohio main plus six neighbor aux files",
-      "assert": "D['b']['totals']['work_region_share'] > 0.85 and D['b']['totals']['res_region_share'] > 0.85",
+      "assert": "D['b']['totals']['work_region_share'] > 0.85 and D['b']['totals']['res_region_share'] > 0.85 and (lambda T: T['home_inside_pic12'] == 1524279 and T['jobs_worked_in_pic12'] == 1735169 and tofixed(100 * T['home_inside_pic12'] / T['jobs_worked_in_pic12'], 1) == '87.8' and max(r['in_county'] for r in D['ls']['matrix']) < 0.70)(D['ls']['totals'])",
       "actual": "(D['b']['totals']['work_region_share'], D['b']['totals']['res_region_share'])",
-      "falsified_if": "Either share drops below 0.85. NOTE the two are different quantities with different denominators and are never summed or differenced; they agree here, which is a finding, not a construction."
+      "falsified_if": "Either share drops below 0.85. NOTE the two are different quantities with different denominators and are never summed or differenced; they agree here, which is a finding, not a construction. A LODES revision moves the share off 87.8 at one decimal, or the totals change. If the quote or plant box goes back to the in-state 89.5 percent beside the every-job county shares, the two halves are again on different bases; the counts binding below fails on any sentence that drops 87.8.",
+      "counts": [
+       {"figure": "87.8 percent", "noun": "every job"}
+      ]
     },
     {
       "id": "ls-only-pittsburgh-matches",

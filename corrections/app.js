@@ -71,9 +71,10 @@ const show = page => {
   for (const between of record.querySelectorAll(".corr-between")) between.hidden = !!page;
   record.querySelector(".corr-preamble").hidden = !!page;
   const list = BY && BY.pages && BY.pages[page];
-  count.textContent = page
+  /* innerHTML: the sentence carries the repository-history link; page is one of `pages` */
+  count.innerHTML = page
     ? `${n} of the ${entries.length} entries name ${page}.` +
-      (list ? ` On that page: ${PV.correctionsSentence(list, (BY.headlines || {})[page])}` : "")
+      (list ? ` On that page: ${PV.correctionsSentence(list, (BY.headlines || {})[page], page)}` : "")
     : `All ${entries.length} entries.`;
 };
 const asked = new URLSearchParams(location.search).get("page");

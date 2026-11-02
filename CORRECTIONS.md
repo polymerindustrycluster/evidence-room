@@ -11,6 +11,68 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-11-01 — Wrong and misleading sentences readers found, *location-quotient, patents, laborshed, timeline, churn, peers, programs, cluster-health, wages, cost-scissors, revisions, chain, atlas, scorecard*
+
+Fresh readers found sentences that contradicted their own page or invited the wrong reading.
+No published figure changed except where a sentence now prints a figure it left out. Each
+page carries a dated note.
+
+**Two lines that measure different things, *location-quotient*.** **Was:** the teal
+fixed-county paint line sat above the grey one "because it counts five counties and the grey
+counts seven, not because it measures anything different". **Is:** they divide by different
+workforces: the grey line by the jobs of all twelve counties, so it is a floor, the teal line
+by its five counties' own jobs. Divided the teal way, the seven counties disclosed in 2025
+read 7.47×, so the denominator is most of the gap to 7.68×.
+
+**A complete year that could still grow, *patents*.** **Was:** a complete filing year was one
+in which "everything filed in them has already published", while the page's own break
+conditions said late-published applications can still raise 2023 above 342. **Is:** the
+complete filing years are 2015 through 2023, a cutoff set by hand a margin past the
+eighteen-month publication lag, and even they can still grow; 2024, whose lag ran out two
+months before the August 2026 read, is labelled still filling rather than incomplete. The
+second break condition says late-published applications, not late filings.
+
+**Two bases in one quotable sentence, *laborshed*.** **Was:** Quote this and the plant box set
+Ashtabula's 68.5 percent (every job in the county) beside "just under 90 percent" of the
+region's jobs held by its residents (jobs held by Ohio residents only; on that basis
+Ashtabula reads 72.7 percent). **Is:** both are on every job; the region figure on that
+basis is 87.8 percent.
+
+**Caveats dropped from the copy-ready lines, *timeline, churn*.** **Was:** timeline's Quote
+this and plant box set 66 events against 4 with neither caveat the page states, and the
+box called it "more public cluster activity to take part in". Churn's plant box said to plan
+on replacement hiring "from ordinary turnover rather than retirement", which a series of
+separations cannot show. **Is:** timeline's lines say the 4 is a floor and that recent rows
+include PIC's own presentations and reviews; churn's box keeps the arithmetic and says the
+series records separations, not retirements.
+
+**Ranks and counts set by the wrong measure, *peers, programs, cluster-health, wages, atlas, scorecard*.**
+**Was:** the peers finder put Akron's jobs rank, 6th of 155, straight after its 4.69×
+concentration; it is 8th on concentration. Programs' plant box counted Ohio's "22
+substantive polymer programs" beside a table of 22 technician records, a different set.
+Cluster health labelled 23,459 "jobs on the fixed county set" without saying it is three
+industries; called a 6.2 percent fall (plastics and rubber) and a 5.7 percent fall (three
+industries) both "the national industry"; said paint's seven counties were "the same count as
+last year" when Lorain was withheld and Geauga published (on the six published in both years
+paint fell 30); said three universities confer the polymer degrees, where two do; printed a
+double full stop; and gave its 1.24× and 0.90× pay benchmark without its industries, beside
+wages' 0.88× on a wider set, also unnamed. Atlas said its finding breaks if a revision
+changes "the 41 with a 2023 award", which reads as 41 awards; the 41 are institutions still
+conferring in 2023. The scorecard's polymer credentials chart said "those same three
+universities" and three of its row definitions named three institutions; two confer the
+polymer credentials (Case Western Reserve, Akron) and two the materials ones (Case Western
+Reserve, Kent State). **Is:** each rank sits by its measure, the box says which 22, each figure
+names its basis, both pay boxes name their industries, atlas names its 41, and the scorecard names its two
+universities.
+
+**Titles a reader cites, *cost-scissors, revisions, chain, patents*.** **Was:** the tab
+titles, which the Cite as line carries, read "Nothing Came Back Down" (the headline says gas
+gave the whole spike back), "Every Number Moves" (corrected to almost every month on 30
+August), "Can Northeast Ohio Make This?" (the page is a record inventory) and "Cluster
+vitals: does the region still invent it?" (the patent counts are Ohio statewide). **Is:**
+"Gas Came Back Down, Finished Products Did Not", "Almost Every Month Moves", "What the Chain
+Register Holds" and "Ohio's Polymer Patents Fell With the Nation's".
+
 ## 2026-10-07 — A source churn never read, *churn, sources*
 
 **Was:** churn credited the BLS payroll census (QCEW) as one of its two sources, and the

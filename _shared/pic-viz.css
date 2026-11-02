@@ -371,8 +371,8 @@ details.pv-table:not([open]) .pv-tablewrap{display:none}
 .pv-method .pv-repro summary{cursor:pointer;list-style:none;display:inline-block}
 .pv-method .pv-repro summary::-webkit-details-marker{display:none}
 .pv-method .pv-repro summary h3{display:inline;color:var(--action)}
-.pv-method .pv-repro summary h3::before{content:"▸  ";font-size:.8em}
-.pv-method .pv-repro[open] summary h3::before{content:"▾  "}
+.pv-method .pv-repro summary h3::before{content:"▸  " / "";font-size:.8em}  /* the alt text after "/" is empty, so the glyph is not read aloud */
+.pv-method .pv-repro[open] summary h3::before{content:"▾  " / ""}
 /* The reproduce block spans the full method column rather than sitting in one of its
    flow columns: a source entry with an endpoint and six filters is a table, not a column
    of a masonry, and breaking it mid-source would split a filter from its source. */
@@ -630,3 +630,15 @@ th.pv-sortable[aria-sort="descending"]::after{content:" ↓";opacity:1;color:var
 .pv-plant-band .pv-quote{max-width:var(--measure);margin:18px auto 0;font-size:15px;line-height:1.55}
 /* The band a page's static "Words on this page" block sits in, just above the closer. */
 .pv-words-band .pv-words{margin-top:0}
+
+/* The text version without scripting: _data/build/render_static.py's nojs regions, wholly
+   inside <noscript>, so a scripted page never parses them. */
+.pv-nojs{font-size:15px;line-height:1.5}
+main > noscript > .pv-nojs{padding-block:14px}
+.pv-nojs p{margin:0 0 6px}
+.pv-nojs ul{margin:0 0 8px;padding-left:1.2em}
+.hero .pv-nojs{max-width:var(--measure);margin:14px auto 0;color:#C6E2E6}  /* as .wrap > .pv-breaks */
+.hero .pv-nojs b{color:#fff}
+.hero .pv-nojs a{color:inherit;text-decoration:underline}
+/* Read by a screen reader, never painted: figures()' sentence breaks. Same clip as .pv-skipchart. */
+.pv-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}

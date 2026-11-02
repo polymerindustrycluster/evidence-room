@@ -111,8 +111,11 @@ export function verifyRestoration(path, originalBytes, originalTimes) {
   // Reading the bytes may update atime. Restore it again before checking timestamps.
   restoreTimes(path, originalTimes);
   const now = statSync(path);
-  // Node's utimes API restores to microseconds, not APFS's arbitrary nanoseconds.
-  if (Math.abs(now.mtimeMs - originalTimes.mtimeMs) > 0.0011 ||
-      Math.abs(now.atimeMs - originalTimes.atimeMs) > 0.0011)
+  // Node's utimes API restores to microseconds, not APFS's arbitrary nanoseconds, and the
+  // Linux runner drifted past 1.1us on one run in ten (#59, 1 November 2026). A file put
+  // back is within a millisecond; one rewritten later is seconds off.
+  // shortcut: 1ms tolerance, tighten if a restore ever hides a real rewrite
+  if (Math.abs(now.mtimeMs - originalTimes.mtimeMs) > 1 ||
+      Math.abs(now.atimeMs - originalTimes.atimeMs) > 1)
     throw new Error(`${path}: timestamps were not restored to filesystem API precision`);
 }

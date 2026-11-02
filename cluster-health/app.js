@@ -96,7 +96,7 @@ const standLine = t => `${t.dimension === "Job quality" ? "the median county-ind
 document.getElementById("stand").innerHTML =
   `Private plastics and rubber products manufacturing lost ${N(E.groups[0].series.find(r => r.year === 2022).jobs - E.groups[0].series.at(-1).jobs)} jobs
    across the Polymer Industry Cluster&rsquo;s (PIC) twelve counties between 2022 and 2025.
-   Its annual-average workplace count barely changed. The national industry lost jobs too.`;
+   Its annual-average workplace count barely changed. Plastics and rubber lost jobs nationally too.`;
 
 /* Each hero figure carries its industry, time window and annual-average unit. */
 const withheld = D.register.possible_cells - D.register.disclosed.at(-1).cells;
@@ -526,7 +526,7 @@ document.getElementById("tiles").innerHTML = T.map(t => `
         <dt>Against</dt><dd><b>${t.baseline.name}.</b> ${t.baseline.why}</dd>
         <dt>Where it stands</dt><dd><b>The ${t.standing.rank_words}.</b>
           ${sfmt(t.standing, t.standing.value)} in ${syear(t.standing, t.standing.year)},
-          on ${t.standing.basis}. Its lowest published year is
+          on ${t.standing.basis.replace(/\.\s*$/, "")}. Its lowest published year is
           ${sPoint(t.standing, "low")} and its highest ${sPoint(t.standing, "high")}. That
           is a comparison with its own history, not with a target.</dd>
         <dt>Better direction</dt><dd>${t.standing.merit}</dd>

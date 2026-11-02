@@ -233,6 +233,12 @@ async function bundle(name) {
   const st = spawnSync("python3", [path.join(WEB, "_data", "build", "stamp_cite.py")], {encoding: "utf8"});
   if (st.status !== 0) throw new Error(`stamp_cite.py failed: ${(st.stderr || st.stdout).trim()}`);
 }
+/* The static no-script regions carry the revised date and cite line, so they go stale the same
+   way; render them on every bundle too (_data/build/render_static.py), after the stamp. */
+{
+  const rs = spawnSync("python3", [path.join(WEB, "_data", "build", "render_static.py")], {encoding: "utf8"});
+  if (rs.status !== 0) throw new Error(`render_static.py failed: ${(rs.stderr || rs.stdout).trim()}`);
+}
 
 const args = process.argv.slice(2);
 const names = args.length

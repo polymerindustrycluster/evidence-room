@@ -244,6 +244,7 @@ jobs:
         run: |
           node tools/bundle.mjs
           python3 _data/build/stamp_cite.py
+          python3 _data/build/render_static.py   # static no-script regions carry the same dates
       - uses: actions/upload-pages-artifact@v3
         if: github.event_name != 'pull_request'
         with:

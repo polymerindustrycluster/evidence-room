@@ -328,6 +328,8 @@
   {
    "id": "greater-akron-chamber",
    "name": "Greater Akron Chamber",
+   "basis": "for its own work",
+   "grantee": "That $4.15M counts only the lines that pay for the Chamber’s own work. The Chamber also signs, as grantee, for all $3,084,371 of APEX, which this map shows under Regional workforce programs, the work that money pays for; and PIC confirms it is grantee of record on the whole $31,250,000 Ohio Innovation Hub grant, which includes the $1,499,515 governance line above. The two counts have different bases and are not added together.",
    "awards": [
     {
      "programId": "eda-direct",

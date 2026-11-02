@@ -213,6 +213,24 @@
       ]
     },
     {
+      "id": "chamber-two-bases",
+      "text": "The Greater Akron Chamber's $4.15M in the recipient finder is the money for its own work, $2,650,000 of the Tech Hub award and $1,499,515 of the Ohio grant; it is also the grantee that signs for all $3,084,371 of APEX, booked under Regional workforce programs, and grantee of record on the whole $31,250,000 Ohio grant. Its panel states both counts with their bases.",
+      "source": "funding.json recipients greater-akron-chamber (awards, basis, grantee) and regional-workforce; sources apex and ohio; provenance (Ohio grantee of record, confirmed by PIC 30 September 2026)",
+      "assert": "(lambda c, w: [(a['programId'], a['amount']) for a in c['awards']] == [('eda-direct', 2650000), ('oh-gov', 1499515)] and c['basis'] == 'for its own work' and all(f in c['grantee'] for f in ('$4.15M', '$3,084,371', '$31,250,000', '$1,499,515', 'Regional workforce programs', 'not added together')) and one(a for a in w['awards'] if a['programId'] == 'apex-workforce')['amount'] == 3084371 and w['name'] == 'Regional workforce programs' and one(x for x in D['sources'] if x['id'] == 'apex')['award'] == 3084371 and one(x for x in D['sources'] if x['id'] == 'ohio')['award'] == 31250000 and any('grantee of record is the Greater Akron Chamber' in t for t in D['meta']['provenance']) and not any(r.get('basis') or r.get('grantee') for r in D['recipients'] if r is not c))(one(r for r in D['recipients'] if r['id'] == 'greater-akron-chamber'), one(r for r in D['recipients'] if r['id'] == 'regional-workforce'))",
+      "actual": "(lambda c: (c['awards'], c.get('basis'), c.get('grantee')))(one(r for r in D['recipients'] if r['id'] == 'greater-akron-chamber'))",
+      "falsified_if": "The Chamber's own lines move from $2,650,000 and $1,499,515, APEX moves from $3,084,371 or stops being booked under Regional workforce programs, the Ohio award moves from $31,250,000, the provenance stops naming the Chamber grantee of record, or the finder qualifier or panel note loses a figure or the sentence saying the two counts are not added. Added 2026-11-01: the finder listed 'Greater Akron Chamber · $4.15M across two awards' with no basis while this page names the Chamber grantee on APEX and the Ohio grant (fresh-eyes board read, 1 November 2026).",
+      "counts": [
+        {
+          "figure": "$3,084,371",
+          "noun": "APEX"
+        },
+        {
+          "figure": "$31,250,000",
+          "noun": "Ohio"
+        }
+      ]
+    },
+    {
       "id": "flexsys-award",
       "text": "Flexsys holds $10.09M for a safer anti-degradant, a 6PPD alternative (vignette kicker and body).",
       "source": "flexsys award in funding.json",

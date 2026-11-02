@@ -297,7 +297,30 @@ for (const name of names) {
     if (pc.unmeasured.length) out.push(`768:contrast-rendered UNMEASURED ${pc.unmeasured.slice(0, 3).join(", ")}`);
     await page.close();
   }
-  const clean = out.every(s => /^svg=/.test(s));
+  {
+    /* WITHOUT SCRIPTING (fresh-access review, 1 November 2026). With JavaScript off a story
+       lost its stat tiles, scope lines, "This finding breaks if", status sentence, revision
+       date and citation, and said nothing was missing. _data/build/render_static.py now
+       writes a <noscript> text version (verify_consistency.py [static] holds its words);
+       this holds that a browser with scripting off actually shows it, on every page that
+       has a claims file, and that no text in it renders invisibly. */
+    const owed = existsSync(`${WEB}/${name}/claims.json`);
+    const page = await browser.newPage({viewport: {width: 1440, height: 900}, javaScriptEnabled: false});
+    await page.goto(`file:///${file.replace(/\\/g, "/")}`);
+    const r = await page.evaluate(() => {
+      const box = [...document.querySelectorAll(".pv-nojs")];
+      const text = box.map(e => e.innerText).join("\n");
+      return {n: box.length, shown: box.filter(e => e.getClientRects().length).length,
+        has: ["need JavaScript; the figures below are the text version", "Revised ", "Cite as:",
+              "This finding breaks if:", "Prototype:", "Internal working view:"].filter(t => text.includes(t))};
+    });
+    if (owed && (r.n !== 2 || r.shown !== 2)) out.push(`nojs:${r.shown} of ${r.n} text-version block(s) shown with scripting off, not 2 of 2`);
+    else if (owed && !["need JavaScript", "Revised ", "Cite as:"].every(t => r.has.some(h => h.startsWith(t))))
+      out.push(`nojs:text version lacks ${["need JavaScript", "Revised ", "Cite as:"].filter(t => !r.has.some(h => h.startsWith(t))).join(", ")}`);
+    if (owed) out.push(`nojs=${r.has.map(h => h.split(/[ :;]/)[0]).join("+")}`);
+    await page.close();
+  }
+  const clean = out.every(s => /^(svg|nojs)=/.test(s));
   if (!clean) bad++;
   console.log(`${name.padEnd(20)} ${clean ? "OK  " : "FAIL"} ${out.join("  ")}`);
 }

@@ -26,7 +26,7 @@
       ]
     },
     {
-      "text": "Plan on most replacement hiring coming from ordinary turnover rather than retirement: if everyone reaching 65 retired and every one of those jobs were refilled, age would account for about 400 of the 6,626 hires the region makes in a year.",
+      "text": "Count retirements in your own records rather than reading them off this page: if everyone reaching 65 retired and every one of those jobs were refilled, age would account for about 400 of the 6,626 hires the region makes in a year, but the Census series records separations, not retirements.",
       "claims": [
         "churn-pipeline-floor"
       ]
@@ -374,7 +374,7 @@
       "source": "derived: the same trailing four-quarter average the rate chart draws",
       "assert": "(lambda R: (lambda pk: len(R) - 1 - pk == 13 and all(R[i] > R[i+1] for i in range(pk, len(R) - 1)) and tofixed(R[pk] * 100, 1) == '16.7' and tofixed(R[-1] * 100, 1) == '9.6')(R.index(max(R))))([sum(q['churn_rate'] for q in D['ch']['quarters'][i-3:i+1]) / 4 for i in range(3, len(D['ch']['quarters']))]) and sum(q['churn_rate'] for q in D['ch']['quarters'][-4:]) / 4 < sum(q['churn_rate'] for q in D['ch']['quarters']) / len(D['ch']['quarters'])",
       "counts": [
-        {"figure": "13", "noun": "quarters"},
+        {"figure": "13 quarters", "noun": "since it peaked"},
         {"figure": "16.7%", "noun": "peaked"}
       ],
       "actual": "(lambda R: (R.index(max(R)), len(R) - 1 - R.index(max(R)), tofixed(max(R) * 100, 1), tofixed(R[-1] * 100, 1)))([sum(q['churn_rate'] for q in D['ch']['quarters'][i-3:i+1]) / 4 for i in range(3, len(D['ch']['quarters']))])",

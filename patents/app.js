@@ -141,7 +141,7 @@ function drawBars() {
            a["stroke-dasharray"] = "4 3"; }
     hoverable(el("rect", a, svg),
       `<b>${r.year}</b><br>${N(r.ohio)} filed` +
-      (r.complete ? "" : "<br>still filling: publication lag"), String(r.year));
+      (r.complete ? "" : "<br>still filling: after the 2023 cutoff"), String(r.year));
   });
 
   /* Annotations last (house smell list). */
@@ -157,7 +157,7 @@ function drawBars() {
   document.getElementById("barstable").innerHTML =
     tableView("barstable", "Ohio polymer applications by filing year",
     ["Year", "Filed", "Status"],
-    ROWS.map(r => [r.year, N(r.ohio), r.complete ? "complete" : "incomplete (lag)"]));
+    ROWS.map(r => [r.year, N(r.ohio), r.complete ? "complete" : "still filling (after cutoff)"]));
 }
 
 /* --------------------------------------------------- the city table, plain */

@@ -488,6 +488,21 @@ def fmt_n(v):
     return f"{round(v):,}"
 
 
+# Paint's published counties: the same NUMBER both years is not the same counties (Lorain
+# withheld and Geauga published in 2025), so the note names the swap and the change on the
+# counties published in both years. "the same count as last year" read as jobs unchanged.
+_pc = {y: {r["name"]: r["emp"] for r in county_rows if r["year"] == y and r["naics"] == "3255"}
+       for y in (LATEST - 1, LATEST)}
+_out, _in = sorted(set(_pc[LATEST - 1]) - set(_pc[LATEST])), sorted(set(_pc[LATEST]) - set(_pc[LATEST - 1]))
+_both = set(_pc[LATEST - 1]) & set(_pc[LATEST])
+_both_change = round(sum(_pc[LATEST][c] - _pc[LATEST - 1][c] for c in _both))
+paint_note = (f"{fmt_n(by_industry['3255']['latest'])} jobs across "
+              f"{WORDS[by_industry['3255']['cells_latest']]} published counties"
+              + (f", the same {WORDS[len(_both)]} as last year" if not (_out or _in) else
+                 f"; {' and '.join(_out)} {'was' if len(_out) == 1 else 'were'} withheld and "
+                 f"{' and '.join(_in)} published, and on the {WORDS[len(_both)]} in both "
+                 f"years paint {'fell' if _both_change < 0 else 'rose'} {abs(_both_change):,}"))
+
 tiles = [
     {
         "id": "scale",
@@ -541,7 +556,7 @@ tiles = [
         "standing": dict(standing([(y, balanced[y]) for y in YEARS], "high"),
                          basis=(f"the {len(balanced_keys)} county figures published in "
                                 f"every year since {YEARS[0]}"),
-                         basis_short="jobs on the fixed county set",
+                         basis_short="three-industry jobs, fixed county set",
                          merit_short="more jobs is better",
                          merit=("More jobs is the better end of this range. Nobody has "
                                 "set a number the region is aiming at, so the range is "
@@ -584,9 +599,7 @@ tiles = [
                       f"published in both years")},
             {"label": by_industry["3255"]["label"],
              "value": f"down {abs(by_industry['3255']['change']):,.0f} jobs",
-             "note": (f"{fmt_n(by_industry['3255']['latest'])} jobs across "
-                      f"{WORDS[by_industry['3255']['cells_latest']]} published counties, "
-                      f"the same count as last year")},
+             "note": paint_note},
             {"label": by_industry["3252"]["label"],
              "value": f"up {abs(by_industry['3252']['change']):,.0f} jobs",
              "note": (f"a county came back into disclosure, from "
@@ -819,7 +832,7 @@ tiles = [
                     f"The other group of programs here, materials degrees at Case Western and Kent State, held at "
                     f"{materials[deg_latest]}."),
         "standing": dict(standing([(y, polymer[y]) for y in prog_years], "high"),
-                         basis=(f"the same three institutions, {prog_years[0]} to "
+                         basis=(f"the same two universities, {prog_years[0]} to "
                                 f"{prog_years[-1]}"),
                          basis_short="polymer degrees a year",
                          merit_short="more degrees is better",
@@ -829,7 +842,7 @@ tiles = [
                                 "into the same plants."),
                          fmt="n"),
         "baseline": {
-            "name": f"the same three institutions in {deg_peak_year}, their own high",
+            "name": f"the same two universities in {deg_peak_year}, their own high",
             "why": ("A peer region would need a defensible peer set and PIC has named "
                     "none. The programs’ own decade is the baseline that needs no "
                     "choice made for it."),

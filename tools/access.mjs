@@ -28,6 +28,11 @@
  *     a missing address is requested, and the page that comes back must render in the
  *     site's own styles and link to the index and its story list, with both targets real.
  *
+ *   EACH POINT ONCE, EACH BYPASS PAST ITS CHART, THE LOGO ONCE (fresh-access review,
+ *     1 November 2026). Drawn chart text left in the accessibility tree beside marks that
+ *     carry their own aria-label, a "Skip the chart" that lands on another chart's bypass or
+ *     inside its own chart, and a masthead logo announced beside the link that names it.
+ *
  * WHAT IT CANNOT INSPECT IS A FAILURE, NOT A PASS: a Tab walk that never comes back round,
  * a twin table or chart with no ids, or a control that is rendered at neither 1440 nor
  * 390px. It does not run a screen reader. Whether VoiceOver or NVDA actually speaks a
@@ -141,6 +146,80 @@ for (const name of pages) {
         (t.extra.length ? `; not plotted ${t.extra.join(", ")}` : ""));
   }
   if (twins.length) notes.push(`${twins.length} twin table(s) match their marks`);
+
+  /* 6. EACH POINT ONCE, AND NO ANNOTATION LOST (fresh-access review and Codex, 1 November
+     2026). A chart's svg exposes its children, so where every mark carries its own
+     aria-label, drawn text that only repeats what is said already (an axis tick, or a label
+     every word and number of which is in a mark's aria-label, the chart's description or
+     its table view) is the same point read twice and must be aria-hidden. Drawn text that
+     says something nothing else does ("Akron 6% under the nation (0.94×)") must NOT be
+     hidden, or the annotation is gone for a screen-reader user. The rule is written out
+     here, not imported from picviz.js, so the gate does not take the renderer's word. This
+     reads structure, not a screen reader. A chart whose marks are not all labelled is
+     listed, since there the drawn text may be the only name a point has. */
+  const twice = await p.evaluate(() => {
+    const outer = n => { let s = n.ownerSVGElement; while (s && s.ownerSVGElement) s = s.ownerSVGElement; return s; };
+    const toks = s => String(s).toLowerCase().replace(/(\d),(?=\d)/g, "$1").match(/[a-z]+|\d+(?:\.\d+)?/g) || [];
+    const groups = new Set([...document.querySelectorAll("[data-pv-mark]")]
+      .map(m => m.closest("[data-pv-group]") || m.closest(".chart") || outer(m)).filter(Boolean));
+    const out = {loud: [], lost: [], unlabelled: [], kept: 0};
+    for (const g of groups) {
+      const id = g.id || (g.querySelector("svg[id]") || {}).id || "(unnamed)";
+      const marks = [...g.querySelectorAll("[data-pv-mark]")];
+      if (!marks.every(m => m.getAttribute("aria-label"))) { out.unlabelled.push(id); continue; }
+      const svgs = [...g.querySelectorAll("svg")].concat(g.matches("svg") ? [g] : []);
+      const parts = marks.map(m => m.getAttribute("aria-label"));
+      for (const v of svgs) {
+        parts.push(v.getAttribute("aria-label") || "", ...[...v.children].filter(e => /^(title|desc)$/i.test(e.tagName)).map(e => e.textContent));
+        if (v.id) document.querySelectorAll("details.pv-table").forEach(d => {
+          if (d.dataset.pvTwin === v.id || d.dataset.pvFor === v.id) parts.push(d.textContent); });
+      }
+      const said = new Set(toks(parts.join(" ")));
+      const known = k => said.has(k) || (/^[a-z]{3,}$/.test(k) && [...said].some(w => w.startsWith(k)));
+      const loud = [], lost = [];
+      for (const t of g.querySelectorAll("svg text")) {
+        const words = toks(t.textContent);
+        if (!words.length || t.closest("[data-pv-mark]")) continue;
+        const repeat = t.classList.contains("pv-tick") || words.every(known);
+        const hidden = !!t.closest("[aria-hidden=true]");
+        if (repeat && !hidden) loud.push(t.textContent.trim());
+        if (!repeat && hidden && t.getClientRects().length) lost.push(t.textContent.trim());
+        if (!repeat && !hidden) out.kept++;
+      }
+      if (loud.length) out.loud.push(`chart #${id} announces ${loud.length} drawn label(s) beside its marks' own ` +
+        `descriptions ("${loud[0].slice(0, 30)}")`);
+      if (lost.length) out.lost.push(`chart #${id} hides ${lost.length} drawn annotation(s) that no mark, description ` +
+        `or table carries ("${lost[0].slice(0, 40)}")`);
+    }
+    return out;
+  });
+  probs.push(...twice.loud, ...twice.lost);
+  notes.push(`${twice.kept} unique chart annotation(s) left audible`);
+  if (twice.unlabelled.length) notes.push(`drawn labels kept on ${twice.unlabelled.length} chart(s) with unlabelled marks (#${twice.unlabelled.join(", #")})`);
+
+  /* 7. "SKIP THE CHART" LANDS PAST THE CHART. On atlas the map's bypass landed on the next
+     chart's own bypass, so the reader heard "Skip the chart" twice (fresh-access review,
+     1 November 2026). Each shown bypass is pressed; it must land on a stop that is outside
+     its chart and is not another bypass. */
+  const skips = await p.evaluate(() => {
+    const out = [];
+    [...document.querySelectorAll(".pv-skipchart")].filter(b => !b.hidden).forEach(b => {
+      const host = b.parentElement.matches(".chart") ? b.parentElement : b.nextElementSibling;
+      const name = (host && (host.id || (host.querySelector("svg[id]") || {}).id)) || "(unnamed)";
+      b.focus(); b.click();
+      const a = document.activeElement;
+      if (a === b || a === document.body) out.push(`the "Skip the chart" before #${name} moves focus nowhere`);
+      else if (a.classList.contains("pv-skipchart")) out.push(`the "Skip the chart" before #${name} lands on another chart's "Skip the chart"`);
+      else if (host && host.contains(a)) out.push(`the "Skip the chart" before #${name} lands inside its own chart`);
+    });
+    return out;
+  });
+  probs.push(...skips);
+
+  /* 8. THE HOUSE MARK BESIDE ITS OWN NAME. The masthead logo carried aria-label "Polymer
+     Industry Cluster" next to a link reading the same, so every banner announced it twice. */
+  if (await p.evaluate(() => [...document.querySelectorAll(".mast .pv-mark")].some(m => m.getAttribute("aria-hidden") !== "true")))
+    probs.push("the masthead logo is announced beside the link that names it");
 
   /* 3. links with no accessible name */
   const links = await p.evaluate(() => {

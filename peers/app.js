@@ -498,9 +498,10 @@ function verdict() {
     /* Says what the ratio MEANS, in the same shape as the looked-up verdict below, so a
        reader who types a metro gets the sentence they have already learnt to read.
        "4.69× the national share" alone told them nothing about which way was up. */
-    v.innerHTML = `<b>Akron</b>: ${N(akron.emp)} jobs, and plastics fills
+    v.innerHTML = `<b>Akron</b>: ${N(akron.emp)} jobs, ${ord(M.rank_emp)} of the
+      ${M.of_disclosed} metros that disclose, and plastics fills
       ${akron.lq.toFixed(2)}× as much of its job base as of the country&rsquo;s,
-      ${ord(M.rank_emp)} of the ${M.of_disclosed} metros that disclose. Cleveland is
+      ${ord(M.rank_lq)} on that measure. Cleveland is
       ${ord(cleRank)} on ${N(cle.emp)} jobs at ${cle.lq.toFixed(2)}×: more jobs, a thinner
       slice of a bigger economy, which keeps it below the 2.0× line. Type a metro to
       find it on the chart.`;
@@ -509,10 +510,10 @@ function verdict() {
   const p = FOUND;
   v.innerHTML = `<b>${p.name}</b>: ${N(p.emp)} jobs, and plastics fills
     ${p.lq.toFixed(2)}× as much of its job base as of the country&rsquo;s.
-    <b>${ord(rankOf(p.area))} of ${M.of_disclosed}</b> disclosed metros, across
+    <b>${ord(rankOf(p.area))} of ${M.of_disclosed}</b> disclosed metros on jobs, across
     ${N(p.estabs)} establishments. ${quadSet.has(p.area)
       ? "It is past both dashed lines, in the corner with Akron."
-      : `Akron is ${ord(M.rank_emp)} at ${akron.lq.toFixed(2)}×.`}`;
+      : `Akron is ${ord(M.rank_emp)} on jobs, at ${akron.lq.toFixed(2)}×.`}`;
 }
 
 {

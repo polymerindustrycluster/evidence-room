@@ -109,7 +109,7 @@ FY2026 remains excluded from the closed-year average and standing.
 | Scale | Jobs in NAICS 3252 + 3255 + 326, PIC-12 | `wages/` | `data/wages.json` |
 | Distinctiveness | Employment share against the national share | `location-quotient/` | `data/lq.json` |
 | Job quality | Pay against the county, and against the same industry nationally | `wages/` | `data/wages.json` |
-| Talent supply | Polymer degree completions at three universities | `occupations/` | `data/viz-data.json` |
+| Talent supply | Polymer degree completions at two universities (Akron, Case Western) | `occupations/` | `data/viz-data.json` |
 | Capital | Federal awards written into signed awards, and routine contracting | `funding-map/`, `federal-money/` | `data/funding.json`, `data/federal.json` |
 
 The revision calibration in the tinted band comes from `revisions/data/revisions.json`.

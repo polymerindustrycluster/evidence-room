@@ -643,6 +643,49 @@ const CASES = [
    defect: "closing an event's detail panel leaving focus on <body>, not the mark that opened it",
    inject: s => s.replace("const o = opener; opener = null;", "const o = null; opener = null;")},
 
+  /* From the fresh-access review of 1 November 2026. */
+  {gate: "access", page: "occupations", args: ["occupations"],
+   expect: /chart #\S+ announces \d+ drawn label\(s\) beside its marks' own descriptions/,
+   defect: "every chart point announced twice: its drawn label, then its mark's aria-label",
+   inject: s => s.replace('t.setAttribute("aria-hidden", "true");\n        else t.removeAttribute("aria-hidden");',
+                          'void 0;\n        else void 0;')},
+
+  {gate: "access", page: "occupations", args: ["occupations"],
+   expect: /chart #pay hides \d+ drawn annotation\(s\) that no mark, description or table carries/,
+   defect: "every drawn chart label hidden, taking occupations' \"Akron 6% under the nation (0.94×)\" out " +
+           "of the accessibility tree with nothing else saying it (Codex, 1 November 2026)",
+   inject: s => s.replace('if (t.classList.contains("pv-tick") || saidAlready(t.textContent, said)) t.setAttribute',
+                          'if (true) t.setAttribute')},
+
+  {gate: "access", page: "atlas", args: ["atlas"],
+   expect: /"Skip the chart" before #map lands on another chart's "Skip the chart"/,
+   defect: "atlas's map bypass landing on the next chart's bypass rather than the map's directory",
+   inject: s => s.replace("if (own) { own.focus(); return; }", "")
+                 .replace('!n.classList.contains("pv-skipchart") &&', "")},
+
+  {gate: "access", page: "occupations", args: ["occupations"],
+   expect: /masthead logo is announced beside the link that names it/,
+   defect: "the masthead logo carrying aria-label \"Polymer Industry Cluster\" beside the link of the same name",
+   inject: s => s.replace('class="pv-mark" viewBox="-30 -30 289.182 294.048" aria-hidden="true"',
+                          'class="pv-mark" viewBox="-30 -30 289.182 294.048" role="img" aria-label="Polymer Industry Cluster"')},
+
+  {gate: "verify", page: "atlas", args: ["atlas"], expect: /nojs:1 of 1 text-version block\(s\) shown with scripting off/,
+   defect: "a story that, with scripting off, loses its revision date, breaks-if line and citation",
+   inject: s => s.replace(/<noscript><div class="pv-nojs">[\s\S]*?<\/noscript>/, "")},
+
+  {gate: "consistency", page: "occupations", file: "occupations/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[static\] occupations\s+the static nojs-byline region is stale/,
+   defect: "the no-script text version still printing an old \"This finding breaks if\" after claims.json moved on",
+   inject: s => s.replace("<b>This finding breaks if:</b> A new national staffing release",
+                          "<b>This finding breaks if:</b> A national staffing release")},
+
+  {gate: "consistency", page: "reach", file: "reach/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[static\] reach\s+no <!-- pv:static nojs --> region/,
+   defect: "a prototype page with no no-script region, so its do-not-cite sentence vanishes without scripting",
+   inject: s => s.replace(/<!-- pv:static nojs -->[\s\S]*?<!-- \/pv:static -->\n/, "")},
+
   {gate: "style", page: "cluster-health", args: ["cluster-health"], expect: /withdrawn:fy2026 is still open/,
    defect: "\"FY2026 is still open\" on a dated snapshot, which the withdrawn pattern missed because " +
            "its optional space compiled to a required one",
@@ -742,6 +785,13 @@ const CASES = [
    defect: "a story whose total is in the hub's job-count table with no link to it",
    inject: s => s.replace("A county total, not a sum of metros.`, {differs: true}]", "A county total, not a sum of metros.`]")},
 
+  /* 1 November 2026: the check holds the hub's table to every row of the file, not to a count. */
+  {gate: "consistency", page: "index", file: "index/index.html",
+   command: "python3", args: ["_data/build/verify_consistency.py"],
+   expect: /\[jobcounts\] index\/index\.html\s+the hub's table prints 17,770, 18,594, 17,725, 24,032/,
+   defect: "a job-count row (churn's 17,943) missing from the hub's rendered table while its data file lists it",
+   inject: s => s.replace(/<tr><th scope="row">17,943<\/th>.*?<\/tr>\n/s, "")},
+
   {gate: "disclosure", page: "index", args: ["index"],
    expect: /job-count table differs from _data\/jobcounts\.json: 17,707/,
    defect: "the hub's job-count table rendering a total its data file does not hold",
@@ -773,8 +823,15 @@ const CASES = [
    command: "python3", args: ["_data/build/verify_consistency.py"],
    expect: /\[kicker\] index:peers\s+card kicker .* is 45 characters, over 40/,
    defect: "a hub card kicker grown past the 40 characters a short question gets",
-   inject: s => s.replace('<p class="kick">Where does Ohio rank?</p>',
-                          '<p class="kick">Where does Ohio rank among states and metros?</p>')},
+   inject: s => s.replace('<p class="kick"><span aria-hidden="true">Where does Ohio rank?</span></p>',
+                          '<p class="kick"><span aria-hidden="true">Where does Ohio rank among states and metros?</span></p>')},
+
+  /* 1 November 2026: the kicker repeats the card's <h4>, so it is hidden from screen readers. */
+  {gate: "disclosure", page: "index", args: ["index"],
+   expect: /card peers: its kicker "Where does Ohio rank\?" is read aloud/,
+   defect: "a hub card whose short question a screen reader hears before the same question in its heading",
+   inject: s => s.replace('<p class="kick"><span aria-hidden="true">Where does Ohio rank?</span></p>',
+                          '<p class="kick">Where does Ohio rank?</p>')},
 
   {gate: "consistency", page: "index", file: "index/index.html",
    command: "python3", args: ["_data/build/verify_consistency.py"],
