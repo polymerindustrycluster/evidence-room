@@ -673,6 +673,10 @@ const CASES = [
    defect: "a story that, with scripting off, loses its revision date, breaks-if line and citation",
    inject: s => s.replace(/<noscript><div class="pv-nojs">[\s\S]*?<\/noscript>/, "")},
 
+  {gate: "verify", page: "realwage", args: ["realwage"], expect: /nojs:text version lacks This finding breaks if:/,
+   defect: "a no-script byline block without the hero's breaks-if line, on a page whose hero declares one",
+   inject: s => s.replace(/<p><b>This finding breaks if:<\/b>[^\n]*<\/p>\n/, "")},
+
   {gate: "consistency", page: "occupations", file: "occupations/index.html",
    command: "python3", args: ["_data/build/verify_consistency.py"],
    expect: /\[static\] occupations\s+the static nojs-byline region is stale/,
