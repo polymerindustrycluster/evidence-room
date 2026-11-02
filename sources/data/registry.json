@@ -3172,12 +3172,12 @@
  ],
  "checks": {
   "n_pages": 22,
-  "n_claims": 554,
+  "n_claims": 556,
   "n_manual": 22,
   "this_page": 35,
-  "n_auto": 532,
+  "n_auto": 534,
   "n_hub_claims": 36,
-  "n_site_claims": 590,
+  "n_site_claims": 592,
   "n_site_pages": 24
  },
  "vintage": {
