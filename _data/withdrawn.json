@@ -1,6 +1,12 @@
 {
   "_about": "Phrasings a published correction withdrew. tools/style.mjs fails a page that prints one again, outside a dated correction note (a block whose text carries 'Correction, <date>' or 'Corrected <date>' before the match) or a mention in curly double quotes. Patterns are JavaScript regular expressions, matched case-insensitively against the rendered text and, since 2026-10-04, against every link's href, so a withdrawn citation cannot return as an address. When you publish a correction, add its withdrawn wording here; 'correction' names the CORRECTIONS.md entry.",
   "withdrawn": [
+    {"pages": ["occupations"], "pattern": "2020 to 2022 (counts are read from|taken from) the",
+     "correction": "2026-11-02 Which years came from NCES, and a bare 4: 2020 and 2021 are the mirror's counts, filed a year late; only 2022 is from NCES"},
+    {"pages": ["sources"], "pattern": "Those three years are therefore taken from the NCES",
+     "correction": "2026-11-02 Which years came from NCES, and a bare 4: 2020 and 2021 are the mirror's rows moved back a year; only 2022 is from NCES alone"},
+    {"pages": ["index"], "pattern": "October 2023, against\\s+4 in the 34 months",
+     "correction": "2026-11-02 Which years came from NCES, and a bare 4: the hub's timeline card says at least 4"},
     {"pages": ["scorecard"], "pattern": "filed them late and skipped one|2020 to\\s+2022 counts (are read|come) from the NCES|Those three years are now taken from the NCES",
      "correction": "2026-11-02 Which years came from NCES, and a bare 4: 2020 and 2021 are the mirror's counts, filed a year late; only 2022 is from NCES"},
     {"pages": ["cluster-health"], "pattern": "2020 to 2022 come from the NCES",

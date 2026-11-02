@@ -472,7 +472,7 @@
   "source_correction": {
    "applied": "2026-08-31",
    "by": "_data/build/mirror_fix_patch.py",
-   "why": "2020 to 2022 are taken from the NCES completions files: the federal mirror this series is otherwise built from ran a year behind and skipped one",
+   "why": "2020 and 2021 are the federal mirror’s counts, which it filed a year late; 2022, which it never served, comes from the NCES completions files",
    "source": "NCES IPEDS completions C2021_A-C2024_A, via fetch_ipeds_nces.py",
    "years_refiled": {
     "2020": null,

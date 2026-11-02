@@ -1067,16 +1067,15 @@ function drawProgMobile() {
     `Integrated Postsecondary Education Data System completions, summed across the
      selected programs each year. The file ends at ${PT.latest_year}, the last year
      available when this page was built, so the fall rests on ${WORDS[LATE.length] || LATE.length}
-     observed years. The 2020 to 2022 counts are read from the NCES completions files: the
-     mirror this series is otherwise built from filed those years a year late and served
-     one of them under no year at all.`;
+     observed years. The 2020 and 2021 counts are the mirror&rsquo;s, filed a year late;
+     2022, which the mirror never served, is read from the NCES completions files.`;
   document.getElementById("progtable").innerHTML = withNote(tableView("prog",
     `Polymer and materials degrees conferred, by program, ${PT.latest_year} and ${WIN[0]}–${WIN[WIN.length - 1]} average`,
     ["Institution", "Program", "Level", String(PT.latest_year), `${WIN[0]}–${WIN[WIN.length - 1]} average`],
     progRows.map(r => [r.institution, `${r.program} (${r.cip.slice(0, 2)}.${r.cip.slice(2)})`, r.award, r.latest, r.window_avg.toFixed(1)])),
     `One row is one institution, program and award level, first major only, from the Urban
-     Institute&rsquo;s copy of the federal completions file, with 2020 to 2022 taken from the
-     NCES files it mis-dated. Programs with no completions in
+     Institute&rsquo;s copy of the federal completions file, with 2020 and 2021 moved back to
+     the years it mis-dated and 2022, which it never served, taken from NCES. Programs with no completions in
      the window are omitted, which is why the list has ${PT.institutions.length} names.`);
   document.getElementById("progsrc").innerHTML =
     `Integrated Postsecondary Education Data System completions by six-digit program code,

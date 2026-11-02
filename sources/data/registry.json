@@ -194,7 +194,7 @@
     ],
     [
      "year labels",
-     "The mirror\u2019s year is the FALL of the academic year, so its 2023 is the NCES C2024_A file. That convention held through 2019 and again at 2023; in between, its 2020, 2021 and 2022 each served the collection year before the one they name, and C2023_A was served under no label at all. Those three years are therefore taken from the NCES completions files (https://nces.ed.gov/ipeds/datacenter/data/C{year}_A.zip, no key), by fetch_ipeds_nces.py; the correction table and its re-check are in _data/build/ipeds_mirror_fix.py. Degrees only: the recovered year also carries two postbaccalaureate certificates, which no other year of the series counts."
+     "The mirror\u2019s year is the FALL of the academic year, so its 2023 is the NCES C2024_A file. That convention held through 2019 and again at 2023; in between, its 2020, 2021 and 2022 each served the collection year before the one they name, and C2023_A was served under no label at all. So 2020 and 2021 are the mirror\u2019s rows moved back a year, checked against the NCES completions files, and 2022 is taken from NCES alone (https://nces.ed.gov/ipeds/datacenter/data/C{year}_A.zip, no key), by fetch_ipeds_nces.py; the correction table and its re-check are in _data/build/ipeds_mirror_fix.py. Degrees only: the recovered year also carries two postbaccalaureate certificates, which no other year of the series counts."
     ]
    ],
    "pages": [

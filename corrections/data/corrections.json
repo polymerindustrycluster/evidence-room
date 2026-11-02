@@ -12,19 +12,25 @@
   {
    "id": "2026-11-02-2",
    "date": "2026-11-02",
-   "heading": "2026-11-02 — Which years came from NCES, and a bare 4, *scorecard, cluster-health, timeline*",
+   "heading": "2026-11-02 — Which years came from NCES, and a bare 4, *scorecard, cluster-health, occupations, sources, timeline, index*",
    "label": "",
-   "title_html": "Which years came from NCES, and a bare 4, <em>scorecard, cluster-health, timeline</em>",
+   "title_html": "Which years came from NCES, and a bare 4, <em>scorecard, cluster-health, occupations, sources, timeline, index</em>",
    "pages": [
     "scorecard",
     "cluster-health",
-    "timeline"
+    "occupations",
+    "sources",
+    "timeline",
+    "index"
    ],
-   "html": "<p>The day's first fixes left two statements loose. No published figure changed. Each page carries a dated note.</p><p><b>Which years the NCES files supply, <em>scorecard, cluster-health</em>.</b> <b>Was:</b> the scorecard's credentials chart said the federal mirror \"filed them late and skipped one\", without saying one what, and its subtitle, table caption and source line, like the cluster-health Talent tile's basis, credited 2020 to 2022 to the NCES completions files. <b>Is:</b> 2020 and 2021 are the mirror's own counts, filed a year late and moved back to their years; only 2022, which the mirror never served, comes from the NCES files.</p><p><b>At least 4, <em>timeline</em>.</b> <b>Was:</b> the pace heading said 66 events against at least 4, but the opening paragraph, the figure title, the chart label and the stat card still gave a bare 4. <b>Is:</b> each says at least 4 or calls it a floor.</p>",
+   "html": "<p>The day's first fixes left two statements loose. No published figure changed. Each page carries a dated note.</p><p><b>Which years the NCES files supply, <em>scorecard, cluster-health, occupations, sources</em>.</b> <b>Was:</b> the scorecard's credentials chart said the federal mirror \"filed them late and skipped one\", without saying one what, and its subtitle, table caption and source line, like the cluster-health Talent tile's basis, credited 2020 to 2022 to the NCES completions files. <b>Is:</b> 2020 and 2021 are the mirror's own counts, filed a year late and moved back to their years; only 2022, which the mirror never served, comes from the NCES files. The same credit stood in the occupations page's trend source line and program table note and in the IPEDS entry of the sources register; each now gives the same split.</p><p><b>At least 4, <em>timeline, index</em>.</b> <b>Was:</b> the pace heading said 66 events against at least 4, but the opening paragraph, the figure title, the chart label and the stat card still gave a bare 4, as did the hub's timeline card. <b>Is:</b> each says at least 4 or calls it a floor.</p>",
    "flags": {
     "scorecard": {},
     "cluster-health": {},
-    "timeline": {}
+    "occupations": {},
+    "sources": {},
+    "timeline": {},
+    "index": {}
    },
    "after_html": ""
   },

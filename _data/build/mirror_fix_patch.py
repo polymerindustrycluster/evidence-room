@@ -132,8 +132,8 @@ else:
     occ["meta"]["years"]["ipeds_window"] = window
     occ["meta"]["source"] = occ["meta"]["source"].replace(
         "IPEDS completions by CIP via the Urban Institute",
-        "IPEDS completions by CIP via the Urban Institute, with 2020 to 2022 taken from "
-        "the NCES completions files directly")
+        "IPEDS completions by CIP via the Urban Institute, with 2020 and 2021 re-filed a year "
+        "back and 2022 taken from the NCES completions files directly")
     changed.append(f"{rel}: {len(occ['programs'])} programmes, {window} window, "
                    f"latest {pt['polymer_awards_latest']}, "
                    f"window average {pt['polymer_awards_window_avg']}")
@@ -172,11 +172,7 @@ else:
     N = {9: "nine", 10: "ten", 11: "eleven", 12: "twelve"}
     st["rank_words"] = (f"{WORDS.get(st['rank_from_low'], str(st['rank_from_low']) + 'th lowest')}"
                         f" of {N.get(st['n_years'], st['n_years'])}")
-    # Not MF.CAPTION, whose "ran a year behind and skipped one" leaves "one" dangling (2 November 2026).
-    # 2020 and 2021 are re-filed mirror rows (MF.LAG); only 2022 is NCES (MF.BACKFILL_YEAR).
-    st["basis"] = (f"the same two universities, {years[0]} to {years[-1]}. 2020 and 2021 are the "
-                   "federal mirror’s counts, which it filed a year late; 2022, which it never "
-                   "served, comes from the NCES completions files.")
+    st["basis"] = f"the same two universities, {years[0]} to {years[-1]}. {MF.CAPTION}."
     tile["value"] = str(st["value"])
 
     steps = [(b, poly[b] - poly[a]) for a, b in zip(years, years[1:])]
