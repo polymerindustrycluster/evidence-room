@@ -434,7 +434,7 @@ figures([
    it is the register the page is drawn from, not a step in the argument. */
 {
   document.getElementById("statestable").innerHTML = tableView("states",
-    `Substantive polymer programs by state, all ${D.states.length} states`,
+    `Substantive polymer programs by state, ${D.states.filter(r => r.state !== "DC" && r.state !== "PR").length} states, D.C. and Puerto Rico`,
     ["State", "Ever", "Still conferring 2023"],
     D.states.map(r => [r.state, r.ever, r.still]));
   document.getElementById("statessrc").innerHTML =

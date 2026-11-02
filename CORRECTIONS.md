@@ -40,6 +40,8 @@ the active shares' numerators and denominators are floors and the shares can mov
 way; the small and brief counts, and the last year shown for a record that stopped in 2021
 or 2022, can move either way. The `prog-not-recomputed` claim pins them until it is done.
 
+**Also corrected the same day.** The state appendix and its table said "thirty states"; the thirty are 28 states, the District of Columbia and Puerto Rico. Found by the same review.
+
 ## 2026-11-02 — Which years came from NCES, and a bare 4, *scorecard, cluster-health, occupations, sources, timeline, index*
 
 The day's first fixes left two statements loose. No published figure changed. Each page
