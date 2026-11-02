@@ -566,7 +566,7 @@
     {
      "label": "Paint and coatings",
      "value": "down 395 jobs",
-     "note": "4,257 jobs across seven published counties; Lorain was withheld and Geauga published, and on the six in both years paint fell 30"
+     "note": "4,257 jobs across seven published counties; the change compares each year’s published counties, which differ: Lorain was withheld and Geauga published, and on the six in both years paint fell 30"
     },
     {
      "label": "Resin and synthetic rubber",
@@ -1043,7 +1043,7 @@
       "value": 63
      }
     ],
-    "basis": "the same two universities, 2014 to 2023. 2020 to 2022 are taken from the NCES completions files: the federal mirror this series is otherwise built from ran a year behind and skipped one.",
+    "basis": "the same two universities, 2014 to 2023. 2020 to 2022 come from the NCES completions files: the federal mirror the rest is built from ran a year behind there and never served 2022.",
     "basis_short": "polymer degrees a year",
     "merit_short": "more degrees is better",
     "merit": "More degrees out of the three programs is the better end. Nobody has set a number the region needs, and this range cannot see the two-year and certificate routes into the same plants.",

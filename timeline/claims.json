@@ -4,7 +4,7 @@
   "terms": ["Tech Hub"]
  },
  "plant": [
-  {"text": "Read the jump in the public record as a ceiling, not a count of activity you can join: it holds 66 delivered events in the 34 months since October 2023, against 4 in the 34 months before, a floor because the record was compiled after the designation, and recent rows include PIC’s own presentations and reviews.", "claims": ["tl-cadence-before-after"]},
+  {"text": "Read the jump in the public record as a ceiling, not a count of activity you can join: it holds 66 delivered events in the 34 months since October 2023, against 4 in the 34 months before, a floor because the record was compiled after the designation; and the 66 include PIC’s own presentations and reviews.", "claims": ["tl-cadence-before-after"]},
   {"text": "The pilot facility’s readiness target is one of 18 scheduled dates on the record, not a delivered event, so check its status before you plan work around it.", "claims": ["tl-sched-split"]}
  ],
  "hero": "tl-cadence-before-after",
@@ -12,7 +12,7 @@
   "h": "heritage.json",
   "t": "timeline.json"
  },
- "quote": {"text": "The PIC timeline register holds 66 delivered public events for the Northeast Ohio polymer cluster in the 34 months after the October 2023 federal designation, against 4 in the 34 months before, a floor because the register was compiled after the designation, and the recent rows include PIC’s own presentations and reviews.", "claims": ["tl-cadence-before-after"]},
+ "quote": {"text": "The PIC timeline register holds 66 delivered public events for the Northeast Ohio polymer cluster in the 34 months after the October 2023 federal designation, against 4 in the 34 months before, a floor because the register was compiled after the designation; and the recent rows include PIC’s own presentations and reviews, so the jump measures how fast the register fills, not what got built.", "claims": ["tl-cadence-before-after"]},
  "claims": [
   {
    "id": "tl-heritage-count",
@@ -116,7 +116,8 @@
     {"figure": "4 events in the 34 months before that", "noun": "The public record holds"},
     {"figure": "66 delivered in the 34 months since", "noun": "34 months before that"},
     {"figure": "4 delivered events", "noun": "34 months before"}, {"figure": "4 in the 34 months before", "noun": "a floor"},
-    {"figure": "66 ÷ 4", "noun": "true jump"}
+    {"figure": "66 ÷ 4", "noun": "true jump"},
+    {"figure": "at least 4", "noun": "events"}
    ]
   },
   {

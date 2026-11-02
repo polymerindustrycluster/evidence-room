@@ -31,8 +31,11 @@ python derive_reach.py      # shapes it, quarantines implausible partners,
 
 **Both inputs are held, not in the public checkout.** `_data/build/reach.json` (the raw
 pull) is gitignored with every other `_data/build/*.json`. `derive_reach.py` also reads
-`world.json` from the same folder, the Natural Earth 1:110m coastline backdrop (coastlines only, coordinates rounded to
-three decimals). No script in `_data/build` produces `world.json`. So `derive_reach.py` cannot run
+`world.json` from the same folder, the basemap. It has never been committed and no script in either tree writes it;
+its source is recorded only in its own `meta`, which `derive_reach.py` copies into `reach.json` `meta.basemap`:
+"Natural Earth 1:110m admin-0 countries, coastlines only", coordinates rounded to three decimals, specks under about
+0.4 square degrees dropped, outer rings only. Where it was downloaded from, which Natural Earth version, and what
+simplified it are not recorded (see `_data/REBUILDING.md`). So `derive_reach.py` cannot run
 from a clean clone; `fetch_reach.py` can, against the live OpenAlex API, and will
 return later counts than the shipped file.
 

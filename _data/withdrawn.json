@@ -1,6 +1,14 @@
 {
   "_about": "Phrasings a published correction withdrew. tools/style.mjs fails a page that prints one again, outside a dated correction note (a block whose text carries 'Correction, <date>' or 'Corrected <date>' before the match) or a mention in curly double quotes. Patterns are JavaScript regular expressions, matched case-insensitively against the rendered text and, since 2026-10-04, against every link's href, so a withdrawn citation cannot return as an address. When you publish a correction, add its withdrawn wording here; 'correction' names the CORRECTIONS.md entry.",
   "withdrawn": [
+    {"pages": ["timeline"], "pattern": "designation, and (the )?recent rows include|events against 4\\b",
+     "correction": "2026-11-02 Caveats and sets stated where readers quote them: the Quote this sentence and plant box give each caveat its own reason, and the pace heading says at least 4"},
+    {"pages": ["wages"], "pattern": "\\(NAICS 325 and 326\\)",
+     "correction": "2026-11-02 Caveats and sets stated where readers quote them: the 51 pairings include the four-digit subcodes 3252, 3255, 3261 and 3262"},
+    {"pages": ["cluster-health"], "pattern": "than a decade ago|ran a year behind and skipped one|published counties; Lorain was withheld",
+     "correction": "2026-11-02 Caveats and sets stated where readers quote them: 2016 is seven years earlier; the mirror note says what it skipped; the paint change compares each year's published counties"},
+    {"pages": ["location-quotient"], "pattern": "annual averages of the year.s four quarters",
+     "correction": "2026-11-02 Caveats and sets stated where readers quote them: a job count's annual average is of twelve monthly counts"},
     {"pages": ["location-quotient"], "pattern": "not because it measures anything different",
      "correction": "2026-11-01 Wrong and misleading sentences readers found: the fixed-base and moving-base paint lines divide by different workforces"},
     {"pages": ["patents"], "pattern": "everything filed in them has already published|late filings lift|lag has run out for everything filed|incomplete \\(lag\\)",

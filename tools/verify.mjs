@@ -11,7 +11,7 @@
    one colour (an image or gradient under the text) is reported as unmeasured and fails.
    Until 5 October 2026 .eyebrow was exempt, the brand lime at 4.12:1 on --ink, pending
    John's call; he made it (lighten the lime on the hero only), so nothing is exempt now. */
-import {readdirSync, existsSync} from "fs";
+import {readdirSync, existsSync, readFileSync} from "fs";
 import {spawnSync} from "child_process";
 import {resolve, dirname} from "path";
 import {fileURLToPath} from "url";
@@ -305,6 +305,11 @@ for (const name of names) {
        this holds that a browser with scripting off actually shows it, on every page that
        has a claims file, and that no text in it renders invisibly. */
     const owed = existsSync(`${WEB}/${name}/claims.json`);
+    /* A hero that declares breaks_if owes its line in the byline block (2 November 2026);
+       the condition is render_static.py's, which prints it only with guards too. */
+    const spec = owed ? JSON.parse(readFileSync(`${WEB}/${name}/claims.json`, "utf8")) : {};
+    const hero = (spec.claims || []).find(c => c.id === spec.hero);
+    const want = ["need JavaScript", "Revised ", "Cite as:", ...(hero?.breaks_if && hero?.guards ? ["This finding breaks if:"] : [])];
     const page = await browser.newPage({viewport: {width: 1440, height: 900}, javaScriptEnabled: false});
     await page.goto(`file:///${file.replace(/\\/g, "/")}`);
     const r = await page.evaluate(() => {
@@ -315,8 +320,8 @@ for (const name of names) {
               "This finding breaks if:", "Prototype:", "Internal working view:"].filter(t => text.includes(t))};
     });
     if (owed && (r.n !== 2 || r.shown !== 2)) out.push(`nojs:${r.shown} of ${r.n} text-version block(s) shown with scripting off, not 2 of 2`);
-    else if (owed && !["need JavaScript", "Revised ", "Cite as:"].every(t => r.has.some(h => h.startsWith(t))))
-      out.push(`nojs:text version lacks ${["need JavaScript", "Revised ", "Cite as:"].filter(t => !r.has.some(h => h.startsWith(t))).join(", ")}`);
+    else if (owed && !want.every(t => r.has.some(h => h.startsWith(t))))
+      out.push(`nojs:text version lacks ${want.filter(t => !r.has.some(h => h.startsWith(t))).join(", ")}`);
     if (owed) out.push(`nojs=${r.has.map(h => h.split(/[ :;]/)[0]).join("+")}`);
     await page.close();
   }

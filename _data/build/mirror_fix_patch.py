@@ -172,7 +172,10 @@ else:
     N = {9: "nine", 10: "ten", 11: "eleven", 12: "twelve"}
     st["rank_words"] = (f"{WORDS.get(st['rank_from_low'], str(st['rank_from_low']) + 'th lowest')}"
                         f" of {N.get(st['n_years'], st['n_years'])}")
-    st["basis"] = f"the same two universities, {years[0]} to {years[-1]}. {MF.CAPTION}."
+    # Not MF.CAPTION, whose "ran a year behind and skipped one" leaves "one" dangling (2 November 2026).
+    st["basis"] = (f"the same two universities, {years[0]} to {years[-1]}. 2020 to 2022 come from "
+                   "the NCES completions files: the federal mirror the rest is built from ran a year "
+                   "behind there and never served 2022.")
     tile["value"] = str(st["value"])
 
     steps = [(b, poly[b] - poly[a]) for a, b in zip(years, years[1:])]

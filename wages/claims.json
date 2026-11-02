@@ -22,13 +22,14 @@
   },
   "plant": [
     {
-      "text": "Your local pay benchmark usually sits above the town’s: in 40 of the 51 pairings of a county and an industry that BLS can publish, polymer pay beats the county’s all-industry average.",
+      "text": "Your local pay benchmark usually sits above the town’s: in 40 of the 51 pairings of a county and an industry that BLS can publish, polymer pay beats the county’s all-industry average, while against its manufacturing average 19 of 23 chemistry-side pairings pay more and only 4 of 28 plastics and rubber pairings do.",
       "claims": [
-        "wage-premium-count"
+        "wage-premium-count",
+        "wage-vs-mfg-split"
       ]
     },
     {
-      "text": "Your pay also competes with your industry elsewhere in the country, where it is usually higher: across chemical, plastics and rubber manufacturing (NAICS 325 and 326), 44 of the 51 pairings pay less than the same industry pays nationally, the typical one about 12 percent less.",
+      "text": "Your pay also competes with your industry elsewhere in the country, where it is usually higher: across chemical, plastics and rubber manufacturing (NAICS 325 and 326, including their four-digit subcodes), 44 of the 51 pairings pay less than the same industry pays nationally, the typical one about 12 percent less.",
       "claims": [
         "vs-us-counterweight"
       ]
@@ -42,7 +43,7 @@
     }
   ],
   "quote": {
-    "text": "In 2025, the average wage beat the county’s all-industry average in 40 of the 51 published county-industry pairings in chemical, plastics and rubber manufacturing (NAICS 325 and 326) across the PIC-12 counties (BLS QCEW, annual averages).",
+    "text": "In 2025, the average wage beat the county’s all-industry average in 40 of the 51 published county-industry pairings in chemical, plastics and rubber manufacturing (NAICS 325 and 326, including their four-digit subcodes) across the PIC-12 counties (BLS QCEW, annual averages).",
     "claims": [
       "wage-premium-count"
     ]
@@ -202,7 +203,7 @@
     },
     {
       "id": "vs-us-counterweight",
-      "text": "44 of the 51 pairings, in chemical, plastics and rubber manufacturing (NAICS 325 and 326), pay less than the same industry pays elsewhere in the country; the typical one pays about 12 percent less, a median 0.88x (counterweight lede, closer, plant box; the plant box names the 325 and 326 set since 2026-11-01, so its 0.88x is not read as the cluster-health tile's 0.90x on 3252, 3255 and 326). The guarded band 0.877-0.885 all rounds to 'about 12 percent less'.",
+      "text": "44 of the 51 pairings, in chemical, plastics and rubber manufacturing (NAICS 325 and 326, including their four-digit subcodes), pay less than the same industry pays elsewhere in the country; the typical one pays about 12 percent less, a median 0.88x (counterweight lede, closer, plant box; the plant box names the 325 and 326 set since 2026-11-01, so its 0.88x is not read as the cluster-health tile's 0.90x on 3252, 3255 and 326). The guarded band 0.877-0.885 all rounds to 'about 12 percent less'.",
       "source": "vs_us: county weekly wage / same-industry US average; 2025 annual averages; NAICS 325 and 326; BLS QCEW",
       "assert": "len([r for r in D['w']['latest_rows'] if r.get('vs_local_all') and r.get('vs_us') and r['vs_us'] < 1]) == 44 and abs((lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_us'] for r in D['w']['latest_rows'] if r.get('vs_local_all') and r.get('vs_us')]) - 0.881) <= 0.004",
       "actual": "(len([r for r in D['w']['latest_rows'] if r.get('vs_local_all') and r.get('vs_us') and r['vs_us'] < 1]), (lambda a:(lambda s,n: s[n//2] if n%2 else (s[n//2-1]+s[n//2])/2)(sorted(a),len(a)))([r['vs_us'] for r in D['w']['latest_rows'] if r.get('vs_local_all') and r.get('vs_us')]))",
@@ -377,7 +378,8 @@
         {"figure": "1.16", "noun": "pairings"},
         {"figure": "19 of 23", "noun": "pairings"},
         {"figure": "0.87", "noun": "pairings"},
-        {"figure": "4 of 28", "noun": "pairings"}
+        {"figure": "4 of 28", "noun": "pairings"},
+        {"figure": "only 4 of 28", "noun": "pairings"}
       ]
     },
     {
