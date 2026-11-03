@@ -176,6 +176,11 @@
    Outlined rather than filled, so it cannot be mistaken for the footprint chip. */
 .card .pill.proto{border:1px solid var(--ink);color:var(--ink);padding:1px 7px;
   font-weight:700;letter-spacing:.04em}
+/* A page still on PIC-12 while PIC-18 is rolled out (2026-11-03). Dashed, so it reads as
+   temporary beside the solid footprint chip and the outlined prototype flag. */
+.card .pill.pend{border:1px dashed var(--ink);color:var(--ink);padding:1px 7px;
+  font-weight:700;letter-spacing:.02em}
+.footprint-switch{background:#FFF4D6;padding:8px 12px;margin:0 0 14px;max-width:72ch}
 .cards.lead .card{border-left:3px solid var(--ink)}
 /* The three statuses, once, above the cards (2026-10-04). */
 .status-key{list-style:none;padding:0;margin-top:14px;font-size:14px;line-height:1.55;

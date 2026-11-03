@@ -6,6 +6,24 @@ product and domain decisions that a reader or rebuilder needs.
 
 ---
 
+## 2026-11-03 — PIC-18 replaces PIC-12 for federal-data pages (John Swanson)
+
+- **The footprint is now PIC-18.** It is the NEO-SMART eighteen-county region: JobsOhio's Team NEO (14)
+  plus Lake to River (4), per jobsohio.com/ohio-regional-network, read 2026-11-03. It contains PIC-12
+  and adds Ashland, Columbiana, Erie, Huron, Richland and Tuscarawas. The reason is to align PIC with
+  NEO-SMART and the JobsOhio working split.
+- **All three repositories move together.** pic-geo carries the canonical definition (v1.1.0), this
+  room re-vendors it, and the cluster-health dashboard switches too. Federal pages and the dashboard
+  keep reconciling, which was the point of the 2026-08-14 decision this supersedes.
+- **Pages are re-derived one at a time.** Until a page is, its data's `meta.footprint` still says
+  PIC-12, and `footprintPending` puts a notice at the top of the page saying so. The notice disappears
+  by itself when the data is rebuilt on PIC-18. Each re-derivation that moves a published number
+  carries its dated correction, as always.
+- **NEO-14 (vault pages) and PIC-12+2 (chain) are unchanged.** PIC-12 stays defined, so figures
+  already published against it remain reproducible.
+- **Known limit:** the PIC-18 ZIP crosswalk ships without a city list. That needs the EPA facility
+  extract, so the patents page, which matches inventors by city, re-derives last.
+
 ## 2026-10-07 — W4 content: the short kicker, the plant box, and where a chip will not fit (Claude, for John's review)
 
 - **The hub card is the one source of each kicker.** Every card leads with a short question
