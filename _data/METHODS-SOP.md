@@ -32,14 +32,16 @@ here is what a machine cannot adjudicate.
 
 # 1. Definitions that must be decided, not inferred
 
-**The footprint.** PIC-12 is PIC's official twelve-county set and the one the cluster-health
-dashboard uses. The chain register's CODEBOOK set, **PIC-12+2**, includes all twelve plus
+**The footprint.** PIC-18 is PIC's footprint for federal-data work from 2026-11-03. It is the NEO-SMART
+eighteen-county region, JobsOhio's Team NEO plus Lake to River, and contains all of PIC-12 (DECISIONS.md
+2026-11-03). Pages move to it one at a time, and a page still on PIC-12 says so at the top. PIC-12 is the
+earlier twelve-county set, kept so published figures stay reproducible. The chain register's CODEBOOK set, **PIC-12+2**, includes all twelve plus
 Columbiana and Tuscarawas. **NEO-14** names only the vault's fourteen-county set, the NEO14
 constant in pic-geo and the vendored footprints.py; it shares only ten PIC counties, adding
 Crawford, Huron, Richland and Tuscarawas and leaving out Ashtabula and Trumbull. Until
 2026-10-04 the chain set was also called NEO-14; it was renamed so one name means one set. **Use the explicit
 county list attached to each source, not the label alone.** Regional federal county
-aggregates use PIC-12; chain company records use their CODEBOOK rule. National,
+aggregates use PIC-18 (PIC-12 until each page is re-derived); chain company records use their CODEBOOK rule. National,
 state, metro and county comparisons name their own geography. A metro is not a county
 footprint, and a shared code or year does not prove two sources use the same boundaries.
 If a page deliberately compares footprints, it says so in its prose and limitations, and

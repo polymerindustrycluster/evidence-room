@@ -302,6 +302,47 @@ function picker(total) {
   paint();
 }
 
+/* ------------------------------------------------------------------ footprint switch
+
+   PIC-18 replaced PIC-12 on 2026-11-03 (DECISIONS.md), and the pages switch one at a time.
+   The hub lists which have switched, from the same PV.PIC18_PENDING / PIC18_SWITCHED lists
+   that draw each page's own methodology-box notice, so the two cannot disagree. Each pending card
+   gets an outlined chip; the sentence under the picker gives the count and names them. */
+function footprintSwitch() {
+  const pending = PV.PIC18_PENDING || {}, done = PV.PIC18_SWITCHED || {};
+  const live = CARDS.filter(el => el.isConnected);
+  const SHORT = {peers: "Peers", laborshed: "Laborshed", wages: "Wages",
+    "federal-money": "Federal money", "cluster-health": "Cluster health",
+    "location-quotient": "Location quotient", churn: "Churn", occupations: "Occupations",
+    patents: "Patents", scorecard: "Scorecard"};
+  const name = el => SHORT[el.dataset.slug] || el.dataset.slug;
+  const pend = live.filter(el => pending[el.dataset.slug]);
+  const sw = live.filter(el => done[el.dataset.slug]);
+  for (const el of pend) {
+    const s = document.createElement("span");
+    s.className = "pill pend";
+    s.textContent = "PIC-18 update pending";
+    const geo = el.querySelector(".pill.geo");
+    if (geo) geo.after(s); else el.querySelector(".meta")?.prepend(s);
+  }
+  const host = document.querySelector(".picker");
+  if (!host || (!pend.length && !sw.length)) return;
+  const total = pend.length + sw.length;
+  const p = document.createElement("p");
+  p.className = "footprint-switch";
+  p.id = "footprint-switch";
+  const swLine = sw.length
+    ? ` Switched: ${sw.map(el => `<a href="${el.getAttribute("href")}">${name(el)}</a> (${done[el.dataset.slug]})`).join(", ")}.`
+    : "";
+  p.innerHTML = `<b>Footprint switch in progress.</b> On 2026-11-03 PIC adopted PIC-18, the
+    NEO-SMART eighteen-county region, in place of PIC-12. ${sw.length
+      ? `<b>${Word(sw.length)} of the ${word(total)}</b> pages here with a PIC-12 figure ${sw.length === 1 ? "has" : "have"} been re-derived on it.`
+      : `None of the ${word(total)} pages here with a PIC-12 figure has been re-derived on it yet.`}${swLine}
+    Still on PIC-12: ${pend.map(el => `<a href="${el.getAttribute("href")}">${name(el)}</a>`).join(", ")}.
+    The county picker below lists the twelve PIC-12 counties until the last of these switches.`;
+  host.before(p);
+}
+
 /* ------------------------------------------------------------------ run
 
    Three independent steps, each contained. A failure in one of them used to take the whole
@@ -317,6 +358,7 @@ try {
 try {
   PV.padGrid(".cards", "card");
   picker(total);
+  footprintSwitch();
 } catch (e) {
   console.error("hub: county picker unavailable —", e.message);
 }
