@@ -306,7 +306,7 @@ function picker(total) {
 
    PIC-18 replaced PIC-12 on 2026-11-03 (DECISIONS.md), and the pages switch one at a time.
    The hub lists which have switched, from the same PV.PIC18_PENDING / PIC18_SWITCHED lists
-   that draw each page's own masthead notice, so the two cannot disagree. Each pending card
+   that draw each page's own methodology-box notice, so the two cannot disagree. Each pending card
    gets an outlined chip; the sentence under the picker gives the count and names them. */
 function footprintSwitch() {
   const pending = PV.PIC18_PENDING || {}, done = PV.PIC18_SWITCHED || {};

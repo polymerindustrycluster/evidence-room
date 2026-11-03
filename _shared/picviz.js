@@ -619,11 +619,11 @@ const PV = (() => {
 
   /* ------------------------------------------------------- footprint pending
      PIC-18 (owner ruling 2026-11-03, DECISIONS.md) replaces PIC-12 for federal-data pages.
-     Pages are re-derived one at a time; until a page is, it says so at the top, in words,
+     Pages are re-derived one at a time; until a page is, it says so in its methodology box, in words,
      rather than leaving the reader to notice.
 
      ONE LIST, TWO READERS. PIC18_PENDING names every page that still carries a PIC-12
-     figure and what that figure is, as the start of the notice's sentence (verb included). The masthead notice reads it, and so does the hub, which
+     figure and what that figure is, as the start of the notice's sentence (verb included). The methodology-box notice reads it, and so does the hub, which
      marks each pending card and prints how many have switched. A page whose own data says
      meta.footprint.key === "pic12" gets the notice even if it is missing here, so a page
      cannot be dropped from the list while its data is still PIC-12. When a page is
@@ -642,15 +642,19 @@ const PV = (() => {
     "patents": "the regional city list on this page uses",
   };
   const PIC18_SWITCHED = {};   // slug: "YYYY-MM-DD" the page's data was rebuilt on PIC-18
+  /* WHERE IT RENDERS. In the methodology box, under "Data sources", not in the masthead. A
+     masthead line was tried first (2026-11-03) and failed three house gates: `disclosure`
+     reserves the masthead banner for PROTOTYPE and INTERNAL pages, `coldopen` found six
+     pages with no headroom above their first chart, and `measure` put it off the rail. The
+     hub lists every pending page above its county picker, so a reader choosing a page sees
+     the status before opening it; the page itself states it where its sources are named. */
   function footprintPending(fp, page) {
     const what = PIC18_PENDING[page] || (fp && fp.key === "pic12" ? "the figures on this page use" : null);
-    if (!what || document.querySelector(".pv-pending")) return;
-    const p = document.createElement("p");
-    p.className = "pv-status pv-pending";
-    p.innerHTML = `<b>Footprint update in progress:</b> ${what} PIC-12, the earlier ` +
-      "twelve-county footprint. On 2026-11-03 PIC adopted PIC-18, the NEO-SMART eighteen-county " +
-      "region; this page will be re-derived on it and the change logged as a correction.";
-    document.querySelector("header.mast .wrap")?.appendChild(p);
+    if (!what) return "";
+    return `<p class="pv-method-note pv-pending"><b>Footprint update in progress:</b> ${what}
+      PIC-12, the earlier twelve-county footprint. On 2026-11-03 PIC adopted PIC-18, the
+      NEO-SMART eighteen-county region; this page will be re-derived on it and the change
+      logged as a correction.</p>`;
   }
 
   /* ------------------------------------------------------------ status banner
@@ -1084,7 +1088,6 @@ const PV = (() => {
       }
     }
     statusBanner(m.status, o.page);
-    footprintPending(m.footprint, o.page);
     await madeAndChecked(o.page || "index", manual.length, claims);
     await correctionsSummary(o.page || "index");
 
@@ -1152,6 +1155,7 @@ const PV = (() => {
         })()}
         <div>
           <h3>Data sources</h3>
+          ${footprintPending(m.footprint, o.page)}
           ${sources.length ? `<ul>${li(sources)}</ul>`
             : `<p>${o.sourcesNote || "Named on each page this one links to."}</p>`}
           ${m.fetched ? `<p class="pv-method-note">Retrieved ${m.fetched}.</p>` : ""}
