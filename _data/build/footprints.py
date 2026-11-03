@@ -34,6 +34,13 @@ PIC18 = {
 #: Which JobsOhio network region each PIC-18 county belongs to (the public source of PIC-18).
 JOBSOHIO_REGION = {f: ("Lake to River" if n in ("Ashtabula", "Columbiana", "Mahoning", "Trumbull")
                        else "Team NEO") for f, n in PIC18.items()}
+#: Team NEO's own 14 counties: the JobsOhio regional partner's service area, and the region
+#: of its Vibrant Economy Indicators (neohioeconomy.org, read 2026-11-03). A subset of PIC-18,
+#: carried so a PIC-18 figure can be cut to the region Team NEO publishes against.
+#: NOT the vault's NEO-14 below, which shares the number and twelve of the counties: Team NEO
+#: holds Ashland and Erie, the vault's NEO-14 holds Crawford and Mahoning instead.
+TEAMNEO14 = {f: n for f, n in PIC18.items() if JOBSOHIO_REGION[f] == "Team NEO"}
+
 NEO14 = {
     "39153": "Summit", "39035": "Cuyahoga", "39133": "Portage", "39151": "Stark",
     "39055": "Geauga", "39085": "Lake", "39093": "Lorain", "39103": "Medina",
@@ -65,5 +72,14 @@ META = {
                          "PIC-12, which it contains. Against the vault’s NEO-14 it adds "
                          "Ashland, Ashtabula, Columbiana, Erie and Trumbull and leaves out "
                          "Crawford; the two share thirteen counties."},
+    "teamneo14": {"key": "teamneo14", "n": len(TEAMNEO14), "label": "Team NEO-14",
+                  "counties": sorted(TEAMNEO14.values()),
+                  "note": "Team NEO’s own 14-county region (JobsOhio’s Northeast Ohio partner), "
+                          "the region its Vibrant Economy Indicators report. A subset of "
+                          "PIC-18, used as a subtotal so figures can be read against Team NEO’s.",
+                  "differs": "PIC-18 minus the four Lake to River counties: Ashtabula, "
+                             "Columbiana, Mahoning and Trumbull. Not the vault’s NEO-14: Team "
+                             "NEO-14 holds Ashland and Erie, NEO-14 holds Crawford and "
+                             "Mahoning; the two share twelve counties."},
     "shared": sorted(PIC12[c] for c in SHARED),
 }

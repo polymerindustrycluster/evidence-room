@@ -20,7 +20,7 @@ SUPPRESSION
   suppressed=true with value null — never zero, never interpolated.
 """
 import json, os, collections
-from footprints import PIC12, META
+from footprints import PIC18, TEAMNEO14, META
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "qcew.json")
@@ -45,9 +45,14 @@ NAICS = [
     ("3261", "Plastics products",                  "detail"),
     ("3262", "Rubber products",                    "detail"),
 ]
-# FEDERAL-data page: PIC-12, so it reconciles with cluster-health.
-FOOTPRINT = "pic12"
-COUNTIES = [a for a in PIC12 if a in NAME]
+# FEDERAL-data page: PIC-18 from 2026-11-03 (owner ruling, DECISIONS.md), so it reconciles
+# with cluster-health. Team NEO-14, the Team NEO half of PIC-18, is carried as a subtotal so
+# the region can be read against Team NEO's Vibrant Economy Indicators.
+FOOTPRINT = "pic18"
+COUNTIES = [a for a in PIC18 if a in NAME]
+SUBTOTALS = {"teamneo14": [a for a in TEAMNEO14 if a in NAME]}
+missing = [a for a in PIC18 if a not in NAME]
+assert not missing, f"qcew.json lacks PIC-18 counties {missing}; re-run fetch_qcew.py"
 YEARS = sorted({r["year"] for r in rows})
 
 
@@ -89,23 +94,29 @@ for y in YEARS:
 
 # The composite: BLS publishes no LQ for a custom geography, so it is summed
 # from county components and flagged as ours, not BLS's.
-composite = []
-for y in YEARS:
-    ut = cell(y, "US000", "0", "10")
-    tot = sum(c["emp"] for a in COUNTIES if (c := cell(y, a, "0", "10")))
-    for naics, label, register in NAICS:
-        un = cell(y, "US000", "5", naics)
-        parts = [cell(y, a, "5", naics) for a in COUNTIES]
-        known = [p for p in parts if p]
-        emp = sum(p["emp"] for p in known)
-        missing = len(parts) - len(known)
-        composite.append({
-            "year": y, "naics": naics, "label": label, "register": register, "emp": emp,
-            "estabs": sum(p["estabs"] for p in known if p["estabs"]),
-            "counties_counted": len(known), "counties_suppressed": missing,
-            "lq": round((emp / tot) / (un["emp"] / ut["emp"]), 4)
-                  if (tot and un and ut and emp) else None,
-        })
+def composite_of(counties):
+    out = []
+    for y in YEARS:
+        ut = cell(y, "US000", "0", "10")
+        tot = sum(c["emp"] for a in counties if (c := cell(y, a, "0", "10")))
+        for naics, label, register in NAICS:
+            un = cell(y, "US000", "5", naics)
+            parts = [cell(y, a, "5", naics) for a in counties]
+            known = [p for p in parts if p]
+            emp = sum(p["emp"] for p in known)
+            missing = len(parts) - len(known)
+            out.append({
+                "year": y, "naics": naics, "label": label, "register": register, "emp": emp,
+                "estabs": sum(p["estabs"] for p in known if p["estabs"]),
+                "counties_counted": len(known), "counties_suppressed": missing,
+                "lq": round((emp / tot) / (un["emp"] / ut["emp"]), 4)
+                      if (tot and un and ut and emp) else None,
+            })
+    return out
+
+
+composite = composite_of(COUNTIES)
+subtotals = {k: {"footprint": META[k], "composite": composite_of(v)} for k, v in SUBTOTALS.items()}
 
 data = {
     "meta": {
@@ -161,6 +172,7 @@ data = {
     "areas": [{"code": a, "name": NAME[a]} for a in COUNTIES + ["39000", "US000"]],
     "cells": out_cells,
     "composite": composite,
+    "subtotals": subtotals,
 }
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 json.dump(data, open(OUT, "w", encoding="utf-8"), separators=(",", ":"))

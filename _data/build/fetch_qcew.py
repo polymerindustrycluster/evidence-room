@@ -10,13 +10,12 @@ Nothing here writes to Supabase. Production backfill is a separate, human-gated 
 import csv, io, json, os, time, urllib.request, urllib.error, collections
 
 SP = os.path.dirname(os.path.abspath(__file__))
-NEO = {  # the 14 counties the studio already uses
-    "39153": "Summit", "39035": "Cuyahoga", "39133": "Portage", "39151": "Stark",
-    "39055": "Geauga", "39085": "Lake", "39093": "Lorain", "39103": "Medina",
-    "39077": "Huron", "39099": "Mahoning", "39169": "Wayne", "39157": "Tuscarawas",
-    "39139": "Richland", "39033": "Crawford",
-}
-AREAS = dict(NEO)
+# Every county any footprint uses, read from footprints.py rather than retyped here: the
+# vault's NEO-14, PIC-12, and PIC-18 (which holds Team NEO-14). This list used to be a typed
+# NEO-14 literal, so PIC-12's Ashtabula and Trumbull and PIC-18's Ashland, Columbiana and Erie
+# were added by hand or not at all (2026-11-03, PIC-18 re-derivation).
+from footprints import NEO14, PIC12, PIC18  # noqa: E402
+AREAS = dict(sorted({**NEO14, **PIC12, **PIC18}.items()))
 AREAS["US000"] = "United States"
 AREAS["39000"] = "Ohio"
 
