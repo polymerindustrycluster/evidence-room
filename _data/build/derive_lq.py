@@ -182,7 +182,7 @@ v = data["meta"]["verification"]
 print(f"verification: {v['cells_checked']} cells, MAE {v['mean_abs_residual']}, max {v['max_abs_residual']}")
 print("suppressed cells:", sum(1 for c in out_cells if c["suppressed"]))
 print()
-print("NEO-14 composite LQ by year:")
+print("PIC-18 composite LQ by year:")
 for naics, label, register in NAICS:
     s = [c for c in composite if c["naics"] == naics]
     line = "  ".join(f"{c['year']}:{c['lq']:.2f}" for c in s if c["lq"])
