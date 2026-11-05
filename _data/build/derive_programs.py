@@ -31,6 +31,7 @@ import sqlite3
 import sys
 
 import ipeds_quarantine as QZ
+import programs_mirror_patch as PMP
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DB = os.environ.get("PROGRAMS_DB") or os.path.join(
@@ -54,6 +55,27 @@ def check(label, got, want):
 
 
 print(f"reading {DB}")
+
+# THE MIRROR'S YEARS (ipeds_mirror_fix.py). The census is built on the Urban mirror's labels:
+# its "2020" is 2019 again, its "2021" and "2022" are 2020 and 2021, and C2023_A is in no
+# row. Everything below is derived on those labels exactly as before, then
+# programs_mirror_patch.patch() re-files the year-keyed series and adds 2022 from NCES, the
+# same code that corrected the committed file. The per-programme columns (total_awards,
+# first/last year, status) come from build_db.py and stay on the mirror's labels until
+# build_db.py itself re-files them and adds C2023_A per programme; the patch names them in
+# source_correction.not_recomputed_here and the page says which way they can be off.
+_raw = {r["year"]: r["awards"] for r in q("""SELECT y.year, SUM(y.awards) AS awards
+          FROM program_year y JOIN program p USING (program_id)
+          WHERE p.cip_group='polymer' AND p.source='ipeds' GROUP BY y.year""")}
+MIRROR_LABELLED = _raw.get(2020) in (None, _raw.get(2019))
+if not MIRROR_LABELLED:
+    # build_db.py has re-filed: a real 2020 exists. Then 2022 must be C2023_A, and QZ.drop
+    # and the patch below must not run, or they would drop and shift real years.
+    _c23 = PMP.nces_polymer(2023)["national"]
+    if _raw.get(2022) != _c23:
+        raise SystemExit(f"FATAL: the census has a real 2020 but its 2022 ({_raw.get(2022)}) "
+                         f"is not NCES C2023_A ({_c23}); half-applied correction.")
+    QZ.QUARANTINED.clear()
 
 # ------------------------------------------------------------------ the series
 series = QZ.drop(q("""SELECT y.year, SUM(y.awards) AS awards
@@ -271,5 +293,20 @@ D = {
     "pay": pay_rows,
 }
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
-json.dump(D, open(OUT, "w", encoding="utf-8"), indent=1)
+if MIRROR_LABELLED:
+    D = PMP.patch(D, PMP.nces_polymer(2022), PMP.nces_polymer(2023))
+    print("after the mirror-year correction:")
+    check("national 2019..2023", [r["awards"] for r in D["series"] if r["year"] >= 2019],
+          [807, 763, 673, 690, 617])
+    check("Akron 2016..2023", [D["ua"]["series"][str(y)] for y in range(2016, 2024)],
+          [114, 114, 109, 77, 87, 32, 37, 44])
+    check("Akron bachelor 2016..2023", D["ua"]["bachelor_2016_2023"], [3, 1, 0, 3, 0, 0, 0, 2])
+    check("fell since the peak", (D["down_years_last7"], D["down_years_of"]), (5, 7))
+else:
+    D.pop("quarantined", None)
+    D.pop("quarantine_caption", None)
+    D["source_correction"] = {"why": PMP.MF.CAPTION, "per_program_2022": "C2023_A",
+                              "years_refiled": {str(k): v for k, v in PMP.MF.LAG.items()},
+                              "year_backfilled": PMP.MF.BACKFILL_YEAR}
+json.dump(D, open(OUT, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
 print(f"wrote {OUT} ({os.path.getsize(OUT):,} bytes)")

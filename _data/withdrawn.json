@@ -1,6 +1,8 @@
 {
   "_about": "Phrasings a published correction withdrew. tools/style.mjs fails a page that prints one again, outside a dated correction note (a block whose text carries 'Correction, <date>' or 'Corrected <date>' before the match) or a mention in curly double quotes. Patterns are JavaScript regular expressions, matched case-insensitively against the rendered text and, since 2026-10-04, against every link's href, so a withdrawn citation cannot return as an address. When you publish a correction, add its withdrawn wording here; 'correction' names the CORRECTIONS.md entry.",
   "withdrawn": [
+    {"pages": ["programs"], "pattern": "four of the five\\s+years|2020 is quarantined, not zero|excluding\\s+quarantined 2020|2020 is not drawn|record has no real 2020",
+     "correction": "2026-11-02 The mirror's years on the programs page: 2020 and 2021 are re-filed, 2022 comes from NCES, and completions fell in five of the seven years since the peak"},
     {"pages": ["sources", "scorecard", "occupations", "cluster-health", "accountability"], "pattern": "with three years read from NCES",
      "correction": "2026-11-02 Which years came from NCES, and a bare 4: the IPEDS source title says one year read from NCES"},
     {"pages": ["occupations"], "pattern": "2020 to 2022 (counts are read from|taken from) the",
