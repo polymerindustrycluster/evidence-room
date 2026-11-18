@@ -178,11 +178,11 @@
     },
     {
       "id": "churn-footprint",
-      "text": "This page uses the PIC-12 footprint, and the banner names all twelve counties.",
+      "text": "The local totals cover the twelve Northeast Ohio counties listed in the glossary.",
       "source": "John's decision 2026-08-14",
       "assert": "D['ch']['meta']['footprint']['label'] == 'PIC-12' and len(D['ch']['meta']['footprint']['counties']) == 12 and D['ch']['meta']['footprint']['counties'] == sorted(D['ch']['meta']['footprint']['counties']) and {c['county'] for c in D['ch']['counties']} == set(D['ch']['meta']['footprint']['counties'])",
       "actual": "D['ch']['meta']['footprint']['counties']",
-      "falsified_if": "The footprint label changes, the list stops holding twelve names, the names stop being alphabetical (the banner prints them in file order and reads as a list), or the county panel stops covering exactly the counties the banner names. BANNER COPY: the strip above the headline used to open on 'excludes Crawford, Huron, Richland and Tuscarawas, which the vault's NEO-14 includes' — two undefined internal terms in the most valuable position on the page. A naive reader skipped the whole strip. It now names the twelve counties, which is the geography the headline promises; NEO-14 is defined in the methodology instead. FOOTPRINT: this page still does NOT reconcile with NEO-14 pages, which share only 10 counties, and the methodology says so."
+      "falsified_if": "The footprint label changes, the county list differs from the twelve names in the glossary, or the county panel covers a different set."
     },
     {
       "id": "churn-footprint-complete",

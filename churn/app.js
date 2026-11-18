@@ -1196,17 +1196,6 @@ onFonts(drawAll);
 MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
                         : MOBILE.addListener(drawAll);
 
-/* Footprint banner — stated on the page, not left to the reader to infer.
-
-   It used to open the page on "excludes Crawford, Huron, Richland and Tuscarawas, which
-   the vault's NEO-14 includes": two undefined internal terms in the most valuable
-   position on the page, before the reader has met a single finding. A naive reader
-   skipped the whole strip and started at the headline. The banner now names the twelve
-   counties, which is the geography the headline promises and the one thing a reader
-   actually wants from a footprint line. NEO-14 is explained in the methodology, where a
-   reader who needs it can find it defined rather than referenced. */
-PV.footprintBanner({...FP, note: "Former PIC region.", differs: ""});
-
 /* Standard methodology + AI disclosure. Generated, not written — see picviz.js. Three
    page-specific blocks are appended: the removed peer comparison, what a fair one would
    need, and the detail that used to crowd the figure captions. All three FOLD behind
@@ -1246,8 +1235,7 @@ meth.querySelector(".pv-method-grid").insertAdjacentHTML("beforeend", `
       chart is a floor. ${last.year}Q4 is absent rather than zero: the Census has not
       published it. Below 760px the flow chart aggregates quarters into years, which
       changes the shape of the chart and none of its values, and carries its own title.</p>
-    <p><b>${FP.label}</b> is the ${FP.words}-county footprint PIC uses for its own
-      reporting, and it is what every figure on this page is summed over. PIC&rsquo;s
+    <p><b>${FP.label}</b> is the earlier ${FP.words}-county region used for the local totals on this page. PIC&rsquo;s
       internal files also carry a different fourteen-county definition called NEO-14, which
       adds Crawford, Huron, Richland and Tuscarawas and leaves out Ashtabula and Trumbull. The
       two share ten counties and never reconcile, so a total from this page and a total from a NEO-14 page are not
