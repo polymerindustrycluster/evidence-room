@@ -779,7 +779,8 @@ MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
    Standard methodology + AI disclosure. Generated, not written — see picviz.js. The
    parent/child overlap reconciliation moves here out of chart 1's caption; every count in it
    is computed above, never typed. */
-const meth = await PV.methodology({page: "wages", meta: {...D.meta, as_of: [D.meta.as_of || D.meta.fetched, manufacturing.meta.fetched].sort().at(-1)},
+D.meta.as_of = [D.meta.as_of || D.meta.fetched, manufacturing.meta.fetched].sort().at(-1);
+const meth = await PV.methodology({page: "wages", meta: D.meta,
   definitions: `NAICS is the federal industry classification, and the
     ${[...new Set(D.latest_rows.map(r => r.naics))].length} industries tracked here are its
     codes 325 chemical manufacturing, 3252 resin and synthetic rubber, 3255 paint and
