@@ -1311,7 +1311,7 @@ document.getElementById("defnote").innerHTML =
    at the worst of them: Geauga County resin in 2025, which the bureau&rsquo;s basis puts at
    22.70&times; and the intuitive one at 21.27&times;. This chart is the tripwire: if BLS changes
    its method, or ours drifts, the divergence shows up here before it reaches a funder.
-   The regional development organization Team NEO, a Northeast Ohio group, published 2.69&times; using Lightcast data. That is one number for one year with no
+   Team NEO, a regional development organization in Northeast Ohio, published 2.69&times; using Lightcast data. That is one number for one year with no
    decomposition and no way for anyone outside the licence to check it. The components are
    free, which is why this page can rank six industries and eleven years against each
    other and that figure cannot.`;
