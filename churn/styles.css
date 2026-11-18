@@ -26,7 +26,7 @@
 
 /* Per-rendering copy. The narrow chart in band 1 aggregates quarters into years, so it
    carries its own title rather than a title written for marks it does not draw. */
-.band .byline{color:var(--caption)}
+.band .byline{color:var(--caption);max-width:var(--measure);margin-inline:auto}
 .only-narrow{display:none}
 @media (max-width:760px){
   /* `.legend span` carries a display of its own, so the plain class loses the cascade
