@@ -5,6 +5,7 @@
     "peers": "../../peers/data/peers.json",
     "lq": "../../location-quotient/data/lq.json",
     "ls": "../../laborshed/data/laborshed.json",
+    "factory": "../../wages/data/mfg.json",
     "wg": "../../wages/data/wages.json",
     "ch": "../../churn/data/churn.json",
     "occ": "../../occupations/data/viz-data.json",
@@ -125,8 +126,8 @@
             "job"
           ]
         },
-        {"figure": "First in the country", "noun": "Ohio holds"},
-        {"figure": "10,248 more than second-place Texas", "noun": "Ohio holds"}
+        {"figure": "First in the country", "noun": "Ohio had"},
+        {"figure": "10,248 more than second-place Texas", "noun": "Ohio had"}
       ]
     },
     {
@@ -254,17 +255,19 @@
     },
     {
       "id": "card-wages-premium",
-      "text": "Wages card: across 51 county-industry pairings, median group-average pay is 0.99x county manufacturing pay, from 1.16x for chemicals and 0.87x for plastics and rubber, and 1.21x county all-jobs pay. These are chemical/plastics/rubber group averages, not individual wages or a causal premium.",
-      "source": "BLS QCEW 2025 annual averages, county by NAICS, via wages/data/wages.json",
-      "assert": "len([r for r in D['wg']['latest_rows'] if r.get('vs_local_all')]) == 51 and tofixed(sorted(r['vs_local_all'] for r in D['wg']['latest_rows'] if r.get('vs_local_all'))[25],2)=='1.21' and tofixed(sorted(r['weekly_wage'] / D['mfg']['counties'][r['name']]['mfg_weekly_wage'] for r in D['wg']['latest_rows'] if r.get('vs_local_all'))[25],2)=='0.99' and tofixed((lambda c: sorted(r['weekly_wage'] / D['mfg']['counties'][r['name']]['mfg_weekly_wage'] for r in D['wg']['latest_rows'] if r.get('vs_local_all') and r['naics'] in c))(('325','3252','3255'))[11],2)=='1.16' and (lambda v: tofixed((v[13]+v[14])/2,2)=='0.87')((lambda c: sorted(r['weekly_wage'] / D['mfg']['counties'][r['name']]['mfg_weekly_wage'] for r in D['wg']['latest_rows'] if r.get('vs_local_all') and r['naics'] in c))(('326','3261','3262')))",
-      "actual": "{'pairings': len([r for r in D['wg']['latest_rows'] if r.get('vs_local_all')]), 'all_jobs_median': tofixed(sorted(r['vs_local_all'] for r in D['wg']['latest_rows'] if r.get('vs_local_all'))[25], 2), 'manufacturing_median': tofixed(sorted(r['weekly_wage'] / D['mfg']['counties'][r['name']]['mfg_weekly_wage'] for r in D['wg']['latest_rows'] if r.get('vs_local_all'))[25], 2)}",
-      "falsified_if": "The disclosed comparison no longer has 51 county-industry pairings, or the median group-average ratios no longer round to 1.21 against county all-jobs pay and 0.99 against county manufacturing pay. Or the chemical and plastics-and-rubber medians against manufacturing no longer round to 1.16 and 0.87 (added 2026-09-28 with the family split).",
+      "text": "Across eleven comparable counties, chemicals paid above other factories in ten and plastics and rubber in three.",
+      "source": "BLS QCEW, 2025 annual county files, private NAICS 31-33, 325 and 326. Residual payroll divided by residual annual average employment.",
+      "assert": "(lambda rows: len(rows)==11 and all(all(v>0 for pair in r.values() for v in pair) and all(r['31-33'][k]>r['325'][k]+r['326'][k] for k in (0,1)) for r in rows) and [sum(r[c][0]*(r['31-33'][1]-r['325'][1]-r['326'][1]) > r[c][1]*(r['31-33'][0]-r['325'][0]-r['326'][0]) for r in rows) for c in ('325','326')]==[10,3])([v['payroll_and_jobs'] for v in D['factory']['counties'].values() if len(v['payroll_and_jobs'])==3])",
+      "falsified_if": "Either count changes, the residual denominator is nonpositive or the number of complete county comparisons changes.",
       "counts": [
-        {"figure": "Across 51 county-industry pairings", "noun": "median group-average pay"},
-        {"figure": "0.99 times county manufacturing pay", "noun": "median group-average pay is"},
-        {"figure": "from 1.16 times for chemicals", "noun": "county manufacturing pay"},
-        {"figure": "0.87 times for plastics and rubber", "noun": "1.16 times for chemicals"},
-        {"figure": "1.21 times county all-jobs pay", "noun": "0.87 times for plastics and rubber"}
+        {
+          "figure": "ten of eleven counties",
+          "noun": "chemicals paid more"
+        },
+        {
+          "figure": "Plastics and rubber paid more in three",
+          "noun": "counties"
+        }
       ]
     },
     {

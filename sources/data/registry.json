@@ -73,7 +73,7 @@
     ],
     [
      "wage_comparison",
-     "The wages page includes broad chemical manufacturing 325 and plastics/rubber 326, plus their separately disclosed parts. Broad 325 includes pharmaceuticals and agricultural chemicals. The complete non-overlapping group comparison weights county/group-average pay ratios by jobs; it is not an individual wage distribution. Private manufacturing 31-33 is a separate comparator; industry 10 all-ownership county pay is the local all-jobs benchmark."
+     "The wages page includes broad chemical manufacturing 325 and plastics/rubber 326, plus their separately disclosed parts. Broad 325 includes pharmaceuticals and agricultural chemicals. The complete non-overlapping group comparison weights county/group-average pay ratios by jobs; it is not an individual wage distribution. For the opening wage chart, fetch_mfg_baseline.py subtracts disclosed private 325 and 326 payroll and annual average employment from county private manufacturing before comparing average pay. Trumbull lacks a complete pair in 2025. Private manufacturing 31-33 is a separate inclusive comparator; industry 10 all-ownership county pay is the local all-jobs benchmark."
     ],
     [
      "cluster_health_workplaces",
@@ -1841,7 +1841,7 @@
     "fips": "39169"
    }
   ],
-  "note": "PIC's official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
+  "note": "PIC\u2019s former twelve-county footprint. PIC adopted its eighteen-county region on 3 November 2026.",
   "differs": "The chain register uses PIC-12+2, its CODEBOOK county set, adding Columbiana and Tuscarawas. NEO-14, the vault\u2019s fourteen-county set in pic-geo, is a different list."
  },
  "socs": [
@@ -3172,12 +3172,12 @@
  ],
  "checks": {
   "n_pages": 22,
-  "n_claims": 554,
+  "n_claims": 555,
   "n_manual": 22,
   "this_page": 35,
-  "n_auto": 532,
+  "n_auto": 533,
   "n_hub_claims": 36,
-  "n_site_claims": 590,
+  "n_site_claims": 591,
   "n_site_pages": 24
  },
  "vintage": {

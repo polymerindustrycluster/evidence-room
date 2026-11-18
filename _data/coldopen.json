@@ -77,6 +77,7 @@
   "corrections": "the rendered corrections log (DECISIONS.md D3): a text record of CORRECTIONS.md, filterable by page, with no figure to draw"
  },
  "fixed": [
+  "churn",
   "wages",
   "scorecard",
   "funding-map",
@@ -93,7 +94,7 @@
   "outranks 19px; lower it again when the hero is next edited."
  ],
  "ceilings": {
-  "churn": 1701,
+
   "cluster-health": 1082,
   "federal-money": 1713,
   "laborshed": 1561,

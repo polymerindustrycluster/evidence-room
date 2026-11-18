@@ -23,7 +23,7 @@
     "Trumbull",
     "Wayne"
    ],
-   "note": "PIC’s official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
+   "note": "PIC’s former twelve-county footprint. PIC adopted its eighteen-county region on 3 November 2026.",
    "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the vault’s NEO-14 includes; NEO-14 in turn leaves out Ashtabula and Trumbull. The two share ten counties."
   },
   "scope": "Obligations at place of performance in the 12 PIC-12 counties. NAICS rows are filtered to 325* and 326*, chemical and plastics/rubber. County rows are ALL industries and are an order of magnitude larger; the two are shown separately and never summed.",
@@ -3897,7 +3897,7 @@
      "Trumbull",
      "Wayne"
     ],
-    "note": "PIC’s official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
+    "note": "PIC’s former twelve-county footprint. PIC adopted its eighteen-county region on 3 November 2026.",
     "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the vault’s NEO-14 includes; NEO-14 in turn leaves out Ashtabula and Trumbull. The two share ten counties."
    },
    "why": "PRIME CONTRACTING ONLY, award_type_codes A-D, so the polymer numerator and the all-industry denominator are the same kind of money. Same CPI-U restatement as every other total on this page.",

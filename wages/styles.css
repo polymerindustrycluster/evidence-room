@@ -84,3 +84,7 @@
    the block 151px outboard of the rail. */
 .hero .wrap > .hero-viz{max-width:var(--measure);margin:26px auto 4px}
 .hero-viz svg{width:100%;height:auto;display:block;overflow:visible}
+
+.hero-viz .chem-key,.hero-viz .plast-key{color:#fff}
+.hero-viz .pv-table summary{color:#fff;text-decoration:underline}
+.hero-viz .pv-tablewrap{color:var(--text);background:var(--paper)}

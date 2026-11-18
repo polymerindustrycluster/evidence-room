@@ -45,8 +45,7 @@ SHARED = set(PIC12) & set(NEO14)
 META = {
     "pic12": {"key": "pic12", "n": len(PIC12), "label": "PIC-12",
               "counties": sorted(PIC12.values()),
-              "note": "PIC’s official 12-county footprint, matching the cluster-health "
-                      "dashboard. Chosen for federal-data pages so figures reconcile.",
+              "note": "PIC’s former twelve-county footprint. PIC adopted its eighteen-county region on 3 November 2026.",
               "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the "
                          "vault’s NEO-14 includes; NEO-14 in turn leaves out Ashtabula and "
                          "Trumbull. The two share ten counties."},

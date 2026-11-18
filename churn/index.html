@@ -25,98 +25,33 @@
 <section class="hero">
   <div class="wrap">
     <p class="eyebrow" data-kicker>How much churn is behind the headcount?</p>
-    <h1>A tenth of this workforce turns over every quarter.
-      <em>Almost none of it is growth</em>.</h1>
-    <!-- Claim-carrying text is STATIC, and the script that used to write it has been
-         deleted rather than left to overwrite it: one copy of every sentence, checked by
-         claims.json against the data. Only genuinely computed spans (the county verdict,
-         the payroll translator) are still filled by JS. -->
-    <!-- The standfirst answers the growth question outright, because the headline does
-         not and a reader who meets +168 first will assume it did. Two Census measures,
-         two questions, and the page says which one is which before it says anything
-         else. -->
-    <p class="stand">Two Census measures, estimated separately, answer two different questions.
-      <b>Are there more jobs?</b> No: the headcount fell by 719, to 17,725.
-      <b>How much movement is under that?</b> One job in ten here starts and one in ten ends every quarter: about 14 in and
-      14 out at a 150-person plant. The ledger nets them: 111,529 hires, 111,361
-      separations, +168. They are <b>job events, not people</b>: a
-      Summit-to-Stark move counts twice.</p>
-    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data U.S. Census QWI, 2012Q1 to 2025Q3</p>
-    <!-- pv:static nojs-byline -->
-<noscript><div class="pv-nojs">
-<p>Revised <time datetime="2026-11-01">1 November 2026</time>. 13 corrections since publication. Headline wording last changed 30 August 2026 (<a href="https://github.com/polymerindustrycluster/evidence-room/commits/main/churn/index.html">repository history</a>). See them in the <a href="../corrections/?page=churn">corrections log</a>.</p>
-<p>What the headline figures cover:</p><ul><li>NAICS 326 · PIC-12 · 2012–2025 · Census QWI</li></ul>
-<p><b>This finding breaks if:</b> Revised Census figures put the share starting, or ending, each quarter far from one in ten.</p>
-<p><b>Cite as:</b> Swanson, J., Polymer Industry Cluster (2026). <cite>The Churn Engine</cite>. Polymer Industry Cluster (PIC) Evidence Room, version <time datetime="2026-11-01">1 November 2026</time>. <a href="https://polymerindustrycluster.github.io/evidence-room/churn/">https://polymerindustrycluster.github.io/evidence-room/churn/</a>. Creative Commons Attribution 4.0 (CC BY 4.0).</p>
-</div></noscript>
-    <!-- /pv:static -->
-    <div class="hero-row" id="figs">
-      <div class="figv key"><div class="n">111,529</div><div class="k">hires</div>
-        <div class="d">across 55 quarters</div></div>
-      <div class="figv"><div class="n">111,361</div><div class="k">separations</div>
-        <div class="d">over the same period</div></div>
-      <!-- 55 quarters, not "14 years": 55 quarters is 13.75 years, and the card beside
-           this one already counts the same span in quarters. -->
-      <div class="figv"><div class="n">+168</div><div class="k">net flow, 55 quarters</div>
-        <div class="d">starts minus ends. Not a jobs gain: the headcount fell 719</div></div>
-      <div class="figv"><div class="n">10.8%</div><div class="k">average churn, 2012 to
-        2025</div>
-        <div class="d">a tenth of jobs start, a tenth end, each quarter. The last four
-          published quarters run 9.6%</div></div>
-    </div>
-    <!-- THE DECLINE IS PAID OFF. This paragraph used to say no comparator existed here and
-         that the same series would answer it cheaply, which made the honest-sounding
-         refusal a research gap wearing a caveat's clothes. The comparison is now fetched
-         and published in the band directly below, so the question is answered in the same
-         position it is asked. The answer is paid for inside the paragraph: the sentence
-         about what this pull CAN answer went, because the next section is now that
-         answer, and the cold-open ratchet is a ceiling rather than a target. -->
-    <p class="gauge"><b>Is a tenth of the jobs, every quarter, a lot?</b> No. Three of the
-      six biggest plastics and rubber states churn faster than this region and three churn
-      slower. More jobs end than start in all seven, so what stands out is not the
-      direction but the size of the gap: 0.74 points here, second-widest of the seven and
-      more than double the 0.29-point median of the six states. A payroll churns when people leave for better work, and it churns when a
-      plant cannot keep anyone, and these records cannot tell the two apart: separations
-      count quits and layoffs alike. What they do show is that the rise since 2012 is
-      almost all on the leaving side:
-      the separation rate, the share of jobs that end in a quarter, rose 1.9
-      points; the hire rate rose 0.2. Averaged over a year, more jobs have ended than started
-      in every quarter since 2023Q1.</p>
+    <h1>Quarterly turnover averaged about one job in ten.</h1>
+    <p class="stand">Across twelve Northeast Ohio counties, turnover in plastics and rubber was near the middle of six big manufacturing states. The gap between jobs ending and starting was second widest.</p>
+
   </div>
 </section>
 
 <section class="band tint">
   <div class="wrap">
-    <p class="takeaway">Compared with what</p>
-    <h2>A tenth of the jobs a quarter is ordinary for this industry. The size of the gap
-      is not</h2>
-    <!-- MICHIGAN MOVED OUT OF THIS LEDE AND INTO THE FIGURE'S OWN CHROME. The cold-open
-         ratchet is a ceiling, not a target, and this band now sits between the hero and
-         the page's first chart: three lines of setup here cost the chart its place on the
-         first screen. The state is named in the subtitle, given its reason in the source
-         line and kept as a row in the table, which is where a coverage gap belongs. -->
-    <p class="lede">The same Census measure the rest of this page uses, over the same four
-      quarters and the same industry code: Ohio and the five other states with the biggest
-      plastics and rubber payrolls, each published whole, against the twelve counties
-      summed.</p>
-    <!-- The corpus travels inside the fragment: "three of the six states" detaches into a
-         claim about no particular six. -->
-    <p class="fig-title">Three of the six biggest plastics and rubber states churn faster
-      than this region and three slower. In all seven, more jobs end than start</p>
-    <p class="fig-sub">Left: the share of jobs that start or end in a quarter, 2024Q4 to
-      2025Q3, on a scale that starts at zero. Right: how far the separation rate runs ahead
-      of the hire rate, in points. Michigan is not drawn; the source line says why.</p>
-    <div class="legend">
-      <span><i style="background:#0C6473"></i> This region, the twelve counties</span>
-      <span><i style="background:#B9B3A9"></i> One state, published whole</span>
-      <span><i style="background:#C85F0C"></i> Separations run ahead of hires</span>
-    </div>
+    <p class="takeaway">Plastics and rubber jobs · 2024Q4 to 2025Q3</p>
+    <h2>Three states turned over faster, three slower</h2>
+    <p class="fig-sub">The first scale shows average quarterly turnover. The second shows how far separations exceeded hires, in percentage points.</p>
     <div class="chart"><svg id="peer" role="img" aria-labelledby="peer-t"><title id="peer-t">Two panels sharing seven rows, ranked by turnover. On the left,
         the share of jobs starting or ending each quarter: Indiana, Texas and Ohio above
         this region, Pennsylvania, Illinois and California below it. On the right, the
         amount by which the separation rate exceeds the hire rate: positive for all
         seven, widest in California and second-widest in this region.</title></svg></div>
+    <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic) &middot; Data U.S. Census QWI, 2012Q1 to 2025Q3</p>
+    <!-- pv:static nojs-byline -->
+<noscript><div class="pv-nojs">
+<p>Revised <time datetime="2026-11-18">18 November 2026</time>. 14 corrections since publication. Headline wording last changed 30 August 2026 (<a href="https://github.com/polymerindustrycluster/evidence-room/commits/main/churn/index.html">repository history</a>). See them in the <a href="../corrections/?page=churn">corrections log</a>.</p>
+<p>What the headline figures cover:</p><ul><li>NAICS 326 · PIC-12 · 2012–2025 · Census QWI</li></ul>
+<p><b>This finding breaks if:</b> Revised Census figures put the average quarterly share starting or ending far from one in ten.</p>
+<p><b>Cite as:</b> Swanson, J., Polymer Industry Cluster (2026). <cite>The Churn Engine</cite>. Polymer Industry Cluster (PIC) Evidence Room, version <time datetime="2026-11-18">18 November 2026</time>. <a href="https://polymerindustrycluster.github.io/evidence-room/churn/">https://polymerindustrycluster.github.io/evidence-room/churn/</a>. Creative Commons Attribution 4.0 (CC BY 4.0).</p>
+</div></noscript>
+    <!-- /pv:static -->
     <div id="peertable"></div>
+    <p class="body">Separations ran ahead of hires by 0.74 points here, second-widest of the seven and more than double the 0.29-point median of the six states. Census counts quits and layoffs together. Michigan has no usable figures for this period.</p>
     <!-- The comparability check sits under the chart it licenses, not in a footer: it is
          the reason a sum of twelve counties may be set beside a whole state at all, and it
          is static because it carries two numbers a reader can check. -->
@@ -132,6 +67,21 @@
 
 <section class="band">
   <div class="wrap">
+    <div class="hero-row" id="figs">
+      <div class="figv key"><div class="n">111,529</div><div class="k">hires</div>
+        <div class="d">across 55 quarters</div></div>
+      <div class="figv"><div class="n">111,361</div><div class="k">separations</div>
+        <div class="d">over the same period</div></div>
+      <!-- 55 quarters, not "14 years": 55 quarters is 13.75 years, and the card beside
+           this one already counts the same span in quarters. -->
+      <div class="figv"><div class="n">+168</div><div class="k">net flow, 55 quarters</div>
+        <div class="d">starts minus ends. Not a jobs gain: the headcount fell 719</div></div>
+      <div class="figv"><div class="n">10.8%</div><div class="k">average churn, 2012 to
+        2025</div>
+        <div class="d">Average shares starting and ending were each about a tenth. The last four
+          published quarters run 9.6%</div></div>
+    </div>
+    <p class="body">Across 55 quarters the ledger recorded 111,529 hires, 111,361 separations, +168. Starts barely exceeded ends. In the separate estimate, the headcount fell by 719, to 17,725. One worker moving from Summit to Stark can generate two events.</p>
     <p class="takeaway">The flow</p>
     <h2>Hires above the line, separations below, for 55 quarters</h2>
     <p class="lede">Both are flows: hires (jobs starting) and separations (jobs ending, quits and
@@ -143,7 +93,7 @@
          so the wide chart's per-quarter numbers would name marks a phone reader cannot
          see. Both are static; neither is a truncation of the other. -->
     <p class="fig-title only-wide">About two thousand jobs start and about two thousand
-      end every quarter, and the net line stays on the axis; averaged over a year, it has
+      end in an average quarter, and the net line stays on the axis; averaged over a year, it has
       sat just below it since 2023Q1</p>
     <p class="fig-title only-narrow">About eight thousand jobs start and about eight
       thousand end in an average year</p>
@@ -160,6 +110,7 @@
     <div id="flowtable"></div>
     <!-- The reconciliation sits between the table and the source line because that is
          where the two measures are printed side by side. -->
+    <p class="body">Since the start of the series, the separation rate, the share of jobs that end, rose 1.9 points. The hire rate rose 0.2 points.</p>
     <p class="src" id="flowreconcile"></p>
     <p class="src" id="flowsrc"></p>
     <p class="src">Correction, 30 September 2026. Was: the title over this chart said the
@@ -335,7 +286,7 @@
     <h2>What 9.6% a quarter looks like at a 150-person plant</h2>
     <p class="lede">Over the last four published quarters the cluster moved 9.6% of its
       jobs in a quarter. At a 150-person plant that is about <b>14 people starting and 14
-      leaving</b> every quarter, roughly five of each in a month, and about 58 replacement
+      leaving</b> in an average quarter, roughly five of each in a month, and about 58 replacement
       hires to make in a year. Across all 55 quarters the rate averages 10.8%, which
       works out to 16 and 16 a quarter and about 65 replacement hires a year. The plant is
       illustrative: it applies a cluster average to a single site, and no single plant

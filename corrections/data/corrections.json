@@ -1,14 +1,39 @@
 {
  "meta": {
   "status": "PUBLISHED",
-  "as_of": "2026-11-02",
+  "as_of": "2026-11-18",
   "source": "CORRECTIONS.md, rendered as written by _data/build/derive_corrections.py",
   "method": "Each entry in CORRECTIONS.md is rendered from its Markdown without changing a word. The pages an entry names are read from its italics, or listed by hand where an older entry names them in prose. Each page’s byline link counts the entries naming it and says whether one changed the page’s headline.",
   "scope": "A log of corrections shows the errors someone found, not the ones still on the site. A page with more entries has been checked harder, not necessarily been wrong more often, and corrections made before a page was first published are listed but left out of its count.",
-  "n_entries": 73
+  "n_entries": 74
  },
  "preamble_html": "<p>Every published number that changes gets an entry here: what it said, what it says now, and what caused the change. Entries are <b>appended, never rewritten</b> — an entry edited later is no longer evidence of anything.</p><p>The bar for an entry is <em>a reader could have quoted the old version</em>, not <em>the change was embarrassing</em>. Several pages also carry a correction block in the body where the error is most likely to be re-made; those are the same events, described where they matter.</p><p>Newest first. Report an error by opening an issue — the <b>Data error</b> template asks for the page, the figure, and what you think it should be.</p>",
  "entries": [
+  {
+   "id": "2026-11-18-1",
+   "date": "2026-11-18",
+   "heading": "2026-11-18 — Quarterly turnover, factory pay and coverage, *churn, wages, laborshed, location-quotient, peers, index*",
+   "label": "",
+   "title_html": "Quarterly turnover, factory pay and coverage, <em>churn, wages, laborshed, location-quotient, peers, index</em>",
+   "pages": [
+    "churn",
+    "wages",
+    "laborshed",
+    "location-quotient",
+    "peers",
+    "index"
+   ],
+   "html": "<p><b>Quarterly turnover, <em>churn</em>.</b> The opening called one tenth the turnover every quarter. It is the average over 55 quarters. The peer comparison uses the last four published quarters.</p><p><b>Factory pay, <em>wages, index</em>.</b> The former factory comparison included both industries being compared. The opening now subtracts both industries’ payroll and employment from private manufacturing before comparing pay. The later all-manufacturing and all-jobs comparisons retain their own labels.</p><p><b>Coverage and vintage, <em>churn, location-quotient, wages, laborshed, peers, index</em>.</b> PIC-12 is the former footprint measured by these county figures. Census commuting records cover jobs in the source. The hub now dates its Ohio ranking to 2024.</p>",
+   "flags": {
+    "churn": {},
+    "wages": {},
+    "laborshed": {},
+    "location-quotient": {},
+    "peers": {},
+    "index": {}
+   },
+   "after_html": ""
+  },
   {
    "id": "2026-11-02-2",
    "date": "2026-11-02",

@@ -1,8 +1,8 @@
 {
  "status": "PUBLISHED",
  "n_pieces": 22,
- "as_of": "2026-09-11",
- "total_claims": 554,
+ "as_of": "2026-11-18",
+ "total_claims": 555,
  "total_manual": 22,
  "pages": {
   "accountability": {
@@ -111,7 +111,7 @@
    "status": "PUBLISHED"
   },
   "wages": {
-   "claims": 37,
+   "claims": 38,
    "manual": 1,
    "status": "PUBLISHED"
   }

@@ -15,6 +15,7 @@ sector rung is agglvl 74 in a county file; whatever the US000 file uses for the 
 is DERIVED from the file rather than assumed, for the reason the sources page teaches:
 the state file taught us the rungs are numbered per geography.
 """
+from datetime import date
 import csv
 import io
 import json
@@ -56,6 +57,14 @@ for fips, name in sorted(PIC12.items(), key=lambda kv: kv[1]):
         "mfg_emp": int(m["annual_avg_emplvl"]) if m else None,
         "all_weekly_wage": int(a["annual_avg_wkly_wage"]) if a else None,
     }
+    # Disjoint private industries. Preserve disclosure gaps, and subtract payroll
+    # and employment before dividing to obtain the rest-of-manufacturing wage.
+    factory = {}
+    for code in ("31-33", "325", "326"):
+        row = pick(rs, code)
+        if row:
+            factory[code] = [int(row["total_annual_wages"]), int(row["annual_avg_emplvl"])]
+    mfg[name]["payroll_and_jobs"] = factory
     print(f"  {name:10} mfg ${mfg[name]['mfg_weekly_wage'] or '?'}/wk on "
           f"{mfg[name]['mfg_emp'] or '?'} jobs, all-industry "
           f"${mfg[name]['all_weekly_wage'] or '?'}/wk")
@@ -91,6 +100,8 @@ for y in TREND_YEARS:
 
 out = {
     "meta": {
+        "status": "PUBLISHED",
+        "fetched": date.today().isoformat(),
         "source": "BLS QCEW annual averages, data.bls.gov, fetched live; own_code 5 for "
                   "industries, own_code 0 for the all-industry county totals",
         "year": YEAR,
