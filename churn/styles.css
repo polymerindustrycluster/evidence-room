@@ -115,3 +115,8 @@
   .calc input{font-size:26px;width:130px}
   .calcout{font-size:17px}
 }
+
+@media (max-width:760px){
+  .hero + .band{padding-top:22px}
+  .hero + .band .chart{margin-top:8px}
+}

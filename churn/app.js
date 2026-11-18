@@ -1205,7 +1205,7 @@ MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
    counties, which is the geography the headline promises and the one thing a reader
    actually wants from a footprint line. NEO-14 is explained in the methodology, where a
    reader who needs it can find it defined rather than referenced. */
-PV.footprintBanner({...FP, note: "The figures use PIC’s former region.", differs: ""});
+PV.footprintBanner({...FP, note: "Former PIC region.", differs: ""});
 
 /* Standard methodology + AI disclosure. Generated, not written — see picviz.js. Three
    page-specific blocks are appended: the removed peer comparison, what a fair one would
