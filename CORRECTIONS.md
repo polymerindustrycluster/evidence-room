@@ -11,6 +11,14 @@ most likely to be re-made; those are the same events, described where they matte
 Newest first. Report an error by opening an issue — the **Data error** template asks for the
 page, the figure, and what you think it should be.
 
+## 2026-11-18 — Quarterly turnover, factory pay and coverage, *churn, wages, laborshed, location-quotient, peers, index*
+
+**Quarterly turnover, *churn*.** The opening called one tenth the turnover every quarter. It is the average over 55 quarters. The peer comparison uses the last four published quarters.
+
+**Factory pay, *wages, index*.** The former factory comparison included both industries being compared. The opening now subtracts both industries’ payroll and employment from private manufacturing before comparing pay. The later all-manufacturing and all-jobs comparisons retain their own labels.
+
+**Coverage and vintage, *churn, location-quotient, wages, laborshed, peers, index*.** PIC-12 is the former footprint measured by these county figures. Census commuting records cover jobs in the source. The hub now dates its Ohio ranking to 2024.
+
 ## 2026-11-02 — Which years came from NCES, and a bare 4, *scorecard, cluster-health, occupations, sources, timeline, index*
 
 The day's first fixes left two statements loose. No published figure changed. Each page

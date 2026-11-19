@@ -1311,7 +1311,7 @@ document.getElementById("defnote").innerHTML =
    at the worst of them: Geauga County resin in 2025, which the bureau&rsquo;s basis puts at
    22.70&times; and the intuitive one at 21.27&times;. This chart is the tripwire: if BLS changes
    its method, or ours drifts, the divergence shows up here before it reaches a funder.
-   Team NEO&rsquo;s 2.69&times; is a Lightcast product, one number for one year with no
+   Team NEO, a regional development organization in Northeast Ohio, published 2.69&times; using Lightcast data. That is one number for one year with no
    decomposition and no way for anyone outside the licence to check it. The components are
    free, which is why this page can rank six industries and eleven years against each
    other and that figure cannot.`;
@@ -1430,14 +1430,7 @@ addEventListener("resize", () => {
   requestAnimationFrame(() => { openPending = false; drawOpen(); });
 });
 
-/* Footprint banner — stated on the page, not left to the reader to infer. The stored note
-   read "PIC's official 12-county footprint, matching the cluster-health dashboard": PIC
-   twice in the first sentence a reader ever meets, expanded only in the footer thousands
-   of pixels below, and a cross-reference to a dashboard they have never seen. Expanded
-   once, here, and the cross-reference replaced by what it was there to promise. */
-PV.footprintBanner({...FP, note: `PIC stands for Polymer Industry Cluster, and these
-  ${FP.words} are its official footprint, used on every page here that is built from
-  federal files so the figures reconcile with each other.`});
+PV.footprintBanner({...FP, note: "The figures use PIC’s former region.", differs: ""});
 
 /* Standard methodology + AI disclosure. Generated, not written — see picviz.js. */
 await PV.methodology({page: "location-quotient", meta: D.meta});

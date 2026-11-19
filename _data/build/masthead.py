@@ -27,7 +27,7 @@ MASTHEAD_FILE = {
     "occupations": "viz-data.json", "patents": "patents.json", "peers": "peers.json",
     "programs": "viz-data.json", "reach": "reach.json", "realwage": "realwage.json",
     "revisions": "revisions.json", "scorecard": "scorecard.json",
-    "sources": "registry.json", "wages": "wages.json",
+    "sources": "registry.json", "wages": ["wages.json", "mfg.json"],
     # timeline has no one file: its app.js prints the newer of its two files' asOf dates.
     "timeline": ["timeline.json", "heritage.json"],
     # the rendered corrections log: its date is the newest entry's

@@ -22,7 +22,7 @@
     "Trumbull",
     "Wayne"
    ],
-   "note": "PIC's official 12-county footprint, matching the cluster-health dashboard. Chosen for federal-data pages so figures reconcile.",
+   "note": "PIC’s former twelve-county footprint. PIC adopted its eighteen-county region on 3 November 2026.",
    "differs": "Excludes Crawford, Huron, Richland and Tuscarawas, which the vault\u2019s NEO-14 includes; NEO-14 in turn leaves out Ashtabula and Trumbull. The two share ten counties.",
    "wider_adds": [
     "Crawford",

@@ -1,5 +1,5 @@
 {
-  "hero": "wage-premium-count",
+  "hero": "wage-other-factories",
   "data": {
     "w": "wages.json",
     "m": "mfg.json"
@@ -43,12 +43,22 @@
     }
   ],
   "quote": {
-    "text": "In 2025, the average wage beat the county’s all-industry average in 40 of the 51 published county-industry pairings in chemical, plastics and rubber manufacturing (NAICS 325 and 326, including their four-digit subcodes) across the PIC-12 counties (BLS QCEW, annual averages).",
+    "text": "In 2025, average chemical manufacturing pay exceeded pay in the rest of local manufacturing in ten of eleven comparable Northeast Ohio counties, while plastics and rubber pay did so in three (PIC-12, private NAICS 325 and 326, BLS QCEW).",
     "claims": [
-      "wage-premium-count"
+      "wage-other-factories"
     ]
   },
   "claims": [
+    {
+      "id": "wage-other-factories",
+      "text": "Across eleven comparable counties, chemicals paid above other factories in ten and plastics and rubber in three.",
+      "scope": {"industry": "NAICS 325 and 326", "place": "PIC-12", "period": "2025 annual avg", "source": "BLS QCEW"},
+      "source": "BLS QCEW, 2025 annual county files, private manufacturing NAICS 31-33 and industry groups NAICS 325 and 326. Residual payroll divided by residual annual average employment.",
+      "assert": "(lambda rows: len(rows)==11 and all(all(v>0 for pair in r.values() for v in pair) and all(r['31-33'][k]>r['325'][k]+r['326'][k] for k in (0,1)) for r in rows) and [sum(r[c][0]*(r['31-33'][1]-r['325'][1]-r['326'][1]) > r[c][1]*(r['31-33'][0]-r['325'][0]-r['326'][0]) for r in rows) for c in ('325','326')]==[10,3])([v['payroll_and_jobs'] for v in D['m']['counties'].values() if len(v['payroll_and_jobs'])==3])",
+      "falsified_if": "Either count changes, the residual denominator is nonpositive or the number of complete county comparisons changes.",
+      "guards": "Chemicals usually paid more than other factory work. Plastics and rubber usually paid less.",
+      "breaks_if": "Revised county payrolls put either industry on the other side of its comparison in a majority of counties."
+    },
     {
       "id": "narrow-weighted-group-median",
       "text": "Narrow NAICS 3252+3255+326 covers 24,032 jobs and has an employment-weighted median group-average ratio of 1.17x its county all-jobs wage. The broad 325+326 result is 1.26x. Neither is an individual wage median.",
@@ -373,7 +383,7 @@
       "actual": "{fam: (lambda v: (len(v), sorted(v)[len(v)//2], len([x for x in v if x > 1])))([round(r['weekly_wage'] / D['m']['counties'][r['name']]['mfg_weekly_wage'], 4) for r in D['w']['latest_rows'] if r.get('vs_local_all') and r['naics'] in c]) for fam, c in (('chem', ('325','3252','3255')), ('prod', ('326','3261','3262')))}",
       "falsified_if": "Either family's median against county manufacturing pay moves more than 0.004 from 1.164 or 0.868, or its count above 1.0 changes. Added 2026-09-28: the headline called pay 'level' with manufacturing on the pooled 0.99x, and neither family is level.",
       "breaks_if": "Revised figures put the middle chemical pairing at or below its county’s manufacturing pay, or the middle plastics and rubber pairing above it.",
-      "guards": "Against manufacturing, chemicals pay more; plastics and rubber pay less.",
+      "guards": "Against the county manufacturing average, chemicals generally pay more and plastics and rubber less",
       "counts": [
         {"figure": "1.16", "noun": "pairings"},
         {"figure": "19 of 23", "noun": "pairings"},

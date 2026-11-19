@@ -25,58 +25,34 @@
 <section class="hero">
   <div class="wrap">
     <p class="eyebrow" data-kicker>What does the work pay?</p>
-    <!-- THE UNIT IS IN THE HEADLINE, because a reader took it for a different one. This
-         said "The typical polymer job pays 1.2 times", and the number under it is a median
-         over PAIRINGS, not over jobs: the largest pairings sit below it (Cuyahoga plastics
-         and rubber, 0.87x on 2,037 jobs), so a reader who took "job" literally believed a
-         claim the page never made. The pairing is now named in the H1 and defined in the
-         first clause of the standfirst, and the job-weighted figure is computed and printed
-         on the median card beside it rather than left for the reader to assume. -->
-    <!-- NOT "LEVEL". This said "Against manufacturing, pay is level" on the pooled median
-         of 0.99x, and no pairing family is level: chemistry-side pairings sit at 1.16x (19
-         of 23 above their county's factory wage), plastics and rubber at 0.87x (4 of 28).
-         The 0.99x is the two halves cancelling. Guarded by wage-vs-mfg-split. -->
-    <h1>These industries out-pay the town average.<br><em>Against manufacturing, chemicals pay more; plastics and rubber pay less.</em></h1>
-    <p class="stand">The middle county-industry average is 0.99 times its county’s manufacturing
-      average, compared with 1.21 times the all-jobs average. This is a descriptive
-      comparison, not evidence that an industry causes higher pay. A pairing is one
-      tracked industry in one county. The cover includes all chemical manufacturing
-      (NAICS 325), including pharmaceuticals and agricultural chemicals, and plastics
-      and rubber products (326); it is broader than PIC’s 3252 + 3255 + 326 register.
-      Forty of 51 published pairings beat their county’s all-jobs average.
-      Parent groups and their subgroups overlap, so pairings are not separate job counts.
-      The broad cover contains 33,529 jobs, counted once.</p>
+    <h1>Chemicals usually paid more than other factory work. <em>Plastics and rubber usually paid less.</em></h1>
+    <p class="stand">In 2025 chemical manufacturing paid above the rest of local manufacturing in ten of eleven comparable Northeast Ohio counties. Plastics and rubber did so in three. See where your county falls.</p>
+    <div class="hero-viz" data-hero-figure><p>Average pay relative to the county’s other factories · 2025<br>
+      <b class="chem-key">● Chemicals</b> &nbsp; <b class="plast-key">◆ Plastics and rubber</b></p>
+      <svg id="open" role="img" aria-labelledby="open-t"><title id="open-t">County average pay ratios. One times means the same pay as manufacturing outside both industries. Both exceed it in Ashtabula, Geauga and Portage.</title></svg>
+      <p>Private establishments in PIC’s former twelve-county region. Trumbull lacks a disclosed chemical figure. Source: BLS annual county payroll and average jobs, retrieved 18 November 2026. Hours and job mix affect pay.</p>
+      <div id="factorytable"></div></div>
     <p class="byline">By <b>John Swanson</b>, Polymer Industry Cluster desk &middot; Analysis and graphics by Claude (Anthropic), updated with Codex (OpenAI) &middot; Data: the Bureau of Labor
       Statistics Quarterly Census of Employment and Wages (QCEW), annual averages
       2015&ndash;2025</p>
     <!-- pv:static nojs-byline -->
 <noscript><div class="pv-nojs">
-<p>Revised <time datetime="2026-11-02">2 November 2026</time>. 8 corrections since publication. Headline wording last changed 28 September 2026 (<a href="https://github.com/polymerindustrycluster/evidence-room/commits/main/wages/index.html">repository history</a>). See them in the <a href="../corrections/?page=wages">corrections log</a>.</p>
+<p>Revised <time datetime="2026-11-19">19 November 2026</time>. 9 corrections since publication. Headline wording last changed 18 November 2026 (<a href="https://github.com/polymerindustrycluster/evidence-room/commits/main/wages/index.html">repository history</a>). See them in the <a href="../corrections/?page=wages">corrections log</a>.</p>
 <p>What the headline figures cover:</p><ul><li>NAICS 325 and 326 · PIC-12 · 2025 annual avg · BLS QCEW</li></ul>
-<p><b>This finding breaks if:</b> Revised figures leave half or fewer pairings paying above their county’s average job.</p>
-<p><b>Cite as:</b> Swanson, J., Polymer Industry Cluster (2026). <cite>Does The Cluster Pay Better</cite>. Polymer Industry Cluster (PIC) Evidence Room, version <time datetime="2026-11-02">2 November 2026</time>. <a href="https://polymerindustrycluster.github.io/evidence-room/wages/">https://polymerindustrycluster.github.io/evidence-room/wages/</a>. Creative Commons Attribution 4.0 (CC BY 4.0).</p>
+<p><b>This finding breaks if:</b> Revised county payrolls put either industry on the other side of its comparison in a majority of counties.</p>
+<p><b>Cite as:</b> Swanson, J., Polymer Industry Cluster (2026). <cite>Does The Cluster Pay Better</cite>. Polymer Industry Cluster (PIC) Evidence Room, version <time datetime="2026-11-19">19 November 2026</time>. <a href="https://polymerindustrycluster.github.io/evidence-room/wages/">https://polymerindustrycluster.github.io/evidence-room/wages/</a>. Creative Commons Attribution 4.0 (CC BY 4.0).</p>
 </div></noscript>
     <!-- /pv:static -->
-    <!-- THE COLD OPEN. This page opened on 900px of headline, standfirst and stat cards,
-         so the first chart began at 1,818px: a reader scrolled two full screens before
-         seeing a single mark. The stat cards are not the problem and have not moved. This
-         strip is the headline claim drawn, one dot per published pairing on one axis, and
-         it is the only chart on the page a reader meets before any explanation, so it
-         carries its own reading in its labels. The detailed version, by county and
-         industry, is the first band's chart. Guarded by tools/coldopen.mjs. -->
-    <div class="hero-viz"><svg id="open" role="img" aria-labelledby="open-t"><title
-      id="open-t">Every published polymer-industry-and-county pairing in Northeast Ohio,
-      2025, placed by what the work pays against the average job in that same county. Most
-      sit to the right of parity.</title></svg></div>
     <div class="hero-row" id="figs"></div>
   </div>
 </section>
 
 <section class="band">
   <div class="wrap">
-    <p class="takeaway">The finding</p>
+    <p class="takeaway">Against all jobs in the county</p>
+    <p class="body" id="cover-count">These industries out-pay the town average. Forty of 51 published pairings beat their county’s all-jobs average. The broad cover contains 33,529 jobs counted once. The middle county-industry average is 0.99 times its county’s manufacturing average, compared with 1.21 times the all-jobs average. The pairings include overlapping subgroups. The opening chart instead uses two non-overlapping industries and excludes both from its manufacturing benchmark.</p>
     <h2>Where polymer pay beats the town, and where it doesn&rsquo;t</h2>
-    <p class="lede">Every figure here rests on one ratio: what polymer work pays in a
+    <p class="lede">This chart uses a different baseline: what polymer work pays in a
       county, against what the average job in that same county pays. At 1.0&times; the
       two are equal; at 1.2&times; polymer pay is a fifth higher; at 0.9&times; it is a
       tenth lower. (The arithmetic: the industry&rsquo;s average weekly wage in a county,
@@ -180,15 +156,14 @@
 
 <section class="band tint">
   <div class="wrap">
-    <p class="takeaway">The other counterweight</p>
-    <h2>Against the factory next door, chemicals pay more and plastics and rubber less</h2>
+    <p class="takeaway">Against all manufacturing in the county</p>
+    <h2>Against the county manufacturing average, chemicals generally pay more and plastics and rubber less</h2>
     <p class="lede">The 1.21&times; premium is real, and it is not particular to polymer.
       Manufacturing as a whole out-pays the all-jobs average in every one of the twelve
       counties, by a median 1.25&times;. Measure the same 51 pairings against their
       county&rsquo;s manufacturing wage instead of its all-jobs average and the middle
       pairing lands at <b>0.99&times;</b>, 23 of the 51 above it. That middle is not a
-      level: chemical pairings sit at a median 1.16&times;, 19 of 23 above the factory
-      next door, and plastics and rubber pairings at 0.87&times;, 4 of 28 above.</p>
+      level: chemical pairings sit at a median 1.16&times;, 19 of 23 above the county manufacturing average, and plastics and rubber pairings at 0.87&times;, 4 of 28 above.</p>
     <p class="body">Both comparisons answer a real question, and they answer different
       ones. Against the town, polymer work pays like factory work, and factory work pays
       well; that is the sentence a recruiter can use. Against the factories, chemistry
@@ -196,8 +171,7 @@
       first comparison while sounding like the second, and the gap between them is the
       whole 1.25&times; that manufacturing at large carries.</p>
     <p class="src">BLS QCEW annual averages, 2025: private manufacturing (NAICS 31-33)
-      weekly wage by county against the same all-industry averages every ratio on this
-      page uses. Same census and year; both industry wages use private ownership,
+      weekly wage by county against the county’s all-industry average. Same census and year; both industry wages use private ownership,
       while the all-jobs county average includes public and private ownership. Fetched 2026-08-30.
       The broad chemical/plastics/rubber cover is about one manufacturing job in six
       across the twelve counties and is included in this comparator. The figures do
@@ -284,15 +258,13 @@
 <h2 id="pv-plant-h">If you run a plant here</h2>
 <ul><li data-claims="wage-premium-count wage-vs-mfg-split">Your local pay benchmark usually sits above the town’s: in 40 of the 51 pairings of a county and an industry that BLS can publish, polymer pay beats the county’s all-industry average, while against its manufacturing average 19 of 23 chemistry-side pairings pay more and only 4 of 28 plastics and rubber pairings do.</li><li data-claims="vs-us-counterweight">Your pay also competes with your industry elsewhere in the country, where it is usually higher: across chemical, plastics and rubber manufacturing (NAICS 325 and 326, including their four-digit subcodes), 44 of the 51 pairings pay less than the same industry pays nationally, the typical one about 12 percent less.</li><li data-claims="products-side-median chem-side-median">If you run a plastics or rubber plant, expect pay near your county’s average job rather than the chemical plants’ premium: plastics-and-rubber pairings come out at a median 1.01×, chemistry-side pairings at 1.35×.</li></ul>
 </aside>
-<noscript><p class="pv-quote"><b>Quote this:</b> “<span class="pv-quote-text">In 2025, the average wage beat the county’s all-industry average in 40 of the 51 published county-industry pairings in chemical, plastics and rubber manufacturing (NAICS 325 and 326, including their four-digit subcodes) across the PIC-12 counties (BLS QCEW, annual averages).</span>”</p></noscript></div></section>
+<noscript><p class="pv-quote"><b>Quote this:</b> “<span class="pv-quote-text">In 2025, average chemical manufacturing pay exceeded pay in the rest of local manufacturing in ten of eleven comparable Northeast Ohio counties, while plastics and rubber pay did so in three (PIC-12, private NAICS 325 and 326, BLS QCEW).</span>”</p></noscript></div></section>
 <!-- /pv:static -->
 
 </main>
 <footer class="foot">
   <div class="wrap">
-    <p class="foot-lede">Read it from your own seat: the twelve buttons above the first
-      chart re-draw every figure for one county, and the table under each chart carries
-      every row behind it.</p>
+    <p class="foot-lede">Choose a county in the all-jobs comparison to see which local industries pay above the county average.</p>
     <p class="foot-k">Read next</p>
     <ul class="foot-links">
       <li><a href="../realwage/">What the pay buys</a>

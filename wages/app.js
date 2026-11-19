@@ -151,7 +151,7 @@ const dip = pts.reduce((a, b) => b.med < a.med ? b : a);
 
 /* The job-count link (W4) at the foot of the standfirst, whose last sentence prints the
    33,529 total. */
-document.querySelector(".hero .stand").insertAdjacentHTML("afterend", PV.differsLink());
+document.getElementById("cover-count").insertAdjacentHTML("afterend", PV.differsLink());
 
 /* ------------------------------------------------------------------- hero stats */
 /* Exactly one accented card, and it is the headline's number: the H1 says "1.2 times", so
@@ -684,102 +684,44 @@ document.getElementById("closersub").innerHTML =
    file, and the honest recruiting pitch carries both.`;
 
 /* --------------------------------------------------------------------- assemble */
-/* ------------------------------------------------------- the cold open, in the hero
-   One dot per published pairing on one axis: the headline claim, drawn, before any
-   explanation. Deliberately the SAME measure as the first band's chart and a poorer
-   view of it (no county, no industry, no size), because its only job is to put the
-   shape of the distribution in the first screen and hand the reader to the detail.
+const manufacturing = await PV.data("mfg.json");
+PV.scopeChip(document.querySelector(".hero-viz"), "wage-other-factories");
+const factoryRows = [];
+for (const [name, county] of Object.entries(manufacturing.counties)) {
+  const cells = county.payroll_and_jobs;
+  if (!cells["325"] || !cells["326"] || !cells["31-33"]) continue;
+  const [total, chemicals, products] = ["31-33", "325", "326"].map(code => cells[code]);
+  const other = (total[0] - chemicals[0] - products[0]) / (total[1] - chemicals[1] - products[1]);
+  factoryRows.push({name, chemicals: chemicals[0] / chemicals[1] / other, products: products[0] / products[1] / other});
+}
+factoryRows.sort((a, b) => b.chemicals - a.chemicals);
+document.getElementById("factorytable").innerHTML = tableView("factory", "Average pay relative to other local factories, 2025",
+  ["County", "Chemicals", "Plastics and rubber"], factoryRows.map(r => [r.name, r.chemicals.toFixed(2) + "×", r.products.toFixed(2) + "×"]));
 
-   It re-lays out at the breakpoint through drawAll, like every other chart here. The
-   phone variant is NOT the desktop one scaled: at 700 units squeezed into a 350px
-   column every label rendered at 7.5px, half the 12px floor. The narrow viewBox
-   restores a ~1:1 scale, and the two readings stack instead of sitting on one row. */
 function drawOpen() {
-  const M = MOBILE.matches;
   const svg = document.getElementById("open");
-  if (svg) {
-    /* THE VIEWBOX IS SIZED TO THE TEXT RAIL, NOT THE FIGURE RAIL. Drawn at the site's
-       980px figure width this strip started 151px left of the headline above it, which
-       is the two-rail defect the house has one law against.
-
-       AND IT IS SIZED IN MEASURED PIXELS, not authored units. The first version fixed it
-       at 700 and 358, which held at 1440 and 390 and painted 10.9px labels at 768, where
-       the rail is narrower than either. Measuring makes the render scale exactly 1.000 at
-       every width, so a 15-unit label is 15 real pixels always. */
-    const railW = Math.round((svg.parentElement || svg).getBoundingClientRect().width);
-    const W = Math.max(300, railW || (M ? 358 : 700));
-    const H = M ? 232 : 196;
-    const m = M ? {t: 84, r: 10, b: 40, l: 10} : {t: 52, r: 16, b: 42, l: 16};
-    const w = W - m.l - m.r;
-    const LO = 0.7, HI = 2.2;
-    const X = v => m.l + (Math.min(Math.max(v, LO), HI) - LO) / (HI - LO) * w;
-    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-    /* Keep the <title> and drop the previous render: drawAll re-runs this at the
-       breakpoint, and appending would stack two swarms in one box. */
-    [...svg.childNodes].slice(1).forEach(n => svg.removeChild(n));
-    const NS = "http://www.w3.org/2000/svg";
-    const mk = (t, a, p) => { const n = document.createElementNS(NS, t);
-      for (const k in a) { if (a[k] == null) continue;
-        if (k === "fill" || k === "stroke") n.style[k] = a[k]; else n.setAttribute(k, a[k]); }
-      (p || svg).appendChild(n); return n; };
-    const tx = (s, a) => { const n = mk("text", a); n.textContent = s; return n; };
-
-    const CHEM = "#6FD9EC", PROD = "#F4A45E", LIME = "#B8D637";
-    const base = m.t + (H - m.t - m.b) - 6, R = M ? 4 : 5;
-
-    /* Axis ticks skip 1.0: parity gets the lime rule and its own label, and a grey tick
-       under it would print the same number twice in two inks. */
-    (M ? [1.2, 1.6, 2.0] : [0.8, 1.2, 1.6, 2.0]).forEach(v => {
-      tx(v.toFixed(1) + "×", {x: X(v), y: H - 12, "text-anchor": "middle",
-        "font-size": 15, "font-weight": 700, fill: "rgba(255,255,255,.62)"});
-    });
-    mk("line", {x1: m.l, y1: base + 11, x2: m.l + w, y2: base + 11,
-      stroke: "rgba(255,255,255,.28)", "stroke-width": 1});
-
-    /* parity, the one line the whole page argues about. It starts BELOW the legend row:
-       drawn from the top it ran straight through the legend's second chip, because
-       1.0× lands at x≈150 and that is where a left-aligned legend puts it. */
-    mk("line", {x1: X(1), y1: M ? m.t + 12 : m.t - 2, x2: X(1), y2: base + 11,
-      stroke: LIME, "stroke-width": 2});
-    tx("1.0×", {x: X(1) - 7, y: H - 12, "text-anchor": "end",
-      "font-size": 15, "font-weight": 700, fill: LIME});
-
-    /* beeswarm: stack rather than overlap, so 51 dots stay countable */
-    const placed = [];
-    rows.map(r => ({x: X(r.vs_local_all), fam: FAM(r)}))
-        .sort((a, b) => a.x - b.x)
-        .forEach(p => {
-          let lvl = 0;
-          while (placed.some(q => q.lvl === lvl && Math.abs(q.x - p.x) < R * 2 + 1)) lvl++;
-          placed.push({x: p.x, lvl});
-          mk("circle", {cx: p.x, cy: base - lvl * (R * 2 + 1.5), r: R,
-            fill: p.fam === "chem" ? CHEM : PROD, "fill-opacity": .95});
-        });
-
-    /* The reading sits ABOVE the swarm on two rows, clear of the axis: the first draft
-       put "11 pay less" on the tick row and it printed straight through the 1.0× label. */
-    tx(`${above} of ${rows.length} pay more`, M ? {x: m.l, y: 18,
-        "font-size": 15, "font-weight": 700, fill: "#fff"}
-      : {x: m.l + w, y: 18, "text-anchor": "end",
-         "font-size": 15, "font-weight": 700, fill: "#fff"});
-    tx(`${belowN} pay less than their county`, {x: m.l, y: M ? 40 : 18,
-      "font-size": 15, "font-weight": 700, fill: "rgba(255,255,255,.8)"});
-    /* Legend clears the parity rule rather than starting at the left margin; on the phone
-       it takes its own two rows, because one row of both keys does not fit 358 units. */
-    /* THE KEY NAMES THE INDUSTRIES, IT DOES NOT NAME A SIDE. This chip read "chemistry
-       side" and the one on the scatter read "products side", and both appeared as chart
-       keys roughly 1,300px above the sentence that defines either. The second chip was
-       always self-explaining ("plastics and rubber"); the first now is too, and the
-       gap to it widens from 128 to 200 units to hold the longer word. */
-    const lx = M ? m.l : X(1) + 26, ly = M ? 62 : 34, gap = 200;
-    mk("circle", {cx: lx, cy: ly, r: 5, fill: CHEM});
-    tx("chemicals, resin, paint", {x: lx + 11, y: ly + 5, "font-size": 15,
-      "font-weight": 700, fill: CHEM});
-    mk("circle", {cx: M ? lx : lx + gap, cy: M ? ly + 22 : ly, r: 5, fill: PROD});
-    tx("plastics and rubber", {x: (M ? lx : lx + gap) + 11, y: (M ? ly + 22 : ly) + 5,
-      "font-size": 15, "font-weight": 700, fill: PROD});
+  const width = Math.round(svg.parentElement.getBoundingClientRect().width);
+  const height = 44 + factoryRows.length * 25;
+  svg.replaceChildren(svg.querySelector("title"));
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  const low = Math.min(0.7, ...factoryRows.map(r => Math.min(r.products, r.chemicals)));
+  const high = Math.max(1.75, ...factoryRows.map(r => Math.max(r.products, r.chemicals)));
+  const x = ratio => 88 + (ratio - low) / (high - low) * (width - 102);
+  for (const tick of [0.75, 1, 1.25, 1.5]) {
+    el("line", {x1:x(tick), x2:x(tick), y1:24, y2:height-7, stroke:tick === 1 ? "#fff" : "#586970"}, svg);
+    txt(svg, tick + "×", {x:x(tick), y:17, "text-anchor":"middle", fill:"#fff", "font-size":14});
   }
-
+  factoryRows.forEach((r,i) => {
+    const y = 42 + i * 25;
+    txt(svg, r.name, {x:0, y:y+5, fill:"#fff", "font-size":15});
+    el("line", {x1:x(r.products), x2:x(r.chemicals), y1:y, y2:y, stroke:"#b7c4c6"}, svg);
+    const circle = el("circle", {cx:x(r.chemicals), cy:y, r:5, fill:"#6fd9ec"}, svg);
+    const diamond = el("path", {d:`M ${x(r.products)} ${y-6} l 6 6 -6 6 -6 -6 z`, fill:"#f4a45e"}, svg);
+    const chemicalLabel = r.name + " chemicals: " + r.chemicals.toFixed(2) + "× other factory pay";
+    hoverable(circle, chemicalLabel, chemicalLabel);
+    const productLabel = r.name + " plastics and rubber: " + r.products.toFixed(2) + "× other factory pay";
+    hoverable(diamond, productLabel, productLabel);
+  });
 }
 
 function drawAll() { drawOpen(); drawPremium(); drawScatter(); drawTrend(); }
@@ -838,6 +780,7 @@ MOBILE.addEventListener ? MOBILE.addEventListener("change", drawAll)
    Standard methodology + AI disclosure. Generated, not written — see picviz.js. The
    parent/child overlap reconciliation moves here out of chart 1's caption; every count in it
    is computed above, never typed. */
+D.meta.as_of = [D.meta.as_of || D.meta.fetched, manufacturing.meta.fetched].sort().at(-1);
 const meth = await PV.methodology({page: "wages", meta: D.meta,
   definitions: `NAICS is the federal industry classification, and the
     ${[...new Set(D.latest_rows.map(r => r.naics))].length} industries tracked here are its
@@ -850,7 +793,7 @@ const meth = await PV.methodology({page: "wages", meta: D.meta,
     pairings are not ${rows.length} separate places. Counted at the finest industry detail
     published in each county, so that no pairing sits inside another, ${dAbove} of
     ${dedup.length} pairings pay above their county average: ${pctDedup}%, against
-    ${pctHead}% for the headline ${above} of ${rows.length}. Those ${dAbove} cover
+    ${pctHead}% across all ${rows.length} published pairings (${above} above average). Those ${dAbove} cover
     ${N(empAbove)} of the ${N(empTot)} jobs in that de-duplicated set. That ${N(empTot)} is
     not this cluster&rsquo;s headcount and is not used as one: keeping only the finest rows
     in each county drops whatever a group holds beyond its published parts, which is
@@ -880,7 +823,7 @@ const meth = await PV.methodology({page: "wages", meta: D.meta,
   if (h) {
     const p = document.createElement("p");
     p.className = "pv-method-note";
-    p.textContent = `Coverage: the cluster’s official ${FP.words}-county footprint ` +
+    p.textContent = `Coverage: the cluster’s former ${FP.words}-county footprint ` +
       `(${FP.counties.join(", ")}), all in Northeast Ohio. The chain page uses these twelve counties plus ` +
       `Columbiana and Tuscarawas. The legacy fourteen-county definition in the shared ` +
       `geography module instead includes Crawford, Huron, Richland and Tuscarawas and ` +
