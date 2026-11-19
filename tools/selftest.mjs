@@ -220,7 +220,7 @@ const CASES = [
 
   {gate: "coldopen", page: "churn", args: ["churn"],
    defect: "a page whose first chart sinks below its recorded budget",
-   inject: s => s.replace("</head>", "<style>.hero .wrap{padding-bottom:400px}</style></head>")},
+   inject: s => s.replace("</head>", "<style>.hero .wrap{padding-bottom:1000px}</style></head>")},
 
   {gate: "style", page: "revisions", args: ["revisions"],
    defect: "an em-dash in published prose, which the house style law forbids",
