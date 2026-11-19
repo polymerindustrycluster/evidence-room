@@ -43,7 +43,7 @@
     }
   ],
   "quote": {
-    "text": "In 2025, chemical manufacturing paid more than other local manufacturing in ten of eleven comparable Northeast Ohio counties. Plastics and rubber manufacturing did so in three. The comparison excludes both industries from the benchmark (BLS QCEW, private NAICS 325 and 326).",
+    "text": "In 2025, average chemical manufacturing pay exceeded pay in the rest of local manufacturing in ten of eleven comparable Northeast Ohio counties, while plastics and rubber pay did so in three (PIC-12, private NAICS 325 and 326, BLS QCEW).",
     "claims": [
       "wage-other-factories"
     ]
@@ -52,7 +52,8 @@
     {
       "id": "wage-other-factories",
       "text": "Across eleven comparable counties, chemicals paid above other factories in ten and plastics and rubber in three.",
-      "source": "BLS QCEW, 2025 annual county files, private NAICS 31-33, 325 and 326. Residual payroll divided by residual annual average employment.",
+      "scope": {"industry": "NAICS 325 and 326", "place": "PIC-12", "period": "2025 annual avg", "source": "BLS QCEW"},
+      "source": "BLS QCEW, 2025 annual county files, private manufacturing NAICS 31-33 and industry groups NAICS 325 and 326. Residual payroll divided by residual annual average employment.",
       "assert": "(lambda rows: len(rows)==11 and all(all(v>0 for pair in r.values() for v in pair) and all(r['31-33'][k]>r['325'][k]+r['326'][k] for k in (0,1)) for r in rows) and [sum(r[c][0]*(r['31-33'][1]-r['325'][1]-r['326'][1]) > r[c][1]*(r['31-33'][0]-r['325'][0]-r['326'][0]) for r in rows) for c in ('325','326')]==[10,3])([v['payroll_and_jobs'] for v in D['m']['counties'].values() if len(v['payroll_and_jobs'])==3])",
       "falsified_if": "Either count changes, the residual denominator is nonpositive or the number of complete county comparisons changes.",
       "guards": "Chemicals usually paid more than other factory work. Plastics and rubber usually paid less.",

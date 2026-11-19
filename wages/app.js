@@ -685,6 +685,7 @@ document.getElementById("closersub").innerHTML =
 
 /* --------------------------------------------------------------------- assemble */
 const manufacturing = await PV.data("mfg.json");
+PV.scopeChip(document.querySelector(".hero-viz"), "wage-other-factories");
 const factoryRows = [];
 for (const [name, county] of Object.entries(manufacturing.counties)) {
   const cells = county.payroll_and_jobs;
