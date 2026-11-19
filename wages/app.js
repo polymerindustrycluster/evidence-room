@@ -792,7 +792,7 @@ const meth = await PV.methodology({page: "wages", meta: D.meta,
     pairings are not ${rows.length} separate places. Counted at the finest industry detail
     published in each county, so that no pairing sits inside another, ${dAbove} of
     ${dedup.length} pairings pay above their county average: ${pctDedup}%, against
-    ${pctHead}% for the headline ${above} of ${rows.length}. Those ${dAbove} cover
+    ${pctHead}% across all ${rows.length} published pairings (${above} above average). Those ${dAbove} cover
     ${N(empAbove)} of the ${N(empTot)} jobs in that de-duplicated set. That ${N(empTot)} is
     not this cluster&rsquo;s headcount and is not used as one: keeping only the finest rows
     in each county drops whatever a group holds beyond its published parts, which is

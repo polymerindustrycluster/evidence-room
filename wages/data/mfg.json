@@ -2,6 +2,8 @@
  "meta": {
   "status": "PUBLISHED",
   "fetched": "2026-11-18",
+  "baseline_retrieved": "2026-08-30",
+  "payroll_and_jobs_retrieved": "2026-11-18",
   "source": "BLS QCEW annual averages, data.bls.gov, fetched live; own_code 5 for industries, own_code 0 for the all-industry county totals",
   "year": 2025,
   "row": "one county: private manufacturing (NAICS 31-33) average weekly wage and employment, beside the county all-ownership all-industry average wage.",

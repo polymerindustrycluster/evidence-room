@@ -98,10 +98,13 @@ for y in TREND_YEARS:
         us_mfg_wage = int(rm[0]["annual_avg_wkly_wage"]) if rm else None
     print(f"  US 326 {y}: {tide[-1]['us_326_emp']:,}")
 
+retrieved = date.today().isoformat()
 out = {
     "meta": {
         "status": "PUBLISHED",
-        "fetched": date.today().isoformat(),
+        "fetched": retrieved,
+        "baseline_retrieved": retrieved,
+        "payroll_and_jobs_retrieved": retrieved,
         "source": "BLS QCEW annual averages, data.bls.gov, fetched live; own_code 5 for "
                   "industries, own_code 0 for the all-industry county totals",
         "year": YEAR,

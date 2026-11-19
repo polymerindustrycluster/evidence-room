@@ -43,9 +43,9 @@
     }
   ],
   "quote": {
-    "text": "In 2025, the average wage beat the county’s all-industry average in 40 of the 51 published county-industry pairings in chemical, plastics and rubber manufacturing (NAICS 325 and 326, including their four-digit subcodes) across the PIC-12 counties (BLS QCEW, annual averages).",
+    "text": "In 2025, chemical manufacturing paid more than other local manufacturing in ten of eleven comparable Northeast Ohio counties. Plastics and rubber manufacturing did so in three. The comparison excludes both industries from the benchmark (BLS QCEW, private NAICS 325 and 326).",
     "claims": [
-      "wage-premium-count"
+      "wage-other-factories"
     ]
   },
   "claims": [
